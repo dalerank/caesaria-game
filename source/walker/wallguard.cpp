@@ -34,7 +34,7 @@ class WallGuard::Impl
 {
 public:
   typedef enum { doNothing=0, back2tower, go2position, fightEnemy,
-                 patrol } State;
+                 patrol, go2tower } State;
   TowerPtr base;
   State action;
   gfx::Type walk;
@@ -229,15 +229,9 @@ void WallGuard::_back2tower()
 {
   if( _d->base.isValid() )
   {
-    Pathway way = PathwayHelper::create( getIJ(), _d->base.as<Construction>(), PathwayHelper::allTerrain );
-
-    if( way.isValid() )
-    {
-      setPathway( way );
-      _d->action = Impl::go2position;
-      go();
-      return;
-    }
+    _pathwayRef().rbegin();
+    _computeDirection();
+    go();
   }
   else
   {
@@ -259,15 +253,14 @@ void WallGuard::_reachedPathway()
 
   case Impl::go2position:
   {
-    if( _getCity()->getWalkers( getType(), getIJ() ).size() != 1 ) //only me in this tile
-    {
-      _back2tower();
-    }
-    else
-    {
-      _d->action = Impl::patrol;
-    }
+    _back2tower();
+    _d->action = Impl::go2tower;
   }
+  break;
+
+  case Impl::go2tower:
+    deleteLater();
+    _d->action = Impl::doNothing;
   break;
 
   default:
@@ -326,6 +319,8 @@ void WallGuard::send2city( TowerPtr base, Pathway pathway )
 
   setPathway( pathway );
   go();
+
+  _d->action = Impl::go2position;
 
   if( !isDeleted() )
   {

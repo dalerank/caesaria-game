@@ -32,9 +32,15 @@ public:
   int getDirection() const;
 
   virtual void destroy();
+  virtual Point getOffset(Tile &tile, const Point &subpos) const;
 
   void updatePicture(PlayerCityPtr city);
+  bool isTowerEnter() const;
   bool mayPatrol() const;
+  virtual bool isFlat() const;
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
 private:
   class Impl;

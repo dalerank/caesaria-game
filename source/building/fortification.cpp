@@ -36,7 +36,10 @@ class Fortification::Impl
 public:
   int direction;
   Picture tmpPicture;
+  Point offset;
   bool mayPatrol;
+  bool isTowerEnter;
+  int index;
 };
 
 Fortification::Fortification() : Wall(), _d( new Impl )
@@ -92,6 +95,31 @@ void Fortification::destroy()
       }
     }
   }
+}
+
+Point Fortification::getOffset(Tile& tile, const Point& subpos) const
+{
+  switch( _d->index )
+  {
+  case 155:
+  case 160:
+  case 173: return _d->offset + Point( -8, 0 );
+
+  case 154:
+  case 161:
+  case 171: return _d->offset + Point( -8, 0 );
+
+  case 152:
+  case 172:
+  case 159:
+  case 175:
+  case 176:
+  case 177:
+  case 181:
+  case 182: return _d->offset + Point( -8, 0);
+  }
+
+  return _d->offset;
 }
 
 const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
@@ -185,12 +213,9 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     }
   }
 
-  bool towerNorth = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().is<Tower>();
-  bool towerWest = tmap.at( pos + TilePos( -1, 0 ) ).getOverlay().is<Tower>();
-
   const_cast< Fortification* >( this )->_d->direction = directionFlags;
   Fortification& th = *const_cast< Fortification* >( this );
-  Point mainPicOffset;
+  th._d->offset =  Point( 0, 0 );
   th._fgPicturesRef().clear();
   int index;
   switch( directionFlags )
@@ -213,26 +238,26 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0xdd: index = 156; break;
   case 0x41: index = 168; break;
   case 0xde: index = 174; break;
-  case 0x36: index = 176; mainPicOffset = Point( 0, 12 ); break;
-  case 0x3f: index = 171; mainPicOffset = Point( 0, 12 ); break;
+  case 0x36: index = 176; _d->offset = Point( 0, 12 ); break;
+  case 0x3f: index = 171; _d->offset = Point( 0, 12 ); break;
   case 0x4e: index = 174; break;
   case 0x23: case 0x83: case 0xa3: index = 179; break;
   case 0xad: index = 156; break;
   case 0xac: index = 180; break;
-  case 0xaf: index = 169; mainPicOffset = Point( 0, 12 ); break;
+  case 0xaf: index = 169; _d->offset = Point( 0, 12 ); break;
   case 0xcc: case 0x8c: index = 162; break;
-  case 0x7e: index = 173; mainPicOffset = Point( 0, 12 ); break;
+  case 0x7e: index = 173; _d->offset = Point( 0, 12 ); break;
   case 0x7b: index = 153; break;
   case 0xb3: index = 157; break;
   case 0x87: index = 174; break;
-  case 0xb7: case 0xbf: index = 171; mainPicOffset = Point( 0, 12 ); break;
+  case 0xb7: case 0xbf: index = 171; _d->offset = Point( 0, 12 ); break;
   case 0x5a: case 0x2a: index = 153; break;
   case 0x57: index = 174; break;
   case 0x58: index = 167; break;
   case 0x5e: index = 174; break;
   case 0x55: case 0xa5: index = 156; break;
   case 0x49: index = 164; break;
-  case 0xa7: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0xa7: index = 175; _d->offset = Point( 0, 12 ); break;
   case 0x9b: index = 153; break;
   case 0x85: index = 156; break;
   case 0x56: index = 174; break;
@@ -247,30 +272,30 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0x29: case 0xa9: index = 164; break;
   case 0x22: index = 157; break;
   case 0xdf: index = 174; break;
-  case 0xae: case 0xa6: index = 175; mainPicOffset = Point( 0, 12 ); break;
-  case 0xbe: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0xae: case 0xa6: index = 175; _d->offset = Point( 0, 12 ); break;
+  case 0xbe: index = 175; _d->offset = Point( 0, 12 ); break;
   case 0x4c: case 0x6c: case 0xec: index = 162; break;  // sw + s + w
   case 0x46: index = 174; break;
-  case 0xef: index = 173; mainPicOffset = Point( 0, 12 ); break;
+  case 0xef: index = 173; _d->offset = Point( 0, 12 ); break;
   case 0x65: index = 156; break;
-  case 0x67: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0x67: index = 175; _d->offset = Point( 0, 12 ); break;
   case 5: index = 156; break;  // N + S
   case 6: index = 174; break;  // E + S
-  case 0x12: index = 157; break; //NE + E
+  case 0x12: case 0x73: index = 157; break; //NE + E
   case 0x1e: case 0x47: index = 174; break;
   case 0xc1: index = 168; break;
   case 0xce: index = 174; break;
   case 0x1a: index = 153; break;
   case 0x7d: case 0xb5: index = 156; break;
   case 0x71: index = 168; break;
-  case 0xfe: index = 173; mainPicOffset = Point( 0, 12 ); break;
-  case 0xf7: index = 171; mainPicOffset = Point( 0, 12 ); break;
+  case 0xfe: index = 173; _d->offset = Point( 0, 12 ); break;
+  case 0xf7: index = 171; _d->offset = Point( 0, 12 ); break;
   case 0xa4: index = 162; break;
   case 0xfd: case 0xfc: index = 156; break;
   case 0xeb: index = 153; break;
   case 0xaa: case 0xfa: index = 153; break;
   case 0x5f: index = 174; break;
-  case 0xee: index = 173; mainPicOffset = Point( 0, 12 ); break;
+  case 0xee: index = 173; _d->offset = Point( 0, 12 ); break;
   case 0xe9: index = 164; break;
   case 0xbd: index = 156; break;
   case 0x86: index = 174; break; //e + s + nw
@@ -279,42 +304,42 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0x2c: index = 180; break;
   case 0x44: index = 162; break; //SW + S
   case 0xe3: index = 179; break;
-  case 0x26: case 0xe7: case 0xe6: index = 175; mainPicOffset = Point( 0, 12 ); break; //e + s + se
+  case 0x26: case 0xe7: case 0xe6: index = 175; _d->offset = Point( 0, 12 ); break; //e + s + se
   case 8: index = 167; break; // W
   case 9: index = 164; break; // N + W
   case 0x59: index = 164; break; // n + w + ne + sw
   case 0x5b: index = 153; break;
   case 0x5d: case 0xc7: index = 156; break;
-  case 0x5c: index = 180; break;
+  case 0x5c: index = 162; break;
   case 0xab: index = 153; break;
   case 10: index = 153; break; // E + W
   case 12: index = 162; break; // S + W
   case 14: index = 174; break; // E + S + W
   case 0x0f: index = 174; break;
-  case 0x2e: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0x2e: case 0xb6: index = 175; _d->offset = Point( 0, 12 ); break;
   case 11: index = 153; break; // N + E + W
   case 13: index = 156; break; // W + S + N
   case 7: index = 174; break;// N + E + S
   case 0x81: index = 168; break;
   case 0x82: index = 157; break;
   case 0x6a: index = 153; break;
-  case 0x6f: index = 173; mainPicOffset = Point( 0, 12 ); break;
+  case 0x6f: index = 173; _d->offset = Point( 0, 12 ); break;
   case 0xfb: index = 153; break;
   case 0xf5: index = 156; break;
   case 0x8e: index = 174; break;
   case 0x45: index = 156; break;
   case 0x88: index = 167; break;
   case 0x1b: index = 153; break;
-  case 0x1c: index = 162; break;
+  case 0x1c: case 0xdc: index = 162; break;
   case 0x19: index = 164; break;
   case 0x64: index = 162; break;
   case 0x68: index = 167; break;
-  case 0x6e: index = 155; mainPicOffset = Point( 0, 12 ); break;
-  case 0xff: index = 152; mainPicOffset = Point( 0, 12 ); break;
-  case 0x66: case 0x76: index = 175; mainPicOffset = Point( 0, 12 ); break;
-  case 0x7f: index = 152; mainPicOffset = Point( 0, 12 ); break;
+  case 0x6e: index = 155; _d->offset = Point( 0, 12 ); break;
+  case 0xff: index = 152; _d->offset = Point( 0, 12 ); break;
+  case 0x66: case 0x76: index = 175; _d->offset = Point( 0, 12 ); break;
+  case 0x7f: index = 172; _d->offset = Point( 0, 12 ); break;
   case 0x7a: case 0xea: index = 153; break;
-  case 0x77: index = 171; mainPicOffset = Point( 0, 12 ); break;
+  case 0x77: index = 171; _d->offset = Point( 0, 12 ); break;
   case 0x4d: index = 162; break;
   case 0x52: index = 157; break;
   case 0xcb: case 0xca: index = 153; break;
@@ -327,15 +352,15 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0x34: index = 162; break;
   case 0x3a: index = 153; break;
   case 0x35: index = 156; break;
-  case 0x3e: index = 176; mainPicOffset = Point( 0, 12 ); break;
+  case 0x3e: index = 176; _d->offset = Point( 0, 12 ); break;
   case 0x33: case 0xd3: index = 157; break;
   case 0x3b: index = 153; break;
   case 0x31: index = 168; break;
-  case 0x37: index = 171; mainPicOffset = Point( 0, 12 ); break;
+  case 0x37: index = 171; _d->offset = Point( 0, 12 ); break;
   case 0xed: case 0xe5: index = 156;
   case 0xcd: index = 156; break;
   case 0xc8: index = 167; break;
-  case 0x27: index = 159; mainPicOffset = Point( 0, 12 ); break;
+  case 0x27: index = 159; _d->offset = Point( 0, 12 ); break;
   case 0x28: index = 167; break;
   case 0x13: index = 157; break;
   case 0x8a: case 0xdb: index = 153; break;
@@ -344,7 +369,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0xd5: index = 156; break;
   case 0xd9: case 0x39: index = 164; break;
   case 0x8f: index = 174; break; // N + S + E + W (crossing)
-  case 0x2f: index = 175; mainPicOffset = Point( 0, 12 ); break;
+  case 0x2f: index = 175; _d->offset = Point( 0, 12 ); break;
   case 0x53: index = 157; break;
   case 0x54: index = 162; break;
   case 0x89: index = 164; break; //nw + w + n
@@ -367,16 +392,41 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
     //Logger::warning( "Impossible direction on wall building [%d,%d]", pos.getI(), pos.getJ() );
   }
 
-  if( index == 175 )
+  _d->isTowerEnter = false;
+  TowerPtr towerNorth = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().as<Tower>();
+  TowerPtr towerWest = tmap.at( pos + TilePos( -1, 0 ) ).getOverlay().as<Tower>();
+
+  if( towerNorth.isValid() )
   {
-    if( towerNorth ) { index = 181; }
-    else if( towerWest ) { index = 182; }
+    towerNorth->resetPatroling();
   }
 
-  th._d->mayPatrol = (mainPicOffset.getY() > 0);
+  if( towerWest.isValid() )
+  {
+    towerWest->resetPatroling();
+  }
+
+  switch( index )
+  {
+  case 175:
+    {
+      _d->isTowerEnter = (towerNorth.isValid() || towerWest.isValid());
+      if( towerNorth.isValid() ) { index = 181; }
+      else if( towerWest.isValid() ) { index = 182; }
+    }
+  break;
+
+  case 162:
+    if( towerNorth.isValid() ) { index = 183; }
+  break;
+  }
+
+
+  _d->index = index;
+  th._d->mayPatrol = (_d->offset.getY() > 0);
 
   th._d->tmpPicture = Picture::load( ResourceGroup::wall, index );
-  th._d->tmpPicture.addOffset( mainPicOffset.getX(), mainPicOffset.getY() );
+  th._d->tmpPicture.addOffset( _d->offset.getX(), _d->offset.getY() );
   return _d->tmpPicture;
 }
 
@@ -390,7 +440,38 @@ void Fortification::updatePicture(PlayerCityPtr city)
   setPicture( getPicture( city, getTilePos(), TilesArray() ) );
 }
 
+bool Fortification::isTowerEnter() const
+{
+  return _d->isTowerEnter;
+}
+
 bool Fortification::mayPatrol() const
 {
   return _d->mayPatrol;
+}
+
+bool Fortification::isFlat() const
+{
+  return false;
+}
+
+void Fortification::save(VariantMap& stream) const
+{
+  Wall::save( stream );
+
+  stream[ "direction" ] = (int)_d->direction;
+  stream[ "offset" ] = _d->offset;
+  stream[ "mayPatrol" ] = _d->mayPatrol;
+  stream[ "isTowerEnter" ] = _d->isTowerEnter;
+  stream[ "index" ] = _d->index;
+}
+
+void Fortification::load(const VariantMap& stream)
+{
+  Wall::load( stream );
+  _d->direction = (Direction)stream.get( "direction" ).toInt();
+  _d->offset = stream.get( "offset" );
+  _d->mayPatrol = stream.get( "mayPatrol" );
+  _d->isTowerEnter = stream.get( "isTowerEnter" );
+  _d->index = stream.get( "index" );
 }

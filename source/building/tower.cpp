@@ -34,6 +34,8 @@ public:
   typedef std::set< Pathway > PatrolWays;
   PatrolWays patrolWays;
   unsigned int areaHash;
+  Point offset;
+  bool needResetWays;
 
   void mayPatroling( const Tile* tile, bool& ret )
   {
@@ -125,18 +127,29 @@ void Tower::_rebuildWays()
 
 void Tower::deliverService()
 {
+  if( _d->needResetWays )
+  {
+    _d->patrolWays.clear();
+    _d->needResetWays = false;
+  }
+
   if( _d->patrolWays.empty() )
   {
     _rebuildWays();
   }
 
-  if( !_d->patrolWays.empty() )
+  if( !_d->patrolWays.empty() && getWalkers().empty() )
   {
     Impl::PatrolWays::iterator it = _d->patrolWays.begin();
     std::advance( it, rand() % _d->patrolWays.size() );
 
     WallGuardPtr guard = WallGuard::create( _getCity(), walker::romeGuard );
     guard->send2city( this, *it );
+
+    if( !guard->isDeleted() )
+    {
+      addWalker( guard.as<Walker>() );
+    }
   }
 }
 
@@ -147,11 +160,15 @@ TilesArray Tower::getEnterArea() const
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    bool mayPatrol;
-    _d->mayPatroling( *it, mayPatrol );
-    if( !mayPatrol ) { it = tiles.erase( it ); }
-    else { it++; }
+    FortificationPtr wall = (*it)->getOverlay().as<Fortification>();
+    if( wall.isValid() && wall->isTowerEnter() ) { it++; }
+    else { it = tiles.erase( it ); }
   }
 
   return tiles;
+}
+
+void Tower::resetPatroling()
+{
+  _d->needResetWays;
 }
