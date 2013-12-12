@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cart_pusher.hpp"
 
@@ -188,6 +189,7 @@ void CartPusher::computeWalkerDestination()
    // get the list of buildings within reach
    Pathway pathWay;
    Propagator pathPropagator( _getCity() );
+   pathPropagator.setAllDirections( false );
    _d->consumerBuilding = 0;
 
    if( _d->producerBuilding.isNull() )

@@ -32,10 +32,22 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
   }
   break;
 
+  case roadOnly:
+  {
+    Pathway ret;
+    Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::roadOnly );
+
+    return ret;
+  }
+
   case roadFirst:
   {
     Pathway ret;
     Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::roadOnly );
+    if( !ret.isValid() )
+    {
+      Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::roadOnly );
+    }
 
     return ret;
   }
@@ -62,10 +74,23 @@ Pathway PathwayHelper::create( TilePos startPos,
   }
   break;
 
+  case roadOnly:
+  {
+    Pathway ret;
+    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::roadOnly );
+
+    return ret;
+  }
+
   case roadFirst:
   {
     Pathway ret;
     Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::roadOnly );
+
+    if( !ret.isValid() )
+    {
+      Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::terrainOnly );
+    }
 
     return ret;
   }

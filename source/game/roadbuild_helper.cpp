@@ -43,7 +43,8 @@ compare_tiles_(const Tile * first, const Tile * second)
 TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos )
 {
   Pathway way;
-  Pathfinder::getInstance().getPath( startPos, stopPos, way, Pathfinder::fourDirection );
+  Pathfinder::getInstance().getPath( startPos, stopPos, way,
+                                     Pathfinder::fourDirection | Pathfinder::terrainOnly );
 
   if( way.isValid() )
   {

@@ -60,7 +60,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::utilitya, 1, 42, offset);
   _d->setRange( ResourceGroup::govt, 1, 10, offset);
   _d->setRange( ResourceGroup::sprites, 1, 8, offset ); //collapse fog
-  _d->setRange( ResourceGroup::sprites, 9, 20, offset ); //overlay columns
+  _d->setRange( ResourceGroup::sprites, 224, 225, offset ); //overlay columns
   _d->setRange( ResourceGroup::wall, 152, 185, offset );
 
   _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlay building 1x1
