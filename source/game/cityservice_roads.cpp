@@ -28,15 +28,17 @@ using namespace constants;
 class CityServiceRoads::Impl
 {
 public:
+  typedef std::pair< ConstructionPtr, int > UpdateInfo;
+  typedef std::vector< UpdateInfo > Updates;
+
   PlayerCityPtr city;
-  int maxDistance;
   int defaultIncreasePaved;
   int defaultDecreasePaved;
 
   DateTime lastTimeUpdate;
   ScopedPtr< Propagator > propagator;
 
-  void updateRoadsAround( BuildingPtr building );
+  void updateRoadsAround( UpdateInfo info );
 };
 
 CityServicePtr CityServiceRoads::create(PlayerCityPtr city)
@@ -50,7 +52,6 @@ CityServiceRoads::CityServiceRoads(PlayerCityPtr city )
 : CityService( "roads" ), _d( new Impl )
 {
   _d->city = city;
-  _d->maxDistance = 10;
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;
   _d->lastTimeUpdate = GameDate::current();
@@ -69,11 +70,16 @@ void CityServiceRoads::update( const unsigned int time )
 
   CityHelper helper( _d->city );
 
-  BuildingList buildings;
+
+  Impl::Updates positions;
   foreach( TileOverlay::Type type, btypes )
   {
     BuildingList tmp = helper.find<Building>( type );
-    buildings.insert( buildings.end(), tmp.begin(), tmp.end() );
+
+    foreach( BuildingPtr b, tmp )
+    {
+      positions.push_back( Impl::UpdateInfo( b.as<Construction>(), 10 ) );
+    }
   }
 
   HouseList houses = helper.find<House>( building::house );
@@ -81,13 +87,13 @@ void CityServiceRoads::update( const unsigned int time )
   {
     if( house->getSpec().getLevel() >= House::bigMansion )
     {
-      buildings.push_back( house.as<Building>() );
+      positions.push_back( Impl::UpdateInfo( house.as<Construction>(), 5 ) );
     }
   }
 
-  foreach( BuildingPtr building, buildings )
+  foreach( Impl::UpdateInfo upos, positions )
   {
-    _d->updateRoadsAround( building );
+    _d->updateRoadsAround( upos );
   }
 
   if( _d->lastTimeUpdate.getMonth() % 3 == 1 )
@@ -105,10 +111,10 @@ CityServiceRoads::~CityServiceRoads()
 
 }
 
-void CityServiceRoads::Impl::updateRoadsAround(BuildingPtr building)
+void CityServiceRoads::Impl::updateRoadsAround( UpdateInfo info )
 {
-  propagator->init( building.as<Construction>() );
-  Propagator::PathWayList pathWayList = propagator->getWays( maxDistance );
+  propagator->init( info.first );
+  Propagator::PathWayList pathWayList = propagator->getWays( info.second );
 
   foreach( Pathway& current, pathWayList )
   {

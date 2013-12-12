@@ -347,7 +347,8 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   case 0x17: index = 174; break;
   case 0x8b: index = 153; break;
   case 0x4a: index = 153; break;
-  case 0x84: case 0x1d: index = 156; break;
+  case 0x84: index = 162; break;
+  case 0x1d: index = 156; break;
   case 0x32: index = 157; break;
   case 0x34: index = 162; break;
   case 0x3a: index = 153; break;

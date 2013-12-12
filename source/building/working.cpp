@@ -146,6 +146,9 @@ void WorkingBuilding::destroy()
     walker->deleteLater();
   }
 
-  events::GameEventPtr e=events::ReturnWorkers::create( getTilePos(), getWorkersCount() );
-  e->dispatch();
+  if( getWorkersCount() > 0 )
+  {
+    events::GameEventPtr e=events::ReturnWorkers::create( getTilePos(), getWorkersCount() );
+    e->dispatch();
+  }
 }

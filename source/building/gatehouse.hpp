@@ -31,9 +31,17 @@ public:
   virtual bool isWalkable() const;
   virtual bool isRoad() const;
 
+  virtual Renderer::PassQueue getPassQueue() const;
+  virtual const PicturesArray& getPictures(Renderer::Pass pass) const;
+
+  virtual void initTerrain(Tile &terrain);
+
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
 
+  virtual void build(PlayerCityPtr city, const TilePos& pos);
 private:
+  bool _update( PlayerCityPtr city, TilePos pos );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

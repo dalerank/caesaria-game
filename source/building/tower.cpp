@@ -138,7 +138,7 @@ void Tower::deliverService()
     _rebuildWays();
   }
 
-  if( !_d->patrolWays.empty() && getWalkers().empty() )
+  if( getWorkersCount() > 0 && !_d->patrolWays.empty() && getWalkers().empty() )
   {
     Impl::PatrolWays::iterator it = _d->patrolWays.begin();
     std::advance( it, rand() % _d->patrolWays.size() );
