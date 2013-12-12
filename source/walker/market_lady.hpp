@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_MARKETLADY_H_INCLUDED__
-#define __OPENCAESAR3_MARKETLADY_H_INCLUDED__
+#ifndef __CAESARIA_MARKETLADY_H_INCLUDED__
+#define __CAESARIA_MARKETLADY_H_INCLUDED__
 
 #include "walker.hpp"
 #include "building/warehouse.hpp"
@@ -28,13 +28,15 @@ public:
   virtual ~MarketLady();
 
   void send2City( MarketPtr market );
-  virtual void _reachedPathway();
 
   // compute the destination to fetch the given good
   void computeWalkerDestination( MarketPtr market );
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+protected:
+  virtual void _reachedPathway();
 
 private:
   MarketLady( PlayerCityPtr city );

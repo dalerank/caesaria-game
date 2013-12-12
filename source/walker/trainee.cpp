@@ -105,6 +105,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   {
     Propagator pathPropagator( _getCity() );
     pathPropagator.init( _d->base.as<Construction>() );
+    pathPropagator.setAllDirections( false );
     pathPropagator.propagate( _maxDistance );
 
     foreach( TileOverlay::Type buildingType, _buildingNeed )

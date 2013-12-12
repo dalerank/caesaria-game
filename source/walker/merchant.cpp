@@ -49,6 +49,7 @@ public:
   SimpleGoodStore sell;
   SimpleGoodStore buy;
   int attemptCount;
+  int waitInterval;
   std::string baseCityName;
   int maxDistance;
   State nextState;
@@ -62,6 +63,7 @@ Merchant::Merchant(PlayerCityPtr city )
   _setAnimation( gfx::horseMerchant );
   _setType( walker::merchant );
   _d->maxDistance = 60;
+  _d->waitInterval = 0;
   _d->attemptCount = 0;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -139,6 +141,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       Propagator pathPropagator( city );
       Tilemap& tmap = city->getTilemap();
       pathPropagator.init( tmap.at( position ) );
+      pathPropagator.setAllDirections( false );
       pathPropagator.propagate( maxDistance );
       Propagator::DirectRoute route;
 
@@ -180,7 +183,9 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       Propagator pathPropagator( city );
       Tilemap& tmap = city->getTilemap();
       pathPropagator.init( tmap.at( position ) );
+      pathPropagator.setAllDirections( false );
       pathPropagator.propagate( maxDistance );
+
       Propagator::DirectRoute route;
 
       // try to find goods for city export 
@@ -251,6 +256,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       }
 
       nextState = stGoOutFromCity;
+      waitInterval = 60;
       resolveState( city, wlk, position );
     }
   break;
@@ -305,6 +311,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       }
 
       nextState = stFindWarehouseForBuying;
+      waitInterval = 60;
       resolveState( city, wlk, position );
     }
   break;
@@ -354,6 +361,7 @@ void Merchant::save( VariantMap& stream ) const
   stream[ "sell" ] = _d->sell.save();
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "baseCity" ] = Variant( _d->baseCityName );
+  stream[ "wait" ] = _d->waitInterval;
 }
 
 void Merchant::load( const VariantMap& stream)
@@ -361,8 +369,20 @@ void Merchant::load( const VariantMap& stream)
   Walker::load( stream );
   _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
   _d->sell.load( stream.get( "sell" ).toMap() );
-  _d->maxDistance = stream.get( "maxDistance" ).toInt();
+  _d->maxDistance = stream.get( "maxDistance" );
   _d->baseCityName = stream.get( "baseCity" ).toString();
+  _d->waitInterval = stream.get( "wait" );
+}
+
+void Merchant::timeStep(const unsigned long time)
+{
+  if( _d->waitInterval > 0 )
+  {
+    _d->waitInterval--;
+    return;
+  }
+
+  Walker::timeStep( time );
 }
 
 WalkerPtr Merchant::create(PlayerCityPtr city, world::MerchantPtr merchant )

@@ -127,6 +127,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      Pathway pathWay;
      Propagator pathPropagator( _getCity() );
      pathPropagator.init( _d->market.as<Construction>() );
+     pathPropagator.setAllDirections( false );
      pathPropagator.propagate( _d->maxDistance);
 
      // try to find the most needed good

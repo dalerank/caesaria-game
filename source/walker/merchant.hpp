@@ -29,8 +29,11 @@ public:
 
   void send2City();
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+  virtual void timeStep(const unsigned long time);
+
 protected:
   virtual void _reachedPathway();
 

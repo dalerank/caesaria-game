@@ -85,7 +85,8 @@ void Immigrant::_findPath2blankHouse( TilePos startPoint )
   Pathway pathway;
   if( house.isValid() )
   {
-    pathway = PathwayHelper::create( startPoint, house.as<Construction>(), PathwayHelper::allTerrain );
+    pathway = PathwayHelper::create( startPoint, house.as<Construction>(),
+                                     PathwayHelper::roadFirst  );
   }
 
   if( !pathway.isValid() )
