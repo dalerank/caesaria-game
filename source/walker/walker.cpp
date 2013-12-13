@@ -399,7 +399,7 @@ void Walker::_computeDirection()
   }
 }
 
-const Tile&Walker::_getNextTile() const
+const Tile& Walker::_getNextTile() const
 {
   TilePos pos = getIJ();
   switch( _d->action.direction )
@@ -411,7 +411,7 @@ const Tile&Walker::_getNextTile() const
   case constants::south: pos += TilePos( 0, -1 ); break;
   case constants::southWest: pos += TilePos( -1, -1 ); break;
   case constants::west: pos += TilePos( -1, 0 ); break;
-  case constants::northWest: pos += TilePos( 1, -1 ); break;
+  case constants::northWest: pos += TilePos( -1, 1 ); break;
   default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
   }
 
@@ -528,16 +528,24 @@ void Walker::load( const VariantMap& stream)
 {
   Tilemap& tmap = _getCity()->getTilemap();
 
+  _d->tileOffset = stream.get( "tileoffset" );
+  _d->name = stream.get( "name" ).toString();
+  _d->posOnMap = stream.get( "mappos" );
+  _d->pos = stream.get( "pos" );
   _d->pathWay.init( tmap, tmap.at( 0, 0 ) );
   _d->pathWay.load( stream.get( "pathway" ).toMap() );
+
+  if( !_d->pathWay.isValid() )
+  {
+    Logger::warning( "Wrong way for %s at [%d,%d]", _d->name.c_str(),
+                     _d->pos.getI(), _d->pos.getJ() );
+    deleteLater();
+  }
+
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
-  _d->pos = stream.get( "pos" );
-  _d->tileOffset = stream.get( "tileoffset" );
-  _d->posOnMap = stream.get( "mappos" );
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->speedMultiplier = (float)stream.get( "speedMul" );
-  _d->name = stream.get( "name" ).toString();
 
   Variant value = stream.get( "animationType" );
   if( value.isValid() )

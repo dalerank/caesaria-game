@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GUI_INFO_BOX_HPP
-#define GUI_INFO_BOX_HPP
+#ifndef _CAESARIA_INFOBOXSIMPLE_H_INCLUDE_
+#define _CAESARIA_INFOBOXSIMPLE_H_INCLUDE_
 
 #include <string>
 #include <list>
@@ -171,4 +171,4 @@ public:
 };
 
 }//end namespace gui
-#endif
+#endif //_CAESARIA_INFOBOXSIMPLE_H_INCLUDE_

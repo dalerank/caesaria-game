@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "prefecture.hpp"
 #include "gfx/picture.hpp"
@@ -21,12 +21,21 @@
 #include "game/astarpathfinding.hpp"
 #include "gfx/tile.hpp"
 #include "game/path_finding.hpp"
+#include "gfx/tilemap.hpp"
 #include "game/city.hpp"
 #include "building/constants.hpp"
 
-Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building::prefecture, Size(1))
+class Prefecture::Impl
 {
-  _fireDetect = TilePos( -1, -1 );
+public:
+  TilePos fireDetect;
+};
+
+Prefecture::Prefecture()
+  : ServiceBuilding(Service::prefect, constants::building::prefecture, Size(1)),
+    _d( new Impl )
+{
+  _d->fireDetect = TilePos( -1, -1 );
   _fireIncrement = 0;
   setPicture( ResourceGroup::security, 1 );
   
@@ -34,6 +43,11 @@ Prefecture::Prefecture() : ServiceBuilding(Service::prefect, constants::building
   _animationRef().setDelay( 4 );
   _animationRef().setOffset( Point( 20, 36 ) );
   _fgPicturesRef().resize(1);
+}
+
+Prefecture::~Prefecture()
+{
+
 }
 
 void Prefecture::timeStep(const unsigned long time)
@@ -62,7 +76,7 @@ void Prefecture::deliverService()
 {
   if( getWorkersCount() > 0 && getWalkers().size() == 0 )
   {
-    bool fireDetect = _fireDetect.getI() >= 0;
+    bool fireDetect = _d->fireDetect.getI() >= 0;
     PrefectPtr walker = Prefect::create( _getCity() );
     walker->setMaxDistance( 26 );
 
@@ -71,16 +85,25 @@ void Prefecture::deliverService()
     {
       Pathway pathway;
       TilePos startPos = getAccessRoads().front()->getIJ();
-      bool pathFounded = Pathfinder::getInstance().getPath( startPos, _fireDetect, pathway, false );
+
+      Tilemap& tmap = _getCity()->getTilemap();
+      TilesArray arrivedArea = tmap.getArea( _d->fireDetect - TilePos( 1, 1), _d->fireDetect + TilePos( 1, 1 ) );
+      bool pathFounded = Pathfinder::getInstance().getPath( startPos, arrivedArea, pathway,
+                                                            Pathfinder::terrainOnly );
       //patrol = !pathFounded;
 
       if( pathFounded )
       {
+        pathway.setNextTile( tmap.at( _d->fireDetect ) );
         walker->setIJ( pathway.getOrigin().getIJ() );
         walker->setPathway( pathway );
       }
+      else
+      {
+        fireDetect = false;
+      }
 
-      _fireDetect = TilePos( -1, -1 );
+      _d->fireDetect = TilePos( -1, -1 );
     }
     
     walker->send2City( PrefecturePtr( this ), fireDetect ? 200 : 0 );
@@ -91,5 +114,5 @@ void Prefecture::deliverService()
 
 void Prefecture::fireDetect( const TilePos& pos )
 {
-  _fireDetect = pos;
+  _d->fireDetect = pos;
 }

@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef _OPENCAESAR_BUILDING_H_INCLUDE_
-#define _OPENCAESAR_BUILDING_H_INCLUDE_
+#ifndef _CAESARIA_BUILDING_H_INCLUDE_
+#define _CAESARIA_BUILDING_H_INCLUDE_
 
 #include <string>
 #include <map>
@@ -106,4 +106,4 @@ public:
   void timeStep(const unsigned long time);
 };
 
-#endif
+#endif //_CAESARIA_BUILDING_H_INCLUDE_

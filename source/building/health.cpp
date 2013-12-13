@@ -91,7 +91,7 @@ void Baths::timeStep(const unsigned long time)
 
 void Baths::deliverService()
 {
-  if( _haveReservorWater && getWalkers().empty() )
+  if( _haveReservorWater && getWorkersCount() > 0 && getWalkers().empty() )
   {
     ServiceBuilding::deliverService();
   }
@@ -103,7 +103,10 @@ Barber::Barber() : ServiceBuilding(Service::barber, building::barber, Size(1))
 
 void Barber::deliverService()
 {
-
+  if( getWalkers().empty() && getWorkersCount() )
+  {
+    ServiceBuilding::deliverService();
+  }
 }
 
 unsigned int Barber::getWalkerDistance() const

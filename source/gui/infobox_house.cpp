@@ -158,10 +158,11 @@ void InfoBoxHouse::drawGood( HousePtr house, const Good::Type &goodType, const i
 
   // pictures of goods
   const Picture& pic = GoodHelper::getPicture( goodType );
-  Label* lb = new Label( this, Rect( Point( 31 + 100 * col, startY + 2 + 30 * row), Size( 24, 50) ) );
+  Label* lb = new Label( this, Rect( Point( 30 + 100 * col, startY + 2 + 30 * row), Size( 80, 50) ) );
   lb->setFont( Font::create( FONT_2 ) );
   lb->setIcon( pic );
   lb->setText( text );
+  lb->setTextOffset( Point( 30, 0 ));
   //font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row, false );
 }
 

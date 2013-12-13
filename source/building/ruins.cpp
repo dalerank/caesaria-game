@@ -1,23 +1,24 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ruins.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
+#include "gfx/tilemap.hpp"
 #include "game/city.hpp"
 #include "events/event.hpp"
 #include "constants.hpp"
@@ -57,13 +58,29 @@ void BurningRuins::timeStep(const unsigned long time)
         _animationRef().load(ResourceGroup::land2a, 224, 8);
         _animationRef().setOffset( Point( 14, 18 ) );
       }
+
+      Tilemap& tmap = _getCity()->getTilemap();
+      for( int range=1; range < 3; range++ )
+      {
+        TilePos offset( range, range );
+        TilesArray tiles = tmap.getRectangle( getTilePos() - offset, getTilePos() + offset );
+
+        foreach( Tile* tile, tiles)
+        {
+          BuildingPtr b = tile->getOverlay().as<Building>();
+          if( b.isValid() && b->getClass() != building::disasterGroup )
+          {
+            b->updateState( Construction::fire, 0.5 );
+          }
+        }
+      }
     }
     else
     {
       deleteLater();
       _animationRef().clear();
       _fgPicturesRef().clear();
-    }
+    }        
   }
 }
 

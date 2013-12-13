@@ -119,26 +119,27 @@ void ServiceWalker::_computeWalkerPath()
   Propagator::PathWayList pathWayList = pathPropagator.getWays(_d->maxDistance);
 
   float maxPathValue = 0.0;
-  Pathway* bestPath = NULL;
+  Pathway bestPath;
   foreach( Pathway& current, pathWayList )
   {
     float pathValue = evaluatePath(current);
     if (pathValue > maxPathValue)
     {
-      bestPath = &current;
+      bestPath = current;
       maxPathValue = pathValue;
     }
   }
 
-  if (bestPath == NULL)
+  if( !bestPath.isValid() )
   {
     // no good path
     deleteLater();
     return;
   }
 
-  setIJ( bestPath->getOrigin().getIJ() );
-  setPathway(*bestPath);
+
+  setIJ( bestPath.getOrigin().getIJ() );
+  setPathway( bestPath );
 }
 
 void ServiceWalker::_cancelPath()

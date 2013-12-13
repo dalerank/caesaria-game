@@ -138,12 +138,24 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   return false;
 }
 
-
 void Prefect::_back2Prefecture()
-{
-  _d->endPatrolPoint = getBase()->getEnterArea().front()->getIJ();
-  _back2Patrol();
-}
+{ 
+  Pathway pathway = PathwayHelper::create( getIJ(), getBase().as<Construction>(),
+                                           PathwayHelper::roadFirst );
+
+  if( pathway.isValid() )
+  {
+    _d->action = Impl::patrol;
+    _setAnimation( gfx::prefect );
+    _updatePathway( pathway );
+    setSpeed( 1 );
+    go();
+  }
+  else
+  {
+    deleteLater();
+  }
+ }
 
 void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 {
@@ -164,19 +176,20 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 
 void Prefect::_back2Patrol()
 {
-  Pathway pathway = PathwayHelper::create( getIJ(), _d->endPatrolPoint, PathwayHelper::allTerrain );
+  Pathway pathway = PathwayHelper::create( getIJ(), _d->endPatrolPoint,
+                                           PathwayHelper::allTerrain );
 
   if( pathway.isValid() )
   {
-    _d->action = Impl::patrol;
-    _setAnimation( gfx::prefect );
+    _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
+    _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefect );
     _updatePathway( pathway );
     setSpeed( 1 );
     go();
   }
   else
   {
-    die();
+    _back2Prefecture();
   }
 }
 
@@ -284,8 +297,11 @@ void Prefect::_centerTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      getBase().as<Prefecture>()->fireDetect( firePos );
-      _back2Prefecture();
+      if( getBase().isValid() )
+      {
+        getBase().as<Prefecture>()->fireDetect( firePos );
+        _back2Prefecture();
+      }
     }
     else
     {
@@ -328,6 +344,7 @@ void Prefect::_centerTile()
     if( building.isValid() && building->getType() == building::burningRuins )
     {
       _d->action = Impl::fightFire;
+      _d->endPatrolPoint = building->getTilePos();
       _setAnimation( gfx::prefectFightFire );
       _setAction( acFight );
       setSpeed( 0.f );
@@ -457,7 +474,7 @@ void Prefect::die()
 
 void Prefect::load( const VariantMap& stream )
 {
-  ServiceWalker::load( stream );
+   ServiceWalker::load( stream );
  
   _d->action = (Impl::PrefectAction)stream.get( "prefectAction" ).toInt();
   _d->water = (int)stream.get( "water" );

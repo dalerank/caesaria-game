@@ -706,13 +706,13 @@ msgstr "Дорога (описание)"
 
 #: oc3_gui_info_box.cpp:658
 msgid "##clear_land_caption##"
-msgstr ""
-"На этой земле можно строить все, что угодно, по ней могут пройти не только "
-"свои, но и вражеские солдаты!"
+msgstr "Свободный участок"
+
 
 #: oc3_gui_info_box.cpp:659
 msgid "##clear_land_text##"
-msgstr "Очистить"
+msgstr ""На этой земле можно строить все, что угодно, по ней могут пройти не только "
+"свои, но и вражеские солдаты!""
 
 #: oc3_gui_info_box.cpp:680
 msgid "##freehouse_caption##"
