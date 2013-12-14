@@ -37,8 +37,13 @@
 #include "events/event.hpp"
 #include "events/fireworkers.hpp"
 #include "building/desirability.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
+
+namespace {
+  enum { maxNegativeStep=-3, maxPositiveStep=3 };
+}
 
 class House::Impl
 {
@@ -57,6 +62,7 @@ public:
   std::string condition4Up;  
   CitizenGroup habitants;
   int currentYear;
+  int changeCondition;
 
   bool mayPayTax()
   {
@@ -125,6 +131,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _d->desirability.base = -3;
   _d->desirability.range = 3;
   _d->desirability.step = 1;
+  _d->changeCondition = 0;
   _d->currentYear = GameDate::current().getYear();
   updateState( Construction::fire, 0, false );
 
@@ -176,18 +183,42 @@ void House::timeStep(const unsigned long time)
        _d->goodStore.setCurrentQty( goodType, std::max( _d->goodStore.getCurrentQty(goodType) - montlyGoodsQty, 0) );
     }
 
-    bool validate = _d->spec.checkHouse( this );
+    bool validate = _d->spec.checkHouse( this, &_d->condition4Up );
     if( !validate )
     {
-      levelDown();
+      _d->changeCondition--;
+      if( _d->changeCondition <= maxNegativeStep )
+      {
+        _d->changeCondition = 0;
+        levelDown();
+      }
     }
     else
     {
       _d->condition4Up = "";
-      if( _d->spec.next().checkHouse( this, &_d->condition4Up ) )
+      bool mayUpgrade =  _d->spec.next().checkHouse( this, &_d->condition4Up );
+      if( mayUpgrade )
       {
-         levelUp();
-      }
+        _d->changeCondition++;
+        if( _d->changeCondition >= maxPositiveStep )
+        {
+          _d->changeCondition = 0;
+          levelUp();
+        }
+      }      
+    }
+
+    if( _d->changeCondition < 0 )
+    {
+      std::string why;
+      _d->spec.checkHouse( this, &why );
+      _d->condition4Up = StringHelper::format( 0xff, "%s %s",
+                                               _("##house_willbe_degrade##"),
+                                               why.c_str() );
+    }
+    else if( _d->changeCondition > 0 )
+    {
+      _d->condition4Up = _("##house_willbe_upgrade##");
     }
 
     int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
@@ -499,7 +530,7 @@ void House::applyService( ServiceWalkerPtr walker )
   case Service::baths:
   case Service::school:
   case Service::library:
-  case Service::college:
+  case Service::academy:
   case Service::theater:
   case Service::amphitheater:
   case Service::colloseum:
@@ -727,6 +758,7 @@ void House::save( VariantMap& stream ) const
   stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "goodstore" ] = _d->goodStore.save();
   stream[ "healthLevel" ] = _d->healthLevel;
+  stream[ "changeCondition" ] = _d->changeCondition;
 
   VariantList vl_services;
   foreach( Impl::Services::value_type& mapItem, _d->services )
@@ -753,7 +785,7 @@ void House::load( const VariantMap& stream )
 
   _d->habitants.load( stream.get( "currentHubitants" ).toList() );
   _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
-
+  _d->changeCondition = stream.get( "changeCondition", 0 );
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
 
   _d->initGoodStore( getSize().getArea() );
@@ -808,7 +840,7 @@ bool House::isEducationNeed(Service::Type type) const
   switch( type )
   {
   case Service::school: return (lvl>0);
-  case Service::college: return (lvl>1);
+  case Service::academy: return (lvl>1);
   case Service::library: return (lvl>2);
   default: break;
   }

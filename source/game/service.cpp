@@ -44,7 +44,7 @@ ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
   append( Service::hospital, "srvc_hospital" );
   append( Service::school, "srvc_school" );
   append( Service::library, "srvc_library" );
-  append( Service::college, "srvc_college" );
+  append( Service::academy, "srvc_college" );
   append( Service::theater, "srvc_theater" );
   append( Service::amphitheater, "srvc_amphitheater" );
   append( Service::colloseum, "srvc_collosseum" );

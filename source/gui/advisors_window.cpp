@@ -40,6 +40,8 @@
 #include "core/foreach.hpp"
 #include "game/cityfunds.hpp"
 #include "events/event.hpp"
+#include "game/settings.hpp"
+#include "gui/image.hpp"
 
 namespace gui
 {
@@ -47,7 +49,6 @@ namespace gui
 class AdvisorsWindow::Impl
 {
 public:
-  PictureRef background;
   Widget* advisorPanel;
 
   Point offset;
@@ -72,16 +73,12 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
 : Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
 {
   // use some clipping to remove the right and bottom areas
-  _d->background.reset( Picture::create( getSize() ) );
+  setupUI( GameSettings::rcpath( "/gui/advisors.gui" ) );
   _d->advisorPanel = 0;
-
-  Picture& backgr = Picture::load( "senate", 1 );
-
-  _d->background->draw( backgr, Rect( Point( 0, 0), backgr.getSize() ), Rect( Point( 0,0), getSize() ) ); 
 
   Point tabButtonPos( (getWidth() - 636) / 2, getHeight() / 2 + 192);
 
-  _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 14 ), tabButtonPos.getX(), tabButtonPos.getY() );
+  new gui::Image( this, tabButtonPos, Picture::load( ResourceGroup::menuMiddleIcons, 14 ) );
   addButton( ADV_EMPLOYERS, 255 );
   addButton( ADV_LEGION, 256 );
   addButton( ADV_EMPIRE, 257 );
@@ -156,8 +153,6 @@ void AdvisorsWindow::draw( GfxEngine& engine )
 {
   if( !isVisible() )
     return;
-
-  engine.drawPicture( *_d->background, Point( 0, 0 ) );
 
   Widget::draw( engine );
 }

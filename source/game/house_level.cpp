@@ -14,6 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+
 
 #include "house_level.hpp"
 
@@ -304,7 +306,7 @@ int HouseLevelSpec::computeEducationLevel(HousePtr house, std::string &oMissingR
    if( house->hasServiceAccess(Service::school) )
    {
       res = 1;
-      if( house->hasServiceAccess(Service::college) )
+      if( house->hasServiceAccess(Service::academy) )
       {
          res = 2;
          if( house->hasServiceAccess(Service::library) )
@@ -361,7 +363,7 @@ float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type se
       break;
    case Service::school:
    case Service::library:
-   case Service::college:
+   case Service::academy:
       res = evaluateEducationNeed(house, service);
       break;
    case Service::baths:
@@ -388,32 +390,29 @@ float HouseLevelSpec::evaluateEntertainmentNeed(HousePtr house, const Service::T
 
 float HouseLevelSpec::evaluateEducationNeed(HousePtr house, const Service::Type service)
 {
-   float res = 0;
-   //int houseLevel = house.getLevelSpec().getHouseLevel();
-   int minLevel = next()._d->minEducationLevel;
-   if( minLevel == 1 )
-   {
-      // need school or library
-      if (service != Service::college)
-      {
-         res = (float)( 100 - house->getServiceValue(service) );
-      } 
-   }
-   else if (minLevel == 2)
-   {
-      // need school and library
-      if (service != Service::college)
-      {
-         res = (float)( 100 - house->getServiceValue(service) );
-      }
-   }
-   else if (minLevel == 3)
-   {
-      // need school and library and college
-      res = (float)( 100 - house->getServiceValue(service) );
-   }
-   // std::cout << "education need: " << service << " " << res << std::endl;
-   return res;
+  float res = 0;
+  //int houseLevel = house.getLevelSpec().getHouseLevel();
+  int minLevel = next()._d->minEducationLevel;
+  switch( minLevel )
+  {
+  case 1:  // need school
+    res = (service == Service::school
+            ? (float)( 100 - house->getServiceValue(service) )
+            : 0);
+  break;
+
+  case 2: // need school and academy
+    res = (service != Service::library
+            ? (float)( 100 - house->getServiceValue(service) )
+            : 0);
+  break;
+
+  case 3: // need school and library and college
+     res = (float)( 100 - house->getServiceValue(service) );
+  break;
+  }
+  // std::cout << "education need: " << service << " " << res << std::endl;
+  return res;
 }
 
 float HouseLevelSpec::evaluateHealthNeed(HousePtr house, const Service::Type service)

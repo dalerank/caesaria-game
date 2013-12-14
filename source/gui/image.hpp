@@ -29,7 +29,7 @@ class Image : public Widget
 public:
   typedef enum { native=0, fit, image } Mode;
   //! constructor
-  Image( Widget* parent );
+  Image(Widget* parent );
 
   Image(Widget* parent, Rect rectangle, Picture pic, Mode mode=image, int id=-1);
   Image(Widget* parent, Point pos, Picture pic, int id=-1);

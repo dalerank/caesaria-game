@@ -137,7 +137,7 @@ PushButton::PushButton( Widget* parent,
 
 void PushButton::_updateTexture( ElementState state )
 {
-  Size btnSize = getSize();
+  Size btnSize = getSize();      
   PictureRef& curTxs = _d->buttonStates[ state ].background;
   PictureRef& textTxs = _d->buttonStates[ state ].textPicture;
 

@@ -44,7 +44,9 @@ public:
    Academy();
 
    int getVisitorsNumber() const;
+   virtual void deliverService();
    virtual std::string getSound() const;
+   unsigned int getWalkerDistance() const;
 };
 
 

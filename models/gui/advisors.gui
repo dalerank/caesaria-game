@@ -1,0 +1,9 @@
+{  
+  geometryf : [ 0, 0, 1, 1 ]
+
+  imgBackground#Image : {
+    geometryf : [ 0, 0, 1, 1 ]
+    image : "senate_00001.png"
+  }
+
+}

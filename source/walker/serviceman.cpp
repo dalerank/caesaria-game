@@ -83,7 +83,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::market: _setAnimation( gfx::marketlady ); nameType = NameGenerator::female; break;
 
   case Service::library:
-  case Service::college:  _setAnimation( gfx::teacher );                              break;
+  case Service::academy:  _setAnimation( gfx::teacher );                              break;
 
   case Service::forum:
   case Service::senate:   _setAnimation(gfx:: taxCollector );                                    break;
@@ -363,7 +363,7 @@ void ServiceWalker::die()
   case Service::school: start=817; stop=824; rcGroup = ResourceGroup::citizen1; break;
 
   case Service::library:
-  case Service::college:
+  case Service::academy:
     start=1121; stop=1128; rcGroup = ResourceGroup::citizen3;
   break;
 

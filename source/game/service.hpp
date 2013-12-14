@@ -31,7 +31,7 @@ public:
     prefect,
     religionNeptune, religionCeres, religionVenus, religionMars, religionMercury, oracle,
     doctor, barber, baths, hospital,
-    school, library, college,
+    school, library, academy,
     theater, amphitheater, colloseum,
     hippodrome,
     burningRuins,

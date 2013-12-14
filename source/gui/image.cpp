@@ -44,6 +44,7 @@ public oc3_signals:
 //! constructor
 Image::Image( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
+	_d->mode = Image::fit;
 }
 
 Image::Image(Widget* parent, Rect rectangle, Picture pic, Mode mode, int id)
@@ -98,7 +99,7 @@ void Image::_updateTexture( GfxEngine& painter )
     case Image::image:
       _d->background->draw( _d->bgPicture,
                             Rect( Point(0, 0), _d->bgPicture.getSize()),
-                            Rect( 0, 0, getWidth(), getHeight() ), false );
+                            Rect( Point( 0, 0 ), getSize() ), false );
     break;
     }
   }    
@@ -163,6 +164,11 @@ void Image::setupUI(const VariantMap& ui)
   Widget::setupUI( ui );
 
   setPicture( Picture::load( ui.get( "image" ).toString() ) );
+  std::string mode = ui.get( "mode", "fit" ).toString();
+  if( mode == "fit" ) { _d->mode = Image::fit; }
+  else if( mode == "image" ) { _d->mode = Image::image; }
+  else if( mode == "native" ) { _d->mode = Image::native; }
+  else { _d->mode = Image::fit; }
 }
 
 PictureRef& Image::getPicture()

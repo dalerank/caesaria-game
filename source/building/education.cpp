@@ -55,7 +55,7 @@ int Library::getVisitorsNumber() const
   return 800;
 }
 
-Academy::Academy() : ServiceBuilding(Service::college, building::academy, Size(3))
+Academy::Academy() : ServiceBuilding(Service::academy, building::academy, Size(3))
 {
   setPicture( ResourceGroup::commerce, 85 );
 }
@@ -63,6 +63,19 @@ Academy::Academy() : ServiceBuilding(Service::college, building::academy, Size(3
 int Academy::getVisitorsNumber() const
 {
   return 100;
+}
+
+void Academy::deliverService()
+{
+  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+  {
+    ServiceBuilding::deliverService();
+  }
+}
+
+unsigned int Academy::getWalkerDistance() const
+{
+  return 26;
 }
 
 std::string Academy::getSound() const
