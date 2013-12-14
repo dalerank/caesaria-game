@@ -47,7 +47,8 @@ public:
   void addOffset(const int dx, const int dy);
   void setName(std::string &name);  // for save game
   std::string getName() const;
-  Picture* createCopy() const;
+  Picture* clone() const;
+  void scale( Size size );
   SDL_Surface* getSurface() const;
   Point getOffset() const;
   int getWidth() const;
@@ -78,8 +79,6 @@ public:
   static Picture* create( const Size& size );
   static const Picture& getInvalid();
   static void destroy( Picture* ptr );
-
-  unsigned int& getGlTextureID() const;
 private:
   class Impl;
   ScopedPtr< Impl > _d;

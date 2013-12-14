@@ -140,16 +140,16 @@ void PictureBank::createResources()
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *originalPic.getSurface() );
 
-  Picture* fullReservoir = originalPic.createCopy(); //mem leak on destroy picloader
+  Picture* fullReservoir = originalPic.clone(); //mem leak on destroy picloader
   fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir->getSurface() );
 
   Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003.png", *emptyFontainOrig.getSurface() );
 
-  Picture* fullFontain = emptyFontainOrig.createCopy();  //mem leak on destroy picloader
+  Picture* fullFontain = emptyFontainOrig.clone();  //mem leak on destroy picloader
   fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
-  setPicture( std::string( ResourceGroup::waterbuildings) + "_00004.png", *fullFontain->getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004.png", *fullFontain->getSurface() );
 }
 
 PictureBank::PictureBank() : _d( new Impl )

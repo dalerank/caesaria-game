@@ -93,9 +93,13 @@ void Image::_updateTexture( GfxEngine& painter )
   {    
     switch( _d->mode )
     {
-    case Image::native: _d->background->draw( _d->bgPicture, Point(), true ); break;
+    case Image::native: _d->background->draw( _d->bgPicture, Point( 0, 0 ), true ); break;
 
     case Image::fit:
+      _d->background->draw( _d->bgPicture, Point( getWidth() - _d->bgPicture.getWidth(),
+                                                  getHeight() - _d->bgPicture.getHeight() ) / 2, false );
+    break;
+
     case Image::image:
       _d->background->draw( _d->bgPicture,
                             Rect( Point(0, 0), _d->bgPicture.getSize()),

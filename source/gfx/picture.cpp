@@ -24,6 +24,7 @@
 #include "gfx/engine.hpp"
 #include "core/requirements.hpp"
 #include "core/color.hpp"
+#include "core/logger.hpp"
 #include <SDL.h>
 
 // Picture class functions
@@ -45,14 +46,17 @@ public:
   SDL_Surface* surface;
 
   // for OPEN_GL surface
-  unsigned int glTextureID;  // texture ID for openGL
+  //unsigned int glTextureID;  // texture ID for openGL
+
+  SDL_Surface* getZoomedSurface(SDL_Surface* src, double zoomx, double zoomy);
+  void zoomSurface(SDL_Surface* src, SDL_Surface* dst);
 };
 
 Picture::Picture() : _d( new Impl )
 {
   _d->surface = NULL;
   _d->offset = Point( 0, 0 );
-  _d->glTextureID = 0;
+  //_d->glTextureID = 0;
   _d->size = Size( 0 );
   _d->name = "";
 }
@@ -134,11 +138,11 @@ Picture& Picture::load( const std::string& filename )
   return PictureBank::instance().getPicture( filename );
 }
 
-Picture* Picture::createCopy() const
+Picture* Picture::clone() const
 {
   if( !_d->surface )
   {
-    _CAESARIA_DEBUG_BREAK_IF( "No surface for duplicate" );
+    Logger::warning( "No surface for clone" );
     return GfxEngine::instance().createPicture( Size( 100 ) );
   }
 
@@ -155,6 +159,12 @@ Picture* Picture::createCopy() const
   newpic->init(img, _d->offset );
 
   return newpic;
+}
+
+void Picture::scale(Size size)
+{
+ /* Picture scaledPic;
+  scaledPic.init*/
 }
 
 void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
@@ -311,7 +321,7 @@ Picture& Picture::operator=( const Picture& other )
   _d->surface = other._d->surface;
 
   // for OPEN_GL surface
-  _d->glTextureID = other._d->glTextureID;  // texture ID for openGL
+  //_d->glTextureID = other._d->glTextureID;  // texture ID for openGL
 
   _d->offset = other._d->offset;
 
@@ -323,10 +333,10 @@ Picture::~Picture()
 
 }
 
-unsigned int& Picture::getGlTextureID() const
+/*unsigned int& Picture::getGlTextureID() const
 {
   return _d->glTextureID;
-}
+}*/
 
 void Picture::destroy( Picture* ptr )
 {
@@ -356,4 +366,107 @@ Picture* Picture::create( const Size& size )
 const Picture& Picture::getInvalid()
 {
   return _invalidPicture;
+}
+
+void Picture::Impl::zoomSurface(SDL_Surface* src, SDL_Surface* dst)
+{
+	unsigned int* src_pointer = static_cast<unsigned int*>(src->pixels);
+	unsigned int* src_help_pointer = src_pointer;
+	unsigned int* dst_pointer = static_cast<unsigned int*>(dst->pixels);
+
+	int x, y;
+	unsigned int *sx_ca, *sy_ca;
+	unsigned int sx = static_cast<unsigned int>(0xffff * src->w / dst->w);
+	unsigned int sy = static_cast<unsigned int>(0xffff * src->h / dst->h);
+	unsigned int sx_c = 0;
+	unsigned int sy_c = 0;
+
+	// Allocates memory and calculates row wide&height
+	ScopedArrayPtr< unsigned int > sx_a( new unsigned int[dst->w + 1] );
+	sx_ca = sx_a.data();
+	for(x = 0; x <= dst->w; x++)
+	{
+		*sx_ca = sx_c;
+		sx_ca++;
+		sx_c &= 0xffff;
+		sx_c += sx;
+	}
+
+	ScopedArrayPtr< unsigned int > sy_a( new unsigned int[dst->h + 1] );
+	sy_ca = sy_a.data();
+	for (y = 0; y <= dst->h; y++)
+	{
+		*sy_ca = sy_c;
+		sy_ca++;
+		sy_c &= 0xffff;
+		sy_c += sy;
+	}
+	sy_ca = sy_a.data();
+
+	// Transfers the image data
+
+	if (SDL_MUSTLOCK(src))
+	{
+		SDL_LockSurface(src);
+	}
+	if (SDL_MUSTLOCK(dst))
+	{
+		SDL_LockSurface(dst);
+	}
+
+	for (y = 0; y < dst->h; y++)
+	{
+		src_pointer = src_help_pointer;
+		sx_ca = sx_a.data();
+		for (x = 0; x < dst->w; x++)
+		{
+			*dst_pointer = *src_pointer;
+			sx_ca++;
+			src_pointer += (*sx_ca >> 16);
+			dst_pointer++;
+		}
+		sy_ca++;
+		src_help_pointer = (unsigned int*)((unsigned char*)src_help_pointer + (*sy_ca >> 16) * src->pitch);
+	}
+
+	if (SDL_MUSTLOCK(dst))
+	{
+		SDL_UnlockSurface(dst);
+	}
+	if (SDL_MUSTLOCK(src))
+	{
+		SDL_UnlockSurface(src);
+	}
+}
+
+SDL_Surface* Picture::Impl::getZoomedSurface(SDL_Surface * src, double zoomx, double zoomy)
+{
+	if (src == NULL)
+		return NULL;
+
+	SDL_Surface *zoom_src;
+	SDL_Surface *zoom_dst;
+	int dst_w = std::max( static_cast<int>(round(src->w * zoomx)), 1 );
+	int dst_h = std::max( static_cast<int>(round(src->h * zoomy)), 1 );
+
+	// If source surface has no alpha channel then convert it
+	if (src->format->Amask == 0)
+	{
+		zoom_src = SDL_CreateRGBSurface(SDL_SWSURFACE, src->w, src->h, 32,
+																		0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff );
+		SDL_BlitSurface(src, NULL, zoom_src, NULL);
+	}
+	else
+	{
+		zoom_src = src;
+	}
+	// Create destination surface
+	zoom_dst = SDL_CreateRGBSurface(SDL_SWSURFACE, dst_w, dst_h, 32,
+			zoom_src->format->Rmask, zoom_src->format->Gmask,
+			zoom_src->format->Bmask, zoom_src->format->Amask);
+
+	// Zoom surface
+	zoomSurface(zoom_src, zoom_dst);
+
+	return zoom_dst;
 }
