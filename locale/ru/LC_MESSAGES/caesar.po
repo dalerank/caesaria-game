@@ -2,13 +2,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencaesar3\n"
 "POT-Creation-Date: 2013-10-09 14:35+0400\n"
-"PO-Revision-Date: 2013-12-09 12:18+0300\n"
+"PO-Revision-Date: 2013-12-14 12:50+0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: c:\\Users\\dalerank\\Dropbox\\opencaesar3\\\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -47,51 +47,51 @@ msgstr "школьников"
 
 #: oc3_advisor_emperor_window.cpp:59
 msgid "##set_mayor_salary##"
-msgstr "изменить жалование"
+msgstr "Установить уровень жалования"
 
 #: oc3_advisor_emperor_window.cpp:65
 msgid "##citizen_salary##"
-msgstr "гражданин"
+msgstr "Жалование гражданина"
 
 #: oc3_advisor_emperor_window.cpp:66
 msgid "##clerk_salary##"
-msgstr "клерк"
+msgstr "Жалование клерка"
 
 #: oc3_advisor_emperor_window.cpp:67
 msgid "##engineer_salary##"
-msgstr "инженер"
+msgstr "Жалование инженера"
 
 #: oc3_advisor_emperor_window.cpp:68
 msgid "##architect_salary##"
-msgstr "архитектор"
+msgstr "Жалование архитектора"
 
 #: oc3_advisor_emperor_window.cpp:69
 msgid "##questor_salary##"
-msgstr "квестор"
+msgstr "Жалование квестора"
 
 #: oc3_advisor_emperor_window.cpp:70
 msgid "##procurate_salary##"
-msgstr "прокуратор"
+msgstr "Жалование прокуратора"
 
 #: oc3_advisor_emperor_window.cpp:71
 msgid "##edil_salary##"
-msgstr "эдил"
+msgstr "Жалование эдила"
 
 #: oc3_advisor_emperor_window.cpp:72
 msgid "##pretor_salary##"
-msgstr "претор"
+msgstr "Жалование претора"
 
 #: oc3_advisor_emperor_window.cpp:73
 msgid "##consoul_salary##"
-msgstr "консул"
+msgstr "Жалование консула"
 
 #: oc3_advisor_emperor_window.cpp:74
 msgid "##proconsoul_salary##"
-msgstr "проконсул"
+msgstr "Жалование проконсула"
 
 #: oc3_advisor_emperor_window.cpp:75
 msgid "##caesar_salary##"
-msgstr "цезарь"
+msgstr "Жалование цезаря"
 
 #: oc3_advisor_emperor_window.cpp:77 oc3_advisor_emperor_window.cpp:102
 msgid "##cancel##"
@@ -708,11 +708,11 @@ msgstr "Дорога (описание)"
 msgid "##clear_land_caption##"
 msgstr "Свободный участок"
 
-
 #: oc3_gui_info_box.cpp:659
 msgid "##clear_land_text##"
-msgstr ""На этой земле можно строить все, что угодно, по ней могут пройти не только "
-"свои, но и вражеские солдаты!""
+msgstr ""
+"На этой земле можно строить все, что угодно, по ней могут пройти не только "
+"свои, но и вражеские солдаты!"
 
 #: oc3_gui_info_box.cpp:680
 msgid "##freehouse_caption##"

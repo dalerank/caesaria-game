@@ -83,31 +83,39 @@ if( BUILD_PNG )
 endif()
 
 if(WIN32)
-  set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesaria")
+  set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 
 if(UNIX)
-  set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesaria.linux")
+  set(EXECUTABLE_FILENAME "caesaria.linux")
 endif(UNIX)
 
 if(MACOSX)
-  set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "caesaria.macos")
+  set(EXECUTABLE_FILENAME "caesaria.macos")
 endif(MACOSX)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
+
+if(CMAKE_BUILD_TYPE EQUAL "Release")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+endif(CMAKE_BUILD_TYPE EQUAL "Release")
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
 endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
+
+# prepare working directory
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_FILENAME}.exe" "${WORK_DIR}/${EXECUTABLE_FILENAME}.exe"
+)
+
 # Copy DLL to build output directory
 if(WIN32)
-  if(MSVC)
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} /Wall")
-    include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/dependecies/msvc-include/" )
-  endif(MSVC)
-
   set(_LIBS_FOR_DLL_SOURCE
     ${SDL_LIBRARY}
     ${SDL_MIXER_LIBRARY}
@@ -124,16 +132,9 @@ if(WIN32)
       ${_lib_path}/../bin/*.dll)
 
     foreach(dll ${DLLs})
-      #MESSAGE (DLL: ${dll})
-      add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy ${dll} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+      add_custom_command( TARGET ${PROJECT_NAME}
+                          POST_BUILD
+                          COMMAND ${CMAKE_COMMAND} -E copy ${dll} ${WORK_DIR})
     endforeach()
   endforeach(_lib)
-
-  # Set resource path in Visual Studio as debuging argument
-  if (MSVC)
-    set(DEBUG_ARGS "-R \"${CMAKE_CURRENT_SOURCE_DIR}/resources\"")
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/vs/opencaesar3.vcxproj.user" "${CMAKE_CURRENT_BINARY_DIR}/opencaesar3.vcxproj.user" @ONLY)
-  endif(MSVC)
-
 endif(WIN32)

@@ -9,10 +9,13 @@ option( BUILD_BZIP "Static bzip" ON )
 option( BUILD_LZMA "Static lzma" ON )
 option( BUILD_CURL "Static curl" ON )
 option( BUILD_PNG "Static png" ON )
+option( BUILD_AUDIO "Use sdl_mixer" ON)
 
 set(DEP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )
 set(GAME_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/models" )
 set(LOCALE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/locale" )
+get_filename_component(WORK_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
+set(WORK_DIR ${WORK_DIR}/caesaria-test)
 
 if( BUILD_LIBINTL )
   set(LIBINTL_VERSION "0.14.4")
@@ -21,6 +24,14 @@ if( BUILD_LIBINTL )
   set(LIBINTL_A "${LIBINTL_HOME}/lib/libintl.a" )
   add_subdirectory( ${LIBINTL_HOME} EXCLUDE_FROM_ALL )
 endif( BUILD_LIBINTL )
+
+IF(BUILD_AUDIO)
+  SET( CAESARIA_USE_SDL_MIXER ON)
+  MESSAGE("Note: SDL audio is enabled (default)")
+ELSE()
+  SET( CAESARIA_USE_SDL_MIXER OFF)
+  MESSAGE("Note: SDL audio is disabled")
+ENDIF(BUILD_AUDIO)
 
 if( BUILD_ZLIB )
   set(ZLIB_NAME "zlib")
@@ -58,7 +69,13 @@ if( BUILD_PNG )
   add_subdirectory( ${PNGLIB_HOME} EXCLUDE_FROM_ALL )
 endif()
 
+# Include individual projects
+message("")
+# We always build game otherwise we would miss the generated header
+message("Building CaesarIA-game")
 add_subdirectory(source)
+
+message("Building CaesarIA-updater")
 add_subdirectory(updater)
 
 #set(NO_USE_SYSTEM_ZLIB ON)

@@ -74,7 +74,11 @@ if(MACOSX)
   set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "updater.macos")
 endif(MACOSX)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+if(CMAKE_BUILD_TYPE EQUAL "Release")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+endif(CMAKE_BUILD_TYPE EQUAL "Release")
+
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

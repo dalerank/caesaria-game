@@ -205,7 +205,11 @@ void House::timeStep(const unsigned long time)
           _d->changeCondition = 0;
           levelUp();
         }
-      }      
+      }
+      else
+      {
+        _d->changeCondition = 0;
+      }
     }
 
     if( _d->changeCondition < 0 )
