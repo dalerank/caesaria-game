@@ -739,7 +739,7 @@ bool House::isFlat() const
 
 std::string House::getSound() const
 {
-  if( _d->habitants.count() )
+  if( !_d->habitants.count() )
     return "";
 
   return StringHelper::format( 0xff, "house_%05d.wav", _d->houseLevel*10+1 );

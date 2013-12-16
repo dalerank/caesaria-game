@@ -268,6 +268,7 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    sound : [ "templeceres", 1 ]
   },  
   
   small_neptune_temple : {
@@ -275,6 +276,7 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    sound : [ "templeneptune", 1 ]
   }, 
   
   small_mercury_temple : {
@@ -290,6 +292,7 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    sound : [ "templemars", 1 ]
   },
 
   small_venus_temple : {
@@ -297,6 +300,7 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    sound : [ "templevenus", 1 ]
   },
  
   big_ceres_temple : {
@@ -304,6 +308,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    sound : [ "templeceres", 2 ]
   }, 
   
   big_neptune_temple : {
@@ -311,6 +316,7 @@
     desirability : { base : 8,	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    sound : [ "templeneptune", 2 ]
   }, 
   
   big_mercury_temple : {
@@ -318,6 +324,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    sound : [ "templemercury", 2 ]
   },
   
   big_mars_temple : {
@@ -325,6 +332,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    sound : [ "templemars", 2 ]
   },
   
   big_venus_temple : {
@@ -332,6 +340,7 @@
     desirability : { base : 8, 	range : 8,	step : -1 }
     employers : 5
     class : "religion"
+    sound : [ "templevenus", 2 ]
   }, 
 
   market : {
@@ -429,7 +438,7 @@
     desirability : { base : 8,	range : 4,	step : -2 }
     employers : 20
     class : "administration"
-    sound : [ "seante", 1 ]
+    sound : [ "senate", 1 ]
   }, 
  
   senate_2 : {
@@ -560,6 +569,7 @@
     employers : 10
     class : "food"
     productRate : 2.4
+    sound : [ "wheatfarm", 1 ]
   }, 
 
   vegetable_farm :

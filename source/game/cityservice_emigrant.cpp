@@ -61,10 +61,10 @@ void CityServiceEmigrant::update( const unsigned int time )
   emigrantsDesirability += (_d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary()) * emDesKoeff;
 
   int worklessPercent = CityStatistic::getWorklessPercent( _d->city );
-  emigrantsDesirability += worklessPercent;
+  emigrantsDesirability += (worklessPercent * (worklessPercent < 15 ? 1 : 2));
 
   int goddesRandom = rand() % 100;
-  if( goddesRandom > emigrantsDesirability )
+  if( goddesRandom < emigrantsDesirability )
     return;
 
 
