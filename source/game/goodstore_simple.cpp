@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "goodstore_simple.hpp"
 #include "core/math.hpp"
@@ -23,38 +23,42 @@
 class SimpleGoodStore::Impl
 {
 public:
+  typedef std::vector<GoodStock> StockList;
+  StockList stocks;
+  int maxQty;
 };
 
-SimpleGoodStore::SimpleGoodStore()
+SimpleGoodStore::SimpleGoodStore() : _gsd( new Impl )
 {
-  _maxQty = 0;
+  _gsd->maxQty = 0;
 
-  _goodStockList.resize(Good::goodCount);
+  _gsd->stocks.resize(Good::goodCount);
   for (int n = 0; n < (int)Good::goodCount; ++n)
   {
-    _goodStockList[n].setType( (Good::Type)n );
+    _gsd->stocks[n].setType( (Good::Type)n );
   }
 }
 
 
 void SimpleGoodStore::setMaxQty(const int maxQty)
 {
-  _maxQty = maxQty;
+  _gsd->maxQty = maxQty;
 }
 
 
 int SimpleGoodStore::getMaxQty() const
 {
-  return _maxQty;
+  return _gsd->maxQty;
 }
 
 
 int SimpleGoodStore::getCurrentQty() const
 {
   int qty = 0;
-  for( std::vector<GoodStock>::const_iterator goodIt = _goodStockList.begin(); goodIt != _goodStockList.end(); ++goodIt)
+  for( Impl::StockList::const_iterator goodIt = _gsd->stocks.begin();
+       goodIt != _gsd->stocks.end(); ++goodIt)
   {
-    qty += (*goodIt)._currentQty;
+    qty += (*goodIt).qty();
   }
 
   return qty;
@@ -63,31 +67,31 @@ int SimpleGoodStore::getCurrentQty() const
 
 GoodStock& SimpleGoodStore::getStock(const Good::Type &goodType)
 {
-  return _goodStockList[goodType];
+  return _gsd->stocks[goodType];
 }
 
 
 int SimpleGoodStore::getCurrentQty(const Good::Type &goodType) const
 {
-  return _goodStockList[goodType]._currentQty;
+  return _gsd->stocks[goodType].qty();
 }
 
 
 int SimpleGoodStore::getMaxQty(const Good::Type &goodType) const
 {
-  return _goodStockList[goodType]._maxQty;
+  return _gsd->stocks[goodType].cap();
 }
 
 
 void SimpleGoodStore::setMaxQty(const Good::Type &goodType, const int maxQty)
 {
-  _goodStockList[goodType]._maxQty = maxQty;
+  _gsd->stocks[goodType].setCap( maxQty );
 }
 
 
 void SimpleGoodStore::setCurrentQty(const Good::Type &goodType, const int currentQty)
 {
-  _goodStockList[goodType]._currentQty = currentQty;
+  _gsd->stocks[goodType].setQty( currentQty );
 }
 
 int SimpleGoodStore::getMaxStore(const Good::Type goodType)
@@ -98,12 +102,12 @@ int SimpleGoodStore::getMaxStore(const Good::Type goodType)
     int globalFreeRoom = getMaxQty() - getCurrentQty();
 
     // current free capacity
-    freeRoom = math::clamp( _goodStockList[goodType]._maxQty - _goodStockList[goodType]._currentQty, 0, globalFreeRoom );
+    freeRoom = math::clamp( _gsd->stocks[goodType].cap() - _gsd->stocks[goodType].qty(), 0, globalFreeRoom );
 
     // remove all storage reservations
     foreach( _Reservations::value_type& item, _getStoreReservations() )
     {
-      freeRoom -= item.second._currentQty;
+      freeRoom -= item.second.qty();
     }
   }
 
@@ -120,16 +124,16 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
     return;
   }
 
-  if (stock._currentQty < reservedStock._currentQty)
+  if (stock.qty() < reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
     return;
   }
 
-  int amount = reservedStock._currentQty;
-  GoodStock &currentStock = _goodStockList[reservedStock.type()];
-  currentStock._currentQty += amount;
-  stock._currentQty -= amount;
+  int amount = reservedStock.qty();
+  GoodStock &currentStock = _gsd->stocks[reservedStock.type()];
+  currentStock.push( amount );
+  stock.pop( amount );
 }
 
 
@@ -143,16 +147,16 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
     return;
   }
 
-  if( stock._maxQty < stock._currentQty + reservedStock._currentQty)
+  if( stock.cap() < stock.qty() + reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
     return;
   }
 
-  int amount = reservedStock._currentQty;
+  int amount = reservedStock.qty();
   GoodStock &currentStock = getStock(reservedStock.type());
-  currentStock._currentQty -= amount;
-  stock._currentQty += amount;
+  currentStock.pop( amount );
+  stock.push( amount );
   // std::cout << "SimpleGoodStore, retrieve qty=" << amount << " resID=" << reservationID << std::endl;
 }
 
@@ -161,11 +165,11 @@ VariantMap SimpleGoodStore::save() const
 {
   VariantMap stream = GoodStore::save();
 
-  stream[ "max" ] = _maxQty;
+  stream[ "max" ] = _gsd->maxQty;
 
   VariantList stockSave;
-  for( StockList::const_iterator itStock = _goodStockList.begin();
-       itStock != _goodStockList.end(); itStock++)
+  for( Impl::StockList::const_iterator itStock = _gsd->stocks.begin();
+       itStock != _gsd->stocks.end(); itStock++)
   {
     stockSave.push_back( (*itStock).save() );
   }
@@ -177,17 +181,17 @@ VariantMap SimpleGoodStore::save() const
 
 void SimpleGoodStore::load( const VariantMap& stream )
 {
-  _goodStockList.clear();
+  _gsd->stocks.clear();
 
   GoodStore::load( stream );
-  _maxQty = (int)stream.get( "max" );
+  _gsd->maxQty = (int)stream.get( "max" );
 
   VariantList stockSave = stream.get( "stock" ).toList();
   for( VariantList::iterator it=stockSave.begin(); it!=stockSave.end(); it++ )
   {
     GoodStock restored;
     restored.load( (*it).toList() );
-    _goodStockList.push_back( restored );
+    _gsd->stocks.push_back( restored );
   }
 }
 

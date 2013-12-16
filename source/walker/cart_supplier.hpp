@@ -33,18 +33,21 @@ public:
   
   virtual void getPictureList(std::vector<Picture> &oPics);
 
-  void send2City( BuildingPtr building, const Good::Type type, const int qty );
+  void send2City(BuildingPtr building, Good::Type what, const int qty );
 
   void computeWalkerDestination( BuildingPtr building, const Good::Type type, const int qty );
  
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
+  virtual void timeStep(const unsigned long time);
+
 protected:
   CartSupplier( PlayerCityPtr city );
   virtual void _changeDirection();
   virtual void _reachedPathway();
 
+  void _reserveStorage();
 private:
   class Impl;
   ScopedPtr< Impl > _d;

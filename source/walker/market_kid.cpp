@@ -51,7 +51,7 @@ MarketKid::MarketKid(PlayerCityPtr city )
 {
   _d->delay = 0;
   _d->birthTime = 0;
-  _d->basket._maxQty = 100;
+  _d->basket.setCap( 100 );
   _setAnimation( gfx::marketkid );
   _setType( walker::marketKid );
 
@@ -103,7 +103,7 @@ void MarketKid::_reachedPathway()
   MarketPtr market = cityh.find<Market>( building::market, _d->marketPos );
   if( market.isValid() )
   {
-    market->getGoodStore().store( _d->basket, _d->basket._currentQty );
+    market->getGoodStore().store( _d->basket, _d->basket.qty() );
   }
 }
 

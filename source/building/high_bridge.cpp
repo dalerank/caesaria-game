@@ -179,10 +179,10 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       tiles.pop_back();
       
-      tiles.pop_front();      
+      tiles.erase( tiles.begin() );
       _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingSE );
       _d->addSpan( tiles.front()->getIJ() - startPos, HighBridgeSubTile::liftingSE2 );
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
 
       foreach( Tile* tile, tiles )
       {
@@ -200,9 +200,9 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
       tiles.pop_back();
       tiles.pop_back();
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
       TilePos liftPos = tiles.front()->getIJ();
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
@@ -224,10 +224,10 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       tiles.pop_back();
 
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
       _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingSE );
       _d->addSpan( tiles.front()->getIJ() - startPos, HighBridgeSubTile::liftingSE2 );      
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
 
       foreach( Tile* tile, tiles )
       {        
@@ -246,9 +246,9 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       tiles.pop_back();
       
-      tiles.pop_front();  
+      tiles.erase( tiles.begin() );
       TilePos liftPos = tiles.front()->getIJ();
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );

@@ -160,7 +160,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       TilesArray tiles = tilemap.getArea( endPos, startPos );
 
       tiles.pop_back();
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
       for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); it++ )
@@ -176,7 +176,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       TilesArray tiles = tilemap.getArea( startPos, endPos );
 
       tiles.pop_back();
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
@@ -195,7 +195,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
           break;
 
       tiles.pop_back();
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
       for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); it++ )
@@ -215,7 +215,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
         break;
 
       tiles.pop_back();
-      tiles.pop_front();
+      tiles.erase( tiles.begin() );
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )

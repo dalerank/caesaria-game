@@ -90,7 +90,7 @@ void CartSupplier::_reachedPathway()
     if( storage )
     {
       storage->applyStorageReservation( _d->stock, _d->rcvReservationID );
-      storage->store( _d->stock, _d->stock._currentQty );
+      storage->store( _d->stock, _d->stock.qty() );
     }
     else
     {
@@ -99,13 +99,7 @@ void CartSupplier::_reachedPathway()
   }
   else
   {
-    // walker is near the granary/warehouse
-    _pathwayRef().rbegin();
-    _computeDirection();
-    go();
-
     // get goods from destination building
-    
     BuildingPtr building = helper.find<Building>( building::any, _d->storageBuildingPos );
 
     if( building.is<Granary>() )
@@ -123,6 +117,13 @@ void CartSupplier::_reachedPathway()
       // warehouse->retrieveGoods(_basket.getStock(G_IRON));
       warehouse->getGoodStore().applyRetrieveReservation(_d->stock, _d->reservationID);
     }
+
+    _reserveStorage();
+
+    // walker is near the granary/warehouse
+    _pathwayRef().rbegin();
+    _centerTile();
+    go();
   }
 }
 
@@ -217,7 +218,6 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
 
 void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Type type, const int qty )
 {
-  _d->baseBuildingPos = building->getTilePos();
   _d->storageBuildingPos = TilePos( -1, -1 );  // no destination yet
 
   // we have something to buy!
@@ -253,37 +253,45 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   }
 }
 
-void CartSupplier::send2City( BuildingPtr building, const Good::Type type, const int qty )
+void CartSupplier::send2City( BuildingPtr building, Good::Type what, const int qty )
 {
-  computeWalkerDestination( building, type, qty );
+  _d->stock.setType( what );
+  _d->stock.setCap( qty );
+  _d->baseBuildingPos = building->getTilePos();
 
-  GoodStore* storage = 0;
-  if( building.is<Factory>() )
-  {
-    storage = &building.as<Factory>()->getGoodStore();
-  }
-  else if( building.is<Granary>() )
-  {
-    storage = &building.as<Granary>()->getGoodStore();
-  }
-  else if( building.is<Warehouse>() )
-  {
-    storage = &building.as<Warehouse>()->getGoodStore();
-  }
+  computeWalkerDestination( building, what, qty );
 
   if( !isDeleted()  )
-  {   
-    if( storage != 0 )
-    {
-      _d->rcvReservationID = storage->reserveStorage( _d->stock );
-    }
-    else
-    {}
-
-    _d->stock.setType( type );
-    _d->stock._maxQty = qty;
+  {           
     _d->city->addWalker( WalkerPtr( this ) );
   }
+}
+
+void CartSupplier::_reserveStorage()
+{
+  CityHelper helper( _d->city );
+  BuildingPtr b = helper.find<Building>( building::any, _d->baseBuildingPos );
+
+  GoodStore* storage = 0;
+  if( b.is<Factory>() )
+  {
+    storage = &b.as<Factory>()->getGoodStore();
+  }
+  else if( b.is<Granary>() )
+  {
+    storage = &b.as<Granary>()->getGoodStore();
+  }
+  else if( b.is<Warehouse>() )
+  {
+    storage = &b.as<Warehouse>()->getGoodStore();
+  }
+
+  if( storage != 0 )
+  {
+    _d->rcvReservationID = storage->reserveStorage( _d->stock );
+  }
+  else
+  {}
 }
 
 CartSupplierPtr CartSupplier::create(PlayerCityPtr city )
@@ -302,4 +310,9 @@ void CartSupplier::save( VariantMap& stream ) const
 void CartSupplier::load( const VariantMap& stream )
 {
   Walker::load( stream );
+}
+
+void CartSupplier::timeStep(const unsigned long time)
+{
+  Walker::timeStep( time );
 }

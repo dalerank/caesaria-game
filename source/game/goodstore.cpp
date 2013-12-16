@@ -46,7 +46,7 @@ int GoodStore::getMaxRetrieve(const Good::Type goodType)
   // remove all retrieval reservations
   foreach( _Reservations::value_type& item, _d->retrieveReservations )
   {
-    qty -= item.second._currentQty;
+    qty -= item.second.qty();
   }
 
   return qty;
@@ -58,7 +58,7 @@ long GoodStore::reserveStorage(GoodStock &stock)
   long reservationID = 0;
 
   // current free capacity
-  if( getMaxStore(stock.type() ) >= stock._currentQty )
+  if( getMaxStore(stock.type() ) >= stock.qty() )
   {
     // the stock can be stored!
     reservationID = _d->nextReservationID;
@@ -76,7 +76,7 @@ long GoodStore::reserveRetrieval(GoodStock &stock)
   long reservationID = 0;
 
   // current good quantity
-  if (getMaxRetrieve(stock.type()) >= stock._currentQty)
+  if (getMaxRetrieve(stock.type()) >= stock.qty())
   {
     // the stock can be retrieved!
     reservationID = _d->nextReservationID;
@@ -152,7 +152,7 @@ void GoodStore::store( GoodStock &stock, const int amount)
 {
   GoodStock reservedStock;
   reservedStock.setType( stock.type() );
-  reservedStock._currentQty = amount;
+  reservedStock.setQty( amount );
 
   long reservationID = reserveStorage(reservedStock);
 
@@ -170,7 +170,7 @@ void GoodStore::retrieve(GoodStock &stock, int amount)
 {
   GoodStock reservedStock;
   reservedStock.setType( stock.type() );
-  reservedStock._currentQty = amount;
+  reservedStock.setQty( amount );
 
   long reservationID = reserveRetrieval(reservedStock);
   if( reservationID > 0 )
@@ -193,7 +193,7 @@ void GoodStore::storeAll( GoodStore& goodStore)
     goodStore.retrieve( stock, goodStore.getCurrentQty( goodType ) );
     if( !stock.empty() )
     {
-      store(stock, stock._currentQty);
+      store(stock, stock.qty());
     }
   }
 }

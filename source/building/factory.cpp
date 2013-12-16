@@ -97,7 +97,7 @@ bool Factory::mayWork() const
   if( inStock.type() == Good::none )
     return true;
 
-  if( inStock._currentQty > 0 || _d->produceGood )
+  if( inStock.qty() > 0 || _d->produceGood )
     return true;
 
   return false;
@@ -202,7 +202,7 @@ void Factory::deliverGood()
     }
     else
     {
-      _d->goodStore.store( walker->getStock(), walker->getStock()._currentQty );
+      _d->goodStore.store( walker->getStock(), walker->getStock().qty() );
     }
   }
 }
@@ -258,10 +258,10 @@ void Factory::receiveGood()
   GoodStock& stock = getInGood();
 
   //send cart supplier if stock not full
-  if( _mayDeliverGood() && stock._currentQty < stock._maxQty )
+  if( _mayDeliverGood() && stock.qty() < stock.cap() )
   {
     CartSupplierPtr walker = CartSupplier::create( _getCity() );
-    walker->send2City( this, stock.type(), stock._maxQty - stock._currentQty );
+    walker->send2City( this, stock.type(), stock.cap() - stock.qty() );
 
     if( !walker->isDeleted() )
     {

@@ -1,23 +1,23 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef _OPENCAESAR_GOOD_H_INCLUDE_
-#define _OPENCAESAR_GOOD_H_INCLUDE_
+#ifndef _CAESARIA_GOOD_H_INCLUDE_
+#define _CAESARIA_GOOD_H_INCLUDE_
 
 #include "enums.hpp"
 #include <string>
@@ -28,11 +28,10 @@ class VariantList;
 
 class Good
 {
-  friend class GoodHelper;
 public:
   typedef enum
   {
-    none,
+    none=0,
     wheat, fish, meat, fruit, vegetable,
     olive, oil,
     grape, wine,
@@ -55,9 +54,18 @@ class GoodStock : public Good
 public:
   GoodStock();
   GoodStock(const Good::Type &goodType, const int maxQty, const int currentQty=0);
+  ~GoodStock();
 
-  void setType( const Good::Type &goodType );
-  void setMax( const int maxQty );
+  void setType( Good::Type goodType );
+
+  void setCap( const int maxQty );
+  int cap() const { return _maxQty; }
+
+  void setQty( const int qty ) { _currentQty = qty; }
+  int qty() const { return _currentQty; }
+
+  void push( const int qty ) { _currentQty += qty; }
+  void pop( const int qty ) { _currentQty -= qty; }
 
   /** amount: if -1, amount=stock._currentQty */
   void append(GoodStock &stock, const int amount = -1);
@@ -67,8 +75,9 @@ public:
 
   bool empty() const;
 
+protected:
   int _maxQty;
   int _currentQty;
 };
     
-#endif //_OPENCAESAR_GOOD_H_INCLUDE_
+#endif //_CAESARIA_GOOD_H_INCLUDE_

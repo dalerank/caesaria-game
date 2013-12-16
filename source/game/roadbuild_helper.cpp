@@ -96,7 +96,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
   }
 
   // sort tiles to be drawn in the rigth order on screen
-  ret.sort(compare_tiles_);
+  std::sort( ret.begin(), ret.end(), compare_tiles_ );
 
   return ret;
 }

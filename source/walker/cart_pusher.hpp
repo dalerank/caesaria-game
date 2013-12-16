@@ -36,8 +36,6 @@ public:
 
   Picture& getCartPicture();
   virtual void getPictureList(std::vector<Picture> &oPics);
-  virtual void _changeDirection();
-  virtual void _reachedPathway();
 
   void send2City( BuildingPtr building, GoodStock& carry );
 
@@ -50,11 +48,14 @@ public:
   virtual void die();
 
 protected:
-   CartPusher( PlayerCityPtr city );
+  CartPusher( PlayerCityPtr city );
+
+  virtual void _changeDirection();
+  virtual void _reachedPathway();
 
 private:
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //_CAESARIA_CART_PUSHER_H_INCLUDE_

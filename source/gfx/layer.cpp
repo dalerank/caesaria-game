@@ -309,18 +309,18 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
 
 void Layer::drawColumn( GfxEngine& engine, const Point& pos, const int startPicId, const int percent)
 {
-  engine.drawPicture( Picture::load( ResourceGroup::sprites, startPicId + 2 ), pos + Point( 5, 15 ) );
+  engine.drawPicture( Picture::load( ResourceGroup::sprites, startPicId + 2 ), pos + Point( 10, -15 ) );
 
   int roundPercent = ( percent / 10 ) * 10;
   Picture& pic = Picture::load( ResourceGroup::sprites, startPicId + 1 );
   for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
   {
-    engine.drawPicture( pic, pos - Point( -13, -5 + offsetY ) );
+    engine.drawPicture( pic, pos - Point( -18, 2 + offsetY ) );
   }
 
   if( percent >= 10 )
   {
-    engine.drawPicture( Picture::load( ResourceGroup::sprites, startPicId ), pos - Point( -1, -6 + roundPercent ) );
+    engine.drawPicture( Picture::load( ResourceGroup::sprites, startPicId ), pos - Point( -6, 10 + roundPercent ) );
   }
 }
 

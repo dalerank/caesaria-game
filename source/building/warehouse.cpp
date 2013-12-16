@@ -41,7 +41,7 @@ public:
   WarehouseTile(const TilePos& pos )
   {
     _pos = pos;
-    _stock._maxQty = 400;
+    _stock.setCap( 400 );
     computePicture();
   }
 
@@ -81,7 +81,7 @@ void WarehouseTile::computePicture()
 
   if (_stock.type() != Good::none)
   {
-    picIdx += _stock._currentQty/100 -1;
+    picIdx += _stock.qty()/100 -1;
   }
 
   _picture = Picture::load( ResourceGroup::warehouse, picIdx );
@@ -154,7 +154,7 @@ int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
   {
     if ( whTile._stock.type() == goodType || goodType == Good::goodCount )
     {
-      amount += whTile._stock._currentQty;
+      amount += whTile._stock.qty();
     }
   }
 
@@ -186,14 +186,14 @@ int WarehouseStore::getMaxStore(const Good::Type goodType)
   foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
   {
     GoodStock &subTileStock = whTile._stock;
-    maxStore[ subTileStock.type() ] += subTileStock._currentQty;
+    maxStore[ subTileStock.type() ] += subTileStock.qty();
   }
 
   // add reservations
   foreach( _Reservations::value_type reservation, _getStoreReservations() )
   {
     GoodStock &reservationStock = reservation.second;
-    maxStore[ reservationStock.type() ] += reservationStock._currentQty;
+    maxStore[ reservationStock.type() ] += reservationStock.qty();
   }
 
   // compute number of free tiles
@@ -228,14 +228,14 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
     return;
   }
 
-  if (stock._currentQty < reservedStock._currentQty)
+  if (stock.qty() < reservedStock.qty())
   {
     Logger::warning( "Quantity does not match reservation" );
     return;
   }
 
 
-  int amount = reservedStock._currentQty;
+  int amount = reservedStock.qty();
   // std::cout << "WarehouseStore, store qty=" << amount << " resID=" << reservationID << std::endl;
 
   // first we look at the half filled subTiles
@@ -246,9 +246,9 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
       break;
     }
 
-    if (whTile._stock.type() == stock.type() && whTile._stock._currentQty < whTile._stock._maxQty)
+    if (whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.cap())
     {
-      int tileAmount = std::min(amount, whTile._stock._maxQty - whTile._stock._currentQty);
+      int tileAmount = std::min(amount, whTile._stock.cap() - whTile._stock.qty());
       // std::cout << "put in half filled" << std::endl;
       whTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
@@ -265,7 +265,7 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
 
     if (whTile._stock.type() == Good::none)
     {
-      int tileAmount = std::min(amount, whTile._stock._maxQty);
+      int tileAmount = std::min(amount, whTile._stock.cap() );
       // std::cout << "put in empty tile" << std::endl;
       whTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
@@ -285,13 +285,13 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
     Logger::warning( "GoodType does not match reservation");
     return;
   }
-  if (stock._maxQty < stock._currentQty + reservedStock._currentQty)
+  if (stock.cap() < stock.qty() + reservedStock.qty() )
   {
     Logger::warning( "Quantity does not match reservation");
     return;
   }
 
-  int amount = reservedStock._currentQty;
+  int amount = reservedStock.qty();
   // std::cout << "WarehouseStore, retrieve qty=" << amount << " resID=" << reservationID << std::endl;
 
   // first we look at the half filled subTiles
@@ -302,9 +302,9 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
       break;
     }
 
-    if( whTile._stock.type() == stock.type() && whTile._stock._currentQty < whTile._stock._maxQty)
+    if( whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.cap() )
     {
-      int tileAmount = std::min(amount, whTile._stock._currentQty);
+      int tileAmount = std::min(amount, whTile._stock.qty());
       // std::cout << "retrieve from half filled" << std::endl;
       stock.append(whTile._stock, tileAmount);
       amount -= tileAmount;
@@ -321,7 +321,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
 
     if (whTile._stock.type() == stock.type())
     {
-      int tileAmount = std::min(amount, whTile._stock._currentQty);
+      int tileAmount = std::min(amount, whTile._stock.qty());
       // std::cout << "retrieve from filled" << std::endl;
       stock.append(whTile._stock, tileAmount);
       amount -= tileAmount;

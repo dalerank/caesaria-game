@@ -92,7 +92,7 @@ bool Barracks::isNeedWeapons() const
 
 void Barracks::storeGoods(GoodStock& stock, const int amount)
 {
-  _d->store.store(stock, amount == -1 ? stock._currentQty : amount );
+  _d->store.store(stock, amount == -1 ? stock.qty() : amount );
 }
 
 void Barracks::save(VariantMap& stream) const

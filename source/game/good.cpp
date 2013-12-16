@@ -39,6 +39,11 @@ GoodStock::GoodStock(const Good::Type &goodType, const int maxQty, const int cur
    _currentQty = currentQty;
 }
 
+GoodStock::~GoodStock()
+{
+
+}
+
 void GoodStock::append(GoodStock &stock, const int iAmount)
 {
   if (stock._type == none)
@@ -106,12 +111,12 @@ bool GoodStock::empty() const
   return _currentQty == 0;
 }
 
-void GoodStock::setType(const Type &goodType )
+void GoodStock::setType(Type goodType )
 {
   _type = goodType;
 }
 
-void GoodStock::setMax( const int maxQty )
+void GoodStock::setCap( const int maxQty )
 {
   _maxQty = maxQty;
 }

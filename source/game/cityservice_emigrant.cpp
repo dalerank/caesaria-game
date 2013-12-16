@@ -55,18 +55,19 @@ void CityServiceEmigrant::update( const unsigned int time )
     return;
   
   unsigned int vacantPop=0;
-  int emigrantsDesirability = 50; //base desirability value
+  int emigrantsIndesirability = 50; //base indesirability value
   float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
   //if salary in city more then empire people more effectivelly go to ouu city
-  emigrantsDesirability += (_d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary()) * emDesKoeff;
+  emigrantsIndesirability += (_d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary()) * emDesKoeff;
 
   int worklessPercent = CityStatistic::getWorklessPercent( _d->city );
-  emigrantsDesirability += (worklessPercent * (worklessPercent < 15 ? 1 : 2));
+  emigrantsIndesirability += worklessPercent == 0
+                            ? -10
+                            : (worklessPercent * (worklessPercent < 15 ? 1 : 2));
 
   int goddesRandom = rand() % 100;
-  if( goddesRandom < emigrantsDesirability )
+  if( goddesRandom < emigrantsIndesirability )
     return;
-
 
   CityHelper helper( _d->city );
   HouseList houses = helper.find<House>(building::house);

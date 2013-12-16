@@ -503,9 +503,10 @@ void House::buyMarket( ServiceWalkerPtr walker )
          GoodStock stock(goodType, qty);
          marketStore.retrieve(stock, qty);
 
-         stock._currentQty = stock._maxQty = qty * 10;
+         stock.setCap( qty * 10 );
+         stock.setQty( stock.cap() );
 
-         houseStore.store(stock, stock._currentQty );
+         houseStore.store(stock, stock.qty() );
        }
     }
   }

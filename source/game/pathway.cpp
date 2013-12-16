@@ -21,6 +21,19 @@
 
 using namespace  constants;
 
+class Directions : public std::vector<constants::Direction>
+{
+public:
+   Directions& operator =(const Directions& a )
+   {
+     size_type newSize = a.size();
+     resize( newSize );
+     std::memcpy( data(), a.data(), sizeof(Direction) * newSize );
+
+     return *this;
+   }
+};
+
 bool operator<(const Pathway &v1, const Pathway &v2)
 {
   if (v1.getLength()!=v2.getLength())
@@ -38,7 +51,6 @@ public:
   TilePos destination;
   bool isReverse;
 
-  typedef std::vector<constants::Direction> Directions;
   Directions directionList;
   Directions::iterator directionIt;
   Directions::reverse_iterator directionIt_reverse;
@@ -118,7 +130,7 @@ void Pathway::toggleDirection()
   else
   {
     _d->isReverse = true;
-    _d->directionIt_reverse = Impl::Directions::reverse_iterator( _d->directionIt );
+    _d->directionIt_reverse = Directions::reverse_iterator( _d->directionIt );
   }
 }
 
@@ -269,7 +281,7 @@ void Pathway::prettyPrint() const
                      _origin->getI(), _origin->getJ(), _d->destination.getI(), _d->destination.getJ() );
 
     std::string strDir = "";
-    for( Impl::Directions::const_iterator itDir = _d->directionList.begin();
+    for( Directions::const_iterator itDir = _d->directionList.begin();
          itDir != _d->directionList.end(); ++itDir)
     {
       Direction direction = *itDir;
@@ -308,7 +320,7 @@ VariantMap Pathway::save() const
   stream[ "stopPos" ] = _d->destination;
 
   VariantList directions;
-  for( Impl::Directions::const_iterator itDir = _d->directionList.begin();
+  for( Directions::const_iterator itDir = _d->directionList.begin();
        itDir != _d->directionList.end(); ++itDir)
   {
     directions.push_back( (int)*itDir );
@@ -367,12 +379,12 @@ unsigned int Pathway::getStep() const
 {
   if(_d->isReverse)
   {
-    size_t pos = std::distance<Impl::Directions::const_reverse_iterator>(_d->directionList.rbegin(), _d->directionIt_reverse);
+    size_t pos = std::distance<Directions::const_reverse_iterator>(_d->directionList.rbegin(), _d->directionIt_reverse);
     return static_cast<unsigned int>(pos);
   }
   else
   {
-    size_t pos = std::distance<Impl::Directions::const_iterator>(_d->directionList.begin(), _d->directionIt);
+    size_t pos = std::distance<Directions::const_iterator>(_d->directionList.begin(), _d->directionIt);
     return static_cast<unsigned int>(pos);
   }
 }

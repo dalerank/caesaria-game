@@ -264,7 +264,7 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
     std::string text = StringHelper::format( 0xff, "%s %s: %d %s",
                                              GoodHelper::getName( building->getInGood().type() ).c_str(),
                                              _("##factory_stock##"),
-                                             building->getInGood()._currentQty / 100,
+                                             building->getInGood().qty() / 100,
                                              _("##factory_units##") );
 
     lb->setText( text );

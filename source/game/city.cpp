@@ -79,6 +79,8 @@ public:
     {
       it->second.clear();
     }
+
+    _grid.clear();
   }
 
   unsigned int hash( const TilePos& pos )
@@ -92,6 +94,23 @@ public:
     if( pos.getI() >= 0 && pos.getJ() >= 0 )
     {
       _grid[ hash( pos ) ].push_back( a );
+    }
+  }
+
+  void remove( WalkerPtr& a )
+  {
+    TilePos pos = a->getIJ();
+    if( pos.getI() >= 0 && pos.getJ() >= 0 )
+    {
+      WalkerList& d = _grid[ hash( pos ) ];
+      for( WalkerList::iterator it=d.begin(); it != d.end(); it++ )
+      {
+        if( *it == a )
+        {
+          d.erase( it );
+          return;
+        }
+      }
     }
   }
 
@@ -211,7 +230,8 @@ void PlayerCity::timeStep( unsigned int time )
       if( walker->isDeleted() )
       {
         // remove the walker from the walkers list  
-        walkerIt = _d->walkerList.erase(walkerIt);       
+        _d->walkersGrid.remove( *walkerIt );
+        walkerIt = _d->walkerList.erase(walkerIt);               
       }
       else
       {

@@ -186,7 +186,7 @@ void Granary::_tryDevastateGranary()
 
       if( !walker->isDeleted() )
       {
-        stock._currentQty = 0;
+        stock.setQty( 0 );
         _d->goodStore.retrieve( stock, goodQty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
         addWalker( walker.as<Walker>() );
         break;

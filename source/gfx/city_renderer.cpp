@@ -178,11 +178,11 @@ void CityRenderer::setMode( Renderer::ModePtr command )
 
 void CityRenderer::animate(unsigned int time)
 {
-  TilesArray visibleTiles = _d->camera.getTiles();
+  const TilesArray& visibleTiles = _d->camera.getTiles();
 
-  foreach( Tile* tile, visibleTiles )
+  for( TilesArray::const_iterator i=visibleTiles.begin(); i != visibleTiles.end(); i++ )
   {
-    tile->animate( time );
+    (*i)->animate( time );
   }
 }
 

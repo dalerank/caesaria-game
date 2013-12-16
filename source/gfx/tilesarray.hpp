@@ -18,9 +18,10 @@
 
 #include "tile.hpp"
 
-#include <list>
+#include <vector>
+#include <cstring>
 
-class TilesArray : public std::list<Tile*>
+class TilesArray : public std::vector<Tile*>
 {
 public:
   bool contain( TilePos tilePos ) const
@@ -32,6 +33,25 @@ public:
     }
 
     return false;
+  }
+
+  TilesArray() {}
+
+  TilesArray( const TilesArray& a )
+  {
+    *this = a;
+  }
+
+  TilesArray& operator=(const TilesArray& a)
+  {
+    resize(a.size());
+    std::memcpy( data(), a.data(), sizeof(Tile*) * a.size() );
+    /*for( const_iterator i=a.begin(); i != a.end(); i++ )
+    {
+      push_back( *i );
+    }*/
+
+    return *this;
   }
 };
 

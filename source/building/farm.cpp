@@ -96,7 +96,7 @@ Farm::Farm(const Good::Type outGood, const Type type )
   _d->pictureBuilding.addOffset( 30, 15);
 
   setPicture( _d->pictureBuilding );
-  getOutGood().setMax( 100 );
+  getOutGood().setCap( 100 );
 
   init();
 }

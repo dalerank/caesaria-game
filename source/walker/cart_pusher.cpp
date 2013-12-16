@@ -64,7 +64,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->maxDistance = 25;
-  _d->stock._maxQty = 400;
+  _d->stock.setCap( 400 );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -100,7 +100,7 @@ void CartPusher::_reachedPathway()
   if( !_pathwayRef().isReverse() )
   {
     _pathwayRef().toggleDirection();
-    _computeDirection();
+    _centerTile();
     go();
     _d->consumerBuilding = 0;
   }
@@ -253,7 +253,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
     // for every factory within range
     SmartPtr<T> building = pathWayIt->first.as<T>();
 
-    if( stock._currentQty >  building->getGoodStore().getMaxStore( stock.type() ) )
+    if( stock.qty() >  building->getGoodStore().getMaxStore( stock.type() ) )
     {
       pathWayList.erase( pathWayIt++ );
     }

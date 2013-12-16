@@ -192,6 +192,7 @@ TilesArray Tilemap::getRectangle( TilePos pos, Size size, const bool corners /*=
 TilesArray Tilemap::getArea(TilePos start, TilePos stop )
 {
   TilesArray res;
+  res.reserve( 100 );
 
   for (int i = start.getI(); i <= stop.getI(); ++i)
   {

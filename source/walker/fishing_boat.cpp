@@ -100,14 +100,14 @@ void FishingBoat::timeStep(const unsigned long time)
       if( overlay != 0 )
       {
         FishPlacePtr fishplace = overlay.as<FishPlace>();
-        _d->stock._currentQty = math::clamp( _d->stock._currentQty+10, 0, _d->stock._maxQty );
+        _d->stock.setQty( math::clamp( _d->stock.qty()+10, 0, _d->stock.cap() ) );
       }
       else
       {
         _d->mode = Impl::ready2Catch;
       }
 
-      if( _d->stock._currentQty == _d->stock._maxQty )
+      if( _d->stock.qty() == _d->stock.cap() )
       {
         _d->mode = Impl::finishCatch;
       }
@@ -145,13 +145,13 @@ void FishingBoat::timeStep(const unsigned long time)
     case Impl::wait: break;
 
     case Impl::unloadFish:
-      if( _d->stock._currentQty > 0 && _d->base != 0 )
+      if( _d->stock.qty() > 0 && _d->base != 0 )
       {
-        _d->stock._currentQty = math::clamp( _d->stock._currentQty-10, 0, 100 );
+        _d->stock.setQty( math::clamp( _d->stock.qty()-10, 0, 100 ) );
         _d->base->updateProgress( 10 );
       }
 
-      if( _d->stock._currentQty == 0 )
+      if( _d->stock.qty() == 0 )
       {
         _d->mode = Impl::ready2Catch;
       }
@@ -187,7 +187,7 @@ FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
   setName( _("##fishing_boat##") );
   _d->mode = Impl::wait;
   _d->stock.setType( Good::fish );
-  _d->stock.setMax( 100 );
+  _d->stock.setCap( 100 );
 }
 
 FishingBoatPtr FishingBoat::create(PlayerCityPtr city)

@@ -162,7 +162,7 @@ bool Engine::load(vfs::Path filename)
     }
 
     _d->samples[ filename.toString() ] = sample;
-    Logger::warning( " Loaded %s to sample %i.",filename.toString().c_str(), _d->samples.size() );
+    //Logger::warning( " Loaded %s to sample %i.",filename.toString().c_str(), _d->samples.size() );
   }
 
   return true;

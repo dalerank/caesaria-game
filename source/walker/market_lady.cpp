@@ -249,13 +249,13 @@ void MarketLady::_reachedPathway()
         for( int gtype=Good::none; gtype <= Good::goodCount ; gtype++ )
         {
           GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
-          if( currentStock._currentQty > 0 )
+          if( currentStock.qty() > 0 )
           {
             MarketKidPtr boy = MarketKid::create( _getCity(), this );
             GoodStock& boyBasket =  boy->getBasket();
             boyBasket.setType( (Good::Type)gtype );
-            boyBasket._maxQty = 100;
-            _d->basket.retrieve( boyBasket, math::clamp( currentStock._currentQty, 0, 100 ) );
+            boyBasket.setCap( 100 );
+            _d->basket.retrieve( boyBasket, math::clamp( currentStock.qty(), 0, 100 ) );
             boy->setDelay( delay );
             delay += 20;
             boy->send2City( _d->market );

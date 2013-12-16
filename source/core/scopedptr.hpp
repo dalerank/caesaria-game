@@ -58,7 +58,15 @@ public:
 	inline ~ScopedPtr()
 	{
 		T *oldD = this->d;
-		Cleanup::cleanup(oldD);
+		try
+		{
+			Cleanup::cleanup(oldD);
+		}
+		catch(...)
+		{
+			//some bad happen
+		}
+
 		this->d = 0;
 	}
 
@@ -100,7 +108,14 @@ public:
 			return;
 		T *oldD = d;
 		d = other;
-		Cleanup::cleanup(oldD);
+		try
+		{
+			Cleanup::cleanup(oldD);
+		}
+		catch(...)
+		{
+			//some bad happen
+		}
 	}
 
 	inline T *take()

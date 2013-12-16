@@ -106,10 +106,10 @@ std::list<Good::Type> Market::getMostNeededGoods()
     // for all types of good
     Good::Type goodType = (Good::Type) n;
     GoodStock &stock = _d->goodStore.getStock(goodType);
-    int demand = stock._maxQty - stock._currentQty;
+    int demand = stock.cap() - stock.qty();
     if (demand > 99)
     {
-      mapGoods.insert( std::make_pair(float(stock._currentQty)/float(stock._maxQty), goodType));
+      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.cap()), goodType));
     }
   }
 
@@ -127,7 +127,7 @@ int Market::getGoodDemand(const Good::Type &goodType)
 {
   int res = 0;
   GoodStock &stock = _d->goodStore.getStock(goodType);
-  res = stock._maxQty - stock._currentQty;
+  res = stock.cap() - stock.qty();
   res = (res/100)*100;  // round at the lowest century
   return res;
 }
