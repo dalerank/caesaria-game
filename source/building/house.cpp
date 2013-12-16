@@ -810,22 +810,35 @@ void House::load( const VariantMap& stream )
 
 int House::getFoodLevel() const
 {
-  switch( _d->spec.getLevel() )
+  const Good::Type f[] = { Good::wheat, Good::fish, Good::meat, Good::fruit, Good::vegetable };
+  std::set<Good::Type> foods( f, f+5 );
+
+  int ret = 0;
+  int foodLevel = getSpec().getMinFoodLevel();
+  if( foodLevel == 0 )
+    return 0;
+
+  while( foodLevel > 0 )
   {
-  case smallHovel:
-  case bigTent:
-    return -1;
-  
-  case smallHut:
-  case bigHut: 
-  {
-    int ret = _d->goodStore.getCurrentQty(Good::wheat);
-    return ret;
+    Good::Type maxFtype = Good::none;
+    int maxFoodQty = 0;
+    foreach( Good::Type ft, foods )
+    {
+      int tmpQty = _d->goodStore.getCurrentQty(Good::wheat);
+      if( tmpQty > maxFoodQty )
+      {
+        maxFoodQty = tmpQty;
+        maxFtype = ft;
+      }
+    }
+
+    ret += maxFoodQty * 100 / _d->goodStore.getMaxQty( maxFtype );
+    foods.erase( maxFtype );
+    foodLevel--;
   }
-  
-  default: 
-    return -1;
-  }
+
+  ret /= getSpec().getMinFoodLevel();
+  return ret;
 }
 
 int House::getHealthLevel() const

@@ -52,7 +52,9 @@ public:
 class Collosseum : public EntertainmentBuilding
 {
 public:
-   Collosseum();
+  Collosseum();
+  virtual void deliverService();
+  virtual void build(PlayerCityPtr city, const TilePos& pos);
 };
 
 class Hippodrome : public EntertainmentBuilding

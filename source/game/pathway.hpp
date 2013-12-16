@@ -57,14 +57,13 @@ public:
 
   Pathway& operator=(const Pathway& other );
 
+  Pathway copy( int start, int stop=-1) const;
+
   void load( const VariantMap& stream );
   VariantMap save() const;
 
   bool isValid() const;
 private:
-  Tilemap* _tilemap;
-  Tile* _origin;
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

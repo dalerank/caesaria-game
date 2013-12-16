@@ -188,15 +188,15 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(building::theater,      Theater,      WorkingBuildingCreator );
   ADD_CREATOR(building::amphitheater, Amphitheater, WorkingBuildingCreator );
   ADD_CREATOR(building::colloseum,    Collosseum,   WorkingBuildingCreator );
-  addCreator(building::actorColony,  CAESARIA_STR_EXT(ActorColony), new WorkingBuildingCreator<ActorColony>() );
-  addCreator(building::gladiatorSchool, CAESARIA_STR_EXT(GladiatorSchool), new WorkingBuildingCreator<GladiatorSchool>() );
-  addCreator(building::lionHouse,    CAESARIA_STR_EXT(LionsNursery), new WorkingBuildingCreator<LionsNursery>() );
-  addCreator(building::chariotSchool,CAESARIA_STR_EXT(WorkshopChariot), new WorkingBuildingCreator<WorkshopChariot>() );
-  addCreator(building::hippodrome,   CAESARIA_STR_EXT(Hippodrome),new WorkingBuildingCreator<Hippodrome>() );
+  ADD_CREATOR(building::actorColony,  ActorColony,  WorkingBuildingCreator );
+  ADD_CREATOR(building::gladiatorSchool, GladiatorSchool, WorkingBuildingCreator );
+  ADD_CREATOR(building::lionsNursery, LionsNursery, WorkingBuildingCreator );
+  ADD_CREATOR(building::chariotSchool,WorkshopChariot, WorkingBuildingCreator );
+  ADD_CREATOR(building::hippodrome,   Hippodrome, WorkingBuildingCreator );
 
   // road&house
-  addCreator(building::house,        CAESARIA_STR_EXT(House), new ConstructionCreator<House>() );
-  addCreator(construction::road,     CAESARIA_STR_EXT(Road) , new ConstructionCreator<Road>() );
+  ADD_CREATOR(building::house,        House, ConstructionCreator );
+  ADD_CREATOR(construction::road,     Road, ConstructionCreator );
 
   // administration
   addCreator(building::forum,        CAESARIA_STR_EXT(Forum) , new WorkingBuildingCreator<Forum>() );

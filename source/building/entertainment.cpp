@@ -45,7 +45,7 @@ EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
 
    case Service::colloseum:
       _traineeMap[walker::gladiator] = 0;
-      _traineeMap[walker::tamer] = 0;
+      _traineeMap[walker::lionTamer] = 0;
    break;
 
    default:
@@ -171,12 +171,46 @@ void Theater::deliverService()
 
 Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, building::colloseum, Size(5) )
 {
-  //setPicture( Picture::load( ResourceGroup::entertaiment, 36));
+  setPicture( Picture::load( ResourceGroup::entertaiment, 36));
 
-  //_getAnimation().load( ResourceGroup::entertaiment, 37, 13);
-  //_getAnimation().setOffset( Point( 122, 81 ) );
+  _animationRef().load( ResourceGroup::entertaiment, 37, 13);
+  _animationRef().setOffset( Point( 122, 81 ) );
+
   _fgPicturesRef().resize(2);
-  _fgPicturesRef().at(0) = Picture::load( ResourceGroup::entertaiment, 50);
+}
+
+void Collosseum::deliverService()
+{
+  EntertainmentBuilding::deliverService();
+
+  if( _animationRef().isRunning() )
+  {
+    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 50 );
+  }
+  else
+  {
+    _fgPicturesRef().front() = Picture::getInvalid();
+    _fgPicturesRef().back() = Picture::getInvalid();
+  }
+}
+
+void Collosseum::build(PlayerCityPtr city, const TilePos& pos)
+{
+  ServiceBuilding::build( city, pos );
+
+  CityHelper helper( city );
+  GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( building::gladiatorSchool );
+  LionsNurseryList lionsNs = helper.find<LionsNursery>( building::lionsNursery );
+
+  if( glSchools.empty() )
+  {
+    _setError( _("##need_gladiator_school##") );
+  }
+
+  if( lionsNs.empty() )
+  {
+    _setError( _("##need_gladiator_school##") );
+  }
 }
 
 //------------

@@ -29,12 +29,13 @@ public:
   static TraineeWalkerPtr create( PlayerCityPtr city, constants::walker::Type traineeType );
 
   void checkDestination(const TileOverlay::Type buildingType, Propagator& pathPropagator);
-  void send2City( BuildingPtr base, bool roadOnly=true );
+  virtual void send2City( BuildingPtr base, bool roadOnly=true );
   void setBase(Building &building);
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
+  virtual ~TraineeWalker();
 protected:
   TraineeWalker( PlayerCityPtr city, constants::walker::Type traineeType);
   void _computeWalkerPath( bool roadOnly );
@@ -44,11 +45,6 @@ protected:
   void _cancelPath();
 
 private:
-  int _maxDistance;
-
-  std::list<TileOverlay::Type> _buildingNeed;  // list of buildings needing this trainee
-  float _maxNeed;  // evaluates the need for that trainee
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

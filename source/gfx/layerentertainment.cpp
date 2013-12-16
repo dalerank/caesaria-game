@@ -63,7 +63,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::amphitheater:
     case building::colloseum:
     case building::hippodrome:
-    case building::lionHouse:
+    case building::lionsNursery:
     case building::actorColony:
     case building::gladiatorSchool:
       needDrawAnimations = _flags.count( overlay->getType() );
@@ -133,12 +133,12 @@ LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city
     _flags.insert( building::unknown ); _flags.insert( building::theater );
     _flags.insert( building::amphitheater ); _flags.insert( building::colloseum );
     _flags.insert( building::hippodrome ); _flags.insert( building::actorColony );
-    _flags.insert( building::gladiatorSchool ); _flags.insert( building::lionHouse );
+    _flags.insert( building::gladiatorSchool ); _flags.insert( building::lionsNursery );
     _flags.insert( building::chariotSchool );
 
     _visibleWalkers.insert( walker::actor );
     _visibleWalkers.insert( walker::gladiator );
-    _visibleWalkers.insert( walker::tamer );
+    _visibleWalkers.insert( walker::lionTamer );
     _visibleWalkers.insert( walker::charioter );
   break;
 
@@ -161,10 +161,10 @@ LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city
   case citylayer::colloseum:
     _flags.insert( building::colloseum );
     _flags.insert( building::gladiatorSchool );
-    _flags.insert( building::lionHouse );
+    _flags.insert( building::lionsNursery );
 
     _visibleWalkers.insert( walker::gladiator );
-    _visibleWalkers.insert( walker::tamer );
+    _visibleWalkers.insert( walker::lionTamer );
   break;
 
 

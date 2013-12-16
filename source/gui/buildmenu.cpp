@@ -326,7 +326,7 @@ void BuildMenu_entertainment::initialize()
   addBuildButton(building::hippodrome);
   addBuildButton(building::actorColony);
   addBuildButton(building::gladiatorSchool);
-  addBuildButton(building::lionHouse);
+  addBuildButton(building::lionsNursery);
   addBuildButton(building::chariotSchool);
 
   BuildMenu::initialize();

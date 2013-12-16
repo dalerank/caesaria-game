@@ -41,7 +41,7 @@ enum Type{
   merchant,
   actor,
   gladiator,
-  tamer,
+  lionTamer,
   charioter,
   sheep,
   barber,

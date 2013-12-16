@@ -114,10 +114,10 @@ int HouseLevelSpec::getMinReligionLevel() const
 //    return _minWaterLevel;
 // }
 //
-// int HouseLevelSpec::getMinFoodLevel()
-// {
-//    return _minFoodLevel;
-// }
+int HouseLevelSpec::getMinFoodLevel() const
+{
+  return _d->minFoodLevel;
+}
 
 
 bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
@@ -680,6 +680,10 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->minFoodLevel = hSpec.get( "food" ).toInt();
     
     spec._d->requiredGoods[Good::wheat] = 1;  // hard coded ... to be changed!
+    spec._d->requiredGoods[Good::fish] = 1;
+    spec._d->requiredGoods[Good::meat] = 1;
+    spec._d->requiredGoods[Good::fruit] = 1;
+    spec._d->requiredGoods[Good::vegetable] = 1;
     spec._d->requiredGoods[Good::pottery] = hSpec.get( "pottery" ).toInt();  // pottery
     spec._d->requiredGoods[Good::oil] = hSpec.get( "oil" ).toInt();  // oil
     spec._d->requiredGoods[Good::furniture] = hSpec.get( "furniture").toInt();// furniture

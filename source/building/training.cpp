@@ -144,7 +144,7 @@ void GladiatorSchool::timeStep(const unsigned long time)
   }
 }
 
-LionsNursery::LionsNursery() : TrainingBuilding( building::lionHouse, Size(3) )
+LionsNursery::LionsNursery() : TrainingBuilding( building::lionsNursery, Size(3) )
 {
    _fgPicturesRef().resize(1);
 }
@@ -153,23 +153,26 @@ void LionsNursery::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
 
-  if( getWorkersCount() > 0 )
+  if( time % 15 == 1 )
   {
-    if( _animationRef().isStopped() )
+    if( getWorkersCount() > 0 )
     {
-      _animationRef().start();
+      if( _animationRef().isStopped() )
+      {
+        _animationRef().start();
+      }
     }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().stop();
+    else if( _animationRef().isRunning() )
+    {
+      _animationRef().stop();
+    }
   }
 }
 
 void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::tamer );
+  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::lionTamer );
   trainee->send2City( this );
 }
 

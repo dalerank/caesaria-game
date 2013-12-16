@@ -29,7 +29,7 @@ using namespace constants;
 class Wharf::Impl
 {
 public:
-  enum { southWestPic=54, northEastPic=52, northWestPic=55, southEastPic=53 };
+  enum { southPic=54, northPic=52, westPic=55, eastPic=53 };
   std::vector<int> saveTileInfo;
   Direction direction;
   FishingBoatPtr boat;
@@ -45,25 +45,25 @@ public:
     if( t00.getFlag( Tile::tlWater ) && t10.getFlag( Tile::tlWater )
         && t01.getFlag( Tile::isConstructible ) && t11.getFlag( Tile::isConstructible ) )
     {
-      return southWest;
+      return south;
     }
 
     if( t01.getFlag( Tile::tlWater ) && t11.getFlag( Tile::tlWater )
         && t00.getFlag( Tile::isConstructible ) && t10.getFlag( Tile::isConstructible ) )
     {
-      return northEast;
+      return north;
     }
 
     if( t00.getFlag( Tile::tlWater ) && t01.getFlag( Tile::tlWater )
         && t10.getFlag( Tile::isConstructible ) && t11.getFlag( Tile::isConstructible ) )
     {
-      return northWest;
+      return west;
     }
 
     if( t10.getFlag( Tile::tlWater ) && t11.getFlag( Tile::tlWater )
         && t00.getFlag( Tile::isConstructible ) && t01.getFlag( Tile::isConstructible ) )
     {
-      return southEast;
+      return east;
     }
 
     return noneDirection;
@@ -73,7 +73,7 @@ public:
 Wharf::Wharf() : Factory(Good::none, Good::fish, building::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
-  setPicture( ResourceGroup::wharf, Impl::northEastPic );
+  setPicture( ResourceGroup::wharf, Impl::northPic );
 }
 
 bool Wharf::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -193,10 +193,10 @@ const Tile& Wharf::getLandingTile() const
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
-  case southWest: offset = TilePos( 0, -1 ); break;
-  case northWest: offset = TilePos( -1, 0 ); break;
-  case northEast: offset = TilePos( 0, 1 ); break;
-  case southEast: offset = TilePos( 1, 0 ); break;
+  case south: offset = TilePos( 0, -1 ); break;
+  case west: offset = TilePos( -1, 0 ); break;
+  case north: offset = TilePos( 0, 2 ); break;
+  case east: offset = TilePos( 2, 0 ); break;
 
   default: break;
   }
@@ -219,10 +219,10 @@ void Wharf::_setDirection(Direction direction)
   _d->direction = direction;
   switch( direction )
   {
-  case southWest: setPicture( ResourceGroup::wharf, Impl::southWestPic ); break;
-  case northEast: setPicture( ResourceGroup::wharf, Impl::northEastPic ); break;
-  case northWest: setPicture( ResourceGroup::wharf, Impl::northWestPic ); break;
-  case southEast: setPicture( ResourceGroup::wharf, Impl::southEastPic ); break;
+  case south: setPicture( ResourceGroup::wharf, Impl::southPic ); break;
+  case north: setPicture( ResourceGroup::wharf, Impl::northPic ); break;
+  case west: setPicture( ResourceGroup::wharf, Impl::westPic ); break;
+  case east: setPicture( ResourceGroup::wharf, Impl::eastPic ); break;
 
   default: break;
   }

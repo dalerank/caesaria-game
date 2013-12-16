@@ -41,7 +41,7 @@ public:
     append( building::colloseum,      "colloseum" );
     append( building::actorColony,    "artist_colony" );
     append( building::gladiatorSchool,"gladiator_pit" );
-    append( building::lionHouse,      "lion_pit" );
+    append( building::lionsNursery,   "lion_pit" );
     append( building::chariotSchool,  "chatioteer_school" );
     append( building::house,          "house" );
     append( construction::road,       "road" );

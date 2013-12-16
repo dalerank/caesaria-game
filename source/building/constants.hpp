@@ -82,7 +82,7 @@ enum Type
   colloseum,
   actorColony,
   gladiatorSchool,
-  lionHouse,
+  lionsNursery,
   chariotSchool,
 
   //watersupply

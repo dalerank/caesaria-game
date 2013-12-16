@@ -214,10 +214,10 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::senate,           CAESARIA_STR_EXT(B_SENATE),    new BaseInfoboxCreator<InfoBoxSenate>() );
   addInfobox( building::theater,          CAESARIA_STR_EXT(Theater),     new ServiceBaseInfoboxCreator( _("##theater_title##"), _("##theater_text##")) );
   addInfobox( building::actorColony,      CAESARIA_STR_EXT(B_ACTOR_COLONY), new ServiceBaseInfoboxCreator( _("##actor_colony_title##"), _("##actor_colony_text##")) );
-  addInfobox( building::amphitheater,     CAESARIA_STR_EXT(buildingAmphitheater), new ServiceBaseInfoboxCreator( _("##amphitheater_title##"), _("##amphitheater_text##")) );
-  addInfobox( building::gladiatorSchool,  CAESARIA_STR_EXT(B_GLADIATOR_SCHOOL), new ServiceBaseInfoboxCreator( _("##gladiator_school_title##"), _("##gladiator_school_text##")) );
-  addInfobox( building::colloseum,        CAESARIA_STR_EXT(B_COLLOSSEUM), new BaseInfoboxCreator<InfoBoxColosseum>() );
-  addInfobox( building::lionHouse,        CAESARIA_STR_EXT(B_LION_HOUSE), new ServiceBaseInfoboxCreator( _("##lion_house_title##"), _("##lion_house_text##")) );
+  addInfobox( building::amphitheater,     CAESARIA_STR_EXT(Amphitheater), new ServiceBaseInfoboxCreator( _("##amphitheater_title##"), _("##amphitheater_text##")) );
+  addInfobox( building::gladiatorSchool,  CAESARIA_STR_EXT(GladiatorSchool), new ServiceBaseInfoboxCreator( _("##gladiator_school_title##"), _("##gladiator_school_text##")) );
+  addInfobox( building::colloseum,        CAESARIA_STR_EXT(Collosseum), new BaseInfoboxCreator<InfoBoxColosseum>() );
+  addInfobox( building::lionsNursery,     CAESARIA_STR_EXT(LionsNursery), new ServiceBaseInfoboxCreator( _("##lion_house_title##"), _("##lion_house_text##")) );
   addInfobox( building::hippodrome,       CAESARIA_STR_EXT(B_HIPPODROME), new ServiceBaseInfoboxCreator( _("##hippodrome_title##"), _("##hippodrome_text##")) );
   addInfobox( building::chariotSchool,    CAESARIA_STR_EXT(chariotSchool),new ServiceBaseInfoboxCreator( _("##chario_maker_title##"), _("##chario_maker_text##")) );
   addInfobox( building::forum,            CAESARIA_STR_EXT(forum),        new ServiceBaseInfoboxCreator( _("##forum_title##"), _("##forum_text##")) );

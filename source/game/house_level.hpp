@@ -72,7 +72,7 @@ public:
 //    int getMinHealthLevel();
   int getMinReligionLevel() const;
 //    int getMinWaterLevel();
-//    int getMinFoodLevel();
+  int getMinFoodLevel() const;
   ~HouseLevelSpec();
   HouseLevelSpec();
   HouseLevelSpec( const HouseLevelSpec& other );

@@ -78,7 +78,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::school:   _setAnimation( gfx::scholar );                                  break;
   case Service::theater:  _setAnimation( gfx::actor );    _setType( walker::actor );    break;
   case Service::amphitheater:_setAnimation( gfx::gladiator ); _setType( walker::gladiator ); break;
-  case Service::colloseum:_setAnimation( gfx::tamer );    _setType( walker::tamer );    break;
+  case Service::colloseum:_setAnimation( gfx::tamer );    _setType( walker::lionTamer );    break;
   case Service::hippodrome:_setAnimation( gfx::actor );   _setType( walker::charioter ); break;
   case Service::market: _setAnimation( gfx::marketlady ); nameType = NameGenerator::female; break;
 

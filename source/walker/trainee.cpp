@@ -30,15 +30,19 @@ using namespace constants;
 class TraineeWalker::Impl
 {
 public:
+  std::list<TileOverlay::Type> buildingNeed;  // list of buildings needing this trainee
+
   BuildingPtr base;
   BuildingPtr destination;
+  int maxDistance;
+  float maxNeed;  // evaluates the need for that trainee
 };
 
 TraineeWalker::TraineeWalker(PlayerCityPtr city, walker::Type traineeType)
   : Walker( city ), _d( new Impl )
 {
   _setType( traineeType );
-  _maxDistance = 30;
+  _d->maxDistance = 30;
 
   _init( traineeType );
 }
@@ -49,19 +53,19 @@ void TraineeWalker::_init(walker::Type traineeType)
   {
   case walker::actor:
     _setAnimation( gfx::actor );
-    _buildingNeed.push_back(building::theater);
-    _buildingNeed.push_back(building::amphitheater);
+    _d->buildingNeed.push_back(building::theater);
+    _d->buildingNeed.push_back(building::amphitheater);
   break;
 
   case walker::gladiator:
     _setAnimation( gfx::gladiator );
-    _buildingNeed.push_back(building::amphitheater);
-    _buildingNeed.push_back(building::colloseum);
+    _d->buildingNeed.push_back(building::amphitheater);
+    _d->buildingNeed.push_back(building::colloseum);
   break;
 
-  case walker::tamer:
+  case walker::lionTamer:
     _setAnimation( gfx::tamer );
-    _buildingNeed.push_back(building::colloseum);
+    _d->buildingNeed.push_back(building::colloseum);
   break;
 
   case walker::charioter:
@@ -70,8 +74,8 @@ void TraineeWalker::_init(walker::Type traineeType)
 
   case walker::soldier:
     _setAnimation( gfx::soldier );
-    _buildingNeed.push_back( building::militaryAcademy );
-    _buildingNeed.push_back( building::fortLegionaire );
+    _d->buildingNeed.push_back( building::militaryAcademy );
+    _d->buildingNeed.push_back( building::fortLegionaire );
   break;
 
   default:
@@ -98,7 +102,7 @@ void TraineeWalker::setBase(Building &originBuilding)
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
-  _maxNeed = 0;  // need of this trainee in buildings
+  _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
   if( roadOnly )
@@ -106,9 +110,9 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     Propagator pathPropagator( _getCity() );
     pathPropagator.init( _d->base.as<Construction>() );
     pathPropagator.setAllDirections( false );
-    pathPropagator.propagate( _maxDistance );
+    pathPropagator.propagate( _d->maxDistance );
 
-    foreach( TileOverlay::Type buildingType, _buildingNeed )
+    foreach( TileOverlay::Type buildingType, _d->buildingNeed )
     {
       checkDestination(buildingType, pathPropagator);
     }
@@ -123,22 +127,22 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     CityHelper helper( _getCity() );
 
     BuildingList buildings;
-    foreach( TileOverlay::Type buildingType, _buildingNeed )
+    foreach( TileOverlay::Type buildingType, _d->buildingNeed )
     {
       BuildingList tmpBuildings = helper.find<Building>( buildingType );
       buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
     }
 
-    _maxNeed = 0;
+    _d->maxNeed = 0;
     Propagator::DirectRoute droute;
     TilePos startPos = _d->base->getTilePos();
     foreach( BuildingPtr bld, buildings )
     {
       Pathway way = PathwayHelper::create( startPos, bld.as<Construction>(), PathwayHelper::allTerrain );
       float curNeed = bld->evaluateTrainee( getType() );
-      if( way.isValid() && _maxNeed < curNeed && way.getLength() < _maxDistance )
+      if( way.isValid() && _d->maxNeed < curNeed && way.getLength() < _d->maxDistance )
       {
-        _maxNeed = curNeed;
+        _d->maxNeed = curNeed;
         droute = std::make_pair( bld.as<Construction>(), way );
       }
     }
@@ -173,9 +177,9 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
     BuildingPtr building = item.first.as<Building>();
 
     float need = building->evaluateTrainee( getType() );
-    if (need > _maxNeed)
+    if (need > _d->maxNeed)
     {
-      _maxNeed = need;
+      _d->maxNeed = need;
       _d->destination = building;
     }
   }
@@ -205,7 +209,7 @@ void TraineeWalker::save( VariantMap& stream ) const
   Walker::save( stream );
   stream[ "originBldPos" ] = _d->base->getTilePos();
   stream[ "destBldPos" ] = _d->destination->getTilePos();
-  stream[ "maxDistance" ] = _maxDistance;
+  stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "traineeType" ] = getType();
   stream[ "type" ] = (int)walker::trainee;
 }
@@ -219,11 +223,16 @@ void TraineeWalker::load( const VariantMap& stream )
   CityHelper helper( _getCity() );
   _d->base = helper.find<Building>( building::any, stream.get( "originBldPos" ).toTilePos() );
   _d->destination = helper.find<Building>( building::any, stream.get( "destBldPos" ).toTilePos() );
-  _maxDistance = (int)stream.get( "maxDistance" );
+  _d->maxDistance = (int)stream.get( "maxDistance" );
   walker::Type wtype = (walker::Type)stream.get( "traineeType" ).toInt();
 
   _setType( wtype );
   _init( wtype );
+}
+
+TraineeWalker::~TraineeWalker()
+{
+
 }
 
 TraineeWalkerPtr TraineeWalker::create(PlayerCityPtr city, walker::Type traineeType )
