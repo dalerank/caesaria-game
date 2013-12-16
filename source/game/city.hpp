@@ -176,7 +176,7 @@ public:
   SmartPtr< T > find( const TileOverlay::Type type, const TilePos& pos )
   {   
     TileOverlayPtr overlay = _city->getOverlay( pos );
-    if( overlay->getType() == type || type == constants::building::any )
+    if( overlay.isValid() && (overlay->getType() == type || type == constants::building::any) )
     {
       return overlay.as< T >();
     }

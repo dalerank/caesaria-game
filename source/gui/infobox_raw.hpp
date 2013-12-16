@@ -13,19 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_BUILDINGENGINEER_H_INCLUDE_
-#define __CAESARIA_BUILDINGENGINEER_H_INCLUDE_
+#ifndef _CAESARIA_INFOBOXRAW_H_INCLUDE_
+#define _CAESARIA_INFOBOXRAW_H_INCLUDE_
 
-#include "service.hpp"
+#include "info_box.hpp"
 
-class EngineerPost : public ServiceBuilding
+namespace gui
+{
+
+class InfoBoxRawMaterial : public InfoBoxSimple
 {
 public:
-    EngineerPost();
-    virtual void timeStep(const unsigned long time);
-    virtual void deliverService();
-
-    virtual unsigned int getWalkerDistance() const;
+  InfoBoxRawMaterial( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxRawMaterial();
 };
 
-#endif
+}//end namespace gui
+#endif //_CAESARIA_INFOBOXRAW_H_INCLUDE_

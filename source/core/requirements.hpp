@@ -22,7 +22,7 @@
 //see CMakeLists.txt for this define
 //#define NO_USE_SYSTEM_ZLIB
 
-#if defined CAESARIA_PLATFORM_WIN
+#if defined(CAESARIA_PLATFORM_WIN)
   // alignment of a member was sensitive to packing
   //#pragma warning(disable : 4121)
 
@@ -37,6 +37,12 @@
     #define CAESARIA_COMPILER_NAME "msvc"
   #elif defined(__GNUC__)
     #define CAESARIA_COMPILER_NAME "mingw"
+  #endif
+#endif
+
+#if defined(CAESARIA_PLATFORM_UNIX)
+  #ifdef __GNUC__
+    #define CAESARIA_COMPILER_NAME "gcc"
   #endif
 #endif
 

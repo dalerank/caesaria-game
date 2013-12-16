@@ -39,9 +39,8 @@ MarketKidPtr MarketKid::create( PlayerCityPtr city, MarketLadyPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
   ret->setIJ( lady->getIJ() );
-  ret->setPathway( lady->getPathway() );
-  ret->_pathwayRef().rbegin();
-  ret->_centerTile();
+  ret->_pathwayRef() = lady->getPathway();
+
   ret->drop();
 
   return ret;
@@ -69,6 +68,8 @@ void MarketKid::send2City( MarketPtr destination )
   if( destination.isValid() )
   {
     _d->marketPos = destination->getTilePos();
+    _pathwayRef().rbegin();
+    _centerTile();
     _getCity()->addWalker( this );
   }
   else

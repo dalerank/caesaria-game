@@ -32,6 +32,7 @@
 #include "walker/walker.hpp"
 #include "gfx/tilemap.hpp"
 #include "gui/infobox_house.hpp"
+#include "gui/infobox_raw.hpp"
 #include <map>
 
 using namespace constants;

@@ -25,8 +25,8 @@ class ClayPit : public Factory
 public:
   ClayPit();
   
-  bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
-  void timeStep( const unsigned long time );
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
+  virtual void timeStep( const unsigned long time );
 };
 
 #endif //__CAESARIA_CLAY_PIT_H_INCLUDED__

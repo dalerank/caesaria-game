@@ -64,13 +64,6 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class InfoBoxRawMaterial : public InfoBoxSimple
-{
-public:
-  InfoBoxRawMaterial( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxRawMaterial();
-};
-
 // info box about a service building
 class InfoBoxWorkingBuilding : public InfoBoxSimple
 {

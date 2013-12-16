@@ -60,25 +60,41 @@ endif()
 
 if(WIN32)
   target_link_libraries( ${PROJECT_NAME} psapi ws2_32 ${CURLLIB_NAME} )
-  set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "updater")
+  set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 
 if(UNIX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
   target_link_libraries( ${PROJECT_NAME} pthread )
 
-  set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "updater.linux")
+  set(EXECUTABLE_FILENAME "updater.linux")
 endif(UNIX)
 
 if(MACOSX)
-  set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME "updater.macos")
+  set(EXECUTABLE_FILENAME "updater.macos")
 endif(MACOSX)
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
 if(CMAKE_BUILD_TYPE EQUAL "Release")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
 endif(CMAKE_BUILD_TYPE EQUAL "Release")
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
+if(WIN32)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
+endif(WIN32)
+
+# prepare working directory
+set(UPDATER_BINARY_FILENAME ${EXECUTABLE_FILENAME})
+if(WIN32)
+  set(UPDATER_BINARY_FILENAME ${UPDATER_BINARY_FILENAME}.exe)
+endif(WIN32)
+
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${UPDATER_BINARY_FILENAME}" "${WORK_DIR}/${UPDATER_BINARY_FILENAME}"
+)
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "menu.hpp"
 #include "texturedbutton.hpp"
@@ -35,6 +35,7 @@
 #include "core/logger.hpp"
 #include "building/constants.hpp"
 #include "game/city.hpp"
+#include "events/playsound.hpp"
 
 using namespace constants;
 
@@ -77,6 +78,9 @@ public:
   Label* middleLabel;
   OverlaysMenu* overlaysMenu; 
   PlayerCityPtr city;
+
+  void initActionButton( PushButton* btn, Point pos );
+  void playSound();
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
@@ -371,6 +375,8 @@ void ExtentMenu::maximize()
                                                  stopPos, 300 );
 }
 
+
+
 ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
     : Menu( parent, id, rectangle )
 {
@@ -379,43 +385,43 @@ ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
   _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
   CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
 
-  _d->houseButton->setPosition( Point( 13, 277 ) );
+  _d->initActionButton( _d->houseButton, Point( 13, 277 ) );
   _d->houseButton->setIsPushButton( false );
-  _d->clearButton->setPosition( Point( 63, 277 ) );
+  _d->initActionButton( _d->clearButton, Point( 63, 277 ) );
   _d->clearButton->setIsPushButton( false );
-  _d->roadButton->setPosition( Point( 113, 277 ) );
+  _d->initActionButton( _d->roadButton, Point( 113, 277 ) );
   _d->roadButton->setIsPushButton( false );
 
-  _d->waterButton->setPosition( Point( 13, 313 ) );
-  _d->healthButton->setPosition( Point( 63, 313 ) );
-  _d->templeButton->setPosition( Point( 113, 313 ) );
-  _d->educationButton->setPosition( Point(13, 349 ));
-  _d->entertainmentButton->setPosition( Point(63, 349 ) );
-  _d->administrationButton->setPosition( Point( 113, 349) );
-  _d->engineerButton->setPosition( Point( 13, 385 ) );
-  _d->securityButton->setPosition( Point( 63, 385 ) );
-  _d->commerceButton->setPosition( Point( 113, 385) );
+  _d->initActionButton( _d->waterButton, Point( 13, 313 ) );
+  _d->initActionButton( _d->healthButton, Point( 63, 313 ) );
+  _d->initActionButton( _d->templeButton, Point( 113, 313 ) );
+  _d->initActionButton( _d->educationButton, Point(13, 349 ));
+  _d->initActionButton( _d->entertainmentButton, Point(63, 349 ) );
+  _d->initActionButton( _d->administrationButton, Point( 113, 349) );
+  _d->initActionButton( _d->engineerButton, Point( 13, 385 ) );
+  _d->initActionButton( _d->securityButton, Point( 63, 385 ) );
+  _d->initActionButton( _d->commerceButton, Point( 113, 385) );
 
-  // // header
-  _d->senateButton = _addButton( 79, false, 0, -1, false, -1, _("##senateBtnTooltip") );
+  //header
+  _d->senateButton = _addButton( 79, false, 0, -1, false, -1, _("##senateBtnTooltip##") );
   _d->senateButton->setGeometry( Rect( Point( 7, 155 ), Size( 71, 23 ) ) );
-  _d->empireButton = _addButton( 82, false, 0, -1, false, -1, _("##empireBtnTooltip") );
+  _d->empireButton = _addButton( 82, false, 0, -1, false, -1, _("##empireBtnTooltip##") );
   _d->empireButton->setGeometry( Rect( Point( 84, 155 ), Size( 71, 23 ) ) );
   
-  _d->missionButton = _addButton( 85, false, 0, -1, false, -1, _("##missionBtnTooltip") );
+  _d->missionButton = _addButton( 85, false, 0, -1, false, -1, _("##missionBtnTooltip##") );
   _d->missionButton->setGeometry( Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
-  _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##northBtnTooltip") );
+  _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##northBtnTooltip##") );
   _d->northButton->setGeometry( Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
-  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotateLeftBtnTooltip") );
+  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotateLeftBtnTooltip##") );
   _d->rotateLeftButton->setGeometry( Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
-  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotateRightBtnTooltip") );
+  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotateRightBtnTooltip##") );
   _d->rotateRightButton->setGeometry( Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
-  _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, _("##cancelBtnTooltip") );
+  _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, _("##cancelBtnTooltip##") );
   _d->cancelButton->setGeometry( Rect( Point( 13, 421 ), Size( 39, 22 ) ) );
-  _d->messageButton = _addButton( 115, false, 0, -1, false, -1, _("##messageBtnTooltip") );
+  _d->messageButton = _addButton( 115, false, 0, -1, false, -1, _("##messageBtnTooltip##") );
   _d->messageButton->setGeometry( Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
-  _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip") );
+  _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip##") );
   _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton->setEnabled( false );
 
@@ -490,6 +496,18 @@ void ExtentMenu::setAlarmEnabled( bool enabled )
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow()
 {
   return _d->missionButton->onClicked();
+}
+
+void Menu::Impl::initActionButton(PushButton* btn, Point pos)
+{
+  btn->setPosition( pos );
+  CONNECT( btn, onClicked(), this, Impl::playSound );
+}
+
+void Menu::Impl::playSound()
+{
+  events::GameEventPtr e = events::PlaySound::create( "panel", rand() % 3 + 1, 256 );
+  e->dispatch();
 }
 
 }

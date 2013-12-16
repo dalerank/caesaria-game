@@ -1,0 +1,18 @@
+{  
+  lbDamage#Label : {
+    geometryf : [ 0.2, 0.85, 0.8, 0.95 ]
+  }
+
+  lbProgress#Label : {
+    geometryf : [ 0.15, 0.15, 0.85, 0.25 ]
+  }
+
+  lbAbout#Label : {
+    geometryf : [ 0.15, 0.25, 0.85, 0.5 ]
+    multiline : true
+  }
+
+  lbProductivity : {
+    geometryf : [ 0.15, 0.5, 0.85, 0.65 ]
+  }
+}

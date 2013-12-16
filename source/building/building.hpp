@@ -54,12 +54,13 @@ public:
   virtual float evaluateTrainee( constants::walker::Type traineeType);  // returns >0 if trainee is needed
   void reserveTrainee( constants::walker::Type traineeType); // trainee will come
   void cancelTrainee( constants::walker::Type traineeType);  // trainee will not come
-  void applyTrainee( constants::walker::Type traineeType); // trainee arrives
+  virtual void applyTrainee( constants::walker::Type traineeType); // trainee arrives
   virtual Renderer::PassQueue getPassQueue() const;
 
 protected:
   float _damageIncrement;
   float _fireIncrement;
+
   typedef std::map< constants::walker::Type, int> TraineeMap;
   std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
   TraineeMap _traineeMap;  // current level of trainees working in the building (0..200)
