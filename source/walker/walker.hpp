@@ -113,6 +113,8 @@ protected:
   PlayerCityPtr _getCity() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
+  void _setPosOnMap( Point pos );
+  Point _getPosOnMap() const;
 
 private:
    /* useful method for subtile movement computation

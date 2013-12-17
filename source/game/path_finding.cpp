@@ -265,9 +265,9 @@ Propagator::Routes Propagator::getRoutes(const TileOverlay::Type buildingType)
   return ret;
 }
 
-Propagator::PathWayList Propagator::getWays(const int maxDistance)
+PathwayList Propagator::getWays(const int maxDistance)
 {
-  PathWayList oPathWayList;
+  PathwayList oPathWayList;
   int nbLoops = 0;  // to detect infinite loops
 
   std::set<Pathway>::iterator firstBranch;

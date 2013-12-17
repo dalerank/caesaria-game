@@ -598,7 +598,7 @@ const Pathway& Walker::getPathway() const
 void Walker::turn(TilePos pos)
 {
   float t = (pos - getIJ()).getAngleICW();
-  int angle = (int)( t / 45.f);
+  int angle = (int)ceil( t / 45.f);
 
   Direction directions[] = { east, southEast, south, southWest,
                              west, northWest, north, northEast };
@@ -662,6 +662,16 @@ void Walker::_updateAnimation( const unsigned int time )
   {
     _d->animation.update( time );
   }
+}
+
+void Walker::_setPosOnMap(Point pos)
+{
+  _d->posOnMap = pos;
+}
+
+Point Walker::_getPosOnMap() const
+{
+  return _d->posOnMap;
 }
 
 void Walker::go()

@@ -46,9 +46,9 @@ protected:
   void _back2tower();
   void _back2patrol();
   bool _tryAttack();
-  Pathway _findPathway2NearestEnemy();
+  FortificationList _findNearestWalls( EnemySoldierPtr enemy );
 
-  WalkerList _findEnemiesInRange(unsigned int range);
+  EnemySoldierList _findEnemiesInRange(unsigned int range);
 
   Pathway _attackEnemyInRange(unsigned int range);
 private:

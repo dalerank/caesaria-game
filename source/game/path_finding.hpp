@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef PATH_FINDING_HPP
-#define PATH_FINDING_HPP
+#ifndef _CAESARIA_PATHFINDING_HPP_INCLUDE_
+#define _CAESARIA_PATHFINDING_HPP_INCLUDE_
 
 #include "enums.hpp"
 #include "core/serializer.hpp"
@@ -33,8 +33,6 @@ class Propagator
 public:
   typedef std::pair< ConstructionPtr, Pathway > DirectRoute;
   typedef std::map < ConstructionPtr, Pathway > Routes;
-  typedef std::list< Pathway > PathWayList;
-  //typedef std::list<PathWay> Ways;
   
   Propagator( PlayerCityPtr city );
   ~Propagator();
@@ -53,7 +51,7 @@ public:
   void propagate(const int maxDistance);
 
   /** returns all paths starting at origin */
-  PathWayList getWays(const int maxDistance);
+  PathwayList getWays(const int maxDistance);
   Routes getRoutes(const TileOverlay::Type buildingType);
 
   /** finds the shortest path between origin and destination
@@ -72,4 +70,4 @@ private:
 };
 
 
-#endif
+#endif //_CAESARIA_PATHFINDING_HPP_INCLUDE_

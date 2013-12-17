@@ -201,7 +201,10 @@ void TraineeWalker::_reachedPathway()
 {
   Walker::_reachedPathway();
   deleteLater();
-  _d->destination->applyTrainee( getType() );
+  if( _d->destination.isValid() )
+  {
+    _d->destination->applyTrainee( getType() );
+  }
 }
 
 void TraineeWalker::save( VariantMap& stream ) const

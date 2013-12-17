@@ -114,7 +114,7 @@ CityServiceRoads::~CityServiceRoads()
 void CityServiceRoads::Impl::updateRoadsAround( UpdateInfo info )
 {
   propagator->init( info.first );
-  Propagator::PathWayList pathWayList = propagator->getWays( info.second );
+  PathwayList pathWayList = propagator->getWays( info.second );
 
   foreach( Pathway& current, pathWayList )
   {

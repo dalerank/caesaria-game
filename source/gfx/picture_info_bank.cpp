@@ -61,6 +61,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::sprites, 1, 8, offset ); //collapse fog
   _d->setRange( ResourceGroup::sprites, 224, 225, offset ); //overlay columns
   _d->setRange( ResourceGroup::wall, 152, 185, offset );
+  _d->setRange( ResourceGroup::sprites, 114, 161, offset );
 
   _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlay building 1x1
   _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1

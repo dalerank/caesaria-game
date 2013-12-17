@@ -57,6 +57,7 @@ enum Type{
   patrolPoint,
   romeGuard,
   lion,
+  spear,
   all = 0xff,
   any = all
 };

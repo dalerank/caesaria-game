@@ -68,6 +68,8 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+typedef std::list< Pathway > PathwayList;
+
 bool operator<(const Pathway &v1, const Pathway &v2);
 typedef Delegate2< const Tile*, bool& > TilePossibleCondition;
 

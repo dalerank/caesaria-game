@@ -27,20 +27,24 @@
 #include "enemysoldier.hpp"
 #include "building/tower.hpp"
 #include "building/fortification.hpp"
+#include "walker/spear.hpp"
 
 using namespace constants;
 
 class WallGuard::Impl
 {
 public:
-  typedef enum { doNothing=0, back2tower, go2position, fightEnemy,
+  typedef enum { doNothing=0, go2position, attackEnemy,
                  patrol, go2tower } State;
   TowerPtr base;
   State action;
   gfx::Type walk;
   gfx::Type fight;
   TilePos patrolPosition;
+  int wait;
   double strikeForce, resistance;
+
+  EnemySoldierPtr findNearbyEnemy(EnemySoldierList enemies , TilePos pos);
 };
 
 WallGuard::WallGuard( PlayerCityPtr city, walker::Type type ) : Soldier( city ), _d( new Impl )
@@ -50,6 +54,7 @@ WallGuard::WallGuard( PlayerCityPtr city, walker::Type type ) : Soldier( city ),
 
   _init( type );
   _d->patrolPosition = TilePos( -1, -1 );
+  _d->wait = 0;
 }
 
 void WallGuard::_init( walker::Type type )
@@ -96,24 +101,40 @@ void WallGuard::die()
 
 void WallGuard::timeStep(const unsigned long time)
 {
+  if( _d->wait > 0 )
+  {
+    _d->wait--;
+    return;
+  }
+
   Soldier::timeStep( time );
 
   switch( _d->action )
   {
-  case Impl::fightEnemy:
+  case Impl::attackEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( 1 );
+    EnemySoldierList enemies = _findEnemiesInRange( 7 );
 
     if( !enemies.empty() )
     {
-      WalkerPtr p = enemies.front();
+      EnemySoldierPtr p = _d->findNearbyEnemy( enemies, getIJ() );
       turn( p->getIJ() );
-      p->updateHealth( -3 );
-      p->acceptAction( Walker::acFight, getIJ() );
+
+      if( _animationRef().getIndex() == (_animationRef().getFrameCount()-1) )
+      {
+        SpearPtr spear = Spear::create( _getCity() );
+        spear->toThrow( getIJ(), p->getIJ() );
+        _d->wait = 60;
+        _updateAnimation( time+1 );
+      }
     }
     else
     {
-      _tryAttack();
+      bool haveEnemies = _tryAttack();
+      if( !haveEnemies )
+      {
+        _back2tower();
+      }
     }
   }
   break;
@@ -121,7 +142,11 @@ void WallGuard::timeStep(const unsigned long time)
   case Impl::patrol:
     if( time % 15 == 1 )
     {
-      _tryAttack();
+      bool haveEnemies = _tryAttack();
+      if( !haveEnemies )
+      {
+        _back2tower();
+      }
     }
   break;
 
@@ -164,23 +189,26 @@ void WallGuard::load(const VariantMap& stream)
   }
 }
 
-WalkerList WallGuard::_findEnemiesInRange( unsigned int range )
+EnemySoldierList WallGuard::_findEnemiesInRange( unsigned int range )
 {
   Tilemap& tmap = _getCity()->getTilemap();
-  WalkerList walkers;
+  EnemySoldierList walkers;
 
-  TilePos offset( range, range );
-  TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
-
-  foreach( Tile* tile, tiles )
+  for( int i=0; i < range; i++ )
   {
-    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, tile->getIJ() );
+    TilePos offset( i, i );
+    TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
 
-    foreach( WalkerPtr w, tileWalkers )
+    foreach( Tile* tile, tiles )
     {
-      if( w.is<EnemySoldier>() )
+      WalkerList tileWalkers = _getCity()->getWalkers( walker::any, tile->getIJ() );
+
+      foreach( WalkerPtr w, tileWalkers )
       {
-        walkers.push_back( w );
+        if( w.is<EnemySoldier>() )
+        {
+          walkers.push_back( w.as<EnemySoldier>() );
+        }
       }
     }
   }
@@ -188,50 +216,115 @@ WalkerList WallGuard::_findEnemiesInRange( unsigned int range )
   return walkers;
 }
 
-bool WallGuard::_tryAttack()
+FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 {
-  WalkerList enemies = _findEnemiesInRange( 1 );
-  if( !enemies.empty() )
+  FortificationList ret;
+
+  Tilemap& tmap = _getCity()->getTilemap();
+  for( int range=1; range < 8; range++ )
   {
-    _d->action = Impl::fightEnemy;
-    setSpeed( 0.f );
-    _setAction( acFight );
-    _setAnimation( _d->fight );
-    _changeDirection();
-    return true;
-  }
+    TilePos offset( range, range );
+    TilePos ePos = enemy->getIJ();
+    TilesArray tiles = tmap.getRectangle( ePos - offset, ePos + offset );
 
-  return false;
-}
-
-Pathway WallGuard::_findPathway2NearestEnemy()
-{
- /* Pathway ret;
-
-  for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
-  {
-    WalkerList walkers = _findEnemiesInRange( tmpRange );
-
-    foreach( WalkerPtr w, walkers)
+    foreach( Tile* tile, tiles )
     {
-      ret = PathwayHelper::create( getIJ(), w->getIJ(), PathwayHelper::allTerrain );
-      if( ret.isValid() )
+      FortificationPtr f = tile->getOverlay().as<Fortification>();
+      if( f.isValid() && f->mayPatrol() )
       {
-        return ret;
+        ret.push_back( f );
       }
     }
   }
-*/
-  return Pathway();
+
+  return ret;
+}
+
+bool WallGuard::_tryAttack()
+{
+  EnemySoldierList enemies = _findEnemiesInRange( 10 );
+
+  if( !enemies.empty() )
+  {
+    //find nearest walkable wall
+    EnemySoldierPtr soldierInAttackRange;
+    double minDistance = 8;
+
+    //enemy in attack range
+    foreach( EnemySoldierPtr enemy, enemies )
+    {
+      double tmpDistance = enemy->getIJ().distanceFrom( getIJ() );
+      if( tmpDistance < minDistance )
+      {
+        minDistance = tmpDistance;
+        soldierInAttackRange = enemy;
+      }
+    }
+
+    if( soldierInAttackRange.isValid() )
+    {
+      _d->action = Impl::attackEnemy;
+      setSpeed( 0.f );
+      _setAction( acFight );
+      _setAnimation( _d->fight );
+      _changeDirection();
+    }
+    else
+    {
+      Pathway shortestWay;
+      minDistance = 999;
+      foreach( EnemySoldierPtr enemy, enemies )
+      {
+        FortificationList nearestWall = _findNearestWalls( enemy );
+
+        PathwayList wayList = _d->base->getWays( getIJ(), nearestWall );
+        foreach( Pathway& way, wayList )
+        {
+          double tmpDistance = way.getDestination().getIJ().distanceFrom( enemy->getIJ() );
+          if( tmpDistance < minDistance )
+          {
+            shortestWay = way;
+            minDistance = tmpDistance;
+          }
+        }
+      }
+
+      if( shortestWay.isValid() )
+      {
+        _updatePathway( shortestWay );
+        _d->action = Impl::go2position;
+        _setAction( acMove );
+        _setAnimation( _d->walk );
+        setSpeed( 1.f );
+        go();
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 void WallGuard::_back2tower()
 {
   if( _d->base.isValid() )
   {
-    _pathwayRef().rbegin();
-    _computeDirection();
-    go();
+    _d->action = Impl::go2tower;
+    TilesArray enter = _d->base->getEnterArea();
+
+    if( !enter.empty() )
+    {
+      setSpeed( 1.f );
+      _setAnimation( _d->walk );
+      Pathway way = _d->base->getWay( getIJ(), enter.front()->getIJ() );
+      setPathway( way );
+      go();
+    }
+
+    if( !_pathwayRef().isValid() )
+    {
+      deleteLater();
+    }
   }
   else
   {
@@ -253,8 +346,12 @@ void WallGuard::_reachedPathway()
 
   case Impl::go2position:
   {
-    _back2tower();
-    _d->action = Impl::go2tower;
+    bool haveEnemies = _tryAttack();
+    if( !haveEnemies )
+    {
+      _back2tower();
+      _d->action = Impl::go2tower;
+    }
   }
   break;
 
@@ -326,4 +423,21 @@ void WallGuard::send2city( TowerPtr base, Pathway pathway )
   {
     _getCity()->addWalker( this );
   }
+}
+
+EnemySoldierPtr WallGuard::Impl::findNearbyEnemy(EnemySoldierList enemies, TilePos pos)
+{
+  EnemySoldierPtr ret;
+  double minDistance = 999;
+  foreach( EnemySoldierPtr e, enemies )
+  {
+    double tmpDistance = pos.distanceFrom( e->getIJ() );
+    if( tmpDistance > 2 && tmpDistance < minDistance )
+    {
+      minDistance = tmpDistance;
+      ret = e;
+    }
+  }
+
+  return ret;
 }

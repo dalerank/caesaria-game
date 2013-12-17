@@ -283,6 +283,7 @@ void EnemySoldier::_centerTile()
 
 void EnemySoldier::timeStep(const unsigned long time)
 {
+  setSpeed( 0.f );
   Soldier::timeStep( time );
 
   switch( _d->action )

@@ -12,38 +12,34 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_TOWER_H_INCLUDED__
-#define __CAESARIA_TOWER_H_INCLUDED__
+#ifndef __CAESARIA_SPEAR_H_INCLUDED__
+#define __CAESARIA_SPEAR_H_INCLUDED__
 
-#include "service.hpp"
-#include "game/pathway.hpp"
+#include "animals.hpp"
+#include "core/predefinitions.hpp"
 
-class Tower : public ServiceBuilding
+class Spear : public Walker
 {
 public:
-  Tower();
+  static SpearPtr create( PlayerCityPtr city );
 
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
+  void toThrow( TilePos src, TilePos dst );
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+  virtual void timeStep(const unsigned long time);
 
-  virtual void deliverService();
+  virtual void turn(TilePos pos);
 
-  virtual TilesArray getEnterArea() const;
+  virtual const Picture& getMainPicture();
 
-  void resetPatroling();
-  PathwayList getWays(TilePos start, FortificationList dest );
-  Pathway getWay(TilePos start, TilePos stop);
 protected:
-  void _rebuildWays();
+  virtual void _reachedPathway();
 
 private:
+  Spear( PlayerCityPtr city );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_TOWER_H_INCLUDED__
+#endif //__CAESARIA_SPEAR_H_INCLUDED__

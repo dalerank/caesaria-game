@@ -170,5 +170,25 @@ TilesArray Tower::getEnterArea() const
 
 void Tower::resetPatroling()
 {
-  _d->needResetWays;
+  _d->needResetWays = true;
+}
+
+PathwayList Tower::getWays(TilePos start, FortificationList dest)
+{
+  PathwayList ret;
+  foreach( FortificationPtr wall, dest )
+  {
+    Pathway tmp = PathwayHelper::create( start, wall->getTilePos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+    if( tmp.isValid() )
+    {
+      ret.push_back( tmp );
+    }
+  }
+
+  return ret;
+}
+
+Pathway Tower::getWay(TilePos start, TilePos stop)
+{
+  return PathwayHelper::create( start, stop, makeDelegate( _d.data(), &Impl::mayPatroling ) );
 }
