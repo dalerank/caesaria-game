@@ -24,8 +24,10 @@ class Lion : public Animal
 public:
   static LionPtr create( PlayerCityPtr city );
 
-  virtual void send2City(const TilePos& start);
   virtual void die();
+
+protected:
+  virtual void _reachedPathway();
 
 private:
   Lion( PlayerCityPtr city );

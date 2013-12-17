@@ -14,6 +14,37 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "lion.hpp"
+#include "core/gettext.hpp"
+#include "game/city.hpp"
+//#include "corpse.hpp"
 
 using namespace constants;
 
+LionPtr Lion::create(PlayerCityPtr city)
+{
+  LionPtr ret( new Lion( city ) );
+  ret->drop();
+
+  return ret;
+}
+
+void Lion::die()
+{
+  Animal::die();
+
+  //Corpse::create( _getCity(), getIJ(), "citizen04", 257, 264 );
+}
+
+void Lion::_reachedPathway()
+{
+  Animal::_reachedPathway();
+  deleteLater();
+}
+
+Lion::Lion(PlayerCityPtr city) : Animal( city )
+{
+  _setType( walker::lion );
+  _setAnimation( gfx::lion );
+
+  setName( _("##Lion##") );
+}

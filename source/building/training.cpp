@@ -26,6 +26,7 @@
 #include "game/resourcegroup.hpp"
 #include "game/city.hpp"
 #include "constants.hpp"
+#include "walker/lion_tamer.hpp"
 
 using namespace constants;
 
@@ -172,8 +173,13 @@ void LionsNursery::timeStep(const unsigned long time)
 void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::lionTamer );
-  trainee->send2City( this );
+  LionTamerPtr tamer = LionTamer::create( _getCity() );
+  tamer->send2City( this, true );
+
+  if( !tamer->isDeleted() )
+  {
+    addWalker( tamer.as<Walker>() );
+  }
 }
 
 
