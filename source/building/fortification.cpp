@@ -28,6 +28,7 @@
 #include "core/logger.hpp"
 #include "tower.hpp"
 #include "core/font.hpp"
+#include "gatehouse.hpp"
 
 using namespace constants;
 
@@ -40,6 +41,8 @@ public:
   bool mayPatrol;
   bool isTowerEnter;
   int index;
+
+  bool isFortification( PlayerCityPtr city, TilePos pos, bool tower=false );
 };
 
 Fortification::Fortification() : Wall(), _d( new Impl )
@@ -74,6 +77,12 @@ void Fortification::build(PlayerCityPtr city, const TilePos& pos )
   foreach( FortificationPtr frt, fortifications )
   {
     frt->updatePicture( city );
+  }
+
+  TowerList towers = helper.find<Tower>( building::tower );
+  foreach( TowerPtr tower, towers )
+  {
+    tower->resetPatroling();
   }
 
   updatePicture( city );
@@ -394,31 +403,32 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   }
 
   _d->isTowerEnter = false;
-  TowerPtr towerNorth = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().as<Tower>();
-  TowerPtr towerWest = tmap.at( pos + TilePos( -1, 0 ) ).getOverlay().as<Tower>();
-
-  if( towerNorth.isValid() )
-  {
-    towerNorth->resetPatroling();
-  }
-
-  if( towerWest.isValid() )
-  {
-    towerWest->resetPatroling();
-  }
+  bool towerNorth = _d->isFortification( city, pos + TilePos( 0, 1 ) );
+  bool towerWest = _d->isFortification( city, pos + TilePos( -1, 0 ) );
+  bool towerEast = _d->isFortification( city, pos + TilePos( 1, 0 ) );
 
   switch( index )
   {
   case 175:
     {
-      _d->isTowerEnter = (towerNorth.isValid() || towerWest.isValid());
-      if( towerNorth.isValid() ) { index = 181; }
-      else if( towerWest.isValid() ) { index = 182; }
+      towerNorth = _d->isFortification( city, pos + TilePos( 0, 1 ), true );
+      towerWest = _d->isFortification( city, pos + TilePos( -1, 0 ), true );
+      _d->isTowerEnter = (towerNorth || towerWest);
+      if( towerNorth ) { index = 181; }
+      else if( towerWest ) { index = 182; }
     }
   break;
 
+  case 157:
+    if( towerWest ) { index = 184; }
+  break;
+
   case 162:
-    if( towerNorth.isValid() ) { index = 183; }
+    if( towerNorth ) { index = 183; }
+  break;
+
+  case 164:
+    if( towerEast ) { index = 153; }
   break;
   }
 
@@ -475,4 +485,13 @@ void Fortification::load(const VariantMap& stream)
   _d->mayPatrol = stream.get( "mayPatrol" );
   _d->isTowerEnter = stream.get( "isTowerEnter" );
   _d->index = stream.get( "index" );
+}
+
+
+bool Fortification::Impl::isFortification( PlayerCityPtr city, TilePos pos, bool tower )
+{
+  TileOverlayPtr ov = city->getOverlay( pos );
+  return tower
+            ? ov.is<Tower>()
+            : ov.is<Tower>() || ov.is<Gatehouse>();
 }
