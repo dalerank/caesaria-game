@@ -120,7 +120,7 @@ void WallGuard::timeStep(const unsigned long time)
       EnemySoldierPtr p = _d->findNearbyEnemy( enemies, getIJ() );
       turn( p->getIJ() );
 
-      if( _animationRef().getIndex() == (_animationRef().getFrameCount()-1) )
+      if( _animationRef().getIndex() == (int)(_animationRef().getFrameCount()-1) )
       {
         SpearPtr spear = Spear::create( _getCity() );
         spear->toThrow( getIJ(), p->getIJ() );
@@ -194,7 +194,7 @@ EnemySoldierList WallGuard::_findEnemiesInRange( unsigned int range )
   Tilemap& tmap = _getCity()->getTilemap();
   EnemySoldierList walkers;
 
-  for( int i=0; i < range; i++ )
+  for( unsigned int i=0; i < range; i++ )
   {
     TilePos offset( i, i );
     TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );

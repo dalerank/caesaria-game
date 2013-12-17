@@ -114,7 +114,7 @@ Picture Road::computePicture()
 
   // std::cout << "direction flags=" << directionFlags << std::endl;
 
-  int index;
+  int index = 0;
   if( _paved == 0 )
   {
     switch (directionFlags)
