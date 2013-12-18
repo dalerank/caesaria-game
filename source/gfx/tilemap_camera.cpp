@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
@@ -23,6 +23,9 @@
 #include "core/logger.hpp"
 #include "gfx/tile.hpp"
 #include "core/foreach.hpp"
+#include "tileoverlay.hpp"
+
+#include <set>
 
 struct MovableOrders
 {
@@ -50,6 +53,7 @@ public:
   TilesArray tiles;   // cached list of visible tiles
 
   MovableOrders mayMove( PointF point );
+  void resetDrawn();
 
 public oc3_signals:
   Signal1<Point> onPositionChangedSignal;
@@ -63,7 +67,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->center = TilePos( 0, 0 );
   _d->screenSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
-  _d->borderSize = Size( 180 );
+  _d->borderSize = Size( 90 );
 }
 
 TilemapCamera::~TilemapCamera()
@@ -111,6 +115,7 @@ void TilemapCamera::move(PointF relative)
   if( mv.any() )
   {
     _d->centerMapXZ += relative;
+    _d->resetDrawn();
     _d->tiles.clear();
 
     _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
@@ -141,8 +146,7 @@ void TilemapCamera::moveDown(const int amount){  setCenter( Point( getCenterX(),
 
 void TilemapCamera::startFrame()
 {
-  foreach( Tile* tile, _d->tiles )
-    tile->resetWasDrawn();
+  _d->resetDrawn();
 }
 
 Tile* TilemapCamera::getCenterTile() const
@@ -164,6 +168,8 @@ const TilesArray& TilemapCamera::getTiles() const
 
     Size sizeT = _d->viewSize;  // size x
 
+    std::set< Tile* > overvorderTiles;
+
     for (int z = cz + sizeT.getHeight(); z>=cz - sizeT.getHeight(); --z)
     {
       // depth axis. from far to near.
@@ -180,9 +186,22 @@ const TilesArray& TilemapCamera::getTiles() const
         int j = (x + z - zm)/2;
         int i = x - j;
 
+        Tile* tile = &_d->tilemap->at( i, j );
         if( (i >= 0) && (j >= 0) && (i < mapSize) && (j < mapSize) )
         {
-          _d->tiles.push_back( &_d->tilemap->at( i, j ));
+          _d->tiles.push_back( tile );
+        }
+
+        Tile* master = tile->getMasterTile();
+        if( master != NULL )
+        {
+          Point pos = master->getXY() + _d->offset;
+          std::set< Tile* >::iterator mIt = overvorderTiles.find( master );
+          if( pos.getX() < 0 && mIt == overvorderTiles.end() )
+          {
+            _d->tiles.push_back( master );
+            overvorderTiles.insert( master );
+          }
         }
       }
     }
@@ -222,6 +241,14 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
   ret.up = (tilemap->at( mapSize - 1, 0 ).getXY() + mapOffset ).getY() > screenSize.getHeight();
 
   return ret;
+}
+
+void TilemapCamera::Impl::resetDrawn()
+{
+  foreach( Tile* tile, tiles )
+  {
+    tile->resetWasDrawn();
+  }
 }
 
 Point TilemapCamera::getOffset() const{  return _d->offset;}
