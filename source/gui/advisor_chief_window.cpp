@@ -37,7 +37,7 @@ namespace gui
 {
 
 
-class AdvisorFinanceWindow::Impl
+class AdvisorChiefWindow::Impl
 {
 public:
   PlayerCityPtr city;
@@ -51,7 +51,7 @@ public:
   int calculateTaxValue();
 };
 
-AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, int id )
+AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;
@@ -59,7 +59,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
                Size( 640, 420 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
-  title->setText( _("##Finance advisor##") );
+  title->setText( _("##advisor_chief##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
