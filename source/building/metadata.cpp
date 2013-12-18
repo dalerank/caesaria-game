@@ -324,11 +324,11 @@ MetaDataHolder::MetaDataHolder() : _d( new Impl )
 void MetaDataHolder::initialize( const vfs::Path& filename )
 {
   // populate _mapBuildingByInGood
-  _d->mapBuildingByInGood[Good::iron]   = building::weaponsWorkshop;
+  _d->mapBuildingByInGood[Good::iron  ] = building::weaponsWorkshop;
   _d->mapBuildingByInGood[Good::timber] = building::furnitureWorkshop;
-  _d->mapBuildingByInGood[Good::clay]   = building::pottery;
-  _d->mapBuildingByInGood[Good::olive]  = building::creamery;
-  _d->mapBuildingByInGood[Good::grape]  = building::winery;
+  _d->mapBuildingByInGood[Good::clay  ] = building::pottery;
+  _d->mapBuildingByInGood[Good::olive ] = building::creamery;
+  _d->mapBuildingByInGood[Good::grape ] = building::winery;
 
   VariantMap constructions = SaveAdapter::load( filename.toString() );
 

@@ -240,7 +240,7 @@ InfoBoxSenate::~InfoBoxSenate()
 {
 }
 
-GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
+InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
   FactoryPtr building = tile.getOverlay().as<Factory>();
@@ -274,7 +274,7 @@ GuiInfoFactory::GuiInfoFactory( Widget* parent, const Tile& tile)
   _updateWorkersLabel( Point( 32, 157 ), 542, building->getMaxWorkers(), building->getWorkersCount() );
 }
 
-std::string GuiInfoFactory::getInfoText()
+std::string InfoboxFactory::getInfoText()
 {
   return "";
   /*std::string textKey = GoodHelper::getName( _building->getOutGood().type() );

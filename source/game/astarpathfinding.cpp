@@ -192,6 +192,8 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
 
   oPathWay.init( *tilemap, tilemap->at( startPos ) );
 
+  bool useRoad = (( flags & ignoreRoad ) == 0 );
+
   if( (flags & customCondition)) {}
   else if( (flags & roadOnly) > 0 ) { condition = makeDelegate( this, &Impl::isRoad); }
   else if( (flags & terrainOnly) > 0 ) { condition = makeDelegate( this, &Impl::isTerrain ); }
@@ -300,11 +302,11 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
         {
           // If it has a wroste g score than the one that pass through the current point
           // then its path is improved when it's parent is the current point
-          if (child->getGScore() > child->getGScore(current))
+          if (child->getGScore() > child->getGScore(current, useRoad ))
           {
             // Change its parent and g score
             child->setParent(current);
-            child->computeScores( endPoints.front() );
+            child->computeScores( endPoints.front(), useRoad );
           }
         }
         else
@@ -315,7 +317,7 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
 
           // Compute it's g, h and f score
           child->setParent(current);
-          child->computeScores( endPoints.front() );
+          child->computeScores( endPoints.front(), useRoad );
         }
       }
     }

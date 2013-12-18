@@ -56,6 +56,7 @@ public:
   ConstructionPtr getContruction() const;
   bool isBorderBuilding() const;
   bool isMultiBuilding() const;
+  bool isRoadAssignment() const;
 public:
   BuildMode();
 

@@ -99,10 +99,10 @@ public:
   InfoBoxFreeHouse( Widget* parent, const Tile& tile );
 };
 // info box about a factory building
-class GuiInfoFactory : public InfoBoxSimple
+class InfoboxFactory : public InfoBoxSimple
 {
 public:
-   GuiInfoFactory( Widget* parent, const Tile& tile );
+   InfoboxFactory( Widget* parent, const Tile& tile );
    std::string getInfoText();
 };
 

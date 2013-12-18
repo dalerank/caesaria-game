@@ -13,25 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef _CAESARIA_INFOBOXRUINS_H_INCLUDE_
+#define _CAESARIA_INFOBOXRUINS_H_INCLUDE_
 
-#ifndef __CAESARIA_ROADPROPAGATOR_H_INCLUDE_
-#define __CAESARIA_ROADPROPAGATOR_H_INCLUDE_
+#include "info_box.hpp"
 
-#include "core/scopedptr.hpp"
-#include "gfx/tilemap.hpp"
+namespace gui
+{
 
-class Tilemap;
-
-class RoadPropagator
+class InfoboxRuins : public InfoBoxSimple
 {
 public:
-  /** finds the shortest path between origin and destination
-  * returns True if a path exists
-  * the path is returned in oPathWay
-  */
-  static TilesArray createPath( Tilemap& tileMap,
-                                TilePos startTile, TilePos destination,
-                                bool roadAssignment=false );
+  InfoboxRuins( Widget* parent, const Tile& tile );
+  virtual ~InfoboxRuins();
 };
 
-#endif //__CAESARIA_ROADPROPAGATOR_H_INCLUDE_
+}//end namespace gui
+#endif //_CAESARIA_INFOBOXRUINS_H_INCLUDE_

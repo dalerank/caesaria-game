@@ -31,6 +31,7 @@
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
 #include "protestor.hpp"
+#include "events/disaster.hpp"
 #include "game/pathway_helper.hpp"
 
 using namespace constants;

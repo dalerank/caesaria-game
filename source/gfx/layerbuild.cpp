@@ -38,6 +38,7 @@ public:
   bool multiBuilding;
   TilePos lastTilePos;
   bool borderBuilding;
+  bool roadAssignment;
   CityRenderer* renderer;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
@@ -151,7 +152,9 @@ void LayerBuild::_updatePreviewTiles( bool force )
     Tile* startTile = _getCamera()->at( _getStartCursorPos(), true );  // tile under the cursor (or NULL)
     Tile* stopTile  = _getCamera()->at( _getLastCursorPos(),  true );
 
-    TilesArray pathWay = RoadPropagator::createPath( _getCity()->getTilemap(), startTile->getIJ(), stopTile->getIJ() );
+    TilesArray pathWay = RoadPropagator::createPath( _getCity()->getTilemap(),
+                                                     startTile->getIJ(), stopTile->getIJ(),
+                                                     _d->roadAssignment );
     for( TilesArray::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
     {
       _checkPreviewBuild( (*it)->getIJ() );
@@ -365,6 +368,7 @@ void LayerBuild::init(Point cursor)
 
   BuildModePtr command = _d->renderer->getMode().as<BuildMode>();
   _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
+  _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
   _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;
 }
 

@@ -25,7 +25,7 @@
 
 using namespace constants;
 
-BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, building::burningRuins, Size(1) )
+BurningRuins::BurningRuins() : Ruins( building::burningRuins )
 {
   updateState( Construction::fire, 99, false );
 
@@ -37,7 +37,7 @@ BurningRuins::BurningRuins() : ServiceBuilding(Service::burningRuins, building::
 
 void BurningRuins::timeStep(const unsigned long time)
 {
-  ServiceBuilding::timeStep(time);
+  Building::timeStep(time);
 
   if (time % 16 == 0 )
   {
@@ -86,7 +86,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
 void BurningRuins::destroy()
 {
-  ServiceBuilding::destroy();
+  Building::destroy();
 
   events::GameEventPtr event = events::BuildEvent::create( getTilePos(), building::burnedRuins );
   event->dispatch();
@@ -97,18 +97,6 @@ int BurningRuins::getMaxWorkers() const
   return 0;
 }
 
-void BurningRuins::deliverService()
-{
-  /*ServiceWalker walker(getService());
-  walker.setServiceBuilding(*this);
-  std::set<Building*> reachedBuildings = walker.getReachedBuildings(getTile().getI(), getTile().getJ());
-  for (std::set<Building*>::iterator itBuilding = reachedBuildings.begin(); itBuilding != reachedBuildings.end(); ++itBuilding)
-  {
-    Building &building = **itBuilding;
-    building.applyService(walker);
-  }*/
-}
-
 void BurningRuins::burn()
 {
 
@@ -116,7 +104,7 @@ void BurningRuins::burn()
 
 void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
-  ServiceBuilding::build( city, pos );
+  Building::build( city, pos );
   //while burning can't remove it
   getTile().setFlag( Tile::tlTree, false );
   getTile().setFlag( Tile::tlRoad, false );
@@ -157,7 +145,7 @@ void BurnedRuins::timeStep( const unsigned long time )
 
 }
 
-BurnedRuins::BurnedRuins() : Building( building::burnedRuins, Size(1) )
+BurnedRuins::BurnedRuins() : Ruins( building::burnedRuins )
 {
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
@@ -189,7 +177,7 @@ void BurnedRuins::destroy()
   Building::destroy();
 }
 
-CollapsedRuins::CollapsedRuins() : Building(building::collapsedRuins, Size(1) )
+CollapsedRuins::CollapsedRuins() : Ruins(building::collapsedRuins)
 {
   updateState( Construction::damage, 1, false );
 
@@ -225,7 +213,7 @@ bool CollapsedRuins::isNeedRoadAccess() const
 }
 
 
-PlagueRuins::PlagueRuins() : Building( building::plagueRuins, Size(1) )
+PlagueRuins::PlagueRuins() : Ruins( building::plagueRuins )
 {
   updateState( Construction::fire, 99, false );
 
@@ -306,4 +294,11 @@ bool PlagueRuins::isWalkable() const
 bool PlagueRuins::isNeedRoadAccess() const
 {
   return false;
+}
+
+
+Ruins::Ruins(building::Type type)
+  : Building( type, Size(1) )
+{
+
 }

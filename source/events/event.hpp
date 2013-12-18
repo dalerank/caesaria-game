@@ -37,22 +37,6 @@ protected:
   GameEvent() {}
 };
 
-class DisasterEvent : public GameEvent
-{
-public:
-  typedef enum
-  {
-    fire, collapse, plague, count
-  } Type;
-  static GameEventPtr create( const TilePos&, Type type );
-
-  virtual void exec( Game& game );
-
-private:
-  TilePos _pos;
-  Type _type;
-};
-
 class BuildEvent : public GameEvent
 {
 public:

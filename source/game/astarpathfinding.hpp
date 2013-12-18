@@ -30,7 +30,7 @@ public:
                  roadOnly=0x4, waterOnly=0x8, terrainOnly=0x10,
                  traversePath=0x20,
                  everyWhere=0x80, fourDirection=0x100,
-                 customCondition=0x200 } Flags;
+                 customCondition=0x200, ignoreRoad=0x400 } Flags;
 
   static Pathfinder& getInstance();
 
