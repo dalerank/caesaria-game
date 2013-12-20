@@ -13,38 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_FISHING_BOAT_INCLUDE_H_
-#define _CAESARIA_FISHING_BOAT_INCLUDE_H_
+#ifndef _CAESARIA_COASTALBUILDING_INCLUDE_H_
+#define _CAESARIA_COASTALBUILDING_INCLUDE_H_
 
-#include "ship.hpp"
+#include "factory.hpp"
+#include "core/direction.hpp"
 
-class FishingBoat : public Ship
+class CoastalFactory : public Factory
 {
 public:
-  static FishingBoatPtr create( PlayerCityPtr city );
-
-  void send2City( WharfPtr base, const TilePos& start);
+  CoastalFactory( const Good::Type consume, const Good::Type produce,
+                  const TileOverlay::Type type, Size size );
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual void destroy();
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual void timeStep(const unsigned long time);
-  void startCatch();
-  void back2base();
+  const Tile& getLandingTile() const;
 
-  bool isBusy() const;
-
-  virtual void die();
-protected:
-  virtual void _reachedPathway();
-  virtual void _changeTile();
+  ~CoastalFactory();
+private:
+  void _setDirection( constants::Direction direction );
+  virtual void _updatePicture( constants::Direction direction ) = 0;
 
 private:
-  FishingBoat( PlayerCityPtr city );
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-
-#endif //_CAESARIA_FISHING_BOAT_INCLUDE_H_
+#endif //_CAESARIA_COASTALBUILDING_INCLUDE_H_

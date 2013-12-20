@@ -214,12 +214,6 @@ bool BigStatue::isNeedRoadAccess() const
   return false;
 }
 
-Shipyard::Shipyard() : Building( building::shipyard, Size(2) )
-{
-  setPicture( ResourceGroup::transport, 1);
-  // also transport 2 3 4 check position of river on map
-}
-
 // dock pictures
 // transport 5        animation = 6~16
 // transport 17       animation = 18~28

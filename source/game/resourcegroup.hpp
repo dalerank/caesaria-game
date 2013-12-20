@@ -42,6 +42,7 @@ public:
   static const char* govt;
   static const char* carts;
   static const char* wharf;
+  static const char* shipyard;
   static const char* waterOverlay;
   static const char* foodOverlay;
   static const char* empirebits;

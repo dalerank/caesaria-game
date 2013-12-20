@@ -12,23 +12,24 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WHARF_INCLUDE_H_
-#define _CAESARIA_WHARF_INCLUDE_H_
+#ifndef _CAESARIA_SHIPYARD_H_INCLUDE_
+#define _CAESARIA_SHIPYARD_H_INCLUDE_
 
 #include "coastalbuilding.hpp"
-#include "core/direction.hpp"
 
-class Wharf : public CoastalFactory
+class Shipyard : public CoastalFactory
 {
 public:
-  Wharf();
+  Shipyard();
 
   virtual void destroy();
   virtual void timeStep(const unsigned long time);
 
-  FishingBoatPtr getBoat() const;
-  void assignBoat( FishingBoatPtr boat );
+  virtual unsigned int getConsumeQty() const;
 
 private:
   virtual void _updatePicture( constants::Direction direction );
@@ -38,4 +39,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //_CAESARIA_WHARF_INCLUDE_H_
+#endif //_CAESARIA_SHIPYARD_H_INCLUDE_

@@ -62,6 +62,7 @@ public:
   virtual float getProductRate() const;
 
   virtual unsigned int getFinishedQty() const;
+  virtual unsigned int getConsumeQty() const;
 
 protected:  
   virtual bool _mayDeliverGood() const;

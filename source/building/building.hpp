@@ -88,12 +88,6 @@ public:
   bool isNeedRoadAccess() const;
 };
 
-class Shipyard : public Building
-{
-public:
-  Shipyard();
-};
-
 class TriumphalArch : public Building
 {
 public:

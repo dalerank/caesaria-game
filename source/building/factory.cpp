@@ -172,16 +172,17 @@ void Factory::timeStep(const unsigned long time)
 
    if( !_d->produceGood )
    {
+     unsigned int consumeQty = getConsumeQty();
      if( _d->inGoodType == Good::none ) //raw material
      {
        _d->produceGood = true;
      }
-     else if( _d->goodStore.getCurrentQty( _d->inGoodType ) >= 100 && _d->goodStore.getCurrentQty( _d->outGoodType ) < 100 )
+     else if( _d->goodStore.getCurrentQty( _d->inGoodType ) >= consumeQty && _d->goodStore.getCurrentQty( _d->outGoodType ) < 100 )
      {
        _d->produceGood = true;
        //gcc fix temporaly ref object error
-       GoodStock tmpStock( _d->inGoodType, 100, 0 );
-       _d->goodStore.retrieve( tmpStock, 100  );
+       GoodStock tmpStock( _d->inGoodType, consumeQty, 0 );
+       _d->goodStore.retrieve( tmpStock, consumeQty  );
      }     
    }
 }
@@ -260,6 +261,11 @@ float Factory::getProductRate() const
 unsigned int Factory::getFinishedQty() const
 {
   return _d->finishedQty;
+}
+
+unsigned int Factory::getConsumeQty() const
+{
+  return 100;
 }
 
 Good::Type Factory::getOutGoodType() const

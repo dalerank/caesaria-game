@@ -56,6 +56,7 @@
 #include "building/wall.hpp"
 #include "building/fortification.hpp"
 #include "building/gatehouse.hpp"
+#include "building/shipyard.hpp"
 #include "building/tower.hpp"
 #include "elevation.hpp"
 #include <map>
@@ -253,15 +254,15 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::furnitureWorkshop,  CAESARIA_STR_EXT(FurnitureWorkshop), new FactoryCreator<FurnitureWorkshop>() );
   addCreator(building::winery, CAESARIA_STR_EXT(Winery)     , new FactoryCreator<Winery>() );
   addCreator(building::creamery, CAESARIA_STR_EXT(Creamery)      , new FactoryCreator<Creamery>() );
-  addCreator(building::pottery,      CAESARIA_STR_EXT(Pottery)  , new FactoryCreator<Pottery>() );
+  ADD_CREATOR(building::pottery,  Pottery, FactoryCreator );
 
   // utility
   addCreator(building::engineerPost, CAESARIA_STR_EXT(EngineerPost), new WorkingBuildingCreator<EngineerPost>() );
   addCreator(building::lowBridge,    CAESARIA_STR_EXT(LowBridge), new ConstructionCreator<LowBridge>() );
   addCreator(building::highBridge,   CAESARIA_STR_EXT(HighBridge), new ConstructionCreator<HighBridge>() );
   addCreator(building::dock,       CAESARIA_STR_EXT(Dock)    , new ConstructionCreator<Dock>() );
-  addCreator(building::shipyard,   CAESARIA_STR_EXT(Shipyard), new ConstructionCreator<Shipyard>() );
-  addCreator(building::wharf,        CAESARIA_STR_EXT(Wharf)   , new WorkingBuildingCreator<Wharf>() );
+  ADD_CREATOR(building::shipyard,   Shipyard, FactoryCreator );
+  ADD_CREATOR(building::wharf,      Wharf   , FactoryCreator );
   addCreator(building::triumphalArch, CAESARIA_STR_EXT(TriumphalArch) , new ConstructionCreator<TriumphalArch>() );
 
   // religion

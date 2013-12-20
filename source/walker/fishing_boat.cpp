@@ -32,7 +32,7 @@ using namespace constants;
 class FishingBoat::Impl
 {
 public:
-  typedef enum { go2fishplace, catchFish, back2Base, finishCatch, unloadFish, ready2Catch, wait } Mode;
+  typedef enum { go2fishplace, catchFish, back2base, finishCatch, unloadFish, ready2Catch, wait } Mode;
   WharfPtr base;
   TilePos destination;
   GoodStock stock;
@@ -124,7 +124,7 @@ void FishingBoat::timeStep(const unsigned long time)
 
         if( pathfound )
         {
-          _d->mode = Impl::back2Base;
+          _d->mode = Impl::back2base;
           setPathway( way );
           go();
         }
@@ -141,7 +141,7 @@ void FishingBoat::timeStep(const unsigned long time)
     break;
 
     case Impl::go2fishplace: break;
-    case Impl::back2Base: break;
+    case Impl::back2base: break;
     case Impl::wait: break;
 
     case Impl::unloadFish:
@@ -163,6 +163,11 @@ void FishingBoat::timeStep(const unsigned long time)
 void FishingBoat::startCatch()
 {
   _d->mode = Impl::ready2Catch;
+}
+
+void FishingBoat::back2base()
+{
+  _d->mode = Impl::finishCatch;
 }
 
 bool FishingBoat::isBusy() const
@@ -205,7 +210,7 @@ void FishingBoat::_reachedPathway()
   switch( _d->mode )
   {
   case Impl::go2fishplace: _d->mode = Impl::catchFish; break;
-  case Impl::back2Base: _d->mode = Impl::unloadFish; break;
+  case Impl::back2base: _d->mode = Impl::unloadFish; break;
   default: break;
   }
 }

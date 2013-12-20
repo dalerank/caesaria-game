@@ -31,6 +31,7 @@ const char* ResourceGroup::citizen5        = "citizen05";
 const char* ResourceGroup::sprites         = "sprites";
 const char* ResourceGroup::buildingEngineer= "transport";  
 const char* ResourceGroup::wharf           = "transport"; 
+const char* ResourceGroup::shipyard        = "transport";
 const char* ResourceGroup::transport       = "transport"; 
 const char* ResourceGroup::utilitya        = "utilitya";
 const char* ResourceGroup::commerce        = "commerce";
