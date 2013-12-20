@@ -24,6 +24,7 @@
 #include "road.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
+#include "cityhelper.hpp"
 #include "building/building.hpp"
 
 #include <iterator>

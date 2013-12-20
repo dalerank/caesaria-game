@@ -17,7 +17,7 @@
 
 #include "building/metadata.hpp"
 #include "core/exception.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "core/position.hpp"
 #include "building/granary.hpp"
 #include "building/warehouse.hpp"
@@ -256,7 +256,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
 void CartSupplier::send2City( BuildingPtr building, Good::Type what, const int qty )
 {
   _d->stock.setType( what );
-  _d->stock.setCap( qty );
+  _d->stock.setCapacity( qty );
   _d->baseBuildingPos = building->getTilePos();
 
   computeWalkerDestination( building, what, qty );

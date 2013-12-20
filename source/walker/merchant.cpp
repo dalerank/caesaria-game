@@ -18,7 +18,7 @@
 #include "building/warehouse.hpp"
 #include "game/pathway_helper.hpp"
 #include "game/path_finding.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
 #include "core/stringhelper.hpp"

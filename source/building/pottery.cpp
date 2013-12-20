@@ -16,7 +16,7 @@
 #include "pottery.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "core/gettext.hpp"
 #include "constants.hpp"
 

@@ -85,7 +85,8 @@ FarmTile::~FarmTile()
 class Farm::Impl
 {
 public:
-  std::vector<FarmTile> subTiles;
+  typedef std::vector<FarmTile> SubTiles;
+  SubTiles subTiles;
   Picture pictureBuilding;  // we need to change its offset
 };
 
@@ -96,7 +97,7 @@ Farm::Farm(const Good::Type outGood, const Type type )
   _d->pictureBuilding.addOffset( 30, 15);
 
   setPicture( _d->pictureBuilding );
-  getOutGood().setCap( 100 );
+  getOutGood().setCapacity( 500 );
 
   init();
 }
@@ -178,6 +179,11 @@ void Farm::save( VariantMap& stream ) const
 void Farm::load( const VariantMap& stream )
 {
   Factory::load( stream );
+}
+
+unsigned int Farm::getProduceQty() const
+{
+  return getProductRate() * getFinishedQty() * getWorkersCount() / getMaxWorkers();
 }
 
 Farm::~Farm()

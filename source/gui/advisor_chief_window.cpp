@@ -30,6 +30,8 @@
 #include "game/cityfunds.hpp"
 #include "game/house_level.hpp"
 #include "building/constants.hpp"
+#include "game/citymigration.hpp"
+#include "game/citystatistic.hpp"
 
 using namespace constants;
 
@@ -43,10 +45,9 @@ public:
   PlayerCityPtr city;
   PictureRef background;
 
-  gui::Label* lbTaxRateNow;
   TexturedButton* btnHelp;
 
-  void drawReportRow( const Point& pos, const std::string& title, CityFunds::IssueType type );
+  void drawReportRow( Point pos, std::string title, std::string text );
 };
 
 AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int id )
@@ -66,62 +67,83 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   //main _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
   //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 20, 50 ), Size( getWidth() - 20, getHeight() - 70 ) ), PictureDecorator::blackFrame);
+  PictureDecorator::draw( *_d->background, Rect( 20, 55, getWidth() - 20, getHeight() - 20 ), PictureDecorator::blackFrame);
 
-  Picture& icon = Picture::load( ResourceGroup::panelBackground, 265 );
+  Picture& icon = Picture::load( ResourceGroup::panelBackground, 266 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
-  Font fontWhite = Font::create( FONT_1_WHITE );
+  Point startPoint( 20, 60 );
+  Point offset( 0, 20 );
 
-  std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->getFunds().getValue(), _("##denaries##") );
-  fontWhite.draw( *_d->background, moneyStr, 70, 55, false );
-  fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75, false );
+  int needWorkersNumber = CityStatistic::getVacantionsNumber(_d->city );
+  int workless = CityStatistic::getWorklessPercent( _d->city );
+  std::string text;
+  if( needWorkersNumber > 0 ) {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );  }
+  else if( workless > 10 )  {    text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );  }
+  else  {    text = _("##advchief_employers_ok##");  }
 
-  _d->lbTaxRateNow = new gui::Label( this, Rect( 245, 75, 245 + 350, 75 + 20 ), "" );
-  _d->lbTaxRateNow->setFont( fontWhite );
-  _d->updateTaxRateNowLabel();
+  _d->drawReportRow( startPoint, _("##advchief_employment##"), text );
 
-  std::string strRegPaeyrs = StringHelper::format( 0xff, "%d%% %s", 0, _("##population_registered_as_taxpayers##") );
-  fontWhite.draw( *_d->background, strRegPaeyrs, 70, 95, false );
+  int profit = _d->city->getFunds().getProfit();
+  if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
+  else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
 
-  Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##Last year##"), 265, 130, false );
-  font.draw( *_d->background, _("##This year##"), 400, 130, false );
+  _d->drawReportRow( startPoint + offset * 1, _("##advchief_finance##"), text );
 
-  Point startPoint( 75, 145 );
-  Point offset( 0, 17 );
+  SmartPtr<CityMigration> migration = _d->city->findService( CityMigration::getDefaultName() ).as<CityMigration>();
+  //int migrationLastMonth = 0;
+  text = _("##migration_unknown_reason##");
+  if( migration.isValid() )
+  {
+    //migrationLastMonth = migration->getValue();
+    text = migration->getReason();
+  }
 
-  _d->drawReportRow( startPoint, _("##Taxes##"), CityFunds::taxIncome );
-  _d->drawReportRow( startPoint + offset, _("##Trade##"), CityFunds::exportGoods );
-  _d->drawReportRow( startPoint + offset * 2, _("##Donations##"), CityFunds::donation );
-  _d->drawReportRow( startPoint + offset * 3, _("##Debet##"), CityFunds::debet );
-  _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 200, 0 ), Size( 72, 1) ) );
-  _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 340, 0 ), Size( 72, 1) ) );
-  
-  startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 4, _("##Import##"), CityFunds::importGoods );
-  _d->drawReportRow( startPoint + offset * 5, _("##Wages##"), CityFunds::workersWages );
-  _d->drawReportRow( startPoint + offset * 6, _("##Buildings##"), CityFunds::buildConstruction );
-  _d->drawReportRow( startPoint + offset * 7, _("##Percents##"), CityFunds::creditPercents );
-  _d->drawReportRow( startPoint + offset * 8, _("##Salary##"), CityFunds::playerSalary );
-   
-  _d->drawReportRow( startPoint + offset * 9, _("##Other##"), CityFunds::otherExpenditure );
-  _d->drawReportRow( startPoint + offset * 10, _("##Empire tax##"), CityFunds::empireTax );
-  _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 200, 0 ), Size( 72, 1) ) );
-  _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 340, 0 ), Size( 72, 1) ) );
+  _d->drawReportRow( startPoint + offset * 2, _("##advchief_migration##"), text );
 
-  _d->drawReportRow( startPoint + offset * 11, _("##Credit##"), CityFunds::credit );
+  int foodStock = CityStatistic::getFoodStock( _d->city );
+  int foodMontlyConsumption = CityStatistic::getFoodMonthlyConsumption( _d->city );
+  int monthWithFood = foodStock / foodMontlyConsumption;
 
-  startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 12, _("##Profit##"), CityFunds::profit );
-  
-  startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 13, _("##Balance##"), CityFunds::balance );
+  switch( monthWithFood )
+  {
+    case 0: text = _("##have_no_food_on_next_month##"); break;
+    case 1: text = _("##small_food_on_next_month##"); break;
+    case 2: text = _("##some_food_on_next_month##"); break;
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+    default:
+      text = StringHelper::format( 0xff, "%s %d", _("##have_food_for##"), monthWithFood );
+  }
 
-  new TexturedButton( this, Point( 185, 70 ), Size( 24 ), -1, 601 );
-  new TexturedButton( this, Point( 185+24, 70 ), Size( 24 ), -1, 605 );
+  _d->drawReportRow( startPoint + offset * 3, _("##advchief_food_stocks##"), text );
+
+  int foodProducing = CityStatistic::getFoodProducing( _d->city );
+  if( foodProducing == 0 )
+  {
+    text = _("##we_noproduce_food##");
+  }
+  else
+  {
+    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
+    bool positiveProducing = (foodProducing - yearlyFoodConsumption >= 0 ? true : false);
+    if( positiveProducing )
+    {
+      int foodKoeff = foodProducing / yearlyFoodConsumption;
+      switch( foodKoeff )
+      {
+      case 0: case 1: text = _("##we_produce_some_than_eat##"); break;
+      case 2: text = _("##we_produce_more_than_eat##"); break;
+      default:
+        text = _("##we_produce_much_than_eat##");
+      }
+    }
+    else
+    {
+      text = _("##we_produce_less_than_eat##");
+    }
+  }
+
+  _d->drawReportRow( startPoint + offset * 4, _("##advchief_food_consumption##"), text );
 }
 
 void AdvisorChiefWindow::draw( GfxEngine& painter )
@@ -134,18 +156,16 @@ void AdvisorChiefWindow::draw( GfxEngine& painter )
   Widget::draw( painter );
 }
 
-
-void AdvisorChiefWindow::Impl::drawReportRow(const Point& pos, const std::string& title, CityFunds::IssueType type)
+void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::string text)
 {
-  Font font = Font::create( FONT_1 );
+  Font font = Font::create( FONT_2_WHITE );
+  Font font2 = Font::create( FONT_2 );
 
-  int lyvalue = city->getFunds().getIssueValue( type, CityFunds::lastYear );
-  int tyvalue = city->getFunds().getIssueValue( type, CityFunds::thisYear );
+  Picture pointPic = Picture::load( ResourceGroup::panelBackground, 48 );
 
-  font.draw( *background, title, pos, false );
-  font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0), false );
-  font.draw( *background, StringHelper::format( 0xff, "%d", tyvalue ), pos + Point( 355, 0), false );
+  background->draw( pointPic, pos + Point( 5, 10 ) );
+  font.draw( *background, title, pos + Point( 20, 0), false );
+  font2.draw( *background, text, pos + Point( 255, 0), false );
 }
-
 
 }//end namespace gui

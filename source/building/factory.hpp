@@ -59,6 +59,9 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void setProductRate( const float rate );
+  virtual float getProductRate() const;
+
+  virtual unsigned int getFinishedQty() const;
 
 protected:  
   virtual bool _mayDeliverGood() const;

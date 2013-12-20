@@ -79,13 +79,13 @@ int SimpleGoodStore::getCurrentQty(const Good::Type &goodType) const
 
 int SimpleGoodStore::getMaxQty(const Good::Type &goodType) const
 {
-  return _gsd->stocks[goodType].cap();
+  return _gsd->stocks[goodType].capacity();
 }
 
 
 void SimpleGoodStore::setMaxQty(const Good::Type &goodType, const int maxQty)
 {
-  _gsd->stocks[goodType].setCap( maxQty );
+  _gsd->stocks[goodType].setCapacity( maxQty );
 }
 
 
@@ -102,7 +102,7 @@ int SimpleGoodStore::getMaxStore(const Good::Type goodType)
     int globalFreeRoom = getMaxQty() - getCurrentQty();
 
     // current free capacity
-    freeRoom = math::clamp( _gsd->stocks[goodType].cap() - _gsd->stocks[goodType].qty(), 0, globalFreeRoom );
+    freeRoom = math::clamp( _gsd->stocks[goodType].capacity() - _gsd->stocks[goodType].qty(), 0, globalFreeRoom );
 
     // remove all storage reservations
     foreach( _Reservations::value_type& item, _getStoreReservations() )
@@ -147,7 +147,7 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
     return;
   }
 
-  if( stock.cap() < stock.qty() + reservedStock.qty())
+  if( stock.capacity() < stock.qty() + reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
     return;

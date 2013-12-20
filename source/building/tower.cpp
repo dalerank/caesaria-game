@@ -18,7 +18,7 @@
 #include "tower.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "gfx/tilemap.hpp"
 #include "fortification.hpp"
 #include "core/direction.hpp"

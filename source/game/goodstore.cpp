@@ -152,7 +152,7 @@ void GoodStore::store( GoodStock &stock, const int amount)
 {
   GoodStock reservedStock;
   reservedStock.setType( stock.type() );
-  reservedStock.setCap( stock.cap() );
+  reservedStock.setCapacity( stock.capacity() );
   reservedStock.setQty( amount );
 
   long reservationID = reserveStorage(reservedStock);

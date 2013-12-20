@@ -25,7 +25,7 @@
 #include "game/path_finding.hpp"
 #include "market_kid.hpp"
 #include "game/goodstore_simple.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "game/name_generator.hpp"
 #include "building/constants.hpp"
 
@@ -254,7 +254,7 @@ void MarketLady::_reachedPathway()
             MarketKidPtr boy = MarketKid::create( _getCity(), this );
             GoodStock& boyBasket =  boy->getBasket();
             boyBasket.setType( (Good::Type)gtype );
-            boyBasket.setCap( 100 );
+            boyBasket.setCapacity( 100 );
             _d->basket.retrieve( boyBasket, math::clamp( currentStock.qty(), 0, 100 ) );
             boy->setDelay( delay );
             delay += 20;

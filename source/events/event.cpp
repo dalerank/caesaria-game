@@ -36,6 +36,8 @@
 #include "building/constants.hpp"
 #include "gfx/tilesarray.hpp"
 #include "playsound.hpp"
+#include "game/cityhelper.hpp"
+#include "game/citystatistic.hpp"
 
 using namespace constants;
 

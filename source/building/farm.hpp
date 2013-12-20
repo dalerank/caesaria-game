@@ -33,6 +33,8 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
+  virtual unsigned int getProduceQty() const;
+
 protected:
   class Impl;
   ScopedPtr< Impl > _d;

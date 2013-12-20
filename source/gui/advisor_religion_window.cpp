@@ -24,7 +24,7 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "building/house.hpp"
 #include "texturedbutton.hpp"
 #include "game/divinity.hpp"

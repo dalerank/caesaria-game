@@ -41,7 +41,7 @@ public:
   WarehouseTile(const TilePos& pos )
   {
     _pos = pos;
-    _stock.setCap( 400 );
+    _stock.setCapacity( 400 );
     computePicture();
   }
 
@@ -246,9 +246,9 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
       break;
     }
 
-    if (whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.cap())
+    if (whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.capacity())
     {
-      int tileAmount = std::min(amount, whTile._stock.cap() - whTile._stock.qty());
+      int tileAmount = std::min(amount, whTile._stock.capacity() - whTile._stock.qty());
       // std::cout << "put in half filled" << std::endl;
       whTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
@@ -265,7 +265,7 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
 
     if (whTile._stock.type() == Good::none)
     {
-      int tileAmount = std::min(amount, whTile._stock.cap() );
+      int tileAmount = std::min(amount, whTile._stock.capacity() );
       // std::cout << "put in empty tile" << std::endl;
       whTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
@@ -285,7 +285,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
     Logger::warning( "GoodType does not match reservation");
     return;
   }
-  if (stock.cap() < stock.qty() + reservedStock.qty() )
+  if (stock.capacity() < stock.qty() + reservedStock.qty() )
   {
     Logger::warning( "Quantity does not match reservation");
     return;
@@ -302,7 +302,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
       break;
     }
 
-    if( whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.cap() )
+    if( whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.capacity() )
     {
       int tileAmount = std::min(amount, whTile._stock.qty());
       // std::cout << "retrieve from half filled" << std::endl;

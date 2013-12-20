@@ -31,7 +31,7 @@
 #include "gfx/tilemap.hpp"
 #include "game/gamedate.hpp"
 #include "game/goodstore_simple.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
 #include "events/event.hpp"
@@ -161,11 +161,10 @@ void House::timeStep(const unsigned long time)
     _d->makeOldHabitants();
   }
 
-  if( time % 16 == 0 )
+  if( time % getSpec().getServiceConsumptionInterval() == 0 )
   {
     _d->consumeServices();
-    _d->updateHealthLevel();    
-    cancelService( Service::recruter );
+    _d->updateHealthLevel();        
   }
 
   if( time % 32 == 0 )
@@ -173,13 +172,14 @@ void House::timeStep(const unsigned long time)
     appendServiceValue( Service::crime, _d->spec.getCrime() + 2 );
   }
 
-  if( time % 64 == 0 )
+  if( time % getSpec().getFoodConsumptionInterval() == 0 )
   {
+    cancelService( Service::recruter );
     // consume goods
     for( int i = 0; i < Good::goodCount; ++i)
     {
        Good::Type goodType = (Good::Type) i;
-       int montlyGoodsQty = _d->spec.computeMonthlyConsumption( *this, goodType, true );
+       int montlyGoodsQty = _d->spec.computeMonthlyConsumption( this, goodType, true );
        _d->goodStore.setCurrentQty( goodType, std::max( _d->goodStore.getCurrentQty(goodType) - montlyGoodsQty, 0) );
     }
 
@@ -490,8 +490,8 @@ void House::buyMarket( ServiceWalkerPtr walker )
   {
     Good::Type goodType = (Good::Type) i;
     int houseQty = houseStore.getCurrentQty(goodType) / 10;
-    int houseSafeQty = _d->spec.computeMonthlyConsumption(*this, goodType, false )
-                       + _d->spec.next().computeMonthlyConsumption(*this, goodType, false );
+    int houseSafeQty = _d->spec.computeMonthlyConsumption( this, goodType, false )
+                       + _d->spec.next().computeMonthlyConsumption( this, goodType, false );
     int marketQty = marketStore.getCurrentQty(goodType);
     if( houseQty < houseSafeQty && marketQty > 0  )
     {
@@ -503,8 +503,8 @@ void House::buyMarket( ServiceWalkerPtr walker )
          GoodStock stock(goodType, qty);
          marketStore.retrieve(stock, qty);
 
-         stock.setCap( qty * 10 );
-         stock.setQty( stock.cap() );
+         stock.setCapacity( qty * 10 );
+         stock.setQty( stock.capacity() );
 
          houseStore.store(stock, stock.qty() );
        }
@@ -618,8 +618,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
     {
       Good::Type goodType = (Good::Type) i;
       int houseQty = houseStore.getCurrentQty(goodType) / 10;
-      int houseSafeQty = _d->spec.computeMonthlyConsumption(*this, goodType, false)
-                         + _d->spec.next().computeMonthlyConsumption(*this, goodType, false );
+      int houseSafeQty = _d->spec.computeMonthlyConsumption( this, goodType, false)
+                         + _d->spec.next().computeMonthlyConsumption( this, goodType, false );
       int marketQty = marketStore.getCurrentQty(goodType);
       if( houseQty < houseSafeQty && marketQty > 0)
       {

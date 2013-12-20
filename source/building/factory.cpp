@@ -29,9 +29,10 @@
 #include "walker/cart_supplier.hpp"
 #include "core/stringhelper.hpp"
 #include "game/goodstore_simple.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -46,6 +47,7 @@ public:
   Good::Type inGoodType;
   Good::Type outGoodType;
   bool produceGood;
+  unsigned int finishedQty;
 };
 
 Factory::Factory(const Good::Type inType, const Good::Type outType,
@@ -58,6 +60,7 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
    _d->produceGood = false;
    _d->inGoodType = inType;
    _d->outGoodType = outType;
+   _d->finishedQty = 100;
    _d->goodStore.setMaxQty(1000);  // quite unlimited
    _d->goodStore.setMaxQty(_d->inGoodType, 200);
    _d->goodStore.setMaxQty(_d->outGoodType, 200);
@@ -140,17 +143,18 @@ void Factory::timeStep(const unsigned long time)
      if( _d->goodStore.getCurrentQty( _d->outGoodType ) < _d->goodStore.getMaxQty( _d->outGoodType )  )
      {
        _d->progress -= 100.f;
+       unsigned int qty = getFinishedQty();
        //gcc fix for temporaly ref object
-       GoodStock tmpStock( _d->outGoodType, 100, 100 );
-       _d->goodStore.store( tmpStock, 100 );
+       GoodStock tmpStock( _d->outGoodType, qty, qty );
+       _d->goodStore.store( tmpStock, qty );
      }
    }
    else
    {
      //ok... factory is work, produce goods
-     float workersRatio = float(getWorkersCount()) / float(getMaxWorkers());  // work drops if not enough workers
-     // 1080: number of seconds in a year, 0.67: number of timeSteps per second
-     float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
+     float workersRatio = (float)getWorkersCount() / (float)getMaxWorkers();  // work drops if not enough workers
+     float timeKoeff = DateTime::monthInYear / (float)GameDate::getTickInMonth();
+     float work = timeKoeff * _d->productionRate * workersRatio;  // work is proportional to time and factory speed
      if( _d->produceGood )
      {
        _d->progress += work;
@@ -248,6 +252,16 @@ void Factory::setProductRate( const float rate )
   _d->productionRate = rate;
 }
 
+float Factory::getProductRate() const
+{
+  return _d->productionRate;
+}
+
+unsigned int Factory::getFinishedQty() const
+{
+  return _d->finishedQty;
+}
+
 Good::Type Factory::getOutGoodType() const
 {
   return _d->outGoodType;
@@ -258,10 +272,10 @@ void Factory::receiveGood()
   GoodStock& stock = getInGood();
 
   //send cart supplier if stock not full
-  if( _mayDeliverGood() && stock.qty() < stock.cap() )
+  if( _mayDeliverGood() && stock.qty() < stock.capacity() )
   {
     CartSupplierPtr walker = CartSupplier::create( _getCity() );
-    walker->send2City( this, stock.type(), stock.cap() - stock.qty() );
+    walker->send2City( this, stock.type(), stock.capacity() - stock.qty() );
 
     if( !walker->isDeleted() )
     {

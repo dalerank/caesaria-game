@@ -251,7 +251,7 @@ void ComputerCity::timeStep( unsigned int time )
           continue;
 
         GoodStock& stock = sellGoods.getStock( gtype );  
-        stock.setCap( qty );
+        stock.setCapacity( qty );
         
         //move goods to merchant's storage
         _d->sellStore.retrieve( stock, qty );

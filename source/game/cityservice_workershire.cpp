@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_workershire.hpp"
-#include "city.hpp"
+#include "cityhelper.hpp"
 #include "core/safetycast.hpp"
 #include "building/engineer_post.hpp"
 #include "building/prefecture.hpp"

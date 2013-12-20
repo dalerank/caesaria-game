@@ -16,7 +16,7 @@
 #include "wharf.hpp"
 #include "gfx/tile.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"

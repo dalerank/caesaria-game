@@ -1,21 +1,21 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "fishing_boat.hpp"
 #include "core/gettext.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "building/wharf.hpp"
 #include "game/good.hpp"
 #include "game/fish_place.hpp"
@@ -100,14 +100,14 @@ void FishingBoat::timeStep(const unsigned long time)
       if( overlay != 0 )
       {
         FishPlacePtr fishplace = overlay.as<FishPlace>();
-        _d->stock.setQty( math::clamp( _d->stock.qty()+10, 0, _d->stock.cap() ) );
+        _d->stock.setQty( math::clamp( _d->stock.qty()+10, 0, _d->stock.capacity() ) );
       }
       else
       {
         _d->mode = Impl::ready2Catch;
       }
 
-      if( _d->stock.qty() == _d->stock.cap() )
+      if( _d->stock.qty() == _d->stock.capacity() )
       {
         _d->mode = Impl::finishCatch;
       }
@@ -187,7 +187,7 @@ FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
   setName( _("##fishing_boat##") );
   _d->mode = Impl::wait;
   _d->stock.setType( Good::fish );
-  _d->stock.setCap( 100 );
+  _d->stock.setCapacity( 100 );
 }
 
 FishingBoatPtr FishingBoat::create(PlayerCityPtr city)

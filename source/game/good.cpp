@@ -116,7 +116,7 @@ void GoodStock::setType(Type goodType )
   _type = goodType;
 }
 
-void GoodStock::setCap( const int maxQty )
+void GoodStock::setCapacity( const int maxQty )
 {
   _maxQty = maxQty;
 }

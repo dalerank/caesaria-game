@@ -24,7 +24,7 @@
 #include "core/stringhelper.hpp"
 #include "building/house.hpp"
 #include "core/gettext.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "gui/infobox_warehouse.hpp"
 #include "gui/infobox_market.hpp"
 #include "core/logger.hpp"

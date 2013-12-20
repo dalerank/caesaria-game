@@ -37,6 +37,7 @@
 #include "advisor_entertainment_window.hpp"
 #include "advisor_religion_window.hpp"
 #include "advisor_finance_window.hpp"
+#include "advisor_chief_window.hpp"
 #include "core/foreach.hpp"
 #include "game/cityfunds.hpp"
 #include "events/event.hpp"
@@ -143,6 +144,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_ENTERTAINMENT: _d->advisorPanel = new AdvisorEntertainmentWindow( _d->city, this, -1 ); break;
   case ADV_RELIGION: _d->advisorPanel = new AdvisorReligionWindow( _d->city, this, -1 ); break;
   case ADV_FINANCE: _d->advisorPanel = new AdvisorFinanceWindow( _d->city, this, -1 ); break;
+  case ADV_MAIN: _d->advisorPanel = new AdvisorChiefWindow( _d->city, this, -1 );
 
   default:
   break;

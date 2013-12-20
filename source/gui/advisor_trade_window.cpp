@@ -26,7 +26,7 @@
 #include "core/gettext.hpp"
 #include "groupbox.hpp"
 #include "building/factory.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "game/trade_options.hpp"
 #include "building/warehouse.hpp"
 #include "game/goodstore.hpp"

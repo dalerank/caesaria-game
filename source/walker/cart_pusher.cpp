@@ -64,7 +64,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->maxDistance = 25;
-  _d->stock.setCap( 400 );
+  _d->stock.setCapacity( 400 );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
