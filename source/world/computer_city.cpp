@@ -47,8 +47,8 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->empire = empire;
   _d->merchantsNumber = 0;
   _d->isAvailable = true;
-  _d->sellStore.setMaxQty( 99999 );
-  _d->buyStore.setMaxQty( 99999 );
+  _d->sellStore.setCapacity( 99999 );
+  _d->buyStore.setCapacity( 99999 );
 }
 
 std::string ComputerCity::getName() const
@@ -94,25 +94,25 @@ void ComputerCity::save( VariantMap& options ) const
   {
     Good::Type gtype = Good::Type ( i );
     std::string tname = GoodHelper::getTypeName( gtype );
-    int maxSellStock = _d->sellStore.getMaxQty( gtype );
+    int maxSellStock = _d->sellStore.capacity( gtype );
     if( maxSellStock > 0 )
     {
       vm_sells[ tname ] = maxSellStock / 100;
     }
 
-    int sold = _d->sellStore.getCurrentQty( gtype );
+    int sold = _d->sellStore.getQty( gtype );
     if( sold > 0 )
     {
       vm_sold[ tname ] = sold / 100;
     }
 
-    int maxBuyStock = _d->buyStore.getMaxQty( gtype );
+    int maxBuyStock = _d->buyStore.capacity( gtype );
     if( maxBuyStock > 0 )
     {
       vm_buys[ tname ] = maxBuyStock / 100;
     }
 
-    int bought = _d->buyStore.getCurrentQty( gtype );
+    int bought = _d->buyStore.getQty( gtype );
     if( bought > 0 )
     {
       vm_bought[ tname ] = bought / 100;
@@ -142,28 +142,28 @@ void ComputerCity::load( const VariantMap& options )
   for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); it++ )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
-    _d->sellStore.setMaxQty( gtype, it->second.toInt() * 100 );
+    _d->sellStore.setCapacity( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& sold_vm = options.get( "sold" ).toMap();
   for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); it++ )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
-    _d->sellStore.setCurrentQty( gtype, it->second.toInt() * 100 );
+    _d->sellStore.setQty( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& buys_vm = options.get( "buys" ).toMap();
   for( VariantMap::const_iterator it=buys_vm.begin(); it != buys_vm.end(); it++ )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
-    _d->buyStore.setMaxQty( gtype, it->second.toInt() * 100 );
+    _d->buyStore.setCapacity( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& bought_vm = options.get( "bought" ).toMap();
   for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); it++ )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
-    _d->buyStore.setCurrentQty( gtype, it->second.toInt() * 100 );
+    _d->buyStore.setQty( gtype, it->second.toInt() * 100 );
   }
 }
 
@@ -211,8 +211,8 @@ void ComputerCity::timeStep( unsigned int time )
     for( int i=Good::none; i < Good::goodCount; i ++ )
     {
       Good::Type gtype = Good::Type( i );
-      _d->sellStore.setCurrentQty( gtype, _d->sellStore.getMaxQty( gtype ) );     
-      _d->buyStore.setCurrentQty( gtype, 0  );
+      _d->sellStore.setQty( gtype, _d->sellStore.capacity( gtype ) );     
+      _d->buyStore.setQty( gtype, 0  );
       _d->merchantsNumber = 0;
     }
   }
@@ -230,21 +230,21 @@ void ComputerCity::timeStep( unsigned int time )
     if( !routes.empty() )
     {
       SimpleGoodStore sellGoods, buyGoods;
-      sellGoods.setMaxQty( 2000 );
-      buyGoods.setMaxQty( 2000 );
+      sellGoods.setCapacity( 2000 );
+      buyGoods.setCapacity( 2000 );
       for( int i=Good::none; i < Good::goodCount; i ++ )
       {
         Good::Type gtype = Good::Type( i );
 
-        buyGoods.setMaxQty( gtype, _d->buyStore.getMaxQty( gtype ) );
+        buyGoods.setCapacity( gtype, _d->buyStore.capacity( gtype ) );
 
         //how much space left
-        int maxQty = (std::min)( _d->sellStore.getMaxQty( gtype ) / 4, sellGoods.getFreeQty() );
+        int maxQty = (std::min)( _d->sellStore.capacity( gtype ) / 4, sellGoods.getFreeQty() );
         
         //we want send merchants to all routes
         maxQty /= routes.size();
 
-        int qty = math::clamp( _d->sellStore.getCurrentQty( gtype ), 0, maxQty );
+        int qty = math::clamp( _d->sellStore.getQty( gtype ), 0, maxQty );
 
         //have no goods to sell
         if( qty == 0 )

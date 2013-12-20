@@ -161,7 +161,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   const GoodStore& sellgoods = currentCity->getSells();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
-    if( sellgoods.getMaxQty( (Good::Type)i ) > 0  )
+    if( sellgoods.capacity( (Good::Type)i ) > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( GoodHelper::getPicture( Good::Type(i), true) );
@@ -175,7 +175,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   const GoodStore& buygoods = currentCity->getBuys();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
-    if( buygoods.getMaxQty( (Good::Type)i ) > 0  )
+    if( buygoods.capacity( (Good::Type)i ) > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture(  GoodHelper::getPicture( Good::Type(i), true) );
@@ -201,8 +201,8 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   const GoodStore& sellgoods = currentCity->getSells();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
-    int maxsell = sellgoods.getMaxQty( (Good::Type)i ) / 100;
-    int cursell = sellgoods.getCurrentQty( (Good::Type)i ) / 100;
+    int maxsell = sellgoods.capacity( (Good::Type)i ) / 100;
+    int cursell = sellgoods.getQty( (Good::Type)i ) / 100;
     if( maxsell > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
@@ -220,8 +220,8 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   const GoodStore& buygoods = currentCity->getBuys();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
-    int maxbuy = buygoods.getMaxQty( (Good::Type)i ) / 100;
-    int curbuy = buygoods.getCurrentQty( (Good::Type)i ) / 100;
+    int maxbuy = buygoods.capacity( (Good::Type)i ) / 100;
+    int curbuy = buygoods.getQty( (Good::Type)i ) / 100;
     if( maxbuy > 0  )
     {
       Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );

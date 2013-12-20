@@ -61,17 +61,17 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
    _d->inGoodType = inType;
    _d->outGoodType = outType;
    _d->finishedQty = 100;
-   _d->goodStore.setMaxQty(1000);  // quite unlimited
-   _d->goodStore.setMaxQty(_d->inGoodType, 200);
-   _d->goodStore.setMaxQty(_d->outGoodType, 200);
+   _d->goodStore.setCapacity(1000);  // quite unlimited
+   _d->goodStore.setCapacity(_d->inGoodType, 200);
+   _d->goodStore.setCapacity(_d->outGoodType, 200);
 }
 
-GoodStock& Factory::getInGood()
+GoodStock& Factory::inStockRef()
 {
    return _d->goodStore.getStock(_d->inGoodType);
 }
 
-GoodStock& Factory::getOutGood()
+GoodStock& Factory::outStockRef()
 {
   return _d->goodStore.getStock(_d->outGoodType);
 }
@@ -96,7 +96,7 @@ bool Factory::mayWork() const
   if( getWorkersCount() == 0 || !_d->isActive )
     return false;
 
-  GoodStock& inStock = const_cast< Factory* >( this )->getInGood();
+  GoodStock& inStock = const_cast< Factory* >( this )->inStockRef();
   if( inStock.type() == Good::none )
     return true;
 
@@ -140,7 +140,7 @@ void Factory::timeStep(const unsigned long time)
    {
      _d->produceGood = false;
      
-     if( _d->goodStore.getCurrentQty( _d->outGoodType ) < _d->goodStore.getMaxQty( _d->outGoodType )  )
+     if( _d->goodStore.getQty( _d->outGoodType ) < _d->goodStore.capacity( _d->outGoodType )  )
      {
        _d->progress -= 100.f;
        unsigned int qty = getFinishedQty();
@@ -177,7 +177,7 @@ void Factory::timeStep(const unsigned long time)
      {
        _d->produceGood = true;
      }
-     else if( _d->goodStore.getCurrentQty( _d->inGoodType ) >= consumeQty && _d->goodStore.getCurrentQty( _d->outGoodType ) < 100 )
+     else if( _d->goodStore.getQty( _d->inGoodType ) >= consumeQty && _d->goodStore.getQty( _d->outGoodType ) < 100 )
      {
        _d->produceGood = true;
        //gcc fix temporaly ref object error
@@ -190,7 +190,7 @@ void Factory::timeStep(const unsigned long time)
 void Factory::deliverGood()
 {
   // make a cart pusher and send him away
-  int qty = _d->goodStore.getCurrentQty( _d->outGoodType );
+  int qty = _d->goodStore.getQty( _d->outGoodType );
   if( _mayDeliverGood() && qty >= 100 )
   {      
     CartPusherPtr walker = CartPusher::create( _getCity() );
@@ -275,7 +275,7 @@ Good::Type Factory::getOutGoodType() const
 
 void Factory::receiveGood()
 {
-  GoodStock& stock = getInGood();
+  GoodStock& stock = inStockRef();
 
   //send cart supplier if stock not full
   if( _mayDeliverGood() && stock.qty() < stock.capacity() )

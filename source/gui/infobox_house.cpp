@@ -153,7 +153,7 @@ void InfoBoxHouse::drawHabitants( HousePtr house )
 
 void InfoBoxHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
 {
-  int qty = house->getGoodStore().getCurrentQty( goodType );
+  int qty = house->getGoodStore().getQty( goodType );
   std::string text = StringHelper::format( 0xff, "%d", qty);
 
   // pictures of goods

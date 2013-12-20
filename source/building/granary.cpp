@@ -35,7 +35,7 @@ public:
     }
 
     setOrder( Good::fish, GoodOrders::none );
-    setMaxQty( GranaryGoodStore::maxCapacity );
+    setCapacity( GranaryGoodStore::maxCapacity );
   }
 
   // returns the reservationID if stock can be retrieved (else 0)
@@ -71,7 +71,7 @@ public:
   virtual void setOrder( const Good::Type type, const GoodOrders::Order order )
   {
     SimpleGoodStore::setOrder( type, order );
-    setMaxQty( type, (order == GoodOrders::reject || order == GoodOrders::none ) ? 0 : GranaryGoodStore::maxCapacity );
+    setCapacity( type, (order == GoodOrders::reject || order == GoodOrders::none ) ? 0 : GranaryGoodStore::maxCapacity );
   }
 
   Granary* granary;
@@ -113,7 +113,7 @@ void Granary::timeStep(const unsigned long time)
     _fgPicturesRef().at(5) = _animationRef().getFrame();
 
     if( time % 22 == 1 && _d->goodStore.isDevastation() 
-        && (_d->goodStore.getCurrentQty() > 0) && getWalkers().empty() )
+        && (_d->goodStore.getQty() > 0) && getWalkers().empty() )
     {
       _tryDevastateGranary();
     }
@@ -127,8 +127,8 @@ GoodStore& Granary::getGoodStore()
 
 void Granary::computePictures()
 {
-  int allQty = _d->goodStore.getCurrentQty();
-  int maxQty = _d->goodStore.getMaxQty();
+  int allQty = _d->goodStore.getQty();
+  int maxQty = _d->goodStore.capacity();
 
   for (int n = 0; n < 4; ++n)
   {

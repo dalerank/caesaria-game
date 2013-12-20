@@ -148,7 +148,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       //try found any available warehouse for selling our goods
       const GoodStore& buyOrders = city->getBuys();
 
-      if( buyOrders.getMaxQty() > 0 )
+      if( buyOrders.capacity() > 0 )
       {
         route = getWarehouse4Sells( pathPropagator, sell );
       }
@@ -189,7 +189,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       Propagator::DirectRoute route;
 
       // try to find goods for city export 
-      if( buy.getMaxQty() > 0 )
+      if( buy.capacity() > 0 )
       {
         route = getWarehouse4Buys( pathPropagator, buy );
       }
@@ -225,7 +225,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
           for( int i=Good::wheat; i < Good::goodCount; i++ )
           {
             Good::Type goodType = (Good::Type)i;
-            cityGoodsAvailable[ goodType ] += wh->getGoodStore().getCurrentQty( goodType );
+            cityGoodsAvailable[ goodType ] += wh->getGoodStore().getQty( goodType );
           }
         }
         
@@ -293,8 +293,8 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         for (int n = Good::wheat; n<Good::goodCount; ++n)
         {
           Good::Type goodType = (Good::Type)n;
-          int qty4sell = sell.getCurrentQty( goodType );
-          if( qty4sell > 0 && cityOrders.getMaxQty( goodType ) > 0 )
+          int qty4sell = sell.getQty( goodType );
+          if( qty4sell > 0 && cityOrders.capacity( goodType ) > 0 )
           {
             int maySells = std::min( qty4sell, warehouse->getGoodStore().getMaxStore( goodType ) );
             if( maySells != 0 )

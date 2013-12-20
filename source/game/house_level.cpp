@@ -183,19 +183,19 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
     ref = _("##missing_food##");
   }
 
-  if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().getCurrentQty(Good::pottery) == 0)
+  if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().getQty(Good::pottery) == 0)
   {
     res = false;
     ref = _("##missing_pottery##");
   }
 
-  if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().getCurrentQty(Good::furniture) == 0)
+  if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().getQty(Good::furniture) == 0)
   {
     res = false;
     ref = _("##missing_furniture##");
   }
 
-  if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().getCurrentQty(Good::oil) == 0)
+  if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().getQty(Good::oil) == 0)
   {
     res = false;
     ref = _("##missing_oil##");
@@ -240,11 +240,11 @@ int HouseLevelSpec::computeFoodLevel(HousePtr house)
   int res = 0;
 
   const GoodStore& goodStore = house->getGoodStore();
-  res += goodStore.getCurrentQty(Good::wheat) > 0 ? 1 : 0;
-  res += goodStore.getCurrentQty(Good::fish) > 0 ? 1 : 0;
-  res += goodStore.getCurrentQty(Good::meat) > 0 ? 1 : 0;
-  res += goodStore.getCurrentQty(Good::fruit) > 0 ? 1 : 0;
-  res += goodStore.getCurrentQty(Good::vegetable) > 0 ? 1 :0;
+  res += goodStore.getQty(Good::wheat) > 0 ? 1 : 0;
+  res += goodStore.getQty(Good::fish) > 0 ? 1 : 0;
+  res += goodStore.getQty(Good::meat) > 0 ? 1 : 0;
+  res += goodStore.getQty(Good::fruit) > 0 ? 1 : 0;
+  res += goodStore.getQty(Good::vegetable) > 0 ? 1 :0;
 
   return res;
 }
@@ -496,7 +496,7 @@ int HouseLevelSpec::computeMonthlyFoodConsumption(HousePtr house) const
   {
     Good::Type type = Good::Type( i );
 
-    if( house->getGoodStore().getCurrentQty( type ) > 0 )
+    if( house->getGoodStore().getQty( type ) > 0 )
     {
       foodConsumption += computeMonthlyConsumption( house, type, true );
     }

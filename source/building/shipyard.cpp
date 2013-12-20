@@ -47,7 +47,8 @@ Shipyard::Shipyard() : CoastalFactory(Good::timber, Good::none, building::shipya
   // transport 1 2 3 4
   setPicture( ResourceGroup::shipyard, Impl::northPic );
 
-  getInGood().setCapacity( 1200 );
+  inStockRef().setCapacity( 1200 );
+  getGoodStore().setCapacity( 1200 );
   _d->creatingBoat = false;
 }
 
@@ -87,16 +88,12 @@ void Shipyard::timeStep(const unsigned long time)
 
   if( getProgress() >= 100.0 )
   {
-    if( getGoodStore().getCurrentQty( getOutGoodType() ) < getGoodStore().getMaxQty( getOutGoodType() )  )
+    if( getGoodStore().getQty( getOutGoodType() ) < getGoodStore().capacity( getOutGoodType() )  )
     {
       updateProgress( -100.f );
 
       _d->boat = FishingBoat::create( _getCity() );
     }
-  }
-  else
-  {
-
   }
 }
 

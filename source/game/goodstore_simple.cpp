@@ -25,12 +25,12 @@ class SimpleGoodStore::Impl
 public:
   typedef std::vector<GoodStock> StockList;
   StockList stocks;
-  int maxQty;
+  int capacity;
 };
 
 SimpleGoodStore::SimpleGoodStore() : _gsd( new Impl )
 {
-  _gsd->maxQty = 0;
+  _gsd->capacity = 0;
 
   _gsd->stocks.resize(Good::goodCount);
   for (int n = 0; n < (int)Good::goodCount; ++n)
@@ -40,19 +40,19 @@ SimpleGoodStore::SimpleGoodStore() : _gsd( new Impl )
 }
 
 
-void SimpleGoodStore::setMaxQty(const int maxQty)
+void SimpleGoodStore::setCapacity(const int maxQty)
 {
-  _gsd->maxQty = maxQty;
+  _gsd->capacity = maxQty;
 }
 
 
-int SimpleGoodStore::getMaxQty() const
+int SimpleGoodStore::capacity() const
 {
-  return _gsd->maxQty;
+  return _gsd->capacity;
 }
 
 
-int SimpleGoodStore::getCurrentQty() const
+int SimpleGoodStore::getQty() const
 {
   int qty = 0;
   for( Impl::StockList::const_iterator goodIt = _gsd->stocks.begin();
@@ -71,25 +71,25 @@ GoodStock& SimpleGoodStore::getStock(const Good::Type &goodType)
 }
 
 
-int SimpleGoodStore::getCurrentQty(const Good::Type &goodType) const
+int SimpleGoodStore::getQty(const Good::Type &goodType) const
 {
   return _gsd->stocks[goodType].qty();
 }
 
 
-int SimpleGoodStore::getMaxQty(const Good::Type &goodType) const
+int SimpleGoodStore::capacity(const Good::Type &goodType) const
 {
   return _gsd->stocks[goodType].capacity();
 }
 
 
-void SimpleGoodStore::setMaxQty(const Good::Type &goodType, const int maxQty)
+void SimpleGoodStore::setCapacity(const Good::Type &goodType, const int maxQty)
 {
   _gsd->stocks[goodType].setCapacity( maxQty );
 }
 
 
-void SimpleGoodStore::setCurrentQty(const Good::Type &goodType, const int currentQty)
+void SimpleGoodStore::setQty(const Good::Type &goodType, const int currentQty)
 {
   _gsd->stocks[goodType].setQty( currentQty );
 }
@@ -99,7 +99,7 @@ int SimpleGoodStore::getMaxStore(const Good::Type goodType)
   int freeRoom = 0;
   if( !isDevastation() )
   {
-    int globalFreeRoom = getMaxQty() - getCurrentQty();
+    int globalFreeRoom = capacity() - getQty();
 
     // current free capacity
     freeRoom = math::clamp( _gsd->stocks[goodType].capacity() - _gsd->stocks[goodType].qty(), 0, globalFreeRoom );
@@ -165,7 +165,7 @@ VariantMap SimpleGoodStore::save() const
 {
   VariantMap stream = GoodStore::save();
 
-  stream[ "max" ] = _gsd->maxQty;
+  stream[ "max" ] = _gsd->capacity;
 
   VariantList stockSave;
   for( Impl::StockList::const_iterator itStock = _gsd->stocks.begin();
@@ -184,7 +184,7 @@ void SimpleGoodStore::load( const VariantMap& stream )
   _gsd->stocks.clear();
 
   GoodStore::load( stream );
-  _gsd->maxQty = (int)stream.get( "max" );
+  _gsd->capacity = (int)stream.get( "max" );
 
   VariantList stockSave = stream.get( "stock" ).toList();
   for( VariantList::iterator it=stockSave.begin(); it!=stockSave.end(); it++ )
@@ -202,11 +202,11 @@ SimpleGoodStore::~SimpleGoodStore()
 
 void SimpleGoodStore::resize( const GoodStore& other )
 {
-  setMaxQty( other.getMaxQty() );
+  setCapacity( other.capacity() );
 
   for( int i=Good::wheat; i < Good::goodCount; i++ )
   {
     Good::Type gtype = Good::Type( i );
-    setMaxQty( gtype, other.getMaxQty( gtype ) );
+    setCapacity( gtype, other.capacity( gtype ) );
   }
 }

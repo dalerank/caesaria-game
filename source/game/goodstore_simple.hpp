@@ -28,17 +28,17 @@ public:
   SimpleGoodStore();
   ~SimpleGoodStore();
 
-  void setMaxQty(const int maxQty);
-  int getMaxQty() const;
-  int getCurrentQty() const;
+  void setCapacity(const int maxQty);
+  int capacity() const;
+  int getQty() const;
 
   void resize( const GoodStore& other );
 
   GoodStock& getStock(const Good::Type &goodType);
-  virtual int getCurrentQty(const Good::Type &goodType) const;
-  int getMaxQty(const Good::Type &goodType) const;
-  void setMaxQty(const Good::Type &goodType, const int maxQty);
-  void setCurrentQty(const Good::Type &goodType, const int currentQty);
+  virtual int getQty(const Good::Type &goodType) const;
+  int capacity(const Good::Type &goodType) const;
+  void setCapacity(const Good::Type &goodType, const int maxQty);
+  void setQty(const Good::Type &goodType, const int currentQty);
 
   // returns the max quantity that can be stored now
   int getMaxStore(const Good::Type goodType);

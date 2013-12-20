@@ -89,16 +89,16 @@ public:
   void initGoodStore( int size )
   {
     int rsize = 25 * size * houseLevel;
-    goodStore.setMaxQty( rsize * 10 );  // no limit
-    goodStore.setMaxQty(Good::wheat, rsize );
-    goodStore.setMaxQty(Good::fish, rsize );
-    goodStore.setMaxQty(Good::meat, rsize );
-    goodStore.setMaxQty(Good::fruit, rsize );
-    goodStore.setMaxQty(Good::vegetable, rsize );
-    goodStore.setMaxQty(Good::pottery, rsize );
-    goodStore.setMaxQty(Good::furniture, rsize);
-    goodStore.setMaxQty(Good::oil, rsize );
-    goodStore.setMaxQty(Good::wine, rsize );
+    goodStore.setCapacity( rsize * 10 );  // no limit
+    goodStore.setCapacity(Good::wheat, rsize );
+    goodStore.setCapacity(Good::fish, rsize );
+    goodStore.setCapacity(Good::meat, rsize );
+    goodStore.setCapacity(Good::fruit, rsize );
+    goodStore.setCapacity(Good::vegetable, rsize );
+    goodStore.setCapacity(Good::pottery, rsize );
+    goodStore.setCapacity(Good::furniture, rsize);
+    goodStore.setCapacity(Good::oil, rsize );
+    goodStore.setCapacity(Good::wine, rsize );
   }
 
   void consumeServices()
@@ -180,7 +180,7 @@ void House::timeStep(const unsigned long time)
     {
        Good::Type goodType = (Good::Type) i;
        int montlyGoodsQty = _d->spec.computeMonthlyConsumption( this, goodType, true );
-       _d->goodStore.setCurrentQty( goodType, std::max( _d->goodStore.getCurrentQty(goodType) - montlyGoodsQty, 0) );
+       _d->goodStore.setQty( goodType, std::max( _d->goodStore.getQty(goodType) - montlyGoodsQty, 0) );
     }
 
     bool validate = _d->spec.checkHouse( this, &_d->condition4Up );
@@ -489,10 +489,10 @@ void House::buyMarket( ServiceWalkerPtr walker )
   for (int i = 0; i < Good::goodCount; ++i)
   {
     Good::Type goodType = (Good::Type) i;
-    int houseQty = houseStore.getCurrentQty(goodType) / 10;
+    int houseQty = houseStore.getQty(goodType) / 10;
     int houseSafeQty = _d->spec.computeMonthlyConsumption( this, goodType, false )
                        + _d->spec.next().computeMonthlyConsumption( this, goodType, false );
-    int marketQty = marketStore.getCurrentQty(goodType);
+    int marketQty = marketStore.getQty(goodType);
     if( houseQty < houseSafeQty && marketQty > 0  )
     {
        int qty = std::min( houseSafeQty - houseQty, marketQty);
@@ -617,10 +617,10 @@ float House::evaluateService(ServiceWalkerPtr walker)
     for (int i = 0; i < Good::goodCount; ++i)
     {
       Good::Type goodType = (Good::Type) i;
-      int houseQty = houseStore.getCurrentQty(goodType) / 10;
+      int houseQty = houseStore.getQty(goodType) / 10;
       int houseSafeQty = _d->spec.computeMonthlyConsumption( this, goodType, false)
                          + _d->spec.next().computeMonthlyConsumption( this, goodType, false );
-      int marketQty = marketStore.getCurrentQty(goodType);
+      int marketQty = marketStore.getQty(goodType);
       if( houseQty < houseSafeQty && marketQty > 0)
       {
          res += std::min( houseSafeQty - houseQty, marketQty);
@@ -824,7 +824,7 @@ int House::getFoodLevel() const
     int maxFoodQty = 0;
     foreach( Good::Type ft, foods )
     {
-      int tmpQty = _d->goodStore.getCurrentQty(Good::wheat);
+      int tmpQty = _d->goodStore.getQty(Good::wheat);
       if( tmpQty > maxFoodQty )
       {
         maxFoodQty = tmpQty;
@@ -832,7 +832,7 @@ int House::getFoodLevel() const
       }
     }
 
-    ret += maxFoodQty * 100 / _d->goodStore.getMaxQty( maxFtype );
+    ret += maxFoodQty * 100 / _d->goodStore.capacity( maxFtype );
     foods.erase( maxFtype );
     foodLevel--;
   }

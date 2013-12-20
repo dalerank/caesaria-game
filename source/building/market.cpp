@@ -34,7 +34,7 @@ public:
     bool anyGoodStored = false;
     for( int i = 0; i < Good::goodCount; ++i)
     {
-      anyGoodStored |= ( goodStore.getCurrentQty( Good::Type(i) ) >= 100 );
+      anyGoodStored |= ( goodStore.getQty( Good::Type(i) ) >= 100 );
     }
 
     return anyGoodStored;
@@ -42,16 +42,16 @@ public:
 
   void initStore()
   {
-    goodStore.setMaxQty(5000);
-    goodStore.setMaxQty(Good::wheat, 400);
-    goodStore.setMaxQty(Good::fish, 400);
-    goodStore.setMaxQty(Good::fruit, 400);
-    goodStore.setMaxQty(Good::meat, 400);
-    goodStore.setMaxQty(Good::vegetable, 400);
-    goodStore.setMaxQty(Good::pottery, 300);
-    goodStore.setMaxQty(Good::furniture, 300);
-    goodStore.setMaxQty(Good::oil, 300);
-    goodStore.setMaxQty(Good::wine, 300);
+    goodStore.setCapacity(5000);
+    goodStore.setCapacity(Good::wheat, 400);
+    goodStore.setCapacity(Good::fish, 400);
+    goodStore.setCapacity(Good::fruit, 400);
+    goodStore.setCapacity(Good::meat, 400);
+    goodStore.setCapacity(Good::vegetable, 400);
+    goodStore.setCapacity(Good::pottery, 300);
+    goodStore.setCapacity(Good::furniture, 300);
+    goodStore.setCapacity(Good::oil, 300);
+    goodStore.setCapacity(Good::wine, 300);
   }
 };
 
@@ -167,7 +167,7 @@ void Market::timeStep(const unsigned long time)
     }
 
     WalkerList walkers = getWalkers();
-    if( walkers.size() > 0 && _d->goodStore.getCurrentQty() == 0 )
+    if( walkers.size() > 0 && _d->goodStore.getQty() == 0 )
     {
       ServiceWalkerPtr walker = walkers.front().as<ServiceWalker>();
       if( walker.isValid() )

@@ -83,7 +83,7 @@ void Wharf::timeStep(const unsigned long time)
 
   if( getProgress() >= 100.0 )
   {
-    if( getGoodStore().getCurrentQty( getOutGoodType() ) < getGoodStore().getMaxQty( getOutGoodType() )  )
+    if( getGoodStore().getQty( getOutGoodType() ) < getGoodStore().capacity( getOutGoodType() )  )
     {
       updateProgress( -100.f );
       //gcc fix for temporaly ref object
@@ -93,7 +93,7 @@ void Wharf::timeStep(const unsigned long time)
   }
   else
   {
-    if( _d->boat.isValid() && !_d->boat->isBusy() && getOutGood().empty() )
+    if( _d->boat.isValid() && !_d->boat->isBusy() && outStockRef().empty() )
     {
       _d->boat->startCatch();
     }

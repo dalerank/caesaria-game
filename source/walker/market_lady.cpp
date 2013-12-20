@@ -48,18 +48,18 @@ MarketLady::MarketLady(PlayerCityPtr city )
    _setAnimation( gfx::marketlady );
    _setType( walker::marketLady );
    _d->maxDistance = 25;
-   _d->basket.setMaxQty(800);  // this is a big basket!
+   _d->basket.setCapacity(800);  // this is a big basket!
 
-   _d->basket.setMaxQty(Good::wheat, 800);
-   _d->basket.setMaxQty(Good::fruit, 800);
-   _d->basket.setMaxQty(Good::vegetable, 800);
-   _d->basket.setMaxQty(Good::meat, 800);
-   _d->basket.setMaxQty(Good::fish, 800);
+   _d->basket.setCapacity(Good::wheat, 800);
+   _d->basket.setCapacity(Good::fruit, 800);
+   _d->basket.setCapacity(Good::vegetable, 800);
+   _d->basket.setCapacity(Good::meat, 800);
+   _d->basket.setCapacity(Good::fish, 800);
 
-   _d->basket.setMaxQty(Good::pottery, 300);
-   _d->basket.setMaxQty(Good::furniture, 300);
-   _d->basket.setMaxQty(Good::oil, 300);
-   _d->basket.setMaxQty(Good::wine, 300);
+   _d->basket.setCapacity(Good::pottery, 300);
+   _d->basket.setCapacity(Good::furniture, 300);
+   _d->basket.setCapacity(Good::oil, 300);
+   _d->basket.setCapacity(Good::wine, 300);
 
    setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -102,7 +102,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
     // a warehouse/granary has been found!
     // reserve some goods from that warehouse/granary
     int qty = std::min( max_qty, market->getGoodDemand( what ) );
-    qty = std::min(qty, basket.getMaxQty( what ) - basket.getCurrentQty( what ));
+    qty = std::min(qty, basket.capacity( what ) - basket.getQty( what ));
     // std::cout << "MarketLady reserves from warehouse, qty=" << qty << std::endl;
     GoodStock stock( what, qty, qty);
     reservId = res->getGoodStore().reserveRetrieval( stock );
@@ -200,11 +200,11 @@ void MarketLady::_reachedPathway()
         {
            // for all types of good (except G_NONE)
            Good::Type goodType = (Good::Type) n;
-           int qty = _d->market->getGoodDemand(goodType) - _d->basket.getCurrentQty(goodType);
+           int qty = _d->market->getGoodDemand(goodType) - _d->basket.getQty(goodType);
            if (qty > 0)
            {
               qty = std::min(qty, granary->getGoodStore().getMaxRetrieve(goodType));
-              qty = std::min(qty, _d->basket.getMaxQty(_d->priorityGood) - _d->basket.getCurrentQty(_d->priorityGood));
+              qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.getQty(_d->priorityGood));
               if (qty > 0)
               {
                  // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
@@ -227,11 +227,11 @@ void MarketLady::_reachedPathway()
         {
            // for all types of good (except G_NONE)
            Good::Type goodType = (Good::Type) n;
-           int qty = _d->market->getGoodDemand(goodType) - _d->basket.getCurrentQty(goodType);
+           int qty = _d->market->getGoodDemand(goodType) - _d->basket.getQty(goodType);
            if (qty > 0)
            {
               qty = std::min(qty, warehouse->getGoodStore().getMaxRetrieve(goodType));
-              qty = std::min(qty, _d->basket.getMaxQty(_d->priorityGood) - _d->basket.getCurrentQty(_d->priorityGood));
+              qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.getQty(_d->priorityGood));
               if (qty > 0)
               {
                  // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
@@ -244,7 +244,7 @@ void MarketLady::_reachedPathway()
 
       unsigned long delay = 20;
 
-      while( _d->basket.getCurrentQty() > 100 )
+      while( _d->basket.getQty() > 100 )
       {
         for( int gtype=Good::none; gtype <= Good::goodCount ; gtype++ )
         {

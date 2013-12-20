@@ -43,7 +43,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      // for all furage types of good
      for (int goodType = 0; goodType<Good::olive; ++goodType)
      {
-       furageSum += goods.getCurrentQty( (Good::Type)goodType );
+       furageSum += goods.getQty( (Good::Type)goodType );
      }
 
      int paintY = 100;
@@ -89,7 +89,7 @@ void InfoBoxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int 
 
   int offset = ( getWidth() - startOffset * 2 ) / 5;
   std::string goodName = GoodHelper::getName( goodType );
-  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().getCurrentQty( goodType ) );
+  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().getQty( goodType ) );
 
   // pictures of goods
   Picture pic = GoodHelper::getPicture( goodType );

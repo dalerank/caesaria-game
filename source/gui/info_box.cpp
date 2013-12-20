@@ -256,15 +256,15 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   }
 
   // paint picture of in good
-  if( building->getInGood().type() != Good::none )
+  if( building->inStockRef().type() != Good::none )
   {
     Label* lb = new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 0, 25 ), Size( getWidth() - 32, 25 ) ) );
-    lb->setIcon( GoodHelper::getPicture( building->getInGood().type() ) );
+    lb->setIcon( GoodHelper::getPicture( building->inStockRef().type() ) );
 
     std::string text = StringHelper::format( 0xff, "%s %s: %d %s",
-                                             GoodHelper::getName( building->getInGood().type() ).c_str(),
+                                             GoodHelper::getName( building->inStockRef().type() ).c_str(),
                                              _("##factory_stock##"),
-                                             building->getInGood().qty() / 100,
+                                             building->inStockRef().qty() / 100,
                                              _("##factory_units##") );
 
     lb->setText( text );
@@ -331,7 +331,7 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
 
   // summary: total stock, free capacity
   std::string desc = StringHelper::format( 0xff, "%d %s %d",
-                                           _granary->getGoodStore().getCurrentQty(),
+                                           _granary->getGoodStore().getQty(),
                                            _("##units_in_stock_freespace_for##"),
                                            _granary->getGoodStore().getFreeQty() );
 
@@ -367,7 +367,7 @@ void InfoBoxGranary::showSpecialOrdersWindow()
 void InfoBoxGranary::drawGood(const Good::Type &goodType, int col, int paintY)
 {
   std::string goodName = GoodHelper::getName( goodType );
-  int qty = _granary->getGoodStore().getCurrentQty(goodType);
+  int qty = _granary->getGoodStore().getQty(goodType);
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
 
   // pictures of goods

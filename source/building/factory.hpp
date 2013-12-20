@@ -32,8 +32,8 @@ public:
            const TileOverlay::Type type, const Size& size );
   ~Factory();
 
-  GoodStock& getInGood();
-  GoodStock& getOutGood();
+  GoodStock& inStockRef();
+  GoodStock& outStockRef();
 
   Good::Type getInGoodType() const;
   Good::Type getOutGoodType() const;
