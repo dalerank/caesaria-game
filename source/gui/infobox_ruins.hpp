@@ -13,39 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA3_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
-#define __CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
+#ifndef _CAESARIA_INFOBOXRUINS_H_INCLUDE_
+#define _CAESARIA_INFOBOXRUINS_H_INCLUDE_
 
-#include "widget.hpp"
-#include "core/predefinitions.hpp"
-#include "core/scopedptr.hpp"
-#include "core/signals.hpp"
-#include "core/event.hpp"
+#include "info_box.hpp"
 
 namespace gui
 {
 
-class AdvisorEmperorWindow : public Widget
+class InfoboxRuins : public InfoBoxSimple
 {
 public:
-  AdvisorEmperorWindow(Widget* parent, int maxMoney, int id );
-
-  void draw( GfxEngine& painter );
-
-  bool onEvent(const NEvent &event);
-
-public oc3_signals:
-  Signal1<int>& onChangeSalary();
-  Signal1<int>& onSendMoney();
-
-protected:
-  void _showChangeSalaryWindow();
-  void _showSend2CityWindow();
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  InfoboxRuins( Widget* parent, const Tile& tile );
+  virtual ~InfoboxRuins();
 };
 
 }//end namespace gui
-#endif //__CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
+#endif //_CAESARIA_INFOBOXRUINS_H_INCLUDE_

@@ -44,66 +44,6 @@ namespace events
 
 static const int windowGamePausedId = StringHelper::hash( "gamepause" );
 
-GameEventPtr DisasterEvent::create( const TilePos& pos, Type type )
-{
-  DisasterEvent* event = new DisasterEvent();
-  event->_pos = pos;
-  event->_type = type;
-
-  GameEventPtr ret( event );
-  ret->drop();
-
-  return ret;
-}
-
-void DisasterEvent::exec( Game& game )
-{
-  Tilemap& tmap = game.getCity()->getTilemap();
-  Tile& tile = tmap.at( _pos );
-  TilePos rPos = _pos;
-
-  if( tile.getFlag( Tile::isDestructible ) )
-  {
-    Size size( 1 );
-
-    TileOverlayPtr overlay = tile.getOverlay();
-    if( overlay.isValid() )
-    {
-      overlay->deleteLater();
-      size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();
-    }
-
-    switch( _type )
-    {
-    case DisasterEvent::collapse:
-    {
-      GameEventPtr e = PlaySound::create( "explode", rand() % 2, 256 );
-      e->dispatch();
-    }
-    break;
-
-    default:
-    break;
-    }
-
-    TilesArray clearedTiles = tmap.getArea( rPos, size );
-    foreach( Tile* tile, clearedTiles )
-    {
-      TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins, building::plagueRuins };
-      bool canCreate = TileOverlayFactory::getInstance().canCreate( dstr2constr[_type] );
-      if( canCreate )
-      {
-        Dispatcher::append( BuildEvent::create( tile->getIJ(), dstr2constr[_type] ) );
-      }
-    }
-
-    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##"),
-                                  _("##alarm_plague_in_city##") };
-    game.getCity()->onDisasterEvent().emit( _pos, dstr2string[_type] );
-  }
-}
-
 GameEventPtr BuildEvent::create( const TilePos& pos, const TileOverlay::Type type )
 {
   return create( pos, TileOverlayFactory::getInstance().create( type ) );

@@ -1,26 +1,55 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_GOODSTORE_H_INCLUDED__
-#define __OPENCAESAR3_GOODSTORE_H_INCLUDED__
+#ifndef __CAESARIA_GOODSTORE_H_INCLUDED__
+#define __CAESARIA_GOODSTORE_H_INCLUDED__
 
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
 #include "good.hpp"
 #include "goodorders.hpp"
 #include "core/variant.hpp"
+
+#include <set>
+
+struct ReserveInfo
+{
+  GoodStock stock;
+  DateTime time;
+  unsigned long id;
+
+  bool operator<(const ReserveInfo& a )
+  {
+    return id < a.id;
+  }
+};
+
+class Reservations : public std::set<ReserveInfo>
+{
+  static const ReserveInfo invalid;
+public:
+  GoodStock& get(unsigned long id) const;
+
+  unsigned long push( const GoodStock& stock, DateTime time );
+  bool pop( unsigned int id );
+
+  void removeExpired( DateTime currentDate, int monthNumber );
+
+  VariantMap save() const;
+  void load( const VariantMap& stream );
+};
 
 class SimpleGoodStore;
 class GoodStore
@@ -77,13 +106,12 @@ public:
   virtual GoodOrders::Order getOrder( const Good::Type type ) const;
 
 protected:
-  typedef std::map<long, GoodStock> _Reservations;
-  _Reservations& _getStoreReservations();
-  _Reservations& _getRetrieveReservations();
+  Reservations& _getStoreReservations();
+  Reservations& _getRetrieveReservations();
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_GOODSTORE_H_INCLUDED__
+#endif //__CAESARIA_GOODSTORE_H_INCLUDED__

@@ -203,7 +203,8 @@ Directory Directory::getApplicationDir()
   char exe_path[PATH_MAX] = {0};
   char * dir_path;
   sprintf(exe_path, "/proc/%d/exe", getpid());
-  readlink(exe_path, exe_path, sizeof(exe_path));
+  ssize_t result = readlink(exe_path, exe_path, sizeof(exe_path));
+  result;
   dir_path = dirname(exe_path);
   return Path(dir_path);
 #elif defined(CAESARIA_PLATFORM_MACOSX)

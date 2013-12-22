@@ -24,6 +24,7 @@
 #include "astarpathfinding.hpp"
 #include "gfx/tile.hpp"
 #include "pathway.hpp"
+#include "pathway_helper.hpp"
 #include "core/logger.hpp"
 
 // comparison (for sorting list of tiles by their coordinates)
@@ -40,11 +41,12 @@ compare_tiles_(const Tile * first, const Tile * second)
   return false;
 }
 
-TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos )
+TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos , bool roadAssignment)
 {
   Pathway way;
-  Pathfinder::getInstance().getPath( startPos, stopPos, way,
-                                     Pathfinder::fourDirection | Pathfinder::terrainOnly );
+  int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly;
+  flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
+  Pathfinder::getInstance().getPath( startPos, stopPos, way, flags );
 
   if( way.isValid() )
   {

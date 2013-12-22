@@ -16,14 +16,25 @@
 #ifndef __CAESARIA_RUINS_H_INCLUDE_
 #define __CAESARIA_RUINS_H_INCLUDE_
 
-#include "service.hpp"
+#include "building.hpp"
+#include "constants.hpp"
 
-class BurningRuins : public ServiceBuilding
+class Ruins : public Building
+{
+public:
+  Ruins( constants::building::Type type );
+  void setInfo( std::string parent ) { _parent = parent; }
+  std::string getInfo() const { return _parent; }
+
+protected:
+  std::string _parent;
+};
+
+class BurningRuins : public Ruins
 {
 public:
   BurningRuins();
 
-  virtual void deliverService();
   virtual void timeStep(const unsigned long time);
   virtual void burn();
   virtual void build(PlayerCityPtr city, const TilePos& pos );
@@ -36,7 +47,7 @@ public:
   virtual bool isNeedRoadAccess() const;
 };
 
-class BurnedRuins : public Building
+class BurnedRuins : public Ruins
 {
 public:
   BurnedRuins();
@@ -51,7 +62,7 @@ public:
 
 typedef SmartPtr< BurningRuins > BurningRuinsPtr;
 
-class CollapsedRuins : public Building
+class CollapsedRuins : public Ruins
 {
 public:
   CollapsedRuins();
@@ -63,7 +74,7 @@ public:
   virtual bool isNeedRoadAccess() const;
 };
 
-class PlagueRuins : public Building
+class PlagueRuins : public Ruins
 {
 public:
   PlagueRuins();

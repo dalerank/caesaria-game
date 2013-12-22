@@ -13,30 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_GAMEDATE_H_INCLUDED__
-#define __CAESARIA_GAMEDATE_H_INCLUDED__
-  
-#include "core/time.hpp"
-#include "core/scopedptr.hpp"
+#ifndef _CAESARIA_DISASTER_EVENT_H_INCLUDE_
+#define _CAESARIA_DISASTER_EVENT_H_INCLUDE_
 
-class GameDate
+#include "event.hpp"
+
+namespace events
+{
+
+class DisasterEvent : public GameEvent
 {
 public:
-  static DateTime current();
+  typedef enum
+  {
+    fire, collapse, plague, count
+  } Type;
+  static GameEventPtr create( const TilePos&, Type type );
 
-  static void timeStep( unsigned int time );
-
-  static void init( const DateTime& date );
-
-  static GameDate& instance();
-
-  ~GameDate();
+  virtual void exec( Game& game );
 
 private:
-  GameDate();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  TilePos _pos;
+  Type _type;
 };
 
-#endif //__CAESARIA_GAMEDATE_H_INCLUDED__
+} //end namespace events
+#endif //_CAESARIA_DISASTER_EVENT_H_INCLUDE_

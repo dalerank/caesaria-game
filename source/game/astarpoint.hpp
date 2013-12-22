@@ -48,11 +48,11 @@ public:
     parent = p;
   }
 
-  int getGScore(AStarPoint* p)
+  int getGScore(AStarPoint* p, bool useRoad )
   { 
-    int offset = p->tile
+    int offset = (p->tile
                   ? (p->tile->getFlag( Tile::tlRoad ) ? 0 : +50)
-                  : (+100);
+                  : (+100) ) * ( useRoad ? 1 : 0 );
     TilePos pos = tile ? tile->getIJ() : TilePos( 0, 0 ); 
     TilePos otherPos = p->tile ? p->tile->getIJ() : getPos();
     return p->g + ((pos.getI() == otherPos.getI() || pos.getJ() == otherPos.getJ()) ? 10 : 14) + offset;
@@ -80,9 +80,9 @@ public:
     return f;
   }
 
-  void computeScores(AStarPoint* end)
+  void computeScores(AStarPoint* end, bool useRoad )
   {
-    g = getGScore(parent);
+    g = getGScore(parent, useRoad );
     h = getHScore(end);
     f = g + h;
   }

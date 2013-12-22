@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "goodstore.hpp"
 #include "goodstore_simple.hpp"
@@ -23,11 +23,11 @@
 class GoodStore::Impl
 {
 public:
-  long nextReservationID;
+  unsigned long nextReservationID;
   bool devastation;
 
-  _Reservations storeReservations;  // key=reservationID, value=stock
-  _Reservations retrieveReservations;  // key=reservationID, value=stock
+  GoodStore::_Reservations storeReservations;  // key=reservationID, value=stock
+  GoodStore::_Reservations retrieveReservations;  // key=reservationID, value=stock
   GoodOrders goodOrders;
 };
 
@@ -152,6 +152,7 @@ void GoodStore::store( GoodStock &stock, const int amount)
 {
   GoodStock reservedStock;
   reservedStock.setType( stock.type() );
+  reservedStock.setCap( stock.cap() );
   reservedStock.setQty( amount );
 
   long reservationID = reserveStorage(reservedStock);
@@ -302,4 +303,22 @@ int GoodStore::getFreeQty( const Good::Type& goodType ) const
 int GoodStore::getFreeQty() const
 {
   return getMaxQty() - getCurrentQty();
+}
+
+const ReserveInfo Reservations::invalid = { GoodStock(), DateTime(), 0 };
+GoodStock& Reservations::get(unsigned long id) const
+{
+  for( Reservations::iterator i=begin(); i != end(); i++ )
+  {
+    if( (*i)->id == id )
+      return *i;
+  }
+
+  return Reservations::invalid;
+}
+
+unsigned long Reservations::push(const GoodStock& stock, DateTime time)
+{
+  ReserveInfo info;
+  info.stock = stock;
 }

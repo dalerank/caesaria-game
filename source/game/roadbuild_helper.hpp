@@ -29,7 +29,9 @@ public:
   * returns True if a path exists
   * the path is returned in oPathWay
   */
-  static TilesArray createPath(Tilemap& tileMap, TilePos startTile, TilePos destination );
+  static TilesArray createPath( Tilemap& tileMap,
+                                TilePos startTile, TilePos destination,
+                                bool roadAssignment=false );
 };
 
 #endif //__CAESARIA_ROADPROPAGATOR_H_INCLUDE_

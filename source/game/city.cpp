@@ -440,6 +440,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "funds" ] = _d->funds.save();
   stream[ "population" ] = _d->population;
   stream[ "name" ] = Variant( _d->name );
+  stream[ "tradeOptions" ] = _d->tradeOptions.save();
 
   // walkers
   VariantMap vm_walkers;
@@ -481,6 +482,7 @@ void PlayerCity::load( const VariantMap& stream )
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
   _d->lastMonthCount = GameDate::current().getMonth();
+  _d->tradeOptions.load( stream.get( "tradeOptions" ).toMap() );
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
   foreach( VariantMap::value_type& item, overlays )

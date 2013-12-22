@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "advisor_finance_window.hpp"
+#include "advisor_chief_window.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "gui/pushbutton.hpp"
@@ -37,7 +37,7 @@ namespace gui
 {
 
 
-class AdvisorFinanceWindow::Impl
+class AdvisorChiefWindow::Impl
 {
 public:
   PlayerCityPtr city;
@@ -47,11 +47,9 @@ public:
   TexturedButton* btnHelp;
 
   void drawReportRow( const Point& pos, const std::string& title, CityFunds::IssueType type );
-  void updateTaxRateNowLabel();
-  int calculateTaxValue();
 };
 
-AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, int id )
+AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;
@@ -59,7 +57,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
                Size( 640, 420 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
-  title->setText( _("##Finance advisor##") );
+  title->setText( _("##advisor_chief##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
@@ -68,7 +66,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   //main _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
   //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 70, 50 ), Size( getWidth() - 86, 70 ) ), PictureDecorator::blackFrame);
+  PictureDecorator::draw( *_d->background, Rect( Point( 20, 50 ), Size( getWidth() - 20, getHeight() - 70 ) ), PictureDecorator::blackFrame);
 
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 265 );
   _d->background->draw( icon, Point( 11, 11 ) );
@@ -126,7 +124,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   new TexturedButton( this, Point( 185+24, 70 ), Size( 24 ), -1, 605 );
 }
 
-void AdvisorFinanceWindow::draw( GfxEngine& painter )
+void AdvisorChiefWindow::draw( GfxEngine& painter )
 {
   if( !isVisible() )
     return;
@@ -137,7 +135,7 @@ void AdvisorFinanceWindow::draw( GfxEngine& painter )
 }
 
 
-void AdvisorFinanceWindow::Impl::drawReportRow(const Point& pos, const std::string& title, CityFunds::IssueType type)
+void AdvisorChiefWindow::Impl::drawReportRow(const Point& pos, const std::string& title, CityFunds::IssueType type)
 {
   Font font = Font::create( FONT_1 );
 
@@ -149,35 +147,5 @@ void AdvisorFinanceWindow::Impl::drawReportRow(const Point& pos, const std::stri
   font.draw( *background, StringHelper::format( 0xff, "%d", tyvalue ), pos + Point( 355, 0), false );
 }
 
-void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()
-{
-  int taxValue = calculateTaxValue();
-  std::string strCurretnTax = StringHelper::format( 0xff, "%d%% %s %d %s",
-                                                    city->getFunds().getTaxRate(), _("##may_collect_about##"),
-                                                    taxValue, _("##denaries##") );
-  lbTaxRateNow->setText( strCurretnTax );
-}
-
-int AdvisorFinanceWindow::Impl::calculateTaxValue()
-{
-  CityHelper helper( city );
-
-  HouseList houses = helper.find<House>( building::house );
-
-  float taxValue = 0.f;
-  float taxRate = city->getFunds().getTaxRate();
-  foreach( HousePtr house, houses )
-  {
-    int maxhb = house->getMaxHabitants();
-    if( maxhb == 0 )
-      continue;
-
-    int maturehb = house->getHabitants().count( CitizenGroup::mature );
-    int housetax = house->getSpec().getTaxRate();
-    taxValue += housetax * maturehb * taxRate / maxhb;
-  }
-
-  return taxValue;
-}
 
 }//end namespace gui

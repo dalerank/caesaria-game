@@ -43,7 +43,7 @@ public:
       return TileGrid::at(i).at(j);
     }
 
-    Logger::warning( "Need inside point current=[%d, %d]", i, j );
+    //Logger::warning( "Need inside point current=[%d, %d]", i, j );
     return invalidTile;
   }
 

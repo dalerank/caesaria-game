@@ -26,6 +26,7 @@ class BuildMode::Impl
 public:
     bool isBorderBuilding;
     bool isMultiBuilding;
+    bool isRoadAssignment;
     ConstructionPtr construction;
 };
 
@@ -36,7 +37,12 @@ bool BuildMode::isBorderBuilding() const
 
 bool BuildMode::isMultiBuilding() const
 {
-    return _d->isMultiBuilding;
+  return _d->isMultiBuilding;
+}
+
+bool BuildMode::isRoadAssignment() const
+{
+  return _d->isRoadAssignment;
 }
 
 ConstructionPtr BuildMode::getContruction() const
@@ -63,12 +69,14 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
   newCommand->_d->construction = overlay.as<Construction>();
   newCommand->_d->isMultiBuilding = false;
   newCommand->_d->isBorderBuilding = false;
+  newCommand->_d->isRoadAssignment = false;
 
   switch( type )
   {
   case construction::road:
     newCommand->_d->isBorderBuilding = true;
     newCommand->_d->isMultiBuilding = true;
+    newCommand->_d->isRoadAssignment = true;
   break;
 
   case building::aqueduct:
