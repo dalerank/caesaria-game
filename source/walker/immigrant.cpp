@@ -20,7 +20,7 @@
 #include "building/house.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "game/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "game/name_generator.hpp"

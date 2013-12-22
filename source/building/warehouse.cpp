@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
@@ -38,10 +38,10 @@
 class WarehouseTile : public ReferenceCounted
 {
 public:
-  WarehouseTile(const TilePos& pos )
+  WarehouseTile( const TilePos& pos )
   {
     _pos = pos;
-    _stock.setCap( 400 );
+    _stock.setCapacity( 400 );
     computePicture();
   }
 
@@ -101,10 +101,11 @@ public:
 
   void init(Warehouse &_warehouse);
 
-  virtual int getCurrentQty(const Good::Type &goodType) const;
-  virtual int getCurrentQty() const;
-  virtual int getMaxQty() const;
-  virtual int getMaxQty(const Good::Type& goodType ) const;
+  virtual int getQty(const Good::Type &goodType) const;
+  virtual int getQty() const;
+  virtual int capacity() const;
+  virtual void setCapacity( const int maxcap);
+  virtual int capacity(const Good::Type& goodType ) const;
 
   // returns the max quantity that can be stored now
   virtual int getMaxStore(const Good::Type goodType);
@@ -143,7 +144,7 @@ void WarehouseStore::init(Warehouse &warehouse)
   _warehouse = &warehouse;
 }
 
-int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
+int WarehouseStore::getQty(const Good::Type &goodType) const
 {
   if( _warehouse->getWorkersCount() == 0 )
     return 0;
@@ -161,9 +162,9 @@ int WarehouseStore::getCurrentQty(const Good::Type &goodType) const
   return amount;
 }
 
-int WarehouseStore::getCurrentQty() const
+int WarehouseStore::getQty() const
 {
-  return getCurrentQty( Good::goodCount );
+  return getQty( Good::goodCount );
 }
 
 int WarehouseStore::getMaxStore(const Good::Type goodType)
@@ -246,9 +247,9 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
       break;
     }
 
-    if (whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.cap())
+    if (whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.capacity())
     {
-      int tileAmount = std::min(amount, whTile._stock.cap() - whTile._stock.qty());
+      int tileAmount = std::min(amount, whTile._stock.capacity() - whTile._stock.qty());
       // std::cout << "put in half filled" << std::endl;
       whTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
@@ -265,7 +266,7 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
 
     if (whTile._stock.type() == Good::none)
     {
-      int tileAmount = std::min(amount, whTile._stock.cap() );
+      int tileAmount = std::min(amount, whTile._stock.capacity() );
       // std::cout << "put in empty tile" << std::endl;
       whTile._stock.append(stock, tileAmount);
       amount -= tileAmount;
@@ -285,7 +286,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
     Logger::warning( "GoodType does not match reservation");
     return;
   }
-  if (stock.cap() < stock.qty() + reservedStock.qty() )
+  if (stock.capacity() < stock.qty() + reservedStock.qty() )
   {
     Logger::warning( "Quantity does not match reservation");
     return;
@@ -302,7 +303,7 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
       break;
     }
 
-    if( whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.cap() )
+    if( whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.capacity() )
     {
       int tileAmount = std::min(amount, whTile._stock.qty());
       // std::cout << "retrieve from half filled" << std::endl;
@@ -331,14 +332,19 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
   _warehouse->computePictures();
 }
 
-int WarehouseStore::getMaxQty() const
+int WarehouseStore::capacity() const
 {
   return 400 * _warehouse->_d->subTiles.size();
 }
 
-int WarehouseStore::getMaxQty( const Good::Type& goodType ) const
+void WarehouseStore::setCapacity(const int)
 {
-  return getMaxQty();
+
+}
+
+int WarehouseStore::capacity( const Good::Type& goodType ) const
+{
+  return capacity();
 }
 
 Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 3 )), _d( new Impl )
@@ -442,7 +448,7 @@ void Warehouse::load( const VariantMap& stream )
 void Warehouse::_resolveDevastationMode()
 {
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  if( (_d->goodStore.getCurrentQty() > 0) && getWalkers().empty() )
+  if( (_d->goodStore.getQty() > 0) && getWalkers().empty() )
   {
     for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
     {

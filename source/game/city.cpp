@@ -26,7 +26,7 @@
 #include "tileoverlay_factory.hpp"
 #include "astarpathfinding.hpp"
 #include "core/safetycast.hpp"
-#include "cityservice_emigrant.hpp"
+#include "citymigration.hpp"
 #include "cityservice_workershire.hpp"
 #include "cityservice_timers.hpp"
 #include "cityservice_prosperity.hpp"
@@ -64,6 +64,8 @@
 #include "building/constants.hpp"
 #include "cityservice_disorder.hpp"
 #include "world/merchant.hpp"
+#include "cityhelper.hpp"
+#include "citystatistic.hpp"
 #include <set>
 
 using namespace constants;
@@ -189,7 +191,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->climate = C_CENTRAL;
   _d->lastMonthCount = GameDate::current().getMonth();
 
-  addService( CityServiceEmigrant::create( this ) );
+  addService( CityMigration::create( this ) );
   addService( CityServiceWorkersHire::create( this ) );
   addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
   addService( CityServiceProsperity::create( this ) );
@@ -463,8 +465,15 @@ void PlayerCity::save( VariantMap& stream) const
     vm_overlays[ StringHelper::format( 0xff, "%d,%d", overlay->getTile().getI(),
                                                       overlay->getTile().getJ() ) ] = vm_overlay;
   }
-
   stream[ "overlays" ] = vm_overlays;
+
+  VariantMap vm_services;
+  foreach( CityServicePtr service, _d->services )
+  {   
+    vm_services[ service->getName() ] = service->save();
+  }
+
+  stream[ "services" ] = vm_services;
 }
 
 void PlayerCity::load( const VariantMap& stream )
@@ -520,7 +529,23 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "Can't load walker %s", item.first.c_str() );
+      Logger::warning( "Can't load walker " + item.first );
+    }
+  }
+
+  VariantMap services = stream.get( "services" ).toMap();
+  foreach( VariantMap::value_type& item, services )
+  {
+    VariantMap servicesSave = item.second.toMap();
+
+    CityServicePtr srvc = findService( item.first);
+    if( srvc.isValid()  )
+    {
+      srvc->load( servicesSave );
+    }
+    else
+    {
+      Logger::warning( "Can't find service " + item.first );
     }
   }
 }
@@ -608,53 +633,4 @@ void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
 {
   WalkerPtr cityMerchant = Merchant::create( this, merchant );
   cityMerchant.as<Merchant>()->send2City();
-}
-
-void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild )
-{
-  Tilemap& tilemap = _city->getTilemap();
-
-  const Desirability& dsrbl = construction->getDesirability();
-  int mul = ( onBuild ? 1 : -1);
-
-  //change desirability in selfarea
-  TilesArray area = tilemap.getArea( construction->getTilePos(), construction->getSize() );
-  foreach( Tile* tile, area )
-  {
-    tile->appendDesirability( mul * dsrbl.base );
-  }
-
-  //change deisirability around
-  int current = mul * dsrbl.base;
-  for( int curRange=1; curRange <= dsrbl.range; curRange++ )
-  {
-    TilesArray perimetr = tilemap.getRectangle( construction->getTilePos() - TilePos( curRange, curRange ),
-                                                 construction->getSize() + Size( 2 * curRange ) );
-    foreach( Tile* tile, perimetr )
-    {
-      tile->appendDesirability( current );
-    }
-
-    current += mul * dsrbl.step;
-  }
-}
-
-TilesArray CityHelper::getArea(TileOverlayPtr overlay)
-{
-  return _city->getTilemap().getArea( overlay->getTilePos(), overlay->getSize() );
-}
-
-TilesArray CityHelper::getAroundTiles(TileOverlayPtr overlay)
-{
-  return _city->getTilemap().getArea( overlay->getTilePos()-TilePos(1,1), overlay->getSize()+Size(2) );
-}
-
-TilesArray CityHelper::getArea(TilePos start, TilePos stop)
-{
-  return _city->getTilemap().getArea( start, stop );
-}
-
-float CityHelper::getBalanceKoeff()
-{
-  return atan( _city->getPopulation() / 5000.f );
 }

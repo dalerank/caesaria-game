@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_workershire.hpp"
-#include "city.hpp"
+#include "cityhelper.hpp"
 #include "core/safetycast.hpp"
 #include "building/engineer_post.hpp"
 #include "building/prefecture.hpp"
@@ -85,6 +85,7 @@ CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
   _d->priorities[ 35 ] = building::academy;
   _d->priorities[ 36 ] = building::colloseum;
   _d->priorities[ 37 ] = building::lionsNursery;
+  _d->priorities[ 38 ] = building::shipyard;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )

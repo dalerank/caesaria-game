@@ -21,7 +21,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/safetycast.hpp"
 #include "constants.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "gfx/tilemap.hpp"
 #include "game/road.hpp"
 #include "core/direction.hpp"
@@ -74,13 +74,13 @@ void Aqueduct::destroy()
 
   if( _getCity().isValid() )
   {
-    TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2 ), Size( 5 ) );
     foreach( Tile* tile, area )
     {
-      TileOverlayPtr overlay = tile->getOverlay();
-      if( overlay.isValid() && overlay->getType() == building::aqueduct )
+      AqueductPtr aq = tile->getOverlay().as<Aqueduct>();
+      if( aq.isValid() )
       {
-        overlay.as<Aqueduct>()->updatePicture( _getCity() );
+        aq->updatePicture( _getCity() );
       }
     }
   }

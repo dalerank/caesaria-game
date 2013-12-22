@@ -34,7 +34,7 @@ public:
     bool anyGoodStored = false;
     for( int i = 0; i < Good::goodCount; ++i)
     {
-      anyGoodStored |= ( goodStore.getCurrentQty( Good::Type(i) ) >= 100 );
+      anyGoodStored |= ( goodStore.getQty( Good::Type(i) ) >= 100 );
     }
 
     return anyGoodStored;
@@ -42,16 +42,16 @@ public:
 
   void initStore()
   {
-    goodStore.setMaxQty(5000);
-    goodStore.setMaxQty(Good::wheat, 400);
-    goodStore.setMaxQty(Good::fish, 400);
-    goodStore.setMaxQty(Good::fruit, 400);
-    goodStore.setMaxQty(Good::meat, 400);
-    goodStore.setMaxQty(Good::vegetable, 400);
-    goodStore.setMaxQty(Good::pottery, 300);
-    goodStore.setMaxQty(Good::furniture, 300);
-    goodStore.setMaxQty(Good::oil, 300);
-    goodStore.setMaxQty(Good::wine, 300);
+    goodStore.setCapacity(5000);
+    goodStore.setCapacity(Good::wheat, 400);
+    goodStore.setCapacity(Good::fish, 400);
+    goodStore.setCapacity(Good::fruit, 400);
+    goodStore.setCapacity(Good::meat, 400);
+    goodStore.setCapacity(Good::vegetable, 400);
+    goodStore.setCapacity(Good::pottery, 300);
+    goodStore.setCapacity(Good::furniture, 300);
+    goodStore.setCapacity(Good::oil, 300);
+    goodStore.setCapacity(Good::wine, 300);
   }
 };
 
@@ -106,10 +106,10 @@ std::list<Good::Type> Market::getMostNeededGoods()
     // for all types of good
     Good::Type goodType = (Good::Type) n;
     GoodStock &stock = _d->goodStore.getStock(goodType);
-    int demand = stock.cap() - stock.qty();
+    int demand = stock.capacity() - stock.qty();
     if (demand > 99)
     {
-      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.cap()), goodType));
+      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.capacity()), goodType));
     }
   }
 
@@ -127,7 +127,7 @@ int Market::getGoodDemand(const Good::Type &goodType)
 {
   int res = 0;
   GoodStock &stock = _d->goodStore.getStock(goodType);
-  res = stock.cap() - stock.qty();
+  res = stock.capacity() - stock.qty();
   res = (res/100)*100;  // round at the lowest century
   return res;
 }
@@ -167,7 +167,7 @@ void Market::timeStep(const unsigned long time)
     }
 
     WalkerList walkers = getWalkers();
-    if( walkers.size() > 0 && _d->goodStore.getCurrentQty() == 0 )
+    if( walkers.size() > 0 && _d->goodStore.getQty() == 0 )
     {
       ServiceWalkerPtr walker = walkers.front().as<ServiceWalker>();
       if( walker.isValid() )

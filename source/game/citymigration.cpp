@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "cityservice_emigrant.hpp"
-#include "city.hpp"
+#include "citymigration.hpp"
+#include "cityhelper.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/emigrant.hpp"
@@ -26,33 +26,48 @@
 #include "building/constants.hpp"
 #include "settings.hpp"
 #include "world/empire.hpp"
+#include "gamedate.hpp"
+#include "citystatistic.hpp"
 
 using namespace constants;
 
-class CityServiceEmigrant::Impl
+class CityMigration::Impl
 {
 public:
   PlayerCityPtr city;
+  int lastMonthPopulation;
+  int lastMonthMigration;
+  DateTime lastUpdate;
 };
 
-CityServicePtr CityServiceEmigrant::create(PlayerCityPtr city )
+CityServicePtr CityMigration::create(PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityServiceEmigrant( city ) );
+  CityServicePtr ret( new CityMigration( city ) );
   ret->drop();
 
   return ret;
 }
 
-CityServiceEmigrant::CityServiceEmigrant( PlayerCityPtr city )
-: CityService( "emigration" ), _d( new Impl )
+CityMigration::CityMigration( PlayerCityPtr city )
+: CityService( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
+  _d->lastMonthMigration = 0;
+  _d->lastMonthPopulation = 0;
+  _d->lastUpdate = GameDate::current();
 }
 
-void CityServiceEmigrant::update( const unsigned int time )
+void CityMigration::update( const unsigned int time )
 {
   if( time % 44 != 1 )
     return;
+
+  if( _d->lastUpdate.getMonthToDate( GameDate::current() ) > 0 )
+  {
+    _d->lastUpdate = GameDate::current();
+    _d->lastMonthMigration = _d->city->getPopulation() - _d->lastMonthPopulation;
+    _d->lastMonthPopulation = _d->city->getPopulation();
+  }
   
   unsigned int vacantPop=0;
   int emigrantsIndesirability = 50; //base indesirability value
@@ -99,4 +114,32 @@ void CityServiceEmigrant::update( const unsigned int time )
   {
     emigrant->send2City( roadTile );
   }
+}
+
+std::string CityMigration::getReason() const
+{
+  return "##unknown_migration_reason##";
+}
+
+std::string CityMigration::getDefaultName()
+{
+  return "migration";
+}
+
+VariantMap CityMigration::save() const
+{
+  VariantMap ret;
+
+  ret[ "lastUpdate" ] = _d->lastUpdate;
+  ret[ "lastMonthMigration" ] = _d->lastMonthMigration;
+  ret[ "lastMonthPopulation" ] = _d->lastMonthPopulation;
+
+  return ret;
+}
+
+void CityMigration::load(const VariantMap& stream)
+{
+  _d->lastUpdate = stream.get( "lastUpdate", GameDate::current() ).toDateTime();
+  _d->lastMonthMigration = stream.get( "lastMonthMigration", 0 );
+  _d->lastMonthPopulation = stream.get( "lastMonthPopulation", 0 );
 }

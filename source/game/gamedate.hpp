@@ -30,6 +30,8 @@ public:
 
   static GameDate& instance();
 
+  static unsigned int getTickInMonth();
+
   ~GameDate();
 
 private:

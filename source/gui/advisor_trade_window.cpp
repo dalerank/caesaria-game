@@ -26,7 +26,7 @@
 #include "core/gettext.hpp"
 #include "groupbox.hpp"
 #include "building/factory.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "game/trade_options.hpp"
 #include "building/warehouse.hpp"
 #include "game/goodstore.hpp"
@@ -503,7 +503,7 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
   WarehouseList warehouses = helper.find< Warehouse >( building::warehouse );
   foreach( WarehousePtr warehouse, warehouses )
   {
-    goodsQty += warehouse->getGoodStore().getCurrentQty( gtype );
+    goodsQty += warehouse->getGoodStore().getQty( gtype );
   }
 
   return goodsQty;

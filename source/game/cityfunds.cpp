@@ -1,20 +1,20 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityfunds.hpp"
-#include "city.hpp"
+#include "cityhelper.hpp"
 #include "trade_options.hpp"
 #include "building/house.hpp"
 #include "building/constants.hpp"
@@ -74,6 +74,12 @@ int CityFunds::getValue() const
   return _d->money;
 }
 
+int CityFunds::getProfit() const
+{
+  int balanceLastYear = getIssueValue( CityFunds::balance, lastYear );
+  return _d->money - balanceLastYear;
+}
+
 void CityFunds::updateHistory( const DateTime& date )
 {
   if( _d->lastYeapUpdate >= date.getYear() )
@@ -81,6 +87,8 @@ void CityFunds::updateHistory( const DateTime& date )
     return;
   }
 
+  resolveIssue( FundIssue( CityFunds::balance, _d->money ) );
+  resolveIssue( FundIssue( CityFunds::profit, getProfit() ) );
   _d->lastYeapUpdate = date.getYear();
   _d->history.insert( _d->history.begin(), Impl::IssuesValue() );
 
@@ -178,86 +186,4 @@ CityFunds::~CityFunds()
 Signal1<int>& CityFunds::onChange()
 {
   return _d->onChangeSignal;
-}
-
-
-unsigned int CityStatistic::getCurrentWorkersNumber(PlayerCityPtr city)
-{
-  CityHelper helper( city );
-
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
-
-  int workersNumber = 0;
-  foreach( WorkingBuildingPtr bld, buildings )
-  {
-    workersNumber += bld->getWorkersCount();
-  }
-
-  return workersNumber;
-}
-
-unsigned int CityStatistic::getVacantionsNumber(PlayerCityPtr city)
-{
-  CityHelper helper( city );
-
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
-
-  int workersNumber = 0;
-  foreach( WorkingBuildingPtr bld, buildings )
-  {
-    workersNumber += bld->getMaxWorkers();
-  }
-
-  return workersNumber;
-}
-
-unsigned int CityStatistic::getAvailableWorkersNumber(PlayerCityPtr city)
-{
-  CityHelper helper( city );
-
-  HouseList houses = helper.find<House>( building::house );
-
-  int workersNumber = 0;
-  foreach( HousePtr house, houses )
-  {
-    workersNumber += (house->getServiceValue( Service::recruter ) + house->getWorkersCount());
-  }
-
-  return workersNumber;
-}
-
-unsigned int CityStatistic::getMontlyWorkersWages(PlayerCityPtr city)
-{
-  int workersNumber = getCurrentWorkersNumber( city );
-
-  if( workersNumber == 0 )
-    return 0;
-
-  //wages all worker in year
-  //workers take salary in sestertius 1/100 part of dinarius
-  int wages = workersNumber * city->getFunds().getWorkerSalary() / 100;
-
-  wages = std::max<int>( wages, 1 );
-
-  return wages;
-}
-
-unsigned int CityStatistic::getWorklessNumber(PlayerCityPtr city)
-{
-  CityHelper helper( city );
-
-  HouseList houses = helper.find<House>( building::house );
-
-  int worklessNumber = 0;
-  foreach( HousePtr house, houses )
-  {
-    worklessNumber += house->getServiceValue( Service::recruter );
-  }
-
-  return worklessNumber;
-}
-
-unsigned int CityStatistic::getWorklessPercent(PlayerCityPtr city)
-{
-  return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
 }

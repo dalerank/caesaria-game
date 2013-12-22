@@ -12,23 +12,31 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERFOOD_H_INCLUDED__
-#define __CAESARIA_LAYERFOOD_H_INCLUDED__
+#ifndef _CAESARIA_SHIPYARD_H_INCLUDE_
+#define _CAESARIA_SHIPYARD_H_INCLUDE_
 
-#include "layer.hpp"
-#include "city_renderer.hpp"
+#include "coastalbuilding.hpp"
 
-class LayerFood : public Layer
+class Shipyard : public CoastalFactory
 {
 public:
-  virtual int getType() const;
-  virtual VisibleWalkers getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  Shipyard();
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+  virtual void destroy();
+  virtual void timeStep(const unsigned long time);
+
+  virtual unsigned int getConsumeQty() const;
+
 private:
-  LayerFood( TilemapCamera& camera, PlayerCityPtr city );
+  virtual void _updatePicture( constants::Direction direction );
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_LAYERFOOD_H_INCLUDED__
+#endif //_CAESARIA_SHIPYARD_H_INCLUDE_

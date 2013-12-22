@@ -26,6 +26,9 @@ public:
   void setInfo( std::string parent ) { _parent = parent; }
   std::string getInfo() const { return _parent; }
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
 protected:
   std::string _parent;
 };
@@ -61,6 +64,7 @@ public:
 };
 
 typedef SmartPtr< BurningRuins > BurningRuinsPtr;
+typedef SmartPtr< BurnedRuins > BurnedRuinsPtr;
 
 class CollapsedRuins : public Ruins
 {

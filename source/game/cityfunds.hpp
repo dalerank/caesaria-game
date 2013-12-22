@@ -1,20 +1,20 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_CITYFUNDS_H_INCLUDED__
-#define __OPENCAESAR3_CITYFUNDS_H_INCLUDED__
+#ifndef __CAESARIA_CITYFUNDS_H_INCLUDED__
+#define __CAESARIA_CITYFUNDS_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
@@ -60,6 +60,7 @@ public:
   void setWorkerSalary( const unsigned int value );
 
   int getValue() const;
+  int getProfit() const;
 
   VariantMap save() const;
   void load( const VariantMap& stream );
@@ -72,15 +73,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-class CityStatistic
-{
-public:
-  static unsigned int getCurrentWorkersNumber( PlayerCityPtr city );
-  static unsigned int getVacantionsNumber( PlayerCityPtr city );
-  static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
-  static unsigned int getMontlyWorkersWages( PlayerCityPtr city );
-  static unsigned int getWorklessNumber( PlayerCityPtr city );
-  static unsigned int getWorklessPercent( PlayerCityPtr city );
-};
-
-#endif //__OPENCAESAR3_CITYFUNDS_H_INCLUDED__
+#endif //__CAESARIA_CITYFUNDS_H_INCLUDED__

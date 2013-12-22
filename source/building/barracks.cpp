@@ -37,8 +37,8 @@ Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
   setMaxWorkers(5);
   setPicture( ResourceGroup::security, 17 );
 
-  _d->store.setMaxQty( 1000 );
-  _d->store.setMaxQty( Good::weapon, 1000 );
+  _d->store.setCapacity( 1000 );
+  _d->store.setCapacity( Good::weapon, 1000 );
 }
 
 void Barracks::deliverTrainee()
@@ -54,7 +54,7 @@ void Barracks::deliverTrainee()
     }
   }
 
-  if( _d->store.getCurrentQty( Good::weapon ) >= 100 )
+  if( _d->store.getQty( Good::weapon ) >= 100 )
   {
     TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::soldier );
     trainee->send2City( this, false );

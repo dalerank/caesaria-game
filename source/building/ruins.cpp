@@ -88,7 +88,11 @@ void BurningRuins::destroy()
 {
   Building::destroy();
 
-  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), building::burnedRuins );
+  BurnedRuinsPtr p( new BurnedRuins() );
+  p->drop();
+  p->setInfo( getInfo() );
+
+  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), p.as<TileOverlay>() );
   event->dispatch();
 }
 
@@ -263,7 +267,11 @@ void PlagueRuins::destroy()
 {
   Building::destroy();
 
-  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), building::burnedRuins );
+  BurnedRuinsPtr p( new BurnedRuins() );
+  p->drop();
+  p->setInfo( getInfo() );
+
+  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), p.as<TileOverlay>() );
   event->dispatch();
 }
 
@@ -301,4 +309,18 @@ Ruins::Ruins(building::Type type)
   : Building( type, Size(1) )
 {
 
+}
+
+void Ruins::save(VariantMap& stream) const
+{
+  Building::save( stream );
+
+  stream[ "text" ] = Variant( _parent );
+}
+
+void Ruins::load(const VariantMap& stream)
+{
+  Building::load( stream );
+
+  _parent = stream.get( "text" ).toString();
 }

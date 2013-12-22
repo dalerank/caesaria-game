@@ -85,18 +85,18 @@ public:
       switch( info.order )
       {
       case CityTradeOptions::importing:
-        buys.setMaxQty( gtype, 9999 );
-        sells.setMaxQty( gtype, 0 );
+        buys.setCapacity( gtype, 9999 );
+        sells.setCapacity( gtype, 0 );
       break;
 
       case CityTradeOptions::exporting:
-        buys.setMaxQty( gtype, 0 );
-        sells.setMaxQty( gtype, 9999 );
+        buys.setCapacity( gtype, 0 );
+        sells.setCapacity( gtype, 9999 );
       break;
 
       case CityTradeOptions::noTrade:
-        buys.setMaxQty( gtype, 0 );
-        buys.setMaxQty( gtype, 0 );
+        buys.setCapacity( gtype, 0 );
+        buys.setCapacity( gtype, 0 );
       break;
 
       default: break;
@@ -106,8 +106,8 @@ public:
 
   Impl()
   {
-    buys.setMaxQty( 9999 );
-    sells.setMaxQty( 9999 );
+    buys.setCapacity( 9999 );
+    sells.setCapacity( 9999 );
     for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type gtype = (Good::Type)i;

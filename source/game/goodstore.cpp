@@ -41,7 +41,7 @@ GoodStore::GoodStore() : _d( new Impl )
 int GoodStore::getMaxRetrieve(const Good::Type goodType)
 {
   // current good quantity
-  int qty = getCurrentQty(goodType);
+  int qty = getQty(goodType);
 
   // remove all retrieval reservations
   foreach( _Reservations::value_type& item, _d->retrieveReservations )
@@ -152,7 +152,7 @@ void GoodStore::store( GoodStock &stock, const int amount)
 {
   GoodStock reservedStock;
   reservedStock.setType( stock.type() );
-  reservedStock.setCap( stock.cap() );
+  reservedStock.setCapacity( stock.capacity() );
   reservedStock.setQty( amount );
 
   long reservationID = reserveStorage(reservedStock);
@@ -191,7 +191,7 @@ void GoodStore::storeAll( GoodStore& goodStore)
     // for all types of good (except G_NONE)
     Good::Type goodType = (Good::Type) n;
     GoodStock stock( goodType, 9999, 0 );
-    goodStore.retrieve( stock, goodStore.getCurrentQty( goodType ) );
+    goodStore.retrieve( stock, goodStore.getQty( goodType ) );
     if( !stock.empty() )
     {
       store(stock, stock.qty());
@@ -297,12 +297,12 @@ GoodStore::_Reservations& GoodStore::_getRetrieveReservations()
 
 int GoodStore::getFreeQty( const Good::Type& goodType ) const
 {
-  return getMaxQty( goodType ) - getCurrentQty( goodType );
+  return capacity( goodType ) - getQty( goodType );
 }
 
 int GoodStore::getFreeQty() const
 {
-  return getMaxQty() - getCurrentQty();
+  return capacity() - getQty();
 }
 
 const ReserveInfo Reservations::invalid = { GoodStock(), DateTime(), 0 };

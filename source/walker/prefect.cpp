@@ -21,7 +21,7 @@
 #include "game/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "core/variant.hpp"
 #include "game/name_generator.hpp"
 #include "core/stringhelper.hpp"

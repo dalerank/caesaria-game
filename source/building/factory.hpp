@@ -32,8 +32,8 @@ public:
            const TileOverlay::Type type, const Size& size );
   ~Factory();
 
-  GoodStock& getInGood();
-  GoodStock& getOutGood();
+  GoodStock& inStockRef();
+  GoodStock& outStockRef();
 
   Good::Type getInGoodType() const;
   Good::Type getOutGoodType() const;
@@ -59,6 +59,10 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void setProductRate( const float rate );
+  virtual float getProductRate() const;
+
+  virtual unsigned int getFinishedQty() const;
+  virtual unsigned int getConsumeQty() const;
 
 protected:  
   virtual bool _mayDeliverGood() const;

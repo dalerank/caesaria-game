@@ -29,9 +29,10 @@
 #include "walker/cart_supplier.hpp"
 #include "core/stringhelper.hpp"
 #include "game/goodstore_simple.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -46,6 +47,7 @@ public:
   Good::Type inGoodType;
   Good::Type outGoodType;
   bool produceGood;
+  unsigned int finishedQty;
 };
 
 Factory::Factory(const Good::Type inType, const Good::Type outType,
@@ -58,17 +60,18 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
    _d->produceGood = false;
    _d->inGoodType = inType;
    _d->outGoodType = outType;
-   _d->goodStore.setMaxQty(1000);  // quite unlimited
-   _d->goodStore.setMaxQty(_d->inGoodType, 200);
-   _d->goodStore.setMaxQty(_d->outGoodType, 200);
+   _d->finishedQty = 100;
+   _d->goodStore.setCapacity(1000);  // quite unlimited
+   _d->goodStore.setCapacity(_d->inGoodType, 200);
+   _d->goodStore.setCapacity(_d->outGoodType, 200);
 }
 
-GoodStock& Factory::getInGood()
+GoodStock& Factory::inStockRef()
 {
    return _d->goodStore.getStock(_d->inGoodType);
 }
 
-GoodStock& Factory::getOutGood()
+GoodStock& Factory::outStockRef()
 {
   return _d->goodStore.getStock(_d->outGoodType);
 }
@@ -93,7 +96,7 @@ bool Factory::mayWork() const
   if( getWorkersCount() == 0 || !_d->isActive )
     return false;
 
-  GoodStock& inStock = const_cast< Factory* >( this )->getInGood();
+  GoodStock& inStock = const_cast< Factory* >( this )->inStockRef();
   if( inStock.type() == Good::none )
     return true;
 
@@ -137,20 +140,21 @@ void Factory::timeStep(const unsigned long time)
    {
      _d->produceGood = false;
      
-     if( _d->goodStore.getCurrentQty( _d->outGoodType ) < _d->goodStore.getMaxQty( _d->outGoodType )  )
+     if( _d->goodStore.getQty( _d->outGoodType ) < _d->goodStore.capacity( _d->outGoodType )  )
      {
        _d->progress -= 100.f;
+       unsigned int qty = getFinishedQty();
        //gcc fix for temporaly ref object
-       GoodStock tmpStock( _d->outGoodType, 100, 100 );
-       _d->goodStore.store( tmpStock, 100 );
+       GoodStock tmpStock( _d->outGoodType, qty, qty );
+       _d->goodStore.store( tmpStock, qty );
      }
    }
    else
    {
      //ok... factory is work, produce goods
-     float workersRatio = float(getWorkersCount()) / float(getMaxWorkers());  // work drops if not enough workers
-     // 1080: number of seconds in a year, 0.67: number of timeSteps per second
-     float work = 100.f / 1080.f / 0.67f * _d->productionRate * workersRatio * workersRatio;  // work is proportional to time and factory speed
+     float workersRatio = (float)getWorkersCount() / (float)getMaxWorkers();  // work drops if not enough workers
+     float timeKoeff = DateTime::monthInYear / (float)GameDate::getTickInMonth();
+     float work = timeKoeff * _d->productionRate * workersRatio;  // work is proportional to time and factory speed
      if( _d->produceGood )
      {
        _d->progress += work;
@@ -168,16 +172,17 @@ void Factory::timeStep(const unsigned long time)
 
    if( !_d->produceGood )
    {
+     unsigned int consumeQty = getConsumeQty();
      if( _d->inGoodType == Good::none ) //raw material
      {
        _d->produceGood = true;
      }
-     else if( _d->goodStore.getCurrentQty( _d->inGoodType ) >= 100 && _d->goodStore.getCurrentQty( _d->outGoodType ) < 100 )
+     else if( _d->goodStore.getQty( _d->inGoodType ) >= consumeQty && _d->goodStore.getQty( _d->outGoodType ) < 100 )
      {
        _d->produceGood = true;
        //gcc fix temporaly ref object error
-       GoodStock tmpStock( _d->inGoodType, 100, 0 );
-       _d->goodStore.retrieve( tmpStock, 100  );
+       GoodStock tmpStock( _d->inGoodType, consumeQty, 0 );
+       _d->goodStore.retrieve( tmpStock, consumeQty  );
      }     
    }
 }
@@ -185,7 +190,7 @@ void Factory::timeStep(const unsigned long time)
 void Factory::deliverGood()
 {
   // make a cart pusher and send him away
-  int qty = _d->goodStore.getCurrentQty( _d->outGoodType );
+  int qty = _d->goodStore.getQty( _d->outGoodType );
   if( _mayDeliverGood() && qty >= 100 )
   {      
     CartPusherPtr walker = CartPusher::create( _getCity() );
@@ -248,6 +253,21 @@ void Factory::setProductRate( const float rate )
   _d->productionRate = rate;
 }
 
+float Factory::getProductRate() const
+{
+  return _d->productionRate;
+}
+
+unsigned int Factory::getFinishedQty() const
+{
+  return _d->finishedQty;
+}
+
+unsigned int Factory::getConsumeQty() const
+{
+  return 100;
+}
+
 Good::Type Factory::getOutGoodType() const
 {
   return _d->outGoodType;
@@ -255,13 +275,13 @@ Good::Type Factory::getOutGoodType() const
 
 void Factory::receiveGood()
 {
-  GoodStock& stock = getInGood();
+  GoodStock& stock = inStockRef();
 
   //send cart supplier if stock not full
-  if( _mayDeliverGood() && stock.qty() < stock.cap() )
+  if( _mayDeliverGood() && stock.qty() < stock.capacity() )
   {
     CartSupplierPtr walker = CartSupplier::create( _getCity() );
-    walker->send2City( this, stock.type(), stock.cap() - stock.qty() );
+    walker->send2City( this, stock.type(), stock.capacity() - stock.qty() );
 
     if( !walker->isDeleted() )
     {

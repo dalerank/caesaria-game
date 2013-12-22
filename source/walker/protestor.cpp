@@ -17,7 +17,7 @@
 #include "building/house.hpp"
 #include "game/path_finding.hpp"
 #include "constants.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "game/house_level.hpp"
 #include "building/constants.hpp"
 #include "core/foreach.hpp"

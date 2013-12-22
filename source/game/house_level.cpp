@@ -31,6 +31,7 @@
 #include "game/goodhelper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "gamedate.hpp"
 
 #include <string>
 #include <map>
@@ -182,25 +183,35 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
     ref = _("##missing_food##");
   }
 
-  if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().getCurrentQty(Good::pottery) == 0)
+  if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().getQty(Good::pottery) == 0)
   {
     res = false;
     ref = _("##missing_pottery##");
   }
 
-  if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().getCurrentQty(Good::furniture) == 0)
+  if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().getQty(Good::furniture) == 0)
   {
     res = false;
     ref = _("##missing_furniture##");
   }
 
-  if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().getCurrentQty(Good::oil) == 0)
+  if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().getQty(Good::oil) == 0)
   {
     res = false;
     ref = _("##missing_oil##");
   }
 
   return res;
+}
+
+unsigned int HouseLevelSpec::getServiceConsumptionInterval() const
+{
+  return 16;
+}
+
+unsigned int HouseLevelSpec::getFoodConsumptionInterval() const
+{
+  return 64;
 }
 
 int HouseLevelSpec::computeWaterLevel(HousePtr house, std::string &oMissingRequirement)
@@ -229,11 +240,11 @@ int HouseLevelSpec::computeFoodLevel(HousePtr house)
   int res = 0;
 
   const GoodStore& goodStore = house->getGoodStore();
-  res += goodStore.getCurrentQty(Good::wheat) > 0 ? 1 : 0;
-  res += goodStore.getCurrentQty(Good::fish) > 0 ? 1 : 0;
-  res += goodStore.getCurrentQty(Good::meat) > 0 ? 1 : 0;
-  res += goodStore.getCurrentQty(Good::fruit) > 0 ? 1 : 0;
-  res += goodStore.getCurrentQty(Good::vegetable) > 0 ? 1 :0;
+  res += goodStore.getQty(Good::wheat) > 0 ? 1 : 0;
+  res += goodStore.getQty(Good::fish) > 0 ? 1 : 0;
+  res += goodStore.getQty(Good::meat) > 0 ? 1 : 0;
+  res += goodStore.getQty(Good::fruit) > 0 ? 1 : 0;
+  res += goodStore.getQty(Good::vegetable) > 0 ? 1 :0;
 
   return res;
 }
@@ -457,17 +468,42 @@ float HouseLevelSpec::evaluateReligionNeed(HousePtr house, const Service::Type s
    return (float)minLevel;
 }
 
-int HouseLevelSpec::computeMonthlyConsumption(House &house, const Good::Type goodType, bool real)
+int HouseLevelSpec::computeMonthlyConsumption( HousePtr house, const Good::Type goodType, bool real) const
 {
-  int res = 0;
-  if (_d->requiredGoods[goodType] != 0)
+  if( house.isNull() )
   {
-    res = house.getHabitants().count() * _d->requiredGoods[goodType];
+    Logger::warning( "HouseLevelSpec::computeMonthlyConsumption parameter is null" );
+    return 0;
   }
+
+  int res = house->getHabitants().count() * _d->requiredGoods[goodType];
 
   res *= (real ? _d->consumptionMuls[ goodType ] : 1);
 
   return res;
+}
+
+int HouseLevelSpec::computeMonthlyFoodConsumption(HousePtr house) const
+{
+  if( house.isNull() )
+  {
+    Logger::warning( "HouseLevelSpec::computeMonthlyFoodConsumption parameter is null" );
+    return 0;
+  }
+
+  int foodConsumption=0;
+  for( int i=Good::wheat; i <= Good::vegetable; i++ )
+  {
+    Good::Type type = Good::Type( i );
+
+    if( house->getGoodStore().getQty( type ) > 0 )
+    {
+      foodConsumption += computeMonthlyConsumption( house, type, true );
+    }
+  }
+
+  foodConsumption *= ( GameDate::getTickInMonth() / getFoodConsumptionInterval() );
+  return foodConsumption;
 }
 
 const std::string& HouseLevelSpec::getInternalName() const
@@ -694,7 +730,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
 
     for (int i = 0; i < Good::goodCount; ++i)
     {
-      spec._d->consumptionMuls[ (Good::Type)i ] = 0.1;
+      spec._d->consumptionMuls[ (Good::Type)i ] = 0.2;
     }
 
     //load consumption goods koefficient

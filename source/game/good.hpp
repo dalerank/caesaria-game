@@ -58,8 +58,8 @@ public:
 
   void setType( Good::Type goodType );
 
-  void setCap( const int maxQty );
-  int cap() const { return _maxQty; }
+  void setCapacity( const int maxQty );
+  int capacity() const { return _maxQty; }
 
   void setQty( const int qty ) { _currentQty = qty; }
   int qty() const { return _currentQty; }

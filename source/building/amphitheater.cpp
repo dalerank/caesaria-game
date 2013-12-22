@@ -18,7 +18,7 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "training.hpp"
 #include "core/gettext.hpp"
 #include "core/stringhelper.hpp"

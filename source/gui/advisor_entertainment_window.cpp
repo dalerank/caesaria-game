@@ -23,7 +23,7 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "game/city.hpp"
+#include "game/cityhelper.hpp"
 #include "core/foreach.hpp"
 #include "building/house.hpp"
 #include "festival_planing_window.hpp"

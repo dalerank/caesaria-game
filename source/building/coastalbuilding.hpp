@@ -13,69 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_FARM_H_INCLUDED__
-#define __CAESARIA_FARM_H_INCLUDED__
+#ifndef _CAESARIA_COASTALBUILDING_INCLUDE_H_
+#define _CAESARIA_COASTALBUILDING_INCLUDE_H_
 
 #include "factory.hpp"
+#include "core/direction.hpp"
 
-class Farm : public Factory
+class CoastalFactory : public Factory
 {
 public:
-  Farm(const Good::Type outGood, const TileOverlay::Type type );
-  virtual ~Farm();
-  void init();
-
-  void computePictures();
-
-  virtual void timeStep(const unsigned long time);
+  CoastalFactory( const Good::Type consume, const Good::Type produce,
+                  const TileOverlay::Type type, Size size );
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual void destroy();
 
-  virtual void save(VariantMap& stream) const;
-  virtual void load(const VariantMap& stream);
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
-  virtual unsigned int getProduceQty() const;
+  const Tile& getLandingTile() const;
 
-protected:
+  ~CoastalFactory();
+private:
+  void _setDirection( constants::Direction direction );
+  virtual void _updatePicture( constants::Direction direction ) = 0;
+
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-class FarmWheat : public Farm
-{
-public:
-  FarmWheat();
-};
-
-class FarmOlive : public Farm
-{
-public:
-  FarmOlive();
-};
-
-class FarmGrape : public Farm
-{
-public:
-  FarmGrape();
-};
-
-class FarmMeat : public Farm
-{
-public:
-  FarmMeat();
-};
-
-class FarmFruit : public Farm
-{
-public:
-  FarmFruit();
-};
-
-class FarmVegetable : public Farm
-{
-public:
-  FarmVegetable();
-};
-
-typedef SmartPtr< Farm > FarmPtr;
-
-#endif//__CAESARIA_FARM_H_INCLUDED__
+#endif //_CAESARIA_COASTALBUILDING_INCLUDE_H_

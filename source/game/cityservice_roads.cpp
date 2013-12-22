@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_roads.hpp"
-#include "city.hpp"
+#include "cityhelper.hpp"
 #include "gamedate.hpp"
 #include "path_finding.hpp"
 #include "gfx/tilemap.hpp"
