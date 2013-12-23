@@ -20,7 +20,7 @@
 #include "gfx/tileoverlay.hpp"
 #include "core/time.hpp"
 #include "gfx/engine.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 

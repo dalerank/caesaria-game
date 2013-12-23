@@ -17,14 +17,15 @@
 
 #include "building/metadata.hpp"
 #include "core/exception.hpp"
-#include "game/cityhelper.hpp"
+#include "player/cityhelper.hpp"
 #include "core/position.hpp"
 #include "building/granary.hpp"
 #include "building/warehouse.hpp"
 #include "gfx/tile.hpp"
-#include "game/goodhelper.hpp"
+#include "game/gamedate.hpp"
+#include "good/goodhelper.hpp"
 #include "core/variant.hpp"
-#include "game/path_finding.hpp"
+#include "pathway/path_finding.hpp"
 #include "gfx/animation_bank.hpp"
 #include "building/factory.hpp"
 #include "game/name_generator.hpp"
@@ -206,8 +207,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
     // a warehouse/granary has been found!
     // reserve some goods from that warehouse/granary
     int qty = math::clamp( needQty, 0, max_qty );
-    GoodStock tmpStock( what, qty, qty);
-    reservId = res->getGoodStore().reserveRetrieval( tmpStock );
+    reservId = res->getGoodStore().reserveRetrieval( what, qty, GameDate::current() );
     return res->getTilePos();
   }
   else
@@ -288,7 +288,7 @@ void CartSupplier::_reserveStorage()
 
   if( storage != 0 )
   {
-    _d->rcvReservationID = storage->reserveStorage( _d->stock );
+    _d->rcvReservationID = storage->reserveStorage( _d->stock, GameDate::current() );
   }
   else
   {}

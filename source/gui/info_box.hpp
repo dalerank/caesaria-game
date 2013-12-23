@@ -21,8 +21,8 @@
 
 #include "widget.hpp"
 #include "gfx/picture.hpp"
-#include "building/factory.hpp"
-#include "building/service.hpp"
+#include "objects/factory.hpp"
+#include "objects/service.hpp"
 #include "game/predefinitions.hpp"
 
 namespace gui

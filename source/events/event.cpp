@@ -15,10 +15,10 @@
 
 #include "event.hpp"
 #include "game/tileoverlay_factory.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 #include "core/gettext.hpp"
-#include "building/metadata.hpp"
-#include "game/cityfunds.hpp"
+//#include "building/metadata.hpp"
+#include "player/cityfunds.hpp"
 #include "gui/environment.hpp"
 #include "gui/info_box.hpp"
 #include "gfx/tilemap.hpp"
@@ -33,11 +33,11 @@
 #include "game/trade_options.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "game/settings.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 #include "gfx/tilesarray.hpp"
 #include "playsound.hpp"
-#include "game/cityhelper.hpp"
-#include "game/citystatistic.hpp"
+#include "player/cityhelper.hpp"
+#include "player/citystatistic.hpp"
 
 using namespace constants;
 

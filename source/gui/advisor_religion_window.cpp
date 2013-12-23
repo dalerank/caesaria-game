@@ -24,12 +24,12 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "game/cityhelper.hpp"
-#include "building/house.hpp"
+#include "player/cityhelper.hpp"
+#include "objects/house.hpp"
 #include "texturedbutton.hpp"
 #include "game/divinity.hpp"
 #include "game/gamedate.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 

@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef __CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
 #define __CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
 
@@ -21,7 +20,7 @@
 #include "core/predefinitions.hpp"
 #include "core/referencecounted.hpp"
 #include "core/smartptr.hpp"
-#include "game/construction.hpp"
+#include "objects/construction.hpp"
 #include "gfx/renderer.hpp"
 
 class LayerMode : public Renderer::Mode

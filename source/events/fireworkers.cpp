@@ -15,9 +15,9 @@
 
 #include "fireworkers.hpp"
 #include "game/game.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 #include "gfx/tilemap.hpp"
-#include "building/working.hpp"
+#include "objects/working.hpp"
 
 namespace events
 {

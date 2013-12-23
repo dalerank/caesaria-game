@@ -23,7 +23,7 @@ class FishingBoat : public Ship
 public:
   static FishingBoatPtr create( PlayerCityPtr city );
 
-  void send2City( WharfPtr base, const TilePos& start);
+  void send2City( CoastalFactoryPtr base, TilePos start);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -31,6 +31,8 @@ public:
   virtual void timeStep(const unsigned long time);
   void startCatch();
   void back2base();
+
+  void setBase( CoastalFactoryPtr base );
 
   bool isBusy() const;
 

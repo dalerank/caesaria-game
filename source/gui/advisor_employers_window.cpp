@@ -23,13 +23,13 @@
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
 #include "core/foreach.hpp"
-#include "game/cityhelper.hpp"
-#include "game/cityfunds.hpp"
+#include "player/cityhelper.hpp"
+#include "player/cityfunds.hpp"
 #include "game/settings.hpp"
 #include "world/empire.hpp"
-#include "building/constants.hpp"
-#include "building/working.hpp"
-#include "game/citystatistic.hpp"
+#include "objects/constants.hpp"
+#include "objects/working.hpp"
+#include "player/citystatistic.hpp"
 
 using namespace constants;
 

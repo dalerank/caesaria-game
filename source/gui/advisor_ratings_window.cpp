@@ -23,11 +23,11 @@
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
 #include "core/font.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 #include "game/win_targets.hpp"
 #include "texturedbutton.hpp"
-#include "game/cityservice_culture.hpp"
-#include "game/cityservice_prosperity.hpp"
+#include "player/cityservice_culture.hpp"
+#include "player/cityservice_prosperity.hpp"
 #include "core/logger.hpp"
 
 namespace gui

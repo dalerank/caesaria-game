@@ -23,7 +23,7 @@
 #include "gfx/engine.hpp"
 #include "groupbox.hpp"
 #include "environment.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 

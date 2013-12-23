@@ -16,7 +16,7 @@
 #include "showtileinfo.hpp"
 #include "game/infoboxmanager.hpp"
 #include "game/game.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 
 namespace events
 {

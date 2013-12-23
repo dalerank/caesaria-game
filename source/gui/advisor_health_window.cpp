@@ -23,12 +23,12 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "game/cityhelper.hpp"
+#include "player/cityhelper.hpp"
 #include "core/foreach.hpp"
-#include "building/house.hpp"
+#include "objects/house.hpp"
 #include "texturedbutton.hpp"
-#include "building/constants.hpp"
-#include "building/service.hpp"
+#include "objects/constants.hpp"
+#include "objects/service.hpp"
 
 using namespace constants;
 

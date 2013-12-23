@@ -19,7 +19,7 @@
 #include "core/referencecounted.hpp"
 #include "core/smartptr.hpp"
 #include "core/position.hpp"
-#include "building/building.hpp"
+#include "objects/building.hpp"
 #include "predefinitions.hpp"
 
 class Game;

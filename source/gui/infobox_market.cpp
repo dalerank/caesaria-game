@@ -12,14 +12,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+
 #include <cstdio>
 
 #include "infobox_market.hpp"
 #include "label.hpp"
-#include "building/market.hpp"
-#include "game/goodstore.hpp"
+#include "objects/market.hpp"
+#include "good/goodstore.hpp"
 #include "core/gettext.hpp"
-#include "game/goodhelper.hpp"
+#include "good/goodhelper.hpp"
 #include "core/stringhelper.hpp"
 
 using namespace constants;

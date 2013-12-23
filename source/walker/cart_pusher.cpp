@@ -20,17 +20,18 @@
 
 #include "building/metadata.hpp"
 #include "core/exception.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
+#include "game/gamedate.hpp"
 #include "core/position.hpp"
 #include "building/granary.hpp"
 #include "building/warehouse.hpp"
 #include "gfx/tile.hpp"
-#include "game/goodhelper.hpp"
+#include "good/goodhelper.hpp"
 #include "core/variant.hpp"
-#include "game/path_finding.hpp"
+#include "pathway/path_finding.hpp"
 #include "gfx/picture_bank.hpp"
 #include "building/factory.hpp"
-#include "game/goodstore.hpp"
+#include "good/goodstore.hpp"
 #include "core/stringhelper.hpp"
 #include "game/name_generator.hpp"
 #include "gfx/tilemap.hpp"
@@ -279,7 +280,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 
   if( res.isValid() )
   {
-    reservationID = res.as<T>()->getGoodStore().reserveStorage( stock );
+    reservationID = res.as<T>()->getGoodStore().reserveStorage( stock, GameDate::current() );
     if (reservationID != 0)
     {
       oPathWay = *shortestPath;

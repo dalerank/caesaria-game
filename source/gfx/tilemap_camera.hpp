@@ -21,6 +21,7 @@
 
 #include "core/size.hpp"
 #include "core/scopedptr.hpp"
+#include "predefinitions.hpp"
 #include "tilemap.hpp"
 #include "core/position.hpp"
 #include "core/signals.hpp"

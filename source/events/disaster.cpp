@@ -16,14 +16,14 @@
 #include "disaster.hpp"
 #include "game/game.hpp"
 #include "gfx/tilemap.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 #include "playsound.hpp"
 #include "game/tileoverlay_factory.hpp"
 #include "dispatcher.hpp"
 #include "core/gettext.hpp"
-#include "game/house_level.hpp"
-#include "building/house.hpp"
-#include "building/ruins.hpp"
+#include "objects/house_level.hpp"
+#include "objects/house.hpp"
+#include "objects/ruins.hpp"
 #include "core/stringhelper.hpp"
 
 using namespace constants;

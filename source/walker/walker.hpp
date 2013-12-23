@@ -19,9 +19,9 @@
 #include <string>
 #include <memory>
 
-#include "building/building.hpp"
+#include "objects/building.hpp"
 #include "walker/action.hpp"
-#include "building/service.hpp"
+#include "objects/service.hpp"
 #include "gfx/picture.hpp"
 #include "game/enums.hpp"
 #include "core/serializer.hpp"

@@ -27,7 +27,7 @@
 #include "core/gettext.hpp"
 #include "building/building.hpp"
 #include "building/metadata.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "pushbutton.hpp"

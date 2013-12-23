@@ -17,7 +17,7 @@
 #define _CAESARIA_CITYTRADEOPTIONS_INCLUDE_H_
 
 #include "core/scopedptr.hpp"
-#include "game/good.hpp"
+#include "good/good.hpp"
 #include "core/variant.hpp"
 
 class GoodStore;

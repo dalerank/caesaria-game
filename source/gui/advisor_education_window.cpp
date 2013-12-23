@@ -22,13 +22,13 @@
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
-#include "game/cityhelper.hpp"
-#include "building/house.hpp"
+#include "player/cityhelper.hpp"
+#include "objects/house.hpp"
 #include "core/foreach.hpp"
 #include "game/settings.hpp"
-#include "game/house_level.hpp"
-#include "building/constants.hpp"
-#include "building/service.hpp"
+#include "objects/house_level.hpp"
+#include "objects/constants.hpp"
+#include "objects/service.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;

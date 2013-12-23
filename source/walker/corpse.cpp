@@ -15,8 +15,8 @@
 
 #include "corpse.hpp"
 #include "core/variant.hpp"
-#include "game/city.hpp"
-#include "game/pathway_helper.hpp"
+#include "player/city.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"

@@ -28,6 +28,7 @@
 #include "game/cityhelper.hpp"
 #include "game/name_generator.hpp"
 #include "building/constants.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -104,8 +105,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
     int qty = std::min( max_qty, market->getGoodDemand( what ) );
     qty = std::min(qty, basket.capacity( what ) - basket.getQty( what ));
     // std::cout << "MarketLady reserves from warehouse, qty=" << qty << std::endl;
-    GoodStock stock( what, qty, qty);
-    reservId = res->getGoodStore().reserveRetrieval( stock );
+    reservId = res->getGoodStore().reserveRetrieval( what, qty, GameDate::current() );
     return res->getTilePos();
   }
 

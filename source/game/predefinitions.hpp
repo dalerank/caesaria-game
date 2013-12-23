@@ -17,21 +17,12 @@
 #define __CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__
 
 #include "gfx/predefinitions.hpp"
-#include "building/predefinitions.hpp"
+#include "objects/predefinitions.hpp"
 #include "walker/predefinitions.hpp"
 #include "world/predefinitions.hpp"
 #include "core/predefinitions.hpp"
 #include "events/predefinitions.hpp"
 #include "gui/predefinitions.hpp"
-
-PREDEFINE_CLASS_SMARTPOINTER_LIST(Road,List)
-PREDEFINE_CLASS_SMARTPOINTER_LIST(FishPlace,List)
-PREDEFINE_CLASS_SMARTPOINTER(Player)
-PREDEFINE_CLASS_SMARTPOINTER(PlayerCity)
-PREDEFINE_CLASS_SMARTPOINTER(CityService)
-
-class Tilemap;
-class TilemapCamera;
-class Pathway;
+#include "player/predefinitions.hpp"
 
 #endif //__CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__

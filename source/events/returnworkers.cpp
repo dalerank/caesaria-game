@@ -15,8 +15,8 @@
 
 #include "returnworkers.hpp"
 #include "game/game.hpp"
-#include "game/city.hpp"
-#include "building/house.hpp"
+#include "player/city.hpp"
+#include "objects/house.hpp"
 #include "gfx/tilemap.hpp"
 
 namespace events

@@ -34,7 +34,7 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "building/constants.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;

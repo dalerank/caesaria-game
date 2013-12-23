@@ -33,7 +33,7 @@ class FishingBoat::Impl
 {
 public:
   typedef enum { go2fishplace, catchFish, back2base, finishCatch, unloadFish, ready2Catch, wait } Mode;
-  WharfPtr base;
+  CoastalFactoryPtr base;
   TilePos destination;
   GoodStock stock;
   Mode mode;
@@ -53,13 +53,12 @@ void FishingBoat::save( VariantMap& stream ) const
 
 void FishingBoat::load( const VariantMap& stream )
 {
-  Walker::load( stream );
+  Ship::load( stream );
   _d->destination = stream.get( "destination" );
   _d->stock.load( stream.get( "stock" ).toList() );
   _d->mode = (Impl::Mode)stream.get( "mode", (int)Impl::wait ).toInt();
 
-  CityHelper helper( _getCity() );
-  _d->base = helper.find<Wharf>( building::wharf, (TilePos)stream.get( "base" ) );
+  _d->base = _getCity()->getOverlay( (TilePos)stream.get( "base" ) ).as<CoastalFactory>();
   if( _d->base.isValid() )
   {
     _d->base->assignBoat( this );
@@ -170,6 +169,11 @@ void FishingBoat::back2base()
   _d->mode = Impl::finishCatch;
 }
 
+void FishingBoat::setBase(CoastalFactoryPtr base)
+{
+  _d->base = base;
+}
+
 bool FishingBoat::isBusy() const
 {
   return _d->mode != Impl::wait;
@@ -251,7 +255,7 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& p
   return Pathway();
 }
 
-void FishingBoat::send2City( WharfPtr base, const TilePos &start )
+void FishingBoat::send2City( CoastalFactoryPtr base, TilePos start )
 {
   _d->base = base;
   if( !isDeleted() )

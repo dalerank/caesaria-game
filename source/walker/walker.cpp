@@ -539,7 +539,7 @@ void Walker::load( const VariantMap& stream)
   {
     Logger::warning( "Wrong way for %s at [%d,%d]", _d->name.c_str(),
                      _d->pos.getI(), _d->pos.getJ() );
-    deleteLater();
+    //deleteLater();
   }
 
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
@@ -708,7 +708,7 @@ public:
     append( walker::marketKid, "market_lady_helper", _("##wt_market_lady_helper##") );
     append( walker::serviceman, "serviceman", _("##wt_serviceman##") );
     append( walker::trainee, "trainee", _("##wt_trainee##") );
-    append( walker::recruter, "workers_hunter", _("##wt_workers_hunter##") );
+    append( walker::recruter, "recruter", _("##wt_recruter##") );
     append( walker::prefect, "prefect", _("##wt_prefect##") );
     append( walker::taxCollector, "tax_collector", _("##wt_tax_collector##") );
     append( walker::merchant, "merchant", _("##wt_merchant##") );
@@ -720,6 +720,12 @@ public:
     append( walker::gladiator, "gladiator", _("##wt_gladiator##") );
     append( walker::barber, "barber", _("##wt_barber##" ) );
     append( walker::surgeon, "surgeon", _("##wt_surgeon##") );
+    append( walker::lionTamer, "lion_tamer", _("##wt_lion_tamer") );
+    append( walker::fishingBoat, "fishing_boat", _("##fishing_boat##") );
+    append( walker::protestor, "protestor", _("##wt_protestor##" ) );
+    append( walker::legionary, "legioanry", _("##wt_legionary##") );
+    append( walker::corpse, "corpse", _("##wt_corpse##") );
+    append( walker::lion, "lion", _("##wt_lion##") );
     append( walker::all, "unknown", _("##wt_unknown##") );
   }
 };
@@ -779,7 +785,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   case walker::taxCollector: index=6; break;
   case walker::sheep: index = 54; break;
   case walker::recruter: index=13; break;
-
+  case walker::lionTamer: index=11; break;
   default: index=8; break;
   break;
   }

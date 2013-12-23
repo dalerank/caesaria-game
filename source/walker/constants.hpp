@@ -58,6 +58,7 @@ enum Type{
   romeGuard,
   lion,
   spear,
+  fishPlace,
   all = 0xff,
   any = all
 };

@@ -15,9 +15,9 @@
 
 #include "emigrant.hpp"
 #include "core/position.hpp"
-#include "game/road.hpp"
+#include "place/road.hpp"
 #include "gfx/animation_bank.hpp"
-#include "game/city.hpp"
+#include "player/city.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"

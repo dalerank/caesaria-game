@@ -14,12 +14,12 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "infobox_raw.hpp"
-#include "game/goodhelper.hpp"
+#include "good/goodhelper.hpp"
 #include "image.hpp"
 #include "core/stringhelper.hpp"
 #include "label.hpp"
 #include "core/gettext.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 #include "game/settings.hpp"
 
 using namespace constants;
@@ -28,7 +28,7 @@ namespace gui
 {
 
 InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 64 ) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 74 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
   FactoryPtr rawmb = tile.getOverlay().as<Factory>();

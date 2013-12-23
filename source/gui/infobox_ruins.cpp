@@ -14,14 +14,14 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "infobox_ruins.hpp"
-#include "game/goodhelper.hpp"
+#include "good/goodhelper.hpp"
 #include "image.hpp"
 #include "core/stringhelper.hpp"
 #include "label.hpp"
 #include "core/gettext.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 #include "game/settings.hpp"
-#include "building/ruins.hpp"
+#include "objects/ruins.hpp"
 
 using namespace constants;
 

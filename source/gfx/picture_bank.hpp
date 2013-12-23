@@ -15,15 +15,12 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #ifndef __CAESARIA_PICLOADER_H_INCLUDED__
 #define __CAESARIA_PICLOADER_H_INCLUDED__
 
-#include <map>
-
 #include "picture.hpp"
 #include "walker/action.hpp"
-#include "game/good.hpp"
+#include "good/good.hpp"
 #include "core/scopedptr.hpp"
 
 class GfxEngine;
