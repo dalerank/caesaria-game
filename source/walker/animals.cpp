@@ -15,7 +15,7 @@
 
 #include "animals.hpp"
 #include "core/variant.hpp"
-#include "player/city.hpp"
+#include "city/city.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"

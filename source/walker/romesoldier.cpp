@@ -16,12 +16,12 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "romesoldier.hpp"
-#include "game/city.hpp"
-#include "game/name_generator.hpp"
+#include "city/city.hpp"
+#include "name_generator.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
-#include "building/military.hpp"
-#include "game/pathway_helper.hpp"
+#include "objects/military.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "animals.hpp"
 #include "enemysoldier.hpp"

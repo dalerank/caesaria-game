@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tileoverlay.hpp"
-#include "building/metadata.hpp"
-#include "game/city.hpp"
+#include "objects/metadata.hpp"
+#include "city/city.hpp"
 #include "tilemap.hpp"
 #include "core/logger.hpp"
 

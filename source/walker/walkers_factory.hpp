@@ -13,35 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
-#define __CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
+#ifndef __CAESARIA_WALKERMANAGER_H_INCLUDED__
+#define __CAESARIA_WALKERMANAGER_H_INCLUDED__
 
-#include "enums.hpp"
 #include "core/scopedptr.hpp"
-#include "predefinitions.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "game/predefinitions.hpp"
+#include "walker/constants.hpp"
 
-class TileOverlayConstructor
+class WalkerCreator
 {
 public:
-  virtual TileOverlayPtr create() = 0;
+  virtual WalkerPtr create( PlayerCityPtr city ) = 0;
 };
 
-class TileOverlayFactory
+class WalkerManager
 {
 public:
-    static TileOverlayFactory& getInstance();
-    TileOverlayPtr create( const TileOverlay::Type type ) const;
-    TileOverlayPtr create( const std::string& typeName ) const;
+  static WalkerManager& getInstance();
 
-    bool canCreate( const TileOverlay::Type type ) const;
+  bool canCreate( constants::walker::Type type ) const;
 
-    void addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
+  void addCreator( constants::walker::Type type, WalkerCreator* ctor );
+
+  WalkerPtr create( constants::walker::Type walkerType, PlayerCityPtr city );  // get an instance of the given type
+
+  ~WalkerManager();
 private:
-    TileOverlayFactory();
+  WalkerManager();
 
-    class Impl;
-    ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif  //__CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
+#endif //__CAESARIA_WALKERMANAGER_H_INCLUDED__

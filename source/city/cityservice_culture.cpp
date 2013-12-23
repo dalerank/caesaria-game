@@ -14,18 +14,18 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_culture.hpp"
-#include "cityhelper.hpp"
+#include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "building/house.hpp"
-#include "building/entertainment.hpp"
-#include "house_level.hpp"
+#include "objects/house.hpp"
+#include "objects/entertainment.hpp"
+#include "objects/house_level.hpp"
 #include "gfx/tile.hpp"
 #include "core/time.hpp"
-#include "gamedate.hpp"
-#include "building/religion.hpp"
-#include "building/education.hpp"
-#include "building/constants.hpp"
+#include "game/gamedate.hpp"
+#include "objects/religion.hpp"
+#include "objects/education.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 

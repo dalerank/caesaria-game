@@ -14,14 +14,16 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_fishplace.hpp"
-#include "cityhelper.hpp"
+#include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/position.hpp"
 #include "gfx/tile.hpp"
-#include "tileoverlay_factory.hpp"
-#include "fish_place.hpp"
-#include "constants.hpp"
+#include "objects/objects_factory.hpp"
+#include "walker/fish_place.hpp"
+//#include "constants.hpp"
+
+using namespace constants;
 
 class CityServiceFishPlace::Impl
 {
@@ -55,12 +57,12 @@ void CityServiceFishPlace::update( const unsigned int time )
   if( _d->places.empty() )
   {
     CityHelper helper( _d->city );
-    _d->places = helper.find<FishPlace>( constants::place::fishPlace );
+    _d->places = helper.find<FishPlace>( walker::fishPlace );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    TileOverlayPtr fishplace = TileOverlayFactory::getInstance().create( constants::place::fishPlace );
+    TileOverlayPtr fishplace = TileOverlayFactory::getInstance().create( walker::fishPlace );
 
     if( fishplace != 0 )
     {

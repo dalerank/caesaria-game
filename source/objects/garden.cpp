@@ -16,7 +16,7 @@
 #include "garden.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "core/stringhelper.hpp"

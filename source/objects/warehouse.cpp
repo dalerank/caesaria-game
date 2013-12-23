@@ -26,13 +26,13 @@
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "walker/cart_pusher.hpp"
-#include "game/goodstore.hpp"
-#include "game/city.hpp"
+#include "good/goodstore.hpp"
+#include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
-#include "game/goodhelper.hpp"
+#include "good/goodhelper.hpp"
 
 #include <list>
 

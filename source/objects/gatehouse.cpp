@@ -18,9 +18,9 @@
 #include "gatehouse.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "gfx/tilemap.hpp"
-#include "game/road.hpp"
+#include "objects/road.hpp"
 #include "core/direction.hpp"
 
 using namespace constants;

@@ -17,7 +17,7 @@
 #define __CAESARIA_WALKER_PREFECT_H_INCLUDED__
 
 #include "serviceman.hpp"
-#include "building/prefecture.hpp"
+#include "objects/prefecture.hpp"
 
 class Prefect : public ServiceWalker
 {

@@ -122,8 +122,7 @@ public:
     append( building::tower,          "tower" );
     append( building::wall,           "wall"  );
     append( building::fortification,  "fortification" );
-    append( place::elevation, "elevation" );
-    append( place::fishPlace, "fish_place" );
+    append( building::elevation, "elevation" );
     append( building::unknown,        "" );
  }
 };

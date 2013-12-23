@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "cityhelper.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 
 using namespace constants;

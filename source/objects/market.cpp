@@ -18,10 +18,10 @@
 #include "game/resourcegroup.hpp"
 #include "walker/market_lady.hpp"
 #include "core/variant.hpp"
-#include "game/goodstore_simple.hpp"
-#include "game/city.hpp"
+#include "good/goodstore_simple.hpp"
+#include "city/city.hpp"
 #include "walker/serviceman.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 
 class Market::Impl

@@ -15,7 +15,7 @@
 
 #include "returnworkers.hpp"
 #include "game/game.hpp"
-#include "player/city.hpp"
+#include "city/city.hpp"
 #include "objects/house.hpp"
 #include "gfx/tilemap.hpp"
 

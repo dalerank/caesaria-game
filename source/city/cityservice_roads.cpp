@@ -14,14 +14,14 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_roads.hpp"
-#include "cityhelper.hpp"
-#include "gamedate.hpp"
-#include "path_finding.hpp"
+#include "city/helper.hpp"
+#include "game/gamedate.hpp"
+#include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
-#include "building/house.hpp"
-#include "house_level.hpp"
-#include "road.hpp"
-#include "building/constants.hpp"
+#include "objects/house.hpp"
+#include "objects/house_level.hpp"
+#include "objects/road.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 

@@ -15,7 +15,7 @@
 
 #include "ship.hpp"
 #include "core/gettext.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"

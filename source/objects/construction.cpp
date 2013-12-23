@@ -19,7 +19,7 @@
 
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "events/disaster.hpp"
 #include "core/logger.hpp"
 

@@ -23,15 +23,15 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "player/city.hpp"
+#include "city/city.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
-#include "player/cityfunds.hpp"
+#include "city/funds.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
-#include "player/citymigration.hpp"
-#include "player/citystatistic.hpp"
+#include "city/migration.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 

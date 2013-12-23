@@ -19,14 +19,14 @@
 #include "city.hpp"
 
 #include "gfx/tile.hpp"
-#include "building/metadata.hpp"
-#include "path_finding.hpp"
+#include "objects/metadata.hpp"
+#include "pathway/path_finding.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "tileoverlay_factory.hpp"
-#include "astarpathfinding.hpp"
+#include "objects/objects_factory.hpp"
+#include "pathway/astarpathfinding.hpp"
 #include "core/safetycast.hpp"
-#include "citymigration.hpp"
+#include "city/migration.hpp"
 #include "cityservice_workershire.hpp"
 #include "cityservice_timers.hpp"
 #include "cityservice_prosperity.hpp"
@@ -34,25 +34,22 @@
 #include "cityservice_info.hpp"
 #include "cityservice_animals.hpp"
 #include "gfx/tilemap.hpp"
-#include "road.hpp"
+#include "objects/road.hpp"
 #include "core/time.hpp"
 #include "core/variant.hpp"
 #include "core/stringhelper.hpp"
-#include "walkermanager.hpp"
+#include "walker/walkers_factory.hpp"
 #include "core/gettext.hpp"
 #include "build_options.hpp"
-#include "building/house.hpp"
-#include "building/forum.hpp"
-#include "building/senate.hpp"
 #include "cityservice_culture.hpp"
-#include "cityfunds.hpp"
+#include "city/funds.hpp"
 #include "world/city.hpp"
 #include "world/empire.hpp"
 #include "trade_options.hpp"
-#include "goodstore_simple.hpp"
+#include "good/goodstore_simple.hpp"
 #include "world/trading.hpp"
 #include "walker/merchant.hpp"
-#include "gamedate.hpp"
+#include "game/gamedate.hpp"
 #include "cityservice_religion.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"
@@ -61,11 +58,14 @@
 #include "cityservice_roads.hpp"
 #include "cityservice_fishplace.hpp"
 #include "core/logger.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 #include "cityservice_disorder.hpp"
 #include "world/merchant.hpp"
-#include "cityhelper.hpp"
-#include "citystatistic.hpp"
+#include "city/helper.hpp"
+#include "city/statistic.hpp"
+#include "objects/forum.hpp"
+#include "objects/senate.hpp"
+#include "objects/house.hpp"
 #include <set>
 
 using namespace constants;
@@ -390,7 +390,7 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
   ForumList forums = hlp.find< Forum >( building::forum );
   foreach( ForumPtr forum, forums ) { lastMonthTax += forum->collectTaxes(); }
 
-  std::list<SenatePtr> senates = hlp.find< Senate >( building::senate );
+  SenateList senates = hlp.find< Senate >( building::senate );
   foreach( SenatePtr senate, senates ) { lastMonthTax += senate->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( CityFunds::taxIncome, lastMonthTax ) );

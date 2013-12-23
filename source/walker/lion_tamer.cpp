@@ -16,9 +16,9 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "lion_tamer.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "lion.hpp"
-#include "game/pathway.hpp"
+#include "pathway/pathway.hpp"
 
 using namespace constants;
 

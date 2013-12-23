@@ -17,7 +17,7 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/picture.hpp"
 #include "walker/taxcollector.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
 #include "walker/constants.hpp"

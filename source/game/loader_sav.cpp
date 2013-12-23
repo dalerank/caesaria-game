@@ -17,10 +17,10 @@
 #include "gfx/tile.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "tileoverlay_factory.hpp"
+#include "objects/objects_factory.hpp"
 #include "game.hpp"
 #include "pkwareinputstream.hpp"
-#include "city.hpp"
+#include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 
 #include <fstream>

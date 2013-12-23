@@ -18,12 +18,12 @@
 #include "tower.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "fortification.hpp"
 #include "core/direction.hpp"
 #include "walker/wallguard.hpp"
-#include "game/pathway_helper.hpp"
+#include "pathway/pathway_helper.hpp"
 
 using namespace constants;
 

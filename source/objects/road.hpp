@@ -16,7 +16,7 @@
 #ifndef __CAESARIA_ROAD_H_INCLUDE__
 #define __CAESARIA_ROAD_H_INCLUDE__
 
-#include "building/construction.hpp"
+#include "objects/construction.hpp"
 
 class Road : public Construction
 {

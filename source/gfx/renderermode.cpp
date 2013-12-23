@@ -14,9 +14,9 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "renderermode.hpp"
-#include "game/tileoverlay_factory.hpp"
-#include "building/building.hpp"
-#include "building/constants.hpp"
+#include "objects/objects_factory.hpp"
+#include "objects/building.hpp"
+#include "objects/constants.hpp"
 #include "layerconstants.hpp"
 
 using namespace constants;

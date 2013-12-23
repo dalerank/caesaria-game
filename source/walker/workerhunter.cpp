@@ -14,15 +14,15 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "workerhunter.hpp"
-#include "building/house.hpp"
+#include "objects/house.hpp"
 #include "core/predefinitions.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
 #include "servicewalker_helper.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "game/enums.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/path_finding.hpp"
+#include "pathway/path_finding.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
 

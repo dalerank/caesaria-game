@@ -17,7 +17,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "constants.hpp"
 
 using namespace constants;

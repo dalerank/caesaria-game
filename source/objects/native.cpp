@@ -16,7 +16,7 @@
 #include "native.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "constants.hpp"
 
 using namespace constants;

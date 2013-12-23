@@ -18,8 +18,8 @@
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
 #include "walker/cart_pusher.hpp"
-#include "game/goodstore_simple.hpp"
-#include "game/city.hpp"
+#include "good/goodstore_simple.hpp"
+#include "city/city.hpp"
 #include "constants.hpp"
 
 class GranaryGoodStore : public SimpleGoodStore

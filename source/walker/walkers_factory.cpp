@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "walkermanager.hpp"
+#include "walkers_factory.hpp"
 #include "walker/trainee.hpp"
 #include "walker/market_lady.hpp"
 #include "walker/cart_pusher.hpp"
 #include "walker/prefect.hpp"
 #include "walker/emigrant.hpp"
 #include "walker/taxcollector.hpp"
-#include "city.hpp"
+#include "city/city.hpp"
 #include "name_generator.hpp"
 #include "core/logger.hpp"
 #include "walker/animals.hpp"

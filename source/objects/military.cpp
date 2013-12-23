@@ -19,7 +19,7 @@
 #include "military.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/romesoldier.hpp"
 #include "core/logger.hpp"

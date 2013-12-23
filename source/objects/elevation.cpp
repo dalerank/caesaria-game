@@ -17,7 +17,7 @@
 #include "constants.hpp"
 #include "gfx/tile.hpp"
 
-Elevation::Elevation() : TileOverlay( constants::place::elevation, Size( 2 ) )
+Elevation::Elevation() : TileOverlay( constants::building::elevation, Size( 2 ) )
 {
   setDebugName( CAESARIA_STR_EXT(Elevation) );
 }

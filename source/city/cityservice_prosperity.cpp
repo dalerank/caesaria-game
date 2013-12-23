@@ -14,18 +14,18 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_prosperity.hpp"
-#include "cityhelper.hpp"
+#include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "citystatistic.hpp"
-#include "building/house.hpp"
-#include "house_level.hpp"
+#include "city/statistic.hpp"
+#include "objects/house.hpp"
+#include "objects/house_level.hpp"
 #include "gfx/tile.hpp"
-#include "building/entertainment.hpp"
-#include "gamedate.hpp"
-#include "cityfunds.hpp"
+#include "objects/entertainment.hpp"
+#include "game/gamedate.hpp"
+#include "city/funds.hpp"
 #include "world/empire.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 using namespace  constants;
 

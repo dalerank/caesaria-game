@@ -27,7 +27,7 @@
 #include "core/event.hpp"
 #include "texturedbutton.hpp"
 #include "gui/label.hpp"
-#include "player/city.hpp"
+#include "city/city.hpp"
 #include "objects/market.hpp"
 #include "objects/granary.hpp"
 #include "core/stringhelper.hpp"

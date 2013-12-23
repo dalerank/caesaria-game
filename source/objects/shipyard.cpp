@@ -21,10 +21,10 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
-#include "game/goodstore.hpp"
+#include "good/goodstore.hpp"
 #include "wharf.hpp"
-#include "game/pathway.hpp"
-#include "game/cityhelper.hpp"
+#include "pathway/pathway.hpp"
+#include "city/helper.hpp"
 #include "walker/fishing_boat.hpp"
 
 using namespace constants;

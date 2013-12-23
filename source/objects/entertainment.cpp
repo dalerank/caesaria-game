@@ -18,12 +18,12 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "training.hpp"
 #include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 

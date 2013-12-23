@@ -12,30 +12,38 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LOW_BRIDGE_H_INCLUDED__
-#define __CAESARIA_LOW_BRIDGE_H_INCLUDED__
+#ifndef __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
 
-#include "objects/construction.hpp"
+#include "cityservice.hpp"
 #include "core/scopedptr.hpp"
-#include "core/direction.hpp"
+#include "core/predefinitions.hpp"
+#include "game/divinity.hpp"
+#include "core/variant.hpp"
 
-class LowBridge : public Construction
+class CityServiceFestival : public CityService
 {
 public:
-  LowBridge();
+  static CityServicePtr create( PlayerCityPtr city );
+  static std::string getDefaultName();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;
-  virtual void initTerrain( Tile& terrain );
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
-  virtual void destroy();
+  DateTime getLastFestivalDate() const;
+  DateTime getNextFestivalDate() const;
+  void assignFestival( RomeDivinityType name , int size);
+
+  void update( const unsigned int time );
+
+  VariantMap save() const;
+  void load( VariantMap stream );
 
 private:
-  void _computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir );
-  void _checkParams( PlayerCityPtr city, constants::Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
+  CityServiceFestival( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_LOW_BRIDGE_H_INCLUDED__
+#endif //__CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__

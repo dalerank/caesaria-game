@@ -23,7 +23,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "core/stringhelper.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"

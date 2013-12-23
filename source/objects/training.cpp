@@ -24,7 +24,7 @@
 #include "core/gettext.hpp"
 #include "core/variant.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "constants.hpp"
 #include "walker/lion_tamer.hpp"
 

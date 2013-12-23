@@ -15,7 +15,7 @@
 
 #include "pathway_helper.hpp"
 #include "astarpathfinding.hpp"
-#include "city.hpp"
+#include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 
 Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,

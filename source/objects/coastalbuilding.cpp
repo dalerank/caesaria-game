@@ -16,12 +16,12 @@
 #include "coastalbuilding.hpp"
 #include "gfx/tile.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
-#include "game/goodstore.hpp"
+#include "good/goodstore.hpp"
 #include "constants.hpp"
 
 using namespace constants;

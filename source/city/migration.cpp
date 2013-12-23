@@ -13,21 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "citymigration.hpp"
-#include "cityhelper.hpp"
+#include "migration.hpp"
+#include "helper.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/emigrant.hpp"
 #include "core/position.hpp"
-#include "road.hpp"
-#include "building/house.hpp"
+#include "objects/road.hpp"
+#include "objects/house.hpp"
 #include "gfx/tile.hpp"
-#include "cityfunds.hpp"
-#include "building/constants.hpp"
-#include "settings.hpp"
+#include "funds.hpp"
+#include "objects/constants.hpp"
+#include "game/settings.hpp"
 #include "world/empire.hpp"
-#include "gamedate.hpp"
-#include "citystatistic.hpp"
+#include "game/gamedate.hpp"
+#include "statistic.hpp"
 
 using namespace constants;
 

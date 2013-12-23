@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "layerbuild.hpp"
-#include "building/aqueduct.hpp"
+#include "objects/aqueduct.hpp"
 #include "layerconstants.hpp"
 #include "walker/constants.hpp"
 #include "game/roadbuild_helper.hpp"
@@ -22,12 +22,12 @@
 #include "events/event.hpp"
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "tilemap_camera.hpp"
 #include "core/event.hpp"
 #include "sdl_engine.hpp"
 #include "core/font.hpp"
-#include "building/fortification.hpp"
+#include "objects/fortification.hpp"
 #include "core/stringhelper.hpp"
 
 using namespace constants;

@@ -16,7 +16,7 @@
 #ifndef __CAESARIA_HIGH_BRIDGE_H_INCLUDED__
 #define __CAESARIA_HIGH_BRIDGE_H_INCLUDED__
 
-#include "game/construction.hpp"
+#include "objects/construction.hpp"
 #include "core/scopedptr.hpp"
 #include "core/direction.hpp"
 

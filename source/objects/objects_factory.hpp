@@ -12,39 +12,35 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __CAESARIA_ALARM_EVENT_HOLDER_H_INCLUDED__
-#define __CAESARIA_ALARM_EVENT_HOLDER_H_INCLUDED__
+#ifndef __CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
+#define __CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
 
 #include "core/scopedptr.hpp"
-#include "core/position.hpp"
-#include "core/signals.hpp"
+#include "predefinitions.hpp"
+#include "gfx/tileoverlay.hpp"
 
-#include <string>
-
-class AlarmEventHolder
+class TileOverlayConstructor
 {
 public:
-  AlarmEventHolder();
-
-  ~AlarmEventHolder();
-
-  void add(TilePos pos, std::string message );
-  void next();
-  
-  bool haveAlarms() const;
-  TilePos getCurrentPos() const;
-  std::string getCurrentMessage() const;
-
-oc3_signals public:
-  Signal1<bool>& onAlarmChange();
-  Signal1<TilePos>& onMoveToAlarm();
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  virtual TileOverlayPtr create() = 0;
 };
 
-#endif //__OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
+class TileOverlayFactory
+{
+public:
+    static TileOverlayFactory& getInstance();
+    TileOverlayPtr create( const TileOverlay::Type type ) const;
+    TileOverlayPtr create( const std::string& typeName ) const;
+
+    bool canCreate( const TileOverlay::Type type ) const;
+
+    void addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
+private:
+    TileOverlayFactory();
+
+    class Impl;
+    ScopedPtr< Impl > _d;
+};
+
+#endif  //__CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_

@@ -17,7 +17,7 @@
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"
 #include "constants.hpp"

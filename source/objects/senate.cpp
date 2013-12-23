@@ -16,11 +16,11 @@
 #include "senate.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/cityfunds.hpp"
+#include "city/funds.hpp"
 #include "walker/taxcollector.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "constants.hpp"
-#include "game/citystatistic.hpp"
+#include "city/statistic.hpp"
 #include "core/gettext.hpp"
 
 using namespace constants;

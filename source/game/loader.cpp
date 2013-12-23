@@ -28,7 +28,7 @@
 #include "resourcegroup.hpp"
 #include "core/foreach.hpp"
 #include "game.hpp"
-#include "city.hpp"
+#include "city/city.hpp"
 #include "core/logger.hpp"
 
 #include <vector>

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ambientsound.hpp"
-#include "city.hpp"
+#include "city/city.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "sound/engine.hpp"
 #include "core/stringhelper.hpp"

@@ -19,8 +19,7 @@
 #define __CAESARIA_BUILDMENU_H_INCLUDE_
 
 #include "gui/widget.hpp"
-#include "game/enums.hpp"
-#include "game/build_options.hpp"
+#include "city/build_options.hpp"
 
 namespace gui
 {

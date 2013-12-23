@@ -17,7 +17,7 @@
 #define __CAESARIA_MARKETLADY_H_INCLUDED__
 
 #include "walker.hpp"
-#include "building/warehouse.hpp"
+#include "objects/warehouse.hpp"
 
 /** This is the market lady buying goods at granaries and warehouses */
 class MarketLady : public Walker

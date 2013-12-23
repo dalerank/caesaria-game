@@ -19,19 +19,19 @@
 
 #include "house_level.hpp"
 
-#include "building/house.hpp"
+#include "objects/house.hpp"
 #include "core/exception.hpp"
 #include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
 #include "core/variant.hpp"
 #include "core/saveadapter.hpp"
-#include "goodstore.hpp"
+#include "good/goodstore.hpp"
 #include "core/foreach.hpp"
-#include "city.hpp"
-#include "game/goodhelper.hpp"
+#include "city/city.hpp"
+#include "good/goodhelper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
-#include "gamedate.hpp"
+#include "game/gamedate.hpp"
 
 #include <string>
 #include <map>

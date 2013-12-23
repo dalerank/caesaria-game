@@ -19,7 +19,7 @@
 #define __CAESARIA_TOWER_H_INCLUDED__
 
 #include "service.hpp"
-#include "game/pathway.hpp"
+#include "pathway/pathway.hpp"
 
 class Tower : public ServiceBuilding
 {

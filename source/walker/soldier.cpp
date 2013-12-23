@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "soldier.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 
 using namespace constants;
 

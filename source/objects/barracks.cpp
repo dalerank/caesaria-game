@@ -19,8 +19,8 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "walker/trainee.hpp"
-#include "game/goodstore_simple.hpp"
-#include "game/city.hpp"
+#include "good/goodstore_simple.hpp"
+#include "city/city.hpp"
 #include "walker/cart_supplier.hpp"
 
 using namespace constants;

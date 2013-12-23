@@ -20,7 +20,7 @@
 #define _CAESARIA_ROMESOLDIER_INCLUDE_H_
 
 #include "soldier.hpp"
-#include "building/predefinitions.hpp"
+#include "objects/predefinitions.hpp"
 
 /** Soldier, friend or enemy */
 class RomeSoldier : public Soldier

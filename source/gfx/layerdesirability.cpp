@@ -15,8 +15,8 @@
 
 #include "layerdesirability.hpp"
 #include "game/resourcegroup.hpp"
-#include "building/constants.hpp"
-#include "game/cityhelper.hpp"
+#include "objects/constants.hpp"
+#include "city/helper.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "core/stringhelper.hpp"
 #include "layerconstants.hpp"

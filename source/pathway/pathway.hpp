@@ -22,9 +22,7 @@
 #include "core/scopedptr.hpp"
 #include "core/direction.hpp"
 #include "core/delegate.hpp"
-
-class TilesArray;
-class Tilemap;
+#include "gfx/predefinitions.hpp"
 
 class Pathway
 {

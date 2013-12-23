@@ -23,6 +23,8 @@
 #include "core/predefinitions.hpp"
 #include "events/predefinitions.hpp"
 #include "gui/predefinitions.hpp"
-#include "player/predefinitions.hpp"
+#include "city/predefinitions.hpp"
+
+PREDEFINE_CLASS_SMARTPOINTER(Player)
 
 #endif //__CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__

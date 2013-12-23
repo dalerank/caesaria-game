@@ -16,7 +16,7 @@
 #ifndef __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
 
-#include "cityservice.hpp"
+#include "city/cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 

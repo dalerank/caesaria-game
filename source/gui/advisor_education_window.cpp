@@ -22,7 +22,7 @@
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
-#include "player/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/foreach.hpp"
 #include "game/settings.hpp"

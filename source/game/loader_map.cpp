@@ -15,16 +15,16 @@
 
 #include "loader_map.hpp"
 #include "gfx/tile.hpp"
-#include "city.hpp"
+#include "city/city.hpp"
 #include "game.hpp"
 #include "core/exception.hpp"
-#include "tileoverlay_factory.hpp"
+#include "objects/objects_factory.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/tilemap.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"
-#include "building/constants.hpp"
-#include "constants.hpp"
+#include "objects/constants.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 
@@ -314,7 +314,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
       case 0x34e:
       case 0x34f:
       case 0x350:
-        overlay = TileOverlayFactory::getInstance().create( place::elevation );
+        overlay = TileOverlayFactory::getInstance().create( building::elevation );
         overlay->setPicture( Picture::load( TileHelper::convId2PicName( oTile.getOriginalImgId() ) ) );
       break;
     }

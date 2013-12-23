@@ -15,12 +15,12 @@
 
 #include "market_kid.hpp"
 #include "market_lady.hpp"
-#include "building/market.hpp"
-#include "game/cityhelper.hpp"
-#include "game/pathway.hpp"
-#include "game/goodstore.hpp"
+#include "objects/market.hpp"
+#include "city/helper.hpp"
+#include "pathway/pathway.hpp"
+#include "good/goodstore.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/name_generator.hpp"
+#include "name_generator.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
 

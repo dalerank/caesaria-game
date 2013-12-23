@@ -18,11 +18,11 @@
 #include "clay_pit.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/gettext.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 ClayPit::ClayPit() : Factory( Good::none, Good::clay, constants::building::clayPit, Size(2) )
 {

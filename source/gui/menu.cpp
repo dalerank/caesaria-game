@@ -33,8 +33,8 @@
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
-#include "building/constants.hpp"
-#include "player/city.hpp"
+#include "objects/constants.hpp"
+#include "city/city.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;

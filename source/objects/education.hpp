@@ -16,7 +16,7 @@
 #ifndef _CAESARIA_BUILDING_EDUCATION_H_INCLUDE_
 #define _CAESARIA_BUILDING_EDUCATION_H_INCLUDE_
 
-#include "building/service.hpp"
+#include "objects/service.hpp"
 
 class School : public ServiceBuilding
 {

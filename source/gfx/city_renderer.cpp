@@ -27,7 +27,7 @@
 #include "gfx/renderermode.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/stringhelper.hpp"
-#include "game/house_level.hpp"
+#include "objects/house_level.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"
 #include "core/font.hpp"
@@ -47,10 +47,10 @@
 #include "layerentertainment.hpp"
 #include "layercrime.hpp"
 #include "walker/walker.hpp"
-#include "building/aqueduct.hpp"
+#include "objects/aqueduct.hpp"
 #include "layerdestroy.hpp"
 #include "tilemap_camera.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 
 using namespace constants;
 

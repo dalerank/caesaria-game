@@ -14,17 +14,17 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_religion.hpp"
-#include "cityhelper.hpp"
+#include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "gamedate.hpp"
-#include "building/religion.hpp"
-#include "divinity.hpp"
+#include "game/gamedate.hpp"
+#include "objects/religion.hpp"
+#include "game/divinity.hpp"
 #include "events/event.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 

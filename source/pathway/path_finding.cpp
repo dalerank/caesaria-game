@@ -18,14 +18,14 @@
 #include "path_finding.hpp"
 
 #include "gfx/tilemap.hpp"
-#include "city.hpp"
+#include "city/city.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "road.hpp"
+#include "objects/road.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
-#include "cityhelper.hpp"
-#include "building/building.hpp"
+#include "city/helper.hpp"
+#include "objects/building.hpp"
 
 #include <iterator>
 
@@ -157,7 +157,7 @@ void Propagator::propagate(const int maxDistance)
    }
 }
 
-bool Propagator::getPath( RoadPtr destination, Pathway &oPathWay)
+/*bool Propagator::getPath( RoadPtr destination, Pathway &oPathWay)
 {
    std::map<Tile*, Pathway>::iterator mapIt;
    int distance = 30;
@@ -182,7 +182,7 @@ bool Propagator::getPath( RoadPtr destination, Pathway &oPathWay)
 
       distance = distance * 2;
    }
-}
+}*/
 
 
 bool Propagator::getPath( ConstructionPtr destination, Pathway &oPathWay)

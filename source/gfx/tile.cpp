@@ -15,7 +15,7 @@
 
 #include "tile.hpp"
 #include "core/exception.hpp"
-#include "building/building.hpp"
+#include "objects/building.hpp"
 #include "tileoverlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"

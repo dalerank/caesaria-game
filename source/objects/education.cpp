@@ -15,7 +15,7 @@
 
 #include "education.hpp"
 #include "game/resourcegroup.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 

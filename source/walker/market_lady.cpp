@@ -14,20 +14,20 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "market_lady.hpp"
-#include "building/metadata.hpp"
+#include "objects/metadata.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "building/market.hpp"
-#include "building/granary.hpp"
+#include "objects/market.hpp"
+#include "objects/granary.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
-#include "game/path_finding.hpp"
+#include "pathway/path_finding.hpp"
 #include "market_kid.hpp"
-#include "game/goodstore_simple.hpp"
-#include "game/cityhelper.hpp"
-#include "game/name_generator.hpp"
-#include "building/constants.hpp"
+#include "good/goodstore_simple.hpp"
+#include "city/helper.hpp"
+#include "name_generator.hpp"
+#include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;

@@ -21,10 +21,10 @@
 #include "core/stringhelper.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
-#include "astarpathfinding.hpp"
+#include "pathway/astarpathfinding.hpp"
 #include "gfx/tile.hpp"
-#include "pathway.hpp"
-#include "pathway_helper.hpp"
+#include "pathway/pathway.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "core/logger.hpp"
 
 // comparison (for sorting list of tiles by their coordinates)

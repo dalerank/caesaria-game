@@ -15,7 +15,7 @@
 
 #include "fireworkers.hpp"
 #include "game/game.hpp"
-#include "player/city.hpp"
+#include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/working.hpp"
 

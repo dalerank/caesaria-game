@@ -12,36 +12,43 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
+#ifndef __CAESARIA_WIN_TARGETS_H_INCLUDED__
+#define __CAESARIA_WIN_TARGETS_H_INCLUDED__
 
-#include "cityservice.hpp"
+#include "core/referencecounted.hpp"
+#include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
-#include "game/divinity.hpp"
-#include "core/variant.hpp"
 
-class CityServiceFestival : public CityService
+class VariantMap;
+
+class CityWinTargets : public ReferenceCounted
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
-  static std::string getDefaultName();
+  CityWinTargets();
+  ~CityWinTargets();
 
-  DateTime getLastFestivalDate() const;
-  DateTime getNextFestivalDate() const;
-  void assignFestival( RomeDivinityType name , int size);
+  int getCulture() const;
+  int getProsperity() const;
+  int getFavour() const;
+  int getPeace() const;
+  int getPopulation() const;
+  const std::string& getOverview() const;
 
-  void update( const unsigned int time );
+  bool isSuccess( int culture, int prosperity,
+                  int favour, int peace,
+                  int population ) const;
 
-  VariantMap save() const;
-  void load( VariantMap stream );
+  void load( const VariantMap& stream );
+
+  CityWinTargets& operator=(const CityWinTargets& a);
 
 private:
-  CityServiceFestival( PlayerCityPtr city );
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
+#endif //__CAESARIA_WIN_TARGETS_H_INCLUDED__

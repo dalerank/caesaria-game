@@ -23,11 +23,11 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "player/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
-#include "player/cityfunds.hpp"
+#include "city/funds.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 

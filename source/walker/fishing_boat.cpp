@@ -15,16 +15,18 @@
 
 #include "fishing_boat.hpp"
 #include "core/gettext.hpp"
-#include "game/cityhelper.hpp"
-#include "building/wharf.hpp"
-#include "game/good.hpp"
-#include "game/fish_place.hpp"
-#include "game/astarpathfinding.hpp"
+#include "city/helper.hpp"
+#include "objects/wharf.hpp"
+#include "good/good.hpp"
+#include "walker/fish_place.hpp"
+#include "pathway/astarpathfinding.hpp"
 #include "core/stringhelper.hpp"
-#include "game/pathway.hpp"
+#include "pathway/pathway.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
-#include "game/constants.hpp"
+#include "constants.hpp"
+#include "objects/predefinitions.hpp"
+#include "walker/fish_place.hpp"
 #include "gfx/tilesarray.hpp"
 
 using namespace constants;
@@ -94,11 +96,11 @@ void FishingBoat::timeStep(const unsigned long time)
       _setAnimation( gfx::fishingBoatWork );
 
       CityHelper helper( _getCity() );
-      FishPlacePtr overlay = helper.find<FishPlace>( place::fishPlace, getIJ() );
+      FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, getIJ() );
 
-      if( overlay != 0 )
+      if( !places.empty() )
       {
-        FishPlacePtr fishplace = overlay.as<FishPlace>();
+        FishPlacePtr fishplace = places.front();
         _d->stock.setQty( math::clamp( _d->stock.qty()+10, 0, _d->stock.capacity() ) );
       }
       else
@@ -228,7 +230,7 @@ void FishingBoat::_changeTile()
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& pos )
 {
   CityHelper helper( city );
-  FishPlaceList places = helper.find<FishPlace>( place::fishPlace );
+  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace );
 
   int minDistance = 999;
   FishPlacePtr nearest;

@@ -16,7 +16,7 @@
 #include "merchant.hpp"
 #include "empire.hpp"
 #include "city.hpp"
-#include "game/goodstore_simple.hpp"
+#include "good/goodstore_simple.hpp"
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"

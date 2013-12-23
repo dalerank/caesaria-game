@@ -14,10 +14,10 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_disorder.hpp"
-#include "cityhelper.hpp"
-#include "building/constants.hpp"
+#include "city/helper.hpp"
+#include "objects/constants.hpp"
 #include "core/foreach.hpp"
-#include "building/house.hpp"
+#include "objects/house.hpp"
 #include "walker/protestor.hpp"
 
 using namespace constants;

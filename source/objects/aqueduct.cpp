@@ -21,9 +21,10 @@
 #include "game/resourcegroup.hpp"
 #include "core/safetycast.hpp"
 #include "constants.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
-#include "game/road.hpp"
+#include "objects/predefinitions.hpp"
+#include "objects/road.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
 

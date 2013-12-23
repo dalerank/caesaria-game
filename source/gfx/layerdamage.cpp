@@ -14,12 +14,12 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "layerdamage.hpp"
-#include "building/constants.hpp"
-#include "building/house.hpp"
-#include "game/house_level.hpp"
+#include "objects/constants.hpp"
+#include "objects/house.hpp"
+#include "objects/house_level.hpp"
 #include "game/resourcegroup.hpp"
 #include "layerconstants.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 
 using namespace constants;
 

@@ -20,7 +20,7 @@
 #define _CAESARIA_WALLGUARD_INCLUDE_H_
 
 #include "soldier.hpp"
-#include "building/predefinitions.hpp"
+#include "objects/predefinitions.hpp"
 
 /** Soldier, friend or enemy */
 class WallGuard : public Soldier

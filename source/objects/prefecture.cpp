@@ -18,12 +18,12 @@
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "walker/prefect.hpp"
-#include "game/astarpathfinding.hpp"
+#include "pathway/astarpathfinding.hpp"
 #include "gfx/tile.hpp"
-#include "game/path_finding.hpp"
+#include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
-#include "game/city.hpp"
-#include "building/constants.hpp"
+#include "city/city.hpp"
+#include "objects/constants.hpp"
 
 class Prefecture::Impl
 {

@@ -27,7 +27,7 @@
 #include "core/time.hpp"
 #include "core/stringhelper.hpp"
 #include "objects/metadata.hpp"
-#include "game/build_options.hpp"
+#include "city/build_options.hpp"
 #include "core/foreach.hpp"
 #include "objects/constants.hpp"
 #include "events/playsound.hpp"

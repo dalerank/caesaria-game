@@ -15,7 +15,7 @@
 
 #include "spear.hpp"
 #include "core/gettext.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
 

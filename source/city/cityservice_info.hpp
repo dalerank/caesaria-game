@@ -12,38 +12,28 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WALKERMANAGER_H_INCLUDED__
-#define __CAESARIA_WALKERMANAGER_H_INCLUDED__
+#ifndef __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_INFO_H_INCLUDED__
 
-#include "enums.hpp"
+#include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
-#include "walker/constants.hpp"
 
-class WalkerCreator
+class CityServiceInfo : public CityService
 {
 public:
-  virtual WalkerPtr create( PlayerCityPtr city ) = 0;
-};
+  static CityServicePtr create( PlayerCityPtr city );
 
-class WalkerManager
-{
-public:
-  static WalkerManager& getInstance();
+  void update( const unsigned int time );
 
-  bool canCreate( constants::walker::Type type ) const;
-
-  void addCreator( constants::walker::Type type, WalkerCreator* ctor );
-
-  WalkerPtr create( constants::walker::Type walkerType, PlayerCityPtr city );  // get an instance of the given type
-
-  ~WalkerManager();
 private:
-  WalkerManager();
+  CityServiceInfo( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_WALKERMANAGER_H_INCLUDED__
+#endif //__CAESARIA_CITYSERVICE_INFO_H_INCLUDED__

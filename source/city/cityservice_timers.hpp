@@ -12,12 +12,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_CITYSERVICE_TIMERS_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_TIMERS_H_INCLUDED__
 
-PREDEFINE_CLASS_SMARTPOINTER(Player)
-PREDEFINE_CLASS_SMARTPOINTER(PlayerCity)
-PREDEFINE_CLASS_SMARTPOINTER(CityService)
+#include "cityservice.hpp"
+#include "core/timer.hpp"
 
-#endif //__CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
+class CityServiceTimers : public CityService
+{
+public:
+  static CityServiceTimers& getInstance();
+
+  void update( const unsigned int time );
+  void addTimer( TimerPtr timer );
+
+  ~CityServiceTimers();
+private:
+  CityServiceTimers();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+
+#endif //__CAESARIA_CITYSERVICE_TIMERS_H_INCLUDED__

@@ -15,11 +15,11 @@
 
 #include "layerfire.hpp"
 #include "tileoverlay.hpp"
-#include "building/constants.hpp"
-#include "building/house.hpp"
-#include "game/house_level.hpp"
+#include "objects/constants.hpp"
+#include "objects/house.hpp"
+#include "objects/house_level.hpp"
 #include "game/resourcegroup.hpp"
-#include "game/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "layerconstants.hpp"
 
 using namespace constants;

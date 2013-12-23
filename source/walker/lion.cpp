@@ -15,7 +15,7 @@
 
 #include "lion.hpp"
 #include "core/gettext.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 //#include "corpse.hpp"
 
 using namespace constants;

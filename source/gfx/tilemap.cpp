@@ -18,7 +18,7 @@
 #include "tilemap.hpp"
 
 #include "gfx/tile.hpp"
-#include "building/building.hpp"
+#include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "core/variant.hpp"

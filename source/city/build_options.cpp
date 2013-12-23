@@ -14,9 +14,9 @@
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "build_options.hpp"
-#include "building/metadata.hpp"
+#include "objects/metadata.hpp"
 #include "core/foreach.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 #include <map>
 
 using namespace constants;

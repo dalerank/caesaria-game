@@ -24,7 +24,7 @@
 #include "walker/constants.hpp"
 #include "walker/walker.hpp"
 #include "tilemap_camera.hpp"
-#include "game/city.hpp"
+#include "city/city.hpp"
 
 using namespace constants;
 

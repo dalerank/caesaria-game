@@ -18,8 +18,8 @@
 #include "gfx/city_renderer.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "game.hpp"
-#include "city.hpp"
-#include "building/military.hpp"
+#include "city/city.hpp"
+#include "objects/military.hpp"
 
 using namespace constants;
 

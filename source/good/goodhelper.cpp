@@ -16,7 +16,7 @@
 #include "goodhelper.hpp"
 #include "good.hpp"
 #include "core/enumerator.hpp"
-#include "resourcegroup.hpp"
+#include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/animation_bank.hpp"
 #include "core/gettext.hpp"

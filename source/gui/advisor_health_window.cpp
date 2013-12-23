@@ -23,7 +23,7 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
-#include "player/cityhelper.hpp"
+#include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"

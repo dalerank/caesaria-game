@@ -23,7 +23,7 @@
 #include "gfx/tile.hpp"
 #include "core/position.hpp"
 #include "core/foreach.hpp"
-#include "player.hpp"
+#include "game/player.hpp"
 #include "objects/constants.hpp"
 #include "world/city.hpp"
 #include "walker/constants.hpp"

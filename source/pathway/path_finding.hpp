@@ -56,7 +56,7 @@ public:
    * returns True if a path exists
    * the path is returned in oPathWay
    */
-  bool getPath( RoadPtr destination, Pathway& oPathWay );
+  //bool getPath( RoadPtr destination, Pathway& oPathWay );
   bool getPath( ConstructionPtr destination, Pathway& oPathWay );
 
   DirectRoute getShortestRoute( const Routes& routes );

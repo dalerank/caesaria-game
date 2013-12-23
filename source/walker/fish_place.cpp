@@ -14,11 +14,11 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "fish_place.hpp"
-#include "resourcegroup.hpp"
-#include "city.hpp"
+#include "game/resourcegroup.hpp"
+#include "city/city.hpp"
 #include "gfx/tilemap.hpp"
-#include "astarpathfinding.hpp"
-#include "pathway.hpp"
+#include "pathway/astarpathfinding.hpp"
+#include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
 #include "constants.hpp"
 
@@ -39,7 +39,7 @@ public:
   }
 };
 
-FishPlace::FishPlace() : TileOverlay( constants::place::fishPlace ), _d( new Impl )
+FishPlace::FishPlace() : TileOverlay( constants::walker::fishPlace ), _d( new Impl )
 {
   setDebugName( "fishPlace" );
 

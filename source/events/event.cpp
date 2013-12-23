@@ -14,11 +14,11 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "event.hpp"
-#include "game/tileoverlay_factory.hpp"
-#include "player/city.hpp"
+#include "objects/objects_factory.hpp"
+#include "city/city.hpp"
 #include "core/gettext.hpp"
 //#include "building/metadata.hpp"
-#include "player/cityfunds.hpp"
+#include "city/funds.hpp"
 #include "gui/environment.hpp"
 #include "gui/info_box.hpp"
 #include "gfx/tilemap.hpp"
@@ -30,14 +30,14 @@
 #include "world/empire.hpp"
 #include "game/resourcegroup.hpp"
 #include "gui/advisors_window.hpp"
-#include "game/trade_options.hpp"
+#include "city/trade_options.hpp"
 #include "gui/message_stack_widget.hpp"
 #include "game/settings.hpp"
 #include "objects/constants.hpp"
 #include "gfx/tilesarray.hpp"
 #include "playsound.hpp"
-#include "player/cityhelper.hpp"
-#include "player/citystatistic.hpp"
+#include "city/helper.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 

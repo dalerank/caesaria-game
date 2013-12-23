@@ -17,11 +17,11 @@
 #include "gfx/picture.hpp"
 #include "gamedate.hpp"
 #include "service.hpp"
-#include "cityhelper.hpp"
-#include "building/farm.hpp"
+#include "city/helper.hpp"
+#include "objects/farm.hpp"
 #include "events/event.hpp"
 #include "core/gettext.hpp"
-#include "building/constants.hpp"
+#include "objects/constants.hpp"
 
 using namespace constants;
 

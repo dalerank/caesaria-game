@@ -15,7 +15,7 @@
 
 #include "senate_popup_info.hpp"
 #include "gfx/city_renderer.hpp"
-#include "building/senate.hpp"
+#include "objects/senate.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "environment.hpp"

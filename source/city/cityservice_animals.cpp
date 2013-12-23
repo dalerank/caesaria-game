@@ -16,7 +16,7 @@
 #include "cityservice_animals.hpp"
 #include "city.hpp"
 #include "gfx/tile.hpp"
-#include "gamedate.hpp"
+#include "game/gamedate.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/animals.hpp"
 #include "walker/constants.hpp"

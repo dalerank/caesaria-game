@@ -13,16 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "citystatistic.hpp"
-#include "cityhelper.hpp"
+#include "statistic.hpp"
+#include "helper.hpp"
 #include "trade_options.hpp"
-#include "building/house.hpp"
-#include "building/constants.hpp"
-#include "building/granary.hpp"
-#include "house_level.hpp"
-#include "goodstore.hpp"
-#include "cityfunds.hpp"
-#include "building/farm.hpp"
+#include "objects/house.hpp"
+#include "objects/constants.hpp"
+#include "objects/granary.hpp"
+#include "objects/house_level.hpp"
+#include "good/goodstore.hpp"
+#include "city/funds.hpp"
+#include "objects/farm.hpp"
 
 using namespace constants;
 

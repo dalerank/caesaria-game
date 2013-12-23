@@ -16,7 +16,7 @@
 #ifndef __CAESARIA_GARDEN_H_INCLUDED__
 #define __CAESARIA_GARDEN_H_INCLUDED__
 
-#include "game/construction.hpp"
+#include "objects/construction.hpp"
 
 class Garden : public Construction
 {

@@ -13,28 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "showtileinfo.hpp"
-#include "game/infoboxmanager.hpp"
-#include "game/game.hpp"
-#include "city/city.hpp"
+#ifndef __CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
+#define __CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
 
-namespace events
-{
+#include "core/predefinitions.hpp"
 
-GameEventPtr ShowTileInfo::create( TilePos pos )
-{
-  ShowTileInfo* e = new ShowTileInfo();
-  e->_pos = pos;
+PREDEFINE_CLASS_SMARTPOINTER(PlayerCity)
+PREDEFINE_CLASS_SMARTPOINTER(CityService)
 
-  GameEventPtr ret( e );
-  ret->drop();
-
-  return ret;
-}
-
-void ShowTileInfo::exec(Game& game)
-{
-  InfoBoxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos );
-}
-
-}
+#endif //__CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
