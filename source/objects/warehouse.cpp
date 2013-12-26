@@ -463,7 +463,7 @@ void Warehouse::_resolveDevastationMode()
       {
         GoodStock stock( (Good::Type)goodType, goodQty, goodQty);
         CartPusherPtr walker = CartPusher::create( _getCity() );
-        walker->send2City( BuildingPtr( this ), stock );
+        walker->send2city( BuildingPtr( this ), stock );
 
         if( !walker->isDeleted() )
         {

@@ -237,7 +237,7 @@ void House::timeStep(const unsigned long time)
         e->dispatch();
       }
 
-      Immigrant::send2City( _getCity(), homeless, getTile() );
+      Immigrant::send2city( _getCity(), homeless, getTile() );
     }
   }
 
@@ -715,7 +715,7 @@ void House::destroy()
 {
   _d->maxHabitants = 0;
 
-  Immigrant::send2City( _getCity(), _d->habitants, getTile() );
+  Immigrant::send2city( _getCity(), _d->habitants, getTile() );
 
   if( getWorkersCount() > 0 )
   {

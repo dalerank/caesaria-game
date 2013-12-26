@@ -296,13 +296,12 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::nativeField, CAESARIA_STR_EXT(NativeField) , new ConstructionCreator<NativeField>() );
 
   //damages
-  addCreator(building::burningRuins , CAESARIA_STR_EXT(BurningRuins), new ConstructionCreator<BurningRuins>() );
-  addCreator(building::burnedRuins , CAESARIA_STR_EXT(BurnedRuins), new ConstructionCreator<BurnedRuins>() );
-  addCreator(building::collapsedRuins , CAESARIA_STR_EXT(CollapsedRuins), new ConstructionCreator<CollapsedRuins>() );
-  addCreator(building::plagueRuins , CAESARIA_STR_EXT(PlagueRuins), new ConstructionCreator<PlagueRuins>() );
+  ADD_CREATOR(building::burningRuins, BurningRuins, ConstructionCreator );
+  ADD_CREATOR(building::burnedRuins, BurnedRuins, ConstructionCreator );
+  ADD_CREATOR(building::collapsedRuins, CollapsedRuins, ConstructionCreator );
+  ADD_CREATOR(building::plagueRuins, PlagueRuins, ConstructionCreator);
 
   //places
-  ADD_CREATOR( walker::fishPlace, FishPlace, BaseCreator );
   ADD_CREATOR( building::elevation, Elevation, BaseCreator );
 }
 

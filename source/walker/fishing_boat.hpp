@@ -23,7 +23,7 @@ class FishingBoat : public Ship
 public:
   static FishingBoatPtr create( PlayerCityPtr city );
 
-  void send2City( CoastalFactoryPtr base, TilePos start);
+  void send2city( CoastalFactoryPtr base, TilePos start);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

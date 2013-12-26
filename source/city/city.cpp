@@ -340,8 +340,13 @@ WalkerList PlayerCity::getWalkers( walker::Type type )
 
 WalkerList PlayerCity::getWalkers(walker::Type type, TilePos startPos, TilePos stopPos)
 {
+  TilePos invalidPos( -1, -1 );
+
+  if( startPos == invalidPos )
+    return getWalkers( type );
+
   WalkerList ret;
-  if( stopPos == TilePos( -1, -1 ) )
+  if( stopPos == invalidPos )
   {
     stopPos = startPos;
   }

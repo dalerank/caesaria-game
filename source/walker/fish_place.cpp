@@ -21,161 +21,93 @@
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
 #include "constants.hpp"
+#include "core/gettext.hpp"
+
+using namespace constants;
 
 class FishPlace::Impl
 {
 public:
-  Renderer::PassQueue passQueue;
   int fishCount;
-  WalkerPtr walker;
   Point basicOffset;
-  PicturesArray animations;
-
-  void restoreTilePic( Tile& tile )
-  {
-    int picId = tile.getOriginalImgId();
-    Picture* pic = &Picture::load( TileHelper::convId2PicName( picId ) );
-    tile.setPicture( pic );
-  }
+  Animation animation;
 };
 
-FishPlace::FishPlace() : TileOverlay( constants::walker::fishPlace ), _d( new Impl )
+FishPlace::FishPlace( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 {
-  setDebugName( "fishPlace" );
+  _setType( walker::fishPlace );
+  _setAnimation( gfx::unknown );
+  setSpeed( 0.1f );
 
-  setPicture( Picture::getInvalid() );
-
-  _animationRef().setDelay( 3 );
-  _d->animations.resize( 1 );
-  _d->passQueue.push_back( Renderer::foreground );
-  _d->passQueue.push_back( Renderer::animations );
+  setName( _("##ship##") );
 
   _d->fishCount = rand() % 100;
 
   if( _d->fishCount > 1 )
   {
-    _animationRef().load( ResourceGroup::land3a, 19, 24); //big fish place
+    _d->animation.load( ResourceGroup::land3a, 19, 24); //big fish place
     _d->basicOffset = Point( -41, 122 );
-    _animationRef().setOffset( _d->basicOffset );
+    _d->animation.setOffset( _d->basicOffset );
   }
   else
   {
-    _animationRef().load( ResourceGroup::land3a, 1, 18);
+    _d->animation.load( ResourceGroup::land3a, 1, 18);
     _d->basicOffset =  Point( 0, 55 );
-    _animationRef().setOffset( _d->basicOffset );
+    _d->animation.setOffset( _d->basicOffset );
   } //small fish place
+  _d->animation.setDelay( 4 );
+}
+
+FishPlacePtr FishPlace::create(PlayerCityPtr city)
+{
+  FishPlacePtr ret( new FishPlace( city ) );
+  ret->drop();
+
+  return ret;
 }
 
 FishPlace::~FishPlace()
 {
 
 }
-
-void FishPlace::build(PlayerCityPtr city, const TilePos& pos)
-{
-  setSize( Size( 0 ) );
-  TileOverlay::build( city, pos );
-
-  Tilemap &tilemap = city->getTilemap();
-  Tile& tile = tilemap.at( pos );
-  tile.setMasterTile( getTile().getMasterTile() );
-
-  if( tile.getOverlay().isValid() && tile.getOverlay() != this )
-  {
-    tile.getOverlay()->deleteLater();
-  }
-
-  tile.setOverlay( this );
-
-  _d->restoreTilePic( getTile() );
-}
-
-void FishPlace::initTerrain(Tile& terrain)
-{
-
-}
-
 void FishPlace::timeStep(const unsigned long time)
 {
-  _animationRef().update( time );
+  Walker::timeStep( time );
 
-  _d->animations[ 0 ] = _animationRef().getFrame();
-
-  if( _d->walker != 0 )
-  {
-    TilePos lastPos = _d->walker->getIJ();
-    _d->walker->timeStep( time );
-
-    if( lastPos != _d->walker->getIJ() )
-    {
-      getTile().setOverlay( 0 );
-      _d->restoreTilePic( getTile() );
-
-      TilePos pos =  _d->walker->getIJ();
-      build( _getCity(), pos );
-
-      _animationRef().setDelay( 2 + rand() % 4 );
-    }
-    else if( lastPos == _d->walker->getPathway().getDestination().getIJ() )
-    {
-      deleteLater();
-    }
-  }
-  else
-  {
-    Pathway pathway;
-    bool pathFound = Pathfinder::getInstance().getPath( getTilePos(), _getCity()->getBorderInfo().boatExit,
-                                                        pathway, Pathfinder::waterOnly );
-
-    if( !pathFound )
-    {
-      deleteLater();
-    }
-    else
-    {
-      _d->walker = WalkerPtr( new Walker( _getCity() ) );
-      _d->walker->drop();
-      _d->walker->setSpeed( 0.1f );
-      _d->walker->setIJ( getTilePos() );
-      _d->walker->setPathway( pathway );
-      _d->walker->go();
-    }
-  }
-}
-
-void FishPlace::destroy()
-{
-  getTile().setOverlay( 0 );
-
-  _d->restoreTilePic( getTile() );
-
-  TileOverlay::destroy();
+  _d->animation.update( time );
 }
 
 void FishPlace::save(VariantMap& stream) const
 {
-  TileOverlay::save( stream );
+  Walker::save( stream );
   stream[ "fishCount" ] = _d->fishCount;
 }
 
 void FishPlace::load(const VariantMap& stream)
 {
-  TileOverlay::load( stream );
+  Walker::load( stream );
   _d->fishCount = stream.get( "fishCount" );
 }
 
-const PicturesArray& FishPlace::getPictures(Renderer::Pass pass) const
+const Picture& FishPlace::getMainPicture()
 {
-  switch(pass)
-  {
-  case Renderer::animations: return _d->animations;
-  default: break;
-  }
-
-  return TileOverlay::getPictures( pass );
+  return _d->animation.getFrame();
 }
 
-Renderer::PassQueue FishPlace::getPassQueue() const
+void FishPlace::send2city(TilePos pos)
 {
-  return _d->passQueue;
+  Pathway pathway;
+  bool pathFound = Pathfinder::getInstance().getPath( pos, _getCity()->getBorderInfo().boatExit,
+                                                      pathway, Pathfinder::waterOnly );
+  if( !pathFound )
+  {
+    deleteLater();
+  }
+  else
+  {
+    _getCity()->addWalker( this );
+    setIJ( pos );
+    setPathway( pathway );
+    go();
+  }
 }

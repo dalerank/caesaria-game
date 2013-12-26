@@ -203,7 +203,7 @@ void Factory::deliverGood()
     GoodStock pusherStock( _d->outGoodType, qty, 0 ); 
     _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
 
-    walker->send2City( BuildingPtr( this ), pusherStock );
+    walker->send2city( BuildingPtr( this ), pusherStock );
 
     //success to send cartpusher
     if( !walker->isDeleted() )

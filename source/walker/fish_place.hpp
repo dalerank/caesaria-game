@@ -1,44 +1,45 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _OPENCAESAR3_FISHPLACE_H_INCLUDE_
-#define _OPENCAESAR3_FISHPLACE_H_INCLUDE_
+#ifndef _CAESARIA_FISHPLACE_H_INCLUDE_
+#define _CAESARIA_FISHPLACE_H_INCLUDE_
 
-#include "gfx/tileoverlay.hpp"
+#include "walker.hpp"
 
-class FishPlace : public TileOverlay
+class FishPlace : public Walker
 {
 public:
-  FishPlace();
+  static FishPlacePtr create( PlayerCityPtr city );
+
   ~FishPlace();
 
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-  virtual void initTerrain(Tile &terrain);
   virtual void timeStep(const unsigned long time);
-  virtual void destroy();
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  const PicturesArray& getPictures(Renderer::Pass pass) const;
-  Renderer::PassQueue getPassQueue() const;
+  virtual const Picture& getMainPicture();
+  void send2city( TilePos pos );
 
 private:
+  FishPlace( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //_OPENCAESAR3_FISHPLACE_H_INCLUDE_
+#endif //_CAESARIA_FISHPLACE_H_INCLUDE_

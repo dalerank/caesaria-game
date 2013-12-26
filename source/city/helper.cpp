@@ -20,6 +20,8 @@
 
 using namespace constants;
 
+const TilePos CityHelper::invalidPos = TilePos( -1, -1 );
+
 void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild )
 {
   Tilemap& tilemap = _city->getTilemap();

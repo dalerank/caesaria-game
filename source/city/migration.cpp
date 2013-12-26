@@ -112,7 +112,7 @@ void CityMigration::update( const unsigned int time )
 
   if( emigrant.isValid() )
   {
-    emigrant->send2City( roadTile );
+    emigrant->send2city( roadTile );
   }
 }
 

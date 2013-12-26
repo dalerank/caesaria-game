@@ -14,24 +14,25 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "walkers_factory.hpp"
-#include "walker/trainee.hpp"
-#include "walker/market_lady.hpp"
-#include "walker/cart_pusher.hpp"
-#include "walker/prefect.hpp"
-#include "walker/emigrant.hpp"
-#include "walker/taxcollector.hpp"
+#include "trainee.hpp"
+#include "market_lady.hpp"
+#include "cart_pusher.hpp"
+#include "prefect.hpp"
+#include "emigrant.hpp"
+#include "taxcollector.hpp"
 #include "city/city.hpp"
 #include "name_generator.hpp"
 #include "core/logger.hpp"
-#include "walker/animals.hpp"
-#include "walker/fishing_boat.hpp"
-#include "walker/constants.hpp"
-#include "walker/corpse.hpp"
-#include "walker/protestor.hpp"
-#include "walker/enemysoldier.hpp"
-#include "walker/romesoldier.hpp"
-#include "walker/lion.hpp"
-#include "walker/lion_tamer.hpp"
+#include "animals.hpp"
+#include "fishing_boat.hpp"
+#include "constants.hpp"
+#include "corpse.hpp"
+#include "protestor.hpp"
+#include "enemysoldier.hpp"
+#include "romesoldier.hpp"
+#include "lion.hpp"
+#include "lion_tamer.hpp"
+#include "fish_place.hpp"
 #include <map>
 
 using namespace constants;
@@ -118,6 +119,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::legionary, new SoldierCreator<RomeSoldier>( walker::legionary ) );
   addCreator( walker::lion, new BaseCreator< Lion >() );
   addCreator( walker::lionTamer, new BaseCreator< LionTamer >() );
+  addCreator( walker::fishPlace, new BaseCreator< FishPlace >() );
 }
 
 WalkerManager::~WalkerManager()

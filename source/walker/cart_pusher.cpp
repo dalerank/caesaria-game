@@ -338,7 +338,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
    return res;
 }
 
-void CartPusher::send2City( BuildingPtr building, GoodStock& carry )
+void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
 {
   _d->stock.append( carry );
   setProducerBuilding( building  );

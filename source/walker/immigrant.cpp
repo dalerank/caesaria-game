@@ -181,20 +181,20 @@ ImmigrantPtr Immigrant::create(PlayerCityPtr city )
   return newImmigrant;
 }
 
-bool Immigrant::send2City( PlayerCityPtr city, const CitizenGroup& peoples, Tile& startTile )
+bool Immigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples, Tile& startTile )
 {
   if( peoples.count() > 0 )
   {
     ImmigrantPtr im = Immigrant::create( city );
     im->setPeoples( peoples );
-    im->send2City( startTile );
+    im->send2city( startTile );
     return true;
   }
 
   return false;
 }
 
-void Immigrant::send2City( Tile& startTile )
+void Immigrant::send2city( Tile& startTile )
 {
   _findPath2blankHouse( startTile.getIJ() );
   _getCity()->addWalker( this );

@@ -16,10 +16,8 @@
 #include "cityservice_fishplace.hpp"
 #include "city/helper.hpp"
 #include "core/safetycast.hpp"
-#include "gfx/tilemap.hpp"
 #include "core/position.hpp"
-#include "gfx/tile.hpp"
-#include "objects/objects_factory.hpp"
+#include "walker/walkers_factory.hpp"
 #include "walker/fish_place.hpp"
 //#include "constants.hpp"
 
@@ -57,17 +55,16 @@ void CityServiceFishPlace::update( const unsigned int time )
   if( _d->places.empty() )
   {
     CityHelper helper( _d->city );
-    _d->places = helper.find<FishPlace>( walker::fishPlace );
+    _d->places = helper.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    TileOverlayPtr fishplace = TileOverlayFactory::getInstance().create( walker::fishPlace );
+    FishPlacePtr fishplace = WalkerManager::getInstance().create( walker::fishPlace, _d->city ).as<FishPlace>();
 
-    if( fishplace != 0 )
+    if( fishplace.isValid() )
     {
-      fishplace->build( _d->city, _d->city->getBorderInfo().boatEntry );
-      _d->city->addOverlay( fishplace );
+      fishplace->send2city( _d->city->getBorderInfo().boatEntry );
       _d->places.push_back( fishplace.as<FishPlace>() );
     }
   }

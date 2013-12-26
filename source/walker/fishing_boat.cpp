@@ -230,13 +230,14 @@ void FishingBoat::_changeTile()
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& pos )
 {
   CityHelper helper( city );
-  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace );
+  TilePos offset( 10, 10 );
+  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos - offset, pos + offset );
 
   int minDistance = 999;
   FishPlacePtr nearest;
   foreach( FishPlacePtr place, places )
   {
-    int currentDistance = pos.distanceFrom( place->getTilePos() );
+    int currentDistance = pos.distanceFrom( place->getIJ() );
     if( currentDistance < minDistance )
     {
       minDistance = currentDistance;
@@ -247,7 +248,7 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& p
   if( nearest != 0 )
   {
     Pathway way;
-    bool pathFound = Pathfinder::getInstance().getPath( pos, nearest->getTilePos(),
+    bool pathFound = Pathfinder::getInstance().getPath( pos, nearest->getIJ(),
                                                         way, Pathfinder::waterOnly );
 
     if( pathFound )
@@ -257,7 +258,7 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& p
   return Pathway();
 }
 
-void FishingBoat::send2City( CoastalFactoryPtr base, TilePos start )
+void FishingBoat::send2city( CoastalFactoryPtr base, TilePos start )
 {
   _d->base = base;
   if( !isDeleted() )

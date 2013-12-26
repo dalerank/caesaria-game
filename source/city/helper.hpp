@@ -23,6 +23,7 @@
 class CityHelper
 {
 public:
+  static const TilePos invalidPos;
   CityHelper( PlayerCityPtr city ) : _city( city ) {}
 
   template< class T >
@@ -60,7 +61,7 @@ public:
 
   template< class T >
   std::list< SmartPtr< T > > find( constants::walker::Type type,
-                                   TilePos start, TilePos stop=TilePos(-1,-1) )
+                                   TilePos start, TilePos stop=CityHelper::invalidPos )
   {
     std::list< SmartPtr< T > > ret;
 
@@ -126,21 +127,7 @@ public:
   }
 
   template< class T >
-  std::list< SmartPtr< T > > getProducers( const Good::Type goodtype )
-  {
-    std::list< SmartPtr< T > > ret;
-    TileOverlayList& overlays = _city->getOverlays();
-    foreach( TileOverlayPtr item, overlays )
-    {
-      SmartPtr< T > b = item.as<T>();
-      if( b.isValid() && b->getOutGoodType() == goodtype )
-      {
-        ret.push_back( b );
-      }
-    }
-
-    return ret;
-  }
+  std::list< SmartPtr< T > > getProducers( const Good::Type goodtype );
 
   TilesArray getArea( TileOverlayPtr overlay );
   TilesArray getAroundTiles( TileOverlayPtr building );
@@ -162,6 +149,23 @@ std::list< SmartPtr< T > > CityHelper::find( const TileOverlay::Type type )
   {
     SmartPtr< T > b = item.as<T>();
     if( b.isValid() && (b->getType() == type || type == constants::building::any ) )
+    {
+      ret.push_back( b );
+    }
+  }
+
+  return ret;
+}
+
+template< class T >
+std::list< SmartPtr< T > > CityHelper::getProducers( const Good::Type goodtype )
+{
+  std::list< SmartPtr< T > > ret;
+  TileOverlayList& overlays = _city->getOverlays();
+  foreach( TileOverlayPtr item, overlays )
+  {
+    SmartPtr< T > b = item.as<T>();
+    if( b.isValid() && b->getOutGoodType() == goodtype )
     {
       ret.push_back( b );
     }
