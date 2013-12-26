@@ -57,6 +57,7 @@ public:
 protected:
   virtual void _afterCreate() {}
   Label* _getTitle();
+  Label* _getDescription();
   Label* _getBlackFrame();
   virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );
 

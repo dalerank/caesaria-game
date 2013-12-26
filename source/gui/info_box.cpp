@@ -62,13 +62,13 @@ public:
   Label* lbBackground;
   Label* lbBlackFrame;
   Label* lbTitle;
-  Label* lbText;
+  Label* lbDescription;
   PushButton* btnExit;
   PushButton* btnHelp;
   bool isAutoPosition;
 
   Impl() : lbBackground(0), lbBlackFrame(0), lbTitle(0),
-    lbText(0), btnExit(0), btnHelp(0), isAutoPosition(false)
+    lbDescription(0), btnExit(0), btnHelp(0), isAutoPosition(false)
   {
 
   }
@@ -85,14 +85,14 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
   _d->btnHelp = findChild<TexturedButton*>( "btnHelp", true );
   _d->lbBackground = findChild<Label*>( "lbBackground", true );
   _d->lbBlackFrame = findChild<Label*>( "lbBlackFrame", true );
-  _d->lbText = findChild<Label*>( "lbText", true );
+  _d->lbDescription = findChild<Label*>( "lbText", true );
 
   if( _d->btnExit ) { _d->btnExit->setPosition( Point( getWidth() - 39, getHeight() - 39 ) ); }
   if( _d->btnHelp ) { _d->btnHelp->setPosition( Point( 14, getHeight() - 39 ) ); }
 
   CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
 
-  _d->lbText = new Label( this, Rect( 32, 64, 510 - 32, 300 - 48 ) );
+  _d->lbDescription = new Label( this, Rect( 32, 64, 510 - 32, 300 - 48 ) );
 
   // black box
   Point lastPos( getWidth() - 32, getHeight() - 48 );
@@ -103,11 +103,11 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
     lastPos.setY( _d->lbBlackFrame->getTop() - 10 );
   }
 
-  if( _d->lbText )
+  if( _d->lbDescription )
   {
-    Rect r = _d->lbText->getRelativeRect();
+    Rect r = _d->lbDescription->getRelativeRect();
     r.LowerRightCorner = lastPos;
-    _d->lbText->setGeometry( r );
+    _d->lbDescription->setGeometry( r );
   }
 
   _afterCreate();
@@ -118,7 +118,7 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
 
 void InfoBoxSimple::setText( const std::string& text )
 {
-  if( _d->lbText ) { _d->lbText->setText( text ); }
+  if( _d->lbDescription ) { _d->lbDescription->setText( text ); }
 }
 
 InfoBoxSimple::~InfoBoxSimple()
@@ -177,6 +177,8 @@ void InfoBoxSimple::setupUI(const VariantMap& ui)
 }
 
 Label* InfoBoxSimple::_getTitle(){  return _d->lbTitle;}
+
+Label*InfoBoxSimple::_getDescription(){ return _d->lbDescription; }
 Label* InfoBoxSimple::_getBlackFrame(){  return _d->lbBlackFrame; }
 
 void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
@@ -256,10 +258,11 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   }
 
   // paint picture of in good
+  Label* lbStockInfo;
   if( building->inStockRef().type() != Good::none )
   {
-    Label* lb = new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 0, 25 ), Size( getWidth() - 32, 25 ) ) );
-    lb->setIcon( GoodHelper::getPicture( building->inStockRef().type() ) );
+    lbStockInfo = new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 0, 25 ), Size( getWidth() - 32, 25 ) ) );
+    lbStockInfo->setIcon( GoodHelper::getPicture( building->inStockRef().type() ) );
 
     std::string text = StringHelper::format( 0xff, "%s %s: %d %s",
                                              GoodHelper::getName( building->inStockRef().type() ).c_str(),
@@ -267,9 +270,14 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
                                              building->inStockRef().qty() / 100,
                                              _("##factory_units##") );
 
-    lb->setText( text );
-    lb->setTextOffset( Point( 30, 0 ) );
+    lbStockInfo->setText( text );
+    lbStockInfo->setTextOffset( Point( 30, 0 ) );
   }
+
+  Label* lbDesc = _getDescription();
+  lbDesc->setWordwrap( true );
+  lbDesc->setGeometry( Rect( 16, lbStockInfo->getBottom() + 5, getWidth() - 16, 150 ));
+  setText( MetaDataHolder::getDescription( building->getType() ) );
 
   _updateWorkersLabel( Point( 32, 157 ), 542, building->getMaxWorkers(), building->getWorkersCount() );
 }
@@ -531,9 +539,9 @@ InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::st
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
 
-  _d->lbText->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
-  _d->lbText->setWordwrap( true );
-  _d->lbText->setText( message );
+  _d->lbDescription->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbDescription->setWordwrap( true );
+  _d->lbDescription->setText( message );
 }
 
 InfoBoxText::~InfoBoxText()
@@ -547,8 +555,8 @@ InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
 {
   setTitle( "##fontaun_title##" );
 
-  _d->lbText->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
-  _d->lbText->setWordwrap( true );
+  _d->lbDescription->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbDescription->setWordwrap( true );
 
   FountainPtr fountain = tile.getOverlay().as<Fountain>();
   std::string text;
@@ -566,7 +574,7 @@ InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
     }
   }
 
-  _d->lbText->setText( text );
+  _d->lbDescription->setText( text );
 }
 
 InfoBoxFontain::~InfoBoxFontain()

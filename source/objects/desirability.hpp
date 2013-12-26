@@ -18,6 +18,8 @@
 
 struct Desirability
 {
+ Desirability() : base( 0 ), range( 0 ), step( 0 ) {}
+
  int base;
  int range;
  int step;

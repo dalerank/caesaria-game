@@ -680,6 +680,7 @@
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
     class : "industry"
+    desc : [ "##weapons_workshop_info##" ]
   },
   
   furniture_workshop :

@@ -167,6 +167,7 @@ public:
   TileOverlay::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
+  StringArray desc;
   VariantMap options;
 };
 
@@ -177,9 +178,6 @@ MetaData::MetaData(const TileOverlay::Type buildingType, const std::string& name
   _d->group = building::unknownGroup;
   _d->name = name;
   _prettyName = "##" + name + "##";  // i18n translation
-  _d->desirability.base = 0;
-  _d->desirability.range = 0;
-  _d->desirability.step = 0;
 }
 
 MetaData::MetaData(const MetaData &a) : _d( new Impl )
@@ -205,6 +203,14 @@ std::string MetaData::getSound() const
 std::string MetaData::getPrettyName() const
 {
   return _prettyName;
+}
+
+std::string MetaData::getDescription() const
+{
+  if( _d->desc.empty() )
+    return "##" + _d->name + "_info##";
+
+  return _d->desc.at( rand() % _d->desc.size() );
 }
 
 TileOverlay::Type MetaData::getType() const
@@ -237,7 +243,7 @@ MetaData &MetaData::operator=(const MetaData &a)
   _basePicture = a._basePicture;
   _d->group = a._d->group;
   _d->desirability = a._d->desirability;
-
+  _d->desc = a._d->desc;
   _d->options = a._d->options;
 
   return *this;
@@ -364,6 +370,8 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     bData._d->desirability.range = (int)desMap[ "range" ];
     bData._d->desirability.step  = (int)desMap[ "step" ];
 
+    bData._d->desc = options.get( "desc" ).toStringArray();
+
     Variant prettyName = options[ "prettyName" ];
     if( prettyName.isValid() )
     {
@@ -396,7 +404,7 @@ TileOverlay::Type MetaDataHolder::getType( const std::string& name )
   if( type == instance()._d->typeHelper.getInvalid() )
   {
     Logger::warning( "Can't find type for typeName %s", name.c_str() );
-    _CAESARIA_DEBUG_BREAK_IF( "Can't find type for typeName" );
+    return building::unknown;
   }
 
   return type;
@@ -409,13 +417,18 @@ TileOverlay::Group MetaDataHolder::getClass( const std::string& name )
   if( type == instance()._d->classHelper.getInvalid() )
   {
     Logger::warning( "Can't find building class for building className %s", name.c_str() );
-    _CAESARIA_DEBUG_BREAK_IF( "Can't find building class for building className" );
+    return building::unknownGroup;
   }
 
   return type;
 }
 
-std::string MetaDataHolder::getPrettyName(TileOverlay::Type bType)
+std::string MetaDataHolder::getPrettyName(TileOverlay::Type type)
 {
-  return instance().getData( bType ).getPrettyName();
+  return instance().getData( type ).getPrettyName();
+}
+
+std::string MetaDataHolder::getDescription(TileOverlay::Type type)
+{
+  return instance().getData( type ).getDescription();
 }

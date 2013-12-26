@@ -172,9 +172,9 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::doctor,           CAESARIA_STR_EXT(Doctor),      new ServiceBaseInfoboxCreator( "##doctor_title##", "##doctor_text##" ) );
   addInfobox( building::baths,            CAESARIA_STR_EXT(Baths),       new ServiceBaseInfoboxCreator( "##baths_title##", "##baths_text##" ) );
   addInfobox( building::barber,           CAESARIA_STR_EXT(Barber),      new ServiceBaseInfoboxCreator( "##barber_title##", "##barber_text##" ) );
-  addInfobox( building::hospital,         CAESARIA_STR_EXT(B_HOSPITAL),  new ServiceBaseInfoboxCreator( "##hospital_title##", "##hospital_text##" ) );
+  addInfobox( building::hospital,         CAESARIA_STR_EXT(Hospital),    new ServiceBaseInfoboxCreator( "##hospital_title##", "##hospital_info##" ) );
   addInfobox( building::fountain,         CAESARIA_STR_EXT(B_FOUNTAIN),  new BaseInfoboxCreator<InfoBoxFontain>() );
-  addInfobox( building::aqueduct,         CAESARIA_STR_EXT(B_AQUEDUCT),  new InfoBoxBasicCreator( "##aqueduct_title##", "##aqueduct_text##") );
+  addInfobox( building::aqueduct,         CAESARIA_STR_EXT(B_AQUEDUCT),  new InfoBoxBasicCreator( "##aqueduct_title##", "##aqueduct_info##") );
   addInfobox( building::market,           CAESARIA_STR_EXT(B_MARKET),    new BaseInfoboxCreator<InfoBoxMarket>() );
   addInfobox( building::granary,          CAESARIA_STR_EXT(B_GRANARY),   new BaseInfoboxCreator<InfoBoxGranary>() );
   addInfobox( building::grapeFarm,        CAESARIA_STR_EXT(B_GRAPE_FARM),new BaseInfoboxCreator<InfoBoxRawMaterial>() );
@@ -205,7 +205,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( construction::plaza,        CAESARIA_STR_EXT(B_PLAZA),     new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::unknown,          CAESARIA_STR_EXT(unknown),     new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::pottery,          CAESARIA_STR_EXT(Pottery),   new BaseInfoboxCreator<InfoboxFactory>() );
-  addInfobox( building::shipyard,          CAESARIA_STR_EXT(Shipyard),   new BaseInfoboxCreator<InfoboxFactory>() );
+  addInfobox( building::shipyard,         CAESARIA_STR_EXT(Shipyard),   new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::weaponsWorkshop,  CAESARIA_STR_EXT(WeaponsWorkshop), new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::furnitureWorkshop,CAESARIA_STR_EXT(FurnitureWorkshop), new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::clayPit,          CAESARIA_STR_EXT(ClayPit),  new BaseInfoboxCreator<InfoBoxRawMaterial>() );
@@ -223,10 +223,10 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::lionsNursery,     CAESARIA_STR_EXT(LionsNursery), new ServiceBaseInfoboxCreator( _("##lion_house_title##"), _("##lion_house_text##")) );
   addInfobox( building::hippodrome,       CAESARIA_STR_EXT(Hippodrome), new ServiceBaseInfoboxCreator( _("##hippodrome_title##"), _("##hippodrome_text##")) );
   addInfobox( building::chariotSchool,    CAESARIA_STR_EXT(chariotSchool),new ServiceBaseInfoboxCreator( _("##chario_maker_title##"), _("##chario_maker_text##")) );
-  addInfobox( building::forum,            CAESARIA_STR_EXT(Forum),        new ServiceBaseInfoboxCreator( _("##forum_title##"), _("##forum_text##")) );
-  addInfobox( building::governorHouse,    CAESARIA_STR_EXT(governorHouse),new ServiceBaseInfoboxCreator( _("##governor_house_title##"), _("##governonr_house_text##")) );
-  addInfobox( building::governorVilla,    CAESARIA_STR_EXT(governorVilla),new ServiceBaseInfoboxCreator( _("##governor_villa_title##"), _("##governonr_villa_text##")) );
-  addInfobox( building::governorPalace,   CAESARIA_STR_EXT(governorPalace), new ServiceBaseInfoboxCreator( _("##governor_palace_title##"), _("##governonr_palace_text##")) );
+  addInfobox( building::forum,            CAESARIA_STR_EXT(Forum),        new ServiceBaseInfoboxCreator( _("##forum_title##"), _("##forum_information##")) );
+  addInfobox( building::governorHouse,    CAESARIA_STR_EXT(governorHouse),new ServiceBaseInfoboxCreator( _("##governor_house_title##"), _("##governor_house_text##")) );
+  addInfobox( building::governorVilla,    CAESARIA_STR_EXT(governorVilla),new ServiceBaseInfoboxCreator( _("##governor_villa_title##"), _("##governor_villa_text##")) );
+  addInfobox( building::governorPalace,   CAESARIA_STR_EXT(governorPalace), new ServiceBaseInfoboxCreator( _("##governor_palace_title##"), _("##governor_palace_text##")) );
   addInfobox( building::highBridge,       CAESARIA_STR_EXT(HighBridge),   new InfoBoxBasicCreator( _("##high_bridge_title##"), _("##high_bridge_text##")) );
   addInfobox( building::lowBridge,        CAESARIA_STR_EXT(LowBridge),    new InfoBoxBasicCreator( _("##low_bridge_title##"), _("##low_bridge_text##")) );
   addInfobox( building::wharf,            CAESARIA_STR_EXT(Wharf),        new BaseInfoboxCreator<InfoboxFactory>() );

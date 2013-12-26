@@ -42,6 +42,7 @@ public:
   std::string getName() const;
   std::string getSound() const;
   std::string getPrettyName() const;
+  std::string getDescription() const;
   TileOverlay::Type getType() const;
   TileOverlay::Group getGroup() const;
   Picture getBasePicture() const;
@@ -75,7 +76,8 @@ public:
    static TileOverlay::Type getType( const std::string& name );
    static TileOverlay::Group getClass( const std::string& name );
 
-   static std::string getPrettyName( TileOverlay::Type bType );
+   static std::string getPrettyName( TileOverlay::Type type );
+   static std::string getDescription( TileOverlay::Type type );
 
    void initialize( const vfs::Path& filename );
 private:

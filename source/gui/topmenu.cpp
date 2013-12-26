@@ -26,6 +26,7 @@
 #include "game/gamedate.hpp"
 #include "game/settings.hpp"
 #include "core/logger.hpp"
+#include "texturedbutton.hpp"
 
 namespace gui
 {
@@ -49,6 +50,7 @@ public:
 
   void resolveSave();
   void updateDate();
+  void showAboutInfo();
 
 oc3_signals public:
   Signal0<> onExitSignal;
@@ -101,6 +103,19 @@ void TopMenu::Impl::updateDate()
   std::string text = StringHelper::format( 0xff, "%s %d %s",
                                            month.c_str(), abs( saveDate.getYear() ), age.c_str());
   lbDate->setText( text );
+}
+
+void TopMenu::Impl::showAboutInfo()
+{
+  Widget* parent = lbDate->getParent()->getParent();
+  Size pSize = parent->getSize();
+  Size mySize( 500, 300 );
+  Rect rect( Point( (pSize.getWidth() - mySize.getWidth()) / 2, (pSize.getHeight() - mySize.getHeight()) / 2 ), mySize );
+  Label* bg = new Label( parent, rect, "", false, Label::bgWhiteFrame );
+  bg->setText( _("##about_caesaria_game##") );
+
+  TexturedButton* btnExit = new TexturedButton( bg, Point( pSize.getWidth() - 39, pSize.getHeight() - 39), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 
 TopMenu::TopMenu( Widget* parent, const int height ) 
@@ -171,6 +186,10 @@ TopMenu::TopMenu( Widget* parent, const int height )
   CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
+  ContextMenu* helpMenu = tmp->addSubMenu();
+  ContextMenuItem* aboutItem = helpMenu->addItem( _("##gmenu_about##"), -1 );
+  CONNECT( aboutItem, onClicked(), _d.data(), Impl::showAboutInfo );
+
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();
   advisersMenu->addItem( _("##adv_employments_m##"), ADV_EMPLOYERS );
