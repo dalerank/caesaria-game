@@ -230,8 +230,7 @@ void FishingBoat::_changeTile()
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& pos )
 {
   CityHelper helper( city );
-  TilePos offset( 10, 10 );
-  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos - offset, pos + offset );
+  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, CityHelper::invalidPos );
 
   int minDistance = 999;
   FishPlacePtr nearest;

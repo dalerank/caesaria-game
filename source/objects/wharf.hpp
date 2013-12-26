@@ -30,6 +30,8 @@ public:
   ShipPtr getBoat() const;
   virtual void assignBoat( ShipPtr boat );
 
+  virtual bool mayWork() const;
+
 private:
   virtual void _updatePicture( constants::Direction direction );
 

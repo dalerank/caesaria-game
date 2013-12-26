@@ -114,6 +114,12 @@ void Wharf::assignBoat( ShipPtr boat )
   }
 }
 
+bool Wharf::mayWork() const
+{
+  bool mayWork = CoastalFactory::mayWork();
+  return (mayWork && _d->boat.isValid());
+}
+
 void Wharf::_updatePicture(Direction direction)
 {
   switch( direction )

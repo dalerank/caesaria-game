@@ -182,8 +182,8 @@ bool _inArea( APoints& area, AStarPoint* end )
 }
 
 void Pathfinder::Impl::isRoad( const Tile* tile, bool& possible ) {  possible = tile ? tile->isWalkable( false ) : false; }
-void Pathfinder::Impl::isTerrain( const Tile* tile, bool& possible ) {   possible = tile ? tile->isWalkable( true ) : false; }
-void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = tile ? tile->getFlag( Tile::tlWater ) : false; }
+void Pathfinder::Impl::isTerrain( const Tile* tile, bool& possible ) { possible = tile ? tile->isWalkable( true ) : false; }
+void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = tile ? tile->getFlag( Tile::tlDeepWater ) : false; }
 
 bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {

@@ -28,7 +28,7 @@
 
 class HouseLevelSpec
 {
-   friend class HouseSpecHelper;
+  friend class HouseSpecHelper;
 
 public:
   int getLevel() const;
@@ -49,6 +49,8 @@ public:
   bool checkHouse( HousePtr house, std::string* retMissing = 0);
   unsigned int getServiceConsumptionInterval() const;
   unsigned int getFoodConsumptionInterval() const;
+
+  int findLowLevelHouseNearby( HousePtr house, std::string &oMissingRequirement );
 
   HouseLevelSpec next() const;
 

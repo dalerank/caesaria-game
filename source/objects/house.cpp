@@ -255,7 +255,7 @@ const HouseLevelSpec& House::getSpec() const
    return _d->spec;
 }
 
-void House::_tryUpdate_1_to_11_lvl( int level4grow, int startSmallPic, int startBigPic, const char desirability )
+void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int startBigPic, const char desirability )
 {
   CityHelper helper( _getCity() );
 
@@ -355,34 +355,34 @@ void House::levelUp()
     _d->desirability.step = 1;
   break;
 
-  case 2: _tryUpdate_1_to_11_lvl( 1, 1, 5, -3);
+  case 2: _tryEvolve_1_to_11_lvl( 1, 1, 5, -3);
   break;
   
-  case 3: _tryUpdate_1_to_11_lvl( 2, 3, 6, -3 ); 
+  case 3: _tryEvolve_1_to_11_lvl( 2, 3, 6, -3 );
   break;
   
-  case 4: _tryUpdate_1_to_11_lvl( 3, 7, 11, -2 );
+  case 4: _tryEvolve_1_to_11_lvl( 3, 7, 11, -2 );
   break;
   
-  case 5: _tryUpdate_1_to_11_lvl( 4, 9, 12, -2 );
+  case 5: _tryEvolve_1_to_11_lvl( 4, 9, 12, -2 );
   break;
 
-  case 6: _tryUpdate_1_to_11_lvl( 5, 13, 17, -2 );
+  case 6: _tryEvolve_1_to_11_lvl( 5, 13, 17, -2 );
   break;
 
-  case 7: _tryUpdate_1_to_11_lvl( 6, 15, 18, -2 );
+  case 7: _tryEvolve_1_to_11_lvl( 6, 15, 18, -2 );
   break;
 
-  case 8: _tryUpdate_1_to_11_lvl( 7, 19, 23, -1 );
+  case 8: _tryEvolve_1_to_11_lvl( 7, 19, 23, -1 );
   break;
 
-  case 9: _tryUpdate_1_to_11_lvl( 8, 21, 24, -1 );
+  case 9: _tryEvolve_1_to_11_lvl( 8, 21, 24, -1 );
   break;
 
-  case 10: _tryUpdate_1_to_11_lvl( 9, 25, 29, 0 );
+  case 10: _tryEvolve_1_to_11_lvl( 9, 25, 29, 0 );
   break;
 
-  case 11: _tryUpdate_1_to_11_lvl( 10, 27, 30, 0 );
+  case 11: _tryEvolve_1_to_11_lvl( 10, 27, 30, 0 );
   break;
   }
 

@@ -37,7 +37,7 @@ void Tile::Terrain::clearFlags()
   garden     = false;
   meadow     = false;
   wall       = false;
-  gatehouse  = false;
+  deepWater  = false;
 }
 
 Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
@@ -169,8 +169,8 @@ bool Tile::getFlag(Tile::Type type) const
   case tlGarden: return _terrain.garden;
   case tlElevation: return _terrain.elevation;
   case tlWall: return _terrain.wall;
-  case tlGateHouse: return _terrain.gatehouse;
   case wasDrawn: return _wasDrawn;
+  case tlDeepWater: return _terrain.deepWater;
   default: break;
   }
 
@@ -191,8 +191,8 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlElevation: _terrain.elevation = value; break;
   case clearAll: _terrain.clearFlags(); break;
   case tlWall: _terrain.wall = value; break;
-  case tlGateHouse: _terrain.gatehouse = value; break;
   case wasDrawn: _wasDrawn = value; break;
+  case tlDeepWater: _terrain.deepWater = value;
   default: break;
   }
 }
@@ -341,7 +341,7 @@ int TileHelper::encode(const Tile& tt)
   res += tt.getFlag( Tile::tlMeadow ) ? 0x800 : 0;
   res += tt.getFlag( Tile::tlWall ) ? 0x4000 : 0;
   res += tt.getFlag( Tile::tlElevation ) ? 0x200 : 0;
-  res += tt.getFlag( Tile::tlGateHouse ) ? 0x8000 : 0;
+  res += tt.getFlag( Tile::tlDeepWater ) ? 0x8000 : 0;
   return res;
 }
 
@@ -361,7 +361,7 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x400)  { tile.setFlag( Tile::tlRock, true );     }
   if(bitset & 0x800)  { tile.setFlag( Tile::tlMeadow, true);    }
   if(bitset & 0x4000) { tile.setFlag( Tile::tlWall, true);      }
-  if(bitset & 0x8000) { tile.setFlag( Tile::tlGateHouse, true); }
+  if(bitset & 0x8000) { tile.setFlag( Tile::tlDeepWater, true); }
 }
 
 Tile& TileHelper::getInvalid()

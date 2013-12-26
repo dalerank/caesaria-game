@@ -90,7 +90,7 @@ public:
 private:
 
   void _update();
-  void _tryUpdate_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );
+  void _tryEvolve_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );
   void _tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability );
 
   class Impl;

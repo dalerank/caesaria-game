@@ -72,10 +72,7 @@ void Shipyard::timeStep(const unsigned long time)
   }
 
   if( time % GameDate::getTickInMonth() == 1 )
-  {
-    if( !_d->isNeedCreateBoat( _getCity() ) )
-      return;
-
+  {    
     if( _d->boat.isValid() )
     {
       WharfPtr wharf = _d->findFreeWharf( _getCity() );
@@ -87,6 +84,9 @@ void Shipyard::timeStep(const unsigned long time)
         _d->boat = FishingBoatPtr();
       }
     }
+
+    if( !_d->isNeedCreateBoat( _getCity() ) )
+      return;
   }
 
   CoastalFactory::timeStep(time);

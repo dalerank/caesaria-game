@@ -98,6 +98,7 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
     {
       water.setIndex( rId );
       tile->setAnimation( water );
+      tile->setFlag( Tile::tlDeepWater, true );
     }
   }
 }

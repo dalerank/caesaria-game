@@ -37,7 +37,7 @@ class Tile
     bool meadow;
     bool elevation;
     bool wall;
-    bool gatehouse;
+    bool deepWater;
     int  desirability;
     int  watersrvc;
 
@@ -53,7 +53,7 @@ class Tile
 
 public:
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding, tlAqueduct,
-                 tlGarden, tlElevation, tlWall, tlGateHouse,
+                 tlGarden, tlElevation, tlWall, tlDeepWater,
                  isConstructible, isDestructible, clearAll,
                  wasDrawn } Type;
 

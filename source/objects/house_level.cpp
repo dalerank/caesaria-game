@@ -27,7 +27,7 @@
 #include "core/saveadapter.hpp"
 #include "good/goodstore.hpp"
 #include "core/foreach.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "good/goodhelper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
@@ -141,6 +141,13 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
     ref = _("##low_desirability##");
   }
 
+  value = findLowLevelHouseNearby( house, reason );
+  if( value > 0 )
+  {
+    res = false;
+    ref = _("##low_level_house_nearby##");
+  }
+
   value = computeEntertainmentLevel( house );
   if( value < _d->minEntertainmentLevel )
   {
@@ -212,6 +219,24 @@ unsigned int HouseLevelSpec::getServiceConsumptionInterval() const
 unsigned int HouseLevelSpec::getFoodConsumptionInterval() const
 {
   return 64;
+}
+
+int HouseLevelSpec::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
+{
+  CityHelper helper( house->_getCity() );
+
+  Size size = house->getSize();
+  TilePos offset( size.getWidth(), size.getHeight() );
+  TilePos housePos = house->getTilePos();
+  HouseList houses = helper.find<House>( constants::building::house, housePos - offset, housePos + offset );
+
+  int ret = 0;
+  foreach( HousePtr h, houses )
+  {
+    ret += ( _d->houseLevel - h->getSpec().getLevel() > 1 ) ? 1 : 0;
+  }
+
+  return ret;
 }
 
 int HouseLevelSpec::computeWaterLevel(HousePtr house, std::string &oMissingRequirement)
