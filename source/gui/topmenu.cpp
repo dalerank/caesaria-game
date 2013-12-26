@@ -25,6 +25,7 @@
 #include "game/enums.hpp"
 #include "game/gamedate.hpp"
 #include "game/settings.hpp"
+#include "environment.hpp"
 #include "core/logger.hpp"
 #include "texturedbutton.hpp"
 
@@ -107,7 +108,7 @@ void TopMenu::Impl::updateDate()
 
 void TopMenu::Impl::showAboutInfo()
 {
-  Widget* parent = lbDate->getParent()->getParent();
+  Widget* parent = lbDate->getEnvironment()->getRootWidget();
   Size pSize = parent->getSize();
   Size mySize( 500, 300 );
   Rect rect( Point( (pSize.getWidth() - mySize.getWidth()) / 2, (pSize.getHeight() - mySize.getHeight()) / 2 ), mySize );
@@ -162,7 +163,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* load = file->addItem( _("##gmenu_file_load##"), -1, true, false, false, false );
   ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
-  ContextMenuItem* exit = file->addItem( _("##gmenu_file_exit##"), -1, true, false, false, false );
+  ContextMenuItem* exit = file->addItem( _("##gmenu_exit_game##"), -1, true, false, false, false );
 
   CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
   CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::emit );

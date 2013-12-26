@@ -634,7 +634,7 @@ void Label::setFont( const Font& font )
   _d->needUpdatePicture = true;
 }
 
-void Label::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
+void Label::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
   Widget::setTextAlignment( horizontal, vertical );
   _d->needUpdatePicture = true;

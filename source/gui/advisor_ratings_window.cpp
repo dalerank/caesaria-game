@@ -84,7 +84,7 @@ public:
   TexturedButton* btnHelp;
   Label* lbRatingInfo;
 
-  void drawColumn( const Point& center, const int value );
+  void drawColumn( const Point& alignCenter, const int value );
   void checkCultureRating();
   void checkProsperityRating();
   void checkPeaceRating();

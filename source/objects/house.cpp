@@ -222,7 +222,7 @@ void House::timeStep(const unsigned long time)
     }
     else if( _d->changeCondition > 0 )
     {
-      _d->condition4Up = _("##house_willbe_upgrade##");
+      _d->condition4Up = _("##house_evolves_at##");
     }
 
     int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );

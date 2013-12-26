@@ -101,7 +101,7 @@ public:
 
   virtual void setFont( const Font& font );
 
-  virtual void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
+  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   virtual void setLineIntervalOffset( const int offset );
 

@@ -410,6 +410,11 @@ TileOverlay::Type MetaDataHolder::getType( const std::string& name )
   return type;
 }
 
+std::string MetaDataHolder::getTypename(TileOverlay::Type type)
+{
+  return instance()._d->typeHelper.findName( type );
+}
+
 TileOverlay::Group MetaDataHolder::getClass( const std::string& name )
 {
   TileOverlay::Group type = instance()._d->classHelper.findType( name );

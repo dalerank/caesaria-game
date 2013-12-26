@@ -97,7 +97,7 @@ public:
   virtual Size getTextDimension();
 
   //! Sets text justification
-  virtual void setTextAlignment( TypeAlign horizontal, TypeAlign vertical );
+  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   //! called if an event happened.
   virtual bool onEvent( const NEvent& event );

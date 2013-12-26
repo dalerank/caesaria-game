@@ -65,8 +65,8 @@ public:
   void setEnabled( bool en );
   // A multicolor extension
 
-  const TypeAlign& getHorizontalAlign() const;
-  const TypeAlign& getVerticalAlign() const;
+  const Alignment& getHorizontalAlign() const;
+  const Alignment& getVerticalAlign() const;
 
   bool isAlignEnabled() const;
 
@@ -85,7 +85,7 @@ public:
   };
 
 	//!sets the item text alignment
-	void setItemTextAlignment( TypeAlign horizontal, TypeAlign vertical );
+	void setItemTextAlignment( Alignment horizontal, Alignment vertical );
 
   ListItemOverrideColor OverrideColors[ LBC_COUNT ];
 

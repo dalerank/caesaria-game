@@ -37,7 +37,7 @@ GuiEnv* Widget::getEnvironment()
     return _environment;
 }
 
-void Widget::setTextAlignment( TypeAlign horizontal, TypeAlign vertical )
+void Widget::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
     if( !(horizontal >= alignUpperLeft && horizontal <= alignAuto)
         || !(vertical >= alignUpperLeft && vertical <= alignAuto) )
@@ -63,9 +63,10 @@ unsigned int Widget::getHeight() const
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : _d( new Impl ),
   _alignLeft(alignUpperLeft), _alignRight(alignUpperLeft), _alignTop(alignUpperLeft), _alignBottom(alignUpperLeft),
-  _environment( parent ? parent->getEnvironment() : 0 ), _eventHandler( NULL )
+  _environment( parent ? parent->getEnvironment() : 0 )
 {
   _d->isVisible = true;
+  _d->eventHandler = 0;
   _d->maxSize = Size(0,0);
   _d->minSize = Size(1,1);
   _d->parent = parent;
@@ -197,7 +198,7 @@ void Widget::setMinSize( const Size& size )
     updateAbsolutePosition();
 }
 
-void Widget::setAlignment( TypeAlign left, TypeAlign right, TypeAlign top, TypeAlign bottom )
+void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Alignment bottom )
 {
   _alignLeft = left;
   _alignRight = right;
@@ -681,14 +682,13 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     const int diffy = parentAbsolute.getHeight() - _d->lastParentRect.getHeight();
 
 
-    if (_alignLeft == alignScale || _alignRight == alignScale)
+    if( _alignLeft == alignScale || _alignRight == alignScale)
         fw = (float)parentAbsolute.getWidth();
 
-    if (_alignTop == alignScale || _alignBottom == alignScale)
+    if( _alignTop == alignScale || _alignBottom == alignScale)
         fh = (float)parentAbsolute.getHeight();
-
     
-    switch (_alignLeft)
+    switch( _alignLeft)
     {
     case alignAuto:
     case alignUpperLeft: break;
@@ -697,7 +697,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     case alignScale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.getX() * fw ); break;
     }
 
-    switch (_alignRight)
+    switch( _alignRight)
     {
     case alignAuto:
     case alignUpperLeft:   break;
@@ -706,7 +706,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     case alignScale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.getX() * fw ) ); break;
     }
 
-    switch (_alignTop)
+    switch( _alignTop)
     {
     case alignAuto:
     case alignUpperLeft: break;
@@ -715,7 +715,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     case alignScale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.getY() * fh) ); break;
     }
 
-    switch (_alignBottom)
+    switch( _alignBottom)
     {
     case alignAuto:
     case alignUpperLeft:  break;
@@ -865,8 +865,8 @@ void Widget::setID( int id )
 
 bool Widget::onEvent( const NEvent& event )
 {
-  if( _eventHandler )
-      _eventHandler->onEvent( event );
+  if( _d->eventHandler )
+      _d->eventHandler->onEvent( event );
 
   if (event.EventType == sEventMouse)
     if (getParent() && (getParent()->getParent() == NULL))
@@ -919,7 +919,7 @@ Size Widget::getMinSize() const
 //     }
 // }
 
-void Widget::installEventHandler( Widget* elementHandler ){  _eventHandler = elementHandler;}
+void Widget::installEventHandler( Widget* elementHandler ){  _d->eventHandler = elementHandler;}
 bool Widget::isHovered() const{  return _environment->isHovered( this );}
 bool Widget::isFocused() const{  return _environment->hasFocus( this );}
 Rect Widget::getClientRect() const{  return Rect( 0, 0, getWidth(), getHeight() );}
@@ -959,8 +959,8 @@ int Widget::getLeft() const { return getRelativeRect().UpperLeftCorner.getX(); }
 int Widget::getRight() const { return getRelativeRect().LowerRightCorner.getX(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
-TypeAlign Widget::getHorizontalTextAlign() const{  return _d->textHorzAlign; }
-TypeAlign Widget::getVerticalTextAlign() const{  return _d->textVertAlign;}
+Alignment Widget::getHorizontalTextAlign() const{  return _d->textHorzAlign; }
+Alignment Widget::getVerticalTextAlign() const{  return _d->textVertAlign;}
 void Widget::deleteLater(){  _environment->deleteLater( this ); }
 
 }//end namespace gui

@@ -74,6 +74,7 @@ public:
    TileOverlay::Type getConsumerType(const Good::Type inGoodType) const;
 
    static TileOverlay::Type getType( const std::string& name );
+   static std::string getTypename( TileOverlay::Type type );
    static TileOverlay::Group getClass( const std::string& name );
 
    static std::string getPrettyName( TileOverlay::Type type );

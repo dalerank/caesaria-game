@@ -44,7 +44,7 @@ public:
 
   virtual bool onEvent( const NEvent& event);
 
-  bool isPointInside(const Point& point) const;
+  virtual bool isPointInside(const Point& point) const;
 
   void setTitle( const std::string& title );
   virtual void setText( const std::string& text );
@@ -53,12 +53,14 @@ public:
   void setAutoPosition( bool value );
 
   virtual void setupUI(const VariantMap &ui);
+  virtual void showDescription() {}
 
 protected:
   virtual void _afterCreate() {}
   Label* _getTitle();
-  Label* _getDescription();
+  Label* _getInfo();
   Label* _getBlackFrame();
+  PushButton* _getBtnExit();
   virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );
 
   class Impl;
@@ -73,7 +75,11 @@ public:
   InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building );
   
   void drawWorkers( int );
-  void setText(const std::string& text);
+  virtual void setText(const std::string& text);
+
+  virtual void showDescription();
+private:
+  TileOverlay::Type _type;
 };
 
 class InfoBoxSenate : public InfoBoxSimple
@@ -81,8 +87,6 @@ class InfoBoxSenate : public InfoBoxSimple
 public:
   InfoBoxSenate( Widget* parent, const Tile& tile );
   virtual ~InfoBoxSenate();
-
-  void paint();
 };
 
 class InfoBoxLand : public InfoBoxSimple
@@ -91,7 +95,7 @@ class InfoBoxLand : public InfoBoxSimple
 public:
   InfoBoxLand( Widget* parent, const Tile& tile );   
 
-  void setText( const std::string& text );
+  virtual void setText( const std::string& text );
 };
 
 class InfoBoxFreeHouse : public InfoBoxLand
@@ -103,8 +107,12 @@ public:
 class InfoboxFactory : public InfoBoxSimple
 {
 public:
-   InfoboxFactory( Widget* parent, const Tile& tile );
-   std::string getInfoText();
+  InfoboxFactory( Widget* parent, const Tile& tile );
+
+  virtual void showDescription();
+  std::string getInfoText( FactoryPtr factory );
+private:
+  TileOverlay::Type _type;
 };
 
 // info box about a granary

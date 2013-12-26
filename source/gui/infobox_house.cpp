@@ -62,6 +62,8 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   HousePtr house = tile.getOverlay().as<House>();
   setTitle( house->getSpec().getLevelName() );
 
+  _getBtnExit()->setTooltipText( _("##advanced_houseinfo##") );
+
   Label* houseInfo = new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
   houseInfo->setWordwrap( true );
 

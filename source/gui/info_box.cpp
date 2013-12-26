@@ -41,6 +41,7 @@
 #include "gfx/engine.hpp"
 #include "gui/special_orders_window.hpp"
 #include "good/goodstore.hpp"
+#include "environment.hpp"
 #include "groupbox.hpp"
 #include "walker/walker.hpp"
 #include "objects/watersupply.hpp"
@@ -50,6 +51,7 @@
 #include "events/event.hpp"
 #include "game/settings.hpp"
 #include "image.hpp"
+#include "dictionary.hpp"
 
 using namespace constants;
 
@@ -62,13 +64,13 @@ public:
   Label* lbBackground;
   Label* lbBlackFrame;
   Label* lbTitle;
-  Label* lbDescription;
+  Label* lbInfo;
   PushButton* btnExit;
   PushButton* btnHelp;
   bool isAutoPosition;
 
   Impl() : lbBackground(0), lbBlackFrame(0), lbTitle(0),
-    lbDescription(0), btnExit(0), btnHelp(0), isAutoPosition(false)
+    lbInfo(0), btnExit(0), btnHelp(0), isAutoPosition(false)
   {
 
   }
@@ -85,14 +87,15 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
   _d->btnHelp = findChild<TexturedButton*>( "btnHelp", true );
   _d->lbBackground = findChild<Label*>( "lbBackground", true );
   _d->lbBlackFrame = findChild<Label*>( "lbBlackFrame", true );
-  _d->lbDescription = findChild<Label*>( "lbText", true );
+  _d->lbInfo = findChild<Label*>( "lbText", true );
 
   if( _d->btnExit ) { _d->btnExit->setPosition( Point( getWidth() - 39, getHeight() - 39 ) ); }
   if( _d->btnHelp ) { _d->btnHelp->setPosition( Point( 14, getHeight() - 39 ) ); }
 
-  CONNECT( _d->btnExit, onClicked(), this, InfoBoxLand::deleteLater );
+  CONNECT( _d->btnExit, onClicked(), this, InfoBoxSimple::deleteLater );
+  CONNECT( _d->btnHelp, onClicked(), this, InfoBoxSimple::showDescription );
 
-  _d->lbDescription = new Label( this, Rect( 32, 64, 510 - 32, 300 - 48 ) );
+  _d->lbInfo = new Label( this, Rect( 32, 64, 510 - 32, 300 - 48 ) );
 
   // black box
   Point lastPos( getWidth() - 32, getHeight() - 48 );
@@ -103,11 +106,11 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
     lastPos.setY( _d->lbBlackFrame->getTop() - 10 );
   }
 
-  if( _d->lbDescription )
+  if( _d->lbInfo )
   {
-    Rect r = _d->lbDescription->getRelativeRect();
+    Rect r = _d->lbInfo->getRelativeRect();
     r.LowerRightCorner = lastPos;
-    _d->lbDescription->setGeometry( r );
+    _d->lbInfo->setGeometry( r );
   }
 
   _afterCreate();
@@ -118,7 +121,7 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
 
 void InfoBoxSimple::setText( const std::string& text )
 {
-  if( _d->lbDescription ) { _d->lbDescription->setText( text ); }
+  if( _d->lbInfo ) { _d->lbInfo->setText( text ); }
 }
 
 InfoBoxSimple::~InfoBoxSimple()
@@ -178,8 +181,9 @@ void InfoBoxSimple::setupUI(const VariantMap& ui)
 
 Label* InfoBoxSimple::_getTitle(){  return _d->lbTitle;}
 
-Label*InfoBoxSimple::_getDescription(){ return _d->lbDescription; }
+Label*InfoBoxSimple::_getInfo(){ return _d->lbInfo; }
 Label* InfoBoxSimple::_getBlackFrame(){  return _d->lbBlackFrame; }
+PushButton*InfoBoxSimple::_getBtnExit() { return _d->btnExit; }
 
 void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
@@ -200,6 +204,7 @@ void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
 InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
+  _type = building->getType();
   setTitle( MetaDataHolder::instance().getData( building->getType() ).getPrettyName() );  
 
   _updateWorkersLabel( Point( 32, 150 ), 542, building->getMaxWorkers(), building->getWorkersCount() );
@@ -215,7 +220,12 @@ InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingP
 void InfoBoxWorkingBuilding::setText(const std::string& text)
 {
   if( Widget* lb = findChild( lbHelpId ) )
-      lb->setText( text );
+    lb->setText( text );
+}
+
+void InfoBoxWorkingBuilding::showDescription()
+{
+  DictionaryWindow::show( getEnvironment()->getRootWidget(), _type );
 }
 
 InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
@@ -245,85 +255,76 @@ InfoBoxSenate::~InfoBoxSenate()
 InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
-  FactoryPtr building = tile.getOverlay().as<Factory>();
-  setTitle( MetaDataHolder::getPrettyName( building->getType() ) );
+  FactoryPtr factory = tile.getOverlay().as<Factory>();
+  _type = factory->getType();
+  setTitle( MetaDataHolder::getPrettyName( factory->getType() ) );
 
   // paint progress
-  std::string text = StringHelper::format( 0xff, "%s %d%%", _("##production_ready_at##"), building->getProgress() );
+  std::string text = StringHelper::format( 0xff, "%s %d%%", _("##production_ready_at##"), factory->getProgress() );
   new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 10, 0 ), Size( getWidth() - 32, 25 ) ), text );
 
-  if( building->getOutGoodType() != Good::none )
+  if( factory->getOutGoodType() != Good::none )
   {
-    new Image( this, Point( 10, 10), GoodHelper::getPicture( building->getOutGoodType() ) );
+    new Image( this, Point( 10, 10), GoodHelper::getPicture( factory->getOutGoodType() ) );
   }
 
   // paint picture of in good
-  Label* lbStockInfo;
-  if( building->inStockRef().type() != Good::none )
+  if( factory->inStockRef().type() != Good::none )
   {
-    lbStockInfo = new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 0, 25 ), Size( getWidth() - 32, 25 ) ) );
-    lbStockInfo->setIcon( GoodHelper::getPicture( building->inStockRef().type() ) );
+    Label* lbStockInfo = new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 0, 25 ), Size( getWidth() - 32, 25 ) ) );
+    lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
 
     std::string text = StringHelper::format( 0xff, "%s %s: %d %s",
-                                             GoodHelper::getName( building->inStockRef().type() ).c_str(),
+                                             GoodHelper::getName( factory->inStockRef().type() ).c_str(),
                                              _("##factory_stock##"),
-                                             building->inStockRef().qty() / 100,
+                                             factory->inStockRef().qty() / 100,
                                              _("##factory_units##") );
 
     lbStockInfo->setText( text );
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
   }
 
-  Label* lbDesc = _getDescription();
-  lbDesc->setWordwrap( true );
-  lbDesc->setGeometry( Rect( 16, lbStockInfo->getBottom() + 5, getWidth() - 16, 150 ));
-  setText( MetaDataHolder::getDescription( building->getType() ) );
+  setText( getInfoText( factory ) );
 
-  _updateWorkersLabel( Point( 32, 157 ), 542, building->getMaxWorkers(), building->getWorkersCount() );
+  _updateWorkersLabel( Point( 32, 157 ), 542, factory->getMaxWorkers(), factory->getWorkersCount() );
 }
 
-std::string InfoboxFactory::getInfoText()
+void InfoboxFactory::showDescription()
 {
-  return "";
-  /*std::string textKey = GoodHelper::getName( _building->getOutGood().type() );
-  if (_building->isActive() == false)
+  DictionaryWindow::show( getEnvironment()->getRootWidget(), _type );
+}
+
+std::string InfoboxFactory::getInfoText( FactoryPtr factory )
+{
+  std::string factoryType = MetaDataHolder::getTypename( factory->getType() );
+  float workKoeff = factory->getWorkers() * 100 / factory->getMaxWorkers();
+
+  if( workKoeff == 0 )
   {
-    textKey+= "- Production arretee sous ordre du gouverneur";
+    return "##" + factoryType + "_no_workers##";
   }
-  else if (_building->getInGood().type() != Good::G_NONE && _building->getInGood()._currentQty == 0)
+  else if (nbWorkers < 25)
   {
-    textKey+= "- Production arretee par manque de matiere premiere";
+    textKey+= "- Production quasimment a l'arret par manque de main-d'oeuvre";
+  }
+  else if (nbWorkers < 50)
+  {
+    textKey+= "- Production tres ralentie par manque d'employes";
+  }
+  else if (nbWorkers < 75)
+  {
+    textKey+= "- Production limitee par manque de personnel";
+  }
+  else if (nbWorkers < 100 )
+  {
+    textKey+= "- Production legerement ralentie par manque d'employes";
   }
   else
   {
-    int nbWorkers = _building->getWorkers();
-    if (nbWorkers == 0)
-    {
-       textKey+= "- Production arretee par manque de personnel";
-    }
-    else if (nbWorkers < 5)
-    {
-       textKey+= "- Production quasimment a l'arret par manque de main-d'oeuvre";
-    }
-    else if (nbWorkers < 7)
-    {
-       textKey+= "- Production tres ralentie par manque d'employes";
-    }
-    else if (nbWorkers < 9)
-    {
-       textKey+= "- Production limitee par manque de personnel";
-    }
-    else if (nbWorkers < 10)
-    {
-       textKey+= "- Production legerement ralentie par manque d'employes";
-    }
-    else
-    {
-       textKey+= "- Production a son maximum";
-    }
+    return "##" + factoryType + "_full_work##";
   }
 
-  return _(textKey.c_str());*/
+  return _(textKey.c_str());
 }
 
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
@@ -539,9 +540,9 @@ InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::st
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
 
-  _d->lbDescription->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
-  _d->lbDescription->setWordwrap( true );
-  _d->lbDescription->setText( message );
+  _d->lbInfo->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbInfo->setWordwrap( true );
+  _d->lbInfo->setText( message );
 }
 
 InfoBoxText::~InfoBoxText()
@@ -555,8 +556,8 @@ InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
 {
   setTitle( "##fontaun_title##" );
 
-  _d->lbDescription->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
-  _d->lbDescription->setWordwrap( true );
+  _d->lbInfo->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbInfo->setWordwrap( true );
 
   FountainPtr fountain = tile.getOverlay().as<Fountain>();
   std::string text;
@@ -574,7 +575,7 @@ InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
     }
   }
 
-  _d->lbDescription->setText( text );
+  _d->lbInfo->setText( text );
 }
 
 InfoBoxFontain::~InfoBoxFontain()

@@ -58,7 +58,7 @@ public:
   bool operator!=(const Font& other) const;
 
   Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
-                          TypeAlign horizontalAlign, TypeAlign verticalAlign );
+                          Alignment horizontalAlign, Alignment verticalAlign );
 
   void draw(Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
   void draw(Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );

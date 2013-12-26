@@ -591,7 +591,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
     Rect frameRect = getItemTextRect_();
     frameRect.LowerRightCorner.setY( frameRect.getTop() + _d->itemHeight );
 
-    TypeAlign itemTextHorizontalAlign, itemTextVerticalAlign;
+    Alignment itemTextHorizontalAlign, itemTextVerticalAlign;
     Font currentFont;
 
     for (int i=0; i<(int)_d->items.size(); ++i)

@@ -1,3 +1,6 @@
 {
-  pics_1 : "resources/pics_1.zip"
+  main : "resources/pics.zip"
+  oc3  : "resources/pics_oc3.zip"
+  wait : "resources/pics_wait.zip"
+  carthago : "resources/pics_carthage.zip"
 }

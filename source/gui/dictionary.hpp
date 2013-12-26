@@ -13,39 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_FILM_WIDGET_H_INCLUDE_
-#define _CAESARIA_FILM_WIDGET_H_INCLUDE_
+#ifndef _CAESARIA_DICTIONARY_H_INCLUDE_
+#define _CAESARIA_DICTIONARY_H_INCLUDE_
 
 #include "gui/widget.hpp"
 #include "core/signals.hpp"
 #include "gfx/engine.hpp"
+#include "gfx/tileoverlay.hpp"
 
 namespace gui
 {
 
-class FilmWidget : public Widget
+class DictionaryWindow : public Widget
 {
 public:
-  FilmWidget( Widget* parent, vfs::Path film );
+  static void show( Widget* parent, TileOverlay::Type type );
 
   //! Деструктор
-  virtual ~FilmWidget(void);
+  virtual ~DictionaryWindow();
 
-  //virtual bool onEvent(const NEvent &event);
-
-  virtual void setText(const std::string &text);
-  virtual void setReceiver(std::string text);
-  virtual void setTitle(std::string text);
-  virtual void setTime(DateTime time);
-
-public oc3_signals:
-  Signal0<>& onClose();
+  void showHelp( TileOverlay::Type type );
 
 private:
+  DictionaryWindow( Widget* parent );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
 } //end namespace gui
 
-#endif //_CAESARIA_FILM_WIDGET_H_INCLUDE_
+#endif //_CAESARIA_DICTIONARY_H_INCLUDE_

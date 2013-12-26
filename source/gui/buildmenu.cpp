@@ -341,7 +341,7 @@ BuildMenu_entertainment::BuildMenu_entertainment( Widget* parent, const Rect& re
 void BuildMenu_commerce::initialize()
 {
   addSubmenuButton(BM_FARM, _("Farm") );
-  addSubmenuButton(BM_RAW_MATERIAL, _("Raw materials") );
+  addSubmenuButton(BM_RAW_MATERIAL, _("##fabric##") );
   addSubmenuButton(BM_FACTORY, _("Factory") );
 
   addBuildButton(building::market);

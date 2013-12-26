@@ -507,7 +507,7 @@ int ScrollBar::getPos() const
 }
 
 PushButton* ScrollBar::_CreateButton( const Rect& rectangle, 
-                                      TypeAlign left, TypeAlign rigth, TypeAlign top, TypeAlign bottom, int type )
+                                      Alignment left, Alignment rigth, Alignment top, Alignment bottom, int type )
 {
     PushButton* btn = new PushButton( this, rectangle );
     btn->setSubElement(true);

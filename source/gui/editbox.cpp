@@ -239,7 +239,7 @@ void EditBox::setupUI(const VariantMap& ui)
 }
 
 //! Sets text justification
-void EditBox::setTextAlignment(TypeAlign horizontal, TypeAlign vertical)
+void EditBox::setTextAlignment(Alignment horizontal, Alignment vertical)
 {
 	Widget::setTextAlignment( horizontal, vertical );
 }

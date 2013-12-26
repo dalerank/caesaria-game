@@ -28,8 +28,8 @@ public:
   ElementState state;
   bool enabled;
 
-  TypeAlign horizontal;
-  TypeAlign vertical;
+  Alignment horizontal;
+  Alignment vertical;
   bool alignEnabled;
 };
 
@@ -48,7 +48,7 @@ const std::string& ListBoxItem::getText() const
     return _d->text;
 }
 
-const TypeAlign& ListBoxItem::getVerticalAlign() const
+const Alignment& ListBoxItem::getVerticalAlign() const
 {
     return _d->vertical;
 }
@@ -58,7 +58,7 @@ bool ListBoxItem::isAlignEnabled() const
     return _d->enabled;
 }
 
-const TypeAlign& ListBoxItem::getHorizontalAlign() const
+const Alignment& ListBoxItem::getHorizontalAlign() const
 {
     return _d->horizontal;
 }
@@ -107,7 +107,7 @@ ListBoxItem& ListBoxItem::getInvalidItem()
 	return invalidItem;
 }
 
-void ListBoxItem::setItemTextAlignment( TypeAlign horizontal, TypeAlign vertical )
+void ListBoxItem::setItemTextAlignment( Alignment horizontal, Alignment vertical )
 {
     _d->vertical = vertical;
     _d->horizontal = horizontal;

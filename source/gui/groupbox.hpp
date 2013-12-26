@@ -39,7 +39,7 @@ public:
   virtual const Picture& getBackgroundImage() const;
 
   //! sets if the image should scale to fit the element
-  virtual void setScaleBackgroundImage(bool scale);
+  virtual void setScaleBackgroundImage(bool alignScale);
   virtual bool isBackgroundImageScaled() const;
 
   //! draws the element and its children

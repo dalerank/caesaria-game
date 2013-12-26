@@ -148,7 +148,7 @@ bool Font::operator!=( const Font& other ) const
 }
 
 Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect, 
-                             TypeAlign horizontalAlign, TypeAlign verticalAlign )
+                             Alignment horizontalAlign, Alignment verticalAlign )
 {
   Rect resultRect;
   Size d = getSize( text );
