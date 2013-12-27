@@ -32,6 +32,7 @@
 #include "objects/constants.hpp"
 #include "city/migration.hpp"
 #include "city/statistic.hpp"
+#include "city/cityservice_info.hpp"
 
 using namespace constants;
 
@@ -48,6 +49,11 @@ public:
   TexturedButton* btnHelp;
 
   void drawReportRow( Point pos, std::string title, std::string text );
+  void drawEmploymentState( Point pos );
+  void drawProfitState( Point pos );
+  void drawMigrationState( Point pos );
+  void drawFoodStockState( Point pos );
+  void drawFoodConsumption( Point pos );
 };
 
 AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int id )
@@ -75,75 +81,12 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   Point startPoint( 20, 60 );
   Point offset( 0, 20 );
 
-  int needWorkersNumber = CityStatistic::getVacantionsNumber(_d->city );
-  int workless = CityStatistic::getWorklessPercent( _d->city );
-  std::string text;
-  if( needWorkersNumber > 0 ) {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );  }
-  else if( workless > 10 )  {    text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );  }
-  else  {    text = _("##advchief_employers_ok##");  }
+  _d->drawEmploymentState( startPoint );
+  _d->drawProfitState( startPoint + offset );
+  _d->drawMigrationState( startPoint + offset * 2 );
+  _d->drawFoodStockState( startPoint + offset * 3 );
+  _d->drawFoodConsumption( startPoint + offset * 4 );
 
-  _d->drawReportRow( startPoint, _("##advchief_employment##"), text );
-
-  int profit = _d->city->getFunds().getProfit();
-  if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
-  else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
-
-  _d->drawReportRow( startPoint + offset * 1, _("##advchief_finance##"), text );
-
-  SmartPtr<CityMigration> migration = _d->city->findService( CityMigration::getDefaultName() ).as<CityMigration>();
-  //int migrationLastMonth = 0;
-  text = _("##migration_unknown_reason##");
-  if( migration.isValid() )
-  {
-    //migrationLastMonth = migration->getValue();
-    text = migration->getReason();
-  }
-
-  _d->drawReportRow( startPoint + offset * 2, _("##advchief_migration##"), text );
-
-  int foodStock = CityStatistic::getFoodStock( _d->city );
-  int foodMontlyConsumption = CityStatistic::getFoodMonthlyConsumption( _d->city );
-  int monthWithFood = foodStock / foodMontlyConsumption;
-
-  switch( monthWithFood )
-  {
-    case 0: text = _("##have_no_food_on_next_month##"); break;
-    case 1: text = _("##small_food_on_next_month##"); break;
-    case 2: text = _("##some_food_on_next_month##"); break;
-
-    default:
-      text = StringHelper::format( 0xff, "%s %d", _("##have_food_for##"), monthWithFood );
-  }
-
-  _d->drawReportRow( startPoint + offset * 3, _("##advchief_food_stocks##"), text );
-
-  int foodProducing = CityStatistic::getFoodProducing( _d->city );
-  if( foodProducing == 0 )
-  {
-    text = _("##we_noproduce_food##");
-  }
-  else
-  {
-    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
-    bool positiveProducing = (foodProducing - yearlyFoodConsumption >= 0 ? true : false);
-    if( positiveProducing )
-    {
-      int foodKoeff = foodProducing / yearlyFoodConsumption;
-      switch( foodKoeff )
-      {
-      case 0: case 1: text = _("##we_produce_some_than_eat##"); break;
-      case 2: text = _("##we_produce_more_than_eat##"); break;
-      default:
-        text = _("##we_produce_much_than_eat##");
-      }
-    }
-    else
-    {
-      text = _("##we_produce_less_than_eat##");
-    }
-  }
-
-  _d->drawReportRow( startPoint + offset * 4, _("##advchief_food_consumption##"), text );
 }
 
 void AdvisorChiefWindow::draw( GfxEngine& painter )
@@ -166,6 +109,81 @@ void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::
   background->draw( pointPic, pos + Point( 5, 10 ) );
   font.draw( *background, title, pos + Point( 20, 0), false );
   font2.draw( *background, text, pos + Point( 255, 0), false );
+}
+
+void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
+{
+  int needWorkersNumber = CityStatistic::getVacantionsNumber( city );
+  int workless = CityStatistic::getWorklessPercent( city );
+  std::string text;
+  if( needWorkersNumber > 0 ) { text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );  }
+  else if( workless > 10 )  {   text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );  }
+  else  {                       text = _("##advchief_employers_ok##");  }
+
+  drawReportRow( pos, _("##advchief_employment##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
+{
+  std::string text;
+  int profit = city->getFunds().getProfit();
+  if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
+  else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
+
+  drawReportRow( pos, _("##advchief_finance##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
+{
+  SmartPtr<CityMigration> migration = city->findService( CityMigration::getDefaultName() ).as<CityMigration>();
+
+  std::string text = _("##migration_unknown_reason##");
+  if( migration.isValid() )
+  {
+    text = migration->getReason();
+  }
+
+  drawReportRow( pos, _("##advchief_migration##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
+{
+  SmartPtr< CityServiceInfo > info = city->findService( CityServiceInfo::getDefaultName() ).as<CityServiceInfo>();
+
+  std::string text = _("##food_stock_unknown_reason##");
+  if( info.isValid() )
+  {
+    int monthWithFood = info->getLast().monthWithFood;
+    switch( monthWithFood )
+    {
+      case 0: text = _("##have_no_food_on_next_month##"); break;
+      case 1: text = _("##small_food_on_next_month##"); break;
+      case 2: text = _("##some_food_on_next_month##"); break;
+
+      default:
+        text = StringHelper::format( 0xff, "%s %d", _("##have_food_for##"), monthWithFood );
+    }
+  }
+
+  drawReportRow( pos, _("##advchief_food_stocks##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
+{
+  std::string text;
+  SmartPtr< CityServiceInfo > info = city->findService( CityServiceInfo::getDefaultName() ).as<CityServiceInfo>();
+
+  switch( info->getLast().foodKoeff )
+  {
+  case -1: text= _("##we_produce_less_than_eat##"); break;
+  case 0: text = _("##we_noproduce_food##"); break;
+  case 1: text = _("##we_produce_some_than_eat##"); break;
+  case 2: text = _("##we_produce_more_than_eat##"); break;
+
+  default: text = _("##we_produce_much_than_eat##");
+  }
+
+  drawReportRow( pos, _("##advchief_food_consumption##"), text );
 }
 
 }//end namespace gui

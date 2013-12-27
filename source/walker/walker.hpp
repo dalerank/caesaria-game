@@ -138,7 +138,7 @@ class WalkerHelper
 public:
   static WalkerHelper& instance();
 
-  static std::string getName( constants::walker::Type type );
+  static std::string getTypename( constants::walker::Type type );
   static constants::walker::Type getType( const std::string& name );
   static std::string getPrettyTypeName( constants::walker::Type type );
   static Picture getBigPicture( constants::walker::Type type );

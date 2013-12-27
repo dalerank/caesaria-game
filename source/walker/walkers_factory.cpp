@@ -148,7 +148,7 @@ WalkerManager& WalkerManager::getInstance()
 
 void WalkerManager::addCreator( const walker::Type type, WalkerCreator* ctor )
 {
-  std::string typeName = WalkerHelper::getName( type );
+  std::string typeName = WalkerHelper::getTypename( type );
 
   bool alreadyHaveConstructor = _d->constructors.find( type ) != _d->constructors.end();
   if( alreadyHaveConstructor )

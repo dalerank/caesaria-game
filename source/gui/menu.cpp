@@ -140,7 +140,7 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
                                           ResourceMenu::entertainmentMidPicId, _("##entertainmentBtnTooltip") );
     
     _d->administrationButton = _addButton( 139, true, 8, BM_ADMINISTRATION, haveSubMenu, 
-                                           ResourceMenu::administrationMidPicId, _("##administractionBtnTooltip") );
+                                           ResourceMenu::administrationMidPicId, _("##administration_building##") );
     
     _d->engineerButton = _addButton( 167, true, 9, BM_ENGINEERING, haveSubMenu, 
                                      ResourceMenu::engineerMidPicId, _("##engineerBtnTooltip") );

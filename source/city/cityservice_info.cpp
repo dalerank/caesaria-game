@@ -23,32 +23,15 @@
 #include "objects/house_level.hpp"
 #include "gfx/tile.hpp"
 #include "game/gamedate.hpp"
-#include "city/funds.hpp"
-
-class CityParameters
-{
-public:
-  DateTime date;
-  int population;
-  int funds;
-  int tax;
-  int taxpayes;
-
-  CityParameters()
-  {
-    population = 0;
-    funds = 0;
-    tax = 0;
-    taxpayes = 0;
-  }
-};
+#include "funds.hpp"
+#include "statistic.hpp"
 
 class CityServiceInfo::Impl
 {
 public:
   PlayerCityPtr city;
   DateTime lastDate;
-  std::vector< CityParameters > params;
+  std::vector< CityServiceInfo::Parameters > params;
 };
 
 CityServicePtr CityServiceInfo::create(PlayerCityPtr city )
@@ -60,7 +43,7 @@ CityServicePtr CityServiceInfo::create(PlayerCityPtr city )
 }
 
 CityServiceInfo::CityServiceInfo( PlayerCityPtr city )
-  : CityService( "info" ), _d( new Impl )
+  : CityService( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();
@@ -77,13 +60,38 @@ void CityServiceInfo::update( const unsigned int time )
     _d->lastDate = GameDate::current();
 
     _d->params.erase( _d->params.begin() );
-    _d->params.push_back( CityParameters() );
+    _d->params.push_back( Parameters() );
 
-    CityParameters& last = _d->params.back();
+    Parameters& last = _d->params.back();
     last.population = _d->city->getPopulation();
     last.funds = _d->city->getFunds().getValue();    
     last.tax = 0;//_d->city->getFunds().getIssueValue();
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
 
+    int foodStock = CityStatistic::getFoodStock( _d->city );
+    int foodMontlyConsumption = CityStatistic::getFoodMonthlyConsumption( _d->city );
+    last.monthWithFood = foodStock / foodMontlyConsumption;
+
+    int foodProducing = CityStatistic::getFoodProducing( _d->city );
+    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
+    last.foodKoeff = ( foodProducing - yearlyFoodConsumption >= 0 )
+                      ? foodProducing / yearlyFoodConsumption
+                      : -1;
+
+    last.needWorkers = CityStatistic::getVacantionsNumber( _d->city );
+    last.workless = CityStatistic::getWorklessPercent( _d->city );
+    last.tax = _d->city->getFunds().getTaxRate();
   }
+}
+
+CityServiceInfo::Parameters CityServiceInfo::getLast() const
+{
+  return _d->params.empty()
+            ? Parameters()
+            : _d->params.back();
+}
+
+std::string CityServiceInfo::getDefaultName()
+{
+  return "info";
 }

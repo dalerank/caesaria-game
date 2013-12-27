@@ -25,9 +25,42 @@
 class CityServiceInfo : public CityService
 {
 public:
+  class Parameters
+  {
+  public:
+    DateTime date;
+    int population;
+    int funds;
+    int tax;
+    int taxpayes;
+    int monthWithFood;
+    int foodKoeff;
+    int godsMood;
+    int needWorkers;
+    int workless;
+    int tax;
+
+    Parameters()
+    {
+      population = 0;
+      funds = 0;
+      tax = 0;
+      taxpayes = 0;
+      monthWithFood = 0;
+      foodKoeff = 0;
+      godsMood = 0;
+      needWorkers = 0;
+      workless = 0;
+      tax = 0;
+    }
+  };
+
   static CityServicePtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
+  Parameters getLast() const;
+
+  static std::string getDefaultName();
 
 private:
   CityServiceInfo( PlayerCityPtr city );

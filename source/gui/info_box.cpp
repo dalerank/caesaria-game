@@ -297,34 +297,14 @@ void InfoboxFactory::showDescription()
 std::string InfoboxFactory::getInfoText( FactoryPtr factory )
 {
   std::string factoryType = MetaDataHolder::getTypename( factory->getType() );
-  float workKoeff = factory->getWorkers() * 100 / factory->getMaxWorkers();
+  float workKoeff = factory->getWorkersCount() * 100 / factory->getMaxWorkers();
 
-  if( workKoeff == 0 )
-  {
-    return "##" + factoryType + "_no_workers##";
-  }
-  else if (nbWorkers < 25)
-  {
-    textKey+= "- Production quasimment a l'arret par manque de main-d'oeuvre";
-  }
-  else if (nbWorkers < 50)
-  {
-    textKey+= "- Production tres ralentie par manque d'employes";
-  }
-  else if (nbWorkers < 75)
-  {
-    textKey+= "- Production limitee par manque de personnel";
-  }
-  else if (nbWorkers < 100 )
-  {
-    textKey+= "- Production legerement ralentie par manque d'employes";
-  }
-  else
-  {
-    return "##" + factoryType + "_full_work##";
-  }
-
-  return _(textKey.c_str());
+  if( workKoeff == 0 )     {  return "##" + factoryType + "_no_workers##";      }
+  else if(workKoeff < 25)  {  return "##" + factoryType + "_bad_work##";        }
+  else if (workKoeff < 50) {  return "##" + factoryType + "_slow_work##";       }
+  else if (workKoeff < 75) {  return "##" + factoryType + "_patrly_workers##";  }
+  else if (workKoeff < 100 ){ return "##" + factoryType + "_need_some_workers##";  }
+  else                     {  return "##" + factoryType + "_full_work##";       }
 }
 
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )

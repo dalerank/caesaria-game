@@ -13,32 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_DICTIONARY_H_INCLUDE_
-#define _CAESARIA_DICTIONARY_H_INCLUDE_
+#ifndef __CAESARIA_CITIZEN_IDEA_H_INCLUDED__
+#define __CAESARIA_CITIZEN_IDEA_H_INCLUDED__
+  
+#include "walker/predefinitions.hpp"
+#include "city/city.hpp"
 
-#include "gui/widget.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "gfx/tileoverlay.hpp"
-
-namespace gui
-{
-
-class DictionaryWindow : public Widget
+class CitizenIdea
 {
 public:
-  static void show( Widget* parent, TileOverlay::Type type );
-
-  //! Деструктор
-  virtual ~DictionaryWindow();
-
-private:
-  DictionaryWindow( Widget* parent );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  static std::string check( WalkerPtr walker, PlayerCityPtr city );
 };
 
-} //end namespace gui
-
-#endif //_CAESARIA_DICTIONARY_H_INCLUDE_
+#endif //__CAESARIA_CITIZEN_IDEA_H_INCLUDED__

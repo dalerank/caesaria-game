@@ -29,7 +29,7 @@ class AdvisorChiefWindow : public Widget
 public:
   AdvisorChiefWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( GfxEngine& painter );
+  virtual void draw( GfxEngine& painter );
 
 private:
   class Impl;

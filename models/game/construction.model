@@ -682,6 +682,7 @@
     employers : 10
     class : "industry"
     sound : [ "creamery", 1 ]
+    desc : [ "##oil_workshop_info##" ]
   },
   
   weapons_workshop :
@@ -709,5 +710,6 @@
     employers : 10
     class : "industry"
     image : [ "commerce", 132 ]
+    desc : [ "##pottery_workshop_info##" ]
   }
 }

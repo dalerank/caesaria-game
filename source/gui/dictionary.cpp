@@ -16,9 +16,7 @@
 #include "dictionary.hpp"
 #include "game/settings.hpp"
 #include "pushbutton.hpp"
-#include "core/event.hpp"
 #include "core/stringhelper.hpp"
-#include "core/foreach.hpp"
 #include "texturedbutton.hpp"
 #include "label.hpp"
 #include "core/logger.hpp"
@@ -33,7 +31,6 @@ public:
   Label* lbTitle;
   Label* lbText;
   TexturedButton* btnExit;
-  TileOverlay::Type type;
 };
 
 DictionaryWindow::DictionaryWindow( Widget* parent )
@@ -52,16 +49,11 @@ DictionaryWindow::DictionaryWindow( Widget* parent )
 void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
 {
   DictionaryWindow* wnd = new DictionaryWindow( parent );
-  wnd->showHelp( type );
+  wnd->_d->lbText->setText( MetaDataHolder::getDescription( type ) );
 }
 
 DictionaryWindow::~DictionaryWindow( void )
 {
-}
-
-void DictionaryWindow::showHelp(TileOverlay::Type type)
-{
-  _d->lbText->setText( MetaDataHolder::getDescription( _d->type ) );
 }
 
 }//end namespace gui

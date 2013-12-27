@@ -710,6 +710,7 @@ public:
     append( walker::trainee, "trainee", _("##wt_trainee##") );
     append( walker::recruter, "recruter", _("##wt_recruter##") );
     append( walker::prefect, "prefect", _("##wt_prefect##") );
+    append( walker::priest, "priest", _("##wt_priest##" ) );
     append( walker::taxCollector, "tax_collector", _("##wt_tax_collector##") );
     append( walker::merchant, "merchant", _("##wt_merchant##") );
     append( walker::engineer, "engineer", _("##wt_engineer##") );
@@ -723,7 +724,7 @@ public:
     append( walker::lionTamer, "lion_tamer", _("##wt_lion_tamer") );
     append( walker::fishingBoat, "fishing_boat", _("##fishing_boat##") );
     append( walker::protestor, "protestor", _("##wt_protestor##" ) );
-    append( walker::legionary, "legioanry", _("##wt_legionary##") );
+    append( walker::legionary, "legionary", _("##wt_legionary##") );
     append( walker::corpse, "corpse", _("##wt_corpse##") );
     append( walker::lion, "lion", _("##wt_lion##") );
     append( walker::all, "unknown", _("##wt_unknown##") );
@@ -736,7 +737,7 @@ WalkerHelper& WalkerHelper::instance()
   return inst;
 }
 
-std::string WalkerHelper::getName( walker::Type type )
+std::string WalkerHelper::getTypename( walker::Type type )
 {
   std::string name = instance()._d->findName( type );
 
