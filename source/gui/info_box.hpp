@@ -115,20 +115,6 @@ private:
   TileOverlay::Type _type;
 };
 
-// info box about a granary
-class InfoBoxGranary : public InfoBoxSimple
-{
-public:
-  InfoBoxGranary( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxGranary();
-  
-  void drawGood(const Good::Type &goodType, int, int);
-  void showSpecialOrdersWindow();
-
-private:
-  GranaryPtr _granary;
-};
-
 // info box about a fontain
 class InfoBoxFontain : public InfoBoxSimple
 {

@@ -36,6 +36,7 @@
 #include "objects/ruins.hpp"
 #include "gui/infobox_ruins.hpp"
 #include "gui/infobox_citizen.hpp"
+#include "gui/infobox_granary.hpp"
 #include <map>
 
 using namespace constants;

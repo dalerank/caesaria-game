@@ -326,6 +326,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       _d->houseId = startBigPic;
       _d->picIdOffset = 0;
       _update();
+
       build( _getCity(), getTile().getIJ() );
       //set new desirability level
       helper.updateDesirability( this, true );

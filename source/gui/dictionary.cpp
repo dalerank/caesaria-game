@@ -49,7 +49,10 @@ DictionaryWindow::DictionaryWindow( Widget* parent )
 void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
 {
   DictionaryWindow* wnd = new DictionaryWindow( parent );
-  wnd->_d->lbText->setText( MetaDataHolder::getDescription( type ) );
+  if( wnd->_d->lbText )
+  {
+    wnd->_d->lbText->setText( MetaDataHolder::getDescription( type ) );
+  }
 }
 
 DictionaryWindow::~DictionaryWindow( void )
