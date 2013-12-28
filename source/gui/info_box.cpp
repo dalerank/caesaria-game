@@ -465,33 +465,6 @@ InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
     }
 }   
 
-InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
-  : InfoBoxSimple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) )
-{
-  new Label( this, Rect( 25, 100, getWidth() - 25, getHeight() - 130), "", false, Label::bgWhiteBorderA );
-  //mini screenshot from citizen pos need here
-  new Label( this, Rect( 25, 45, 25 + 52, 45 + 52), "", false, Label::bgBlack );
-
-  Label* lbName = new Label( this, Rect( 90, 108, getWidth() - 30, 108 + 35) );
-  lbName->setFont( Font::create( FONT_3 ));
-  Label* lbType = new Label( this, Rect( 90, 145, getWidth() - 30, 145 + 25) );
-  Label* lbThinks = new Label( this, Rect( 90, 170, getWidth() - 30, getHeight() - 140), "Citizen's thoughts will be placed here" );
-  Label* lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
-
-  if( !walkers.empty() )
-  {
-    WalkerPtr walker = walkers.front();
-    lbName->setText( walker->getName() );
-    lbType->setText( WalkerHelper::getPrettyTypeName( walker->getType() ) );
-    lbThinks->setText( walker->getThinks() );
-    lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( walker->getType() ) );
-  }
-}
-
-InfoBoxCitizen::~InfoBoxCitizen() {
-}
-
-
 InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {

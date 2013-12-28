@@ -13,15 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "citizen_idea.hpp"
+#include "thinks.hpp"
 #include "city/cityservice_info.hpp"
 #include "core/logger.hpp"
-#include "walker/walker.hpp"
-#include "walker/constants.hpp"
+#include "walker.hpp"
+#include "constants.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
 
-std::string CitizenIdea::check(WalkerPtr walker, PlayerCityPtr city)
+std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
 {
   SmartPtr< CityServiceInfo > info = city->findService( CityServiceInfo::getDefaultName() ).as<CityServiceInfo>();
 
@@ -33,7 +34,7 @@ std::string CitizenIdea::check(WalkerPtr walker, PlayerCityPtr city)
 
   StringArray troubles;
   std::string walkerTypename = WalkerHelper::getTypename( walker->getType() );
-  CityServiceInfo::Parameters& params = info->getLast();
+  CityServiceInfo::Parameters params = info->getLast();
   if( params.monthWithFood < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_so_hungry##" );
@@ -75,10 +76,17 @@ std::string CitizenIdea::check(WalkerPtr walker, PlayerCityPtr city)
   }
 
   if( !troubles.empty() )
-    return troubles.at( rand() % troubles.size() );
+  {
+    std::string trouble = troubles.at( rand() % troubles.size() );
+    return _( trouble.c_str() );
+  }
 
   StringArray positiveIdeas;
-  if( params.lifeValue > 75 )
+  if( params.lifeValue > 90 )
+  {
+    positiveIdeas.push_back( "##" + walkerTypename + "_perfect_life##" );
+  }
+  else if( params.lifeValue > 75 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_good_life##" );
   }
@@ -86,4 +94,12 @@ std::string CitizenIdea::check(WalkerPtr walker, PlayerCityPtr city)
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_average_life##" );
   }
+
+  if( !positiveIdeas.empty() )
+  {
+    std::string idea = positiveIdeas.at( rand() % positiveIdeas.size() );
+    return _( idea.c_str() );
+  }
+
+  return _("##unknown_reason##");
 }

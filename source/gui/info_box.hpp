@@ -157,14 +157,6 @@ public:
    InfoBoxBuilding( Widget* parent, const Tile& tile );
 };
 
-// Simple info box with static text on plain background
-class InfoBoxCitizen : public InfoBoxSimple
-{
-public:
-  InfoBoxCitizen(Widget* parent, const WalkerList& walkers );
-  virtual ~InfoBoxCitizen();
-};
-
 class InfoBoxText : public InfoBoxSimple
 {
 public:

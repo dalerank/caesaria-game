@@ -38,7 +38,10 @@ public:
     int godsMood;
     int needWorkers;
     int workless;
-    int tax;
+    int colloseumCoverage;
+    int theaterCoverage;
+    int entertainment;
+    int lifeValue;
 
     Parameters()
     {
@@ -52,6 +55,10 @@ public:
       needWorkers = 0;
       workless = 0;
       tax = 0;
+      colloseumCoverage = 0;
+      theaterCoverage = 0;
+      entertainment = 0;
+      lifeValue = 0;
     }
   };
 

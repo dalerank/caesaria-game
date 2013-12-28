@@ -30,6 +30,7 @@ const char* GameSettings::fullscreen = "fullscreen";
 const char* GameSettings::language = "language";
 const char* GameSettings::emigrantSalaryKoeff = "emigrantSalaryKoeff";
 const char* GameSettings::savedir = "savedir";
+const char* GameSettings::minMonthWithFood = "minMonthWithFood";
 
 class GameSettings::Impl
 {
@@ -57,6 +58,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ settingsPath ] = Variant( std::string( "/settings.model" ) );
   _d->options[ resolution ] = Size( 1024, 768 );
   _d->options[ fullscreen ] = false;
+  _d->options[ minMonthWithFood ] = 3;
   _d->options[ emigrantSalaryKoeff ] = 2.f;
 
    vfs::Path dirName = "saves";

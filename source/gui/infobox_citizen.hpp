@@ -13,16 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_CITIZEN_IDEA_H_INCLUDED__
-#define __CAESARIA_CITIZEN_IDEA_H_INCLUDED__
-  
-#include "walker/predefinitions.hpp"
-#include "city/city.hpp"
+#ifndef _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
+#define _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
 
-class CitizenIdea
+#include <string>
+#include <list>
+
+#include "info_box.hpp"
+
+namespace gui
+{
+
+// Simple info box with static text on plain background
+class InfoBoxCitizen : public InfoBoxSimple
 {
 public:
-  static std::string check( WalkerPtr walker, PlayerCityPtr city );
+  InfoBoxCitizen(Widget* parent, const WalkerList& walkers);
+  virtual ~InfoBoxCitizen();
 };
 
-#endif //__CAESARIA_CITIZEN_IDEA_H_INCLUDED__
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_

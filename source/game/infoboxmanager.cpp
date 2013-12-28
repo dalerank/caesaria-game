@@ -35,6 +35,7 @@
 #include "gui/infobox_raw.hpp"
 #include "objects/ruins.hpp"
 #include "gui/infobox_ruins.hpp"
+#include "gui/infobox_citizen.hpp"
 #include <map>
 
 using namespace constants;

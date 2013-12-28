@@ -37,6 +37,7 @@ public:
   static const char* fullscreen;
   static const char* savedir;
   static const char* emigrantSalaryKoeff;
+  static const char* minMonthWithFood;
 
   static GameSettings& getInstance();
 

@@ -28,6 +28,7 @@
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
+#include "cityservice_info.hpp"
 
 using namespace constants;
 
@@ -37,7 +38,26 @@ public:
   PlayerCityPtr city;
   int lastMonthPopulation;
   int lastMonthMigration;
+  int vacantHouse;
   DateTime lastUpdate;
+
+  bool useAdvancedCheck()
+  {
+    return city->getPopulation() > 150;
+  }
+
+  CityServiceInfo::Parameters getLastParams()
+  {
+    SmartPtr< CityServiceInfo > info = city->findService( CityServiceInfo::getDefaultName() ).as<CityServiceInfo>();
+
+    CityServiceInfo::Parameters params;
+    if( info.isValid() )
+    {
+      params = info->getLast();
+    }
+
+    return params;
+  }
 };
 
 CityServicePtr CityMigration::create(PlayerCityPtr city )
@@ -53,6 +73,7 @@ CityMigration::CityMigration( PlayerCityPtr city )
 {
   _d->city = city;
   _d->lastMonthMigration = 0;
+  _d->vacantHouse = 0;
   _d->lastMonthPopulation = 0;
   _d->lastUpdate = GameDate::current();
 }
@@ -62,6 +83,8 @@ void CityMigration::update( const unsigned int time )
   if( time % 44 != 1 )
     return;
 
+  CityServiceInfo::Parameters params = _d->getLastParams();
+
   if( _d->lastUpdate.getMonthToDate( GameDate::current() ) > 0 )
   {
     _d->lastUpdate = GameDate::current();
@@ -69,16 +92,25 @@ void CityMigration::update( const unsigned int time )
     _d->lastMonthPopulation = _d->city->getPopulation();
   }
   
-  unsigned int vacantPop=0;
+  unsigned int vacantHouse=0;
   int emigrantsIndesirability = 50; //base indesirability value
   float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
   //if salary in city more then empire people more effectivelly go to ouu city
-  emigrantsIndesirability += (_d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary()) * emDesKoeff;
+  int diffSalary = _d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary();
+  emigrantsIndesirability += diffSalary * emDesKoeff;
 
-  int worklessPercent = CityStatistic::getWorklessPercent( _d->city );
-  emigrantsIndesirability += worklessPercent == 0
-                            ? -10
-                            : (worklessPercent * (worklessPercent < 15 ? 1 : 2));
+  emigrantsIndesirability += params.workless == 0
+                             ? -10
+                             : (params.workless * (params.workless < 15 ? 1 : 2));
+
+  //emigrant like when lot of food stock int city
+  if( _d->useAdvancedCheck() )
+  {
+    int minMonthWithFood = GameSettings::get( GameSettings::minMonthWithFood );
+    emigrantsIndesirability += ( params.monthWithFood < minMonthWithFood
+                                 ? (params.monthWithFood * 3)
+                                 : (-params.monthWithFood * 2) );
+  }
 
   int goddesRandom = rand() % 100;
   if( goddesRandom < emigrantsIndesirability )
@@ -90,18 +122,19 @@ void CityMigration::update( const unsigned int time )
   {
     if( house->getAccessRoads().size() > 0 )
     {
-      vacantPop += math::clamp( house->getMaxHabitants() - house->getHabitants().count(), 0, 0xff );
+      vacantHouse += math::clamp( house->getMaxHabitants() - house->getHabitants().count(), 0, 0xff );
     }
   }
 
-  if( vacantPop == 0 )
+  _d->vacantHouse = vacantHouse;
+  if( vacantHouse == 0 )
   {
     return;
   }
 
   WalkerList walkers = _d->city->getWalkers( walker::emigrant );
 
-  if( vacantPop <= walkers.size() * 5 )
+  if( vacantHouse <= walkers.size() * 5 )
   {
     return;
   }
@@ -118,6 +151,19 @@ void CityMigration::update( const unsigned int time )
 
 std::string CityMigration::getReason() const
 {
+  if( _d->vacantHouse == 0 ) { return "##migration_lack_empty_house##"; }
+  else if( _d->useAdvancedCheck() )
+  {
+    CityServiceInfo::Parameters params = _d->getLastParams();
+    if( params.monthWithFood < (int)GameSettings::get( GameSettings::minMonthWithFood ) )
+      return "##migration_lessfood_granary##";
+    if( params.monthWithFood == 0 )
+      return "##migration_empty_granary##";
+    if( params.workless > 5 )
+      return "##migration_lack_jobs##";
+    if( params.workless > 15 )
+      return "##migration_people_away##";
+  }
   return "##unknown_migration_reason##";
 }
 
@@ -133,6 +179,7 @@ VariantMap CityMigration::save() const
   ret[ "lastUpdate" ] = _d->lastUpdate;
   ret[ "lastMonthMigration" ] = _d->lastMonthMigration;
   ret[ "lastMonthPopulation" ] = _d->lastMonthPopulation;
+  ret[ "vacantHouse" ] = _d->vacantHouse;
 
   return ret;
 }
@@ -142,4 +189,5 @@ void CityMigration::load(const VariantMap& stream)
   _d->lastUpdate = stream.get( "lastUpdate", GameDate::current() ).toDateTime();
   _d->lastMonthMigration = stream.get( "lastMonthMigration", 0 );
   _d->lastMonthPopulation = stream.get( "lastMonthPopulation", 0 );
+  _d->vacantHouse = stream.get( "vacantHouse", 0 );
 }

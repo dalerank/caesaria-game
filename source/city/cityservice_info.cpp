@@ -65,7 +65,6 @@ void CityServiceInfo::update( const unsigned int time )
     Parameters& last = _d->params.back();
     last.population = _d->city->getPopulation();
     last.funds = _d->city->getFunds().getValue();    
-    last.tax = 0;//_d->city->getFunds().getIssueValue();
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
 
     int foodStock = CityStatistic::getFoodStock( _d->city );

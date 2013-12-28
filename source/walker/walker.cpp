@@ -28,6 +28,7 @@
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "thinks.hpp"
 #include "ability.hpp"
 
 using namespace constants;
@@ -456,7 +457,7 @@ const std::string &Walker::getName() const
 
 std::string Walker::getThinks() const
 {
-  return "";
+  return WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
 }
 
 void Walker::getPictureList(PicturesArray& oPics)
