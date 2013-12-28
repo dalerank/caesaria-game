@@ -38,6 +38,7 @@ public:
   static const char* savedir;
   static const char* emigrantSalaryKoeff;
   static const char* minMonthWithFood;
+  static const char* worklessCitizenAway;
 
   static GameSettings& getInstance();
 

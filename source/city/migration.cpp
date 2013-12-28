@@ -58,6 +58,8 @@ public:
 
     return params;
   }
+
+  void createMigrantToCity();
 };
 
 CityServicePtr CityMigration::create(PlayerCityPtr city )
@@ -91,67 +93,43 @@ void CityMigration::update( const unsigned int time )
     _d->lastMonthMigration = _d->city->getPopulation() - _d->lastMonthPopulation;
     _d->lastMonthPopulation = _d->city->getPopulation();
   }
-  
-  unsigned int vacantHouse=0;
+
   int emigrantsIndesirability = 50; //base indesirability value
   float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
   //if salary in city more then empire people more effectivelly go to ouu city
   int diffSalary = _d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary();
   emigrantsIndesirability += diffSalary * emDesKoeff;
 
-  emigrantsIndesirability += params.workless == 0
-                             ? -10
-                             : (params.workless * (params.workless < 15 ? 1 : 2));
+  int worklessCitizenAway = GameSettings::get( GameSettings::worklessCitizenAway );
 
-  //emigrant like when lot of food stock int city
+
   if( _d->useAdvancedCheck() )
   {
+    //emigrant like when lot of food stock int city
     int minMonthWithFood = GameSettings::get( GameSettings::minMonthWithFood );
     emigrantsIndesirability += ( params.monthWithFood < minMonthWithFood
                                  ? (params.monthWithFood * 3)
                                  : (-params.monthWithFood * 2) );
+
+    //emigrant need workplaces
+    emigrantsIndesirability += params.workless == 0
+                            ? -10
+                            : (params.workless * (params.workless < worklessCitizenAway ? 1 : 2));
   }
 
   int goddesRandom = rand() % 100;
   if( goddesRandom < emigrantsIndesirability )
-    return;
-
-  CityHelper helper( _d->city );
-  HouseList houses = helper.find<House>(building::house);
-  foreach( HousePtr house, houses )
   {
-    if( house->getAccessRoads().size() > 0 )
-    {
-      vacantHouse += math::clamp( house->getMaxHabitants() - house->getHabitants().count(), 0, 0xff );
-    }
-  }
-
-  _d->vacantHouse = vacantHouse;
-  if( vacantHouse == 0 )
-  {
-    return;
-  }
-
-  WalkerList walkers = _d->city->getWalkers( walker::emigrant );
-
-  if( vacantHouse <= walkers.size() * 5 )
-  {
-    return;
-  }
-
-  Tile& roadTile = _d->city->getTilemap().at( _d->city->getBorderInfo().roadEntry );
-
-  EmigrantPtr emigrant = Emigrant::create( _d->city );
-
-  if( emigrant.isValid() )
-  {
-    emigrant->send2city( roadTile );
+    _d->createMigrantToCity();
   }
 }
 
 std::string CityMigration::getReason() const
 {
-  if( _d->vacantHouse == 0 ) { return "##migration_lack_empty_house##"; }
+  if( _d->vacantHouse == 0 )
+  {
+    return "##migration_lack_empty_house##";
+  }
   else if( _d->useAdvancedCheck() )
   {
     CityServiceInfo::Parameters params = _d->getLastParams();
@@ -161,10 +139,10 @@ std::string CityMigration::getReason() const
       return "##migration_empty_granary##";
     if( params.workless > 5 )
       return "##migration_lack_jobs##";
-    if( params.workless > 15 )
+    if( params.workless > (int)GameSettings::get( GameSettings::worklessCitizenAway ) )
       return "##migration_people_away##";
   }
-  return "##unknown_migration_reason##";
+  return "##migration_peoples_arrived_in_city##";
 }
 
 std::string CityMigration::getDefaultName()
@@ -190,4 +168,41 @@ void CityMigration::load(const VariantMap& stream)
   _d->lastMonthMigration = stream.get( "lastMonthMigration", 0 );
   _d->lastMonthPopulation = stream.get( "lastMonthPopulation", 0 );
   _d->vacantHouse = stream.get( "vacantHouse", 0 );
+}
+
+
+void CityMigration::Impl::createMigrantToCity()
+{
+  unsigned int vh=0;
+  CityHelper helper( city );
+  HouseList houses = helper.find<House>(building::house);
+  foreach( HousePtr house, houses )
+  {
+    if( house->getAccessRoads().size() > 0 )
+    {
+      vh += math::clamp( house->getMaxHabitants() - house->getHabitants().count(), 0, 0xff );
+    }
+  }
+
+  vacantHouse = vh;
+  if( vh == 0 )
+  {
+    return;
+  }
+
+  WalkerList walkers = city->getWalkers( walker::emigrant );
+
+  if( vh <= walkers.size() * 5 )
+  {
+    return;
+  }
+
+  Tile& roadTile = city->getTilemap().at( city->getBorderInfo().roadEntry );
+
+  EmigrantPtr emigrant = Emigrant::create( city );
+
+  if( emigrant.isValid() )
+  {
+    emigrant->send2city( roadTile );
+  }
 }

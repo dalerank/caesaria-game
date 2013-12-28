@@ -38,6 +38,7 @@
 #include "events/fireworkers.hpp"
 #include "objects/desirability.hpp"
 #include "core/gettext.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -164,7 +165,7 @@ void House::timeStep(const unsigned long time)
   if( time % getSpec().getServiceConsumptionInterval() == 0 )
   {
     _d->consumeServices();
-    _d->updateHealthLevel();        
+    _d->updateHealthLevel();            
   }
 
   if( time % 32 == 0 )
@@ -224,6 +225,7 @@ void House::timeStep(const unsigned long time)
     {
       _d->condition4Up = _("##house_evolves_at##");
     }
+
 
     int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
     if( homelessCount > 0 )
@@ -296,6 +298,8 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       TilesArray::iterator delIt=area.begin();
       HousePtr selfHouse = (*delIt)->getOverlay().as<House>();
 
+      _d->initGoodStore( Size( getSize().getWidth() + 1 ).getArea() );
+
       delIt++; //don't remove himself
       for( ; delIt != area.end(); delIt++ )
       {
@@ -319,9 +323,9 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
 
       //reset desirability level with old house size
       helper.updateDesirability( this, false );
-
+      _d->houseId = startBigPic;
+      _d->picIdOffset = 0;
       _update();
-      setSize( getSize() + Size(1) );      
       build( _getCity(), getTile().getIJ() );
       //set new desirability level
       helper.updateDesirability( this, true );

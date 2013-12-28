@@ -153,9 +153,9 @@ void GoodStore::store( GoodStock &stock, const int amount)
   }
   else
   {
-    Logger::warning( "GoodStore:Impossible to store %d of %s",
-                     GoodHelper::getName( stock.type() ).c_str(),
-                     stock.qty() );
+    Logger::warning( "GoodStore:: store impossible to store %d of %s",
+                     stock.qty(),
+                     GoodHelper::getName( stock.type() ).c_str() );
   }
 }
 

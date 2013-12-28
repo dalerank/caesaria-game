@@ -69,12 +69,12 @@ void CityServiceInfo::update( const unsigned int time )
 
     int foodStock = CityStatistic::getFoodStock( _d->city );
     int foodMontlyConsumption = CityStatistic::getFoodMonthlyConsumption( _d->city );
-    last.monthWithFood = foodStock / foodMontlyConsumption;
+    last.monthWithFood = foodMontlyConsumption > 0 ? (foodStock / foodMontlyConsumption) : 0;
 
     int foodProducing = CityStatistic::getFoodProducing( _d->city );
     int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
-    last.foodKoeff = ( foodProducing - yearlyFoodConsumption >= 0 )
-                      ? foodProducing / yearlyFoodConsumption
+    last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
+                      ? foodProducing / (yearlyFoodConsumption+1)
                       : -1;
 
     last.needWorkers = CityStatistic::getVacantionsNumber( _d->city );
@@ -85,9 +85,7 @@ void CityServiceInfo::update( const unsigned int time )
 
 CityServiceInfo::Parameters CityServiceInfo::getLast() const
 {
-  return _d->params.empty()
-            ? Parameters()
-            : _d->params.back();
+  return _d->params.empty() ? Parameters() : _d->params.back();
 }
 
 std::string CityServiceInfo::getDefaultName()

@@ -71,6 +71,7 @@ public:
 		MutexLocker locker(&_mutex);
 
 		fputs(str.c_str(), _logFile);
+		fputs("\n", _logFile);
 		fflush(_logFile);
 	}
 };
