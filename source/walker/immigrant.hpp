@@ -28,6 +28,8 @@ public:
   static bool send2city( PlayerCityPtr city, const CitizenGroup& peoples, Tile& startTile );
 
   void send2city( Tile& startTile );
+  void leaveCity( Tile& tile );
+
   void setPeoples( const CitizenGroup& peoples );
   virtual void timeStep(const unsigned long time);
 
@@ -36,6 +38,7 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
   virtual void die();
+
 
 protected:
   virtual void _reachedPathway();

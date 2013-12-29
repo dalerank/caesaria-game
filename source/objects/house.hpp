@@ -73,6 +73,7 @@ public:
 
   int getMaxHabitants();
   void addHabitants( CitizenGroup& habitants );
+  CitizenGroup remHabitants( int count );
   const CitizenGroup& getHabitants() const;
 
   float collectTaxes();
@@ -92,6 +93,8 @@ private:
   void _update();
   void _tryEvolve_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );
   void _tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability );
+  void _makeOldHabitants();
+  void _updateHabitants(const CitizenGroup& group);
 
   class Impl;
   ScopedPtr< Impl > _d;

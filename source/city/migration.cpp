@@ -38,12 +38,11 @@ public:
   PlayerCityPtr city;
   int lastMonthPopulation;
   int lastMonthMigration;
-  int vacantHouse;
   DateTime lastUpdate;
 
-  bool useAdvancedCheck()
+  float getMigrationKoeff()
   {
-    return city->getPopulation() > 150;
+    return ( std::min<float>( city->getPopulation(), 150 ) / 150.f );
   }
 
   CityServiceInfo::Parameters getLastParams()
@@ -59,7 +58,9 @@ public:
     return params;
   }
 
-  void createMigrantToCity();
+  void createMigrationToCity();
+  void createMigrationFromCity();
+  unsigned int calcVacantHouse();
 };
 
 CityServicePtr CityMigration::create(PlayerCityPtr city )
@@ -75,62 +76,66 @@ CityMigration::CityMigration( PlayerCityPtr city )
 {
   _d->city = city;
   _d->lastMonthMigration = 0;
-  _d->vacantHouse = 0;
   _d->lastMonthPopulation = 0;
   _d->lastUpdate = GameDate::current();
 }
 
 void CityMigration::update( const unsigned int time )
 {
-  if( time % 44 != 1 )
+  if( time % 50 != 1 )
     return;
 
+  float migrationKoeff = _d->getMigrationKoeff();
   CityServiceInfo::Parameters params = _d->getLastParams();
+
+  int worklessCitizenAway = GameSettings::get( GameSettings::worklessCitizenAway );
+  int emigrantsIndesirability = 50; //base indesirability value
+  float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
+
+  //if salary in city more then empire people more effectivelly go to our city
+  int diffSalary = _d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary();
+  emigrantsIndesirability += diffSalary * emDesKoeff;
+
+  //emigrant like when lot of food stock int city
+  int minMonthWithFood = GameSettings::get( GameSettings::minMonthWithFood );
+  emigrantsIndesirability += ( params.monthWithFood < minMonthWithFood
+                               ? ((minMonthWithFood - params.monthWithFood) * 3)
+                               : -params.monthWithFood );
+  //emigrant need workplaces
+  emigrantsIndesirability += params.workless == 0
+                              ? -10
+                              : (params.workless * (params.workless < worklessCitizenAway ? 1 : 2));
+
+  emigrantsIndesirability *= migrationKoeff;
+
+  int maxIndesirability = 100;
+  int goddesRandom = rand() % maxIndesirability;
+  if( goddesRandom > emigrantsIndesirability )
+  {
+    _d->createMigrationToCity();
+  }
 
   if( _d->lastUpdate.getMonthToDate( GameDate::current() ) > 0 )
   {
     _d->lastUpdate = GameDate::current();
     _d->lastMonthMigration = _d->city->getPopulation() - _d->lastMonthPopulation;
     _d->lastMonthPopulation = _d->city->getPopulation();
-  }
 
-  int emigrantsIndesirability = 50; //base indesirability value
-  float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
-  //if salary in city more then empire people more effectivelly go to ouu city
-  int diffSalary = _d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary();
-  emigrantsIndesirability += diffSalary * emDesKoeff;
-
-  int worklessCitizenAway = GameSettings::get( GameSettings::worklessCitizenAway );
-
-
-  if( _d->useAdvancedCheck() )
-  {
-    //emigrant like when lot of food stock int city
-    int minMonthWithFood = GameSettings::get( GameSettings::minMonthWithFood );
-    emigrantsIndesirability += ( params.monthWithFood < minMonthWithFood
-                                 ? (params.monthWithFood * 3)
-                                 : (-params.monthWithFood * 2) );
-
-    //emigrant need workplaces
-    emigrantsIndesirability += params.workless == 0
-                            ? -10
-                            : (params.workless * (params.workless < worklessCitizenAway ? 1 : 2));
-  }
-
-  int goddesRandom = rand() % 100;
-  if( goddesRandom < emigrantsIndesirability )
-  {
-    _d->createMigrantToCity();
+    if( params.workless * migrationKoeff > worklessCitizenAway
+        || emigrantsIndesirability > maxIndesirability )
+    {
+      _d->createMigrationFromCity();
+    }
   }
 }
 
 std::string CityMigration::getReason() const
 {
-  if( _d->vacantHouse == 0 )
-  {
+  unsigned int vacantHouse = _d->calcVacantHouse();
+  if( vacantHouse == 0 )
     return "##migration_lack_empty_house##";
-  }
-  else if( _d->useAdvancedCheck() )
+
+  if( _d->getMigrationKoeff() > 0.99f )
   {
     CityServiceInfo::Parameters params = _d->getLastParams();
     if( params.monthWithFood < (int)GameSettings::get( GameSettings::minMonthWithFood ) )
@@ -157,7 +162,6 @@ VariantMap CityMigration::save() const
   ret[ "lastUpdate" ] = _d->lastUpdate;
   ret[ "lastMonthMigration" ] = _d->lastMonthMigration;
   ret[ "lastMonthPopulation" ] = _d->lastMonthPopulation;
-  ret[ "vacantHouse" ] = _d->vacantHouse;
 
   return ret;
 }
@@ -167,13 +171,11 @@ void CityMigration::load(const VariantMap& stream)
   _d->lastUpdate = stream.get( "lastUpdate", GameDate::current() ).toDateTime();
   _d->lastMonthMigration = stream.get( "lastMonthMigration", 0 );
   _d->lastMonthPopulation = stream.get( "lastMonthPopulation", 0 );
-  _d->vacantHouse = stream.get( "vacantHouse", 0 );
 }
 
-
-void CityMigration::Impl::createMigrantToCity()
+unsigned int CityMigration::Impl::calcVacantHouse()
 {
-  unsigned int vh=0;
+  unsigned int vh = 0;
   CityHelper helper( city );
   HouseList houses = helper.find<House>(building::house);
   foreach( HousePtr house, houses )
@@ -184,7 +186,12 @@ void CityMigration::Impl::createMigrantToCity()
     }
   }
 
-  vacantHouse = vh;
+  return vh;
+}
+
+void CityMigration::Impl::createMigrationToCity()
+{
+  unsigned int vh = calcVacantHouse();
   if( vh == 0 )
   {
     return;
@@ -204,5 +211,36 @@ void CityMigration::Impl::createMigrantToCity()
   if( emigrant.isValid() )
   {
     emigrant->send2city( roadTile );
+  }
+}
+
+void CityMigration::Impl::createMigrationFromCity()
+{
+  CityHelper helper( city );
+  HouseList houses = helper.find<House>(building::house);
+  const int minWorkersNumber = 4;
+  for( HouseList::iterator i=houses.begin(); i != houses.end(); )
+  {
+    int houseWorkless = (*i)->getServiceValue( Service::recruter );
+    if( !(*i)->getEnterArea().empty() && houseWorkless > 0 ) { i++; }
+    else { i = houses.erase( i ); }
+  }
+
+  if( !houses.empty() )
+  {
+    int stepNumber = std::max<int>( rand() % houses.size(), 1 );
+    for( int i=0; i < stepNumber; i++ )
+    {
+      HouseList::iterator house = houses.begin();
+      std::advance( house, rand() % houses.size() );
+
+      EmigrantPtr emigrant = Emigrant::create( city );
+
+      if( emigrant.isValid() )
+      {
+        (*house)->remHabitants( minWorkersNumber );
+        emigrant->leaveCity( *(*house)->getEnterArea().front() );
+      }
+    }
   }
 }

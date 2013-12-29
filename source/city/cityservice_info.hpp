@@ -69,6 +69,9 @@ public:
 
   static std::string getDefaultName();
 
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap& stream);
+
 private:
   CityServiceInfo( PlayerCityPtr city );
 

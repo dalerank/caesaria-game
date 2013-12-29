@@ -200,6 +200,25 @@ void Immigrant::send2city( Tile& startTile )
   _getCity()->addWalker( this );
 }
 
+void Immigrant::leaveCity(Tile& tile)
+{
+  setIJ( tile.getIJ() );
+  Pathway pathway = PathwayHelper::create( tile.getIJ(),
+                                           _getCity()->getBorderInfo().roadExit,
+                                           PathwayHelper::allTerrain );
+
+  if( !pathway.isValid() )
+  {
+    die();
+    return;
+  }
+
+  _getCity()->addWalker( this );
+  setPathway( pathway );
+  go();
+}
+
+
 Immigrant::~Immigrant()
 {
 

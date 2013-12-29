@@ -110,13 +110,6 @@ public:
 
     services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
   }
-
-  void makeOldHabitants()
-  { 
-    habitants.makeOld();
-    habitants[ CitizenGroup::newborn ] = 0; //birth+helath function from mature habitants count
-    habitants[ CitizenGroup::longliver ] = 0;
-  }
 };
 
 House::House(const int houseId) : Building( building::house ), _d( new Impl )
@@ -151,6 +144,34 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _update();
 }
 
+void House::_makeOldHabitants()
+{
+  CitizenGroup newHabitants = _d->habitants;
+  newHabitants.makeOld();
+  newHabitants[ CitizenGroup::newborn ] = 0; //birth+health function from mature habitants count
+  newHabitants[ CitizenGroup::longliver ] = 0; //death-health function from oldest habitants count
+
+  _updateHabitants( newHabitants );
+}
+
+void House::_updateHabitants( const CitizenGroup& group )
+{
+  int deltaWorkersNumber = group.count( CitizenGroup::mature ) - _d->habitants.count( CitizenGroup::mature );
+
+  _d->habitants = group;
+
+  _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
+
+  int firedWorkersNumber = _d->services[ Service::recruter ] + deltaWorkersNumber;
+  _d->services[ Service::recruter ] += deltaWorkersNumber;
+
+  if( firedWorkersNumber < 0 )
+  {
+    events::GameEventPtr e = events::FireWorkers::create( getTilePos(), abs( firedWorkersNumber ) );
+    e->dispatch();
+  }
+}
+
 void House::timeStep(const unsigned long time)
 {
   if( _d->habitants.empty()  )
@@ -159,7 +180,7 @@ void House::timeStep(const unsigned long time)
   if( _d->currentYear != GameDate::current().getYear() )
   {
     _d->currentYear = GameDate::current().getYear();
-    _d->makeOldHabitants();
+    _makeOldHabitants();
   }
 
   if( time % getSpec().getServiceConsumptionInterval() == 0 )
@@ -704,11 +725,21 @@ int House::getRoadAccessDistance() const
 void House::addHabitants( CitizenGroup& habitants )
 {
   int peoplesCount = math::clamp(  _d->maxHabitants - _d->habitants.count(), 0, _d->maxHabitants );
-  CitizenGroup newHabitants = habitants.retrieve( peoplesCount );
-  _d->habitants += newHabitants;
-  _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
-  _d->services[ Service::recruter ] += newHabitants.count( CitizenGroup::mature );
+  CitizenGroup newState = _d->habitants;
+  newState += habitants.retrieve( peoplesCount );
+
+  _updateHabitants( newState );
   _update();
+}
+
+CitizenGroup House::remHabitants(int count)
+{
+  count = math::clamp<int>( count, 0, _d->habitants.count() );
+  CitizenGroup hb = _d->habitants.retrieve( count );
+
+  _updateHabitants( _d->habitants );
+
+  return hb;
 }
 
 const CitizenGroup& House::getHabitants() const

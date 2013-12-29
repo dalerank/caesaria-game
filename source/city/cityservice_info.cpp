@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
 #include "gfx/tile.hpp"
+#include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
 #include "funds.hpp"
 #include "statistic.hpp"
@@ -29,9 +30,10 @@
 class CityServiceInfo::Impl
 {
 public:
+  typedef std::vector< CityServiceInfo::Parameters > History;
   PlayerCityPtr city;
   DateTime lastDate;
-  std::vector< CityServiceInfo::Parameters > params;
+  History params;
 };
 
 CityServicePtr CityServiceInfo::create(PlayerCityPtr city )
@@ -63,6 +65,7 @@ void CityServiceInfo::update( const unsigned int time )
     _d->params.push_back( Parameters() );
 
     Parameters& last = _d->params.back();
+    last.date = _d->lastDate;
     last.population = _d->city->getPopulation();
     last.funds = _d->city->getFunds().getValue();    
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
@@ -91,4 +94,65 @@ CityServiceInfo::Parameters CityServiceInfo::getLast() const
 std::string CityServiceInfo::getDefaultName()
 {
   return "info";
+}
+
+VariantMap CityServiceInfo::save() const
+{
+  VariantMap ret;
+
+  int step=0;
+  for( Impl::History::iterator i=_d->params.begin(); i != _d->params.end(); i++ )
+  {
+    VariantList step_values;
+
+    const Parameters& p = *i;
+
+    step_values.push_back( p.date );
+    step_values.push_back( p.population );
+    step_values.push_back( p.funds );
+    step_values.push_back( p.tax );
+    step_values.push_back( p.taxpayes );
+    step_values.push_back( p.monthWithFood );
+    step_values.push_back( p.foodKoeff );
+    step_values.push_back( p.godsMood );
+    step_values.push_back( p.needWorkers );
+    step_values.push_back( p.workless );
+    step_values.push_back( p.colloseumCoverage );
+    step_values.push_back( p.theaterCoverage );
+    step_values.push_back( p.entertainment );
+    step_values.push_back( p.lifeValue );
+
+    ret[ StringHelper::format( 0xff, "%02d", step ) ] = step_values;
+    step++;
+  }
+
+  return ret;
+}
+
+void CityServiceInfo::load(const VariantMap& stream)
+{
+  for( VariantMap::const_iterator i=stream.begin(); i != stream.end(); i++ )
+  {
+    Parameters p;
+
+    VariantList l = i->second.toList();
+    p.date = l.get( 0 ).toDateTime();
+    p.population = l.get( 1 );
+    p.funds = l.get( 2 ) ;
+    p.tax = l.get( 3 );
+    p.taxpayes = l.get( 4 );
+    p.monthWithFood = l.get( 5 );
+    p.foodKoeff = l.get( 6 );
+    p.godsMood = l.get( 7 );
+    p.needWorkers = l.get( 8 );
+    p.workless = l.get( 9 );
+    p.colloseumCoverage = l.get( 10 );
+    p.theaterCoverage = l.get( 11 );
+    p.entertainment = l.get( 12 );
+    p.lifeValue = l.get( 13 );
+
+    _d->params.push_back( p );
+  }
+
+  _d->params.resize( DateTime::monthInYear );
 }
