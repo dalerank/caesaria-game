@@ -74,7 +74,6 @@ public:
   void initVideo();
   void initPictures(const vfs::Path& resourcePath);
   void initGuiEnvironment();
-  void loadSettings(const vfs::Path& filename);
   void initPantheon( const vfs::Path& filename );
 };
 
@@ -117,16 +116,6 @@ void Game::mountArchives()
 void Game::Impl::initGuiEnvironment()
 {
   gui = new gui::GuiEnv( *engine );
-}
-
-void Game::Impl::loadSettings( const vfs::Path& filename )
-{
-  VariantMap settings = SaveAdapter::load( filename );
-
-  foreach( VariantMap::value_type& v, settings )
-  {
-    GameSettings::set( v.first, v.second );
-  }
 }
 
 void Game::Impl::initPantheon(const vfs::Path& filename)
@@ -354,7 +343,7 @@ void Game::initialize()
   Logger::registerWriter( Logger::consolelog );
   Logger::registerWriter( Logger::filelog );
 
-  _d->loadSettings( GameSettings::rcpath( GameSettings::settingsPath ) );
+  GameSettings::load();
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
   _d->initGuiEnvironment();

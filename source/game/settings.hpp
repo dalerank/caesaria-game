@@ -47,6 +47,9 @@ public:
 
   static vfs::Path rcpath( const std::string& option="" );
 
+  static void load();
+  static void save();
+
 private:
   GameSettings();
 

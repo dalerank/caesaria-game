@@ -46,11 +46,13 @@ void SetVideoSettings::exec(Game& game)
 void SetVideoSettings::_setResolution(Size newSize)
 {
   GameSettings::set( GameSettings::resolution, newSize );
+  GameSettings::save();
 }
 
 void SetVideoSettings::_setFullscreen(bool fullscreen)
 {
   GameSettings::set( GameSettings::fullscreen, fullscreen );
+  GameSettings::save();
 }
 
 }

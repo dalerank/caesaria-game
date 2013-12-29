@@ -38,6 +38,7 @@ public:
 public oc3_signals:
   Signal1<Size>& onSreenSizeChange();
   Signal1<bool>& onFullScreenChange();
+  Signal0<>& onClose();
 
 private:
   void _update();

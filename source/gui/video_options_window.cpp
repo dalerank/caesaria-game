@@ -19,7 +19,11 @@
 #include "core/event.hpp"
 #include "listbox.hpp"
 #include "core/stringhelper.hpp"
+#include "dialogbox.hpp"
+#include "core/gettext.hpp"
+#include "environment.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {
@@ -29,7 +33,10 @@ class VideoOptionsWindow::Impl
 public:
   Signal1<Size> onScreenSizeChangeSignal;
   Signal1<bool> onFullScreeChangeSignal;
+  Signal0<> onCloseSignal;
+  PushButton* btnSwitchMode;
   bool fullScreen;
+  bool haveChanges;
 };
 
 VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, bool fullscreen )
@@ -38,8 +45,10 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, b
   setupUI( GameSettings::rcpath( "/gui/videooptions.gui" ) );
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
+  _d->btnSwitchMode = findChild<PushButton*>( "btnSwitchMode", true );
 
   _d->fullScreen = fullscreen;
+  _d->haveChanges = false;
   if( ListBox* lbxModes = findChild<ListBox*>( "lbxModes", true ) )
   {
     std::string modeStr;
@@ -50,6 +59,8 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, b
       item.setTag( (mode.getWidth() << 16) + mode.getHeight());
     }
   }
+
+  _update();
 }
 
 VideoOptionsWindow::~VideoOptionsWindow( void )
@@ -68,13 +79,21 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
     {
     case 1:
     {
-      _d->fullScreen = _d->fullScreen;
+      _d->fullScreen = !_d->fullScreen;
       _d->onFullScreeChangeSignal( _d->fullScreen );
+      _d->haveChanges = true;
       _update();
     }
     break;
 
     default:
+      if( _d->haveChanges )
+      {
+        Widget* parent = getEnvironment()->getRootWidget();
+        DialogBox* dlg = new DialogBox( parent, Rect(), "",
+                                        _("##need_restart_for_apply_changes##"), DialogBox::btnOk );
+        CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
+      }
       deleteLater();
     break;
     }
@@ -85,6 +104,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
 
   case guiListboxChanged:
   {
+    _d->haveChanges = true;
     ListBox* lbx = safety_cast< ListBox* >( event.gui.caller );
 
     int tag = lbx->getSelectedItem().getTag();
@@ -109,10 +129,17 @@ Signal1<bool>&VideoOptionsWindow::onFullScreenChange()
   return _d->onFullScreeChangeSignal;
 }
 
-void VideoOptionsWindow::_update()
+Signal0<>&VideoOptionsWindow::onClose()
 {
-
+  return _d->onCloseSignal;
 }
 
+void VideoOptionsWindow::_update()
+{
+  if( _d->btnSwitchMode )
+  {
+    _d->btnSwitchMode->setText( _d->fullScreen ? "##fullscreen_on##" : "##fullscreen_off##" );
+  }
+}
 
 }//end namespace gui

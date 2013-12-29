@@ -58,10 +58,19 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   Label* lbText = new Label( this, Rect( 10, 55, getWidth() - 10, 55 + 55 ), text );
   lbText->setTextAlignment( alignCenter, alignCenter );
 
-  new TexturedButton( this, Point( getWidth() / 2 - 24 - 16, getHeight() - 50), 
-                      Size( 39, 26 ), btnOk, ResourceMenu::okBtnPicId );
-  new TexturedButton( this, Point( getWidth() / 2 + 16, getHeight() - 50 ), 
-                      Size( 39, 26 ), btnCancel, ResourceMenu::cancelBtnPicId );
+  if( buttons == btnOk || buttons == btnCancel )
+  {
+    new TexturedButton( this, Point( getWidth() / 2 - 20, getHeight() - 50),
+                        Size( 39, 26 ), buttons,
+                        buttons == btnOk ? ResourceMenu::okBtnPicId : ResourceMenu::cancelBtnPicId );
+  }
+  else if( buttons == (btnOk | btnCancel) )
+  {
+    new TexturedButton( this, Point( getWidth() / 2 - 24 - 16, getHeight() - 50),
+                        Size( 39, 26 ), btnOk, ResourceMenu::okBtnPicId );
+    new TexturedButton( this, Point( getWidth() / 2 + 16, getHeight() - 50 ),
+                        Size( 39, 26 ), btnCancel, ResourceMenu::cancelBtnPicId );
+  }
 }
 
 Signal1<int>& DialogBox::onResult()

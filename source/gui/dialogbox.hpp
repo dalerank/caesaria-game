@@ -26,7 +26,7 @@ namespace  gui
 class DialogBox : public Widget 
 {
 public:
-  enum { btnYes=1, btnNo=2, btnOk=4, btnCancel=8 };
+  enum { btnYes=0x1, btnNo=0x2, btnOk=0x4, btnCancel=0x8 };
   DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
              const std::string& text, int buttons );
 

@@ -15,7 +15,9 @@
 
 #include "settings.hpp"
 #include "vfs/path.hpp"
+#include "core/saveadapter.hpp"
 #include "vfs/directory.hpp"
+#include "core/foreach.hpp"
 
 const char* GameSettings::localePath = "localePath";
 const char* GameSettings::resourcePath = "resourcePath";
@@ -95,4 +97,23 @@ vfs::Path GameSettings::rcpath( const std::string& option )
   }
 
   return vfs::Path(rc + getInstance()._d->options[ option ].toString());
+}
+
+void GameSettings::load()
+{
+  VariantMap settings = SaveAdapter::load( rcpath( GameSettings::settingsPath ) );
+
+  foreach( VariantMap::value_type& v, settings )
+  {
+    set( v.first, v.second );
+  }
+}
+
+void GameSettings::save()
+{
+  VariantMap saveSettings;
+  saveSettings[ GameSettings::fullscreen ] = get( GameSettings::fullscreen );
+  saveSettings[ GameSettings::resolution ] = get( GameSettings::resolution );
+
+  SaveAdapter::save( saveSettings,  rcpath( GameSettings::settingsPath ) );
 }
