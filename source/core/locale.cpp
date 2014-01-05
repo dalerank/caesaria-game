@@ -29,7 +29,7 @@ static void __loadTranslator( vfs::Path filename )
 {  
   translator.clear();
   VariantMap trs = SaveAdapter::load( directory/filename );
-  Logger::warning( (directory/filename).toString() );
+  Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
 
   for( VariantMap::iterator it=trs.begin(); it != trs.end(); it++ )
   {

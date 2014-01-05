@@ -96,8 +96,14 @@ void Traderoute::update( unsigned int time )
   }
 }
 
-const PointsArray&Traderoute::getPoints() const
+PointsArray Traderoute::getPoints( bool reverse ) const
 {
+  if( reverse )
+  {
+    PointsArray ret = _d->points;
+    std::reverse( ret.begin(), ret.end() );
+    return ret;
+  }
   return _d->points;
 }
 

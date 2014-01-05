@@ -41,7 +41,7 @@ public:
   std::string getName() const;
 
   void update( unsigned int time );
-  const PointsArray& getPoints() const;
+  PointsArray getPoints( bool reverse=false ) const;
   void setPoints(const PointsArray& points , bool seaRoute);
   const PicturesArray& getPictures() const;
 

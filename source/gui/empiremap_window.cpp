@@ -339,21 +339,13 @@ void EmpireMapWindow::draw( GfxEngine& engine )
     int index = city.is<PlayerCity>() ? 0 : 2; //maybe it our city
 
     engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.getX(), location.getY() ) );
-  }
-
-  engine.drawPicture( *_d->border, Point( 0, 0 ) );
-
-  engine.drawPicture( _d->leftEagle, _d->eagleOffset.getWidth(), getHeight() - 120 + _d->eagleOffset.getHeight() - _d->leftEagle.getHeight() - 10 );
-  engine.drawPicture( _d->rightEagle, getWidth() - _d->eagleOffset.getWidth() - _d->rightEagle.getWidth(), 
-                      getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
-
-  engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2, 
-                      getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
+  }  
 
   world::TraderouteList routes = _d->empire->getTradeRoutes();
   foreach( world::TraderoutePtr route, routes )
   {
-    const Picture& picture = Picture::load( ResourceGroup::empirebits, PicID::seaTradeRoute );
+    const Picture& picture = Picture::load( ResourceGroup::empirebits,
+                                            route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute );
 
     world::MerchantPtr merchant = route->getMerchant( 0 );
     const PointsArray& points = route->getPoints();
@@ -368,6 +360,15 @@ void EmpireMapWindow::draw( GfxEngine& engine )
       engine.drawPicture( picture, _d->offset + merchant->getLocation() );
     }      
   }
+
+  engine.drawPicture( *_d->border, Point( 0, 0 ) );
+
+  engine.drawPicture( _d->leftEagle, _d->eagleOffset.getWidth(), getHeight() - 120 + _d->eagleOffset.getHeight() - _d->leftEagle.getHeight() - 10 );
+  engine.drawPicture( _d->rightEagle, getWidth() - _d->eagleOffset.getWidth() - _d->rightEagle.getWidth(),
+                      getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
+
+  engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2,
+                      getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
 
   Widget::draw( engine );
 }
