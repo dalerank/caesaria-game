@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
+#include "empiremap.hpp"
 
 namespace world
 {
@@ -31,6 +32,7 @@ public:
   Point location;
   std::string name;
   EmpirePtr empire;
+  unsigned int tradeType;
   bool distantCity;
   bool isAvailable;
   SimpleGoodStore sellStore;
@@ -127,6 +129,8 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
   options[ "available" ] = _d->isAvailable;
   options[ "merchantsNumber" ] = _d->merchantsNumber;
+  options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
+  options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
 }
 
 void ComputerCity::load( const VariantMap& options )
@@ -165,6 +169,9 @@ void ComputerCity::load( const VariantMap& options )
     Good::Type gtype = GoodHelper::getType( it->first );
     _d->buyStore.setQty( gtype, it->second.toInt() * 100 );
   }
+
+  _d->tradeType = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
+                  + (options.get( "land" ).toBool() ? EmpireMap::land : EmpireMap::unknown);
 }
 
 const GoodStore& ComputerCity::getSells() const
@@ -219,7 +226,7 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( _d->lastTimeMerchantSend.getMonthToDate( GameDate::current() ) > 2 ) 
   {
-    TradeRouteList routes = _d->empire->getTradeRoutes( getName() );
+    TraderouteList routes = _d->empire->getTradeRoutes( getName() );
     _d->lastTimeMerchantSend = GameDate::current();
 
     if( _d->merchantsNumber >= routes.size() )
@@ -258,7 +265,7 @@ void ComputerCity::timeStep( unsigned int time )
       }
 
       //send merchants to all routes
-      foreach( TradeRoutePtr route, routes )
+      foreach( TraderoutePtr route, routes )
       {
         _d->merchantsNumber++;
         route->addMerchant( getName(), sellGoods, buyGoods );
@@ -270,6 +277,11 @@ void ComputerCity::timeStep( unsigned int time )
 EmpirePtr ComputerCity::getEmpire() const
 {
   return _d->empire;
+}
+
+unsigned int ComputerCity::getTradeType() const
+{
+  return _d->tradeType;
 }
 
 }//end namespace world

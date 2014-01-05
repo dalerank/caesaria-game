@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_EMPIRECITY_H_INCLUDED__
 #define __CAESARIA_EMPIRECITY_H_INCLUDED__
@@ -21,7 +23,6 @@
 #include "core/position.hpp"
 #include "predefinitions.hpp"
 #include "core/serializer.hpp"
-
 
 class GoodStore;
 
@@ -40,7 +41,7 @@ public:
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
   virtual void arrivedMerchant( MerchantPtr ) = 0;
-
+  virtual unsigned int getTradeType() const = 0;
   virtual EmpirePtr getEmpire() const = 0;
 
   virtual const GoodStore& getSells() const = 0;

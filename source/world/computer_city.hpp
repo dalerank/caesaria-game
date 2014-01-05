@@ -45,6 +45,7 @@ public:
   virtual const GoodStore& getBuys() const;
 
   virtual EmpirePtr getEmpire() const;
+  virtual unsigned int getTradeType() const;
 
   virtual void arrivedMerchant( MerchantPtr );
 

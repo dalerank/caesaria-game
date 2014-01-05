@@ -32,7 +32,7 @@
     {
       geometry : [ 50, 237, 270, 257 ]
       bgtype : "smallGrayBorderLine"
-      text : "##cancel##"
+      text : "##vopt_close##"
     }
   }
 }

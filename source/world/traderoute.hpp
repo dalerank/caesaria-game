@@ -1,44 +1,51 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _OPENCAESAR3_EMPIRE_TRADING_INCLUDE_H_
-#define _OPENCAESAR3_EMPIRE_TRADING_INCLUDE_H_
+#ifndef _CAESARIA_EMPIRE_TRADEROUTE_INCLUDE_H_
+#define _CAESARIA_EMPIRE_TRADEROUTE_INCLUDE_H_
 
-//#include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/position.hpp"
+#include "gfx/picture.hpp"
 
 class GoodStore;
 
 namespace world
 {
 
-class TradeRoute : public ReferenceCounted
+class Traderoute : public ReferenceCounted
 {
 public:
-  TradeRoute(EmpirePtr empire, std::string begin, std::string end );
-  ~TradeRoute();
+  Traderoute(EmpirePtr empire, std::string begin, std::string end );
+  ~Traderoute();
 
   CityPtr getBeginCity() const;
   CityPtr getEndCity() const;
   std::string getName() const;
 
   void update( unsigned int time );
+  const PointsArray& getPoints() const;
+  void setPoints(const PointsArray& points , bool seaRoute);
+  const PicturesArray& getPictures() const;
+
+  bool isSeaRoute() const;
 
   void addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy );
   MerchantPtr getMerchant( unsigned int index );
@@ -56,4 +63,4 @@ private:
 
 }//end namespace world
 
-#endif //_OPENCAESAR3_EMPIRE_TRADING_INCLUDE_H_
+#endif //_CAESARIA_EMPIRE_TRADEROUTE_INCLUDE_H_

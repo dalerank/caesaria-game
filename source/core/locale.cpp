@@ -34,6 +34,7 @@ void Locale::setLanguage(std::string language)
   ByteArray localeData;
   localeData = StringHelper::format( 0xff, "LANGUAGE=%s", language.c_str() );
   putenv( localeData.data() );
+  Logger::warning( "Locale:set language " + language );
 #elif defined(CAESARIA_PLATFORM_UNIX)
   setlocale( LC_ALL, language.c_str() );
 #endif

@@ -271,8 +271,8 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
           //Logger::warning( "No child for parent is (%d,%d)", current->getPos().getI() + x, current->getPos().getJ() + y );
           continue;
         }
-        // If it's closed or not walkable then pass
 
+        // If it's closed or not walkable then pass
         if( child->closed || !isWalkable( child->getPos() ) )
         {
           continue;

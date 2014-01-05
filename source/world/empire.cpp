@@ -1,17 +1,19 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "empire.hpp"
 #include "computer_city.hpp"
@@ -23,6 +25,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "traderoute.hpp"
+#include "empiremap.hpp"
 
 namespace world
 {
@@ -32,6 +35,7 @@ class Empire::Impl
 public:
   CityList cities;
   Trading trading;
+  EmpireMap emap;
 
   std::string playerCityName;
   int workerSalary;
@@ -60,8 +64,11 @@ Empire::~Empire()
 
 }
 
-void Empire::initialize( const vfs::Path& filename )
+void Empire::initialize(vfs::Path filename , vfs::Path filemap)
 {
+  VariantMap emap = SaveAdapter::load( filemap.toString() );
+  _d->emap.initialize( emap );
+
   _d->cities.clear();
   VariantMap cities = SaveAdapter::load( filename.toString() );
 
@@ -76,6 +83,7 @@ void Empire::initialize( const vfs::Path& filename )
     CityPtr city = ComputerCity::create( this, item.first );
     addCity( city );
     city->load( item.second.toMap() );
+    _d->emap.setCity( city->getLocation() );
   }
 }
 
@@ -161,23 +169,62 @@ unsigned int Empire::getWorkersSalary() const
   return _d->workerSalary;
 }
 
-void Empire::createTradeRoute( const std::string& start, const std::string& stop )
+void Empire::createTradeRoute(std::string start, std::string stop )
 {
   CityPtr startCity = getCity( start );
   CityPtr stopCity = getCity( stop );
 
   if( startCity != 0 && stopCity != 0 )
   {
-    _d->trading.createRoute( start, stop );
+    TraderoutePtr route = _d->trading.createRoute( start, stop );
+    EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->getTradeType();
+    EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->getTradeType();
+    bool land = (startType & EmpireMap::land) && (stopType & EmpireMap::land);
+    bool sea = (startType & EmpireMap::sea) && (stopType & EmpireMap::sea);
+
+    PointsArray lpnts, spnts;
+    if( land )
+    {
+      lpnts = _d->emap.getRoute( startCity->getLocation(), stopCity->getLocation(), EmpireMap::land );
+    }
+
+    if( sea )
+    {
+      spnts = _d->emap.getRoute( startCity->getLocation(), stopCity->getLocation(), EmpireMap::sea );
+    }
+
+    if( !lpnts.empty() || !spnts.empty() )
+    {
+      if( lpnts.empty() )
+      {
+        route->setPoints( spnts, true );
+        return;
+      }
+
+      if( spnts.empty() )
+      {
+        route->setPoints( lpnts, false );
+        return;
+      }
+
+      if( spnts.size() > lpnts.size() )
+      {
+        route->setPoints( lpnts, false );
+      }
+      else
+      {
+        route->setPoints( spnts, true );
+      }
+    }
   }
 }
 
-TradeRoutePtr Empire::getTradeRoute( unsigned int index )
+TraderoutePtr Empire::getTradeRoute( unsigned int index )
 {
   return _d->trading.getRoute( index );
 }
 
-TradeRoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
+TraderoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
 {
   return _d->trading.getRoute( start, stop ); 
 }
@@ -211,7 +258,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   return ret;
 }
 
-TradeRouteList Empire::getTradeRoutes( const std::string& startCity )
+TraderouteList Empire::getTradeRoutes( const std::string& startCity )
 {
   return _d->trading.getRoutes( startCity );
 }
@@ -233,7 +280,7 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
 }
 
 
-TradeRouteList Empire::getTradeRoutes()
+TraderouteList Empire::getTradeRoutes()
 {
   return _d->trading.getRoutes();
 }

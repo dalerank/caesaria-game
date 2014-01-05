@@ -11,25 +11,37 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA. If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_TRADEROUTE_FINDER_H_INCLUDED__
+#define __CAESARIA_TRADEROUTE_FINDER_H_INCLUDED__
 
 #include "core/smartptr.hpp"
-#include "core/predefinitions.hpp"
+#include "predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/position.hpp"
 
 namespace world
 {
 
-PREDEFINE_CLASS_SMARTPOINTER_LIST(Traderoute,List)
-PREDEFINE_CLASS_SMARTPOINTER(Merchant)
-PREDEFINE_CLASS_SMARTPOINTER(Empire)
-PREDEFINE_CLASS_SMARTPOINTER(EmpireMap)
-PREDEFINE_CLASS_SMARTPOINTER_LIST(City,List)
+class TraderouteFinder
+{
+public:
+  typedef enum { waterOnly=0x1, terrainOnly=0x2 } Flags;
+
+  TraderouteFinder( const EmpireMap& empiremap );
+
+  bool getRoute( TilePos start, TilePos stop, TilePosArray& way, int flags );
+  void setTerrainType( TilePos pos, unsigned int type );
+
+  ~TraderouteFinder();
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
 
 }
 
-#endif //__CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
+#endif //__CAESARIA_TRADEROUTE_FINDER_H_INCLUDED__

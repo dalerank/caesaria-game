@@ -1,17 +1,19 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "trading.hpp"
 #include "empire.hpp"
@@ -28,7 +30,7 @@ class Trading::Impl
 {
 public:
   EmpirePtr empire;
-  typedef std::map< unsigned int, TradeRoutePtr > TradeRoutes;
+  typedef std::map< unsigned int, TraderoutePtr > TradeRoutes;
   TradeRoutes routes;
 };
 
@@ -77,7 +79,7 @@ void Trading::load(const VariantMap& stream)
     {
       std::string beginCity = routeName.substr( 0, delimPos );
       std::string endCity = routeName.substr( delimPos+3 );
-      TradeRoutePtr route = createRoute( beginCity, endCity );
+      TraderoutePtr route = createRoute( beginCity, endCity );
       route->load( it->second.toMap() );
     }
   }
@@ -91,7 +93,7 @@ Trading::~Trading()
 void Trading::sendMerchant( const std::string& begin, const std::string& end,
                                   GoodStore& sell, GoodStore& buy )
 {
-  TradeRoutePtr route = getRoute( begin, end );
+  TraderoutePtr route = getRoute( begin, end );
   if( route != 0 )
   {
     Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
@@ -101,7 +103,7 @@ void Trading::sendMerchant( const std::string& begin, const std::string& end,
   route->addMerchant( begin, sell, buy );
 }
 
-TradeRoutePtr Trading::getRoute( const std::string& begin, const std::string& end )
+TraderoutePtr Trading::getRoute( const std::string& begin, const std::string& end )
 {
   unsigned int routeId = StringHelper::hash( begin ) + StringHelper::hash( end );
   Impl::TradeRoutes::iterator it = _d->routes.find( routeId );
@@ -114,7 +116,7 @@ TradeRoutePtr Trading::getRoute( const std::string& begin, const std::string& en
   return it->second;
 }
 
-TradeRoutePtr Trading::getRoute( unsigned int index )
+TraderoutePtr Trading::getRoute( unsigned int index )
 {
   if( index >= _d->routes.size() )
     return 0;
@@ -124,9 +126,9 @@ TradeRoutePtr Trading::getRoute( unsigned int index )
   return it->second;
 }
 
-TradeRoutePtr Trading::createRoute( const std::string& begin, const std::string& end )
+TraderoutePtr Trading::createRoute( const std::string& begin, const std::string& end )
 {
-  TradeRoutePtr route = getRoute( begin, end );
+  TraderoutePtr route = getRoute( begin, end );
   if( route != 0 )
   {
     Logger::warning( "Trade route exist [%s to %s]", begin.c_str(), end.c_str() );
@@ -135,16 +137,16 @@ TradeRoutePtr Trading::createRoute( const std::string& begin, const std::string&
 
   unsigned int routeId = StringHelper::hash( begin ) + StringHelper::hash( end );
 
-  route = TradeRoutePtr( new TradeRoute( _d->empire, begin, end ) );
-  route->drop();
+  route = TraderoutePtr( new Traderoute( _d->empire, begin, end ) );
   _d->routes[ routeId ] = route;
+  route->drop();
 
   return route;
 }
 
-TradeRouteList Trading::getRoutes( const std::string& begin )
+TraderouteList Trading::getRoutes( const std::string& begin )
 {
-  TradeRouteList ret;
+  TraderouteList ret;
 
   CityPtr city = _d->empire->getCity( begin );
 
@@ -159,9 +161,9 @@ TradeRouteList Trading::getRoutes( const std::string& begin )
   return ret;
 }
 
-TradeRouteList Trading::getRoutes()
+TraderouteList Trading::getRoutes()
 {
-  TradeRouteList ret;
+  TraderouteList ret;
   foreach( Impl::TradeRoutes::value_type& item, _d->routes )
   {
     ret.push_back( item.second );

@@ -309,7 +309,8 @@ void Game::load(std::string filename)
 {
   Logger::warning( "Load game begin" );
 
-  _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ) );
+  _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
+                          GameSettings::rcpath( GameSettings::worldModel ) );
 
   GameLoader loader;
   _d->loadOk = loader.load( filename, *this);

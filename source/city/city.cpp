@@ -66,6 +66,7 @@
 #include "objects/forum.hpp"
 #include "objects/senate.hpp"
 #include "objects/house.hpp"
+#include "world/empiremap.hpp"
 #include <set>
 
 using namespace constants;
@@ -591,6 +592,7 @@ void PlayerCity::setLocation( const Point& location ) {   _d->location = locatio
 Point PlayerCity::getLocation() const {   return _d->location; }
 const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSells(); }
 const GoodStore& PlayerCity::getBuys() const {   return _d->tradeOptions.getBuys(); }
+unsigned int PlayerCity::getTradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::getEmpire() const {   return _d->empire; }
 void PlayerCity::updateRoads() {    _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
@@ -608,7 +610,7 @@ int PlayerCity::getProsperity() const
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 {
-  PlayerCityPtr ret( new PlayerCity );
+  PlayerCityPtr ret( new PlayerCity() );
   ret->_d->empire = empire;
   ret->_d->player = player;
   ret->drop();

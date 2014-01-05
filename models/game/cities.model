@@ -1,6 +1,8 @@
 {
 	Lugdunum : {
-    location : [ 475, 275 ]
+    location : [ 460, 260 ]
+    sea : true
+    land : true
     
     sells : { vegetable : 40, marble : 40 }
     buys : { wine : 25, oil : 15, pottery : 25 }    
@@ -9,13 +11,19 @@
 	}
   
   Corinthus : {
-		location : [ 1140, 720 ]
+		location : [ 1160, 760 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "fruit", "olive", "fish", "clay" ] 
 	}
   
   Londinium : {
-    location : [ 322, 67 ]
+    location : [ 340, 60 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "vegetable", "wine", "fish",
                   "timber", "clay", "marble" ] 
@@ -25,7 +33,10 @@
 	}
   
   Mediolanum : {
-		location : [ 614, 310 ]
+		location : [ 600, 300 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "pigs", "timber", "clay" ]
     
@@ -34,7 +45,10 @@
 	}
 	
 	Lindum : { 
-		location : [ 269, 35 ]
+		location : [ 260, 0 ]
+    
+    sea : true
+    land : true
     
     sells : { wheat : 40, clay : 40 }
     buys : { wine : 25, oil : 40, furniture : 40 } 
@@ -44,14 +58,20 @@
 	}
   
   Toletum : {
- 		location : [ 114, 603 ]
+ 		location : [ 100, 600 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "vegetable", "fish",
                   "timber", "clay", "iron" ]
 	}
 	
 	Valentia : {
-    location : [ 235, 757 ]
+    location : [ 240, 740 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "fruit", "olive", "wine", "fish",
                   "timber", "clay", "marble", "iron" ]
@@ -61,31 +81,46 @@
 	}
 	
 	Caesarea : {
-		location : [ 387, 791 ] 
+		location : [ 380, 780 ] 
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "fruit", "olive", "wine", "fish",
                   "timber", "clay", "marble" ]
 	}
   
   Carthago : {
- 		location : [ 656, 735 ]
+ 		location : [ 640, 760 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "olive", "wine", "fish",
                   "timber", "clay", "marble", "iron" ]
 	}
   
   Sarmizegetusa : {
-    location : [ 1041, 307 ]
+    location : [ 1020, 300 ]
+    
+    sea : true
+    land : true
   }
 	
 	Cyrene : {
-		location : [ 1140, 917 ]
+		location : [ 1140, 900 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "fish", "clay" ]
 	}
 	
 	Tarraco : {
- 		location : [ 382, 494 ]
+ 		location : [ 400, 480 ]
+    
+    sea : true
+    land : true
     
     sells : { olive : 40, clay : 40, wine : 40 }
     buys : { weapon : 25, pottery : 40, furniture : 25 } 
@@ -95,7 +130,10 @@
 	}
   
   Hierosolyma : {
-		location : [ 1745, 925 ]
+		location : [ 1740, 920 ]
+    
+    sea : true
+    land : true
     
     sells : { olive : 40, furniture : 25, pottery : 25 }
     buys : { wine : 15, timber : 25, marble : 15 } 
@@ -104,24 +142,36 @@
 	}
   
   Miletus : {
- 		location : [ 1345, 732 ]
+ 		location : [ 1340, 760 ]
+    
+    sea : true
+    land : true
     
     sells : { fruit : 25, timber : 25, clay : 25 }
     buys : { weapon : 25, oil : 25, wine : 15 } 
   }
 	
 	Tarsus : {
-		location : [ 1660, 740 ]
+		location : [ 1660, 760 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "iron", "fish", "timber", "marble" ]
 	}
   
   Lutetia : {
-      location : [ 370, 198 ]
+    location : [ 360, 140 ]
+      
+    sea : true
+    land : true
   }
   
   Tingis : { 
-		location : [ 128, 815 ]
+		location : [ 120, 840 ]
+    
+    sea : true
+    land : true
     
     sells : { fruit : 25, clay : 40 }
     buys : { wine : 40, oil : 40, marble : 15 } 
@@ -130,65 +180,92 @@
 	}
 	
 	"Augusta Trevorum" : {
-    location : [ 552, 157 ]
+    location : [ 540, 140 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "vegetable", "fruit", "fish", 
                   "iron", "timber", "clay" ]
 	}
 	
 	"Carthago Nova" : {
-		location : [ 225, 743 ] 
+		location : [ 220, 760 ] 
+    
+    sea : true
+    land : true
     
     resources : [ "vegetable", "fruit", "olive", "wine", "fish", 
                   "clay" ]
 	}
 	
 	"Leptis Magna" : {
-		location : [ 827, 927 ]
+		location : [ 820, 920 ]
+    
+    sea : true
+    land : true
     
     resources : [ "wheat", "vegetable", "olive", "fish", 
                   "clay", "marble", "timber", "iron" ]
 	}
   
   Athenae : {
-		location : [ 1200, 705 ] 
+		location : [ 1200, 700 ] 
+    
+    sea : true
+    land : true
 	}
 	
 	Brundisium : {
-		location : [ 945, 543 ]
+		location : [ 940, 560 ]
+    
+    sea : true
+    land : true
 	}
   
   Damascus : {
- 		location : [ 1743, 860 ]
+ 		location : [ 1740, 860 ]
+    
+    sea : true
+    land : true
     
     sells : { olive : 25, wine : 25 }
     buys : { weapon : 25, pottery : 25 }
   }
 	
 	Capua : {
-		location : [ 829, 543 ]
+		location : [ 820, 560 ]
+    
+    sea : true
+    land : true
     
     sells : { fruit : 25, iron : 25 }
     buys : { oil : 25, furniture : 25 }
 	}
   
   Massilia : {
-    location : [ 500, 420 ]
+    location : [ 500, 440 ]
+    
+    sea : true
+    land : true
   }
   
   Tarentum : {
-		location : [ 903, 601 ]
+		location : [ 900, 600 ]
+    
+    land : true
+    sea : true
+    
 		sells : {	fruit : 25, olive : 25, timber : 25 }	
 		buys : { pottery : 25, vegetable : 25, wheat : 40 }
-		
-		sea : false
 	}
 	
 	Syracusae : {
-		location : [ 843, 723 ]
+		location : [ 840, 720 ]
 		sells : { fruit : 25, olive : 40, clay : 25 }
 		buys : { wine : 40, marble : 15, furniture : 25 }
-		land : false
+		land : true
+    sea : true
 		resources : [ "wheat", "vegetable", "fruit", "wine", 
                   "fish", "timber", "clay" ]
 	}

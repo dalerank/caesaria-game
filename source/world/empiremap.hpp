@@ -15,21 +15,38 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_EMPIREMAP_H_INCLUDED__
+#define __CAESARIA_EMPIREMAP_H_INCLUDED__
 
 #include "core/smartptr.hpp"
+#include "core/scopedptr.hpp"
+#include "core/variant.hpp"
 #include "core/predefinitions.hpp"
 
 namespace world
 {
 
-PREDEFINE_CLASS_SMARTPOINTER_LIST(Traderoute,List)
-PREDEFINE_CLASS_SMARTPOINTER(Merchant)
-PREDEFINE_CLASS_SMARTPOINTER(Empire)
-PREDEFINE_CLASS_SMARTPOINTER(EmpireMap)
-PREDEFINE_CLASS_SMARTPOINTER_LIST(City,List)
+class EmpireMap
+{
+public:
+  typedef enum { unknown=0, sea=0x1, land=0x2, city=sea|land, any=0x4 } TerrainType;
+
+  EmpireMap();
+  ~EmpireMap();
+
+  void initialize( const VariantMap& stream );
+  void setCity( Point pos );
+
+  Size getSize() const;
+
+  TerrainType at(const TilePos& ij) const;
+
+  PointsArray getRoute(Point start, Point stop, int flags );
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
 
 }
 
-#endif //__CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
+#endif //__CAESARIA_EMPIREMAP_H_INCLUDED__

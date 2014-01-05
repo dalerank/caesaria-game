@@ -32,6 +32,7 @@ const char* GameSettings::fullscreen = "fullscreen";
 const char* GameSettings::language = "language";
 const char* GameSettings::emigrantSalaryKoeff = "emigrantSalaryKoeff";
 const char* GameSettings::savedir = "savedir";
+const char* GameSettings::worldModel = "worldModel";
 const char* GameSettings::minMonthWithFood = "minMonthWithFood";
 const char* GameSettings::worklessCitizenAway = "worklessCitizenAway";
 
@@ -51,17 +52,18 @@ GameSettings::GameSettings() : _d( new Impl )
 {
   std::string application_path = vfs::Directory::getApplicationDir().toString();
 
-  _d->options[ resourcePath ] = Variant( application_path + std::string( "/resources" ) );
-  _d->options[ localePath ] = Variant( application_path + std::string( "/resources/locale" ) );
-  _d->options[ pantheonModel ] = Variant( std::string( "/pantheon.model" ) );
-  _d->options[ houseModel ] = Variant( std::string( "/house.model" ) );
-  _d->options[ constructionModel ] = Variant( std::string( "/construction.model" ) );
-  _d->options[ citiesModel ] = Variant( std::string( "/cities.model" ) );
-  _d->options[ ctNamesModel ] = Variant( std::string( "/names.model" ) );
-  _d->options[ settingsPath ] = Variant( std::string( "/settings.model" ) );
-  _d->options[ resolution ] = Size( 1024, 768 );
-  _d->options[ fullscreen ] = false;
-  _d->options[ minMonthWithFood ] = 3;
+  _d->options[ resourcePath        ] = Variant( application_path + std::string( "/resources" ) );
+  _d->options[ localePath          ] = Variant( application_path + std::string( "/resources/locale" ) );
+  _d->options[ pantheonModel       ] = Variant( std::string( "/pantheon.model" ) );
+  _d->options[ houseModel          ] = Variant( std::string( "/house.model" ) );
+  _d->options[ constructionModel   ] = Variant( std::string( "/construction.model" ) );
+  _d->options[ citiesModel         ] = Variant( std::string( "/cities.model" ) );
+  _d->options[ ctNamesModel        ] = Variant( std::string( "/names.model" ) );
+  _d->options[ settingsPath        ] = Variant( std::string( "/settings.model" ) );
+  _d->options[ resolution          ] = Size( 1024, 768 );
+  _d->options[ fullscreen          ] = false;
+  _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );
+  _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 15;
   _d->options[ emigrantSalaryKoeff ] = 2.f;
 

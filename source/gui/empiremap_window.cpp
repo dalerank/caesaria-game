@@ -104,7 +104,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
     }
     else
     {
-      world::TradeRoutePtr route = empire->getTradeRoute( currentCity->getName(), ourCity );
+      world::TraderoutePtr route = empire->getTradeRoute( currentCity->getName(), ourCity );
       if( route != 0 )
       {
         drawTradeRouteInfo();
@@ -350,12 +350,19 @@ void EmpireMapWindow::draw( GfxEngine& engine )
   engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2, 
                       getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
 
-  world::TradeRouteList routes = _d->empire->getTradeRoutes();
-  foreach( world::TradeRoutePtr route, routes )
+  world::TraderouteList routes = _d->empire->getTradeRoutes();
+  foreach( world::TraderoutePtr route, routes )
   {
     const Picture& picture = Picture::load( ResourceGroup::empirebits, PicID::seaTradeRoute );
 
     world::MerchantPtr merchant = route->getMerchant( 0 );
+    const PointsArray& points = route->getPoints();
+    const PicturesArray& pictures = route->getPictures();
+    for( int index=0; index < pictures.size(); index++ )
+    {
+      engine.drawPicture( pictures[ index ], _d->offset + points[ index ] );
+    }
+
     if( merchant != 0 )
     {
       engine.drawPicture( picture, _d->offset + merchant->getLocation() );

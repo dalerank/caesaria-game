@@ -252,7 +252,7 @@ void Minimap::draw(GfxEngine& painter)
   if( !isVisible() )
     return;
 
-  if( DateTime::getElapsedTime() - _d->lastTimeUpdate > 500 )
+  if( DateTime::getElapsedTime() - _d->lastTimeUpdate > 250 )
   {
     _d->updateImage();
     _d->lastTimeUpdate = DateTime::getElapsedTime();

@@ -16,7 +16,8 @@
 #ifndef __CAESARIA_PREDEFINITIONS_H_INCLUDED__
 #define __CAESARIA_PREDEFINITIONS_H_INCLUDED__
 
-#include "core/smartptr.hpp"
+#include "smartptr.hpp"
+#include "position.hpp"
 
 #include <list>
 #include <vector>
@@ -30,6 +31,7 @@ class VariantMap;
 class DateTime;
 typedef long unsigned int ThreadID;
 
-typedef long unsigned int ThreadID;
+typedef std::vector< TilePos > TilePosArray;
+typedef std::vector< Point > PointsArray;
 
 #endif //__CAESARIA_PREDEFINITIONS_H_INCLUDED__
