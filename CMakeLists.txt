@@ -2,7 +2,6 @@ project(CaesarIA)
 
 cmake_minimum_required(VERSION 2.6)
 
-option( BUILD_LIBINTL "Static libintl" OFF )
 option( BUILD_ZLIB "Static zlib" ON )
 option( BUILD_AES "Static aes" ON )
 option( BUILD_BZIP "Static bzip" ON )
@@ -16,14 +15,6 @@ set(GAME_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/models" )
 set(LOCALE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/locale" )
 get_filename_component(WORK_DIR ${CMAKE_CURRENT_SOURCE_DIR} PATH)
 set(WORK_DIR ${WORK_DIR}/caesaria-test)
-
-if( BUILD_LIBINTL )
-  set(LIBINTL_VERSION "0.14.4")
-  set(LIBINTL_DIR "libintl-${LIBINTL_VERSION}" )
-  set(LIBINTL_HOME "${DEP_SOURCE_DIR}/${LIBINTL_DIR}" )
-  set(LIBINTL_A "${LIBINTL_HOME}/lib/libintl.a" )
-  add_subdirectory( ${LIBINTL_HOME} EXCLUDE_FROM_ALL )
-endif( BUILD_LIBINTL )
 
 if(BUILD_AUDIO)
   set( CAESARIA_USE_SDL_MIXER ON)

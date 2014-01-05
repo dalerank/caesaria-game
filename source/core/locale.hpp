@@ -21,8 +21,9 @@
 class Locale
 {
 public:
-  static void loadTranslator(vfs::Directory directory);
+  static void setDirectory( vfs::Directory directory );
   static void setLanguage(std::string language);
+  static const char* translate(const char* text);
 };
 
 

@@ -70,18 +70,18 @@ public:
   float time, saveTime;
   float timeMultiplier;
   
-  void initLocale(const std::string& localePath);
+  void initLocale(std::string localePath);
   void initVideo();
-  void initPictures(const vfs::Path& resourcePath);
+  void initPictures( vfs::Path resourcePath);
   void initGuiEnvironment();
-  void initPantheon( const vfs::Path& filename );
+  void initPantheon(vfs::Path filename );
 };
 
-void Game::Impl::initLocale(const std::string & localePath)
+void Game::Impl::initLocale( std::string localePath)
 {
-  // init the internationalization library (gettext)
-  Locale::setLanguage(   GameSettings::get( GameSettings::language ).toString() );
-  Locale::loadTranslator( localePath );
+  //init translator
+  Locale::setDirectory( localePath );
+  Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
 }
 
 void Game::Impl::initVideo()
@@ -118,13 +118,13 @@ void Game::Impl::initGuiEnvironment()
   gui = new gui::GuiEnv( *engine );
 }
 
-void Game::Impl::initPantheon(const vfs::Path& filename)
+void Game::Impl::initPantheon( vfs::Path filename)
 {
   VariantMap pantheon = SaveAdapter::load( filename );
   DivinePantheon::getInstance().load( pantheon );
 }
 
-void Game::Impl::initPictures(const vfs::Path& resourcePath)
+void Game::Impl::initPictures(vfs::Path resourcePath)
 {
   AnimationBank::loadCarts();
   AnimationBank::loadWalkers();

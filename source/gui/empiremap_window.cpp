@@ -345,7 +345,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
   engine.drawPicture( _d->leftEagle, _d->eagleOffset.getWidth(), getHeight() - 120 + _d->eagleOffset.getHeight() - _d->leftEagle.getHeight() - 10 );
   engine.drawPicture( _d->rightEagle, getWidth() - _d->eagleOffset.getWidth() - _d->rightEagle.getWidth(), 
-    getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
+                      getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
 
   engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2, 
                       getHeight() - 120 - _d->centerPicture.getHeight() + 20 );
@@ -358,7 +358,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
     world::MerchantPtr merchant = route->getMerchant( 0 );
     const PointsArray& points = route->getPoints();
     const PicturesArray& pictures = route->getPictures();
-    for( int index=0; index < pictures.size(); index++ )
+    for( unsigned int index=0; index < pictures.size(); index++ )
     {
       engine.drawPicture( pictures[ index ], _d->offset + points[ index ] );
     }

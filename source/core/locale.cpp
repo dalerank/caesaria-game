@@ -16,28 +16,45 @@
 #include "locale.hpp"
 #include "bytearray.hpp"
 #include "logger.hpp"
+#include "stringhelper.hpp"
+#include "saveadapter.hpp"
 
-#include <libintl.h>
+namespace {
+  typedef std::map< int, std::string > Translator;
+  Translator translator;
+  vfs::Directory directory;
+  std::string invalidText = "";
 
-extern int  _nl_msg_cat_cntr;
+static void __loadTranslator( vfs::Path filename )
+{  
+  translator.clear();
+  VariantMap trs = SaveAdapter::load( directory/filename );
+  Logger::warning( (directory/filename).toString() );
 
-void Locale::loadTranslator(vfs::Directory directory)
+  for( VariantMap::iterator it=trs.begin(); it != trs.end(); it++ )
+  {
+    int hash = StringHelper::hash( it->first );
+    translator[ hash ] = it->second.toString();
+  }
+}
+
+}
+
+void Locale::setDirectory(vfs::Directory dir)
 {
-  bindtextdomain( "caesar", directory.toString().c_str() );
-  bind_textdomain_codeset( "caesar", "UTF-8" );
-  textdomain( "caesar" );
+  directory = dir;
 }
 
 void Locale::setLanguage(std::string language)
 {
-#ifdef CAESARIA_PLATFORM_WIN
-  ByteArray localeData;
-  localeData = StringHelper::format( 0xff, "LANGUAGE=%s", language.c_str() );
-  putenv( localeData.data() );
-  Logger::warning( "Locale:set language " + language );
-#elif defined(CAESARIA_PLATFORM_UNIX)
-  setlocale( LC_ALL, language.c_str() );
-#endif
+  vfs::Path filename = "caesar." + language;
+  __loadTranslator( filename );
+}
 
-  ++_nl_msg_cat_cntr;
+const char* Locale::translate(const char* text)
+{
+  int hash = StringHelper::hash( text );
+  Translator::iterator it = translator.find( hash );
+
+  return ( it != translator.end() ? it->second.c_str() : text );
 }

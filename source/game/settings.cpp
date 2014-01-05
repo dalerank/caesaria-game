@@ -60,6 +60,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ citiesModel         ] = Variant( std::string( "/cities.model" ) );
   _d->options[ ctNamesModel        ] = Variant( std::string( "/names.model" ) );
   _d->options[ settingsPath        ] = Variant( std::string( "/settings.model" ) );
+  _d->options[ language            ] = Variant( std::string( "ru" ) );
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
   _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );

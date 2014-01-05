@@ -12,12 +12,6 @@ find_package(SDL REQUIRED)
 find_package(SDL_mixer REQUIRED)
 find_package(SDL_ttf REQUIRED)
 
-if(NOT BUILD_LIBINTL)
-  find_package(Libintl REQUIRED)
-  include_directories( ${LIBINTL_INCLUDE_DIR} )
-  link_libraries( ${LIBINTL_LIBRARIES} )
-endif()
-
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${SDL_INCLUDE_DIR}
@@ -55,10 +49,6 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${OBJECTS_SOURCES_LIST} ${GAME_SOURCES_LIST} ${VFS_SOURCES_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST} )
-
-if( BUILD_LIBINTL )
-  target_link_libraries(${PROJECT_NAME} libintl)
-endif( BUILD_LIBINTL )
 
 if( BUILD_ZLIB )
   link_directories(${ZLIB_HOME})

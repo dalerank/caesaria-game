@@ -19,8 +19,8 @@
 #ifndef GETTEXT_HPP
 #define GETTEXT_HPP
 
-#include <libintl.h>
-#define _(x) gettext(x)
+#include "locale.hpp"
+#define _(x) Locale::translate(x)
 
 
 #endif
