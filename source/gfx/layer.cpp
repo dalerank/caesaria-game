@@ -192,24 +192,20 @@ WalkerList Layer::_getVisibleWalkerList()
   return walkerList;
 }
 
-void Layer::_drawWalkersBetweenZ( GfxEngine& engine, WalkerList walkerList, int minZ, int maxZ, const Point& camOffset )
+void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset )
 {
   PicturesArray pictureList;
+  WalkerList walkers = _getCity()->getWalkers( walker::any, tile.getIJ() );
 
-  foreach( WalkerPtr walker, walkerList )
+  foreach( WalkerPtr walker, walkers )
   {
-    // TODO: calculate once && sort
-    int zAnim = walker->getIJ().getZ();// getJ() - walker.getI();
-    if( zAnim > minZ && zAnim <= maxZ )
+    pictureList.clear();
+    walker->getPictureList( pictureList );
+    foreach( Picture& picRef, pictureList )
     {
-      pictureList.clear();
-      walker->getPictureList( pictureList );
-      foreach( Picture& picRef, pictureList )
+      if( picRef.isValid() )
       {
-        if( picRef.isValid() )
-        {
-          engine.drawPicture( picRef, walker->getPosition() + camOffset );
-        }
+        engine.drawPicture( picRef, walker->getPosition() + camOffset );
       }
     }
   }
@@ -253,12 +249,7 @@ void Layer::render( GfxEngine& engine)
   {
     int z = tile->getIJ().getZ();
 
-    if (z != lastZ)
-    {
-      // TODO: pre-sort all animations
-      lastZ = z;
-      _drawWalkersBetweenZ( engine, walkerList, z, z+1, camOffset );
-    }
+    _drawWalkers( engine, *tile, camOffset );
 
     drawTileR( engine, *tile, camOffset, z, false );
   }

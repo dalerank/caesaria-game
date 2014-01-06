@@ -60,8 +60,7 @@ protected:
   WalkerList _getVisibleWalkerList();
   void _setStartCursorPos( Point pos );
   Point _getStartCursorPos() const;
-  void _drawWalkersBetweenZ( GfxEngine& engine, WalkerList walkerList,
-                             int minZ, int maxZ, const Point& camOffset);
+  void _drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset);
 
   TilesArray _getSelectedArea();
 

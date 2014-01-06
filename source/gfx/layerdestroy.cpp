@@ -126,12 +126,7 @@ void LayerDestroy::render( GfxEngine& engine )
   {
     int z = tile->getIJ().getZ();
 
-    if (z != lastZ)
-    {
-      // TODO: pre-sort all animations
-      lastZ = z;
-      _drawWalkersBetweenZ( engine, walkerList, z, z+1, cameraOffset );
-    }
+    _drawWalkers( engine, *tile, cameraOffset );
 
     int tilePosHash = tile->getJ() * 1000 + tile->getI();
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )

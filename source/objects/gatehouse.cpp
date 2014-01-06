@@ -26,7 +26,7 @@
 using namespace constants;
 
 namespace {
-static const Renderer::Pass rpass[2] = { Renderer::building/* Renderer::animations*/ };
+static const Renderer::Pass rpass[2] = { Renderer::building, Renderer::overWalker };
 static const Renderer::PassQueue gatehousePass = Renderer::PassQueue( rpass, rpass + 1 );
 }
 
@@ -142,7 +142,7 @@ const PicturesArray& Gatehouse::getPictures(Renderer::Pass pass) const
 {
   switch( pass )
   {
-  case Renderer::animations: return _d->gatehouseSprite;
+  case Renderer::overWalker: return _d->gatehouseSprite;
   default: break;
   }
 

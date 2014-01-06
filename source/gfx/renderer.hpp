@@ -17,6 +17,7 @@ public:
                   ground=12,                  
                   foreground = 24, //solid overlays
                   building=32,
+                  overWalker,
                   animations=48,
                   transparent = 56, //transparent overlays
                   shadow = 64 //drawn after solid overlays
