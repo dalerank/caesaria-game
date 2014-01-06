@@ -38,44 +38,7 @@ public:
     return (imgId >= 372 && imgId <= 387);
   }
 
-  Direction getDirection( PlayerCityPtr city, TilePos pos )
-  {
-    Tilemap& tilemap = city->getTilemap();
-    const Tile& t00 = tilemap.at( pos );
-    const Tile& t10 = tilemap.at( pos + TilePos( 1, 0 ) );
-    const Tile& t01 = tilemap.at( pos + TilePos( 0, 1 ) );
-    const Tile& t11 = tilemap.at( pos + TilePos( 1, 1 ) );
-
-    if( t00.getFlag( Tile::tlWater ) && isFlatCoast( t00 )
-        && t10.getFlag( Tile::tlWater ) && isFlatCoast( t10 )
-        && t01.getFlag( Tile::isConstructible ) && t11.getFlag( Tile::isConstructible ) )
-    {
-      return south;
-    }
-
-    if( t01.getFlag( Tile::tlWater ) && isFlatCoast( t01 )
-        && t11.getFlag( Tile::tlWater ) && isFlatCoast( t11 )
-        && t00.getFlag( Tile::isConstructible ) && t10.getFlag( Tile::isConstructible ) )
-    {
-      return north;
-    }
-
-    if( t00.getFlag( Tile::tlWater ) && isFlatCoast( t00 )
-        && t01.getFlag( Tile::tlWater ) && isFlatCoast( t01 )
-        && t10.getFlag( Tile::isConstructible ) && t11.getFlag( Tile::isConstructible ) )
-    {
-      return west;
-    }
-
-    if( t10.getFlag( Tile::tlWater ) && isFlatCoast( t10 )
-        && t11.getFlag( Tile::tlWater ) && isFlatCoast( t11 )
-        && t00.getFlag( Tile::isConstructible ) && t01.getFlag( Tile::isConstructible ) )
-    {
-      return east;
-    }
-
-    return noneDirection;
-  }
+  Direction getDirection(PlayerCityPtr city, TilePos pos);
 };
 
 CoastalFactory::CoastalFactory(const Good::Type consume, const Good::Type produce,
@@ -167,5 +130,42 @@ void CoastalFactory::_setDirection(Direction direction)
   _updatePicture( direction );
 }
 
+Direction CoastalFactory::Impl::getDirection(PlayerCityPtr city, TilePos pos)
+{
+  Tilemap& tilemap = city->getTilemap();
 
+  const Tile& t00 = tilemap.at( pos );
+  const Tile& t10 = tilemap.at( pos + TilePos( 1, 0 ) );
+  const Tile& t01 = tilemap.at( pos + TilePos( 0, 1 ) );
+  const Tile& t11 = tilemap.at( pos + TilePos( 1, 1 ) );
 
+  if( t00.getFlag( Tile::tlWater ) && isFlatCoast( t00 )
+      && t10.getFlag( Tile::tlWater ) && isFlatCoast( t10 )
+      && t01.getFlag( Tile::isConstructible ) && t11.getFlag( Tile::isConstructible ) )
+  {
+    return south;
+  }
+
+  if( t01.getFlag( Tile::tlWater ) && isFlatCoast( t01 )
+      && t11.getFlag( Tile::tlWater ) && isFlatCoast( t11 )
+      && t00.getFlag( Tile::isConstructible ) && t10.getFlag( Tile::isConstructible ) )
+  {
+    return north;
+  }
+
+  if( t00.getFlag( Tile::tlWater ) && isFlatCoast( t00 )
+      && t01.getFlag( Tile::tlWater ) && isFlatCoast( t01 )
+      && t10.getFlag( Tile::isConstructible ) && t11.getFlag( Tile::isConstructible ) )
+  {
+    return west;
+  }
+
+  if( t10.getFlag( Tile::tlWater ) && isFlatCoast( t10 )
+      && t11.getFlag( Tile::tlWater ) && isFlatCoast( t11 )
+      && t00.getFlag( Tile::isConstructible ) && t01.getFlag( Tile::isConstructible ) )
+  {
+    return east;
+  }
+
+  return noneDirection;
+}

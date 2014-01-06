@@ -59,6 +59,7 @@
 #include "shipyard.hpp"
 #include "tower.hpp"
 #include "elevation.hpp"
+#include "dock.hpp"
 #include <map>
 
 using namespace constants;
@@ -250,20 +251,20 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::marbleQuarry, CAESARIA_STR_EXT(MarbleQuarry), new FactoryCreator<MarbleQuarry>() );
 
   // factories
-  addCreator(building::weaponsWorkshop, CAESARIA_STR_EXT(WeaponsWorkshop)   , new FactoryCreator<WeaponsWorkshop>() );
-  addCreator(building::furnitureWorkshop,  CAESARIA_STR_EXT(FurnitureWorkshop), new FactoryCreator<FurnitureWorkshop>() );
-  addCreator(building::winery, CAESARIA_STR_EXT(Winery)     , new FactoryCreator<Winery>() );
-  addCreator(building::creamery, CAESARIA_STR_EXT(Creamery)      , new FactoryCreator<Creamery>() );
+  ADD_CREATOR(building::weaponsWorkshop, WeaponsWorkshop, FactoryCreator );
+  ADD_CREATOR(building::furnitureWorkshop,  FurnitureWorkshop, FactoryCreator );
+  ADD_CREATOR(building::winery, Winery, FactoryCreator );
+  ADD_CREATOR(building::creamery, Creamery, FactoryCreator );
   ADD_CREATOR(building::pottery,  Pottery, FactoryCreator );
 
   // utility
   addCreator(building::engineerPost, CAESARIA_STR_EXT(EngineerPost), new WorkingBuildingCreator<EngineerPost>() );
   addCreator(building::lowBridge,    CAESARIA_STR_EXT(LowBridge), new ConstructionCreator<LowBridge>() );
-  addCreator(building::highBridge,   CAESARIA_STR_EXT(HighBridge), new ConstructionCreator<HighBridge>() );
-  addCreator(building::dock,       CAESARIA_STR_EXT(Dock)    , new ConstructionCreator<Dock>() );
+  ADD_CREATOR(building::highBridge,   HighBridge, ConstructionCreator );
+  ADD_CREATOR(building::dock,       Dock    , WorkingBuildingCreator );
   ADD_CREATOR(building::shipyard,   Shipyard, FactoryCreator );
   ADD_CREATOR(building::wharf,      Wharf   , FactoryCreator );
-  addCreator(building::triumphalArch, CAESARIA_STR_EXT(TriumphalArch) , new ConstructionCreator<TriumphalArch>() );
+  ADD_CREATOR(building::triumphalArch, TriumphalArch, ConstructionCreator );
 
   // religion
   addCreator(building::templeCeres,  CAESARIA_STR_EXT(TempleCeres)  , new WorkingBuildingCreator<TempleCeres>() );

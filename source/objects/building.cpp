@@ -214,34 +214,7 @@ bool BigStatue::isNeedRoadAccess() const
   return false;
 }
 
-// dock pictures
-// transport 5        animation = 6~16
-// transport 17       animation = 18~28
-// transport 29       animation = 30~40
-// transport 41       animation = 42~51
-
-Dock::Dock() : Building( building::dock, Size(2) )
-{
-  setPicture( ResourceGroup::transport, 5);
-
-  _animationRef().load( ResourceGroup::transport, 6, 11);
-  // now fill in reverse order
-  _animationRef().load( ResourceGroup::transport, 15, 10, Animation::reverse );
-  
-  _animationRef().setOffset( Point( 107, 61 ) );
-  _fgPicturesRef().resize(1);
-}
-
-void Dock::timeStep(const unsigned long time)
-{
-  _animationRef().update( time );
-  
-  // takes current animation frame and put it into foreground
-  _fgPicturesRef().at(0) = _animationRef().getFrame();
-}
-
 // second arch pictures is land3a 45 + 46	
-
 TriumphalArch::TriumphalArch() : Building( building::triumphalArch, Size(3) )
 {
   setPicture( ResourceGroup::land3a, 43 );

@@ -93,11 +93,4 @@ public:
   TriumphalArch();
 };
 
-class Dock : public Building
-{
-public:
-  Dock();
-  void timeStep(const unsigned long time);
-};
-
 #endif //_CAESARIA_BUILDING_H_INCLUDE_
