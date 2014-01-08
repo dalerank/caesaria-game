@@ -168,7 +168,7 @@ void ScreenMenu::Impl::resolvePlayMission()
                                                     GameSettings::rcpath( "/missions/" ), ".oc3mission", -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
-  wnd->setTitle( _("##Select mission##") );
+  wnd->setTitle( _("##Select_mission##") );
 }
 
 void ScreenMenu::Impl::resolveShowLoadMapWnd()
