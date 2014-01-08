@@ -19,7 +19,7 @@
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
-#include "walker/fishing_boat.hpp"
+#include "walker/seamerchant.hpp"
 #include "core/foreach.hpp"
 #include "good/goodstore.hpp"
 #include "constants.hpp"
@@ -112,6 +112,14 @@ void Dock::load(const VariantMap& stream)
 
   _d->direction = (Direction)stream.get( "direction", (int)southWest ).toInt();
   _d->saveTileInfo << stream.get( "saved_tile" ).toList();
+}
+
+bool Dock::isBusy() const
+{
+  CityHelper helper( _getCity() );
+  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant );
+
+  return !merchants.empty();
 }
 
 const Tile& Dock::getLandingTile() const

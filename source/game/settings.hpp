@@ -40,6 +40,7 @@ public:
   static const char* minMonthWithFood;
   static const char* worldModel;
   static const char* worklessCitizenAway;
+  static const char* langModel;
 
   static GameSettings& getInstance();
 

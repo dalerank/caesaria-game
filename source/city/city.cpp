@@ -67,6 +67,7 @@
 #include "objects/senate.hpp"
 #include "objects/house.hpp"
 #include "world/empiremap.hpp"
+#include "walker/seamerchant.hpp"
 #include <set>
 
 using namespace constants;
@@ -638,6 +639,14 @@ int PlayerCity::getFavour() const
 
 void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
 {
-  WalkerPtr cityMerchant = Merchant::create( this, merchant );
-  cityMerchant.as<Merchant>()->send2City();
+  if( merchant->isSeaRoute() )
+  {
+    WalkerPtr cityMerchant = SeaMerchant::create( this, merchant );
+    cityMerchant.as<SeaMerchant>()->send2city();
+  }
+  else
+  {
+    WalkerPtr cityMerchant = Merchant::create( this, merchant );
+    cityMerchant.as<Merchant>()->send2city();
+  }
 }

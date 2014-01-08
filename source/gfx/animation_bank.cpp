@@ -141,6 +141,7 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::legionaryFight   ] = loadAnimation( ResourceGroup::citizen3, 649, 6, Walker::acFight );
   animations[gfx::guardGo          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
   animations[gfx::guardFigth       ] = loadAnimation( ResourceGroup::citizen3, 192, 6, Walker::acFight );
+  animations[gfx::seaMerchant      ] = loadAnimation( ResourceGroup::carts, 241, 1 );
 }
 
 AnimationBank& AnimationBank::instance()

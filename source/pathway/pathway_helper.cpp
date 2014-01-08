@@ -53,6 +53,15 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
   }
   break;
 
+  case water:
+  {
+    Pathway ret;
+    Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::waterOnly );
+
+    return ret;
+  }
+  break;
+
   default:
   break;
   }

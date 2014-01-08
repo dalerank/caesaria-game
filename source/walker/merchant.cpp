@@ -343,7 +343,7 @@ void Merchant::_reachedPathway()
   _d->resolveState( _getCity(), this, getIJ() );
 }
 
-void Merchant::send2City()
+void Merchant::send2city()
 {
   _d->nextState = Impl::stFindWarehouseForSelling;
   _d->resolveState( _getCity(), this, _getCity()->getBorderInfo().roadEntry );
@@ -385,15 +385,23 @@ void Merchant::timeStep(const unsigned long time)
   Walker::timeStep( time );
 }
 
+WalkerPtr Merchant::create(PlayerCityPtr city)
+{
+  return create( city, world::MerchantPtr() );
+}
+
 WalkerPtr Merchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
 {
   Merchant* cityMerchant( new Merchant( city ) );
-  cityMerchant->_d->sell.resize( merchant->getSellGoods() );
-  cityMerchant->_d->sell.storeAll( merchant->getSellGoods() );
-  cityMerchant->_d->buy.resize( merchant->getBuyGoods() );
-  cityMerchant->_d->buy.storeAll( merchant->getBuyGoods() );
-  cityMerchant->_d->baseCityName = merchant->getBaseCityName();
-  
+  if( merchant.isValid() )
+  {
+    cityMerchant->_d->sell.resize( merchant->getSellGoods() );
+    cityMerchant->_d->sell.storeAll( merchant->getSellGoods() );
+    cityMerchant->_d->buy.resize( merchant->getBuyGoods() );
+    cityMerchant->_d->buy.storeAll( merchant->getBuyGoods() );
+    cityMerchant->_d->baseCityName = merchant->getBaseCityName();
+  }
+
   WalkerPtr ret( cityMerchant );
   ret->drop();
 

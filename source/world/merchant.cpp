@@ -22,6 +22,7 @@
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "traderoute.hpp"
 
 namespace world
 {
@@ -117,6 +118,11 @@ bool Merchant::isDeleted() const
 void Merchant::deleteLater()
 {
   _d->isDeleted = true;
+}
+
+bool Merchant::isSeaRoute() const
+{
+  return _d->route->isSeaRoute();
 }
 
 VariantMap Merchant::save() const

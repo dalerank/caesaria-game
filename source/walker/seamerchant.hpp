@@ -12,28 +12,37 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITYSERVICE_FISHPLACE_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_FISHPLACE_H_INCLUDED__
+#ifndef _CAESARIA_SEAMERCHANT_INCLUDE_H_
+#define _CAESARIA_SEAMERCHANT_INCLUDE_H_
 
-#include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
+#include "walker.hpp"
+#include "world/trading.hpp"
 
-class CityServiceFishPlace : public CityService
+/** This is the empire merchant which buy/sell goods at warehouses */
+class SeaMerchant : public Walker
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static WalkerPtr create( PlayerCityPtr city );
+  static WalkerPtr create( PlayerCityPtr city, world::MerchantPtr merchant );
 
-  void update( const unsigned int time );
+  virtual ~SeaMerchant();
+
+  void send2city();
+
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+  virtual void timeStep(const unsigned long time);
+
+protected:
+  virtual void _reachedPathway();
 
 private:
-  CityServiceFishPlace( PlayerCityPtr city );
+  SeaMerchant( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_CITYSERVICE_FISHPLACE_H_INCLUDED__
+#endif //_CAESARIA_SEAMERCHANT_INCLUDE_H_

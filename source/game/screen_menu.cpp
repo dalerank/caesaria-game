@@ -35,13 +35,11 @@
 #include "gui/label.hpp"
 #include "gui/listbox.hpp"
 #include "core/locale.hpp"
+#include "core/saveadapter.hpp"
 
 class ScreenMenu::Impl
 {
 public:
-  static const char* englishLanguage;
-  static const char* russianLanguage;
-
   Picture bgPicture;
   gui::StartMenu* menu;         // menu to display
   int result;
@@ -86,9 +84,6 @@ public:
   }
 };
 
-const char* ScreenMenu::Impl::englishLanguage = "English";
-const char* ScreenMenu::Impl::russianLanguage = "Russian";
-
 void ScreenMenu::Impl::resolveShowLoadGameWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
@@ -119,8 +114,12 @@ void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
 
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
-  lbx->addItem( Impl::englishLanguage );
-  lbx->addItem( Impl::russianLanguage );
+
+  VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
+  for( VariantMap::iterator it=languages.begin(); it != languages.end(); it++ )
+  {
+    lbx->addItem( it->first );
+  }
 
   CONNECT( lbx, onItemSelected(), this, Impl::resolveChangeLanguage );
   CONNECT( btn, onClicked(), this, Impl::reload );
@@ -128,13 +127,18 @@ void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
 
 void ScreenMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
-  const char* localeName[3] = { "en", "en", "ru" };
+  std::string lang;
+  VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
+  for( VariantMap::iterator it=languages.begin(); it != languages.end(); it++ )
+  {
+    if( item.getText() == it->first )
+    {
+      lang = it->second.toString();
+      break;
+    }
+  }
 
-  int langIndex = 0;
-  if( item.getText() == Impl::englishLanguage )     { langIndex = 1; }
-  else if( item.getText() == Impl::russianLanguage ){ langIndex = 2; }
-
-  GameSettings::set( GameSettings::language, Variant( std::string( localeName[ langIndex ] ) ) );
+  GameSettings::set( GameSettings::language, Variant( std::string( lang ) ) );
 
   Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
 }

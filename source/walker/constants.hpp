@@ -59,6 +59,7 @@ enum Type{
   lion,
   spear,
   fishPlace,
+  seaMerchant,
   all = 0xff,
   any = all
 };

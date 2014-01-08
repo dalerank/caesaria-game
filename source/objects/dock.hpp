@@ -32,6 +32,8 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
+  bool isBusy() const;
+
   const Tile& getLandingTile() const;
 
   ~Dock();

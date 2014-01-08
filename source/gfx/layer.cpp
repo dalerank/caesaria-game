@@ -214,8 +214,6 @@ void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camO
 void Layer::render( GfxEngine& engine)
 {
   // center the map on the screen
-  int lastZ = -1000;  // dummy value
-
   TilesArray visibleTiles = _d->camera->getTiles();
   Point camOffset = _d->camera->getOffset();
 

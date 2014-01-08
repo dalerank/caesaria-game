@@ -64,8 +64,6 @@ void LayerDestroy::render( GfxEngine& engine )
   // center the map on the screen
   Point cameraOffset = _getCamera()->getOffset();
 
-  int lastZ = -1000;  // dummy value
-
   _getCamera()->startFrame();
 
   TilesArray visibleTiles = _getCamera()->getTiles();

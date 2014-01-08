@@ -70,6 +70,7 @@ enum Type
   charioter,
   guardGo,
   guardFigth,
+  seaMerchant,
   countType
 };
 

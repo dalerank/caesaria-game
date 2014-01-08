@@ -131,6 +131,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange(ResourceGroup::carts, 369, 464, Point( -15, 32) ); //market lady helper
   _d->setRange(ResourceGroup::carts, 145, 240, Point( -15, 32) ); //merchant horse caravan
   _d->setRange(ResourceGroup::carts, 249, 264, offset );  //fishing boat
+  _d->setRange(ResourceGroup::carts, 241, 248, offset );  //sea merchant boat
   _d->setRange(ResourceGroup::carts, 265, 272, offset );  //ship die
 }
 

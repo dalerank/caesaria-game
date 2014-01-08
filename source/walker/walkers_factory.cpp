@@ -33,6 +33,8 @@
 #include "lion.hpp"
 #include "lion_tamer.hpp"
 #include "fish_place.hpp"
+#include "seamerchant.hpp"
+#include "merchant.hpp"
 #include <map>
 
 using namespace constants;
@@ -114,12 +116,14 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::trainee, new TraineeWalkerCreator() );
   addCreator( walker::fishingBoat, new BaseCreator<FishingBoat>() );
   addCreator( walker::corpse, new BaseCreator<Corpse>() );
+  addCreator( walker::merchant, new BaseCreator<Merchant>() );
   addCreator( walker::protestor, new BaseCreator<Protestor>() );
   addCreator( walker::britonSoldier, new SoldierCreator<EnemySoldier>( walker::britonSoldier ) );
   addCreator( walker::legionary, new SoldierCreator<RomeSoldier>( walker::legionary ) );
   addCreator( walker::lion, new BaseCreator< Lion >() );
   addCreator( walker::lionTamer, new BaseCreator< LionTamer >() );
   addCreator( walker::fishPlace, new BaseCreator< FishPlace >() );
+  addCreator( walker::seaMerchant, new BaseCreator<SeaMerchant>() );
 }
 
 WalkerManager::~WalkerManager()

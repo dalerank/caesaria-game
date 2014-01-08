@@ -56,5 +56,7 @@ const char* Locale::translate(const char* text)
   int hash = StringHelper::hash( text );
   Translator::iterator it = translator.find( hash );
 
-  return ( it != translator.end() ? it->second.c_str() : text );
+  return ( it != translator.end()
+                 ? (it->second.empty() ? text : it->second.c_str())
+                 : text );
 }

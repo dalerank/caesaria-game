@@ -18,13 +18,11 @@
 #ifndef _CAESARIA_WORLD_MERCHANT_INCLUDE_H_
 #define _CAESARIA_WORLD_MERCHANT_INCLUDE_H_
 
-//#include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/position.hpp"
-#include "traderoute.hpp"
 
 class GoodStore;
 
@@ -48,6 +46,8 @@ public:
 
   bool isDeleted() const;
   void deleteLater();
+
+  bool isSeaRoute() const;
 
   VariantMap save() const;
   void load( const VariantMap& stream );
