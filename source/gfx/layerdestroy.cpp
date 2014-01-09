@@ -124,8 +124,6 @@ void LayerDestroy::render( GfxEngine& engine )
   {
     int z = tile->getIJ().getZ();
 
-    _drawWalkers( engine, *tile, cameraOffset );
-
     int tilePosHash = tile->getJ() * 1000 + tile->getI();
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
@@ -136,6 +134,8 @@ void LayerDestroy::render( GfxEngine& engine )
     }
 
     drawTileR( engine, *tile, cameraOffset, z, false );
+
+    _drawWalkers( engine, *tile, cameraOffset );
     engine.resetTileDrawMask();
   }
 }

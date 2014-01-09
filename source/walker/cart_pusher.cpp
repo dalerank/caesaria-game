@@ -232,17 +232,24 @@ void CartPusher::computeWalkerDestination()
    }
    else
    {
-     _setDirection( constants::north );
-     setSpeed( 0 );
-     setIJ( _d->producerBuilding->getAccessRoads().front()->getIJ() );
-     _walk();
+     if( _d->producerBuilding->getAccessRoads().empty() )
+     {
+       deleteLater();
+     }
+     else
+     {
+       _setDirection( constants::north );
+       setSpeed( 0 );
+       setIJ( _d->producerBuilding->getAccessRoads().front()->getIJ() );
+       _walk();
+     }
    }
 }
 
 template< class T >
 BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
-                                     GoodStock& stock, long& reservationID,
-                                     Propagator &pathPropagator, Pathway &oPathWay )
+                                 GoodStock& stock, long& reservationID,
+                                 Propagator &pathPropagator, Pathway &oPathWay )
 {
   BuildingPtr res;
   Propagator::Routes pathWayList = pathPropagator.getRoutes( buildingType );

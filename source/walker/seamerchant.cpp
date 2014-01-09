@@ -17,6 +17,7 @@
 #include "good/goodstore_simple.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
 #include "core/stringhelper.hpp"
@@ -29,29 +30,36 @@
 #include "objects/constants.hpp"
 #include "world/merchant.hpp"
 #include "objects/dock.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
 class SeaMerchant::Impl
 {
-public:
+public:  
   typedef enum { stFindDock=0,
                  stGoOutFromCity,
+                 stRequestGoods,
                  stSellGoods,
                  stBuyGoods,
                  stNothing,
+                 stWaitGoods,
                  stBackToBaseCity } State;
 
   TilePos destBuildingPos;  // warehouse
   SimpleGoodStore sell;
   SimpleGoodStore buy;
+  int tryDockCount;
+  int maxTryDockCount;
   int waitInterval;
+  DateTime landingDate;
   std::string baseCityName;
   State nextState;
 
   void resolveState(PlayerCityPtr city, WalkerPtr wlk);
   Pathway findNearbyDock(const DockList& docks, TilePos position );
   void goAwayFromCity( PlayerCityPtr city, WalkerPtr walker );
+  DockPtr findLandingDock(PlayerCityPtr city, WalkerPtr walker );
 };
 
 SeaMerchant::SeaMerchant(PlayerCityPtr city )
@@ -60,6 +68,8 @@ SeaMerchant::SeaMerchant(PlayerCityPtr city )
   _setAnimation( gfx::seaMerchant );
   _setType( walker::seaMerchant );
   _d->waitInterval = 0;
+  _d->tryDockCount = 0;
+  _d->maxTryDockCount = 3;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -73,32 +83,37 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   switch( nextState )
   {
   case stFindDock:
-  {
+  {    
     destBuildingPos = TilePos( -1, -1 );  // no destination yet
 
-    // get the list of buildings within reach
-    CityHelper helper( city );
-    DockList docks = helper.find<Dock>( building::dock );
     Pathway pathway;
-
-    if( !docks.empty() )
+    // get the list of buildings within reach   
+    if( tryDockCount < maxTryDockCount )
     {
-      DockList freeDocks;
-      for( DockList::iterator dock=docks.begin(); dock != docks.end(); dock++ )
-      {
-        if( !(*dock)->isBusy() )
-        {
-          freeDocks.push_back( *dock );
-        }
-      }
+      CityHelper helper( city );
+      DockList docks = helper.find<Dock>( building::dock );
 
-      pathway = findNearbyDock( freeDocks.empty() ? docks : freeDocks, wlk->getIJ() );
+
+      if( !docks.empty() )
+      {
+        DockList freeDocks;
+        for( DockList::iterator dock=docks.begin(); dock != docks.end(); dock++ )
+        {
+          if( !(*dock)->isBusy() )
+          {
+            freeDocks.push_back( *dock );
+          }
+        }
+
+        pathway = findNearbyDock( freeDocks.empty() ? docks : freeDocks, wlk->getIJ() );
+      }
     }
+    tryDockCount++;
 
     if( pathway.isValid() )
     {
       // we found a destination!
-      nextState = stSellGoods;
+      nextState = stRequestGoods;
       wlk->setPathway( pathway );
       wlk->go();
     }
@@ -110,53 +125,81 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   }
   break;
 
-  case stBuyGoods:
+  case stRequestGoods:
   {
-    /*CityHelper helper( city );
-    WarehousePtr warehouse = helper.find<Warehouse>( building::warehouse, destBuildingPos );
+    landingDate = GameDate::current();
 
-    if( warehouse.isValid() )
+    DockPtr myDock = findLandingDock( city, wlk );
+    if( myDock.isValid() )
     {
-      std::map< Good::Type, int > cityGoodsAvailable;
-      WarehouseList warehouses = helper.find<Warehouse>( building::warehouse );
-      foreach( WarehousePtr wh, warehouses )
+      CityTradeOptions& options = city->getTradeOptions();
+      //request goods
+      for( int n = Good::wheat; n<Good::goodCount; ++n )
       {
-        for( int i=Good::wheat; i < Good::goodCount; i++ )
+        Good::Type goodType = (Good::Type)n;
+        int needQty = buy.getFreeQty( goodType );
+        int maySell = math::clamp( options.getExportLimit( goodType ) * 100, 0, needQty );
+
+        if( maySell > 0)
         {
-          Good::Type goodType = (Good::Type)i;
-          cityGoodsAvailable[ goodType ] += wh->getGoodStore().getQty( goodType );
+          GoodStock stock( goodType, maySell, maySell );
+          myDock->requestGoods( stock );
         }
       }
 
-      //const GoodStore& cityOrders = city->getSells();
-      CityTradeOptions& options = city->getTradeOptions();
+      nextState = stSellGoods;
+      resolveState( city, wlk );
+    }
+    else
+    {
+      nextState = stFindDock;
+      resolveState( city, wlk );
+    }
+  }
+  break;
+
+  case stBuyGoods:
+  {
+    DockPtr myDock = findLandingDock( city, wlk );
+
+    if( myDock.isValid() )
+    {
       //try buy goods
       for( int n = Good::wheat; n<Good::goodCount; ++n )
       {
         Good::Type goodType = (Good::Type) n;
         int needQty = buy.getFreeQty( goodType );
-        int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.getExportLimit( goodType ) * 100, 0, 9999 );
 
-        if( needQty > 0 && maySell > 0)
+        if( needQty > 0 )
         {
-          int mayBuy = std::min( needQty, warehouse->getGoodStore().getMaxRetrieve( goodType ) );
-          mayBuy = std::min( mayBuy, maySell );
-          if( mayBuy > 0 )
-          {
-            // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-            GoodStock& stock = buy.getStock( goodType );
-            warehouse->getGoodStore().retrieve( stock, mayBuy );
-
-            events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, mayBuy );
-            e->dispatch();
-          }
+          GoodStock& stock = buy.getStock( goodType );
+          myDock->buyGoods( stock, needQty );
         }
       }
-    }
 
-    nextState = stGoOutFromCity;
-    waitInterval = 60;
-    resolveState( city, wlk, position );*/
+      nextState = stWaitGoods;
+      waitInterval = 60;
+    }
+    else
+    {
+      nextState = stFindDock;
+      resolveState( city, wlk );
+    }
+  }
+  break;
+
+  case stWaitGoods:
+  {
+    if( landingDate.getMonthToDate( GameDate::current() ) > 2 )
+    {
+      nextState = stGoOutFromCity;
+      resolveState( city, wlk );
+    }
+    else
+    {
+      nextState = stBuyGoods;
+      resolveState( city, wlk );
+    }
   }
   break;
 
@@ -170,40 +213,26 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   break;
 
   case stSellGoods:
-  {
-    nextState = stGoOutFromCity;
-    resolveState( city, wlk );
-    /*CityHelper helper( city );
-    WarehousePtr warehouse = helper.find<Warehouse>( building::warehouse, destBuildingPos );
+  {    
+    DockPtr myDock = findLandingDock( city, wlk );
 
-    const GoodStore& cityOrders = city->getBuys();
-
-    if( warehouse.isValid() )
+    if( myDock.isValid() )
     {
       //try sell goods
-      for (int n = Good::wheat; n<Good::goodCount; ++n)
+      for( int n = Good::wheat; n<Good::goodCount; ++n)
       {
         Good::Type goodType = (Good::Type)n;
-        int qty4sell = sell.getQty( goodType );
-        if( qty4sell > 0 && cityOrders.capacity( goodType ) > 0 )
+        if( sell.getQty( goodType ) > 0 )
         {
-          int maySells = std::min( qty4sell, warehouse->getGoodStore().getMaxStore( goodType ) );
-          if( maySells != 0 )
-          {
-            // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-            GoodStock& stock = sell.getStock( goodType );
-            warehouse->getGoodStore().store( stock, maySells );
-
-            events::GameEventPtr e = events::FundIssueEvent::import( goodType, maySells );
-            e->dispatch();
-          }
+          GoodStock& stock = sell.getStock( goodType );
+          myDock->sellGoods( stock );
         }
       }
     }
 
-    nextState = stFindWarehouseForBuying;
+    nextState = stBuyGoods;
+    resolveState( city, wlk );
     waitInterval = 60;
-    resolveState( city, wlk, position );*/
   }
   break;
 
@@ -224,7 +253,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   break;
 
   default:
-    Logger::warning( "Merchant: unknown state resolved" );
+    Logger::warning( "SeaMerchant: unknown state resolved" );
   }
 }
 
@@ -265,6 +294,21 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
   }
 }
 
+DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
+{
+  CityHelper helper( city );
+  DockList docks = helper.find<Dock>( building::dock, walker->getIJ() - TilePos( 1, 1), walker->getIJ() + TilePos( 1, 1 ) );
+  foreach( DockPtr dock, docks )
+  {
+    if( dock->getLandingTile().getIJ() == walker->getIJ() )
+    {
+      return dock;
+    }
+  }
+
+  return DockPtr();
+}
+
 void SeaMerchant::send2city()
 {
   _d->nextState = Impl::stFindDock;
@@ -301,6 +345,11 @@ void SeaMerchant::timeStep(const unsigned long time)
   {
     _d->waitInterval--;
     return;
+  }
+
+  if( _d->nextState == Impl::stWaitGoods )
+  {
+    _d->resolveState( _getCity(), this );
   }
 
   Walker::timeStep( time );

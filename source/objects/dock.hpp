@@ -23,6 +23,8 @@ class Dock : public WorkingBuilding
 {
 public:
   Dock();
+  ~Dock();
+
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
   virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void destroy();
@@ -36,16 +38,23 @@ public:
 
   const Tile& getLandingTile() const;
 
-  ~Dock();
+  void requestGoods( GoodStock& stock );
+
+  void sellGoods( GoodStock& stock );
+  void buyGoods( GoodStock& stock, int qty );
+  void storeGoods(GoodStock& stock, const int amount);
 private:
   void _setDirection( constants::Direction direction );
   virtual void _updatePicture( constants::Direction direction );
+  void _tryReceiveGoods();
+  void _tryDeliverGoods();
 
 private:
   Dock( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
+
 };
 
 #endif //_CAESARIA_DOCK_INCLUDE_H_

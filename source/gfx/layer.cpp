@@ -245,11 +245,11 @@ void Layer::render( GfxEngine& engine)
 
   foreach( Tile* tile, visibleTiles )
   {
-    int z = tile->getIJ().getZ();
-
-    _drawWalkers( engine, *tile, camOffset );
+    int z = tile->getIJ().getZ();    
 
     drawTileR( engine, *tile, camOffset, z, false );
+
+    _drawWalkers( engine, *tile, camOffset );
   }
 }
 
