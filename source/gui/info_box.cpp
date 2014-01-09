@@ -412,11 +412,21 @@ InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
 
   _updateWorkersLabel( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkersCount() );
 
-  std::string text = StringHelper::format( 0xff, "Animal contest runs for another %d days", 0 );
-  new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), text );
+  CityHelper helper( _getCity() );
+  ColloseumList colloseums = helper.find<Colloseum>( building::colloseum );
+  
+  if( colloseums.empty() )
+  {
+	new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
+  }
+  else
+  {
+	std::string text = StringHelper::format( 0xff, "Animal contest runs for another %d days", 0 );
+	new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), text );
 
-  text = StringHelper::format( 0xff, "Gladiator bouts runs for another %d days", 0 );
-  new Label( this, Rect( 35, 210, getWidth() - 35, 210 + 20 ), text );
+	text = StringHelper::format( 0xff, "Gladiator bouts runs for another %d days", 0 );
+	new Label( this, Rect( 35, 210, getWidth() - 35, 210 + 20 ), text ); 
+  }
 }
 
 InfoBoxColosseum::~InfoBoxColosseum()

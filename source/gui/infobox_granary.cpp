@@ -37,7 +37,7 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   _granary = tile.getOverlay().as<Granary>();
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth())/ 2, getHeight() - 34 ), btnOrdersSize),
-                                         _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
+                                         _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( btnOrders, onClicked(), this, InfoBoxGranary::showSpecialOrdersWindow );
 
   setTitle( MetaDataHolder::getPrettyName( _granary->getType() ) );
