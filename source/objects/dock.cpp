@@ -26,6 +26,7 @@
 #include "constants.hpp"
 #include "events/event.hpp"
 #include "game/gamedate.hpp"
+#include "walker/cart_pusher.hpp"
 
 using namespace constants;
 
@@ -34,8 +35,8 @@ class Dock::Impl
 public:
   enum { southPic=29, northPic=5, westPic=41, eastPic=17 };
 
-  SimpleGoodStore buyGoodStore;
-  SimpleGoodStore sellGoodStore;
+  SimpleGoodStore exportGoods;
+  SimpleGoodStore importGoods;
   SimpleGoodStore requestGoods;
   std::vector<int> saveTileInfo;
   Direction direction;
@@ -58,11 +59,11 @@ Dock::Dock(): WorkingBuilding( building::dock, Size(3) ), _d( new Impl )
   for( int i=Good::wheat; i < Good::goodCount; i++ )
   {
     Good::Type gtype = (Good::Type)i;
-    _d->sellGoodStore.setCapacity( gtype, 1000 );
-    _d->buyGoodStore.setCapacity( gtype, 1000 );
+    _d->importGoods.setCapacity( gtype, 1000 );
+    _d->exportGoods.setCapacity( gtype, 1000 );
   }
-  _d->sellGoodStore.setCapacity( 1000 * Good::goodCount );
-  _d->buyGoodStore.setCapacity( 1000 * Good::goodCount );
+  _d->importGoods.setCapacity( 1000 * Good::goodCount );
+  _d->exportGoods.setCapacity( 1000 * Good::goodCount );
 
   _fgPicturesRef().resize(1);
   _animationRef().setDelay( 5 );
@@ -112,6 +113,7 @@ void Dock::timeStep(const unsigned long time)
   if( time % (GameDate::getTickInMonth()/4) == 1 )
   {
     _tryReceiveGoods();
+    _tryDeliverGoods();
   }
 
   WorkingBuilding::timeStep( time );
@@ -131,13 +133,15 @@ void Dock::load(const VariantMap& stream)
 
   _d->direction = (Direction)stream.get( "direction", (int)southWest ).toInt();
   _d->saveTileInfo << stream.get( "saved_tile" ).toList();
+
+  _updatePicture( _d->direction );
 }
 
 bool Dock::isBusy() const
 {
   CityHelper helper( _getCity() );
   SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant );
-
+sellGoodStore
   return !merchants.empty();
 }
 
@@ -161,7 +165,7 @@ const Tile& Dock::getLandingTile() const
 void Dock::requestGoods(GoodStock& stock)
 {
   int maxRequest = std::min( stock.qty(), _d->requestGoods.getMaxStore( stock.type() ) );
-  maxRequest -= _d->buyGoodStore.getQty( stock.type() );
+  maxRequest -= _d->exportGoods.getQty( stock.type() );
 
   if( maxRequest > 0 )
   {
@@ -174,30 +178,26 @@ void Dock::sellGoods(GoodStock& stock)
   const GoodStore& cityOrders = _getCity()->getBuys();
 
   //try sell goods
-  if( stock.qty() > 0 && cityOrders.capacity( stock.type() ) > 0 )
+  int traderMaySell = std::min( stock.qty(), cityOrders.capacity( stock.type() ) );
+  if( traderMaySell > 0 )
   {
-    //int maySells = std::min( stock.qty(), _d->sellGoodStore.getMaxStore( stock.type() ) );
-    int maySells = std::min( maySells, cityOrders.getFreeQty( stock.type() ) );
-    if( maySells > 0 )
-    {
-      // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-      _d->sellGoodStore.store( stock, maySells );
+    // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+    _d->importGoods.store( stock, traderMaySell );
 
-      events::GameEventPtr e = events::FundIssueEvent::import( stock.type(), maySells );
-      e->dispatch();
-    }
+    events::GameEventPtr e = events::FundIssueEvent::import( stock.type(), traderMaySell );
+    e->dispatch();
   }
 }
 
 void Dock::storeGoods(GoodStock &stock, const int)
 {
-  _d->buyGoodStore.store( stock, stock.qty() );
+  _d->exportGoods.store( stock, stock.qty() );
 }
 
-void Dock::buyGoods( GoodStock& stock, int qty)
+void Dock::buyGoods( GoodStock& stock, int qty )
 {
-  qty = std::min( qty, _d->buyGoodStore.getMaxRetrieve( stock.type() ) );
-  _d->buyGoodStore.retrieve( stock, qty );
+  qty = std::min( qty, _d->exportGoods.getMaxRetrieve( stock.type() ) );
+  _d->exportGoods.retrieve( stock, qty );
 
   if( stock.qty() > 0 )
   {
@@ -218,9 +218,9 @@ void Dock::_updatePicture(Direction direction)
   switch( direction )
   {
   case south: index = Impl::southPic; offset = Point( 35, 51 ); break;
-  case north: index = Impl::northPic; offset = Point( 107, 61 ); break;
-  case west: index = Impl::westPic; offset = Point( 48, 70 );break;
-  case east: index = Impl::eastPic; offset = Point( 62, 36 ); break;
+  case north: index = Impl::northPic; offset = Point( 107, 61 );break;
+  case west:  index = Impl::westPic;  offset = Point( 48, 70 ); break;
+  case east:  index = Impl::eastPic;  offset = Point( 62, 36 ); break;
 
   default: break;
   }
@@ -228,7 +228,8 @@ void Dock::_updatePicture(Direction direction)
   setPicture( ResourceGroup::transport, index );
   _animationRef().clear();
   _animationRef().load( ResourceGroup::transport, index+1, 10 );
-  // now fill in reverse order
+
+  //now fill in reverse order
   _animationRef().load( ResourceGroup::transport, index+10, 10, Animation::reverse );
   _animationRef().setOffset( offset );
 }
@@ -300,6 +301,38 @@ bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
   return ret;
 }
 
+void Dock::_tryDeliverGoods()
+{
+  for( int i=Good::wheat; i < Good::goodCount; i++ )
+  {
+    if( getWalkers().size() > 2 )
+    {
+      return;
+    }
+
+    Good::Type gtype = (Good::Type)i;
+    int qty = std::min( _d->importGoods.getMaxRetrieve( gtype ), 400 );
+
+    if( qty > 0 )
+    {
+      CartPusherPtr walker = CartPusher::create( _getCity() );
+      GoodStock pusherStock( gtype, qty, 0 );
+      _d->importGoods.retrieve( pusherStock, qty );
+      walker->send2city( BuildingPtr( this ), pusherStock );
+
+      //success to send cartpusher
+      if( !walker->isDeleted() )
+      {
+        addWalker( walker.as<Walker>() );
+      }
+      else
+      {
+        _d->importGoods.store( pusherStock, qty );
+      }
+    }
+  }
+}
+
 void Dock::_tryReceiveGoods()
 {
   for( int i=Good::wheat; i < Good::goodCount; i++ )
@@ -313,13 +346,14 @@ void Dock::_tryReceiveGoods()
     if( _d->requestGoods.getQty( gtype ) > 0 )
     {
       CartSupplierPtr cart = CartSupplier::create( _getCity() );
-      cart->send2City( this, gtype, 100 );
+      int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( gtype ) );
+      cart->send2City( this, gtype, qty );
 
       if( !cart->isDeleted() )
       {
         addWalker( cart.as<Walker>() );
-        GoodStock tmpStock( gtype, 100, 0 );
-        _d->requestGoods.retrieve( tmpStock, 100 );
+        GoodStock tmpStock( gtype, qty, 0 );
+        _d->requestGoods.retrieve( tmpStock, qty );
         i--;
       }
       else

@@ -24,7 +24,6 @@
 #include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
-#include "objects/constants.hpp"
 
 using namespace constants;
 

@@ -181,17 +181,46 @@ MerchantPtr Traderoute::getMerchant( unsigned int index )
 VariantMap Traderoute::save() const
 {  
   VariantMap ret;
+  VariantMap merchants;
   foreach( MerchantPtr m, _d->merchants )
   {
-    ret[ StringHelper::format( 0xff, "->%s", m->getDestCityName().c_str() ) ] = m->save();
+    merchants[ StringHelper::format( 0xff, "->%s", m->getDestCityName().c_str() ) ] = m->save();
   }
+  ret[ "merchants" ] = merchants;
+
+  VariantList vl_points;
+  foreach( Point p, _d->points )
+  {
+    vl_points.push_back( p );
+  }
+  ret[ "points" ] = vl_points;
+
+  VariantList vl_pictures;
+  foreach( Picture& pic, _d->pictures )
+  {
+    vl_pictures.push_back( Variant( pic.getName() ) );
+  }
+  ret[ "pictures" ] = vl_pictures;
 
   return ret;
 }
 
 void Traderoute::load(const VariantMap& stream)
 {
-  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); it++ )
+  VariantList points = stream.get( "points" ).toList();
+  for( VariantList::iterator i=points.begin(); i != points.end(); i++ )
+  {
+    _d->points.push_back( (*i).toPoint() );
+  }
+
+  VariantList pictures = stream.get( "pictures" ).toList();
+  for( VariantList::iterator i=pictures.begin(); i != pictures.end(); i++ )
+  {
+    _d->pictures.push_back( Picture::load( (*i).toString() + ".png" ) );
+  }
+
+  VariantMap merchants = stream.get( "merchants" ).toMap();
+  for( VariantMap::const_iterator it=merchants.begin(); it != merchants.end(); it++ )
   {
     SimpleGoodStore sell, buy;
     addMerchant( _d->begin, sell, buy );

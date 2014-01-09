@@ -253,7 +253,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   break;
 
   default:
-    Logger::warning( "Merchant: unknown state resolved" );
+    Logger::warning( "SeaMerchant: unknown state resolved" );
   }
 }
 

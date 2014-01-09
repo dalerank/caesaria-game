@@ -47,12 +47,14 @@ private:
   void _setDirection( constants::Direction direction );
   virtual void _updatePicture( constants::Direction direction );
   void _tryReceiveGoods();
+  void _tryDeliverGoods();
 
 private:
   Dock( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
+
 };
 
 #endif //_CAESARIA_DOCK_INCLUDE_H_

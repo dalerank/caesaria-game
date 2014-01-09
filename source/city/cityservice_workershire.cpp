@@ -86,6 +86,7 @@ CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
   _d->priorities[ 36 ] = building::colloseum;
   _d->priorities[ 37 ] = building::lionsNursery;
   _d->priorities[ 38 ] = building::shipyard;
+  _d->priorities[ 39 ] = building::dock;
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
