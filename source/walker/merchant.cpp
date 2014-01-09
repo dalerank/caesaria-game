@@ -18,6 +18,7 @@
 #include "objects/warehouse.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "pathway/path_finding.hpp"
+#include "city/statistic.hpp"
 #include "city/helper.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
@@ -218,18 +219,8 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       if( warehouse.isValid() )
       {
-        std::map< Good::Type, int > cityGoodsAvailable;
-        WarehouseList warehouses = helper.find<Warehouse>( building::warehouse );
-        foreach( WarehousePtr wh, warehouses )
-        {
-          for( int i=Good::wheat; i < Good::goodCount; i++ )
-          {
-            Good::Type goodType = (Good::Type)i;
-            cityGoodsAvailable[ goodType ] += wh->getGoodStore().getQty( goodType );
-          }
-        }
-        
-        //const GoodStore& cityOrders = city->getSells();
+        CityStatistic::GoodsMap cityGoodsAvailable = CityStatistic::getGoodsMap( city );
+
         CityTradeOptions& options = city->getTradeOptions();
         //try buy goods
         for( int n = Good::wheat; n<Good::goodCount; ++n )

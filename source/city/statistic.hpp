@@ -19,11 +19,14 @@
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
 #include "core/signals.hpp"
+#include "good/good.hpp"
 #include "predefinitions.hpp"
 
 class CityStatistic
 {
 public:
+  typedef std::map< Good::Type, int > GoodsMap;
+
   static unsigned int getCurrentWorkersNumber( PlayerCityPtr city );
   static unsigned int getVacantionsNumber( PlayerCityPtr city );
   static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
@@ -33,6 +36,7 @@ public:
   static unsigned int getFoodStock( PlayerCityPtr city );
   static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
   static unsigned int getFoodProducing( PlayerCityPtr city );
+  static GoodsMap getGoodsMap( PlayerCityPtr city );
 };
 
 #endif //__CAESARIA_CITYSTATISTIC_H_INCLUDED__

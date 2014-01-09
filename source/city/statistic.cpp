@@ -23,6 +23,7 @@
 #include "good/goodstore.hpp"
 #include "city/funds.hpp"
 #include "objects/farm.hpp"
+#include "objects/warehouse.hpp"
 
 using namespace constants;
 
@@ -152,4 +153,22 @@ unsigned int CityStatistic::getFoodProducing(PlayerCityPtr city)
   }
 
   return foodProducing;
+}
+
+CityStatistic::GoodsMap CityStatistic::getGoodsMap(PlayerCityPtr city)
+{
+  CityHelper helper( city );
+  GoodsMap cityGoodsAvailable;
+
+  WarehouseList warehouses = helper.find<Warehouse>( building::warehouse );
+  foreach( WarehousePtr wh, warehouses )
+  {
+    for( int i=Good::wheat; i < Good::goodCount; i++ )
+    {
+      Good::Type goodType = (Good::Type)i;
+      cityGoodsAvailable[ goodType ] += wh->getGoodStore().getQty( goodType );
+    }
+  }
+
+  return cityGoodsAvailable;
 }
