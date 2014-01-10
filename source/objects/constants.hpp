@@ -82,7 +82,7 @@ enum Type
   colloseum,
   actorColony,
   gladiatorSchool,
-  lionsNursery,
+  lionsNursery,//10
   chariotSchool,
 
   //watersupply
@@ -98,7 +98,7 @@ enum Type
   senate,
   forum,
   governorHouse,
-  governorVilla,
+  governorVilla,//20
   governorPalace,
 
 // security
@@ -110,7 +110,7 @@ enum Type
   fortLegionaire,
   fortJavelin,
   fortMounted,
-  militaryAcademy,
+  militaryAcademy,//30
   barracks,
   fortArea,
 
@@ -124,7 +124,7 @@ enum Type
   fruitFarm,
   vegetableFarm,
   oliveFarm,
-  grapeFarm,
+  grapeFarm,//40
   pigFarm,
 
 // raw materials
@@ -138,7 +138,7 @@ enum Type
   creamery,
   weaponsWorkshop,
   furnitureWorkshop,
-  pottery,
+  pottery,//50
 
 // utility
   engineerPost,
@@ -152,7 +152,7 @@ enum Type
   wharf,
 
 // health
-  doctor,
+  doctor,//60
   hospital,
   baths,
   barber,
@@ -166,7 +166,7 @@ enum Type
 // religion: small temples
   templeCeres,
   templeMars,
-  templeNeptune,
+  templeNeptune,//70
   templeMercury,
   templeVenus,
 
@@ -182,7 +182,7 @@ enum Type
 
 // building of natives
   nativeHut,
-  nativeCenter,
+  nativeCenter,//80
   nativeField,
 
 //other

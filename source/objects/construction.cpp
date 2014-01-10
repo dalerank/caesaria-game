@@ -38,11 +38,6 @@ Construction::Construction(const Type type, const Size& size)
   _d->params[ damage ] = 0;
 }
 
-Construction::~Construction()
-{
-
-}
-
 bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& ) const
 {
   Tilemap& tilemap = city->getTilemap();
@@ -65,17 +60,18 @@ bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& 
 }
 
 std::string Construction::getError() const { return ""; }
+TilesArray Construction::getAccessRoads() const {   return _d->accessRoads; }
+bool Construction::canDestroy() const {  return true; }
+void Construction::destroy() {  TileOverlay::destroy(); }
+bool Construction::isNeedRoadAccess() const{  return true; }
+const Picture& Construction::getPicture() const {  return TileOverlay::getPicture(); }
+Construction::~Construction() {}
 
 void Construction::build(PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
 
   computeAccessRoads();
-}
-
-TilesArray Construction::getAccessRoads() const
-{
-   return _d->accessRoads;
 }
 
 // here the problem lays: if we remove road, it is left in _accessRoads array
@@ -132,11 +128,6 @@ Desirability Construction::getDesirability() const
   return MetaDataHolder::instance().getData( getType() ).getDesirbility();
 }
 
-void Construction::destroy()
-{
-  TileOverlay::destroy();
-}
-
 void Construction::updateState(Construction::Param param, double value, bool relative)
 {
   if( relative ) _d->params[ param ] += value;
@@ -150,22 +141,6 @@ void Construction::save( VariantMap& stream) const
     TileOverlay::save( stream );
     stream[ Serializable::fireLevel ] = getState( fire );
     stream[ Serializable::damageLevel ] = getState( damage );
-
-//    stream.write_int(_traineeMap.size(), 1, 0, WTT_MAX);
-//    for (std::map<WalkerTraineeType, int>::iterator itLevel = _traineeMap.begin(); itLevel != _traineeMap.end(); ++itLevel)
-//    {
-//       WalkerTraineeType traineeType = itLevel->first;
-//       int traineeLevel = itLevel->second;
-//       stream.write_int((int)traineeType, 1, 0, WTT_MAX);
-//       stream.write_int(traineeLevel, 1, 0, 200);
-//    }
-//
-//    stream.write_int(_reservedTrainees.size(), 1, 0, WTT_MAX);
-//    for (std::set<WalkerTraineeType>::iterator itReservation = _reservedTrainees.begin(); itReservation != _reservedTrainees.end(); ++itReservation)
-//    {
-//       WalkerTraineeType traineeType = *itReservation;
-//       stream.write_int((int)traineeType, 1, 0, WTT_MAX);
-//    }
 }
 
 void Construction::load( const VariantMap& stream )
@@ -173,24 +148,6 @@ void Construction::load( const VariantMap& stream )
   TileOverlay::load( stream );
   _d->params[ fire ] = (float)stream.get( Serializable::fireLevel, 0.f );
   _d->params[ damage ] = (float)stream.get( Serializable::damageLevel, 0.f );
-//    Construction::unserialize(stream);
-//    _damageLevel = (float)stream.read_int(1, 0, 100);
-//    _fireLevel = (float)stream.read_int(1, 0, 100);
-//
-//    int size = stream.read_int(1, 0, WTT_MAX);
-//    for (int i=0; i<size; ++i)
-//    {
-//       WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
-//       int traineeLevel = stream.read_int(1, 0, 200);
-//       _traineeMap[traineeType] = traineeLevel;
-//    }
-//
-//    size = stream.read_int(1, 0, WTT_MAX);
-//    for (int i=0; i<size; ++i)
-//    {
-//       WalkerTraineeType traineeType = (WalkerTraineeType) stream.read_int(1, 0, WTT_MAX);
-//       _reservedTrainees.insert(traineeType);
-//    }
 }
 
 double Construction::getState(Construction::Param param) const
@@ -234,17 +191,8 @@ void Construction::timeStep(const unsigned long time)
   TileOverlay::timeStep( time );
 }
 
-const Picture& Construction::getPicture() const
-{
-  return TileOverlay::getPicture();
-}
-
 const Picture& Construction::getPicture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
   return getPicture();
 }
 
-bool Construction::isNeedRoadAccess() const
-{
-  return true;
-}

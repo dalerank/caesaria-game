@@ -131,11 +131,21 @@ void ClearLandEvent::exec( Game& game )
 
     TileOverlayPtr overlay = cursorTile.getOverlay();
 
-    bool deleteRoad = false;
+    bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    if (cursorTile.getFlag( Tile::tlRoad )) deleteRoad = true;
+    if( overlay.is<Construction>() )
+    {
+      ConstructionPtr constr = overlay.as<Construction>();
 
-    if ( overlay.isValid() )
+      if( !constr->canDestroy() )
+      {
+        GameEventPtr e = WarningMessageEvent::create( _( constr->getError().c_str() ) );
+        e->dispatch();
+        return;
+      }
+    }
+
+    if( overlay.isValid() )
     {
       size = overlay->getSize();
       rPos = overlay->getTile().getIJ();
@@ -401,7 +411,7 @@ void WarningMessageEvent::exec(Game& game)
   gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(
                                       game.getGui()->getRootWidget()->findChild( gui::WindowMessageStack::defaultID ) );
 
-  if( window )
+  if( window && !_text.empty() )
   {
     window->addMessage( _text );
   }

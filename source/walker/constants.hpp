@@ -33,7 +33,7 @@ enum Type{
   serviceman,                   //unknown service
   trainee,
   recruter,
-  prefect,
+  prefect,//10
   taxCollector,
   engineer,
   doctor,
@@ -43,7 +43,7 @@ enum Type{
   gladiator,
   lionTamer,
   charioter,
-  sheep,
+  sheep,//20
   barber,
   surgeon,
   fishingBoat,
@@ -53,7 +53,7 @@ enum Type{
   corpse,
   enemySoldier,
   britonSoldier,
-  legionary,
+  legionary,//30
   patrolPoint,
   romeGuard,
   lion,

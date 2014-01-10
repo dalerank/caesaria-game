@@ -736,6 +736,9 @@ public:
     append( walker::legionary, "legionary", _("##wt_legionary##") );
     append( walker::corpse, "corpse", _("##wt_corpse##") );
     append( walker::lion, "lion", _("##wt_lion##") );
+    append( walker::britonSoldier, "briton_soldier", _("##wt_briton_soldier##") );
+    append( walker::fishPlace, "fish_place", _("##wt_fish_place##") );
+    append( walker::seaMerchant, "sea_merchant", _("##wt_sea_merchant##") );
     append( walker::all, "unknown", _("##wt_unknown##") );
   }
 };

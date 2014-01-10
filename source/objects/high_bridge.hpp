@@ -28,7 +28,12 @@ public:
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;
   virtual void initTerrain( Tile& terrain );
   virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool canDestroy() const;
   virtual void destroy();
+  virtual std::string getError() const;
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
 private:
   void _computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir );

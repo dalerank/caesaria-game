@@ -17,10 +17,11 @@
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"
 #include "constants.hpp"
+#include "walker/walker.hpp"
 #include <vector>
 
 using namespace constants;
@@ -56,6 +57,11 @@ public:
     case descentSE2: _picture.addOffset( -29, 16 ); _picture.addOffset( 8, -13 ); break;
     case descentSE: _picture.addOffset( 8, -13 ); break;
     }
+  }
+
+  bool canDestroy() const
+  {
+    return _parent->canDestroy();
   }
 
   ~HighBridgeSubTile()
@@ -125,6 +131,7 @@ public:
   HighBridgeSubTiles subtiles;
   Direction direction;
   int imgLiftId, imgDescntId;
+  std::string error;
 
   void addSpan( const TilePos& pos, int index, bool isFooting=false )
   {
@@ -352,6 +359,9 @@ void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
   TilePos endPos, startPos;
   _d->direction=noneDirection;
 
+  setSize( Size(0) );
+  Construction::build( city, pos );
+
   _d->subtiles.clear();
   _fgPicturesRef().clear();
 
@@ -378,6 +388,22 @@ void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
   }
 }
 
+bool HighBridge::canDestroy() const
+{
+  CityHelper helper( _getCity() );
+  foreach( HighBridgeSubTilePtr subtile, _d->subtiles )
+  {
+    WalkerList walkers = helper.find<Walker>( walker::any, subtile->getTilePos() );
+    if( !walkers.empty() )
+    {
+      _d->error = "##cant_demolish_bridge_with_people##";
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void HighBridge::destroy()
 { 
   PlayerCityPtr city = _getCity();
@@ -393,5 +419,33 @@ void HighBridge::destroy()
     mapTile.setPicture( &Picture::load( picName ) );
 
     TileHelper::decode( mapTile, subtile->_info );
+  }
+}
+
+std::string HighBridge::getError() const
+{
+  return _d->error;
+}
+
+void HighBridge::save(VariantMap& stream) const
+{
+  Construction::save( stream );
+
+  VariantList vl_tinfo;
+  foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
+  {
+    vl_tinfo.push_back( subtile->_imgId );
+  }
+  stream[ "terraininfo" ] = vl_tinfo;
+}
+
+void HighBridge::load(const VariantMap& stream)
+{
+  Construction::load( stream );
+
+  VariantList vl_tinfo = stream.get( "terraininfo" ).toList();
+  for( unsigned int i=0; i < vl_tinfo.size(); i++ )
+  {
+    _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
   }
 }

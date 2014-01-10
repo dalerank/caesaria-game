@@ -43,6 +43,7 @@ public:
   virtual void computeAccessRoads();  
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
   virtual Desirability getDesirability() const;
+  virtual bool canDestroy() const;
   virtual void destroy();
   virtual void updateState( Param param, double value, bool relative=true );
   virtual double getState( Param param ) const;
