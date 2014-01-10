@@ -128,22 +128,22 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
                                   !haveSubMenu, ResourceMenu::houseMidPicId, _("##build_housing##") );
     
     _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID, 
-                                  !haveSubMenu, ResourceMenu::clearMidPicId, _("##clearBtnTooltip##") );
+                                  !haveSubMenu, ResourceMenu::clearMidPicId, _("##clear_land##") );
     
-    _d->roadButton = _addButton( 135, true, 2, construction::road, !haveSubMenu, ResourceMenu::roadMidPicId, _("##roadBtnTooltip##") );
-    _d->waterButton = _addButton( 127, true, 3, BM_WATER, haveSubMenu, ResourceMenu::waterMidPicId, _("##waterBtnTooltip##") );
+    _d->roadButton = _addButton( 135, true, 2, construction::road, !haveSubMenu, ResourceMenu::roadMidPicId, _("##build_road_tlp##") );
+    _d->waterButton = _addButton( 127, true, 3, BM_WATER, haveSubMenu, ResourceMenu::waterMidPicId, _("##water_build_tlp##") );
     _d->healthButton = _addButton( 163, true, 4, BM_HEALTH, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip##") );
     _d->templeButton = _addButton( 151, true, 5, BM_RELIGION, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip##") );
     _d->educationButton = _addButton( 147, true, 6, BM_EDUCATION, haveSubMenu, ResourceMenu::educationMidPicId, _("##education_objects##") );
     
     _d->entertainmentButton = _addButton( 143, true, 7, BM_ENTERTAINMENT, haveSubMenu, 
-                                          ResourceMenu::entertainmentMidPicId, _("##entertainmentBtnTooltip##") );
+                                          ResourceMenu::entertainmentMidPicId, _("##entertainment##") );
     
     _d->administrationButton = _addButton( 139, true, 8, BM_ADMINISTRATION, haveSubMenu, 
                                            ResourceMenu::administrationMidPicId, _("##administration_building##") );
     
     _d->engineerButton = _addButton( 167, true, 9, BM_ENGINEERING, haveSubMenu, 
-                                     ResourceMenu::engineerMidPicId, _("##engineerBtnTooltip##") );
+                                     ResourceMenu::engineerMidPicId, _("##engineering_structures##") );
     
     _d->securityButton = _addButton( 159, true, 10, BM_SECURITY, haveSubMenu, 
                                      ResourceMenu::securityMidPicId, _("##securityBtnTooltip##") );
@@ -408,7 +408,7 @@ ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
   _d->initActionButton( _d->commerceButton, Point( 113, 385) );
 
   //header
-  _d->senateButton = _addButton( 79, false, 0, -1, false, -1, _("##senateBtnTooltip##") );
+  _d->senateButton = _addButton( 79, false, 0, -1, false, -1, _("##senate##") );
   _d->senateButton->setGeometry( Rect( Point( 7, 155 ), Size( 71, 23 ) ) );
   _d->empireButton = _addButton( 82, false, 0, -1, false, -1, _("##empireBtnTooltip##") );
   _d->empireButton->setGeometry( Rect( Point( 84, 155 ), Size( 71, 23 ) ) );

@@ -97,7 +97,7 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect, savesPath, ".oc3save",-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
-  wnd->setTitle( _("##Load save##") );
+  wnd->setTitle( _("##mainmenu_loadgame##") );
 }
 
 void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
@@ -168,7 +168,7 @@ void ScreenMenu::Impl::resolvePlayMission()
                                                     GameSettings::rcpath( "/missions/" ), ".oc3mission", -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
-  wnd->setTitle( _("##Select_mission##") );
+  wnd->setTitle( _("##mainmenu_playmission##") );
 }
 
 void ScreenMenu::Impl::resolveShowLoadMapWnd()
@@ -185,7 +185,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
                                                     -1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
-  wnd->setTitle( _("##Load map##") );
+  wnd->setTitle( _("##mainmenu_loadmap##") );
 }
 
 ScreenMenu::ScreenMenu( Game& game, GfxEngine& engine ) : _d( new Impl )

@@ -83,7 +83,7 @@ void TopMenu::draw( GfxEngine& engine )
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( StringHelper::format( 0xff, "%s %d", _("##population_short##"), value ) );
+    _d->lbPopulation->setText( StringHelper::format( 0xff, "%s %d", _("##pop##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
@@ -158,9 +158,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
 
-  /*ContextMenuItem* newGame = */file->addItem( _("##gmenu_file_new##"), -1, true, false, false, false );
   /*ContextMenuItem* restart = */ file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
-  ContextMenuItem* load = file->addItem( _("##gmenu_file_load##"), -1, true, false, false, false );
+  ContextMenuItem* load = file->addItem( _("##mainmenu_loadgame##"), -1, true, false, false, false );
   ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
   ContextMenuItem* exit = file->addItem( _("##gmenu_exit_game##"), -1, true, false, false, false );
@@ -172,16 +171,9 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubMenu();
-  ContextMenuItem* screen = options->addItem( _("##screen_options##"), -1, true, false, false, false );  
-  /*ContextMenuItem* sound = */options->addItem( _("##sound_options##"), -1, true, false, false, false );
-  ContextMenuItem* speed = options->addItem( _("##speed_options##"), -1, true, false, false, false );
-  ContextMenuItem* language = options->addItem( _("##select_language##"), -1, true, true, false, false );
-  _d->langSelect = language->addSubMenu();
-  ContextMenuItem* russianLng = _d->langSelect->addItem( _("##russian_lang##"), 0xf001, true, false, false, false );
-  ContextMenuItem* englishLng = _d->langSelect->addItem( _("##english_lang##"), 0xf002, true, false, false, false );
-
-  CONNECT( russianLng, onClicked(), this, TopMenu::resolveSelectLanguage );
-  CONNECT( englishLng, onClicked(), this, TopMenu::resolveSelectLanguage );
+  ContextMenuItem* screen = options->addItem( _("##screen_settings##"), -1, true, false, false, false );
+  /*ContextMenuItem* sound = */options->addItem( _("##sound_settings##"), -1, true, false, false, false );
+  ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
 
   CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::emit );
   CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::emit );
@@ -194,17 +186,17 @@ TopMenu::TopMenu( Widget* parent, const int height )
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();
   advisersMenu->addItem( _("##adv_employments_m##"), ADV_EMPLOYERS );
-  advisersMenu->addItem( _("##adv_military_m##"), ADV_LEGION );
-  advisersMenu->addItem( _("##adv_empire_m##"), ADV_EMPIRE );
-  advisersMenu->addItem( _("##adv_ratings_m##"), ADV_RATINGS );
-  advisersMenu->addItem( _("##adv_trade_m##"), ADV_TRADING );
-  advisersMenu->addItem( _("##adv_population_m##"), ADV_POPULATION );
-  advisersMenu->addItem( _("##adv_health_m##"), ADV_HEALTH );
-  advisersMenu->addItem( _("##adv_education_m##"), ADV_EDUCATION );
-  advisersMenu->addItem( _("##adv_religion_m##"), ADV_RELIGION );
+  advisersMenu->addItem( _("##adv_military_m##"   ), ADV_LEGION );
+  advisersMenu->addItem( _("##adv_empire_m##"     ), ADV_EMPIRE );
+  advisersMenu->addItem( _("##adv_ratings_m##"    ), ADV_RATINGS );
+  advisersMenu->addItem( _("##trade_advisor##"      ), ADV_TRADING );
+  advisersMenu->addItem( _("##adv_population_m##" ), ADV_POPULATION );
+  advisersMenu->addItem( _("##adv_health_m##"     ), ADV_HEALTH );
+  advisersMenu->addItem( _("##adv_education_m##"  ), ADV_EDUCATION );
+  advisersMenu->addItem( _("##adv_religion_m##"   ), ADV_RELIGION );
   advisersMenu->addItem( _("##adv_entertainment_m##"), ADV_ENTERTAINMENT );
-  advisersMenu->addItem( _("##adv_finance_m##"), ADV_FINANCE );
-  advisersMenu->addItem( _("##adv_main_m##"), ADV_MAIN );
+  advisersMenu->addItem( _("##adv_finance_m##"    ), ADV_FINANCE );
+  advisersMenu->addItem( _("##chief_advisor##"       ), ADV_MAIN );
   CONNECT( advisersMenu, onItemAction(), &(_d->onRequestAdvisorSignal), Signal1<int>::emit );
 }
 
@@ -226,22 +218,6 @@ Signal0<>& TopMenu::onEnd()
 Signal1<int>& TopMenu::onRequestAdvisor()
 {
   return _d->onRequestAdvisorSignal;
-}
-
-void TopMenu::resolveSelectLanguage()
-{
-  if( ContextMenuItem* current = _d->langSelect->getSelectedItem() )
-  {
-    switch( current->getCommandId() )
-    {
-    case 0xf001: putenv( "LC_ALL=ru_RU" ); break;
-
-    case 0xf002:
-    default:
-        putenv( "LC_ALL=en_US" );
-    break;
-    }
-  }
 }
 
 Signal0<>& TopMenu::onLoad()

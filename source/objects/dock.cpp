@@ -141,7 +141,7 @@ bool Dock::isBusy() const
 {
   CityHelper helper( _getCity() );
   SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant );
-sellGoodStore
+
   return !merchants.empty();
 }
 

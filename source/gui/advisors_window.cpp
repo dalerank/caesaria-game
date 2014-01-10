@@ -61,12 +61,13 @@ public:
   void showEmpireMapWindow();
 };
 
-PushButton* AdvisorsWindow::addButton( const int pos, const int picId )
+PushButton* AdvisorsWindow::addButton( const int pos, const int picId, std::string tooltip )
 {
   Point tabButtonPos( (getWidth() - 636) / 2 + 10, getHeight() / 2 + 192 + 10);
 
   PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * pos, Size( 40 ), pos, picId, picId, picId + 13 );
   btn->setIsPushButton( true );
+  btn->setTooltipText( tooltip );
   return btn;
 }
 
@@ -80,18 +81,18 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   Point tabButtonPos( (getWidth() - 636) / 2, getHeight() / 2 + 192);
 
   new gui::Image( this, tabButtonPos, Picture::load( ResourceGroup::menuMiddleIcons, 14 ) );
-  addButton( ADV_EMPLOYERS, 255 );
-  addButton( ADV_LEGION, 256 );
-  addButton( ADV_EMPIRE, 257 );
-  addButton( ADV_RATINGS, 258 );
-  addButton( ADV_TRADING, 259 );
-  addButton( ADV_POPULATION, 260 );
-  addButton( ADV_HEALTH, 261 );
-  addButton( ADV_EDUCATION, 262 );
-  addButton( ADV_ENTERTAINMENT, 263 );
-  addButton( ADV_RELIGION, 264 );
-  addButton( ADV_FINANCE, 265 );
-  addButton( ADV_MAIN, 266 );
+  addButton( ADV_EMPLOYERS, 255, _("##visit_labor_advisor##") );
+  addButton( ADV_LEGION, 256, _("##visit_military_advisor##") );
+  addButton( ADV_EMPIRE, 257, _("##visit_imperial_advisor##") );
+  addButton( ADV_RATINGS, 258, _("##visit_rating_advisor##" ) );
+  addButton( ADV_TRADING, 259, _("##visit_trade_advisor##") );
+  addButton( ADV_POPULATION, 260, _("##visit_population_advisor##")  );
+  addButton( ADV_HEALTH, 261, _("##visit_health_advisor##") );
+  addButton( ADV_EDUCATION, 262, _("##visit_education_advisor##") );
+  addButton( ADV_ENTERTAINMENT, 263, _("##visit_entertainment_advisor##") );
+  addButton( ADV_RELIGION, 264, _("##visit_religion_advisor##") );
+  addButton( ADV_FINANCE, 265, _("##visit_financial_advisor##") );
+  addButton( ADV_MAIN, 266, _("##visit_chief_advisor##") );
 
   PushButton* btn = addButton( ADV_COUNT, 609 );
   btn->setIsPushButton( false );

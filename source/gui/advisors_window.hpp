@@ -41,7 +41,7 @@ protected:
   ScopedPtr< Impl > _d;
 
   AdvisorsWindow( Widget* parent, int id );
-  PushButton* addButton( const int pos, const int picId );
+  PushButton* addButton( const int pos, const int picId, std::string="" );
 };
 
 }//end namespace gui

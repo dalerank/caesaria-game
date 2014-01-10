@@ -79,7 +79,7 @@ public:
 
   virtual void showDescription();
 private:
-  TileOverlay::Type _type;
+  WorkingBuildingPtr _working;
 };
 
 class InfoBoxSenate : public InfoBoxSimple

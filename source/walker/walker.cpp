@@ -53,6 +53,7 @@ public:
   DirectedAction action;
   std::string name;
   int health;
+  std::string thinks;
   AbilityList abilities;
 
   float getSpeed() const
@@ -457,7 +458,12 @@ const std::string &Walker::getName() const
 
 std::string Walker::getThinks() const
 {
-  return WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
+  if( _d->thinks.empty() )
+  {
+    _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
+  }
+
+  return _(_d->thinks.c_str());
 }
 
 void Walker::getPictureList(PicturesArray& oPics)
@@ -523,6 +529,7 @@ void Walker::save( VariantMap& stream ) const
   stream[ "speedMul" ] = (float)_d->speedMultiplier;
   stream[ "uid" ] = (unsigned int)_d->uid;
   stream[ "remainmove" ] = _d->remainMove;
+  stream[ "thinks" ] = Variant( _d->thinks );
 }
 
 void Walker::load( const VariantMap& stream)
@@ -535,6 +542,7 @@ void Walker::load( const VariantMap& stream)
   _d->pos = stream.get( "pos" );
   _d->pathWay.init( tmap, tmap.at( 0, 0 ) );
   _d->pathWay.load( stream.get( "pathway" ).toMap() );
+  _d->thinks = stream.get( "thinks" ).toString();
 
   if( !_d->pathWay.isValid() )
   {
@@ -776,7 +784,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   switch( type )
   {
   case walker::immigrant: index=9; break;
-  case walker::emigrant: index=13; break;
+  case walker::emigrant: index=4; break;
   case walker::doctor: index = 2; break;
   case walker::cartPusher: index=51; break;
   case walker::marketLady: index=12; break;

@@ -203,28 +203,39 @@ void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
 InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
-  _type = building->getType();
-  setTitle( MetaDataHolder::instance().getData( building->getType() ).getPrettyName() );  
+  _working = building;
+  setTitle( MetaDataHolder::instance().getData( _working->getType() ).getPrettyName() );
 
-  _updateWorkersLabel( Point( 32, 150 ), 542, building->getMaxWorkers(), building->getWorkersCount() );
+  _updateWorkersLabel( Point( 32, 150 ), 542, _working->getMaxWorkers(), _working->getWorkersCount() );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)building->getState( Construction::damage ),
-                                           (int)building->getState( Construction::fire ));
+                                           (int)_working->getState( Construction::damage ),
+                                           (int)_working->getState( Construction::fire ));
 
   new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ), text );
   new Label( this, Rect( 16, 50, getWidth() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
 }
 
 void InfoBoxWorkingBuilding::setText(const std::string& text)
-{
+{  
   if( Widget* lb = findChild( lbHelpId ) )
-    lb->setText( text );
+  {
+    StringArray messages;
+    messages.push_back( text );
+
+    std::string type = MetaDataHolder::getTypename( _working->getType() );
+    const char* stateName[] = { "nowork", "poor", "half", "good", "awesome" };
+    int workPercent = _working->getWorkersCount() * 4 / _working->getMaxWorkers();
+
+    messages.push_back( StringHelper::format( 0xff, "##%s_%s##", type.c_str(), stateName[ workPercent == 0 ? 0 : (workPercent + 1) ]));
+
+    lb->setText( messages.at( rand() % messages.size() ) );
+  }
 }
 
 void InfoBoxWorkingBuilding::showDescription()
 {
-  DictionaryWindow::show( getEnvironment()->getRootWidget(), _type );
+  DictionaryWindow::show( getEnvironment()->getRootWidget(), _working->getType() );
 }
 
 InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
@@ -364,9 +375,14 @@ InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
     }
     else 
     {
-     setTitle( _("##road_caption##") );
+      setTitle( _("##road_caption##") );
       lbText->setText( _("##road_text##"));
     }
+  }
+  else if( tile.getFlag( Tile::tlMeadow ) )
+  {
+    setTitle( _("##meadow_caption##") );
+    lbText->setText( _("##meadow_text##"));
   }
   else 
   {
@@ -411,21 +427,18 @@ InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
   setTitle( MetaDataHolder::getPrettyName( building::colloseum ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkersCount() );
-
-  CityHelper helper( _getCity() );
-  ColloseumList colloseums = helper.find<Colloseum>( building::colloseum );
   
-  if( colloseums.empty() )
+  if( colloseum->isNeedGladiators() )
   {
-	new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
+    new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
   }
   else
   {
-	std::string text = StringHelper::format( 0xff, "Animal contest runs for another %d days", 0 );
-	new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), text );
+    std::string text = StringHelper::format( 0xff, "Animal contest runs for another %d days", 0 );
+    new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), text );
 
-	text = StringHelper::format( 0xff, "Gladiator bouts runs for another %d days", 0 );
-	new Label( this, Rect( 35, 210, getWidth() - 35, 210 + 20 ), text ); 
+    text = StringHelper::format( 0xff, "Gladiator bouts runs for another %d days", 0 );
+    new Label( this, Rect( 35, 210, getWidth() - 35, 210 + 20 ), text );
   }
 }
 

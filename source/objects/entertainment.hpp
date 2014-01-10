@@ -55,6 +55,8 @@ public:
   Collosseum();
   virtual void deliverService();
   virtual void build(PlayerCityPtr city, const TilePos& pos);
+
+  bool isNeedGladiators() const;
 };
 
 class Hippodrome : public EntertainmentBuilding

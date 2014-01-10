@@ -213,6 +213,14 @@ void Collosseum::build(PlayerCityPtr city, const TilePos& pos)
   }
 }
 
+bool Collosseum::isNeedGladiators() const
+{
+  CityHelper helper( _getCity() );
+  GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( building::gladiatorSchool );
+
+  return colloseums.empty();
+}
+
 //------------
 
 Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(5) )

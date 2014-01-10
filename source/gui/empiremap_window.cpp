@@ -316,6 +316,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->btnHelp = new TexturedButton( this, Point( 20, getHeight() - 44 ), Size( 24 ), -1, 528 );
   _d->btnExit = new TexturedButton( this, Point( getWidth() - 44, getHeight() - 44 ), Size( 24 ), -1, 533 );
   _d->btnTrade = new TexturedButton( this, Point( getWidth() - 48, getHeight() - 100), Size( 28 ), -1, 292 );
+  _d->btnTrade->setTooltipText( _("##to_trade_advisor##") );
 
   _d->citypics[ 0 ] = Picture::load( ResourceGroup::empirebits, 1 );
   _d->citypics[ 1 ] = Picture::load( ResourceGroup::empirebits, 8 );

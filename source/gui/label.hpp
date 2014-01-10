@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef __CAESARIA_GUILABEL_H_INCLUDE_
 #define __CAESARIA_GUILABEL_H_INCLUDE_
 
