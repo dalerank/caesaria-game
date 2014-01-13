@@ -46,7 +46,7 @@ public:
 
 		fputs("Caesaria logfile created: ", _logFile);
 		fputs(StringHelper::format( 0xff, "%02:%02d:%02d",
-																t.getHour(), t.getMinutes(), t.getSeconds()).c_str(),
+																t.hour(), t.minutes(), t.seconds()).c_str(),
 					_logFile);
 		fputs("\n", _logFile);
 	}
@@ -57,7 +57,7 @@ public:
 
 		fputs("Caesaria logfile closed: ", _logFile);
 		fputs( StringHelper::format( 0xff, "%02:%02d:%02d",
-																t.getHour(), t.getMinutes(), t.getSeconds()).c_str(),
+																t.hour(), t.minutes(), t.seconds()).c_str(),
 					 _logFile);
 		fputs("\n", _logFile);
 

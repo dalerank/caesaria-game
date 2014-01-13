@@ -80,9 +80,9 @@ void FilmWidget::setTitle(std::string text)
 void FilmWidget::setTime(DateTime time)
 {
   if( _d->lbTime ) _d->lbTime->setText( StringHelper::format( 0xff, "%s %d %s",
-                                                              DateTime::getMonthName( time.getMonth() ),
-                                                              time.getYear(),
-                                                              time.getYear() < 0 ? "BC" : "AD" ) );
+                                                              DateTime::getMonthName( time.month() ),
+                                                              time.year(),
+                                                              time.year() < 0 ? "BC" : "AD" ) );
 }
 
 Signal0<>& FilmWidget::onClose()

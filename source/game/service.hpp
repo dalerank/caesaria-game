@@ -42,18 +42,20 @@ public:
 
   Service() : _value( 0 ), _min( 0 ), _max( 100 ) {}
 
-  void set( int i ) { _value = math::clamp<int>( i, _min, _max); }
-  int value() const { return _value; }
+  void set( float i ) { _value = math::clamp<float>( i, _min, _max); }
+  float value() const { return _value; }
 
   int getMax() const { return _max; }
   void setMax( int value ) { _max = value; set( _value ); }
 
-  operator int() const { return _value; }
-  Service& operator=(  int i) { set( i ); return *this; }
-  Service& operator-=(int i) { set( _value - i ); return *this; }
-  Service& operator+=(int i) { set( _value + i ); return *this; }
+  operator float() const { return _value; }
+
+  Service& operator=( float i) { set( i ); return *this; }
+  Service& operator-=(float i) { set( _value - i ); return *this; }
+  Service& operator+=(float i) { set( _value + i ); return *this; }
 private:
-  int _value, _min, _max;
+  float _value;
+  int _min, _max;
 };
 
 class ServiceHelper : public EnumsHelper<Service::Type>

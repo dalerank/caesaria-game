@@ -94,15 +94,15 @@ void TopMenu::setFunds( int value )
 
 void TopMenu::Impl::updateDate()
 {
-  if( !lbDate || saveDate.getMonth() == GameDate::current().getMonth() )
+  if( !lbDate || saveDate.month() == GameDate::current().month() )
     return;
 
   saveDate = GameDate::current();
 
-  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", saveDate.getMonth() + 1).c_str() );
-  std::string age = _( StringHelper::format( 0xff, "##age_%s##", saveDate.getYear() > 0 ? "ad" : "bc" ).c_str() );
+  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", saveDate.month() + 1).c_str() );
+  std::string age = _( StringHelper::format( 0xff, "##age_%s##", saveDate.year() > 0 ? "ad" : "bc" ).c_str() );
   std::string text = StringHelper::format( 0xff, "%s %d %s",
-                                           month.c_str(), abs( saveDate.getYear() ), age.c_str());
+                                           month.c_str(), abs( saveDate.year() ), age.c_str());
   lbDate->setText( text );
 }
 

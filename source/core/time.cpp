@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "time.hpp"
@@ -108,12 +108,12 @@ bool DateTime::operator>( const DateTime& other ) const
 
 bool DateTime::isValid() const
 {   
-    return (year > -4573 && year < 9999)
-            && (month<12)
-            && (day<31)
-            && (hour < 24)
-            && (minutes < 60)
-            && (seconds < 60);
+    return (_year > -4573 && _year < 9999)
+            && (_month<12)
+            && (_day<31)
+            && (_hour < 24)
+            && (_minutes < 60)
+            && (_seconds < 60);
 }
 
 /*DateTime& DateTime::appendHour( int hour )
@@ -149,9 +149,9 @@ tm _getOsLocalTime( time_t date )
 
 DateTime& DateTime::appendMonth( int m/*=1 */ )
 {
-  int sumMonth = month + m;
-  month = sumMonth % 12;
-  year += sumMonth / 12;
+  int sumMonth = _month + m;
+  _month = sumMonth % 12;
+  _year += sumMonth / 12;
 
   return *this;
 }
@@ -159,55 +159,55 @@ DateTime& DateTime::appendMonth( int m/*=1 */ )
 DateTime DateTime::getDate() const
 {
     DateTime ret( *this );
-    ret.minutes = ret.hour = ret.seconds = 0;
+    ret._minutes = ret._hour = ret._seconds = 0;
     return ret;
 }
 
 DateTime::DateTime( const DateTime& time )
 {
-    seconds = time.seconds;
-    minutes = time.minutes;
-    hour = time.hour;
-    day = time.day;
-    month = time.month;
-    year = time.year;
+    _seconds = time._seconds;
+    _minutes = time._minutes;
+    _hour = time._hour;
+    _day = time._day;
+    _month = time._month;
+    _year = time._year;
 }
 
 DateTime::DateTime( const char* strValue )
 {
   sscanf( strValue, "%04d.%02d.%02d:%02d.%02d.%02d",
-          &year, &month, &day, &hour, &minutes, &seconds );
+          &_year, &_month, &_day, &_hour, &_minutes, &_seconds );
 }
 
 DateTime::DateTime( int y, unsigned char m, unsigned char d, 
                     unsigned char h, unsigned char mm, unsigned char s )
 {
-   year = y;
-   month = m;
-   day = d;
-   hour = h;
-   minutes = mm;
-   seconds = s;
+   _year = y;
+   _month = m;
+   _day = d;
+   _hour = h;
+   _minutes = mm;
+   _seconds = s;
 }
 
 DateTime::DateTime()
 {
-    seconds = minutes = hour = 0;
-    year = day = month = 0;
+    _seconds = _minutes = _hour = 0;
+    _year = _day = _month = 0;
 }
 
-unsigned char DateTime::getHour() const {    return hour;}
-unsigned char DateTime::getMonth() const {    return month; }
-int DateTime::getYear() const {     return year; }
-unsigned char DateTime::getMinutes() const {     return minutes; }
-unsigned char DateTime::getDay() const {     return day; }
-unsigned char DateTime::getSeconds() const  {     return seconds; }
-void DateTime::setHour( unsigned char h ) {     hour = h; }
-void DateTime::setMonth( unsigned char m ) {     month = m; }
-void DateTime::setYear( unsigned int y ) {     year = y; }
-void DateTime::setMinutes( unsigned char m )  {    minutes = m; }
-void DateTime::setDay( unsigned char d ) { day = d; }
-void DateTime::setSeconds( unsigned char s ) { seconds = s; }
+unsigned char DateTime::hour() const {    return _hour;}
+unsigned char DateTime::month() const {    return _month; }
+int DateTime::year() const {     return _year; }
+unsigned char DateTime::minutes() const {     return _minutes; }
+unsigned char DateTime::day() const {     return _day; }
+unsigned char DateTime::seconds() const  {     return _seconds; }
+void DateTime::setHour( unsigned char h ) {     _hour = h; }
+void DateTime::setMonth( unsigned char m ) {     _month = m; }
+void DateTime::setYear( unsigned int y ) {     _year = y; }
+void DateTime::setMinutes( unsigned char m )  {    _minutes = m; }
+void DateTime::setDay( unsigned char d ) { _day = d; }
+void DateTime::setSeconds( unsigned char s ) { _seconds = s; }
 
 DateTime DateTime::getCurrenTime()
 {
@@ -266,7 +266,7 @@ const char* DateTime::getMonthName( unsigned char d )
 DateTime DateTime::getTime() const
 {
     DateTime ret( *this );
-    ret.year = ret.month = ret.day = 0;
+    ret._year = ret._month = ret._day = 0;
     return ret;
 }
 
@@ -291,12 +291,12 @@ DateTime& DateTime::operator= ( time_t t)
 
 DateTime& DateTime::operator=( const DateTime& val )
 { 
-  seconds = val.seconds;
-  minutes = val.minutes;
-  hour = val.hour;
-  day = val.day;
-  month = val.month;
-  year = val.year;
+  _seconds = val._seconds;
+  _minutes = val._minutes;
+  _hour = val._hour;
+  _day = val._day;
+  _month = val._month;
+  _year = val._year;
 
   return *this;
 }
@@ -318,15 +318,15 @@ DateTime DateTime::_JulDayToDate( const long lJD )
   yr = 4000L * ( t1 + 1L ) / 1461001L;
   t1 = t1 - 1461L * yr / 4L + 31L;
   mo = 80L * t1 / 2447L;
-  ret.day = (int) ( t1 - 2447L * mo / 80L );
+  ret._day = (int) ( t1 - 2447L * mo / 80L );
   t1 = mo / 11L;
-  ret.month = (int) ( mo + 2L - 12L * t1 );
-  ret.year = (int) ( 100L * ( t2 - 49L ) + yr + t1 );
+  ret._month = (int) ( mo + 2L - 12L * t1 );
+  ret._year = (int) ( 100L * ( t2 - 49L ) + yr + t1 );
 
   // Correct for BC years
-  if ( ret.year <= 0 )
+  if ( ret._year <= 0 )
   {
-    ret.year -= 1;
+    ret._year -= 1;
   }
 
   return ret;
@@ -336,7 +336,7 @@ long DateTime::_toJd() const
 {
   long jul_day;
 
-  long lmonth = (long)month, lday = (long)day, lyear = (long)year;
+  long lmonth = (long)_month, lday = (long)_day, lyear = (long)_year;
 
   // Adjust BC years
   if ( lyear < 0 )

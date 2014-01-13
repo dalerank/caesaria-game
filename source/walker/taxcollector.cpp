@@ -35,16 +35,13 @@ void TaxCollector::_centerTile()
 {
   ServiceWalker::_centerTile();
 
-  float taxRate = _getCity()->getFunds().getTaxRate() / 100.f;
-
   ReachedBuildings buildings = getReachedBuildings( getIJ() );
   foreach( BuildingPtr building, buildings )
   {
     HousePtr house = building.as<House>();
-    if( house.isValid() && house->ready2Taxation() )
+    if( house.isValid() )
     {
-      float money = house->collectTaxes() * taxRate;
-      _d->money += money;
+      _d->money += house->collectTaxes();
     }
   }
 }
@@ -80,7 +77,7 @@ void TaxCollector::_reachedPathway()
   {
     if( getBase().isValid() )
     {
-      getBase()->evaluateService( this );
+      getBase()->applyService( this );
     }
   }
 }

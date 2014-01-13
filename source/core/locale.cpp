@@ -51,12 +51,12 @@ void Locale::setLanguage(std::string language)
   __loadTranslator( filename );
 }
 
-const char* Locale::translate(const char* text)
+const char* Locale::translate( const std::string& text)
 {
   int hash = StringHelper::hash( text );
   Translator::iterator it = translator.find( hash );
 
   return ( it != translator.end()
-                 ? (it->second.empty() ? text : it->second.c_str())
-                 : text );
+                 ? (it->second.empty() ? text.c_str() : it->second.c_str())
+                 : text.c_str() );
 }

@@ -57,7 +57,7 @@ void CityServiceInfo::update( const unsigned int time )
   if( time % 44 != 1 )
     return;
 
-  if( GameDate::current().getMonth() != _d->lastDate.getMonth() )
+  if( GameDate::current().month() != _d->lastDate.month() )
   {
     _d->lastDate = GameDate::current();
 

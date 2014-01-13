@@ -62,7 +62,7 @@ void CityServiceDisorder::update( const unsigned int time )
   HouseList criminalizedHouse;
   foreach( HousePtr house, houses )
   {
-    int crimeLvl = cityCrimeKoeff * (rand() % (house->getServiceValue( Service::crime )+1));
+    int crimeLvl = cityCrimeKoeff * (rand() % (int)(house->getServiceValue( Service::crime )+1));
     if( crimeLvl >= _d->minCrimeLevel )
     {
       criminalizedHouse.push_back( house );

@@ -374,8 +374,8 @@ void ScreenGame::Impl::makeScreenShot()
   DateTime time = DateTime::getCurrenTime();
 
   std::string filename = StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png", 
-                                               time.getYear(), time.getMonth(), time.getDay(),
-                                               time.getHour(), time.getMinutes(), time.getSeconds() );
+                                               time.year(), time.month(), time.day(),
+                                               time.hour(), time.minutes(), time.seconds() );
   Logger::warning( "creating screenshot %s", filename.c_str() );
 
   GfxEngine::instance().createScreenshot( filename );

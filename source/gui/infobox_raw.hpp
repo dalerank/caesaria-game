@@ -23,9 +23,14 @@ namespace gui
 
 class InfoBoxRawMaterial : public InfoBoxSimple
 {
-public:
+public:  
   InfoBoxRawMaterial( Widget* parent, const Tile& tile );
   virtual ~InfoBoxRawMaterial();
+
+  virtual void showDescription();
+
+private:
+  int _type;
 };
 
 }//end namespace gui

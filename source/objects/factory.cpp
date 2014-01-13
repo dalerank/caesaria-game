@@ -116,7 +116,7 @@ void Factory::timeStep(const unsigned long time)
     receiveGood();
     deliverGood();
 
-    if( GameDate::current().getMonth() % 3 == 1 )
+    if( GameDate::current().month() % 3 == 1 )
     {
       getGoodStore().removeExpired( GameDate::current() );
     }

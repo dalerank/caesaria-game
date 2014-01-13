@@ -191,7 +191,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
-  _d->lastMonthCount = GameDate::current().getMonth();
+  _d->lastMonthCount = GameDate::current().month();
 
   addService( CityMigration::create( this ) );
   addService( CityServiceWorkersHire::create( this ) );
@@ -210,9 +210,9 @@ PlayerCity::PlayerCity() : _d( new Impl )
 
 void PlayerCity::timeStep( unsigned int time )
 {
-  if( _d->lastMonthCount != GameDate::current().getMonth() )
+  if( _d->lastMonthCount != GameDate::current().month() )
   {
-    _d->lastMonthCount = GameDate::current().getMonth();
+    _d->lastMonthCount = GameDate::current().month();
     monthStep( GameDate::current() );
   }
 
@@ -497,7 +497,7 @@ void PlayerCity::load( const VariantMap& stream )
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
-  _d->lastMonthCount = GameDate::current().getMonth();
+  _d->lastMonthCount = GameDate::current().month();
   _d->tradeOptions.load( stream.get( "tradeOptions" ).toMap() );
 
   VariantMap overlays = stream.get( "overlays" ).toMap();

@@ -60,7 +60,7 @@ CityServiceRoads::CityServiceRoads(PlayerCityPtr city )
 
 void CityServiceRoads::update( const unsigned int time )
 {
-  if( _d->lastTimeUpdate.getMonth() == GameDate::current().getMonth() )
+  if( _d->lastTimeUpdate.month() == GameDate::current().month() )
     return;
 
   _d->lastTimeUpdate = GameDate::current();
@@ -96,7 +96,7 @@ void CityServiceRoads::update( const unsigned int time )
     _d->updateRoadsAround( upos );
   }
 
-  if( _d->lastTimeUpdate.getMonth() % 3 == 1 )
+  if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
     RoadList roads = helper.find<Road>( construction::road );
     foreach( RoadPtr road, roads )

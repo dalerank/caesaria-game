@@ -77,8 +77,8 @@ void CityServiceFestival::update( const unsigned int time )
     return;
 
   const DateTime current = GameDate::current();
-  if( _d->festivalDate.getYear() == current.getYear()
-      && _d->festivalDate.getMonth() == current.getMonth() )
+  if( _d->festivalDate.year() == current.year()
+      && _d->festivalDate.month() == current.month() )
   {
     _d->lastFestivalDate = GameDate::current();
     _d->festivalDate = DateTime( -550, 1, 1 );

@@ -82,14 +82,14 @@ int CityFunds::getProfit() const
 
 void CityFunds::updateHistory( const DateTime& date )
 {
-  if( _d->lastYeapUpdate >= date.getYear() )
+  if( _d->lastYeapUpdate >= date.year() )
   {
     return;
   }
 
   resolveIssue( FundIssue( CityFunds::balance, _d->money ) );
   resolveIssue( FundIssue( CityFunds::profit, getProfit() ) );
-  _d->lastYeapUpdate = date.getYear();
+  _d->lastYeapUpdate = date.year();
   _d->history.insert( _d->history.begin(), Impl::IssuesValue() );
 
   if( _d->history.size() > 2 )

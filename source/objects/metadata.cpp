@@ -358,11 +358,6 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     }
 
     MetaData bData( btype, mapItem.first );
-    const std::string pretty = options[ "pretty" ].toString();
-    if( !pretty.empty() )
-    {
-      bData._prettyName = pretty;
-    }
 
     bData._d->options = options;
     VariantMap desMap = options[ "desirability" ].toMap();
@@ -372,7 +367,7 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
 
     bData._d->desc = options.get( "desc" ).toStringArray();
 
-    Variant prettyName = options[ "prettyName" ];
+    Variant prettyName = options.get( "prettyName" );
     if( prettyName.isValid() )
     {
       bData._prettyName = prettyName.toString();

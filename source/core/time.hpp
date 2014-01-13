@@ -1,21 +1,21 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef __OPENCAESAR3_DATETIME_H_INCLUDE_
-#define __OPENCAESAR3_DATETIME_H_INCLUDE_
+#ifndef __CAESARIA_DATETIME_H_INCLUDE_
+#define __CAESARIA_DATETIME_H_INCLUDE_
 
 #include <time.h>
 
@@ -28,13 +28,13 @@ public:
     static const int dayInWeek = 7;
     static const int monthInYear = 12;
 
-    unsigned char getHour() const;
-    unsigned char getMonth() const;
-    int getYear() const;
-    unsigned char getMinutes() const;
-    unsigned char getDay() const;
+    unsigned char hour() const;
+    unsigned char month() const;
+    int year() const;
+    unsigned char minutes() const;
+    unsigned char day() const;
     unsigned char getDayOfWeek() const;
-    unsigned char getSeconds() const;
+    unsigned char seconds() const;
 
     void setHour( unsigned char hour );
     void setMonth( unsigned char month );
@@ -94,12 +94,12 @@ public:
     static unsigned int getElapsedTime();
 
 private:
-    unsigned int seconds;
-    unsigned int minutes;
-    unsigned int hour;
-    unsigned int day;
-    unsigned int month;
-    int year;
+    unsigned int _seconds;
+    unsigned int _minutes;
+    unsigned int _hour;
+    unsigned int _day;
+    unsigned int _month;
+    int _year;
 
     long _toJd() const;
 
@@ -111,4 +111,4 @@ private:
     DateTime _JulDayToDate( const long lJD );
 };
 
-#endif
+#endif //__CAESARIA_DATETIME_H_INCLUDE_

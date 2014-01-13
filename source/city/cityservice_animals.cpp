@@ -45,7 +45,7 @@ void CityServiceAnimals::update(const unsigned int time)
   if( time % 16 != 1 )
     return;
 
-  if( _d->lastTimeUpdate.getMonth() != GameDate::current().getMonth() )
+  if( _d->lastTimeUpdate.month() != GameDate::current().month() )
   {
     _d->lastTimeUpdate = GameDate::current();
     Tilemap& tmap = _d->city->getTilemap();

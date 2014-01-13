@@ -50,6 +50,7 @@
 #include "events/event.hpp"
 #include "game/settings.hpp"
 #include "image.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -81,11 +82,32 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   drawHabitants( house );
 
   int taxes = house->getSpec().getTaxRate();
-  std::string taxesStr = taxes <= 0
-                           ? StringHelper::format( 0xff, _("##house_not_taxation##") )
-                           : StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
+  std::string taxesStr;
+  if( taxes > 0 )
+  {
+    if( house->getServiceValue( Service::forum ) == 0 )
+    {
+      taxesStr = StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
+    }
+    else
+    {
+      DateTime lastTax = house->getLastTaxation();
+      if( GameDate::current().year() == lastTax.year() )
+      {
+        taxesStr = "##no_tax_in_this_year##";
+      }
+      else
+      {
+        taxesStr = "##no_visited_by_taxman##";
+      }
+    }
+  }
+  else
+  {
+    taxesStr = "##house_not_taxation##";
+  }
 
-  Label* taxesLb = new Label( this, Rect( 16 + 35, 177, getWidth() - 16, 177 + 20 ), taxesStr );
+  Label* taxesLb = new Label( this, Rect( 16 + 35, 177, getWidth() - 16, 177 + 20 ), _( taxesStr ) );
 
   std::string aboutCrimes = _("##house_not_report_about_crimes##");
   Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );

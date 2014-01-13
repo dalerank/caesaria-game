@@ -546,8 +546,8 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
             case Variant::NDateTime:
               {
                 const DateTime* dt = v_cast<DateTime>(d);
-                *str = StringHelper::format( 0xff, "%04d.%02d.%02d %02d:%02d:%02d", dt->getYear(), dt->getMonth(),
-                                             dt->getDay(), dt->getHour(), dt->getMinutes(), dt->getSeconds() );
+                *str = StringHelper::format( 0xff, "%04d.%02d.%02d %02d:%02d:%02d", dt->year(), dt->month(),
+                                             dt->day(), dt->hour(), dt->minutes(), dt->seconds() );
               }
             break;
             case Variant::Bool:

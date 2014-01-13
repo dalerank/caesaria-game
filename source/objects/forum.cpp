@@ -62,7 +62,7 @@ void Forum::applyService(ServiceWalkerPtr walker)
   break;
   }
 
-  ServiceBuilding::evaluateService( walker );
+  ServiceBuilding::applyService( walker );
 }
 
 int Forum::collectTaxes()

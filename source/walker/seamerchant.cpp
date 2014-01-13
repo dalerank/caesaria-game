@@ -136,7 +136,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
   case stWaitFreeDock:
   {
-    waitInterval = GameDate::getTickInMonth() / 4;
+    waitInterval = GameDate::getTickInMonth() / 2;
     nextState = stFindDock;
   }
   break;
@@ -224,7 +224,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   case stGoOutFromCity:
   {
     // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-    waitInterval = 60;
+    waitInterval = GameDate::getTickInMonth() / 4;
     goAwayFromCity( city, wlk );
     nextState = stBackToBaseCity;
   }
@@ -250,7 +250,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     nextState = stBuyGoods;
     resolveState( city, wlk );
-    waitInterval = 60;
+    waitInterval = GameDate::getTickInMonth() / 4;
   }
   break;
 

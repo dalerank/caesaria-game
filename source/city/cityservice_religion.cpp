@@ -54,7 +54,7 @@ CityServiceReligion::CityServiceReligion(PlayerCityPtr city )
 
 void CityServiceReligion::update( const unsigned int time )
 {
-  if( _d->lastDate.getMonth() == GameDate::current().getMonth() )
+  if( _d->lastDate.month() == GameDate::current().month() )
     return;
 
   _d->lastDate = GameDate::current();

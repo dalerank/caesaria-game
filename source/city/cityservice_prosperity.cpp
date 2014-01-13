@@ -74,7 +74,7 @@ void CityServiceProsperity::update( const unsigned int time )
   if( time % 44 != 1 )
     return;
 
-  if( abs( GameDate::current().getYear() - _d->lastDate.getYear() ) == 1 )
+  if( abs( GameDate::current().year() - _d->lastDate.year() ) == 1 )
   {
     _d->lastDate = GameDate::current();
 

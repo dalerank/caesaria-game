@@ -21,6 +21,8 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "game/settings.hpp"
+#include "dictionary.hpp"
+#include "environment.hpp"
 
 using namespace constants;
 
@@ -32,6 +34,8 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
   FactoryPtr rawmb = tile.getOverlay().as<Factory>();
+  _type = rawmb->getType();
+
   Label* lbDamage = findChild<Label*>( "lbDamage", true );
   Label* lbProgress = findChild<Label*>( "lbProgress", true );
   Label* lbAbout = findChild<Label*>( "lbAbout", true );
@@ -59,48 +63,11 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
     lbProgress->setText( text );
   }
 
+  std::string typeRaw = MetaDataHolder::getTypename( rawmb->getType() );
+  setTitle( MetaDataHolder::getPrettyName( rawmb->getType() ) );
   if( lbAbout != NULL )
   {
-    std::string desc, name;
-    //GoodType goodType = G_NONE;
-    switch( rawmb->getType() )
-    {
-    case building::wheatFarm:
-      desc = _("##farm_description_wheat##");
-      name = _("##farm_title_wheat##");
-    break;
-
-    case building::fruitFarm:
-      desc.assign( _("##farm_description_fruit##") );
-      name.assign( _("##farm_title_fruit##") );
-    break;
-
-    case building::oliveFarm:
-      desc.assign( _("##farm_description_olive##") );
-      name.assign( _("##farm_title_olive##") );
-    break;
-
-    case building::grapeFarm:
-      desc.assign( _("##farm_description_vine##") );
-      name.assign( _("##farm_title_vine##") );
-    break;
-
-    case building::pigFarm:
-      desc.assign( _("##farm_description_meat##") );
-      name.assign( _("##farm_title_meat##") );
-    break;
-
-    case building::vegetableFarm:
-      desc.assign( _("##farm_description_vegetable##") );
-      name.assign( _("##farm_title_vegetable##") );
-    break;
-
-    default:
-    break;
-    }
-
-    lbAbout->setText( desc );
-    setTitle( name );
+    lbAbout->setText( StringHelper::format( 0xff, "%s_desc", typeRaw.c_str() ) );
   }
 
   if( lbProductivity != NULL )
@@ -121,6 +88,11 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
 
 InfoBoxRawMaterial::~InfoBoxRawMaterial()
 {
+}
+
+void InfoBoxRawMaterial::showDescription()
+{
+  DictionaryWindow::show( getEnvironment()->getRootWidget(), _type );
 }
 
 }//end namespace gui
