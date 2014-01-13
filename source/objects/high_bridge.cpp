@@ -51,10 +51,10 @@ public:
     case liftingSW2: _picture.addOffset( -29, -16 ); break;
     case descentSW2: _picture.addOffset( -29, -16 ); break;
     
-    case liftingSE2:  _picture.addOffset( -29, 16 ); _picture.addOffset( 8, -13 ); break;
-    case liftingSE: _picture.addOffset( 8, -13 ); break;
+    case liftingSE2:  _picture.addOffset( -28, 1 ); break;
+    case liftingSE: _picture.addOffset( 3, -14 ); break;
     case spanSE: _picture.addOffset( 8, -13 ); break;
-    case descentSE2: _picture.addOffset( -29, 16 ); _picture.addOffset( 8, -13 ); break;
+    case descentSE2: _picture.addOffset( -22, 2 );  break;
     case descentSE: _picture.addOffset( 8, -13 ); break;
     }
   }
@@ -94,6 +94,14 @@ public:
     if( _parent )
     {
       _parent->deleteLater();
+    }
+  }
+
+  void save(VariantMap &stream) const
+  {
+    if( getTilePos() == _parent->getTilePos() )
+    {
+      return _parent->save( stream );
     }
   }
 
@@ -149,14 +157,18 @@ bool HighBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) c
   TilePos endPos, startPos;
   _d->direction=noneDirection;
   
-  _d->subtiles.clear();
-  const_cast< HighBridge* >( this )->_fgPicturesRef().clear();
-
-  _checkParams( city, _d->direction, startPos, endPos, pos );
- 
-  if( _d->direction != noneDirection )
+  TileOverlayPtr ov = city->getOverlay( pos );
+  if( ov.isNull() )
   {
-    const_cast< HighBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
+    _d->subtiles.clear();
+    const_cast< HighBridge* >( this )->_fgPicturesRef().clear();
+
+    _checkParams( city, _d->direction, startPos, endPos, pos );
+
+    if( _d->direction != noneDirection )
+    {
+      const_cast< HighBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
+    }
   }
 
   return (_d->direction != noneDirection );
@@ -285,11 +297,11 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   Tilemap& tilemap = city->getTilemap();
   Tile& tile = tilemap.at( curPos );
 
-  if( tile.getFlag( Tile::tlRoad ) )
+  /*if( tile.getFlag( Tile::tlRoad ) )
   {
     direction = constants::noneDirection;
     return;
-  }
+  }*/
 
   int imdId = tile.getOriginalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
@@ -315,7 +327,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
         stop = (*it)->getIJ();
-        direction = abs( stop.getI() - start.getI() ) > 3 ? southWest : noneDirection;
+        direction = abs( stop.getI() - start.getI() ) > 3 ? southEast : noneDirection;
         break;
       }
     }
@@ -422,10 +434,8 @@ void HighBridge::destroy()
   }
 }
 
-std::string HighBridge::getError() const
-{
-  return _d->error;
-}
+std::string HighBridge::getError() const {  return _d->error;}
+bool HighBridge::isNeedRoadAccess() const{  return false;}
 
 void HighBridge::save(VariantMap& stream) const
 {

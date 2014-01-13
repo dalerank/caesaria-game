@@ -138,9 +138,9 @@ void Construction::updateState(Construction::Param param, double value, bool rel
 
 void Construction::save( VariantMap& stream) const
 {
-    TileOverlay::save( stream );
-    stream[ Serializable::fireLevel ] = getState( fire );
-    stream[ Serializable::damageLevel ] = getState( damage );
+  TileOverlay::save( stream );
+  stream[ Serializable::fireLevel ] = getState( fire );
+  stream[ Serializable::damageLevel ] = getState( damage );
 }
 
 void Construction::load( const VariantMap& stream )

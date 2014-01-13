@@ -81,6 +81,10 @@ public:
 
   void save(VariantMap &stream) const
   {
+    if( getTilePos() == _parent->getTilePos() )
+    {
+      return _parent->save( stream );
+    }
   }
 
   Point getOffset( Tile& tile, const Point& subpos ) const
@@ -131,15 +135,19 @@ bool LowBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) co
 
   TilePos endPos, startPos;
   _d->direction=noneDirection;
-  
-  _d->subtiles.clear();
-  const_cast< LowBridge* >( this )->_fgPicturesRef().clear();
 
-  _checkParams( city, _d->direction, startPos, endPos, pos );
- 
-  if( _d->direction != noneDirection )
+  TileOverlayPtr bridge = city->getOverlay( pos );
+  if( bridge.isNull() )
   {
-    const_cast< LowBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
+    _d->subtiles.clear();
+    const_cast< LowBridge* >( this )->_fgPicturesRef().clear();
+
+    _checkParams( city, _d->direction, startPos, endPos, pos );
+
+    if( _d->direction != noneDirection )
+    {
+      const_cast< LowBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
+    }
   }
 
   return (_d->direction != noneDirection);
@@ -251,11 +259,11 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   Tilemap& tilemap = city->getTilemap();
   Tile& tile = tilemap.at( curPos );
 
-  if( tile.getFlag( Tile::tlRoad ) )
+  /*if( tile.getFlag( Tile::tlRoad ) )
   {
     direction = constants::noneDirection;
     return;
-  }
+  }*/
 
   int imdId = tile.getOriginalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
@@ -417,10 +425,8 @@ void LowBridge::destroy()
   }
 }
 
-std::string LowBridge::getError() const
-{
-  return _d->error;
-}
+std::string LowBridge::getError() const  { return _d->error; }
+bool LowBridge::isNeedRoadAccess() const { return false; }
 
 void LowBridge::save(VariantMap& stream) const
 {
@@ -429,16 +435,18 @@ void LowBridge::save(VariantMap& stream) const
   VariantList vl_tinfo;
   foreach( LowBridgeSubTilePtr subtile,  _d->subtiles )
   {
+
     vl_tinfo.push_back( subtile->_imgId );
   }
   stream[ "terraininfo" ] = vl_tinfo;
+  //stream[ "direction" ] = (int)_d->direction;
 }
 
 void LowBridge::load(const VariantMap& stream)
 {
   Construction::load( stream );
 
-  VariantList vl_tinfo = stream.get( "terraininfo" ).toList();
+  VariantList vl_tinfo = stream.get( "terraininfo" ).toList();  
   for( unsigned int i=0; i < vl_tinfo.size(); i++ )
   {
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
