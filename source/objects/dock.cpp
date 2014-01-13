@@ -45,6 +45,7 @@ public:
   Direction getDirection(PlayerCityPtr city, TilePos pos, Size size);
   bool isConstructibleArea( const TilesArray& tiles );
   bool isCoastalArea( const TilesArray& tiles );
+  SeaMerchantList getMerchantsOnWait( PlayerCityPtr city, TilePos pos );
 };
 
 Dock::Dock(): WorkingBuilding( building::dock, Size(3) ), _d( new Impl )
@@ -140,7 +141,7 @@ void Dock::load(const VariantMap& stream)
 bool Dock::isBusy() const
 {
   CityHelper helper( _getCity() );
-  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant );
+  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, getLandingTile().getIJ() );
 
   return !merchants.empty();
 }
@@ -162,6 +163,44 @@ const Tile& Dock::getLandingTile() const
   return tmap.at( getTilePos() + offset );
 }
 
+int Dock::getQueueSize() const
+{
+  CityHelper helper( _getCity() );
+  TilePos offset( 3, 3 );
+  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant,
+                                                        getTilePos() - offset, getTilePos() + offset );
+
+  for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
+  {
+    if( !(*it)->isWaitFreeDock() ) { it = merchants.erase( it ); }
+    else { it++; }
+  }
+
+  return merchants.size();
+}
+
+const Tile& Dock::getQueueTile() const
+{
+  CityHelper helper( _getCity() );
+  TilePos offset( 3, 3 );
+  TilesArray tiles = helper.getArea( getTilePos() - offset, getTilePos() + offset );
+
+  for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
+  {
+    bool saveTile = false;
+    if( (*it)->getFlag( Tile::tlDeepWater ) )
+    {
+      saveTile = _getCity()->getWalkers( walker::seaMerchant, (*it)->getIJ() ).empty();
+    }
+
+    if( !saveTile ) { it = tiles.erase( it ); }
+    else { it++; }
+  }
+
+  TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles.at( rand() % tiles.size() )->getIJ();
+  return _getCity()->getTilemap().at( pos );
+}
+
 void Dock::requestGoods(GoodStock& stock)
 {
   int maxRequest = std::min( stock.qty(), _d->requestGoods.getMaxStore( stock.type() ) );
@@ -173,7 +212,7 @@ void Dock::requestGoods(GoodStock& stock)
   }
 }
 
-void Dock::sellGoods(GoodStock& stock)
+void Dock::importingGoods(GoodStock& stock)
 {
   const GoodStore& cityOrders = _getCity()->getBuys();
 
@@ -194,7 +233,7 @@ void Dock::storeGoods(GoodStock &stock, const int)
   _d->exportGoods.store( stock, stock.qty() );
 }
 
-void Dock::buyGoods( GoodStock& stock, int qty )
+void Dock::exportingGoods( GoodStock& stock, int qty )
 {
   qty = std::min( qty, _d->exportGoods.getMaxRetrieve( stock.type() ) );
   _d->exportGoods.retrieve( stock, qty );

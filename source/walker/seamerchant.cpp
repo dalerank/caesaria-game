@@ -40,6 +40,7 @@ public:
   typedef enum { stFindDock=0,
                  stGoOutFromCity,
                  stRequestGoods,
+                 stWaitFreeDock,
                  stSellGoods,
                  stBuyGoods,
                  stNothing,
@@ -60,6 +61,7 @@ public:
   Pathway findNearbyDock(const DockList& docks, TilePos position );
   void goAwayFromCity( PlayerCityPtr city, WalkerPtr walker );
   DockPtr findLandingDock(PlayerCityPtr city, WalkerPtr walker );
+  Pathway findRandomRaid(const DockList& docks, TilePos position);
 };
 
 SeaMerchant::SeaMerchant(PlayerCityPtr city )
@@ -84,7 +86,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   {
   case stFindDock:
   {    
-    destBuildingPos = TilePos( -1, -1 );  // no destination yet
+    destBuildingPos = TilePos( -1, -1 );  // no destination yet    
 
     Pathway pathway;
     // get the list of buildings within reach   
@@ -92,7 +94,6 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       CityHelper helper( city );
       DockList docks = helper.find<Dock>( building::dock );
-
 
       if( !docks.empty() )
       {
@@ -105,15 +106,23 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
           }
         }
 
-        pathway = findNearbyDock( freeDocks.empty() ? docks : freeDocks, wlk->getIJ() );
+        if( freeDocks.empty() )
+        {
+          pathway = findRandomRaid( docks, wlk->getIJ() );
+          nextState = stWaitFreeDock;
+        }
+        else
+        {
+          pathway = findNearbyDock( freeDocks, wlk->getIJ() );
+          nextState = stRequestGoods;
+        }
       }
     }
     tryDockCount++;
 
     if( pathway.isValid() )
     {
-      // we found a destination!
-      nextState = stRequestGoods;
+      // we found a destination!      
       wlk->setPathway( pathway );
       wlk->go();
     }
@@ -125,12 +134,21 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   }
   break;
 
+  case stWaitFreeDock:
+  {
+    waitInterval = GameDate::getTickInMonth() / 4;
+    nextState = stFindDock;
+  }
+  break;
+
   case stRequestGoods:
   {
     landingDate = GameDate::current();
 
+    bool emptyDock = city->getWalkers( walker::any, wlk->getIJ() ).empty();
+
     DockPtr myDock = findLandingDock( city, wlk );
-    if( myDock.isValid() )
+    if( myDock.isValid() && emptyDock )
     {
       CityTradeOptions& options = city->getTradeOptions();
       //request goods
@@ -173,7 +191,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
         if( needQty > 0 )
         {
           GoodStock& stock = buy.getStock( goodType );
-          myDock->buyGoods( stock, needQty );
+          myDock->exportingGoods( stock, needQty );
         }
       }
 
@@ -225,7 +243,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
         if( sell.getQty( goodType ) > 0 )
         {
           GoodStock& stock = sell.getStock( goodType );
-          myDock->sellGoods( stock );
+          myDock->importingGoods( stock );
         }
       }
     }
@@ -255,6 +273,31 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   default:
     Logger::warning( "SeaMerchant: unknown state resolved" );
   }
+}
+
+Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos position)
+{
+  DockList::const_iterator i = docks.begin();
+  DockPtr minQueueDock;
+  int minQueue = 999;
+
+  for( DockList::const_iterator it=docks.begin(); it != docks.end(); it++ )
+  {
+    int currentQueueSize = (*it)->getQueueSize();
+    if( currentQueueSize < minQueue )
+    {
+      minQueue = currentQueueSize;
+      minQueueDock = *it;
+    }
+  }
+
+  Pathway ret;
+  if( minQueueDock.isValid() )
+  {
+    ret = PathwayHelper::create( position, (*i)->getQueueTile().getIJ(), PathwayHelper::water );
+  }
+
+  return ret;
 }
 
 Pathway SeaMerchant::Impl::findNearbyDock(const DockList& docks, TilePos position)
@@ -328,6 +371,7 @@ void SeaMerchant::save( VariantMap& stream ) const
   stream[ "sell" ] = _d->sell.save();
   stream[ "baseCity" ] = Variant( _d->baseCityName );
   stream[ "wait" ] = _d->waitInterval;
+  stream[ "state" ] = (int)_d->nextState;
 }
 
 void SeaMerchant::load( const VariantMap& stream)
@@ -337,6 +381,7 @@ void SeaMerchant::load( const VariantMap& stream)
   _d->sell.load( stream.get( "sell" ).toMap() );
   _d->baseCityName = stream.get( "baseCity" ).toString();
   _d->waitInterval = stream.get( "wait" );
+  _d->nextState = (Impl::State)stream.get( "state" ).toInt();
 }
 
 void SeaMerchant::timeStep(const unsigned long time)
@@ -347,18 +392,21 @@ void SeaMerchant::timeStep(const unsigned long time)
     return;
   }
 
-  if( _d->nextState == Impl::stWaitGoods )
+  switch( _d->nextState )
   {
+  case Impl::stWaitGoods:
+  case Impl::stWaitFreeDock:
     _d->resolveState( _getCity(), this );
+  break;
+
+  default: break;
   }
 
   Walker::timeStep( time );
 }
 
-WalkerPtr SeaMerchant::create(PlayerCityPtr city)
-{
-  return create( city, world::MerchantPtr() );
-}
+bool SeaMerchant::isWaitFreeDock() const {  return Impl::stWaitFreeDock == _d->nextState; }
+WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
 
 WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
 {

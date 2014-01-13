@@ -35,6 +35,8 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
+  bool isWaitFreeDock() const;
+
 protected:
   virtual void _reachedPathway();
 

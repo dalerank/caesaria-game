@@ -294,6 +294,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
   }
 
+  _getInfo()->move( Point( 0, 15 ));
   setText( getInfoText( factory ) );
 
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->getMaxWorkers(), factory->getWorkersCount() );

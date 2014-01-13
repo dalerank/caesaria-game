@@ -37,12 +37,16 @@ public:
   bool isBusy() const;
 
   const Tile& getLandingTile() const;
+  const Tile& getQueueTile() const;
+
+  int getQueueSize() const;
 
   void requestGoods( GoodStock& stock );
 
-  void sellGoods( GoodStock& stock );
-  void buyGoods( GoodStock& stock, int qty );
+  void importingGoods( GoodStock& stock );
+  void exportingGoods( GoodStock& stock, int qty );
   void storeGoods(GoodStock& stock, const int amount);
+
 private:
   void _setDirection( constants::Direction direction );
   virtual void _updatePicture( constants::Direction direction );
