@@ -21,6 +21,8 @@
 #include "core/saveadapter.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "core/gettext.hpp"
+
 
 namespace gui
 {
@@ -569,7 +571,7 @@ void Widget::setupUI( const VariantMap& ui )
 
   Variant tmp;
   setID( (int)ui.get( "id", -1 ) );
-  setText( ui.get( "text" ).toString() );
+  setText( _( ui.get( "text" ).toString() ) );
   setTooltipText( ui.get( "tooltip" ).toString() );
   setVisible( ui.get( "visible", true ).toBool() );
   setEnabled( ui.get( "enabled", true ).toBool() );

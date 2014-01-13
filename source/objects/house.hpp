@@ -79,7 +79,7 @@ public:
   float collectTaxes();
   DateTime getLastTaxation() const;
 
-  std::string getUpCondition() const;
+  std::string getEvolveInfo() const;
 
   virtual int getRoadAccessDistance() const;
 
@@ -95,6 +95,7 @@ private:
   void _tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability );
   void _makeOldHabitants();
   void _updateHabitants(const CitizenGroup& group);
+  void _checkEvolve();
 
   class Impl;
   ScopedPtr< Impl > _d;

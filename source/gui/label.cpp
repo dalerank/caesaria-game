@@ -18,7 +18,6 @@
 #include "gfx/decorator.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
-#include "core/gettext.hpp"
 
 using namespace std;
 
@@ -529,7 +528,7 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 //! Sets the new caption of this element.
 void Label::setText(const string& text)
 {
-  Widget::setText( _(text) );
+  Widget::setText( text );
 
   _d->breakText( getText(), getSize() );
   _d->needUpdatePicture = true;

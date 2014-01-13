@@ -82,13 +82,6 @@ private:
   WorkingBuildingPtr _working;
 };
 
-class InfoBoxSenate : public InfoBoxSimple
-{
-public:
-  InfoBoxSenate( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxSenate();
-};
-
 class InfoBoxLand : public InfoBoxSimple
 {
   static const int lbTextId=2;

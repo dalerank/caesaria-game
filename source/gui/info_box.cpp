@@ -186,10 +186,9 @@ PushButton*InfoBoxSimple::_getBtnExit() { return _d->btnExit; }
 
 void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
+  _d->lbBlackFrame->setVisible( need > 0 );
   if( !_d->lbBlackFrame || 0 == need)
     return;
-
-  _d->lbBlackFrame->setVisible( need > 0 );
 
   // number of workers
   std::string text = StringHelper::format( 0xff, "%d %s (%d %s)",
@@ -223,11 +222,14 @@ void InfoBoxWorkingBuilding::setText(const std::string& text)
     StringArray messages;
     messages.push_back( text );
 
-    std::string type = MetaDataHolder::getTypename( _working->getType() );
-    const char* stateName[] = { "nowork", "poor", "half", "good", "awesome" };
-    int workPercent = _working->getWorkersCount() * 4 / _working->getMaxWorkers();
+    if( _working->getMaxWorkers() > 0 )
+    {
+      std::string type = MetaDataHolder::getTypename( _working->getType() );
+      const char* stateName[] = { "nowork", "poor", "half", "good", "awesome" };
+      int workPercent = _working->getWorkersCount() * 4 / _working->getMaxWorkers();
 
-    messages.push_back( StringHelper::format( 0xff, "##%s_%s##", type.c_str(), stateName[ workPercent == 0 ? 0 : (workPercent + 1) ]));
+      messages.push_back( StringHelper::format( 0xff, "##%s_%s##", type.c_str(), stateName[ workPercent == 0 ? 0 : (workPercent + 1) ]));
+    }
 
     lb->setText( messages.at( rand() % messages.size() ) );
   }
@@ -236,30 +238,6 @@ void InfoBoxWorkingBuilding::setText(const std::string& text)
 void InfoBoxWorkingBuilding::showDescription()
 {
   DictionaryWindow::show( getEnvironment()->getRootWidget(), _working->getType() );
-}
-
-InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
-{
-  SenatePtr senate = tile.getOverlay().as<Senate>();
-  setTitle( MetaDataHolder::instance().getData( building::senate ).getPrettyName() );
-
-  // number of workers
-  _updateWorkersLabel( Point( 32, 136), 542, senate->getMaxWorkers(), senate->getWorkersCount() );
-
-  std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->getFunds() );
-
-  Label* lb = new Label( this, Rect( 60, 35, getWidth() - 16, 35 + 30 ), denariesStr );
-  lb->setIcon( GoodHelper::getPicture( Good::denaries ) );
-  lb->setText( denariesStr );
-
-  new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##open_rating_adviser##") );
-  new TexturedButton( this, Point( 350, 215 ), Size(28), -1, 289 );
-  new Label( this, Rect( 16, 70, getWidth() - 16, 70 + 60 ), _("##senate_help_text##") );
-}
-
-InfoBoxSenate::~InfoBoxSenate()
-{
 }
 
 InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
@@ -470,7 +448,7 @@ InfoBoxText::~InfoBoxText()
 InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
-  setTitle( "##fontaun_title##" );
+  setTitle( "##fontain##" );
 
   _d->lbInfo->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
   _d->lbInfo->setWordwrap( true );

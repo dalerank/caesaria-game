@@ -65,7 +65,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
 
   _getBtnExit()->setTooltipText( _("##advanced_houseinfo##") );
 
-  Label* houseInfo = new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), house->getUpCondition() );
+  Label* houseInfo = new Label( this, Rect( 30, 40, getWidth() - 30, 40 + 100 ), _( house->getEvolveInfo() ) );
   houseInfo->setWordwrap( true );
 
   std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",

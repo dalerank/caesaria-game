@@ -62,7 +62,7 @@ public:
   int maxHabitants;
   DateTime taxCheckInterval;
   DateTime lastTaxationDate;
-  std::string condition4Up;  
+  std::string evolveInfo;
   CitizenGroup habitants;
   int currentYear;
   int changeCondition;
@@ -166,6 +166,59 @@ void House::_updateHabitants( const CitizenGroup& group )
   }
 }
 
+void House::_checkEvolve()
+{
+  bool validate = _d->spec.checkHouse( this, &_d->evolveInfo );
+  if( !validate )
+  {
+    _d->changeCondition--;
+    if( _d->changeCondition <= maxNegativeStep )
+    {
+      _d->changeCondition = 0;
+      levelDown();
+    }
+  }
+  else
+  {
+    _d->evolveInfo = "";
+    bool mayUpgrade =  _d->spec.next().checkHouse( this, &_d->evolveInfo );
+    if( mayUpgrade )
+    {
+      _d->changeCondition++;
+      if( _d->changeCondition >= maxPositiveStep )
+      {
+        _d->changeCondition = 0;
+        levelUp();
+      }
+    }
+    else
+    {
+      _d->changeCondition = 0;
+    }
+  }
+
+  if( _d->changeCondition < 0 )
+  {
+    std::string why;
+    _d->spec.checkHouse( this, &why );
+    if( why.empty() )
+    {
+      why = why.substr( why - 2 );
+      why += "_degrade##";
+    }
+    else
+    {
+      why = "##house_willbe_degrade##";
+    }
+
+    _d->evolveInfo = why;
+  }
+  else if( _d->changeCondition > 0 )
+  {
+    _d->evolveInfo = _("##house_evolves_at##");
+  }
+}
+
 void House::timeStep(const unsigned long time)
 {
   if( _d->habitants.empty()  )
@@ -188,6 +241,8 @@ void House::timeStep(const unsigned long time)
     _d->taxCheckInterval = GameDate::current();
     float cityTax = _getCity()->getFunds().getTaxRate() / 100.f;
     appendServiceValue( Service::forum, (cityTax * _d->spec.getTaxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
+
+    _checkEvolve();
   }
 
   if( time % getSpec().getFoodConsumptionInterval() == 0 )
@@ -202,50 +257,7 @@ void House::timeStep(const unsigned long time)
        _d->goodStore.setQty( goodType, std::max( _d->goodStore.getQty(goodType) - montlyGoodsQty, 0) );
     }
 
-    bool validate = _d->spec.checkHouse( this, &_d->condition4Up );
-    if( !validate )
-    {
-      _d->changeCondition--;
-      if( _d->changeCondition <= maxNegativeStep )
-      {
-        _d->changeCondition = 0;
-        levelDown();
-      }
-    }
-    else
-    {
-      _d->condition4Up = "";
-      bool mayUpgrade =  _d->spec.next().checkHouse( this, &_d->condition4Up );
-      if( mayUpgrade )
-      {
-        _d->changeCondition++;
-        if( _d->changeCondition >= maxPositiveStep )
-        {
-          _d->changeCondition = 0;
-          levelUp();
-        }
-      }
-      else
-      {
-        _d->changeCondition = 0;
-      }
-    }
-
-    if( _d->changeCondition < 0 )
-    {
-      std::string why;
-      _d->spec.checkHouse( this, &why );
-      _d->condition4Up = StringHelper::format( 0xff, "%s %s",
-                                               _("##house_willbe_degrade##"),
-                                               why.c_str() );
-    }
-    else if( _d->changeCondition > 0 )
-    {
-      _d->condition4Up = _("##house_evolves_at##");
-    }
-
-
-    int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
+        int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
     if( homelessCount > 0 )
     {
       CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
@@ -859,7 +871,7 @@ float House::collectTaxes()
 
 int House::getHealthLevel() const{  return _d->healthLevel;}
 DateTime House::getLastTaxation() const{  return _d->lastTaxationDate;}
-std::string House::getUpCondition() const{  return _d->condition4Up;}
+std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::getDesirability() const {  return _d->desirability; }
 bool House::isWalkable() const{  return (_d->houseId == smallHovel && _d->habitants.count() == 0); }
 bool House::isFlat() const {   return isWalkable(); }

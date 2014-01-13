@@ -63,13 +63,6 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
     lbProgress->setText( text );
   }
 
-  std::string typeRaw = MetaDataHolder::getTypename( rawmb->getType() );
-  setTitle( MetaDataHolder::getPrettyName( rawmb->getType() ) );
-  if( lbAbout != NULL )
-  {
-    lbAbout->setText( StringHelper::format( 0xff, "%s_desc", typeRaw.c_str() ) );
-  }
-
   if( lbProductivity != NULL )
   {
     std::string text = _("##farm_working_normally##");
