@@ -48,10 +48,10 @@ public:
   virtual float evaluateService(ServiceWalkerPtr walker);
   virtual void buyMarket(ServiceWalkerPtr walker);
 
-  virtual void appendServiceValue( Service::Type srvc, const int value );
+  virtual void appendServiceValue(Service::Type srvc, float value );
   virtual bool hasServiceAccess( Service::Type service );
-  virtual int getServiceValue( Service::Type service );
-  virtual void setServiceValue( Service::Type service, const int access );
+  virtual float getServiceValue( Service::Type service );
+  virtual void setServiceValue(Service::Type service, float value );
   virtual TilesArray getEnterArea() const;
 
   int getFoodLevel() const;
@@ -77,7 +77,7 @@ public:
   const CitizenGroup& getHabitants() const;
 
   float collectTaxes();
-  bool ready2Taxation() const;
+  DateTime getLastTaxation() const;
 
   std::string getUpCondition() const;
 

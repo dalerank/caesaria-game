@@ -213,12 +213,12 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
 
 unsigned int HouseLevelSpec::getServiceConsumptionInterval() const
 {
-  return 16;
+  return GameDate::getTickInMonth() / 16;
 }
 
 unsigned int HouseLevelSpec::getFoodConsumptionInterval() const
 {
-  return 64;
+  return GameDate::getTickInMonth() / 4;
 }
 
 int HouseLevelSpec::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)

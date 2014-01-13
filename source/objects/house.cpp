@@ -39,6 +39,7 @@
 #include "objects/desirability.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
+#include "city/funds.hpp"
 
 using namespace constants;
 
@@ -59,21 +60,12 @@ public:
   SimpleGoodStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
   int maxHabitants;
-  DateTime lastPayDate;
+  DateTime taxCheckInterval;
+  DateTime lastTaxationDate;
   std::string condition4Up;  
   CitizenGroup habitants;
   int currentYear;
   int changeCondition;
-
-  bool mayPayTax()
-  {
-    return lastPayDate.getMonthToDate( GameDate::current() ) > 0;
-  }
-
-  float getAvailableTax()
-  {
-    return spec.getTaxRate() * habitants.count( CitizenGroup::mature ) / 12.f;
-  }
 
   void updateHealthLevel()
   {
@@ -105,17 +97,19 @@ public:
   void consumeServices()
   {
     int currentWorkersPower = services[ Service::recruter ];       //save available workers number
-    for( Services::iterator it=services.begin(); it != services.end(); it++ )
-    { it->second -= 1; } //consume services
+    float tax = services[ Service::forum ];
+
+    foreach( Services::value_type& s, services ) { s.second -= 1; } //consume services
 
     services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
+    services[ Service::forum ] = tax;
   }
 };
 
 House::House(const int houseId) : Building( building::house ), _d( new Impl )
 {
   _d->houseId = houseId;
-  _d->lastPayDate = DateTime( -400, 1, 1 );
+  _d->taxCheckInterval = DateTime( -400, 1, 1 );
   _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
   _d->healthLevel = 100;
   HouseSpecHelper& helper = HouseSpecHelper::getInstance();
@@ -126,7 +120,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _d->desirability.range = 3;
   _d->desirability.step = 1;
   _d->changeCondition = 0;
-  _d->currentYear = GameDate::current().getYear();
+  _d->currentYear = GameDate::current().year();
   updateState( Construction::fire, 0, false );
 
   _d->initGoodStore( 1 );
@@ -177,10 +171,10 @@ void House::timeStep(const unsigned long time)
   if( _d->habitants.empty()  )
     return;
 
-  if( _d->currentYear != GameDate::current().getYear() )
+  if( _d->currentYear != GameDate::current().year() )
   {
-    _d->currentYear = GameDate::current().getYear();
-    _makeOldHabitants();
+    _d->currentYear = GameDate::current().year();
+    _makeOldHabitants();    
   }
 
   if( time % getSpec().getServiceConsumptionInterval() == 0 )
@@ -189,13 +183,16 @@ void House::timeStep(const unsigned long time)
     _d->updateHealthLevel();            
   }
 
-  if( time % 32 == 0 )
+  if( _d->taxCheckInterval.month() != GameDate::current().month() )
   {
-    appendServiceValue( Service::crime, _d->spec.getCrime() + 2 );
+    _d->taxCheckInterval = GameDate::current();
+    float cityTax = _getCity()->getFunds().getTaxRate() / 100.f;
+    appendServiceValue( Service::forum, (cityTax * _d->spec.getTaxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
   }
 
   if( time % getSpec().getFoodConsumptionInterval() == 0 )
   {
+    appendServiceValue( Service::crime, _d->spec.getCrime() + 2 );
     cancelService( Service::recruter );
     // consume goods
     for( int i = 0; i < Good::goodCount; ++i)
@@ -265,17 +262,6 @@ void House::timeStep(const unsigned long time)
   }
 
   Building::timeStep( time );
-}
-
-GoodStore& House::getGoodStore()
-{
-   return _d->goodStore;
-}
-
-
-const HouseLevelSpec& House::getSpec() const
-{
-   return _d->spec;
 }
 
 void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int startBigPic, const char desirability )
@@ -538,11 +524,6 @@ void House::buyMarket( ServiceWalkerPtr walker )
   }
 }
 
-void House::appendServiceValue( Service::Type srvc, const int value)
-{
-  setServiceValue( srvc, getServiceValue( srvc ) + value );
-}
-
 void House::applyService( ServiceWalkerPtr walker )
 {
   Building::applyService(walker);  // handles basic services, and remove service reservation
@@ -579,11 +560,6 @@ void House::applyService( ServiceWalkerPtr walker )
     buyMarket(walker);
   break;
  
-  case Service::senate:
-  case Service::forum:
-    setServiceValue(service, 100);
-  break;
-
   case Service::prefect:
     appendServiceValue(Service::crime, -25);
   break;
@@ -632,7 +608,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   // this house pays taxes
   case Service::forum:
   case Service::senate:
-    res = _d->mayPayTax() ? _d->getAvailableTax() : 0.f;
+    res = _d->services[ Service::forum ];
   break;
 
   case Service::market:
@@ -673,21 +649,6 @@ float House::evaluateService(ServiceWalkerPtr walker)
   return res;
 }
 
-bool House::hasServiceAccess( Service::Type service)
-{
-  return (_d->services[service] > 0);
-}
-
-int House::getServiceValue( Service::Type service)
-{
-  return _d->services[service];
-}
-
-void House::setServiceValue( Service::Type service, const int access)
-{
-  _d->services[service] = access;
-}
-
 TilesArray House::getEnterArea() const
 {
   if( isWalkable() )
@@ -702,11 +663,6 @@ TilesArray House::getEnterArea() const
   }
 }
 
-int House::getMaxHabitants()
-{
-  return _d->maxHabitants;
-}
-
 void House::_update()
 {
   int picId = ( _d->houseId == smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
@@ -714,6 +670,7 @@ void House::_update()
   setPicture( pic );
   setSize( Size( (pic.getWidth() + 2 ) / 60 ) );
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * getSize().getArea();
+  _d->services[ Service::forum ].setMax( _d->spec.getTaxRate() * _d->maxHabitants );
   _d->initGoodStore( getSize().getArea() );
 }
 
@@ -742,11 +699,6 @@ CitizenGroup House::remHabitants(int count)
   return hb;
 }
 
-const CitizenGroup& House::getHabitants() const
-{
-  return _d->habitants;
-}
-
 void House::destroy()
 {
   _d->maxHabitants = 0;
@@ -764,27 +716,12 @@ void House::destroy()
   Building::destroy();
 }
 
-bool House::isWalkable() const
-{
-  return (_d->houseId == smallHovel && _d->habitants.count() == 0);
-}
-
-bool House::isFlat() const
-{
-  return isWalkable();
-}
-
 std::string House::getSound() const
 {
   if( !_d->habitants.count() )
     return "";
 
   return StringHelper::format( 0xff, "house_%05d.wav", _d->houseLevel*10+1 );
-}
-
-Desirability House::getDesirability() const
-{
-  return _d->desirability;
 }
 
 void House::save( VariantMap& stream ) const
@@ -837,7 +774,7 @@ void House::load( const VariantMap& stream )
   {
     Service::Type type = Service::Type( (int)(*it) );
     it++;
-    _d->services[ type ] = (*it).toInt(); //serviceValue
+    _d->services[ type ] = (*it).toFloat(); //serviceValue
   }
 
   Building::build( _getCity(), getTilePos() );
@@ -877,11 +814,6 @@ int House::getFoodLevel() const
   return ret;
 }
 
-int House::getHealthLevel() const
-{
-  return _d->healthLevel;
-}
-
 int House::getWorkersCount() const
 {
   const Service& srvc = _d->services[ Service::recruter ];
@@ -919,21 +851,23 @@ bool House::isEntertainmentNeed(Service::Type type) const
 
 float House::collectTaxes()
 {
-  if( _d->mayPayTax() )
-  {
-    _d->lastPayDate = GameDate::current();
-    return _d->getAvailableTax();
-  }
-
-  return 0;
+  float tax = getServiceValue( Service::forum );
+  setServiceValue( Service::forum, 0 );
+  _d->lastTaxationDate = GameDate::current();
+  return tax;
 }
 
-bool House::ready2Taxation() const
-{
-  return _d->mayPayTax();
-}
-
-std::string House::getUpCondition() const
-{
-  return _d->condition4Up;
-}
+int House::getHealthLevel() const{  return _d->healthLevel;}
+DateTime House::getLastTaxation() const{  return _d->lastTaxationDate;}
+std::string House::getUpCondition() const{  return _d->condition4Up;}
+Desirability House::getDesirability() const {  return _d->desirability; }
+bool House::isWalkable() const{  return (_d->houseId == smallHovel && _d->habitants.count() == 0); }
+bool House::isFlat() const {   return isWalkable(); }
+const CitizenGroup& House::getHabitants() const  {  return _d->habitants; }
+GoodStore& House::getGoodStore(){   return _d->goodStore;}
+const HouseLevelSpec& House::getSpec() const{   return _d->spec; }
+bool House::hasServiceAccess( Service::Type service) {  return (_d->services[service] > 0); }
+float House::getServiceValue( Service::Type service){  return _d->services[service]; }
+void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }
+int House::getMaxHabitants() {  return _d->maxHabitants; }
+void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
