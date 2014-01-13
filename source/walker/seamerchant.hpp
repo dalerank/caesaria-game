@@ -37,6 +37,8 @@ public:
 
   bool isWaitFreeDock() const;
 
+  virtual std::string getThinks() const;
+
 protected:
   virtual void _reachedPathway();
 

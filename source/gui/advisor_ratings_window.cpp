@@ -36,10 +36,11 @@ namespace gui
 class RatingButton : public PushButton
 {
 public:
-  RatingButton( Widget* parent, const Point& pos, const std::string& title )
-    : PushButton( parent, Rect( pos, Size( 108, 65 )), title, -1, false, PushButton::whiteBorderUp )
+  RatingButton( Widget* parent, Point pos, std::string title, std::string tooltip )
+    : PushButton( parent, Rect( pos, Size( 108, 65 )), _(title), -1, false, PushButton::whiteBorderUp )
   {
     setTextAlignment( alignCenter, alignUpperLeft );
+    setTooltipText( _(tooltip) );
     _value = 0;
     _target = 0;
   }
@@ -201,28 +202,25 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   Font font = Font::create( FONT_2 );
   font.draw( *_d->background, StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.getPopulation() ), 225, 15, false );
 
-  _d->btnCulture    = new RatingButton( this, Point( 80,  290), _("##wdnrt_culture##") );
+  _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wdnrt_culture##", "##wndrt_culture_tooltip##" );
   _d->btnCulture->setTarget( targets.getCulture() );
   _d->btnCulture->setValue( _d->city->getCulture() );
-  _d->btnCulture->setTooltipText( _("##get_advice_about_culture##" ) );
   _d->drawColumn( _d->btnCulture->getRelativeRect().getCenter(), 0 );
   CONNECT( _d->btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
 
-  _d->btnProsperity = new RatingButton( this, Point( 200, 290), _("##wndrt_prosperity##") );
+  _d->btnProsperity = new RatingButton( this, Point( 200, 290), "##wndrt_prosperity##", "##wndrt_prosperity_tooltip##" );
   _d->btnProsperity->setValue( _d->city->getProsperity() );
   _d->btnProsperity->setTarget( targets.getProsperity() );
-  _d->btnProsperity->setTooltipText( _("##get_advice_about_prosperity##") );
   _d->drawColumn( _d->btnProsperity->getRelativeRect().getCenter(), _d->city->getProsperity() );
   CONNECT( _d->btnProsperity, onClicked(), _d.data(), Impl::checkProsperityRating );
 
-  _d->btnPeace      = new RatingButton( this, Point( 320, 290), _("##wndrt_peace##") );
+  _d->btnPeace      = new RatingButton( this, Point( 320, 290), "##wndrt_peace##", "##wndrt_peace_tooltip##" );
   _d->btnPeace->setValue( _d->city->getPeace() );
   _d->btnPeace->setTarget( targets.getPeace() );
   _d->drawColumn( _d->btnPeace->getRelativeRect().getCenter(), 0 );
-  _d->btnPeace->setTooltipText( _("##get_advice_about_peace##") );
   CONNECT( _d->btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
 
-  _d->btnFavour     = new RatingButton( this, Point( 440, 290), _("##wndrt_favour##") );
+  _d->btnFavour     = new RatingButton( this, Point( 440, 290), "##wndrt_favour##", "##wndrt_favour_tooltip##" );
   //_d->btnFavour->setValue( _d->city->getFavour() );
   _d->btnFavour->setTarget( targets.getFavour() );
   _d->drawColumn( _d->btnFavour->getRelativeRect().getCenter(), 0 );

@@ -386,7 +386,7 @@ ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
     : Menu( parent, id, rectangle )
 {
   _d->minimizeButton->deleteLater();
-  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##minimizeBtnTooltip") );
+  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##show_bigpanel##") );
   _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
   CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
 

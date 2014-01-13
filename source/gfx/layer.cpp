@@ -313,7 +313,7 @@ void Layer::drawColumn( GfxEngine& engine, const Point& pos, const int startPicI
   }
 }
 
-void Layer::init(Point cursor)
+void Layer::init( Point cursor )
 {
   _d->lastCursorPos = cursor;
   _d->startCursorPos = cursor;

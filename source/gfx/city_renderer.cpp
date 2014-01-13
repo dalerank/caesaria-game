@@ -62,6 +62,7 @@ public:
 
   PlayerCityPtr city;     // city to display
   Tilemap* tilemap;
+  gui::GuiEnv* guienv;
   GfxEngine* engine;
   TilemapCamera camera;  // visible map area
   Layers layers;
@@ -79,9 +80,10 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine )
+void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine , gui::GuiEnv* guienv)
 {
   _d->city = city;
+  _d->guienv = guienv;
   _d->tilemap = &city->getTilemap();
   _d->camera.init( *_d->tilemap );
   _d->engine = engine;
@@ -128,7 +130,7 @@ void CityRenderer::Impl::setLayer(int type)
     currentLayer = layers.front();
   }
 
-  currentLayer->init( currentCursorPos );
+  currentLayer->init( currentCursorPos, guienv );
 }
 
 void CityRenderer::render()

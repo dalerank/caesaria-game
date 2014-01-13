@@ -18,7 +18,9 @@
 #include "infobox_citizen.hpp"
 #include "label.hpp"
 #include "walker/walker.hpp"
+#include "walker/merchant.hpp"
 #include "game/settings.hpp"
+#include "walker/constants.hpp"
 
 using namespace constants;
 
@@ -44,14 +46,29 @@ InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
                                "Citizen's thoughts will be placed here" );
   Label* lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
 
+  WalkerPtr wlk;
   if( !walkers.empty() )
   {
-    WalkerPtr walker = walkers.front();
-    lbName->setText( walker->getName() );
-    lbType->setText( WalkerHelper::getPrettyTypeName( walker->getType() ) );
-    lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( walker->getType() ) );
+    wlk = walkers.front();
+    lbName->setText( wlk->getName() );
+    lbType->setText( WalkerHelper::getPrettyTypeName( wlk->getType() ) );
+    lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->getType() ) );
 
-    lbThinks->setText( walkers.front()->getThinks() );
+    lbThinks->setText( wlk->getThinks() );
+  }
+
+  if( wlk.isValid() )
+  {
+    switch( wlk->getType() )
+    {
+    case walker::merchant:
+    {
+      setTitle( _("##trade_caravan_from##") + wlk.as<Merchant>()->getParentCity() );
+    }
+    break;
+
+    default: setTitle( _("##citizen##" ) );
+    }
   }
 }
 

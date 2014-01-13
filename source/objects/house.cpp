@@ -203,7 +203,7 @@ void House::_checkEvolve()
     _d->spec.checkHouse( this, &why );
     if( why.empty() )
     {
-      why = why.substr( why - 2 );
+      why = why.substr( why.size() - 2 );
       why += "_degrade##";
     }
     else

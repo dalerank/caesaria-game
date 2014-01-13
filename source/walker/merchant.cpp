@@ -376,10 +376,8 @@ void Merchant::timeStep(const unsigned long time)
   Walker::timeStep( time );
 }
 
-WalkerPtr Merchant::create(PlayerCityPtr city)
-{
-  return create( city, world::MerchantPtr() );
-}
+std::string Merchant::getParentCity() const{  return _d->baseCityName; }
+WalkerPtr Merchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
 
 WalkerPtr Merchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
 {

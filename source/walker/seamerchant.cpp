@@ -406,6 +406,18 @@ void SeaMerchant::timeStep(const unsigned long time)
 }
 
 bool SeaMerchant::isWaitFreeDock() const {  return Impl::stWaitFreeDock == _d->nextState; }
+
+std::string SeaMerchant::getThinks() const
+{
+  switch( _d->nextState )
+  {
+  case Impl::stWaitFreeDock: return "##waiting_for_free_dock##";
+  case Impl::stBuyGoods: return "##docked_buying_selling_goods##";
+  }
+
+  return Walker::getThinks();
+}
+
 WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
 
 WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
