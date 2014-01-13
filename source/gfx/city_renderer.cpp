@@ -45,6 +45,7 @@
 #include "layerdamage.hpp"
 #include "layerdesirability.hpp"
 #include "layerentertainment.hpp"
+#include "layertax.hpp"
 #include "layercrime.hpp"
 #include "walker/walker.hpp"
 #include "objects/aqueduct.hpp"
@@ -105,6 +106,7 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine )
   addLayer( LayerCrime::create( _d->camera, city ) ) ;
   addLayer( LayerBuild::create( this, city ) );
   addLayer( LayerDestroy::create( _d->camera, city ) );
+  addLayer( LayerTax::create( _d->camera, city ) );
 
   _d->setLayer( citylayer::simple );
 }
