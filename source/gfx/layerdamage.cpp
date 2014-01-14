@@ -20,8 +20,14 @@
 #include "game/resourcegroup.hpp"
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
+#include "core/event.hpp"
+#include "tilemap_camera.hpp"
 
 using namespace constants;
+
+static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_damage_risk##",
+                                         "##some_damage_risk##", "##very_high_damage_risk##",
+                                         "##extreme_damage_risk##" };
 
 int LayerDamage::getType() const
 {
@@ -106,6 +112,37 @@ LayerPtr LayerDamage::create(TilemapCamera& camera, PlayerCityPtr city)
   ret->drop();
 
   return ret;
+}
+
+void LayerDamage::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        ConstructionPtr constr = tile->getOverlay().as<Construction>();
+        if( constr != 0 )
+        {
+          int damageLevel = math::clamp<int>( constr->getState( Construction::damage ), 0, 100 );
+          text = damageLevelName[ damageLevel / 20 ];
+        }
+      }
+
+      _setTooltipText( text );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerDamage::LayerDamage( TilemapCamera& camera, PlayerCityPtr city)

@@ -422,7 +422,7 @@ void CartPusher::die()
 
 std::string CartPusher::getThinks() const
 {
-  if( !_pathwayRef().isValid() )
+  if( !getPathway().isValid() )
   {
     return "##cartpusher_cantfind_destination##";
   }

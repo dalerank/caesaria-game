@@ -170,7 +170,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
 
 std::string MarketLady::getThinks() const
 {
-  if( !_pathwayRef().isReverse() )
+  if( !getPathway().isReverse() )
   {
     return "##market_lady_find_goods##";
   }

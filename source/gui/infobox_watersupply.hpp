@@ -13,23 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_LAYERDAMAGE_H_INCLUDED__
-#define __CAESARIA_LAYERDAMAGE_H_INCLUDED__
+#ifndef _CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
+#define _CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
 
-#include "layer.hpp"
+#include "info_box.hpp"
 
-class LayerDamage : public Layer
+namespace gui
+{
+
+// info box about a fontain
+class InfoBoxFontain : public InfoBoxSimple
 {
 public:
-  virtual int getType() const;
-  virtual std::set<int> getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
-  virtual void handleEvent(NEvent& event);
+   InfoBoxFontain( Widget* parent, const Tile& tile );
+   virtual ~InfoBoxFontain();
 
-  static LayerPtr create(TilemapCamera& camera, PlayerCityPtr city );
-
-private:
-  LayerDamage( TilemapCamera& camera, PlayerCityPtr city );
+   virtual void showDescription();
 };
 
-#endif //__CAESARIA_LAYERDAMAGE_H_INCLUDED__
+}//end namespace gui
+#endif //_CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_

@@ -388,42 +388,4 @@ InfoBoxText::~InfoBoxText()
 
 }
 
-
-InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
-{
-  setTitle( "##fontain##" );
-
-  _d->lbInfo->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
-  _d->lbInfo->setWordwrap( true );
-
-  FountainPtr fountain = tile.getOverlay().as<Fountain>();
-  std::string text;
-  if( fountain != 0 )
-  {
-    if( fountain->isActive() )
-    {
-      text = _("##fountain_text##");
-    }
-    else
-    {
-      text = fountain->haveReservoirAccess()
-               ? _("##need_full_reservoir_for_work##")
-               : _("##need_reservoir_for_work##");
-    }
-  }
-
-  _d->lbInfo->setText( text );
-}
-
-InfoBoxFontain::~InfoBoxFontain()
-{
-
-}
-
-void InfoBoxFontain::showDescription()
-{
-  DictionaryWindow::show( getParent(), building::fountain );
-}
-
 }//end namespace gui

@@ -39,6 +39,7 @@
 #include "gui/infobox_granary.hpp"
 #include "gui/infobox_senate.hpp"
 #include "gui/infobox_factory.hpp"
+#include "gui/infobox_watersupply.hpp"
 #include <map>
 
 using namespace constants;

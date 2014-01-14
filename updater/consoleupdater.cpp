@@ -424,7 +424,7 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 		{
 			Logger::warning( "");
 		}
-		break;
+	break;
 	};
 }
 
@@ -481,6 +481,8 @@ void ConsoleUpdater::PrintProgress()
 		line += GetShortenedString(_info.file.getBasename().toString(), remainingLength);
 	}
 	break;
+
+	default: break;
 	};
 
 	// Expand the line length to 79 characters
