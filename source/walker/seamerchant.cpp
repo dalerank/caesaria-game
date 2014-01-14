@@ -413,6 +413,8 @@ std::string SeaMerchant::getThinks() const
   {
   case Impl::stWaitFreeDock: return "##waiting_for_free_dock##";
   case Impl::stBuyGoods: return "##docked_buying_selling_goods##";
+
+  default: break;
   }
 
   return Walker::getThinks();

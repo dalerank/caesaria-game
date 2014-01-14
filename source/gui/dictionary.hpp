@@ -31,6 +31,7 @@ public:
 
   //! Деструктор
   virtual ~DictionaryWindow();
+  virtual bool onEvent(const NEvent &event);
 
 private:
   DictionaryWindow( Widget* parent );

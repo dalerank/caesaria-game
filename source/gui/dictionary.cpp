@@ -21,6 +21,7 @@
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "objects/metadata.hpp"
+#include "core/event.hpp"
 
 namespace gui
 {
@@ -57,6 +58,29 @@ void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
 
 DictionaryWindow::~DictionaryWindow( void )
 {
+}
+
+bool DictionaryWindow::onEvent(const NEvent& event)
+{
+  switch( event.EventType )
+  {
+  case sEventMouse:
+    if( event.mouse.type == mouseRbtnRelease )
+    {
+      deleteLater();
+      return true;
+    }
+    else if( event.mouse.type == mouseLbtnRelease )
+    {
+      return true;
+    }
+  break;
+
+  default:
+  break;
+  }
+
+  return Widget::onEvent( event );
 }
 
 }//end namespace gui

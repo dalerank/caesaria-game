@@ -80,10 +80,9 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine , gui::GuiEnv* guienv)
+void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
 {
   _d->city = city;
-  _d->guienv = guienv;
   _d->tilemap = &city->getTilemap();
   _d->camera.init( *_d->tilemap );
   _d->engine = engine;
@@ -130,7 +129,7 @@ void CityRenderer::Impl::setLayer(int type)
     currentLayer = layers.front();
   }
 
-  currentLayer->init( currentCursorPos, guienv );
+  currentLayer->init( currentCursorPos );
 }
 
 void CityRenderer::render()

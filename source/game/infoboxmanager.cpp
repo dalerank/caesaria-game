@@ -142,8 +142,13 @@ public:
     InfoBoxSimple* infoBox = new InfoBoxSimple( parent, Rect( 0, 0, 510, 300 ) );
     infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
                                   size.getHeight() - infoBox->getHeight()) );
+    TileOverlayPtr overlay = city->getOverlay( pos );
 
-    infoBox->setTitle( _( title ) );
+    std::string caption = overlay.isValid()
+                            ? MetaDataHolder::getPrettyName( overlay->getType() )
+                            : title;
+
+    infoBox->setTitle( _( caption ) );
     infoBox->setText( _( text ) );
     return infoBox;
   }
@@ -205,7 +210,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::smallStatue,      CAESARIA_STR_EXT(B_STATUE1),   new InfoBoxBasicCreator( "", "##statue_info##") );
   addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoBoxBasicCreator( "", "##statue_info##") );
   addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoBoxBasicCreator( "", "##statue_info##") );
-  addInfobox( construction::plaza,        CAESARIA_STR_EXT(B_PLAZA),     new CitizenInfoboxCreator<InfoBoxLand>() );
+  addInfobox( construction::plaza,        CAESARIA_STR_EXT(Plaza),     new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::unknown,          CAESARIA_STR_EXT(unknown),     new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::pottery,          CAESARIA_STR_EXT(Pottery),   new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::shipyard,         CAESARIA_STR_EXT(Shipyard),   new BaseInfoboxCreator<InfoboxFactory>() );
@@ -215,6 +220,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::timberLogger,     CAESARIA_STR_EXT(TimberLogger), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addInfobox( building::marbleQuarry,     CAESARIA_STR_EXT(MarbleQuarry), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
   addInfobox( building::ironMine,         CAESARIA_STR_EXT(IronMine), new BaseInfoboxCreator<InfoBoxRawMaterial>() );
+  addInfobox( building::dock,             CAESARIA_STR_EXT(Dock), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::winery,           CAESARIA_STR_EXT(Winery), new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::creamery,         CAESARIA_STR_EXT(Creamery), new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::senate,           CAESARIA_STR_EXT(Senate),    new BaseInfoboxCreator<InfoBoxSenate>() );

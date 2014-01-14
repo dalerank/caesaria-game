@@ -25,6 +25,7 @@ public:
   virtual int getType() const;
   virtual std::set<int> getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void handleEvent( NEvent& event );
 
   static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
 private:

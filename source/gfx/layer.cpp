@@ -25,6 +25,7 @@
 #include "walker/walker.hpp"
 #include "tilemap_camera.hpp"
 #include "city/city.hpp"
+#include "core/font.hpp"
 
 using namespace constants;
 
@@ -38,7 +39,9 @@ public:
   Point startCursorPos;
   TilemapCamera* camera;
   PlayerCityPtr city;
+  PictureRef tooltipPic;
   int nextLayer;
+  std::string tooltipText;
   RenderQueue renderQueue;
 };
 
@@ -211,6 +214,21 @@ void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camO
   }
 }
 
+void Layer::_setTooltipText(std::string text)
+{
+  if( !_d->tooltipPic.isNull() && (_d->tooltipText != text))
+  {
+    _d->tooltipPic->fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic->getSize() ) );
+    Font font = Font::create( FONT_2 );
+
+    _d->tooltipText = text;
+    Size size =  font.getSize( text );
+    _d->tooltipPic->fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
+    _d->tooltipPic->fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
+    font.draw( *_d->tooltipPic, text, Point(), false );
+  }
+}
+
 void Layer::render( GfxEngine& engine)
 {
   // center the map on the screen
@@ -320,11 +338,20 @@ void Layer::init( Point cursor )
   _d->nextLayer = getType();
 }
 
+void Layer::afterRender(GfxEngine& engine)
+{
+  if( !_d->tooltipText.empty() )
+  {
+    engine.drawPicture( *_d->tooltipPic, _d->lastCursorPos );
+  }
+}
+
 Layer::Layer( TilemapCamera& camera, PlayerCityPtr city )
   : _d( new Impl )
 {
   _d->camera = &camera;
   _d->city = city;
+  _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
 }
 
 int Layer::getNextLayer() const{ return _d->nextLayer; }

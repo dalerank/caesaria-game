@@ -114,6 +114,8 @@ class InfoBoxFontain : public InfoBoxSimple
 public:
    InfoBoxFontain( Widget* parent, const Tile& tile );
    virtual ~InfoBoxFontain();
+
+   virtual void showDescription();
 };
 
 class InfoBoxTemple : public InfoBoxSimple

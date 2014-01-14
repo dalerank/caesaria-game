@@ -477,4 +477,9 @@ InfoBoxFontain::~InfoBoxFontain()
 
 }
 
+void InfoBoxFontain::showDescription()
+{
+  DictionaryWindow::show( getParent(), building::fountain );
+}
+
 }//end namespace gui

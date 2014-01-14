@@ -46,7 +46,7 @@ public:
   virtual void init( Point cursor );
 
   virtual void beforeRender(GfxEngine& engine) {}
-  virtual void afterRender(GfxEngine& engine) {}
+  virtual void afterRender(GfxEngine& engine);
   virtual void render(GfxEngine& engine);
   virtual void renderPass(GfxEngine& engine, Renderer::Pass pass);
 
@@ -61,6 +61,7 @@ protected:
   void _setStartCursorPos( Point pos );
   Point _getStartCursorPos() const;
   void _drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset);
+  void _setTooltipText( std::string text );
 
   TilesArray _getSelectedArea();
 

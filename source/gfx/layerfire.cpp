@@ -21,13 +21,15 @@
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "layerconstants.hpp"
+#include "tilemap_camera.hpp"
+#include "core/event.hpp"
 
 using namespace constants;
 
-int LayerFire::getType() const
-{
-  return citylayer::fire;
-}
+static const char* fireLevelName[] = { "##very_low_fire_risk##", "##low_fire_risk##",
+                                       "##some_fire_risk##", "##very_high_fire_risk##", "##extreme_fire_risk##" };
+
+int LayerFire::getType() const {  return citylayer::fire; }
 
 std::set<int> LayerFire::getVisibleWalkers() const
 {
@@ -82,10 +84,10 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        BuildingPtr building = overlay.as< Building >();
-        if( building != 0 )
+        ConstructionPtr constr = overlay.as< Construction >();
+        if( constr != 0 )
         {
-          fireLevel = (int)building->getState( Construction::fire );
+          fireLevel = (int)constr->getState( Construction::fire );
         }
 
         CityHelper helper( _getCity() );
@@ -103,6 +105,37 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, 18, fireLevel );
     }
   }
+}
+
+void LayerFire::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        ConstructionPtr constr = tile->getOverlay().as<Construction>();
+        if( constr != 0 )
+        {
+          int fireLevel = math::clamp<int>( constr->getState( Construction::fire ), 0, 100 );
+          text = fireLevelName[ fireLevel / 20 ];
+        }
+      }
+
+      _setTooltipText( text );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerPtr LayerFire::create(TilemapCamera& camera, PlayerCityPtr city)

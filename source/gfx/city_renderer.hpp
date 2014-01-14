@@ -30,7 +30,7 @@ public:
   CityRenderer();
   ~CityRenderer();
 
-  void initialize( PlayerCityPtr city, GfxEngine* engine, gui::GuiEnv* guienv );
+  void initialize(PlayerCityPtr city, GfxEngine* engine);
 
   TilemapCamera& getCamera();
 
