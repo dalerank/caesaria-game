@@ -419,3 +419,13 @@ void CartPusher::die()
 
   Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen1, 1025, 1032 );
 }
+
+std::string CartPusher::getThinks() const
+{
+  if( !_pathwayRef().isValid() )
+  {
+    return "##cartpusher_cantfind_destination##";
+  }
+
+  return Walker::getThinks();
+}

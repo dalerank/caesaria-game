@@ -21,7 +21,6 @@
 
 #include "widget.hpp"
 #include "gfx/picture.hpp"
-#include "objects/factory.hpp"
 #include "objects/service.hpp"
 #include "game/predefinitions.hpp"
 
@@ -95,17 +94,6 @@ class InfoBoxFreeHouse : public InfoBoxLand
 {
 public:
   InfoBoxFreeHouse( Widget* parent, const Tile& tile );
-};
-// info box about a factory building
-class InfoboxFactory : public InfoBoxSimple
-{
-public:
-  InfoboxFactory( Widget* parent, const Tile& tile );
-
-  virtual void showDescription();
-  std::string getInfoText( FactoryPtr factory );
-private:
-  TileOverlay::Type _type;
 };
 
 // info box about a fontain

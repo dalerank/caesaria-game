@@ -23,6 +23,7 @@
 #include "game/settings.hpp"
 #include "dictionary.hpp"
 #include "environment.hpp"
+#include "objects/factory.hpp"
 
 using namespace constants;
 

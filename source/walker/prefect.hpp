@@ -33,6 +33,8 @@ public:
   virtual void send2City( PrefecturePtr prefecture, int water=0 );
   virtual void die();
 
+  virtual std::string getThinks() const;
+
   ~Prefect();
 
 protected:

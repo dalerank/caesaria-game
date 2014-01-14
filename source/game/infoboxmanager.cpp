@@ -38,6 +38,7 @@
 #include "gui/infobox_citizen.hpp"
 #include "gui/infobox_granary.hpp"
 #include "gui/infobox_senate.hpp"
+#include "gui/infobox_factory.hpp"
 #include <map>
 
 using namespace constants;

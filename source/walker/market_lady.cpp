@@ -62,7 +62,7 @@ MarketLady::MarketLady(PlayerCityPtr city )
    _d->basket.setCapacity(Good::oil, 300);
    _d->basket.setCapacity(Good::wine, 300);
 
-   setName( NameGenerator::rand( NameGenerator::male ) );
+   setName( NameGenerator::rand( NameGenerator::female ) );
 }
 
 MarketLady::~MarketLady()
@@ -165,6 +165,18 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      // we have nothing to buy, or cannot find what we need to buy
      deleteLater();
      return;
+  }
+}
+
+std::string MarketLady::getThinks() const
+{
+  if( !_pathwayRef().isReverse() )
+  {
+    return "##market_lady_find_goods##";
+  }
+  else
+  {
+    return "##market_lady_return##";
   }
 }
 

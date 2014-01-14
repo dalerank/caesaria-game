@@ -240,62 +240,6 @@ void InfoBoxWorkingBuilding::showDescription()
   DictionaryWindow::show( getEnvironment()->getRootWidget(), _working->getType() );
 }
 
-InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
-{
-  FactoryPtr factory = tile.getOverlay().as<Factory>();
-  _type = factory->getType();
-  setTitle( MetaDataHolder::getPrettyName( factory->getType() ) );
-
-  // paint progress
-  std::string text = StringHelper::format( 0xff, "%s %d%%", _("##production_ready_at##"), factory->getProgress() );
-  new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 10, 0 ), Size( getWidth() - 32, 25 ) ), text );
-
-  if( factory->getOutGoodType() != Good::none )
-  {
-    new Image( this, Point( 10, 10), GoodHelper::getPicture( factory->getOutGoodType() ) );
-  }
-
-  // paint picture of in good
-  if( factory->inStockRef().type() != Good::none )
-  {
-    Label* lbStockInfo = new Label( this, Rect( _d->lbTitle->getLeftdownCorner() + Point( 0, 25 ), Size( getWidth() - 32, 25 ) ) );
-    lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
-
-    std::string text = StringHelper::format( 0xff, "%s %s: %d %s",
-                                             GoodHelper::getName( factory->inStockRef().type() ).c_str(),
-                                             _("##factory_stock##"),
-                                             factory->inStockRef().qty() / 100,
-                                             _("##factory_units##") );
-
-    lbStockInfo->setText( text );
-    lbStockInfo->setTextOffset( Point( 30, 0 ) );
-  }
-
-  _getInfo()->move( Point( 0, 15 ));
-  setText( getInfoText( factory ) );
-
-  _updateWorkersLabel( Point( 32, 157 ), 542, factory->getMaxWorkers(), factory->getWorkersCount() );
-}
-
-void InfoboxFactory::showDescription()
-{
-  DictionaryWindow::show( getEnvironment()->getRootWidget(), _type );
-}
-
-std::string InfoboxFactory::getInfoText( FactoryPtr factory )
-{
-  std::string factoryType = MetaDataHolder::getTypename( factory->getType() );
-  float workKoeff = factory->getWorkersCount() * 100 / factory->getMaxWorkers();
-
-  if( workKoeff == 0 )     {  return "##" + factoryType + "_no_workers##";      }
-  else if(workKoeff < 25)  {  return "##" + factoryType + "_bad_work##";        }
-  else if (workKoeff < 50) {  return "##" + factoryType + "_slow_work##";       }
-  else if (workKoeff < 75) {  return "##" + factoryType + "_patrly_workers##";  }
-  else if (workKoeff < 100 ){ return "##" + factoryType + "_need_some_workers##";  }
-  else                     {  return "##" + factoryType + "_full_work##";       }
-}
-
 InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {

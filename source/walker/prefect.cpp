@@ -473,6 +473,17 @@ void Prefect::die()
   Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 711, 718 );
 }
 
+std::string Prefect::getThinks() const
+{
+  switch( _d->action )
+  {
+  case Impl::go2fire: return "##prefect_goto_fire##";
+  default: break;
+  }
+
+  return ServiceWalker::getThinks();
+}
+
 void Prefect::load( const VariantMap& stream )
 {
    ServiceWalker::load( stream );
