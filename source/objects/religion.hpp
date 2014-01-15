@@ -50,6 +50,8 @@ class BigTemple : public Temple
 protected:
   BigTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
   virtual unsigned int getParishionerNumber() const;
+
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 };
 
 class TempleCeres : public SmallTemple

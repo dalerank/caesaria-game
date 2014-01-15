@@ -15,9 +15,11 @@
 
 #include "religion.hpp"
 #include "game/divinity.hpp"
+#include "city/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "constants.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 
@@ -134,4 +136,18 @@ BigTemple::BigTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgI
 unsigned int BigTemple::getParishionerNumber() const
 {
   return 300;
+}
+
+void BigTemple::build(PlayerCityPtr city, const TilePos& pos)
+{
+  CityStatistic::GoodsMap goods = CityStatistic::getGoodsMap( city );
+  if( goods[ Good::marble ] >= 2 )
+  {
+    Temple::build( city, pos );
+  }
+  else
+  {
+    _setError( "##need_marble_for_large_temple##" );
+    deleteLater();
+  }
 }
