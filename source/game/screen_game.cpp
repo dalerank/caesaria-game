@@ -177,8 +177,10 @@ void ScreenGame::initialize()
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->renderer.getCamera(), TilemapCamera::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
+
   CONNECT( &_d->renderer.getCamera(), onPositionChanged(), mmap, Minimap::setCenter );
   CONNECT( &_d->renderer.getCamera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
+  CONNECT( mmap, onCenterChange(), &_d->renderer.getCamera(), TilemapCamera::setCenter );
 
   _d->showMissionTaretsWindow();
   _d->renderer.getCamera().setCenter( city->getCameraPos() );

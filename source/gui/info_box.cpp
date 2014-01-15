@@ -523,10 +523,24 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
       {
         text = "##also_fountain_in_well_area##";
       }
+      else
+      {
+        text = "##well_info##";
+      }
     }
   }
 
   _d->lbInfo->setText( _(text) );
+}
+
+InfoboxWell::~InfoboxWell()
+{
+
+}
+
+void InfoboxWell::showDescription()
+{
+  DictionaryWindow::show( getParent(), building::well );
 }
 
 }//end namespace gui

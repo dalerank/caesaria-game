@@ -79,6 +79,7 @@ public:
   OverlaysMenu* overlaysMenu; 
   PlayerCityPtr city;
 
+
   void initActionButton( PushButton* btn, Point pos );
   void playSound();
 
@@ -473,35 +474,12 @@ void ExtentMenu::toggleOverlays()
   _d->overlaysMenu->setVisible( !_d->overlaysMenu->isVisible() );
 }
 
-Signal1<int>& ExtentMenu::onSelectOverlayType()
-{
-  return _d->overlaysMenu->onSelectOverlayType();
-}
-
-Signal0<>& ExtentMenu::onEmpireMapShow()
-{
-  return _d->empireButton->onClicked();// onEmpireMapShowSignal;
-}
-
-Signal0<>& ExtentMenu::onAdvisorsWindowShow()
-{
-  return _d->senateButton->onClicked();//onAdvisorsWndShowSignal;
-}
-
-Signal0<>& ExtentMenu::onSwitchAlarm()
-{
-  return _d->disasterButton->onClicked(); //onSwitchAlarmSignal;
-}
-
-void ExtentMenu::setAlarmEnabled( bool enabled )
-{
-  _d->disasterButton->setEnabled( enabled );
-}
-
-Signal0<>& ExtentMenu::onMissionTargetsWindowShow()
-{
-  return _d->missionButton->onClicked();
-}
+Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }
+Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked(); }
+Signal0<>& ExtentMenu::onAdvisorsWindowShow(){  return _d->senateButton->onClicked(); }
+Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked(); }
+void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
+Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked();}
 
 void Menu::Impl::initActionButton(PushButton* btn, Point pos)
 {
