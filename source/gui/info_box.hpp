@@ -112,10 +112,19 @@ private:
 class InfoBoxFontain : public InfoBoxSimple
 {
 public:
-   InfoBoxFontain( Widget* parent, const Tile& tile );
-   virtual ~InfoBoxFontain();
+  InfoBoxFontain( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxFontain();
 
-   virtual void showDescription();
+  virtual void showDescription();
+};
+
+class InfoboxWell : public InfoBoxSimple
+{
+public:
+  InfoboxWell( Widget* parent, const Tile& tile );
+  virtual ~InfoboxWell();
+
+  virtual void showDescription();
 };
 
 class InfoBoxTemple : public InfoBoxSimple

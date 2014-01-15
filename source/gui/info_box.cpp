@@ -49,6 +49,7 @@
 #include "objects/constants.hpp"
 #include "events/event.hpp"
 #include "game/settings.hpp"
+#include "objects/well.hpp"
 #include "image.hpp"
 #include "dictionary.hpp"
 
@@ -446,7 +447,7 @@ InfoBoxText::~InfoBoxText()
 
 
 InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
 {
   setTitle( "##fontain##" );
 
@@ -480,6 +481,52 @@ InfoBoxFontain::~InfoBoxFontain()
 void InfoBoxFontain::showDescription()
 {
   DictionaryWindow::show( getParent(), building::fountain );
+}
+
+InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
+  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
+{
+  setTitle( "##well##" );
+
+  _d->lbInfo->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbInfo->setWordwrap( true );
+
+  WellPtr well = tile.getOverlay().as<Well>();
+  std::string text;
+  if( well.isValid() )
+  {
+    TilesArray coverageArea = well->getCoverageArea();
+
+    bool haveHouseInArea = false;
+    foreach( Tile* tile, coverageArea )
+    {
+      haveHouseInArea |= tile->getOverlay().as<House>().isValid();
+    }
+
+    if( !haveHouseInArea )
+    {
+      text = "##well_haveno_houses_inarea##";
+    }
+    else
+    {
+      bool houseNeedWell = false;
+      foreach( Tile* tile, coverageArea)
+      {
+        HousePtr house = tile->getOverlay().as<House>();
+        if( house.isValid() )
+        {
+          houseNeedWell |= ( house->getServiceValue( Service::fontain ) == 0 );
+        }
+      }
+
+      if( !houseNeedWell )
+      {
+        text = "##also_fountain_in_well_area##";
+      }
+    }
+  }
+
+  _d->lbInfo->setText( _(text) );
 }
 
 }//end namespace gui

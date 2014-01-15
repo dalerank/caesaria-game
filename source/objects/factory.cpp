@@ -428,7 +428,7 @@ void Winery::build(PlayerCityPtr city, const TilePos& pos)
   CityHelper helper( city );
   bool haveVinegrad = !helper.find<Building>( building::grapeFarm ).empty();
 
-  const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : _("##need_vinegrad_for_work##") );
+  const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : "##need_grape##" );
 }
 
 Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(2) )
