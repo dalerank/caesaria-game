@@ -36,7 +36,7 @@ bool Pottery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& around
   CityHelper helper( city );
   bool haveClaypit = !helper.find<Building>( building::clayPit ).empty();
 
-  const_cast< Pottery* >( this )->_setError( haveClaypit ? "" : _("##need_clay_for_work##") );
+  const_cast< Pottery* >( this )->_setError( haveClaypit ? "" : "##need_clay_pit##" );
 
   return ret;
 }

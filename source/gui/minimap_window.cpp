@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "minimap_window.hpp"
 #include "gfx/tilemap.hpp"
@@ -20,6 +22,8 @@
 #include "gfx/tileoverlay.hpp"
 #include "core/time.hpp"
 #include "gfx/engine.hpp"
+#include "core/event.hpp"
+#include "core/gettext.hpp"
 #include "objects/constants.hpp"
 
 using namespace constants;
@@ -44,9 +48,14 @@ public:
   void getTerrainColours(const Tile& tile, int &c1, int &c2);
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
+
+  Point getOffset() { return Point( 146/2 - center.getX(), 112/2 + center.getY() - tilemap->getSize()*2); }
+
+public oc3_signals:
+  Signal1<TilePos> onCenterChangeSignal;
 };
 
-Minimap::Minimap(Widget* parent, const Rect& rect, const Tilemap& tilemap, int climate)
+Minimap::Minimap(Widget* parent, Rect rect, const Tilemap& tilemap, int climate)
   : Widget( parent, -1, rect ), _d( new Impl )
 {
   _d->tilemap = &tilemap;
@@ -55,14 +64,11 @@ Minimap::Minimap(Widget* parent, const Rect& rect, const Tilemap& tilemap, int c
   _d->fullmap.reset( Picture::create( Size( _d->tilemap->getSize() * 2 ) ) );
   _d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
   _d->colors = new MinimapColors( (ClimateType)climate );
+  setTooltipText( _("##minimap_tooltip##") );
 }
 
-Point getBitmapCoordinates(int x, int y, int mapsize )
-{
-  return Point( x + y, x + mapsize - y - 1 );
-}
-
-void getBuildingColours( const Tile& tile, int &c1, int &c2);
+Point getBitmapCoordinates(int x, int y, int mapsize ) {  return Point( x + y, x + mapsize - y - 1 ); }
+void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
 void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 {
@@ -184,8 +190,6 @@ void Minimap::Impl::updateImage()
   fullmap->lock();
   // here we can draw anything
 
-  // std::cout << "center is (" << _mapArea->getCenterX() << "," << _mapArea->getCenterZ() << ")" << std::endl;
-
   int border = (162 - mapsize) / 2;
   int max = border + mapsize;
 
@@ -231,13 +235,8 @@ void Minimap::Impl::updateImage()
   fullmap->unlock();
 
   // this is window where minimap is displayed
-
-
-  int i = center.getX();
-  int j = center.getY();
-
   minimap->fill( 0xff000000, Rect() );
-  minimap->draw( *fullmap, 146/2 - i, 112/2 + j - mapsize*2 );
+  minimap->draw( *fullmap, getOffset() );
 }
 
 /* end of helper functions */
@@ -263,9 +262,28 @@ void Minimap::draw(GfxEngine& painter)
   Widget::draw( painter );
 }
 
-void Minimap::setCenter( Point pos)
+void Minimap::setCenter( Point pos) {  _d->center = pos; }
+
+bool Minimap::onEvent(const NEvent& event)
 {
-  _d->center = pos;
+  if( sEventMouse == event.EventType
+      && mouseLbtnRelease == event.mouse.type )
+  {
+    Point clickPosition = event.mouse.getPosition() - getAbsoluteRect().UpperLeftCorner;
+
+    int mapsize = _d->tilemap->getSize();
+
+    clickPosition -= _d->getOffset();
+    TilePos tpos;
+    tpos.setI( (clickPosition.getX() + clickPosition.getY() - mapsize + 1) / 2 );
+    tpos.setJ( -clickPosition.getY() + tpos.getI() + mapsize - 1 );
+
+    _d->onCenterChangeSignal.emit( tpos );
+  }
+
+  return Widget::onEvent( event );
 }
+
+Signal1<TilePos>& Minimap::onCenterChange(){  return _d->onCenterChangeSignal; }
 
 }//end namespace gui

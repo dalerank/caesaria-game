@@ -1,0 +1,106 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+
+#include "goodrequestevent.hpp"
+#include "good/goodhelper.hpp"
+
+namespace events
+{
+
+class GoodRequestEvent::Impl
+{
+public:
+  DateTime date;
+  unsigned int month;
+  GoodStock stock;
+  int winFavour, winMoney;
+  int failFavour, failMoney;
+};
+
+GameEventPtr GoodRequestEvent::create( const VariantMap& stream )
+{
+  GoodRequestEvent* gr = new GoodRequestEvent();
+  gr->load( stream );
+
+  GameEventPtr ret( gr );
+  ret->drop();
+
+  return ret;
+}
+
+GoodRequestEvent::~GoodRequestEvent()
+{
+
+}
+
+void GoodRequestEvent::exec(Game&)
+{
+
+}
+
+VariantMap GoodRequestEvent::save() const
+{
+  VariantMap ret;
+  ret[ "date" ] = _d->date;
+  ret[ "month" ] = _d->month;
+  ret[ "good" ] = _d->stock.save();
+  VariantMap vm_win;
+  vm_win[ "favour" ] = _d->winFavour;
+  vm_win[.get[ "money" ] = _d->winMoney;
+  ret[ "success" ] = vm_win;
+
+  VariantMap vm_fail;
+  vm_fail[ "favour" ] = _d->failFavour;
+  vm_fail[ "money" ] = _d->failMoney;
+  ret[ "fail" ] = vm_fail;
+
+  return ret;
+}
+
+void GoodRequestEvent::load(const VariantMap& stream)
+{
+  _d->date = stream.get( "date" ).toDateTime();
+  _d->month = (int)stream.get( "month" );
+
+  Variant vm_goodt = stream.get( "good" );
+  if( vm_goodt.type() == Variant::Map )
+  {
+    VariantMap vm_good = vm_goodt.toMap();
+    if( !vm_good.empty() )
+    {
+      _d->stock.setType( GoodHelper::getType( vm_good.begin()->first ) );
+      _d->stock.setCapacity( vm_good.begin()->second.toInt() );
+    }
+  }
+  else if( vm_goodt.type() == Variant::List )
+  {
+    _d->stock.load( vm_goodt.toList() );
+  }
+
+  VariantMap vm_win = stream.get( "success" ).toMap();
+  _d->winFavour = vm_win.get( "favour" );
+  _d->winMoney = vm_win.get( "money" );
+
+  VariantMap vm_fail = stream.get( "fail" ).toMap();
+  _d->failFavour = vm_fail.get( "favour" );
+  _d->failMoney = vm_fail.get( "money" );
+}
+
+GoodRequestEvent::GoodRequestEvent() : _d( new Impl )
+{
+
+}
+
+}

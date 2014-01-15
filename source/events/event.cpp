@@ -70,38 +70,49 @@ void BuildEvent::exec( Game& game )
   {
     _overlay->build( game.getCity(), _pos );
 
-    ConstructionPtr construction = _overlay.as<Construction>();
-    if( construction != 0 )
+    if( !_overlay->isDeleted() )
     {
-      CityHelper helper( game.getCity() );
-      helper.updateDesirability( construction, true );
-
-      game.getCity()->addOverlay( _overlay );
-      game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction,
-                                                          -(int)buildingData.getOption( "cost" ) ) );
-
-      GameEventPtr e = PlaySound::create( "buildok", 1, 256 );
-      e->dispatch();
-
-      if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
+      ConstructionPtr construction = _overlay.as<Construction>();
+      if( construction.isValid() )
       {
-        game.getCity()->onWarningMessage().emit( "##building_need_road_access##" );
-      }
+        CityHelper helper( game.getCity() );
+        helper.updateDesirability( construction, true );
 
-      std::string error = construction->getError();
-      if( !error.empty() )
-      {
-        game.getCity()->onWarningMessage().emit( error );
-      }
+        game.getCity()->addOverlay( _overlay );
+        game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction,
+                                                            -(int)buildingData.getOption( "cost" ) ) );
 
-      WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
-      if( wb.isValid() && wb->getMaxWorkers() > 0 )
-      {
-        int worklessCount = CityStatistic::getWorklessNumber( game.getCity() );
-        if( worklessCount < wb->getMaxWorkers() )
+        GameEventPtr e = PlaySound::create( "buildok", 1, 256 );
+        e->dispatch();
+
+        if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
         {
-          game.getCity()->onWarningMessage().emit( "##city_need_more_workers##" );
+          game.getCity()->onWarningMessage().emit( "##building_need_road_access##" );
         }
+
+        std::string error = construction->getError();
+        if( !error.empty() )
+        {
+          game.getCity()->onWarningMessage().emit( error );
+        }
+
+        WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
+        if( wb.isValid() && wb->getMaxWorkers() > 0 )
+        {
+          int worklessCount = CityStatistic::getWorklessNumber( game.getCity() );
+          if( worklessCount < wb->getMaxWorkers() )
+          {
+            game.getCity()->onWarningMessage().emit( "##city_need_more_workers##" );
+          }
+        }
+      }
+    }
+    else
+    {
+      ConstructionPtr construction = _overlay.as<Construction>();
+      if( construction.isValid() )
+      {
+        game.getCity()->onWarningMessage().emit( _(construction->getError()) );
       }
     }
   }

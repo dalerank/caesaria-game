@@ -309,26 +309,6 @@ void Widget::draw( GfxEngine& painter )
   }
 }
 
-bool Widget::isVisible() const
-{
-  return _d->isVisible;
-}
-
-bool Widget::isSubElement() const
-{
-  return _d->isSubElement;
-}
-
-void Widget::setSubElement( bool subElement )
-{
-  _d->isSubElement = subElement;
-}
-
-void Widget::setTabStop( bool enable )
-{
-  _d->isTabStop = enable;
-}
-
 void Widget::setTabOrder( int index )
 {
   // negative = autonumber
@@ -356,10 +336,7 @@ void Widget::setTabOrder( int index )
   }
 }
 
-int Widget::getTabOrder() const
-{
-  return _d->tabOrder;
-}
+int Widget::getTabOrder() const{  return _d->tabOrder;}
 
 Widget* Widget::getTabGroup()
 {
@@ -780,91 +757,6 @@ void Widget::remove()
       getParent()->removeChild( this );
 }
 
-void Widget::setEnabled(bool enabled)
-{
-  _d->isEnabled = enabled;
-}
-
-// f32 Widget::getOpacity( u32 index/*=0 */ ) const
-// {
-//     return ( index < _d->opacity.size() ) ? (f32)_d->opacity[ index ] : 0xff;
-// }
-// 
-// void Widget::setOpacity( f32 nA, int index/*=0 */ )
-// {
-//     _d->opacity[ index ] = math::clamp<f32>( nA, 0, 255 );
-// }
-
-std::string Widget::getInternalName() const
-{
-    return _d->internalName;
-}
-
-void Widget::setInternalName( const std::string& name )
-{
-    _d->internalName = name;
-}
-
-Widget* Widget::getParent() const
-{
-    return _d->parent;
-}
-
-Rect Widget::getRelativeRect() const
-{
-  return _d->relativeRect;
-}
-
-bool Widget::isNotClipped() const
-{
-  return _d->noClip;
-}
-
-void Widget::setVisible( bool visible )
-{
-  _d->isVisible = visible;
-}
-
-bool Widget::isTabStop() const
-{
-  return _d->isTabStop;
-}
-
-bool Widget::hasTabGroup() const
-{
-  return _d->isTabGroup;
-}
-
-void Widget::setText( const std::string& text )
-{
-  _d->text = text;
-}
-
-void Widget::setTooltipText( const std::string& text )
-{
-  _d->toolTipText = text;
-}
-
-std::string Widget::getText() const
-{
-  return _d->text;
-}
-
-std::string Widget::getTooltipText() const
-{
-  return _d->toolTipText;
-}
-
-int Widget::getID() const
-{
-  return _d->id;
-}
-
-void Widget::setID( int id )
-{
-  _d->id = id;
-}
-
 bool Widget::onEvent( const NEvent& event )
 {
   if( _d->eventHandler )
@@ -875,11 +767,6 @@ bool Widget::onEvent( const NEvent& event )
       return true;
 
   return getParent() ? getParent()->onEvent(event) : false;
-}
-
-const Widget::Widgets& Widget::getChildren() const
-{
-  return _d->children;
 }
 
 bool Widget::isMyChild( Widget* child ) const
@@ -896,31 +783,36 @@ bool Widget::isMyChild( Widget* child ) const
 	return child == this;
 }
 
-Size Widget::getMaxSize() const
+void Widget::setWidth( unsigned int width )
 {
-    return _d->maxSize;
+  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width, getHeight() ) );
+  setGeometry( rectangle );
 }
 
-Size Widget::getMinSize() const
+void Widget::setHeight( unsigned int height )
 {
-    return _d->minSize;
+  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( getWidth(), height ) );
+  setGeometry( rectangle );
 }
 
-// bool Widget::isColorEnabled( u32 index ) const
-// {
-//     ColorMap::Node* ret = _d->overrideColors.find( index );
-//     return ret ? ret->getValue().enabled : false;
-// }
-// 
-// void Widget::setEnabledColor( bool enable, u32 index/*=0*/ )
-// {
-//     ColorMap::Node* ret = _d->overrideColors.find( index );
-//     if( ret )
-//     {
-//         _d->overrideColors.set( index, _OverrideColor( ret->getValue().color, enable ));
-//     }
-// }
-
+void Widget::setEnabled(bool enabled){  _d->isEnabled = enabled;}
+std::string Widget::getInternalName() const{    return _d->internalName;}
+void Widget::setInternalName( const std::string& name ){    _d->internalName = name;}
+Widget* Widget::getParent() const{    return _d->parent;}
+Rect Widget::getRelativeRect() const{  return _d->relativeRect;}
+bool Widget::isNotClipped() const{  return _d->noClip;}
+void Widget::setVisible( bool visible ){  _d->isVisible = visible;}
+bool Widget::isTabStop() const{  return _d->isTabStop;}
+bool Widget::hasTabGroup() const{  return _d->isTabGroup;}
+void Widget::setText( const std::string& text ){  _d->text = text;}
+void Widget::setTooltipText( const std::string& text ) {  _d->toolTipText = text;}
+std::string Widget::getText() const{  return _d->text;}
+std::string Widget::getTooltipText() const{  return _d->toolTipText;}
+int Widget::getID() const{  return _d->id;}
+void Widget::setID( int id ) {  _d->id = id; }
+const Widget::Widgets& Widget::getChildren() const{  return _d->children;}
+Size Widget::getMaxSize() const{    return _d->maxSize;}
+Size Widget::getMinSize() const{    return _d->minSize;}
 void Widget::installEventHandler( Widget* elementHandler ){  _d->eventHandler = elementHandler;}
 bool Widget::isHovered() const{  return _environment->isHovered( this );}
 bool Widget::isFocused() const{  return _environment->hasFocus( this );}
@@ -941,19 +833,10 @@ Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localR
 void Widget::move( const Point& relativeMovement ){  setGeometry( _d->desiredRect + relativeMovement );}
 int Widget::getBottom() const{  return _d->relativeRect.LowerRightCorner.getY();}
 void Widget::setTabGroup( bool isGroup ) { _d->isTabGroup = isGroup; }
-
-void Widget::setWidth( unsigned int width )
-{
-  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width, getHeight() ) );
-  setGeometry( rectangle );
-}
-
-void Widget::setHeight( unsigned int height )
-{
-  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( getWidth(), height ) );
-  setGeometry( rectangle );
-}
-
+bool Widget::isVisible() const{  return _d->isVisible;}
+bool Widget::isSubElement() const{  return _d->isSubElement;}
+void Widget::setSubElement( bool subElement ){  _d->isSubElement = subElement;}
+void Widget::setTabStop( bool enable ){  _d->isTabStop = enable;}
 void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, getTop() ) ); }
 void Widget::setTop( int newTop ) { setPosition( Point( getLeft(), newTop ) );  }
 int Widget::getTop() const { return getRelativeRect().UpperLeftCorner.getY(); }

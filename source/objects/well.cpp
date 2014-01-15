@@ -1,26 +1,32 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "well.hpp"
 #include "game/resourcegroup.hpp"
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "constants.hpp"
 
 using namespace constants;
+
+namespace {
+ const unsigned int wellServiceRange = 2;
+}
 
 Well::Well() : ServiceBuilding( Service::well, building::well, Size(1) )
 {
@@ -42,12 +48,15 @@ void Well::deliverService()
   }
 }
 
-bool Well::isNeedRoadAccess() const
-{
-  return false;
-}
+bool Well::isNeedRoadAccess() const {  return false; }
+bool Well::isDestructible() const{  return true; }
 
-bool Well::isDestructible() const
+TilesArray Well::getCoverageArea() const
 {
-  return true;
+  TilesArray ret;
+
+  TilePos offset( wellServiceRange, wellServiceRange );
+  CityHelper helper( _getCity() );
+  ret = helper.getArea( getTilePos() - offset, getTilePos() + offset );
+  return ret;
 }

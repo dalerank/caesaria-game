@@ -96,6 +96,15 @@ public:
   InfoBoxFreeHouse( Widget* parent, const Tile& tile );
 };
 
+class InfoboxWell : public InfoBoxSimple
+{
+public:
+  InfoboxWell( Widget* parent, const Tile& tile );
+  virtual ~InfoboxWell();
+
+  virtual void showDescription();
+};
+
 class InfoBoxTemple : public InfoBoxSimple
 {
 public:

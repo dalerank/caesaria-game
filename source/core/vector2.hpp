@@ -158,13 +158,13 @@ public:
 		const float cs = cos(degrees);
 		const float sn = sin(degrees);
 
-		x -= center.X;
-		y -= center.Y;
+		x -= center.x;
+		y -= center.y;
 
 		set((T)(x*cs - y*sn), (T)(x*sn + y*cs));
 
-		x += center.X;
-		y += center.Y;
+		x += center.x;
+		y += center.y;
 		return *this;
 	}
 
