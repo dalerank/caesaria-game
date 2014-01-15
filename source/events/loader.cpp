@@ -13,20 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "scriptevent.hpp"
+#include "loader.hpp"
 #include "goodrequestevent.hpp"
 
 namespace events
 {
 
-GameEventPtr ScriptEvent::create( const VariantMap& stream )
+GameEventPtr Loader::load( const VariantMap& stream )
 {
   std::string type = stream.get( "type" ).toString();
   if( "good_request" == type ) { return GoodRequestEvent::create( stream ); }
 
   return GameEventPtr();
 }
-
-void ScriptEvent::exec(Game&) {}
 
 }

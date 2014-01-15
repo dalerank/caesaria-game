@@ -382,7 +382,7 @@ void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
   CityHelper helper( city );
   bool haveIronMine = !helper.find<Building>( building::ironMine ).empty();
 
-  _setError( haveIronMine ? "" : _("##need_iron_for_work##") );
+  _setError( haveIronMine ? "" : "##need_iron_for_work##" );
 }
 
 bool FurnitureWorkshop::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const

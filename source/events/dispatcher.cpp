@@ -14,6 +14,9 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "dispatcher.hpp"
+#include "core/stringhelper.hpp"
+#include "core/foreach.hpp"
+#include "loader.hpp"
 
 namespace events
 {
@@ -40,24 +43,47 @@ Dispatcher::~Dispatcher()
 
 void Dispatcher::append( GameEventPtr event)
 {
-  instance()._d->events.push_back( event );
+  _d->events.push_back( event );
 }
 
 void Dispatcher::update(unsigned int time)
 {
-  Dispatcher& inst = instance();
-  Impl::Events& events = inst._d->events;
-
-  for( Impl::Events::iterator it=events.begin(); it != events.end();  )
+  for( Impl::Events::iterator it=_d->events.begin(); it != _d->events.end();  )
   {
     GameEventPtr e = *it;
     if( e->mayExec( time ) )
     {
-      inst._d->onEventSignal.emit( e );
+      _d->onEventSignal.emit( e );
     }
 
-    if( e->isDeleted() ) { it = events.erase( it ); }
+    if( e->isDeleted() ) { it = _d->events.erase( it ); }
     else { it++; }
+  }
+}
+
+VariantMap Dispatcher::save() const
+{
+  VariantMap ret;
+  int index = 0;
+  foreach( GameEventPtr event, _d->events )
+  {
+    ret[ StringHelper::format( 0xff, "%d", index ) ] = event->save();
+  }
+
+  return ret;
+}
+
+void Dispatcher::load(const VariantMap& stream)
+{
+  for( VariantMap::const_iterator it=stream.begin();
+       it != stream.end(); it++ )
+  {
+    GameEventPtr e = Loader::load( it->second.toMap() );
+
+    if( e.isValid() )
+    {
+      append( e );
+    }
   }
 }
 

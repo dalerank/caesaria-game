@@ -13,25 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_SCRIPTEVENT_H_INCLUDE_
-#define _CAESARIA_SCRIPTEVENT_H_INCLUDE_
+#ifndef _CAESARIA_EVENTLOADER_H_INCLUDE_
+#define _CAESARIA_EVENTLOADER_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class ScriptEvent : public GameEvent
+class Loader
 {
 public:
-  static GameEventPtr create( const VariantMap& stream );
-
-  virtual void exec( Game& game );
-
-private:
+  static GameEventPtr load( const VariantMap& stream );
 
 };
 
 }
 
-#endif //_CAESARIA_SCRIPTEVENT_H_INCLUDE_
+#endif //_CAESARIA_EVENTLOADER_H_INCLUDE_

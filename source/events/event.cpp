@@ -430,7 +430,7 @@ void WarningMessageEvent::exec(Game& game)
 
 void events::GameEvent::dispatch()
 {
-  Dispatcher::append( this );
+  Dispatcher::instance().append( this );
 }
 
 } //end namespace events

@@ -31,8 +31,11 @@ public:
   Dispatcher();
   ~Dispatcher();
 
-  static void append( GameEventPtr event );
-  static void update( unsigned int time );
+  void append( GameEventPtr event );
+  void update( unsigned int time );
+
+  VariantMap save() const;
+  void load( const VariantMap& stream );
 
 public oc3_signals:
   Signal1<GameEventPtr>& onEvent();

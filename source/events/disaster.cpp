@@ -95,7 +95,7 @@ void DisasterEvent::exec( Game& game )
           ov.as<Ruins>()->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", disasterInfoType ) );
         }
 
-        Dispatcher::append( BuildEvent::create( tile->getIJ(), ov ) );
+        Dispatcher::instance().append( BuildEvent::create( tile->getIJ(), ov ) );
       }
     }
 

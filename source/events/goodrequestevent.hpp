@@ -28,6 +28,8 @@ public:
 
   virtual ~GoodRequestEvent();
   virtual void exec( Game& game );
+  virtual bool mayExec(unsigned int time) const;
+  virtual bool isDeleted() const;
 
   VariantMap save() const;
   void load(const VariantMap& stream );

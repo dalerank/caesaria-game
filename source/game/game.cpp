@@ -227,7 +227,7 @@ void Game::setScreenGame()
       }
     }
 
-    events::Dispatcher::update( _d->time );
+    events::Dispatcher::instance().update( _d->time );
   }
 
   switch( screen.getResult() )

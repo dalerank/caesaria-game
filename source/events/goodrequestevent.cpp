@@ -15,6 +15,7 @@
 
 #include "goodrequestevent.hpp"
 #include "good/goodhelper.hpp"
+#include "game/gamedate.hpp"
 
 namespace events
 {
@@ -40,14 +41,17 @@ GameEventPtr GoodRequestEvent::create( const VariantMap& stream )
   return ret;
 }
 
-GoodRequestEvent::~GoodRequestEvent()
-{
+GoodRequestEvent::~GoodRequestEvent(){}
+void GoodRequestEvent::exec(Game&){}
 
+bool GoodRequestEvent::mayExec(unsigned int) const
+{
+  return _d->date >= GameDate::current();
 }
 
-void GoodRequestEvent::exec(Game&)
+bool GoodRequestEvent::isDeleted() const
 {
-
+  return _d->date >= GameDate::current();
 }
 
 VariantMap GoodRequestEvent::save() const
@@ -58,7 +62,7 @@ VariantMap GoodRequestEvent::save() const
   ret[ "good" ] = _d->stock.save();
   VariantMap vm_win;
   vm_win[ "favour" ] = _d->winFavour;
-  vm_win[.get[ "money" ] = _d->winMoney;
+  vm_win[ "money" ] = _d->winMoney;
   ret[ "success" ] = vm_win;
 
   VariantMap vm_fail;
