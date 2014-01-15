@@ -59,8 +59,8 @@ public:
 
   WalkerList getWalkers( constants::walker::Type type );
   WalkerList getWalkers( constants::walker::Type type, TilePos startPos, TilePos stopPos=TilePos( -1, -1 ) );
+
   void addWalker( WalkerPtr walker );
-  void removeWalker( WalkerPtr walker );
 
   void addService( CityServicePtr service );
   CityServicePtr findService( const std::string& name ) const;
@@ -91,15 +91,14 @@ public:
   std::string getName() const; 
   void setName( const std::string& name );
 
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
   // add construction
   void addOverlay(TileOverlayPtr overlay);
   TileOverlayPtr getOverlay( const TilePos& pos ) const;
 
   const CityBuildOptions& getBuildOptions() const;
-
   void setBuildOptions( const CityBuildOptions& options );
 
   const CityWinTargets& getWinTargets() const;

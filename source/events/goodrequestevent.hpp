@@ -13,26 +13,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_DIRECTION_INCLUDE_H_
-#define _CAESARIA_DIRECTION_INCLUDE_H_
+#ifndef _CAESARIA_GOODREQUESTTEVENT_H_INCLUDE_
+#define _CAESARIA_GOODREQUESTTEVENT_H_INCLUDE_
 
-namespace constants
+#include "event.hpp"
+
+namespace events
 {
 
-typedef enum
-{ 
-  noneDirection,
-  north,
-  northWest,
-  west,
-  southWest,
-  south,
-  southEast,
-  east,
-  northEast,
-  countDirection
-} Direction;
+class GoodRequestEvent : public GameEvent
+{
+public:
+  static GameEventPtr create( const VariantMap& stream );
 
-} //end namespace constants
+  virtual ~GoodRequestEvent();
+  virtual void exec( Game& game );
 
-#endif  //_CAESARIA_DIRECTION_INCLUDE_H_
+  VariantMap save() const;
+  void load(const VariantMap& stream );
+
+private:
+  GoodRequestEvent();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
+}
+
+#endif //_CAESARIA_GOODREQUESTTEVENT_H_INCLUDE_

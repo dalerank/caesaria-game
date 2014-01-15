@@ -595,10 +595,9 @@ const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSel
 const GoodStore& PlayerCity::getBuys() const {   return _d->tradeOptions.getBuys(); }
 unsigned int PlayerCity::getTradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::getEmpire() const {   return _d->empire; }
-void PlayerCity::updateRoads() {    _d->needRecomputeAllRoads = true; }
+void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
-void PlayerCity::removeWalker( WalkerPtr walker ) { _d->walkerList.remove( walker ); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos PlayerCity::getCameraPos() const {return _d->cameraStart; }
 void PlayerCity::addService( CityServicePtr service ) {  _d->services.push_back( service ); }

@@ -142,6 +142,13 @@ void ComputerCity::load( const VariantMap& options )
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
   _d->merchantsNumber = (int)options.get( "merchantsNumber" );
 
+  for( int i=Good::none; i < Good::goodCount; i ++ )
+  {
+    Good::Type gtype = Good::Type ( i );
+    _d->sellStore.setCapacity( gtype, 0 );
+    _d->buyStore.setCapacity( gtype, 0 );
+  }
+
   const VariantMap& sells_vm = options.get( "sells" ).toMap();
   for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); it++ )
   {

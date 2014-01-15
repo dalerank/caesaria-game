@@ -48,8 +48,8 @@ public:
   TraderouteList getTradeRoutes( const std::string& startCity );
   TraderouteList getTradeRoutes();
 
-  void save( VariantMap& stream ) const;
-  void load( const VariantMap& stream );
+  virtual void save( VariantMap& stream ) const;
+  virtual void load( const VariantMap& stream );
 
   void setCitiesAvailable( bool value );
   unsigned int getWorkersSalary() const;

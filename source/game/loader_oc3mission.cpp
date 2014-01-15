@@ -29,6 +29,7 @@
 #include "world/empire.hpp"
 #include "city/city.hpp"
 #include "settings.hpp"
+#include "events/scriptevent.hpp"
 
 class GameLoaderMission::Impl
 {
@@ -55,6 +56,13 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     PlayerCityPtr city = game.getCity();
     city->getFunds().resolveIssue( FundIssue( CityFunds::donation, vm[ "funds" ].toInt() ) );
 
+    VariantMap vm_events = vm[ "events" ].toMap();
+    for( VariantMap::iterator it=vm_events.begin(); it != vm_events.end(); it++ )
+    {
+      events::GameEventPtr e = events::ScriptEvent::create( it->second.toMap() );
+      e->dispatch();
+    }
+
     game.getEmpire()->setCitiesAvailable( false );
 
     game.getEmpire()->load( vm[ "empire" ].toMap() );
@@ -75,5 +83,6 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
 bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
 {
-  return filename.substr( filename.size() - 11 ) == ".oc3mission";
+  vfs::Path path( filename );
+  return path.isExtension( ".mission" );
 }
