@@ -91,6 +91,7 @@ void Image::_updateTexture( GfxEngine& painter )
   // draw button background
   if( _d->bgPicture.isValid() )
   {    
+    _d->background->fill( 0x0000000, Rect() );
     switch( _d->mode )
     {
     case Image::native: _d->background->draw( _d->bgPicture, Point( 0, 0 ), true ); break;
@@ -109,7 +110,7 @@ void Image::_updateTexture( GfxEngine& painter )
   }    
   else
   {
-    _d->background->fill( 0xff000000, Rect( 0, 0, 0, 0 ) );
+    _d->background->fill( 0xff000000, Rect() );
   }
 }
 

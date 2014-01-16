@@ -44,12 +44,19 @@ CityServicePtr CityRequestDispatcher::create(PlayerCityPtr city)
   return ret;
 }
 
-CityRequestPtr CityRequestDispatcher::add( const VariantMap& stream )
+bool CityRequestDispatcher::add( const VariantMap& stream )
 {
   std::string type = stream.get( "type" ).toString();
-  if( "good_request" == type ) { return GoodRequest::create( stream ); }
+  if( "good_request" == type )
+  {
+    CityRequestPtr r = GoodRequest::create( stream );
+    _d->requests.push_back( r );
+    events::GameEventPtr e = events::ShowRequestInfo::create( r );
+    e->dispatch();
+    return true;
+  }
 
-  return CityRequestPtr();
+  return false;
 }
 
 CityRequestDispatcher::~CityRequestDispatcher()

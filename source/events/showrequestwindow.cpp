@@ -17,6 +17,7 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "gui/requestwindow.hpp"
+#include "gui/environment.hpp"
 
 namespace events
 {
@@ -34,7 +35,11 @@ GameEventPtr ShowRequestInfo::create( CityRequestPtr request )
 
 void ShowRequestInfo::exec(Game& game)
 {
-
+  if( _request.isValid() )
+  {
+    gui::EmperrorRequestWindow* wnd = gui::EmperrorRequestWindow::create( game.getGui()->getRootWidget(), _request );
+    wnd->show();
+  }
 }
 
 }

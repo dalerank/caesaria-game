@@ -68,6 +68,9 @@ void PostponeEvent::load(const VariantMap& stream)
   _d->options = stream;
 }
 
-PostponeEvent::PostponeEvent(){}
+PostponeEvent::PostponeEvent() : _d( new Impl )
+{
+
+}
 
 }
