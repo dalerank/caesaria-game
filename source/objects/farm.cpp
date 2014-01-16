@@ -25,6 +25,7 @@
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

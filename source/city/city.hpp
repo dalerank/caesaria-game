@@ -23,15 +23,10 @@
 #include "core/signals.hpp"
 #include "gfx/tile.hpp"
 #include "core/position.hpp"
-#include "core/foreach.hpp"
 #include "game/player.hpp"
 #include "objects/constants.hpp"
 #include "world/city.hpp"
 #include "walker/constants.hpp"
-#include "gfx/tileoverlay.hpp"
-#include "good/good.hpp"
-#include "objects/service.hpp"
-#include "gfx/tilemap.hpp"
 
 class CityBuildOptions;
 class CityTradeOptions;

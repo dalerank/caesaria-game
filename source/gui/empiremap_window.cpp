@@ -36,6 +36,7 @@
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "world/merchant.hpp"
+#include "core/foreach.hpp"
 
 namespace gui
 {

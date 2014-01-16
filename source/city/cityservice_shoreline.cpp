@@ -20,6 +20,8 @@
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
+#include "core/foreach.hpp"
+#include "gfx/tileoverlay.hpp"
 
 class CityServiceShoreline::Impl
 {

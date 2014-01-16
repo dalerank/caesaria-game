@@ -17,6 +17,7 @@
 #include "astarpathfinding.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/construction.hpp"
 
 Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
                                WayType type/*=roadOnly */ )

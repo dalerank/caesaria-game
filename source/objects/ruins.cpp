@@ -22,6 +22,7 @@
 #include "city/city.hpp"
 #include "events/event.hpp"
 #include "constants.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

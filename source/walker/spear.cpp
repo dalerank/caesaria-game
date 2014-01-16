@@ -18,6 +18,7 @@
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

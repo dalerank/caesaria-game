@@ -18,6 +18,10 @@
 #include "gfx/tilemap_camera.hpp"
 #include "sound/engine.hpp"
 #include "core/stringhelper.hpp"
+#include "gfx/tileoverlay.hpp"
+#include "core/foreach.hpp"
+
+#include <set>
 
 struct SoundEmitter
 {

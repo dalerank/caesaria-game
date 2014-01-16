@@ -20,6 +20,7 @@
 #include "city/city.hpp"
 #include "core/gettext.hpp"
 #include "constants.hpp"
+#include "core/foreach.hpp"
 
 MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, constants::building::marbleQuarry, Size(2) )
 {

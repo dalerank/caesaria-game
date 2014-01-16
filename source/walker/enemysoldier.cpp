@@ -30,6 +30,7 @@
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "animals.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

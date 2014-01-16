@@ -20,6 +20,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 
