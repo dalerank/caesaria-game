@@ -13,34 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_MESSAGE_STACK_WIDGET_H_INCLUDED__
-#define __CAESARIA_MESSAGE_STACK_WIDGET_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_SHOWREQUESTINFO_H_INCLUDE_
+#define _CAESARIA_EVENT_SHOWREQUESTINFO_H_INCLUDE_
 
-#include "widget.hpp"
-#include "core/scopedptr.hpp"
+#include "event.hpp"
 
-namespace gui
+namespace events
 {
 
-class WindowMessageStack : public Widget
+class ShowRequestInfo : public GameEvent
 {
 public:
-  static const int defaultID;
-  static WindowMessageStack* create( Widget* parent );
+  static GameEventPtr create( CityRequestPtr request );
+  virtual void exec( Game& game );
 
-  // draw on screen
-  virtual void draw( GfxEngine& engine );
-
-  bool onEvent(const NEvent& event);
-
-  void addMessage( std::string );
- 
 private:
-  WindowMessageStack( Widget* parent, int id, const Rect& rectangle );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  CityRequestPtr _request;
 };
 
-}//end namespace gui
-#endif //__CAESARIA_MESSAGE_STACK_WIDGET_H_INCLUDED__
+}
+
+#endif //_CAESARIA_EVENT_SHOWREQUESTINFO_H_INCLUDE_

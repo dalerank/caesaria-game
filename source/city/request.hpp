@@ -21,6 +21,7 @@
 #include "core/time.hpp"
 #include "predefinitions.hpp"
 #include "core/variant.hpp"
+#include "good/good.hpp"
 
 class CityRequest : public ReferenceCounted
 {
@@ -59,6 +60,10 @@ public:
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream );
+
+  int getQty() const;
+  Good::Type getGoodType() const;
+  int getMonths2Comply() const;
 
 private:
   GoodRequest();

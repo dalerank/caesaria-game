@@ -13,37 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_OVERLAYS_MENU_H_INCLUDED__
-#define __CAESARIA_OVERLAYS_MENU_H_INCLUDED__
+#ifndef __CAESARIA_EMPERROR_REQUEST_WINDOW_H_INCLUDED__
+#define __CAESARIA_EMPERROR_REQUEST_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
-#include "game/enums.hpp"
 #include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
+#include "widget.hpp"
 #include "core/signals.hpp"
+#include "city/request.hpp"
 
 namespace gui
 {
 
-class OverlaysMenu : public Widget
+class EmperrorRequestWindow : public Widget
 {
 public:
-  OverlaysMenu( Widget* parent, const Rect& rectangle, int id);
+  static EmperrorRequestWindow* create( Widget* parent, CityRequestPtr request );
+  ~EmperrorRequestWindow();
 
-  bool isPointInside(const Point& point) const;
+  virtual void draw( GfxEngine& painter );
 
-  bool onEvent(const NEvent& event);
-
-oc3_signals public:
-  Signal1<int>& onSelectOverlayType();
+  virtual bool onEvent(const NEvent &event);
 
 private:
-  void _addButtons( const int type );
-  // add the button in the menu.
-  void _addButton( const int buildingType, const std::string& name, const Point& offset );
+  EmperrorRequestWindow( Widget* parent, CityRequestPtr request );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
 }//end namespace gui
-#endif //__CAESARIA_OVERLAYS_MENU_H_INCLUDED__
+#endif //__CAESARIA_EMPERROR_REQUEST_WINDOW_H_INCLUDED__

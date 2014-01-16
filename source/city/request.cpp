@@ -20,7 +20,7 @@ class GoodRequest::Impl
 {
 public:
   DateTime date;
-  unsigned int month;
+  unsigned int months2comply;
   GoodStock stock;
   int winFavour, winMoney;
   int failFavour, failMoney;
@@ -53,7 +53,7 @@ VariantMap GoodRequest::save() const
 {
   VariantMap ret;
   ret[ "date" ] = _d->date;
-  ret[ "month" ] = _d->month;
+  ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();
   VariantMap vm_win;
   vm_win[ "favour" ] = _d->winFavour;
@@ -71,7 +71,7 @@ VariantMap GoodRequest::save() const
 void GoodRequest::load(const VariantMap& stream)
 {
   _d->date = stream.get( "date" ).toDateTime();
-  _d->month = (int)stream.get( "month" );
+  _d->months2comply = (int)stream.get( "month" );
 
   Variant vm_goodt = stream.get( "good" );
   if( vm_goodt.type() == Variant::Map )
@@ -95,8 +95,13 @@ void GoodRequest::load(const VariantMap& stream)
   VariantMap vm_fail = stream.get( "fail" ).toMap();
   _d->failFavour = vm_fail.get( "favour" );
   _d->failMoney = vm_fail.get( "money" );
-  _finishedDate = _d->date.appendMonth( _d->month );
+  _finishedDate = _d->date.appendMonth( _d->months2comply );
 }
+
+int GoodRequest::getQty() const { return _d->stock.capacity(); }
+Good::Type GoodRequest::getGoodType() const { return _d->stock.type(); }
+int GoodRequest::getMonths2Comply() const { return _d->months2comply; }
+
 
 GoodRequest::GoodRequest()
   : CityRequest( DateTime() ), _d( new Impl )

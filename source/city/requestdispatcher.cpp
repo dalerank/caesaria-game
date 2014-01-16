@@ -17,6 +17,8 @@
 #include "request.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
+#include "events/showrequestwindow.hpp"
+
 
 class CityRequestDispatcher::Impl
 {

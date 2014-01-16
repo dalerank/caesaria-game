@@ -1,0 +1,61 @@
+{  
+  geometry : [ 0, 0, 480, 320 ]
+
+  imgBackground#Label : {
+    geometryf : [ 0, 0, 1, 1 ]
+    bgtype : "whiteFrame"
+
+    lbTitle#Label :
+    {
+      geometryf : [ 0.1 , 0.02, 0.9, 0.13 ]
+      text : "##title##"
+      font : "FONT_3"
+      text : "##emperror_request_goods##"
+      textAlign : [ "center", "center" ]
+    }
+
+    lbBlackframe#Label : {
+      font : "FONT_2_WHITE"
+      geometryf : [ 0.05, 0.1, 0.95, 0.9 ]
+      textAlign : [ "center", "center" ]
+      bgtype : "blackFrame"
+
+      lbText#Label : {
+        geometry : [ 5, 55, 430, 100 ]
+        font : "FONT_2_WHITE"
+        text : "##rome_need_some_goods##"
+      }
+
+      lbQty#Label : {
+        geometry : [ 10, 110, 30, 135 ]
+        font : "FONt_2_WHITE"
+      }
+
+      imgIcon#Image : {
+        geometry : [ 40, 110, 64, 134 ]
+      }
+
+      lbInterval#Label : {
+        geometry : [ 200, 110, 420, 135 ]
+        font : "FONT_2_WHITE"
+      }
+    }
+
+    btnAdvisor#TexturedButton : {
+      geometry : [ 18, 280, 46, 308 ]
+      normal : [ "paneling", 286 ]
+      hovered : [ "paneling", 287 ]
+      pressed : [ "paneling", 288 ]
+      disabled : [ "paneling", 286 ]
+    }
+
+    btnExit#TexturedButton :
+    {
+      geometry : [ 440, 284, 464, 306 ]
+      normal : [ "paneling", 532 ]
+      hovered : [ "paneling", 533 ]
+      pressed : [ "paneling", 534 ]
+      disabled : [ "paneling", 535 ]
+    }
+  }
+}

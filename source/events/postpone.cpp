@@ -44,12 +44,17 @@ PostponeEvent::~PostponeEvent(){}
 
 void PostponeEvent::exec(Game& game)
 {
-  PlayerCityPtr city = game.getCity();
-  CityRequestDispatcherPtr dispatcher = city->findService( CityRequestDispatcher::getDefaultName() );
+  bool isCityRequest = _d->options.get( "city_request" );
 
-  if( dispatcher.isValid() )
+  if( isCityRequest )
   {
-    dispatcher->add( _d->options );
+    PlayerCityPtr city = game.getCity();
+    CityRequestDispatcherPtr dispatcher = city->findService( CityRequestDispatcher::getDefaultName() ).as<CityRequestDispatcher>();
+
+    if( dispatcher.isValid() )
+    {
+      dispatcher->add( _d->options );
+    }
   }
 }
 
