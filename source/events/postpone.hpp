@@ -13,18 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "loader.hpp"
-#include "goodrequestevent.hpp"
+#ifndef _CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#define _CAESARIA_POSTPONEEVENT_H_INCLUDE_
+
+#include "event.hpp"
 
 namespace events
 {
 
-GameEventPtr Loader::load( const VariantMap& stream )
+class PostponeEvent : public GameEvent
 {
-  std::string type = stream.get( "type" ).toString();
-  if( "good_request" == type ) { return GoodRequestEvent::create( stream ); }
+public:
+  static GameEventPtr create( const VariantMap& stream );
 
-  return GameEventPtr();
+  virtual ~PostponeEvent();
+  virtual void exec( Game& game );
+  virtual bool mayExec( unsigned int time ) const;
+  virtual bool isDeleted() const;
+
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap& stream );
+
+private:
+  PostponeEvent();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
 }
 
-}
+#endif //_CAESARIA_POSTPONEEVENT_H_INCLUDE_

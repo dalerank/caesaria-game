@@ -43,13 +43,14 @@
 		
 	events : 
   {
-		"Jul.348" : {
+		"Jul.348" : {			
 			date : "-348.06.01"
 			type : "good_request"
 			good : { oil : 10 }		
 			month : 10	
 			success : { favour : 10, money : 1000 }			
 			fail : { favour : -10 }
+			city_request : true
 		}
 		
 		"Apr.345" : {
@@ -59,6 +60,7 @@
 			month : 10
 			success : { favour : 10, money : 1000 }			
 			fail : { favour : -10 }
+			city_request : true
 		}
 	}
 	

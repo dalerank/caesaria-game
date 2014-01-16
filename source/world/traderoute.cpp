@@ -112,7 +112,7 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
   _d->points = points;
   _d->seaRoute = seaRoute;
 
-  for( int i=1; i < points.size(); i++ )
+  for( unsigned int i=1; i < points.size(); i++ )
   {
     Point offset;
     Point p1 = points[ i ];

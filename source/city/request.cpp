@@ -13,14 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "goodrequestevent.hpp"
+#include "request.hpp"
 #include "good/goodhelper.hpp"
-#include "game/gamedate.hpp"
 
-namespace events
-{
-
-class GoodRequestEvent::Impl
+class GoodRequest::Impl
 {
 public:
   DateTime date;
@@ -30,31 +26,30 @@ public:
   int failFavour, failMoney;
 };
 
-GameEventPtr GoodRequestEvent::create( const VariantMap& stream )
+CityRequestPtr GoodRequest::create( const VariantMap& stream )
 {
-  GoodRequestEvent* gr = new GoodRequestEvent();
+  GoodRequest* gr = new GoodRequest();
   gr->load( stream );
 
-  GameEventPtr ret( gr );
+  CityRequestPtr ret( gr );
   ret->drop();
 
   return ret;
 }
 
-GoodRequestEvent::~GoodRequestEvent(){}
-void GoodRequestEvent::exec(Game&){}
+GoodRequest::~GoodRequest(){}
 
-bool GoodRequestEvent::mayExec(unsigned int) const
+void GoodRequest::exec( PlayerCityPtr city )
 {
-  return _d->date >= GameDate::current();
+  success();
 }
 
-bool GoodRequestEvent::isDeleted() const
+bool GoodRequest::mayExec(PlayerCityPtr city) const
 {
-  return _d->date >= GameDate::current();
+  return false;
 }
 
-VariantMap GoodRequestEvent::save() const
+VariantMap GoodRequest::save() const
 {
   VariantMap ret;
   ret[ "date" ] = _d->date;
@@ -73,7 +68,7 @@ VariantMap GoodRequestEvent::save() const
   return ret;
 }
 
-void GoodRequestEvent::load(const VariantMap& stream)
+void GoodRequest::load(const VariantMap& stream)
 {
   _d->date = stream.get( "date" ).toDateTime();
   _d->month = (int)stream.get( "month" );
@@ -100,11 +95,17 @@ void GoodRequestEvent::load(const VariantMap& stream)
   VariantMap vm_fail = stream.get( "fail" ).toMap();
   _d->failFavour = vm_fail.get( "favour" );
   _d->failMoney = vm_fail.get( "money" );
+  _finishedDate = _d->date.appendMonth( _d->month );
 }
 
-GoodRequestEvent::GoodRequestEvent() : _d( new Impl )
+GoodRequest::GoodRequest()
+  : CityRequest( DateTime() ), _d( new Impl )
 {
 
 }
+
+
+CityRequest::~CityRequest()
+{
 
 }

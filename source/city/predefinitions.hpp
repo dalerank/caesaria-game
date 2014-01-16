@@ -13,12 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_CITY_PREDEFINITIONS_H_INCLUDED__
+#define __CAESARIA_CITY_PREDEFINITIONS_H_INCLUDED__
 
 #include "core/predefinitions.hpp"
 
 PREDEFINE_CLASS_SMARTPOINTER(PlayerCity)
-PREDEFINE_CLASS_SMARTPOINTER(CityService)
+PREDEFINE_CLASS_SMARTPOINTER_LIST(CityService,List)
+PREDEFINE_CLASS_SMARTPOINTER_LIST(CityRequest,List)
+PREDEFINE_CLASS_SMARTPOINTER(CityRequestDispatcher)
 
-#endif //__CAESARIA_PLAYER_PREDEFINITIONS_H_INCLUDED__
+#endif //__CAESARIA_CITY_PREDEFINITIONS_H_INCLUDED__

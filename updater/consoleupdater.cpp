@@ -425,6 +425,8 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 			Logger::warning( "");
 		}
 	break;
+
+	default: break;
 	};
 }
 

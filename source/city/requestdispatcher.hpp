@@ -13,34 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_GOODREQUESTTEVENT_H_INCLUDE_
-#define _CAESARIA_GOODREQUESTTEVENT_H_INCLUDE_
+#ifndef _CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
+#define _CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
 
-#include "event.hpp"
+#include "cityservice.hpp"
+#include "request.hpp"
 
-namespace events
-{
-
-class GoodRequestEvent : public GameEvent
+class CityRequestDispatcher : public CityService
 {
 public:
-  static GameEventPtr create( const VariantMap& stream );
+  static CityServicePtr create( PlayerCityPtr city );
 
-  virtual ~GoodRequestEvent();
-  virtual void exec( Game& game );
-  virtual bool mayExec(unsigned int time) const;
-  virtual bool isDeleted() const;
+  CityRequestPtr add( const VariantMap& stream );
+  virtual ~CityRequestDispatcher();
 
-  VariantMap save() const;
-  void load(const VariantMap& stream );
+  static std::string getDefaultName();
+
+  virtual void update(const unsigned int time);
 
 private:
-  GoodRequestEvent();
+  CityRequestDispatcher();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-}
-
-#endif //_CAESARIA_GOODREQUESTTEVENT_H_INCLUDE_
+#endif //_CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_

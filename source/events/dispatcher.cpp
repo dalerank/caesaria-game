@@ -16,7 +16,8 @@
 #include "dispatcher.hpp"
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
-#include "loader.hpp"
+#include "postpone.hpp"
+#include "core/logger.hpp"
 
 namespace events
 {
@@ -43,7 +44,14 @@ Dispatcher::~Dispatcher()
 
 void Dispatcher::append( GameEventPtr event)
 {
-  _d->events.push_back( event );
+  if( event.isValid() )
+  {
+    _d->events.push_back( event );
+  }
+  else
+  {
+    Logger::warning( "Null event" );
+  }
 }
 
 void Dispatcher::update(unsigned int time)
@@ -78,7 +86,7 @@ void Dispatcher::load(const VariantMap& stream)
   for( VariantMap::const_iterator it=stream.begin();
        it != stream.end(); it++ )
   {
-    GameEventPtr e = Loader::load( it->second.toMap() );
+    GameEventPtr e = PostponeEvent::create( it->second.toMap() );
 
     if( e.isValid() )
     {

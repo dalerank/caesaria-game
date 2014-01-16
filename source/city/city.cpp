@@ -68,6 +68,7 @@
 #include "objects/house.hpp"
 #include "world/empiremap.hpp"
 #include "walker/seamerchant.hpp"
+#include "city/requestdispatcher.hpp"
 #include <set>
 
 using namespace constants;
@@ -206,6 +207,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( CityServiceRoads::create( this ) );
   addService( CityServiceFishPlace::create( this ) );
   addService( CityServiceDisorder::create( this ) );
+  addService( CityRequestDispatcher::create( this ) );
 }
 
 void PlayerCity::timeStep( unsigned int time )

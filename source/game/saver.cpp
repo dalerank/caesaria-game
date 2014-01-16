@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "saver.hpp"
 #include "core/variant.hpp"
@@ -24,15 +25,17 @@
 #include "gamedate.hpp"
 #include "game.hpp"
 #include "divinity.hpp"
+#include "events/dispatcher.hpp"
 
 void GameSaver::save(const vfs::Path& filename, const Game& game )
 {
   VariantMap vm;
-  vm[ "version" ] = Variant( 1 );
+  vm[ "version" ] = 1;
   vm[ "timemultiplier" ] = game.getTimeMultiplier();
 
   VariantMap vm_scenario;
   vm_scenario[ "date" ] = GameDate::current();
+  vm_scenario[ "events" ] = events::Dispatcher::instance().save();
   vm[ "scenario" ] = vm_scenario;
 
   VariantMap vm_empire;

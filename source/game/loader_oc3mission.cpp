@@ -29,7 +29,7 @@
 #include "world/empire.hpp"
 #include "city/city.hpp"
 #include "settings.hpp"
-#include "events/loader.hpp"
+#include "events/postpone.hpp"
 
 class GameLoaderMission::Impl
 {
@@ -59,7 +59,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     VariantMap vm_events = vm[ "events" ].toMap();
     for( VariantMap::iterator it=vm_events.begin(); it != vm_events.end(); it++ )
     {
-      events::GameEventPtr e = events::Loader::load( it->second.toMap() );
+      events::GameEventPtr e = events::PostponeEvent::create( it->second.toMap() );
       e->dispatch();
     }
 
