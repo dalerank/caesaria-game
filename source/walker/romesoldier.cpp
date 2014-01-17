@@ -25,6 +25,7 @@
 #include "gfx/tilemap.hpp"
 #include "animals.hpp"
 #include "enemysoldier.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

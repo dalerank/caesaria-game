@@ -22,6 +22,7 @@
 #include "pathway/pathway.hpp"
 #include "objects/senate.hpp"
 #include "objects/forum.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

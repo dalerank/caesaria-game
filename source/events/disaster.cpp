@@ -25,6 +25,8 @@
 #include "objects/house.hpp"
 #include "objects/ruins.hpp"
 #include "core/stringhelper.hpp"
+#include "gfx/tilesarray.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

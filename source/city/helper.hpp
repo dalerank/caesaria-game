@@ -19,6 +19,13 @@
 #define __CAESARIA_CITYHELPER_H_INCLUDED__
 
 #include "city.hpp"
+#include "gfx/tileoverlay.hpp"
+#include "gfx/tilesarray.hpp"
+#include "good/good.hpp"
+#include "core/foreach.hpp"
+#include "objects/service.hpp"
+
+#include <set>
 
 class CityHelper
 {

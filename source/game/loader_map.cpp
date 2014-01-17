@@ -28,6 +28,7 @@
 using namespace constants;
 
 #include <fstream>
+#include <map>
 
 class GameLoaderC3Map::Impl
 {

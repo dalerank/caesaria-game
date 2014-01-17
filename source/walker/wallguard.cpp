@@ -28,6 +28,7 @@
 #include "objects/tower.hpp"
 #include "objects/fortification.hpp"
 #include "walker/spear.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

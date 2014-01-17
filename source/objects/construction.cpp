@@ -22,6 +22,7 @@
 #include "city/city.hpp"
 #include "events/disaster.hpp"
 #include "core/logger.hpp"
+#include "core/foreach.hpp"
 
 class Construction::Impl
 {

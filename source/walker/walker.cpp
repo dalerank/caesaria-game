@@ -30,6 +30,7 @@
 #include "core/logger.hpp"
 #include "thinks.hpp"
 #include "ability.hpp"
+#include "core/foreach.hpp"
 
 using namespace constants;
 

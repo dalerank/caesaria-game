@@ -51,6 +51,7 @@
 #include "game/settings.hpp"
 #include "objects/well.hpp"
 #include "image.hpp"
+#include "core/foreach.hpp"
 #include "dictionary.hpp"
 
 using namespace constants;

@@ -18,6 +18,8 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/working.hpp"
+#include "gfx/tile.hpp"
+#include "core/foreach.hpp"
 
 namespace events
 {
