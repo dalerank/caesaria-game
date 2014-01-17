@@ -57,6 +57,8 @@ MerchantPtr Merchant::create( TraderoutePtr route, const std::string& start,
                               GoodStore& sell, GoodStore& buy )
 {
   MerchantPtr ret( new Merchant() );
+  ret->drop();
+
   ret->_d->route = route;
   bool startCity = (route->getBeginCity()->getName() == start);
   
@@ -71,11 +73,16 @@ MerchantPtr Merchant::create( TraderoutePtr route, const std::string& start,
 
   ret->_d->baseCity = baseCity->getName();
   ret->_d->destCity = destCity->getName();
-  ret->_d->steps = route->getPoints( !startCity );
-  ret->_d->step = 0;
-  ret->_d->location = ret->_d->steps.front();
-  ret->drop();
 
+  ret->_d->steps = route->getPoints( !startCity );
+  ret->_d->step = 0;  
+
+  if( ret->_d->steps.empty() )
+  {
+    return MerchantPtr();
+  }
+
+  ret->_d->location = ret->_d->steps.front();
   return ret;
 }
 

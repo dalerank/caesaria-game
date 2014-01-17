@@ -122,7 +122,7 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id
 
     const bool haveSubMenu = true;
     _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
-                                     !haveSubMenu, ResourceMenu::emptyMidPicId, _("##minimizeBtnTooltip##") );
+                                     !haveSubMenu, ResourceMenu::emptyMidPicId, _("##hide_bigpanel##") );
     _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
     _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, building::house,
@@ -337,7 +337,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
 
 Signal0<>& Menu::onMaximize()
 {
-  _d->minimizeButton->setTooltipText( _("##maximizeBtnTooltip##") );
+  _d->minimizeButton->setTooltipText( _("##show_bigpanel##") );
   return _d->onMaximizeSignal;
 }
 

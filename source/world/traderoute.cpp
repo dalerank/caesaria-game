@@ -149,6 +149,12 @@ bool Traderoute::isSeaRoute() const
 
 void Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy )
 {
+  if( _d->points.empty() )
+  {
+    Logger::warning( "Cannot create merchant for empty trade route [" + _d->begin + "<->" +_d->end  + "]" );
+    return;
+  }
+
   MerchantPtr merchant = Merchant::create( this, begin, sell, buy );
   _d->merchants.push_back( merchant );  
 

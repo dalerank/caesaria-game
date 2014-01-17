@@ -76,6 +76,7 @@ private:
 	std::size_t _downloadedBytes;
 
 	std::string _errorMessage;
+	bool _showDebugInfo;
 
 public:
 	HttpRequest(HttpConnection& conn, const std::string& url);

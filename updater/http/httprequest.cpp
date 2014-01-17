@@ -39,7 +39,8 @@ HttpRequest::HttpRequest(HttpConnection& conn, const std::string& url) :
 	_status(NOT_PERFORMED_YET),
 	_cancelFlag(false),
 	_progress(0),
-	_downloadedBytes(0)
+	_downloadedBytes(0),
+	_showDebugInfo( false )
 {}
 
 HttpRequest::HttpRequest(HttpConnection& conn, const std::string& url, vfs::Path destFilename) :
@@ -50,7 +51,8 @@ HttpRequest::HttpRequest(HttpConnection& conn, const std::string& url, vfs::Path
 	_destFilename(destFilename),
 	_cancelFlag(false),
 	_progress(0),
-	_downloadedBytes(0)
+	_downloadedBytes(0),
+	_showDebugInfo( false )
 {}
 
 void HttpRequest::InitRequest()
@@ -102,7 +104,10 @@ void HttpRequest::Perform()
 {
 	_errorMessage.clear();
 
-	Logger::update( "Download from " + _url);
+	if( _showDebugInfo )
+	{
+		Logger::update( "Download from " + _url, true );
+	}
 
 	InitRequest();
 

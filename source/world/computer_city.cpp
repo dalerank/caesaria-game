@@ -135,7 +135,9 @@ void ComputerCity::save( VariantMap& options ) const
 
 void ComputerCity::load( const VariantMap& options )
 {
-  setLocation( options.get( "location" ).toPoint() );
+  Variant location = options.get( "location" );
+  if( location.isValid() )
+    setLocation( location.toPoint() );
 
   _d->isAvailable = (bool)options.get( "available", false );
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();

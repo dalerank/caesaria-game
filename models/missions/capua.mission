@@ -23,8 +23,7 @@
     {
       Syracusae : 
       {
-        location : [ 843, 723 ]
-        land : false
+        sea : false
         available : true
         sells : { meat : 15,  marble : 15 }			
         buys : { olive : 15, oil : 25, furniture : 15	}
@@ -32,8 +31,7 @@
       
       Tarentum : 
       {
-        location : [ 903, 601 ]
-        sea : false
+	sea : true
         available : true
         sells : { furniture : 15, wine : 15 }
         buys : { pottery : 25	}
@@ -44,7 +42,7 @@
 	events : 
   {
 		"Jul.348" : {			
-			date : "-348.06.01"
+			date : "-350.01.01"
 			type : "good_request"
 			good : { oil : 10 }		
 			month : 10	

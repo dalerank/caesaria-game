@@ -30,6 +30,7 @@
 #include "city/city.hpp"
 #include "settings.hpp"
 #include "events/postpone.hpp"
+#include "gamedate.hpp"
 
 class GameLoaderMission::Impl
 {
@@ -55,6 +56,8 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     PlayerCityPtr city = game.getCity();
     city->getFunds().resolveIssue( FundIssue( CityFunds::donation, vm[ "funds" ].toInt() ) );
+
+    GameDate::init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm[ "events" ].toMap();
     for( VariantMap::iterator it=vm_events.begin(); it != vm_events.end(); it++ )

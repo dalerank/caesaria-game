@@ -18,6 +18,7 @@
 #include "city.hpp"
 #include "game/gamedate.hpp"
 #include "events/showrequestwindow.hpp"
+#include "core/foreach.hpp"
 
 
 class CityRequestDispatcher::Impl
