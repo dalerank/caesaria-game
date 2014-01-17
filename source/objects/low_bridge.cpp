@@ -91,11 +91,11 @@ public:
   {
     switch( _index )
     {
-    case liftingSE: return Point( 0, subpos.getX() );
-    case spanSE:    return Point( 0, 10 );
-    case descentSE: return Point( 0, 10 - subpos.getX() );
+    case liftingSE: return Point( -subpos.getX()*0.9, subpos.getX()*0.7 );
+    case spanSE:    return Point( -15, 12 );
+    case descentSE: return Point( -10 + subpos.getX(), 12 - subpos.getX() * 0.7 );
     case descentSW: return Point( -subpos.getY(), 0 );
-    case spanSW:    return Point( -10, 0 );
+    case spanSW:    return Point( -10, 10 );
     case liftingSW: return Point( -(10 - subpos.getY()), 0 );
 
     default: return Point( 0, 0 );
