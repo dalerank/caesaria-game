@@ -89,7 +89,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else if( fireLevel >= 0)
     {
-      drawColumn( engine, screenPos, 18, fireLevel );
+      drawColumn( engine, screenPos, fireLevel );
     }
   }
 }
@@ -105,4 +105,5 @@ LayerPtr LayerCrime::create(TilemapCamera& camera, PlayerCityPtr city)
 LayerCrime::LayerCrime(TilemapCamera& camera, PlayerCityPtr city)
   : Layer( camera, city )
 {
+  _loadColumnPicture( 18 );
 }

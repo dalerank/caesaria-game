@@ -30,7 +30,7 @@ namespace gui
 InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
-  setTitle( "##fontain##" );
+  setTitle( "##fountain##" );
 
   _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );
@@ -41,7 +41,7 @@ InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
   {
     if( fountain->isActive() )
     {
-      text = _("##fountain_text##");
+      text = _("##fountain_info##");
     }
     else
     {

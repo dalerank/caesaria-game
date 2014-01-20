@@ -827,11 +827,12 @@ int Widget::getScreenLeft() const { return getAbsoluteRect().getLeft(); }
 int Widget::getScreenBottom() const { return getAbsoluteRect().getBottom(); }
 int Widget::getScreenRight() const { return getAbsoluteRect().getRight(); }
 Point Widget::getLeftdownCorner() const { return Point( getLeft(), getBottom() ); }
+Point Widget::getRightupCorner() const { return Point( getRight(), getTop() ); }
 unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }
 Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _d->absoluteRect.UpperLeftCorner;}
 Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _d->absoluteRect.UpperLeftCorner;}
 void Widget::move( const Point& relativeMovement ){  setGeometry( _d->desiredRect + relativeMovement );}
-int Widget::getBottom() const{  return _d->relativeRect.LowerRightCorner.getY();}
+int Widget::getBottom() const{  return _d->relativeRect.LowerRightCorner.getY(); }
 void Widget::setTabGroup( bool isGroup ) { _d->isTabGroup = isGroup; }
 bool Widget::isVisible() const{  return _d->isVisible;}
 bool Widget::isSubElement() const{  return _d->isSubElement;}
@@ -847,5 +848,12 @@ void Widget::show() {  setVisible( true ); }
 Alignment Widget::getHorizontalTextAlign() const{  return _d->textHorzAlign; }
 Alignment Widget::getVerticalTextAlign() const{  return _d->textVertAlign;}
 void Widget::deleteLater(){  _environment->deleteLater( this ); }
+
+void Widget::setBottom( int b )
+{
+  Rect r = _d->relativeRect;
+  r.LowerRightCorner.setY(  b );
+  setGeometry( r );
+}
 
 }//end namespace gui

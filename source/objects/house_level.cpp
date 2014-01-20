@@ -44,6 +44,7 @@ public:
   int maxHabitantsByTile;
   std::string levelName;
   std::string internalName;
+  unsigned int srvcInterval, goodInterval, foodInterval;
  
   int taxRate;
 
@@ -65,60 +66,27 @@ public:
   GoodConsumptionMuls consumptionMuls;
 };
 
-int HouseLevelSpec::getLevel() const
-{
-   return _d->houseLevel;
-}
-
-const std::string& HouseLevelSpec::getLevelName() const
-{
-   return _d->levelName;
-}
-
-bool HouseLevelSpec::isPatrician() const
-{
-   return _d->houseLevel > 12;
-}
-
-int HouseLevelSpec::getMaxHabitantsByTile() const
-{
-   return _d->maxHabitantsByTile;
-}
-
-int HouseLevelSpec::getTaxRate() const
-{
-   return _d->taxRate;
-}
-
-int HouseLevelSpec::getMinEntertainmentLevel() const
-{
-  return _d->minEntertainmentLevel;
-}
-
-int HouseLevelSpec::getMinEducationLevel() const
-{
-  return _d->minEducationLevel;
-}
+int HouseLevelSpec::getLevel() const {   return _d->houseLevel;}
+const std::string& HouseLevelSpec::getLevelName() const{   return _d->levelName;}
+bool HouseLevelSpec::isPatrician() const{   return _d->houseLevel > 12;}
+int HouseLevelSpec::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
+int HouseLevelSpec::getTaxRate() const{   return _d->taxRate;}
+int HouseLevelSpec::getMinEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
+int HouseLevelSpec::getMinEducationLevel() const{  return _d->minEducationLevel;}
 //
 // int HouseLevelSpec::getMinHealthLevel()
 // {
 //    return _minHealthLevel;
 // }
 //
-int HouseLevelSpec::getMinReligionLevel() const
-{
-  return _d->minReligionLevel;
-}
+int HouseLevelSpec::getMinReligionLevel() const{  return _d->minReligionLevel;}
 //
 // int HouseLevelSpec::getMinWaterLevel()
 // {
 //    return _minWaterLevel;
 // }
 //
-int HouseLevelSpec::getMinFoodLevel() const
-{
-  return _d->minFoodLevel;
-}
+int HouseLevelSpec::getMinFoodLevel() const{  return _d->minFoodLevel;}
 
 
 bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
@@ -211,15 +179,9 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   return res;
 }
 
-unsigned int HouseLevelSpec::getServiceConsumptionInterval() const
-{
-  return GameDate::getTickInMonth() / 16;
-}
-
-unsigned int HouseLevelSpec::getFoodConsumptionInterval() const
-{
-  return GameDate::getTickInMonth() / 4;
-}
+unsigned int HouseLevelSpec::getServiceConsumptionInterval() const{  return _d->srvcInterval;}
+unsigned int HouseLevelSpec::getFoodConsumptionInterval() const{  return _d->foodInterval; }
+unsigned int HouseLevelSpec::getGoodConsumptionInterval() const{ return _d->goodInterval; }
 
 int HouseLevelSpec::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
 {
@@ -493,7 +455,7 @@ float HouseLevelSpec::evaluateReligionNeed(HousePtr house, const Service::Type s
    return (float)minLevel;
 }
 
-int HouseLevelSpec::computeMonthlyConsumption( HousePtr house, const Good::Type goodType, bool real) const
+int HouseLevelSpec::computeMonthlyGoodConsumption( HousePtr house, const Good::Type goodType, bool real) const
 {
   if( house.isNull() )
   {
@@ -501,11 +463,30 @@ int HouseLevelSpec::computeMonthlyConsumption( HousePtr house, const Good::Type 
     return 0;
   }
 
-  int res = house->getHabitants().count() * _d->requiredGoods[goodType];
+  int res=0;
+  switch( goodType )
+  {
+  case Good::furniture:
+  case Good::oil:
+  case Good::pottery:
+  case Good::wine:
+    res = 2;
+  break;
+
+  case Good::wheat:
+  case Good::meat:
+  case Good::fish:
+  case Good::fruit:
+  case Good::vegetable:
+    res = house->getHabitants().count() / 2;
+  break;
+
+  default: res = 0;
+  }
 
   res *= (real ? _d->consumptionMuls[ goodType ] : 1);
 
-  return res;
+  return (res * _d->requiredGoods[goodType]);
 }
 
 int HouseLevelSpec::computeMonthlyFoodConsumption(HousePtr house) const
@@ -516,40 +497,13 @@ int HouseLevelSpec::computeMonthlyFoodConsumption(HousePtr house) const
     return 0;
   }
 
-  int foodConsumption=0;
-  for( int i=Good::wheat; i <= Good::vegetable; i++ )
-  {
-    Good::Type type = Good::Type( i );
-
-    if( house->getGoodStore().getQty( type ) > 0 )
-    {
-      foodConsumption += computeMonthlyConsumption( house, type, true );
-    }
-  }
-
-  foodConsumption *= ( GameDate::getTickInMonth() / getFoodConsumptionInterval() );
-  return foodConsumption;
+  return house->getHabitants().count() / 2;
 }
 
-const std::string& HouseLevelSpec::getInternalName() const
-{
-  return _d->internalName;
-}
-
-int HouseLevelSpec::getRequiredGoodLevel(Good::Type type) const
-{
-  return _d->requiredGoods[type];
-}
-
-int HouseLevelSpec::getProsperity() const
-{
-  return _d->prosperity;
-}
-
-int HouseLevelSpec::getCrime() const
-{
-  return _d->crime;
-}
+const std::string& HouseLevelSpec::getInternalName() const{  return _d->internalName; }
+int HouseLevelSpec::getRequiredGoodLevel(Good::Type type) const{  return _d->requiredGoods[type];}
+int HouseLevelSpec::getProsperity() const{  return _d->prosperity;}
+int HouseLevelSpec::getCrime() const{  return _d->crime;}
 
 HouseLevelSpec::~HouseLevelSpec()
 {
@@ -558,7 +512,9 @@ HouseLevelSpec::~HouseLevelSpec()
 
 HouseLevelSpec::HouseLevelSpec() : _d( new Impl )
 {
-
+  _d->srvcInterval = GameDate::getTickInMonth() / 16;
+  _d->foodInterval = GameDate::getTickInMonth() / 2;
+  _d->goodInterval = GameDate::getTickInMonth();
 }
 
 HouseLevelSpec::HouseLevelSpec( const HouseLevelSpec& other ) : _d( new Impl )
@@ -686,10 +642,7 @@ HouseLevelSpec HouseSpecHelper::getHouseLevelSpec(const int houseLevel)
   return _d->spec_by_level[level];
 }
 
-int HouseSpecHelper::getHouseLevel(const int houseId)
-{
-  return _d->level_by_id[houseId];
-}
+int HouseSpecHelper::getHouseLevel(const int houseId){  return _d->level_by_id[houseId];}
 
 int HouseSpecHelper::getHouseLevel( const std::string& name )
 {
@@ -755,7 +708,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
 
     for (int i = 0; i < Good::goodCount; ++i)
     {
-      spec._d->consumptionMuls[ (Good::Type)i ] = 0.2;
+      spec._d->consumptionMuls[ (Good::Type)i ] = 1;
     }
 
     //load consumption goods koefficient
@@ -767,5 +720,4 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
 
     _d->spec_by_level[ spec._d->houseLevel ] = spec;
   }
-
 }

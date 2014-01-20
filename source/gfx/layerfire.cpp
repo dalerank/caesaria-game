@@ -65,7 +65,10 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::prefecture:
     case building::well:
     case building::fountain:
+    case building::lowBridge:
+    case building::highBridge:
       engine.drawPicture( tile.getPicture(), screenPos );
+      drawTilePass( engine, tile, offset, Renderer::foreground );
       needDrawAnimations = true;
     break;
 
@@ -102,7 +105,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else if( fireLevel >= 0)
     {
-      drawColumn( engine, screenPos, 18, fireLevel );
+      drawColumn( engine, screenPos, fireLevel );
     }
   }
 }
@@ -149,4 +152,5 @@ LayerPtr LayerFire::create(TilemapCamera& camera, PlayerCityPtr city)
 LayerFire::LayerFire(TilemapCamera& camera, PlayerCityPtr city)
   : Layer( camera, city )
 {
+  _loadColumnPicture( 18 );
 }

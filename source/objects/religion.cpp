@@ -104,7 +104,7 @@ unsigned int BigTempleMercure::getParishionerNumber() const
   return 300;
 }
 
-TempleOracle::TempleOracle() : Temple( RomeDivinityPtr(), building::oracle, 55, Size(2) )
+TempleOracle::TempleOracle() : BigTemple( RomeDivinityPtr(), building::oracle, 55 )
 {
   _animationRef().load( ResourceGroup::security, 56, 6);
   _animationRef().setOffset( Point( 9, 30 ) );
@@ -114,6 +114,16 @@ TempleOracle::TempleOracle() : Temple( RomeDivinityPtr(), building::oracle, 55, 
 unsigned int TempleOracle::getParishionerNumber() const
 {
   return 500;
+}
+
+void TempleOracle::build(PlayerCityPtr city, const TilePos& pos)
+{
+  BigTemple::build( city, pos );
+
+  if( isDeleted() )
+  {
+    _setError( "##oracle_need_2_cart_marble##" );
+  }
 }
 
 SmallTemple::SmallTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId )

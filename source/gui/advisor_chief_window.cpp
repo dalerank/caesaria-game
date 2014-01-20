@@ -86,7 +86,6 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   _d->drawMigrationState( startPoint + offset * 2 );
   _d->drawFoodStockState( startPoint + offset * 3 );
   _d->drawFoodConsumption( startPoint + offset * 4 );
-
 }
 
 void AdvisorChiefWindow::draw( GfxEngine& painter )

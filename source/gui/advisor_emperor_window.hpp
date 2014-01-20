@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA3_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
+#ifndef __CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
 
 #include "widget.hpp"
@@ -21,6 +21,7 @@
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "core/event.hpp"
+#include "city/predefinitions.hpp"
 
 namespace gui
 {
@@ -28,7 +29,7 @@ namespace gui
 class AdvisorEmperorWindow : public Widget
 {
 public:
-  AdvisorEmperorWindow(Widget* parent, int maxMoney, int id );
+  AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id );
 
   void draw( GfxEngine& painter );
 

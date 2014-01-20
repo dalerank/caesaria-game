@@ -99,7 +99,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else if( religionLevel > 0 )
     {
-      drawColumn( engine, screenPos, 9, religionLevel );
+      drawColumn( engine, screenPos, religionLevel );
     }
   }
 }
@@ -115,4 +115,5 @@ LayerPtr LayerReligion::create(TilemapCamera& camera, PlayerCityPtr city)
 LayerReligion::LayerReligion(TilemapCamera& camera, PlayerCityPtr city)
   : Layer( camera, city )
 {
+  _loadColumnPicture( 9 );
 }

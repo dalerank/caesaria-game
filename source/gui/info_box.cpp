@@ -65,13 +65,13 @@ public:
   Label* lbBackground;
   Label* lbBlackFrame;
   Label* lbTitle;
-  Label* lbInfo;
+  Label* lbText;
   PushButton* btnExit;
   PushButton* btnHelp;
   bool isAutoPosition;
 
   Impl() : lbBackground(0), lbBlackFrame(0), lbTitle(0),
-    lbInfo(0), btnExit(0), btnHelp(0), isAutoPosition(false)
+    lbText(0), btnExit(0), btnHelp(0), isAutoPosition(false)
   {
 
   }
@@ -88,15 +88,13 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
   _d->btnHelp = findChild<TexturedButton*>( "btnHelp", true );
   _d->lbBackground = findChild<Label*>( "lbBackground", true );
   _d->lbBlackFrame = findChild<Label*>( "lbBlackFrame", true );
-  _d->lbInfo = findChild<Label*>( "lbText", true );
+  _d->lbText = findChild<Label*>( "lbText", true );
 
   if( _d->btnExit ) { _d->btnExit->setPosition( Point( getWidth() - 39, getHeight() - 39 ) ); }
   if( _d->btnHelp ) { _d->btnHelp->setPosition( Point( 14, getHeight() - 39 ) ); }
 
   CONNECT( _d->btnExit, onClicked(), this, InfoBoxSimple::deleteLater );
   CONNECT( _d->btnHelp, onClicked(), this, InfoBoxSimple::showDescription );
-
-  _d->lbInfo = new Label( this, Rect( 32, 64, 510 - 32, 300 - 48 ) );
 
   // black box
   Point lastPos( getWidth() - 32, getHeight() - 48 );
@@ -107,11 +105,11 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
     lastPos.setY( _d->lbBlackFrame->getTop() - 10 );
   }
 
-  if( _d->lbInfo )
+  if( _d->lbText && blackArea.getWidth() == 0 )
   {
-    Rect r = _d->lbInfo->getRelativeRect();
-    r.LowerRightCorner = lastPos;
-    _d->lbInfo->setGeometry( r );
+    Rect r = _d->lbText->getRelativeRect();
+    r.LowerRightCorner = _d->btnExit->getRightupCorner();
+    _d->lbText->setGeometry( r );
   }
 
   _afterCreate();
@@ -122,7 +120,7 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
 
 void InfoBoxSimple::setText( const std::string& text )
 {
-  if( _d->lbInfo ) { _d->lbInfo->setText( text ); }
+  if( _d->lbText ) { _d->lbText->setText( text ); }
 }
 
 InfoBoxSimple::~InfoBoxSimple()
@@ -182,7 +180,7 @@ void InfoBoxSimple::setupUI(const VariantMap& ui)
 
 Label* InfoBoxSimple::_getTitle(){  return _d->lbTitle;}
 
-Label*InfoBoxSimple::_getInfo(){ return _d->lbInfo; }
+Label*InfoBoxSimple::_getInfo(){ return _d->lbText; }
 Label* InfoBoxSimple::_getBlackFrame(){  return _d->lbBlackFrame; }
 PushButton*InfoBoxSimple::_getBtnExit() { return _d->btnExit; }
 
@@ -380,9 +378,9 @@ InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::st
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
 
-  _d->lbInfo->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
-  _d->lbInfo->setWordwrap( true );
-  _d->lbInfo->setText( message );
+  _d->lbText->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbText->setWordwrap( true );
+  _d->lbText->setText( message );
 }
 
 InfoBoxText::~InfoBoxText()
@@ -395,8 +393,8 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
 {
   setTitle( "##well##" );
 
-  _d->lbInfo->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
-  _d->lbInfo->setWordwrap( true );
+  _d->lbText->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbText->setWordwrap( true );
 
   WellPtr well = tile.getOverlay().as<Well>();
   std::string text;
@@ -437,7 +435,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
     }
   }
 
-  _d->lbInfo->setText( _(text) );
+  _d->lbText->setText( _(text) );
 }
 
 InfoboxWell::~InfoboxWell()

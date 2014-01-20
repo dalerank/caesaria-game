@@ -46,6 +46,7 @@
     {
       geometry : [ 32, 64, 380, 96 ]
       multiline : true
+      font : "FONT_2"
     }
   }
 }

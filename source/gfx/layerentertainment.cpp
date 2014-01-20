@@ -109,7 +109,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else if( entertainmentLevel > 0 )
     {
-      drawColumn( engine, screenPos, 9, entertainmentLevel );
+      drawColumn( engine, screenPos, entertainmentLevel );
     }
   }
 }
@@ -125,6 +125,7 @@ LayerPtr LayerEntertainment::create(TilemapCamera& camera, PlayerCityPtr city, i
 LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city, int type )
   : Layer( camera, city )
 {
+  _loadColumnPicture( 9 );
   _type = type;
 
   switch( type )
