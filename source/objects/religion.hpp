@@ -115,11 +115,13 @@ public:
   virtual unsigned int getParishionerNumber() const;
 };
 
-class TempleOracle : public Temple
+class TempleOracle : public BigTemple
 {
 public:
   TempleOracle();
   virtual unsigned int getParishionerNumber() const;
+
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 };
 
 

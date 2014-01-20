@@ -141,11 +141,15 @@ public:
 
   virtual int getBottom() const;
 
+  virtual void setBottom(int b);
+
   virtual int getScreenBottom() const;
 
   virtual int getScreenRight() const;
 
   virtual Point getLeftdownCorner() const;
+
+  virtual Point getRightupCorner() const;
 
   virtual unsigned int getArea() const;
 
