@@ -41,9 +41,9 @@ public:
   {
     std::list< SmartPtr< T > > ret;
     TileOverlayList& buildings = _city->getOverlays();
-    foreach( TileOverlayPtr item, buildings )
+    foreach( item, buildings )
     {
-      SmartPtr< T > b = item.as<T>();
+      SmartPtr< T > b = (*item).as<T>();
       if( b.isValid() && (b->getClass() == group || group == constants::building::anyGroup ) )
       {
         ret.push_back( b );
@@ -73,11 +73,11 @@ public:
     std::list< SmartPtr< T > > ret;
 
     WalkerList walkers = _city->getWalkers( type, start, stop );
-    foreach( WalkerPtr w, walkers )
+    foreach( w, walkers )
     {
-      if( w.is<T>() )
+      if( (*w).is<T>() )
       {
-        ret.push_back( w.as<T>() );
+        ret.push_back( (*w).as<T>() );
       }
     }
 

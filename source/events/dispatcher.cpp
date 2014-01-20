@@ -73,9 +73,9 @@ VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   int index = 0;
-  foreach( GameEventPtr event, _d->events )
+  foreach( event, _d->events )
   {
-    ret[ StringHelper::format( 0xff, "%d", index ) ] = event->save();
+    ret[ StringHelper::format( 0xff, "%d", index ) ] = (*event)->save();
   }
 
   return ret;

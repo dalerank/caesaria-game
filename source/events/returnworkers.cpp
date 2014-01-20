@@ -42,7 +42,7 @@ void ReturnWorkers::exec(Game& game)
   {
     TilesArray perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
                                                  _center + TilePos( curRange, curRange ) );
-    foreach( Tile* tile, perimetr )
+    foreach( tile, perimetr )
     {
       HousePtr house = tile->getOverlay().as<House>();
       if( house.isValid() )

@@ -43,9 +43,9 @@ void FireWorkers::exec(Game& game)
   {
     TilesArray perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
                                                  _center + TilePos( curRange, curRange ) );
-    foreach( Tile* tile, perimetr )
+    foreach( tile, perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = tile->getOverlay().as<WorkingBuilding>();
+      WorkingBuildingPtr wrkBuilding = (*tile)->getOverlay().as<WorkingBuilding>();
       if( wrkBuilding.isValid() )
       {
         int bldWorkersCount = wrkBuilding->getWorkersCount();

@@ -86,7 +86,7 @@ void DisasterEvent::exec( Game& game )
     }
 
     TilesArray clearedTiles = tmap.getArea( rPos, size );
-    foreach( Tile* tile, clearedTiles )
+    foreach( tile, clearedTiles )
     {
       TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins, building::plagueRuins };
       TileOverlayPtr ov = TileOverlayFactory::getInstance().create( dstr2constr[_type] );
@@ -97,7 +97,7 @@ void DisasterEvent::exec( Game& game )
           ov.as<Ruins>()->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", disasterInfoType ) );
         }
 
-        Dispatcher::instance().append( BuildEvent::create( tile->getIJ(), ov ) );
+        Dispatcher::instance().append( BuildEvent::create( (*tile)->getIJ(), ov ) );
       }
     }
 
