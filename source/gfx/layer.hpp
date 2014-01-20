@@ -42,7 +42,7 @@ public:
   virtual void drawArea( GfxEngine& engine, const TilesArray& area, Point offset,
                          std::string resourceGroup, int tileId );
 
-  virtual void drawColumn(GfxEngine& engine, const Point& pos, const int startPicId, const int percent );
+  virtual void drawColumn(GfxEngine& engine, const Point& pos, const int percent );
   virtual void init( Point cursor );
 
   virtual void beforeRender(GfxEngine& engine) {}
@@ -62,6 +62,7 @@ protected:
   Point _getStartCursorPos() const;
   void _drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset);
   void _setTooltipText( std::string text );
+  void _loadColumnPicture( int picId );
 
   TilesArray _getSelectedArea();
 

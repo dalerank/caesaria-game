@@ -101,7 +101,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else if( damageLevel >= 0 )
     {
-      drawColumn( engine, screenPos, 15, damageLevel );
+      drawColumn( engine, screenPos, damageLevel );
     }
   }
 }
@@ -148,5 +148,5 @@ void LayerDamage::handleEvent(NEvent& event)
 LayerDamage::LayerDamage( TilemapCamera& camera, PlayerCityPtr city)
   : Layer( camera, city )
 {
-
+  _loadColumnPicture( 15 );
 }

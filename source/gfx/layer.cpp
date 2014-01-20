@@ -43,6 +43,10 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
+
+  Picture footColumn;
+  Picture bodyColumn;
+  Picture headerColumn;
 };
 
 void Layer::registerTileForRendering(Tile& tile)
@@ -314,20 +318,20 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
   }
 }
 
-void Layer::drawColumn( GfxEngine& engine, const Point& pos, const int startPicId, const int percent)
+void Layer::drawColumn(GfxEngine& engine, const Point& pos, const int percent)
 {
-  engine.drawPicture( Picture::load( ResourceGroup::sprites, startPicId + 2 ), pos + Point( 10, -15 ) );
+  engine.drawPicture( _d->footColumn, pos + Point( 10, -21 ) );
 
   int roundPercent = ( percent / 10 ) * 10;
-  Picture& pic = Picture::load( ResourceGroup::sprites, startPicId + 1 );
+
   for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
   {
-    engine.drawPicture( pic, pos - Point( -18, 2 + offsetY ) );
+    engine.drawPicture( _d->bodyColumn, pos - Point( -18, 12 + offsetY ) );
   }
 
   if( percent >= 10 )
   {
-    engine.drawPicture( Picture::load( ResourceGroup::sprites, startPicId ), pos - Point( -6, 10 + roundPercent ) );
+    engine.drawPicture( _d->headerColumn, pos - Point( -6, 20 + roundPercent ) );
   }
 }
 
@@ -352,6 +356,13 @@ Layer::Layer( TilemapCamera& camera, PlayerCityPtr city )
   _d->camera = &camera;
   _d->city = city;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
+}
+
+void Layer::_loadColumnPicture(int picId)
+{
+  _d->footColumn = Picture::load( ResourceGroup::sprites, picId + 2 );
+  _d->bodyColumn = Picture::load( ResourceGroup::sprites, picId + 1 );
+  _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
 }
 
 int Layer::getNextLayer() const{ return _d->nextLayer; }

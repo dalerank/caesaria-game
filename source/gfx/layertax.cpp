@@ -90,7 +90,7 @@ void LayerTax::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else if( taxLevel > 0 )
     {
-      drawColumn( engine, screenPos, 9, taxLevel );
+      drawColumn( engine, screenPos, taxLevel );
     }
   }
 }
@@ -106,4 +106,5 @@ LayerPtr LayerTax::create(TilemapCamera& camera, PlayerCityPtr city )
 LayerTax::LayerTax( TilemapCamera& camera, PlayerCityPtr city)
   : Layer( camera, city )
 {
+  _loadColumnPicture( 9 );
 }

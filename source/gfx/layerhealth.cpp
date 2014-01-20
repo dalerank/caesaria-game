@@ -107,7 +107,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else if( healthLevel > 0 )
     {
-      drawColumn( engine, screenPos, 9, healthLevel );
+      drawColumn( engine, screenPos, healthLevel );
     }
   }
 }
@@ -123,6 +123,7 @@ LayerPtr LayerHealth::create(TilemapCamera& camera, PlayerCityPtr city, int type
 LayerHealth::LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type)
   : Layer( camera, city )
 {
+  _loadColumnPicture( 9 );
   _type = type;
 
   switch( type )

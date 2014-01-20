@@ -97,7 +97,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else if( foodLevel >= 0 )
     {
-      drawColumn( engine, screenPos, 18, math::clamp( 100 - foodLevel, 0, 100 ) );
+      drawColumn( engine, screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
 }
@@ -113,4 +113,5 @@ LayerPtr LayerFood::create(TilemapCamera& camera, PlayerCityPtr city)
 LayerFood::LayerFood(TilemapCamera& camera, PlayerCityPtr city)
   : Layer( camera, city )
 {
+  _loadColumnPicture( 18 );
 }

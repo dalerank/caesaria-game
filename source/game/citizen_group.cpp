@@ -85,15 +85,8 @@ CitizenGroup& CitizenGroup::operator += (const CitizenGroup& b)
   return *this;
 }
 
-bool CitizenGroup::empty() const
-{
-  return _hb.empty();
-}
-
-void CitizenGroup::clear()
-{
-  _hb.clear();
-}
+bool CitizenGroup::empty() const {  return _hb.empty(); }
+void CitizenGroup::clear(){  _hb.clear(); }
 
 void CitizenGroup::makeOld()
 {

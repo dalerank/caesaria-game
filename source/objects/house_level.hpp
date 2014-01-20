@@ -49,6 +49,7 @@ public:
   bool checkHouse( HousePtr house, std::string* retMissing = 0);
   unsigned int getServiceConsumptionInterval() const;
   unsigned int getFoodConsumptionInterval() const;
+  unsigned int getGoodConsumptionInterval() const;
 
   int findLowLevelHouseNearby( HousePtr house, std::string &oMissingRequirement );
 
@@ -61,7 +62,7 @@ public:
   int computeReligionLevel(HousePtr house);
   int computeWaterLevel(HousePtr house, std::string &oMissingRequirement);
   int computeFoodLevel(HousePtr house);
-  int computeMonthlyConsumption(HousePtr house, const Good::Type goodType, bool real) const;
+  int computeMonthlyGoodConsumption(HousePtr house, const Good::Type goodType, bool real) const;
   int computeMonthlyFoodConsumption( HousePtr house ) const;
 
   float evaluateServiceNeed(HousePtr house, const Service::Type service);

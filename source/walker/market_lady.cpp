@@ -185,18 +185,13 @@ void MarketLady::_reachedPathway()
    Walker::_reachedPathway();
    if( _pathwayRef().isReverse() )
    {
-      // walker is back in the market
-      deleteLater();
-      // put the content of the basket in the market
-      _d->market->getGoodStore().storeAll( _d->basket );
+     // walker is back in the market
+     deleteLater();
+     // put the content of the basket in the market
+     _d->market->getGoodStore().storeAll( _d->basket );
    }
    else
    {
-      // walker is near the granary/warehouse
-      _pathwayRef().rbegin();
-      _computeDirection();
-      go();
-
       // get goods from destination building
       TileOverlayPtr building = _getCity()->getTilemap().at( _d->destBuildingPos ).getOverlay();
       
@@ -208,22 +203,22 @@ void MarketLady::_reachedPathway()
         granary->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = 1; n<Good::goodCount; ++n)
+        for (int n = Good::wheat; n<=Good::vegetable; ++n)
         {
-           // for all types of good (except G_NONE)
-           Good::Type goodType = (Good::Type) n;
-           int qty = _d->market->getGoodDemand(goodType) - _d->basket.getQty(goodType);
-           if (qty > 0)
-           {
-              qty = std::min(qty, granary->getGoodStore().getMaxRetrieve(goodType));
-              qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.getQty(_d->priorityGood));
-              if (qty > 0)
-              {
-                 // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-                 GoodStock& stock = _d->basket.getStock(goodType);
-                 granary->getGoodStore().retrieve(stock, qty);
-              }
-           }
+          // for all types of good (except G_NONE)
+          Good::Type goodType = (Good::Type) n;
+          int qty = _d->market->getGoodDemand(goodType) - _d->basket.getQty(goodType);
+          if (qty > 0)
+          {
+            qty = std::min(qty, granary->getGoodStore().getMaxRetrieve(goodType));
+            qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.getQty(_d->priorityGood));
+            if (qty > 0)
+            {
+              // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+              GoodStock& stock = _d->basket.getStock(goodType);
+              granary->getGoodStore().retrieve(stock, qty);
+            }
+          }
         }
       }
       else if( building.is<Warehouse>() )
@@ -235,26 +230,26 @@ void MarketLady::_reachedPathway()
         warehouse->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = 1; n<Good::goodCount; ++n)
+        for (int n = Good::olive; n<Good::goodCount; ++n)
         {
-           // for all types of good (except G_NONE)
-           Good::Type goodType = (Good::Type) n;
-           int qty = _d->market->getGoodDemand(goodType) - _d->basket.getQty(goodType);
-           if (qty > 0)
-           {
-              qty = std::min(qty, warehouse->getGoodStore().getMaxRetrieve(goodType));
-              qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.getQty(_d->priorityGood));
-              if (qty > 0)
-              {
-                 // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
-                 GoodStock& stock = _d->basket.getStock(goodType);
-                 warehouse->getGoodStore().retrieve(stock, qty);
-              }
-           }
+          // for all types of good (except G_NONE)
+          Good::Type goodType = (Good::Type) n;
+          int qty = _d->market->getGoodDemand(goodType) - _d->basket.getQty(goodType);
+          if (qty > 0)
+          {
+            qty = std::min(qty, warehouse->getGoodStore().getMaxRetrieve(goodType));
+            qty = std::min(qty, _d->basket.capacity(_d->priorityGood) - _d->basket.getQty(_d->priorityGood));
+            if (qty > 0)
+            {
+              // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
+              GoodStock& stock = _d->basket.getStock(goodType);
+              warehouse->getGoodStore().retrieve(stock, qty);
+            }
+          }
         }
       }
 
-      unsigned long delay = 20;
+      unsigned long delay = GameDate::getTickInMonth() / 4;
 
       while( _d->basket.getQty() > 100 )
       {
@@ -275,6 +270,11 @@ void MarketLady::_reachedPathway()
           }
         }
       }
+
+      // walker is near the granary/warehouse
+      _pathwayRef().rbegin();
+      _centerTile();
+      go();
    }
 }
 

@@ -67,43 +67,11 @@ public:
   int currentYear;
   int changeCondition;
 
-  void updateHealthLevel()
-  {
-    float delim = 1 + (((services[Service::well] > 0 || services[Service::fontain] > 0) ? 1 : 0))
-                + ((services[Service::doctor] > 0 || services[Service::hospital] > 0) ? 1 : 0)
-                + (services[Service::baths] > 0 ? 0.7 : 0)
-                + (services[Service::barber] > 0 ? 0.3 : 0);
-
-    float decrease = 0.3f / delim;
-
-    healthLevel = math::clamp<float>( healthLevel - decrease, 0, 100 );
-  }
-
-  void initGoodStore( int size )
-  {
-    int rsize = 25 * size * houseLevel;
-    goodStore.setCapacity( rsize * 10 );  // no limit
-    goodStore.setCapacity(Good::wheat, rsize );
-    goodStore.setCapacity(Good::fish, rsize );
-    goodStore.setCapacity(Good::meat, rsize );
-    goodStore.setCapacity(Good::fruit, rsize );
-    goodStore.setCapacity(Good::vegetable, rsize );
-    goodStore.setCapacity(Good::pottery, rsize );
-    goodStore.setCapacity(Good::furniture, rsize);
-    goodStore.setCapacity(Good::oil, rsize );
-    goodStore.setCapacity(Good::wine, rsize );
-  }
-
-  void consumeServices()
-  {
-    int currentWorkersPower = services[ Service::recruter ];       //save available workers number
-    float tax = services[ Service::forum ];
-
-    foreach( Services::value_type& s, services ) { s.second -= 1; } //consume services
-
-    services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
-    services[ Service::forum ] = tax;
-  }
+  void updateHealthLevel();
+  void initGoodStore( int size );
+  void consumeServices();
+  void consumeGoods(HousePtr house);
+  void consumeFoods(HousePtr house);
 };
 
 House::House(const int houseId) : Building( building::house ), _d( new Impl )
@@ -236,28 +204,28 @@ void House::timeStep(const unsigned long time)
     _d->updateHealthLevel();            
   }
 
+  if( time % getSpec().getFoodConsumptionInterval() == 0 )
+  {
+    _d->consumeFoods( this );
+  }
+
+  if( time % getSpec().getGoodConsumptionInterval() == 0 )
+  {
+    _d->consumeGoods( this );
+  }
+
   if( _d->taxCheckInterval.month() != GameDate::current().month() )
   {
     _d->taxCheckInterval = GameDate::current();
     float cityTax = _getCity()->getFunds().getTaxRate() / 100.f;
     appendServiceValue( Service::forum, (cityTax * _d->spec.getTaxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
 
-    _checkEvolve();
-  }
+    _checkEvolve();    
 
-  if( time % getSpec().getFoodConsumptionInterval() == 0 )
-  {
     appendServiceValue( Service::crime, _d->spec.getCrime() + 2 );
-    cancelService( Service::recruter );
-    // consume goods
-    for( int i = 0; i < Good::goodCount; ++i)
-    {
-       Good::Type goodType = (Good::Type) i;
-       int montlyGoodsQty = _d->spec.computeMonthlyConsumption( this, goodType, true );
-       _d->goodStore.setQty( goodType, std::max( _d->goodStore.getQty(goodType) - montlyGoodsQty, 0) );
-    }
+    cancelService( Service::recruter );    
 
-        int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
+    int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
     if( homelessCount > 0 )
     {
       CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
@@ -513,21 +481,23 @@ void House::buyMarket( ServiceWalkerPtr walker )
   for (int i = 0; i < Good::goodCount; ++i)
   {
     Good::Type goodType = (Good::Type) i;
-    int houseQty = houseStore.getQty(goodType) / 10;
-    int houseSafeQty = _d->spec.computeMonthlyConsumption( this, goodType, false )
-                       + _d->spec.next().computeMonthlyConsumption( this, goodType, false );
+    int houseQty = houseStore.getQty(goodType);
+    int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )
+                       + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
+    houseSafeQty *= 6;
+
     int marketQty = marketStore.getQty(goodType);
     if( houseQty < houseSafeQty && marketQty > 0  )
     {
        int qty = std::min( houseSafeQty - houseQty, marketQty);
-       qty = math::clamp( qty, 0, houseStore.getFreeQty( goodType ) / 10 );
+       qty = math::clamp( qty, 0, houseStore.getFreeQty( goodType ) );
 
        if( qty > 0 )
        {
          GoodStock stock(goodType, qty);
          marketStore.retrieve(stock, qty);
 
-         stock.setCapacity( qty * 10 );
+         stock.setCapacity( qty );
          stock.setQty( stock.capacity() );
 
          houseStore.store(stock, stock.qty() );
@@ -632,8 +602,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
     {
       Good::Type goodType = (Good::Type) i;
       int houseQty = houseStore.getQty(goodType) / 10;
-      int houseSafeQty = _d->spec.computeMonthlyConsumption( this, goodType, false)
-                         + _d->spec.next().computeMonthlyConsumption( this, goodType, false );
+      int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false)
+                         + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
       int marketQty = marketStore.getQty(goodType);
       if( houseQty < houseSafeQty && marketQty > 0)
       {
@@ -809,7 +779,7 @@ int House::getFoodLevel() const
     int maxFoodQty = 0;
     foreach( Good::Type ft, foods )
     {
-      int tmpQty = _d->goodStore.getQty(Good::wheat);
+      int tmpQty = _d->goodStore.getQty( ft );
       if( tmpQty > maxFoodQty )
       {
         maxFoodQty = tmpQty;
@@ -883,3 +853,103 @@ float House::getServiceValue( Service::Type service){  return _d->services[servi
 void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }
 int House::getMaxHabitants() {  return _d->maxHabitants; }
 void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
+
+
+void House::Impl::updateHealthLevel()
+{
+  float delim = 1 + (((services[Service::well] > 0 || services[Service::fontain] > 0) ? 1 : 0))
+      + ((services[Service::doctor] > 0 || services[Service::hospital] > 0) ? 1 : 0)
+      + (services[Service::baths] > 0 ? 0.7 : 0)
+      + (services[Service::barber] > 0 ? 0.3 : 0);
+
+  float decrease = 0.3f / delim;
+
+  healthLevel = math::clamp<float>( healthLevel - decrease, 0, 100 );
+}
+
+void House::Impl::initGoodStore(int size)
+{
+  int rsize = 25 * size * houseLevel;
+  goodStore.setCapacity( rsize * 10 );  // no limit
+  goodStore.setCapacity(Good::wheat, rsize );
+  goodStore.setCapacity(Good::fish, rsize );
+  goodStore.setCapacity(Good::meat, rsize );
+  goodStore.setCapacity(Good::fruit, rsize );
+  goodStore.setCapacity(Good::vegetable, rsize );
+  goodStore.setCapacity(Good::pottery, rsize );
+  goodStore.setCapacity(Good::furniture, rsize);
+  goodStore.setCapacity(Good::oil, rsize );
+  goodStore.setCapacity(Good::wine, rsize );
+}
+
+void House::Impl::consumeServices()
+{
+  int currentWorkersPower = services[ Service::recruter ];       //save available workers number
+  float tax = services[ Service::forum ];
+
+  foreach( Services::value_type& s, services ) { s.second -= 1; } //consume services
+
+  services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
+  services[ Service::forum ] = tax;
+}
+
+void House::Impl::consumeGoods( HousePtr house )
+{
+  for( int i = Good::olive; i < Good::goodCount; ++i)
+  {
+     Good::Type goodType = (Good::Type) i;
+     int montlyGoodsQty = spec.computeMonthlyGoodConsumption( house, goodType, true );
+     goodStore.setQty( goodType, std::max( goodStore.getQty(goodType) - montlyGoodsQty, 0) );
+  }
+}
+
+void House::Impl::consumeFoods(HousePtr house)
+{
+  int consumeQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::getTickInMonth();
+
+  int foodLevel = spec.getMinFoodLevel();
+  int tmpConsumeQty = 0;
+
+  // consume foods
+  if( foodLevel > 2 )
+  {
+    tmpConsumeQty = consumeQty / 3;
+
+    int fQty = goodStore.getQty( Good::fruit );
+    int vQty = goodStore.getQty( Good::vegetable );
+
+    Good::Type maxType = ( fQty > vQty ) ? Good::fruit : Good::vegetable;
+    Good::Type minType = ( fQty > vQty ) ? Good::vegetable : Good::fruit;
+
+    vQty = std::min( goodStore.getQty( minType ), tmpConsumeQty / 2 );
+    goodStore.setQty( minType, std::max( goodStore.getQty( minType ) - vQty, 0) );
+
+    fQty = ( tmpConsumeQty - vQty );
+    goodStore.setQty( maxType, std::max( goodStore.getQty( maxType ) - fQty, 0) );
+  }
+
+  if( foodLevel > 1 )
+  {
+    tmpConsumeQty = (0 == tmpConsumeQty ? consumeQty / 2 : tmpConsumeQty);
+
+    int mQty = std::min( goodStore.getQty( Good::meat ), tmpConsumeQty / 2 );
+    int fQty = std::min( goodStore.getQty( Good::fish ), tmpConsumeQty / 2 );
+
+    Good::Type maxType = ( fQty > mQty ) ? Good::fish : Good::meat;
+    Good::Type minType = ( fQty > mQty ) ? Good::meat : Good::fish;
+
+    mQty = std::min( goodStore.getQty( minType ), tmpConsumeQty / 2 );
+    goodStore.setQty( minType, std::max( goodStore.getQty( minType ) - mQty, 0) );
+
+    fQty = ( tmpConsumeQty - mQty );
+    goodStore.setQty( maxType, std::max( goodStore.getQty( maxType ) - fQty, 0) );
+  }
+
+  if( foodLevel > 0 )
+  {
+    tmpConsumeQty = (0 == tmpConsumeQty ? consumeQty : tmpConsumeQty);
+
+    int wQty = std::min( goodStore.getQty( Good::wheat ), tmpConsumeQty );
+    goodStore.setQty( Good::wheat, std::max( goodStore.getQty(Good::wheat) - wQty, 0) );
+  }
+}
