@@ -25,14 +25,63 @@
 #include "listbox.hpp"
 #include "listboxitem.hpp"
 #include "core/logger.hpp"
+#include "city/request.hpp"
+#include "core/foreach.hpp"
+#include "good/goodhelper.hpp"
+#include "game/gamedate.hpp"
+#include "gameautopause.hpp"
+#include "city/statistic.hpp"
+#include "game/player.hpp"
 
 namespace gui
 {
 
+namespace {
+  Point requestButtonOffset = Point( 0, 90 );
+  Size requestButtonSize = Size( 550, 80 );
+}
+
+class RequestButton : public PushButton
+{
+public:
+  RequestButton( Widget* parent, const Point& pos, int index, CityRequestPtr request )
+    : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", index, false, PushButton::blackBorderUp )
+  {
+    _request = request;
+    _resizeEvent();
+  }
+
+  virtual void _updateTexture( ElementState state )
+  {
+    PushButton::_updateTexture( state );
+
+    PictureRef& pic = _getTextPicture( state );
+
+    Font font = Font::create( FONT_2_WHITE );
+
+    if( _request.is<GoodRequest>() )
+    {
+      GoodRequestPtr gr = _request.as<GoodRequest>();
+      std::string title = StringHelper::format( 0xff, "##emperor_request##" );
+      font.draw( *pic, title, 20, 2 );
+      font.draw( *pic, StringHelper::format( 0xff, "%d", gr->getQty() ), 20, 25 );
+
+      Picture goodPicture = GoodHelper::getPicture( gr->getGoodType() );
+      pic->draw( goodPicture, Point( 50, 25 ), false );
+
+      int month2comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
+      font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 25 );
+    }
+  }
+
+private:
+  CityRequestPtr _request;
+};
+
 class AdvisorEmperorWindow::Impl
 {
 public:
-  int money;
+  PlayerCityPtr city;
   int wantSend;
   PictureRef background;
   gui::Label* lbEmperorFavour;
@@ -42,10 +91,11 @@ public:
   PushButton* btnSendGift;
   PushButton* btnSend2City;
   PushButton* btnChangeSalary; 
+  GameAutoPause autoPause;
 
   void sendMoney()
   {
-    money -= wantSend;
+    city->get money -= wantSend;
     onSendMoneySignal.emit( wantSend );
   }
 
@@ -144,10 +194,14 @@ Signal1<int>&AdvisorEmperorWindow::onSendMoney()
   return _d->onSendMoneySignal;
 }
 
-AdvisorEmperorWindow::AdvisorEmperorWindow(Widget* parent, int maxMoney, int id )
+AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  _d->money = maxMoney;
+  _d->autoPause.activate();
+
+  int money = _d->city->getPlayer()->getMoney();
+
+  _d->city = city;
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
@@ -161,9 +215,33 @@ AdvisorEmperorWindow::AdvisorEmperorWindow(Widget* parent, int maxMoney, int id 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
   //buttons _d->_d->background
-  Point startPos( 32, 91 );
-  PictureDecorator::draw( *_d->background, Rect( startPos, Size( 570, 220 ) ), PictureDecorator::blackFrame );
+  Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
+  PictureDecorator::draw( *_d->background, reqsRect, PictureDecorator::blackFrame );
   PictureDecorator::draw( *_d->background, Rect( 66, 325, 66 + 510, 325 + 94 ), PictureDecorator::blackFrame );
+
+  CityRequestList reqs;
+  CityRequestDispatcherPtr dispatcher = _d->city->findService( CityRequestDispatcher::getDefaultName() ).as<CityRequestDispatcher>();
+
+  if( dispatcher.isValid() )
+  {
+    reqs = dispatcher->getRequests();
+  }
+
+  if( reqs.empty() )
+  {
+    Label* lb = new Label( this, reqsRect, "##have_no_requests##" );
+    lb->setTextAlignment( alignCenter, alignCenter );
+  }
+  else
+  {
+    int index = 0;
+    foreach( CityRequestPtr request, reqs )
+    {
+      RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 10, 10 ), index, request );
+      btn->setEnabled( request->mayExec() );
+      index++;
+    }
+  }
   
   _d->lbEmperorFavour = new gui::Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), "Favour of the emperor 50" );
   _d->lbEmperorFavourDesc = new gui::Label( this, _d->lbEmperorFavour->getRelativeRect() + Point( 0, 20 ), "The emperor has mixed feelings to you" );

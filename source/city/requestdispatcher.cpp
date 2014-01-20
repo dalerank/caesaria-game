@@ -88,3 +88,8 @@ void CityRequestDispatcher::update(const unsigned int time)
   }
 }
 
+CityRequestList CityRequestDispatcher::getRequests() const
+{
+  return _d->requests;
+}
+

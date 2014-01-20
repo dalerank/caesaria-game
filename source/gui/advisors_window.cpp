@@ -41,6 +41,7 @@
 #include "core/foreach.hpp"
 #include "city/funds.hpp"
 #include "events/event.hpp"
+#include "city/requestdispatcher.hpp"
 #include "game/settings.hpp"
 #include "gui/image.hpp"
 
@@ -126,7 +127,8 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
   case ADV_EMPIRE:
     {
-      AdvisorEmperorWindow* wnd = new AdvisorEmperorWindow( this, _d->city->getPlayer()->getMoney(), ADV_EMPIRE );
+      AdvisorEmperorWindow* wnd = new AdvisorEmperorWindow( _d->city, this, playerMoney, ADV_EMPIRE );
+
       _d->advisorPanel = wnd;
       CONNECT( wnd, onSendMoney(), _d.data(), Impl::sendMoney2City );
     }

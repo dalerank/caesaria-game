@@ -13,31 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
-#define _CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
+#ifndef _CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
+#define _CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
 
-#include "cityservice.hpp"
-#include "request.hpp"
+#include "core/scopedptr.hpp"
 
-class CityRequestDispatcher : public CityService
+class GameAutoPause
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
-
-  bool add( const VariantMap& stream );
-  virtual ~CityRequestDispatcher();
-
-  static std::string getDefaultName();
-
-  virtual void update(const unsigned int time);
-
-  CityRequestList getRequests() const;
-
-private:
-  CityRequestDispatcher();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  GameAutoPause();
+  void activate();
+  virtual ~GameAutoPause();
 };
 
-#endif //_CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
+#endif //_CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
