@@ -53,6 +53,7 @@
 #include "image.hpp"
 #include "core/foreach.hpp"
 #include "dictionary.hpp"
+#include "gameautopause.hpp"
 
 using namespace constants;
 
@@ -69,6 +70,8 @@ public:
   PushButton* btnExit;
   PushButton* btnHelp;
   bool isAutoPosition;
+  GameAutoPause autopause;
+
 
   Impl() : lbBackground(0), lbBlackFrame(0), lbTitle(0),
     lbText(0), btnExit(0), btnHelp(0), isAutoPosition(false)
@@ -80,6 +83,8 @@ public:
 InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blackArea, int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
+  _d->autopause.activate();
+
   // create the title
   Widget::setupUI( GameSettings::rcpath( "/gui/infobox.gui" ) );
 
@@ -113,9 +118,6 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
   }
 
   _afterCreate();
-
-  events::GameEventPtr e = events::Pause::create( events::Pause::hidepause );
-  e->dispatch();
 }
 
 void InfoBoxSimple::setText( const std::string& text )
@@ -125,8 +127,6 @@ void InfoBoxSimple::setText( const std::string& text )
 
 InfoBoxSimple::~InfoBoxSimple()
 {
-  events::GameEventPtr e = events::Pause::create( events::Pause::hideplay );
-  e->dispatch();
 }
 
 void InfoBoxSimple::draw( GfxEngine& engine )
@@ -203,7 +203,9 @@ InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingP
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
   _working = building;
-  setTitle( MetaDataHolder::instance().getData( _working->getType() ).getPrettyName() );
+
+  std::string title = MetaDataHolder::getPrettyName( _working->getType() );
+  setTitle( _(title) );
 
   _updateWorkersLabel( Point( 32, 150 ), 542, _working->getMaxWorkers(), _working->getWorkersCount() );
 
@@ -211,7 +213,7 @@ InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingP
                                            (int)_working->getState( Construction::damage ),
                                            (int)_working->getState( Construction::fire ));
 
-  new Label( this, Rect( 50, getHeight() - 50, getWidth() - 50, getHeight() - 16 ), text );
+  new Label( this, Rect( 50, getHeight() - 30, getWidth() - 50, getHeight() - 10 ), text );
   new Label( this, Rect( 16, 50, getWidth() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
 }
 
@@ -386,66 +388,6 @@ InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::st
 InfoBoxText::~InfoBoxText()
 {
 
-}
-
-InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
-{
-  setTitle( "##well##" );
-
-  _d->lbText->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
-  _d->lbText->setWordwrap( true );
-
-  WellPtr well = tile.getOverlay().as<Well>();
-  std::string text;
-  if( well.isValid() )
-  {
-    TilesArray coverageArea = well->getCoverageArea();
-
-    bool haveHouseInArea = false;
-    foreach( tile, coverageArea )
-    {
-      haveHouseInArea |= (*tile)->getOverlay().as<House>().isValid();
-    }
-
-    if( !haveHouseInArea )
-    {
-      text = "##well_haveno_houses_inarea##";
-    }
-    else
-    {
-      bool houseNeedWell = false;
-      foreach( tile, coverageArea)
-      {
-        HousePtr house = (*tile)->getOverlay().as<House>();
-        if( house.isValid() )
-        {
-          houseNeedWell |= ( house->getServiceValue( Service::fontain ) == 0 );
-        }
-      }
-
-      if( !houseNeedWell )
-      {
-        text = "##also_fountain_in_well_area##";
-      }
-      else
-      {
-        text = "##well_info##";
-      }
-    }
-  }
-
-  _d->lbText->setText( _(text) );
-}
-
-InfoboxWell::~InfoboxWell()
-{
-
-}
-
-void InfoboxWell::showDescription()
-{
-  DictionaryWindow::show( getParent(), building::well );
 }
 
 }//end namespace gui

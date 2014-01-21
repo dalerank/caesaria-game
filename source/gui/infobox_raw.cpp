@@ -24,6 +24,7 @@
 #include "dictionary.hpp"
 #include "environment.hpp"
 #include "objects/factory.hpp"
+#include "infobox_factory.hpp"
 
 using namespace constants;
 
@@ -60,23 +61,18 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
 
   if( lbProgress != NULL )
   {
-    std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete##"), rawmb->getProgress() );
+    std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), rawmb->getProgress() );
     lbProgress->setText( text );
   }
 
+  std::string title = MetaDataHolder::getPrettyName( rawmb->getType() );
+  _getTitle()->setText( _(title) );
+
   if( lbProductivity != NULL )
   {
-    std::string text = _("##farm_working_normally##");
-    if( rawmb->getWorkersCount() == 0 )
-    {
-      text = _("##farm_have_no_workers##");
-    }
-    else if( rawmb->getWorkersCount() <= rawmb->getMaxWorkers() / 2 )
-    {
-      text = _("##farm_working_bad##");
-    }
+    std::string text = InfoboxFactory::getInfoText( rawmb );
 
-    lbProductivity->setText( text );
+    lbProductivity->setText( _(text) );
   }
 }
 

@@ -29,7 +29,7 @@ public:
   InfoboxFactory( Widget* parent, const Tile& tile );
 
   virtual void showDescription();
-  std::string getInfoText( FactoryPtr factory );
+  static std::string getInfoText( FactoryPtr factory );
 private:
   TileOverlay::Type _type;
 };

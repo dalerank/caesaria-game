@@ -49,7 +49,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( "plateau", 1, 44, offset);
   _d->setRange( ResourceGroup::commerce, 1, 167, offset);
   _d->setRange( ResourceGroup::transport, 1, 93, offset);
-  _d->setOne( ResourceGroup::transport, 72, 0, 5 ); //lifting low bridge sw
+  _d->setOne( ResourceGroup::transport, 72, 0, 44 ); //lifting low bridge sw
   _d->setOne( ResourceGroup::transport, 74, 0, 68 ); //span high bridge se
   _d->setOne( ResourceGroup::transport, 77, 0, 53 ); //span high bridge sw
   _d->setRange( ResourceGroup::security, 1, 61, offset);

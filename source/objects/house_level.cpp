@@ -141,7 +141,12 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minReligionLevel )
   {
     res = false;
-    ref = "##missing_religion##";
+    switch( _d->minReligionLevel )
+    {
+    case 0: res = "##missing_religion##"; break;
+    case 1: res = "##need_second_religion##"; break;
+    case 2: res = "##need_third_religion##"; break;
+    }
   }
 
   value = computeWaterLevel(house, reason);

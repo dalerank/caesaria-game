@@ -40,7 +40,8 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
                                          _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( btnOrders, onClicked(), this, InfoBoxGranary::showSpecialOrdersWindow );
 
-  setTitle( MetaDataHolder::getPrettyName( _granary->getType() ) );
+  std::string title = MetaDataHolder::getPrettyName( _granary->getType() );
+  setTitle( _(title) );
 
   // summary: total stock, free capacity
   std::string desc = StringHelper::format( 0xff, "%d %s %d",
@@ -81,11 +82,11 @@ void InfoBoxGranary::drawGood( Good::Type goodType, int col, int paintY)
 {
   std::string goodName = GoodHelper::getName( goodType );
   int qty = _granary->getGoodStore().getQty(goodType);
-  std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
+  std::string outText = StringHelper::format( 0xff, "%d %s", qty, _( goodName ) );
 
   // pictures of goods
   const Picture& pic = GoodHelper::getPicture( goodType );
-  Label* lb = new Label( this, Rect( Point( (col == 0 ? 31 : 250), paintY), Size( 100, 24 )) );
+  Label* lb = new Label( this, Rect( Point( (col == 0 ? 31 : 250), paintY), Size( 150, 24 )) );
   lb->setIcon( pic );
   lb->setFont( Font::create( FONT_2 ) );
   lb->setText( outText );

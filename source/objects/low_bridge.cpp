@@ -87,16 +87,16 @@ public:
     }
   }
 
-  Point getOffset( Tile& tile, const Point& subpos ) const
+  Point getOffset( Tile& , const Point& subpos ) const
   {
     switch( _index )
     {
     case liftingSE: return Point( -subpos.getX()*0.9, subpos.getX()*0.7 );
     case spanSE:    return Point( -15, 12 );
     case descentSE: return Point( -10 + subpos.getX(), 12 - subpos.getX() * 0.7 );
-    case descentSW: return Point( -subpos.getY(), 0 );
-    case spanSW:    return Point( -10, 10 );
-    case liftingSW: return Point( -(10 - subpos.getY()), 0 );
+    case descentSW: return Point( -subpos.getY()*0.5, subpos.getY()*0.9 );
+    case spanSW:    return Point( -8, 25 );
+    case liftingSW: return Point( subpos.getY()*0.6, 20-subpos.getY()*0.4 );
 
     default: return Point( 0, 0 );
     }
