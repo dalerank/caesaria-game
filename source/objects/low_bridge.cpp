@@ -375,9 +375,8 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
     
     TilesArray tiles = tilemap.getArea( startPos, endPos );
     int index=0;
-    foreach( Tile* t, tiles )
+    foreach( t, tiles )
     {
-      t;
       LowBridgeSubTilePtr subtile = _d->subtiles[ index ];
       TilePos buildPos = pos + subtile->_pos * signSum;
       Tile& tile = tilemap.at( buildPos );
@@ -396,9 +395,9 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
 bool LowBridge::canDestroy() const
 {
   CityHelper helper( _getCity() );
-  foreach( LowBridgeSubTilePtr subtile, _d->subtiles )
+  foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.find<Walker>( walker::any, subtile->getTilePos() );
+    WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->getTilePos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -433,10 +432,9 @@ void LowBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  foreach( LowBridgeSubTilePtr subtile,  _d->subtiles )
+  foreach( subtile,  _d->subtiles )
   {
-
-    vl_tinfo.push_back( subtile->_imgId );
+    vl_tinfo.push_back( (*subtile)->_imgId );
   }
   stream[ "terraininfo" ] = vl_tinfo;
   //stream[ "direction" ] = (int)_d->direction;

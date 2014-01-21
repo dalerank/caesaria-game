@@ -115,10 +115,7 @@ void Walker::timeStep(const unsigned long time)
   break;
   }
 
-  foreach( AbilityPtr ab, _d->abilities)
-  {
-    ab->run( this, time );
-  }
+  foreach( it, _d->abilities) { (*it)->run( this, time ); }
 
   if( getHealth() <= 0 )
   {

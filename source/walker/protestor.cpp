@@ -181,8 +181,9 @@ void Protestor::timeStep(const unsigned long time)
       }
       else
       {
-        foreach( ConstructionPtr c, constructions )
+        foreach( it, constructions )
         {
+          ConstructionPtr c = *it;
           if( c->getClass() != building::disasterGroup && c->getType() != construction::road )
           {
             c->updateState( Construction::fire, 1 );

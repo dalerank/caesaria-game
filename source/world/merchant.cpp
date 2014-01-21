@@ -143,7 +143,8 @@ VariantMap Merchant::save() const
   ret[ "end"      ]= Variant( _d->destCity );
   ret[ "location" ]= _d->location;
   VariantList vl_steps;
-  foreach( Point p, _d->steps ) { vl_steps.push_back( p ); }
+
+  foreach( p, _d->steps ) { vl_steps.push_back( *p ); }
 
   ret[ "steps"    ]= vl_steps;
 
@@ -161,7 +162,7 @@ void Merchant::load(const VariantMap& stream)
   _d->location = stream.get( "location" ).toPoint();
 
   VariantList steps = stream.get( "steps" ).toList();
-  foreach( Variant v, steps ) { _d->steps.push_back( v.toPoint() ); }
+  foreach( v, steps ) { _d->steps.push_back( v->toPoint() ); }
 }
 
 std::string Merchant::getBaseCityName() const

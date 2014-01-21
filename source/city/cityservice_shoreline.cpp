@@ -38,12 +38,12 @@ void CityServiceShoreline::Impl::checkMap( PlayerCityPtr city )
   int mapSize = city->getTilemap().getSize();
   TilesArray tiles = city->getTilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
 
-  foreach( Tile* tile, tiles )
+  foreach( tile, tiles )
   {
-    int imgId = tile->getOriginalImgId();
+    int imgId = (*tile)->getOriginalImgId();
     if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) )
     {
-      slTiles.push_back( tile );
+      slTiles.push_back( *tile );
     }
   }
 }
@@ -75,8 +75,9 @@ void CityServiceShoreline::update( const unsigned int time )
     _d->checkMap( _d->city );
   }
 
-  foreach( Tile* tile, _d->slTiles )
+  foreach( it, _d->slTiles )
   {
+    Tile* tile = *it;
     if( tile->getOverlay().isValid() )
       continue;
 

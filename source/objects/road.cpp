@@ -105,8 +105,9 @@ Picture Road::computePicture()
 
   TilesArray roads = getAccessRoads();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  foreach( Tile* tile, roads )
+  foreach( it, roads )
   {
+    Tile* tile = *it;
     if (tile->getJ() > j)      { directionFlags += 1; } // road to the north
     else if (tile->getJ() < j) { directionFlags += 4; } // road to the south
     else if (tile->getI() > i) { directionFlags += 2; } // road to the east
@@ -268,9 +269,9 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   bool is_constructible = true;
 
   TilesArray area = tilemap.getArea( pos, getSize() ); // something very complex ???
-  foreach( Tile* tile, area )
+  foreach( tile, area )
   {
-    is_constructible &= tile->getFlag( Tile::tlRoad );
+    is_constructible &= (*tile)->getFlag( Tile::tlRoad );
   }
 
   return is_constructible;

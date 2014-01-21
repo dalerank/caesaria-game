@@ -79,12 +79,12 @@ void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
   world::CityList cities = empire->getCities();
 
   currentCity = 0;
-  foreach( world::CityPtr city, cities )
+  foreach( city, cities )
   {
-    Rect rect( city->getLocation(), Size( 40 ) );
+    Rect rect( (*city)->getLocation(), Size( 40 ) );
     if( rect.isPointInside( pos ) )
     {
-      currentCity = city;
+      currentCity = (*city);
       break;
     }
   }
@@ -243,10 +243,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 void EmpireMapWindow::Impl::resetInfoPanel()
 {
   Widget::Widgets childs = tradeInfo->getChildren();
-  foreach( Widget* widget, childs )
-  {
-    widget->deleteLater();
-  }
+  foreach( widget, childs ) { (*widget)->deleteLater(); }
 }
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
@@ -335,17 +332,18 @@ void EmpireMapWindow::draw( GfxEngine& engine )
   engine.drawPicture( _d->empireMap, _d->offset );  
 
   world::CityList cities = _d->empire->getCities();
-  foreach( world::CityPtr city, cities )
+  foreach( city, cities )
   {
-    Point location = city->getLocation();
-    int index = city.is<PlayerCity>() ? 0 : 2; //maybe it our city
+    Point location = (*city)->getLocation();
+    int index = (*city).is<PlayerCity>() ? 0 : 2; //maybe it our city
 
     engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.getX(), location.getY() ) );
   }  
 
   world::TraderouteList routes = _d->empire->getTradeRoutes();
-  foreach( world::TraderoutePtr route, routes )
+  foreach( it, routes )
   {
+    world::TraderoutePtr route = *it;
     const Picture& picture = Picture::load( ResourceGroup::empirebits,
                                             route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute );
 

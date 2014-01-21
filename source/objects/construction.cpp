@@ -52,10 +52,7 @@ bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& 
   if( (int)area.size() != getSize().getArea() )
     return false;
 
-  foreach( Tile* tile, area )
-  {
-     is_constructible &= tile->getFlag( Tile::isConstructible );
-  }
+  foreach( tile, area ) {is_constructible &= (*tile)->getFlag( Tile::isConstructible );}
 
   return is_constructible;
 }
@@ -92,11 +89,11 @@ void Construction::computeAccessRoads()
     TilesArray rect = tilemap.getRectangle( getTilePos() + TilePos( -dst, -dst ),
                                             getTilePos() + TilePos( s+dst-1, s+dst-1 ),
                                             !Tilemap::checkCorners );
-    foreach( Tile* tile, rect )
+    foreach( tile, rect )
     {
-      if( tile->getFlag( Tile::tlRoad ) )
+      if( (*tile)->getFlag( Tile::tlRoad ) )
       {
-        _d->accessRoads.push_back( tile );
+        _d->accessRoads.push_back( *tile );
       }
     }
   }

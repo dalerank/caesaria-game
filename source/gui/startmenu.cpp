@@ -55,10 +55,10 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
 
     Point offsetBtn( ( getWidth() - btnSize.getWidth() ) / 2, ( getHeight() - offsetY * 3 ) / 2 );
     List< PushButton* > buttons = findChildren< PushButton* >(); 
-    foreach( PushButton* btn, buttons )
+    foreach( btn, buttons )
     {
-        btn->setPosition( offsetBtn );
-        offsetBtn += Point( 0, offsetY );
+      (*btn)->setPosition( offsetBtn );
+      offsetBtn += Point( 0, offsetY );
     }
 
     return btn;

@@ -133,8 +133,9 @@ void Immigrant::_reachedPathway()
   {
     TilesArray area = _getCity()->getTilemap().getArea( getIJ() - TilePos(1,1),
                                                          getIJ() + TilePos(1,1) );
-    foreach( Tile* tile, area )  //have destination
+    foreach( it, area )  //have destination
     {
+      Tile* tile = *it;
       HousePtr house = tile->getOverlay().as<House>();
       if( !house.isValid() )
         continue;

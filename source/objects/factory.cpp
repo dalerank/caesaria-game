@@ -325,9 +325,9 @@ bool TimberLogger::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& 
 
    Tilemap& tilemap = city->getTilemap();
    TilesArray area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
-   foreach( Tile* tile, area )
+   foreach( tile, area )
    {
-     near_forest |= tile->getFlag( Tile::tlTree );
+     near_forest |= (*tile)->getFlag( Tile::tlTree );
    }
 
    const_cast< TimberLogger* >( this )->_setError( near_forest ? "" : _("##lumber_mill_need_forest_near##"));
@@ -352,10 +352,8 @@ bool IronMine::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& arou
 
   Tilemap& tilemap = city->getTilemap();
   TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), pos + TilePos(3, 3), Tilemap::checkCorners );
-  foreach( Tile* tile, perimetr )
-  {
-    near_mountain |= tile->getFlag( Tile::tlRock );
-  }
+
+  foreach( it, perimetr ) { near_mountain |= (*it)->getFlag( Tile::tlRock ); }
 
   const_cast< IronMine* >( this )->_setError( near_mountain ? "" : _("##iron_mine_need_mountain_near##"));
 

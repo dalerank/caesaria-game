@@ -203,9 +203,9 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       _d->addSpan( tiles.front()->getIJ() - startPos, HighBridgeSubTile::liftingSE2 );
       tiles.erase( tiles.begin() );
 
-      foreach( Tile* tile, tiles )
+      foreach( tile, tiles )
       {
-        _d->addSpan( tile->getIJ() - startPos, HighBridgeSubTile::spanSE );
+        _d->addSpan( (*tile)->getIJ() - startPos, HighBridgeSubTile::spanSE );
       }
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );     
@@ -248,9 +248,9 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       _d->addSpan( tiles.front()->getIJ() - startPos, HighBridgeSubTile::liftingSE2 );      
       tiles.erase( tiles.begin() );
 
-      foreach( Tile* tile, tiles )
+      foreach( tile, tiles )
       {        
-        _d->addSpan( tile->getIJ() - startPos, HighBridgeSubTile::spanSE );
+        _d->addSpan( (*tile)->getIJ() - startPos, HighBridgeSubTile::spanSE );
       }
 
       _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );
@@ -284,10 +284,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
   break;
   }
 
-  foreach( HighBridgeSubTilePtr tile, _d->subtiles )
-  {
-    _fgPicturesRef().push_back( tile->_picture );
-  }
+  foreach( tile, _d->subtiles ) { _fgPicturesRef().push_back( (*tile)->_picture ); }
 }
 
 void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const
@@ -385,8 +382,9 @@ void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
   {    
     _computePictures( city, startPos, endPos, _d->direction );
    
-    foreach( HighBridgeSubTilePtr subtile, _d->subtiles )
+    foreach( it, _d->subtiles )
     {
+      HighBridgeSubTilePtr subtile = *it;
       TilePos buildPos = pos + subtile->_pos;
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.getPicture() );
@@ -403,9 +401,9 @@ void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
 bool HighBridge::canDestroy() const
 {
   CityHelper helper( _getCity() );
-  foreach( HighBridgeSubTilePtr subtile, _d->subtiles )
+  foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.find<Walker>( walker::any, subtile->getTilePos() );
+    WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->getTilePos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -419,8 +417,9 @@ bool HighBridge::canDestroy() const
 void HighBridge::destroy()
 { 
   PlayerCityPtr city = _getCity();
-  foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
+  foreach( it,  _d->subtiles )
   {
+    HighBridgeSubTilePtr subtile = *it;
     subtile->_parent = 0;
     events::GameEventPtr event = events::ClearLandEvent::create( subtile->_pos );
     event->dispatch();
@@ -442,10 +441,11 @@ void HighBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  foreach( HighBridgeSubTilePtr subtile,  _d->subtiles )
+  foreach( subtile,  _d->subtiles )
   {
-    vl_tinfo.push_back( subtile->_imgId );
+    vl_tinfo.push_back( (*subtile)->_imgId );
   }
+
   stream[ "terraininfo" ] = vl_tinfo;
 }
 

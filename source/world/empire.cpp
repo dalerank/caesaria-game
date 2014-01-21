@@ -50,10 +50,10 @@ Empire::Empire() : _d( new Impl )
 CityList Empire::getCities() const
 {
   CityList ret;
-  foreach( CityPtr city, _d->cities )
+  foreach( city, _d->cities )
   {
-    if( city->isAvailable() )
-      ret.push_back( city );
+    if( (*city)->isAvailable() )
+      ret.push_back( *city );
   }
 
   return ret;
@@ -78,11 +78,11 @@ void Empire::initialize(vfs::Path filename , vfs::Path filemap)
     return;
   }
 
-  foreach( VariantMap::value_type& item, cities )
+  foreach( item, cities )
   {
-    CityPtr city = ComputerCity::create( this, item.first );
+    CityPtr city = ComputerCity::create( this, item->first );
     addCity( city );
-    city->load( item.second.toMap() );
+    city->load( item->second.toMap() );
     _d->emap.setCity( city->getLocation() );
   }
 }
@@ -113,29 +113,29 @@ EmpirePtr Empire::create()
 
 CityPtr Empire::getCity( const std::string& name ) const
 {
-  foreach( CityPtr city, _d->cities )
+  foreach( city, _d->cities )
   {
-    if( city->getName() == name )
+    if( (*city)->getName() == name )
     {
-      return city;
+      return *city;
     }
   }
 
-  return 0;
+  return CityPtr();
 }
 
 void Empire::save( VariantMap& stream ) const
 {
   VariantMap vm_cities;
-  foreach( CityPtr city, _d->cities )
+  foreach( city, _d->cities )
   {
     //not need save city player
-    if( city->getName() == _d->playerCityName )
+    if( (*city)->getName() == _d->playerCityName )
       continue;
 
     VariantMap vm_city;
-    city->save( vm_city );
-    vm_cities[ city->getName() ] = vm_city;
+    (*city)->save( vm_city );
+    vm_cities[ (*city)->getName() ] = vm_city;
   }
 
   stream[ "cities" ] = vm_cities;
@@ -146,12 +146,12 @@ void Empire::load( const VariantMap& stream )
 {
   VariantMap cities = stream.get( "cities" ).toMap();
 
-  foreach( VariantMap::value_type& item, cities )
+  foreach( item, cities )
   {
-    CityPtr city = getCity( item.first );
+    CityPtr city = getCity( item->first );
     if( city != 0 )
     {
-      city->load( item.second.toMap() );
+      city->load( item->second.toMap() );
     }
   }
 
@@ -160,14 +160,10 @@ void Empire::load( const VariantMap& stream )
 
 void Empire::setCitiesAvailable(bool value)
 {
-  foreach( CityPtr city, _d->cities )
-    city->setAvailable( value );
+  foreach( city, _d->cities ) { (*city)->setAvailable( value ); }
 }
 
-unsigned int Empire::getWorkersSalary() const
-{
-  return _d->workerSalary;
-}
+unsigned int Empire::getWorkersSalary() const {  return _d->workerSalary; }
 
 void Empire::createTradeRoute(std::string start, std::string stop )
 {
@@ -233,9 +229,9 @@ void Empire::timeStep( unsigned int time )
 {
   _d->trading.update( time );
 
-  foreach( CityPtr city, _d->cities )
+  foreach( city, _d->cities )
   {
-    city->timeStep( time );
+    (*city)->timeStep( time );
   }
 }
 

@@ -339,25 +339,25 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
 
   VariantMap constructions = SaveAdapter::load( filename.toString() );
 
-  foreach( VariantMap::value_type& mapItem, constructions )
+  foreach( mapItem, constructions )
   {
-    VariantMap options = mapItem.second.toMap();
+    VariantMap options = mapItem->second.toMap();
 
-    const TileOverlay::Type btype = getType( mapItem.first );
+    const TileOverlay::Type btype = getType( mapItem->first );
     if( btype == building::unknown )
     {
-      Logger::warning( "!!!Warning: can't associate type with %s", mapItem.first.c_str() );
+      Logger::warning( "!!!Warning: can't associate type with %s", mapItem->first.c_str() );
       continue;
     }
 
     Impl::BuildingsMap::const_iterator bdataIt = _d->buildings.find( btype );
     if( bdataIt != _d->buildings.end() )
     {
-      Logger::warning( "!!!Warning: type %s also initialized", mapItem.first.c_str() );
+      Logger::warning( "!!!Warning: type %s also initialized", mapItem->first.c_str() );
       continue;
     }
 
-    MetaData bData( btype, mapItem.first );
+    MetaData bData( btype, mapItem->first );
 
     bData._d->options = options;
     VariantMap desMap = options[ "desirability" ].toMap();

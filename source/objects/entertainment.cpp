@@ -86,10 +86,7 @@ void EntertainmentBuilding::deliverService()
     _animationRef().stop(); //have no actors for the show
   }
 
-  foreach( TraineeMap::value_type& item, _traineeMap )
-  {
-    item.second = math::clamp( item.second-decreaseLevel, 0, 100);
-  }
+  foreach( item, _traineeMap ) { item->second = math::clamp( item->second - decreaseLevel, 0, 100); }
 }
 
 int EntertainmentBuilding::getVisitorsNumber() const
@@ -118,10 +115,7 @@ bool EntertainmentBuilding::isShow() const
 int EntertainmentBuilding::_getTraineeLevel()
 {
   int minLevel = 100;
-  foreach( TraineeMap::value_type item, _traineeMap )
-  {
-    minLevel = std::min( minLevel, item.second);
-  }
+  foreach( item, _traineeMap ) {  minLevel = std::min( minLevel, item->second); }
 
   return minLevel;
 }

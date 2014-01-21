@@ -185,8 +185,9 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city,
   ret.partlyWork = 0;
 
   ServiceBuildingList servBuildings = helper.find<ServiceBuilding>( service );
-  foreach( ServiceBuildingPtr building, servBuildings )
+  foreach( b, servBuildings )
   {
+    ServiceBuildingPtr building = *b;
     if( building->getWorkersCount() > 0 )
     {
       ret.buildingWork++;
@@ -235,8 +236,9 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   int nextLevel = 0;
 
   HouseList houses = helper.find<House>( building::house );
-  foreach( HousePtr house, houses )
+  foreach( it, houses )
   {
+    HousePtr house = *it;
     int habitants = house->getHabitants().count( CitizenGroup::mature );
 
     const HouseLevelSpec& lspec = house->getSpec();
@@ -282,9 +284,9 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   if( clsInfo.partlyWork > 0 ) { troubles.push_back( "##small_colloseum_show##" ); }
 
   HippodromeList hippodromes = helper.find<Hippodrome>( building::hippodrome );
-  foreach( HippodromePtr h, hippodromes )
+  foreach( h, hippodromes )
   {
-    if( h->evaluateTrainee( walker::charioter ) == 100 ) { troubles.push_back( "##no_chariots##" ); }
+    if( (*h)->evaluateTrainee( walker::charioter ) == 100 ) { troubles.push_back( "##no_chariots##" ); }
   }
 
   if( nextLevel > 0 )

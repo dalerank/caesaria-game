@@ -115,11 +115,11 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
 void CityRenderer::Impl::setLayer(int type)
 {
   currentLayer = 0;
-  foreach( LayerPtr layer, layers )
+  foreach( layer, layers )
   {
-    if( layer->getType() == type )
+    if( (*layer)->getType() == type )
     {
-      currentLayer = layer;
+      currentLayer = *layer;
       break;
     }
   }

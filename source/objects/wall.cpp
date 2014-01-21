@@ -50,10 +50,8 @@ void Wall::build(PlayerCityPtr city, const TilePos& pos )
 
   CityHelper helper( city );
   WallList walls = helper.find<Wall>( building::wall );
-  foreach( WallPtr wall, walls )
-  {
-    wall->updatePicture( city );
-  }
+
+  foreach( wall, walls ) { (*wall)->updatePicture( city ); }
 
   updatePicture( city );
 }
@@ -65,9 +63,10 @@ void Wall::destroy()
   if( _getCity().isValid() )
   {
     TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
-    foreach( Tile* tile, area )
+
+    foreach( tile, area )
     {
-      WallPtr wall = tile->getOverlay().as<Wall>();
+      WallPtr wall = (*tile)->getOverlay().as<Wall>();
       if( wall.isValid()  )
       {
         wall->updatePicture( _getCity() );

@@ -142,10 +142,10 @@ WharfPtr Shipyard::Impl::findFreeWharf( PlayerCityPtr city )
   CityHelper helper( city );
 
   WharfList wharfs = helper.find<Wharf>( building::wharf );
-  foreach( WharfPtr wharf, wharfs )
+  foreach( wharf, wharfs )
   {
-    if( wharf->getBoat().isNull() )
-      return wharf;
+    if( (*wharf)->getBoat().isNull() )
+      return *wharf;
   }
 
   return WharfPtr();

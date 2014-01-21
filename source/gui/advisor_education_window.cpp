@@ -146,10 +146,10 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   int sumScholars = 0;
   int sumStudents = 0;
   HouseList houses = helper.find<House>( building::house );
-  foreach( HousePtr house, houses )
+  foreach( house, houses )
   {
-    sumScholars += house->getHabitants().count( CitizenGroup::scholar );
-    sumStudents += house->getHabitants().count( CitizenGroup::student );
+    sumScholars += (*house)->getHabitants().count( CitizenGroup::scholar );
+    sumStudents += (*house)->getHabitants().count( CitizenGroup::student );
   }
 
   std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->getPopulation(), _("##peoples##"),
@@ -201,8 +201,9 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
   break;
   }
 
-  foreach( ServiceBuildingPtr serv, servBuildings )
+  foreach( it, servBuildings )
   {
+    ServiceBuildingPtr serv = *it;
     if( serv->getWorkersCount() > 0 )
     {
       ret.buildingWork++;
@@ -211,8 +212,9 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
   }
 
   HouseList houses = helper.find<House>( building::house );
-  foreach( HousePtr house, houses )
+  foreach( it, houses )
   {
+    HousePtr house = *it;
     ret.need += ( house->getHabitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );
     ret.nextLevel += (house->getSpec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
   }

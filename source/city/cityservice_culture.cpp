@@ -109,42 +109,42 @@ void CityServiceCulture::update( const unsigned int time )
     CityHelper helper( _d->city );
 
     TempleList temples = helper.find<Temple>( building::religionGroup );
-    foreach( TemplePtr temple, temples )
+    foreach( temple, temples )
     {
-      _d->parishionersCount += temple->getParishionerNumber();
+      _d->parishionersCount += (*temple)->getParishionerNumber();
     }
 
     _d->religionCoverage = _d->parishionersCount / (float)cityPopulation;
     _d->religionPoints = _d->convCoverage2Points( religionPoints, _d->religionCoverage );
 
     TheaterList theaters = helper.find<Theater>( building::theater );
-    foreach( TheaterPtr theater, theaters )
+    foreach( theater, theaters )
     {
-      _d->theaterVisitors += theater->getVisitorsNumber();
+      _d->theaterVisitors += (*theater)->getVisitorsNumber();
     }
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
 
     LibraryList libraries = helper.find<Library>( building::library );
-    foreach( LibraryPtr library, libraries )
+    foreach( library, libraries )
     {
-      _d->libraryVisitors += library->getVisitorsNumber();
+      _d->libraryVisitors += (*library)->getVisitorsNumber();
     }
     _d->libraryCoverage = _d->libraryVisitors / (float)cityPopulation;
     _d->libraryPoints = _d->convCoverage2Points( librariesPoints, _d->libraryCoverage );
 
     SchoolList schools = helper.find<School>( building::school );
-    foreach( SchoolPtr school, schools )
+    foreach( school, schools )
     {
-      _d->schoolVisitors += school->getVisitorsNumber();
+      _d->schoolVisitors += (*school)->getVisitorsNumber();
     }
     _d->schoolCoverage = _d->schoolVisitors / (float)cityPopulation;
     _d->schoolPoints = _d->convCoverage2Points( schoolsPoints, _d->schoolCoverage );
 
     AcademyList colleges = helper.find<Academy>( building::academy );
-    foreach( AcademyPtr college, colleges )
+    foreach( college, colleges )
     {
-      _d->collegeVisitors += college->getVisitorsNumber();
+      _d->collegeVisitors += (*college)->getVisitorsNumber();
     }
     _d->collegeCoverage = _d->collegeVisitors / (float)cityPopulation;
     _d->collegePoints = _d->convCoverage2Points( academiesPoints, _d->collegeCoverage );

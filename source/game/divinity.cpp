@@ -114,10 +114,8 @@ public:
 
       CityHelper helper( city );
       FarmList farms = helper.find<Farm>( building::any );
-      foreach( FarmPtr farm, farms )
-      {
-        farm->updateProgress( -farm->getProgress() );
-      }
+
+      foreach( farm, farms ) { (*farm)->updateProgress( -(*farm)->getProgress() ); }
     }
   }
 };
@@ -154,10 +152,10 @@ RomeDivinityPtr DivinePantheon::get( RomeDivinityType name )
 RomeDivinityPtr DivinePantheon::get(std::string name)
 {
   Divinities divines = getInstance().getAll();
-  foreach( RomeDivinityPtr current, divines )
+  foreach( current, divines )
   {
-    if( current->getName() == name || current->getDebugName() == name )
-      return current;
+    if( (*current)->getName() == name || (*current)->getDebugName() == name )
+      return *current;
   }
 
   return RomeDivinityPtr();
@@ -197,9 +195,10 @@ void DivinePantheon::load( const VariantMap& stream )
 void DivinePantheon::save(VariantMap& stream)
 {
   Divinities divines = getInstance().getAll();
-  foreach( RomeDivinityPtr current, divines )
+
+  foreach( current, divines )
   {
-    stream[ current->getName() ] = current->save();
+    stream[ (*current)->getName() ] = (*current)->save();
   }
 }
 

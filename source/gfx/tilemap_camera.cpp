@@ -247,10 +247,7 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
 
 void TilemapCamera::Impl::resetDrawn()
 {
-  foreach( Tile* tile, tiles )
-  {
-    tile->resetWasDrawn();
-  }
+  foreach( tile, tiles ) { (*tile)->resetWasDrawn(); }
 }
 
 Point TilemapCamera::getOffset() const{  return _d->offset;}

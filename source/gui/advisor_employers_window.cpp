@@ -198,17 +198,17 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
 
   WorkingBuildingList buildings;
   CityHelper helper( city );
-  foreach( building::Group buildingsGroup, bldClasses )
+  foreach( buildingsGroup, bldClasses )
   {
-    WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( buildingsGroup );
+    WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( *buildingsGroup );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 
   EmployersInfo ret = { 0, 0 };
-  foreach( WorkingBuildingPtr building, buildings )
+  foreach( b, buildings )
   {
-    ret.currentWorkers += building->getWorkersCount();
-    ret.needWorkers += building->getMaxWorkers();
+    ret.currentWorkers += (*b)->getWorkersCount();
+    ret.needWorkers += (*b)->getMaxWorkers();
   }
 
   return ret;

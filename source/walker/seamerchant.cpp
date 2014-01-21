@@ -341,11 +341,11 @@ DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
   CityHelper helper( city );
   DockList docks = helper.find<Dock>( building::dock, walker->getIJ() - TilePos( 1, 1), walker->getIJ() + TilePos( 1, 1 ) );
-  foreach( DockPtr dock, docks )
+  foreach( dock, docks )
   {
-    if( dock->getLandingTile().getIJ() == walker->getIJ() )
+    if( (*dock)->getLandingTile().getIJ() == walker->getIJ() )
     {
-      return dock;
+      return *dock;
     }
   }
 

@@ -90,9 +90,9 @@ public:
     std::set< SmartPtr< T > > tmp;
 
     TilesArray area = getArea( start, stop );
-    foreach( Tile* tile, area )
+    foreach( tile, area )
     {
-      SmartPtr<T> obj = tile->getOverlay().as<T>();
+      SmartPtr<T> obj = (*tile)->getOverlay().as<T>();
       if( obj.isValid() && (obj->getType() == type || type == constants::building::any) )
       {
         tmp.insert( obj );
@@ -100,9 +100,9 @@ public:
     }    
 
     std::list< SmartPtr< T > > ret;
-    foreach( SmartPtr<T> obj, tmp )
+    foreach( obj, tmp )
     {
-      ret.push_back( obj );
+      ret.push_back( *obj );
     }
 
     return ret;
@@ -115,9 +115,9 @@ public:
 
     TilesArray area = getArea( start, stop );
 
-    foreach( Tile* tile, area )
+    foreach( tile, area )
     {
-      SmartPtr<T> obj = tile->getOverlay().as<T>();
+      SmartPtr<T> obj = (*tile)->getOverlay().as<T>();
       if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
       {
         tmp.insert( obj );
@@ -125,7 +125,7 @@ public:
     }
 
     std::list< SmartPtr< T > > ret;
-    foreach( SmartPtr<T> obj, tmp )
+    foreach( obj, tmp )
     {
       ret.push_back( obj );
     }
@@ -152,9 +152,9 @@ std::list< SmartPtr< T > > CityHelper::find( const TileOverlay::Type type )
 {
   std::list< SmartPtr< T > > ret;
   TileOverlayList& buildings = _city->getOverlays();
-  foreach( TileOverlayPtr item, buildings )
+  foreach( item, buildings )
   {
-    SmartPtr< T > b = item.as<T>();
+    SmartPtr< T > b = item->as<T>();
     if( b.isValid() && (b->getType() == type || type == constants::building::any ) )
     {
       ret.push_back( b );
@@ -169,9 +169,9 @@ std::list< SmartPtr< T > > CityHelper::getProducers( const Good::Type goodtype )
 {
   std::list< SmartPtr< T > > ret;
   TileOverlayList& overlays = _city->getOverlays();
-  foreach( TileOverlayPtr item, overlays )
+  foreach( item, overlays )
   {
-    SmartPtr< T > b = item.as<T>();
+    SmartPtr< T > b = item->as<T>();
     if( b.isValid() && b->getOutGoodType() == goodtype )
     {
       ret.push_back( b );

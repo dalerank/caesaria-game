@@ -31,9 +31,9 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
 
   //change desirability in selfarea
   TilesArray area = tilemap.getArea( construction->getTilePos(), construction->getSize() );
-  foreach( Tile* tile, area )
+  foreach( tile, area )
   {
-    tile->appendDesirability( mul * dsrbl.base );
+    (*tile)->appendDesirability( mul * dsrbl.base );
   }
 
   //change deisirability around
@@ -42,9 +42,9 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
   {
     TilesArray perimetr = tilemap.getRectangle( construction->getTilePos() - TilePos( curRange, curRange ),
                                                  construction->getSize() + Size( 2 * curRange ) );
-    foreach( Tile* tile, perimetr )
+    foreach( tile, perimetr )
     {
-      tile->appendDesirability( current );
+      (*tile)->appendDesirability( current );
     }
 
     current += mul * dsrbl.step;

@@ -112,9 +112,9 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     pathPropagator.setAllDirections( false );
     pathPropagator.propagate( _d->maxDistance );
 
-    foreach( TileOverlay::Type buildingType, _d->buildingNeed )
+    foreach( buildingType, _d->buildingNeed )
     {
-      checkDestination(buildingType, pathPropagator);
+      checkDestination( *buildingType, pathPropagator);
     }
 
     if( _d->destination.isValid() )
@@ -127,17 +127,18 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     CityHelper helper( _getCity() );
 
     BuildingList buildings;
-    foreach( TileOverlay::Type buildingType, _d->buildingNeed )
+    foreach( buildingType, _d->buildingNeed )
     {
-      BuildingList tmpBuildings = helper.find<Building>( buildingType );
+      BuildingList tmpBuildings = helper.find<Building>( *buildingType );
       buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
     }
 
     _d->maxNeed = 0;
     Propagator::DirectRoute droute;
     TilePos startPos = _d->base->getTilePos();
-    foreach( BuildingPtr bld, buildings )
+    foreach( it, buildings )
     {
+      BuildingPtr bld = *it;
       Pathway way = PathwayHelper::create( startPos, bld.as<Construction>(), PathwayHelper::allTerrain );
       float curNeed = bld->evaluateTrainee( getType() );
       if( way.isValid() && _d->maxNeed < curNeed && way.getLength() < _d->maxDistance )
@@ -171,10 +172,10 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
 {
   Propagator::Routes pathWayList = pathPropagator.getRoutes( buildingType );
 
-  foreach( Propagator::Routes::value_type& item, pathWayList )
+  foreach( item, pathWayList )
   {
     // for every building within range
-    BuildingPtr building = item.first.as<Building>();
+    BuildingPtr building = item->first.as<Building>();
 
     float need = building->evaluateTrainee( getType() );
     if (need > _d->maxNeed)

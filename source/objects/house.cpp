@@ -254,15 +254,15 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
     TilesArray area = tmap.getArea( getTile().getIJ(), Size(2) );
     bool mayGrow = true;
 
-    foreach( Tile* tile, area )
+    foreach( tile, area )
     {
-      if( tile == NULL )
+      if( *tile == NULL )
       {
         mayGrow = false;   //some broken, can't grow
         break;
       }
 
-      HousePtr house = tile->getOverlay().as<House>();
+      HousePtr house = (*tile)->getOverlay().as<House>();
       if( house != NULL && house->getSpec().getLevel() == level4grow )
       {
         if( house->getSize().getWidth() > 1 )  //bigger house near, can't grow
@@ -420,14 +420,14 @@ void House::levelDown()
     {
       TilesArray perimetr = tmap.getArea( getTilePos(), Size(2) );
       int peoplesPerHouse = getHabitants().count() / 4;
-      foreach( Tile* tile, perimetr )
+      foreach( tile, perimetr )
       {
         HousePtr house = TileOverlayFactory::getInstance().create( building::house ).as<House>();
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
         house->_d->houseId = smallHovel;
         house->_update();
 
-        events::GameEventPtr event = events::BuildEvent::create( tile->getIJ(), house.as<TileOverlay>() );
+        events::GameEventPtr event = events::BuildEvent::create( (*tile)->getIJ(), house.as<TileOverlay>() );
         event->dispatch();
       }
 
@@ -721,10 +721,10 @@ void House::save( VariantMap& stream ) const
   stream[ "changeCondition" ] = _d->changeCondition;
 
   VariantList vl_services;
-  foreach( Impl::Services::value_type& mapItem, _d->services )
+  foreach( mapItem, _d->services )
   {
-    vl_services.push_back( Variant( (int)mapItem.first) );
-    vl_services.push_back( Variant( mapItem.second ) );
+    vl_services.push_back( Variant( (int)mapItem->first) );
+    vl_services.push_back( Variant( mapItem->second ) );
   }
 
   stream[ "services" ] = vl_services;
@@ -777,13 +777,13 @@ int House::getFoodLevel() const
   {
     Good::Type maxFtype = Good::none;
     int maxFoodQty = 0;
-    foreach( Good::Type ft, foods )
+    foreach( ft, foods )
     {
-      int tmpQty = _d->goodStore.getQty( ft );
+      int tmpQty = _d->goodStore.getQty( *ft );
       if( tmpQty > maxFoodQty )
       {
         maxFoodQty = tmpQty;
-        maxFtype = ft;
+        maxFtype = *ft;
       }
     }
 
@@ -887,7 +887,7 @@ void House::Impl::consumeServices()
   int currentWorkersPower = services[ Service::recruter ];       //save available workers number
   float tax = services[ Service::forum ];
 
-  foreach( Services::value_type& s, services ) { s.second -= 1; } //consume services
+  foreach( s, services ) { s->second -= 1; } //consume services
 
   services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
   services[ Service::forum ] = tax;

@@ -37,9 +37,9 @@ void TaxCollector::_centerTile()
   ServiceWalker::_centerTile();
 
   ReachedBuildings buildings = getReachedBuildings( getIJ() );
-  foreach( BuildingPtr building, buildings )
+  foreach( it, buildings )
   {
-    HousePtr house = building.as<House>();
+    HousePtr house = it->as<House>();
     if( house.isValid() )
     {
       _d->money += house->collectTaxes();

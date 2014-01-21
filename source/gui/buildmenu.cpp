@@ -104,9 +104,10 @@ void BuildMenu::initialize()
   Size textSize;
   Font font = Font::create( FONT_2 );
   Widget::Widgets children = getChildren();
-  foreach( Widget* widget, children )
+  foreach( widget, children )
   {
-    if( BuildButton *button = dynamic_cast< BuildButton* >( widget ) )
+    BuildButton *button = dynamic_cast< BuildButton* >( *widget );
+    if( button )
     {
         textSize = font.getSize( button->getText());
         max_text_width = std::max(max_text_width, textSize.getWidth() );
@@ -120,12 +121,13 @@ void BuildMenu::initialize()
   setWidth( std::max(150, max_text_width + max_cost_width + 20) );
 
   // set the same size for all buttons
-  foreach( Widget* widget, children )
+  foreach( widget, children )
   {
-      if( BuildButton *button = dynamic_cast< BuildButton* >( widget ) )
-      {
-          button->setWidth( getWidth() );
-      }
+    BuildButton *button = dynamic_cast< BuildButton* >( *widget );
+    if( button )
+    {
+      button->setWidth( getWidth() );
+    }
   }
 }
 

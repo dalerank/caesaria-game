@@ -403,9 +403,9 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
     TilesArray coverageArea = well->getCoverageArea();
 
     bool haveHouseInArea = false;
-    foreach( Tile* tile, coverageArea )
+    foreach( tile, coverageArea )
     {
-      haveHouseInArea |= tile->getOverlay().as<House>().isValid();
+      haveHouseInArea |= (*tile)->getOverlay().as<House>().isValid();
     }
 
     if( !haveHouseInArea )
@@ -415,9 +415,9 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
     else
     {
       bool houseNeedWell = false;
-      foreach( Tile* tile, coverageArea)
+      foreach( tile, coverageArea)
       {
-        HousePtr house = tile->getOverlay().as<House>();
+        HousePtr house = (*tile)->getOverlay().as<House>();
         if( house.isValid() )
         {
           houseNeedWell |= ( house->getServiceValue( Service::fontain ) == 0 );

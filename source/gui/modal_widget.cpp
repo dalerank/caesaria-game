@@ -145,11 +145,11 @@ void ModalScreen::draw( GfxEngine& painter )
 		Rect r;
 
 		Widget::Widgets children = getChildren();
-		foreach( Widget* w, children )
+		foreach( w, children )
 		{
-			if( w->isVisible())
+			if( (*w)->isVisible())
 			{
-				r = w->getAbsoluteRect();
+				r = (*w)->getAbsoluteRect();
 				r.LowerRightCorner += Point( 1, 1 );
 				r.UpperLeftCorner -= Point( 1, 1 );
 

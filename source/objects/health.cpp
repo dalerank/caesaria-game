@@ -62,10 +62,7 @@ void Baths::timeStep(const unsigned long time)
 
     bool haveWater = false;
     TilesArray tiles = helper.getArea( this );
-    foreach( Tile* tile, tiles )
-    {
-      haveWater |= tile->getWaterService( WTR_RESERVOIR ) > 0;
-    }
+    foreach( tile, tiles ) { haveWater |= (*tile)->getWaterService( WTR_RESERVOIR ) > 0; }
 
     if( haveWater && getWorkersCount() > 0 )
     {

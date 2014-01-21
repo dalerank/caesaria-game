@@ -107,9 +107,9 @@ void Pathfinder::update( const Tilemap& tilemap )
   }
 
   TilesArray tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
-  foreach( Tile* tile, tiles )
+  foreach( tile, tiles )
   {
-    _d->grid[ tile->getI() ][ tile->getJ() ] = new AStarPoint( tile );
+    _d->grid[ (*tile)->getI() ][ (*tile)->getJ() ] = new AStarPoint( *tile );
   }
 }
 
@@ -172,9 +172,9 @@ unsigned int Pathfinder::getMaxLoopCount() const
 
 bool _inArea( APoints& area, AStarPoint* end )
 {
-  foreach( AStarPoint* p, area )
+  foreach( p, area )
   {
-    if( p == end )
+    if( *p == end )
       return true;
   }
 
@@ -207,10 +207,7 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
   AStarPoint* start = at( startPos );
   APoints endPoints;
 
-  foreach( Tile* tile, arrivedArea )
-  {
-    endPoints.push_back( at( tile->getIJ() ) );
-  }
+  foreach( tile, arrivedArea ) { endPoints.push_back( at( (*tile)->getIJ() ) ); }
 
   AStarPoint* current = NULL;
   AStarPoint* child = NULL;
@@ -228,11 +225,11 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
   while( n == 0 || ( !_inArea( endPoints, current ) && n < maxLoopCount ))
   {
     // Look for the smallest F value in the openList and make it the current point
-    foreach( AStarPoint* point, openList)
+    foreach( point, openList)
     {
-      if( point == openList.front() || point->getFScore() <= current->getFScore() )
+      if( *point == openList.front() || (*point)->getFScore() <= current->getFScore() )
       {
-        current = point;
+        current = *point;
       }
     }
 
@@ -326,9 +323,9 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
   }
 
   // Reset
-  foreach( AStarPoint* point, openList) { point->opened = false; }
+  foreach( point, openList) { (*point)->opened = false; }
 
-  foreach( AStarPoint* point, closedList) { point->closed = false; }
+  foreach( point, closedList) { (*point)->closed = false; }
 
   if( n == maxLoopCount )
   {
@@ -343,10 +340,7 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
     n++;
   }
 
-  foreach( AStarPoint* pathPoint, lPath )
-  {
-    oPathWay.setNextTile( tilemap->at( pathPoint->getPos() ) );
-  }
+  foreach( pathPoint, lPath ) { oPathWay.setNextTile( tilemap->at( (*pathPoint)->getPos() ) ); }
 
   return oPathWay.getLength() > 0;
 }

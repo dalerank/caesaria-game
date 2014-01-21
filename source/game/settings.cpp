@@ -108,10 +108,7 @@ void GameSettings::load()
 {
   VariantMap settings = SaveAdapter::load( rcpath( GameSettings::settingsPath ) );
 
-  foreach( VariantMap::value_type& v, settings )
-  {
-    set( v.first, v.second );
-  }
+  foreach( v, settings ) { set( v->first, v->second ); }
 }
 
 void GameSettings::save()

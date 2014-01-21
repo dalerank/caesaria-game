@@ -164,8 +164,9 @@ void ClearLandEvent::exec( Game& game )
     }
 
     TilesArray clearedTiles = tmap.getArea( rPos, size );
-    foreach( Tile* tile, clearedTiles )
+    foreach( it, clearedTiles )
     {
+      Tile* tile = *it;
       tile->setMasterTile( NULL );
       tile->setFlag( Tile::tlTree, false);
       tile->setFlag( Tile::tlRoad, false);

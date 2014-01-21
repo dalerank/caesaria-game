@@ -36,10 +36,7 @@ unsigned int CityStatistic::getCurrentWorkersNumber(PlayerCityPtr city)
   WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
 
   int workersNumber = 0;
-  foreach( WorkingBuildingPtr bld, buildings )
-  {
-    workersNumber += bld->getWorkersCount();
-  }
+  foreach( bld, buildings ) { workersNumber += (*bld)->getWorkersCount(); }
 
   return workersNumber;
 }
@@ -51,10 +48,7 @@ unsigned int CityStatistic::getVacantionsNumber(PlayerCityPtr city)
   WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
 
   int workersNumber = 0;
-  foreach( WorkingBuildingPtr bld, buildings )
-  {
-    workersNumber += bld->getMaxWorkers();
-  }
+  foreach( bld, buildings ) { workersNumber += (*bld)->getMaxWorkers(); }
 
   return workersNumber;
 }
@@ -66,10 +60,7 @@ unsigned int CityStatistic::getAvailableWorkersNumber(PlayerCityPtr city)
   HouseList houses = helper.find<House>( building::house );
 
   int workersNumber = 0;
-  foreach( HousePtr house, houses )
-  {
-    workersNumber += (house->getServiceValue( Service::recruter ) + house->getWorkersCount());
-  }
+  foreach( h, houses ) { workersNumber += ( (*h)->getServiceValue( Service::recruter ) + (*h)->getWorkersCount()); }
 
   return workersNumber;
 }
@@ -97,10 +88,7 @@ unsigned int CityStatistic::getWorklessNumber(PlayerCityPtr city)
   HouseList houses = helper.find<House>( building::house );
 
   int worklessNumber = 0;
-  foreach( HousePtr house, houses )
-  {
-    worklessNumber += house->getServiceValue( Service::recruter );
-  }
+  foreach( h, houses ) { worklessNumber += (*h)->getServiceValue( Service::recruter ); }
 
   return worklessNumber;
 }
@@ -117,10 +105,7 @@ unsigned int CityStatistic::getFoodStock(PlayerCityPtr city)
   int foodSum = 0;
 
   GranaryList granaries = helper.find<Granary>( building::granary );
-  foreach( GranaryPtr gr, granaries )
-  {
-    foodSum += gr->getGoodStore().getQty();
-  }
+  foreach( gr, granaries ) { foodSum += (*gr)->getGoodStore().getQty(); }
 
   return foodSum;
 }
@@ -132,10 +117,7 @@ unsigned int CityStatistic::getFoodMonthlyConsumption(PlayerCityPtr city)
   int foodComsumption = 0;
   HouseList houses = helper.find<House>( building::house );
 
-  foreach( HousePtr house, houses )
-  {
-    foodComsumption += house->getSpec().computeMonthlyFoodConsumption( house );
-  }
+  foreach( h, houses ) { foodComsumption += (*h)->getSpec().computeMonthlyFoodConsumption( *h ); }
 
   return foodComsumption;
 }
@@ -147,10 +129,7 @@ unsigned int CityStatistic::getFoodProducing(PlayerCityPtr city)
   int foodProducing = 0;
   FarmList farms = helper.find<Farm>( building::foodGroup );
 
-  foreach( FarmPtr farm, farms )
-  {
-    foodProducing += farm->getProduceQty();
-  }
+  foreach( f, farms ) { foodProducing += (*f)->getProduceQty(); }
 
   return foodProducing;
 }
@@ -161,12 +140,12 @@ CityStatistic::GoodsMap CityStatistic::getGoodsMap(PlayerCityPtr city)
   GoodsMap cityGoodsAvailable;
 
   WarehouseList warehouses = helper.find<Warehouse>( building::warehouse );
-  foreach( WarehousePtr wh, warehouses )
+  foreach( wh, warehouses )
   {
     for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type goodType = (Good::Type)i;
-      cityGoodsAvailable[ goodType ] += wh->getGoodStore().getQty( goodType );
+      cityGoodsAvailable[ goodType ] += (*wh)->getGoodStore().getQty( goodType );
     }
   }
 

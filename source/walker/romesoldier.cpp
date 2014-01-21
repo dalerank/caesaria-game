@@ -176,15 +176,15 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   TilePos offset( range, range );
   TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
 
-  foreach( Tile* tile, tiles )
+  foreach( tile, tiles )
   {
-    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, tile->getIJ() );
+    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->getIJ() );
 
-    foreach( WalkerPtr w, tileWalkers )
+    foreach( w, tileWalkers )
     {
-      if( w.is<EnemySoldier>() )
+      if( w->is<EnemySoldier>() )
       {
-        walkers.push_back( w );
+        walkers.push_back( *w );
       }
     }
   }
@@ -216,9 +216,9 @@ Pathway RomeSoldier::_findPathway2NearestEnemy( unsigned int range )
   {
     WalkerList walkers = _findEnemiesInRange( tmpRange );
 
-    foreach( WalkerPtr w, walkers)
+    foreach( w, walkers)
     {
-      ret = PathwayHelper::create( getIJ(), w->getIJ(), PathwayHelper::allTerrain );
+      ret = PathwayHelper::create( getIJ(), (*w)->getIJ(), PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
         return ret;

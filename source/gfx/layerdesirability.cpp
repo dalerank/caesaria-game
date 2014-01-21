@@ -80,9 +80,9 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         CityHelper helper( _getCity() );
         TilesArray tiles4clear = helper.getArea( overlay );
 
-        foreach( Tile* tile, tiles4clear )
+        foreach( tile, tiles4clear )
         {
-          engine.drawPicture( pic, tile->getXY() + offset );
+          engine.drawPicture( pic, (*tile)->getXY() + offset );
         }
       }
     break;

@@ -107,9 +107,10 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
     return;
 
   Widget::Widgets children = getChildren();
-  foreach( Widget* child, children )
+  foreach( child, children )
   {
-    if( PushButton* btn = safety_cast< PushButton* >( child ) )
+    PushButton* btn = safety_cast< PushButton* >( *child );
+    if( btn )
     {
       btn->setPressed( btn->getID() == type );
     }
@@ -127,7 +128,7 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
   case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
   case ADV_EMPIRE:
     {
-      AdvisorEmperorWindow* wnd = new AdvisorEmperorWindow( _d->city, this, playerMoney, ADV_EMPIRE );
+      AdvisorEmperorWindow* wnd = new AdvisorEmperorWindow( _d->city, this, ADV_EMPIRE );
 
       _d->advisorPanel = wnd;
       CONNECT( wnd, onSendMoney(), _d.data(), Impl::sendMoney2City );

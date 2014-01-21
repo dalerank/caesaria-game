@@ -60,10 +60,8 @@ void Recruter::_changeTile()
   {
     ServiceWalkerHelper hlp( *this );
     std::set<HousePtr> houses = hlp.getReachedBuildings<House>( getIJ() );
-    foreach( HousePtr house, houses )
-    {
-      house->applyService( ServiceWalkerPtr( this ) );
-    }
+
+    foreach( it, houses ) { (*it)->applyService( ServiceWalkerPtr( this ) ); }
   }
   else
   {

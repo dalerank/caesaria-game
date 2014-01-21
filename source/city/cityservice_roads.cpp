@@ -72,36 +72,33 @@ void CityServiceRoads::update( const unsigned int time )
 
 
   Impl::Updates positions;
-  foreach( TileOverlay::Type type, btypes )
+  foreach( it, btypes )
   {
-    BuildingList tmp = helper.find<Building>( type );
+    BuildingList tmp = helper.find<Building>( *it );
 
-    foreach( BuildingPtr b, tmp )
+    foreach( b, tmp )
     {
-      positions.push_back( Impl::UpdateInfo( b.as<Construction>(), 10 ) );
+      positions.push_back( Impl::UpdateInfo( b->as<Construction>(), 10 ) );
     }
   }
 
   HouseList houses = helper.find<House>( building::house );
-  foreach( HousePtr house, houses )
+  foreach( house, houses )
   {
-    if( house->getSpec().getLevel() >= House::bigMansion )
+    if( (*house)->getSpec().getLevel() >= House::bigMansion )
     {
-      positions.push_back( Impl::UpdateInfo( house.as<Construction>(), 5 ) );
+      positions.push_back( Impl::UpdateInfo( (*house).as<Construction>(), 5 ) );
     }
   }
 
-  foreach( Impl::UpdateInfo upos, positions )
-  {
-    _d->updateRoadsAround( upos );
-  }
+  foreach( upos, positions ) { _d->updateRoadsAround( *upos ); }
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
     RoadList roads = helper.find<Road>( construction::road );
-    foreach( RoadPtr road, roads )
+    foreach( road, roads )
     {
-      road->appendPaved( _d->defaultDecreasePaved );
+      (*road)->appendPaved( _d->defaultDecreasePaved );
     }
   }
 }
@@ -116,9 +113,9 @@ void CityServiceRoads::Impl::updateRoadsAround( UpdateInfo info )
   propagator->init( info.first );
   PathwayList pathWayList = propagator->getWays( info.second );
 
-  foreach( Pathway& current, pathWayList )
+  foreach( current, pathWayList )
   {
-    const TilesArray& tiles = current.getAllTiles();
+    const TilesArray& tiles = current->getAllTiles();
     for( TilesArray::const_iterator it=tiles.begin(); it != tiles.end(); it++ )
     {
       RoadPtr road = (*it)->getOverlay().as<Road>();

@@ -42,10 +42,8 @@ void Well::deliverService()
   walker->setBase( BuildingPtr( this ) );
 
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
-  foreach( BuildingPtr building, reachedBuildings)
-  {
-    building->applyService( walker );
-  }
+
+  foreach( it, reachedBuildings) { (*it)->applyService( walker ); }
 }
 
 bool Well::isNeedRoadAccess() const {  return false; }

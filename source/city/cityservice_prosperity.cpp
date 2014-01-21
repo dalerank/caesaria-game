@@ -91,8 +91,9 @@ void CityServiceProsperity::update( const unsigned int time )
     int prosperityCap = 0;
     int patricianCount = 0;
     int plebsCount = 0;
-    foreach( HousePtr house, houses)
+    foreach( it, houses)
     {
+      HousePtr house = *it;
       prosperityCap += house->getSpec().getProsperity();
       patricianCount += house->getSpec().isPatrician() ? house->getHabitants().count() : 0;
       plebsCount += house->getSpec().getLevel() < 5 ? house->getHabitants().count() : 0;

@@ -48,10 +48,7 @@ unsigned int Animation::getFrameCount() const
 
 void Animation::setOffset( const Point& offset )
 {
-  foreach( Picture& pic, _pictures )
-  {
-    pic.setOffset( offset );
-  }
+  foreach( pic, _pictures ) { pic->setOffset( offset ); }
 }
 
 Point Animation::getOffset() const

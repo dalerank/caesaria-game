@@ -53,9 +53,9 @@ bool MarbleQuarry::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& a
 
   Tilemap& tilemap = city->getTilemap();
   TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners);
-  foreach( Tile* tile, perimetr )
+  foreach( tile, perimetr )
   {
-    near_mountain |= tile->getFlag( Tile::tlRock );
+    near_mountain |= (*tile)->getFlag( Tile::tlRock );
   }
 
   const_cast< MarbleQuarry* >( this )->_setError( near_mountain ? "" : _("##build_near_mountain_only##") );

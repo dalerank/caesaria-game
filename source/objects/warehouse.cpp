@@ -152,11 +152,11 @@ int WarehouseStore::getQty(const Good::Type &goodType) const
 
   int amount = 0;
 
-  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
+  foreach( whTile, _warehouse->_d->subTiles )
   {
-    if ( whTile._stock.type() == goodType || goodType == Good::goodCount )
+    if ( whTile->_stock.type() == goodType || goodType == Good::goodCount )
     {
-      amount += whTile._stock.qty();
+      amount += whTile->_stock.qty();
     }
   }
 
@@ -184,9 +184,9 @@ int WarehouseStore::getMaxStore(const Good::Type goodType)
     maxStore[ (Good::Type)i ] = 0;
   }
   // put current stock in the map
-  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
+  foreach( whTile, _warehouse->_d->subTiles )
   {
-    GoodStock &subTileStock = whTile._stock;
+    GoodStock &subTileStock = whTile->_stock;
     maxStore[ subTileStock.type() ] += subTileStock.qty();
   }
 
@@ -200,15 +200,15 @@ int WarehouseStore::getMaxStore(const Good::Type goodType)
 
   // compute number of free tiles
   int nbFreeTiles = _warehouse->_d->subTiles.size();
-  foreach( StockMap::value_type& mapItem, maxStore )
+  foreach( mapItem, maxStore )
   {
-    Good::Type otherGoodType = mapItem.first;
+    Good::Type otherGoodType = mapItem->first;
     if (otherGoodType == goodType)
     {
       // don't count this goodType
       continue;
     }
-    int qty = mapItem.second;
+    int qty = mapItem->second;
     int nbTiles = ((qty/100)+3)/4;  // nb of subTiles this goodType occupies
     nbFreeTiles -= nbTiles;
   }
@@ -241,35 +241,37 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
   // std::cout << "WarehouseStore, store qty=" << amount << " resID=" << reservationID << std::endl;
 
   // first we look at the half filled subTiles
-  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
+  foreach( whTile, _warehouse->_d->subTiles )
   {
     if (amount == 0)
     {
       break;
     }
 
-    if (whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.capacity())
+    GoodStock& whStock = whTile->_stock;
+    if( whStock.type() == stock.type() && whStock.freeQty() > 0 )
     {
-      int tileAmount = std::min(amount, whTile._stock.capacity() - whTile._stock.qty());
+      int tileAmount = std::min(amount, whStock.capacity() - whStock.qty());
       // std::cout << "put in half filled" << std::endl;
-      whTile._stock.append(stock, tileAmount);
+      whStock.append(stock, tileAmount);
       amount -= tileAmount;
     }
   }
 
   // then we look at the empty subTiles
-  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
+  foreach( whTile, _warehouse->_d->subTiles )
   {
     if (amount == 0)
     {
       break;
     }
 
-    if (whTile._stock.type() == Good::none)
+    GoodStock& whStock = whTile->_stock;
+    if( whStock.type() == Good::none)
     {
-      int tileAmount = std::min(amount, whTile._stock.capacity() );
+      int tileAmount = std::min(amount, whStock.capacity() );
       // std::cout << "put in empty tile" << std::endl;
-      whTile._stock.append(stock, tileAmount);
+      whStock.append(stock, tileAmount);
       amount -= tileAmount;
     }
   }
@@ -300,35 +302,37 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
   int amount = reservedStock.qty();
 
   // first we look at the half filled subTiles
-  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
+  foreach( whTile, _warehouse->_d->subTiles )
   {
     if (amount == 0)
     {
       break;
     }
 
-    if( whTile._stock.type() == stock.type() && whTile._stock.qty() < whTile._stock.capacity() )
+    GoodStock& whStock = whTile->_stock;
+    if( whStock.type() == stock.type() && whStock.freeQty() > 0 )
     {
-      int tileAmount = std::min(amount, whTile._stock.qty());
+      int tileAmount = std::min(amount, whStock.qty());
       // std::cout << "retrieve from half filled" << std::endl;
-      stock.append(whTile._stock, tileAmount);
+      stock.append( whStock, tileAmount);
       amount -= tileAmount;
     }
   }
 
   // then we look at the filled subTiles
-  foreach( WarehouseTile& whTile, _warehouse->_d->subTiles )
+  foreach( whTile, _warehouse->_d->subTiles )
   {
     if (amount == 0)
     {
       break;
     }
 
-    if (whTile._stock.type() == stock.type())
+    GoodStock& whStock = whTile->_stock;
+    if( whStock.type() == stock.type())
     {
-      int tileAmount = std::min(amount, whTile._stock.qty());
+      int tileAmount = std::min(amount, whStock.qty());
       // std::cout << "retrieve from filled" << std::endl;
-      stock.append(whTile._stock, tileAmount);
+      stock.append(whStock, tileAmount);
       amount -= tileAmount;
     }
   }
@@ -403,10 +407,10 @@ void Warehouse::timeStep(const unsigned long time)
 void Warehouse::computePictures()
 {
   int index = 4;
-  foreach( WarehouseTile& whTile, _d->subTiles )
+  foreach( whTile, _d->subTiles )
   {
-     whTile.computePicture();
-     _fgPicturesRef().at(index) = whTile._picture;
+     whTile->computePicture();
+     _fgPicturesRef().at(index) = whTile->_picture;
      index++;
   }
 }
@@ -420,14 +424,11 @@ void Warehouse::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(B_WAREHOUSE) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(Warehouse) ) );
   stream[ "goodStore" ] = _d->goodStore.save();
 
   VariantList vm_tiles;
-  foreach( WarehouseTile& whTile, _d->subTiles )
-  {
-    vm_tiles.push_back( whTile._stock.save() );
-  }
+  foreach( whTile, _d->subTiles ) { vm_tiles.push_back( whTile->_stock.save() ); }
 
   stream[ "tiles" ] = vm_tiles;
 }
@@ -440,9 +441,9 @@ void Warehouse::load( const VariantMap& stream )
   
   VariantList vm_tiles = stream.get( "tiles" ).toList();
   int tileIndex = 0;
-  foreach( Variant& var, vm_tiles )
+  foreach( it, vm_tiles )
   {
-    _d->subTiles[ tileIndex ]._stock.load( var.toList() );
+    _d->subTiles[ tileIndex ]._stock.load( it->toList() );
     tileIndex++;
   }
 

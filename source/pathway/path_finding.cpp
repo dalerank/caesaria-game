@@ -131,8 +131,9 @@ void Propagator::propagate(const int maxDistance)
       // propagate to neighbour tiles
       TilesArray accessTiles = _d->tilemap->getRectangle( tile.getIJ() + TilePos( -1,-1 ),
                                                           tile.getIJ() + TilePos( 1, 1 ), _d->allDirections);
-      foreach( Tile* tile2, accessTiles )
+      foreach( itr, accessTiles )
       {
+        Tile* tile2 = *itr;
          // for every neighbor tile
          if( tile2->isWalkable(_d->allLands))
          {
@@ -238,15 +239,16 @@ Propagator::Routes Propagator::getRoutes(const TileOverlay::Type buildingType)
   ConstructionList constructionList = helper.find<Construction>( buildingType );
 
   // for each destination building
-  foreach( ConstructionPtr destination, constructionList )
+  foreach( it, constructionList )
   {
+    ConstructionPtr destination = *it;
     std::set<Pathway> destPath;  // paths to the current building, ordered by distance
 
     TilesArray destTiles = destination->getAccessRoads();
-    foreach( Tile* tile, destTiles )
+    foreach( tile, destTiles )
     {
       // searches path to that given tile
-      std::map<Tile*, Pathway>::iterator pathWayIt= _d->completedBranches.find( tile );
+      std::map<Tile*, Pathway>::iterator pathWayIt= _d->completedBranches.find( *tile );
 
       if( pathWayIt != _d->completedBranches.end() )
       {
@@ -299,8 +301,9 @@ PathwayList Propagator::getWays(const int maxDistance)
 
        // nextTiles = accessTiles - alreadyProcessedTiles
        TilesArray nextTiles;
-       foreach( Tile* tile2, accessTiles )
+       foreach( itr, accessTiles )
        {
+         Tile* tile2 = *itr;
          // for every neighbour tile
          bool notResolved = (markTiles.find( tile2 ) == markTiles.end());
          if( tile2->isWalkable(_d->allLands) && !pathWay.contains( *tile2 ) && notResolved)

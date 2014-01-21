@@ -316,10 +316,7 @@ bool Menu::unselectAll()
 void Menu::_createBuildMenu( int type, Widget* parent )
 {
     List< BuildMenu* > menus = findChildren<BuildMenu*>();
-    foreach( BuildMenu*  item, menus )
-    {
-        item->deleteLater();
-    }
+    foreach( item, menus ) { (*item)->deleteLater(); }
 
     BuildMenu* buildMenu = BuildMenu::create( (BuildMenuType)type, this );
 
