@@ -307,7 +307,7 @@ void Game::save(std::string filename) const
 }
 
 void Game::load(std::string filename)
-{
+{  
   Logger::warning( "Load game begin" );
 
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),

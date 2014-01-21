@@ -41,6 +41,8 @@ public:
   static const char* worldModel;
   static const char* worklessCitizenAway;
   static const char* langModel;
+  static const char* fastsavePostfix;
+  static const char* saveExt;
 
   static GameSettings& getInstance();
 

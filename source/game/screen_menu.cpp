@@ -93,8 +93,9 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
              windowSize );
 
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
+  std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
 
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect, savesPath, ".oc3save",-1 );
+  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect, savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );

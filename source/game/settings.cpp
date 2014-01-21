@@ -36,6 +36,8 @@ const char* GameSettings::worldModel = "worldModel";
 const char* GameSettings::minMonthWithFood = "minMonthWithFood";
 const char* GameSettings::langModel = "langModel";
 const char* GameSettings::worklessCitizenAway = "worklessCitizenAway";
+const char* GameSettings::fastsavePostfix = "fastsavePostfix";
+const char* GameSettings::saveExt = "saveExt";
 
 class GameSettings::Impl
 {
@@ -63,6 +65,8 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ settingsPath        ] = Variant( std::string( "/settings.model" ) );
   _d->options[ langModel           ] = Variant( std::string( "/language.model" ) );
   _d->options[ language            ] = Variant( std::string( "ru" ) );
+  _d->options[ fastsavePostfix     ] = Variant( std::string( "_fastsave") );
+  _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
   _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );
