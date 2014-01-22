@@ -43,7 +43,7 @@ public:
     TileOverlayList& buildings = _city->getOverlays();
     foreach( item, buildings )
     {
-      SmartPtr< T > b = (*item).as<T>();
+      SmartPtr< T > b = csDynamicCast< T >(*item);
       if( b.isValid() && (b->getClass() == group || group == constants::building::anyGroup ) )
       {
         ret.push_back( b );
@@ -60,7 +60,7 @@ public:
     TileOverlayPtr overlay = _city->getOverlay( pos );
     if( overlay.isValid() && (overlay->getType() == type || type == constants::building::any) )
     {
-      return overlay.as< T >();
+      return csDynamicCast< T >( overlay );
     }
 
     return SmartPtr<T>();
@@ -75,9 +75,10 @@ public:
     WalkerList walkers = _city->getWalkers( type, start, stop );
     foreach( w, walkers )
     {
-      if( (*w).is<T>() )
+      SmartPtr< T > ptr = csDynamicCast<T>( *w );
+      if( ptr.isValid() )
       {
-        ret.push_back( (*w).as<T>() );
+        ret.push_back( ptr );
       }
     }
 
@@ -90,9 +91,9 @@ public:
     std::set< SmartPtr< T > > tmp;
 
     TilesArray area = getArea( start, stop );
-    foreach( Tile* tile, area )
+    foreach( tile, area )
     {
-      SmartPtr<T> obj = tile->getOverlay().as<T>();
+      SmartPtr<T> obj = csDynamicCast< T >( (*tile)->getOverlay() );
       if( obj.isValid() && (obj->getType() == type || type == constants::building::any) )
       {
         tmp.insert( obj );
@@ -100,9 +101,9 @@ public:
     }    
 
     std::list< SmartPtr< T > > ret;
-    foreach( SmartPtr<T> obj, tmp )
+    foreach( obj, tmp )
     {
-      ret.push_back( obj );
+      ret.push_back( *obj );
     }
 
     return ret;

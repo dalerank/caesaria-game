@@ -163,20 +163,15 @@ public:
   {
     return obj != 0;
   }
-
-  //Conversion operator
-  template<class U> SmartPtr<U> as() const
-  {
-    SmartPtr<U> newptr( safety_cast<U*>(obj) );
-    return newptr;
-  }
-
-  template<class U>
-  bool is() const
-  {
-    U* tmp = safety_cast<U*>(obj);
-    return ( tmp != 0 );
-  }
 };
+
+template<class A, class B>
+inline SmartPtr<A> csDynamicCast( SmartPtr<B> ptr )
+{ return safety_cast<A*>( ptr.object() ); }
+
+template<class A, class B>
+inline bool csCheckCast( SmartPtr<B> ptr )
+{ return safety_cast<A*>( ptr.object() ) != 0; }
+
 
 #endif //__CAESARIA_SMARTPTR_H_INCLUDE_

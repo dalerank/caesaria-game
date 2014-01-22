@@ -45,7 +45,7 @@ void FireWorkers::exec(Game& game)
                                                  _center + TilePos( curRange, curRange ) );
     foreach( tile, perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = (*tile)->getOverlay().as<WorkingBuilding>();
+      WorkingBuildingPtr wrkBuilding = csDynamicCast<WorkingBuilding>( (*tile)->getOverlay() );
       if( wrkBuilding.isValid() )
       {
         int bldWorkersCount = wrkBuilding->getWorkersCount();

@@ -61,10 +61,11 @@ void DisasterEvent::exec( Game& game )
     {
       overlay->deleteLater();
       size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();      
-      if( overlay.is<House>() )
+      rPos = overlay->getTile().getIJ();
+      HousePtr house = csDynamicCast< House >( overlay );
+      if( house.isValid() )
       {
-        disasterInfoType = 1000 + overlay.as<House>()->getSpec().getLevel();
+        disasterInfoType = 1000 + house->getSpec().getLevel();
       }
       else
       {
@@ -91,10 +92,11 @@ void DisasterEvent::exec( Game& game )
       TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins, building::plagueRuins };
       TileOverlayPtr ov = TileOverlayFactory::getInstance().create( dstr2constr[_type] );
       if( ov.isValid() )
-      {                
-        if( ov.is<Ruins>() )
+      {
+        SmartPtr< Ruins > ruins = csDynamicCast< Ruins >( ov );
+        if( ruins.isValid() )
         {
-          ov.as<Ruins>()->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", disasterInfoType ) );
+          ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", disasterInfoType ) );
         }
 
         Dispatcher::instance().append( BuildEvent::create( (*tile)->getIJ(), ov ) );
