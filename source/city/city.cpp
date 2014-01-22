@@ -220,9 +220,9 @@ void PlayerCity::timeStep( unsigned int time )
 
   //update walkers access map
   _d->walkersGrid.clear();
-  foreach( WalkerPtr walker, _d->walkerList )
+  foreach( it, _d->walkerList )
   {
-    _d->walkersGrid.append( walker );
+    _d->walkersGrid.append( *it );
   }
 
   WalkerList::iterator walkerIt = _d->walkerList.begin();
@@ -292,8 +292,9 @@ void PlayerCity::timeStep( unsigned int time )
   if( _d->needRecomputeAllRoads )
   {
     _d->needRecomputeAllRoads = false;
-    foreach( TileOverlayPtr overlay, _d->overlayList )
+    foreach( it, _d->overlayList )
     {
+      TileOverlayPtr overlay = *it;
       // for each overlay
       ConstructionPtr construction = overlay.as<Construction>();
       if( construction != NULL )
@@ -331,11 +332,11 @@ WalkerList PlayerCity::getWalkers( walker::Type type )
   }
 
   WalkerList res;
-  foreach( WalkerPtr walker, _d->walkerList )
+  foreach( w, _d->walkerList )
   {
-    if( walker->getType() == type  )
+    if( (*w)->getType() == type  )
     {
-      res.push_back( walker );
+      res.push_back( *w );
     }
   }
 
@@ -356,15 +357,15 @@ WalkerList PlayerCity::getWalkers(walker::Type type, TilePos startPos, TilePos s
   }
 
   TilesArray area = _d->tilemap.getArea( startPos, stopPos );
-  foreach( Tile* tile, area)
+  foreach( tile, area)
   {
-    WalkerList current = _d->walkersGrid.at( tile->getIJ() );
+    WalkerList current = _d->walkersGrid.at( (*tile)->getIJ() );
 
-    foreach( WalkerPtr w, current )
+    foreach( w, current )
     {
-      if( w->getType() == type || type == walker::any )
+      if( (*w)->getType() == type || type == walker::any )
       {
-        ret.push_back( w );
+        ret.push_back( *w );
       }
     }
   }
@@ -397,10 +398,10 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
   int lastMonthTax = 0;
   
   ForumList forums = hlp.find< Forum >( building::forum );
-  foreach( ForumPtr forum, forums ) { lastMonthTax += forum->collectTaxes(); }
+  foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
   SenateList senates = hlp.find< Senate >( building::senate );
-  foreach( SenatePtr senate, senates ) { lastMonthTax += senate->collectTaxes(); }
+  foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   funds.resolveIssue( FundIssue( CityFunds::taxIncome, lastMonthTax ) );
 }
@@ -418,10 +419,8 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   CityHelper helper( city );
 
   HouseList houseList = helper.find<House>( building::house );
-  foreach( HousePtr house, houseList)
-  {
-    pop += house->getHabitants().count();
-  }
+
+  foreach( house, houseList) { pop += (*house)->getHabitants().count(); }
   
   population = pop;
   onPopulationChangedSignal.emit( pop );
@@ -456,10 +455,10 @@ void PlayerCity::save( VariantMap& stream) const
   // walkers
   VariantMap vm_walkers;
   int walkedId = 0;
-  foreach( WalkerPtr walker, _d->walkerList )
+  foreach( w, _d->walkerList )
   {
     VariantMap vm_walker;
-    walker->save( vm_walker );
+    (*w)->save( vm_walker );
     vm_walkers[ StringHelper::format( 0xff, "%d", walkedId ) ] = vm_walker;
     walkedId++;
   }
@@ -467,19 +466,19 @@ void PlayerCity::save( VariantMap& stream) const
 
   // overlays
   VariantMap vm_overlays;
-  foreach( TileOverlayPtr overlay, _d->overlayList )
+  foreach( overlay, _d->overlayList )
   {
     VariantMap vm_overlay;
-    overlay->save( vm_overlay );
-    vm_overlays[ StringHelper::format( 0xff, "%d,%d", overlay->getTile().getI(),
-                                                      overlay->getTile().getJ() ) ] = vm_overlay;
+    (*overlay)->save( vm_overlay );
+    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*overlay)->getTile().getI(),
+                                                      (*overlay)->getTile().getJ() ) ] = vm_overlay;
   }
   stream[ "overlays" ] = vm_overlays;
 
   VariantMap vm_services;
-  foreach( CityServicePtr service, _d->services )
+  foreach( service, _d->services )
   {   
-    vm_services[ service->getName() ] = service->save();
+    vm_services[ (*service)->getName() ] = (*service)->save();
   }
 
   stream[ "services" ] = vm_services;
@@ -503,9 +502,9 @@ void PlayerCity::load( const VariantMap& stream )
   _d->tradeOptions.load( stream.get( "tradeOptions" ).toMap() );
 
   VariantMap overlays = stream.get( "overlays" ).toMap();
-  foreach( VariantMap::value_type& item, overlays )
+  foreach( item, overlays )
   {
-    VariantMap overlayParams = item.second.toMap();
+    VariantMap overlayParams = item->second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
     TileOverlay::Type overlayType = (TileOverlay::Type)config.get( 0 ).toInt();
@@ -520,14 +519,14 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "Can't load overlay %s", item.first.c_str() );
+      Logger::warning( "Can't load overlay " + item->first );
     }
   }
 
   VariantMap walkers = stream.get( "walkers" ).toMap();
-  foreach( VariantMap::value_type& item, walkers )
+  foreach( item, walkers )
   {
-    VariantMap walkerInfo = item.second.toMap();
+    VariantMap walkerInfo = item->second.toMap();
     int walkerType = (int)walkerInfo.get( "type", 0 );
 
     WalkerPtr walker = WalkerManager::getInstance().create( walker::Type( walkerType ), this );
@@ -538,23 +537,23 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "Can't load walker " + item.first );
+      Logger::warning( "Can't load walker " + item->first );
     }
   }
 
   VariantMap services = stream.get( "services" ).toMap();
-  foreach( VariantMap::value_type& item, services )
+  foreach( item, services )
   {
-    VariantMap servicesSave = item.second.toMap();
+    VariantMap servicesSave = item->second.toMap();
 
-    CityServicePtr srvc = findService( item.first);
+    CityServicePtr srvc = findService( item->first );
     if( srvc.isValid()  )
     {
       srvc->load( servicesSave );
     }
     else
     {
-      Logger::warning( "Can't find service " + item.first );
+      Logger::warning( "Can't find service " + item->first );
     }
   }
 }
@@ -571,10 +570,10 @@ void PlayerCity::addWalker( WalkerPtr walker )
 
 CityServicePtr PlayerCity::findService( const std::string& name ) const
 {
-  foreach( CityServicePtr service, _d->services )
+  foreach( service, _d->services )
   {
-    if( name == service->getName() )
-      return service;
+    if( name == (*service)->getName() )
+      return *service;
   }
 
   return CityServicePtr();

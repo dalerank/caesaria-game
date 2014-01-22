@@ -137,10 +137,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
       case citylayer::health:
       case citylayer::commerce:
         {
-          foreach( PushButton* item, _d->buttons )
-          {
-            item->deleteLater();
-          }
+          foreach( item, _d->buttons )  { (*item)->deleteLater(); }
 
           _d->buttons.clear();
 
@@ -153,10 +150,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
       case citylayer::water:
       case citylayer::religion:
         {
-          foreach( PushButton* item, _d->buttons )
-          {
-            item->deleteLater();
-          }
+          foreach( item, _d->buttons )  { (*item)->deleteLater(); }
 
           _d->buttons.clear();
           return true;

@@ -73,11 +73,11 @@ std::string CityRequestDispatcher::getDefaultName()
 void CityRequestDispatcher::update(const unsigned int time)
 {
   if( time % (GameDate::getTickInMonth() / 4) == 1)
-  foreach( CityRequestPtr rq, _d->requests )
+  foreach( rq, _d->requests )
   {
-    if( rq->getFinishedDate() <= GameDate::current() )
+    if( (*rq)->getFinishedDate() <= GameDate::current() )
     {
-      rq->fail();
+      (*rq)->fail();
     }
   }
 

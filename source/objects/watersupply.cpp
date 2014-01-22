@@ -51,11 +51,8 @@ void Reservoir::destroy()
   //now remove water flag from near tiles
   Tilemap& tmap = _getCity()->getTilemap();
   TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
-  foreach( Tile* tile, reachedTiles )
-  {
-    tile->decreaseWaterService( WTR_RESERVOIR );
-  }
 
+  foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_RESERVOIR ); }
 
   // update adjacent aqueducts
   Construction::destroy();
@@ -99,10 +96,8 @@ bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
 
   Tilemap& tilemap = city->getTilemap();
   TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), !Tilemap::checkCorners );
-  foreach( Tile* tile, perimetr)
-  {
-    near_water |= tile->getFlag( Tile::tlWater );
-  }
+
+  foreach( tile, perimetr) { near_water |= (*tile)->getFlag( Tile::tlWater ); }
 
   return near_water;
 }
@@ -134,10 +129,8 @@ void Reservoir::timeStep(const unsigned long time)
   {
     Tilemap& tmap = _getCity()->getTilemap();
     TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
-    foreach( Tile* tile, reachedTiles )
-    {
-      tile->fillWaterService( WTR_RESERVOIR );
-    }   
+
+    foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_RESERVOIR ); }
   }
 
   //add water to all consumer
@@ -205,10 +198,7 @@ void WaterSource::timeStep( const unsigned long time )
       _waterStateChanged();
     }
 
-    foreach( Impl::WaterSourceMap::value_type& item, _d->sourcesMap )
-    {
-      item.second = math::clamp( item.second-1, 0, 4 );
-    }
+    foreach( item, _d->sourcesMap ) { item->second = math::clamp( item->second-1, 0, 4 ); }
   }
 
   Construction::timeStep( time );
@@ -271,10 +261,7 @@ void Fountain::deliverService()
   walker->setReachDistance( 4 );
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
 
-  foreach( BuildingPtr building, reachedBuildings )
-  {
-    building->applyService( walker );
-  } 
+  foreach( b, reachedBuildings ) { (*b)->applyService( walker ); }
 }
 
 void Fountain::timeStep(const unsigned long time)
@@ -291,13 +278,6 @@ void Fountain::timeStep(const unsigned long time)
     {
       //remove fontain service from tiles
       _haveReservoirWater = false;
-      Tilemap& tmap = _getCity()->getTilemap();
-      TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
-      foreach( Tile* tile, reachedTiles )
-      {
-        tile->decreaseWaterService( WTR_FONTAIN );
-      }
-
       _animationRef().stop();
     }
 
@@ -309,10 +289,8 @@ void Fountain::timeStep(const unsigned long time)
 
     Tilemap& tmap = _getCity()->getTilemap();
     TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 4, 4 ), Size( 4 + 4 ) + getSize() );
-    foreach( Tile* tile, reachedTiles )
-    {
-      tile->fillWaterService( WTR_FONTAIN );
-    }
+
+    foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
   }
 
   ServiceBuilding::timeStep( time );
@@ -350,9 +328,9 @@ bool Fountain::isActive() const
 bool Fountain::haveReservoirAccess() const
 {
   TilesArray reachedTiles = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 10, 10 ), Size( 10, 10 ) + getSize() );
-  foreach( Tile* tile, reachedTiles )
+  foreach( tile, reachedTiles )
   {
-    TileOverlayPtr overlay = tile->getOverlay();
+    TileOverlayPtr overlay = (*tile)->getOverlay();
     if( overlay != 0 && (building::reservoir == overlay->getType()) )
     {
       return true;

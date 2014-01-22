@@ -178,7 +178,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::house,            CAESARIA_STR_EXT(House),       new InfoBoxHouseCreator() );
   addInfobox( building::prefecture,       CAESARIA_STR_EXT(Prefecture),  new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::engineerPost,     CAESARIA_STR_EXT(EngineerPost),new ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( building::well,             CAESARIA_STR_EXT(Well),        new ServiceBaseInfoboxCreator( "", "##well_info##" ) );
+  addInfobox( building::well,             CAESARIA_STR_EXT(Well),        new BaseInfoboxCreator<InfoboxWell>() );
   addInfobox( building::doctor,           CAESARIA_STR_EXT(Doctor),      new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::baths,            CAESARIA_STR_EXT(Baths),       new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::barber,           CAESARIA_STR_EXT(Barber),      new ServiceBaseInfoboxCreator( "", "" ) );

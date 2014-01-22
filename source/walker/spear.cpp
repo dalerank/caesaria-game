@@ -113,10 +113,10 @@ const Picture& Spear::getMainPicture()
 void Spear::_reachedPathway()
 {
   WalkerList walkers = _getCity()->getWalkers( walker::any, _d->dst );
-  foreach( WalkerPtr walker, walkers )
+  foreach( w, walkers )
   {
-    walker->updateHealth( -10 );
-    walker->acceptAction( Walker::acFight, _d->from );
+    (*w)->updateHealth( -10 );
+    (*w)->acceptAction( Walker::acFight, _d->from );
   }
   deleteLater();
 }

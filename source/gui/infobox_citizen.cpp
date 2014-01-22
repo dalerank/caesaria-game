@@ -45,6 +45,7 @@ InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
 
   Label* lbThinks = new Label( this, Rect( 90, 148, getWidth() - 30, getHeight() - 140),
                                "Citizen's thoughts will be placed here" );
+  lbThinks->setWordwrap( true );
   Label* lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
 
   WalkerPtr wlk;
@@ -52,7 +53,9 @@ InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
   {
     wlk = walkers.front();
     lbName->setText( wlk->getName() );
-    lbType->setText( WalkerHelper::getPrettyTypeName( wlk->getType() ) );
+
+    std::string walkerType = WalkerHelper::getPrettyTypeName( wlk->getType() );
+    lbType->setText( _(walkerType) );
     lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->getType() ) );
 
     lbThinks->setText( wlk->getThinks() );
@@ -62,13 +65,12 @@ InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
   {
     switch( wlk->getType() )
     {
-    case walker::merchant:
-    {
-      setTitle( _("##trade_caravan_from##") + wlk.as<Merchant>()->getParentCity() );
-    }
+    case walker::merchant: { setTitle( _("##trade_caravan_from##") + wlk.as<Merchant>()->getParentCity() ); }
     break;
 
-    default: setTitle( _("##citizen##" ) );
+
+
+    default: setTitle( _("##citizen##") );
     }
   }
 }

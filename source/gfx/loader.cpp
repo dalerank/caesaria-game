@@ -41,14 +41,14 @@ Picture PictureLoader::load( vfs::NFile file )
      return Picture::getInvalid();
 
   // try to load file based on file extension
-  foreach( AbstractPictureLoader* loader, _d->loaders )
+  foreach( loader, _d->loaders )
   {
-    if( loader->isALoadableFileExtension(file.getFileName()) ||
-        loader->isALoadableFileFormat(file) )
+    if( (*loader)->isALoadableFileExtension(file.getFileName()) ||
+        (*loader)->isALoadableFileFormat(file) )
     {
       // reset file position which might have changed due to previous loadImage calls
       file.seek(0);
-      return loader->load( file );
+      return (*loader)->load( file );
     }
   }
 

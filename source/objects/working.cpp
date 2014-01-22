@@ -141,10 +141,7 @@ void WorkingBuilding::destroy()
 {
   Building::destroy();
 
-  foreach( WalkerPtr walker, _d->walkerList )
-  {
-    walker->deleteLater();
-  }
+  foreach( walker, _d->walkerList ) { (*walker)->deleteLater(); }
 
   if( getWorkersCount() > 0 )
   {

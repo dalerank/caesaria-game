@@ -52,11 +52,11 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, b
   if( ListBox* lbxModes = findChild<ListBox*>( "lbxModes", true ) )
   {
     std::string modeStr;
-    foreach( GfxEngine::Mode mode, modes )
+    foreach( mode, modes )
     {
-      modeStr = StringHelper::format( 0xff, "%dx%d", mode.getWidth(), mode.getHeight() );
+      modeStr = StringHelper::format( 0xff, "%dx%d", mode->getWidth(), mode->getHeight() );
       ListBoxItem& item = lbxModes->addItem( modeStr );
-      item.setTag( (mode.getWidth() << 16) + mode.getHeight());
+      item.setTag( (mode->getWidth() << 16) + mode->getHeight());
     }
   }
 

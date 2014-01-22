@@ -36,11 +36,11 @@ GoodOrders::GoodOrders() : _d( new Impl )
 
 void GoodOrders::set( Order rule )
 {
-  foreach( Impl::Orders::value_type& item, _d->orders )
+  foreach( item, _d->orders )
   {
-    if( item.second != GoodOrders::none )
+    if( item->second != GoodOrders::none )
     {
-      item.second = rule;
+      item->second = rule;
     }
   }
 }

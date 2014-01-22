@@ -45,14 +45,14 @@ public:
 
 void LayerBuild::_discardPreview()
 {
-  foreach( Tile* tile, _d->buildTiles )
+  foreach( tile, _d->buildTiles )
   {
-    if( tile->getOverlay().isValid() )
+    if( (*tile)->getOverlay().isValid() )
     {
-      tile->getOverlay()->deleteLater();
+      (*tile)->getOverlay()->deleteLater();
     }
 
-    delete tile;
+    delete *tile;
   }
 
   _d->buildTiles.clear();
@@ -164,10 +164,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
   {
     TilesArray tiles = _getSelectedArea();
 
-    foreach( Tile* tile, tiles )
-    {
-      _checkPreviewBuild( tile->getIJ() );
-    }
+    foreach( it, tiles ) { _checkPreviewBuild( (*it)->getIJ() ); }
   }
 }
 
@@ -186,8 +183,9 @@ void LayerBuild::_buildAll()
   }
 
   bool buildOk = false;
-  foreach( Tile* tile, _d->buildTiles )
+  foreach( it, _d->buildTiles )
   {
+    Tile* tile = *it;
     if( cnstr->canBuild( _getCity(), tile->getIJ(), TilesArray() ) && tile->isMasterTile())
     {
       events::GameEventPtr event = events::BuildEvent::create( tile->getIJ(), cnstr->getType() );
@@ -291,8 +289,9 @@ std::set<int> LayerBuild::getVisibleWalkers() const
 void LayerBuild::_drawBuildTiles(GfxEngine& engine)
 {
   Point offset = _getCamera()->getOffset();
-  foreach( Tile* postTile, _d->buildTiles )
+  foreach( it, _d->buildTiles )
   {
+    Tile* postTile = *it;
     postTile->resetWasDrawn();
 
     ConstructionPtr ptr_construction = postTile->getOverlay().as<Construction>();

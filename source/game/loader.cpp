@@ -91,14 +91,14 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
   water.setDelay( 12 );
   water.load( ResourceGroup::land1a, 121, 7 );
   water.load( ResourceGroup::land1a, 127, 7, true );
-  foreach( Tile* tile, area )
+  foreach( tile, area )
   {
-    int rId = tile->getOriginalImgId() - 364;
+    int rId = (*tile)->getOriginalImgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
       water.setIndex( rId );
-      tile->setAnimation( water );
-      tile->setFlag( Tile::tlDeepWater, true );
+      (*tile)->setAnimation( water );
+      (*tile)->setFlag( Tile::tlDeepWater, true );
     }
   }
 }

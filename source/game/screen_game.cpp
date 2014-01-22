@@ -93,6 +93,9 @@ public:
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
   void makeEnemy();
+  void makeFastSave();
+  void loadFastSave();
+  vfs::Path getFastSaveName();
 };
 
 ScreenGame::ScreenGame(Game& game , GfxEngine& engine ) : _d( new Impl )
@@ -189,13 +192,14 @@ void ScreenGame::initialize()
 void ScreenGame::Impl::showSaveDialog()
 {
   vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+  std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
 
   if( !saveDir.isExist() )
   {
     vfs::Directory::createByPath( saveDir );
   }
 
-  SaveDialog* dialog = new SaveDialog( game->getGui()->getRootWidget(), saveDir, ".oc3save", -1 );
+  SaveDialog* dialog = new SaveDialog( game->getGui()->getRootWidget(), saveDir, defaultExt, -1 );
   CONNECT( dialog, onFileSelected(), game, Game::save );
 }
 
@@ -236,6 +240,20 @@ void ScreenGame::Impl::makeEnemy()
   EnemySoldierPtr enemy = EnemySoldier::create( game->getCity(),
                                                 constants::walker::britonSoldier );
   enemy->send2City( game->getCity()->getBorderInfo().roadEntry );
+}
+
+void ScreenGame::Impl::makeFastSave() {  game->save( getFastSaveName().toString() ); }
+void ScreenGame::Impl::loadFastSave() {  game->load( getFastSaveName().toString() ); }
+
+vfs::Path ScreenGame::Impl::getFastSaveName()
+{
+  vfs::Path filename = game->getCity()->getName()
+                       + GameSettings::get( GameSettings::fastsavePostfix ).toString()
+                       + GameSettings::get( GameSettings::saveExt ).toString();
+
+  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+
+  return saveDir/filename;
 }
 
 void ScreenGame::Impl::showEmpireMapWindow()
@@ -300,9 +318,10 @@ void ScreenGame::handleEvent( NEvent& event )
     }
     break;
 
-		case KEY_F10:
-			_d->makeScreenShot();
-		break;
+    case KEY_F10:	_d->makeScreenShot(); break;
+
+		case KEY_F5: _d->makeFastSave(); break;
+		case KEY_F9: _d->loadFastSave(); break;
 
 		case KEY_F11:
 			if( event.keyboard.pressed )

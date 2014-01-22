@@ -61,10 +61,7 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
   CityHelper helper( city );
   AqueductList aqueducts = helper.find<Aqueduct>( building::aqueduct );
 
-  foreach( AqueductPtr aqueduct, aqueducts )
-  {
-    aqueduct->updatePicture( city );
-  }
+  foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( city ); }
 
   updatePicture( city );
 }
@@ -76,9 +73,9 @@ void Aqueduct::destroy()
   if( _getCity().isValid() )
   {
     TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2 ), Size( 5 ) );
-    foreach( Tile* tile, area )
+    foreach( tile, area )
     {
-      AqueductPtr aq = tile->getOverlay().as<Aqueduct>();
+      AqueductPtr aq = (*tile)->getOverlay().as<Aqueduct>();
       if( aq.isValid() )
       {
         aq->updatePicture( _getCity() );
@@ -130,20 +127,20 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
       tp_to = pos;
 
     TilesArray perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
-    foreach( Tile* tile, perimetr )
+    foreach( tile, perimetr )
     {
       AqueductPtr bldAqueduct;
       for( TilesArray::const_iterator it=aroundTiles.begin(); it != aroundTiles.end(); it++ )
       {
-        if( (*it)->getIJ() == tile->getIJ() )
+        if( (*it)->getIJ() == (*tile)->getIJ() )
         {
           bldAqueduct = (*it)->getOverlay().as<Aqueduct>();
           break;
         }
       }
 
-      if( tile->getFlag( Tile::tlRoad )
-          && (tile->getFlag( Tile::tlAqueduct ) || bldAqueduct.isValid() ) )
+      if( (*tile)->getFlag( Tile::tlRoad )
+          && ( (*tile)->getFlag( Tile::tlAqueduct ) || bldAqueduct.isValid() ) )
         return false;
     }
   }

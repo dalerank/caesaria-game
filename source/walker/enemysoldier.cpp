@@ -122,9 +122,9 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
 
   walker::Type type;
-  foreach( Tile* tile, tiles )
+  foreach( tile, tiles )
   {
-    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, tile->getIJ() );
+    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->getIJ() );
 
     for( WalkerList::iterator i=tileWalkers.begin();i!=tileWalkers.end(); i++ )
     {
@@ -166,9 +166,9 @@ Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
   {
     WalkerList walkers = _findEnemiesInRange( tmpRange );
 
-    foreach( WalkerPtr w, walkers)
+    foreach( it, walkers)
     {
-      ret = PathwayHelper::create( getIJ(), w->getIJ(), PathwayHelper::allTerrain );
+      ret = PathwayHelper::create( getIJ(), (*it)->getIJ(), PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
         return ret;
@@ -223,9 +223,9 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
   TilePos offset( range, range );
   TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
 
-  foreach( Tile* tile, tiles )
+  foreach( it, tiles )
   {
-    BuildingPtr b = tile->getOverlay().as<Building>();
+    BuildingPtr b = (*it)->getOverlay().as<Building>();
     if( b.isValid() && b->getClass() != building::disasterGroup )
     {
       ret.push_back( b );
@@ -243,9 +243,9 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
   {
     BuildingList buildings = _findBuildingsInRange( tmpRange );
 
-    foreach( BuildingPtr building, buildings )
+    foreach( it, buildings )
     {
-      ret = PathwayHelper::create( getIJ(), building.as<Construction>(), PathwayHelper::allTerrain );
+      ret = PathwayHelper::create( getIJ(), it->as<Construction>(), PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
         return ret;

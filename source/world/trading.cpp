@@ -164,10 +164,7 @@ TraderouteList Trading::getRoutes( const std::string& begin )
 TraderouteList Trading::getRoutes()
 {
   TraderouteList ret;
-  foreach( Impl::TradeRoutes::value_type& item, _d->routes )
-  {
-    ret.push_back( item.second );
-  }
+  foreach( item, _d->routes ) { ret.push_back( item->second ); }
 
   return ret;
 }

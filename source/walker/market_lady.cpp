@@ -131,9 +131,9 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      pathPropagator.propagate( _d->maxDistance);
 
      // try to find the most needed good
-     foreach( Good::Type goodType, priorityGoods )
+     foreach( goodType, priorityGoods )
      {
-        _d->priorityGood = goodType;
+        _d->priorityGood = *goodType;
 
         if( _d->priorityGood == Good::wheat || _d->priorityGood == Good::fish
             || _d->priorityGood == Good::meat || _d->priorityGood == Good::fruit

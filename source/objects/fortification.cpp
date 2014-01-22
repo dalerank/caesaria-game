@@ -74,16 +74,11 @@ void Fortification::build(PlayerCityPtr city, const TilePos& pos )
 
   CityHelper helper( city );
   FortificationList fortifications = helper.find<Fortification>( building::fortification );
-  foreach( FortificationPtr frt, fortifications )
-  {
-    frt->updatePicture( city );
-  }
+
+  foreach( frt, fortifications ) { (*frt)->updatePicture( city ); }
 
   TowerList towers = helper.find<Tower>( building::tower );
-  foreach( TowerPtr tower, towers )
-  {
-    tower->resetPatroling();
-  }
+  foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
   updatePicture( city );
 }
@@ -95,9 +90,9 @@ void Fortification::destroy()
   if( _getCity().isValid() )
   {
     TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
-    foreach( Tile* tile, area )
+    foreach( tile, area )
     {
-      FortificationPtr f = tile->getOverlay().as<Fortification>();
+      FortificationPtr f = (*tile)->getOverlay().as<Fortification>();
       if( f.isValid()  )
       {
         f->updatePicture( _getCity() );

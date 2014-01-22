@@ -37,9 +37,9 @@ public:
   {
     Point offsetLb( 0, 0 );
     Point offset( 0, 23 );
-    foreach( Widget* widget, childs )
+    foreach( widget, childs )
     {
-      widget->setPosition( offsetLb );
+      (*widget)->setPosition( offsetLb );
       offsetLb += offset;
     }
   }

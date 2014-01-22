@@ -109,9 +109,9 @@ bool Farm::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
   bool on_meadow = false;
 
   TilesArray area = city->getTilemap().getArea( pos, getSize() );
-  foreach( Tile* tile, area )
+  foreach( tile, area )
   {
-    on_meadow |= tile->getFlag( Tile::tlMeadow );
+    on_meadow |= (*tile)->getFlag( Tile::tlMeadow );
   }
 
   const_cast< Farm* >( this )->_setError( on_meadow ? _("##need_meadow_ground##") : "" );

@@ -64,7 +64,7 @@ void CoastalFactory::build(PlayerCityPtr city, const TilePos& pos)
 
   TilesArray area = city->getTilemap().getArea( pos, getSize() );
 
-  foreach( Tile* tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *tile ) ); }
+  foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
 
   Factory::build( city, pos );
 }
@@ -76,7 +76,7 @@ void CoastalFactory::destroy()
   TilesArray area = helper.getArea( this );
 
   int index=0;
-  foreach( Tile* tile, area ) { TileHelper::decode( *tile, _d->saveTileInfo.at( index++ ) ); }
+  foreach( tile, area ) { TileHelper::decode( *(*tile), _d->saveTileInfo.at( index++ ) ); }
 
   Factory::destroy();
 }

@@ -234,8 +234,9 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& p
 
   int minDistance = 999;
   FishPlacePtr nearest;
-  foreach( FishPlacePtr place, places )
+  foreach( it, places )
   {
+    FishPlacePtr place = *it;
     int currentDistance = pos.distanceFrom( place->getIJ() );
     if( currentDistance < minDistance )
     {

@@ -63,9 +63,9 @@ void Garden::build(PlayerCityPtr city, const TilePos& pos )
   {
     TilesArray tilesAround = city->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1),
                                                               getTilePos() + TilePos( 1, 1 ) );
-    foreach( Tile* tile, tilesAround )
+    foreach( tile, tilesAround )
     {
-      GardenPtr garden = tile->getOverlay().as<Garden>();
+      GardenPtr garden = (*tile)->getOverlay().as<Garden>();
       if( garden.isValid() )
       {
         garden->update();
@@ -106,17 +106,17 @@ void Garden::update()
   TilesArray nearTiles = _getCity()->getTilemap().getArea( getTilePos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
-  foreach( Tile* tile, nearTiles )
+  foreach( tile, nearTiles )
   {
-    GardenPtr garden = tile->getOverlay().as<Garden>();
+    GardenPtr garden = (*tile)->getOverlay().as<Garden>();
     canGrow2squareGarden &= (garden.isValid() && garden->getSize().getArea() <= 2 );
   }
 
   if( canGrow2squareGarden )
   {   
-    foreach( Tile* tile, nearTiles )
+    foreach( tile, nearTiles )
     {
-      TileOverlayPtr overlay = tile->getOverlay();
+      TileOverlayPtr overlay = (*tile)->getOverlay();
 
       //not delete himself
       if( overlay != this && overlay.isValid() )

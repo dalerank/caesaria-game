@@ -219,9 +219,9 @@ void GoodStore::load( const VariantMap& stream )
 
   VariantList vm_orders = stream.get( "orders" ).toList();
   int index = 0;
-  foreach( Variant& var, vm_orders )
+  foreach( var, vm_orders )
   {
-    setOrder( (Good::Type)index, (GoodOrders::Order)var.toInt() );
+    setOrder( (Good::Type)index, (GoodOrders::Order)var->toInt() );
     index++;
   }
 }

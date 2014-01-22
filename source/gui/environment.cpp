@@ -102,9 +102,9 @@ Widget* GuiEnv::getRootWidget()
 
 void GuiEnv::Impl::threatDeletionQueue()
 {
-  foreach( Widget* widget, deletionQueue )
+  foreach( widget, deletionQueue )
   {
-    try{ widget->remove(); }
+    try{ (*widget)->remove(); }
     catch(...){}
   }
 
@@ -213,9 +213,9 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 			_d->hoveredNoSubelement = WidgetPtr();
 		}
 
-    foreach( Widget* widget, _d->deletionQueue )
+    foreach( widget, _d->deletionQueue )
     {
-      if( widget == ptrElement )
+      if( (*widget) == ptrElement )
       {
 				return;
       }
@@ -518,10 +518,7 @@ void GuiEnv::beforeDraw()
 
   updateHoveredElement( _d->cursorPos );
 
-  foreach( Widget* widget, Widget::_d->children )
-  {
-    widget->beforeDraw( *_d->engine );
-  }
+  foreach( widget, Widget::_d->children ) { (*widget)->beforeDraw( *_d->engine ); }
 
   if( _d->toolTip.Element.isValid() )
   {

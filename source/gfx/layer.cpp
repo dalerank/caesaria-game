@@ -54,9 +54,9 @@ void Layer::registerTileForRendering(Tile& tile)
   if( tile.getOverlay() != 0 )
   {
     Renderer::PassQueue passQueue = tile.getOverlay()->getPassQueue();
-    foreach( Renderer::Pass pass, passQueue )
+    foreach( pass, passQueue )
     {
-      _d->renderQueue[ pass ].push_back( &tile );
+      _d->renderQueue[ *pass ].push_back( &tile );
     }
   }
 }
@@ -66,9 +66,9 @@ void Layer::renderPass( GfxEngine& engine, Renderer::Pass pass )
   // building foregrounds and animations
   Impl::TileQueue& tiles = _d->renderQueue[ pass ];
   Point offset = _d->camera->getOffset();
-  foreach( Tile* tile, tiles )
+  foreach( tile, tiles )
   {
-    drawTilePass( engine, *tile, offset, pass );
+    drawTilePass( engine, *(*tile), offset, pass );
   }
 
   tiles.clear();
@@ -190,9 +190,9 @@ WalkerList Layer::_getVisibleWalkerList()
   Layer::VisibleWalkers visibleWalkers = getVisibleWalkers();
 
   WalkerList walkerList;
-  foreach( int wtAct, visibleWalkers )
+  foreach( wtAct, visibleWalkers )
   {
-    WalkerList foundWalkers = _getCity()->getWalkers( (walker::Type)wtAct );
+    WalkerList foundWalkers = _getCity()->getWalkers( (walker::Type)*wtAct );
     walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
   }
 
@@ -204,15 +204,15 @@ void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camO
   PicturesArray pictureList;
   WalkerList walkers = _getCity()->getWalkers( walker::any, tile.getIJ() );
 
-  foreach( WalkerPtr walker, walkers )
+  foreach( w, walkers )
   {
     pictureList.clear();
-    walker->getPictureList( pictureList );
-    foreach( Picture& picRef, pictureList )
+    (*w)->getPictureList( pictureList );
+    foreach( picRef, pictureList )
     {
-      if( picRef.isValid() )
+      if( (*picRef).isValid() )
       {
-        engine.drawPicture( picRef, walker->getPosition() + camOffset );
+        engine.drawPicture( *picRef, (*w)->getPosition() + camOffset );
       }
     }
   }
@@ -242,8 +242,9 @@ void Layer::render( GfxEngine& engine)
   _getCamera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  foreach( Tile* tile, visibleTiles )
+  foreach( it, visibleTiles )
   {
+    Tile* tile = *it;
     Tile* master = tile->getMasterTile();
 
     if( !tile->isFlat() )
@@ -263,10 +264,11 @@ void Layer::render( GfxEngine& engine)
   }
 
   // SECOND PART: draw all sprites, impassable land and buildings
-  WalkerList walkerList = _getVisibleWalkerList();
+  //WalkerList walkerList = _getVisibleWalkerList();
 
-  foreach( Tile* tile, visibleTiles )
+  foreach( it, visibleTiles )
   {
+    Tile* tile = *it;
     int z = tile->getIJ().getZ();    
 
     drawTileR( engine, *tile, camOffset, z, false );

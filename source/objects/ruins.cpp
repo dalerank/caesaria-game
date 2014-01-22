@@ -66,9 +66,9 @@ void BurningRuins::timeStep(const unsigned long time)
         TilePos offset( range, range );
         TilesArray tiles = tmap.getRectangle( getTilePos() - offset, getTilePos() + offset );
 
-        foreach( Tile* tile, tiles)
+        foreach( tile, tiles)
         {
-          BuildingPtr b = tile->getOverlay().as<Building>();
+          BuildingPtr b = (*tile)->getOverlay().as<Building>();
           if( b.isValid() && b->getClass() != building::disasterGroup )
           {
             b->updateState( Construction::fire, 0.5 );

@@ -45,11 +45,11 @@ public:
 
   void resolveMerchantArrived( MerchantPtr merchant )
   {
-    foreach( MerchantPtr m, merchants )
+    foreach( m, merchants )
     {
-      if( m == merchant )
+      if( *m == merchant )
       {
-        m->deleteLater();
+        (*m)->deleteLater();
         break;
       }
     }
@@ -188,23 +188,21 @@ VariantMap Traderoute::save() const
 {  
   VariantMap ret;
   VariantMap merchants;
-  foreach( MerchantPtr m, _d->merchants )
+  foreach( m, _d->merchants )
   {
-    merchants[ StringHelper::format( 0xff, "->%s", m->getDestCityName().c_str() ) ] = m->save();
+    merchants[ "->" + (*m)->getDestCityName() ] = (*m)->save();
   }
+
   ret[ "merchants" ] = merchants;
 
   VariantList vl_points;
-  foreach( Point p, _d->points )
-  {
-    vl_points.push_back( p );
-  }
+  foreach( p, _d->points ) { vl_points.push_back( *p ); }
   ret[ "points" ] = vl_points;
 
   VariantList vl_pictures;
-  foreach( Picture& pic, _d->pictures )
+  foreach( pic, _d->pictures )
   {
-    vl_pictures.push_back( Variant( pic.getName() ) );
+    vl_pictures.push_back( Variant( pic->getName() ) );
   }
   ret[ "pictures" ] = vl_pictures;
 

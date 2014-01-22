@@ -69,11 +69,11 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 {
   buildings = getReachedBuildings( getIJ() );
 
-  foreach( BuildingPtr building, buildings )
+  foreach( it, buildings )
   {
-    if( building->getType() == building::burningRuins )
+    if( (*it)->getType() == building::burningRuins )
     {
-      pos = building->getTilePos();
+      pos = (*it)->getTilePos();
       return true;
     }
   }
@@ -88,8 +88,9 @@ bool Prefect::_looks4Protestor( TilePos& pos )
   ProtestorList protestors = helper.find<Protestor>( walker::protestor, getIJ() - offset, getIJ() + offset );
 
   int minDistance=99;
-  foreach( ProtestorPtr p, protestors )
+  foreach( it, protestors )
   {
+    ProtestorPtr p = *it;
     int distance = p->getIJ().distanceFrom( getIJ() );
     if( distance < minDistance )
     {
@@ -103,8 +104,9 @@ bool Prefect::_looks4Protestor( TilePos& pos )
 
 bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 {
-  foreach( BuildingPtr building, buildings )
+  foreach( it, buildings )
   {
+    BuildingPtr building = *it;
     if( building->getType() != building::burningRuins )
       continue;
 
@@ -119,8 +121,9 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     }
   }
 
-  foreach( BuildingPtr building, buildings )
+  foreach( it, buildings )
   {
+    BuildingPtr building = *it;
     if( building->getType() != building::burningRuins )
       continue;
 
@@ -160,8 +163,9 @@ void Prefect::_back2Prefecture()
 
 void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 {
-  foreach( BuildingPtr building, reachedBuildings )
+  foreach( it, reachedBuildings )
   {
+    BuildingPtr building = *it;
     building->applyService( ServiceWalkerPtr( this ) );
 
     HousePtr house = building.as<House>();

@@ -30,8 +30,7 @@ namespace gui
 void Widget::beforeDraw( GfxEngine& painter )
 {
   _CAESARIA_DEBUG_BREAK_IF( !_d->parent && "Parent must be exists" );
-  foreach( Widget* widget, _d->children )
-    widget->beforeDraw( painter );
+  foreach( widget, _d->children ) { (*widget)->beforeDraw( painter ); }
 }
 
 GuiEnv* Widget::getEnvironment()
@@ -102,10 +101,10 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 Widget::~Widget()
 {
   // delete all children
-  foreach( Widget* widget, _d->children )
+  foreach( widget, _d->children )
   {
-      widget->_d->parent = 0;
-      widget->drop();
+    (*widget)->_d->parent = 0;
+    (*widget)->drop();
   }
 }
 
@@ -236,10 +235,7 @@ void Widget::updateAbsolutePosition()
   }
 
   // update all children
-  foreach( Widget* widget, _d->children )
-  {
-    widget->updateAbsolutePosition();
-  }
+  foreach( widget, _d->children ) { (*widget)->updateAbsolutePosition(); }
 }
 
 Widget* Widget::getElementFromPoint( const Point& point )
@@ -304,8 +300,7 @@ void Widget::draw( GfxEngine& painter )
 {
   if ( isVisible() )
   {
-    foreach( Widget* widget, _d->children )
-      widget->draw( painter );
+    foreach( widget, _d->children ) { (*widget)->draw( painter ); }
   }
 }
 
@@ -416,16 +411,16 @@ Widget* Widget::findChild( int id, bool searchchildren/*=false*/ ) const
 {
   Widget* e = 0;
 
-  foreach( Widget* widget, _d->children )
+  foreach( widget, _d->children )
   {
-    if( widget->getID() == id)
+    if( (*widget)->getID() == id)
     {
-      return widget;
+      return *widget;
     }
 
     if( searchchildren )
     {
-      e = widget->findChild(id, true);
+      e = (*widget)->findChild(id, true);
     }
 
     if( e )
@@ -743,11 +738,10 @@ void Widget::recalculateAbsolutePosition( bool recursive )
 
 void Widget::animate( unsigned int timeMs )
 {
-    if ( isVisible() )
-    {
-        foreach( Widget* widget, _d->children )
-            widget->animate( timeMs );
-    }
+  if( !isVisible() )
+    return;
+
+  foreach( widget, _d->children ) { (*widget)->animate( timeMs ); }
 }
 
 void Widget::remove()

@@ -357,9 +357,9 @@ public:
     //if any factory work in city, that industry work too
     bool anyFactoryWork = false;
     FactoryList factories = helper.getProducers<Factory>( _type );
-    foreach( FactoryPtr factory, factories )
+    foreach( factory, factories )
     {
-      anyFactoryWork |= factory->isActive();
+      anyFactoryWork |= (*factory)->isActive();
     }
 
     return factories.empty() ? true : anyFactoryWork;
@@ -379,9 +379,9 @@ public:
     int workFactoryCount=0, idleFactoryCount=0;
 
     FactoryList factories = helper.getProducers<Factory>( _type );
-    foreach( FactoryPtr factory, factories )
+    foreach( factory, factories )
     {
-      ( factory->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
+      ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
     }
 
     std::string text = StringHelper::format( 0xff, "%d %s, %d %s", workFactoryCount, _("##work##"), 
@@ -399,10 +399,7 @@ public:
     bool industryEnabled = isIndustryEnabled();
     //up or down all factory for this industry
     FactoryList factories = helper.getProducers<Factory>( _type );
-    foreach( FactoryPtr factory, factories )
-    {
-      factory->setActive( !industryEnabled );
-    }
+    foreach( factory, factories ) { (*factory)->setActive( !industryEnabled ); }
 
     updateIndustryState();
     _onOrderChangedSignal.emit();
@@ -452,10 +449,8 @@ oc3_signals private:
 void AdvisorTradeWindow::Impl::updateGoodsInfo()
 {
   Widget::Widgets children = gbInfo->getChildren();
-  foreach( Widget* child, children )
-  {
-    child->deleteLater();
-  }
+
+  foreach( child, children ) { (*child)->deleteLater(); }
 
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->getWidth(), 20 );
@@ -487,10 +482,8 @@ bool AdvisorTradeWindow::Impl::getWorkState(Good::Type gtype )
 
   bool industryActive = false;
   FactoryList producers = helper.getProducers<Factory>( gtype );
-  foreach( FactoryPtr factory, producers )
-  {
-    industryActive |= factory->isActive();
-  }
+
+  foreach( it, producers ) { industryActive |= (*it)->isActive(); }
 
   return producers.empty() ? true : industryActive;
 }
@@ -501,10 +494,7 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
 
   int goodsQty = 0;
   WarehouseList warehouses = helper.find< Warehouse >( building::warehouse );
-  foreach( WarehousePtr warehouse, warehouses )
-  {
-    goodsQty += warehouse->getGoodStore().getQty( gtype );
-  }
+  foreach( it, warehouses ) { goodsQty += (*it)->getGoodStore().getQty( gtype ); }
 
   return goodsQty;
 }

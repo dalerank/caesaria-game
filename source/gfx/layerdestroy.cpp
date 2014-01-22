@@ -28,9 +28,9 @@ using namespace constants;
 void LayerDestroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea();
-  foreach( Tile* tile, tiles4clear )
+  foreach( tile, tiles4clear )
   {
-    events::GameEventPtr event = events::ClearLandEvent::create( tile->getIJ() );
+    events::GameEventPtr event = events::ClearLandEvent::create( (*tile)->getIJ() );
     event->dispatch();
   }
 }
@@ -74,25 +74,27 @@ void LayerDestroy::render( GfxEngine& engine )
   TilesArray destroyArea = _getSelectedArea();
 
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
-  foreach( Tile* tile, destroyArea)
+  foreach( it, destroyArea)
   {
+    Tile* tile = *it;
     hashDestroyArea.insert( tile->getJ() * 1000 + tile->getI() );
 
     TileOverlayPtr overlay = tile->getOverlay();
     if( overlay.isValid() )
     {
       TilesArray overlayArea = tmap.getArea( overlay->getTilePos(), overlay->getSize() );
-      foreach( Tile* ovelayTile, overlayArea )
+      foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert( ovelayTile->getJ() * 1000 + ovelayTile->getI() );
+        hashDestroyArea.insert( (*ovelayTile)->getJ() * 1000 + (*ovelayTile)->getI() );
       }
     }
   }
   //Rect destroyArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  foreach( Tile* tile, visibleTiles )
+  foreach( it, visibleTiles )
   {
+    Tile* tile = *it;
     Tile* master = tile->getMasterTile();
 
     if( !tile->isFlat() )
@@ -120,8 +122,9 @@ void LayerDestroy::render( GfxEngine& engine )
 
   // SECOND PART: draw all sprites, impassable land and buildings
   WalkerList walkerList = _getVisibleWalkerList();
-  foreach( Tile* tile, visibleTiles )
+  foreach( it, visibleTiles )
   {
+    Tile* tile = *it;
     int z = tile->getIJ().getZ();
 
     int tilePosHash = tile->getJ() * 1000 + tile->getI();

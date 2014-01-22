@@ -274,23 +274,16 @@ void ComputerCity::timeStep( unsigned int time )
       }
 
       //send merchants to all routes
-      foreach( TraderoutePtr route, routes )
+      foreach( route, routes )
       {
         _d->merchantsNumber++;
-        route->addMerchant( getName(), sellGoods, buyGoods );
+        (*route)->addMerchant( getName(), sellGoods, buyGoods );
       }
     }
   }
 }
 
-EmpirePtr ComputerCity::getEmpire() const
-{
-  return _d->empire;
-}
-
-unsigned int ComputerCity::getTradeType() const
-{
-  return _d->tradeType;
-}
+EmpirePtr ComputerCity::getEmpire() const { return _d->empire; }
+unsigned int ComputerCity::getTradeType() const { return _d->tradeType; }
 
 }//end namespace world

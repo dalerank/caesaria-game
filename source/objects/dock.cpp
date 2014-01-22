@@ -87,7 +87,7 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
 
   TilesArray area = city->getTilemap().getArea( pos, getSize() );
 
-  foreach( Tile* tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *tile ) ); }
+  foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
 
   WorkingBuilding::build( city, pos );
 }
@@ -99,7 +99,7 @@ void Dock::destroy()
   TilesArray area = helper.getArea( this );
 
   int index=0;
-  foreach( Tile* tile, area ) { TileHelper::decode( *tile, _d->saveTileInfo.at( index++ ) ); }
+  foreach( tile, area ) { TileHelper::decode( *(*tile), _d->saveTileInfo.at( index++ ) ); }
 
   WorkingBuilding::destroy();
 }

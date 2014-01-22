@@ -37,6 +37,9 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
    lbAbout->setWordwrap( true );
    lbAbout->setFont( Font::create( FONT_1 ) );
 
+   std::string title = MetaDataHolder::getPrettyName( market->getType() );
+   setTitle( title );
+
    if( market->getWorkersCount() > 0 )
    {
      GoodStore& goods = market->getGoodStore();

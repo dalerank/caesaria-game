@@ -179,10 +179,7 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
     PushButton* btn = safety_cast< PushButton* >( event.gui.caller );
     if( btn && (btn->getID() & 0x0200) )
     {
-      foreach ( TexturedButton* abtn, _d->godBtns )
-      {
-        abtn->setPressed( false );
-      }
+      foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
 
       btn->setPressed( true );
       _d->currentDivinity = _d->divines[ btn->getID() ];

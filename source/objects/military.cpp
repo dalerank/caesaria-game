@@ -61,11 +61,11 @@ void FortLegionnaire::_readyNewSoldier()
   CityHelper helper( _getCity() );
   TilesArray tiles = helper.getAroundTiles( this );
 
-  foreach( Tile* tile, tiles)
+  foreach( tile, tiles)
   {
-    if( tile->isWalkable( true ) )
+    if( (*tile)->isWalkable( true ) )
     {
-      soldier->send2city( this, tile->getIJ() );
+      soldier->send2city( this, (*tile)->getIJ() );
       addWalker( soldier.as<Walker>() );
       return;
     }
@@ -262,9 +262,9 @@ void Fort::changePatrolArea()
 {
   WalkerList walkers = getWalkers();
 
-  foreach( WalkerPtr w, walkers )
+  foreach( it, walkers )
   {
-    RomeSoldierPtr soldier = w.as<RomeSoldier>();
+    RomeSoldierPtr soldier = it->as<RomeSoldier>();
     if( soldier.isValid() )
     {
       soldier->send2patrol();

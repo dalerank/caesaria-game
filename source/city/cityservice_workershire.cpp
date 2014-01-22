@@ -91,9 +91,9 @@ CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
 {
-  foreach( WalkerPtr walker, _d->hrInCity )
+  foreach( w, _d->hrInCity )
   {
-    RecruterPtr hr = walker.as<Recruter>();
+    RecruterPtr hr = w->as<Recruter>();
     if( hr.isValid() )
     {
       if( hr->getBase() == building.as<Building>() )
@@ -108,8 +108,9 @@ void CityServiceWorkersHire::_hireByType(const TileOverlay::Type type )
 {
   CityHelper hlp( _d->city );
   WorkingBuildingList buildings = hlp.find< WorkingBuilding >( type );
-  foreach( WorkingBuildingPtr wrkbld, buildings )
+  foreach( it, buildings )
   {
+    WorkingBuildingPtr wrkbld = *it;
     if( _haveHr( wrkbld ) )
       continue;
 
@@ -131,8 +132,8 @@ void CityServiceWorkersHire::update( const unsigned int time )
 
   _d->hrInCity = _d->city->getWalkers( walker::recruter );
 
-  foreach( Priorities::value_type& pr, _d->priorities )
+  foreach( pr, _d->priorities )
   {
-    _hireByType( pr.second );
+    _hireByType( pr->second );
   }
 }

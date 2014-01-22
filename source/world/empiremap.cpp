@@ -96,9 +96,9 @@ PointsArray EmpireMap::getRoute(Point start, Point stop, int flags )
 
   _d->routefinder->getRoute( _d->pnt2tp( start ), _d->pnt2tp( stop ), tiles, flags);
 
-  foreach( TilePos pos, tiles)
+  foreach( pos, tiles)
   {
-    way.push_back( _d->tp2pnt( pos ) + Point( 10, 10 ) );
+    way.push_back( _d->tp2pnt( *pos ) + Point( 10, 10 ) );
   }
 
   return way;
@@ -127,10 +127,10 @@ void EmpireMap::initialize(const VariantMap& stream)
 
   VariantList tiles = stream.get( "tiles" ).toList();
   int index = 0;
-  foreach( Variant v, tiles )
+  foreach( v, tiles )
   {
     EmTile& tile = _d->at( TilePos( index % _d->size.getWidth(), index / _d->size.getWidth() ) );
-    tile.info = (v.toInt() == 0 ? EmpireMap::land : EmpireMap::sea);
+    tile.info = (v->toInt() == 0 ? EmpireMap::land : EmpireMap::sea);
     index++;
   }
 

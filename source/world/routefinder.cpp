@@ -191,11 +191,11 @@ bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, TilePosArr
   while( n == 0 || ( !(stopPoint == current) && n < maxLoopCount ))
   {
     // Look for the smallest F value in the openList and make it the current point
-    foreach( EmPoint* point, openList)
+    foreach( point, openList)
     {
-      if( point == openList.front() || point->getFScore() <= current->getFScore() )
+      if( *point == openList.front() || (*point)->getFScore() <= current->getFScore() )
       {
-        current = point;
+        current = *point;
       }
     }
 
@@ -285,9 +285,9 @@ bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, TilePosArr
   }
 
   // Reset
-  foreach( EmPoint* point, openList) { point->opened = false; }
+  foreach( point, openList) { (*point)->opened = false; }
 
-  foreach( EmPoint* point, closedList) { point->closed = false; }
+  foreach( point, closedList) { (*point)->closed = false; }
 
   if( n >= maxLoopCount )
   {
@@ -302,10 +302,7 @@ bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, TilePosArr
     n++;
   }
 
-  foreach( EmPoint* pathPoint, lPath )
-  {
-    way.push_back( pathPoint->pos );
-  }
+  foreach( pathPoint, lPath ) { way.push_back( (*pathPoint)->pos ); }
 
   return way.size() > 0;
 }

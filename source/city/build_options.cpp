@@ -88,10 +88,10 @@ void CityBuildOptions::load(const VariantMap& options)
     setIndustryAvaible( BM_FACTORY, false );
 
   VariantMap buildings = options.get( "buildings" ).toMap();
-  foreach( VariantMap::value_type& item, buildings )
+  foreach( item, buildings )
   {
-    TileOverlay::Type btype = MetaDataHolder::getType( item.first );
-    setBuildingAvailble( btype, item.second.toBool() );
+    TileOverlay::Type btype = MetaDataHolder::getType( item->first );
+    setBuildingAvailble( btype, item->second.toBool() );
   }
 }
 

@@ -87,16 +87,16 @@ public:
     }
   }
 
-  Point getOffset( Tile& tile, const Point& subpos ) const
+  Point getOffset( Tile& , const Point& subpos ) const
   {
     switch( _index )
     {
     case liftingSE: return Point( -subpos.getX()*0.9, subpos.getX()*0.7 );
     case spanSE:    return Point( -15, 12 );
     case descentSE: return Point( -10 + subpos.getX(), 12 - subpos.getX() * 0.7 );
-    case descentSW: return Point( -subpos.getY(), 0 );
-    case spanSW:    return Point( -10, 10 );
-    case liftingSW: return Point( -(10 - subpos.getY()), 0 );
+    case descentSW: return Point( -subpos.getY()*0.5, subpos.getY()*0.9 );
+    case spanSW:    return Point( -8, 25 );
+    case liftingSW: return Point( subpos.getY()*0.6, 20-subpos.getY()*0.4 );
 
     default: return Point( 0, 0 );
     }
@@ -375,9 +375,8 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
     
     TilesArray tiles = tilemap.getArea( startPos, endPos );
     int index=0;
-    foreach( Tile* t, tiles )
+    foreach( t, tiles )
     {
-      t;
       LowBridgeSubTilePtr subtile = _d->subtiles[ index ];
       TilePos buildPos = pos + subtile->_pos * signSum;
       Tile& tile = tilemap.at( buildPos );
@@ -396,9 +395,9 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
 bool LowBridge::canDestroy() const
 {
   CityHelper helper( _getCity() );
-  foreach( LowBridgeSubTilePtr subtile, _d->subtiles )
+  foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.find<Walker>( walker::any, subtile->getTilePos() );
+    WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->getTilePos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -433,10 +432,9 @@ void LowBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  foreach( LowBridgeSubTilePtr subtile,  _d->subtiles )
+  foreach( subtile,  _d->subtiles )
   {
-
-    vl_tinfo.push_back( subtile->_imgId );
+    vl_tinfo.push_back( (*subtile)->_imgId );
   }
   stream[ "terraininfo" ] = vl_tinfo;
   //stream[ "direction" ] = (int)_d->direction;

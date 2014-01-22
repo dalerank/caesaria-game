@@ -34,7 +34,8 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 {
   FactoryPtr factory = tile.getOverlay().as<Factory>();
   _type = factory->getType();
-  setTitle( MetaDataHolder::getPrettyName( factory->getType() ) );
+  std::string  title = MetaDataHolder::getPrettyName( factory->getType() );
+  setTitle( _(title) );
 
   // paint progress
   std::string text = StringHelper::format( 0xff, "%s %d%%", _("##production_ready_at##"), factory->getProgress() );
@@ -62,7 +63,9 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   }
 
   _getInfo()->move( Point( 0, 15 ));
-  setText( getInfoText( factory ) );
+
+  std::string workInfo = getInfoText( factory );
+  setText( _(workInfo) );
 
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->getMaxWorkers(), factory->getWorkersCount() );
 }
@@ -75,14 +78,12 @@ void InfoboxFactory::showDescription()
 std::string InfoboxFactory::getInfoText( FactoryPtr factory )
 {
   std::string factoryType = MetaDataHolder::getTypename( factory->getType() );
-  float workKoeff = factory->getWorkersCount() * 100 / factory->getMaxWorkers();
+  float workKoeff = (factory->getWorkersCount() / (float)factory->getMaxWorkers()) * 5.f;
 
-  if( workKoeff == 0 )     {  return "##" + factoryType + "_no_workers##";      }
-  else if(workKoeff < 25)  {  return "##" + factoryType + "_bad_work##";        }
-  else if (workKoeff < 50) {  return "##" + factoryType + "_slow_work##";       }
-  else if (workKoeff < 75) {  return "##" + factoryType + "_patrly_workers##";  }
-  else if (workKoeff < 100 ){ return "##" + factoryType + "_need_some_workers##";  }
-  else                     {  return "##" + factoryType + "_full_work##";       }
+  const char* workKoeffStr[] = { "_no_workers", "_bad_work", "_slow_work", "_patrly_workers",
+                                 "_need_some_workers", "_full_work" };
+
+  return StringHelper::format( 0xff, "##%s%s##", factoryType.c_str(), workKoeffStr[ (int)ceil(workKoeff) ] );
 }
 
 }//end namespace gui

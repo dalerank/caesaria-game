@@ -121,6 +121,12 @@ void Tile::animate(unsigned int time)
   {
     _animation.update( time );
   }
+
+  if( time % 22 == 0)
+  {
+    decreaseWaterService( WTR_FONTAIN );
+    decreaseWaterService( WTR_WELL );
+  }
 }
 
 const Animation&Tile::getAnimation() const

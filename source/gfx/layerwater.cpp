@@ -105,8 +105,9 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     Tilemap& tilemap = _getCity()->getTilemap();
     TilesArray area = tilemap.getArea( tile.getIJ(), areaSize );
 
-    foreach( Tile* rtile, area )
+    foreach( it, area )
     {
+      Tile* rtile = *it;
       int reservoirWater = rtile->getWaterService( WTR_RESERVOIR );
       int fontainWater = rtile->getWaterService( WTR_FONTAIN );
 

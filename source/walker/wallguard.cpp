@@ -200,15 +200,15 @@ EnemySoldierList WallGuard::_findEnemiesInRange( unsigned int range )
     TilePos offset( i, i );
     TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
 
-    foreach( Tile* tile, tiles )
+    foreach( tile, tiles )
     {
-      WalkerList tileWalkers = _getCity()->getWalkers( walker::any, tile->getIJ() );
+      WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->getIJ() );
 
-      foreach( WalkerPtr w, tileWalkers )
+      foreach( w, tileWalkers )
       {
-        if( w.is<EnemySoldier>() )
+        if( w->is<EnemySoldier>() )
         {
-          walkers.push_back( w.as<EnemySoldier>() );
+          walkers.push_back( w->as<EnemySoldier>() );
         }
       }
     }
@@ -228,9 +228,9 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
     TilePos ePos = enemy->getIJ();
     TilesArray tiles = tmap.getRectangle( ePos - offset, ePos + offset );
 
-    foreach( Tile* tile, tiles )
+    foreach( tile, tiles )
     {
-      FortificationPtr f = tile->getOverlay().as<Fortification>();
+      FortificationPtr f = (*tile)->getOverlay().as<Fortification>();
       if( f.isValid() && f->mayPatrol() )
       {
         ret.push_back( f );
@@ -252,13 +252,13 @@ bool WallGuard::_tryAttack()
     double minDistance = 8;
 
     //enemy in attack range
-    foreach( EnemySoldierPtr enemy, enemies )
+    foreach( enemy, enemies )
     {
-      double tmpDistance = enemy->getIJ().distanceFrom( getIJ() );
+      double tmpDistance = (*enemy)->getIJ().distanceFrom( getIJ() );
       if( tmpDistance < minDistance )
       {
         minDistance = tmpDistance;
-        soldierInAttackRange = enemy;
+        soldierInAttackRange = *enemy;
       }
     }
 
@@ -274,17 +274,18 @@ bool WallGuard::_tryAttack()
     {
       Pathway shortestWay;
       minDistance = 999;
-      foreach( EnemySoldierPtr enemy, enemies )
+      foreach( it, enemies )
       {
+        EnemySoldierPtr enemy = *it;
         FortificationList nearestWall = _findNearestWalls( enemy );
 
         PathwayList wayList = _d->base->getWays( getIJ(), nearestWall );
-        foreach( Pathway& way, wayList )
+        foreach( way, wayList )
         {
-          double tmpDistance = way.getDestination().getIJ().distanceFrom( enemy->getIJ() );
+          double tmpDistance = way->getDestination().getIJ().distanceFrom( enemy->getIJ() );
           if( tmpDistance < minDistance )
           {
-            shortestWay = way;
+            shortestWay = *way;
             minDistance = tmpDistance;
           }
         }
@@ -430,13 +431,13 @@ EnemySoldierPtr WallGuard::Impl::findNearbyEnemy(EnemySoldierList enemies, TileP
 {
   EnemySoldierPtr ret;
   double minDistance = 999;
-  foreach( EnemySoldierPtr e, enemies )
+  foreach( it, enemies )
   {
-    double tmpDistance = pos.distanceFrom( e->getIJ() );
+    double tmpDistance = pos.distanceFrom( (*it)->getIJ() );
     if( tmpDistance > 2 && tmpDistance < minDistance )
     {
       minDistance = tmpDistance;
-      ret = e;
+      ret = *it;
     }
   }
 

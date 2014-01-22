@@ -221,8 +221,9 @@ void Tilemap::save( VariantMap& stream ) const
   VariantList idInfo;
 
   TilesArray tiles = const_cast< Tilemap* >( this )->getArea( TilePos( 0, 0 ), Size( _d->size ) );
-  foreach( Tile* tile, tiles )
+  foreach( it, tiles )
   {
+    Tile* tile = *it;
     bitsetInfo.push_back( TileHelper::encode( *tile ) );
     desInfo.push_back( tile->getDesirability() );
     idInfo.push_back( tile->getOriginalImgId() );

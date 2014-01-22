@@ -112,9 +112,9 @@ public:
     ret.buildingCount = 0;
 
     ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
-    foreach( ServiceBuildingPtr building, srvBuildings )
+    foreach( b, srvBuildings )
     {
-      ret.buildingWork += building->getWorkersCount() > 0 ? 1 : 0;
+      ret.buildingWork += (*b)->getWorkersCount() > 0 ? 1 : 0;
       ret.buildingCount++;
     }
 

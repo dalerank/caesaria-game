@@ -141,7 +141,12 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minReligionLevel )
   {
     res = false;
-    ref = "##missing_religion##";
+    switch( _d->minReligionLevel )
+    {
+    case 0: res = "##missing_religion##"; break;
+    case 1: res = "##need_second_religion##"; break;
+    case 2: res = "##need_third_religion##"; break;
+    }
   }
 
   value = computeWaterLevel(house, reason);
@@ -193,10 +198,7 @@ int HouseLevelSpec::findLowLevelHouseNearby(HousePtr house, std::string& oMissin
   HouseList houses = helper.find<House>( constants::building::house, housePos - offset, housePos + offset );
 
   int ret = 0;
-  foreach( HousePtr h, houses )
-  {
-    ret += ( _d->houseLevel - h->getSpec().getLevel() > 1 ) ? 1 : 0;
-  }
+  foreach( it, houses ) { ret += ( _d->houseLevel - (*it)->getSpec().getLevel() > 1 ) ? 1 : 0; }
 
   return ret;
 }
@@ -534,10 +536,8 @@ int HouseLevelSpec::computeDesirabilityLevel(HousePtr house, std::string& oMissi
   TilesArray area = city->getTilemap().getArea( house->getTilePos() - TilePos( 2, 2 ), house->getSize() + Size( 4 ) );
 
   float middleDesirbl = (float)area.front()->getDesirability();
-  foreach( Tile* tile, area )
-  {
-    middleDesirbl = (middleDesirbl + (float)tile->getDesirability() )/2.f;
-  }
+
+  foreach( tile, area ) { middleDesirbl = (middleDesirbl + (float)(*tile)->getDesirability() )/2.f; }
 
   return (int)middleDesirbl;
 }
@@ -646,11 +646,11 @@ int HouseSpecHelper::getHouseLevel(const int houseId){  return _d->level_by_id[h
 
 int HouseSpecHelper::getHouseLevel( const std::string& name )
 {
-  foreach( Impl::HouseLevels::value_type& item, _d->spec_by_level )
+  foreach( item, _d->spec_by_level )
   {
-    if( item.second.getInternalName() == name )
+    if( item->second.getInternalName() == name )
     {
-      return item.second.getLevel();
+      return item->second.getLevel();
     }
   }
 
@@ -673,15 +673,15 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
   }
 
 
-  foreach( VariantMap::value_type& item, houses )
+  foreach( item, houses )
   {
     // this is not a comment (comments start by #)
     // std::cout << "Line #" << linenum << ":" << line << std::endl;
-    VariantMap hSpec = item.second.toMap();
+    VariantMap hSpec = item->second.toMap();
 
     HouseLevelSpec spec;
     spec._d->houseLevel = hSpec[ "level" ].toInt();
-    spec._d->internalName = item.first;
+    spec._d->internalName = item->first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
     spec._d->minDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
@@ -713,9 +713,9 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
 
     //load consumption goods koefficient
     VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
-    foreach( VariantMap::value_type& v, varConsumptions )
+    foreach( v, varConsumptions )
     {
-      spec._d->consumptionMuls[ GoodHelper::getType( v.first ) ] = (float)v.second;
+      spec._d->consumptionMuls[ GoodHelper::getType( v->first ) ] = (float)v->second;
     }
 
     _d->spec_by_level[ spec._d->houseLevel ] = spec;

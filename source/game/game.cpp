@@ -307,7 +307,7 @@ void Game::save(std::string filename) const
 }
 
 void Game::load(std::string filename)
-{
+{  
   Logger::warning( "Load game begin" );
 
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
@@ -325,9 +325,9 @@ void Game::load(std::string filename)
   _d->empire->initPlayerCity( _d->city.as<world::City>() );
 
   TileOverlayList& llo = _d->city->getOverlays();
-  foreach( TileOverlayPtr overlay, llo )
+  foreach( overlay, llo )
   {
-    ConstructionPtr construction = overlay.as<Construction>();
+    ConstructionPtr construction = overlay->as<Construction>();
     if( construction.isValid() )
     {
       construction->computeAccessRoads();

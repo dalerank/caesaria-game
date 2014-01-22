@@ -178,11 +178,11 @@ unsigned int CityMigration::Impl::calcVacantHouse()
   unsigned int vh = 0;
   CityHelper helper( city );
   HouseList houses = helper.find<House>(building::house);
-  foreach( HousePtr house, houses )
+  foreach( house, houses )
   {
-    if( house->getAccessRoads().size() > 0 )
+    if( (*house)->getAccessRoads().size() > 0 )
     {
-      vh += math::clamp( house->getMaxHabitants() - house->getHabitants().count(), 0, 0xff );
+      vh += math::clamp( (*house)->getMaxHabitants() - (*house)->getHabitants().count(), 0, 0xff );
     }
   }
 

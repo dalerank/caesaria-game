@@ -99,14 +99,14 @@ void Tower::_rebuildWays()
     TilePos offset( range, range );
     TilesArray tiles = _getCity()->getTilemap().getRectangle( getTilePos() - offset,
                                                               getTilePos() + offset );
-    foreach( Tile* tile, tiles )
+    foreach( tile, tiles )
     {
       bool patrolingWall;
-      _d->mayPatroling( tile, patrolingWall );
+      _d->mayPatroling( *tile, patrolingWall );
       if( patrolingWall )
       {
         TilePos tpos = enter.front()->getIJ();
-        Pathway pathway = PathwayHelper::create( tpos, tile->getIJ(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+        Pathway pathway = PathwayHelper::create( tpos, (*tile)->getIJ(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
 
         if( pathway.isValid() )
         {
@@ -176,9 +176,9 @@ void Tower::resetPatroling()
 PathwayList Tower::getWays(TilePos start, FortificationList dest)
 {
   PathwayList ret;
-  foreach( FortificationPtr wall, dest )
+  foreach( wall, dest )
   {
-    Pathway tmp = PathwayHelper::create( start, wall->getTilePos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+    Pathway tmp = PathwayHelper::create( start, (*wall)->getTilePos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
     if( tmp.isValid() )
     {
       ret.push_back( tmp );

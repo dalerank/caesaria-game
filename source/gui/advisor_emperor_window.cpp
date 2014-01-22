@@ -31,6 +31,8 @@
 #include "game/gamedate.hpp"
 #include "gameautopause.hpp"
 #include "city/statistic.hpp"
+#include "city/requestdispatcher.hpp"
+#include "city/city.hpp"
 #include "game/player.hpp"
 
 namespace gui
@@ -95,7 +97,6 @@ public:
 
   void sendMoney()
   {
-    city->get money -= wantSend;
     onSendMoneySignal.emit( wantSend );
   }
 
@@ -176,7 +177,8 @@ bool AdvisorEmperorWindow::onEvent(const NEvent& event)
       if( id > 0 && ((id & 0x0f00) == 0x0f00) )
       {
         int multiplier = id & 0xff;
-        _d->wantSend = math::clamp( (multiplier == 0xff ? _d->money : (multiplier * 500)), 0, _d->money);
+        int money = _d->city->getPlayer()->getMoney();
+        _d->wantSend = math::clamp( (multiplier == 0xff ? money : (multiplier * 500)), 0, money);
       }
     }
   }
@@ -235,10 +237,10 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   else
   {
     int index = 0;
-    foreach( CityRequestPtr request, reqs )
+    foreach( request, reqs )
     {
-      RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 10, 10 ), index, request );
-      btn->setEnabled( request->mayExec() );
+      RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 10, 10 ), index, *request );
+      btn->setEnabled( (*request)->mayExec( _d->city ) );
       index++;
     }
   }
