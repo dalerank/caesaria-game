@@ -498,7 +498,7 @@ void PushButton::drawIcon( GfxEngine& painter )
       return;
 
   Point pos = convertLocalToScreen( _d->iconRect ).UpperLeftCorner;
-  painter.drawPicture( iconTexture, pos.getX(), pos.getY() );
+  painter.drawPicture( iconTexture, pos.x(), pos.y() );
 }
 
 void PushButton::setText( const std::string& text )

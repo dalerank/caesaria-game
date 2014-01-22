@@ -295,20 +295,9 @@ void Factory::receiveGood()
   }
 }
 
-bool Factory::isActive() const
-{
-  return _d->isActive;
-}
-
-void Factory::setActive( bool active )
-{
-  _d->isActive = active;
-}
-
-bool Factory::standIdle() const
-{
-  return !mayWork();
-}
+bool Factory::isActive() const {  return _d->isActive; }
+void Factory::setActive( bool active ) {   _d->isActive = active;}
+bool Factory::standIdle() const{  return !mayWork(); }
 
 TimberLogger::TimberLogger() : Factory(Good::none, Good::timber, building::timberLogger, Size(2) )
 {

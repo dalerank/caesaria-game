@@ -62,7 +62,7 @@ void Tower::load(const VariantMap& stream)
   Building::load( stream );
 }
 
-bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
 {
   Tilemap& tmap = city->getTilemap();
 
@@ -82,6 +82,11 @@ bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
                        (frtMap[ north ] || freeMap[ north ]) &&
                        (frtMap[ east ] || freeMap[ east ]) &&
                        (frtMap[ northEast ] || freeMap[ northEast ]) );
+
+  if( !mayConstruct )
+  {
+    const_cast<Tower*>( this )->_setError( "##tower_may_build_on_thick_walls##" );
+  }
 
   return mayConstruct;
 }
@@ -180,8 +185,9 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
   {
     Pathway tmp = PathwayHelper::create( start, (*wall)->getTilePos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
     if( tmp.isValid() )
-    {
-      ret.push_back( tmp );
+    {    
+      ret.push_back( PathwayPtr( new Pathway( tmp ) ) );
+      ret.back()->drop();
     }
   }
 

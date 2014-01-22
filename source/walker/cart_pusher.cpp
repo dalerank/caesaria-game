@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
+#include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
 
 using namespace constants;
@@ -52,9 +53,9 @@ public:
   int maxDistance;
   long reservationID;
 
-  BuildingPtr getWalkerDestination_factory(Propagator& pathPropagator, Pathway &oPathWay);
-  BuildingPtr getWalkerDestination_warehouse(Propagator& pathPropagator, Pathway &oPathWay);
-  BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, Pathway &oPathWay);
+  BuildingPtr getWalkerDestination_factory(Propagator& pathPropagator, Pathway& oPathWay);
+  BuildingPtr getWalkerDestination_warehouse(Propagator& pathPropagator, Pathway& oPathWay);
+  BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, Pathway& oPathWay);
 };
 
 CartPusher::CartPusher(PlayerCityPtr city )
@@ -157,12 +158,22 @@ void CartPusher::_changeDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartPusher::getPictureList(std::vector<Picture> &oPics)
+void CartPusher::getPictureList(PicturesArray& oPics)
 {
    oPics.clear();
+   Point offset;
+
+   switch( getDirection() )
+   {
+   case constants::west: offset = Point( 10, -5 ); break;
+   case constants::east: offset = Point( -10, 5 ); break;
+   case constants::north: offset = Point( -5, -5 ); break;
+   case constants::south: offset = Point( 5, 5 ); break;
+   default: break;
+   }
 
    // depending on the walker direction, the cart is ahead or behind
-   switch (getDirection())
+   switch( getDirection() )
    {
    case constants::west:
    case constants::northWest:
@@ -183,6 +194,8 @@ void CartPusher::getPictureList(std::vector<Picture> &oPics)
    default:
    break;
    }
+
+   foreach( it, oPics ) { it->addOffset( offset ); }
 }
 
 void CartPusher::computeWalkerDestination()
@@ -226,7 +239,7 @@ void CartPusher::computeWalkerDestination()
    {
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
-     setIJ( pathWay.getOrigin().getIJ() );
+     setIJ( pathWay.getStartPos() );
      setPathway( pathWay );
      setSpeed( 1 );
    }
@@ -249,13 +262,13 @@ void CartPusher::computeWalkerDestination()
 template< class T >
 BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
                                  GoodStock& stock, long& reservationID,
-                                 Propagator &pathPropagator, Pathway &oPathWay )
+                                 Propagator &pathPropagator, Pathway& oPathWay )
 {
   BuildingPtr res;
-  Propagator::Routes pathWayList = pathPropagator.getRoutes( buildingType );
+  DirectRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
   //remove factories with improrer storage
-  Propagator::Routes::iterator pathWayIt= pathWayList.begin();
+  DirectRoutes::iterator pathWayIt= pathWayList.begin();
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
@@ -274,13 +287,13 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   //find shortest path
   int maxLength = 999;
   Pathway* shortestPath = 0;
-  for( Propagator::Routes::iterator pathIt = pathWayList.begin(); 
-    pathIt != pathWayList.end(); pathIt++ )
+  for( DirectRoutes::iterator pathIt = pathWayList.begin();
+       pathIt != pathWayList.end(); pathIt++ )
   {
-    if( pathIt->second.getLength() < maxLength )
+    if( pathIt->second->getLength() < maxLength )
     {
-      shortestPath = &pathIt->second;
-      maxLength = pathIt->second.getLength();
+      shortestPath = pathIt->second.object();
+      maxLength = pathIt->second->getLength();
       res = pathIt->first.as<Building>();
     }
   }
@@ -302,7 +315,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   return res;
 }
 
-BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
   Good::Type goodType = stock.type();
@@ -319,7 +332,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropa
   return res;
 }
 
-BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPropagator, Pathway &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
 
@@ -328,7 +341,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_warehouse(Propagator &pathPro
   return res;
 }
 
-BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropagator, Pathway &oPathWay)
+BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropagator, Pathway& oPathWay)
 {
    BuildingPtr res;
 

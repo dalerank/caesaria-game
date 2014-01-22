@@ -24,14 +24,12 @@
 #include "core/variant.hpp"
 #include "pathway.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "route.hpp"
 #include <list>
 
 class Propagator
 {
 public:
-  typedef std::pair< ConstructionPtr, Pathway > DirectRoute;
-  typedef std::map < ConstructionPtr, Pathway > Routes;
-  
   Propagator( PlayerCityPtr city );
   ~Propagator();
 
@@ -50,16 +48,9 @@ public:
 
   /** returns all paths starting at origin */
   PathwayList getWays(const int maxDistance);
-  Routes getRoutes(const TileOverlay::Type buildingType);
+  DirectRoutes getRoutes(const TileOverlay::Type buildingType);
 
-  /** finds the shortest path between origin and destination
-   * returns True if a path exists
-   * the path is returned in oPathWay
-   */
-  //bool getPath( RoadPtr destination, Pathway& oPathWay );
-  bool getPath( ConstructionPtr destination, Pathway& oPathWay );
-
-  DirectRoute getShortestRoute( const Routes& routes );
+  DirectRoute getShortestRoute( const DirectRoutes& routes );
   DirectRoute getShortestRoute( const TileOverlay::Type buildingType );
 
 private:

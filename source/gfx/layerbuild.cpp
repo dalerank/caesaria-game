@@ -214,7 +214,7 @@ void LayerBuild::handleEvent(NEvent& event)
     case mouseMoved:
     {
       _setLastCursorPos( event.mouse.getPosition() );
-      if( !event.mouse.isLeftPressed() || _getStartCursorPos().getX() < 0 )
+      if( !event.mouse.isLeftPressed() || _getStartCursorPos().x() < 0 )
       {
         _setStartCursorPos( _getLastCursorPos() );
       }
@@ -303,7 +303,7 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
       engine.setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
 
-    drawTileR( engine, *postTile, offset, postTile->getIJ().getZ(), true );
+    drawTileR( engine, *postTile, offset, postTile->getIJ().z(), true );
   }
 
   engine.resetTileDrawMask();

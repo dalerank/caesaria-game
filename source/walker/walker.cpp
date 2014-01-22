@@ -50,7 +50,7 @@ public:
   Animation animation;  // current animation
   Point posOnMap; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
   PointF remainMove;  // remaining movement
-  Pathway pathWay;
+  Pathway pathway;
   DirectedAction action;
   std::string name;
   int health;
@@ -134,48 +134,24 @@ void Walker::setIJ( const TilePos& pos )
 
    _d->tileOffset = _d->midTilePos;
 
-   _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() ) * 15 + _d->tileOffset;
+   _d->posOnMap = Point( _d->pos.i(), _d->pos.j() ) * 15 + _d->tileOffset;
 }
 
-int Walker::getI() const
-{
-   return _d->pos.getI();
-}
+int Walker::getI() const{   return _d->pos.i();}
+int Walker::getJ() const{   return _d->pos.j();}
 
-int Walker::getJ() const
-{
-   return _d->pos.getJ();
-}
-
-Point Walker::getPosition() const
-{
-  return Point( 2*(_d->posOnMap.getX() + _d->posOnMap.getY()),
-                _d->posOnMap.getX() - _d->posOnMap.getY() );
-}
-
-Point Walker::getSubPosition() const
-{
-  return _d->tileOffset;
-}
+Point Walker::getMapPos() const{  return Point( 2*(_d->posOnMap.x() + _d->posOnMap.y()), _d->posOnMap.x() - _d->posOnMap.y() );}
+Point Walker::getSubPos() const{  return _d->tileOffset; }
 
 void Walker::setPathway( const Pathway& pathway)
-{
-  _d->pathWay = pathway;
-  _d->pathWay.begin();
-
+{ 
+  _d->pathway = pathway;
+  _d->pathway.begin();
   _centerTile();
 }
 
-void Walker::setSpeed(const float speed)
-{
-   _d->speed = speed;
-}
-
-gfx::Type Walker::_getAnimationType() const
-{
-   return _d->walkerGraphic;
-}
-
+void Walker::setSpeed(const float speed){   _d->speed = speed;}
+gfx::Type Walker::_getAnimationType() const{   return _d->walkerGraphic;}
 
 // ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
 void Walker::inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
@@ -263,53 +239,53 @@ void Walker::_walk()
 
   bool newTile = false;
   bool midTile = false;
-  int amountI = int(_d->remainMove.getX());
-  int amountJ = int(_d->remainMove.getY());
+  int amountI = int(_d->remainMove.x());
+  int amountJ = int(_d->remainMove.y());
   _d->remainMove -= Point( amountI, amountJ ).toPointF();
 
   // std::cout << "walker step, amount :" << amount << std::endl;
-  int tmpX = _d->tileOffset.getX();
-  int tmpY = _d->tileOffset.getY();
-  int tmpJ = _d->pos.getJ();
-  int tmpI = _d->pos.getI();
+  int tmpX = _d->tileOffset.x();
+  int tmpY = _d->tileOffset.y();
+  int tmpJ = _d->pos.j();
+  int tmpI = _d->pos.i();
   while (amountI+amountJ > 0)
   {
     switch (_d->action.direction)
     {
     case constants::north:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
     break;
 
     case constants::northEast:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-       inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
+       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
     break;
 
     case constants::east:
-       inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
     break;
 
     case constants::southEast:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-       inc(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
+       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
     break;
 
     case constants::south:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
+       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
     break;
 
     case constants::southWest:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-       dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
+       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
     break;
 
     case constants::west:
-       dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
     break;
 
     case constants::northWest:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.getY(), newTile, midTile);
-       dec(tmpX, tmpI, amountI, _d->midTilePos.getX(), newTile, midTile);
+       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
+       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
     break;
 
     default:
@@ -346,7 +322,7 @@ void Walker::_walk()
                              ? offtile.getOverlay()->getOffset( offtile, _d->tileOffset )
                              : Point( 0, 0 );
 
-  _d->posOnMap = Point( _d->pos.getI(), _d->pos.getJ() )*15 + _d->tileOffset + overlayOffset;
+  _d->posOnMap = Point( _d->pos.i(), _d->pos.j() )*15 + _d->tileOffset + overlayOffset;
 }
 
 void Walker::_changeTile()
@@ -359,7 +335,7 @@ void Walker::_changeTile()
 void Walker::_centerTile()
 {
    // std::cout << "Walker is on mid tile! coord=" << _i << "," << _j << std::endl;
-   if (_d->pathWay.isDestination())
+   if (_d->pathway.isDestination())
    {
       _reachedPathway();
    }
@@ -395,7 +371,7 @@ void Walker::_brokePathway( TilePos pos )
 void Walker::_computeDirection()
 {
   Direction lastDirection = _d->action.direction;
-  _d->action.direction = _d->pathWay.getNextDirection();
+  _d->action.direction = _d->pathway.getNextDirection();
 
   if( lastDirection != _d->action.direction )
   {
@@ -518,7 +494,7 @@ void Walker::save( VariantMap& stream ) const
 {
   stream[ "name" ] = Variant( _d->name );
   stream[ "type" ] = (int)_d->walkerType;
-  stream[ "pathway" ] =  _d->pathWay.save();
+  stream[ "pathway" ] =  _d->pathway.save();
   stream[ "health" ] = _d->health;
   stream[ "action" ] = (int)_d->action.action;
   stream[ "direction" ] = (int)_d->action.direction;
@@ -542,14 +518,14 @@ void Walker::load( const VariantMap& stream)
   _d->name = stream.get( "name" ).toString();
   _d->posOnMap = stream.get( "mappos" );
   _d->pos = stream.get( "pos" );
-  _d->pathWay.init( tmap, tmap.at( 0, 0 ) );
-  _d->pathWay.load( stream.get( "pathway" ).toMap() );
+  _d->pathway.init( tmap, tmap.at( 0, 0 ) );
+  _d->pathway.load( stream.get( "pathway" ).toMap() );
   _d->thinks = stream.get( "thinks" ).toString();
 
-  if( !_d->pathWay.isValid() )
+  if( !_d->pathway.isValid() )
   {
     Logger::warning( "Wrong way for %s at [%d,%d]", _d->name.c_str(),
-                     _d->pos.getI(), _d->pos.getJ() );
+                     _d->pos.i(), _d->pos.j() );
     //deleteLater();
   }
 
@@ -581,30 +557,14 @@ void Walker::addAbility(AbilityPtr ability)
   _d->abilities.push_back( ability );
 }
 
-TilePos Walker::getIJ() const
-{
-    return _d->pos;
-}
-
-void Walker::deleteLater()
-{
-   _d->isDeleted = true;
-}
-
-void Walker::setUniqueId( const UniqueId uid )
-{
-  _d->uid = uid;
-}
-
-Pathway& Walker::_pathwayRef()
-{
-  return _d->pathWay;
-}
-
-const Pathway& Walker::getPathway() const
-{
-  return _d->pathWay;
-}
+TilePos Walker::getIJ() const{    return _d->pos;}
+void Walker::deleteLater(){   _d->isDeleted = true;}
+void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
+Pathway& Walker::_pathwayRef() {  return _d->pathway; }
+const Pathway& Walker::getPathway() const {  return _d->pathway; }
+Animation& Walker::_animationRef() {  return _d->animation;}
+void Walker::_setAction( Walker::Action action ) {  _d->action.action = action; }
+void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
 
 void Walker::turn(TilePos pos)
 {
@@ -621,26 +581,11 @@ void Walker::turn(TilePos pos)
   }
 }
 
-Animation& Walker::_animationRef()
+void Walker::_updatePathway( const Pathway& pathway)
 {
-  return _d->animation;
-}
-
-void Walker::_updatePathway(const Pathway& pathway)
-{
-  _d->pathWay = pathway;
-  _d->pathWay.begin();
+  _d->pathway = pathway;
+  _d->pathway.begin();
   _computeDirection();
-}
-
-void Walker::_setAction( Walker::Action action )
-{
-  _d->action.action = action;
-}
-
-void Walker::_setDirection(constants::Direction direction )
-{
-  _d->action.direction = direction;
 }
 
 void Walker::_setAnimation( gfx::Type type)

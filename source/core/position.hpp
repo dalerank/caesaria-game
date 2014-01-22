@@ -29,15 +29,15 @@ public:
     Point() : Vector2<int>( 0, 0 ) {}
     Point( const Vector2<int>& pos ) : Vector2<int>( pos ) {}
 
-    Point operator+(const Point& other) const { return Point( x + other.x, y + other.y ); }
-    Point operator-(const Point& other) const { return Point( x - other.x, y - other.y ); }
-    Point operator -() const { return Point( -x, -y); }
-    Point operator*(int mul) const{ return Point( x*mul, y*mul ); }
+    Point operator+(const Point& other) const { return Point( _x + other._x, _y + other._y ); }
+    Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
+    Point operator -() const { return Point( -_x, -_y); }
+    Point operator*(int mul) const{ return Point( _x*mul, _y*mul ); }
 
-    void setX( const int nx ) { x = nx; }
-    void setY( const int ny ) { y = ny; }
+    void setX( const int nx ) { _x = nx; }
+    void setY( const int ny ) { _y = ny; }
 
-    float distanceTo( const Point& other ) const { return sqrtf( pow( float(x - other.x), 2.f) + pow( float(y - other.y), 2.f) ); }
+    float distanceTo( const Point& other ) const { return sqrtf( pow( float(_x - other._x), 2.f) + pow( float(_y - other._y), 2.f) ); }
 
     PointF toPointF() const; 
 };
@@ -49,55 +49,55 @@ public:
     PointF() : Vector2<float>( 0, 0 ) {}
     PointF( const Vector2<float>& pos ) : Vector2<float>( pos ) {}
 
-    PointF operator+(const PointF& other) const { return PointF( x + other.x, y + other.y ); }
+    PointF operator+(const PointF& other) const { return PointF( _x + other._x, _y + other._y ); }
 
-    void setX( const float nx ) { x = nx; }
-    void setY( const float ny ) { y = ny; }
+    void setX( const float nx ) { _x = nx; }
+    void setY( const float ny ) { _y = ny; }
 
-    Point toPoint() const { return Point( (int)x, (int)y ); }
+    Point toPoint() const { return Point( (int)_x, (int)_y ); }
 };
 
 inline PointF Point::toPointF() const
 { 
-    return PointF( (float)x, (float)y ); 
+    return PointF( (float)_x, (float)_y );
 }
 
 class TilePos : Vector2<int>
 {
 public:
   TilePos( const int i, const int j ) : Vector2<int>( i, j ) {}
-  TilePos( const TilePos& other ) : Vector2<int>( other.x, other.y ) {}
+  TilePos( const TilePos& other ) : Vector2<int>( other._x, other._y ) {}
   TilePos() : Vector2<int>( 0, 0 ) {}
 
-  int getI() const { return x; }
-  int getJ() const { return y; }
-  int getZ() const { return y - x; }
+  int i() const { return _x; }
+  int j() const { return _y; }
+  int z() const { return _y - _x; }
 
-  int& ri() { return x; }
-  int& rj() { return y; }
+  int& ri() { return _x; }
+  int& rj() { return _y; }
 
-  void setI( const int i ) { x = i; }
-  void setJ( const int j ) { y = j; }
+  void setI( const int i ) { _x = i; }
+  void setJ( const int j ) { _y = j; }
 
   float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
 
-  TilePos& operator=(const TilePos& other) { set( other.x, other.y ); return *this; }
-  TilePos& operator+=(const TilePos& other) { set( x+other.x, y+other.y ); return *this; }
-  TilePos operator+(const TilePos& other) const { return TilePos( x + other.x, y + other.y ); }
-  TilePos operator-(const TilePos& other) const { return TilePos( x - other.x, y - other.y ); }
-  TilePos operator*(int v) const { return TilePos( x * v, y * v ); }
-  TilePos operator-() const { return TilePos( -x, -y ); }
-  bool operator==(const TilePos& other) const{ return (x == other.x) && ( y == other.y ); }
-  bool operator!=(const TilePos& other) const{ return (x != other.x ) || ( y != other.y ); }
-  bool operator<(const TilePos& other) const{ return (x<other.x) || (x==other.x && y<other.y); }
+  TilePos& operator=(const TilePos& other) { set( other._x, other._y ); return *this; }
+  TilePos& operator+=(const TilePos& other) { set( _x+other._x, _y+other._y ); return *this; }
+  TilePos operator+(const TilePos& other) const { return TilePos( _x + other._x, _y + other._y ); }
+  TilePos operator-(const TilePos& other) const { return TilePos( _x - other._x, _y - other._y ); }
+  TilePos operator*(int v) const { return TilePos( _x * v, _y * v ); }
+  TilePos operator-() const { return TilePos( -_x, -_y ); }
+  bool operator==(const TilePos& other) const{ return (_x == other._x) && ( _y == other._y ); }
+  bool operator!=(const TilePos& other) const{ return (_x != other._x ) || ( _y != other._y ); }
+  bool operator<(const TilePos& other) const{ return (_x<other._x) || (_x==other._x && _y<other._y); }
 
   double getAngleICW() const { return getAngle(); }
 
   TilePos fit( const TilePos& lur, const TilePos& tbr ) const
   {
     TilePos ret = *this;
-    ret.x = math::clamp( ret.x, lur.x, tbr.x );
-    ret.y = math::clamp( ret.y, lur.y, tbr.y );
+    ret._x = math::clamp( ret._x, lur._x, tbr._x );
+    ret._y = math::clamp( ret._y, lur._y, tbr._y );
 
     return ret;
   }
@@ -105,7 +105,7 @@ public:
 
 inline std::ostream & operator << (std::ostream& os, const TilePos& tp)
 {
-  return os << "(" << tp.getI() << "," << tp.getJ() << ")";
+  return os << "(" << tp.i() << "," << tp.j() << ")";
 }
 
 #endif //__CAESARIA_POSITION_H_INCLUDED__

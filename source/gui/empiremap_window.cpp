@@ -337,7 +337,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
     Point location = (*city)->getLocation();
     int index = (*city).is<PlayerCity>() ? 0 : 2; //maybe it our city
 
-    engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.getX(), location.getY() ) );
+    engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.x(), location.y() ) );
   }  
 
   world::TraderouteList routes = _d->empire->getTradeRoutes();
@@ -408,10 +408,10 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
         if( _d->dragging )
         {
           // gui window should not be dragged outside its parent
-          if( _d->offset.getX() > 0
-              || _d->offset.getX() + _d->empireMap.getWidth() < (int)getWidth()
-              || _d->offset.getY() > 0
-              || _d->offset.getY() + _d->empireMap.getHeight() < (int)getHeight()-120 )
+          if( _d->offset.x() > 0
+              || _d->offset.x() + _d->empireMap.getWidth() < (int)getWidth()
+              || _d->offset.y() > 0
+              || _d->offset.y() + _d->empireMap.getHeight() < (int)getHeight()-120 )
           {
             break;
           }
@@ -419,8 +419,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
           _d->offset += (event.mouse.getPosition() - _d->dragStartPosition);
           _d->dragStartPosition = event.mouse.getPosition();
 
-          _d->offset.setX( math::clamp<int>( _d->offset.getX(), -_d->empireMap.getWidth() + getWidth(), 0 ) );
-          _d->offset.setY( math::clamp<int>( _d->offset.getY(), -_d->empireMap.getHeight() + getHeight() - 120, 0 ) );
+          _d->offset.setX( math::clamp<int>( _d->offset.x(), -_d->empireMap.getWidth() + getWidth(), 0 ) );
+          _d->offset.setY( math::clamp<int>( _d->offset.y(), -_d->empireMap.getHeight() + getHeight() - 120, 0 ) );
         }
       }
     break;

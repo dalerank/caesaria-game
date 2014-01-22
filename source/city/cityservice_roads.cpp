@@ -115,7 +115,7 @@ void CityServiceRoads::Impl::updateRoadsAround( UpdateInfo info )
 
   foreach( current, pathWayList )
   {
-    const TilesArray& tiles = current->getAllTiles();
+    const TilesArray& tiles = (*current)->getAllTiles();
     for( TilesArray::const_iterator it=tiles.begin(); it != tiles.end(); it++ )
     {
       RoadPtr road = (*it)->getOverlay().as<Road>();

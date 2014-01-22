@@ -17,7 +17,7 @@
 #define __OPENCAESAR3_SERVICEWALKER_H_INCLUDED__
 
 #include "walker.hpp"
-#include "core/predefinitions.hpp"
+#include "pathway/predefinitions.hpp"
 
 /** This walker gives a service to buildings along the road */
 class ServiceWalker : public Walker
@@ -36,7 +36,7 @@ public:
   virtual float getServiceValue() const;
 
   // evaluates the service demand on the given pathWay
-  float evaluatePath(Pathway &pathWay);
+  float evaluatePath( PathwayPtr pathWay);
   ReachedBuildings getReachedBuildings(const TilePos& pos );
 
   virtual unsigned int getReachDistance() const;
@@ -48,10 +48,11 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
-  virtual void setPathway(const Pathway &pathway);
+  virtual void setPathway(const Pathway& pathway);
   virtual void die();
 
   ~ServiceWalker();
+
 protected:
   virtual void _reachedPathway();
   virtual void _changeTile();  // called when the walker is on a new tile
@@ -61,8 +62,9 @@ protected:
 
   void _init(const Service::Type service);
   void _computeWalkerPath();
-  void _reservePath(const Pathway &pathWay);
-  void _updatePathway(const Pathway &pathway);
+  void _reservePath(const Pathway& pathWay);
+  void _updatePathway(const Pathway& pathway);
+  void _updatePathway(PathwayPtr pathway);
   void _cancelPath();
 
 private:

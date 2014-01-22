@@ -62,22 +62,22 @@ void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap
 {
   unsigned int idOffset = 0;
   TilePos tlOffset;
-  if( tlPos.getI() == 0 || tlPos.getI() == tileMap.getSize() - 1 )
+  if( tlPos.i() == 0 || tlPos.i() == tileMap.getSize() - 1 )
   {
     tlOffset = TilePos( 0, 1 );
-    idOffset = (tlPos.getI() == 0 ? 1 : 3 );
+    idOffset = (tlPos.i() == 0 ? 1 : 3 );
 
   }
-  else if( tlPos.getJ() == 0 || tlPos.getJ() == tileMap.getSize() - 1 )
+  else if( tlPos.j() == 0 || tlPos.j() == tileMap.getSize() - 1 )
   {
     tlOffset = TilePos( 1, 0 );
-    idOffset = (tlPos.getJ() == 0 ? 2 : 0 );
+    idOffset = (tlPos.j() == 0 ? 2 : 0 );
   }
 
   Tile& signTile = tileMap.at( tlPos + tlOffset );
 
-  Logger::warning( "(%d, %d)", tlPos.getI(),    tlPos.getJ()    );
-  Logger::warning( "(%d, %d)", tlOffset.getI(), tlOffset.getJ() );
+  Logger::warning( "(%d, %d)", tlPos.i(),    tlPos.j()    );
+  Logger::warning( "(%d, %d)", tlOffset.i(), tlOffset.j() );
 
   signTile.setPicture( ResourceGroup::land3a, picIdStart + idOffset );
   signTile.setFlag( Tile::tlRock, true );

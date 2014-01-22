@@ -129,7 +129,7 @@ void AmbientSound::update( const unsigned int time )
   for( Impl::Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
     TilePos distance = _d->cameraPos - (*i).tile->getIJ();
-    if( abs( distance.getI() ) > 3 || abs( distance.getJ() ) > 3
+    if( abs( distance.i() ) > 3 || abs( distance.j() ) > 3
         || !(*i).isValid() )
     {
       //ae.stop( (*i).getSound() );

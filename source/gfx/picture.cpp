@@ -73,70 +73,20 @@ void Picture::init(SDL_Surface *surface, const Point& offset )
   _d->size = Size( _d->surface->w, _d->surface->h );
 }
 
-void Picture::setOffset(const int xoffset, const int yoffset)
-{
-  _d->offset = Point( xoffset, yoffset );
-}
+void Picture::setOffset( Point offset ) { _d->offset = offset; }
+void Picture::addOffset( Point offset ) { _d->offset += offset; }
+void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
-void Picture::setOffset( const Point& offset )
-{
-  _d->offset = offset;
-}
-
-void Picture::addOffset(const int dx, const int dy)
-{
-  _d->offset += Point( dx, dy );
-}
-
-SDL_Surface* Picture::getSurface() const
-{
-  return _d->surface;
-}
-
-Point Picture::getOffset() const
-{
-  return _d->offset;
-}
-
-int Picture::getWidth() const
-{
-  return _d->size.getWidth();
-}
-
-int Picture::getHeight() const
-{
-  return _d->size.getHeight();
-}
-
-void Picture::setName(std::string &name)
-{
-  _d->name = name;
-}
-
-std::string Picture::getName() const
-{
-  return _d->name;
-}
-
-Size Picture::getSize() const
-{
-  return _d->size;
-}
-
-bool Picture::isValid() const
-{
-  return _d->surface != 0;
-}
-
-Picture& Picture::load( const std::string& group, const int id )
-{
-  return PictureBank::instance().getPicture( group, id );
-}
-
-Picture& Picture::load( const std::string& filename )
-{
-  return PictureBank::instance().getPicture( filename );
-}
+SDL_Surface* Picture::getSurface() const{  return _d->surface;}
+Point Picture::getOffset() const{  return _d->offset;}
+int Picture::getWidth() const{  return _d->size.getWidth();}
+int Picture::getHeight() const{  return _d->size.getHeight();}
+void Picture::setName(std::string &name){  _d->name = name;}
+std::string Picture::getName() const{  return _d->name;}
+Size Picture::getSize() const{  return _d->size;}
+bool Picture::isValid() const{  return _d->surface != 0;}
+Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
+Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}
 
 Picture* Picture::clone() const
 {
@@ -209,7 +159,7 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstr
 void Picture::draw( const Picture &srcpic, const Point& pos, bool useAlpha )
 {
   draw( srcpic, Rect( Point( 0, 0 ), srcpic.getSize() ), 
-                Rect( pos + Point( srcpic._d->offset.getX(), -srcpic._d->offset.getY() ), srcpic.getSize() ), useAlpha );
+                Rect( pos + Point( srcpic._d->offset.x(), -srcpic._d->offset.y() ), srcpic.getSize() ), useAlpha );
 
 }
 
@@ -238,8 +188,8 @@ void Picture::unlock()
 int Picture::getPixel(Point pos )
 {
   // validate arguments
-  if( _d->surface == NULL || pos.getX() < 0 || pos.getY() < 0 
-      || pos.getX() >= _d->surface->w || pos.getY() >= _d->surface->h)
+  if( _d->surface == NULL || pos.x() < 0 || pos.y() < 0
+      || pos.x() >= _d->surface->w || pos.y() >= _d->surface->h)
     return 0;
 
   Uint32 res = 0;
@@ -248,14 +198,14 @@ int Picture::getPixel(Point pos )
   case 1:
     // 8bpp
     Uint8 *bufp8;
-    bufp8 = (Uint8 *)_d->surface->pixels + pos.getY() *_d->surface->pitch + pos.getX();
+    bufp8 = (Uint8 *)_d->surface->pixels + pos.y() *_d->surface->pitch + pos.x();
     res = *bufp8;
     break;
 
   case 2:
     // 15bpp or 16bpp
     Uint16 *bufp16;
-    bufp16 = (Uint16 *)_d->surface->pixels + pos.getY() *_d->surface->pitch/2 + pos.getX();
+    bufp16 = (Uint16 *)_d->surface->pixels + pos.y() *_d->surface->pitch/2 + pos.x();
     res = *bufp16;
     break;
 
@@ -267,7 +217,7 @@ int Picture::getPixel(Point pos )
   case 4:
     // 32bpp
     Uint32 *bufp32;
-    bufp32 = (Uint32 *)_d->surface->pixels + pos.getY()*_d->surface->pitch/4 + pos.getX();
+    bufp32 = (Uint32 *)_d->surface->pixels + pos.y()*_d->surface->pitch/4 + pos.x();
     res = *bufp32;
     break;
   }
@@ -278,7 +228,7 @@ int Picture::getPixel(Point pos )
 void Picture::setPixel(Point pos, const int color)
 {
   // validate arguments
-  if (_d->surface == NULL || pos.getX() < 0 || pos.getY() < 0 || pos.getX() >= _d->surface->w || pos.getY() >= _d->surface->h)
+  if (_d->surface == NULL || pos.x() < 0 || pos.y() < 0 || pos.x() >= _d->surface->w || pos.y() >= _d->surface->h)
     return;
 
   switch (_d->surface->format->BytesPerPixel)
@@ -286,14 +236,14 @@ void Picture::setPixel(Point pos, const int color)
   case 1:
     // 8bpp
     Uint8 *bufp8;
-    bufp8 = (Uint8 *)_d->surface->pixels + pos.getY() * _d->surface->pitch + pos.getX();
+    bufp8 = (Uint8 *)_d->surface->pixels + pos.y() * _d->surface->pitch + pos.x();
     *bufp8 = color;
     break;
 
   case 2:
     // 15bpp or 16bpp
     Uint16 *bufp16;
-    bufp16 = (Uint16 *)_d->surface->pixels + pos.getY() * _d->surface->pitch / 2 + pos.getX();
+    bufp16 = (Uint16 *)_d->surface->pixels + pos.y() * _d->surface->pitch / 2 + pos.x();
     *bufp16 = color;
     break;
 
@@ -305,7 +255,7 @@ void Picture::setPixel(Point pos, const int color)
   case 4:
     // 32bpp
     Uint32 *bufp32;
-    bufp32 = (Uint32 *)_d->surface->pixels + pos.getY() * _d->surface->pitch/4 + pos.getX();
+    bufp32 = (Uint32 *)_d->surface->pixels + pos.y() * _d->surface->pitch/4 + pos.x();
     *bufp32 = color;
     break;
   }

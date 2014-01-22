@@ -63,14 +63,14 @@ public:
                   : (+100) ) * ( useRoad ? 1 : 0 );
     TilePos pos = tile ? tile->getIJ() : TilePos( 0, 0 ); 
     TilePos otherPos = p->tile ? p->tile->getIJ() : getPos();
-    return p->g + ((pos.getI() == otherPos.getI() || pos.getJ() == otherPos.getJ()) ? 10 : 14) + offset;
+    return p->g + ((pos.i() == otherPos.i() || pos.j() == otherPos.j()) ? 10 : 14) + offset;
   }
 
   int getHScore(AStarPoint* p)
   {
     TilePos pos = tile ? tile->getIJ() : TilePos( 0, 0 ); 
     TilePos otherPos = p ? p->tile->getIJ() : TilePos( 0, 0 );
-    return (abs(otherPos.getI() - pos.getI()) + abs(otherPos.getJ() - pos.getJ())) * 10;
+    return (abs(otherPos.i() - pos.i()) + abs(otherPos.j() - pos.j())) * 10;
   }
 
   void computeScores(AStarPoint* end, bool useRoad )

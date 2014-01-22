@@ -24,44 +24,22 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
 {
   switch( type )
   {
-  case allTerrain:
-  {
-    Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::terrainOnly );
-
-    return ret;
-  }
-  break;
-
-  case roadOnly:
-  {
-    Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::roadOnly );
-
-    return ret;
-  }
+  case allTerrain: return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::terrainOnly );
+  case roadOnly: return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::roadOnly );
 
   case roadFirst:
   {
-    Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::roadOnly );
+    Pathway ret = Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::roadOnly );
     if( !ret.isValid() )
     {
-      Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::roadOnly );
+      ret = Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::roadOnly );
     }
 
     return ret;
   }
   break;
 
-  case water:
-  {
-    Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::waterOnly );
-
-    return ret;
-  }
-  break;
+  case water: return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::waterOnly );
 
   default:
   break;
@@ -70,36 +48,20 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
   return Pathway();
 }
 
-Pathway PathwayHelper::create( TilePos startPos,
-                               ConstructionPtr construction, PathwayHelper::WayType type)
+Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, PathwayHelper::WayType type)
 {
   switch( type )
   {
-  case allTerrain:
-  {
-    Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::terrainOnly );
-
-    return ret;
-  }
-  break;
-
-  case roadOnly:
-  {
-    Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::roadOnly );
-
-    return ret;
-  }
+  case allTerrain: return Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
+  case roadOnly: return Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::roadOnly );
 
   case roadFirst:
   {
-    Pathway ret;
-    Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::roadOnly );
+    Pathway ret = Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::roadOnly );
 
     if( !ret.isValid() )
     {
-      Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), ret, Pathfinder::terrainOnly );
+      ret = Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
     }
 
     return ret;
@@ -117,13 +79,10 @@ Pathway PathwayHelper::create( TilePos startPos,
 Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition)
 {
   Pathfinder::getInstance().setCondition( condition );
-  Pathway ret;
-
-  Pathfinder::getInstance().getPath( startPos, stopPos, ret, Pathfinder::customCondition );
-  return ret;
+  return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::customCondition );
 }
 
-Pathway PathwayHelper::randomWay(PlayerCityPtr city, TilePos startPos, int walkRadius)
+Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius)
 {
   int loopCounter = 0; //loop limiter
   do

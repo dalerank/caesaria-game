@@ -883,7 +883,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
 
                _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.UpperLeftCorner;
                _d->markAreaRect.UpperLeftCorner += Point( mbegin, 0 );
-               _d->markAreaRect.LowerRightCorner += Point( _d->markAreaRect.UpperLeftCorner.getX() + mend - mbegin, 0 );
+               _d->markAreaRect.LowerRightCorner += Point( _d->markAreaRect.UpperLeftCorner.x() + mend - mbegin, 0 );
 
                //draw mark
                _d->markAreaRect = _d->markAreaRect /*+ marginOffset */;
@@ -967,7 +967,7 @@ void EditBox::draw( GfxEngine& painter )
 
   if( _d->textPicture )
   {
-    painter.drawPicture( *_d->textPicture, _d->textOffset.getX() + getScreenLeft(), _d->textOffset.getY() + getScreenTop() );
+    painter.drawPicture( *_d->textPicture, _d->textOffset.x() + getScreenLeft(), _d->textOffset.y() + getScreenTop() );
   }
 
   if( focus )
@@ -1135,18 +1135,18 @@ int EditBox::getCursorPos(int x, int y)
 	for (unsigned int i=0; i < lineCount; ++i)
 	{
 		setTextRect(i);
-    if (i == 0 && y < _d->currentTextRect.UpperLeftCorner.getY() )
+    if (i == 0 && y < _d->currentTextRect.UpperLeftCorner.y() )
     {
-      y = _d->currentTextRect.UpperLeftCorner.getY();
+      y = _d->currentTextRect.UpperLeftCorner.y();
     }
  
-    if (i == lineCount - 1 && y > _d->currentTextRect.LowerRightCorner.getY() )
+    if (i == lineCount - 1 && y > _d->currentTextRect.LowerRightCorner.y() )
     {
-      y = _d->currentTextRect.LowerRightCorner.getY();
+      y = _d->currentTextRect.LowerRightCorner.y();
     }
 
 		// is it inside this region?
-    if (y >= _d->currentTextRect.UpperLeftCorner.getY() && y <= _d->currentTextRect.LowerRightCorner.getY() )
+    if (y >= _d->currentTextRect.UpperLeftCorner.y() && y <= _d->currentTextRect.LowerRightCorner.y() )
 		{
 			// we've found the clicked line
 			txtLine = (_d->wordWrapEnabled || _d->multiLine) ? &_d->brokenText[i] : &myText;
@@ -1155,9 +1155,9 @@ int EditBox::getCursorPos(int x, int y)
 		}
 	}
 
-  if( x < _d->currentTextRect.UpperLeftCorner.getX() )
+  if( x < _d->currentTextRect.UpperLeftCorner.x() )
   {
-    x = _d->currentTextRect.UpperLeftCorner.getX();
+    x = _d->currentTextRect.UpperLeftCorner.x();
   }
 
 	if ( !txtLine )
@@ -1165,7 +1165,7 @@ int EditBox::getCursorPos(int x, int y)
 		return 0;
   }
 
-  int idx = font.getCharacterFromPos( *txtLine, x - _d->currentTextRect.UpperLeftCorner.getX() );
+  int idx = font.getCharacterFromPos( *txtLine, x - _d->currentTextRect.UpperLeftCorner.x() );
 
 	// click was on or left of the line
 	if (idx != -1)
@@ -1311,7 +1311,7 @@ void EditBox::setTextRect(int line, const std::string& tempText )
   _d->currentTextRect = getAbsoluteRect();
 
   _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.getHeight() * line - _d->vertScrollPos );
-  _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.getRight() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.getY() + d.getHeight() );
+  _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.getRight() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.y() + d.getHeight() );
 }
 
 int EditBox::getLineFromPos(int pos)
@@ -1397,7 +1397,7 @@ void EditBox::calculateScrollPos()
 		std::string *txtLine = _d->multiLine ? &_d->brokenText[cursLine] : &myText;
 		int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
 
-    int cStart = _d->currentTextRect.UpperLeftCorner.getX() + _d->horizScrollPos +
+    int cStart = _d->currentTextRect.UpperLeftCorner.x() + _d->horizScrollPos +
 		                            font.getSize( txtLine->substr(0, cPos) ).getWidth();
 
 		int cEnd = cStart + font.getSize( "_ " ).getWidth();
@@ -1413,13 +1413,13 @@ void EditBox::calculateScrollPos()
 	}
 
 	// vertical scroll position
-  if( getScreenBottom() < _d->currentTextRect.LowerRightCorner.getY() + _d->vertScrollPos)
+  if( getScreenBottom() < _d->currentTextRect.LowerRightCorner.y() + _d->vertScrollPos)
   {
-    _d->vertScrollPos = _d->currentTextRect.LowerRightCorner.getY() - getScreenBottom() + _d->vertScrollPos;
+    _d->vertScrollPos = _d->currentTextRect.LowerRightCorner.y() - getScreenBottom() + _d->vertScrollPos;
   }
-  else if ( getScreenTop() > _d->currentTextRect.UpperLeftCorner.getY() + _d->vertScrollPos)
+  else if ( getScreenTop() > _d->currentTextRect.UpperLeftCorner.y() + _d->vertScrollPos)
   {
-    _d->vertScrollPos = _d->currentTextRect.UpperLeftCorner.getY() - getScreenTop() + _d->vertScrollPos;
+    _d->vertScrollPos = _d->currentTextRect.UpperLeftCorner.y() - getScreenTop() + _d->vertScrollPos;
   }
 	else
 		_d->vertScrollPos = 0;

@@ -40,7 +40,7 @@ public:
   GoodStock stock;
   Mode mode;
 
-  Pathway findFishingPlace(PlayerCityPtr city, const TilePos& pos);
+  Pathway findFishingPlace(PlayerCityPtr city, TilePos pos);
 };
 
 void FishingBoat::save( VariantMap& stream ) const
@@ -119,11 +119,10 @@ void FishingBoat::timeStep(const unsigned long time)
     {
       if( _d->base != 0 )
       {
-        Pathway way;
-        bool pathfound = Pathfinder::getInstance().getPath( getIJ(), _d->base->getLandingTile().getIJ(),
-                                                            way, Pathfinder::waterOnly );
+        Pathway way = Pathfinder::getInstance().getPath( getIJ(), _d->base->getLandingTile().getIJ(),
+                                                         Pathfinder::waterOnly );
 
-        if( pathfound )
+        if( way.isValid() )
         {
           _d->mode = Impl::back2base;
           setPathway( way );
@@ -227,7 +226,7 @@ void FishingBoat::_changeTile()
   _animationRef().setDelay( 3 );
 }
 
-Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& pos )
+Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 {
   CityHelper helper( city );
   FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, CityHelper::invalidPos );
@@ -247,12 +246,10 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, const TilePos& p
 
   if( nearest != 0 )
   {
-    Pathway way;
-    bool pathFound = Pathfinder::getInstance().getPath( pos, nearest->getIJ(),
-                                                        way, Pathfinder::waterOnly );
+    Pathway way = Pathfinder::getInstance().getPath( pos, nearest->getIJ(),
+                                                     Pathfinder::waterOnly );
 
-    if( pathFound )
-      return way;
+    return way;
   }
 
   return Pathway();

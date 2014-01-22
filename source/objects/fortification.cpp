@@ -186,9 +186,9 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
       int j = (*it)->getJ();
 
       if( (pos + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
-      else if(i == pos.getI() && j == (pos.getJ() - 1)) is_busy[south] = true;
-      else if(j == pos.getJ() && i == (pos.getI() + 1)) is_busy[east] = true;
-      else if(j == pos.getJ() && i == (pos.getI() - 1)) is_busy[west] = true;
+      else if(i == pos.i() && j == (pos.j() - 1)) is_busy[south] = true;
+      else if(j == pos.j() && i == (pos.i() + 1)) is_busy[east] = true;
+      else if(j == pos.j() && i == (pos.i() - 1)) is_busy[west] = true;
       else if((pos + TilePos(1, 1)) == rpos ) is_busy[northEast] = true;
       else if((pos + TilePos(1, -1)) == rpos ) is_busy[southEast] = true;
       else if((pos + TilePos(-1, -1)) == rpos ) is_busy[southWest] = true;
@@ -429,10 +429,10 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
 
 
   _d->index = index;
-  th._d->mayPatrol = (_d->offset.getY() > 0);
+  th._d->mayPatrol = (_d->offset.y() > 0);
 
   th._d->tmpPicture = Picture::load( ResourceGroup::wall, index );
-  th._d->tmpPicture.addOffset( _d->offset.getX(), _d->offset.getY() );
+  th._d->tmpPicture.addOffset( _d->offset );
   return _d->tmpPicture;
 }
 

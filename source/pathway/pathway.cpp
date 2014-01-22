@@ -34,9 +34,9 @@ public:
    }
 };
 
-bool operator<(const Pathway &v1, const Pathway &v2)
+bool operator<(const Pathway& v1, const Pathway& v2)
 {
-  if (v1.getLength()!=v2.getLength())
+  if( v1.getLength()!=v2.getLength() )
   {
     return v1.getLength() < v2.getLength();
   }
@@ -93,20 +93,15 @@ int Pathway::getLength() const
   return _d->directionList.size();
 }
 
-const Tile& Pathway::getOrigin() const
-{
-  return *_d->origin;
-}
+const Tile& Pathway::getOrigin() const {  return *_d->origin; }
+TilePos Pathway::getStartPos() const { return _d->origin ? _d->origin->getIJ() : TilePos( -1, -1); }
+bool Pathway::isReverse() const {  return _d->isReverse; }
+const TilesArray& Pathway::getAllTiles() const {  return _d->tileList; }
 
 const Tile& Pathway::getDestination() const
 {
   const Tile& res = _d->tilemap->at( _d->destination );
   return res;
-}
-
-bool Pathway::isReverse() const
-{
-  return _d->isReverse;
 }
 
 void Pathway::begin()
@@ -214,7 +209,7 @@ void Pathway::setNextDirection(Direction direction)
 
   if( !_d->tilemap->isInside( TilePos( _d->destination ) ) )
   {
-    Logger::warning( "Destination[%d, %d] out of map", _d->destination.getI(), _d->destination.getJ() );
+    Logger::warning( "Destination[%d, %d] out of map", _d->destination.i(), _d->destination.j() );
   }
   else
   {
@@ -225,8 +220,8 @@ void Pathway::setNextDirection(Direction direction)
 
 void Pathway::setNextTile( const Tile& tile )
 {
-  int dI = tile.getI() - _d->destination.getI();
-  int dJ = tile.getJ() - _d->destination.getJ();
+  int dI = tile.getI() - _d->destination.i();
+  int dJ = tile.getJ() - _d->destination.j();
 
   Direction direction;
 
@@ -265,11 +260,6 @@ bool Pathway::contains(Tile &tile)
   return res;
 }
 
-const TilesArray& Pathway::getAllTiles() const
-{
-  return _d->tileList;
-}
-
 void Pathway::prettyPrint() const
 {
   if (_d->origin == NULL)
@@ -279,7 +269,7 @@ void Pathway::prettyPrint() const
   else
   {
     Logger::warning( "pathWay from [%d,%d] to [%d,%d]",
-                     _d->origin->getI(), _d->origin->getJ(), _d->destination.getI(), _d->destination.getJ() );
+                     _d->origin->getI(), _d->origin->getJ(), _d->destination.i(), _d->destination.j() );
 
     std::string strDir = "";
     for( Directions::const_iterator itDir = _d->directionList.begin();

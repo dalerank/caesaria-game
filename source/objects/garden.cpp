@@ -57,7 +57,7 @@ void Garden::build(PlayerCityPtr city, const TilePos& pos )
   int theGrid[2][2] = {{113, 110}, {112, 111}};
 
   Construction::build( city, pos );
-  setPicture( ResourceGroup::entertaiment, theGrid[pos.getI() % 2][pos.getJ() % 2] );
+  setPicture( ResourceGroup::entertaiment, theGrid[pos.i() % 2][pos.j() % 2] );
 
   if( getSize().getArea() == 1 )
   {

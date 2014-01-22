@@ -36,19 +36,17 @@ public:
   {
     _pos = pos;
     _index = index;
-
+    _parent = 0;
     _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI()) - 10);
+    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()) - 10 ) );
   }
 
   ~LowBridgeSubTile()
   {
   }
 
-  bool isWalkable() const
-  {
-    return true;
-  }
+  std::string getError() const { return _parent ? _parent->getError() : "";  }
+  bool isWalkable() const { return true;  }
 
   void build( PlayerCityPtr city, const TilePos& pos )
   {
@@ -56,20 +54,19 @@ public:
     _fgPicturesRef().clear();
     _pos = pos;
     _picture = Picture::load( ResourceGroup::transport, _index );
-    _picture.addOffset( 10, -10 );
+    _picture.addOffset( Point( 10, -10 ) );
     _fgPicturesRef().push_back( _picture );
   }
 
   void initTerrain( Tile& terrain )
   {
+    bool isWater = terrain.getFlag( Tile::tlWater );
     terrain.setFlag( Tile::clearAll, true );
+    terrain.setFlag( Tile::tlWater, isWater );
     terrain.setFlag( Tile::tlRoad, true );
   }
 
-  bool canDestroy() const
-  {
-    return _parent->canDestroy();
-  }
+  bool canDestroy() const  {    return _parent->canDestroy();  }
 
   void destroy()
   {
@@ -91,12 +88,12 @@ public:
   {
     switch( _index )
     {
-    case liftingSE: return Point( -subpos.getX()*0.9, subpos.getX()*0.7 );
+    case liftingSE: return Point( -subpos.x()*0.9, subpos.x()*0.7 );
     case spanSE:    return Point( -15, 12 );
-    case descentSE: return Point( -10 + subpos.getX(), 12 - subpos.getX() * 0.7 );
-    case descentSW: return Point( -subpos.getY()*0.5, subpos.getY()*0.9 );
+    case descentSE: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
+    case descentSW: return Point( -subpos.y()*0.5, subpos.y()*0.9 );
     case spanSW:    return Point( -8, 25 );
-    case liftingSW: return Point( subpos.getY()*0.6, 20-subpos.getY()*0.4 );
+    case liftingSW: return Point( subpos.y()*0.6, 20-subpos.y()*0.4 );
 
     default: return Point( 0, 0 );
     }

@@ -25,22 +25,23 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "city/helper.hpp"
+#include "core/logger.hpp"
 #include "objects/building.hpp"
-
-#include <iterator>
 
 class Propagator::Impl
 {
 public:
-  std::set<Pathway> activeBranches;
-  std::map<Tile*, Pathway> completedBranches;
+  std::set<PathwayPtr> activeBranches;
+
+  typedef std::map<Tile*, PathwayPtr> RouteMap;
+
+  RouteMap completedBranches;
   PlayerCityPtr city;
   Tile* origin;
   Tilemap* tilemap;
   bool allLands;  // true if can walk in all lands, false if limited to roads
   bool allDirections;  // true if can walk in all directions, false if limited to North/South/East/West
 };
-
 
 Propagator::Propagator(PlayerCityPtr city ) : _d( new Impl )
 {
@@ -92,12 +93,13 @@ void Propagator::init(const TilesArray& origin)
   {
     // std::cout << "Tile access " << tile.getI() << "," << tile.getJ() << std::endl;
     Tile* tile = *it;
-    Pathway pathWay;
-    pathWay.init(*_d->tilemap, *tile);
+    PathwayPtr pathWay( new Pathway() );
+    pathWay->drop();
+    pathWay->init(*_d->tilemap, *tile);
     // init active branches
-    _d->activeBranches.insert(pathWay);
+    _d->activeBranches.insert( pathWay );
     // init trivial completed branches
-    _d->completedBranches.insert( std::pair<Tile*, Pathway>( tile, pathWay ) );
+    _d->completedBranches.insert( std::pair<Tile*, PathwayPtr>( tile, pathWay ) );
   }
 }
 
@@ -105,7 +107,7 @@ void Propagator::propagate(const int maxDistance)
 {
    int nbLoops = 0;  // to detect infinite loops
 
-   std::set<Pathway>::iterator firstBranch;
+   std::set<PathwayPtr>::iterator firstBranch;
 
    // propagate on all tiles
    while (!_d->activeBranches.empty())
@@ -116,12 +118,12 @@ void Propagator::propagate(const int maxDistance)
       // get the shortest active path
       firstBranch = _d->activeBranches.begin();
 
-      const Pathway &pathWay = *firstBranch;
-      const Tile& tile = pathWay.getDestination();
+      PathwayPtr pathWay = *firstBranch;
+      const Tile& tile = pathWay->getDestination();
       //std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
       int tileLength = 1;
-      if (pathWay.getLength() + tileLength > maxDistance)
+      if (pathWay->getLength() + tileLength > maxDistance)
       {
          // we processed all paths within range. stop the propagation
          //std::cout << "MaxDistance reached. stop propagation" << std::endl;
@@ -142,10 +144,12 @@ void Propagator::propagate(const int maxDistance)
             if (_d->completedBranches.find( tile2 )==_d->completedBranches.end())
             {
                // the tile has not been processed yet
-               Pathway pathWay2(pathWay);
-               pathWay2.setNextTile( *tile2 );
+               PathwayPtr pathWay2( new Pathway( *pathWay.object() ) );
+               pathWay2->drop();
+               pathWay2->setNextTile( *tile2 );
+
                _d->activeBranches.insert(pathWay2);
-               _d->completedBranches.insert(std::pair<Tile*, Pathway>( tile2, pathWay2));
+               _d->completedBranches.insert(std::pair<Tile*, PathwayPtr>( tile2, pathWay2));
 
                // pathWay2.prettyPrint();
                // std::cout << "distance at:" << tile2.getI() << "," << tile2.getJ() << " is:" << pathWay2.getLength() << std::endl;
@@ -185,55 +189,9 @@ void Propagator::propagate(const int maxDistance)
    }
 }*/
 
-
-bool Propagator::getPath( ConstructionPtr destination, Pathway &oPathWay)
+DirectRoutes Propagator::getRoutes(const TileOverlay::Type buildingType)
 {
-   const TilesArray& destTiles = destination->getAccessRoads();
-   std::map<Tile*, Pathway>::iterator mapIt;
-   std::set<Pathway> destPath;  // paths to the destination building, ordered by distance
-   int distance = 30;
-   while (true)
-   {
-      propagate(distance);
-
-      // searches reached destTiles
-      for( TilesArray::const_iterator itTile= destTiles.begin(); itTile != destTiles.end(); ++itTile)
-      {
-        // for each destination tile
-        Tile &tile= **itTile;
-
-        // searches path to that given tile
-        mapIt = _d->completedBranches.find(&tile);
-
-        if (mapIt != _d->completedBranches.end())
-        {
-           // we found a path!
-           Pathway &path= (*mapIt).second;
-           destPath.insert(path);
-        }
-      }
-
-      if (! destPath.empty())
-      {
-        // there is a path to that building
-        oPathWay = *destPath.begin();
-        return true;
-      }
-
-      // not found: try again
-      if (_d->activeBranches.empty())
-      {
-        // no need to continue, no more active branches!
-        return false;
-      }
-
-      distance = distance * 2;
-   }
-}
-
-Propagator::Routes Propagator::getRoutes(const TileOverlay::Type buildingType)
-{
-  Routes ret;
+  DirectRoutes ret;
   // init the building list
   CityHelper helper( _d->city );
   ConstructionList constructionList = helper.find<Construction>( buildingType );
@@ -242,19 +200,18 @@ Propagator::Routes Propagator::getRoutes(const TileOverlay::Type buildingType)
   foreach( it, constructionList )
   {
     ConstructionPtr destination = *it;
-    std::set<Pathway> destPath;  // paths to the current building, ordered by distance
+    std::set<PathwayPtr> destPath;  // paths to the current building, ordered by distance
 
     TilesArray destTiles = destination->getAccessRoads();
     foreach( tile, destTiles )
     {
       // searches path to that given tile
-      std::map<Tile*, Pathway>::iterator pathWayIt= _d->completedBranches.find( *tile );
+      Impl::RouteMap::iterator pathWayIt= _d->completedBranches.find( *tile );
 
       if( pathWayIt != _d->completedBranches.end() )
       {
         // we found a path!!!
-        Pathway &path= (*pathWayIt).second;
-        destPath.insert(path);
+        destPath.insert( pathWayIt->second );
       }
     }
 
@@ -273,7 +230,7 @@ PathwayList Propagator::getWays(const int maxDistance)
   PathwayList oPathWayList;
   int nbLoops = 0;  // to detect infinite loops
 
-  std::set<Pathway>::iterator firstBranch;
+  std::set<PathwayPtr>::iterator firstBranch;
 
   std::set< Tile* > markTiles;
 
@@ -285,14 +242,18 @@ PathwayList Propagator::getWays(const int maxDistance)
     // get an active branch
     firstBranch = _d->activeBranches.begin();
 
-    Pathway pathWay = *firstBranch;
+    PathwayPtr pathWay( new Pathway( *const_cast<PathwayPtr&>( *firstBranch ).object() ) );
 
-    while (pathWay.getLength() < maxDistance)
+    while( pathWay->getLength() < maxDistance)
     {
        // propagate branch until maxDistance is reached
-       if ((nbLoops++)>100000) THROW("Infinite loop detected during propagation");
+       if ((nbLoops++)>100000)
+       {
+         Logger::warning("Infinite loop detected during propagation");
+         return PathwayList();
+       }
 
-       const Tile& tile = pathWay.getDestination();
+       const Tile& tile = pathWay->getDestination();
        // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
        // propagate to neighbour tiles
@@ -306,7 +267,7 @@ PathwayList Propagator::getWays(const int maxDistance)
          Tile* tile2 = *itr;
          // for every neighbour tile
          bool notResolved = (markTiles.find( tile2 ) == markTiles.end());
-         if( tile2->isWalkable(_d->allLands) && !pathWay.contains( *tile2 ) && notResolved)
+         if( tile2->isWalkable(_d->allLands) && !pathWay->contains( *tile2 ) && notResolved)
          {
            nextTiles.push_back( tile2 );
            markTiles.insert( tile2 );
@@ -329,26 +290,27 @@ PathwayList Propagator::getWays(const int maxDistance)
           {
              // update the current branch
              // std::cout << "updated!" << std::endl;
-             pathWay.setNextTile(tile2);
+             pathWay->setNextTile(tile2);
           }
           else
           {
              // copy the current branch
              // std::cout << "cloned!" << std::endl;
-             Pathway pathWay2(pathWay);
-             pathWay2.setNextTile(tile2);
-             _d->activeBranches.insert(pathWay2);
+             PathwayPtr pathWay2( new Pathway( *pathWay.object() ) );
+             pathWay2->drop();
+             pathWay2->setNextTile(tile2);
+             _d->activeBranches.insert( pathWay2 );
           }
        }
 
     }
 
     // the current branch has been fully maximized
-    oPathWayList.push_back(pathWay);
+    oPathWayList.push_back( pathWay );
     // pathWay.prettyPrint();
 
     // this branch is no longer active
-    _d->activeBranches.erase(firstBranch);
+    _d->activeBranches.erase( firstBranch );
   }
 
   return oPathWayList;
@@ -359,31 +321,30 @@ Propagator::~Propagator()
 
 }
 
-Propagator::DirectRoute Propagator::getShortestRoute( const Routes& routes )
+DirectRoute Propagator::getShortestRoute(const DirectRoutes& routes )
 {
   DirectRoute ret;
   int minLength = 999;
 
-  for( Propagator::Routes::const_iterator pathWayIt= routes.begin(); 
+  for( DirectRoutes::const_iterator pathWayIt= routes.begin();
        pathWayIt != routes.end(); ++pathWayIt)
   {
     // for every warehouse within range
-    const Pathway& pathWay= pathWayIt->second;
+    PathwayPtr pathWay = pathWayIt->second;
 
-    if( pathWay.getLength() < minLength )
+    if( pathWay->getLength() < minLength )
     {
-      minLength = pathWay.getLength();
-      ret.first = pathWayIt->first;
-      ret.second = pathWay;
+      minLength = pathWay->getLength();
+      ret = DirectRoute( pathWayIt->first, *pathWay.object() );
     }
   }
 
   return ret;
 }
 
-Propagator::DirectRoute Propagator::getShortestRoute(const TileOverlay::Type buildingType )
+DirectRoute Propagator::getShortestRoute(const TileOverlay::Type buildingType )
 {
-  Routes routes = getRoutes( buildingType );
+  DirectRoutes routes = getRoutes( buildingType );
 
   return getShortestRoute( routes );
 }

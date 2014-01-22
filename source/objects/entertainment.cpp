@@ -222,8 +222,8 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::
   setPicture( "circus", 5 );
   Picture logo = Picture::load("circus", 3);
   Picture logo1 = Picture::load("circus", 1);
-  logo.setOffset(150,181);
-  logo1.setOffset(300,310);
+  logo.setOffset( Point( 150,181 ) );
+  logo1.setOffset( Point( 300,310 ) );
   _fgPicturesRef().resize(5);
   _fgPicturesRef().at(0) = logo;
   _fgPicturesRef().at(1) = logo1;

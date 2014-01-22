@@ -45,7 +45,7 @@ const Picture& Emigrant::getCartPicture()
   return Immigrant::getCartPicture();
 }
 
-void Emigrant::getPictureList(std::vector<Picture> &oPics)
+void Emigrant::getPictureList(PicturesArray &oPics)
 {
   oPics.clear();
 

@@ -25,7 +25,7 @@
 #include "gfx/picture.hpp"
 #include "game/enums.hpp"
 #include "core/serializer.hpp"
-#include "core/referencecounted.hpp"
+#include "pathway/predefinitions.hpp"
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
@@ -45,16 +45,16 @@ public:
   virtual void timeStep(const unsigned long time);  // performs one simulation step
   virtual constants::walker::Type getType() const;
   // position and movement
-  int getI() const;
+
   int getJ() const;
 
   TilePos getIJ() const;
   void setIJ( const TilePos& pos );
 
-  virtual Point getPosition() const;
-  Point getSubPosition() const;
+  virtual Point getMapPos() const;
+  Point getSubPos() const;
 
-  virtual void setPathway( const Pathway& pathWay);
+  virtual void setPathway(const Pathway& pathway);
   const Pathway& getPathway() const;
 
   virtual void turn( TilePos pos );
@@ -101,10 +101,13 @@ protected:
   virtual void _changeDirection(); // called when the walker changes direction
   virtual void _brokePathway(TilePos pos);
 
+  int getI() const;
+
 protected:
   Pathway& _pathwayRef();
+  virtual void _updatePathway(const Pathway& pathway );
+
   Animation& _animationRef();
-  virtual void _updatePathway( const Pathway& pathway );
   void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
   void _setAnimation( constants::gfx::Type type );

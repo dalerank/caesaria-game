@@ -164,8 +164,9 @@ public:
     return obj != 0;
   }
 
-  //Conversion operator
-  template<class U> SmartPtr<U> as() const
+  //Conversion operator 
+  template<class U>
+  SmartPtr<U> as() const
   {
     SmartPtr<U> newptr( safety_cast<U*>(obj) );
     return newptr;

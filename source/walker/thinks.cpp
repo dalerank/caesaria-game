@@ -42,7 +42,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
 
   if( params.godsMood < 3 )
   {
-    troubles.push_back( "##" + walkerTypename + "_gods_angry" );
+    troubles.push_back( "##" + walkerTypename + "_gods_angry##" );
   }
 
   if( params.colloseumCoverage < 3 )

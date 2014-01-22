@@ -113,7 +113,7 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value > 0 )
   {
     res = false;
-    ref = "##low_level_house_nearby##";
+    ref = "##nearby_building##" + reason + "##negative_effect_info##";
   }
 
   value = computeEntertainmentLevel( house );
@@ -198,7 +198,15 @@ int HouseLevelSpec::findLowLevelHouseNearby(HousePtr house, std::string& oMissin
   HouseList houses = helper.find<House>( constants::building::house, housePos - offset, housePos + offset );
 
   int ret = 0;
-  foreach( it, houses ) { ret += ( _d->houseLevel - (*it)->getSpec().getLevel() > 1 ) ? 1 : 0; }
+  foreach( it, houses )
+  {
+    if( _d->houseLevel - (*it)->getSpec().getLevel() > 2 )
+    {
+      ret = 1;
+      oMissingRequirement = MetaDataHolder::getTypename( (*it)->getType() );
+      break;
+    }
+  }
 
   return ret;
 }
@@ -214,11 +222,11 @@ int HouseLevelSpec::computeWaterLevel(HousePtr house, std::string &oMissingRequi
   else if (house->hasServiceAccess(Service::well))
   {
     res = 1;
-    oMissingRequirement = "##need fountain##";
+    oMissingRequirement = "##need_fountain##";
   }
   else
   {
-    oMissingRequirement = "##need water##";
+    oMissingRequirement = "##need_water##";
   }
   return res;
 }

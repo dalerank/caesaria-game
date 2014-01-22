@@ -116,13 +116,13 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
     SizeF d = r2.getSize().toSizeF();
 
     if( _alignLeft == alignScale)
-      _d->scaleRect.UpperLeftCorner.setX( (float)r.UpperLeftCorner.getX() / d.getWidth() );
+      _d->scaleRect.UpperLeftCorner.setX( (float)r.UpperLeftCorner.x() / d.getWidth() );
     if (_alignRight == alignScale)
-      _d->scaleRect.LowerRightCorner.setX( (float)r.LowerRightCorner.getX() / d.getWidth() );
+      _d->scaleRect.LowerRightCorner.setX( (float)r.LowerRightCorner.x() / d.getWidth() );
     if (_alignTop == alignScale)
-      _d->scaleRect.UpperLeftCorner.setY( (float)r.UpperLeftCorner.getY() / d.getHeight() );
+      _d->scaleRect.UpperLeftCorner.setY( (float)r.UpperLeftCorner.y() / d.getHeight() );
     if (_alignBottom == alignScale)
-      _d->scaleRect.LowerRightCorner.setY( (float)r.LowerRightCorner.getY() / d.getHeight() );
+      _d->scaleRect.LowerRightCorner.setY( (float)r.LowerRightCorner.y() / d.getHeight() );
   }
 
 	_d->desiredRect = r;
@@ -150,10 +150,10 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   {
   case ProportionalGeometry:
     _d->desiredRect = Rect(
-          floor( d.getWidth() * r.UpperLeftCorner.getX() ),
-          floor( d.getHeight() * r.UpperLeftCorner.getY() ),
-          floor( d.getWidth() * r.LowerRightCorner.getX() ),
-          floor( d.getHeight() * r.LowerRightCorner.getY() ));
+          floor( d.getWidth() * r.UpperLeftCorner.x() ),
+          floor( d.getHeight() * r.UpperLeftCorner.y() ),
+          floor( d.getWidth() * r.LowerRightCorner.x() ),
+          floor( d.getHeight() * r.LowerRightCorner.y() ));
 
     _d->scaleRect = r;
   break;
@@ -214,13 +214,13 @@ void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Align
 
     RectF dRect = _d->desiredRect.toRectF();
     if( _alignLeft == alignScale)
-      _d->scaleRect.UpperLeftCorner.setX( dRect.UpperLeftCorner.getX() / d.getWidth() );
+      _d->scaleRect.UpperLeftCorner.setX( dRect.UpperLeftCorner.x() / d.getWidth() );
     if(_alignRight == alignScale)
-      _d->scaleRect.LowerRightCorner.setX( dRect.LowerRightCorner.getX() / d.getWidth() );
+      _d->scaleRect.LowerRightCorner.setX( dRect.LowerRightCorner.x() / d.getWidth() );
     if( _alignTop  == alignScale)
-      _d->scaleRect.UpperLeftCorner.setY( dRect.UpperLeftCorner.getY() / d.getHeight() );
+      _d->scaleRect.UpperLeftCorner.setY( dRect.UpperLeftCorner.y() / d.getHeight() );
     if (_alignBottom == alignScale)
-      _d->scaleRect.LowerRightCorner.setY( dRect.LowerRightCorner.getY() / d.getHeight() );
+      _d->scaleRect.LowerRightCorner.setY( dRect.LowerRightCorner.y() / d.getHeight() );
   }
 }
 
@@ -668,7 +668,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     case alignUpperLeft: break;
     case alignLowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
     case alignCenter: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
-    case alignScale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.getX() * fw ); break;
+    case alignScale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.x() * fw ); break;
     }
 
     switch( _alignRight)
@@ -677,7 +677,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     case alignUpperLeft:   break;
     case alignLowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
     case alignCenter: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
-    case alignScale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.getX() * fw ) ); break;
+    case alignScale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.x() * fw ) ); break;
     }
 
     switch( _alignTop)
@@ -686,7 +686,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     case alignUpperLeft: break;
     case alignLowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
     case alignCenter: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
-    case alignScale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.getY() * fh) ); break;
+    case alignScale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.y() * fh) ); break;
     }
 
     switch( _alignBottom)
@@ -695,7 +695,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     case alignUpperLeft:  break;
     case alignLowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
     case alignCenter:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
-    case alignScale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.getY() * fh) );  break;
+    case alignScale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.y() * fh) );  break;
     }
 
     _d->relativeRect = _d->desiredRect;
@@ -705,13 +705,13 @@ void Widget::recalculateAbsolutePosition( bool recursive )
 
     // make sure the desired rectangle is allowed
     if (w < (int)_d->minSize.getWidth() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.getX() + _d->minSize.getWidth() );
+        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->minSize.getWidth() );
     if (h < (int)_d->minSize.getHeight() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.getY() + _d->minSize.getHeight() );
+        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->minSize.getHeight() );
     if (_d->maxSize.getWidth() > 0 && w > (int)_d->maxSize.getWidth() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.getX() + _d->maxSize.getWidth() );
+        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->maxSize.getWidth() );
     if (_d->maxSize.getHeight() > 0 && h > (int)_d->maxSize.getHeight() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.getY() + _d->maxSize.getHeight() );
+        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->maxSize.getHeight() );
 
     _d->relativeRect.repair();
 
@@ -826,7 +826,7 @@ unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }
 Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _d->absoluteRect.UpperLeftCorner;}
 Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _d->absoluteRect.UpperLeftCorner;}
 void Widget::move( const Point& relativeMovement ){  setGeometry( _d->desiredRect + relativeMovement );}
-int Widget::getBottom() const{  return _d->relativeRect.LowerRightCorner.getY(); }
+int Widget::getBottom() const{  return _d->relativeRect.LowerRightCorner.y(); }
 void Widget::setTabGroup( bool isGroup ) { _d->isTabGroup = isGroup; }
 bool Widget::isVisible() const{  return _d->isVisible;}
 bool Widget::isSubElement() const{  return _d->isSubElement;}
@@ -834,9 +834,9 @@ void Widget::setSubElement( bool subElement ){  _d->isSubElement = subElement;}
 void Widget::setTabStop( bool enable ){  _d->isTabStop = enable;}
 void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, getTop() ) ); }
 void Widget::setTop( int newTop ) { setPosition( Point( getLeft(), newTop ) );  }
-int Widget::getTop() const { return getRelativeRect().UpperLeftCorner.getY(); }
-int Widget::getLeft() const { return getRelativeRect().UpperLeftCorner.getX(); }
-int Widget::getRight() const { return getRelativeRect().LowerRightCorner.getX(); }
+int Widget::getTop() const { return getRelativeRect().UpperLeftCorner.y(); }
+int Widget::getLeft() const { return getRelativeRect().UpperLeftCorner.x(); }
+int Widget::getRight() const { return getRelativeRect().LowerRightCorner.x(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
 Alignment Widget::getHorizontalTextAlign() const{  return _d->textHorzAlign; }

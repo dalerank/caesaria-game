@@ -215,7 +215,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( construction::plaza,        CAESARIA_STR_EXT(Plaza),     new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::unknown,          CAESARIA_STR_EXT(unknown),     new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::pottery,          CAESARIA_STR_EXT(Pottery),   new BaseInfoboxCreator<InfoboxFactory>() );
-  addInfobox( building::shipyard,         CAESARIA_STR_EXT(Shipyard),   new BaseInfoboxCreator<InfoboxFactory>() );
+  addInfobox( building::shipyard,         CAESARIA_STR_EXT(Shipyard),   new BaseInfoboxCreator<InfoboxShipyard>() );
   addInfobox( building::weaponsWorkshop,  CAESARIA_STR_EXT(WeaponsWorkshop), new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::furnitureWorkshop,CAESARIA_STR_EXT(FurnitureWorkshop), new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::clayPit,          CAESARIA_STR_EXT(ClayPit),  new BaseInfoboxCreator<InfoBoxRawMaterial>() );
@@ -240,7 +240,7 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::governorPalace,   CAESARIA_STR_EXT(governorPalace), new ServiceBaseInfoboxCreator( "", "##governor_palace_text##") );
   addInfobox( building::highBridge,       CAESARIA_STR_EXT(HighBridge),   new InfoBoxBasicCreator( "", "##high_bridge_text##") );
   addInfobox( building::lowBridge,        CAESARIA_STR_EXT(LowBridge),    new InfoBoxBasicCreator( "", "##low_bridge_text##") );
-  addInfobox( building::wharf,            CAESARIA_STR_EXT(Wharf),        new BaseInfoboxCreator<InfoboxFactory>() );
+  addInfobox( building::wharf,            CAESARIA_STR_EXT(Wharf),        new BaseInfoboxCreator<InfoboxWharf>() );
   addInfobox( building::burningRuins,     CAESARIA_STR_EXT(BurningRuins), new BaseInfoboxCreator<InfoboxRuins>() );
   addInfobox( building::burnedRuins,      CAESARIA_STR_EXT(BurnedRuins), new BaseInfoboxCreator<InfoboxRuins>() );
   addInfobox( building::plagueRuins,      CAESARIA_STR_EXT(PlagueRuins), new BaseInfoboxCreator<InfoboxRuins>() );
@@ -279,7 +279,7 @@ void InfoBoxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
   if( infoBox && infoBox->isAutoPosition() )
   {
     Size rSize = gui->getRootWidget()->getSize();
-    int y = ( gui->getCursorPos().getY() < rSize.getHeight() / 2 )
+    int y = ( gui->getCursorPos().y() < rSize.getHeight() / 2 )
                 ? rSize.getHeight() - infoBox->getHeight() - 5
                 : 30;
     Point pos( ( rSize.getWidth() - infoBox->getWidth() ) / 2, y );

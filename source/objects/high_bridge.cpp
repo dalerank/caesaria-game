@@ -40,7 +40,7 @@ public:
     _index = index;
 
     _picture = Picture::load( ResourceGroup::transport, index % 100 );
-    _picture.addOffset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI()));
+    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()) ) );
     checkSecondPart();
   }
 
@@ -85,7 +85,12 @@ public:
 
   void initTerrain( Tile& terrain )
   {
+    bool isWater = terrain.getFlag( Tile::tlWater );
+    bool isDeepWater = terrain.getFlag( Tile::tlDeepWater );
+
     terrain.setFlag( Tile::clearAll, true );
+    terrain.setFlag( Tile::tlWater, isWater );
+    terrain.setFlag( Tile::tlDeepWater, isDeepWater );
     terrain.setFlag( Tile::tlRoad, true );
   }
 
@@ -109,14 +114,14 @@ public:
   {
     switch( _index )
     {
-    case liftingSE: return Point( 0, subpos.getX() );
+    case liftingSE: return Point( 0, subpos.x() );
     case spanSE:    return Point( 0, 10 );
     case footingSE: return Point( 0, 10 );
-    case descentSE: return Point( 0, 10 - subpos.getX() );
-    case descentSW: return Point( -subpos.getY(), 0 );
+    case descentSE: return Point( 0, 10 - subpos.x() );
+    case descentSW: return Point( -subpos.y(), 0 );
     case spanSW:    return Point( -10, 0 );
     case footingSW: return Point( -10, 0 );
-    case liftingSW: return Point( -(10 - subpos.getY()), 0 );
+    case liftingSW: return Point( -(10 - subpos.y()), 0 );
 
     default: return Point( 0, 0 );
     }
@@ -310,7 +315,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
       {
         stop = (*it)->getIJ();
-        direction = abs( stop.getI() - start.getI() ) > 3 ? northWest : noneDirection;
+        direction = abs( stop.i() - start.i() ) > 3 ? northWest : noneDirection;
         break;
       }
     }
@@ -324,7 +329,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
         stop = (*it)->getIJ();
-        direction = abs( stop.getI() - start.getI() ) > 3 ? southEast : noneDirection;
+        direction = abs( stop.i() - start.i() ) > 3 ? southEast : noneDirection;
         break;
       }
     }
@@ -338,7 +343,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
         stop = (*it)->getIJ();
-        direction = abs( stop.getJ() - start.getJ() ) > 3 ? northEast : noneDirection;
+        direction = abs( stop.j() - start.j() ) > 3 ? northEast : noneDirection;
         break;
       }
     }
@@ -352,7 +357,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
         stop = (*it)->getIJ();
-        direction = abs( stop.getJ() - start.getJ() ) > 3 ? southWest : noneDirection;
+        direction = abs( stop.j() - start.j() ) > 3 ? southWest : noneDirection;
         break;
       }
     }

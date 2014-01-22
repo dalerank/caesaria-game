@@ -72,28 +72,25 @@ MarketLady::~MarketLady()
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
                                MarketPtr market, SimpleGoodStore& basket, const Good::Type what,
-                               Pathway &oPathWay, long& reservId )
+                               Pathway& oPathWay, long& reservId )
 {
   SmartPtr< T > res;
 
-  Propagator::Routes pathWayList = pathPropagator.getRoutes( type );
+  DirectRoutes pathWayList = pathPropagator.getRoutes( type );
 
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  for( Propagator::Routes::iterator pathWayIt= pathWayList.begin(); 
-    pathWayIt != pathWayList.end(); ++pathWayIt)
+  for( DirectRoutes::iterator routeIt= pathWayList.begin();
+    routeIt != pathWayList.end(); ++routeIt)
   {
     // for every warehouse within range
-    ConstructionPtr construction = pathWayIt->first;
-    Pathway& pathWay= pathWayIt->second;
-
-    SmartPtr< T > destBuilding = construction.as< T >();
+    SmartPtr< T > destBuilding = routeIt->first.as< T >();
     int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
     if( qty > max_qty )
     {
       res = destBuilding;
-      oPathWay = pathWay;
+      oPathWay = *routeIt->second.object();
       max_qty = qty;
     }
   }
@@ -141,7 +138,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
         {
            // try get that good from a granary
            _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, building::granary, _d->market,
-                                                              _d->basket, _d->priorityGood, pathWay, _d->reservationID );
+                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
         }
         else
         {
@@ -150,17 +147,17 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
         }
 
-        if( _d->destBuildingPos.getI() >= 0 )
+        if( _d->destBuildingPos.i() >= 0 )
         {
            // we found a destination!
-           setIJ( pathWay.getOrigin().getIJ() );
-           setPathway(pathWay);
+           setIJ( pathWay.getStartPos() );
+           setPathway( pathWay );
            break;
         }
      }
   }
 
-  if( _d->destBuildingPos.getI() < 0)
+  if( _d->destBuildingPos.i() < 0)
   {
      // we have nothing to buy, or cannot find what we need to buy
      deleteLater();

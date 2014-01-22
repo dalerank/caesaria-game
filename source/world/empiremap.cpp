@@ -46,7 +46,7 @@ public:
   {
     if( isInside( p ) )
     {
-      return EmTileGrid::at(p.getJ()).at(p.getI());
+      return EmTileGrid::at(p.j()).at(p.i());
     }
 
     //Logger::warning( "Need inside point current=[%d, %d]", i, j );
@@ -55,7 +55,7 @@ public:
 
   bool isInside( const TilePos& pos )
   {
-    return( pos.getI() >= 0 && pos.getJ()>=0 && pos.getI() < size.getWidth() && pos.getJ() < size.getHeight());
+    return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size.getWidth() && pos.j() < size.getHeight());
   }
 
   void resize( Size s )
@@ -76,8 +76,8 @@ public:
     }
   }
 
-  TilePos pnt2tp( Point pos ) { return TilePos( pos.getX() / tilesize.getWidth(), pos.getY() / tilesize.getHeight() ); }
-  Point tp2pnt( TilePos tp ) { return Point( tp.getI() * tilesize.getWidth(), tp.getJ() * tilesize.getHeight() ); }
+  TilePos pnt2tp( Point pos ) { return TilePos( pos.x() / tilesize.getWidth(), pos.y() / tilesize.getHeight() ); }
+  Point tp2pnt( TilePos tp ) { return Point( tp.i() * tilesize.getWidth(), tp.j() * tilesize.getHeight() ); }
 
   Size size;
   Size tilesize;

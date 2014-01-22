@@ -113,14 +113,14 @@ Service::Type ServiceWalker::getService() const
 
 void ServiceWalker::_computeWalkerPath()
 {  
-  Propagator pathPropagator( _getCity() );
-  pathPropagator.init( _d->base.as<Construction>() );
-  pathPropagator.setAllDirections( false );
+  Propagator roadPropagator( _getCity() );
+  roadPropagator.init( _d->base.as<Construction>() );
+  roadPropagator.setAllDirections( false );
 
-  PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);
+  PathwayList pathWayList = roadPropagator.getWays(_d->maxDistance);
 
   float maxPathValue = 0.0;
-  Pathway bestPath;
+  PathwayPtr bestPath;
   foreach( current, pathWayList )
   {
     float pathValue = evaluatePath( *current );
@@ -138,9 +138,8 @@ void ServiceWalker::_computeWalkerPath()
     return;
   }
 
-
-  setIJ( bestPath.getOrigin().getIJ() );
-  setPathway( bestPath );
+  setIJ( bestPath->getOrigin().getIJ() );
+  setPathway( *bestPath.object() );
 }
 
 void ServiceWalker::_cancelPath()
@@ -170,7 +169,7 @@ void ServiceWalker::setReachDistance(unsigned int value)
 
 void ServiceWalker::return2Base()
 {
-  if( !getPathway().isReverse() )
+  if( !_pathwayRef().isReverse() )
   {
     _pathwayRef().toggleDirection();
   }
@@ -196,11 +195,11 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   return res;
 }
 
-float ServiceWalker::evaluatePath( Pathway& pathWay )
+float ServiceWalker::evaluatePath( PathwayPtr pathWay )
 {
   // evaluate all buildings along the path
   ServiceWalker::ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  const TilesArray& pathTileList = pathWay.getAllTiles();
+  const TilesArray& pathTileList = pathWay->getAllTiles();
 
   int distance = 0;
   float res = 0.0;
@@ -226,7 +225,7 @@ float ServiceWalker::evaluatePath( Pathway& pathWay )
   return res;
 }
 
-void ServiceWalker::_reservePath(const Pathway& pathWay)
+void ServiceWalker::_reservePath( const Pathway& pathWay)
 {
   // reserve all buildings along the path
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
@@ -247,7 +246,12 @@ void ServiceWalker::_reservePath(const Pathway& pathWay)
   }
 }
 
-void ServiceWalker::_updatePathway(const Pathway& pathway)
+void ServiceWalker::_updatePathway( PathwayPtr pathway)
+{
+  _updatePathway( pathway.isValid() ? *pathway.object() : Pathway() );
+}
+
+void ServiceWalker::_updatePathway( const Pathway& pathway)
 {
   _cancelPath();
 
@@ -278,7 +282,7 @@ void ServiceWalker::_changeTile()
 void ServiceWalker::_reachedPathway()
 {
   Walker::_reachedPathway();
-  if (_pathwayRef().isReverse())
+  if( _pathwayRef().isReverse())
   {
     // walker is back in the market
     deleteLater();
@@ -316,7 +320,7 @@ void ServiceWalker::load( const VariantMap& stream )
   _d->base = overlay.as<Building>();
   if( _d->base.isNull() )
   {
-    Logger::warning( "Not found base building[%d,%d] for service walker", basePos.getI(), basePos.getJ() );
+    Logger::warning( "Not found base building[%d,%d] for service walker", basePos.i(), basePos.j() );
   }
   else
   {
@@ -328,7 +332,7 @@ void ServiceWalker::load( const VariantMap& stream )
   }
 }
 
-void ServiceWalker::setPathway(const Pathway& pathway)
+void ServiceWalker::setPathway( const Pathway& pathway)
 {
   _cancelPath();
 

@@ -169,9 +169,9 @@ void House::_checkEvolve()
   {
     std::string why;
     _d->spec.checkHouse( this, &why );
-    if( why.empty() )
+    if( !why.empty() )
     {
-      why = why.substr( why.size() - 2 );
+      why = why.substr( 0, why.size() - 2 );
       why += "_degrade##";
     }
     else

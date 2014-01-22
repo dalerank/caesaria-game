@@ -47,7 +47,7 @@ Point Elevation::getOffset( Tile& tile, const Point& subpos) const
 {
   TilePos delta = getTilePos() - tile.getIJ();
 
-  return Point( -(5 - subpos.getY()), 0 );
+  return Point( -(5 - subpos.y()), 0 );
 }
 
 bool Elevation::isDestructible() const

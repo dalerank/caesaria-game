@@ -278,7 +278,7 @@ void RomeSoldier::_brokePathway(TilePos pos)
 {
   Soldier::_brokePathway( pos );
 
-  if( _d->patrolPosition.getI() >= 0 )
+  if( _d->patrolPosition.i() >= 0 )
   {
     Pathway way = PathwayHelper::create( getIJ(), _d->patrolPosition,
                                          PathwayHelper::allTerrain );

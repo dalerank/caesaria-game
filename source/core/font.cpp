@@ -227,7 +227,7 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
 
 void Font::draw( Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha )
 {
-  draw( dstpic, text, pos.getX(), pos.getY(), useAlpha );
+  draw( dstpic, text, pos.x(), pos.y(), useAlpha );
 }
 
 Font::~Font()

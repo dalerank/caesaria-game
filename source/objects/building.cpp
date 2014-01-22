@@ -69,7 +69,7 @@ void Building::storeGoods(GoodStock &stock, const int amount)
 {
   std::string bldType = getDebugName();
   Logger::warning( "This building should not store any goods %s at [%d,%d]",
-                   bldType.c_str(), getTilePos().getI(), getTilePos().getJ() );
+                   bldType.c_str(), getTilePos().i(), getTilePos().j() );
   try
   {
    _CAESARIA_DEBUG_BREAK_IF("This building should not store any goods");

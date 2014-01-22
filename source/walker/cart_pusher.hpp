@@ -35,7 +35,7 @@ public:
   GoodStock& getStock();
 
   Picture& getCartPicture();
-  virtual void getPictureList(std::vector<Picture> &oPics);
+  virtual void getPictureList(PicturesArray& oPics);
 
   void send2city( BuildingPtr building, GoodStock& carry );
 

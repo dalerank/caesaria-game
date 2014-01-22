@@ -184,7 +184,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     else if( data.type() == Variant::NTilePos)
     {
       TilePos pos = data.toTilePos();
-      str = StringHelper::format( 0xff, "[ %d, %d ]", pos.getI(), pos.getJ() );
+      str = StringHelper::format( 0xff, "[ %d, %d ]", pos.i(), pos.j() );
     }
     else if( data.type() == Variant::NSize)
     {
@@ -194,14 +194,14 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     else if( data.type() == Variant::NPoint)
     {
       Point pos = data.toPoint();
-      str = StringHelper::format( 0xff, "[ %d, %d ]", pos.getX(), pos.getY() );
+      str = StringHelper::format( 0xff, "[ %d, %d ]", pos.x(), pos.y() );
     }
     else if( data.type() == Variant::NPointF)
     {
       PointF pos = data.toPointF();
       // TODO: cheap hack - almost locale independent double formatting
-      std::string posX = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.getX()), ",", ".");
-      std::string posY = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.getY()), ",", ".");
+      std::string posX = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.x()), ",", ".");
+      std::string posY = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.y()), ",", ".");
       str = StringHelper::format( 0xff, "[ \"%s\", \"%s\" ]", posX.c_str(), posY.c_str() );
     }
     else if (data.type() == Variant::Bool) // boolean value?

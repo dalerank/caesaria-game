@@ -29,6 +29,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -233,7 +234,7 @@ void WaterSource::_setResolved(bool value){  _d->alsoResolved = value;}
 bool WaterSource::_isResolved() const { return _d->alsoResolved; }
 int WaterSource::_getWater() const{  return _d->water;}
 bool WaterSource::_isRoad() const { return _d->isRoad; }
-int WaterSource::getId() const{  return getTilePos().getJ() * 10000 + getTilePos().getI();}
+int WaterSource::getId() const{  return getTilePos().j() * 10000 + getTilePos().i();}
 std::string WaterSource::getError() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 
@@ -245,6 +246,7 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
 
   //setPicture( ResourceGroup::utilitya, 10 );
 
+  _waterIncreaseInterval = GameDate::getTickInMonth() / 3;
   _initAnimation();
   _fgPicturesRef().resize(1);
 
@@ -267,7 +269,7 @@ void Fountain::deliverService()
 void Fountain::timeStep(const unsigned long time)
 {
   //filled area, that fontain present and work
-  if( time % 22 == 1 )
+  if( time % _waterIncreaseInterval == 1 )
   {
     if( getTile().getWaterService( WTR_RESERVOIR ) > 0 /*&& getWorkersCount() > 0*/ )
     {
@@ -315,15 +317,8 @@ void Fountain::build(PlayerCityPtr city, const TilePos& pos )
   setPicture( ResourceGroup::waterbuildings, fontainEmpty );
 }
 
-bool Fountain::isNeedRoadAccess() const
-{
-  return false;
-}
-
-bool Fountain::isActive() const
-{
-  return ServiceBuilding::isActive() && _haveReservoirWater;
-}
+bool Fountain::isNeedRoadAccess() const {  return false; }
+bool Fountain::isActive() const {  return ServiceBuilding::isActive() && _haveReservoirWater; }
 
 bool Fountain::haveReservoirAccess() const
 {

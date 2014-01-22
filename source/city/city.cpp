@@ -90,13 +90,13 @@ public:
 
   unsigned int hash( const TilePos& pos )
   {
-    return (pos.getI() << 16) + pos.getJ();
+    return (pos.i() << 16) + pos.j();
   }
 
   void append( WalkerPtr& a )
   {
     const TilePos& pos = a->getIJ();
-    if( pos.getI() >= 0 && pos.getJ() >= 0 )
+    if( pos.i() >= 0 && pos.j() >= 0 )
     {
       _grid[ hash( pos ) ].push_back( a );
     }
@@ -105,7 +105,7 @@ public:
   void remove( WalkerPtr& a )
   {
     TilePos pos = a->getIJ();
-    if( pos.getI() >= 0 && pos.getJ() >= 0 )
+    if( pos.i() >= 0 && pos.j() >= 0 )
     {
       WalkerList& d = _grid[ hash( pos ) ];
       for( WalkerList::iterator it=d.begin(); it != d.end(); it++ )
@@ -121,7 +121,7 @@ public:
 
   const WalkerList& at( TilePos pos )
   {
-    if( pos.getI() >= 0 && pos.getJ() >= 0 )
+    if( pos.i() >= 0 && pos.j() >= 0 )
     {
       return _grid[ hash( pos ) ];
     }
@@ -511,7 +511,7 @@ void PlayerCity::load( const VariantMap& stream )
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
     TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( overlayType );
-    if( overlay.isValid() && pos.getI() >= 0 )
+    if( overlay.isValid() && pos.i() >= 0 )
     {
       overlay->build( this, pos );
       overlay->load( overlayParams );

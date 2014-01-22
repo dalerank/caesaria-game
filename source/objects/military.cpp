@@ -133,7 +133,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   _d( new Impl )
 {
   Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
-  logo.setOffset(80,10);
+  logo.setOffset( Point( 80, 10 ) );
 
   Picture area = Picture::load(ResourceGroup::security, 13 );
   area.setOffset(Tile( TilePos(3,0)).getXY() + Point(0,-30));
@@ -221,7 +221,7 @@ TilePos Fort::getFreeSlot() const
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
-    Logger::warning( "Not patrol point assign in fort [%d,%d]", getTilePos().getI(), getTilePos().getJ() );
+    Logger::warning( "Not patrol point assign in fort [%d,%d]", getTilePos().i(), getTilePos().j() );
     patrolPos = _d->area->getTilePos() + TilePos( 0, 3 );
   }
   else
@@ -342,7 +342,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
   Animation anim;
   anim.load( prefix, startPos, stepNumber );
   anim.setOffset( anim.getOffset() + Point( 0, 52 )  + extOffset );
-  pp->_d->standart.addOffset( extOffset.getX(), extOffset.getY() );
+  pp->_d->standart.addOffset( extOffset.x(), extOffset.y() );
 
   pp->_d->animation = anim;
   pp->setIJ( position );

@@ -508,7 +508,7 @@ void GuiEnv::beforeDraw()
   const Size screenSize( _d->engine->getScreenSize() );
   const Point rigthDown = getRootWidget()->getAbsoluteRect().LowerRightCorner;
   
-  if( rigthDown.getX() != screenSize.getWidth() || rigthDown.getY() != screenSize.getHeight() )
+  if( rigthDown.x() != screenSize.getWidth() || rigthDown.y() != screenSize.getHeight() )
   {
     // resize gui environment
     setGeometry( Rect( Point( 0, 0 ), screenSize ) );

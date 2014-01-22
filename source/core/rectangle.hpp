@@ -106,7 +106,7 @@ public:
   \param p Point to add to the box. */
   void addInternalPoint(const Vector2<T>& p)
   {
-    addInternalPoint(p.getX(), p.getY());
+    addInternalPoint(p.x(), p.y());
   }
 
   //! Adds a point to the bounding rectangle
@@ -116,14 +116,14 @@ public:
   \param y Y-Coordinate of the point to add to this box. */
   void addInternalPoint(T x, T y)
   {
-    if (x>LowerRightCorner.getX() )
+    if (x>LowerRightCorner.x() )
       LowerRightCorner.setX( x );
-    if (y>LowerRightCorner.getY() )
+    if (y>LowerRightCorner.y() )
       LowerRightCorner.setY( y );
 
-    if (x<UpperLeftCorner.getX() )
+    if (x<UpperLeftCorner.x() )
       UpperLeftCorner.setX( x );
-    if (y<UpperLeftCorner.getY())
+    if (y<UpperLeftCorner.y())
       UpperLeftCorner.setY( y );
   }
 
@@ -132,10 +132,10 @@ public:
 	\return True if the position is within the rectangle, false if not. */
 	bool isPointInside(const Vector2<T>& pos) const
 	{
-		return (UpperLeftCorner.getX() <= pos.getX() &&
-			UpperLeftCorner.getY() <= pos.getY() &&
-			LowerRightCorner.getX() >= pos.getX() &&
-			LowerRightCorner.getY() >= pos.getY() );
+		return (UpperLeftCorner.x() <= pos.x() &&
+			UpperLeftCorner.y() <= pos.y() &&
+			LowerRightCorner.x() >= pos.x() &&
+			LowerRightCorner.y() >= pos.y() );
 	}
 
 	//! Check if the rectangle collides with another rectangle.
@@ -143,34 +143,34 @@ public:
 	\return True if the rectangles collide. */
 	bool isRectCollided(const RectT<T>& other) const
 	{
-		return (LowerRightCorner.getY() > other.UpperLeftCorner.getY() &&
-			UpperLeftCorner.getY() < other.LowerRightCorner.getY() &&
-			LowerRightCorner.getX() > other.UpperLeftCorner.getX() &&
-			UpperLeftCorner.getX() < other.LowerRightCorner.getX());
+		return (LowerRightCorner.y() > other.UpperLeftCorner.y() &&
+			UpperLeftCorner.y() < other.LowerRightCorner.y() &&
+			LowerRightCorner.x() > other.UpperLeftCorner.x() &&
+			UpperLeftCorner.x() < other.LowerRightCorner.x());
 	}
 
 	//! Clips this rectangle with another one.
 	/** \param other RectT to clip with */
 	void clipAgainst(const RectT<T>& other)
 	{
-		if (other.LowerRightCorner.getX() < LowerRightCorner.getX())
-			LowerRightCorner.setX( other.LowerRightCorner.getX() );
+		if (other.LowerRightCorner.x() < LowerRightCorner.x())
+			LowerRightCorner.setX( other.LowerRightCorner.x() );
 
-        if (other.LowerRightCorner.getY() < LowerRightCorner.getY())
-			LowerRightCorner.setY( other.LowerRightCorner.getY() );
+        if (other.LowerRightCorner.y() < LowerRightCorner.y())
+			LowerRightCorner.setY( other.LowerRightCorner.y() );
 
-		if (other.UpperLeftCorner.getX() > UpperLeftCorner.getX())
-			UpperLeftCorner.setX( other.UpperLeftCorner.getX() );
+		if (other.UpperLeftCorner.x() > UpperLeftCorner.x())
+			UpperLeftCorner.setX( other.UpperLeftCorner.x() );
 
-        if (other.UpperLeftCorner.getY() > UpperLeftCorner.getY())
-			UpperLeftCorner.setY( other.UpperLeftCorner.getY() );
+        if (other.UpperLeftCorner.y() > UpperLeftCorner.y())
+			UpperLeftCorner.setY( other.UpperLeftCorner.y() );
 
 		// correct possible invalid rect resulting from clipping
-		if (UpperLeftCorner.getY() > LowerRightCorner.getY())
-			UpperLeftCorner.setY( LowerRightCorner.getY() );
+		if (UpperLeftCorner.y() > LowerRightCorner.y())
+			UpperLeftCorner.setY( LowerRightCorner.y() );
 		
-        if (UpperLeftCorner.getX() > LowerRightCorner.getX())
-			UpperLeftCorner.setX( LowerRightCorner.getX() );
+        if (UpperLeftCorner.x() > LowerRightCorner.x())
+			UpperLeftCorner.setX( LowerRightCorner.x() );
 	}
 
 	//! Moves this rectangle to fit inside another one.
@@ -180,28 +180,28 @@ public:
 		if (other.getWidth() < getWidth() || other.getHeight() < getHeight())
 			return false;
 
-		int diff = other.LowerRightCorner.getX() - LowerRightCorner.getX();
+		int diff = other.LowerRightCorner.x() - LowerRightCorner.x();
 		if (diff < 0)
 		{
 			LowerRightCorner += Vector2<T>( diff, 0 );
 			UpperLeftCorner += Vector2<T>( diff, 0 );
 		}
 
-		diff = other.LowerRightCorner.getY() - LowerRightCorner.getY();
+		diff = other.LowerRightCorner.y() - LowerRightCorner.y();
 		if (diff < 0)
 		{
 			LowerRightCorner += Vector2<T>( 0, diff );
 			UpperLeftCorner  += Vector2<T>( 0, diff );
 		}
 
-		diff = UpperLeftCorner.getX() - other.UpperLeftCorner.getX();
+		diff = UpperLeftCorner.x() - other.UpperLeftCorner.x();
 		if (diff < 0)
 		{
 			UpperLeftCorner -= Vector2<T>( diff, 0 );
 			LowerRightCorner -= Vector2<T>( diff, 0 );
 		}
 
-		diff = UpperLeftCorner.getY() - other.UpperLeftCorner.getY();
+		diff = UpperLeftCorner.y() - other.UpperLeftCorner.y();
 		if (diff < 0)
 		{
 			UpperLeftCorner -= Vector2<T>( diff, 0 );
@@ -214,29 +214,29 @@ public:
 	//! Get width of rectangle.
 	T getWidth() const
 	{
-		return LowerRightCorner.getX() - UpperLeftCorner.getX();
+		return LowerRightCorner.x() - UpperLeftCorner.x();
 	}
 
 	//! Get height of rectangle.
 	T getHeight() const
 	{
-		return LowerRightCorner.getY() - UpperLeftCorner.getY();
+		return LowerRightCorner.y() - UpperLeftCorner.y();
 	}
 
 	//! If the lower right corner of the rect is smaller then the upper left, the points are swapped.
 	void repair()
 	{
-		if (LowerRightCorner.getX() < UpperLeftCorner.getX())
+		if (LowerRightCorner.x() < UpperLeftCorner.x())
         {
-            T tmp = LowerRightCorner.getX();
-			LowerRightCorner.setX( UpperLeftCorner.getX() );
+            T tmp = LowerRightCorner.x();
+			LowerRightCorner.setX( UpperLeftCorner.x() );
             UpperLeftCorner.setX( tmp );
         }
 
-		if (LowerRightCorner.getY() < UpperLeftCorner.getY())
+		if (LowerRightCorner.y() < UpperLeftCorner.y())
         {
-            T tmp = LowerRightCorner.getY();
-			LowerRightCorner.setY( UpperLeftCorner.getY() );
+            T tmp = LowerRightCorner.y();
+			LowerRightCorner.setY( UpperLeftCorner.y() );
             UpperLeftCorner.setY( tmp );
         }
 	}
@@ -246,25 +246,25 @@ public:
 	right than the LowerRightCorner. */
 	bool isValid() const
 	{
-		return ((LowerRightCorner.getX() >= UpperLeftCorner.getX()) &&
-			(LowerRightCorner.getY() >= UpperLeftCorner.getY()));
+		return ((LowerRightCorner.x() >= UpperLeftCorner.x()) &&
+			(LowerRightCorner.y() >= UpperLeftCorner.y()));
 	}
 
     //! Get the center of the rectangle
 	Vector2<T> getCenter() const
 	{
 		return Vector2<T>(
-				(UpperLeftCorner.getX() + LowerRightCorner.getX()) / 2,
-				(UpperLeftCorner.getY() + LowerRightCorner.getY()) / 2);
+				(UpperLeftCorner.x() + LowerRightCorner.x()) / 2,
+				(UpperLeftCorner.y() + LowerRightCorner.y()) / 2);
 	}
 
   RectT<T> relativeTo( const RectT<T>& other, T limit )
   {
     RectT<T> retRect( *this );
-    retRect.UpperLeftCorner -= Vector2<T>( (retRect.UpperLeftCorner.getX() - other.UpperLeftCorner.getX()) / limit, 0 );
-    retRect.UpperLeftCorner -= Vector2<T>( 0, (retRect.UpperLeftCorner.getY() - other.UpperLeftCorner.getY()) / limit );
-    retRect.LowerRightCorner -= Vector2<T>( (retRect.LowerRightCorner.getX() - other.LowerRightCorner.getX()) / limit, 0 );
-    retRect.LowerRightCorner -= Vector2<T>( 0, (retRect.LowerRightCorner.getY() - other.LowerRightCorner.getY()) / limit );
+    retRect.UpperLeftCorner -= Vector2<T>( (retRect.UpperLeftCorner.x() - other.UpperLeftCorner.x()) / limit, 0 );
+    retRect.UpperLeftCorner -= Vector2<T>( 0, (retRect.UpperLeftCorner.y() - other.UpperLeftCorner.y()) / limit );
+    retRect.LowerRightCorner -= Vector2<T>( (retRect.LowerRightCorner.x() - other.LowerRightCorner.x()) / limit, 0 );
+    retRect.LowerRightCorner -= Vector2<T>( 0, (retRect.LowerRightCorner.y() - other.LowerRightCorner.y()) / limit );
 
     return retRect;
   }
@@ -277,27 +277,27 @@ public:
 
 	T getTop() const
 	{
-		return UpperLeftCorner.getY();
+		return UpperLeftCorner.y();
 	}
 
 	T getLeft() const
 	{
-		return UpperLeftCorner.getX();
+		return UpperLeftCorner.x();
 	}
 
 	T getBottom() const
 	{
-		return LowerRightCorner.getY();
+		return LowerRightCorner.y();
 	}
 
 	T getRight()
 	{
-		return LowerRightCorner.getX();
+		return LowerRightCorner.x();
 	}
 
 	T getRight() const
 	{
-		return LowerRightCorner.getX();
+		return LowerRightCorner.x();
 	}
 
 	//! Upper left corner
@@ -315,7 +315,7 @@ public:
   Rect() : RectT<int>( 0, 0, 0, 0 ) {}
   //! Constructor with upper left corner and dimension
   Rect(const Point& pos, const Size& size)
-    : RectT<int>( pos, Point( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
+    : RectT<int>( pos, Point( pos.x() + size.getWidth(), pos.y() + size.getHeight() ) ) {}
 
   Rect( int x1, int y1, int x2, int y2 )
     : RectT<int>( x1, y1, x2, y2 ) {}
@@ -351,7 +351,7 @@ public:
     : RectT<float>( x1, y1, x2, y2 ) {}
 
   RectF(const PointF& pos, const SizeF& size)
-    : RectT<float>( pos, PointF( pos.getX() + size.getWidth(), pos.getY() + size.getHeight() ) ) {}
+    : RectT<float>( pos, PointF( pos.x() + size.getWidth(), pos.y() + size.getHeight() ) ) {}
 
   RectF( const PointF& p1, const PointF& p2 )
     : RectT<float>( p1, p2 ) {}

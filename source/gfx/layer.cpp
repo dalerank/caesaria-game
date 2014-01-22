@@ -84,7 +84,7 @@ void Layer::handleEvent(NEvent& event)
     {
       Point savePos = _d->lastCursorPos;
       _d->lastCursorPos = event.mouse.getPosition();
-      if( !event.mouse.isLeftPressed() || _d->startCursorPos.getX() < 0 )
+      if( !event.mouse.isLeftPressed() || _d->startCursorPos.x() < 0 )
       {
         _d->startCursorPos = _d->lastCursorPos;
       }
@@ -92,7 +92,7 @@ void Layer::handleEvent(NEvent& event)
       if( event.mouse.isLeftPressed() )
       {
         Point delta = _d->lastCursorPos - savePos;
-        _d->camera->move( PointF( -delta.getX() * 0.1, delta.getY() * 0.1 ) );
+        _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );
       }
     }
     break;
@@ -166,8 +166,8 @@ TilesArray Layer::_getSelectedArea()
 //  std::cout << "TilemapRenderer::_getSelectedArea" << " ";
 //  std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
 
-  outStartPos = TilePos( std::min<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::min<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
-  outStopPos  = TilePos( std::max<int>( startPosTmp.getI(), stopPosTmp.getI() ), std::max<int>( startPosTmp.getJ(), stopPosTmp.getJ() ) );
+  outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
+  outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
 
   return _getCity()->getTilemap().getArea( outStartPos, outStopPos );
 }
@@ -212,7 +212,7 @@ void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camO
     {
       if( (*picRef).isValid() )
       {
-        engine.drawPicture( *picRef, (*w)->getPosition() + camOffset );
+        engine.drawPicture( *picRef, (*w)->getMapPos() + camOffset );
       }
     }
   }
@@ -236,7 +236,7 @@ void Layer::_setTooltipText(std::string text)
 void Layer::render( GfxEngine& engine)
 {
   // center the map on the screen
-  TilesArray visibleTiles = _d->camera->getTiles();
+  const TilesArray& visibleTiles = _d->camera->getTiles();
   Point camOffset = _d->camera->getOffset();
 
   _getCamera()->startFrame();
@@ -269,7 +269,7 @@ void Layer::render( GfxEngine& engine)
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
-    int z = tile->getIJ().getZ();    
+    int z = tile->getIJ().z();
 
     drawTileR( engine, *tile, camOffset, z, false );
 
@@ -294,7 +294,7 @@ void Layer::drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( master->getIJ().getZ() == depth && !master->getFlag( Tile::wasDrawn ) )
+  if( master->getIJ().z() == depth && !master->getFlag( Tile::wasDrawn ) )
   {
     drawTile( engine, *master, offset );
   }

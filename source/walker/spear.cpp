@@ -46,8 +46,8 @@ void Spear::toThrow(TilePos src, TilePos dst)
 {
   _d->from = src;
   _d->dst = dst;
-  _d->dstPos = Point( dst.getI(), dst.getJ() ) * 15 + Point( 7, 7 );
-  _d->srcPos = Point( src.getI(), src.getJ() ) * 15 + Point( 7, 7 );
+  _d->dstPos = Point( dst.i(), dst.j() ) * 15 + Point( 7, 7 );
+  _d->srcPos = Point( src.i(), src.j() ) * 15 + Point( 7, 7 );
 
   _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / 20.f;
   _d->currentPos = _d->srcPos.toPointF();
@@ -59,12 +59,12 @@ void Spear::toThrow(TilePos src, TilePos dst)
   TileOverlayPtr ov = tile.getOverlay();
   if( ov.isValid() )
   {
-    _d->height = ov->getOffset( tile, Point( 7, 7 ) ).getY();
+    _d->height = ov->getOffset( tile, Point( 7, 7 ) ).y();
     Tile& dTile = _getCity()->getTilemap().at( dst );
     ov = dTile.getOverlay();
     if( ov.isValid() )
     {
-      float dHeight = ov->getOffset( dTile, Point( 7, 7) ).getY();
+      float dHeight = ov->getOffset( dTile, Point( 7, 7) ).y();
       _d->deltaHeight = (dHeight - _d->height) / 20.f;
     }
   }

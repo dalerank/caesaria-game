@@ -81,6 +81,7 @@ public:
 private:
   bool _haveReservoirWater;
   void _initAnimation();
+  int _waterIncreaseInterval;
 };
 
 #endif // __CAESARIA_WATER_BUILDGINDS_INCLUDED__

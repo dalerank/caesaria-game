@@ -96,10 +96,9 @@ const Picture& FishPlace::getMainPicture()
 
 void FishPlace::send2city(TilePos pos)
 {
-  Pathway pathway;
-  bool pathFound = Pathfinder::getInstance().getPath( pos, _getCity()->getBorderInfo().boatExit,
-                                                      pathway, Pathfinder::waterOnly );
-  if( !pathFound )
+  Pathway pathway = Pathfinder::getInstance().getPath( pos, _getCity()->getBorderInfo().boatExit,
+                                                       Pathfinder::waterOnly );
+  if( !pathway.isValid() )
   {
     deleteLater();
   }

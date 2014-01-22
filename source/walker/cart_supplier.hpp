@@ -31,7 +31,7 @@ public:
   
   virtual const Picture& getCartPicture();
   
-  virtual void getPictureList(std::vector<Picture> &oPics);
+  virtual void getPictureList( PicturesArray &oPics);
 
   void send2City(BuildingPtr building, Good::Type what, const int qty );
 

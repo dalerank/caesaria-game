@@ -56,20 +56,20 @@ void PositionAnimator::beforeDraw( GfxEngine& painter )
 {
 	if( isEnabled() && getParent() && isFlag( isActive ) )
 	{
-    if( fabs(_d->currentPos.getX() - _d->stopPos.getX() ) > 0.5f 
-        || fabs( _d->currentPos.getY() - _d->stopPos.getY() ) > 0.5f )
+    if( fabs(_d->currentPos.x() - _d->stopPos.x() ) > 0.5f 
+        || fabs( _d->currentPos.y() - _d->stopPos.y() ) > 0.5f )
 		{
-			if( _d->stopPos.getX() == ANIMATOR_UNUSE_VALUE )
-				_d->stopPos.setX( int(_d->currentPos.getX() ) );
-			if( _d->stopPos.getY() == ANIMATOR_UNUSE_VALUE )
-				_d->stopPos.setY( int(_d->currentPos.getY() ) );
+			if( _d->stopPos.x() == ANIMATOR_UNUSE_VALUE )
+				_d->stopPos.setX( int(_d->currentPos.x() ) );
+			if( _d->stopPos.y() == ANIMATOR_UNUSE_VALUE )
+				_d->stopPos.setY( int(_d->currentPos.y() ) );
 
       float fps = 1000.f / float( DateTime::getElapsedTime() - _d->lastTimeUpdate + 1 );
       _d->lastTimeUpdate = DateTime::getElapsedTime();
 			float step = _d->stopPos.getDistanceFrom( _d->startPos ) / float( fps * ( _d->time / 1000.f ) );
-			float offsetX = _d->stopPos.getX() - _d->currentPos.getX();
+			float offsetX = _d->stopPos.x() - _d->currentPos.x();
 			float signX = offsetX < 0 ? -1.f : 1.f;
-			float offsetY = _d->stopPos.getY() - _d->currentPos.getY();
+			float offsetY = _d->stopPos.y() - _d->currentPos.y();
 			float signY = offsetY < 0 ? -1.f : 1.f;
 
       _d->currentPos += PointF( signX * std::min<float>( step, fabs( offsetX ) ),

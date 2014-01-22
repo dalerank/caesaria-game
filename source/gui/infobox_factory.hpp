@@ -34,5 +34,18 @@ private:
   TileOverlay::Type _type;
 };
 
+class InfoboxShipyard : public InfoboxFactory
+{
+public:
+  InfoboxShipyard( Widget* parent, const Tile& tile );
+};
+
+class InfoboxWharf : public InfoboxFactory
+{
+public:
+  InfoboxWharf( Widget* parent, const Tile& tile );
+};
+
+
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXFACTORY_H_INCLUDE_

@@ -196,7 +196,7 @@ void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
                                            need, _("##requierd##") );
   _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), pos );
   _d->lbBlackFrame->setText( text );
-  _d->lbBlackFrame->setTextOffset( Point( pos.getX() + 30, 0 ) );
+  _d->lbBlackFrame->setTextOffset( Point( pos.x() + 30, 0 ) );
 }
 
 InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)

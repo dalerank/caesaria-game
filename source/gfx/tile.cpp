@@ -19,6 +19,11 @@
 #include "tileoverlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
+#include "game/gamedate.hpp"
+
+namespace {
+  int waterDecreaseInterval = GameDate::getTickInMonth() / 2;
+}
 
 void Tile::Terrain::reset()
 {
@@ -51,9 +56,9 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
   _terrain.imgid = 0;
 }
 
-int Tile::getI() const    {   return _pos.getI();   }
+int Tile::getI() const    {   return _pos.i();   }
 
-int Tile::getJ() const    {   return _pos.getJ();   }
+int Tile::getJ() const    {   return _pos.j();   }
 
 
 void Tile::setPicture(const Picture *picture)
@@ -122,7 +127,7 @@ void Tile::animate(unsigned int time)
     _animation.update( time );
   }
 
-  if( time % 22 == 0)
+  if( time % waterDecreaseInterval == 0)
   {
     decreaseWaterService( WTR_FONTAIN );
     decreaseWaterService( WTR_WELL );

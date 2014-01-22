@@ -86,7 +86,7 @@ void WarehouseTile::computePicture()
   }
 
   _picture = Picture::load( ResourceGroup::warehouse, picIdx );
-  _picture.addOffset(30*(_pos.getI()+_pos.getJ()), 15*(_pos.getJ()-_pos.getI()));
+  _picture.addOffset(30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()));
 }
 
 

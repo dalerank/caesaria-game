@@ -66,7 +66,7 @@ void LayerDestroy::render( GfxEngine& engine )
 
   _getCamera()->startFrame();
 
-  TilesArray visibleTiles = _getCamera()->getTiles();
+  const TilesArray& visibleTiles = _getCamera()->getTiles();
 
   Tilemap& tmap = _getCity()->getTilemap();
 
@@ -125,7 +125,7 @@ void LayerDestroy::render( GfxEngine& engine )
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
-    int z = tile->getIJ().getZ();
+    int z = tile->getIJ().z();
 
     int tilePosHash = tile->getJ() * 1000 + tile->getI();
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
@@ -152,7 +152,7 @@ void LayerDestroy::handleEvent(NEvent& event)
     case mouseMoved:
     {
       _setLastCursorPos( event.mouse.getPosition() );
-      if( !event.mouse.isLeftPressed() || _getStartCursorPos().getX() < 0 )
+      if( !event.mouse.isLeftPressed() || _getStartCursorPos().x() < 0 )
       {
         _setStartCursorPos( _getLastCursorPos() );
       }

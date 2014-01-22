@@ -36,11 +36,11 @@ public:
 
   void update( const Tilemap& tmap );
 
-  bool getPath( TilePos start, TilesArray arrivedArea, Pathway& oPathway, int flags );
+  Pathway getPath( TilePos start, TilesArray arrivedArea, int flags );
 
-  bool getPath( TilePos start, TilePos stop, Pathway& oPathway, int flags );
+  Pathway getPath( TilePos start, TilePos stop, int flags );
 
-  bool getPath( const Tile& start, const Tile& stop, Pathway& oPathWay, int flags);
+  Pathway getPath(const Tile& start, const Tile& stop, int flags);
 
   void setCondition( const TilePossibleCondition& condition );
   void resetCondition();

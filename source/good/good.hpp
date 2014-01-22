@@ -42,7 +42,7 @@ public:
     goodCount
   } Type;
 
-  virtual Type type() const { return _type; }
+  Type type() const { return _type; }
 
 protected:
   Type _type;

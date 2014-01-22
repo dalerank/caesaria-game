@@ -145,7 +145,7 @@ void CartSupplier::_changeDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartSupplier::getPictureList(std::vector<Picture> &oPics)
+void CartSupplier::getPictureList(PicturesArray &oPics)
 {
    oPics.clear();
 
@@ -180,24 +180,24 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
 {
   SmartPtr< T > res;
 
-  Propagator::Routes pathWayList = pathPropagator.getRoutes( type );
+  DirectRoutes pathWayList = pathPropagator.getRoutes( type );
 
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  for( Propagator::Routes::iterator pathWayIt= pathWayList.begin(); 
+  for( DirectRoutes::iterator pathWayIt= pathWayList.begin();
        pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every warehouse within range
     BuildingPtr building= pathWayIt->first.as<Building>();
-    Pathway& pathWay= pathWayIt->second;
+    PathwayPtr pathWay= pathWayIt->second;
 
     SmartPtr< T > destBuilding = building.as< T >();
     int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
     if( qty > max_qty )
     {
       res = destBuilding;
-      oPathWay = pathWay;
+      oPathWay = *pathWay.object();
       max_qty = qty;
     }
   }
@@ -232,14 +232,14 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, building::granary,
                                                              type, qty, pathWay, _d->reservationID );
 
-  if( _d->storageBuildingPos.getI() < 0 )
+  if( _d->storageBuildingPos.i() < 0 )
   {
     // try get that good from a warehouse
     _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, building::warehouse,
                                                                  type, qty, pathWay, _d->reservationID );
   }
 
-  if( _d->storageBuildingPos.getI() >= 0 )
+  if( _d->storageBuildingPos.i() >= 0 )
   {
     // we found a destination!
     setIJ( pathWay.getOrigin().getIJ() );

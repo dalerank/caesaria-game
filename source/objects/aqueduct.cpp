@@ -238,10 +238,10 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
       if( !(*it)->getOverlay().is<Aqueduct>() )
         continue;
 
-      if( i == pos.getI() && j == (pos.getJ() + 1)) is_busy[north] = true;
-      else if (i == pos.getI() && j == (pos.getJ() - 1))is_busy[south] = true;
-      else if (j == pos.getJ() && i == (pos.getI() + 1))is_busy[east] = true;
-      else if (j == pos.getJ() && i == (pos.getI() - 1))is_busy[west] = true;
+      if( i == pos.i() && j == (pos.j() + 1)) is_busy[north] = true;
+      else if (i == pos.i() && j == (pos.j() - 1))is_busy[south] = true;
+      else if (j == pos.j() && i == (pos.i() + 1))is_busy[east] = true;
+      else if (j == pos.j() && i == (pos.i() - 1))is_busy[west] = true;
     }
   }
 

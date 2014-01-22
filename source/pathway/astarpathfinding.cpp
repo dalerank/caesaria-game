@@ -21,6 +21,7 @@
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "objects/construction.hpp"
 #include <set>
 
 using namespace std;
@@ -40,7 +41,7 @@ public:
   public:
     AStarPoint* operator[](const TilePos& pos )
     {
-      return at( pos.getI() ).at( pos.getJ() );
+      return at( pos.i() ).at( pos.j() );
     }
 
     APoints& operator[]( unsigned int row )
@@ -70,7 +71,7 @@ public:
 
   bool isValid( const TilePos& pos )
   {
-    return ( pos.getI() >= 0 && pos.getJ() >= 0 && pos.getI() < (int)grid.size() && pos.getJ() < (int)grid[pos.getI()].size() );
+    return ( pos.i() >= 0 && pos.j() >= 0 && pos.i() < (int)grid.size() && pos.j() < (int)grid[pos.i()].size() );
   }
 
   bool isWalkable( const TilePos& pos )
@@ -113,26 +114,29 @@ void Pathfinder::update( const Tilemap& tilemap )
   }
 }
 
-bool Pathfinder::getPath(TilePos start, TilesArray arrivedArea, Pathway& oPathway, int flags)
+Pathway Pathfinder::getPath(TilePos start, TilesArray arrivedArea, int flags)
 {
+  Pathway oPathway;
   if( (flags & checkStart) )
   {
     AStarPoint* ap = _d->at( start );
     if( !ap || !(ap->tile) || !(ap->tile->isWalkable( true ) ) )
-      return false;
+      return Pathway();
   }
 
   if( flags & traversePath )
   {
-    return _d->getTraversingPoints( start, arrivedArea.front()->getIJ(), oPathway );
+    bool found = _d->getTraversingPoints( start, arrivedArea.front()->getIJ(), oPathway );
+    return found ? oPathway : Pathway();
   }
 
-  return _d->aStar( start, arrivedArea, oPathway, flags );
+  bool found = _d->aStar( start, arrivedArea, oPathway, flags );
+  return found ? oPathway : Pathway();
 }
 
-bool Pathfinder::getPath( const Tile& start, const Tile& stop, Pathway& oPathWay, int flags )
+Pathway Pathfinder::getPath( const Tile& start, const Tile& stop, int flags )
 {
-  return getPath( start.getIJ(), stop.getIJ(), oPathWay, flags );
+  return getPath( start.getIJ(), stop.getIJ(), flags );
 }
 
 void Pathfinder::setCondition(const TilePossibleCondition& condition)
@@ -140,11 +144,11 @@ void Pathfinder::setCondition(const TilePossibleCondition& condition)
   _d->condition = condition;
 }
 
-bool Pathfinder::getPath( TilePos start, TilePos stop, Pathway& oPathway, int flags)
+Pathway Pathfinder::getPath(TilePos start, TilePos stop,  int flags)
 {
   TilesArray area;
   area.push_back( &_d->tilemap->at(stop) );
-  return getPath( start, area, oPathway, flags );
+  return getPath( start, area, flags );
 }
 
 bool Pathfinder::Impl::getTraversingPoints( TilePos start, TilePos stop, Pathway& oPathway )
@@ -157,7 +161,7 @@ bool Pathfinder::Impl::getTraversingPoints( TilePos start, TilePos stop, Pathway
   TilePos cPos = start;
   while( cPos != stop )
   {
-    TilePos move( math::clamp( stop.getI() - cPos.getI(), -1, 1 ), math::clamp( stop.getJ() - cPos.getJ(), -1, 1 ) );
+    TilePos move( math::clamp( stop.i() - cPos.i(), -1, 1 ), math::clamp( stop.j() - cPos.j(), -1, 1 ) );
     oPathway.setNextTile( *(at( cPos + move )->tile) );
     cPos += move;
   }

@@ -28,24 +28,24 @@ public:
     Size() : Vector2<int>( 0, 0 ) {}
     Size( const int s ) : Vector2<int>( s, s ) {}
 
-    Size operator+(const Size& other) const { return Size( x + other.x, y + other.y ); }
+    Size operator+(const Size& other) const { return Size( _x + other._x, _y + other._y ); }
 
-    int getWidth() const { return x; }
-    int getHeight() const { return y; }
+    int getWidth() const { return _x; }
+    int getHeight() const { return _y; }
 
-    void setWidth( int w ) { x = w; }
-    void setHeight( int h ) { y = h; }
+    void setWidth( int w ) { _x = w; }
+    void setHeight( int h ) { _y = h; }
 
     SizeF toSizeF() const;
 
-    int getArea() const { return x * y; }
+    int getArea() const { return _x * _y; }
 
-    bool operator==(const Size& other) const{ return (x == other.x) && ( y == other.y ); }
-    bool operator!=(const Size& other) const{ return (x != other.x ) || ( y != other.y ); }
-    Size& operator+=(const Size& other) { x += other.x; y += other.y; return *this; }
-    Size operator-(const Size& other) { return Size( x - other.x, y - other.y ); }
-    Size& operator=(const Vector2<int>& s ) { x = s.getX(), y = s.getY(); return *this; }
-    Size operator/(float delim) { return Size( int(x/delim), int(y/delim) ); }
+    bool operator==(const Size& other) const{ return (_x == other._x) && ( _y == other._y ); }
+    bool operator!=(const Size& other) const{ return (_x != other._x ) || ( _y != other._y ); }
+    Size& operator+=(const Size& other) { _x += other._x; _y += other._y; return *this; }
+    Size operator-(const Size& other) { return Size( _x - other._x, _y - other._y ); }
+    Size& operator=(const Vector2<int>& s ) { _x = s.x(), _y = s.y(); return *this; }
+    Size operator/(float delim) { return Size( int(_x/delim), int(_y/delim) ); }
 };
 
 class SizeF : Vector2<float>
@@ -55,17 +55,17 @@ public:
   SizeF() : Vector2<float>( 0, 0 ) {}
   SizeF( const float s ) : Vector2<float>( s, s ) {}
 
-  SizeF operator+(const SizeF& other) const { return SizeF( x + other.x, y + other.y ); }
+  SizeF operator+(const SizeF& other) const { return SizeF( _x + other._x, _y + other._y ); }
 
-  float getWidth() const { return x; }
-  float getHeight() const { return y; }
+  float getWidth() const { return _x; }
+  float getHeight() const { return _y; }
 
-  void setWidth( float w ) { x = w; }
-  void setHeight( float h ) { y = h; }
+  void setWidth( float w ) { _x = w; }
+  void setHeight( float h ) { _y = h; }
 
-  Size toSize() const { return Size( int(x), int(y) ); }
+  Size toSize() const { return Size( int(_x), int(_y) ); }
 
-  float getArea() const { return x * y; }
+  float getArea() const { return _x * _y; }
 
   bool operator==(const SizeF& other) const { return IsEqual(other, math::ROUNDING_ERROR_f32); }
   bool operator!=(const SizeF& other) const { return !IsEqual(other, math::ROUNDING_ERROR_f32); }
@@ -73,7 +73,7 @@ public:
 
 inline SizeF Size::toSizeF() const
 {
- return SizeF( float(x), float(y) ); 
+ return SizeF( float(_x), float(_y) ); 
 }
 
 #endif

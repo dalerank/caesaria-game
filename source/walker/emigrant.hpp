@@ -31,7 +31,7 @@ public:
 
   static EmigrantPtr create( PlayerCityPtr city);
 
-  virtual void getPictureList(std::vector<Picture> &oPics);
+  virtual void getPictureList(PicturesArray &oPics);
   virtual void timeStep(const unsigned long time);
 
   virtual void die();

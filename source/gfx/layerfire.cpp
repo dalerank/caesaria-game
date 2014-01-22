@@ -23,6 +23,7 @@
 #include "layerconstants.hpp"
 #include "tilemap_camera.hpp"
 #include "core/event.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
 
@@ -130,7 +131,7 @@ void LayerFire::handleEvent(NEvent& event)
         }
       }
 
-      _setTooltipText( text );
+      _setTooltipText( _(text) );
     }
     break;
 

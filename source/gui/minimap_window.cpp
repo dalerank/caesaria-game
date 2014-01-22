@@ -49,7 +49,7 @@ public:
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
 
-  Point getOffset() { return Point( 146/2 - center.getX(), 112/2 + center.getY() - tilemap->getSize()*2); }
+  Point getOffset() { return Point( 146/2 - center.x(), 112/2 + center.y() - tilemap->getSize()*2); }
 
 public oc3_signals:
   Signal1<TilePos> onCenterChangeSignal;
@@ -203,7 +203,7 @@ void Minimap::Impl::updateImage()
       int c1, c2;
       getTerrainColours( tile, c1, c2);
 
-      if( pnt.getX() >= fullmap->getWidth()-1 || pnt.getY() >= fullmap->getHeight() )
+      if( pnt.x() >= fullmap->getWidth()-1 || pnt.y() >= fullmap->getHeight() )
         continue;
 
       fullmap->setPixel( pnt, c1);
@@ -275,8 +275,8 @@ bool Minimap::onEvent(const NEvent& event)
 
     clickPosition -= _d->getOffset();
     TilePos tpos;
-    tpos.setI( (clickPosition.getX() + clickPosition.getY() - mapsize + 1) / 2 );
-    tpos.setJ( -clickPosition.getY() + tpos.getI() + mapsize - 1 );
+    tpos.setI( (clickPosition.x() + clickPosition.y() - mapsize + 1) / 2 );
+    tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
 
     _d->onCenterChangeSignal.emit( tpos );
   }

@@ -60,13 +60,13 @@ public:
   int getGScore( const EmPoint* p)
   {
     TilePos otherPos = p->pos;
-    return p->g + ((pos.getI() == otherPos.getI() || pos.getJ() == otherPos.getJ()) ? 10 : 14);
+    return p->g + ((pos.i() == otherPos.i() || pos.j() == otherPos.j()) ? 10 : 14);
   }
 
   int getHScore( const EmPoint* p)
   {
     TilePos otherPos = p ? p->pos : TilePos( 0, 0 );
-    return (abs(otherPos.getI() - pos.getI()) + abs(otherPos.getJ() - pos.getJ())) * 10;
+    return (abs(otherPos.i() - pos.i()) + abs(otherPos.j() - pos.j())) * 10;
   }
 
   void computeScores( const EmPoint* end )
@@ -99,7 +99,7 @@ public:
 
     EmPoint* operator[]( const TilePos& pos )
     {
-      unsigned int offset = pos.getJ() * _size.getWidth() + pos.getI();
+      unsigned int offset = pos.j() * _size.getWidth() + pos.i();
       return offset < size() ? &at( offset ) : 0;
     }
   private:

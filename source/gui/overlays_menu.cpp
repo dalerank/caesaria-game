@@ -63,7 +63,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::health, _("##ovrm_health##"), startPos+=offset );
     _addButton( citylayer::commerce, _("##ovrm_commerce##"), startPos+=offset );
     _addButton( citylayer::religion, _("##ovrm_religion##"), startPos+=offset );
-    setHeight( 8 * offset.getY() );
+    setHeight( 8 * offset.y() );
     break;
 
   case citylayer::risks:
@@ -112,7 +112,7 @@ void OverlaysMenu::_addButton(const int ovType, const std::string& name, const P
   btn->setFont( Font::create( FONT_1 ) );
   btn->setNotClipped( true );
   
-  if( offset.getX() != 0 )
+  if( offset.x() != 0 )
     _d->buttons.push_back( btn );
 }
 

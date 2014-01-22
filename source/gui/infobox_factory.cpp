@@ -23,6 +23,8 @@
 #include "good/goodhelper.hpp"
 #include "dictionary.hpp"
 #include "environment.hpp"
+#include "objects/shipyard.hpp"
+#include "objects/wharf.hpp"
 
 using namespace constants;
 
@@ -85,5 +87,34 @@ std::string InfoboxFactory::getInfoText( FactoryPtr factory )
 
   return StringHelper::format( 0xff, "##%s%s##", factoryType.c_str(), workKoeffStr[ (int)ceil(workKoeff) ] );
 }
+
+InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
+  : InfoboxFactory( parent, tile )
+{
+  ShipyardPtr shipyard = tile.getOverlay().as<Shipyard>();
+
+  int progressCount = shipyard->getProgress();
+  if( progressCount > 1 && progressCount < 100 )
+  {
+    new Label( this,
+               Rect( _getTitle()->getLeftdownCorner() + Point( 10, 35 ), Size( getWidth() - 32, 25 ) ),
+               _("##build_fishing_boat##") );
+  }
+}
+
+
+InfoboxWharf::InfoboxWharf(Widget* parent, const Tile& tile)
+  : InfoboxFactory( parent, tile )
+{
+  WharfPtr wharf = tile.getOverlay().as<Wharf>();
+
+  if( wharf->getBoat().isNull() )
+  {
+    new Label( this,
+               Rect( _getTitle()->getLeftdownCorner() + Point( 10, 35 ), Size( getWidth() - 32, 25 ) ),
+               _("##wait_for_fishing_boat##") );
+  }
+}
+
 
 }//end namespace gui

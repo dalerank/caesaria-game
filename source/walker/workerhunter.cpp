@@ -65,7 +65,7 @@ void Recruter::_changeTile()
   }
   else
   {
-    if( !_pathwayRef().isReverse() ) 
+    if( !_pathwayRef().isReverse() )
     {
       _pathwayRef().toggleDirection();
     }

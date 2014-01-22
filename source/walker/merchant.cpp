@@ -74,19 +74,18 @@ Merchant::~Merchant()
 {
 }
 
-Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
-                                           SimpleGoodStore& basket )
+DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& basket )
 {
-  Propagator::Routes pathWayList = pathPropagator.getRoutes( building::warehouse );
+  DirectRoutes routes = pathPropagator.getRoutes( building::warehouse );
 
-  std::map< int, Propagator::DirectRoute > warehouseRating;
+  std::map< int, DirectRoute > warehouseRating;
 
   // select the warehouse with the max quantity of requested goods
-  Propagator::Routes::iterator pathWayIt = pathWayList.begin(); 
-  while( pathWayIt != pathWayList.end() )
+  DirectRoutes::iterator routeIt = routes.begin();
+  while( routeIt != routes.end() )
   {
-    // for every warehouse within range
-    WarehousePtr warehouse= pathWayIt->first.as< Warehouse >();
+    // for every warehouse in range
+    WarehousePtr warehouse = routeIt->first.as< Warehouse >();
 
     int rating = 0;
     for( int i=Good::wheat; i<Good::goodCount; i++ )
@@ -97,23 +96,23 @@ Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
       rating = need > 0 ? ( qty ) : 0;
     }
 
-    rating = math::clamp( rating - pathWayIt->second.getLength(), 0, 999 );
-    warehouseRating[ rating ] = *pathWayIt; 
+    rating = math::clamp( rating - routeIt->second->getLength(), 0, 999 );
+    warehouseRating[ rating ] = DirectRoute( routeIt->first, *routeIt->second.object() );
 
-    pathWayIt++;
+    routeIt++;
   }
 
   //have only available warehouses, find nearest of it
-  return warehouseRating.size() > 0 ? warehouseRating.rbegin()->second : Propagator::DirectRoute();
+  return warehouseRating.size() > 0 ? warehouseRating.rbegin()->second : DirectRoute();
 }
 
-Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
+DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
                                             SimpleGoodStore& basket )
 {
-  Propagator::Routes pathWayList = pathPropagator.getRoutes( building::warehouse );
+  DirectRoutes pathWayList = pathPropagator.getRoutes( building::warehouse );
 
   // select the warehouse with the max quantity of requested goods
-  Propagator::Routes::iterator pathWayIt = pathWayList.begin(); 
+  DirectRoutes::iterator pathWayIt = pathWayList.begin();
   while( pathWayIt != pathWayList.end() )
   {
     // for every warehouse within range
@@ -124,7 +123,7 @@ Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
   }
 
   //have only available warehouses, find nearest of it
-  Propagator::DirectRoute shortest = pathPropagator.getShortestRoute( pathWayList );
+  DirectRoute shortest = pathPropagator.getShortestRoute( pathWayList );
 
   return shortest;
 }
@@ -144,7 +143,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       pathPropagator.init( tmap.at( position ) );
       pathPropagator.setAllDirections( false );
       pathPropagator.propagate( maxDistance );
-      Propagator::DirectRoute route;
+      DirectRoute route;
 
       //try found any available warehouse for selling our goods
       const GoodStore& buyOrders = city->getBuys();
@@ -164,7 +163,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         // we found a destination!
         nextState = stSellGoods;
         destBuildingPos = route.first->getTilePos();
-        wlk->setIJ( route.second.getOrigin().getIJ() );
+        wlk->setIJ( route.second.getStartPos() );
         wlk->setPathway( route.second );      
         wlk->go();
       }
@@ -187,7 +186,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       pathPropagator.setAllDirections( false );
       pathPropagator.propagate( maxDistance );
 
-      Propagator::DirectRoute route;
+      DirectRoute route;
 
       // try to find goods for city export 
       if( buy.capacity() > 0 )
@@ -200,7 +199,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         // we found a destination!
         nextState = stBuyGoods;
         destBuildingPos = route.first->getTilePos();    
-        wlk->setIJ( route.second.getOrigin().getIJ() );
+        wlk->setIJ( route.second.getStartPos() );
         wlk->setPathway( route.second );
         wlk->go();
       }
@@ -258,7 +257,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       Pathway pathWay = PathwayHelper::create( position, city->getBorderInfo().roadExit, PathwayHelper::allTerrain );
       if( pathWay.isValid() )
       {
-        wlk->setIJ( pathWay.getOrigin().getIJ() );
+        wlk->setIJ( pathWay.getStartPos() );
         wlk->setPathway( pathWay );
         wlk->go();
       }

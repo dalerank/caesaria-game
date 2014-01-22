@@ -87,13 +87,15 @@ void BuildEvent::exec( Game& game )
 
         if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )
         {
-          game.getCity()->onWarningMessage().emit( "##building_need_road_access##" );
+          GameEventPtr e = WarningMessageEvent::create( "##building_need_road_access##" );
+          e->dispatch();
         }
 
         std::string error = construction->getError();
         if( !error.empty() )
         {
-          game.getCity()->onWarningMessage().emit( error );
+          GameEventPtr e = WarningMessageEvent::create( error );
+          e->dispatch();
         }
 
         WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
@@ -102,7 +104,8 @@ void BuildEvent::exec( Game& game )
           int worklessCount = CityStatistic::getWorklessNumber( game.getCity() );
           if( worklessCount < wb->getMaxWorkers() )
           {
-            game.getCity()->onWarningMessage().emit( "##city_need_more_workers##" );
+            GameEventPtr e = WarningMessageEvent::create( "##city_need_more_workers##" );
+            e->dispatch();
           }
         }
       }
@@ -112,7 +115,8 @@ void BuildEvent::exec( Game& game )
       ConstructionPtr construction = _overlay.as<Construction>();
       if( construction.isValid() )
       {
-        game.getCity()->onWarningMessage().emit( _(construction->getError()) );
+        GameEventPtr e = WarningMessageEvent::create( construction->getError() );
+        e->dispatch();
       }
     }
   }
@@ -150,7 +154,7 @@ void ClearLandEvent::exec( Game& game )
 
       if( !constr->canDestroy() )
       {
-        GameEventPtr e = WarningMessageEvent::create( _( constr->getError().c_str() ) );
+        GameEventPtr e = WarningMessageEvent::create( _( constr->getError() ) );
         e->dispatch();
         return;
       }
@@ -425,7 +429,7 @@ void WarningMessageEvent::exec(Game& game)
 
   if( window && !_text.empty() )
   {
-    window->addMessage( _text );
+    window->addMessage( _(_text) );
   }
 }
 

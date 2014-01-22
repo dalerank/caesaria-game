@@ -492,7 +492,7 @@ void ContextMenu::recalculateSize_()
       if( root && ContextMenuItem::alignAuto == refItem->getSubMenuAlignment() )
       {
         Rect rectRoot( root->getAbsoluteRect() );
-				if ( getAbsoluteRect().UpperLeftCorner.getX() + subRect.LowerRightCorner.getX() > rectRoot.LowerRightCorner.getX() )
+				if ( getAbsoluteRect().UpperLeftCorner.x() + subRect.LowerRightCorner.x() > rectRoot.LowerRightCorner.x() )
 				{
 					subRect.UpperLeftCorner.setX( -subMenuSize.getWidth() );
 					subRect.LowerRightCorner.setX( 0 );
@@ -512,7 +512,7 @@ void ContextMenu::recalculateSize_()
 
 				case ContextMenuItem::alignHorizCenter:
 					subRect.UpperLeftCorner.setX( ( getAbsoluteRect().getWidth() - subMenuSize.getWidth() ) / 2 );
-					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.getX() + subMenuSize.getWidth() );
+					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.x() + subMenuSize.getWidth() );
 				break;
 				}
 

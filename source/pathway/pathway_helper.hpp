@@ -17,7 +17,6 @@
 #define __CAESARIA_PATHWAYHELPER_H_INCLUDED__
 
 #include "pathway.hpp"
-#include "predefinitions.hpp"
 #include "city/predefinitions.hpp"
 #include "objects/predefinitions.hpp"
 

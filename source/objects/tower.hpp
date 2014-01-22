@@ -29,7 +29,7 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray&) const;
 
   virtual void deliverService();
 

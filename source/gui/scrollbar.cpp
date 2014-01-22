@@ -334,7 +334,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
         if( _d->upButton && _d->upButton->isVisible() )
            _d->sliderRect.UpperLeftCorner += Point( _d->upButton->getWidth(), 0 );
         
-        _d->sliderRect.LowerRightCorner.setX( _d->sliderRect.UpperLeftCorner.getX() + _drawLenght );
+        _d->sliderRect.LowerRightCorner.setX( _d->sliderRect.UpperLeftCorner.x() + _drawLenght );
       }
       else
       {
@@ -343,7 +343,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
         if( _d->upButton && _d->upButton->isVisible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->getHeight() );
 
-        _d->sliderRect.LowerRightCorner.setY( _d->sliderRect.UpperLeftCorner.getY() + _drawLenght );
+        _d->sliderRect.LowerRightCorner.setY( _d->sliderRect.UpperLeftCorner.y() + _drawLenght );
       }
     }
   }
@@ -382,12 +382,12 @@ int ScrollBar::_getPosFromMousePos(const Point& pos) const
     if (_horizontal)
 	{
 		w = getWidth() - float(getHeight())*3.0f;
-		p = pos.getX() - getScreenLeft() - getHeight()*1.5f;
+		p = pos.x() - getScreenLeft() - getHeight()*1.5f;
 	}
 	else
 	{
 		w = getHeight() - float(getWidth())*3.0f;
-		p = pos.getY() - getScreenTop() - getWidth()*1.5f;
+		p = pos.y() - getScreenTop() - getWidth()*1.5f;
 	}
     return (int) ( p/w * getRange() ) + _minValue;
 }
@@ -402,20 +402,20 @@ void ScrollBar::setPos(int pos)
   if (_horizontal)
 	{
     _drawLenght = getHeight() * 3;
-    int borderMargin = -borderMarginRect.UpperLeftCorner.getX();
-    borderMargin -= borderMarginRect.LowerRightCorner.getX();
+    int borderMargin = -borderMarginRect.UpperLeftCorner.x();
+    borderMargin -= borderMarginRect.LowerRightCorner.x();
 
     float f = ( getWidth() + borderMargin - ( getHeight()*2.0f + _drawLenght)) / getRange();
-    _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.getX();
+    _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.x();
 	}
 	else
 	{
     _drawLenght = getWidth() * 3;
-    int borderMargin = -borderMarginRect.UpperLeftCorner.getY();
-    borderMargin -= borderMarginRect.LowerRightCorner.getY();
+    int borderMargin = -borderMarginRect.UpperLeftCorner.y();
+    borderMargin -= borderMarginRect.LowerRightCorner.y();
 
     float f = ( getHeight() + borderMargin - ( getWidth()*0.0f + _drawLenght)) / getRange();
-    _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.getY();
+    _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.y();
 	}
 }
 

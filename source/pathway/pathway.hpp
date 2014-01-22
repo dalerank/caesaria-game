@@ -24,7 +24,7 @@
 #include "core/delegate.hpp"
 #include "gfx/predefinitions.hpp"
 
-class Pathway
+class Pathway : public ReferenceCounted
 {
 public:
   Pathway();
@@ -36,6 +36,8 @@ public:
 
   int getLength() const;
   const Tile& getOrigin() const;
+  TilePos getStartPos() const;
+
   const Tile& getDestination() const;
   bool isReverse() const;
   unsigned int getStep() const;
@@ -53,7 +55,7 @@ public:
   void prettyPrint() const;
   void toggleDirection();
 
-  Pathway& operator=(const Pathway& other );
+  Pathway& operator=(const Pathway& other);
 
   Pathway copy( int start, int stop=-1) const;
 
@@ -66,9 +68,7 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-typedef std::list< Pathway > PathwayList;
-
-bool operator<(const Pathway &v1, const Pathway &v2);
+bool operator<(const Pathway& v1, const Pathway& v2);
 typedef Delegate2< const Tile*, bool& > TilePossibleCondition;
 
 #endif //__CAESARIA_PATHWAY_H_INCLUDED__

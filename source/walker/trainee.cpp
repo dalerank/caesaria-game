@@ -105,55 +105,37 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
-  if( roadOnly )
+  CityHelper helper( _getCity() );
+
+  BuildingList buildings;
+  foreach( buildingType, _d->buildingNeed )
   {
-    Propagator pathPropagator( _getCity() );
-    pathPropagator.init( _d->base.as<Construction>() );
-    pathPropagator.setAllDirections( false );
-    pathPropagator.propagate( _d->maxDistance );
+    BuildingList tmpBuildings = helper.find<Building>( *buildingType );
+    buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
+  }
 
-    foreach( buildingType, _d->buildingNeed )
+  _d->maxNeed = 0;
+  DirectRoute droute;
+  TilePos startPos = _d->base->getTilePos();
+  foreach( it, buildings )
+  {
+    BuildingPtr bld = *it;
+    Pathway way = PathwayHelper::create( startPos, bld.as<Construction>(),
+                                         roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
+    float curNeed = bld->evaluateTrainee( getType() );
+    if( way.isValid() && _d->maxNeed < curNeed && way.getLength() < _d->maxDistance )
     {
-      checkDestination( *buildingType, pathPropagator);
-    }
-
-    if( _d->destination.isValid() )
-    {
-      pathPropagator.getPath( _d->destination.as<Construction>(), finalPath );
+      _d->maxNeed = curNeed;
+      droute = DirectRoute( bld.as<Construction>(), way );
     }
   }
-  else
+
+  if( droute.first.isValid() )
   {
-    CityHelper helper( _getCity() );
-
-    BuildingList buildings;
-    foreach( buildingType, _d->buildingNeed )
-    {
-      BuildingList tmpBuildings = helper.find<Building>( *buildingType );
-      buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
-    }
-
-    _d->maxNeed = 0;
-    Propagator::DirectRoute droute;
-    TilePos startPos = _d->base->getTilePos();
-    foreach( it, buildings )
-    {
-      BuildingPtr bld = *it;
-      Pathway way = PathwayHelper::create( startPos, bld.as<Construction>(), PathwayHelper::allTerrain );
-      float curNeed = bld->evaluateTrainee( getType() );
-      if( way.isValid() && _d->maxNeed < curNeed && way.getLength() < _d->maxDistance )
-      {
-        _d->maxNeed = curNeed;
-        droute = std::make_pair( bld.as<Construction>(), way );
-      }
-    }
-
-    if( droute.first.isValid() )
-    {
-      finalPath = droute.second;
-      _d->destination = droute.first.as<Building>();
-    }
+    finalPath = droute.second;
+    _d->destination = droute.first.as<Building>();
   }
+
 
   if( finalPath.isValid() )
   {
@@ -170,7 +152,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
 void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propagator &pathPropagator)
 {
-  Propagator::Routes pathWayList = pathPropagator.getRoutes( buildingType );
+  DirectRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
   foreach( item, pathWayList )
   {
@@ -186,7 +168,7 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
   }
 }
 
-void TraineeWalker::send2City( BuildingPtr base, bool roadOnly)
+void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
 {
   _d->base = base;
   _computeWalkerPath( roadOnly );

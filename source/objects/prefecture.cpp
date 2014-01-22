@@ -76,26 +76,24 @@ void Prefecture::deliverService()
 {
   if( getWorkersCount() > 0 && getWalkers().size() == 0 )
   {
-    bool fireDetect = _d->fireDetect.getI() >= 0;
+    bool fireDetect = _d->fireDetect.i() >= 0;
     PrefectPtr walker = Prefect::create( _getCity() );
     walker->setMaxDistance( 26 );
 
     //bool patrol = true;
     if( fireDetect )
     {
-      Pathway pathway;
       TilePos startPos = getAccessRoads().front()->getIJ();
 
       Tilemap& tmap = _getCity()->getTilemap();
       TilesArray arrivedArea = tmap.getArea( _d->fireDetect - TilePos( 1, 1), _d->fireDetect + TilePos( 1, 1 ) );
-      bool pathFounded = Pathfinder::getInstance().getPath( startPos, arrivedArea, pathway,
-                                                            Pathfinder::terrainOnly );
+      Pathway pathway = Pathfinder::getInstance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
       //patrol = !pathFounded;
 
-      if( pathFounded )
+      if( pathway.isValid() )
       {
         pathway.setNextTile( tmap.at( _d->fireDetect ) );
-        walker->setIJ( pathway.getOrigin().getIJ() );
+        walker->setIJ( pathway.getStartPos() );
         walker->setPathway( pathway );
       }
       else

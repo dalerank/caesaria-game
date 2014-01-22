@@ -162,8 +162,8 @@ void ListBox::removeItem(unsigned int id)
 
 int ListBox::getItemAt( const Point& pos ) const
 {
-  if ( 	pos.getX() < getScreenLeft() || pos.getX() >= getScreenRight()
-      ||	pos.getY() < getScreenTop() || pos.getY() >= getScreenBottom() )
+  if ( 	pos.x() < getScreenLeft() || pos.x() >= getScreenRight()
+      ||	pos.y() < getScreenTop() || pos.y() >= getScreenBottom() )
   {
 	  return -1;
   }
@@ -173,7 +173,7 @@ int ListBox::getItemAt( const Point& pos ) const
 	  return -1;
   }
 
-  int item = ((pos.getY() - getScreenTop() - 1) + _d->scrollBar->getPos()) / _d->itemHeight;
+  int item = ((pos.y() - getScreenTop() - 1) + _d->scrollBar->getPos()) / _d->itemHeight;
   
   if ( item < 0 || item >= (int)_d->items.size())
   {
@@ -571,7 +571,7 @@ Rect ListBox::getItemTextRect_()
 {
   Rect frameRect( Point( 0, 0 ), getSize() );
   if( _d->scrollBar->isVisible() )
-      frameRect.LowerRightCorner.setX( frameRect.LowerRightCorner.getX() - DEFAULT_SCROLLBAR_SIZE );
+      frameRect.LowerRightCorner.setX( frameRect.LowerRightCorner.x() - DEFAULT_SCROLLBAR_SIZE );
 
   return frameRect;
 }
@@ -598,8 +598,8 @@ void ListBox::beforeDraw( GfxEngine& painter)
     {
       ListBoxItem& refItem = _d->items[i];
 
-      if( frameRect.LowerRightCorner.getY() >= 0 &&
-          frameRect.UpperLeftCorner.getY() <= (int)getHeight() )
+      if( frameRect.LowerRightCorner.y() >= 0 &&
+          frameRect.UpperLeftCorner.y() <= (int)getHeight() )
       {
         refItem.setState( _GetCurrentItemState( i, hl ) );
 

@@ -272,7 +272,7 @@ bool WallGuard::_tryAttack()
     }
     else
     {
-      Pathway shortestWay;
+      PathwayPtr shortestWay;
       minDistance = 999;
       foreach( it, enemies )
       {
@@ -282,7 +282,7 @@ bool WallGuard::_tryAttack()
         PathwayList wayList = _d->base->getWays( getIJ(), nearestWall );
         foreach( way, wayList )
         {
-          double tmpDistance = way->getDestination().getIJ().distanceFrom( enemy->getIJ() );
+          double tmpDistance = (*way)->getDestination().getIJ().distanceFrom( enemy->getIJ() );
           if( tmpDistance < minDistance )
           {
             shortestWay = *way;
@@ -293,7 +293,7 @@ bool WallGuard::_tryAttack()
 
       if( shortestWay.isValid() )
       {
-        _updatePathway( shortestWay );
+        _updatePathway( *shortestWay.object() );
         _d->action = Impl::go2position;
         _setAction( acMove );
         _setAnimation( _d->walk );
@@ -371,7 +371,7 @@ void WallGuard::_brokePathway(TilePos pos)
 {
   Soldier::_brokePathway( pos );
 
-  if( _d->patrolPosition.getI() >= 0 )
+  if( _d->patrolPosition.i() >= 0 )
   {
     Pathway way = PathwayHelper::create( getIJ(), _d->patrolPosition,
                                          PathwayHelper::allTerrain );

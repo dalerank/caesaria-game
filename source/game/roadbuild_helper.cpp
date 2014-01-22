@@ -42,11 +42,10 @@ compare_tiles_(const Tile * first, const Tile * second)
 }
 
 TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos , bool roadAssignment)
-{
-  Pathway way;
+{  
   int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly;
   flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
-  Pathfinder::getInstance().getPath( startPos, stopPos, way, flags );
+  Pathway way = Pathfinder::getInstance().getPath( startPos, stopPos, flags );
 
   if( way.isValid() )
   {
@@ -56,12 +55,12 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
   TilesArray ret;
 
   //int mapSize = tileMap.getSize();;
-  int iStep = (startPos.getI() < stopPos.getI()) ? 1 : -1;
-  int jStep = (startPos.getJ() < stopPos.getJ()) ? 1 : -1;
+  int iStep = (startPos.i() < stopPos.i()) ? 1 : -1;
+  int jStep = (startPos.j() < stopPos.j()) ? 1 : -1;
 
   std::cout << "RoadPropagator::getPath" << std::endl;
 
-  Logger::warning( "(%d, %d) to (%d, %d)", startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
+  Logger::warning( "(%d, %d) to (%d, %d)", startPos.i(), startPos.j(), stopPos.i(), stopPos.j() );
 
   if( startPos == stopPos )
   {
@@ -72,28 +71,28 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
   std::cout << "propagate by I axis" << std::endl;
 
   // propagate on I axis
-  for( TilePos tmp( startPos.getI(), stopPos.getJ() ); ; tmp+=TilePos( iStep, 0 ) )
+  for( TilePos tmp( startPos.i(), stopPos.j() ); ; tmp+=TilePos( iStep, 0 ) )
   {
     Tile& curTile = tileMap.at( tmp );
 
     Logger::warning( "+ (%d, %d)", curTile.getI(), curTile.getJ() );
     ret.push_back( &curTile );
 
-    if (tmp.getI() == stopPos.getI())
+    if (tmp.i() == stopPos.i())
       break;
   }
 
   std::cout << "propagate by J axis" << std::endl;
 
   // propagate on J axis
-  for( int j = startPos.getJ();; j+=jStep )
+  for( int j = startPos.j();; j+=jStep )
   {
-    Tile& curTile = tileMap.at( startPos.getI(), j );
+    Tile& curTile = tileMap.at( startPos.i(), j );
 
     std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
     ret.push_back( &curTile );
 
-    if( j == stopPos.getJ() )
+    if( j == stopPos.j() )
       break;
   }
 

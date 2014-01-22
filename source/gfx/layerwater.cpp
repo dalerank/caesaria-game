@@ -21,6 +21,9 @@
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
 #include "tilemap.hpp"
+#include "core/event.hpp"
+#include "core/gettext.hpp"
+#include "tilemap_camera.hpp"
 
 using namespace constants;
 
@@ -61,6 +64,8 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::fountain:
     case building::well:
     case building::aqueduct:
+    case building::lowBridge:
+    case building::highBridge:
       pic = tile.getPicture();
       needDrawAnimations = true;
       areaSize = overlay->getSize();
@@ -92,6 +97,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     if ( pic.isValid() )
     {
       engine.drawPicture( pic, screenPos );
+      drawTilePass( engine, tile, offset, Renderer::foreground );
     }
 
     if( needDrawAnimations )
@@ -120,7 +126,48 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       }
     }
   }
+}
 
+void LayerWater::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        bool isWater = tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlDeepWater );
+        if( !isWater )
+        {
+          int wtrSrvc = (tile->getWaterService( WTR_WELL ) > 0 ? 1 : 0);
+          wtrSrvc |= (tile->getWaterService( WTR_FONTAIN ) > 0 ? 2 : 0);
+          wtrSrvc |= (tile->getWaterService( WTR_RESERVOIR ) > 0 ? 4 : 0);
+
+          switch( wtrSrvc )
+          {
+          case 0:         /*text = "##water_srvc_no_water##";*/ break;
+          case 1:         text = "##water_srvc_well##"; break;
+          case 2: case 6: text = "##water_srvc_fountain##"; break;
+          case 3:         text = "##water_srvc_fountain_and_well##"; break;
+          case 7:         text = "##water_srvc_fountain_and_reservoir##"; break;
+          case 4: case 5: text = "##water_srvc_reservoir##"; break;
+          }
+        }
+      }
+
+      _setTooltipText( _(text) );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerPtr LayerWater::create(TilemapCamera& camera, PlayerCityPtr city)

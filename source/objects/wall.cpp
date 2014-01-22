@@ -154,9 +154,9 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArra
       int j = (*it)->getJ();
 
       if( (pos + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
-      else if(i == pos.getI() && j == (pos.getJ() - 1)) is_busy[south] = true;
-      else if(j == pos.getJ() && i == (pos.getI() + 1)) is_busy[east] = true;
-      else if(j == pos.getJ() && i == (pos.getI() - 1)) is_busy[west] = true;
+      else if(i == pos.i() && j == (pos.j() - 1)) is_busy[south] = true;
+      else if(j == pos.j() && i == (pos.i() + 1)) is_busy[east] = true;
+      else if(j == pos.j() && i == (pos.i() - 1)) is_busy[west] = true;
       else if((pos + TilePos(1, 1)) == rpos ) is_busy[northEast] = true;
       else if((pos + TilePos(1, -1)) == rpos ) is_busy[southEast] = true;
     }
@@ -226,7 +226,7 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArra
 
   default:
     index = 178; // it's impossible, but ...
-    Logger::warning( "Impossible direction on wall building [%d,%d]", pos.getI(), pos.getJ() );
+    Logger::warning( "Impossible direction on wall building [%d,%d]", pos.i(), pos.j() );
   }
 
   return Picture::load( ResourceGroup::wall, index );

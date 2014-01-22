@@ -218,8 +218,9 @@ void ScreenMenu::initialize()
   _d->bgPicture = Picture::load("title", 1);
 
   // center the bgPicture on the screen
-  _d->bgPicture.setOffset( (_d->engine->getScreenWidth() - _d->bgPicture.getWidth()) / 2,
-                            -( _d->engine->getScreenHeight() - _d->bgPicture.getHeight() ) / 2 );
+  Point p( (_d->engine->getScreenWidth() - _d->bgPicture.getWidth()) / 2,
+           -( _d->engine->getScreenHeight() - _d->bgPicture.getHeight() ) / 2 );
+  _d->bgPicture.setOffset( p );
 
   _d->game->getGui()->clear();
 

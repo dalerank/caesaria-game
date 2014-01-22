@@ -27,6 +27,7 @@ public:
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
   static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+  virtual void handleEvent(NEvent& event);
 private:
   LayerWater( TilemapCamera& camera, PlayerCityPtr city );
   std::set<int> _flags;

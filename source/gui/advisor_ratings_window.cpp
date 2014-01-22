@@ -102,13 +102,13 @@ void AdvisorRatingsWindow::Impl::drawColumn( const Point& center, const int valu
 
   for( int i=0; i < value; i++ )
   {
-    background->draw( body, center.getX() - body.getWidth() / 2, columnStartY - 10 - i * 2 );
+    background->draw( body, center.x() - body.getWidth() / 2, columnStartY - 10 - i * 2 );
   }
 
-  background->draw( footer, center.getX() - footer.getWidth() / 2, columnStartY - footer.getHeight() );
+  background->draw( footer, center.x() - footer.getWidth() / 2, columnStartY - footer.getHeight() );
   if( value >= 50 )
   {
-    background->draw( header, center.getX() - header.getWidth() / 2, columnStartY - 10 - value * 2);
+    background->draw( header, center.x() - header.getWidth() / 2, columnStartY - 10 - value * 2);
   }
 }
 

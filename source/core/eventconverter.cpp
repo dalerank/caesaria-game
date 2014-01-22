@@ -352,8 +352,8 @@ int EventConverter::Impl::checkSuccessiveClicks(int mouseX, int mouseY, MouseEve
     int clickTime = DateTime::getElapsedTime();
 
     if ( (clickTime-MouseMultiClicks.LastClickTime) < MouseMultiClicks.DoubleClickTime
-        && abs(MouseMultiClicks.LastClick.getX() - mouseX ) <= MAX_MOUSEMOVE
-        && abs(MouseMultiClicks.LastClick.getY() - mouseY ) <= MAX_MOUSEMOVE
+        && abs(MouseMultiClicks.LastClick.x() - mouseX ) <= MAX_MOUSEMOVE
+        && abs(MouseMultiClicks.LastClick.y() - mouseY ) <= MAX_MOUSEMOVE
         && MouseMultiClicks.CountSuccessiveClicks < 3
         && MouseMultiClicks.LastMouseInputEvent == inputEvent
         )

@@ -49,7 +49,7 @@ public:
 
   bool isInside( const TilePos& pos )
   {
-    return( pos.getI() >= 0 && pos.getJ()>=0 && pos.getI() < size && pos.getJ() < size);
+    return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size && pos.j() < size);
   }
 
   void resize( const int s )
@@ -90,16 +90,16 @@ bool Tilemap::isInside(const TilePos& pos ) const
 TilePos Tilemap::fit( const TilePos& pos ) const
 {
   TilePos ret;
-  ret.setI( math::clamp( pos.getI(), 0, _d->size ) );
-  ret.setJ( math::clamp( pos.getJ(), 0, _d->size ) );
+  ret.setI( math::clamp( pos.i(), 0, _d->size ) );
+  ret.setJ( math::clamp( pos.j(), 0, _d->size ) );
   return ret;
 }
 
 Tile* Tilemap::at(Point pos, bool overborder)
 {
   // x relative to the left most pixel of the tilemap
-  int i = (pos.getX() + 2 * pos.getY()) / 60;
-  int j = (pos.getX() - 2 * pos.getY()) / 60;
+  int i = (pos.x() + 2 * pos.y()) / 60;
+  int j = (pos.x() - 2 * pos.y()) / 60;
 
   if( overborder )
   {
@@ -131,12 +131,12 @@ const Tile& Tilemap::at(const int i, const int j) const
 
 Tile& Tilemap::at( const TilePos& ij )
 {
-  return _d->at( ij.getI(), ij.getJ() );
+  return _d->at( ij.i(), ij.j() );
 }
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
-  return const_cast<Tilemap*>( this )->at( ij.getI(), ij.getJ() );
+  return const_cast<Tilemap*>( this )->at( ij.i(), ij.j() );
 }
 
 int Tilemap::getSize() const
@@ -154,29 +154,29 @@ TilesArray Tilemap::getRectangle( const TilePos& start, const TilePos& stop, con
     delta_corners = 1;
   }
 
-  for(int i = start.getI() + delta_corners; i <= stop.getI() - delta_corners; ++i)
+  for(int i = start.i() + delta_corners; i <= stop.i() - delta_corners; ++i)
   {
-    if (isInside( TilePos( i, start.getJ() ) ))
+    if (isInside( TilePos( i, start.j() ) ))
     {
-      res.push_back( &at(i, start.getJ() ));
+      res.push_back( &at(i, start.j() ));
     }
 
-    if (isInside( TilePos( i, stop.getJ() ) ))
+    if (isInside( TilePos( i, stop.j() ) ))
     {
-      res.push_back( &at( i, stop.getJ() ));
+      res.push_back( &at( i, stop.j() ));
     }
   }
 
-  for (int j = start.getJ() + 1; j <= stop.getJ() - 1; ++j)  // corners have been handled already
+  for (int j = start.j() + 1; j <= stop.j() - 1; ++j)  // corners have been handled already
   {
-    if (isInside( TilePos( start.getI(), j ) ))
+    if (isInside( TilePos( start.i(), j ) ))
     {
-      res.push_back(&at(start.getI(), j));
+      res.push_back(&at(start.i(), j));
     }
 
-    if (isInside( TilePos( stop.getI(), j ) ))
+    if (isInside( TilePos( stop.i(), j ) ))
     {
-      res.push_back(&at(stop.getI(), j));
+      res.push_back(&at(stop.i(), j));
     }
   }
 
@@ -194,9 +194,9 @@ TilesArray Tilemap::getArea(TilePos start, TilePos stop )
   TilesArray res;
   res.reserve( 100 );
 
-  for (int i = start.getI(); i <= stop.getI(); ++i)
+  for (int i = start.i(); i <= stop.i(); ++i)
   {
-    for (int j = start.getJ(); j <= stop.getJ(); ++j)
+    for (int j = start.j(); j <= stop.j(); ++j)
     {
       if( isInside( TilePos( i, j ) ))
       {
