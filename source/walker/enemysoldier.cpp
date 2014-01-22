@@ -129,7 +129,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
     for( WalkerList::iterator i=tileWalkers.begin();i!=tileWalkers.end(); i++ )
     {
       type = (*i)->getType();
-      if( type == getType() || (*i).is<Animal>() || type  == walker::corpse )
+      if( type == getType() || csCheckCast<Animal>(*i) || type  == walker::corpse )
         continue;
 
       walkers.push_back( *i );
@@ -225,7 +225,7 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
 
   foreach( it, tiles )
   {
-    BuildingPtr b = (*it)->getOverlay().as<Building>();
+    BuildingPtr b = csDynamicCast<Building>( (*it)->getOverlay() );
     if( b.isValid() && b->getClass() != building::disasterGroup )
     {
       ret.push_back( b );
@@ -245,7 +245,8 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
 
     foreach( it, buildings )
     {
-      ret = PathwayHelper::create( getIJ(), it->as<Construction>(), PathwayHelper::allTerrain );
+      ConstructionPtr c = csDynamicCast<Construction>( *it );
+      ret = PathwayHelper::create( getIJ(), c, PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
         return ret;

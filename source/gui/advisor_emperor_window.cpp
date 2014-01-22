@@ -61,9 +61,9 @@ public:
 
     Font font = Font::create( FONT_2_WHITE );
 
-    if( _request.is<GoodRequest>() )
+    GoodRequestPtr gr = csDynamicCast<GoodRequest>(_request);
+    if( gr.isValid() )
     {
-      GoodRequestPtr gr = _request.as<GoodRequest>();
       std::string title = StringHelper::format( 0xff, "##emperor_request##" );
       font.draw( *pic, title, 20, 2 );
       font.draw( *pic, StringHelper::format( 0xff, "%d", gr->getQty() ), 20, 25 );
@@ -222,7 +222,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   PictureDecorator::draw( *_d->background, Rect( 66, 325, 66 + 510, 325 + 94 ), PictureDecorator::blackFrame );
 
   CityRequestList reqs;
-  CityRequestDispatcherPtr dispatcher = _d->city->findService( CityRequestDispatcher::getDefaultName() ).as<CityRequestDispatcher>();
+  CityRequestDispatcherPtr dispatcher = csDynamicCast<CityRequestDispatcher>( _d->city->findService( CityRequestDispatcher::getDefaultName() ) );
 
   if( dispatcher.isValid() )
   {

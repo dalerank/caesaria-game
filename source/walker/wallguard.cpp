@@ -177,7 +177,7 @@ void WallGuard::load(const VariantMap& stream)
   _d->patrolPosition = stream.get( "patrolPosition" );
 
   TilePos basePosition = stream.get( "base" );
-  TowerPtr tower = _getCity()->getOverlay( basePosition ).as<Tower>();
+  TowerPtr tower = csDynamicCast<Tower>( _getCity()->getOverlay( basePosition ) );
 
   if( tower.isValid() )
   {
@@ -206,9 +206,10 @@ EnemySoldierList WallGuard::_findEnemiesInRange( unsigned int range )
 
       foreach( w, tileWalkers )
       {
-        if( w->is<EnemySoldier>() )
+        EnemySoldierPtr e = csDynamicCast<EnemySoldier>( *w );
+        if( e.isValid() )
         {
-          walkers.push_back( w->as<EnemySoldier>() );
+          walkers.push_back( e );
         }
       }
     }
@@ -230,7 +231,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 
     foreach( tile, tiles )
     {
-      FortificationPtr f = (*tile)->getOverlay().as<Fortification>();
+      FortificationPtr f = csDynamicCast<Fortification>( (*tile)->getOverlay() );
       if( f.isValid() && f->mayPatrol() )
       {
         ret.push_back( f );

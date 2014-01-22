@@ -108,7 +108,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   if( roadOnly )
   {
     Propagator pathPropagator( _getCity() );
-    pathPropagator.init( _d->base.as<Construction>() );
+    pathPropagator.init( _d->base.object() );
     pathPropagator.setAllDirections( false );
     pathPropagator.propagate( _d->maxDistance );
 
@@ -119,7 +119,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
     if( _d->destination.isValid() )
     {
-      pathPropagator.getPath( _d->destination.as<Construction>(), finalPath );
+      pathPropagator.getPath( _d->destination.object(), finalPath );
     }
   }
   else
@@ -139,19 +139,19 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     foreach( it, buildings )
     {
       BuildingPtr bld = *it;
-      Pathway way = PathwayHelper::create( startPos, bld.as<Construction>(), PathwayHelper::allTerrain );
+      Pathway way = PathwayHelper::create( startPos, bld.object(), PathwayHelper::allTerrain );
       float curNeed = bld->evaluateTrainee( getType() );
       if( way.isValid() && _d->maxNeed < curNeed && way.getLength() < _d->maxDistance )
       {
         _d->maxNeed = curNeed;
-        droute = std::make_pair( bld.as<Construction>(), way );
+        droute = std::make_pair( bld.object(), way );
       }
     }
 
     if( droute.first.isValid() )
     {
       finalPath = droute.second;
-      _d->destination = droute.first.as<Building>();
+      _d->destination = csDynamicCast<Building>( droute.first );
     }
   }
 
@@ -175,7 +175,7 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
   foreach( item, pathWayList )
   {
     // for every building within range
-    BuildingPtr building = item->first.as<Building>();
+    BuildingPtr building = csDynamicCast<Building>( item->first );
 
     float need = building->evaluateTrainee( getType() );
     if (need > _d->maxNeed)

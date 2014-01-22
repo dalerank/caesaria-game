@@ -114,7 +114,7 @@ Service::Type ServiceWalker::getService() const
 void ServiceWalker::_computeWalkerPath()
 {  
   Propagator pathPropagator( _getCity() );
-  pathPropagator.init( _d->base.as<Construction>() );
+  pathPropagator.init( csDynamicCast<Construction>( _d->base ) );
   pathPropagator.setAllDirections( false );
 
   PathwayList pathWayList = pathPropagator.getWays(_d->maxDistance);
@@ -186,7 +186,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   TilesArray reachedTiles = _getCity()->getTilemap().getArea( start, stop );
   foreach( it, reachedTiles )
   {
-    BuildingPtr building = (*it)->getOverlay().as<Building>();
+    BuildingPtr building = csDynamicCast<Building>( (*it)->getOverlay() );
     if( building.isValid() )
     {
       res.insert(building);
@@ -313,14 +313,14 @@ void ServiceWalker::load( const VariantMap& stream )
   TilePos basePos = stream.get( "base" ).toTilePos();
   TileOverlayPtr overlay = _getCity()->getTilemap().at( basePos ).getOverlay();
 
-  _d->base = overlay.as<Building>();
+  _d->base = csDynamicCast<Building>( overlay );
   if( _d->base.isNull() )
   {
     Logger::warning( "Not found base building[%d,%d] for service walker", basePos.getI(), basePos.getJ() );
   }
   else
   {
-    WorkingBuildingPtr wrk = _d->base.as<WorkingBuilding>();
+    WorkingBuildingPtr wrk = csDynamicCast<WorkingBuilding>( _d->base );
     if( wrk.isValid() )
     {
       wrk->addWalker( this );

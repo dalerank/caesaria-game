@@ -32,7 +32,7 @@ namespace gui
 InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
-  _warehouse = tile.getOverlay().as<Warehouse>();
+  _warehouse = csDynamicCast<Warehouse>( tile.getOverlay() );
 
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth()) / 2, getHeight() - 34 ), btnOrdersSize ),

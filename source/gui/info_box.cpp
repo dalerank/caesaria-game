@@ -245,7 +245,7 @@ void InfoBoxWorkingBuilding::showDescription()
 InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
-  TemplePtr temple = tile.getOverlay().as<Temple>();
+  TemplePtr temple = csDynamicCast<Temple>( tile.getOverlay() );
   RomeDivinityPtr divn = temple->getDivinity();
 
   std::string text = StringHelper::format( 0xff, "##Temple of ##%s (%s)", 
@@ -265,7 +265,7 @@ InfoBoxTemple::~InfoBoxTemple()
 InfoBoxBuilding::InfoBoxBuilding( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
-  BuildingPtr building = tile.getOverlay().as<Building>();
+  BuildingPtr building = csDynamicCast<Building>( tile.getOverlay() );
   setTitle( MetaDataHolder::getPrettyName( building->getType() ) );
 }
 
@@ -335,7 +335,8 @@ InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
 {
     setTitle( _("##freehouse_caption##") );
 
-    if( tile.getOverlay().as<Construction>()->getAccessRoads().size() == 0 )
+    ConstructionPtr cnst = csDynamicCast<Construction>( tile.getOverlay() );
+    if( cnst.isValid() && cnst->getAccessRoads().size() == 0 )
     {
       setText( _("##freehouse_text_noroad##") );
     }
@@ -348,7 +349,7 @@ InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
 InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
-  CollosseumPtr colloseum = tile.getOverlay().as<Collosseum>();
+  CollosseumPtr colloseum = csDynamicCast<Collosseum>(tile.getOverlay());
   setTitle( MetaDataHolder::getPrettyName( building::colloseum ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkersCount() );

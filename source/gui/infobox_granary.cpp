@@ -34,7 +34,7 @@ namespace gui
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
-  _granary = tile.getOverlay().as<Granary>();
+  _granary = csDynamicCast<Granary>( tile.getOverlay() );
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth())/ 2, getHeight() - 34 ), btnOrdersSize),
                                          _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );

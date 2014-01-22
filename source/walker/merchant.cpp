@@ -86,7 +86,7 @@ Propagator::DirectRoute getWarehouse4Buys( Propagator &pathPropagator,
   while( pathWayIt != pathWayList.end() )
   {
     // for every warehouse within range
-    WarehousePtr warehouse= pathWayIt->first.as< Warehouse >();
+    WarehousePtr warehouse = csDynamicCast<Warehouse>( pathWayIt->first );
 
     int rating = 0;
     for( int i=Good::wheat; i<Good::goodCount; i++ )
@@ -117,7 +117,7 @@ Propagator::DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
   while( pathWayIt != pathWayList.end() )
   {
     // for every warehouse within range
-    WarehousePtr warehouse= pathWayIt->first.as< Warehouse >();
+    WarehousePtr warehouse= csDynamicCast<Warehouse>( pathWayIt->first );
 
     if( warehouse->getGoodStore().getFreeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
     else { pathWayIt++; }    

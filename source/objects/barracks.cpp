@@ -50,7 +50,7 @@ void Barracks::deliverTrainee()
 
     if( !walker->isDeleted() )
     {
-      addWalker( walker.as<Walker>() );
+      addWalker( walker.object() );
     }
   }
 
@@ -63,7 +63,7 @@ void Barracks::deliverTrainee()
     {
       GoodStock delStock( Good::weapon, 100 );
       _d->store.retrieve( delStock, 100 );
-      addWalker( trainee.as<Walker>() );
+      addWalker( trainee.object() );
     }
   }
 }

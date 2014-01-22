@@ -59,7 +59,7 @@ void LionTamer::send2City(BuildingPtr base, bool roadOnly)
     lion->go();
     _d->delay = 12;
 
-    _getCity()->addWalker( lion.as<Walker>() );
+    _getCity()->addWalker( csDynamicCast<Walker>( lion ) );
   }
 }
 

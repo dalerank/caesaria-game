@@ -85,7 +85,7 @@ void Immigrant::_findPath2blankHouse( TilePos startPoint )
   Pathway pathway;
   if( house.isValid() )
   {
-    pathway = PathwayHelper::create( startPoint, house.as<Construction>(),
+    pathway = PathwayHelper::create( startPoint, csDynamicCast<Construction>(house),
                                      PathwayHelper::roadFirst  );
   }
 
@@ -119,7 +119,7 @@ void Immigrant::_reachedPathway()
     return;
   }
 
-  HousePtr house = _getCity()->getOverlay( getIJ() ).as<House>();
+  HousePtr house = csDynamicCast<House>( _getCity()->getOverlay( getIJ() ) );
   if( house.isValid() )
   {
     int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
@@ -136,7 +136,7 @@ void Immigrant::_reachedPathway()
     foreach( it, area )  //have destination
     {
       Tile* tile = *it;
-      HousePtr house = tile->getOverlay().as<House>();
+      HousePtr house = csDynamicCast<House>( tile->getOverlay() );
       if( !house.isValid() )
         continue;
       int freeRoom = house->getMaxHabitants() - house->getHabitants().count();

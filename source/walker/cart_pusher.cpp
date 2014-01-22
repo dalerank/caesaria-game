@@ -77,24 +77,19 @@ void CartPusher::_reachedPathway()
 
   if( _d->consumerBuilding != NULL )
   {
-    GranaryPtr granary = _d->consumerBuilding.as<Granary>();
-    WarehousePtr warehouse = _d->consumerBuilding.as<Warehouse>();
-    FactoryPtr factory = _d->consumerBuilding.as<Factory>(); 
-    if( granary != NULL )
+    GranaryPtr granary = csDynamicCast<Granary>(_d->consumerBuilding);
+    WarehousePtr warehouse = csDynamicCast<Warehouse>(_d->consumerBuilding);
+    FactoryPtr factory = csDynamicCast<Factory>(_d->consumerBuilding);
+
+    GoodStore* goodStore = 0;
+    if( granary.isValid() ) { goodStore = &granary->getGoodStore(); }
+    else if( warehouse.isValid() ) { goodStore = &warehouse->getGoodStore(); }
+    else if( factory.isValid() ) { goodStore = &factory->getGoodStore(); }
+
+    if( goodStore )
     {
-       granary->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
-       _d->reservationID = 0;
-    }
-    else if ( warehouse != NULL )
-    {
-       warehouse->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
-       _d->reservationID = 0;
-    }
-    else if( factory != NULL )
-    {
-       factory->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
-       // factory->computePictures();
-       _d->reservationID = 0;
+      goodStore->applyStorageReservation(_d->stock, _d->reservationID);
+      _d->reservationID = 0;
     }
   }
   //
@@ -200,7 +195,7 @@ void CartPusher::computeWalkerDestination()
      return;
    }
 
-   pathPropagator.init( _d->producerBuilding.as<Construction>() );
+   pathPropagator.init( csDynamicCast<Construction>(_d->producerBuilding) );
    pathPropagator.propagate(_d->maxDistance);
 
    BuildingPtr destBuilding;
@@ -259,7 +254,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
-    SmartPtr<T> building = pathWayIt->first.as<T>();
+    SmartPtr<T> building = csDynamicCast<T>( pathWayIt->first );
 
     if( stock.qty() >  building->getGoodStore().getMaxStore( stock.type() ) )
     {
@@ -281,13 +276,14 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
     {
       shortestPath = &pathIt->second;
       maxLength = pathIt->second.getLength();
-      res = pathIt->first.as<Building>();
+      res = csDynamicCast<Building>( pathIt->first );
     }
   }
 
   if( res.isValid() )
   {
-    reservationID = res.as<T>()->getGoodStore().reserveStorage( stock, GameDate::current() );
+    SmartPtr<T> ptr = csDynamicCast<T>( res );
+    reservationID = ptr->getGoodStore().reserveStorage( stock, GameDate::current() );
     if (reservationID != 0)
     {
       oPathWay = *shortestPath;
@@ -398,16 +394,16 @@ void CartPusher::load( const VariantMap& stream )
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = _getCity()->getTilemap().at( prPos );
-  _d->producerBuilding = prTile.getOverlay().as<Building>();
+  _d->producerBuilding = csDynamicCast<Building>( prTile.getOverlay() );
   
-  if( _d->producerBuilding.is<WorkingBuilding>() )
+  if( csCheckCast<WorkingBuilding>( _d->producerBuilding ) )
   {
-    _d->producerBuilding.as<WorkingBuilding>()->addWalker( this );
+    WorkingBuildingPtr wb = csDynamicCast<WorkingBuilding>( _d->producerBuilding );
+    wb->addWalker( this );
   }
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
-  Tile& cnsmTile = _getCity()->getTilemap().at( cnsmPos );
-  _d->consumerBuilding = cnsmTile.getOverlay().as<Building>();
+  _d->consumerBuilding = csDynamicCast<Building>( _getCity()->getOverlay( cnsmPos ) );
 
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reservationID" ).toInt();

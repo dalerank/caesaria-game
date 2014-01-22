@@ -144,7 +144,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 { 
-  Pathway pathway = PathwayHelper::create( getIJ(), getBase().as<Construction>(),
+  Pathway pathway = PathwayHelper::create( getIJ(), csDynamicCast<Construction>( getBase() ),
                                            PathwayHelper::roadFirst );
 
   if( pathway.isValid() )
@@ -168,7 +168,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
     BuildingPtr building = *it;
     building->applyService( ServiceWalkerPtr( this ) );
 
-    HousePtr house = building.as<House>();
+    HousePtr house = csDynamicCast<House>( building );
     if( house.isValid() && house->getHealthLevel() < 1 )
     {
       house->deleteLater();
@@ -304,7 +304,10 @@ void Prefect::_centerTile()
       //found fire, no water, go prefecture
       if( getBase().isValid() )
       {
-        getBase().as<Prefecture>()->fireDetect( firePos );
+        PrefecturePtr ptr = csDynamicCast<Prefecture>( getBase() );
+        if( ptr.isValid() )
+          ptr->fireDetect( firePos );
+
         _back2Prefecture();
       }
     }
@@ -345,7 +348,7 @@ void Prefect::_centerTile()
 
   case Impl::go2fire:
   {
-    BuildingPtr building = _getNextTile().getOverlay().as<Building>();
+    BuildingPtr building = csDynamicCast<Building>( _getNextTile().getOverlay() );
     if( building.isValid() && building->getType() == building::burningRuins )
     {
       _d->action = Impl::fightFire;
@@ -373,7 +376,7 @@ void Prefect::timeStep(const unsigned long time)
   {
   case Impl::fightFire:
   {    
-    BuildingPtr building = _getNextTile().getOverlay().as<Building>();
+    BuildingPtr building = csDynamicCast<Building>( _getNextTile().getOverlay() );
     bool inFire = (building.isValid() && building->getType() == building::burningRuins );
 
     if( inFire )
@@ -455,13 +458,13 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 
   if( water > 0 )
   {
-    setBase( prefecture.as<Building>() );
+    setBase( prefecture.object() );
 
     _getCity()->addWalker( WalkerPtr( this ));
   }
   else
   {
-    ServiceWalker::send2City( prefecture.as<Building>() );    
+    ServiceWalker::send2City( prefecture.object() );
   }
 
   if( _pathwayRef().isValid() )
@@ -498,7 +501,7 @@ void Prefect::load( const VariantMap& stream )
 
   _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefect );
 
-  PrefecturePtr prefecture = getBase().as<Prefecture>();
+  PrefecturePtr prefecture = csDynamicCast<Prefecture>( getBase() );
   if( prefecture.isValid() )
   {
     prefecture->addWalker( WalkerPtr( this ) );

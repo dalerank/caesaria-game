@@ -86,7 +86,8 @@ void Protestor::timeStep(const unsigned long time)
     ConstructionList constructions = helper.find<Construction>( building::house );
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
-      if( (*it).as<House>()->getSpec().getLevel() <= _d->houseLevel ) { it=constructions.erase( it ); }
+      HousePtr h = csDynamicCast<House>( *it );
+      if( h->getSpec().getLevel() <= _d->houseLevel ) { it=constructions.erase( it ); }
       else { it++; }
     }
 

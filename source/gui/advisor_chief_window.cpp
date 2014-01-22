@@ -134,7 +134,7 @@ void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
 
 void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
 {
-  SmartPtr<CityMigration> migration = city->findService( CityMigration::getDefaultName() ).as<CityMigration>();
+  SmartPtr<CityMigration> migration = csDynamicCast<CityMigration>( city->findService( CityMigration::getDefaultName() ) );
 
   std::string text = _("##migration_unknown_reason##");
   if( migration.isValid() )
@@ -147,7 +147,7 @@ void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
 
 void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
 {
-  SmartPtr< CityServiceInfo > info = city->findService( CityServiceInfo::getDefaultName() ).as<CityServiceInfo>();
+  SmartPtr< CityServiceInfo > info = csDynamicCast<CityServiceInfo>( city->findService( CityServiceInfo::getDefaultName() ) );
 
   std::string text = _("##food_stock_unknown_reason##");
   if( info.isValid() )
@@ -170,7 +170,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
 void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
 {
   std::string text;
-  SmartPtr< CityServiceInfo > info = city->findService( CityServiceInfo::getDefaultName() ).as<CityServiceInfo>();
+  SmartPtr< CityServiceInfo > info = csDynamicCast<CityServiceInfo>( city->findService( CityServiceInfo::getDefaultName() ));
 
   switch( info->getLast().foodKoeff )
   {

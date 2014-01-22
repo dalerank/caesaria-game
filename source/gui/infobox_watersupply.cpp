@@ -38,7 +38,7 @@ InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
   _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );
 
-  FountainPtr fountain = tile.getOverlay().as<Fountain>();
+  FountainPtr fountain = csDynamicCast<Fountain>( tile.getOverlay() );
   std::string text;
   if( fountain != 0 )
   {
@@ -75,7 +75,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
   _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );
 
-  WellPtr well = tile.getOverlay().as<Well>();
+  WellPtr well = csDynamicCast<Well>( tile.getOverlay() );
   std::string text;
   if( well.isValid() )
   {
@@ -84,7 +84,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
     bool haveHouseInArea = false;
     foreach( tile, coverageArea )
     {
-      haveHouseInArea |= (*tile)->getOverlay().as<House>().isValid();
+      haveHouseInArea |= csCheckCast<House>( (*tile)->getOverlay() );
     }
 
     if( !haveHouseInArea )
@@ -96,7 +96,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
       bool houseNeedWell = false;
       foreach( tile, coverageArea)
       {
-        HousePtr house = (*tile)->getOverlay().as<House>();
+        HousePtr house = csDynamicCast<House>( (*tile)->getOverlay() );
         if( house.isValid() )
         {
           houseNeedWell |= ( house->getServiceValue( Service::fontain ) == 0 );

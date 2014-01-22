@@ -45,7 +45,7 @@ void Forum::deliverService()
 
     if( !walker->isDeleted() )
     {
-      addWalker( walker.as<Walker>() );
+      addWalker( walker.object() );
     }
   }
 }
@@ -55,7 +55,7 @@ void Forum::applyService(ServiceWalkerPtr walker)
   switch( walker->getType() )
   {
   case walker::taxCollector:
-    _d->taxValue += walker.as<TaxCollector>()->getMoney();
+    _d->taxValue += csDynamicCast<TaxCollector>( walker )->getMoney();
   break;
 
   default:

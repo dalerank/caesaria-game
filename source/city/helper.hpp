@@ -118,7 +118,7 @@ public:
 
     foreach( tile, area )
     {
-      SmartPtr<T> obj = (*tile)->getOverlay().as<T>();
+      SmartPtr<T> obj = csDynamicCast< T >((*tile)->getOverlay());
       if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
       {
         tmp.insert( obj );
@@ -155,7 +155,7 @@ std::list< SmartPtr< T > > CityHelper::find( const TileOverlay::Type type )
   TileOverlayList& buildings = _city->getOverlays();
   foreach( item, buildings )
   {
-    SmartPtr< T > b = item->as<T>();
+    SmartPtr< T > b = csDynamicCast<T>( *item );
     if( b.isValid() && (b->getType() == type || type == constants::building::any ) )
     {
       ret.push_back( b );
@@ -172,7 +172,7 @@ std::list< SmartPtr< T > > CityHelper::getProducers( const Good::Type goodtype )
   TileOverlayList& overlays = _city->getOverlays();
   foreach( item, overlays )
   {
-    SmartPtr< T > b = item->as<T>();
+    SmartPtr< T > b = csDynamicCast<T>( *item );
     if( b.isValid() && b->getOutGoodType() == goodtype )
     {
       ret.push_back( b );

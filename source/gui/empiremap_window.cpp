@@ -99,7 +99,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
   {
     lbCityTitle->setText( currentCity->getName() );
 
-    if( currentCity.is<PlayerCity>() )
+    if( csCheckCast<PlayerCity>( currentCity ) )
     {
       drawCityInfo();
     }
@@ -139,13 +139,17 @@ void EmpireMapWindow::Impl::drawCityInfo()
 {
   Label* lb = new Label( tradeInfo, Rect( Point( 0, tradeInfo->getHeight() - 70), Size( tradeInfo->getWidth(), 30) ) );
   lb->setTextAlignment( alignCenter, alignUpperLeft );
-  if( currentCity.is<PlayerCity>() )
+  if( csCheckCast<PlayerCity>( currentCity ) )
   {
     lb->setText( _("##empiremap_our_city##") );
   }
-  else if( currentCity.as<world::ComputerCity>()->isDistantCity() )
+  else if( csCheckCast<world::ComputerCity>(currentCity) )
   {
-    lb->setText( _("##empiremap_distant_city##") );
+    SmartPtr<world::ComputerCity> compCity = csDynamicCast<world::ComputerCity>( currentCity );
+    if( compCity->isDistantCity() )
+    {
+      lb->setText( _("##empiremap_distant_city##") );
+    }
   }
   /*else if( currentCity->isRomeCity() )
   {
@@ -335,7 +339,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
   foreach( city, cities )
   {
     Point location = (*city)->getLocation();
-    int index = (*city).is<PlayerCity>() ? 0 : 2; //maybe it our city
+    int index = csCheckCast<PlayerCity>( *city ) ? 0 : 2; //maybe it our city
 
     engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.getX(), location.getY() ) );
   }  

@@ -40,7 +40,7 @@ public:
     std::set< SmartPtr< T > > ret;        
     for( ServiceWalker::ReachedBuildings::iterator it=buildings.begin(); it != buildings.end(); it++ )
     {
-      SmartPtr< T > building = (*it).as<T>();
+      SmartPtr< T > building = csDynamicCast<T>(*it);
       if( building.isValid() )
       {
         ret.insert( building );
