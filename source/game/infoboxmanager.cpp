@@ -41,6 +41,7 @@
 #include "gui/infobox_watersupply.hpp"
 #include "gui/infobox_citizen_mgr.hpp"
 #include "gui/infobox_land.hpp"
+#include "gui/infobox_temple.hpp"
 #include <map>
 
 using namespace constants;

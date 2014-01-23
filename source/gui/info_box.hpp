@@ -90,13 +90,6 @@ public:
   virtual void showDescription();
 };
 
-class InfoBoxTemple : public InfoboxSimple
-{
-public:
-  InfoBoxTemple( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxTemple();
-};
-
 class InfoBoxColosseum : public InfoboxSimple
 {
 public:

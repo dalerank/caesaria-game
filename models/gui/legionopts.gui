@@ -65,12 +65,13 @@
       text : "##morale##"
     }
        
-    lbFormation#Label : {
+    lbFormationText#Label : {
       lbFormationTitle#Label : {
         geometry : [ 0, 0, 430, 20 ]
         textAlign : [ "upperLeft", "center" ]
         font : "FONT_2_WHITE"
         text : "##formation_title##"
+        bgType : "blackFrame"
       }
       
       geometry : [ 15, 230, 445, 290 ] 

@@ -13,28 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_INFOBOX_LEGION_H_INCLUDE_
-#define _CAESARIA_INFOBOX_LEGION_H_INCLUDE_
-
-#include <string>
-#include <list>
+#ifndef _CAESARIA_INFOBOXTEMPLE_H_INCLUDE_
+#define _CAESARIA_INFOBOXTEMPLE_H_INCLUDE_
 
 #include "info_box.hpp"
 
 namespace gui
 {
 
-class InfoboxLegion : public InfoboxSimple
+class InfoBoxTemple : public InfoboxSimple
 {
 public:
-  InfoboxLegion(Widget* parent, PatrolPointPtr patrolPoint );
-  virtual ~InfoboxLegion();
-
-  virtual bool onEvent(const NEvent &event);
-private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+  InfoBoxTemple( Widget* parent, const Tile& tile );
+  virtual ~InfoBoxTemple();
 };
 
 }//end namespace gui
-#endif //_CAESARIA_INFOBOX_LEGION_H_INCLUDE_
+#endif //_CAESARIA_INFOBOXTEMPLE_H_INCLUDE_

@@ -242,28 +242,6 @@ void InfoBoxWorkingBuilding::showDescription()
   DictionaryWindow::show( getEnvironment()->getRootWidget(), _working->getType() );
 }
 
-InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
-{
-  TemplePtr temple = ptr_cast<Temple>( tile.getOverlay() );
-  RomeDivinityPtr divn = temple->getDivinity();
-
-  bool bigTemple = temple->getSize().getWidth() > 2;
-  std::string desc = _(divn->getShortDescription());
-  std::string text = StringHelper::format( 0xff, "##%s_%s_temple##",
-                                                 bigTemple ? "big" : "small",
-                                                 divn->getDebugName().c_str() );
-  setTitle( _(text) + desc );
-
-  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->getMaxWorkers(), temple->getWorkersCount() );
-
-  new Image( this, Point( 192, 140 ), temple->getDivinity()->getPicture() );
-}
-
-InfoBoxTemple::~InfoBoxTemple()
-{
-}
-
 InfoBoxBuilding::InfoBoxBuilding( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
