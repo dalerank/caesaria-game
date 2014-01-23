@@ -60,7 +60,7 @@ void FishingBoat::load( const VariantMap& stream )
   _d->stock.load( stream.get( "stock" ).toList() );
   _d->mode = (Impl::Mode)stream.get( "mode", (int)Impl::wait ).toInt();
 
-  _d->base = _getCity()->getOverlay( (TilePos)stream.get( "base" ) ).as<CoastalFactory>();
+  _d->base = ptr_cast<CoastalFactory>(_getCity()->getOverlay( (TilePos)stream.get( "base" ) ) );
   if( _d->base.isValid() )
   {
     _d->base->assignBoat( this );

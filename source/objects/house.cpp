@@ -262,7 +262,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
         break;
       }
 
-      HousePtr house = (*tile)->getOverlay().as<House>();
+      HousePtr house = ptr_cast<House>( (*tile)->getOverlay() );
       if( house != NULL && house->getSpec().getLevel() == level4grow )
       {
         if( house->getSize().getWidth() > 1 )  //bigger house near, can't grow
@@ -283,14 +283,14 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       CitizenGroup sumHabitants = getHabitants();
       int sumFreeWorkers = getServiceValue( Service::recruter );
       TilesArray::iterator delIt=area.begin();
-      HousePtr selfHouse = (*delIt)->getOverlay().as<House>();
+      HousePtr selfHouse = ptr_cast<House>( (*delIt)->getOverlay() );
 
       _d->initGoodStore( Size( getSize().getWidth() + 1 ).getArea() );
 
       delIt++; //don't remove himself
       for( ; delIt != area.end(); delIt++ )
       {
-        HousePtr house = (*delIt)->getOverlay().as<House>();
+        HousePtr house = ptr_cast<House>( (*delIt)->getOverlay() );
         if( house.isValid() )
         {
           house->deleteLater();
@@ -422,12 +422,12 @@ void House::levelDown()
       int peoplesPerHouse = getHabitants().count() / 4;
       foreach( tile, perimetr )
       {
-        HousePtr house = TileOverlayFactory::getInstance().create( building::house ).as<House>();
+        HousePtr house = ptr_cast<House>( TileOverlayFactory::getInstance().create( building::house ) );
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
         house->_d->houseId = smallHovel;
         house->_update();
 
-        events::GameEventPtr event = events::BuildEvent::create( (*tile)->getIJ(), house.as<TileOverlay>() );
+        events::GameEventPtr event = events::BuildEvent::create( (*tile)->getIJ(), house.object() );
         event->dispatch();
       }
 
@@ -474,7 +474,7 @@ void House::levelDown()
 void House::buyMarket( ServiceWalkerPtr walker )
 {
   // std::cout << "House buyMarket" << std::endl;
-  MarketPtr market = walker->getBase().as<Market>();
+  MarketPtr market = ptr_cast<Market>( walker->getBase() );
   GoodStore& marketStore = market->getGoodStore();
 
   GoodStore &houseStore = getGoodStore();
@@ -557,7 +557,7 @@ void House::applyService( ServiceWalkerPtr walker )
     if( !svalue )
       break;
 
-    RecruterPtr hunter = walker.as<Recruter>();
+    RecruterPtr hunter = ptr_cast<Recruter>( walker );
     if( hunter.isValid() )
     {
       int hiredWorkers = math::clamp( svalue, 0, hunter->getWorkersNeeded() );
@@ -595,7 +595,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   case Service::market:
   {
-    MarketPtr market = walker->getBase().as<Market>();
+    MarketPtr market = ptr_cast<Market>( walker->getBase() );
     GoodStore &marketStore = market->getGoodStore();
     GoodStore &houseStore = getGoodStore();
     for (int i = 0; i < Good::goodCount; ++i)

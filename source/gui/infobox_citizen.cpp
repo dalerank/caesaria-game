@@ -65,7 +65,11 @@ InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
   {
     switch( wlk->getType() )
     {
-    case walker::merchant: { setTitle( _("##trade_caravan_from##") + wlk.as<Merchant>()->getParentCity() ); }
+    case walker::merchant:
+    {
+      MerchantPtr m = ptr_cast<Merchant>( wlk );
+      setTitle( _("##trade_caravan_from##") + m->getParentCity() );
+    }
     break;
 
 

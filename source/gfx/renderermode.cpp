@@ -66,7 +66,7 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
 {
   BuildMode* newCommand = new BuildMode();
   TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( type );
-  newCommand->_d->construction = overlay.as<Construction>();
+  newCommand->_d->construction = ptr_cast<Construction>( overlay );
   newCommand->_d->isMultiBuilding = false;
   newCommand->_d->isBorderBuilding = false;
   newCommand->_d->isRoadAssignment = false;

@@ -59,12 +59,12 @@ bool Gatehouse::_update( PlayerCityPtr city, TilePos pos )
   freemap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
 
   bool rmap[ countDirection ] = { 0 };
-  rmap[ noneDirection ] = tmap.at( pos ).getOverlay().is<Road>();
-  rmap[ north ] = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().is<Road>();
-  rmap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getOverlay().is<Road>();
-  rmap[ east  ] = tmap.at( pos + TilePos( 1, 0 ) ).getOverlay().is<Road>();
-  rmap[ west ] = tmap.at( pos + TilePos( -1, 0 ) ).getOverlay().is<Road>();
-  rmap[ northWest ] = tmap.at( pos + TilePos( -1, 1 ) ).getOverlay().is<Road>();
+  rmap[ noneDirection ] = is_kind_of<Road>( tmap.at( pos ).getOverlay() );
+  rmap[ north ] = is_kind_of<Road>( tmap.at( pos + TilePos( 0, 1 ) ).getOverlay() );
+  rmap[ northEast ] = is_kind_of<Road>( tmap.at( pos + TilePos( 1, 1 ) ).getOverlay() );
+  rmap[ east  ] = is_kind_of<Road>( tmap.at( pos + TilePos( 1, 0 ) ).getOverlay() );
+  rmap[ west ] = is_kind_of<Road>( tmap.at( pos + TilePos( -1, 0 ) ).getOverlay() );
+  rmap[ northWest ] = is_kind_of<Road>(  tmap.at( pos + TilePos( -1, 1 ) ).getOverlay() );
 
   int index = 150;
   if( (rmap[ noneDirection ] && rmap[ north ]) ||
@@ -95,15 +95,15 @@ bool Gatehouse::_update( PlayerCityPtr city, TilePos pos )
   case north:
     wrongBorder = ( rmap[ noneDirection ] && rmap[ west ] );
     wrongBorder |= ( rmap[ north ] && rmap[ northWest ] );
-    wrongBorder |= ( rmap[ east ] && tmap.at( pos + TilePos( 2, 0 ) ).getOverlay().is<Road>() );
-    wrongBorder |= ( rmap[ northEast ] && tmap.at( pos + TilePos( 2, 1 ) ).getOverlay().is<Road>() );
+    wrongBorder |= rmap[ east ] &&  is_kind_of<Road>( city->getOverlay( pos + TilePos( 2, 0 ) ) );
+    wrongBorder |= rmap[ northEast ] && is_kind_of<Road>( city->getOverlay( pos + TilePos( 2, 1 ) ) );
   break;
 
   case west:
-    wrongBorder = ( rmap[ noneDirection ] && tmap.at( pos + TilePos( 0, -1 ) ).getOverlay().is<Road>() );
-    wrongBorder |= ( rmap[ east ] && tmap.at( pos + TilePos( 1, -1 ) ).getOverlay().is<Road>() );
-    wrongBorder |= ( rmap[ north ] && tmap.at( pos + TilePos( 0, 2 ) ).getOverlay().is<Road>() );
-    wrongBorder |= ( rmap[ northEast ] && tmap.at( pos + TilePos( 1, 2 ) ).getOverlay().is<Road>() );
+    wrongBorder = ( rmap[ noneDirection ] && is_kind_of<Road>( city->getOverlay( pos + TilePos( 0, -1 ) ) ) );
+    wrongBorder |= ( rmap[ east ] && is_kind_of<Road>( city->getOverlay( pos + TilePos( 1, -1 ) ) ) );
+    wrongBorder |= ( rmap[ north ] && is_kind_of<Road>( city->getOverlay( pos + TilePos( 0, 2 ) ) ) );
+    wrongBorder |= ( rmap[ northEast ] && is_kind_of<Road>( city->getOverlay( pos + TilePos( 1, 2 ) ) ) );
   break;
 
   default:

@@ -67,7 +67,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
           WalkerList walkers = city->getWalkers( walker::patrolPoint, tile->getIJ() );
           if( !walkers.empty() )
           {            
-            _d->patrolPoint = walkers.front().as<PatrolPoint>();
+            _d->patrolPoint = ptr_cast<PatrolPoint>( walkers.front() );
             _d->savePatrolPos = _d->patrolPoint->getIJ();
           }
         }

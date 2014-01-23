@@ -77,7 +77,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       bool haveWater = tile.getWaterService( WTR_FONTAIN ) > 0 || tile.getWaterService( WTR_WELL ) > 0;
       if ( overlay->getType() == building::house )
       {
-        HousePtr h = overlay.as<House>();
+        HousePtr h = ptr_cast<House>( overlay );
         tileNumber = OverlayPic::inHouse;
         haveWater = haveWater || h->hasServiceAccess(Service::fontain) || h->hasServiceAccess(Service::well);
       }

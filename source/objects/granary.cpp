@@ -190,7 +190,7 @@ void Granary::_tryDevastateGranary()
       {
         stock.setQty( 0 );
         _d->goodStore.retrieve( stock, goodQty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
-        addWalker( walker.as<Walker>() );
+        addWalker( walker.object() );
         break;
       }
     }

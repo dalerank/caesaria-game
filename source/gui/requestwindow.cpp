@@ -54,10 +54,9 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, CityRequestPtr req
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
 
-  if( request.is<GoodRequest>() )
+  GoodRequestPtr gr = ptr_cast<GoodRequest>(request);
+  if( gr.isValid() )
   {
-    GoodRequestPtr gr = request.as<GoodRequest>();
-
     Label* lb = findChild<Label*>( "lbQty", true );
     if( lb ) { lb->setText( StringHelper::format( 0xff, "%d", gr->getQty() ) ); }
 

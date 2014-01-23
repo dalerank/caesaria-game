@@ -659,7 +659,7 @@ void Updater::NotifyDownloadProgress()
 		info.downloadSpeed = curDownload->GetDownloadSpeed();
 		info.downloadedBytes = curDownload->GetDownloadedBytes();
 
-		MirrorDownloadPtr mirrorDownload = curDownload.as<MirrorDownload>();
+		MirrorDownloadPtr mirrorDownload = ptr_cast<MirrorDownload>( curDownload );
 
 		if (mirrorDownload != NULL)
 		{

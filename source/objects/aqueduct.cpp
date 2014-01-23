@@ -50,7 +50,7 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
   Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have aqueduct here
-  AqueductPtr aqueveduct = terrain.getOverlay().as<Aqueduct>();
+  AqueductPtr aqueveduct = ptr_cast<Aqueduct>( terrain.getOverlay() );
   if( aqueveduct.isValid() )
   {
     return;
@@ -75,7 +75,7 @@ void Aqueduct::destroy()
     TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2 ), Size( 5 ) );
     foreach( tile, area )
     {
-      AqueductPtr aq = (*tile)->getOverlay().as<Aqueduct>();
+      AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->getOverlay() );
       if( aq.isValid() )
       {
         aq->updatePicture( _getCity() );
@@ -107,11 +107,11 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   Tile& terrain = tilemap.at( pos );
 
   // we can't build on plazas
-  if( terrain.getOverlay().as<Plaza>().isValid() )
+  if( is_kind_of<Plaza>( terrain.getOverlay() ) )
       return false;
 
   // we can show that won't build over other aqueduct
-  if( terrain.getOverlay().as<Aqueduct>().isValid() )
+  if( is_kind_of<Aqueduct>( terrain.getOverlay() ) )
       return false;
 
   // also we can't build if next tile is road + aqueduct
@@ -134,7 +134,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
       {
         if( (*it)->getIJ() == (*tile)->getIJ() )
         {
-          bldAqueduct = (*it)->getOverlay().as<Aqueduct>();
+          bldAqueduct = ptr_cast< Aqueduct >( (*it)->getOverlay() );
           break;
         }
       }
@@ -235,7 +235,7 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
       int i = (*it)->getI();
       int j = (*it)->getJ();
 
-      if( !(*it)->getOverlay().is<Aqueduct>() )
+      if( !is_kind_of<Aqueduct>( (*it)->getOverlay() ) )
         continue;
 
       if( i == pos.i() && j == (pos.j() + 1)) is_busy[north] = true;
@@ -248,7 +248,7 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
   // calculate directions
   for (int i = 0; i < countDirection; ++i)
   {
-    if( !is_border[i] && (overlay_d[i].is<Aqueduct>() || overlay_d[i].is<Reservoir>() || is_busy[i]))
+    if( !is_border[i] && (is_kind_of<Aqueduct>( overlay_d[i] ) || is_kind_of<Reservoir>( overlay_d[i] ) || is_busy[i]))
     {
       switch (i) {
       case north: directionFlags += 1; break;
@@ -270,10 +270,10 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
     {
       const_cast<Aqueduct*>( this )->_setIsRoad( true );
 
-      RoadPtr rwest = city->getOverlay( tile_pos + TilePos( -1, 0 ) ).as<Road>();
-      RoadPtr rnorth = city->getOverlay( tile_pos + TilePos( 0, 1 ) ).as<Road>();
-      RoadPtr reast = city->getOverlay( tile_pos + TilePos( 1, 0 ) ).as<Road>();
-      RoadPtr rsouth = city->getOverlay( tile_pos + TilePos( 0, -1 ) ).as<Road>();
+      RoadPtr rwest  = ptr_cast<Road>( city->getOverlay( tile_pos + TilePos( -1, 0 ) ) );
+      RoadPtr rnorth = ptr_cast<Road>( city->getOverlay( tile_pos + TilePos( 0, 1 ) ) );
+      RoadPtr reast  = ptr_cast<Road>( city->getOverlay( tile_pos + TilePos( 1, 0 ) ) );
+      RoadPtr rsouth = ptr_cast<Road>( city->getOverlay( tile_pos + TilePos( 0, -1 ) ));
 
       if( rwest != NULL || reast != NULL )
       {

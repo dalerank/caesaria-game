@@ -60,7 +60,7 @@ void LayerBuild::_discardPreview()
 
 void LayerBuild::_checkPreviewBuild(TilePos pos)
 {
-  BuildModePtr bldCommand = _d->renderer->getMode().as<BuildMode>();
+  BuildModePtr bldCommand = ptr_cast<BuildMode>(_d->renderer->getMode() );
 
   if (bldCommand.isNull())
     return;
@@ -93,7 +93,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         }
         tile->setPicture( &overlay->getPicture() );
         tile->setMasterTile( masterTile );
-        tile->setOverlay( overlay.as<TileOverlay>() );
+        tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
         _d->buildTiles.push_back( tile );
       }
@@ -170,7 +170,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
 void LayerBuild::_buildAll()
 {
-  BuildModePtr bldCommand = _d->renderer->getMode().as<BuildMode>();
+  BuildModePtr bldCommand = ptr_cast<BuildMode>( _d->renderer->getMode() );
   if( bldCommand.isNull() )
     return;
 
@@ -294,10 +294,10 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
     Tile* postTile = *it;
     postTile->resetWasDrawn();
 
-    ConstructionPtr ptr_construction = postTile->getOverlay().as<Construction>();
+    ConstructionPtr ptr_construction = ptr_cast<Construction>( postTile->getOverlay() );
     engine.resetTileDrawMask();
 
-    if( ptr_construction != NULL
+    if( ptr_construction.isValid()
         && ptr_construction->canBuild( _getCity(), postTile->getIJ(), _d->buildTiles ) )
     {
       engine.setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
@@ -318,7 +318,7 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 
   if( overlay.isValid() )
   {
-    ConstructionPtr cntr = overlay.as<Construction>();
+    ConstructionPtr cntr = ptr_cast<Construction>( overlay );
     if( cntr.isValid() && postTiles.size() > 0 )
     {
       tile.setWasDrawn();
@@ -330,14 +330,14 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 
     registerTileForRendering( tile );
 
-    if( tile.getOverlay().is<Fortification>() )
+    /*if( csCheckCast<Fortification>( tile.getOverlay() ) )
     {
       GfxSdlEngine* e = static_cast< GfxSdlEngine* >( &GfxEngine::instance());
       Font f = Font::create( FONT_2 );
       f.setColor( 0xffff0000 );
       int df = tile.getOverlay().as<Fortification>()->getDirection();
       f.draw( e->getScreen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
-    }
+    }*/
   }
 
   if( !tile.getFlag( Tile::wasDrawn ) )
@@ -365,7 +365,7 @@ void LayerBuild::init(Point cursor)
 {
   Layer::init( cursor );
 
-  BuildModePtr command = _d->renderer->getMode().as<BuildMode>();
+  BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->getMode() );
   _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
   _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
   _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;

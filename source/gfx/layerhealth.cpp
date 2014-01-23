@@ -78,7 +78,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //houses
     case building::house:
       {
-        HousePtr house = overlay.as< House >();
+        HousePtr house = ptr_cast<House>( overlay );
 
         if( _flags.count( building::doctor ) ) { healthLevel = house->getHealthLevel(); }
         else if( _flags.count( building::hospital ) ) { healthLevel = house->getServiceValue( Service::hospital ); }

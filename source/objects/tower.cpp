@@ -39,7 +39,7 @@ public:
 
   void mayPatroling( const Tile* tile, bool& ret )
   {
-    FortificationPtr f = tile->getOverlay().as<Fortification>();
+    FortificationPtr f = ptr_cast<Fortification>( tile->getOverlay() );
     ret = ( f.isValid() && f->mayPatrol() );
   }
 };
@@ -73,10 +73,10 @@ bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
   freeMap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
 
   bool frtMap[ countDirection ] = { 0 };
-  frtMap[ noneDirection ] = tmap.at( pos ).getOverlay().is<Fortification>();
-  frtMap[ north ] = tmap.at( pos + TilePos( 0, 1 ) ).getOverlay().is<Fortification>();
-  frtMap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getOverlay().is<Fortification>();
-  frtMap[ east  ] = tmap.at( pos + TilePos( 1, 0 ) ).getOverlay().is<Fortification>();
+  frtMap[ noneDirection ] = is_kind_of<Fortification>( tmap.at( pos ).getOverlay() );
+  frtMap[ north ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 0, 1 ) ).getOverlay() );
+  frtMap[ northEast ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 1 ) ).getOverlay() );
+  frtMap[ east  ] = is_kind_of<Fortification>( tmap.at( pos + TilePos( 1, 0 ) ).getOverlay() );
 
   bool mayConstruct = ((frtMap[ noneDirection ] || freeMap[ noneDirection ]) &&
                        (frtMap[ north ] || freeMap[ north ]) &&
@@ -153,7 +153,7 @@ void Tower::deliverService()
 
     if( !guard->isDeleted() )
     {
-      addWalker( guard.as<Walker>() );
+      addWalker( guard.object() );
     }
   }
 }
@@ -165,7 +165,7 @@ TilesArray Tower::getEnterArea() const
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    FortificationPtr wall = (*it)->getOverlay().as<Fortification>();
+    FortificationPtr wall = ptr_cast<Fortification>( (*it)->getOverlay() );
     if( wall.isValid() && wall->isTowerEnter() ) { it++; }
     else { it = tiles.erase( it ); }
   }

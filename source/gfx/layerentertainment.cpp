@@ -81,7 +81,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //houses
     case building::house:
       {
-        HousePtr house = overlay.as< House >();
+        HousePtr house = ptr_cast<House>( overlay );
         if( _flags.count( building::unknown ) ) { entertainmentLevel = house->getSpec().computeEntertainmentLevel( house ); }
         else if( _flags.count( building::theater ) ) { entertainmentLevel = house->getServiceValue( Service::theater ); }
         else if( _flags.count( building::amphitheater ) ) { entertainmentLevel = house->getServiceValue( Service::amphitheater ); }

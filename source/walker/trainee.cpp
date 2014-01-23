@@ -120,22 +120,21 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   foreach( it, buildings )
   {
     BuildingPtr bld = *it;
-    Pathway way = PathwayHelper::create( startPos, bld.as<Construction>(),
+    Pathway way = PathwayHelper::create( startPos, bld.object(),
                                          roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
     float curNeed = bld->evaluateTrainee( getType() );
     if( way.isValid() && _d->maxNeed < curNeed && way.getLength() < _d->maxDistance )
     {
       _d->maxNeed = curNeed;
-      droute = DirectRoute( bld.as<Construction>(), way );
+      droute = DirectRoute( bld.object(), way );
     }
   }
 
   if( droute.first.isValid() )
   {
     finalPath = droute.second;
-    _d->destination = droute.first.as<Building>();
+    _d->destination = ptr_cast<Building>( droute.first );
   }
-
 
   if( finalPath.isValid() )
   {
@@ -157,7 +156,7 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
   foreach( item, pathWayList )
   {
     // for every building within range
-    BuildingPtr building = item->first.as<Building>();
+    BuildingPtr building = ptr_cast<Building>( item->first );
 
     float need = building->evaluateTrainee( getType() );
     if (need > _d->maxNeed)

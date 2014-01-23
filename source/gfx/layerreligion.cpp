@@ -70,7 +70,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //houses
     case building::house:
       {
-        HousePtr house = overlay.as< House >();
+        HousePtr house = ptr_cast<House>( overlay );
         religionLevel = house->getServiceValue(Service::religionMercury);
         religionLevel += house->getServiceValue(Service::religionVenus);
         religionLevel += house->getServiceValue(Service::religionMars);

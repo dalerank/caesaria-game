@@ -78,24 +78,19 @@ void CartPusher::_reachedPathway()
 
   if( _d->consumerBuilding != NULL )
   {
-    GranaryPtr granary = _d->consumerBuilding.as<Granary>();
-    WarehousePtr warehouse = _d->consumerBuilding.as<Warehouse>();
-    FactoryPtr factory = _d->consumerBuilding.as<Factory>(); 
-    if( granary != NULL )
+    GranaryPtr granary = ptr_cast<Granary>(_d->consumerBuilding);
+    WarehousePtr warehouse = ptr_cast<Warehouse>(_d->consumerBuilding);
+    FactoryPtr factory = ptr_cast<Factory>(_d->consumerBuilding);
+
+    GoodStore* goodStore = 0;
+    if( granary.isValid() ) { goodStore = &granary->getGoodStore(); }
+    else if( warehouse.isValid() ) { goodStore = &warehouse->getGoodStore(); }
+    else if( factory.isValid() ) { goodStore = &factory->getGoodStore(); }
+
+    if( goodStore )
     {
-       granary->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
-       _d->reservationID = 0;
-    }
-    else if ( warehouse != NULL )
-    {
-       warehouse->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
-       _d->reservationID = 0;
-    }
-    else if( factory != NULL )
-    {
-       factory->getGoodStore().applyStorageReservation(_d->stock, _d->reservationID);
-       // factory->computePictures();
-       _d->reservationID = 0;
+      goodStore->applyStorageReservation(_d->stock, _d->reservationID);
+      _d->reservationID = 0;
     }
   }
   //
@@ -213,7 +208,7 @@ void CartPusher::computeWalkerDestination()
      return;
    }
 
-   pathPropagator.init( _d->producerBuilding.as<Construction>() );
+   pathPropagator.init( ptr_cast<Construction>(_d->producerBuilding) );
    pathPropagator.propagate(_d->maxDistance);
 
    BuildingPtr destBuilding;
@@ -272,7 +267,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
-    SmartPtr<T> building = pathWayIt->first.as<T>();
+    SmartPtr<T> building = ptr_cast<T>( pathWayIt->first );
 
     if( stock.qty() >  building->getGoodStore().getMaxStore( stock.type() ) )
     {
@@ -286,24 +281,25 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
 
   //find shortest path
   int maxLength = 999;
-  Pathway* shortestPath = 0;
+  PathwayPtr shortestPath = 0;
   for( DirectRoutes::iterator pathIt = pathWayList.begin();
        pathIt != pathWayList.end(); pathIt++ )
   {
     if( pathIt->second->getLength() < maxLength )
     {
-      shortestPath = pathIt->second.object();
+      shortestPath = pathIt->second;
       maxLength = pathIt->second->getLength();
-      res = pathIt->first.as<Building>();
+      res = ptr_cast<Building>( pathIt->first );
     }
   }
 
   if( res.isValid() )
   {
-    reservationID = res.as<T>()->getGoodStore().reserveStorage( stock, GameDate::current() );
+    SmartPtr<T> ptr = ptr_cast<T>( res );
+    reservationID = ptr->getGoodStore().reserveStorage( stock, GameDate::current() );
     if (reservationID != 0)
     {
-      oPathWay = *shortestPath;
+      oPathWay = *(shortestPath.object());
     }
     else
     {
@@ -411,16 +407,16 @@ void CartPusher::load( const VariantMap& stream )
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = _getCity()->getTilemap().at( prPos );
-  _d->producerBuilding = prTile.getOverlay().as<Building>();
+  _d->producerBuilding = ptr_cast<Building>( prTile.getOverlay() );
   
-  if( _d->producerBuilding.is<WorkingBuilding>() )
+  if( is_kind_of<WorkingBuilding>( _d->producerBuilding ) )
   {
-    _d->producerBuilding.as<WorkingBuilding>()->addWalker( this );
+    WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( _d->producerBuilding );
+    wb->addWalker( this );
   }
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
-  Tile& cnsmTile = _getCity()->getTilemap().at( cnsmPos );
-  _d->consumerBuilding = cnsmTile.getOverlay().as<Building>();
+  _d->consumerBuilding = ptr_cast<Building>( _getCity()->getOverlay( cnsmPos ) );
 
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reservationID" ).toInt();

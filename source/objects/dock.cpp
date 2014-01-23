@@ -362,7 +362,7 @@ void Dock::_tryDeliverGoods()
       //success to send cartpusher
       if( !walker->isDeleted() )
       {
-        addWalker( walker.as<Walker>() );
+        addWalker( walker.object() );
       }
       else
       {
@@ -390,7 +390,7 @@ void Dock::_tryReceiveGoods()
 
       if( !cart->isDeleted() )
       {
-        addWalker( cart.as<Walker>() );
+        addWalker( cart.object() );
         GoodStock tmpStock( gtype, qty, 0 );
         _d->requestGoods.retrieve( tmpStock, qty );
         i--;

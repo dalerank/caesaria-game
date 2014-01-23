@@ -60,11 +60,8 @@ Fortification::~Fortification()
 
 void Fortification::build(PlayerCityPtr city, const TilePos& pos )
 {
-  Tilemap& tilemap = city->getTilemap();
-  Tile& terrain = tilemap.at( pos );
-
   // we can't build if already have wall here
-  WallPtr wall = terrain.getOverlay().as<Wall>();
+  WallPtr wall = ptr_cast<Wall>( city->getOverlay( pos ) );
   if( wall.isValid() )
   {
     return;
@@ -92,7 +89,7 @@ void Fortification::destroy()
     TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
     foreach( tile, area )
     {
-      FortificationPtr f = (*tile)->getOverlay().as<Fortification>();
+      FortificationPtr f = ptr_cast<Fortification>( (*tile)->getOverlay() );
       if( f.isValid()  )
       {
         f->updatePicture( _getCity() );
@@ -487,6 +484,6 @@ bool Fortification::Impl::isFortification( PlayerCityPtr city, TilePos pos, bool
 {
   TileOverlayPtr ov = city->getOverlay( pos );
   return tower
-            ? ov.is<Tower>()
-            : ov.is<Tower>() || ov.is<Gatehouse>();
+            ? is_kind_of<Tower>( ov )
+            : is_kind_of<Tower>( ov ) || is_kind_of<Gatehouse>( ov );
 }

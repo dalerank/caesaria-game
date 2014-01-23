@@ -322,12 +322,12 @@ void Game::load(std::string filename)
     return;
   }
 
-  _d->empire->initPlayerCity( _d->city.as<world::City>() );
+  _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
 
   TileOverlayList& llo = _d->city->getOverlays();
   foreach( overlay, llo )
   {
-    ConstructionPtr construction = overlay->as<Construction>();
+    ConstructionPtr construction = ptr_cast<Construction>( *overlay );
     if( construction.isValid() )
     {
       construction->computeAccessRoads();

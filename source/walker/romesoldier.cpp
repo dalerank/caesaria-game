@@ -155,7 +155,7 @@ void RomeSoldier::load(const VariantMap& stream)
   _d->patrolPosition = stream.get( "patrolPosition" );
 
   TilePos basePosition = stream.get( "base" );
-  FortPtr fort = _getCity()->getOverlay( basePosition ).as< Fort >();
+  FortPtr fort = ptr_cast<Fort>( _getCity()->getOverlay( basePosition ) );
 
   if( fort.isValid() )
   {
@@ -182,7 +182,7 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 
     foreach( w, tileWalkers )
     {
-      if( w->is<EnemySoldier>() )
+      if( is_kind_of<EnemySoldier>( *w ) )
       {
         walkers.push_back( *w );
       }

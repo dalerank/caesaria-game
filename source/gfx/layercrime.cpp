@@ -65,7 +65,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //houses
     case building::house:
       {
-        HousePtr house = overlay.as< House >();
+        HousePtr house = ptr_cast<House>( overlay );
         fireLevel = (int)house->getServiceValue( Service::crime );
         needDrawAnimations = (house->getSpec().getLevel() == 1) && house->getHabitants().empty();
 

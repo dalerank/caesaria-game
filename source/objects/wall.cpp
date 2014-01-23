@@ -40,7 +40,7 @@ void Wall::build(PlayerCityPtr city, const TilePos& pos )
   Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have wall here
-  WallPtr wall = terrain.getOverlay().as<Wall>();
+  WallPtr wall = ptr_cast<Wall>( terrain.getOverlay() );
   if( wall.isValid() )
   {
     return;
@@ -66,7 +66,7 @@ void Wall::destroy()
 
     foreach( tile, area )
     {
-      WallPtr wall = (*tile)->getOverlay().as<Wall>();
+      WallPtr wall = ptr_cast<Wall>( (*tile)->getOverlay() );
       if( wall.isValid()  )
       {
         wall->updatePicture( _getCity() );

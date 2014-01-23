@@ -93,10 +93,10 @@ bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
 {
   foreach( w, _d->hrInCity )
   {
-    RecruterPtr hr = w->as<Recruter>();
+    RecruterPtr hr = ptr_cast<Recruter>( *w );
     if( hr.isValid() )
     {
-      if( hr->getBase() == building.as<Building>() )
+      if( hr->getBase() == building.object() )
         return true;
     }
   }

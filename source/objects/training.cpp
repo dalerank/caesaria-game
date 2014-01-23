@@ -95,7 +95,7 @@ void ActorColony::deliverTrainee()
 
   if( !trainee->isDeleted() )
   {
-    addWalker( trainee.as<Walker>() );
+    addWalker( trainee.object() );
   }
 }
 
@@ -178,7 +178,7 @@ void LionsNursery::deliverTrainee()
 
   if( !tamer->isDeleted() )
   {
-    addWalker( tamer.as<Walker>() );
+    addWalker( tamer.object() );
   }
 }
 

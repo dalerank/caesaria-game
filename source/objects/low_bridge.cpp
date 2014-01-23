@@ -382,7 +382,7 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
       subtile->_info = TileHelper::encode( tile );
       subtile->_parent = this;
       
-      events::GameEventPtr event = events::BuildEvent::create( buildPos, subtile.as<TileOverlay>() );
+      events::GameEventPtr event = events::BuildEvent::create( buildPos, subtile.object() );
       event->dispatch();
       index++;
     }    

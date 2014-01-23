@@ -41,12 +41,12 @@ void Road::build( PlayerCityPtr city, const TilePos& pos )
   Construction::build( city, pos );
   setPicture( computePicture() );
 
-  if( overlay.is<Road>() )
+  if( is_kind_of<Road>( overlay ) )
   {
     return;
   }
 
-  if( overlay.is<Aqueduct>() )
+  if( is_kind_of<Aqueduct>( overlay ) )
   {
     overlay->build( city, pos );
     return;
@@ -88,7 +88,7 @@ bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
 
   TileOverlayPtr overlay  = city->getTilemap().at( pos ).getOverlay();
 
-  return ( overlay.is<Aqueduct>() || overlay.is<Road>() );
+  return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
 }
 
 

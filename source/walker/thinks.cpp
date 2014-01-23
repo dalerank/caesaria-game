@@ -24,7 +24,7 @@ using namespace constants;
 
 std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
 {
-  SmartPtr< CityServiceInfo > info = city->findService( CityServiceInfo::getDefaultName() ).as<CityServiceInfo>();
+  SmartPtr< CityServiceInfo > info = ptr_cast<CityServiceInfo>( city->findService( CityServiceInfo::getDefaultName() ) );
 
   if( info.isNull() )
   {

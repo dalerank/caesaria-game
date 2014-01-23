@@ -79,7 +79,7 @@ void Shipyard::timeStep(const unsigned long time)
 
       if( wharf.isValid() )
       {
-        wharf->assignBoat( _d->boat.as<Ship>() );
+        wharf->assignBoat( _d->boat.object() );
         _d->boat->back2base();
         _d->boat = FishingBoatPtr();
       }

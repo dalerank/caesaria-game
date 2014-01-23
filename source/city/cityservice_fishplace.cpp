@@ -60,12 +60,12 @@ void CityServiceFishPlace::update( const unsigned int time )
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    FishPlacePtr fishplace = WalkerManager::getInstance().create( walker::fishPlace, _d->city ).as<FishPlace>();
+    FishPlacePtr fishplace = ptr_cast<FishPlace>( WalkerManager::getInstance().create( walker::fishPlace, _d->city ) );
 
     if( fishplace.isValid() )
     {
       fishplace->send2city( _d->city->getBorderInfo().boatEntry );
-      _d->places.push_back( fishplace.as<FishPlace>() );
+      _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
     }
   }
 

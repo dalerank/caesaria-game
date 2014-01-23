@@ -81,11 +81,13 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  for( DirectRoutes::iterator routeIt= pathWayList.begin();
-    routeIt != pathWayList.end(); ++routeIt)
+  foreach( routeIt, pathWayList )
   {
     // for every warehouse within range
-    SmartPtr< T > destBuilding = routeIt->first.as< T >();
+    ConstructionPtr construction = routeIt->first;
+    PathwayPtr pathWay= routeIt->second;
+
+    SmartPtr< T > destBuilding = ptr_cast<T>( construction );
     int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
     if( qty > max_qty )
     {
@@ -123,7 +125,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
      // get the list of buildings within reach
      Pathway pathWay;
      Propagator pathPropagator( _getCity() );
-     pathPropagator.init( _d->market.as<Construction>() );
+     pathPropagator.init( ptr_cast<Construction>( _d->market ) );
      pathPropagator.setAllDirections( false );
      pathPropagator.propagate( _d->maxDistance);
 
@@ -192,9 +194,9 @@ void MarketLady::_reachedPathway()
       // get goods from destination building
       TileOverlayPtr building = _getCity()->getTilemap().at( _d->destBuildingPos ).getOverlay();
       
-      if( building.is<Granary>() )
+      if( is_kind_of<Granary>( building ) )
       {
-        GranaryPtr granary = building.as<Granary>();
+        GranaryPtr granary = ptr_cast<Granary>( building );
         // this is a granary!
         // std::cout << "MarketLady arrives at granary, res=" << _reservationID << std::endl;
         granary->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
@@ -218,9 +220,9 @@ void MarketLady::_reachedPathway()
           }
         }
       }
-      else if( building.is<Warehouse>() )
+      else if( is_kind_of<Warehouse>( building ) )
       {
-        WarehousePtr warehouse = building.as<Warehouse>();
+        WarehousePtr warehouse = ptr_cast<Warehouse>( building );
         // this is a warehouse!
         // std::cout << "Market buyer takes IRON from warehouse" << std::endl;
         // warehouse->retrieveGoods(_basket.getStock(G_IRON));
@@ -263,7 +265,7 @@ void MarketLady::_reachedPathway()
             boy->setDelay( delay );
             delay += 20;
             boy->send2City( _d->market );
-            _d->market->addWalker( boy.as<Walker>() );
+            _d->market->addWalker( ptr_cast<Walker>( boy ) );
           }
         }
       }

@@ -39,7 +39,7 @@ Recruter::Recruter(PlayerCityPtr city )
 
 void Recruter::hireWorkers( const int workers )
 {
-  WorkingBuildingPtr wbase = getBase().as<WorkingBuilding>();
+  WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( getBase() );
   if( wbase.isValid() ) 
   {
     _workersNeeded = math::clamp( _workersNeeded - workers, 0, 0xff );
@@ -82,7 +82,7 @@ RecruterPtr Recruter::create(PlayerCityPtr city )
 void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 {
   _workersNeeded = workersNeeded;
-  ServiceWalker::send2City( building.as< Building >() );
+  ServiceWalker::send2City( building.object() );
 }
 
 void Recruter::die()

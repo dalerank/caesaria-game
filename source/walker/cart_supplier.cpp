@@ -66,27 +66,20 @@ void CartSupplier::_reachedPathway()
 {
   Walker::_reachedPathway();
   CityHelper helper( _d->city );
-  
+
   if( _pathwayRef().isReverse() )
   {
     // walker is back in the market
     deleteLater();
     // put the content of the stock to receiver
     BuildingPtr building = helper.find<Building>( building::any, _d->baseBuildingPos );
-
     GoodStore* storage = 0;
-    if( building.is<Factory>() )
-    {
-      storage = &building.as<Factory>()->getGoodStore();
-    }
-    else if( building.is<Granary>() )
-    {
-      storage = &building.as<Granary>()->getGoodStore();
-    }
-    else if( building.is<Warehouse>() )
-    {
-      storage = &building.as<Warehouse>()->getGoodStore();
-    }
+    FactoryPtr f = ptr_cast<Factory>( building );
+    GranaryPtr g = ptr_cast<Granary>( building );
+    WarehousePtr w = ptr_cast<Warehouse>( building );
+    if( f.isValid() ) { storage = &f->getGoodStore(); }
+    else if( g.isValid() ) { storage = &g->getGoodStore(); }
+    else if( w.isValid() ){ storage = &w->getGoodStore(); }
 
     if( storage )
     {
@@ -102,24 +95,19 @@ void CartSupplier::_reachedPathway()
   {
     // get goods from destination building
     BuildingPtr building = helper.find<Building>( building::any, _d->storageBuildingPos );
+    GoodStore* storage = 0;
+    FactoryPtr f = ptr_cast<Factory>( building );
+    GranaryPtr g = ptr_cast<Granary>( building );
+    WarehousePtr w = ptr_cast<Warehouse>( building );
+    if( f.isValid() ) { storage = &f->getGoodStore(); }
+    else if( g.isValid() ) { storage = &g->getGoodStore(); }
+    else if( w.isValid() ){ storage = &w->getGoodStore(); }
 
-    if( building.is<Granary>() )
+    if( storage )
     {
-      GranaryPtr granary = building.as<Granary>();
-      // this is a granary!
-      // std::cout << "MarketBuyer arrives at granary, res=" << _reservationID << std::endl;
-      granary->getGoodStore().applyRetrieveReservation( _d->stock, _d->reservationID );      
+      storage->applyRetrieveReservation(_d->stock, _d->reservationID);
+      _reserveStorage();
     }
-    else if( building.is<Warehouse>() )
-    {
-      WarehousePtr warehouse = building.as<Warehouse>();
-      // this is a warehouse!
-      // std::cout << "Market buyer takes IRON from warehouse" << std::endl;
-      // warehouse->retrieveGoods(_basket.getStock(G_IRON));
-      warehouse->getGoodStore().applyRetrieveReservation(_d->stock, _d->reservationID);
-    }
-
-    _reserveStorage();
 
     // walker is near the granary/warehouse
     _pathwayRef().rbegin();
@@ -189,10 +177,10 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
        pathWayIt != pathWayList.end(); ++pathWayIt)
   {
     // for every warehouse within range
-    BuildingPtr building= pathWayIt->first.as<Building>();
+    BuildingPtr building= ptr_cast<Building>( pathWayIt->first );
     PathwayPtr pathWay= pathWayIt->second;
 
-    SmartPtr< T > destBuilding = building.as< T >();
+    SmartPtr< T > destBuilding = ptr_cast<T>( building );
     int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
     if( qty > max_qty )
     {
@@ -224,7 +212,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   // get the list of buildings within reach
   Pathway pathWay;
   Propagator pathPropagator( _d->city );
-  pathPropagator.init( building.as<Construction>() );
+  pathPropagator.init( ptr_cast<Construction>( building ) );
   pathPropagator.setAllDirections( false );
   pathPropagator.propagate( _d->maxDistance);
 
@@ -273,18 +261,12 @@ void CartSupplier::_reserveStorage()
   BuildingPtr b = helper.find<Building>( building::any, _d->baseBuildingPos );
 
   GoodStore* storage = 0;
-  if( b.is<Factory>() )
-  {
-    storage = &b.as<Factory>()->getGoodStore();
-  }
-  else if( b.is<Granary>() )
-  {
-    storage = &b.as<Granary>()->getGoodStore();
-  }
-  else if( b.is<Warehouse>() )
-  {
-    storage = &b.as<Warehouse>()->getGoodStore();
-  }
+  FactoryPtr f = ptr_cast<Factory>( b );
+  GranaryPtr g = ptr_cast<Granary>( b );
+  WarehousePtr w = ptr_cast<Warehouse>( b );
+  if( f.isValid() ) { storage = &f->getGoodStore(); }
+  else if( g.isValid() ) { storage = &g->getGoodStore(); }
+  else if( w.isValid() ){ storage = &w->getGoodStore(); }
 
   if( storage != 0 )
   {

@@ -71,7 +71,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //houses
     case building::house:
       {
-        HousePtr house = overlay.as< House >();
+        HousePtr house = ptr_cast<House>( overlay );
         damageLevel = (int)house->getState( Construction::damage );
         needDrawAnimations = (house->getSpec().getLevel() == 1) && house->getHabitants().empty();
 
@@ -83,7 +83,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        BuildingPtr building = overlay.as< Building >();
+        BuildingPtr building = ptr_cast<Building>( overlay );
         if( building.isValid() )
         {
           damageLevel = (int)building->getState( Construction::damage );
@@ -126,7 +126,7 @@ void LayerDamage::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        ConstructionPtr constr = tile->getOverlay().as<Construction>();
+        ConstructionPtr constr = ptr_cast<Construction>( tile->getOverlay() );
         if( constr != 0 )
         {
           int damageLevel = math::clamp<int>( constr->getState( Construction::damage ), 0, 100 );

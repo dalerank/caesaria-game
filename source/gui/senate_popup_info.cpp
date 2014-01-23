@@ -81,9 +81,9 @@ void SenatePopupInfo::draw( GfxEngine& painter )
 
   Tile* tile = _d->mapRenderer->getCamera().at( cursorPos, false );
 
-  if( tile )
+  if( tile && tile->getOverlay().isValid() )
   {
-    SenatePtr senate = tile->getOverlay().as<Senate>();
+    SenatePtr senate = ptr_cast<Senate>( tile->getOverlay() );
 
     if( senate.isValid() )
     {

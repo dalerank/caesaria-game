@@ -31,8 +31,8 @@ UpdateController::UpdateController(IUpdateView& view, vfs::Path executableName, 
 	_progress = ProgressHandlerPtr( new ProgressHandler(_view) );
 	_progress->drop();
 
-	_updater.SetDownloadProgressCallback(_progress.as<updater::Updater::DownloadProgress>());
-	_updater.SetFileOperationProgressCallback(_progress.as<updater::Updater::FileOperationProgress>());
+	_updater.SetDownloadProgressCallback( ptr_cast<Updater::DownloadProgress>( _progress ));
+	_updater.SetFileOperationProgressCallback( ptr_cast<Updater::FileOperationProgress>( _progress ));
 }
 
 UpdateController::~UpdateController()

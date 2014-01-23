@@ -72,7 +72,7 @@ void BuildEvent::exec( Game& game )
 
     if( !_overlay->isDeleted() )
     {
-      ConstructionPtr construction = _overlay.as<Construction>();
+      ConstructionPtr construction = ptr_cast<Construction>( _overlay );
       if( construction.isValid() )
       {
         CityHelper helper( game.getCity() );
@@ -98,7 +98,7 @@ void BuildEvent::exec( Game& game )
           e->dispatch();
         }
 
-        WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
+        WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( construction );
         if( wb.isValid() && wb->getMaxWorkers() > 0 )
         {
           int worklessCount = CityStatistic::getWorklessNumber( game.getCity() );
@@ -112,7 +112,7 @@ void BuildEvent::exec( Game& game )
     }
     else
     {
-      ConstructionPtr construction = _overlay.as<Construction>();
+      ConstructionPtr construction = ptr_cast<Construction>( _overlay );
       if( construction.isValid() )
       {
         GameEventPtr e = WarningMessageEvent::create( construction->getError() );
@@ -148,16 +148,12 @@ void ClearLandEvent::exec( Game& game )
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    if( overlay.is<Construction>() )
+    ConstructionPtr constr = ptr_cast<Construction>(overlay);
+    if( constr.isValid() && !constr->canDestroy() )
     {
-      ConstructionPtr constr = overlay.as<Construction>();
-
-      if( !constr->canDestroy() )
-      {
-        GameEventPtr e = WarningMessageEvent::create( _( constr->getError() ) );
-        e->dispatch();
-        return;
-      }
+      GameEventPtr e = WarningMessageEvent::create( _( constr->getError().c_str() ) );
+      e->dispatch();
+      return;
     }
 
     if( overlay.isValid() )

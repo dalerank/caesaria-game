@@ -62,7 +62,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
   switch( walker->getType() )
   {
   case walker::taxCollector:
-    _d->taxValue += walker.as<TaxCollector>()->getMoney();
+    _d->taxValue += ptr_cast<TaxCollector>( walker )->getMoney();
   break;
 
   default:
@@ -116,7 +116,7 @@ void Senate::deliverService()
 
     if( !walker->isDeleted() )
     {
-      addWalker( walker.as<Walker>() );
+      addWalker( walker.object() );
     }
   }
 }

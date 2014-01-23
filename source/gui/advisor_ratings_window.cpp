@@ -114,7 +114,7 @@ void AdvisorRatingsWindow::Impl::drawColumn( const Point& center, const int valu
 
 void AdvisorRatingsWindow::Impl::checkCultureRating()
 {
-  SmartPtr< CityServiceCulture > culture = city->findService( CityServiceCulture::getDefaultName() ).as<CityServiceCulture>();
+  SmartPtr< CityServiceCulture > culture = ptr_cast<CityServiceCulture>( city->findService( CityServiceCulture::getDefaultName() ) );
 
   if( culture != 0 )
   {
@@ -140,7 +140,7 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
 
 void AdvisorRatingsWindow::Impl::checkProsperityRating()
 {
-  SmartPtr< CityServiceProsperity > prosperity = city->findService( CityServiceProsperity::getDefaultName() ).as<CityServiceProsperity>();
+  SmartPtr< CityServiceProsperity > prosperity = ptr_cast<CityServiceProsperity>( city->findService( CityServiceProsperity::getDefaultName() ) );
 
   if( prosperity != 0 )
   {

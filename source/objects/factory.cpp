@@ -208,7 +208,7 @@ void Factory::deliverGood()
     //success to send cartpusher
     if( !walker->isDeleted() )
     {
-      addWalker( walker.as<Walker>() );
+      addWalker( walker.object() );
     }
     else
     {
@@ -290,7 +290,7 @@ void Factory::receiveGood()
 
     if( !walker->isDeleted() )
     {
-      addWalker( walker.as<Walker>() );
+      addWalker( walker.object() );
     }
   }
 }

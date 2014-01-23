@@ -207,7 +207,7 @@ void DivinePantheon::doFestival( RomeDivinityType who, int type )
   RomeDivinityPtr divn = get( who );
   if( divn.isValid() )
   {
-    divn.as<RomeDivinityBase>()->assignFestival( type );
+    ptr_cast<RomeDivinityBase>(divn)->assignFestival( type );
   }
 }
 

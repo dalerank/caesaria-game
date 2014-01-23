@@ -34,7 +34,7 @@ namespace gui
 InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
-  FactoryPtr factory = tile.getOverlay().as<Factory>();
+  FactoryPtr factory = ptr_cast<Factory>( tile.getOverlay() );
   _type = factory->getType();
   std::string  title = MetaDataHolder::getPrettyName( factory->getType() );
   setTitle( _(title) );
@@ -91,7 +91,7 @@ std::string InfoboxFactory::getInfoText( FactoryPtr factory )
 InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
   : InfoboxFactory( parent, tile )
 {
-  ShipyardPtr shipyard = tile.getOverlay().as<Shipyard>();
+  ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.getOverlay() );
 
   int progressCount = shipyard->getProgress();
   if( progressCount > 1 && progressCount < 100 )
@@ -106,7 +106,7 @@ InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
 InfoboxWharf::InfoboxWharf(Widget* parent, const Tile& tile)
   : InfoboxFactory( parent, tile )
 {
-  WharfPtr wharf = tile.getOverlay().as<Wharf>();
+  WharfPtr wharf = ptr_cast<Wharf>( tile.getOverlay() );
 
   if( wharf->getBoat().isNull() )
   {

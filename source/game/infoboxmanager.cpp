@@ -60,7 +60,7 @@ class InfoBoxHouseCreator : public InfoboxCreator
 public:
   gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    HousePtr house = city->getOverlay( pos ).as<House>();
+    HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
     if( house->getHabitants().count() > 0 )
     {
       return new InfoBoxHouse( parent, city->getTilemap().at( pos ) );
@@ -110,7 +110,7 @@ public:
   gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     Size  size = parent->getSize();
-    WorkingBuildingPtr building = city->getOverlay( pos ).as<WorkingBuilding>();
+    WorkingBuildingPtr building = ptr_cast<WorkingBuilding>( city->getOverlay( pos ) );
     if( building.isValid() )
     {
       InfoBoxWorkingBuilding* infoBox = new InfoBoxWorkingBuilding( parent, building );

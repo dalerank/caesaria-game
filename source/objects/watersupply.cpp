@@ -217,7 +217,7 @@ void WaterSource::_produceWater( const TilePos* points, const int size )
       continue;
     }
 
-    SmartPtr< WaterSource > ws = tilemap.at( pos ).getOverlay().as<WaterSource>();
+    SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( pos ).getOverlay() );
     
     if( ws.isValid() )
     {     

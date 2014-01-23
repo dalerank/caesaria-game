@@ -66,7 +66,7 @@ void FortLegionnaire::_readyNewSoldier()
     if( (*tile)->isWalkable( true ) )
     {
       soldier->send2city( this, (*tile)->getIJ() );
-      addWalker( soldier.as<Walker>() );
+      addWalker( soldier.object() );
       return;
     }
   }
@@ -113,7 +113,7 @@ void FortArea::destroy()
 {
   Building::destroy();
 
-  FortPtr fort = _getCity()->getOverlay( _d->basePos ).as< Fort >();
+  FortPtr fort = ptr_cast<Fort>( _getCity()->getOverlay( _d->basePos ) );
   if( fort.isValid() )
   {
     events::GameEventPtr e = events::ClearLandEvent::create( _d->basePos );
@@ -264,7 +264,7 @@ void Fort::changePatrolArea()
 
   foreach( it, walkers )
   {
-    RomeSoldierPtr soldier = it->as<RomeSoldier>();
+    RomeSoldierPtr soldier = ptr_cast<RomeSoldier>( *it );
     if( soldier.isValid() )
     {
       soldier->send2patrol();
@@ -313,7 +313,7 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
   _d->area->build( city, pos + TilePos( 3, 0 ) );
   _d->area->setBase( this );
 
-  city->addOverlay( _d->area.as<TileOverlay>() );
+  city->addOverlay( _d->area.object() );
 
   _fgPicturesRef().resize(1);
 }
@@ -349,7 +349,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
   PatrolPointPtr ptr( pp );
   ptr->drop();
 
-  city->addWalker( ptr.as<Walker>() );
+  city->addWalker( ptr.object() );
   return ptr;
 }
 
@@ -372,7 +372,7 @@ void PatrolPoint::timeStep(const unsigned long time)
 
 void PatrolPoint::acceptPosition()
 {
-  FortPtr fort = _getCity()->getOverlay( _d->basePos ).as< Fort >();
+  FortPtr fort = ptr_cast<Fort>( _getCity()->getOverlay( _d->basePos ) );
   if( fort.isValid() )
   {
     fort->changePatrolArea();

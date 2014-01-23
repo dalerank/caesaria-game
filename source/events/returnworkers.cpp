@@ -44,7 +44,7 @@ void ReturnWorkers::exec(Game& game)
                                                  _center + TilePos( curRange, curRange ) );
     foreach( tile, perimetr )
     {
-      HousePtr house = (*tile)->getOverlay().as<House>();
+      HousePtr house = ptr_cast< House >( (*tile)->getOverlay() );
       if( house.isValid() )
       {
         int lastWorkersCount = house->getServiceValue( Service::recruter );

@@ -43,7 +43,7 @@ public:
     TileOverlayList& buildings = _city->getOverlays();
     foreach( item, buildings )
     {
-      SmartPtr< T > b = (*item).as<T>();
+      SmartPtr< T > b = ptr_cast< T >(*item);
       if( b.isValid() && (b->getClass() == group || group == constants::building::anyGroup ) )
       {
         ret.push_back( b );
@@ -60,7 +60,7 @@ public:
     TileOverlayPtr overlay = _city->getOverlay( pos );
     if( overlay.isValid() && (overlay->getType() == type || type == constants::building::any) )
     {
-      return overlay.as< T >();
+      return ptr_cast< T >( overlay );
     }
 
     return SmartPtr<T>();
@@ -75,9 +75,10 @@ public:
     WalkerList walkers = _city->getWalkers( type, start, stop );
     foreach( w, walkers )
     {
-      if( (*w).is<T>() )
+      SmartPtr< T > ptr = ptr_cast<T>( *w );
+      if( ptr.isValid() )
       {
-        ret.push_back( (*w).as<T>() );
+        ret.push_back( ptr );
       }
     }
 
@@ -92,7 +93,7 @@ public:
     TilesArray area = getArea( start, stop );
     foreach( tile, area )
     {
-      SmartPtr<T> obj = (*tile)->getOverlay().as<T>();
+      SmartPtr<T> obj = ptr_cast< T >( (*tile)->getOverlay() );
       if( obj.isValid() && (obj->getType() == type || type == constants::building::any) )
       {
         tmp.insert( obj );
@@ -117,7 +118,7 @@ public:
 
     foreach( tile, area )
     {
-      SmartPtr<T> obj = (*tile)->getOverlay().as<T>();
+      SmartPtr<T> obj = ptr_cast< T >((*tile)->getOverlay());
       if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
       {
         tmp.insert( obj );
@@ -154,7 +155,7 @@ std::list< SmartPtr< T > > CityHelper::find( const TileOverlay::Type type )
   TileOverlayList& buildings = _city->getOverlays();
   foreach( item, buildings )
   {
-    SmartPtr< T > b = item->as<T>();
+    SmartPtr< T > b = ptr_cast<T>( *item );
     if( b.isValid() && (b->getType() == type || type == constants::building::any ) )
     {
       ret.push_back( b );
@@ -171,7 +172,7 @@ std::list< SmartPtr< T > > CityHelper::getProducers( const Good::Type goodtype )
   TileOverlayList& overlays = _city->getOverlays();
   foreach( item, overlays )
   {
-    SmartPtr< T > b = item->as<T>();
+    SmartPtr< T > b = ptr_cast<T>( *item );
     if( b.isValid() && b->getOutGoodType() == goodtype )
     {
       ret.push_back( b );

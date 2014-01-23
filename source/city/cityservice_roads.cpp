@@ -78,7 +78,7 @@ void CityServiceRoads::update( const unsigned int time )
 
     foreach( b, tmp )
     {
-      positions.push_back( Impl::UpdateInfo( b->as<Construction>(), 10 ) );
+      positions.push_back( Impl::UpdateInfo( b->object(), 10 ) );
     }
   }
 
@@ -87,7 +87,7 @@ void CityServiceRoads::update( const unsigned int time )
   {
     if( (*house)->getSpec().getLevel() >= House::bigMansion )
     {
-      positions.push_back( Impl::UpdateInfo( (*house).as<Construction>(), 5 ) );
+      positions.push_back( Impl::UpdateInfo( house->object(), 5 ) );
     }
   }
 
@@ -118,7 +118,7 @@ void CityServiceRoads::Impl::updateRoadsAround( UpdateInfo info )
     const TilesArray& tiles = (*current)->getAllTiles();
     for( TilesArray::const_iterator it=tiles.begin(); it != tiles.end(); it++ )
     {
-      RoadPtr road = (*it)->getOverlay().as<Road>();
+      RoadPtr road = ptr_cast<Road>( (*it)->getOverlay() );
       if( road.isValid() )
       {
         road->appendPaved( defaultIncreasePaved );

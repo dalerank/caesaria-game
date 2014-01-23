@@ -296,7 +296,7 @@ void PlayerCity::timeStep( unsigned int time )
     {
       TileOverlayPtr overlay = *it;
       // for each overlay
-      ConstructionPtr construction = overlay.as<Construction>();
+      ConstructionPtr construction = ptr_cast<Construction>( overlay );
       if( construction != NULL )
       {
         // overlay matches the filter
@@ -304,7 +304,7 @@ void PlayerCity::timeStep( unsigned int time )
         // for some constructions we need to update picture
         if( construction->getType() == construction::road )
         {
-          RoadPtr road = construction.as<Road>();
+          RoadPtr road = ptr_cast<Road>( construction );
           road->updatePicture();
         }
       }
@@ -428,10 +428,11 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
 void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay)
 {
-  if( overlay.is<Construction>() )
+  ConstructionPtr constr = ptr_cast<Construction>( overlay );
+  if( constr.isValid() )
   {
     CityHelper helper( city );
-    helper.updateDesirability( overlay.as<Construction>(), false );
+    helper.updateDesirability( constr, false );
   }
 }
 
@@ -605,8 +606,8 @@ void PlayerCity::addService( CityServicePtr service ) {  _d->services.push_back(
 
 int PlayerCity::getProsperity() const
 {
-  CityServicePtr csPrsp = findService( CityServiceProsperity::getDefaultName() );
-  return csPrsp.isValid() ? csPrsp.as<CityServiceProsperity>()->getValue() : 0;
+  SmartPtr<CityServiceProsperity> csPrsp = ptr_cast<CityServiceProsperity>( findService( CityServiceProsperity::getDefaultName() ) );
+  return csPrsp.isValid() ? csPrsp->getValue() : 0;
 }
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
@@ -621,8 +622,8 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::getCulture() const
 {
-  CityServicePtr csPrsp = findService( CityServiceCulture::getDefaultName() );
-  return csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
+  SmartPtr<CityServiceCulture> csClt = ptr_cast<CityServiceCulture>( findService( CityServiceCulture::getDefaultName() ) );
+  return csClt.isValid() ? csClt->getValue() : 0;
 }
 
 int PlayerCity::getPeace() const
@@ -641,12 +642,12 @@ void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
 {
   if( merchant->isSeaRoute() )
   {
-    WalkerPtr cityMerchant = SeaMerchant::create( this, merchant );
-    cityMerchant.as<SeaMerchant>()->send2city();
+    SeaMerchantPtr cityMerchant = ptr_cast<SeaMerchant>( SeaMerchant::create( this, merchant ) );
+    cityMerchant->send2city();
   }
   else
   {
-    WalkerPtr cityMerchant = Merchant::create( this, merchant );
-    cityMerchant.as<Merchant>()->send2city();
+    MerchantPtr cityMerchant = ptr_cast<Merchant>( Merchant::create( this, merchant ) );
+    cityMerchant->send2city();
   }
 }

@@ -68,7 +68,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
         foreach( tile, tiles)
         {
-          BuildingPtr b = (*tile)->getOverlay().as<Building>();
+          BuildingPtr b = ptr_cast<Building>( (*tile)->getOverlay() );
           if( b.isValid() && b->getClass() != building::disasterGroup )
           {
             b->updateState( Construction::fire, 0.5 );
@@ -93,7 +93,7 @@ void BurningRuins::destroy()
   p->drop();
   p->setInfo( getInfo() );
 
-  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), p.as<TileOverlay>() );
+  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), p.object() );
   event->dispatch();
 }
 
@@ -272,7 +272,7 @@ void PlagueRuins::destroy()
   p->drop();
   p->setInfo( getInfo() );
 
-  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), p.as<TileOverlay>() );
+  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), p.object() );
   event->dispatch();
 }
 

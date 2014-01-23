@@ -91,7 +91,7 @@ public:
 
   virtual void init( TileOverlayPtr a, const MetaData& info )
   {
-    ConstructionPtr construction = a.as<Construction>();
+    ConstructionPtr construction = ptr_cast<Construction>( a );
     if( construction == 0 )
       return;
 
@@ -129,7 +129,7 @@ public:
   {
     ConstructionCreator<T>::init( a, info );
 
-    WorkingBuildingPtr wb = a.as<WorkingBuilding>();
+    WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( a );
     if( wb != 0 )
     {
       wb->setMaxWorkers( (int)info.getOption( "employers" ) );
@@ -144,7 +144,7 @@ public:
   {
     WorkingBuildingCreator<T>::init( a, info );
 
-    FactoryPtr f = a.as<Factory>();
+    FactoryPtr f = ptr_cast<Factory>( a );
     if( f.isValid() )
     {
       f->setProductRate( (float)info.getOption( "productRate", 9.6 ) );

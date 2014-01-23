@@ -76,7 +76,7 @@ void Market::deliverService()
 
     if( !buyer->isDeleted() )
     {
-      addWalker( buyer.as<Walker>() );
+      addWalker( buyer.object() );
     }
     else if( _d->isAnyGoodStored() )
     {
@@ -162,7 +162,7 @@ void Market::timeStep(const unsigned long time)
     WalkerList walkers = getWalkers();
     if( walkers.size() > 0 && _d->goodStore.getQty() == 0 )
     {
-      ServiceWalkerPtr walker = walkers.front().as<ServiceWalker>();
+      ServiceWalkerPtr walker = ptr_cast<ServiceWalker>( walkers.front() );
       if( walker.isValid() )
       {
         walker->return2Base();

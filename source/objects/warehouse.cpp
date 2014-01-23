@@ -470,7 +470,7 @@ void Warehouse::_resolveDevastationMode()
         {
           GoodStock tmpStock( (Good::Type)goodType, goodQty );;
           _d->goodStore.retrieve( tmpStock, goodQty );
-          addWalker( walker.as<Walker>() );
+          addWalker( walker.object() );
         }
       }
     }   

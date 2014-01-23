@@ -106,7 +106,7 @@ void Prefecture::deliverService()
     
     walker->send2City( PrefecturePtr( this ), fireDetect ? 200 : 0 );
 
-    addWalker( walker.as<Walker>() );
+    addWalker( walker.object() );
   }
 }
 

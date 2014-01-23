@@ -39,11 +39,8 @@ void TaxCollector::_centerTile()
   ReachedBuildings buildings = getReachedBuildings( getIJ() );
   foreach( it, buildings )
   {
-    HousePtr house = it->as<House>();
-    if( house.isValid() )
-    {
-      _d->money += house->collectTaxes();
-    }
+    HousePtr house = ptr_cast<House>( *it );
+    _d->money += house.isValid() ? house->collectTaxes() : 0;
   }
 }
 

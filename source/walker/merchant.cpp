@@ -84,8 +84,8 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
   DirectRoutes::iterator routeIt = routes.begin();
   while( routeIt != routes.end() )
   {
-    // for every warehouse in range
-    WarehousePtr warehouse = routeIt->first.as< Warehouse >();
+    // for every warehouse within range
+    WarehousePtr warehouse = ptr_cast<Warehouse>( routeIt->first );
 
     int rating = 0;
     for( int i=Good::wheat; i<Good::goodCount; i++ )
@@ -116,7 +116,7 @@ DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
   while( pathWayIt != pathWayList.end() )
   {
     // for every warehouse within range
-    WarehousePtr warehouse= pathWayIt->first.as< Warehouse >();
+    WarehousePtr warehouse= ptr_cast<Warehouse>( pathWayIt->first );
 
     if( warehouse->getGoodStore().getFreeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
     else { pathWayIt++; }    

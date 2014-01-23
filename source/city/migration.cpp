@@ -47,7 +47,7 @@ public:
 
   CityServiceInfo::Parameters getLastParams()
   {
-    SmartPtr< CityServiceInfo > info = city->findService( CityServiceInfo::getDefaultName() ).as<CityServiceInfo>();
+    SmartPtr<CityServiceInfo> info = ptr_cast<CityServiceInfo>( city->findService( CityServiceInfo::getDefaultName() ) );
 
     CityServiceInfo::Parameters params;
     if( info.isValid() )
