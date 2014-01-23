@@ -83,7 +83,7 @@ int Picture::getWidth() const{  return _d->size.getWidth();}
 int Picture::getHeight() const{  return _d->size.getHeight();}
 void Picture::setName(std::string &name){  _d->name = name;}
 std::string Picture::getName() const{  return _d->name;}
-Size Picture::getSize() const{  return _d->size;}
+Size Picture::getSize() const{  return _d->size; }
 bool Picture::isValid() const{  return _d->surface != 0;}
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
 Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}

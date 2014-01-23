@@ -52,24 +52,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-class PatrolPoint : public Walker
-{
-public:
-  static PatrolPointPtr create( PlayerCityPtr city, FortPtr base,
-                                std::string prefix, int startPos, int stepNumber, TilePos position );
-
-  virtual void getPictureList(PicturesArray& oPics);
-  virtual void timeStep(const unsigned long time);
-
-  void acceptPosition();
-
-protected:
-  PatrolPoint( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
 class FortLegionnaire : public Fort
 {
 public:  

@@ -33,7 +33,7 @@ namespace gui
 {
 
 InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
   SenatePtr senate = ptr_cast<Senate>( tile.getOverlay() );
   setTitle( MetaDataHolder::instance().getData( building::senate ).getPrettyName() );

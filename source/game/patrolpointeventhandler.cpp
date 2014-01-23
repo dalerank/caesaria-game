@@ -20,6 +20,7 @@
 #include "game.hpp"
 #include "city/city.hpp"
 #include "objects/military.hpp"
+#include "walker/patrolpoint.hpp"
 
 using namespace constants;
 

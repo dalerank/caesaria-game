@@ -30,7 +30,7 @@ namespace gui
 {
 
 InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
   _warehouse = ptr_cast<Warehouse>( tile.getOverlay() );
 

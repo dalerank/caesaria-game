@@ -28,8 +28,8 @@ using namespace constants;
 namespace gui
 {
 
-InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
-  : InfoBoxSimple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) )
+InfoboxCitizen::InfoboxCitizen(Widget* parent, const WalkerList& walkers )
+  : InfoboxSimple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxcitizen.gui") );
 
@@ -79,7 +79,7 @@ InfoBoxCitizen::InfoBoxCitizen(Widget* parent, const WalkerList& walkers )
   }
 }
 
-InfoBoxCitizen::~InfoBoxCitizen()
+InfoboxCitizen::~InfoboxCitizen()
 {
 }
 

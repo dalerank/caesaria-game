@@ -47,11 +47,9 @@ struct ButtonState
   PictureRef background;
   PictureRef textPicture;
   Picture iconTexture;
-  //SDL_Color color;
-  //bool overrideColorEnabled;
+  Point iconOffset;
   Font font;
   Rect rectangle;
-  //ElementStyle* style;
 };
 
 class PushButton::Impl
@@ -262,9 +260,9 @@ bool PushButton::isPushButton() const
   return _d->isPushButton;
 }
 
-void PushButton::setPicture( const Picture& picture, ElementState state )
+void PushButton::setPicture(Picture picture, ElementState state )
 {
-  Rect rectangle( Point(0,0), picture.isValid() ? picture.getSize() : Size( 0, 0 ) );
+  Rect rectangle( Point(0,0), picture.getSize() );
 
   _d->buttonStates[ state ].bgTexture = picture;
   _d->buttonStates[ state ].rectangle = rectangle;
@@ -274,6 +272,37 @@ void PushButton::setPicture( const Picture& picture, ElementState state )
 void PushButton::setPicture(const std::string& rcname, int index, ElementState state)
 {
   setPicture( Picture::load( rcname, index ), state );
+}
+
+void PushButton::setIcon( const std::string& rcname, int index, ElementState state)
+{
+  _d->buttonStates[ state ].iconTexture = Picture::load( rcname, index );
+}
+
+void PushButton::setIconOffset(Point offset)
+{
+  for( int i=stNormal; i < StateCount; i++ )
+  {
+    _d->buttonStates[ i ].iconOffset = offset;
+  }
+}
+
+void PushButton::setIcon(const std::string& rcname, int index)
+{
+  Picture pic = Picture::load( rcname, index );
+  for( int i=stNormal; i < StateCount; i++ )
+  {
+    _d->buttonStates[ i ].iconTexture = pic;
+  }
+}
+
+void PushButton::setPicture( const std::string& rcname, int index )
+{
+  Picture pic = Picture::load( rcname, index );
+  for( int i=stNormal; i < StateCount; i++ )
+  {
+    setPicture( pic, (ElementState)i );
+  }
 }
 
 void PushButton::setPressed( bool pressed )
@@ -492,13 +521,15 @@ void PushButton::draw( GfxEngine& painter )
 
 void PushButton::drawIcon( GfxEngine& painter )
 {
-  const Picture& iconTexture = _d->buttonStates[ _d->currentButtonState ].iconTexture;
+  const ButtonState& bstate = _d->buttonStates[ _d->currentButtonState ];
+
+  const Picture& iconTexture = bstate.iconTexture;
 
   if( !iconTexture.isValid() )
       return;
 
   Point pos = convertLocalToScreen( _d->iconRect ).UpperLeftCorner;
-  painter.drawPicture( iconTexture, pos.x(), pos.y() );
+  painter.drawPicture( iconTexture, pos + bstate.iconOffset );
 }
 
 void PushButton::setText( const std::string& text )

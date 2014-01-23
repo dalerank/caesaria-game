@@ -31,7 +31,7 @@ namespace gui
 {
 
 InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##fountain##") );
 
@@ -68,7 +68,7 @@ void InfoBoxFontain::showDescription()
 }
 
 InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
+  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
 {
   setTitle( "##well##" );
 

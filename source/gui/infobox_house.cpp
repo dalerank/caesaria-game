@@ -58,7 +58,7 @@ namespace gui
 {
 
 InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   HousePtr house = ptr_cast<House>( tile.getOverlay() );
   setTitle( _(house->getSpec().getLevelName()) );

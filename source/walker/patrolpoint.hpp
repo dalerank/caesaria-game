@@ -12,24 +12,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
-#define _CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
+#ifndef __CAESARIA_PATROLPOINT_H_INCLUDED__
+#define __CAESARIA_PATROLPOINT_H_INCLUDED__
 
-#include "info_box.hpp"
+#include "walker.hpp"
 
-namespace gui
-{
-
-// info box about a fontain
-class InfoBoxFontain : public InfoboxSimple
+class PatrolPoint : public Walker
 {
 public:
-   InfoBoxFontain( Widget* parent, const Tile& tile );
-   virtual ~InfoBoxFontain();
+  static PatrolPointPtr create( PlayerCityPtr city, FortPtr base,
+                                std::string prefix, int startPos, int stepNumber, TilePos position );
 
-   virtual void showDescription();
+  virtual void getPictureList(PicturesArray& oPics);
+  virtual void timeStep(const unsigned long time);
+
+  void acceptPosition();
+
+protected:
+  PatrolPoint( PlayerCityPtr city );
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-}//end namespace gui
-#endif //_CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
+#endif //__CAESARIA_MILITARY_BUILDING_H_INCLUDED__

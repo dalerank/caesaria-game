@@ -34,7 +34,7 @@ GameEventPtr ShowTileInfo::create( TilePos pos )
 
 void ShowTileInfo::exec(Game& game)
 {
-  InfoBoxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos );
+  InfoboxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos );
 }
 
 }

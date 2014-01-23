@@ -32,7 +32,7 @@ namespace gui
 {
 
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
   _granary = ptr_cast<Granary>( tile.getOverlay() );
   Size btnOrdersSize( 350, 20 );

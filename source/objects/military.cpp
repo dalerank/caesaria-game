@@ -24,6 +24,7 @@
 #include "walker/romesoldier.hpp"
 #include "core/logger.hpp"
 #include "events/event.hpp"
+#include "walker/patrolpoint.hpp"
 
 using namespace constants;
 
@@ -321,60 +322,4 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
 bool Fort::isNeedRoadAccess() const
 {
   return false;
-}
-
-class PatrolPoint::Impl
-{
-public:
-  Animation animation;
-  Picture standart;
-  TilePos basePos;
-};
-
-PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
-                                    std::string prefix, int startPos, int stepNumber, TilePos position)
-{
-  PatrolPoint* pp = new PatrolPoint( city );
-  pp->_d->standart = Picture::load( ResourceGroup::sprites, 58 );
-  pp->_d->basePos = base->getTilePos();
-
-  Point extOffset( 15, 0 );
-  Animation anim;
-  anim.load( prefix, startPos, stepNumber );
-  anim.setOffset( anim.getOffset() + Point( 0, 52 )  + extOffset );
-  pp->_d->standart.addOffset( extOffset.x(), extOffset.y() );
-
-  pp->_d->animation = anim;
-  pp->setIJ( position );
-  PatrolPointPtr ptr( pp );
-  ptr->drop();
-
-  city->addWalker( ptr.object() );
-  return ptr;
-}
-
-void PatrolPoint::getPictureList(PicturesArray& oPics)
-{
-  oPics.push_back( _d->standart );
-  oPics.push_back( _d->animation.getFrame() );
-}
-
-PatrolPoint::PatrolPoint( PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
-{
-  _setType( walker::patrolPoint );
-}
-
-void PatrolPoint::timeStep(const unsigned long time)
-{
-  _d->animation.update( time );
-}
-
-void PatrolPoint::acceptPosition()
-{
-  FortPtr fort = ptr_cast<Fort>( _getCity()->getOverlay( _d->basePos ) );
-  if( fort.isValid() )
-  {
-    fort->changePatrolArea();
-  }
 }

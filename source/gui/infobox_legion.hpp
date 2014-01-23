@@ -13,23 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
-#define _CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
+#ifndef _CAESARIA_INFOBOX_LEGION_H_INCLUDE_
+#define _CAESARIA_INFOBOX_LEGION_H_INCLUDE_
+
+#include <string>
+#include <list>
 
 #include "info_box.hpp"
 
 namespace gui
 {
 
-// info box about a fontain
-class InfoBoxFontain : public InfoboxSimple
+class InfoboxLegion : public InfoboxSimple
 {
 public:
-   InfoBoxFontain( Widget* parent, const Tile& tile );
-   virtual ~InfoBoxFontain();
-
-   virtual void showDescription();
+  InfoboxLegion(Widget* parent, PatrolPointPtr patrolPoint );
+  virtual ~InfoboxLegion();
 };
 
 }//end namespace gui
-#endif //_CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
+#endif //_CAESARIA_INFOBOX_LEGION_H_INCLUDE_

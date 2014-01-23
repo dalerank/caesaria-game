@@ -60,7 +60,7 @@ using namespace constants;
 namespace gui
 {
 
-class InfoBoxSimple::Impl
+class InfoboxSimple::Impl
 {
 public:
   Label* lbBackground;
@@ -80,7 +80,7 @@ public:
   }
 };
 
-InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blackArea, int id )
+InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blackArea, int id )
 : Widget( parent, id, rect ), _d( new Impl )
 {
   _d->autopause.activate();
@@ -98,8 +98,8 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
   if( _d->btnExit ) { _d->btnExit->setPosition( Point( getWidth() - 39, getHeight() - 39 ) ); }
   if( _d->btnHelp ) { _d->btnHelp->setPosition( Point( 14, getHeight() - 39 ) ); }
 
-  CONNECT( _d->btnExit, onClicked(), this, InfoBoxSimple::deleteLater );
-  CONNECT( _d->btnHelp, onClicked(), this, InfoBoxSimple::showDescription );
+  CONNECT( _d->btnExit, onClicked(), this, InfoboxSimple::deleteLater );
+  CONNECT( _d->btnHelp, onClicked(), this, InfoboxSimple::showDescription );
 
   // black box
   Point lastPos( getWidth() - 32, getHeight() - 48 );
@@ -120,27 +120,27 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
   _afterCreate();
 }
 
-void InfoBoxSimple::setText( const std::string& text )
+void InfoboxSimple::setText( const std::string& text )
 {
   if( _d->lbText ) { _d->lbText->setText( text ); }
 }
 
-InfoBoxSimple::~InfoBoxSimple()
+InfoboxSimple::~InfoboxSimple()
 {
 }
 
-void InfoBoxSimple::draw( GfxEngine& engine )
+void InfoboxSimple::draw( GfxEngine& engine )
 {
   Widget::draw( engine );
 }
 
-bool InfoBoxSimple::isPointInside( const Point& point ) const
+bool InfoboxSimple::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
   return getParent()->getAbsoluteRect().isPointInside( point );
 }
 
-bool InfoBoxSimple::onEvent( const NEvent& event)
+bool InfoboxSimple::onEvent( const NEvent& event)
 {
   switch( event.EventType )
   {
@@ -163,28 +163,28 @@ bool InfoBoxSimple::onEvent( const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void InfoBoxSimple::setTitle( const std::string& title )
+void InfoboxSimple::setTitle( const std::string& title )
 {
   if( _d->lbTitle ) { _d->lbTitle->setText( title ); }
 }
 
-bool InfoBoxSimple::isAutoPosition() const{  return _d->isAutoPosition;}
-void InfoBoxSimple::setAutoPosition( bool value ){  _d->isAutoPosition = value;}
+bool InfoboxSimple::isAutoPosition() const{  return _d->isAutoPosition;}
+void InfoboxSimple::setAutoPosition( bool value ){  _d->isAutoPosition = value;}
 
-void InfoBoxSimple::setupUI(const VariantMap& ui)
+void InfoboxSimple::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
   _d->isAutoPosition = ui.get( "autoPosition", true );
 }
 
-Label* InfoBoxSimple::_getTitle(){  return _d->lbTitle;}
+Label* InfoboxSimple::_getTitle(){  return _d->lbTitle;}
 
-Label*InfoBoxSimple::_getInfo(){ return _d->lbText; }
-Label* InfoBoxSimple::_getBlackFrame(){  return _d->lbBlackFrame; }
-PushButton*InfoBoxSimple::_getBtnExit() { return _d->btnExit; }
+Label*InfoboxSimple::_getInfo(){ return _d->lbText; }
+Label* InfoboxSimple::_getBlackFrame(){  return _d->lbBlackFrame; }
+PushButton*InfoboxSimple::_getBtnExit() { return _d->btnExit; }
 
-void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
+void InfoboxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
   _d->lbBlackFrame->setVisible( need > 0 );
   if( !_d->lbBlackFrame || 0 == need)
@@ -200,7 +200,7 @@ void InfoBoxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
 }
 
 InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
   _working = building;
 
@@ -243,7 +243,7 @@ void InfoBoxWorkingBuilding::showDescription()
 }
 
 InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
   TemplePtr temple = ptr_cast<Temple>( tile.getOverlay() );
   RomeDivinityPtr divn = temple->getDivinity();
@@ -265,91 +265,14 @@ InfoBoxTemple::~InfoBoxTemple()
 }
 
 InfoBoxBuilding::InfoBoxBuilding( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
+  : InfoboxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
   BuildingPtr building = ptr_cast<Building>( tile.getOverlay() );
   setTitle( MetaDataHolder::getPrettyName( building->getType() ) );
 }
 
-InfoBoxLand::InfoBoxLand( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
-{ 
-  Label* lbText = new Label( this, Rect( 38, 239, 470, 338 ), "", true, Label::bgNone, lbTextId );
-  lbText->setFont( Font::create( FONT_2 ) );
-  lbText->setWordwrap( true );
-
-  if( tile.getFlag( Tile::tlTree ) )
-  {
-    setTitle( _("##trees_and_forest_caption##") );
-    lbText->setText( _("##trees_and_forest_text##"));
-  } 
-  else if( tile.getFlag( Tile::tlWater ) )
-  {
-    setTitle( _("##water_caption##") );
-    lbText->setText( _("##water_text##"));
-  }
-  else if( tile.getFlag( Tile::tlRock ) )
-  {
-    setTitle( _("##rock_caption##") );
-    lbText->setText( _("##rock_text##"));
-  }
-  else if( tile.getFlag( Tile::tlRoad ) )
-  {
-    if( tile.getOverlay()->getType() == construction::plaza )
-    {
-      setTitle( _("##plaza_caption##") );
-      lbText->setText( _("##plaza_text##"));
-    }
-    else 
-    {
-      setTitle( _("##road_caption##") );
-      lbText->setText( _("##road_text##"));
-    }
-  }
-  else if( tile.getFlag( Tile::tlMeadow ) )
-  {
-    setTitle( _("##meadow_caption##") );
-    lbText->setText( _("##meadow_text##"));
-  }
-  else 
-  {
-    setTitle( _("##clear_land_caption##") );
-    lbText->setText( _("##clear_land_text##"));
-  }
-  
-  //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
-
-  std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) ID:%04X",
-                                           tile.getI(), tile.getJ(),  
-                                          ((short int) tile.getOriginalImgId() ) );
-  
-  lbText->setText( text );
-}
-
-void InfoBoxLand::setText( const std::string& text )
-{
-  if( Widget* lb = findChild( lbTextId ) )
-    lb->setText( text );
-}
-
-InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
-    : InfoBoxLand( parent, tile )
-{
-    setTitle( _("##freehouse_caption##") );
-
-    ConstructionPtr cnst = ptr_cast<Construction>( tile.getOverlay() );
-    if( cnst.isValid() && cnst->getAccessRoads().size() == 0 )
-    {
-      setText( _("##freehouse_text_noroad##") );
-    }
-    else
-    {
-      setText( _("##freehouse_text##") );
-    }
-}   
-
 InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   CollosseumPtr colloseum = ptr_cast<Collosseum>(tile.getOverlay());
   setTitle( MetaDataHolder::getPrettyName( building::colloseum ) );
@@ -376,7 +299,7 @@ InfoBoxColosseum::~InfoBoxColosseum()
 }
 
 InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::string& message)
-  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );
   _d->isAutoPosition = false;
