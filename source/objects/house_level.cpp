@@ -120,7 +120,12 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minEntertainmentLevel )
   {
     res = false;
-    ref = "##missing_entertainment##";
+    switch( _d->minEntertainmentLevel / 20 )
+    {
+    case 1: ref = "##missing_entertainment##"; break;
+    case 2: ref = "##missing_entertainment_amph##"; break;
+    case 3: ref =
+    }
   }
 
   value = computeEducationLevel( house, reason );
@@ -523,8 +528,8 @@ HouseLevelSpec::~HouseLevelSpec()
 HouseLevelSpec::HouseLevelSpec() : _d( new Impl )
 {
   _d->srvcInterval = GameDate::getTickInMonth() / 16;
-  _d->foodInterval = GameDate::getTickInMonth() / 2;
-  _d->goodInterval = GameDate::getTickInMonth();
+  _d->foodInterval = GameDate::getTickInMonth();
+  _d->goodInterval = GameDate::getTickInMonth() / 2;
 }
 
 HouseLevelSpec::HouseLevelSpec( const HouseLevelSpec& other ) : _d( new Impl )

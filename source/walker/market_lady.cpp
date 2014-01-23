@@ -250,7 +250,7 @@ void MarketLady::_reachedPathway()
 
       while( _d->basket.getQty() > 100 )
       {
-        for( int gtype=Good::none; gtype <= Good::goodCount ; gtype++ )
+        for( int gtype=Good::wheat; gtype < Good::goodCount ; gtype++ )
         {
           GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
           if( currentStock.qty() > 0 )

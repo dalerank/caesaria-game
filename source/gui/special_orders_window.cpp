@@ -57,7 +57,7 @@ public:
     Label::_updateTexture( painter );
 
     Picture goodIcon = GoodHelper::getPicture( _type );
-    std::string goodName = GoodHelper::getName( _type );
+    std::string goodName = _( "##" + GoodHelper::getTypeName( _type ) + "##" );
 
     if( getTextPicture() )
     {
@@ -240,7 +240,7 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
                                           "", -1, false, PushButton::whiteBorderUp );
 
   _btnTradeCenter = new PushButton( this, Rect( 80, getHeight() - 70, getWidth() - 80, getHeight() - 50 ),
-                                   _("##Trace center##"), -1, false, PushButton::whiteBorderUp );
+                                   _("##trace_center##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();

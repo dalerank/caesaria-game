@@ -34,7 +34,8 @@ public:
 
   void resize( const GoodStore& other );
 
-  GoodStock& getStock(const Good::Type &goodType);
+  GoodStock& getStock(const Good::Type &goodType);  
+
   virtual int getQty(const Good::Type &goodType) const;
   int capacity(const Good::Type &goodType) const;
   void setCapacity(const Good::Type &goodType, const int maxQty);

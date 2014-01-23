@@ -248,10 +248,12 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   TemplePtr temple = tile.getOverlay().as<Temple>();
   RomeDivinityPtr divn = temple->getDivinity();
 
-  std::string text = StringHelper::format( 0xff, "##Temple of ##%s (%s)", 
-                                                 divn->getName().c_str(), 
-                                                 divn->getShortDescription().c_str() );
-  setTitle( text );
+  bool bigTemple = temple->getSize().getWidth() > 2;
+  std::string desc = _(divn->getShortDescription());
+  std::string text = StringHelper::format( 0xff, "##%s_%s_temple##",
+                                                 bigTemple ? "big" : "small",
+                                                 divn->getDebugName().c_str() );
+  setTitle( _(text) + desc );
 
   _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->getMaxWorkers(), temple->getWorkersCount() );
 

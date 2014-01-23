@@ -257,15 +257,8 @@ void GoodStore::removeExpired(DateTime date)
   _d->storeReservations.removeExpired( date, 2 );
 }
 
-Reservations& GoodStore::_getStoreReservations()
-{
-  return _d->storeReservations;
-}
-
-Reservations& GoodStore::_getRetrieveReservations()
-{
-  return _d->retrieveReservations;
-}
+Reservations& GoodStore::_getStoreReservations() {  return _d->storeReservations; }
+Reservations& GoodStore::_getRetrieveReservations(){   return _d->retrieveReservations;}
 
 int GoodStore::getFreeQty( const Good::Type& goodType ) const
 {
@@ -278,10 +271,7 @@ int GoodStore::getFreeQty() const
 }
 
 const ReserveInfo Reservations::invalid = { GoodStock(), DateTime(), 0 };
-Reservations::Reservations()
-{
-  _idCounter = 1;
-}
+Reservations::Reservations(){  _idCounter = 1; }
 
 const ReserveInfo& Reservations::get(unsigned long id) const
 {

@@ -20,23 +20,45 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 
+class SmStock : public GoodStock, public ReferenceCounted
+{
+public:
+  typedef SmartPtr<SmStock> Ptr;
+
+  static Ptr create( Good::Type type )
+  {
+    Ptr ret( new SmStock() );
+    ret->setType( type );
+    ret->drop();
+
+    return ret;
+  }
+};
+
+
 class SimpleGoodStore::Impl
 {
 public:
-  typedef std::vector<GoodStock> StockList;
+  typedef std::vector<SmStock::Ptr> StockList;
   StockList stocks;
   int capacity;
+
+  void reset()
+  {
+    stocks.clear();
+    stocks.reserve(Good::goodCount);
+    for( int n = 0; n < (int)Good::goodCount; ++n)
+    {
+      stocks.push_back( SmStock::create( (Good::Type)n ) );
+    }
+  }
 };
 
 SimpleGoodStore::SimpleGoodStore() : _gsd( new Impl )
 {
   _gsd->capacity = 0;
 
-  _gsd->stocks.resize(Good::goodCount);
-  for (int n = 0; n < (int)Good::goodCount; ++n)
-  {
-    _gsd->stocks[n].setType( (Good::Type)n );
-  }
+  _gsd->reset();
 }
 
 
@@ -58,7 +80,7 @@ int SimpleGoodStore::getQty() const
   for( Impl::StockList::const_iterator goodIt = _gsd->stocks.begin();
        goodIt != _gsd->stocks.end(); ++goodIt)
   {
-    qty += (*goodIt).qty();
+    qty += (*goodIt)->qty();
   }
 
   return qty;
@@ -67,31 +89,28 @@ int SimpleGoodStore::getQty() const
 
 GoodStock& SimpleGoodStore::getStock(const Good::Type &goodType)
 {
-  return _gsd->stocks[goodType];
+  return *(_gsd->stocks[goodType].object());
 }
-
 
 int SimpleGoodStore::getQty(const Good::Type &goodType) const
 {
-  return _gsd->stocks[goodType].qty();
+  return _gsd->stocks[goodType]->qty();
 }
 
 
 int SimpleGoodStore::capacity(const Good::Type &goodType) const
 {
-  return _gsd->stocks[goodType].capacity();
+  return _gsd->stocks[goodType]->capacity();
 }
-
 
 void SimpleGoodStore::setCapacity(const Good::Type &goodType, const int maxQty)
 {
-  _gsd->stocks[goodType].setCapacity( maxQty );
+  _gsd->stocks[goodType]->setCapacity( maxQty );
 }
-
 
 void SimpleGoodStore::setQty(const Good::Type &goodType, const int currentQty)
 {
-  _gsd->stocks[goodType].setQty( currentQty );
+  _gsd->stocks[goodType]->setQty( currentQty );
 }
 
 int SimpleGoodStore::getMaxStore(const Good::Type goodType)
@@ -102,11 +121,11 @@ int SimpleGoodStore::getMaxStore(const Good::Type goodType)
     int globalFreeRoom = capacity() - getQty();
 
     // current free capacity
-    freeRoom = math::clamp( _gsd->stocks[goodType].capacity() - _gsd->stocks[goodType].qty(), 0, globalFreeRoom );
+    GoodStock& st = *_gsd->stocks[goodType].object();
+    freeRoom = math::clamp( st.freeQty(), 0, globalFreeRoom );
 
     // remove all storage reservations
-    for( Reservations::iterator i=_getStoreReservations().begin();
-         i != _getStoreReservations().end(); i++ )
+    foreach( i, _getStoreReservations() )
     {
       freeRoom -= i->stock.qty();
     }
@@ -132,8 +151,7 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
   }
 
   int amount = reservedStock.qty();
-  GoodStock &currentStock = _gsd->stocks[reservedStock.type()];
-  currentStock.push( amount );
+  _gsd->stocks[ reservedStock.type() ]->push( amount );
   stock.pop( amount );
 }
 
@@ -171,7 +189,7 @@ VariantMap SimpleGoodStore::save() const
   for( Impl::StockList::const_iterator itStock = _gsd->stocks.begin();
        itStock != _gsd->stocks.end(); itStock++)
   {
-    stockSave.push_back( (*itStock).save() );
+    stockSave.push_back( (*itStock)->save() );
   }
 
   stream[ "stock" ] = stockSave;
@@ -181,17 +199,16 @@ VariantMap SimpleGoodStore::save() const
 
 void SimpleGoodStore::load( const VariantMap& stream )
 {
-  _gsd->stocks.clear();
-
   GoodStore::load( stream );
   _gsd->capacity = (int)stream.get( "max" );
 
+  _gsd->reset();
   VariantList stockSave = stream.get( "stock" ).toList();
-  for( VariantList::iterator it=stockSave.begin(); it!=stockSave.end(); it++ )
+  foreach( it, stockSave )
   {
-    GoodStock restored;
-    restored.load( (*it).toList() );
-    _gsd->stocks.push_back( restored );
+    SmStock::Ptr stock = SmStock::create( Good::none );
+    stock->load( it->toList() );
+    _gsd->stocks[ stock->type() ] = stock;
   }
 }
 

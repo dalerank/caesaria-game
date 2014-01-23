@@ -80,9 +80,9 @@ void InfoBoxGranary::showSpecialOrdersWindow()
 
 void InfoBoxGranary::drawGood( Good::Type goodType, int col, int paintY)
 {
-  std::string goodName = GoodHelper::getName( goodType );
+  std::string goodName = GoodHelper::getTypeName( goodType );
   int qty = _granary->getGoodStore().getQty(goodType);
-  std::string outText = StringHelper::format( 0xff, "%d %s", qty, _( goodName ) );
+  std::string outText = StringHelper::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
 
   // pictures of goods
   const Picture& pic = GoodHelper::getPicture( goodType );
