@@ -45,30 +45,10 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PatrolPointPtr patrolPoint )
   _d->lbFormationTitle = findChild<Label*>( "lbFormationTitle", true );
   _d->lbFormationText = findChild<Label*>( "lbFormation", true );
 
-  Point offset( 83, 0 );
-  Rect rect( Point( 100, 140 ), Size( 83 ) );
-  PushButton* btn = new PushButton( this, rect, "", 28 );
-  btn->setBackgroundStyle( PushButton::whiteBorderUp );
-  btn->setIcon( ResourceGroup::menuMiddleIcons, 28 );
-  btn->setIconOffset( Point( 1, 1 ) );
-
-  rect += offset;
-  btn = new PushButton( this, rect, "", 30 );
-  btn->setBackgroundStyle( PushButton::whiteBorderUp );
-  btn->setIcon( ResourceGroup::menuMiddleIcons, 30 );
-  btn->setIconOffset( Point( 1, 1 ) );
-
-  rect += offset;
-  btn = new PushButton( this, rect, "", 31 );
-  btn->setBackgroundStyle( PushButton::whiteBorderUp );
-  btn->setIcon( ResourceGroup::menuMiddleIcons, 31 );
-  btn->setIconOffset( Point( 1, 1 ) );
-
-  rect += offset;
-  btn = new PushButton( this, rect, "", 32 );
-  btn->setBackgroundStyle( PushButton::whiteBorderUp );
-  btn->setIcon( ResourceGroup::menuMiddleIcons, 32 );
-  btn->setIconOffset( Point( 1, 1 ) );
+  _addFormationButton( 0, 28 );
+  _addFormationButton( 1, 30 );
+  _addFormationButton( 2, 31 );
+  _addFormationButton( 3, 32 );
 }
 
 InfoboxLegion::~InfoboxLegion()
@@ -99,6 +79,17 @@ bool InfoboxLegion::onEvent(const NEvent& event)
   }
 
   return InfoboxSimple::onEvent( event );
+}
+
+void InfoboxLegion::_addFormationButton(int index, int picId)
+{
+  Point offset( 83, 0 );
+  Rect rect( Point( 100, 140 ) + offset * index, Size( 83 ) );
+  PushButton* btn = new PushButton( this, rect, "", picId );
+  btn->setBackgroundStyle( PushButton::whiteBorderUp );
+  btn->setIcon( ResourceGroup::menuMiddleIcons, picId );
+  btn->setIconOffset( Point( 1, 1 ) );
+  btn->setTooltipText( _("##legion_formation_tooltip##") );
 }
 
 }//end namespace gui

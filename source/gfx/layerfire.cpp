@@ -27,7 +27,7 @@
 
 using namespace constants;
 
-static const char* fireLevelName[] = { "##very_low_fire_risk##", "##low_fire_risk##",
+static const char* fireLevelName[] = { "##very_low_fire_risk##", "##very_low_fire_risk##", "##low_fire_risk##",
                                        "##some_fire_risk##", "##very_high_fire_risk##", "##extreme_fire_risk##" };
 
 int LayerFire::getType() const {  return citylayer::fire; }

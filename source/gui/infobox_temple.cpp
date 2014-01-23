@@ -33,11 +33,11 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   RomeDivinityPtr divn = temple->getDivinity();
 
   bool bigTemple = temple->getSize().getWidth() > 2;
-  std::string desc = " ( " + _( divn->getShortDescription() ) + " )";
-  std::string text = StringHelper::format( 0xff, "##%s_%s_temple##",
+  std::string desc = _( divn->getShortDescription() );
+  std::string text = _( StringHelper::format( 0xff, "##%s_%s_temple##",
                                                  bigTemple ? "big" : "small",
-                                                 divn->getDebugName().c_str() );
-  setTitle( _(text) + desc) );
+                                                 divn->getDebugName().c_str() ) );
+  setTitle( text + " ( " + desc + " )" );
 
   _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->getMaxWorkers(), temple->getWorkersCount() );
 

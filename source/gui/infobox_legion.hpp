@@ -32,6 +32,8 @@ public:
 
   virtual bool onEvent(const NEvent &event);
 private:
+  void _addFormationButton( int index, int picId );
+
   class Impl;
   ScopedPtr<Impl> _d;
 };
