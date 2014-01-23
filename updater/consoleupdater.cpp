@@ -79,7 +79,7 @@ ConsoleUpdater::Outcome ConsoleUpdater::GetOutcome()
 	return _d->outcome;
 }
 
-void ConsoleUpdater::Run()
+void ConsoleUpdater::run()
 {
 	// Parse the command line
 	if( _options.isSet("help") )

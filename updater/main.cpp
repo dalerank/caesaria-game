@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 	{
 		ConsoleUpdater updater(argc, argv);
 
-		updater.Run();
+		updater.run();
 
 		int exitCode = EXIT_FAILURE;
 

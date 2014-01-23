@@ -62,7 +62,7 @@ public:
 	Outcome GetOutcome();
 
 	// Main entry point, algorithm starts here, does not leak exceptions
-	void Run();
+	void run();
 
 	// IUpdateView implementation
 	void onStartStep(UpdateStep step);

@@ -182,7 +182,7 @@ unsigned int CityMigration::Impl::calcVacantHouse()
   {
     if( (*house)->getAccessRoads().size() > 0 )
     {
-      vh += math::clamp( (*house)->getMaxHabitants() - (*house)->getHabitants().count(), 0, 0xff );
+      vh += math::clamp<int>( (*house)->getMaxHabitants() - (*house)->getHabitants().count(), 0, 0xff );
     }
   }
 
