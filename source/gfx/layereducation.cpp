@@ -45,6 +45,8 @@ int LayerEducation::_getLevelValue( HousePtr house )
   case citylayer::library: return house->getServiceValue( Service::library );
   case citylayer::academy: return house->getServiceValue( Service::academy );
   }
+
+  return 0;
 }
 
 void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)

@@ -173,7 +173,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
     {
       house->deleteLater();
 
-      events::GameEventPtr e = events::DisasterEvent::create( house->getTilePos(), events::DisasterEvent::plague );
+      events::GameEventPtr e = events::DisasterEvent::create( house->getTile(), events::DisasterEvent::plague );
       e->dispatch();
     }
   }

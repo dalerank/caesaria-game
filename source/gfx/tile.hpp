@@ -57,7 +57,7 @@ public:
                  isConstructible, isDestructible, clearAll,
                  wasDrawn } Type;
 
-  Tile(const TilePos& pos);
+  explicit Tile(const TilePos& pos);
 
   // tile coordinates
   int i() const;

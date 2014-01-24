@@ -220,14 +220,12 @@ InfoboxManager::InfoboxManager() : _d( new Impl )
   addInfobox( building::lowBridge,        CAESARIA_STR_EXT(LowBridge),    new InfoBoxBasicCreator( "", "##low_bridge_text##") );
   addInfobox( building::wharf,            CAESARIA_STR_EXT(Wharf),        new BaseInfoboxCreator<InfoboxWharf>() );
   addInfobox( building::burningRuins,     CAESARIA_STR_EXT(BurningRuins), new BaseInfoboxCreator<InfoboxRuins>() );
+  addInfobox( building::collapsedRuins,   CAESARIA_STR_EXT(CollapsedRuins), new BaseInfoboxCreator<CollapsedRuins>() );
   addInfobox( building::burnedRuins,      CAESARIA_STR_EXT(BurnedRuins), new BaseInfoboxCreator<InfoboxRuins>() );
   addInfobox( building::plagueRuins,      CAESARIA_STR_EXT(PlagueRuins), new BaseInfoboxCreator<InfoboxRuins>() );
 }
 
-InfoboxManager::~InfoboxManager()
-{
-
-}
+InfoboxManager::~InfoboxManager() {}
 
 InfoboxManager& InfoboxManager::getInstance()
 {

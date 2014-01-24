@@ -110,14 +110,14 @@ void Construction::burn()
 {
   deleteLater();
 
-  events::GameEventPtr event = events::DisasterEvent::create( getTilePos(), events::DisasterEvent::fire );
+  events::GameEventPtr event = events::DisasterEvent::create( getTile(), events::DisasterEvent::fire );
   event->dispatch();
 }
 
 void Construction::collapse()
 {
   deleteLater();
-  events::GameEventPtr event = events::DisasterEvent::create( getTilePos(), events::DisasterEvent::collapse );
+  events::GameEventPtr event = events::DisasterEvent::create( getTile(), events::DisasterEvent::collapse );
   event->dispatch();
 }
 
