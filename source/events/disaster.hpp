@@ -28,13 +28,14 @@ public:
   {
     fire, collapse, plague, count
   } Type;
-  static GameEventPtr create( const TilePos&, Type type );
+  static GameEventPtr create(const Tile& tile, Type type );
 
   virtual void exec( Game& game );
 
 private:
   TilePos _pos;
   Type _type;
+  int _infoType;
 };
 
 } //end namespace events

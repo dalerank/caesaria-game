@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "layerhealth.hpp"
+#include "layereducation.hpp"
 #include "objects/constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/house.hpp"
@@ -21,35 +21,33 @@
 #include "layerconstants.hpp"
 #include "tilemap_camera.hpp"
 #include "city/helper.hpp"
-#include "core/gettext.hpp"
 #include "core/event.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
 
-int LayerHealth::getType() const
+int LayerEducation::getType() const
 {
   return _type;
 }
 
-Layer::VisibleWalkers LayerHealth::getVisibleWalkers() const
+Layer::VisibleWalkers LayerEducation::getVisibleWalkers() const
 {
   return _walkers;
 }
 
-int LayerHealth::_getLevelValue( HousePtr house )
+int LayerEducation::_getLevelValue( HousePtr house )
 {
   switch(_type)
   {
-  case citylayer::health: return house->getHealthLevel();
-  case citylayer::hospital: return house->getServiceValue( Service::hospital );
-  case citylayer::barber: return house->getServiceValue( Service::barber );
-  case citylayer::baths: return house->getServiceValue( Service::baths );
+  case citylayer::education: return house->getHealthLevel();
+  case citylayer::school: return house->getServiceValue( Service::school );
+  case citylayer::library: return house->getServiceValue( Service::library );
+  case citylayer::academy: return house->getServiceValue( Service::academy );
   }
-
-  return 0;
 }
 
-void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -65,7 +63,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   {
     TileOverlayPtr overlay = tile.getOverlay();
 
-    int healthLevel = -1;
+    int educationLevel = -1;
     switch( overlay->getType() )
     {
       //fire buildings and roads
@@ -75,10 +73,9 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       engine.drawPicture( tile.getPicture(), screenPos );
     break;
 
-    case building::doctor:
-    case building::hospital:
-    case building::barber:
-    case building::baths:
+    case building::school:
+    case building::library:
+    case building::academy:
       needDrawAnimations = _flags.count( overlay->getType() );
       if( needDrawAnimations )
       {
@@ -96,7 +93,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       {
         HousePtr house = ptr_cast<House>( overlay );
 
-        healthLevel = _getLevelValue( house );
+        educationLevel = _getLevelValue( house );
 
         needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
 
@@ -118,22 +115,22 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
       registerTileForRendering( tile );
     }
-    else if( healthLevel > 0 )
+    else if( educationLevel > 0 )
     {
-      drawColumn( engine, screenPos, healthLevel );
+      drawColumn( engine, screenPos, educationLevel );
     }
   }
 }
 
-LayerPtr LayerHealth::create(TilemapCamera& camera, PlayerCityPtr city, int type )
+LayerPtr LayerEducation::create(TilemapCamera& camera, PlayerCityPtr city, int type )
 {
-  LayerPtr ret( new LayerHealth( camera, city, type ) );
+  LayerPtr ret( new LayerEducation( camera, city, type ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerHealth::handleEvent(NEvent& event)
+void LayerEducation::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -151,11 +148,10 @@ void LayerHealth::handleEvent(NEvent& event)
           std::string typeName;
           switch( _type )
           {
-          case citylayer::health: typeName = "health"; break;
-          case citylayer::doctor: typeName = "doctor"; break;
-          case citylayer::hospital: typeName = "hospital"; break;
-          case citylayer::barber: typeName = "barber"; break;
-          case citylayer::baths: typeName = "baths"; break;
+          case citylayer::education: typeName = "education"; break;
+          case citylayer::school: typeName = "school"; break;
+          case citylayer::library: typeName = "library"; break;
+          case citylayer::academy: typeName = "academy"; break;
           }
 
           int lvlValue = _getLevelValue( house );
@@ -184,7 +180,7 @@ void LayerHealth::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerHealth::LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type)
+LayerEducation::LayerEducation( TilemapCamera& camera, PlayerCityPtr city, int type)
   : Layer( camera, city )
 {
   _loadColumnPicture( 9 );
@@ -192,21 +188,9 @@ LayerHealth::LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type)
 
   switch( type )
   {
-  case citylayer::health:
-  case citylayer::doctor:
-    _flags.insert( building::doctor ); _walkers.insert( walker::doctor );
-  break;
-
-  case citylayer::hospital:
-    _flags.insert( building::hospital ); _walkers.insert( walker::surgeon );
-  break;
-
-  case citylayer::barber:
-    _flags.insert( building::barber ); _walkers.insert( walker::barber );
-  break;
-
-  case citylayer::baths:
-    _flags.insert( building::baths ); _walkers.insert( walker::bathlady );
-  break;
+  case citylayer::education:
+  case citylayer::school: _flags.insert( building::school ); _walkers.insert( walker::scholar ); break;
+  case citylayer::library: _flags.insert( building::library ); _walkers.insert( walker::librarian ); break;
+  case citylayer::academy: _flags.insert( building::academy ); _walkers.insert( walker::teacher ); break;
   }
 }

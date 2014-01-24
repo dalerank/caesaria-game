@@ -40,6 +40,13 @@ void BurningRuins::timeStep(const unsigned long time)
 {
   Building::timeStep(time);
 
+  _animationRef().update( time );
+  const Picture& pic = _animationRef().getFrame();
+  if( pic.isValid() )
+  {
+     _fgPicturesRef().back() = _animationRef().getFrame();
+  }
+
   if (time % 16 == 0 )
   {
     if( getState( Construction::fire ) > 0 )

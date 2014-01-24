@@ -33,11 +33,27 @@ using namespace constants;
 namespace events
 {
 
-GameEventPtr DisasterEvent::create(const TilePos& pos, Type type )
+GameEventPtr DisasterEvent::create( const Tile& tile, Type type )
 {
   DisasterEvent* event = new DisasterEvent();
-  event->_pos = pos;
+  event->_pos = tile.pos();
   event->_type = type;
+  event->_infoType = 0;
+
+  TileOverlayPtr overlay = tile.getOverlay();
+  if( overlay.isValid() )
+  {
+    overlay->deleteLater();
+    HousePtr house = ptr_cast< House >( overlay );
+    if( house.isValid() )
+    {
+      event->_infoType = 1000 + house->getSpec().getLevel();
+    }
+    else
+    {
+      event->_infoType = overlay->getType();
+    }
+  }
 
   GameEventPtr ret( event );
   ret->drop();
@@ -54,23 +70,13 @@ void DisasterEvent::exec( Game& game )
   if( tile.getFlag( Tile::isDestructible ) )
   {
     Size size( 1 );
-    int disasterInfoType=0;
 
     TileOverlayPtr overlay = tile.getOverlay();
     if( overlay.isValid() )
     {
       overlay->deleteLater();
-      size = overlay->getSize();
       rPos = overlay->getTilePos();
-      HousePtr house = ptr_cast< House >( overlay );
-      if( house.isValid() )
-      {
-        disasterInfoType = 1000 + house->getSpec().getLevel();
-      }
-      else
-      {
-        disasterInfoType = overlay->getType();
-      }
+      size = overlay->getSize();
     }
 
     switch( _type )
@@ -96,7 +102,7 @@ void DisasterEvent::exec( Game& game )
         SmartPtr< Ruins > ruins = ptr_cast< Ruins >( ov );
         if( ruins.isValid() )
         {
-          ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", disasterInfoType ) );
+          ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", _infoType ) );
         }
 
         Dispatcher::instance().append( BuildEvent::create( (*tile)->pos(), ov ) );

@@ -51,6 +51,7 @@
 #include "objects/aqueduct.hpp"
 #include "layerdestroy.hpp"
 #include "tilemap_camera.hpp"
+#include "layereducation.hpp"
 #include "city/city.hpp"
 
 using namespace constants;
@@ -108,6 +109,9 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
   addLayer( LayerBuild::create( this, city ) );
   addLayer( LayerDestroy::create( _d->camera, city ) );
   addLayer( LayerTax::create( _d->camera, city ) );
+  addLayer( LayerEducation::create( _d->camera, city, citylayer::school ) );
+  addLayer( LayerEducation::create( _d->camera, city, citylayer::library ) );
+  addLayer( LayerEducation::create( _d->camera, city, citylayer::academy ) );
 
   _d->setLayer( citylayer::simple );
 }

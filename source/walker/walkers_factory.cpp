@@ -124,6 +124,9 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::lionTamer, new BaseCreator< LionTamer >() );
   addCreator( walker::fishPlace, new BaseCreator< FishPlace >() );
   addCreator( walker::seaMerchant, new BaseCreator<SeaMerchant>() );
+  addCreator( walker::scholar, new ServicemanCreator( Service::school ) );
+  addCreator( walker::librarian, new ServicemanCreator( Service::library ) );
+  addCreator( walker::teacher, new ServicemanCreator( Service::academy ) );
 }
 
 WalkerManager::~WalkerManager()
