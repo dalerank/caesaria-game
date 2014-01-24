@@ -21,7 +21,6 @@
 
 #include "objects/house.hpp"
 #include "core/exception.hpp"
-#include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
 #include "core/variant.hpp"
 #include "core/saveadapter.hpp"
@@ -113,7 +112,7 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value > 0 )
   {
     res = false;
-    ref = "##nearby_building##" + reason + "##negative_effect_info##";
+    ref = "##nearby_building_negative_effect##";
   }
 
   value = computeEntertainmentLevel( house );
@@ -152,8 +151,8 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
     switch( _d->minReligionLevel )
     {
     case 0: res = "##missing_religion##"; break;
-    case 1: res = "##need_second_religion##"; break;
-    case 2: res = "##need_third_religion##"; break;
+    case 1: res = "##missing_second_religion##"; break;
+    case 2: res = "##missing_third_religion##"; break;
     }
   }
 
@@ -161,14 +160,23 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minWaterLevel )
   {
     res = false;
-    ref = /* _("##missing_water##") + */reason;
+    ref = reason;
   }
 
   value = computeFoodLevel(house);
   if( value < _d->minFoodLevel )
   {
     res = false;
-    ref = "##missing_food##";
+    if( !house->hasServiceAccess( Service::market ) ) { ref = "##missing_market##"; }
+    else
+    {
+      switch( _d->minFoodLevel )
+      {
+      case 1: ref = "##missing_food##"; break;
+      case 2: ref = "##missing_second_food##"; break;
+      case 3: ref = "##missing_third_food##"; break;
+      }
+    }
   }
 
   if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().getQty(Good::pottery) == 0)
@@ -188,6 +196,19 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
     res = false;
     ref = "##missing_oil##";
   }
+
+  if( _d->requiredGoods[Good::wine] != 0 && house->getGoodStore().getQty(Good::wine) == 0)
+  {
+    res = false;
+    ref = "##missing_wine##";
+  }
+
+  if( _d->requiredGoods[Good::prettyWine] != 0 && house->getGoodStore().getQty(Good::prettyWine) == 0)
+  {
+    res = false;
+    ref = "##missing_second_wine##";
+  }
+
 
   return res;
 }
@@ -230,11 +251,11 @@ int HouseLevelSpec::computeWaterLevel(HousePtr house, std::string &oMissingRequi
   else if (house->hasServiceAccess(Service::well))
   {
     res = 1;
-    oMissingRequirement = "##need_fountain##";
+    oMissingRequirement = "##missing_fountain##";
   }
   else
   {
-    oMissingRequirement = "##need_water##";
+    oMissingRequirement = "##missing_water##";
   }
   return res;
 }
@@ -290,27 +311,27 @@ int HouseLevelSpec::computeHealthLevel( HousePtr house, std::string &oMissingReq
             {
                if (house->hasServiceAccess(Service::doctor))
                {
-                  oMissingRequirement = "##need_hospital##";
+                  oMissingRequirement = "##missing_hospital##";
                }
                else
                {
-                  oMissingRequirement = "##need_doctor##";
+                  oMissingRequirement = "##missing_doctor##";
                }
             }
          }
          else
          {
-            oMissingRequirement = "##need_barber##";
+            oMissingRequirement = "##missing_barber##";
          }
       }
       else
       {
-         oMissingRequirement = "##need_doctor_or_hospital##";
+         oMissingRequirement = "##missing_doctor_or_hospital##";
       }
    }
    else
    {
-      oMissingRequirement = "##need_bath##";
+      oMissingRequirement = "##missing_bath##";
    }
    return res;
 }
@@ -331,17 +352,17 @@ int HouseLevelSpec::computeEducationLevel(HousePtr house, std::string &oMissingR
          }
          else
          {
-            oMissingRequirement = "##need_library##";
+            oMissingRequirement = "##missing_library##";
          }
       }
       else
       {
-         oMissingRequirement = "##need_colege##";
+         oMissingRequirement = "##missing_colege##";
       }
    }
    else
    {
-      oMissingRequirement = "##need_school##";
+      oMissingRequirement = "##missing_school##";
    }
 
    return res;

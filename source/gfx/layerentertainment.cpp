@@ -70,6 +70,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       if( needDrawAnimations )
       {
         engine.drawPicture( tile.getPicture(), screenPos );
+        drawTilePass( engine, tile, offset, Renderer::foreground );
       }
       else
       {

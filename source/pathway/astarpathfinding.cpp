@@ -110,7 +110,7 @@ void Pathfinder::update( const Tilemap& tilemap )
   TilesArray tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
   foreach( tile, tiles )
   {
-    _d->grid[ (*tile)->getI() ][ (*tile)->getJ() ] = new AStarPoint( *tile );
+    _d->grid[ (*tile)->i() ][ (*tile)->j() ] = new AStarPoint( *tile );
   }
 }
 

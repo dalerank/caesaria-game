@@ -220,8 +220,8 @@ void Pathway::setNextDirection(Direction direction)
 
 void Pathway::setNextTile( const Tile& tile )
 {
-  int dI = tile.getI() - _d->destination.i();
-  int dJ = tile.getJ() - _d->destination.j();
+  int dI = tile.i() - _d->destination.i();
+  int dJ = tile.j() - _d->destination.j();
 
   Direction direction;
 
@@ -269,7 +269,7 @@ void Pathway::prettyPrint() const
   else
   {
     Logger::warning( "pathWay from [%d,%d] to [%d,%d]",
-                     _d->origin->getI(), _d->origin->getJ(), _d->destination.i(), _d->destination.j() );
+                     _d->origin->i(), _d->origin->j(), _d->destination.i(), _d->destination.j() );
 
     std::string strDir = "";
     for( Directions::const_iterator itDir = _d->directionList.begin();

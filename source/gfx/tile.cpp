@@ -56,15 +56,11 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
   _terrain.imgid = 0;
 }
 
-int Tile::getI() const    {   return _pos.i();   }
+int Tile::i() const    {   return _pos.i();   }
 
-int Tile::getJ() const    {   return _pos.j();   }
+int Tile::j() const    {   return _pos.j();   }
 
-
-void Tile::setPicture(const Picture *picture)
-{
-  _picture = picture;
-}
+void Tile::setPicture(const Picture *picture) {  _picture = picture; }
 
 void Tile::setPicture(const char* rc, const int index)
 {
@@ -117,7 +113,7 @@ bool Tile::isMasterTile() const
 
 Point Tile::getXY() const
 {
-  return Point( 30 * ( getI() + getJ()), 15 * (getI() - getJ()) );
+  return Point( 30 * ( i() + j()), 15 * (i() - j()) );
 }
 
 void Tile::animate(unsigned int time)
@@ -318,22 +314,10 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
   std::stringstream ss(pic_name.substr(pos+1));
   ss >> res_id;
 
-  if (res_pfx == "plateau")
-  {
-    res_id += 200;
-  }
-  else if (res_pfx == "land1a")
-  {
-    res_id += 244;
-  }
-  else if (res_pfx == ResourceGroup::land2a)
-  {
-    res_id += 547;
-  }
-  else if (res_pfx == ResourceGroup::land3a)
-  {
-    res_id += 778;
-  }
+  if (res_pfx == "plateau"){  res_id += 200; }
+  else if (res_pfx == ResourceGroup::land1a) { res_id += 244; }
+  else if (res_pfx == ResourceGroup::land2a) { res_id += 547; }
+  else if (res_pfx == ResourceGroup::land3a) { res_id += 778; }
   else
   {
     THROW("Unknown image " << pic_name);

@@ -60,8 +60,8 @@ public:
   Tile(const TilePos& pos);
 
   // tile coordinates
-  int getI() const;
-  int getJ() const;
+  int i() const;
+  int j() const;
   TilePos getIJ() const;
   Point getXY() const;
 

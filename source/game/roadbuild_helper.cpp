@@ -31,11 +31,11 @@
 bool
 compare_tiles_(const Tile * first, const Tile * second)
 {
-  if (first->getI() < second->getI())
+  if (first->i() < second->i())
     return true;
 
-  else if (first->getI() == second->getI() &&
-           first->getJ() > second->getJ())
+  else if (first->i() == second->i() &&
+           first->j() > second->j())
     return true;
 
   return false;
@@ -75,7 +75,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
   {
     Tile& curTile = tileMap.at( tmp );
 
-    Logger::warning( "+ (%d, %d)", curTile.getI(), curTile.getJ() );
+    Logger::warning( "+ (%d, %d)", curTile.i(), curTile.j() );
     ret.push_back( &curTile );
 
     if (tmp.i() == stopPos.i())
@@ -89,7 +89,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
   {
     Tile& curTile = tileMap.at( startPos.i(), j );
 
-    std::cout << "+ (" << curTile.getI() << " " << curTile.getJ() << ") ";
+    std::cout << "+ (" << curTile.i() << " " << curTile.j() << ") ";
     ret.push_back( &curTile );
 
     if( j == stopPos.j() )

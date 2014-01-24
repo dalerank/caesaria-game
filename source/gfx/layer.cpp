@@ -308,13 +308,13 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
   Tile* baseTile = area.front();
   TileOverlayPtr overlay = baseTile->getOverlay();
   Picture *pic = NULL;
-  int leftBorderAtI = baseTile->getI();
-  int rightBorderAtJ = overlay->getSize().getHeight() - 1 + baseTile->getJ();
+  int leftBorderAtI = baseTile->i();
+  int rightBorderAtJ = overlay->getSize().getHeight() - 1 + baseTile->j();
   for( TilesArray::const_iterator it=area.begin(); it != area.end(); it++ )
   {
     Tile* tile = *it;
-    int tileBorders = ( tile->getI() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
-                      + ( tile->getJ() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
+    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
+                      + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     pic = &Picture::load(resourceGroup, tileBorders + tileId);
     engine.drawPicture( *pic, tile->getXY() + offset );
   }
@@ -333,7 +333,7 @@ void Layer::drawColumn(GfxEngine& engine, const Point& pos, const int percent)
 
   if( percent >= 10 )
   {
-    engine.drawPicture( _d->headerColumn, pos - Point( -6, 20 + roundPercent ) );
+    engine.drawPicture( _d->headerColumn, pos - Point( -6, 25 + roundPercent ) );
   }
 }
 

@@ -72,7 +72,7 @@ void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
 void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 {
-  int rndData = tile.getI() * tile.getJ();
+  int rndData = tile.i() * tile.j();
   int num3 = rndData & 3;
   int num7 = rndData & 7;
 

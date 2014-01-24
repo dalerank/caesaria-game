@@ -150,8 +150,8 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArra
       }
 
       TilePos rpos = (*it)->getIJ();
-      int i = (*it)->getI();
-      int j = (*it)->getJ();
+      int i = (*it)->i();
+      int j = (*it)->j();
 
       if( (pos + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
       else if(i == pos.i() && j == (pos.j() - 1)) is_busy[south] = true;

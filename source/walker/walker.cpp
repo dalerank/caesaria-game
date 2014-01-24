@@ -344,7 +344,7 @@ void Walker::_centerTile()
       // compute the direction to reach the destination
       _computeDirection();
       const Tile& tile = _getNextTile();
-      if( tile.getI() < 0 || !tile.isWalkable( true ) )
+      if( tile.i() < 0 || !tile.isWalkable( true ) )
       {
         _brokePathway( tile.getIJ() );
       }
