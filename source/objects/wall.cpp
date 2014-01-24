@@ -149,7 +149,7 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos pos, const TilesArra
         continue;
       }
 
-      TilePos rpos = (*it)->getIJ();
+      TilePos rpos = (*it)->pos();
       int i = (*it)->i();
       int j = (*it)->j();
 

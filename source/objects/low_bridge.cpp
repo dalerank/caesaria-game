@@ -174,12 +174,12 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
-      for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); it++ )
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
+      foreach( it, tiles )
       {
-        _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSE );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSE );
       }
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );     
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );
     }
   break;
 
@@ -190,12 +190,12 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {
-        _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSW );
       }
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );    
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );
     }
     break;
 
@@ -209,13 +209,13 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
-      for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); it++ )
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
+      foreach( it, tiles )
       {        
-        _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSE );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSE );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );
     }
   break;
 
@@ -229,13 +229,13 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {        
-        _d->addSpan( (*it)->getIJ() - startPos, LowBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSW );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );
     }
   break;
 
@@ -271,7 +271,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       imdId = (*it)->getOriginalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
       {
-        stop = (*it)->getIJ();
+        stop = (*it)->pos();
         direction = constants::northWest;
         break;
       }
@@ -285,7 +285,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       imdId = (*it)->getOriginalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
-        stop = (*it)->getIJ();
+        stop = (*it)->pos();
         direction = southEast;
         break;
       }
@@ -299,7 +299,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       imdId = (*it)->getOriginalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
-        stop = (*it)->getIJ();
+        stop = (*it)->pos();
         direction = northEast;
         break;
       }
@@ -313,7 +313,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
       imdId = (*it)->getOriginalImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
-        stop = (*it)->getIJ();
+        stop = (*it)->pos();
         direction = southWest;
         break;
       }

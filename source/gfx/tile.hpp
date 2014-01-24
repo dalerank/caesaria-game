@@ -62,8 +62,8 @@ public:
   // tile coordinates
   int i() const;
   int j() const;
-  TilePos getIJ() const;
-  Point getXY() const;
+  TilePos pos() const;
+  Point mapPos() const;
 
   // displayed picture
   void setPicture( const Picture* picture );

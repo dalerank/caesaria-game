@@ -159,7 +159,7 @@ void ClearLandEvent::exec( Game& game )
     if( overlay.isValid() )
     {
       size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();
+      rPos = overlay->getTilePos();
       overlay->deleteLater();
     }
 

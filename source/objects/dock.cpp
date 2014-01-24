@@ -141,7 +141,7 @@ void Dock::load(const VariantMap& stream)
 bool Dock::isBusy() const
 {
   CityHelper helper( _getCity() );
-  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, getLandingTile().getIJ() );
+  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, getLandingTile().pos() );
 
   return !merchants.empty();
 }
@@ -190,14 +190,14 @@ const Tile& Dock::getQueueTile() const
     bool saveTile = false;
     if( (*it)->getFlag( Tile::tlDeepWater ) )
     {
-      saveTile = _getCity()->getWalkers( walker::seaMerchant, (*it)->getIJ() ).empty();
+      saveTile = _getCity()->getWalkers( walker::seaMerchant, (*it)->pos() ).empty();
     }
 
     if( !saveTile ) { it = tiles.erase( it ); }
     else { it++; }
   }
 
-  TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles.at( rand() % tiles.size() )->getIJ();
+  TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles.at( rand() % tiles.size() )->pos();
   return _getCity()->getTilemap().at( pos );
 }
 

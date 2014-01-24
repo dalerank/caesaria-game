@@ -178,7 +178,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
           || (*it)->getOverlay()->getType() != building::fortification )
         continue;
 
-      TilePos rpos = (*it)->getIJ();
+      TilePos rpos = (*it)->pos();
       int i = (*it)->i();
       int j = (*it)->j();
 

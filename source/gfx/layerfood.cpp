@@ -40,7 +40,7 @@ Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
 
 void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 

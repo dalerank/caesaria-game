@@ -41,7 +41,7 @@ void Well::deliverService()
   ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
   walker->setBase( BuildingPtr( this ) );
 
-  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().getIJ() );
+  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().pos() );
 
   foreach( it, reachedBuildings) { (*it)->applyService( walker ); }
 }

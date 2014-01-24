@@ -248,7 +248,7 @@ void CartPusher::computeWalkerDestination()
      {
        _setDirection( constants::north );
        setSpeed( 0 );
-       setIJ( _d->producerBuilding->getAccessRoads().front()->getIJ() );
+       setIJ( _d->producerBuilding->getAccessRoads().front()->pos() );
        _walk();
      }
    }
@@ -390,9 +390,9 @@ void CartPusher::save( VariantMap& stream ) const
   Walker::save( stream );
   
   stream[ "stock" ] = _d->stock.save();
-  stream[ "producerPos" ] = _d->producerBuilding->getTile().getIJ();
+  stream[ "producerPos" ] = _d->producerBuilding->getTilePos();
   stream[ "consumerPos" ] = _d->consumerBuilding.isValid() 
-                                      ? _d->consumerBuilding->getTile().getIJ()
+                                      ? _d->consumerBuilding->getTilePos()
                                       : TilePos( -1, -1 );
 
   stream[ "maxDistance" ] = _d->maxDistance;

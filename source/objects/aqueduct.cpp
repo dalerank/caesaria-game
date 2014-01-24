@@ -132,7 +132,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
       AqueductPtr bldAqueduct;
       for( TilesArray::const_iterator it=aroundTiles.begin(); it != aroundTiles.end(); it++ )
       {
-        if( (*it)->getIJ() == (*tile)->getIJ() )
+        if( (*it)->pos() == (*tile)->pos() )
         {
           bldAqueduct = ptr_cast< Aqueduct >( (*it)->getOverlay() );
           break;

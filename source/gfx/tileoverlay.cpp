@@ -68,18 +68,18 @@ void TileOverlay::setPicture(Picture picture)
 
   if (_d->masterTile != NULL)
   {
-     Tilemap &tilemap = _getCity()->getTilemap();
-     // _master_tile == NULL is cloneable buildings
-     TilePos pos = _d->masterTile->getIJ();
+    Tilemap &tilemap = _getCity()->getTilemap();
+    // _master_tile == NULL is cloneable buildings
+    TilePos pos = _d->masterTile->pos();
 
-     for (int dj = 0; dj<_d->size.getWidth(); ++dj)
-     {
-        for (int di = 0; di<_d->size.getHeight(); ++di)
-        {
-           Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
-           tile.setPicture( &_d->picture );
-        }
-     }
+    for (int dj = 0; dj<_d->size.getWidth(); ++dj)
+    {
+      for (int di = 0; di<_d->size.getHeight(); ++di)
+      {
+        Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
+        tile.setPicture( &_d->picture );
+      }
+    }
   }
 }
 
@@ -141,7 +141,7 @@ void TileOverlay::save( VariantMap& stream ) const
                       ? Variant( md.getData( _d->overlayType ).getName() )
                       : Variant( getDebugName() ) );
 
-  config.push_back( getTile().getIJ() );
+  config.push_back( getTile().pos() );
 
   stream[ "config" ] = config;
   stream[ "picture" ] = Variant( _d->picture.getName() );
@@ -172,7 +172,7 @@ TilePos TileOverlay::getTilePos() const
     Logger::warning(  "master tile can't be null" );
     return TilePos( -1, -1 );
   }
-  return _d->masterTile->getIJ();
+  return _d->masterTile->pos();
 }
 
 std::string TileOverlay::getSound() const

@@ -359,7 +359,7 @@ WalkerList PlayerCity::getWalkers(walker::Type type, TilePos startPos, TilePos s
   TilesArray area = _d->tilemap.getArea( startPos, stopPos );
   foreach( tile, area)
   {
-    WalkerList current = _d->walkersGrid.at( (*tile)->getIJ() );
+    WalkerList current = _d->walkersGrid.at( (*tile)->pos() );
 
     foreach( w, current )
     {

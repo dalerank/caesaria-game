@@ -70,7 +70,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
 
   std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
                                                   house->getHabitants().count(),
-                                                  house->getServiceValue( Service::recruter ),
+                                                  (int)house->getServiceValue( Service::recruter ),
                                                   house->getHabitants().count( CitizenGroup::newborn ),
                                                   house->getHabitants().count( CitizenGroup::child ),
                                                   house->getHabitants().count( CitizenGroup::scholar ),

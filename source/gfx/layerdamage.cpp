@@ -43,7 +43,7 @@ std::set<int> LayerDamage::getVisibleWalkers() const
 
 void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 

@@ -35,7 +35,7 @@ Layer::VisibleWalkers LayerHealth::getVisibleWalkers() const
 
 void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 

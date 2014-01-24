@@ -346,7 +346,7 @@ void Walker::_centerTile()
       const Tile& tile = _getNextTile();
       if( tile.i() < 0 || !tile.isWalkable( true ) )
       {
-        _brokePathway( tile.getIJ() );
+        _brokePathway( tile.pos() );
       }
    }
 }

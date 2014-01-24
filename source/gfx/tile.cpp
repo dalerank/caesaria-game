@@ -101,7 +101,7 @@ bool Tile::isFlat() const
            : !(_terrain.rock || _terrain.tree || _terrain.aqueduct) );
 }
 
-TilePos Tile::getIJ() const
+TilePos Tile::pos() const
 {
   return _pos;
 }
@@ -111,7 +111,7 @@ bool Tile::isMasterTile() const
   return (_master == this);
 }
 
-Point Tile::getXY() const
+Point Tile::mapPos() const
 {
   return Point( 30 * ( i() + j()), 15 * (i() - j()) );
 }

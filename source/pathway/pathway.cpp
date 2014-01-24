@@ -79,7 +79,7 @@ void Pathway::init( Tilemap& tilemap, Tile &origin)
 {
   _d->tilemap = &tilemap;
   _d->origin = &origin;
-  _d->destination = origin.getIJ();
+  _d->destination = origin.pos();
   _d->directionList.clear();
   _d->directionIt = _d->directionList.begin();
   _d->directionIt_reverse = _d->directionList.rbegin();
@@ -94,7 +94,7 @@ int Pathway::getLength() const
 }
 
 const Tile& Pathway::getOrigin() const {  return *_d->origin; }
-TilePos Pathway::getStartPos() const { return _d->origin ? _d->origin->getIJ() : TilePos( -1, -1); }
+TilePos Pathway::getStartPos() const { return _d->origin ? _d->origin->pos() : TilePos( -1, -1); }
 bool Pathway::isReverse() const {  return _d->isReverse; }
 const TilesArray& Pathway::getAllTiles() const {  return _d->tileList; }
 
@@ -307,7 +307,7 @@ VariantMap Pathway::save() const
     return VariantMap();
   }
 
-  stream[ "startPos" ] = _d->origin->getIJ();
+  stream[ "startPos" ] = _d->origin->pos();
   stream[ "stopPos" ] = _d->destination;
 
   VariantList directions;
@@ -337,7 +337,7 @@ void Pathway::load( const VariantMap& stream )
   }
 
   _d->origin = &_d->tilemap->at( stream.get( "startPos" ).toTilePos() );
-  _d->destination = _d->origin->getIJ(); //stream.get( "stopPos" ).toTilePos();
+  _d->destination = _d->origin->pos(); //stream.get( "stopPos" ).toTilePos();
   VariantList directions = stream.get( "directions" ).toList();
   for( VariantList::iterator it = directions.begin(); it != directions.end(); it++ )
   {

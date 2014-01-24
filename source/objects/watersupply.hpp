@@ -76,6 +76,7 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual bool isActive() const;
   virtual bool haveReservoirAccess() const;
+  virtual void destroy();
 
   virtual void load( const VariantMap& stream);
 private:

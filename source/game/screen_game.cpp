@@ -231,7 +231,7 @@ void ScreenGame::Impl::saveCameraPos(Point p)
 
   if( tile )
   {
-    game->getCity()->setCameraPos( tile->getIJ() );
+    game->getCity()->setCameraPos( tile->pos() );
   }
 }
 

@@ -324,7 +324,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
   if( overlay != NULL )
   {
     Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.getOriginalImgId() );
-    overlay->build( city, oTile.getIJ() );
+    overlay->build( city, oTile.pos() );
     city->getOverlays().push_back(overlay);
   }
 }

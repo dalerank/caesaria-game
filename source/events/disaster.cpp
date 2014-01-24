@@ -61,7 +61,7 @@ void DisasterEvent::exec( Game& game )
     {
       overlay->deleteLater();
       size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();
+      rPos = overlay->getTilePos();
       HousePtr house = ptr_cast< House >( overlay );
       if( house.isValid() )
       {
@@ -99,7 +99,7 @@ void DisasterEvent::exec( Game& game )
           ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", disasterInfoType ) );
         }
 
-        Dispatcher::instance().append( BuildEvent::create( (*tile)->getIJ(), ov ) );
+        Dispatcher::instance().append( BuildEvent::create( (*tile)->pos(), ov ) );
       }
     }
 

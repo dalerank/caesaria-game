@@ -223,11 +223,12 @@ void House::timeStep(const unsigned long time)
     _checkEvolve();    
 
     appendServiceValue( Service::crime, _d->spec.getCrime() + 2 );
-    cancelService( Service::recruter );    
+    cancelService( Service::recruter );
 
     int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
     if( homelessCount > 0 )
     {
+      homelessCount /= (homelessCount > 4 ? 2 : 1);
       CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
 
       int workersFireCount = homeless.count( CitizenGroup::mature );
@@ -251,7 +252,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
   if( getSize() == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
-    TilesArray area = tmap.getArea( getTile().getIJ(), Size(2) );
+    TilesArray area = tmap.getArea( getTile().pos(), Size(2) );
     bool mayGrow = true;
 
     foreach( tile, area )
@@ -314,7 +315,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       _d->picIdOffset = 0;
       _update();
 
-      build( _getCity(), getTile().getIJ() );
+      build( _getCity(), getTile().pos() );
       //set new desirability level
       helper.updateDesirability( this, true );
     }
@@ -427,7 +428,7 @@ void House::levelDown()
         house->_d->houseId = smallHovel;
         house->_update();
 
-        events::GameEventPtr event = events::BuildEvent::create( (*tile)->getIJ(), house.object() );
+        events::GameEventPtr event = events::BuildEvent::create( (*tile)->pos(), house.object() );
         event->dispatch();
       }
 
@@ -747,6 +748,7 @@ void House::load( const VariantMap& stream )
   _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
   _d->changeCondition = stream.get( "changeCondition", 0 );
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
+  _d->currentYear = GameDate::current().year();
 
   _d->initGoodStore( getSize().getArea() );
 

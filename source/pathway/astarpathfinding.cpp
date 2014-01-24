@@ -126,7 +126,7 @@ Pathway Pathfinder::getPath(TilePos start, TilesArray arrivedArea, int flags)
 
   if( flags & traversePath )
   {
-    bool found = _d->getTraversingPoints( start, arrivedArea.front()->getIJ(), oPathway );
+    bool found = _d->getTraversingPoints( start, arrivedArea.front()->pos(), oPathway );
     return found ? oPathway : Pathway();
   }
 
@@ -136,7 +136,7 @@ Pathway Pathfinder::getPath(TilePos start, TilesArray arrivedArea, int flags)
 
 Pathway Pathfinder::getPath( const Tile& start, const Tile& stop, int flags )
 {
-  return getPath( start.getIJ(), stop.getIJ(), flags );
+  return getPath( start.pos(), stop.pos(), flags );
 }
 
 void Pathfinder::setCondition(const TilePossibleCondition& condition)
@@ -211,7 +211,7 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
   AStarPoint* start = at( startPos );
   APoints endPoints;
 
-  foreach( tile, arrivedArea ) { endPoints.push_back( at( (*tile)->getIJ() ) ); }
+  foreach( tile, arrivedArea ) { endPoints.push_back( at( (*tile)->pos() ) ); }
 
   AStarPoint* current = NULL;
   AStarPoint* child = NULL;

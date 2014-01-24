@@ -65,7 +65,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
         if( _d->patrolPoint.isNull() )
         {
           PlayerCityPtr city = _d->game->getCity();
-          WalkerList walkers = city->getWalkers( walker::patrolPoint, tile->getIJ() );
+          WalkerList walkers = city->getWalkers( walker::patrolPoint, tile->pos() );
           if( !walkers.empty() )
           {            
             _d->patrolPoint = ptr_cast<PatrolPoint>( walkers.front() );
@@ -96,7 +96,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
         Tile* tile = _d->renderer->getCamera().at( event.mouse.getPosition(), true );
         if( tile )
         {
-          _d->patrolPoint->setIJ( tile->getIJ() );
+          _d->patrolPoint->setIJ( tile->pos() );
         }
       }
     }

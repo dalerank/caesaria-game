@@ -37,8 +37,8 @@ struct SoundEmitter
 
   bool operator < ( const SoundEmitter& a ) const
   {
-    return ( tile->getIJ().distanceFrom( camerapos )
-             < a.tile->getIJ().distanceFrom( camerapos ));
+    return ( tile->pos().distanceFrom( camerapos )
+             < a.tile->pos().distanceFrom( camerapos ));
   }
 
   std::string getSound() const
@@ -68,7 +68,7 @@ struct SoundEmitter
 
   float getDistance( TilePos p ) const
   {
-    return tile->getIJ().distanceFrom( p );
+    return tile->pos().distanceFrom( p );
   }
 
   bool isValid() const
@@ -115,7 +115,7 @@ void AmbientSound::update( const unsigned int time )
   if( !tile )
     return;
 
-  _d->cameraPos = tile->getIJ();
+  _d->cameraPos = tile->pos();
 
   audio::Engine& ae = audio::Engine::instance();
 
@@ -128,7 +128,7 @@ void AmbientSound::update( const unsigned int time )
   //remove so far emitters
   for( Impl::Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
   {
-    TilePos distance = _d->cameraPos - (*i).tile->getIJ();
+    TilePos distance = _d->cameraPos - (*i).tile->pos();
     if( abs( distance.i() ) > 3 || abs( distance.j() ) > 3
         || !(*i).isValid() )
     {

@@ -70,7 +70,7 @@ void InfoBoxFontain::showDescription()
 InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
   : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
 {
-  setTitle( "##well##" );
+  setTitle( _("##well##") );
 
   _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );
