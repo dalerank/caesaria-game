@@ -22,13 +22,31 @@ namespace gui
 {
 
 // info box about a fontain
-class InfoBoxFontain : public InfoboxSimple
+class InfoboxFontain : public InfoboxSimple
 {
 public:
-   InfoBoxFontain( Widget* parent, const Tile& tile );
-   virtual ~InfoBoxFontain();
+   InfoboxFontain( Widget* parent, const Tile& tile );
+   virtual ~InfoboxFontain();
 
    virtual void showDescription();
+};
+
+class InfoboxWell : public InfoboxSimple
+{
+public:
+  InfoboxWell( Widget* parent, const Tile& tile );
+  virtual ~InfoboxWell();
+
+  virtual void showDescription();
+};
+
+class InfoboxReservoir : public InfoboxSimple
+{
+public:
+  InfoboxReservoir( Widget* parent, const Tile& tile );
+  virtual ~InfoboxReservoir();
+
+  virtual void showDescription();
 };
 
 }//end namespace gui

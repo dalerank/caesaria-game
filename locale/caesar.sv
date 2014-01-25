@@ -1,3 +1,4 @@
+{
 "##0_entertainment_access##":"Denna boning har inte tillgång till underhållning överhuvudtaget"
 "##1_entertainment_access##":"Denna boning har knappt tillgång till underhållning"
 "##2_entertainment_access##":"Denna boning har viss tillgång till underhållning"
@@ -2346,3 +2347,4 @@
 "undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"
+}

@@ -841,7 +841,7 @@ float House::collectTaxes()
   return tax;
 }
 
-int House::getHealthLevel() const{  return _d->healthLevel;}
+int House::getHealthLevel() const{  return _d->healthLevel; }
 DateTime House::getLastTaxation() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::getDesirability() const {  return _d->desirability; }

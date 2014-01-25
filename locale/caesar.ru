@@ -1,3 +1,4 @@
+{
 "##0_entertainment_access##":"У этого жилища нет доступа ни к каким развлечениям"
 "##1_entertainment_access##":"У этого жилища крайне ограниченный доступ к каким бы то ни было развлечениям"
 "##2_entertainment_access##":"У этого жилища есть некоторый доступ к развлечениям"
@@ -2346,3 +2347,4 @@
 "undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"
+}

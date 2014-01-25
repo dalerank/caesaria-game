@@ -40,7 +40,22 @@ int LayerEducation::_getLevelValue( HousePtr house )
 {
   switch(_type)
   {
-  case citylayer::education: return house->getHealthLevel();
+  case citylayer::education:
+  {
+    switch( house->getSpec().getMinEducationLevel() )
+    {
+    case 1: return house->getServiceValue( Service::school );
+    case 2: return ( house->getServiceValue( Service::school ) +
+                      house->getServiceValue( Service::library ) ) / 2;
+    case 3: return ( house->getServiceValue( Service::school ) +
+                     house->getServiceValue( Service::library ) +
+                     house->getServiceValue( Service::academy ) ) / 3;
+
+    default: return 0;
+    }
+  }
+  break;
+
   case citylayer::school: return house->getServiceValue( Service::school );
   case citylayer::library: return house->getServiceValue( Service::library );
   case citylayer::academy: return house->getServiceValue( Service::academy );
@@ -107,7 +122,7 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-      CityHelper helper( _getCity() );
+        CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;

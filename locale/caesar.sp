@@ -1,3 +1,4 @@
+{
 "##0_entertainment_access##":"Esta vivienda no tiene acceso a ningún tipo de entretenimiento."
 "##1_entertainment_access##":"Esta vivienda apenas tiene acceso a entretenimientos."
 "##2_entertainment_access##":"Esta vivienda tiene algo de acceso a actividades de entretenimiento."
@@ -2346,3 +2347,4 @@
 "undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"
+}

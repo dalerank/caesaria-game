@@ -346,44 +346,44 @@ int HouseLevelSpec::computeHealthLevel( HousePtr house, std::string &oMissingReq
 
 int HouseLevelSpec::computeEducationLevel(HousePtr house, std::string &oMissingRequirement)
 {
-   int res = 0;
-   if( house->hasServiceAccess(Service::school) )
-   {
-      res = 1;
-      if( house->hasServiceAccess(Service::academy) )
+  int res = 0;
+  if( house->hasServiceAccess(Service::school) )
+  {
+    res = 1;
+    if( house->hasServiceAccess(Service::academy) )
+    {
+      res = 2;
+      if( house->hasServiceAccess(Service::library) )
       {
-         res = 2;
-         if( house->hasServiceAccess(Service::library) )
-         {
-            res = 3;
-         }
-         else
-         {
-            oMissingRequirement = "##missing_library##";
-         }
+        res = 3;
       }
       else
       {
-         oMissingRequirement = "##missing_colege##";
+        oMissingRequirement = "##missing_library##";
       }
-   }
-   else
-   {
-      oMissingRequirement = "##missing_school##";
-   }
+    }
+    else
+    {
+      oMissingRequirement = "##missing_colege##";
+    }
+  }
+  else
+  {
+    oMissingRequirement = "##missing_school##";
+  }
 
-   return res;
+  return res;
 }
 
 int HouseLevelSpec::computeReligionLevel(HousePtr house)
 {
-   int res = 0;
-   res += house->hasServiceAccess(Service::religionMercury) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionVenus) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionMars) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionNeptune) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionCeres) ? 1 : 0;
-   return res;
+  int res = 0;
+  res += house->hasServiceAccess(Service::religionMercury) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionVenus) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionMars) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionNeptune) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionCeres) ? 1 : 0;
+  return res;
 }
 
 float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type service)
