@@ -22,7 +22,7 @@ namespace constants
 namespace citylayer
 {
 enum { simple=0, water, fire, damage, desirability,
-       entertainments, entertainmentAll, theater, amphitheater, colloseum, hippodrome,
+       entertainments, entertainment, theater, amphitheater, colloseum, hippodrome,
        health, doctor, hospital, barber, baths,
        food,
        religion,

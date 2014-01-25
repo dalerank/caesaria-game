@@ -119,14 +119,21 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minEntertainmentLevel )
   {
     res = false;
-    switch( (int)value / 20 )
+    if( value == 0 )
     {
-    case 0: ref = "##missing_entertainment##"; break;
-    case 1: ref = "##missing_entertainment_amph##"; break;
-    case 2: ref = "##missing_entertainment_also##"; break;
-    case 3: ref = "##missing_entertainment_colloseum##"; break;
-    case 4: ref = "##missing_entertainment_need_more##"; break;
-      //##missing_entertainment_patrician##
+      ref = "##missing_entertainment##";
+    }
+    else
+    {
+      switch( _d->minEntertainmentLevel / 20 )
+      {
+      case 0: ref = "##missing_entertainment_theater##"; break;
+      case 1: ref = "##missing_entertainment_amph##"; break;
+      case 2: ref = "##missing_entertainment_also##"; break;
+      case 3: ref = "##missing_entertainment_colloseum##"; break;
+      case 4: ref = "##missing_entertainment_hippodrome##"; break;
+        //##missing_entertainment_patrician##
+      }
     }
   }
 

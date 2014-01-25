@@ -100,7 +100,7 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
   addLayer( LayerReligion::create( _d->camera, city ) );
   addLayer( LayerDamage::create( _d->camera, city ) );
   addLayer( LayerDesirability::create( _d->camera, city ) );
-  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::entertainmentAll ) );
+  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( LayerEntertainment::create( _d->camera, city, citylayer::theater ) );
   addLayer( LayerEntertainment::create( _d->camera, city, citylayer::amphitheater ) );
   addLayer( LayerEntertainment::create( _d->camera, city, citylayer::colloseum ) );

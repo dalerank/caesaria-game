@@ -75,7 +75,7 @@ void OverlaysMenu::_addButtons(const int type )
     break;
 
   case citylayer::entertainments:
-    _addButton( citylayer::entertainmentAll, _("##ovrm_entr_all##"), startPos );
+    _addButton( citylayer::entertainment, _("##ovrm_entr_all##"), startPos );
     _addButton( citylayer::theater, _("##ovrm_theatres##"), startPos+=offset );
     _addButton( citylayer::amphitheater, _("##ovrm_amtheatres##"), startPos+=offset );
     _addButton( citylayer::colloseum, _("##ovrm_colliseum##"), startPos+=offset );
