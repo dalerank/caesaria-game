@@ -43,8 +43,9 @@ public:
   void init(SDL_Surface* surface, const Point& offset );
 
   void setOffset( Point offset );
-  void addOffset( Point offset );
+  void setOffset( int x, int y );
 
+  void addOffset( Point offset );
   void addOffset(int x, int y);
 
   void setName(std::string &name);  // for save game
