@@ -22,6 +22,7 @@
 #include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/gettext.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 // govt 4  - senate
@@ -39,6 +40,25 @@ Senate::Senate() : ServiceBuilding( Service::senate, building::senate, Size(5) )
 {
   setPicture( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
+
+  _fgPicturesRef().resize( 8 );
+  _fgPicturesRef()[ 0 ] = Picture::load( ResourceGroup::govt, 5 );
+  _fgPicturesRef()[ 0 ].setOffset( 140, -30 );
+  _fgPicturesRef()[ 1 ] = Picture::load( ResourceGroup::govt, 6 );
+  _fgPicturesRef()[ 1 ].setOffset( 170, -25 );
+  _fgPicturesRef()[ 2 ] = Picture::load( ResourceGroup::govt, 7 );
+  _fgPicturesRef()[ 2 ].setOffset( 200, -15 );
+  _fgPicturesRef()[ 3 ] = Picture::load( ResourceGroup::govt, 8 );
+  _fgPicturesRef()[ 3 ].setOffset( 230, -10 );
+
+  _fgPicturesRef()[ 4 ] = Picture::load( ResourceGroup::transport, 87 );
+  _fgPicturesRef()[ 4 ].setOffset( 80, -15 );
+  _fgPicturesRef()[ 5 ] = Picture::load( ResourceGroup::transport, 87 );
+  _fgPicturesRef()[ 5 ].setOffset( 90, -20 );
+  _fgPicturesRef()[ 6 ] = Picture::load( ResourceGroup::transport, 87 );
+  _fgPicturesRef()[ 6 ].setOffset( 110, -30 );
+  _fgPicturesRef()[ 7 ] = Picture::load( ResourceGroup::transport, 87 );
+  _fgPicturesRef()[ 7 ].setOffset( 120, -10 );
 }
 
 bool Senate::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -72,20 +92,32 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-unsigned int Senate::getWalkerDistance() const
+unsigned int Senate::getWalkerDistance() const {  return 26; }
+
+void Senate::timeStep(const unsigned long time)
 {
-  return 26;
+  if( time % GameDate::getTickInMonth() == 0 )
+  {
+    int workless = getStatus( Senate::workless );
+    for( int k=0; k < 4; k++ )
+    {
+      _fgPicturesRef()[ 4 + k ] = k * 5 < workless
+                                    ? Picture::load( ResourceGroup::transport, 87 )
+                                    : Picture();
+    }
+
+    _fgPicturesRef()[ 0 ].setOffset( 140, -30 + getStatus( Senate::culture ) / 2 );
+    _fgPicturesRef()[ 1 ].setOffset( 170, -25 + getStatus( Senate::prosperity ) / 2 );
+    _fgPicturesRef()[ 2 ].setOffset( 200, -15 + getStatus( Senate::peace ) / 2 );
+    _fgPicturesRef()[ 3 ].setOffset( 230, -10 + getStatus( Senate::favour ) / 2 );
+  }
+
+  ServiceBuilding::timeStep( time );
 }
 
-unsigned int Senate::getFunds() const
-{
-  return _getCity()->getFunds().getValue();
-}
-
-int Senate::collectTaxes()
-{
-  return _d->taxValue;
-}
+unsigned int Senate::getFunds() const {  return _getCity()->getFunds().getValue(); }
+int Senate::collectTaxes() {  return _d->taxValue; }
+std::string Senate::getError() const {  return _d->errorStr; }
 
 int Senate::getStatus(Senate::Status status) const
 {
@@ -99,11 +131,6 @@ int Senate::getStatus(Senate::Status status) const
   }
 
   return 0;
-}
-
-std::string Senate::getError() const
-{
-  return _d->errorStr;
 }
 
 void Senate::deliverService()

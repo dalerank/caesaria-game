@@ -102,6 +102,12 @@ void TraineeWalker::setBase(Building &originBuilding)
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
+  if( _d->base.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
   _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
@@ -114,19 +120,28 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
   }
 
-  _d->maxNeed = 0;
+  TilesArray startArea = roadOnly ? _d->base->getAccessRoads() : _d->base->getEnterArea();
+
   DirectRoute droute;
-  TilePos startPos = _d->base->getTilePos();
-  foreach( it, buildings )
+  _d->maxNeed = 0;
+  int minDistance = _d->maxDistance;
+
+  foreach( itile, startArea )
   {
-    BuildingPtr bld = *it;
-    Pathway way = PathwayHelper::create( startPos, bld.object(),
-                                         roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
-    float curNeed = bld->evaluateTrainee( getType() );
-    if( way.isValid() && _d->maxNeed < curNeed && way.getLength() < _d->maxDistance )
+    TilePos startPos = (*itile)->pos();
+    foreach( it, buildings )
     {
-      _d->maxNeed = curNeed;
-      droute = DirectRoute( bld.object(), way );
+      BuildingPtr bld = *it;
+      Pathway way = PathwayHelper::create( startPos, bld.object(),
+                                           roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
+      float curNeed = bld->evaluateTrainee( getType() );
+      if( way.isValid()
+          && _d->maxNeed < curNeed
+          && way.getLength() <minDistance)
+      {
+        _d->maxNeed = curNeed;
+        droute = DirectRoute( bld.object(), way );
+      }
     }
   }
 
