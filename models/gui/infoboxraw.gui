@@ -5,6 +5,7 @@
 
   lbProgress#Label : {
     geometryf : [ 0.15, 0.15, 0.85, 0.25 ]
+    font : "FONT_2"
   }
 
   lbAbout#Label : {

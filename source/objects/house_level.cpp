@@ -364,7 +364,7 @@ int HouseLevelSpec::computeEducationLevel(HousePtr house, std::string &oMissingR
     }
     else
     {
-      oMissingRequirement = "##missing_colege##";
+      oMissingRequirement = "##missing_college##";
     }
   }
   else
