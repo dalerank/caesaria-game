@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "build_options.hpp"
 #include "objects/metadata.hpp"
@@ -45,26 +45,32 @@ void CityBuildOptions::setBuildingAvailble( const TileOverlay::Type type, bool m
   _d->rules[ type ] = mayBuild;
 }
 
-void CityBuildOptions::setIndustryAvaible( const BuildMenuType type, bool mayBuild )
+void CityBuildOptions::setBuildingAvailble( const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild )
 {
+  for( int i=start; i <= stop; i++ )
+    _d->rules[ (TileOverlay::Type)i ] = mayBuild;
+}
+
+void CityBuildOptions::setGroupAvaible( const BuildMenuType type, Variant vmb )
+{
+  if( vmb.isNull() )
+    return;
+
+  bool mayBuild = (vmb.toString() != disableAll);
   switch( type )
   {
-  case BM_FARM:
-    _d->rules[ building::oliveFarm ] = mayBuild; _d->rules[ building::wheatFarm ] = mayBuild;
-    _d->rules[ building::fruitFarm ] = mayBuild; _d->rules[ building::vegetableFarm ] = mayBuild;
-    _d->rules[ building::grapeFarm ] = mayBuild; _d->rules[ building::pigFarm ] = mayBuild;
-  break;
-
-  case BM_RAW_MATERIAL:
-    _d->rules[ building::marbleQuarry ] = mayBuild; _d->rules[ building::ironMine ] = mayBuild;
-    _d->rules[ building::timberLogger ] = mayBuild; _d->rules[ building::clayPit ] = mayBuild;
-  break;
-
-  case BM_FACTORY:
-    _d->rules[ building::winery ] = mayBuild; _d->rules[ building::creamery ] = mayBuild;
-    _d->rules[ building::weaponsWorkshop ] = mayBuild; _d->rules[ building::furnitureWorkshop ] = mayBuild;
-    _d->rules[ building::pottery ] = mayBuild;
-  break;
+  case BM_FARM: setBuildingAvailble( building::wheatFarm, building::pigFarm, mayBuild ); break;
+  case BM_WATER: setBuildingAvailble( building::reservoir, building::well, mayBuild ); break;
+  case BM_HEALTH: setBuildingAvailble( building::doctor, building::barber, mayBuild ); break;
+  case BM_RAW_MATERIAL: setBuildingAvailble( building::marbleQuarry, building::clayPit, mayBuild ); break;
+  case BM_RELIGION: setBuildingAvailble( building::templeCeres, building::cathedralVenus, mayBuild ); break;
+  case BM_FACTORY: setBuildingAvailble( building::winery, building::pottery, mayBuild ); break;
+  case BM_EDUCATION: setBuildingAvailble( building::school, building::library, mayBuild ); break;
+  case BM_ENTERTAINMENT: setBuildingAvailble( building::amphitheater, building::chariotSchool, mayBuild ); break;
+  case BM_ADMINISTRATION: setBuildingAvailble( building::senate, building::governorPalace, mayBuild ); break;
+  case BM_ENGINEERING: setBuildingAvailble( building::engineerPost, building::wharf, mayBuild ); break;
+  case BM_SECURITY: setBuildingAvailble( building::prefecture, building::fortArea, mayBuild ); break;
+  case BM_COMMERCE: setBuildingAvailble( building::market, building::warehouse, mayBuild ); break;
 
   default:
   break;
@@ -78,14 +84,19 @@ void CityBuildOptions::clear()
 
 void CityBuildOptions::load(const VariantMap& options)
 {
-  if( options.get( "farm" ).toString() == disableAll )
-    setIndustryAvaible( BM_FARM, false );
 
-  if( options.get( "raw_material" ).toString() == disableAll )
-    setIndustryAvaible( BM_RAW_MATERIAL, false );
-
-  if( options.get( "factory" ).toString() == disableAll)
-    setIndustryAvaible( BM_FACTORY, false );
+  setGroupAvaible( BM_FARM, options.get( "farm" ) );
+  setGroupAvaible( BM_RAW_MATERIAL, options.get( "raw_material" ) );
+  setGroupAvaible( BM_FACTORY, options.get( "factory" ) );
+  setGroupAvaible( BM_WATER, options.get( "water" ) );
+  setGroupAvaible( BM_HEALTH, options.get( "health" ) );
+  setGroupAvaible( BM_RELIGION, options.get( "religion" ) );
+  setGroupAvaible( BM_EDUCATION, options.get( "education" ) );
+  setGroupAvaible( BM_ENTERTAINMENT, options.get( "entertainment" ) );
+  setGroupAvaible( BM_ADMINISTRATION, options.get( "govt" ) );
+  setGroupAvaible( BM_ENGINEERING, options.get( "engineering" ) );
+  setGroupAvaible( BM_SECURITY, options.get( "security" ) );
+  setGroupAvaible( BM_COMMERCE, options.get( "commerce" ) );
 
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( item, buildings )

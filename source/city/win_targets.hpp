@@ -22,6 +22,7 @@
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
+#include "core/stringarray.hpp"
 
 class VariantMap;
 
@@ -35,8 +36,9 @@ public:
   int getProsperity() const;
   int getFavour() const;
   int getPeace() const;
+  std::string getShortDesc() const;
   int getPopulation() const;
-  const std::string& getOverview() const;
+  const StringArray& getOverview() const;
 
   bool isSuccess( int culture, int prosperity,
                   int favour, int peace,

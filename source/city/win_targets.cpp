@@ -29,7 +29,9 @@ public:
   int favour;
   int peace;
   bool success;
-  std::string overview;
+  StringArray overview;
+  std::string shortDesc,
+              caption;
 };
 
 CityWinTargets::CityWinTargets() : _d( new Impl )
@@ -68,7 +70,9 @@ void CityWinTargets::load( const VariantMap& stream )
   _d->prosperity = (int)stream.get( "prosperity" );
   _d->favour = (int)stream.get( "favour" );
   _d->peace = (int)stream.get( "peace" );
-  _d->overview = stream.get( "overview" ).toString();
+  _d->overview = stream.get( "overview" ).toStringArray();
+  _d->shortDesc = stream.get( "short" ).toString();
+  _d->caption = stream.get( "caption" ).toString();
 }
 
 CityWinTargets&CityWinTargets::operator=(const CityWinTargets& a)
@@ -81,36 +85,16 @@ CityWinTargets&CityWinTargets::operator=(const CityWinTargets& a)
   _d->favour = a._d->favour;
   _d->peace = a._d->peace;
   _d->overview = a._d->overview;
+  _d->shortDesc = a._d->shortDesc;
+  _d->caption = a._d->caption;
 
   return *this;
 }
 
-int CityWinTargets::getCulture() const
-{
-  return _d->culture;
-}
-
-int CityWinTargets::getProsperity() const
-{
-  return _d->prosperity;
-}
-
-int CityWinTargets::getFavour() const
-{
-  return _d->favour;
-}
-
-int CityWinTargets::getPeace() const
-{
-  return _d->peace;
-}
-
-int CityWinTargets::getPopulation() const
-{
-  return _d->population;
-}
-
-const std::string&CityWinTargets::getOverview() const
-{
-  return _d->overview;
-}
+int CityWinTargets::getCulture() const{  return _d->culture;}
+int CityWinTargets::getProsperity() const{  return _d->prosperity;}
+int CityWinTargets::getFavour() const{  return _d->favour;}
+int CityWinTargets::getPeace() const{  return _d->peace;}
+std::string CityWinTargets::getShortDesc() const {  return _d->shortDesc;}
+int CityWinTargets::getPopulation() const{  return _d->population;}
+const StringArray& CityWinTargets::getOverview() const{  return _d->overview;}

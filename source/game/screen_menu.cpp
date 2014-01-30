@@ -215,6 +215,7 @@ void ScreenMenu::handleEvent( NEvent& event )
 
 void ScreenMenu::initialize()
 {
+  Logger::warning( "ScreenMenu: initialize start");
   _d->bgPicture = Picture::load("title", 1);
 
   // center the bgPicture on the screen

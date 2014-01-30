@@ -164,10 +164,9 @@ void Game::setScreenMenu()
     case ScreenMenu::startNewGame:
     {
       /* temporary*/     
-      vfs::Entries::Items maps = vfs::Directory( GameSettings::rcpath( "/maps/" ) ).getEntries().filter( vfs::Entries::file, "" ).getItems();
       std::srand( DateTime::getElapsedTime() );
-      std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
-      Logger::warning( "Loading map:%s", file.c_str() );
+      std::string file = GameSettings::rcpath( "/missions/tutorial.mission" ).toString();
+      Logger::warning( "Start new career:%s", file.c_str() );
 
       load( file );
 
