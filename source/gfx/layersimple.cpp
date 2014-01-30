@@ -36,7 +36,7 @@ std::set<int> LayerSimple::getVisibleWalkers() const
 
 void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   TileOverlayPtr overlay = tile.getOverlay();
 

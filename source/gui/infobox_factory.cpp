@@ -41,7 +41,8 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
   // paint progress
   std::string text = StringHelper::format( 0xff, "%s %d%%", _("##production_ready_at##"), factory->getProgress() );
-  new Label( this, Rect( _getTitle()->getLeftdownCorner() + Point( 10, 0 ), Size( getWidth() - 32, 25 ) ), text );
+  Label* lbPr = new Label( this, Rect( _getTitle()->getLeftdownCorner() + Point( 10, 0 ), Size( getWidth() - 32, 25 ) ), text );
+  lbPr->setFont( Font::create( FONT_2 ) );
 
   if( factory->getOutGoodType() != Good::none )
   {

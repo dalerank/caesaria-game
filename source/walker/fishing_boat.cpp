@@ -119,7 +119,7 @@ void FishingBoat::timeStep(const unsigned long time)
     {
       if( _d->base != 0 )
       {
-        Pathway way = Pathfinder::getInstance().getPath( getIJ(), _d->base->getLandingTile().getIJ(),
+        Pathway way = Pathfinder::getInstance().getPath( getIJ(), _d->base->getLandingTile().pos(),
                                                          Pathfinder::waterOnly );
 
         if( way.isValid() )

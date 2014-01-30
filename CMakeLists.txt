@@ -2,6 +2,7 @@ project(CaesarIA)
 
 cmake_minimum_required(VERSION 2.6)
 
+message("System is=${CMAKE_SYSTEM_NAME}")
 option( BUILD_ZLIB "Static zlib" ON )
 option( BUILD_AES "Static aes" ON )
 option( BUILD_BZIP "Static bzip" ON )

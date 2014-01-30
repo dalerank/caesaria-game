@@ -230,7 +230,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   if( _d->storageBuildingPos.i() >= 0 )
   {
     // we found a destination!
-    setIJ( pathWay.getOrigin().getIJ() );
+    setIJ( pathWay.getStartPos() );
     setPathway(pathWay);    
   }
   else

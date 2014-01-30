@@ -39,6 +39,7 @@ public:
     iron, weapon,
     marble,
     denaries,
+    prettyWine,
     goodCount
   } Type;
 

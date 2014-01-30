@@ -100,18 +100,18 @@ void Road::initTerrain(Tile& terrain)
 
 Picture Road::computePicture()
 {
-  int i = getTile().getI();
-  int j = getTile().getJ();
+  int i = getTile().i();
+  int j = getTile().j();
 
   TilesArray roads = getAccessRoads();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
   foreach( it, roads )
   {
     Tile* tile = *it;
-    if (tile->getJ() > j)      { directionFlags += 1; } // road to the north
-    else if (tile->getJ() < j) { directionFlags += 4; } // road to the south
-    else if (tile->getI() > i) { directionFlags += 2; } // road to the east
-    else if (tile->getI() < i) { directionFlags += 8; } // road to the west
+    if (tile->j() > j)      { directionFlags += 1; } // road to the north
+    else if (tile->j() < j) { directionFlags += 4; } // road to the south
+    else if (tile->i() > i) { directionFlags += 2; } // road to the east
+    else if (tile->i() < i) { directionFlags += 8; } // road to the west
   }
 
   // std::cout << "direction flags=" << directionFlags << std::endl;

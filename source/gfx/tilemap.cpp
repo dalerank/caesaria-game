@@ -277,7 +277,7 @@ void Tilemap::load( const VariantMap& stream )
         for (int dj = 0; dj<tile_size; ++dj)
         {
           // for each subcol of the multi-tile
-          Tile &sub_tile = at( tile->getIJ() + TilePos( di, dj ) );
+          Tile &sub_tile = at( tile->pos() + TilePos( di, dj ) );
           sub_tile.setMasterTile( master );
           sub_tile.setPicture( &pic );
         }

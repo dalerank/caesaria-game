@@ -30,7 +30,7 @@ void LayerDestroy::_clearAll()
   TilesArray tiles4clear = _getSelectedArea();
   foreach( tile, tiles4clear )
   {
-    events::GameEventPtr event = events::ClearLandEvent::create( (*tile)->getIJ() );
+    events::GameEventPtr event = events::ClearLandEvent::create( (*tile)->pos() );
     event->dispatch();
   }
 }
@@ -41,7 +41,7 @@ void LayerDestroy::_drawTileInSelArea( GfxEngine& engine, Tile& tile, Tile* mast
   {
     // single-tile
     drawTile( engine, tile, offset );
-    engine.drawPicture( _clearPic, tile.getXY() + offset );
+    engine.drawPicture( _clearPic, tile.mapPos() + offset );
   }
   else
   {
@@ -77,7 +77,7 @@ void LayerDestroy::render( GfxEngine& engine )
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
-    hashDestroyArea.insert( tile->getJ() * 1000 + tile->getI() );
+    hashDestroyArea.insert( tile->j() * 1000 + tile->i() );
 
     TileOverlayPtr overlay = tile->getOverlay();
     if( overlay.isValid() )
@@ -85,7 +85,7 @@ void LayerDestroy::render( GfxEngine& engine )
       TilesArray overlayArea = tmap.getArea( overlay->getTilePos(), overlay->getSize() );
       foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert( (*ovelayTile)->getJ() * 1000 + (*ovelayTile)->getI() );
+        hashDestroyArea.insert( (*ovelayTile)->j() * 1000 + (*ovelayTile)->i() );
       }
     }
   }
@@ -100,7 +100,7 @@ void LayerDestroy::render( GfxEngine& engine )
     if( !tile->isFlat() )
       continue;
 
-    int tilePosHash = tile->getJ() * 1000 + tile->getI();
+    int tilePosHash = tile->j() * 1000 + tile->i();
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       _drawTileInSelArea( engine, *tile, master, cameraOffset );
@@ -121,13 +121,13 @@ void LayerDestroy::render( GfxEngine& engine )
   }
 
   // SECOND PART: draw all sprites, impassable land and buildings
-  WalkerList walkerList = _getVisibleWalkerList();
+  //WalkerList walkerList = _getVisibleWalkerList();
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
-    int z = tile->getIJ().z();
+    int z = tile->pos().z();
 
-    int tilePosHash = tile->getJ() * 1000 + tile->getI();
+    int tilePosHash = tile->j() * 1000 + tile->i();
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       if( tile->getFlag( Tile::isDestructible ) )
@@ -221,7 +221,7 @@ std::set<int> LayerDestroy::getVisibleWalkers() const
 
 void LayerDestroy::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   TileOverlayPtr overlay = tile.getOverlay();
 

@@ -39,6 +39,8 @@ public:
   virtual void applyService(ServiceWalkerPtr walker);
 
   virtual unsigned int getWalkerDistance() const;
+
+  virtual void timeStep(const unsigned long time);
 private:
   class Impl;
   ScopedPtr< Impl > _d;

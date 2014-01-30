@@ -72,7 +72,7 @@ InfoboxLand::InfoboxLand( Widget* parent, const Tile& tile )
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
 
   std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) ID:%04X",
-                                           tile.getI(), tile.getJ(),  
+                                           tile.i(), tile.j(),  
                                           ((short int) tile.getOriginalImgId() ) );
   
   lbText->setText( text );

@@ -359,7 +359,7 @@ WalkerList PlayerCity::getWalkers(walker::Type type, TilePos startPos, TilePos s
   TilesArray area = _d->tilemap.getArea( startPos, stopPos );
   foreach( tile, area)
   {
-    WalkerList current = _d->walkersGrid.at( (*tile)->getIJ() );
+    WalkerList current = _d->walkersGrid.at( (*tile)->pos() );
 
     foreach( w, current )
     {
@@ -471,8 +471,8 @@ void PlayerCity::save( VariantMap& stream) const
   {
     VariantMap vm_overlay;
     (*overlay)->save( vm_overlay );
-    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*overlay)->getTile().getI(),
-                                                      (*overlay)->getTile().getJ() ) ] = vm_overlay;
+    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*overlay)->getTile().i(),
+                                                      (*overlay)->getTile().j() ) ] = vm_overlay;
   }
   stream[ "overlays" ] = vm_overlays;
 

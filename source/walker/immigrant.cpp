@@ -197,14 +197,14 @@ bool Immigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples, Tile
 
 void Immigrant::send2city( Tile& startTile )
 {
-  _findPath2blankHouse( startTile.getIJ() );
+  _findPath2blankHouse( startTile.pos() );
   _getCity()->addWalker( this );
 }
 
 void Immigrant::leaveCity(Tile& tile)
 {
-  setIJ( tile.getIJ() );
-  Pathway pathway = PathwayHelper::create( tile.getIJ(),
+  setIJ( tile.pos() );
+  Pathway pathway = PathwayHelper::create( tile.pos(),
                                            _getCity()->getBorderInfo().roadExit,
                                            PathwayHelper::allTerrain );
 

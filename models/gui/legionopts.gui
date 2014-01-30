@@ -65,7 +65,7 @@
       text : "##morale##"
     }
        
-    lbFormationText#Label : {
+    lbFormation#Label : {
       lbFormationTitle#Label : {
         geometry : [ 0, 0, 430, 20 ]
         textAlign : [ "upperLeft", "center" ]

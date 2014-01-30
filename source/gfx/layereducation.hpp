@@ -13,27 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_LAYERENTERTAINMENT_H_INCLUDED__
-#define __CAESARIA_LAYERENTERTAINMENT_H_INCLUDED__
+#ifndef __CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
+#define __CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
 
 #include "layer.hpp"
 
-class LayerEntertainment : public Layer
+class LayerEducation : public Layer
 {
 public:
   virtual int getType() const;
   virtual VisibleWalkers getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create(TilemapCamera& camera, PlayerCityPtr city, int type );
+  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);
+
 private:
-  LayerEntertainment( TilemapCamera& camera, PlayerCityPtr city, int type );
+  LayerEducation( TilemapCamera& camera, PlayerCityPtr city, int type );
   int _getLevelValue(HousePtr house);
 
   std::set<int> _flags;
-  VisibleWalkers _visibleWalkers;
+  std::set<int> _walkers;
   int _type;
 };
 
-#endif //__CAESARIA_LAYERENTERTAINMENT_H_INCLUDED__
+#endif //__CAESARIA_LAYEREDUCATIONH_H_INCLUDED__

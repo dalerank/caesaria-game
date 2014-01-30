@@ -57,7 +57,7 @@ public:
 protected:
   void _setLastCursorPos( Point pos );
   Point _getLastCursorPos() const;
-  WalkerList _getVisibleWalkerList();
+  WalkerList _getVisibleWalkerList( const VisibleWalkers& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
   Point _getStartCursorPos() const;
   void _drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset);

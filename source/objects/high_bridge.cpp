@@ -204,17 +204,17 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       
       tiles.erase( tiles.begin() );
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingSE );
-      _d->addSpan( tiles.front()->getIJ() - startPos, HighBridgeSubTile::liftingSE2 );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingSE );
+      _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingSE2 );
       tiles.erase( tiles.begin() );
 
       foreach( tile, tiles )
       {
-        _d->addSpan( (*tile)->getIJ() - startPos, HighBridgeSubTile::spanSE );
+        _d->addSpan( (*tile)->pos() - startPos, HighBridgeSubTile::spanSE );
       }
 
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );     
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentSE2 );     
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentSE2 );
     }
   break;
 
@@ -225,15 +225,15 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       tiles.pop_back();
       tiles.erase( tiles.begin() );
-      TilePos liftPos = tiles.front()->getIJ();
+      TilePos liftPos = tiles.front()->pos();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
 
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {
-        _d->addSpan( (*it)->getIJ() - startPos, HighBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanSW );
       }
 
       _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentSW2 );
@@ -249,17 +249,17 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
 
       tiles.erase( tiles.begin() );
-      _d->addSpan( tiles.front()->getIJ() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingSE );
-      _d->addSpan( tiles.front()->getIJ() - startPos, HighBridgeSubTile::liftingSE2 );      
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingSE );
+      _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingSE2 );
       tiles.erase( tiles.begin() );
 
       foreach( tile, tiles )
       {        
-        _d->addSpan( (*tile)->getIJ() - startPos, HighBridgeSubTile::spanSE );
+        _d->addSpan( (*tile)->pos() - startPos, HighBridgeSubTile::spanSE );
       }
 
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentSE2 );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentSE2 );
     }
   break;
 
@@ -271,14 +271,14 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       
       tiles.erase( tiles.begin() );
-      TilePos liftPos = tiles.front()->getIJ();
+      TilePos liftPos = tiles.front()->pos();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
-      _d->addSpan( tiles.back()->getIJ() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
       {        
-        _d->addSpan( (*it)->getIJ() - startPos, HighBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanSW );
       }
       _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentSW2 );
       _d->addSpan( liftPos - startPos - TilePos( 0, 1 ), HighBridgeSubTile::descentSW );
@@ -314,7 +314,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       imdId = (*it)->getOriginalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
       {
-        stop = (*it)->getIJ();
+        stop = (*it)->pos();
         direction = abs( stop.i() - start.i() ) > 3 ? northWest : noneDirection;
         break;
       }
@@ -328,7 +328,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       imdId = (*it)->getOriginalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
-        stop = (*it)->getIJ();
+        stop = (*it)->pos();
         direction = abs( stop.i() - start.i() ) > 3 ? southEast : noneDirection;
         break;
       }
@@ -342,7 +342,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       imdId = (*it)->getOriginalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
-        stop = (*it)->getIJ();
+        stop = (*it)->pos();
         direction = abs( stop.j() - start.j() ) > 3 ? northEast : noneDirection;
         break;
       }
@@ -356,7 +356,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
       imdId = (*it)->getOriginalImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
-        stop = (*it)->getIJ();
+        stop = (*it)->pos();
         direction = abs( stop.j() - start.j() ) > 3 ? southWest : noneDirection;
         break;
       }

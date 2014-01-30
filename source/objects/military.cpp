@@ -66,7 +66,7 @@ void FortLegionnaire::_readyNewSoldier()
   {
     if( (*tile)->isWalkable( true ) )
     {
-      soldier->send2city( this, (*tile)->getIJ() );
+      soldier->send2city( this, (*tile)->pos() );
       addWalker( soldier.object() );
       return;
     }
@@ -137,7 +137,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   logo.setOffset( Point( 80, 10 ) );
 
   Picture area = Picture::load(ResourceGroup::security, 13 );
-  area.setOffset(Tile( TilePos(3,0)).getXY() + Point(0,-30));
+  area.setOffset(Tile( TilePos(3,0)).mapPos() + Point(0,-30));
 
   _fgPicturesRef().resize(2);
   _fgPicturesRef().at( 0 ) = logo;
@@ -243,7 +243,7 @@ TilePos Fort::getFreeSlot() const
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    WalkerList wlist = _getCity()->getWalkers( walker::any, (*it)->getIJ() );
+    WalkerList wlist = _getCity()->getWalkers( walker::any, (*it)->pos() );
     if( !wlist.empty() ) { it = tiles.erase( it ); }
     else { it++; }
   }
@@ -253,7 +253,7 @@ TilePos Fort::getFreeSlot() const
     int step = rand() % std::min<int>( tiles.size(), _d->maxSoldier );
     TilesArray::iterator it = tiles.begin();
     std::advance( it, step );
-    return (*it)->getIJ();
+    return (*it)->pos();
   }
 
   return TilePos( -1, -1 );

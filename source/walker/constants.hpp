@@ -60,6 +60,9 @@ enum Type{
   spear,
   fishPlace,
   seaMerchant,
+  scholar,
+  librarian,
+  teacher,
   all = 0xff,
   any = all
 };

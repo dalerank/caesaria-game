@@ -83,7 +83,7 @@ void Prefecture::deliverService()
     //bool patrol = true;
     if( fireDetect )
     {
-      TilePos startPos = getAccessRoads().front()->getIJ();
+      TilePos startPos = getAccessRoads().front()->pos();
 
       Tilemap& tmap = _getCity()->getTilemap();
       TilesArray arrivedArea = tmap.getArea( _d->fireDetect - TilePos( 1, 1), _d->fireDetect + TilePos( 1, 1 ) );

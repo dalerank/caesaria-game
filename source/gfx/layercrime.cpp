@@ -38,7 +38,7 @@ Layer::VisibleWalkers LayerCrime::getVisibleWalkers() const
 
 void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 

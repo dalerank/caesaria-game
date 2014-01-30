@@ -159,7 +159,7 @@ void ClearLandEvent::exec( Game& game )
     if( overlay.isValid() )
     {
       size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();
+      rPos = overlay->getTilePos();
       overlay->deleteLater();
     }
 
@@ -193,7 +193,9 @@ void ClearLandEvent::exec( Game& game )
         int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 );
         int imgId = rand() % 58;
 
+        Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
         tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
+        tile->setOriginalImgId( TileHelper::convPicName2Id( pic.getName() ) );
       }
     }
 

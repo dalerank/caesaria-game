@@ -30,7 +30,7 @@ using namespace constants;
 namespace gui
 {
 
-InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
+InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
   : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##fountain##") );
@@ -57,20 +57,50 @@ InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
   _getInfo()->setText( _(text) );
 }
 
-InfoBoxFontain::~InfoBoxFontain()
+InfoboxFontain::~InfoboxFontain()
 {
 
 }
 
-void InfoBoxFontain::showDescription()
+void InfoboxFontain::showDescription()
 {
   DictionaryWindow::show( getParent(), building::fountain );
+}
+
+InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
+  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+{
+  setTitle( _("##reservoir##") );
+
+  _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _getInfo()->setWordwrap( true );
+
+  ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.getOverlay() );
+  std::string text;
+  if( reservoir.isValid() )
+  {
+    text = reservoir->haveWater()
+              ? "##reservoir_info##"
+              : "##reservoir_no_water##";
+  }
+
+  _getInfo()->setText( _(text) );
+}
+
+InfoboxReservoir::~InfoboxReservoir()
+{
+
+}
+
+void InfoboxReservoir::showDescription()
+{
+  DictionaryWindow::show( getParent(), building::reservoir );
 }
 
 InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
   : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
 {
-  setTitle( "##well##" );
+  setTitle( _("##well##") );
 
   _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );

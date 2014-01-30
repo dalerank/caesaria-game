@@ -81,15 +81,6 @@ private:
   WorkingBuildingPtr _working;
 };
 
-class InfoboxWell : public InfoboxSimple
-{
-public:
-  InfoboxWell( Widget* parent, const Tile& tile );
-  virtual ~InfoboxWell();
-
-  virtual void showDescription();
-};
-
 class InfoBoxColosseum : public InfoboxSimple
 {
 public:

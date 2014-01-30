@@ -202,7 +202,7 @@ EnemySoldierList WallGuard::_findEnemiesInRange( unsigned int range )
 
     foreach( tile, tiles )
     {
-      WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->getIJ() );
+      WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->pos() );
 
       foreach( w, tileWalkers )
       {
@@ -283,7 +283,7 @@ bool WallGuard::_tryAttack()
         PathwayList wayList = _d->base->getWays( getIJ(), nearestWall );
         foreach( way, wayList )
         {
-          double tmpDistance = (*way)->getDestination().getIJ().distanceFrom( enemy->getIJ() );
+          double tmpDistance = (*way)->getDestination().pos().distanceFrom( enemy->getIJ() );
           if( tmpDistance < minDistance )
           {
             shortestWay = *way;
@@ -319,7 +319,7 @@ void WallGuard::_back2tower()
     {
       setSpeed( 1.f );
       _setAnimation( _d->walk );
-      Pathway way = _d->base->getWay( getIJ(), enter.front()->getIJ() );
+      Pathway way = _d->base->getWay( getIJ(), enter.front()->pos() );
       setPathway( way );
       go();
     }
@@ -414,7 +414,7 @@ void WallGuard::_centerTile()
 
 void WallGuard::send2city( TowerPtr base, Pathway pathway )
 {
-  setIJ( pathway.getOrigin().getIJ() );
+  setIJ( pathway.getStartPos() );
   _d->base = base;
 
   setPathway( pathway );

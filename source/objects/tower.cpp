@@ -110,8 +110,8 @@ void Tower::_rebuildWays()
       _d->mayPatroling( *tile, patrolingWall );
       if( patrolingWall )
       {
-        TilePos tpos = enter.front()->getIJ();
-        Pathway pathway = PathwayHelper::create( tpos, (*tile)->getIJ(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+        TilePos tpos = enter.front()->pos();
+        Pathway pathway = PathwayHelper::create( tpos, (*tile)->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
 
         if( pathway.isValid() )
         {

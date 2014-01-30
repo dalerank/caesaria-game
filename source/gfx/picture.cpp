@@ -74,6 +74,7 @@ void Picture::init(SDL_Surface *surface, const Point& offset )
 }
 
 void Picture::setOffset( Point offset ) { _d->offset = offset; }
+void Picture::setOffset(int x, int y) { _d->offset = Point( x, y ); }
 void Picture::addOffset( Point offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 

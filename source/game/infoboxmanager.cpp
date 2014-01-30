@@ -154,16 +154,17 @@ InfoboxManager::InfoboxManager() : _d( new Impl )
 
   InfoboxCitizenManager::loadInfoboxes( *this );
 
-  addInfobox( building::reservoir,        CAESARIA_STR_EXT(Reservoir),   new InfoBoxBasicCreator( "", "##reservoir_info##" ) );
-  addInfobox( building::house,            CAESARIA_STR_EXT(House),       new InfoboxHouseCreator() );
-  addInfobox( building::prefecture,       CAESARIA_STR_EXT(Prefecture),  new ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( building::engineerPost,     CAESARIA_STR_EXT(EngineerPost),new ServiceBaseInfoboxCreator( "", "" ) );
+#define ADD_INFOBOX(typen, creator) addInfobox(typen, CAESARIA_STR_EXT(typen), new creator)
+  ADD_INFOBOX( building::reservoir,    BaseInfoboxCreator<InfoboxReservoir>() );
+  ADD_INFOBOX( building::house,        InfoboxHouseCreator() );
+  ADD_INFOBOX( building::prefecture,   ServiceBaseInfoboxCreator( "", "" ) );
+  ADD_INFOBOX( building::engineerPost, ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::well,             CAESARIA_STR_EXT(Well),        new BaseInfoboxCreator<InfoboxWell>() );
   addInfobox( building::doctor,           CAESARIA_STR_EXT(Doctor),      new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::baths,            CAESARIA_STR_EXT(Baths),       new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::barber,           CAESARIA_STR_EXT(Barber),      new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::hospital,         CAESARIA_STR_EXT(Hospital),    new ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( building::fountain,         CAESARIA_STR_EXT(B_FOUNTAIN),  new BaseInfoboxCreator<InfoBoxFontain>() );
+  addInfobox( building::fountain,         CAESARIA_STR_EXT(B_FOUNTAIN),  new BaseInfoboxCreator<InfoboxFontain>() );
   addInfobox( building::aqueduct,         CAESARIA_STR_EXT(B_AQUEDUCT),  new InfoBoxBasicCreator( "", "##aqueduct_info##") );
   addInfobox( building::market,           CAESARIA_STR_EXT(B_MARKET),    new BaseInfoboxCreator<InfoBoxMarket>() );
   addInfobox( building::granary,          CAESARIA_STR_EXT(B_GRANARY),   new BaseInfoboxCreator<InfoBoxGranary>() );
@@ -220,14 +221,12 @@ InfoboxManager::InfoboxManager() : _d( new Impl )
   addInfobox( building::lowBridge,        CAESARIA_STR_EXT(LowBridge),    new InfoBoxBasicCreator( "", "##low_bridge_text##") );
   addInfobox( building::wharf,            CAESARIA_STR_EXT(Wharf),        new BaseInfoboxCreator<InfoboxWharf>() );
   addInfobox( building::burningRuins,     CAESARIA_STR_EXT(BurningRuins), new BaseInfoboxCreator<InfoboxRuins>() );
+  addInfobox( building::collapsedRuins,   CAESARIA_STR_EXT(CollapsedRuins), new BaseInfoboxCreator<InfoboxRuins>() );
   addInfobox( building::burnedRuins,      CAESARIA_STR_EXT(BurnedRuins), new BaseInfoboxCreator<InfoboxRuins>() );
   addInfobox( building::plagueRuins,      CAESARIA_STR_EXT(PlagueRuins), new BaseInfoboxCreator<InfoboxRuins>() );
 }
 
-InfoboxManager::~InfoboxManager()
-{
-
-}
+InfoboxManager::~InfoboxManager() {}
 
 InfoboxManager& InfoboxManager::getInstance()
 {

@@ -138,7 +138,7 @@ void VideoOptionsWindow::_update()
 {
   if( _d->btnSwitchMode )
   {
-    _d->btnSwitchMode->setText( _d->fullScreen ? "##fullscreen_on##" : "##fullscreen_off##" );
+    _d->btnSwitchMode->setText( _d->fullScreen ? _("##fullscreen_on##") : _("##fullscreen_off##") );
   }
 }
 
