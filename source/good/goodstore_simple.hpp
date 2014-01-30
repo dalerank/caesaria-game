@@ -22,8 +22,8 @@
 class SimpleGoodStore : public GoodStore
 {
 public:
-  using GoodStore::applyStorageReservation;
-  using GoodStore::applyRetrieveReservation;
+  //using GoodStore::applyStorageReservation;
+  //using GoodStore::applyRetrieveReservation;
 
   SimpleGoodStore();
   ~SimpleGoodStore();

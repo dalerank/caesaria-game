@@ -226,14 +226,14 @@ PlagueRuins::PlagueRuins() : Ruins( building::plagueRuins )
   _animationRef().load( ResourceGroup::land2a, 188, 8 );
   _animationRef().setOffset( Point( 14, 26 ) );
   _fgPicturesRef().resize(2);
-  _fgPicturesRef().at( 1 ) = Picture::load( ResourceGroup::sprites, 218 );
-  _fgPicturesRef().at( 1 ).setOffset( Point( 16, 32 ) );
+  _fgPicturesRef()[ 1 ] = Picture::load( ResourceGroup::sprites, 218 );
+  _fgPicturesRef()[ 1 ].setOffset( Point( 16, 32 ) );
 }
 
 void PlagueRuins::timeStep(const unsigned long time)
 {
   _animationRef().update( time );
-  _fgPicturesRef().at( 0 ) = _animationRef().getFrame();
+  _fgPicturesRef()[ 0 ] = _animationRef().getFrame();
 
   if (time % 16 == 0 )
   {

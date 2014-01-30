@@ -20,7 +20,7 @@
 #define pkwareinputstream_h
 
 #include <string>
-#include <istream>
+//#include <istream>
 
 /**
 * Exception class for errors

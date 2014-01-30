@@ -21,6 +21,7 @@
 #include "good/goodstore_simple.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
+#include "game/gamedate.hpp"
 
 class GranaryGoodStore : public SimpleGoodStore
 {
@@ -98,8 +99,8 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
   _animationRef().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
   _animationRef().setDelay( 4 );
 
-  _fgPicturesRef().at(0) = Picture::load( ResourceGroup::commerce, 141);
-  _fgPicturesRef().at(5) = _animationRef().getFrame();
+  _fgPicturesRef()[0] = Picture::load( ResourceGroup::commerce, 141);
+  _fgPicturesRef()[5] = _animationRef().getFrame();
   computePictures();
 
   _d->devastateThis = false;  
@@ -112,9 +113,9 @@ void Granary::timeStep(const unsigned long time)
   {
     _animationRef().update( time );
 
-    _fgPicturesRef().at(5) = _animationRef().getFrame();
+    _fgPicturesRef()[5] = _animationRef().getFrame();
 
-    if( time % 22 == 1 && _d->goodStore.isDevastation() 
+    if( time % (GameDate::getTickInMonth() / 2) == 1 && _d->goodStore.isDevastation() 
         && (_d->goodStore.getQty() > 0) && getWalkers().empty() )
     {
       _tryDevastateGranary();
@@ -135,25 +136,13 @@ void Granary::computePictures()
   for (int n = 0; n < 4; ++n)
   {
     // reset all window pictures
-    _fgPicturesRef().at(n+1) = Picture::getInvalid();
+    _fgPicturesRef()[n+1] = Picture::getInvalid();
   }
 
-  if (allQty > 0)
-  {
-    _fgPicturesRef().at(1) = Picture::load( ResourceGroup::commerce, 142);
-  }
-  if( allQty > maxQty * 0.25)
-  {
-    _fgPicturesRef().at(2) = Picture::load( ResourceGroup::commerce, 143);
-  }
-  if (allQty > maxQty * 0.5)
-  {
-    _fgPicturesRef().at(3) = Picture::load( ResourceGroup::commerce, 144);
-  }
-  if (allQty > maxQty * 0.9)
-  {
-    _fgPicturesRef().at(4) = Picture::load( ResourceGroup::commerce, 145);
-  }
+  if (allQty > 0){ _fgPicturesRef()[1] = Picture::load( ResourceGroup::commerce, 142); }
+  if( allQty > maxQty * 0.25) { _fgPicturesRef()[2] = Picture::load( ResourceGroup::commerce, 143); }
+  if (allQty > maxQty * 0.5){ _fgPicturesRef()[3] = Picture::load( ResourceGroup::commerce, 144); }
+  if (allQty > maxQty * 0.9){ _fgPicturesRef()[4] = Picture::load( ResourceGroup::commerce, 145); }
 }
 
 void Granary::save( VariantMap& stream) const

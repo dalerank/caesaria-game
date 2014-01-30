@@ -133,7 +133,7 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
 
     if( !troubles.empty() )
     {
-      lbRatingInfo->setText( troubles.at( rand() % troubles.size() ) );
+      lbRatingInfo->setText( troubles[ (int)(rand() % troubles.size())] );
     }
   }
 }
@@ -164,7 +164,7 @@ void AdvisorRatingsWindow::Impl::checkProsperityRating()
 
     std::string text = troubles.empty()
                         ? _("##good_prosperity##")
-                        : troubles.at( rand() % troubles.size() );
+                        : troubles[ (int)(rand() % troubles.size()) ];
 
     lbRatingInfo->setText( text );
   }

@@ -244,8 +244,8 @@ void Protestor::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
-  _d->houseLevel = stream.at( "houseLevel" );
-  _d->state = (Impl::State)stream.at( "state" ).toInt();
+  _d->houseLevel = stream.get( "houseLevel" );
+  _d->state = (Impl::State)stream.get( "state" ).toInt();
 }
 
 Pathway Protestor::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )

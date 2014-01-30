@@ -215,7 +215,7 @@ DateTime DateTime::getCurrenTime()
 
 #if defined(CAESARIA_PLATFORM_WIN)
     _getsystime( &d );
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
     time_t rawtime;
     time ( &rawtime );
 

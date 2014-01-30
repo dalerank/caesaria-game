@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "city.hpp"
 #include "requestdispatcher.hpp"
 #include "request.hpp"
-#include "city.hpp"
 #include "game/gamedate.hpp"
 #include "events/showrequestwindow.hpp"
 #include "core/foreach.hpp"

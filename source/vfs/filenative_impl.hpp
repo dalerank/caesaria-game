@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef __OPENCAESAR3_FILENATIVE_H_INCLUDED__
-#define __OPENCAESAR3_FILENATIVE_H_INCLUDED__
+#ifndef __CAESARIA_FILENATIVE_H_INCLUDED__
+#define __CAESARIA_FILENATIVE_H_INCLUDED__
 
 #include <stdio.h>
 #include "entity.hpp"
@@ -76,5 +76,5 @@ private:
 
 } //end namespace io
 
-#endif
+#endif //__CAESARIA_FILENATIVE_H_INCLUDED__
 

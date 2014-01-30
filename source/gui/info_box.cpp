@@ -88,12 +88,12 @@ InfoBoxSimple::InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blac
   // create the title
   Widget::setupUI( GameSettings::rcpath( "/gui/infobox.gui" ) );
 
-  _d->lbTitle = findChild<Label*>( "lbTitle", true );
-  _d->btnExit = findChild<TexturedButton*>( "btnExit", true );
-  _d->btnHelp = findChild<TexturedButton*>( "btnHelp", true );
-  _d->lbBackground = findChild<Label*>( "lbBackground", true );
-  _d->lbBlackFrame = findChild<Label*>( "lbBlackFrame", true );
-  _d->lbText = findChild<Label*>( "lbText", true );
+  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
+  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
+  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
+  _d->lbBackground = findChildA<Label*>( "lbBackground", true, this );
+  _d->lbBlackFrame = findChildA<Label*>( "lbBlackFrame", true, this );
+  _d->lbText = findChildA<Label*>( "lbText", true, this );
 
   if( _d->btnExit ) { _d->btnExit->setPosition( Point( getWidth() - 39, getHeight() - 39 ) ); }
   if( _d->btnHelp ) { _d->btnHelp->setPosition( Point( 14, getHeight() - 39 ) ); }
@@ -233,7 +233,7 @@ void InfoBoxWorkingBuilding::setText(const std::string& text)
       messages.push_back( StringHelper::format( 0xff, "##%s_%s##", type.c_str(), stateName[ workPercent == 0 ? 0 : (workPercent + 1) ]));
     }
 
-    lb->setText( messages.at( rand() % messages.size() ) );
+    lb->setText( messages[ (int)(rand() % messages.size()) ] );
   }
 }
 

@@ -163,7 +163,7 @@ void Game::setScreenMenu()
       /* temporary*/     
       vfs::Entries::Items maps = vfs::Directory( GameSettings::rcpath( "/maps/" ) ).getEntries().filter( vfs::Entries::file, "" ).getItems();
       std::srand( DateTime::getElapsedTime() );
-      std::string file = maps.at( std::rand() % maps.size() ).fullName.toString();
+      std::string file = maps[ rand() % maps.size() ].fullName.toString();
       Logger::warning( "Loading map:%s", file.c_str() );
 
       load( file );
@@ -344,6 +344,8 @@ void Game::initialize()
 {
   Logger::registerWriter( Logger::consolelog );
   Logger::registerWriter( Logger::filelog );
+  
+  Logger::warning( "Application dir: " + vfs::Directory::getApplicationDir().toString() );
 
   GameSettings::load();
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );

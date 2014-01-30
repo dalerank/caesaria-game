@@ -23,9 +23,9 @@
 class StringArray : public std::vector< std::string >
 {
 public:
-  std::string rand() const
+  inline std::string rand() const
   {
-    return empty() ? "" : at( std::rand() % size() );
+    return empty() ? "" : (*this)[ (int)std::rand() % size() ];
   }
 };
 

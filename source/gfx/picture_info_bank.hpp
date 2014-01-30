@@ -19,6 +19,8 @@
 #include "core/position.hpp"
 #include "core/scopedptr.hpp"
 
+#include <string>
+
 // contains data needed for loading pictures
 class PictureInfoBank
 {

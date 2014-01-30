@@ -210,7 +210,7 @@ std::string MetaData::getDescription() const
   if( _d->desc.empty() )
     return "##" + _d->name + "_info##";
 
-  return _d->desc.at( rand() % _d->desc.size() );
+  return _d->desc[ rand() % _d->desc.size() ];
 }
 
 TileOverlay::Type MetaData::getType() const

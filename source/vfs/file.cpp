@@ -169,7 +169,7 @@ bool NFile::remove( Path filename )
     Logger::warning( "Error[%d] on removed file %s", error, filename.toString().c_str() );
   }
   return result;
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
   int result = ::remove( filename.toString().c_str() );
   return (result == 0);
 #endif

@@ -28,7 +28,7 @@ public:
    {
      size_type newSize = a.size();
      resize( newSize );
-     std::memcpy( data(), a.data(), sizeof(Direction) * newSize );
+     std::memcpy( &front(), &a.front(), sizeof(Direction) * newSize );
 
      return *this;
    }
@@ -374,11 +374,11 @@ Pathway Pathway::copy(int start, int stop) const
     return ret;
   }
 
-  ret.init( *_d->tilemap, *_d->tileList.at( start ) );
+  ret.init( *_d->tilemap, *_d->tileList[ start ] );
   stop = (stop == -1 ? _d->tileList.size() : stop );
   for( int i=start+1; i < stop; i++ )
   {
-    ret.setNextTile( *_d->tileList.at( i ) );
+    ret.setNextTile( *_d->tileList[ i ] );
   }
 
   return ret;

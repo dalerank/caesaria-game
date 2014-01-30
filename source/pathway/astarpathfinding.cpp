@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "objects/construction.hpp"
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/position.hpp"
@@ -21,7 +22,6 @@
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "objects/construction.hpp"
 #include <set>
 
 using namespace std;
@@ -41,12 +41,12 @@ public:
   public:
     AStarPoint* operator[](const TilePos& pos )
     {
-      return at( pos.i() ).at( pos.j() );
+      return (*this)[ pos.i() ][ pos.j() ];
     }
 
     APoints& operator[]( unsigned int row )
     {
-      return at( row );
+      return (*this)[ row ];
     }
   };
 

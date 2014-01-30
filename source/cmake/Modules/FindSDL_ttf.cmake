@@ -42,6 +42,8 @@ find_path(SDL_TTF_INCLUDE_DIR SDL_ttf.h
     ENV SDLTTFDIR
     ENV SDLDIR
   PATH_SUFFIXES SDL SDL12 SDL11 include
+  PATHS
+  /boot/system/develop/headers/x86   #haiku
 )
 
 if(NOT SDL_TTF_LIBRARY AND SDLTTF_LIBRARY)
@@ -54,7 +56,9 @@ find_library(SDL_TTF_LIBRARY
   ${DEP_SOURCE_DIR}/SDL_ttf
     ENV SDLTTFDIR
     ENV SDLDIR
-  PATH_SUFFIXES lib lib/x86
+  PATH_SUFFIXES lib
+  PATHS
+  /boot/system/develop		#haiku
 )
 
 if(SDL_TTF_INCLUDE_DIR AND EXISTS "${SDL_TTF_INCLUDE_DIR}/SDL_ttf.h")

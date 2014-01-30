@@ -79,8 +79,7 @@ class CitizenInfoboxCreator : public InfoboxCreator
 public:
   gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    CityHelper helper( city );
-    WalkerList walkers = helper.find<Walker>( walker::any, pos );
+    WalkerList walkers = city->getWalkers( walker::any, pos );
 
     if( walkers.empty() )
     {
@@ -91,6 +90,8 @@ public:
       return new InfoBoxCitizen( parent, walkers );
     }
   }
+  
+  virtual ~CitizenInfoboxCreator() {}
 
   PlayerCityPtr city;
 };
@@ -106,6 +107,8 @@ public:
     text = descr;
     isDrawWorkers = drawWorkers;
   }
+  
+  virtual ~ServiceBaseInfoboxCreator() {}
 
   gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
@@ -137,6 +140,8 @@ public:
     title = caption;
     text = desc;
   }
+  
+  virtual ~InfoBoxBasicCreator() {}
 
   gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {

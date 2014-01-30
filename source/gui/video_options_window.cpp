@@ -45,11 +45,11 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, b
   setupUI( GameSettings::rcpath( "/gui/videooptions.gui" ) );
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
-  _d->btnSwitchMode = findChild<PushButton*>( "btnSwitchMode", true );
+  _d->btnSwitchMode = findChildA<PushButton*>( "btnSwitchMode", true, this );
 
   _d->fullScreen = fullscreen;
   _d->haveChanges = false;
-  if( ListBox* lbxModes = findChild<ListBox*>( "lbxModes", true ) )
+  if( ListBox* lbxModes = findChildA<ListBox*>( "lbxModes", true, this ) )
   {
     std::string modeStr;
     foreach( mode, modes )

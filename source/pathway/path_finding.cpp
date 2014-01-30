@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
+#include "objects/construction.hpp"
 #include "path_finding.hpp"
-
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
 #include "core/exception.hpp"

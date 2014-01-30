@@ -63,12 +63,19 @@ if(WIN32)
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 
-if(UNIX)
+if(LINUX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
   target_link_libraries( ${PROJECT_NAME} pthread )
 
   set(EXECUTABLE_FILENAME "updater.linux")
-endif(UNIX)
+endif(LINUX)
+
+if(HAIKU)
+  target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
+  target_link_libraries( ${PROJECT_NAME} root )
+
+  set(EXECUTABLE_FILENAME "updater.haiku")
+endif(HAIKU)
 
 if(MACOSX)
   set(EXECUTABLE_FILENAME "updater.macos")

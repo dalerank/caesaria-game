@@ -151,7 +151,7 @@ bool Util::DarkRadiantIsRunning()
 
 } // namespace
 
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
 // Linux implementation
 
 #include <iostream>

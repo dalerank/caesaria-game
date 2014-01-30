@@ -48,11 +48,11 @@ FilmWidget::FilmWidget(Widget* parent, vfs::Path film )
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
 
-  _d->lbTitle = findChild<Label*>( "lbTitle", true );
-  _d->btnExit = findChild<TexturedButton*>( "btnExit", true );
-  _d->lbTime = findChild<Label*>( "lbTime", true );
-  _d->lbReceiver = findChild<Label*>( "lbReceiver", true );
-  _d->lbMessage = findChild<Label*>( "lbMessage", true );
+  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
+  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
+  _d->lbTime = findChildA<Label*>( "lbTime", true, this );
+  _d->lbReceiver = findChildA<Label*>( "lbReceiver", true, this );
+  _d->lbMessage = findChildA<Label*>( "lbMessage", true, this );
 
   CONNECT( _d->btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
   CONNECT( _d->btnExit, onClicked(), this, FilmWidget::deleteLater );

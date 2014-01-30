@@ -100,7 +100,14 @@ public:
     EmPoint* operator[]( const TilePos& pos )
     {
       unsigned int offset = pos.j() * _size.getWidth() + pos.i();
-      return offset < size() ? &at( offset ) : 0;
+      if( offset < size() )
+      {
+      	Grid::iterator it = begin();
+      	std::advance( it, offset );
+      	return &(*it)	;
+      }
+      
+      return 0;
     }
   private:
     Size _size;

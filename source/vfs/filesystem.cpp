@@ -26,7 +26,7 @@
 	#include <io.h> // for _access
 	#include <tchar.h>
     #include <stdio.h>
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
@@ -676,7 +676,7 @@ bool FileSystem::existFile(const Path& filename) const
 
 #if defined(CAESARIA_PLATFORM_WIN)
   return ( _access( filename.toString().c_str(), 0) != -1);
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
   return ( access( filename.toString().c_str(), 0 ) != -1);
 #endif //CAESARIA_PLATFORM_UNIX
 }

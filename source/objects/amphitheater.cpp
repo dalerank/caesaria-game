@@ -67,7 +67,7 @@ void Amphitheater::deliverService()
 {
   EntertainmentBuilding::deliverService();
 
-  _fgPicturesRef().at(0) = _animationRef().isRunning()
+  _fgPicturesRef()[0] = _animationRef().isRunning()
                          ? Picture::load( ResourceGroup::entertaiment, 12 )
                          : Picture::getInvalid();
 

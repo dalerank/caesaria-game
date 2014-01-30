@@ -16,6 +16,7 @@
 #include "mutex.hpp"
 #include "thread.hpp"
 
+#include <memory.h>
 #include <iostream>
 
 using namespace std;

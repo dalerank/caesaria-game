@@ -40,7 +40,7 @@ public:
   {
     if( isInside( TilePos( i, j ) ) )
     {
-      return TileGrid::at(i).at(j);
+      return (*this)[i][j];
     }
 
     //Logger::warning( "Need inside point current=[%d, %d]", i, j );
@@ -60,11 +60,11 @@ public:
     TileGrid::resize( size );
     for( int i = 0; i < size; ++i )
     {
-      TileGrid::at( i ).reserve( size );
+      (*this)[i].reserve( size );
 
       for (int j = 0; j < size; ++j)
       {
-        TileGrid::at( i ).push_back( Tile( TilePos( i, j ) ));
+        (*this)[i].push_back( Tile( TilePos( i, j ) ));
       }
     }
   }

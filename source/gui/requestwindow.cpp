@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "city/city.hpp"
 #include "requestwindow.hpp"
 #include "game/settings.hpp"
 #include "label.hpp"
@@ -57,18 +58,18 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, CityRequestPtr req
   GoodRequestPtr gr = ptr_cast<GoodRequest>(request);
   if( gr.isValid() )
   {
-    Label* lb = findChild<Label*>( "lbQty", true );
+    Label* lb = findChildA<Label*>( "lbQty", true, this );
     if( lb ) { lb->setText( StringHelper::format( 0xff, "%d", gr->getQty() ) ); }
 
-    Image* img = findChild<Image*>( "imgIcon", true );
+    Image* img = findChildA<Image*>( "imgIcon", true, this );
     if( img ) { img->setPicture( GoodHelper::getPicture( gr->getGoodType() )); }
 
-    lb = findChild<Label*>( "lbInterval", true );
+    lb = findChildA<Label*>( "lbInterval", true, this );
     if( lb ) { lb->setText( StringHelper::format( 0xff, "%d %s", gr->getMonths2Comply(), _( "##months_to_comply##") )); }
   }
 
-  TexturedButton* btnExit = findChild<TexturedButton*>( "btnExit", true );
-  TexturedButton* btnAdvisor = findChild<TexturedButton*>( "btnAdvisor", true );
+  TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
+  TexturedButton* btnAdvisor = findChildA<TexturedButton*>( "btnAdvisor", true, this );
   CONNECT( btnExit, onClicked(), this, EmperrorRequestWindow::deleteLater );
   CONNECT( btnAdvisor, onClicked(), _d.data(), Impl::openEmperrorAdvisor );
 }

@@ -62,7 +62,7 @@ public:
 
 	CTask();
 
-	~CTask(){}
+	virtual ~CTask(){}
 	virtual bool task()=0;
 };
 

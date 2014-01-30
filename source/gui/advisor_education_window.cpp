@@ -125,9 +125,10 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
                Size( 640, 256 ) ) );
 
   setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );
-  _d->lbBackframe = findChild<Label*>( "lbBlackframe", true );
-  _d->lbCityInfo = findChild<Label*>( "lbCityInfo", true );
-  _d->lbCityTrouble = findChild<Label*>( "lbCityTrouble", true );
+  
+  _d->lbBackframe = findChildA<Label*>( "lbBlackframe", true, this );
+  _d->lbCityInfo = findChildA<Label*>( "lbCityInfo", true, this );
+  _d->lbCityTrouble = findChildA<Label*>( "lbCityTrouble", true, this);
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
@@ -157,7 +158,7 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
   StringArray troubles = _d->getTrouble( city );
-  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.at( rand() % troubles.size() ).c_str() ) ); }
+  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles[ rand() % troubles.size() ] ) ); }
 }
 
 void AdvisorEducationWindow::draw( GfxEngine& painter )

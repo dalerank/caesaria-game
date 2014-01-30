@@ -21,6 +21,36 @@
 
 using namespace constants;
 
+class LayerMode::Impl
+{
+public:
+  int type;
+};
+
+Renderer::ModePtr LayerMode::create( const int type )
+{
+  Renderer::ModePtr ret( new LayerMode( type ) );
+  ret->drop();
+
+  return ret;
+}
+
+LayerMode::LayerMode(int type) : _d( new Impl )
+{
+  _d->type = type;
+  //_d->type = citylayer::simple;
+}
+
+int LayerMode::getType() const
+{
+  return _d->type;
+}
+
+void LayerMode::_setType(int type)
+{
+  _d->type = type;
+}
+
 class BuildMode::Impl
 {
 public:
@@ -104,34 +134,4 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
 BuildMode::BuildMode()
   : LayerMode( citylayer::build ), _d( new Impl )
 {
-}
-
-class LayerMode::Impl
-{
-public:
-  int type;
-};
-
-Renderer::ModePtr LayerMode::create( const int type )
-{
-  Renderer::ModePtr ret( new LayerMode( type ) );
-  ret->drop();
-
-  return ret;
-}
-
-LayerMode::LayerMode(int type) : _d( new Impl )
-{
-  _d->type = type;
-  //_d->type = citylayer::simple;
-}
-
-int LayerMode::getType() const
-{
-  return _d->type;
-}
-
-void LayerMode::_setType(int type)
-{
-  _d->type = type;
 }

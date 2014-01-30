@@ -99,7 +99,7 @@ void Dock::destroy()
   TilesArray area = helper.getArea( this );
 
   int index=0;
-  foreach( tile, area ) { TileHelper::decode( *(*tile), _d->saveTileInfo.at( index++ ) ); }
+  foreach( tile, area ) { TileHelper::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   WorkingBuilding::destroy();
 }
@@ -109,7 +109,7 @@ void Dock::timeStep(const unsigned long time)
   _animationRef().update( time );
 
   // takes current animation frame and put it into foreground
-  _fgPicturesRef().at(0) = _animationRef().getFrame();
+  _fgPicturesRef()[0] = _animationRef().getFrame();
 
   if( time % (GameDate::getTickInMonth()/4) == 1 )
   {
@@ -197,7 +197,7 @@ const Tile& Dock::getQueueTile() const
     else { it++; }
   }
 
-  TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles.at( rand() % tiles.size() )->getIJ();
+  TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles[ rand() % tiles.size() ]->getIJ();
   return _getCity()->getTilemap().at( pos );
 }
 

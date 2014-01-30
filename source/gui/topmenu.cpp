@@ -143,15 +143,15 @@ TopMenu::TopMenu( Widget* parent, const int height )
     x += pic.getWidth();
     i++;
   }
-  _d->lbPopulation = findChild<Label*>( "lbPopulation" );
+  _d->lbPopulation = findChildA<Label*>( "lbPopulation", false, this );
   if( _d->lbPopulation )
     _d->lbPopulation->setPosition( Point( getWidth() - populationLabelOffset, 0 ) );
 
-  _d->lbFunds = findChild<Label*>( "lbFunds" );
+  _d->lbFunds = findChildA<Label*>( "lbFunds", false, this  );
   if( _d->lbFunds )
     _d->lbFunds->setPosition(  Point( getWidth() - fundLabelOffset, 0) );
 
-  _d->lbDate = findChild<Label*>( "lbDate" );
+  _d->lbDate = findChildA<Label*>( "lbDate", false, this );
   if( _d->lbDate )
     _d->lbDate->setPosition( Point( getWidth() - dateLabelOffset, 0) );
 

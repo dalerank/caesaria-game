@@ -76,7 +76,7 @@ void CoastalFactory::destroy()
   TilesArray area = helper.getArea( this );
 
   int index=0;
-  foreach( tile, area ) { TileHelper::decode( *(*tile), _d->saveTileInfo.at( index++ ) ); }
+  foreach( tile, area ) { TileHelper::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
 
   Factory::destroy();
 }

@@ -82,7 +82,7 @@ void AlarmEventHolder::next()
     return;
 
   _d->currentIndex = (_d->currentIndex+1) % _d->alarms.size();
-  _d->onMoveToAlarmSignal.emit( _d->alarms.at( _d->currentIndex ).position );
+  _d->onMoveToAlarmSignal.emit( _d->alarms[ _d->currentIndex ].position );
 }
 
 TilePos AlarmEventHolder::getCurrentPos() const
@@ -90,7 +90,7 @@ TilePos AlarmEventHolder::getCurrentPos() const
   if( _d->currentIndex >= _d->alarms.size() )
     return TilePos( -1, -1 );
 
-  return _d->alarms.at( _d->currentIndex ).position;
+  return _d->alarms[ _d->currentIndex ].position;
 }
 
 bool AlarmEventHolder::haveAlarms() const
@@ -103,7 +103,7 @@ std::string AlarmEventHolder::getCurrentMessage() const
   if( _d->currentIndex >= _d->alarms.size() )
     return "";
 
-  return _d->alarms.at( _d->currentIndex ).message;
+  return _d->alarms[ _d->currentIndex ].message;
 }
 
 Signal1<bool>& AlarmEventHolder::onAlarmChange()

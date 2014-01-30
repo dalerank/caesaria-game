@@ -38,10 +38,10 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   FactoryPtr rawmb = ptr_cast<Factory>( tile.getOverlay() );
   _type = rawmb->getType();
 
-  Label* lbDamage = findChild<Label*>( "lbDamage", true );
-  Label* lbProgress = findChild<Label*>( "lbProgress", true );
-  Label* lbAbout = findChild<Label*>( "lbAbout", true );
-  Label* lbProductivity = findChild<Label*>( "lbProductivity", true );
+  Label* lbDamage = findChildA<Label*>( "lbDamage", true, this );
+  Label* lbProgress = findChildA<Label*>( "lbProgress", true, this );
+  Label* lbAbout = findChildA<Label*>( "lbAbout", true, this );
+  Label* lbProductivity = findChildA<Label*>( "lbProductivity", true, this );
 
   if( rawmb->getOutGoodType() != Good::none )
   {

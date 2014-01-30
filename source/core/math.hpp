@@ -72,9 +72,16 @@ inline float radToDeg( float radians)
 }
 
 template <class T>
-inline T clamp (const T& value, const T& low, const T& high)
+inline const T& max( const T& a, const T& b) { return a > b ? a : b; }
+
+template <class T>
+inline const T& min( const T& a, const T& b) { return a < b ? a : b; }
+
+template< class T >
+inline T clamp(const T& value, const T& low, const T& high)
 {
-	return (std::min<T>)( (std::max<T>)( value,low ), high );
+  const T& mx = math::max<T>( value, low);
+  return math::min<T>( mx, high);
 }
 
 //! Utility function to convert a radian value to degrees

@@ -54,7 +54,7 @@ GameSettings& GameSettings::getInstance()
 GameSettings::GameSettings() : _d( new Impl )
 {
   std::string application_path = vfs::Directory::getApplicationDir().toString();
-
+  
   _d->options[ resourcePath        ] = Variant( application_path + std::string( "/resources" ) );
   _d->options[ localePath          ] = Variant( application_path + std::string( "/resources/locale" ) );
   _d->options[ pantheonModel       ] = Variant( std::string( "/pantheon.model" ) );

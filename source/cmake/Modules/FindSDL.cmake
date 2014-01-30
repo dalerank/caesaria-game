@@ -79,6 +79,7 @@ find_path(SDL_INCLUDE_DIR SDL.h
   PATHS
   /usr/local/include/SDL11  #freebsd sdl1.1
   /usr/local/include/SDL12  #freebsd sdl1.2
+  /boot/system/develop/headers/x86/SDL 				#haiku
   ${WIN32_SDL_DEPENDENCIES_DIR}
 )
 MESSAGE("SDL_INCLUDE_DIR is ${SDL_INCLUDE_DIR}")
@@ -90,7 +91,9 @@ find_library(SDL_LIBRARY_TEMP
   HINTS
         ${WIN32_SDL_DEPENDENCIES_DIR}
     ENV SDLDIR
-  PATH_SUFFIXES lib lib/x86
+  PATH_SUFFIXES lib
+  PATHS
+  /boot/system/develop/lib   #haiku
 )
 
 if(NOT SDL_BUILDING_LIBRARY)
@@ -110,6 +113,7 @@ if(NOT SDL_BUILDING_LIBRARY)
       /opt/local
       /opt/csw
       /opt
+      /boot/system/develop/lib		#haiku
     )
   endif()
 endif()

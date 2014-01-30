@@ -228,5 +228,5 @@ PicturesArray AnimationBank::Impl::fillCart( const std::string &prefix, const in
 
 const Picture& AnimationBank::getCart(int cartId, constants::Direction direction)
 {
-  return instance()._d->carts.at( cartId ).at( direction );
+  return instance()._d->carts[ cartId ][ direction ];
 }

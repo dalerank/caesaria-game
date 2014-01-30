@@ -130,12 +130,12 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widge
 
   setPosition( Point( (parent->getWidth() - getWidth() )/2, parent->getHeight() / 2 - 242 ) );
 
-  _d->lbBlackframe = findChild<Label*>( "lbBlackframe", true );
-  _d->lbTroubleInfo = findChild<Label*>( "lbTroubleInfo", true );
-  _d->btnHelp = findChild<TexturedButton*>( "btnHelp", true );
-  _d->btnNewFestival = findChild<PushButton*>( "btnNewFestival", true );
-  _d->lbMonthFromLastFestival = findChild<Label*>( "lbMonthFromLastFestival", true );
-  _d->lbInfoAboutLastFestival = findChild<Label*>( "lbInfoAboutLastFestival", true );
+  _d->lbBlackframe = findChildA<Label*>( "lbBlackframe", true, this );
+  _d->lbTroubleInfo = findChildA<Label*>( "lbTroubleInfo", true, this );
+  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
+  _d->btnNewFestival = findChildA<PushButton*>( "btnNewFestival", true, this );
+  _d->lbMonthFromLastFestival = findChildA<Label*>( "lbMonthFromLastFestival", true, this );
+  _d->lbInfoAboutLastFestival = findChildA<Label*>( "lbInfoAboutLastFestival", true, this );
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
@@ -304,7 +304,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
     troubles.push_back( "##entertainment_full##" );
   }
 
-  lbTroubleInfo->setText( _( troubles.at( rand() % troubles.size() ).c_str() ) );
+  lbTroubleInfo->setText( _( troubles[ (int)(rand() % troubles.size()) ] ) );
 }
 
 void AdvisorEntertainmentWindow::Impl::updateFestivalInfo()

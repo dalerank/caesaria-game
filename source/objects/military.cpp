@@ -139,8 +139,8 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   area.setOffset(Tile( TilePos(3,0)).getXY() + Point(0,-30));
 
   _fgPicturesRef().resize(2);
-  _fgPicturesRef().at( 0 ) = logo;
-  _fgPicturesRef().at( 1 ) = area;
+  _fgPicturesRef()[ 0 ] = logo;
+  _fgPicturesRef()[ 1 ] = area;
 
   _d->area = new FortArea();
   _d->area->drop();
@@ -249,7 +249,7 @@ TilePos Fort::getFreeSlot() const
 
   if( !tiles.empty() )
   {
-    int step = rand() % std::min( tiles.size(), _d->maxSoldier );
+    int step = rand() % std::min<int>( tiles.size(), _d->maxSoldier );
     TilesArray::iterator it = tiles.begin();
     std::advance( it, step );
     return (*it)->getIJ();
