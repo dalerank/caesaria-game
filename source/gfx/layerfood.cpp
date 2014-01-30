@@ -40,7 +40,7 @@ Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
 
 void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 
@@ -72,7 +72,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = ptr_cast<House>( overlay );
-        foodLevel = house->getFoodLevel();
+        foodLevel = house->getState( (Construction::Param)House::food );
         needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
       }
       break;

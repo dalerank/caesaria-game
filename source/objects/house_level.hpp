@@ -26,7 +26,7 @@
 #include "predefinitions.hpp"
 #include "service.hpp"
 
-class HouseLevelSpec
+class HouseSpecification
 {
   friend class HouseSpecHelper;
 
@@ -53,7 +53,7 @@ public:
 
   int findLowLevelHouseNearby( HousePtr house, std::string &oMissingRequirement );
 
-  HouseLevelSpec next() const;
+  HouseSpecification next() const;
 
   int computeDesirabilityLevel(HousePtr house, std::string &oMissingRequirement) const;
   int computeEntertainmentLevel(HousePtr house) const;
@@ -79,10 +79,10 @@ public:
   int getMinReligionLevel() const;
 //    int getMinWaterLevel();
   int getMinFoodLevel() const;
-  ~HouseLevelSpec();
-  HouseLevelSpec();
-  HouseLevelSpec( const HouseLevelSpec& other );
-  HouseLevelSpec& operator=(const HouseLevelSpec& other );
+  ~HouseSpecification();
+  HouseSpecification();
+  HouseSpecification( const HouseSpecification& other );
+  HouseSpecification& operator=(const HouseSpecification& other );
 
 private:
   class Impl;
@@ -94,7 +94,7 @@ class HouseSpecHelper
 public:
   static HouseSpecHelper& getInstance();
 
-  HouseLevelSpec getHouseLevelSpec(const int houseLevel);
+  HouseSpecification getHouseLevelSpec(const int houseLevel);
   int getHouseLevel(const int houseId);
   int getHouseLevel( const std::string& name );
   void initialize( const vfs::Path& filename );

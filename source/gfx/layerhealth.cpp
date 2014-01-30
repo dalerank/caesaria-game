@@ -19,7 +19,10 @@
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
 #include "layerconstants.hpp"
+#include "tilemap_camera.hpp"
 #include "city/helper.hpp"
+#include "core/gettext.hpp"
+#include "core/event.hpp"
 
 using namespace constants;
 
@@ -33,9 +36,22 @@ Layer::VisibleWalkers LayerHealth::getVisibleWalkers() const
   return _walkers;
 }
 
+int LayerHealth::_getLevelValue( HousePtr house )
+{
+  switch(_type)
+  {
+  case citylayer::health: return house->getState( (Construction::Param)House::health );
+  case citylayer::hospital: return house->getServiceValue( Service::hospital );
+  case citylayer::barber: return house->getServiceValue( Service::barber );
+  case citylayer::baths: return house->getServiceValue( Service::baths );
+  }
+
+  return 0;
+}
+
 void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 
@@ -80,10 +96,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       {
         HousePtr house = ptr_cast<House>( overlay );
 
-        if( _flags.count( building::doctor ) ) { healthLevel = house->getHealthLevel(); }
-        else if( _flags.count( building::hospital ) ) { healthLevel = house->getServiceValue( Service::hospital ); }
-        else if( _flags.count( building::barber ) ) { healthLevel = house->getServiceValue( Service::barber ); }
-        else if( _flags.count( building::baths ) ) { healthLevel = house->getServiceValue( Service::baths ); }
+        healthLevel = _getLevelValue( house );
 
         needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
 
@@ -118,6 +131,57 @@ LayerPtr LayerHealth::create(TilemapCamera& camera, PlayerCityPtr city, int type
   ret->drop();
 
   return ret;
+}
+
+void LayerHealth::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        HousePtr house = ptr_cast<House>( tile->getOverlay() );
+        if( house != 0 )
+        {
+          std::string typeName;
+          switch( _type )
+          {
+          case citylayer::health: typeName = "health"; break;
+          case citylayer::doctor: typeName = "doctor"; break;
+          case citylayer::hospital: typeName = "hospital"; break;
+          case citylayer::barber: typeName = "barber"; break;
+          case citylayer::baths: typeName = "baths"; break;
+          }
+
+          int lvlValue = _getLevelValue( house );
+          std::string levelName;
+          if( lvlValue > 0 )
+          {
+            if( lvlValue < 20 ) { levelName = "##warning_"; }
+            else if( lvlValue < 40 ) { levelName = "##bad_"; }
+            else if( lvlValue < 60 ) { levelName = "##simple_"; }
+            else if( lvlValue < 80 ) { levelName = "##good_"; }
+            else { levelName = "##awesome_"; }
+
+            text = levelName + typeName + "_access##";
+          }
+        }
+      }
+
+      _setTooltipText( _(text) );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerHealth::LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type)

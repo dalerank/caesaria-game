@@ -35,11 +35,13 @@
 #include "gui/infobox_raw.hpp"
 #include "objects/ruins.hpp"
 #include "gui/infobox_ruins.hpp"
-#include "gui/infobox_citizen.hpp"
 #include "gui/infobox_granary.hpp"
 #include "gui/infobox_senate.hpp"
 #include "gui/infobox_factory.hpp"
 #include "gui/infobox_watersupply.hpp"
+#include "gui/infobox_citizen_mgr.hpp"
+#include "gui/infobox_land.hpp"
+#include "gui/infobox_temple.hpp"
 #include <map>
 
 using namespace constants;
@@ -49,16 +51,16 @@ template< class T >
 class BaseInfoboxCreator : public InfoboxCreator
 {
 public:
-  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     return new T( parent, city->getTilemap().at( pos ) );
   }
 };
 
-class InfoBoxHouseCreator : public InfoboxCreator
+class InfoboxHouseCreator : public InfoboxCreator
 {
 public:
-  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
     if( house->getHabitants().count() > 0 )
@@ -70,30 +72,6 @@ public:
       return new InfoBoxFreeHouse( parent, city->getTilemap().at( pos ) );
     }
   }
-};
-
-
-template< class T >
-class CitizenInfoboxCreator : public InfoboxCreator
-{
-public:
-  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
-  {
-    WalkerList walkers = city->getWalkers( walker::any, pos );
-
-    if( walkers.empty() )
-    {
-      return new T( parent, city->getTilemap().at( pos ) );
-    }
-    else
-    {
-      return new InfoBoxCitizen( parent, walkers );
-    }
-  }
-  
-  virtual ~CitizenInfoboxCreator() {}
-
-  PlayerCityPtr city;
 };
 
 class ServiceBaseInfoboxCreator : public InfoboxCreator
@@ -110,7 +88,7 @@ public:
   
   virtual ~ServiceBaseInfoboxCreator() {}
 
-  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     Size  size = parent->getSize();
     WorkingBuildingPtr building = ptr_cast<WorkingBuilding>( city->getOverlay( pos ) );
@@ -143,10 +121,10 @@ public:
   
   virtual ~InfoBoxBasicCreator() {}
 
-  gui::InfoBoxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     Size  size = parent->getSize();
-    InfoBoxSimple* infoBox = new InfoBoxSimple( parent, Rect( 0, 0, 510, 300 ) );
+    InfoboxSimple* infoBox = new InfoboxSimple( parent, Rect( 0, 0, 510, 300 ) );
     infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, 
                                   size.getHeight() - infoBox->getHeight()) );
     TileOverlayPtr overlay = city->getOverlay( pos );
@@ -163,7 +141,7 @@ public:
   std::string title, text;
 };
 
-class InfoBoxManager::Impl
+class InfoboxManager::Impl
 {
 public:
     bool showDebugInfo;
@@ -174,21 +152,23 @@ public:
     InfoboxCreators constructors;
 };
 
-InfoBoxManager::InfoBoxManager() : _d( new Impl )
+InfoboxManager::InfoboxManager() : _d( new Impl )
 {
   _d->showDebugInfo = true;
 
-  addInfobox( construction::road,         CAESARIA_STR_EXT(Road),        new CitizenInfoboxCreator<InfoBoxLand>() );
-  addInfobox( building::reservoir,        CAESARIA_STR_EXT(Reservoir),   new InfoBoxBasicCreator( "", "##reservoir_info##" ) );
-  addInfobox( building::house,            CAESARIA_STR_EXT(House),       new InfoBoxHouseCreator() );
-  addInfobox( building::prefecture,       CAESARIA_STR_EXT(Prefecture),  new ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( building::engineerPost,     CAESARIA_STR_EXT(EngineerPost),new ServiceBaseInfoboxCreator( "", "" ) );
+  InfoboxCitizenManager::loadInfoboxes( *this );
+
+#define ADD_INFOBOX(typen, creator) addInfobox(typen, CAESARIA_STR_EXT(typen), new creator)
+  ADD_INFOBOX( building::reservoir,    BaseInfoboxCreator<InfoboxReservoir>() );
+  ADD_INFOBOX( building::house,        InfoboxHouseCreator() );
+  ADD_INFOBOX( building::prefecture,   ServiceBaseInfoboxCreator( "", "" ) );
+  ADD_INFOBOX( building::engineerPost, ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::well,             CAESARIA_STR_EXT(Well),        new BaseInfoboxCreator<InfoboxWell>() );
   addInfobox( building::doctor,           CAESARIA_STR_EXT(Doctor),      new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::baths,            CAESARIA_STR_EXT(Baths),       new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::barber,           CAESARIA_STR_EXT(Barber),      new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::hospital,         CAESARIA_STR_EXT(Hospital),    new ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( building::fountain,         CAESARIA_STR_EXT(B_FOUNTAIN),  new BaseInfoboxCreator<InfoBoxFontain>() );
+  addInfobox( building::fountain,         CAESARIA_STR_EXT(B_FOUNTAIN),  new BaseInfoboxCreator<InfoboxFontain>() );
   addInfobox( building::aqueduct,         CAESARIA_STR_EXT(B_AQUEDUCT),  new InfoBoxBasicCreator( "", "##aqueduct_info##") );
   addInfobox( building::market,           CAESARIA_STR_EXT(B_MARKET),    new BaseInfoboxCreator<InfoBoxMarket>() );
   addInfobox( building::granary,          CAESARIA_STR_EXT(B_GRANARY),   new BaseInfoboxCreator<InfoBoxGranary>() );
@@ -217,8 +197,6 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::smallStatue,      CAESARIA_STR_EXT(B_STATUE1),   new InfoBoxBasicCreator( "", "##statue_info##") );
   addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoBoxBasicCreator( "", "##statue_info##") );
   addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoBoxBasicCreator( "", "##statue_info##") );
-  addInfobox( construction::plaza,        CAESARIA_STR_EXT(Plaza),     new CitizenInfoboxCreator<InfoBoxLand>() );
-  addInfobox( building::unknown,          CAESARIA_STR_EXT(unknown),     new CitizenInfoboxCreator<InfoBoxLand>() );
   addInfobox( building::pottery,          CAESARIA_STR_EXT(Pottery),   new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::shipyard,         CAESARIA_STR_EXT(Shipyard),   new BaseInfoboxCreator<InfoboxShipyard>() );
   addInfobox( building::weaponsWorkshop,  CAESARIA_STR_EXT(WeaponsWorkshop), new BaseInfoboxCreator<InfoboxFactory>() );
@@ -247,22 +225,20 @@ InfoBoxManager::InfoBoxManager() : _d( new Impl )
   addInfobox( building::lowBridge,        CAESARIA_STR_EXT(LowBridge),    new InfoBoxBasicCreator( "", "##low_bridge_text##") );
   addInfobox( building::wharf,            CAESARIA_STR_EXT(Wharf),        new BaseInfoboxCreator<InfoboxWharf>() );
   addInfobox( building::burningRuins,     CAESARIA_STR_EXT(BurningRuins), new BaseInfoboxCreator<InfoboxRuins>() );
+  addInfobox( building::collapsedRuins,   CAESARIA_STR_EXT(CollapsedRuins), new BaseInfoboxCreator<InfoboxRuins>() );
   addInfobox( building::burnedRuins,      CAESARIA_STR_EXT(BurnedRuins), new BaseInfoboxCreator<InfoboxRuins>() );
   addInfobox( building::plagueRuins,      CAESARIA_STR_EXT(PlagueRuins), new BaseInfoboxCreator<InfoboxRuins>() );
 }
 
-InfoBoxManager::~InfoBoxManager()
-{
+InfoboxManager::~InfoboxManager() {}
 
-}
-
-InfoBoxManager& InfoBoxManager::getInstance()
+InfoboxManager& InfoboxManager::getInstance()
 {
-  static InfoBoxManager inst;
+  static InfoboxManager inst;
   return inst;
 }
 
-void InfoBoxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
+void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
 {
   Tile& tile = city->getTilemap().at( pos );
   TileOverlayPtr overlay = tile.getOverlay();
@@ -277,7 +253,7 @@ void InfoBoxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
-  InfoBoxSimple* infoBox = findConstructor != _d->constructors.end()
+  InfoboxSimple* infoBox = findConstructor != _d->constructors.end()
                                   ? findConstructor->second->create( city, gui->getRootWidget(), pos )
                                   : 0;
   
@@ -293,12 +269,12 @@ void InfoBoxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
   }
 }
 
-void InfoBoxManager::setShowDebugInfo( const bool showInfo )
+void InfoboxManager::setShowDebugInfo( const bool showInfo )
 {
   _d->showDebugInfo = showInfo;
 } 
 
-void InfoBoxManager::addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor )
+void InfoboxManager::addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor )
 {
   bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
   _CAESARIA_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
@@ -310,7 +286,7 @@ void InfoBoxManager::addInfobox( const TileOverlay::Type type, const std::string
   }
 }
 
-bool InfoBoxManager::canCreate(const TileOverlay::Type type) const
+bool InfoboxManager::canCreate(const TileOverlay::Type type) const
 {
   return _d->constructors.find( type ) != _d->constructors.end();   
 }

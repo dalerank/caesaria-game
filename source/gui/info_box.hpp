@@ -31,11 +31,11 @@ class PushButton;
 class Label;
 
 // base class for info boxes
-class InfoBoxSimple : public Widget
+class InfoboxSimple : public Widget
 {
 public:
-  InfoBoxSimple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
-  virtual ~InfoBoxSimple();
+  InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
+  virtual ~InfoboxSimple();
 
   virtual void draw( GfxEngine& engine );  // draw on screen
 
@@ -67,7 +67,7 @@ protected:
 };
 
 // info box about a service building
-class InfoBoxWorkingBuilding : public InfoBoxSimple
+class InfoBoxWorkingBuilding : public InfoboxSimple
 {
   static const int lbHelpId=2;
 public:
@@ -81,51 +81,20 @@ private:
   WorkingBuildingPtr _working;
 };
 
-class InfoBoxLand : public InfoBoxSimple
-{
-  static const int lbTextId=2;
-public:
-  InfoBoxLand( Widget* parent, const Tile& tile );   
-
-  virtual void setText( const std::string& text );
-};
-
-class InfoBoxFreeHouse : public InfoBoxLand
-{
-public:
-  InfoBoxFreeHouse( Widget* parent, const Tile& tile );
-};
-
-class InfoboxWell : public InfoBoxSimple
-{
-public:
-  InfoboxWell( Widget* parent, const Tile& tile );
-  virtual ~InfoboxWell();
-
-  virtual void showDescription();
-};
-
-class InfoBoxTemple : public InfoBoxSimple
-{
-public:
-  InfoBoxTemple( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxTemple();
-};
-
-class InfoBoxColosseum : public InfoBoxSimple
+class InfoBoxColosseum : public InfoboxSimple
 {
 public:
   InfoBoxColosseum( Widget* parent, const Tile& tile );
   virtual ~InfoBoxColosseum();
 };
 
-class InfoBoxBuilding : public InfoBoxSimple
+class InfoBoxBuilding : public InfoboxSimple
 {
 public:
    InfoBoxBuilding( Widget* parent, const Tile& tile );
 };
 
-class InfoBoxText : public InfoBoxSimple
+class InfoBoxText : public InfoboxSimple
 {
 public:
   InfoBoxText(Widget* parent, const std::string& title, const std::string& message );

@@ -21,13 +21,20 @@
 #include "referencecounted.hpp"
 
 #ifdef CAESARIA_PLATFORM_LINUX
-	#include <stdio.h>
-	#include <malloc.h>
-	#include <memory.h>
-	#include <pthread.h>
-	#include <stdlib.h>
-	#include <time.h>
-	#include <errno.h>
+  #include <stdio.h>
+  #include <malloc.h>
+  #include <memory.h>
+  #include <pthread.h>
+  #include <stdlib.h>
+  #include <time.h>
+  #include <errno.h>
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+  #include <stdio.h>
+  #include <memory.h>
+  #include <pthread.h>
+  #include <stdlib.h>
+  #include <time.h>
+  #include <errno.h>
 #elif defined(CAESARIA_PLATFORM_WIN)
 	#include <windows.h>
 	#include <stdio.h>
@@ -141,7 +148,7 @@ public:
 	ThreadState_t ThreadState();
 	bool		PingThread(unsigned int dwTimeout=0);
 	bool    AtCapacity();
-#ifdef WINDOWS
+#ifdef CAESARIA_PLATFORM_WINDOWS
 	void		SetPriority(DWORD dwPriority=THREAD_PRIORITY_NORMAL);
 #else
 	void		SetPriority(unsigned int dwPriority=0);

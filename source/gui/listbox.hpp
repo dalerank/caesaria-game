@@ -1,20 +1,20 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_LIST_BOX_H_INCLUDED__
-#define __OPENCAESAR3_LIST_BOX_H_INCLUDED__
+#ifndef __CAESARIA_GUI_LISTBOX_H_INCLUDED__
+#define __CAESARIA_GUI_LISTBOX_H_INCLUDED__
 
 #include "gui/widget.hpp"
 #include "core/flagholder.hpp"
@@ -73,7 +73,7 @@ public:
   virtual void removeItem(unsigned int id);
 
   //! get the the id of the item at the given absolute coordinates
-  virtual int getItemAt( const Point& pos ) const;
+  virtual int getItemAt( Point pos ) const;
 
   //! set all item colors of specified type at given index to color
   virtual void setItemOverrideColor( unsigned int index, const int color, 
@@ -112,17 +112,21 @@ public:
   virtual void setItemFont( Font font );
 
   //! set the item at the given index
-  virtual void setItem( unsigned int index, const std::string &text, int icon);
+  virtual void setItem( unsigned int index, std::string text);
 
   //! Insert the item at the given index
   //! Return the index on success or -1 on failure.
-  virtual int insertItem(unsigned int index, const std::string &text, int icon);
+  virtual int insertItem(unsigned int index, std::string text);
 
   //! Swap the items at the given indices
   virtual void swapItems(unsigned int index1, unsigned int index2);
 
   //! set global itemHeight
   virtual void setItemHeight( int height );
+
+  virtual int getItemHeight() const;
+
+  virtual void setItemAlignment( int index, Alignment horizontal, Alignment vertical );
 
   //! Sets whether to draw the background
   virtual void setDrawBackground(bool draw);
@@ -133,11 +137,19 @@ public:
   //! \return
   //! returns the id of the new created item
   virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 );
+  virtual ListBoxItem& addItem( Picture pic );
+
+  virtual void fitText( const std::string& text );
+
   virtual void addItems( const StringArray& strings );
+
+  virtual Font getFont() const;
 
   virtual int getSelected();
 
-  void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( GfxEngine& painter );
+
+  virtual void setItemTextOffset(Point p);
 
 oc3_signals public:
   Signal1<std::string>& onItemSelectedAgain();
@@ -153,9 +165,6 @@ private:
 
   void _IndexChanged( unsigned int eventType );
   ElementState _GetCurrentItemState( unsigned int index, bool hl );
-  //Font _GetCurrentItemFont( const ListBoxItem& item, bool selected, ElementStyle* itemStyle );
-  //Color _GetCurrentItemColor( const ListBoxItem& item, bool selected, ElementStyle* itemStyle );
-  void _DrawItemIcon( const ListBoxItem& item, const Rect& rectangle, bool highlighted, bool selected, Rect* clip, const int color );
   Rect getItemTextRect_();
   Font _GetCurrentItemFont( const ListBoxItem& item, bool selected );
   NColor _GetCurrentItemColor( const ListBoxItem& item, bool selected );
@@ -165,4 +174,4 @@ private:
 };
 
 }//end namespace gui
-#endif
+#endif //__CAESARIA_GUI_LISTBOX_H_INCLUDED__

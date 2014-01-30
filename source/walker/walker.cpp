@@ -344,9 +344,9 @@ void Walker::_centerTile()
       // compute the direction to reach the destination
       _computeDirection();
       const Tile& tile = _getNextTile();
-      if( tile.getI() < 0 || !tile.isWalkable( true ) )
+      if( tile.i() < 0 || !tile.isWalkable( true ) )
       {
-        _brokePathway( tile.getIJ() );
+        _brokePathway( tile.pos() );
       }
    }
 }
@@ -684,7 +684,7 @@ public:
     append( walker::corpse, "corpse", _("##wt_corpse##") );
     append( walker::lion, "lion", _("##wt_lion##") );
     append( walker::britonSoldier, "briton_soldier", _("##wt_briton_soldier##") );
-    append( walker::fishPlace, "fish_place", _("##wt_fish_place##") );
+    append( walker::fishPlace, "fish_place", _("##wt_endeavor##") );
     append( walker::seaMerchant, "sea_merchant", _("##wt_sea_merchant##") );
     append( walker::all, "unknown", _("##wt_unknown##") );
   }

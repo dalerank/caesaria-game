@@ -38,6 +38,10 @@ const char* GameSettings::langModel = "langModel";
 const char* GameSettings::worklessCitizenAway = "worklessCitizenAway";
 const char* GameSettings::fastsavePostfix = "fastsavePostfix";
 const char* GameSettings::saveExt = "saveExt";
+const char* GameSettings::workDir = "workDir";
+const vfs::Path defaultSaveDir = "saves";
+const vfs::Path defaultResDir = "resources";
+const vfs::Path defaultLocaleDir = "resources/locale";
 
 class GameSettings::Impl
 {
@@ -54,9 +58,8 @@ GameSettings& GameSettings::getInstance()
 GameSettings::GameSettings() : _d( new Impl )
 {
   std::string application_path = vfs::Directory::getApplicationDir().toString();
-  
-  _d->options[ resourcePath        ] = Variant( application_path + std::string( "/resources" ) );
-  _d->options[ localePath          ] = Variant( application_path + std::string( "/resources/locale" ) );
+  setwdir( application_path );
+
   _d->options[ pantheonModel       ] = Variant( std::string( "/pantheon.model" ) );
   _d->options[ houseModel          ] = Variant( std::string( "/house.model" ) );
   _d->options[ constructionModel   ] = Variant( std::string( "/construction.model" ) );
@@ -73,16 +76,6 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 15;
   _d->options[ emigrantSalaryKoeff ] = 2.f;
-
-   vfs::Path dirName = "saves";
-   vfs::Directory saveDir;
- #ifdef CAESARIA_PLATFORM_LINUX
-   dirName = vfs::Path( ".caesaria/" ) + dirName;
-   saveDir = vfs::Directory::getUserDir()/dirName;
- #elif defined(CAESARIA_PLATFORM_WIN)
-   saveDir = vfs::Directory::getApplicationDir()/dirName;
- #endif
-   _d->options[ savedir ] = Variant( saveDir.toString() );
 }
 
 void GameSettings::set( const std::string& option, const Variant& value )
@@ -95,17 +88,47 @@ Variant GameSettings::get( const std::string& option )
   return getInstance()._d->options[ option ];
 }
 
-vfs::Path GameSettings::rcpath( const std::string& option )
+void GameSettings::setwdir( const std::string& wdirstr )
 {
-  std::string rc = getInstance()._d->options[ resourcePath ].toString();
+  vfs::Directory wdir( wdirstr );
+  _d->options[ workDir ] = Variant( wdir.toString() );
+  _d->options[ resourcePath ] = Variant( (wdir/defaultResDir).toString() );
+  _d->options[ localePath ] = Variant( (wdir/defaultLocaleDir).toString() );
+  _d->options[ savedir ] = Variant( (wdir/defaultSaveDir).toString() );
 
-  VariantMap::iterator it = getInstance()._d->options.find( option );
-  if( it == getInstance()._d->options.end() )
+  vfs::Directory saveDir;
+#if defined(CAESARIA_PLATFORM_LINUX)
+  vfs::Path dirName = vfs::Path( ".caesaria/" ) + defaultSavedirName;
+  saveDir = vfs::Directory::getUserDir()/dirName;
+#elif defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_HAIKU)
+  saveDir = wdir/defaultSaveDir;
+#endif
+  _d->options[ savedir ] = Variant( saveDir.toString() );
+}
+
+static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
+{
+  Variant vr = GameSettings::get( fpath.toString() );
+  if( vr.isNull() )
   {
-    return vfs::Path(rc + option);
+    return dir/fpath;
   }
 
-  return vfs::Path(rc + getInstance()._d->options[ option ].toString());
+  return dir/vfs::Path( vr.toString() );
+}
+
+vfs::Path GameSettings::rcpath( const std::string& option )
+{
+  std::string rc = get( resourcePath ).toString();
+
+  return __concatPath( rc, option );
+}
+
+vfs::Path GameSettings::rpath( const std::string& option )
+{
+  std::string wd = get( workDir ).toString();
+
+  return __concatPath( wd, option );
 }
 
 void GameSettings::load()

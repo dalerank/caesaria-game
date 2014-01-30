@@ -21,7 +21,6 @@
 
 #include "objects/house.hpp"
 #include "core/exception.hpp"
-#include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
 #include "core/variant.hpp"
 #include "core/saveadapter.hpp"
@@ -37,7 +36,7 @@
 #include <map>
 #include <list>
 
-class HouseLevelSpec::Impl
+class HouseSpecification::Impl
 {
 public:
   int houseLevel;
@@ -66,30 +65,30 @@ public:
   GoodConsumptionMuls consumptionMuls;
 };
 
-int HouseLevelSpec::getLevel() const {   return _d->houseLevel;}
-const std::string& HouseLevelSpec::getLevelName() const{   return _d->levelName;}
-bool HouseLevelSpec::isPatrician() const{   return _d->houseLevel > 12;}
-int HouseLevelSpec::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
-int HouseLevelSpec::getTaxRate() const{   return _d->taxRate;}
-int HouseLevelSpec::getMinEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
-int HouseLevelSpec::getMinEducationLevel() const{  return _d->minEducationLevel;}
+int HouseSpecification::getLevel() const {   return _d->houseLevel;}
+const std::string& HouseSpecification::getLevelName() const{   return _d->levelName;}
+bool HouseSpecification::isPatrician() const{   return _d->houseLevel > 12;}
+int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
+int HouseSpecification::getTaxRate() const{   return _d->taxRate;}
+int HouseSpecification::getMinEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
+int HouseSpecification::getMinEducationLevel() const{  return _d->minEducationLevel;}
 //
 // int HouseLevelSpec::getMinHealthLevel()
 // {
 //    return _minHealthLevel;
 // }
 //
-int HouseLevelSpec::getMinReligionLevel() const{  return _d->minReligionLevel;}
+int HouseSpecification::getMinReligionLevel() const{  return _d->minReligionLevel;}
 //
 // int HouseLevelSpec::getMinWaterLevel()
 // {
 //    return _minWaterLevel;
 // }
 //
-int HouseLevelSpec::getMinFoodLevel() const{  return _d->minFoodLevel;}
+int HouseSpecification::getMinFoodLevel() const{  return _d->minFoodLevel;}
 
 
-bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
+bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
 {
   bool res = true;
   int value;
@@ -113,21 +112,28 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value > 0 )
   {
     res = false;
-    ref = "##nearby_building##" + reason + "##negative_effect_info##";
+    ref = "##nearby_building_negative_effect##";
   }
 
   value = computeEntertainmentLevel( house );
   if( value < _d->minEntertainmentLevel )
   {
     res = false;
-    switch( (int)value / 20 )
+    if( value == 0 )
     {
-    case 0: ref = "##missing_entertainment##"; break;
-    case 1: ref = "##missing_entertainment_amph##"; break;
-    case 2: ref = "##missing_entertainment_also##"; break;
-    case 3: ref = "##missing_entertainment_colloseum##"; break;
-    case 4: ref = "##missing_entertainment_need_more##"; break;
-      //##missing_entertainment_patrician##
+      ref = "##missing_entertainment##";
+    }
+    else
+    {
+      switch( _d->minEntertainmentLevel / 20 )
+      {
+      case 0: ref = "##missing_entertainment_theater##"; break;
+      case 1: ref = "##missing_entertainment_amph##"; break;
+      case 2: ref = "##missing_entertainment_also##"; break;
+      case 3: ref = "##missing_entertainment_colloseum##"; break;
+      case 4: ref = "##missing_entertainment_hippodrome##"; break;
+        //##missing_entertainment_patrician##
+      }
     }
   }
 
@@ -152,8 +158,8 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
     switch( _d->minReligionLevel )
     {
     case 0: res = "##missing_religion##"; break;
-    case 1: res = "##need_second_religion##"; break;
-    case 2: res = "##need_third_religion##"; break;
+    case 1: res = "##missing_second_religion##"; break;
+    case 2: res = "##missing_third_religion##"; break;
     }
   }
 
@@ -161,14 +167,23 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minWaterLevel )
   {
     res = false;
-    ref = /* _("##missing_water##") + */reason;
+    ref = reason;
   }
 
   value = computeFoodLevel(house);
   if( value < _d->minFoodLevel )
   {
     res = false;
-    ref = "##missing_food##";
+    if( !house->hasServiceAccess( Service::market ) ) { ref = "##missing_market##"; }
+    else
+    {
+      switch( _d->minFoodLevel )
+      {
+      case 1: ref = "##missing_food##"; break;
+      case 2: ref = "##missing_second_food##"; break;
+      case 3: ref = "##missing_third_food##"; break;
+      }
+    }
   }
 
   if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().getQty(Good::pottery) == 0)
@@ -189,14 +204,27 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
     ref = "##missing_oil##";
   }
 
+  if( _d->requiredGoods[Good::wine] != 0 && house->getGoodStore().getQty(Good::wine) == 0)
+  {
+    res = false;
+    ref = "##missing_wine##";
+  }
+
+  if( _d->requiredGoods[Good::prettyWine] != 0 && house->getGoodStore().getQty(Good::prettyWine) == 0)
+  {
+    res = false;
+    ref = "##missing_second_wine##";
+  }
+
+
   return res;
 }
 
-unsigned int HouseLevelSpec::getServiceConsumptionInterval() const{  return _d->srvcInterval;}
-unsigned int HouseLevelSpec::getFoodConsumptionInterval() const{  return _d->foodInterval; }
-unsigned int HouseLevelSpec::getGoodConsumptionInterval() const{ return _d->goodInterval; }
+unsigned int HouseSpecification::getServiceConsumptionInterval() const{  return _d->srvcInterval;}
+unsigned int HouseSpecification::getFoodConsumptionInterval() const{  return _d->foodInterval; }
+unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->goodInterval; }
 
-int HouseLevelSpec::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
+int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
 {
   CityHelper helper( house->_getCity() );
 
@@ -219,7 +247,7 @@ int HouseLevelSpec::findLowLevelHouseNearby(HousePtr house, std::string& oMissin
   return ret;
 }
 
-int HouseLevelSpec::computeWaterLevel(HousePtr house, std::string &oMissingRequirement)
+int HouseSpecification::computeWaterLevel(HousePtr house, std::string &oMissingRequirement)
 {
   // no water=0, well=1, fountain=2
   int res = 0;
@@ -230,17 +258,17 @@ int HouseLevelSpec::computeWaterLevel(HousePtr house, std::string &oMissingRequi
   else if (house->hasServiceAccess(Service::well))
   {
     res = 1;
-    oMissingRequirement = "##need_fountain##";
+    oMissingRequirement = "##missing_fountain##";
   }
   else
   {
-    oMissingRequirement = "##need_water##";
+    oMissingRequirement = "##missing_water##";
   }
   return res;
 }
 
 
-int HouseLevelSpec::computeFoodLevel(HousePtr house)
+int HouseSpecification::computeFoodLevel(HousePtr house)
 {
   int res = 0;
 
@@ -255,7 +283,7 @@ int HouseLevelSpec::computeFoodLevel(HousePtr house)
 }
 
 
-int HouseLevelSpec::computeEntertainmentLevel(HousePtr house) const
+int HouseSpecification::computeEntertainmentLevel(HousePtr house) const
 {
    int res = 0;
    res += house->hasServiceAccess(Service::theater) ? 10 : 0;
@@ -266,7 +294,7 @@ int HouseLevelSpec::computeEntertainmentLevel(HousePtr house) const
 }
 
 
-int HouseLevelSpec::computeHealthLevel( HousePtr house, std::string &oMissingRequirement)
+int HouseSpecification::computeHealthLevel( HousePtr house, std::string &oMissingRequirement)
 {
    // no health=0, bath=1, bath+doctor/hospital=2, bath+doctor/hospital+barber=3, bath+doctor+hospital+barber=4
    int res = 0;
@@ -290,75 +318,75 @@ int HouseLevelSpec::computeHealthLevel( HousePtr house, std::string &oMissingReq
             {
                if (house->hasServiceAccess(Service::doctor))
                {
-                  oMissingRequirement = "##need_hospital##";
+                  oMissingRequirement = "##missing_hospital##";
                }
                else
                {
-                  oMissingRequirement = "##need_doctor##";
+                  oMissingRequirement = "##missing_doctor##";
                }
             }
          }
          else
          {
-            oMissingRequirement = "##need_barber##";
+            oMissingRequirement = "##missing_barber##";
          }
       }
       else
       {
-         oMissingRequirement = "##need_doctor_or_hospital##";
+         oMissingRequirement = "##missing_doctor_or_hospital##";
       }
    }
    else
    {
-      oMissingRequirement = "##need_bath##";
+      oMissingRequirement = "##missing_bath##";
    }
    return res;
 }
 
 
-int HouseLevelSpec::computeEducationLevel(HousePtr house, std::string &oMissingRequirement)
+int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMissingRequirement)
 {
-   int res = 0;
-   if( house->hasServiceAccess(Service::school) )
-   {
-      res = 1;
-      if( house->hasServiceAccess(Service::academy) )
+  int res = 0;
+  if( house->hasServiceAccess(Service::school) )
+  {
+    res = 1;
+    if( house->hasServiceAccess(Service::academy) )
+    {
+      res = 2;
+      if( house->hasServiceAccess(Service::library) )
       {
-         res = 2;
-         if( house->hasServiceAccess(Service::library) )
-         {
-            res = 3;
-         }
-         else
-         {
-            oMissingRequirement = "##need_library##";
-         }
+        res = 3;
       }
       else
       {
-         oMissingRequirement = "##need_colege##";
+        oMissingRequirement = "##missing_library##";
       }
-   }
-   else
-   {
-      oMissingRequirement = "##need_school##";
-   }
+    }
+    else
+    {
+      oMissingRequirement = "##missing_college##";
+    }
+  }
+  else
+  {
+    oMissingRequirement = "##missing_school##";
+  }
 
-   return res;
+  return res;
 }
 
-int HouseLevelSpec::computeReligionLevel(HousePtr house)
+int HouseSpecification::computeReligionLevel(HousePtr house)
 {
-   int res = 0;
-   res += house->hasServiceAccess(Service::religionMercury) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionVenus) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionMars) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionNeptune) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionCeres) ? 1 : 0;
-   return res;
+  int res = 0;
+  res += house->hasServiceAccess(Service::religionMercury) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionVenus) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionMars) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionNeptune) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionCeres) ? 1 : 0;
+  return res;
 }
 
-float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type service)
+float HouseSpecification::evaluateServiceNeed(HousePtr house, const Service::Type service)
 {
    float res = 0;
 
@@ -398,13 +426,13 @@ float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type se
    return res * (100 - house->getServiceValue(service));
 }
 
-float HouseLevelSpec::evaluateEntertainmentNeed(HousePtr house, const Service::Type service)
+float HouseSpecification::evaluateEntertainmentNeed(HousePtr house, const Service::Type service)
 {
    //int houseLevel = house.getLevelSpec().getHouseLevel();
    return (float)next()._d->minEntertainmentLevel;
 }
 
-float HouseLevelSpec::evaluateEducationNeed(HousePtr house, const Service::Type service)
+float HouseSpecification::evaluateEducationNeed(HousePtr house, const Service::Type service)
 {
   float res = 0;
   //int houseLevel = house.getLevelSpec().getHouseLevel();
@@ -431,7 +459,7 @@ float HouseLevelSpec::evaluateEducationNeed(HousePtr house, const Service::Type 
   return res;
 }
 
-float HouseLevelSpec::evaluateHealthNeed(HousePtr house, const Service::Type service)
+float HouseSpecification::evaluateHealthNeed(HousePtr house, const Service::Type service)
 {
    float res = 0;
    //int houseLevel = house.getLevelSpec().getHouseLevel();
@@ -462,10 +490,10 @@ float HouseLevelSpec::evaluateHealthNeed(HousePtr house, const Service::Type ser
       res = (float)( 100 - house->getServiceValue(service) );
    }
 
-   return std::max<float>( res, 100 - house->getHealthLevel() );
+   return std::max<float>( res, 100 - house->getState( (Construction::Param)House::health ) );
 }
 
-float HouseLevelSpec::evaluateReligionNeed(HousePtr house, const Service::Type service)
+float HouseSpecification::evaluateReligionNeed(HousePtr house, const Service::Type service)
 {
    //int houseLevel = house.getLevelSpec().getHouseLevel();
    int minLevel = next()._d->minReligionLevel;
@@ -473,7 +501,7 @@ float HouseLevelSpec::evaluateReligionNeed(HousePtr house, const Service::Type s
    return (float)minLevel;
 }
 
-int HouseLevelSpec::computeMonthlyGoodConsumption( HousePtr house, const Good::Type goodType, bool real) const
+int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const Good::Type goodType, bool real) const
 {
   if( house.isNull() )
   {
@@ -507,7 +535,7 @@ int HouseLevelSpec::computeMonthlyGoodConsumption( HousePtr house, const Good::T
   return (res * _d->requiredGoods[goodType]);
 }
 
-int HouseLevelSpec::computeMonthlyFoodConsumption(HousePtr house) const
+int HouseSpecification::computeMonthlyFoodConsumption(HousePtr house) const
 {
   if( house.isNull() )
   {
@@ -518,34 +546,34 @@ int HouseLevelSpec::computeMonthlyFoodConsumption(HousePtr house) const
   return house->getHabitants().count() / 2;
 }
 
-const std::string& HouseLevelSpec::getInternalName() const{  return _d->internalName; }
-int HouseLevelSpec::getRequiredGoodLevel(Good::Type type) const{  return _d->requiredGoods[type];}
-int HouseLevelSpec::getProsperity() const{  return _d->prosperity;}
-int HouseLevelSpec::getCrime() const{  return _d->crime;}
+const std::string& HouseSpecification::getInternalName() const{  return _d->internalName; }
+int HouseSpecification::getRequiredGoodLevel(Good::Type type) const{  return _d->requiredGoods[type];}
+int HouseSpecification::getProsperity() const{  return _d->prosperity;}
+int HouseSpecification::getCrime() const{  return _d->crime;}
 
-HouseLevelSpec::~HouseLevelSpec()
+HouseSpecification::~HouseSpecification()
 {
 
 }
 
-HouseLevelSpec::HouseLevelSpec() : _d( new Impl )
+HouseSpecification::HouseSpecification() : _d( new Impl )
 {
   _d->srvcInterval = GameDate::getTickInMonth() / 16;
   _d->foodInterval = GameDate::getTickInMonth();
   _d->goodInterval = GameDate::getTickInMonth() / 2;
 }
 
-HouseLevelSpec::HouseLevelSpec( const HouseLevelSpec& other ) : _d( new Impl )
+HouseSpecification::HouseSpecification( const HouseSpecification& other ) : _d( new Impl )
 {
   *this = other;
 }
 
-HouseLevelSpec HouseLevelSpec::next() const
+HouseSpecification HouseSpecification::next() const
 {
   return HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel+1);
 }
 
-int HouseLevelSpec::computeDesirabilityLevel(HousePtr house, std::string& oMissingRequirement) const
+int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oMissingRequirement) const
 {
   PlayerCityPtr city = house->_getCity();
 
@@ -558,7 +586,7 @@ int HouseLevelSpec::computeDesirabilityLevel(HousePtr house, std::string& oMissi
   return (int)middleDesirbl;
 }
 
-HouseLevelSpec& HouseLevelSpec::operator=( const HouseLevelSpec& other )
+HouseSpecification& HouseSpecification::operator=( const HouseSpecification& other )
 {
   _d->houseLevel = other._d->houseLevel;
   _d->maxHabitantsByTile = other._d->maxHabitantsByTile;
@@ -587,7 +615,7 @@ class HouseSpecHelper::Impl
 {
 public:
   typedef std::map<int, int> HouseLevelSpecsEqMap;
-  typedef std::map<int, HouseLevelSpec > HouseLevels;
+  typedef std::map<int, HouseSpecification > HouseLevels;
 
   HouseLevels spec_by_level;  // key=houseLevel, value=houseLevelSpec
   HouseLevelSpecsEqMap level_by_id;  // key=houseId, value=houseLevel
@@ -652,7 +680,7 @@ HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
   _d->level_by_id[45] = 0;
 }
 
-HouseLevelSpec HouseSpecHelper::getHouseLevelSpec(const int houseLevel)
+HouseSpecification HouseSpecHelper::getHouseLevelSpec(const int houseLevel)
 {
   int level = (math::clamp)(houseLevel, 0, 17);
   return _d->spec_by_level[level];
@@ -695,7 +723,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     // std::cout << "Line #" << linenum << ":" << line << std::endl;
     VariantMap hSpec = item->second.toMap();
 
-    HouseLevelSpec spec;
+    HouseSpecification spec;
     spec._d->houseLevel = hSpec[ "level" ].toInt();
     spec._d->internalName = item->first;
     spec._d->levelName = hSpec[ "title" ].toString();

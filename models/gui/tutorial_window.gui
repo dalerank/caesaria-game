@@ -1,0 +1,46 @@
+{  
+  geometry : [ 0, 0, 590, 450 ]
+  
+	lbBackground#Label : 
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbTitle#Label :
+    {
+      font : "FONT_2"
+      geometry : [ 10, 10, 580, 70 ]
+      text : "##title##"
+      textAlign : [ "center", "center" ]
+    }
+    
+    imgAdvisor#Image : {
+      geometry : [ 10, 10, 70, 70 ]
+      image : "picture2_00001.png"
+      mode : "image"
+    }
+       
+    btnHelp#TexturedButton :
+    {
+      geometry : [ 16, 410, 40, 434 ]
+      normal : [ "paneling", 528 ]
+      hovered : [ "paneling", 529 ]
+      pressed : [ "paneling", 530 ]
+      disabled : [ "paneling", 531 ]
+    }
+    
+    btnExit#TexturedButton :
+    {
+      geometry : [ 550, 410, 574, 434 ]
+      normal : [ "paneling", 532 ]
+      hovered : [ "paneling", 533 ]
+      pressed : [ "paneling", 534 ]
+      disabled : [ "paneling", 535 ]
+    }
+    
+    lbxHelp#ListBox : {
+      geometry : [ 16, 76, 580, 410 ]
+      bgtype : "blackFrame"     
+    }
+  }
+}

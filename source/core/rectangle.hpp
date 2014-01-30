@@ -275,30 +275,10 @@ public:
            && LowerRightCorner.IsEqual( other.LowerRightCorner, tolerance);
   }
 
-	T getTop() const
-	{
-		return UpperLeftCorner.y();
-	}
-
-	T getLeft() const
-	{
-		return UpperLeftCorner.x();
-	}
-
-	T getBottom() const
-	{
-		return LowerRightCorner.y();
-	}
-
-	T getRight()
-	{
-		return LowerRightCorner.x();
-	}
-
-	T getRight() const
-	{
-		return LowerRightCorner.x();
-	}
+	T top() const 	{		return UpperLeftCorner.y();	}
+	T left() const	{		return UpperLeftCorner.x();	}
+	T bottom() const	{		return LowerRightCorner.y();	}
+	T right() const	{		return LowerRightCorner.x();	}
 
 	//! Upper left corner
 	Vector2<T> UpperLeftCorner;

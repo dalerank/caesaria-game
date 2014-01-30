@@ -178,7 +178,7 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 
   foreach( tile, tiles )
   {
-    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->getIJ() );
+    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->pos() );
 
     foreach( w, tileWalkers )
     {

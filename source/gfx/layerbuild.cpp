@@ -140,10 +140,10 @@ void LayerBuild::_updatePreviewTiles( bool force )
   if( !curTile )
     return;
 
-  if( curTile && !force && _d->lastTilePos == curTile->getIJ() )
+  if( curTile && !force && _d->lastTilePos == curTile->pos() )
     return;
 
-  _d->lastTilePos = curTile->getIJ();
+  _d->lastTilePos = curTile->pos();
 
   _discardPreview();
 
@@ -153,18 +153,18 @@ void LayerBuild::_updatePreviewTiles( bool force )
     Tile* stopTile  = _getCamera()->at( _getLastCursorPos(),  true );
 
     TilesArray pathWay = RoadPropagator::createPath( _getCity()->getTilemap(),
-                                                     startTile->getIJ(), stopTile->getIJ(),
+                                                     startTile->pos(), stopTile->pos(),
                                                      _d->roadAssignment );
     for( TilesArray::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
     {
-      _checkPreviewBuild( (*it)->getIJ() );
+      _checkPreviewBuild( (*it)->pos() );
     }
   }
   else
   {
     TilesArray tiles = _getSelectedArea();
 
-    foreach( it, tiles ) { _checkPreviewBuild( (*it)->getIJ() ); }
+    foreach( it, tiles ) { _checkPreviewBuild( (*it)->pos() ); }
   }
 }
 
@@ -186,9 +186,9 @@ void LayerBuild::_buildAll()
   foreach( it, _d->buildTiles )
   {
     Tile* tile = *it;
-    if( cnstr->canBuild( _getCity(), tile->getIJ(), TilesArray() ) && tile->isMasterTile())
+    if( cnstr->canBuild( _getCity(), tile->pos(), TilesArray() ) && tile->isMasterTile())
     {
-      events::GameEventPtr event = events::BuildEvent::create( tile->getIJ(), cnstr->getType() );
+      events::GameEventPtr event = events::BuildEvent::create( tile->pos(), cnstr->getType() );
       event->dispatch();
       buildOk = true;
     }
@@ -298,12 +298,12 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
     engine.resetTileDrawMask();
 
     if( ptr_construction.isValid()
-        && ptr_construction->canBuild( _getCity(), postTile->getIJ(), _d->buildTiles ) )
+        && ptr_construction->canBuild( _getCity(), postTile->pos(), _d->buildTiles ) )
     {
       engine.setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
 
-    drawTileR( engine, *postTile, offset, postTile->getIJ().z(), true );
+    drawTileR( engine, *postTile, offset, postTile->pos().z(), true );
   }
 
   engine.resetTileDrawMask();
@@ -311,7 +311,7 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
 
 void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   TileOverlayPtr overlay = tile.getOverlay();
   const TilesArray& postTiles = _d->buildTiles;
@@ -322,7 +322,7 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
     if( cntr.isValid() && postTiles.size() > 0 )
     {
       tile.setWasDrawn();
-      const Picture& pic = cntr->getPicture( _getCity(), tile.getIJ(), postTiles );
+      const Picture& pic = cntr->getPicture( _getCity(), tile.pos(), postTiles );
       engine.drawPicture( pic, screenPos );
 
       drawTilePass( engine, tile, offset, Renderer::foreground );

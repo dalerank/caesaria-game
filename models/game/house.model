@@ -1,5 +1,4 @@
 {
-	/* 0;Terrain vague;0;;;;;;;;;;;;;;; */
 	terrain_vacant : 
 		{
 			level : 0,

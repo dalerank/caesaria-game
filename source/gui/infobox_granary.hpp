@@ -22,7 +22,7 @@ namespace gui
 {
 
 // info box about a granary
-class InfoBoxGranary : public InfoBoxSimple
+class InfoBoxGranary : public InfoboxSimple
 {
 public:
   InfoBoxGranary( Widget* parent, const Tile& tile );

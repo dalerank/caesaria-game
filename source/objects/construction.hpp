@@ -26,10 +26,17 @@
 #include "objects/metadata.hpp"
 #include "gfx/tilesarray.hpp"
 
+class Parameter
+{
+public:
+  Parameter( int t ) : type( t ) {}
+  int type;
+};
+
 class Construction : public TileOverlay
 {
 public:
-  typedef enum { fire=0, damage } Param;
+  typedef enum { fire=0, damage, count=0xff } Param;
   Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 

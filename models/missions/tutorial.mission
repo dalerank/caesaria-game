@@ -1,0 +1,114 @@
+{
+  version : 1
+  map : "/maps/Corinthus.map"
+  funds : 8000
+  date : "-350.01.01"
+  finish : "-300.01.01"
+	
+  win :
+  {
+    population : 150
+    culture : 0
+    prosperity : 0
+    peace : 0
+    favour : 0
+    next : "/missions/tutorial2.mission"
+    title : "##win_clerk_title##"
+    may_continue : false
+    short : "##build_some_houses##"
+    maxHouseLevel : "big_villa"
+    caption : "##new_village##"
+    overview :  [ "##tutorial_text##",
+                  "@img=picture2_00002.png" ]
+  }
+	
+  empire : {}
+  		
+  events :
+  {
+    "tutorial#random_fire" : {
+      date : "-350.01.01"
+      population : [ 30, 999 ]
+      exec : {
+        "first_fire#tutorial_window" : { 
+          date : "-350.01.01"
+          tutorial : "/tutorial/first_fire.tutorial"
+        }
+        
+        "enable_prefecture#building_options" : {
+          date : "-350.01.01"
+          buildings : { prefecture : true }
+        }
+      }
+    }
+    
+    "tutorial#random_collapse" : {
+      date : "-350.01.01"
+      population : [ 40, 999 ]
+      exec : { 
+        "first_collapse#tutorial_window" : {
+          date : "-350.01.01"
+          tutorial : "/tutorial/first_collapse.tutorial"
+        }
+        
+        "enable_engineer#building_options" : {
+          date : "-350.01.01"
+          buildings : { engineering_post : true, senate_1 : true }
+        }
+      }
+    }
+    
+    "tutorial#tutorial_window" : {
+      date : "-349.01.01" 
+      tutorial : "/tutorial/religion.tutorial"    
+    }
+    
+    "enable_religion#building_options" : {
+      date : "-349.01.01"
+      buildings : { small_ceres_temple : true, 
+              small_venus_temple : true, 
+              small_mars_temple : true, 
+              small_neptune_temple : true, 
+              small_mercury_temple : true 
+            }
+    }   
+
+    "health_upper#health_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 30
+    }
+    
+    "wheat_upper#wheat_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 200
+    }
+    
+    "desirability_upper#deisrability_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 50
+    }
+  }
+	
+  buildoptions :
+  {
+    farm : "disable_all"
+    raw_material : "disable_all"
+    factory : "disable_all"
+    water : "disable_all"
+    health : "disable_all"
+    religion : "disable_all"
+    education : "disable_all"
+    entertainment : "disable_all"
+    govt : "disable_all"
+    engineering : "disable_all"
+    security : "disable_all"
+                   
+    buildings : 
+    { 
+      well : true
+    }
+  }
+}

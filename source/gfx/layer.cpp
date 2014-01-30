@@ -113,8 +113,8 @@ void Layer::handleEvent(NEvent& event)
 
       if( event.mouse.control )
       {
-        _d->camera->setCenter( tile->getIJ() );
-        _d->city->setCameraPos( tile->getIJ() );
+        _d->camera->setCenter( tile->pos() );
+        _d->city->setCameraPos( tile->pos() );
       }
 
       _d->startCursorPos = _d->lastCursorPos;
@@ -126,7 +126,7 @@ void Layer::handleEvent(NEvent& event)
       Tile* tile = _d->camera->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
       if( tile )
       {
-        events::GameEventPtr e = events::ShowTileInfo::create( tile->getIJ() );
+        events::GameEventPtr e = events::ShowTileInfo::create( tile->pos() );
         e->dispatch();
       }
     }
@@ -160,8 +160,8 @@ TilesArray Layer::_getSelectedArea()
   Tile* startTile = _d->camera->at( _d->startCursorPos, true );  // tile under the cursor (or NULL)
   Tile* stopTile  = _d->camera->at( _d->lastCursorPos, true );
 
-  TilePos startPosTmp = startTile->getIJ();
-  TilePos stopPosTmp  = stopTile->getIJ();
+  TilePos startPosTmp = startTile->pos();
+  TilePos stopPosTmp  = stopTile->pos();
 
 //  std::cout << "TilemapRenderer::_getSelectedArea" << " ";
 //  std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
@@ -181,18 +181,18 @@ void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer:
 
   for( PicturesArray::const_iterator it=pictures.begin(); it != pictures.end(); it++ )
   {
-    engine.drawPicture( *it, tile.getXY() + offset );
+    engine.drawPicture( *it, tile.mapPos() + offset );
   }
 }
 
-WalkerList Layer::_getVisibleWalkerList()
+WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos& pos)
 {
   Layer::VisibleWalkers visibleWalkers = getVisibleWalkers();
 
   WalkerList walkerList;
   foreach( wtAct, visibleWalkers )
   {
-    WalkerList foundWalkers = _getCity()->getWalkers( (walker::Type)*wtAct );
+    WalkerList foundWalkers = _getCity()->getWalkers( (walker::Type)*wtAct, pos );
     walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
   }
 
@@ -202,7 +202,7 @@ WalkerList Layer::_getVisibleWalkerList()
 void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset )
 {
   PicturesArray pictureList;
-  WalkerList walkers = _getCity()->getWalkers( walker::any, tile.getIJ() );
+  WalkerList walkers = _getVisibleWalkerList( getVisibleWalkers(), tile.pos() );
 
   foreach( w, walkers )
   {
@@ -269,7 +269,7 @@ void Layer::render( GfxEngine& engine)
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
-    int z = tile->getIJ().z();
+    int z = tile->pos().z();
 
     drawTileR( engine, *tile, camOffset, z, false );
 
@@ -294,7 +294,7 @@ void Layer::drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( master->getIJ().z() == depth && !master->getFlag( Tile::wasDrawn ) )
+  if( master->pos().z() == depth && !master->getFlag( Tile::wasDrawn ) )
   {
     drawTile( engine, *master, offset );
   }
@@ -308,15 +308,15 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
   Tile* baseTile = area.front();
   TileOverlayPtr overlay = baseTile->getOverlay();
   Picture *pic = NULL;
-  int leftBorderAtI = baseTile->getI();
-  int rightBorderAtJ = overlay->getSize().getHeight() - 1 + baseTile->getJ();
+  int leftBorderAtI = baseTile->i();
+  int rightBorderAtJ = overlay->getSize().getHeight() - 1 + baseTile->j();
   for( TilesArray::const_iterator it=area.begin(); it != area.end(); it++ )
   {
     Tile* tile = *it;
-    int tileBorders = ( tile->getI() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
-                      + ( tile->getJ() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
+    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
+                      + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     pic = &Picture::load(resourceGroup, tileBorders + tileId);
-    engine.drawPicture( *pic, tile->getXY() + offset );
+    engine.drawPicture( *pic, tile->mapPos() + offset );
   }
 }
 
@@ -328,12 +328,12 @@ void Layer::drawColumn(GfxEngine& engine, const Point& pos, const int percent)
 
   for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
   {
-    engine.drawPicture( _d->bodyColumn, pos - Point( -18, 12 + offsetY ) );
+    engine.drawPicture( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
   }
 
   if( percent >= 10 )
   {
-    engine.drawPicture( _d->headerColumn, pos - Point( -6, 20 + roundPercent ) );
+    engine.drawPicture( _d->headerColumn, pos - Point( -6, 25 + roundPercent ) );
   }
 }
 

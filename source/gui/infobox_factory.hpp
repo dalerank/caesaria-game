@@ -23,7 +23,7 @@ namespace gui
 {
 
 // info box about a factory building
-class InfoboxFactory : public InfoBoxSimple
+class InfoboxFactory : public InfoboxSimple
 {
 public:
   InfoboxFactory( Widget* parent, const Tile& tile );

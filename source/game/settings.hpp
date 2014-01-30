@@ -30,7 +30,6 @@ public:
   static const char* houseModel;
   static const char* citiesModel;
   static const char* constructionModel;
-  static const char* workDir;
   static const char* settingsPath;
   static const char* language;
   static const char* resolution;
@@ -43,6 +42,7 @@ public:
   static const char* langModel;
   static const char* fastsavePostfix;
   static const char* saveExt;
+  static const char* workDir;
 
   static GameSettings& getInstance();
 
@@ -50,10 +50,12 @@ public:
   static Variant get( const std::string& option );
 
   static vfs::Path rcpath( const std::string& option="" );
+  static vfs::Path rpath( const std::string& option="" );
 
   static void load();
   static void save();
 
+  void setwdir( const std::string& wdir );
 private:
   GameSettings();
 

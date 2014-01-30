@@ -64,7 +64,7 @@ public:
     }
 
     return SmartPtr<T>();
-  }
+  }  
 
   template< class T >
   std::list< SmartPtr< T > > find( constants::walker::Type type,

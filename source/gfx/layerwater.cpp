@@ -39,7 +39,7 @@ std::set<int> LayerWater::getVisibleWalkers() const
 
 void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 
@@ -109,7 +109,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlBuilding ) ) )
   {
     Tilemap& tilemap = _getCity()->getTilemap();
-    TilesArray area = tilemap.getArea( tile.getIJ(), areaSize );
+    TilesArray area = tilemap.getArea( tile.pos(), areaSize );
 
     foreach( it, area )
     {
@@ -122,7 +122,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
         picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine.drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->getXY() + offset );
+        engine.drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mapPos() + offset );
       }
     }
   }

@@ -24,49 +24,26 @@ public:
   std::string text;
 	int tag;
   float currentHovered;
-  int icon;
+  Picture icon;
   ElementState state;
   bool enabled;
+  Point offset;
 
   Alignment horizontal;
   Alignment vertical;
   bool alignEnabled;
 };
 
-void ListBoxItem::setText(const std::string& text)
-{
-    _d->text = text;
-}
-
-void ListBoxItem::setIcon( int icon )
-{
-    _d->icon = icon;
-}
-
-const std::string& ListBoxItem::getText() const
-{
-    return _d->text;
-}
-
-const Alignment& ListBoxItem::getVerticalAlign() const
-{
-    return _d->vertical;
-}
-
-bool ListBoxItem::isAlignEnabled() const
-{
-    return _d->enabled;
-}
-
-const Alignment& ListBoxItem::getHorizontalAlign() const
-{
-    return _d->horizontal;
-}
+void ListBoxItem::setText(const std::string& text){    _d->text = text;}
+void ListBoxItem::setIcon( Picture icon ){    _d->icon = icon; }
+const std::string& ListBoxItem::getText() const{    return _d->text;}
+const Alignment& ListBoxItem::getVerticalAlign() const{    return _d->vertical;}
+bool ListBoxItem::isAlignEnabled() const{    return _d->enabled;}
+const Alignment& ListBoxItem::getHorizontalAlign() const{    return _d->horizontal;}
 
 ListBoxItem::ListBoxItem() : _d( new Impl )
 {
     _d->currentHovered = 0.f;
-    _d->icon = -1;
     _d->enabled = true;
     _d->horizontal = alignUpperLeft;
     _d->vertical = alignCenter;
@@ -109,58 +86,22 @@ ListBoxItem& ListBoxItem::getInvalidItem()
 
 void ListBoxItem::setItemTextAlignment( Alignment horizontal, Alignment vertical )
 {
-    _d->vertical = vertical;
-    _d->horizontal = horizontal;
-    _d->alignEnabled = true;
+  _d->vertical = vertical;
+  _d->horizontal = horizontal;
+  _d->alignEnabled = true;
 }
 
-ListBoxItem::~ListBoxItem()
-{
-}
-
-void ListBoxItem::setTag( int tag )
-{
-	_d->tag = tag;
-}
-
-int ListBoxItem::getTag() const
-{
-	return _d->tag;
-}
-
-bool ListBoxItem::isEnabled() const
-{
-    return _d->enabled;
-}
-
-void ListBoxItem::setEnabled( bool en )
-{
-    _d->enabled = en;
-}
-
-ElementState ListBoxItem::getState() const
-{
-    return _d->state;
-}
-
-void ListBoxItem::setState( const ElementState& st )
-{
-    _d->state = st;
-}
-
-float ListBoxItem::getCurrentHovered() const
-{
-   return _d->currentHovered;
-}
-
-void ListBoxItem::updateHovered( float delta )
-{
-    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );
-}
-
-int ListBoxItem::getIcon() const
-{
-    return _d->icon;
-}
+ListBoxItem::~ListBoxItem(){}
+void ListBoxItem::setTag( int tag ){	_d->tag = tag;}
+int ListBoxItem::getTag() const{	return _d->tag;}
+bool ListBoxItem::isEnabled() const{    return _d->enabled;}
+void ListBoxItem::setEnabled( bool en ){    _d->enabled = en;}
+ElementState ListBoxItem::getState() const{    return _d->state;}
+void ListBoxItem::setState( const ElementState& st ){    _d->state = st;}
+Point ListBoxItem::getOffset() const{  return _d->offset;}
+void ListBoxItem::setOffset(Point p){  _d->offset = p;}
+float ListBoxItem::getCurrentHovered() const {   return _d->currentHovered;}
+void ListBoxItem::updateHovered( float delta ){    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );}
+Picture ListBoxItem::getIcon() const { return _d->icon; }
 
 }//end namespace gui

@@ -32,9 +32,14 @@
 #include "core/position.hpp"
 #include "pictureconverter.hpp"
 #include "core/time.hpp"
+#include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
+
+#ifdef CAESARIA_PLATFORM_MACOSX
+#include <dlfcn.h>
+#endif
 
 class GfxSdlEngine::Impl
 {
@@ -76,15 +81,36 @@ void GfxSdlEngine::init()
   _d->fps = 0;
   _d->showDebugInfo = false;
 
+  Logger::warning( "GrafixEngine: init");
   int rc = SDL_Init(SDL_INIT_VIDEO);
-  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
+  if (rc != 0)
+  {
+    Logger::warning( StringHelper::format( 0xff, "Unable to initialize SDL: %d", SDL_GetError() ) );
+    THROW("Unable to initialize SDL: " << SDL_GetError());
+  }
+  
+  Logger::warning( "GrafixEngine: ttf init");
   rc = TTF_Init();
-  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
+  if (rc != 0)
+  {
+    THROW("Unable to initialize SDL: " << SDL_GetError());
+  }
 
   unsigned int flags = SDL_DOUBLEBUF | SDL_SWSURFACE;
   flags |= (getFlag( GfxEngine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
-
+    
+#ifdef CAESARIA_PLATFORM_MACOSX
+    void* cocoa_lib;
+    cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
+    void (*nsappload)(void);
+    nsappload = (void(*)()) dlsym(	cocoa_lib, "NSApplicationLoad");
+    nsappload();
+#endif
+ 
+  Logger::warning( StringHelper::format( 0xff, "GrafixEngine: set mode %dx%d",  _srcSize.getWidth(), _srcSize.getHeight() ) );
   SDL_Surface* scr = SDL_SetVideoMode(_srcSize.getWidth(), _srcSize.getHeight(), 32, flags );  // 32bpp
+    
+  Logger::warning( "GrafixEngine: init successfull");
   _d->screen.init( scr, Point( 0, 0 ) );
   
   if( !_d->screen.isValid() ) 
@@ -92,7 +118,8 @@ void GfxSdlEngine::init()
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  SDL_WM_SetCaption( "CaesarIA: "CAESARIA_VERSION, 0 );    
+  Logger::warning( "GrafixEngine: set caption");
+  SDL_WM_SetCaption( "CaesarIA: "CAESARIA_VERSION, 0 );
 
   SDL_EnableKeyRepeat(1, 100);
 }
@@ -158,7 +185,7 @@ void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int d
 
   if( clipRect != 0 )
   {
-    SDL_Rect r = { (short)clipRect->getLeft(), (short)clipRect->getTop(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
+    SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
     SDL_SetClipRect( _d->screen.getSurface(), &r );
   }
 
@@ -199,17 +226,10 @@ void GfxSdlEngine::resetTileDrawMask()
 
 Picture* GfxSdlEngine::createPicture(const Size& size )
 {
-  SDL_Surface* img;
-  //img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32, 
-  //                            0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF );
-  img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32, 
-                              0, 0, 0, 0 );
+  SDL_Surface* img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32,
+                                           0, 0, 0, 0 );
 
-  
-  if (img == NULL)
-  {
-    THROW( "Cannot make surface, size=" << size.getWidth() << "x" << size.getHeight() );
-  }
+  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "Cannot make surface, size=%dx%d", size.getWidth(), size.getHeight() ) );
 
   Picture *pic = new Picture();
   pic->init(img, Point( 0, 0 ));  // no offset

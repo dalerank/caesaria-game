@@ -3,21 +3,30 @@
 #include "core/exception.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "vfs/directory.hpp"
 
 int main(int argc, char* argv[])
 {
+  Logger::registerWriter( Logger::consolelog );
+  Logger::registerWriter( Logger::filelog );
+
+  vfs::Directory workdir = vfs::Path( argv[0] ).directory();
+  Logger::warning( "Working directory is " + workdir.toString() );
+
+  GameSettings::getInstance().setwdir( workdir.toString() );
+
   for (int i = 0; i < (argc - 1); i++)
   {
     if( !strcmp( argv[i], "-R" ) )
     {
-      std::string path = argv[i+1];
-      GameSettings::set( GameSettings::resourcePath, Variant( path ) );
-      GameSettings::set( GameSettings::localePath, Variant( path + "/locale" ) );
+      Logger::warning( "Setting workdir to %s", argv[i+1] );
+      GameSettings::getInstance().setwdir( argv[i+1] );
       i++;
     }
 
     if( !strcmp( argv[i], "-Lc" ) )
-    {
+    {      
+      Logger::warning( "Setting language to " + std::string( argv[i+1] ) );
       GameSettings::set( GameSettings::language, Variant( std::string( argv[i+1] ) ) );
       i++;
     }

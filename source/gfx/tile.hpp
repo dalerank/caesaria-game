@@ -57,13 +57,13 @@ public:
                  isConstructible, isDestructible, clearAll,
                  wasDrawn } Type;
 
-  Tile(const TilePos& pos);
+  explicit Tile(const TilePos& pos);
 
   // tile coordinates
-  int getI() const;
-  int getJ() const;
-  TilePos getIJ() const;
-  Point getXY() const;
+  int i() const;
+  int j() const;
+  TilePos pos() const;
+  Point mapPos() const;
 
   // displayed picture
   void setPicture( const Picture* picture );

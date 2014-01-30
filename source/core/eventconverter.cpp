@@ -302,9 +302,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
             ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
             ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
             ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
-            ret.keyboard.symbol =  ( sdlEvent.key.keysym.unicode != 0 
-                                          ? sdlEvent.key.keysym.unicode&0xff
-                                          : ( key + ( ret.keyboard.shift ? 0 : 0x20 ) ) );
+            ret.keyboard.symbol =  sdlEvent.key.keysym.unicode;
         }
         break;
 
@@ -381,7 +379,8 @@ EventConverter& EventConverter::instance()
 
 EventConverter::EventConverter() : _d( new Impl )
 {
-    _d->createKeyMap();
+  SDL_EnableUNICODE(1);
+  _d->createKeyMap();
 }
 
 EventConverter::~EventConverter()

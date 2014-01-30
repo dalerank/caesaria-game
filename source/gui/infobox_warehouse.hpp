@@ -21,7 +21,7 @@
 namespace gui
 {
 
-class InfoBoxWarehouse : public InfoBoxSimple
+class InfoBoxWarehouse : public InfoboxSimple
 {
 public:
   InfoBoxWarehouse( Widget* parent, const Tile& tile );

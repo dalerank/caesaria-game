@@ -54,8 +54,8 @@ public:
   int picIdOffset;
   int houseId;  // pictureId
   int houseLevel;
-  float healthLevel;
-  HouseLevelSpec spec;  // characteristics of the current house level
+  //float healthLevel;
+  HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
   SimpleGoodStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
@@ -67,11 +67,12 @@ public:
   int currentYear;
   int changeCondition;
 
-  void updateHealthLevel();
+  void updateHealthLevel( HousePtr house );
   void initGoodStore( int size );
   void consumeServices();
   void consumeGoods(HousePtr house);
   void consumeFoods(HousePtr house);
+  int getFoodLevel() const;
 };
 
 House::House(const int houseId) : Building( building::house ), _d( new Impl )
@@ -79,7 +80,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _d->houseId = houseId;
   _d->taxCheckInterval = DateTime( -400, 1, 1 );
   _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
-  _d->healthLevel = 100;
+  updateState( (Construction::Param)House::health, 100, false );
   HouseSpecHelper& helper = HouseSpecHelper::getInstance();
   _d->houseLevel = helper.getHouseLevel( houseId );
   _d->spec = helper.getHouseLevelSpec( _d->houseLevel );
@@ -143,7 +144,7 @@ void House::_checkEvolve()
     if( _d->changeCondition <= maxNegativeStep )
     {
       _d->changeCondition = 0;
-      levelDown();
+      _levelDown();
     }
   }
   else
@@ -156,7 +157,7 @@ void House::_checkEvolve()
       if( _d->changeCondition >= maxPositiveStep )
       {
         _d->changeCondition = 0;
-        levelUp();
+        _levelUp();
       }
     }
     else
@@ -201,7 +202,7 @@ void House::timeStep(const unsigned long time)
   if( time % getSpec().getServiceConsumptionInterval() == 0 )
   {
     _d->consumeServices();
-    _d->updateHealthLevel();            
+    _d->updateHealthLevel( this );
   }
 
   if( time % getSpec().getFoodConsumptionInterval() == 0 )
@@ -223,11 +224,12 @@ void House::timeStep(const unsigned long time)
     _checkEvolve();    
 
     appendServiceValue( Service::crime, _d->spec.getCrime() + 2 );
-    cancelService( Service::recruter );    
+    cancelService( Service::recruter );
 
     int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
     if( homelessCount > 0 )
     {
+      homelessCount /= (homelessCount > 4 ? 2 : 1);
       CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
 
       int workersFireCount = homeless.count( CitizenGroup::mature );
@@ -251,7 +253,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
   if( getSize() == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
-    TilesArray area = tmap.getArea( getTile().getIJ(), Size(2) );
+    TilesArray area = tmap.getArea( getTile().pos(), Size(2) );
     bool mayGrow = true;
 
     foreach( tile, area )
@@ -314,7 +316,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       _d->picIdOffset = 0;
       _update();
 
-      build( _getCity(), getTile().getIJ() );
+      build( _getCity(), getTile().pos() );
       //set new desirability level
       helper.updateDesirability( this, true );
     }
@@ -334,7 +336,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
 }
 
 
-void House::levelUp()
+void House::_levelUp()
 {
   _d->houseLevel++;   
   _d->picIdOffset = 0;
@@ -399,9 +401,9 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
   helper.updateDesirability( this, true );
 }
 
-void House::levelDown()
+void House::_levelDown()
 {
-  if( _d->houseLevel == smallHovel )
+  if( _d->houseLevel == HouseLevel::smallHovel )
     return;
 
   _d->houseLevel--;
@@ -424,10 +426,10 @@ void House::levelDown()
       {
         HousePtr house = ptr_cast<House>( TileOverlayFactory::getInstance().create( building::house ) );
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
-        house->_d->houseId = smallHovel;
+        house->_d->houseId = HouseLevel::smallHovel;
         house->_update();
 
-        events::GameEventPtr event = events::BuildEvent::create( (*tile)->getIJ(), house.object() );
+        events::GameEventPtr event = events::BuildEvent::create( (*tile)->pos(), house.object() );
         event->dispatch();
       }
 
@@ -534,7 +536,7 @@ void House::applyService( ServiceWalkerPtr walker )
 
   case Service::hospital:
   case Service::doctor:
-    _d->healthLevel += 10;
+    updateState( (Construction::Param)House::health, 10 );
     setServiceValue(service, 100);
   break;
   
@@ -645,9 +647,19 @@ TilesArray House::getEnterArea() const
   }
 }
 
+double House::getState(Param param) const
+{
+  switch( (int)param )
+  {
+  case House::food: return _d->getFoodLevel();
+
+  default: return Building::getState( param );
+  }
+}
+
 void House::_update()
 {
-  int picId = ( _d->houseId == smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
+  int picId = ( _d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
   Picture pic = Picture::load( ResourceGroup::housing, picId );
   setPicture( pic );
   setSize( Size( (pic.getWidth() + 2 ) / 60 ) );
@@ -717,7 +729,7 @@ void House::save( VariantMap& stream ) const
   stream[ "currentHubitants" ] = _d->habitants.save();
   stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "goodstore" ] = _d->goodStore.save();
-  stream[ "healthLevel" ] = _d->healthLevel;
+  stream[ "healthLevel" ] = getState( (Construction::Param)House::health );
   stream[ "changeCondition" ] = _d->changeCondition;
 
   VariantList vl_services;
@@ -737,7 +749,7 @@ void House::load( const VariantMap& stream )
   _d->picIdOffset = (int)stream.get( "picIdOffset", 0 );
   _d->houseId = (int)stream.get( "houseId", 0 );
   _d->houseLevel = (int)stream.get( "houseLevel", 0 );
-  _d->healthLevel = (float)stream.get( "healthLevel", 0 );
+  //_d->healthLevel = (float)stream.get( "healthLevel", 0 );
   _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
 
   _d->desirability.base = (int)stream.get( "desirability", 0 );
@@ -747,6 +759,7 @@ void House::load( const VariantMap& stream )
   _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
   _d->changeCondition = stream.get( "changeCondition", 0 );
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
+  _d->currentYear = GameDate::current().year();
 
   _d->initGoodStore( getSize().getArea() );
 
@@ -763,13 +776,13 @@ void House::load( const VariantMap& stream )
   _update();
 }
 
-int House::getFoodLevel() const
+int House::Impl::getFoodLevel() const
 {
   const Good::Type f[] = { Good::wheat, Good::fish, Good::meat, Good::fruit, Good::vegetable };
   std::set<Good::Type> foods( f, f+5 );
 
   int ret = 0;
-  int foodLevel = getSpec().getMinFoodLevel();
+  int foodLevel = spec.getMinFoodLevel();
   if( foodLevel == 0 )
     return 0;
 
@@ -779,7 +792,7 @@ int House::getFoodLevel() const
     int maxFoodQty = 0;
     foreach( ft, foods )
     {
-      int tmpQty = _d->goodStore.getQty( *ft );
+      int tmpQty = goodStore.getQty( *ft );
       if( tmpQty > maxFoodQty )
       {
         maxFoodQty = tmpQty;
@@ -787,12 +800,12 @@ int House::getFoodLevel() const
       }
     }
 
-    ret += maxFoodQty * 100 / _d->goodStore.capacity( maxFtype );
+    ret += maxFoodQty * 100 / goodStore.capacity( maxFtype );
     foods.erase( maxFtype );
     foodLevel--;
   }
 
-  ret /= getSpec().getMinFoodLevel();
+  ret /= spec.getMinFoodLevel();
   return ret;
 }
 
@@ -839,15 +852,14 @@ float House::collectTaxes()
   return tax;
 }
 
-int House::getHealthLevel() const{  return _d->healthLevel;}
 DateTime House::getLastTaxation() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::getDesirability() const {  return _d->desirability; }
-bool House::isWalkable() const{  return (_d->houseId == smallHovel && _d->habitants.count() == 0); }
+bool House::isWalkable() const{  return (_d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0); }
 bool House::isFlat() const {   return isWalkable(); }
 const CitizenGroup& House::getHabitants() const  {  return _d->habitants; }
 GoodStore& House::getGoodStore(){   return _d->goodStore;}
-const HouseLevelSpec& House::getSpec() const{   return _d->spec; }
+const HouseSpecification& House::getSpec() const{   return _d->spec; }
 bool House::hasServiceAccess( Service::Type service) {  return (_d->services[service] > 0); }
 float House::getServiceValue( Service::Type service){  return _d->services[service]; }
 void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }
@@ -855,7 +867,7 @@ int House::getMaxHabitants() {  return _d->maxHabitants; }
 void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
 
 
-void House::Impl::updateHealthLevel()
+void House::Impl::updateHealthLevel( HousePtr house )
 {
   float delim = 1 + (((services[Service::well] > 0 || services[Service::fontain] > 0) ? 1 : 0))
       + ((services[Service::doctor] > 0 || services[Service::hospital] > 0) ? 1 : 0)
@@ -864,7 +876,7 @@ void House::Impl::updateHealthLevel()
 
   float decrease = 0.3f / delim;
 
-  healthLevel = math::clamp<float>( healthLevel - decrease, 0, 100 );
+  house->updateState( (Construction::Param)House::health, -decrease );
 }
 
 void House::Impl::initGoodStore(int size)

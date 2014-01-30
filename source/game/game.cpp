@@ -87,10 +87,13 @@ void Game::Impl::initLocale( std::string localePath)
 
 void Game::Impl::initVideo()
 {
-  Logger::warning( "init graphic engine" );
+  Logger::warning( "GraficEngine: create" );
   engine = new GfxSdlEngine();
 
+  Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
+    
+  Logger::warning( "GraficEngine: try set fullscreen mode" );
   engine->setFlag( GfxEngine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
   engine->init();
 }
@@ -161,13 +164,12 @@ void Game::setScreenMenu()
     case ScreenMenu::startNewGame:
     {
       /* temporary*/     
-      vfs::Entries::Items maps = vfs::Directory( GameSettings::rcpath( "/maps/" ) ).getEntries().filter( vfs::Entries::file, "" ).getItems();
       std::srand( DateTime::getElapsedTime() );
-      std::string file = maps[ rand() % maps.size() ].fullName.toString();
-      Logger::warning( "Loading map:%s", file.c_str() );
+      std::string startMission = "/missions/tutorial.mission";
+      Logger::warning( "Start new career with mission " + startMission );
 
-      load( file );
-
+      load( startMission );
+      _d->player->setName( screen.getPlayerName() );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
@@ -233,16 +235,10 @@ void Game::setScreenGame()
 
   switch( screen.getResult() )
   {
-    case ScreenGame::mainMenu:
-      _d->nextScreen = SCREEN_MENU;
-    break;
-
-    case ScreenGame::quitGame:
-      _d->nextScreen = SCREEN_QUIT;
-    break;
-
-    default:
-      _d->nextScreen = SCREEN_QUIT;
+    case ScreenGame::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
+    case ScreenGame::loadGame: load( screen.getMapName() ); _d->nextScreen = SCREEN_GAME; break;
+    case ScreenGame::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
+    default: _d->nextScreen = SCREEN_QUIT;
   }
 }
 
@@ -308,13 +304,28 @@ void Game::save(std::string filename) const
 
 void Game::load(std::string filename)
 {  
-  Logger::warning( "Load game begin" );
+  Logger::warning( "Game: try load from " + filename );
 
+  vfs::Path fPath = GameSettings::rpath( filename );
+  if( !fPath.isExist() )
+  {
+    Logger::warning( "Cannot find file " + fPath.toString() );
+    Logger::warning( "Try find file in resource's folder " );
+
+    fPath = GameSettings::rcpath( filename ).getAbsolutePath();
+    if( !fPath.isExist() )
+    {
+      Logger::warning( "Cannot find file " + fPath.toString() );
+      return;
+    }
+  }
+
+  reset();
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
                           GameSettings::rcpath( GameSettings::worldModel ) );
 
   GameLoader loader;
-  _d->loadOk = loader.load( filename, *this);
+  _d->loadOk = loader.load( fPath, *this);
 
   if( !_d->loadOk )
   {
@@ -342,11 +353,6 @@ void Game::load(std::string filename)
 
 void Game::initialize()
 {
-  Logger::registerWriter( Logger::consolelog );
-  Logger::registerWriter( Logger::filelog );
-  
-  Logger::warning( "Application dir: " + vfs::Directory::getApplicationDir().toString() );
-
   GameSettings::load();
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
@@ -372,13 +378,8 @@ void Game::exec()
   {
      switch(_d->nextScreen)
      {
-     case SCREEN_MENU:
-        setScreenMenu();
-     break;
-
-     case SCREEN_GAME:
-        setScreenGame();
-     break;
+     case SCREEN_MENU:        setScreenMenu();     break;
+     case SCREEN_GAME:        setScreenGame();     break;
 
      default:
         Logger::warning( "Unexpected next screen type %d", _d->nextScreen );

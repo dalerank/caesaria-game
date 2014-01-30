@@ -54,7 +54,7 @@ void Dispatcher::append( GameEventPtr event)
   }
 }
 
-void Dispatcher::update(unsigned int time)
+void Dispatcher::update( unsigned int time )
 {
   for( Impl::Events::iterator it=_d->events.begin(); it != _d->events.end();  )
   {
@@ -86,7 +86,7 @@ void Dispatcher::load(const VariantMap& stream)
   for( VariantMap::const_iterator it=stream.begin();
        it != stream.end(); it++ )
   {
-    GameEventPtr e = PostponeEvent::create( it->second.toMap() );
+    GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
 
     if( e.isValid() )
     {

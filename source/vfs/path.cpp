@@ -418,7 +418,7 @@ Path Path::getBasename(bool keepExtension) const
 //! returns the directory part of a filename, i.e. all until the first
 //! slash or backslash, excluding it. If no directory path is prefixed, a '.'
 //! is returned.
-std::string Path::getDir() const
+std::string Path::directory() const
 {
   // find last forward or backslash
   std::string::size_type lastSlash = toString().find_last_of( '/' );

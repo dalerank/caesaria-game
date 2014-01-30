@@ -119,15 +119,9 @@ void Logger::warning( const char* fmt, ... )
   getInstance()._d->write( ret );
 }
 
-void Logger::warning(const std::string& text)
-{
-  getInstance()._d->write( text );
-}
-
-void Logger::update(const std::string& text, bool newline)
-{  
-  getInstance()._d->write( text, newline );
-}
+void Logger::warning(const std::string& text) {  getInstance()._d->write( text );}
+void Logger::warningIf(bool warn, const std::string& text){  if( warn ) warning( text ); }
+void Logger::update(const std::string& text, bool newline){  getInstance()._d->write( text, newline ); }
 
 void Logger::registerWriter(Logger::Type type)
 {

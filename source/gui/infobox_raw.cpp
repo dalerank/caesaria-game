@@ -32,7 +32,7 @@ namespace gui
 {
 
 InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 74 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 74 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
   FactoryPtr rawmb = ptr_cast<Factory>( tile.getOverlay() );

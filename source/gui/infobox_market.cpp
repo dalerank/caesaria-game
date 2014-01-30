@@ -29,7 +29,7 @@ namespace gui
 {
 
 InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
 {
    MarketPtr market = ptr_cast<Market>( tile.getOverlay() );
 

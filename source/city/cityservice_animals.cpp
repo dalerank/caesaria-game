@@ -71,7 +71,7 @@ void CityServiceAnimals::update(const unsigned int time)
       {
         TilesArray::iterator it = border.begin();
         std::advance( it, std::rand() % border.size() );
-        ptr_cast<Sheep>(sheep)->send2City( (*it)->getIJ() );
+        ptr_cast<Sheep>(sheep)->send2City( (*it)->pos() );
       }
     }
   }

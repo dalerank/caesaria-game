@@ -70,10 +70,14 @@ void Picture::init(SDL_Surface *surface, const Point& offset )
 {
   _d->surface = surface;
   _d->offset = offset;
-  _d->size = Size( _d->surface->w, _d->surface->h );
+  if( _d->surface != 0 )
+  {
+    _d->size = Size( _d->surface->w, _d->surface->h );
+  }
 }
 
 void Picture::setOffset( Point offset ) { _d->offset = offset; }
+void Picture::setOffset(int x, int y) { _d->offset = Point( x, y ); }
 void Picture::addOffset( Point offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
@@ -83,7 +87,7 @@ int Picture::getWidth() const{  return _d->size.getWidth();}
 int Picture::getHeight() const{  return _d->size.getHeight();}
 void Picture::setName(std::string &name){  _d->name = name;}
 std::string Picture::getName() const{  return _d->name;}
-Size Picture::getSize() const{  return _d->size;}
+Size Picture::getSize() const{  return _d->size; }
 bool Picture::isValid() const{  return _d->surface != 0;}
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
 Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}
@@ -133,12 +137,12 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstr
 
   SDL_Rect srcRect, dstRect;
 
-  srcRect.x = srcrect.getLeft();
-  srcRect.y = srcrect.getTop();
+  srcRect.x = srcrect.left();
+  srcRect.y = srcrect.top();
   srcRect.w = srcrect.getWidth();
   srcRect.h = srcrect.getHeight();
-  dstRect.x = dstrect.getLeft();
-  dstRect.y = dstrect.getTop();
+  dstRect.x = dstrect.left();
+  dstRect.y = dstrect.top();
   dstRect.w = dstrect.getWidth();
   dstRect.h = dstrect.getHeight();
 
@@ -298,7 +302,7 @@ void Picture::fill( const NColor& color, const Rect& rect )
   SDL_Surface* source = _d->surface;
 
   SDL_LockSurface( source );
-  SDL_Rect sdlRect = { (short)rect.getLeft(), (short)rect.getTop(), (Uint16)rect.getWidth(), (Uint16)rect.getHeight() };
+  SDL_Rect sdlRect = { (short)rect.left(), (short)rect.top(), (Uint16)rect.getWidth(), (Uint16)rect.getHeight() };
 
   SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(), 
                                                                                            color.getBlue(), color.getAlpha() )); 

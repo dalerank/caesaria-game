@@ -23,11 +23,11 @@ namespace {
   typedef std::map< int, std::string > Translator;
   Translator translator;
   vfs::Directory directory;
+  std::string currentLanguage;
   std::string invalidText = "";
 
 static void __loadTranslator( vfs::Path filename )
 {  
-  translator.clear();
   VariantMap trs = SaveAdapter::load( directory/filename );
   Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
 
@@ -47,8 +47,15 @@ void Locale::setDirectory(vfs::Directory dir)
 
 void Locale::setLanguage(std::string language)
 {
-  vfs::Path filename = "caesar." + language;
-  __loadTranslator( filename );
+  translator.clear();
+  currentLanguage = language;
+  addTranslation( "caesar" );
+}
+
+void Locale::addTranslation(std::string filename)
+{
+  vfs::Path realPath = filename + "." + currentLanguage;
+  __loadTranslator( realPath );
 }
 
 const char* Locale::translate( const std::string& text)

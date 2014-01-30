@@ -26,8 +26,11 @@ public:
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
   static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city, int type );
+  virtual void handleEvent(NEvent& event);
+
 private:
   LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type );
+  int _getLevelValue(HousePtr house);
 
   std::set<int> _flags;
   std::set<int> _walkers;

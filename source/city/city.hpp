@@ -115,9 +115,7 @@ oc3_signals public:
   Signal1<int>& onFundsChanged();
   Signal1<std::string>& onWarningMessage();
   Signal2<TilePos,std::string>& onDisasterEvent();
-
-protected:
-  void monthStep( const DateTime& time );
+  Signal0<>& onChangeBuildingOptions();  
 
 private:
   PlayerCity();

@@ -1,5 +1,14 @@
-"##trouble_low_fire_risk##":"Denna byggnad har ingen brandrisk"
-"##need_iron_for_work##":"Denna byggnad kräver järnmalm"
+{
+"##0_entertainment_access##":"Denna boning har inte tillgång till underhållning överhuvudtaget"
+"##1_entertainment_access##":"Denna boning har knappt tillgång till underhållning"
+"##2_entertainment_access##":"Denna boning har viss tillgång till underhållning"
+"##3_entertainment_access##":"Denna boning har mycket begränsad tillgång till underhållning"
+"##4_entertainment_access##":"Denna boning har rimlig tillgång till underhållning"
+"##5_entertainment_access##":"Denna boning har begränsad tillgång till underhållning"
+"##6_entertainment_access##":"Denna boning har god tillgång till underhållning"
+"##7_entertainment_access##":"Denna boning har mycket god tillgång till underhållning"
+"##8_entertainment_access##":"Denna boning har utmärkt tillgång till underhållning"
+"##9_entertainment_access##":"Denna boning har tillgång till all underhållning som kan önskas"
 "##academies##":"Högskolor"
 "##academy_trained##":"Utbildad på högskola"
 "##academy##":"Högskola"
@@ -9,7 +18,6 @@
 "##accept##":"Acceptera"
 "##accepting##":"Accepterar"
 "##access_ramp##":"Åtkomstramp"
-"##actor_colony##":"Skådespelarkoloni"
 "##actor_low_entertainment##":"Tråkigt! Det säger alla om det här stället, trots mina tappra insatser. Staden behöver verkligen mer underhållning."
 "##actor##":"Skådespelare"
 "##ad##":"eKr"
@@ -44,50 +52,79 @@
 "##age_ad##":""
 "##age_bc##":""
 "##also_fountain_in_well_area##":"Denna brunn är överflödig för tillfället, eftersom alla hus som den betjänar tar sitt vatten från en fontän."
+"##amphitheater_full_work##":"Denna amfiteater erbjuder sitt samhälle både intressant gladiatorkamp och pjäser med lokala skådespelare."
+"##amphitheater_no_workers##":"Denna amfiteater är stängd. Den har inga anställda, och erbjuder ingen förströelse åt det lokala samhället."
 "##amphitheater##":"Amfiteater"
 "##amphitheatres##":"Amfiteatrar"
 "##angry##":"Arga"
 "##animal_contests_run##":"Djurtävlingarna pågår ytterligare"
 "##aqueduct_info##":"Akvedukter gör det möjligt att konstruera reservoarer långt från vatten, vilket gör det möjligt för fontäner att förse staden med vatten."
+"##aqueduct_no_water##":"Denna akvedukt transporterar inte vatten mellan reservoarer eftersom den saknar vattenkälla."
+"##aqueduct_work##":"Denna akvedukt transporterar vatten mellan reservoarer."
 "##aqueduct##":"Akvedukt"
 "##arabian_stallions##":"Arabiska hingstar"
 "##architect_salary##":"Arkitektlön på"
 "##architect##":"Arkitekt"
 "##army_marker##":"Armémarkör"
 "##arrow##":"Pil"
-"##artist_colony_bad_workers##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag utbilda en skådespelare på tre månader."
+"##artist_colony_bad_work##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag utbilda en skådespelare på tre månader."
 "##artist_colony_full_work##":"Det är med nöje vi tillkännager att vi, med full sysselsättning, kan hjälpa upp till fyra nya skådespelare varje månad."
 "##artist_colony_slow_work##":"Vi lider av svår personalbrist, och kommer att få kämpa för att utbilda en ny skådespelare under de kommande två månaderna."
+"##artist_colony##":"Skådespelarkoloni"
+"##avesome_amphitheater_access##":"Detta hus passerades nyligen av en gladiator. Det kommer att ha tillgång till amfiteater under lång tid framåt"
+"##avesome_clinic_access##":"Detta hus passerades nyligen av en läkare. Det kommer att ha tillgång till en klinik under lång tid framåt"
+"##avesome_college_access##":"Detta hus passerades nyligen av en lärare. Det kommer att ha tillgång till högskola under lång tid framåt"
+"##avesome_colloseum_access##":"Detta hus passerades nyligen av en lejontämjare. Det kommer att ha tillgång till ett colosseum under lång tid framåt"
+"##avesome_hippodrome_access##":"Detta hus har nyligen passerats av en körsven. Det kommer att ha tillgång till hippodrom under lång tid framåt"
+"##avesome_hospital_access##":"Detta hus passerades nyligen av en kirurg. Det kommer att ha tillgång till sjukhus under lång tid framåt"
+"##avesome_library_access##":"Detta hus har nyligen passerats av en bibliotekarie. Det kommer att ha tillgång till bibliotek under lång tid framåt"
+"##avesome_school_access##":"Detta hus passerades nyligen av ett skolbarn. Det kommer att ha tillgång till skola under lång tid framåt"
+"##avesome_theater_access##":"Detta hus passerades nyligen av en skådespelare. Det kommer att ha tillgång till teater under lång tid framåt"
+"##awesome_barber_access##":"Detta hus passerades nyligen av en barberare. Det kommer att ha tillgång till en barberare under lång tid framåt"
+"##awesome_baths_access##":"Detta hus passerades nyligen av en badhusarbetare. Det kommer att ha tillgång till badhus under lång tid framöver"
 "##balance##":"Balans"
 "##ballista##":"Kastmaskin"
 "##barbarian_warrior##":"En barbarisk soldat"
 "##barber_access##":"Barberartillgång"
+"##barber_full_work##":"Denna barberarlokal används, och ortsbefolkningen är vältrimmad."
 "##barber_need_colloseum##":"Efter en dag med rakning och klippning vill jag se en trevlig lejonstrid. Men det går inte att uppbringa här."
+"##barber_no_workers##":"Denna barberarlokal används inte, och är därför värdelös för lokalsamhället."
 "##barber_shop##":"Barberare"
 "##barber_so_hungry##":"En hårklippning får dig att glömma hungern. Och det är många hungriga i den här staden."
 "##barber##":"Barberare"
 "##barbers##":"Barberare"
 "##barracks_full_work##":"Vi utbildar nya soldater med maximal effektivitet och vi har vapen för att utbilda alla typer av soldater."
+"##barracks_info##":"Ingen kan gå med i en romersk legion utan att först komma hit. Alla nya rekryter kommer hit."
 "##barracks_need_some_workers##":"Pga. personalbrist utbildar vi nya soldater långsammare än vanligt men vi har de vapen som krävs för att utbilda alla typer av soldater."
 "##barracks##":"Förläggningar"
 "##bath_1##":"Badhus"
 "##bath_access##":"Badtillgång"
 "##bath##":"Badhus"
 "##bathlady##":"Badarbetare"
+"##baths_full_work##":"Detta badhus används, besökarna blir rena och avslappnade."
 "##baths_info##":"Civiliserade människor badar minst en gång om dagen. Utöver bättre hälsa utgör baden även en önskvärd träffpunkt med olika rekreativa aktiviteter."
+"##baths_need_reservoir##":"Detta badhus behöver en rörledning till en reservoar."
+"##baths_no_workers##":"Detta badhus används inte, och är därför värdelöst för lokalsamhället."
 "##baths##":"Badhus"
 "##bc##":"fKr"
 "##become_trade_center##":"Utse till handelscentral"
 "##below_average##":"Under medel"
 "##better_class_road##":"En finare typ av väg"
+"##big_domus##":"Stor Insulae"
+"##big_hut##":"Stort hus"
+"##big_palace##":"Stort palats"
+"##big_villa##":"Stor villa"
+"##bit_tent##":"Stor tält"
 "##bldm_factory##":"Verkstäder"
 "##bldm_farm##":"Jordbruk"
 "##bldm_raw_materials##":"Råmaterial"
+"##bldm_raw##":"Tyg"
 "##bolt##":"Armborst"
 "##bridge##":"Bro"
 "##bridges##":"Broar"
 "##briton##":"En britt"
 "##britons##":"Britter"
+"##build_fishing_boat##":"Vi bygger båtar på beställning från en fiskehamn i staden."
 "##build_housing##":"Bygg bostäder"
 "##build_markets_to_distribute_food##":"Bygg marknader för att distribuera maten som lagrats här"
 "##build_road_tlp##":"Bygg vägar"
@@ -101,6 +138,8 @@
 "##cart_pusher_no_entertainment##":"...vagnar. Det är mer underhållande än resten av den här staden."
 "##carthaginian_soldier##":"En karthagisk soldat"
 "##cartpusher_cantfind_destination##":"Det skulle gå snabbare att dra varorna till Rom än dit jag ska."
+"##ceres_badmood_info##":"Ceres missnöje är farligt, eftersom hon skyddar folket från dåliga skördar och hungersnöd."
+"##ceres_goodmood_info##":"Ceres skänker fruktsamhet åt jorden, och får plantorna att växa. Blidka henne, eller bered dig på hungersnöd."
 "##charioteer##":"Körsven"
 "##charioter_so_hungry##":"Hungrig? Jag kan äta en häst, så lite mat finns det."
 "##chatioteer_school##":"Skola för körsvenner"
@@ -109,11 +148,13 @@
 "##children##":"Barn"
 "##citizen_are_rioting##":"Medborgarna gör uppror!"
 "##citizen_salary##":"Medborgarlön på"
+"##citizens_additional_rooms_for##":"Extra utrymme för"
 "##city_cyrene##":"Cyrene"
 "##city_damascus##":"Damascus"
 "##city_has_debt##":"Staden har en skuld till Rom på"
 "##city_have##":"Stadens skattkammare har tillgångar på"
 "##city_health##":"Hälsosituation"
+"##city_need_more_workers##":"Din stad kräver fler arbetare"
 "##city_sounds_off##":"Stadsljud är AV"
 "##city_sounds_on##":"Stadsljud är PÅ"
 "##city##":"Stad"
@@ -133,12 +174,15 @@
 "##click_here_that_use_it##":"Klicka här för att stänga av hamstring"
 "##click_item_for_start_trade##":"Klicka på en vara"
 "##clinic_info##":"Läkares förbättrar medborgarnas hälsa genom sina hembesök i de stadsdelar som ingår i deras runda. Blomstrande områden vill ha en klinik."
+"##clinic##":"Klinik"
+"##clinics##":"Kliniker"
 "##collapse_immitent##":"Överhängande risk för kollaps"
 "##collapsed_ruins_info##":"Dessa spillror av gamla byggnader gör marken mindre åtråvärd."
 "##colloseum_haveno_gladiatorpit##":"Bygg en gladiatorskola för att arrangera matcher här"
 "##colloseum_info##":"Colosseum och amfiteatrar behöver alltid nya gladiatorer för att ersätta förlorarna."
+"##colloseum_no_workers##":"Detta colosseum är stängt. Utan anställda är det värdelöst som rekreationsanläggning."
+"##colloseum##":"Colosseum"
 "##colloseums##":"Colosseum"
-"##colosseum##":"Colosseum"
 "##column_info##":"Kolonnformation"
 "##comerceBtnTooltip##":""
 "##commerce_desc##":"(Handel)"
@@ -168,6 +212,7 @@
 "##dedicate_fectival_mercury##":"Tillägna Merkurius en festival"
 "##dedicate_fectival_neptune##":"Tillägna Neptunus en festival"
 "##dedicate_fectival_venus##":"Tillägna Venus en festival"
+"##defensive_formation_text##":"En mycket defensiv formation. Nästan omöjlig att penetreras av missiler."
 "##delete_game##":""
 "##delete_object##":"Radera objekt"
 "##delete_this_message##":"Radera detta meddelande"
@@ -180,6 +225,7 @@
 "##destroy_bridge_warning##":"Sätt tillbaka Caesar III CD'n i CD-ROM enheten"
 "##destroy_bridge##":"CD saknas"
 "##destroy_fort##":"Förstör ett fort"
+"##devastate_granary##":"Töm sädesmagasin"
 "##difficulty##":""
 "##disasterBtnTooltip##":""
 "##dispatch_force##":"Sänd iväg undsättningsstyrka?"
@@ -192,14 +238,13 @@
 "##dn##":"Spara karta"
 "##dock_full_work##":"Med fullt antal anställda lassar och lossar vi med maximal hastighet."
 "##dock_info##":"Hamnarbetarna hämtar varor som vi köper från lagerlokalen."
+"##dock_info##":"Handelsskepp från hela riket lägger till här för att leverera importvaror och hämta exportvaror. Du kan inte bedriva sjöhandel utan en handelshamn."
 "##dock_need_some_workers##":"Vi är underbemannade och därför kommer det att ta lite längre tid än vanligt att lasta och lossa de fartyg som anlöper hamnen."
 "##dock_no_workers##":"Vi har inga hamnarbetare och kan därför inte lasta eller lossa några fartyg som kommer till hamnen."
 "##dock_no_workers##":"Vi kan inte betjäna det förtöjda fartyget utan hamnarbetare!"
 "##dock##":"Handelshamn"
 "##docked_buying_selling_goods##":"Ligger vid kaj, köper och säljer varor"
 "##doctor_gods_angry##":"Var hälsad, medborgare. Har du hört? Gudarna är vreda."
-"##doctor##":"Klinik"
-"##doctors##":"Kliniker"
 "##donations##":"Donerat"
 "##east##":"Öst"
 "##edil_salary##":"Edillön på"
@@ -218,7 +263,6 @@
 "##employee##":"Enhet"
 "##employees##":"Enheter"
 "##employers##":"Anställd arbetsstyrka"
-"##empty_granary##":"Töm sädesmagasin"
 "##emw_bought##":"Köpt"
 "##emw_buy##":"Inköp"
 "##engineer_building_allok##":"Jag behövs knappast. Dessa byggnader är i utmärkt skick."
@@ -244,9 +288,7 @@
 "##exit##":"Avsluta"
 "##explosion##":"Explosion"
 "##exports_over##":"Exportera vara över"
-"##extra_room_for##":"Extra utrymme för"
 "##extreme_fire_risk##":"Extrem brandrisk"
-"##fabric##":"Tyg"
 "##factory_need_more_workers##":"Fungerar knappt. Tilldela fler människor till vår sektor"
 "##farm_need_farmland##":"Bygg jordbruk på jordbruksmark (leta efter gult gräs)"
 "##farm_working_bad##":""
@@ -281,32 +323,33 @@
 "##forum_no_workers##":"Utan indrivare bidrar det här kontoret inte med någonting till stadskassan."
 "##forum_patrly_workers##":"Vi är underbemannade och måste vänta en vecka innan våra indrivare är tillbaka i tjänst."
 "##forum##":"Forum"
+"##fountain_info##":"Människorna hämtar allt vatten som de behöver från fontäner, som måste förses med vatten via ledningar från en reservoar. Fontäner är den källa till vatten som folket föredrar."
 "##fountain##":"Fontän"
 "##free##":"ledig"
 "##freehouse_caption##":""
 "##freehouse_text_noroad##":"Ingen kommer att skapa sig ett hem här eftersom det ligger för långt från närmaste väg. Om ingen väg byggs snart kommer detta område att återgå till öppet landskap."
 "##freehouse_text_noroad##":""
 "##freehouse_text##":""
-"##fruits##":"Frukt"
+"##fruit##":"Frukt"
 "##fullscreen_off##":"Fönsterskärm"
 "##fullscreen_on##":"Fullskärm"
 "##funds_tooltip##":""
 "##furniture_need##":"Möbler behövs"
 "##furniture_workshop_bad_work##":"Mycket få snickare arbetar här. Som resultat är möbelproduktionen långsam."
 "##furniture_workshop_info##":"Snickarna vid snickeriet skapar fina möbler av virke. Medborgarna kan möblera sina villor och du kan handla med överskottet."
+"##furniture_workshop_need_resource##":"Detta snickeri behöver leverans av virke från ett magasin eller från en brädgård för att kunna producera möbler."
 "##furniture_workshop##":"Möbelsnickeri"
 "##furniture##":"Möbler"
-"##fwheat_farm##":"Veteodling"
 "##game_is_paused##":"Spelet stoppat (Tryck P för att fortsätta)"
 "##game_speed##":""
 "##garden_info##":"Denna trevliga plats skänker medborgarna avkoppling från stadens buller, värme och smuts genom en sval oas av grönska. Alla vill ha en trädgård intill sitt hus."
 "##garden##":"Trädgårdar"
 "##gardens_info##":"Trädgårdar förbättrar den lokala miljön."
 "##gatehouse##":"Grindstuga"
-"##gladiator_pit_bad_workers##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag utbilda en gladiator var tredje månad."
+"##gladiator_pit_bad_work##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag utbilda en gladiator var tredje månad."
 "##gladiator_pit_full_work##":"Det är med nöje vi tillkännager att vi, med full sysselsättning, utbildar upp till fyra nya gladiatorer varje månad."
 "##gladiator_pit_no_workers##":"Utan utbildningspersonal kan denna skola inte utbilda nya gladiatorer."
-"##gladiator_school##":"Gladiatorskola"
+"##gladiator_pit##":"Gladiatorskola"
 "##gmenu_about##":"Om"
 "##gmenu_advisors##":""
 "##gmenu_exit_game##":"Avsluta spel"
@@ -333,7 +376,7 @@
 "##granary_holds##":"månad"
 "##granary_info##":"Fulla sädesmagasin är livsviktiga för att hålla folkets magar fyllda och för att attrahera nya medborgare. Ett sädesmagasin kan lagra säd, kött, grönsaker och frukt."
 "##granary_orders##":"Instruktioner sädesmagasin"
-"##granary##":"Sädesmagasin"
+"##granery##":"Sädesmagasin"
 "##grape##":"Vindruvor"
 "##grass##":"Gräs"
 "##gree_manuscript##":"Ett grekiskt manuskript"
@@ -341,17 +384,24 @@
 "##have_food_for##":"- livsmedel för"
 "##have_no_food_on_next_month##":"- inga livsmedel kommande månad"
 "##have_no_legions##":"Du har inga legioner att sända"
+"##have_no_requests##":"För närvarande har du inga meddelanden att läsa. I takt med att din stad växer, eller om kejsaren begär varor av dig, kommer meddelanden att visas här"
 "##health_advisor##":"Byggnader förknippade med hälsa"
 "##health##":"Hälsa"
 "##healthBtnTooltip##":""
 "##help##":"Hjälp"
 "##hide_bigpanel##":"Göm sidopanelen, och utöka spelvyn"
+"##high_bridge##":"Fartygsbro"
 "##hippodrome##":"Hippodrom"
 "##hippodromes##":"Hippodromer"
+"##hold_ceres_festival##":"Anordna festival för Ceres"
+"##hold_mars_festival##":"Anordna festival för Mars"
+"##hold_mercury_festival##":"Anordna festival för Merkurius"
+"##hold_neptune_festival##":"Anordna festival för Neptunus"
+"##hold_venus_festival##":"Anordna festival för Venus"
 "##hospital_info##":"Även om ingen vill bo i närheten av dem, räddar sjukhus liv. Staden borde ha tillräckligt med sängplatser för alla sina invånare."
 "##hospital##":"Sjukhus"
 "##hospitals##":"Sjukhus"
-"##house_evolves_at##":"utvecklas vid"
+"##house_evolves_at##":"Denna boning kommer snart att utvecklas och få bättre status, som ett resultat av de förbättrade lokala villkoren."
 "##house_no_troubles_with_food##":"Detta hus har inget problem med att skaffa den mat som krävs för att överleva"
 "##house_not_report_about_crimes##":"De boende har inte rapporterat någon brottslighet."
 "##houseBtnTooltip##":""
@@ -371,20 +421,23 @@
 "##iron##":"Järn"
 "##judaean_warrior##":"En judéisk soldat"
 "##labor##":"Arbetskraft"
-"##large_ temples##":"Stora tempel"
+"##large_temples##":"Stora tempel"
 "##large##":"Stort"
 "##last_year##":"Förra året"
 "##lawless_area##":"Ett laglöst område. Människorna är vettskrämda."
 "##layer_crime##":"Brott"
 "##leave_empire?##":"Lämna det Romerska Riket?"
+"##legion_formation_tooltip##":"Klicka här för att ändra legionens formation"
 "##legion##":"Militär"
 "##legionary_perfect_life##":"Medborgare! Jag har kämpat i många städer och den här är en av de bästa."
 "##legionary_so_hungry##":"Hur ska en soldat kunna slåss utan mat?"
 "##legions##":"Legioner"
 "##libraries##":"Bibliotek"
+"##library_full_work##":"Detta bibliotek används. Dess hyllor är fyllda med skriftrullar med lärdom."
 "##library_info##":"Litterära arbeten från hela riket förvaras här på grekiska och latin. Lärda män insisterar att biblioteken är avgörande för en viktig stad."
+"##library_no_workers##":"Hyllorna i detta bibliotek är tomma, och värdelösa för lokalsamhället."
 "##library##":"Bibliotek"
-"##lion_pit_bad_workers##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag leverera ett lejon på tre månader."
+"##lion_pit_bad_work##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag leverera ett lejon på tre månader."
 "##lion_pit_no_workers##":"Utan personal kan detta lejonhus inte leverera några nya lejon till spelen."
 "##lion_pit_work##":"Det är med nöje vi tillkännager att vi, med full sysselsättning, kan leverera upp till fyra nya lejon varje månad."
 "##lion_pit##":"Lejonhus"
@@ -397,12 +450,14 @@
 "##low_bridge##":"Låg bro"
 "##low_damage_risk##":"Liten risk att kollapsa"
 "##low_desirability_degrade##":"Detta hus kommer snart att förfalla. Den sjunkande efterfrågan på boende i detta område drar ner det."
+"##low_desirability##":"Du behöver göra området mer attraktivt, t ex genom att anlägga några trädgårdar eller torg."
 "##low_fire_risk##":"Liten brandrisk"
 "##lumber_mill_bad_work##":"Mycket få människor arbetar vid den här brädgården. Som resultat är timmerproduktionen långsam."
 "##lumber_mill_full_work##":"Denna brädgård har alla anställda den behöver. Den arbetar fullt ut med att såga timmer."
 "##lumber_mill_info##":"Såga virke för handel, eller till möbelverkstäderna. Patricierna vill ha möbler till sina villor, eller så kan du exportera det till dina handelspartners."
 "##lumber_mill_need_some_workers##":"Denna brädgård arbetar inte med maximal kapacitet. Som resultat kommer timmerproduktionen att bli något långsammare."
 "##lumber_mill_no_workers##":"Denna brädgård har inga anställda. Produktionen har upphört."
+"##lumber_mill##":"Brädgård"
 "##macedonian_soldier##":"En makedonisk soldat"
 "##mainmenu_loadgame##":"Öppna spel"
 "##mainmenu_loadmap##":"Ny karta"
@@ -426,6 +481,8 @@
 "##maximizeBtnTooltip##":""
 "##may_collect_about##":"ger en avkastning på"
 "##meadow_caption##":"Äng"
+"##meat_farm_full_work##":"Denna farm har alla anställda den behöver, och dess djurstam är fet och stor."
+"##meat_farm_no_workers##":"Denna farm har inga anställda, och alla djuren har flytt eller dött."
 "##meat##":"Kött"
 "##message##":"Meddelande"
 "##messageBtnTooltip##":""
@@ -437,12 +494,53 @@
 "##migration_people_away##":"Brist på arbete driver bort människor"
 "##minimap_tooltip##":"Klicka på denna översiktskarta för att flytta till avlägsna delar av din stad"
 "##minimizeBtnTooltip##":""
+"##missing_barber_degrade##":"Detta hus kommer snart att förfalla, eftersom det har förlorat tillgången till barberare."
+"##missing_barber##":"Detta hus kan inte utvecklas, eftersom det inte har någon lokal tillgång till en barberare."
+"##missing_baths_degrade##":"Detta hus kommer snart att förfalla, eftersom det har förlorat tillgången till sitt badhus."
+"##missing_baths##":"Detta hus kan inte utvecklas, eftersom det inte har tillgång till ett lokalt badhus."
+"##missing_clinic##":"Detta hus kan inte utvecklas, eftersom det i stort sett saknar tillgång till sjukvård. Det saknar tillgång till både klinik och sjukhus."
+"##missing_clinic##":"Detta hus kan inte utvecklas, eftersom det vill ha bättre möjligheter till sjukvård. Det finns lokal tillgång till ett sjukhus men det behövs en klinik i närheten."
+"##missing_college_degrade##":"Detta hus kommer snart att förfalla. Dess tidigare utmärkta tillgång till utbildning har försämrats, eftersom det har förlorat tillgången till sin högskola."
+"##missing_college##":"Detta hus kan inte utvecklas, eftersom dess redan utmärkta tillgång till utbildning måste förbättras genom tillgång till en högskola."
+"##missing_entertainment_also##":"Detta hus kan inte utvecklas, eftersom det inte finns tillräckligt med underhållning i området."
+"##missing_entertainment_amph##":"Detta hus kan inte utvecklas, eftersom det knappt finns någon underhållning i området."
+"##missing_entertainment_colloseum##":"Detta hus kan inte utvecklas, eftersom det visserligen finns viss underhållning i området, men inte tillräckligt."
 "##missing_entertainment_degrade##":"Detta hus kommer snart att förfalla, eftersom det knappast finns någon underhållning i området."
+"##missing_entertainment_need_more##":"Detta hus kan inte utvecklas, eftersom det visserligen finns god underhållning i området, men inte tillräckligt varierat utbud."
+"##missing_entertainment_patrician##":"Detta hus kan inte utvecklas, eftersom det visserligen finns utmärkt underhållning i området, men det är trångt och utbudet är inte tillräckligt varierat för de kräsna patricierna."
+"##missing_entertainment##":"Detta hus kan inte utvecklas, eftersom det inte finns någon underhållning i området."
+"##missing_food_degrade##":"Detta hus kommer snart att förfalla. Det har visserligen tillgång till en marknad, men marknaden själv har svårt att få livsmedelsleveranser."
+"##missing_food_degrade##":"Detta hus kommer snart att förfalla, eftersom det inte har fått några livsmedelsleveranser från en lokal marknad nyligen."
+"##missing_food_from_market##":"Detta hus kan inte utvecklas. Det har visserligen tillgång till en lokal marknad, men marknaden själv har svårt att få livsmedelsleveranser."
+"##missing_food##":"Detta hus kan inte utvecklas, eftersom det måste ha leveranser av livsmedel från en lokal marknad."
+"##missing_fountain_degrade##":"Detta hus kommer snart att förfalla, eftersom det inte har tillgång till rent vatten från en fontän."
+"##missing_fountain##":"Detta hus kan inte utvecklas, eftersom det inte har tillgång till ren vattentillförsel från en fontän."
 "##missing_furniture_degrade##":"Detta hus kommer snart att förfalla, eftersom det har slut på möbler och dess lokala marknad har ett sporadiskt utbud."
+"##missing_furniture##":"Detta hus kan inte utvecklas. Det behöver tillgång till möbelleveranser från sin lokala marknad innan mer välmående medborgarklasser kommer att flytta in."
+"##missing_hospital##":"Detta hus kan inte utvecklas, eftersom det vill ha bättre möjligheter till sjukvård. Klinikernas täckning är bra men det saknas lokal tillgång till ett sjukhus."
+"##missing_library_degrade##":"Detta hus kommer snart att förfalla. Dess tillgång till utbildning har försämrats, eftersom det har förlorat tillgång till sitt bibliotek."
+"##missing_library##":"Detta hus kan inte utvecklas, eftersom dess tillgång till utbildning måste förbättras genom tillgång till ett bibliotek."
+"##missing_market_degrade##":"Detta hus kommer snart att förfalla. Det har förlorat tillgången till en marknad."
+"##missing_market##":"Detta hus kan inte utvecklas, eftersom det inte har tillgång till en lokal marknad."
 "##missing_oil_degrade##":"Detta hus kommer snart att förfalla, eftersom det har slut på oljan och dess lokala marknad har ett sporadiskt utbud."
+"##missing_oil##":"Detta hus kan inte utvecklas. Det behöver oljeleveranser från sin lokala marknad innan mer välmående medborgarklasser kommer att flytta in."
 "##missing_pottery_degrade##":"Detta hus kommer snart att förfalla. Det har inte längre tillgång till krukor, och leveranserna till dess lokala marknad är minst sagt opålitliga."
+"##missing_pottery##":"Detta hus kan inte utvecklas. Det behöver leveranser av krukor från sin lokala marknad innan förmögnare medborgarklasser kommer att flytta in."
+"##missing_religion##":"Detta hus kan inte utvecklas, eftersom det inte har tillgång till några lokala möjligheter till religionsutövning."
+"##missing_school_degrade##":"Detta hus kommer snart att förfalla. Dess tillgång till utbildning har försämrats, eftersom det har förlorat tillgång till sin skola."
+"##missing_school##":"Detta hus kan inte utvecklas, eftersom det inte har tillgång till grundläggande utbildningsmöjligheter vare sig från skola eller bibliotek."
+"##missing_school##":"Detta hus kan inte utvecklas, eftersom dess tillgång till utbildning måste förbättras genom tillgång till en skola."
+"##missing_second_food##":"Detta hus kan inte utvecklas, eftersom det krävs en till typ av livsmedel, som levereras från en lokal marknad, för att förmå mer välbärgade att flytta in."
+"##missing_second_religion_degrade##":"Detta hus kommer snart att förfalla. Dess tillgång till lokala religiösa byggnader har reducerats till endast ett tempel för en enda gud."
+"##missing_second_religion##":"Detta hus kan inte utvecklas, eftersom det endast har tillgång till tempel för en enda gud. I takt med att dess invånare kommer upp sig i världen kommer de att vilja ägna mer tid åt att tillbe andra gudar."
+"##missing_second_wine##":"Detta hus kan inte utvecklas. Det krävs en vinsort till för att tillfredsställa de sysslolösa patriciernas dekadenta livsstil. Öppna en ny handelsväg, eller tillverka ditt eget vin."
+"##missing_third_food##":"Detta hus kan inte utvecklas, eftersom det krävs en tredje typ av livsmedel, som levereras från en lokal marknad, för att förmå patricierklasserna att flytta in."
+"##missing_third_religion_degrade##":"Detta hus kommer snart att förfalla. Dess tidigare utmärkta religiösa möjligheter har reducerats, och det har nu endast tillgång till tempel för två gudar."
+"##missing_third_religion##":"Detta hus kan inte utvecklas, eftersom det endast har tillgång till tempel för två gudar. I takt med att dess invånare kommer upp sig i världen kommer de att vilja ägna mer tid åt att tillbe andra gudar."
 "##missing_water_degrade##":"Detta hus kommer snart att förfalla, eftersom det saknar tillgång till även den enklaste vattenförsörjning."
+"##missing_water##":"Detta hus kan inte utvecklas, eftersom det inte har tillgång till ens den mest primitiva vattenförsörjning."
 "##missing_wine_degrade##":"Detta hus kommer snart att förfalla, eftersom det har slut på vin och dess lokala marknad har ett sporadiskt utbud."
+"##missing_wine##":"Detta hus kan inte utvecklas. Det behöver tillgång till vinleveranser från sin lokala marknad innan mer välmående medborgarklasser kommer att flytta in."
 "##missionBtnTooltip##":""
 "##month_09_short##":"Sep"
 "##month_1_short##":"Jan"
@@ -463,11 +561,13 @@
 "##more_people##":"Anställda"
 "##more_person##":"Anställd"
 "##my_rome##":""
-"##nearby_building##":"En närliggande byggnad ("
+"##nearby_building_negative_effect_degrade##":"En närliggande byggnad har en försämrande effekt på efterfrågan till området. Försök att anlägga t ex trädgårdar, torg och statyer."
+"##nearby_building_negative_effect##":"En närliggande byggnad har en försämrande effekt på efterfrågan till området. Försök att anlägga t ex trädgårdar, torg och statyer."
 "##need_actor_colony##":"Bygg en skådespelarkoloni för att sända skådespelare hit"
 "##need_build_on_cleared_area##":""
 "##need_clay_pit##":"Denna byggnad kräver lera"
 "##need_grape##":"Denna byggnad kräver druvor"
+"##need_iron_for_work##":"Denna byggnad kräver järnmalm"
 "##need_iron_mine##":"Bygg en järngruva"
 "##need_lionnursery##":"Bygg ett lejonhus för att arrangera djurtävlingar"
 "##need_marble_for_large_temple##":"Du behöver 2 ton marmor för att bygga ett stort tempel"
@@ -489,15 +589,18 @@
 "##oil_workshop_bad_work##":"Mycket få människor arbetar vid denna olivpress. Som resultat är oljeproduktionen långsam."
 "##oil_workshop_full_work##":"Denna olivpress är fullt bemannad och producerar rikliga mängder olja av hög kvalitet."
 "##oil_workshop_info##":"Här pressas olja från oliver, som plebejerna behöver för matlagning och för belysningen i sin Insulae. Överskottsoljan kan bli lönsam handel."
+"##oil_workshop_need_resource##":"Denna olivpress kommer inte att producera olja utan leverans av oliver, från ett magasin eller från en lantgård."
 "##oil_workshop_need_some_workers##":"Denna olivpress behöver fler arbetare för att nå sin fulla potential för oljeproduktion."
 "##oil_workshop_no_workers##":"Denna olivpress har inga anställda och kommer inte att producera olja."
 "##oil_workshop_patrly_workers##":"Denna olivpress är underbemannad och producerar oljan mycket långsammare än vad den borde."
 "##oil##":"Olja"
 "##olive_farm_info##":"Oliver är värdefulla för sin olja. Olivpresserierna ger olja för matlagning, belysning, smörjning och konservering."
 "##olive_farm##":"Olivodling"
-"##olives##":"Oliver"
+"##olive##":"Oliver"
 "##open_trade_route##":"Öppna handelsväg"
 "##options##":"Inställning"
+"##oracle_info##":"Orakel ökar efterfrågan på husen i stadsdelen och gör de boende gladare. Denna byggnad tillfredsställer samtliga gudar."
+"##oracle_need_2_cart_marble##":"Du behöver 2 ton marmor för att bygga ett orakel"
 "##oracle##":"Orakel"
 "##oracles_in_city##":"Orakel i staden"
 "##oracles##":"Orakel"
@@ -549,7 +652,9 @@
 "##population_tooltip##":""
 "##population##":"Befolkning"
 "##pottery_bad_work##":"Mycket få människor arbetar här. Som resultat går krukproduktionen långsamt."
+"##pottery_workshiop_full_work##":"Detta krukmakeri har alla anställda det behöver. Det arbetar fullt ut med att producera krukor."
 "##pottery_workshop_info##":"Här formar krukmakare lera till kärl som medborgarna använder till förvaring. Handla med krukor, eller låt dina marknader distribuera dem så att människorna kan bygga bättre hus."
+"##pottery_workshop_need_resource##":"Detta krukmakeri behöver leveranser av lera, från ett magasin eller från ett lertag, för att kunna producera krukor."
 "##pottery##":"Krukor"
 "##praetor_salary##":"Pretorslön på"
 "##prefect_goto_fire##":"Om du vill veta hur städer ser ut när de brinner, se noga på nu!"
@@ -606,6 +711,8 @@
 "##save_game##":"Spara spel"
 "##scholar##":"Skolbarn"
 "##scholars##":"i skolålder,"
+"##school_full_work##":"Denna skola används inte, och är värdelös för lokalsamhället."
+"##school_info##":"Barn måste gå i stadsdelsskolorna för att lära sig grunderna i läsning, skrivning och retorik om de skall kunna växa upp till produktiva vuxna."
 "##school##":"Skola"
 "##schools##":"Skolor"
 "##screen_settings##":"Bild"
@@ -628,9 +735,21 @@
 "##show_bigpanel##":"Visa hela sidopanelen"
 "##show_prices##":"Visa priser"
 "##show##":"Evenemang"
-"##small_casa##":"Litet hus"
+"##simple_formation_text##":"En enkel formation, som ger fördelar åt försvarstrupper."
+"##small_ceres_temple##":"Cerestempel"
+"##small_domus##":"Liten Insulae"
 "##small_food_on_next_month##":"- mycket lite mat kommande månad"
+"##small_hut##":"Litet hus"
+"##small_hut##":"Litet skjul"
+"##small_mars_temple##":"Marstempel"
+"##small_mercury_temple##":"Merkuriustempel"
+"##small_neptune_temple##":"Neptunustempel"
+"##small_palace##":"Litet palats"
+"##small_shack##":"Liten koja"
 "##small_temples##":"Små tempel"
+"##small_tent##":"Litet tält"
+"##small_venus_temple##":"Venustempel"
+"##small_villa##":"Liten villa"
 "##small##":"Litet"
 "##soldier_awesome_live##":"Jag må vara en simpel soldat, men även jag kan se vilken storslagen stad detta är."
 "##soldier##":"Soldat"
@@ -662,20 +781,26 @@
 "##to_trade_advisor##":"Till handelsrådgivaren"
 "##tooltip_full##":"Mushjälp FULL"
 "##tooltip_some##":"Mushjälp HALV"
+"##tower_may_build_on_thick_walls##":"Du kan endast bygga torn på tjocka murar"
 "##trade_advisor##":"Handelsrådgivare"
 "##trade_btn_notrade_text##":"Gör ej affärer"
 "##trade_caravan_from##":"Köpmannakaravan från"
 "##trade##":"Handel"
 "##trees_and_forest_caption##":"Träd och skogsland"
 "##trees_and_forest_text##":"Träden kan inte forceras, men de kan röjas undan. De är livsviktiga för skogsindustrin, brädgårdar måste ligga nära träden för att producera timmer."
+"##trouble_low_fire_risk##":"Denna byggnad har ingen brandrisk"
 "##unit##":"År"
 "##units##":"År"
 "##use_and_trade_resource##":"Använder och byteshandlar med denna vara"
+"##vegetable_farm_full_work##":"Denna lantgård har alla anställda det behöver. Grönsaker växer här i överflöd."
 "##vegetable_farm_info##":"Grönsaker är en viktig del av den balanserad diet som ditt folk behöver för hälsa och glädje. I sädesmagasinen lagras grönsaker för lokal konsumtion, och i handelsmagasinen förvaras överskottet för export."
-"##vegetables##":"Grönsaker"
+"##vegetable_farm_no_workers##":"Denna lantgård har inga anställda. Inget har planterats."
+"##vegetable##":"Grönsaker"
 "##very_high_fire_risk##":"Mycket stor brandrisk"
 "##very_low_fire_risk##":"Mycket liten brandrisk"
 "##vinard_full_work##":"Denna odling har alla anställda den behöver. Vinrankorna är tunga med stora, saftiga druvor."
+"##vinard_full_work##":"Denna lund har alla anställda den behöver. Trädgrenarna dignar med tunga lass av oliver."
+"##vinard_info##":"Druvorna från dessa vinrankor har odlats särskild för vinframställning. Vingårdarna gör fint vin för dina egna patricier, samt för export."
 "##vinard_need_some_workers##":"Denna odling är underbemannad. Det tar längre tid att producera druvor än vad det borde."
 "##vinard_no_workers##":"Denna odling har inga anställda. Produktionen har upphört."
 "##vinard_patrly_workers##":"Denna odling utnyttjar inte maximal kapacitet. Som resultat kommer druvproduktionen att bli mindre."
@@ -694,36 +819,63 @@
 "##visit_religion_advisor##":"Besök din religionsrådgivare"
 "##visit_trade_advisor##":"Besök din handelsrådgivare"
 "##wages##":"Löner"
+"##wait_for_fishing_boat##":"Vi vänta för närvarande på att ett varv skall bygga oss en fiskebåt."
 "##waiting_for_free_dock##":"Har kastat ankar, i väntan på ledig kajplats"
 "##wall##":"Mur"
 "##war_desc##":"(Krig)"
 "##warehouse_info##":"Varor som produceras för handel kräver magasinering. Karavaner besöker handelsmagasinen för att köpa och sälja varor och handelshamnar får sitt gods från intilliggande magasin."
+"##warehouse_no_workers##":"Endast minimibemanning. Kommer ej att sända eller ta emot varor"
+"##warehouse##":"Handelsmagasin"
+"##warehouses##":"Handelsmagasin"
+"##warning_amphitheater_access##":"Detta hus har inte passerats av en gladiator på ett tag. Det kommer snart att förlora tillgång till amfiteater"
+"##warning_barber_access##":"Om ingen barberare går förbi huset snart, kommer det att förlora sin tillgång till barberare"
+"##warning_baths_access##":"Om ingen badhusarbetare passerar snart, kommer detta hus att förlora sin tillgång till badhus"
+"##warning_college_access##":"Om ingen lärare passerar huset snart, kommer det att förlora sin tillgång till högskola"
+"##warning_colloseum_access##":"Detta hus har inte passerats av en lejontämjare på ett tag. Det kommer snart att förlora tillgång till colosseum"
+"##warning_doctor_access##":"Om ingen läkare passerar huset snart, kommer det att förlora sin tillgång till läkarklinik"
 "##warning_full##":"Varningar PÅ"
+"##warning_hippodrome_access##":"Detta hus har inte passerats av en körsven på ett tag. Det kommer snart att förlora tillgång till hippodrom"
+"##warning_hospital_access##":"Om ingen kirurg passerar detta hus snart, kommer det att förlora sin tillgång till sjukhus"
+"##warning_library_access##":"Om ingen bibliotekarie passerar huset snart, kommer det att förlora sin tillgång till bibliotek"
+"##warning_school_access##":"Om inget skolbarn passerar huset snart, kommer det att förlora sin tillgång till skola"
 "##warning_some##":"Varningar AV"
+"##warning_theater_access##":"Detta hus har inte passerats av en skådespelare på ett tag. Det kommer snart att förlora tillgången till teater"
 "##water_build_tlp##":"Byggnader förknippade med vatten"
 "##water_caption##":"H2O"
 "##water_info##":"Kan inte forceras, men broar kan byggas på vissa platser. Vatten är en vital handelslänk till resten av imperiet via handelshamnar. Lertag måste byggas nära vatten."
+"##water_srvc_fountain_and_well##":"Detta område har tillgång till en reservoar via rörledning och dricksvatten från en brunn eller fontän"
+"##water_srvc_reservoir##":"Detta område har tillgång till en reservoar via rörledning, vilket gör att fontäner och badhus fungerar"
+"##water_srvc_well##":"Detta område har tillgång till dricksvatten"
 "##water_supply##":""
 "##we_produce_more_than_eat##":"Vi producerar något mer än vi äter"
 "##we_produce_much_than_eat##":"Vi producerar mycket mer än vi äter"
 "##we_produce_some_than_eat##":"Vi producerar lagom för att livnära alla"
 "##weapon##":"Vapen"
+"##weapons_workshop_full_work##":"Denna smedja har alla anställda den behöver, den arbetar fullt ut med att producera vapen."
 "##weapons_workshop_info##":"Vapensmeder förvandlar järn till vapen och rustningar, som du kan handla med och göra vinst eller använda för att utrusta dina egna legioner."
+"##weapons_workshop_need_resource##":"Denna smedja kräver leverans av järn, från ett magasin eller från ett malmbrott, för att producera vapen."
+"##weapons_workshop##":"Vapensmedja"
 "##well_haveno_houses_inarea##":"Denna brunn är överflödig för tillfället, eftersom det inte finns några hus inom dess serviceområde."
 "##well_info##":"Medborgare utan tillgång till fontän kan ta vatten från brunnar, men stadsdelar med brunnsvatten är inga trevliga platser att bo på."
 "##well##":"Brunn"
 "##wharf_info##":"Båtar avseglar från fartygsvarvet och hämtar sina besättningar här. Varje fiskehamn kan betjäna en fiskebåt."
 "##wharf##":"Fiskehamn"
 "##wheat_farm_info##":"Vetekorn är det grundläggande livsmedlet för ditt folk. Det måste lagras i sädesmagasin för att livnära ditt folk, eller i handelsmagasin för export."
+"##wheat_farm##":"Veteodling"
 "##wheat##":"Vete"
 "##wine_workshop_bad_work##":"Mycket få människor arbetar vid denna vingård. Som resultat är vinproduktionen långsam."
+"##wine_workshop_full_work##":"Denna vingård har alla anställda den behöver och arbetar fullt ut med att producera vin."
 "##wine_workshop_info##":"Vinhandlare förvandlar druvor till vin, vilket patricierna kräver om de skall bygga villor. Vin är en handelsvara som är begärlig för många."
+"##wine_workshop_need_resource##":"Denna vingård kan inte producera vin förrän den får en leverans av druvor från ett magasin eller en druvodling."
+"##wine_workshop_no_workers##":"Denna vingård har inga anställda. Produktionen har upphört."
+"##wine_workshop##":"Vingård"
 "##wine##":"Vin"
 "##wndrt_favor_tooltip##":"Klicka här för information om din popularitetsställning"
 "##wndrt_peace_tooltip##":"Klicka här för information om din fredsställning"
 "##wndrt_prosperity_tooltip##":"Klicka här för information om din välståndsställning"
 "##workers_yearly_wages_is##":"Beräknad årlig kostnad för"
 "##wt_emmigrant##":""
+"##wt_endeavor##":"Endeavor"
 "##wt_gladiator##":"Gladiator"
 "##wt_immigrant##":"Immigrant"
 "##wt_immigrant##":"Hemlös"
@@ -2135,215 +2287,64 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"##yes##":"Да"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+}

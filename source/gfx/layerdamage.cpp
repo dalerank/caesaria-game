@@ -43,7 +43,7 @@ std::set<int> LayerDamage::getVisibleWalkers() const
 
 void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 
@@ -130,7 +130,10 @@ void LayerDamage::handleEvent(NEvent& event)
         if( constr != 0 )
         {
           int damageLevel = math::clamp<int>( constr->getState( Construction::damage ), 0, 100 );
-          text = damageLevelName[ damageLevel / 20 ];
+          if( damageLevel > 0 )
+          {
+            text = damageLevelName[ damageLevel / 20 ];
+          }
         }
       }
 

@@ -29,6 +29,8 @@ public:
   WindowPlayerName( Widget* parent );
   ~WindowPlayerName();
 
+  virtual std::string getText();
+
 public oc3_signals:
   Signal0<>& onClose();
   Signal1<std::string>& onNameChange();

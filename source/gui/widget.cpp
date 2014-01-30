@@ -136,7 +136,7 @@ void Widget::_resizeEvent()
 void Widget::setPosition( const Point& position )
 {
 	const Rect rectangle( position, getSize() );
-    setGeometry( rectangle );
+	setGeometry( rectangle );
 }
 
 void Widget::setGeometry( const RectF& r, GeometryType mode )
@@ -570,8 +570,9 @@ void Widget::setupUI( const VariantMap& ui )
     RectF r = tmp.toRectf();
     if( r.getWidth() > 1 && r.getHeight() > 1)
     {
+      r = RectF( 0, 0, 1, 1 );
       Logger::warning( "Incorrect geometryf values [%f, %f, %f, %f]",
-                       r.getLeft(), r.getTop(), r.getRight(), r.getBottom() );
+                       r.left(), r.top(), r.right(), r.bottom() );
     }
 
     setGeometry( r );
@@ -816,10 +817,10 @@ void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
 Rect& Widget::getAbsoluteClippingRectRef() const{  return _d->absoluteClippingRect;}
 unsigned int Widget::getWidth() const{  return getRelativeRect().getWidth();}
 Size Widget::getSize() const{  return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );}
-int Widget::getScreenTop() const { return getAbsoluteRect().getTop(); }
-int Widget::getScreenLeft() const { return getAbsoluteRect().getLeft(); }
-int Widget::getScreenBottom() const { return getAbsoluteRect().getBottom(); }
-int Widget::getScreenRight() const { return getAbsoluteRect().getRight(); }
+int Widget::getScreenTop() const { return getAbsoluteRect().top(); }
+int Widget::getScreenLeft() const { return getAbsoluteRect().left(); }
+int Widget::getScreenBottom() const { return getAbsoluteRect().bottom(); }
+int Widget::getScreenRight() const { return getAbsoluteRect().right(); }
 Point Widget::getLeftdownCorner() const { return Point( getLeft(), getBottom() ); }
 Point Widget::getRightupCorner() const { return Point( getRight(), getTop() ); }
 unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }

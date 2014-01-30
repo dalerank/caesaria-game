@@ -45,7 +45,7 @@ bool Elevation::isFlat() const
 
 Point Elevation::getOffset( Tile& tile, const Point& subpos) const
 {
-  TilePos delta = getTilePos() - tile.getIJ();
+  TilePos delta = getTilePos() - tile.pos();
 
   return Point( -(5 - subpos.y()), 0 );
 }

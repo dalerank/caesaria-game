@@ -19,6 +19,7 @@
 #include "walker.hpp"
 #include "constants.hpp"
 #include "core/gettext.hpp"
+#include "animals.hpp"
 
 using namespace constants;
 
@@ -30,6 +31,12 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
   {
     Logger::warning( "CitizenIdea::check no city service info" );
     return _("##unknown_reason##");
+  }
+
+  if( is_kind_of<Animal>( walker ) )
+  {
+    std::string text = StringHelper::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->getType() ).c_str() );
+    return _( text );
   }
 
   StringArray troubles;

@@ -257,13 +257,13 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 	      	
 	      Tile& master = oTilemap.at(i, j - size + 1);
       	
-        Logger::warning( "Master will be at (%d,%d)", master.getI(), master.getJ() );
+        Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
       	
 	      for (int di = 0; di < size; ++di)
         {
 	        for (int dj = 0; dj < size; ++dj)
 	        {
-	            oTilemap.at(master.getI() + di, master.getJ() + dj).setMasterTile(&master);
+							oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
 	        }
         }
     	
@@ -302,7 +302,7 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
       case 0xb10:
       case 0xb0d:
         overlay =  TileOverlayFactory::getInstance().create( building::nativeCenter );
-        Logger::warning( "creation of Native center at (%d,%d)", oTile.getI(), oTile.getJ() );
+        Logger::warning( "creation of Native center at (%d,%d)", oTile.i(), oTile.j() );
       break;
 
       case 0xb11:
@@ -323,8 +323,8 @@ void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
   //terrain.setOverlay( overlay );
   if( overlay != NULL )
   {
-    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.getI(), oTile.getJ(), oTile.getOriginalImgId() );
-    overlay->build( city, oTile.getIJ() );
+    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.getOriginalImgId() );
+    overlay->build( city, oTile.pos() );
     city->getOverlays().push_back(overlay);
   }
 }

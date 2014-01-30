@@ -30,11 +30,12 @@ class GfxEngine;
 class ScreenGame: public Screen
 {
 public:
-  typedef enum {mainMenu=0, quitGame} ResultType;
+  typedef enum {mainMenu=0, loadGame, quitGame} ResultType;
   ScreenGame( Game& game, GfxEngine& engine );
   ~ScreenGame();
 
   void initialize();
+  std::string getMapName() const;
 
   virtual void handleEvent( NEvent& event );
   virtual void draw();
@@ -45,8 +46,10 @@ public:
   virtual bool installEventHandler(EventHandlerPtr);
 
 private:
-  void resolveEndGame();
-  void resolveExitGame();
+  void _resolveEndGame();
+  void _resolveExitGame();
+  void _resolveSwitchMap();
+  void _resolveFastLoad();
 
   class Impl;
   ScopedPtr< Impl > _d;

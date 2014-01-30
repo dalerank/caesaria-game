@@ -25,11 +25,11 @@ namespace gui
 {
 
 // Simple info box with static text on plain background
-class InfoBoxCitizen : public InfoBoxSimple
+class InfoboxCitizen : public InfoboxSimple
 {
 public:
-  InfoBoxCitizen(Widget* parent, const WalkerList& walkers);
-  virtual ~InfoBoxCitizen();
+  InfoboxCitizen(Widget* parent, const WalkerList& walkers);
+  virtual ~InfoboxCitizen();
 };
 
 }//end namespace gui

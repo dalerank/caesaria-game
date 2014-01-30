@@ -17,13 +17,17 @@
 #include "gfx/picture.hpp"
 #include "gfx/decorator.hpp"
 #include "gui/label.hpp"
-#include "game/resourcegroup.hpp"
 #include "texturedbutton.hpp"
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
 
 namespace gui
 {
+
+namespace {
+  int okBtnPicId = 239;
+  int cancelBtnPicId = 243;
+}
 
 class DialogBox::Impl
 {
@@ -62,14 +66,14 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   {
     new TexturedButton( this, Point( getWidth() / 2 - 20, getHeight() - 50),
                         Size( 39, 26 ), buttons,
-                        buttons == btnOk ? ResourceMenu::okBtnPicId : ResourceMenu::cancelBtnPicId );
+                        buttons == btnOk ? okBtnPicId : cancelBtnPicId );
   }
   else if( buttons == (btnOk | btnCancel) )
   {
     new TexturedButton( this, Point( getWidth() / 2 - 24 - 16, getHeight() - 50),
-                        Size( 39, 26 ), btnOk, ResourceMenu::okBtnPicId );
+                        Size( 39, 26 ), btnOk, okBtnPicId );
     new TexturedButton( this, Point( getWidth() / 2 + 16, getHeight() - 50 ),
-                        Size( 39, 26 ), btnCancel, ResourceMenu::cancelBtnPicId );
+                        Size( 39, 26 ), btnCancel, cancelBtnPicId );
   }
 }
 

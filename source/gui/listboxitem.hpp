@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>..
 
 
-#ifndef NRPLISTBOXITEM_H
-#define NRPLISTBOXITEM_H
+#ifndef _CAESARIA_LISTBOXITEM_H_INCLUDE_
+#define _CAESARIA_LISTBOXITEM_H_INCLUDE_
 
 #include "widget.hpp"
 #include "core/alignment.hpp"
@@ -58,8 +58,8 @@ public:
   const std::string& getText() const;
 	void setTag( int tag );
 	int getTag() const;
-  int getIcon() const;
-  void setIcon( int icon );
+	Picture getIcon() const;
+	void setIcon( Picture pic );
 
   bool isEnabled() const;
   void setEnabled( bool en );
@@ -75,6 +75,9 @@ public:
 
   ElementState getState() const;
   void setState( const ElementState& state );
+
+  Point getOffset() const;
+  void setOffset( Point p );
 
   struct ListItemOverrideColor
   {
@@ -97,4 +100,4 @@ private:
 };
 
 }//end namespace gui
-#endif // NRPLISTBOXITEM_H
+#endif // _CAESARIA_LISTBOXITEM_H_INCLUDE_

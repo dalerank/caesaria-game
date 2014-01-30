@@ -95,7 +95,7 @@ void Protestor::timeStep(const unsigned long time)
     //find more expensive house, fire this!!!
     if( pathway.isValid() )
     {
-      setIJ( pathway.getOrigin().getIJ() );
+      setIJ( pathway.getStartPos() );
       setPathway( pathway );
       go();
       _d->state = Impl::go2destination;
@@ -125,7 +125,7 @@ void Protestor::timeStep(const unsigned long time)
     Pathway pathway = _d->findTarget( _getCity(), constructions, getIJ() );
     if( pathway.isValid() )
     {
-      setIJ( pathway.getOrigin().getIJ() );
+      setIJ( pathway.getStartPos() );
       setPathway( pathway );
       go();
       _d->state = Impl::go2destination;

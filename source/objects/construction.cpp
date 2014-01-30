@@ -110,14 +110,14 @@ void Construction::burn()
 {
   deleteLater();
 
-  events::GameEventPtr event = events::DisasterEvent::create( getTile().getIJ(), events::DisasterEvent::fire );
+  events::GameEventPtr event = events::DisasterEvent::create( getTile(), events::DisasterEvent::fire );
   event->dispatch();
 }
 
 void Construction::collapse()
 {
   deleteLater();
-  events::GameEventPtr event = events::DisasterEvent::create( getTile().getIJ(), events::DisasterEvent::collapse );
+  events::GameEventPtr event = events::DisasterEvent::create( getTile(), events::DisasterEvent::collapse );
   event->dispatch();
 }
 
@@ -137,32 +137,38 @@ void Construction::updateState(Construction::Param param, double value, bool rel
 void Construction::save( VariantMap& stream) const
 {
   TileOverlay::save( stream );
-  stream[ Serializable::fireLevel ] = getState( fire );
-  stream[ Serializable::damageLevel ] = getState( damage );
+  VariantList vl_states;
+  foreach( it, _d->params )
+  {
+    vl_states.push_back( VariantList() << (int)it->first << (int)it->second );
+  }
+
+  stream[ "states" ] = vl_states;
 }
 
 void Construction::load( const VariantMap& stream )
 {
   TileOverlay::load( stream );
-  _d->params[ fire ] = (float)stream.get( Serializable::fireLevel, 0.f );
-  _d->params[ damage ] = (float)stream.get( Serializable::damageLevel, 0.f );
+  VariantList vl_states = stream.get( "states" ).toList();
+  foreach( it, vl_states )
+  {
+    const VariantList& param = it->toList();
+    _d->params[ (Construction::Param)param.get( 0 ).toInt() ] = param.get( 1, 0.f ).toDouble();
+  }
 }
 
-double Construction::getState(Construction::Param param) const
-{
-  return _d->params[ param ];
-}
+double Construction::getState(Param param) const { return _d->params[ param ]; }
 
 TilesArray Construction::getEnterArea() const
 {
   TilesArray tiles;
 
   int s = getSize().getWidth();
-  const TilesArray& near = _getCity()->getTilemap().getRectangle( getTilePos() - TilePos(1, 1),
+  TilesArray near = _getCity()->getTilemap().getRectangle( getTilePos() - TilePos(1, 1),
                                                                   getTilePos() + TilePos(s, s),
                                                                   !Tilemap::checkCorners );
 
-  for( TilesArray::const_iterator it=near.begin(); it != near.end(); it++)
+  foreach( it, near )
   {
     if( (*it)->isWalkable( true ) )
     {

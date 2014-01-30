@@ -23,15 +23,14 @@
   #include <windows.h>
   #include <io.h>
   #include <shlobj.h>
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  #ifdef CAESARIA_PLATFORM_LINUX
+#elif defined(CAESARIA_PLATFORM_UNIX) 
+  #if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
     #include <sys/io.h>
     #include <linux/limits.h>
     #include <pwd.h>
   #elif defined(CAESARIA_PLATFORM_MACOSX)
     #include <libproc.h>
-  #endif  
-  
+  #endif
   #include <sys/stat.h>
   #include <unistd.h>
   #include <stdio.h>
@@ -176,7 +175,8 @@ Directory Directory::operator/(const Directory& dir)
 Path Directory::operator/(const Path& filename)
 {
   std::string dr = addEndSlash().toString();
-  return Path( dr + filename.toString() );
+  std::string fn = filename.removeBeginSlash().toString();
+  return Path( dr + fn );
 }
 
 
@@ -200,17 +200,16 @@ Directory Directory::getApplicationDir()
   Directory tmp( std::string( tmpPath.data() ) );
   tmp = tmp.up();
   return tmp;
-#elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(CAESARIA_PLATFORM_LINUX)
   char exe_path[PATH_MAX] = {0};
-  char * dir_path;
   sprintf(exe_path, "/proc/%d/exe", ::getpid());
-  ssize_t result = readlink(exe_path, exe_path, sizeof(exe_path));
-  result;
-  dir_path = dirname(exe_path);
-  return Path(dir_path);
+  readlink(exe_path, exe_path, sizeof(exe_path));
+  vfs::Directory wdir = vfs::Path( exe_path ).directory();
+  //dir_path = dirname(exe_path);
+  return wdir;
 /*#elif defined(CAESARIA_PLATFORM_HAIKU)
   char exe_path[PATH_MAX] = {0};
-  sprintf(exe_path, "/proc/%d/exe", ::getpid());
+  sprintf(exe_path, "/proc/%d/exe", getpid());
   readlink(exe_path, exe_path, sizeof(exe_path));
   dirname(exe_path);
   return Path( exe_path );*/
@@ -322,7 +321,7 @@ Path Directory::getRelativePathTo(Path path) const
     return *this;
 
   Path path1 = getAbsolutePath();
-  Path path2( Directory( path.getDir() ).getAbsolutePath() );
+  Path path2( Directory( path.directory() ).getAbsolutePath() );
   StringArray list1, list2;
 
   list1 = StringHelper::split( path1.toString(), "/\\");

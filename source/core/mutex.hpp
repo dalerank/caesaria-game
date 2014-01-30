@@ -19,7 +19,7 @@
 #include "platform.hpp"
 #include "predefinitions.hpp"
 
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef CAESARIA_PLATFORM_UNIX
 	#include <pthread.h>
 #elif defined(CAESARIA_PLATFORM_WIN)
 	#include <windows.h>

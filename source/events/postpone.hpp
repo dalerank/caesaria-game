@@ -24,7 +24,7 @@ namespace events
 class PostponeEvent : public GameEvent
 {
 public:
-  static GameEventPtr create( const VariantMap& stream );
+  static GameEventPtr create(const std::string& type, const VariantMap& stream );
 
   virtual ~PostponeEvent();
   virtual void exec( Game& game );

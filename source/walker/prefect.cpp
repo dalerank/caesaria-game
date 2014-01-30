@@ -169,12 +169,15 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
     building->applyService( ServiceWalkerPtr( this ) );
 
     HousePtr house = ptr_cast<House>( building );
-    if( house.isValid() && house->getHealthLevel() < 1 )
+    if( house.isValid() )
     {
-      house->deleteLater();
-
-      events::GameEventPtr e = events::DisasterEvent::create( house->getTilePos(), events::DisasterEvent::plague );
-      e->dispatch();
+      int healthLevel = house->getState( (Construction::Param)House::health );
+      if( healthLevel < 1 )
+      {
+        house->deleteLater();
+        events::GameEventPtr e = events::DisasterEvent::create( house->getTile(), events::DisasterEvent::plague );
+        e->dispatch();
+      }
     }
   }
 }
@@ -224,7 +227,7 @@ void Prefect::_brokePathway(TilePos pos)
   }
   else if( _d->water > 0 )
   {
-    TilePos destination = _pathwayRef().getDestination().getIJ();
+    TilePos destination = _pathwayRef().getDestination().pos();
 
     Pathway pathway = PathwayHelper::create( getIJ(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
@@ -469,7 +472,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 
   if( _pathwayRef().isValid() )
   {
-    _d->endPatrolPoint = _pathwayRef().getDestination().getIJ();
+    _d->endPatrolPoint = _pathwayRef().getDestination().pos();
   }
 }
 

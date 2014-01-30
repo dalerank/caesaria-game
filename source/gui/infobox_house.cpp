@@ -58,7 +58,7 @@ namespace gui
 {
 
 InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   HousePtr house = ptr_cast<House>( tile.getOverlay() );
   setTitle( _(house->getSpec().getLevelName()) );
@@ -70,7 +70,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
 
   std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
                                                   house->getHabitants().count(),
-                                                  house->getServiceValue( Service::recruter ),
+                                                  (int)house->getServiceValue( Service::recruter ),
                                                   house->getHabitants().count( CitizenGroup::newborn ),
                                                   house->getHabitants().count( CitizenGroup::child ),
                                                   house->getHabitants().count( CitizenGroup::scholar ),

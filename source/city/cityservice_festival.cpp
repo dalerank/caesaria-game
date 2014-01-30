@@ -86,7 +86,7 @@ void CityServiceFestival::update( const unsigned int time )
 
     const char* titles[3] = { "##small_festival##", "##middle_festival##", "##great_festival##" };
     const char* text[3] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
-    int id = math::clamp( _d->festivalType, 0, 3 );
+    int id = math::clamp<int>( _d->festivalType, 0, 3 );
     events::GameEventPtr e = events::ShowFeastWindow::create( text[ id ], titles[ id ],
                                                               _d->city->getPlayer()->getName() );
     e->dispatch();

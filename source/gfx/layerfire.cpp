@@ -27,7 +27,7 @@
 
 using namespace constants;
 
-static const char* fireLevelName[] = { "##very_low_fire_risk##", "##low_fire_risk##",
+static const char* fireLevelName[] = { "##very_low_fire_risk##", "##very_low_fire_risk##", "##low_fire_risk##",
                                        "##some_fire_risk##", "##very_high_fire_risk##", "##extreme_fire_risk##" };
 
 int LayerFire::getType() const {  return citylayer::fire; }
@@ -41,7 +41,7 @@ std::set<int> LayerFire::getVisibleWalkers() const
 
 void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.getXY() + offset;
+  Point screenPos = tile.mapPos() + offset;
 
   tile.setWasDrawn();
 
@@ -127,7 +127,7 @@ void LayerFire::handleEvent(NEvent& event)
         if( constr != 0 )
         {
           int fireLevel = math::clamp<int>( constr->getState( Construction::fire ), 0, 100 );
-          text = fireLevelName[ fireLevel / 20 ];
+          text = fireLevelName[ fireLevel / 16 ];
         }
       }
 

@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef SCREEN_MENU_HPP
-#define SCREEN_MENU_HPP
+#ifndef _CAESARIA_SCREEN_MENU_H_INCLUDE_
+#define _CAESARIA_SCREEN_MENU_H_INCLUDE_
 
 #include "screen.hpp"
 #include "core/scopedptr.hpp"
@@ -30,34 +30,34 @@ class Game;
 class ScreenMenu : public Screen
 {
 public:
-    enum 
-    { 
-      startNewGame=0,
-      loadMap,
-      loadSavedGame,
-      closeApplication,
-      reloadScreen,
-      unlknowState=0xff
-    } Result;
-    
-    ScreenMenu( Game& game, GfxEngine& engine );
-    ~ScreenMenu();
+  enum
+  {
+    startNewGame=0,
+    loadMap,
+    loadSavedGame,
+    closeApplication,
+    reloadScreen,
+    unlknowState=0xff
+  } Result;
 
-    virtual void handleEvent( NEvent& event);
+  ScreenMenu( Game& game, GfxEngine& engine );
+  ~ScreenMenu();
 
-    // draws the menu/menubar/etc... on the screen
-    virtual void draw();
-    virtual void initialize();
+  virtual void handleEvent( NEvent& event);
 
-    const std::string& getMapName() const;
+  // draws the menu/menubar/etc... on the screen
+  virtual void draw();
+  virtual void initialize();
 
-    int getResult() const;
-    bool isStopped() const;
+  std::string getMapName() const;
+  std::string getPlayerName() const;
+
+  int getResult() const;
+  bool isStopped() const;
 
 private:
-    class Impl;
-    ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-
-#endif
+#endif //_CAESARIA_SCREEN_MENU_H_INCLUDE_

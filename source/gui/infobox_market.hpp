@@ -25,7 +25,7 @@ namespace gui
 {
 
 // info box about a market
-class InfoBoxMarket : public InfoBoxSimple
+class InfoBoxMarket : public InfoboxSimple
 {
 public:
    InfoBoxMarket( Widget* parent, const Tile& tile );

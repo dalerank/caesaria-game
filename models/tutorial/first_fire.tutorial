@@ -1,0 +1,7 @@
+{  
+ items : [ "##tutorial_prefecture_info##",
+           "@img=picture2_00005.png", 
+           "##tutorial_prefect_detect_fire##",
+           "@img=picture2_00006.png",
+           "##tutorial_ruins_info##"]
+}

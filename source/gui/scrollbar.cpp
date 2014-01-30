@@ -56,21 +56,15 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	setPos(0);
 }
 
-Signal1<int>& ScrollBar::onPositionChanged()
-{
-	return _d->onPositionChanged;
-}
+Signal1<int>& ScrollBar::onPositionChanged() {	return _d->onPositionChanged; }
 
 //! destructor
-ScrollBar::~ScrollBar()
-{
-}
+ScrollBar::~ScrollBar(){}
 
 void ScrollBar::_resolvePositionChanged()
 {
-    getParent()->onEvent( NEvent::Gui( this, 0, guiScrollbarChanged ) );
-
-    _d->onPositionChanged.emit( _value );
+  getParent()->onEvent( NEvent::Gui( this, 0, guiScrollbarChanged ) );
+  _d->onPositionChanged.emit( _value );
 }
 
 //! called if an event happened
@@ -87,31 +81,16 @@ bool ScrollBar::onEvent(const NEvent& event)
 				bool absorb = true;
 				switch (event.keyboard.key)
 				{
-				case KEY_LEFT:
-				case KEY_UP:
-                    setPos(_value-_smallStep);
-					break;
-				case KEY_RIGHT:
-				case KEY_DOWN:
-                    setPos(_value+_smallStep);
-					break;
-				case KEY_HOME:
-                    setPos(_minValue);
-					break;
-				case KEY_PRIOR:
-                    setPos(_value-_largeStep);
-					break;
-				case KEY_END:
-                    setPos(_maxVallue);
-					break;
-				case KEY_NEXT:
-                    setPos(_value+_largeStep);
-					break;
-				default:
-					absorb = false;
+				case KEY_LEFT: case KEY_UP: setPos(_value-_smallStep); break;
+				case KEY_RIGHT:	case KEY_DOWN: setPos(_value+_smallStep); break;
+				case KEY_HOME: setPos(_minValue);	break;
+				case KEY_PRIOR: setPos(_value-_largeStep); break;
+				case KEY_END: setPos(_maxVallue);	break;
+				case KEY_NEXT: setPos(_value+_largeStep); break;
+				default:absorb = false;
 				}
 
-                if (_value != oldPos)
+				if (_value != oldPos)
 				{
 					_resolvePositionChanged();
 				}
@@ -151,12 +130,8 @@ bool ScrollBar::onEvent(const NEvent& event)
 				case mouseWheel:
 					if( isFocused() )
 					{
-						// thanks to a bug report by REAPER
-						// thanks to tommi by tommi for another bugfix
-						// everybody needs a little thanking. hallo niko!;-)
 						setPos(	getPos() +
-                            ( (int)event.mouse.wheel * _smallStep * (_horizontal ? 1 : -1 ) )
-							);
+										( (int)event.mouse.wheel * _smallStep * (_horizontal ? 1 : -1 ) )	);
 
 						_resolvePositionChanged();
 						return true;

@@ -23,19 +23,19 @@
 #include "enums.hpp"
 #include "gui/info_box.hpp"
 
-class InfoBoxManager;
-typedef SmartPtr< InfoBoxManager > InfoBoxManagerPtr;
+class InfoboxManager;
+typedef SmartPtr< InfoboxManager > InfoBoxManagerPtr;
 
 class InfoboxCreator
 {
 public:
-  virtual gui::InfoBoxSimple* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
+  virtual gui::InfoboxSimple* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
 };
 
-class InfoBoxManager : public ReferenceCounted
+class InfoboxManager : public ReferenceCounted
 {
 public:
-  static InfoBoxManager& getInstance();
+  static InfoboxManager& getInstance();
 
   void showHelp( PlayerCityPtr city, gui::GuiEnv* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
@@ -43,8 +43,8 @@ public:
   void addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor );
   bool canCreate( const TileOverlay::Type type ) const;
 private:
-  InfoBoxManager();
-  ~InfoBoxManager();
+  InfoboxManager();
+  ~InfoboxManager();
    
   class Impl;
   ScopedPtr< Impl > _d;

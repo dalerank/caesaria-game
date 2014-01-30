@@ -138,7 +138,7 @@ void ServiceWalker::_computeWalkerPath()
     return;
   }
 
-  setIJ( bestPath->getOrigin().getIJ() );
+  setIJ( bestPath->getStartPos() );
   setPathway( *bestPath.object() );
 }
 
@@ -148,7 +148,7 @@ void ServiceWalker::_cancelPath()
 
   foreach( tile, pathTileList )
   {
-    ReachedBuildings reachedBuildings = getReachedBuildings( (*tile)->getIJ() );
+    ReachedBuildings reachedBuildings = getReachedBuildings( (*tile)->pos() );
     foreach( b, reachedBuildings )
     {
       // the building has not been reserved yet
@@ -205,7 +205,7 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
   float res = 0.0;
   for( TilesArray::const_iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
-    ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
+    ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
     foreach( it, reachedBuildings )
     {
       std::pair<ServiceWalker::ReachedBuildings::iterator, bool> rc = doneBuildings.insert( *it );
@@ -233,7 +233,7 @@ void ServiceWalker::_reservePath( const Pathway& pathWay)
 
   for( TilesArray::const_iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
-    ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->getIJ() );
+    ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
     foreach( it, reachedBuildings )
     {
       std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( *it );
@@ -300,7 +300,7 @@ void ServiceWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "service" ] = Variant( ServiceHelper::getName( _d->service ) );
-  stream[ "base" ] = _d->base->getTile().getIJ();
+  stream[ "base" ] = _d->base->getTilePos();
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "reachDistance" ] = _d->reachDistance;
 }

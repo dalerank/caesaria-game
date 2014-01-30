@@ -294,7 +294,7 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
   Pathway ret;
   if( minQueueDock.isValid() )
   {
-    ret = PathwayHelper::create( position, (*i)->getQueueTile().getIJ(), PathwayHelper::water );
+    ret = PathwayHelper::create( position, (*i)->getQueueTile().pos(), PathwayHelper::water );
   }
 
   return ret;
@@ -303,12 +303,12 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
 Pathway SeaMerchant::Impl::findNearbyDock(const DockList& docks, TilePos position)
 {
   DockList::const_iterator i = docks.begin();
-  Pathway ret = PathwayHelper::create( position, (*i)->getLandingTile().getIJ(), PathwayHelper::water );
+  Pathway ret = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::water );
 
   i++;
   for( ; i != docks.end(); i++ )
   {
-    Pathway tmp = PathwayHelper::create( position, (*i)->getLandingTile().getIJ(), PathwayHelper::water );
+    Pathway tmp = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::water );
     if( tmp.getLength() < ret.getLength() )
     {
       ret = tmp;
@@ -343,7 +343,7 @@ DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
   DockList docks = helper.find<Dock>( building::dock, walker->getIJ() - TilePos( 1, 1), walker->getIJ() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
-    if( (*dock)->getLandingTile().getIJ() == walker->getIJ() )
+    if( (*dock)->getLandingTile().pos() == walker->getIJ() )
     {
       return *dock;
     }

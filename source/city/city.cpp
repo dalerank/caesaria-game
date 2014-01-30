@@ -23,6 +23,7 @@
 #include "objects/metadata.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/exception.hpp"
+#include "events/winmission.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
@@ -69,7 +70,7 @@
 #include "objects/house.hpp"
 #include "world/empiremap.hpp"
 #include "walker/seamerchant.hpp"
-#include "city/requestdispatcher.hpp"
+#include "requestdispatcher.hpp"
 #include <set>
 
 using namespace constants;
@@ -172,6 +173,7 @@ public:
   // collect taxes from all houses
   void collectTaxes( PlayerCityPtr city);
   void payWages( PlayerCityPtr city );
+  void monthStep( PlayerCityPtr city, const DateTime& time );
   void calculatePopulation( PlayerCityPtr city );
   void beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay );
 
@@ -179,6 +181,7 @@ oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
   Signal2<TilePos,std::string> onDisasterEventSignal;
+  Signal0<> onChangeBuildingOptionsSignal;
 };
 
 PlayerCity::PlayerCity() : _d( new Impl )
@@ -216,7 +219,7 @@ void PlayerCity::timeStep( unsigned int time )
   if( _d->lastMonthCount != GameDate::current().month() )
   {
     _d->lastMonthCount = GameDate::current().month();
-    monthStep( GameDate::current() );
+    _d->monthStep( this, GameDate::current() );
   }
 
   //update walkers access map
@@ -313,16 +316,17 @@ void PlayerCity::timeStep( unsigned int time )
   }
 }
 
-void PlayerCity::monthStep( const DateTime& time )
+void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 {
-  _d->collectTaxes( this );
-  _d->calculatePopulation( this );
-  _d->payWages( this );
+  collectTaxes( city );
+  calculatePopulation( city );
+  payWages( city );
 
-  _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -_d->player->getSalary() ) );
-  _d->player->appendMoney( _d->player->getSalary() );
+  int playerSalary = player->getSalary();
+  funds.resolveIssue( FundIssue( CityFunds::playerSalary, -playerSalary ) );
+  player->appendMoney( playerSalary );
 
-  _d->funds.updateHistory( GameDate::current() );
+  funds.updateHistory( GameDate::current() );
 }
 
 WalkerList PlayerCity::getWalkers( walker::Type type )
@@ -360,7 +364,7 @@ WalkerList PlayerCity::getWalkers(walker::Type type, TilePos startPos, TilePos s
   TilesArray area = _d->tilemap.getArea( startPos, stopPos );
   foreach( tile, area)
   {
-    WalkerList current = _d->walkersGrid.at( (*tile)->getIJ() );
+    WalkerList current = _d->walkersGrid.at( (*tile)->pos() );
 
     foreach( w, current )
     {
@@ -472,8 +476,8 @@ void PlayerCity::save( VariantMap& stream) const
   {
     VariantMap vm_overlay;
     (*overlay)->save( vm_overlay );
-    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*overlay)->getTile().getI(),
-                                                      (*overlay)->getTile().getJ() ) ] = vm_overlay;
+    vm_overlays[ StringHelper::format( 0xff, "%d,%d", (*overlay)->getTile().i(),
+                                                      (*overlay)->getTile().j() ) ] = vm_overlay;
   }
   stream[ "overlays" ] = vm_overlays;
 
@@ -581,10 +585,16 @@ CityServicePtr PlayerCity::findService( const std::string& name ) const
   return CityServicePtr();
 }
 
+void PlayerCity::setBuildOptions(const CityBuildOptions& options)
+{
+  _d->buildOptions = options;
+  _d->onChangeBuildingOptionsSignal.emit();
+}
+
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
+Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
 const CityBuildOptions& PlayerCity::getBuildOptions() const { return _d->buildOptions; }
-void PlayerCity::setBuildOptions(const CityBuildOptions& options) { _d->buildOptions = options; }
 const CityWinTargets& PlayerCity::getWinTargets() const {   return _d->targets; }
 void PlayerCity::setWinTargets(const CityWinTargets& targets) { _d->targets = targets; }
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).getOverlay(); }

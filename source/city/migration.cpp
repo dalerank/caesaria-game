@@ -29,6 +29,7 @@
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
 #include "cityservice_info.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -38,11 +39,12 @@ public:
   PlayerCityPtr city;
   int lastMonthPopulation;
   int lastMonthMigration;
+  int updateTickInerval;
   DateTime lastUpdate;
 
   float getMigrationKoeff()
   {
-    return ( std::min<float>( city->getPopulation(), 150 ) / 150.f );
+    return ( std::min<float>( city->getPopulation(), 300 ) / 300.f );
   }
 
   CityServiceInfo::Parameters getLastParams()
@@ -78,17 +80,22 @@ CityMigration::CityMigration( PlayerCityPtr city )
   _d->lastMonthMigration = 0;
   _d->lastMonthPopulation = 0;
   _d->lastUpdate = GameDate::current();
+  _d->updateTickInerval  = GameDate::getTickInMonth() / 2;
 }
 
 void CityMigration::update( const unsigned int time )
-{
-  if( time % 50 != 1 )
+{  
+  if( time % _d->updateTickInerval != 1 )
     return;
+
+  Logger::warning( "MigrationSrvc: start calculate" );
+  const int worklessCitizenAway = GameSettings::get( GameSettings::worklessCitizenAway );
+  const int maxIndesirability = 100;
 
   float migrationKoeff = _d->getMigrationKoeff();
   CityServiceInfo::Parameters params = _d->getLastParams();
+  Logger::warning( "MigrationSrvc: current migration koeff=%f", migrationKoeff );
 
-  int worklessCitizenAway = GameSettings::get( GameSettings::worklessCitizenAway );
   int emigrantsIndesirability = 50; //base indesirability value
   float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
 
@@ -107,8 +114,9 @@ void CityMigration::update( const unsigned int time )
                               : (params.workless * (params.workless < worklessCitizenAway ? 1 : 2));
 
   emigrantsIndesirability *= migrationKoeff;
+  Logger::warning( "MigrationSrvc: current indesrbl=%d", emigrantsIndesirability );
 
-  int maxIndesirability = 100;
+
   int goddesRandom = rand() % maxIndesirability;
   if( goddesRandom > emigrantsIndesirability )
   {
@@ -121,8 +129,12 @@ void CityMigration::update( const unsigned int time )
     _d->lastMonthMigration = _d->city->getPopulation() - _d->lastMonthPopulation;
     _d->lastMonthPopulation = _d->city->getPopulation();
 
+    Logger::warning( "MigrationSrvc: current workless=%f indesrbl=%f",
+                        params.workless * migrationKoeff,
+                        emigrantsIndesirability * migrationKoeff );
+
     if( params.workless * migrationKoeff > worklessCitizenAway
-        || emigrantsIndesirability > maxIndesirability )
+        || emigrantsIndesirability * migrationKoeff > maxIndesirability )
     {
       _d->createMigrationFromCity();
     }
@@ -182,7 +194,7 @@ unsigned int CityMigration::Impl::calcVacantHouse()
   {
     if( (*house)->getAccessRoads().size() > 0 )
     {
-      vh += math::clamp( (*house)->getMaxHabitants() - (*house)->getHabitants().count(), 0, 0xff );
+      vh += math::clamp<int>( (*house)->getMaxHabitants() - (*house)->getHabitants().count(), 0, 0xff );
     }
   }
 

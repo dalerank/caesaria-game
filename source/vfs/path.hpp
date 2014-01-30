@@ -80,7 +80,7 @@ public:
 
   //! Returns the directory a file is located in.
   /** \param filename: The file to get the directory from */
-  virtual std::string getDir() const;
+  virtual std::string directory() const;
 
 private:  
   class Impl;

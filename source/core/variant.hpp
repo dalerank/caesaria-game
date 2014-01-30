@@ -273,6 +273,12 @@ public:
     }
   }
 
+  VariantList& operator <<( const Variant& v )
+  {
+    push_back( v );
+    return *this;
+  }
+
   template<class T>
   VariantList( std::vector<T> array )
   {

@@ -213,7 +213,11 @@
 #    ifdef HAVE_WS2TCPIP_H
 #       include <ws2tcpip.h>
 // greebo: For Win2k support, also include the Wspiapi.h
-#		include <Wspiapi.h>
+#	ifdef __MINGW32__
+#         include <ws2spi.h>
+#       else 
+#         include <Wspiapi.h>
+#       endif
 #    endif
 #  else
 #    ifdef HAVE_WINSOCK_H

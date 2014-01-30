@@ -30,8 +30,8 @@ using namespace constants;
 namespace gui
 {
 
-InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
+  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##fountain##") );
 
@@ -57,20 +57,50 @@ InfoBoxFontain::InfoBoxFontain(Widget* parent, const Tile& tile)
   _getInfo()->setText( _(text) );
 }
 
-InfoBoxFontain::~InfoBoxFontain()
+InfoboxFontain::~InfoboxFontain()
 {
 
 }
 
-void InfoBoxFontain::showDescription()
+void InfoboxFontain::showDescription()
 {
   DictionaryWindow::show( getParent(), building::fountain );
 }
 
-InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
-  : InfoBoxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
+InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
+  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
-  setTitle( "##well##" );
+  setTitle( _("##reservoir##") );
+
+  _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _getInfo()->setWordwrap( true );
+
+  ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.getOverlay() );
+  std::string text;
+  if( reservoir.isValid() )
+  {
+    text = reservoir->haveWater()
+              ? "##reservoir_info##"
+              : "##reservoir_no_water##";
+  }
+
+  _getInfo()->setText( _(text) );
+}
+
+InfoboxReservoir::~InfoboxReservoir()
+{
+
+}
+
+void InfoboxReservoir::showDescription()
+{
+  DictionaryWindow::show( getParent(), building::reservoir );
+}
+
+InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
+  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
+{
+  setTitle( _("##well##") );
 
   _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );

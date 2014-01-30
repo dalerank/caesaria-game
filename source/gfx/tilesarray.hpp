@@ -28,7 +28,7 @@ public:
   {
     for( const_iterator it=begin(); it != end(); it++ )
     {
-      if( (*it)->getIJ() == tilePos )
+      if( (*it)->pos() == tilePos )
         return true;
     }
 

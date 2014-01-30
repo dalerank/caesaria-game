@@ -1,5 +1,14 @@
-"##trouble_low_fire_risk##":"This building has no likelihood of catching fire"
-"##need_iron_for_work##":"This building needs iron ore"
+{
+"##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
+"##1_entertainment_access##":"This dwelling barely has access to any entertainment"
+"##2_entertainment_access##":"This dwelling has some access to entertainment venues"
+"##3_entertainment_access##":"This dwelling has very limited access to entertainment venues"
+"##4_entertainment_access##":"This dwelling has reasonable access to entertainment venues"
+"##5_entertainment_access##":"This dwelling has limited access to entertainment venues"
+"##6_entertainment_access##":"This dwelling has good access to entertainment venues"
+"##7_entertainment_access##":"This dwelling has very good access to entertainment venues"
+"##8_entertainment_access##":"This dwelling has excellent access to entertainment venues"
+"##9_entertainment_access##":"This dwelling has access to all the entertainment it could ever desire"
 "##academies##":"Academies"
 "##academy_trained##":"Academy trained"
 "##academy##":"Academy"
@@ -9,7 +18,6 @@
 "##accept##":"Accept"
 "##accepting##":"Accepting"
 "##access_ramp##":"Access ramp"
-"##actor_colony##":"Actor colony"
 "##actor_low_entertainment##":"Boring! That's what they say about this place! "
 "##actor##":"Actor"
 "##ad##":"AD"
@@ -44,50 +52,79 @@
 "##age_ad##":"AD"
 "##age_bc##":"BC"
 "##also_fountain_in_well_area##":"This well is redundant, as all the houses it serves can draw their water from a local fountain."
+"##amphitheater_full_work##":"This amphitheater offers its community both exciting gladiatorial combat and plays from local actors."
+"##amphitheater_no_workers##":"This amphitheater is dead. With no employees, it provides no leisure service to the local community."
 "##amphitheater##":"Amphitheater"
 "##amphitheatres##":"Amphitheaters"
 "##angry##":"Angry"
 "##animal_contests_run##":"Animal contests run for another"
 "##aqueduct_info##":"Aqueducts allow reservoir construction away from water, thus allowing fountains to give drinking water to inland areas of a city."
+"##aqueduct_no_water##":"This aqueduct is not transporting water between reservoirs, as it has no source of water from which to draw."
+"##aqueduct_work##":"This aqueduct is transporting water between reservoirs."
 "##aqueduct##":"Aqueduct"
 "##arabian_stallions##":"Arabian stallions"
 "##architect_salary##":"Architect's salary of"
 "##architect##":"Architect"
 "##army_marker##":"Army marker"
 "##arrow##":"Arrow"
-"##artist_colony_bad_workers##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can train an actor in three months."
+"##artist_colony_bad_work##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can train an actor in three months."
 "##artist_colony_full_work##":"We are pleased to announce that, with full employment, we are helping up to four new actors every month."
 "##artist_colony_slow_work##":"We need employees badly. It will be a struggle to turn out one new actor over the next two months."
+"##artist_colony##":"Actor colony"
+"##avesome_amphitheater_access##":"This house was recently passed by an actor or a gladiator. It will have amphitheater access for a long time"
+"##avesome_clinic_access##":"This house was recently passed by a doctor. It will have clinic access for a long time"
+"##avesome_college_access##":"This house was recently passed by a teacher. It will have academy access for a long time"
+"##avesome_colloseum_access##":"This house was recently passed by a lion trainer or gladiator. It will have colosseum access for a long time"
+"##avesome_hippodrome_access##":"This house was recently passed by a charioteer. It will have hippodrome access for a long time"
+"##avesome_hospital_access##":"This house was recently passed by a surgeon. It will have hospital access for a long time"
+"##avesome_library_access##":"This house was recently passed by a librarian. It will have library access for a long time"
+"##avesome_school_access##":"This house was recently passed by a schoolchild. It will have school access for a long time"
+"##avesome_theater_access##":"This house was recently passed by an actor. It will have theater access for a long time"
+"##awesome_barber_access##":"This house was recently passed by a barber. It will have barber access for a long time"
+"##awesome_baths_access##":"This house was recently passed by a bath-house worker. It will have bath-house access for a long time"
 "##balance##":"Balance"
 "##ballista##":"Ballista"
 "##barbarian_warrior##":"A barbarian warrior"
 "##barber_access##":"Barber access"
+"##barber_full_work##":"This barber shop is operational, and the local community is well-groomed."
 "##barber_need_colloseum##":"After a day cutting hair, all I want is a lion fight. No chance of that here!"
+"##barber_no_workers##":"This barber shop is not operational, and is of no use to the local community."
 "##barber_shop##":"Barber shop"
 "##barber_so_hungry##":"A hair cut takes your mind off hunger. And there's lots of hunger here."
 "##barber##":"Barber"
 "##barbers##":"Barber shops"
 "##barracks_full_work##":"We are training new soldiers at maximum efficiency, and we have the weapons to train any type of soldier."
+"##barracks_info##":"No one can join the Roman legions without first passing through here; it's the city's training school for new recruits."
 "##barracks_need_some_workers##":"We are training new soldiers at reduced efficiency due to lack of staff, although we do have the weapons to train any type of soldier."
 "##barracks##":"Barracks"
 "##bath_1##":"Bath house"
 "##bath_access##":"Bath access"
 "##bath##":"Bath house"
 "##bathlady##":"Baths worker"
+"##baths_full_work##":"This bath-house is operational, and the local community is clean and relaxed."
 "##baths_info##":"Civilized people bathe at least once a day. Besides improving public health, baths are a desirable community center offering various relaxing diversions."
+"##baths_need_reservoir##":"This bath-house needs pipe access to a nearby reservoir."
+"##baths_no_workers##":"This bath-house is not operational. With no attendants on staff, who would bathe there?"
 "##baths##":"Bath houses"
 "##bc##":"BC"
 "##become_trade_center##":"Become the trade center"
 "##below_average##":"Below average"
 "##better_class_road##":"A better class of road"
+"##big_domus##":"Large insulae"
+"##big_hut##":"Large casa"
+"##big_palace##":"Large palace"
+"##big_villa##":"Large villa"
+"##bit_tent##":"Large tent"
 "##bldm_factory##":"Workshops"
 "##bldm_farm##":"Farms"
 "##bldm_raw_materials##":"Raw materials"
+"##bldm_raw##":"Fabric"
 "##bolt##":"Bolt"
 "##bridge##":"Bridge"
 "##bridges##":"Bridges"
 "##briton##":"A Briton"
 "##britons##":"Britons"
+"##build_fishing_boat##":"We are building a boat to order for a fishing wharf in the city."
 "##build_housing##":"Build housing"
 "##build_markets_to_distribute_food##":"Build markets to distribute the food stored here"
 "##build_road_tlp##":"Build roads"
@@ -101,6 +138,8 @@
 "##cart_pusher_no_entertainment##":"I don't mind pushing a cart; it's more entertaining than the rest of this city!"
 "##carthaginian_soldier##":"A Carthaginian soldier"
 "##cartpusher_cantfind_destination##":"It would be quicker to push these goods to Rome than to where I'm going!"
+"##ceres_badmood_info##":"Ceres' displeasure is dangerous, as she protects the people from poor harvests and famines."
+"##ceres_goodmood_info##":"Ceres brings fertility to the land, and makes the crops grow. Appease her, or prepare to go hungry."
 "##charioteer##":"Charioteer"
 "##charioter_so_hungry##":"Hungry? I could eat a horse, there's so little food here!"
 "##chatioteer_school##":"Chariot maker"
@@ -109,11 +148,13 @@
 "##children##":"Children"
 "##citizen_are_rioting##":"Citizens are rioting!"
 "##citizen_salary##":"Citizen's salary of"
+"##citizens_additional_rooms_for##":"Extra room for"
 "##city_cyrene##":"Cyrene"
 "##city_damascus##":"Damascus"
 "##city_has_debt##":"City has a debt to Rome of"
 "##city_have##":"City treasury has assets of"
 "##city_health##":"City health"
+"##city_need_more_workers##":"Your city needs more workers"
 "##city_sounds_off##":"City sounds are off"
 "##city_sounds_on##":"City sounds are on"
 "##city##":"City"
@@ -133,12 +174,15 @@
 "##click_here_that_use_it##":"Click here to turn off stockpiling"
 "##click_item_for_start_trade##":"Click on an item to trade"
 "##clinic_info##":"Doctors improve citizens' health as they make house-calls in the neighborhoods on their route. Wealthy areas want a clinic."
+"##clinic##":"Doctor"
+"##clinics##":"Clinics"
 "##collapse_immitent##":"Collapse imminent"
 "##collapsed_ruins_info##":"These crumbled remains of old buildings lower the desirability of land in their vicinity."
 "##colloseum_haveno_gladiatorpit##":"Build a gladiator school to stage fights here"
 "##colloseum_info##":"Colosseums and amphitheaters always need new gladiators to replace the losers."
+"##colloseum_no_workers##":"This colosseum is closed. With no employees to run it, it is useless as a leisure amenity."
+"##colloseum##":"Colosseum"
 "##colloseums##":"Colosseums"
-"##colosseum##":"Colosseum"
 "##column_info##":"Column formation"
 "##comerceBtnTooltip##":"Commerce"
 "##commerce_desc##":"(Commerce)"
@@ -168,6 +212,7 @@
 "##dedicate_fectival_mercury##":"Dedicate a festival to Mercury"
 "##dedicate_fectival_neptune##":"Dedicate a festival to Neptune"
 "##dedicate_fectival_venus##":"Dedicate a festival to Venus"
+"##defensive_formation_text##":"A highly defensive formation. Virtually impervious to missile fire."
 "##delete_game##":"Delete game"
 "##delete_object##":"Delete object"
 "##delete_this_message##":"Delete this message"
@@ -180,6 +225,7 @@
 "##destroy_bridge_warning##":"Pull down bridges with care. Isolated communities soon perish if they are cut off from the road to Rome."
 "##destroy_bridge##":"Demolishing a bridge"
 "##destroy_fort##":"Demolishing a fort"
+"##devastate_granary##":"Empty granary"
 "##difficulty##":"Difficulty"
 "##disasterBtnTooltip##":""
 "##dispatch_force##":"Dispatch relief force?"
@@ -192,14 +238,13 @@
 "##dn##":"Denarius"
 "##dock_full_work##":"With full employment, we can service the docked ship quickly and efficiently."
 "##dock_info##":"Dockers are collecting some goods we're buying from a warehouse."
+"##dock_info##":"Trading ships from all across the Empire moor here to deliver imports, and pick up exports. You cannot trade overseas without docks."
 "##dock_need_some_workers##":"We are understaffed, so it will take a little longer than normal to load and unload any ships that arrive in port."
 "##dock_no_workers##":"Any ship that moors here will find no workers to load or unload its cargo."
 "##dock_no_workers##":"Without any dockers on staff, we cannot service the docked ship."
 "##dock##":"Dock"
 "##docked_buying_selling_goods##":"Docked, buying and selling goods"
 "##doctor_gods_angry##":"Hail, citizen. Have you heard? The gods are angry."
-"##doctor##":"Doctor"
-"##doctors##":"Clinics"
 "##donations##":"Donated"
 "##east##":"East"
 "##edil_salary##":"Aedile's salary of"
@@ -218,7 +263,6 @@
 "##employee##":"Employee"
 "##employees##":"Employees"
 "##employers##":"Employed workforce"
-"##empty_granary##":"Empty granary"
 "##emw_bought##":"Bought"
 "##emw_buy##":"Buys"
 "##engineer_building_allok##":"I'm hardly needed; these buildings are in great condition."
@@ -244,9 +288,7 @@
 "##exit##":"Exit"
 "##explosion##":"Explosion"
 "##exports_over##":"Export goods over"
-"##extra_room_for##":"Extra room for"
 "##extreme_fire_risk##":"Extreme fire risk"
-"##fabric##":"Fabric"
 "##factory_need_more_workers##":"Barely working. Allocate more workers to our sector"
 "##farm_need_farmland##":"Build farms on farmland (look for yellow grass)"
 "##farm_working_bad##":""
@@ -281,32 +323,33 @@
 "##forum_no_workers##":"With no collection staff, this office contributes nothing to the city treasury."
 "##forum_patrly_workers##":"We are understaffed, and have a week's wait before our returning collectors are back out on duty."
 "##forum##":"Forum"
+"##fountain_info##":"People draw all the free water they want from fountains, which must be supplied by pipes from a reservoir. Fountains add to the city's need for water service workers. Everyone prefers fountain water to other sources."
 "##fountain##":"Fountain"
 "##free##":"free"
 "##freehouse_caption##":""
 "##freehouse_text_noroad##":"No one will make their home here as it is too far to the nearest road. Unless road access is added soon, this site will revert to open land."
 "##freehouse_text_noroad##":""
 "##freehouse_text##":""
-"##fruits##":"Fruit"
+"##fruit##":"Fruit"
 "##fullscreen_off##":"Windowed screen"
 "##fullscreen_on##":"Full screen"
 "##funds_tooltip##":"Funds"
 "##furniture_need##":"Furniture needed"
 "##furniture_workshop_bad_work##":"Very few carpenters work here. Furniture production is very slow as a result."
 "##furniture_workshop_info##":"The carpenters at this workshop make fine furniture from lumber. Some citizens want furniture for their own homes, or you can trade any surplus."
+"##furniture_workshop_need_resource##":"This workshop needs a shipment of timber from a warehouse or a lumber yard to produce furniture."
 "##furniture_workshop##":"Furniture workshop"
 "##furniture##":"Furniture"
-"##fwheat_farm##":"Wheat farm"
 "##game_is_paused##":"Game Paused ('P' Key Continues)"
 "##game_speed##":"Game speed"
 "##garden_info##":"This pleasant lot gives citizens relief from the noise, heat and dirt of the city with a cool oasis of green space. Everyone wants a garden next door."
 "##garden##":"Gardens"
 "##gardens_info##":"Gardens improve the local environment."
 "##gatehouse##":"Gatehouse"
-"##gladiator_pit_bad_workers##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can train a gladiator in three months."
+"##gladiator_pit_bad_work##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can train a gladiator in three months."
 "##gladiator_pit_full_work##":"We are pleased to announce that, with full employment, we are training up to four new gladiators every month."
 "##gladiator_pit_no_workers##":"With no training staff, this school cannot train any new gladiators."
-"##gladiator_school##":"Gladiator school"
+"##gladiator_pit##":"Gladiator school"
 "##gmenu_about##":"About"
 "##gmenu_advisors##":"Adviser"
 "##gmenu_exit_game##":"Exit game"
@@ -333,7 +376,7 @@
 "##granary_holds##":"Granary holds"
 "##granary_info##":"Full granaries are vital for keeping the people's bellies filled and attracting new citizens. A granary can store grain, meat or fish, vegetables and fruit."
 "##granary_orders##":"Granary instructions"
-"##granary##":"Granary"
+"##granery##":"Granary"
 "##grape##":"Vines"
 "##grass##":"Grass"
 "##gree_manuscript##":"A Greek manuscript"
@@ -341,17 +384,24 @@
 "##have_food_for##":"- food for"
 "##have_no_food_on_next_month##":"- no food for the coming month"
 "##have_no_legions##":"You do not have any legions to send"
+"##have_no_requests##":"You currently have no messages to read. As your city grows or the Emperor asks you for goods, messages will be posted here"
 "##health_advisor##":"Health-related structures"
 "##health##":"Health"
 "##healthBtnTooltip##":"Health"
 "##help##":"Help"
 "##hide_bigpanel##":"Hide the Control Panel to see a wider playing area"
+"##high_bridge##":"Ship bridge"
 "##hippodrome##":"Hippodrome"
 "##hippodromes##":"Hippodromes"
+"##hold_ceres_festival##":"Hold festival to Ceres"
+"##hold_mars_festival##":"Hold festival to Mars"
+"##hold_mercury_festival##":"Hold festival to Mercury"
+"##hold_neptune_festival##":"Hold festival to Neptune"
+"##hold_venus_festival##":"Hold festival to Venus"
 "##hospital_info##":"Although no one wants to live near one, hospitals save lives when disease strikes. The city should have enough beds for all its citizens."
 "##hospital##":"Hospital"
 "##hospitals##":"Hospitals"
-"##house_evolves_at##":"evolves at"
+"##house_evolves_at##":"This dwelling will soon evolve to one of greater stature, as a result of the improving local conditions."
 "##house_no_troubles_with_food##":"This house has no problems in getting the food it requires to survive"
 "##house_not_report_about_crimes##":"Residents have reported no crime at all."
 "##houseBtnTooltip##":"House"
@@ -371,20 +421,23 @@
 "##iron##":"Iron"
 "##judaean_warrior##":"A Judaean warrior"
 "##labor##":"Labor"
-"##large_ temples##":"Large temples"
+"##large_temples##":"Large temples"
 "##large##":"large"
 "##last_year##":"Last year"
 "##lawless_area##":"A lawless area. People are terrified."
 "##layer_crime##":"Crime"
 "##leave_empire?##":"Leave the Empire?"
+"##legion_formation_tooltip##":"Click here to change the legion's formation"
 "##legion##":"Legion"
 "##legionary_perfect_life##":"Citizen! I've fought in many cities in my day, and this one is one of the best."
 "##legionary_so_hungry##":"How's a soldier supposed to fight without food?"
 "##legions##":"Legions"
 "##libraries##":"Libraries"
+"##library_full_work##":"This library is operational. Its racks are filled with scrolls of knowledge."
 "##library_info##":"Literary works from all over the Empire are stored here in Greek and Latin. Scholars insist that libraries are crucial for an important city."
+"##library_no_workers##":"This library's racks are empty, and of no use to the local community."
 "##library##":"Library"
-"##lion_pit_bad_workers##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can provide a lion in three months."
+"##lion_pit_bad_work##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can provide a lion in three months."
 "##lion_pit_no_workers##":"With no handlers, this lion pit will not supply any new lions for the games."
 "##lion_pit_work##":"We are pleased to announce that, with full employment, we can provide up to four new lions every month."
 "##lion_pit##":"Lion pit"
@@ -397,12 +450,14 @@
 "##low_bridge##":"Low bridge"
 "##low_damage_risk##":"Low risk of collapse"
 "##low_desirability_degrade##":"This house will devolve soon. The falling desirability of living in this locality is dragging it down"
+"##low_desirability##":"You need to improve the desirability of the local area - perhaps by placing some gardens or plaza, for example."
 "##low_fire_risk##":"Low fire risk"
 "##lumber_mill_bad_work##":"Very few people work at this yard. Timber production is slow as a result."
 "##lumber_mill_full_work##":"This yard has all the employees it needs. It is working flat out to harvest timber."
 "##lumber_mill_info##":"Cut timber for trade, or to supply furniture workshops. Your citizens will want to furnish their homes, or you can export it to your trading partners."
 "##lumber_mill_need_some_workers##":"This yard is working below maximum capacity. Timber production will be slightly slower as a result."
 "##lumber_mill_no_workers##":"This yard has no employees. Production has ceased."
+"##lumber_mill##":"Timber yard"
 "##macedonian_soldier##":"A Macedonian soldier"
 "##mainmenu_loadgame##":"Load game"
 "##mainmenu_loadmap##":"Load map"
@@ -426,6 +481,8 @@
 "##maximizeBtnTooltip##":"Show panel"
 "##may_collect_about##":"yields an estimated"
 "##meadow_caption##":"Meadow"
+"##meat_farm_full_work##":"This farm has all the employees it needs. Its herd is fat and numerous."
+"##meat_farm_no_workers##":"This farm has no employees, and all the animals have escaped or died."
 "##meat##":"Meat"
 "##message##":"Message"
 "##messageBtnTooltip##":""
@@ -437,12 +494,53 @@
 "##migration_people_away##":"Lack of jobs is driving people away."
 "##minimap_tooltip##":"Click on this overview map to move to distant parts of your city"
 "##minimizeBtnTooltip##":"Hide panel"
+"##missing_barber_degrade##":"This house will devolve soon, as it has lost barber access."
+"##missing_barber##":"This house cannot evolve, as it has no local access to a barber."
+"##missing_baths_degrade##":"This house will devolve soon, as it has lost bath-house access."
+"##missing_baths##":"This house cannot evolve, as it does not have access to a local bath-house."
+"##missing_clinic##":"This house cannot evolve, as it effectively has no health provision. It does not have access to a clinic, or a hospital."
+"##missing_clinic##":"This house cannot evolve, as it wants greater health provision. There is local access to a hospital, but a doctor's clinic needs to be built nearby."
+"##missing_college_degrade##":"This house will devolve soon. Its previously excellent access to education was downgraded when it lost access to its academy."
+"##missing_college##":"This house cannot evolve, as its already excellent access to education needs to be improved by access to an academy."
+"##missing_entertainment_also##":"This house cannot evolve, as there is too little entertainment to be found in the location."
+"##missing_entertainment_amph##":"This house cannot evolve, as there is hardly any entertainment to be found in the location."
+"##missing_entertainment_colloseum##":"This house cannot evolve, as there is some entertainment to be found in the location, but not enough."
 "##missing_entertainment_degrade##":"This house will devolve soon, as there is hardly any entertainment in the location"
+"##missing_entertainment_need_more##":"This house cannot evolve, as there is good entertainment to be found in the location, but not enough variety."
+"##missing_entertainment_patrician##":"This house cannot evolve, as there is excellent entertainment to be found in the location, but the venues are too crowded or lack enough variety for the discerning patrician classes."
+"##missing_entertainment##":"This house cannot evolve, as there is no entertainment to be found in the location."
+"##missing_food_degrade##":"This house will devolve soon. Although it has access to a market, the market itself finds it hard to get supplies of food."
+"##missing_food_degrade##":"This house will devolve soon, as it has not received any supplies of food recently from a local market"
+"##missing_food_from_market##":"This house cannot evolve. Although it has access to a local market, the market has trouble getting supplies of food."
+"##missing_food##":"This house cannot evolve, as it needs a supply of food from a local market."
+"##missing_fountain_degrade##":"This house will devolve soon, as it does not have access to clean water from a fountain"
+"##missing_fountain##":"This house cannot evolve, as it does not have access to a clean water supply from a fountain"
 "##missing_furniture_degrade##":"This house will devolve soon, as it has run out of furniture and its local market has at best an erratic supply."
+"##missing_furniture##":"This house cannot evolve. It needs supplies of furniture provided to it by its local market before a wealthier class of citizen will move in."
+"##missing_hospital##":"This house cannot evolve, as it wants greater health provision. Doctor's clinic coverage is good, but there is no local access to a hospital."
+"##missing_library_degrade##":"This house will devolve soon. Its access to education has been downgraded, as it has lost access to its library."
+"##missing_library##":"This house cannot evolve, as its access to education needs to be improved by access to a library."
+"##missing_market_degrade##":"This house will devolve soon. It has lost access to a market."
+"##missing_market##":"This house cannot evolve, as it does not have access to a local market."
 "##missing_oil_degrade##":"This house will devolve soon, as it has run out of oil and its local market has at best an erratic supply."
+"##missing_oil##":"This house cannot evolve. It needs supplies of oil provided to it by its local market before a wealthier class of citizen will move in."
 "##missing_pottery_degrade##":"This house will devolve soon. It has run out of pottery, and its local market has at best an erratic supply."
+"##missing_pottery##":"This house cannot evolve. It needs supplies of pottery provided to it by its local market before a wealthier class of citizen will move in."
+"##missing_religion##":"This house cannot evolve, as it has no access to any local religious facilities."
+"##missing_school_degrade##":"This house will devolve soon. Its access to education has been downgraded, as it has lost access to its school."
+"##missing_school##":"This house cannot evolve, as it has no basic educational facilities provided by either a school or a library."
+"##missing_school##":"This house cannot evolve, as its access to education needs to be improved by access to a school."
+"##missing_second_food##":"This house cannot evolve, as it needs a second type of food, supplied from a local market, to encourage wealthier plebes to move in."
+"##missing_second_religion_degrade##":"This house will devolve soon. Its access to local religious facilities was reduced to the temples of only one god."
+"##missing_second_religion##":"This house cannot evolve, as it has access to the temples of a single god only. As its inhabitants move up the world, they wish to spend more time worshipping other gods."
+"##missing_second_wine##":"This house cannot evolve. It needs a second type of wine to satisfy the idle patricians' decadent lifestyle. Open a new trade route, or make your own wine."
+"##missing_third_food##":"This house cannot evolve, as it needs a third type of food, supplied from a local market, to encourage the patrician classes to move in."
+"##missing_third_religion_degrade##":"This house will devolve soon. Its previously excellent religious facilities were reduced to the temples of only two gods."
+"##missing_third_religion##":"This house cannot evolve, as it has access to the temples of only two religions. As its inhabitants move up the world, they wish to spend more time worshipping other gods."
 "##missing_water_degrade##":"This house will devolve soon, as it lacks access to even the most primitive of water supplies"
+"##missing_water##":"This house cannot evolve, as it does not have access to even the most primitive of water supplies"
 "##missing_wine_degrade##":"This house will devolve soon, as it has run out of wine and its local market has at best an erratic supply."
+"##missing_wine##":"This house cannot evolve. It needs supplies of wine provided to it by its local market before a wealthier class of citizen will move in."
 "##missionBtnTooltip##":""
 "##month_09_short##":"Sep"
 "##month_1_short##":"Jan"
@@ -463,11 +561,13 @@
 "##more_people##":"more people"
 "##more_person##":"more person"
 "##my_rome##":"My Rome"
-"##nearby_building##":"A nearby building ("
+"##nearby_building_negative_effect_degrade##":"A nearby building is having a detrimental effect on the desirability of the location. Try placing gardens, statues or plazas, for example."
+"##nearby_building_negative_effect##":"A nearby building is having a detrimental effect on the desirability of the location. Try placing gardens, statues or plazas, for example."
 "##need_actor_colony##":"Build an actor colony to send performers here"
 "##need_build_on_cleared_area##":""
 "##need_clay_pit##":"This building needs clay"
 "##need_grape##":"This building needs grapes"
+"##need_iron_for_work##":"This building needs iron ore"
 "##need_iron_mine##":"Build an iron mine"
 "##need_lionnursery##":"Build a lion house to stage animal contests"
 "##need_marble_for_large_temple##":"You need 2 cartloads of marble to build a large temple"
@@ -489,15 +589,18 @@
 "##oil_workshop_bad_work##":"Very few people work at this olive press. Oil production is slow as a result."
 "##oil_workshop_full_work##":"This olive press is fully staffed, and produces ample high-quality oil."
 "##oil_workshop_info##":"Here olives are pressed for oil, which plebeians need for salads, cooking and for lighting their insulae. Olive oil may also be profitably traded."
+"##oil_workshop_need_resource##":"This workshop will produce no oil without a shipment of olives, whether from a warehouse or a farm."
 "##oil_workshop_need_some_workers##":"This olive press could use more workers to reach its full potential for oil production."
 "##oil_workshop_no_workers##":"This olive press has no employees, and will yield no oil."
 "##oil_workshop_patrly_workers##":"This olive press is understaffed, and produces oil more slowly than it should."
 "##oil##":"Oil"
 "##olive_farm_info##":"Olives are most valuable for their oil. Workshops press olives to yield oil for cooking, lighting, lubrication and preservation."
 "##olive_farm##":"Olives farm"
-"##olives##":"Olives"
+"##olive##":"Olives"
 "##open_trade_route##":"Open trade route"
 "##options##":"Options"
+"##oracle_info##":"This marble temple makes nearby homes more desirable and pleases all of the gods. It does not employ priests, though, or provide houses with access to any particular god."
+"##oracle_need_2_cart_marble##":"You need 2 cartloads of marble to build an oracle"
 "##oracle##":"Oracle"
 "##oracles_in_city##":"Oracles in the city"
 "##oracles##":"Oracles"
@@ -549,7 +652,9 @@
 "##population_tooltip##":"Population"
 "##population##":"Population"
 "##pottery_bad_work##":"Very few people work here. Pottery production is slow as a result."
+"##pottery_workshiop_full_work##":"This workshop has all the employees it needs. It is working flat out to produce pottery."
 "##pottery_workshop_info##":"Here, potters mould clay into pots that citizens use for storing commodities. Trade pottery, or let your markets distribute it so that people can build better housing."
+"##pottery_workshop_need_resource##":"This workshop needs clay delivered to it, from a warehouse or a clay pit, to produce pottery."
 "##pottery##":"Pottery"
 "##praetor_salary##":"Praetor's salary of"
 "##prefect_goto_fire##":"If you want to know what cities look like when they burn, watch carefully!"
@@ -606,6 +711,8 @@
 "##save_game##":"Save game"
 "##scholar##":"Schoolchild"
 "##scholars##":"school age,"
+"##school_full_work##":"This school is not operational, and is of no use to the local community."
+"##school_info##":"Small children must attend neighborhood schools to learn the rudiments of reading, writing and rhetoric if they are to grow into productive adults."
 "##school##":"School"
 "##schools##":"Schools"
 "##screen_settings##":"Display settings"
@@ -628,9 +735,21 @@
 "##show_bigpanel##":"Display the full Control Panel"
 "##show_prices##":"Show prices"
 "##show##":"Shows"
-"##small_casa##":"Small casa"
+"##simple_formation_text##":"A simple formation, giving some advantage to defending troops."
+"##small_ceres_temple##":"Temple to Ceres"
+"##small_domus##":"Small insulae"
 "##small_food_on_next_month##":"- very little food for the coming month"
+"##small_hut##":"Small casa"
+"##small_hut##":"Small hovel"
+"##small_mars_temple##":"Temple to Mars"
+"##small_mercury_temple##":"Temple to Mercury"
+"##small_neptune_temple##":"Temple to Neptune"
+"##small_palace##":"Small palace"
+"##small_shack##":"Small shack"
 "##small_temples##":"Small temples"
+"##small_tent##":"Small tent"
+"##small_venus_temple##":"Temple to Venus"
+"##small_villa##":"Small villa"
 "##small##":"Small"
 "##soldier_awesome_live##":"I may only be a lowly soldier, but even I can see what a great city this is!"
 "##soldier##":"Soldier"
@@ -662,20 +781,26 @@
 "##to_trade_advisor##":"To Trade Advisor"
 "##tooltip_full##":"Mouse help - FULL"
 "##tooltip_some##":"Mouse help - SOME"
+"##tower_may_build_on_thick_walls##":"You can only build towers on thick walls"
 "##trade_advisor##":"Trade Advisor"
 "##trade_btn_notrade_text##":"Not trading"
 "##trade_caravan_from##":"Caravan of merchants from"
 "##trade##":"Trade"
 "##trees_and_forest_caption##":"Trees and woodland"
 "##trees_and_forest_text##":"Trees are impassable, but may be cleared. They are vital to the timber industry, and timber yards must be adjacent to trees to produce timber."
+"##trouble_low_fire_risk##":"This building has no likelihood of catching fire"
 "##unit##":"Unit"
 "##units##":"Units"
 "##use_and_trade_resource##":"Using and trading this resource"
+"##vegetable_farm_full_work##":"This farm has all the employees it needs. Vegetables grow here in abundance."
 "##vegetable_farm_info##":"Vegetables are important to the balanced diet your people need for happiness and health. Granaries store vegetables for local consumption, and warehouses take surpluses for export."
-"##vegetables##":"Vegetables"
+"##vegetable_farm_no_workers##":"This farm has no employees. Nothing has been planted."
+"##vegetable##":"Vegetables"
 "##very_high_fire_risk##":"Very high fire risk"
 "##very_low_fire_risk##":"Very low fire risk"
 "##vinard_full_work##":"This vineyard has all the employees it needs. The vines are frequently heavy with fat, juicy grapes."
+"##vinard_full_work##":"This grove has all the employees it needs. Tree limbs regularly sag under heavy loads of olives."
+"##vinard_info##":"The grapes from these vines were bred specifically for winemaking. Workshops make fine wine for your own patricians, and for export."
 "##vinard_need_some_workers##":"This vineyard is understaffed. It is taking longer to produce grapes than it should."
 "##vinard_no_workers##":"This vineyard has no employees. Production has ceased."
 "##vinard_patrly_workers##":"This vineyard is working below maximum capacity. Grape production will be slightly slower as a result."
@@ -694,36 +819,63 @@
 "##visit_religion_advisor##":"Visit your Religion Advisor"
 "##visit_trade_advisor##":"Visit your Trade Advisor"
 "##wages##":"Wages"
+"##wait_for_fishing_boat##":"We are currently waiting for a shipyard to build us a fishing boat."
 "##waiting_for_free_dock##":"Anchored, waiting for free dock"
 "##wall##":"Wall"
 "##war_desc##":"(War)"
 "##warehouse_info##":"Goods produced for trade need warehouse storage. Caravans visit warehouses to buy and sell goods, and docks draw their goods from nearby warehouses."
+"##warehouse_no_workers##":"Skeleton staff only. Will not dispatch or receive goods"
+"##warehouse##":"Warehouse"
+"##warehouses##":"Warehouses"
+"##warning_amphitheater_access##":"This house has not been passed by an actor or a gladiator for a while. It will soon lose amphitheater access"
+"##warning_barber_access##":"Unless a barber walks by soon, this house will lose barber access"
+"##warning_baths_access##":"Unless a bath-house worker passes soon, this house will lose bath-house access"
+"##warning_college_access##":"Unless a teacher passes it soon, this house will lose academy access"
+"##warning_colloseum_access##":"This house has not been passed by a lion trainer or gladiator for a while. It will soon lose colosseum access"
+"##warning_doctor_access##":"Unless a doctor passes it soon, this house will lose doctor clinic access"
 "##warning_full##":"Warnings - ON"
+"##warning_hippodrome_access##":"This house has not been passed by a charioteer for a while. It will soon lose hippodrome access"
+"##warning_hospital_access##":"Unless a surgeon passes it soon, this house will lose hospital access"
+"##warning_library_access##":"Unless a librarian passes it soon, this house will lose library access"
+"##warning_school_access##":"Unless a schoolchild skips past it soon, this house will lose school access"
 "##warning_some##":"Warnings - OFF"
+"##warning_theater_access##":"This house has not been passed by an actor for a while. It will soon lose theater access"
 "##water_build_tlp##":"Water-related structures"
 "##water_caption##":"Water"
 "##water_info##":"Impassable, but may be bridged at certain points. Water is often a vital trade link to the rest of the Empire via the construction of docks. Clay pits must be adjacent to water."
+"##water_srvc_fountain_and_well##":"This land has pipe access to a reservoir, and drinking water from a well or fountain"
+"##water_srvc_reservoir##":"This land has pipe access to a reservoir, enabling fountains and bath-houses to work"
+"##water_srvc_well##":"This land has drinking water access"
 "##water_supply##":"Water"
 "##we_produce_more_than_eat##":"We produce a little more than we eat"
 "##we_produce_much_than_eat##":"We produce much more than we eat"
 "##we_produce_some_than_eat##":"We produce just enough to feed everyone"
 "##weapon##":"Weapons"
+"##weapons_workshop_full_work##":"This workshop has all the employees it needs, it is working flat out to produce weapons."
 "##weapons_workshop_info##":"Armorers transform iron into arms and armor, which you may trade for a handsome profit or use to equip your own legions."
+"##weapons_workshop_need_resource##":"This workshop needs iron delivered to it, from a warehouse or an iron mine, to produce weapons."
+"##weapons_workshop##":"Weapons workshop"
 "##well_haveno_houses_inarea##":"This well is unnecessary at the moment, as there are no houses within its service range."
 "##well_info##":"Citizens without fountain access can draw water from wells, but well-water neighborhoods are not desirable places to live."
 "##well##":"Well"
 "##wharf_info##":"Boats sail here from the shipyard to take on crews and begin fishing local waters. Each wharf can service one fishing boat."
 "##wharf##":"Wharf"
 "##wheat_farm_info##":"Grain is the basic foodstuff for your population. It must be stored in granaries to feed your people, or warehouses if it is for export."
+"##wheat_farm##":"Wheat farm"
 "##wheat##":"Wheat"
 "##wine_workshop_bad_work##":"Very few people work at this winery. Wine production is very slow as a result."
+"##wine_workshop_full_work##":"This winery has all the employees it needs, and is working flat out to produce wine."
 "##wine_workshop_info##":"Vintners turn grapes into wine, which patricians require if they are to build villas. Wine is a widely-demanded trade commodity."
+"##wine_workshop_need_resource##":"This workshop cannot produce wine until it receives a delivery of grapes from a warehouse or a farm."
+"##wine_workshop_no_workers##":"This winery has no employees. Production has ceased."
+"##wine_workshop##":"Wine workshop"
 "##wine##":"Wine"
 "##wndrt_favor_tooltip##":"Click here for advice about your Favor rating"
 "##wndrt_peace_tooltip##":"Click here for advice about your Peace rating"
 "##wndrt_prosperity_tooltip##":"Click here for advice about your Prosperity rating"
 "##workers_yearly_wages_is##":"Estimated annual bill of"
 "##wt_emmigrant##":"Emigrant"
+"##wt_endeavor##":"Endeavor"
 "##wt_gladiator##":"Gladiator"
 "##wt_immigrant##":"Immigrant"
 "##wt_immigrant##":"Homeless"
@@ -2135,215 +2287,64 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"##yes##":"Да"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+}

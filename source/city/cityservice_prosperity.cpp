@@ -104,7 +104,7 @@ void CityServiceProsperity::update( const unsigned int time )
     _d->lastYearProsperity = getValue();
 
     int saveValue = _d->prosperity;
-    _d->prosperity = math::clamp( prosperityCap, 0, _d->prosperity + 2 );
+    _d->prosperity = math::clamp<int>( prosperityCap, 0, _d->prosperity + 2 );
     _d->houseCapTrand = _d->prosperity - saveValue;
 
     int currentFunds = _d->city->getFunds().getValue();

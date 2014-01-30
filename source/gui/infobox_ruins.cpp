@@ -29,7 +29,7 @@ namespace gui
 {
 
 InfoboxRuins::InfoboxRuins( Widget* parent, const Tile& tile )
-  : InfoBoxSimple( parent, Rect( 0, 0, 510, 350 ) )
+  : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ) )
 {
   RuinsPtr ruin = ptr_cast<Ruins>( tile.getOverlay() );
   std::string text = _("##ruins_0000_text##");

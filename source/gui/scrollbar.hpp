@@ -100,8 +100,8 @@ public:
 
 	float getRange () const;
 
-oc3_signals public:
-    Signal1<int>& onPositionChanged();
+public oc3_signals:
+	Signal1<int>& onPositionChanged();
 
 protected:
 	void _resizeEvent();

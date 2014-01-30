@@ -33,11 +33,27 @@ using namespace constants;
 namespace events
 {
 
-GameEventPtr DisasterEvent::create(const TilePos& pos, Type type )
+GameEventPtr DisasterEvent::create( const Tile& tile, Type type )
 {
   DisasterEvent* event = new DisasterEvent();
-  event->_pos = pos;
+  event->_pos = tile.pos();
   event->_type = type;
+  event->_infoType = 0;
+
+  TileOverlayPtr overlay = tile.getOverlay();
+  if( overlay.isValid() )
+  {
+    overlay->deleteLater();
+    HousePtr house = ptr_cast< House >( overlay );
+    if( house.isValid() )
+    {
+      event->_infoType = 1000 + house->getSpec().getLevel();
+    }
+    else
+    {
+      event->_infoType = overlay->getType();
+    }
+  }
 
   GameEventPtr ret( event );
   ret->drop();
@@ -54,23 +70,13 @@ void DisasterEvent::exec( Game& game )
   if( tile.getFlag( Tile::isDestructible ) )
   {
     Size size( 1 );
-    int disasterInfoType=0;
 
     TileOverlayPtr overlay = tile.getOverlay();
     if( overlay.isValid() )
     {
       overlay->deleteLater();
+      rPos = overlay->getTilePos();
       size = overlay->getSize();
-      rPos = overlay->getTile().getIJ();
-      HousePtr house = ptr_cast< House >( overlay );
-      if( house.isValid() )
-      {
-        disasterInfoType = 1000 + house->getSpec().getLevel();
-      }
-      else
-      {
-        disasterInfoType = overlay->getType();
-      }
     }
 
     switch( _type )
@@ -96,10 +102,13 @@ void DisasterEvent::exec( Game& game )
         SmartPtr< Ruins > ruins = ptr_cast< Ruins >( ov );
         if( ruins.isValid() )
         {
-          ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", disasterInfoType ) );
+          std::string typev = _infoType > 1000
+                                ? StringHelper::format( 0xff, "house%02d", _infoType - 1000 )
+                                : MetaDataHolder::getTypename( _infoType );
+          ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", typev.c_str() ) );
         }
 
-        Dispatcher::instance().append( BuildEvent::create( (*tile)->getIJ(), ov ) );
+        Dispatcher::instance().append( BuildEvent::create( (*tile)->pos(), ov ) );
       }
     }
 

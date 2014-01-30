@@ -392,6 +392,7 @@ FurnitureWorkshop::FurnitureWorkshop() : Factory(Good::timber, Good::furniture, 
   setPicture( ResourceGroup::commerce, 117 );
 
   _animationRef().load(ResourceGroup::commerce, 118, 14);
+  _animationRef().setDelay( 4 );
   _fgPicturesRef().resize(2);
 }
 
