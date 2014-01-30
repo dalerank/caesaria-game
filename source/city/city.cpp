@@ -178,6 +178,7 @@ oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
   Signal1<std::string> onWarningMessageSignal;
   Signal2<TilePos,std::string> onDisasterEventSignal;
+  Signal0<> onChangeBuildingOptionsSignal;
 };
 
 PlayerCity::PlayerCity() : _d( new Impl )
@@ -580,10 +581,16 @@ CityServicePtr PlayerCity::findService( const std::string& name ) const
   return CityServicePtr();
 }
 
+void PlayerCity::setBuildOptions(const CityBuildOptions& options)
+{
+  _d->buildOptions = options;
+  _d->onChangeBuildingOptionsSignal.emit();
+}
+
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
+Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
 const CityBuildOptions& PlayerCity::getBuildOptions() const { return _d->buildOptions; }
-void PlayerCity::setBuildOptions(const CityBuildOptions& options) { _d->buildOptions = options; }
 const CityWinTargets& PlayerCity::getWinTargets() const {   return _d->targets; }
 void PlayerCity::setWinTargets(const CityWinTargets& targets) { _d->targets = targets; }
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).getOverlay(); }

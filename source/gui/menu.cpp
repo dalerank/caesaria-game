@@ -82,6 +82,7 @@ public:
 
   void initActionButton( PushButton* btn, Point pos );
   void playSound();
+  void updateBuildingOptions();
 
 oc3_signals public:
   Signal1< int > onCreateConstructionSignal;
@@ -291,9 +292,11 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
   ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
   ret->_d->bgPicture->draw( bottom,  0, bground.getHeight() );
-  ret->_d->city = city;
+  ret->_d->city = city;  
+  ret->_d->updateBuildingOptions();
 
   ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
+  CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
 
   return ret;
 }
@@ -315,21 +318,21 @@ bool Menu::unselectAll()
 
 void Menu::_createBuildMenu( int type, Widget* parent )
 {
-    List< BuildMenu* > menus = findChildren<BuildMenu*>();
-    foreach( item, menus ) { (*item)->deleteLater(); }
+   List< BuildMenu* > menus = findChildren<BuildMenu*>();
+   foreach( item, menus ) { (*item)->deleteLater(); }
 
-    BuildMenu* buildMenu = BuildMenu::create( (BuildMenuType)type, this );
+   BuildMenu* buildMenu = BuildMenu::create( (BuildMenuType)type, this );
 
-    if( buildMenu != NULL )
-    {
-        buildMenu->setNotClipped( true );
+   if( buildMenu != NULL )
+   {
+     buildMenu->setNotClipped( true );
 
-        buildMenu->setBuildOptions( _d->city->getBuildOptions() );
-        buildMenu->initialize();
-       
-        int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
-        buildMenu->setPosition( Point( -(int)buildMenu->getWidth() - 5, y ) );
-    }
+     buildMenu->setBuildOptions( _d->city->getBuildOptions() );
+     buildMenu->initialize();
+
+     int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
+     buildMenu->setPosition( Point( -(int)buildMenu->getWidth() - 5, y ) );
+   }
 }
 
 Signal0<>& Menu::onMaximize()
@@ -350,8 +353,10 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
   ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
 
   ret->_d->city = city;
+  ret->_d->updateBuildingOptions();
 
   ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
+  CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
 
   return ret;
 }
@@ -488,6 +493,20 @@ void Menu::Impl::playSound()
 {
   events::GameEventPtr e = events::PlaySound::create( "panel", rand() % 2 + 1, 256 );
   e->dispatch();
+}
+
+void Menu::Impl::updateBuildingOptions()
+{
+  const CityBuildOptions& options = city->getBuildOptions();
+  waterButton->setEnabled( options.isGroupAvailable( BM_WATER ) );
+  administrationButton->setEnabled( options.isGroupAvailable( BM_ADMINISTRATION ) );
+  entertainmentButton->setEnabled( options.isGroupAvailable( BM_ENTERTAINMENT ) );
+  educationButton->setEnabled( options.isGroupAvailable( BM_EDUCATION ));
+  templeButton->setEnabled( options.isGroupAvailable( BM_RELIGION ));
+  commerceButton->setEnabled( options.isGroupAvailable( BM_COMMERCE ));
+  securityButton->setEnabled( options.isGroupAvailable( BM_SECURITY ));
+  healthButton->setEnabled( options.isGroupAvailable( BM_HEALTH ) );
+  engineerButton->setEnabled( options.isGroupAvailable( BM_ENGINEERING ));
 }
 
 }

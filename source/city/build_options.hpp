@@ -30,6 +30,7 @@ public:
 
   void setBuildingAvailble( const TileOverlay::Type type, bool mayBuild );
   void setGroupAvaible(const BuildMenuType type, Variant mayBuild );
+  bool isGroupAvailable(const BuildMenuType type ) const;
 
   bool isBuildingAvailble( const TileOverlay::Type type ) const;
 
@@ -40,6 +41,7 @@ public:
   CityBuildOptions& operator=(const CityBuildOptions& a);
 
   void setBuildingAvailble(const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild);
+  bool isBuildingsAvailble(const TileOverlay::Type start, const TileOverlay::Type stop) const;
 private:
   class Impl;
   ScopedPtr< Impl > _d;

@@ -51,6 +51,16 @@ void CityBuildOptions::setBuildingAvailble( const TileOverlay::Type start, const
     _d->rules[ (TileOverlay::Type)i ] = mayBuild;
 }
 
+bool CityBuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const TileOverlay::Type stop ) const
+{
+  bool available = false;
+  for( int i=start; i <= stop; i++ )
+    available |= _d->rules[ (TileOverlay::Type)i ];
+
+  return available;
+}
+
+
 void CityBuildOptions::setGroupAvaible( const BuildMenuType type, Variant vmb )
 {
   if( vmb.isNull() )
@@ -63,7 +73,7 @@ void CityBuildOptions::setGroupAvaible( const BuildMenuType type, Variant vmb )
   case BM_WATER: setBuildingAvailble( building::reservoir, building::well, mayBuild ); break;
   case BM_HEALTH: setBuildingAvailble( building::doctor, building::barber, mayBuild ); break;
   case BM_RAW_MATERIAL: setBuildingAvailble( building::marbleQuarry, building::clayPit, mayBuild ); break;
-  case BM_RELIGION: setBuildingAvailble( building::templeCeres, building::cathedralVenus, mayBuild ); break;
+  case BM_RELIGION: setBuildingAvailble( building::templeCeres, building::oracle, mayBuild ); break;
   case BM_FACTORY: setBuildingAvailble( building::winery, building::pottery, mayBuild ); break;
   case BM_EDUCATION: setBuildingAvailble( building::school, building::library, mayBuild ); break;
   case BM_ENTERTAINMENT: setBuildingAvailble( building::amphitheater, building::chariotSchool, mayBuild ); break;
@@ -71,10 +81,36 @@ void CityBuildOptions::setGroupAvaible( const BuildMenuType type, Variant vmb )
   case BM_ENGINEERING: setBuildingAvailble( building::engineerPost, building::wharf, mayBuild ); break;
   case BM_SECURITY: setBuildingAvailble( building::prefecture, building::fortArea, mayBuild ); break;
   case BM_COMMERCE: setBuildingAvailble( building::market, building::warehouse, mayBuild ); break;
-
+  case BM_TEMPLE: setBuildingAvailble( building::templeCeres, building::templeVenus, mayBuild ); break;
+  case BM_BIGTEMPLE: setBuildingAvailble( building::cathedralCeres, building::cathedralVenus, mayBuild ); break;
   default:
   break;
   }
+}
+
+bool CityBuildOptions::isGroupAvailable(const BuildMenuType type) const
+{
+  switch( type )
+  {
+  case BM_FARM:         return isBuildingsAvailble( building::wheatFarm, building::pigFarm );
+  case BM_WATER:        return isBuildingsAvailble( building::reservoir, building::well ); break;
+  case BM_HEALTH:       return isBuildingsAvailble( building::doctor, building::barber ); break;
+  case BM_RAW_MATERIAL: return isBuildingsAvailble( building::marbleQuarry, building::clayPit ); break;
+  case BM_RELIGION:     return isBuildingsAvailble( building::templeCeres, building::oracle ); break;
+  case BM_FACTORY:      return isBuildingsAvailble( building::winery, building::pottery ); break;
+  case BM_EDUCATION:    return isBuildingsAvailble( building::school, building::library ); break;
+  case BM_ENTERTAINMENT: return isBuildingsAvailble( building::amphitheater, building::chariotSchool ); break;
+  case BM_ADMINISTRATION: return isBuildingsAvailble( building::senate, building::governorPalace ); break;
+  case BM_ENGINEERING:  return isBuildingsAvailble( building::engineerPost, building::wharf ); break;
+  case BM_SECURITY:     return isBuildingsAvailble( building::prefecture, building::fortArea ); break;
+  case BM_COMMERCE:     return isBuildingsAvailble( building::market, building::warehouse ); break;
+  case BM_TEMPLE:       return isBuildingsAvailble( building::templeCeres, building::templeVenus ); break;
+  case BM_BIGTEMPLE:    return isBuildingsAvailble( building::cathedralCeres, building::cathedralVenus ); break;
+  default:
+  break;
+  }
+
+  return false;
 }
 
 void CityBuildOptions::clear()
