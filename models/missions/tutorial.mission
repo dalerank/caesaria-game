@@ -20,9 +20,19 @@
 	}
 	
 	empire : {}
-		
+  		
 	events : 
   {
+    "Jan.350" : {
+      date : "-350.01.01"
+      type : "fire"
+      condition :
+      { 
+        population : [ 80, 999 ]
+      }
+      random_fire : true
+    }
+    
 		"Jul.348" : {			
 			date : "-350.01.01"
 			type : "good_request"

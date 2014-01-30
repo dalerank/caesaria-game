@@ -258,25 +258,25 @@ bool Menu::onEvent(const NEvent& event)
 
     if( event.EventType == sEventMouse )
     {
-        switch( event.mouse.type )
-        {
-        case mouseRbtnRelease:
-            _createBuildMenu( -1, this );
-            unselectAll();
-            _d->lastPressed = 0;
-        return true;
+      switch( event.mouse.type )
+      {
+      case mouseRbtnRelease:
+        _createBuildMenu( -1, this );
+        unselectAll();
+        _d->lastPressed = 0;
+      return true;
 
-        case mouseLbtnPressed:
-        case mouseLbtnRelease:
-            {
-                //lock movement for tilemap
-                if( findChildren<BuildMenu*>().size() > 0 )
-                    return true;
-            }
-        break;
+      case mouseLbtnPressed:
+      case mouseLbtnRelease:
+      {
+        //lock movement for tilemap
+        if( findChildren<BuildMenu*>().size() > 0 )
+          return true;
+      }
+      break;
 
-        default: break;
-        }
+      default: break;
+      }
     }
 
     return Widget::onEvent( event );

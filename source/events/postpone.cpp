@@ -44,9 +44,7 @@ PostponeEvent::~PostponeEvent(){}
 
 void PostponeEvent::exec(Game& game)
 {
-  bool isCityRequest = _d->options.get( "city_request" );
-
-  if( isCityRequest )
+  if( (bool)_d->options.get( "city_request" ) )
   {
     PlayerCityPtr city = game.getCity();
     CityServicePtr service = city->findService( CityRequestDispatcher::getDefaultName() );
@@ -56,6 +54,10 @@ void PostponeEvent::exec(Game& game)
     {
       dispatcher->add( _d->options );
     }
+  }
+  else if( (bool)_d->options.get( "random_fire" ) )
+  {
+
   }
 }
 
