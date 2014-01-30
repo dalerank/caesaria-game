@@ -104,7 +104,8 @@ struct ReleaseFile
 		if( file.isExtension(".linux") )
 			return true;
 #elif defined(CAESARIA_PLATFORM_MACOSX)
-		#error not worked yet
+		if( file.isExtension(".macosx") )
+			return true;
 #endif
 			return false;
 	}

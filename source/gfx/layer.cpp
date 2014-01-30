@@ -328,7 +328,7 @@ void Layer::drawColumn(GfxEngine& engine, const Point& pos, const int percent)
 
   for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
   {
-    engine.drawPicture( _d->bodyColumn, pos - Point( -18, 9 + offsetY ) );
+    engine.drawPicture( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
   }
 
   if( percent >= 10 )

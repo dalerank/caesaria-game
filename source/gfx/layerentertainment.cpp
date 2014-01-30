@@ -40,7 +40,11 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
 {
   switch( _type )
   {
-  case citylayer::entertainmentAll: return house->getSpec().computeEntertainmentLevel( house );
+  case citylayer::entertainment:
+  {
+    int entLevel = house->getSpec().computeEntertainmentLevel( house );
+    return ( entLevel * 100 / house->getSpec().getMinEntertainmentLevel() );
+  }
   case citylayer::theater: return house->getServiceValue( Service::theater );
   case citylayer::amphitheater: return house->getServiceValue( Service::amphitheater );
   case citylayer::colloseum: return house->getServiceValue( Service::colloseum );
@@ -154,7 +158,7 @@ void LayerEntertainment::handleEvent(NEvent& event)
           std::string typeName;
           switch( _type )
           {
-          case citylayer::entertainmentAll: typeName = "entertainment"; break;
+          case citylayer::entertainment: typeName = "entertainment"; break;
           case citylayer::theater: typeName = "theater"; break;
           case citylayer::amphitheater: typeName = "amphitheater"; break;
           case citylayer::colloseum: typeName = "colloseum"; break;
@@ -162,16 +166,24 @@ void LayerEntertainment::handleEvent(NEvent& event)
           }
 
           int lvlValue = _getLevelValue( house );
-          std::string levelName;
           if( lvlValue > 0 )
           {
-            if( lvlValue < 20 ) { levelName = "##warning_"; }
-            else if( lvlValue < 40 ) { levelName = "##bad_"; }
-            else if( lvlValue < 60 ) { levelName = "##simple_"; }
-            else if( lvlValue < 80 ) { levelName = "##good_"; }
-            else { levelName = "##awesome_"; }
+            if( _type == citylayer::entertainment )
+            {
+              text = StringHelper::format( 0xff, "##%d_entertainment_access", lvlValue / 10 );
+            }
+            else
+            {
+              std::string levelName;
 
-            text = levelName + typeName + "_access##";
+              if( lvlValue < 20 ) { levelName = "##warning_"; }
+              else if( lvlValue < 40 ) { levelName = "##bad_"; }
+              else if( lvlValue < 60 ) { levelName = "##simple_"; }
+              else if( lvlValue < 80 ) { levelName = "##good_"; }
+              else { levelName = "##awesome_"; }
+
+              text = levelName + typeName + "_access##";
+            }
           }
         }
       }
@@ -195,7 +207,7 @@ LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city
 
   switch( type )
   {
-  case citylayer::entertainmentAll:
+  case citylayer::entertainment:
     _flags.insert( building::unknown ); _flags.insert( building::theater );
     _flags.insert( building::amphitheater ); _flags.insert( building::colloseum );
     _flags.insert( building::hippodrome ); _flags.insert( building::actorColony );

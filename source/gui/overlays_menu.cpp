@@ -59,7 +59,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::water, _("##ovrm_water##"), startPos+=offset );
     _addButton( citylayer::risks, _("##ovrm_risk##"), startPos+=offset );
     _addButton( citylayer::entertainments, _("##ovrm_entertainment##"), startPos+=offset );
-    _addButton( citylayer::education, _("##ovrm_education##"), startPos+=offset );
+    _addButton( citylayer::educations, _("##ovrm_education##"), startPos+=offset );
     _addButton( citylayer::health, _("##ovrm_health##"), startPos+=offset );
     _addButton( citylayer::commerce, _("##ovrm_commerce##"), startPos+=offset );
     _addButton( citylayer::religion, _("##ovrm_religion##"), startPos+=offset );
@@ -75,15 +75,15 @@ void OverlaysMenu::_addButtons(const int type )
     break;
 
   case citylayer::entertainments:
-    _addButton( citylayer::entertainmentAll, _("##ovrm_entr_all##"), startPos );
+    _addButton( citylayer::entertainment, _("##ovrm_entr_all##"), startPos );
     _addButton( citylayer::theater, _("##ovrm_theatres##"), startPos+=offset );
     _addButton( citylayer::amphitheater, _("##ovrm_amtheatres##"), startPos+=offset );
     _addButton( citylayer::colloseum, _("##ovrm_colliseum##"), startPos+=offset );
     _addButton( citylayer::hippodrome, _("##ovrm_hpdrome##"), startPos+=offset );
     break;
 
-  case citylayer::education:
-    _addButton( citylayer::educationAll, _("##ovrm_edct_all##"), startPos );
+  case citylayer::educations:
+    _addButton( citylayer::education, _("##ovrm_edct_all##"), startPos );
     _addButton( citylayer::school, _("##ovrm_school##"), startPos+=offset );
     _addButton( citylayer::library, _("##ovrm_library##"), startPos+=offset );
     _addButton( citylayer::academy, _("##ovrm_academy##"), startPos+=offset );
@@ -133,7 +133,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
       {
       case citylayer::risks:
       case citylayer::entertainments:
-      case citylayer::education:
+      case citylayer::educations:
       case citylayer::health:
       case citylayer::commerce:
         {

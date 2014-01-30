@@ -32,9 +32,14 @@
 #include "core/position.hpp"
 #include "pictureconverter.hpp"
 #include "core/time.hpp"
+#include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
+
+#ifdef CAESARIA_PLATFORM_MACOSX
+#include <dlfcn.h>
+#endif
 
 class GfxSdlEngine::Impl
 {
@@ -76,15 +81,36 @@ void GfxSdlEngine::init()
   _d->fps = 0;
   _d->showDebugInfo = false;
 
+  Logger::warning( "GrafixEngine: init");
   int rc = SDL_Init(SDL_INIT_VIDEO);
-  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
+  if (rc != 0)
+  {
+    Logger::warning( StringHelper::format( 0xff, "Unable to initialize SDL: %d", SDL_GetError() ) );
+    THROW("Unable to initialize SDL: " << SDL_GetError());
+  }
+  
+  Logger::warning( "GrafixEngine: ttf init");
   rc = TTF_Init();
-  if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
+  if (rc != 0)
+  {
+    THROW("Unable to initialize SDL: " << SDL_GetError());
+  }
 
   unsigned int flags = SDL_DOUBLEBUF | SDL_SWSURFACE;
   flags |= (getFlag( GfxEngine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
-
+    
+#ifdef CAESARIA_PLATFORM_MACOSX
+    void* cocoa_lib;
+    cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
+    void (*nsappload)(void);
+    nsappload = (void(*)()) dlsym(	cocoa_lib, "NSApplicationLoad");
+    nsappload();
+#endif
+ 
+  Logger::warning( StringHelper::format( 0xff, "GrafixEngine: set mode %dx%d",  _srcSize.getWidth(), _srcSize.getHeight() ) );
   SDL_Surface* scr = SDL_SetVideoMode(_srcSize.getWidth(), _srcSize.getHeight(), 32, flags );  // 32bpp
+    
+  Logger::warning( "GrafixEngine: init successfull");
   _d->screen.init( scr, Point( 0, 0 ) );
   
   if( !_d->screen.isValid() ) 
@@ -92,7 +118,8 @@ void GfxSdlEngine::init()
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  SDL_WM_SetCaption( "CaesarIA: "CAESARIA_VERSION, 0 );    
+  Logger::warning( "GrafixEngine: set caption");
+  SDL_WM_SetCaption( "CaesarIA: "CAESARIA_VERSION, 0 );
 
   SDL_EnableKeyRepeat(1, 100);
 }

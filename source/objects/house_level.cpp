@@ -119,14 +119,21 @@ bool HouseLevelSpec::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minEntertainmentLevel )
   {
     res = false;
-    switch( (int)value / 20 )
+    if( value == 0 )
     {
-    case 0: ref = "##missing_entertainment##"; break;
-    case 1: ref = "##missing_entertainment_amph##"; break;
-    case 2: ref = "##missing_entertainment_also##"; break;
-    case 3: ref = "##missing_entertainment_colloseum##"; break;
-    case 4: ref = "##missing_entertainment_need_more##"; break;
-      //##missing_entertainment_patrician##
+      ref = "##missing_entertainment##";
+    }
+    else
+    {
+      switch( _d->minEntertainmentLevel / 20 )
+      {
+      case 0: ref = "##missing_entertainment_theater##"; break;
+      case 1: ref = "##missing_entertainment_amph##"; break;
+      case 2: ref = "##missing_entertainment_also##"; break;
+      case 3: ref = "##missing_entertainment_colloseum##"; break;
+      case 4: ref = "##missing_entertainment_hippodrome##"; break;
+        //##missing_entertainment_patrician##
+      }
     }
   }
 
@@ -339,44 +346,44 @@ int HouseLevelSpec::computeHealthLevel( HousePtr house, std::string &oMissingReq
 
 int HouseLevelSpec::computeEducationLevel(HousePtr house, std::string &oMissingRequirement)
 {
-   int res = 0;
-   if( house->hasServiceAccess(Service::school) )
-   {
-      res = 1;
-      if( house->hasServiceAccess(Service::academy) )
+  int res = 0;
+  if( house->hasServiceAccess(Service::school) )
+  {
+    res = 1;
+    if( house->hasServiceAccess(Service::academy) )
+    {
+      res = 2;
+      if( house->hasServiceAccess(Service::library) )
       {
-         res = 2;
-         if( house->hasServiceAccess(Service::library) )
-         {
-            res = 3;
-         }
-         else
-         {
-            oMissingRequirement = "##missing_library##";
-         }
+        res = 3;
       }
       else
       {
-         oMissingRequirement = "##missing_colege##";
+        oMissingRequirement = "##missing_library##";
       }
-   }
-   else
-   {
-      oMissingRequirement = "##missing_school##";
-   }
+    }
+    else
+    {
+      oMissingRequirement = "##missing_college##";
+    }
+  }
+  else
+  {
+    oMissingRequirement = "##missing_school##";
+  }
 
-   return res;
+  return res;
 }
 
 int HouseLevelSpec::computeReligionLevel(HousePtr house)
 {
-   int res = 0;
-   res += house->hasServiceAccess(Service::religionMercury) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionVenus) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionMars) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionNeptune) ? 1 : 0;
-   res += house->hasServiceAccess(Service::religionCeres) ? 1 : 0;
-   return res;
+  int res = 0;
+  res += house->hasServiceAccess(Service::religionMercury) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionVenus) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionMars) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionNeptune) ? 1 : 0;
+  res += house->hasServiceAccess(Service::religionCeres) ? 1 : 0;
+  return res;
 }
 
 float HouseLevelSpec::evaluateServiceNeed(HousePtr house, const Service::Type service)

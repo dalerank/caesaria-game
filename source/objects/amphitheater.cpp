@@ -59,7 +59,7 @@ void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
   GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( building::gladiatorSchool );
   if( gladiators.empty() )
   {
-    _setError( _("##need_gladiator_school##") );
+    _setError( _("##colloseum_haveno_gladiatorpit##") );
   }
 }
 

@@ -80,6 +80,7 @@ find_path(SDL_INCLUDE_DIR SDL.h
   /usr/local/include/SDL11  #freebsd sdl1.1
   /usr/local/include/SDL12  #freebsd sdl1.2
   ${WIN32_SDL_DEPENDENCIES_DIR}
+  #/Library/Frameworks/SDL.framework/Headers
 )
 MESSAGE("SDL_INCLUDE_DIR is ${SDL_INCLUDE_DIR}")
 
@@ -100,7 +101,7 @@ if(NOT SDL_BUILDING_LIBRARY)
     # seem to provide SDLmain for compatibility even though they don't
     # necessarily need it.
     find_library(SDLMAIN_LIBRARY
-      NAMES SDLmain SDLmain-1.1
+      NAMES SDLmain SDLmain-1.1 SDLmain-1.2
       HINTS
         ${WIN32_SDL_DEPENDENCIES_DIR}
       ENV SDLDIR

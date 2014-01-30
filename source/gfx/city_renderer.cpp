@@ -100,7 +100,7 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
   addLayer( LayerReligion::create( _d->camera, city ) );
   addLayer( LayerDamage::create( _d->camera, city ) );
   addLayer( LayerDesirability::create( _d->camera, city ) );
-  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::entertainmentAll ) );
+  addLayer( LayerEntertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( LayerEntertainment::create( _d->camera, city, citylayer::theater ) );
   addLayer( LayerEntertainment::create( _d->camera, city, citylayer::amphitheater ) );
   addLayer( LayerEntertainment::create( _d->camera, city, citylayer::colloseum ) );
@@ -109,6 +109,7 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
   addLayer( LayerBuild::create( this, city ) );
   addLayer( LayerDestroy::create( _d->camera, city ) );
   addLayer( LayerTax::create( _d->camera, city ) );
+  addLayer( LayerEducation::create( _d->camera, city, citylayer::education ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::school ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::library ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::academy ) );

@@ -102,7 +102,10 @@ void DisasterEvent::exec( Game& game )
         SmartPtr< Ruins > ruins = ptr_cast< Ruins >( ov );
         if( ruins.isValid() )
         {
-          ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", _infoType ) );
+          std::string typev = _infoType > 1000
+                                ? StringHelper::format( 0xff, "house%02d", _infoType - 1000 )
+                                : MetaDataHolder::getTypename( _infoType );
+          ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", typev.c_str() ) );
         }
 
         Dispatcher::instance().append( BuildEvent::create( (*tile)->pos(), ov ) );

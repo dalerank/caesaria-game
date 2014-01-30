@@ -30,6 +30,7 @@
     #include <pwd.h>
   #elif defined(CAESARIA_PLATFORM_MACOSX)
     #include <libproc.h>
+    #include <pwd.h>   
   #endif
   #include <sys/stat.h>
   #include <unistd.h>

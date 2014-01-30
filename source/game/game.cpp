@@ -87,10 +87,13 @@ void Game::Impl::initLocale( std::string localePath)
 
 void Game::Impl::initVideo()
 {
-  Logger::warning( "init graphic engine" );
+  Logger::warning( "GrafixEngine: create" );
   engine = new GfxSdlEngine();
 
+  Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
+    
+  Logger::warning( "GraficEngine: try set fullscreen mode" );
   engine->setFlag( GfxEngine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
   engine->init();
 }
