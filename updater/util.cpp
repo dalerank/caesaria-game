@@ -24,7 +24,7 @@
 
 #include <string>
 #include <windows.h>
-#include "Psapi.h"
+#include <psapi.h>
 
 namespace updater
 {

@@ -1,29 +1,33 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "dialogbox.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/decorator.hpp"
 #include "gui/label.hpp"
-#include "game/resourcegroup.hpp"
 #include "texturedbutton.hpp"
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
 
 namespace gui
 {
+
+namespace {
+  int okBtnPicId = 239;
+  int cancelBtnPicId = 243;
+}
 
 class DialogBox::Impl
 {
@@ -62,14 +66,14 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   {
     new TexturedButton( this, Point( getWidth() / 2 - 20, getHeight() - 50),
                         Size( 39, 26 ), buttons,
-                        buttons == btnOk ? ResourceMenu::okBtnPicId : ResourceMenu::cancelBtnPicId );
+                        buttons == btnOk ? okBtnPicId : cancelBtnPicId );
   }
   else if( buttons == (btnOk | btnCancel) )
   {
     new TexturedButton( this, Point( getWidth() / 2 - 24 - 16, getHeight() - 50),
-                        Size( 39, 26 ), btnOk, ResourceMenu::okBtnPicId );
+                        Size( 39, 26 ), btnOk, okBtnPicId );
     new TexturedButton( this, Point( getWidth() / 2 + 16, getHeight() - 50 ),
-                        Size( 39, 26 ), btnCancel, ResourceMenu::cancelBtnPicId );
+                        Size( 39, 26 ), btnCancel, cancelBtnPicId );
   }
 }
 

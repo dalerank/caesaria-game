@@ -18,8 +18,8 @@
 
 #ifdef CAESARIA_PLATFORM_WIN
   #include <winsock2.h> // greebo: need to include winsock2 before curl/curl.h
-  #include <Ws2tcpip.h>
-  #include <Wspiapi.h>
+  #include <ws2tcpip.h>
+  #include <wspiapi.h>
 #endif
 
 #include "core/mutex.hpp"

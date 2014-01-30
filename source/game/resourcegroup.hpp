@@ -60,12 +60,14 @@ public:
 class ResourceMenu
 {
 public:
+  enum {
+    okBtnPicId = 239,
+    cancelBtnPicId = 243
+  };
   static const int maximizeBtn = 101;
   static const int houseBtnPicId = 123;
   static const int helpInfBtnPicId = 528;
   static const int exitInfBtnPicId = 532;
-  static const int okBtnPicId = 239;
-  static const int cancelBtnPicId = 243;
 
   static const int houseMidPicId = 1;
   static const int clearMidPicId = 12;
@@ -85,10 +87,12 @@ public:
 class PicID
 {
 public:
+  enum {
+    seaTradeRoute = 69,
+    landTradeRoute = 70
+  };
   static const int bad = 0;
   static const int empireStamp = 543;
-  static const int seaTradeRoute = 69;
-  static const int landTradeRoute = 70;
   static const int baseLocalGoodId = 316;
   static const int baseEmpireGoodId = 10;
 };
