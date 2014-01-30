@@ -24,7 +24,7 @@
 
 #include <string>
 #include <windows.h>
-#include "Psapi.h"
+#include <psapi.h>
 
 namespace updater
 {
@@ -104,51 +104,7 @@ bool Util::caesariaIsRunning()
 
 	return false;
 }
-
-bool Util::DarkRadiantIsRunning()
-{
-	DWORD processes[1024];
-	DWORD num;
-
-	if (!EnumProcesses(processes, sizeof(processes), &num))
-	{
-		return false;
-	}
-
-	// Iterate over the processes
-	for (int i = 0; i < int(num/sizeof(DWORD)); i++)
-	{
-		char szProcessName[MAX_PATH] = "unknown";
-
-		// Get the handle for this process
-		HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, FALSE, processes[i]);
-
-		if (hProcess)
-		{
-			HMODULE hMod;
-			DWORD countBytes;
-
-			if (EnumProcessModules(hProcess, &hMod, sizeof(hMod), &countBytes))
-			{
-				GetModuleBaseNameA(hProcess, hMod, szProcessName, sizeof(szProcessName));
-
-				std::string processName(szProcessName);
-				processName = StringHelper::localeLower( processName );
-
-				if (processName == "darkradiant.exe")
-				{
-					CloseHandle(hProcess); // close the handle, we're terminating
-					return true;
-				}
-			}
-		}
-
-		CloseHandle(hProcess);
-	}
-
-	return false;
-}
-
+    
 } // namespace
 
 #elif defined(CAESARIA_PLATFORM_LINUX)
@@ -216,7 +172,7 @@ bool Util::caesariaIsRunning()
 
 	for( vfs::Entries::ConstItemIt i= procs.begin(); i != procs.end(); ++i)
 	{
-		if(CheckProcessFile(i->name.toString(), caesariaProcessName)) // grayman - looking for tdm now instead of doom3
+		if(CheckProcessFile(i->name.toString(), caesariaProcessName)) // grayman - looking for caesaria
 		{
 			return true;
 		}
@@ -234,6 +190,7 @@ bool Util::caesariaIsRunning()
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "core/logger.hpp"
 #include <sys/sysctl.h>
 
 namespace updater
@@ -251,7 +208,7 @@ bool FindProcessByName(const char* processName)
 	
 	if (err == -1)
 	{
-		TraceLog::WriteLine(LOG_ERROR, "Failed to receive buffer size for process list.");
+        Logger::warning("Failed to receive buffer size for process list.");
 		return false;
 	}
 	
@@ -259,7 +216,7 @@ bool FindProcessByName(const char* processName)
 	
 	if (procList == NULL)
 	{
-		TraceLog::WriteLine(LOG_ERROR, "Out of Memory trying to allocate process buffer");
+        Logger::warning( "Out of Memory trying to allocate process buffer");
 		return false;
 	}
 	
@@ -285,15 +242,9 @@ bool FindProcessByName(const char* processName)
 	return result;
 }
 
-bool Util::TDMIsRunning()
+bool Util::caesariaIsRunning()
 {
-	return FindProcessByName("thedarkmod"); // grayman - look for TDM instead of "Doom 3".
-}
-
-bool Util::DarkRadiantIsRunning()
-{
-	// DarkRadiant isn't existing in Mac so far
-	return FindProcessByName("DarkRadiant");
+	return FindProcessByName("caesaria.macosx"); // grayman - look for caesaria
 }
 
 } // namespace

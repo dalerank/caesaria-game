@@ -411,11 +411,11 @@ static long dprintf_Pass1(const char *format, va_stack_t *vto, char **endpos,
         case 'z':
           /* the code below generates a warning if -Wunreachable-code is
              used */
-#if (SIZEOF_SIZE_T > CURL_SIZEOF_LONG)
-          flags |= FLAGS_LONGLONG;
-#else
+//#if (SIZEOF_SIZE_T > CURL_SIZEOF_LONG)
+//          flags |= FLAGS_LONGLONG;
+//#else
           flags |= FLAGS_LONG;
-#endif
+//#endif
           break;
         case 'O':
 #if (CURL_SIZEOF_CURL_OFF_T > CURL_SIZEOF_LONG)

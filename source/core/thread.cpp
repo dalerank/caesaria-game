@@ -16,7 +16,7 @@
 #include "thread.hpp"
 #include "requirements.hpp"
 
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef CAESARIA_PLATFORM_UNIX
 extern "C"
 {
  int	usleep(useconds_t useconds);
@@ -790,7 +790,7 @@ bool Thread::Start()
 			m_state = ThreadStateFault;
 			return false;
 		}
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(CAESARIA_PLATFORM_UNIX	)
 		pthread_attr_t attr;
 
 		pthread_attr_init(&attr);
@@ -1015,7 +1015,7 @@ ThreadID Thread::getID()
 #ifdef CAESARIA_PLATFORM_WIN
 	thisThreadsId = (ThreadID)GetCurrentThreadId();
 #else
-	thisThreadsId = pthread_self();
+	thisThreadsId = (ThreadID)pthread_self();
 #endif
 	return thisThreadsId;
 }

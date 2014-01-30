@@ -19,7 +19,7 @@
 #include "platform.hpp"
 #include "predefinitions.hpp"
 
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef CAESARIA_PLATFORM_UNIX
 	#include <pthread.h>
 #elif defined(CAESARIA_PLATFORM_WIN)
 	#include <windows.h>
@@ -31,7 +31,7 @@ private:
 
 #ifdef CAESARIA_PLATFORM_WIN
 	HANDLE m_mutex;
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(CAESARIA_PLATFORM_UNIX)
 	pthread_mutex_t m_mutex;
 #endif
 

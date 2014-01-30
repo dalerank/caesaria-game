@@ -64,8 +64,10 @@ public:
   static const int houseBtnPicId = 123;
   static const int helpInfBtnPicId = 528;
   static const int exitInfBtnPicId = 532;
-  static const int okBtnPicId = 239;
-  static const int cancelBtnPicId = 243;
+  enum {
+    okBtnPicId = 239,
+    cancelBtnPicId = 243
+  };
 
   static const int houseMidPicId = 1;
   static const int clearMidPicId = 12;
@@ -87,8 +89,10 @@ class PicID
 public:
   static const int bad = 0;
   static const int empireStamp = 543;
-  static const int seaTradeRoute = 69;
-  static const int landTradeRoute = 70;
+  enum {
+    seaTradeRoute = 69,
+    landTradeRoute = 70
+  };
   static const int baseLocalGoodId = 316;
   static const int baseEmpireGoodId = 10;
 };

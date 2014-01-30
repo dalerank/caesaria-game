@@ -250,7 +250,7 @@ TilePos Fort::getFreeSlot() const
 
   if( !tiles.empty() )
   {
-    int step = rand() % std::min( tiles.size(), _d->maxSoldier );
+    int step = rand() % std::min<int>( tiles.size(), _d->maxSoldier );
     TilesArray::iterator it = tiles.begin();
     std::advance( it, step );
     return (*it)->getIJ();

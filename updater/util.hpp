@@ -63,11 +63,8 @@ public:
 		Sleep(millisecs);
 	}
 
-	// Platform-dependent process check routine (grayman - searches for TheDarkMod executable among active processes)
+	// Platform-dependent process check routine (grayman - searches for caesaria executable among active processes)
 	static bool caesariaIsRunning();
-
-	// Platform-dependent process check routine (searches for the DarkRadiant executable among active processes)
-	static bool DarkRadiantIsRunning();
 };
 
 } // end namespace updater
