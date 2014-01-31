@@ -32,9 +32,9 @@ public:
   virtual VariantMap save() const;
 
 private:
-  VariantMap _options;
   PlayerCityPtr _city;
   int _minPopulation, _maxPopulation;
+  std::string _tutorial;
 };
 
 }

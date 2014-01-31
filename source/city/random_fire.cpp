@@ -16,6 +16,8 @@
 #include "random_fire.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "game/gamedate.hpp"
+#include "gui/tutorial_window.hpp"
 
 namespace events
 {
@@ -34,7 +36,22 @@ GameEventPtr RandomFire::create( PlayerCityPtr city, const VariantMap& options )
 
 void RandomFire::update(unsigned int time)
 {
+  if( time % GameDate::getTickInMonth() == 0 )
+  {
+    int population = _city->getPopulation();
+    if( population > _minPopulation && population < _maxPopulation )
+    {
 
+
+    }
+  }
+}
+
+void RandomFire::load(const VariantMap& stream)
+{
+  VariantList vl = stream.get( "population" ).toList();
+  _minPopulation = vl.get( 0, 0 ).toInt();
+  _maxPopulation = vl.get( 1, 999999 ).toInt();
 }
 
 }
