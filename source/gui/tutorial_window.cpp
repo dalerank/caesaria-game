@@ -13,34 +13,37 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_POSTPONEEVENT_H_INCLUDE_
-#define _CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#include <cstdio>
 
-#include "event.hpp"
+#include "tutorial_window.hpp"
+#include "core/saveadapter.hpp"
+#include "listbox.hpp"
+#include "core/foreach.hpp"
 
-namespace events
+namespace gui
 {
 
-class PostponeEvent : public GameEvent
+TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
+  : Widget( parent, -1, Rect( 0, 0, 590, 450 ))
 {
-public:
-  static GameEventPtr create( const VariantMap& stream );
+  setupUI( "/gui/tutorial_window.gui" );
 
-  virtual ~PostponeEvent();
-  virtual void exec( Game& game );
-  virtual bool mayExec( Game& game, unsigned int time ) const;
-  virtual bool isDeleted() const;
+  ListBox* lbx = findChild<ListBox*>( "lbxHelp", true );
 
-  virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream );
+  if( !lbx )
+    return;
 
-private:
-  PostponeEvent();
+  VariantMap vm = SaveAdapter::load( tutorial );
+  VariantList items = vm.get( "items" ).toList();
 
-  class Impl;
-  ScopedPtr<Impl> _d;
-};
-
+  foreach( it, items )
+  {
+    lbx->addItem( it->toString() );
+  }
 }
 
-#endif //_CAESARIA_POSTPONEEVENT_H_INCLUDE_
+TutorialWindow::~TutorialWindow()
+{
+}
+
+}//end namespace gui

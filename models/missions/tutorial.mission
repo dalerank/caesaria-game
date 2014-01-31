@@ -16,7 +16,7 @@
     short : "##build_some_houses##"
 		maxHouseLevel : "big_villa"
     caption : "##new_village##"
-    overview : [ "##tutorial_text##" ]
+    overview : [ "##tutorial_text##", "@img=picture2_00001.png" ]
 	}
 	
 	empire : {}
@@ -26,11 +26,9 @@
     "Jan.350" : {
       date : "-350.01.01"
       type : "fire"
-      condition :
-      { 
-        population : [ 80, 999 ]
-      }
+      population : [ 80, 999 ]
       random_fire : true
+      tutorial : "/tutorial/first_fire.tutorial"
     }
     
 		"Jul.348" : {			

@@ -18,6 +18,7 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "city/requestdispatcher.hpp"
+#include "city/random_fire.hpp"
 
 namespace events
 {
@@ -44,9 +45,9 @@ PostponeEvent::~PostponeEvent(){}
 
 void PostponeEvent::exec(Game& game)
 {
+  PlayerCityPtr city = game.getCity();
   if( (bool)_d->options.get( "city_request" ) )
-  {
-    PlayerCityPtr city = game.getCity();
+  {    
     CityServicePtr service = city->findService( CityRequestDispatcher::getDefaultName() );
     CityRequestDispatcherPtr dispatcher = ptr_cast<CityRequestDispatcher>( service );
 
@@ -57,11 +58,11 @@ void PostponeEvent::exec(Game& game)
   }
   else if( (bool)_d->options.get( "random_fire" ) )
   {
-
+    GameEventPtr e = RandomFire::create( city )
   }
 }
 
-bool PostponeEvent::mayExec(unsigned int) const{  return _d->date <= GameDate::current();}
+bool PostponeEvent::mayExec( Game& game, unsigned int ) const{  return _d->date <= GameDate::current();}
 bool PostponeEvent::isDeleted() const{  return _d->date <= GameDate::current(); }
 VariantMap PostponeEvent::save() const {  return _d->options; }
 

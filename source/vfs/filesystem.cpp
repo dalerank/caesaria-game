@@ -190,6 +190,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   archive = _d->changeArchivePassword(filename, password );
   if( archive.isValid() )
   {
+    Logger::warning( "Open archive " + filename.getAbsolutePath().toString() );
     return archive;
   }
 
@@ -295,7 +296,10 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
                                  const std::string& password)
 {
   if( !file.isOpen() || archiveType == Archive::folder)
-  return ArchivePtr();
+  {
+    Logger::warning( "Cannot open archive " + file.getFileName().getAbsolutePath().toString() );
+    return ArchivePtr();
+  }
 
   if( file.isOpen() )
   {

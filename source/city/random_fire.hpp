@@ -13,34 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_POSTPONEEVENT_H_INCLUDE_
-#define _CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#ifndef _CAESARIA_RANDOMFIRE_H_INCLUDE_
+#define _CAESARIA_RANDOMFIRE_H_INCLUDE_
 
-#include "event.hpp"
+#include "cityservice.hpp"
+#include "city.hpp"
 
 namespace events
 {
 
-class PostponeEvent : public GameEvent
+class RandomFire : public CityService
 {
 public:
-  static GameEventPtr create( const VariantMap& stream );
+  static CityServicePtr create( PlayerCityPtr city, const VariantMap& options );
+  virtual bool update(unsigned int time) const;
 
-  virtual ~PostponeEvent();
-  virtual void exec( Game& game );
-  virtual bool mayExec( Game& game, unsigned int time ) const;
-  virtual bool isDeleted() const;
-
+  virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream );
 
 private:
-  PostponeEvent();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  VariantMap _options;
+  PlayerCityPtr _city;
+  int _minPopulation, _maxPopulation;
 };
 
 }
 
-#endif //_CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#endif //_CAESARIA_RANDOMFIRE_H_INCLUDE_

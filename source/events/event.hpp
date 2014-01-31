@@ -31,7 +31,7 @@ class GameEvent : public ReferenceCounted
 {
 public:
   virtual void exec( Game& game ) = 0;
-  virtual bool mayExec( unsigned int time ) const { return true; }
+  virtual bool mayExec( Game& game, unsigned int time ) const { return true; }
   virtual bool isDeleted() const { return true; }
 
   void dispatch();
