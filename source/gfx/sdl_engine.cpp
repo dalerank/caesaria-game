@@ -226,17 +226,10 @@ void GfxSdlEngine::resetTileDrawMask()
 
 Picture* GfxSdlEngine::createPicture(const Size& size )
 {
-  SDL_Surface* img;
-  //img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32, 
-  //                            0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF );
-  img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32, 
-                              0, 0, 0, 0 );
+  SDL_Surface* img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32,
+                                           0, 0, 0, 0 );
 
-  
-  if (img == NULL)
-  {
-    THROW( "Cannot make surface, size=" << size.getWidth() << "x" << size.getHeight() );
-  }
+  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "Cannot make surface, size=%dx%d", size.getWidth(), size.getHeight() ) );
 
   Picture *pic = new Picture();
   pic->init(img, Point( 0, 0 ));  // no offset

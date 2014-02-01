@@ -21,6 +21,7 @@
 #include "core/rectangle.hpp"
 #include "core/alignment.hpp"
 #include "core/scopedptr.hpp"
+#include "core/stringarray.hpp"
 #include "core/color.hpp"
 
 class Picture;
@@ -66,6 +67,7 @@ public:
   unsigned int getWidthFromCharacter( char c ) const;
   int getCharacterFromPos(const std::string& text, int pixel_x) const;
   unsigned int getKerningHeight() const;
+  StringArray breakText( const std::string& text, int pixelLength );
 private:
   class Impl;
   ScopedPtr< Impl > _d;

@@ -70,7 +70,10 @@ void Picture::init(SDL_Surface *surface, const Point& offset )
 {
   _d->surface = surface;
   _d->offset = offset;
-  _d->size = Size( _d->surface->w, _d->surface->h );
+  if( _d->surface != 0 )
+  {
+    _d->size = Size( _d->surface->w, _d->surface->h );
+  }
 }
 
 void Picture::setOffset( Point offset ) { _d->offset = offset; }

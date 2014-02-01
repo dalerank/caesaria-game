@@ -13,12 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <cstdio>
-
 #include "tutorial_window.hpp"
 #include "core/saveadapter.hpp"
 #include "listbox.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
+#include "game/settings.hpp"
+#include "core/stringhelper.hpp"
+#include "core/gettext.hpp"
+#include "texturedbutton.hpp"
 
 namespace gui
 {
@@ -26,19 +29,29 @@ namespace gui
 TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
   : Widget( parent, -1, Rect( 0, 0, 590, 450 ))
 {
-  setupUI( "/gui/tutorial_window.gui" );
+  _locker.activate();
+
+  setupUI( GameSettings::rcpath( "/gui/tutorial_window.gui" ) );
+  Size pSize = getParent()->getSize() - getSize();
+  setPosition( Point( pSize.getWidth() / 2, pSize.getHeight() / 2 ) );
 
   ListBox* lbx = findChild<ListBox*>( "lbxHelp", true );
+  TexturedButton* btn = findChild<TexturedButton*>( "btnExit", true );
+  CONNECT( btn, onClicked(), this, TutorialWindow::deleteLater );
 
   if( !lbx )
     return;
 
-  VariantMap vm = SaveAdapter::load( tutorial );
-  VariantList items = vm.get( "items" ).toList();
+  VariantMap vm = SaveAdapter::load( GameSettings::rcpath( tutorial.toString() ) );
+  Logger::warningIf( vm.empty(), "Cannot load tutorial description from " + tutorial.toString() );
+
+  StringArray items = vm.get( "items" ).toStringArray();
 
   foreach( it, items )
   {
-    lbx->addItem( it->toString() );
+    std::string text = *it;
+    if( text.substr( 0, 5 ) == "@img=" ) { lbx->addItem( Picture::load( text.substr( 5 ) ) ); }
+    else { lbx->fitText( _( text ) ); }
   }
 }
 

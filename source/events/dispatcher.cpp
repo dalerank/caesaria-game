@@ -54,7 +54,7 @@ void Dispatcher::append( GameEventPtr event)
   }
 }
 
-void Dispatcher::update(unsigned int time)
+void Dispatcher::update( unsigned int time )
 {
   for( Impl::Events::iterator it=_d->events.begin(); it != _d->events.end();  )
   {

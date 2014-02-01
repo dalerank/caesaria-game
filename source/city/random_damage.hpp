@@ -13,19 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_LOCALE_H_INCLUDED__
-#define __CAESARIA_LOCALE_H_INCLUDED__
+#ifndef _CAESARIA_RANDOMDAMAGE_H_INCLUDE_
+#define _CAESARIA_RANDOMDAMAGE_H_INCLUDE_
 
-#include "vfs/directory.hpp"
+#include "cityservice.hpp"
+#include "city.hpp"
 
-class Locale
+class RandomDamage : public CityService
 {
 public:
-  static void setDirectory( vfs::Directory directory );
-  static void setLanguage(std::string language);
-  static void addTranslation(std::string filename);
-  static const char* translate( const std::string& text);
+  static CityServicePtr create( PlayerCityPtr city, const VariantMap& options );
+  virtual void update( const unsigned int time);
+
+  virtual bool isDeleted() const;
+
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
+
+private:
+  RandomDamage();
+
+  PlayerCityPtr _city;
+  int _minPopulation, _maxPopulation;
+  std::string _tutorial;
+  bool _isDeleted;
 };
 
-
-#endif //__CAESARIA_LOCALE_H_INCLUDED__
+#endif //_CAESARIA_RANDOMDAMAGE_H_INCLUDE_

@@ -28,7 +28,7 @@ public:
 
   virtual ~PostponeEvent();
   virtual void exec( Game& game );
-  virtual bool mayExec( Game& game, unsigned int time ) const;
+  virtual bool mayExec( unsigned int time ) const;
   virtual bool isDeleted() const;
 
   virtual VariantMap save() const;

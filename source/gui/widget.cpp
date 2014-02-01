@@ -136,7 +136,7 @@ void Widget::_resizeEvent()
 void Widget::setPosition( const Point& position )
 {
 	const Rect rectangle( position, getSize() );
-    setGeometry( rectangle );
+	setGeometry( rectangle );
 }
 
 void Widget::setGeometry( const RectF& r, GeometryType mode )
@@ -570,6 +570,7 @@ void Widget::setupUI( const VariantMap& ui )
     RectF r = tmp.toRectf();
     if( r.getWidth() > 1 && r.getHeight() > 1)
     {
+      r = RectF( 0, 0, 1, 1 );
       Logger::warning( "Incorrect geometryf values [%f, %f, %f, %f]",
                        r.getLeft(), r.getTop(), r.getRight(), r.getBottom() );
     }

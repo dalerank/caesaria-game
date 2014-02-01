@@ -66,9 +66,14 @@ const double RADTODEG64 = 180.0 / PI64;
 /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
 \param radians	The radians value to convert to degrees.
 */
-inline float radToDeg( float radians)
+inline float rad2Degf( float radians)
 {
 	return RADTODEG * radians;
+}
+
+inline int random( int max )
+{
+	return std::rand() % max;
 }
 
 template <class T>
@@ -81,7 +86,7 @@ inline T clamp (const T& value, const T& low, const T& high)
 /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
 \param radians	The radians value to convert to degrees.
 */
-inline double radToDeg64( double radians)
+inline double rad2Degaq( double radians)
 {
 	return RADTODEG64 * radians;
 }

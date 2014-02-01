@@ -120,7 +120,11 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
   _d->lbPopulation->setText( text );
 
   foreach( it, wint.getOverview() )
-    _d->lbxHelp->addItem( _( *it ) );
+  {
+    std::string text = *it;
+    if( text.substr( 0, 5 ) == "@img=" ) { _d->lbxHelp->addItem( Picture::load( text.substr( 5 ) ) ); }
+    else { _d->lbxHelp->fitText( _( text ) ); }
+  }
 
   _d->lbShortDesc->setText( wint.getShortDesc() );
 }

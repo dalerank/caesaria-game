@@ -18,14 +18,14 @@
 
 #include <vector>
 #include <string>
-#include <algorithm>
+#include "core/math.hpp"
 
 class StringArray : public std::vector< std::string >
 {
 public:
   std::string rand() const
   {
-    return empty() ? "" : at( random() % size() );
+    return empty() ? "" : at( math::random( size() ) );
   }
 };
 

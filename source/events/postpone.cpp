@@ -19,6 +19,7 @@
 #include "city/city.hpp"
 #include "city/requestdispatcher.hpp"
 #include "city/random_fire.hpp"
+#include "city/random_damage.hpp"
 
 namespace events
 {
@@ -58,11 +59,17 @@ void PostponeEvent::exec(Game& game)
   }
   else if( (bool)_d->options.get( "random_fire" ) )
   {
-    GameEventPtr e = RandomFire::create( city )
+    CityServicePtr srvc = RandomFire::create( city, _d->options );
+    city->addService( srvc );
+  }
+  else if( (bool)_d->options.get( "random_collapse" ) )
+  {
+    CityServicePtr srvc = RandomDamage::create( city, _d->options );
+    city->addService( srvc );
   }
 }
 
-bool PostponeEvent::mayExec( Game& game, unsigned int ) const{  return _d->date <= GameDate::current();}
+bool PostponeEvent::mayExec( unsigned int ) const{  return _d->date <= GameDate::current();}
 bool PostponeEvent::isDeleted() const{  return _d->date <= GameDate::current(); }
 VariantMap PostponeEvent::save() const {  return _d->options; }
 

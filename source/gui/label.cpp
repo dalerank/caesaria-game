@@ -603,10 +603,7 @@ Label::BackgroundMode Label::getBackgroundMode() const
   return _d->backgroundMode;
 }
 
-bool Label::isBorderVisible() const
-{
-  return _d->isBorderVisible;
-}
+bool Label::isBorderVisible() const {  return _d->isBorderVisible; }
 
 void Label::setPrefixText( const string& prefix )
 {

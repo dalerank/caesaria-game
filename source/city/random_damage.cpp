@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "random_fire.hpp"
+#include "random_damage.hpp"
 #include "game/game.hpp"
 #include "city/helper.hpp"
 #include "game/gamedate.hpp"
@@ -22,9 +22,9 @@
 
 using namespace constants;
 
-CityServicePtr RandomFire::create( PlayerCityPtr city, const VariantMap& options )
+CityServicePtr RandomDamage::create( PlayerCityPtr city, const VariantMap& options )
 {
-  RandomFire* e = new RandomFire();
+  RandomDamage* e = new RandomDamage();
   e->_city = city;
   e->load( options );
 
@@ -34,7 +34,7 @@ CityServicePtr RandomFire::create( PlayerCityPtr city, const VariantMap& options
   return ret;
 }
 
-void RandomFire::update( const unsigned int time)
+void RandomDamage::update( const unsigned int time)
 {
   if( time % GameDate::getTickInMonth() == 0 && !_isDeleted )
   {
@@ -48,7 +48,7 @@ void RandomFire::update( const unsigned int time)
       {
         HouseList::iterator it = houses.begin();
         std::advance( it, math::random( houses.size() ) );
-        (*it)->burn();
+        (*it)->collapse();
       }
 
       if( !_tutorial.empty() )
@@ -60,12 +60,12 @@ void RandomFire::update( const unsigned int time)
   }
 }
 
-bool RandomFire::isDeleted() const
+bool RandomDamage::isDeleted() const
 {
   return _isDeleted;
 }
 
-void RandomFire::load(const VariantMap& stream)
+void RandomDamage::load(const VariantMap& stream)
 {
   VariantList vl = stream.get( "population" ).toList();
   _minPopulation = vl.get( 0, 0 ).toInt();
@@ -73,12 +73,12 @@ void RandomFire::load(const VariantMap& stream)
   _tutorial = stream.get( "tutorial" ).toString();
 }
 
-VariantMap RandomFire::save() const
+VariantMap RandomDamage::save() const
 {
   return VariantMap();
 }
 
-RandomFire::RandomFire() : CityService("randomFire")
+RandomDamage::RandomFire() : CityService("randomDamage")
 {
   _isDeleted = false;
 }

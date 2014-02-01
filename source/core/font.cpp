@@ -343,3 +343,222 @@ void FontCollection::initialize(const std::string &resourcePath)
   addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path, 28, black);
 }
 
+static StringArray _font_breakText(const std::string& text, const Font& f, int elWidth, bool RightToLeft )
+{
+  StringArray brokenText;
+
+  Font font = f;
+
+  if( !font.isValid() )
+  {
+    Logger::warning( "StringHelper::breakText font must be exists" );
+    brokenText.push_back( text );
+    return brokenText;
+  }
+
+  std::string line;
+  std::string word;
+  std::string rwhitespace;
+  std::string rText = text;
+  int size = rText.size();
+  int length = 0;
+
+  char c;
+
+	// We have to deal with right-to-left and left-to-right differently
+	// However, most parts of the following code is the same, it's just
+	// some order and boundaries which change.
+	if( !RightToLeft)
+	{
+		// regular (left-to-right)
+		for (int i=0; i<size; ++i)
+		{
+			c = rText[i];
+			bool lineBreak = false;
+
+			if( c == '\r' ) // Mac or Windows breaks
+			{
+				lineBreak = true;
+				if (rText[i+1] == '\n') // Windows breaks
+				{
+					rText.erase(i+1);
+					--size;
+				}
+				c = '\0';
+			}
+			else if (c == '\n') // Unix breaks
+			{
+				lineBreak = true;
+				c = '\0';
+			}
+
+			bool isWhitespace = (c == ' ' || c == 0);
+			if ( !isWhitespace )
+			{
+				// part of a word
+				word += c;
+			}
+
+			if ( isWhitespace || i == (size-1))
+			{
+				if (word.size())
+				{
+					// here comes the next whitespace, look if
+					// we must break the last word to the next line.
+					const int whitelgth = font.getSize( rwhitespace ).getWidth();
+					const int wordlgth = font.getSize( word ).getWidth();
+
+					if (wordlgth > elWidth)
+					{
+						// This word is too long to fit in the available space, look for
+						// the Unicode Soft HYphen (SHY / 00AD) character for a place to
+						// break the word at
+						int where = word.find_first_of( char(0xAD) );
+						if (where != -1)
+						{
+							std::string first  = word.substr(0, where);
+							std::string second = word.substr(where, word.size() - where);
+							brokenText.push_back(line + first + "-");
+							const int secondLength = font.getSize( second ).getWidth();
+
+							length = secondLength;
+							line = second;
+						}
+						else
+						{
+							// No soft hyphen found, so there's nothing more we can do
+							// break to next line
+							if (length)
+								brokenText.push_back(line);
+							length = wordlgth;
+							line = word;
+						}
+					}
+					else if (length && (length + wordlgth + whitelgth > elWidth))
+					{
+						// break to next line
+						brokenText.push_back(line);
+						length = wordlgth;
+						line = word;
+					}
+					else
+					{
+						// add word to line
+						line += rwhitespace;
+						line += word;
+						length += whitelgth + wordlgth;
+					}
+
+					word = "";
+					rwhitespace = "";
+				}
+
+				if ( isWhitespace )
+				{
+					rwhitespace += c;
+				}
+
+				// compute line break
+				if (lineBreak)
+				{
+					line += rwhitespace;
+					line += word;
+					brokenText.push_back(line);
+					line = "";
+					word = "";
+					rwhitespace = "";
+					length = 0;
+				}
+			}
+		}
+
+		line += rwhitespace;
+		line += word;
+		brokenText.push_back(line);
+	}
+	else
+	{
+		// right-to-left
+		for (int i=size; i>=0; --i)
+		{
+			c = rText[i];
+			bool lineBreak = false;
+
+			if(c == '\r') // Mac or Windows breaks
+			{
+				lineBreak = true;
+				if( (i>0) && rText[i-1] == '\n' ) // Windows breaks
+				{
+					rText.erase(i-1);
+					--size;
+				}
+				c = '\0';
+			}
+			else if (c == '\n') // Unix breaks
+			{
+				lineBreak = true;
+				c = '\0';
+			}
+
+			if (c==' ' || c==0 || i==0)
+			{
+				if (word.size())
+				{
+					// here comes the next whitespace, look if
+					// we must break the last word to the next line.
+					const int whitelgth = font.getSize( rwhitespace ).getWidth();
+					const int wordlgth = font.getSize( word ).getWidth();
+
+					if (length && (length + wordlgth + whitelgth > elWidth))
+					{
+						// break to next line
+						brokenText.push_back(line);
+						length = wordlgth;
+						line = word;
+					}
+					else
+					{
+						// add word to line
+						line = rwhitespace + line;
+						line = word + line;
+						length += whitelgth + wordlgth;
+					}
+
+					word = "";
+					rwhitespace = "";
+				}
+
+				if (c != 0)
+					rwhitespace = std::string(&c, 1) + rwhitespace;
+
+				// compute line break
+				if (lineBreak)
+				{
+					line = rwhitespace + line;
+					line = word + line;
+					brokenText.push_back(line);
+					line = "";
+					word = "";
+					rwhitespace = "";
+					length = 0;
+				}
+			}
+			else
+			{
+				// yippee this is a word..
+				word = std::string(&c, 1) + word;
+			}
+		}
+
+		line = rwhitespace + line;
+		line = word + line;
+		brokenText.push_back(line);
+	}
+
+	return brokenText;
+}
+
+StringArray Font::breakText(const std::string& text, int pixelLength)
+{
+	return _font_breakText( text, *this, pixelLength, false );
+}

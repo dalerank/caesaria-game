@@ -9,9 +9,15 @@
     lbTitle#Label :
     {
       font : "FONT_2"
-      geometryf : [ 10, 10, 580, 70 ]
+      geometry : [ 10, 10, 580, 70 ]
       text : "##title##"
       textAlign : [ "center", "center" ]
+    }
+    
+    imgAdvisor#Image : {
+      geometry : [ 10, 10, 70, 70 ]
+      image : "picture2_00001.png"
+      mode : "image"
     }
        
     btnHelp#TexturedButton :

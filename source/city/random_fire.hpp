@@ -19,24 +19,24 @@
 #include "cityservice.hpp"
 #include "city.hpp"
 
-namespace events
-{
-
 class RandomFire : public CityService
 {
 public:
   static CityServicePtr create( PlayerCityPtr city, const VariantMap& options );
-  virtual bool update(unsigned int time) const;
+  virtual void update( const unsigned int time);
+
+  virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
 
 private:
+  RandomFire();
+
   PlayerCityPtr _city;
   int _minPopulation, _maxPopulation;
   std::string _tutorial;
+  bool _isDeleted;
 };
-
-}
 
 #endif //_CAESARIA_RANDOMFIRE_H_INCLUDE_
