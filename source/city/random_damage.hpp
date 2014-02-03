@@ -22,7 +22,7 @@
 class RandomDamage : public CityService
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city, const VariantMap& options );
+  static CityServicePtr create( PlayerCityPtr city );
   virtual void update( const unsigned int time);
 
   virtual bool isDeleted() const;
@@ -35,7 +35,7 @@ private:
 
   PlayerCityPtr _city;
   int _minPopulation, _maxPopulation;
-  std::string _tutorial;
+  VariantMap _events;
   bool _isDeleted;
 };
 

@@ -37,6 +37,8 @@ public:
   int getFavour() const;
   int getPeace() const;
   std::string getShortDesc() const;
+  std::string getNextMission() const;
+  std::string getNewTitle() const;
   int getPopulation() const;
   const StringArray& getOverview() const;
 

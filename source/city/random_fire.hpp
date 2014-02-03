@@ -17,12 +17,13 @@
 #define _CAESARIA_RANDOMFIRE_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "city.hpp"
+#include "predefinitions.hpp"
+#include "core/scopedptr.hpp"
 
 class RandomFire : public CityService
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city, const VariantMap& options );
+  static CityServicePtr create(PlayerCityPtr city);
   virtual void update( const unsigned int time);
 
   virtual bool isDeleted() const;
@@ -33,10 +34,8 @@ public:
 private:
   RandomFire();
 
-  PlayerCityPtr _city;
-  int _minPopulation, _maxPopulation;
-  std::string _tutorial;
-  bool _isDeleted;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_RANDOMFIRE_H_INCLUDE_

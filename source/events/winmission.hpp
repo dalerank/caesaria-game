@@ -13,34 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_POSTPONEEVENT_H_INCLUDE_
-#define _CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
+#define _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class PostponeEvent : public GameEvent
+class WinMission : public GameEvent
 {
 public:
-  static GameEventPtr create(const std::string& type, const VariantMap& stream );
-
-  virtual ~PostponeEvent();
+  static GameEventPtr create();
   virtual void exec( Game& game );
-  virtual bool mayExec( unsigned int time ) const;
-  virtual bool isDeleted() const;
-
-  virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream );
-
-private:
-  PostponeEvent();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
 };
 
 }
 
-#endif //_CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#endif //_CAESARIA_EVENT_SHOWTILEINFO_H_INCLUDE_

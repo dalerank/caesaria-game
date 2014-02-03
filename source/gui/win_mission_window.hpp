@@ -13,34 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_POSTPONEEVENT_H_INCLUDE_
-#define _CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#ifndef _CAESARIA_WINMISSION_WINDOW_H_INCLUDE_
+#define _CAESARIA_WINMISSION_WINDOW_H_INCLUDE_
 
-#include "event.hpp"
+#include "widget.hpp"
+#include "gameautopause.hpp"
+#include "core/signals.hpp"
 
-namespace events
+namespace gui
 {
 
-class PostponeEvent : public GameEvent
+class WinMissionWindow : public Widget
 {
 public:
-  static GameEventPtr create(const std::string& type, const VariantMap& stream );
+  WinMissionWindow(Widget* parent, std::string newTitle,
+                    bool mayContinue);
+  virtual ~WinMissionWindow();
 
-  virtual ~PostponeEvent();
-  virtual void exec( Game& game );
-  virtual bool mayExec( unsigned int time ) const;
-  virtual bool isDeleted() const;
-
-  virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream );
+public oc3_signals:
+  Signal0<>& onAcceptAssign();
+  Signal1<int>& onContinueRules();
 
 private:
-  PostponeEvent();
-
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-}
-
-#endif //_CAESARIA_POSTPONEEVENT_H_INCLUDE_
+}//end namespace gui
+#endif //_CAESARIA_WINMISSION_WINDOW_H_INCLUDE_

@@ -64,7 +64,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     VariantMap vm_events = vm[ "events" ].toMap();
     for( VariantMap::iterator it=vm_events.begin(); it != vm_events.end(); it++ )
     {
-      events::GameEventPtr e = events::PostponeEvent::create( it->second.toMap() );
+      events::GameEventPtr e = events::PostponeEvent::create( it->first, it->second.toMap() );
       e->dispatch();
     }
 

@@ -13,19 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "showtutorialwindow.hpp"
+#include "winmission.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
-#include "gui/tutorial_window.hpp"
+#include "gui/win_mission_window.hpp"
+#include "city/win_targets.hpp"
 #include "gui/environment.hpp"
+#include "core/logger.hpp"
 
 namespace events
 {
 
-GameEventPtr ShowTutorialWindow::create(std::string tutorial )
+GameEventPtr WinMission::create()
 {
-  ShowTutorialWindow* e = new ShowTutorialWindow();
-  e->_tutorial = tutorial;
+  WinMission* e = new WinMission();
 
   GameEventPtr ret( e );
   ret->drop();
@@ -33,18 +34,18 @@ GameEventPtr ShowTutorialWindow::create(std::string tutorial )
   return ret;
 }
 
-void ShowTutorialWindow::load(const VariantMap& opt)
+void WinMission::exec(Game& game)
 {
-  _tutorial = opt.get( "tutorial" ).toString();
-}
+  Logger::warning( "WinMission: exec ");
+  PlayerCityPtr city = game.getCity();
 
-void ShowTutorialWindow::exec(Game& game)
-{
-  if( _tutorial.empty() )
-    return;
+  const CityWinTargets& wt = city->getWinTargets();
+  std::string nextMission = wt.getNextMission();
+  std::string newTitle = wt.getNewTitle();
 
-  gui::TutorialWindow* wnd = new gui::TutorialWindow( game.getGui()->getRootWidget(), _tutorial );
-  wnd->show();
+  gui::WinMissionWindow* wnd = new gui::WinMissionWindow( game.getGui()->getRootWidget(), newTitle, false );
+
+  //CONNECT( wnd, onNextMission(), &game, Game::load);
 }
 
 }

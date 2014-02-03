@@ -120,7 +120,6 @@ void CityBuildOptions::clear()
 
 void CityBuildOptions::load(const VariantMap& options)
 {
-
   setGroupAvaible( BM_FARM, options.get( "farm" ) );
   setGroupAvaible( BM_RAW_MATERIAL, options.get( "raw_material" ) );
   setGroupAvaible( BM_FACTORY, options.get( "factory" ) );

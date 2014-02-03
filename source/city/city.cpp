@@ -22,6 +22,7 @@
 #include "objects/metadata.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/exception.hpp"
+#include "events/winmission.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
@@ -68,7 +69,7 @@
 #include "objects/house.hpp"
 #include "world/empiremap.hpp"
 #include "walker/seamerchant.hpp"
-#include "city/requestdispatcher.hpp"
+#include "requestdispatcher.hpp"
 #include <set>
 
 using namespace constants;
@@ -171,6 +172,7 @@ public:
   // collect taxes from all houses
   void collectTaxes( PlayerCityPtr city);
   void payWages( PlayerCityPtr city );
+  void monthStep( PlayerCityPtr city, const DateTime& time );
   void calculatePopulation( PlayerCityPtr city );
   void beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay );
 
@@ -216,7 +218,7 @@ void PlayerCity::timeStep( unsigned int time )
   if( _d->lastMonthCount != GameDate::current().month() )
   {
     _d->lastMonthCount = GameDate::current().month();
-    monthStep( GameDate::current() );
+    _d->monthStep( this, GameDate::current() );
   }
 
   //update walkers access map
@@ -313,16 +315,17 @@ void PlayerCity::timeStep( unsigned int time )
   }
 }
 
-void PlayerCity::monthStep( const DateTime& time )
+void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 {
-  _d->collectTaxes( this );
-  _d->calculatePopulation( this );
-  _d->payWages( this );
+  collectTaxes( city );
+  calculatePopulation( city );
+  payWages( city );
 
-  _d->funds.resolveIssue( FundIssue( CityFunds::playerSalary, -_d->player->getSalary() ) );
-  _d->player->appendMoney( _d->player->getSalary() );
+  int playerSalary = player->getSalary();
+  funds.resolveIssue( FundIssue( CityFunds::playerSalary, -playerSalary ) );
+  player->appendMoney( playerSalary );
 
-  _d->funds.updateHistory( GameDate::current() );
+  funds.updateHistory( GameDate::current() );
 }
 
 WalkerList PlayerCity::getWalkers( walker::Type type )

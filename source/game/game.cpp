@@ -87,7 +87,7 @@ void Game::Impl::initLocale( std::string localePath)
 
 void Game::Impl::initVideo()
 {
-  Logger::warning( "GrafixEngine: create" );
+  Logger::warning( "GraficEngine: create" );
   engine = new GfxSdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
@@ -165,10 +165,10 @@ void Game::setScreenMenu()
     {
       /* temporary*/     
       std::srand( DateTime::getElapsedTime() );
-      std::string file = GameSettings::rcpath( "/missions/tutorial.mission" ).toString();
-      Logger::warning( "Start new career:%s", file.c_str() );
+      std::string startMission = "/missions/tutorial.mission";
+      Logger::warning( "Start new career with mission " + startMission );
 
-      load( file );
+      load( startMission );
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
@@ -235,16 +235,10 @@ void Game::setScreenGame()
 
   switch( screen.getResult() )
   {
-    case ScreenGame::mainMenu:
-      _d->nextScreen = SCREEN_MENU;
-    break;
-
-    case ScreenGame::quitGame:
-      _d->nextScreen = SCREEN_QUIT;
-    break;
-
-    default:
-      _d->nextScreen = SCREEN_QUIT;
+    case ScreenGame::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
+    case ScreenGame::loadGame: load( screen.getMapName() ); _d->nextScreen = SCREEN_GAME; break;
+    case ScreenGame::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
+    default: _d->nextScreen = SCREEN_QUIT;
   }
 }
 
@@ -310,13 +304,25 @@ void Game::save(std::string filename) const
 
 void Game::load(std::string filename)
 {  
-  Logger::warning( "Load game begin" );
+  Logger::warning( "Game: try load from " + filename );
 
+  vfs::Path fPath( filename );
+  if( !fPath.isExist() )
+  {
+    fPath = GameSettings::rcpath( filename );
+    if( fPath.isExist() )
+    {
+      Logger::warning( "Cannot load find file " + filename );
+      return;
+    }
+  }
+
+  reset();
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
                           GameSettings::rcpath( GameSettings::worldModel ) );
 
   GameLoader loader;
-  _d->loadOk = loader.load( filename, *this);
+  _d->loadOk = loader.load( fPath, *this);
 
   if( !_d->loadOk )
   {
@@ -372,13 +378,8 @@ void Game::exec()
   {
      switch(_d->nextScreen)
      {
-     case SCREEN_MENU:
-        setScreenMenu();
-     break;
-
-     case SCREEN_GAME:
-        setScreenGame();
-     break;
+     case SCREEN_MENU:        setScreenMenu();     break;
+     case SCREEN_GAME:        setScreenGame();     break;
 
      default:
         Logger::warning( "Unexpected next screen type %d", _d->nextScreen );

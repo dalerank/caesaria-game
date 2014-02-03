@@ -28,6 +28,7 @@
 #include "core/stringhelper.hpp"
 #include "city/win_targets.hpp"
 #include "core/logger.hpp"
+#include "gameautopause.hpp"
 
 namespace gui
 {
@@ -35,6 +36,7 @@ namespace gui
 class MissionTargetsWindow::Impl
 {
 public:
+  GameAutoPause locker;
   PlayerCityPtr city;
   PictureRef background;
   Label* title;
@@ -67,6 +69,7 @@ MissionTargetsWindow::~MissionTargetsWindow()
 MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle ) 
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
+  _d->locker.activate();
   _d->background.reset( Picture::create( getSize() ) );
 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );

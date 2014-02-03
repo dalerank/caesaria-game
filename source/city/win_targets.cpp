@@ -31,7 +31,9 @@ public:
   bool success;
   StringArray overview;
   std::string shortDesc,
-              caption;
+              caption,
+              nextMission,
+              newTitle;
 };
 
 CityWinTargets::CityWinTargets() : _d( new Impl )
@@ -54,6 +56,9 @@ bool CityWinTargets::isSuccess( int culture, int prosperity,
                                 int favour, int peace,
                                 int population ) const
 {
+  if( (_d->population + _d->culture + _d->prosperity + _d->favour + _d->peace) == 0 )
+    return false;
+
   _d->success = (_d->population <= population &&
                  _d->culture <= culture && _d->prosperity <= prosperity &&
                  _d->favour <= favour && _d->peace <= peace);
@@ -73,6 +78,8 @@ void CityWinTargets::load( const VariantMap& stream )
   _d->overview = stream.get( "overview" ).toStringArray();
   _d->shortDesc = stream.get( "short" ).toString();
   _d->caption = stream.get( "caption" ).toString();
+  _d->nextMission = stream.get( "next" ).toString();
+  _d->newTitle = stream.get( "title" ).toString();
 }
 
 CityWinTargets&CityWinTargets::operator=(const CityWinTargets& a)
@@ -87,6 +94,8 @@ CityWinTargets&CityWinTargets::operator=(const CityWinTargets& a)
   _d->overview = a._d->overview;
   _d->shortDesc = a._d->shortDesc;
   _d->caption = a._d->caption;
+  _d->nextMission = a._d->nextMission;
+  _d->newTitle = a._d->newTitle;
 
   return *this;
 }
@@ -96,5 +105,7 @@ int CityWinTargets::getProsperity() const{  return _d->prosperity;}
 int CityWinTargets::getFavour() const{  return _d->favour;}
 int CityWinTargets::getPeace() const{  return _d->peace;}
 std::string CityWinTargets::getShortDesc() const {  return _d->shortDesc;}
+std::string CityWinTargets::getNextMission() const { return _d->nextMission; }
+std::string CityWinTargets::getNewTitle() const { return _d->newTitle; }
 int CityWinTargets::getPopulation() const{  return _d->population;}
 const StringArray& CityWinTargets::getOverview() const{  return _d->overview;}

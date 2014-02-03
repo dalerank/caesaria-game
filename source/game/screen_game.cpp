@@ -21,6 +21,7 @@
 #include <algorithm>
 
 #include "gfx/engine.hpp"
+#include "city/win_targets.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
 #include "resourcegroup.hpp"
@@ -57,6 +58,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "ambientsound.hpp"
+#include "gui/win_mission_window.hpp"
 
 using namespace gui;
 
@@ -74,6 +76,8 @@ public:
   CityRenderer renderer;
   Game* game; // current game
   AlarmEventHolder alarmsHolder;
+  DateTime lastDate;
+  std::string mapToLoad;
   bool isPaused;
 
   int result;
@@ -94,7 +98,6 @@ public:
   void saveCameraPos(Point p);
   void makeEnemy();
   void makeFastSave();
-  void loadFastSave();
   vfs::Path getFastSaveName();
 };
 
@@ -154,8 +157,8 @@ void ScreenGame::initialize()
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
-  CONNECT( _d->topMenu, onExit(), this, ScreenGame::resolveExitGame );
-  CONNECT( _d->topMenu, onEnd(), this, ScreenGame::resolveEndGame );
+  CONNECT( _d->topMenu, onExit(), this, ScreenGame::_resolveExitGame );
+  CONNECT( _d->topMenu, onEnd(), this, ScreenGame::_resolveEndGame );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
@@ -188,6 +191,8 @@ void ScreenGame::initialize()
   _d->showMissionTaretsWindow();
   _d->renderer.getCamera().setCenter( city->getCameraPos() );
 }
+
+std::string ScreenGame::getMapName() const{  return _d->mapToLoad;}
 
 void ScreenGame::Impl::showSaveDialog()
 {
@@ -243,7 +248,12 @@ void ScreenGame::Impl::makeEnemy()
 }
 
 void ScreenGame::Impl::makeFastSave() {  game->save( getFastSaveName().toString() ); }
-void ScreenGame::Impl::loadFastSave() {  game->load( getFastSaveName().toString() ); }
+
+void ScreenGame::_resolveFastLoad()
+{
+  _d->mapToLoad = _d->getFastSaveName().toString();
+  _resolveSwitchMap();
+}
 
 vfs::Path ScreenGame::Impl::getFastSaveName()
 {
@@ -255,6 +265,8 @@ vfs::Path ScreenGame::Impl::getFastSaveName()
 
   return saveDir/filename;
 }
+
+void ScreenGame::_resolveSwitchMap() { _d->result = ScreenGame::loadGame;  stop(); }
 
 void ScreenGame::Impl::showEmpireMapWindow()
 {
@@ -274,7 +286,34 @@ void ScreenGame::draw()
 }
 
 void ScreenGame::animate( unsigned int time ) {  _d->renderer.animate( time ); }
-void ScreenGame::afterFrame() {}
+
+void ScreenGame::afterFrame()
+{
+  if( _d->lastDate.month() != GameDate::current().month() )
+  {
+    _d->lastDate = GameDate::current();
+    PlayerCityPtr city = _d->game->getCity();
+    const CityWinTargets& wt = city->getWinTargets();
+
+    int culture = city->getCulture();
+    int prosperity = city->getProsperity();
+    int favour = city->getFavour();
+    int peace = city->getFavour();
+    int population = city->getPopulation();
+    bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
+
+    if( success )
+    {
+      std::string newTitle = wt.getNewTitle();
+
+      gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->getGui()->getRootWidget(), newTitle, false );
+
+      _d->mapToLoad = wt.getNextMission();
+
+      CONNECT( wnd, onAcceptAssign(), this, ScreenGame::_resolveSwitchMap );
+    }
+  }
+}
 
 void ScreenGame::handleEvent( NEvent& event )
 {
@@ -321,7 +360,7 @@ void ScreenGame::handleEvent( NEvent& event )
     case KEY_F10:	_d->makeScreenShot(); break;
 
 		case KEY_F5: _d->makeFastSave(); break;
-		case KEY_F9: _d->loadFastSave(); break;
+		case KEY_F9: _resolveFastLoad(); break;
 
 		case KEY_F11:
 			if( event.keyboard.pressed )
@@ -410,18 +449,8 @@ void ScreenGame::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerM
 void ScreenGame::Impl::showAdvisorsWindow(){  showAdvisorsWindow( ADV_EMPLOYERS ); }
 void ScreenGame::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( ADV_TRADING ); }
 void ScreenGame::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->getGui()->getRootWidget(), game->getCity() ); }
-
-void ScreenGame::resolveEndGame()
-{
-  _d->result = ScreenGame::mainMenu;
-  stop();
-}
-
-void ScreenGame::resolveExitGame()
-{
-  _d->result = ScreenGame::quitGame;
-  stop();
-}
+void ScreenGame::_resolveEndGame(){  _d->result = ScreenGame::mainMenu;  stop();}
+void ScreenGame::_resolveExitGame(){  _d->result = ScreenGame::quitGame;  stop();}
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
 {  

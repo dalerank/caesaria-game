@@ -17,16 +17,15 @@
 #include "game/game.hpp"
 #include "city/helper.hpp"
 #include "game/gamedate.hpp"
-#include "events/showtutorialwindow.hpp"
 #include "objects/house.hpp"
+#include "events/dispatcher.hpp"
 
 using namespace constants;
 
-CityServicePtr RandomDamage::create( PlayerCityPtr city, const VariantMap& options )
+CityServicePtr RandomDamage::create( PlayerCityPtr city )
 {
   RandomDamage* e = new RandomDamage();
   e->_city = city;
-  e->load( options );
 
   CityServicePtr ret( e );
   ret->drop();
@@ -44,18 +43,14 @@ void RandomDamage::update( const unsigned int time)
       _isDeleted = true;
       CityHelper helper( _city );
       HouseList houses = helper.find<House>( building::house );
-      for( int k=0; k < houses.size() / 4; k++ )
+      for( unsigned int k=0; k < houses.size() / 4; k++ )
       {
         HouseList::iterator it = houses.begin();
         std::advance( it, math::random( houses.size() ) );
         (*it)->collapse();
-      }
+      }     
 
-      if( !_tutorial.empty() )
-      {
-        events::GameEventPtr e = events::ShowTutorialWindow::create( _tutorial );
-        e->dispatch();
-      }
+      events::Dispatcher::instance().load( _events );
     }
   }
 }
@@ -70,7 +65,7 @@ void RandomDamage::load(const VariantMap& stream)
   VariantList vl = stream.get( "population" ).toList();
   _minPopulation = vl.get( 0, 0 ).toInt();
   _maxPopulation = vl.get( 1, 999999 ).toInt();
-  _tutorial = stream.get( "tutorial" ).toString();
+  _events = stream.get( "exec" ).toMap();
 }
 
 VariantMap RandomDamage::save() const
@@ -78,7 +73,7 @@ VariantMap RandomDamage::save() const
   return VariantMap();
 }
 
-RandomDamage::RandomFire() : CityService("randomDamage")
+RandomDamage::RandomDamage() : CityService("randomDamage")
 {
   _isDeleted = false;
 }

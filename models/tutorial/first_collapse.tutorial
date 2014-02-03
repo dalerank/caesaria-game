@@ -1,0 +1,7 @@
+{  
+ items : [ "##tutorial_engineer_info##",
+           "@img=picture2_00010.png", 
+           "\n\n\n",
+           "##tutorial_engineer_senate##",
+           "@img=picture2_000011.png"]
+}

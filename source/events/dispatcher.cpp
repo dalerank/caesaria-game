@@ -86,7 +86,7 @@ void Dispatcher::load(const VariantMap& stream)
   for( VariantMap::const_iterator it=stream.begin();
        it != stream.end(); it++ )
   {
-    GameEventPtr e = PostponeEvent::create( it->second.toMap() );
+    GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
 
     if( e.isValid() )
     {

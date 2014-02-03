@@ -17,9 +17,13 @@
 #include "game/gamedate.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "core/foreach.hpp"
 #include "city/requestdispatcher.hpp"
 #include "city/random_fire.hpp"
 #include "city/random_damage.hpp"
+#include "core/logger.hpp"
+#include "showtutorialwindow.hpp"
+#include "changebuildingoptions.hpp"
 
 namespace events
 {
@@ -28,17 +32,31 @@ class PostponeEvent::Impl
 {
 public:
   DateTime date;
+  std::string name;
+  std::string type;
   VariantMap options;
 };
 
-GameEventPtr PostponeEvent::create(const VariantMap& stream)
+GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& stream )
 {
   PostponeEvent* pe = new PostponeEvent();
+
+  std::string::size_type reshPos = type.find( "#" );
+  pe->_d->name = type;
+  pe->_d->type = reshPos != std::string::npos
+                      ? type.substr( reshPos+1 )
+                      : type;
+
   pe->load( stream );
+  Logger::warningIf( pe->_d->type.empty(), "Unknown postpone event" );
 
   GameEventPtr ret( pe );
   ret->drop();
 
+  if( pe->_d->type.empty() )
+    return GameEventPtr();
+
+  Logger::warning( "Load postpone event " + type );
   return ret;
 }
 
@@ -46,8 +64,9 @@ PostponeEvent::~PostponeEvent(){}
 
 void PostponeEvent::exec(Game& game)
 {
+  Logger::warning( "Start event name=" + _d->name + " type=" + _d->type );
   PlayerCityPtr city = game.getCity();
-  if( (bool)_d->options.get( "city_request" ) )
+  if( "city_request" == _d->type )
   {    
     CityServicePtr service = city->findService( CityRequestDispatcher::getDefaultName() );
     CityRequestDispatcherPtr dispatcher = ptr_cast<CityRequestDispatcher>( service );
@@ -57,15 +76,29 @@ void PostponeEvent::exec(Game& game)
       dispatcher->add( _d->options );
     }
   }
-  else if( (bool)_d->options.get( "random_fire" ) )
+  else if( "random_fire" == _d->type )
   {
-    CityServicePtr srvc = RandomFire::create( city, _d->options );
+    CityServicePtr srvc = RandomFire::create( city );
+    srvc->load( _d->options );
     city->addService( srvc );
   }
-  else if( (bool)_d->options.get( "random_collapse" ) )
+  else if( "random_collapse" == _d->type )
   {
-    CityServicePtr srvc = RandomDamage::create( city, _d->options );
+    CityServicePtr srvc = RandomDamage::create( city );
+    srvc->load( _d->options );
     city->addService( srvc );
+  }
+  else if( "tutorial_window" == _d->type )
+  {
+    GameEventPtr e = ShowTutorialWindow::create( "" );
+    e->load( _d->options );
+    e->dispatch();
+  }
+  else if( "building_options" == _d->type )
+  {
+    GameEventPtr e = ChangeBuildingOptions::create( _d->options );
+    //e->load( _d->options );
+    e->dispatch();
   }
 }
 
@@ -76,7 +109,10 @@ VariantMap PostponeEvent::save() const {  return _d->options; }
 void PostponeEvent::load(const VariantMap& stream)
 {
   _d->date = stream.get( "date" ).toDateTime();
+  _d->type = stream.get( "eventType", Variant( _d->type ) ).toString();
+  _d->name = stream.get( "eventName", Variant( _d->name ) ).toString();
   _d->options = stream;
+
 }
 
 PostponeEvent::PostponeEvent() : _d( new Impl )

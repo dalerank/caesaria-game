@@ -15,18 +15,28 @@
 
 #include "random_fire.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "helper.hpp"
+#include "city.hpp"
 #include "game/gamedate.hpp"
-#include "events/showtutorialwindow.hpp"
 #include "objects/house.hpp"
+#include "events/dispatcher.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
-CityServicePtr RandomFire::create( PlayerCityPtr city, const VariantMap& options )
+class RandomFire::Impl
+{
+public:
+  PlayerCityPtr city;
+  int minPopulation, maxPopulation;
+  VariantMap events;
+  bool isDeleted;
+};
+
+CityServicePtr RandomFire::create( PlayerCityPtr city )
 {
   RandomFire* e = new RandomFire();
-  e->_city = city;
-  e->load( options );
+  e->_d->city = city;
 
   CityServicePtr ret( e );
   ret->drop();
@@ -36,41 +46,38 @@ CityServicePtr RandomFire::create( PlayerCityPtr city, const VariantMap& options
 
 void RandomFire::update( const unsigned int time)
 {
-  if( time % GameDate::getTickInMonth() == 0 && !_isDeleted )
+  if( time % GameDate::getTickInMonth() == 0 && !_d->isDeleted )
   {
-    int population = _city->getPopulation();
-    if( population > _minPopulation && population < _maxPopulation )
+    int population = _d->city->getPopulation();
+    if( population > _d->minPopulation && population < _d->maxPopulation )
     {
-      _isDeleted = true;
-      CityHelper helper( _city );
+      Logger::warning( "Execute random fire service" );
+      _d->isDeleted = true;
+      CityHelper helper( _d->city );
       HouseList houses = helper.find<House>( building::house );
-      for( int k=0; k < houses.size() / 4; k++ )
+      for( unsigned int k=0; k < houses.size() / 4; k++ )
       {
         HouseList::iterator it = houses.begin();
         std::advance( it, math::random( houses.size() ) );
         (*it)->burn();
       }
 
-      if( !_tutorial.empty() )
-      {
-        events::GameEventPtr e = events::ShowTutorialWindow::create( _tutorial );
-        e->dispatch();
-      }
+      events::Dispatcher::instance().load( _d->events );
     }
   }
 }
 
 bool RandomFire::isDeleted() const
 {
-  return _isDeleted;
+  return _d->isDeleted;
 }
 
 void RandomFire::load(const VariantMap& stream)
 {
   VariantList vl = stream.get( "population" ).toList();
-  _minPopulation = vl.get( 0, 0 ).toInt();
-  _maxPopulation = vl.get( 1, 999999 ).toInt();
-  _tutorial = stream.get( "tutorial" ).toString();
+  _d->minPopulation = vl.get( 0, 0 ).toInt();
+  _d->maxPopulation = vl.get( 1, 999999 ).toInt();
+  _d->events = stream.get( "exec" ).toMap();
 }
 
 VariantMap RandomFire::save() const
@@ -78,7 +85,7 @@ VariantMap RandomFire::save() const
   return VariantMap();
 }
 
-RandomFire::RandomFire() : CityService("randomFire")
+RandomFire::RandomFire() : CityService("randomFire"), _d( new Impl )
 {
-  _isDeleted = false;
+  _d->isDeleted = false;
 }
