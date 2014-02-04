@@ -95,17 +95,29 @@ Variant GameSettings::get( const std::string& option )
   return getInstance()._d->options[ option ];
 }
 
+static vfs::Path __concatPath( const std::string& dir, const std::string& fpath )
+{
+  Variant vr = GameSettings::get( fpath );
+  if( vr.isNull() )
+  {
+    return vfs::Path(dir + fpath);
+  }
+
+  return vfs::Path(dir + vr.toString());
+}
+
 vfs::Path GameSettings::rcpath( const std::string& option )
 {
   std::string rc = getInstance()._d->options[ resourcePath ].toString();
 
-  VariantMap::iterator it = getInstance()._d->options.find( option );
-  if( it == getInstance()._d->options.end() )
-  {
-    return vfs::Path(rc + option);
-  }
+  return __concatPath( rc, option );
+}
 
-  return vfs::Path(rc + getInstance()._d->options[ option ].toString());
+vfs::Path GameSettings::rpath( const std::string& option )
+{
+  std::string wd = vfs::Directory::getApplicationDir().toString();
+
+  return __concatPath( wd, option );
 }
 
 void GameSettings::load()

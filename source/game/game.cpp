@@ -306,13 +306,16 @@ void Game::load(std::string filename)
 {  
   Logger::warning( "Game: try load from " + filename );
 
-  vfs::Path fPath( filename );
+  vfs::Path fPath = GameSettings::rpath( filename );
   if( !fPath.isExist() )
   {
-    fPath = GameSettings::rcpath( filename );
-    if( fPath.isExist() )
+    Logger::warning( "Cannot find file " + fPath.toString() );
+    Logger::warning( "Try find file in resource's folder " );
+
+    fPath = GameSettings::rcpath( filename ).getAbsolutePath();
+    if( !fPath.isExist() )
     {
-      Logger::warning( "Cannot load find file " + filename );
+      Logger::warning( "Cannot find file " + fPath.toString() );
       return;
     }
   }
