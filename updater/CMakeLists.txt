@@ -70,9 +70,9 @@ if(UNIX)
   set(EXECUTABLE_FILENAME "updater.linux")
 endif(UNIX)
 
-if(MACOSX)
+if(APPLE)
   set(EXECUTABLE_FILENAME "updater.macos")
-endif(MACOSX)
+endif(APPLE)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 

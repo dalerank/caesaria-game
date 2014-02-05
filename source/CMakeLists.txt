@@ -87,9 +87,9 @@ if(UNIX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
 endif(UNIX)
 
-if(MACOSX)
+if(APPLE)
   set(EXECUTABLE_FILENAME "caesaria.macos")
-endif(MACOSX)
+endif(APPLE)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 

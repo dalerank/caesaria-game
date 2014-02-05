@@ -241,7 +241,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
     HousePtr house = *it;
     int habitants = house->getHabitants().count( CitizenGroup::mature );
 
-    const HouseLevelSpec& lspec = house->getSpec();
+    const HouseSpecification& lspec = house->getSpec();
 
     if( house->isEntertainmentNeed( Service::theater ) )
     {

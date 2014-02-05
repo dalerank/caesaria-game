@@ -42,6 +42,7 @@ public:
   virtual void burn();
   virtual void build(PlayerCityPtr city, const TilePos& pos );
   virtual bool isWalkable() const;
+  virtual bool isDestructible() const;
   virtual void destroy();
   virtual int getMaxWorkers() const;
 

@@ -148,10 +148,7 @@ void Construction::load( const VariantMap& stream )
   _d->params[ damage ] = (float)stream.get( Serializable::damageLevel, 0.f );
 }
 
-double Construction::getState(Construction::Param param) const
-{
-  return _d->params[ param ];
-}
+double Construction::getState(Param param) const { return _d->params[ param ]; }
 
 TilesArray Construction::getEnterArea() const
 {

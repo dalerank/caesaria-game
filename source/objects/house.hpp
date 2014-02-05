@@ -23,26 +23,35 @@
 #include "core/scopedptr.hpp"
 #include "game/citizen_group.hpp"
 
-class HouseLevelSpec;
+class HouseSpecification;
 class GoodStore;
+
+class HouseLevel
+{
+public:
+  enum { smallHovel=1, bigTent,
+         smallHut, bigHut,
+         smallDomus, bigDomus,
+         smallMansion, bigMansion,
+         smallInsula, middleInsula, bigInsula, greatInsula,
+         smallVilla,  middleVilla,  bigVilla,  greatVilla,
+         smallPalace, middlePalace, bigPalace, greatPalace } ID;
+};
 
 class House : public Building
 {
-  friend class HouseLevelSpec;
+  friend class HouseSpecification;
 public:
-  enum { smallHovel=1, bigTent, smallHut, bigHut, smallDomus, bigDomus, smallMansion, bigMansion,
-         smallInsula, middleInsula, bigInsula, greatInsula,
-         smallVilla,  middleVilla,  bigVilla,  greatVilla,
-         smallPalace, middlePalace, bigPalace, greatPalace }  Level;
+  enum { food=Construction::damage+1, health, unemployed };
 
-  House( const int houseId=smallHovel );
+  House( const int houseId=HouseLevel::smallHovel );
 
   virtual void timeStep(const unsigned long time);
 
   virtual GoodStore& getGoodStore();
 
   // return the current house level
-  const HouseLevelSpec& getSpec() const;
+  const HouseSpecification& getSpec() const;
 
   virtual void applyService(ServiceWalkerPtr walker);
   virtual float evaluateService(ServiceWalkerPtr walker);
@@ -54,7 +63,9 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual TilesArray getEnterArea() const;
 
-  int getFoodLevel() const;
+  //virtual void updateState(Param param, double value, bool relative);
+  virtual double getState( Param param) const;
+
   int getHealthLevel() const;
   int getWorkersCount() const;
 
@@ -62,9 +73,6 @@ public:
   bool isEntertainmentNeed( Service::Type type ) const;
 
   Desirability getDesirability() const;
-
-  void levelUp();
-  void levelDown();
 
   virtual void destroy();
 
@@ -89,6 +97,9 @@ public:
   virtual std::string getSound() const;
 
 private:
+
+  void _levelUp();
+  void _levelDown();
 
   void _update();
   void _tryEvolve_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );

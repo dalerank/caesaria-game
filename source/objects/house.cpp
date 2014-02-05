@@ -55,7 +55,7 @@ public:
   int houseId;  // pictureId
   int houseLevel;
   float healthLevel;
-  HouseLevelSpec spec;  // characteristics of the current house level
+  HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
   SimpleGoodStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
@@ -72,6 +72,7 @@ public:
   void consumeServices();
   void consumeGoods(HousePtr house);
   void consumeFoods(HousePtr house);
+  int getFoodLevel() const;
 };
 
 House::House(const int houseId) : Building( building::house ), _d( new Impl )
@@ -143,7 +144,7 @@ void House::_checkEvolve()
     if( _d->changeCondition <= maxNegativeStep )
     {
       _d->changeCondition = 0;
-      levelDown();
+      _levelDown();
     }
   }
   else
@@ -156,7 +157,7 @@ void House::_checkEvolve()
       if( _d->changeCondition >= maxPositiveStep )
       {
         _d->changeCondition = 0;
-        levelUp();
+        _levelUp();
       }
     }
     else
@@ -335,7 +336,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
 }
 
 
-void House::levelUp()
+void House::_levelUp()
 {
   _d->houseLevel++;   
   _d->picIdOffset = 0;
@@ -400,7 +401,7 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
   helper.updateDesirability( this, true );
 }
 
-void House::levelDown()
+void House::_levelDown()
 {
   if( _d->houseLevel == smallHovel )
     return;
@@ -646,6 +647,16 @@ TilesArray House::getEnterArea() const
   }
 }
 
+double House::getState(Param param) const
+{
+  switch( (int)param )
+  {
+  case House::food: return _d->getFoodLevel();
+
+  default: return Building::getState( param );
+  }
+}
+
 void House::_update()
 {
   int picId = ( _d->houseId == smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
@@ -765,13 +776,13 @@ void House::load( const VariantMap& stream )
   _update();
 }
 
-int House::getFoodLevel() const
+int House::Impl::getFoodLevel() const
 {
   const Good::Type f[] = { Good::wheat, Good::fish, Good::meat, Good::fruit, Good::vegetable };
   std::set<Good::Type> foods( f, f+5 );
 
   int ret = 0;
-  int foodLevel = getSpec().getMinFoodLevel();
+  int foodLevel = spec.getMinFoodLevel();
   if( foodLevel == 0 )
     return 0;
 
@@ -781,7 +792,7 @@ int House::getFoodLevel() const
     int maxFoodQty = 0;
     foreach( ft, foods )
     {
-      int tmpQty = _d->goodStore.getQty( *ft );
+      int tmpQty = goodStore.getQty( *ft );
       if( tmpQty > maxFoodQty )
       {
         maxFoodQty = tmpQty;
@@ -789,12 +800,12 @@ int House::getFoodLevel() const
       }
     }
 
-    ret += maxFoodQty * 100 / _d->goodStore.capacity( maxFtype );
+    ret += maxFoodQty * 100 / goodStore.capacity( maxFtype );
     foods.erase( maxFtype );
     foodLevel--;
   }
 
-  ret /= getSpec().getMinFoodLevel();
+  ret /= spec.getMinFoodLevel();
   return ret;
 }
 
@@ -849,7 +860,7 @@ bool House::isWalkable() const{  return (_d->houseId == smallHovel && _d->habita
 bool House::isFlat() const {   return isWalkable(); }
 const CitizenGroup& House::getHabitants() const  {  return _d->habitants; }
 GoodStore& House::getGoodStore(){   return _d->goodStore;}
-const HouseLevelSpec& House::getSpec() const{   return _d->spec; }
+const HouseSpecification& House::getSpec() const{   return _d->spec; }
 bool House::hasServiceAccess( Service::Type service) {  return (_d->services[service] > 0); }
 float House::getServiceValue( Service::Type service){  return _d->services[service]; }
 void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }

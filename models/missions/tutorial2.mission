@@ -1,0 +1,60 @@
+{
+  version : 1
+  map : "/maps/Corinthus.map"
+  funds : 8000
+  date : "-350.01.01"
+  finish : "-300.01.01"
+	
+  win :
+  {
+    population : 650
+    culture : 0
+    prosperity : 0
+    peace : 0
+    favour : 0
+    next : "/missions/tutorial3.mission"
+    title : "##win_clerk_title##"
+    may_continue : false
+    short : "##build_some_houses##"
+    maxHouseLevel : "big_villa"
+    caption : "##food##"
+    overview :  [ "##tutorial_markets_text##",
+                  "@img=picture2_00008.png",
+                  "\n\n\n\n\n\n\n\n",
+                  "##tutorial_granary_text##",
+                  "@img=picture3_00006.png",
+                  "##tutorial_granary_text2##",
+                  "@img=picture3_00005.png",
+                  "##tutorial_priority##",
+                  "@img=picture3_00004.png" ]
+  }
+	
+  empire : {}
+  		
+  events :
+  {
+  }
+	
+  buildoptions :
+  {
+    farm : "disable_all"
+    raw_material : "disable_all"
+    factory : "disable_all"
+    water : "disable_all"
+    health : "disable_all"
+    religion : "disable_all"
+    education : "disable_all"
+    entertainment : "disable_all"
+    govt : "disable_all"
+    engineering : "disable_all"
+    security : "disable_all"
+                   
+    buildings : 
+    { 
+      well : true, 
+      engineering_post : true,
+      prefecture : true,
+      templeCeres : true, templeVenus : true, templeMars : true, templeNeptune : true, templeMercury : true
+    }
+  }
+}

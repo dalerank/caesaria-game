@@ -29,7 +29,7 @@
 class Construction : public TileOverlay
 {
 public:
-  typedef enum { fire=0, damage } Param;
+  typedef enum { fire=0, damage, count=0xff } Param;
   Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 
