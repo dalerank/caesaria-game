@@ -1177,18 +1177,18 @@ int EditBox::getCursorPos(int x, int y)
 	for( unsigned int i=0; i < lineCount; ++i)
 	{
 		setTextRect(i);
-		if( i == 0 && y < _d->currentTextRect.getTop() )
+		if( i == 0 && y < _d->currentTextRect.top() )
     {
-      y = _d->currentTextRect.getTop();
+      y = _d->currentTextRect.top();
     }
  
-    if( i == lineCount - 1 && y > _d->currentTextRect.getBottom() )
+    if( i == lineCount - 1 && y > _d->currentTextRect.bottom() )
     {
-      y = _d->currentTextRect.getBottom();
+      y = _d->currentTextRect.bottom();
     }
 
 		// is it inside this region?
-		if( y >= _d->currentTextRect.getTop() && y <= _d->currentTextRect.getBottom() )
+		if( y >= _d->currentTextRect.top() && y <= _d->currentTextRect.bottom() )
 		{
 			// we've found the clicked line
 			txtLine = (_d->wordWrapEnabled || _d->multiLine) ? &_d->brokenText[i] : &myText;
@@ -1197,9 +1197,9 @@ int EditBox::getCursorPos(int x, int y)
 		}
 	}
 
-  if( x < _d->currentTextRect.getLeft() )
+  if( x < _d->currentTextRect.left() )
   {
-    x = _d->currentTextRect.getLeft();
+    x = _d->currentTextRect.left();
   }
 
 	if ( !txtLine )
@@ -1207,7 +1207,7 @@ int EditBox::getCursorPos(int x, int y)
 		return 0;
   }
 
-  int idx = font.getCharacterFromPos( *txtLine, x - _d->currentTextRect.getLeft() );
+  int idx = font.getCharacterFromPos( *txtLine, x - _d->currentTextRect.left() );
 
 	// click was on or left of the line
 	if (idx != -1)
@@ -1352,7 +1352,7 @@ void EditBox::setTextRect(int line, const std::string& tempText )
   _d->currentTextRect = getAbsoluteRect();
 
   _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.getHeight() * line - _d->vertScrollPos );
-  _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.getRight() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.y() + d.getHeight() );
+  _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.right() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.y() + d.getHeight() );
 }
 
 int EditBox::getLineFromPos(int pos)

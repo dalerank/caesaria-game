@@ -54,7 +54,7 @@ public:
   void setInternalName( const std::string& name );
 
   template< class T >
-  T findChild( const std::string& internalName, bool recursiveFind = false )
+  T findChild( const std::string& internalName, bool recursiveFind = false ) const
   {
       Widgets::const_iterator it = getChildren().begin();
       for( ; it != getChildren().end(); it++ )

@@ -18,6 +18,7 @@
 #include "gfx/decorator.hpp"
 #include "gui/label.hpp"
 #include "listbox.hpp"
+#include "game/player.hpp"
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
 #include "gfx/engine.hpp"
@@ -77,8 +78,8 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   TexturedButton* btnExit = new TexturedButton( this, Point( getWidth() - 110, getHeight() - 40), Size( 27 ), -1, 179 );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
 
-  _d->title = new Label( this, Rect( 16, 16, getWidth() - 16, 16 + 30), _("##title##") );
-  _d->subTitle = new Label( this, Rect( 16, _d->title->getBottom(), getWidth() - 16, _d->title->getBottom() + 20), "##sub_title##" );
+  _d->title = new Label( this, Rect( 16, 16, getWidth() - 16, 16 + 30), "##player_name##");
+  //_d->subTitle = new Label( this, Rect( 16, _d->title->getBottom(), getWidth() - 16, _d->title->getBottom() + 20), "##sub_title##" );
 
   GroupBox* gbTargets = new GroupBox( this, Rect( 16, 64, getWidth() - 64, 64 + 80), Widget::noId, GroupBox::blackFrame );
   Label* lbTtargets = new Label( gbTargets, Rect( 15, 0, 490, 28), _("##mission_wnd_targets_title##") );
@@ -117,6 +118,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
   _d->lbPeace->setVisible( wint.getPeace() > 0 );
   _d->lbFavour->setVisible( wint.getFavour() > 0 );
   _d->lbProsperity->setVisible( wint.getProsperity() > 0 );
+  _d->title->setText( _d->city->getPlayer()->getName()  );
   _d->lbShortDesc->setVisible( !wint.getShortDesc().empty() );
 
   std::string text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.getPopulation() );

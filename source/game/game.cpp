@@ -169,7 +169,7 @@ void Game::setScreenMenu()
       Logger::warning( "Start new career with mission " + startMission );
 
       load( startMission );
-
+      _d->player->setName( screen.getPlayerName() );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;

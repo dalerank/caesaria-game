@@ -64,9 +64,9 @@ void PictureDecorator::drawFrame(Picture &dstpic, const Rect& rectangle, const i
   // topLeft corner
   dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+0), rectangle.UpperLeftCorner, useAlpha );
   // topRight corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+2), Point( rectangle.getRight()-sh, rectangle.getTop() ), useAlpha );
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+2), Point( rectangle.right()-sh, rectangle.top() ), useAlpha );
   // bottomLeft corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+6), Point( rectangle.getLeft(), rectangle.getBottom() - sh ), useAlpha );
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+6), Point( rectangle.left(), rectangle.bottom() - sh ), useAlpha );
   // bottomRight corner
   dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+8), rectangle.LowerRightCorner - Point( 16, 16 ), useAlpha );
 }
@@ -97,11 +97,11 @@ void PictureDecorator::drawBorder(Picture &dstpic, const Rect& rectangle, const 
   // topLeft corner
   dstpic.draw( Picture::load( ResourceGroup::panelBackground, offset+0), rectangle.UpperLeftCorner, useAlpha);
   // topRight corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), rectangle.getRight()-sw, rectangle.getTop(), useAlpha );
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+2), rectangle.right()-sw, rectangle.top(), useAlpha );
   // bottomLeft corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), rectangle.getLeft(), rectangle.getBottom()-sh, useAlpha);
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), rectangle.left(), rectangle.bottom()-sh, useAlpha);
   // bottomRight corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), rectangle.getRight()-16, rectangle.getBottom()-sh, useAlpha);
+  dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), rectangle.right()-16, rectangle.bottom()-sh, useAlpha);
 }
 
 void PictureDecorator::drawPanel( Picture &dstpic, const Rect& rectangle, int picId, bool useAlpha )
@@ -179,8 +179,8 @@ void PictureDecorator::drawBorder( Picture &dstpic, const Rect& rectangle,
   }
 
   dstpic.draw( Picture::load( ResourceGroup::panelBackground, ltc), rectangle.UpperLeftCorner );    // left-top corner
-  dstpic.draw( Picture::load( ResourceGroup::panelBackground, lbc), Point( rectangle.getLeft(), rectangle.getBottom()-sh ), useAlpha );    // left-bottom corner
-  dstpic.draw( Picture::load( ResourceGroup::panelBackground, rtc ), Point( rectangle.getRight() - sw, rectangle.getTop() ), useAlpha );     // right-top corner
+  dstpic.draw( Picture::load( ResourceGroup::panelBackground, lbc), Point( rectangle.left(), rectangle.bottom()-sh ), useAlpha );    // left-bottom corner
+  dstpic.draw( Picture::load( ResourceGroup::panelBackground, rtc ), Point( rectangle.right() - sw, rectangle.top() ), useAlpha );     // right-top corner
   dstpic.draw( Picture::load( ResourceGroup::panelBackground, rbc), rectangle.LowerRightCorner - Point( sw, sh ), useAlpha );    // right-bottom corner
 }
 

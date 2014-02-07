@@ -47,6 +47,7 @@ public:
   Game* game;
   GfxEngine* engine;
   std::string fileMap;
+  std::string playerName;
 
   void resolveNewGame();
 
@@ -69,7 +70,7 @@ public:
 
   void setPlayerName( std::string name )
   {
-    game->getPlayer()->setName( name );
+    playerName = name;
   }
 
   void resolveShowLoadMapWnd();
@@ -148,12 +149,13 @@ void ScreenMenu::Impl::resolveChangePlayerName()
 {
   gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->getGui()->getRootWidget() );
 
+  playerName = dlg->getText();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
   CONNECT( dlg, onClose(), this, Impl::resolveNewGame );
 }
 
 void ScreenMenu::Impl::resolveNewGame()
-{
+{  
   result=startNewGame; isStopped=true;
 }
 
@@ -208,10 +210,7 @@ void ScreenMenu::draw()
   _d->game->getGui()->draw();
 }
 
-void ScreenMenu::handleEvent( NEvent& event )
-{
-  _d->game->getGui()->handleEvent( event );
-}
+void ScreenMenu::handleEvent( NEvent& event ){  _d->game->getGui()->handleEvent( event );}
 
 void ScreenMenu::initialize()
 {
@@ -246,17 +245,7 @@ void ScreenMenu::initialize()
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 }
 
-int ScreenMenu::getResult() const
-{
-  return _d->result;
-}
-
-bool ScreenMenu::isStopped() const
-{
-  return _d->isStopped;
-}
-
-const std::string& ScreenMenu::getMapName() const
-{
-  return _d->fileMap;
-}
+int ScreenMenu::getResult() const{  return _d->result;}
+bool ScreenMenu::isStopped() const{  return _d->isStopped;}
+std::string ScreenMenu::getMapName() const{  return _d->fileMap;}
+std::string ScreenMenu::getPlayerName() const { return _d->playerName; }

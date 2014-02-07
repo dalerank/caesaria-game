@@ -175,7 +175,7 @@ void Label::_updateTexture( GfxEngine& painter )
         Rect textRect = _d->font.calculateTextRect( rText, frameRect, getHorizontalTextAlign(), getVerticalTextAlign() );
 
         textRect += _d->textOffset;
-        _d->font.draw( *_d->textPicture, getText(), textRect.getLeft(), textRect.getTop() );
+        _d->font.draw( *_d->textPicture, getText(), textRect.left(), textRect.top() );
       }
       else
       {
@@ -194,7 +194,7 @@ void Label::_updateTexture( GfxEngine& painter )
 
             textRect += _d->textOffset;
 
-            _d->font.draw( *_d->textPicture, _d->brokenText[i], textRect.getLeft(), textRect.getTop() );
+            _d->font.draw( *_d->textPicture, _d->brokenText[i], textRect.left(), textRect.top() );
 
             r += Point( 0, height + _d->lineIntervalOffset );
         }

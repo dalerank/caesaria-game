@@ -590,7 +590,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
     bool hl = ( isFlag( LBF_HIGHLIGHTWHEN_NOTFOCUSED ) || isFocused() || _d->scrollBar->isFocused() );
     Rect frameRect = getItemTextRect_();
-    frameRect.LowerRightCorner.setY( frameRect.getTop() + _d->itemHeight );
+    frameRect.LowerRightCorner.setY( frameRect.top() + _d->itemHeight );
 
     Alignment itemTextHorizontalAlign, itemTextVerticalAlign;
     Font currentFont;
@@ -622,7 +622,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-        currentFont.draw( *_d->picture, refItem.getText(), textRect.getLeft(), textRect.getTop() - _d->scrollBar->getPos(), false );
+        currentFont.draw( *_d->picture, refItem.getText(), textRect.left(), textRect.top() - _d->scrollBar->getPos(), false );
       }
 
       frameRect += Point( 0, _d->itemHeight );

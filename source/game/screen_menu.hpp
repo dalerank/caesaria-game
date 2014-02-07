@@ -49,7 +49,8 @@ public:
     virtual void draw();
     virtual void initialize();
 
-    const std::string& getMapName() const;
+    std::string getMapName() const;
+    std::string getPlayerName() const;
 
     int getResult() const;
     bool isStopped() const;
