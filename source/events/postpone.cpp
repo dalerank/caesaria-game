@@ -22,6 +22,7 @@
 #include "city/random_fire.hpp"
 #include "city/random_damage.hpp"
 #include "core/logger.hpp"
+#include "city/health_updater.hpp"
 #include "showtutorialwindow.hpp"
 #include "changebuildingoptions.hpp"
 
@@ -99,6 +100,12 @@ void PostponeEvent::exec(Game& game)
     GameEventPtr e = ChangeBuildingOptions::create( _d->options );
     //e->load( _d->options );
     e->dispatch();
+  }
+  else if( "health_updater" == _d->type )
+  {
+    CityServicePtr srvc = HealthUpdater::create( city );
+    srvc->load( _d->options );
+    city->addService( srvc );
   }
 }
 

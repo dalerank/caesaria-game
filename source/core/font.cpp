@@ -91,7 +91,7 @@ Font Font::create( const std::string& family, const int size )
 //   }
 // }
 
-unsigned int Font::getWidthFromCharacter( char c ) const
+unsigned int Font::getWidthFromCharacter( unsigned int c ) const
 {
   int minx, maxx, miny, maxy, advance;
   TTF_GlyphMetrics( _d->ttfFont, c, &minx, &maxx, &miny, &maxy, &advance );
@@ -104,19 +104,19 @@ unsigned int Font::getKerningHeight() const
   return 3;
 }
 
-int Font::getCharacterFromPos(const std::string& text, int pixel_x) const
+int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
 {
   int x = 0;
   int idx = 0;
 
-  while (text[idx])
+  while( text[idx] )
   {
-    x += getWidthFromCharacter(text[idx]);
+    x += getWidthFromCharacter( text[idx] );
 
     if (x >= pixel_x)
       return idx;
 
-    ++idx;
+    idx++;
   }
 
   return -1;

@@ -26,6 +26,13 @@
 #include "objects/metadata.hpp"
 #include "gfx/tilesarray.hpp"
 
+class Parameter
+{
+public:
+  Parameter( int t ) : type( t ) {}
+  int type;
+};
+
 class Construction : public TileOverlay
 {
 public:

@@ -17,22 +17,22 @@
 #define __CAESARIA_EVENTCONVERTER_H_INCLUDE_
 
 #include "event.hpp"
-#include <memory>
+#include "scopedptr.hpp"
 #include <SDL_events.h>
 
 class EventConverter
 {
 public:
-    static EventConverter& instance();
+	 static EventConverter& instance();
 	~EventConverter();
 
 	NEvent get( const SDL_Event& event );
 
 private:
-    class Impl;
-    std::auto_ptr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
     
-    EventConverter();
+  EventConverter();
 };
 
 #endif //__CAESARIA_EVENTCONVERTER_H_INCLUDE_

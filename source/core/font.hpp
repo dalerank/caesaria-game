@@ -64,8 +64,8 @@ public:
   void draw(Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
   void draw(Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );
 
-  unsigned int getWidthFromCharacter( char c ) const;
-  int getCharacterFromPos(const std::string& text, int pixel_x) const;
+  unsigned int getWidthFromCharacter( unsigned int c ) const;
+  int getCharacterFromPos(const std::wstring& text, int pixel_x) const;
   unsigned int getKerningHeight() const;
   StringArray breakText( const std::string& text, int pixelLength );
 private:

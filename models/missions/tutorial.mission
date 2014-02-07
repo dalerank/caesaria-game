@@ -68,6 +68,11 @@
       date : "-349.01.01"
       buildings : { templeCeres : true, templeVenus : true, templeMars : true, templeNeptune : true, templeMercury : true }
     }   
+
+    "health_upper#health_updater" : {
+      endTime : "01.01.01"
+      value : +30
+    }
   }
 	
   buildoptions :

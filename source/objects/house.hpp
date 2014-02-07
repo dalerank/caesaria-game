@@ -63,7 +63,6 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual TilesArray getEnterArea() const;
 
-  //virtual void updateState(Param param, double value, bool relative);
   virtual double getState( Param param) const;
 
   int getHealthLevel() const;

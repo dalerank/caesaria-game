@@ -20,6 +20,7 @@
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "core/logger.hpp"
+#include "events/dispatcher.hpp"
 
 using namespace constants;
 
@@ -30,6 +31,7 @@ public:
   DateTime endTime;
   VariantMap events;
   bool isDeleted;
+  int value;
 };
 
 CityServicePtr HealthUpdater::create( PlayerCityPtr city )
@@ -54,7 +56,7 @@ void HealthUpdater::update( const unsigned int time)
     HouseList houses = helper.find<House>( building::house );
     foreach( it, houses )
     {
-      (*it)->up;
+      (*it)->updateState( (Construction::Param)House::health, _d->value, true );
     }
 
     events::Dispatcher::instance().load( _d->events );
@@ -65,10 +67,9 @@ bool HealthUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void HealthUpdater::load(const VariantMap& stream)
 {
-  VariantList vl = stream.get( "population" ).toList();
-  _d->minPopulation = vl.get( 0, 0 ).toInt();
-  _d->maxPopulation = vl.get( 1, 999999 ).toInt();
+  _d->endTime = stream.get( "endTime" ).toDateTime();
   _d->events = stream.get( "exec" ).toMap();
+  _d->value = stream.get( "value" );
 }
 
 VariantMap HealthUpdater::save() const

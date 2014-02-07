@@ -403,7 +403,7 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
 
 void House::_levelDown()
 {
-  if( _d->houseLevel == smallHovel )
+  if( _d->houseLevel == HouseLevel::smallHovel )
     return;
 
   _d->houseLevel--;
@@ -426,7 +426,7 @@ void House::_levelDown()
       {
         HousePtr house = ptr_cast<House>( TileOverlayFactory::getInstance().create( building::house ) );
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
-        house->_d->houseId = smallHovel;
+        house->_d->houseId = HouseLevel::smallHovel;
         house->_update();
 
         events::GameEventPtr event = events::BuildEvent::create( (*tile)->pos(), house.object() );
@@ -659,7 +659,7 @@ double House::getState(Param param) const
 
 void House::_update()
 {
-  int picId = ( _d->houseId == smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
+  int picId = ( _d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
   Picture pic = Picture::load( ResourceGroup::housing, picId );
   setPicture( pic );
   setSize( Size( (pic.getWidth() + 2 ) / 60 ) );
@@ -856,7 +856,7 @@ int House::getHealthLevel() const{  return _d->healthLevel; }
 DateTime House::getLastTaxation() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::getDesirability() const {  return _d->desirability; }
-bool House::isWalkable() const{  return (_d->houseId == smallHovel && _d->habitants.count() == 0); }
+bool House::isWalkable() const{  return (_d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0); }
 bool House::isFlat() const {   return isWalkable(); }
 const CitizenGroup& House::getHabitants() const  {  return _d->habitants; }
 GoodStore& House::getGoodStore(){   return _d->goodStore;}

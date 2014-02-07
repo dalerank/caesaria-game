@@ -365,7 +365,7 @@ struct NEvent
   //! Any kind of keyboard event.
   struct _KeyboardEvent
   {    
-    char symbol; //! Character corresponding to the key (0, if not a character)
+    int symbol; //! Character corresponding to the key (0, if not a character)
     KeyCode key; //! Key which has been pressed or released
     bool pressed:1; //! If not true, then the key was left up
     bool shift:1; //! True if shift was also pressed

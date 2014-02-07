@@ -107,6 +107,7 @@ public:
 
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
+  virtual std::string getText() const;
 
   //! Sets the maximum amount of characters which may be entered in the box.
   //! \param max: Maximum amount of characters. If 0, the character amount is
@@ -148,7 +149,7 @@ protected:
   //! returns the line number that the cursor is on
   int getLineFromPos( int pos );
   //! adds a letter to the edit box
-  void inputChar( char c );
+  void _inputChar( unsigned short c );
   //! calculates the current scroll position
   void calculateScrollPos();
 
@@ -164,7 +165,9 @@ protected:
   void _drawHolderText( Font font, Rect* clip );
 
   void _init();
-  
+
+  void _setText( const std::wstring& text );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
