@@ -585,7 +585,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
     for (int i=0; i<(int)_d->items.size(); ++i)
     {
-      ListBoxItem& refItem = _d->items[i];      
+      ListBoxItem& refItem = _d->items[i];
 
       if( refItem.getIcon().isValid() )
       {
@@ -597,8 +597,9 @@ void ListBox::beforeDraw( GfxEngine& painter)
         _d->picture->draw( refItem.getIcon(), frameRect.UpperLeftCorner - Point( 0, _d->scrollBar->getPos() ) + offset );
       }
 
-      if( !refItem.getText().empty() &&
-          frameRect.LowerRightCorner.y() >= 0 && frameRect.UpperLeftCorner.y() <= (int)getHeight() )
+      int mnY = frameRect.LowerRightCorner.y() - _d->scrollBar->getPos();
+      int mxY = frameRect.UpperLeftCorner.y() - _d->scrollBar->getPos();
+      if( !refItem.getText().empty() && mnY >= 0 && mxY <= (int)getHeight() )
       {
         refItem.setState( _GetCurrentItemState( i, hl ) );
 

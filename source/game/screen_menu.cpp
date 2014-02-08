@@ -190,6 +190,8 @@ void ScreenMenu::Impl::resolveCredits()
   lbx->addItem( "nickers (2nickers@gmail.com)" );
   lbx->addItem( "ImperatorPrime" );
   lbx->addItem( "veprbl" );
+
+  CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
 }
 
 void ScreenMenu::Impl::resolvePlayMission()
