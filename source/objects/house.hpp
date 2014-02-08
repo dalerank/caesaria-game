@@ -65,7 +65,6 @@ public:
 
   virtual double getState( Param param) const;
 
-  int getHealthLevel() const;
   int getWorkersCount() const;
 
   bool isEducationNeed( Service::Type type ) const;

@@ -127,7 +127,16 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
   foreach( it, wint.getOverview() )
   {
     std::string text = *it;
-    if( text.substr( 0, 5 ) == "@img=" ) { _d->lbxHelp->addItem( Picture::load( text.substr( 5 ) ) ); }
+    if( text.substr( 0, 5 ) == "@img=" )
+    {
+      Picture pic = Picture::load( text.substr( 5 ) );
+      ListBoxItem& item = _d->lbxHelp->addItem( pic );
+      item.setItemTextAlignment( alignCenter, alignUpperLeft );
+      int lineCount = pic.getHeight() / _d->lbxHelp->getItemHeight();
+      StringArray lines;
+      lines.resize( lineCount );
+      _d->lbxHelp->addItems( lines );
+    }
     else { _d->lbxHelp->fitText( _( text ) ); }
   }
 

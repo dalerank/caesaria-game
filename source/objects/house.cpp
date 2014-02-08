@@ -54,7 +54,7 @@ public:
   int picIdOffset;
   int houseId;  // pictureId
   int houseLevel;
-  float healthLevel;
+  //float healthLevel;
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
   SimpleGoodStore goodStore;
@@ -67,7 +67,7 @@ public:
   int currentYear;
   int changeCondition;
 
-  void updateHealthLevel();
+  void updateHealthLevel( HousePtr house );
   void initGoodStore( int size );
   void consumeServices();
   void consumeGoods(HousePtr house);
@@ -80,7 +80,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _d->houseId = houseId;
   _d->taxCheckInterval = DateTime( -400, 1, 1 );
   _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
-  _d->healthLevel = 100;
+  updateState( (Construction::Param)House::health, 100, false );
   HouseSpecHelper& helper = HouseSpecHelper::getInstance();
   _d->houseLevel = helper.getHouseLevel( houseId );
   _d->spec = helper.getHouseLevelSpec( _d->houseLevel );
@@ -202,7 +202,7 @@ void House::timeStep(const unsigned long time)
   if( time % getSpec().getServiceConsumptionInterval() == 0 )
   {
     _d->consumeServices();
-    _d->updateHealthLevel();            
+    _d->updateHealthLevel( this );
   }
 
   if( time % getSpec().getFoodConsumptionInterval() == 0 )
@@ -536,7 +536,7 @@ void House::applyService( ServiceWalkerPtr walker )
 
   case Service::hospital:
   case Service::doctor:
-    _d->healthLevel += 10;
+    updateState( (Construction::Param)House::health, 10 );
     setServiceValue(service, 100);
   break;
   
@@ -729,7 +729,7 @@ void House::save( VariantMap& stream ) const
   stream[ "currentHubitants" ] = _d->habitants.save();
   stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "goodstore" ] = _d->goodStore.save();
-  stream[ "healthLevel" ] = _d->healthLevel;
+  stream[ "healthLevel" ] = getState( (Construction::Param)House::health );
   stream[ "changeCondition" ] = _d->changeCondition;
 
   VariantList vl_services;
@@ -749,7 +749,7 @@ void House::load( const VariantMap& stream )
   _d->picIdOffset = (int)stream.get( "picIdOffset", 0 );
   _d->houseId = (int)stream.get( "houseId", 0 );
   _d->houseLevel = (int)stream.get( "houseLevel", 0 );
-  _d->healthLevel = (float)stream.get( "healthLevel", 0 );
+  //_d->healthLevel = (float)stream.get( "healthLevel", 0 );
   _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
 
   _d->desirability.base = (int)stream.get( "desirability", 0 );
@@ -852,7 +852,6 @@ float House::collectTaxes()
   return tax;
 }
 
-int House::getHealthLevel() const{  return _d->healthLevel; }
 DateTime House::getLastTaxation() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::getDesirability() const {  return _d->desirability; }
@@ -868,7 +867,7 @@ int House::getMaxHabitants() {  return _d->maxHabitants; }
 void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
 
 
-void House::Impl::updateHealthLevel()
+void House::Impl::updateHealthLevel( HousePtr house )
 {
   float delim = 1 + (((services[Service::well] > 0 || services[Service::fontain] > 0) ? 1 : 0))
       + ((services[Service::doctor] > 0 || services[Service::hospital] > 0) ? 1 : 0)
@@ -877,7 +876,7 @@ void House::Impl::updateHealthLevel()
 
   float decrease = 0.3f / delim;
 
-  healthLevel = math::clamp<float>( healthLevel - decrease, 0, 100 );
+  house->updateState( (Construction::Param)House::health, -decrease );
 }
 
 void House::Impl::initGoodStore(int size)

@@ -19,8 +19,7 @@
     maxHouseLevel : "big_villa"
     caption : "##new_village##"
     overview :  [ "##tutorial_text##",
-                  "@img=picture2_00002.png",
-                  "\n\n\n\n\n\n\n\n" ]
+                  "@img=picture2_00002.png" ]
   }
 	
   empire : {}
@@ -64,14 +63,32 @@
       tutorial : "/tutorial/religion.tutorial"    
     }
     
-    "enable_engineer#building_options" : {
+    "enable_religion#building_options" : {
       date : "-349.01.01"
-      buildings : { templeCeres : true, templeVenus : true, templeMars : true, templeNeptune : true, templeMercury : true }
+      buildings : { small_ceres_temple : true, 
+              small_venus_temple : true, 
+              small_mars_temple : true, 
+              small_neptune_temple : true, 
+              small_mercury_temple : true 
+            }
     }   
 
     "health_upper#health_updater" : {
+      date : "-350.01.01"
       endTime : "01.01.01"
-      value : +30
+      value : 30
+    }
+    
+    "wheat_upper#wheat_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 200
+    }
+    
+    "desirability_upper#deisrability_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 50
     }
   }
 	

@@ -38,10 +38,14 @@ public:
 
   virtual void applyService(ServiceWalkerPtr walker);
 
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
+
   virtual unsigned int getWalkerDistance() const;
 
   virtual void timeStep(const unsigned long time);
 private:
+  void _updateUnemployers();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

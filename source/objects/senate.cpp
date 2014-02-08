@@ -50,15 +50,6 @@ Senate::Senate() : ServiceBuilding( Service::senate, building::senate, Size(5) )
   _fgPicturesRef()[ 2 ].setOffset( 200, -15 );
   _fgPicturesRef()[ 3 ] = Picture::load( ResourceGroup::govt, 8 );
   _fgPicturesRef()[ 3 ].setOffset( 230, -10 );
-
-  _fgPicturesRef()[ 4 ] = Picture::load( ResourceGroup::transport, 87 );
-  _fgPicturesRef()[ 4 ].setOffset( 80, -15 );
-  _fgPicturesRef()[ 5 ] = Picture::load( ResourceGroup::transport, 87 );
-  _fgPicturesRef()[ 5 ].setOffset( 90, -20 );
-  _fgPicturesRef()[ 6 ] = Picture::load( ResourceGroup::transport, 87 );
-  _fgPicturesRef()[ 6 ].setOffset( 110, -30 );
-  _fgPicturesRef()[ 7 ] = Picture::load( ResourceGroup::transport, 87 );
-  _fgPicturesRef()[ 7 ].setOffset( 120, -10 );
 }
 
 bool Senate::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -92,19 +83,19 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
+void Senate::build(PlayerCityPtr city, const TilePos& pos)
+{
+  ServiceBuilding::build( city, pos );
+  _updateUnemployers();
+}
+
 unsigned int Senate::getWalkerDistance() const {  return 26; }
 
 void Senate::timeStep(const unsigned long time)
 {
   if( time % GameDate::getTickInMonth() == 0 )
   {
-    int workless = getStatus( Senate::workless );
-    for( int k=0; k < 4; k++ )
-    {
-      _fgPicturesRef()[ 4 + k ] = k * 5 < workless
-                                    ? Picture::load( ResourceGroup::transport, 87 )
-                                    : Picture();
-    }
+    _updateUnemployers();
 
     _fgPicturesRef()[ 0 ].setOffset( 140, -30 + getStatus( Senate::culture ) / 2 );
     _fgPicturesRef()[ 1 ].setOffset( 170, -25 + getStatus( Senate::prosperity ) / 2 );
@@ -113,6 +104,22 @@ void Senate::timeStep(const unsigned long time)
   }
 
   ServiceBuilding::timeStep( time );
+}
+
+void Senate::_updateUnemployers()
+{
+  Point offsets[] = { Point( 80, -15), Point( 90, -20), Point( 110, -30 ), Point( 120, -10 ) };
+  int workless = getStatus( Senate::workless );
+  for( int k=0; k < 4; k++ )
+  {
+    Picture pic;
+    if( k * 5 < workless )
+    {
+      pic = Picture::load( ResourceGroup::transport, 87 );
+      pic.setOffset( offsets[ k ] );
+    }
+    _fgPicturesRef()[ 4 + k ] = pic;
+  }
 }
 
 unsigned int Senate::getFunds() const {  return _getCity()->getFunds().getValue(); }

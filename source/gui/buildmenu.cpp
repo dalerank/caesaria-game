@@ -406,14 +406,16 @@ void BuildMenu_factory::initialize()
 
 BuildMenu_factory::BuildMenu_factory( Widget* parent, const Rect& rectangle )
 : BuildMenu( parent, rectangle, -1 )	 
-{
-
-}
+{}
 
 void BuildMenu_religion::initialize()
 {
-  addSubmenuButton(BM_TEMPLE , _("##small_temples##") );
-  addSubmenuButton(BM_BIGTEMPLE , _("##large_temples##") );
+  bool smallTemplesAvailabe = _options.isBuildingsAvailble( building::templeCeres, building::templeVenus );
+  if( smallTemplesAvailabe ) { addSubmenuButton(BM_TEMPLE , _("##small_temples##") ); }
+
+  bool bigTemplesAvailable = _options.isBuildingsAvailble( building::cathedralCeres, building::cathedralVenus );
+  if( bigTemplesAvailable ) { addSubmenuButton(BM_BIGTEMPLE , _("##large_temples##") ); }
+
   addBuildButton(building::oracle);
 
   BuildMenu::initialize();
@@ -421,9 +423,7 @@ void BuildMenu_religion::initialize()
 
 BuildMenu_religion::BuildMenu_religion( Widget* parent, const Rect& rectangle )
 : BuildMenu( parent, rectangle, -1 )	 
-{
-
-}
+{}
 
 void BuildMenu_temple::initialize()
 {

@@ -51,7 +51,7 @@ WinMissionWindow::WinMissionWindow(Widget* parent, std::string newTitle, bool ma
   lb->setFont( Font::create( FONT_2 ) );
   lb->setTextAlignment( alignCenter, alignCenter );
 
-  lb = new Label( this, Rect( 10, 60, getWidth() - 10, + 30), _( newTitle ) );
+  lb = new Label( this, Rect( 10, 60, getWidth() - 10, 60 + 30), _( newTitle ) );
   lb->setFont( Font::create( FONT_3) );
   lb->setTextAlignment( alignCenter, alignCenter );
 

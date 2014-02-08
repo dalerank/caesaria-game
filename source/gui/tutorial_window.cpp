@@ -50,8 +50,20 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
   foreach( it, items )
   {
     std::string text = *it;
-    if( text.substr( 0, 5 ) == "@img=" ) { lbx->addItem( Picture::load( text.substr( 5 ) ) ); }
-    else { lbx->fitText( _( text ) ); }
+    if( text.substr( 0, 5 ) == "@img=" )
+    {
+      Picture pic = Picture::load( text.substr( 5 ) );
+      ListBoxItem& item = lbx->addItem( pic );
+      item.setItemTextAlignment( alignCenter, alignUpperLeft );
+      int lineCount = pic.getHeight() / lbx->getItemHeight();
+      StringArray lines;
+      lines.resize( lineCount );
+      lbx->addItems( lines );
+    }
+    else
+    {
+      lbx->fitText( _( text ) );
+    }
   }
 }
 

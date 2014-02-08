@@ -40,7 +40,7 @@ int LayerHealth::_getLevelValue( HousePtr house )
 {
   switch(_type)
   {
-  case citylayer::health: return house->getHealthLevel();
+  case citylayer::health: return house->getState( (Construction::Param)House::health );
   case citylayer::hospital: return house->getServiceValue( Service::hospital );
   case citylayer::barber: return house->getServiceValue( Service::barber );
   case citylayer::baths: return house->getServiceValue( Service::baths );

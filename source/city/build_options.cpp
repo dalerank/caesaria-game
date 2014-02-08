@@ -78,7 +78,11 @@ void CityBuildOptions::setGroupAvaible( const BuildMenuType type, Variant vmb )
   case BM_EDUCATION: setBuildingAvailble( building::school, building::library, mayBuild ); break;
   case BM_ENTERTAINMENT: setBuildingAvailble( building::amphitheater, building::chariotSchool, mayBuild ); break;
   case BM_ADMINISTRATION: setBuildingAvailble( building::senate, building::governorPalace, mayBuild ); break;
-  case BM_ENGINEERING: setBuildingAvailble( building::engineerPost, building::wharf, mayBuild ); break;
+  case BM_ENGINEERING:
+    setBuildingAvailble( building::engineerPost, building::wharf, mayBuild );
+    setBuildingAvailble( construction::plaza, mayBuild );
+    setBuildingAvailble( construction::garden, mayBuild );
+  break;
   case BM_SECURITY: setBuildingAvailble( building::prefecture, building::fortArea, mayBuild ); break;
   case BM_COMMERCE: setBuildingAvailble( building::market, building::warehouse, mayBuild ); break;
   case BM_TEMPLE: setBuildingAvailble( building::templeCeres, building::templeVenus, mayBuild ); break;

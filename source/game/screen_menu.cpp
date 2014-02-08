@@ -31,6 +31,7 @@
 #include "game/settings.hpp"
 #include "gui/playername_window.hpp"
 #include "core/logger.hpp"
+#include "core/foreach.hpp"
 #include "vfs/directory.hpp"
 #include "gui/label.hpp"
 #include "gui/listbox.hpp"
@@ -57,6 +58,8 @@ public:
     fileMap = fileName;
     isStopped=true; 
   }
+
+  void resolveCredits();
   
   void resolvePlayMission();
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
@@ -118,7 +121,7 @@ void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
   VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
-  for( VariantMap::iterator it=languages.begin(); it != languages.end(); it++ )
+  foreach( it, languages )
   {
     lbx->addItem( it->first );
   }
@@ -131,7 +134,7 @@ void ScreenMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
   VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
-  for( VariantMap::iterator it=languages.begin(); it != languages.end(); it++ )
+  foreach( it, languages )
   {
     if( item.getText() == it->first )
     {
@@ -157,6 +160,36 @@ void ScreenMenu::Impl::resolveChangePlayerName()
 void ScreenMenu::Impl::resolveNewGame()
 {  
   result=startNewGame; isStopped=true;
+}
+
+void ScreenMenu::Impl::resolveCredits()
+{
+  gui::Widget* parent = game->getGui()->getRootWidget();
+  Size rootSize = parent->getSize();
+  Size windowSize( 512, 384 );
+  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+             windowSize );
+
+  gui::Label* frame = new gui::Label( parent, rect, "", false, gui::Label::bgWhiteFrame );
+  gui::ListBox* lbx = new gui::ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
+  gui::PushButton* btn = new gui::PushButton( frame, Rect( 0, 0, 1, 1), "Close" );
+
+  lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
+  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
+
+  lbx->addItem( "gathanase" );
+  lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
+  lbx->addItem( "gecube (gb12335@gmail.com)" );
+  lbx->addItem( "tracertong" );
+  lbx->addItem( "hellium" );
+  lbx->addItem( "pufik6666" );
+  lbx->addItem( "andreibranescu" );
+  lbx->addItem( "AMDmi3 (amdmi3@amdmi3.ru)" );
+  lbx->addItem( "akuskis" );
+  lbx->addItem( "Rovanion" );
+  lbx->addItem( "nickers (2nickers@gmail.com)" );
+  lbx->addItem( "ImperatorPrime" );
+  lbx->addItem( "veprbl" );
 }
 
 void ScreenMenu::Impl::resolvePlayMission()
@@ -240,6 +273,9 @@ void ScreenMenu::initialize()
 
   btn = _d->menu->addButton( _("Language"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowChangeLanguageWindow );
+
+  btn = _d->menu->addButton( _("Credits"), -1 );
+  CONNECT( btn, onClicked(), _d.data(), Impl::resolveCredits );
 
   btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );

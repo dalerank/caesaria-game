@@ -85,9 +85,9 @@ ListBoxItem& ListBoxItem::getInvalidItem()
 
 void ListBoxItem::setItemTextAlignment( Alignment horizontal, Alignment vertical )
 {
-    _d->vertical = vertical;
-    _d->horizontal = horizontal;
-    _d->alignEnabled = true;
+  _d->vertical = vertical;
+  _d->horizontal = horizontal;
+  _d->alignEnabled = true;
 }
 
 ListBoxItem::~ListBoxItem(){}

@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "listbox.hpp"
 #include "listboxprivate.hpp"
@@ -233,20 +233,20 @@ void ListBox::_IndexChanged( unsigned int eventType )
     switch( eventType )
     {
     case guiListboxChanged:
-        _d->indexSelected.emit( _d->selectedItemIndex );
-        if( _d->selectedItemIndex >= 0 )
-        {
-            _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].getText() );
-            _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
-        }
+      _d->indexSelected.emit( _d->selectedItemIndex );
+      if( _d->selectedItemIndex >= 0 )
+      {
+        _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].getText() );
+        _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
+      }
     break;
 
     case guiListboxSelectedAgain:
-        _d->indexSelectedAgain.emit( _d->selectedItemIndex );
-        if( _d->selectedItemIndex >= 0 )
-        {
-            _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].getText() );
-        }
+      _d->indexSelectedAgain.emit( _d->selectedItemIndex );
+      if( _d->selectedItemIndex >= 0 )
+      {
+          _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].getText() );
+      }
     break;
 
     default:
@@ -277,45 +277,32 @@ bool ListBox::onEvent(const NEvent& event)
 				int oldSelected = _d->selectedItemIndex;
 				switch (event.keyboard.key)
 				{
-					case KEY_DOWN:
-                        _d->selectedItemIndex += 1;
-						break;
-					case KEY_UP:
-                        _d->selectedItemIndex -= 1;
-						break;
-					case KEY_HOME:
-                        _d->selectedItemIndex = 0;
-						break;
-					case KEY_END:
-                        _d->selectedItemIndex = (int)_d->items.size()-1;
-						break;
-					case KEY_NEXT:
-                        _d->selectedItemIndex += getHeight() / _d->itemHeight;
-						break;
-					case KEY_PRIOR:
-                        _d->selectedItemIndex -= getHeight() / _d->itemHeight;
-						break;
-					default:
-						break;
+					case KEY_DOWN: _d->selectedItemIndex += 1; break;
+					case KEY_UP:   _d->selectedItemIndex -= 1; break;
+					case KEY_HOME: _d->selectedItemIndex = 0;  break;
+					case KEY_END:  _d->selectedItemIndex = (int)_d->items.size()-1; break;
+					case KEY_NEXT: _d->selectedItemIndex += getHeight() / _d->itemHeight; break;
+					case KEY_PRIOR:_d->selectedItemIndex -= getHeight() / _d->itemHeight; break;
+					default: break;
 				}
          
-                if (_d->selectedItemIndex >= (int)_d->items.size())
-                {
-                  _d->selectedItemIndex = _d->items.size() - 1;
-                }
-                        else if (_d->selectedItemIndex<0)
-                {
-                  _d->selectedItemIndex = 0;
-                }
+        if (_d->selectedItemIndex >= (int)_d->items.size())
+        {
+          _d->selectedItemIndex = _d->items.size() - 1;
+        }
+                else if (_d->selectedItemIndex<0)
+        {
+          _d->selectedItemIndex = 0;
+        }
         
-                _RecalculateScrollPos();
-                _d->needItemsRepackTextures = true;
+        _RecalculateScrollPos();
+        _d->needItemsRepackTextures = true;
 
 				// post the news
-                if( oldSelected != _d->selectedItemIndex && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ) )
-                {
-                  _IndexChanged( guiListboxChanged );
-                }
+				if( oldSelected != _d->selectedItemIndex && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ) )
+				{
+					_IndexChanged( guiListboxChanged );
+				}
 
 				return true;
 			}
@@ -349,55 +336,55 @@ bool ListBox::onEvent(const NEvent& event)
 				// find the selected item, starting at the current selection
                 int start = _d->selectedItemIndex;
                         // dont change selection if the key buffer matches the current item
-                if (_d->selectedItemIndex > -1 && _d->keyBuffer.size() > 1)
+        if (_d->selectedItemIndex > -1 && _d->keyBuffer.size() > 1)
 				{
-                    if( _d->items[ _d->selectedItemIndex ].getText().size() >= _d->keyBuffer.size()
-                      && StringHelper::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ),
-                                                 StringHelper::equaleIgnoreCase ) )
-                    {
-                            return true;
-                    }
+					if( _d->items[ _d->selectedItemIndex ].getText().size() >= _d->keyBuffer.size()
+							&& StringHelper::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ),
+																				StringHelper::equaleIgnoreCase ) )
+					{
+						return true;
+					}
 				}
 
 				int current;
-                for( current = start+1; current < (int)_d->items.size(); ++current)
+				for( current = start+1; current < (int)_d->items.size(); ++current)
 				{
-                    if( _d->items[current].getText().size() >= _d->keyBuffer.size())
+					if( _d->items[current].getText().size() >= _d->keyBuffer.size())
 					{
-                        if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr(0,_d->keyBuffer.size()),
+						if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr(0,_d->keyBuffer.size()),
                                         StringHelper::equaleIgnoreCase ) )
 						{
-                            if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
-                            {
-                              _IndexChanged( guiListboxChanged );
-                            }
+							if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
+							{
+								_IndexChanged( guiListboxChanged );
+							}
 
-                            setSelected(current);
+							setSelected(current);
 							return true;
 						}
 					}
 				}
 
-                for( current = 0; current <= start; ++current)
+				for( current = 0; current <= start; ++current)
 				{
-                     if( _d->items[current].getText().size() >= _d->keyBuffer.size())
+					if( _d->items[current].getText().size() >= _d->keyBuffer.size())
 					{
-                        if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr( 0,_d->keyBuffer.size() ),
-                                                    StringHelper::equaleIgnoreCase ) )
-                        {
-                          if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
-                          {
-                            _IndexChanged( guiListboxChanged );
-                          }
+						if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr( 0,_d->keyBuffer.size() ),
+																				StringHelper::equaleIgnoreCase ) )
+						{
+							if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
+							{
+								_IndexChanged( guiListboxChanged );
+							}
 
-                          setSelected(current);
-                                        return true;
-                        }
-                    }
-                }
-
-                return true;
+              setSelected(current);
+              return true;
             }
+          }
+        }
+
+        return true;
+      }
 			break;
 
 		case sEventGui:
@@ -441,6 +428,7 @@ bool ListBox::onEvent(const NEvent& event)
 				case mouseWheel:
 					{
 						_d->scrollBar->setPos(_d->scrollBar->getPos() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
+						_d->needItemsRepackTextures = true;
 						return true;
 					}
 				break;
@@ -601,7 +589,12 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
       if( refItem.getIcon().isValid() )
       {
-        _d->picture->draw( refItem.getIcon(), frameRect.UpperLeftCorner - Point( 0, _d->scrollBar->getPos() ) );
+        Point offset;
+        if( refItem.getHorizontalAlign() == alignCenter )
+        {
+          offset.setX( (getWidth() - refItem.getIcon().getWidth()) / 2 );
+        }
+        _d->picture->draw( refItem.getIcon(), frameRect.UpperLeftCorner - Point( 0, _d->scrollBar->getPos() ) + offset );
       }
 
       if( !refItem.getText().empty() &&
@@ -795,8 +788,17 @@ void ListBox::setItemDefaultColor( ListBoxItem::ColorType colorType, NColor colo
 //! set global itemHeight
 void ListBox::setItemHeight( int height )
 {
-    _d->itemHeight = height;
-    _d->itemHeightOverride = 1;
+  _d->itemHeight = height;
+  _d->itemHeightOverride = 1;
+}
+
+int ListBox::getItemHeight() const { return _d->itemHeight; }
+
+void ListBox::setItemAlignment(int index, Alignment horizontal, Alignment vertical)
+{
+  ListBoxItem& item = getItem( index );
+  item.setItemTextAlignment( horizontal, vertical );
+  _d->needItemsRepackTextures = true;
 }
 
 ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int color )

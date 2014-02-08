@@ -124,6 +124,10 @@ public:
   //! set global itemHeight
   virtual void setItemHeight( int height );
 
+  virtual int getItemHeight() const;
+
+  virtual void setItemAlignment( int index, Alignment horizontal, Alignment vertical );
+
   //! Sets whether to draw the background
   virtual void setDrawBackground(bool draw);
 

@@ -54,7 +54,11 @@
       well : true, 
       engineering_post : true,
       prefecture : true,
-      templeCeres : true, templeVenus : true, templeMars : true, templeNeptune : true, templeMercury : true
+      small_ceres_temple : true, 
+      small_venus_temple : true, 
+      small_mars_temple : true, 
+      small_neptune_temple : true, 
+      small_mercury_temple : true
     }
   }
 }

@@ -169,12 +169,15 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
     building->applyService( ServiceWalkerPtr( this ) );
 
     HousePtr house = ptr_cast<House>( building );
-    if( house.isValid() && house->getHealthLevel() < 1 )
+    if( house.isValid() )
     {
-      house->deleteLater();
-
-      events::GameEventPtr e = events::DisasterEvent::create( house->getTile(), events::DisasterEvent::plague );
-      e->dispatch();
+      int healthLevel = house->getState( (Construction::Param)House::health );
+      if( healthLevel < 1 )
+      {
+        house->deleteLater();
+        events::GameEventPtr e = events::DisasterEvent::create( house->getTile(), events::DisasterEvent::plague );
+        e->dispatch();
+      }
     }
   }
 }
