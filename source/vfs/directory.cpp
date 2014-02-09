@@ -176,7 +176,8 @@ Directory Directory::operator/(const Directory& dir)
 Path Directory::operator/(const Path& filename)
 {
   std::string dr = addEndSlash().toString();
-  return Path( dr + filename.toString() );
+  std::string fn = filename.removeBeginSlash().toString();
+  return Path( dr + fn );
 }
 
 
