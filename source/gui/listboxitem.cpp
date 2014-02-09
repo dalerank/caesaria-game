@@ -27,6 +27,7 @@ public:
   Picture icon;
   ElementState state;
   bool enabled;
+  Point offset;
 
   Alignment horizontal;
   Alignment vertical;
@@ -97,13 +98,10 @@ bool ListBoxItem::isEnabled() const{    return _d->enabled;}
 void ListBoxItem::setEnabled( bool en ){    _d->enabled = en;}
 ElementState ListBoxItem::getState() const{    return _d->state;}
 void ListBoxItem::setState( const ElementState& st ){    _d->state = st;}
+Point ListBoxItem::getOffset() const{  return _d->offset;}
+void ListBoxItem::setOffset(Point p){  _d->offset = p;}
 float ListBoxItem::getCurrentHovered() const {   return _d->currentHovered;}
-
-void ListBoxItem::updateHovered( float delta )
-{
-    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );
-}
-
+void ListBoxItem::updateHovered( float delta ){    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );}
 Picture ListBoxItem::getIcon() const { return _d->icon; }
 
 }//end namespace gui

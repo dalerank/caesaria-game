@@ -42,6 +42,7 @@ public:
   static const char* langModel;
   static const char* fastsavePostfix;
   static const char* saveExt;
+  static const char* workDir;
 
   static GameSettings& getInstance();
 
@@ -54,6 +55,7 @@ public:
   static void load();
   static void save();
 
+  void setwdir( vfs::Directory options );
 private:
   GameSettings();
 

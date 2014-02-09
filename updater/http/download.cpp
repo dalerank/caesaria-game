@@ -76,7 +76,7 @@ void Download::Start()
 
 	// Construct the temporary filename
 	vfs::Path filename = _destFilename.getBasename();
-	vfs::Directory folder = _destFilename.getDir();
+	vfs::Directory folder = _destFilename.directory();
 
 	if ( !folder.isExist() )
 	{

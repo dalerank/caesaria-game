@@ -310,7 +310,7 @@ Path Directory::getRelativePathTo(Path path) const
     return *this;
 
   Path path1 = getAbsolutePath();
-  Path path2( Directory( path.getDir() ).getAbsolutePath() );
+  Path path2( Directory( path.directory() ).getAbsolutePath() );
   StringArray list1, list2;
 
   list1 = StringHelper::split( path1.toString(), "/\\");

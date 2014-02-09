@@ -95,6 +95,8 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->lbShortDesc = new Label( gbTargets, Rect( 16, 54, 270 + 240, 54 + 20), "", false, Label::bgSmBrown );
 
   _d->lbxHelp = new ListBox( this, Rect( 16, 152, getWidth() - 20, getHeight() - 40 ) );
+  _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
+  _d->lbxHelp->setItemTextOffset( Point( 10, 0 ) );
 }
 
 void MissionTargetsWindow::draw( GfxEngine& painter )
@@ -123,6 +125,9 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
 
   std::string text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.getPopulation() );
   _d->lbPopulation->setText( text );
+  _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
+  _d->lbxHelp->setItemTextOffset( Point( 20, 0 ) );
+  _d->lbxHelp->setItemDefaultColor( ListBoxItem::LBC_TEXT, 0xffe0e0e0 );
 
   foreach( it, wint.getOverview() )
   {

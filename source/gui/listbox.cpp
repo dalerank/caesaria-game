@@ -594,7 +594,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
         {
           offset.setX( (getWidth() - refItem.getIcon().getWidth()) / 2 );
         }
-        _d->picture->draw( refItem.getIcon(), frameRect.UpperLeftCorner - Point( 0, _d->scrollBar->getPos() ) + offset );
+        _d->picture->draw( refItem.getIcon(), frameRect.UpperLeftCorner + Point( 0, -_d->scrollBar->getPos() ) + offset );
       }
 
       int mnY = frameRect.LowerRightCorner.y() - _d->scrollBar->getPos();
@@ -616,7 +616,9 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-        currentFont.draw( *_d->picture, refItem.getText(), textRect.left(), textRect.top() - _d->scrollBar->getPos(), false );
+        currentFont.draw( *_d->picture, refItem.getText(),
+                          textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->getPos() ) + refItem.getOffset(),
+                          false );
       }
 
       frameRect += Point( 0, _d->itemHeight );
@@ -807,6 +809,7 @@ ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int col
   ListBoxItem i;
   i.setText( text );
   i.setState( stNormal );
+  i.setOffset( _d->itemTextOffset );
   //i.currentHovered = 255;
   i.OverrideColors[ ListBoxItem::LBC_TEXT ].font = font.isValid() ? font : _d->font;
   i.OverrideColors[ ListBoxItem::LBC_TEXT ].color = color;
@@ -837,7 +840,8 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  for( StringArray::const_iterator it=strings.begin(); it != strings.end(); it++ ) { addItem( *it ); }
+  for( StringArray::const_iterator it=strings.begin(); it != strings.end(); it++ )
+  { addItem( *it ); }
 }
 
 Font ListBox::getFont() const{  return _d->font;}
@@ -845,6 +849,7 @@ void ListBox::setDrawBackground(bool draw){    setFlag( LBF_DRAWBACK, draw );} /
 int ListBox::getSelected() {    return _d->selectedItemIndex; }
 Signal1<std::string>& ListBox::onItemSelectedAgain(){  return _d->onItemSelectedAgainSignal;}
 Signal1<const ListBoxItem&>& ListBox::onItemSelected(){  return _d->onItemSelectedSignal;}
-void ListBox::setItemFont( Font font ){  _d->font = font;}
+void ListBox::setItemFont( Font font ){ _d->font = font; }
+void ListBox::setItemTextOffset( Point p ) { _d->itemTextOffset = p; }
 
 }//end namespace gui

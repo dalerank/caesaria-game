@@ -76,6 +76,9 @@ public:
   ElementState getState() const;
   void setState( const ElementState& state );
 
+  Point getOffset() const;
+  void setOffset( Point p );
+
   struct ListItemOverrideColor
   {
     ListItemOverrideColor() : Use(false), color( 0 ) {}

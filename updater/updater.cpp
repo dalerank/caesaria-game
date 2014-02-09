@@ -862,7 +862,7 @@ void Updater::RestartUpdater()
 
 		siStartupInfo.cb = sizeof(siStartupInfo);
 
-		vfs::Directory parentPath = _updateBatchFile.getDir();
+		vfs::Directory parentPath = _updateBatchFile.directory();
 
 		Logger::warning( "Starting batch file " + _updateBatchFile.toString() + " in " + parentPath.toString() );
 

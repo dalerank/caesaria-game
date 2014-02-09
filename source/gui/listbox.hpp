@@ -147,7 +147,9 @@ public:
 
   virtual int getSelected();
 
-  void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( GfxEngine& painter );
+
+  virtual void setItemTextOffset(Point p);
 
 oc3_signals public:
   Signal1<std::string>& onItemSelectedAgain();

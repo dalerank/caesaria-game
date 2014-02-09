@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _NRP_LISTBOX_PRIVATE_H_INCLUDE_
-#define _NRP_LISTBOX_PRIVATE_H_INCLUDE_
+#ifndef _CAESARIA_LISTBOX_PRIVATE_H_INCLUDE_
+#define _CAESARIA_LISTBOX_PRIVATE_H_INCLUDE_
 
 #include "listboxitem.hpp"
 #include "core/signals.hpp"
@@ -48,6 +48,7 @@ public:
 	unsigned int lastKeyTime;
   std::string keyBuffer;
 	bool selecting;
+	Point itemTextOffset;
 	bool needItemsRepackTextures;
 
 oc3_signals public:
@@ -86,4 +87,4 @@ oc3_signals public:
 };
 
 }//end namespace gui
-#endif
+#endif //_CAESARIA_LISTBOX_PRIVATE_H_INCLUDE_

@@ -353,9 +353,6 @@ void Game::load(std::string filename)
 
 void Game::initialize()
 {
-  Logger::registerWriter( Logger::consolelog );
-  Logger::registerWriter( Logger::filelog );
-
   GameSettings::load();
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
