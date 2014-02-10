@@ -199,7 +199,7 @@ void ScreenGame::Impl::showSaveDialog()
   vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
   std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
 
-  if( !saveDir.isExist() )
+  if( !saveDir.exist() )
   {
     vfs::Directory::createByPath( saveDir );
   }
@@ -278,10 +278,14 @@ void ScreenGame::Impl::showEmpireMapWindow()
 }
 
 void ScreenGame::draw()
-{
+{ 
+  Logger::warning( "ScreenGame render" );
   _d->renderer.render();
 
+  Logger::warning( "ScreenGame beforeDraw" );
   _d->game->getGui()->beforeDraw();
+  
+  Logger::warning( "ScreenGame darw" );
   _d->game->getGui()->draw();
 }
 

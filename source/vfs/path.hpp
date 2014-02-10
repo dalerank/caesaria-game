@@ -39,7 +39,7 @@ public:
   Path( const Path& );
   virtual ~Path();
 
-  bool isExist() const;
+  bool exist() const;
   bool isFolder() const;
   bool isDirectoryEntry() const;
 

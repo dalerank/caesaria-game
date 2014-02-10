@@ -106,7 +106,7 @@ void Game::initSound()
 
 void Game::mountArchives()
 {
-  Logger::warning( "mount archives begin" );
+  Logger::warning( "Game: mount archives begin" );
 
   vfs::FileSystem& fs = vfs::FileSystem::instance();
 
@@ -190,6 +190,7 @@ void Game::setScreenMenu()
     case ScreenMenu::loadMap:
     {
       load( screen.getMapName() );
+      Logger::warning( "screen menu: end loading map" );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
@@ -207,11 +208,16 @@ void Game::setScreenMenu()
 
 void Game::setScreenGame()
 {
+  Logger::warning( "game: enter setScreenGame" );
   ScreenGame screen( *this, *_d->engine );
+  
+  Logger::warning( "game: start initialize" );
   screen.initialize();
 
+  Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
   {
+  	Logger::warning( "game: loop tick %d", _d->saveTime );
     screen.update( *_d->engine );
 
     if( !_d->pauseCounter )
@@ -267,20 +273,9 @@ Game::Game() : _d( new Impl )
   CONNECT( &events::Dispatcher::instance(), onEvent(), this, Game::resolveEvent );
 }
 
-void Game::changeTimeMultiplier(int percent)
-{
-  setTimeMultiplier( _d->timeMultiplier + percent );
-}
-
-void Game::setTimeMultiplier(int percent)
-{
-  _d->timeMultiplier = math::clamp<int>( percent, 10, 300 );
-}
-
-int Game::getTimeMultiplier() const
-{
-  return _d->timeMultiplier;
-}
+void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
+void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<int>( percent, 10, 300 );}
+int Game::getTimeMultiplier() const{  return _d->timeMultiplier;}
 
 void Game::resolveEvent( events::GameEventPtr event )
 {
@@ -291,10 +286,7 @@ void Game::resolveEvent( events::GameEventPtr event )
 }
 
 
-Game::~Game()
-{
-
-}
+Game::~Game(){}
 
 void Game::save(std::string filename) const
 {
@@ -306,35 +298,47 @@ void Game::load(std::string filename)
 {  
   Logger::warning( "Game: try load from " + filename );
 
-  vfs::Path fPath = GameSettings::rpath( filename );
-  if( !fPath.isExist() )
+  vfs::Path fPath( filename );
+  if( !fPath.exist() )
   {
     Logger::warning( "Cannot find file " + fPath.toString() );
-    Logger::warning( "Try find file in resource's folder " );
+    fPath = GameSettings::rpath( filename );
 
-    fPath = GameSettings::rcpath( filename ).getAbsolutePath();
-    if( !fPath.isExist() )
+    if( !fPath.exist() )
     {
       Logger::warning( "Cannot find file " + fPath.toString() );
-      return;
+      Logger::warning( "Try find file in resource's folder " );
+
+      fPath = GameSettings::rcpath( filename ).getAbsolutePath();
+      if( !fPath.exist() )
+      {
+        Logger::warning( "Cannot find file " + fPath.toString() );
+        return;
+      }
     }
   }
 
+  Logger::warning( "Game: reseting varialbes" );
   reset();
+  
+  Logger::warning( "Game: init empire start options" );
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
                           GameSettings::rcpath( GameSettings::worldModel ) );
 
+  Logger::warning( "Game: try find loader" );
   GameLoader loader;
   _d->loadOk = loader.load( fPath, *this);
-
+  
   if( !_d->loadOk )
   {
     Logger::warning( "LOADING ERROR: can't load game from %s", filename.c_str() );
     return;
   }
 
+  Logger::warning( "Game: init player city" );
   _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
 
+  Logger::warning( "Game: calculate road access for buildings" );
   TileOverlayList& llo = _d->city->getOverlays();
   foreach( overlay, llo )
   {
@@ -345,6 +349,7 @@ void Game::load(std::string filename)
     }
   }
 
+  Logger::warning( "Game: initialize pathfinder" );
   Pathfinder::getInstance().update( _d->city->getTilemap() );
 
   Logger::warning( "Load game end" );
@@ -376,6 +381,7 @@ void Game::exec()
 
   while(_d->nextScreen != SCREEN_QUIT)
   {
+  	 Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
      switch(_d->nextScreen)
      {
      case SCREEN_MENU:        setScreenMenu();     break;

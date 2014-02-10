@@ -43,7 +43,7 @@ namespace vfs
 bool Directory::create( std::string dir )
 {
   Directory rdir( dir );
-  if( rdir.isExist() )
+  if( rdir.exist() )
   {
     Logger::warning( "Directory %s also exist", dir.c_str() );
     return false;
@@ -80,7 +80,7 @@ bool Directory::createByPath( Directory dir )
     {
       current += *iter;
       Path path = current;
-      if( path.isExist() )
+      if( path.exist() )
       {
         if( !path.isFolder() )
         {
@@ -111,19 +111,19 @@ bool Directory::createByPath( Directory dir )
 
 Path Directory::find( const Path& fileName ) const
 {
-  _CAESARIA_DEBUG_BREAK_IF( !isExist() );
+  _CAESARIA_DEBUG_BREAK_IF( !exist() );
   if( !fileName.toString().size() )
   {
     return "";
   }
 
-  if( fileName.isExist() )
+  if( fileName.exist() )
   {
     return fileName;
   }
 
   Path finalPath( addEndSlash().toString() + fileName.toString() );
-  if( finalPath.isExist() )
+  if( finalPath.exist() )
   {
     return finalPath;
   }
@@ -179,16 +179,8 @@ Path Directory::operator/(const Path& filename)
   return Path( dr + fn );
 }
 
-
-bool Directory::changeCurrentDir( const Path& dirName )
-{
-  return FileSystem::instance().changeWorkingDirectoryTo( dirName );
-}
-
-Directory Directory::getCurrent()
-{
-  return FileSystem::instance().getWorkingDirectory();
-}
+bool Directory::changeCurrentDir( const Path& dirName ){  return FileSystem::instance().changeWorkingDirectoryTo( dirName );}
+Directory Directory::getCurrent(){  return FileSystem::instance().getWorkingDirectory();}
 
 Directory Directory::getApplicationDir()
 {
@@ -294,9 +286,7 @@ Directory Directory::getUserDir()
   return vfs::Directory( mHomePath );
 }
 
-Directory::Directory()
-{
-}
+Directory::Directory(){}
 
 Directory Directory::up() const
 {
@@ -311,7 +301,7 @@ Directory Directory::up() const
     return Path( pathToAny.toString().substr( 0, index ) );
   }
 
-  _CAESARIA_DEBUG_BREAK_IF( !isExist() );
+  _CAESARIA_DEBUG_BREAK_IF( !exist() );
   return Directory();
 }
 

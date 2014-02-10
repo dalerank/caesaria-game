@@ -120,7 +120,7 @@ Path Path::removeBeginSlash() const
 
   wchar_t endsym = *pathTo.begin();
   if( endsym == '/' || endsym == '\\' )
-      pathTo.erase( pathTo.begin() );
+      pathTo.erase( 0, 1 );
 
   return pathTo;
 }
@@ -140,7 +140,7 @@ Path Path::removeEndSlash() const
   return pathTo;
 }
 
-bool Path::isExist() const
+bool Path::exist() const
 {
     return FileSystem::instance().existFile( *this );
 }

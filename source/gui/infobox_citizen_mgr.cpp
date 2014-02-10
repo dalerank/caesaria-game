@@ -31,7 +31,7 @@ class CitizenInfoboxCreator : public InfoboxCreator
 public:
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    /*CityHelper helper( city );
+    CityHelper helper( city );
     WalkerList walkers = helper.find<Walker>( walker::any, pos );
 
     if( walkers.empty() )
@@ -49,7 +49,7 @@ public:
       {
         return new gui::InfoboxLegion( parent, pp.front() );
       }
-    }*/
+    }
   }
 };
 

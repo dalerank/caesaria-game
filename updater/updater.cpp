@@ -68,7 +68,7 @@ void Updater::setBinaryAsExecutable()
 #endif
 
 	vfs::Path path2exe = getTargetDir()/executableName;
-	if( path2exe.isExist() )
+	if( path2exe.exist() )
 	{
 		// set the executable bit on binary
 		_markFileAsExecutable( path2exe );
@@ -103,7 +103,7 @@ bool Updater::isMirrorsNeedUpdate()
 	vfs::Directory folder = getTargetDir();
 	vfs::Path mirrorPath = folder/CAESARIA_MIRRORS_INFO;
 
-	if( !mirrorPath.isExist() )
+	if( !mirrorPath.exist() )
 	{
 		// No mirrors file
 		Logger::update( "No mirrors file present on this machine.");
@@ -258,7 +258,7 @@ void Updater::DetermineLocalVersion()
 				continue;
 			}
 
-			if( !candidate.isExist() )
+			if( !candidate.exist() )
 			{
 				Logger::warning( "MISSING" );
 				mismatch = true;
@@ -501,7 +501,7 @@ bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFi
 
 	//Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
 
-	if( localFile.isExist() )
+	if( localFile.exist() )
 	{
 		// File exists, check ignore list
 		if (_ignoreList.find( StringHelper::localeLower( releaseFile.file.toString()) ) != _ignoreList.end())
