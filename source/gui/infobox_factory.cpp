@@ -67,7 +67,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
   _getInfo()->move( Point( 0, 15 ));
 
-  std::string workInfo = getInfoText( factory );
+  std::string workInfo = factory->getWorkersProblem();
   setText( _(workInfo) );
 
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->getMaxWorkers(), factory->getWorkersCount() );
@@ -76,17 +76,6 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 void InfoboxFactory::showDescription()
 {
   DictionaryWindow::show( getEnvironment()->getRootWidget(), _type );
-}
-
-std::string InfoboxFactory::getInfoText( FactoryPtr factory )
-{
-  std::string factoryType = MetaDataHolder::getTypename( factory->getType() );
-  float workKoeff = (factory->getWorkersCount() / (float)factory->getMaxWorkers()) * 5.f;
-
-  const char* workKoeffStr[] = { "_no_workers", "_bad_work", "_slow_work", "_patrly_workers",
-                                 "_need_some_workers", "_full_work" };
-
-  return StringHelper::format( 0xff, "##%s%s##", factoryType.c_str(), workKoeffStr[ (int)ceil(workKoeff) ] );
 }
 
 InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)

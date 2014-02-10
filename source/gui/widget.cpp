@@ -616,6 +616,7 @@ void Widget::setupUI( const VariantMap& ui )
 
 void Widget::setupUI(const vfs::Path& filename)
 {
+  Logger::warning( "Widget: load gui model from " + filename.toString() );
   setupUI( SaveAdapter::load( filename ) );
 }
 

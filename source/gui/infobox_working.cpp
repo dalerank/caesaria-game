@@ -56,12 +56,7 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
 
     if( _working->getMaxWorkers() > 0 )
     {
-      std::string type = MetaDataHolder::getTypename( _working->getType() );
-      const char* stateName[] = { "no_workers", "bad_work", "patrly_workers", "need_some_workers", "full_work" };
-      int workPercent = ceil( _working->getWorkersCount() * 5 / _working->getMaxWorkers() );
-      workPercent = math::clamp( workPercent, 0, 4 );
-
-      messages.push_back( StringHelper::format( 0xff, "##%s_%s##", type.c_str(), stateName[ workPercent ]));
+      messages.push_back( _working->getWorkersProblem() );
     }
 
     std::string currentText = messages[ math::random( messages.size() ) ];
