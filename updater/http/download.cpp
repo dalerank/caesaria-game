@@ -78,7 +78,7 @@ void Download::Start()
 	vfs::Path filename = _destFilename.getBasename();
 	vfs::Directory folder = _destFilename.directory();
 
-	if ( !folder.isExist() )
+	if ( !folder.exist() )
 	{
 		// Make sure the folder exists
 		if( !vfs::Directory::createByPath( folder ) )

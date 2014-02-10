@@ -106,7 +106,7 @@ void Game::initSound()
 
 void Game::mountArchives()
 {
-  Logger::warning( "mount archives begin" );
+  Logger::warning( "Game: mount archives begin" );
 
   vfs::FileSystem& fs = vfs::FileSystem::instance();
 
@@ -267,20 +267,9 @@ Game::Game() : _d( new Impl )
   CONNECT( &events::Dispatcher::instance(), onEvent(), this, Game::resolveEvent );
 }
 
-void Game::changeTimeMultiplier(int percent)
-{
-  setTimeMultiplier( _d->timeMultiplier + percent );
-}
-
-void Game::setTimeMultiplier(int percent)
-{
-  _d->timeMultiplier = math::clamp<int>( percent, 10, 300 );
-}
-
-int Game::getTimeMultiplier() const
-{
-  return _d->timeMultiplier;
-}
+void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
+void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<int>( percent, 10, 300 );}
+int Game::getTimeMultiplier() const{  return _d->timeMultiplier;}
 
 void Game::resolveEvent( events::GameEventPtr event )
 {
@@ -291,10 +280,7 @@ void Game::resolveEvent( events::GameEventPtr event )
 }
 
 
-Game::~Game()
-{
-
-}
+Game::~Game(){}
 
 void Game::save(std::string filename) const
 {
@@ -306,19 +292,27 @@ void Game::load(std::string filename)
 {  
   Logger::warning( "Game: try load from " + filename );
 
-  vfs::Path fPath = GameSettings::rpath( filename );
-  if( !fPath.isExist() )
+  vfs::Path fPath( filename );
+  if( !fPath.exist() )
   {
     Logger::warning( "Cannot find file " + fPath.toString() );
-    Logger::warning( "Try find file in resource's folder " );
+    fPath = GameSettings::rpath( filename );
 
-    fPath = GameSettings::rcpath( filename ).getAbsolutePath();
-    if( !fPath.isExist() )
+    if( !fPath.exist() )
     {
       Logger::warning( "Cannot find file " + fPath.toString() );
-      return;
+      Logger::warning( "Try find file in resource's folder " );
+
+      fPath = GameSettings::rcpath( filename ).getAbsolutePath();
+      if( !fPath.exist() )
+      {
+        Logger::warning( "Cannot find file " + fPath.toString() );
+        return;
+      }
     }
   }
+
+
 
   reset();
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),

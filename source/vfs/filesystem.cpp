@@ -284,7 +284,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   }
   else
   {
-    Logger::warning( "Could not create archive for %s", filename.toString().c_str() );
+    Logger::warning( "Could not create archive for " + filename.toString() );
   }
 
   return ArchivePtr();
