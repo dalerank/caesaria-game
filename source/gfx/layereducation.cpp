@@ -36,7 +36,7 @@ Layer::VisibleWalkers LayerEducation::getVisibleWalkers() const
   return _walkers;
 }
 
-int LayerEducation::_getLevelValue( HousePtr house )
+int LayerEducation::_getLevelValue( HousePtr house ) const
 {
   switch(_type)
   {
@@ -147,6 +147,16 @@ LayerPtr LayerEducation::create(TilemapCamera& camera, PlayerCityPtr city, int t
   return ret;
 }
 
+std::string LayerEducation::_getAccessLevel( int lvlValue ) const
+{
+  if( lvlValue == 0 ) { return "##no_"; }
+  else if( lvlValue < 20 ) { return "##warning_"; }
+  else if( lvlValue < 40 ) { return "##bad_"; }
+  else if( lvlValue < 60 ) { return "##simple_"; }
+  else if( lvlValue < 80 ) { return "##good_"; }
+  else { return "##awesome_"; }
+}
+
 void LayerEducation::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
@@ -157,30 +167,41 @@ void LayerEducation::handleEvent(NEvent& event)
     {
       Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
       std::string text = "";
+      std::string levelName = "";
+      int lvlValue = -1;
       if( tile != 0 )
       {
         HousePtr house = ptr_cast<House>( tile->getOverlay() );
         if( house != 0 )
         {
           std::string typeName;
+          lvlValue = _getLevelValue( house );
           switch( _type )
           {
-          case citylayer::education: typeName = "education"; break;
-          case citylayer::school: typeName = "school"; break;
+          case citylayer::education:
+          {
+            if( house->hasServiceAccess( Service::academy ) )
+            {
+              text = "##education_have_academy_access##";
+            }
+            else
+            {
+              bool schoolAccess = house->hasServiceAccess( Service::school );
+              bool libraryAccess = house->hasServiceAccess( Service::library );
+              if( schoolAccess && libraryAccess ) { text = "##education_have_school_library_access##"; }
+              else if( schoolAccess || libraryAccess ) { text = "##education_have_school_or_library_access##"; }
+              else { text = "##education_have_no_access##"; }
+            }
+          }
+          break;
+          case citylayer::school: typeName = "school";  break;
           case citylayer::library: typeName = "library"; break;
           case citylayer::academy: typeName = "academy"; break;
-          }
+          }       
 
-          int lvlValue = _getLevelValue( house );
-          std::string levelName;
-          if( lvlValue > 0 )
+          if( text.empty() )
           {
-            if( lvlValue < 20 ) { levelName = "##warning_"; }
-            else if( lvlValue < 40 ) { levelName = "##bad_"; }
-            else if( lvlValue < 60 ) { levelName = "##simple_"; }
-            else if( lvlValue < 80 ) { levelName = "##good_"; }
-            else { levelName = "##awesome_"; }
-
+            levelName = _getAccessLevel( lvlValue );
             text = levelName + typeName + "_access##";
           }
         }

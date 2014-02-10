@@ -19,6 +19,7 @@
 #include "walker/walker.hpp"
 #include "core/foreach.hpp"
 #include "events/returnworkers.hpp"
+#include "core/stringhelper.hpp"
 
 class WorkingBuilding::Impl
 {
@@ -36,36 +37,6 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
   _d->currentWorkers = 0;
   _d->maxWorkers = 0;
   _d->isActive = true;
-}
-
-void WorkingBuilding::setMaxWorkers(const int maxWorkers)
-{
-  _d->maxWorkers = maxWorkers;
-}
-
-int WorkingBuilding::getMaxWorkers() const
-{
-  return _d->maxWorkers;
-}
-
-void WorkingBuilding::setWorkers(const unsigned int currentWorkers)
-{
-  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );
-}
-
-int WorkingBuilding::getWorkersCount() const
-{
-  return _d->currentWorkers;
-}
-
-void WorkingBuilding::setActive(const bool value)
-{
-  _d->isActive = value;
-}
-
-bool WorkingBuilding::isActive() const
-{
-  return _d->isActive;
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
@@ -87,20 +58,32 @@ void WorkingBuilding::load( const VariantMap& stream)
     _d->maxWorkers = value;
 }
 
-void WorkingBuilding::addWorkers(const unsigned int workers )
+
+std::string WorkingBuilding::getWorkersProblem() const
 {
-  setWorkers( getWorkersCount() + workers );
+  std::string factoryType = MetaDataHolder::getTypename( getType() );
+  float workKoeff = (getWorkersCount() / (float)getMaxWorkers()) * 6.f;
+
+  const char* workKoeffStr[] = { "no_workers", "bad_work", "slow_work", "patrly_workers",
+                                 "need_some_workers", "full_work" };
+  workKoeff = math::clamp( (int)ceil(workKoeff), 0, 5 );
+
+  return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), workKoeffStr[ (int)workKoeff ] );
 }
 
-void WorkingBuilding::removeWorkers(const unsigned int workers)
-{
-  setWorkers( getWorkersCount() - workers );
-}
 
-WorkingBuilding::~WorkingBuilding()
-{
-
-}
+void WorkingBuilding::setMaxWorkers(const int maxWorkers){  _d->maxWorkers = maxWorkers;}
+int WorkingBuilding::getMaxWorkers() const{  return _d->maxWorkers;}
+void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
+int WorkingBuilding::getWorkersCount() const{  return _d->currentWorkers;}
+void WorkingBuilding::setActive(const bool value){  _d->isActive = value;}
+bool WorkingBuilding::isActive() const{  return _d->isActive;}
+void WorkingBuilding::addWorkers(const unsigned int workers ){  setWorkers( getWorkersCount() + workers );}
+void WorkingBuilding::removeWorkers(const unsigned int workers){  setWorkers( getWorkersCount() - workers );}
+WorkingBuilding::~WorkingBuilding(){}
+const WalkerList& WorkingBuilding::getWalkers() const {  return _d->walkerList;}
+std::string WorkingBuilding::getError() const{  return _d->errorStr;}
+void WorkingBuilding::_setError(const std::string& err){  _d->errorStr = err;}
 
 void WorkingBuilding::timeStep( const unsigned long time )
 {
@@ -120,21 +103,6 @@ void WorkingBuilding::addWalker( WalkerPtr walker )
   {
     _d->walkerList.push_back( walker );
   }
-}
-
-const WalkerList& WorkingBuilding::getWalkers() const
-{
-  return _d->walkerList;
-}
-
-std::string WorkingBuilding::getError() const
-{
-  return _d->errorStr;
-}
-
-void WorkingBuilding::_setError(const std::string& err)
-{
-  _d->errorStr = err;
 }
 
 void WorkingBuilding::destroy()

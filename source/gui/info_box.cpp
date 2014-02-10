@@ -199,6 +199,7 @@ void InfoboxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
   _d->lbBlackFrame->setTextOffset( Point( pos.x() + 30, 0 ) );
 }
 
+<<<<<<< HEAD
 InfoBoxWorkingBuilding::InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
   : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
@@ -243,6 +244,9 @@ void InfoBoxWorkingBuilding::showDescription()
 }
 
 InfoBoxBuilding::InfoBoxBuilding( Widget* parent, const Tile& tile )
+=======
+InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
+>>>>>>> af29c4435a40d90f4878d9b5875b92f045093172
   : InfoboxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
   BuildingPtr building = ptr_cast<Building>( tile.getOverlay() );

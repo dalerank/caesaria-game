@@ -195,6 +195,7 @@ enum Type
   forum2,
   senate2,
   elevation,
+  typeCount,
   userType=1000
 }; //end Type
 

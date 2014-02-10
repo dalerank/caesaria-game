@@ -279,13 +279,9 @@ void ScreenGame::Impl::showEmpireMapWindow()
 
 void ScreenGame::draw()
 { 
-  Logger::warning( "ScreenGame render" );
   _d->renderer.render();
 
-  Logger::warning( "ScreenGame beforeDraw" );
   _d->game->getGui()->beforeDraw();
-  
-  Logger::warning( "ScreenGame darw" );
   _d->game->getGui()->draw();
 }
 

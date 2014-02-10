@@ -57,20 +57,10 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 }
 
 int Tile::i() const    {   return _pos.i();   }
-
 int Tile::j() const    {   return _pos.j();   }
-
 void Tile::setPicture(const Picture *picture) {  _picture = picture; }
-
-void Tile::setPicture(const char* rc, const int index)
-{
-  setPicture( &Picture::load( rc, index ) );
-}
-
-void Tile::setPicture(const std::string& name)
-{
-  setPicture( &Picture::load( name ) );
-}
+void Tile::setPicture(const char* rc, const int index){  setPicture( &Picture::load( rc, index ) );}
+void Tile::setPicture(const std::string& name){ setPicture( &Picture::load( name ) );}
 
 const Picture& Tile::getPicture() const
 {
@@ -79,15 +69,8 @@ const Picture& Tile::getPicture() const
   return *_picture;
 }
 
-Tile* Tile::getMasterTile() const
-{
-  return _master;
-}
-
-void Tile::setMasterTile(Tile* master)
-{
-  _master = master;
-}
+Tile* Tile::getMasterTile() const{  return _master;}
+void Tile::setMasterTile(Tile* master){  _master = master;}
 
 bool Tile::isFlat() const
 {
@@ -101,20 +84,9 @@ bool Tile::isFlat() const
            : !(_terrain.rock || _terrain.tree || _terrain.aqueduct) );
 }
 
-TilePos Tile::pos() const
-{
-  return _pos;
-}
-
-bool Tile::isMasterTile() const
-{
-  return (_master == this);
-}
-
-Point Tile::mapPos() const
-{
-  return Point( 30 * ( i() + j()), 15 * (i() - j()) );
-}
+TilePos Tile::pos() const{  return _pos;}
+bool Tile::isMasterTile() const{  return (_master == this);}
+Point Tile::mapPos() const{  return Point( 30 * ( i() + j()), 15 * (i() - j()) );}
 
 void Tile::animate(unsigned int time)
 {
@@ -130,15 +102,8 @@ void Tile::animate(unsigned int time)
   }
 }
 
-const Animation&Tile::getAnimation() const
-{
-  return _animation;
-}
-
-void Tile::setAnimation(const Animation& animation)
-{
-  _animation = animation;
-}
+const Animation&Tile::getAnimation() const{  return _animation;}
+void Tile::setAnimation(const Animation& animation){ _animation = animation;}
 
 bool Tile::isWalkable( bool alllands ) const
 {
@@ -204,55 +169,28 @@ void Tile::setFlag(Tile::Type type, bool value)
   }
 }
 
-void Tile::appendDesirability(int value)
-{
-   _terrain.desirability = math::clamp( _terrain.desirability += value, -0xff, 0xff );
-}
-
-int Tile::getDesirability() const
-{
-  return _terrain.desirability;
-}
-
-TileOverlayPtr Tile::getOverlay() const
-{
-  return _overlay;
-}
-
-void Tile::setOverlay(TileOverlayPtr overlay)
-{
-  _overlay = overlay;
-}
-
-unsigned int Tile::getOriginalImgId() const
-{
-  return _terrain.imgid;
-}
-
-void Tile::setOriginalImgId(unsigned short id)
-{
-  _terrain.imgid = id;
-}
+void Tile::appendDesirability(int value){   _terrain.desirability = math::clamp( _terrain.desirability += value, -0xff, 0xff );}
+int Tile::getDesirability() const{  return _terrain.desirability;}
+TileOverlayPtr Tile::getOverlay() const{  return _overlay;}
+void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
+unsigned int Tile::getOriginalImgId() const{  return _terrain.imgid;}
+void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
 
 void Tile::fillWaterService(const WaterService type)
 {
-  _terrain.watersrvc |= (0xf << (type*4));
+  int vl = math::clamp( getWaterService( type )+1, 0, 0xf );
+  _terrain.watersrvc |= ( vl << (type*4));
 }
 
 void Tile::decreaseWaterService(const WaterService type)
 {
-  int tmpSrvValue = (_terrain.watersrvc >> (type*4)) & 0xf;
-  //tmpSrvValue = math::clamp( tmpSrvValue-1, 0, 0xf );
-  tmpSrvValue = 0;
+  int tmpSrvValue = math::clamp( getWaterService( type )-1, 0, 0xf);
 
   _terrain.watersrvc &= ~(0xf<<(type*4));
   _terrain.watersrvc |= tmpSrvValue << (type*4);
 }
 
-int Tile::getWaterService(const WaterService type) const
-{
-  return (_terrain.watersrvc >> (type*4)) & 0xf;
-}
+int Tile::getWaterService(const WaterService type) const{  return (_terrain.watersrvc >> (type*4)) & 0xf;}
 
 std::string TileHelper::convId2PicName( const unsigned int imgId )
 {

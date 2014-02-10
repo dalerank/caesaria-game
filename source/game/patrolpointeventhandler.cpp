@@ -69,7 +69,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
           if( !walkers.empty() )
           {            
             _d->patrolPoint = ptr_cast<PatrolPoint>( walkers.front() );
-            _d->savePatrolPos = _d->patrolPoint->getIJ();
+            _d->savePatrolPos = _d->patrolPoint->pos();
           }
         }
         else
@@ -84,7 +84,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
     case mouseRbtnRelease:
       if( _d->patrolPoint.isValid() )
       {
-        _d->patrolPoint->setIJ( _d->savePatrolPos );
+        _d->patrolPoint->setPos( _d->savePatrolPos );
         _d->patrolPoint = PatrolPointPtr();
       }
     break;
@@ -96,7 +96,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
         Tile* tile = _d->renderer->getCamera().at( event.mouse.getPosition(), true );
         if( tile )
         {
-          _d->patrolPoint->setIJ( tile->pos() );
+          _d->patrolPoint->setPos( tile->pos() );
         }
       }
     }

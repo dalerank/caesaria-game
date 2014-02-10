@@ -44,7 +44,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
   pp->_d->standart.addOffset( extOffset.x(), extOffset.y() );
 
   pp->_d->animation = anim;
-  pp->setIJ( position );
+  pp->setPos( position );
   PatrolPointPtr ptr( pp );
   ptr->drop();
 

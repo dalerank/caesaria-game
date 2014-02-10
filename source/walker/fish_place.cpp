@@ -105,7 +105,7 @@ void FishPlace::send2city(TilePos pos)
   else
   {
     _getCity()->addWalker( this );
-    setIJ( pos );
+    setPos( pos );
     setPathway( pathway );
     go();
   }

@@ -30,7 +30,8 @@ public:
 
 private:
   LayerEducation( TilemapCamera& camera, PlayerCityPtr city, int type );
-  int _getLevelValue(HousePtr house);
+  int _getLevelValue(HousePtr house ) const;
+  std::string _getAccessLevel( int lvl ) const;
 
   std::set<int> _flags;
   std::set<int> _walkers;

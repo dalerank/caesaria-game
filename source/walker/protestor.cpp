@@ -91,11 +91,11 @@ void Protestor::timeStep(const unsigned long time)
       else { it++; }
     }
 
-    Pathway pathway = _d->findTarget( _getCity(), constructions, getIJ() );
+    Pathway pathway = _d->findTarget( _getCity(), constructions, pos() );
     //find more expensive house, fire this!!!
     if( pathway.isValid() )
     {
-      setIJ( pathway.getStartPos() );
+      setPos( pathway.getStartPos() );
       setPathway( pathway );
       go();
       _d->state = Impl::go2destination;
@@ -122,10 +122,10 @@ void Protestor::timeStep(const unsigned long time)
       else { it++; }
     }
 
-    Pathway pathway = _d->findTarget( _getCity(), constructions, getIJ() );
+    Pathway pathway = _d->findTarget( _getCity(), constructions, pos() );
     if( pathway.isValid() )
     {
-      setIJ( pathway.getStartPos() );
+      setPos( pathway.getStartPos() );
       setPathway( pathway );
       go();
       _d->state = Impl::go2destination;
@@ -139,7 +139,7 @@ void Protestor::timeStep(const unsigned long time)
 
   case Impl::go2anyplace:
   {
-    Pathway pathway = PathwayHelper::randomWay( _getCity(), getIJ(), 10 );
+    Pathway pathway = PathwayHelper::randomWay( _getCity(), pos(), 10 );
 
     if( pathway.isValid() )
     {
@@ -165,7 +165,7 @@ void Protestor::timeStep(const unsigned long time)
     {
 
       CityHelper helper( _getCity() );
-      ConstructionList constructions = helper.find<Construction>( building::any, getIJ() - TilePos( 1, 1), getIJ() + TilePos( 1, 1) );
+      ConstructionList constructions = helper.find<Construction>( building::any, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {
@@ -215,7 +215,7 @@ Protestor::~Protestor()
 
 void Protestor::send2City( HousePtr house )
 {
-  setIJ( house->getTilePos() );
+  setPos( house->getTilePos() );
   _d->houseLevel = house->getSpec().getLevel();
   _d->state = Impl::searchHouse;
 
@@ -229,7 +229,7 @@ void Protestor::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 447, 454 );
+  Corpse::create( _getCity(), pos(), ResourceGroup::citizen2, 447, 454 );
 }
 
 void Protestor::save(VariantMap& stream) const

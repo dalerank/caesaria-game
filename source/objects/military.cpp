@@ -227,7 +227,7 @@ TilePos Fort::getFreeSlot() const
   }
   else
   {
-    patrolPos = _d->patrolPoint->getIJ();
+    patrolPos = _d->patrolPoint->pos();
   }
 
 
@@ -277,7 +277,7 @@ void Fort::save(VariantMap& stream) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "patrolPoint" ] = _d->patrolPoint->getIJ();
+  stream[ "patrolPoint" ] = _d->patrolPoint->pos();
   stream[ "soldierNumber"] = _d->maxSoldier;
 }
 
@@ -288,7 +288,7 @@ void Fort::load(const VariantMap& stream)
   TilePos patrolPos = stream.get( "patrolPoint" );
   if(  _d->patrolPoint.isValid() )
   {
-    _d->patrolPoint->setIJ( patrolPos );
+    _d->patrolPoint->setPos( patrolPos );
   }
 
   _d->maxSoldier = stream.get( "soldierNumber", 16 ).toUInt();

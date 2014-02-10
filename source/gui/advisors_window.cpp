@@ -19,10 +19,10 @@
 #include "gfx/pictureconverter.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
-#include "gui/texturedbutton.hpp"
+#include "texturedbutton.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/decorator.hpp"
-#include "gui/label.hpp"
+#include "label.hpp"
 #include "city/city.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
@@ -43,7 +43,8 @@
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
 #include "game/settings.hpp"
-#include "gui/image.hpp"
+#include "image.hpp"
+#include "gameautopause.hpp"
 
 namespace gui
 {
@@ -51,6 +52,7 @@ namespace gui
 class AdvisorsWindow::Impl
 {
 public:
+  GameAutoPause locker;
   Widget* advisorPanel;
 
   Point offset;
@@ -75,6 +77,7 @@ PushButton* AdvisorsWindow::addButton( const int pos, const int picId, std::stri
 AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
 : Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
 {
+  _d->locker.activate();
   // use some clipping to remove the right and bottom areas
   setupUI( GameSettings::rcpath( "/gui/advisors.gui" ) );
   _d->advisorPanel = 0;
@@ -82,18 +85,18 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   Point tabButtonPos( (getWidth() - 636) / 2, getHeight() / 2 + 192);
 
   new gui::Image( this, tabButtonPos, Picture::load( ResourceGroup::menuMiddleIcons, 14 ) );
-  addButton( ADV_EMPLOYERS, 255, _("##visit_labor_advisor##") );
-  addButton( ADV_LEGION, 256, _("##visit_military_advisor##") );
-  addButton( ADV_EMPIRE, 257, _("##visit_imperial_advisor##") );
-  addButton( ADV_RATINGS, 258, _("##visit_rating_advisor##" ) );
-  addButton( ADV_TRADING, 259, _("##visit_trade_advisor##") );
-  addButton( ADV_POPULATION, 260, _("##visit_population_advisor##")  );
-  addButton( ADV_HEALTH, 261, _("##visit_health_advisor##") );
-  addButton( ADV_EDUCATION, 262, _("##visit_education_advisor##") );
-  addButton( ADV_ENTERTAINMENT, 263, _("##visit_entertainment_advisor##") );
-  addButton( ADV_RELIGION, 264, _("##visit_religion_advisor##") );
-  addButton( ADV_FINANCE, 265, _("##visit_financial_advisor##") );
-  addButton( ADV_MAIN, 266, _("##visit_chief_advisor##") );
+  addButton( ADV_EMPLOYERS,     255, _("##visit_labor_advisor##"        ));
+  addButton( ADV_LEGION,        256, _("##visit_military_advisor##"     ));
+  addButton( ADV_EMPIRE,        257, _("##visit_imperial_advisor##"     ));
+  addButton( ADV_RATINGS,       258, _("##visit_rating_advisor##"       ));
+  addButton( ADV_TRADING,       259, _("##visit_trade_advisor##"        ));
+  addButton( ADV_POPULATION,    260, _("##visit_population_advisor##"   ));
+  addButton( ADV_HEALTH,        261, _("##visit_health_advisor##"       ));
+  addButton( ADV_EDUCATION,     262, _("##visit_education_advisor##"    ));
+  addButton( ADV_ENTERTAINMENT, 263, _("##visit_entertainment_advisor##"));
+  addButton( ADV_RELIGION,      264, _("##visit_religion_advisor##"     ));
+  addButton( ADV_FINANCE,       265, _("##visit_financial_advisor##"    ));
+  addButton( ADV_MAIN,          266, _("##visit_chief_advisor##"        ));
 
   PushButton* btn = addButton( ADV_COUNT, 609 );
   btn->setIsPushButton( false );

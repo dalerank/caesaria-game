@@ -13,32 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ship.hpp"
-#include "core/gettext.hpp"
-#include "city/city.hpp"
-#include "constants.hpp"
-#include "corpse.hpp"
-#include "game/resourcegroup.hpp"
+#ifndef _CAESARIA_INFOBOX_WORKING_H_INCLUDE_
+#define _CAESARIA_INFOBOX_WORKING_H_INCLUDE_
 
-using namespace constants;
+#include <string>
+#include <list>
 
-Ship::Ship(PlayerCityPtr city )
-  : Walker( city )
-{
-  _setType( walker::unknown );
-  _setAnimation( gfx::unknown );
+#include "info_box.hpp"
 
-  setName( _("##ship##") );
-}
-
-void Ship::die()
-{
-  Walker::die();
-
-  Corpse::create( _getCity(), pos(), ResourceGroup::carts, 265, 272, true );
-}
-
-Ship::~Ship()
+namespace gui
 {
 
-}
+// info box about a service building
+class InfoboxWorkingBuilding : public InfoboxSimple
+{
+  static const int lbHelpId=2;
+public:
+  InfoboxWorkingBuilding( Widget* parent, WorkingBuildingPtr building );
+  
+  void drawWorkers( int );
+  virtual void setText(const std::string& text);
+
+  virtual void showDescription();
+private:
+  WorkingBuildingPtr _working;
+};
+
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_WORKING_H_INCLUDE_

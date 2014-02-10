@@ -18,6 +18,7 @@
 
 #include "game.hpp"
 #include "game/screen_wait.hpp"
+#include "city/build_options.hpp"
 #include "core/stringhelper.hpp"
 #include "city/city.hpp"
 #include "gfx/picture.hpp"
@@ -190,7 +191,14 @@ void Game::setScreenMenu()
     case ScreenMenu::loadMap:
     {
       load( screen.getMapName() );
+<<<<<<< HEAD
       Logger::warning( "screen menu: end loading map" );
+=======
+      CityBuildOptions bopts;
+      bopts = _d->city->getBuildOptions();
+      bopts.setGroupAvailable( BM_MAX, true );
+      _d->city->setBuildOptions( bopts );
+>>>>>>> af29c4435a40d90f4878d9b5875b92f045093172
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;

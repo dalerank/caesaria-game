@@ -64,7 +64,7 @@ void Patrician::_findNewWay( const TilePos& start )
 
   if( pathway.isValid() )
   {
-    setIJ( start );
+    setPos( start );
     setPathway( pathway );
     go();
   }
@@ -80,11 +80,11 @@ void Patrician::die()
 
   if( _getAnimationType() == gfx::patrician )
   {
-    Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen3, 809, 816 );
+    Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 809, 816 );
   }
   else
   {
-    Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen3, 1017, 1024 );
+    Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 1017, 1024 );
   }
 }
 

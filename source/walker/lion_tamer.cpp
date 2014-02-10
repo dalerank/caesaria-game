@@ -54,7 +54,7 @@ void LionTamer::send2City(BuildingPtr base, bool roadOnly)
   if( !isDeleted() )
   {
     LionPtr lion = Lion::create( _getCity() );
-    lion->setIJ( getIJ() );
+    lion->setPos( pos() );
     lion->setPathway( _pathwayRef() );
     lion->go();
     _d->delay = 12;

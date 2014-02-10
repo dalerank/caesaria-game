@@ -20,7 +20,6 @@
     caption : "##food##"
     overview :  [ "##tutorial_markets_text##",
                   "@img=picture2_00008.png",
-                  "\n\n\n\n\n\n\n\n",
                   "##tutorial_granary_text##",
                   "@img=picture3_00006.png",
                   "##tutorial_granary_text2##",
@@ -59,6 +58,7 @@
       small_mars_temple : true, 
       small_neptune_temple : true, 
       small_mercury_temple : true
+      senate_1 : true
     }
   }
 }

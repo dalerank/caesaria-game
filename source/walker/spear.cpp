@@ -93,9 +93,9 @@ void Spear::timeStep(const unsigned long time)
   }
 }
 
-void Spear::turn(TilePos pos)
+void Spear::turn(TilePos p)
 {
-  float t = (pos - getIJ()).getAngleICW();
+  float t = (p - pos()).getAngleICW();
   int angle = (int)( t / 22.5f);// 0 is east
 
   int index = 0;

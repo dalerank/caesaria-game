@@ -97,7 +97,7 @@ public:
 
   void append( WalkerPtr& a )
   {
-    const TilePos& pos = a->getIJ();
+    const TilePos& pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
       _grid[ hash( pos ) ].push_back( a );
@@ -106,7 +106,7 @@ public:
 
   void remove( WalkerPtr& a )
   {
-    TilePos pos = a->getIJ();
+    TilePos pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
       WalkerList& d = _grid[ hash( pos ) ];

@@ -61,7 +61,7 @@ bool CityBuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const
 }
 
 
-void CityBuildOptions::setGroupAvaible( const BuildMenuType type, Variant vmb )
+void CityBuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
 {
   if( vmb.isNull() )
     return;
@@ -87,6 +87,8 @@ void CityBuildOptions::setGroupAvaible( const BuildMenuType type, Variant vmb )
   case BM_COMMERCE: setBuildingAvailble( building::market, building::warehouse, mayBuild ); break;
   case BM_TEMPLE: setBuildingAvailble( building::templeCeres, building::templeVenus, mayBuild ); break;
   case BM_BIGTEMPLE: setBuildingAvailble( building::cathedralCeres, building::cathedralVenus, mayBuild ); break;
+  case BM_MAX: setBuildingAvailble( construction::unknown, building::typeCount, mayBuild );
+
   default:
   break;
   }
@@ -124,18 +126,18 @@ void CityBuildOptions::clear()
 
 void CityBuildOptions::load(const VariantMap& options)
 {
-  setGroupAvaible( BM_FARM, options.get( "farm" ) );
-  setGroupAvaible( BM_RAW_MATERIAL, options.get( "raw_material" ) );
-  setGroupAvaible( BM_FACTORY, options.get( "factory" ) );
-  setGroupAvaible( BM_WATER, options.get( "water" ) );
-  setGroupAvaible( BM_HEALTH, options.get( "health" ) );
-  setGroupAvaible( BM_RELIGION, options.get( "religion" ) );
-  setGroupAvaible( BM_EDUCATION, options.get( "education" ) );
-  setGroupAvaible( BM_ENTERTAINMENT, options.get( "entertainment" ) );
-  setGroupAvaible( BM_ADMINISTRATION, options.get( "govt" ) );
-  setGroupAvaible( BM_ENGINEERING, options.get( "engineering" ) );
-  setGroupAvaible( BM_SECURITY, options.get( "security" ) );
-  setGroupAvaible( BM_COMMERCE, options.get( "commerce" ) );
+  setGroupAvailable( BM_FARM, options.get( "farm" ) );
+  setGroupAvailable( BM_RAW_MATERIAL, options.get( "raw_material" ) );
+  setGroupAvailable( BM_FACTORY, options.get( "factory" ) );
+  setGroupAvailable( BM_WATER, options.get( "water" ) );
+  setGroupAvailable( BM_HEALTH, options.get( "health" ) );
+  setGroupAvailable( BM_RELIGION, options.get( "religion" ) );
+  setGroupAvailable( BM_EDUCATION, options.get( "education" ) );
+  setGroupAvailable( BM_ENTERTAINMENT, options.get( "entertainment" ) );
+  setGroupAvailable( BM_ADMINISTRATION, options.get( "govt" ) );
+  setGroupAvailable( BM_ENGINEERING, options.get( "engineering" ) );
+  setGroupAvailable( BM_SECURITY, options.get( "security" ) );
+  setGroupAvailable( BM_COMMERCE, options.get( "commerce" ) );
 
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( item, buildings )

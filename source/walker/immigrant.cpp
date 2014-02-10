@@ -98,7 +98,7 @@ void Immigrant::_findPath2blankHouse( TilePos startPoint )
 
   if( pathway.isValid() )
   {
-    setIJ( startPoint );
+    setPos( startPoint );
     setPathway( pathway );
     go();
   }
@@ -113,13 +113,13 @@ void Immigrant::_reachedPathway()
   bool gooutCity = true;
   Walker::_reachedPathway();
 
-  if( getIJ() == _getCity()->getBorderInfo().roadExit )
+  if( pos() == _getCity()->getBorderInfo().roadExit )
   {
     deleteLater();
     return;
   }
 
-  HousePtr house = ptr_cast<House>( _getCity()->getOverlay( getIJ() ) );
+  HousePtr house = ptr_cast<House>( _getCity()->getOverlay( pos() ) );
   if( house.isValid() )
   {
     int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
@@ -131,8 +131,8 @@ void Immigrant::_reachedPathway()
   }
   else
   {
-    TilesArray area = _getCity()->getTilemap().getArea( getIJ() - TilePos(1,1),
-                                                         getIJ() + TilePos(1,1) );
+    TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos(1,1),
+                                                         pos() + TilePos(1,1) );
     foreach( it, area )  //have destination
     {
       Tile* tile = *it;
@@ -144,7 +144,7 @@ void Immigrant::_reachedPathway()
       {
         Tilemap& tmap = _getCity()->getTilemap();
         Pathway pathway;
-        pathway.init( tmap, tmap.at( getIJ() ) );
+        pathway.init( tmap, tmap.at( pos() ) );
         pathway.setNextTile( *tile );
 
         gooutCity = false;
@@ -157,7 +157,7 @@ void Immigrant::_reachedPathway()
 
   if( gooutCity )
   {
-    _findPath2blankHouse( getIJ() );
+    _findPath2blankHouse( pos() );
   }
   else
   {
@@ -203,7 +203,7 @@ void Immigrant::send2city( Tile& startTile )
 
 void Immigrant::leaveCity(Tile& tile)
 {
-  setIJ( tile.pos() );
+  setPos( tile.pos() );
   Pathway pathway = PathwayHelper::create( tile.pos(),
                                            _getCity()->getBorderInfo().roadExit,
                                            PathwayHelper::allTerrain );
@@ -294,5 +294,5 @@ void Immigrant::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 1007, 1014 );
+  Corpse::create( _getCity(), pos(), ResourceGroup::citizen2, 1007, 1014 );
 }

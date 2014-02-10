@@ -152,7 +152,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
         if( _d->destBuildingPos.i() >= 0 )
         {
            // we found a destination!
-           setIJ( pathWay.getStartPos() );
+           setPos( pathWay.getStartPos() );
            setPathway( pathWay );
            break;
         }

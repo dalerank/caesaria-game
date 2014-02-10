@@ -138,7 +138,7 @@ void ServiceWalker::_computeWalkerPath()
     return;
   }
 
-  setIJ( bestPath->getStartPos() );
+  setPos( bestPath->getStartPos() );
   setPathway( *bestPath.object() );
 }
 
@@ -274,7 +274,7 @@ void ServiceWalker::_changeTile()
 {
   Walker::_changeTile();
 
-  ReachedBuildings reachedBuildings = getReachedBuildings( getIJ() );
+  ReachedBuildings reachedBuildings = getReachedBuildings( pos() );
 
   foreach( b, reachedBuildings ) { (*b)->applyService( ServiceWalkerPtr( this ) ); }
 }
@@ -391,7 +391,7 @@ void ServiceWalker::die()
 
   if( start >= 0 )
   {
-    Corpse::create( _getCity(), getIJ(), rcGroup, start, stop );
+    Corpse::create( _getCity(), pos(), rcGroup, start, stop );
   }
 }
 

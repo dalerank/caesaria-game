@@ -65,15 +65,15 @@ void Prefect::_changeTile()
   Walker::_changeTile();
 }
 
-bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& pos )
+bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& p )
 {
-  buildings = getReachedBuildings( getIJ() );
+  buildings = getReachedBuildings( pos() );
 
   foreach( it, buildings )
   {
     if( (*it)->getType() == building::burningRuins )
     {
-      pos = (*it)->getTilePos();
+      p = (*it)->getTilePos();
       return true;
     }
   }
@@ -81,21 +81,21 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
   return false;
 }
 
-bool Prefect::_looks4Protestor( TilePos& pos )
+bool Prefect::_looks4Protestor( TilePos& p )
 {
   CityHelper helper( _getCity() );
   TilePos offset( 3, 3 );
-  ProtestorList protestors = helper.find<Protestor>( walker::protestor, getIJ() - offset, getIJ() + offset );
+  ProtestorList protestors = helper.find<Protestor>( walker::protestor, pos() - offset, pos() + offset );
 
   int minDistance=99;
   foreach( it, protestors )
   {
-    ProtestorPtr p = *it;
-    int distance = p->getIJ().distanceFrom( getIJ() );
+    ProtestorPtr protestor = *it;
+    int distance = protestor->pos().distanceFrom( pos() );
     if( distance < minDistance )
     {
       minDistance =  distance;
-      pos = p->getIJ();
+      p = protestor->pos();
     }
   }
 
@@ -110,7 +110,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->getType() != building::burningRuins )
       continue;
 
-    if( building->getTilePos().distanceFrom( getIJ() ) < 1.5f )
+    if( building->getTilePos().distanceFrom( pos() ) < 1.5f )
     {
       turn( building->getTilePos() );
       _d->action = Impl::fightFire;
@@ -127,7 +127,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->getType() != building::burningRuins )
       continue;
 
-    Pathway tmp = PathwayHelper::create( getIJ(), building->getTilePos(), PathwayHelper::allTerrain );
+    Pathway tmp = PathwayHelper::create( pos(), building->getTilePos(), PathwayHelper::allTerrain );
     if( tmp.isValid() )
     {
       _d->action = Impl::go2fire;
@@ -144,7 +144,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 { 
-  Pathway pathway = PathwayHelper::create( getIJ(), ptr_cast<Construction>( getBase() ),
+  Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( getBase() ),
                                            PathwayHelper::roadFirst );
 
   if( pathway.isValid() )
@@ -184,7 +184,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 
 void Prefect::_back2Patrol()
 {
-  Pathway pathway = PathwayHelper::create( getIJ(), _d->endPatrolPoint,
+  Pathway pathway = PathwayHelper::create( pos(), _d->endPatrolPoint,
                                            PathwayHelper::allTerrain );
 
   if( pathway.isValid() )
@@ -214,9 +214,9 @@ bool Prefect::_findFire()
   return false;
 }
 
-void Prefect::_brokePathway(TilePos pos)
+void Prefect::_brokePathway(TilePos p)
 {
-  TileOverlayPtr overlay = _getCity()->getOverlay( pos );
+  TileOverlayPtr overlay = _getCity()->getOverlay( p );
   if( overlay.isValid() && overlay->getType() == building::burningRuins )
   {
     setSpeed( 0 );
@@ -229,7 +229,7 @@ void Prefect::_brokePathway(TilePos pos)
   {
     TilePos destination = _pathwayRef().getDestination().pos();
 
-    Pathway pathway = PathwayHelper::create( getIJ(), destination, PathwayHelper::allTerrain );
+    Pathway pathway = PathwayHelper::create( pos(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
     {
       setSpeed( 1.f );
@@ -250,7 +250,7 @@ void Prefect::_reachedPathway()
   switch( _d->action )
   {
   case Impl::patrol:
-    if( getBase()->getEnterArea().contain( getIJ() )  )
+    if( getBase()->getEnterArea().contain( pos() )  )
     {
       deleteLater();
       _d->action = Impl::doNothing;
@@ -288,7 +288,7 @@ void Prefect::_centerTile()
 
     if( haveProtestorNear )
     {      
-      Pathway pathway = PathwayHelper::create( getIJ(), protestorPos, PathwayHelper::allTerrain );
+      Pathway pathway = PathwayHelper::create( pos(), protestorPos, PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {
@@ -333,7 +333,7 @@ void Prefect::_centerTile()
     bool haveProtestorNear = _looks4Protestor( protestorPos );
     if( haveProtestorNear )
     {
-      if(  protestorPos.distanceFrom( getIJ() ) < 1.5f  )
+      if(  protestorPos.distanceFrom( pos() ) < 1.5f  )
       {
         _d->action = Impl::fightProtestor;
         setSpeed( 0.f );
@@ -414,16 +414,16 @@ void Prefect::timeStep(const unsigned long time)
   {
     CityHelper helper( _getCity() );
     ProtestorList protestors = helper.find<Protestor>( walker::protestor,
-                                                       getIJ() - TilePos( 1, 1), getIJ() + TilePos( 1, 1) );
+                                                       pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
     if( !protestors.empty() )
     {
       ProtestorPtr p = protestors.front();
 
-      turn( p->getIJ() );
+      turn( p->pos() );
 
       p->updateHealth( -3 );
-      p->acceptAction( Walker::acFight, getIJ() );
+      p->acceptAction( Walker::acFight, pos() );
     }
     else
     {
@@ -480,7 +480,7 @@ void Prefect::die()
 {
   ServiceWalker::die();
 
-  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen2, 711, 718 );
+  Corpse::create( _getCity(), pos(), ResourceGroup::citizen2, 711, 718 );
 }
 
 std::string Prefect::getThinks() const

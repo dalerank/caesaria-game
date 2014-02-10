@@ -51,7 +51,7 @@ void Corpse::create(PlayerCityPtr city, TilePos pos,
                     bool loop )
 {
   Corpse* corpse = new Corpse( city );
-  corpse->setIJ( pos );
+  corpse->setPos( pos );
   corpse->_d->startIndex = startIndex;
   corpse->_d->currentIndex = startIndex+1;
   corpse->_d->stopIndex = stopIndex;

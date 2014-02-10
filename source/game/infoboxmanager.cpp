@@ -42,6 +42,7 @@
 #include "gui/infobox_citizen_mgr.hpp"
 #include "gui/infobox_land.hpp"
 #include "gui/infobox_temple.hpp"
+#include "gui/infobox_working.hpp"
 #include <map>
 
 using namespace constants;
@@ -94,7 +95,7 @@ public:
     WorkingBuildingPtr building = ptr_cast<WorkingBuilding>( city->getOverlay( pos ) );
     if( building.isValid() )
     {
-      InfoBoxWorkingBuilding* infoBox = new InfoBoxWorkingBuilding( parent, building );
+      InfoboxWorkingBuilding* infoBox = new InfoboxWorkingBuilding( parent, building );
       infoBox->setPosition( Point( (size.getWidth() - infoBox->getWidth()) / 2, size.getHeight() - infoBox->getHeight()) );
 
       if( !title.empty() ) { infoBox->setTitle( title ); }
