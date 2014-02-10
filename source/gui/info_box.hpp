@@ -66,21 +66,6 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-// info box about a service building
-class InfoBoxWorkingBuilding : public InfoboxSimple
-{
-  static const int lbHelpId=2;
-public:
-  InfoBoxWorkingBuilding( Widget* parent, WorkingBuildingPtr building );
-  
-  void drawWorkers( int );
-  virtual void setText(const std::string& text);
-
-  virtual void showDescription();
-private:
-  WorkingBuildingPtr _working;
-};
-
 class InfoBoxColosseum : public InfoboxSimple
 {
 public:
@@ -88,10 +73,10 @@ public:
   virtual ~InfoBoxColosseum();
 };
 
-class InfoBoxBuilding : public InfoboxSimple
+class InfoboxBuilding : public InfoboxSimple
 {
 public:
-   InfoBoxBuilding( Widget* parent, const Tile& tile );
+   InfoboxBuilding( Widget* parent, const Tile& tile );
 };
 
 class InfoBoxText : public InfoboxSimple

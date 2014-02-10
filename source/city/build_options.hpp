@@ -29,7 +29,7 @@ public:
   ~CityBuildOptions();
 
   void setBuildingAvailble( const TileOverlay::Type type, bool mayBuild );
-  void setGroupAvaible(const BuildMenuType type, Variant mayBuild );
+  void setGroupAvailable(const BuildMenuType type, Variant mayBuild );
   bool isGroupAvailable(const BuildMenuType type ) const;
 
   bool isBuildingAvailble( const TileOverlay::Type type ) const;
