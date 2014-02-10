@@ -154,7 +154,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   if( finalPath.isValid() )
   {
     // some building needs that trainee!!!
-    setIJ( finalPath.getStartPos() );
+    setPos( finalPath.getStartPos() );
     setPathway( finalPath );
   }
   else

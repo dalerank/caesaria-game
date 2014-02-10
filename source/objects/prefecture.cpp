@@ -93,7 +93,7 @@ void Prefecture::deliverService()
       if( pathway.isValid() )
       {
         pathway.setNextTile( tmap.at( _d->fireDetect ) );
-        walker->setIJ( pathway.getStartPos() );
+        walker->setPos( pathway.getStartPos() );
         walker->setPathway( pathway );
       }
       else

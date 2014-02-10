@@ -71,7 +71,7 @@ void Animal::_findNewWay( const TilePos& start )
 
   if( pathway.isValid() )
   {
-    setIJ( start );
+    setPos( start );
     setPathway( pathway );
     go();
   }
@@ -103,18 +103,15 @@ void Sheep::_reachedPathway()
   Walker::_reachedPathway();
 
   Tilemap& tmap = _getCity()->getTilemap();
-  if( tmap.at( getIJ() ).getFlag( Tile::tlMeadow ) )
+  if( tmap.at( pos() ).getFlag( Tile::tlMeadow ) )
   {
     updateHealth( +100 );
   }
 
-  _findNewWay( getIJ() );
+  _findNewWay( pos() );
 }
 
-void Sheep::_brokePathway(TilePos pos)
-{
-  _findNewWay( getIJ() );
-}
+void Sheep::_brokePathway(TilePos p){  _findNewWay( pos() );}
 
 void Sheep::_changeTile()
 {
@@ -126,7 +123,7 @@ void Sheep::die()
 {
   Animal::die();
 
-  Corpse::create( _getCity(), getIJ(), "citizen04", 257, 264 );
+  Corpse::create( _getCity(), pos(), "citizen04", 257, 264 );
 }
 
 void Sheep::send2City(const TilePos &start )

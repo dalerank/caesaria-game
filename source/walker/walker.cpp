@@ -128,7 +128,7 @@ bool Walker::isDeleted() const
    return _d->isDeleted;
 }
 
-void Walker::setIJ( const TilePos& pos )
+void Walker::setPos( const TilePos& pos )
 {
    _d->pos = pos;
 
@@ -209,7 +209,7 @@ void Walker::_walk()
      return;
   }
 
-  Tile& tile = _d->city->getTilemap().at( getIJ() );
+  Tile& tile = _d->city->getTilemap().at( pos() );
 
   switch (_d->action.direction)
   {
@@ -315,7 +315,7 @@ void Walker::_walk()
   }
 
   Tile& offtile = newTile
-                    ? _d->city->getTilemap().at( getIJ() )
+                    ? _d->city->getTilemap().at( pos() )
                     : tile;
 
   Point overlayOffset = offtile.getOverlay().isValid()
@@ -381,21 +381,21 @@ void Walker::_computeDirection()
 
 const Tile& Walker::_getNextTile() const
 {
-  TilePos pos = getIJ();
+  TilePos p = pos();
   switch( _d->action.direction )
   {
-  case constants::north: pos += TilePos( 0, 1 ); break;
-  case constants::northEast: pos += TilePos( 1, 1 ); break;
-  case constants::east: pos += TilePos( 1, 0 ); break;
-  case constants::southEast: pos += TilePos( 1, -1 ); break;
-  case constants::south: pos += TilePos( 0, -1 ); break;
-  case constants::southWest: pos += TilePos( -1, -1 ); break;
-  case constants::west: pos += TilePos( -1, 0 ); break;
-  case constants::northWest: pos += TilePos( -1, 1 ); break;
+  case constants::north: p += TilePos( 0, 1 ); break;
+  case constants::northEast: p += TilePos( 1, 1 ); break;
+  case constants::east: p += TilePos( 1, 0 ); break;
+  case constants::southEast: p += TilePos( 1, -1 ); break;
+  case constants::south: p += TilePos( 0, -1 ); break;
+  case constants::southWest: p += TilePos( -1, -1 ); break;
+  case constants::west: p += TilePos( -1, 0 ); break;
+  case constants::northWest: p += TilePos( -1, 1 ); break;
   default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
   }
 
-  return _d->city->getTilemap().at( pos );
+  return _d->city->getTilemap().at( p );
 }
 
 
@@ -557,7 +557,7 @@ void Walker::addAbility(AbilityPtr ability)
   _d->abilities.push_back( ability );
 }
 
-TilePos Walker::getIJ() const{    return _d->pos;}
+TilePos Walker::pos() const{    return _d->pos;}
 void Walker::deleteLater(){   _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Pathway& Walker::_pathwayRef() {  return _d->pathway; }
@@ -566,9 +566,9 @@ Animation& Walker::_animationRef() {  return _d->animation;}
 void Walker::_setAction( Walker::Action action ) {  _d->action.action = action; }
 void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
 
-void Walker::turn(TilePos pos)
+void Walker::turn(TilePos p)
 {
-  float t = (pos - getIJ()).getAngleICW();
+  float t = (p - pos()).getAngleICW();
   int angle = (int)ceil( t / 45.f);
 
   Direction directions[] = { east, southEast, south, southWest,

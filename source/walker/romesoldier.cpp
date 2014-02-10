@@ -85,7 +85,7 @@ void RomeSoldier::die()
   switch( getType() )
   {
   case walker::legionary:
-    Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen3, 705, 712 );
+    Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 705, 712 );
   break;
 
   default:
@@ -106,9 +106,9 @@ void RomeSoldier::timeStep(const unsigned long time)
     if( !enemies.empty() )
     {
       WalkerPtr p = enemies.front();
-      turn( p->getIJ() );
+      turn( p->pos() );
       p->updateHealth( -3 );
-      p->acceptAction( Walker::acFight, getIJ() );
+      p->acceptAction( Walker::acFight, pos() );
     }
     else
     {
@@ -174,7 +174,7 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   WalkerList walkers;
 
   TilePos offset( range, range );
-  TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
+  TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
 
   foreach( tile, tiles )
   {
@@ -218,7 +218,7 @@ Pathway RomeSoldier::_findPathway2NearestEnemy( unsigned int range )
 
     foreach( w, walkers)
     {
-      ret = PathwayHelper::create( getIJ(), (*w)->getIJ(), PathwayHelper::allTerrain );
+      ret = PathwayHelper::create( pos(), (*w)->pos(), PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
         return ret;
@@ -233,7 +233,7 @@ void RomeSoldier::_back2fort()
 {
   if( _d->base.isValid() )
   {
-    Pathway way = PathwayHelper::create( getIJ(), _d->base->getFreeSlot(), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( pos(), _d->base->getFreeSlot(), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {
@@ -258,7 +258,7 @@ void RomeSoldier::_reachedPathway()
 
   case Impl::go2position:
   {
-    if( _getCity()->getWalkers( getType(), getIJ() ).size() != 1 ) //only me in this tile
+    if( _getCity()->getWalkers( getType(), pos() ).size() != 1 ) //only me in this tile
     {
       _back2fort();
     }
@@ -274,13 +274,13 @@ void RomeSoldier::_reachedPathway()
   }
 }
 
-void RomeSoldier::_brokePathway(TilePos pos)
+void RomeSoldier::_brokePathway(TilePos p)
 {
-  Soldier::_brokePathway( pos );
+  Soldier::_brokePathway( p );
 
   if( _d->patrolPosition.i() >= 0 )
   {
-    Pathway way = PathwayHelper::create( getIJ(), _d->patrolPosition,
+    Pathway way = PathwayHelper::create( pos(), _d->patrolPosition,
                                          PathwayHelper::allTerrain );
 
     if( way.isValid() )
@@ -320,7 +320,7 @@ void RomeSoldier::_centerTile()
 
 void RomeSoldier::send2city(FortPtr base, TilePos pos )
 {
-  setIJ( pos );
+  setPos( pos );
   _d->base = base;
   _back2fort();
 

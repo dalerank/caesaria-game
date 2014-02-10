@@ -108,12 +108,12 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
         if( freeDocks.empty() )
         {
-          pathway = findRandomRaid( docks, wlk->getIJ() );
+          pathway = findRandomRaid( docks, wlk->pos() );
           nextState = stWaitFreeDock;
         }
         else
         {
-          pathway = findNearbyDock( freeDocks, wlk->getIJ() );
+          pathway = findNearbyDock( freeDocks, wlk->pos() );
           nextState = stRequestGoods;
         }
       }
@@ -145,7 +145,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   {
     landingDate = GameDate::current();
 
-    bool emptyDock = city->getWalkers( walker::any, wlk->getIJ() ).empty();
+    bool emptyDock = city->getWalkers( walker::any, wlk->pos() ).empty();
 
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() && emptyDock )
@@ -325,7 +325,7 @@ void SeaMerchant::_reachedPathway()
 
 void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 {
-  Pathway pathway = PathwayHelper::create( walker->getIJ(), city->getBorderInfo().boatExit, PathwayHelper::water );
+  Pathway pathway = PathwayHelper::create( walker->pos(), city->getBorderInfo().boatExit, PathwayHelper::water );
   if( !pathway.isValid() )
   {
     walker->deleteLater();
@@ -340,10 +340,10 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
   CityHelper helper( city );
-  DockList docks = helper.find<Dock>( building::dock, walker->getIJ() - TilePos( 1, 1), walker->getIJ() + TilePos( 1, 1 ) );
+  DockList docks = helper.find<Dock>( building::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
-    if( (*dock)->getLandingTile().pos() == walker->getIJ() )
+    if( (*dock)->getLandingTile().pos() == walker->pos() )
     {
       return *dock;
     }
@@ -355,7 +355,7 @@ DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 void SeaMerchant::send2city()
 {
   _d->nextState = Impl::stFindDock;
-  setIJ( _getCity()->getBorderInfo().boatEntry );
+  setPos( _getCity()->getBorderInfo().boatEntry );
   _d->resolveState( _getCity(), this );
 
   if( !isDeleted() )

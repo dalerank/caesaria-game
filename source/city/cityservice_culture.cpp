@@ -35,11 +35,11 @@ struct Coverage2Point{
 } ;
 
 typedef Coverage2Point CoveragePoints[6];
-static const CoveragePoints religionPoints = { {1.0, 30}, {0.86,22}, {0.71,14}, {0.51, 9}, {0.31, 3}, {0.0, 0} };
-static const CoveragePoints theatresPoints = { {1.0, 25}, {0.86,18}, {0.71,12}, {0.51, 8}, {0.31, 3}, {0.0, 0} };
-static const CoveragePoints librariesPoints = { {1.0, 20}, {0.86,14}, {0.71,8}, {0.51, 4}, {0.31, 2}, {0.0, 0} };
-static const CoveragePoints schoolsPoints = { {1.0, 15}, {0.86,10}, {0.71,6}, {0.51, 4}, {0.31, 1}, {0.0, 0} };
-static const CoveragePoints academiesPoints = { {1.0, 10}, {0.86,7}, {0.71,4}, {0.51, 2}, {0.31, 1}, {0.0, 0} };
+static const CoveragePoints religionPoints  = { {1.0, 30}, {0.86,22}, {0.71,14}, {0.51, 9}, {0.31, 3}, {0.0, 0} };
+static const CoveragePoints theatresPoints  = { {1.0, 25}, {0.86,18}, {0.71,12}, {0.51, 8}, {0.31, 3}, {0.0, 0} };
+static const CoveragePoints librariesPoints = { {1.0, 20}, {0.86,14}, {0.71,8 }, {0.51, 4}, {0.31, 2}, {0.0, 0} };
+static const CoveragePoints schoolsPoints   = { {1.0, 15}, {0.86,10}, {0.71,6 }, {0.51, 4}, {0.31, 1}, {0.0, 0} };
+static const CoveragePoints academiesPoints = { {1.0, 10}, {0.86,7 }, {0.71,4 }, {0.51, 2}, {0.31, 1}, {0.0, 0} };
 
 class CityServiceCulture::Impl
 {
@@ -104,6 +104,9 @@ void CityServiceCulture::update( const unsigned int time )
     _d->lastDate = GameDate::current();
     _d->parishionersCount = 0;
     _d->theaterVisitors = 0;
+    _d->libraryVisitors = 0;
+    _d->schoolVisitors = 0;
+    _d->collegeVisitors = 0;
     int cityPopulation = _d->city->getPopulation();
 
     CityHelper helper( _d->city );
@@ -124,6 +127,7 @@ void CityServiceCulture::update( const unsigned int time )
     }
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
+
 
     LibraryList libraries = helper.find<Library>( building::library );
     foreach( library, libraries )

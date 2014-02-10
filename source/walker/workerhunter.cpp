@@ -59,7 +59,7 @@ void Recruter::_changeTile()
   if( _workersNeeded )
   {
     ServiceWalkerHelper hlp( *this );
-    std::set<HousePtr> houses = hlp.getReachedBuildings<House>( getIJ() );
+    std::set<HousePtr> houses = hlp.getReachedBuildings<House>( pos() );
 
     foreach( it, houses ) { (*it)->applyService( ServiceWalkerPtr( this ) ); }
   }
@@ -89,5 +89,5 @@ void Recruter::die()
 {
   ServiceWalker::die();
 
-  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen1, 97, 104 );
+  Corpse::create( _getCity(), pos(), ResourceGroup::citizen1, 97, 104 );
 }

@@ -79,7 +79,7 @@ void FishingBoat::timeStep(const unsigned long time)
     {
       _animationRef().clear();
       _setAnimation( gfx::fishingBoat );
-      Pathway way = _d->findFishingPlace( _getCity(), getIJ() );
+      Pathway way = _d->findFishingPlace( _getCity(), pos() );
       if( way.isValid() )
       {
         setPathway( way );
@@ -96,7 +96,7 @@ void FishingBoat::timeStep(const unsigned long time)
       _setAnimation( gfx::fishingBoatWork );
 
       CityHelper helper( _getCity() );
-      FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, getIJ() );
+      FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos() );
 
       if( !places.empty() )
       {
@@ -119,7 +119,7 @@ void FishingBoat::timeStep(const unsigned long time)
     {
       if( _d->base != 0 )
       {
-        Pathway way = Pathfinder::getInstance().getPath( getIJ(), _d->base->getLandingTile().pos(),
+        Pathway way = Pathfinder::getInstance().getPath( pos(), _d->base->getLandingTile().pos(),
                                                          Pathfinder::waterOnly );
 
         if( way.isValid() )
@@ -236,7 +236,7 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
   foreach( it, places )
   {
     FishPlacePtr place = *it;
-    int currentDistance = pos.distanceFrom( place->getIJ() );
+    int currentDistance = pos.distanceFrom( place->pos() );
     if( currentDistance < minDistance )
     {
       minDistance = currentDistance;
@@ -246,7 +246,7 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 
   if( nearest != 0 )
   {
-    Pathway way = Pathfinder::getInstance().getPath( pos, nearest->getIJ(),
+    Pathway way = Pathfinder::getInstance().getPath( pos, nearest->pos(),
                                                      Pathfinder::waterOnly );
 
     return way;
@@ -260,7 +260,7 @@ void FishingBoat::send2city( CoastalFactoryPtr base, TilePos start )
   _d->base = base;
   if( !isDeleted() )
   {
-    setIJ( start );
+    setPos( start );
     _getCity()->addWalker( this );
   }
 }

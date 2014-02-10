@@ -163,7 +163,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         // we found a destination!
         nextState = stSellGoods;
         destBuildingPos = route.first->getTilePos();
-        wlk->setIJ( route.second.getStartPos() );
+        wlk->setPos( route.second.getStartPos() );
         wlk->setPathway( route.second );      
         wlk->go();
       }
@@ -199,7 +199,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         // we found a destination!
         nextState = stBuyGoods;
         destBuildingPos = route.first->getTilePos();    
-        wlk->setIJ( route.second.getStartPos() );
+        wlk->setPos( route.second.getStartPos() );
         wlk->setPathway( route.second );
         wlk->go();
       }
@@ -257,7 +257,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       Pathway pathWay = PathwayHelper::create( position, city->getBorderInfo().roadExit, PathwayHelper::allTerrain );
       if( pathWay.isValid() )
       {
-        wlk->setIJ( pathWay.getStartPos() );
+        wlk->setPos( pathWay.getStartPos() );
         wlk->setPathway( pathWay );
         wlk->go();
       }
@@ -330,7 +330,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 void Merchant::_reachedPathway()
 {
   Walker::_reachedPathway();
-  _d->resolveState( _getCity(), this, getIJ() );
+  _d->resolveState( _getCity(), this, pos() );
 }
 
 void Merchant::send2city()

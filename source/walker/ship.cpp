@@ -35,7 +35,7 @@ void Ship::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), getIJ(), ResourceGroup::carts, 265, 272, true );
+  Corpse::create( _getCity(), pos(), ResourceGroup::carts, 265, 272, true );
 }
 
 Ship::~Ship()

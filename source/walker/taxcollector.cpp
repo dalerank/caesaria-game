@@ -36,7 +36,7 @@ void TaxCollector::_centerTile()
 {
   ServiceWalker::_centerTile();
 
-  ReachedBuildings buildings = getReachedBuildings( getIJ() );
+  ReachedBuildings buildings = getReachedBuildings( pos() );
   foreach( it, buildings )
   {
     HousePtr house = ptr_cast<House>( *it );

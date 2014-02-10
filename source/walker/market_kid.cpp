@@ -38,7 +38,7 @@ public:
 MarketKidPtr MarketKid::create( PlayerCityPtr city, MarketLadyPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
-  ret->setIJ( lady->getIJ() );
+  ret->setPos( lady->pos() );
   ret->_pathwayRef() = lady->getPathway();
 
   ret->drop();
@@ -111,7 +111,7 @@ void MarketKid::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), getIJ(), ResourceGroup::carts, 465, 472 );
+  Corpse::create( _getCity(), pos(), ResourceGroup::carts, 465, 472 );
 }
 
 GoodStock& MarketKid::getBasket()

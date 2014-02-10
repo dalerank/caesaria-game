@@ -234,7 +234,7 @@ void CartPusher::computeWalkerDestination()
    {
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
-     setIJ( pathWay.getStartPos() );
+     setPos( pathWay.getStartPos() );
      setPathway( pathWay );
      setSpeed( 1 );
    }
@@ -248,7 +248,7 @@ void CartPusher::computeWalkerDestination()
      {
        _setDirection( constants::north );
        setSpeed( 0 );
-       setIJ( _d->producerBuilding->getAccessRoads().front()->pos() );
+       setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
        _walk();
      }
    }
@@ -426,7 +426,7 @@ void CartPusher::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), getIJ(), ResourceGroup::citizen1, 1025, 1032 );
+  Corpse::create( _getCity(), pos(), ResourceGroup::citizen1, 1025, 1032 );
 }
 
 std::string CartPusher::getThinks() const

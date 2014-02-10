@@ -119,7 +119,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   WalkerList walkers;
 
   TilePos offset( range, range );
-  TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
+  TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
 
   walker::Type type;
   foreach( tile, tiles )
@@ -168,7 +168,7 @@ Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
 
     foreach( it, walkers)
     {
-      ret = PathwayHelper::create( getIJ(), (*it)->getIJ(), PathwayHelper::allTerrain );
+      ret = PathwayHelper::create( pos(), (*it)->pos(), PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
         return ret;
@@ -190,13 +190,13 @@ void EnemySoldier::_check4attack()
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::create( getIJ(), _getCity()->getBorderInfo().boatExit,
+    pathway = PathwayHelper::create( pos(), _getCity()->getBorderInfo().boatExit,
                                      PathwayHelper::allTerrain );
   }
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _getCity(), getIJ(), 20 );
+    pathway = PathwayHelper::randomWay( _getCity(), pos(), 20 );
   }
 
   if( pathway.isValid() )
@@ -221,7 +221,7 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
   Tilemap& tmap = _getCity()->getTilemap();
 
   TilePos offset( range, range );
-  TilesArray tiles = tmap.getRectangle( getIJ() - offset, getIJ() + offset );
+  TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
 
   foreach( it, tiles )
   {
@@ -246,7 +246,7 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
     foreach( it, buildings )
     {
       ConstructionPtr c = ptr_cast<Construction>( *it );
-      ret = PathwayHelper::create( getIJ(), c, PathwayHelper::allTerrain );
+      ret = PathwayHelper::create( pos(), c, PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
         return ret;
@@ -296,9 +296,9 @@ void EnemySoldier::timeStep(const unsigned long time)
     if( !enemies.empty() )
     {
       WalkerPtr p = enemies.front();
-      turn( p->getIJ() );
+      turn( p->pos() );
       p->updateHealth( -3 );
-      p->acceptAction( Walker::acFight, getIJ() );
+      p->acceptAction( Walker::acFight, pos() );
     }
     else
     {
@@ -343,7 +343,7 @@ EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, constants::walker::Type
 
 void EnemySoldier::send2City( TilePos pos )
 {
-  setIJ( pos );
+  setPos( pos );
   _check4attack();
   _getCity()->addWalker( WalkerPtr( this ));
 }
@@ -355,7 +355,7 @@ void EnemySoldier::die()
   switch( getType() )
   {
   case walker::britonSoldier:
-    Corpse::create( _getCity(), getIJ(), ResourceGroup::celts, 393, 400 );
+    Corpse::create( _getCity(), pos(), ResourceGroup::celts, 393, 400 );
   break;
 
   default:

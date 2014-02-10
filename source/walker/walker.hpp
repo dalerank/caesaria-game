@@ -48,8 +48,8 @@ public:
 
   int getJ() const;
 
-  TilePos getIJ() const;
-  void setIJ( const TilePos& pos );
+  TilePos pos() const;
+  void setPos( const TilePos& pos );
 
   virtual Point getMapPos() const;
   Point getSubPos() const;
