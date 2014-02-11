@@ -34,6 +34,9 @@ static void __loadTranslator( vfs::Path filename )
   for( VariantMap::iterator it=trs.begin(); it != trs.end(); it++ )
   {
     int hash = StringHelper::hash( it->first );
+    Translator::iterator trIt = translator.find( hash );
+    Logger::warningIf( trIt != translator.end(), "Locale: also have translation for " + it->first );
+
     translator[ hash ] = it->second.toString();
   }
 }

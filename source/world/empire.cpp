@@ -163,7 +163,7 @@ void Empire::setCitiesAvailable(bool value)
   foreach( city, _d->cities ) { (*city)->setAvailable( value ); }
 }
 
-unsigned int Empire::getWorkersSalary() const {  return _d->workerSalary; }
+unsigned int Empire::getWorkerSalary() const {  return _d->workerSalary; }
 
 void Empire::createTradeRoute(std::string start, std::string stop )
 {

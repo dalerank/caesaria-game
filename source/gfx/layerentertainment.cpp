@@ -171,7 +171,7 @@ void LayerEntertainment::handleEvent(NEvent& event)
           {
             if( _type == citylayer::entertainment )
             {
-              text = StringHelper::format( 0xff, "##%d_entertainment_access", lvlValue / 10 );
+              text = StringHelper::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
             }
             else
             {

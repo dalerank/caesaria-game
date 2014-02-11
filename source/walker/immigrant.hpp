@@ -25,10 +25,11 @@ class Immigrant : public Walker
 {
 public:
   static ImmigrantPtr create( PlayerCityPtr city );
-  static bool send2city( PlayerCityPtr city, const CitizenGroup& peoples, Tile& startTile );
+  static ImmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
+                                 const Tile& startTile, std::string thinks );
 
-  void send2city( Tile& startTile );
-  void leaveCity( Tile& tile );
+  void send2city( const Tile& startTile );
+  void leaveCity( const Tile& tile );
 
   void setPeoples( const CitizenGroup& peoples );
   virtual void timeStep(const unsigned long time);

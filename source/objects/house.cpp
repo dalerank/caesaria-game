@@ -239,7 +239,7 @@ void House::timeStep(const unsigned long time)
         e->dispatch();
       }
 
-      Immigrant::send2city( _getCity(), homeless, getTile() );
+      Immigrant::send2city( _getCity(), homeless, getTile(), "##immigrant_no_home##" );
     }
   }
 
@@ -697,7 +697,12 @@ void House::destroy()
 {
   _d->maxHabitants = 0;
 
-  Immigrant::send2city( _getCity(), _d->habitants, getTile() );
+  const int maxCitizenInGroup = 8;
+  while( _d->habitants.count() > maxCitizenInGroup )
+  {
+    CitizenGroup homeless = _d->habitants.retrieve( std::min<int>( _d->habitants.count(), maxCitizenInGroup ) );
+    Immigrant::send2city( _getCity(), homeless, getTile(), "##immigrant_thrown_from_house##" );
+  }
 
   if( getWorkersCount() > 0 )
   {

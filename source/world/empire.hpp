@@ -52,7 +52,7 @@ public:
   virtual void load( const VariantMap& stream );
 
   void setCitiesAvailable( bool value );
-  unsigned int getWorkersSalary() const;
+  unsigned int getWorkerSalary() const;
 
 private:
   Empire();

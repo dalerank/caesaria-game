@@ -24,6 +24,7 @@
 #include "gfx/tile.hpp"
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
+#include "world/empire.hpp"
 #include "funds.hpp"
 #include "statistic.hpp"
 
@@ -54,7 +55,7 @@ CityServiceInfo::CityServiceInfo( PlayerCityPtr city )
 
 void CityServiceInfo::update( const unsigned int time )
 {
-  if( time % 44 != 1 )
+  if( time % GameDate::getTickInMonth() != 1 )
     return;
 
   if( GameDate::current().month() != _d->lastDate.month() )
@@ -82,6 +83,7 @@ void CityServiceInfo::update( const unsigned int time )
 
     last.needWorkers = CityStatistic::getVacantionsNumber( _d->city );
     last.workless = CityStatistic::getWorklessPercent( _d->city );
+    last.payDiff = _d->city->getEmpire()->getWorkerSalary() - _d->city->getFunds().getWorkerSalary();
     last.tax = _d->city->getFunds().getTaxRate();
   }
 }

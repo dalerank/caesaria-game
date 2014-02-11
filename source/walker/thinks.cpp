@@ -45,11 +45,15 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
   if( params.monthWithFood < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_so_hungry##" );
+    troubles.push_back( "##citizen_so_hungry##" );
+    troubles.push_back( "##citizen_so_hungry2##" );
   }
 
   if( params.godsMood < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_gods_angry##" );
+    troubles.push_back( "##citizen_gods_angry##" );
+    troubles.push_back( "##citizen_gods_angry2##" );
   }
 
   if( params.colloseumCoverage < 3 )
@@ -66,20 +70,35 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
   {
     troubles.push_back( "##" + walkerTypename + "_low_entertainment##" );
   }
+  else if( params.entertainment < 20 )
+  {
+    troubles.push_back( "##" + walkerTypename + "_need_entertainment##" );
+  }
 
   if( params.needWorkers > 0 )
   {
     troubles.push_back( "##" + walkerTypename + "_need_workers##" );
+    troubles.push_back( "##citizen_need_workers##" );
+    troubles.push_back( "##citizen_need_workers2##" );
   }
 
   if( params.workless > 15 )
   {
     troubles.push_back( "##" + walkerTypename + "_high_workless##" );
+    troubles.push_back( "##citizen_high_workless##" );
+    troubles.push_back( "##citizen_high_workless2##" );
+    troubles.push_back( "##citizen_high_workless3##" );
+    troubles.push_back( "##citizen_high_workless4##" );
   }
 
   if( params.tax > 10 )
   {
     troubles.push_back( "##" + walkerTypename + "_high_tax##" );
+  }
+
+  if( params.payDiff < 0 )
+  {
+    troubles.push_back( "##" + walkerTypename + "_low_salary##" );
   }
 
   if( !troubles.empty() )

@@ -32,13 +32,15 @@ Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::pottery, Size(
 bool Pottery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
   bool ret = Factory::canBuild( city, pos, aroundTiles );
+  return ret;
+}
 
+void Pottery::build(PlayerCityPtr city, const TilePos& pos)
+{
   CityHelper helper( city );
   bool haveClaypit = !helper.find<Building>( building::clayPit ).empty();
 
-  const_cast< Pottery* >( this )->_setError( haveClaypit ? "" : "##need_clay_pit##" );
-
-  return ret;
+  _setError( haveClaypit ? "" : "##need_clay_pit##" );
 }
 
 void Pottery::timeStep( const unsigned long time )

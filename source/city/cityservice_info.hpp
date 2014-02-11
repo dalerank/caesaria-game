@@ -42,6 +42,7 @@ public:
     int theaterCoverage;
     int entertainment;
     int lifeValue;
+    int payDiff;
 
     Parameters()
     {
@@ -59,6 +60,7 @@ public:
       theaterCoverage = 0;
       entertainment = 0;
       lifeValue = 0;
+      payDiff = 0;
     }
   };
 

@@ -25,7 +25,6 @@
 #include "pathway/path_finding.hpp"
 #include "city/city.hpp"
 #include "gfx/animation_bank.hpp"
-#include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "thinks.hpp"
@@ -123,11 +122,6 @@ void Walker::timeStep(const unsigned long time)
   }
 }
 
-bool Walker::isDeleted() const
-{
-   return _d->isDeleted;
-}
-
 void Walker::setPos( const TilePos& pos )
 {
    _d->pos = pos;
@@ -136,12 +130,6 @@ void Walker::setPos( const TilePos& pos )
 
    _d->posOnMap = Point( _d->pos.i(), _d->pos.j() ) * 15 + _d->tileOffset;
 }
-
-int Walker::getI() const{   return _d->pos.i();}
-int Walker::getJ() const{   return _d->pos.j();}
-
-Point Walker::getMapPos() const{  return Point( 2*(_d->posOnMap.x() + _d->posOnMap.y()), _d->posOnMap.x() - _d->posOnMap.y() );}
-Point Walker::getSubPos() const{  return _d->tileOffset; }
 
 void Walker::setPathway( const Pathway& pathway)
 { 
@@ -358,16 +346,6 @@ void Walker::_reachedPathway()
   _d->animation = Animation();
 }
 
-void Walker::_changeDirection()
-{
-  _d->animation = Animation();  // need to fetch the new animation
-}
-
-void Walker::_brokePathway( TilePos pos )
-{
-
-}
-
 void Walker::_computeDirection()
 {
   Direction lastDirection = _d->action.direction;
@@ -398,41 +376,33 @@ const Tile& Walker::_getNextTile() const
   return _d->city->getTilemap().at( p );
 }
 
-
-Direction Walker::getDirection()
-{
-  return _d->action.direction;
-}
-
-Walker::Action Walker::getAction()
-{
-  return (Walker::Action)_d->action.action;
-}
-
-double Walker::getHealth() const
-{
-  return _d->health;
-}
-
-void Walker::updateHealth(double value)
-{
-  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );
-}
-
-void Walker::acceptAction(Walker::Action, TilePos)
-{
-
-}
-
-void Walker::setName(const std::string &name)
-{
-  _d->name = name;
-}
-
-const std::string &Walker::getName() const
-{
-  return _d->name;
-}
+int Walker::getI() const{   return _d->pos.i();}
+int Walker::getJ() const{   return _d->pos.j();}
+Point Walker::getMapPos() const{  return Point( 2*(_d->posOnMap.x() + _d->posOnMap.y()), _d->posOnMap.x() - _d->posOnMap.y() );}
+Point Walker::getSubPos() const{  return _d->tileOffset; }
+bool Walker::isDeleted() const{   return _d->isDeleted;}
+void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
+void Walker::_brokePathway( TilePos pos ){}
+Direction Walker::getDirection(){  return _d->action.direction;}
+Walker::Action Walker::getAction(){  return (Walker::Action)_d->action.action;}
+double Walker::getHealth() const{  return _d->health;}
+void Walker::updateHealth(double value) {  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );}
+void Walker::acceptAction(Walker::Action, TilePos){}
+void Walker::setName(const std::string &name) {  _d->name = name; }
+const std::string &Walker::getName() const{  return _d->name; }
+void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
+TilePos Walker::pos() const{    return _d->pos;}
+void Walker::deleteLater(){   _d->isDeleted = true;}
+void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
+Pathway& Walker::_pathwayRef() {  return _d->pathway; }
+const Pathway& Walker::getPathway() const {  return _d->pathway; }
+Animation& Walker::_animationRef() {  return _d->animation;}
+void Walker::_setAction( Walker::Action action ) {  _d->action.action = action; }
+void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
+void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
+void Walker::_setType(walker::Type type){  _d->walkerType = type;}
+PlayerCityPtr Walker::_getCity() const{  return _d->city;}
+void Walker::_setHealth(double value){  _d->health = value;}
 
 std::string Walker::getThinks() const
 {
@@ -441,7 +411,7 @@ std::string Walker::getThinks() const
     _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
   }
 
-  return _(_d->thinks.c_str());
+  return _d->thinks;
 }
 
 void Walker::getPictureList(PicturesArray& oPics)
@@ -483,7 +453,7 @@ const Picture& Walker::getMainPicture()
     else
     {
       _d->animation = animMap.begin()->second;
-      Logger::warning( "Wrong walker direction detected" );
+      Logger::warning( "Walker: wrong direction detected" );
     }
   }
 
@@ -524,7 +494,7 @@ void Walker::load( const VariantMap& stream)
 
   if( !_d->pathway.isValid() )
   {
-    Logger::warning( "Wrong way for %s at [%d,%d]", _d->name.c_str(),
+    Logger::warning( "Walker: wrong way for %s at [%d,%d]", _d->name.c_str(),
                      _d->pos.i(), _d->pos.j() );
     //deleteLater();
   }
@@ -551,20 +521,6 @@ void Walker::load( const VariantMap& stream)
   _d->remainMove = stream.get( "remainmove" ).toPointF();
   _d->health = (double)stream.get( "health" );
 }
-
-void Walker::addAbility(AbilityPtr ability)
-{
-  _d->abilities.push_back( ability );
-}
-
-TilePos Walker::pos() const{    return _d->pos;}
-void Walker::deleteLater(){   _d->isDeleted = true;}
-void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
-Pathway& Walker::_pathwayRef() {  return _d->pathway; }
-const Pathway& Walker::getPathway() const {  return _d->pathway; }
-Animation& Walker::_animationRef() {  return _d->animation;}
-void Walker::_setAction( Walker::Action action ) {  _d->action.action = action; }
-void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
 
 void Walker::turn(TilePos p)
 {
@@ -597,21 +553,6 @@ void Walker::_setAnimation( gfx::Type type)
   }
 }
 
-void Walker::_setType(walker::Type type)
-{
-  _d->walkerType = type;
-}
-
-PlayerCityPtr Walker::_getCity() const
-{
-  return _d->city;
-}
-
-void Walker::_setHealth(double value)
-{
-  _d->health = value;
-}
-
 void Walker::_updateAnimation( const unsigned int time )
 {
   if( _d->animation.size() > 0 )
@@ -620,20 +561,9 @@ void Walker::_updateAnimation( const unsigned int time )
   }
 }
 
-void Walker::_setPosOnMap(Point pos)
-{
-  _d->posOnMap = pos;
-}
-
-Point Walker::_getPosOnMap() const
-{
-  return _d->posOnMap;
-}
-
-void Walker::go()
-{
-  _d->action.action = acMove;       // default action
-}
+void Walker::_setPosOnMap(Point pos){  _d->posOnMap = pos;}
+Point Walker::_getPosOnMap() const{  return _d->posOnMap;}
+void Walker::go(){ _d->action.action = acMove; }      // default action
 
 void Walker::die()
 {
@@ -655,38 +585,38 @@ public:
 
   Impl() : EnumsHelper<walker::Type>( walker::unknown )
   {
-    append( walker::unknown, "none", _("##wt_none##"));
-    append( walker::immigrant, "immigrant", _("##wt_immigrant##") );
-    append( walker::emigrant, "emmigrant", _("##wt_emmigrant##") );
-    append( walker::soldier, "soldier", _("##wt_soldier##") );
-    append( walker::cartPusher, "cart_pusher", _("##wt_cart_pushher##") );
-    append( walker::marketLady, "market_lady", _("##wt_market_lady##") );
-    append( walker::marketKid, "market_lady_helper", _("##wt_market_lady_helper##") );
-    append( walker::serviceman, "serviceman", _("##wt_serviceman##") );
-    append( walker::trainee, "trainee", _("##wt_trainee##") );
-    append( walker::recruter, "recruter", _("##wt_recruter##") );
-    append( walker::prefect, "prefect", _("##wt_prefect##") );
-    append( walker::priest, "priest", _("##wt_priest##" ) );
-    append( walker::taxCollector, "tax_collector", _("##wt_tax_collector##") );
-    append( walker::merchant, "merchant", _("##wt_merchant##") );
-    append( walker::engineer, "engineer", _("##wt_engineer##") );
-    append( walker::doctor, "doctor", _("##wt_doctor##") );
-    append( walker::sheep, "sheep", _("##wt_animal_sheep##") );
-    append( walker::bathlady, "bathlady", _("##wt_bathlady##") );
-    append( walker::actor, "actor", _("##wt_actor##") );
-    append( walker::gladiator, "gladiator", _("##wt_gladiator##") );
-    append( walker::barber, "barber", _("##wt_barber##" ) );
-    append( walker::surgeon, "surgeon", _("##wt_surgeon##") );
-    append( walker::lionTamer, "lion_tamer", _("##wt_lion_tamer") );
-    append( walker::fishingBoat, "fishing_boat", _("##fishing_boat##") );
-    append( walker::protestor, "protestor", _("##wt_protestor##" ) );
-    append( walker::legionary, "legionary", _("##wt_legionary##") );
-    append( walker::corpse, "corpse", _("##wt_corpse##") );
-    append( walker::lion, "lion", _("##wt_lion##") );
-    append( walker::britonSoldier, "briton_soldier", _("##wt_briton_soldier##") );
-    append( walker::fishPlace, "fish_place", _("##wt_endeavor##") );
-    append( walker::seaMerchant, "sea_merchant", _("##wt_sea_merchant##") );
-    append( walker::all, "unknown", _("##wt_unknown##") );
+    append( walker::unknown,    "none",         "##wt_none##" );
+    append( walker::immigrant,  "immigrant",    "##wt_immigrant##" );
+    append( walker::emigrant,   "emmigrant",    "##wt_emmigrant##" );
+    append( walker::soldier,    "soldier",      "##wt_soldier##" );
+    append( walker::cartPusher, "cart_pusher",  "##wt_cart_pushher##" );
+    append( walker::marketLady, "market_lady",  "##wt_market_lady##" );
+    append( walker::marketKid,  "market_lady_helper", "##wt_market_lady_helper##" );
+    append( walker::serviceman, "serviceman",   "##wt_serviceman##" );
+    append( walker::trainee,    "trainee",      "##wt_trainee##" );
+    append( walker::recruter,   "recruter",     "##wt_recruter##" );
+    append( walker::prefect,    "prefect",      "##wt_prefect##" );
+    append( walker::priest,     "priest",       "##wt_priest##"  );
+    append( walker::taxCollector,"tax_collector", "##wt_tax_collector##" );
+    append( walker::merchant,   "merchant",     "##wt_merchant##" );
+    append( walker::engineer,   "engineer",     "##wt_engineer##" );
+    append( walker::doctor,     "doctor",       "##wt_doctor##" );
+    append( walker::sheep,      "sheep",        "##wt_animal_sheep##" );
+    append( walker::bathlady,   "bathlady",     "##wt_bathlady##" );
+    append( walker::actor,      "actor",        "##wt_actor##" );
+    append( walker::gladiator,  "gladiator",    "##wt_gladiator##" );
+    append( walker::barber,     "barber",       "##wt_barber##"  );
+    append( walker::surgeon,    "surgeon",      "##wt_surgeon##" );
+    append( walker::lionTamer,  "lion_tamer",   "##wt_lion_tamer" );
+    append( walker::fishingBoat,"fishing_boat", "##fishing_boat##" );
+    append( walker::protestor,  "protestor",    "##wt_protestor##" );
+    append( walker::legionary,  "legionary",    "##wt_legionary##" );
+    append( walker::corpse,     "corpse",       "##wt_corpse##" );
+    append( walker::lion,       "lion",         "##wt_lion##" );
+    append( walker::britonSoldier, "briton_soldier", "##wt_briton_soldier##" );
+    append( walker::fishPlace,  "fish_place",   "##wt_endeavor##" );
+    append( walker::seaMerchant,"sea_merchant", "##wt_sea_merchant##" );
+    append( walker::all,        "unknown",      "##wt_unknown##" );
   }
 };
 
@@ -702,7 +632,7 @@ std::string WalkerHelper::getTypename( walker::Type type )
 
   if( name.empty() )
   {
-    Logger::warning( "Can't find walker typeName for %d", type );
+    Logger::warning( "WalkerHelper: can't find walker typeName for %d", type );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
   }
 
@@ -715,7 +645,7 @@ walker::Type WalkerHelper::getType(const std::string &name)
 
   if( type == instance()._d->getInvalid() )
   {
-    Logger::warning( "Can't find walker type for %s", name.c_str() );
+    Logger::warning( "WalkerHelper: can't find walker type for %s", name.c_str() );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 
@@ -753,11 +683,5 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   return index >= 0 ? Picture::load( "bigpeople", index ) : Picture::getInvalid();
 }
 
-WalkerHelper::~WalkerHelper()
-{
-}
-
-WalkerHelper::WalkerHelper() : _d( new Impl )
-{
-
-}
+WalkerHelper::~WalkerHelper(){}
+WalkerHelper::WalkerHelper() : _d( new Impl ){}

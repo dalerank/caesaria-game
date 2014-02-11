@@ -130,7 +130,7 @@ void CityServiceProsperity::update( const unsigned int time )
     bool havePatrician = patricianCount > 0;
     _d->prosperityExtend += (havePatrician ? 1 : 0);
 
-    _d->workersSalary = _d->city->getFunds().getWorkerSalary() - _d->city->getEmpire()->getWorkersSalary();
+    _d->workersSalary = _d->city->getFunds().getWorkerSalary() - _d->city->getEmpire()->getWorkerSalary();
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
    

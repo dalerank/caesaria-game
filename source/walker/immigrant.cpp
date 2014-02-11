@@ -182,26 +182,28 @@ ImmigrantPtr Immigrant::create(PlayerCityPtr city )
   return newImmigrant;
 }
 
-bool Immigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples, Tile& startTile )
+ImmigrantPtr Immigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples,
+                                   const Tile& startTile, std::string thinks )
 {
   if( peoples.count() > 0 )
   {
     ImmigrantPtr im = Immigrant::create( city );
     im->setPeoples( peoples );
     im->send2city( startTile );
-    return true;
+    im->setThinks( thinks );
+    return im;
   }
 
-  return false;
+  return ImmigrantPtr();
 }
 
-void Immigrant::send2city( Tile& startTile )
+void Immigrant::send2city( const Tile& startTile )
 {
   _findPath2blankHouse( startTile.pos() );
   _getCity()->addWalker( this );
 }
 
-void Immigrant::leaveCity(Tile& tile)
+void Immigrant::leaveCity( const Tile& tile)
 {
   setPos( tile.pos() );
   Pathway pathway = PathwayHelper::create( tile.pos(),

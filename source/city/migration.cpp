@@ -100,7 +100,7 @@ void CityMigration::update( const unsigned int time )
   float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
 
   //if salary in city more then empire people more effectivelly go to our city
-  int diffSalary = _d->city->getEmpire()->getWorkersSalary() - _d->city->getFunds().getWorkerSalary();
+  int diffSalary = _d->city->getEmpire()->getWorkerSalary() - _d->city->getFunds().getWorkerSalary();
   emigrantsIndesirability += diffSalary * emDesKoeff;
 
   //emigrant like when lot of food stock int city
@@ -252,6 +252,7 @@ void CityMigration::Impl::createMigrationFromCity()
       {
         (*house)->remHabitants( minWorkersNumber );
         emigrant->leaveCity( *(*house)->getEnterArea().front() );
+        emigrant->setThinks( "##immigrant_no_work_for_me##" );
       }
     }
   }
