@@ -1,22 +1,43 @@
 CaesarIA
 -----------
-CaesarIA is a remake of the classic Caesar3 PC game, a city building game developed by Impression Games and published by Sierra Entertainment, in 1998.
+CaesarIA is remake of Caesar III in the big and seamless world of Ancient Rome. You can build the small village with some of gardens and a workshop where you want.
+You also can perform tasks of an emperor or build the whole city and broke attacks of barbarians, Egyptians or carfagens which want to steal your goods and to kill your inhabitants!
+You also can pass the company from original game (when it will be restored)
+The good lock with high walls will help to cope with any invasions. 
 
-The game is currently under heavy development and nearly playable state. Developers are invited to participate.
+The fighting system of game continues and develops the principles from Caesar III. Legions of soldiers can be sent to any point of the card, but don't submit to direct instructions of the player, and work independently.
+Depending on a situation soldiers can recede or be reformed for the best interaction.
+
+The agriculture, extraction and production of goods will demand adjustment of production chains and if the necessary goods can't be got in the city, your trade partner can always sell it to you using
+land or maritime trade routes.
 
 Building CaesarIA
 -------------------
 See INSTALL_LINUX.md or INSTALL_WINDOWS.md depending on which operating system you are running.
 
-####External dependencies
+#### External dependencies
 CaesarIA is build using following excellent libraries:
   * SDL - http://www.libsdl.org/
-    * SDL_image - http://www.libsdl.org/projects/SDL_image/
-    * SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
-    * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
+  * SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
+  * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
     
 Releases:
----------
+##### 2014-02-12
+  * MacOS X an Haiku support
+  * Mission engine and event dispatcher improved
+  * more citizen thinks 
+  * education, entertainment layer add
+  * culture rating calculate improved
+  * listbox now may drawing image
+  * first tutorial mission add
+  * fast save/load
+  * tutorial window add
+  * senate show rating
+  * ruins infobox add
+  * fort and legions add
+  * low bridge behaviour improved
+  * goods consumption fixed
+
 ##### 2013-17-11
   * Garden desirability improved
   * House upgrade logic improved
