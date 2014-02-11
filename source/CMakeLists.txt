@@ -83,9 +83,13 @@ if(WIN32)
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 
-if(UNIX)
+if(LINUX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
-endif(UNIX)
+endif(LINUX)
+
+if(HAIKU)
+  set(EXECUTABLE_FILENAME "caesaria.haiku")
+endif(HAIKU)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "caesaria.macos")
@@ -103,7 +107,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 if(WIN32)

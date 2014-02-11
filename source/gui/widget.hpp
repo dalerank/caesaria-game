@@ -54,7 +54,7 @@ public:
   void setInternalName( const std::string& name );
 
   template< class T >
-  T findChild( const std::string& internalName, bool recursiveFind = false ) const
+  T findChild( const std::string& internalName, bool recursiveFind = false, Widget* t=0)
   {
       Widgets::const_iterator it = getChildren().begin();
       for( ; it != getChildren().end(); it++ )
@@ -468,6 +468,30 @@ enum ElementState
   stChecked,
   StateCount
 };
+
+#ifdef CAESARIA_PLATFORM_HAIKU
+template< class T >
+inline T findChildA( const std::string& internalName, bool recursiveFind, Widget* parent )
+{
+  Widget::Widgets::const_iterator it = parent->getChildren().begin();
+  for( ; it != parent->getChildren().end(); it++ )
+  {
+    if( (*it)->getInternalName() == internalName )
+      return safety_cast< T >( *it );
+
+      if( recursiveFind )
+      {
+        T chElm = findChildA< T >( internalName, recursiveFind, *it );
+        if( chElm )
+           return chElm;
+      }
+  }
+  return 0;
+}
+#else
+	#define findChildA findChild
+#endif
+
 
 }//end namespace gui
 #endif //__CAESARIA_WIDGET_H_INCLUDE_

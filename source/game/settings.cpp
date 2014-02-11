@@ -58,7 +58,6 @@ GameSettings& GameSettings::getInstance()
 GameSettings::GameSettings() : _d( new Impl )
 {
   std::string application_path = vfs::Directory::getApplicationDir().toString();
-
   setwdir( application_path );
 
   _d->options[ pantheonModel       ] = Variant( std::string( "/pantheon.model" ) );
@@ -89,8 +88,9 @@ Variant GameSettings::get( const std::string& option )
   return getInstance()._d->options[ option ];
 }
 
-void GameSettings::setwdir( vfs::Directory wdir)
+void GameSettings::setwdir( const std::string& wdirstr )
 {
+  vfs::Directory wdir( wdirstr );
   _d->options[ workDir ] = Variant( wdir.toString() );
   _d->options[ resourcePath ] = Variant( (wdir/defaultResDir).toString() );
   _d->options[ localePath ] = Variant( (wdir/defaultLocaleDir).toString() );
@@ -100,7 +100,7 @@ void GameSettings::setwdir( vfs::Directory wdir)
 #ifdef CAESARIA_PLATFORM_LINUX
   vfs::Path dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
   saveDir = vfs::Directory::getUserDir()/dirName;
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_HAIKU)
   saveDir = wdir/defaultSaveDir;
 #endif
   _d->options[ savedir ] = Variant( saveDir.toString() );

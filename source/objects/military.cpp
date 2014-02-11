@@ -149,8 +149,8 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   area.setOffset(Tile( TilePos(3,0)).mapPos() + Point(0,-30));
 
   _fgPicturesRef().resize(2);
-  _fgPicturesRef().at( 0 ) = logo;
-  _fgPicturesRef().at( 1 ) = area;
+  _fgPicturesRef()[ 0 ] = logo;
+  _fgPicturesRef()[ 1 ] = area;
 
   _d->area = new FortArea();
   _d->area->drop();

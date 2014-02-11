@@ -16,6 +16,7 @@
 #include "mutex.hpp"
 #include "thread.hpp"
 
+#include <memory.h>
 #include <iostream>
 
 using namespace std;
@@ -29,7 +30,7 @@ Mutex::Mutex(void) : m_bCreated(true)
    pthread_mutexattr_t mattr;
 
    pthread_mutexattr_init( &mattr );
-   pthread_mutex_init(&m_mutex,&mattr);
+   pthread_mutex_init(&m_mutex, &mattr);
 
 #endif
    memset(&m_owner,0,sizeof(ThreadID));

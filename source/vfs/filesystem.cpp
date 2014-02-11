@@ -26,7 +26,7 @@
 	#include <io.h> // for _access
 	#include <tchar.h>
     #include <stdio.h>
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
@@ -570,6 +570,8 @@ Entries FileSystem::getFileList()
   Entries ret;
   Path rpath = StringHelper::replace( getWorkingDirectory().toString(), "\\", "/" );
   rpath = rpath.addEndSlash();
+  
+  Logger::warning( "FileSystem: start listing directory" );
 
 	//! Construct from native filesystem
   if ( _d->fileSystemType == fsNative )
@@ -595,11 +597,11 @@ Entries FileSystem::getFileList()
 			//entry.Name = "E:\\";
 			//entry.isDirectory = true;
 			//Files.push_back(entry);
-		#elif defined(CAESARIA_PLATFORM_UNIX)
-
+		#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+            Logger::warning( "FileSystem: start listing directory on unix" );
 			// --------------------------------------------
 			//! Linux version
-				ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
+			ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
 
 			//! We use the POSIX compliant methods instead of scandir
 			DIR* dirHandle=opendir( rpath.toString().c_str());
@@ -630,7 +632,8 @@ Entries FileSystem::getFileList()
 					}
 					#endif*/
 					
-										ret.addItem( Path( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
+					Logger::warning( "FileSystem: find file " + std::string( dirEntry->d_name ) );
+					ret.addItem( Path( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
 				}
 				closedir(dirHandle);
 			}
@@ -680,7 +683,7 @@ bool FileSystem::existFile(const Path& filename) const
 
 #if defined(CAESARIA_PLATFORM_WIN)
   return ( _access( filename.toString().c_str(), 0) != -1);
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
   return ( access( filename.toString().c_str(), 0 ) != -1);
 #endif //CAESARIA_PLATFORM_UNIX
 }

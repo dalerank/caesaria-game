@@ -15,6 +15,7 @@
 
 #include <cstdio>
 
+#include "walker/patrolpoint.hpp"
 #include "infobox_legion.hpp"
 #include "environment.hpp"
 #include "core/foreach.hpp"
@@ -42,8 +43,8 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PatrolPointPtr patrolPoint )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/legionopts.gui") );
 
-  _d->lbFormationTitle = findChild<Label*>( "lbFormationTitle", true );
-  _d->lbFormationText = findChild<Label*>( "lbFormation", true );
+  _d->lbFormationTitle = findChildA<Label*>( "lbFormationTitle", true, this );
+  _d->lbFormationText = findChildA<Label*>( "lbFormation", true, this );
 
   _addFormationButton( 0, 28 );
   _addFormationButton( 1, 30 );

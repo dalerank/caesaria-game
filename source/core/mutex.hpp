@@ -31,7 +31,7 @@ private:
 
 #ifdef CAESARIA_PLATFORM_WIN
 	HANDLE m_mutex;
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
 	pthread_mutex_t m_mutex;
 #endif
 

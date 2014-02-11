@@ -16,12 +16,12 @@
 #ifndef __CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
 #define __CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
 
+#include "gfx/renderer.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
 #include "core/referencecounted.hpp"
 #include "core/smartptr.hpp"
 #include "objects/construction.hpp"
-#include "gfx/renderer.hpp"
 
 class LayerMode : public Renderer::Mode
 {
@@ -29,7 +29,6 @@ public:
   static Renderer::ModePtr create( const int type );
 
   int getType() const;
-
 protected:
   void _setType( int type );
   LayerMode( int type );

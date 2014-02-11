@@ -16,7 +16,10 @@
 #include "thread.hpp"
 #include "requirements.hpp"
 
-#ifdef CAESARIA_PLATFORM_UNIX
+#include <memory.h>
+#include <errno.h>
+
+#if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
 extern "C"
 {
  int	usleep(useconds_t useconds);
@@ -790,7 +793,7 @@ bool Thread::Start()
 			m_state = ThreadStateFault;
 			return false;
 		}
-#elif defined(CAESARIA_PLATFORM_UNIX	)
+#elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
 		pthread_attr_t attr;
 
 		pthread_attr_init(&attr);
@@ -807,21 +810,10 @@ bool Thread::Start()
 
 			switch(error)/* show the thread error */
 			{
-			case EINVAL:
-					cerr << "error: attr in an invalid thread attributes object\n";
-					break;
-			case EAGAIN:
-					cerr << "error: the necessary resources to create a thread are not\n";
-					cerr << "available.\n";
-					break;
-			case EPERM:
-					cerr << "error: the caller does not have the privileges to create\n";
-					cerr << "the thread with the specified attr object.\n";
-			break;
-			default:
-				cerr << "error: an unknown error was encountered attempting to create\n";
-				cerr << "the requested thread.\n";
-			break;
+			case EINVAL: cerr << "error: attr in an invalid thread attributes object\n";	break;
+			case EAGAIN: cerr << "error: the necessary resources to create a thread are not available.\n";	break;
+			case EPERM:	cerr << "error: the caller does not have the privileges to create the thread with the specified attr object.\n"; break;
+			default: cerr << "error: an unknown error was encountered attempting to create the requested thread.\n"; break;
 			}
 
 			return false;

@@ -95,8 +95,8 @@ class WarehouseStore : public GoodStore
 public:
   typedef std::map< Good::Type, int > StockMap;
 
-  using GoodStore::applyStorageReservation;
-  using GoodStore::applyRetrieveReservation;
+  //using GoodStore::applyStorageReservation;
+  //using GoodStore::applyRetrieveReservation;
 
   WarehouseStore();
 
@@ -366,10 +366,10 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
-  _fgPicturesRef().at( 0 ) = Picture::load(ResourceGroup::warehouse, 1);
-  _fgPicturesRef().at( 1 ) = Picture::load(ResourceGroup::warehouse, 18);
-  _fgPicturesRef().at( 2 ) = _animationRef().getFrame();
-  _fgPicturesRef().at( 3 ) = _d->animFlag.getFrame();
+  _fgPicturesRef()[ 0 ] = Picture::load(ResourceGroup::warehouse, 1);
+  _fgPicturesRef()[ 1 ] = Picture::load(ResourceGroup::warehouse, 18);
+  _fgPicturesRef()[ 2 ] = _animationRef().getFrame();
+  _fgPicturesRef()[ 3 ] = _d->animFlag.getFrame();
 
   // add subTiles in Z-order (from far to near)
   _d->subTiles.clear();
@@ -394,8 +394,8 @@ void Warehouse::timeStep(const unsigned long time)
    _animationRef().update( time );
    _d->animFlag.update( time );
 
-   _fgPicturesRef().at(2) = _animationRef().getFrame();
-   _fgPicturesRef().at(3) = _d->animFlag.getFrame();
+   _fgPicturesRef()[2] = _animationRef().getFrame();
+   _fgPicturesRef()[3] = _d->animFlag.getFrame();
   }
 
   if( _d->goodStore.isDevastation() && (time % 22 == 1 ) )
@@ -410,7 +410,7 @@ void Warehouse::computePictures()
   foreach( whTile, _d->subTiles )
   {
      whTile->computePicture();
-     _fgPicturesRef().at(index) = whTile->_picture;
+     _fgPicturesRef()[index] = whTile->_picture;
      index++;
   }
 }

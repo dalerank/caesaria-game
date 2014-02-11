@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "objects/construction.hpp"
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/position.hpp"
@@ -21,7 +22,6 @@
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
-#include "objects/construction.hpp"
 #include <set>
 
 using namespace std;
@@ -39,24 +39,24 @@ public:
   class Grid : std::vector< AStarPoint* >
   {
   public:
-    inline unsigned int hash( const TilePos& pos ) { return pos.j() * _size.getWidth() + pos.i(); }
-
+    inline size_type hash( const TilePos& pos ) { return pos.j() * _size.getWidth() + pos.i(); }
+    
     AStarPoint* operator[](const TilePos& pos )
     {
-      return data()[ hash( pos ) ];
+	  return *(begin() + hash( pos ));
     }
 
     void reset( int width, int height )
     {
-      _size = Size( width, height );
-      resize( _size.getArea() );
+    	_size = Size( width, height );
+    	resize( _size.getArea() );
     }
-
+    
     void init( Tile* tile )
     {
-      data()[ hash( tile->pos() ) ] = new AStarPoint( tile );
+      *(begin() + hash( tile->pos() ) ) = new AStarPoint( tile );	
     }
-
+    
     Size _size;
   };
 
@@ -109,10 +109,14 @@ Pathfinder::Pathfinder() : _d( new Impl )
 
 void Pathfinder::update( const Tilemap& tilemap )
 {
+  Logger::warning( "Pathfinder: start updating" );
   _d->tilemap = const_cast< Tilemap* >( &tilemap );
 
-  _d->grid.reset( tilemap.getSize(), tilemap.getSize() );
+  Logger::warning( "Pathfinder: resizing grid to %d", tilemap.getSize() );
+  int size = tilemap.getSize();
+  _d->grid.reset( size, size );
 
+  Logger::warning( "Pathfinder: allocation AStarPoints" );
   TilesArray tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
   foreach( tile, tiles )
   {

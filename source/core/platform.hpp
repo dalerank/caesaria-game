@@ -32,6 +32,10 @@
   #define CAESARIA_PLATFORM_UNIX
   #define CAESARIA_PLATFORM_XBSD
   #define CAESARIA_PLATFORM_NAME "freebsd"
+#elif defined(__HAIKU__) || defined(HAIKU)
+  #define CAESARIA_PLATFORM_BEOS
+  #define CAESARIA_PLATFORM_HAIKU
+  #define CAESARIA_PLATFORM_NAME "haiku"  
 #else
   #define CAESARIA_PLATFORM_UNIX
   #define CAESARIA_PLATFORM_LINUX

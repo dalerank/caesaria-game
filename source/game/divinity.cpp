@@ -146,7 +146,7 @@ RomeDivinityPtr DivinePantheon::get( RomeDivinityType name )
   if( (unsigned int)name > getInstance()._d->divinties.size() )
     return RomeDivinityPtr();
 
-  return getInstance()._d->divinties.at( name );
+  return getInstance()._d->divinties[ name ];
 }
 
 RomeDivinityPtr DivinePantheon::get(std::string name)

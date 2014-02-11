@@ -53,7 +53,7 @@ public:
   static const char* citizen4;
   static const char* citizen5;
   static const char* lion;
-  static const char* wall;\
+  static const char* wall;
   static const char* celts;
 };
 
@@ -87,10 +87,11 @@ class PicID
 {
 public:
   enum {
+  	bad = 0,
     seaTradeRoute = 69,
     landTradeRoute = 70
   };
-  static const int bad = 0;
+
   static const int empireStamp = 543;
   static const int baseLocalGoodId = 316;
   static const int baseEmpireGoodId = 10;

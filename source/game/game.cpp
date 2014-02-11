@@ -191,6 +191,8 @@ void Game::setScreenMenu()
     case ScreenMenu::loadMap:
     {
       load( screen.getMapName() );
+      Logger::warning( "screen menu: end loading map" );
+
       CityBuildOptions bopts;
       bopts = _d->city->getBuildOptions();
       bopts.setGroupAvailable( BM_MAX, true );
@@ -212,11 +214,16 @@ void Game::setScreenMenu()
 
 void Game::setScreenGame()
 {
+  Logger::warning( "game: enter setScreenGame" );
   ScreenGame screen( *this, *_d->engine );
+  
+  Logger::warning( "game: start initialize" );
   screen.initialize();
 
+  Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
   {
+  	Logger::warning( "game: loop tick %d", _d->saveTime );
     screen.update( *_d->engine );
 
     if( !_d->pauseCounter )
@@ -317,23 +324,27 @@ void Game::load(std::string filename)
     }
   }
 
-
-
+  Logger::warning( "Game: reseting varialbes" );
   reset();
+  
+  Logger::warning( "Game: init empire start options" );
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
                           GameSettings::rcpath( GameSettings::worldModel ) );
 
+  Logger::warning( "Game: try find loader" );
   GameLoader loader;
   _d->loadOk = loader.load( fPath, *this);
-
+  
   if( !_d->loadOk )
   {
     Logger::warning( "LOADING ERROR: can't load game from %s", filename.c_str() );
     return;
   }
 
+  Logger::warning( "Game: init player city" );
   _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
 
+  Logger::warning( "Game: calculate road access for buildings" );
   TileOverlayList& llo = _d->city->getOverlays();
   foreach( overlay, llo )
   {
@@ -344,6 +355,7 @@ void Game::load(std::string filename)
     }
   }
 
+  Logger::warning( "Game: initialize pathfinder" );
   Pathfinder::getInstance().update( _d->city->getTilemap() );
 
   Logger::warning( "Load game end" );
@@ -375,6 +387,7 @@ void Game::exec()
 
   while(_d->nextScreen != SCREEN_QUIT)
   {
+  	 Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
      switch(_d->nextScreen)
      {
      case SCREEN_MENU:        setScreenMenu();     break;

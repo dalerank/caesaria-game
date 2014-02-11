@@ -55,7 +55,7 @@ public:
   static void load();
   static void save();
 
-  void setwdir( vfs::Directory options );
+  void setwdir( const std::string& wdir );
 private:
   GameSettings();
 

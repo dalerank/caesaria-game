@@ -24,7 +24,6 @@
 #include "gfx/tilemap.hpp"
 
 #include <fstream>
-#include <limits>
 #include <climits>
 #include <stdint.h>
 

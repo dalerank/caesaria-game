@@ -22,13 +22,18 @@
 #ifdef CAESARIA_PLATFORM_WIN
   #include <windows.h>
   #include <io.h>
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) 
   #ifdef CAESARIA_PLATFORM_LINUX
     #include <sys/io.h>
     #include <linux/limits.h>
   #elif defined(CAESARIA_PLATFORM_MACOSX)
     #include <libproc.h>
   #endif
+  #include <sys/stat.h>
+  #include <unistd.h>
+  #include <stdio.h>
+  #include <libgen.h>
+#elif defined(CAESARIA_PLATFORM_HAIKU)
   #include <sys/stat.h>
   #include <unistd.h>
   #include <stdio.h>
@@ -148,7 +153,7 @@ bool Path::isFolder() const
       return false;
 
   return (fad.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
   struct stat path_stat;
   if ( ::stat( toString().c_str(), &path_stat) != 0 )
       return false;
@@ -229,7 +234,7 @@ Path Path::getAbsolutePath() const
   p = _fullpath(fpath, _d->path.c_str(), _MAX_PATH);
   std::string tmp = StringHelper::replace( p, "\\", "/");
   return tmp;
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
   char* p=0;
   char fpath[4096];
   fpath[0]=0;

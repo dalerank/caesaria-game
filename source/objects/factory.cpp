@@ -170,7 +170,7 @@ void Factory::timeStep(const unsigned long time)
       {
         // animation of the working factory
         int level = _fgPicturesRef().size()-1;
-        _fgPicturesRef().at(level) = _animationRef().getFrame();
+        _fgPicturesRef()[level] = _animationRef().getFrame();
       }
     }
   }

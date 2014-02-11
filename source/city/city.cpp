@@ -16,8 +16,9 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "city.hpp"
 
+#include "city.hpp"
+#include "objects/construction.hpp"
 #include "gfx/tile.hpp"
 #include "objects/metadata.hpp"
 #include "pathway/path_finding.hpp"

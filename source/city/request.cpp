@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "city.hpp"
 #include "request.hpp"
 #include "good/goodhelper.hpp"
 

@@ -22,6 +22,7 @@
     
 class ColorHelper
 {
+public:
 	//! Creates a 16 bit A1R5G5B5 color
 	static inline unsigned short RGBA16(unsigned int r, unsigned int g, unsigned int b, unsigned int a=0xFF)
 	{

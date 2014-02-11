@@ -25,6 +25,7 @@
 #include "listbox.hpp"
 #include "listboxitem.hpp"
 #include "core/logger.hpp"
+#include "city/city.hpp"
 #include "city/request.hpp"
 #include "core/foreach.hpp"
 #include "good/goodhelper.hpp"
@@ -32,7 +33,6 @@
 #include "gameautopause.hpp"
 #include "city/statistic.hpp"
 #include "city/requestdispatcher.hpp"
-#include "city/city.hpp"
 #include "game/player.hpp"
 
 namespace gui
@@ -107,7 +107,8 @@ public oc3_signals:
 
 void AdvisorEmperorWindow::_showChangeSalaryWindow()
 {
-  Rect wdgRect( Point( (getWidth() - 510) / 2, (getHeight() -400)/2), Size( 510, 400 ) );
+	Point startPos( (getWidth() - 510) / 2, (getHeight() -400)/2 );
+  Rect wdgRect( startPos, Size( 510, 400 ) );
   GroupBox* gb = new GroupBox( this, wdgRect, -1, GroupBox::whiteFrame );
 
   new gui::Label( gb, Rect( 15, 15, gb->getWidth() - 15, 35), _("##set_mayor_salary##"),  false, gui::Label::bgNone );

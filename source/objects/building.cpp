@@ -29,6 +29,7 @@
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -56,7 +57,7 @@ void Building::initTerrain( Tile &tile )
 
 void Building::timeStep(const unsigned long time)
 {
-   if (time % 64 == 0)
+   if (time % (GameDate::getTickInMonth() / 4 ) == 0)
    {
       updateState( Construction::damage, _damageIncrement );
       updateState( Construction::fire, _fireIncrement );
@@ -221,5 +222,5 @@ TriumphalArch::TriumphalArch() : Building( building::triumphalArch, Size(3) )
   _animationRef().load("land3a", 44, 1);
   _animationRef().setOffset( Point( 63, 97 ) );
   _fgPicturesRef().resize(1);
-  _fgPicturesRef().at(0) = _animationRef().getFrame();
+  _fgPicturesRef()[0] = _animationRef().getFrame();
 }

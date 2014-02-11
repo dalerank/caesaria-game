@@ -44,8 +44,8 @@ public:
 
   TilesArray& operator=(const TilesArray& a)
   {
-    resize(a.size());
-    std::memcpy( data(), a.data(), sizeof(Tile*) * a.size() );
+    resize( a.size() );
+    memcpy( &front(), &a.front(), (unsigned int)(sizeof(Tile*) * a.size()) );
     /*for( const_iterator i=a.begin(); i != a.end(); i++ )
     {
       push_back( *i );

@@ -27,7 +27,8 @@ VariantMap SaveAdapter::load( const vfs::Path& fileName )
   std::fstream f( fileName.toString().c_str(), std::ios::in | std::ios::binary);
 
   f.seekg( 0, std::ios::end);
-  std::ios::pos_type lastPos = f.tellp();
+  //std::ios::pos_type lastPos = f.tellp();
+  int lastPos = f.tellp();
 
   if( lastPos > 0 )
   {

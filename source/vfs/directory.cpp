@@ -23,14 +23,13 @@
   #include <windows.h>
   #include <io.h>
   #include <shlobj.h>
-#elif defined(CAESARIA_PLATFORM_UNIX)
-  #ifdef CAESARIA_PLATFORM_LINUX
+#elif defined(CAESARIA_PLATFORM_UNIX) 
+  #if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
     #include <sys/io.h>
     #include <linux/limits.h>
     #include <pwd.h>
   #elif defined(CAESARIA_PLATFORM_MACOSX)
     #include <libproc.h>
-    #include <pwd.h>   
   #endif
   #include <sys/stat.h>
   #include <unistd.h>
@@ -73,7 +72,7 @@ bool Directory::createByPath( Directory dir )
   std::string current;
   try
   {
-#ifdef CAESARIA_PLATFORM_LINUX
+#if  defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
     changeCurrentDir( "/" );
 #endif
 
@@ -195,12 +194,17 @@ Directory Directory::getApplicationDir()
   return tmp;
 #elif defined(CAESARIA_PLATFORM_LINUX)
   char exe_path[PATH_MAX] = {0};
-  char * dir_path;
+  sprintf(exe_path, "/proc/%d/exe", ::getpid());
+  readlink(exe_path, exe_path, sizeof(exe_path));
+  vfs::Directory wdir = vfs::Path( exe_path ).directory();
+  //dir_path = dirname(exe_path);
+  return wdir;
+/*#elif defined(CAESARIA_PLATFORM_HAIKU)
+  char exe_path[PATH_MAX] = {0};
   sprintf(exe_path, "/proc/%d/exe", getpid());
-  ssize_t result = readlink(exe_path, exe_path, sizeof(exe_path));
-  result;
-  dir_path = dirname(exe_path);
-  return Path(dir_path);
+  readlink(exe_path, exe_path, sizeof(exe_path));
+  dirname(exe_path);
+  return Path( exe_path );*/
 #elif defined(CAESARIA_PLATFORM_MACOSX)
   char exe_path[PROC_PIDPATHINFO_MAXSIZE];
   int ret = proc_pidpath(getpid(), exe_path, sizeof(exe_path));
@@ -235,7 +239,7 @@ Directory Directory::getUserDir()
     mHomePath = "./";
     Logger::warning( "Cannot find home user directory" );
   }
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(CAESARIA_PLATFORM_LINUX) 
   struct passwd* pwd = getpwuid(getuid());
   if (pwd)
   {
@@ -251,8 +255,14 @@ Directory Directory::getUserDir()
   {
     // couldn't create dir in home directory, fall back to cwd
     mHomePath = "./";
-    Logger::warning( "Cannot find home user directory" );
+    Logger::warning( "Cannot find home user directory" );    
   }
+#elif defined(CAESARIA_PLATFORM_HAIKU)
+   mHomePath = getenv("HOME");
+   if( mHomePath.empty() )
+   {
+   	 mHomePath = "/boot/home";
+   }
 #elif defined(CAESARIA_PLATFORM_WIN)
   TCHAR path[MAX_PATH];
   if( SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL|CSIDL_FLAG_CREATE, NULL, 0, path)) )

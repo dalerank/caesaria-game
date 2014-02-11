@@ -42,6 +42,8 @@ find_path(SDL_MIXER_INCLUDE_DIR SDL_mixer.h
     ENV SDLMIXERDIR
     ENV SDLDIR
   PATH_SUFFIXES SDL SDL12 SDL11 include
+  PATHS
+  /boot/system/develop/headers/x86/SDL_mixer		#haiku
 )
 
 if(NOT SDL_MIXER_LIBRARY AND SDLMIXER_LIBRARY)
@@ -54,7 +56,9 @@ find_library(SDL_MIXER_LIBRARY
   ${DEP_SOURCE_DIR}/SDL_mixer
     ENV SDLMIXERDIR
     ENV SDLDIR
-  PATH_SUFFIXES lib lib/x86
+  PATH_SUFFIXES lib 
+  PATHS
+  /boot/system/develop #haiku
 )
 
 if(SDL_MIXER_INCLUDE_DIR AND EXISTS "${SDL_MIXER_INCLUDE_DIR}/SDL_mixer.h")

@@ -41,8 +41,8 @@ DictionaryWindow::DictionaryWindow( Widget* parent )
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
 
-  _d->btnExit = findChild<TexturedButton*>( "btnExit", true );
-  _d->lbText = findChild<Label*>( "lbText", true );
+  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
+  _d->lbText = findChildA<Label*>( "lbText", true, this );
 
   CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater );
 }

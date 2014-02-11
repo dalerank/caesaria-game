@@ -158,7 +158,7 @@ void Farm::computePictures()
 
   for (int n = 0; n<5; ++n)
   {
-    _fgPicturesRef().at(n) = _d->subTiles[n].getPicture();
+    _fgPicturesRef()[n] = _d->subTiles[n].getPicture();
   }
 }
 

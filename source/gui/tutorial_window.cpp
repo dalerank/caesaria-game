@@ -35,8 +35,8 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
   Size pSize = getParent()->getSize() - getSize();
   setPosition( Point( pSize.getWidth() / 2, pSize.getHeight() / 2 ) );
 
-  ListBox* lbx = findChild<ListBox*>( "lbxHelp", true );
-  TexturedButton* btn = findChild<TexturedButton*>( "btnExit", true );
+  ListBox* lbx = findChildA<ListBox*>( "lbxHelp", true, this );
+  TexturedButton* btn = findChildA<TexturedButton*>( "btnExit", true, this );
   CONNECT( btn, onClicked(), this, TutorialWindow::deleteLater );
 
   if( !lbx )

@@ -70,6 +70,13 @@ if(UNIX)
   set(EXECUTABLE_FILENAME "updater.linux")
 endif(UNIX)
 
+if(HAIKU)
+  target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
+  target_link_libraries( ${PROJECT_NAME} root )
+
+  set(EXECUTABLE_FILENAME "updater.haiku")
+endif(HAIKU)
+
 if(APPLE)
   set(EXECUTABLE_FILENAME "updater.macos")
 endif(APPLE)

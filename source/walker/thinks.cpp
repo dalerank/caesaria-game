@@ -106,7 +106,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
 
   if( !troubles.empty() )
   {
-    std::string trouble = troubles.at( rand() % troubles.size() );
+    std::string trouble = troubles[ (int)(rand() % troubles.size()) ];
     return _( trouble.c_str() );
   }
 
@@ -126,7 +126,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
 
   if( !positiveIdeas.empty() )
   {
-    std::string idea = positiveIdeas.at( rand() % positiveIdeas.size() );
+    std::string idea = positiveIdeas[ (int)(rand() % positiveIdeas.size()) ];
     return _( idea.c_str() );
   }
 

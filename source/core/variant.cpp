@@ -289,34 +289,34 @@ inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Im
     return *static_cast<const T *>(a->data.ptr) == *static_cast<const T *>(b->data.ptr);
 }
 
-static bool compare(const Variant2Impl *a, const Variant2Impl *b)
+/*static bool compare(const Variant2Impl *a, const Variant2Impl *b)
 {
     switch(a->type) {
-    /*case Variant::List:
-        return *v_cast<VariantList>(a) == *v_cast<VariantList>(b);*/
-    /*case Variant::Map: 
-        {
-        const VariantMap *m1 = v_cast<VariantMap>(a);
-        const VariantMap *m2 = v_cast<VariantMap>(b);
-        if (m1->count() != m2->count())
-            return false;
-        VariantMap::ConstIterator it = m1->constBegin();
-        VariantMap::ConstIterator it2 = m2->constBegin();
-        while (it != m1->constEnd()) {
-            if (*it != *it2 || it.key() != it2.key())
-                return false;
-            ++it;
-            ++it2;
-        }
-        return true;
-    }*/
-        /*
-    case Variant::Hash:
-        return *v_cast<VariantHash>(a) == *v_cast<VariantHash>(b);*/
+    //case Variant::List:
+    //    return *v_cast<VariantList>(a) == *v_cast<VariantList>(b);
+    //case Variant::Map: 
+    //    {
+    //    const VariantMap *m1 = v_cast<VariantMap>(a);
+    //    const VariantMap *m2 = v_cast<VariantMap>(b);
+    //    if (m1->count() != m2->count())
+    //        return false;
+    //    VariantMap::ConstIterator it = m1->constBegin();
+    //    VariantMap::ConstIterator it2 = m2->constBegin();
+    //    while (it != m1->constEnd()) {
+    //        if (*it != *it2 || it.key() != it2.key())
+    //            return false;
+    //        ++it;
+    //        ++it2;
+    //    }
+    //   return true;
+    //}
+    // 
+    //case Variant::Hash:
+    //    return *v_cast<VariantHash>(a) == *v_cast<VariantHash>(b);
     case Variant::String:
-      return *v_cast<std::string>(a) == *v_cast<std::string>(b);
-    /*case Variant::NStringArray:
-        return *v_cast<StringList>(a) == *v_cast<StringList>(b);*/
+     return *v_cast<std::string>(a) == *v_cast<std::string>(b);
+    //case Variant::NStringArray:
+    //   return *v_cast<StringList>(a) == *v_cast<StringList>(b);
     case Variant::NSize: return *v_cast<Size>(a) == *v_cast<Size>(b);
     case Variant::NSizeF: return *v_cast<SizeF>(a) == *v_cast<SizeF>(b);
     case Variant::NRectI: return *v_cast<Rect>(a) == *v_cast<Rect>(b);
@@ -328,8 +328,8 @@ static bool compare(const Variant2Impl *a, const Variant2Impl *b)
     case Variant::NPoint: return *v_cast<Point>(a) == *v_cast<Point>(b);
     case Variant::NPointF: return *v_cast<PointF>(a) == *v_cast<PointF>(b);
     case Variant::NTilePos: return *v_cast<TilePos>(a) == *v_cast<TilePos>(b);
-/*    case Variant::Url:
-        return *v_cast<Url>(a) == *v_cast<Url>(b);*/
+//    case Variant::Url:
+//        return *v_cast<Url>(a) == *v_cast<Url>(b);
     case Variant::Char:
       return a->data.c == b->data.c;
     case Variant::Int:
@@ -346,10 +346,10 @@ static bool compare(const Variant2Impl *a, const Variant2Impl *b)
         return a->data.d == b->data.d;
     case Variant::Float:
         return a->data.f == b->data.f;
-/*    case Variant::Date:
-        return *v_cast<Date>(a) == *v_cast<Date>(b);
-    case Variant::Time:
-        return *v_cast<Time>(a) == *v_cast<Time>(b); */
+//    case Variant::Date:
+//        return *v_cast<Date>(a) == *v_cast<Date>(b);
+//    case Variant::Time:
+//        return *v_cast<Time>(a) == *v_cast<Time>(b); 
     case Variant::NDateTime: return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
     case Variant::NByteArray: return *v_cast<ByteArray>(a) == *v_cast<ByteArray>(b);
     case Variant::Invalid: return true;
@@ -369,7 +369,7 @@ static bool compare(const Variant2Impl *a, const Variant2Impl *b)
         return true;
 
     return a_ptr == b_ptr;
-}
+}*/
 
 /*!
   \internal
@@ -559,7 +559,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
             case Variant::NStringArray:
               if( v_cast<StringArray>(d)->size() == 1)
               {
-                *str = v_cast<StringArray>(d)->at(0);
+                *str = (*v_cast<StringArray>(d))[0];
               }
             break;
             /*case Variant::Url:
@@ -991,7 +991,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
             VariantList *lst = static_cast<VariantList *>(result);
             const StringArray *slist = v_cast<StringArray>(d);
             for (unsigned int i = 0; i < slist->size(); ++i)
-                lst->push_back( Variant( slist->at(i) ) );
+                lst->push_back( Variant( (*slist)[i] ) );
         } 
         else if( Variant::typeToName( Variant::Type( d->type ) ) == "list<Variant>" )
         {

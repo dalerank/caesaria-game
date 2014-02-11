@@ -89,8 +89,8 @@ Signal1<int>& GameSpeedOptionsWindow::onScrollSpeedChange()
 
 void GameSpeedOptionsWindow::_update()
 {
-  Label* lbSpeed = findChild<Label*>( "lbGameSpeedPercent", true );
-  Label* lbScroll = findChild<Label*>( "lbScrollSpeedPercent", true );
+  Label* lbSpeed = findChildA<Label*>( "lbGameSpeedPercent", true, this );
+  Label* lbScroll = findChildA<Label*>( "lbScrollSpeedPercent", true, this );
 
   if( lbSpeed ) { lbSpeed->setText( StringHelper::format( 0xff, "%d%%", _d->speedValue ) ); }
   if( lbScroll ) { lbScroll->setText( StringHelper::format( 0xff, "%d%%", _d->scrollValue ) ); }

@@ -140,13 +140,13 @@ void Corpse::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->rcGroup = stream.at( "rc" ).toString();
-  _d->startIndex = stream.at( "start" );
-  _d->currentIndex = stream.at( "index" );
-  _d->stopIndex = stream.at( "stop" );
-  _d->time = stream.at( "time" );
-  _d->delay = stream.at( "delay" );
-  _d->loop = stream.at( "loop" );
+  _d->rcGroup = stream.get( "rc" ).toString();
+  _d->startIndex = stream.get( "start" );
+  _d->currentIndex = stream.get( "index" );
+  _d->stopIndex = stream.get( "stop" );
+  _d->time = stream.get( "time" );
+  _d->delay = stream.get( "delay" );
+  _d->loop = stream.get( "loop" );
 
   _d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
 }

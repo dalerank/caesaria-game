@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "infobox_legion.hpp"
+#include "walker/patrolpoint.hpp"
 #include "infobox_citizen_mgr.hpp"
 #include "game/infoboxmanager.hpp"
 #include "city/helper.hpp"
-#include "walker/walker.hpp"
 #include "gfx/tilemap.hpp"
 #include "infobox_citizen.hpp"
 #include "infobox_land.hpp"
-#include "infobox_legion.hpp"
-#include "walker/patrolpoint.hpp"
+
 
 using namespace  constants;
 

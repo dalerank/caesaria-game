@@ -50,4 +50,3 @@ const char* ResourceGroup::empirebits      = "empire_bits";
 const char* ResourceGroup::empirepnls      = "empire_panels";
 const char* ResourceGroup::wall            = "land2a";
 const char* ResourceGroup::celts            = "celts";
-

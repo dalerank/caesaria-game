@@ -88,12 +88,12 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
   // create the title
   Widget::setupUI( GameSettings::rcpath( "/gui/infobox.gui" ) );
 
-  _d->lbTitle = findChild<Label*>( "lbTitle", true );
-  _d->btnExit = findChild<TexturedButton*>( "btnExit", true );
-  _d->btnHelp = findChild<TexturedButton*>( "btnHelp", true );
-  _d->lbBackground = findChild<Label*>( "lbBackground", true );
-  _d->lbBlackFrame = findChild<Label*>( "lbBlackFrame", true );
-  _d->lbText = findChild<Label*>( "lbText", true );
+  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
+  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
+  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
+  _d->lbBackground = findChildA<Label*>( "lbBackground", true, this );
+  _d->lbBlackFrame = findChildA<Label*>( "lbBlackFrame", true, this );
+  _d->lbText = findChildA<Label*>( "lbText", true, this );
 
   if( _d->btnExit ) { _d->btnExit->setPosition( Point( getWidth() - 39, getHeight() - 39 ) ); }
   if( _d->btnHelp ) { _d->btnHelp->setPosition( Point( 14, getHeight() - 39 ) ); }
@@ -198,6 +198,7 @@ void InfoboxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
   _d->lbBlackFrame->setText( text );
   _d->lbBlackFrame->setTextOffset( Point( pos.x() + 30, 0 ) );
 }
+
 
 InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )

@@ -13,15 +13,14 @@ int main(int argc, char* argv[])
   vfs::Directory workdir = vfs::Path( argv[0] ).directory();
   Logger::warning( "Working directory is " + workdir.toString() );
 
-  GameSettings::getInstance().setwdir( workdir );
+  GameSettings::getInstance().setwdir( workdir.toString() );
 
   for (int i = 0; i < (argc - 1); i++)
   {
     if( !strcmp( argv[i], "-R" ) )
     {
-      vfs::Directory rpath( std::string( argv[i+1] ) );
-      Logger::warning( "Setting workdir to " + rpath.toString() );
-      GameSettings::getInstance().setwdir( rpath );
+      Logger::warning( "Setting workdir to %s", argv[i+1] );
+      GameSettings::getInstance().setwdir( argv[i+1] );
       i++;
     }
 

@@ -46,7 +46,7 @@ public:
   {
     if( isInside( p ) )
     {
-      return EmTileGrid::at(p.j()).at(p.i());
+      return (*this)[p.j()][p.i()];
     }
 
     //Logger::warning( "Need inside point current=[%d, %d]", i, j );
@@ -66,7 +66,7 @@ public:
     EmTileGrid::resize( size.getHeight() );
     for( int j = 0; j < size.getHeight(); ++j )
     {
-      EmTileGrid::at( j ).resize( size.getWidth() );
+      (*this)[j].resize( size.getWidth() );
 
       for (int i = 0; i < size.getWidth(); ++i)
       {

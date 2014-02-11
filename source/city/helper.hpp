@@ -53,7 +53,6 @@ public:
     return ret;
   }
 
-
   template< class T >
   SmartPtr< T > find( const TileOverlay::Type type, const TilePos& pos )
   {   
@@ -64,7 +63,7 @@ public:
     }
 
     return SmartPtr<T>();
-  }
+  }  
 
   template< class T >
   std::list< SmartPtr< T > > find( constants::walker::Type type,

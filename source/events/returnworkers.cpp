@@ -49,7 +49,7 @@ void ReturnWorkers::exec(Game& game)
       {
         int lastWorkersCount = house->getServiceValue( Service::recruter );
         house->appendServiceValue( Service::recruter, _workers );
-        int currentWorkers = house->getServiceValue( Service::recruter );
+        int currentWorkers = (int)house->getServiceValue( Service::recruter );
 
         int mayAppend = math::clamp<int>( _workers, 0, currentWorkers - lastWorkersCount );
         _workers -= mayAppend;

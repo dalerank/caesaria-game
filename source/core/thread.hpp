@@ -20,7 +20,7 @@
 #include "smartptr.hpp"
 #include "referencecounted.hpp"
 
-#ifdef CAESARIA_PLATFORM_LINUX
+#if defined(CAESARIA_PLATFORM_LINUX)
   #include <stdio.h>
   #include <malloc.h>
   #include <memory.h>

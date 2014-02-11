@@ -86,6 +86,8 @@ public:
     text = descr;
     isDrawWorkers = drawWorkers;
   }
+  
+  virtual ~ServiceBaseInfoboxCreator() {}
 
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
@@ -117,6 +119,8 @@ public:
     title = caption;
     text = desc;
   }
+  
+  virtual ~InfoBoxBasicCreator() {}
 
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {

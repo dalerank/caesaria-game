@@ -245,9 +245,9 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
   _d->addButton( this, startPos, Impl::prHealthAndEducation, _("##adve_health_education##") );
   _d->addButton( this, startPos, Impl::prAdministrationAndReligion, _("##adve_administration_religion##") );
 
-  _d->lbSalary = findChild<Label*>( "lbSalaries", true );
-  _d->lbWorkersState = findChild<Label*>( "lbWorkersState", true );
-  _d->lbYearlyWages = findChild<Label*>( "lbYearlyWages", true );
+  _d->lbSalary = findChildA<Label*>( "lbSalaries", true, this );
+  _d->lbWorkersState = findChildA<Label*>( "lbWorkersState", true, this );
+  _d->lbYearlyWages = findChildA<Label*>( "lbYearlyWages", true, this );
 
   _d->updateSalaryLabel();
   _d->updateWorkersState();
