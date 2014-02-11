@@ -53,7 +53,7 @@ void Reservoir::destroy()
   Tilemap& tmap = _getCity()->getTilemap();
   TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
 
-  foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_RESERVOIR ); }
+  foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_RESERVOIR, 20 ); }
 
   // update adjacent aqueducts
   Construction::destroy();
@@ -331,7 +331,7 @@ void Fountain::destroy()
   Tilemap& tmap = _getCity()->getTilemap();
   TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
 
-  foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_FONTAIN ); }
+  foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_FONTAIN, 20 ); }
 }
 
 void Fountain::load(const VariantMap& stream)

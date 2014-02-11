@@ -270,11 +270,11 @@ void ScreenGame::_resolveSwitchMap() { _d->result = ScreenGame::loadGame;  stop(
 
 void ScreenGame::Impl::showEmpireMapWindow()
 {
-  events::GameEventPtr e = events::ShowEmpireMapWindow::create( true );
-  e->dispatch();
+  events::GameEventPtr e;
+  if( game->getEmpire()->isAvailable() ) { e = events::ShowEmpireMapWindow::create( true ); }
+  else {  e = events::WarningMessageEvent::create( "##not_available##" ); }
 
-  e = events::ShowAdvisorWindow::create( false, ADV_TRADING );
-  e->dispatch();
+  if( e.isValid() ) e->dispatch();
 }
 
 void ScreenGame::draw()
@@ -454,6 +454,12 @@ void ScreenGame::_resolveExitGame(){  _d->result = ScreenGame::quitGame;  stop()
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
 {  
+  if( !game->getEmpire()->isAvailable() )
+  {
+    events::GameEventPtr e = events::WarningMessageEvent::create( "##not_available##" );
+    e->dispatch();
+  }
+
   List<AdvisorsWindow*> wndList = game->getGui()->getRootWidget()->findChildren<AdvisorsWindow*>();
 
   if( wndList.size() == 1 )

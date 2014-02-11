@@ -90,15 +90,8 @@ oc3_signals public:
   Signal0<> onMaximizeSignal;
 };
 
-Signal1< int >& Menu::onCreateConstruction()
-{
-  return _d->onCreateConstructionSignal;
-}
-
-Signal0<>& Menu::onRemoveTool()
-{
-  return _d->onRemoveToolSignal;
-}
+Signal1< int >& Menu::onCreateConstruction(){  return _d->onCreateConstructionSignal;}
+Signal0<>& Menu::onRemoveTool(){  return _d->onRemoveToolSignal;}
 
 class MenuButton : public TexturedButton
 {

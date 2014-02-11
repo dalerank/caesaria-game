@@ -36,6 +36,7 @@ public:
   CityList cities;
   Trading trading;
   EmpireMap emap;
+  bool available;
 
   std::string playerCityName;
   int workerSalary;
@@ -45,6 +46,7 @@ Empire::Empire() : _d( new Impl )
 {
   _d->trading.init( this );
   _d->workerSalary = 30;
+  _d->available = true;
 }
 
 CityList Empire::getCities() const
@@ -140,6 +142,7 @@ void Empire::save( VariantMap& stream ) const
 
   stream[ "cities" ] = vm_cities;
   stream[ "trade" ] = _d->trading.save();
+  stream[ "enabled" ] = _d->available;
 }
 
 void Empire::load( const VariantMap& stream )
@@ -156,6 +159,7 @@ void Empire::load( const VariantMap& stream )
   }
 
   _d->trading.load( stream.get( "trade").toMap() );
+  _d->available = (bool)stream.get( "enabled", true );
 }
 
 void Empire::setCitiesAvailable(bool value)
@@ -164,6 +168,7 @@ void Empire::setCitiesAvailable(bool value)
 }
 
 unsigned int Empire::getWorkerSalary() const {  return _d->workerSalary; }
+bool Empire::isAvailable() const{  return _d->available; }
 
 void Empire::createTradeRoute(std::string start, std::string stop )
 {

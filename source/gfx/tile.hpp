@@ -1,20 +1,20 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_TILE_H_INCLUDED__
-#define __OPENCAESAR3_TILE_H_INCLUDED__
+#ifndef __CAESARIA_TILE_H_INCLUDED__
+#define __CAESARIA_TILE_H_INCLUDED__
 
 #include "core/position.hpp"
 #include "gfx/animation.hpp"
@@ -99,9 +99,9 @@ public:
   unsigned int getOriginalImgId() const;
   void setOriginalImgId( unsigned short int id );
 
-  void fillWaterService( const WaterService type );
-  void decreaseWaterService( const WaterService type );
-  int getWaterService( const WaterService type ) const;
+  void fillWaterService( WaterService type, int value=1 );
+  void decreaseWaterService( WaterService type, int value=1);
+  int getWaterService( WaterService type ) const;
 
 private:
   TilePos _pos; // coordinates of the tile
@@ -124,4 +124,4 @@ public:
   static Tile& getInvalid();
 };
 
-#endif //__OPENCAESAR3_TILE_H_INCLUDED__
+#endif //__CAESARIA_TILE_H_INCLUDED__

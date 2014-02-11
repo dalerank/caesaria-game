@@ -22,8 +22,11 @@
                   "@img=picture2_00002.png" ]
   }
 	
-  empire : {}
-  		
+  empire :
+  {
+    enabled : false
+  }
+
   events :
   {
     "tutorial#random_fire" : {
