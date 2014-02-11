@@ -36,18 +36,28 @@ class Pathfinder::Impl
 public:  
   TilePossibleCondition condition;
 
-  class Grid : public std::vector< APoints >
+  class Grid : std::vector< AStarPoint* >
   {
   public:
+    inline unsigned int hash( const TilePos& pos ) { return pos.j() * _size.getWidth() + pos.i(); }
+
     AStarPoint* operator[](const TilePos& pos )
     {
-      return at( pos.i() ).at( pos.j() );
+      return data()[ hash( pos ) ];
     }
 
-    APoints& operator[]( unsigned int row )
+    void reset( int width, int height )
     {
-      return at( row );
+      _size = Size( width, height );
+      resize( _size.getArea() );
     }
+
+    void init( Tile* tile )
+    {
+      data()[ hash( tile->pos() ) ] = new AStarPoint( tile );
+    }
+
+    Size _size;
   };
 
   Grid grid;
@@ -71,7 +81,7 @@ public:
 
   bool isValid( const TilePos& pos )
   {
-    return ( pos.i() >= 0 && pos.j() >= 0 && pos.i() < (int)grid.size() && pos.j() < (int)grid[pos.i()].size() );
+    return ( pos.i() >= 0 && pos.j() >= 0 && pos.i() < grid._size.getWidth() && pos.j() < grid._size.getHeight() );
   }
 
   bool isWalkable( const TilePos& pos )
@@ -101,16 +111,12 @@ void Pathfinder::update( const Tilemap& tilemap )
 {
   _d->tilemap = const_cast< Tilemap* >( &tilemap );
 
-  _d->grid.resize( tilemap.getSize() );
-  for( int k=0; k < tilemap.getSize(); k++)
-  {
-    _d->grid[ k ].resize( tilemap.getSize());
-  }
+  _d->grid.reset( tilemap.getSize(), tilemap.getSize() );
 
   TilesArray tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
   foreach( tile, tiles )
   {
-    _d->grid[ (*tile)->i() ][ (*tile)->j() ] = new AStarPoint( *tile );
+    _d->grid.init( *tile );
   }
 }
 

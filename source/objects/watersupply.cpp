@@ -43,7 +43,8 @@ public:
   bool lastWaterState;
   bool isRoad;
   bool alsoResolved;
-  int intervalUpdate;
+  int serviceTimer;
+  int produceTimer;
   std::string errorStr;
 };
 
@@ -61,7 +62,8 @@ void Reservoir::destroy()
 
 Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
 {
-  _d->intervalUpdate = GameDate::getTickInMonth() / 10;
+  _d->serviceTimer = GameDate::getTickInMonth() / 4;
+  _d->produceTimer = GameDate::getTickInMonth() / 15;
   setPicture( ResourceGroup::waterbuildings, 1 );
   
   // utilitya 34      - empty reservoir
@@ -123,7 +125,7 @@ void Reservoir::timeStep(const unsigned long time)
   }
 
   //filled area, that reservoir present
-  if( time % _d->intervalUpdate == 1 )
+  if( time % _d->serviceTimer == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
     TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
@@ -132,7 +134,7 @@ void Reservoir::timeStep(const unsigned long time)
   }
 
   //add water to all consumer
-  if( time % _d->intervalUpdate == 1 )
+  if( time % _d->produceTimer == 1 )
   {
     const TilePos offsets[4] = { TilePos( -1, 1), TilePos( 1, 3 ), TilePos( 3, 1), TilePos( 1, -1) };  
     _produceWater(offsets, 4);
