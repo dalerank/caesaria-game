@@ -19,8 +19,9 @@ int main(int argc, char* argv[])
   {
     if( !strcmp( argv[i], "-R" ) )
     {
-      Logger::warning( "Setting workdir to %s", argv[i+1] );
-      GameSettings::getInstance().setwdir( argv[i+1] );
+      const char* opts = argv[i+1];
+      Logger::warning( "Setting workdir to %s", opts  );
+      GameSettings::getInstance().setwdir( std::string( opts, strlen( opts ) ) );
       i++;
     }
 

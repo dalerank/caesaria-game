@@ -53,6 +53,7 @@
 #include "tilemap_camera.hpp"
 #include "layereducation.hpp"
 #include "city/city.hpp"
+#include "layertroubles.hpp"
 
 using namespace constants;
 
@@ -113,6 +114,7 @@ void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
   addLayer( LayerEducation::create( _d->camera, city, citylayer::school ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::library ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::academy ) );
+  addLayer( LayerTroubles::create( _d->camera, city ) );
 
   _d->setLayer( citylayer::simple );
 }
