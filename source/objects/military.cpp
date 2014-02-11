@@ -25,6 +25,7 @@
 #include "core/logger.hpp"
 #include "events/event.hpp"
 #include "walker/patrolpoint.hpp"
+#include "barracks.hpp"
 
 using namespace constants;
 
@@ -53,6 +54,14 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
   _setPatrolPoint( PatrolPoint::create( city, this,
                                         ResourceGroup::sprites, 21, 8,
                                         pos + TilePos( 3, 3 ) ) );
+
+  CityHelper helper( city );
+  BarracksList barracks = helper.find<Barracks>( building::barracks );
+
+  if( barracks.empty() )
+  {
+    _setError( "##need_barracks_for_work##" );
+  }
 }
 
 void FortLegionnaire::_readyNewSoldier()

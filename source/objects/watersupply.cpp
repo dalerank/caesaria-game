@@ -25,7 +25,6 @@
 #include "walker/serviceman.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
-#include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
@@ -44,6 +43,7 @@ public:
   bool lastWaterState;
   bool isRoad;
   bool alsoResolved;
+  int intervalUpdate;
   std::string errorStr;
 };
 
@@ -61,6 +61,7 @@ void Reservoir::destroy()
 
 Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
 {
+  _d->intervalUpdate = GameDate::getTickInMonth() / 10;
   setPicture( ResourceGroup::waterbuildings, 1 );
   
   // utilitya 34      - empty reservoir
@@ -75,9 +76,7 @@ Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
   //_fgPictures[0]=;
 }
 
-Reservoir::~Reservoir()
-{
-}
+Reservoir::~Reservoir(){}
 
 void Reservoir::build(PlayerCityPtr city, const TilePos& pos )
 {
@@ -86,9 +85,7 @@ void Reservoir::build(PlayerCityPtr city, const TilePos& pos )
   setPicture( ResourceGroup::waterbuildings, 1 );
   _isWaterSource = _isNearWater( city, pos );
   
-  //updateAqueducts();
-  
-  // update adjacent aqueducts
+  _setError( _isWaterSource ? "" : "##need_connect_to_other_reservoir##");
 }
 
 bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
@@ -126,7 +123,7 @@ void Reservoir::timeStep(const unsigned long time)
   }
 
   //filled area, that reservoir present
-  if( time % 22 == 1 )
+  if( time % _d->intervalUpdate == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
     TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
@@ -135,7 +132,7 @@ void Reservoir::timeStep(const unsigned long time)
   }
 
   //add water to all consumer
-  if( time % 11 == 1 )
+  if( time % _d->intervalUpdate == 1 )
   {
     const TilePos offsets[4] = { TilePos( -1, 1), TilePos( 1, 3 ), TilePos( 3, 1), TilePos( 1, -1) };  
     _produceWater(offsets, 4);
@@ -154,15 +151,10 @@ bool Reservoir::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& arou
   bool nearWater = _isNearWater( city, pos );
   const_cast< Reservoir* >( this )->setPicture( ResourceGroup::waterbuildings, nearWater ? 2 : 1  );
 
-  const_cast< Reservoir* >( this )->_setError( nearWater ? "" : _("##need_connect_to_other_reservoir##"));
-
   return ret;
 }
 
-bool Reservoir::isNeedRoadAccess() const
-{
-  return false;
-}
+bool Reservoir::isNeedRoadAccess() const{  return false; }
 
 WaterSource::WaterSource(const Type type, const Size& size )
   : Construction( type, size ), _d( new Impl )
@@ -172,9 +164,7 @@ WaterSource::WaterSource(const Type type, const Size& size )
   _d->lastWaterState = false;
 }
 
-WaterSource::~WaterSource()
-{
-}
+WaterSource::~WaterSource(){}
 
 void WaterSource::addWater( const WaterSource& source )
 {
@@ -183,10 +173,7 @@ void WaterSource::addWater( const WaterSource& source )
   _d->sourcesMap[ sourceId ] = math::clamp( _d->sourcesMap[ sourceId ]+1, 0, 4 );
 }
 
-bool WaterSource::haveWater() const
-{
-  return _d->water > 0;
-} 
+bool WaterSource::haveWater() const{  return _d->water > 0;} 
 
 void WaterSource::timeStep( const unsigned long time )
 {

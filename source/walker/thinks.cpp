@@ -47,6 +47,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
     troubles.push_back( "##" + walkerTypename + "_so_hungry##" );
     troubles.push_back( "##citizen_so_hungry##" );
     troubles.push_back( "##citizen_so_hungry2##" );
+    troubles.push_back( "##citizen_so_hungry3##" );
   }
 
   if( params.godsMood < 3 )
@@ -69,6 +70,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
   if( params.entertainment < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_low_entertainment##" );
+    troubles.push_back( "##citizen_low_entertainment##" );
   }
   else if( params.entertainment < 20 )
   {
@@ -99,6 +101,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
   if( params.payDiff < 0 )
   {
     troubles.push_back( "##" + walkerTypename + "_low_salary##" );
+    troubles.push_back( "##citizen_low_salary##" );
   }
 
   if( !troubles.empty() )
