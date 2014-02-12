@@ -196,7 +196,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
     // reserve some goods from that warehouse/granary
     int qty = math::clamp( needQty, 0, max_qty );
     reservId = res->getGoodStore().reserveRetrieval( what, qty, GameDate::current() );
-    return res->getTilePos();
+    return res->pos();
   }
   else
   {
@@ -245,7 +245,7 @@ void CartSupplier::send2City( BuildingPtr building, Good::Type what, const int q
 {
   _d->stock.setType( what );
   _d->stock.setCapacity( qty );
-  _d->baseBuildingPos = building->getTilePos();
+  _d->baseBuildingPos = building->pos();
 
   computeWalkerDestination( building, what, qty );
 

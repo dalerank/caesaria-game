@@ -50,7 +50,7 @@ void FishingBoat::save( VariantMap& stream ) const
   stream[ "destination" ] = _d->destination;
   stream[ "stock" ] = _d->stock.save();
   stream[ "mode" ] = (int)_d->mode;
-  stream[ "base" ] = _d->base.isValid() ? _d->base->getTilePos() : TilePos( -1, -1 );
+  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
 }
 
 void FishingBoat::load( const VariantMap& stream )

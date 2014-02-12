@@ -42,19 +42,23 @@ public:
 
   virtual bool canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const;  // returns true if it can be built there
   virtual std::string getError() const;
+  virtual std::string getTrouble() const;
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void burn();
   virtual void collapse();
+
   virtual bool isNeedRoadAccess() const;
   virtual TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
+  virtual TilesArray getEnterArea() const;
+
   virtual Desirability getDesirability() const;
   virtual bool canDestroy() const;
   virtual void destroy();
   virtual void updateState( Param param, double value, bool relative=true );
   virtual double getState( Param param ) const;
-  virtual TilesArray getEnterArea() const;
+
   virtual void timeStep(const unsigned long time);
   virtual const Picture& getPicture() const;
   virtual const Picture& getPicture( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const;

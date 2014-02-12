@@ -63,6 +63,7 @@ enum Type{
   scholar,
   librarian,
   teacher,
+  locust,
   all = 0xff,
   any = all
 };

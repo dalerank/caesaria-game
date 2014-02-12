@@ -300,7 +300,7 @@ void ServiceWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "service" ] = Variant( ServiceHelper::getName( _d->service ) );
-  stream[ "base" ] = _d->base->getTilePos();
+  stream[ "base" ] = _d->base->pos();
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "reachDistance" ] = _d->reachDistance;
 }

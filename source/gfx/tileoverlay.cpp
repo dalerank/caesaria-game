@@ -165,7 +165,7 @@ bool TileOverlay::isWalkable() const{  return false;}
 bool TileOverlay::isDestructible() const { return true; }
 bool TileOverlay::isFlat() const{  return false;}
 
-TilePos TileOverlay::getTilePos() const
+TilePos TileOverlay::pos() const
 {
   if( !_d->masterTile )
   {

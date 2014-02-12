@@ -230,7 +230,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
 
   Size size = house->getSize();
   TilePos offset( size.getWidth(), size.getHeight() );
-  TilePos housePos = house->getTilePos();
+  TilePos housePos = house->pos();
   HouseList houses = helper.find<House>( constants::building::house, housePos - offset, housePos + offset );
 
   int ret = 0;
@@ -558,9 +558,9 @@ HouseSpecification::~HouseSpecification()
 
 HouseSpecification::HouseSpecification() : _d( new Impl )
 {
-  _d->srvcInterval = GameDate::getTickInMonth() / 16;
-  _d->foodInterval = GameDate::getTickInMonth();
-  _d->goodInterval = GameDate::getTickInMonth() / 2;
+  _d->srvcInterval = GameDate::ticksInMonth() / 16;
+  _d->foodInterval = GameDate::ticksInMonth();
+  _d->goodInterval = GameDate::ticksInMonth() / 2;
 }
 
 HouseSpecification::HouseSpecification( const HouseSpecification& other ) : _d( new Impl )
@@ -577,7 +577,7 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 {
   PlayerCityPtr city = house->_getCity();
 
-  TilesArray area = city->getTilemap().getArea( house->getTilePos() - TilePos( 2, 2 ), house->getSize() + Size( 4 ) );
+  TilesArray area = city->getTilemap().getArea( house->pos() - TilePos( 2, 2 ), house->getSize() + Size( 4 ) );
 
   float middleDesirbl = (float)area.front()->getDesirability();
 

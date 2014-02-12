@@ -116,7 +116,7 @@ const Tile& CoastalFactory::getLandingTile() const
   default: break;
   }
 
-  return tmap.at( getTilePos() + offset );
+  return tmap.at( pos() + offset );
 }
 
 CoastalFactory::~CoastalFactory()

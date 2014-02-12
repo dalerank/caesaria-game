@@ -207,8 +207,8 @@ void TraineeWalker::_reachedPathway()
 void TraineeWalker::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "originBldPos" ] = _d->base->getTilePos();
-  stream[ "destBldPos" ] = _d->destination->getTilePos();
+  stream[ "originBldPos" ] = _d->base->pos();
+  stream[ "destBldPos" ] = _d->destination->pos();
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "traineeType" ] = getType();
   stream[ "type" ] = (int)walker::trainee;

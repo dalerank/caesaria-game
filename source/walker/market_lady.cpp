@@ -105,7 +105,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
     qty = std::min(qty, basket.capacity( what ) - basket.getQty( what ));
     // std::cout << "MarketLady reserves from warehouse, qty=" << qty << std::endl;
     reservId = res->getGoodStore().reserveRetrieval( what, qty, GameDate::current() );
-    return res->getTilePos();
+    return res->pos();
   }
 
   return TilePos(-1, -1);
@@ -248,7 +248,7 @@ void MarketLady::_reachedPathway()
         }
       }
 
-      unsigned long delay = GameDate::getTickInMonth() / 4;
+      unsigned long delay = GameDate::ticksInMonth() / 4;
 
       while( _d->basket.getQty() > 100 )
       {
@@ -292,7 +292,7 @@ void MarketLady::save( VariantMap& stream ) const
   Walker::save( stream );
   stream[ "destBuildPos" ] = _d->destBuildingPos;
   stream[ "priorityGood" ] = (int)_d->priorityGood;
-  stream[ "marketPos" ] = _d->market->getTilePos();
+  stream[ "marketPos" ] = _d->market->pos();
 
   stream[ "basket" ] = _d->basket.save();
   stream[ "maxDistance" ] = _d->maxDistance;

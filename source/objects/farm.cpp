@@ -18,6 +18,7 @@
 #include "core/exception.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
+#include "city/helper.hpp"
 #include "good/goodhelper.hpp"
 #include "city/city.hpp"
 #include "core/stringhelper.hpp"
@@ -25,6 +26,7 @@
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "walker/locust.hpp"
 #include "core/foreach.hpp"
 
 using namespace constants;
@@ -194,6 +196,19 @@ Farm::~Farm()
 
 FarmWheat::FarmWheat() : Farm(Good::wheat, building::wheatFarm)
 {
+}
+
+std::string FarmWheat::getTrouble() const
+{
+  CityHelper helper( _getCity() );
+
+  LocustList lc = helper.find<Locust>( walker::locust, pos() );
+  if( !lc.empty() )
+  {
+    return "##trouble_farm_was_blighted_by_locust##";
+  }
+
+  return Factory::getTrouble();
 }
 
 FarmOlive::FarmOlive() : Farm(Good::olive, building::oliveFarm)

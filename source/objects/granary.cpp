@@ -115,7 +115,7 @@ void Granary::timeStep(const unsigned long time)
 
     _fgPicturesRef()[5] = _animationRef().getFrame();
 
-    if( time % (GameDate::getTickInMonth() / 2) == 1 && _d->goodStore.isDevastation() 
+    if( time % (GameDate::ticksInMonth() / 2) == 1 && _d->goodStore.isDevastation() 
         && (_d->goodStore.getQty() > 0) && getWalkers().empty() )
     {
       _tryDevastateGranary();

@@ -35,7 +35,7 @@ CityServicePtr RandomDamage::create( PlayerCityPtr city )
 
 void RandomDamage::update( const unsigned int time)
 {
-  if( time % GameDate::getTickInMonth() == 0 && !_isDeleted )
+  if( time % GameDate::ticksInMonth() == 0 && !_isDeleted )
   {
     int population = _city->getPopulation();
     if( population > _minPopulation && population < _maxPopulation )

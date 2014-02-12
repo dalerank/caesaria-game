@@ -66,24 +66,17 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class InfoBoxColosseum : public InfoboxSimple
-{
-public:
-  InfoBoxColosseum( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxColosseum();
-};
-
 class InfoboxBuilding : public InfoboxSimple
 {
 public:
    InfoboxBuilding( Widget* parent, const Tile& tile );
 };
 
-class InfoBoxText : public InfoboxSimple
+class InfoboxText : public InfoboxSimple
 {
 public:
-  InfoBoxText(Widget* parent, const std::string& title, const std::string& message );
-  virtual ~InfoBoxText();
+  InfoboxText(Widget* parent, const std::string& title, const std::string& message );
+  virtual ~InfoboxText();
 };
 
 }//end namespace gui

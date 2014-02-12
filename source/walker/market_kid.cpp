@@ -67,7 +67,7 @@ void MarketKid::send2City( MarketPtr destination )
 {
   if( destination.isValid() )
   {
-    _d->marketPos = destination->getTilePos();
+    _d->marketPos = destination->pos();
     _pathwayRef().rbegin();
     _centerTile();
     _getCity()->addWalker( this );

@@ -71,7 +71,7 @@ void BurningRuins::timeStep(const unsigned long time)
       for( int range=1; range < 3; range++ )
       {
         TilePos offset( range, range );
-        TilesArray tiles = tmap.getRectangle( getTilePos() - offset, getTilePos() + offset );
+        TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
 
         foreach( tile, tiles)
         {
@@ -100,7 +100,7 @@ void BurningRuins::destroy()
   p->drop();
   p->setInfo( getInfo() );
 
-  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), p.object() );
+  events::GameEventPtr event = events::BuildEvent::create( pos(), p.object() );
   event->dispatch();
 }
 
@@ -247,7 +247,7 @@ void PlagueRuins::destroy()
   p->drop();
   p->setInfo( getInfo() );
 
-  events::GameEventPtr event = events::BuildEvent::create( getTilePos(), p.object() );
+  events::GameEventPtr event = events::BuildEvent::create( pos(), p.object() );
   event->dispatch();
 }
 

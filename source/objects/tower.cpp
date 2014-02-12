@@ -102,8 +102,8 @@ void Tower::_rebuildWays()
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
     TilePos offset( range, range );
-    TilesArray tiles = _getCity()->getTilemap().getRectangle( getTilePos() - offset,
-                                                              getTilePos() + offset );
+    TilesArray tiles = _getCity()->getTilemap().getRectangle( pos() - offset,
+                                                              pos() + offset );
     foreach( tile, tiles )
     {
       bool patrolingWall;
@@ -183,7 +183,7 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
   PathwayList ret;
   foreach( wall, dest )
   {
-    Pathway tmp = PathwayHelper::create( start, (*wall)->getTilePos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+    Pathway tmp = PathwayHelper::create( start, (*wall)->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
     if( tmp.isValid() )
     {    
       ret.push_back( PathwayPtr( new Pathway( tmp ) ) );

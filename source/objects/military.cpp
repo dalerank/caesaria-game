@@ -135,7 +135,7 @@ void FortArea::setBase(FortPtr base)
 {
   if( base.isValid() )
   {
-    _d->basePos = base->getTilePos();
+    _d->basePos = base->pos();
   }
 }
 
@@ -214,7 +214,7 @@ void Fort::destroy()
 
   if( _d->area.isValid()  )
   {
-    events::GameEventPtr e = events::ClearLandEvent::create( _d->area->getTilePos() );
+    events::GameEventPtr e = events::ClearLandEvent::create( _d->area->pos() );
     e->dispatch();
     _d->area = 0;
   }
@@ -231,8 +231,8 @@ TilePos Fort::getFreeSlot() const
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
-    Logger::warning( "Not patrol point assign in fort [%d,%d]", getTilePos().i(), getTilePos().j() );
-    patrolPos = _d->area->getTilePos() + TilePos( 0, 3 );
+    Logger::warning( "Not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
+    patrolPos = _d->area->pos() + TilePos( 0, 3 );
   }
   else
   {

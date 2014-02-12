@@ -39,6 +39,7 @@ class Building : public Construction
 {
 public:
   Building(const Type type, const Size& size=Size(1) );
+  virtual ~Building();
   virtual void initTerrain(Tile& terrain);
 
   virtual void timeStep(const unsigned long time);
@@ -64,6 +65,9 @@ protected:
   std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
   TraineeMap _traineeMap;  // current level of trainees working in the building (0..200)
   std::set< constants::walker::Type > _reservedTrainees;  // a trainee is on the way
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 class SmallStatue : public Building

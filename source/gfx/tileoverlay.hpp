@@ -35,7 +35,7 @@ public:
   virtual ~TileOverlay();
 
   Tile& getTile() const;  // master tile, in case of multi-tile area
-  TilePos getTilePos() const;
+  TilePos pos() const;
   Size getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
   void setSize( const Size& size );
 

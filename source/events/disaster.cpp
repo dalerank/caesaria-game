@@ -75,7 +75,7 @@ void DisasterEvent::exec( Game& game )
     if( overlay.isValid() )
     {
       overlay->deleteLater();
-      rPos = overlay->getTilePos();
+      rPos = overlay->pos();
       size = overlay->getSize();
     }
 

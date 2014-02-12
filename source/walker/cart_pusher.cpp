@@ -390,9 +390,9 @@ void CartPusher::save( VariantMap& stream ) const
   Walker::save( stream );
   
   stream[ "stock" ] = _d->stock.save();
-  stream[ "producerPos" ] = _d->producerBuilding->getTilePos();
+  stream[ "producerPos" ] = _d->producerBuilding->pos();
   stream[ "consumerPos" ] = _d->consumerBuilding.isValid() 
-                                      ? _d->consumerBuilding->getTilePos()
+                                      ? _d->consumerBuilding->pos()
                                       : TilePos( -1, -1 );
 
   stream[ "maxDistance" ] = _d->maxDistance;

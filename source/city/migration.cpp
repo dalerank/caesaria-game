@@ -80,7 +80,7 @@ CityMigration::CityMigration( PlayerCityPtr city )
   _d->lastMonthMigration = 0;
   _d->lastMonthPopulation = 0;
   _d->lastUpdate = GameDate::current();
-  _d->updateTickInerval  = GameDate::getTickInMonth() / 2;
+  _d->updateTickInerval  = GameDate::ticksInMonth() / 2;
 }
 
 void CityMigration::update( const unsigned int time )

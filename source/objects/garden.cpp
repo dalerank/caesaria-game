@@ -51,18 +51,18 @@ bool Garden::isNeedRoadAccess() const
   return false;
 }
 
-void Garden::build(PlayerCityPtr city, const TilePos& pos )
+void Garden::build(PlayerCityPtr city, const TilePos& p )
 {
   // this is the same arrangement of garden tiles as existed in C3
   int theGrid[2][2] = {{113, 110}, {112, 111}};
 
-  Construction::build( city, pos );
-  setPicture( ResourceGroup::entertaiment, theGrid[pos.i() % 2][pos.j() % 2] );
+  Construction::build( city, p );
+  setPicture( ResourceGroup::entertaiment, theGrid[p.i() % 2][p.j() % 2] );
 
   if( getSize().getArea() == 1 )
   {
-    TilesArray tilesAround = city->getTilemap().getRectangle( getTilePos() - TilePos( 1, 1),
-                                                              getTilePos() + TilePos( 1, 1 ) );
+    TilesArray tilesAround = city->getTilemap().getRectangle( pos() - TilePos( 1, 1),
+                                                              pos() + TilePos( 1, 1 ) );
     foreach( tile, tilesAround )
     {
       GardenPtr garden = ptr_cast<Garden>( (*tile)->getOverlay() );
@@ -82,7 +82,7 @@ void Garden::load(const VariantMap& stream)
   //after loading size may change to 2
   if( getSize().getArea() > 1 )
   {
-    Construction::build( _getCity(), getTilePos() );
+    Construction::build( _getCity(), pos() );
   }
 }
 
@@ -103,7 +103,7 @@ std::string Garden::getSound() const
 
 void Garden::update()
 {
-  TilesArray nearTiles = _getCity()->getTilemap().getArea( getTilePos(), Size(2) );
+  TilesArray nearTiles = _getCity()->getTilemap().getArea( pos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( tile, nearTiles )
@@ -128,7 +128,7 @@ void Garden::update()
     CityHelper helper( _getCity() );
     helper.updateDesirability( this, false );
     setSize( 2 );
-    Construction::build( _getCity(), getTilePos() );
+    Construction::build( _getCity(), pos() );
     setPicture( ResourceGroup::entertaiment, 114 + rand() % 3 );
     helper.updateDesirability( this, true );
   }

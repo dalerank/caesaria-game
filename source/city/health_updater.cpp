@@ -47,7 +47,7 @@ CityServicePtr HealthUpdater::create( PlayerCityPtr city )
 
 void HealthUpdater::update( const unsigned int time)
 {
-  if( time % GameDate::getTickInMonth() == 0 )
+  if( time % GameDate::ticksInMonth() == 0 )
   {
     _d->isDeleted = (_d->endTime < GameDate::current());
 

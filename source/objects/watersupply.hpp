@@ -58,6 +58,7 @@ public:
   virtual void initTerrain(Tile& terrain);
   virtual void timeStep(const unsigned long time);
   virtual void destroy();
+  virtual std::string getTrouble() const;
 
 private:
   bool _isWaterSource;

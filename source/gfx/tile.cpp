@@ -22,7 +22,7 @@
 #include "game/gamedate.hpp"
 
 namespace {
-  int waterDecreaseInterval = GameDate::getTickInMonth() / 2;
+  int waterDecreaseInterval = GameDate::ticksInMonth() / 2;
 }
 
 void Tile::Terrain::reset()

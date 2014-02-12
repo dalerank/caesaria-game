@@ -30,10 +30,6 @@ public:
 
 private:
   LayerTroubles( TilemapCamera& camera, PlayerCityPtr city );
-
-  std::set<int> _flags;
-  std::set<int> _walkers;
-  int _type;
 };
 
 #endif //__CAESARIA_LAYER_TROUBLES_H_INCLUDED__

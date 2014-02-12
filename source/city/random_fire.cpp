@@ -46,7 +46,7 @@ CityServicePtr RandomFire::create( PlayerCityPtr city )
 
 void RandomFire::update( const unsigned int time)
 {
-  if( time % GameDate::getTickInMonth() == 0 && !_d->isDeleted )
+  if( time % GameDate::ticksInMonth() == 0 && !_d->isDeleted )
   {
     int population = _d->city->getPopulation();
     if( population > _d->minPopulation && population < _d->maxPopulation )

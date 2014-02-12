@@ -93,7 +93,7 @@ unsigned int Senate::getWalkerDistance() const {  return 26; }
 
 void Senate::timeStep(const unsigned long time)
 {
-  if( time % GameDate::getTickInMonth() == 0 )
+  if( time % GameDate::ticksInMonth() == 0 )
   {
     _updateUnemployers();
 

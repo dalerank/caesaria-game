@@ -113,7 +113,7 @@ void WorkingBuilding::destroy()
 
   if( getWorkersCount() > 0 )
   {
-    events::GameEventPtr e=events::ReturnWorkers::create( getTilePos(), getWorkersCount() );
+    events::GameEventPtr e=events::ReturnWorkers::create( pos(), getWorkersCount() );
     e->dispatch();
   }
 }

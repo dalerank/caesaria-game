@@ -55,7 +55,7 @@ CityServiceInfo::CityServiceInfo( PlayerCityPtr city )
 
 void CityServiceInfo::update( const unsigned int time )
 {
-  if( time % GameDate::getTickInMonth() != 1 )
+  if( time % GameDate::ticksInMonth() != 1 )
     return;
 
   if( GameDate::current().month() != _d->lastDate.month() )

@@ -159,7 +159,7 @@ void ClearLandEvent::exec( Game& game )
     if( overlay.isValid() )
     {
       size = overlay->getSize();
-      rPos = overlay->getTilePos();
+      rPos = overlay->pos();
       overlay->deleteLater();
     }
 
@@ -224,7 +224,7 @@ GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::stri
 
 void ShowInfoboxEvent::exec( Game& game )
 {
-  gui::InfoBoxText* msgWnd = new gui::InfoBoxText( game.getGui()->getRootWidget(), _title, _text );
+  gui::InfoboxText* msgWnd = new gui::InfoboxText( game.getGui()->getRootWidget(), _title, _text );
   msgWnd->show();
 }
 

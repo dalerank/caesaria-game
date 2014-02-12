@@ -23,6 +23,7 @@
 #include "events/disaster.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
+#include "core/stringhelper.hpp"
 
 class Construction::Impl
 {
@@ -57,6 +58,28 @@ bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& 
   return is_constructible;
 }
 
+std::string Construction::getTrouble() const
+{
+  if( isNeedRoadAccess() && getAccessRoads().empty() )
+  {
+    return "##trouble_need_road_access##";
+  }
+
+  int lvlTrouble = 0;
+  int damage = getState( Construction::fire );
+  int fire = getState( Construction::damage );
+
+  if( fire > 50 || damage > 50 )
+  {
+    const char* troubleName[] = { "some", "have", "most" };
+    lvlTrouble = std::max( fire, damage );
+    const char* typelvl = ( fire > damage ) ? "fire" : "damage";
+    return StringHelper::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)floor((lvlTrouble-50) / 25) ], typelvl );
+  }
+
+  return "";
+}
+
 std::string Construction::getError() const { return ""; }
 TilesArray Construction::getAccessRoads() const {   return _d->accessRoads; }
 bool Construction::canDestroy() const {  return true; }
@@ -86,8 +109,8 @@ void Construction::computeAccessRoads()
   int s = getSize().getWidth();
   for( int dst=1; dst <= getRoadAccessDistance(); dst++ )
   {
-    TilesArray rect = tilemap.getRectangle( getTilePos() + TilePos( -dst, -dst ),
-                                            getTilePos() + TilePos( s+dst-1, s+dst-1 ),
+    TilesArray rect = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
+                                            pos() + TilePos( s+dst-1, s+dst-1 ),
                                             !Tilemap::checkCorners );
     foreach( tile, rect )
     {
@@ -164,8 +187,8 @@ TilesArray Construction::getEnterArea() const
   TilesArray tiles;
 
   int s = getSize().getWidth();
-  TilesArray near = _getCity()->getTilemap().getRectangle( getTilePos() - TilePos(1, 1),
-                                                                  getTilePos() + TilePos(s, s),
+  TilesArray near = _getCity()->getTilemap().getRectangle( pos() - TilePos(1, 1),
+                                                                  pos() + TilePos(s, s),
                                                                   !Tilemap::checkCorners );
 
   foreach( it, near )

@@ -12,33 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "ability.hpp"
+#ifndef _CAESARIA_INFOBOX_COLLOSEUM_H_INCLUDE_
+#define _CAESARIA_INFOBOX_COLLOSEUM_H_INCLUDE_
 
-Illness::Illness(int strong, int delay)
+#include "info_box.hpp"
+
+namespace gui
 {
-  _strong = strong;
-  _time = 0;
-  _delay = delay;
-}
 
-AbilityPtr Illness::create(double strong, unsigned int delay)
+class InfoboxColosseum : public InfoboxSimple
 {
-  AbilityPtr ret( new Illness( strong, delay ) );
-  ret->drop();
+public:
+  InfoboxColosseum( Widget* parent, const Tile& tile );
+  virtual ~InfoboxColosseum();
+};
 
-  return ret;
-}
-
-void Illness::run(WalkerPtr parent, unsigned int time)
-{
-  if( _time >= _delay )
-  {
-    _time = 0;
-    parent->updateHealth( -_strong );
-  }
-
-  _time++;
-}
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_COLLOSEUM_H_INCLUDE_

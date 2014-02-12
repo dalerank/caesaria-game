@@ -315,7 +315,7 @@ void EnemySoldier::timeStep(const unsigned long time)
     {
       BuildingPtr b = buildings.front();
 
-      turn( b->getTilePos() );
+      turn( b->pos() );
       b->updateState( Construction::damage, 1 );
     }
     else

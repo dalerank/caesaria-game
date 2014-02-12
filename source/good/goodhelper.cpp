@@ -77,24 +77,24 @@ public:
 
   Impl() : EnumsHelper<Good::Type>(Good::none)
   {
-    append( Good::none, "none", _("None") );
-    append( Good::wheat, "wheat", _("Wheat") );
-    append( Good::fish, "fish", _("Fish") );
-    append( Good::meat, "meat", _("Meat") );
-    append( Good::fruit, "fruit", _("Fruits"));
-    append( Good::vegetable, "vegetable", _("Vegetables") );
-    append( Good::olive, "olive", _("Olives") );
-    append( Good::oil, "oil", _("Oil") );
-    append( Good::grape, "grape", _("Grape") );
-    append( Good::wine, "wine", _("Wine") );
-    append( Good::timber, "timber", _("Timber") );
-    append( Good::furniture, "furniture", _("Furniture") );
-    append( Good::clay, "clay", _("Clay") );
-    append( Good::pottery, "pottery", _("Pottery") );
-    append( Good::iron, "iron", _("Iron") );
-    append( Good::weapon, "weapon", _("Weapon") );
-    append( Good::marble, "marble", _("Marble") );
-    append( Good::denaries, "denaries", _("##Denaries##") );
+    append( Good::none, "none", _("##none##") );
+    append( Good::wheat, "wheat", _("##wheat##") );
+    append( Good::fish, "fish", _("##fish##") );
+    append( Good::meat, "meat", _("##meat##") );
+    append( Good::fruit, "fruit", _("##fruits##"));
+    append( Good::vegetable, "vegetable", _("##vegetables##") );
+    append( Good::olive, "olive", _("##olives##") );
+    append( Good::oil, "oil", _("##oil##") );
+    append( Good::grape, "grape", _("##grape##") );
+    append( Good::wine, "wine", _("##wine##") );
+    append( Good::timber, "timber", _("##timber##") );
+    append( Good::furniture, "furniture", _("##furniture##") );
+    append( Good::clay, "clay", _("##clay##") );
+    append( Good::pottery, "pottery", _("##pottery##") );
+    append( Good::iron, "iron", _("##iron##") );
+    append( Good::weapon, "weapon", _("##weapon##") );
+    append( Good::marble, "marble", _("##marble##") );
+    append( Good::denaries, "denaries", _("##denaries##") );
     append( Good::goodCount, "", "unknown" );
   }
 };

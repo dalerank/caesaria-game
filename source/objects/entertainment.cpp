@@ -20,7 +20,6 @@
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
 #include "training.hpp"
-#include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
@@ -86,18 +85,14 @@ void EntertainmentBuilding::deliverService()
     _animationRef().stop(); //have no actors for the show
   }
 
-  foreach( item, _traineeMap ) { item->second = math::clamp( item->second - decreaseLevel, 0, 100); }
+  foreach( item, _traineeMap )
+  {
+    item->second = math::clamp( item->second - decreaseLevel, 0, 100);
+  }
 }
 
-int EntertainmentBuilding::getVisitorsNumber() const
-{
-  return 0;
-}
-
-unsigned int EntertainmentBuilding::getWalkerDistance() const
-{
-  return 35;
-}
+int EntertainmentBuilding::getVisitorsNumber() const{  return 0;}
+unsigned int EntertainmentBuilding::getWalkerDistance() const {  return 35; }
 
 float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 {
@@ -107,10 +102,7 @@ float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
   return ServiceBuilding::evaluateTrainee( traineeType );
 }
 
-bool EntertainmentBuilding::isShow() const
-{
-  return true;
-}
+bool EntertainmentBuilding::isShow() const {  return true; }
 
 int EntertainmentBuilding::_getTraineeLevel()
 {
@@ -134,19 +126,12 @@ void Theater::build(PlayerCityPtr city, const TilePos& pos)
 
   if( actors.empty() )
   {
-    _setError( _("##need_actor_colony##") );
+    _setError( "##need_actor_colony##" );
   }
 }
 
-void Theater::timeStep(const unsigned long time)
-{
-  EntertainmentBuilding::timeStep( time );
-}
-
-int Theater::getVisitorsNumber() const
-{
-  return 500;
-}
+void Theater::timeStep(const unsigned long time) {  EntertainmentBuilding::timeStep( time );}
+int Theater::getVisitorsNumber() const {  return 500; }
 
 void Theater::deliverService()
 {
@@ -198,13 +183,32 @@ void Collosseum::build(PlayerCityPtr city, const TilePos& pos)
 
   if( glSchools.empty() )
   {
-    _setError( _("##need_gladiator_school##") );
+    _setError( "##need_gladiator_school##" );
   }
 
   if( lionsNs.empty() )
   {
-    _setError( _("##need_gladiator_school##") );
+    _setError( "##need_gladiator_school##" );
   }
+}
+
+std::string Collosseum::getTrouble() const
+{
+  std::string ret = EntertainmentBuilding::getTrouble();
+
+  if( !ret.empty() )
+    return ret;
+
+  bool lions = isShowLionBattles();
+  bool gladiators = isShowGladiatorBattles();
+  if( !(lions && gladiators))
+  {
+    return "##trouble_colloseum_no_shows##";
+  }
+
+  if( lions && gladiators )  { return "##trouble_colloseum_full_work##";  }
+  else if( lions ) { return "##colloseum_have_only_lions##"; }
+  else             { return "##trouble_colloseum_have_only_gladiatros##"; }
 }
 
 bool Collosseum::isNeedGladiators() const
@@ -215,7 +219,15 @@ bool Collosseum::isNeedGladiators() const
   return colloseums.empty();
 }
 
-//------------
+bool Collosseum::isShowGladiatorBattles() const
+{
+  return _traineeMap.at(walker::gladiator) > 0;
+}
+
+bool Collosseum::isShowLionBattles() const
+{
+  return _traineeMap.at(walker::lionTamer) > 0;
+}
 
 Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(5) )
 {
@@ -228,5 +240,3 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::
   _fgPicturesRef()[0] = logo;
   _fgPicturesRef()[1] = logo1;
 }
-
-//-----------

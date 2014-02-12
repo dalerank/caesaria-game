@@ -73,7 +73,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
   {
     if( (*it)->getType() == building::burningRuins )
     {
-      p = (*it)->getTilePos();
+      p = (*it)->pos();
       return true;
     }
   }
@@ -110,9 +110,9 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->getType() != building::burningRuins )
       continue;
 
-    if( building->getTilePos().distanceFrom( pos() ) < 1.5f )
+    if( building->pos().distanceFrom( pos() ) < 1.5f )
     {
-      turn( building->getTilePos() );
+      turn( building->pos() );
       _d->action = Impl::fightFire;
       _setAction( acFight );
       _setAnimation( gfx::prefectFightFire );
@@ -127,7 +127,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->getType() != building::burningRuins )
       continue;
 
-    Pathway tmp = PathwayHelper::create( pos(), building->getTilePos(), PathwayHelper::allTerrain );
+    Pathway tmp = PathwayHelper::create( pos(), building->pos(), PathwayHelper::allTerrain );
     if( tmp.isValid() )
     {
       _d->action = Impl::go2fire;
@@ -355,7 +355,7 @@ void Prefect::_centerTile()
     if( building.isValid() && building->getType() == building::burningRuins )
     {
       _d->action = Impl::fightFire;
-      _d->endPatrolPoint = building->getTilePos();
+      _d->endPatrolPoint = building->pos();
       _setAnimation( gfx::prefectFightFire );
       _setAction( acFight );
       setSpeed( 0.f );

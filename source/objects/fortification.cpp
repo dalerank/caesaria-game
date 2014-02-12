@@ -86,7 +86,7 @@ void Fortification::destroy()
 
   if( _getCity().isValid() )
   {
-    TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
     foreach( tile, area )
     {
       FortificationPtr f = ptr_cast<Fortification>( (*tile)->getOverlay() );
@@ -123,7 +123,7 @@ Point Fortification::getOffset(Tile& tile, const Point& subpos) const
   return _d->offset;
 }
 
-const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
+const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos p,
                                              const TilesArray& tmp) const
 {
   // find correct picture as for roads
@@ -131,7 +131,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (tmp.empty()) ? getTilePos() : pos;
+  const TilePos tile_pos = (tmp.empty()) ? pos() : p;
 
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::aqueduct, 121 );
@@ -182,14 +182,14 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
       int i = (*it)->i();
       int j = (*it)->j();
 
-      if( (pos + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
-      else if(i == pos.i() && j == (pos.j() - 1)) is_busy[south] = true;
-      else if(j == pos.j() && i == (pos.i() + 1)) is_busy[east] = true;
-      else if(j == pos.j() && i == (pos.i() - 1)) is_busy[west] = true;
-      else if((pos + TilePos(1, 1)) == rpos ) is_busy[northEast] = true;
-      else if((pos + TilePos(1, -1)) == rpos ) is_busy[southEast] = true;
-      else if((pos + TilePos(-1, -1)) == rpos ) is_busy[southWest] = true;
-      else if((pos + TilePos(-1, 1)) == rpos ) is_busy[northWest] = true;
+      if( (p + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
+      else if(i == p.i() && j == (p.j() - 1)) is_busy[south] = true;
+      else if(j == p.j() && i == (p.i() + 1)) is_busy[east] = true;
+      else if(j == p.j() && i == (p.i() - 1)) is_busy[west] = true;
+      else if((p + TilePos(1, 1)) == rpos ) is_busy[northEast] = true;
+      else if((p + TilePos(1, -1)) == rpos ) is_busy[southEast] = true;
+      else if((p + TilePos(-1, -1)) == rpos ) is_busy[southWest] = true;
+      else if((p + TilePos(-1, 1)) == rpos ) is_busy[northWest] = true;
     }
   }
 
@@ -395,16 +395,16 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos pos,
   }
 
   _d->isTowerEnter = false;
-  bool towerNorth = _d->isFortification( city, pos + TilePos( 0, 1 ) );
-  bool towerWest = _d->isFortification( city, pos + TilePos( -1, 0 ) );
-  bool towerEast = _d->isFortification( city, pos + TilePos( 1, 0 ) );
+  bool towerNorth = _d->isFortification( city, p + TilePos( 0, 1 ) );
+  bool towerWest = _d->isFortification( city, p + TilePos( -1, 0 ) );
+  bool towerEast = _d->isFortification( city, p + TilePos( 1, 0 ) );
 
   switch( index )
   {
   case 175:
     {
-      towerNorth = _d->isFortification( city, pos + TilePos( 0, 1 ), true );
-      towerWest = _d->isFortification( city, pos + TilePos( -1, 0 ), true );
+      towerNorth = _d->isFortification( city, p + TilePos( 0, 1 ), true );
+      towerWest = _d->isFortification( city, p + TilePos( -1, 0 ), true );
       _d->isTowerEnter = (towerNorth || towerWest);
       if( towerNorth ) { index = 181; }
       else if( towerWest ) { index = 182; }
@@ -440,7 +440,7 @@ int Fortification::getDirection() const
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
-  setPicture( getPicture( city, getTilePos(), TilesArray() ) );
+  setPicture( getPicture( city, pos(), TilesArray() ) );
 }
 
 bool Fortification::isTowerEnter() const

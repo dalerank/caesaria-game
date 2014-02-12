@@ -104,7 +104,7 @@ public:
 
   void save(VariantMap &stream) const
   {
-    if( getTilePos() == _parent->getTilePos() )
+    if( pos() == _parent->pos() )
     {
       return _parent->save( stream );
     }
@@ -408,7 +408,7 @@ bool HighBridge::canDestroy() const
   CityHelper helper( _getCity() );
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->getTilePos() );
+    WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";

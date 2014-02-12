@@ -111,7 +111,7 @@ void Dock::timeStep(const unsigned long time)
   // takes current animation frame and put it into foreground
   _fgPicturesRef()[0] = _animationRef().getFrame();
 
-  if( time % (GameDate::getTickInMonth()/4) == 1 )
+  if( time % (GameDate::ticksInMonth()/4) == 1 )
   {
     _tryReceiveGoods();
     _tryDeliverGoods();
@@ -160,7 +160,7 @@ const Tile& Dock::getLandingTile() const
   default: break;
   }
 
-  return tmap.at( getTilePos() + offset );
+  return tmap.at( pos() + offset );
 }
 
 int Dock::getQueueSize() const
@@ -168,7 +168,7 @@ int Dock::getQueueSize() const
   CityHelper helper( _getCity() );
   TilePos offset( 3, 3 );
   SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant,
-                                                        getTilePos() - offset, getTilePos() + offset );
+                                                        pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
   {
@@ -183,7 +183,7 @@ const Tile& Dock::getQueueTile() const
 {
   CityHelper helper( _getCity() );
   TilePos offset( 3, 3 );
-  TilesArray tiles = helper.getArea( getTilePos() - offset, getTilePos() + offset );
+  TilesArray tiles = helper.getArea( pos() - offset, pos() + offset );
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {

@@ -35,7 +35,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
 {
   PatrolPoint* pp = new PatrolPoint( city );
   pp->_d->standart = Picture::load( ResourceGroup::sprites, 58 );
-  pp->_d->basePos = base->getTilePos();
+  pp->_d->basePos = base->pos();
 
   Point extOffset( 15, 0 );
   Animation anim;

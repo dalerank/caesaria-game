@@ -52,7 +52,7 @@ void Reservoir::destroy()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = _getCity()->getTilemap();
-  TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
 
   foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_RESERVOIR, 20 ); }
 
@@ -60,10 +60,15 @@ void Reservoir::destroy()
   Construction::destroy();
 }
 
+std::string Reservoir::getTrouble() const
+{
+  return haveWater() ? "" : "##trouble_too_far_from_water##";
+}
+
 Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
 {
-  _d->serviceTimer = GameDate::getTickInMonth() / 4;
-  _d->produceTimer = GameDate::getTickInMonth() / 15;
+  _d->serviceTimer = GameDate::ticksInMonth() / 4;
+  _d->produceTimer = GameDate::ticksInMonth() / 15;
   setPicture( ResourceGroup::waterbuildings, 1 );
   
   // utilitya 34      - empty reservoir
@@ -128,7 +133,7 @@ void Reservoir::timeStep(const unsigned long time)
   if( time % _d->serviceTimer == 1 )
   {
     Tilemap& tmap = _getCity()->getTilemap();
-    TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+    TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
 
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_RESERVOIR ); }
   }
@@ -200,13 +205,13 @@ void WaterSource::_produceWater( const TilePos* points, const int size )
 
   for( int index=0; index < size; index++ )
   {
-    TilePos pos = getTilePos() + points[index];
-    if( !tilemap.isInside( pos ) )
+    TilePos p = pos() + points[index];
+    if( !tilemap.isInside( p ) )
     {
       continue;
     }
 
-    SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( pos ).getOverlay() );
+    SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).getOverlay() );
     
     if( ws.isValid() )
     {     
@@ -223,7 +228,7 @@ void WaterSource::_setResolved(bool value){  _d->alsoResolved = value;}
 bool WaterSource::_isResolved() const { return _d->alsoResolved; }
 int WaterSource::_getWater() const{  return _d->water;}
 bool WaterSource::_isRoad() const { return _d->isRoad; }
-int WaterSource::getId() const{  return getTilePos().j() * 10000 + getTilePos().i();}
+int WaterSource::getId() const{  return pos().j() * 10000 + pos().i();}
 std::string WaterSource::getError() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 
@@ -235,7 +240,7 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
 
   //setPicture( ResourceGroup::utilitya, 10 );
 
-  _waterIncreaseInterval = GameDate::getTickInMonth() / 3;
+  _waterIncreaseInterval = GameDate::ticksInMonth() / 3;
   _initAnimation();
   _fgPicturesRef().resize(1);
 
@@ -280,7 +285,7 @@ void Fountain::timeStep(const unsigned long time)
 
     TilePos offset( 4, 4 );
     Tilemap& tmap = _getCity()->getTilemap();
-    TilesArray reachedTiles = tmap.getArea( getTilePos() - offset, getTilePos() + offset );
+    TilesArray reachedTiles = tmap.getArea( pos() - offset, pos() + offset );
 
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
   }
@@ -313,7 +318,7 @@ bool Fountain::isActive() const {  return ServiceBuilding::isActive() && _haveRe
 bool Fountain::haveReservoirAccess() const
 {
   TilePos offset( 10, 10 );
-  TilesArray reachedTiles = _getCity()->getTilemap().getArea( getTilePos() - offset, getTilePos() + offset );
+  TilesArray reachedTiles = _getCity()->getTilemap().getArea( pos() - offset, pos() + offset );
   foreach( tile, reachedTiles )
   {
     TileOverlayPtr overlay = (*tile)->getOverlay();
@@ -331,7 +336,7 @@ void Fountain::destroy()
   ServiceBuilding::destroy();
 
   Tilemap& tmap = _getCity()->getTilemap();
-  TilesArray reachedTiles = tmap.getArea( getTilePos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
 
   foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_FONTAIN, 20 ); }
 }

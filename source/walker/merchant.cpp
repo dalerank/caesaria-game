@@ -162,7 +162,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       {
         // we found a destination!
         nextState = stSellGoods;
-        destBuildingPos = route.first->getTilePos();
+        destBuildingPos = route.first->pos();
         wlk->setPos( route.second.getStartPos() );
         wlk->setPathway( route.second );      
         wlk->go();
@@ -198,7 +198,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       {
         // we found a destination!
         nextState = stBuyGoods;
-        destBuildingPos = route.first->getTilePos();    
+        destBuildingPos = route.first->pos();    
         wlk->setPos( route.second.getStartPos() );
         wlk->setPathway( route.second );
         wlk->go();

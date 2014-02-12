@@ -207,34 +207,7 @@ InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
   setTitle( MetaDataHolder::getPrettyName( building->getType() ) );
 }
 
-InfoBoxColosseum::InfoBoxColosseum(Widget *parent, const Tile &tile)
-  : InfoboxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
-{
-  CollosseumPtr colloseum = ptr_cast<Collosseum>(tile.getOverlay());
-  setTitle( MetaDataHolder::getPrettyName( building::colloseum ) );
-
-  _updateWorkersLabel( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkersCount() );
-  
-  if( colloseum->isNeedGladiators() )
-  {
-    new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
-  }
-  else
-  {
-    std::string text = StringHelper::format( 0xff, "Animal contest runs for another %d days", 0 );
-    new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), text );
-
-    text = StringHelper::format( 0xff, "Gladiator bouts runs for another %d days", 0 );
-    new Label( this, Rect( 35, 210, getWidth() - 35, 210 + 20 ), text );
-  }
-}
-
-InfoBoxColosseum::~InfoBoxColosseum()
-{
-
-}
-
-InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::string& message)
+InfoboxText::InfoboxText(Widget* parent, const std::string& title, const std::string& message)
   : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );
@@ -247,7 +220,7 @@ InfoBoxText::InfoBoxText(Widget* parent, const std::string& title, const std::st
   _d->lbText->setText( message );
 }
 
-InfoBoxText::~InfoBoxText()
+InfoboxText::~InfoboxText()
 {
 
 }

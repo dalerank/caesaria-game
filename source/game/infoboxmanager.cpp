@@ -43,6 +43,7 @@
 #include "gui/infobox_land.hpp"
 #include "gui/infobox_temple.hpp"
 #include "gui/infobox_working.hpp"
+#include "gui/infobox_colloseum.hpp"
 #include <map>
 
 using namespace constants;
@@ -214,7 +215,7 @@ InfoboxManager::InfoboxManager() : _d( new Impl )
   addInfobox( building::actorColony,      CAESARIA_STR_EXT(ActorColony), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::amphitheater,     CAESARIA_STR_EXT(Amphitheater), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::gladiatorSchool,  CAESARIA_STR_EXT(GladiatorSchool), new ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( building::colloseum,        CAESARIA_STR_EXT(Collosseum), new BaseInfoboxCreator<InfoBoxColosseum>() );
+  addInfobox( building::colloseum,        CAESARIA_STR_EXT(Collosseum), new BaseInfoboxCreator<InfoboxColosseum>() );
   addInfobox( building::lionsNursery,     CAESARIA_STR_EXT(LionsNursery), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::hippodrome,       CAESARIA_STR_EXT(Hippodrome), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::chariotSchool,    CAESARIA_STR_EXT(chariotSchool),new ServiceBaseInfoboxCreator( "", "" ) );

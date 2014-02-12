@@ -72,7 +72,7 @@ std::string CityRequestDispatcher::getDefaultName()
 
 void CityRequestDispatcher::update(const unsigned int time)
 {
-  if( time % (GameDate::getTickInMonth() / 4) == 1)
+  if( time % (GameDate::ticksInMonth() / 4) == 1)
   foreach( rq, _d->requests )
   {
     if( (*rq)->getFinishedDate() <= GameDate::current() )

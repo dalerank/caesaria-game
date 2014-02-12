@@ -37,11 +37,21 @@ namespace {
 static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::building);
 }
 
+class Building::Impl
+{
+
+};
+
 Building::Building(const TileOverlay::Type type, const Size& size )
-: Construction( type, size )
+: Construction( type, size ), _d( new Impl )
 {
    _damageIncrement = 1;
    _fireIncrement = 1;
+}
+
+Building::~Building()
+{
+
 }
 
 void Building::initTerrain( Tile &tile )
@@ -57,7 +67,7 @@ void Building::initTerrain( Tile &tile )
 
 void Building::timeStep(const unsigned long time)
 {
-   if (time % (GameDate::getTickInMonth() / 4 ) == 0)
+   if (time % (GameDate::ticksInMonth() / 4 ) == 0)
    {
       updateState( Construction::damage, _damageIncrement );
       updateState( Construction::fire, _fireIncrement );
@@ -70,7 +80,7 @@ void Building::storeGoods(GoodStock &stock, const int amount)
 {
   std::string bldType = getDebugName();
   Logger::warning( "This building should not store any goods %s at [%d,%d]",
-                   bldType.c_str(), getTilePos().i(), getTilePos().j() );
+                   bldType.c_str(), pos().i(), pos().j() );
   try
   {
    _CAESARIA_DEBUG_BREAK_IF("This building should not store any goods");

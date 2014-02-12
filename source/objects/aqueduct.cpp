@@ -72,7 +72,7 @@ void Aqueduct::destroy()
 
   if( _getCity().isValid() )
   {
-    TilesArray area = _getCity()->getTilemap().getArea( getTilePos() - TilePos( 2, 2 ), Size( 5 ) );
+    TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos( 2, 2 ), Size( 5 ) );
     foreach( tile, area )
     {
       AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->getOverlay() );
@@ -191,14 +191,14 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   return false;
 }
 
-const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const TilesArray& tmp ) const
+const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos p, const TilesArray& tmp ) const
 {
   // find correct picture as for roads
   Tilemap& tmap = city->getTilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (tmp.empty()) ? getTilePos() : pos;
+  const TilePos tile_pos = (tmp.empty()) ? pos() : p;
 
   if (!tmap.isInside(tile_pos))
     return Picture::load( ResourceGroup::aqueduct, 121 );
@@ -238,10 +238,10 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos pos, const Tiles
       if( !is_kind_of<Aqueduct>( (*it)->getOverlay() ) )
         continue;
 
-      if( i == pos.i() && j == (pos.j() + 1)) is_busy[north] = true;
-      else if (i == pos.i() && j == (pos.j() - 1))is_busy[south] = true;
-      else if (j == pos.j() && i == (pos.i() + 1))is_busy[east] = true;
-      else if (j == pos.j() && i == (pos.i() - 1))is_busy[west] = true;
+      if( i == p.i() && j == (p.j() + 1)) is_busy[north] = true;
+      else if (i == p.i() && j == (p.j() - 1))is_busy[south] = true;
+      else if (j == p.j() && i == (p.i() + 1))is_busy[east] = true;
+      else if (j == p.j() && i == (p.i() - 1))is_busy[west] = true;
     }
   }
 

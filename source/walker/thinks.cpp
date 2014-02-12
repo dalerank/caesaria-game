@@ -71,6 +71,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
   {
     troubles.push_back( "##" + walkerTypename + "_low_entertainment##" );
     troubles.push_back( "##citizen_low_entertainment##" );
+    troubles.push_back( "##citizen_low_entertainment2##" );
   }
   else if( params.entertainment < 20 )
   {
@@ -82,6 +83,10 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
     troubles.push_back( "##" + walkerTypename + "_need_workers##" );
     troubles.push_back( "##citizen_need_workers##" );
     troubles.push_back( "##citizen_need_workers2##" );
+    troubles.push_back( "##citizen_need_workers3##" );
+    troubles.push_back( "##citizen_need_workers4##" );
+    troubles.push_back( "##citizen_need_workers5##" );
+    troubles.push_back( "##citizen_need_workers6##" );
   }
 
   if( params.workless > 15 )

@@ -20,9 +20,12 @@
 #include "objects/constants.hpp"
 #include "city/helper.hpp"
 #include "objects/house_level.hpp"
+#include "good/goodhelper.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
+#include "objects/watersupply.hpp"
 #include "tilemap_camera.hpp"
+#include "objects/factory.hpp"
 
 using namespace constants;
 
@@ -63,7 +66,7 @@ void LayerTroubles::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
 
         CityHelper helper( _getCity() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );              
       }
     break;
 
@@ -105,11 +108,13 @@ void LayerTroubles::handleEvent(NEvent& event)
     {
       Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
       std::string text = "";
+
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->getOverlay() );
-        if( house != 0 )
+        ConstructionPtr constr = ptr_cast<Construction>( tile->getOverlay() );
+        if( constr.isValid() )
         {
+          text = constr->getTrouble();
         }
       }
 

@@ -33,14 +33,14 @@ GameDate& GameDate::instance()
   return inst;
 }
 
-unsigned int GameDate::getTickInMonth()
+unsigned int GameDate::ticksInMonth()
 {
   return 250;
 }
 
 void GameDate::timeStep( unsigned int time )
 {
-  if( time % getTickInMonth() == 1 )
+  if( time % ticksInMonth() == 1 )
   {
     // every X seconds
     GameDate& inst = instance();

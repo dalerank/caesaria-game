@@ -215,7 +215,7 @@ Protestor::~Protestor()
 
 void Protestor::send2City( HousePtr house )
 {
-  setPos( house->getTilePos() );
+  setPos( house->pos() );
   _d->houseLevel = house->getSpec().getLevel();
   _d->state = Impl::searchHouse;
 

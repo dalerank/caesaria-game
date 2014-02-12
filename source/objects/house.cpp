@@ -130,7 +130,7 @@ void House::_updateHabitants( const CitizenGroup& group )
 
   if( firedWorkersNumber < 0 )
   {
-    events::GameEventPtr e = events::FireWorkers::create( getTilePos(), abs( firedWorkersNumber ) );
+    events::GameEventPtr e = events::FireWorkers::create( pos(), abs( firedWorkersNumber ) );
     e->dispatch();
   }
 }
@@ -235,7 +235,7 @@ void House::timeStep(const unsigned long time)
       int workersFireCount = homeless.count( CitizenGroup::mature );
       if( workersFireCount > 0 )
       {
-        events::GameEventPtr e = events::FireWorkers::create( getTilePos(), workersFireCount );
+        events::GameEventPtr e = events::FireWorkers::create( pos(), workersFireCount );
         e->dispatch();
       }
 
@@ -420,7 +420,7 @@ void House::_levelDown()
 
     if( getSize().getArea() > 1 )
     {
-      TilesArray perimetr = tmap.getArea( getTilePos(), Size(2) );
+      TilesArray perimetr = tmap.getArea( pos(), Size(2) );
       int peoplesPerHouse = getHabitants().count() / 4;
       foreach( tile, perimetr )
       {
@@ -706,7 +706,7 @@ void House::destroy()
 
   if( getWorkersCount() > 0 )
   {
-    events::GameEventPtr e = events::FireWorkers::create( getTilePos(), getWorkersCount() );
+    events::GameEventPtr e = events::FireWorkers::create( pos(), getWorkersCount() );
     e->dispatch();
   }
 
@@ -777,7 +777,7 @@ void House::load( const VariantMap& stream )
     _d->services[ type ] = (*it).toFloat(); //serviceValue
   }
 
-  Building::build( _getCity(), getTilePos() );
+  Building::build( _getCity(), pos() );
   _update();
 }
 
@@ -922,7 +922,7 @@ void House::Impl::consumeGoods( HousePtr house )
 
 void House::Impl::consumeFoods(HousePtr house)
 {
-  int consumeQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::getTickInMonth();
+  int consumeQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::ticksInMonth();
 
   int foodLevel = spec.getMinFoodLevel();
   int tmpConsumeQty = 0;

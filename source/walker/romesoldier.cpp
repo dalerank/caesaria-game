@@ -138,7 +138,7 @@ void RomeSoldier::save(VariantMap& stream) const
   Soldier::save( stream );
 
   stream[ "crtAction" ] = (int)_d->action;
-  stream[ "base" ] = _d->base->getTilePos();
+  stream[ "base" ] = _d->base->pos();
   stream[ "strikeForce" ] = _d->strikeForce;
   stream[ "resistance" ] = _d->resistance;
   stream[ "patrolPosition" ] = _d->patrolPosition;

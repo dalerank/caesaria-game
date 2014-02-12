@@ -33,12 +33,16 @@ public:
   ~Factory();
 
   GoodStock& inStockRef();
+  const GoodStock& inStockRef() const;
+
   GoodStock& outStockRef();
 
   Good::Type getInGoodType() const;
   Good::Type getOutGoodType() const;
 
   GoodStore& getGoodStore();
+
+  virtual std::string getTrouble() const;
 
   // called when the factory has made 100 good units
   virtual void deliverGood();
@@ -51,6 +55,7 @@ public:
   virtual void setActive( bool active );
 
   virtual bool mayWork() const;
+  virtual bool haveMaterial() const;
   virtual bool standIdle() const;
 
   virtual void timeStep(const unsigned long time);
@@ -64,7 +69,7 @@ public:
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
 
-protected:  
+protected:
   virtual bool _mayDeliverGood() const;
 
 protected:
