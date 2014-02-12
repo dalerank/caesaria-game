@@ -21,8 +21,8 @@
 class EntertainmentBuilding : public ServiceBuilding
 {
 public:
-  EntertainmentBuilding( const Service::Type service, const TileOverlay::Type type,
-                         const Size& size);
+  EntertainmentBuilding(const Service::Type service, const TileOverlay::Type type,
+                         Size size);
   virtual void deliverService();
   virtual int getVisitorsNumber() const;
 
@@ -66,6 +66,9 @@ class Hippodrome : public EntertainmentBuilding
 {
 public:
    Hippodrome();
+   virtual std::string getTrouble() const;
+
+   bool isRacesCarry() const;
 };
 
 #endif //__CAESARIA_BUILDING_ENTERTAINMENT_H_INCLUDED__

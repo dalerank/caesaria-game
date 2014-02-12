@@ -28,7 +28,7 @@ using namespace constants;
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
                                              const TileOverlay::Type type,
-                                             const Size& size )
+                                             Size size )
   : ServiceBuilding(service, type, size)
 {
    switch( service )
@@ -45,6 +45,10 @@ EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
    case Service::colloseum:
       _traineeMap[walker::gladiator] = 0;
       _traineeMap[walker::lionTamer] = 0;
+   break;
+
+   case Service::hippodrome:
+     _traineeMap[walker::charioter] = 0;
    break;
 
    default:
@@ -239,4 +243,19 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::
   _fgPicturesRef().resize(5);
   _fgPicturesRef()[0] = logo;
   _fgPicturesRef()[1] = logo1;
+}
+
+std::string Hippodrome::getTrouble() const
+{
+  std::string ret = EntertainmentBuilding::getTrouble();
+
+  if( ret.empty() )
+  {
+    ret = isRacesCarry() ? "##trouble_hippodrome_full_work##" : "##trouble_hippodrome_no_charioters##";
+  }
+}
+
+bool Hippodrome::isRacesCarry() const
+{
+
 }

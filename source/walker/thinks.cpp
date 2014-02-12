@@ -55,6 +55,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
     troubles.push_back( "##" + walkerTypename + "_gods_angry##" );
     troubles.push_back( "##citizen_gods_angry##" );
     troubles.push_back( "##citizen_gods_angry2##" );
+    troubles.push_back( "##citizen_gods_angry3##" );
   }
 
   if( params.colloseumCoverage < 3 )
