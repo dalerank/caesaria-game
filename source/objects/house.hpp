@@ -93,6 +93,7 @@ public:
   virtual bool isFlat() const;
 
   virtual std::string getSound() const;
+  virtual std::string getTrouble() const;
 
 private:
 

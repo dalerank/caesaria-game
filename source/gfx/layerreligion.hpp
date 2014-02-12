@@ -25,8 +25,10 @@ public:
   virtual int getType() const;
   virtual VisibleWalkers getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void handleEvent(NEvent& event);
 
   static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+
 private:
   LayerReligion(TilemapCamera& camera, PlayerCityPtr city );
   std::set<int> _flags;

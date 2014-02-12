@@ -20,6 +20,7 @@
 #include "objects/house_level.hpp"
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 
@@ -102,6 +103,41 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, religionLevel );
     }
   }
+}
+
+void LayerReligion::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        HousePtr house = ptr_cast<House>( tile->getOverlay() );
+        if( house.isValid() )
+        {
+          int templeAccess = house->getSpec().computeReligionLevel( house );
+          bool oracleAccess = house->hasServiceAccess( Service::oracle );
+
+          text = (templeAccess == 5 && oracleAccess )
+                  ? "##religion_access_full##"
+                  : StringHelper::format( 0xff, "##religion_access_%d_temple##", templeAccess );
+        }
+      }
+
+      _setTooltipText( _(text) );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerPtr LayerReligion::create(TilemapCamera& camera, PlayerCityPtr city)

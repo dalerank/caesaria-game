@@ -723,6 +723,20 @@ std::string House::getSound() const
   return StringHelper::format( 0xff, "house_%05d.wav", _d->houseLevel*10+1 );
 }
 
+std::string House::getTrouble() const
+{
+  std::string ret = Building::getTrouble();
+
+  if( ret.empty() )
+  {
+    //getSpec().getm
+    //##trouble_house_access_one_temple##
+    //ret =
+  }
+
+  return ret;
+}
+
 void House::save( VariantMap& stream ) const
 {
   Building::save( stream );
