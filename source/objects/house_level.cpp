@@ -375,7 +375,7 @@ int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMiss
   return res;
 }
 
-int HouseSpecification::computeReligionLevel(HousePtr house)
+int HouseSpecification::computeReligionLevel(HousePtr house) const
 {
   int res = 0;
   res += house->hasServiceAccess(Service::religionMercury) ? 1 : 0;

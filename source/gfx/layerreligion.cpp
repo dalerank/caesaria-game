@@ -21,6 +21,9 @@
 #include "layerconstants.hpp"
 #include "city/helper.hpp"
 #include "core/stringhelper.hpp"
+#include "core/event.hpp"
+#include "tilemap_camera.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
 

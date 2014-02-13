@@ -59,7 +59,7 @@ public:
   int computeEntertainmentLevel(HousePtr house) const;
   int computeEducationLevel(HousePtr house, std::string &oMissingRequirement);
   int computeHealthLevel(HousePtr house, std::string &oMissingRequirement);
-  int computeReligionLevel(HousePtr house);
+  int computeReligionLevel(HousePtr house) const;
   int computeWaterLevel(HousePtr house, std::string &oMissingRequirement);
   int computeFoodLevel(HousePtr house);
   int computeMonthlyGoodConsumption(HousePtr house, const Good::Type goodType, bool real) const;

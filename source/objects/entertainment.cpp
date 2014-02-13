@@ -250,4 +250,4 @@ std::string Hippodrome::getTrouble() const
   return ret;
 }
 
-bool Hippodrome::isRacesCarry() const{  return _traineeMap[walker::charioter] > 0;}
+bool Hippodrome::isRacesCarry() const{ return _traineeMap.at( walker::charioter ) > 0; }

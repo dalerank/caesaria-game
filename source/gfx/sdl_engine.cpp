@@ -1,19 +1,20 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 
 #include "sdl_engine.hpp"
@@ -98,17 +99,19 @@ void GfxSdlEngine::init()
 
   unsigned int flags = SDL_DOUBLEBUF | SDL_SWSURFACE;
   flags |= (getFlag( GfxEngine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
+  int systemBpp = 32;
     
 #ifdef CAESARIA_PLATFORM_MACOSX
-    void* cocoa_lib;
-    cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
-    void (*nsappload)(void);
-    nsappload = (void(*)()) dlsym(	cocoa_lib, "NSApplicationLoad");
-    nsappload();
+  void* cocoa_lib;
+  cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
+  void (*nsappload)(void);
+  nsappload = (void(*)()) dlsym( cocoa_lib, "NSApplicationLoad" );
+  nsappload();
+  systemBpp = 24;
 #endif
  
   Logger::warning( StringHelper::format( 0xff, "GrafixEngine: set mode %dx%d",  _srcSize.getWidth(), _srcSize.getHeight() ) );
-  SDL_Surface* scr = SDL_SetVideoMode(_srcSize.getWidth(), _srcSize.getHeight(), 32, flags );  // 32bpp
+  SDL_Surface* scr = SDL_SetVideoMode(_srcSize.getWidth(), _srcSize.getHeight(), systemBpp, flags );  // 32bpp
     
   Logger::warning( "GrafixEngine: init successfull");
   _d->screen.init( scr, Point( 0, 0 ) );
