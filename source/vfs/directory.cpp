@@ -51,7 +51,7 @@ bool Directory::create( std::string dir )
 
   int result=0;
 #ifdef CAESARIA_PLATFORM_WIN
-    CreateDirectoryA( rdir.removeEndSlash().toString().c_str(), NULL );
+  CreateDirectoryA( rdir.removeEndSlash().toString().c_str(), NULL );
 #elif defined(CAESARIA_PLATFORM_UNIX)
   result = ::mkdir( rdir.toString().c_str(), S_IRWXU|S_IRWXG|S_IRWXO );
 #endif
@@ -72,7 +72,7 @@ bool Directory::createByPath( Directory dir )
   std::string current;
   try
   {
-#if  defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if  defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
     changeCurrentDir( "/" );
 #endif
 

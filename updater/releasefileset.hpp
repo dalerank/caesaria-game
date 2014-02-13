@@ -98,16 +98,16 @@ struct ReleaseFile
 	bool isWrongOS() const
 	{
 #ifdef CAESARIA_PLATFORM_LINUX
-		if( file.isExtension(".exe") || file.isExtension(".dll") )
+		if( file.isExtension(".exe") || file.isExtension(".dll") || file.isExtension(".macos") )
 			return true;
 #elif defined(CAESARIA_PLATFORM_WIN)
-		if( file.isExtension(".linux") )
+		if( file.isExtension(".linux") || file.isExtension(".macos") )
 			return true;
 #elif defined(CAESARIA_PLATFORM_MACOSX)
-		if( file.isExtension(".macosx") )
+		if( file.isExtension(".linux") || file.isExtension(".exe") || file.isExtension(".dll"))
 			return true;
 #endif
-			return false;
+		return false;
 	}
 
 	bool isUpdater(const std::string& executable) const
