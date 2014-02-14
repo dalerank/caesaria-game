@@ -63,8 +63,12 @@ void Updater::setBinaryAsExecutable()
 {
 #ifdef CAESARIA_PLATFORM_WIN
 	vfs::Path executableName = "caesaria.exe";
-#else
+#elif defined(CAESARIA_PLATFORM_LINUX)
 	vfs::Path executableName = "caesaria.linux";
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+	vfs::Path executableName = "caesaria.macos";
+#elif defined(CAESARIA_PLATFORM_HAIKU)
+	vfs::Path executableName = "caesaria.haiku";
 #endif
 
 	vfs::Path path2exe = getTargetDir()/executableName;
@@ -77,7 +81,7 @@ void Updater::setBinaryAsExecutable()
 
 void Updater::_markFileAsExecutable(vfs::Path path )
 {
-#ifdef CAESARIA_PLATFORM_LINUX
+#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 	Logger::warning( "Marking file as executable: " + path.toString() );
 
 	struct stat mask;
@@ -927,9 +931,6 @@ void Updater::PostUpdateCleanup()
 			vfs::NFile::remove( p );
 		}		
 	}
-
-	// grayman #3514 - Remove DLL file in case the user is updating an existing installation.
-	// Also remove leftover updater file.
 }
 
 void Updater::CancelDownloads()

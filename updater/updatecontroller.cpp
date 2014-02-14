@@ -139,7 +139,7 @@ void UpdateController::run()
 	{
 		// Launch the thread and setup the callbacks
 		performStep( _curStep );
-		fializeStep( _curStep );
+		finalizeStep( _curStep );
 	}
 }
 
@@ -230,7 +230,7 @@ void UpdateController::performStep(int step)
 	};
 }
 
-void UpdateController::fializeStep(int step)
+void UpdateController::finalizeStep(int step)
 {
 	//Logger::warning( "Step thread finished: %d", step );
 

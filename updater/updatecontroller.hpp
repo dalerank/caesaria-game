@@ -123,7 +123,7 @@ private:
 	void performStep(int step);
 
 	// Invoked by the ExceptionSafeThread when a step is done, do some error handling here
-	void fializeStep(int step);
+	void finalizeStep(int step);
 
 	void TryToProceedTo(UpdateStep step);
 

@@ -100,7 +100,7 @@ void GameSettings::setwdir( const std::string& wdirstr )
 #ifdef CAESARIA_PLATFORM_LINUX
   vfs::Path dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
   saveDir = vfs::Directory::getUserDir()/dirName;
-#elif defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_HAIKU) || defined(CAESARIA_PLATFORM_MACOSX)
   saveDir = wdir/defaultSaveDir;
 #endif
   _d->options[ savedir ] = Variant( saveDir.toString() );

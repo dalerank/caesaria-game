@@ -144,7 +144,7 @@ public:
 
 protected:
 	// Thread entry point
-	void Perform();
+	void perform();
 
 	// Check method
 	bool checkIntegrity();

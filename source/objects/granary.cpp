@@ -167,7 +167,7 @@ void Granary::_tryDevastateGranary()
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
   {
-    int goodQty = math::clamp( goodQty, 0, 400);
+    int goodQty = math::clamp( _d->goodStore.getQty( (Good::Type)goodType ), 0, 400);
 
     if( goodQty > 0 )
     {

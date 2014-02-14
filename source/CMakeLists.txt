@@ -83,23 +83,23 @@ if(WIN32)
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 
-if(LINUX)
+if(UNIX)
   set(EXECUTABLE_FILENAME "caesaria.linux")
-endif(LINUX)
+
+  if(APPLE)
+    set(EXECUTABLE_FILENAME "caesaria.macos")
+  endif(APPLE)
+endif(UNIX)
 
 if(HAIKU)
   set(EXECUTABLE_FILENAME "caesaria.haiku")
 endif(HAIKU)
 
-if(APPLE)
-  set(EXECUTABLE_FILENAME "caesaria.macos")
-endif(APPLE)
-
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-game: building in release mode")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s -Os")
 else()
   message("CaesarIA-game: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
@@ -107,7 +107,11 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+  if(HAIKU)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+  else(HAIKU)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
+  endif(HAIKU)
 endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 if(WIN32)

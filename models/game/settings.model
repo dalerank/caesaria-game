@@ -1,4 +1,5 @@
-{
-  resolution : [1024, 768]
-  fullscreen : false
+{ 
+ fullscreen : false
+ resolution : [ 1280, 800 ]
+ language : "en"
 }

@@ -223,8 +223,16 @@ bool Collosseum::isNeedGladiators() const
   return colloseums.empty();
 }
 
-bool Collosseum::isShowGladiatorBattles() const {  return _traineeMap.at(walker::gladiator) > 0;}
-bool Collosseum::isShowLionBattles() const{  return _traineeMap.at(walker::lionTamer) > 0;}
+bool Collosseum::isShowGladiatorBattles() const
+{
+  TraineeMap::const_iterator it = _traineeMap.find( walker::gladiator );
+  return it != _traineeMap.end();
+}
+bool Collosseum::isShowLionBattles() const
+{
+  TraineeMap::const_iterator it = _traineeMap.find( walker::lionTamer );
+  return it != _traineeMap.end();
+}
 
 Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(5) )
 {

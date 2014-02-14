@@ -457,8 +457,8 @@ void Warehouse::_resolveDevastationMode()
   {
     for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
     {
-      //int goodQtyMax = _d->goodStore.getCurrentQty( (GoodType)goodType );
-      int goodQty = math::clamp( goodQty, 0, 400);
+      int goodQty = _d->goodStore.getQty( (Good::Type)goodType );
+      goodQty = math::clamp( goodQty, 0, 400);
 
       if( goodQty > 0 )
       {

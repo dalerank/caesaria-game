@@ -73,7 +73,11 @@ inline float rad2Degf( float radians)
 
 inline int random( int max )
 {
+#ifdef CAESARIA_PLATFORM_MACOSX
+	return rand() % max();
+#else
 	return std::rand() % max;
+#endif
 }
 
 template <class T>

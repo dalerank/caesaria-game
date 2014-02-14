@@ -122,7 +122,6 @@
     class : "garden"
     image : [ "entertainment", 110 ]
     sound : [ "garden", 1 ]
-    desc : [ "##gardens_info##" ]
   },
   
   fort_legionaries : {
@@ -131,7 +130,6 @@
     employers : 16
     class : "military"
     sound : [ "fort", 1 ]
-    desc : [ "##fort_info##" ]
   },
 
   statue_small : {
@@ -186,7 +184,6 @@
     class : "health"
     image : [ "security", 44 ]
     service : "srvc_hospital"
-    desc : [ "##hospital_info##" ]
   },
   
   baths : {
@@ -198,7 +195,6 @@
     animation : { rc : "security", start : 22, count : 10, offset : [ 23, 25 ], delay : 2 }
     service : "srvc_baths"
     sound : [ "baths", 1 ]
-    desc : [ "##baths_info##" ]
   }, 
 
   barber : {
@@ -362,7 +358,6 @@
     employers : 6
     class : "food"
     sound : [ "granary", 1 ]
-    desc : [ "##granary_info##" ]
   }, 
 
   warehouse : {
@@ -371,7 +366,6 @@
     employers : 6
     class : "trade"
     sound : [ "warehouse", 1 ]
-    desc : [ "##warehouse_info## ]
   }, 
 
   shipyard : {
@@ -395,7 +389,6 @@
     employers : 6
     class : "food"
     sound : [ "wharf", 1 ]
-    desc : [ "##wharf_info## ]
   }, 
   
   governor_palace_1 : {
@@ -424,7 +417,6 @@
     desirability : { base : 0, 	range : 0,	step : 0 }
     employers : 5
     class : "engineer"
-    desc : [ "##engineer_post_info##" ]
   },
 
   low_bridge : {
@@ -596,7 +588,6 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
-    desc : [ "##farm_description_fruit##" ]
   },
   
   olive_farm : 
@@ -682,7 +673,6 @@
     employers : 10
     class : "industry"
     sound : [ "creamery", 1 ]
-    desc : [ "##oil_workshop_info##" ]
   },
   
   weapons_workshop :
@@ -710,6 +700,5 @@
     employers : 10
     class : "industry"
     image : [ "commerce", 132 ]
-    desc : [ "##pottery_workshop_info##" ]
   }
 }
