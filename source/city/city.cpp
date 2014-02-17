@@ -32,9 +32,16 @@
 #include "cityservice_workershire.hpp"
 #include "cityservice_timers.hpp"
 #include "cityservice_prosperity.hpp"
+#include "cityservice_religion.hpp"
+#include "cityservice_festival.hpp"
+#include "cityservice_roads.hpp"
+#include "cityservice_fishplace.hpp"
 #include "cityservice_shoreline.hpp"
 #include "cityservice_info.hpp"
+#include "requestdispatcher.hpp"
+#include "cityservice_disorder.hpp"
 #include "cityservice_animals.hpp"
+#include "cityservice_culture.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/road.hpp"
 #include "core/time.hpp"
@@ -43,7 +50,6 @@
 #include "walker/walkers_factory.hpp"
 #include "core/gettext.hpp"
 #include "build_options.hpp"
-#include "cityservice_culture.hpp"
 #include "city/funds.hpp"
 #include "world/city.hpp"
 #include "world/empire.hpp"
@@ -52,16 +58,11 @@
 #include "world/trading.hpp"
 #include "walker/merchant.hpp"
 #include "game/gamedate.hpp"
-#include "cityservice_religion.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"
-#include "cityservice_festival.hpp"
 #include "win_targets.hpp"
-#include "cityservice_roads.hpp"
-#include "cityservice_fishplace.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
-#include "cityservice_disorder.hpp"
 #include "world/merchant.hpp"
 #include "city/helper.hpp"
 #include "city/statistic.hpp"
@@ -70,7 +71,7 @@
 #include "objects/house.hpp"
 #include "world/empiremap.hpp"
 #include "walker/seamerchant.hpp"
-#include "requestdispatcher.hpp"
+#include "cityservice_factory.hpp"
 #include <set>
 
 using namespace constants;
@@ -577,7 +578,18 @@ void PlayerCity::load( const VariantMap& stream )
     VariantMap servicesSave = item->second.toMap();
 
     CityServicePtr srvc = findService( item->first );
-    if( srvc.isValid()  )
+    if( srvc.isNull() )
+    {
+      Logger::warning( "City: " + item->first + " is not basic service, try load by name" );
+      srvc = CityServiceFactory::create( item->first, this );
+      if( srvc.isValid() )
+      {
+        Logger::warning( "City: creating service " + item->first + " directly");
+        addService( srvc );
+      }
+    }
+
+    if( srvc.isValid() )
     {
       srvc->load( servicesSave );
     }

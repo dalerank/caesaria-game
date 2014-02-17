@@ -55,10 +55,8 @@ void RandomDamage::update( const unsigned int time)
   }
 }
 
-bool RandomDamage::isDeleted() const
-{
-  return _isDeleted;
-}
+std::string RandomDamage::getDefaultName() { return "random_collapse"; }
+bool RandomDamage::isDeleted() const {  return _isDeleted; }
 
 void RandomDamage::load(const VariantMap& stream)
 {
@@ -70,10 +68,17 @@ void RandomDamage::load(const VariantMap& stream)
 
 VariantMap RandomDamage::save() const
 {
-  return VariantMap();
+  VariantMap ret;
+  VariantList vl_pop;
+  vl_pop << _minPopulation << _maxPopulation;
+
+  ret[ "population" ] = vl_pop;
+  ret[ "exec" ] = _events;
+
+  return ret;
 }
 
-RandomDamage::RandomDamage() : CityService("randomDamage")
+RandomDamage::RandomDamage() : CityService( RandomDamage::getDefaultName() )
 {
   _isDeleted = false;
 }

@@ -41,8 +41,13 @@ CityServicePtr CityServiceDisorder::create( PlayerCityPtr city )
   return CityServicePtr( ret );
 }
 
+std::string CityServiceDisorder::getDefaultName()
+{
+  return "disorder";
+}
+
 CityServiceDisorder::CityServiceDisorder(PlayerCityPtr city )
-: CityService( "disorder" ), _d( new Impl )
+  : CityService( CityServiceDisorder::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->minCrimeLevel = defaultCrimeLevel;

@@ -44,8 +44,10 @@ CityServicePtr CityServiceWorkersHire::create(PlayerCityPtr city )
   return ret;
 }
 
+string CityServiceWorkersHire::getDefaultName(){ return "workershire"; }
+
 CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
-: CityService( "workershire" ), _d( new Impl )
+  : CityService( CityServiceWorkersHire::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->priorities[ 1 ] = building::prefecture;

@@ -40,6 +40,8 @@ CityServicePtr CityServiceAnimals::create(PlayerCityPtr city)
   return ret;
 }
 
+std::string CityServiceAnimals::getDefaultName() { return "animals"; }
+
 void CityServiceAnimals::update(const unsigned int time)
 {
   if( time % 16 != 1 )
@@ -78,7 +80,7 @@ void CityServiceAnimals::update(const unsigned int time)
 }
 
 CityServiceAnimals::CityServiceAnimals()
-  : CityService( "animals" ), _d( new Impl )
+  : CityService( CityServiceAnimals::getDefaultName() ), _d( new Impl )
 {
 
 }

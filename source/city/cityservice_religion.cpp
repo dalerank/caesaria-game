@@ -45,8 +45,10 @@ CityServicePtr CityServiceReligion::create(PlayerCityPtr city)
   return ret;
 }
 
+std::string CityServiceReligion::getDefaultName() { return "religion"; }
+
 CityServiceReligion::CityServiceReligion(PlayerCityPtr city )
-  : CityService( "religion" ), _d( new Impl )
+  : CityService( CityServiceReligion::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();

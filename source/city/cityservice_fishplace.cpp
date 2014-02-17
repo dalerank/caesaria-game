@@ -40,8 +40,10 @@ CityServicePtr CityServiceFishPlace::create( PlayerCityPtr city )
   return ret;
 }
 
+std::string CityServiceFishPlace::getDefaultName() {  return "fishplace";}
+
 CityServiceFishPlace::CityServiceFishPlace( PlayerCityPtr city )
-: CityService( "fishplace" ), _d( new Impl )
+  : CityService( CityServiceFishPlace::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->maxFishPlace = 1;

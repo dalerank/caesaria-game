@@ -56,8 +56,10 @@ CityServicePtr CityServiceShoreline::create(PlayerCityPtr city )
   return ret;
 }
 
+std::string CityServiceShoreline::getDefaultName(){ return "shoreline"; }
+
 CityServiceShoreline::CityServiceShoreline( PlayerCityPtr city )
-  : CityService( "shoreline" ), _d( new Impl )
+  : CityService( CityServiceShoreline::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastTimeUpdate = 0;  

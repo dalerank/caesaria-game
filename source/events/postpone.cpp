@@ -19,10 +19,8 @@
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "city/requestdispatcher.hpp"
-#include "city/random_fire.hpp"
-#include "city/random_damage.hpp"
 #include "core/logger.hpp"
-#include "city/health_updater.hpp"
+#include "city/cityservice_factory.hpp"
 #include "showtutorialwindow.hpp"
 #include "changebuildingoptions.hpp"
 
@@ -77,18 +75,6 @@ void PostponeEvent::exec(Game& game)
       dispatcher->add( _d->options );
     }
   }
-  else if( "random_fire" == _d->type )
-  {
-    CityServicePtr srvc = RandomFire::create( city );
-    srvc->load( _d->options );
-    city->addService( srvc );
-  }
-  else if( "random_collapse" == _d->type )
-  {
-    CityServicePtr srvc = RandomDamage::create( city );
-    srvc->load( _d->options );
-    city->addService( srvc );
-  }
   else if( "tutorial_window" == _d->type )
   {
     GameEventPtr e = ShowTutorialWindow::create( "" );
@@ -101,9 +87,10 @@ void PostponeEvent::exec(Game& game)
     //e->load( _d->options );
     e->dispatch();
   }
-  else if( "health_updater" == _d->type )
+  else if( "health_updater" == _d->type || "desirability_updater" == _d->type
+           || "random_collapse" == _d->type || "random_fire" == _d->type )
   {
-    CityServicePtr srvc = HealthUpdater::create( city );
+    CityServicePtr srvc = CityServiceFactory::create( _d->type, city );
     srvc->load( _d->options );
     city->addService( srvc );
   }

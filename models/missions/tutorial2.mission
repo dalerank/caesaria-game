@@ -32,6 +32,17 @@
   		
   events :
   {
+    "health_upper#health_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 30
+    }
+
+    "desirability_upper#desirability_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 50
+    }
   }
 	
   buildoptions :

@@ -24,7 +24,7 @@ class RandomDamage : public CityService
 public:
   static CityServicePtr create( PlayerCityPtr city );
   virtual void update( const unsigned int time);
-
+  static std::string getDefaultName();
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);

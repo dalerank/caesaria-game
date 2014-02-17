@@ -13,24 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_CITYSERVICE_DISORDER_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_DISORDER_H_INCLUDED__
+#ifndef _CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
+#define _CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
 
 #include "cityservice.hpp"
+#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
 
-class CityServiceDisorder : public CityService
+class DesirabilityUpdater : public CityService
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static CityServicePtr create(PlayerCityPtr city);
+  virtual void update( const unsigned int time);
   static std::string getDefaultName();
-  void update( const unsigned int time );
+  virtual bool isDeleted() const;
+  virtual void destroy();
+
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
+
 private:
-  CityServiceDisorder( PlayerCityPtr city );
+  DesirabilityUpdater();
 
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
-#endif //__CAESARIA_CITYSERVICE_DISORDER_H_INCLUDED__
+#endif //_CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_

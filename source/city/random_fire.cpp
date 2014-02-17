@@ -67,10 +67,8 @@ void RandomFire::update( const unsigned int time)
   }
 }
 
-bool RandomFire::isDeleted() const
-{
-  return _d->isDeleted;
-}
+std::string RandomFire::getDefaultName() { return "random_fire"; }
+bool RandomFire::isDeleted() const {  return _d->isDeleted; }
 
 void RandomFire::load(const VariantMap& stream)
 {
@@ -82,10 +80,17 @@ void RandomFire::load(const VariantMap& stream)
 
 VariantMap RandomFire::save() const
 {
-  return VariantMap();
+  VariantMap ret;
+  VariantList vl_pop;
+  vl_pop << _d->minPopulation << _d->maxPopulation;
+
+  ret[ "population" ] = vl_pop;
+  ret[ "exec" ] = _d->events;
+
+  return ret;
 }
 
-RandomFire::RandomFire() : CityService("randomFire"), _d( new Impl )
+RandomFire::RandomFire() : CityService( RandomFire::getDefaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
 }

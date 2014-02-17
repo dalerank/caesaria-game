@@ -50,8 +50,10 @@ CityServicePtr CityServiceRoads::create(PlayerCityPtr city)
   return CityServicePtr( ret );
 }
 
+std::string CityServiceRoads::getDefaultName(){  return "roads";}
+
 CityServiceRoads::CityServiceRoads(PlayerCityPtr city )
-: CityService( "roads" ), _d( new Impl )
+  : CityService( CityServiceRoads::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->defaultIncreasePaved = 4;

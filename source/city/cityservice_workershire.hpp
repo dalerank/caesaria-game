@@ -25,7 +25,7 @@ class CityServiceWorkersHire : public CityService
 {
 public:
   static CityServicePtr create( PlayerCityPtr city );
-
+  static std::string getDefaultName();
   virtual void update( const unsigned int time );
 private:
   CityServiceWorkersHire( PlayerCityPtr city );

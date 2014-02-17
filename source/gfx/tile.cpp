@@ -169,9 +169,9 @@ void Tile::setFlag(Tile::Type type, bool value)
   }
 }
 
-void Tile::appendDesirability(int value){   _terrain.desirability = math::clamp( _terrain.desirability += value, -0xff, 0xff );}
+void Tile::appendDesirability(int value){ _terrain.desirability += value; }
 int Tile::getDesirability() const{  return _terrain.desirability;}
-TileOverlayPtr Tile::getOverlay() const{  return _overlay;}
+TileOverlayPtr Tile::getOverlay() const{ return _overlay;}
 void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
 unsigned int Tile::getOriginalImgId() const{  return _terrain.imgid;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
