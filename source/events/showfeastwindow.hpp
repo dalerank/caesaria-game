@@ -25,7 +25,10 @@ class ShowFeastWindow : public GameEvent
 {
 public:
   static GameEventPtr create(std::string text, std::string title, std::string receiver);
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   std::string _text;

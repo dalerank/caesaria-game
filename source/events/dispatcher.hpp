@@ -20,7 +20,8 @@
 #include "core/scopedptr.hpp"
 #include "event.hpp"
 #include "core/singleton.hpp"
-#include "core/signals.hpp"
+
+class Game;
 
 namespace events
 {
@@ -32,13 +33,10 @@ public:
   ~Dispatcher();
 
   void append( GameEventPtr event );
-  void update( unsigned int time );
+  void update( Game& game, uint time );
 
   VariantMap save() const;
   void load( const VariantMap& stream );
-
-public oc3_signals:
-  Signal1<GameEventPtr>& onEvent();
 
 private:
   class Impl;

@@ -25,7 +25,10 @@ class ShowRequestInfo : public GameEvent
 {
 public:
   static GameEventPtr create( CityRequestPtr request );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   CityRequestPtr _request;

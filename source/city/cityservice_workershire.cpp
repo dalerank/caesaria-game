@@ -26,7 +26,7 @@
 using namespace constants;
 using namespace std;
 
-typedef map< int, TileOverlay::Type > Priorities;
+typedef vector< TileOverlay::Type > Priorities;
 
 class CityServiceWorkersHire::Impl
 {
@@ -50,45 +50,49 @@ CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
   : CityService( CityServiceWorkersHire::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
-  _d->priorities[ 1 ] = building::prefecture;
-  _d->priorities[ 2 ] = building::engineerPost;
-  _d->priorities[ 3 ] = building::clayPit;
-  _d->priorities[ 4 ] = building::wheatFarm;
-  _d->priorities[ 5 ] = building::grapeFarm;
-  _d->priorities[ 6 ] = building::granary;
-  _d->priorities[ 7 ] = building::ironMine;
-  _d->priorities[ 8 ] = building::templeCeres;
-  _d->priorities[ 9 ] = building::pottery;
-  _d->priorities[ 10 ] = building::warehouse;
-  _d->priorities[ 11 ] = building::forum;
-  _d->priorities[ 12 ] = building::doctor;
-  _d->priorities[ 13 ] = building::hospital;
-  _d->priorities[ 14 ] = building::barber;
-  _d->priorities[ 15 ] = building::baths;
-  _d->priorities[ 16 ] = building::fruitFarm;
-  _d->priorities[ 17 ] = building::oliveFarm;
-  _d->priorities[ 18 ] = building::vegetableFarm;
-  _d->priorities[ 19 ] = building::pigFarm;
-  _d->priorities[ 20 ] = building::senate;
-  _d->priorities[ 21 ] = building::market;
-  _d->priorities[ 22 ] = building::timberLogger;
-  _d->priorities[ 23 ] = building::marbleQuarry;
-  _d->priorities[ 24 ] = building::furnitureWorkshop;
-  _d->priorities[ 25 ] = building::weaponsWorkshop;
-  _d->priorities[ 26 ] = building::theater;
-  _d->priorities[ 27 ] = building::actorColony;
-  _d->priorities[ 28 ] = building::school;
-  _d->priorities[ 29 ] = building::amphitheater;
-  _d->priorities[ 30 ] = building::gladiatorSchool;
-  _d->priorities[ 31 ] = building::wharf;
-  _d->priorities[ 32 ] = building::barracks;
-  _d->priorities[ 33 ] = building::tower;
-  _d->priorities[ 34 ] = building::creamery;
-  _d->priorities[ 35 ] = building::academy;
-  _d->priorities[ 36 ] = building::colloseum;
-  _d->priorities[ 37 ] = building::lionsNursery;
-  _d->priorities[ 38 ] = building::shipyard;
-  _d->priorities[ 39 ] = building::dock;
+  _d->priorities.push_back( building::prefecture );
+  _d->priorities.push_back( building::engineerPost );
+  _d->priorities.push_back( building::clayPit );
+  _d->priorities.push_back( building::wheatFarm );
+  _d->priorities.push_back( building::grapeFarm );
+  _d->priorities.push_back( building::granary );
+  _d->priorities.push_back( building::ironMine );
+  _d->priorities.push_back( building::templeCeres );
+  _d->priorities.push_back( building::templeMars );
+  _d->priorities.push_back( building::templeMercury );
+  _d->priorities.push_back( building::templeNeptune );
+  _d->priorities.push_back( building::templeVenus );
+  _d->priorities.push_back( building::pottery );
+  _d->priorities.push_back( building::warehouse );
+  _d->priorities.push_back( building::forum );
+  _d->priorities.push_back( building::doctor );
+  _d->priorities.push_back( building::hospital );
+  _d->priorities.push_back( building::barber );
+  _d->priorities.push_back( building::baths );
+  _d->priorities.push_back( building::fruitFarm );
+  _d->priorities.push_back( building::oliveFarm );
+  _d->priorities.push_back( building::vegetableFarm );
+  _d->priorities.push_back( building::pigFarm );
+  _d->priorities.push_back( building::senate );
+  _d->priorities.push_back( building::market );
+  _d->priorities.push_back( building::timberLogger );
+  _d->priorities.push_back( building::marbleQuarry );
+  _d->priorities.push_back( building::furnitureWorkshop );
+  _d->priorities.push_back( building::weaponsWorkshop );
+  _d->priorities.push_back( building::theater );
+  _d->priorities.push_back( building::actorColony );
+  _d->priorities.push_back( building::school );
+  _d->priorities.push_back( building::amphitheater );
+  _d->priorities.push_back( building::gladiatorSchool );
+  _d->priorities.push_back( building::wharf );
+  _d->priorities.push_back( building::barracks );
+  _d->priorities.push_back( building::tower );
+  _d->priorities.push_back( building::creamery );
+  _d->priorities.push_back( building::academy );
+  _d->priorities.push_back( building::colloseum );
+  _d->priorities.push_back( building::lionsNursery );
+  _d->priorities.push_back( building::shipyard );
+  _d->priorities.push_back( building::dock );
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
@@ -136,6 +140,6 @@ void CityServiceWorkersHire::update( const unsigned int time )
 
   foreach( pr, _d->priorities )
   {
-    _hireByType( pr->second );
+    _hireByType( *pr );
   }
 }

@@ -26,7 +26,10 @@ class ShowTutorialWindow : public GameEvent
 public:
   static GameEventPtr create( std::string tutorial );
   virtual void load( const VariantMap& opt );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game&, uint ) const;
 
 private:
   std::string _tutorial;

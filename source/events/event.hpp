@@ -30,16 +30,18 @@ namespace events
 class GameEvent : public ReferenceCounted
 {
 public:
-  virtual void exec( Game& game ) = 0;
-  virtual bool mayExec( unsigned int time ) const { return true; }
-  virtual bool isDeleted() const { return true; }
+  virtual bool isDeleted() const;
+  virtual bool tryExec( Game& game, uint time );
 
   void dispatch();
 
-  virtual VariantMap save() const { return VariantMap(); }
-  virtual void load(const VariantMap& ) {}
+  virtual VariantMap save() const;
+  virtual void load( const VariantMap& );
 
 protected:
+  virtual void _exec( Game& game, uint time ) = 0;
+  virtual bool _mayExec( Game& game, uint time ) const = 0;
+
   GameEvent() {}
 };
 
@@ -47,7 +49,10 @@ class ClearLandEvent : public GameEvent
 {
 public:
   static GameEventPtr create( const TilePos& );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 private:
   TilePos _pos;
 };
@@ -56,7 +61,11 @@ class ShowInfoboxEvent : public GameEvent
 {
 public:
   static GameEventPtr create( const std::string& title, const std::string& text );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
+
 private:
   std::string _title, _text;
 };
@@ -65,7 +74,10 @@ class WarningMessageEvent : public GameEvent
 {
 public:
   static GameEventPtr create( const std::string& text );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 private:
   std::string _text;
 };
@@ -74,7 +86,10 @@ class ShowEmpireMapWindow : public GameEvent
 {
 public:
   static GameEventPtr create( bool show );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   bool _show;
@@ -84,7 +99,10 @@ class ShowAdvisorWindow : public GameEvent
 {
 public:
   static GameEventPtr create( bool show, int advisor );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   bool _show;
@@ -96,7 +114,10 @@ class Pause : public GameEvent
 public:
   typedef enum { toggle, pause, play, hidepause, hideplay } Mode;
   static GameEventPtr create( Mode mode );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   Mode _mode;
@@ -106,7 +127,10 @@ class ChangeSpeed : public GameEvent
 {
 public:
   static GameEventPtr create( int value );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec( Game& game, uint ) const;
 
 private:
   int _value;
@@ -118,7 +142,11 @@ public:
   static GameEventPtr create( int type, int value );
   static GameEventPtr import( Good::Type good, int qty );
   static GameEventPtr exportg( Good::Type good, int qty );
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
+
 private:
   int _type;
   int _value;

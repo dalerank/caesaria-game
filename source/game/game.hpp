@@ -66,9 +66,6 @@ public:
   void setTimeMultiplier( int percent );
   int getTimeMultiplier() const;
 
-public oc3_slots:
-  void resolveEvent( events::GameEventPtr event );
-
 public oc3_signals:
   Signal1<std::string>& onSaveAccepted();
 

@@ -25,7 +25,10 @@ class ReturnWorkers : public GameEvent
 {
 public:
   static GameEventPtr create(TilePos center, unsigned int workers);
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec(Game& game, uint time );
+  virtual bool _mayExec(Game&, unsigned int ) const;
 
 private:
   TilePos _center;

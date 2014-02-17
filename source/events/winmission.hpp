@@ -25,7 +25,10 @@ class WinMission : public GameEvent
 {
 public:
   static GameEventPtr create();
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint) const;
 };
 
 }

@@ -27,7 +27,10 @@ public:
   static GameEventPtr create( const TilePos&, TileOverlay::Type type );
   static GameEventPtr create( const TilePos&, TileOverlayPtr overlay );
 
-  virtual void exec( Game& game );
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
+
 private:
   TilePos _pos;
   TileOverlayPtr _overlay;

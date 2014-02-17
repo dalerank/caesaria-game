@@ -33,7 +33,7 @@ GameEventPtr SetVideoSettings::create()
   return ret;
 }
 
-void SetVideoSettings::exec(Game& game)
+void SetVideoSettings::_exec(Game& game, uint)
 {
   gui::VideoOptionsWindow* dialog = new gui::VideoOptionsWindow( game.getGui()->getRootWidget(),
                                                                  game.getEngine()->getAvailableModes(),
@@ -42,6 +42,8 @@ void SetVideoSettings::exec(Game& game)
   CONNECT( dialog, onSreenSizeChange(), this, SetVideoSettings::_setResolution );
   CONNECT( dialog, onFullScreenChange(), this, SetVideoSettings::_setFullscreen );
 }
+
+bool SetVideoSettings::_mayExec(Game&, uint) const { return true; }
 
 void SetVideoSettings::_setResolution(Size newSize)
 {

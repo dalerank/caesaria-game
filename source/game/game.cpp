@@ -243,7 +243,7 @@ void Game::setScreenGame()
       }
     }
 
-    events::Dispatcher::instance().update( _d->time );
+    events::Dispatcher::instance().update( *this, _d->time );
   }
 
   switch( screen.getResult() )
@@ -276,22 +276,11 @@ Game::Game() : _d( new Impl )
   _d->time = 0;
   _d->saveTime = 0;
   _d->timeMultiplier = 70;
-
-  CONNECT( &events::Dispatcher::instance(), onEvent(), this, Game::resolveEvent );
 }
 
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
 void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<int>( percent, 10, 300 );}
 int Game::getTimeMultiplier() const{  return _d->timeMultiplier;}
-
-void Game::resolveEvent( events::GameEventPtr event )
-{
-  if( event.isValid() )
-  {
-    event->exec( *this );
-  }
-}
-
 
 Game::~Game(){}
 

@@ -28,9 +28,6 @@ public:
   typedef std::list< GameEventPtr > Events;
 
   Events events;
-
-public oc3_signals:
-  Signal1<GameEventPtr> onEventSignal;
 };
 
 Dispatcher::Dispatcher() : _d( new Impl )
@@ -54,15 +51,13 @@ void Dispatcher::append( GameEventPtr event)
   }
 }
 
-void Dispatcher::update( unsigned int time )
+void Dispatcher::update(Game& game, uint time )
 {
   for( Impl::Events::iterator it=_d->events.begin(); it != _d->events.end();  )
   {
     GameEventPtr e = *it;
-    if( e->mayExec( time ) )
-    {
-      _d->onEventSignal.emit( e );
-    }
+
+    e->tryExec( game, time );
 
     if( e->isDeleted() ) { it = _d->events.erase( it ); }
     else { it++; }
@@ -93,11 +88,6 @@ void Dispatcher::load(const VariantMap& stream)
       append( e );
     }
   }
-}
-
-Signal1<GameEventPtr>&Dispatcher::onEvent()
-{
-  return _d->onEventSignal;
 }
 
 }//end namespace events

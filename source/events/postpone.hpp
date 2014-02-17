@@ -27,12 +27,14 @@ public:
   static GameEventPtr create(const std::string& type, const VariantMap& stream );
 
   virtual ~PostponeEvent();
-  virtual void exec( Game& game );
-  virtual bool mayExec( unsigned int time ) const;
   virtual bool isDeleted() const;
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream );
+
+protected:
+  virtual bool _mayExec( Game& game, uint ) const;
+  virtual void _exec( Game& game, uint );
 
 private:
   PostponeEvent();

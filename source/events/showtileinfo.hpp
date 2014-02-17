@@ -25,9 +25,11 @@ class ShowTileInfo : public GameEvent
 {
 public:
   static GameEventPtr create( TilePos pos );
-  virtual void exec( Game& game );
 
 private:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game&, uint) const;
+
   TilePos _pos;
 };
 

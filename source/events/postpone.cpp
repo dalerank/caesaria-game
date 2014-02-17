@@ -61,7 +61,7 @@ GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& s
 
 PostponeEvent::~PostponeEvent(){}
 
-void PostponeEvent::exec(Game& game)
+void PostponeEvent::_exec(Game& game, uint)
 {
   Logger::warning( "Start event name=" + _d->name + " type=" + _d->type );
   PlayerCityPtr city = game.getCity();
@@ -96,7 +96,7 @@ void PostponeEvent::exec(Game& game)
   }
 }
 
-bool PostponeEvent::mayExec( unsigned int ) const{  return _d->date <= GameDate::current();}
+bool PostponeEvent::_mayExec( Game&, uint ) const{  return _d->date <= GameDate::current();}
 bool PostponeEvent::isDeleted() const{  return _d->date <= GameDate::current(); }
 VariantMap PostponeEvent::save() const {  return _d->options; }
 
@@ -106,7 +106,6 @@ void PostponeEvent::load(const VariantMap& stream)
   _d->type = stream.get( "eventType", Variant( _d->type ) ).toString();
   _d->name = stream.get( "eventName", Variant( _d->name ) ).toString();
   _d->options = stream;
-
 }
 
 PostponeEvent::PostponeEvent() : _d( new Impl )

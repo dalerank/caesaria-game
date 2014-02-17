@@ -45,9 +45,14 @@ GameEventPtr PlaySound::create(std::string filename, int volume)
   return ret;
 }
 
-void PlaySound::exec(Game&)
+void PlaySound::_exec(Game&, uint)
 {
   audio::Engine::instance().play( _sound, _volume );
+}
+
+bool PlaySound::_mayExec(Game& game, uint time) const
+{
+  return true;
 }
 
 }

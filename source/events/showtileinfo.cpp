@@ -32,9 +32,11 @@ GameEventPtr ShowTileInfo::create( TilePos pos )
   return ret;
 }
 
-void ShowTileInfo::exec(Game& game)
+void ShowTileInfo::_exec(Game& game, uint time)
 {
   InfoboxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos );
 }
+
+bool ShowTileInfo::_mayExec(Game&, uint ) const { return true; }
 
 }

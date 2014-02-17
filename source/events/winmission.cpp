@@ -34,7 +34,7 @@ GameEventPtr WinMission::create()
   return ret;
 }
 
-void WinMission::exec(Game& game)
+void WinMission::_exec(Game& game, uint)
 {
   Logger::warning( "WinMission: exec ");
   PlayerCityPtr city = game.getCity();
@@ -43,9 +43,11 @@ void WinMission::exec(Game& game)
   std::string nextMission = wt.getNextMission();
   std::string newTitle = wt.getNewTitle();
 
-  gui::WinMissionWindow* wnd = new gui::WinMissionWindow( game.getGui()->getRootWidget(), newTitle, false );
+  /*gui::WinMissionWindow* wnd = */new gui::WinMissionWindow( game.getGui()->getRootWidget(), newTitle, false );
 
   //CONNECT( wnd, onNextMission(), &game, Game::load);
 }
+
+bool WinMission::_mayExec(Game&, uint ) const { return true; }
 
 }

@@ -32,7 +32,12 @@ GameEventPtr ChangeBuildingOptions::create(const VariantMap& options)
   return ret;
 }
 
-void ChangeBuildingOptions::exec(Game& game)
+bool ChangeBuildingOptions::_mayExec(Game& game, uint time) const
+{
+  return true;
+}
+
+void ChangeBuildingOptions::_exec(Game& game, uint)
 {
   CityBuildOptions options;
   options = game.getCity()->getBuildOptions();

@@ -25,7 +25,10 @@ class FireWorkers : public GameEvent
 {
 public:
   static GameEventPtr create(TilePos center, unsigned int workers);
-  virtual void exec( Game& game );
+
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   TilePos _center;

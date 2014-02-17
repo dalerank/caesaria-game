@@ -62,7 +62,7 @@ GameEventPtr DisasterEvent::create( const Tile& tile, Type type )
   return ret;
 }
 
-void DisasterEvent::exec( Game& game )
+void DisasterEvent::_exec( Game& game, uint )
 {
   Tilemap& tmap = game.getCity()->getTilemap();
   Tile& tile = tmap.at( _pos );
@@ -118,5 +118,7 @@ void DisasterEvent::exec( Game& game )
     game.getCity()->onDisasterEvent().emit( _pos, dstr2string[_type] );
   }
 }
+
+bool DisasterEvent::_mayExec(Game&, uint) const{  return true;}
 
 } //end namespace events

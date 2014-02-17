@@ -25,9 +25,11 @@ class SetVideoSettings : public GameEvent
 {
 public:
   static GameEventPtr create();
-  virtual void exec( Game& game );
 
 private:
+  virtual bool _mayExec(Game&, uint) const;
+  virtual void _exec( Game& game, uint );
+
   void _setResolution(Size);
   void _setFullscreen(bool);
 };

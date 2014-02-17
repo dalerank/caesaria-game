@@ -27,7 +27,9 @@ public:
   static GameEventPtr create(std::string rc, int index, int volume );
   static GameEventPtr create(std::string filename, int volume );
 
-  virtual void exec( Game& game );
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   std::string _sound;

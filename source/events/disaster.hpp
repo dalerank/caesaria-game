@@ -30,7 +30,9 @@ public:
   } Type;
   static GameEventPtr create(const Tile& tile, Type type );
 
-  virtual void exec( Game& game );
+protected:
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game&, uint) const;
 
 private:
   TilePos _pos;

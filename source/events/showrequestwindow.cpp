@@ -33,7 +33,12 @@ GameEventPtr ShowRequestInfo::create( CityRequestPtr request )
   return ret;
 }
 
-void ShowRequestInfo::exec(Game& game)
+bool ShowRequestInfo::_mayExec(Game& game, uint time) const
+{
+  return true;
+}
+
+void ShowRequestInfo::_exec(Game& game, uint)
 {
   if( _request.isValid() )
   {

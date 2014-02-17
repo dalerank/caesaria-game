@@ -34,7 +34,7 @@ GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
   return ret;
 }
 
-void ReturnWorkers::exec(Game& game)
+void ReturnWorkers::_exec(Game& game, uint time)
 {
   Tilemap& tilemap = game.getCity()->getTilemap();
   const int defaultFireWorkersDistance = 40;
@@ -61,4 +61,5 @@ void ReturnWorkers::exec(Game& game)
   }
 }
 
+bool ReturnWorkers::_mayExec(Game&, uint) const { return true; }
 }
