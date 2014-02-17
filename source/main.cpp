@@ -4,6 +4,7 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
+#include "core/stacktrace.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -42,6 +43,7 @@ int main(int argc, char* argv[])
   catch( Exception e )
   {
     Logger::warning( "FATAL ERROR: %s", e.getDescription().c_str() );
+    Stacktrace::print();
   }
 
   return 0;

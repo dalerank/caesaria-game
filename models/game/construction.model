@@ -454,7 +454,6 @@
     employers : 6
     class : "administration"
     sound : [ "forum", 1 ]
-    desc : [ "##forum_information##" ]
   }, 
   
   forum_2 : {
@@ -647,8 +646,6 @@
   clay_pit : 
   {
     cost : 40,
-    prettyName : "##clay_pit##"
-    description : "##clay_pit_help##"
     desirability : { base : -3,	range : 3,	step : 1 }
     employers : 10
     image : [ "commerce", 61 ]
@@ -681,7 +678,6 @@
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
     class : "industry"
-    desc : [ "##weapons_workshop_info##" ]
   },
   
   furniture_workshop :
