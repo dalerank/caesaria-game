@@ -1,5 +1,5 @@
-CaesarIA
------------
+![CaesarIA](/logo.png)
+
 CaesarIA is remake of Caesar III in the big and seamless world of Ancient Rome. You can build the small village with some of gardens and a workshop where you want.
 You also can perform tasks of an emperor or build the whole city and broke attacks of barbarians, Egyptians or carfagens which want to steal your goods and to kill your inhabitants!
 You also can pass the company from original game (when it will be restored)
