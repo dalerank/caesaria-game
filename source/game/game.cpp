@@ -180,9 +180,11 @@ void Game::setScreenMenu()
     break;
    
     case ScreenMenu::loadSavedGame:
-    {  
-      std::cout<<"Loading map:" << "lepcismagna.sav" << std::endl;
-      load( GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
+    case ScreenMenu::loadMission:
+    {        
+      //load( GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
+      load( screen.getMapName() );
+      Logger::warning( "screen menu: end loading map" );
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
@@ -223,7 +225,6 @@ void Game::setScreenGame()
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
   {
-  	Logger::warning( "game: loop tick %d", _d->saveTime );
     screen.update( *_d->engine );
 
     if( !_d->pauseCounter )

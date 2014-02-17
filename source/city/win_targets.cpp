@@ -82,6 +82,24 @@ void CityWinTargets::load( const VariantMap& stream )
   _d->newTitle = stream.get( "title" ).toString();
 }
 
+VariantMap CityWinTargets::save() const
+{
+  VariantMap ret;
+  ret[ "success" ] = _d->success;
+  ret[ "culture" ] = _d->culture;
+  ret[ "population" ] = _d->population;
+  ret[ "prosperity" ] = _d->prosperity;
+  ret[ "favour" ]  = _d->favour;
+  ret[ "peace"  ]  = _d->peace;
+  ret[ "overview" ] = Variant( _d->overview );
+  ret[ "short" ] = Variant( _d->shortDesc );
+  ret[ "caption" ] = Variant( _d->caption );
+  ret[ "next" ] = Variant( _d->nextMission );
+  ret[ "title" ] = Variant( _d->newTitle );
+
+  return ret;
+}
+
 CityWinTargets&CityWinTargets::operator=(const CityWinTargets& a)
 {
   _d->maxHouseLevel = a._d->maxHouseLevel;

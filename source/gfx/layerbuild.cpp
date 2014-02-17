@@ -19,7 +19,7 @@
 #include "walker/constants.hpp"
 #include "game/roadbuild_helper.hpp"
 #include "core/logger.hpp"
-#include "events/event.hpp"
+#include "events/build.hpp"
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "city/city.hpp"

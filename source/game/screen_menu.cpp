@@ -51,22 +51,13 @@ public:
   std::string playerName;
 
   void resolveNewGame();
-
-  void resolveLoadGame( std::string fileName )
-  {
-    result = ScreenMenu::loadSavedGame;
-    fileMap = fileName;
-    isStopped=true; 
-  }
-
   void resolveCredits();
   
   void resolvePlayMission();
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
-  
+
   void resolveSelectFile( std::string fileName )
   {
-    result = ScreenMenu::loadMap;
     fileMap = fileName;
     isStopped = true;
   }
@@ -99,6 +90,7 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
   std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
 
+  result = ScreenMenu::loadSavedGame;
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect, savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
@@ -202,6 +194,7 @@ void ScreenMenu::Impl::resolvePlayMission()
   Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
              windowSize );
 
+  result = ScreenMenu::loadMission;
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect,
                                                     GameSettings::rcpath( "/missions/" ), ".mission", -1 );
 
@@ -222,6 +215,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
                                                     GameSettings::rcpath( "/maps/" ), ".map",
                                                     -1 );
 
+  result = ScreenMenu::loadMap;
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadmap##") );
 }

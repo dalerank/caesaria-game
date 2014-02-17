@@ -443,22 +443,33 @@ void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr
 
 void PlayerCity::save( VariantMap& stream) const
 {
+  Logger::warning( "City: create save map" );
+
+  Logger::warning( "City: save tilemap information");
   VariantMap vm_tilemap;
   _d->tilemap.save( vm_tilemap );
 
   stream[ "tilemap" ] = vm_tilemap;
+
+  Logger::warning( "City: save main paramters ");
   stream[ "roadEntry" ] = _d->borderInfo.roadEntry;
   stream[ "roadExit" ]  = _d->borderInfo.roadExit;
   stream[ "cameraStart" ] = _d->cameraStart;
   stream[ "boatEntry" ] = _d->borderInfo.boatEntry;
   stream[ "boatExit" ] = _d->borderInfo.boatExit;
   stream[ "climate" ] = _d->climate;
-  stream[ "funds" ] = _d->funds.save();
   stream[ "population" ] = _d->population;
   stream[ "name" ] = Variant( _d->name );
-  stream[ "tradeOptions" ] = _d->tradeOptions.save();
 
-  // walkers
+  Logger::warning( "City: save finance information" );
+  stream[ "funds" ] = _d->funds.save();
+
+  Logger::warning( "City: save trade/build/win options" );
+  stream[ "tradeOptions" ] = _d->tradeOptions.save();
+  stream[ "buildOptions" ] = _d->buildOptions.save();
+  stream[ "winTargets"   ] = _d->targets.save();
+
+  Logger::warning( "City: save walkers information" );
   VariantMap vm_walkers;
   int walkedId = 0;
   foreach( w, _d->walkerList )
@@ -470,7 +481,7 @@ void PlayerCity::save( VariantMap& stream) const
   }
   stream[ "walkers" ] = vm_walkers;
 
-  // overlays
+  Logger::warning( "City: save overlays information" );
   VariantMap vm_overlays;
   foreach( overlay, _d->overlayList )
   {
@@ -481,6 +492,7 @@ void PlayerCity::save( VariantMap& stream) const
   }
   stream[ "overlays" ] = vm_overlays;
 
+  Logger::warning( "City: save services information" );
   VariantMap vm_services;
   foreach( service, _d->services )
   {   
@@ -488,25 +500,35 @@ void PlayerCity::save( VariantMap& stream) const
   }
 
   stream[ "services" ] = vm_services;
+
+  Logger::warning( "City: finalize save map" );
 }
 
 void PlayerCity::load( const VariantMap& stream )
 {
+  Logger::warning( "City: start parse savemap" );
   _d->tilemap.load( stream.get( "tilemap" ).toMap() );
 
+  Logger::warning( "City: parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
   _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
   _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
   _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
-
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
-  _d->funds.load( stream.get( "funds" ).toMap() );
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
   _d->lastMonthCount = GameDate::current().month();
-  _d->tradeOptions.load( stream.get( "tradeOptions" ).toMap() );
 
+  Logger::warning( "City: parse funds" );
+  _d->funds.load( stream.get( "funds" ).toMap() );
+
+  Logger::warning( "City: parse trade/build/win params" );
+  _d->tradeOptions.load( stream.get( "tradeOptions" ).toMap() );
+  _d->buildOptions.load( stream.get( "buildOptions" ).toMap() );
+  _d->targets.load( stream.get( "winTargets").toMap() );
+
+  Logger::warning( "City: load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
   foreach( item, overlays )
   {
@@ -529,6 +551,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
   }
 
+  Logger::warning( "City: parse walkers info" );
   VariantMap walkers = stream.get( "walkers" ).toMap();
   foreach( item, walkers )
   {
@@ -547,6 +570,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
   }
 
+  Logger::warning( "City: load service info" );
   VariantMap services = stream.get( "services" ).toMap();
   foreach( item, services )
   {

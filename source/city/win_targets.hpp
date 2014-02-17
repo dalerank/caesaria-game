@@ -47,6 +47,7 @@ public:
                   int population ) const;
 
   void load( const VariantMap& stream );
+  VariantMap save() const;
 
   CityWinTargets& operator=(const CityWinTargets& a);
 

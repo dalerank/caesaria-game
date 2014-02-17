@@ -75,6 +75,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
+  new Label( this, Rect( getWidth() / 2, getHeight() - 40, getWidth() - 110, getHeight() - 10 ), _("##mission_wnd_tocity##" ) );
   TexturedButton* btnExit = new TexturedButton( this, Point( getWidth() - 110, getHeight() - 40), Size( 27 ), -1, 179 );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
 

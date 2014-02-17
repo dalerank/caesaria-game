@@ -37,6 +37,7 @@ public:
   void clear();
 
   void load( const VariantMap& options );
+  VariantMap save() const;
 
   CityBuildOptions& operator=(const CityBuildOptions& a);
 

@@ -137,6 +137,9 @@ BuildMenu::~BuildMenu()
 
 void BuildMenu::addSubmenuButton(const BuildMenuType menuType, const std::string &text)
 {
+  if( !_options.isGroupAvailable( menuType ) )
+    return;
+
   BuildButton* button = new BuildButton( this, text, Rect( Point( 0, getHeight() ), Size( getWidth(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
   button->setCost(-1);  // no display
@@ -410,11 +413,8 @@ BuildMenu_factory::BuildMenu_factory( Widget* parent, const Rect& rectangle )
 
 void BuildMenu_religion::initialize()
 {
-  bool smallTemplesAvailabe = _options.isBuildingsAvailble( building::templeCeres, building::templeVenus );
-  if( smallTemplesAvailabe ) { addSubmenuButton(BM_TEMPLE , _("##small_temples##") ); }
-
-  bool bigTemplesAvailable = _options.isBuildingsAvailble( building::cathedralCeres, building::cathedralVenus );
-  if( bigTemplesAvailable ) { addSubmenuButton(BM_BIGTEMPLE , _("##large_temples##") ); }
+  addSubmenuButton(BM_TEMPLE , _("##small_temples##") );
+  addSubmenuButton(BM_BIGTEMPLE , _("##large_temples##") );
 
   addBuildButton(building::oracle);
 

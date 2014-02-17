@@ -20,7 +20,7 @@
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
-#include "events/event.hpp"
+#include "events/build.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
 

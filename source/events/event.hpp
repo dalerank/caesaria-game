@@ -43,18 +43,6 @@ protected:
   GameEvent() {}
 };
 
-class BuildEvent : public GameEvent
-{
-public:
-  static GameEventPtr create( const TilePos&, TileOverlay::Type type );
-  static GameEventPtr create( const TilePos&, TileOverlayPtr overlay );
-
-  virtual void exec( Game& game );
-private:
-  TilePos _pos;
-  TileOverlayPtr _overlay;
-};
-
 class ClearLandEvent : public GameEvent
 {
 public:

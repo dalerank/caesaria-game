@@ -34,6 +34,7 @@ public:
   {
     startNewGame=0,
     loadMap,
+    loadMission,
     loadSavedGame,
     closeApplication,
     reloadScreen,

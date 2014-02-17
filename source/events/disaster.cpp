@@ -26,6 +26,7 @@
 #include "objects/ruins.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/tilesarray.hpp"
+#include "build.hpp"
 #include "core/foreach.hpp"
 
 using namespace constants;

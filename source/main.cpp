@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
   }
   catch( Exception e )
   {
-    Logger::warning( "FATAL ERROR: %s", e.getDescription().c_str() );
+    Logger::warning( "Critical error: %s", e.getDescription().c_str() );
     Stacktrace::print();
   }
 

@@ -50,14 +50,17 @@
                    
     buildings : 
     { 
-      well : true, 
-      engineering_post : true,
-      prefecture : true,
-      small_ceres_temple : true, 
-      small_venus_temple : true, 
-      small_mars_temple : true, 
-      small_neptune_temple : true, 
+      well : true
+      engineering_post : true
+      prefecture : true
+      small_ceres_temple : true
+      small_venus_temple : true
+      small_mars_temple : true
+      small_neptune_temple : true
       small_mercury_temple : true
+      market : true
+      granery : true
+      wheat_farm : true
       senate_1 : true
     }
   }

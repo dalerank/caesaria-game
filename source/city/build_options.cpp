@@ -119,10 +119,7 @@ bool CityBuildOptions::isGroupAvailable(const BuildMenuType type) const
   return false;
 }
 
-void CityBuildOptions::clear()
-{
-  _d->rules.clear();
-}
+void CityBuildOptions::clear() {  _d->rules.clear(); }
 
 void CityBuildOptions::load(const VariantMap& options)
 {
@@ -145,6 +142,19 @@ void CityBuildOptions::load(const VariantMap& options)
     TileOverlay::Type btype = MetaDataHolder::getType( item->first );
     setBuildingAvailble( btype, item->second.toBool() );
   }
+}
+
+VariantMap CityBuildOptions::save() const
+{
+  VariantMap blds;
+  foreach( it, _d->rules )
+  {
+    blds[ MetaDataHolder::getTypename( it->first ) ] = it->second;
+  }
+
+  VariantMap ret;
+  ret[ "buildings" ] = blds;
+  return ret;
 }
 
 CityBuildOptions& CityBuildOptions::operator=(const CityBuildOptions& a)
