@@ -24,7 +24,9 @@ namespace events
 class ChangeBuildingOptions : public GameEvent
 {
 public:
-  static GameEventPtr create( const VariantMap& options );
+  static GameEventPtr create();
+
+  virtual void load(const VariantMap &);
 
 protected:
   virtual void _exec( Game& game, uint );

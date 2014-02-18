@@ -15,8 +15,7 @@
 
 #include "random_fire.hpp"
 #include "game/game.hpp"
-#include "helper.hpp"
-#include "city.hpp"
+#include "city/helper.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
@@ -24,36 +23,35 @@
 
 using namespace constants;
 
+namespace events
+{
+
 class RandomFire::Impl
 {
 public:
-  PlayerCityPtr city;
   int minPopulation, maxPopulation;
   VariantMap events;
   bool isDeleted;
 };
 
-CityServicePtr RandomFire::create( PlayerCityPtr city )
+GameEventPtr RandomFire::create()
 {
-  RandomFire* e = new RandomFire();
-  e->_d->city = city;
-
-  CityServicePtr ret( e );
+  GameEventPtr ret( new RandomFire() );
   ret->drop();
 
   return ret;
 }
 
-void RandomFire::update( const unsigned int time)
+void RandomFire::_exec( Game& game, uint time)
 {
   if( time % GameDate::ticksInMonth() == 0 && !_d->isDeleted )
   {
-    int population = _d->city->getPopulation();
+    int population = game.getCity()->getPopulation();
     if( population > _d->minPopulation && population < _d->maxPopulation )
     {
       Logger::warning( "Execute random fire service" );
       _d->isDeleted = true;
-      CityHelper helper( _d->city );
+      CityHelper helper( game.getCity() );
       HouseList houses = helper.find<House>( building::house );
       for( unsigned int k=0; k < houses.size() / 4; k++ )
       {
@@ -67,7 +65,7 @@ void RandomFire::update( const unsigned int time)
   }
 }
 
-std::string RandomFire::getDefaultName() { return "random_fire"; }
+bool RandomFire::_mayExec(Game&, uint) const { return true; }
 bool RandomFire::isDeleted() const {  return _d->isDeleted; }
 
 void RandomFire::load(const VariantMap& stream)
@@ -90,7 +88,9 @@ VariantMap RandomFire::save() const
   return ret;
 }
 
-RandomFire::RandomFire() : CityService( RandomFire::getDefaultName() ), _d( new Impl )
+RandomFire::RandomFire() : _d( new Impl )
 {
   _d->isDeleted = false;
 }
+
+}//end namespace events

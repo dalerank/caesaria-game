@@ -13,30 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_RANDOMDAMAGE_H_INCLUDE_
-#define _CAESARIA_RANDOMDAMAGE_H_INCLUDE_
+#ifndef _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
+#define _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
 
-#include "cityservice.hpp"
-#include "city.hpp"
+#include "event.hpp"
 
-class RandomDamage : public CityService
+namespace events
+{
+
+class RandomDamage : public GameEvent
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
-  virtual void update( const unsigned int time);
-  static std::string getDefaultName();
+  static GameEventPtr create();
   virtual bool isDeleted() const;
 
-  virtual void load(const VariantMap &stream);
+  virtual void load(const VariantMap& stream);
   virtual VariantMap save() const;
+
+protected:
+  virtual void _exec(Game &game, uint time);
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   RandomDamage();
 
-  PlayerCityPtr _city;
   int _minPopulation, _maxPopulation;
   VariantMap _events;
   bool _isDeleted;
 };
 
-#endif //_CAESARIA_RANDOMDAMAGE_H_INCLUDE_
+}//end namespace events
+
+#endif //_CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_

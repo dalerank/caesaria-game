@@ -504,7 +504,8 @@ Variant Json::parseObjectName(const std::string &json, int &index, bool &success
   if( !complete )
   {
     success = false;
-    std::string errText = StringHelper::format( 0xff, "Wrong symbol in object name \"%s\"", s.c_str() );
+    std::string advText = json.substr( std::max( 0, index - 60), 120 );
+    std::string errText = StringHelper::format( 0xff, "Wrong symbol in object name \"%s\"  at \n %s", s.c_str(), advText.c_str() );
     return Variant( errText );
   }
 

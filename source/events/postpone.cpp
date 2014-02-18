@@ -21,8 +21,7 @@
 #include "city/requestdispatcher.hpp"
 #include "core/logger.hpp"
 #include "city/cityservice_factory.hpp"
-#include "showtutorialwindow.hpp"
-#include "changebuildingoptions.hpp"
+#include "factory.hpp"
 
 namespace events
 {
@@ -31,6 +30,8 @@ class PostponeEvent::Impl
 {
 public:
   DateTime date;
+  int population;
+  bool mayDelete;
   std::string name;
   std::string type;
   VariantMap options;
@@ -74,35 +75,58 @@ void PostponeEvent::_exec(Game& game, uint)
     {
       dispatcher->add( _d->options );
     }
+
+    return;
   }
-  else if( "tutorial_window" == _d->type )
+
+  GameEventPtr e = GameEventFactory::create( _d->type );
+  if( e.isValid() )
   {
-    GameEventPtr e = ShowTutorialWindow::create( "" );
     e->load( _d->options );
     e->dispatch();
+    return;
   }
-  else if( "building_options" == _d->type )
+
+  CityServicePtr srvc = CityServiceFactory::create( _d->type, city );
+  if( srvc.isValid() )
   {
-    GameEventPtr e = ChangeBuildingOptions::create( _d->options );
-    //e->load( _d->options );
-    e->dispatch();
-  }
-  else if( "health_updater" == _d->type || "desirability_updater" == _d->type
-           || "random_collapse" == _d->type || "random_fire" == _d->type )
-  {
-    CityServicePtr srvc = CityServiceFactory::create( _d->type, city );
     srvc->load( _d->options );
     city->addService( srvc );
   }
+
+  _d->mayDelete = true;
 }
 
-bool PostponeEvent::_mayExec( Game&, uint ) const{  return _d->date <= GameDate::current();}
-bool PostponeEvent::isDeleted() const{  return _d->date <= GameDate::current(); }
+bool PostponeEvent::_mayExec( Game& game, uint time ) const
+{
+  if( time % 25 == 1 )
+  {
+    bool dateCondition = true;
+    if( _d->date.year() != -1000 )
+    {
+      dateCondition = _d->date <= GameDate::current();
+    }
+
+    bool popCondition = true;
+    if( _d->population > 0 )
+    {
+      popCondition = game.getCity()->getPopulation() > _d->population;
+    }
+
+    _d->mayDelete = dateCondition && popCondition;
+    return _d->mayDelete;
+  }
+
+  return false;
+}
+
+bool PostponeEvent::isDeleted() const{  return _d->mayDelete; }
 VariantMap PostponeEvent::save() const {  return _d->options; }
 
 void PostponeEvent::load(const VariantMap& stream)
-{
-  _d->date = stream.get( "date" ).toDateTime();
+{  
+  _d->date = stream.get( "date", DateTime( -1000, 1, 1 ) ).toDateTime();
+  _d->population = (int)stream.get( "population", 0 );
   _d->type = stream.get( "eventType", Variant( _d->type ) ).toString();
   _d->name = stream.get( "eventName", Variant( _d->name ) ).toString();
   _d->options = stream;
@@ -110,7 +134,7 @@ void PostponeEvent::load(const VariantMap& stream)
 
 PostponeEvent::PostponeEvent() : _d( new Impl )
 {
-
+  _d->mayDelete = false;
 }
 
 }

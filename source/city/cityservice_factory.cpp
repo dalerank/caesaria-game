@@ -32,8 +32,6 @@
 #include "cityservice_animals.hpp"
 #include "cityservice_culture.hpp"
 #include "health_updater.hpp"
-#include "random_damage.hpp"
-#include "random_fire.hpp"
 #include "desirability_updater.hpp"
 
 class CityServiceFactory::Impl
@@ -97,7 +95,5 @@ CityServiceFactory::CityServiceFactory() : _d( new Impl )
   addCreator<CityServiceDisorder>();
   addCreator<CityRequestDispatcher>();
   addCreator<HealthUpdater>();
-  addCreator<RandomDamage>();
-  addCreator<RandomFire>();
   addCreator<DesirabilityUpdater>();
 }

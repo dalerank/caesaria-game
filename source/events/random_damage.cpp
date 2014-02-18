@@ -22,26 +22,26 @@
 
 using namespace constants;
 
-CityServicePtr RandomDamage::create( PlayerCityPtr city )
+namespace events
 {
-  RandomDamage* e = new RandomDamage();
-  e->_city = city;
 
-  CityServicePtr ret( e );
+GameEventPtr RandomDamage::create()
+{
+  GameEventPtr ret( new RandomDamage() );
   ret->drop();
 
   return ret;
 }
 
-void RandomDamage::update( const unsigned int time)
+void RandomDamage::_exec( Game& game, uint time )
 {
   if( time % GameDate::ticksInMonth() == 0 && !_isDeleted )
   {
-    int population = _city->getPopulation();
+    int population = game.getCity()->getPopulation();
     if( population > _minPopulation && population < _maxPopulation )
     {
       _isDeleted = true;
-      CityHelper helper( _city );
+      CityHelper helper( game.getCity() );
       HouseList houses = helper.find<House>( building::house );
       for( unsigned int k=0; k < houses.size() / 4; k++ )
       {
@@ -55,7 +55,7 @@ void RandomDamage::update( const unsigned int time)
   }
 }
 
-std::string RandomDamage::getDefaultName() { return "random_collapse"; }
+bool RandomDamage::_mayExec(Game&, uint) const { return true; }
 bool RandomDamage::isDeleted() const {  return _isDeleted; }
 
 void RandomDamage::load(const VariantMap& stream)
@@ -78,7 +78,6 @@ VariantMap RandomDamage::save() const
   return ret;
 }
 
-RandomDamage::RandomDamage() : CityService( RandomDamage::getDefaultName() )
-{
-  _isDeleted = false;
-}
+RandomDamage::RandomDamage(){  _isDeleted = false;}
+
+}//end namespace events

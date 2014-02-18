@@ -13,23 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_RANDOMFIRE_H_INCLUDE_
-#define _CAESARIA_RANDOMFIRE_H_INCLUDE_
+#ifndef _CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
+#define _CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
 
-#include "cityservice.hpp"
+#include "event.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
-class RandomFire : public CityService
+namespace events
+{
+
+class RandomFire : public GameEvent
 {
 public:
-  static CityServicePtr create(PlayerCityPtr city);
-  virtual void update( const unsigned int time);
-  static std::string getDefaultName();
+  static GameEventPtr create();
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
+
+protected:
+  virtual void _exec(Game &game, uint time);
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
   RandomFire();
@@ -38,4 +43,6 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-#endif //_CAESARIA_RANDOMFIRE_H_INCLUDE_
+}//namespace events
+
+#endif //_CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_

@@ -21,10 +21,9 @@
 namespace events
 {
 
-GameEventPtr ChangeBuildingOptions::create(const VariantMap& options)
+GameEventPtr ChangeBuildingOptions::create()
 {
   ChangeBuildingOptions* e = new ChangeBuildingOptions();
-  e->_vars = options;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -32,10 +31,12 @@ GameEventPtr ChangeBuildingOptions::create(const VariantMap& options)
   return ret;
 }
 
-bool ChangeBuildingOptions::_mayExec(Game& game, uint time) const
+void ChangeBuildingOptions::load(const VariantMap& stream)
 {
-  return true;
+  _vars = stream;
 }
+
+bool ChangeBuildingOptions::_mayExec(Game& game, uint time) const {  return true; }
 
 void ChangeBuildingOptions::_exec(Game& game, uint)
 {

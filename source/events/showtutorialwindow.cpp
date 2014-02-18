@@ -22,7 +22,7 @@
 namespace events
 {
 
-GameEventPtr ShowTutorialWindow::create(std::string tutorial )
+GameEventPtr ShowTutorialWindow::create(std::string tutorial)
 {
   ShowTutorialWindow* e = new ShowTutorialWindow();
   e->_tutorial = tutorial;

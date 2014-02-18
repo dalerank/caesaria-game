@@ -34,10 +34,7 @@ Dispatcher::Dispatcher() : _d( new Impl )
 {
 }
 
-Dispatcher::~Dispatcher()
-{
-
-}
+Dispatcher::~Dispatcher(){}
 
 void Dispatcher::append( GameEventPtr event)
 {
