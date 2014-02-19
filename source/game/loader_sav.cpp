@@ -22,10 +22,12 @@
 #include "pkwareinputstream.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/logger.hpp"
 
 #include <fstream>
 #include <climits>
 #include <stdint.h>
+#include <map>
 
 class GameLoaderC3Sav::Impl
 {
@@ -173,6 +175,8 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
   // loads the graphics map
   int border_size = (162 - size) / 2;
 
+  std::map< int, std::map< int, unsigned char > > edgeData;
+
   for (int itA = 0; itA < size; ++itA)
   {
     for (int itB = 0; itB < size; ++itB)
@@ -185,9 +189,65 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
       Tile& tile = oTilemap.at(i, j);
       tile.setPicture( TileHelper::convId2PicName( pGraphicGrid[index] ) );
       tile.setOriginalImgId( pGraphicGrid[index] );
+
+      edgeData[ i ][ j ] = pEdgeGrid[index];
       TileHelper::decode( tile, pTerrainGrid[index] );
     }
   }    
+
+  for (int i = 0; i < size; ++i)
+  {
+    for (int j = 0; j < size; ++j)
+    {
+      unsigned char ed = edgeData[ i][ j ];
+      if( ed == 0x00)
+      {
+        int size = 1;
+
+				{
+					int dj;
+					try
+					{
+						// find size, 5 is maximal size for building
+						for (dj = 0; dj < 5; ++dj)
+						{
+							int edd = edgeData[ i ][ j - dj ];
+							// find bottom left corner
+							if (edd == 8 * dj + 0x40)
+							{
+								size = dj + 1;
+								break;
+							}
+						}
+					}
+					catch(...)
+					{
+						size = dj + 1;
+					}
+				}
+
+				Logger::warning( "Multi-tile x %d at (%d,%d)", size, i, j );
+
+				Tile& master = oTilemap.at(i, j - size + 1);
+
+				Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
+
+        for (int di = 0; di < size; ++di)
+        {
+          for (int dj = 0; dj < size; ++dj)
+          {
+            oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
+          }
+        }
+
+        Logger::warning( " decoding " );
+      }
+
+      // Check if it is building and type of building
+      //if (ttile.getMasterTile() == NULL)
+      //decodeTerrain( oTilemap.at( i, j ), oCity );
+    }
+  }
     
   }
   catch(PKException)

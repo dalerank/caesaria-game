@@ -248,7 +248,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   if( ret.isNull() )
   {
     Logger::warning("Can't init player city, that empire city with name %s no exist", city->getName().c_str() );
-    _CAESARIA_DEBUG_BREAK_IF( "City already exist" );
+    //_CAESARIA_DEBUG_BREAK_IF( "Can't init player city" );
     return ret;
   }
 

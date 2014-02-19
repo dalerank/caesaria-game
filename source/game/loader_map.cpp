@@ -263,7 +263,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
         {
 	        for (int dj = 0; dj < size; ++dj)
 	        {
-							oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
+						oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
 	        }
         }
     	

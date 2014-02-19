@@ -12,8 +12,8 @@
     prosperity : 0
     peace : 0
     favour : 0
-    next : "/missions/tutorial3.mission"
-    title : "##win_clerk_title##"
+    next : "/missions/capua.mission"
+    title : "##win_engineer_title##"
     may_continue : false
     short : "##build_some_houses##"
     maxHouseLevel : "big_villa"

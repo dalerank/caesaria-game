@@ -1,82 +1,63 @@
 {
-	version : 1
-	map : "/maps/Corinthus.map"
-	next : "capua2.oc3mission"
-	funds : 8000	
-	date : "-350.01.01"
+  version : 1
+  map : "/maps/Corinthus.map"
+  funds : 8000
+  date : "-350.01.01"
   finish : "-300.01.01"
 	
-	win : 
+  win :
   {
-		population : 2500
-		culture : 35
-		prosperity : 10
-		peace : 20 
-		favour : 60
-		maxHouseLevel : "big_villa"
-    overview : "The shackles are removed and you are given plenty of freedom to build what you want, right from the start. This level is quite forgiving, so go ahead and experiment, you can even afford to make a few mistakes. Don't run out of money, and everything will work out in the end"
-	}
+    population : 2500
+    culture : 0
+    prosperity : 0
+    peace : 0
+    favour : 0
+    next : "/missions/tutorial3.mission"
+    title : "##win_engineer_title##"
+    may_continue : false
+    short : "##build_some_houses##"
+    maxHouseLevel : "big_villa"
+    caption : "##food##"
+    overview :  [ ]
+  }
 	
-	empire : 
+  empire : {
+    enabled : false
+  }
+  		
+  events :
   {
-    cities : 
-    {
-      Syracusae : 
-      {
-        sea : false
-        available : true
-        sells : { meat : 15,  marble : 15 }			
-        buys : { olive : 15, oil : 25, furniture : 15	}
-      }
-      
-      Tarentum : 
-      {
-	sea : true
-        available : true
-        sells : { furniture : 15, wine : 15 }
-        buys : { pottery : 25	}
-      }
-    }
-	}
-		
-	events : 
-  {
-		"Jul.348" : {			
-			date : "-350.01.01"
-			type : "good_request"
-			good : { oil : 10 }		
-			month : 10	
-			success : { favour : 10, money : 1000 }			
-			fail : { favour : -10 }
-			city_request : true
-		}
-		
-		"Apr.345" : {
-			date : "-345.04.01"
-			type : "good_request"
-			good : { oil : 15 }
-			month : 10
-			success : { favour : 10, money : 1000 }			
-			fail : { favour : -10 }
-			city_request : true
-		}
-	}
+
+  }
 	
-	buildoptions : 
+  buildoptions :
   {
     farm : "disable_all"
     raw_material : "disable_all"
     factory : "disable_all"
+    water : "disable_all"
+    health : "disable_all"
+    religion : "disable_all"
+    education : "disable_all"
+    entertainment : "disable_all"
+    govt : "disable_all"
+    engineering : "disable_all"
+    security : "disable_all"
                    
     buildings : 
     { 
-      pottery_workshop : true
-      furniture_workshop : true 
-      oil_workshop : true
-      clay_pit : true
-      lumber_mill : true 
-      olive_farm : true 
-      wheat_farm : true 
+      well : true
+      engineering_post : true
+      prefecture : true
+      small_ceres_temple : true
+      small_venus_temple : true
+      small_mars_temple : true
+      small_neptune_temple : true
+      small_mercury_temple : true
+      market : true
+      granery : true
+      wheat_farm : true
+      senate_1 : true
     }
   }
 }
