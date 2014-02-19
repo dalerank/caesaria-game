@@ -28,21 +28,66 @@
                   "@img=picture3_00004.png" ]
   }
 	
-  empire : {}
+  empire : {
+    enabled : false
+  }
   		
   events :
   {
+    "disable_advisors#empire_options" : {
+      adviser : { enabled : false }
+    }
+
     "health_upper#health_updater" : {
-      date : "-350.01.01"
       endTime : "01.01.01"
       value : 30
     }
 
     "desirability_upper#desirability_updater" : {
-      date : "-350.01.01"
       endTime : "01.01.01"
       value : 50
     }
+
+    "reservoir#tutorial_window" : {
+      population : 200
+      tutorial : "/tutorial/reservoir.tutorial"
+    }
+
+    "enable_reservoir#building_options" : {
+      population : 200
+      buildings : { reservoir : true, fountain : true, aqueduct : true }
+    }
+
+    "gardens#tutorial_window" : {
+      population : 250
+      tutorial : "/tutorial/gardens.tutorial"
+    }
+
+    "enable_gradens#building_options" : {
+      population : 250
+      buildings : { gardens : true, baths : true, theater : true, artist_colony : true, school : true }
+    }
+
+    "taxes_and_industry#tutorial_window" : {
+      population : 450
+      tutorial : "/tutorial/taxes_and_industry.tutorial"
+    }
+
+    "enable_industry#building_options" : {
+      population : 450
+      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true }
+    }
+
+    "enable_advisors#empire_options" : {
+      population : 450
+      adviser : { enabled : true }
+    }
+
+    "enable_advisors#empire_options" : {
+      population : 600
+      empire : { enabled : true }
+    }
+
   }
 	
   buildoptions :

@@ -22,17 +22,16 @@
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
 #include "gfx/picture.hpp"
+#include "gfx/pictureconverter.hpp"
+#include "core/color.hpp"
 
 class ScreenWait::Impl
 {
 public:
-	Picture bgPicture;
-	GfxEngine* engine;
+	Picture bgPicture;	
 };
 
-ScreenWait::ScreenWait() : _d( new Impl )
-{
-}
+ScreenWait::ScreenWait() : _d( new Impl ) {}
 
 ScreenWait::~ScreenWait() {}
 
@@ -54,7 +53,22 @@ void ScreenWait::draw()
   engine.drawPicture( _d->bgPicture, 0, 0);
 }
 
-int ScreenWait::getResult() const
+void ScreenWait::fadeOut()
 {
-	return 0;
+  GfxEngine& engine = GfxEngine::instance();
+  engine.loadPicture( _d->bgPicture );
+
+  PictureRef pf;
+  pf.init( engine.getScreenSize() );
+  for( int k=0; k < 0xff; k+=3 )
+  {
+    engine.startRenderFrame();
+    pf->fill( NColor(k, 0, 0, 0), Rect() );
+    engine.drawPicture( _d->bgPicture, 0, 0);
+    engine.drawPicture( *pf, 0, 0);
+    //engine.delay( 1 );
+    engine.endRenderFrame();
+  }
 }
+
+int ScreenWait::getResult() const { return 0; }

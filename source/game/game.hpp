@@ -46,7 +46,6 @@ public:
   void initSound();
   void mountArchives();
 
-  void setScreenWait();
   void setScreenMenu();
   void setScreenGame();
 

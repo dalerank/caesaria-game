@@ -169,6 +169,7 @@ void Empire::setCitiesAvailable(bool value)
 
 unsigned int Empire::getWorkerSalary() const {  return _d->workerSalary; }
 bool Empire::isAvailable() const{  return _d->available; }
+void Empire::setAvailable(bool value) { _d->available = value; }
 
 void Empire::createTradeRoute(std::string start, std::string stop )
 {

@@ -43,6 +43,7 @@ public:
   static const char* fastsavePostfix;
   static const char* saveExt;
   static const char* workDir;
+  static const char* adviserEnabled;
 
   static GameSettings& getInstance();
 

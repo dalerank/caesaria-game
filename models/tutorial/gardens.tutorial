@@ -1,0 +1,11 @@
+{
+ items : [ "##can_build_gardens##",
+			"@img=picture4_00002.png",
+			"##gardens_get_desirable##",
+			"@img=picture4_00003.png",
+			"##can_build_theaters##",
+			"@img=picture4_00004.png",
+			"@img=picture4_00005.png",
+			"##build_more_farms##"
+		]
+}

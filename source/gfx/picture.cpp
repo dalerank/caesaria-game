@@ -115,6 +115,11 @@ Picture* Picture::clone() const
   return newpic;
 }
 
+void Picture::setAlpha(unsigned char value)
+{
+  SDL_SetAlpha( _d->surface, SDL_SRCALPHA | SDL_RLEACCEL, value );
+}
+
 void Picture::scale(Size size)
 {
  /* Picture scaledPic;

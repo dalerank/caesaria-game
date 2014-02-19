@@ -192,7 +192,7 @@ void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int d
     SDL_SetClipRect( _d->screen.getSurface(), &r );
   }
 
-  if( _d->rmask || _d->gmask || _d->bmask  )
+  if( _d->rmask || _d->gmask || _d->bmask || _d->amask  )
   {
     PictureConverter::maskColor( _d->maskedPic, picture, _d->rmask, _d->gmask, _d->bmask, _d->amask );
 

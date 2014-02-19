@@ -1,0 +1,15 @@
+{
+ items : [ "##tax_tutorial##",
+		   "@img=picture4_00006.png",
+		   "##nice_house_pay_more##",
+		   "@img=picture4_00007.png",
+		   "##tt_advisors##",
+		   "@img=picture4_00008.png",
+           "##adviser_panel##",
+           "@img=picture4_00009.png"
+			"##tt_industry##",
+			"@img=picture4_00010.png",
+			"@img=picture4_00011.png",
+			"##tt_build_pottery##"
+          ]
+}

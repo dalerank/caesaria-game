@@ -39,6 +39,7 @@ const char* GameSettings::worklessCitizenAway = "worklessCitizenAway";
 const char* GameSettings::fastsavePostfix = "fastsavePostfix";
 const char* GameSettings::saveExt = "saveExt";
 const char* GameSettings::workDir = "workDir";
+const char* GameSettings::adviserEnabled = "adviserEnabled";
 const vfs::Path defaultSaveDir = "saves";
 const vfs::Path defaultResDir = "resources";
 const vfs::Path defaultLocaleDir = "resources/locale";

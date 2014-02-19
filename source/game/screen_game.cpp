@@ -454,10 +454,12 @@ void ScreenGame::_resolveExitGame(){  _d->result = ScreenGame::quitGame;  stop()
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
 {  
-  if( !game->getEmpire()->isAvailable() )
+  Variant advEnabled = GameSettings::get( GameSettings::adviserEnabled );
+  if( advEnabled.isValid() && !(bool)advEnabled )
   {
     events::GameEventPtr e = events::WarningMessageEvent::create( "##not_available##" );
     e->dispatch();
+    return;
   }
 
   List<AdvisorsWindow*> wndList = game->getGui()->getRootWidget()->findChildren<AdvisorsWindow*>();

@@ -141,13 +141,6 @@ void Game::Impl::initPictures(vfs::Path resourcePath)
   PictureBank::instance().createResources();
 }
 
-void Game::setScreenWait()
-{
-   ScreenWait screen;
-   screen.initialize();
-   screen.update( *_d->engine );
-}
-
 void Game::setScreenMenu()
 {
   ScreenMenu screen( *this, *_d->engine );
@@ -361,13 +354,19 @@ void Game::initialize()
   initSound();
   //SoundEngine::instance().play_music("resources/sound/drums.wav");
   mountArchives();  // init some quick pictures for screenWait
-  setScreenWait();
+
+  ScreenWait screen;
+  screen.initialize();
+  screen.update( *_d->engine );
 
   _d->initPictures( GameSettings::rcpath() );
   NameGenerator::initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
   HouseSpecHelper::getInstance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
   MetaDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
   _d->initPantheon( GameSettings::rcpath( GameSettings::pantheonModel ) );
+
+  if( GameSettings::get( "no-fade" ).isNull() )
+    screen.fadeOut();
 }
 
 void Game::exec()

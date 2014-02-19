@@ -54,6 +54,7 @@ public:
   void setCitiesAvailable( bool value );
   unsigned int getWorkerSalary() const;
   bool isAvailable() const;
+  void setAvailable( bool value );
 
 private:
   Empire();

@@ -12,38 +12,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerank@gmail.com
 
-#ifndef _CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
-#define _CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
+#ifndef _CAESARIA_EVENT_CHANGEEMPIREOPTIONS_H_INCLUDE_
+#define _CAESARIA_EVENT_CHANGEEMPIREOPTIONS_H_INCLUDE_
 
-#include "screen.hpp"
-#include "core/scopedptr.hpp"
+#include "event.hpp"
 
-class GfxEngine;
-class GuiEnv;
+namespace events
+{
 
-// displays a background image
-class ScreenWait: public Screen
+class ChangeEmpireOptions : public GameEvent
 {
 public:
-  ScreenWait();
-  ~ScreenWait();
+  static GameEventPtr create();
 
-  void initialize();
-
-  virtual void draw();
-  void fadeOut();
+  virtual void load(const VariantMap &);
 
 protected:
-	int getResult() const;
+  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game &game, uint time) const;
 
 private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+  VariantMap _vars;
 };
 
+}
 
-#endif //_CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
+#endif //_CAESARIA_EVENT_CHANGEEMPIREOPTIONS_H_INCLUDE_

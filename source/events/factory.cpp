@@ -20,6 +20,7 @@
 #include "random_fire.hpp"
 #include "showtutorialwindow.hpp"
 #include "changebuildingoptions.hpp"
+#include "changeempireoptions.hpp"
 
 namespace events
 {
@@ -72,6 +73,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
 {
   addCreator<ShowTutorialWindow>( "tutorial_window" );
   addCreator<ChangeBuildingOptions>( "building_options" );
+  addCreator<ChangeEmpireOptions>( "empire_options" );
   addCreator<RandomDamage>( "random_collapse" );
   addCreator<RandomFire>( "random_fire" );
 }

@@ -51,6 +51,7 @@ public:
   void setName(std::string &name);  // for save game
   std::string getName() const;
   Picture* clone() const;
+  void setAlpha( unsigned char value );
   void scale( Size size );
   SDL_Surface* getSurface() const;
   Point getOffset() const;

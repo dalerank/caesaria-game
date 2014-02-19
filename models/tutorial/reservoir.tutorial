@@ -1,0 +1,11 @@
+{
+ items : [ "##reservoir_header##",
+		   "@img=picture3_00007.png",
+		   "##reservoir_build_fountain##", 	
+		   "@img=picture3_00008.png",
+		   "##reservoir_build_second##",
+			"@img=picture3_00009.png",
+			"##reservoir_citizens_like_fountain##",
+			"@img=picture4_00001.png"
+		 ]
+}

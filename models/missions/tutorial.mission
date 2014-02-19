@@ -28,6 +28,10 @@
   		
   events :
   {
+    "disable_advisors#empire_options" : {
+      adviser : { enabled : false }
+    }
+
     "tutorial#random_fire" : {
       population : 30
       exec : {
