@@ -186,7 +186,7 @@ TilesArray Tilemap::getRectangle( const TilePos& start, const TilePos& stop, con
 
 TilesArray Tilemap::getRectangle( TilePos pos, Size size, const bool corners /*= true */ )
 {
-  return getRectangle( pos, pos + TilePos( size.getWidth()-1, size.getHeight()-1), corners );
+  return getRectangle( pos, pos + TilePos( size.width()-1, size.height()-1), corners );
 }
 
 // Get tiles inside of rectangle
@@ -211,7 +211,7 @@ TilesArray Tilemap::getArea(TilePos start, TilePos stop )
 
 TilesArray Tilemap::getArea( TilePos start, Size size )
 {
-  return getArea( start, start + TilePos( size.getWidth()-1, size.getHeight()-1 ) );
+  return getArea( start, start + TilePos( size.width()-1, size.height()-1 ) );
 }
 
 void Tilemap::save( VariantMap& stream ) const

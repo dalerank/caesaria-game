@@ -13,8 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
 
-#include <memory>
-
 #include "empiremap_window.hpp"
 #include "gfx/picture.hpp"
 #include "core/event.hpp"
@@ -170,6 +168,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     {
       Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( GoodHelper::getPicture( Good::Type(i), true) );
+      lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
       k++;
     }
   }
@@ -184,6 +183,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
     {
       Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture(  GoodHelper::getPicture( Good::Type(i), true) );
+      lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
       k++;
     }
   }
@@ -367,9 +367,9 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
   engine.drawPicture( *_d->border, Point( 0, 0 ) );
 
-  engine.drawPicture( _d->leftEagle, _d->eagleOffset.getWidth(), getHeight() - 120 + _d->eagleOffset.getHeight() - _d->leftEagle.getHeight() - 10 );
-  engine.drawPicture( _d->rightEagle, getWidth() - _d->eagleOffset.getWidth() - _d->rightEagle.getWidth(),
-                      getHeight() - 120 + _d->eagleOffset.getHeight() - _d->rightEagle.getHeight() - 10 );
+  engine.drawPicture( _d->leftEagle, _d->eagleOffset.width(), getHeight() - 120 + _d->eagleOffset.height() - _d->leftEagle.getHeight() - 10 );
+  engine.drawPicture( _d->rightEagle, getWidth() - _d->eagleOffset.width() - _d->rightEagle.getWidth(),
+                      getHeight() - 120 + _d->eagleOffset.height() - _d->rightEagle.getHeight() - 10 );
 
   engine.drawPicture( _d->centerPicture, (getWidth() - _d->centerPicture.getWidth()) / 2,
                       getHeight() - 120 - _d->centerPicture.getHeight() + 20 );

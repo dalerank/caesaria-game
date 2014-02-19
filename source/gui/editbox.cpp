@@ -905,7 +905,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
                {
                    // highlight start is on this line
                    s = rText.substr(0, realmbgn - startPos);
-                   mbegin = _d->lastBreakFont.getSize( s ).getWidth();
+                   mbegin = _d->lastBreakFont.getSize( s ).width();
 
                    // deal with kerning
                    //mbegin += _d->lastBreakFont.getKerningSize( &((*txtLine)[realmbgn - startPos]),
@@ -919,11 +919,11 @@ void EditBox::beforeDraw( GfxEngine& painter )
                {
                    // highlight end is on this line
                    s2 = rText.substr( 0, realmend - startPos );
-                   mend = _d->lastBreakFont.getSize( s2 ).getWidth();
+                   mend = _d->lastBreakFont.getSize( s2 ).width();
                    lineEndPos = (int)s2.size();
                }
                else
-                   mend = _d->lastBreakFont.getSize( (char*)txtLine->c_str() ).getWidth();
+                   mend = _d->lastBreakFont.getSize( (char*)txtLine->c_str() ).width();
 
                _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.UpperLeftCorner;
                _d->markAreaRect.UpperLeftCorner += Point( mbegin, 0 );
@@ -967,7 +967,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
       }
 
       std::wstring stringBeforeCursor = txtLine->substr(0,_d->cursorPos-startPos);
-      charcursorpos = _d->lastBreakFont.getSize( __ucs2utf8( stringBeforeCursor ) ).getWidth() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
+      charcursorpos = _d->lastBreakFont.getSize( __ucs2utf8( stringBeforeCursor ) ).width() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
 
       setTextRect(cursorLine);
       _d->cursorRect = _d->currentTextRect;
@@ -1272,8 +1272,8 @@ void EditBox::breakText()
 			// here comes the next whitespace, look if
 			// we can break the last word to the next line
 			// We also break whitespace, otherwise cursor would vanish beside the right border.
-			int whitelgth = font.getSize( (char*)whitespace.c_str() ).getWidth();
-			int worldlgth = font.getSize( (char*)word.c_str() ).getWidth();
+			int whitelgth = font.getSize( (char*)whitespace.c_str() ).width();
+			int worldlgth = font.getSize( (char*)word.c_str() ).width();
 
 			if (_d->wordWrapEnabled && length + worldlgth + whitelgth > elWidth)
 			{
@@ -1348,12 +1348,12 @@ void EditBox::setTextRect(int line, const std::string& tempText )
 		d.setHeight( getHeight() );
 	}
 	
-  d.setHeight( d.getHeight() + font.getKerningHeight() );
+  d.setHeight( d.height() + font.getKerningHeight() );
 
   _d->currentTextRect = getAbsoluteRect();
 
-  _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.getHeight() * line - _d->vertScrollPos );
-  _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.right() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.y() + d.getHeight() );
+  _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.height() * line - _d->vertScrollPos );
+  _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.right() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.y() + d.height() );
 }
 
 int EditBox::getLineFromPos(int pos)
@@ -1455,9 +1455,9 @@ void EditBox::calculateScrollPos()
 		int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
 
     int cStart = _d->currentTextRect.UpperLeftCorner.x() + _d->horizScrollPos +
-                                font.getSize( (char*)txtLine->substr(0, cPos).c_str() ).getWidth();
+                                font.getSize( (char*)txtLine->substr(0, cPos).c_str() ).width();
 
-		int cEnd = cStart + font.getSize( "_ " ).getWidth();
+		int cEnd = cStart + font.getSize( "_ " ).width();
 
 		if ( getScreenRight() < cEnd)
 			_d->horizScrollPos = cEnd - getScreenRight();

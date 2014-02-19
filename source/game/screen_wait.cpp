@@ -43,7 +43,7 @@ void ScreenWait::initialize()
 
   // center the bgPicture on the screen
   Size s = (engine.getScreenSize() - _d->bgPicture.getSize()) / 2;
-  _d->bgPicture.setOffset( Point( s.getWidth(), -s.getHeight() ) );
+  _d->bgPicture.setOffset( Point( s.width(), -s.height() ) );
 }
 
 void ScreenWait::draw()

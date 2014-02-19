@@ -191,7 +191,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     else if( data.type() == Variant::NSize)
     {
       Size size = data.toSize();
-      str = StringHelper::format( 0xff, "[ %d, %d ]", size.getWidth(), size.getHeight() );
+      str = StringHelper::format( 0xff, "[ %d, %d ]", size.width(), size.height() );
     }
     else if( data.type() == Variant::NPoint)
     {

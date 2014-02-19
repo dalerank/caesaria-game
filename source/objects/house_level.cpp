@@ -229,7 +229,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
   CityHelper helper( house->_getCity() );
 
   Size size = house->getSize();
-  TilePos offset( size.getWidth(), size.getHeight() );
+  TilePos offset( size.width(), size.height() );
   TilePos housePos = house->pos();
   HouseList houses = helper.find<House>( constants::building::house, housePos - offset, housePos + offset );
 

@@ -64,7 +64,7 @@ private:
   Widget* getNextWidget(bool reverse, bool group); 
 
   class Impl;
-  std::auto_ptr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace gui

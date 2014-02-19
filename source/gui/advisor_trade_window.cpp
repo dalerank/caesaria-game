@@ -469,7 +469,7 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
     bool workState = getWorkState( gtype );
     int tradeQty = copt.getExportLimit( gtype );
     
-    TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.getHeight()) * indexOffset, btnSize ),
+    TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
                                             gtype, stackedQty, workState, tradeState, tradeQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
@@ -513,8 +513,8 @@ void AdvisorTradeWindow::Impl::showGoodsPriceWindow()
 {
   Widget* parent = gbInfo->getParent();
   Size size( 610, 180 );
-  new EmpirePricesWindow( parent, -1, Rect( Point( ( parent->getWidth() - size.getWidth() ) / 2,
-                                                   ( parent->getHeight() - size.getHeight() ) / 2), size ), city );
+  new EmpirePricesWindow( parent, -1, Rect( Point( ( parent->getWidth() - size.width() ) / 2,
+                                                   ( parent->getHeight() - size.height() ) / 2), size ), city );
 }
 
 AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int id )

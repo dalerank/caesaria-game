@@ -35,7 +35,7 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   _warehouse = ptr_cast<Warehouse>( tile.getOverlay() );
 
   Size btnOrdersSize( 350, 20 );
-  PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.getWidth()) / 2, getHeight() - 34 ), btnOrdersSize ),
+  PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.width()) / 2, getHeight() - 34 ), btnOrdersSize ),
                                           _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( btnOrders, onClicked(), this, InfoBoxWarehouse::showSpecialOrdersWindow );

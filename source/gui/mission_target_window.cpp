@@ -56,7 +56,7 @@ MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr
 {
   Size size( 610, 430 );
 
-  Rect rectangle( Point( (parent->getWidth() - size.getWidth())/2, (parent->getHeight() - size.getHeight())/2 ), size );
+  Rect rectangle( Point( (parent->getWidth() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
   MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, rectangle );
   ret->setCity( city );
   return ret;

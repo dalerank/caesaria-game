@@ -290,7 +290,7 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
 {
   Tilemap& tilemap = city->getTilemap();
 
-  int s = size.getWidth();
+  int s = size.width();
   TilesArray constructibleTiles = tilemap.getArea( pos + TilePos( 0, 1 ), pos + TilePos( s-1, s-1 ) );
   TilesArray coastalTiles = tilemap.getArea( pos, pos + TilePos( s, 0 ) );
 

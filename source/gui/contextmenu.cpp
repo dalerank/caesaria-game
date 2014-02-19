@@ -458,16 +458,16 @@ void ContextMenu::recalculateSize_()
 			if( font.isValid() )
 				refItem->setDim( font.getSize( refItem->getText() ) + Size( 40, 0 ) );
 
-			maxSize.setWidth( std::max<unsigned int>( refItem->getDim().getWidth(), maxSize.getWidth() ) );
+			maxSize.setWidth( std::max<unsigned int>( refItem->getDim().width(), maxSize.width() ) );
 		}
 
-		refItem->setOffset( maxSize.getHeight() );
-		maxSize += Size( 0, std::max<int>( refItem->getDim().getHeight(), 10 ) );
+		refItem->setOffset( maxSize.height() );
+		maxSize += Size( 0, std::max<int>( refItem->getDim().height(), 10 ) );
 	}
 
-	maxSize.setHeight( std::max<unsigned int>( maxSize.getHeight()+5, 10 ) );
+	maxSize.setHeight( std::max<unsigned int>( maxSize.height()+5, 10 ) );
 
-	rect.LowerRightCorner = getRelativeRect().UpperLeftCorner + Point( maxSize.getWidth(), maxSize.getHeight() );
+	rect.LowerRightCorner = getRelativeRect().UpperLeftCorner + Point( maxSize.width(), maxSize.height() );
 
 	setGeometry(rect);
 
@@ -475,7 +475,7 @@ void ContextMenu::recalculateSize_()
 	for (i=0; i<_d->items.size(); ++i)
 	{
 		ContextMenuItem* refItem = _d->items[i];
-		Rect rectangle( 0, refItem->getOffset(), getWidth(), refItem->getOffset() + refItem->getDim().getHeight() );
+		Rect rectangle( 0, refItem->getOffset(), getWidth(), refItem->getOffset() + refItem->getDim().height() );
 		refItem->setGeometry( rectangle );
 
 		if( refItem->getSubMenu() )
@@ -484,8 +484,8 @@ void ContextMenu::recalculateSize_()
 			ContextMenu* subMenu = refItem->getSubMenu();
 			const Size subMenuSize = subMenu->getAbsoluteRect().getSize();
 
-      Rect subRect( maxSize.getWidth()-5, refItem->getOffset(), 
-			              maxSize.getWidth()+subMenuSize.getWidth()-5, refItem->getOffset() +subMenuSize.getHeight() );
+      Rect subRect( maxSize.width()-5, refItem->getOffset(), 
+			              maxSize.width()+subMenuSize.width()-5, refItem->getOffset() +subMenuSize.height() );
 
       // if it would be drawn beyond the right border, then add it to the left side
       Widget * root = getEnvironment()->getRootWidget();
@@ -494,7 +494,7 @@ void ContextMenu::recalculateSize_()
         Rect rectRoot( root->getAbsoluteRect() );
 				if ( getAbsoluteRect().UpperLeftCorner.x() + subRect.LowerRightCorner.x() > rectRoot.LowerRightCorner.x() )
 				{
-					subRect.UpperLeftCorner.setX( -subMenuSize.getWidth() );
+					subRect.UpperLeftCorner.setX( -subMenuSize.width() );
 					subRect.LowerRightCorner.setX( 0 );
 				}
 			}
@@ -503,7 +503,7 @@ void ContextMenu::recalculateSize_()
 				switch( refItem->getSubMenuAlignment() & 0x0f )
 				{
 				case ContextMenuItem::alignLeft:
-					subRect.UpperLeftCorner.setX( -subMenuSize.getWidth() );
+					subRect.UpperLeftCorner.setX( -subMenuSize.width() );
 					subRect.LowerRightCorner.setX( 0 );
 				break;
 
@@ -511,22 +511,22 @@ void ContextMenu::recalculateSize_()
 				break;
 
 				case ContextMenuItem::alignHorizCenter:
-					subRect.UpperLeftCorner.setX( ( getAbsoluteRect().getWidth() - subMenuSize.getWidth() ) / 2 );
-					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.x() + subMenuSize.getWidth() );
+					subRect.UpperLeftCorner.setX( ( getAbsoluteRect().getWidth() - subMenuSize.width() ) / 2 );
+					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.x() + subMenuSize.width() );
 				break;
 				}
 
 				switch( refItem->getSubMenuAlignment() & 0xf0 )
 				{
 				case ContextMenuItem::alignTop:
-					subRect -= Point( 0, subMenuSize.getHeight() / 2 + refItem->getDim().getHeight() );
+					subRect -= Point( 0, subMenuSize.height() / 2 + refItem->getDim().height() );
 				break;
 
 				case ContextMenuItem::alignBottom:
 				break;
 
 				case ContextMenuItem::alignVertCenter:
-					subRect -= Point( 0, subMenuSize.getHeight() / 4 );
+					subRect -= Point( 0, subMenuSize.height() / 4 );
 				break;
 				}
             }

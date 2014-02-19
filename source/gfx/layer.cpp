@@ -309,7 +309,7 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
   TileOverlayPtr overlay = baseTile->getOverlay();
   Picture *pic = NULL;
   int leftBorderAtI = baseTile->i();
-  int rightBorderAtJ = overlay->getSize().getHeight() - 1 + baseTile->j();
+  int rightBorderAtJ = overlay->getSize().height() - 1 + baseTile->j();
   for( TilesArray::const_iterator it=area.begin(); it != area.end(); it++ )
   {
     Tile* tile = *it;

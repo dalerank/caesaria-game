@@ -72,9 +72,9 @@ void TileOverlay::setPicture(Picture picture)
     // _master_tile == NULL is cloneable buildings
     TilePos pos = _d->masterTile->pos();
 
-    for (int dj = 0; dj<_d->size.getWidth(); ++dj)
+    for (int dj = 0; dj<_d->size.width(); ++dj)
     {
-      for (int di = 0; di<_d->size.getHeight(); ++di)
+      for (int di = 0; di<_d->size.height(); ++di)
       {
         Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
         tile.setPicture( &_d->picture );
@@ -90,9 +90,9 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
   _d->city = city;
   _d->masterTile = &tilemap.at( pos );
 
-  for (int dj = 0; dj < _d->size.getWidth(); ++dj)
+  for (int dj = 0; dj < _d->size.width(); ++dj)
   {
-    for (int di = 0; di < _d->size.getHeight(); ++di)
+    for (int di = 0; di < _d->size.height(); ++di)
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
       tile.setMasterTile( _d->masterTile );

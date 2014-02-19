@@ -89,7 +89,7 @@ FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityP
 {
   Size size( 625, 320 );
 
-  Rect rectangle( Point( (parent->getWidth() - size.getWidth())/2, (parent->getHeight() - size.getHeight())/2 ), size );
+  Rect rectangle( Point( (parent->getWidth() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
   FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, rectangle, city);
 
   return ret;

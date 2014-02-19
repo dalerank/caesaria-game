@@ -84,7 +84,7 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
   Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
 
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
@@ -102,7 +102,7 @@ void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
   Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
 
   gui::Label* frame = new gui::Label( parent, rect, "", false, gui::Label::bgWhiteFrame );
@@ -159,7 +159,7 @@ void ScreenMenu::Impl::resolveCredits()
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
   Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
 
   gui::Label* frame = new gui::Label( parent, rect, "", false, gui::Label::bgWhiteFrame );
@@ -191,7 +191,7 @@ void ScreenMenu::Impl::resolvePlayMission()
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
   Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
 
   result = ScreenMenu::loadMission;
@@ -207,7 +207,7 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
   Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).getWidth() / 2, ( rootSize - windowSize ).getHeight() / 2),
+  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
 
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent,

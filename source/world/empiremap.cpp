@@ -55,7 +55,7 @@ public:
 
   bool isInside( const TilePos& pos )
   {
-    return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size.getWidth() && pos.j() < size.getHeight());
+    return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size.width() && pos.j() < size.height());
   }
 
   void resize( Size s )
@@ -63,12 +63,12 @@ public:
     size = s;
 
     // resize the tile array
-    EmTileGrid::resize( size.getHeight() );
-    for( int j = 0; j < size.getHeight(); ++j )
+    EmTileGrid::resize( size.height() );
+    for( int j = 0; j < size.height(); ++j )
     {
-      (*this)[j].resize( size.getWidth() );
+      (*this)[j].resize( size.width() );
 
-      for (int i = 0; i < size.getWidth(); ++i)
+      for (int i = 0; i < size.width(); ++i)
       {
         TilePos p( i, j );
         at( p ).pos = p;
@@ -76,8 +76,8 @@ public:
     }
   }
 
-  TilePos pnt2tp( Point pos ) { return TilePos( pos.x() / tilesize.getWidth(), pos.y() / tilesize.getHeight() ); }
-  Point tp2pnt( TilePos tp ) { return Point( tp.i() * tilesize.getWidth(), tp.j() * tilesize.getHeight() ); }
+  TilePos pnt2tp( Point pos ) { return TilePos( pos.x() / tilesize.width(), pos.y() / tilesize.height() ); }
+  Point tp2pnt( TilePos tp ) { return Point( tp.i() * tilesize.width(), tp.j() * tilesize.height() ); }
 
   Size size;
   Size tilesize;
@@ -129,7 +129,7 @@ void EmpireMap::initialize(const VariantMap& stream)
   int index = 0;
   foreach( v, tiles )
   {
-    EmTile& tile = _d->at( TilePos( index % _d->size.getWidth(), index / _d->size.getWidth() ) );
+    EmTile& tile = _d->at( TilePos( index % _d->size.width(), index / _d->size.width() ) );
     tile.info = (v->toInt() == 0 ? EmpireMap::land : EmpireMap::sea);
     index++;
   }

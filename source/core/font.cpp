@@ -158,36 +158,36 @@ Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect,
   {
   case alignCenter:
     // align to h centre
-    resultRect.UpperLeftCorner.setX( (baseRect.getWidth()/2) - (d.getWidth()/2) );
-    resultRect.LowerRightCorner.setX( (baseRect.getWidth()/2) + (d.getWidth()/2) );
+    resultRect.UpperLeftCorner.setX( (baseRect.getWidth()/2) - (d.width()/2) );
+    resultRect.LowerRightCorner.setX( (baseRect.getWidth()/2) + (d.width()/2) );
     break;
   case alignLowerRight:
     // align to right edge
-    resultRect.UpperLeftCorner.setX( baseRect.getWidth() - d.getWidth() );
+    resultRect.UpperLeftCorner.setX( baseRect.getWidth() - d.width() );
     resultRect.LowerRightCorner.setX( baseRect.getWidth() );
     break;
   default:
     // align to left edge
     resultRect.UpperLeftCorner.setX( 0 );
-    resultRect.LowerRightCorner.setX( d.getWidth() );
+    resultRect.LowerRightCorner.setX( d.width() );
   }
 
   switch (verticalAlign)
   {
   case alignCenter:
     // align to v centre
-    resultRect.UpperLeftCorner.setY( (baseRect.getHeight()/2) - (d.getHeight()/2) );
-    resultRect.LowerRightCorner.setY( (baseRect.getHeight()/2) + (d.getHeight()/2) );
+    resultRect.UpperLeftCorner.setY( (baseRect.getHeight()/2) - (d.height()/2) );
+    resultRect.LowerRightCorner.setY( (baseRect.getHeight()/2) + (d.height()/2) );
     break;
   case alignLowerRight:
     // align to bottom edge
-    resultRect.UpperLeftCorner.setY( baseRect.getHeight() - d.getHeight() );
+    resultRect.UpperLeftCorner.setY( baseRect.getHeight() - d.height() );
     resultRect.LowerRightCorner.setY( baseRect.getHeight() );
     break;
   default:
     // align to top edge
     resultRect.UpperLeftCorner.setY( 0 );
-    resultRect.LowerRightCorner.setY( d.getHeight() );
+    resultRect.LowerRightCorner.setY( d.height() );
     break;
   }
 
@@ -405,8 +405,8 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getSize( rwhitespace ).getWidth();
-					const int wordlgth = font.getSize( word ).getWidth();
+					const int whitelgth = font.getSize( rwhitespace ).width();
+					const int wordlgth = font.getSize( word ).width();
 
 					if (wordlgth > elWidth)
 					{
@@ -419,7 +419,7 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 							std::string first  = word.substr(0, where);
 							std::string second = word.substr(where, word.size() - where);
 							brokenText.push_back(line + first + "-");
-							const int secondLength = font.getSize( second ).getWidth();
+							const int secondLength = font.getSize( second ).width();
 
 							length = secondLength;
 							line = second;
@@ -506,8 +506,8 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getSize( rwhitespace ).getWidth();
-					const int wordlgth = font.getSize( word ).getWidth();
+					const int whitelgth = font.getSize( rwhitespace ).width();
+					const int wordlgth = font.getSize( word ).width();
 
 					if (length && (length + wordlgth + whitelgth > elWidth))
 					{

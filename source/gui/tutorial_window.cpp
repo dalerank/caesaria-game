@@ -33,7 +33,7 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
 
   setupUI( GameSettings::rcpath( "/gui/tutorial_window.gui" ) );
   Size pSize = getParent()->getSize() - getSize();
-  setPosition( Point( pSize.getWidth() / 2, pSize.getHeight() / 2 ) );
+  setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
   ListBox* lbx = findChildA<ListBox*>( "lbxHelp", true, this );
   TexturedButton* btn = findChildA<TexturedButton*>( "btnExit", true, this );

@@ -52,12 +52,12 @@ void GfxEngine::setScreenSize( Size size )
 
 int GfxEngine::getScreenWidth() const
 {
-  return _srcSize.getWidth();
+  return _srcSize.width();
 }
 
 int GfxEngine::getScreenHeight() const
 {
-  return _srcSize.getHeight();
+  return _srcSize.height();
 }
 
 bool GfxEngine::isFullscreen() const

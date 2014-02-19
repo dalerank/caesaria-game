@@ -39,7 +39,7 @@ public:
   class Grid : std::vector< AStarPoint* >
   {
   public:
-    inline size_type hash( const TilePos& pos ) { return pos.j() * _size.getWidth() + pos.i(); }
+    inline size_type hash( const TilePos& pos ) { return pos.j() * _size.width() + pos.i(); }
     
     AStarPoint* operator[](const TilePos& pos )
     {
@@ -81,7 +81,7 @@ public:
 
   bool isValid( const TilePos& pos )
   {
-    return ( pos.i() >= 0 && pos.j() >= 0 && pos.i() < grid._size.getWidth() && pos.j() < grid._size.getHeight() );
+    return ( pos.i() >= 0 && pos.j() >= 0 && pos.i() < grid._size.width() && pos.j() < grid._size.height() );
   }
 
   bool isWalkable( const TilePos& pos )

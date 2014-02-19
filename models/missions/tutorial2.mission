@@ -88,6 +88,12 @@
       empire : { enabled : true }
     }
 
+    "empire_trade#tutorial_window" : {
+      population : 600
+      tutorial : "/tutorial/tt2_trade.tutorial"
+    }
+
+
   }
 	
   buildoptions :

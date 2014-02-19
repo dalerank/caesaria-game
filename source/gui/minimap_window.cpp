@@ -138,7 +138,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
   {
     case building::house:
     {
-      switch (overlay->getSize().getWidth())
+      switch (overlay->getSize().width())
       {
         case 1:
           {
@@ -162,7 +162,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
         }
       default:
         {
-          switch (overlay->getSize().getWidth())
+          switch (overlay->getSize().width())
           {
           case 1:
           {

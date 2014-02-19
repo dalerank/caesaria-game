@@ -67,7 +67,7 @@ oc3_signals public:
 			if ( itemHeightOverride != 0 )
 				itemHeight = itemHeightOverride;
 			else
-				itemHeight = font.getSize("A").getHeight() + 4;
+				itemHeight = font.getSize("A").height() + 4;
 		}
 
 		int newLength = itemHeight * items.size();

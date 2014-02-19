@@ -32,7 +32,7 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   TemplePtr temple = ptr_cast<Temple>( tile.getOverlay() );
   RomeDivinityPtr divn = temple->getDivinity();
 
-  bool bigTemple = temple->getSize().getWidth() > 2;
+  bool bigTemple = temple->getSize().width() > 2;
   std::string desc = _( divn->getShortDescription() );
   std::string text = _( StringHelper::format( 0xff, "##%s_%s_temple##",
                                                  bigTemple ? "big" : "small",

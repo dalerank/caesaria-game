@@ -147,6 +147,10 @@ void Label::_updateTexture( GfxEngine& painter )
     Rect r( Point( 0, 0 ), getSize() );
     switch( _d->backgroundMode )
     {
+    case bgSimpleWhite:
+      _d->background->fill( 0xff000000, Rect() );
+      _d->background->fill( 0xffffffff, Rect( 1, 1, getWidth() - 1, getHeight() - 1 ) );
+    break;
     case bgWhite: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteArea); break;
     case bgBlack: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackArea ); break;
     case bgBrown:
@@ -185,7 +189,7 @@ void Label::_updateTexture( GfxEngine& painter )
         }
 
         Rect r = frameRect;
-        int height = _d->font.getSize("A").getHeight();// + font.GetKerningHeight();
+        int height = _d->font.getSize("A").height();// + font.GetKerningHeight();
 
         for (unsigned int i=0; i<_d->brokenText.size(); ++i)
         {
@@ -329,7 +333,7 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
     string rText = prefix + text;
 	int size = rText.size();
 	int length = 0;
-	int elWidth = wdgSize.getWidth();
+	int elWidth = wdgSize.width();
 
 	char c;
 
@@ -373,8 +377,8 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getSize( whitespace ).getWidth();
-					const int wordlgth = font.getSize( word ).getWidth();
+					const int whitelgth = font.getSize( whitespace ).width();
+					const int wordlgth = font.getSize( word ).width();
 
 					if (wordlgth > elWidth)
 					{
@@ -387,7 +391,7 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 							string first  = word.substr(0, where);
 							string second = word.substr(where, word.size() - where);
 							brokenText.push_back(line + first + "-");
-							const int secondLength = font.getSize( second ).getWidth();
+							const int secondLength = font.getSize( second ).width();
 
 							length = secondLength;
 							line = second;
@@ -474,8 +478,8 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getSize( whitespace ).getWidth();
-					const int wordlgth = font.getSize( word ).getWidth();
+					const int whitelgth = font.getSize( whitespace ).width();
+					const int wordlgth = font.getSize( word ).width();
 
 					if (length && (length + wordlgth + whitelgth > elWidth))
 					{
@@ -546,7 +550,7 @@ int Label::getTextHeight() const
     if( !font.isValid() )
         return 0;
 
-    int height = font.getSize("A").getHeight();// + font.GetKerningHeight();
+    int height = font.getSize("A").height();// + font.GetKerningHeight();
 
     if( _d->isWordwrap)
             height *= _d->brokenText.size();
@@ -567,7 +571,7 @@ int Label::getTextWidth() const
 
       for(unsigned int line = 0; line < _d->brokenText.size(); ++line)
       {
-        int width = font.getSize( _d->brokenText[line] ).getWidth();
+        int width = font.getSize( _d->brokenText[line] ).width();
 
         if(width > widest)
           widest = width;
@@ -577,7 +581,7 @@ int Label::getTextWidth() const
     }
     else
     {
-      return font.getSize( getText() ).getWidth();
+      return font.getSize( getText() ).width();
     }
 }
 

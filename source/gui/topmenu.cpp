@@ -111,11 +111,11 @@ void TopMenu::Impl::showAboutInfo()
   Widget* parent = lbDate->getEnvironment()->getRootWidget();
   Size pSize = parent->getSize();
   Size mySize( 500, 300 );
-  Rect rect( Point( (pSize.getWidth() - mySize.getWidth()) / 2, (pSize.getHeight() - mySize.getHeight()) / 2 ), mySize );
+  Rect rect( Point( (pSize.width() - mySize.width()) / 2, (pSize.height() - mySize.height()) / 2 ), mySize );
   Label* bg = new Label( parent, rect, "", false, Label::bgWhiteFrame );
   bg->setText( _("##about_caesaria_game##") );
 
-  TexturedButton* btnExit = new TexturedButton( bg, Point( pSize.getWidth() - 39, pSize.getHeight() - 39), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  TexturedButton* btnExit = new TexturedButton( bg, Point( pSize.width() - 39, pSize.height() - 39), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 

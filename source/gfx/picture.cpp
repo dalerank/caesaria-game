@@ -83,8 +83,8 @@ void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Surface* Picture::getSurface() const{  return _d->surface;}
 Point Picture::getOffset() const{  return _d->offset;}
-int Picture::getWidth() const{  return _d->size.getWidth();}
-int Picture::getHeight() const{  return _d->size.getHeight();}
+int Picture::getWidth() const{  return _d->size.width();}
+int Picture::getHeight() const{  return _d->size.height();}
 void Picture::setName(std::string &name){  _d->name = name;}
 std::string Picture::getName() const{  return _d->name;}
 Size Picture::getSize() const{  return _d->size; }

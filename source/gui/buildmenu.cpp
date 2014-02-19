@@ -110,11 +110,11 @@ void BuildMenu::initialize()
     if( button )
     {
         textSize = font.getSize( button->getText());
-        max_text_width = std::max(max_text_width, textSize.getWidth() );
+        max_text_width = std::max(max_text_width, textSize.width() );
 
         std::string text = StringHelper::format( 0xff, "%i", button->getCost() );
         textSize = font.getSize( text );
-        max_cost_width = std::max(max_cost_width, textSize.getWidth());
+        max_cost_width = std::max(max_cost_width, textSize.width());
     }
   }
 

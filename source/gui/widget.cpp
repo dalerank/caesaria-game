@@ -116,13 +116,13 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
     SizeF d = r2.getSize().toSizeF();
 
     if( _alignLeft == alignScale)
-      _d->scaleRect.UpperLeftCorner.setX( (float)r.UpperLeftCorner.x() / d.getWidth() );
+      _d->scaleRect.UpperLeftCorner.setX( (float)r.UpperLeftCorner.x() / d.width() );
     if (_alignRight == alignScale)
-      _d->scaleRect.LowerRightCorner.setX( (float)r.LowerRightCorner.x() / d.getWidth() );
+      _d->scaleRect.LowerRightCorner.setX( (float)r.LowerRightCorner.x() / d.width() );
     if (_alignTop == alignScale)
-      _d->scaleRect.UpperLeftCorner.setY( (float)r.UpperLeftCorner.y() / d.getHeight() );
+      _d->scaleRect.UpperLeftCorner.setY( (float)r.UpperLeftCorner.y() / d.height() );
     if (_alignBottom == alignScale)
-      _d->scaleRect.LowerRightCorner.setY( (float)r.LowerRightCorner.y() / d.getHeight() );
+      _d->scaleRect.LowerRightCorner.setY( (float)r.LowerRightCorner.y() / d.height() );
   }
 
 	_d->desiredRect = r;
@@ -150,10 +150,10 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   {
   case ProportionalGeometry:
     _d->desiredRect = Rect(
-          floor( d.getWidth() * r.UpperLeftCorner.x() ),
-          floor( d.getHeight() * r.UpperLeftCorner.y() ),
-          floor( d.getWidth() * r.LowerRightCorner.x() ),
-          floor( d.getHeight() * r.LowerRightCorner.y() ));
+          floor( d.width() * r.UpperLeftCorner.x() ),
+          floor( d.height() * r.UpperLeftCorner.y() ),
+          floor( d.width() * r.LowerRightCorner.x() ),
+          floor( d.height() * r.LowerRightCorner.y() ));
 
     _d->scaleRect = r;
   break;
@@ -190,10 +190,10 @@ void Widget::setMaxSize( const Size& size )
 void Widget::setMinSize( const Size& size )
 {
     _d->minSize = size;
-    if( _d->minSize.getWidth() < 1)
+    if( _d->minSize.width() < 1)
         _d->minSize.setWidth( 1 );
 
-    if( _d->minSize.getHeight() < 1)
+    if( _d->minSize.height() < 1)
         _d->minSize.setHeight( 1 );
 
     updateAbsolutePosition();
@@ -214,13 +214,13 @@ void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Align
 
     RectF dRect = _d->desiredRect.toRectF();
     if( _alignLeft == alignScale)
-      _d->scaleRect.UpperLeftCorner.setX( dRect.UpperLeftCorner.x() / d.getWidth() );
+      _d->scaleRect.UpperLeftCorner.setX( dRect.UpperLeftCorner.x() / d.width() );
     if(_alignRight == alignScale)
-      _d->scaleRect.LowerRightCorner.setX( dRect.LowerRightCorner.x() / d.getWidth() );
+      _d->scaleRect.LowerRightCorner.setX( dRect.LowerRightCorner.x() / d.width() );
     if( _alignTop  == alignScale)
-      _d->scaleRect.UpperLeftCorner.setY( dRect.UpperLeftCorner.y() / d.getHeight() );
+      _d->scaleRect.UpperLeftCorner.setY( dRect.UpperLeftCorner.y() / d.height() );
     if (_alignBottom == alignScale)
-      _d->scaleRect.LowerRightCorner.setY( dRect.LowerRightCorner.y() / d.getHeight() );
+      _d->scaleRect.LowerRightCorner.setY( dRect.LowerRightCorner.y() / d.height() );
   }
 }
 
@@ -706,14 +706,14 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     const int h = _d->relativeRect.getHeight();
 
     // make sure the desired rectangle is allowed
-    if (w < (int)_d->minSize.getWidth() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->minSize.getWidth() );
-    if (h < (int)_d->minSize.getHeight() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->minSize.getHeight() );
-    if (_d->maxSize.getWidth() > 0 && w > (int)_d->maxSize.getWidth() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->maxSize.getWidth() );
-    if (_d->maxSize.getHeight() > 0 && h > (int)_d->maxSize.getHeight() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->maxSize.getHeight() );
+    if (w < (int)_d->minSize.width() )
+        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->minSize.width() );
+    if (h < (int)_d->minSize.height() )
+        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->minSize.height() );
+    if (_d->maxSize.width() > 0 && w > (int)_d->maxSize.width() )
+        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->maxSize.width() );
+    if (_d->maxSize.height() > 0 && h > (int)_d->maxSize.height() )
+        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->maxSize.height() );
 
     _d->relativeRect.repair();
 

@@ -161,9 +161,9 @@ void PictureDecorator::drawBorder( Picture &dstpic, const Rect& rectangle,
 {
   // draws horizontal borders
   Size size = Picture::load( ResourceGroup::panelBackground, tp ).getSize();
-  const int sw = size.getWidth();
-  const int sh = size.getHeight();
-  for (int i = 0; i<(rectangle.getWidth()/size.getWidth()-1); ++i)
+  const int sw = size.width();
+  const int sh = size.height();
+  for (int i = 0; i<(rectangle.getWidth()/size.width()-1); ++i)
   {
     Point offset = rectangle.UpperLeftCorner + Point( sw+sw*i, 0 );
     dstpic.draw( Picture::load( ResourceGroup::panelBackground, tp+i%pCount), offset, useAlpha );      // top border
@@ -171,7 +171,7 @@ void PictureDecorator::drawBorder( Picture &dstpic, const Rect& rectangle,
   }
 
   // draws vertical borders
-  for (int i = 0; i<(rectangle.getHeight()/size.getHeight()-1); ++i)
+  for (int i = 0; i<(rectangle.getHeight()/size.height()-1); ++i)
   {
     Point offset = rectangle.UpperLeftCorner + Point( 0, sh+sh*i );
     dstpic.draw( Picture::load( ResourceGroup::panelBackground, lp+hCount*(i%pCount)), offset, useAlpha );      // left border

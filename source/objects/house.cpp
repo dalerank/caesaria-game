@@ -267,7 +267,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       HousePtr house = ptr_cast<House>( (*tile)->getOverlay() );
       if( house != NULL && house->getSpec().getLevel() == level4grow )
       {
-        if( house->getSize().getWidth() > 1 )  //bigger house near, can't grow
+        if( house->getSize().width() > 1 )  //bigger house near, can't grow
         {
           mayGrow = false;
           break;
@@ -287,7 +287,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       TilesArray::iterator delIt=area.begin();
       HousePtr selfHouse = ptr_cast<House>( (*delIt)->getOverlay() );
 
-      _d->initGoodStore( Size( getSize().getWidth() + 1 ).getArea() );
+      _d->initGoodStore( Size( getSize().width() + 1 ).getArea() );
 
       delIt++; //don't remove himself
       for( ; delIt != area.end(); delIt++ )
@@ -330,7 +330,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
   //now upgrade groud area to new desirability
   helper.updateDesirability( this, true );
 
-  bool bigSize = getSize().getWidth() > 1;
+  bool bigSize = getSize().width() > 1;
   _d->houseId = bigSize ? startBigPic : startSmallPic; 
   _d->picIdOffset = bigSize ? 0 : ( (rand() % 10 > 6) ? 1 : 0 );
 }
@@ -387,7 +387,7 @@ void House::_levelUp()
 
 void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability )
 {
-  bool bigSize = getSize().getWidth() > 1;
+  bool bigSize = getSize().width() > 1;
   _d->houseId = bigSize ? bigPic : smallPic;
   _d->picIdOffset = bigSize ? 0 : ( rand() % 10 > 6 ? 1 : 0 );
 

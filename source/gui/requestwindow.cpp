@@ -37,7 +37,7 @@ EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, CityReques
 {
   Size size( 625, 320 );
 
-  Rect rectangle( Point( (parent->getWidth() - size.getWidth())/2, (parent->getHeight() - size.getHeight())/2 ), size );
+  Rect rectangle( Point( (parent->getWidth() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
   EmperrorRequestWindow* ret = new EmperrorRequestWindow( parent, request );
 
   return ret;

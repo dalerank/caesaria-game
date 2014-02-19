@@ -90,9 +90,9 @@ void TilemapCamera::setViewport(Size newSize)
   _d->screenSize = newSize;
 
   newSize += _d->borderSize;
-  _d->viewSize = Size( (newSize.getWidth() + 59) / 60, ( newSize.getHeight() + 29) / 30 );
+  _d->viewSize = Size( (newSize.width() + 59) / 60, ( newSize.height() + 29) / 30 );
   
-  Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.getWidth(), _d->viewSize.getHeight() );
+  Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.width(), _d->viewSize.height() );
 }
 
 void TilemapCamera::setCenter(TilePos pos )
@@ -153,15 +153,15 @@ void TilemapCamera::startFrame()
 
 Tile* TilemapCamera::getCenterTile() const
 {
-  return at( Point( _d->screenSize.getWidth() / 2, _d->screenSize.getHeight() / 2 ), true );
+  return at( Point( _d->screenSize.width() / 2, _d->screenSize.height() / 2 ), true );
 }
 
 const TilesArray& TilemapCamera::getTiles() const
 {
   if( _d->tiles.empty() )
   {
-    _d->offset.setX( _d->screenSize.getWidth() / 2 - 30 * (_d->centerMapXZ.x() + 1) + 1 );
-    _d->offset.setY( _d->screenSize.getHeight()/ 2 + 15 * (_d->centerMapXZ.y() - _d->tilemap->getSize() + 1) - 30 );
+    _d->offset.setX( _d->screenSize.width() / 2 - 30 * (_d->centerMapXZ.x() + 1) + 1 );
+    _d->offset.setY( _d->screenSize.height()/ 2 + 15 * (_d->centerMapXZ.y() - _d->tilemap->getSize() + 1) - 30 );
 
     int mapSize = _d->tilemap->getSize();
     int zm = _d->tilemap->getSize() + 1;
@@ -172,17 +172,17 @@ const TilesArray& TilemapCamera::getTiles() const
 
     std::set< Tile* > overvorderTiles;
 
-    for (int z = cz + sizeT.getHeight(); z>=cz - sizeT.getHeight(); --z)
+    for (int z = cz + sizeT.height(); z>=cz - sizeT.height(); --z)
     {
       // depth axis. from far to near.
 
-      int xstart = cx - sizeT.getWidth();
+      int xstart = cx - sizeT.width();
       if ((xstart + z) % 2 == 0)
       {
 	      ++xstart;
       }
 
-      for (int x = xstart; x<=cx + sizeT.getWidth(); x+=2)
+      for (int x = xstart; x<=cx + sizeT.width(); x+=2)
       {
 	// left-right axis
         int j = (x + z - zm)/2;
@@ -234,13 +234,13 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
   MovableOrders ret = { true, true, true, true };
 
   int mapSize = tilemap->getSize();
-  Point mapOffset = Point( screenSize.getWidth() / 2 - 30 * (centerMapXZ.x() + 1) + 1,
-                           screenSize.getHeight() / 2 + 15 * (centerMapXZ.y()-mapSize + 1) - 30 );
+  Point mapOffset = Point( screenSize.width() / 2 - 30 * (centerMapXZ.x() + 1) + 1,
+                           screenSize.height() / 2 + 15 * (centerMapXZ.y()-mapSize + 1) - 30 );
 
   ret.left = !( (tilemap->at( 0, 0 ).mapPos() + mapOffset ).x() > 0);
-  ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).mapPos() + mapOffset).x() > screenSize.getWidth();
+  ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).mapPos() + mapOffset).x() > screenSize.width();
   ret.down = ( (tilemap->at( 0, mapSize - 1 ).mapPos() + mapOffset ).y() < 0 );
-  ret.up = (tilemap->at( mapSize - 1, 0 ).mapPos() + mapOffset ).y() > screenSize.getHeight();
+  ret.up = (tilemap->at( mapSize - 1, 0 ).mapPos() + mapOffset ).y() > screenSize.height();
 
   return ret;
 }

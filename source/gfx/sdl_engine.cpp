@@ -110,8 +110,8 @@ void GfxSdlEngine::init()
   systemBpp = 24;
 #endif
  
-  Logger::warning( StringHelper::format( 0xff, "GrafixEngine: set mode %dx%d",  _srcSize.getWidth(), _srcSize.getHeight() ) );
-  SDL_Surface* scr = SDL_SetVideoMode(_srcSize.getWidth(), _srcSize.getHeight(), systemBpp, flags );  // 32bpp
+  Logger::warning( StringHelper::format( 0xff, "GrafixEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  SDL_Surface* scr = SDL_SetVideoMode(_srcSize.width(), _srcSize.height(), systemBpp, flags );  // 32bpp
     
   Logger::warning( "GrafixEngine: init successfull");
   _d->screen.init( scr, Point( 0, 0 ) );
@@ -229,10 +229,10 @@ void GfxSdlEngine::resetTileDrawMask()
 
 Picture* GfxSdlEngine::createPicture(const Size& size )
 {
-  SDL_Surface* img = SDL_CreateRGBSurface( 0, size.getWidth(), size.getHeight(), 32,
+  SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0, 0, 0, 0 );
 
-  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "Cannot make surface, size=%dx%d", size.getWidth(), size.getHeight() ) );
+  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "Cannot make surface, size=%dx%d", size.width(), size.height() ) );
 
   Picture *pic = new Picture();
   pic->init(img, Point( 0, 0 ));  // no offset

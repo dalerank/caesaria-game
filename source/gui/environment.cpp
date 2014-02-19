@@ -32,7 +32,7 @@ class GuiEnv::Impl
 public:
   struct SToolTip
   {
-    WidgetPtr Element;
+    WidgetPtr element;
     unsigned int LastTime;
     unsigned int EnterTime;
     unsigned int LaunchTime;
@@ -76,7 +76,7 @@ GuiEnv::GuiEnv( GfxEngine& painter )
 
   _environment = this;
 
-  _d->toolTip.Element;
+  _d->toolTip.element;
   _d->toolTip.LastTime = 0;
   _d->toolTip.EnterTime = 0;
   _d->toolTip.LaunchTime = 1000;
@@ -234,16 +234,15 @@ Widget* GuiEnv::createWidget(const std::string& type, Widget* parent)
 
 WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 {
-  Font styleFont = Font::create( FONT_2 );
-
-  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->getTooltipText(), true, Label::bgWhite );
+  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->getTooltipText(), true, Label::bgSimpleWhite );
   elm->setSubElement(true);
 
-  Size size( elm->getTextWidth(), elm->getTextHeight() );
+  Size size( elm->getTextWidth() + 20, elm->getTextHeight() + 2 );
   Rect rect( cursorPos, size );
-  //rect.constrainTo( getAbsoluteRect() );
-  rect -= Point( size.getWidth() + 20, -20 );
+
+  rect -= Point( size.width() + 20, -20 );
   elm->setGeometry( rect );
+  elm->setTextAlignment( alignCenter, alignCenter );
 
   return elm;
 }
@@ -252,7 +251,7 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 void GuiEnv::drawTooltip_( unsigned int time )
 {
     // launch tooltip
-    if ( _d->toolTip.Element.isNull()
+    if ( _d->toolTip.element.isNull()
          && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != getRootWidget()
     		 && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
          || (time - _d->toolTip.LastTime >= _d->toolTip.RelaunchTime && time - _d->toolTip.LastTime < _d->toolTip.LaunchTime))
@@ -265,11 +264,11 @@ void GuiEnv::drawTooltip_( unsigned int time )
         _d->hoveredNoSubelement->onEvent( e );
       }
 
-      _d->toolTip.Element = _d->createStandartTooltip( this );
-      _d->toolTip.Element->setGeometry( _d->toolTip.Element->getRelativeRect() + Point( 1, 1 ) );
+      _d->toolTip.element = _d->createStandartTooltip( this );
+      _d->toolTip.element->setGeometry( _d->toolTip.element->getRelativeRect() + Point( 1, 1 ) );
     }
 
-    if( _d->toolTip.Element.isValid() && _d->toolTip.Element->isVisible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
+    if( _d->toolTip.element.isValid() && _d->toolTip.element->isVisible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
     {
       _d->toolTip.LastTime = time;
 
@@ -278,8 +277,8 @@ void GuiEnv::drawTooltip_( unsigned int time )
           || !_d->hoveredNoSubelement->isVisible() 
           || !_d->hoveredNoSubelement->getParent() )
       {
-        _d->toolTip.Element->deleteLater();
-        _d->toolTip.Element = WidgetPtr();
+        _d->toolTip.element->deleteLater();
+        _d->toolTip.element = WidgetPtr();
       }
     }
 }
@@ -293,13 +292,13 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 	// Get the real Hovered
   _d->hovered = getRootWidget()->getElementFromPoint( mousePos );
 
-  if( _d->toolTip.Element.isValid() && _d->hovered == _d->toolTip.Element )
+  if( _d->toolTip.element.isValid() && _d->hovered == _d->toolTip.element )
   {
     // When the mouse is over the ToolTip we remove that so it will be re-created at a new position.
     // Note that ToolTip.EnterTime does not get changed here, so it will be re-created at once.
-    _d->toolTip.Element->deleteLater();
-    _d->toolTip.Element->hide();
-    _d->toolTip.Element = WidgetPtr();
+    _d->toolTip.element->deleteLater();
+    _d->toolTip.element->hide();
+    _d->toolTip.element = WidgetPtr();
     _d->hovered = getRootWidget()->getElementFromPoint( mousePos );
   }
 
@@ -332,10 +331,10 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 
   if ( lastHoveredNoSubelement != _d->hoveredNoSubelement )
   {
-    if( _d->toolTip.Element.isValid() )
+    if( _d->toolTip.element.isValid() )
     {
-      _d->toolTip.Element->deleteLater();
-      _d->toolTip.Element = WidgetPtr();
+      _d->toolTip.element->deleteLater();
+      _d->toolTip.element = WidgetPtr();
     }
 
     if( _d->hoveredNoSubelement.isValid() )
@@ -498,17 +497,14 @@ bool GuiEnv::handleEvent( const NEvent& event )
   return false;
 }
 
-Widget* GuiEnv::getHoveredElement() const
-{
-  return _d->hovered.object();
-}
+Widget* GuiEnv::getHoveredElement() const {  return _d->hovered.object(); }
 
 void GuiEnv::beforeDraw()
 {
   const Size screenSize( _d->engine->getScreenSize() );
   const Point rigthDown = getRootWidget()->getAbsoluteRect().LowerRightCorner;
   
-  if( rigthDown.x() != screenSize.getWidth() || rigthDown.y() != screenSize.getHeight() )
+  if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {
     // resize gui environment
     setGeometry( Rect( Point( 0, 0 ), screenSize ) );
@@ -518,11 +514,14 @@ void GuiEnv::beforeDraw()
 
   updateHoveredElement( _d->cursorPos );
 
-  foreach( widget, Widget::_d->children ) { (*widget)->beforeDraw( *_d->engine ); }
-
-  if( _d->toolTip.Element.isValid() )
+  foreach( widget, Widget::_d->children )
   {
-    _d->toolTip.Element->bringToFront();
+    (*widget)->beforeDraw( *_d->engine );
+  }
+
+  if( _d->toolTip.element.isValid() )
+  {
+    _d->toolTip.element->bringToFront();
   }
 
   _d->preRenderFunctionCalled = true;
@@ -551,9 +550,6 @@ void GuiEnv::animate( unsigned int time )
   Widget::animate( time );
 }
 
-Point GuiEnv::getCursorPos() const
-{
-  return _d->cursorPos;
-}
+Point GuiEnv::getCursorPos() const {  return _d->cursorPos; }
 
 }//end namespace gui

@@ -90,8 +90,8 @@ Desirability Garden::getDesirability() const
 {
   Desirability ret = Construction::getDesirability();
   ret.base *= getSize().getArea();
-  ret.range *= getSize().getWidth();
-  ret.step *= getSize().getWidth();
+  ret.range *= getSize().width();
+  ret.step *= getSize().width();
 
   return ret;
 }

@@ -99,7 +99,7 @@ public:
 
     EmPoint* operator[]( const TilePos& pos )
     {
-      unsigned int offset = pos.j() * _size.getWidth() + pos.i();
+      unsigned int offset = pos.j() * _size.width() + pos.i();
       if( offset < size() )
       {
       	Grid::iterator it = begin();
@@ -154,9 +154,9 @@ TraderouteFinder::~TraderouteFinder()
 void TraderouteFinder::Impl::update( const EmpireMap& emap )
 {
   grid.resize( emap.getSize() );
-  for( int k=0; k < emap.getSize().getHeight(); k++)
+  for( int k=0; k < emap.getSize().height(); k++)
   {
-    for( int i=0; i < emap.getSize().getWidth(); i++ )
+    for( int i=0; i < emap.getSize().width(); i++ )
     {
       TilePos p(i,k);
 

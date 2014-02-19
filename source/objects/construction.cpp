@@ -106,7 +106,7 @@ void Construction::computeAccessRoads()
 
   Tilemap& tilemap = _getCity()->getTilemap();
 
-  int s = getSize().getWidth();
+  int s = getSize().width();
   for( int dst=1; dst <= getRoadAccessDistance(); dst++ )
   {
     TilesArray rect = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
@@ -186,7 +186,7 @@ TilesArray Construction::getEnterArea() const
 {
   TilesArray tiles;
 
-  int s = getSize().getWidth();
+  int s = getSize().width();
   TilesArray near = _getCity()->getTilemap().getRectangle( pos() - TilePos(1, 1),
                                                                   pos() + TilePos(s, s),
                                                                   !Tilemap::checkCorners );

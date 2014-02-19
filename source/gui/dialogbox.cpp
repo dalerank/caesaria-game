@@ -47,7 +47,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   if( rectangle.getSize() == Size( 0, 0 ) )
   {
     Size defaultSize( 480, 160 );
-    Rect defaultRect( Point( (parent->getWidth() - defaultSize.getWidth())/2,(parent->getHeight() - defaultSize.getHeight())/2),
+    Rect defaultRect( Point( (parent->getWidth() - defaultSize.width())/2,(parent->getHeight() - defaultSize.height())/2),
                       defaultSize );
     setGeometry( defaultRect );
   }

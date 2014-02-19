@@ -295,7 +295,7 @@ public:
   Rect() : RectT<int>( 0, 0, 0, 0 ) {}
   //! Constructor with upper left corner and dimension
   Rect(const Point& pos, const Size& size)
-    : RectT<int>( pos, Point( pos.x() + size.getWidth(), pos.y() + size.getHeight() ) ) {}
+    : RectT<int>( pos, Point( pos.x() + size.width(), pos.y() + size.height() ) ) {}
 
   Rect( int x1, int y1, int x2, int y2 )
     : RectT<int>( x1, y1, x2, y2 ) {}
@@ -331,7 +331,7 @@ public:
     : RectT<float>( x1, y1, x2, y2 ) {}
 
   RectF(const PointF& pos, const SizeF& size)
-    : RectT<float>( pos, PointF( pos.x() + size.getWidth(), pos.y() + size.getHeight() ) ) {}
+    : RectT<float>( pos, PointF( pos.x() + size.width(), pos.y() + size.height() ) ) {}
 
   RectF( const PointF& p1, const PointF& p2 )
     : RectT<float>( p1, p2 ) {}

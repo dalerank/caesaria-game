@@ -54,18 +54,16 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, b
     std::string modeStr;
     foreach( mode, modes )
     {
-      modeStr = StringHelper::format( 0xff, "%dx%d", mode->getWidth(), mode->getHeight() );
+      modeStr = StringHelper::format( 0xff, "%dx%d", mode->width(), mode->height() );
       ListBoxItem& item = lbxModes->addItem( modeStr );
-      item.setTag( (mode->getWidth() << 16) + mode->getHeight());
+      item.setTag( (mode->width() << 16) + mode->height());
     }
   }
 
   _update();
 }
 
-VideoOptionsWindow::~VideoOptionsWindow( void )
-{
-}
+VideoOptionsWindow::~VideoOptionsWindow( void ){}
 
 bool VideoOptionsWindow::onEvent(const NEvent& event)
 {
@@ -119,20 +117,9 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<Size>& VideoOptionsWindow::onSreenSizeChange()
-{
-  return _d->onScreenSizeChangeSignal;
-}
-
-Signal1<bool>&VideoOptionsWindow::onFullScreenChange()
-{
-  return _d->onFullScreeChangeSignal;
-}
-
-Signal0<>&VideoOptionsWindow::onClose()
-{
-  return _d->onCloseSignal;
-}
+Signal1<Size>& VideoOptionsWindow::onSreenSizeChange() {  return _d->onScreenSizeChangeSignal; }
+Signal1<bool>&VideoOptionsWindow::onFullScreenChange(){  return _d->onFullScreeChangeSignal; }
+Signal0<>&VideoOptionsWindow::onClose(){  return _d->onCloseSignal; }
 
 void VideoOptionsWindow::_update()
 {
