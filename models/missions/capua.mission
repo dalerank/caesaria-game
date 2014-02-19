@@ -68,8 +68,8 @@
 
       Syracusae : {
         location : [ 840, 720 ]
-        sells : { fruit : 25, olive : 40, clay : 25 }
-        buys : { wine : 40, marble : 15, furniture : 25 }
+        sells : { meat : 25, marble : 20 }
+        buys : { olive : 40, oil : 15, furniture : 25 }
         land : true
         sea : true
         available : true
@@ -84,8 +84,8 @@
         sea : true
         available : true
 
-        sells : {	fruit : 25, olive : 25, timber : 25 }
-        buys : { pottery : 25, vegetable : 25, wheat : 40 }
+        sells : {	wine : 25, furniture : 25 }
+        buys : { pottery : 25 }
       }
     }
   }
