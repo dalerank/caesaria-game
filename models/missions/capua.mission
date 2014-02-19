@@ -21,12 +21,82 @@
   }
 	
   empire : {
-    enabled : false
+    enabled : true
+
+    objects : {
+      ship : {
+        location : [ 709, 604 ]
+        name : "ship"
+        picture : "empire_bits_00112"
+      }
+
+    }
+
+    cities :
+    {
+      Brundisium : {
+        location : [ 940, 560 ]
+        romecity : true
+        sea : true
+        land : true
+        available : true
+      }
+
+      "Leptis Magna" : {
+        location : [ 820, 920 ]
+
+        sea : true
+        land : true
+        distant : true
+        available : true
+
+        resources : [ "wheat", "vegetable", "olive", "fish",
+                      "clay", "marble", "timber", "iron" ]
+      }
+
+      Carthago : {
+        location : [ 640, 760 ]
+
+        sea : true
+        land : true
+        distant : true
+        available : true
+
+        resources : [ "wheat", "olive", "wine", "fish",
+                      "timber", "clay", "marble", "iron" ]
+      }
+
+      Syracusae : {
+        location : [ 840, 720 ]
+        sells : { fruit : 25, olive : 40, clay : 25 }
+        buys : { wine : 40, marble : 15, furniture : 25 }
+        land : true
+        sea : true
+        available : true
+        resources : [ "wheat", "vegetable", "fruit", "wine",
+                      "fish", "timber", "clay" ]
+      }
+
+      Tarentum : {
+        location : [ 900, 600 ]
+
+        land : true
+        sea : true
+        available : true
+
+        sells : {	fruit : 25, olive : 25, timber : 25 }
+        buys : { pottery : 25, vegetable : 25, wheat : 40 }
+      }
+    }
   }
   		
   events :
   {
-
+    "health_upper#health_updater" : {
+      date : "-350.01.01"
+      endTime : "01.01.01"
+      value : 30
+    }
   }
 	
   buildoptions :
@@ -37,9 +107,9 @@
     water : "enabled"
     health : "disable_all"
     religion : "disable_all"
-    education : "disable_all"
-    entertainment : "disable_all"
-    govt : "disable_all"
+    education : "enabled"
+    entertainment : "enabled"
+    govt : "enabled"
     engineering : "disable_all"
     security : "disable_all"
                    
@@ -47,10 +117,12 @@
     { 
       engineering_post : true
       plaza : true
-      gardens : true
+      garden : true
       low_bridge : true
       high_bridge : true
       dock : true
+      hippodrome : false
+      charioter_school : false
       prefecture : true
       small_ceres_temple : true
       small_venus_temple : true
@@ -60,6 +132,8 @@
       market : true
       granery : true
       wheat_farm : true
+      fig_farm : true
+      olive_farm : true
       senate_1 : true
     }
   }

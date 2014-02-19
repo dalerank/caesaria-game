@@ -581,7 +581,8 @@ void PlayerCity::load( const VariantMap& stream )
     if( srvc.isNull() )
     {
       Logger::warning( "City: " + item->first + " is not basic service, try load by name" );
-      srvc = CityServiceFactory::create( item->first, this );
+
+      srvc = CityServiceFactory::create( item->first, this );      
       if( srvc.isValid() )
       {
         Logger::warning( "City: creating service " + item->first + " directly");

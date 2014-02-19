@@ -33,6 +33,7 @@ public:
   virtual void setLocation( const Point& location );
 
   bool isDistantCity() const;
+  bool isRomeCity() const;
   virtual bool isAvailable() const;
   virtual void setAvailable(bool value);
 

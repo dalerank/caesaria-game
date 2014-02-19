@@ -25,6 +25,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "traderoute.hpp"
+#include "object.hpp"
 #include "empiremap.hpp"
 
 namespace world
@@ -36,6 +37,7 @@ public:
   CityList cities;
   Trading trading;
   EmpireMap emap;
+  ObjectList objects;
   bool available;
 
   std::string playerCityName;
@@ -61,10 +63,7 @@ CityList Empire::getCities() const
   return ret;
 }
 
-Empire::~Empire()
-{
-
-}
+Empire::~Empire(){}
 
 void Empire::initialize(vfs::Path filename , vfs::Path filemap)
 {
@@ -140,6 +139,12 @@ void Empire::save( VariantMap& stream ) const
     vm_cities[ (*city)->getName() ] = vm_city;
   }
 
+  VariantMap vm_objects;
+  foreach( obj, _d->objects)
+  {
+    vm_objects[ (*obj)->getName() ] = (*obj)->save();
+  }
+
   stream[ "cities" ] = vm_cities;
   stream[ "trade" ] = _d->trading.save();
   stream[ "enabled" ] = _d->available;
@@ -156,6 +161,15 @@ void Empire::load( const VariantMap& stream )
     {
       city->load( item->second.toMap() );
     }
+  }
+
+  _d->objects.clear();
+  VariantMap objects = stream.get( "objects" ).toMap();
+  foreach( item, objects )
+  {
+    ObjectPtr obj = Object::create( *this );
+    obj->load( item->second.toMap() );
+    _d->objects.push_back( obj );
   }
 
   _d->trading.load( stream.get( "trade").toMap() );
@@ -221,11 +235,7 @@ void Empire::createTradeRoute(std::string start, std::string stop )
   }
 }
 
-TraderoutePtr Empire::getTradeRoute( unsigned int index )
-{
-  return _d->trading.getRoute( index );
-}
-
+TraderoutePtr Empire::getTradeRoute( unsigned int index ) {  return _d->trading.getRoute( index ); }
 TraderoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
 {
   return _d->trading.getRoute( start, stop ); 
@@ -260,10 +270,8 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   return ret;
 }
 
-TraderouteList Empire::getTradeRoutes( const std::string& startCity )
-{
-  return _d->trading.getRoutes( startCity );
-}
+ObjectList Empire::getObjects() const{  return _d->objects;}
+TraderouteList Empire::getTradeRoutes( const std::string& startCity ){  return _d->trading.getRoutes( startCity );}
 
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
@@ -282,9 +290,6 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
 }
 
 
-TraderouteList Empire::getTradeRoutes()
-{
-  return _d->trading.getRoutes();
-}
+TraderouteList Empire::getTradeRoutes(){  return _d->trading.getRoutes();}
 
 }//end namespace world

@@ -77,7 +77,7 @@ VariantMap HealthUpdater::save() const
 {
   VariantMap ret;
   ret[ "endTime" ] = _d->endTime;
-  ret[ "exec" ] = _d->events;
+  ret[ "exec"  ] = _d->events;
   ret[ "value" ] = _d->value;
 
   return ret;

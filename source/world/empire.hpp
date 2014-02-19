@@ -33,9 +33,12 @@ public:
   static EmpirePtr create();
   ~Empire();
   CityList getCities() const;
+
   CityPtr getCity( const std::string& name ) const;
   CityPtr addCity( CityPtr city );
   CityPtr initPlayerCity( CityPtr city );
+
+  ObjectList getObjects() const;
 
   void initialize( vfs::Path filename, vfs::Path filemap );
   void timeStep( unsigned int time );

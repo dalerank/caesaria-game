@@ -25,7 +25,9 @@ class CityService : public ReferenceCounted
 public:
   virtual void update( const unsigned int time ) = 0;
 
-  virtual std::string getName() const { return _name; }
+  std::string getName() const { return _name; }
+  void setName( const std::string& name  ) { _name = name; }
+
   virtual bool isDeleted() const { return false; }
   
   virtual void destroy() {}
@@ -38,7 +40,6 @@ protected:
   {
   }
 
-protected:
   std::string _name;
 };
 

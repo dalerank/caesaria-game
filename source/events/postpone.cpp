@@ -87,7 +87,7 @@ void PostponeEvent::_exec(Game& game, uint)
     return;
   }
 
-  CityServicePtr srvc = CityServiceFactory::create( _d->type, city );
+  CityServicePtr srvc = CityServiceFactory::create( _d->name, city );
   if( srvc.isValid() )
   {
     srvc->load( _d->options );

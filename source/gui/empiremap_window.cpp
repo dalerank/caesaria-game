@@ -35,6 +35,7 @@
 #include "core/logger.hpp"
 #include "world/merchant.hpp"
 #include "core/foreach.hpp"
+#include "world/object.hpp"
 
 namespace gui
 {
@@ -57,7 +58,7 @@ public:
   PushButton* btnExit;
   PushButton* btnTrade;
   std::string ourCity;
-  Picture citypics[3];
+  Picture citypics[4];
   Label* lbCityTitle;
   Widget* tradeInfo;
   world::EmpirePtr empire;
@@ -323,6 +324,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->citypics[ 0 ] = Picture::load( ResourceGroup::empirebits, 1 );
   _d->citypics[ 1 ] = Picture::load( ResourceGroup::empirebits, 8 );
   _d->citypics[ 2 ] = Picture::load( ResourceGroup::empirebits, 15 );
+  _d->citypics[ 3 ] = Picture::load( ResourceGroup::empirebits, 22 );
 
   CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );
@@ -339,10 +341,28 @@ void EmpireMapWindow::draw( GfxEngine& engine )
   foreach( city, cities )
   {
     Point location = (*city)->getLocation();
-    int index = is_kind_of<PlayerCity>( *city ) ? 0 : 2; //maybe it our city
+    int index = 3;
+    if( is_kind_of<PlayerCity>( *city ) )  //maybe it our city
+    {
+      index = 0;
+    }
+    else if( is_kind_of<world::ComputerCity>( *city ) )
+    {
+      index = 2;
+      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( *city );
+      if( ccity->isDistantCity() )      {        index = 3;       }
+      else if( ccity->isRomeCity() )       {        index = 1;      }
+    }
 
-    engine.drawPicture( _d->citypics[ index ], _d->offset + Point( location.x(), location.y() ) );
+    engine.drawPicture( _d->citypics[ index ], _d->offset + location );
   }  
+
+  world::ObjectList objects = _d->empire->getObjects();
+  foreach( obj, objects )
+  {
+    Point location = (*obj)->getLocation();
+    engine.drawPicture( (*obj)->getPicture(), _d->offset +  location );
+  }
 
   world::TraderouteList routes = _d->empire->getTradeRoutes();
   foreach( it, routes )

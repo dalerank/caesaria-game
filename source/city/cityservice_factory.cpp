@@ -43,12 +43,19 @@ public:
 
 CityServicePtr CityServiceFactory::create( const std::string& name, PlayerCityPtr city )
 {
+  std::string::size_type sharpPos = name.find( "#" );
+  std::string srvcType = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
+
+  Logger::warning( "CityServiceFactory: try find creator for service " + srvcType );
+
   CityServiceFactory& inst = instance();
   foreach( it, inst._d->creators )
   {
-    if( name == (*it)->getServiceName() )
+    if( srvcType == (*it)->getServiceName() )
     {
-      return (*it)->create( city );
+      CityServicePtr srvc = (*it)->create( city );
+      srvc->setName( name );
+      return srvc;
     }
   }
 

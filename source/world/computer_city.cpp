@@ -33,7 +33,7 @@ public:
   std::string name;
   EmpirePtr empire;
   unsigned int tradeType;
-  bool distantCity;
+  bool distantCity, romeCity;
   bool isAvailable;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
@@ -51,37 +51,16 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->isAvailable = true;
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
+  _d->romeCity = false;
 }
 
-std::string ComputerCity::getName() const
-{
-  return _d->name;
-}
-
-Point ComputerCity::getLocation() const
-{
-  return _d->location;
-}
-
-void ComputerCity::setLocation( const Point& location )
-{
-  _d->location = location;
-}
-
-bool ComputerCity::isDistantCity() const
-{
-  return _d->distantCity;
-}
-
-bool ComputerCity::isAvailable() const
-{
-  return _d->isAvailable;
-}
-
-void ComputerCity::setAvailable(bool value)
-{
-  _d->isAvailable = value;
-}
+std::string ComputerCity::getName() const {  return _d->name;}
+Point ComputerCity::getLocation() const{  return _d->location;}
+void ComputerCity::setLocation( const Point& location ){  _d->location = location;}
+bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
+bool ComputerCity::isRomeCity() const{  return _d->romeCity;}
+bool ComputerCity::isAvailable() const{  return _d->isAvailable;}
+void ComputerCity::setAvailable(bool value){  _d->isAvailable = value;}
 
 void ComputerCity::save( VariantMap& options ) const
 {
@@ -131,6 +110,8 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "merchantsNumber" ] = _d->merchantsNumber;
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
+  options[ "distant" ] = _d->distantCity;
+  options[ "romecity" ] = _d->romeCity;
 }
 
 void ComputerCity::load( const VariantMap& options )
@@ -143,6 +124,8 @@ void ComputerCity::load( const VariantMap& options )
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
   _d->merchantsNumber = (int)options.get( "merchantsNumber" );
+  _d->distantCity = (bool)options.get( "distant" );
+  _d->romeCity = (bool)options.get( "romecity" );
 
   for( int i=Good::none; i < Good::goodCount; i ++ )
   {
