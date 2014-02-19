@@ -24,6 +24,7 @@
 #include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
+#include "loaderhelper.hpp"
 
 using namespace constants;
 
@@ -74,8 +75,6 @@ public:
 
   void loadCity(std::fstream& f, PlayerCityPtr oCity );
 
-  void decodeTerrain(Tile &oTile, PlayerCityPtr city );
-
   void initClimate(std::fstream &f, PlayerCityPtr ioCity);
   void initCameraStartPos(std::fstream &f, PlayerCityPtr ioCity);
 
@@ -101,10 +100,7 @@ bool GameLoaderC3Map::load(const std::string& filename, Game& game)
   return true;
 }
 
-GameLoaderC3Map::GameLoaderC3Map() : _d( new Impl )
-{
-
-}
+GameLoaderC3Map::GameLoaderC3Map() : _d( new Impl ) {}
 
 bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
 {
@@ -120,39 +116,9 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.seekg(kLocation, std::ios::beg);
   unsigned int location=0;
   f.read((char*)&location, 1);
-  Logger::warning( "Location of city is %d", (int)(location+1) );
+  Logger::warning( "Location of city is %d", (int)(location) );
 
-  std::string cityName = "";
-  switch( location+1 ) {
-    case 1: case 29: cityName = "Lugdunum"; break;
-    case 2: cityName = "Corinthus"; break;
-    case 3: case 37: cityName = "Londinium"; break;
-    case 4: case 13: case 28: cityName = "Mediolanum"; break;
-    case 5: case 40: cityName = "Lindum"; break;
-    case 6: cityName = "Toletum"; break;
-    case 7: case 33: cityName = "Valentia"; break;
-    case 8: case 35: cityName = "Caesarea"; break;
-    case 9: case 30: cityName = "Carthago"; break;
-    case 10: cityName = "Cyrene"; break;
-    case 11: case 15: case 25: cityName = "Tarraco"; break;
-    case 12: cityName = "Hierosolyma"; break;
-    case 14: case 26: cityName = "Syracusae"; break;
-    case 16: case 31: cityName = "Tarsus"; break;
-    case 17: case 32: cityName = "Tingis"; break;
-    case 18: cityName = "Augusta Trevorum"; break;
-    case 19: cityName = "Carthago Nova"; break;
-    case 20: cityName = "Leptis Magna"; break;
-    case 21: cityName = "Athenae"; break;
-    case 22: cityName = "Brundisium"; break;
-    case 23: cityName = "Capua"; break;
-    case 24: cityName = "Tarentum"; break;
-    case 27: cityName = "Miletus"; break;
-    case 34: cityName = "Lutetia"; break;
-    case 36: cityName = "Sarmizegetusa"; break;
-    case 38: cityName = "Damascus"; break;
-    case 39: cityName = "Massilia"; break;
-  }
-
+  std::string cityName = LoaderHelper::getDefaultCityName( location );
   oCity->setName( cityName );
 
   f.seekg(kSize, std::ios::beg);
@@ -272,62 +238,12 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
       
       // Check if it is building and type of building
       //if (ttile.getMasterTile() == NULL)
-      decodeTerrain( oTilemap.at( i, j ), oCity );
+      LoaderHelper::decodeTerrain( oTilemap.at( i, j ), oCity );
     }
   }
 }
 
-void GameLoaderC3Map::Impl::decodeTerrain(Tile &oTile, PlayerCityPtr city )
-{
-  if (!oTile.isMasterTile() && oTile.getMasterTile()!=NULL)
-    return;
-  
-  TileOverlayPtr overlay; // This is the overlay object, if any
 
-  if( oTile.getFlag( Tile::tlRoad ) )   // road
-  {
-    overlay = TileOverlayFactory::getInstance().create( construction::road );
-  }
-  else /*if( oTile.getFlag( Tile::tlBuilding ) )*/
-  {
-    switch ( oTile.getOriginalImgId() )
-    {
-      case 0xb0e:
-      case 0xb0f:
-      case 0xb0b:
-      case 0xb0c:
-        overlay = TileOverlayFactory::getInstance().create( building::nativeHut );
-      break;
-
-      case 0xb10:
-      case 0xb0d:
-        overlay =  TileOverlayFactory::getInstance().create( building::nativeCenter );
-        Logger::warning( "creation of Native center at (%d,%d)", oTile.i(), oTile.j() );
-      break;
-
-      case 0xb11:
-      case 0xb44:
-        overlay = TileOverlayFactory::getInstance().create( building::nativeField );
-      break;
-
-      case 0x34d:
-      case 0x34e:
-      case 0x34f:
-      case 0x350:
-        overlay = TileOverlayFactory::getInstance().create( building::elevation );
-        overlay->setPicture( Picture::load( TileHelper::convId2PicName( oTile.getOriginalImgId() ) ) );
-      break;
-    }
-  }
-
-  //terrain.setOverlay( overlay );
-  if( overlay != NULL )
-  {
-    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.getOriginalImgId() );
-    overlay->build( city, oTile.pos() );
-    city->getOverlays().push_back(overlay);
-  }
-}
 
 void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity)
 {

@@ -117,7 +117,7 @@ void CityMigration::update( const unsigned int time )
   Logger::warning( "MigrationSrvc: current indesrbl=%d", emigrantsIndesirability );
 
 
-  int goddesRandom = rand() % maxIndesirability;
+  int goddesRandom = math::random( maxIndesirability );
   if( goddesRandom > emigrantsIndesirability )
   {
     _d->createMigrationToCity();

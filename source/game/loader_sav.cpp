@@ -23,6 +23,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "loaderhelper.hpp"
 
 #include <fstream>
 #include <climits>
@@ -32,10 +33,11 @@
 class GameLoaderC3Sav::Impl
 {
 public:
-
+  bool loadCity(std::fstream& f, Game& game);
+  void initEntryExit(std::fstream& f, PlayerCityPtr ioCity);
 };
 
-GameLoaderC3Sav::GameLoaderC3Sav()
+GameLoaderC3Sav::GameLoaderC3Sav() : _d( new Impl )
 {
 
 }
@@ -47,10 +49,59 @@ void SkipCompressed( std::fstream& f )
   f.seekg(tmp, std::ios::cur);
 }
 
-bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
+void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
+{
+  unsigned int size = ioCity->getTilemap().getSize();
+
+  const std::fstream::pos_type savePos = f.tellg();
+
+  // init road entry/exit point
+  unsigned short int i = 0;
+  unsigned short int j = 0;
+  f.seekg(1236, std::ios::cur);
+  f.read((char*)&i, 2);
+  f.read((char*)&j, 2);
+
+  BorderInfo borderInfo;
+
+  borderInfo.roadEntry = TilePos( i, size - j - 1 );
+
+  f.read((char*)&i, 2);
+  f.read((char*)&j, 2);
+  borderInfo.roadExit = TilePos( i, size - j - 1 );
+
+  // init boat entry/exit point
+  f.seekg(savePos, std::ios::beg);
+  f.seekg(1276, std::ios::cur);
+  f.read((char*)&i, 2);
+  f.read((char*)&j, 2);
+  borderInfo.boatEntry = TilePos( i, size - j - 1 );
+
+  f.read((char*)&i, 2);
+  f.read((char*)&j, 2);
+  borderInfo.boatExit = TilePos( i, size - j - 1);
+
+  ioCity->setBorderInfo( borderInfo );
+
+  f.seekg(savePos, std::ios::beg);
+}
+
+
+bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
- 
+
+  //_d->initClimate(f, game.getCity() );
+
+  _d->loadCity(f, game );
+
+  f.close();
+
+  return true;
+}
+
+bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
+{ 
   uint32_t tmp;
 
   // need to rewrite better
@@ -71,6 +122,9 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
     THROW("can't open file");
   
   f.read((char*)&tmp, 4); // read dummy
+
+  std::string cityName = LoaderHelper::getDefaultCityName( tmp );
+  game.getCity()->setName( cityName );
   
   f.read((char*)&tmp, 4); // read scenario flag
   
@@ -157,25 +211,30 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
     SkipCompressed(f); // skip unknown
     f.seekg(788, std::ios::cur); // skip unused data
     f.read((char*)&tmp, 4); //mapsize
+
     int size = tmp;
+    PlayerCityPtr oCity = game.getCity();
+    Tilemap& oTilemap = oCity->getTilemap();
+
+    oTilemap.resize(size);
+    oCity->setCameraPos( TilePos( 0, 0 ) );
+
+    initEntryExit( f, game.getCity() );
+
     f.seekg(1312, std::ios::cur);
     char climate;
     f.read(&climate, 1);
+    oCity->setClimate((ClimateType)climate);
     
     // here goes the WORK!
     
-    PlayerCityPtr oCity = game.getCity();
-    oCity->setClimate((ClimateType)climate);
-    Tilemap& oTilemap = oCity->getTilemap();
-    
-    oTilemap.resize(size);
-
-    oCity->setCameraPos( TilePos( 0, 0 ) );
     
   // loads the graphics map
   int border_size = (162 - size) / 2;
 
   std::map< int, std::map< int, unsigned char > > edgeData;
+
+  game.getCity()->setCameraPos( TilePos( size/2, size/2 ) );
 
   for (int itA = 0; itA < size; ++itA)
   {
@@ -245,7 +304,7 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
 
       // Check if it is building and type of building
       //if (ttile.getMasterTile() == NULL)
-      //decodeTerrain( oTilemap.at( i, j ), oCity );
+      LoaderHelper::decodeTerrain( oTilemap.at( i, j ), oCity );
     }
   }
     
@@ -254,8 +313,6 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game )
   {
     THROW("fatal error when unpacking");
   }
-
-  f.close();
 
   return true;
 }

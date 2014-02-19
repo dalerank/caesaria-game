@@ -13,7 +13,7 @@
     peace : 0
     favour : 0
     next : "/missions/tutorial2.mission"
-    title : "##win_clerk_title##"
+    title : "##win_citizen_title##"
     may_continue : false
     short : "##build_some_houses##"
     maxHouseLevel : "big_villa"
