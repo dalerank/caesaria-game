@@ -374,9 +374,10 @@ void SeaMerchant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   stream[ "destBuildPos" ] = _d->destBuildingPos;
-  stream[ "sell" ] = _d->sell.save();
+  stream[ "sell"  ] = _d->sell.save();
   stream[ "baseCity" ] = Variant( _d->baseCityName );
-  stream[ "wait" ] = _d->waitInterval;
+  stream[ "wait"  ] = _d->waitInterval;
+  stream[ "buy"   ] = _d->buy.save();
   stream[ "state" ] = (int)_d->nextState;
 }
 
@@ -385,6 +386,7 @@ void SeaMerchant::load( const VariantMap& stream)
   Walker::load( stream );
   _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
   _d->sell.load( stream.get( "sell" ).toMap() );
+  _d->buy.load( stream.get( "buy").toMap() );
   _d->baseCityName = stream.get( "baseCity" ).toString();
   _d->waitInterval = stream.get( "wait" );
   _d->nextState = (Impl::State)stream.get( "state" ).toInt();

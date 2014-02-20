@@ -64,20 +64,9 @@ public:
   }
 };
 
-CityPtr Traderoute::getBeginCity() const
-{
-  return _d->empire->getCity( _d->begin );
-}
-
-CityPtr Traderoute::getEndCity() const
-{
-  return _d->empire->getCity( _d->end );
-}
-
-std::string Traderoute::getName() const
-{
-  return _d->begin + "<->" + _d->end;
-}
+CityPtr Traderoute::getBeginCity() const {  return _d->empire->getCity( _d->begin );}
+CityPtr Traderoute::getEndCity() const{  return _d->empire->getCity( _d->end );}
+std::string Traderoute::getName() const{  return _d->begin + "<->" + _d->end;}
 
 void Traderoute::update( unsigned int time )
 {
@@ -137,15 +126,8 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
   }
 }
 
-const PicturesArray&Traderoute::getPictures() const
-{
-  return _d->pictures;
-}
-
-bool Traderoute::isSeaRoute() const
-{
-  return _d->seaRoute;
-}
+const PicturesArray&Traderoute::getPictures() const {  return _d->pictures;}
+bool Traderoute::isSeaRoute() const{  return _d->seaRoute;}
 
 void Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy )
 {
@@ -169,10 +151,7 @@ Traderoute::Traderoute( EmpirePtr empire, std::string begin, std::string end )
   _d->end = end;
 }
 
-Traderoute::~Traderoute()
-{
-
-}
+Traderoute::~Traderoute() {}
 
 MerchantPtr Traderoute::getMerchant( unsigned int index )
 {
@@ -205,6 +184,7 @@ VariantMap Traderoute::save() const
     vl_pictures.push_back( Variant( pic->getName() ) );
   }
   ret[ "pictures" ] = vl_pictures;
+  ret[ "seaRoute" ] = _d->seaRoute;
 
   return ret;
 }
@@ -231,6 +211,7 @@ void Traderoute::load(const VariantMap& stream)
 
     _d->merchants.back()->load( it->second.toMap() );
   }
+  _d->seaRoute = stream.get( "seaRoute" );
 }
 
 Signal1<MerchantPtr>& Traderoute::onMerchantArrived()
