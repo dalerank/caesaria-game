@@ -80,7 +80,7 @@ CityMigration::CityMigration( PlayerCityPtr city )
   _d->lastMonthMigration = 0;
   _d->lastMonthPopulation = 0;
   _d->lastUpdate = GameDate::current();
-  _d->updateTickInerval  = GameDate::ticksInMonth() / 2;
+  _d->updateTickInerval = GameDate::ticksInMonth() / 2;
 }
 
 void CityMigration::update( const unsigned int time )
@@ -121,6 +121,7 @@ void CityMigration::update( const unsigned int time )
   if( goddesRandom > emigrantsIndesirability )
   {
     _d->createMigrationToCity();
+    _d->updateTickInerval = math::random( GameDate::ticksInMonth() / 2 ) + 10;
   }
 
   if( _d->lastUpdate.getMonthToDate( GameDate::current() ) > 0 )

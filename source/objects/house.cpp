@@ -40,6 +40,8 @@
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "city/funds.hpp"
+#include "city/build_options.hpp"
+
 
 using namespace constants;
 
@@ -698,11 +700,12 @@ void House::destroy()
   _d->maxHabitants = 0;
 
   const int maxCitizenInGroup = 8;
-  while( _d->habitants.count() > maxCitizenInGroup )
+  do
   {
     CitizenGroup homeless = _d->habitants.retrieve( std::min<int>( _d->habitants.count(), maxCitizenInGroup ) );
     Immigrant::send2city( _getCity(), homeless, getTile(), "##immigrant_thrown_from_house##" );
   }
+  while( _d->habitants.count() >= maxCitizenInGroup );
 
   if( getWorkersCount() > 0 )
   {
@@ -735,6 +738,11 @@ std::string House::getTrouble() const
   }
 
   return ret;
+}
+
+bool House::isCheckedDesirability() const
+{
+  return _getCity()->getBuildOptions().isCheckDesirability();
 }
 
 void House::save( VariantMap& stream ) const

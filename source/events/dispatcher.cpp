@@ -67,7 +67,7 @@ VariantMap Dispatcher::save() const
   int index = 0;
   foreach( event, _d->events )
   {
-    ret[ StringHelper::format( 0xff, "%d", index ) ] = (*event)->save();
+    ret[ StringHelper::format( 0xff, "event_%d", index++ ) ] = (*event)->save();
   }
 
   return ret;

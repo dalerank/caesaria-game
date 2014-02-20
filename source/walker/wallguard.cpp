@@ -283,7 +283,7 @@ bool WallGuard::_tryAttack()
         PathwayList wayList = _d->base->getWays( pos(), nearestWall );
         foreach( way, wayList )
         {
-          double tmpDistance = (*way)->getDestination().pos().distanceFrom( enemy->pos() );
+          double tmpDistance = (*way)->destination().pos().distanceFrom( enemy->pos() );
           if( tmpDistance < minDistance )
           {
             shortestWay = *way;

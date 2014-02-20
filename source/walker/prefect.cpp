@@ -152,6 +152,7 @@ void Prefect::_back2Prefecture()
     _d->action = Impl::patrol;
     _setAnimation( gfx::prefect );
     _updatePathway( pathway );
+    _d->endPatrolPoint = pathway.destination().pos();
     setSpeed( 1 );
     go();
   }
@@ -227,7 +228,7 @@ void Prefect::_brokePathway(TilePos p)
   }
   else if( _d->water > 0 )
   {
-    TilePos destination = _pathwayRef().getDestination().pos();
+    TilePos destination = _pathwayRef().destination().pos();
 
     Pathway pathway = PathwayHelper::create( pos(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
@@ -262,6 +263,13 @@ void Prefect::_reachedPathway()
   break;
 
   case Impl::go2fire:
+    if( !_findFire() )
+    {
+      _back2Patrol();
+    }
+  break;
+
+  case Impl::findFire:
     if( !_findFire() )
     {
       _back2Patrol();
@@ -472,7 +480,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 
   if( _pathwayRef().isValid() )
   {
-    _d->endPatrolPoint = _pathwayRef().getDestination().pos();
+    _d->endPatrolPoint = _pathwayRef().destination().pos();
   }
 }
 

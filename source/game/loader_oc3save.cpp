@@ -25,6 +25,7 @@
 #include "gamedate.hpp"
 #include "world/empire.hpp"
 #include "divinity.hpp"
+#include "events/dispatcher.hpp"
 
 static const int currentVesion = 1;
 
@@ -38,6 +39,7 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
     game.setTimeMultiplier( (int)vm[ "timemultiplier"] );
 
     GameDate::init( scenario_vm[ "date" ].toDateTime() );
+    events::Dispatcher::instance().load( scenario_vm[ "events" ].toMap() );
 
     game.getPlayer()->load( vm[ "player" ].toMap() );
     game.getCity()->load( vm[ "city" ].toMap() );

@@ -43,6 +43,7 @@ public:
 
   void setBuildingAvailble(const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild);
   bool isBuildingsAvailble(const TileOverlay::Type start, const TileOverlay::Type stop) const;
+  bool isCheckDesirability() const;
 private:
   class Impl;
   ScopedPtr< Impl > _d;

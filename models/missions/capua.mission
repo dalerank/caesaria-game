@@ -94,7 +94,7 @@
   {
     "health_upper#health_updater" : {
       date : "-350.01.01"
-      endTime : "01.01.01"
+      endTime : "348.01.01"
       value : 30
     }
   }

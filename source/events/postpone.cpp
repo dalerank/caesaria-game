@@ -56,7 +56,7 @@ GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& s
   if( pe->_d->type.empty() )
     return GameEventPtr();
 
-  Logger::warning( "Load postpone event " + type );
+  Logger::warning( "Load postpone event " + pe->_d->name );
   return ret;
 }
 
@@ -121,7 +121,13 @@ bool PostponeEvent::_mayExec( Game& game, uint time ) const
 }
 
 bool PostponeEvent::isDeleted() const{  return _d->mayDelete; }
-VariantMap PostponeEvent::save() const {  return _d->options; }
+VariantMap PostponeEvent::save() const
+{
+  VariantMap ret = _d->options;
+  ret[ "eventType" ] = Variant( _d->type );
+  ret[ "eventName" ] = Variant( _d->name );
+  return ret;
+}
 
 void PostponeEvent::load(const VariantMap& stream)
 {  

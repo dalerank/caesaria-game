@@ -28,17 +28,16 @@ class CityBuildOptions::Impl
 public:
   typedef std::map< TileOverlay::Type, bool > BuildingRules;
   BuildingRules rules;
+
+  bool checkDesirability;
 };
 
 CityBuildOptions::CityBuildOptions() : _d( new Impl )
 {
-
+  _d->checkDesirability = true;
 }
 
-CityBuildOptions::~CityBuildOptions()
-{
-
-}
+CityBuildOptions::~CityBuildOptions() {}
 
 void CityBuildOptions::setBuildingAvailble( const TileOverlay::Type type, bool mayBuild )
 {
@@ -60,6 +59,7 @@ bool CityBuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const
   return available;
 }
 
+bool CityBuildOptions::isCheckDesirability() const {  return _d->checkDesirability; }
 
 void CityBuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
 {
@@ -142,6 +142,10 @@ void CityBuildOptions::load(const VariantMap& options)
     TileOverlay::Type btype = MetaDataHolder::getType( item->first );
     setBuildingAvailble( btype, item->second.toBool() );
   }
+
+  Variant chDes = options.get( "check_desirability" );
+  if( chDes.isValid() )
+    _d->checkDesirability = (bool)chDes;
 }
 
 VariantMap CityBuildOptions::save() const
@@ -154,12 +158,14 @@ VariantMap CityBuildOptions::save() const
 
   VariantMap ret;
   ret[ "buildings" ] = blds;
+  ret[ "check_desirability" ] = _d->checkDesirability;
   return ret;
 }
 
 CityBuildOptions& CityBuildOptions::operator=(const CityBuildOptions& a)
 {
   _d->rules = a._d->rules;
+  _d->checkDesirability = a._d->checkDesirability;
 
   return *this;
 }

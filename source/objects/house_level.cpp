@@ -102,7 +102,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
   }
 
   value = computeDesirabilityLevel( house, reason );
-  if( value < _d->minDesirability )
+  if( house->isCheckedDesirability() && value < _d->minDesirability )
   {
     res = false;
     ref = "##low_desirability##";

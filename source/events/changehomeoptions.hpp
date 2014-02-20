@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_EVENT_CHANGEBUILDINGOPTIONS_H_INCLUDE_
-#define _CAESARIA_EVENT_CHANGEBUILDINGOPTIONS_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_CHANGEHOMEOPTIONS_H_INCLUDE_
+#define _CAESARIA_EVENT_CHANGEHOMEOPTIONS_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class ChangeBuildingOptions : public GameEvent
+class ChangeHomeOptions : public GameEvent
 {
 public:
   static GameEventPtr create();
@@ -39,4 +39,4 @@ private:
 
 }
 
-#endif //_CAESARIA_EVENT_CHANGEBUILDINGOPTIONS_H_INCLUDE_
+#endif //_CAESARIA_EVENT_CHANGEHOMEOPTIONS_H_INCLUDE_

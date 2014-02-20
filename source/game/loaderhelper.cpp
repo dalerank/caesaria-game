@@ -25,7 +25,7 @@ std::string LoaderHelper::getDefaultCityName(unsigned int location)
 {
   switch( location )
   {
-  case 1: return "Brundisium";
+  case 0: case 1: return "Brundisium";
   case 2: return "Capua"; break;
   case 3: case 37: return "Londinium"; break;
   case 4: case 13: case 28: return "Mediolanum"; break;

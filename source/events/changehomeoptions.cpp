@@ -13,43 +13,46 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "changebuildingoptions.hpp"
+#include "changehomeoptions.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "city/build_options.hpp"
+#include "world/empire.hpp"
+#include "game/settings.hpp"
 
 namespace events
 {
 
-GameEventPtr ChangeBuildingOptions::create()
+GameEventPtr ChangeHomeOptions::create()
 {
-  ChangeBuildingOptions* e = new ChangeBuildingOptions();
-
-  GameEventPtr ret( e );
+  GameEventPtr ret( new ChangeHomeOptions() );
   ret->drop();
 
   return ret;
 }
 
-void ChangeBuildingOptions::load(const VariantMap& stream)
+void ChangeHomeOptions::load(const VariantMap& stream)
 {
   _vars = stream;
 }
 
-VariantMap ChangeBuildingOptions::save() const
+VariantMap ChangeHomeOptions::save() const
 {
   return _vars;
 }
 
-bool ChangeBuildingOptions::_mayExec(Game& game, uint time) const {  return true; }
+bool ChangeHomeOptions::_mayExec(Game& game, uint time) const {  return true; }
 
-void ChangeBuildingOptions::_exec(Game& game, uint)
+void ChangeHomeOptions::_exec(Game& game, uint)
 {
-  CityBuildOptions options;
-  options = game.getCity()->getBuildOptions();
-  options.load( _vars );
+  //Variant check_desir = _vars.get( "check_desirability" );
+  //if( check_desir.isValid() )
+  //{
+    //game.getEmpire()->setAvailable( check_desir );
+  //}
 
-  game.getCity()->setBuildOptions( options );
+  //CityHelper helper( game.getCity() );
+  //HouseList houses = helper.find<House>( )
 }
 
 }

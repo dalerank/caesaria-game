@@ -17,7 +17,6 @@
 #include "objects/objects_factory.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
-//#include "building/metadata.hpp"
 #include "city/funds.hpp"
 #include "gui/environment.hpp"
 #include "gui/info_box.hpp"

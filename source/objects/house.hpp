@@ -63,7 +63,7 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual TilesArray getEnterArea() const;
 
-  virtual double getState( Param param) const;
+  virtual double getState( Param param) const;  
 
   int getWorkersCount() const;
 
@@ -94,6 +94,8 @@ public:
 
   virtual std::string getSound() const;
   virtual std::string getTrouble() const;
+
+  bool isCheckedDesirability() const;
 
 private:
 

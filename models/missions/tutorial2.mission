@@ -43,11 +43,6 @@
       value : 30
     }
 
-    "desirability_upper#desirability_updater" : {
-      endTime : "01.01.01"
-      value : 50
-    }
-
     "reservoir#tutorial_window" : {
       population : 200
       tutorial : "/tutorial/reservoir.tutorial"
@@ -109,6 +104,7 @@
     govt : "disable_all"
     engineering : "disable_all"
     security : "disable_all"
+    check_desirability : false
                    
     buildings : 
     { 

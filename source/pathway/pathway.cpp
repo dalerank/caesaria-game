@@ -98,7 +98,7 @@ TilePos Pathway::getStartPos() const { return _d->origin ? _d->origin->pos() : T
 bool Pathway::isReverse() const {  return _d->isReverse; }
 const TilesArray& Pathway::getAllTiles() const {  return _d->tileList; }
 
-const Tile& Pathway::getDestination() const
+const Tile& Pathway::destination() const
 {
   const Tile& res = _d->tilemap->at( _d->destination );
   return res;

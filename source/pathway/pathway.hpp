@@ -38,7 +38,7 @@ public:
   const Tile& getOrigin() const;
   TilePos getStartPos() const;
 
-  const Tile& getDestination() const;
+  const Tile& destination() const;
   bool isReverse() const;
   unsigned int getStep() const;
 
