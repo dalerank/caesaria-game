@@ -105,21 +105,25 @@
     raw_material : "disable_all"
     factory : "disable_all"
     water : "enabled"
-    health : "disable_all"
+    health : "enabled"
     religion : "disable_all"
     education : "enabled"
     entertainment : "enabled"
     govt : "enabled"
     engineering : "disable_all"
     security : "disable_all"
+    check_desirability : false
                    
     buildings : 
     { 
       engineering_post : true
       plaza : true
+      forum_1 : false
       garden : true
       low_bridge : true
       high_bridge : true
+      clay_pit : true
+      pottery_workshop : true
       dock : true
       hippodrome : false
       charioter_school : false
@@ -130,7 +134,9 @@
       small_neptune_temple : true
       small_mercury_temple : true
       market : true
+      oil_workshop : true
       granery : true
+      warehouse : true
       wheat_farm : true
       fig_farm : true
       olive_farm : true

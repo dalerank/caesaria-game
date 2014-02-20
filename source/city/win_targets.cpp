@@ -118,12 +118,12 @@ CityWinTargets&CityWinTargets::operator=(const CityWinTargets& a)
   return *this;
 }
 
-int CityWinTargets::getCulture() const{  return _d->culture;}
-int CityWinTargets::getProsperity() const{  return _d->prosperity;}
-int CityWinTargets::getFavour() const{  return _d->favour;}
-int CityWinTargets::getPeace() const{  return _d->peace;}
+int CityWinTargets::needCulture() const{  return _d->culture;}
+int CityWinTargets::needProsperity() const{  return _d->prosperity;}
+int CityWinTargets::needFavour() const{  return _d->favour;}
+int CityWinTargets::needPeace() const{  return _d->peace;}
 std::string CityWinTargets::getShortDesc() const {  return _d->shortDesc;}
 std::string CityWinTargets::getNextMission() const { return _d->nextMission; }
 std::string CityWinTargets::getNewTitle() const { return _d->newTitle; }
-int CityWinTargets::getPopulation() const{  return _d->population;}
+int CityWinTargets::needPopulation() const{  return _d->population;}
 const StringArray& CityWinTargets::getOverview() const{  return _d->overview;}

@@ -352,6 +352,7 @@ void Merchant::save( VariantMap& stream ) const
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "baseCity" ] = Variant( _d->baseCityName );
   stream[ "wait" ] = _d->waitInterval;
+  stream[ "nextState" ] = (int)_d->nextState;
 }
 
 void Merchant::load( const VariantMap& stream)
@@ -362,6 +363,15 @@ void Merchant::load( const VariantMap& stream)
   _d->maxDistance = stream.get( "maxDistance" );
   _d->baseCityName = stream.get( "baseCity" ).toString();
   _d->waitInterval = stream.get( "wait" );
+
+  Variant vNext = stream.get( "nextState" );
+  if( vNext.isValid() )
+    _d->nextState = (Impl::State)vNext.toInt();
+  else
+  {
+    _d->nextState = Impl::stBackToBaseCity;
+    _d->resolveState( _getCity(), this, pos() );
+  }
 }
 
 void Merchant::timeStep(const unsigned long time)

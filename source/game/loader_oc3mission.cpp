@@ -85,6 +85,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     std::string missionName = vfs::Path( filename ).getBasename( false ).toString();
     Locale::addTranslation( missionName );
+    GameSettings::set( GameSettings::lastTranslation, Variant( missionName ) );
 
     return true;
   }

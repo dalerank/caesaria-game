@@ -25,6 +25,7 @@
 #include "gamedate.hpp"
 #include "game.hpp"
 #include "divinity.hpp"
+#include "settings.hpp"
 #include "events/dispatcher.hpp"
 
 void GameSaver::save(const vfs::Path& filename, const Game& game )
@@ -36,6 +37,7 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   VariantMap vm_scenario;
   vm_scenario[ "date" ] = GameDate::current();
   vm_scenario[ "events" ] = events::Dispatcher::instance().save();
+  vm_scenario[ "translation" ] = GameSettings::get( GameSettings::lastTranslation );
   vm[ "scenario" ] = vm_scenario;
 
   VariantMap vm_empire;

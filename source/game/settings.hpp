@@ -44,6 +44,7 @@ public:
   static const char* saveExt;
   static const char* workDir;
   static const char* adviserEnabled;
+  static const char* lastTranslation;
 
   static GameSettings& getInstance();
 

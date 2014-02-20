@@ -32,14 +32,14 @@ public:
   CityWinTargets();
   ~CityWinTargets();
 
-  int getCulture() const;
-  int getProsperity() const;
-  int getFavour() const;
-  int getPeace() const;
+  int needCulture() const;
+  int needProsperity() const;
+  int needFavour() const;
+  int needPeace() const;
   std::string getShortDesc() const;
   std::string getNextMission() const;
   std::string getNewTitle() const;
-  int getPopulation() const;
+  int needPopulation() const;
   const StringArray& getOverview() const;
 
   bool isSuccess( int culture, int prosperity,

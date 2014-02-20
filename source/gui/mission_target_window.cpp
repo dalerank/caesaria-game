@@ -117,15 +117,28 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
 {
   _d->city = city;
   const CityWinTargets& wint = _d->city->getWinTargets();
-  _d->lbCulture->setVisible( wint.getCulture() > 0 );
-  _d->lbPeace->setVisible( wint.getPeace() > 0 );
-  _d->lbFavour->setVisible( wint.getFavour() > 0 );
-  _d->lbProsperity->setVisible( wint.getProsperity() > 0 );
+  _d->lbCulture->setVisible( wint.needCulture() > 0 );
+  _d->lbPeace->setVisible( wint.needPeace() > 0 );
+  _d->lbFavour->setVisible( wint.needFavour() > 0 );
+  _d->lbProsperity->setVisible( wint.needProsperity() > 0 );
   _d->title->setText( _d->city->getPlayer()->getName()  );
   _d->lbShortDesc->setVisible( !wint.getShortDesc().empty() );
 
-  std::string text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.getPopulation() );
+  std::string text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
   _d->lbPopulation->setText( text );
+
+  text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_prosperity##"), wint.needProsperity() );
+  _d->lbProsperity->setText( text );
+
+  text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_favour##"), wint.needFavour() );
+  _d->lbFavour->setText( text );
+
+  text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_culture##"), wint.needCulture() );
+  _d->lbCulture->setText( text );
+
+  text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_peace##"), wint.needPeace() );
+  _d->lbPeace->setText( text );
+
   _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
   _d->lbxHelp->setItemTextOffset( Point( 20, 0 ) );
   _d->lbxHelp->setItemDefaultColor( ListBoxItem::LBC_TEXT, 0xffe0e0e0 );
