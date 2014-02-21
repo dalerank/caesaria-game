@@ -45,6 +45,7 @@
 #include "game/settings.hpp"
 #include "image.hpp"
 #include "gameautopause.hpp"
+#include "events/fundissue.hpp"
 
 namespace gui
 {

@@ -27,6 +27,7 @@
 #include "events/event.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_pusher.hpp"
+#include "events/fundissue.hpp"
 
 using namespace constants;
 
@@ -224,9 +225,11 @@ void Dock::importingGoods(GoodStock& stock)
 
   //try sell goods
   int traderMaySell = std::min( stock.qty(), cityOrders.capacity( stock.type() ) );
+  int dockMayStore = _d->importGoods.getFreeQty( stock.type() );
+
+  traderMaySell = std::min( traderMaySell, dockMayStore );
   if( traderMaySell > 0 )
   {
-    // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
     _d->importGoods.store( stock, traderMaySell );
 
     events::GameEventPtr e = events::FundIssueEvent::import( stock.type(), traderMaySell );
@@ -244,7 +247,7 @@ void Dock::exportingGoods( GoodStock& stock, int qty )
   qty = std::min( qty, _d->exportGoods.getMaxRetrieve( stock.type() ) );
   _d->exportGoods.retrieve( stock, qty );
 
-  if( stock.qty() > 0 )
+  if( qty > 0 )
   {
     events::GameEventPtr e = events::FundIssueEvent::exportg( stock.type(), qty );
     e->dispatch();
@@ -393,7 +396,7 @@ void Dock::_tryReceiveGoods()
 {
   for( int i=Good::wheat; i < Good::goodCount; i++ )
   {
-    if( getWalkers().size() > 2 )
+    if( getWalkers().size() >= 2 )
     {
       return;
     }
@@ -410,7 +413,7 @@ void Dock::_tryReceiveGoods()
         addWalker( cart.object() );
         GoodStock tmpStock( gtype, qty, 0 );
         _d->requestGoods.retrieve( tmpStock, qty );
-        i--;
+        return;
       }
       else
       {

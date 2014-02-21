@@ -33,6 +33,7 @@
 #include "objects/constants.hpp"
 #include "world/merchant.hpp"
 #include "core/stacktrace.hpp"
+#include "events/fundissue.hpp"
 
 using namespace constants;
 

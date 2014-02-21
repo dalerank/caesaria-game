@@ -36,6 +36,7 @@
 #include "world/merchant.hpp"
 #include "core/foreach.hpp"
 #include "world/object.hpp"
+#include "events/fundissue.hpp"
 
 namespace gui
 {

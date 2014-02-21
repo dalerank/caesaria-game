@@ -251,61 +251,6 @@ void ChangeSpeed::_exec(Game& game, uint)
   game.changeTimeMultiplier( _value );
 }
 
-
-GameEventPtr FundIssueEvent::create(int type, int value)
-{
-  FundIssueEvent* ev = new FundIssueEvent();
-  ev->_value = value;
-  ev->_type = type;
-  GameEventPtr ret( ev );
-  ret->drop();
-  return ret;
-}
-
-GameEventPtr FundIssueEvent::import(Good::Type good, int qty)
-{
-  FundIssueEvent* ev = new FundIssueEvent();
-  ev->_gtype = good;
-  ev->_qty = qty;
-  ev->_type = CityFunds::importGoods;
-  GameEventPtr ret( ev );
-  ret->drop();
-  return ret;
-}
-
-GameEventPtr FundIssueEvent::exportg(Good::Type good, int qty)
-{
-  FundIssueEvent* ev = new FundIssueEvent();
-  ev->_gtype = good;
-  ev->_qty = qty;
-  ev->_type = CityFunds::exportGoods;
-  GameEventPtr ret( ev );
-  ret->drop();
-  return ret;
-}
-
-bool FundIssueEvent::_mayExec(Game& game, uint time) const
-{
-  return true;
-}
-
-void FundIssueEvent::_exec(Game& game, uint )
-{
-  if( _type == CityFunds::importGoods )
-  {
-    int price = game.getCity()->getTradeOptions().getSellPrice( _gtype );
-    _value = -price * _qty / 100;
-  }
-  else if( _type == CityFunds::exportGoods )
-  {
-    int price = game.getCity()->getTradeOptions().getBuyPrice( _gtype );
-    _value = price * _qty / 100;
-  }
-
-  game.getCity()->getFunds().resolveIssue( FundIssue( _type, _value ) );
-}
-
-
 GameEventPtr ShowEmpireMapWindow::create(bool show)
 {
   ShowEmpireMapWindow* ev = new ShowEmpireMapWindow();

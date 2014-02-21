@@ -209,6 +209,11 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
       nextState = stWaitGoods;
       waitInterval = anyBuy ? GameDate::ticksInMonth() / 4 : 0;
+
+      if( 0 == buy.getFreeQty() ) //all done
+      {
+        nextState = stGoOutFromCity;
+      }
     }
     else
     {
