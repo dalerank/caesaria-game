@@ -57,22 +57,11 @@ public:
 SimpleGoodStore::SimpleGoodStore() : _gsd( new Impl )
 {
   _gsd->capacity = 0;
-
   _gsd->reset();
 }
 
-
-void SimpleGoodStore::setCapacity(const int maxQty)
-{
-  _gsd->capacity = maxQty;
-}
-
-
-int SimpleGoodStore::capacity() const
-{
-  return _gsd->capacity;
-}
-
+void SimpleGoodStore::setCapacity(const int maxQty) {  _gsd->capacity = maxQty;}
+int SimpleGoodStore::capacity() const {  return _gsd->capacity; }
 
 int SimpleGoodStore::getQty() const
 {
@@ -86,7 +75,6 @@ int SimpleGoodStore::getQty() const
   return qty;
 }
 
-
 GoodStock& SimpleGoodStore::getStock(const Good::Type &goodType)
 {
   return *(_gsd->stocks[goodType].object());
@@ -97,7 +85,6 @@ int SimpleGoodStore::getQty(const Good::Type &goodType) const
   return _gsd->stocks[goodType]->qty();
 }
 
-
 int SimpleGoodStore::capacity(const Good::Type &goodType) const
 {
   return _gsd->stocks[goodType]->capacity();
@@ -105,7 +92,18 @@ int SimpleGoodStore::capacity(const Good::Type &goodType) const
 
 void SimpleGoodStore::setCapacity(const Good::Type &goodType, const int maxQty)
 {
-  _gsd->stocks[goodType]->setCapacity( maxQty );
+  if( goodType == Good::goodCount )
+  {
+    for( int i=Good::none; i < Good::goodCount; i++ )
+    {
+      Good::Type gtype = (Good::Type)i;
+      _gsd->stocks[gtype]->setCapacity( maxQty );
+    }
+  }
+  else
+  {
+    _gsd->stocks[goodType]->setCapacity( maxQty );
+  }
 }
 
 void SimpleGoodStore::setQty(const Good::Type &goodType, const int currentQty)
@@ -155,7 +153,6 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
   stock.pop( amount );
 }
 
-
 void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long reservationID)
 {
   GoodStock reservedStock = getRetrieveReservation(reservationID, true);
@@ -177,7 +174,6 @@ void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long rese
   currentStock.pop( amount );
   stock.push( amount );
 }
-
 
 VariantMap SimpleGoodStore::save() const
 {
@@ -212,10 +208,7 @@ void SimpleGoodStore::load( const VariantMap& stream )
   }
 }
 
-SimpleGoodStore::~SimpleGoodStore()
-{
-
-}
+SimpleGoodStore::~SimpleGoodStore(){}
 
 void SimpleGoodStore::resize( const GoodStore& other )
 {

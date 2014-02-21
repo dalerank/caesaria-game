@@ -46,6 +46,7 @@ public:
   bool isConstructibleArea( const TilesArray& tiles );
   bool isCoastalArea( const TilesArray& tiles );
   SeaMerchantList getMerchantsOnWait( PlayerCityPtr city, TilePos pos );
+  void initStores();
 };
 
 Dock::Dock(): WorkingBuilding( building::dock, Size(3) ), _d( new Impl )
@@ -57,14 +58,7 @@ Dock::Dock(): WorkingBuilding( building::dock, Size(3) ), _d( new Impl )
   // transport 41       animation = 42~51
   setPicture( ResourceGroup::transport, 5);
 
-  for( int i=Good::wheat; i < Good::goodCount; i++ )
-  {
-    Good::Type gtype = (Good::Type)i;
-    _d->importGoods.setCapacity( gtype, 1000 );
-    _d->exportGoods.setCapacity( gtype, 1000 );
-  }
-  _d->importGoods.setCapacity( 1000 * Good::goodCount );
-  _d->exportGoods.setCapacity( 1000 * Good::goodCount );
+  _d->initStores();
 
   _fgPicturesRef().resize(1);
   _animationRef().setDelay( 5 );
@@ -111,7 +105,7 @@ void Dock::timeStep(const unsigned long time)
   // takes current animation frame and put it into foreground
   _fgPicturesRef()[0] = _animationRef().getFrame();
 
-  if( time % (GameDate::ticksInMonth()/4) == 1 )
+  if( time % (GameDate::ticksInMonth()/6) == 1 )
   {
     _tryReceiveGoods();
     _tryDeliverGoods();
@@ -126,6 +120,9 @@ void Dock::save(VariantMap& stream) const
 
   stream[ "direction" ] = (int)_d->direction;
   stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
+  stream[ "exportGoods" ] = _d->exportGoods.save();
+  stream[ "importGoods" ] = _d->importGoods.save();
+  stream[ "requestGoods" ] = _d->requestGoods.save();
 }
 
 void Dock::load(const VariantMap& stream)
@@ -134,6 +131,15 @@ void Dock::load(const VariantMap& stream)
 
   _d->direction = (Direction)stream.get( "direction", (int)southWest ).toInt();
   _d->saveTileInfo << stream.get( "saved_tile" ).toList();
+
+  Variant tmp = stream.get( "exportGoods" );
+  if( tmp.isValid() ) _d->exportGoods.load( tmp.toMap() );
+
+  tmp = stream.get( "importGoods" );
+  if( tmp.isValid() ) _d->importGoods.load( tmp.toMap() );
+
+  tmp = stream.get( "requestGoods" );
+  if( tmp.isValid() ) _d->requestGoods.load( tmp.toMap() );
 
   _updatePicture( _d->direction );
 }
@@ -338,6 +344,17 @@ bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
   }
 
   return ret;
+}
+
+void Dock::Impl::initStores()
+{
+  importGoods.setCapacity( Good::goodCount, 1000 );
+  exportGoods.setCapacity( Good::goodCount, 1000 );
+  requestGoods.setCapacity( Good::goodCount, 1000 );
+
+  importGoods.setCapacity( 1000 * Good::goodCount );
+  exportGoods.setCapacity( 1000 * Good::goodCount );
+  requestGoods.setCapacity( 1000 * Good::goodCount );
 }
 
 void Dock::_tryDeliverGoods()
