@@ -133,7 +133,7 @@ void AdvisorEmployerWindow::Impl::decreaseSalary()
 
 void AdvisorEmployerWindow::Impl::updateWorkersState()
 {
-  int workers = CityStatistic::getCurrentWorkersNumber( city );
+  int workers = CityStatistic::getAvailableWorkersNumber( city );
   int worklessPercent = CityStatistic::getWorklessPercent( city );
   int withoutWork = CityStatistic::getWorklessNumber( city );
   std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )",
