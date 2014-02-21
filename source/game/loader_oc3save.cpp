@@ -27,6 +27,7 @@
 #include "divinity.hpp"
 #include "events/dispatcher.hpp"
 #include "core/locale.hpp"
+#include "settings.hpp"
 
 static const int currentVesion = 1;
 
@@ -42,7 +43,9 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
     GameDate::init( scenario_vm[ "date" ].toDateTime() );
     events::Dispatcher::instance().load( scenario_vm[ "events" ].toMap() );
 
-    Locale::addTranslation( scenario_vm[ "translation" ].toString() );
+    Variant lastTr = scenario_vm[ "translation" ];
+    Locale::addTranslation( lastTr.toString() );
+    GameSettings::set( GameSettings::lastTranslation, lastTr );
 
     game.getPlayer()->load( vm[ "player" ].toMap() );
     game.getCity()->load( vm[ "city" ].toMap() );

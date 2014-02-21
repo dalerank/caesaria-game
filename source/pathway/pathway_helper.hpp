@@ -19,6 +19,8 @@
 #include "pathway.hpp"
 #include "city/predefinitions.hpp"
 #include "objects/predefinitions.hpp"
+#include "objects/constants.hpp"
+#include "route.hpp"
 
 class PathwayHelper
 {
@@ -32,6 +34,8 @@ public:
 
   static Pathway create(TilePos statrPos, TilePos stopPos,
                         const TilePossibleCondition& condition );
+
+  static DirectRoute shortWay( PlayerCityPtr city, TilePos startPos, constants::building::Type buildingType, WayType type );
 
   static Pathway randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius );
 };

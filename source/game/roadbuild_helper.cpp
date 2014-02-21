@@ -25,6 +25,7 @@
 #include "gfx/tile.hpp"
 #include "pathway/pathway.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "objects/construction.hpp"
 #include "core/logger.hpp"
 
 // comparison (for sorting list of tiles by their coordinates)

@@ -22,6 +22,7 @@
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "core/stacktrace.hpp"
 #include <set>
 
 using namespace std;
@@ -104,7 +105,7 @@ public:
 
 Pathfinder::Pathfinder() : _d( new Impl )
 {
-  _d->maxLoopCount = 1200;
+  _d->maxLoopCount = 2400;
 }
 
 void Pathfinder::update( const Tilemap& tilemap )
@@ -202,7 +203,10 @@ void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = 
 bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
   if( arrivedArea.empty() )
+  {
+    Logger::warning( "AStarPathfinder: no arrived area" );
     return false;
+  }
 
   oPathWay.init( *tilemap, tilemap->at( startPos ) );
 
@@ -343,6 +347,9 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
 
   if( n == maxLoopCount )
   {
+    Logger::warning( "AStarPathfinder: maxLoopCount reached from [%d,%d] to [%d,%d]",
+                     startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
+    Stacktrace::print();
     return false;
   }
   // Resolve the path starting from the end point

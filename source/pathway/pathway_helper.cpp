@@ -15,8 +15,8 @@
 
 #include "pathway_helper.hpp"
 #include "astarpathfinding.hpp"
-#include "city/city.hpp"
 #include "gfx/tilemap.hpp"
+#include "city/helper.hpp"
 #include "objects/construction.hpp"
 
 Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
@@ -53,11 +53,11 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
   switch( type )
   {
   case allTerrain: return Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
-  case roadOnly: return Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::roadOnly );
+  case roadOnly: return Pathfinder::getInstance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
 
   case roadFirst:
   {
-    Pathway ret = Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::roadOnly );
+    Pathway ret = Pathfinder::getInstance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
 
     if( !ret.isValid() )
     {
@@ -80,6 +80,36 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
 {
   Pathfinder::getInstance().setCondition( condition );
   return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::customCondition );
+}
+
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, constants::building::Type buildingType, PathwayHelper::WayType type)
+{
+  DirectRoute ret;
+  CityHelper helper( city );
+  ConstructionList constructions = helper.find<Construction>( buildingType );
+
+  foreach( it, constructions )
+  {
+    Pathway path = create( startPos, *it, type );
+    if( path.isValid() )
+    {
+      if( !ret.way().isValid() )
+      {
+        ret.second = path;
+        ret.first = *it;
+      }
+      else
+      {
+        if( ret.way().getLength() > path.getLength() )
+        {
+          ret.second = path;
+          ret.first = *it;
+        }
+      }
+    }
+  }
+
+  return ret;
 }
 
 Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius)

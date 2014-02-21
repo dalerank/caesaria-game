@@ -252,6 +252,9 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
 
 void Fountain::deliverService()
 {
+  if( !_haveReservoirWater )
+    return;
+
   ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
   walker->setBase( BuildingPtr( this ) );
   walker->setReachDistance( 4 );

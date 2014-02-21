@@ -32,6 +32,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "world/merchant.hpp"
+#include "core/stacktrace.hpp"
 
 using namespace constants;
 
@@ -70,9 +71,7 @@ Merchant::Merchant(PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-Merchant::~Merchant()
-{
-}
+Merchant::~Merchant(){}
 
 DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& basket )
 {
@@ -128,7 +127,6 @@ DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
   return shortest;
 }
 
-
 void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TilePos& position )
 {
   switch( nextState )
@@ -155,7 +153,8 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       if( !route.first.isValid() )
       {
-        route = pathPropagator.getShortestRoute( building::warehouse );
+        Logger::warning( "Walker_LandMerchant: can't found path to nearby warehouse. BaseCity=" + baseCityName );
+        route = PathwayHelper::shortWay( city, position, building::warehouse, PathwayHelper::roadOnly );
       }
 
       if( route.first.isValid()  )
@@ -336,7 +335,8 @@ void Merchant::_reachedPathway()
 void Merchant::send2city()
 {
   _d->nextState = Impl::stFindWarehouseForSelling;
-  _d->resolveState( _getCity(), this, _getCity()->getBorderInfo().roadEntry );
+  setPos( _getCity()->getBorderInfo().roadEntry );
+  _d->resolveState( _getCity(), this, pos() );
 
   if( !isDeleted() )
   {

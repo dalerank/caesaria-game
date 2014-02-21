@@ -43,10 +43,7 @@ oc3_signals public:
   Signal1<MerchantPtr> onDestinationSignal;
 };
 
-Merchant::~Merchant()
-{
-
-}
+Merchant::~Merchant(){}
 
 Merchant::Merchant() : _d( new Impl )
 {
@@ -86,10 +83,7 @@ MerchantPtr Merchant::create( TraderoutePtr route, const std::string& start,
   return ret;
 }
 
-Signal1<MerchantPtr>& Merchant::onDestination()
-{
-  return _d->onDestinationSignal;
-}
+Signal1<MerchantPtr>& Merchant::onDestination(){  return _d->onDestinationSignal;}
 
 void Merchant::update( unsigned int time )
 {
@@ -107,30 +101,11 @@ void Merchant::update( unsigned int time )
   }
 }
 
-std::string Merchant::getDestCityName() const
-{
-  return _d->destCity;
-}
-
-Point Merchant::getLocation() const
-{
-  return _d->location;
-}
-
-bool Merchant::isDeleted() const
-{
-  return _d->isDeleted;
-}
-
-void Merchant::deleteLater()
-{
-  _d->isDeleted = true;
-}
-
-bool Merchant::isSeaRoute() const
-{
-  return _d->route->isSeaRoute();
-}
+std::string Merchant::getDestCityName() const {  return _d->destCity; }
+Point Merchant::getLocation() const{  return _d->location;}
+bool Merchant::isDeleted() const{  return _d->isDeleted;}
+void Merchant::deleteLater(){  _d->isDeleted = true;}
+bool Merchant::isSeaRoute() const{  return _d->route->isSeaRoute();}
 
 VariantMap Merchant::save() const
 {
@@ -165,19 +140,8 @@ void Merchant::load(const VariantMap& stream)
   foreach( v, steps ) { _d->steps.push_back( v->toPoint() ); }
 }
 
-std::string Merchant::getBaseCityName() const
-{
-  return _d->baseCity;
-}
-
-GoodStore& Merchant::getSellGoods()
-{
-  return _d->sells;
-}
-
-GoodStore& Merchant::getBuyGoods()
-{
-  return _d->buys;
-}
+std::string Merchant::getBaseCityName() const{  return _d->baseCity;}
+GoodStore& Merchant::getSellGoods(){  return _d->sells;}
+GoodStore& Merchant::getBuyGoods(){  return _d->buys;}
 
 }//end namespace world
