@@ -105,14 +105,23 @@ void EmpireMapWindow::Impl::updateCityInfo()
     }
     else
     {
-      world::TraderoutePtr route = empire->getTradeRoute( currentCity->getName(), ourCity );
-      if( route != 0 )
+      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( currentCity );
+
+      if( ccity->isDistantCity() || ccity->isRomeCity() )
       {
-        drawTradeRouteInfo();
+
       }
       else
       {
-        drawCityGoodsInfo();
+        world::TraderoutePtr route = empire->getTradeRoute( currentCity->getName(), ourCity );
+        if( route != 0 )
+        {
+          drawTradeRouteInfo();
+        }
+        else
+        {
+          drawCityGoodsInfo();
+        }
       }
     }
   }

@@ -33,6 +33,8 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "good/goodhelper.hpp"
+#include "game/gamedate.hpp"
+#include "walker/cart_supplier.hpp"
 
 #include <list>
 
@@ -127,23 +129,20 @@ public:
 
   WhTiles subTiles;
   WarehouseStore goodStore;
+  int devastateModeInterval;
 };
 
 WarehouseStore::WarehouseStore()
 {
   _warehouse = NULL;
 
-  for( int goodType=Good::wheat; goodType <= Good::marble; goodType++ )
+  for( int goodType=Good::wheat; goodType <= Good::goodCount; goodType++ )
   {
     setOrder( (Good::Type)goodType, GoodOrders::accept );
   }
 }
 
-
-void WarehouseStore::init(Warehouse &warehouse)
-{
-  _warehouse = &warehouse;
-}
+void WarehouseStore::init(Warehouse &warehouse){  _warehouse = &warehouse; }
 
 int WarehouseStore::getQty(const Good::Type &goodType) const
 {
@@ -163,10 +162,7 @@ int WarehouseStore::getQty(const Good::Type &goodType) const
   return amount;
 }
 
-int WarehouseStore::getQty() const
-{
-  return getQty( Good::goodCount );
-}
+int WarehouseStore::getQty() const {  return getQty( Good::goodCount ); }
 
 int WarehouseStore::getMaxStore(const Good::Type goodType)
 {
@@ -340,20 +336,9 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
   _warehouse->computePictures();
 }
 
-int WarehouseStore::capacity() const
-{
-  return 400 * _warehouse->_d->subTiles.size();
-}
-
-void WarehouseStore::setCapacity(const int)
-{
-
-}
-
-int WarehouseStore::capacity( const Good::Type& goodType ) const
-{
-  return capacity();
-}
+int WarehouseStore::capacity() const{  return 400 * _warehouse->_d->subTiles.size();}
+void WarehouseStore::setCapacity(const int){}
+int WarehouseStore::capacity( const Good::Type& goodType ) const{  return capacity();}
 
 Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 3 )), _d( new Impl )
 {
@@ -365,6 +350,7 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
   _animationRef().setDelay( 4 );
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
+  _d->devastateModeInterval = GameDate::ticksInMonth() / 5;
 
   _fgPicturesRef()[ 0 ] = Picture::load(ResourceGroup::warehouse, 1);
   _fgPicturesRef()[ 1 ] = Picture::load(ResourceGroup::warehouse, 18);
@@ -398,10 +384,19 @@ void Warehouse::timeStep(const unsigned long time)
    _fgPicturesRef()[3] = _d->animFlag.getFrame();
   }
 
-  if( _d->goodStore.isDevastation() && (time % 22 == 1 ) )
+  if( (time % _d->devastateModeInterval == 1 ) )
   {
-    _resolveDevastationMode();
+    if( _d->goodStore.isDevastation() )
+    {
+      _resolveDevastationMode();
+    }
+    else
+    {
+      _resolveDeliverMode();
+    }
   }
+
+  WorkingBuilding::timeStep( time );
 }
 
 void Warehouse::computePictures()
@@ -450,12 +445,39 @@ void Warehouse::load( const VariantMap& stream )
   computePictures();
 }
 
+void Warehouse::_resolveDeliverMode()
+{
+  if( getWalkers().size() > 0 )
+  {
+    return;
+  }
+  //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
+  for( int goodType=Good::wheat; goodType <= Good::goodCount; goodType++ )
+  {
+    Good::Type gType = (Good::Type)goodType;
+    GoodOrders::Order order = _d->goodStore.getOrder( gType );
+    int goodFreeQty = math::clamp( _d->goodStore.getFreeQty( gType ), 0, 400 );
+
+    if( GoodOrders::deliver == order && goodFreeQty > 0 )
+    {
+      CartSupplierPtr walker = CartSupplier::create( _getCity() );
+      walker->send2city( BuildingPtr( this ), gType, goodFreeQty );
+
+      if( !walker->isDeleted() )
+      {
+        addWalker( walker.object() );
+        return;
+      }
+    }
+  }
+}
+
 void Warehouse::_resolveDevastationMode()
 {
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   if( (_d->goodStore.getQty() > 0) && getWalkers().empty() )
   {
-    for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
+    for( int goodType=Good::wheat; goodType <= Good::goodCount; goodType++ )
     {
       int goodQty = _d->goodStore.getQty( (Good::Type)goodType );
       goodQty = math::clamp( goodQty, 0, 400);

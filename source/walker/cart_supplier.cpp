@@ -241,7 +241,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   }
 }
 
-void CartSupplier::send2City( BuildingPtr building, Good::Type what, const int qty )
+void CartSupplier::send2city( BuildingPtr building, Good::Type what, const int qty )
 {
   _d->stock.setType( what );
   _d->stock.setCapacity( qty );

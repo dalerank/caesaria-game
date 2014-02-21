@@ -77,7 +77,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ fullscreen          ] = false;
   _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );
   _d->options[ minMonthWithFood    ] = 3;
-  _d->options[ worklessCitizenAway ] = 15;
+  _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 2.f;
 }
 

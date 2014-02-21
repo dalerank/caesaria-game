@@ -22,6 +22,7 @@
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
+#include "walker/cart_supplier.hpp"
 
 class GranaryGoodStore : public SimpleGoodStore
 {
@@ -115,18 +116,24 @@ void Granary::timeStep(const unsigned long time)
 
     _fgPicturesRef()[5] = _animationRef().getFrame();
 
-    if( time % (GameDate::ticksInMonth() / 2) == 1 && _d->goodStore.isDevastation() 
-        && (_d->goodStore.getQty() > 0) && getWalkers().empty() )
+    if( time % (GameDate::ticksInMonth() / 2) == 1 )
     {
-      _tryDevastateGranary();
+      if(  getWalkers().empty() )
+      {
+        if( _d->goodStore.isDevastation() )
+        {
+          _tryDevastateGranary();
+        }
+        else
+        {
+          _resolveDeliverMode();
+        }
+      }
     }
   }
 }
 
-GoodStore& Granary::getGoodStore()
-{
-  return _d->goodStore;
-}
+GoodStore& Granary::getGoodStore() {  return _d->goodStore; }
 
 void Granary::computePictures()
 {
@@ -160,6 +167,33 @@ void Granary::load( const VariantMap& stream)
    _d->goodStore.load( stream.get( "goodStore" ).toMap() );
 
    computePictures();
+}
+
+void Granary::_resolveDeliverMode()
+{
+  if( getWalkers().size() > 0 )
+  {
+    return;
+  }
+  //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
+  for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
+  {
+    Good::Type gType = (Good::Type)goodType;
+    GoodOrders::Order order = _d->goodStore.getOrder( gType );
+    int goodFreeQty = math::clamp( _d->goodStore.getFreeQty( gType ), 0, 400 );
+
+    if( GoodOrders::deliver == order && goodFreeQty > 0 )
+    {
+      CartSupplierPtr walker = CartSupplier::create( _getCity() );
+      walker->send2city( BuildingPtr( this ), gType, goodFreeQty );
+
+      if( !walker->isDeleted() )
+      {
+        addWalker( walker.object() );
+        return;
+      }
+    }
+  }
 }
 
 void Granary::_tryDevastateGranary()

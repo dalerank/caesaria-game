@@ -33,7 +33,7 @@ public:
   
   virtual void getPictureList( PicturesArray &oPics);
 
-  void send2City(BuildingPtr building, Good::Type what, const int qty );
+  void send2city(BuildingPtr building, Good::Type what, const int qty );
 
   void computeWalkerDestination( BuildingPtr building, const Good::Type type, const int qty );
  

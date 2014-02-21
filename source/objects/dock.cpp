@@ -406,7 +406,7 @@ void Dock::_tryReceiveGoods()
     {
       CartSupplierPtr cart = CartSupplier::create( _getCity() );
       int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( gtype ) );
-      cart->send2City( this, gtype, qty );
+      cart->send2city( this, gtype, qty );
 
       if( !cart->isDeleted() )
       {

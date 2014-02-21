@@ -135,6 +135,8 @@
       small_mercury_temple : true
       market : true
       oil_workshop : true
+      lumber_mill : true
+      furniture_workshop : true
       granery : true
       warehouse : true
       wheat_farm : true

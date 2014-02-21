@@ -60,7 +60,10 @@ unsigned int CityStatistic::getAvailableWorkersNumber(PlayerCityPtr city)
   HouseList houses = helper.find<House>( building::house );
 
   int workersNumber = 0;
-  foreach( h, houses ) { workersNumber += ( (*h)->getServiceValue( Service::recruter ) + (*h)->getWorkersCount()); }
+  foreach( h, houses )
+  {
+    workersNumber += (*h)->getHabitants().count( CitizenGroup::mature );
+  }
 
   return workersNumber;
 }

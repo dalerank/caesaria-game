@@ -253,7 +253,7 @@ void Factory::receiveGood()
   if( _mayDeliverGood() && qty > 0 )
   {
     CartSupplierPtr walker = CartSupplier::create( _getCity() );
-    walker->send2City( this, getInGoodType(), qty );
+    walker->send2city( this, getInGoodType(), qty );
 
     if( !walker->isDeleted() )
     {

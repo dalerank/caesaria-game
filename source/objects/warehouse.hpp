@@ -42,6 +42,7 @@ public:
 
 private:
   void _resolveDevastationMode();
+  void _resolveDeliverMode();
 
   class Impl;
   ScopedPtr< Impl > _d;

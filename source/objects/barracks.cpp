@@ -46,7 +46,7 @@ void Barracks::deliverTrainee()
   if( getWalkers().size() == 0 && _d->store.getFreeQty() > 0 )
   {
     CartSupplierPtr walker = CartSupplier::create( _getCity() );
-    walker->send2City( this, Good::weapon, 100 );
+    walker->send2city( this, Good::weapon, 100 );
 
     if( !walker->isDeleted() )
     {

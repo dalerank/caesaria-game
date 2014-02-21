@@ -33,6 +33,7 @@ public:
 
 private:
   void _tryDevastateGranary();
+  void _resolveDeliverMode();
 
   class Impl;
   ScopedPtr< Impl > _d;

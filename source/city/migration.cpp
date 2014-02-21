@@ -235,7 +235,7 @@ void CityMigration::Impl::createMigrationFromCity()
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {
     int houseWorkless = (*i)->getServiceValue( Service::recruter );
-    if( !(*i)->getEnterArea().empty() && houseWorkless > 0 ) { i++; }
+    if( !(*i)->getEnterArea().empty() && houseWorkless > minWorkersNumber ) { i++; }
     else { i = houses.erase( i ); }
   }
 
@@ -245,7 +245,7 @@ void CityMigration::Impl::createMigrationFromCity()
     for( int i=0; i < stepNumber; i++ )
     {
       HouseList::iterator house = houses.begin();
-      std::advance( house, rand() % houses.size() );
+      std::advance( house, math::random( houses.size() ) );
 
       EmigrantPtr emigrant = Emigrant::create( city );
 
