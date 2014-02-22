@@ -21,6 +21,7 @@
 class MarketKid : public Walker
 {
 public:
+  static MarketKidPtr create( PlayerCityPtr city );
   static MarketKidPtr create( PlayerCityPtr city, MarketLadyPtr lady );
 
   GoodStock& getBasket();
@@ -28,9 +29,14 @@ public:
 
   void send2City( MarketPtr destination );
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
   virtual void timeStep(const unsigned long time);
-  virtual void _reachedPathway();
   virtual void die();
+
+protected:
+  virtual void _reachedPathway();
 
 private:
   MarketKid( PlayerCityPtr city );

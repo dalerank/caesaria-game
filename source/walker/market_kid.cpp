@@ -35,6 +35,14 @@ public:
   unsigned long birthTime;
 };
 
+MarketKidPtr MarketKid::create(PlayerCityPtr city )
+{
+  MarketKidPtr ret( new MarketKid( city ) );
+  ret->drop();
+
+  return ret;
+}
+
 MarketKidPtr MarketKid::create( PlayerCityPtr city, MarketLadyPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
@@ -76,6 +84,24 @@ void MarketKid::send2City( MarketPtr destination )
   {
     deleteLater();
   }
+}
+
+void MarketKid::save(VariantMap& stream) const
+{
+  Walker::save( stream );
+  stream[ "basket" ] = _d->basket.save();
+  stream[ "delay"  ] = (int)_d->delay;
+  stream[ "market" ] = _d->marketPos;
+  stream[ "birthTime" ] = (int)_d->birthTime;
+}
+
+void MarketKid::load(const VariantMap& stream)
+{
+  Walker::load( stream );
+  _d->basket.load( stream.get( "basket" ).toList() );
+  _d->delay = (int)stream.get( "delay" );
+  _d->marketPos = stream.get( "market" ).toTilePos();
+  _d->birthTime = (int)stream.get( "birthTime" );
 }
 
 void MarketKid::timeStep( const unsigned long time )

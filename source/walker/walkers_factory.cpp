@@ -16,6 +16,7 @@
 #include "walkers_factory.hpp"
 #include "trainee.hpp"
 #include "market_lady.hpp"
+#include "market_kid.hpp"
 #include "cart_pusher.hpp"
 #include "prefect.hpp"
 #include "emigrant.hpp"
@@ -104,10 +105,13 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::immigrant, new BaseCreator<Immigrant>() );
   addCreator( walker::cartPusher, new BaseCreator<CartPusher>() );
   addCreator( walker::prefect, new BaseCreator<Prefect>() );
+  addCreator( walker::priest, new ServicemanCreator( Service::religionCeres ) );
   addCreator( walker::taxCollector, new BaseCreator<TaxCollector>() );
   addCreator( walker::engineer, new ServicemanCreator( Service::engineer ));
   addCreator( walker::doctor, new ServicemanCreator( Service::doctor ) );
   addCreator( walker::sheep, new BaseCreator< Sheep >() );
+  addCreator( walker::marketLady, new BaseCreator< MarketLady >() );
+  addCreator( walker::marketKid, new BaseCreator< MarketKid >() );
   addCreator( walker::bathlady, new ServicemanCreator( Service::baths ) );
   addCreator( walker::actor, new ServicemanCreator( Service::theater ) );
   addCreator( walker::gladiator, new ServicemanCreator( Service::amphitheater ) );
