@@ -38,9 +38,9 @@ void ChangeEmpireOptions::load(const VariantMap& stream)
   _vars = stream;
 }
 
-bool ChangeEmpireOptions::_mayExec(Game& game, uint time) const {  return true; }
+bool ChangeEmpireOptions::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-void ChangeEmpireOptions::_exec(Game& game, uint)
+void ChangeEmpireOptions::_exec(Game& game, unsigned int)
 {
   VariantMap em_opts = _vars.get( "empire" ).toMap();
   VariantMap adv_options = _vars.get( "adviser" ).toMap();

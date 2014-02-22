@@ -42,7 +42,7 @@ GameEventPtr RandomFire::create()
   return ret;
 }
 
-void RandomFire::_exec( Game& game, uint time)
+void RandomFire::_exec( Game& game, unsigned int time)
 {
   if( time % GameDate::ticksInMonth() == 0 && !_d->isDeleted )
   {
@@ -65,7 +65,7 @@ void RandomFire::_exec( Game& game, uint time)
   }
 }
 
-bool RandomFire::_mayExec(Game&, uint) const { return true; }
+bool RandomFire::_mayExec(Game&, unsigned int) const { return true; }
 bool RandomFire::isDeleted() const {  return _d->isDeleted; }
 
 void RandomFire::load(const VariantMap& stream)

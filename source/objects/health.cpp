@@ -15,6 +15,7 @@
 
 #include "health.hpp"
 #include "game/resourcegroup.hpp"
+#include "game/gamedate.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/helper.hpp"
@@ -52,34 +53,32 @@ void Baths::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
 
-  CityHelper helper( city );
-
+  //CityHelper helper( city );
 }
 
 void Baths::timeStep(const unsigned long time)
 {
-  if( time % 22 == 1 )
+  if( time % (GameDate::ticksInMonth() / 4) == 1 )
   {
     CityHelper helper( _getCity() );
 
     bool haveWater = false;
     TilesArray tiles = helper.getArea( this );
     foreach( tile, tiles ) { haveWater |= (*tile)->getWaterService( WTR_RESERVOIR ) > 0; }
+    _haveReservorWater = (haveWater && getWorkersCount() > 0);
 
-    if( haveWater && getWorkersCount() > 0 )
+    if( _haveReservorWater )
     {
       if( _animationRef().isStopped() )
       {
-        _animationRef().start();
-        _haveReservorWater = true;
+        _animationRef().start();        
       }
     }
     else
     {
       if( _animationRef().isRunning() )
       {
-       _animationRef().stop();
-        _haveReservorWater = false;
+        _animationRef().stop();
         _fgPicturesRef().back() = Picture::getInvalid();
       }
     }

@@ -56,12 +56,12 @@ GameEventPtr FundIssueEvent::exportg(Good::Type good, int qty)
   return ret;
 }
 
-bool FundIssueEvent::_mayExec(Game& game, uint time) const
+bool FundIssueEvent::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void FundIssueEvent::_exec(Game& game, uint )
+void FundIssueEvent::_exec(Game& game, unsigned int )
 {
   if( _type == CityFunds::importGoods )
   {

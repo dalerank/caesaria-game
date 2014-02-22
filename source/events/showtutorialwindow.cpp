@@ -38,7 +38,7 @@ void ShowTutorialWindow::load(const VariantMap& opt)
   _tutorial = opt.get( "tutorial" ).toString();
 }
 
-void ShowTutorialWindow::_exec(Game& game, uint)
+void ShowTutorialWindow::_exec(Game& game, unsigned int)
 {
   if( _tutorial.empty() )
     return;
@@ -47,5 +47,5 @@ void ShowTutorialWindow::_exec(Game& game, uint)
   wnd->show();
 }
 
-bool ShowTutorialWindow::_mayExec(Game&, uint) const { return true; }
+bool ShowTutorialWindow::_mayExec(Game&, unsigned int) const { return true; }
 }

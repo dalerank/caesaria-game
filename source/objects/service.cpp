@@ -28,6 +28,7 @@
 #include "core/variant.hpp"
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
+#include "game/gamedate.hpp"
 
 class ServiceBuilding::Impl
 {
@@ -36,6 +37,7 @@ public:
   Service::Type service;
   int serviceTimer;
   int serviceRange;
+  DateTime dateLastSend;
 };
 
 ServiceBuilding::ServiceBuilding(const Service::Type service,
@@ -50,10 +52,9 @@ ServiceBuilding::ServiceBuilding(const Service::Type service,
    _d->serviceRange = 30;
 }
 
-void ServiceBuilding::setServiceDelay( const int delay )
-{
-  _d->serviceDelay = delay;
-}
+void ServiceBuilding::setServiceDelay( const int delay ){  _d->serviceDelay = delay;}
+DateTime ServiceBuilding::getLastSendService() const { return _d->dateLastSend; }
+void ServiceBuilding::_setLastSendService(DateTime time) { _d->dateLastSend = time; }
 
 int ServiceBuilding::getTime2NextService() const
 {
@@ -61,10 +62,7 @@ int ServiceBuilding::getTime2NextService() const
   return (int)(getServiceDelay() * koeff);
 }
 
-Service::Type ServiceBuilding::getService() const
-{
-   return _d->service;
-}
+Service::Type ServiceBuilding::getService() const{   return _d->service;}
 
 void ServiceBuilding::timeStep(const unsigned long time)
 {
@@ -103,13 +101,11 @@ void ServiceBuilding::deliverService()
   if( !serviceman->isDeleted() )
   {
     addWalker( serviceman.object() );
+    _setLastSendService( GameDate::current() );
   }
 }
 
-int ServiceBuilding::getServiceRange() const
-{
-   return _d->serviceRange;
-}
+int ServiceBuilding::getServiceRange() const {   return _d->serviceRange;}
 
 void ServiceBuilding::save( VariantMap& stream ) const 
 {
@@ -127,17 +123,6 @@ void ServiceBuilding::load( const VariantMap& stream )
   _d->serviceRange = (int)stream.get( "range", 30 );
 }
 
-int ServiceBuilding::getServiceDelay() const
-{
-  return _d->serviceDelay;
-}
-
-ServiceBuilding::~ServiceBuilding()
-{
-
-}
-
-unsigned int ServiceBuilding::getWalkerDistance() const
-{
-  return 5;
-}
+int ServiceBuilding::getServiceDelay() const{  return _d->serviceDelay;}
+ServiceBuilding::~ServiceBuilding() {}
+unsigned int ServiceBuilding::getWalkerDistance() const{  return 5; }

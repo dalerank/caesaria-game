@@ -33,7 +33,7 @@ public:
   ~Dispatcher();
 
   void append( GameEventPtr event );
-  void update( Game& game, uint time );
+  void update( Game& game, unsigned int time );
 
   VariantMap save() const;
   void load( const VariantMap& stream );

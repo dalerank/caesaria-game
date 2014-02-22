@@ -43,7 +43,7 @@ using namespace constants;
 namespace events
 {
 
-bool GameEvent::tryExec(Game& game, uint time)
+bool GameEvent::tryExec(Game& game, unsigned int time)
 {
   if( _mayExec( game, time ) )
   {
@@ -72,12 +72,12 @@ GameEventPtr ClearLandEvent::create(const TilePos& pos)
   return ret;
 }
 
-bool ClearLandEvent::_mayExec(Game& game, uint time) const
+bool ClearLandEvent::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void ClearLandEvent::_exec( Game& game, uint )
+void ClearLandEvent::_exec( Game& game, unsigned int )
 {
   Tilemap& tmap = game.getCity()->getTilemap();
 
@@ -166,12 +166,12 @@ GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::stri
   return ret;
 }
 
-bool ShowInfoboxEvent::_mayExec(Game& game, uint time) const
+bool ShowInfoboxEvent::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void ShowInfoboxEvent::_exec( Game& game, uint )
+void ShowInfoboxEvent::_exec( Game& game, unsigned int )
 {
   gui::InfoboxText* msgWnd = new gui::InfoboxText( game.getGui()->getRootWidget(), _title, _text );
   msgWnd->show();
@@ -188,12 +188,12 @@ GameEventPtr Pause::create( Mode mode )
   return ret;
 }
 
-bool Pause::_mayExec(Game& game, uint time) const
+bool Pause::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void Pause::_exec(Game& game, uint)
+void Pause::_exec(Game& game, unsigned int)
 {
   gui::Widget* rootWidget = game.getGui()->getRootWidget();
   gui::Label* wdg = safety_cast< gui::Label* >( rootWidget->findChild( windowGamePausedId ) );
@@ -241,12 +241,12 @@ GameEventPtr ChangeSpeed::create(int value)
   return ret;
 }
 
-bool ChangeSpeed::_mayExec(Game& game, uint) const
+bool ChangeSpeed::_mayExec(Game& game, unsigned int) const
 {
   return true;
 }
 
-void ChangeSpeed::_exec(Game& game, uint)
+void ChangeSpeed::_exec(Game& game, unsigned int)
 {
   game.changeTimeMultiplier( _value );
 }
@@ -260,12 +260,12 @@ GameEventPtr ShowEmpireMapWindow::create(bool show)
   return ret;
 }
 
-bool ShowEmpireMapWindow::_mayExec(Game& game, uint time) const
+bool ShowEmpireMapWindow::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void ShowEmpireMapWindow::_exec(Game& game, uint)
+void ShowEmpireMapWindow::_exec(Game& game, unsigned int)
 {
   List<gui::EmpireMapWindow*> wndList = game.getGui()->getRootWidget()->findChildren<gui::EmpireMapWindow*>();
 
@@ -300,12 +300,12 @@ GameEventPtr ShowAdvisorWindow::create(bool show, int advisor)
   return ret;
 }
 
-bool ShowAdvisorWindow::_mayExec(Game& game, uint time) const
+bool ShowAdvisorWindow::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void ShowAdvisorWindow::_exec(Game& game, uint)
+void ShowAdvisorWindow::_exec(Game& game, unsigned int)
 {
   List<gui::AdvisorsWindow*> wndList = game.getGui()->getRootWidget()->findChildren<gui::AdvisorsWindow*>();
 
@@ -339,12 +339,12 @@ GameEventPtr WarningMessageEvent::create(const std::string& text)
   return ret;
 }
 
-bool WarningMessageEvent::_mayExec(Game& game, uint time) const
+bool WarningMessageEvent::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void WarningMessageEvent::_exec(Game& game, uint)
+void WarningMessageEvent::_exec(Game& game, unsigned int)
 {
   gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(
                                       game.getGui()->getRootWidget()->findChild( gui::WindowMessageStack::defaultID ) );

@@ -98,27 +98,27 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
 
   if( house->getHabitants().count() == 0 )
   {
+    ref = "##house_no_citizen##";
     return false;
   }
 
   value = computeDesirabilityLevel( house, reason );
   if( house->isCheckedDesirability() && value < _d->minDesirability )
   {
-    res = false;
     ref = "##low_desirability##";
+    return false;
   }
 
   value = findLowLevelHouseNearby( house, reason );
   if( value > 0 )
   {
-    res = false;
     ref = "##nearby_building_negative_effect##";
+    return false;
   }
 
   value = computeEntertainmentLevel( house );
   if( value < _d->minEntertainmentLevel )
   {
-    res = false;
     if( value == 0 )
     {
       ref = "##missing_entertainment##";
@@ -135,45 +135,45 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
         //##missing_entertainment_patrician##
       }
     }
+    return false;
   }
 
   value = computeEducationLevel( house, reason );
   if( value < _d->minEducationLevel )
   {
-    res = false;
     ref = /*_("##missing_education##") + */reason;
+    return false;
   }
 
   value = computeHealthLevel( house, reason );
   if( value < _d->minHealthLevel )
   {
-    res = false;
     ref = /*_( "##missing_health##" ) + */reason;
+    return false;
   }
 
   value = computeReligionLevel( house );
   if( value < _d->minReligionLevel )
   {
-    res = false;
     switch( _d->minReligionLevel )
     {
     case 0: res = "##missing_religion##"; break;
     case 1: res = "##missing_second_religion##"; break;
     case 2: res = "##missing_third_religion##"; break;
     }
+    return false;
   }
 
   value = computeWaterLevel(house, reason);
   if( value < _d->minWaterLevel )
   {
-    res = false;
     ref = reason;
+    return false;
   }
 
   value = computeFoodLevel(house);
   if( value < _d->minFoodLevel )
   {
-    res = false;
     if( !house->hasServiceAccess( Service::market ) ) { ref = "##missing_market##"; }
     else
     {
@@ -184,36 +184,37 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
       case 3: ref = "##missing_third_food##"; break;
       }
     }
+    return false;
   }
 
   if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().getQty(Good::pottery) == 0)
   {
-    res = false;
     ref = "##missing_pottery##";
+    return false;
   }
 
   if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().getQty(Good::furniture) == 0)
   {
-    res = false;
     ref = "##missing_furniture##";
+    return false;
   }
 
   if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().getQty(Good::oil) == 0)
   {
-    res = false;
     ref = "##missing_oil##";
+    return false;
   }
 
   if( _d->requiredGoods[Good::wine] != 0 && house->getGoodStore().getQty(Good::wine) == 0)
   {
-    res = false;
     ref = "##missing_wine##";
+    return false;
   }
 
   if( _d->requiredGoods[Good::prettyWine] != 0 && house->getGoodStore().getQty(Good::prettyWine) == 0)
   {
-    res = false;
     ref = "##missing_second_wine##";
+    return false;
   }
 
 

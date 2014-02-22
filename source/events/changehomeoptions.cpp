@@ -41,9 +41,9 @@ VariantMap ChangeHomeOptions::save() const
   return _vars;
 }
 
-bool ChangeHomeOptions::_mayExec(Game& game, uint time) const {  return true; }
+bool ChangeHomeOptions::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-void ChangeHomeOptions::_exec(Game& game, uint)
+void ChangeHomeOptions::_exec(Game& game, unsigned int)
 {
   //Variant check_desir = _vars.get( "check_desirability" );
   //if( check_desir.isValid() )

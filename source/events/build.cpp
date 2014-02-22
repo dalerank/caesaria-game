@@ -43,12 +43,12 @@ GameEventPtr BuildEvent::create(const TilePos& pos, TileOverlayPtr overlay)
   return ret;
 }
 
-bool BuildEvent::_mayExec(Game& game, uint time) const
+bool BuildEvent::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void BuildEvent::_exec( Game& game, uint )
+void BuildEvent::_exec( Game& game, unsigned int )
 {
   const MetaData& buildingData = MetaDataHolder::instance().getData( _overlay->getType() );
   if( _overlay.isValid() )

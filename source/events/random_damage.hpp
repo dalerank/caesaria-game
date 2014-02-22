@@ -31,8 +31,8 @@ public:
   virtual VariantMap save() const;
 
 protected:
-  virtual void _exec(Game &game, uint time);
-  virtual bool _mayExec(Game &game, uint time) const;
+  virtual void _exec(Game &game, unsigned int time);
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
   RandomDamage();

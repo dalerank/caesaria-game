@@ -27,7 +27,7 @@ public:
   static GameEventPtr create(TilePos center, unsigned int workers);
 
 protected:
-  virtual void _exec(Game& game, uint time );
+  virtual void _exec(Game& game, unsigned int time );
   virtual bool _mayExec(Game&, unsigned int ) const;
 
 private:

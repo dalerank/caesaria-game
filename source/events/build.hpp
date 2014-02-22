@@ -28,8 +28,8 @@ public:
   static GameEventPtr create( const TilePos&, TileOverlayPtr overlay );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game &game, uint time) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
   TilePos _pos;

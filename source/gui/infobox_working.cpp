@@ -34,16 +34,22 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
 
   _updateWorkersLabel( Point( 32, 150 ), 542, _working->getMaxWorkers(), _working->getWorkersCount() );
 
-  std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)_working->getState( Construction::damage ),
-                                           (int)_working->getState( Construction::fire ));
-
-  new Label( this, Rect( 50, getHeight() - 30, getWidth() - 50, getHeight() - 10 ), text );
   Label* lb = new Label( this, Rect( 16, 50, getWidth() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
   lb->setFont( Font::create( FONT_2 ) );
   lb->setWordwrap( true );
 
   setText( "" );
+
+  std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
+                                           (int)_working->getState( Construction::damage ),
+                                           (int)_working->getState( Construction::fire ));
+  if( is_kind_of<ServiceBuilding>( _working ) )
+  {
+    ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );
+    DateTime time = srvc->getLastSendService();
+    text += StringHelper::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
+  }
+  new Label( this, Rect( 50, getHeight() - 30, getWidth() - 50, getHeight() - 10 ), text );
 }
 
 void InfoboxWorkingBuilding::setText(const std::string& text)

@@ -34,7 +34,7 @@ GameEventPtr WinMission::create()
   return ret;
 }
 
-void WinMission::_exec(Game& game, uint)
+void WinMission::_exec(Game& game, unsigned int)
 {
   Logger::warning( "WinMission: exec ");
   PlayerCityPtr city = game.getCity();
@@ -48,6 +48,6 @@ void WinMission::_exec(Game& game, uint)
   //CONNECT( wnd, onNextMission(), &game, Game::load);
 }
 
-bool WinMission::_mayExec(Game&, uint ) const { return true; }
+bool WinMission::_mayExec(Game&, unsigned int ) const { return true; }
 
 }

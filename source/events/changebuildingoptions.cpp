@@ -41,9 +41,9 @@ VariantMap ChangeBuildingOptions::save() const
   return _vars;
 }
 
-bool ChangeBuildingOptions::_mayExec(Game& game, uint time) const {  return true; }
+bool ChangeBuildingOptions::_mayExec(Game& game, unsigned int time) const {  return true; }
 
-void ChangeBuildingOptions::_exec(Game& game, uint)
+void ChangeBuildingOptions::_exec(Game& game, unsigned int)
 {
   CityBuildOptions options;
   options = game.getCity()->getBuildOptions();

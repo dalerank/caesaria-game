@@ -27,8 +27,8 @@ public:
   static GameEventPtr create();
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game &game, uint) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int) const;
 };
 
 }

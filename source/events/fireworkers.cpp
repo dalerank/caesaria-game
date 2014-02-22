@@ -34,12 +34,12 @@ GameEventPtr FireWorkers::create(TilePos center, unsigned int workers)
   return ret;
 }
 
-bool FireWorkers::_mayExec(Game& game, uint time) const
+bool FireWorkers::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void FireWorkers::_exec(Game& game, uint)
+void FireWorkers::_exec(Game& game, unsigned int)
 {
   Tilemap& tilemap = game.getCity()->getTilemap();
   const int defaultFireWorkersDistance = 40;

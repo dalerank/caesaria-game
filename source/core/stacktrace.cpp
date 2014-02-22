@@ -19,7 +19,9 @@
 #include "stacktrace.hpp"
 
 #include <stdlib.h>
-#include <execinfo.h>
+#ifdef CAESARIA_PLATFORM_LINUX
+  #include <execinfo.h>
+#endif
 #include <cxxabi.h>
 #include "scopedptr.hpp"
 #include "bytearray.hpp"

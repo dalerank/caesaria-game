@@ -71,19 +71,18 @@ std::string WorkingBuilding::getWorkersProblem() const
   return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), workKoeffStr[ (int)workKoeff ] );
 }
 
-
-void WorkingBuilding::setMaxWorkers(const int maxWorkers){  _d->maxWorkers = maxWorkers;}
-int WorkingBuilding::getMaxWorkers() const{  return _d->maxWorkers;}
+void WorkingBuilding::setMaxWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
+int WorkingBuilding::getMaxWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
-int WorkingBuilding::getWorkersCount() const{  return _d->currentWorkers;}
-void WorkingBuilding::setActive(const bool value){  _d->isActive = value;}
-bool WorkingBuilding::isActive() const{  return _d->isActive;}
-void WorkingBuilding::addWorkers(const unsigned int workers ){  setWorkers( getWorkersCount() + workers );}
-void WorkingBuilding::removeWorkers(const unsigned int workers){  setWorkers( getWorkersCount() - workers );}
+int WorkingBuilding::getWorkersCount() const { return _d->currentWorkers; }
+void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
+bool WorkingBuilding::isActive() const { return _d->isActive; }
+void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( getWorkersCount() + workers ); }
+void WorkingBuilding::removeWorkers(const unsigned int workers) { setWorkers( getWorkersCount() - workers ); }
 WorkingBuilding::~WorkingBuilding(){}
-const WalkerList& WorkingBuilding::getWalkers() const {  return _d->walkerList;}
-std::string WorkingBuilding::getError() const{  return _d->errorStr;}
-void WorkingBuilding::_setError(const std::string& err){  _d->errorStr = err;}
+const WalkerList& WorkingBuilding::getWalkers() const {  return _d->walkerList; }
+std::string WorkingBuilding::getError() const { return _d->errorStr;}
+void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
 
 void WorkingBuilding::timeStep( const unsigned long time )
 {

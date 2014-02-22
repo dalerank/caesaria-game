@@ -33,8 +33,8 @@ public:
   virtual void load(const VariantMap& stream );
 
 protected:
-  virtual bool _mayExec( Game& game, uint ) const;
-  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec( Game& game, unsigned int ) const;
+  virtual void _exec( Game& game, unsigned int );
 
 private:
   PostponeEvent();

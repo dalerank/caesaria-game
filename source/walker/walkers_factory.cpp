@@ -129,10 +129,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::teacher, new ServicemanCreator( Service::academy ) );
 }
 
-WalkerManager::~WalkerManager()
-{
-
-}
+WalkerManager::~WalkerManager(){}
 
 WalkerPtr WalkerManager::create(const walker::Type walkerType, PlayerCityPtr city)
 {

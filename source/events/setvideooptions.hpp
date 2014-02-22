@@ -27,8 +27,8 @@ public:
   static GameEventPtr create();
 
 private:
-  virtual bool _mayExec(Game&, uint) const;
-  virtual void _exec( Game& game, uint );
+  virtual bool _mayExec(Game&, unsigned int) const;
+  virtual void _exec( Game& game, unsigned int );
 
   void _setResolution(Size);
   void _setFullscreen(bool);

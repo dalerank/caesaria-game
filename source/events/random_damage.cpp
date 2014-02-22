@@ -33,7 +33,7 @@ GameEventPtr RandomDamage::create()
   return ret;
 }
 
-void RandomDamage::_exec( Game& game, uint time )
+void RandomDamage::_exec( Game& game, unsigned int time )
 {
   if( time % GameDate::ticksInMonth() == 0 && !_isDeleted )
   {
@@ -55,7 +55,7 @@ void RandomDamage::_exec( Game& game, uint time )
   }
 }
 
-bool RandomDamage::_mayExec(Game&, uint) const { return true; }
+bool RandomDamage::_mayExec(Game&, unsigned int) const { return true; }
 bool RandomDamage::isDeleted() const {  return _isDeleted; }
 
 void RandomDamage::load(const VariantMap& stream)

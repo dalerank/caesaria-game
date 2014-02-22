@@ -62,7 +62,7 @@ GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& s
 
 PostponeEvent::~PostponeEvent(){}
 
-void PostponeEvent::_exec(Game& game, uint)
+void PostponeEvent::_exec(Game& game, unsigned int)
 {
   Logger::warning( "Start event name=" + _d->name + " type=" + _d->type );
   PlayerCityPtr city = game.getCity();
@@ -97,7 +97,7 @@ void PostponeEvent::_exec(Game& game, uint)
   _d->mayDelete = true;
 }
 
-bool PostponeEvent::_mayExec( Game& game, uint time ) const
+bool PostponeEvent::_mayExec(Game& game, unsigned int time ) const
 {
   if( time % 25 == 1 )
   {

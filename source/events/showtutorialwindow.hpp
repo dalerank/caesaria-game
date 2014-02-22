@@ -28,8 +28,8 @@ public:
   virtual void load( const VariantMap& opt );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game&, uint ) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game&, unsigned int ) const;
 
 private:
   std::string _tutorial;

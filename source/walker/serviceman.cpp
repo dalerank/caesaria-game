@@ -76,12 +76,12 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::hospital: _setAnimation( gfx::doctor );   _setType( walker::surgeon );  break;
   case Service::barber:   _setAnimation( gfx::barber );   _setType( walker::barber );   break;
   case Service::baths:    _setAnimation( gfx::bathladyGo );     _setType( walker::bathlady ); break;
-  case Service::school:   _setAnimation( gfx::scholar );                                  break;
+  case Service::school:   _setAnimation( gfx::scholar );  _setType( walker::scholar);   break;
   case Service::theater:  _setAnimation( gfx::actor );    _setType( walker::actor );    break;
   case Service::amphitheater:_setAnimation( gfx::gladiator ); _setType( walker::gladiator ); break;
   case Service::colloseum:_setAnimation( gfx::tamer );    _setType( walker::lionTamer );    break;
   case Service::hippodrome:_setAnimation( gfx::actor );   _setType( walker::charioter ); break;
-  case Service::market: _setAnimation( gfx::marketlady ); nameType = NameGenerator::female; break;
+  case Service::market: _setAnimation( gfx::marketlady ); _setType( walker::marketLady ); nameType = NameGenerator::female; break;
 
   case Service::library:
   case Service::academy:  _setAnimation( gfx::teacher );                              break;
@@ -106,10 +106,7 @@ BuildingPtr ServiceWalker::getBase() const
   return _d->base;
 }
 
-Service::Type ServiceWalker::getService() const
-{
-  return _d->service;
-}
+Service::Type ServiceWalker::getService() const {  return _d->service; }
 
 void ServiceWalker::_computeWalkerPath()
 {  
@@ -157,15 +154,8 @@ void ServiceWalker::_cancelPath()
   }
 }
 
-unsigned int ServiceWalker::getReachDistance() const
-{
-  return _d->reachDistance;
-}
-
-void ServiceWalker::setReachDistance(unsigned int value)
-{
-  _d->reachDistance = value;
-}
+unsigned int ServiceWalker::getReachDistance() const {  return _d->reachDistance;}
+void ServiceWalker::setReachDistance(unsigned int value){  _d->reachDistance = value;}
 
 void ServiceWalker::return2Base()
 {
@@ -395,15 +385,8 @@ void ServiceWalker::die()
   }
 }
 
-void ServiceWalker::setMaxDistance( const int distance )
-{
-  _d->maxDistance = distance;
-}
-
-float ServiceWalker::getServiceValue() const
-{
-  return 100;
-}
+void ServiceWalker::setMaxDistance( const int distance ) { _d->maxDistance = distance; }
+float ServiceWalker::getServiceValue() const { return 100; }
 
 ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )
 {
@@ -412,12 +395,5 @@ ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type s
   return ret;
 }
 
-ServiceWalker::~ServiceWalker()
-{
-
-}
-
-void ServiceWalker::setBase( BuildingPtr base )
-{
-  _d->base = base;
-}
+ServiceWalker::~ServiceWalker() {}
+void ServiceWalker::setBase( BuildingPtr base ) { _d->base = base; }

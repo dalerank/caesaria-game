@@ -40,6 +40,7 @@ public:
   void setServiceDelay( const int delay );
 
   virtual int getTime2NextService() const;
+  virtual DateTime getLastSendService() const;
 
   // called when a service man should service the neighborhood
   virtual void deliverService();
@@ -51,6 +52,8 @@ public:
 
   //void removeWalker( WalkerPtr walker );
 private:  
+  void _setLastSendService( DateTime time );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

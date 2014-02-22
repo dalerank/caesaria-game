@@ -31,7 +31,7 @@ class GameEvent : public ReferenceCounted
 {
 public:
   virtual bool isDeleted() const;
-  virtual bool tryExec( Game& game, uint time );
+  virtual bool tryExec( Game& game, unsigned int time );
 
   void dispatch();
 
@@ -39,8 +39,8 @@ public:
   virtual void load( const VariantMap& );
 
 protected:
-  virtual void _exec( Game& game, uint time ) = 0;
-  virtual bool _mayExec( Game& game, uint time ) const = 0;
+  virtual void _exec( Game& game, unsigned int time ) = 0;
+  virtual bool _mayExec( Game& game, unsigned int time ) const = 0;
 
   GameEvent() {}
 };
@@ -51,8 +51,8 @@ public:
   static GameEventPtr create( const TilePos& );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game &game, uint time) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 private:
   TilePos _pos;
 };
@@ -63,8 +63,8 @@ public:
   static GameEventPtr create( const std::string& title, const std::string& text );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game &game, uint time) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
   std::string _title, _text;
@@ -76,8 +76,8 @@ public:
   static GameEventPtr create( const std::string& text );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game &game, uint time) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 private:
   std::string _text;
 };
@@ -88,8 +88,8 @@ public:
   static GameEventPtr create( bool show );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game &game, uint time) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
   bool _show;
@@ -101,8 +101,8 @@ public:
   static GameEventPtr create( bool show, int advisor );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game &game, uint time) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
   bool _show;
@@ -116,8 +116,8 @@ public:
   static GameEventPtr create( Mode mode );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec(Game &game, uint time) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
   Mode _mode;
@@ -129,8 +129,8 @@ public:
   static GameEventPtr create( int value );
 
 protected:
-  virtual void _exec( Game& game, uint );
-  virtual bool _mayExec( Game& game, uint ) const;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec( Game& game, unsigned int ) const;
 
 private:
   int _value;

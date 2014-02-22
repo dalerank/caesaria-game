@@ -39,12 +39,12 @@ GameEventPtr ShowFeastWindow::create(std::string text, std::string title, std::s
   return ret;
 }
 
-bool ShowFeastWindow::_mayExec(Game& game, uint time) const
+bool ShowFeastWindow::_mayExec(Game& game, unsigned int time) const
 {
   return true;
 }
 
-void ShowFeastWindow::_exec(Game& game, uint)
+void ShowFeastWindow::_exec(Game& game, unsigned int)
 {
   gui::GuiEnv* env = game.getGui();
 
