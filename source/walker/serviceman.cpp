@@ -69,6 +69,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::religionMars:
   case Service::religionMercury:
     _setAnimation( gfx::priest );
+    _setType( walker::priest );
   break;
   
   case Service::engineer: _setAnimation( gfx::engineer ); _setType( walker::engineer ); break;
