@@ -102,9 +102,9 @@ int CityFunds::getIssueValue( IssueType type, int age ) const
   if( (unsigned int)age >= _d->history.size() )
     return 0;
 
-  Impl::IssuesValue step = _d->history[ age ];
+  const Impl::IssuesValue& step = _d->history[ age ];
      
-  Impl::IssuesValue::iterator it = step.find( type );
+  Impl::IssuesValue::const_iterator it = step.find( type );
   return ( it == step.end() ) ? 0 : it->second;
 }
 
