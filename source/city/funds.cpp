@@ -29,7 +29,7 @@ public:
   int taxRate;
   int workerSalary;
   int money;
-  int lastYeapUpdate;
+  int lastYearUpdate;
 
   typedef std::map< CityFunds::IssueType, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;
@@ -43,7 +43,7 @@ CityFunds::CityFunds() : _d( new Impl )
 {
   _d->money = 0;
   _d->workerSalary = 30;
-  _d->lastYeapUpdate = 0;
+  _d->lastYearUpdate = 0;
   _d->history.push_back( Impl::IssuesValue() );
 }
 
@@ -69,10 +69,7 @@ void CityFunds::resolveIssue( FundIssue issue )
   _d->onChangeSignal.emit( _d->money );
 }
 
-int CityFunds::getValue() const
-{
-  return _d->money;
-}
+int CityFunds::getValue() const {  return _d->money; }
 
 int CityFunds::getProfit() const
 {
@@ -82,14 +79,16 @@ int CityFunds::getProfit() const
 
 void CityFunds::updateHistory( const DateTime& date )
 {
-  if( _d->lastYeapUpdate >= date.year() )
+  if( _d->lastYearUpdate == date.year() )
   {
     return;
   }
 
-  resolveIssue( FundIssue( CityFunds::balance, _d->money ) );
-  resolveIssue( FundIssue( CityFunds::profit, getProfit() ) );
-  _d->lastYeapUpdate = date.year();
+  Impl::IssuesValue& step = _d->history.front();
+  step[ CityFunds::balance ] = _d->money;
+  step[ CityFunds::profit ] = getProfit();
+
+  _d->lastYearUpdate = date.year();
   _d->history.insert( _d->history.begin(), Impl::IssuesValue() );
 
   if( _d->history.size() > 2 )
@@ -109,25 +108,10 @@ int CityFunds::getIssueValue( IssueType type, int age ) const
   return ( it == step.end() ) ? 0 : it->second;
 }
 
-int CityFunds::getTaxRate() const
-{
-  return _d->taxRate;
-}
-
-void CityFunds::setTaxRate(const unsigned int value)
-{
-  _d->taxRate = value;
-}
-
-int CityFunds::getWorkerSalary() const
-{
-  return _d->workerSalary;
-}
-
-void CityFunds::setWorkerSalary(const unsigned int value)
-{
-  _d->workerSalary = value;
-}
+int CityFunds::getTaxRate() const{  return _d->taxRate;}
+void CityFunds::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
+int CityFunds::getWorkerSalary() const{  return _d->workerSalary;}
+void CityFunds::setWorkerSalary(const unsigned int value){  _d->workerSalary = value;}
 
 VariantMap CityFunds::save() const
 {
@@ -136,6 +120,7 @@ VariantMap CityFunds::save() const
   ret[ "money" ] = _d->money;
   ret[ "taxRate" ] = _d->taxRate;
   ret[ "workerSalary" ] = _d->workerSalary;
+  ret[ "lastUpdate" ] = _d->lastYearUpdate;
   
   VariantList history;
   for( Impl::IssuesHistory::iterator stepIt=_d->history.begin(); stepIt != _d->history.end(); stepIt++ )
@@ -160,8 +145,10 @@ void CityFunds::load( const VariantMap& stream )
   _d->money = (int)stream.get( "money", 0 );
   _d->taxRate = (int)stream.get( "taxRate", 7 );
   _d->workerSalary = (int)stream.get( "workerSalary", 30 );
+  _d->lastYearUpdate = (int)stream.get( "lastUpdate" );
 
   VariantList history = stream.get( "history" ).toList();
+  _d->history.clear();
   for( VariantList::iterator it = history.begin(); it != history.end(); it++ )
   {
     _d->history.push_back( Impl::IssuesValue() );
@@ -171,19 +158,12 @@ void CityFunds::load( const VariantMap& stream )
     while( stepIt != historyStep.end() )
     {
       IssueType type = (IssueType)stepIt->toInt(); stepIt++;
-      int value = it->toInt(); stepIt++;
+      int value = stepIt->toInt(); stepIt++;
       
       last[ type ] = value;
     }
   }
 }
 
-CityFunds::~CityFunds()
-{
-
-}
-
-Signal1<int>& CityFunds::onChange()
-{
-  return _d->onChangeSignal;
-}
+CityFunds::~CityFunds(){}
+Signal1<int>& CityFunds::onChange(){  return _d->onChangeSignal; }

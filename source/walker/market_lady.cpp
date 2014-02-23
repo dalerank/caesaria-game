@@ -190,8 +190,11 @@ void MarketLady::_reachedPathway()
    {
      // walker is back in the market
      deleteLater();
-     // put the content of the basket in the market
-     _d->market->getGoodStore().storeAll( _d->basket );
+     if( _d->market.isValid() )
+     {
+       // put the content of the basket in the market
+       _d->market->getGoodStore().storeAll( _d->basket );
+     }
    }
    else
    {

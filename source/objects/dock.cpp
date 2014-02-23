@@ -28,6 +28,7 @@
 #include "game/gamedate.hpp"
 #include "walker/cart_pusher.hpp"
 #include "events/fundissue.hpp"
+#include "pathway/pathway.hpp"
 
 using namespace constants;
 
@@ -256,10 +257,7 @@ void Dock::exportingGoods( GoodStock& stock, int qty )
   }
 }
 
-Dock::~Dock()
-{
-
-}
+Dock::~Dock(){}
 
 void Dock::_updatePicture(Direction direction)
 {
@@ -384,7 +382,15 @@ void Dock::_tryDeliverGoods()
       //success to send cartpusher
       if( !walker->isDeleted() )
       {
-        addWalker( walker.object() );
+        if( walker->getPathway().isValid() )
+        {
+          addWalker( walker.object() );
+        }
+        else
+        {
+          _d->importGoods.store( pusherStock, qty );
+          walker->deleteLater();
+        }
       }
       else
       {

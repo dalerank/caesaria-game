@@ -369,7 +369,7 @@ void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( (time % 22 == 1) && !_pathwayRef().isValid() )
+  if( (time % (GameDate::ticksInMonth() / 4) == 1) && !_pathwayRef().isValid() )
   {
     computeWalkerDestination();
   }

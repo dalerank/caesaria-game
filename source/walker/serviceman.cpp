@@ -85,10 +85,10 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::market: _setAnimation( gfx::marketlady ); _setType( walker::marketLady ); nameType = NameGenerator::female; break;
 
   case Service::library:
-  case Service::academy:  _setAnimation( gfx::teacher );                              break;
+  case Service::academy:  _setAnimation( gfx::teacher ); _setType( walker::teacher ); break;
 
   case Service::forum:
-  case Service::senate:   _setAnimation(gfx:: taxCollector );                                    break;
+  case Service::senate:   _setAnimation(gfx:: taxCollector ); _setType( walker::taxCollector); break;
 
   default:
   break;
