@@ -101,10 +101,12 @@ void Dock::destroy()
 
 void Dock::timeStep(const unsigned long time)
 {
-  _animationRef().update( time );
-
-  // takes current animation frame and put it into foreground
-  _fgPicturesRef()[0] = _animationRef().getFrame();
+  if( getWorkersCount() > 0 )
+  {
+    _animationRef().update( time );
+    // takes current animation frame and put it into foreground
+    _fgPicturesRef()[0] = _animationRef().getFrame();
+  }
 
   if( time % (GameDate::ticksInMonth()/6) == 1 )
   {

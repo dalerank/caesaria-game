@@ -65,9 +65,7 @@ MarketLady::MarketLady(PlayerCityPtr city )
    setName( NameGenerator::rand( NameGenerator::female ) );
 }
 
-MarketLady::~MarketLady()
-{
-}
+MarketLady::~MarketLady(){}
 
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
@@ -229,7 +227,7 @@ void MarketLady::_reachedPathway()
         warehouse->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible
-        for (int n = Good::olive; n<Good::goodCount; ++n)
+        for (int n = Good::wheat; n<Good::goodCount; ++n)
         {
           // for all types of good (except G_NONE)
           Good::Type goodType = (Good::Type) n;
@@ -248,7 +246,7 @@ void MarketLady::_reachedPathway()
         }
       }
 
-      unsigned long delay = GameDate::ticksInMonth() / 4;
+      unsigned long delay = 20;
 
       while( _d->basket.getQty() > 100 )
       {

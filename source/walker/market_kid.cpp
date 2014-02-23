@@ -66,10 +66,7 @@ MarketKid::MarketKid(PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-void MarketKid::setDelay( int delay )
-{
-  _d->delay = delay;
-}
+void MarketKid::setDelay( int delay ) {  _d->delay = delay; }
 
 void MarketKid::send2City( MarketPtr destination )
 {
@@ -140,7 +137,4 @@ void MarketKid::die()
   Corpse::create( _getCity(), pos(), ResourceGroup::carts, 465, 472 );
 }
 
-GoodStock& MarketKid::getBasket()
-{
-  return _d->basket;
-}
+GoodStock& MarketKid::getBasket(){  return _d->basket;}

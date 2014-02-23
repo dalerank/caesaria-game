@@ -552,10 +552,7 @@ int HouseSpecification::getRequiredGoodLevel(Good::Type type) const{  return _d-
 int HouseSpecification::getProsperity() const{  return _d->prosperity;}
 int HouseSpecification::getCrime() const{  return _d->crime;}
 
-HouseSpecification::~HouseSpecification()
-{
-
-}
+HouseSpecification::~HouseSpecification() {}
 
 HouseSpecification::HouseSpecification() : _d( new Impl )
 {
@@ -702,23 +699,19 @@ int HouseSpecHelper::getHouseLevel( const std::string& name )
   return 0;
 }
 
-HouseSpecHelper::~HouseSpecHelper()
-{
-
-}
+HouseSpecHelper::~HouseSpecHelper(){}
 
 void HouseSpecHelper::initialize( const vfs::Path& filename )
 {
-  VariantMap houses = SaveAdapter::load( filename.toString() );
+  VariantMap houseSpecs = SaveAdapter::load( filename.toString() );
 
-  if( houses.empty() )
+  if( houseSpecs.empty() )
   {
     Logger::warning( "Can't load house model from %s", filename.toString().c_str() );
     return;
   }
 
-
-  foreach( item, houses )
+  foreach( item, houseSpecs )
   {
     // this is not a comment (comments start by #)
     // std::cout << "Line #" << linenum << ":" << line << std::endl;
@@ -747,7 +740,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->requiredGoods[Good::oil] = hSpec.get( "oil" ).toInt();  // oil
     spec._d->requiredGoods[Good::furniture] = hSpec.get( "furniture").toInt();// furniture
     spec._d->requiredGoods[Good::wine] = hSpec.get( "wine" ).toInt();  // wine
-    spec._d->crime = hSpec.get( "crime" ).toInt();;  // crime
+    spec._d->crime = hSpec.get( "crime" ).toInt();  // crime
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
 

@@ -947,48 +947,27 @@ void House::Impl::consumeFoods(HousePtr house)
   int consumeQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::ticksInMonth();
 
   int foodLevel = spec.getMinFoodLevel();
-  int tmpConsumeQty = 0;
 
-  // consume foods
-  if( foodLevel > 2 )
+  int availableFoodLevel = 0;
+  for( int afl=Good::wheat; afl <= Good::vegetable; afl++ )
   {
-    tmpConsumeQty = consumeQty / 3;
-
-    int fQty = goodStore.getQty( Good::fruit );
-    int vQty = goodStore.getQty( Good::vegetable );
-
-    Good::Type maxType = ( fQty > vQty ) ? Good::fruit : Good::vegetable;
-    Good::Type minType = ( fQty > vQty ) ? Good::vegetable : Good::fruit;
-
-    vQty = std::min( goodStore.getQty( minType ), tmpConsumeQty / 2 );
-    goodStore.setQty( minType, std::max( goodStore.getQty( minType ) - vQty, 0) );
-
-    fQty = ( tmpConsumeQty - vQty );
-    goodStore.setQty( maxType, std::max( goodStore.getQty( maxType ) - fQty, 0) );
+    availableFoodLevel += ( goodStore.getQty( (Good::Type)afl ) > 0 ? 1 : 0 );
   }
 
-  if( foodLevel > 1 )
+  availableFoodLevel = std::min( availableFoodLevel, foodLevel );
+  int currentConsumedGood = 0;
+
+  for( int k=Good::wheat; k <= Good::vegetable; k++ )
   {
-    tmpConsumeQty = (0 == tmpConsumeQty ? consumeQty / 2 : tmpConsumeQty);
+    if( currentConsumedGood >= availableFoodLevel )
+      break;
 
-    int mQty = std::min( goodStore.getQty( Good::meat ), tmpConsumeQty / 2 );
-    int fQty = std::min( goodStore.getQty( Good::fish ), tmpConsumeQty / 2 );
-
-    Good::Type maxType = ( fQty > mQty ) ? Good::fish : Good::meat;
-    Good::Type minType = ( fQty > mQty ) ? Good::meat : Good::fish;
-
-    mQty = std::min( goodStore.getQty( minType ), tmpConsumeQty / 2 );
-    goodStore.setQty( minType, std::max( goodStore.getQty( minType ) - mQty, 0) );
-
-    fQty = ( tmpConsumeQty - mQty );
-    goodStore.setQty( maxType, std::max( goodStore.getQty( maxType ) - fQty, 0) );
-  }
-
-  if( foodLevel > 0 )
-  {
-    tmpConsumeQty = (0 == tmpConsumeQty ? consumeQty : tmpConsumeQty);
-
-    int wQty = std::min( goodStore.getQty( Good::wheat ), tmpConsumeQty );
-    goodStore.setQty( Good::wheat, std::max( goodStore.getQty(Good::wheat) - wQty, 0) );
+    Good::Type gType = (Good::Type)k;
+    int vQty = std::min( goodStore.getQty( gType ), consumeQty / availableFoodLevel );
+    if( vQty > 0 )
+    {
+      currentConsumedGood++;
+      goodStore.setQty( gType, std::max( goodStore.getQty( gType ) - vQty, 0) );
+    }
   }
 }
