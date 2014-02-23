@@ -72,10 +72,7 @@ GameEventPtr ClearLandEvent::create(const TilePos& pos)
   return ret;
 }
 
-bool ClearLandEvent::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
+bool ClearLandEvent::_mayExec(Game& game, unsigned int time) const{  return true;}
 
 void ClearLandEvent::_exec( Game& game, unsigned int )
 {
@@ -119,7 +116,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
 
       deleteRoad |= tile->getFlag( Tile::tlRoad );
 
-      if( tile->getFlag( Tile::tlMeadow ) )
+      if( tile->getFlag( Tile::tlMeadow ) || tile->getFlag( Tile::tlWater ) )
       {
         tile->setPicture( TileHelper::convId2PicName( tile->getOriginalImgId() ) );
       }
@@ -166,10 +163,7 @@ GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::stri
   return ret;
 }
 
-bool ShowInfoboxEvent::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
+bool ShowInfoboxEvent::_mayExec(Game& game, unsigned int time) const{  return true;}
 
 void ShowInfoboxEvent::_exec( Game& game, unsigned int )
 {
@@ -188,10 +182,7 @@ GameEventPtr Pause::create( Mode mode )
   return ret;
 }
 
-bool Pause::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
+bool Pause::_mayExec(Game& game, unsigned int time) const{  return true;}
 
 void Pause::_exec(Game& game, unsigned int)
 {
@@ -241,10 +232,7 @@ GameEventPtr ChangeSpeed::create(int value)
   return ret;
 }
 
-bool ChangeSpeed::_mayExec(Game& game, unsigned int) const
-{
-  return true;
-}
+bool ChangeSpeed::_mayExec(Game& game, unsigned int) const{  return true;}
 
 void ChangeSpeed::_exec(Game& game, unsigned int)
 {

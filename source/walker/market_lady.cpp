@@ -83,7 +83,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Ty
   {
     // for every warehouse within range
     ConstructionPtr construction = routeIt->first;
-    PathwayPtr pathWay= routeIt->second;
+    //PathwayPtr pathWay= routeIt->second;
 
     SmartPtr< T > destBuilding = ptr_cast<T>( construction );
     int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
@@ -139,6 +139,12 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
            // try get that good from a granary
            _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, building::granary, _d->market,
                                                                  _d->basket, _d->priorityGood, pathWay, _d->reservationID );
+
+           if( _d->destBuildingPos.i() < 0 )
+           {
+             _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
+                                                                   _d->basket, _d->priorityGood, pathWay, _d->reservationID );
+           }
         }
         else
         {
@@ -222,8 +228,6 @@ void MarketLady::_reachedPathway()
       {
         WarehousePtr warehouse = ptr_cast<Warehouse>( building );
         // this is a warehouse!
-        // std::cout << "Market buyer takes IRON from warehouse" << std::endl;
-        // warehouse->retrieveGoods(_basket.getStock(G_IRON));
         warehouse->getGoodStore().applyRetrieveReservation(_d->basket, _d->reservationID);
 
         // take other goods if possible

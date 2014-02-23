@@ -49,10 +49,7 @@ Building::Building(const TileOverlay::Type type, const Size& size )
    _fireIncrement = 1;
 }
 
-Building::~Building()
-{
-
-}
+Building::~Building() {}
 
 void Building::initTerrain( Tile &tile )
 {
@@ -61,8 +58,10 @@ void Building::initTerrain( Tile &tile )
   // about it's original information
   // try to fix
   bool saveMeadow = tile.getFlag( Tile::tlMeadow );
+  bool saveWater = tile.getFlag( Tile::tlWater );
   tile.setFlag( Tile::clearAll, true );
   tile.setFlag( Tile::tlMeadow, saveMeadow);
+  tile.setFlag( Tile::tlWater, saveWater );
 }
 
 void Building::timeStep(const unsigned long time)
@@ -196,10 +195,7 @@ SmallStatue::SmallStatue() : Building( building::smallStatue, Size(1) )
   setPicture( ResourceGroup::govt, 1 );
 }
 
-bool SmallStatue::isNeedRoadAccess() const
-{
-  return false;
-}
+bool SmallStatue::isNeedRoadAccess() const {  return false; }
 
 MediumStatue::MediumStatue() : Building( building::middleStatue, Size(2) )
 {
@@ -208,10 +204,7 @@ MediumStatue::MediumStatue() : Building( building::middleStatue, Size(2) )
   setPicture( ResourceGroup::govt, 2);
 }
 
-bool MediumStatue::isNeedRoadAccess() const
-{
-  return false;
-}
+bool MediumStatue::isNeedRoadAccess() const {  return false; }
 
 BigStatue::BigStatue() : Building( building::bigStatue, Size(3))
 {
@@ -220,10 +213,7 @@ BigStatue::BigStatue() : Building( building::bigStatue, Size(3))
   setPicture( ResourceGroup::govt, 3 );
 }
 
-bool BigStatue::isNeedRoadAccess() const
-{
-  return false;
-}
+bool BigStatue::isNeedRoadAccess() const {  return false;}
 
 // second arch pictures is land3a 45 + 46	
 TriumphalArch::TriumphalArch() : Building( building::triumphalArch, Size(3) )

@@ -76,15 +76,9 @@ void FarmTile::computePicture(const int percent)
   _picture.addOffset(30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i() ));
 }
 
-Picture& FarmTile::getPicture()
-{
-  return _picture;
-}
+Picture& FarmTile::getPicture() {  return _picture; }
+FarmTile::~FarmTile() {}
 
-FarmTile::~FarmTile()
-{
-
-}
 class Farm::Impl
 {
 public:
@@ -189,10 +183,7 @@ unsigned int Farm::getProduceQty() const
   return getProductRate() * getFinishedQty() * getWorkersCount() / getMaxWorkers();
 }
 
-Farm::~Farm()
-{
-
-}
+Farm::~Farm() {}
 
 FarmWheat::FarmWheat() : Farm(Good::wheat, building::wheatFarm)
 {
