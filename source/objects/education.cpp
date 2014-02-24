@@ -24,10 +24,7 @@ School::School() : ServiceBuilding(Service::school, building::school, Size(2))
   setPicture( ResourceGroup::commerce, 83 );
 }
 
-int School::getVisitorsNumber() const
-{
-  return 75;
-}
+int School::getVisitorsNumber() const {  return 75; }
 
 void School::deliverService()
 {
@@ -40,30 +37,21 @@ void School::deliverService()
   }
 }
 
-unsigned int School::getWalkerDistance() const
-{
-  return 26;
-}
+unsigned int School::getWalkerDistance() const {  return 26; }
 
 Library::Library() : ServiceBuilding(Service::library, building::library, Size(2))
 {
   setPicture( ResourceGroup::commerce, 84 );
 }
 
-int Library::getVisitorsNumber() const
-{
-  return 800;
-}
+int Library::getVisitorsNumber() const {  return 800; }
 
 Academy::Academy() : ServiceBuilding(Service::academy, building::academy, Size(3))
 {
   setPicture( ResourceGroup::commerce, 85 );
 }
 
-int Academy::getVisitorsNumber() const
-{
-  return 100;
-}
+int Academy::getVisitorsNumber() const {  return 100; }
 
 void Academy::deliverService()
 {
@@ -73,10 +61,7 @@ void Academy::deliverService()
   }
 }
 
-unsigned int Academy::getWalkerDistance() const
-{
-  return 26;
-}
+unsigned int Academy::getWalkerDistance() const{  return 26; }
 
 std::string Academy::getSound() const
 {

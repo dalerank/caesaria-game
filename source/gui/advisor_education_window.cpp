@@ -93,7 +93,7 @@ public:
     const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
                                   "##edu_above_simple##", "##edu_good##", "##edu_very_good##", "##edu_pretty##", "##edu_awesome##" };
     const char* coverageStr = _info.coverage > 0
-                                  ? coverages[ math::clamp( _info.coverage / 10, 0, 10 ) ]
+                                  ? coverages[ math::clamp( _info.coverage / 10, 0, 9 ) ]
                                   : "##non_cvrg##";
     font.draw( *texture, _( coverageStr ), 470, 0 );
   }

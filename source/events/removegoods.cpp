@@ -13,34 +13,43 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
-#define __CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
+#include "removegoods.hpp"
 
-#include "widget.hpp"
-#include "game/predefinitions.hpp"
+using namespace constants;
 
-namespace gui
+namespace events
 {
 
-class EmpireMapWindow : public Widget
+GameEventPtr RemoveGoods::create( Good::Type type, int qty  )
 {
-public:
-  static EmpireMapWindow* create(world::EmpirePtr empire, PlayerCityPtr city, Widget* parent, int id );
+  RemoveGoods* r = new RemoveGoods();
+  r->_qty = qty;
+  r->_type = type;
 
-  virtual ~EmpireMapWindow();
+  GameEventPtr ret( r );
+  ret->drop();
 
-  // draw on screen
-  virtual void draw( GfxEngine& engine );
+  return ret;
+}
 
-  //resolve event
-  virtual bool onEvent(const NEvent& event);
+void RemoveGoods::_exec( Game& game, unsigned int time )
+{
 
-protected:
-  class Impl;
-  ScopedPtr< Impl > _d;
+}
 
-  EmpireMapWindow( Widget* parent, int id );
-};
+bool RemoveGoods::_mayExec(Game&, unsigned int) const { return true; }
+bool RemoveGoods::isDeleted() const {  return true; }
 
-}//end namespace gui
-#endif //__CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
+void RemoveGoods::load(const VariantMap& stream)
+{
+}
+
+VariantMap RemoveGoods::save() const
+{
+  VariantMap ret;
+  return ret;
+}
+
+RemoveGoods::RemoveGoods(){}
+
+}//end namespace events

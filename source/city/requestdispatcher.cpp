@@ -19,6 +19,8 @@
 #include "game/gamedate.hpp"
 #include "events/showrequestwindow.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
+#include "core/stringhelper.hpp"
 
 
 class CityRequestDispatcher::Impl
@@ -47,8 +49,8 @@ CityServicePtr CityRequestDispatcher::create(PlayerCityPtr city)
 
 bool CityRequestDispatcher::add( const VariantMap& stream )
 {
-  std::string type = stream.get( "type" ).toString();
-  if( "good_request" == type )
+  const std::string type = stream.get( "type" ).toString();
+  if( type == GoodRequest::typeName() )
   {
     CityRequestPtr r = GoodRequest::create( stream );
     _d->requests.push_back( r );
@@ -57,18 +59,13 @@ bool CityRequestDispatcher::add( const VariantMap& stream )
     return true;
   }
 
+
+  Logger::warning( "CityRequestDispatcher: cannot load request with type " + type );
   return false;
 }
 
-CityRequestDispatcher::~CityRequestDispatcher()
-{
-
-}
-
-std::string CityRequestDispatcher::getDefaultName()
-{
-  return "requests";
-}
+CityRequestDispatcher::~CityRequestDispatcher() {}
+std::string CityRequestDispatcher::getDefaultName(){  return "requests";}
 
 void CityRequestDispatcher::update(const unsigned int time)
 {
@@ -77,7 +74,7 @@ void CityRequestDispatcher::update(const unsigned int time)
   {
     if( (*rq)->getFinishedDate() <= GameDate::current() )
     {
-      (*rq)->fail();
+      (*rq)->fail( _d->city );
     }
   }
 
@@ -88,8 +85,29 @@ void CityRequestDispatcher::update(const unsigned int time)
   }
 }
 
-CityRequestList CityRequestDispatcher::getRequests() const
+VariantMap CityRequestDispatcher::save() const
 {
-  return _d->requests;
+  VariantMap ret;
+  VariantMap vm_rq;
+
+  foreach( rq, _d->requests )
+  {
+    std::string name = StringHelper::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
+    vm_rq[ name ] = (*rq)->save();
+  }
+
+  ret[ "items" ] = vm_rq;
+  return ret;
 }
+
+void CityRequestDispatcher::load(const VariantMap& stream)
+{
+  VariantMap vm_items = stream.get( "items" ).toMap();
+  foreach( it, vm_items )
+  {
+    add( it->second.toMap() );
+  }
+}
+
+CityRequestList CityRequestDispatcher::getRequests() const {  return _d->requests; }
 

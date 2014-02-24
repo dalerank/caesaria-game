@@ -59,6 +59,8 @@
 #include "gfx/tilemap_camera.hpp"
 #include "ambientsound.hpp"
 #include "gui/win_mission_window.hpp"
+#include "events/showempiremapwindow.hpp"
+#include "events/showadvisorwindow.hpp"
 
 using namespace gui;
 
@@ -454,24 +456,6 @@ void ScreenGame::_resolveExitGame(){  _d->result = ScreenGame::quitGame;  stop()
 
 void ScreenGame::Impl::showAdvisorsWindow( const int advType )
 {  
-  Variant advEnabled = GameSettings::get( GameSettings::adviserEnabled );
-  if( advEnabled.isValid() && !(bool)advEnabled )
-  {
-    events::GameEventPtr e = events::WarningMessageEvent::create( "##not_available##" );
-    e->dispatch();
-    return;
-  }
-
-  List<AdvisorsWindow*> wndList = game->getGui()->getRootWidget()->findChildren<AdvisorsWindow*>();
-
-  if( wndList.size() == 1 )
-  {
-    wndList.front()->bringToFront();
-    wndList.front()->showAdvisor( (AdvisorType)advType ); 
-  }
-  else
-  {
-    /*AdvisorsWindow* advWnd = */AdvisorsWindow::create( game->getGui()->getRootWidget(), -1,
-                                                     (AdvisorType)advType, game->getCity() );
-  }
+  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
+  e->dispatch();
 }

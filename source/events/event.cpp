@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+ // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@
 #include "dispatcher.hpp"
 #include "core/stringhelper.hpp"
 #include "gui/label.hpp"
-#include "gui/empiremap_window.hpp"
 #include "world/empire.hpp"
 #include "game/resourcegroup.hpp"
 #include "gui/advisors_window.hpp"
@@ -237,85 +236,6 @@ bool ChangeSpeed::_mayExec(Game& game, unsigned int) const{  return true;}
 void ChangeSpeed::_exec(Game& game, unsigned int)
 {
   game.changeTimeMultiplier( _value );
-}
-
-GameEventPtr ShowEmpireMapWindow::create(bool show)
-{
-  ShowEmpireMapWindow* ev = new ShowEmpireMapWindow();
-  ev->_show = show;
-  GameEventPtr ret( ev );
-  ret->drop();
-  return ret;
-}
-
-bool ShowEmpireMapWindow::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
-
-void ShowEmpireMapWindow::_exec(Game& game, unsigned int)
-{
-  List<gui::EmpireMapWindow*> wndList = game.getGui()->getRootWidget()->findChildren<gui::EmpireMapWindow*>();
-
-  if( _show )
-  {
-    if( !wndList.empty() )
-    {
-      wndList.front()->bringToFront();
-    }
-    else
-    {
-      gui::EmpireMapWindow::create( game.getEmpire(), game.getCity(), game.getGui()->getRootWidget(), -1 );
-    }
-  }
-  else
-  {
-    if( !wndList.empty() )
-    {
-      wndList.front()->deleteLater();
-    }
-  }
-}
-
-
-GameEventPtr ShowAdvisorWindow::create(bool show, int advisor)
-{
-  ShowAdvisorWindow* ev = new ShowAdvisorWindow();
-  ev->_show = show;
-  ev->_advisor = advisor;
-  GameEventPtr ret( ev );
-  ret->drop();
-  return ret;
-}
-
-bool ShowAdvisorWindow::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
-
-void ShowAdvisorWindow::_exec(Game& game, unsigned int)
-{
-  List<gui::AdvisorsWindow*> wndList = game.getGui()->getRootWidget()->findChildren<gui::AdvisorsWindow*>();
-
-  if( _show )
-  {
-    if( !wndList.empty() )
-    {
-      wndList.front()->bringToFront();
-      wndList.front()->showAdvisor( (AdvisorType)_advisor );
-    }
-    else
-    {
-      gui::AdvisorsWindow::create( game.getGui()->getRootWidget(), -1, (AdvisorType)_advisor, game.getCity() );
-    }
-  }
-  else
-  {
-    if( !wndList.empty() )
-    {
-      wndList.front()->deleteLater();
-    }
-  }
 }
 
 GameEventPtr WarningMessageEvent::create(const std::string& text)

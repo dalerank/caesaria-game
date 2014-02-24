@@ -23,6 +23,7 @@
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
+#include "gui/gameautopause.hpp"
 
 namespace gui
 {
@@ -31,6 +32,7 @@ class EmperrorRequestWindow::Impl
 {
 public:
   void openEmperrorAdvisor();
+  GameAutoPause locker;
 };
 
 EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, CityRequestPtr request )
@@ -51,6 +53,8 @@ EmperrorRequestWindow::~EmperrorRequestWindow()
 EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, CityRequestPtr request )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
+  _d->locker.activate();
+
   setupUI( GameSettings::rcpath( "/gui/request.gui" ) );
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );

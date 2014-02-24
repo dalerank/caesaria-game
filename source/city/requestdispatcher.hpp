@@ -30,6 +30,8 @@ public:
   static std::string getDefaultName();
 
   virtual void update(const unsigned int time);
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap &stream);
 
   CityRequestList getRequests() const;
 

@@ -13,34 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
-#define __CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
+#ifndef _CAESARIA_SHOWEMPIREMAP_EVENT_H_INCLUDE_
+#define _CAESARIA_SHOWEMPIREMAP_EVENT_H_INCLUDE_
 
-#include "widget.hpp"
-#include "game/predefinitions.hpp"
+#include "event.hpp"
 
-namespace gui
+namespace events
 {
 
-class EmpireMapWindow : public Widget
+class ShowEmpireMapWindow : public GameEvent
 {
 public:
-  static EmpireMapWindow* create(world::EmpirePtr empire, PlayerCityPtr city, Widget* parent, int id );
-
-  virtual ~EmpireMapWindow();
-
-  // draw on screen
-  virtual void draw( GfxEngine& engine );
-
-  //resolve event
-  virtual bool onEvent(const NEvent& event);
+  static GameEventPtr create( bool show );
 
 protected:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
-  EmpireMapWindow( Widget* parent, int id );
+private:
+  bool _show;
 };
 
-}//end namespace gui
-#endif //__CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
+} //end namespace events
+#endif //_CAESARIA_SCENARIO_EVENT_H_INCLUDE_

@@ -93,6 +93,7 @@ CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
   _d->priorities.push_back( building::lionsNursery );
   _d->priorities.push_back( building::shipyard );
   _d->priorities.push_back( building::dock );
+  _d->priorities.push_back( building::library );
 }
 
 bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )

@@ -94,8 +94,18 @@
   {
     "health_upper#health_updater" : {
       date : "-350.01.01"
+      type : "good_request"
       endTime : "348.01.01"
       value : 30
+    }
+
+    "emperor_request_oil#city_request" : {
+      date : "-348.06.01"
+      type : "good_request"
+      month : 12
+      good : { oil : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10 }
     }
   }
 	

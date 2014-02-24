@@ -79,7 +79,9 @@ public:
   int getProsperity() const;
   int getCulture() const;
   int getPeace() const;
+
   int getFavour() const;
+  void updateFavour( int value );
 
   Tilemap& getTilemap();
 

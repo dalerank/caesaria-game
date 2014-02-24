@@ -37,6 +37,7 @@ public:
   bool isAvailable;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
+  SimpleGoodStore realSells;
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
   unsigned int merchantsNumber;
@@ -51,6 +52,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->isAvailable = true;
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
+  _d->realSells.setCapacity( 99999 );
   _d->romeCity = false;
 }
 
@@ -112,6 +114,7 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
   options[ "distant" ] = _d->distantCity;
   options[ "romecity" ] = _d->romeCity;
+  options[ "realSells" ] = _d->realSells.save();
 }
 
 void ComputerCity::load( const VariantMap& options )
@@ -132,6 +135,7 @@ void ComputerCity::load( const VariantMap& options )
     Good::Type gtype = Good::Type ( i );
     _d->sellStore.setCapacity( gtype, 0 );
     _d->buyStore.setCapacity( gtype, 0 );
+    _d->realSells.setCapacity( gtype, 0 );
   }
 
   const VariantMap& sells_vm = options.get( "sells" ).toMap();
@@ -139,6 +143,7 @@ void ComputerCity::load( const VariantMap& options )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
     _d->sellStore.setCapacity( gtype, it->second.toInt() * 100 );
+    _d->realSells.setCapacity( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& sold_vm = options.get( "sold" ).toMap();
@@ -164,17 +169,17 @@ void ComputerCity::load( const VariantMap& options )
 
   _d->tradeType = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
                   + (options.get( "land" ).toBool() ? EmpireMap::land : EmpireMap::unknown);
+
+  Variant vm_rsold = options.get( "realSells" );
+
+  if( vm_rsold.isValid() )
+  {
+    _d->realSells.load( vm_rsold.toMap() );
+  }
 }
 
-const GoodStore& ComputerCity::getSells() const
-{
-  return _d->sellStore;
-}
-
-const GoodStore& ComputerCity::getBuys() const
-{
-  return _d->buyStore;
-}
+const GoodStore& ComputerCity::getSells() const {  return _d->realSells;}
+const GoodStore& ComputerCity::getBuys() const{  return _d->buyStore;}
 
 CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 {
@@ -190,21 +195,28 @@ void ComputerCity::arrivedMerchant( MerchantPtr merchant )
   GoodStore& buyGoods = merchant->getBuyGoods();
 
   _d->buyStore.storeAll( buyGoods );
+
+  for( int i=Good::none; i < Good::goodCount; i ++ )
+  {
+    Good::Type gtype = Good::Type ( i );
+    int qty = sellGoods.getFreeQty( gtype );
+    GoodStock stock( gtype, qty, qty );
+    _d->realSells.store( stock, qty );
+  }
+
   _d->sellStore.storeAll( sellGoods );
 
   _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
 }
 
-ComputerCity::~ComputerCity()
-{
-
-}
+ComputerCity::~ComputerCity() {}
 
 void ComputerCity::timeStep( unsigned int time )
 {
   //one year before step need
   if( _d->lastTimeUpdate.getMonthToDate( GameDate::current() ) > 11 )
   {
+    _d->merchantsNumber = math::clamp<unsigned int>( _d->merchantsNumber-1, 0, 2 );
     _d->lastTimeUpdate = GameDate::current();
 
     for( int i=Good::none; i < Good::goodCount; i ++ )
@@ -212,7 +224,7 @@ void ComputerCity::timeStep( unsigned int time )
       Good::Type gtype = Good::Type( i );
       _d->sellStore.setQty( gtype, _d->sellStore.capacity( gtype ) );     
       _d->buyStore.setQty( gtype, 0  );
-      _d->merchantsNumber = 0;
+      _d->realSells.setQty( gtype, 0 );
     }
   }
 

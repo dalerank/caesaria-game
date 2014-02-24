@@ -30,8 +30,8 @@ public:
 
   virtual bool mayExec( PlayerCityPtr city ) { return false; }
   virtual void exec( PlayerCityPtr city ) {}
-  virtual void success() { _isDeleted = true; }
-  virtual void fail() { _isDeleted = true; }
+  virtual void success( PlayerCityPtr ) { _isDeleted = true; }
+  virtual void fail( PlayerCityPtr ) { _isDeleted = true; }
   virtual bool isDeleted() const { return _isDeleted; }
   virtual const DateTime& getFinishedDate() const { return _finishedDate; }
 
@@ -61,10 +61,14 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream );
 
+  virtual void success( PlayerCityPtr city );
+  virtual void fail( PlayerCityPtr city );
+
   int getQty() const;
   Good::Type getGoodType() const;
   int getMonths2Comply() const;
 
+  static std::string typeName();
 private:
   GoodRequest();
 

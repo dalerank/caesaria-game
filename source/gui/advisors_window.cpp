@@ -46,6 +46,7 @@
 #include "image.hpp"
 #include "gameautopause.hpp"
 #include "events/fundissue.hpp"
+#include "events/showempiremapwindow.hpp"
 
 namespace gui
 {

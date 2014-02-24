@@ -16,6 +16,10 @@
 #include "city.hpp"
 #include "request.hpp"
 #include "good/goodhelper.hpp"
+#include "statistic.hpp"
+#include "events/removegoods.hpp"
+#include "events/fundissue.hpp"
+#include "city/funds.hpp"
 
 class GoodRequest::Impl
 {
@@ -42,13 +46,23 @@ GoodRequest::~GoodRequest(){}
 
 void GoodRequest::exec( PlayerCityPtr city )
 {
-  success();
+  events::GameEventPtr e = events::RemoveGoods::create( _d->stock.type(), _d->stock.capacity() );
+  e->dispatch();
+  success( city );
 }
 
-bool GoodRequest::mayExec(PlayerCityPtr city) const
+bool GoodRequest::mayExec( PlayerCityPtr city ) const
 {
+  CityStatistic::GoodsMap gm = CityStatistic::getGoodsMap( city );
+  if( gm[ _d->stock.type() ] >= _d->stock.capacity() )
+  {
+    return true;
+  }
+
   return false;
 }
+
+std::string GoodRequest::typeName() {  return "good_request";}
 
 VariantMap GoodRequest::save() const
 {
@@ -99,19 +113,25 @@ void GoodRequest::load(const VariantMap& stream)
   _finishedDate = _d->date.appendMonth( _d->months2comply );
 }
 
+void GoodRequest::success( PlayerCityPtr city )
+{
+  CityRequest::success( city );
+  city->updateFavour( _d->winFavour );
+  if( _d->winMoney )
+  {
+    events::GameEventPtr e = events::FundIssueEvent::create( CityFunds::donation, _d->winMoney );
+    e->dispatch();
+  }
+}
+
+void GoodRequest::fail( PlayerCityPtr city )
+{
+  CityRequest::fail( city );
+  city->updateFavour( _d->winFavour );
+}
+
 int GoodRequest::getQty() const { return _d->stock.capacity(); }
 Good::Type GoodRequest::getGoodType() const { return _d->stock.type(); }
 int GoodRequest::getMonths2Comply() const { return _d->months2comply; }
-
-
-GoodRequest::GoodRequest()
-  : CityRequest( DateTime() ), _d( new Impl )
-{
-
-}
-
-
-CityRequest::~CityRequest()
-{
-
-}
+GoodRequest::GoodRequest() : CityRequest( DateTime() ), _d( new Impl ) {}
+CityRequest::~CityRequest(){}

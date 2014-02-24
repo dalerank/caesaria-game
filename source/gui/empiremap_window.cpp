@@ -37,6 +37,7 @@
 #include "core/foreach.hpp"
 #include "world/object.hpp"
 #include "events/fundissue.hpp"
+#include "events/showadvisorwindow.hpp"
 
 namespace gui
 {
@@ -72,6 +73,7 @@ public:
   void drawCityInfo();
   void resetInfoPanel();
   void updateCityInfo();
+  void showTradeAdvisorWindow();
 };
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
@@ -129,6 +131,12 @@ void EmpireMapWindow::Impl::updateCityInfo()
   {
     lbCityTitle->setText( "" );    
   }
+}
+
+void EmpireMapWindow::Impl::showTradeAdvisorWindow()
+{
+  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, ADV_TRADING );
+  e->dispatch();
 }
 
 void EmpireMapWindow::Impl::createTradeRoute()
@@ -338,6 +346,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 
   CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );
+  CONNECT( _d->btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow );
 }
 
 void EmpireMapWindow::draw( GfxEngine& engine )
@@ -476,11 +485,6 @@ EmpireMapWindow* EmpireMapWindow::create(world::EmpirePtr empire, PlayerCityPtr 
   ret->_d->ourCity = city->getName();
 
   return ret;
-}
-
-Signal0<>& EmpireMapWindow::onTradeAdvisorRequest()
-{
-  return _d->btnTrade->onClicked(); 
 }
 
 EmpireMapWindow::~EmpireMapWindow()

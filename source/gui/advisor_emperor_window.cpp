@@ -201,15 +201,14 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->autoPause.activate();
-
-  int money = _d->city->getPlayer()->getMoney();
-
   _d->city = city;
+
+  int money = city->getPlayer()->getMoney();
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
-  title->setText( "Player name" );
+  title->setText( city->getPlayer()->getName() );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 

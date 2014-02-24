@@ -171,6 +171,8 @@ public:
   ClimateType climate;   
   UniqueId walkerIdCount;
 
+  int favour;
+
   // collect taxes from all houses
   void collectTaxes( PlayerCityPtr city);
   void payWages( PlayerCityPtr city );
@@ -196,6 +198,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->needRecomputeAllRoads = false;
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
+  _d->favour = 50;
   _d->climate = C_CENTRAL;
   _d->lastMonthCount = GameDate::current().month();
 
@@ -450,17 +453,18 @@ void PlayerCity::save( VariantMap& stream) const
   VariantMap vm_tilemap;
   _d->tilemap.save( vm_tilemap );
 
-  stream[ "tilemap" ] = vm_tilemap;
+  stream[ "tilemap"    ] = vm_tilemap;
 
   Logger::warning( "City: save main paramters ");
-  stream[ "roadEntry" ] = _d->borderInfo.roadEntry;
-  stream[ "roadExit" ]  = _d->borderInfo.roadExit;
-  stream[ "cameraStart" ] = _d->cameraStart;
-  stream[ "boatEntry" ] = _d->borderInfo.boatEntry;
-  stream[ "boatExit" ] = _d->borderInfo.boatExit;
-  stream[ "climate" ] = _d->climate;
+  stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
+  stream[ "roadExit"   ] = _d->borderInfo.roadExit;
+  stream[ "cameraStart"] = _d->cameraStart;
+  stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
+  stream[ "boatExit"   ] = _d->borderInfo.boatExit;
+  stream[ "climate"    ] = _d->climate;
   stream[ "population" ] = _d->population;
-  stream[ "name" ] = Variant( _d->name );
+  stream[ "favour"     ] = _d->favour;
+  stream[ "name"       ] = Variant( _d->name );
 
   Logger::warning( "City: save finance information" );
   stream[ "funds" ] = _d->funds.save();
@@ -519,6 +523,7 @@ void PlayerCity::load( const VariantMap& stream )
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
+  _d->favour = stream.get( "favour", 50 );
   _d->lastMonthCount = GameDate::current().month();
 
   Logger::warning( "City: parse funds" );
@@ -680,11 +685,8 @@ int PlayerCity::getPeace() const
   return 0;//csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
 }
 
-int PlayerCity::getFavour() const
-{
-  //CityServicePtr csPrsp = findService( CityServiceFavour::getDefaultName() );
-  return 0;//csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
-}
+int PlayerCity::getFavour() const { return _d->favour;}
+void PlayerCity::updateFavour(int value) { _d->favour += value; }
 
 void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
 {

@@ -82,33 +82,6 @@ private:
   std::string _text;
 };
 
-class ShowEmpireMapWindow : public GameEvent
-{
-public:
-  static GameEventPtr create( bool show );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  bool _show;
-};
-
-class ShowAdvisorWindow : public GameEvent
-{
-public:
-  static GameEventPtr create( bool show, int advisor );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  bool _show;
-  int _advisor;
-};
-
 class Pause : public GameEvent
 {
 public:
