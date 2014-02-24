@@ -51,7 +51,7 @@ void GoodRequest::exec( PlayerCityPtr city )
 {
   if( !isDeleted() )
   {
-    events::GameEventPtr e = events::RemoveGoods::create( _d->stock.type(), _d->stock.capacity() );
+    events::GameEventPtr e = events::RemoveGoods::create( _d->stock.type(), _d->stock.capacity() * 100 );
     e->dispatch();
     success( city );
   }
@@ -67,7 +67,7 @@ bool GoodRequest::mayExec( PlayerCityPtr city ) const
     return true;
   }
 
-  _d->description += "      " + _( "##unable_fullfill_request##" );
+  _d->description += std::string( "      " ) + _( "##unable_fullfill_request##" );
   return false;
 }
 

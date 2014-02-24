@@ -66,13 +66,12 @@ public:
     GoodRequestPtr gr = ptr_cast<GoodRequest>(_request);
     if( gr.isValid() )
     {
-      font.draw( *pic, title, 20, 2 );
-      font.draw( *pic, StringHelper::format( 0xff, "%d", gr->getQty() ), 20, 2 );
+      font.draw( *pic, StringHelper::format( 0xff, "%d", gr->getQty() ), 2, 2 );
 
       Picture goodPicture = GoodHelper::getPicture( gr->getGoodType() );
-      pic->draw( goodPicture, Point( 50, 2 ), false );
+      pic->draw( goodPicture, Point( 40, 2 ), false );
 
-      fond.draw( *pic, GoodHelper::getTypeName( gr->getGoodType() ) );
+      font.draw( *pic, GoodHelper::getTypeName( gr->getGoodType() ), 60, 2 );
 
       int month2comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
       font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );

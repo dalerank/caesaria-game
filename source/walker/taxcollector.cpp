@@ -69,8 +69,6 @@ int TaxCollector::getMoney() const
 
 void TaxCollector::_reachedPathway()
 {
-  ServiceWalker::_reachedPathway();
-
   if( _pathwayRef().isReverse() )
   {
     if( getBase().isValid() )
@@ -78,6 +76,8 @@ void TaxCollector::_reachedPathway()
       getBase()->applyService( this );
     }
   }
+
+  ServiceWalker::_reachedPathway();  
 }
 
 void TaxCollector::load(const VariantMap& stream)

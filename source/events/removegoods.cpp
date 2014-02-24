@@ -14,6 +14,11 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "removegoods.hpp"
+#include "city/helper.hpp"
+#include "game/game.hpp"
+#include "objects/warehouse.hpp"
+#include "objects/granary.hpp"
+#include "good/goodstore.hpp"
 
 using namespace constants;
 
@@ -32,13 +37,36 @@ GameEventPtr RemoveGoods::create( Good::Type type, int qty  )
   return ret;
 }
 
+template<class T>
+void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what, int& qty )
+{
+  CityHelper helper( city );
+  std::list< SmartPtr<T> > bList = helper.find<T>(btype );
+  foreach( it, bList )
+  {
+    if( qty <= 0 )
+      break;
+
+    GoodStore& store = (*it)->getGoodStore();
+    int maxQty = std::min( store.getMaxRetrieve( what ), qty );
+
+    if( maxQty > 0 )
+    {
+      GoodStock stock( what, maxQty );
+      store.retrieve( stock, maxQty );
+      qty -= maxQty;
+    }
+  }
+}
+
 void RemoveGoods::_exec( Game& game, unsigned int time )
 {
-
+  _removeGoodFrom<Warehouse>( game.getCity(), building::warehouse, _type, _qty );
+  _removeGoodFrom<Granary>( game.getCity(), building::granary, _type, _qty );
 }
 
 bool RemoveGoods::_mayExec(Game&, unsigned int) const { return true; }
-bool RemoveGoods::isDeleted() const {  return true; }
+bool RemoveGoods::isDeleted() const { return true; }
 
 void RemoveGoods::load(const VariantMap& stream)
 {
