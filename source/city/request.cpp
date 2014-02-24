@@ -62,12 +62,12 @@ bool GoodRequest::mayExec( PlayerCityPtr city ) const
   CityStatistic::GoodsMap gm = CityStatistic::getGoodsMap( city );
 
   _d->description = StringHelper::format( 0xff, "%s %d", _("##city_have_request_goods##"), gm[ _d->stock.type() ] / 100 );
-
   if( gm[ _d->stock.type() ] >= _d->stock.capacity() * 100 )
   {
     return true;
   }
 
+  _d->description += "      " + _( "##unable_fullfill_request##" );
   return false;
 }
 

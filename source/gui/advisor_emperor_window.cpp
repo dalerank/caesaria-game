@@ -39,8 +39,8 @@ namespace gui
 {
 
 namespace {
-  Point requestButtonOffset = Point( 0, 90 );
-  Size requestButtonSize = Size( 550, 80 );
+  Point requestButtonOffset = Point( 0, 60 );
+  Size requestButtonSize = Size( 560, 40 );
 }
 
 class RequestButton : public PushButton
@@ -61,21 +61,22 @@ public:
 
     PictureRef& pic = _getTextPicture( state );
 
-    Font font = Font::create( FONT_2_WHITE );
+    Font font = Font::create( FONT_1_WHITE );
 
     GoodRequestPtr gr = ptr_cast<GoodRequest>(_request);
     if( gr.isValid() )
     {
-      std::string title = StringHelper::format( 0xff, "##emperor_request##" );
       font.draw( *pic, title, 20, 2 );
-      font.draw( *pic, StringHelper::format( 0xff, "%d", gr->getQty() ), 20, 25 );
+      font.draw( *pic, StringHelper::format( 0xff, "%d", gr->getQty() ), 20, 2 );
 
       Picture goodPicture = GoodHelper::getPicture( gr->getGoodType() );
-      pic->draw( goodPicture, Point( 50, 25 ), false );
+      pic->draw( goodPicture, Point( 50, 2 ), false );
+
+      fond.draw( *pic, GoodHelper::getTypeName( gr->getGoodType() ) );
 
       int month2comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
-      font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 25 );
-      font.draw( *pic, gr->getDescription(), 25, pic->getHeight() - 30 );
+      font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
+      font.draw( *pic, gr->getDescription(), 5, pic->getHeight() - 20 );
     }
   }
 
@@ -201,7 +202,7 @@ void AdvisorEmperorWindow::_updateRequests()
 
   if( reqs.empty() )
   {
-    Label* lb = new Label( this, reqsRect, "##have_no_requests##" );
+    Label* lb = new Label( this, reqsRect, _("##have_no_requests##") );
     lb->setTextAlignment( alignCenter, alignCenter );
   }
   else
@@ -211,7 +212,8 @@ void AdvisorEmperorWindow::_updateRequests()
       if( !(*request)->isDeleted() )
       {
         bool mayExec = (*request)->mayExec( _d->city );
-        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 10, 10 ), std::distance( request, reqs.begin() ), *request );
+        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( request, reqs.begin() ), *request );
+        btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
       }
