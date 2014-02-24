@@ -47,7 +47,7 @@ class RequestButton : public PushButton
 {
 public:
   RequestButton( Widget* parent, const Point& pos, int index, CityRequestPtr request )
-    : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", index, false, PushButton::blackBorderUp )
+    : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
     _resizeEvent();
@@ -103,6 +103,7 @@ public:
   PushButton* btnSend2City;
   PushButton* btnChangeSalary; 
   GameAutoPause autoPause;
+  bool isRequestsUpdated;
 
   void sendMoney()
   {
@@ -114,6 +115,7 @@ public:
     if( request.isValid() )
     {
       request->exec( city );
+      isRequestsUpdated = true;
     }
   }
 
@@ -178,6 +180,46 @@ void AdvisorEmperorWindow::_showSend2CityWindow()
   CONNECT( btnCancel, onClicked(), gb, GroupBox::deleteLater );
 }
 
+void AdvisorEmperorWindow::_updateRequests()
+{
+  Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
+  PictureDecorator::draw( *_d->background, reqsRect, PictureDecorator::blackFrame );
+
+  List<RequestButton*> btns = findChildren<RequestButton*>();
+  foreach( btn, btns )
+  {
+    (*btn)->deleteLater();
+  }
+
+  CityRequestList reqs;
+  CityRequestDispatcherPtr dispatcher = ptr_cast<CityRequestDispatcher>( _d->city->findService( CityRequestDispatcher::getDefaultName() ) );
+
+  if( dispatcher.isValid() )
+  {
+    reqs = dispatcher->getRequests();
+  }
+
+  if( reqs.empty() )
+  {
+    Label* lb = new Label( this, reqsRect, "##have_no_requests##" );
+    lb->setTextAlignment( alignCenter, alignCenter );
+  }
+  else
+  {
+    foreach( request, reqs )
+    {
+      if( !(*request)->isDeleted() )
+      {
+        bool mayExec = (*request)->mayExec( _d->city );
+        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 10, 10 ), std::distance( request, reqs.begin() ), *request );
+        btn->setEnabled( mayExec );
+        CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
+      }
+    }
+  }
+  _d->isRequestsUpdated = false;
+}
+
 bool AdvisorEmperorWindow::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui  )
@@ -212,6 +254,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
 {
   _d->autoPause.activate();
   _d->city = city;
+  _d->isRequestsUpdated = true;
 
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
@@ -225,36 +268,8 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   //main _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
-  //buttons _d->_d->background
-  Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
-  PictureDecorator::draw( *_d->background, reqsRect, PictureDecorator::blackFrame );
+  //buttons _d->_d->background  
   PictureDecorator::draw( *_d->background, Rect( 66, 325, 66 + 510, 325 + 94 ), PictureDecorator::blackFrame );
-
-  CityRequestList reqs;
-  CityRequestDispatcherPtr dispatcher = ptr_cast<CityRequestDispatcher>( _d->city->findService( CityRequestDispatcher::getDefaultName() ) );
-
-  if( dispatcher.isValid() )
-  {
-    reqs = dispatcher->getRequests();
-  }
-
-  if( reqs.empty() )
-  {
-    Label* lb = new Label( this, reqsRect, "##have_no_requests##" );
-    lb->setTextAlignment( alignCenter, alignCenter );
-  }
-  else
-  {
-    int index = 0;
-    foreach( request, reqs )
-    {
-      bool mayExec = (*request)->mayExec( _d->city );
-      RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 10, 10 ), index, *request );
-      btn->setEnabled( mayExec );
-      index++;
-      CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
-    }
-  }
   
   _d->lbEmperorFavour = new gui::Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), "Favour of the emperor 50" );
   _d->lbEmperorFavourDesc = new gui::Label( this, _d->lbEmperorFavour->getRelativeRect() + Point( 0, 20 ), "The emperor has mixed feelings to you" );
@@ -275,6 +290,10 @@ void AdvisorEmperorWindow::draw( GfxEngine& painter )
     return;
 
   painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+  if( _d->isRequestsUpdated )
+  {
+    _updateRequests();
+  }
 
   Widget::draw( painter );
 }

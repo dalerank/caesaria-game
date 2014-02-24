@@ -42,6 +42,7 @@ public oc3_signals:
 protected:
   void _showChangeSalaryWindow();
   void _showSend2CityWindow();
+  void _updateRequests();
 
 private:
   class Impl;

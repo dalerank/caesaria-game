@@ -49,9 +49,12 @@ GoodRequest::~GoodRequest(){}
 
 void GoodRequest::exec( PlayerCityPtr city )
 {
-  events::GameEventPtr e = events::RemoveGoods::create( _d->stock.type(), _d->stock.capacity() );
-  e->dispatch();
-  success( city );
+  if( !isDeleted() )
+  {
+    events::GameEventPtr e = events::RemoveGoods::create( _d->stock.type(), _d->stock.capacity() );
+    e->dispatch();
+    success( city );
+  }
 }
 
 bool GoodRequest::mayExec( PlayerCityPtr city ) const
