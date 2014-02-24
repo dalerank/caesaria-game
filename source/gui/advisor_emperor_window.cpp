@@ -51,6 +51,8 @@ public:
   {
     _request = request;
     _resizeEvent();
+
+    CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
   }
 
   virtual void _updateTexture( ElementState state )
@@ -73,10 +75,17 @@ public:
 
       int month2comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
       font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 25 );
+      font.draw( *pic, gr->getDescription(), 25, pic->getHeight() - 30 );
     }
   }
 
+public oc3_signals:
+  Signal1<CityRequestPtr>& onExecRequest() { return _onExecRequestSignal; }
+
 private:
+  void _executeRequest() {  _onExecRequestSignal.emit( _request ); }
+
+  Signal1<CityRequestPtr> _onExecRequestSignal;
   CityRequestPtr _request;
 };
 
@@ -98,6 +107,14 @@ public:
   void sendMoney()
   {
     onSendMoneySignal.emit( wantSend );
+  }
+
+  void resolveRequest( CityRequestPtr request )
+  {
+    if( request.isValid() )
+    {
+      request->exec( city );
+    }
   }
 
 public oc3_signals:
@@ -187,15 +204,8 @@ bool AdvisorEmperorWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<int>&AdvisorEmperorWindow::onChangeSalary()
-{
-  return _d->onChangeSalarySignal;
-}
-
-Signal1<int>&AdvisorEmperorWindow::onSendMoney()
-{
-  return _d->onSendMoneySignal;
-}
+Signal1<int>&AdvisorEmperorWindow::onChangeSalary() {  return _d->onChangeSalarySignal;}
+Signal1<int>&AdvisorEmperorWindow::onSendMoney(){  return _d->onSendMoneySignal;}
 
 AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
@@ -203,7 +213,6 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   _d->autoPause.activate();
   _d->city = city;
 
-  int money = city->getPlayer()->getMoney();
   setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
@@ -239,9 +248,11 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
     int index = 0;
     foreach( request, reqs )
     {
+      bool mayExec = (*request)->mayExec( _d->city );
       RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 10, 10 ), index, *request );
-      btn->setEnabled( (*request)->mayExec( _d->city ) );
+      btn->setEnabled( mayExec );
       index++;
+      CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
     }
   }
   

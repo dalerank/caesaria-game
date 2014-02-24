@@ -21,6 +21,7 @@
 #include "label.hpp"
 #include "listbox.hpp"
 #include "core/stringhelper.hpp"
+#include "gameautopause.hpp"
 
 namespace gui
 {
@@ -28,6 +29,7 @@ namespace gui
 class GameSpeedOptionsWindow::Impl
 {
 public:
+  GameAutoPause locker;
   Signal1<int> onGameSpeedChangeSignal;
   Signal1<int> onScrollSpeedChangeSignal;
   int speedValue, scrollValue;
@@ -38,6 +40,7 @@ GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, in
 {
   _d->speedValue = gameSpeed;
   _d->scrollValue = scrollSpeed;
+  _d->locker.activate();
 
   setupUI( GameSettings::rcpath( "/gui/speedoptions.gui" ) );
 

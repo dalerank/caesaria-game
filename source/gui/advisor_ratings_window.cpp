@@ -221,7 +221,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   CONNECT( _d->btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
 
   _d->btnFavour     = new RatingButton( this, Point( 440, 290), "##wndrt_favour##", "##wndrt_favour_tooltip##" );
-  //_d->btnFavour->setValue( _d->city->getFavour() );
+  _d->btnFavour->setValue( _d->city->getFavour() );
   _d->btnFavour->setTarget( targets.needFavour() );
   _d->drawColumn( _d->btnFavour->getRelativeRect().getCenter(), 0 );
 

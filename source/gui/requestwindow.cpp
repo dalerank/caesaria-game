@@ -24,6 +24,7 @@
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "gui/gameautopause.hpp"
+#include "events/showadvisorwindow.hpp"
 
 namespace gui
 {
@@ -76,6 +77,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, CityRequestPtr req
   TexturedButton* btnAdvisor = findChildA<TexturedButton*>( "btnAdvisor", true, this );
   CONNECT( btnExit, onClicked(), this, EmperrorRequestWindow::deleteLater );
   CONNECT( btnAdvisor, onClicked(), _d.data(), Impl::openEmperrorAdvisor );
+  CONNECT( btnAdvisor, onClicked(), this, EmperrorRequestWindow::deleteLater );
 }
 
 void EmperrorRequestWindow::draw( GfxEngine& painter )
@@ -93,7 +95,8 @@ bool EmperrorRequestWindow::onEvent(const NEvent& event)
 
 void EmperrorRequestWindow::Impl::openEmperrorAdvisor()
 {
-
+  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, ADV_EMPIRE );
+  e->dispatch();
 }
 
 }//end namespace gui

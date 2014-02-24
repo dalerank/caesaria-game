@@ -33,7 +33,7 @@
 
       imgIcon#Image : {
         geometry : [ 40, 110, 64, 134 ]
-	mode : "image"
+        mode : "image"
       }
 
       lbInterval#Label : {

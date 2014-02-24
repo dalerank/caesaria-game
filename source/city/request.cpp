@@ -20,6 +20,8 @@
 #include "events/removegoods.hpp"
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
+#include "core/stringhelper.hpp"
+#include "core/gettext.hpp"
 
 class GoodRequest::Impl
 {
@@ -29,6 +31,7 @@ public:
   GoodStock stock;
   int winFavour, winMoney;
   int failFavour, failMoney;
+  std::string description;
 };
 
 CityRequestPtr GoodRequest::create( const VariantMap& stream )
@@ -54,7 +57,10 @@ void GoodRequest::exec( PlayerCityPtr city )
 bool GoodRequest::mayExec( PlayerCityPtr city ) const
 {
   CityStatistic::GoodsMap gm = CityStatistic::getGoodsMap( city );
-  if( gm[ _d->stock.type() ] >= _d->stock.capacity() )
+
+  _d->description = StringHelper::format( 0xff, "%s %d", _("##city_have_request_goods##"), gm[ _d->stock.type() ] / 100 );
+
+  if( gm[ _d->stock.type() ] >= _d->stock.capacity() * 100 )
   {
     return true;
   }
@@ -130,8 +136,8 @@ void GoodRequest::fail( PlayerCityPtr city )
   city->updateFavour( _d->winFavour );
 }
 
+std::string GoodRequest::getDescription() const {  return _d->description; }
 int GoodRequest::getQty() const { return _d->stock.capacity(); }
 Good::Type GoodRequest::getGoodType() const { return _d->stock.type(); }
 int GoodRequest::getMonths2Comply() const { return _d->months2comply; }
 GoodRequest::GoodRequest() : CityRequest( DateTime() ), _d( new Impl ) {}
-CityRequest::~CityRequest(){}

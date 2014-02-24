@@ -26,10 +26,10 @@
 class CityRequest : public ReferenceCounted
 {
 public:
-  virtual ~CityRequest();
+  virtual ~CityRequest() {}
 
-  virtual bool mayExec( PlayerCityPtr city ) { return false; }
-  virtual void exec( PlayerCityPtr city ) {}
+  virtual bool mayExec( PlayerCityPtr ) const { return false; }
+  virtual void exec( PlayerCityPtr ) {}
   virtual void success( PlayerCityPtr ) { _isDeleted = true; }
   virtual void fail( PlayerCityPtr ) { _isDeleted = true; }
   virtual bool isDeleted() const { return _isDeleted; }
@@ -37,6 +37,7 @@ public:
 
   virtual VariantMap save() const { return VariantMap(); }
   virtual void load( const VariantMap& stream ) {}
+  virtual std::string getDescription() const{  return ""; }
 
 protected:
   bool _isDeleted;
@@ -67,6 +68,7 @@ public:
   int getQty() const;
   Good::Type getGoodType() const;
   int getMonths2Comply() const;
+  virtual std::string getDescription() const;
 
   static std::string typeName();
 private:
