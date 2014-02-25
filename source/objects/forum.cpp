@@ -62,7 +62,7 @@ void Forum::applyService(ServiceWalkerPtr walker)
     {
       float tax = txcl->getMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Forum: collect money %f. All money %f", tax, _d->taxValue );
+      Logger::warning( "Forum: collect money %f. All money %d", tax, _d->taxValue );
     }
   }
   break;

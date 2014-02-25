@@ -145,8 +145,8 @@ void AdvisorFinanceWindow::Impl::drawReportRow(const Point& pos, const std::stri
   int tyvalue = city->getFunds().getIssueValue( type, CityFunds::thisYear );
 
   font.draw( *background, title, pos, false );
-  font.draw( *background, StringHelper::format( 0xff, "%d", tyvalue ), pos + Point( 215, 0), false );
-  font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 355, 0), false );
+  font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0), false );
+  font.draw( *background, StringHelper::format( 0xff, "%d", tyvalue ), pos + Point( 355, 0), false );
 }
 
 void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()

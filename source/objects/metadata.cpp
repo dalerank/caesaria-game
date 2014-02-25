@@ -185,25 +185,10 @@ MetaData::MetaData(const MetaData &a) : _d( new Impl )
   *this = a;
 }
 
-MetaData::~MetaData()
-{
-
-}
-
-std::string MetaData::getName() const
-{
-  return _d->name;
-}
-
-std::string MetaData::getSound() const
-{
-  return _d->sound;
-}
-
-std::string MetaData::getPrettyName() const
-{
-  return _prettyName;
-}
+MetaData::~MetaData(){}
+std::string MetaData::getName() const{  return _d->name;}
+std::string MetaData::getSound() const{  return _d->sound;}
+std::string MetaData::getPrettyName() const {  return _prettyName;}
 
 std::string MetaData::getDescription() const
 {
@@ -213,20 +198,9 @@ std::string MetaData::getDescription() const
   return _d->desc[ rand() % _d->desc.size() ];
 }
 
-TileOverlay::Type MetaData::getType() const
-{
-  return _d->tileovType;
-}
-
-Picture MetaData::getBasePicture() const
-{
-  return _basePicture;
-}
-
-Desirability MetaData::getDesirbility() const
-{
-  return _d->desirability;
-}
+TileOverlay::Type MetaData::getType() const {  return _d->tileovType;}
+Picture MetaData::getBasePicture() const{  return _basePicture;}
+Desirability MetaData::getDesirbility() const{  return _d->desirability;}
 
 Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
 {

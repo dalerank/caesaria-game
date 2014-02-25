@@ -479,6 +479,9 @@ void House::buyMarket( ServiceWalkerPtr walker )
 {
   // std::cout << "House buyMarket" << std::endl;
   MarketPtr market = ptr_cast<Market>( walker->getBase() );
+  if( market.isNull() )
+    return;
+
   GoodStore& marketStore = market->getGoodStore();
 
   GoodStore &houseStore = getGoodStore();
@@ -543,6 +546,7 @@ void House::applyService( ServiceWalkerPtr walker )
   break;
   
   case Service::market:
+    setServiceValue( Service::market, 100 );
     buyMarket(walker);
   break;
  

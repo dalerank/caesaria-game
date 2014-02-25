@@ -80,7 +80,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
     {
       float tax = txcl->getMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Senate: collect money %f. All money %f", tax, _d->taxValue );
+      Logger::warning( "Senate: collect money %f. All money %d", tax, _d->taxValue );
     }
   }
   break;
