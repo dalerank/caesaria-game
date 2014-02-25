@@ -1,5 +1,4 @@
 {
-"##citizen_gods_angry3##":"Den här ståthållaren har ingen respekt för gudarna."
 "##0_entertainment_access##":"Denna boning har inte tillgång till underhållning överhuvudtaget"
 "##1_entertainment_access##":"Denna boning har knappt tillgång till underhållning"
 "##2_entertainment_access##":"Denna boning har viss tillgång till underhållning"
@@ -129,6 +128,7 @@
 "##bridges##":"Broar"
 "##briton##":"En britt"
 "##britons##":"Britter"
+"##btn_showprice_tooltip##":"Visar import-/exportpriser för alla varor, som anbefallt av Rom"
 "##build_fishing_boat##":"Vi bygger båtar på beställning från en fiskehamn i staden."
 "##build_housing##":"Bygg bostäder"
 "##build_markets_to_distribute_food##":"Bygg marknader för att distribuera maten som lagrats här"
@@ -156,6 +156,7 @@
 "##citizen_are_rioting##":"Medborgarna gör uppror!"
 "##citizen_gods_angry##":"...religiös, men inte ens jag skulle behandla gudarna på det här sättet."
 "##citizen_gods_angry2##":"Gudarna är upprörda. Om vi inte respekterar dem, kommer vi att få känna på deras vrede."
+"##citizen_gods_angry3##":"Den här ståthållaren har ingen respekt för gudarna."
 "##citizen_gods_angry3##":"Måtte gudarna vara mig nådiga. Det är inte mitt fel att ståthållaren hånar dem."
 "##citizen_high_workless##":"Jag har tur som har ett arbete i denna tid av arbetslöshet."
 "##citizen_high_workless2##":"Om jag inte får arbete snart, måste jag flytta till en annan stad."
@@ -539,6 +540,7 @@
 "##meat_farm_no_workers##":"Denna farm har inga anställda, och alla djuren har flytt eller dött."
 "##meat_farm_patrly_workers##":"Denna farm arbetar inte med maximal kapacitet. Som resultat kommer köttproduktionen att bli något mindre."
 "##meat##":"Kött"
+"##mercury##":"Mercury"
 "##message##":"Meddelande"
 "##messageBtnTooltip##":""
 "##messages##":"Meddelanden"
@@ -599,7 +601,6 @@
 "##missing_wine_degrade##":"Detta hus kommer snart att förfalla, eftersom det har slut på vin och dess lokala marknad har ett sporadiskt utbud."
 "##missing_wine##":"Detta hus kan inte utvecklas. Det behöver tillgång till vinleveranser från sin lokala marknad innan mer välmående medborgarklasser kommer att flytta in."
 "##missionBtnTooltip##":""
-"##month_09_short##":"Sep"
 "##month_1_short##":"Jan"
 "##month_10_short##":"Okt"
 "##month_11_short##":"Nov"
@@ -611,6 +612,7 @@
 "##month_6_short##":"Jun"
 "##month_7_short##":"Jul"
 "##month_8_short##":""
+"##month_9_short##":"Sep"
 "##month##":"Person"
 "##months_until_defeat##":"månader till nederlag"
 "##months_until_victory##":"månader till seger"
@@ -758,6 +760,7 @@
 "##rawm_production_complete_m##":"Produktionen är"
 "##really_destroy_fort##":"Är du säker på att du vill ta detta fort ur aktiv tjänst?"
 "##recruter_so_hungry##":"Om jag inte får mat snart ger jag mig av från staden."
+"##reject##":"Avvisa varor"
 "##religion_access_1_temple##":"Detta hus har endast tillgång till ett tempel för en enda gud"
 "##religion_access_2_temple##":"Detta hus har tillgång till tempel för 2 olika gudar"
 "##religion_access_3_temple##":"Detta hus har tillgång till tempel för 3 olika gudar"
@@ -767,6 +770,7 @@
 "##religion_advisor##":"Religiösa byggnader"
 "##religion##":"Religion"
 "##replay_game##":"Börja om"
+"##request_btn_tooltip##":"Klicka här för att sända iväg begäran"
 "##requierd##":"Behov"
 "##reservoir_info##":"Denna gigantiska cistern innehåller rent dricksvatten, som distribueras via rör av lera över en stor radie i staden. Akvedukter kan länka samman reservoarerna över stora avstånd."
 "##reservoir_no_water##":"Denna reservoar fungerar inte eftersom den inte ligger intill vatten eller inte är ansluten till en annan reservoar via akvedukter."
@@ -819,6 +823,7 @@
 "##small_hut##":"Litet hus"
 "##small_hut##":"Litet skjul"
 "##small_mars_temple##":"Marstempel"
+"##small_mercury_temple_info##":"Handelsmännen dyrkar Merkurius för att skydda sina varor. Om Merkurius vrede väcks sätts allas vinst på spel."
 "##small_mercury_temple##":"Merkuriustempel"
 "##small_neptune_temple##":"Neptunustempel"
 "##small_palace##":"Litet palats"
@@ -885,6 +890,7 @@
 "##trouble_some_fire##":"Denna byggnad har brandrisk"
 "##trouble_too_far_from_water##":"Denna byggnad är inte intill vatten!"
 "##tutorial_prefecture_info##":""
+"##unable_fullfill_request##":"Kan inte fullgöra begäran"
 "##unit##":"År"
 "##units##":"År"
 "##use_and_trade_resource##":"Använder och byteshandlar med denna vara"
@@ -2219,74 +2225,68 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"

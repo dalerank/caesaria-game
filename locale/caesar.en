@@ -1,5 +1,4 @@
 {
-"##citizen_gods_angry3##":"This governor has no respect for the gods"
 "##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
 "##1_entertainment_access##":"This dwelling barely has access to any entertainment"
 "##2_entertainment_access##":"This dwelling has some access to entertainment venues"
@@ -129,6 +128,7 @@
 "##bridges##":"Bridges"
 "##briton##":"A Briton"
 "##britons##":"Britons"
+"##btn_showprice_tooltip##":"Shows the import/export prices of all goods, as decreed by Rome"
 "##build_fishing_boat##":"We are building a boat to order for a fishing wharf in the city."
 "##build_housing##":"Build housing"
 "##build_markets_to_distribute_food##":"Build markets to distribute the food stored here"
@@ -156,6 +156,7 @@
 "##citizen_are_rioting##":"Citizens are rioting!"
 "##citizen_gods_angry##":"I'm not a very religious citizen, but even I wouldn't treat the gods this badly!"
 "##citizen_gods_angry2##":"If we don't pay the gods more respect, we'll feel their wrath!"
+"##citizen_gods_angry3##":"This governor has no respect for the gods"
 "##citizen_gods_angry3##":"May the gods take pity on me! It's not my fault the governor mocks them!"
 "##citizen_high_workless##":"I'm lucky to have a job, with unemployment this high"
 "##citizen_high_workless2##":"If I don't find work soon, I'll need to move to a new city."
@@ -539,6 +540,7 @@
 "##meat_farm_no_workers##":"This farm has no employees, and all the animals have escaped or died."
 "##meat_farm_patrly_workers##":"This farm is working below maximum capacity. Meat production will be slightly leaner as a result."
 "##meat##":"Meat"
+"##mercury##":"Mercury"
 "##message##":"Message"
 "##messageBtnTooltip##":""
 "##messages##":"Messages"
@@ -599,7 +601,6 @@
 "##missing_wine_degrade##":"This house will devolve soon, as it has run out of wine and its local market has at best an erratic supply."
 "##missing_wine##":"This house cannot evolve. It needs supplies of wine provided to it by its local market before a wealthier class of citizen will move in."
 "##missionBtnTooltip##":""
-"##month_09_short##":"Sep"
 "##month_1_short##":"Jan"
 "##month_10_short##":"Oct"
 "##month_11_short##":"Nov"
@@ -611,6 +612,7 @@
 "##month_6_short##":"Jun"
 "##month_7_short##":"Jul"
 "##month_8_short##":"Aug"
+"##month_9_short##":"Sep"
 "##month##":"Month"
 "##months_until_defeat##":"Months until defeat"
 "##months_until_victory##":"Months until victory"
@@ -758,6 +760,7 @@
 "##rawm_production_complete_m##":"Production is"
 "##really_destroy_fort##":"Are you sure you wish to decommission this fort?"
 "##recruter_so_hungry##":"If I don't get some food soon, I'm leaving this city"
+"##reject##":"Refuse goods"
 "##religion_access_1_temple##":"This house has access to a temple to a single god only"
 "##religion_access_2_temple##":"This house has access to temples to 2 different gods"
 "##religion_access_3_temple##":"This house has access to temples to 3 different gods"
@@ -767,6 +770,7 @@
 "##religion_advisor##":"Religious structures"
 "##religion##":"Religion"
 "##replay_game##":"Replay map"
+"##request_btn_tooltip##":"Click here to dispatch request"
 "##requierd##":"Need"
 "##reservoir_info##":"This giant cistern holds clean drinking water, which it distributes through clay pipes over a wide radius in the city. Aqueducts can link reservoirs over long distances."
 "##reservoir_no_water##":"This reservoir needs to be adjacent to water, or connected by aqueduct to a working reservoir, before it will function."
@@ -819,6 +823,7 @@
 "##small_hut##":"Small casa"
 "##small_hut##":"Small hovel"
 "##small_mars_temple##":"Temple to Mars"
+"##small_mercury_temple_info##":"Merchants worship Mercury to safeguard their wares. When Mercury is angered, everyone's profits are endangered."
 "##small_mercury_temple##":"Temple to Mercury"
 "##small_neptune_temple##":"Temple to Neptune"
 "##small_palace##":"Small palace"
@@ -885,6 +890,7 @@
 "##trouble_some_fire##":"This building has a risk of fire"
 "##trouble_too_far_from_water##":"This building is not next to water!"
 "##tutorial_prefecture_info##":""
+"##unable_fullfill_request##":"Unable to fulfill request"
 "##unit##":"Unit"
 "##units##":"Units"
 "##use_and_trade_resource##":"Using and trading this resource"
@@ -2219,74 +2225,68 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"

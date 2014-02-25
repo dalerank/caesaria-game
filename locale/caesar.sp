@@ -1,5 +1,4 @@
 {
-"##citizen_gods_angry3##":"El gobernador no respeta a los dioses."
 "##0_entertainment_access##":"Esta vivienda no tiene acceso a ningún tipo de entretenimiento."
 "##1_entertainment_access##":"Esta vivienda apenas tiene acceso a entretenimientos."
 "##2_entertainment_access##":"Esta vivienda tiene algo de acceso a actividades de entretenimiento."
@@ -129,6 +128,7 @@
 "##bridges##":"Puentes"
 "##briton##":"Bretón"
 "##britons##":"Bretones"
+"##btn_showprice_tooltip##":"Muestra los precios de importación y exportación determinados en Roma"
 "##build_fishing_boat##":"Estamos construyendo un barco para una dársena pesquera de la ciudad."
 "##build_housing##":"Construir viviendas"
 "##build_markets_to_distribute_food##":"Construye mercados para distribuir la comida almacenada aquí."
@@ -156,6 +156,7 @@
 "##citizen_are_rioting##":"¡Los ciudadanos están amotinándose!"
 "##citizen_gods_angry##":"No soy demasiado religioso, pero ni yo me atrevería a tratar tan mal a los dioses."
 "##citizen_gods_angry2##":"Los dioses están enfadados. Si no les demostramos más respeto, sufriremos su ira."
+"##citizen_gods_angry3##":"El gobernador no respeta a los dioses."
 "##citizen_gods_angry3##":"¡Que los dioses se apiaden de mi! ¡No tengo la culpa de que el gobernador se burle de ellos!"
 "##citizen_high_workless##":"Con tanto desempleo, es una suerte tener trabajo."
 "##citizen_high_workless2##":"Si no encuentro trabajo pronto, tendré que mudarme a otra ciudad."
@@ -539,6 +540,7 @@
 "##meat_farm_no_workers##":"Esta granja no tiene empleados. Los animales han escapado o han muerto."
 "##meat_farm_patrly_workers##":"Esta granja está trabajando por debajo de su capacidad máxima. Como resultado, la producción de carne será algo inferior."
 "##meat##":"Carne"
+"##mercury##":"Mercurio"
 "##message##":"Mensaje"
 "##messageBtnTooltip##":""
 "##messages##":"Mensajes"
@@ -599,7 +601,6 @@
 "##missing_wine_degrade##":"Esta casa decaerá pronto, puesto que se le ha agotado el vino y su mercado local está casi sin existencias."
 "##missing_wine##":"Esta casa no puede mejorar. Necesita vino procedente del mercado local antes de que un ciudadano más rico se mude a ella."
 "##missionBtnTooltip##":""
-"##month_09_short##":"Sep"
 "##month_1_short##":"Ene"
 "##month_10_short##":"Oct"
 "##month_11_short##":"Nov"
@@ -611,6 +612,7 @@
 "##month_6_short##":"Jun"
 "##month_7_short##":"Jul"
 "##month_8_short##":""
+"##month_9_short##":"Sep"
 "##month##":"Persona"
 "##months_until_defeat##":"meses para la derrota"
 "##months_until_victory##":"meses para la victoria"
@@ -758,6 +760,7 @@
 "##rawm_production_complete_m##":"La producción está en un"
 "##really_destroy_fort##":"¿Seguro que deseas poner este fuerte fuera de servicio?"
 "##recruter_so_hungry##":"Si no consigo comida pronto, me iré de la ciudad."
+"##reject##":"Rechazar bienes"
 "##religion_access_1_temple##":"Esta casa tiene acceso a un templo de un solo dios."
 "##religion_access_2_temple##":"Esta casa tiene acceso a templos de 2 dioses diferentes."
 "##religion_access_3_temple##":"Esta casa tiene acceso a templos de 3 dioses diferentes."
@@ -767,6 +770,7 @@
 "##religion_advisor##":"Estructuras religiosas"
 "##religion##":"Religión"
 "##replay_game##":"Volver a jugar el mapa"
+"##request_btn_tooltip##":"Haz clic aquí para hacer una solicitud."
 "##requierd##":"Necesidad"
 "##reservoir_info##":"Esta cisterna gigante almacena agua potable que se distribuye a través de tuberías de arcilla a todo el radio urbano. Los acueductos pueden conectar depósitos que se encuentran a gran distancia."
 "##reservoir_no_water##":"Para ser operativo, este depósito tiene que estar cerca del agua o conectado mediante un acueducto a un depósito en funcionamiento."
@@ -819,6 +823,7 @@
 "##small_hut##":"Casa pequeña"
 "##small_hut##":"Tugurio pequeño"
 "##small_mars_temple##":"Templo de Marte"
+"##small_mercury_temple_info##":"Los mercaderes invocan a Mercurio para proteger sus tiendas y almacenes. Cuando Mercurio está enfadado, los ingresos de todo el mundo corren peligro."
 "##small_mercury_temple##":"Templo de Mercurio"
 "##small_neptune_temple##":"Templo de Neptuno"
 "##small_palace##":"Palacio pequeño"
@@ -885,6 +890,7 @@
 "##trouble_some_fire##":"Este edificio tiene riesgo de incendio."
 "##trouble_too_far_from_water##":"¡Este edificio no está cerca del agua!"
 "##tutorial_prefecture_info##":""
+"##unable_fullfill_request##":"Imposible satisfacer solicitud."
 "##unit##":"año"
 "##units##":"años"
 "##use_and_trade_resource##":"Comerciar y utilizar este recurso"
@@ -2219,74 +2225,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"
@@ -2347,3 +2285,66 @@
 "undefined":"undefined"
 "undefined":"undefined"
 "undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+"undefined":"undefined"
+}
