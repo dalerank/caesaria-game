@@ -23,6 +23,7 @@
 #include "city/statistic.hpp"
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 // govt 4  - senate
@@ -73,7 +74,15 @@ void Senate::applyService(ServiceWalkerPtr walker)
   switch( walker->getType() )
   {
   case walker::taxCollector:
-    _d->taxValue += ptr_cast<TaxCollector>( walker )->getMoney();
+  {
+    TaxCollectorPtr txcl = ptr_cast<TaxCollector>( walker );
+    if( txcl.isValid() )
+    {
+      float tax = txcl->getMoney();;
+      _d->taxValue += tax;
+      Logger::warning( "Senate: collect money %f. All money %f", tax, _d->taxValue );
+    }
+  }
   break;
 
   default:
@@ -122,8 +131,14 @@ void Senate::_updateUnemployers()
   }
 }
 
+int Senate::collectTaxes()
+{
+  int save = _d->taxValue;
+  _d->taxValue = 0;
+  return save;
+}
+
 unsigned int Senate::getFunds() const {  return _getCity()->getFunds().getValue(); }
-int Senate::collectTaxes() {  return _d->taxValue; }
 std::string Senate::getError() const {  return _d->errorStr; }
 
 int Senate::getStatus(Senate::Status status) const

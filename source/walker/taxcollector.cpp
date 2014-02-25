@@ -23,6 +23,8 @@
 #include "objects/senate.hpp"
 #include "objects/forum.hpp"
 #include "core/foreach.hpp"
+#include "core/logger.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 
@@ -30,17 +32,28 @@ class TaxCollector::Impl
 {
 public:
   float money;
+
+  std::map< std::string, float > history;
 };
 
-void TaxCollector::_centerTile()
+void TaxCollector::_changeTile()
 {
-  ServiceWalker::_centerTile();
+  Walker::_changeTile();
 
   ReachedBuildings buildings = getReachedBuildings( pos() );
   foreach( it, buildings )
   {
     HousePtr house = ptr_cast<House>( *it );
-    _d->money += house.isValid() ? house->collectTaxes() : 0;
+
+    if( house.isValid() )
+    {
+      float tax = house->collectTaxes();
+      _d->money += tax;
+      house->applyService( this );
+
+      std::string posStr = StringHelper::format( 0xff, "%02dx%02d", house->pos().i(), house->pos().j() );
+      _d->history[ posStr ] += tax;
+    }
   }
 }
 
@@ -74,6 +87,12 @@ void TaxCollector::_reachedPathway()
     if( getBase().isValid() )
     {
       getBase()->applyService( this );
+    }
+
+    Logger::warning( "TaxCollector: path history" );
+    foreach( it, _d->history )
+    {
+      Logger::warning( "       [%s]:%f", it->first.c_str(), it->second );
     }
   }
 

@@ -21,6 +21,7 @@
 #include "core/foreach.hpp"
 #include "constants.hpp"
 #include "walker/constants.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -55,7 +56,15 @@ void Forum::applyService(ServiceWalkerPtr walker)
   switch( walker->getType() )
   {
   case walker::taxCollector:
-    _d->taxValue += ptr_cast<TaxCollector>( walker )->getMoney();
+  {
+    TaxCollectorPtr txcl = ptr_cast<TaxCollector>( walker );
+    if( txcl.isValid() )
+    {
+      float tax = txcl->getMoney();;
+      _d->taxValue += tax;
+      Logger::warning( "Forum: collect money %f. All money %f", tax, _d->taxValue );
+    }
+  }
   break;
 
   default:

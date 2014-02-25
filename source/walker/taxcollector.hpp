@@ -25,13 +25,15 @@ class TaxCollector : public ServiceWalker
 {
 public:
   static TaxCollectorPtr create( PlayerCityPtr city );
-  virtual void _centerTile();
 
   int getMoney() const;
 
-  virtual void _reachedPathway();
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;
+
+protected:
+  virtual void _changeTile();
+  virtual void _reachedPathway();
 
 private:
   TaxCollector( PlayerCityPtr city );
