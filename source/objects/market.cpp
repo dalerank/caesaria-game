@@ -43,15 +43,15 @@ public:
   void initStore()
   {
     goodStore.setCapacity(5000);
-    goodStore.setCapacity(Good::wheat, 400);
-    goodStore.setCapacity(Good::fish, 400);
-    goodStore.setCapacity(Good::fruit, 400);
-    goodStore.setCapacity(Good::meat, 400);
-    goodStore.setCapacity(Good::vegetable, 400);
-    goodStore.setCapacity(Good::pottery, 300);
-    goodStore.setCapacity(Good::furniture, 300);
-    goodStore.setCapacity(Good::oil, 300);
-    goodStore.setCapacity(Good::wine, 300);
+    goodStore.setCapacity(Good::wheat, 800);
+    goodStore.setCapacity(Good::fish, 600);
+    goodStore.setCapacity(Good::fruit, 600);
+    goodStore.setCapacity(Good::meat, 600);
+    goodStore.setCapacity(Good::vegetable, 600);
+    goodStore.setCapacity(Good::pottery, 250);
+    goodStore.setCapacity(Good::furniture, 250);
+    goodStore.setCapacity(Good::oil, 250);
+    goodStore.setCapacity(Good::wine, 250);
   }
 };
 
@@ -100,7 +100,7 @@ std::list<Good::Type> Market::getMostNeededGoods()
     Good::Type goodType = (Good::Type) n;
     GoodStock &stock = _d->goodStore.getStock(goodType);
     int demand = stock.capacity() - stock.qty();
-    if (demand > 99)
+    if (demand > 200)
     {
       mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.capacity()), goodType));
     }

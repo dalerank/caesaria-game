@@ -44,7 +44,7 @@ public:
 		DateTime t = DateTime::getCurrenTime();
 
 		fputs("Caesaria logfile created: ", _logFile);
-		fputs(StringHelper::format( 0xff, "%02:%02d:%02d",
+		fputs(StringHelper::format( 0xff, "%02d:%02d:%02d",
 																t.hour(), t.minutes(), t.seconds()).c_str(),
 					_logFile);
 		fputs("\n", _logFile);
@@ -55,7 +55,7 @@ public:
 		DateTime t = DateTime::getCurrenTime();
 
 		fputs("Caesaria logfile closed: ", _logFile);
-		fputs( StringHelper::format( 0xff, "%02:%02d:%02d",
+		fputs( StringHelper::format( 0xff, "%02d:%02d:%02d",
 																t.hour(), t.minutes(), t.seconds()).c_str(),
 					 _logFile);
 		fputs("\n", _logFile);

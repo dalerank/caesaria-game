@@ -22,6 +22,33 @@ CaesarIA is build using following excellent libraries:
   * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
     
 Releases:
+##### 2014-02-25
+  * Localization improved
+  * MarketLady append market access to house, when it buy something 
+  * MarketLady now buy foods from warehouse also
+  * House now comsume all type of foods, which available on market
+  * MarketKid save/load fixed
+  * Game not crashed if priest cannot load state from save
+  * Fixed loading serviceman from save
+  * Fixed display city wokers number on Employer's adviser screen
+  * Granary/Warehouse now may use "deliver good" order
+  * Dock correct trade operation, only 2 workers active work from it
+  * SeaMerchant now go away from city when buy all needed goods
+  * Add stacktrace for informatively logging error
+  * Fixed trade route save\load land type
+  * Fixed merchant leave city if no trade operations did
+  * Save game state improved, now save events from missions
+  * TaxCollector fixed bug with big money collecting
+  * capua.mission improved empire start state
+  * empire map, now may contain drawble objects
+  * entry point now correct loading from (caesarIII).sav files
+  * EmperrorWindow display request improved
+  * Fixed emperror requests complete
+  * Tooptip  widget displaing fixed
+  * Tutrorial mission now use map from original story
+  * City funds history fixed step add
+
+
 ##### 2014-02-12
   * MacOS X an Haiku support
   * Mission engine and event dispatcher improved

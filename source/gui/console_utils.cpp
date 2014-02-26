@@ -1,67 +1,42 @@
 #include "console_utils.hpp"
 
-/*
-NERPA_MODULE_BEGIN(core)
+ConsoleError::ConsoleError(const std::string str, const int code) : errorMessage(str), errorCode(code)
+{
+}
 
-ConsoleError::ConsoleError(const core::String str, const s32 code) : errorMessage(str), errorCode(code)
-{
-}
-//=====================================================================================
-ConsoleError::ConsoleError(const ConsoleError& err)
-{
-	*this = err;
-}
-//=====================================================================================
-ConsoleError::~ConsoleError()
-{
-}
-//=====================================================================================	
+ConsoleError::ConsoleError(const ConsoleError& err){	*this = err;}
+ConsoleError::~ConsoleError(){}
+
 const ConsoleError& ConsoleError::operator = (const ConsoleError& err)
 {
 	setMessage(err.getMessage());
 	setCode(err.getCode());
 	return *this;
 }
-//=====================================================================================
-const core::String ConsoleError::getMessage() const
-{ 
-	return errorMessage; 
-}
-//=====================================================================================
-const s32 ConsoleError::getCode() const
-{
-	return errorCode; 
-}
-//=====================================================================================
-void ConsoleError::setMessage(const core::String str)
-{
-	errorMessage = str;
-}
-//=====================================================================================
-void ConsoleError::setCode(const s32 code)
-{
-	errorCode = code;
-}
-//=====================================================================================
 
-ConsoleParser::ConsoleParser(const core::String& line) : cmdLine(line)
+const std::string ConsoleError::getMessage() const{ 	return errorMessage; }
+const int ConsoleError::getCode() const{	return errorCode; }
+void ConsoleError::setMessage(const std::string str){	errorMessage = str;}
+void ConsoleError::setCode(const int code){	errorCode = code;}
+
+ConsoleParser::ConsoleParser(const std::string& line) : cmdLine(line)
 {
 	bShouldAddLast = false;
 	bNameDone = false;
 	bEscape = false;
 	bQuote = false;
 }
-ConsoleParser::~ConsoleParser()
-{
-}
-bool ConsoleParser::parse(core::String& cmdName, core::Array<core::String>& args)
+
+ConsoleParser::~ConsoleParser(){}
+
+bool ConsoleParser::parse(std::string& cmdName, StringArray& args)
 {
 	//cout<< "Parsing : [" << cmdLine.c_str() << "]" <<endl;
-	static const wchar_t spaceChar = (wchar_t)' ';
+	static const char spaceChar = ' ';
 	args.clear();
-	cmdName = L"";
+	cmdName = "";
 
-	if(cmdLine.findFirst(spaceChar) == -1)
+	if(cmdLine.find(spaceChar) == std::string::npos)
 	{
 		cmdName = cmdLine;
 		return true;
@@ -86,11 +61,12 @@ bool ConsoleParser::parse(core::String& cmdName, core::Array<core::String>& args
 	}
 	return true;
 }
-bool ConsoleParser::handleChar(wchar_t wc, core::String& cmdName, core::Array<core::String>& args)
+
+bool ConsoleParser::handleChar( char wc, std::string& cmdName, StringArray& args)
 {
-	static const wchar_t spaceChar = (wchar_t)' ';
-	static const wchar_t escapeChar = (wchar_t)'\\';
-	static const wchar_t quoteChar = (wchar_t)'\"';
+	static const char spaceChar = ' ';
+	static const char escapeChar = '\\';
+	static const char quoteChar = '\"';
 	if(wc == spaceChar)
 	{
 		if(!isQuoted())
@@ -147,7 +123,8 @@ bool ConsoleParser::handleChar(wchar_t wc, core::String& cmdName, core::Array<co
 	}
 	return true;
 }
-void ConsoleParser::shoveTmpString(core::String& cmdName, core::Array<core::String>& args)
+
+void ConsoleParser::shoveTmpString(std::string& cmdName, StringArray& args)
 {
 	if(bNameDone)
 	{
@@ -163,35 +140,11 @@ void ConsoleParser::shoveTmpString(core::String& cmdName, core::Array<core::Stri
 	bShouldAddLast = false;
 	resetTmpString();
 }
-void ConsoleParser::resetTmpString()
-{
-	tmpString = L"";
-}
-bool ConsoleParser::isQuoted()
-{
-	return bQuote;
-}
-bool ConsoleParser::isEscaped()
-{
-	return bEscape;
-}
-bool ConsoleParser::isNameDone()
-{
-	return bNameDone;
-}
-void ConsoleParser::setQuoted(bool bVal)
-{
-	bQuote = bVal;
-}
-void ConsoleParser::setEscaped(bool bVal)
-{
-	bEscape = bVal;
-}
-void ConsoleParser::setNameDone(bool bVal)
-{
-	bNameDone = bVal;
-}
-//=====================================================================================
 
-NERPA_MODULE_END(core)
-*/
+void ConsoleParser::resetTmpString(){	tmpString = "";}
+bool ConsoleParser::isQuoted(){	return bQuote;}
+bool ConsoleParser::isEscaped(){	return bEscape;}
+bool ConsoleParser::isNameDone(){	return bNameDone;}
+void ConsoleParser::setQuoted(bool bVal){	bQuote = bVal;}
+void ConsoleParser::setEscaped(bool bVal){ bEscape = bVal;}
+void ConsoleParser::setNameDone(bool bVal){	bNameDone = bVal;}

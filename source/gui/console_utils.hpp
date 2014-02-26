@@ -1,39 +1,38 @@
-#ifndef _Console_Utils_h_
-#define _Console_Utils_h_
+#ifndef _CAESARIA_CONSOLE_UTILS_HPP_INCLUDE_
+#define _CAESARIA_CONSOLE_UTILS_HPP_INCLUDE_
 
-/*
-NERPA_MODULE_BEGIN(core)
+#include "core/stringarray.hpp"
 
 //! a basic error class
 class ConsoleError
 {
 public:
-	ConsoleError(const core::String str=L"", const s32 code=-1);
+	ConsoleError(const std::string str="", const int code=-1);
 	ConsoleError(const ConsoleError& err);
 
 	virtual ~ConsoleError();
 	
 	const ConsoleError& operator = (const ConsoleError& err);
-	virtual const core::String getType() const{ return L"Generic Error"; }
-	const core::String getMessage() const;
-	const s32 getCode() const;
+	virtual const std::string getType() const{ return "Generic Error"; }
+	const std::string getMessage() const;
+	const int getCode() const;
 protected:
-	void setMessage(const core::String str);
-	void setCode(const s32 code);
+	void setMessage(const std::string str);
+	void setCode(const int code);
 private:
-	core::String errorMessage;
-	s32		   errorCode;
+	std::string errorMessage;
+	int		      errorCode;
 };
 
 class ConsoleParser
 {
 public:
-	ConsoleParser(const String& line);
+	ConsoleParser(const std::string& line);
 	virtual ~ConsoleParser();
-	bool parse( String& cmdName, Array< String >& args);
+	bool parse( std::string& cmdName, StringArray& args);
 private:
-	void shoveTmpString( String& cmdName, Array< String >& args);
-	bool handleChar( wchar_t wc, String& cmdName, Array< String >& args);
+	void shoveTmpString( std::string& cmdName, StringArray& args);
+	bool handleChar( char wc, std::string& cmdName, StringArray& args);
 	void resetTmpString();
 	bool isQuoted();
 	bool isEscaped();
@@ -42,17 +41,9 @@ private:
 	void setEscaped(bool bVal);
 	void setNameDone(bool bVal);
 
-	String cmdLine;
+	std::string cmdLine;
 	bool bQuote,bEscape, bNameDone,bShouldAddLast;
-	String tmpString;
+	std::string tmpString;
 };
 
-NERPA_MODULE_END(core)
-
-//! overloaded operator for inserting a wide string to the stl ostream
-inline std::ostream& operator<<(std::ostream& os, const nrp::core::String& s)
-{
-	return (os << s.c_str());
-}
-*/
-#endif
+#endif //_CAESARIA_CONSOLE_UTILS_HPP_INCLUDE_

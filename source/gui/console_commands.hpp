@@ -9,7 +9,7 @@
 
 NERPA_MODULE_BEGIN(core)
 
-//! Отображает введенный текст
+//! РћС‚РѕР±СЂР°Р¶Р°РµС‚ РІРІРµРґРµРЅРЅС‹Р№ С‚РµРєСЃС‚
 class IC_Command_ECHO : public ConsoleCommand
 {
 public:
@@ -18,7 +18,7 @@ public:
 	bool invoke(const Array< String >& args, CommandDispatcher* pDispatcher, MessageSink* pOutput);
 };
 
-//! Отображает помощь по указанной команде
+//! РћС‚РѕР±СЂР°Р¶Р°РµС‚ РїРѕРјРѕС‰СЊ РїРѕ СѓРєР°Р·Р°РЅРЅРѕР№ РєРѕРјР°РЅРґРµ
 class IC_Command_HELP : public ConsoleCommand
 {
 public:
