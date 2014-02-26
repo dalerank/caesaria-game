@@ -10,7 +10,7 @@
       geometryf : [ 0.1 , 0.02, 0.9, 0.13 ]
       text : "##title##"
       font : "FONT_3"
-      text : "##emperror_request_goods##"
+      text : "##emperror_request##"
       textAlign : [ "center", "center" ]
     }
 

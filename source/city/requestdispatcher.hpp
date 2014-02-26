@@ -25,7 +25,7 @@ class CityRequestDispatcher : public CityService
 public:
   static CityServicePtr create( PlayerCityPtr city );
 
-  bool add( const VariantMap& stream );
+  bool add(const VariantMap& stream , bool showMessage=true);
   virtual ~CityRequestDispatcher();
 
   static std::string getDefaultName();

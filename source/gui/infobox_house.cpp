@@ -163,7 +163,7 @@ void InfoBoxHouse::drawHabitants( HousePtr house )
   else if (freeRoom == 0)
   {
     // full house!
-    freeRoomText = StringHelper::format( 0xff, "%d %s", current, _("##citizens##"));
+    freeRoomText = StringHelper::format( 0xff, "%d %s", current, _("##occupants##"));
   }
   else if (freeRoom < 0)
   {

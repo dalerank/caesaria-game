@@ -1,5 +1,7 @@
 {
-" ":"Cancel"
+" ":"Message"
+" ##cancel##":"Cancel"
+" ##emperor_favour_16##":"The Emperor is excited with your performance."
 "##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
 "##1_entertainment_access##":"This dwelling barely has access to any entertainment"
 "##2_entertainment_access##":"This dwelling has some access to entertainment venues"
@@ -138,7 +140,6 @@
 "##buildings##":"Construction"
 "##caesar_assign_new_title##":"Caesar has promoted you to the rank of"
 "##caesar_salary##":"Caesar's salary of"
-"##cancelBtnTooltip##":""
 "##cancelBtnTooltip##":"Cancel this operation"
 "##cant_demolish_bridge_with_people##":"Can't demolish bridge with people on it"
 "##captured_city##":"A captured city"
@@ -291,6 +292,26 @@
 "##emigrant##":"Emigrant"
 "##emmigrant_average_life##":"As cities go, this one seems OK."
 "##emmigrant_where_my_home##":"I'm new to this place. Do you know of somewhere to live?"
+"##emperor_favour_0##":"The Emperor is furious with you."
+"##emperor_favour_1##":"The Emperor is so incredibly angry, he is talking about exiling you."
+"##emperor_favour_10##":"The Emperor is ambivalent toward you."
+"##emperor_favour_11##":"The Emperor thinks you may prove satisfactory."
+"##emperor_favour_12##":"The Emperor is satisfied with you."
+"##emperor_favour_13##":"The Emperor is very pleased with your performance."
+"##emperor_favour_14##":"The Emperor is very excited with your performance."
+"##emperor_favour_15##":"The Emperor is pleased with your performance."
+"##emperor_favour_17##":"The Emperor is extremely excited with your performance."
+"##emperor_favour_18##":"The Emperor is overjoyed with your performance."
+"##emperor_favour_19##":"The Emperor is more than satisfied with your performance."
+"##emperor_favour_2##":"The Emperor is extremely angry with you."
+"##emperor_favour_20##":"The Emperor is so incredibly pleased, he is talking about naming you as his heir."
+"##emperor_favour_3##":"The Emperor is very angry with you."
+"##emperor_favour_4##":"The Emperor is angry with you."
+"##emperor_favour_5##":"The Emperor is extremely displeased with you."
+"##emperor_favour_6##":"The Emperor is most displeased with you."
+"##emperor_favour_7##":"The Emperor is displeased with you."
+"##emperor_favour_8##":"The Emperor is slightly displeased with you."
+"##emperor_favour_9##":"The Emperor is a little concerned with you."
 "##emperor##":"Emperor"
 "##emperror_legion_at_out_gates##":"A legion of the Emperor's troops is at our gates."
 "##empire_map##":"Go to the empire"
@@ -320,6 +341,7 @@
 "##entertainment##":"Entertainment"
 "##entertainmentBtnTooltip##":""
 "##exit_point##":"Exit point"
+"##exit_this_panel##":"Exit this panel"
 "##exit_without_saving?##":"Exit without saving?"
 "##exit##":"Exit"
 "##explosion##":"Explosion"
@@ -443,6 +465,7 @@
 "##house_evolves_at##":"This dwelling will soon evolve to one of greater stature, as a result of the improving local conditions."
 "##house_no_troubles_with_food##":"This house has no problems in getting the food it requires to survive"
 "##house_not_report_about_crimes##":"Residents have reported no crime at all."
+"##house_provide_food_themselves##":"Tent dwellers supply their own food from the local countryside."
 "##houseBtnTooltip##":"House"
 "##hun_warrior##":"A Hun warrior"
 "##immigrant_high_workless##":"I don't like it here. Unemployment is too high"
@@ -542,9 +565,8 @@
 "##meat_farm_patrly_workers##":"This farm is working below maximum capacity. Meat production will be slightly leaner as a result."
 "##meat##":"Meat"
 "##mercury##":"Mercury"
-"##message##":"Message"
 "##messageBtnTooltip##":""
-"##messageBtnTyooltip##":"Messages from your scribes"
+"##messageBtnTooltip##":"Messages from your scribes"
 "##messages##":"Messages"
 "##migration_empty_granary##":"Lack of food prevents immigration"
 "##migration_lack_empty_house##":"Lack of empty housing limits immigration."
@@ -667,6 +689,7 @@
 "##oil_workshop_patrly_workers##":"This olive press is understaffed, and produces oil more slowly than it should."
 "##oil_workshop##":"Oil workshop"
 "##oil##":"Oil"
+"##ok##":"OK"
 "##olive_farm_info##":"Olives are most valuable for their oil. Workshops press olives to yield oil for cooking, lighting, lubrication and preservation."
 "##olive_farm_need_some_workers##":"This grove is working below maximum capacity. Olive production could be better with more workers."
 "##olive_farm_patrly_workers##":"This grove is understaffed. It is taking longer to produce olives than it should."
@@ -806,8 +829,8 @@
 "##select_city_layer##":"Select a city overlay report"
 "##select_location##":"Choose location"
 "##seleucid_soldier##":"A Seleucid soldier"
+"##senate_1##":"Senate"
 "##senate_save##":"in city treasuries"
-"##senate##":"Senate"
 "##senateBtnTooltip##":""
 "##senatepp_clt_rating##":"Culture"
 "##senatepp_favour_rating##":"Favor"
@@ -1007,29 +1030,6 @@
 "##yes##":"Yes"
 "#save_map##":"Save map"
 "Variable":"ENGLISH (v1.1)"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

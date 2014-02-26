@@ -47,18 +47,21 @@ CityServicePtr CityRequestDispatcher::create(PlayerCityPtr city)
   return ret;
 }
 
-bool CityRequestDispatcher::add( const VariantMap& stream )
+bool CityRequestDispatcher::add( const VariantMap& stream, bool showMessage )
 {
   const std::string type = stream.get( "type" ).toString();
   if( type == GoodRequest::typeName() )
   {
     CityRequestPtr r = GoodRequest::create( stream );
     _d->requests.push_back( r );
-    events::GameEventPtr e = events::ShowRequestInfo::create( r );
-    e->dispatch();
+
+    if( showMessage )
+    {
+      events::GameEventPtr e = events::ShowRequestInfo::create( r );
+      e->dispatch();
+    }
     return true;
   }
-
 
   Logger::warning( "CityRequestDispatcher: cannot load request with type " + type );
   return false;
@@ -114,7 +117,7 @@ void CityRequestDispatcher::load(const VariantMap& stream)
   VariantMap vm_items = stream.get( "items" ).toMap();
   foreach( it, vm_items )
   {
-    add( it->second.toMap() );
+    add( it->second.toMap(), false );
   }
 }
 

@@ -105,7 +105,7 @@
       month : 12
       good : { oil : 10 }
       success : { favour : 10 }
-      fail : { favour : -10 }
+      fail : { favour : -10, appendMonth : 24 }
     }
   }
 	

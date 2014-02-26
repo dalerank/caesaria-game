@@ -75,7 +75,9 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
-  new Label( this, Rect( getWidth() / 2, getHeight() - 40, getWidth() - 110, getHeight() - 10 ), _("##mission_wnd_tocity##" ) );
+  Label* lbToCity = new Label( this, Rect( getWidth() / 2, getHeight() - 40, getWidth() - 110, getHeight() - 10 ), _("##mission_wnd_tocity##" ) );
+  lbToCity->setTextAlignment( alignCenter, alignCenter );
+
   TexturedButton* btnExit = new TexturedButton( this, Point( getWidth() - 110, getHeight() - 40), Size( 27 ), -1, 179 );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
 
@@ -127,16 +129,16 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
   std::string text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
   _d->lbPopulation->setText( text );
 
-  text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_prosperity##"), wint.needProsperity() );
+  text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_prsp_rating##"), wint.needProsperity() );
   _d->lbProsperity->setText( text );
 
-  text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_favour##"), wint.needFavour() );
+  text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_favour_rating##"), wint.needFavour() );
   _d->lbFavour->setText( text );
 
-  text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_culture##"), wint.needCulture() );
+  text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_clt_rating##"), wint.needCulture() );
   _d->lbCulture->setText( text );
 
-  text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_peace##"), wint.needPeace() );
+  text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_peace_rating##"), wint.needPeace() );
   _d->lbPeace->setText( text );
 
   _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );

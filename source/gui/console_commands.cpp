@@ -1,45 +1,43 @@
 #include "console_commands.hpp"
+#include "message_sink.hpp"
+#include "console_command.hpp"
+#include "console_dispatcher.hpp"
+#include "core/stringhelper.hpp"
 
-/*
-#include "NrpConsoleCmds.h"
-#include "IScriptEngine.h"
-
-NERPA_MODULE_BEGIN(core)
-
-IC_Command_ECHO::IC_Command_ECHO() : ConsoleCommand(L"echo")
+IC_Command_ECHO::IC_Command_ECHO() : ConsoleCommand("echo")
 {
-	SetUsage(L"echo <string>");
-        AddDescLine(L"print string");
+  SetUsage("echo <string>");
+  AddDescLine( "print string");
 }
 
 IC_Command_ECHO::~IC_Command_ECHO() {}
 
-bool IC_Command_ECHO::invoke(const Array<String>& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
+bool IC_Command_ECHO::invoke(const StringArray& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
 {
 	if(args.size() > 0)
 	{
-		String wstr = L"";
-		for(u32 i = 0; i < args.size(); i++)
+		std::string wstr = "";
+		for(unsigned int i = 0; i < args.size(); i++)
 		{
 			wstr.append( args[i] );
-			wstr.append( L" " );
+			wstr.append( " " );
 		}
 		pOutput->AppendMessage( wstr );
 	}
 	return true;
 }
 
-IC_Command_HELP::IC_Command_HELP() : ConsoleCommand(L"help")
+IC_Command_HELP::IC_Command_HELP() : ConsoleCommand("help")
 {
-        SetUsage(L"help <command>");
-        AddDescLine(L"print help for command");
+  SetUsage("help <command>");
+  AddDescLine("print help for command");
 }
 
 IC_Command_HELP::~IC_Command_HELP()
 {
 }
 
-bool IC_Command_HELP::invoke(const Array<String>& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
+bool IC_Command_HELP::invoke(const StringArray& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
 {
 	if(args.size() == 0)
 	{
@@ -47,10 +45,10 @@ bool IC_Command_HELP::invoke(const Array<String>& args, CommandDispatcher* pDisp
 	}
 	else
 	{
-		String  wstr = args[0];
-		for(u32 i = 1; i < args.size(); i++)
+		std::string  wstr = args[0];
+		for(unsigned int i = 1; i < args.size(); i++)
 		{
-			wstr.append( L" " );
+			wstr.append( " " );
 			wstr.append( args[i] );
 		}
 
@@ -60,57 +58,55 @@ bool IC_Command_HELP::invoke(const Array<String>& args, CommandDispatcher* pDisp
 		}
 		else
 		{
-                        String msg = String( L"Command not fonud " ) + String( wstr );
+			std::string msg = "Command not fonud " + wstr;
 			pOutput->AppendMessage( msg );
 		}
 	}
 	return true;
 }
 
-IC_Command_LIST::IC_Command_LIST(): ConsoleCommand(L"list")
+IC_Command_LIST::IC_Command_LIST(): ConsoleCommand("list")
 {
-	SetUsage(L"list <detailed>");
-        AddDescLine(L"prind avalaible commands");
+  SetUsage( "list <detailed>");
+  AddDescLine( "prind avalaible commands");
 }
 
 IC_Command_LIST::~IC_Command_LIST() {}
 
-bool IC_Command_LIST::invoke(const Array<String>& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
+bool IC_Command_LIST::invoke(const StringArray& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
 {
 	pDispatcher->printCommandList(pOutput, args.size() > 0);
 	return true;
 }
 
-IC_Command_INFO::IC_Command_INFO(irr::IrrlichtDevice *pDevice) 
-					   : ConsoleCommand(L"info"),device(pDevice)
+IC_Command_INFO::IC_Command_INFO() : ConsoleCommand("info")
 {
-	SetUsage(L"info");
-        AddDescLine(L"print system info");
-        AddDescLine(L"-system hardware info");
-        AddDescLine(L"-objlist objects info");
+	SetUsage( "info");
+	AddDescLine( "print system info");
+	AddDescLine( "-system hardware info");
+	AddDescLine( "-objlist objects info");
 }
 
 IC_Command_INFO::~IC_Command_INFO()
 {
-	device = NULL;
 }
 
-bool IC_Command_INFO::invoke(const Array<String>& args, 
+bool IC_Command_INFO::invoke(const StringArray& args,
 									CommandDispatcher* pDispatcher, 
 									MessageSink* pOutput)
 {
 	if( args.size() == 0 )
 	{
-                pOutput->AppendMessage( L"no param" );
+		pOutput->AppendMessage( "no param" );
 		return true;
 	}
 
-	if( args[ 0 ] == L"-system" && device)
+	if( args[ 0 ] == "-system" )
 	{
 
 	}
 
-	if( args[ 0 ] == L"-objlist" )
+	if( args[ 0 ] == "-objlist" )
 	{
 		StringArray strings;
 		//GGetListSystemObject( strings );
@@ -119,7 +115,7 @@ bool IC_Command_INFO::invoke(const Array<String>& args,
 			pOutput->AppendMessage( strings[ cnt ] );
 
 
-        pOutput->AppendMessage( String( L"Size of objlist = " ) + String::fromInt( strings.size() ) );
+		pOutput->AppendMessage( std::string( "Size of objlist = " ) + StringHelper::format( 0xff, "%d", strings.size() ) );
 
 		return true;
 	}
@@ -127,31 +123,28 @@ bool IC_Command_INFO::invoke(const Array<String>& args,
 	return false;
 }
 
-IC_Command_CLS::IC_Command_CLS() : ConsoleCommand(L"cls")
+IC_Command_CLS::IC_Command_CLS() : ConsoleCommand("cls")
 {
-	SetUsage(L"cls");
-        AddDescLine(L"Clear screen");
+  SetUsage("cls");
+  AddDescLine( "Clear screen");
 }
 
 IC_Command_CLS::~IC_Command_CLS() {}
 
-bool IC_Command_CLS::invoke(const Array< String >& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
+bool IC_Command_CLS::invoke(const StringArray& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
 {
 	pOutput->ClearMessages();
 	return true;
 }
 
-IC_Command_SCRIPT::IC_Command_SCRIPT(): ConsoleCommand(L"script")
+IC_Command_SCRIPT::IC_Command_SCRIPT(): ConsoleCommand("script")
 {
 
 }
 
 IC_Command_SCRIPT::~IC_Command_SCRIPT() {}
 
-bool IC_Command_SCRIPT::invoke( const Array< String >& args, CommandDispatcher* pDispatcher, MessageSink* pOutput )
+bool IC_Command_SCRIPT::invoke( const StringArray& args, CommandDispatcher* pDispatcher, MessageSink* pOutput )
 {
 	return true;
 }
-
-NERPA_MODULE_END(core)
-*/

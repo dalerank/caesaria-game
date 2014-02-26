@@ -30,7 +30,7 @@ public:
   unsigned int months2comply;
   GoodStock stock;
   int winFavour, winMoney;
-  int failFavour, failMoney;
+  int failFavour, failMoney, failAppendMonth;
   std::string description;
 };
 
@@ -61,7 +61,7 @@ bool GoodRequest::mayExec( PlayerCityPtr city ) const
 {
   CityStatistic::GoodsMap gm = CityStatistic::getGoodsMap( city );
 
-  _d->description = StringHelper::format( 0xff, "%s %d", _("##city_have_request_goods##"), gm[ _d->stock.type() ] / 100 );
+  _d->description = StringHelper::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), gm[ _d->stock.type() ] / 100 );
   if( gm[ _d->stock.type() ] >= _d->stock.capacity() * 100 )
   {
     return true;
@@ -77,6 +77,7 @@ VariantMap GoodRequest::save() const
 {
   VariantMap ret = CityRequest::save();
   ret[ "date" ] = _d->date;
+  ret[ "type" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();
   VariantMap vm_win;
@@ -87,6 +88,7 @@ VariantMap GoodRequest::save() const
   VariantMap vm_fail;
   vm_fail[ "favour" ] = _d->failFavour;
   vm_fail[ "money" ] = _d->failMoney;
+  vm_fail[ "appendMonth" ] = _d->failAppendMonth;
   ret[ "fail" ] = vm_fail;
 
   return ret;
@@ -119,6 +121,7 @@ void GoodRequest::load(const VariantMap& stream)
   VariantMap vm_fail = stream.get( "fail" ).toMap();
   _d->failFavour = vm_fail.get( "favour" );
   _d->failMoney = vm_fail.get( "money" );
+  _d->failAppendMonth = vm_fail.get( "appendMonth" );
   _finishedDate = _d->date.appendMonth( _d->months2comply );
 }
 
@@ -135,8 +138,17 @@ void GoodRequest::success( PlayerCityPtr city )
 
 void GoodRequest::fail( PlayerCityPtr city )
 {
-  CityRequest::fail( city );
   city->updateFavour( _d->winFavour );
+  if( _d->failAppendMonth > 0 )
+  {
+    _d->date = _finishedDate;
+    _finishedDate = _finishedDate.appendDay( _d->failAppendMonth );
+    _d->failAppendMonth = 0;
+  }
+  else
+  {
+    CityRequest::fail( city );
+  }
 }
 
 std::string GoodRequest::getDescription() const {  return _d->description; }
