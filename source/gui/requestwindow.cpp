@@ -25,6 +25,7 @@
 #include "core/logger.hpp"
 #include "gui/gameautopause.hpp"
 #include "events/showadvisorwindow.hpp"
+#include "game/gamedate.hpp"
 
 namespace gui
 {
@@ -41,7 +42,7 @@ EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, CityReques
   EmperrorRequestWindow* ret = new EmperrorRequestWindow( parent, request );
   if( mayExec )
   {
-    ret->setText( _( "##city_have_goods_for_request##") );
+    ret->setText( _( "##city_have_goods_for_request##") );    
   }
 
   return ret;
@@ -68,7 +69,8 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, CityRequestPtr req
     if( img ) { img->setPicture( GoodHelper::getPicture( gr->getGoodType() )); }
 
     lb = findChildA<Label*>( "lbInterval", true, this );
-    if( lb ) { lb->setText( StringHelper::format( 0xff, "%d %s", gr->getMonths2Comply(), _( "##months_to_comply##") )); }
+    int month2Comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
+    if( lb ) { lb->setText( StringHelper::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
   }
 
   TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
@@ -84,6 +86,15 @@ void EmperrorRequestWindow::draw( GfxEngine& painter )
     return;
 
   Widget::draw( painter );
+}
+
+void EmperrorRequestWindow::setText(const std::string& text)
+{
+  Label* lb = findChildA<Label*>( "lbText", true, this );
+  if( lb )
+  {
+    lb->setText( text );
+  }
 }
 
 bool EmperrorRequestWindow::onEvent(const NEvent& event)

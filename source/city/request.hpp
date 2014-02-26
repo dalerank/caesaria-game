@@ -77,7 +77,6 @@ public:
 
   int getQty() const;
   Good::Type getGoodType() const;
-  int getMonths2Comply() const;
   virtual std::string getDescription() const;
 
   static std::string typeName();

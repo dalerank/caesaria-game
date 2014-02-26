@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "factory.hpp"
 
@@ -391,7 +392,8 @@ Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(
   setPicture( ResourceGroup::commerce, 99 );
 
   _animationRef().load(ResourceGroup::commerce, 100, 8);
-  _fgPicturesRef().resize(2);
+  _animationRef().setDelay( 4 );
+  _fgPicturesRef().resize( 2 );
 }
 
 bool Creamery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const

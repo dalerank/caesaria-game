@@ -38,7 +38,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
    lbAbout->setFont( Font::create( FONT_1 ) );
 
    std::string title = MetaDataHolder::getPrettyName( market->getType() );
-   setTitle( title );
+   setTitle( _( title ) );
 
    if( market->getWorkersCount() > 0 )
    {
@@ -77,15 +77,13 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
    else
    {
      lbAbout->setHeight( 50 );
-     lbAbout->setText( _("##market_not_work##") );
+     lbAbout->setText( _("##market_no_workers##") );
    }
 
    _updateWorkersLabel( Point( 32, 8 ), 542, market->getMaxWorkers(), market->getWorkersCount() );
 }
 
-InfoBoxMarket::~InfoBoxMarket()
-{
-}
+InfoBoxMarket::~InfoBoxMarket() {}
 
 void InfoBoxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int index, int paintY )
 {

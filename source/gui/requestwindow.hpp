@@ -32,7 +32,7 @@ public:
   ~EmperrorRequestWindow();
 
   virtual void draw( GfxEngine& painter );
-
+  virtual void setText(const std::string &text);
   virtual bool onEvent(const NEvent &event);
 
 private:

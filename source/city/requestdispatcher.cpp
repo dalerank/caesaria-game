@@ -85,6 +85,7 @@ void CityRequestDispatcher::update(const unsigned int time)
       if( !request->isAnnounced() && request->mayExec( _d->city ) )
       {
         events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
+        request->setAnnounced( true );
         e->dispatch();
       }
     }

@@ -122,7 +122,8 @@ void GoodRequest::load(const VariantMap& stream)
   _d->failFavour = vm_fail.get( "favour" );
   _d->failMoney = vm_fail.get( "money" );
   _d->failAppendMonth = vm_fail.get( "appendMonth" );
-  _finishedDate = _d->date.appendMonth( _d->months2comply );
+  _finishedDate = _d->date;
+  _finishedDate.appendMonth( _d->months2comply );
 }
 
 void GoodRequest::success( PlayerCityPtr city )
@@ -138,12 +139,13 @@ void GoodRequest::success( PlayerCityPtr city )
 
 void GoodRequest::fail( PlayerCityPtr city )
 {
-  city->updateFavour( _d->winFavour );
+  city->updateFavour( _d->failFavour );
   if( _d->failAppendMonth > 0 )
   {
     _d->date = _finishedDate;
-    _finishedDate = _finishedDate.appendDay( _d->failAppendMonth );
+    _finishedDate.appendMonth( _d->failAppendMonth );
     _d->failAppendMonth = 0;
+    setAnnounced( false );
   }
   else
   {
@@ -154,5 +156,4 @@ void GoodRequest::fail( PlayerCityPtr city )
 std::string GoodRequest::getDescription() const {  return _d->description; }
 int GoodRequest::getQty() const { return _d->stock.capacity(); }
 Good::Type GoodRequest::getGoodType() const { return _d->stock.type(); }
-int GoodRequest::getMonths2Comply() const { return _d->months2comply; }
 GoodRequest::GoodRequest() : CityRequest( DateTime() ), _d( new Impl ) {}

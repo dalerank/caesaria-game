@@ -34,6 +34,7 @@ BurningRuins::BurningRuins() : Ruins( building::burningRuins )
   _animationRef().load( ResourceGroup::land2a, 188, 8 );
   _animationRef().setOffset( Point( 14, 26 ) );
   _fgPicturesRef().resize(1);
+  _animationRef().setDelay( math::random( 6 ) );
 }
 
 void BurningRuins::timeStep(const unsigned long time)
@@ -45,6 +46,11 @@ void BurningRuins::timeStep(const unsigned long time)
   if( pic.isValid() )
   {
      _fgPicturesRef().back() = _animationRef().getFrame();
+  }
+
+  if( time % 50 == 0 )
+  {
+    _animationRef().setDelay( math::random( 6 ) );
   }
 
   if (time % 16 == 0 )

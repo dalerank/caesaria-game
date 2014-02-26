@@ -577,6 +577,7 @@
     cost : 40,
     desirability : { base : -2, 	range : 2,	step : 1 }
     employers : 10
+    productRate : 2.4
     class : "food"
     sound : [ "vegetablefarm", 1 ]
   },
@@ -586,6 +587,7 @@
     cost : 40,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
+    productRate : 2.4
     class : "food"
   },
   
