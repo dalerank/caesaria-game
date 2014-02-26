@@ -36,23 +36,21 @@ public:
   GameAutoPause locker;
 };
 
-EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, CityRequestPtr request )
+EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, CityRequestPtr request, bool mayExec )
 {
-  Size size( 625, 320 );
-
-  Rect rectangle( Point( (parent->getWidth() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
   EmperrorRequestWindow* ret = new EmperrorRequestWindow( parent, request );
+  if( mayExec )
+  {
+    ret->setText( _( "##city_have_goods_for_request##") );
+  }
 
   return ret;
 }
 
-EmperrorRequestWindow::~EmperrorRequestWindow()
-{
-
-}
+EmperrorRequestWindow::~EmperrorRequestWindow() {}
 
 EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, CityRequestPtr request )
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Widget( parent, -1, Rect( 0, 0, 480, 320 ) ), _d( new Impl )
 {
   _d->locker.activate();
 

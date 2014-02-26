@@ -1,4 +1,5 @@
 {  
+ title : "##tutorial_first_collapse##"
  items : [ "##tutorial_engineer_info##",
            "@img=picture2_00010.png", 
            "##tutorial_engineer_senate##",

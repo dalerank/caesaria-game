@@ -13,7 +13,7 @@
     peace : 0
     favour : 0
     next : "/missions/tutorial2.mission"
-    title : "##win_citizen_title##"
+    title : "##clerk##"
     may_continue : false
     short : "##build_some_houses##"
     maxHouseLevel : "big_villa"
@@ -46,7 +46,7 @@
     }
 
     "tutorial#random_collapse" : {
-      population : 40
+      population : 60
       exec : {
         "first_collapse#tutorial_window" : {
           tutorial : "/tutorial/first_collapse.tutorial"
@@ -59,12 +59,12 @@
     }
 
     "tutorial#tutorial_window" : {
-      population : 70
+      population : 80
       tutorial : "/tutorial/religion.tutorial"
     }
 
     "enable_religion#building_options" : {
-      population : 70
+      population : 80
       buildings : {
         small_ceres_temple : true,
         small_venus_temple : true,

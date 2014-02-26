@@ -5,7 +5,7 @@
   {
     font : "FONT_3"
     geometry : [ 30, 10, 290, 35 ]
-    text : "##video_options##"
+    text : "##screen_settings##"
     textAlign : [ "center", "center" ]
   }
 
@@ -32,7 +32,7 @@
     {
       geometry : [ 50, 237, 270, 257 ]
       bgtype : "smallGrayBorderLine"
-      text : "##vopt_close##"
+      text : "##ok##"
     }
   }
 }

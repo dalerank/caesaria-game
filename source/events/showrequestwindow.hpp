@@ -24,7 +24,7 @@ namespace events
 class ShowRequestInfo : public GameEvent
 {
 public:
-  static GameEventPtr create( CityRequestPtr request );
+  static GameEventPtr create( CityRequestPtr request, bool available4exec=false );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -32,6 +32,7 @@ protected:
 
 private:
   CityRequestPtr _request;
+  bool _reqAvailable;
 };
 
 }

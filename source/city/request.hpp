@@ -34,17 +34,27 @@ public:
   virtual void fail( PlayerCityPtr ) { _isDeleted = true; }
   virtual bool isDeleted() const { return _isDeleted; }
   virtual const DateTime& getFinishedDate() const { return _finishedDate; }
+  virtual bool isAnnounced() const { return _isAnnounced; }
+  virtual void setAnnounced( bool value ) { _isAnnounced = value; }
 
-  virtual VariantMap save() const { return VariantMap(); }
+  virtual VariantMap save() const
+  {
+    VariantMap ret;
+    ret[ "deleted" ] = _isDeleted;
+    ret[ "announced" ] = _isAnnounced;
+    ret[ "finish" ] = _finishedDate;
+
+    return ret;
+  }
   virtual void load( const VariantMap& stream ) {}
   virtual std::string getDescription() const{  return ""; }
 
 protected:
-  bool _isDeleted;
+  bool _isDeleted, _isAnnounced;
   DateTime _finishedDate;
 
   CityRequest( DateTime finish ) :
-    _isDeleted( false ), _finishedDate( finish )
+    _isDeleted( false ), _isAnnounced( false ), _finishedDate( finish )
   {
 
   }

@@ -119,6 +119,11 @@ public:
     }
   }
 
+  std::string getEmperorFavourStr()
+  {
+    return StringHelper::format( 0xff, "##emperor_favour_%02d##", (int)(city->getFavour() / 100.f) * 20 );
+  }
+
 public oc3_signals:
   Signal1<int> onChangeSalarySignal;
   Signal1<int> onSendMoneySignal;
@@ -272,8 +277,8 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   //buttons _d->_d->background  
   PictureDecorator::draw( *_d->background, Rect( 66, 325, 66 + 510, 325 + 94 ), PictureDecorator::blackFrame );
   
-  _d->lbEmperorFavour = new gui::Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), "Favour of the emperor 50" );
-  _d->lbEmperorFavourDesc = new gui::Label( this, _d->lbEmperorFavour->getRelativeRect() + Point( 0, 20 ), "The emperor has mixed feelings to you" );
+  _d->lbEmperorFavour = new gui::Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), StringHelper::format( 0xff, "%s %d", "##advemp_emperor_favour##", _d->city->getFavour() ) );
+  _d->lbEmperorFavourDesc = new gui::Label( this, _d->lbEmperorFavour->getRelativeRect() + Point( 0, 20 ), _d->getEmperorFavourStr() );
 
   _d->lbPost = new gui::Label( this, Rect( Point( 70, 336 ), Size( 240, 26 ) ), "Post");
   _d->lbPrimaryFunds = new gui::Label( this, Rect( Point( 70, 370 ), Size( 240, 20 ) ), "PrimaryFunds 0" );

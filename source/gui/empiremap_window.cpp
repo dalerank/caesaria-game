@@ -18,10 +18,11 @@
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
 #include "texturedbutton.hpp"
+#include "objects/dock.hpp"
 #include "core/color.hpp"
 #include "world/empire.hpp"
 #include "world/computer_city.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "label.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
@@ -147,6 +148,18 @@ void EmpireMapWindow::Impl::createTradeRoute()
     events::GameEventPtr e = events::FundIssueEvent::create( CityFunds::otherExpenditure, -(int)cost );
     e->dispatch();
     empire->createTradeRoute( ourCity, currentCity->getName() );
+
+    PlayerCityPtr plCity = ptr_cast<PlayerCity>( empire->getCity( ourCity ) );
+    if( plCity.isValid() )
+    {
+      CityHelper helper( plCity );
+      DockList docks = helper.find<Dock>( constants::building::dock );
+      if( docks.empty() )
+      {
+        events::GameEventPtr e = events::ShowInfoboxEvent::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
+        e->dispatch();
+      }
+    }
   }
 
   updateCityInfo();

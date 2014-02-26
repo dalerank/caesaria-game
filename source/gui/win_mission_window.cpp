@@ -55,7 +55,7 @@ WinMissionWindow::WinMissionWindow(Widget* parent, std::string newTitle, bool ma
   lb->setFont( Font::create( FONT_3) );
   lb->setTextAlignment( alignCenter, alignCenter );
 
-  PushButton* btn = new PushButton( this, Rect( 35, 115, getWidth() - 35, 115 + 20 ), _("##apply_new_assing##"),
+  PushButton* btn = new PushButton( this, Rect( 35, 115, getWidth() - 35, 115 + 20 ), _("##accept_promotion##"),
                                     -1, false, PushButton::smallGrayBorderLine );
 
   CONNECT( btn, onClicked(), &_d->onNextMissionSignal, Signal0<>::emit );

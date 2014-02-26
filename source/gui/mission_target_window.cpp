@@ -159,7 +159,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
     else { _d->lbxHelp->fitText( _( text ) ); }
   }
 
-  _d->lbShortDesc->setText( wint.getShortDesc() );
+  _d->lbShortDesc->setText( _(wint.getShortDesc()) );
 }
 
 }//end namespace gui

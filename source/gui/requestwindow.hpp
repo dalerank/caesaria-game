@@ -28,7 +28,7 @@ namespace gui
 class EmperrorRequestWindow : public Widget
 {
 public:
-  static EmperrorRequestWindow* create( Widget* parent, CityRequestPtr request );
+  static EmperrorRequestWindow* create(Widget* parent, CityRequestPtr request , bool mayExec);
   ~EmperrorRequestWindow();
 
   virtual void draw( GfxEngine& painter );

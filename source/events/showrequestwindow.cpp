@@ -22,10 +22,11 @@
 namespace events
 {
 
-GameEventPtr ShowRequestInfo::create( CityRequestPtr request )
+GameEventPtr ShowRequestInfo::create(CityRequestPtr request, bool available4exec)
 {
   ShowRequestInfo* e = new ShowRequestInfo();
   e->_request = request;
+  e->_reqAvailable = available4exec;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -42,7 +43,7 @@ void ShowRequestInfo::_exec(Game& game, unsigned int)
 {
   if( _request.isValid() )
   {
-    gui::EmperrorRequestWindow* wnd = gui::EmperrorRequestWindow::create( game.getGui()->getRootWidget(), _request );
+    gui::EmperrorRequestWindow* wnd = gui::EmperrorRequestWindow::create( game.getGui()->getRootWidget(), _request, _reqAvailable );
     wnd->show();
   }
 }

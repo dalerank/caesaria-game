@@ -70,18 +70,27 @@ std::string CityRequestDispatcher::getDefaultName(){  return "requests";}
 void CityRequestDispatcher::update(const unsigned int time)
 {
   if( time % (GameDate::ticksInMonth() / 4) == 1)
-  foreach( rq, _d->requests )
   {
-    if( (*rq)->getFinishedDate() <= GameDate::current() )
+    foreach( rq, _d->requests )
     {
-      (*rq)->fail( _d->city );
-    }
-  }
+      CityRequestPtr request = *rq;
+      if( request->getFinishedDate() <= GameDate::current() )
+      {
+        request->fail( _d->city );
+      }
 
-  for( CityRequestList::iterator i=_d->requests.begin(); i != _d->requests.end(); )
-  {
-    if( (*i)->isDeleted() ) { i = _d->requests.erase( i ); }
-    else { i++; }
+      if( !request->isAnnounced() && request->mayExec( _d->city ) )
+      {
+        events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
+        e->dispatch();
+      }
+    }
+
+    for( CityRequestList::iterator i=_d->requests.begin(); i != _d->requests.end(); )
+    {
+      if( (*i)->isDeleted() ) { i = _d->requests.erase( i ); }
+      else { i++; }
+    }
   }
 }
 

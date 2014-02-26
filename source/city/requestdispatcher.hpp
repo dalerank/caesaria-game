@@ -18,6 +18,7 @@
 
 #include "cityservice.hpp"
 #include "request.hpp"
+#include "core/signals.hpp"
 
 class CityRequestDispatcher : public CityService
 {

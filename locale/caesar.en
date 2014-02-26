@@ -1,4 +1,5 @@
 {
+" ":"Cancel"
 "##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
 "##1_entertainment_access##":"This dwelling barely has access to any entertainment"
 "##2_entertainment_access##":"This dwelling has some access to entertainment venues"
@@ -138,6 +139,7 @@
 "##caesar_assign_new_title##":"Caesar has promoted you to the rank of"
 "##caesar_salary##":"Caesar's salary of"
 "##cancelBtnTooltip##":""
+"##cancelBtnTooltip##":"Cancel this operation"
 "##cant_demolish_bridge_with_people##":"Can't demolish bridge with people on it"
 "##captured_city##":"A captured city"
 "##cart_pusher_need_theater##":"After a hard day's work I want to see a good show! No chance of that here!"
@@ -363,7 +365,6 @@
 "##free##":"free"
 "##freehouse_caption##":""
 "##freehouse_text_noroad##":"No one will make their home here as it is too far to the nearest road. Unless road access is added soon, this site will revert to open land."
-"##freehouse_text_noroad##":""
 "##freehouse_text##":""
 "##fruit##":"Fruit"
 "##fullscreen_off##":"Windowed screen"
@@ -543,12 +544,14 @@
 "##mercury##":"Mercury"
 "##message##":"Message"
 "##messageBtnTooltip##":""
+"##messageBtnTyooltip##":"Messages from your scribes"
 "##messages##":"Messages"
 "##migration_empty_granary##":"Lack of food prevents immigration"
 "##migration_lack_empty_house##":"Lack of empty housing limits immigration."
 "##migration_lack_jobs##":"Lack of jobs prevents immigration"
 "##migration_lessfood_granary##":"Lack of food in your granaries is reducing immigration."
 "##migration_people_away##":"Lack of jobs is driving people away."
+"##military_academy##":"Military academy"
 "##minimap_tooltip##":"Click on this overview map to move to distant parts of your city"
 "##minimizeBtnTooltip##":"Hide panel"
 "##missing_barber_degrade##":"This house will devolve soon, as it has lost barber access."
@@ -600,7 +603,11 @@
 "##missing_water##":"This house cannot evolve, as it does not have access to even the most primitive of water supplies"
 "##missing_wine_degrade##":"This house will devolve soon, as it has run out of wine and its local market has at best an erratic supply."
 "##missing_wine##":"This house cannot evolve. It needs supplies of wine provided to it by its local market before a wealthier class of citizen will move in."
-"##missionBtnTooltip##":""
+"##mission_win##":"Victory"
+"##mission_wnd_population##":"Population"
+"##mission_wnd_targets_title##":"Objectives"
+"##mission_wnd_tocity##":"To the city"
+"##missionBtnTooltip##":"Brief description"
 "##month_1_short##":"Jan"
 "##month_10_short##":"Oct"
 "##month_11_short##":"Nov"
@@ -641,6 +648,7 @@
 "##new_governor##":"The new governor"
 "##new_map##":"New map"
 "##no_academy_access##":"This house has no access to an academy"
+"##no_dock_for_sea_trade_routes##":"Although you told your Trade Advisor to commence trade with a sea merchant, the merchant cannot land at out city! You need to construct a doc and supply it with workers. Once you have dock operaating, ships will come and begin trading."
 "##no_goods_for_request##":"You do not have enough goods in your warehouses"
 "##no_target_population##":"( No target population )"
 "##no_tax_in_this_year##":"No tax collected from this house, so far this year."
@@ -699,6 +707,7 @@
 "##ovrm_risk##":"Risks"
 "##ovrm_school##":"School"
 "##ovrm_tax##":"Tax"
+"##ovrm_text##":"Overlays"
 "##ovrm_text##":""
 "##ovrm_theatres##":"Theatres"
 "##ovrm_tooltip##":""
@@ -710,13 +719,13 @@
 "##people##":"People"
 "##percents##":"Interest at"
 "##person##":"Person"
+"##pig_farm_info##":"Well-fed citizens want meat in their diet. Meat can be kept in granaries for local consumption, or taken to warehouses for export."
 "##pig_farm##":"Animal farm"
 "##plaza_caption##":"Plaza"
 "##plaza##":"Plaza"
 "##plname_continue##":"Continue"
 "##pop##":"Pop"
 "##population_registered_as_taxpayers##":"of the population are registered for tax"
-"##population_tooltip##":"Population"
 "##population##":"Population"
 "##pottery_bad_work##":"Very few people work here. Pottery production is slow as a result."
 "##pottery_workshiop_full_work##":"This workshop has all the employees it needs. It is working flat out to produce pottery."
@@ -998,15 +1007,6 @@
 "##yes##":"Yes"
 "#save_map##":"Save map"
 "Variable":"ENGLISH (v1.1)"
-
-
-
-
-
-
-
-
-
 
 
 

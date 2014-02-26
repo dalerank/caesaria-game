@@ -75,7 +75,7 @@ std::string GoodRequest::typeName() {  return "good_request";}
 
 VariantMap GoodRequest::save() const
 {
-  VariantMap ret;
+  VariantMap ret = CityRequest::save();
   ret[ "date" ] = _d->date;
   ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();

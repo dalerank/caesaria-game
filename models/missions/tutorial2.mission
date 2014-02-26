@@ -15,9 +15,9 @@
     next : "/missions/capua.mission"
     title : "##win_clerk_title##"
     may_continue : false
-    short : "##build_some_houses##"
+    short : "##tt2_caption##"
     maxHouseLevel : "big_villa"
-    caption : "##food##"
+    caption : "##tt2_caption##"
     overview :  [ "##tutorial_markets_text##",
                   "@img=picture2_00008.png",
                   "##tutorial_granary_text##",

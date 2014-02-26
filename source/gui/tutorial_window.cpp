@@ -22,6 +22,7 @@
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
 #include "texturedbutton.hpp"
+#include "label.hpp"
 
 namespace gui
 {
@@ -35,6 +36,8 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
   Size pSize = getParent()->getSize() - getSize();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
+  Label* lbTitle = findChildA<Label*>( "lbTitle", true );
+
   ListBox* lbx = findChildA<ListBox*>( "lbxHelp", true, this );
   TexturedButton* btn = findChildA<TexturedButton*>( "btnExit", true, this );
   CONNECT( btn, onClicked(), this, TutorialWindow::deleteLater );
@@ -46,13 +49,16 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
   Logger::warningIf( vm.empty(), "Cannot load tutorial description from " + tutorial.toString() );
 
   StringArray items = vm.get( "items" ).toStringArray();
+  std::string title = vm.get( "title" ).toString();
+  if( lbTitle ) lbTitle->setText( _( title ) );
 
+  const std::string imgSeparator = "@img=";
   foreach( it, items )
   {
     std::string text = *it;
-    if( text.substr( 0, 5 ) == "@img=" )
+    if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
-      Picture pic = Picture::load( text.substr( 5 ) );
+      Picture pic = Picture::load( text.substr( imgSeparator.length() ) );
       ListBoxItem& item = lbx->addItem( pic );
       item.setItemTextAlignment( alignCenter, alignUpperLeft );
       int lineCount = pic.getHeight() / lbx->getItemHeight();
@@ -67,8 +73,6 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
   }
 }
 
-TutorialWindow::~TutorialWindow()
-{
-}
+TutorialWindow::~TutorialWindow() {}
 
 }//end namespace gui

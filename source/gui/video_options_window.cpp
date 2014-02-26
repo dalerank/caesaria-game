@@ -1,17 +1,17 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "video_options_window.hpp"
 #include "game/settings.hpp"
@@ -24,6 +24,7 @@
 #include "environment.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "gameautopause.hpp"
 
 namespace gui
 {
@@ -31,6 +32,7 @@ namespace gui
 class VideoOptionsWindow::Impl
 {
 public:
+  GameAutoPause locker;
   Signal1<Size> onScreenSizeChangeSignal;
   Signal1<bool> onFullScreeChangeSignal;
   Signal0<> onCloseSignal;
@@ -42,6 +44,7 @@ public:
 VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, bool fullscreen )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
+  _d->locker.activate();
   setupUI( GameSettings::rcpath( "/gui/videooptions.gui" ) );
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
