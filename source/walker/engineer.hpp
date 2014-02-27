@@ -15,34 +15,25 @@
 //
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CORPSE_H_INCLUDED__
-#define __CAESARIA_CORPSE_H_INCLUDED__
 
-#include "walker.hpp"
+#ifndef __CAESARIA_ENGINEER_H_INCLUDED__
+#define __CAESARIA_ENGINEER_H_INCLUDED__
+
+#include "serviceman.hpp"
 #include "core/predefinitions.hpp"
 
 /** This is an immigrant coming with his stuff */
-class Corpse : public Walker
+class Engineer : public ServiceWalker
 {
 public:
   static WalkerPtr create( PlayerCityPtr city ); //need for walker manager
-  static void create( PlayerCityPtr city, TilePos pos,
-                      std::string rcGroup, int startIndex, int stopIndex,
-                      bool loop=false);
-  ~Corpse();
 
-  virtual void timeStep(const unsigned long time);
+  virtual ~Engineer();
 
-  virtual void save(VariantMap& stream) const;
-  virtual void load(const VariantMap& stream);
-
-  virtual const Picture& getMainPicture();
+  virtual std::string getThinks() const;
 
 protected:
-  Corpse( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  Engineer( PlayerCityPtr city );
 };
 
-#endif //__CAESARIA_CORPSE_H_INCLUDED__
+#endif //__OPENCAESAR3_CORPSE_H_INCLUDED__

@@ -36,6 +36,7 @@
 #include "fish_place.hpp"
 #include "seamerchant.hpp"
 #include "merchant.hpp"
+#include "engineer.hpp"
 #include <map>
 
 using namespace constants;
