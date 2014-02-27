@@ -13,14 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #include "amphitheater.hpp"
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
 #include "training.hpp"
-#include "core/gettext.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
@@ -45,6 +43,18 @@ std::string Amphitheater::getSound() const
             : "");
 }
 
+std::string Amphitheater::getWorkersState() const
+{
+  if( getWorkersCount() > 0 )
+  {
+    if( getShowsCount() == 0 ) { return "##amphitheater_have_never_show##"; }
+    if( _traineeMap[ walker::gladiator ] == 0 ) { return "##amphitheater_have_only_shows##"; }
+    if( _traineeMap[ walker::actor ] == 0 ) { return "##amphitheater_have_only_battles##"; }
+  }
+
+  return EntertainmentBuilding::getWorkersState();
+}
+
 void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
 {
   EntertainmentBuilding::build( city, pos );
@@ -53,13 +63,13 @@ void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
   ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
   if( actors.empty() )
   {
-    _setError( _("##need_actor_colony##") );
+    _setError( "##need_actor_colony##" );
   }
 
   GladiatorSchoolList gladiators = helper.find<GladiatorSchool>( building::gladiatorSchool );
   if( gladiators.empty() )
   {
-    _setError( _("##colloseum_haveno_gladiatorpit##") );
+    _setError( "##colloseum_haveno_gladiatorpit##" );
   }
 }
 

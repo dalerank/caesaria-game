@@ -135,6 +135,12 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     positiveIdeas.push_back( "##" + walkerTypename + "_average_life##" );
   }
 
+  if( params.education > 90 )
+  {
+    positiveIdeas.push_back( "##" + walkerTypename + "_good_education##" );
+    positiveIdeas << "##citizen_good_education##";
+  }
+
   if( !positiveIdeas.empty() )
   {
     return positiveIdeas.rand();
