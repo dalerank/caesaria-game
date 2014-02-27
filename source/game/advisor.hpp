@@ -12,20 +12,38 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__
 
-#include "gfx/predefinitions.hpp"
-#include "objects/predefinitions.hpp"
-#include "walker/predefinitions.hpp"
-#include "world/predefinitions.hpp"
-#include "core/predefinitions.hpp"
-#include "events/predefinitions.hpp"
-#include "gui/predefinitions.hpp"
-#include "city/predefinitions.hpp"
-#include "advisor.hpp"
+#ifndef _CAESARIA_ADVISOR_INCLUDE_H_
+#define _CAESARIA_ADVISOR_INCLUDE_H_
 
-PREDEFINE_CLASS_SMARTPOINTER(Player)
+namespace constants
+{
 
-#endif //__CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__
+namespace advisor
+{
+
+enum Type
+{
+  employers=0,
+  military,
+  empire,
+  ratings,
+  trading,
+  population,
+  health,
+  education,
+  entertainment,
+  religion,
+  finance,
+  main,
+  count
+};
+
+} //end namespace advisor
+
+} //end namespace constants
+
+#endif  //_CAESARIA_ADVISOR_INCLUDE_H_

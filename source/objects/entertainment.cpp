@@ -56,6 +56,8 @@ EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
      Logger::warning( "Wrong entertainment service type %d", service );
    break;
    }
+
+   _showCounter = 0;
 }
 
 void EntertainmentBuilding::deliverService()
@@ -76,6 +78,7 @@ void EntertainmentBuilding::deliverService()
     if( getWalkers().empty() )
     {
       ServiceBuilding::deliverService();
+      _showCounter++;
 
       if( !getWalkers().empty() )
       {
@@ -107,7 +110,20 @@ float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
   return ServiceBuilding::evaluateTrainee( traineeType );
 }
 
-bool EntertainmentBuilding::isShow() const {  return true; }
+bool EntertainmentBuilding::isShow() const { getAnimation().isRunning(); }
+unsigned int EntertainmentBuilding::getShowsCount() const { return _showCounter; }
+
+void EntertainmentBuilding::save(VariantMap& stream) const
+{
+  ServiceBuilding::save( stream );
+  stream[ "showCounter" ] = _showCounter;
+}
+
+void EntertainmentBuilding::load(const VariantMap& stream)
+{
+  ServiceBuilding::load( stream );
+  _showCounter = (int)stream.get( "showCounter" );
+}
 
 int EntertainmentBuilding::_getTraineeLevel()
 {

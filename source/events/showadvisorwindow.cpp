@@ -25,7 +25,7 @@ using namespace constants;
 namespace events
 {
 
-GameEventPtr ShowAdvisorWindow::create(bool show, int advisor)
+GameEventPtr ShowAdvisorWindow::create(bool show, constants::advisor::Type advisor)
 {
   ShowAdvisorWindow* ev = new ShowAdvisorWindow();
   ev->_show = show;
@@ -54,11 +54,11 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     if( !wndList.empty() )
     {
       wndList.front()->bringToFront();
-      wndList.front()->showAdvisor( (AdvisorType)_advisor );
+      wndList.front()->showAdvisor( _advisor );
     }
     else
     {
-      gui::AdvisorsWindow::create( game.getGui()->getRootWidget(), -1, (AdvisorType)_advisor, game.getCity() );
+      gui::AdvisorsWindow::create( game.getGui()->getRootWidget(), -1, _advisor, game.getCity() );
     }
   }
   else

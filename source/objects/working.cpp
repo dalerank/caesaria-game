@@ -71,6 +71,7 @@ std::string WorkingBuilding::getWorkersProblem() const
   return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), workKoeffStr[ (int)workKoeff ] );
 }
 
+std::string WorkingBuilding::getWorkersState() const { return ""; }
 void WorkingBuilding::setMaxWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
 int WorkingBuilding::getMaxWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}

@@ -26,11 +26,18 @@
 #include "label.hpp"
 #include "good/goodhelper.hpp"
 #include "texturedbutton.hpp"
+#include "events/showadvisorwindow.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
 namespace gui
 {
+
+namespace {
+  int advisorBtnId = 0x2552;
+  Signal0<> invalidBtnClickedSignal;
+}
 
 InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
@@ -49,11 +56,23 @@ InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
   lb->setTextOffset( Point( 30, 0 ));
 
   new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
-  new TexturedButton( this, Point( 350, 215 ), Size(28), -1, 289 );
+  TexturedButton* btnAdvisor = new TexturedButton( this, Point( 350, 215 ), Size(28), advisorBtnId, 289 );
+  CONNECT( btnAdvisor, onClicked(), this, InfoBoxSenate::_showRatingAdvisor );
+  CONNECT( btnAdvisor, onClicked(), this, InfoBoxSenate::deleteLater );
 }
 
-InfoBoxSenate::~InfoBoxSenate()
+InfoBoxSenate::~InfoBoxSenate() {}
+
+Signal0<>& InfoBoxSenate::onButtonAdvisorClicked()
 {
+  TexturedButton* btn = safety_cast<TexturedButton*>( findChild( advisorBtnId, true ) );
+  return btn ? btn->onClicked() : invalidBtnClickedSignal;
+}
+
+void InfoBoxSenate::_showRatingAdvisor()
+{
+  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::ratings );
+  e->dispatch();
 }
 
 }//end namespace gui

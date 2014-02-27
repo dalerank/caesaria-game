@@ -18,11 +18,12 @@
   
 #include "walker/predefinitions.hpp"
 #include "city/city.hpp"
+#include "core/stringarray.hpp"
 
 class WalkerThinks
 {
 public:
-  static std::string check( WalkerPtr walker, PlayerCityPtr city );
+  static std::string check( WalkerPtr walker, PlayerCityPtr city, const StringArray& own=StringArray() );
 };
 
 #endif //__CAESARIA_WALKER_THINKS_H_INCLUDED__

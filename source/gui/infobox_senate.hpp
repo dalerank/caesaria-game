@@ -16,10 +16,8 @@
 #ifndef _CAESARIA_INFOBOXSENATE_H_INCLUDE_
 #define _CAESARIA_INFOBOXSENATE_H_INCLUDE_
 
-#include <string>
-#include <list>
-
 #include "info_box.hpp"
+#include "core/signals.hpp"
 
 namespace gui
 {
@@ -29,6 +27,12 @@ class InfoBoxSenate : public InfoboxSimple
 public:
   InfoBoxSenate( Widget* parent, const Tile& tile );
   virtual ~InfoBoxSenate();
+
+public oc3_signals:
+  Signal0<>& onButtonAdvisorClicked();
+
+private oc3_slots:
+  void _showRatingAdvisor();
 };
 
 }//end namespace gui

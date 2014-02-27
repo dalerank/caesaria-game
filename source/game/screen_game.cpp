@@ -63,6 +63,7 @@
 #include "events/showadvisorwindow.hpp"
 
 using namespace gui;
+using namespace constants;
 
 class ScreenGame::Impl
 {
@@ -86,7 +87,7 @@ public:
 
   void showSaveDialog();
   void showEmpireMapWindow();
-  void showAdvisorsWindow( const int advType );
+  void showAdvisorsWindow(const advisor::Type advType );
   void showAdvisorsWindow();
   void showMissionTaretsWindow();
   void showTradeAdvisorWindow();
@@ -448,13 +449,13 @@ bool ScreenGame::installEventHandler(EventHandlerPtr handler) {  _d->eventHandle
 void ScreenGame::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
 void ScreenGame::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void ScreenGame::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
-void ScreenGame::Impl::showAdvisorsWindow(){  showAdvisorsWindow( ADV_EMPLOYERS ); }
-void ScreenGame::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( ADV_TRADING ); }
+void ScreenGame::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
+void ScreenGame::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
 void ScreenGame::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->getGui()->getRootWidget(), game->getCity() ); }
 void ScreenGame::_resolveEndGame(){  _d->result = ScreenGame::mainMenu;  stop();}
 void ScreenGame::_resolveExitGame(){  _d->result = ScreenGame::quitGame;  stop();}
 
-void ScreenGame::Impl::showAdvisorsWindow( const int advType )
+void ScreenGame::Impl::showAdvisorsWindow( const advisor::Type advType )
 {  
   events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
   e->dispatch();

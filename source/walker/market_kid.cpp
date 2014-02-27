@@ -23,6 +23,7 @@
 #include "name_generator.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
+#include "thinks.hpp"
 
 using namespace constants;
 
@@ -135,6 +136,14 @@ void MarketKid::die()
   Walker::die();
 
   Corpse::create( _getCity(), pos(), ResourceGroup::carts, 465, 472 );
+}
+
+void MarketKid::_updateThinks()
+{
+  StringArray ownThinks;
+  ownThinks << "##market_kid_say_1##";
+
+  setThinks( WalkerThinks::check( this, _getCity(), ownThinks ) );
 }
 
 GoodStock& MarketKid::getBasket(){  return _d->basket;}

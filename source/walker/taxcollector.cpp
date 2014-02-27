@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "taxcollector.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "city/funds.hpp"
 #include "objects/house.hpp"
 #include "name_generator.hpp"
@@ -23,6 +23,7 @@
 #include "objects/senate.hpp"
 #include "objects/forum.hpp"
 #include "core/foreach.hpp"
+#include "objects/house_level.hpp"
 #include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 
@@ -55,6 +56,29 @@ void TaxCollector::_changeTile()
       _d->history[ posStr ] += tax;
     }
   }
+}
+
+std::string TaxCollector::getThinks() const
+{
+  CityHelper helper( _getCity() );
+  TilePos offset( 2, 2 );
+  HouseList houses = helper.find<House>( building::house, pos() - offset, pos() + offset );
+  unsigned int poorHouseCounter=0;
+
+  foreach( h, houses )
+  {
+    if( (*h)->getSpec().getTaxRate() < 10 )
+    {
+      poorHouseCounter++;
+    }
+  }
+
+  if( poorHouseCounter > houses.size() / 2 )
+  {
+    return "##tax_collector_very_little_tax##";
+  }
+
+  return ServiceWalker::getThinks();
 }
 
 TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )

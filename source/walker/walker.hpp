@@ -118,6 +118,7 @@ protected:
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setPosOnMap( Point pos );
+  virtual void _updateThinks();
   Point _getPosOnMap() const;
 
 private:

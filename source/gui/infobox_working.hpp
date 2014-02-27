@@ -35,6 +35,10 @@ public:
   virtual void setText(const std::string& text);
 
   virtual void showDescription();
+
+protected:
+  WorkingBuildingPtr _getBuilding();
+
 private:
   WorkingBuildingPtr _working;
 };

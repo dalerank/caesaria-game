@@ -126,3 +126,20 @@ void ServiceBuilding::load( const VariantMap& stream )
 int ServiceBuilding::getServiceDelay() const{  return _d->serviceDelay;}
 ServiceBuilding::~ServiceBuilding() {}
 unsigned int ServiceBuilding::getWalkerDistance() const{  return 5; }
+
+std::string ServiceBuilding::getWorkersState() const
+{
+  std::string srvcType = MetaDataHolder::getTypename( getType() );
+  std::string state = "unknown";
+
+  if( getWalkers().size() > 0 )
+  {
+    state = "on_patrol";
+  }
+  else if( getWorkersCount() > 0 && _d->serviceTimer < _d->serviceDelay / 4 )
+  {
+    state = "ready_for_work";
+  }
+  std::string currentState = StringHelper::format( 0xff, "##%s_%s##", srvcType.c_str(), state.c_str() );
+  return currentState;
+}

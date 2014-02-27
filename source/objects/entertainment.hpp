@@ -32,9 +32,13 @@ public:
 
   virtual float evaluateTrainee(constants::walker::Type  traineeType);
   virtual bool isShow() const;
+  virtual unsigned int getShowsCount() const;
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 protected:
   int _getTraineeLevel();
+  unsigned int _showCounter;
 };
 
 class Theater : public EntertainmentBuilding

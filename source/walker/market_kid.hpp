@@ -35,7 +35,8 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void die();
 
-protected:
+protected: 
+  virtual void _updateThinks();
   virtual void _reachedPathway();
 
 private:

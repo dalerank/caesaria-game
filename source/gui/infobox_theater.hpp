@@ -13,19 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__
+#ifndef _CAESARIA_INFOBOX_THEATER_H_INCLUDE_
+#define _CAESARIA_INFOBOX_THEATER_H_INCLUDE_
 
-#include "gfx/predefinitions.hpp"
-#include "objects/predefinitions.hpp"
-#include "walker/predefinitions.hpp"
-#include "world/predefinitions.hpp"
-#include "core/predefinitions.hpp"
-#include "events/predefinitions.hpp"
-#include "gui/predefinitions.hpp"
-#include "city/predefinitions.hpp"
-#include "advisor.hpp"
+#include "infobox_working.hpp"
 
-PREDEFINE_CLASS_SMARTPOINTER(Player)
+namespace gui
+{
 
-#endif //__CAESARIA_GAME_PREDEFINITIONS_H_INCLUDED__
+class InfoboxTheater : public InfoboxWorkingBuilding
+{
+public:
+  InfoboxTheater( Widget* parent, const Tile& tile );
+  virtual ~InfoboxTheater();
+};
+
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_THEATER_H_INCLUDE_

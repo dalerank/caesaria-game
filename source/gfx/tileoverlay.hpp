@@ -61,6 +61,7 @@ public:
   virtual std::string getSound() const;
 
   void setAnimation( const Animation& animation );
+  const Animation& getAnimation() const;
 
   virtual const PicturesArray& getPictures( Renderer::Pass pass ) const;
   virtual Renderer::PassQueue getPassQueue() const;

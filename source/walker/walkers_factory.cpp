@@ -107,7 +107,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::prefect, new BaseCreator<Prefect>() );
   addCreator( walker::priest, new ServicemanCreator( Service::religionCeres ) );
   addCreator( walker::taxCollector, new BaseCreator<TaxCollector>() );
-  addCreator( walker::engineer, new ServicemanCreator( Service::engineer ));
+  addCreator( walker::engineer, new BaseCreator< Engineer >() );
   addCreator( walker::doctor, new ServicemanCreator( Service::doctor ) );
   addCreator( walker::sheep, new BaseCreator< Sheep >() );
   addCreator( walker::marketLady, new BaseCreator< MarketLady >() );

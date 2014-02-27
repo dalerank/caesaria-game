@@ -60,7 +60,7 @@
 
     "enable_gradens#building_options" : {
       population : 250
-      buildings : { gardens : true, baths : true, theater : true, artist_colony : true, school : true }
+      buildings : { garden : true, baths : true, theater : true, artist_colony : true, school : true }
     }
 
     "taxes_and_industry#tutorial_window" : {

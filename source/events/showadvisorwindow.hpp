@@ -24,7 +24,7 @@ namespace events
 class ShowAdvisorWindow : public GameEvent
 {
 public:
-  static GameEventPtr create( bool show, int advisor );
+  static GameEventPtr create(bool show, constants::advisor::Type advisor );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -32,7 +32,7 @@ protected:
 
 private:
   bool _show;
-  int _advisor;
+  constants::advisor::Type _advisor;
 };
 
 } //end namespace events

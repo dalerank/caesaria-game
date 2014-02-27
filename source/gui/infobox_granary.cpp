@@ -44,9 +44,9 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   setTitle( _(title) );
 
   // summary: total stock, free capacity
-  std::string desc = StringHelper::format( 0xff, "%d %s %d",
+  std::string desc = StringHelper::format( 0xff, "%d %s, %s %d",
                                            _granary->getGoodStore().getQty(),
-                                           _("##units_in_stock_freespace_for##"),
+                                           _("##units_in_stock##"), _("##freespace_for##"),
                                            _granary->getGoodStore().getFreeQty() );
 
   Label* lbUnits = new Label( this, Rect( _getTitle()->getLeftdownCorner(), Size( getWidth() - 16, 40 )), desc );

@@ -408,7 +408,7 @@ std::string Walker::getThinks() const
 {
   if( _d->thinks.empty() )
   {
-    _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
+    const_cast< Walker* >( this )->_updateThinks();
   }
 
   return _d->thinks;
@@ -562,6 +562,12 @@ void Walker::_updateAnimation( const unsigned int time )
 }
 
 void Walker::_setPosOnMap(Point pos){  _d->posOnMap = pos;}
+
+void Walker::_updateThinks()
+{
+  _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
+}
+
 Point Walker::_getPosOnMap() const{  return _d->posOnMap;}
 void Walker::go(){ _d->action.action = acMove; }      // default action
 

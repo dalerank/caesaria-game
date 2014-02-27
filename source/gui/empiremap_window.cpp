@@ -40,6 +40,8 @@
 #include "events/fundissue.hpp"
 #include "events/showadvisorwindow.hpp"
 
+using namespace constants;
+
 namespace gui
 {
 
@@ -136,7 +138,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
 
 void EmpireMapWindow::Impl::showTradeAdvisorWindow()
 {
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, ADV_TRADING );
+  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::trading );
   e->dispatch();
 }
 

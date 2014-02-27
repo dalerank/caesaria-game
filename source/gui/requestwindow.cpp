@@ -27,6 +27,8 @@
 #include "events/showadvisorwindow.hpp"
 #include "game/gamedate.hpp"
 
+using namespace constants;
+
 namespace gui
 {
 
@@ -104,7 +106,7 @@ bool EmperrorRequestWindow::onEvent(const NEvent& event)
 
 void EmperrorRequestWindow::Impl::openEmperrorAdvisor()
 {
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, ADV_EMPIRE );
+  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::empire );
   e->dispatch();
 }
 

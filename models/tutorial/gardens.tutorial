@@ -1,4 +1,5 @@
 {
+ title : "##garden##
  items : [ "##can_build_gardens##",
 			"@img=picture4_00002.png",
 			"##gardens_get_desirable##",

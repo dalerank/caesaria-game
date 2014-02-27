@@ -48,6 +48,8 @@
 #include "events/fundissue.hpp"
 #include "events/showempiremapwindow.hpp"
 
+using namespace constants;
+
 namespace gui
 {
 
@@ -87,28 +89,28 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   Point tabButtonPos( (getWidth() - 636) / 2, getHeight() / 2 + 192);
 
   new gui::Image( this, tabButtonPos, Picture::load( ResourceGroup::menuMiddleIcons, 14 ) );
-  addButton( ADV_EMPLOYERS,     255, _("##visit_labor_advisor##"        ));
-  addButton( ADV_LEGION,        256, _("##visit_military_advisor##"     ));
-  addButton( ADV_EMPIRE,        257, _("##visit_imperial_advisor##"     ));
-  addButton( ADV_RATINGS,       258, _("##visit_rating_advisor##"       ));
-  addButton( ADV_TRADING,       259, _("##visit_trade_advisor##"        ));
-  addButton( ADV_POPULATION,    260, _("##visit_population_advisor##"   ));
-  addButton( ADV_HEALTH,        261, _("##visit_health_advisor##"       ));
-  addButton( ADV_EDUCATION,     262, _("##visit_education_advisor##"    ));
-  addButton( ADV_ENTERTAINMENT, 263, _("##visit_entertainment_advisor##"));
-  addButton( ADV_RELIGION,      264, _("##visit_religion_advisor##"     ));
-  addButton( ADV_FINANCE,       265, _("##visit_financial_advisor##"    ));
-  addButton( ADV_MAIN,          266, _("##visit_chief_advisor##"        ));
+  addButton( advisor::employers,     255, _("##visit_labor_advisor##"        ));
+  addButton( advisor::military,        256, _("##visit_military_advisor##"     ));
+  addButton( advisor::empire,        257, _("##visit_imperial_advisor##"     ));
+  addButton( advisor::ratings,       258, _("##visit_rating_advisor##"       ));
+  addButton( advisor::trading,       259, _("##visit_trade_advisor##"        ));
+  addButton( advisor::population,    260, _("##visit_population_advisor##"   ));
+  addButton( advisor::health,        261, _("##visit_health_advisor##"       ));
+  addButton( advisor::education,     262, _("##visit_education_advisor##"    ));
+  addButton( advisor::entertainment, 263, _("##visit_entertainment_advisor##"));
+  addButton( advisor::religion,      264, _("##visit_religion_advisor##"     ));
+  addButton( advisor::finance,       265, _("##visit_financial_advisor##"    ));
+  addButton( advisor::main,          266, _("##visit_chief_advisor##"        ));
 
-  PushButton* btn = addButton( ADV_COUNT, 609 );
+  PushButton* btn = addButton( advisor::count, 609 );
   btn->setIsPushButton( false );
 
   CONNECT( btn, onClicked(), this, AdvisorsWindow::deleteLater );
 }
 
-void AdvisorsWindow::showAdvisor( const AdvisorType type )
+void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
 {
-  if( type >= ADV_COUNT )
+  if( type >= advisor::count )
     return;
 
   Widget::Widgets children = getChildren();
@@ -129,31 +131,31 @@ void AdvisorsWindow::showAdvisor( const AdvisorType type )
 
   switch( type )
   {
-  case ADV_EMPLOYERS: _d->advisorPanel = new AdvisorEmployerWindow( _d->city, this, ADV_EMPLOYERS ); break;
-  case ADV_LEGION: _d->advisorPanel = new AdvisorLegionWindow( this, ADV_LEGION ); break;
-  case ADV_EMPIRE:
+  case advisor::employers: _d->advisorPanel = new AdvisorEmployerWindow( _d->city, this, advisor::employers ); break;
+  case advisor::military: _d->advisorPanel = new AdvisorLegionWindow( this, advisor::military ); break;
+  case advisor::empire:
     {
-      AdvisorEmperorWindow* wnd = new AdvisorEmperorWindow( _d->city, this, ADV_EMPIRE );
+      AdvisorEmperorWindow* wnd = new AdvisorEmperorWindow( _d->city, this, advisor::empire );
 
       _d->advisorPanel = wnd;
       CONNECT( wnd, onSendMoney(), _d.data(), Impl::sendMoney2City );
     }
   break;
-  case ADV_RATINGS: _d->advisorPanel = new AdvisorRatingsWindow( this, ADV_RATINGS, _d->city ); break;
-  case ADV_TRADING:
+  case advisor::ratings: _d->advisorPanel = new AdvisorRatingsWindow( this, advisor::ratings, _d->city ); break;
+  case advisor::trading:
     {
-      AdvisorTradeWindow* wnd = new AdvisorTradeWindow( _d->city, this, ADV_TRADING );
+      AdvisorTradeWindow* wnd = new AdvisorTradeWindow( _d->city, this, advisor::trading );
       _d->advisorPanel =  wnd;
       CONNECT( wnd, onEmpireMapRequest(), _d.data(), Impl::showEmpireMapWindow );
     }
   break;
 
-  case ADV_EDUCATION: _d->advisorPanel = new AdvisorEducationWindow( _d->city, this, -1 ); break;
-  case ADV_HEALTH: _d->advisorPanel = new AdvisorHealthWindow( _d->city, this, -1 ); break;
-  case ADV_ENTERTAINMENT: _d->advisorPanel = new AdvisorEntertainmentWindow( _d->city, this, -1 ); break;
-  case ADV_RELIGION: _d->advisorPanel = new AdvisorReligionWindow( _d->city, this, -1 ); break;
-  case ADV_FINANCE: _d->advisorPanel = new AdvisorFinanceWindow( _d->city, this, -1 ); break;
-  case ADV_MAIN: _d->advisorPanel = new AdvisorChiefWindow( _d->city, this, -1 );
+  case advisor::education: _d->advisorPanel = new AdvisorEducationWindow( _d->city, this, -1 ); break;
+  case advisor::health: _d->advisorPanel = new AdvisorHealthWindow( _d->city, this, -1 ); break;
+  case advisor::entertainment: _d->advisorPanel = new AdvisorEntertainmentWindow( _d->city, this, -1 ); break;
+  case advisor::religion: _d->advisorPanel = new AdvisorReligionWindow( _d->city, this, -1 ); break;
+  case advisor::finance: _d->advisorPanel = new AdvisorFinanceWindow( _d->city, this, -1 ); break;
+  case advisor::main: _d->advisorPanel = new AdvisorChiefWindow( _d->city, this, -1 );
 
   default:
   break;
@@ -179,16 +181,16 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     int id = event.gui.caller->getID();
-    if( id >= 0 && id < ADV_COUNT )
+    if( id >= 0 && id < advisor::count )
     {
-      showAdvisor( (AdvisorType)event.gui.caller->getID() );
+      showAdvisor( (constants::advisor::Type)event.gui.caller->getID() );
     }
   }
 
   return Widget::onEvent( event );
 }
 
-AdvisorsWindow* AdvisorsWindow::create( Widget* parent, int id, const AdvisorType type, PlayerCityPtr city )
+AdvisorsWindow* AdvisorsWindow::create(Widget* parent, int id, const constants::advisor::Type type, PlayerCityPtr city )
 {
   AdvisorsWindow* ret = new AdvisorsWindow( parent, id );
   ret->_d->city = city;

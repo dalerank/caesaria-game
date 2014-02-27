@@ -28,12 +28,12 @@ class PushButton;
 class AdvisorsWindow : public Widget
 {
 public:
-  static AdvisorsWindow* create(Widget* parent, int id, const AdvisorType type, PlayerCityPtr city  );
+  static AdvisorsWindow* create(Widget* parent, int id, const constants::advisor::Type type, PlayerCityPtr city  );
 
   // draw on screen
   void draw( GfxEngine& engine );
 
-  void showAdvisor( const AdvisorType type );
+  void showAdvisor( const constants::advisor::Type type );
 
   bool onEvent(const NEvent& event);
 protected:

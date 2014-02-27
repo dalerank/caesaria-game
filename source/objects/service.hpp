@@ -50,7 +50,7 @@ public:
 
   virtual unsigned int getWalkerDistance() const;
 
-  //void removeWalker( WalkerPtr walker );
+  std::string getWorkersState() const;
 private:  
   void _setLastSendService( DateTime time );
 

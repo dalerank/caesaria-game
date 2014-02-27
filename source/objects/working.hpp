@@ -49,6 +49,7 @@ public:
 
   virtual std::string getError() const;
   virtual std::string getWorkersProblem() const;
+  virtual std::string getWorkersState() const;
 
 protected:
   void _setError(const std::string& err);

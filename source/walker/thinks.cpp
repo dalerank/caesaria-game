@@ -18,44 +18,47 @@
 #include "core/logger.hpp"
 #include "walker.hpp"
 #include "constants.hpp"
-#include "core/gettext.hpp"
 #include "animals.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 
-std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
+std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const StringArray& own)
 {
   SmartPtr< CityServiceInfo > info = ptr_cast<CityServiceInfo>( city->findService( CityServiceInfo::getDefaultName() ) );
 
   if( info.isNull() )
   {
     Logger::warning( "CitizenIdea::check no city service info" );
-    return _("##unknown_reason##");
+    return "##unknown_reason##";
   }
 
   if( is_kind_of<Animal>( walker ) )
   {
     std::string text = StringHelper::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->getType() ).c_str() );
-    return _( text );
+    return text;
   }
 
-  StringArray troubles;
+  StringArray troubles = own;
   std::string walkerTypename = WalkerHelper::getTypename( walker->getType() );
   CityServiceInfo::Parameters params = info->getLast();
   if( params.monthWithFood < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_so_hungry##" );
-    troubles.push_back( "##citizen_so_hungry##" );
-    troubles.push_back( "##citizen_so_hungry2##" );
-    troubles.push_back( "##citizen_so_hungry3##" );
+    troubles << "##citizen_so_hungry##";
+    troubles << "##citizen_so_hungry2##";
+    troubles << "##citizen_so_hungry3##";
+    troubles << "##citizen_so_hungry4##";
   }
 
   if( params.godsMood < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_gods_angry##" );
-    troubles.push_back( "##citizen_gods_angry##" );
-    troubles.push_back( "##citizen_gods_angry2##" );
-    troubles.push_back( "##citizen_gods_angry3##" );
+    troubles << "##citizen_gods_angry##";
+    troubles << "##citizen_gods_angry2##";
+    troubles << "##citizen_gods_angry3##";
+    troubles << "##citizen_gods_angry4##";
+    troubles << "##citizen_gods_angry5##";
   }
 
   if( params.colloseumCoverage < 3 )
@@ -93,10 +96,13 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
   if( params.workless > 15 )
   {
     troubles.push_back( "##" + walkerTypename + "_high_workless##" );
-    troubles.push_back( "##citizen_high_workless##" );
-    troubles.push_back( "##citizen_high_workless2##" );
-    troubles.push_back( "##citizen_high_workless3##" );
-    troubles.push_back( "##citizen_high_workless4##" );
+    troubles << "##citizen_high_workless##" ;
+    troubles << "##citizen_high_workless2##";
+    troubles << "##citizen_high_workless3##";
+    troubles << "##citizen_high_workless4##";
+    troubles << "##citizen_high_workless5##";
+    troubles << "##citizen_high_workless6##";
+    troubles << "##citizen_high_workless7##";
   }
 
   if( params.tax > 10 )
@@ -112,11 +118,10 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
 
   if( !troubles.empty() )
   {
-    std::string trouble = troubles[ (int)(rand() % troubles.size()) ];
-    return _( trouble.c_str() );
+    return troubles.rand();
   }
 
-  StringArray positiveIdeas;
+  StringArray positiveIdeas = own;
   if( params.lifeValue > 90 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_perfect_life##" );
@@ -132,9 +137,8 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city)
 
   if( !positiveIdeas.empty() )
   {
-    std::string idea = positiveIdeas[ (int)(rand() % positiveIdeas.size()) ];
-    return _( idea.c_str() );
+    return positiveIdeas.rand();
   }
 
-  return _("##unknown_reason##");
+  return "##unknown_reason##";
 }

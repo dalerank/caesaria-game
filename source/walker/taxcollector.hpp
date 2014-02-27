@@ -30,6 +30,7 @@ public:
 
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;
+  virtual std::string getThinks() const;
 
 protected:
   virtual void _changeTile();

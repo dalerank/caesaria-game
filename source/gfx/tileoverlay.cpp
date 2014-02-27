@@ -193,6 +193,7 @@ TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
 const Picture& TileOverlay::getPicture() const{  return _d->picture;}
 void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}
+const Animation&TileOverlay::getAnimation() const { return _d->animation;}
 void TileOverlay::deleteLater(){  _d->isDeleted  = true;}
 void TileOverlay::destroy(){}
 Size TileOverlay::getSize() const{  return _d->size;}

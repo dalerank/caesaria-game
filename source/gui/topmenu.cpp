@@ -28,6 +28,9 @@
 #include "environment.hpp"
 #include "core/logger.hpp"
 #include "texturedbutton.hpp"
+#include "game/advisor.hpp"
+
+using namespace constants;
 
 namespace gui
 {
@@ -52,6 +55,7 @@ public:
   void resolveSave();
   void updateDate();
   void showAboutInfo();
+  void resolveAdvisorShow(int);
 
 oc3_signals public:
   Signal0<> onExitSignal;
@@ -60,7 +64,7 @@ oc3_signals public:
   Signal0<> onLoadSignal;
   Signal0<> onShowVideoOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
-  Signal1<int> onRequestAdvisorSignal;
+  Signal1<advisor::Type> onRequestAdvisorSignal;
 };
 
 /*bool TopMenu::onEvent(const NEvent& event)
@@ -185,54 +189,28 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();
-  advisersMenu->addItem( _("##adv_employments_m##"), ADV_EMPLOYERS );
-  advisersMenu->addItem( _("##adv_military_m##"   ), ADV_LEGION );
-  advisersMenu->addItem( _("##adv_empire_m##"     ), ADV_EMPIRE );
-  advisersMenu->addItem( _("##adv_ratings_m##"    ), ADV_RATINGS );
-  advisersMenu->addItem( _("##trade_advisor##"      ), ADV_TRADING );
-  advisersMenu->addItem( _("##adv_population_m##" ), ADV_POPULATION );
-  advisersMenu->addItem( _("##adv_health_m##"     ), ADV_HEALTH );
-  advisersMenu->addItem( _("##adv_education_m##"  ), ADV_EDUCATION );
-  advisersMenu->addItem( _("##adv_religion_m##"   ), ADV_RELIGION );
-  advisersMenu->addItem( _("##adv_entertainment_m##"), ADV_ENTERTAINMENT );
-  advisersMenu->addItem( _("##adv_finance_m##"    ), ADV_FINANCE );
-  advisersMenu->addItem( _("##chief_advisor##"       ), ADV_MAIN );
-  CONNECT( advisersMenu, onItemAction(), &(_d->onRequestAdvisorSignal), Signal1<int>::emit );
+  advisersMenu->addItem( _("##adv_employments_m##"), advisor::employers );
+  advisersMenu->addItem( _("##adv_military_m##"   ), advisor::military );
+  advisersMenu->addItem( _("##adv_empire_m##"     ), advisor::empire );
+  advisersMenu->addItem( _("##adv_ratings_m##"    ), advisor::ratings );
+  advisersMenu->addItem( _("##trade_advisor##"    ), advisor::trading);
+  advisersMenu->addItem( _("##adv_population_m##" ), advisor::population );
+  advisersMenu->addItem( _("##adv_health_m##"     ), advisor::health );
+  advisersMenu->addItem( _("##adv_education_m##"  ), advisor::education );
+  advisersMenu->addItem( _("##adv_religion_m##"   ), advisor::religion );
+  advisersMenu->addItem( _("##adv_entertainment_m##"), advisor::entertainment );
+  advisersMenu->addItem( _("##adv_finance_m##"    ), advisor::finance );
+  advisersMenu->addItem( _("##chief_advisor##"       ), advisor::main );
+  CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 }
 
-Signal0<>& TopMenu::onExit()
-{
-  return _d->onExitSignal;
-}
-
-Signal0<>& TopMenu::onSave()
-{
-  return _d->onSaveSignal;
-}
-
-Signal0<>& TopMenu::onEnd()
-{
-  return _d->onEndSignal;
-}
-
-Signal1<int>& TopMenu::onRequestAdvisor()
-{
-  return _d->onRequestAdvisorSignal;
-}
-
-Signal0<>& TopMenu::onLoad()
-{
-  return _d->onLoadSignal;
-}
-
-Signal0<>& TopMenu::onShowVideoOptions()
-{
-  return _d->onShowVideoOptionsSignal;
-}
-
-Signal0<>&TopMenu::onShowGameSpeedOptions()
-{
-  return _d->onShowGameSpeedOptionsSignal;
-}
+Signal0<>& TopMenu::onExit() {  return _d->onExitSignal;}
+Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal;}
+Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal;}
+Signal1<advisor::Type>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal;}
+Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal;}
+Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal;}
+Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal;}
+void TopMenu::Impl::resolveAdvisorShow(int id) { onRequestAdvisorSignal.emit( (advisor::Type)id ); }
 
 }//end namespace gui

@@ -496,6 +496,7 @@ std::string Prefect::getThinks() const
   switch( _d->action )
   {
   case Impl::go2fire: return "##prefect_goto_fire##";
+  case Impl::fightFire: return "##prefect_fight_fire##";
   default: break;
   }
 

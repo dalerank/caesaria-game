@@ -31,20 +31,9 @@ void Animation::start(bool loop)
   _d->loop = loop;
 }
 
-PicturesArray& Animation::getFrames()
-{
-  return _pictures;
-}
-
-const PicturesArray& Animation::getFrames() const
-{
-  return _pictures;
-}
-
-unsigned int Animation::getFrameCount() const
-{
-  return _pictures.size();
-}
+PicturesArray& Animation::getFrames() {  return _pictures;}
+const PicturesArray& Animation::getFrames() const{  return _pictures;}
+unsigned int Animation::getFrameCount() const{  return _pictures.size();}
 
 void Animation::setOffset( const Point& offset )
 {
@@ -88,15 +77,8 @@ const Picture& Animation::getFrame() const
                   : Picture::getInvalid();
 }
 
-int Animation::getIndex() const
-{
-  return _animIndex;
-}
-
-void Animation::setIndex(int index)
-{
-  _animIndex = math::clamp<int>( index, 0, _pictures.size()-1 );
-}
+int Animation::getIndex() const {  return _animIndex;}
+void Animation::setIndex(int index){  _animIndex = math::clamp<int>( index, 0, _pictures.size()-1 );}
 
 Animation::Animation() : _d( new Impl )
 {
@@ -104,25 +86,10 @@ Animation::Animation() : _d( new Impl )
   start( true );
 }
 
-Animation::~Animation()
-{
-
-}
-
-Animation::Animation(const Animation& other) : _d( new Impl )
-{
-  *this = other;
-}
-
-void Animation::setDelay( const unsigned int delay )
-{
-  _frameDelay = delay;
-}
-
-void Animation::setLoop( bool loop )
-{
-  _d->loop = loop;
-}
+Animation::~Animation() {}
+Animation::Animation(const Animation& other) : _d( new Impl ){  *this = other;}
+void Animation::setDelay( const unsigned int delay ){  _frameDelay = delay;}
+void Animation::setLoop( bool loop ){  _d->loop = loop;}
 
 void Animation::load( const std::string &prefix, const int start, const int number, 
                       bool reverse /*= false*/, const int step /*= 1*/ )
@@ -135,25 +102,10 @@ void Animation::load( const std::string &prefix, const int start, const int numb
   }
 }
 
-void Animation::clear()
-{
-  _pictures.clear();
-}
-
-bool Animation::isRunning() const
-{
-  return _animIndex >= 0;
-}
-
-bool Animation::isStopped() const
-{
-  return _animIndex == -1;
-}
-
-void Animation::stop()
-{
-  _animIndex = -1;
-}
+void Animation::clear() { _pictures.clear();}
+bool Animation::isRunning() const{  return _animIndex >= 0;}
+bool Animation::isStopped() const{  return _animIndex == -1;}
+void Animation::stop(){  _animIndex = -1;}
 
 Animation& Animation::operator=( const Animation& other )
 {
@@ -166,12 +118,5 @@ Animation& Animation::operator=( const Animation& other )
   return *this;
 }
 
-int Animation::size() const
-{
-  return _pictures.size();
-}
-
-bool Animation::isValid() const
-{
-  return _pictures.size() > 0;
-}
+int Animation::size() const {  return _pictures.size();}
+bool Animation::isValid() const{  return _pictures.size() > 0;}

@@ -27,6 +27,12 @@ public:
   {
     return empty() ? "" : (*this)[ (int)math::random( size() ) ];
   }
+
+  inline StringArray& operator << ( const std::string& a )
+  {
+    push_back( a );
+    return *this;
+  }
 };
 
 #endif //__OPENCAESAR3_STRINGARRAY_H_INCLUDED__

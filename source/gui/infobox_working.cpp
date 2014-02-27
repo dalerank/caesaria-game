@@ -65,14 +65,18 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
       messages.push_back( _working->getWorkersProblem() );
     }
 
-    std::string currentText = messages[ math::random( messages.size() ) ];
-    lb->setText( _( currentText ) );
+    lb->setText( _( messages.rand() ) );
   }
 }
 
 void InfoboxWorkingBuilding::showDescription()
 {
   DictionaryWindow::show( getEnvironment()->getRootWidget(), _working->getType() );
+}
+
+WorkingBuildingPtr InfoboxWorkingBuilding::_getBuilding()
+{
+  return _working;
 }
 
 }//end namespace gui

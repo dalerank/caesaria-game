@@ -137,9 +137,7 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   drawGood( house, Good::wine, 3, 1, startY );
 }
 
-InfoBoxHouse::~InfoBoxHouse()
-{
-}
+InfoBoxHouse::~InfoBoxHouse() {}
 
 void InfoBoxHouse::drawHabitants( HousePtr house )
 {
