@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#include "screen.hpp"
+#include "base.hpp"
 
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
@@ -23,15 +23,17 @@
 #include "core/eventconverter.hpp"
 #include "core/time.hpp"
 
-Screen::Screen()
+namespace scene
+{
+
+Base::Base()
 {
   _isStopped = false;
 }
 
-Screen::~Screen() {}
+Base::~Base() {}
 
-
-void Screen::drawFrame( GfxEngine &engine )
+void Base::drawFrame( GfxEngine &engine )
 {
    engine.startRenderFrame();
    
@@ -40,16 +42,11 @@ void Screen::drawFrame( GfxEngine &engine )
    engine.endRenderFrame();
 }
 
-void Screen::handleEvent( NEvent& event) {}
+void Base::handleEvent( NEvent& event) {}
+void Base::afterFrame() {}
+void Base::stop(){ _isStopped = true;}
 
-void Screen::afterFrame() {}
-
-void Screen::stop()
-{
-  _isStopped = true;
-}
-
-void Screen::update( GfxEngine &engine )
+void Base::update( GfxEngine &engine )
 {
   static unsigned int lastclock = DateTime::getElapsedTime();
   static unsigned int currentclock = 0;
@@ -72,9 +69,7 @@ void Screen::update( GfxEngine &engine )
   engine.delay( delay );
 }
 
-bool Screen::isStopped() const
-{
-  return _isStopped;
-}
+bool Base::isStopped() const{  return _isStopped;}
+bool Base::installEventHandler(EventHandlerPtr) { return false; }
 
-bool Screen::installEventHandler(EventHandlerPtr) { return false; }
+}//end namespace scene

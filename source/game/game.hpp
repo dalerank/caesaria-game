@@ -23,10 +23,12 @@
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
+#include "scene/base.hpp"
 
 #include <string>
 
 class GfxEngine;
+class Scene;
 
 class Game
 {
@@ -54,6 +56,7 @@ public:
   world::EmpirePtr getEmpire() const;
   gui::GuiEnv* getGui() const;
   GfxEngine* getEngine() const;
+  scene::Base* getScreen() const;
 
   void setPaused( bool value );
   bool isPaused() const;

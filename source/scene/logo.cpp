@@ -16,8 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2013 Dalerank, dalerank@gmail.com
 
-
-#include "screen_wait.hpp"
+#include "logo.hpp"
 
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
@@ -25,17 +24,20 @@
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 
-class ScreenWait::Impl
+namespace scene
+{
+
+class SplashScreen::Impl
 {
 public:
 	Picture bgPicture;	
 };
 
-ScreenWait::ScreenWait() : _d( new Impl ) {}
+SplashScreen::SplashScreen() : _d( new Impl ) {}
 
-ScreenWait::~ScreenWait() {}
+SplashScreen::~SplashScreen() {}
 
-void ScreenWait::initialize()
+void SplashScreen::initialize()
 {
   GfxEngine& engine = GfxEngine::instance();
 
@@ -46,14 +48,14 @@ void ScreenWait::initialize()
   _d->bgPicture.setOffset( Point( s.width(), -s.height() ) );
 }
 
-void ScreenWait::draw()
+void SplashScreen::draw()
 {
   GfxEngine& engine = GfxEngine::instance();
 
   engine.drawPicture( _d->bgPicture, 0, 0);
 }
 
-void ScreenWait::fadeOut()
+void SplashScreen::fadeOut()
 {
   GfxEngine& engine = GfxEngine::instance();
   engine.loadPicture( _d->bgPicture );
@@ -71,4 +73,6 @@ void ScreenWait::fadeOut()
   }
 }
 
-int ScreenWait::getResult() const { return 0; }
+int SplashScreen::getResult() const { return 0; }
+
+}//end namespace scene

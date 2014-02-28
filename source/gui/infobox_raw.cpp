@@ -40,7 +40,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
 
   Label* lbDamage = findChildA<Label*>( "lbDamage", true, this );
   Label* lbProgress = findChildA<Label*>( "lbProgress", true, this );
-  Label* lbAbout = findChildA<Label*>( "lbAbout", true, this );
+  //Label* lbAbout = findChildA<Label*>( "lbAbout", true, this );
   Label* lbProductivity = findChildA<Label*>( "lbProductivity", true, this );
 
   if( rawmb->getOutGoodType() != Good::none )

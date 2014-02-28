@@ -16,12 +16,12 @@
 #ifndef _CAESARIA_INFOBOX_COLLOSEUM_H_INCLUDE_
 #define _CAESARIA_INFOBOX_COLLOSEUM_H_INCLUDE_
 
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 
 namespace gui
 {
 
-class InfoboxColosseum : public InfoboxSimple
+class InfoboxColosseum : public InfoboxConstruction
 {
 public:
   InfoboxColosseum( Widget* parent, const Tile& tile );

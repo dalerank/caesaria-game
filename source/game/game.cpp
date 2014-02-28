@@ -17,7 +17,7 @@
 // Copyright 2012-2013 dalerank, dalerankn8@gmail.com
 
 #include "game.hpp"
-#include "game/screen_wait.hpp"
+#include "scene/logo.hpp"
 #include "city/build_options.hpp"
 #include "core/stringhelper.hpp"
 #include "city/city.hpp"
@@ -25,8 +25,8 @@
 #include "gfx/sdl_engine.hpp"
 #include "sound/engine.hpp"
 #include "gfx/picture_bank.hpp"
-#include "screen_menu.hpp"
-#include "screen_game.hpp"
+#include "scene/menu.hpp"
+#include "scene/level.hpp"
 #include "gui/environment.hpp"
 #include "settings.hpp"
 #include "divinity.hpp"
@@ -59,6 +59,7 @@ class Game::Impl
 {
 public:
   ScreenType nextScreen;
+  scene::Base* currentScreen;
   GfxEngine* engine;
   gui::GuiEnv* gui;
 
@@ -143,8 +144,9 @@ void Game::Impl::initPictures(vfs::Path resourcePath)
 
 void Game::setScreenMenu()
 {
-  ScreenMenu screen( *this, *_d->engine );
+  scene::ScreenMenu screen( *this, *_d->engine );
   screen.initialize();
+  _d->currentScreen = &screen;
 
   while( !screen.isStopped() )
   {
@@ -155,7 +157,7 @@ void Game::setScreenMenu()
 
   switch( screen.getResult() )
   {
-    case ScreenMenu::startNewGame:
+    case scene::ScreenMenu::startNewGame:
     {
       /* temporary*/     
       std::srand( DateTime::getElapsedTime() );
@@ -168,12 +170,12 @@ void Game::setScreenMenu()
     }
     break;
 
-    case ScreenMenu::reloadScreen:
+    case scene::ScreenMenu::reloadScreen:
       _d->nextScreen = SCREEN_MENU;
     break;
    
-    case ScreenMenu::loadSavedGame:
-    case ScreenMenu::loadMission:
+    case scene::ScreenMenu::loadSavedGame:
+    case scene::ScreenMenu::loadMission:
     {        
       //load( GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
       load( screen.getMapName() );
@@ -183,7 +185,7 @@ void Game::setScreenMenu()
     }
     break;
 
-    case ScreenMenu::loadMap:
+    case scene::ScreenMenu::loadMap:
     {
       load( screen.getMapName() );
       Logger::warning( "screen menu: end loading map" );
@@ -196,7 +198,7 @@ void Game::setScreenMenu()
     }
     break;
    
-    case ScreenMenu::closeApplication:
+    case scene::ScreenMenu::closeApplication:
     {
       _d->nextScreen = SCREEN_QUIT;
     }
@@ -210,10 +212,11 @@ void Game::setScreenMenu()
 void Game::setScreenGame()
 {
   Logger::warning( "game: enter setScreenGame" );
-  ScreenGame screen( *this, *_d->engine );
+  scene::Level screen( *this, *_d->engine );
   
   Logger::warning( "game: start initialize" );
   screen.initialize();
+  _d->currentScreen = &screen;
 
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
@@ -241,9 +244,9 @@ void Game::setScreenGame()
 
   switch( screen.getResult() )
   {
-    case ScreenGame::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
-    case ScreenGame::loadGame: load( screen.getMapName() ); _d->nextScreen = SCREEN_GAME; break;
-    case ScreenGame::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
+    case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
+    case scene::Level::loadGame: load( screen.getMapName() ); _d->nextScreen = SCREEN_GAME; break;
+    case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
     default: _d->nextScreen = SCREEN_QUIT;
   }
 }
@@ -355,7 +358,7 @@ void Game::initialize()
   //SoundEngine::instance().play_music("resources/sound/drums.wav");
   mountArchives();  // init some quick pictures for screenWait
 
-  ScreenWait screen;
+  scene::SplashScreen screen;
   screen.initialize();
   screen.update( *_d->engine );
 

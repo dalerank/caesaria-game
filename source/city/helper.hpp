@@ -136,6 +136,12 @@ public:
   template< class T >
   std::list< SmartPtr< T > > getProducers( const Good::Type goodtype );
 
+  template< class T >
+  SmartPtr< T > next( const SmartPtr< T > current );
+
+  template< class T >
+  SmartPtr< T > prew( const SmartPtr< T > current );
+
   TilesArray getArea( TileOverlayPtr overlay );
   TilesArray getAroundTiles( TileOverlayPtr building );
   TilesArray getArea( TilePos start, TilePos stop );
@@ -146,6 +152,26 @@ public:
 protected:
   PlayerCityPtr _city;
 };
+
+template<class T>
+SmartPtr<T> CityHelper::prew(const SmartPtr<T> current)
+{
+  if( current.isNull() )
+    return SmartPtr<T>();
+
+  std::list< SmartPtr< T > > objects = find<T>( current->getType() );
+  foreach( obj, objects )
+  {
+    if( current == *obj )
+    {
+      obj--;
+      if( obj == objects.end() ) { return objects.back(); }
+      else { return *obj; }
+    }
+  }
+
+  return SmartPtr<T>();
+}
 
 template< class T >
 std::list< SmartPtr< T > > CityHelper::find( const TileOverlay::Type type )
@@ -179,6 +205,26 @@ std::list< SmartPtr< T > > CityHelper::getProducers( const Good::Type goodtype )
   }
 
   return ret;
+}
+
+template< class T >
+SmartPtr< T > CityHelper::next( const SmartPtr< T > current )
+{
+  if( current.isNull() )
+    return SmartPtr<T>();
+
+  std::list< SmartPtr< T > > objects = find<T>( current->getType() );
+  foreach( obj, objects )
+  {
+    if( current == *obj )
+    {
+      obj++;
+      if( obj == objects.end() ) { return *objects.begin(); }
+      else { return *obj; }
+    }
+  }
+
+  return SmartPtr<T>();
 }
 
 #endif //__CAESARIA_CITYHELPER_H_INCLUDED__

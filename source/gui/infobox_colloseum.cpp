@@ -28,9 +28,10 @@ namespace gui
 {
 
 InfoboxColosseum::InfoboxColosseum(Widget *parent, const Tile &tile)
-  : InfoboxSimple( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   CollosseumPtr colloseum = ptr_cast<Collosseum>(tile.getOverlay());
+  setConstruction( ptr_cast<Construction>( colloseum ) );
   setTitle( _( MetaDataHolder::getPrettyName( building::colloseum ) ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkersCount() );

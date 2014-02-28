@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "screen_game.hpp"
+#include "level.hpp"
 
 #include <algorithm>
 
@@ -24,12 +24,12 @@
 #include "city/win_targets.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
-#include "resourcegroup.hpp"
+#include "game/resourcegroup.hpp"
 #include "gui/environment.hpp"
 #include "gui/topmenu.hpp"
 #include "gui/menu.hpp"
 #include "core/event.hpp"
-#include "infoboxmanager.hpp"
+#include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "gfx/renderermode.hpp"
 #include "gui/message_stack_widget.hpp"
@@ -38,14 +38,14 @@
 #include "gui/empiremap_window.hpp"
 #include "gui/save_dialog.hpp"
 #include "gui/advisors_window.hpp"
-#include "alarm_event_holder.hpp"
+#include "game/alarm_event_holder.hpp"
 #include "gfx/city_renderer.hpp"
-#include "game.hpp"
+#include "game/game.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "city/funds.hpp"
-#include "gamedate.hpp"
+#include "game/gamedate.hpp"
 #include "world/empire.hpp"
-#include "settings.hpp"
+#include "game/settings.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/label.hpp"
 #include "core/gettext.hpp"
@@ -54,10 +54,10 @@
 #include "events/setvideooptions.hpp"
 #include "core/logger.hpp"
 #include "walker/enemysoldier.hpp"
-#include "patrolpointeventhandler.hpp"
+#include "game/patrolpointeventhandler.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap_camera.hpp"
-#include "ambientsound.hpp"
+#include "game/ambientsound.hpp"
 #include "gui/win_mission_window.hpp"
 #include "events/showempiremapwindow.hpp"
 #include "events/showadvisorwindow.hpp"
@@ -65,7 +65,10 @@
 using namespace gui;
 using namespace constants;
 
-class ScreenGame::Impl
+namespace scene
+{
+
+class Level::Impl
 {
 public:
   typedef std::vector< EventHandlerPtr > EventHandlers;
@@ -104,7 +107,7 @@ public:
   vfs::Path getFastSaveName();
 };
 
-ScreenGame::ScreenGame(Game& game , GfxEngine& engine ) : _d( new Impl )
+Level::Level(Game& game , GfxEngine& engine ) : _d( new Impl )
 {
   _d->topMenu = NULL;
   _d->game = &game;
@@ -112,9 +115,9 @@ ScreenGame::ScreenGame(Game& game , GfxEngine& engine ) : _d( new Impl )
   _d->isPaused = false;
 }
 
-ScreenGame::~ScreenGame() {}
+Level::~Level() {}
 
-void ScreenGame::initialize()
+void Level::initialize()
 {
   PlayerCityPtr city = _d->game->getCity();
   _d->renderer.initialize( city, _d->engine );
@@ -160,8 +163,8 @@ void ScreenGame::initialize()
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
-  CONNECT( _d->topMenu, onExit(), this, ScreenGame::_resolveExitGame );
-  CONNECT( _d->topMenu, onEnd(), this, ScreenGame::_resolveEndGame );
+  CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
+  CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
@@ -195,9 +198,9 @@ void ScreenGame::initialize()
   _d->renderer.getCamera().setCenter( city->getCameraPos() );
 }
 
-std::string ScreenGame::getMapName() const{  return _d->mapToLoad;}
+std::string Level::getMapName() const{  return _d->mapToLoad;}
 
-void ScreenGame::Impl::showSaveDialog()
+void Level::Impl::showSaveDialog()
 {
   vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
   std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
@@ -211,13 +214,13 @@ void ScreenGame::Impl::showSaveDialog()
   CONNECT( dialog, onFileSelected(), game, Game::save );
 }
 
-void ScreenGame::Impl::setVideoOptions()
+void Level::Impl::setVideoOptions()
 {
   events::GameEventPtr event = events::SetVideoSettings::create();
   event->dispatch();
 }
 
-void ScreenGame::Impl::showGameSpeedOptionsDialog()
+void Level::Impl::showGameSpeedOptionsDialog()
 {
   GameSpeedOptionsWindow* dialog = new GameSpeedOptionsWindow( game->getGui()->getRootWidget(),
                                                                game->getTimeMultiplier(),
@@ -227,13 +230,13 @@ void ScreenGame::Impl::showGameSpeedOptionsDialog()
   CONNECT( dialog, onScrollSpeedChange(), &renderer.getCamera(), TilemapCamera::setScrollSpeed );
 }
 
-void ScreenGame::Impl::resolveWarningMessage(std::string text )
+void Level::Impl::resolveWarningMessage(std::string text )
 {
   events::GameEventPtr e = events::WarningMessageEvent::create( text );
   e->dispatch();
 }
 
-void ScreenGame::Impl::saveCameraPos(Point p)
+void Level::Impl::saveCameraPos(Point p)
 {
   Tile* tile = renderer.getCamera().at( Point( engine->getScreenWidth()/2, engine->getScreenHeight()/2 ), false );
 
@@ -243,22 +246,22 @@ void ScreenGame::Impl::saveCameraPos(Point p)
   }
 }
 
-void ScreenGame::Impl::makeEnemy()
+void Level::Impl::makeEnemy()
 {
   EnemySoldierPtr enemy = EnemySoldier::create( game->getCity(),
                                                 constants::walker::britonSoldier );
   enemy->send2City( game->getCity()->getBorderInfo().roadEntry );
 }
 
-void ScreenGame::Impl::makeFastSave() {  game->save( getFastSaveName().toString() ); }
+void Level::Impl::makeFastSave() {  game->save( getFastSaveName().toString() ); }
 
-void ScreenGame::_resolveFastLoad()
+void Level::_resolveFastLoad()
 {
   _d->mapToLoad = _d->getFastSaveName().toString();
   _resolveSwitchMap();
 }
 
-vfs::Path ScreenGame::Impl::getFastSaveName()
+vfs::Path Level::Impl::getFastSaveName()
 {
   vfs::Path filename = game->getCity()->getName()
                        + GameSettings::get( GameSettings::fastsavePostfix ).toString()
@@ -269,9 +272,9 @@ vfs::Path ScreenGame::Impl::getFastSaveName()
   return saveDir/filename;
 }
 
-void ScreenGame::_resolveSwitchMap() { _d->result = ScreenGame::loadGame;  stop(); }
+void Level::_resolveSwitchMap() { _d->result = Level::loadGame;  stop(); }
 
-void ScreenGame::Impl::showEmpireMapWindow()
+void Level::Impl::showEmpireMapWindow()
 {
   events::GameEventPtr e;
   if( game->getEmpire()->isAvailable() ) { e = events::ShowEmpireMapWindow::create( true ); }
@@ -280,7 +283,7 @@ void ScreenGame::Impl::showEmpireMapWindow()
   if( e.isValid() ) e->dispatch();
 }
 
-void ScreenGame::draw()
+void Level::draw()
 { 
   _d->renderer.render();
 
@@ -288,9 +291,9 @@ void ScreenGame::draw()
   _d->game->getGui()->draw();
 }
 
-void ScreenGame::animate( unsigned int time ) {  _d->renderer.animate( time ); }
+void Level::animate( unsigned int time ) {  _d->renderer.animate( time ); }
 
-void ScreenGame::afterFrame()
+void Level::afterFrame()
 {
   if( _d->lastDate.month() != GameDate::current().month() )
   {
@@ -313,12 +316,12 @@ void ScreenGame::afterFrame()
 
       _d->mapToLoad = wt.getNextMission();
 
-      CONNECT( wnd, onAcceptAssign(), this, ScreenGame::_resolveSwitchMap );
+      CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
     }
   }
 }
 
-void ScreenGame::handleEvent( NEvent& event )
+void Level::handleEvent( NEvent& event )
 {
   //After MouseDown events are send to the same target till MouseUp
   GuiEnv& gui = *_d->game->getGui();
@@ -432,7 +435,7 @@ void ScreenGame::handleEvent( NEvent& event )
   }
 }
 
-void ScreenGame::Impl::makeScreenShot()
+void Level::Impl::makeScreenShot()
 {
   DateTime time = DateTime::getCurrenTime();
 
@@ -444,19 +447,21 @@ void ScreenGame::Impl::makeScreenShot()
   GfxEngine::instance().createScreenshot( filename );
 }
 
-int ScreenGame::getResult() const {  return _d->result; }
-bool ScreenGame::installEventHandler(EventHandlerPtr handler) {  _d->eventHandlers.push_back( handler ); return true; }
-void ScreenGame::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
-void ScreenGame::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
-void ScreenGame::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
-void ScreenGame::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
-void ScreenGame::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void ScreenGame::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->getGui()->getRootWidget(), game->getCity() ); }
-void ScreenGame::_resolveEndGame(){  _d->result = ScreenGame::mainMenu;  stop();}
-void ScreenGame::_resolveExitGame(){  _d->result = ScreenGame::quitGame;  stop();}
+int Level::getResult() const {  return _d->result; }
+bool Level::installEventHandler(EventHandlerPtr handler) {  _d->eventHandlers.push_back( handler ); return true; }
+void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
+void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
+void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
+void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
+void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
+void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->getGui()->getRootWidget(), game->getCity() ); }
+void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
+void Level::_resolveExitGame(){  _d->result = Level::quitGame;  stop();}
 
-void ScreenGame::Impl::showAdvisorsWindow( const advisor::Type advType )
+void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
 {  
   events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
   e->dispatch();
 }
+
+}//end namespace scene

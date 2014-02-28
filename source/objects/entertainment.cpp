@@ -114,11 +114,7 @@ void EntertainmentBuilding::load(const VariantMap& stream)
 }
 
 EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::getNecessaryWalkers() const { return _d->necWalkers; }
-
-void EntertainmentBuilding::_addNecessaryWalker(walker::Type type)
-{
-  _d->necWalkers.push_back( type );
-}
+void EntertainmentBuilding::_addNecessaryWalker(walker::Type type){  _d->necWalkers.push_back( type );}
 
 bool EntertainmentBuilding::_isWalkerReady()
 {

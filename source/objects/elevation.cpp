@@ -24,10 +24,7 @@ Elevation::Elevation() : TileOverlay( constants::building::elevation, Size( 2 ) 
   setDebugName( CAESARIA_STR_EXT(Elevation) );
 }
 
-Elevation::~Elevation()
-{
-
-}
+Elevation::~Elevation(){}
 
 void Elevation::initTerrain(Tile& terrain)
 {
@@ -35,24 +32,15 @@ void Elevation::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlRoad, true );
 }
 
-bool Elevation::isWalkable() const
-{
-  return true;
-}
-
-bool Elevation::isFlat() const
-{
-  return true;
+bool Elevation::isWalkable() const{  return true;}
+bool Elevation::isFlat() const{  return true;
 }
 
 Point Elevation::getOffset( Tile& tile, const Point& subpos) const
 {
-  TilePos delta = pos() - tile.pos();
+  //TilePos delta = pos() - tile.pos();
 
   return Point( -(5 - subpos.y()), 0 );
 }
 
-bool Elevation::isDestructible() const
-{
-  return false;
-}
+bool Elevation::isDestructible() const{  return false;}

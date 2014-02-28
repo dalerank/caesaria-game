@@ -16,7 +16,7 @@
 #include "showtileinfo.hpp"
 #include "game/infoboxmanager.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 
 namespace events
 {
@@ -37,14 +37,25 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
 {
   switch( _mode )
   {
-  case current:  InfoboxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos ); break;
+  case current:
+  break;
 
   case next:
   case prew:
+  {
+    CityHelper helper( game.getCity() );
+    ConstructionPtr c =  ptr_cast<Construction>( game.getCity()->getOverlay( _pos ) );
+    c = (_mode == next ? helper.next( c ) : helper.prew( c ));
+
+    if( c.isValid() ) { _pos = c->pos(); }
+  }
+  break;
 
   default:
   break;
   }
+
+  InfoboxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos );
 }
 
 bool ShowTileInfo::_mayExec(Game&, unsigned int ) const { return true; }

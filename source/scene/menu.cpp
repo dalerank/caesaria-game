@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "screen_menu.hpp"
+#include "menu.hpp"
 
 #include "core/gettext.hpp"
 #include "gui/loadmapwindow.hpp"
@@ -37,6 +37,9 @@
 #include "gui/listbox.hpp"
 #include "core/locale.hpp"
 #include "core/saveadapter.hpp"
+
+namespace scene
+{
 
 class ScreenMenu::Impl
 {
@@ -281,3 +284,5 @@ int ScreenMenu::getResult() const{  return _d->result;}
 bool ScreenMenu::isStopped() const{  return _d->isStopped;}
 std::string ScreenMenu::getMapName() const{  return _d->fileMap;}
 std::string ScreenMenu::getPlayerName() const { return _d->playerName; }
+
+}//end namespace scene

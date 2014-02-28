@@ -25,6 +25,9 @@
 struct NEvent;
 class GfxEngine;
 
+namespace scene
+{
+
 class EventHandler : public ReferenceCounted
 {
 public:
@@ -34,10 +37,10 @@ public:
 typedef SmartPtr< EventHandler >  EventHandlerPtr;
 
 
-class Screen
+class Base
 {
 public:
-  virtual ~Screen();
+  virtual ~Base();
 
   virtual void handleEvent( NEvent& event);
   //virtual void handleWidgetEvent(const WidgetEvent &event, Widget *widget);
@@ -62,11 +65,12 @@ public:
   virtual bool installEventHandler( EventHandlerPtr );
 
 protected:
-  Screen();
+  Base();
 
   //WidgetEvent _wevent;  // event to pass to the main loop
   bool _isStopped;  // screen needs to stop its loop
 };
 
+}//end namespace scene
 
 #endif //_CAESARIA_SCREEN_H_INCLUDE_

@@ -42,9 +42,9 @@ PatrolPointEventHandler::PatrolPointEventHandler(Game& game, CityRenderer& rende
   _d->renderer = &renderer;
 }
 
-EventHandlerPtr PatrolPointEventHandler::create( Game& game, CityRenderer& renderer )
+scene::EventHandlerPtr PatrolPointEventHandler::create( Game& game, CityRenderer& renderer )
 {
-  EventHandlerPtr handler( new PatrolPointEventHandler( game, renderer ) );
+  scene::EventHandlerPtr handler( new PatrolPointEventHandler( game, renderer ) );
   handler->drop();
 
   return handler;

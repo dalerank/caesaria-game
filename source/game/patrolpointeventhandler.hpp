@@ -16,16 +16,16 @@
 #ifndef _CAESARIA_HOUSE_HABITANT_INCLUDE_H_
 #define _CAESARIA_HOUSE_HABITANT_INCLUDE_H_
 
-#include "screen.hpp"
+#include "scene/base.hpp"
 #include "core/scopedptr.hpp"
 
 class Game;
 class CityRenderer;
 
-class PatrolPointEventHandler : public EventHandler
+class PatrolPointEventHandler : public scene::EventHandler
 {
 public:
-  static EventHandlerPtr create( Game& game, CityRenderer& renderer );
+  static scene::EventHandlerPtr create( Game& game, CityRenderer& renderer );
 
   virtual void handleEvent(NEvent &event);
   virtual bool finished() const;

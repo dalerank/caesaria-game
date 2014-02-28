@@ -14,36 +14,50 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerank@gmail.com
 
-#ifndef _CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
-#define _CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
 
-#include "screen.hpp"
+#ifndef _CAESARIA_SCREEN_GAME_H_INCLUDE_
+#define _CAESARIA_SCREEN_GAME_H_INCLUDE_
+
+#include "base.hpp"
+#include "core/predefinitions.hpp"
 #include "core/scopedptr.hpp"
+#include "game/game.hpp"
+#include <string>
 
-class GfxEngine;
-class GuiEnv;
+class Game;
 
-// displays a background image
-class ScreenWait: public Screen
+namespace scene
+{
+
+class Level: public Base
 {
 public:
-  ScreenWait();
-  ~ScreenWait();
+  typedef enum {mainMenu=0, loadGame, quitGame} ResultType;
+  Level( Game& game, GfxEngine& engine );
+  ~Level();
 
   void initialize();
+  std::string getMapName() const;
 
+  virtual void handleEvent( NEvent& event );
   virtual void draw();
-  void fadeOut();
+  virtual void animate( unsigned int time );
+  virtual void afterFrame();
+  virtual int getResult() const;
 
-protected:
-	int getResult() const;
+  virtual bool installEventHandler(EventHandlerPtr);
 
 private:
+  void _resolveEndGame();
+  void _resolveExitGame();
+  void _resolveSwitchMap();
+  void _resolveFastLoad();
+
   class Impl;
-  ScopedPtr<Impl> _d;
+  ScopedPtr< Impl > _d;
 };
 
+}//end namespace scene
 
-#endif //_CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
+#endif //_CAESARIA_SCREEN_GAME_H_INCLUDE_

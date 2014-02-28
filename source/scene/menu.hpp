@@ -19,15 +19,18 @@
 #ifndef _CAESARIA_SCREEN_MENU_H_INCLUDE_
 #define _CAESARIA_SCREEN_MENU_H_INCLUDE_
 
-#include "screen.hpp"
+#include "base.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
 #include <string>
 
 class Game;
 
+namespace scene
+{
+
 // displays the newGame/loadGame/quitGame menu
-class ScreenMenu : public Screen
+class ScreenMenu : public Base
 {
 public:
   enum
@@ -60,5 +63,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace scene
 
 #endif //_CAESARIA_SCREEN_MENU_H_INCLUDE_
