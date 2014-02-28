@@ -32,9 +32,10 @@ namespace gui
 {
 
 InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
   FactoryPtr factory = ptr_cast<Factory>( tile.getOverlay() );
+  setConstruction( ptr_cast<Construction>( factory ) );
   _type = factory->getType();
   std::string  title = MetaDataHolder::getPrettyName( factory->getType() );
   setTitle( _(title) );

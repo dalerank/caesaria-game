@@ -59,7 +59,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
     {
     case mouseLbtnRelease:
     {
-      Tile* tile = _d->renderer->getCamera().at( event.mouse.getPosition(), true );
+      Tile* tile = _d->renderer->camera().at( event.mouse.getPosition(), true );
       if( tile )
       {
         if( _d->patrolPoint.isNull() )
@@ -93,7 +93,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
     {
       if( _d->patrolPoint.isValid() )
       {
-        Tile* tile = _d->renderer->getCamera().at( event.mouse.getPosition(), true );
+        Tile* tile = _d->renderer->camera().at( event.mouse.getPosition(), true );
         if( tile )
         {
           _d->patrolPoint->setPos( tile->pos() );

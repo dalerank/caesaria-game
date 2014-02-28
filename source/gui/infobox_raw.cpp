@@ -32,11 +32,13 @@ namespace gui
 {
 
 InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 74 ) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 74 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
   FactoryPtr rawmb = ptr_cast<Factory>( tile.getOverlay() );
   _type = rawmb->getType();
+
+  setConstruction( ptr_cast<Construction>( rawmb ) );
 
   Label* lbDamage = findChildA<Label*>( "lbDamage", true, this );
   Label* lbProgress = findChildA<Label*>( "lbProgress", true, this );

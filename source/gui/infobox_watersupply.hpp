@@ -16,13 +16,13 @@
 #ifndef _CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
 #define _CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_
 
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 
 namespace gui
 {
 
 // info box about a fontain
-class InfoboxFontain : public InfoboxSimple
+class InfoboxFontain : public InfoboxConstruction
 {
 public:
    InfoboxFontain( Widget* parent, const Tile& tile );
@@ -31,7 +31,7 @@ public:
    virtual void showDescription();
 };
 
-class InfoboxWell : public InfoboxSimple
+class InfoboxWell : public InfoboxConstruction
 {
 public:
   InfoboxWell( Widget* parent, const Tile& tile );
@@ -40,7 +40,7 @@ public:
   virtual void showDescription();
 };
 
-class InfoboxReservoir : public InfoboxSimple
+class InfoboxReservoir : public InfoboxConstruction
 {
 public:
   InfoboxReservoir( Widget* parent, const Tile& tile );

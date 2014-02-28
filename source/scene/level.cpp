@@ -155,11 +155,11 @@ void Level::initialize()
   WindowMessageStack::create( gui.getRootWidget() );
 
   _d->rightPanel->bringToFront();
-  _d->renderer.getCamera().setViewport( engine.getScreenSize() );
+  _d->renderer.camera().setViewport( engine.getScreenSize() );
 
   new SenatePopupInfo( gui.getRootWidget(), _d->renderer );
 
-  _d->game->getCity()->addService( AmbientSound::create( _d->game->getCity(), _d->renderer.getCamera() ) );
+  _d->game->getCity()->addService( AmbientSound::create( _d->game->getCity(), _d->renderer.camera() ) );
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
@@ -187,15 +187,15 @@ void Level::initialize()
 
   CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->renderer.getCamera(), TilemapCamera::setCenter );
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->renderer.camera(), TilemapCamera::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
 
-  CONNECT( &_d->renderer.getCamera(), onPositionChanged(), mmap, Minimap::setCenter );
-  CONNECT( &_d->renderer.getCamera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
-  CONNECT( mmap, onCenterChange(), &_d->renderer.getCamera(), TilemapCamera::setCenter );
+  CONNECT( &_d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter );
+  CONNECT( &_d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
+  CONNECT( mmap, onCenterChange(), &_d->renderer.camera(), TilemapCamera::setCenter );
 
   _d->showMissionTaretsWindow();
-  _d->renderer.getCamera().setCenter( city->getCameraPos() );
+  _d->renderer.camera().setCenter( city->getCameraPos() );
 }
 
 std::string Level::getMapName() const{  return _d->mapToLoad;}
@@ -227,7 +227,7 @@ void Level::Impl::showGameSpeedOptionsDialog()
                                                                0 );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
-  CONNECT( dialog, onScrollSpeedChange(), &renderer.getCamera(), TilemapCamera::setScrollSpeed );
+  CONNECT( dialog, onScrollSpeedChange(), &renderer.camera(), TilemapCamera::setScrollSpeed );
 }
 
 void Level::Impl::resolveWarningMessage(std::string text )
@@ -238,7 +238,7 @@ void Level::Impl::resolveWarningMessage(std::string text )
 
 void Level::Impl::saveCameraPos(Point p)
 {
-  Tile* tile = renderer.getCamera().at( Point( engine->getScreenWidth()/2, engine->getScreenHeight()/2 ), false );
+  Tile* tile = renderer.camera().at( Point( engine->getScreenWidth()/2, engine->getScreenHeight()/2 ), false );
 
   if( tile )
   {
@@ -463,5 +463,11 @@ void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
   events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
   e->dispatch();
 }
+
+void Level::setCameraPos(TilePos pos)
+{
+  _d->renderer.camera().setCenter( pos );
+}
+
 
 }//end namespace scene

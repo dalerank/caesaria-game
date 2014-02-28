@@ -17,6 +17,7 @@
 #include "game/infoboxmanager.hpp"
 #include "game/game.hpp"
 #include "city/helper.hpp"
+#include "movecamera.hpp"
 
 namespace events
 {
@@ -47,7 +48,13 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
     ConstructionPtr c =  ptr_cast<Construction>( game.getCity()->getOverlay( _pos ) );
     c = (_mode == next ? helper.next( c ) : helper.prew( c ));
 
-    if( c.isValid() ) { _pos = c->pos(); }
+    if( c.isValid() )
+    {
+      _pos = c->pos();
+
+      GameEventPtr e = MoveCamera::create( _pos );
+      e->dispatch();
+    }
   }
   break;
 

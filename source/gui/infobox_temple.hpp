@@ -16,12 +16,12 @@
 #ifndef _CAESARIA_INFOBOXTEMPLE_H_INCLUDE_
 #define _CAESARIA_INFOBOXTEMPLE_H_INCLUDE_
 
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 
 namespace gui
 {
 
-class InfoBoxTemple : public InfoboxSimple
+class InfoBoxTemple : public InfoboxConstruction
 {
 public:
   InfoBoxTemple( Widget* parent, const Tile& tile );

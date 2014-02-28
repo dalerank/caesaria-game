@@ -32,9 +32,12 @@ namespace gui
 {
 
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
   _granary = ptr_cast<Granary>( tile.getOverlay() );
+
+  setConstruction( ptr_cast<Construction>( _granary ) );
+
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.width())/ 2, getHeight() - 34 ), btnOrdersSize),
                                          _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );

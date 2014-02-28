@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2013 Dalerank, dalerank@gmail.com
 
-#ifndef _CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
-#define _CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
+#ifndef _CAESARIA_SCENE_LOGO_HPP_INCLUDE_
+#define _CAESARIA_SCENE_LOGO_HPP_INCLUDE_
 
 #include "base.hpp"
 #include "core/scopedptr.hpp"
@@ -47,4 +47,4 @@ private:
 
 }//end namespace scene
 
-#endif //_CAESARIA_SCREEN_WAIT_HPP_INCLUDE_
+#endif //_CAESARIA_SCENE_LOGO_HPP_INCLUDE_

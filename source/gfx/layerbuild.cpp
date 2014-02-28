@@ -384,7 +384,7 @@ LayerBuild::~LayerBuild()
 }
 
 LayerBuild::LayerBuild(CityRenderer* renderer, PlayerCityPtr city)
-  : Layer( renderer->getCamera(), city ), _d( new Impl )
+  : Layer( renderer->camera(), city ), _d( new Impl )
 {
   _d->renderer = renderer;  
 }

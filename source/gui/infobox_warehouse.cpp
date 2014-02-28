@@ -30,9 +30,11 @@ namespace gui
 {
 
 InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
   _warehouse = ptr_cast<Warehouse>( tile.getOverlay() );
+
+  setConstruction( ptr_cast<Construction>( _warehouse ) );
 
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.width()) / 2, getHeight() - 34 ), btnOrdersSize ),

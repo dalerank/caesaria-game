@@ -16,13 +16,13 @@
 #ifndef _CAESARIA_INFOBOX_GRANARY_H_INCLUDE_
 #define _CAESARIA_INFOBOX_GRANARY_H_INCLUDE_
 
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 
 namespace gui
 {
 
 // info box about a granary
-class InfoBoxGranary : public InfoboxSimple
+class InfoBoxGranary : public InfoboxConstruction
 {
 public:
   InfoBoxGranary( Widget* parent, const Tile& tile );

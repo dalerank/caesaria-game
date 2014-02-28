@@ -79,7 +79,7 @@ void SenatePopupInfo::draw( GfxEngine& painter )
 {
   Point cursorPos = getEnvironment()->getCursorPos();
 
-  Tile* tile = _d->mapRenderer->getCamera().at( cursorPos, false );
+  Tile* tile = _d->mapRenderer->camera().at( cursorPos, false );
 
   if( tile && tile->getOverlay().isValid() )
   {

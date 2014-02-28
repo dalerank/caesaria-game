@@ -160,11 +160,6 @@ void CityRenderer::render()
   }
 }
 
-TilemapCamera& CityRenderer::getCamera()
-{
-  return _d->camera;
-}
-
 void CityRenderer::handleEvent( NEvent& event )
 {
   if( event.EventType == sEventMouse )
@@ -196,6 +191,7 @@ void CityRenderer::animate(unsigned int time)
   }
 }
 
+TilemapCamera& CityRenderer::camera() {  return _d->camera; }
 Renderer::ModePtr CityRenderer::getMode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
 Tilemap& CityRenderer::getTilemap(){   return *_d->tilemap; }

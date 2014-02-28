@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef _CAESARIA_SCREEN_H_INCLUDE_
-#define _CAESARIA_SCREEN_H_INCLUDE_
+#ifndef _CAESARIA_SCENE_BASE_H_INCLUDE_
+#define _CAESARIA_SCENE_BASE_H_INCLUDE_
 
 #include "core/referencecounted.hpp"
 #include "core/smartptr.hpp"
@@ -73,4 +73,4 @@ protected:
 
 }//end namespace scene
 
-#endif //_CAESARIA_SCREEN_H_INCLUDE_
+#endif //_CAESARIA_SCENE_BASE_H_INCLUDE_

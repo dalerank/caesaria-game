@@ -56,7 +56,7 @@ public:
   world::EmpirePtr getEmpire() const;
   gui::GuiEnv* getGui() const;
   GfxEngine* getEngine() const;
-  scene::Base* getScreen() const;
+  scene::Base* getScene() const;
 
   void setPaused( bool value );
   bool isPaused() const;

@@ -19,13 +19,13 @@
 #include <string>
 #include <list>
 
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 
 namespace gui
 {
 
 // info box about a service building
-class InfoboxWorkingBuilding : public InfoboxSimple
+class InfoboxWorkingBuilding : public InfoboxConstruction
 {
   static const int lbHelpId=2;
 public:

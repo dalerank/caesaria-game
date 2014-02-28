@@ -16,14 +16,13 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 
-#ifndef _CAESARIA_SCREEN_GAME_H_INCLUDE_
-#define _CAESARIA_SCREEN_GAME_H_INCLUDE_
+#ifndef _CAESARIA_SCENE_LEVEL_H_INCLUDE_
+#define _CAESARIA_SCENE_LEVEL_H_INCLUDE_
 
 #include "base.hpp"
 #include "core/predefinitions.hpp"
 #include "core/scopedptr.hpp"
 #include "game/game.hpp"
-#include <string>
 
 class Game;
 
@@ -48,6 +47,8 @@ public:
 
   virtual bool installEventHandler(EventHandlerPtr);
 
+  void setCameraPos( TilePos pos );
+
 private:
   void _resolveEndGame();
   void _resolveExitGame();
@@ -60,4 +61,4 @@ private:
 
 }//end namespace scene
 
-#endif //_CAESARIA_SCREEN_GAME_H_INCLUDE_
+#endif //_CAESARIA_SCENE_LEVEL_H_INCLUDE_

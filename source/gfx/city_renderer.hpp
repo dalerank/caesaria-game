@@ -32,7 +32,7 @@ public:
 
   void initialize(PlayerCityPtr city, GfxEngine* engine);
 
-  TilemapCamera& getCamera();
+  TilemapCamera& camera();
 
   // draws the tilemap on the screen,
   // using a dumb back to front drawing of all pictures.

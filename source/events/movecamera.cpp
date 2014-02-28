@@ -13,23 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_INFOBOX_MARKET_H_INCLUDE_
-#define __CAESARIA_INFOBOX_MARKET_H_INCLUDE_
+#include "movecamera.hpp"
+#include "sound/engine.hpp"
+#include "game/game.hpp"
+#include "scene/level.hpp"
 
-#include "infobox_construction.hpp"
-
-namespace gui
+namespace events
 {
 
-// info box about a market
-class InfoBoxMarket : public InfoboxConstruction
+GameEventPtr MoveCamera::create( TilePos pos )
 {
-public:
-   InfoBoxMarket( Widget* parent, const Tile& tile );
-   virtual ~InfoBoxMarket();
-   
-   void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
-};
+  MoveCamera* e = new MoveCamera();
+  e->_pos = pos;
 
-}//end namespace gui
-#endif //__CAESARIA_INFOBOX_MARKET_H_INCLUDE_
+  GameEventPtr ret( e );
+  ret->drop();
+
+  return ret;
+}
+
+void MoveCamera::_exec(Game& game, unsigned int)
+{
+  scene::Level* level = safety_cast<scene::Level*>( game.getScene() );
+
+  if( level )
+  {
+    level->setCameraPos( _pos );
+  }
+}
+
+bool MoveCamera::_mayExec(Game& , unsigned int ) const { return true; }
+
+}

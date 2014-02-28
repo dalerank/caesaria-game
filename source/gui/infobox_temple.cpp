@@ -27,10 +27,12 @@ namespace gui
 {
 
 InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
   TemplePtr temple = ptr_cast<Temple>( tile.getOverlay() );
   RomeDivinityPtr divn = temple->getDivinity();
+
+  setConstruction( ptr_cast<Construction>( temple ) );
 
   bool bigTemple = temple->getSize().width() > 2;
   std::string desc = _( divn->getShortDescription() );

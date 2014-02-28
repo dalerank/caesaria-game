@@ -31,7 +31,7 @@ namespace gui
 {
 
 InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
-  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##fountain##") );
 
@@ -39,6 +39,8 @@ InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
   _getInfo()->setWordwrap( true );
 
   FountainPtr fountain = ptr_cast<Fountain>( tile.getOverlay() );
+  setConstruction( ptr_cast<Construction>( fountain ) );
+
   std::string text;
   if( fountain != 0 )
   {
@@ -57,10 +59,7 @@ InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
   _getInfo()->setText( _(text) );
 }
 
-InfoboxFontain::~InfoboxFontain()
-{
-
-}
+InfoboxFontain::~InfoboxFontain(){}
 
 void InfoboxFontain::showDescription()
 {
@@ -68,7 +67,7 @@ void InfoboxFontain::showDescription()
 }
 
 InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
-  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##reservoir##") );
 
@@ -76,6 +75,8 @@ InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
   _getInfo()->setWordwrap( true );
 
   ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.getOverlay() );
+  setConstruction( ptr_cast<Construction>( reservoir ) );
+
   std::string text;
   if( reservoir.isValid() )
   {
@@ -87,10 +88,7 @@ InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
   _getInfo()->setText( _(text) );
 }
 
-InfoboxReservoir::~InfoboxReservoir()
-{
-
-}
+InfoboxReservoir::~InfoboxReservoir() {}
 
 void InfoboxReservoir::showDescription()
 {
@@ -98,7 +96,7 @@ void InfoboxReservoir::showDescription()
 }
 
 InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
-  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect() )
+  : InfoboxConstruction( parent, Rect( 0, 0, 480, 320 ), Rect() )
 {
   setTitle( _("##well##") );
 
@@ -106,6 +104,8 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
   _getInfo()->setWordwrap( true );
 
   WellPtr well = ptr_cast<Well>( tile.getOverlay() );
+  setConstruction( ptr_cast<Construction>( well ) );
+
   std::string text;
   if( well.isValid() )
   {
@@ -147,10 +147,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
   _getInfo()->setText( _(text) );
 }
 
-InfoboxWell::~InfoboxWell()
-{
-
-}
+InfoboxWell::~InfoboxWell() {}
 
 void InfoboxWell::showDescription()
 {

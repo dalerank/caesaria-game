@@ -41,7 +41,7 @@
 namespace scene
 {
 
-class ScreenMenu::Impl
+class StartMenu::Impl
 {
 public:
   Picture bgPicture;
@@ -77,12 +77,12 @@ public:
   void resolveChangeLanguage(const gui::ListBoxItem&);
   void reload()
   {
-    result = ScreenMenu::reloadScreen;
+    result = StartMenu::reloadScreen;
     isStopped = true;
   }
 };
 
-void ScreenMenu::Impl::resolveShowLoadGameWnd()
+void StartMenu::Impl::resolveShowLoadGameWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
@@ -93,14 +93,14 @@ void ScreenMenu::Impl::resolveShowLoadGameWnd()
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
   std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
 
-  result = ScreenMenu::loadSavedGame;
+  result = StartMenu::loadSavedGame;
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect, savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
 }
 
-void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
+void StartMenu::Impl::resolveShowChangeLanguageWindow()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
@@ -125,7 +125,7 @@ void ScreenMenu::Impl::resolveShowChangeLanguageWindow()
   CONNECT( btn, onClicked(), this, Impl::reload );
 }
 
-void ScreenMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
+void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
   VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
@@ -143,7 +143,7 @@ void ScreenMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
   Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
 }
 
-void ScreenMenu::Impl::resolveChangePlayerName()
+void StartMenu::Impl::resolveChangePlayerName()
 {
   gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->getGui()->getRootWidget() );
 
@@ -152,12 +152,12 @@ void ScreenMenu::Impl::resolveChangePlayerName()
   CONNECT( dlg, onClose(), this, Impl::resolveNewGame );
 }
 
-void ScreenMenu::Impl::resolveNewGame()
+void StartMenu::Impl::resolveNewGame()
 {  
   result=startNewGame; isStopped=true;
 }
 
-void ScreenMenu::Impl::resolveCredits()
+void StartMenu::Impl::resolveCredits()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
@@ -189,7 +189,7 @@ void ScreenMenu::Impl::resolveCredits()
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
 }
 
-void ScreenMenu::Impl::resolvePlayMission()
+void StartMenu::Impl::resolvePlayMission()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
@@ -197,7 +197,7 @@ void ScreenMenu::Impl::resolvePlayMission()
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
 
-  result = ScreenMenu::loadMission;
+  result = StartMenu::loadMission;
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect,
                                                     GameSettings::rcpath( "/missions/" ), ".mission", -1 );
 
@@ -205,7 +205,7 @@ void ScreenMenu::Impl::resolvePlayMission()
   wnd->setTitle( _("##mainmenu_playmission##") );
 }
 
-void ScreenMenu::Impl::resolveShowLoadMapWnd()
+void StartMenu::Impl::resolveShowLoadMapWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
   Size rootSize = parent->getSize();
@@ -218,12 +218,12 @@ void ScreenMenu::Impl::resolveShowLoadMapWnd()
                                                     GameSettings::rcpath( "/maps/" ), ".map",
                                                     -1 );
 
-  result = ScreenMenu::loadMap;
+  result = StartMenu::loadMap;
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadmap##") );
 }
 
-ScreenMenu::ScreenMenu( Game& game, GfxEngine& engine ) : _d( new Impl )
+StartMenu::StartMenu( Game& game, GfxEngine& engine ) : _d( new Impl )
 {
   _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
@@ -231,9 +231,9 @@ ScreenMenu::ScreenMenu( Game& game, GfxEngine& engine ) : _d( new Impl )
   _d->engine = &engine;
 }
 
-ScreenMenu::~ScreenMenu() {}
+StartMenu::~StartMenu() {}
 
-void ScreenMenu::draw()
+void StartMenu::draw()
 {
   _d->game->getGui()->beforeDraw();
 
@@ -242,9 +242,9 @@ void ScreenMenu::draw()
   _d->game->getGui()->draw();
 }
 
-void ScreenMenu::handleEvent( NEvent& event ){  _d->game->getGui()->handleEvent( event );}
+void StartMenu::handleEvent( NEvent& event ){  _d->game->getGui()->handleEvent( event );}
 
-void ScreenMenu::initialize()
+void StartMenu::initialize()
 {
   Logger::warning( "ScreenMenu: initialize start");
   _d->bgPicture = Picture::load("title", 1);
@@ -280,9 +280,9 @@ void ScreenMenu::initialize()
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 }
 
-int ScreenMenu::getResult() const{  return _d->result;}
-bool ScreenMenu::isStopped() const{  return _d->isStopped;}
-std::string ScreenMenu::getMapName() const{  return _d->fileMap;}
-std::string ScreenMenu::getPlayerName() const { return _d->playerName; }
+int StartMenu::getResult() const{  return _d->result;}
+bool StartMenu::isStopped() const{  return _d->isStopped;}
+std::string StartMenu::getMapName() const{  return _d->fileMap;}
+std::string StartMenu::getPlayerName() const { return _d->playerName; }
 
 }//end namespace scene

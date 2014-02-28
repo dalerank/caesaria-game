@@ -16,12 +16,12 @@
 #ifndef _CAESARIA_INFOBOXRAW_H_INCLUDE_
 #define _CAESARIA_INFOBOXRAW_H_INCLUDE_
 
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 
 namespace gui
 {
 
-class InfoBoxRawMaterial : public InfoboxSimple
+class InfoBoxRawMaterial : public InfoboxConstruction
 {
 public:  
   InfoBoxRawMaterial( Widget* parent, const Tile& tile );

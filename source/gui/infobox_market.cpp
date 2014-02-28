@@ -29,9 +29,11 @@ namespace gui
 {
 
 InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
 {
    MarketPtr market = ptr_cast<Market>( tile.getOverlay() );
+
+   setConstruction( ptr_cast<Construction>( market ));
 
    Label* lbAbout = new Label( this, Rect( 15, 35, getWidth() - 15, 36) );
    lbAbout->setWordwrap( true );

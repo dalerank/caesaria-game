@@ -269,6 +269,7 @@ void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
     Point pos( ( rSize.width() - infoBox->getWidth() ) / 2, y );
 
     infoBox->setPosition( pos );
+    infoBox->setFocus();
   }
 }
 

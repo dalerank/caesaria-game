@@ -16,8 +16,8 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_SCREEN_MENU_H_INCLUDE_
-#define _CAESARIA_SCREEN_MENU_H_INCLUDE_
+#ifndef _CAESARIA_SCENE_STARTMENU_H_INCLUDE_
+#define _CAESARIA_SCENE_STARTMENU_H_INCLUDE_
 
 #include "base.hpp"
 #include "core/scopedptr.hpp"
@@ -30,7 +30,7 @@ namespace scene
 {
 
 // displays the newGame/loadGame/quitGame menu
-class ScreenMenu : public Base
+class StartMenu : public Base
 {
 public:
   enum
@@ -44,8 +44,8 @@ public:
     unlknowState=0xff
   } Result;
 
-  ScreenMenu( Game& game, GfxEngine& engine );
-  ~ScreenMenu();
+  StartMenu( Game& game, GfxEngine& engine );
+  ~StartMenu();
 
   virtual void handleEvent( NEvent& event);
 
@@ -66,4 +66,4 @@ private:
 
 }//end namespace scene
 
-#endif //_CAESARIA_SCREEN_MENU_H_INCLUDE_
+#endif //_CAESARIA_SCENE_STARTMENU_H_INCLUDE_

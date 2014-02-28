@@ -36,7 +36,7 @@ Dispatcher::Dispatcher() : _d( new Impl )
 
 Dispatcher::~Dispatcher(){}
 
-void Dispatcher::append( GameEventPtr event)
+void Dispatcher::append(GameEventPtr event)
 {
   if( event.isValid() )
   {

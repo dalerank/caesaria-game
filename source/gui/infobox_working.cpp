@@ -25,9 +25,11 @@ namespace gui
 {
 
 InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
   _working = building;
+
+  setConstruction( ptr_cast<Construction>( _working ) );
 
   std::string title = MetaDataHolder::getPrettyName( _working->getType() );
   setTitle( _(title) );

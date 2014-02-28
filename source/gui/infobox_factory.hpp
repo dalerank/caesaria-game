@@ -16,14 +16,14 @@
 #ifndef _CAESARIA_INFOBOXFACTORY_H_INCLUDE_
 #define _CAESARIA_INFOBOXFACTORY_H_INCLUDE_
 
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 #include "objects/factory.hpp"
 
 namespace gui
 {
 
 // info box about a factory building
-class InfoboxFactory : public InfoboxSimple
+class InfoboxFactory : public InfoboxConstruction
 {
 public:
   InfoboxFactory( Widget* parent, const Tile& tile );

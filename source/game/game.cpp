@@ -144,7 +144,7 @@ void Game::Impl::initPictures(vfs::Path resourcePath)
 
 void Game::setScreenMenu()
 {
-  scene::ScreenMenu screen( *this, *_d->engine );
+  scene::StartMenu screen( *this, *_d->engine );
   screen.initialize();
   _d->currentScreen = &screen;
 
@@ -157,7 +157,7 @@ void Game::setScreenMenu()
 
   switch( screen.getResult() )
   {
-    case scene::ScreenMenu::startNewGame:
+    case scene::StartMenu::startNewGame:
     {
       /* temporary*/     
       std::srand( DateTime::getElapsedTime() );
@@ -170,12 +170,12 @@ void Game::setScreenMenu()
     }
     break;
 
-    case scene::ScreenMenu::reloadScreen:
+    case scene::StartMenu::reloadScreen:
       _d->nextScreen = SCREEN_MENU;
     break;
    
-    case scene::ScreenMenu::loadSavedGame:
-    case scene::ScreenMenu::loadMission:
+    case scene::StartMenu::loadSavedGame:
+    case scene::StartMenu::loadMission:
     {        
       //load( GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
       load( screen.getMapName() );
@@ -185,7 +185,7 @@ void Game::setScreenMenu()
     }
     break;
 
-    case scene::ScreenMenu::loadMap:
+    case scene::StartMenu::loadMap:
     {
       load( screen.getMapName() );
       Logger::warning( "screen menu: end loading map" );
@@ -198,7 +198,7 @@ void Game::setScreenMenu()
     }
     break;
    
-    case scene::ScreenMenu::closeApplication:
+    case scene::StartMenu::closeApplication:
     {
       _d->nextScreen = SCREEN_QUIT;
     }
@@ -256,6 +256,7 @@ PlayerCityPtr Game::getCity() const { return _d->city; }
 world::EmpirePtr Game::getEmpire() const { return _d->empire; }
 gui::GuiEnv* Game::getGui() const { return _d->gui; }
 GfxEngine*Game::getEngine() const { return _d->engine; }
+scene::Base*Game::getScene() const { return _d->currentScreen; }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
