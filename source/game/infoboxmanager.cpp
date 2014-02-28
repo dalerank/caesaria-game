@@ -68,11 +68,11 @@ public:
     HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
     if( house->getHabitants().count() > 0 )
     {
-      return new InfoBoxHouse( parent, city->getTilemap().at( pos ) );
+      return new InfoboxHouse( parent, city->getTilemap().at( pos ) );
     }
     else
     {
-      return new InfoBoxFreeHouse( parent, city->getTilemap().at( pos ) );
+      return new InfoboxFreeHouse( parent, city->getTilemap().at( pos ) );
     }
   }
 };

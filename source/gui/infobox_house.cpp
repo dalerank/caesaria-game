@@ -57,7 +57,7 @@ using namespace constants;
 namespace gui
 {
 
-InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
+InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   HousePtr house = ptr_cast<House>( tile.getOverlay() );
@@ -137,9 +137,9 @@ InfoBoxHouse::InfoBoxHouse( Widget* parent, const Tile& tile )
   drawGood( house, Good::wine, 3, 1, startY );
 }
 
-InfoBoxHouse::~InfoBoxHouse() {}
+InfoboxHouse::~InfoboxHouse() {}
 
-void InfoBoxHouse::drawHabitants( HousePtr house )
+void InfoboxHouse::drawHabitants( HousePtr house )
 {
   // citizen or patrician picture
   int picId = house->getSpec().isPatrician() ? 541 : 542;
@@ -173,7 +173,7 @@ void InfoBoxHouse::drawHabitants( HousePtr house )
   lbHabitants->setText( freeRoomText );
 }
 
-void InfoBoxHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
+void InfoboxHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
 {
   int qty = house->getGoodStore().getQty( goodType );
   std::string text = StringHelper::format( 0xff, "%d", qty);

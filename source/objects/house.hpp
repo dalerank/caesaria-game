@@ -42,7 +42,7 @@ class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::damage+1, health, unemployed };
+  enum { food=Construction::count, health, unemployed };
 
   House( const int houseId=HouseLevel::smallHovel );
 

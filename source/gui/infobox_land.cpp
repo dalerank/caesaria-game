@@ -26,8 +26,9 @@ namespace gui
 InfoboxLand::InfoboxLand( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
 { 
-  Label* lbText = new Label( this, Rect( 38, 239, 470, 338 ), "", true, Label::bgNone, lbTextId );
+  Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
   lbText->setFont( Font::create( FONT_2 ) );
+  lbText->setTextAlignment( alignUpperLeft, alignCenter );
   lbText->setWordwrap( true );
 
   if( tile.getFlag( Tile::tlTree ) )
@@ -84,7 +85,7 @@ void InfoboxLand::setText( const std::string& text )
     lb->setText( text );
 }
 
-InfoBoxFreeHouse::InfoBoxFreeHouse( Widget* parent, const Tile& tile )
+InfoboxFreeHouse::InfoboxFreeHouse( Widget* parent, const Tile& tile )
     : InfoboxLand( parent, tile )
 {
   setTitle( _("##freehouse_caption##") );

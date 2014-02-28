@@ -144,9 +144,9 @@ float Building::evaluateTrainee(walker::Type traineeType)
    }
 
    int trValue = getTraineeValue( traineeType );
-   if( trValue > 0 )
+   if( trValue >= 0 )
    {
-      res = (float)( 101 - trValue );
+      res = (float)( 100 - trValue );
    }
 
    return res;
@@ -169,7 +169,7 @@ void Building::setTraineeValue(walker::Type type, int value)
 int Building::getTraineeValue(walker::Type traineeType) const
 {
   Impl::TraineeMap::iterator i = _d->traineeMap.find( traineeType );
-  return i != _d->traineeMap.end() ? i->second : 0;
+  return i != _d->traineeMap.end() ? i->second : -1;
 }
 
 Renderer::PassQueue Building::getPassQueue() const {  return buildingPassQueue;}

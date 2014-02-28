@@ -30,10 +30,10 @@ public:
   virtual void setText( const std::string& text );
 };
 
-class InfoBoxFreeHouse : public InfoboxLand
+class InfoboxFreeHouse : public InfoboxLand
 {
 public:
-  InfoBoxFreeHouse( Widget* parent, const Tile& tile );
+  InfoboxFreeHouse( Widget* parent, const Tile& tile );
 };
 
 

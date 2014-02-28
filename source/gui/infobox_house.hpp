@@ -24,11 +24,11 @@
 namespace gui
 {
 
-class InfoBoxHouse : public InfoboxSimple
+class InfoboxHouse : public InfoboxSimple
 {
 public:
-   InfoBoxHouse( Widget* parent, const Tile& tile);
-   virtual ~InfoBoxHouse();
+   InfoboxHouse( Widget* parent, const Tile& tile);
+   virtual ~InfoboxHouse();
 
    void drawHabitants(HousePtr house);
    void drawGood(HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY );

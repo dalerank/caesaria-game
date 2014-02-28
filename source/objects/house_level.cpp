@@ -237,7 +237,8 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
   int ret = 0;
   foreach( it, houses )
   {
-    if( _d->houseLevel - (*it)->getSpec().getLevel() > 2 )
+    int bLevel = (*it)->getSpec().getLevel;
+    if( bLevel > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
       oMissingRequirement = MetaDataHolder::getTypename( (*it)->getType() );

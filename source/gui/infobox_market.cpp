@@ -35,7 +35,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
 
    setConstruction( ptr_cast<Construction>( market ));
 
-   Label* lbAbout = new Label( this, Rect( 15, 35, getWidth() - 15, 36) );
+   Label* lbAbout = new Label( this, Rect( 15, 25, getWidth() - 15, 36) );
    lbAbout->setWordwrap( true );
    lbAbout->setFont( Font::create( FONT_1 ) );
    lbAbout->setTextAlignment( alignUpperLeft, alignCenter );
