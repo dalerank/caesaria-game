@@ -30,8 +30,8 @@ namespace {
 
 Well::Well() : ServiceBuilding( Service::well, building::well, Size(1) )
 {
-  _fireIncrement = 0;
-  _damageIncrement = 0;
+  updateState( Construction::inflammability, 0, false );
+  updateState( Construction::collapsibility, 0, false );
 
   setWorkers( 0 );
 }

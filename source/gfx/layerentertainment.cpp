@@ -167,16 +167,16 @@ void LayerEntertainment::handleEvent(NEvent& event)
           }
 
           int lvlValue = _getLevelValue( house );
-          if( lvlValue > 0 )
+          if( _type == citylayer::entertainment )
           {
-            if( _type == citylayer::entertainment )
-            {
-              text = StringHelper::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
-            }
-            else
-            {
-              std::string levelName;
+            text = StringHelper::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
+          }
+          else
+          {
+            std::string levelName;
 
+            if( lvlValue > 0 )
+            {
               if( lvlValue < 20 ) { levelName = "##warning_"; }
               else if( lvlValue < 40 ) { levelName = "##bad_"; }
               else if( lvlValue < 60 ) { levelName = "##simple_"; }
@@ -184,6 +184,10 @@ void LayerEntertainment::handleEvent(NEvent& event)
               else { levelName = "##awesome_"; }
 
               text = levelName + typeName + "_access##";
+            }
+            else
+            {
+              text = levelName + "_no_access";
             }
           }
         }

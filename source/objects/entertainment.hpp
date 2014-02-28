@@ -23,8 +23,13 @@
 class EntertainmentBuilding : public ServiceBuilding
 {
 public:
-  EntertainmentBuilding(const Service::Type service, const TileOverlay::Type type,
+  typedef std::vector<constants::walker::Type> NecessaryWalkers;
+
+  EntertainmentBuilding( const Service::Type service, const TileOverlay::Type type,
                          Size size);
+
+  virtual ~EntertainmentBuilding();
+
   virtual void deliverService();
   virtual int getVisitorsNumber() const;
 
@@ -36,9 +41,15 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+
+  virtual NecessaryWalkers getNecessaryWalkers() const;
+
 protected:
-  int _getTraineeLevel();
-  unsigned int _showCounter;
+  void _addNecessaryWalker( constants::walker::Type type );
+  bool _isWalkerReady();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 class Theater : public EntertainmentBuilding
@@ -60,6 +71,7 @@ class Collosseum : public EntertainmentBuilding
 public:
   Collosseum();
   virtual void deliverService();
+  virtual Service::Type getService() const;
   virtual void build(PlayerCityPtr city, const TilePos& pos);
   virtual std::string getTrouble() const;
 

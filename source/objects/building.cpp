@@ -22,6 +22,7 @@
 #include "core/exception.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
+#include "walker/trainee.hpp"
 #include "core/stringhelper.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
@@ -39,14 +40,19 @@ static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::bui
 
 class Building::Impl
 {
+public:
+  float damageIncrement;
+  float fireIncrement;
 
+  typedef std::map< constants::walker::Type, int> TraineeMap;
+  TraineeMap traineeMap;  // current level of trainees working in the building (0..200)
 };
 
 Building::Building(const TileOverlay::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
-   _damageIncrement = 1;
-   _fireIncrement = 1;
+   _d->damageIncrement = 1;
+   _d->fireIncrement = 1;
 }
 
 Building::~Building() {}
@@ -68,8 +74,8 @@ void Building::timeStep(const unsigned long time)
 {
    if (time % (GameDate::ticksInMonth() / 4 ) == 0)
    {
-      updateState( Construction::damage, _damageIncrement );
-      updateState( Construction::fire, _fireIncrement );
+      updateState( Construction::damage, getState( Construction::collapsibility ) );
+      updateState( Construction::fire, getState( Construction::inflammability ) );
    }
 
    Construction::timeStep(time);
@@ -109,17 +115,8 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
-void Building::reserveService(const Service::Type service)
-{
-   // std::cout << "reserved service" << std::endl;
-   _reservedServices.insert(service);
-}
-
-void Building::cancelService(const Service::Type service)
-{
-   // std::cout << "cancel service" << std::endl;
-   _reservedServices.erase(service);
-}
+void Building::reserveService(const Service::Type service) {   _reservedServices.insert(service);}
+void Building::cancelService(const Service::Type service){   _reservedServices.erase(service);}
 
 void Building::applyService( ServiceWalkerPtr walker)
 {
@@ -146,35 +143,36 @@ float Building::evaluateTrainee(walker::Type traineeType)
       return 0.0;
    }
 
-   if( _traineeMap.count(traineeType) == 1 )
+   int trValue = getTraineeValue( traineeType );
+   if( trValue > 0 )
    {
-      int currentLevel = _traineeMap[traineeType];
-      res = (float)( 101 - currentLevel );
+      res = (float)( 101 - trValue );
    }
 
    return res;
 }
 
-void Building::reserveTrainee(walker::Type traineeType)
+void Building::reserveTrainee(walker::Type traineeType) { _reservedTrainees.insert(traineeType); }
+void Building::cancelTrainee(walker::Type traineeType) { _reservedTrainees.erase(traineeType);}
+
+void Building::updateTrainee(  TraineeWalkerPtr walker )
 {
-   _reservedTrainees.insert(traineeType);
+   _reservedTrainees.erase( walker->getType() );
+   _d->traineeMap[ walker->getType() ] += walker->getValue() ;
 }
 
-void Building::cancelTrainee(walker::Type traineeType)
+void Building::setTraineeValue(walker::Type type, int value)
 {
-   _reservedTrainees.erase(traineeType);
+  _d->traineeMap[ type ] = value;
 }
 
-void Building::applyTrainee(walker::Type traineeType)
+int Building::getTraineeValue(walker::Type traineeType) const
 {
-   _reservedTrainees.erase(traineeType);
-   _traineeMap[traineeType] += 100;
+  Impl::TraineeMap::iterator i = _d->traineeMap.find( traineeType );
+  return i != _d->traineeMap.end() ? i->second : 0;
 }
 
-Renderer::PassQueue Building::getPassQueue() const
-{
-  return buildingPassQueue;
-}
+Renderer::PassQueue Building::getPassQueue() const {  return buildingPassQueue;}
 
 
 
@@ -190,8 +188,9 @@ Renderer::PassQueue Building::getPassQueue() const
 
 SmallStatue::SmallStatue() : Building( building::smallStatue, Size(1) )
 {
-  _fireIncrement = 0;
-  _damageIncrement = 0;
+  updateState( Construction::inflammability, 0, false );
+  updateState( Construction::collapsibility, 0, false );
+
   setPicture( ResourceGroup::govt, 1 );
 }
 
@@ -199,8 +198,9 @@ bool SmallStatue::isNeedRoadAccess() const {  return false; }
 
 MediumStatue::MediumStatue() : Building( building::middleStatue, Size(2) )
 {
-  _fireIncrement = 0;
-  _damageIncrement = 0;
+  updateState( Construction::inflammability, 0, false );
+  updateState( Construction::collapsibility, 0, false );
+
   setPicture( ResourceGroup::govt, 2);
 }
 
@@ -208,8 +208,9 @@ bool MediumStatue::isNeedRoadAccess() const {  return false; }
 
 BigStatue::BigStatue() : Building( building::bigStatue, Size(3))
 {
-  _fireIncrement = 0;
-  _damageIncrement = 0;
+  updateState( Construction::inflammability, 0, false );
+  updateState( Construction::collapsibility, 0, false );
+
   setPicture( ResourceGroup::govt, 3 );
 }
 

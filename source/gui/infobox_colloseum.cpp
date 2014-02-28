@@ -49,9 +49,6 @@ InfoboxColosseum::InfoboxColosseum(Widget *parent, const Tile &tile)
   }
 }
 
-InfoboxColosseum::~InfoboxColosseum()
-{
-
-}
+InfoboxColosseum::~InfoboxColosseum() {}
 
 }//end namespace gui

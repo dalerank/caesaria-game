@@ -29,6 +29,9 @@ using namespace constants;
 Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, building::amphitheater, Size(3))
 {
   _fgPicturesRef().resize(2);
+
+  _addNecessaryWalker( walker::actor );
+  _addNecessaryWalker( walker::gladiator );
 }
 
 void Amphitheater::timeStep(const unsigned long time)
@@ -43,13 +46,19 @@ std::string Amphitheater::getSound() const
             : "");
 }
 
+Service::Type Amphitheater::getService() const
+{
+  int gldValue = getTraineeValue( walker::gladiator );
+  return gldValue > 0 ? Service::amphitheater : Service::theater;
+}
+
 std::string Amphitheater::getWorkersState() const
 {
   if( getWorkersCount() > 0 )
   {
     if( getShowsCount() == 0 ) { return "##amphitheater_have_never_show##"; }
-    if( _traineeMap[ walker::gladiator ] == 0 ) { return "##amphitheater_have_only_shows##"; }
-    if( _traineeMap[ walker::actor ] == 0 ) { return "##amphitheater_have_only_battles##"; }
+    if( getTraineeValue( walker::gladiator ) == 0 ) { return "##amphitheater_have_only_shows##"; }
+    if( getTraineeValue( walker::actor ) == 0 ) { return "##amphitheater_have_only_battles##"; }
   }
 
   return EntertainmentBuilding::getWorkersState();

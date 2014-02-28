@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dakerankn8@gmail.com
 
 #ifndef _CAESARIA_SERVICE_BUILDING_H_INCLUDE_
 #define _CAESARIA_SERVICE_BUILDING_H_INCLUDE_
@@ -31,7 +32,7 @@ public:
 
   virtual ~ServiceBuilding();
 
-  Service::Type getService() const;
+  virtual Service::Type getService() const;
   virtual void timeStep(const unsigned long time);
   virtual void destroy();  // handles the walkers
 

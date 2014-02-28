@@ -29,14 +29,19 @@
 class Parameter
 {
 public:
-  Parameter( int t ) : type( t ) {}
-  int type;
+  typedef enum { fire=0, damage, inflammability, durability, count=0xff } Type;
+  typedef enum { absolute=0, relative=1 } Mode;
+  Parameter( Type t, double v, Mode m=absolute ) : type( t ), value( v ), mode( m) {}
+
+  Type type;
+  double value;
+  Mode mode;
 };
 
 class Construction : public TileOverlay
 {
 public:
-  typedef enum { fire=0, damage, count=0xff } Param;
+  typedef enum { fire=0, damage, inflammability, collapsibility, count=0xff } Param;
   Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 
@@ -56,6 +61,7 @@ public:
   virtual Desirability getDesirability() const;
   virtual bool canDestroy() const;
   virtual void destroy();
+
   virtual void updateState( Param param, double value, bool relative=true );
   virtual double getState( Param param ) const;
 

@@ -45,25 +45,25 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void storeGoods(GoodStock &stock, const int amount = -1);
   // evaluate the given service
-  virtual float evaluateService(ServiceWalkerPtr walker);
+  virtual float evaluateService( ServiceWalkerPtr walker);
   // handle service reservation
   void reserveService(const Service::Type service);
   void cancelService(const Service::Type service);
   virtual void applyService( ServiceWalkerPtr walker);
+
   // evaluate the need for the given trainee
   virtual float evaluateTrainee( constants::walker::Type traineeType);  // returns >0 if trainee is needed
-  void reserveTrainee( constants::walker::Type traineeType); // trainee will come
-  void cancelTrainee( constants::walker::Type traineeType);  // trainee will not come
-  virtual void applyTrainee( constants::walker::Type traineeType); // trainee arrives
+  void reserveTrainee( constants::walker::Type traineeType ); // trainee will come
+  void cancelTrainee( constants::walker::Type traineeType );  // trainee will not come
+  int getTraineeValue( constants::walker::Type traineeType ) const;
+
+  virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
+  virtual void setTraineeValue( constants::walker::Type type, int value ); // trainee arrives
+
   virtual Renderer::PassQueue getPassQueue() const;
 
 protected:
-  float _damageIncrement;
-  float _fireIncrement;
-
-  typedef std::map< constants::walker::Type, int> TraineeMap;
   std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
-  TraineeMap _traineeMap;  // current level of trainees working in the building (0..200)
   std::set< constants::walker::Type > _reservedTrainees;  // a trainee is on the way
 
   class Impl;

@@ -29,6 +29,7 @@ public:
   static TraineeWalkerPtr create( PlayerCityPtr city, constants::walker::Type traineeType );
 
   void checkDestination(const TileOverlay::Type buildingType, Propagator& pathPropagator);
+  virtual int getValue() const;
   virtual void send2City( BuildingPtr base, bool roadOnly=true );
   void setBase(Building &building);
 

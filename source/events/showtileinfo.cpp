@@ -21,10 +21,11 @@
 namespace events
 {
 
-GameEventPtr ShowTileInfo::create( TilePos pos )
+GameEventPtr ShowTileInfo::create(TilePos pos, Mode mode)
 {
   ShowTileInfo* e = new ShowTileInfo();
   e->_pos = pos;
+  e->_mode = mode;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -34,7 +35,16 @@ GameEventPtr ShowTileInfo::create( TilePos pos )
 
 void ShowTileInfo::_exec(Game& game, unsigned int time)
 {
-  InfoboxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos );
+  switch( _mode )
+  {
+  case current:  InfoboxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos ); break;
+
+  case next:
+  case prew:
+
+  default:
+  break;
+  }
 }
 
 bool ShowTileInfo::_mayExec(Game&, unsigned int ) const { return true; }

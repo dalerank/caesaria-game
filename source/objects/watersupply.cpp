@@ -244,8 +244,8 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
   _initAnimation();
   _fgPicturesRef().resize(1);
 
-  _damageIncrement = 0;
-  _fireIncrement = 0;
+  updateState( Construction::inflammability, 0, false );
+  updateState( Construction::collapsibility, 0, false );
 
   setWorkers( 1 );
 }

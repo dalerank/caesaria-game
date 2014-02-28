@@ -24,13 +24,15 @@ namespace events
 class ShowTileInfo : public GameEvent
 {
 public:
-  static GameEventPtr create( TilePos pos );
+  typedef enum { current=0, next, prew, count } Mode;
+  static GameEventPtr create( TilePos pos, Mode mode=current );
 
 private:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game&, unsigned int) const;
 
   TilePos _pos;
+  Mode _mode;
 };
 
 }

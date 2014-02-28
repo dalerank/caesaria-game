@@ -102,7 +102,9 @@ FortArea::FortArea() : Building( building::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
-  _fireIncrement = _damageIncrement = 0;
+
+  updateState( Construction::inflammability, 0, false );
+  updateState( Construction::collapsibility, 0, false );
 }
 
 FortArea::~FortArea()
@@ -156,7 +158,9 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   _d->area->drop();
 
   _d->maxSoldier = 16;
-  _fireIncrement = _damageIncrement = 0;
+
+  updateState( Construction::inflammability, 0, false );
+  updateState( Construction::collapsibility, 0, false );
 }
 
 float Fort::evaluateTrainee(walker::Type traineeType)
@@ -193,14 +197,14 @@ void Fort::timeStep( const unsigned long time )
       }
     }
 
-    int traineeLevel = _traineeMap[ walker::soldier ] / 100;
+    int traineeLevel = getTraineeValue( walker::soldier );
     // all trainees are there for the show!
-    if( traineeLevel >= 1 )
+    if( traineeLevel / 100 >= 1 )
     {
       if( getWalkers().size() < _d->maxSoldier )
       {
         _readyNewSoldier();
-        _traineeMap[ walker::soldier ] = math::clamp<int>( _traineeMap[ walker::soldier ] - 100, 0, _d->maxSoldier * 100 );
+        setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
       }
     }
   }

@@ -74,8 +74,9 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   if( params.entertainment < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_low_entertainment##" );
-    troubles.push_back( "##citizen_low_entertainment##" );
-    troubles.push_back( "##citizen_low_entertainment2##" );
+    troubles << "##citizen_low_entertainment##";
+    troubles << "##citizen_low_entertainment2##";
+    troubles << "##citizen_low_entertainment3##";
   }
   else if( params.entertainment < 20 )
   {
@@ -85,12 +86,15 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   if( params.needWorkers > 0 )
   {
     troubles.push_back( "##" + walkerTypename + "_need_workers##" );
-    troubles.push_back( "##citizen_need_workers##" );
-    troubles.push_back( "##citizen_need_workers2##" );
-    troubles.push_back( "##citizen_need_workers3##" );
-    troubles.push_back( "##citizen_need_workers4##" );
-    troubles.push_back( "##citizen_need_workers5##" );
-    troubles.push_back( "##citizen_need_workers6##" );
+    troubles << "##citizen_need_workers##";
+    troubles << "##citizen_need_workers2##";
+    troubles << "##citizen_need_workers3##";
+    troubles << "##citizen_need_workers4##";
+    troubles << "##citizen_need_workers5##";
+    troubles << "##citizen_need_workers6##";
+    troubles << "##citizen_need_workers7##";
+    troubles << "##citizen_need_workers8##";
+    troubles << "##citizen_need_workers9##";
   }
 
   if( params.workless > 15 )
@@ -103,6 +107,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     troubles << "##citizen_high_workless5##";
     troubles << "##citizen_high_workless6##";
     troubles << "##citizen_high_workless7##";
+    troubles << "##citizen_high_workless8##";
   }
 
   if( params.tax > 10 )

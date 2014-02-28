@@ -182,6 +182,11 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
   }
 }
 
+int TraineeWalker::getValue() const
+{
+  return 100;
+}
+
 void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
 {
   _d->base = base;
@@ -198,9 +203,10 @@ void TraineeWalker::_reachedPathway()
 {
   Walker::_reachedPathway();
   deleteLater();
+
   if( _d->destination.isValid() )
   {
-    _d->destination->applyTrainee( getType() );
+    _d->destination->updateTrainee( this );
   }
 }
 

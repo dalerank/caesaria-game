@@ -27,58 +27,45 @@
 
 using namespace constants;
 
+class EntertainmentBuilding::Impl
+{
+public:
+  EntertainmentBuilding::NecessaryWalkers necWalkers;
+  unsigned int showCounter;
+};
+
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
                                              const TileOverlay::Type type,
                                              Size size )
-  : ServiceBuilding(service, type, size)
+  : ServiceBuilding(service, type, size), _d( new Impl )
 {
-   switch( service )
-   {
-   case Service::theater:
-      _traineeMap[walker::actor] = 0;
-   break;
+  _d->showCounter = 0;
+}
 
-   case Service::amphitheater:
-      _traineeMap[walker::actor] = 0;
-      _traineeMap[walker::gladiator] = 0;
-   break;
+EntertainmentBuilding::~EntertainmentBuilding()
+{
 
-   case Service::colloseum:
-      _traineeMap[walker::gladiator] = 0;
-      _traineeMap[walker::lionTamer] = 0;
-   break;
-
-   case Service::hippodrome:
-     _traineeMap[walker::charioter] = 0;
-   break;
-
-   default:
-     Logger::warning( "Wrong entertainment service type %d", service );
-   break;
-   }
-
-   _showCounter = 0;
 }
 
 void EntertainmentBuilding::deliverService()
 {
   // we need all trainees types for the show
-  int minLevel = _getTraineeLevel();
-
-  if( (getWorkersCount() <= 0) )
+  if( getWorkersCount() <= 0 )
   {
     _animationRef().stop();
     return;
   }
 
+  bool isWalkerReady = _isWalkerReady();
+
   int decreaseLevel = 10;
   // all trainees are there for the show!
-  if( minLevel > 25 )
+  if( isWalkerReady )
   {
     if( getWalkers().empty() )
     {
       ServiceBuilding::deliverService();
-      _showCounter++;
+      _d->showCounter++;
 
       if( !getWalkers().empty() )
       {
@@ -93,9 +80,10 @@ void EntertainmentBuilding::deliverService()
     _animationRef().stop(); //have no actors for the show
   }
 
-  foreach( item, _traineeMap )
+  foreach( item, _d->necWalkers )
   {
-    item->second = math::clamp( item->second - decreaseLevel, 0, 100);
+    int level = getTraineeValue( *item );
+    setTraineeValue( *item, math::clamp( level - decreaseLevel, 0, 100) );
   }
 }
 
@@ -110,32 +98,41 @@ float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
   return ServiceBuilding::evaluateTrainee( traineeType );
 }
 
-bool EntertainmentBuilding::isShow() const { getAnimation().isRunning(); }
-unsigned int EntertainmentBuilding::getShowsCount() const { return _showCounter; }
+bool EntertainmentBuilding::isShow() const { return getAnimation().isRunning(); }
+unsigned int EntertainmentBuilding::getShowsCount() const { return _d->showCounter; }
 
 void EntertainmentBuilding::save(VariantMap& stream) const
 {
   ServiceBuilding::save( stream );
-  stream[ "showCounter" ] = _showCounter;
+  stream[ "showCounter" ] = _d->showCounter;
 }
 
 void EntertainmentBuilding::load(const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
-  _showCounter = (int)stream.get( "showCounter" );
+  _d->showCounter = (int)stream.get( "showCounter" );
 }
 
-int EntertainmentBuilding::_getTraineeLevel()
-{
-  int minLevel = 100;
-  foreach( item, _traineeMap ) {  minLevel = std::min( minLevel, item->second); }
+EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::getNecessaryWalkers() const { return _d->necWalkers; }
 
-  return minLevel;
+void EntertainmentBuilding::_addNecessaryWalker(walker::Type type)
+{
+  _d->necWalkers.push_back( type );
+}
+
+bool EntertainmentBuilding::_isWalkerReady()
+{
+  int maxLevel = 0;
+  foreach( item, _d->necWalkers )
+  {  maxLevel = std::max( maxLevel, getTraineeValue( *item ) ); }
+
+  return maxLevel;
 }
 
 Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, Size(2))
 {
   _fgPicturesRef().resize(2);
+  _addNecessaryWalker( walker::actor );
 }
 
 void Theater::build(PlayerCityPtr city, const TilePos& pos)
@@ -177,6 +174,9 @@ Collosseum::Collosseum() : EntertainmentBuilding(Service::colloseum, building::c
   _animationRef().setOffset( Point( 122, 81 ) );
 
   _fgPicturesRef().resize(2);
+
+  _addNecessaryWalker( walker::gladiator );
+  _addNecessaryWalker( walker::lionTamer );
 }
 
 void Collosseum::deliverService()
@@ -192,6 +192,12 @@ void Collosseum::deliverService()
     _fgPicturesRef().front() = Picture::getInvalid();
     _fgPicturesRef().back() = Picture::getInvalid();
   }
+}
+
+Service::Type Collosseum::getService() const
+{
+  int lionValue = getTraineeValue( walker::lionTamer );
+  return lionValue > 0 ? Service::colloseum : Service::amphitheater;
 }
 
 void Collosseum::build(PlayerCityPtr city, const TilePos& pos)
@@ -240,16 +246,8 @@ bool Collosseum::isNeedGladiators() const
   return colloseums.empty();
 }
 
-bool Collosseum::isShowGladiatorBattles() const
-{
-  TraineeMap::const_iterator it = _traineeMap.find( walker::gladiator );
-  return it != _traineeMap.end();
-}
-bool Collosseum::isShowLionBattles() const
-{
-  TraineeMap::const_iterator it = _traineeMap.find( walker::lionTamer );
-  return it != _traineeMap.end();
-}
+bool Collosseum::isShowGladiatorBattles() const {  return getTraineeValue( walker::gladiator ) > 0; }
+bool Collosseum::isShowLionBattles() const{  return getTraineeValue( walker::lionTamer ); }
 
 Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(5) )
 {
@@ -261,6 +259,8 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::
   _fgPicturesRef().resize(5);
   _fgPicturesRef()[0] = logo;
   _fgPicturesRef()[1] = logo1;
+
+  _addNecessaryWalker( walker::charioter );
 }
 
 std::string Hippodrome::getTrouble() const
@@ -275,4 +275,4 @@ std::string Hippodrome::getTrouble() const
   return ret;
 }
 
-bool Hippodrome::isRacesCarry() const{ return _traineeMap.at( walker::charioter ) > 0; }
+bool Hippodrome::isRacesCarry() const{ return getTraineeValue( walker::charioter ) > 0; }

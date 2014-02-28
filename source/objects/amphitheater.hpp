@@ -28,6 +28,7 @@ public:
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
   virtual std::string getSound() const;
+  virtual Service::Type getService() const;
 
   virtual std::string getWorkersState() const;
 };
