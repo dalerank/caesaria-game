@@ -37,6 +37,7 @@
 #include "seamerchant.hpp"
 #include "merchant.hpp"
 #include "engineer.hpp"
+#include "workerhunter.hpp"
 #include <map>
 
 using namespace constants;
@@ -132,6 +133,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::scholar, new ServicemanCreator( Service::school ) );
   addCreator( walker::librarian, new ServicemanCreator( Service::library ) );
   addCreator( walker::teacher, new ServicemanCreator( Service::academy ) );
+  addCreator( walker::recruter, new BaseCreator<Recruter>() );
 }
 
 WalkerManager::~WalkerManager(){}

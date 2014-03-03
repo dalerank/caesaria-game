@@ -237,7 +237,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
   int ret = 0;
   foreach( it, houses )
   {
-    int bLevel = (*it)->getSpec().getLevel;
+    int bLevel = (*it)->getSpec().getLevel();
     if( bLevel > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;

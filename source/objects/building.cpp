@@ -41,9 +41,6 @@ static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::bui
 class Building::Impl
 {
 public:
-  float damageIncrement;
-  float fireIncrement;
-
   typedef std::map< constants::walker::Type, int> TraineeMap;
   TraineeMap traineeMap;  // current level of trainees working in the building (0..200)
 };
@@ -51,8 +48,8 @@ public:
 Building::Building(const TileOverlay::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
-   _d->damageIncrement = 1;
-   _d->fireIncrement = 1;
+  updateState( Construction::inflammability, 1, false );
+  updateState( Construction::collapsibility, 1, false );
 }
 
 Building::~Building() {}

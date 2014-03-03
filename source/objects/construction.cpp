@@ -163,7 +163,7 @@ void Construction::save( VariantMap& stream) const
   VariantList vl_states;
   foreach( it, _d->params )
   {
-    vl_states.push_back( VariantList() << (int)it->first << (int)it->second );
+    vl_states.push_back( VariantList() << (int)it->first << (double)it->second );
   }
 
   stream[ "states" ] = vl_states;

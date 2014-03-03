@@ -492,13 +492,6 @@ void Walker::load( const VariantMap& stream)
   _d->pathway.load( stream.get( "pathway" ).toMap() );
   _d->thinks = stream.get( "thinks" ).toString();
 
-  if( !_d->pathway.isValid() )
-  {
-    Logger::warning( "Walker: wrong way for %s at [%d,%d]", _d->name.c_str(),
-                     _d->pos.i(), _d->pos.j() );
-    //deleteLater();
-  }
-
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
@@ -508,6 +501,13 @@ void Walker::load( const VariantMap& stream)
   if( value.isValid() )
   {
     _d->walkerGraphic = (gfx::Type)value.toInt();
+  }
+
+  if( !_d->pathway.isValid() )
+  {
+    Logger::warning( "Walker: wrong way for %s:%s at [%d,%d]",
+                     WalkerHelper::getTypename( _d->walkerType ).c_str(), _d->name.c_str(),
+                     _d->pos.i(), _d->pos.j() );
   }
   
   if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file
@@ -623,6 +623,9 @@ public:
     append( walker::fishPlace,  "fish_place",   "##wt_endeavor##" );
     append( walker::seaMerchant,"sea_merchant", "##wt_sea_merchant##" );
     append( walker::all,        "unknown",      "##wt_unknown##" );
+    append( walker::scholar,    "scholar",      "##wt_scholar##" );
+    append( walker::teacher,    "teacher",      "##wt_teacher##" );
+    append( walker::librarian,  "librarian",    "##wt_librarian##" );
   }
 };
 

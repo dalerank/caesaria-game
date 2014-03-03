@@ -30,14 +30,13 @@ using namespace constants;
 static const char* fireLevelName[] = { "##very_low_fire_risk##", "##very_low_fire_risk##", "##low_fire_risk##",
                                        "##some_fire_risk##", "##very_high_fire_risk##", "##extreme_fire_risk##" };
 
+namespace {
+  std::set<int> layerFireWalkers;
+}
+
 int LayerFire::getType() const {  return citylayer::fire; }
 
-std::set<int> LayerFire::getVisibleWalkers() const
-{
-  std::set<int> ret;
-  ret.insert( walker::prefect );
-  return ret;
-}
+std::set<int> LayerFire::getVisibleWalkers() const {  return layerFireWalkers; }
 
 void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 {
@@ -154,4 +153,5 @@ LayerFire::LayerFire(TilemapCamera& camera, PlayerCityPtr city)
   : Layer( camera, city )
 {
   _loadColumnPicture( 18 );
+  layerFireWalkers.insert( walker::prefect );
 }

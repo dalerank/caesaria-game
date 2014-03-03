@@ -28,6 +28,7 @@ public:
   virtual void handleEvent( NEvent& event );
 
   static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+
 private:
   LayerFire( TilemapCamera& camera, PlayerCityPtr city );
 };
