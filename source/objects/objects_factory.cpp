@@ -60,6 +60,7 @@
 #include "tower.hpp"
 #include "elevation.hpp"
 #include "dock.hpp"
+#include "fountain.hpp"
 #include <map>
 
 using namespace constants;

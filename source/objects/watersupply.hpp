@@ -65,25 +65,4 @@ private:
   bool _isNearWater( PlayerCityPtr city, const TilePos& pos ) const;
 };
 
-class Fountain : public ServiceBuilding
-{
-public:
-  Fountain();
-
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;
-  virtual void deliverService();
-  virtual void timeStep(const unsigned long time);
-  virtual bool isNeedRoadAccess() const;
-  virtual bool isActive() const;
-  virtual bool haveReservoirAccess() const;
-  virtual void destroy();
-
-  virtual void load( const VariantMap& stream);
-private:
-  bool _haveReservoirWater;
-  void _initAnimation();
-  int _waterIncreaseInterval;
-};
-
 #endif // __CAESARIA_WATER_BUILDGINDS_INCLUDED__

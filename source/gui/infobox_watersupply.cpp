@@ -17,13 +17,14 @@
 
 #include "infobox_watersupply.hpp"
 #include "label.hpp"
-#include "objects/watersupply.hpp"
+#include "objects/fountain.hpp"
 #include "core/gettext.hpp"
 #include "dictionary.hpp"
 #include "objects/well.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
+#include "objects/watersupply.hpp"
 
 using namespace constants;
 
