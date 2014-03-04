@@ -79,7 +79,7 @@ void Religion::update( const unsigned int time )
 
   _d->lastDate = GameDate::current();
 
-  Pantheon::Divinities divinities = Pantheon::getInstance().getAll();
+  Pantheon::Divinities divinities = Pantheon::instance().all();
 
   //clear temples info
   _d->templesCoverity.clear();

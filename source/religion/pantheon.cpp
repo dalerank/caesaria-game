@@ -34,7 +34,7 @@ public:
   Pantheon::Divinities divinties;
 };
 
-Pantheon& Pantheon::getInstance()
+Pantheon& Pantheon::instance()
 {
   static Pantheon inst;
   return inst;
@@ -42,24 +42,22 @@ Pantheon& Pantheon::getInstance()
 
 Pantheon::Pantheon() : _d( new Impl )
 {
-}
-
-RomeDivinityPtr Pantheon::ceres()
-{
-  return getInstance().get( romeDivCeres );
+  _d->divinties.push_back( RomeDivinityCeres::create() );
+  _d->divinties.push_back( RomeDivinityNeptune::create() );
+  _d->divinties.push_back( RomeDivinityMercury::create() );
 }
 
 RomeDivinityPtr Pantheon::get( RomeDivinityType name )
 {
-  if( (unsigned int)name > getInstance()._d->divinties.size() )
+  if( (unsigned int)name > instance()._d->divinties.size() )
     return RomeDivinityPtr();
 
-  return getInstance()._d->divinties[ name ];
+  return instance()._d->divinties[ name ];
 }
 
 RomeDivinityPtr Pantheon::get(std::string name)
 {
-  Divinities divines = getInstance().getAll();
+  Divinities divines = instance().all();
   foreach( current, divines )
   {
     if( (*current)->getName() == name || (*current)->getDebugName() == name )
@@ -69,24 +67,18 @@ RomeDivinityPtr Pantheon::get(std::string name)
   return RomeDivinityPtr();
 }
 
-Pantheon::Divinities Pantheon::getAll(){ return _d->divinties; }
+Pantheon::Divinities Pantheon::all(){ return _d->divinties; }
 RomeDivinityPtr Pantheon::mars(){  return get( romeDivMars ); }
 RomeDivinityPtr Pantheon::neptune() { return get( romeDivNeptune ); }
 RomeDivinityPtr Pantheon::venus(){ return get( romeDivVenus ); }
 RomeDivinityPtr Pantheon::mercury(){  return get( romeDivMercury ); }
+RomeDivinityPtr Pantheon::ceres() {  return instance().get( romeDivCeres );}
 
 void Pantheon::load( const VariantMap& stream )
-{
-  RomeDivinityPtr divn = get( divNames[ romeDivCeres ] );
-
-  if( divn.isNull() )
-  {
-    _d->divinties.push_back( RomeDivinityCeres::create() );
-  }
-
+{  
   for( int index=0; divNames[ index ] != 0; index++ )
   {
-    divn = get( divNames[ index ] );
+    RomeDivinityPtr divn = get( divNames[ index ] );
 
     if( divn.isNull() )
     {
@@ -102,7 +94,7 @@ void Pantheon::load( const VariantMap& stream )
 
 void Pantheon::save(VariantMap& stream)
 {
-  Divinities divines = getInstance().getAll();
+  Divinities divines = instance().all();
 
   foreach( current, divines )
   {

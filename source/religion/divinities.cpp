@@ -21,6 +21,9 @@
 #include "events/event.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
+#include "walker/fishing_boat.hpp"
+#include "good/goodstore.hpp"
+#include "objects/warehouse.hpp"
 
 using namespace constants;
 
@@ -70,7 +73,7 @@ void RomeDivinityBase::updateRelation(float income, PlayerCityPtr city)
   city::Helper helper( city );
   float cityBalanceKoeff = helper.getBalanceKoeff();
 
-  _relation = math::clamp<float>( _relation + income - getDefaultDecrease() * cityBalanceKoeff, 0, 100 );
+  _relation = math::clamp<float>( _relation + (income - getDefaultDecrease()) * cityBalanceKoeff, 0, 100 );
 }
 
 std::string RomeDivinityBase::getMoodDescription() const
@@ -142,11 +145,54 @@ void RomeDivinityNeptune::updateRelation(float income, PlayerCityPtr city)
     event->dispatch();
 
     city::Helper helper( city );
-    FarmList farms = helper.find<Farm>( building::any );
+    FishingBoatList boats = helper.find<FishingBoat>( walker::fishingBoat, city::Helper::invalidPos );
 
-    foreach( farm, farms )
+    int destroyBoats = math::random( boats.size() );
+    for( int i=0; i < destroyBoats; i++ )
     {
-      (*farm)->updateProgress( -(*farm)->getProgress() );
+      FishingBoatList::iterator it = boats.begin();
+      std::advance( it, math::random( boats.size() ) );
+      (*it)->deleteLater();
+      boats.erase( it );
+    }
+  }
+}
+
+RomeDivinityPtr RomeDivinityMercury::create()
+{
+  RomeDivinityPtr ret( new RomeDivinityMercury() );
+  ret->setInternalName( divNames[ romeDivMercury ] );
+  ret->drop();
+
+  return ret;
+}
+
+void RomeDivinityMercury::updateRelation(float income, PlayerCityPtr city)
+{
+  RomeDivinityBase::updateRelation( income, city );
+
+  if( getRelation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
+  {
+    _lastActionDate = GameDate::current();
+    events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_mercury_title##"),
+                                                                   _("##wrath_of_mercury_description##") );
+    event->dispatch();
+
+    city::Helper helper( city );
+    WarehouseList whs = helper.find<Warehouse>( building::warehouse );
+    foreach( it, whs )
+    {
+      GoodStore& store = (*it)->getGoodStore();
+      for( int i=Good::none; i < Good::goodCount; i++ )
+      {
+        Good::Type gtype = (Good::Type)i;
+        int goodQty = math::random( store.qty( gtype ) );
+        if( goodQty > 0 )
+        {
+          GoodStock rmStock( gtype, goodQty );
+          store.retrieve( rmStock, goodQty );
+        }
+      }
     }
   }
 }

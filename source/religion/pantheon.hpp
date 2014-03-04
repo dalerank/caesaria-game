@@ -31,15 +31,15 @@ class Pantheon
 public:
   typedef std::vector< RomeDivinityPtr > Divinities;
 
-  static Pantheon& getInstance();
+  static Pantheon& instance();
 
-  Divinities getAll();
 
   void load(const VariantMap& stream );
   void save(VariantMap& stream);
 
   static void doFestival( RomeDivinityType who, int type);
 
+  Divinities all();
   static RomeDivinityPtr ceres();
   static RomeDivinityPtr mars();
   static RomeDivinityPtr neptune();
