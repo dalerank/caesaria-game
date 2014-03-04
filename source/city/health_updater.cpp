@@ -54,12 +54,12 @@ void HealthUpdater::update( const unsigned int time)
   {
     _d->isDeleted = (_d->endTime < GameDate::current());
 
-    Logger::warning( "Execute health updater service" );
+    Logger::warning( "HealthUpdater: execute service" );
     Helper helper( _d->city );
     HouseList houses = helper.find<House>( building::house );
     foreach( it, houses )
     {
-      (*it)->updateState( (Construction::Param)House::health, _d->value, true );
+      (*it)->updateState( House::health, _d->value );
     }
 
     events::Dispatcher::instance().load( _d->events );

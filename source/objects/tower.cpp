@@ -49,8 +49,8 @@ Tower::Tower() : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), 
   setMaxWorkers( 6 );
   setPicture( ResourceGroup::land2a, 149 );
 
-  updateState( Construction::inflammability, 0, false );
-  updateState( Construction::collapsibility, 0, false );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 }
 
 void Tower::save(VariantMap& stream) const

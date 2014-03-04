@@ -80,8 +80,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
 {
   _d->houseId = houseId;
   _d->taxCheckInterval = DateTime( -400, 1, 1 );
-  _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
-  updateState( (Construction::Param)House::health, 100, false );
+  _d->picIdOffset = ( math::random( 10 ) > 6 ? 1 : 0 );
   HouseSpecHelper& helper = HouseSpecHelper::getInstance();
   _d->houseLevel = helper.getHouseLevel( houseId );
   _d->spec = helper.getHouseLevelSpec( _d->houseLevel );
@@ -91,7 +90,10 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _d->desirability.step = 1;
   _d->changeCondition = 0;
   _d->currentYear = GameDate::current().year();
-  updateState( Construction::fire, 0, false );
+
+  setState( House::health, 100 );
+  setState( House::fire, 0 );
+  setState( House::morale, 100 );
 
   _d->initGoodStore( 1 );
 

@@ -28,7 +28,7 @@ using namespace constants;
 
 BurningRuins::BurningRuins() : Ruins( building::burningRuins )
 {
-  updateState( Construction::fire, 99, false );
+  setState( Construction::fire, 99 );
 
   setPicture( ResourceGroup::land2a, 187 );
   _animationRef().load( ResourceGroup::land2a, 188, 8 );
@@ -146,8 +146,8 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
 {
   if ( Service::prefect == walker->getService() )
   {
-    double newValue = math::clamp<float>( getState( Construction::fire ) - walker->getServiceValue() / 10, 0.f, 100.f );
-    updateState( Construction::fire, newValue, false );
+    double delta =  walker->getServiceValue() / 10;
+    updateState( Construction::fire, delta );
   }
 }
 
@@ -173,7 +173,7 @@ void BurnedRuins::destroy(){ Building::destroy();}
 
 CollapsedRuins::CollapsedRuins() : Ruins(building::collapsedRuins)
 {
-  updateState( Construction::damage, 1, false );
+  setState( Construction::damage, 1 );
 
   _animationRef().load( ResourceGroup::sprites, 1, 8 );
   _animationRef().setOffset( Point( 14, 26 ) );
@@ -201,7 +201,7 @@ bool CollapsedRuins::isNeedRoadAccess() const{  return false;}
 
 PlagueRuins::PlagueRuins() : Ruins( building::plagueRuins )
 {
-  updateState( Construction::fire, 99, false );
+  setState( Construction::fire, 99 );
 
   setPicture( ResourceGroup::land2a, 187 );
   _animationRef().load( ResourceGroup::land2a, 188, 8 );

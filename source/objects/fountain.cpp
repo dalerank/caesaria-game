@@ -46,8 +46,8 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
   _fgPicturesRef().resize(1);
   _lastPicId = simpleFountain;
 
-  updateState( Construction::inflammability, 0, false );
-  updateState( Construction::collapsibility, 0, false );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 
   setWorkers( 1 );
 }

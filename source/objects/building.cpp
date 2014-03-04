@@ -48,8 +48,8 @@ public:
 Building::Building(const TileOverlay::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
-  updateState( Construction::inflammability, 1, false );
-  updateState( Construction::collapsibility, 1, false );
+  setState( Construction::inflammability, 1 );
+  setState( Construction::collapsibility, 1 );
 }
 
 Building::~Building() {}
@@ -124,8 +124,8 @@ void Building::applyService( ServiceWalkerPtr walker)
 
    switch( service )
    {
-   case Service::engineer: updateState( Construction::damage, 0, false ); break;
-   case Service::prefect: updateState( Construction::fire, 0, false ); break;
+   case Service::engineer: setState( Construction::damage, 0 ); break;
+   case Service::prefect: setState( Construction::fire, 0 ); break;
    default: break;
    }
 }
@@ -185,8 +185,8 @@ Renderer::PassQueue Building::getPassQueue() const {  return buildingPassQueue;}
 
 SmallStatue::SmallStatue() : Building( building::smallStatue, Size(1) )
 {
-  updateState( Construction::inflammability, 0, false );
-  updateState( Construction::collapsibility, 0, false );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 
   setPicture( ResourceGroup::govt, 1 );
 }
@@ -195,8 +195,8 @@ bool SmallStatue::isNeedRoadAccess() const {  return false; }
 
 MediumStatue::MediumStatue() : Building( building::middleStatue, Size(2) )
 {
-  updateState( Construction::inflammability, 0, false );
-  updateState( Construction::collapsibility, 0, false );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 
   setPicture( ResourceGroup::govt, 2);
 }
@@ -205,8 +205,8 @@ bool MediumStatue::isNeedRoadAccess() const {  return false; }
 
 BigStatue::BigStatue() : Building( building::bigStatue, Size(3))
 {
-  updateState( Construction::inflammability, 0, false );
-  updateState( Construction::collapsibility, 0, false );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 
   setPicture( ResourceGroup::govt, 3 );
 }

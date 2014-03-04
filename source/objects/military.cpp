@@ -103,23 +103,16 @@ FortArea::FortArea() : Building( building::fortArea, Size(4) ),
 {
   setPicture( ResourceGroup::security, 13 );
 
-  updateState( Construction::inflammability, 0, false );
-  updateState( Construction::collapsibility, 0, false );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 }
 
 FortArea::~FortArea()
 {
 }
 
-bool FortArea::isFlat() const
-{
-  return true;
-}
-
-bool FortArea::isWalkable() const
-{
-  return true;
-}
+bool FortArea::isFlat() const {  return true; }
+bool FortArea::isWalkable() const{  return true;}
 
 void FortArea::destroy()
 {
@@ -159,8 +152,8 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
 
   _d->maxSoldier = 16;
 
-  updateState( Construction::inflammability, 0, false );
-  updateState( Construction::collapsibility, 0, false );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 }
 
 float Fort::evaluateTrainee(walker::Type traineeType)
@@ -172,10 +165,7 @@ float Fort::evaluateTrainee(walker::Type traineeType)
   return ( maxForce - currentForce - traineeForce ) / 16;
 }
 
-Fort::~Fort()
-{
-
-}
+Fort::~Fort() {}
 
 void Fort::timeStep( const unsigned long time )
 {
@@ -332,7 +322,4 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
   _fgPicturesRef().resize(1);
 }
 
-bool Fort::isNeedRoadAccess() const
-{
-  return false;
-}
+bool Fort::isNeedRoadAccess() const {  return false; }

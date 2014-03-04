@@ -28,7 +28,7 @@
 class Construction::Impl
 {
 public:
-  typedef std::map<Construction::Param, double> Params;
+  typedef std::map<int, double> Params;
   TilesArray accessRoads;
   Params params;
 };
@@ -149,12 +149,14 @@ Desirability Construction::getDesirability() const
   return MetaDataHolder::instance().getData( type() ).getDesirbility();
 }
 
-void Construction::updateState(Construction::Param param, double value, bool relative)
+void Construction::setState( ParameterType param, double value)
 {
-  if( relative ) _d->params[ param ] += value;
-  else           _d->params[ param ] = value;
+  _d->params[ param ] = math::clamp<double>( value, 0.f, 100.f );
+}
 
-  _d->params[ param ] = math::clamp<double>( _d->params[ param ], 0.f, 100.f );
+void Construction::updateState(Construction::ParameterType name, double value)
+{
+  setState( name, getState( name ) + value );
 }
 
 void Construction::save( VariantMap& stream) const
@@ -180,7 +182,7 @@ void Construction::load( const VariantMap& stream )
   }
 }
 
-double Construction::getState(Param param) const { return _d->params[ param ]; }
+double Construction::getState( ParameterType param) const { return _d->params[ param ]; }
 
 TilesArray Construction::getEnterArea() const
 {

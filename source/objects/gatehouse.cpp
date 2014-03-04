@@ -42,8 +42,8 @@ Gatehouse::Gatehouse() : Building( building::gatehouse, Size( 2 ) ), _d( new Imp
   setPicture( ResourceGroup::land2a, 150 );
   _d->gatehouseSprite.resize( 1 );
 
-  updateState( Construction::inflammability, 0, false );
-  updateState( Construction::collapsibility, 0, false );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 }
 
 bool Gatehouse::_update( PlayerCityPtr city, TilePos pos )
