@@ -59,6 +59,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case construction::plaza:
     case building::prefecture:
       engine.drawPicture( tile.getPicture(), screenPos );
+      drawTilePass( engine, tile, offset, Renderer::foreground );
       needDrawAnimations = true;
     break;
 
