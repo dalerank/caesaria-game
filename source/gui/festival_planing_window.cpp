@@ -89,7 +89,7 @@ FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityP
 {
   Size size( 625, 320 );
 
-  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
+  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->height() - size.height())/2 ), size );
   FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, rectangle, city);
 
   return ret;
@@ -123,12 +123,12 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
   _d->updateTitle();
 
-  _d->festivalName = new Label( this, Rect( 145, getHeight() - 52, 145 + 200, getHeight() - 22), "##small_festival##" );
+  _d->festivalName = new Label( this, Rect( 145, height() - 52, 145 + 200, height() - 22), "##small_festival##" );
 
   _d->festivalType = Impl::smallFest;
 
-  _d->btnHelp = new TexturedButton( this, Point( 52, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  _d->btnExit = new TexturedButton( this, Point( width() - 74, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 52, height() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
   int greatFestivalCost = math::clamp( _d->city->getPopulation() / 10, 100, 9999 );
@@ -151,8 +151,8 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->btnGreatFestival->setTextAlignment( alignUpperLeft, alignCenter );
   //_d->btnGreatFestival->setIsPushButton( true );
 
-  _d->btnYes = new TexturedButton( this, Point( 350, getHeight() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
-  _d->btnNo = new TexturedButton( this, Point( 350 + 43, getHeight() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
+  _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
+  _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
 
   CONNECT( _d->btnExit,onClicked(), this, FestivalPlaningWindow::deleteLater );
   CONNECT( _d->btnNo,  onClicked(), this, FestivalPlaningWindow::deleteLater );

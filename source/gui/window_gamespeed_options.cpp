@@ -44,7 +44,7 @@ GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, in
 
   setupUI( GameSettings::rcpath( "/gui/speedoptions.gui" ) );
 
-  setPosition( Point( parent->width() - width(), parent->getHeight() - getHeight() ) / 2 );
+  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
 
   _update();
 }

@@ -70,7 +70,7 @@ void SaveDialog::Impl::findFiles()
 SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id )
 : Widget( parent, id, Rect( 0, 0, 385, 336 ) ), _d( new Impl )
 {
-  setPosition( Point( (parent->width() - width())/2, (parent->getHeight() - getHeight()) / 2 ) );
+  setPosition( Point( (parent->width() - width())/2, (parent->height() - height()) / 2 ) );
   
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 30) );
   title->setText( "Save city" );

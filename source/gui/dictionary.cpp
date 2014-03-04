@@ -39,7 +39,7 @@ DictionaryWindow::DictionaryWindow( Widget* parent )
 {
   setupUI( GameSettings::rcpath( "/gui/dictionary.gui" ) );
 
-  setPosition( Point( parent->width() - width(), parent->getHeight() - getHeight() ) / 2 );
+  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
 
   _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
   _d->lbText = findChildA<Label*>( "lbText", true, this );

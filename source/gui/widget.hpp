@@ -131,7 +131,7 @@ public:
 
   virtual void setHeight( unsigned int height );
 
-  virtual unsigned int getHeight() const;
+  virtual unsigned int height() const;
 
   virtual unsigned int width() const;
 

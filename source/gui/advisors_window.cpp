@@ -70,7 +70,7 @@ public:
 
 PushButton* AdvisorsWindow::addButton( const int pos, const int picId, std::string tooltip )
 {
-  Point tabButtonPos( (width() - 636) / 2 + 10, getHeight() / 2 + 192 + 10);
+  Point tabButtonPos( (width() - 636) / 2 + 10, height() / 2 + 192 + 10);
 
   PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * pos, Size( 40 ), pos, picId, picId, picId + 13 );
   btn->setIsPushButton( true );
@@ -86,7 +86,7 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   setupUI( GameSettings::rcpath( "/gui/advisors.gui" ) );
   _d->advisorPanel = 0;
 
-  Point tabButtonPos( (width() - 636) / 2, getHeight() / 2 + 192);
+  Point tabButtonPos( (width() - 636) / 2, height() / 2 + 192);
 
   new gui::Image( this, tabButtonPos, Picture::load( ResourceGroup::menuMiddleIcons, 14 ) );
   addButton( advisor::employers,     255, _("##visit_labor_advisor##"        ));

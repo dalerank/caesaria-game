@@ -131,12 +131,12 @@ public oc3_signals:
 
 void AdvisorEmperorWindow::_showChangeSalaryWindow()
 {
-  Point startPos( (width() - 510) / 2, (getHeight() -400)/2 );
+  Point startPos( (width() - 510) / 2, (height() -400)/2 );
   Rect wdgRect( startPos, Size( 510, 400 ) );
   GroupBox* gb = new GroupBox( this, wdgRect, -1, GroupBox::whiteFrame );
 
   new gui::Label( gb, Rect( 15, 15, gb->width() - 15, 35), _("##set_mayor_salary##"),  false, gui::Label::bgNone );
-  ListBox* lbx = new ListBox( gb, Rect( 16, 50, gb->width() - 16, gb->getHeight() - 100 ) );
+  ListBox* lbx = new ListBox( gb, Rect( 16, 50, gb->width() - 16, gb->height() - 100 ) );
   lbx->setItemHeight( 22 );
   lbx->setTextAlignment( alignCenter, alignCenter );
   lbx->setItemFont( Font::create( FONT_2_WHITE ) );
@@ -153,7 +153,7 @@ void AdvisorEmperorWindow::_showChangeSalaryWindow()
   item = &lbx->addItem( _("##proconsoul_salary##") ); item->setTag( 80 );
   item = &lbx->addItem( _("##caesar_salary##") ); item->setTag( 100 );
 
-  PushButton* btn = new PushButton( gb, Rect( Point( 176, gb->getHeight() - 32 ), Size( 160, 20) ), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
+  PushButton* btn = new PushButton( gb, Rect( Point( 176, gb->height() - 32 ), Size( 160, 20) ), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( btn, onClicked(), gb, GroupBox::deleteLater );
 }
 
@@ -176,7 +176,7 @@ void AdvisorEmperorWindow::_showSend2CityWindow()
   new PushButton( gb, Rect( start, btnSize ), "5000", 0x0f0a, false, PushButton::blackBorderUp ); start += offset;
   new PushButton( gb, Rect( start, btnSize ), _("##send_all##"), 0xf0ff, false,PushButton::blackBorderUp );
 
-  Rect btnRect = Rect( 80, gb->getHeight() - 35, 80 + 160, gb->getHeight() - 15 );
+  Rect btnRect = Rect( 80, gb->height() - 35, 80 + 160, gb->height() - 15 );
   PushButton* btnSend = new PushButton( gb, btnRect, _("##send_money##"), -1, false, PushButton::whiteBorderUp );
   PushButton* btnCancel = new PushButton( gb, btnRect + Point( 190, 0), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
 
@@ -262,7 +262,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   _d->city = city;
   _d->isRequestsUpdated = true;
 
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );

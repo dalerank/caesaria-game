@@ -98,7 +98,7 @@ void Image::_updateTexture( GfxEngine& painter )
 
     case Image::fit:
       _d->background->draw( _d->bgPicture, Point( width() - _d->bgPicture.getWidth(),
-                                                  getHeight() - _d->bgPicture.getHeight() ) / 2, false );
+                                                  height() - _d->bgPicture.getHeight() ) / 2, false );
     break;
 
     case Image::image:

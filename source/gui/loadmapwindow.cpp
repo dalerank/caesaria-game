@@ -65,8 +65,8 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   _d->directory = dir;
   _d->fileExtension = ext;
 
-  _d->btnExit = new TexturedButton( this, Point( 472, getHeight() - 39), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-  _d->btnHelp = new TexturedButton( this, Point( 14, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnExit = new TexturedButton( this, Point( 472, height() - 39), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 14, height() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
 
   _d->files = new ListBox( this, Rect( 10, _d->lbTitle->bottom(), width() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 

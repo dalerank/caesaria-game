@@ -323,7 +323,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
      buildMenu->setBuildOptions( _d->city->getBuildOptions() );
      buildMenu->initialize();
 
-     int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
+     int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->height() - buildMenu->height() );
      buildMenu->setPosition( Point( -(int)buildMenu->width() - 5, y ) );
    }
 }

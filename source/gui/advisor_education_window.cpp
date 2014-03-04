@@ -121,7 +121,7 @@ public:
 AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 256 ) ) );
 
   setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );

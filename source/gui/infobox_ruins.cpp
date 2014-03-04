@@ -40,7 +40,7 @@ InfoboxRuins::InfoboxRuins( Widget* parent, const Tile& tile )
       text = _( ruin->getInfo().c_str() );
     }
   }
-  Label* lb = new Label( this, Rect( 20, 20, width() - 20, getHeight() - 50), text );
+  Label* lb = new Label( this, Rect( 20, 20, width() - 20, height() - 50), text );
   lb->setTextAlignment( alignCenter, alignCenter );
   lb->setWordwrap( true );
 }

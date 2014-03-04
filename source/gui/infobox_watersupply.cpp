@@ -35,7 +35,7 @@ InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
 {
   setTitle( _("##fountain##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, getHeight() - 55 ) );
+  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _getInfo()->setWordwrap( true );
 
   FountainPtr fountain = ptr_cast<Fountain>( tile.overlay() );
@@ -71,7 +71,7 @@ InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
 {
   setTitle( _("##reservoir##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, getHeight() - 55 ) );
+  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _getInfo()->setWordwrap( true );
 
   ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.overlay() );
@@ -100,7 +100,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
 {
   setTitle( _("##well##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, getHeight() - 55 ) );
+  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _getInfo()->setWordwrap( true );
 
   WellPtr well = ptr_cast<Well>( tile.overlay() );

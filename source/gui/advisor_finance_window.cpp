@@ -55,7 +55,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 420 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
@@ -120,7 +120,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   startPoint += Point( 0, 6 );
   _d->drawReportRow( startPoint + offset * 13, _("##Balance##"), CityFunds::balance );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
   new TexturedButton( this, Point( 185, 70 ), Size( 24 ), -1, 601 );
   new TexturedButton( this, Point( 185+24, 70 ), Size( 24 ), -1, 605 );

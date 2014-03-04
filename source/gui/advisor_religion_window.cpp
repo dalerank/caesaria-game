@@ -122,7 +122,7 @@ public:
 AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 280 ) ) );
 
   Label* title = new Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
@@ -173,7 +173,7 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), RomeDivinityPtr(),
                                             info.smallTemplCount, 0 );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
 void AdvisorReligionWindow::draw( GfxEngine& painter )

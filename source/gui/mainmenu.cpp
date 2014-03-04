@@ -156,7 +156,7 @@ void MainMenu::recalculateSize_()
 	//AbstractSkin* skin = getEnvironment()->getSkin();
   Font font = Font::create( FONT_2_WHITE );
   
-  int height = std::max<int>( DEFAULT_MENU_HEIGHT, getHeight() );
+  int height = std::max<int>( DEFAULT_MENU_HEIGHT, height() );
 	setGeometry( Rect( parentRect.UpperLeftCorner.x(), parentRect.UpperLeftCorner.y(),
                      parentRect.LowerRightCorner.x(), parentRect.UpperLeftCorner.y() + height ) );
 	Rect rect;
@@ -173,12 +173,12 @@ void MainMenu::recalculateSize_()
     ContextMenuItem* refItem = getItem( i );
 		if ( refItem->isSeparator() )
 		{
-			refItem->setDim( Size( 16, getHeight() ) );
+			refItem->setDim( Size( 16, height() ) );
 		}
 		else
 		{
       Size itemSize = font.getSize( refItem->getText() ) + Size( 20, 0 );
-      itemSize.setHeight( getHeight() );
+      itemSize.setHeight( height() );
 			refItem->setDim( itemSize );
 		}
 

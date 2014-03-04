@@ -10,7 +10,7 @@ namespace gui
 
 //! constructor
 ModalScreen::ModalScreen( Widget* parent, int id)
-: Widget( parent, id, Rect(0, 0, parent->width(), parent->getHeight() ) ),
+: Widget( parent, id, Rect(0, 0, parent->width(), parent->height() ) ),
 	_mouseDownTime(0)
 {
 	#ifdef _DEBUG

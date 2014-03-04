@@ -47,7 +47,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   if( rectangle.getSize() == Size( 0, 0 ) )
   {
     Size defaultSize( 480, 160 );
-    Rect defaultRect( Point( (parent->width() - defaultSize.width())/2,(parent->getHeight() - defaultSize.height())/2),
+    Rect defaultRect( Point( (parent->width() - defaultSize.width())/2,(parent->height() - defaultSize.height())/2),
                       defaultSize );
     setGeometry( defaultRect );
   }
@@ -64,15 +64,15 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
 
   if( buttons == btnOk || buttons == btnCancel )
   {
-    new TexturedButton( this, Point( width() / 2 - 20, getHeight() - 50),
+    new TexturedButton( this, Point( width() / 2 - 20, height() - 50),
                         Size( 39, 26 ), buttons,
                         buttons == btnOk ? okBtnPicId : cancelBtnPicId );
   }
   else if( buttons == (btnOk | btnCancel) )
   {
-    new TexturedButton( this, Point( width() / 2 - 24 - 16, getHeight() - 50),
+    new TexturedButton( this, Point( width() / 2 - 24 - 16, height() - 50),
                         Size( 39, 26 ), btnOk, okBtnPicId );
-    new TexturedButton( this, Point( width() / 2 + 16, getHeight() - 50 ),
+    new TexturedButton( this, Point( width() / 2 + 16, height() - 50 ),
                         Size( 39, 26 ), btnCancel, cancelBtnPicId );
   }
 }

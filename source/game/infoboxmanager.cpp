@@ -98,7 +98,7 @@ public:
     if( building.isValid() )
     {
       InfoboxWorkingBuilding* infoBox = new InfoboxWorkingBuilding( parent, building );
-      infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, size.height() - infoBox->getHeight()) );
+      infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, size.height() - infoBox->height()) );
 
       if( !title.empty() ) { infoBox->setTitle( title ); }
       if( !text.empty() ) { infoBox->setText( text ); }
@@ -129,7 +129,7 @@ public:
     Size  size = parent->getSize();
     InfoboxSimple* infoBox = new InfoboxSimple( parent, Rect( 0, 0, 510, 300 ) );
     infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, 
-                                  size.height() - infoBox->getHeight()) );
+                                  size.height() - infoBox->height()) );
     TileOverlayPtr overlay = city->getOverlay( pos );
 
     std::string caption = overlay.isValid()
@@ -264,7 +264,7 @@ void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
   {
     Size rSize = gui->getRootWidget()->getSize();
     int y = ( gui->getCursorPos().y() < rSize.height() / 2 )
-                ? rSize.height() - infoBox->getHeight() - 5
+                ? rSize.height() - infoBox->height() - 5
                 : 30;
     Point pos( ( rSize.width() - infoBox->width() ) / 2, y );
 

@@ -36,7 +36,7 @@ public:
 AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                      Size( 640, 416 ) ) );
 
   _d->background.reset( Picture::create( getSize() ) );
@@ -51,8 +51,8 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id )
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 
-  _d->alarm = new gui::Label( this, Rect( 60, getHeight()-60, width() - 60, getHeight() - 40 ), _("##advlegion_noalarm##") );
-  _d->helpRequest = new gui::Label( this, Rect( 60, getHeight()-40, width() - 60, getHeight() - 20 ), _("##advlegion_norequest##") );
+  _d->alarm = new gui::Label( this, Rect( 60, height()-60, width() - 60, height() - 40 ), _("##advlegion_noalarm##") );
+  _d->helpRequest = new gui::Label( this, Rect( 60, height()-40, width() - 60, height() - 20 ), _("##advlegion_norequest##") );
 }
 
 void AdvisorLegionWindow::draw( GfxEngine& painter )

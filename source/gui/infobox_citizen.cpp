@@ -33,8 +33,8 @@ InfoboxCitizen::InfoboxCitizen(Widget* parent, const WalkerList& walkers )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxcitizen.gui") );
 
-  new Label( this, Rect( 25, 100, width() - 25, getHeight() - 130), "", false, Label::bgWhiteBorderA );
-  new Label( this, Rect( 28, 103, width() - 28, getHeight() - 133), "", false, Label::bgBlack );
+  new Label( this, Rect( 25, 100, width() - 25, height() - 130), "", false, Label::bgWhiteBorderA );
+  new Label( this, Rect( 28, 103, width() - 28, height() - 133), "", false, Label::bgBlack );
   //mini screenshot from citizen pos need here
   new Label( this, Rect( 25, 45, 25 + 52, 45 + 52), "", false, Label::bgBlackFrame );
 
@@ -43,7 +43,7 @@ InfoboxCitizen::InfoboxCitizen(Widget* parent, const WalkerList& walkers )
   Label* lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
   lbType->setFont( Font::create( FONT_1 ));
 
-  Label* lbThinks = new Label( this, Rect( 90, 148, width() - 30, getHeight() - 140),
+  Label* lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
                                "Citizen's thoughts will be placed here" );
   lbThinks->setWordwrap( true );
   Label* lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );

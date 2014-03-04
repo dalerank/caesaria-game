@@ -56,7 +56,7 @@ void Widget::setMaxWidth( unsigned int width )
     _d->maxSize.setWidth( width );
 }
 
-unsigned int Widget::getHeight() const
+unsigned int Widget::height() const
 {
     return getRelativeRect().getHeight();
 }
@@ -781,7 +781,7 @@ bool Widget::isMyChild( Widget* child ) const
 
 void Widget::setWidth( unsigned int width )
 {
-  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width, getHeight() ) );
+  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width, height() ) );
   setGeometry( rectangle );
 }
 
@@ -812,7 +812,7 @@ Size Widget::getMinSize() const{    return _d->minSize;}
 void Widget::installEventHandler( Widget* elementHandler ){  _d->eventHandler = elementHandler;}
 bool Widget::isHovered() const{  return _environment->isHovered( this );}
 bool Widget::isFocused() const{  return _environment->hasFocus( this );}
-Rect Widget::getClientRect() const{  return Rect( 0, 0, width(), getHeight() );}
+Rect Widget::getClientRect() const{  return Rect( 0, 0, width(), height() );}
 void Widget::setFocus(){  getEnvironment()->setFocus( this );}
 void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
 Rect& Widget::getAbsoluteClippingRectRef() const{  return _d->absoluteClippingRect;}

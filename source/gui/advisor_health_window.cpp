@@ -126,7 +126,7 @@ public:
 AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 290 ) ) );
 
   Label* title = new Label( this, Rect( 60, 10, width() - 10, 10 + 40) );
@@ -167,7 +167,7 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
   _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), building::hospital,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
 void AdvisorHealthWindow::draw( GfxEngine& painter )

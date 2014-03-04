@@ -128,7 +128,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widge
 
   setupUI( GameSettings::rcpath( "/gui/entertainmentadv.gui" ) );
 
-  setPosition( Point( (parent->width() - width() )/2, parent->getHeight() / 2 - 242 ) );
+  setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
   _d->lbBlackframe = findChildA<Label*>( "lbBlackframe", true, this );
   _d->lbTroubleInfo = findChildA<Label*>( "lbTroubleInfo", true, this );

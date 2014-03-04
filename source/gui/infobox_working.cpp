@@ -51,7 +51,7 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
     DateTime time = srvc->getLastSendService();
     text += StringHelper::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
   }
-  new Label( this, Rect( 50, getHeight() - 30, width() - 50, getHeight() - 10 ), text );
+  new Label( this, Rect( 50, height() - 30, width() - 50, height() - 10 ), text );
 }
 
 void InfoboxWorkingBuilding::setText(const std::string& text)

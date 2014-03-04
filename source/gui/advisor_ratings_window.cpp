@@ -54,7 +54,7 @@ public:
     digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), width() / 2 - 10, 15, false );
 
     Font targetFont = Font::create( FONT_1 );
-    targetFont.draw( *pic, StringHelper::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, getHeight() - 25, false );
+    targetFont.draw( *pic, StringHelper::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 25, false );
   }
 
   void setValue( const int value )
@@ -179,7 +179,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
   Label* title = new Label( this, Rect( 60, 10, 225, 10 + 40) );
@@ -225,7 +225,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   _d->btnFavour->setTarget( targets.needFavour() );
   _d->drawColumn( _d->btnFavour->getRelativeRect().getCenter(), 0 );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, getHeight() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
 void AdvisorRatingsWindow::draw( GfxEngine& painter )

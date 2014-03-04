@@ -46,7 +46,7 @@ FilmWidget::FilmWidget(Widget* parent, vfs::Path film )
 
   setupUI( GameSettings::rcpath( "/gui/filmwidget.gui" ) );
 
-  setPosition( Point( parent->width() - width(), parent->getHeight() - getHeight() ) / 2 );
+  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
 
   _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
   _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );

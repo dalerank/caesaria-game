@@ -149,7 +149,7 @@ void Label::_updateTexture( GfxEngine& painter )
     {
     case bgSimpleWhite:
       _d->background->fill( 0xff000000, Rect() );
-      _d->background->fill( 0xffffffff, Rect( 1, 1, width() - 1, getHeight() - 1 ) );
+      _d->background->fill( 0xffffffff, Rect( 1, 1, width() - 1, height() - 1 ) );
     break;
     case bgWhite: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteArea); break;
     case bgBlack: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackArea ); break;

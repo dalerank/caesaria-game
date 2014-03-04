@@ -47,7 +47,7 @@ VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, b
   _d->locker.activate();
   setupUI( GameSettings::rcpath( "/gui/videooptions.gui" ) );
 
-  setPosition( Point( parent->width() - width(), parent->getHeight() - getHeight() ) / 2 );
+  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
   _d->btnSwitchMode = findChildA<PushButton*>( "btnSwitchMode", true, this );
 
   _d->fullScreen = fullscreen;

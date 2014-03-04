@@ -796,7 +796,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
 
       if( _d->cursorPic.isNull() )
       {
-        _d->cursorPic.reset( Picture::create( Size(1, getHeight() / 5 * 4 ) ) );
+        _d->cursorPic.reset( Picture::create( Size(1, height() / 5 * 4 ) ) );
         _d->cursorPic->fill( 0xff000000, Rect( 0, 0, 0, 0) );
       }
 
@@ -812,7 +812,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
       }
       else
       {
-        PictureDecorator::draw( *_d->picture, Rect( 0, 0, width(), getHeight() ), PictureDecorator::blackFrame );
+        PictureDecorator::draw( *_d->picture, Rect( 0, 0, width(), height() ), PictureDecorator::blackFrame );
       }
 
       Rect localClipRect = getAbsoluteRect();
@@ -972,7 +972,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
       setTextRect(cursorLine);
       _d->cursorRect = _d->currentTextRect;
       _d->cursorRect.UpperLeftCorner += Point( charcursorpos-1, 6 );
-      _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, getHeight() - 4 );
+      _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, height() - 4 );
       //_d->cursorRect.UpperLeftCorner += style.GetMargin().getRect().UpperLeftCorner;
       //_d->cursorRect.LowerRightCorner -= style.GetMargin().getRect().LowerRightCorner;
   }
@@ -1345,7 +1345,7 @@ void EditBox::setTextRect(int line, const std::string& tempText )
 	else
 	{
 		d = font.getSize( tempText.size() > 0 ? tempText : (char*)_d->text.c_str() );
-		d.setHeight( getHeight() );
+		d.setHeight( height() );
 	}
 	
   d.setHeight( d.height() + font.getKerningHeight() );

@@ -52,7 +52,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 	_d->selecting = false;
 	_d->needItemsRepackTextures = true;
 
-  _d->recalculateItemHeight( Font::create( FONT_2 ), getHeight() );
+  _d->recalculateItemHeight( Font::create( FONT_2 ), height() );
 
 #ifdef _DEBUG
   setDebugName( "ListBox");
@@ -66,7 +66,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
 	const int s = DEFAULT_SCROLLBAR_SIZE;
 
-  _d->scrollBar = new ScrollBar( this, Rect( width() - s, 0, width(), getHeight()), false );
+  _d->scrollBar = new ScrollBar( this, Rect( width() - s, 0, width(), height()), false );
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
@@ -106,9 +106,9 @@ void ListBox::_updateTexture()
   {    
     _d->background.reset( Picture::create( size ) );
     _d->picture.reset( Picture::create( size ) );
-    PictureDecorator::draw( *_d->background, Rect( 0, 0, width() - _d->scrollBar->width(), getHeight() ), PictureDecorator::blackFrame );
+    PictureDecorator::draw( *_d->background, Rect( 0, 0, width() - _d->scrollBar->width(), height() ), PictureDecorator::blackFrame );
     PictureDecorator::draw( *_d->background,
-                            Rect( width() - _d->scrollBar->width(), 0, width(), getHeight() ), 
+                            Rect( width() - _d->scrollBar->width(), 0, width(), height() ), 
                             PictureDecorator::whiteArea  );
   }
 }
@@ -157,7 +157,7 @@ void ListBox::removeItem(unsigned int id)
 
   _d->items.erase( _d->items.begin() + id);
 
-  _d->recalculateItemHeight( _d->font, getHeight() );
+  _d->recalculateItemHeight( _d->font, height() );
 }
 
 
@@ -196,7 +196,7 @@ void ListBox::clear()
     _d->scrollBar->setPos(0);
   }
 
-  _d->recalculateItemHeight( _d->font, getHeight() );
+  _d->recalculateItemHeight( _d->font, height() );
 }
 
 //! sets the selected item. Set this to -1 if no item should be selected
@@ -281,8 +281,8 @@ bool ListBox::onEvent(const NEvent& event)
 					case KEY_UP:   _d->selectedItemIndex -= 1; break;
 					case KEY_HOME: _d->selectedItemIndex = 0;  break;
 					case KEY_END:  _d->selectedItemIndex = (int)_d->items.size()-1; break;
-					case KEY_NEXT: _d->selectedItemIndex += getHeight() / _d->itemHeight; break;
-					case KEY_PRIOR:_d->selectedItemIndex -= getHeight() / _d->itemHeight; break;
+					case KEY_NEXT: _d->selectedItemIndex += height() / _d->itemHeight; break;
+					case KEY_PRIOR:_d->selectedItemIndex -= height() / _d->itemHeight; break;
 					default: break;
 				}
          
@@ -514,7 +514,7 @@ void ListBox::_SelectNew(int ypos)
 void ListBox::_resizeEvent()
 {
     _d->totalItemHeight = 0;
-    _d->recalculateItemHeight( _d->font, getHeight() );
+    _d->recalculateItemHeight( _d->font, height() );
 }
 
 ElementState ListBox::_GetCurrentItemState( unsigned int index, bool hl )
@@ -599,7 +599,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
       int mnY = frameRect.LowerRightCorner.y() - _d->scrollBar->getPos();
       int mxY = frameRect.UpperLeftCorner.y() - _d->scrollBar->getPos();
-      if( !refItem.getText().empty() && mnY >= 0 && mxY <= (int)getHeight() )
+      if( !refItem.getText().empty() && mnY >= 0 && mxY <= (int)height() )
       {
         refItem.setState( _GetCurrentItemState( i, hl ) );
 
@@ -652,9 +652,9 @@ void ListBox::_RecalculateScrollPos()
 	{
     _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos );
 	}
-	else if (selPos > (int)getHeight() - _d->itemHeight)
+	else if (selPos > (int)height() - _d->itemHeight)
 	{
-    _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos - getHeight() + _d->itemHeight );
+    _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos - height() + _d->itemHeight );
 	}
 }
 
@@ -678,7 +678,7 @@ void ListBox::setItem(unsigned int index, std::string text)
 
   _d->items[index].setText( text );
   _d->needItemsRepackTextures = true;
-  _d->recalculateItemHeight( _d->font, getHeight() );
+  _d->recalculateItemHeight( _d->font, height() );
 }
 
 
@@ -691,7 +691,7 @@ int ListBox::insertItem(unsigned int index, std::string text)
 
   _d->items.insert( _d->items.begin() + index, i );
 
-  _d->recalculateItemHeight( _d->font, getHeight() );
+  _d->recalculateItemHeight( _d->font, height() );
 
 	return index;
 }
@@ -819,7 +819,7 @@ ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int col
 
   _d->items.push_back(i);
 
-  _d->recalculateItemHeight( _d->font, getHeight() );
+  _d->recalculateItemHeight( _d->font, height() );
 
   return _d->items.back();
 }

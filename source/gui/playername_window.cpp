@@ -35,7 +35,7 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 {
   setupUI( GameSettings::rcpath( "/gui/playername.gui" ) );
 
-  Point offset( width(), getHeight() );
+  Point offset( width(), height() );
   setPosition( parent->getRelativeRect().getCenter() - offset / 2 );
 
   const bool searchRecursive = true;

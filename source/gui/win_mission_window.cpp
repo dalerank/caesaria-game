@@ -41,7 +41,7 @@ WinMissionWindow::WinMissionWindow(Widget* parent, std::string newTitle, bool ma
   Size pSize = getParent()->getSize() - getSize();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
-  new Label( this, Rect( 0, 0, width(), getHeight()), "", false, Label::bgWhiteFrame );
+  new Label( this, Rect( 0, 0, width(), height()), "", false, Label::bgWhiteFrame );
 
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 30), _("##mission_win##") );
   title->setFont( Font::create( FONT_3 ) );

@@ -281,10 +281,10 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
       else
       {
           if( _d->upButton && _d->upButton->isVisible() )
-              _d->backgroundRect.UpperLeftCorner += Point( 0, _d->upButton->getHeight() );
+              _d->backgroundRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
 
           if( _d->downButton && _d->downButton->isVisible() )
-              _d->backgroundRect.LowerRightCorner -= Point( 0, _d->downButton->getHeight() );
+              _d->backgroundRect.LowerRightCorner -= Point( 0, _d->downButton->height() );
       }
     }
 
@@ -316,7 +316,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
         _d->sliderRect.UpperLeftCorner.setX( screenLeft() + (width() - _d->sliderTexture.getWidth()) / 2 );
         _d->sliderRect.UpperLeftCorner.setY( getScreenTop() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->isVisible() )
-            _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->getHeight() );
+            _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
 
         _d->sliderRect.LowerRightCorner.setY( _d->sliderRect.UpperLeftCorner.y() + _drawLenght );
       }
@@ -356,12 +356,12 @@ int ScrollBar::_getPosFromMousePos(const Point& pos) const
 	float w, p;
     if (_horizontal)
 	{
-		w = width() - float(getHeight())*3.0f;
-		p = pos.x() - screenLeft() - getHeight()*1.5f;
+		w = width() - float(height())*3.0f;
+		p = pos.x() - screenLeft() - height()*1.5f;
 	}
 	else
 	{
-		w = getHeight() - float(width())*3.0f;
+		w = height() - float(width())*3.0f;
 		p = pos.y() - getScreenTop() - width()*1.5f;
 	}
     return (int) ( p/w * getRange() ) + _minValue;
@@ -376,11 +376,11 @@ void ScrollBar::setPos(int pos)
   const Rect& borderMarginRect = Rect( 0, 0, 0, 0 );
   if (_horizontal)
 	{
-    _drawLenght = getHeight() * 3;
+    _drawLenght = height() * 3;
     int borderMargin = -borderMarginRect.UpperLeftCorner.x();
     borderMargin -= borderMarginRect.LowerRightCorner.x();
 
-    float f = ( width() + borderMargin - ( getHeight()*2.0f + _drawLenght)) / getRange();
+    float f = ( width() + borderMargin - ( height()*2.0f + _drawLenght)) / getRange();
     _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.x();
 	}
 	else
@@ -389,7 +389,7 @@ void ScrollBar::setPos(int pos)
     int borderMargin = -borderMarginRect.UpperLeftCorner.y();
     borderMargin -= borderMarginRect.LowerRightCorner.y();
 
-    float f = ( getHeight() + borderMargin - ( width()*0.0f + _drawLenght)) / getRange();
+    float f = ( height() + borderMargin - ( width()*0.0f + _drawLenght)) / getRange();
     _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.y();
 	}
 }
@@ -514,7 +514,7 @@ void ScrollBar::refreshControls_()
 {
   if (_horizontal)
 	{
-		int h = getHeight();
+		int h = height();
 		if( !_d->upButton )
          _d->upButton = _CreateButton( Rect(0, 0, h, h), alignUpperLeft, alignUpperLeft, alignUpperLeft, alignLowerRight, 2 );
 
@@ -532,7 +532,7 @@ void ScrollBar::refreshControls_()
 
     if (!_d->downButton)
     {
-      _d->downButton = _CreateButton( Rect(0, getHeight()-26, 39, getHeight()), 
+      _d->downButton = _CreateButton( Rect(0, height()-26, 39, height()), 
                                       alignUpperLeft, alignLowerRight, alignLowerRight, alignLowerRight, 1 );
     }
 	}

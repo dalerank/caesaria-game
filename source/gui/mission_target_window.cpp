@@ -56,7 +56,7 @@ MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr
 {
   Size size( 610, 430 );
 
-  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
+  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->height() - size.height())/2 ), size );
   MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, rectangle );
   ret->setCity( city );
   return ret;
@@ -75,10 +75,10 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
-  Label* lbToCity = new Label( this, Rect( width() / 2, getHeight() - 40, width() - 110, getHeight() - 10 ), _("##mission_wnd_tocity##" ) );
+  Label* lbToCity = new Label( this, Rect( width() / 2, height() - 40, width() - 110, height() - 10 ), _("##mission_wnd_tocity##" ) );
   lbToCity->setTextAlignment( alignCenter, alignCenter );
 
-  TexturedButton* btnExit = new TexturedButton( this, Point( width() - 110, getHeight() - 40), Size( 27 ), -1, 179 );
+  TexturedButton* btnExit = new TexturedButton( this, Point( width() - 110, height() - 40), Size( 27 ), -1, 179 );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
 
   _d->title = new Label( this, Rect( 16, 16, width() - 16, 16 + 30), "##player_name##");
@@ -97,7 +97,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->lbPeace = new Label( gbTargets, Rect( 270, 54, 270 + 240, 54 + 20), _("##mission_wnd_peace##"), false, Label::bgSmBrown );
   _d->lbShortDesc = new Label( gbTargets, Rect( 16, 54, 270 + 240, 54 + 20), "", false, Label::bgSmBrown );
 
-  _d->lbxHelp = new ListBox( this, Rect( 16, 152, width() - 20, getHeight() - 40 ) );
+  _d->lbxHelp = new ListBox( this, Rect( 16, 152, width() - 20, height() - 40 ) );
   _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
   _d->lbxHelp->setItemTextOffset( Point( 10, 0 ) );
 }

@@ -72,9 +72,9 @@ public:
   void updateBtnText()
   {
     GoodOrders::Order rule = _storageBuilding->getGoodStore().getOrder( _type );
-    std::string ruleName[] = { _("##accept##"), _("##reject##"), _("##deliver##"), _("##none##") };
+    std::string ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
     _btnChangeRule->setFont( Font::create( rule == GoodOrders::reject ? FONT_1_RED : FONT_1_WHITE ) );
-    _btnChangeRule->setText( ruleName[ rule ] );
+    _btnChangeRule->setText( _(ruleName[ rule ]) );
   }
 
   void changeGranaryRule()
@@ -176,10 +176,7 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void BaseSpecialOrdersWindow::setTitle( const std::string& text )
-{
-  _d->lbTitle->setText( text );
-}
+void BaseSpecialOrdersWindow::setTitle( const std::string& text ){  _d->lbTitle->setText( text );}
 
 GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary )
 : BaseSpecialOrdersWindow( parent, pos, defaultHeight )

@@ -45,7 +45,7 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
                                  const std::string& receiver, int id ) 
   : Widget( parent, id, Rect( 0, 0, 590, 320 ) ), _d( new Impl )
 {
-  setPosition( Point( (parent->width() - width())/2, (parent->getHeight() - getHeight()) / 2 ) );
+  setPosition( Point( (parent->width() - width())/2, (parent->height() - height()) / 2 ) );
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 30), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
@@ -56,11 +56,11 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
   PictureDecorator::draw( *_d->background, Rect( Point( 18, 50 ), Size( width() - 34, 220 ) ), PictureDecorator::blackFrame );
 
-  _d->btnExit = new TexturedButton( this, Point( width() - 40, getHeight() - 40 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnExit = new TexturedButton( this, Point( width() - 40, height() - 40 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
   CONNECT( _d->btnExit, onClicked(), this, PopupMessageBox::deleteLater );
 
-  _d->btnHelp = new TexturedButton( this, Point( 18, getHeight() - 40 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 18, height() - 40 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
 
   Font font2 = Font::create( FONT_2_WHITE );

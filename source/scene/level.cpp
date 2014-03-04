@@ -142,11 +142,11 @@ void Level::initialize()
 
   _d->menu = Menu::create( gui.getRootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->width() - _d->rightPanel->width(),
-                                 _d->topMenu->getHeight() ) );
+                                 _d->topMenu->height() ) );
 
   _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1, city );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->width() - _d->rightPanel->width(),
-                                     _d->topMenu->getHeight() ) );
+                                     _d->topMenu->height() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
                                city->getTilemap(),
