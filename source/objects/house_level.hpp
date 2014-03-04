@@ -31,15 +31,15 @@ class HouseSpecification
   friend class HouseSpecHelper;
 
 public:
-  int getLevel() const;
+  int level() const;
   int getMaxHabitantsByTile() const;
-  int getTaxRate() const;
-  int getProsperity() const;
-  int getCrime() const;
+  int taxRate() const;
+  int prosperity() const;
+  int crime() const;
 
   // return the house type "small casa, luxury villa, ..."
-  const std::string& getLevelName() const;
-  const std::string& getInternalName() const;
+  const std::string& levelName() const;
+  const std::string& internalName() const;
 
   int getRequiredGoodLevel(Good::Type type) const;
 

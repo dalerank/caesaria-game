@@ -61,7 +61,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   HousePtr house = ptr_cast<House>( tile.overlay() );
-  setTitle( _(house->getSpec().getLevelName()) );
+  setTitle( _(house->getSpec().levelName()) );
 
   _getBtnExit()->setTooltipText( _("##advanced_houseinfo##") );
 
@@ -81,7 +81,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
 
   drawHabitants( house );
 
-  int taxes = house->getSpec().getTaxRate();
+  int taxes = house->getSpec().taxRate();
   std::string taxesStr;
   if( taxes > 0 )
   {
@@ -113,7 +113,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->bottom() + 10;
-  if( house->getSpec().getLevel() > 2 )
+  if( house->getSpec().level() > 2 )
   {
     drawGood( house, Good::wheat, 0, 0, startY );
     drawGood( house, Good::fish, 1, 0, startY );

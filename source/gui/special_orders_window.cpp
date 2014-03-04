@@ -45,7 +45,7 @@ public:
     _storageBuilding = storageBuilding;
     setFont( Font::create( FONT_1_WHITE ) );
 
-    _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, getHeight() ), "", -1, false, PushButton::blackBorderUp );
+    _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
     _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
     updateBtnText();
 
@@ -72,7 +72,7 @@ public:
   void updateBtnText()
   {
     GoodOrders::Order rule = _storageBuilding->getGoodStore().getOrder( _type );
-    std::string ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
+    const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
     _btnChangeRule->setFont( Font::create( rule == GoodOrders::reject ? FONT_1_RED : FONT_1_WHITE ) );
     _btnChangeRule->setText( _(ruleName[ rule ]) );
   }
@@ -118,10 +118,10 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   _d->lbTitle->setFont( Font::create( FONT_3 ) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
 
-  _d->btnExit = new TexturedButton( this, Point( 472, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnExit = new TexturedButton( this, Point( 472, height() - 39 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
 
-  _d->btnHelp = new TexturedButton( this, Point( 14, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 14, height() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
 
   CONNECT( _d->btnExit, onClicked(), this, GranarySpecialOrdersWindow::deleteLater );
@@ -131,8 +131,8 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   // draws the box and the inner black box
   PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
-  _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, getHeight() - 70), -1, GroupBox::blackFrame );  
-  _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->getHeight() -5 ) );
+  _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
+  _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->height() -5 ) );
 }
 
 
@@ -195,7 +195,7 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
     }
   }
 
-  _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, width() - 80, getHeight() - 25 ),
+  _btnToggleDevastation = new PushButton( this, Rect( 80, height() - 45, width() - 80, height() - 25 ),
                                           "", -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
@@ -233,10 +233,10 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
     }
   }
 
-  _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, width() - 80, getHeight() - 25 ),
+  _btnToggleDevastation = new PushButton( this, Rect( 80, height() - 45, width() - 80, height() - 25 ),
                                           "", -1, false, PushButton::whiteBorderUp );
 
-  _btnTradeCenter = new PushButton( this, Rect( 80, getHeight() - 70, width() - 80, getHeight() - 50 ),
+  _btnTradeCenter = new PushButton( this, Rect( 80, height() - 70, width() - 80, height() - 50 ),
                                    _("##trade_center##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );

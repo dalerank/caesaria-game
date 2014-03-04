@@ -97,9 +97,9 @@ void ProsperityRating::update( const unsigned int time )
     foreach( it, houses)
     {
       HousePtr house = *it;
-      prosperityCap += house->getSpec().getProsperity();
+      prosperityCap += house->getSpec().prosperity();
       patricianCount += house->getSpec().isPatrician() ? house->getHabitants().count() : 0;
-      plebsCount += house->getSpec().getLevel() < 5 ? house->getHabitants().count() : 0;
+      plebsCount += house->getSpec().level() < 5 ? house->getHabitants().count() : 0;
     }
 
     prosperityCap /= houses.size();

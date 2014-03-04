@@ -67,7 +67,7 @@ std::string TaxCollector::getThinks() const
 
   foreach( h, houses )
   {
-    if( (*h)->getSpec().getTaxRate() < 10 )
+    if( (*h)->getSpec().taxRate() < 10 )
     {
       poorHouseCounter++;
     }

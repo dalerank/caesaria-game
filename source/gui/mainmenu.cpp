@@ -156,13 +156,13 @@ void MainMenu::recalculateSize_()
 	//AbstractSkin* skin = getEnvironment()->getSkin();
   Font font = Font::create( FONT_2_WHITE );
   
-  int height = std::max<int>( DEFAULT_MENU_HEIGHT, height() );
+  int hg = std::max<int>( DEFAULT_MENU_HEIGHT, height() );
 	setGeometry( Rect( parentRect.UpperLeftCorner.x(), parentRect.UpperLeftCorner.y(),
-                     parentRect.LowerRightCorner.x(), parentRect.UpperLeftCorner.y() + height ) );
+										 parentRect.LowerRightCorner.x(), parentRect.UpperLeftCorner.y() + hg ) );
 	Rect rect;
 
   rect.UpperLeftCorner = parentRect.UpperLeftCorner;
-  height = std::max<int>( font.getSize("A").height(), height );
+  hg = std::max<int>( font.getSize("A").height(), hg );
 	//if (skin && height < skin->getSize ( EGDS_MENU_HEIGHT ))
 	//	height = skin->getSize(EGDS_MENU_HEIGHT);
 	int width = rect.UpperLeftCorner.x();
@@ -187,20 +187,20 @@ void MainMenu::recalculateSize_()
 	}
 
 	// recalculate submenus
-	for (i=0; i<(int)getItemCount(); ++i)
+	for( i=0; i<(int)getItemCount(); ++i )
   {
     ContextMenuItem* refItem = getItem( i );
 
-    Rect rectangle( refItem->getOffset(), 0, refItem->getOffset() + refItem->getDim().width(), height );
+    Rect rectangle( refItem->getOffset(), 0, refItem->getOffset() + refItem->getDim().width(), hg );
     refItem->setGeometry( rectangle );
 
-		if (refItem->getSubMenu())
+		if( refItem->getSubMenu() )
 		{
 			// move submenu
       Size itemSize = refItem->getSubMenu()->getAbsoluteRect().getSize();
 
-			refItem->getSubMenu()->setGeometry( Rect( refItem->getOffset(), height,
-					                          						refItem->getOffset() + itemSize.width()-5, height+itemSize.height() ));
+			refItem->getSubMenu()->setGeometry( Rect( refItem->getOffset(), hg,
+																								refItem->getOffset() + itemSize.width()-5, hg+itemSize.height() ));
 		}
   }
 }

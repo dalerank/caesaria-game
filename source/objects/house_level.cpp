@@ -65,11 +65,11 @@ public:
   GoodConsumptionMuls consumptionMuls;
 };
 
-int HouseSpecification::getLevel() const {   return _d->houseLevel;}
-const std::string& HouseSpecification::getLevelName() const{   return _d->levelName;}
+int HouseSpecification::level() const {   return _d->houseLevel;}
+const std::string& HouseSpecification::levelName() const{   return _d->levelName;}
 bool HouseSpecification::isPatrician() const{   return _d->houseLevel > 12;}
 int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
-int HouseSpecification::getTaxRate() const{   return _d->taxRate;}
+int HouseSpecification::taxRate() const{   return _d->taxRate;}
 int HouseSpecification::getMinEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
 int HouseSpecification::getMinEducationLevel() const{  return _d->minEducationLevel;}
 //
@@ -237,8 +237,9 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
   int ret = 0;
   foreach( it, houses )
   {
-    int bLevel = (*it)->getSpec().getLevel();
-    if( bLevel > 0 && (_d->houseLevel - bLevel > 2) )
+    int pop = (*it)->getHabitants().count();
+    int bLevel = (*it)->getSpec().level();
+    if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
       oMissingRequirement = MetaDataHolder::getTypename( (*it)->type() );
@@ -548,10 +549,10 @@ int HouseSpecification::computeMonthlyFoodConsumption(HousePtr house) const
   return house->getHabitants().count() / 2;
 }
 
-const std::string& HouseSpecification::getInternalName() const{  return _d->internalName; }
+const std::string& HouseSpecification::internalName() const{  return _d->internalName; }
 int HouseSpecification::getRequiredGoodLevel(Good::Type type) const{  return _d->requiredGoods[type];}
-int HouseSpecification::getProsperity() const{  return _d->prosperity;}
-int HouseSpecification::getCrime() const{  return _d->crime;}
+int HouseSpecification::prosperity() const{  return _d->prosperity;}
+int HouseSpecification::crime() const{  return _d->crime;}
 
 HouseSpecification::~HouseSpecification() {}
 
@@ -691,9 +692,9 @@ int HouseSpecHelper::getHouseLevel( const std::string& name )
 {
   foreach( item, _d->spec_by_level )
   {
-    if( item->second.getInternalName() == name )
+    if( item->second.internalName() == name )
     {
-      return item->second.getLevel();
+      return item->second.level();
     }
   }
 

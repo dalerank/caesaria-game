@@ -85,7 +85,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   HouseSpecHelper& helper = HouseSpecHelper::getInstance();
   _d->houseLevel = helper.getHouseLevel( houseId );
   _d->spec = helper.getHouseLevelSpec( _d->houseLevel );
-  setName( _d->spec.getLevelName() );
+  setName( _d->spec.levelName() );
   _d->desirability.base = -3;
   _d->desirability.range = 3;
   _d->desirability.step = 1;
@@ -220,11 +220,11 @@ void House::timeStep(const unsigned long time)
   {
     _d->taxCheckInterval = GameDate::current();
     float cityTax = _getCity()->getFunds().getTaxRate() / 100.f;
-    appendServiceValue( Service::forum, (cityTax * _d->spec.getTaxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
+    appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
 
     _checkEvolve();    
 
-    appendServiceValue( Service::crime, _d->spec.getCrime() + 2 );
+    appendServiceValue( Service::crime, _d->spec.crime() + 2 );
     cancelService( Service::recruter );
 
     int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
@@ -266,7 +266,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       }
 
       HousePtr house = ptr_cast<House>( (*tile)->overlay() );
-      if( house != NULL && house->getSpec().getLevel() == level4grow )
+      if( house != NULL && house->getSpec().level() == level4grow )
       {
         if( house->getSize().width() > 1 )  //bigger house near, can't grow
         {
@@ -669,7 +669,7 @@ void House::_update()
   setPicture( pic );
   setSize( Size( (pic.getWidth() + 2 ) / 60 ) );
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * getSize().getArea();
-  _d->services[ Service::forum ].setMax( _d->spec.getTaxRate() * _d->maxHabitants );
+  _d->services[ Service::forum ].setMax( _d->spec.taxRate() * _d->maxHabitants );
   _d->initGoodStore( getSize().getArea() );
 }
 

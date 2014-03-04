@@ -87,7 +87,7 @@ void Protestor::timeStep(const unsigned long time)
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
       HousePtr h = ptr_cast<House>( *it );
-      if( h->getSpec().getLevel() <= _d->houseLevel ) { it=constructions.erase( it ); }
+      if( h->getSpec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
       else { it++; }
     }
 
@@ -216,7 +216,7 @@ Protestor::~Protestor()
 void Protestor::send2City( HousePtr house )
 {
   setPos( house->pos() );
-  _d->houseLevel = house->getSpec().getLevel();
+  _d->houseLevel = house->getSpec().level();
   _d->state = Impl::searchHouse;
 
   if( !isDeleted() )

@@ -173,7 +173,7 @@ int AdvisorFinanceWindow::Impl::calculateTaxValue()
       continue;
 
     int maturehb = (*house)->getHabitants().count( CitizenGroup::mature );
-    int housetax = (*house)->getSpec().getTaxRate();
+    int housetax = (*house)->getSpec().taxRate();
     taxValue += housetax * maturehb * taxRate / maxhb;
   }
 

@@ -37,7 +37,7 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   setConstruction( ptr_cast<Construction>( _warehouse ) );
 
   Size btnOrdersSize( 350, 20 );
-  PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width()) / 2, getHeight() - 34 ), btnOrdersSize ),
+  PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width()) / 2, height() - 34 ), btnOrdersSize ),
                                           _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( btnOrders, onClicked(), this, InfoBoxWarehouse::showSpecialOrdersWindow );
@@ -75,7 +75,7 @@ InfoBoxWarehouse::~InfoBoxWarehouse() {}
 void InfoBoxWarehouse::showSpecialOrdersWindow()
 {
   Point pos;
-  if( getTop() > (int)getParent()->getHeight() / 2 )
+  if( getTop() > (int)getParent()->height() / 2 )
   {
     pos = Point( screenLeft(), screenBottom() - WarehouseSpecialOrdersWindow::defaultHeight );
   }

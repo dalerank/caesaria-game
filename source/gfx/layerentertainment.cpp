@@ -107,7 +107,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         HousePtr house = ptr_cast<House>( overlay );
         entertainmentLevel = _getLevelValue( house );
 
-        needDrawAnimations = (house->getSpec().getLevel() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
         CityHelper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
