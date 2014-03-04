@@ -240,7 +240,7 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
                                           "", -1, false, PushButton::whiteBorderUp );
 
   _btnTradeCenter = new PushButton( this, Rect( 80, getHeight() - 70, width() - 80, getHeight() - 50 ),
-                                   _("##trace_center##"), -1, false, PushButton::whiteBorderUp );
+                                   _("##trade_center##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();

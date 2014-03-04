@@ -42,7 +42,8 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
 
   CONNECT( btnOrders, onClicked(), this, InfoBoxWarehouse::showSpecialOrdersWindow );
 
-  setTitle( MetaDataHolder::getPrettyName( _warehouse->type() ) );
+  std::string title = MetaDataHolder::getPrettyName( _warehouse->type() );
+  setTitle( _(title) );
 
   // summary: total stock, free capacity
   int _paintY = _getTitle() ? _getTitle()->bottom() : 50;
