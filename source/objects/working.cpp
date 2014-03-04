@@ -58,7 +58,6 @@ void WorkingBuilding::load( const VariantMap& stream)
     _d->maxWorkers = value;
 }
 
-
 std::string WorkingBuilding::getWorkersProblem() const
 {
   std::string factoryType = MetaDataHolder::getTypename( getType() );
@@ -69,6 +68,18 @@ std::string WorkingBuilding::getWorkersProblem() const
   workKoeff = math::clamp( (int)ceil(workKoeff), 0, 5 );
 
   return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), workKoeffStr[ (int)workKoeff ] );
+}
+
+std::string WorkingBuilding::getTrouble() const
+{
+  std::string trouble = Building::getTrouble();
+
+  if( trouble.empty() && getWorkersCount() < getMaxWorkers() / 2 )
+  {
+    trouble = getWorkersProblem();
+  }
+
+  return trouble;
 }
 
 std::string WorkingBuilding::getWorkersState() const { return ""; }

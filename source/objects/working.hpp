@@ -51,6 +51,8 @@ public:
   virtual std::string getWorkersProblem() const;
   virtual std::string getWorkersState() const;
 
+  virtual std::string getTrouble() const;
+
 protected:
   void _setError(const std::string& err);
   void _fireWorkers();

@@ -63,7 +63,7 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
    _d->inGoodType = inType;
    _d->outGoodType = outType;
    _d->finishedQty = 100;
-   _d->goodStore.setCapacity(1000);  // quite unlimited
+   _d->goodStore.setCapacity(0);  // quite limited before it start work
    _d->goodStore.setCapacity(_d->inGoodType, 200);
    _d->goodStore.setCapacity(_d->outGoodType, 200);
 }
@@ -96,14 +96,19 @@ void Factory::timeStep(const unsigned long time)
   WorkingBuilding::timeStep(time);
 
   //try get good from storage building for us
-  if( time % 22 == 1 && getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( time % (GameDate::ticksInMonth()/4) == 1 )
   {
-    receiveGood();
-    deliverGood();
+    _d->goodStore.setCapacity( getWorkersCount() > 0 ? 1000 : 0);
 
-    if( GameDate::current().month() % 3 == 1 )
+    if( getWorkersCount() > 0 && getWalkers().size() == 0 )
     {
-      getGoodStore().removeExpired( GameDate::current() );
+      receiveGood();
+      deliverGood();
+
+      if( GameDate::current().month() % 3 == 1 )
+      {
+        getGoodStore().removeExpired( GameDate::current() );
+      }
     }
   }
 
