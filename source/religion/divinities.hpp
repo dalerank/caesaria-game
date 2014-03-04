@@ -66,6 +66,13 @@ public:
   virtual void updateRelation(float income, PlayerCityPtr city);
 };
 
+class RomeDivinityNeptune : public RomeDivinityBase
+{
+public:
+  static RomeDivinityPtr create();
+  virtual void updateRelation(float income, PlayerCityPtr city);
+};
+
 }//end namespace religion
 
 #endif //__CAESARIA_DIVINITIES_H_INCLUDED__

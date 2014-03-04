@@ -88,7 +88,7 @@ void ProsperityRating::update( const unsigned int time )
       return;
     }
 
-    CityHelper helper( _d->city );
+    Helper helper( _d->city );
     HouseList houses = helper.find<House>( building::house );
 
     int prosperityCap = 0;

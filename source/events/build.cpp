@@ -60,7 +60,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
       ConstructionPtr construction = ptr_cast<Construction>( _overlay );
       if( construction.isValid() )
       {
-        CityHelper helper( game.getCity() );
+        city::Helper helper( game.getCity() );
         helper.updateDesirability( construction, true );
 
         game.getCity()->addOverlay( _overlay );

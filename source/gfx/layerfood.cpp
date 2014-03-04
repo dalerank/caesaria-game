@@ -69,7 +69,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //houses
     case building::house:
       {
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = ptr_cast<House>( overlay );
         foodLevel = house->getState( (Construction::Param)House::food );
@@ -80,7 +80,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base);
       }
       break;

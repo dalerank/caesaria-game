@@ -73,7 +73,7 @@ void CoastalFactory::build(PlayerCityPtr city, const TilePos& pos)
 
 void CoastalFactory::destroy()
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
 
   TilesArray area = helper.getArea( this );
 

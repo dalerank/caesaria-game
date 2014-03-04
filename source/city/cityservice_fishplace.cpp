@@ -59,7 +59,7 @@ void Fishery::update( const unsigned int time )
 
   if( _d->places.empty() )
   {
-    CityHelper helper( _d->city );
+    Helper helper( _d->city );
     _d->places = helper.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
   }
 

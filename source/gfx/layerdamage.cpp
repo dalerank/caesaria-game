@@ -76,7 +76,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         damageLevel = (int)house->getState( Construction::damage );
         needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
 
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
       break;
@@ -90,7 +90,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
           damageLevel = (int)building->getState( Construction::damage );
         }
 
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
       break;

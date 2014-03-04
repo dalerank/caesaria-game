@@ -85,7 +85,7 @@ void Religion::update( const unsigned int time )
   _d->templesCoverity.clear();
 
   //update temples info
-  CityHelper helper( _d->city );
+  Helper helper( _d->city );
   TempleList temples = helper.find<Temple>( building::religionGroup );
   foreach( it, temples)
   {
@@ -114,7 +114,7 @@ void Religion::update( const unsigned int time )
 
 void Religion::Impl::updateRelation(RomeDivinityPtr divn)
 {
-  CityHelper helper( city );
+  Helper helper( city );
   int peopleReached = 0;
   TempleList temples = helper.find<Temple>( building::religionGroup );
 

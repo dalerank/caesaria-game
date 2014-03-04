@@ -92,7 +92,7 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
 
 void Dock::destroy()
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
 
   TilesArray area = helper.getArea( this );
 
@@ -152,7 +152,7 @@ void Dock::load(const VariantMap& stream)
 
 bool Dock::isBusy() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, getLandingTile().pos() );
 
   return !merchants.empty();
@@ -177,7 +177,7 @@ const Tile& Dock::getLandingTile() const
 
 int Dock::getQueueSize() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   TilePos offset( 3, 3 );
   SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant,
                                                         pos() - offset, pos() + offset );
@@ -193,7 +193,7 @@ int Dock::getQueueSize() const
 
 const Tile& Dock::getQueueTile() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   TilePos offset( 3, 3 );
   TilesArray tiles = helper.getArea( pos() - offset, pos() + offset );
 

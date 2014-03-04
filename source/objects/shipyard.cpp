@@ -139,7 +139,7 @@ bool Shipyard::Impl::isNeedCreateBoat(PlayerCityPtr city )
 
 WharfPtr Shipyard::Impl::findFreeWharf( PlayerCityPtr city )
 {
-  CityHelper helper( city );
+  city::Helper helper( city );
 
   WharfList wharfs = helper.find<Wharf>( building::wharf );
   foreach( wharf, wharfs )

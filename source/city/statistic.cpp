@@ -33,7 +33,7 @@ namespace city
 
 unsigned int Statistic::getCurrentWorkersNumber(PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  Helper helper( city );
 
   WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
 
@@ -45,7 +45,7 @@ unsigned int Statistic::getCurrentWorkersNumber(PlayerCityPtr city)
 
 unsigned int Statistic::getVacantionsNumber(PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  Helper helper( city );
 
   WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
 
@@ -57,7 +57,7 @@ unsigned int Statistic::getVacantionsNumber(PlayerCityPtr city)
 
 unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  Helper helper( city );
 
   HouseList houses = helper.find<House>( building::house );
 
@@ -88,7 +88,7 @@ unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
 
 unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  Helper helper( city );
 
   HouseList houses = helper.find<House>( building::house );
 
@@ -105,7 +105,7 @@ unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 
 unsigned int Statistic::getFoodStock(PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  Helper helper( city );
 
   int foodSum = 0;
 
@@ -117,7 +117,7 @@ unsigned int Statistic::getFoodStock(PlayerCityPtr city)
 
 unsigned int Statistic::getFoodMonthlyConsumption(PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  Helper helper( city );
 
   int foodComsumption = 0;
   HouseList houses = helper.find<House>( building::house );
@@ -129,7 +129,7 @@ unsigned int Statistic::getFoodMonthlyConsumption(PlayerCityPtr city)
 
 unsigned int Statistic::getFoodProducing(PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  Helper helper( city );
 
   int foodProducing = 0;
   FarmList farms = helper.find<Farm>( building::foodGroup );
@@ -141,7 +141,7 @@ unsigned int Statistic::getFoodProducing(PlayerCityPtr city)
 
 Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  Helper helper( city );
   GoodsMap cityGoodsAvailable;
 
   WarehouseList warehouses = helper.find<Warehouse>( building::warehouse );

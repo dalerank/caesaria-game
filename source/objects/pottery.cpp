@@ -38,7 +38,7 @@ bool Pottery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& around
 void Pottery::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
-  CityHelper helper( city );
+  city::Helper helper( city );
   bool haveClaypit = !helper.find<Building>( building::clayPit ).empty();
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );

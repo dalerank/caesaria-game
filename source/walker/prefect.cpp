@@ -83,7 +83,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 
 bool Prefect::_looks4Protestor( TilePos& p )
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   TilePos offset( 3, 3 );
   ProtestorList protestors = helper.find<Protestor>( walker::protestor, pos() - offset, pos() + offset );
 
@@ -420,7 +420,7 @@ void Prefect::timeStep(const unsigned long time)
 
   case Impl::fightProtestor:
   {
-    CityHelper helper( _getCity() );
+    city::Helper helper( _getCity() );
     ProtestorList protestors = helper.find<Protestor>( walker::protestor,
                                                        pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 

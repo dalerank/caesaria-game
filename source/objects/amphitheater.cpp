@@ -68,7 +68,7 @@ void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
 {
   EntertainmentBuilding::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
   if( actors.empty() )
   {

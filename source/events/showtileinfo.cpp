@@ -44,7 +44,7 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   case next:
   case prew:
   {
-    CityHelper helper( game.getCity() );
+    city::Helper helper( game.getCity() );
     ConstructionPtr c =  ptr_cast<Construction>( game.getCity()->getOverlay( _pos ) );
     c = (_mode == next ? helper.next( c ) : helper.prew( c ));
 

@@ -197,7 +197,7 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   }
 
   WorkingBuildingList buildings;
-  CityHelper helper( city );
+  city::Helper helper( city );
   foreach( buildingsGroup, bldClasses )
   {
     WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( *buildingsGroup );

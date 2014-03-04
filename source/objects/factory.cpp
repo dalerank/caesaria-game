@@ -339,7 +339,7 @@ void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   bool haveIronMine = !helper.find<Building>( building::ironMine ).empty();
 
   _setError( haveIronMine ? "" : "##need_iron_for_work##" );
@@ -354,7 +354,7 @@ void FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   bool haveTimberLogger = !helper.find<TimberLogger>( building::timberLogger ).empty();
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
@@ -386,7 +386,7 @@ void Winery::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   bool haveVinegrad = !helper.find<Building>( building::grapeFarm ).empty();
 
   const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : "##need_grape##" );
@@ -410,7 +410,7 @@ void Creamery::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   bool haveOliveFarm = !helper.find<Building>( building::oliveFarm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );

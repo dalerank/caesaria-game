@@ -41,7 +41,7 @@ void RandomDamage::_exec( Game& game, unsigned int time )
     if( population > _minPopulation && population < _maxPopulation )
     {
       _isDeleted = true;
-      CityHelper helper( game.getCity() );
+      city::Helper helper( game.getCity() );
       HouseList houses = helper.find<House>( building::house );
       for( unsigned int k=0; k < houses.size() / 4; k++ )
       {

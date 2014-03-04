@@ -154,7 +154,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
     PlayerCityPtr plCity = ptr_cast<PlayerCity>( empire->getCity( ourCity ) );
     if( plCity.isValid() )
     {
-      CityHelper helper( plCity );
+      city::Helper helper( plCity );
       DockList docks = helper.find<Dock>( constants::building::dock );
       if( docks.empty() )
       {

@@ -189,7 +189,7 @@ void Migration::load(const VariantMap& stream)
 unsigned int Migration::Impl::calcVacantHouse()
 {
   unsigned int vh = 0;
-  CityHelper helper( city );
+  Helper helper( city );
   HouseList houses = helper.find<House>(building::house);
   foreach( house, houses )
   {
@@ -229,7 +229,7 @@ void Migration::Impl::createMigrationToCity()
 
 void Migration::Impl::createMigrationFromCity()
 {
-  CityHelper helper( city );
+  Helper helper( city );
   HouseList houses = helper.find<House>(building::house);
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )

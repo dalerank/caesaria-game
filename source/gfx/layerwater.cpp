@@ -84,7 +84,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       tileNumber += (haveWater ? OverlayPic::haveWater : 0);
       tileNumber += tile.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
-      CityHelper helper( _getCity() );
+      city::Helper helper( _getCity() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
       pic = Picture::getInvalid();

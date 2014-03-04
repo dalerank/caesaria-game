@@ -69,7 +69,7 @@ void Fortification::build(PlayerCityPtr city, const TilePos& pos )
 
   Building::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   FortificationList fortifications = helper.find<Fortification>( building::fortification );
 
   foreach( frt, fortifications ) { (*frt)->updatePicture( city ); }

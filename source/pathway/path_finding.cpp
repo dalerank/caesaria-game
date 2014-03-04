@@ -193,7 +193,7 @@ DirectRoutes Propagator::getRoutes(const TileOverlay::Type buildingType)
 {
   DirectRoutes ret;
   // init the building list
-  CityHelper helper( _d->city );
+  city::Helper helper( _d->city );
   ConstructionList constructionList = helper.find<Construction>( buildingType );
 
   // for each destination building

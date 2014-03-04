@@ -249,7 +249,7 @@ void House::timeStep(const unsigned long time)
 
 void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int startBigPic, const char desirability )
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
 
   if( getSize() == 1 )
   {
@@ -392,7 +392,7 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
   _d->houseId = bigSize ? bigPic : smallPic;
   _d->picIdOffset = bigSize ? 0 : ( rand() % 10 > 6 ? 1 : 0 );
 
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   //clear current desirability influence
   helper.updateDesirability( this, false );
 

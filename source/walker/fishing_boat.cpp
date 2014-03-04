@@ -95,7 +95,7 @@ void FishingBoat::timeStep(const unsigned long time)
       _animationRef().clear();
       _setAnimation( gfx::fishingBoatWork );
 
-      CityHelper helper( _getCity() );
+      city::Helper helper( _getCity() );
       FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos() );
 
       if( !places.empty() )
@@ -228,8 +228,8 @@ void FishingBoat::_changeTile()
 
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 {
-  CityHelper helper( city );
-  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, CityHelper::invalidPos );
+  city::Helper helper( city );
+  FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, city::Helper::invalidPos );
 
   int minDistance = 999;
   FishPlacePtr nearest;

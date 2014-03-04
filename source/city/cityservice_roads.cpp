@@ -75,7 +75,7 @@ void Roads::update( const unsigned int time )
   std::vector< TileOverlay::Type > btypes;
   btypes.push_back( building::senate );
 
-  CityHelper helper( _d->city );
+  Helper helper( _d->city );
 
 
   Impl::Updates positions;

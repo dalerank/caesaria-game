@@ -117,7 +117,7 @@ bool WorkersHire::_haveHr( WorkingBuildingPtr building )
 
 void WorkersHire::_hireByType(const TileOverlay::Type type )
 {
-  CityHelper hlp( _d->city );
+  Helper hlp( _d->city );
   WorkingBuildingList buildings = hlp.find< WorkingBuilding >( type );
   foreach( it, buildings )
   {

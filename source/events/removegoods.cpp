@@ -40,7 +40,7 @@ GameEventPtr RemoveGoods::create( Good::Type type, int qty  )
 template<class T>
 void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what, int& qty )
 {
-  CityHelper helper( city );
+  city::Helper helper( city );
   std::list< SmartPtr<T> > bList = helper.find<T>(btype );
   foreach( it, bList )
   {

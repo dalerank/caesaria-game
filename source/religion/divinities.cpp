@@ -67,7 +67,7 @@ VariantMap RomeDivinityBase::save() const
 
 void RomeDivinityBase::updateRelation(float income, PlayerCityPtr city)
 {
-  CityHelper helper( city );
+  city::Helper helper( city );
   float cityBalanceKoeff = helper.getBalanceKoeff();
 
   _relation = math::clamp<float>( _relation + income - getDefaultDecrease() * cityBalanceKoeff, 0, 100 );
@@ -111,10 +111,43 @@ void RomeDivinityCeres::updateRelation(float income, PlayerCityPtr city)
                                                                    _("##wrath_of_ceres_description##") );
     event->dispatch();
 
-    CityHelper helper( city );
+    city::Helper helper( city );
     FarmList farms = helper.find<Farm>( building::any );
 
-    foreach( farm, farms ) { (*farm)->updateProgress( -(*farm)->getProgress() ); }
+    foreach( farm, farms )
+    {
+      (*farm)->updateProgress( -(*farm)->getProgress() );
+    }
+  }
+}
+
+RomeDivinityPtr RomeDivinityNeptune::create()
+{
+  RomeDivinityPtr ret( new RomeDivinityNeptune() );
+  ret->setInternalName( divNames[ romeDivNeptune ] );
+  ret->drop();
+
+  return ret;
+}
+
+void RomeDivinityNeptune::updateRelation(float income, PlayerCityPtr city)
+{
+  RomeDivinityBase::updateRelation( income, city );
+
+  if( getRelation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
+  {
+    _lastActionDate = GameDate::current();
+    events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_neptune_title##"),
+                                                                   _("##wrath_of_neptune_description##") );
+    event->dispatch();
+
+    city::Helper helper( city );
+    FarmList farms = helper.find<Farm>( building::any );
+
+    foreach( farm, farms )
+    {
+      (*farm)->updateProgress( -(*farm)->getProgress() );
+    }
   }
 }
 

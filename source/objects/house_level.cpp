@@ -227,7 +227,7 @@ unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->
 
 int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
 {
-  CityHelper helper( house->_getCity() );
+  city::Helper helper( house->_getCity() );
 
   Size size = house->getSize();
   TilePos offset( size.width(), size.height() );

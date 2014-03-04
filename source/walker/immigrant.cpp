@@ -50,7 +50,7 @@ Immigrant::Immigrant(PlayerCityPtr city )
 
 HousePtr Immigrant::_findBlankHouse()
 {
-  CityHelper hlp( _getCity() );
+  city::Helper hlp( _getCity() );
   HouseList houses = hlp.find< House >( building::house );
   HousePtr blankHouse;
 

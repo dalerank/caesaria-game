@@ -161,7 +161,7 @@ void Tower::deliverService()
 
 TilesArray Tower::getEnterArea() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   TilesArray tiles = helper.getAroundTiles( const_cast< Tower* >( this )  );
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )

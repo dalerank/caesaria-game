@@ -191,7 +191,7 @@ FarmWheat::FarmWheat() : Farm(Good::wheat, building::wheatFarm)
 
 std::string FarmWheat::getTrouble() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
 
   LocustList lc = helper.find<Locust>( walker::locust, pos() );
   if( !lc.empty() )

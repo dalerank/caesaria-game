@@ -353,7 +353,7 @@ public:
 
   bool isIndustryEnabled()
   {
-    CityHelper helper( _city );
+    city::Helper helper( _city );
     //if any factory work in city, that industry work too
     bool anyFactoryWork = false;
     FactoryList factories = helper.getProducers<Factory>( _type );
@@ -375,7 +375,7 @@ public:
       return;
     }
 
-    CityHelper helper( _city );
+    city::Helper helper( _city );
     int workFactoryCount=0, idleFactoryCount=0;
 
     FactoryList factories = helper.getProducers<Factory>( _type );
@@ -394,7 +394,7 @@ public:
 
   void toggleIndustryEnable()
   {
-    CityHelper helper( _city );
+    city::Helper helper( _city );
 
     bool industryEnabled = isIndustryEnabled();
     //up or down all factory for this industry
@@ -478,7 +478,7 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
 
 bool AdvisorTradeWindow::Impl::getWorkState(Good::Type gtype )
 {
-  CityHelper helper( city );
+  city::Helper helper( city );
 
   bool industryActive = false;
   FactoryList producers = helper.getProducers<Factory>( gtype );
@@ -490,7 +490,7 @@ bool AdvisorTradeWindow::Impl::getWorkState(Good::Type gtype )
 
 int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
 {
-  CityHelper helper( city );
+  city::Helper helper( city );
 
   int goodsQty = 0;
   WarehouseList warehouses = helper.find< Warehouse >( building::warehouse );

@@ -67,7 +67,7 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
 void CartSupplier::_reachedPathway()
 {
   Walker::_reachedPathway();
-  CityHelper helper( _d->city );
+  city::Helper helper( _d->city );
 
   if( _pathwayRef().isReverse() )
   {
@@ -259,7 +259,7 @@ void CartSupplier::send2city( BuildingPtr building, Good::Type what, const int q
 
 void CartSupplier::_reserveStorage()
 {
-  CityHelper helper( _d->city );
+  city::Helper helper( _d->city );
   BuildingPtr b = helper.find<Building>( building::any, _d->baseBuildingPos );
 
   GoodStore* storage = 0;

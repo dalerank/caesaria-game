@@ -55,7 +55,7 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
                                         ResourceGroup::sprites, 21, 8,
                                         pos + TilePos( 3, 3 ) ) );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   BarracksList barracks = helper.find<Barracks>( building::barracks );
 
   if( barracks.empty() )
@@ -68,7 +68,7 @@ void FortLegionnaire::_readyNewSoldier()
 {
   RomeSoldierPtr soldier = RomeSoldier::create( _getCity(), walker::legionary );
 
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   TilesArray tiles = helper.getAroundTiles( this );
 
   foreach( tile, tiles)
@@ -244,7 +244,7 @@ TilePos Fort::getFreeSlot() const
   }
 
 
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   TilesArray tiles = helper.getArea( patrolPos - TilePos( 0, 3), patrolPos );
 
   for( int range=1; range < 5; range++ )

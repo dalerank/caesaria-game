@@ -82,7 +82,7 @@ void Protestor::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    CityHelper helper( _getCity() );
+    city::Helper helper( _getCity() );
     ConstructionList constructions = helper.find<Construction>( building::house );
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
@@ -109,7 +109,7 @@ void Protestor::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    CityHelper helper( _getCity() );
+    city::Helper helper( _getCity() );
     ConstructionList constructions = helper.find<Construction>( building::house );
     constructions = helper.find<Construction>( building::any );
 
@@ -164,7 +164,7 @@ void Protestor::timeStep(const unsigned long time)
     if( time % 16 == 1 )
     {
 
-      CityHelper helper( _getCity() );
+      city::Helper helper( _getCity() );
       ConstructionList constructions = helper.find<Construction>( building::any, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )

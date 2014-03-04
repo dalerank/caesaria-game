@@ -59,7 +59,7 @@ void Disorder::update( const unsigned int time )
   if( time % (GameDate::ticksInMonth()/2) != 1 )
     return;
 
-  CityHelper helper( _d->city );
+  Helper helper( _d->city );
   HouseList houses = helper.find<House>( building::house );
 
   WalkerList walkers = _d->city->getWalkers( walker::protestor );

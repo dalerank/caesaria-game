@@ -125,7 +125,7 @@ void Garden::update()
       }
     }
 
-    CityHelper helper( _getCity() );
+    city::Helper helper( _getCity() );
     helper.updateDesirability( this, false );
     setSize( 2 );
     Construction::build( _getCity(), pos() );

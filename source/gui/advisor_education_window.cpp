@@ -142,7 +142,7 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   info = _d->getInfo( city, building::library );
   _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBackframe, Rect( startPoint + Point( 0, 40), labelSize), building::library, info );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
 
   int sumScholars = 0;
   int sumStudents = 0;
@@ -172,7 +172,7 @@ void AdvisorEducationWindow::draw( GfxEngine& painter )
 
 InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
 {
-  CityHelper helper( city );
+  city::Helper helper( city );
 
   InfrastructureInfo ret;
 

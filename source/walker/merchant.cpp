@@ -213,7 +213,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stBuyGoods:
     {
-      CityHelper helper( city );
+      city::Helper helper( city );
       WarehousePtr warehouse = helper.find<Warehouse>( building::warehouse, destBuildingPos );
 
       if( warehouse.isValid() )
@@ -272,7 +272,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stSellGoods:
     {
-      CityHelper helper( city );
+      city::Helper helper( city );
       WarehousePtr warehouse = helper.find<Warehouse>( building::warehouse, destBuildingPos );
 
       const GoodStore& cityOrders = city->getBuys();

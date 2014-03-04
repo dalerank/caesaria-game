@@ -58,7 +58,7 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
 
   Construction::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   AqueductList aqueducts = helper.find<Aqueduct>( building::aqueduct );
 
   foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( city ); }

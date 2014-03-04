@@ -111,7 +111,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
 
   BuildingList buildings;
   foreach( buildingType, _d->buildingNeed )
@@ -226,7 +226,7 @@ void TraineeWalker::load( const VariantMap& stream )
 
   _init( getType() );
 
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   _d->base = helper.find<Building>( building::any, stream.get( "originBldPos" ).toTilePos() );
   _d->destination = helper.find<Building>( building::any, stream.get( "destBldPos" ).toTilePos() );
   _d->maxDistance = (int)stream.get( "maxDistance" );

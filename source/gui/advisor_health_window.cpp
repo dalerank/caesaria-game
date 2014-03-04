@@ -103,7 +103,7 @@ public:
 
   InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service )
   {
-    CityHelper helper( city );
+    city::Helper helper( city );
 
     InfrastructureInfo ret;
 

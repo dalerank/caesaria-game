@@ -30,7 +30,7 @@ Engineer::~Engineer()
 
 std::string Engineer::getThinks() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
 
   TilePos offset( 2, 2 );
 

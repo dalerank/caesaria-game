@@ -20,9 +20,12 @@
 
 using namespace constants;
 
-const TilePos CityHelper::invalidPos = TilePos( -1, -1 );
+namespace city
+{
 
-void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild )
+const TilePos Helper::invalidPos = TilePos( -1, -1 );
+
+void Helper::updateDesirability( ConstructionPtr construction, bool onBuild )
 {
   Tilemap& tilemap = _city->getTilemap();
 
@@ -51,22 +54,24 @@ void CityHelper::updateDesirability( ConstructionPtr construction, bool onBuild 
   }
 }
 
-TilesArray CityHelper::getArea(TileOverlayPtr overlay)
+TilesArray Helper::getArea(TileOverlayPtr overlay)
 {
   return _city->getTilemap().getArea( overlay->pos(), overlay->getSize() );
 }
 
-TilesArray CityHelper::getAroundTiles(TileOverlayPtr overlay)
+TilesArray Helper::getAroundTiles(TileOverlayPtr overlay)
 {
   return _city->getTilemap().getArea( overlay->pos()-TilePos(1,1), overlay->getSize()+Size(2) );
 }
 
-TilesArray CityHelper::getArea(TilePos start, TilePos stop)
+TilesArray Helper::getArea(TilePos start, TilePos stop)
 {
   return _city->getTilemap().getArea( start, stop );
 }
 
-float CityHelper::getBalanceKoeff()
+float Helper::getBalanceKoeff()
 {
   return atan( _city->getPopulation() / 5000.f );
 }
+
+}//end namespace city

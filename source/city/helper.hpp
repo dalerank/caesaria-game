@@ -27,11 +27,14 @@
 
 #include <set>
 
-class CityHelper
+namespace city
+{
+
+class Helper
 {
 public:
   static const TilePos invalidPos;
-  CityHelper( PlayerCityPtr city ) : _city( city ) {}
+  Helper( PlayerCityPtr city ) : _city( city ) {}
 
   template< class T >
   std::list< SmartPtr< T > > find( const TileOverlay::Type type );
@@ -67,7 +70,7 @@ public:
 
   template< class T >
   std::list< SmartPtr< T > > find( constants::walker::Type type,
-                                   TilePos start, TilePos stop=CityHelper::invalidPos )
+                                   TilePos start, TilePos stop=Helper::invalidPos )
   {
     std::list< SmartPtr< T > > ret;
 
@@ -154,7 +157,7 @@ protected:
 };
 
 template<class T>
-SmartPtr<T> CityHelper::prew(const SmartPtr<T> current)
+SmartPtr<T> Helper::prew(const SmartPtr<T> current)
 {
   if( current.isNull() )
     return SmartPtr<T>();
@@ -174,7 +177,7 @@ SmartPtr<T> CityHelper::prew(const SmartPtr<T> current)
 }
 
 template< class T >
-std::list< SmartPtr< T > > CityHelper::find( const TileOverlay::Type type )
+std::list< SmartPtr< T > > Helper::find( const TileOverlay::Type type )
 {
   std::list< SmartPtr< T > > ret;
   TileOverlayList& buildings = _city->getOverlays();
@@ -191,7 +194,7 @@ std::list< SmartPtr< T > > CityHelper::find( const TileOverlay::Type type )
 }
 
 template< class T >
-std::list< SmartPtr< T > > CityHelper::getProducers( const Good::Type goodtype )
+std::list< SmartPtr< T > > Helper::getProducers( const Good::Type goodtype )
 {
   std::list< SmartPtr< T > > ret;
   TileOverlayList& overlays = _city->getOverlays();
@@ -208,7 +211,7 @@ std::list< SmartPtr< T > > CityHelper::getProducers( const Good::Type goodtype )
 }
 
 template< class T >
-SmartPtr< T > CityHelper::next( const SmartPtr< T > current )
+SmartPtr< T > Helper::next( const SmartPtr< T > current )
 {
   if( current.isNull() )
     return SmartPtr<T>();
@@ -226,5 +229,7 @@ SmartPtr< T > CityHelper::next( const SmartPtr< T > current )
 
   return SmartPtr<T>();
 }
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYHELPER_H_INCLUDED__

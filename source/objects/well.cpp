@@ -54,7 +54,7 @@ TilesArray Well::getCoverageArea() const
   TilesArray ret;
 
   TilePos offset( wellServiceRange, wellServiceRange );
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   ret = helper.getArea( pos() - offset, pos() + offset );
   return ret;
 }

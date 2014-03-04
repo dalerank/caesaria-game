@@ -79,7 +79,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         fireLevel = (int)house->getState( Construction::fire );
         needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
 
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
       }
     break;
@@ -93,7 +93,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
           fireLevel = (int)constr->getState( Construction::fire );
         }
 
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
       }
     break;

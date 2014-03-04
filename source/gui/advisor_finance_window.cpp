@@ -160,7 +160,7 @@ void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()
 
 int AdvisorFinanceWindow::Impl::calculateTaxValue()
 {
-  CityHelper helper( city );
+  city::Helper helper( city );
 
   HouseList houses = helper.find<House>( building::house );
 

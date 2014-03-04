@@ -51,7 +51,7 @@ void RandomFire::_exec( Game& game, unsigned int time)
     {
       Logger::warning( "Execute random fire service" );
       _d->isDeleted = true;
-      CityHelper helper( game.getCity() );
+      city::Helper helper( game.getCity() );
       HouseList houses = helper.find<House>( building::house );
       for( unsigned int k=0; k < houses.size() / 4; k++ )
       {

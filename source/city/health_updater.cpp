@@ -55,7 +55,7 @@ void HealthUpdater::update( const unsigned int time)
     _d->isDeleted = (_d->endTime < GameDate::current());
 
     Logger::warning( "Execute health updater service" );
-    CityHelper helper( _d->city );
+    Helper helper( _d->city );
     HouseList houses = helper.find<House>( building::house );
     foreach( it, houses )
     {

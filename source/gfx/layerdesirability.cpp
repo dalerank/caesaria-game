@@ -77,7 +77,7 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
                           : math::clamp( tile.getDesirability() / 15, 0, 6 );
         Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         TilesArray tiles4clear = helper.getArea( overlay );
 
         foreach( tile, tiles4clear )

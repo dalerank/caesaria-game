@@ -83,7 +83,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         religionLevel = math::clamp( religionLevel / (house->getSpec().getMinReligionLevel()+1), 0, 100 );
         needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
 
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     break;
@@ -91,7 +91,7 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        CityHelper helper( _getCity() );
+        city::Helper helper( _getCity() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;

@@ -112,7 +112,7 @@ void CultureRating::update( const unsigned int time )
     _d->collegeVisitors = 0;
     int cityPopulation = _d->city->getPopulation();
 
-    CityHelper helper( _d->city );
+    Helper helper( _d->city );
 
     TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( temple, temples )

@@ -108,7 +108,7 @@ public:
 
   InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type small, const TileOverlay::Type big )
   {
-    CityHelper helper( city );
+    city::Helper helper( city );
 
     InfrastructureInfo ret;
 

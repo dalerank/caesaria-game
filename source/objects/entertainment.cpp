@@ -135,7 +135,7 @@ void Theater::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   ActorColonyList actors = helper.find<ActorColony>( building::actorColony );
 
   if( actors.empty() )
@@ -200,7 +200,7 @@ void Collosseum::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   GladiatorSchoolList glSchools = helper.find<GladiatorSchool>( building::gladiatorSchool );
   LionsNurseryList lionsNs = helper.find<LionsNursery>( building::lionsNursery );
 
@@ -236,7 +236,7 @@ std::string Collosseum::getTrouble() const
 
 bool Collosseum::isNeedGladiators() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( building::gladiatorSchool );
 
   return colloseums.empty();

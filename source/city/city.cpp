@@ -403,7 +403,7 @@ int               PlayerCity::getPopulation() const {   return _d->population; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
-  CityHelper hlp( city );
+  city::Helper hlp( city );
   int lastMonthTax = 0;
   
   ForumList forums = hlp.find< Forum >( building::forum );
@@ -425,7 +425,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 {
   long pop = 0; /* population can't be negative - should be unsigned long long*/
   
-  CityHelper helper( city );
+  city::Helper helper( city );
 
   HouseList houseList = helper.find<House>( building::house );
 
@@ -440,7 +440,7 @@ void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr
   ConstructionPtr constr = ptr_cast<Construction>( overlay );
   if( constr.isValid() )
   {
-    CityHelper helper( city );
+    city::Helper helper( city );
     helper.updateDesirability( constr, false );
   }
 }

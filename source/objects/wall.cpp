@@ -48,7 +48,7 @@ void Wall::build(PlayerCityPtr city, const TilePos& pos )
 
   Construction::build( city, pos );
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   WallList walls = helper.find<Wall>( building::wall );
 
   foreach( wall, walls ) { (*wall)->updatePicture( city ); }

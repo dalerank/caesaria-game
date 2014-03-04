@@ -80,7 +80,7 @@ void Locust::timeStep(const unsigned long time)
 
   if( time % _d->grubInterval == 1 )
   {
-    CityHelper helper( _getCity() );
+    city::Helper helper( _getCity() );
     FarmPtr farm = helper.find<Farm>( building::any, pos() );
     if( farm.isValid() && farm->type() != building::pigFarm )
     {

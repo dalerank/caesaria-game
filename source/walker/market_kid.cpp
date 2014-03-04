@@ -123,7 +123,7 @@ void MarketKid::_reachedPathway()
 
   deleteLater();
 
-  CityHelper cityh( _getCity() );
+  city::Helper cityh( _getCity() );
   MarketPtr market = cityh.find<Market>( building::market, _d->marketPos );
   if( market.isValid() )
   {

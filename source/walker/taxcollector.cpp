@@ -60,7 +60,7 @@ void TaxCollector::_changeTile()
 
 std::string TaxCollector::getThinks() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   TilePos offset( 2, 2 );
   HouseList houses = helper.find<House>( building::house, pos() - offset, pos() + offset );
   unsigned int poorHouseCounter=0;

@@ -391,7 +391,7 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
 
 bool LowBridge::canDestroy() const
 {
-  CityHelper helper( _getCity() );
+  city::Helper helper( _getCity() );
   foreach( subtile, _d->subtiles )
   {
     WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->pos() );

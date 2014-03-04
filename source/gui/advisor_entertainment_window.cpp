@@ -174,7 +174,7 @@ void AdvisorEntertainmentWindow::_showFestivalWindow()
 
 InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
 {
-  CityHelper helper( city );
+  city::Helper helper( city );
 
   InfrastructureInfo ret;
 
@@ -230,7 +230,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   const InfrastructureInfo& clsInfo = lbColisseumInfo->getInfo();
   //const InfrastructureInfo& hpdInfo = lbHippodromeInfo->getInfo();
 
-  CityHelper helper( city );
+  city::Helper helper( city );
   int theatersNeed = 0, amptNeed = 0, clsNeed = 0, hpdNeed = 0;
   int theatersServed = 0, amptServed = 0, clsServed = 0, hpdServed = 0;
   int nextLevel = 0;
