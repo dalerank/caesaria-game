@@ -23,7 +23,13 @@
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
 
-class GoodRequest::Impl
+namespace  city
+{
+
+namespace request
+{
+
+class RqGood::Impl
 {
 public:
   DateTime date;
@@ -34,20 +40,20 @@ public:
   std::string description;
 };
 
-CityRequestPtr GoodRequest::create( const VariantMap& stream )
+RequestPtr RqGood::create( const VariantMap& stream )
 {
-  GoodRequest* gr = new GoodRequest();
+  RqGood* gr = new RqGood();
   gr->load( stream );
 
-  CityRequestPtr ret( gr );
+  RequestPtr ret( gr );
   ret->drop();
 
   return ret;
 }
 
-GoodRequest::~GoodRequest(){}
+RqGood::~RqGood(){}
 
-void GoodRequest::exec( PlayerCityPtr city )
+void RqGood::exec( PlayerCityPtr city )
 {
   if( !isDeleted() )
   {
@@ -57,7 +63,7 @@ void GoodRequest::exec( PlayerCityPtr city )
   }
 }
 
-bool GoodRequest::mayExec( PlayerCityPtr city ) const
+bool RqGood::mayExec( PlayerCityPtr city ) const
 {
   CityStatistic::GoodsMap gm = CityStatistic::getGoodsMap( city );
 
@@ -71,11 +77,11 @@ bool GoodRequest::mayExec( PlayerCityPtr city ) const
   return false;
 }
 
-std::string GoodRequest::typeName() {  return "good_request";}
+std::string RqGood::typeName() {  return "good_request";}
 
-VariantMap GoodRequest::save() const
+VariantMap RqGood::save() const
 {
-  VariantMap ret = CityRequest::save();
+  VariantMap ret = Request::save();
   ret[ "date" ] = _d->date;
   ret[ "type" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
@@ -94,7 +100,7 @@ VariantMap GoodRequest::save() const
   return ret;
 }
 
-void GoodRequest::load(const VariantMap& stream)
+void RqGood::load(const VariantMap& stream)
 {
   _d->date = stream.get( "date" ).toDateTime();
   _d->months2comply = (int)stream.get( "month" );
@@ -126,9 +132,9 @@ void GoodRequest::load(const VariantMap& stream)
   _finishedDate.appendMonth( _d->months2comply );
 }
 
-void GoodRequest::success( PlayerCityPtr city )
+void RqGood::success( PlayerCityPtr city )
 {
-  CityRequest::success( city );
+  Request::success( city );
   city->updateFavour( _d->winFavour );
   if( _d->winMoney )
   {
@@ -137,7 +143,7 @@ void GoodRequest::success( PlayerCityPtr city )
   }
 }
 
-void GoodRequest::fail( PlayerCityPtr city )
+void RqGood::fail( PlayerCityPtr city )
 {
   city->updateFavour( _d->failFavour );
   if( _d->failAppendMonth > 0 )
@@ -149,11 +155,30 @@ void GoodRequest::fail( PlayerCityPtr city )
   }
   else
   {
-    CityRequest::fail( city );
+    Request::fail( city );
   }
 }
 
-std::string GoodRequest::getDescription() const {  return _d->description; }
-int GoodRequest::getQty() const { return _d->stock.capacity(); }
-Good::Type GoodRequest::getGoodType() const { return _d->stock.type(); }
-GoodRequest::GoodRequest() : CityRequest( DateTime() ), _d( new Impl ) {}
+std::string RqGood::getDescription() const {  return _d->description; }
+int RqGood::getQty() const { return _d->stock.capacity(); }
+Good::Type RqGood::getGoodType() const { return _d->stock.type(); }
+RqGood::RqGood() : Request( DateTime() ), _d( new Impl ) {}
+
+VariantMap Request::save() const
+{
+  VariantMap ret;
+  ret[ "deleted" ] = _isDeleted;
+  ret[ "announced" ] = _isAnnounced;
+  ret[ "finish" ] = _finishedDate;
+
+  return ret;
+}
+
+Request::Request(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishedDate( finish )
+{
+
+}
+
+}//end namespace request
+
+}//end namespace city

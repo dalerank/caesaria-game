@@ -20,7 +20,10 @@
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
 
-class CityService : public ReferenceCounted
+namespace city
+{
+
+class Srvc : public ReferenceCounted
 {
 public:
   virtual void update( const unsigned int time ) = 0;
@@ -36,13 +39,15 @@ public:
   virtual void load(const VariantMap& stream) {}
 
 protected:
-  CityService( const std::string& name ) : _name( name )
+  Srvc( const std::string& name ) : _name( name )
   {
   }
 
   std::string _name;
 };
 
-typedef SmartPtr<CityService> CityServicePtr;
+typedef SmartPtr<Srvc> SrvcPtr;
+
+}//end namespace city
 
 #endif//__CAESARIA_CITYSERVICE_H_INCLUDED__

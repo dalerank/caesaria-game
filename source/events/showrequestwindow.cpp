@@ -22,7 +22,7 @@
 namespace events
 {
 
-GameEventPtr ShowRequestInfo::create(CityRequestPtr request, bool available4exec)
+GameEventPtr ShowRequestInfo::create( city::request::RequestPtr request, bool available4exec)
 {
   ShowRequestInfo* e = new ShowRequestInfo();
   e->_request = request;
@@ -34,10 +34,7 @@ GameEventPtr ShowRequestInfo::create(CityRequestPtr request, bool available4exec
   return ret;
 }
 
-bool ShowRequestInfo::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
+bool ShowRequestInfo::_mayExec(Game&, unsigned int) const {  return true; }
 
 void ShowRequestInfo::_exec(Game& game, unsigned int)
 {

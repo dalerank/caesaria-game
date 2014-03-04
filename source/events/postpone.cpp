@@ -68,8 +68,8 @@ void PostponeEvent::_exec(Game& game, unsigned int)
   PlayerCityPtr city = game.getCity();
   if( "city_request" == _d->type )
   {    
-    CityServicePtr service = city->findService( CityRequestDispatcher::getDefaultName() );
-    CityRequestDispatcherPtr dispatcher = ptr_cast<CityRequestDispatcher>( service );
+    city::SrvcPtr service = city->findService( city::request::Dispatcher::getDefaultName() );
+    city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( service );
 
     if( dispatcher.isValid() )
     {
@@ -87,7 +87,7 @@ void PostponeEvent::_exec(Game& game, unsigned int)
     return;
   }
 
-  CityServicePtr srvc = CityServiceFactory::create( _d->name, city );
+  city::SrvcPtr srvc = city::ServiceFactory::create( _d->name, city );
   if( srvc.isValid() )
   {
     srvc->load( _d->options );

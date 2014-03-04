@@ -20,10 +20,13 @@
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
-class HealthUpdater : public CityService
+namespace city
+{
+
+class HealthUpdater : public Srvc
 {
 public:
-  static CityServicePtr create(PlayerCityPtr city);
+  static SrvcPtr create(PlayerCityPtr city);
   virtual void update( const unsigned int time);
   static std::string getDefaultName();
   virtual bool isDeleted() const;
@@ -37,5 +40,7 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}//end namespace city
 
 #endif //_CAESARIA_HEALTHUPDATER_H_INCLUDE_

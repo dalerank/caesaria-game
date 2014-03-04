@@ -20,11 +20,14 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceCulture : public CityService
+namespace city
+{
+
+class CultureRating : public Srvc
 {
 public:
   typedef enum { ccSchool, ccLibrary, ccAcademy, ccReligion, ccTheatres } Coverage;
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
   int getValue() const;
@@ -34,10 +37,12 @@ public:
   static std::string getDefaultName();
 
 private:
-  CityServiceCulture( PlayerCityPtr city );
+  CultureRating( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__

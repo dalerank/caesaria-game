@@ -23,10 +23,16 @@
 #include "core/variant.hpp"
 #include "good/good.hpp"
 
-class CityRequest : public ReferenceCounted
+namespace city
+{
+
+namespace request
+{
+
+class Request : public ReferenceCounted
 {
 public:
-  virtual ~CityRequest() {}
+  virtual ~Request() {}
 
   virtual bool mayExec( PlayerCityPtr ) const { return false; }
   virtual void exec( PlayerCityPtr ) {}
@@ -37,15 +43,7 @@ public:
   virtual bool isAnnounced() const { return _isAnnounced; }
   virtual void setAnnounced( bool value ) { _isAnnounced = value; }
 
-  virtual VariantMap save() const
-  {
-    VariantMap ret;
-    ret[ "deleted" ] = _isDeleted;
-    ret[ "announced" ] = _isAnnounced;
-    ret[ "finish" ] = _finishedDate;
-
-    return ret;
-  }
+  virtual VariantMap save() const;
   virtual void load( const VariantMap& stream ) {}
   virtual std::string getDescription() const{  return ""; }
 
@@ -53,19 +51,15 @@ protected:
   bool _isDeleted, _isAnnounced;
   DateTime _finishedDate;
 
-  CityRequest( DateTime finish ) :
-    _isDeleted( false ), _isAnnounced( false ), _finishedDate( finish )
-  {
-
-  }
+  Request( DateTime finish );
 };
 
-class GoodRequest : public CityRequest
+class RqGood : public Request
 {
 public:
-  static CityRequestPtr create( const VariantMap& stream );
+  static RequestPtr create( const VariantMap& stream );
 
-  virtual ~GoodRequest();
+  virtual ~RqGood();
   virtual void exec( PlayerCityPtr city );
   virtual bool mayExec( PlayerCityPtr city ) const;
 
@@ -81,10 +75,14 @@ public:
 
   static std::string typeName();
 private:
-  GoodRequest();
+  RqGood();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}//end namespace request
+
+}//end namespace city
 
 #endif //__CAESARIA_CITY_REQUEST_H_INCLUDED__

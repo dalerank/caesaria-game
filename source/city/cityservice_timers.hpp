@@ -21,21 +21,25 @@
 #include "cityservice.hpp"
 #include "core/timer.hpp"
 
-class CityServiceTimers : public CityService
+namespace city
+{
+
+class Timers : public Srvc
 {
 public:
-  static CityServiceTimers& getInstance();
+  static Timers& getInstance();
 
   void update( const unsigned int time );
   void addTimer( TimerPtr timer );
 
-  ~CityServiceTimers();
+  ~Timers();
 private:
-  CityServiceTimers();
+  Timers();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_TIMERS_H_INCLUDED__

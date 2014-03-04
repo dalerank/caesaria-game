@@ -20,12 +20,15 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceProsperity : public CityService
+namespace city
+{
+
+class ProsperityRating : public Srvc
 {
 public:
   typedef enum { cmHousesCap, cmHaveProfit, cmWorkless,
                  cmWorkersSalary, cmChange, cmPercentPlebs } Mark;
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
   int getValue() const;
@@ -35,10 +38,12 @@ public:
   static std::string getDefaultName();
 
 private:
-  CityServiceProsperity( PlayerCityPtr city );
+  ProsperityRating( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_PROSPERITY_H_INCLUDED__

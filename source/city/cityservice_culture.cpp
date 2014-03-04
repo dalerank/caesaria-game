@@ -29,6 +29,9 @@
 
 using namespace constants;
 
+namespace city
+{
+
 struct Coverage2Point{
   double coverage;
   int points;
@@ -41,7 +44,7 @@ static const CoveragePoints librariesPoints = { {1.0, 20}, {0.86,14}, {0.71,8 },
 static const CoveragePoints schoolsPoints   = { {1.0, 15}, {0.86,10}, {0.71,6 }, {0.51, 4}, {0.31, 1}, {0.0, 0} };
 static const CoveragePoints academiesPoints = { {1.0, 10}, {0.86,7 }, {0.71,4 }, {0.51, 2}, {0.31, 1}, {0.0, 0} };
 
-class CityServiceCulture::Impl
+class CultureRating::Impl
 {
 public:
   PlayerCityPtr city;
@@ -78,25 +81,25 @@ public:
   }
 };
 
-CityServicePtr CityServiceCulture::create(PlayerCityPtr city )
+SrvcPtr CultureRating::create(PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityServiceCulture( city ) );
+  SrvcPtr ret( new CultureRating( city ) );
   ret->drop();
 
   return ret;
 }
 
-CityServiceCulture::CityServiceCulture(PlayerCityPtr city )
-  : CityService( getDefaultName() ), _d( new Impl )
+CultureRating::CultureRating(PlayerCityPtr city )
+  : Srvc( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();
   _d->culture = 0;
 }
 
-void CityServiceCulture::update( const unsigned int time )
+void CultureRating::update( const unsigned int time )
 {
-  if( time % 44 != 1 )
+  if( time % (GameDate::ticksInMonth() / 2) != 1 )
     return;
 
   if( _d->lastDate.getMonthToDate( GameDate::current() ) > 0 )
@@ -158,12 +161,9 @@ void CityServiceCulture::update( const unsigned int time )
   }
 }
 
-int CityServiceCulture::getValue() const
-{
-  return _d->culture;
-}
+int CultureRating::getValue() const {  return _d->culture; }
 
-int CityServiceCulture::getCoverage( Coverage type) const
+int CultureRating::getCoverage( Coverage type) const
 {
   switch( type )
   {
@@ -177,7 +177,6 @@ int CityServiceCulture::getCoverage( Coverage type) const
   return 0;
 }
 
-std::string CityServiceCulture::getDefaultName()
-{
-  return CAESARIA_STR_EXT(CityServiceCulture);
-}
+std::string CultureRating::getDefaultName() {  return CAESARIA_STR_EXT(CityServiceCulture); }
+
+}//end namespace city

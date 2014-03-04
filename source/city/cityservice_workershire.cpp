@@ -21,14 +21,18 @@
 #include "walker/workerhunter.hpp"
 #include "core/foreach.hpp"
 #include "objects/constants.hpp"
+#include "game/gamedate.hpp"
 #include <map>
 
 using namespace constants;
 using namespace std;
 
+namespace city
+{
+
 typedef vector< TileOverlay::Type > Priorities;
 
-class CityServiceWorkersHire::Impl
+class WorkersHire::Impl
 {
 public:
   Priorities priorities;
@@ -36,18 +40,18 @@ public:
   PlayerCityPtr city;
 };
 
-CityServicePtr CityServiceWorkersHire::create(PlayerCityPtr city )
+SrvcPtr WorkersHire::create(PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityServiceWorkersHire( city ));
+  SrvcPtr ret( new WorkersHire( city ));
   ret->drop();
 
   return ret;
 }
 
-string CityServiceWorkersHire::getDefaultName(){ return "workershire"; }
+string WorkersHire::getDefaultName(){ return "workershire"; }
 
-CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
-  : CityService( CityServiceWorkersHire::getDefaultName() ), _d( new Impl )
+WorkersHire::WorkersHire(PlayerCityPtr city )
+  : Srvc( WorkersHire::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->priorities.push_back( building::prefecture );
@@ -96,7 +100,7 @@ CityServiceWorkersHire::CityServiceWorkersHire(PlayerCityPtr city )
   _d->priorities.push_back( building::library );
 }
 
-bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
+bool WorkersHire::_haveHr( WorkingBuildingPtr building )
 {
   foreach( w, _d->hrInCity )
   {
@@ -111,7 +115,7 @@ bool CityServiceWorkersHire::_haveHr( WorkingBuildingPtr building )
   return false;
 }
 
-void CityServiceWorkersHire::_hireByType(const TileOverlay::Type type )
+void WorkersHire::_hireByType(const TileOverlay::Type type )
 {
   CityHelper hlp( _d->city );
   WorkingBuildingList buildings = hlp.find< WorkingBuilding >( type );
@@ -130,9 +134,9 @@ void CityServiceWorkersHire::_hireByType(const TileOverlay::Type type )
   }
 }
 
-void CityServiceWorkersHire::update( const unsigned int time )
+void WorkersHire::update( const unsigned int time )
 {
-  if( time % 22 != 1 )
+  if( time % (GameDate::ticksInMonth()/2) != 1 )
     return;
 
   //unsigned int vacantPop=0;
@@ -144,3 +148,5 @@ void CityServiceWorkersHire::update( const unsigned int time )
     _hireByType( *pr );
   }
 }
+
+}//end namespace city

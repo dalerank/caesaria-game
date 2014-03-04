@@ -20,17 +20,22 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceDisorder : public CityService
+namespace city
+{
+
+class Disorder : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   void update( const unsigned int time );
 private:
-  CityServiceDisorder( PlayerCityPtr city );
+  Disorder( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_DISORDER_H_INCLUDED__

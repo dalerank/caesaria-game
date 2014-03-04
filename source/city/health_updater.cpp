@@ -24,6 +24,9 @@
 
 using namespace constants;
 
+namespace city
+{
+
 class HealthUpdater::Impl
 {
 public:
@@ -34,12 +37,12 @@ public:
   int value;
 };
 
-CityServicePtr HealthUpdater::create( PlayerCityPtr city )
+SrvcPtr HealthUpdater::create( PlayerCityPtr city )
 {
   HealthUpdater* e = new HealthUpdater();
   e->_d->city = city;
 
-  CityServicePtr ret( e );
+  SrvcPtr ret( e );
   ret->drop();
 
   return ret;
@@ -83,7 +86,9 @@ VariantMap HealthUpdater::save() const
   return ret;
 }
 
-HealthUpdater::HealthUpdater() : CityService( HealthUpdater::getDefaultName() ), _d( new Impl )
+HealthUpdater::HealthUpdater() : Srvc( HealthUpdater::getDefaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
 }
+
+}//end namespace city

@@ -29,7 +29,10 @@
 
 using namespace  constants;
 
-class CityServiceProsperity::Impl
+namespace city
+{
+
+class ProsperityRating::Impl
 {
 public:
   PlayerCityPtr city;
@@ -45,16 +48,16 @@ public:
   int percentPlebs;
 };
 
-CityServicePtr CityServiceProsperity::create(PlayerCityPtr city )
+SrvcPtr ProsperityRating::create(PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityServiceProsperity( city ) );
+  SrvcPtr ret( new ProsperityRating( city ) );
   ret->drop();
 
   return ret;
 }
 
-CityServiceProsperity::CityServiceProsperity(PlayerCityPtr city )
-  : CityService( getDefaultName() ), _d( new Impl )
+ProsperityRating::ProsperityRating(PlayerCityPtr city )
+  : Srvc( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();
@@ -69,9 +72,9 @@ CityServiceProsperity::CityServiceProsperity(PlayerCityPtr city )
   _d->percentPlebs = 0;
 }
 
-void CityServiceProsperity::update( const unsigned int time )
+void ProsperityRating::update( const unsigned int time )
 {
-  if( time % 44 != 1 )
+  if( time % (GameDate::ticksInMonth()/2) != 1 )
     return;
 
   if( abs( GameDate::current().year() - _d->lastDate.year() ) == 1 )
@@ -142,12 +145,9 @@ void CityServiceProsperity::update( const unsigned int time )
   }
 }
 
-int CityServiceProsperity::getValue() const
-{
-  return _d->prosperity + _d->prosperityExtend;
-}
+int ProsperityRating::getValue() const {  return _d->prosperity + _d->prosperityExtend; }
 
-int CityServiceProsperity::getMark(CityServiceProsperity::Mark type) const
+int ProsperityRating::getMark(ProsperityRating::Mark type) const
 {
   switch( type )
   {
@@ -162,7 +162,6 @@ int CityServiceProsperity::getMark(CityServiceProsperity::Mark type) const
   return 0;
 }
 
-std::string CityServiceProsperity::getDefaultName()
-{
-  return "prosperity";
-}
+std::string ProsperityRating::getDefaultName(){  return "prosperity"; }
+
+}//end namespace city

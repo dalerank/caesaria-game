@@ -20,22 +20,25 @@
 #include "core/scopedptr.hpp"
 #include "city/city.hpp"
 
-class CityServiceCreator : public ReferenceCounted
+namespace city
+{
+
+class ServiceCreator : public ReferenceCounted
 {
 public:
-  virtual CityServicePtr create( PlayerCityPtr city ) = 0;
+  virtual SrvcPtr create( PlayerCityPtr city ) = 0;
   virtual std::string getServiceName() const = 0;
 };
 
-typedef SmartPtr<CityServiceCreator> CityServiceCreatorPtr;
+typedef SmartPtr<ServiceCreator> ServiceCreatorPtr;
 
 template< class T >
-class BaseServiceCreator : public CityServiceCreator
+class BaseServiceCreator : public ServiceCreator
 {
 public:
-  virtual CityServicePtr create( PlayerCityPtr city )
+  virtual SrvcPtr create( PlayerCityPtr city )
   {
-    CityServicePtr ret( T::create( city ) );
+    SrvcPtr ret( T::create( city ) );
     return ret;
   }
 
@@ -43,25 +46,27 @@ public:
 };
 
 
-class CityServiceFactory
+class ServiceFactory
 {
 public:
-  static CityServicePtr create( const std::string& name, PlayerCityPtr city);
-  static CityServiceFactory& instance();
-  void addCreator( CityServiceCreatorPtr creator );
+  static SrvcPtr create( const std::string& name, PlayerCityPtr city);
+  static ServiceFactory& instance();
+  void addCreator( ServiceCreatorPtr creator );
 
   template<class T>
   void addCreator()
   {
-    CityServiceCreatorPtr ret( new BaseServiceCreator<T>() );
+    ServiceCreatorPtr ret( new BaseServiceCreator<T>() );
     addCreator( ret );
   }
 
 private:
-  CityServiceFactory();
+  ServiceFactory();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}//end namespace city
 
 #endif//__CAESARIA_CITYSERVICE_FACTORY_H_INCLUDED__

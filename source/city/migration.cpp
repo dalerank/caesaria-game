@@ -33,7 +33,10 @@
 
 using namespace constants;
 
-class CityMigration::Impl
+namespace city
+{
+
+class Migration::Impl
 {
 public:
   PlayerCityPtr city;
@@ -47,11 +50,11 @@ public:
     return ( std::min<float>( city->getPopulation(), 300 ) / 300.f );
   }
 
-  CityServiceInfo::Parameters getLastParams()
+  Info::Parameters getLastParams()
   {
-    SmartPtr<CityServiceInfo> info = ptr_cast<CityServiceInfo>( city->findService( CityServiceInfo::getDefaultName() ) );
+    SmartPtr<Info> info = ptr_cast<Info>( city->findService( Info::getDefaultName() ) );
 
-    CityServiceInfo::Parameters params;
+    Info::Parameters params;
     if( info.isValid() )
     {
       params = info->getLast();
@@ -65,16 +68,16 @@ public:
   unsigned int calcVacantHouse();
 };
 
-CityServicePtr CityMigration::create(PlayerCityPtr city )
+SrvcPtr Migration::create(PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityMigration( city ) );
+  SrvcPtr ret( new Migration( city ) );
   ret->drop();
 
   return ret;
 }
 
-CityMigration::CityMigration( PlayerCityPtr city )
-: CityService( getDefaultName() ), _d( new Impl )
+Migration::Migration( PlayerCityPtr city )
+: Srvc( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastMonthMigration = 0;
@@ -83,7 +86,7 @@ CityMigration::CityMigration( PlayerCityPtr city )
   _d->updateTickInerval = GameDate::ticksInMonth() / 2;
 }
 
-void CityMigration::update( const unsigned int time )
+void Migration::update( const unsigned int time )
 {  
   if( time % _d->updateTickInerval != 1 )
     return;
@@ -93,7 +96,7 @@ void CityMigration::update( const unsigned int time )
   const int maxIndesirability = 100;
 
   float migrationKoeff = _d->getMigrationKoeff();
-  CityServiceInfo::Parameters params = _d->getLastParams();
+  Info::Parameters params = _d->getLastParams();
   Logger::warning( "MigrationSrvc: current migration koeff=%f", migrationKoeff );
 
   int emigrantsIndesirability = 50; //base indesirability value
@@ -142,7 +145,7 @@ void CityMigration::update( const unsigned int time )
   }
 }
 
-std::string CityMigration::getReason() const
+std::string Migration::getReason() const
 {
   unsigned int vacantHouse = _d->calcVacantHouse();
   if( vacantHouse == 0 )
@@ -150,7 +153,7 @@ std::string CityMigration::getReason() const
 
   if( _d->getMigrationKoeff() > 0.99f )
   {
-    CityServiceInfo::Parameters params = _d->getLastParams();
+    Info::Parameters params = _d->getLastParams();
     if( params.monthWithFood < (int)GameSettings::get( GameSettings::minMonthWithFood ) )
       return "##migration_lessfood_granary##";
     if( params.monthWithFood == 0 )
@@ -163,12 +166,9 @@ std::string CityMigration::getReason() const
   return "##migration_peoples_arrived_in_city##";
 }
 
-std::string CityMigration::getDefaultName()
-{
-  return "migration";
-}
+std::string Migration::getDefaultName() { return "migration"; }
 
-VariantMap CityMigration::save() const
+VariantMap Migration::save() const
 {
   VariantMap ret;
 
@@ -179,14 +179,14 @@ VariantMap CityMigration::save() const
   return ret;
 }
 
-void CityMigration::load(const VariantMap& stream)
+void Migration::load(const VariantMap& stream)
 {
   _d->lastUpdate = stream.get( "lastUpdate", GameDate::current() ).toDateTime();
   _d->lastMonthMigration = stream.get( "lastMonthMigration", 0 );
   _d->lastMonthPopulation = stream.get( "lastMonthPopulation", 0 );
 }
 
-unsigned int CityMigration::Impl::calcVacantHouse()
+unsigned int Migration::Impl::calcVacantHouse()
 {
   unsigned int vh = 0;
   CityHelper helper( city );
@@ -202,7 +202,7 @@ unsigned int CityMigration::Impl::calcVacantHouse()
   return vh;
 }
 
-void CityMigration::Impl::createMigrationToCity()
+void Migration::Impl::createMigrationToCity()
 {
   unsigned int vh = calcVacantHouse();
   if( vh == 0 )
@@ -227,7 +227,7 @@ void CityMigration::Impl::createMigrationToCity()
   }
 }
 
-void CityMigration::Impl::createMigrationFromCity()
+void Migration::Impl::createMigrationFromCity()
 {
   CityHelper helper( city );
   HouseList houses = helper.find<House>(building::house);
@@ -258,3 +258,5 @@ void CityMigration::Impl::createMigrationFromCity()
     }
   }
 }
+
+}//end namespace city

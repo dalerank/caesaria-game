@@ -1,44 +1,48 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
 #include "cityservice_timers.hpp"
 #include "core/time.hpp"
 #include <vector>
 
-typedef std::vector< TimerPtr > Timers;
+namespace city
+{
 
-class CityServiceTimers::Impl
+typedef std::vector< TimerPtr > TimerList;
+
+class Timers::Impl
 {
 public:
-  Timers timers;
+  TimerList timers;
 };
 
-CityServiceTimers& CityServiceTimers::getInstance()
+Timers& Timers::getInstance()
 {
-  static CityServiceTimers inst;
+  static Timers inst;
   return inst;
 }
 
-CityServiceTimers::CityServiceTimers() 
-  : CityService( "timers" ), _d( new Impl )
+Timers::Timers() : Srvc( "timers" ), _d( new Impl )
 { 
 }
 
-void CityServiceTimers::update( const unsigned int time )
+void Timers::update( const unsigned int time )
 {
-  Timers::iterator it=_d->timers.begin(); 
+  TimerList::iterator it=_d->timers.begin();
   while( it != _d->timers.end() )
   { 
     if( !(*it)->isActive() )
@@ -53,11 +57,7 @@ void CityServiceTimers::update( const unsigned int time )
   }
 }
 
-void CityServiceTimers::addTimer( TimerPtr timer )
-{
-  _d->timers.push_back( timer );
-}
+void Timers::addTimer( TimerPtr timer ) {  _d->timers.push_back( timer ); }
+Timers::~Timers() {}
 
-CityServiceTimers::~CityServiceTimers()
-{
-}
+}//end namespace city

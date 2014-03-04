@@ -19,11 +19,14 @@
 #include "core/position.hpp"
 #include "walker/walkers_factory.hpp"
 #include "walker/fish_place.hpp"
-//#include "constants.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
-class CityServiceFishPlace::Impl
+namespace city
+{
+
+class Fishery::Impl
 {
 public:
   PlayerCityPtr city;
@@ -32,26 +35,26 @@ public:
   FishPlaceList places;
 };
 
-CityServicePtr CityServiceFishPlace::create( PlayerCityPtr city )
+SrvcPtr Fishery::create( PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityServiceFishPlace( city ) );
+  SrvcPtr ret( new Fishery( city ) );
   ret->drop();
 
   return ret;
 }
 
-std::string CityServiceFishPlace::getDefaultName() {  return "fishplace";}
+std::string Fishery::getDefaultName() {  return "fishery";}
 
-CityServiceFishPlace::CityServiceFishPlace( PlayerCityPtr city )
-  : CityService( CityServiceFishPlace::getDefaultName() ), _d( new Impl )
+Fishery::Fishery( PlayerCityPtr city )
+  : Srvc( Fishery::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->maxFishPlace = 1;
 }
 
-void CityServiceFishPlace::update( const unsigned int time )
+void Fishery::update( const unsigned int time )
 {  
-  if( time % 44 != 1 )
+  if( time % (GameDate::ticksInMonth()/2) != 1 )
     return;
 
   if( _d->places.empty() )
@@ -84,3 +87,5 @@ void CityServiceFishPlace::update( const unsigned int time )
     }
   }
 }
+
+}//end namespace city

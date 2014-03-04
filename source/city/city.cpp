@@ -76,7 +76,7 @@
 
 using namespace constants;
 
-typedef std::vector< CityServicePtr > CityServices;
+typedef std::vector< city::SrvcPtr > CityServices;
 
 class WGrid
 {
@@ -202,20 +202,20 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->climate = C_CENTRAL;
   _d->lastMonthCount = GameDate::current().month();
 
-  addService( CityMigration::create( this ) );
-  addService( CityServiceWorkersHire::create( this ) );
-  addService( CityServicePtr( &CityServiceTimers::getInstance() ) );
-  addService( CityServiceProsperity::create( this ) );
+  addService( city::Migration::create( this ) );
+  addService( city::WorkersHire::create( this ) );
+  addService( city::SrvcPtr( &city::Timers::getInstance() ) );
+  addService( city::ProsperityRating::create( this ) );
   addService( CityServiceShoreline::create( this ) );
-  addService( CityServiceInfo::create( this ) );
-  addService( CityServiceCulture::create( this ) );
-  addService( CityServiceAnimals::create( this ) );
-  addService( CityServiceReligion::create( this ) );
-  addService( CityServiceFestival::create( this ) );
-  addService( CityServiceRoads::create( this ) );
-  addService( CityServiceFishPlace::create( this ) );
-  addService( CityServiceDisorder::create( this ) );
-  addService( CityRequestDispatcher::create( this ) );
+  addService( city::Info::create( this ) );
+  addService( city::CultureRating::create( this ) );
+  addService( city::Animals::create( this ) );
+  addService( city::Religion::create( this ) );
+  addService( city::Festival::create( this ) );
+  addService( city::Roads::create( this ) );
+  addService( city::Fishery::create( this ) );
+  addService( city::Disorder::create( this ) );
+  addService( city::request::Dispatcher::create( this ) );
 }
 
 void PlayerCity::timeStep( unsigned int time )
@@ -582,12 +582,12 @@ void PlayerCity::load( const VariantMap& stream )
   {
     VariantMap servicesSave = item->second.toMap();
 
-    CityServicePtr srvc = findService( item->first );
+    city::SrvcPtr srvc = findService( item->first );
     if( srvc.isNull() )
     {
       Logger::warning( "City: " + item->first + " is not basic service, try load by name" );
 
-      srvc = CityServiceFactory::create( item->first, this );      
+      srvc = city::ServiceFactory::create( item->first, this );
       if( srvc.isValid() )
       {
         Logger::warning( "City: creating service " + item->first + " directly");
@@ -616,7 +616,7 @@ void PlayerCity::addWalker( WalkerPtr walker )
   _d->walkerList.push_back( walker );
 }
 
-CityServicePtr PlayerCity::findService( const std::string& name ) const
+city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 {
   foreach( service, _d->services )
   {
@@ -624,7 +624,7 @@ CityServicePtr PlayerCity::findService( const std::string& name ) const
       return *service;
   }
 
-  return CityServicePtr();
+  return city::SrvcPtr();
 }
 
 void PlayerCity::setBuildOptions(const CityBuildOptions& options)
@@ -655,11 +655,11 @@ Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChange
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos PlayerCity::getCameraPos() const {return _d->cameraStart; }
-void PlayerCity::addService( CityServicePtr service ) {  _d->services.push_back( service ); }
+void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( service ); }
 
 int PlayerCity::getProsperity() const
 {
-  SmartPtr<CityServiceProsperity> csPrsp = ptr_cast<CityServiceProsperity>( findService( CityServiceProsperity::getDefaultName() ) );
+  SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::getDefaultName() ) );
   return csPrsp.isValid() ? csPrsp->getValue() : 0;
 }
 
@@ -675,7 +675,7 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::getCulture() const
 {
-  SmartPtr<CityServiceCulture> csClt = ptr_cast<CityServiceCulture>( findService( CityServiceCulture::getDefaultName() ) );
+  SmartPtr<city::CultureRating> csClt = ptr_cast<city::CultureRating>( findService( city::CultureRating::getDefaultName() ) );
   return csClt.isValid() ? csClt->getValue() : 0;
 }
 

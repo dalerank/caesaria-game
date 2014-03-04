@@ -20,10 +20,13 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class AmbientSound : public CityService
+namespace city
+{
+
+class AmbientSound : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city, TilemapCamera& camera );
+  static SrvcPtr create( PlayerCityPtr city, TilemapCamera& camera );
 
   void update( const unsigned int time );
 private:
@@ -32,5 +35,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_WATER_H_INCLUDED__

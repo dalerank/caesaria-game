@@ -27,7 +27,10 @@
 
 using namespace constants;
 
-class CityServiceRoads::Impl
+namespace city
+{
+
+class Roads::Impl
 {
 public:
   typedef std::pair< ConstructionPtr, int > UpdateInfo;
@@ -43,17 +46,17 @@ public:
   void updateRoadsAround( UpdateInfo info );
 };
 
-CityServicePtr CityServiceRoads::create(PlayerCityPtr city)
+SrvcPtr Roads::create(PlayerCityPtr city)
 {
-  CityServiceRoads* ret = new CityServiceRoads( city );
+  Roads* ret = new Roads( city );
 
-  return CityServicePtr( ret );
+  return SrvcPtr( ret );
 }
 
-std::string CityServiceRoads::getDefaultName(){  return "roads";}
+std::string Roads::getDefaultName(){  return "roads";}
 
-CityServiceRoads::CityServiceRoads(PlayerCityPtr city )
-  : CityService( CityServiceRoads::getDefaultName() ), _d( new Impl )
+Roads::Roads(PlayerCityPtr city )
+  : Srvc( Roads::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->defaultIncreasePaved = 4;
@@ -62,7 +65,7 @@ CityServiceRoads::CityServiceRoads(PlayerCityPtr city )
   _d->propagator.reset( new Propagator( city ) );
 }
 
-void CityServiceRoads::update( const unsigned int time )
+void Roads::update( const unsigned int time )
 {
   if( _d->lastTimeUpdate.month() == GameDate::current().month() )
     return;
@@ -107,12 +110,9 @@ void CityServiceRoads::update( const unsigned int time )
   }
 }
 
-CityServiceRoads::~CityServiceRoads()
-{
+Roads::~Roads() {}
 
-}
-
-void CityServiceRoads::Impl::updateRoadsAround( UpdateInfo info )
+void Roads::Impl::updateRoadsAround( UpdateInfo info )
 {
   propagator->init( info.first );
   PathwayList pathWayList = propagator->getWays( info.second );
@@ -130,3 +130,5 @@ void CityServiceRoads::Impl::updateRoadsAround( UpdateInfo info )
     }
   }
 }
+
+}//end namesapce city

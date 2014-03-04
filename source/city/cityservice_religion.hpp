@@ -20,18 +20,23 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceReligion : public CityService
+namespace city
+{
+
+class Religion : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   void update( const unsigned int time );
 
 private:
-  CityServiceReligion( PlayerCityPtr city );
+  Religion( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__OPENCAESAR3_CITYSERVICE_RELIGION_H_INCLUDED__

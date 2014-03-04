@@ -20,10 +20,13 @@
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
-class DesirabilityUpdater : public CityService
+namespace city
+{
+
+class DesirabilityUpdater : public Srvc
 {
 public:
-  static CityServicePtr create(PlayerCityPtr city);
+  static SrvcPtr create(PlayerCityPtr city);
   virtual void update( const unsigned int time);
   static std::string getDefaultName();
   virtual bool isDeleted() const;
@@ -38,5 +41,7 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}
 
 #endif //_CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_

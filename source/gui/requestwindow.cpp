@@ -39,7 +39,7 @@ public:
   GameAutoPause locker;
 };
 
-EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, CityRequestPtr request, bool mayExec )
+EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::request::RequestPtr request, bool mayExec )
 {
   EmperrorRequestWindow* ret = new EmperrorRequestWindow( parent, request );
   if( mayExec )
@@ -52,7 +52,7 @@ EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, CityReques
 
 EmperrorRequestWindow::~EmperrorRequestWindow() {}
 
-EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, CityRequestPtr request )
+EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::RequestPtr request )
   : Widget( parent, -1, Rect( 0, 0, 480, 320 ) ), _d( new Impl )
 {
   _d->locker.activate();
@@ -61,7 +61,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, CityRequestPtr req
 
   setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
 
-  GoodRequestPtr gr = ptr_cast<GoodRequest>(request);
+  city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(request);
   if( gr.isValid() )
   {
     Label* lb = findChildA<Label*>( "lbQty", true, this );

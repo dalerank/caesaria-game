@@ -23,7 +23,11 @@
 
 using namespace constants;
 
-class CityServiceAnimals::Impl
+namespace city
+{
+
+
+class Animals::Impl
 {
 public:
   static const unsigned int maxSheeps = 10;
@@ -31,18 +35,18 @@ public:
   DateTime lastTimeUpdate;
 };
 
-CityServicePtr CityServiceAnimals::create(PlayerCityPtr city)
+SrvcPtr Animals::create(PlayerCityPtr city)
 {
-  CityServiceAnimals* ret = new CityServiceAnimals();
+  Animals* ret = new Animals();
   ret->_d->city = city;
   ret->_d->lastTimeUpdate = GameDate::current();
 
   return ret;
 }
 
-std::string CityServiceAnimals::getDefaultName() { return "animals"; }
+std::string Animals::getDefaultName() { return "animals"; }
 
-void CityServiceAnimals::update(const unsigned int time)
+void Animals::update(const unsigned int time)
 {
   if( time % 16 != 1 )
     return;
@@ -79,8 +83,10 @@ void CityServiceAnimals::update(const unsigned int time)
   }
 }
 
-CityServiceAnimals::CityServiceAnimals()
-  : CityService( CityServiceAnimals::getDefaultName() ), _d( new Impl )
+Animals::Animals()
+  : Srvc( Animals::getDefaultName() ), _d( new Impl )
 {
 
 }
+
+}//end namespace city

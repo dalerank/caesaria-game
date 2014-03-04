@@ -52,7 +52,7 @@ TimerPtr Timer::create( unsigned int time, bool loop, int id/*=-1 */ )
   ret->_d->id = id;
   ret->drop();
 
-  CityServiceTimers::getInstance().addTimer( ret );
+  city::Timers::getInstance().addTimer( ret );
 
   return ret;
 }

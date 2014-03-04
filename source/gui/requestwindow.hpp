@@ -28,7 +28,7 @@ namespace gui
 class EmperrorRequestWindow : public Widget
 {
 public:
-  static EmperrorRequestWindow* create(Widget* parent, CityRequestPtr request , bool mayExec);
+  static EmperrorRequestWindow* create(Widget* parent, city::request::RequestPtr request , bool mayExec);
   ~EmperrorRequestWindow();
 
   virtual void draw( GfxEngine& painter );
@@ -36,7 +36,7 @@ public:
   virtual bool onEvent(const NEvent &event);
 
 private:
-  EmperrorRequestWindow( Widget* parent, CityRequestPtr request );
+  EmperrorRequestWindow( Widget* parent, city::request::RequestPtr request );
 
   class Impl;
   ScopedPtr< Impl > _d;

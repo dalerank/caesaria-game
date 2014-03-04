@@ -20,10 +20,13 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityMigration : public CityService
+namespace city
+{
+
+class Migration : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
 
@@ -36,10 +39,12 @@ public:
   virtual void load(const VariantMap& stream);
 
 private:
-  CityMigration( PlayerCityPtr city );
+  Migration( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_EMIGRANT_H_INCLUDED__

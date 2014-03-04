@@ -28,32 +28,35 @@
 #include "funds.hpp"
 #include "statistic.hpp"
 
-class CityServiceInfo::Impl
+namespace city
+{
+
+class Info::Impl
 {
 public:
-  typedef std::vector< CityServiceInfo::Parameters > History;
+  typedef std::vector< Info::Parameters > History;
   PlayerCityPtr city;
   DateTime lastDate;
   History params;
 };
 
-CityServicePtr CityServiceInfo::create(PlayerCityPtr city )
+SrvcPtr Info::create(PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityServiceInfo( city ) );
+  SrvcPtr ret( new Info( city ) );
   ret->drop();
 
   return ret;
 }
 
-CityServiceInfo::CityServiceInfo( PlayerCityPtr city )
-  : CityService( getDefaultName() ), _d( new Impl )
+Info::Info( PlayerCityPtr city )
+  : Srvc( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();
   _d->params.resize( 12 );
 }
 
-void CityServiceInfo::update( const unsigned int time )
+void Info::update( const unsigned int time )
 {
   if( time % GameDate::ticksInMonth() != 1 )
     return;
@@ -88,17 +91,10 @@ void CityServiceInfo::update( const unsigned int time )
   }
 }
 
-CityServiceInfo::Parameters CityServiceInfo::getLast() const
-{
-  return _d->params.empty() ? Parameters() : _d->params.back();
-}
+Info::Parameters Info::getLast() const {  return _d->params.empty() ? Parameters() : _d->params.back(); }
+std::string Info::getDefaultName(){  return "info"; }
 
-std::string CityServiceInfo::getDefaultName()
-{
-  return "info";
-}
-
-VariantMap CityServiceInfo::save() const
+VariantMap Info::save() const
 {
   VariantMap ret;
 
@@ -131,7 +127,7 @@ VariantMap CityServiceInfo::save() const
   return ret;
 }
 
-void CityServiceInfo::load(const VariantMap& stream)
+void Info::load(const VariantMap& stream)
 {
   for( VariantMap::const_iterator i=stream.begin(); i != stream.end(); i++ )
   {
@@ -158,3 +154,5 @@ void CityServiceInfo::load(const VariantMap& stream)
 
   _d->params.resize( DateTime::monthInYear );
 }
+
+}//end namespace city

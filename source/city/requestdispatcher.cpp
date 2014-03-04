@@ -22,37 +22,42 @@
 #include "core/logger.hpp"
 #include "core/stringhelper.hpp"
 
+namespace city
+{
 
-class CityRequestDispatcher::Impl
+namespace request
+{
+
+class Dispatcher::Impl
 {
 public:
   PlayerCityPtr city;
 
-  CityRequestList requests;
+  RequestList requests;
 };
 
-CityRequestDispatcher::CityRequestDispatcher()
-  : CityService( getDefaultName() ), _d( new Impl )
+Dispatcher::Dispatcher()
+  : Srvc( getDefaultName() ), _d( new Impl )
 {
 }
 
-CityServicePtr CityRequestDispatcher::create(PlayerCityPtr city)
+city::SrvcPtr Dispatcher::create(PlayerCityPtr city)
 {
-  CityRequestDispatcher* cd = new CityRequestDispatcher();
+  Dispatcher* cd = new Dispatcher();
   cd->_d->city = city;
 
-  CityServicePtr ret( cd );
+  SrvcPtr ret( cd );
   ret->drop();
 
   return ret;
 }
 
-bool CityRequestDispatcher::add( const VariantMap& stream, bool showMessage )
+bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 {
   const std::string type = stream.get( "type" ).toString();
-  if( type == GoodRequest::typeName() )
+  if( type == RqGood::typeName() )
   {
-    CityRequestPtr r = GoodRequest::create( stream );
+    RequestPtr r = RqGood::create( stream );
     _d->requests.push_back( r );
 
     if( showMessage )
@@ -67,16 +72,16 @@ bool CityRequestDispatcher::add( const VariantMap& stream, bool showMessage )
   return false;
 }
 
-CityRequestDispatcher::~CityRequestDispatcher() {}
-std::string CityRequestDispatcher::getDefaultName(){  return "requests";}
+Dispatcher::~Dispatcher() {}
+std::string Dispatcher::getDefaultName(){  return "requests";}
 
-void CityRequestDispatcher::update(const unsigned int time)
+void Dispatcher::update(const unsigned int time)
 {
   if( time % (GameDate::ticksInMonth() / 4) == 1)
   {
     foreach( rq, _d->requests )
     {
-      CityRequestPtr request = *rq;
+      RequestPtr request = *rq;
       if( request->getFinishedDate() <= GameDate::current() )
       {
         request->fail( _d->city );
@@ -90,7 +95,7 @@ void CityRequestDispatcher::update(const unsigned int time)
       }
     }
 
-    for( CityRequestList::iterator i=_d->requests.begin(); i != _d->requests.end(); )
+    for( RequestList::iterator i=_d->requests.begin(); i != _d->requests.end(); )
     {
       if( (*i)->isDeleted() ) { i = _d->requests.erase( i ); }
       else { i++; }
@@ -98,7 +103,7 @@ void CityRequestDispatcher::update(const unsigned int time)
   }
 }
 
-VariantMap CityRequestDispatcher::save() const
+VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   VariantMap vm_rq;
@@ -113,7 +118,7 @@ VariantMap CityRequestDispatcher::save() const
   return ret;
 }
 
-void CityRequestDispatcher::load(const VariantMap& stream)
+void Dispatcher::load(const VariantMap& stream)
 {
   VariantMap vm_items = stream.get( "items" ).toMap();
   foreach( it, vm_items )
@@ -122,5 +127,8 @@ void CityRequestDispatcher::load(const VariantMap& stream)
   }
 }
 
-CityRequestList CityRequestDispatcher::getRequests() const {  return _d->requests; }
+RequestList Dispatcher::getRequests() const {  return _d->requests; }
 
+}//end namespace request
+
+}//end namespace city

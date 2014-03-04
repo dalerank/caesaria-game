@@ -34,42 +34,45 @@
 #include "health_updater.hpp"
 #include "desirability_updater.hpp"
 
-class CityServiceFactory::Impl
+namespace city
+{
+
+class ServiceFactory::Impl
 {
 public:
-  typedef std::vector< CityServiceCreatorPtr > Creators;
+  typedef std::vector< ServiceCreatorPtr > Creators;
   Creators creators;
 };
 
-CityServicePtr CityServiceFactory::create( const std::string& name, PlayerCityPtr city )
+SrvcPtr ServiceFactory::create( const std::string& name, PlayerCityPtr city )
 {
   std::string::size_type sharpPos = name.find( "#" );
   std::string srvcType = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
 
   Logger::warning( "CityServiceFactory: try find creator for service " + srvcType );
 
-  CityServiceFactory& inst = instance();
+  ServiceFactory& inst = instance();
   foreach( it, inst._d->creators )
   {
     if( srvcType == (*it)->getServiceName() )
     {
-      CityServicePtr srvc = (*it)->create( city );
+      city::SrvcPtr srvc = (*it)->create( city );
       srvc->setName( name );
       return srvc;
     }
   }
 
   Logger::warning( "CityServiceFactory: not found creator for service " + name );
-  return CityServicePtr();
+  return SrvcPtr();
 }
 
-CityServiceFactory& CityServiceFactory::instance()
+ServiceFactory& ServiceFactory::instance()
 {
-  static CityServiceFactory inst;
+  static city::ServiceFactory inst;
   return inst;
 }
 
-void CityServiceFactory::addCreator( CityServiceCreatorPtr creator )
+void ServiceFactory::addCreator( ServiceCreatorPtr creator )
 {
   if( creator.isNull() )
     return;
@@ -86,21 +89,23 @@ void CityServiceFactory::addCreator( CityServiceCreatorPtr creator )
   _d->creators.push_back( creator );
 }
 
-CityServiceFactory::CityServiceFactory() : _d( new Impl )
+ServiceFactory::ServiceFactory() : _d( new Impl )
 {
-  addCreator<CityMigration>();
-  addCreator<CityServiceWorkersHire>();
-  addCreator<CityServiceProsperity>();
+  addCreator<Migration>();
+  addCreator<WorkersHire>();
+  addCreator<ProsperityRating>();
   addCreator<CityServiceShoreline>();
-  addCreator<CityServiceInfo>();
-  addCreator<CityServiceCulture>();
-  addCreator<CityServiceAnimals>();
-  addCreator<CityServiceReligion>();
-  addCreator<CityServiceFestival>();
-  addCreator<CityServiceRoads>();
-  addCreator<CityServiceFishPlace>();
-  addCreator<CityServiceDisorder>();
-  addCreator<CityRequestDispatcher>();
+  addCreator<Info>();
+  addCreator<CultureRating>();
+  addCreator<Animals>();
+  addCreator<Religion>();
+  addCreator<Festival>();
+  addCreator<Roads>();
+  addCreator<Fishery>();
+  addCreator<Disorder>();
+  addCreator<request::Dispatcher>();
   addCreator<HealthUpdater>();
   addCreator<DesirabilityUpdater>();
 }
+
+}//end namespace city

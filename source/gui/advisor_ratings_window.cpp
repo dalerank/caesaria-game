@@ -114,7 +114,7 @@ void AdvisorRatingsWindow::Impl::drawColumn( const Point& center, const int valu
 
 void AdvisorRatingsWindow::Impl::checkCultureRating()
 {
-  SmartPtr< CityServiceCulture > culture = ptr_cast<CityServiceCulture>( city->findService( CityServiceCulture::getDefaultName() ) );
+  SmartPtr< city::CultureRating > culture = ptr_cast<city::CultureRating>( city->findService( city::CultureRating::getDefaultName() ) );
 
   if( culture != 0 )
   {
@@ -125,11 +125,11 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
     }
 
     StringArray troubles;
-    if( culture->getCoverage( CityServiceCulture::ccSchool ) < 100 ) { troubles.push_back( _("##have_less_school_in_city##") ); }
-    if( culture->getCoverage( CityServiceCulture::ccLibrary ) < 100 ) { troubles.push_back( _("##have_less_library_in_city##" ) ); }
-    if( culture->getCoverage( CityServiceCulture::ccAcademy ) < 100 ) { troubles.push_back( _("##have_less_academy_in_city##" ) ); }
-    if( culture->getCoverage( CityServiceCulture::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_temples_in_city##" ) ); }
-    if( culture->getCoverage( CityServiceCulture::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_theatres_in_city##" ) ); }
+    if( culture->getCoverage( city::CultureRating::ccSchool ) < 100 ) { troubles.push_back( _("##have_less_school_in_city##") ); }
+    if( culture->getCoverage( city::CultureRating::ccLibrary ) < 100 ) { troubles.push_back( _("##have_less_library_in_city##" ) ); }
+    if( culture->getCoverage( city::CultureRating::ccAcademy ) < 100 ) { troubles.push_back( _("##have_less_academy_in_city##" ) ); }
+    if( culture->getCoverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_temples_in_city##" ) ); }
+    if( culture->getCoverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_theatres_in_city##" ) ); }
 
     if( !troubles.empty() )
     {
@@ -140,7 +140,7 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
 
 void AdvisorRatingsWindow::Impl::checkProsperityRating()
 {
-  SmartPtr< CityServiceProsperity > prosperity = ptr_cast<CityServiceProsperity>( city->findService( CityServiceProsperity::getDefaultName() ) );
+  SmartPtr< city::ProsperityRating > prosperity = ptr_cast<city::ProsperityRating>( city->findService( city::ProsperityRating::getDefaultName() ) );
 
   if( prosperity != 0 )
   {
@@ -151,12 +151,12 @@ void AdvisorRatingsWindow::Impl::checkProsperityRating()
     }
 
     StringArray troubles;
-    if( prosperity->getMark( CityServiceProsperity::cmHousesCap ) < 0 ) { troubles.push_back( _("##bad_house_quality##") ); }
-    if( prosperity->getMark( CityServiceProsperity::cmHaveProfit ) == 0 ) { troubles.push_back( _("##lost_money_last_year##") ); }
-    if( prosperity->getMark( CityServiceProsperity::cmWorkless ) > 15 ) { troubles.push_back( _("##high_workless_number##") ); }
-    if( prosperity->getMark( CityServiceProsperity::cmWorkersSalary ) < 0 ) { troubles.push_back( _("##workers_salary_less_then_rome##") ); }
-    if( prosperity->getMark( CityServiceProsperity::cmPercentPlebs ) > 30 ) { troubles.push_back( _("##much_plebs##") ); }
-    if( prosperity->getMark( CityServiceProsperity::cmChange ) == 0 )
+    if( prosperity->getMark( city::ProsperityRating::cmHousesCap ) < 0 ) { troubles.push_back( _("##bad_house_quality##") ); }
+    if( prosperity->getMark( city::ProsperityRating::cmHaveProfit ) == 0 ) { troubles.push_back( _("##lost_money_last_year##") ); }
+    if( prosperity->getMark( city::ProsperityRating::cmWorkless ) > 15 ) { troubles.push_back( _("##high_workless_number##") ); }
+    if( prosperity->getMark( city::ProsperityRating::cmWorkersSalary ) < 0 ) { troubles.push_back( _("##workers_salary_less_then_rome##") ); }
+    if( prosperity->getMark( city::ProsperityRating::cmPercentPlebs ) > 30 ) { troubles.push_back( _("##much_plebs##") ); }
+    if( prosperity->getMark( city::ProsperityRating::cmChange ) == 0 )
     {
       troubles.push_back( _("##no_prosperity_change##") );
       troubles.push_back( _("##how_to_grow_prosperity##") );

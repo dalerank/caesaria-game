@@ -23,6 +23,9 @@
 
 #include <set>
 
+namespace city
+{
+
 struct SoundEmitter
 {
   Tile* tile;
@@ -88,19 +91,19 @@ public:
   Emitters emitters;
 };
 
-CityServicePtr AmbientSound::create(PlayerCityPtr city, TilemapCamera& camera )
+SrvcPtr AmbientSound::create(PlayerCityPtr city, TilemapCamera& camera )
 {
   AmbientSound* ret = new AmbientSound( city );
   ret->_d->camera = &camera;
 
-  CityServicePtr p( ret );
+  city::SrvcPtr p( ret );
   p->drop();
 
   return p;
 }
 
 AmbientSound::AmbientSound(PlayerCityPtr city )
-: CityService( "ambientsound" ), _d( new Impl )
+: Srvc( "ambientsound" ), _d( new Impl )
 {
   _d->city = city;
 }
@@ -161,3 +164,5 @@ void AmbientSound::update( const unsigned int time )
     }
   }
 }
+
+}//end namespace city

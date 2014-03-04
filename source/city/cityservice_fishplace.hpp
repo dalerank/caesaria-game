@@ -22,18 +22,23 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceFishPlace : public CityService
+namespace city
+{
+
+class Fishery : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   void update( const unsigned int time );
 
 private:
-  CityServiceFishPlace( PlayerCityPtr city );
+  Fishery( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_FISHPLACE_H_INCLUDED__

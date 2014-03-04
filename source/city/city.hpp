@@ -57,8 +57,8 @@ public:
 
   void addWalker( WalkerPtr walker );
 
-  void addService( CityServicePtr service );
-  CityServicePtr findService( const std::string& name ) const;
+  void addService( city::SrvcPtr service );
+  city::SrvcPtr findService( const std::string& name ) const;
 
   TileOverlayList& getOverlays();
 

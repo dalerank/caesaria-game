@@ -24,10 +24,13 @@
 #include "game/divinity.hpp"
 #include "core/variant.hpp"
 
-class CityServiceFestival : public CityService
+namespace city
+{
+
+class Festival : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
 
   DateTime getLastFestivalDate() const;
@@ -40,10 +43,12 @@ public:
   void load( VariantMap stream );
 
 private:
-  CityServiceFestival( PlayerCityPtr city );
+  Festival( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__

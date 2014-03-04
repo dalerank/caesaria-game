@@ -46,7 +46,7 @@ namespace {
 class RequestButton : public PushButton
 {
 public:
-  RequestButton( Widget* parent, const Point& pos, int index, CityRequestPtr request )
+  RequestButton( Widget* parent, const Point& pos, int index, city::request::RequestPtr request )
     : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
@@ -63,7 +63,7 @@ public:
 
     Font font = Font::create( FONT_1_WHITE );
 
-    GoodRequestPtr gr = ptr_cast<GoodRequest>(_request);
+    city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
     if( gr.isValid() )
     {
       font.draw( *pic, StringHelper::format( 0xff, "%d", gr->getQty() ), 2, 2 );
@@ -80,13 +80,13 @@ public:
   }
 
 public oc3_signals:
-  Signal1<CityRequestPtr>& onExecRequest() { return _onExecRequestSignal; }
+  Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
   void _executeRequest() {  _onExecRequestSignal.emit( _request ); }
 
-  Signal1<CityRequestPtr> _onExecRequestSignal;
-  CityRequestPtr _request;
+  Signal1<city::request::RequestPtr> _onExecRequestSignal;
+  city::request::RequestPtr _request;
 };
 
 class AdvisorEmperorWindow::Impl
@@ -110,7 +110,7 @@ public:
     onSendMoneySignal.emit( wantSend );
   }
 
-  void resolveRequest( CityRequestPtr request )
+  void resolveRequest( city::request::RequestPtr request )
   {
     if( request.isValid() )
     {
@@ -196,8 +196,8 @@ void AdvisorEmperorWindow::_updateRequests()
     (*btn)->deleteLater();
   }
 
-  CityRequestList reqs;
-  CityRequestDispatcherPtr dispatcher = ptr_cast<CityRequestDispatcher>( _d->city->findService( CityRequestDispatcher::getDefaultName() ) );
+  city::request::RequestList reqs;
+  city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( _d->city->findService( city::request::Dispatcher::getDefaultName() ) );
 
   if( dispatcher.isValid() )
   {

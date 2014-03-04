@@ -19,6 +19,7 @@
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "walker/protestor.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -27,35 +28,35 @@ namespace constants
 const int defaultCrimeLevel = 75;
 }
 
-class CityServiceDisorder::Impl
+namespace city
+{
+
+class Disorder::Impl
 {
 public:
   PlayerCityPtr city;
   int minCrimeLevel;
 };
 
-CityServicePtr CityServiceDisorder::create( PlayerCityPtr city )
+SrvcPtr Disorder::create( PlayerCityPtr city )
 {
-  CityServiceDisorder* ret = new CityServiceDisorder( city );
+  Disorder* ret = new Disorder( city );
 
-  return CityServicePtr( ret );
+  return SrvcPtr( ret );
 }
 
-std::string CityServiceDisorder::getDefaultName()
-{
-  return "disorder";
-}
+std::string Disorder::getDefaultName(){  return "disorder";}
 
-CityServiceDisorder::CityServiceDisorder(PlayerCityPtr city )
-  : CityService( CityServiceDisorder::getDefaultName() ), _d( new Impl )
+Disorder::Disorder(PlayerCityPtr city )
+  : Srvc( Disorder::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->minCrimeLevel = defaultCrimeLevel;
 }
 
-void CityServiceDisorder::update( const unsigned int time )
+void Disorder::update( const unsigned int time )
 {
-  if( time % 22 != 1 )
+  if( time % (GameDate::ticksInMonth()/2) != 1 )
     return;
 
   CityHelper helper( _d->city );
@@ -84,3 +85,5 @@ void CityServiceDisorder::update( const unsigned int time )
     protestor->send2City( *it );
   }
 }
+
+}//end namespace city

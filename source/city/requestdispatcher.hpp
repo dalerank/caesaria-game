@@ -20,13 +20,19 @@
 #include "request.hpp"
 #include "core/signals.hpp"
 
-class CityRequestDispatcher : public CityService
+namespace city
+{
+
+namespace request
+{
+
+class Dispatcher : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
 
   bool add(const VariantMap& stream , bool showMessage=true);
-  virtual ~CityRequestDispatcher();
+  virtual ~Dispatcher();
 
   static std::string getDefaultName();
 
@@ -34,13 +40,17 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap &stream);
 
-  CityRequestList getRequests() const;
+  RequestList getRequests() const;
 
 private:
-  CityRequestDispatcher();
+  Dispatcher();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+}//end namespace request
+
+}//end namespace city
 
 #endif //_CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_

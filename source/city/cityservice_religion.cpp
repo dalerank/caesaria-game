@@ -28,7 +28,10 @@
 
 using namespace constants;
 
-class CityServiceReligion::Impl
+namespace city
+{
+
+class Religion::Impl
 {
 public:
   PlayerCityPtr city;
@@ -37,24 +40,24 @@ public:
   void updateRelation( RomeDivinityPtr divn );
 };
 
-CityServicePtr CityServiceReligion::create(PlayerCityPtr city)
+SrvcPtr Religion::create(PlayerCityPtr city)
 {
-  CityServicePtr ret( new CityServiceReligion( city ) );
+  SrvcPtr ret( new Religion( city ) );
   ret->drop();
 
   return ret;
 }
 
-std::string CityServiceReligion::getDefaultName() { return "religion"; }
+std::string Religion::getDefaultName() { return "religion"; }
 
-CityServiceReligion::CityServiceReligion(PlayerCityPtr city )
-  : CityService( CityServiceReligion::getDefaultName() ), _d( new Impl )
+Religion::Religion(PlayerCityPtr city )
+  : Srvc( Religion::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();
 }
 
-void CityServiceReligion::update( const unsigned int time )
+void Religion::update( const unsigned int time )
 {
   if( _d->lastDate.month() == GameDate::current().month() )
     return;
@@ -66,7 +69,7 @@ void CityServiceReligion::update( const unsigned int time )
   foreach( it, divinities ) { _d->updateRelation( *it ); }
 }
 
-void CityServiceReligion::Impl::updateRelation(RomeDivinityPtr divn)
+void Religion::Impl::updateRelation(RomeDivinityPtr divn)
 {
   CityHelper helper( city );
   int peopleReached = 0;
@@ -77,3 +80,5 @@ void CityServiceReligion::Impl::updateRelation(RomeDivinityPtr divn)
   float faithIncome = (float)peopleReached / (float)(city->getPopulation()+1);
   divn->updateRelation( faithIncome, city );
 }
+
+}//end namespace city

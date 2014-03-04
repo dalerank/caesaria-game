@@ -21,14 +21,17 @@
 #include "gfx/tileoverlay.hpp"
 #include "core/predefinitions.hpp"
 
-class CityServiceWorkersHire : public CityService
+namespace city
+{
+
+class WorkersHire : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   virtual void update( const unsigned int time );
 private:
-  CityServiceWorkersHire( PlayerCityPtr city );
+  WorkersHire( PlayerCityPtr city );
 
   void _hireByType( const TileOverlay::Type type );
   bool _haveHr( WorkingBuildingPtr building );
@@ -37,4 +40,5 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+}//end namespace city
 #endif //__CAESARIA_CITYSERVICE_WORKERSHIRE_H_INCLUDED__

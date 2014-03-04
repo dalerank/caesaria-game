@@ -22,19 +22,24 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceRoads : public CityService
+namespace city
+{
+
+class Roads : public Srvc
 {
 public:
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
 
   void update( const unsigned int time );
-  ~CityServiceRoads();
+  ~Roads();
 private:
-  CityServiceRoads( PlayerCityPtr city );
+  Roads( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_ROADS_H_INCLUDED__

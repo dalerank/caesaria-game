@@ -48,9 +48,9 @@ void CityServiceShoreline::Impl::checkMap( PlayerCityPtr city )
   }
 }
 
-CityServicePtr CityServiceShoreline::create(PlayerCityPtr city )
+city::SrvcPtr CityServiceShoreline::create(PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityServiceShoreline( city ) );
+  city::SrvcPtr ret( new CityServiceShoreline( city ) );
   ret->drop();
 
   return ret;
@@ -59,7 +59,7 @@ CityServicePtr CityServiceShoreline::create(PlayerCityPtr city )
 std::string CityServiceShoreline::getDefaultName(){ return "shoreline"; }
 
 CityServiceShoreline::CityServiceShoreline( PlayerCityPtr city )
-  : CityService( CityServiceShoreline::getDefaultName() ), _d( new Impl )
+  : city::Srvc( CityServiceShoreline::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastTimeUpdate = 0;  

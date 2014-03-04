@@ -25,6 +25,9 @@
 
 using namespace constants;
 
+namespace city
+{
+
 class DesirabilityUpdater::Impl
 {
 public:
@@ -38,12 +41,12 @@ public:
   void update( bool positive );
 };
 
-CityServicePtr DesirabilityUpdater::create( PlayerCityPtr city )
+SrvcPtr DesirabilityUpdater::create( PlayerCityPtr city )
 {
   DesirabilityUpdater* e = new DesirabilityUpdater();
   e->_d->city = city;
 
-  CityServicePtr ret( e );
+  SrvcPtr ret( e );
   ret->drop();
 
   return ret;
@@ -92,7 +95,7 @@ VariantMap DesirabilityUpdater::save() const
   return ret;
 }
 
-DesirabilityUpdater::DesirabilityUpdater() : CityService( DesirabilityUpdater::getDefaultName() ), _d( new Impl )
+DesirabilityUpdater::DesirabilityUpdater() : Srvc( DesirabilityUpdater::getDefaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
   _d->alsoInfluence = false;
@@ -111,3 +114,5 @@ void DesirabilityUpdater::Impl::update(bool positive)
     (*it)->appendDesirability( positive ? value : -value);
   }
 }
+
+}//end namespace city

@@ -21,7 +21,10 @@
 #include "game/divinity.hpp"
 #include "events/showfeastwindow.hpp"
 
-class CityServiceFestival::Impl
+namespace city
+{
+
+class Festival::Impl
 {
 public:
   PlayerCityPtr city;
@@ -32,30 +35,19 @@ public:
   int festivalType;
 };
 
-CityServicePtr CityServiceFestival::create(PlayerCityPtr city )
+SrvcPtr Festival::create(PlayerCityPtr city )
 {
-  CityServicePtr ret( new CityServiceFestival( city ) );
+  SrvcPtr ret( new Festival( city ) );
   ret->drop();
 
   return ret;
 }
 
-std::string CityServiceFestival::getDefaultName()
-{
-  return "festival";
-}
+std::string Festival::getDefaultName() {  return "festival";}
+DateTime Festival::getLastFestivalDate() const{  return _d->lastFestivalDate;}
+DateTime Festival::getNextFestivalDate() const{  return _d->festivalDate; }
 
-DateTime CityServiceFestival::getLastFestivalDate() const
-{
-  return _d->lastFestivalDate;
-}
-
-DateTime CityServiceFestival::getNextFestivalDate() const
-{
-  return _d->festivalDate;
-}
-
-void CityServiceFestival::assignFestival( RomeDivinityType name, int size )
+void Festival::assignFestival( RomeDivinityType name, int size )
 {
   _d->festivalType = size;
   _d->festivalDate = GameDate::current();
@@ -63,17 +55,17 @@ void CityServiceFestival::assignFestival( RomeDivinityType name, int size )
   _d->divinity = name;
 }
 
-CityServiceFestival::CityServiceFestival(PlayerCityPtr city )
-: CityService( getDefaultName() ), _d( new Impl )
+Festival::Festival(PlayerCityPtr city )
+: Srvc( getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastFestivalDate = DateTime( -350, 0, 0 );
   _d->festivalDate = DateTime( -550, 0, 0 );
 }
 
-void CityServiceFestival::update( const unsigned int time )
+void Festival::update( const unsigned int time )
 {
-  if( time % 44 != 1 )
+  if( time % (GameDate::ticksInMonth() / 2) != 1 )
     return;
 
   const DateTime current = GameDate::current();
@@ -93,7 +85,7 @@ void CityServiceFestival::update( const unsigned int time )
   }
 }
 
-VariantMap CityServiceFestival::save() const
+VariantMap Festival::save() const
 {
   VariantMap ret;
   ret[ "lastDate" ] = _d->lastFestivalDate;
@@ -104,10 +96,12 @@ VariantMap CityServiceFestival::save() const
   return ret;
 }
 
-void CityServiceFestival::load(VariantMap stream)
+void Festival::load(VariantMap stream)
 {
   _d->lastFestivalDate = stream[ "lastDate" ].toDateTime();
   _d->festivalDate = stream[ "nextDate" ].toDateTime();
   _d->divinity = (RomeDivinityType)stream[ "divinity" ].toInt();
   _d->festivalType = (int)stream[ "festival" ];
 }
+
+}//end namespace city

@@ -22,7 +22,10 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceInfo : public CityService
+namespace city
+{
+
+class Info : public Srvc
 {
 public:
   class Parameters
@@ -66,7 +69,7 @@ public:
     }
   };
 
-  static CityServicePtr create( PlayerCityPtr city );
+  static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
   Parameters getLast() const;
@@ -77,10 +80,12 @@ public:
   virtual void load(const VariantMap& stream);
 
 private:
-  CityServiceInfo( PlayerCityPtr city );
+  Info( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_INFO_H_INCLUDED__

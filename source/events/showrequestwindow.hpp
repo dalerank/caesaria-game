@@ -17,6 +17,7 @@
 #define _CAESARIA_EVENT_SHOWREQUESTINFO_H_INCLUDE_
 
 #include "event.hpp"
+#include "city/request.hpp"
 
 namespace events
 {
@@ -24,14 +25,14 @@ namespace events
 class ShowRequestInfo : public GameEvent
 {
 public:
-  static GameEventPtr create( CityRequestPtr request, bool available4exec=false );
+  static GameEventPtr create( city::request::RequestPtr request, bool available4exec=false );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  CityRequestPtr _request;
+  city::request::RequestPtr _request;
   bool _reqAvailable;
 };
 

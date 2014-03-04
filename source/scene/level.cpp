@@ -159,7 +159,7 @@ void Level::initialize()
 
   new SenatePopupInfo( gui.getRootWidget(), _d->renderer );
 
-  _d->game->getCity()->addService( AmbientSound::create( _d->game->getCity(), _d->renderer.camera() ) );
+  _d->game->getCity()->addService( city::AmbientSound::create( _d->game->getCity(), _d->renderer.camera() ) );
 
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
