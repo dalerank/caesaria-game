@@ -66,7 +66,7 @@ Image::Image(Widget* parent, Rect rectangle, Picture pic, Mode mode, int id)
 }
 
 Image::Image(Widget* parent, Point pos, Picture pic, int id)
-	: Widget( parent, id, Rect( pos, pic.getSize() ) ),
+	: Widget( parent, id, Rect( pos, pic.size() ) ),
 		_d( new Impl )
 {
   _d->mode = Image::image;
@@ -78,7 +78,7 @@ void Image::_updateTexture( GfxEngine& painter )
 {
   Size imageSize = getSize();
 
-  if( _d->background && _d->background->getSize() != imageSize )
+  if( _d->background && _d->background->size() != imageSize )
   {
     _d->background.reset();  
   }
@@ -97,13 +97,13 @@ void Image::_updateTexture( GfxEngine& painter )
     case Image::native: _d->background->draw( _d->bgPicture, Point( 0, 0 ), true ); break;
 
     case Image::fit:
-      _d->background->draw( _d->bgPicture, Point( getWidth() - _d->bgPicture.getWidth(),
+      _d->background->draw( _d->bgPicture, Point( width() - _d->bgPicture.getWidth(),
                                                   getHeight() - _d->bgPicture.getHeight() ) / 2, false );
     break;
 
     case Image::image:
       _d->background->draw( _d->bgPicture,
-                            Rect( Point(0, 0), _d->bgPicture.getSize()),
+                            Rect( Point(0, 0), _d->bgPicture.size()),
                             Rect( Point( 0, 0 ), getSize() ), false );
     break;
     }
@@ -128,7 +128,7 @@ void Image::draw( GfxEngine& painter )
   // draw background
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *_d->background, screenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

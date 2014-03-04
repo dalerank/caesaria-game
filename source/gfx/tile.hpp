@@ -94,7 +94,7 @@ public:
 
   void appendDesirability( int value );
   int getDesirability() const;
-  TileOverlayPtr getOverlay() const;
+  TileOverlayPtr overlay() const;
   void setOverlay( TileOverlayPtr overlay );
   unsigned int getOriginalImgId() const;
   void setOriginalImgId( unsigned short int id );

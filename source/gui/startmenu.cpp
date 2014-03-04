@@ -52,7 +52,7 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
 
     PushButton* btn = new PushButton( this, Rect( Point( 0, 0 ), btnSize ), caption, id ); 
 
-    Point offsetBtn( ( getWidth() - btnSize.width() ) / 2, ( getHeight() - offsetY * 5 ) / 2 );
+    Point offsetBtn( ( width() - btnSize.width() ) / 2, ( getHeight() - offsetY * 5 ) / 2 );
     List< PushButton* > buttons = findChildren< PushButton* >(); 
     foreach( btn, buttons )
     {

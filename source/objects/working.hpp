@@ -26,13 +26,13 @@ public:
   ~WorkingBuilding();
 
   void setMaxWorkers(const int maxWorkers);
-  int getMaxWorkers() const;
+  int maxWorkers() const;
 
   void setWorkers( const unsigned int currentWorkers );
   void addWorkers( const unsigned int workers );
   void removeWorkers( const unsigned int workers );
 
-  int getWorkersCount() const;
+  int numberWorkers() const;
 
   virtual void setActive(const bool value);  // if false then this building is stopped
   virtual bool isActive() const;

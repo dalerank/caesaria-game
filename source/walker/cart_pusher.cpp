@@ -407,7 +407,7 @@ void CartPusher::load( const VariantMap& stream )
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
   Tile& prTile = _getCity()->getTilemap().at( prPos );
-  _d->producerBuilding = ptr_cast<Building>( prTile.getOverlay() );
+  _d->producerBuilding = ptr_cast<Building>( prTile.overlay() );
   
   if( is_kind_of<WorkingBuilding>( _d->producerBuilding ) )
   {

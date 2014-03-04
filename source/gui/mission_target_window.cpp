@@ -56,7 +56,7 @@ MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr
 {
   Size size( 610, 430 );
 
-  Rect rectangle( Point( (parent->getWidth() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
+  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
   MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, rectangle );
   ret->setCity( city );
   return ret;
@@ -75,16 +75,16 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
-  Label* lbToCity = new Label( this, Rect( getWidth() / 2, getHeight() - 40, getWidth() - 110, getHeight() - 10 ), _("##mission_wnd_tocity##" ) );
+  Label* lbToCity = new Label( this, Rect( width() / 2, getHeight() - 40, width() - 110, getHeight() - 10 ), _("##mission_wnd_tocity##" ) );
   lbToCity->setTextAlignment( alignCenter, alignCenter );
 
-  TexturedButton* btnExit = new TexturedButton( this, Point( getWidth() - 110, getHeight() - 40), Size( 27 ), -1, 179 );
+  TexturedButton* btnExit = new TexturedButton( this, Point( width() - 110, getHeight() - 40), Size( 27 ), -1, 179 );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
 
-  _d->title = new Label( this, Rect( 16, 16, getWidth() - 16, 16 + 30), "##player_name##");
+  _d->title = new Label( this, Rect( 16, 16, width() - 16, 16 + 30), "##player_name##");
   //_d->subTitle = new Label( this, Rect( 16, _d->title->getBottom(), getWidth() - 16, _d->title->getBottom() + 20), "##sub_title##" );
 
-  GroupBox* gbTargets = new GroupBox( this, Rect( 16, 64, getWidth() - 64, 64 + 80), Widget::noId, GroupBox::blackFrame );
+  GroupBox* gbTargets = new GroupBox( this, Rect( 16, 64, width() - 64, 64 + 80), Widget::noId, GroupBox::blackFrame );
   Label* lbTtargets = new Label( gbTargets, Rect( 15, 0, 490, 28), _("##mission_wnd_targets_title##") );
   lbTtargets->setFont( Font::create( FONT_1_WHITE ) );
   lbTtargets->setTextAlignment( alignUpperLeft, alignUpperLeft );
@@ -97,7 +97,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->lbPeace = new Label( gbTargets, Rect( 270, 54, 270 + 240, 54 + 20), _("##mission_wnd_peace##"), false, Label::bgSmBrown );
   _d->lbShortDesc = new Label( gbTargets, Rect( 16, 54, 270 + 240, 54 + 20), "", false, Label::bgSmBrown );
 
-  _d->lbxHelp = new ListBox( this, Rect( 16, 152, getWidth() - 20, getHeight() - 40 ) );
+  _d->lbxHelp = new ListBox( this, Rect( 16, 152, width() - 20, getHeight() - 40 ) );
   _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
   _d->lbxHelp->setItemTextOffset( Point( 10, 0 ) );
 }
@@ -109,7 +109,7 @@ void MissionTargetsWindow::draw( GfxEngine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
   }
 
   Widget::draw( painter );

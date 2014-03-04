@@ -160,7 +160,7 @@ void PictureDecorator::drawBorder( Picture &dstpic, const Rect& rectangle,
                                    int ltc, int lbc, int rtc, int rbc, bool useAlpha )
 {
   // draws horizontal borders
-  Size size = Picture::load( ResourceGroup::panelBackground, tp ).getSize();
+  Size size = Picture::load( ResourceGroup::panelBackground, tp ).size();
   const int sw = size.width();
   const int sh = size.height();
   for (int i = 0; i<(rectangle.getWidth()/size.width()-1); ++i)

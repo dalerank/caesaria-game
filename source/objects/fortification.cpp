@@ -89,7 +89,7 @@ void Fortification::destroy()
     TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
     foreach( tile, area )
     {
-      FortificationPtr f = ptr_cast<Fortification>( (*tile)->getOverlay() );
+      FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
       if( f.isValid()  )
       {
         f->updatePicture( _getCity() );
@@ -160,22 +160,22 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos p,
 
   // get overlays for all directions
   TileOverlayPtr overlay_d[countDirection];
-  overlay_d[north] = tmap.at( tile_pos_d[north] ).getOverlay();
-  overlay_d[east] = tmap.at( tile_pos_d[east]  ).getOverlay();
-  overlay_d[south] = tmap.at( tile_pos_d[south] ).getOverlay();
-  overlay_d[west] = tmap.at( tile_pos_d[west]  ).getOverlay();
-  overlay_d[northEast] = tmap.at( tile_pos_d[northEast]  ).getOverlay();
-  overlay_d[southEast] = tmap.at( tile_pos_d[southEast]  ).getOverlay();
-  overlay_d[southWest] = tmap.at( tile_pos_d[southWest]  ).getOverlay();
-  overlay_d[northWest] = tmap.at( tile_pos_d[northWest]  ).getOverlay();
+  overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
+  overlay_d[east] = tmap.at( tile_pos_d[east]  ).overlay();
+  overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
+  overlay_d[west] = tmap.at( tile_pos_d[west]  ).overlay();
+  overlay_d[northEast] = tmap.at( tile_pos_d[northEast]  ).overlay();
+  overlay_d[southEast] = tmap.at( tile_pos_d[southEast]  ).overlay();
+  overlay_d[southWest] = tmap.at( tile_pos_d[southWest]  ).overlay();
+  overlay_d[northWest] = tmap.at( tile_pos_d[northWest]  ).overlay();
 
   // if we have a TMP array with wall, calculate them
   if( !tmp.empty())
   {
     for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
-      if( (*it)->getOverlay().isNull()
-          || (*it)->getOverlay()->getType() != building::fortification )
+      if( (*it)->overlay().isNull()
+          || (*it)->overlay()->type() != building::fortification )
         continue;
 
       TilePos rpos = (*it)->pos();
@@ -197,7 +197,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos p,
   for (int i = 0; i < countDirection; ++i)
   {
     if (!is_border[i] &&
-        ( (overlay_d[i].isValid() && overlay_d[i]->getType() == building::fortification) || is_busy[i]))
+        ( (overlay_d[i].isValid() && overlay_d[i]->type() == building::fortification) || is_busy[i]))
     {
       switch (i)
       {

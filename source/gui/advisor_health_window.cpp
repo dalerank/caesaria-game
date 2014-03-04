@@ -114,7 +114,7 @@ public:
     ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
     foreach( b, srvBuildings )
     {
-      ret.buildingWork += (*b)->getWorkersCount() > 0 ? 1 : 0;
+      ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
       ret.buildingCount++;
     }
 
@@ -126,10 +126,10 @@ public:
 AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 290 ) ) );
 
-  Label* title = new Label( this, Rect( 60, 10, getWidth() - 10, 10 + 40) );
+  Label* title = new Label( this, Rect( 60, 10, width() - 10, 10 + 40) );
   title->setText( _("##Health advisor##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
@@ -142,7 +142,7 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
   _d->background->draw( icon, Point( 11, 11 ) );
 
   //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( 35, 110, getWidth() - 35, 110 + 85 ), PictureDecorator::blackFrame );
+  PictureDecorator::draw( *_d->background, Rect( 35, 110, width() - 35, 110 + 85 ), PictureDecorator::blackFrame );
 
   Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##work##"), 180, 92, false );
@@ -175,7 +175,7 @@ void AdvisorHealthWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
 
   Widget::draw( painter );
 }

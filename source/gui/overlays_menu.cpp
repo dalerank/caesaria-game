@@ -49,7 +49,7 @@ void OverlaysMenu::_addButtons(const int type )
   Point offset( 0, 27 );
   if( Widget* wdg = findChild( type ) )
   {
-    startPos = Point( -1 * (int)getWidth() - 10, wdg->getTop() );
+    startPos = Point( -1 * (int)width() - 10, wdg->getTop() );
   }
 
   switch( type )
@@ -108,7 +108,7 @@ void OverlaysMenu::_addButtons(const int type )
 
 void OverlaysMenu::_addButton(const int ovType, const std::string& name, const Point& offset )
 {
-  PushButton* btn = new PushButton( this, Rect( 0, 0, getWidth(), 20 ) + offset, name, ovType, false, PushButton::smallGrayBorderLine );
+  PushButton* btn = new PushButton( this, Rect( 0, 0, width(), 20 ) + offset, name, ovType, false, PushButton::smallGrayBorderLine );
   btn->setFont( Font::create( FONT_1 ) );
   btn->setNotClipped( true );
   

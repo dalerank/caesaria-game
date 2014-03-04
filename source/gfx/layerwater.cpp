@@ -46,16 +46,16 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   bool needDrawAnimations = false;
   Size areaSize(1);
 
-  if( tile.getOverlay().isNull() )
+  if( tile.overlay().isNull() )
   {
     //draw background
     engine.drawPicture( tile.getPicture(), screenPos );
   }
   else
   {
-    TileOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.overlay();
     Picture pic;
-    switch( overlay->getType() )
+    switch( overlay->type() )
     {
       //water buildings
     case construction::road:
@@ -75,7 +75,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     {
       int tileNumber = 0;
       bool haveWater = tile.getWaterService( WTR_FONTAIN ) > 0 || tile.getWaterService( WTR_WELL ) > 0;
-      if ( overlay->getType() == building::house )
+      if ( overlay->type() == building::house )
       {
         HousePtr h = ptr_cast<House>( overlay );
         tileNumber = OverlayPic::inHouse;
@@ -117,7 +117,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       int reservoirWater = rtile->getWaterService( WTR_RESERVOIR );
       int fontainWater = rtile->getWaterService( WTR_FONTAIN );
 
-      if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->getOverlay().isNull() )
+      if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->overlay().isNull() )
       {
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;

@@ -50,7 +50,7 @@ bool BuildEvent::_mayExec(Game& game, unsigned int time) const
 
 void BuildEvent::_exec( Game& game, unsigned int )
 {
-  const MetaData& buildingData = MetaDataHolder::instance().getData( _overlay->getType() );
+  const MetaData& buildingData = MetaDataHolder::instance().getData( _overlay->type() );
   if( _overlay.isValid() )
   {
     _overlay->build( game.getCity(), _pos );
@@ -84,10 +84,10 @@ void BuildEvent::_exec( Game& game, unsigned int )
         }
 
         WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( construction );
-        if( wb.isValid() && wb->getMaxWorkers() > 0 )
+        if( wb.isValid() && wb->maxWorkers() > 0 )
         {
           int worklessCount = CityStatistic::getWorklessNumber( game.getCity() );
-          if( worklessCount < wb->getMaxWorkers() )
+          if( worklessCount < wb->maxWorkers() )
           {
             GameEventPtr e = WarningMessageEvent::create( "##city_need_more_workers##" );
             e->dispatch();

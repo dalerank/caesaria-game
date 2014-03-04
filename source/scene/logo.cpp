@@ -44,7 +44,7 @@ void SplashScreen::initialize()
   _d->bgPicture = Picture::load("c3title", 2);
 
   // center the bgPicture on the screen
-  Size s = (engine.getScreenSize() - _d->bgPicture.getSize()) / 2;
+  Size s = (engine.getScreenSize() - _d->bgPicture.size()) / 2;
   _d->bgPicture.setOffset( Point( s.width(), -s.height() ) );
 }
 

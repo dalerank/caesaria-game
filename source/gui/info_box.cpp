@@ -95,14 +95,14 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
   _d->lbBlackFrame = findChildA<Label*>( "lbBlackFrame", true, this );
   _d->lbText = findChildA<Label*>( "lbText", true, this );
 
-  if( _d->btnExit ) { _d->btnExit->setPosition( Point( getWidth() - 39, getHeight() - 39 ) ); }
+  if( _d->btnExit ) { _d->btnExit->setPosition( Point( width() - 39, getHeight() - 39 ) ); }
   if( _d->btnHelp ) { _d->btnHelp->setPosition( Point( 14, getHeight() - 39 ) ); }
 
   CONNECT( _d->btnExit, onClicked(), this, InfoboxSimple::deleteLater );
   CONNECT( _d->btnHelp, onClicked(), this, InfoboxSimple::showDescription );
 
   // black box
-  Point lastPos( getWidth() - 32, getHeight() - 48 );
+  Point lastPos( width() - 32, getHeight() - 48 );
   if( _d->lbBlackFrame )
   {
     _d->lbBlackFrame->setVisible( blackArea.getSize().getArea() > 0 );
@@ -203,8 +203,8 @@ void InfoboxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
 InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
-  BuildingPtr building = ptr_cast<Building>( tile.getOverlay() );
-  setTitle( MetaDataHolder::getPrettyName( building->getType() ) );
+  BuildingPtr building = ptr_cast<Building>( tile.overlay() );
+  setTitle( MetaDataHolder::getPrettyName( building->type() ) );
 }
 
 InfoboxText::InfoboxText(Widget* parent, const std::string& title, const std::string& message)
@@ -213,9 +213,9 @@ InfoboxText::InfoboxText(Widget* parent, const std::string& title, const std::st
   setTitle( title );
   _d->isAutoPosition = false;
 
-  setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
+  setPosition( Point( parent->width() - width(), parent->getHeight() - getHeight() ) / 2 );
 
-  _d->lbText->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _d->lbText->setGeometry( Rect( 25, 45, width() - 25, getHeight() - 55 ) );
   _d->lbText->setWordwrap( true );
   _d->lbText->setText( message );
 }

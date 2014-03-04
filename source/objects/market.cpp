@@ -34,7 +34,7 @@ public:
     bool anyGoodStored = false;
     for( int i = 0; i < Good::goodCount; ++i)
     {
-      anyGoodStored |= ( goodStore.getQty( Good::Type(i) ) >= 100 );
+      anyGoodStored |= ( goodStore.qty( Good::Type(i) ) >= 100 );
     }
 
     return anyGoodStored;
@@ -68,7 +68,7 @@ Market::Market() : ServiceBuilding(Service::market, constants::building::market,
 
 void Market::deliverService()
 {
-  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
     MarketLadyPtr buyer = MarketLady::create( _getCity() );
@@ -144,7 +144,7 @@ void Market::timeStep(const unsigned long time)
 {
   if( time % 16 == 0 )
   {
-    if( getWorkersCount() > 0 )
+    if( numberWorkers() > 0 )
     {
       if( _animationRef().isStopped() )
       {
@@ -160,7 +160,7 @@ void Market::timeStep(const unsigned long time)
     }
 
     WalkerList walkers = getWalkers();
-    if( walkers.size() > 0 && _d->goodStore.getQty() == 0 )
+    if( walkers.size() > 0 && _d->goodStore.qty() == 0 )
     {
       ServiceWalkerPtr walker = ptr_cast<ServiceWalker>( walkers.front() );
       if( walker.isValid() )

@@ -77,7 +77,7 @@ void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _
 
 bool Factory::mayWork() const
 {
-  if( getWorkersCount() == 0 || !_d->isActive )
+  if( numberWorkers() == 0 || !_d->isActive )
     return false;
 
   GoodStock& inStock = const_cast< Factory* >( this )->inStockRef();
@@ -98,9 +98,9 @@ void Factory::timeStep(const unsigned long time)
   //try get good from storage building for us
   if( time % (GameDate::ticksInMonth()/4) == 1 )
   {
-    _d->goodStore.setCapacity( getWorkersCount() > 0 ? 1000 : 0);
+    _d->goodStore.setCapacity( numberWorkers() > 0 ? 1000 : 0);
 
-    if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+    if( numberWorkers() > 0 && getWalkers().size() == 0 )
     {
       receiveGood();
       deliverGood();
@@ -135,7 +135,7 @@ void Factory::timeStep(const unsigned long time)
   {
     _d->produceGood = false;
 
-    if( _d->goodStore.getQty( _d->outGoodType ) < _d->goodStore.capacity( _d->outGoodType )  )
+    if( _d->goodStore.qty( _d->outGoodType ) < _d->goodStore.capacity( _d->outGoodType )  )
     {
       _d->progress -= 100.f;
       unsigned int qty = getFinishedQty();
@@ -147,7 +147,7 @@ void Factory::timeStep(const unsigned long time)
   else
   {
     //ok... factory is work, produce goods
-    float workersRatio = (float)getWorkersCount() / (float)getMaxWorkers();  // work drops if not enough workers
+    float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
     float timeKoeff = DateTime::monthInYear / (float)GameDate::ticksInMonth();
     float work = timeKoeff * _d->productionRate * workersRatio;  // work is proportional to time and factory speed
     if( _d->produceGood )
@@ -172,7 +172,7 @@ void Factory::timeStep(const unsigned long time)
     {
       _d->produceGood = true;
     }
-    else if( _d->goodStore.getQty( _d->inGoodType ) >= consumeQty && _d->goodStore.getQty( _d->outGoodType ) < 100 )
+    else if( _d->goodStore.qty( _d->inGoodType ) >= consumeQty && _d->goodStore.qty( _d->outGoodType ) < 100 )
     {
       _d->produceGood = true;
       //gcc fix temporaly ref object error
@@ -185,7 +185,7 @@ void Factory::timeStep(const unsigned long time)
 void Factory::deliverGood()
 {
   // make a cart pusher and send him away
-  int qty = _d->goodStore.getQty( _d->outGoodType );
+  int qty = _d->goodStore.qty( _d->outGoodType );
   if( _mayDeliverGood() && qty >= 100 )
   {      
     CartPusherPtr walker = CartPusher::create( _getCity() );

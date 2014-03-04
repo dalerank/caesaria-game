@@ -43,14 +43,14 @@ public:
   // returns the reservationID if stock can be retrieved (else 0)
   virtual long reserveStorage( GoodStock &stock, DateTime time )
   {
-    return granary->getWorkersCount() > 0
+    return granary->numberWorkers() > 0
               ? SimpleGoodStore::reserveStorage( stock, time )
               : 0;
   }
 
   virtual void store( GoodStock &stock, const int amount)
   {
-    if( granary->getWorkersCount() == 0 )
+    if( granary->numberWorkers() == 0 )
     {
       return;
     }
@@ -110,7 +110,7 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
 void Granary::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep( time );
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
     _animationRef().update( time );
 
@@ -137,7 +137,7 @@ GoodStore& Granary::getGoodStore() {  return _d->goodStore; }
 
 void Granary::computePictures()
 {
-  int allQty = _d->goodStore.getQty();
+  int allQty = _d->goodStore.qty();
   int maxQty = _d->goodStore.capacity();
 
   for (int n = 0; n < 4; ++n)
@@ -180,7 +180,7 @@ void Granary::_resolveDeliverMode()
   {
     Good::Type gType = (Good::Type)goodType;
     GoodOrders::Order order = _d->goodStore.getOrder( gType );
-    int goodFreeQty = math::clamp( _d->goodStore.getFreeQty( gType ), 0, 400 );
+    int goodFreeQty = math::clamp( _d->goodStore.freeQty( gType ), 0, 400 );
 
     if( GoodOrders::deliver == order && goodFreeQty > 0 )
     {
@@ -201,7 +201,7 @@ void Granary::_tryDevastateGranary()
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
   {
-    int goodQty = math::clamp( _d->goodStore.getQty( (Good::Type)goodType ), 0, 400);
+    int goodQty = math::clamp( _d->goodStore.qty( (Good::Type)goodType ), 0, 400);
 
     if( goodQty > 0 )
     {

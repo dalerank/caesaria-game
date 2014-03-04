@@ -80,7 +80,7 @@ void CityServiceShoreline::update( const unsigned int time )
   foreach( it, _d->slTiles )
   {
     Tile* tile = *it;
-    if( tile->getOverlay().isValid() )
+    if( tile->overlay().isValid() )
       continue;
 
     int picId = tile->getOriginalImgId();

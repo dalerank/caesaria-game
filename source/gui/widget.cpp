@@ -787,7 +787,7 @@ void Widget::setWidth( unsigned int width )
 
 void Widget::setHeight( unsigned int height )
 {
-  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( getWidth(), height ) );
+  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width(), height ) );
   setGeometry( rectangle );
 }
 
@@ -812,23 +812,23 @@ Size Widget::getMinSize() const{    return _d->minSize;}
 void Widget::installEventHandler( Widget* elementHandler ){  _d->eventHandler = elementHandler;}
 bool Widget::isHovered() const{  return _environment->isHovered( this );}
 bool Widget::isFocused() const{  return _environment->hasFocus( this );}
-Rect Widget::getClientRect() const{  return Rect( 0, 0, getWidth(), getHeight() );}
+Rect Widget::getClientRect() const{  return Rect( 0, 0, width(), getHeight() );}
 void Widget::setFocus(){  getEnvironment()->setFocus( this );}
 void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
 Rect& Widget::getAbsoluteClippingRectRef() const{  return _d->absoluteClippingRect;}
-unsigned int Widget::getWidth() const{  return getRelativeRect().getWidth();}
+unsigned int Widget::width() const{  return getRelativeRect().getWidth();}
 Size Widget::getSize() const{  return Size( _d->relativeRect.getWidth(), _d->relativeRect.getHeight() );}
 int Widget::getScreenTop() const { return getAbsoluteRect().top(); }
-int Widget::getScreenLeft() const { return getAbsoluteRect().left(); }
-int Widget::getScreenBottom() const { return getAbsoluteRect().bottom(); }
+int Widget::screenLeft() const { return getAbsoluteRect().left(); }
+int Widget::screenBottom() const { return getAbsoluteRect().bottom(); }
 int Widget::getScreenRight() const { return getAbsoluteRect().right(); }
-Point Widget::getLeftdownCorner() const { return Point( getLeft(), getBottom() ); }
+Point Widget::leftdownCorner() const { return Point( getLeft(), bottom() ); }
 Point Widget::getRightupCorner() const { return Point( getRight(), getTop() ); }
 unsigned int Widget::getArea() const { return getAbsoluteRect().getArea(); }
 Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _d->absoluteRect.UpperLeftCorner;}
 Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _d->absoluteRect.UpperLeftCorner;}
 void Widget::move( const Point& relativeMovement ){  setGeometry( _d->desiredRect + relativeMovement );}
-int Widget::getBottom() const{  return _d->relativeRect.LowerRightCorner.y(); }
+int Widget::bottom() const{  return _d->relativeRect.LowerRightCorner.y(); }
 void Widget::setTabGroup( bool isGroup ) { _d->isTabGroup = isGroup; }
 bool Widget::isVisible() const{  return _d->isVisible;}
 bool Widget::isSubElement() const{  return _d->isSubElement;}

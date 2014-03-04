@@ -73,7 +73,7 @@ public:
   int getPixel( Point pos );
   void setPixel( Point pos, const int color);
 
-  Size getSize() const;
+  Size size() const;
 
   bool isValid() const;
 

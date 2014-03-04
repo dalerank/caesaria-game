@@ -40,7 +40,7 @@ void Wall::build(PlayerCityPtr city, const TilePos& pos )
   Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have wall here
-  WallPtr wall = ptr_cast<Wall>( terrain.getOverlay() );
+  WallPtr wall = ptr_cast<Wall>( terrain.overlay() );
   if( wall.isValid() )
   {
     return;
@@ -66,7 +66,7 @@ void Wall::destroy()
 
     foreach( tile, area )
     {
-      WallPtr wall = ptr_cast<Wall>( (*tile)->getOverlay() );
+      WallPtr wall = ptr_cast<Wall>( (*tile)->overlay() );
       if( wall.isValid()  )
       {
         wall->updatePicture( _getCity() );
@@ -131,20 +131,20 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos p, const TilesArray&
 
   // get overlays for all directions
   TileOverlayPtr overlay_d[countDirection];
-  overlay_d[north] = tmap.at( tile_pos_d[north] ).getOverlay();
-  overlay_d[east] = tmap.at( tile_pos_d[east]  ).getOverlay();
-  overlay_d[south] = tmap.at( tile_pos_d[south] ).getOverlay();
-  overlay_d[west] = tmap.at( tile_pos_d[west]  ).getOverlay();
-  overlay_d[northEast] = tmap.at( tile_pos_d[northEast]  ).getOverlay();
-  overlay_d[southEast] = tmap.at( tile_pos_d[southEast]  ).getOverlay();
+  overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
+  overlay_d[east] = tmap.at( tile_pos_d[east]  ).overlay();
+  overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
+  overlay_d[west] = tmap.at( tile_pos_d[west]  ).overlay();
+  overlay_d[northEast] = tmap.at( tile_pos_d[northEast]  ).overlay();
+  overlay_d[southEast] = tmap.at( tile_pos_d[southEast]  ).overlay();
 
   // if we have a TMP array with wall, calculate them
   if (!tmp.empty())
   {
     for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
-      if( (*it)->getOverlay().isNull()
-          || (*it)->getOverlay()->getType() != building::wall)
+      if( (*it)->overlay().isNull()
+          || (*it)->overlay()->type() != building::wall)
       {
         continue;
       }
@@ -166,7 +166,7 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos p, const TilesArray&
   for (int i = 0; i < countDirection; ++i) {
     if( !is_border[i] &&
        ( (overlay_d[i].isValid() &&
-          (overlay_d[i]->getType() == building::wall || overlay_d[i]->getType() == building::gatehouse ) )
+          (overlay_d[i]->type() == building::wall || overlay_d[i]->type() == building::gatehouse ) )
         || is_busy[i] ) )
     {
       switch (i)

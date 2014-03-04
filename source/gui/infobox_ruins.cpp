@@ -31,7 +31,7 @@ namespace gui
 InfoboxRuins::InfoboxRuins( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ) )
 {
-  RuinsPtr ruin = ptr_cast<Ruins>( tile.getOverlay() );
+  RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
   std::string text = _("##ruins_0000_text##");
   if( ruin.isValid() )
   {
@@ -40,7 +40,7 @@ InfoboxRuins::InfoboxRuins( Widget* parent, const Tile& tile )
       text = _( ruin->getInfo().c_str() );
     }
   }
-  Label* lb = new Label( this, Rect( 20, 20, getWidth() - 20, getHeight() - 50), text );
+  Label* lb = new Label( this, Rect( 20, 20, width() - 20, getHeight() - 50), text );
   lb->setTextAlignment( alignCenter, alignCenter );
   lb->setWordwrap( true );
 }

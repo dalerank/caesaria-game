@@ -111,7 +111,7 @@ void Label::_updateTexture( GfxEngine& painter )
 {
   Size labelSize = getSize();
 
-  if( _d->background && _d->background->getSize() != labelSize )
+  if( _d->background && _d->background->size() != labelSize )
   {
     _d->background.reset();
   }
@@ -121,7 +121,7 @@ void Label::_updateTexture( GfxEngine& painter )
     _d->background.reset( Picture::create( labelSize ) );
   }
 
-  if( _d->textPicture && _d->textPicture->getSize() != labelSize )
+  if( _d->textPicture && _d->textPicture->size() != labelSize )
   {
     _d->textPicture.reset( Picture::create( labelSize ) );
   }
@@ -149,7 +149,7 @@ void Label::_updateTexture( GfxEngine& painter )
     {
     case bgSimpleWhite:
       _d->background->fill( 0xff000000, Rect() );
-      _d->background->fill( 0xffffffff, Rect( 1, 1, getWidth() - 1, getHeight() - 1 ) );
+      _d->background->fill( 0xffffffff, Rect( 1, 1, width() - 1, getHeight() - 1 ) );
     break;
     case bgWhite: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteArea); break;
     case bgBlack: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackArea ); break;

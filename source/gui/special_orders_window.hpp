@@ -38,7 +38,7 @@ public:
 
   ~BaseSpecialOrdersWindow();
 protected:
-  BaseSpecialOrdersWindow( Widget* parent, const Point& pos );
+  BaseSpecialOrdersWindow(Widget* parent, const Point& pos , int height);
 
   class Impl;
   ScopedPtr< Impl > _d;
@@ -47,6 +47,7 @@ protected:
 class GranarySpecialOrdersWindow : public BaseSpecialOrdersWindow
 {
 public:
+  static const int defaultHeight = 450;
   GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
 
   void toggleDevastation();
@@ -60,6 +61,7 @@ private:
 class WarehouseSpecialOrdersWindow : public BaseSpecialOrdersWindow
 {
 public:
+  static const int defaultHeight = 550;
   WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse );
 
   void toggleDevastation();

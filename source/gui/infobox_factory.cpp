@@ -34,15 +34,15 @@ namespace gui
 InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
-  FactoryPtr factory = ptr_cast<Factory>( tile.getOverlay() );
+  FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( factory ) );
-  _type = factory->getType();
-  std::string  title = MetaDataHolder::getPrettyName( factory->getType() );
+  _type = factory->type();
+  std::string  title = MetaDataHolder::getPrettyName( factory->type() );
   setTitle( _(title) );
 
   // paint progress
   std::string text = StringHelper::format( 0xff, "%s %d%%", _("##production_ready_at##"), factory->getProgress() );
-  Label* lbPr = new Label( this, Rect( _getTitle()->getLeftdownCorner() + Point( 10, 0 ), Size( getWidth() - 32, 25 ) ), text );
+  Label* lbPr = new Label( this, Rect( _getTitle()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
   lbPr->setFont( Font::create( FONT_2 ) );
 
   if( factory->getOutGoodType() != Good::none )
@@ -53,12 +53,12 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   // paint picture of in good
   if( factory->inStockRef().type() != Good::none )
   {
-    Label* lbStockInfo = new Label( this, Rect( _getTitle()->getLeftdownCorner() + Point( 0, 25 ), Size( getWidth() - 32, 25 ) ) );
+    Label* lbStockInfo = new Label( this, Rect( _getTitle()->leftdownCorner() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
 
-    std::string text = StringHelper::format( 0xff, "%s %s: %d %s",
-                                             GoodHelper::getName( factory->inStockRef().type() ).c_str(),
-                                             _("##factory_stock##"),
+    std::string text = StringHelper::format( 0xff, "##%s_%s##: %d %s",
+                                             GoodHelper::getTypeName( factory->inStockRef().type() ).c_str(),
+                                             "factory_stock",
                                              factory->inStockRef().qty() / 100,
                                              _("##factory_units##") );
 
@@ -71,7 +71,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   std::string workInfo = factory->getWorkersProblem();
   setText( _(workInfo) );
 
-  _updateWorkersLabel( Point( 32, 157 ), 542, factory->getMaxWorkers(), factory->getWorkersCount() );
+  _updateWorkersLabel( Point( 32, 157 ), 542, factory->maxWorkers(), factory->numberWorkers() );
 }
 
 void InfoboxFactory::showDescription()
@@ -82,13 +82,13 @@ void InfoboxFactory::showDescription()
 InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
   : InfoboxFactory( parent, tile )
 {
-  ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.getOverlay() );
+  ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.overlay() );
 
   int progressCount = shipyard->getProgress();
   if( progressCount > 1 && progressCount < 100 )
   {
     new Label( this,
-               Rect( _getTitle()->getLeftdownCorner() + Point( 10, 35 ), Size( getWidth() - 32, 25 ) ),
+               Rect( _getTitle()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
                _("##build_fishing_boat##") );
   }
 }
@@ -97,12 +97,12 @@ InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
 InfoboxWharf::InfoboxWharf(Widget* parent, const Tile& tile)
   : InfoboxFactory( parent, tile )
 {
-  WharfPtr wharf = ptr_cast<Wharf>( tile.getOverlay() );
+  WharfPtr wharf = ptr_cast<Wharf>( tile.overlay() );
 
   if( wharf->getBoat().isNull() )
   {
     new Label( this,
-               Rect( _getTitle()->getLeftdownCorner() + Point( 10, 35 ), Size( getWidth() - 32, 25 ) ),
+               Rect( _getTitle()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
                _("##wait_for_fishing_boat##") );
   }
 }

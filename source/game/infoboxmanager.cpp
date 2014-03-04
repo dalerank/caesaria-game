@@ -98,7 +98,7 @@ public:
     if( building.isValid() )
     {
       InfoboxWorkingBuilding* infoBox = new InfoboxWorkingBuilding( parent, building );
-      infoBox->setPosition( Point( (size.width() - infoBox->getWidth()) / 2, size.height() - infoBox->getHeight()) );
+      infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, size.height() - infoBox->getHeight()) );
 
       if( !title.empty() ) { infoBox->setTitle( title ); }
       if( !text.empty() ) { infoBox->setText( text ); }
@@ -128,12 +128,12 @@ public:
   {
     Size  size = parent->getSize();
     InfoboxSimple* infoBox = new InfoboxSimple( parent, Rect( 0, 0, 510, 300 ) );
-    infoBox->setPosition( Point( (size.width() - infoBox->getWidth()) / 2, 
+    infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, 
                                   size.height() - infoBox->getHeight()) );
     TileOverlayPtr overlay = city->getOverlay( pos );
 
     std::string caption = overlay.isValid()
-                            ? MetaDataHolder::getPrettyName( overlay->getType() )
+                            ? MetaDataHolder::getPrettyName( overlay->type() )
                             : title;
 
     infoBox->setTitle( _( caption ) );
@@ -244,7 +244,7 @@ InfoboxManager& InfoboxManager::getInstance()
 void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
 {
   Tile& tile = city->getTilemap().at( pos );
-  TileOverlayPtr overlay = tile.getOverlay();
+  TileOverlayPtr overlay = tile.overlay();
   TileOverlay::Type type;
 
   if( _d->showDebugInfo )
@@ -252,7 +252,7 @@ void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
     Logger::warning( "Tile debug info: dsrbl=%d", tile.getDesirability() );
   }
 
-  type = overlay.isNull() ? building::unknown : overlay->getType();
+  type = overlay.isNull() ? building::unknown : overlay->type();
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
@@ -266,7 +266,7 @@ void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
     int y = ( gui->getCursorPos().y() < rSize.height() / 2 )
                 ? rSize.height() - infoBox->getHeight() - 5
                 : 30;
-    Point pos( ( rSize.width() - infoBox->getWidth() ) / 2, y );
+    Point pos( ( rSize.width() - infoBox->width() ) / 2, y );
 
     infoBox->setPosition( pos );
     infoBox->setFocus();

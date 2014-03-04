@@ -70,9 +70,9 @@ void SaveDialog::Impl::findFiles()
 SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id )
 : Widget( parent, id, Rect( 0, 0, 385, 336 ) ), _d( new Impl )
 {
-  setPosition( Point( (parent->getWidth() - getWidth())/2, (parent->getHeight() - getHeight()) / 2 ) );
+  setPosition( Point( (parent->width() - width())/2, (parent->getHeight() - getHeight()) / 2 ) );
   
-  Label* title = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 30) );
+  Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 30) );
   title->setText( "Save city" );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
@@ -88,7 +88,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
   _d->lbxSaves = new ListBox( this, Rect( 18, 70, 18 + 356, 70 + 205 ) );
   CONNECT( _d->lbxSaves, onItemSelectedAgain(), _d.data(), Impl::resolveListboxChange );
  
-  new Label( this, Rect( 18, 296, getWidth() / 2, 297 + 30 ), "Continue?" );
+  new Label( this, Rect( 18, 296, width() / 2, 297 + 30 ), "Continue?" );
   _d->btnOk = new TexturedButton( this, Point( 217, 297 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
   CONNECT( _d->btnOk, onClicked(), _d.data(), Impl::resolveButtonOkClick );
   CONNECT( _d->btnOk, onClicked(), this, SaveDialog::deleteLater );
@@ -104,7 +104,7 @@ void SaveDialog::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
 
   Widget::draw( painter );
 }

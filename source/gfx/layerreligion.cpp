@@ -47,17 +47,17 @@ void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
-  if( tile.getOverlay().isNull() )
+  if( tile.overlay().isNull() )
   {
     //draw background
     engine.drawPicture( tile.getPicture(), screenPos );
   }
   else
   {
-    TileOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.overlay();
 
     int religionLevel = -1;
-    switch( overlay->getType() )
+    switch( overlay->type() )
     {
       //fire buildings and roads
     case construction::road:
@@ -120,7 +120,7 @@ void LayerReligion::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->getOverlay() );
+        HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house.isValid() )
         {
           int templeAccess = house->getSpec().computeReligionLevel( house );

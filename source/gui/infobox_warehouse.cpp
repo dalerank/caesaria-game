@@ -32,20 +32,20 @@ namespace gui
 InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
-  _warehouse = ptr_cast<Warehouse>( tile.getOverlay() );
+  _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
   setConstruction( ptr_cast<Construction>( _warehouse ) );
 
   Size btnOrdersSize( 350, 20 );
-  PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.width()) / 2, getHeight() - 34 ), btnOrdersSize ),
+  PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width()) / 2, getHeight() - 34 ), btnOrdersSize ),
                                           _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( btnOrders, onClicked(), this, InfoBoxWarehouse::showSpecialOrdersWindow );
 
-  setTitle( MetaDataHolder::getPrettyName( _warehouse->getType() ) );
+  setTitle( MetaDataHolder::getPrettyName( _warehouse->type() ) );
 
   // summary: total stock, free capacity
-  int _paintY = _getTitle() ? _getTitle()->getBottom() : 50;
+  int _paintY = _getTitle() ? _getTitle()->bottom() : 50;
 
   drawGood(Good::wheat,     0, _paintY+0);
   drawGood(Good::vegetable, 0, _paintY+25);
@@ -66,19 +66,17 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   drawGood(Good::furniture, 2, _paintY+75);
   drawGood(Good::pottery,   2, _paintY+100);
 
-  _updateWorkersLabel( Point( 20, 10 ), 542, _warehouse->getMaxWorkers(), _warehouse->getWorkersCount() );
+  _updateWorkersLabel( Point( 20, 10 ), 542, _warehouse->maxWorkers(), _warehouse->numberWorkers() );
 }
 
-InfoBoxWarehouse::~InfoBoxWarehouse()
-{
-}
+InfoBoxWarehouse::~InfoBoxWarehouse() {}
 
 void InfoBoxWarehouse::showSpecialOrdersWindow()
 {
   Point pos;
   if( getTop() > (int)getParent()->getHeight() / 2 )
   {
-    pos = Point( getScreenLeft(), getScreenBottom() - 450 );
+    pos = Point( screenLeft(), screenBottom() - WarehouseSpecialOrdersWindow::defaultHeight );
   }
   else
   {
@@ -91,7 +89,7 @@ void InfoBoxWarehouse::showSpecialOrdersWindow()
 void InfoBoxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
 {
   std::string goodName = GoodHelper::getName( goodType );
-  int qty = _warehouse->getGoodStore().getQty(goodType);
+  int qty = _warehouse->getGoodStore().qty(goodType);
 
   // pictures of goods
   const Picture& pic = GoodHelper::getPicture( goodType );

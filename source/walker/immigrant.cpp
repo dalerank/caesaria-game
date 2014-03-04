@@ -136,7 +136,7 @@ void Immigrant::_reachedPathway()
     foreach( it, area )  //have destination
     {
       Tile* tile = *it;
-      HousePtr house = ptr_cast<House>( tile->getOverlay() );
+      HousePtr house = ptr_cast<House>( tile->overlay() );
       if( !house.isValid() )
         continue;
       int freeRoom = house->getMaxHabitants() - house->getHabitants().count();

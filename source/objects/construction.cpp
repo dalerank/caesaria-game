@@ -146,7 +146,7 @@ void Construction::collapse()
 
 Desirability Construction::getDesirability() const
 {
-  return MetaDataHolder::instance().getData( getType() ).getDesirbility();
+  return MetaDataHolder::instance().getData( type() ).getDesirbility();
 }
 
 void Construction::updateState(Construction::Param param, double value, bool relative)

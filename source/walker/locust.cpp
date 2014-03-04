@@ -82,7 +82,7 @@ void Locust::timeStep(const unsigned long time)
   {
     CityHelper helper( _getCity() );
     FarmPtr farm = helper.find<Farm>( building::any, pos() );
-    if( farm.isValid() && farm->getType() != building::pigFarm )
+    if( farm.isValid() && farm->type() != building::pigFarm )
     {
       farm->updateProgress( -50 );
     }

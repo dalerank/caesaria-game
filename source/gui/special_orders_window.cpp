@@ -105,16 +105,16 @@ public:
   void addOrderWidget( const int index, const Good::Type good, T storageBuiding )
   {
     Point offset( 0, 25 );
-    Size wdgSize( gbOrdersInsideArea->getWidth(), 25 );
+    Size wdgSize( gbOrdersInsideArea->width(), 25 );
     new OrderGoodWidget<T>( gbOrdersInsideArea, Rect( offset * index, wdgSize), good, storageBuiding );
   }
 };
 
-BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& pos )
-  : Widget( parent, -1, Rect( pos, Size( 510, 450 ) ) ), _d( new Impl )
+BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& pos, int h )
+  : Widget( parent, -1, Rect( pos, Size( 510, h ) ) ), _d( new Impl )
 {
   // create the title
-  _d->lbTitle = new Label( this, Rect( 50, 10, getWidth()-50, 10 + 30 ), "", true );
+  _d->lbTitle = new Label( this, Rect( 50, 10, width()-50, 10 + 30 ), "", true );
   _d->lbTitle->setFont( Font::create( FONT_3 ) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
 
@@ -131,8 +131,8 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   // draws the box and the inner black box
   PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
 
-  _d->gbOrders = new GroupBox( this, Rect( 17, 42, getWidth() - 17, getHeight() - 70), -1, GroupBox::blackFrame );  
-  _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->getWidth() -5, _d->gbOrders->getHeight() -5 ) );
+  _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, getHeight() - 70), -1, GroupBox::blackFrame );  
+  _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->getHeight() -5 ) );
 }
 
 
@@ -143,7 +143,7 @@ BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow()
 
 void BaseSpecialOrdersWindow::draw( GfxEngine& engine )
 {
-  engine.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
+  engine.drawPicture( *_d->bgPicture, screenLeft(), getScreenTop() );
   Widget::draw( engine );
 }
 
@@ -182,7 +182,7 @@ void BaseSpecialOrdersWindow::setTitle( const std::string& text )
 }
 
 GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary )
-: BaseSpecialOrdersWindow( parent, pos )
+: BaseSpecialOrdersWindow( parent, pos, defaultHeight )
 {
   setTitle( _("##granary_orders##") );
   int index=0;
@@ -198,7 +198,7 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
     }
   }
 
-  _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, getWidth() - 80, getHeight() - 25 ),
+  _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, width() - 80, getHeight() - 25 ),
                                           "", -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
@@ -219,7 +219,7 @@ void GranarySpecialOrdersWindow::_updateBtnDevastation()
 }
 
 WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
-: BaseSpecialOrdersWindow( parent, pos )
+: BaseSpecialOrdersWindow( parent, pos, defaultHeight )
 {
   setTitle( _("##warehouse_orders##") );
 
@@ -236,10 +236,10 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
     }
   }
 
-  _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, getWidth() - 80, getHeight() - 25 ),
+  _btnToggleDevastation = new PushButton( this, Rect( 80, getHeight() - 45, width() - 80, getHeight() - 25 ),
                                           "", -1, false, PushButton::whiteBorderUp );
 
-  _btnTradeCenter = new PushButton( this, Rect( 80, getHeight() - 70, getWidth() - 80, getHeight() - 50 ),
+  _btnTradeCenter = new PushButton( this, Rect( 80, getHeight() - 70, width() - 80, getHeight() - 50 ),
                                    _("##trace_center##"), -1, false, PushButton::whiteBorderUp );
 
   CONNECT( _btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );

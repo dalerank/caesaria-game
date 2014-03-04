@@ -57,7 +57,7 @@ void GroupBox::draw( GfxEngine& painter )
     if (!isVisible())
         return;
 
-    painter.drawPicture( *_d->texture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *_d->texture, screenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
 
     Widget::draw( painter );
 }
@@ -98,7 +98,7 @@ void GroupBox::beforeDraw( GfxEngine& painter )
     Size mySize = getSize();
 
 
-    if( !_d->texture.isNull() && _d->texture->getSize() != mySize )
+    if( !_d->texture.isNull() && _d->texture->size() != mySize )
       _d->texture.reset();
 
     if( _d->texture.isNull() )
@@ -108,7 +108,7 @@ void GroupBox::beforeDraw( GfxEngine& painter )
     {
       if( _d->scaleImage )
       {
-        _d->texture->draw( _d->backgroundImage, Rect( Point( 0, 0 ), _d->backgroundImage.getSize()), Rect( Point(0, 0), mySize) );
+        _d->texture->draw( _d->backgroundImage, Rect( Point( 0, 0 ), _d->backgroundImage.size()), Rect( Point(0, 0), mySize) );
       }
       else
       {

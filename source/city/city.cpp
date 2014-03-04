@@ -310,7 +310,7 @@ void PlayerCity::timeStep( unsigned int time )
         // overlay matches the filter
         construction->computeAccessRoads();
         // for some constructions we need to update picture
-        if( construction->getType() == construction::road )
+        if( construction->type() == construction::road )
         {
           RoadPtr road = ptr_cast<Road>( construction );
           road->updatePicture();
@@ -639,7 +639,7 @@ Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOpti
 const CityBuildOptions& PlayerCity::getBuildOptions() const { return _d->buildOptions; }
 const CityWinTargets& PlayerCity::getWinTargets() const {   return _d->targets; }
 void PlayerCity::setWinTargets(const CityWinTargets& targets) { _d->targets = targets; }
-TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).getOverlay(); }
+TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::getPlayer() const { return _d->player; }
 std::string PlayerCity::getName() const {  return _d->name; }
 void PlayerCity::setName( const std::string& name ) {   _d->name = name;}

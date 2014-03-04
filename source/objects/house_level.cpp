@@ -187,31 +187,31 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
     return false;
   }
 
-  if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().getQty(Good::pottery) == 0)
+  if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().qty(Good::pottery) == 0)
   {
     ref = "##missing_pottery##";
     return false;
   }
 
-  if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().getQty(Good::furniture) == 0)
+  if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().qty(Good::furniture) == 0)
   {
     ref = "##missing_furniture##";
     return false;
   }
 
-  if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().getQty(Good::oil) == 0)
+  if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().qty(Good::oil) == 0)
   {
     ref = "##missing_oil##";
     return false;
   }
 
-  if( _d->requiredGoods[Good::wine] != 0 && house->getGoodStore().getQty(Good::wine) == 0)
+  if( _d->requiredGoods[Good::wine] != 0 && house->getGoodStore().qty(Good::wine) == 0)
   {
     ref = "##missing_wine##";
     return false;
   }
 
-  if( _d->requiredGoods[Good::prettyWine] != 0 && house->getGoodStore().getQty(Good::prettyWine) == 0)
+  if( _d->requiredGoods[Good::prettyWine] != 0 && house->getGoodStore().qty(Good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
     return false;
@@ -241,7 +241,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
     if( bLevel > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      oMissingRequirement = MetaDataHolder::getTypename( (*it)->getType() );
+      oMissingRequirement = MetaDataHolder::getTypename( (*it)->type() );
       break;
     }
   }
@@ -275,11 +275,11 @@ int HouseSpecification::computeFoodLevel(HousePtr house)
   int res = 0;
 
   const GoodStore& goodStore = house->getGoodStore();
-  res += goodStore.getQty(Good::wheat) > 0 ? 1 : 0;
-  res += goodStore.getQty(Good::fish) > 0 ? 1 : 0;
-  res += goodStore.getQty(Good::meat) > 0 ? 1 : 0;
-  res += goodStore.getQty(Good::fruit) > 0 ? 1 : 0;
-  res += goodStore.getQty(Good::vegetable) > 0 ? 1 :0;
+  res += goodStore.qty(Good::wheat) > 0 ? 1 : 0;
+  res += goodStore.qty(Good::fish) > 0 ? 1 : 0;
+  res += goodStore.qty(Good::meat) > 0 ? 1 : 0;
+  res += goodStore.qty(Good::fruit) > 0 ? 1 : 0;
+  res += goodStore.qty(Good::vegetable) > 0 ? 1 :0;
 
   return res;
 }

@@ -131,12 +131,12 @@ public oc3_signals:
 
 void AdvisorEmperorWindow::_showChangeSalaryWindow()
 {
-	Point startPos( (getWidth() - 510) / 2, (getHeight() -400)/2 );
+  Point startPos( (width() - 510) / 2, (getHeight() -400)/2 );
   Rect wdgRect( startPos, Size( 510, 400 ) );
   GroupBox* gb = new GroupBox( this, wdgRect, -1, GroupBox::whiteFrame );
 
-  new gui::Label( gb, Rect( 15, 15, gb->getWidth() - 15, 35), _("##set_mayor_salary##"),  false, gui::Label::bgNone );
-  ListBox* lbx = new ListBox( gb, Rect( 16, 50, gb->getWidth() - 16, gb->getHeight() - 100 ) );
+  new gui::Label( gb, Rect( 15, 15, gb->width() - 15, 35), _("##set_mayor_salary##"),  false, gui::Label::bgNone );
+  ListBox* lbx = new ListBox( gb, Rect( 16, 50, gb->width() - 16, gb->getHeight() - 100 ) );
   lbx->setItemHeight( 22 );
   lbx->setTextAlignment( alignCenter, alignCenter );
   lbx->setItemFont( Font::create( FONT_2_WHITE ) );
@@ -162,7 +162,7 @@ void AdvisorEmperorWindow::_showSend2CityWindow()
   _d->wantSend = 0;
   GroupBox* gb = new GroupBox( this, Rect( Point( 50, 175 ), Size( 510, 160 )), -1, GroupBox::whiteFrame );
 
-  gui::Label* lbTitle = new gui::Label( gb, Rect( 85, 15, gb->getWidth() - 85, 40), _("##send_money_to_city##"),  false, gui::Label::bgNone );
+  gui::Label* lbTitle = new gui::Label( gb, Rect( 85, 15, gb->width() - 85, 40), _("##send_money_to_city##"),  false, gui::Label::bgNone );
   lbTitle->setTextAlignment( alignCenter, alignCenter );
   lbTitle->setFont( Font::create( FONT_3 ) );
   new gui::Label( gb, Rect( Point( 50, 50), Size( 415, 60 ) ), "", false, gui::Label::bgBlack );
@@ -262,10 +262,10 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   _d->city = city;
   _d->isRequestsUpdated = true;
 
-  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
-  gui::Label* title = new gui::Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
+  gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
   title->setText( city->getPlayer()->getName() );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
@@ -295,7 +295,7 @@ void AdvisorEmperorWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
   if( _d->isRequestsUpdated )
   {
     _updateRequests();

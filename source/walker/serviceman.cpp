@@ -176,7 +176,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   TilesArray reachedTiles = _getCity()->getTilemap().getArea( start, stop );
   foreach( it, reachedTiles )
   {
-    BuildingPtr building = ptr_cast<Building>( (*it)->getOverlay() );
+    BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
     if( building.isValid() )
     {
       res.insert(building);
@@ -306,7 +306,7 @@ void ServiceWalker::load( const VariantMap& stream )
   _d->reachDistance = (int)stream.get( "reachDistance" );
 
   TilePos basePos = stream.get( "base" ).toTilePos();
-  TileOverlayPtr overlay = _getCity()->getTilemap().at( basePos ).getOverlay();
+  TileOverlayPtr overlay = _getCity()->getTilemap().at( basePos ).overlay();
 
   _d->base = ptr_cast<Building>( overlay );
   if( _d->base.isNull() )

@@ -66,7 +66,7 @@ public:
     PictureRef& background = _getBackground( state );
     background->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
     background->draw( _goodPicture, 15, 0, false );
-    background->draw( _goodPicture, getWidth() - 20 - _goodPicture.getWidth(), 0, false );
+    background->draw( _goodPicture, width() - 20 - _goodPicture.getWidth(), 0, false );
 
     if( _getTextPicture( state ) != 0 )
     {
@@ -96,7 +96,7 @@ public:
 
       if( state == stHovered ) 
       {
-        PictureDecorator::draw( *background, Rect( 50, 0, getWidth() - 50, getHeight() ), PictureDecorator::brownBorder, false );
+        PictureDecorator::draw( *background, Rect( 50, 0, width() - 50, getHeight() ), PictureDecorator::brownBorder, false );
       }
     }
   }
@@ -245,11 +245,11 @@ public:
 
           Font font = getFont( state );
           std::string text = _("##trade_btn_export_text##");
-          Rect textRect = font.calculateTextRect( text, Rect( 0, 0, getWidth() / 2, getHeight() ), getHorizontalTextAlign(), getVerticalTextAlign() );
+          Rect textRect = font.calculateTextRect( text, Rect( 0, 0, width() / 2, getHeight() ), getHorizontalTextAlign(), getVerticalTextAlign() );
           font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, true );
 
           text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
-          textRect = font.calculateTextRect( text, Rect( getWidth() / 2 + 24 * 2, 0, getWidth(), getHeight() ), getHorizontalTextAlign(), getVerticalTextAlign() );
+          textRect = font.calculateTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), getHeight() ), getHorizontalTextAlign(), getVerticalTextAlign() );
           font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, true );
         }
       break;
@@ -285,19 +285,19 @@ public:
     const Picture& iconGood = GoodHelper::getPicture( type );
     _background->draw( iconGood, Point( 10, 10 ) );
 
-    Label* lbTitle = new Label( this, Rect( 40, 10, getWidth() - 10, 10 + 30), GoodHelper::getName( type ) );
+    Label* lbTitle = new Label( this, Rect( 40, 10, width() - 10, 10 + 30), GoodHelper::getName( type ) );
     lbTitle->setFont( Font::create( FONT_3 ) );
 
-    _lbIndustryInfo = new Label( this, Rect( 40, 40, getWidth() - 10, 40 + 20 ) );
+    _lbIndustryInfo = new Label( this, Rect( 40, 40, width() - 10, 40 + 20 ) );
 
     std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
-    /*Label* lbStacked = */new Label( this, Rect( 40, 60, getWidth() - 10, 60 + 20 ), text );
+    /*Label* lbStacked = */new Label( this, Rect( 40, 60, width() - 10, 60 + 20 ), text );
 
-    _btnTradeState = new TradeStateButton( this, Rect( 50, 85, getWidth() - 60, 85 + 30), -1 );
-    _btnIndustryState = new PushButton( this, Rect( 50, 125, getWidth() - 60, 125 + 30), "", -1, false, PushButton::whiteBorderUp );
-    _btnStackingState = new PushButton( this, Rect( 50, 160, getWidth() - 60, 160 + 50), "", -1, false, PushButton::whiteBorderUp );
+    _btnTradeState = new TradeStateButton( this, Rect( 50, 85, width() - 60, 85 + 30), -1 );
+    _btnIndustryState = new PushButton( this, Rect( 50, 125, width() - 60, 125 + 30), "", -1, false, PushButton::whiteBorderUp );
+    _btnStackingState = new PushButton( this, Rect( 50, 160, width() - 60, 160 + 50), "", -1, false, PushButton::whiteBorderUp );
 
-    TexturedButton* btnExit = new TexturedButton( this, Point( getWidth() - 34, getHeight() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+    TexturedButton* btnExit = new TexturedButton( this, Point( width() - 34, getHeight() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
     /*TexturedButton* btnHelp = */new TexturedButton( this, Point( 11, getHeight() - 34 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
     updateTradeState();
@@ -317,7 +317,7 @@ public:
     if( !isVisible() )
       return;
 
-    painter.drawPicture( *_background, getScreenLeft(), getScreenTop() );
+    painter.drawPicture( *_background, screenLeft(), getScreenTop() );
 
     Widget::draw( painter );
   }
@@ -453,7 +453,7 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
   foreach( child, children ) { (*child)->deleteLater(); }
 
   Point startDraw( 0, 5 );
-  Size btnSize( gbInfo->getWidth(), 20 );
+  Size btnSize( gbInfo->width(), 20 );
   CityTradeOptions& copt = city->getTradeOptions();
   for( int i=Good::wheat, indexOffset=0; i < Good::goodCount; i++ )
   {
@@ -494,7 +494,7 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
 
   int goodsQty = 0;
   WarehouseList warehouses = helper.find< Warehouse >( building::warehouse );
-  foreach( it, warehouses ) { goodsQty += (*it)->getGoodStore().getQty( gtype ); }
+  foreach( it, warehouses ) { goodsQty += (*it)->getGoodStore().qty( gtype ); }
 
   return goodsQty;
 }
@@ -503,7 +503,7 @@ void AdvisorTradeWindow::Impl::showGoodOrderManageWindow(Good::Type type )
 {
   Widget* parent = gbInfo->getParent();
   int stackedGoods = getStackedGoodsQty( type ) ;
-  GoodOrderManageWindow* wnd = new GoodOrderManageWindow( parent, Rect( 50, 130, parent->getWidth() - 45, parent->getHeight() -60 ), 
+  GoodOrderManageWindow* wnd = new GoodOrderManageWindow( parent, Rect( 50, 130, parent->width() - 45, parent->getHeight() -60 ), 
                                                           city, type, stackedGoods );
 
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
@@ -513,17 +513,17 @@ void AdvisorTradeWindow::Impl::showGoodsPriceWindow()
 {
   Widget* parent = gbInfo->getParent();
   Size size( 610, 180 );
-  new EmpirePricesWindow( parent, -1, Rect( Point( ( parent->getWidth() - size.width() ) / 2,
+  new EmpirePricesWindow( parent, -1, Rect( Point( ( parent->width() - size.width() ) / 2,
                                                    ( parent->getHeight() - size.height() ) / 2), size ), city );
 }
 
 AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 432 ) ) );
 
-  Label* title = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
+  Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
   title->setText( _("##Trade advisor##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
@@ -540,7 +540,7 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
   CONNECT( _d->btnEmpireMap, onClicked(), this, AdvisorTradeWindow::deleteLater );
   CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );
 
-  _d->gbInfo = new GroupBox( this, Rect( 35, 55, getWidth() - 33, getHeight() - 45 ), -1, GroupBox::blackFrame );
+  _d->gbInfo = new GroupBox( this, Rect( 35, 55, width() - 33, getHeight() - 45 ), -1, GroupBox::blackFrame );
 
   _d->updateGoodsInfo();
 }
@@ -550,7 +550,7 @@ void AdvisorTradeWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
 
   Widget::draw( painter );
 }

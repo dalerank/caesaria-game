@@ -51,7 +51,7 @@ Prefecture::~Prefecture()
 
 void Prefecture::timeStep(const unsigned long time)
 {
-  bool mayAnimate = getWorkersCount() > 0;
+  bool mayAnimate = numberWorkers() > 0;
 
   if( mayAnimate  )
   {
@@ -73,7 +73,7 @@ void Prefecture::timeStep(const unsigned long time)
 
 void Prefecture::deliverService()
 {
-  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     bool fireDetect = _d->fireDetect.i() >= 0;
     PrefectPtr walker = Prefect::create( _getCity() );

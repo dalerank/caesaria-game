@@ -128,7 +128,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widge
 
   setupUI( GameSettings::rcpath( "/gui/entertainmentadv.gui" ) );
 
-  setPosition( Point( (parent->getWidth() - getWidth() )/2, parent->getHeight() / 2 - 242 ) );
+  setPosition( Point( (parent->width() - width() )/2, parent->getHeight() / 2 - 242 ) );
 
   _d->lbBlackframe = findChildA<Label*>( "lbBlackframe", true, this );
   _d->lbTroubleInfo = findChildA<Label*>( "lbTroubleInfo", true, this );
@@ -188,7 +188,7 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city,
   foreach( b, servBuildings )
   {
     ServiceBuildingPtr building = *b;
-    if( building->getWorkersCount() > 0 )
+    if( building->numberWorkers() > 0 )
     {
       ret.buildingWork++;
 
@@ -202,10 +202,10 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city,
       break;
       }
 
-      ret.peoplesServed += maxServing * building->getWorkersCount() / building->getMaxWorkers();
+      ret.peoplesServed += maxServing * building->numberWorkers() / building->maxWorkers();
     }
     ret.buildingCount++;
-    ret.partlyWork += (building->getWorkersCount() != building->getMaxWorkers() ? 1 : 0);
+    ret.partlyWork += (building->numberWorkers() != building->maxWorkers() ? 1 : 0);
   }
 
   return ret;

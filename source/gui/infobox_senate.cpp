@@ -42,16 +42,16 @@ namespace {
 InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
-  SenatePtr senate = ptr_cast<Senate>( tile.getOverlay() );
+  SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
   std::string title = MetaDataHolder::instance().getData( building::senate ).getPrettyName();
   setTitle( _(title) );
 
   // number of workers
-  _updateWorkersLabel( Point( 32, 136), 542, senate->getMaxWorkers(), senate->getWorkersCount() );
+  _updateWorkersLabel( Point( 32, 136), 542, senate->maxWorkers(), senate->numberWorkers() );
 
   std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->getFunds() );
 
-  Label* lb = new Label( this, Rect( 60, 35, getWidth() - 16, 35 + 30 ), denariesStr );
+  Label* lb = new Label( this, Rect( 60, 35, width() - 16, 35 + 30 ), denariesStr );
   lb->setIcon( GoodHelper::getPicture( Good::denaries ) );
   lb->setText( denariesStr );
   lb->setTextOffset( Point( 30, 0 ));

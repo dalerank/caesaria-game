@@ -63,8 +63,8 @@ SenatePopupInfo::SenatePopupInfo( Widget* parent, CityRenderer& mapRenderer ) :
   _d->lastUpdateTime = 0;
   _d->background.reset( Picture::create( Size( 240, 80 ) ) );
 
-  _d->background->fill( 0xff000000, Rect( Point( 0, 0 ), _d->background->getSize() ) );
-  _d->background->fill( 0xffffffff, Rect( Point( 1, 1 ), _d->background->getSize() - Size( 2, 2 ) ) );
+  _d->background->fill( 0xff000000, Rect( Point( 0, 0 ), _d->background->size() ) );
+  _d->background->fill( 0xffffffff, Rect( Point( 1, 1 ), _d->background->size() - Size( 2, 2 ) ) );
   
   _d->font = Font::create( FONT_1 );
 
@@ -81,9 +81,9 @@ void SenatePopupInfo::draw( GfxEngine& painter )
 
   Tile* tile = _d->mapRenderer->camera().at( cursorPos, false );
 
-  if( tile && tile->getOverlay().isValid() )
+  if( tile && tile->overlay().isValid() )
   {
-    SenatePtr senate = ptr_cast<Senate>( tile->getOverlay() );
+    SenatePtr senate = ptr_cast<Senate>( tile->overlay() );
 
     if( senate.isValid() )
     {

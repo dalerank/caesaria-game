@@ -81,7 +81,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
         foreach( tile, tiles)
         {
-          BuildingPtr b = ptr_cast<Building>( (*tile)->getOverlay() );
+          BuildingPtr b = ptr_cast<Building>( (*tile)->overlay() );
           if( b.isValid() && b->getClass() != building::disasterGroup )
           {
             b->updateState( Construction::fire, 0.5 );

@@ -48,7 +48,7 @@ InfoboxLand::InfoboxLand( Widget* parent, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    if( tile.getOverlay()->getType() == construction::plaza )
+    if( tile.overlay()->type() == construction::plaza )
     {
       setTitle( _("##plaza_caption##") );
       lbText->setText( _("##plaza_text##"));
@@ -90,7 +90,7 @@ InfoboxFreeHouse::InfoboxFreeHouse( Widget* parent, const Tile& tile )
 {
   setTitle( _("##freehouse_caption##") );
 
-  ConstructionPtr cnst = ptr_cast<Construction>( tile.getOverlay() );
+  ConstructionPtr cnst = ptr_cast<Construction>( tile.overlay() );
   if( cnst.isValid() && cnst->getAccessRoads().size() == 0 )
   {
     setText( _("##freehouse_text_noroad##") );

@@ -56,12 +56,12 @@ void Spear::toThrow(TilePos src, TilePos dst)
 
   _getCity()->addWalker( this );
   Tile& tile = _getCity()->getTilemap().at( src );
-  TileOverlayPtr ov = tile.getOverlay();
+  TileOverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
     _d->height = ov->getOffset( tile, Point( 7, 7 ) ).y();
     Tile& dTile = _getCity()->getTilemap().at( dst );
-    ov = dTile.getOverlay();
+    ov = dTile.overlay();
     if( ov.isValid() )
     {
       float dHeight = ov->getOffset( dTile, Point( 7, 7) ).y();

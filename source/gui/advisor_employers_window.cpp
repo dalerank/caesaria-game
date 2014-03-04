@@ -207,8 +207,8 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   EmployersInfo ret = { 0, 0 };
   foreach( b, buildings )
   {
-    ret.currentWorkers += (*b)->getWorkersCount();
-    ret.needWorkers += (*b)->getMaxWorkers();
+    ret.currentWorkers += (*b)->numberWorkers();
+    ret.needWorkers += (*b)->maxWorkers();
   }
 
   return ret;
@@ -229,7 +229,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setupUI( GameSettings::rcpath( "/gui/employersadv.gui" ) );
-  setPosition( Point( (parent->getWidth() - getWidth()) / 2, parent->getHeight() / 2 - 242 ) );
+  setPosition( Point( (parent->width() - width()) / 2, parent->getHeight() / 2 - 242 ) );
 
   _d->city = city;
 

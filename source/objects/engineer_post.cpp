@@ -32,7 +32,7 @@ EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::bu
 
 void EngineerPost::timeStep(const unsigned long time)
 {
-  bool mayAnimate = getWorkersCount() > 0;
+  bool mayAnimate = numberWorkers() > 0;
 
   if( mayAnimate )
   {
@@ -52,7 +52,7 @@ void EngineerPost::timeStep(const unsigned long time)
 
 void EngineerPost::deliverService()
 {
-  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }

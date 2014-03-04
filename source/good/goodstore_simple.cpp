@@ -63,7 +63,7 @@ SimpleGoodStore::SimpleGoodStore() : _gsd( new Impl )
 void SimpleGoodStore::setCapacity(const int maxQty) {  _gsd->capacity = maxQty;}
 int SimpleGoodStore::capacity() const {  return _gsd->capacity; }
 
-int SimpleGoodStore::getQty() const
+int SimpleGoodStore::qty() const
 {
   int qty = 0;
   for( Impl::StockList::const_iterator goodIt = _gsd->stocks.begin();
@@ -80,7 +80,7 @@ GoodStock& SimpleGoodStore::getStock(const Good::Type &goodType)
   return *(_gsd->stocks[goodType].object());
 }
 
-int SimpleGoodStore::getQty(const Good::Type &goodType) const
+int SimpleGoodStore::qty(const Good::Type &goodType) const
 {
   return _gsd->stocks[goodType]->qty();
 }
@@ -116,7 +116,7 @@ int SimpleGoodStore::getMaxStore(const Good::Type goodType)
   int freeRoom = 0;
   if( !isDevastation() )
   {
-    int globalFreeRoom = capacity() - getQty();
+    int globalFreeRoom = capacity() - qty();
 
     // current free capacity
     GoodStock& st = *_gsd->stocks[goodType].object();

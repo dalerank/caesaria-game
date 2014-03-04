@@ -65,7 +65,7 @@ public:
     {           
         char buffer[32];
         sprintf( buffer, "%d", _cost );
-        Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, getWidth()-10, getHeight() ),
+        Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, width()-10, getHeight() ),
                                                 alignLowerRight, getVerticalTextAlign() );
         font.draw( *_getTextPicture( state ), buffer, textRect.left(), textRect.top() );
     }
@@ -126,7 +126,7 @@ void BuildMenu::initialize()
     BuildButton *button = dynamic_cast< BuildButton* >( *widget );
     if( button )
     {
-      button->setWidth( getWidth() );
+      button->setWidth( width() );
     }
   }
 }
@@ -140,7 +140,7 @@ void BuildMenu::addSubmenuButton(const BuildMenuType menuType, const std::string
   if( !_options.isGroupAvailable( menuType ) )
     return;
 
-  BuildButton* button = new BuildButton( this, text, Rect( Point( 0, getHeight() ), Size( getWidth(), 25 ) ), -1 );
+  BuildButton* button = new BuildButton( this, text, Rect( Point( 0, getHeight() ), Size( width(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
   button->setCost(-1);  // no display
 
@@ -159,7 +159,7 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   {
     // building can be built
     BuildButton* button = new BuildButton( this, _(buildingData.getPrettyName().c_str()),
-                                           Rect( 0, getHeight(), getWidth(), getHeight() + 25 ), -1 );
+                                           Rect( 0, getHeight(), width(), getHeight() + 25 ), -1 );
     button->setCost(cost);
     button->setID( buildingType );
 
@@ -197,7 +197,7 @@ BuildMenu* BuildMenu::create(const BuildMenuType menuType, Widget* parent )
 bool BuildMenu::isPointInside( const Point& point ) const
 {
   Rect clickedRect = _environment->getRootWidget()->getAbsoluteRect();
-  clickedRect.LowerRightCorner = Point( getParent()->getScreenLeft(), _environment->getRootWidget()->getHeight() );
+  clickedRect.LowerRightCorner = Point( getParent()->screenLeft(), _environment->getRootWidget()->getHeight() );
   return clickedRect.isPointInside( point );
 }
 

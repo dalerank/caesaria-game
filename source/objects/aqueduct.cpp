@@ -50,7 +50,7 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
   Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have aqueduct here
-  AqueductPtr aqueveduct = ptr_cast<Aqueduct>( terrain.getOverlay() );
+  AqueductPtr aqueveduct = ptr_cast<Aqueduct>( terrain.overlay() );
   if( aqueveduct.isValid() )
   {
     return;
@@ -75,7 +75,7 @@ void Aqueduct::destroy()
     TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos( 2, 2 ), Size( 5 ) );
     foreach( tile, area )
     {
-      AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->getOverlay() );
+      AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->overlay() );
       if( aq.isValid() )
       {
         aq->updatePicture( _getCity() );
@@ -107,11 +107,11 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   Tile& terrain = tilemap.at( pos );
 
   // we can't build on plazas
-  if( is_kind_of<Plaza>( terrain.getOverlay() ) )
+  if( is_kind_of<Plaza>( terrain.overlay() ) )
       return false;
 
   // we can show that won't build over other aqueduct
-  if( is_kind_of<Aqueduct>( terrain.getOverlay() ) )
+  if( is_kind_of<Aqueduct>( terrain.overlay() ) )
       return false;
 
   // also we can't build if next tile is road + aqueduct
@@ -134,7 +134,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
       {
         if( (*it)->pos() == (*tile)->pos() )
         {
-          bldAqueduct = ptr_cast< Aqueduct >( (*it)->getOverlay() );
+          bldAqueduct = ptr_cast< Aqueduct >( (*it)->overlay() );
           break;
         }
       }
@@ -222,10 +222,10 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos p, const TilesAr
 
   // get overlays for all directions
   TileOverlayPtr overlay_d[countDirection];
-  overlay_d[north] = tmap.at( tile_pos_d[north] ).getOverlay();
-  overlay_d[east] = tmap.at( tile_pos_d[east]  ).getOverlay();
-  overlay_d[south] = tmap.at( tile_pos_d[south] ).getOverlay();
-  overlay_d[west] = tmap.at( tile_pos_d[west]  ).getOverlay();
+  overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
+  overlay_d[east] = tmap.at( tile_pos_d[east]  ).overlay();
+  overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
+  overlay_d[west] = tmap.at( tile_pos_d[west]  ).overlay();
 
   // if we have a TMP array with aqueducts, calculate them
   if (!tmp.empty())
@@ -235,7 +235,7 @@ const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos p, const TilesAr
       int i = (*it)->i();
       int j = (*it)->j();
 
-      if( !is_kind_of<Aqueduct>( (*it)->getOverlay() ) )
+      if( !is_kind_of<Aqueduct>( (*it)->overlay() ) )
         continue;
 
       if( i == p.i() && j == (p.j() + 1)) is_busy[north] = true;

@@ -29,7 +29,7 @@ namespace gui
 InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 56, 510 - 16, 56 + 62) )
 {
-  TemplePtr temple = ptr_cast<Temple>( tile.getOverlay() );
+  TemplePtr temple = ptr_cast<Temple>( tile.overlay() );
   RomeDivinityPtr divn = temple->getDivinity();
 
   setConstruction( ptr_cast<Construction>( temple ) );
@@ -41,7 +41,7 @@ InfoBoxTemple::InfoBoxTemple( Widget* parent, const Tile& tile )
                                                  divn->getDebugName().c_str() ) );
   setTitle( text + " ( " + desc + " )" );
 
-  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->getMaxWorkers(), temple->getWorkersCount() );
+  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maxWorkers(), temple->numberWorkers() );
 
   Image* img = new Image( this, Point( 192, 140 ), divn->getPicture() );
   bool goodRelation = divn->getRelation() >= 50;

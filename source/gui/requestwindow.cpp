@@ -59,7 +59,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
 
   setupUI( GameSettings::rcpath( "/gui/request.gui" ) );
 
-  setPosition( Point( parent->getWidth() - getWidth(), parent->getHeight() - getHeight() ) / 2 );
+  setPosition( Point( parent->width() - width(), parent->getHeight() - getHeight() ) / 2 );
 
   city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(request);
   if( gr.isValid() )

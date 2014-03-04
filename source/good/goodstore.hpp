@@ -62,13 +62,13 @@ public:
   GoodStore();
   virtual ~GoodStore();
 
-  virtual int getQty(const Good::Type &goodType) const = 0;
-  virtual int getQty() const = 0;
+  virtual int qty(const Good::Type &goodType) const = 0;
+  virtual int qty() const = 0;
   virtual void setCapacity(const int maxcap) = 0;
   virtual int capacity() const = 0;
   virtual int capacity(const Good::Type& goodType ) const = 0;
-  virtual int getFreeQty( const Good::Type& goodType ) const;
-  virtual int getFreeQty() const;
+  virtual int freeQty( const Good::Type& goodType ) const;
+  virtual int freeQty() const;
 
   // returns the max quantity that can be stored now
   virtual int getMaxStore(const Good::Type goodType) = 0;

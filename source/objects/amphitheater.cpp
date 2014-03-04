@@ -41,7 +41,7 @@ void Amphitheater::timeStep(const unsigned long time)
 
 std::string Amphitheater::getSound() const
 {
-  return (isActive() && getWorkersCount() > 0
+  return (isActive() && numberWorkers() > 0
             ? WorkingBuilding::getSound()
             : "");
 }
@@ -54,7 +54,7 @@ Service::Type Amphitheater::getService() const
 
 std::string Amphitheater::getWorkersState() const
 {
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
     if( getShowsCount() == 0 ) { return "##amphitheater_have_never_show##"; }
     if( getTraineeValue( walker::gladiator ) == 0 ) { return "##amphitheater_have_only_shows##"; }

@@ -39,7 +39,7 @@ Forum::Forum() : ServiceBuilding(Service::forum, building::forum, Size(2)), _d( 
 
 void Forum::deliverService()
 {
-  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _getCity() );
     walker->send2City( this );

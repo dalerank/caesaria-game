@@ -87,7 +87,7 @@ int Picture::getWidth() const{  return _d->size.width();}
 int Picture::getHeight() const{  return _d->size.height();}
 void Picture::setName(std::string &name){  _d->name = name;}
 std::string Picture::getName() const{  return _d->name;}
-Size Picture::getSize() const{  return _d->size; }
+Size Picture::size() const{  return _d->size; }
 bool Picture::isValid() const{  return _d->surface != 0;}
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
 Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}
@@ -167,8 +167,8 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstr
 
 void Picture::draw( const Picture &srcpic, const Point& pos, bool useAlpha )
 {
-  draw( srcpic, Rect( Point( 0, 0 ), srcpic.getSize() ), 
-                Rect( pos + Point( srcpic._d->offset.x(), -srcpic._d->offset.y() ), srcpic.getSize() ), useAlpha );
+  draw( srcpic, Rect( Point( 0, 0 ), srcpic.size() ), 
+                Rect( pos + Point( srcpic._d->offset.x(), -srcpic._d->offset.y() ), srcpic.size() ), useAlpha );
 
 }
 

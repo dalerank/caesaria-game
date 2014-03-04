@@ -26,13 +26,13 @@ namespace gui
 {
 
 InfoboxTheater::InfoboxTheater(Widget *parent, const Tile &tile)
-  : InfoboxWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.getOverlay() ) )
+  : InfoboxWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
 {
   TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );
   setTitle( _( theater->getName() ) );
 
   _getInfo()->setTextAlignment( alignUpperLeft, alignCenter);
-  _updateWorkersLabel( Point( 40, 150), 542, theater->getMaxWorkers(), theater->getWorkersCount() );
+  _updateWorkersLabel( Point( 40, 150), 542, theater->maxWorkers(), theater->numberWorkers() );
   
   if( theater->getShowsCount() == 0 )
   {

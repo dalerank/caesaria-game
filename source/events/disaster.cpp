@@ -41,7 +41,7 @@ GameEventPtr DisasterEvent::create( const Tile& tile, Type type )
   event->_type = type;
   event->_infoType = 0;
 
-  TileOverlayPtr overlay = tile.getOverlay();
+  TileOverlayPtr overlay = tile.overlay();
   if( overlay.isValid() )
   {
     overlay->deleteLater();
@@ -52,7 +52,7 @@ GameEventPtr DisasterEvent::create( const Tile& tile, Type type )
     }
     else
     {
-      event->_infoType = overlay->getType();
+      event->_infoType = overlay->type();
     }
   }
 
@@ -72,7 +72,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
   {
     Size size( 1 );
 
-    TileOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.overlay();
     if( overlay.isValid() )
     {
       overlay->deleteLater();

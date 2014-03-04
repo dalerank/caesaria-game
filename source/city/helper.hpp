@@ -57,7 +57,7 @@ public:
   SmartPtr< T > find( const TileOverlay::Type type, const TilePos& pos )
   {   
     TileOverlayPtr overlay = _city->getOverlay( pos );
-    if( overlay.isValid() && (overlay->getType() == type || type == constants::building::any) )
+    if( overlay.isValid() && (overlay->type() == type || type == constants::building::any) )
     {
       return ptr_cast< T >( overlay );
     }
@@ -92,8 +92,8 @@ public:
     TilesArray area = getArea( start, stop );
     foreach( tile, area )
     {
-      SmartPtr<T> obj = ptr_cast< T >( (*tile)->getOverlay() );
-      if( obj.isValid() && (obj->getType() == type || type == constants::building::any) )
+      SmartPtr<T> obj = ptr_cast< T >( (*tile)->overlay() );
+      if( obj.isValid() && (obj->type() == type || type == constants::building::any) )
       {
         tmp.insert( obj );
       }
@@ -117,7 +117,7 @@ public:
 
     foreach( tile, area )
     {
-      SmartPtr<T> obj = ptr_cast< T >((*tile)->getOverlay());
+      SmartPtr<T> obj = ptr_cast< T >((*tile)->overlay());
       if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
       {
         tmp.insert( obj );
@@ -159,7 +159,7 @@ SmartPtr<T> CityHelper::prew(const SmartPtr<T> current)
   if( current.isNull() )
     return SmartPtr<T>();
 
-  std::list< SmartPtr< T > > objects = find<T>( current->getType() );
+  std::list< SmartPtr< T > > objects = find<T>( current->type() );
   foreach( obj, objects )
   {
     if( current == *obj )
@@ -181,7 +181,7 @@ std::list< SmartPtr< T > > CityHelper::find( const TileOverlay::Type type )
   foreach( item, buildings )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );
-    if( b.isValid() && (b->getType() == type || type == constants::building::any ) )
+    if( b.isValid() && (b->type() == type || type == constants::building::any ) )
     {
       ret.push_back( b );
     }
@@ -213,7 +213,7 @@ SmartPtr< T > CityHelper::next( const SmartPtr< T > current )
   if( current.isNull() )
     return SmartPtr<T>();
 
-  std::list< SmartPtr< T > > objects = find<T>( current->getType() );
+  std::list< SmartPtr< T > > objects = find<T>( current->type() );
   foreach( obj, objects )
   {
     if( current == *obj )

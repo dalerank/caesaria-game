@@ -84,7 +84,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
     Size size( 1 );
     TilePos rPos = _pos;
 
-    TileOverlayPtr overlay = cursorTile.getOverlay();
+    TileOverlayPtr overlay = cursorTile.overlay();
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 

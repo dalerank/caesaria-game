@@ -34,32 +34,32 @@ namespace gui
 InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
-  _granary = ptr_cast<Granary>( tile.getOverlay() );
+  _granary = ptr_cast<Granary>( tile.overlay() );
 
   setConstruction( ptr_cast<Construction>( _granary ) );
 
   Size btnOrdersSize( 350, 20 );
-  PushButton* btnOrders = new PushButton( this, Rect( Point( (getWidth() - btnOrdersSize.width())/ 2, getHeight() - 34 ), btnOrdersSize),
+  PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width())/ 2, getHeight() - 34 ), btnOrdersSize),
                                          _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( btnOrders, onClicked(), this, InfoBoxGranary::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::getPrettyName( _granary->getType() );
+  std::string title = MetaDataHolder::getPrettyName( _granary->type() );
   setTitle( _(title) );
 
   // summary: total stock, free capacity
   std::string desc = StringHelper::format( 0xff, "%d %s, %s %d",
-                                           _granary->getGoodStore().getQty(),
+                                           _granary->getGoodStore().qty(),
                                            _("##units_in_stock##"), _("##freespace_for##"),
-                                           _granary->getGoodStore().getFreeQty() );
+                                           _granary->getGoodStore().freeQty() );
 
-  Label* lbUnits = new Label( this, Rect( _getTitle()->getLeftdownCorner(), Size( getWidth() - 16, 40 )), desc );
+  Label* lbUnits = new Label( this, Rect( _getTitle()->leftdownCorner(), Size( width() - 16, 40 )), desc );
 
-  drawGood(Good::wheat, 0, lbUnits->getBottom() );
-  drawGood(Good::meat, 0, lbUnits->getBottom() + 25);
-  drawGood(Good::fruit, 1, lbUnits->getBottom() );
-  drawGood(Good::vegetable, 1, lbUnits->getBottom() + 25);
+  drawGood(Good::wheat, 0, lbUnits->bottom() );
+  drawGood(Good::meat, 0, lbUnits->bottom() + 25);
+  drawGood(Good::fruit, 1, lbUnits->bottom() );
+  drawGood(Good::vegetable, 1, lbUnits->bottom() + 25);
 
-  _updateWorkersLabel( Point( 32, lbUnits->getBottom() + 60 ), 542, _granary->getMaxWorkers(), _granary->getWorkersCount() );
+  _updateWorkersLabel( Point( 32, lbUnits->bottom() + 60 ), 542, _granary->maxWorkers(), _granary->numberWorkers() );
 }
 
 InfoBoxGranary::~InfoBoxGranary()
@@ -71,7 +71,7 @@ void InfoBoxGranary::showSpecialOrdersWindow()
   Point pos;
   if( getTop() > (int)getParent()->getHeight() / 2 )
   {
-    pos = Point( getScreenLeft(), getScreenBottom() - 450 );   
+    pos = Point( screenLeft(), screenBottom() - GranarySpecialOrdersWindow::defaultHeight );
   }
   else
   {
@@ -84,7 +84,7 @@ void InfoBoxGranary::showSpecialOrdersWindow()
 void InfoBoxGranary::drawGood( Good::Type goodType, int col, int paintY)
 {
   std::string goodName = GoodHelper::getTypeName( goodType );
-  int qty = _granary->getGoodStore().getQty(goodType);
+  int qty = _granary->getGoodStore().qty(goodType);
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
 
   // pictures of goods

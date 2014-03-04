@@ -56,7 +56,7 @@ void Wharf::timeStep(const unsigned long time)
   CoastalFactory::timeStep(time);
 
   //try get good from storage building for us
-  if( time % 22 == 1 && getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( time % 22 == 1 && numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     receiveGood();
     deliverGood();
@@ -83,7 +83,7 @@ void Wharf::timeStep(const unsigned long time)
 
   if( getProgress() >= 100.0 )
   {
-    if( getGoodStore().getQty( getOutGoodType() ) < getGoodStore().capacity( getOutGoodType() )  )
+    if( getGoodStore().qty( getOutGoodType() ) < getGoodStore().capacity( getOutGoodType() )  )
     {
       updateProgress( -100.f );
       //gcc fix for temporaly ref object

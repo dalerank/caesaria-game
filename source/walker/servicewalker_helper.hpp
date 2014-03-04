@@ -19,7 +19,7 @@ public:
     ServiceWalker::ReachedBuildings::iterator it=res.begin();
     while( it != res.end() )
     {
-      if( (*it)->getType() != type )
+      if( (*it)->type() != type )
       {
         res.erase( it++ );
       }

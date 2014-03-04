@@ -50,7 +50,7 @@ EntertainmentBuilding::~EntertainmentBuilding()
 void EntertainmentBuilding::deliverService()
 {
   // we need all trainees types for the show
-  if( getWorkersCount() <= 0 )
+  if( numberWorkers() <= 0 )
   {
     _animationRef().stop();
     return;
@@ -92,7 +92,7 @@ unsigned int EntertainmentBuilding::getWalkerDistance() const {  return 35; }
 
 float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 {
-  if( getWorkersCount() == 0 )
+  if( numberWorkers() == 0 )
     return 0.0;
 
   return ServiceBuilding::evaluateTrainee( traineeType );

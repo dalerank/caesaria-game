@@ -60,8 +60,8 @@ void WorkingBuilding::load( const VariantMap& stream)
 
 std::string WorkingBuilding::getWorkersProblem() const
 {
-  std::string factoryType = MetaDataHolder::getTypename( getType() );
-  float workKoeff = (getWorkersCount() / (float)getMaxWorkers()) * 6.f;
+  std::string factoryType = MetaDataHolder::getTypename( type() );
+  float workKoeff = (numberWorkers() / (float)maxWorkers()) * 6.f;
 
   const char* workKoeffStr[] = { "no_workers", "bad_work", "slow_work", "patrly_workers",
                                  "need_some_workers", "full_work" };
@@ -74,7 +74,7 @@ std::string WorkingBuilding::getTrouble() const
 {
   std::string trouble = Building::getTrouble();
 
-  if( trouble.empty() && getWorkersCount() < getMaxWorkers() / 2 )
+  if( trouble.empty() && numberWorkers() < maxWorkers() / 2 )
   {
     trouble = getWorkersProblem();
   }
@@ -84,13 +84,13 @@ std::string WorkingBuilding::getTrouble() const
 
 std::string WorkingBuilding::getWorkersState() const { return ""; }
 void WorkingBuilding::setMaxWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
-int WorkingBuilding::getMaxWorkers() const { return _d->maxWorkers; }
+int WorkingBuilding::maxWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
-int WorkingBuilding::getWorkersCount() const { return _d->currentWorkers; }
+int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
-void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( getWorkersCount() + workers ); }
-void WorkingBuilding::removeWorkers(const unsigned int workers) { setWorkers( getWorkersCount() - workers ); }
+void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( numberWorkers() + workers ); }
+void WorkingBuilding::removeWorkers(const unsigned int workers) { setWorkers( numberWorkers() - workers ); }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::getWalkers() const {  return _d->walkerList; }
 std::string WorkingBuilding::getError() const { return _d->errorStr;}
@@ -122,9 +122,9 @@ void WorkingBuilding::destroy()
 
   foreach( walker, _d->walkerList ) { (*walker)->deleteLater(); }
 
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
-    events::GameEventPtr e=events::ReturnWorkers::create( pos(), getWorkersCount() );
+    events::GameEventPtr e=events::ReturnWorkers::create( pos(), numberWorkers() );
     e->dispatch();
   }
 }

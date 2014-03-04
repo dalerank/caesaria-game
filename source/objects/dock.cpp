@@ -104,7 +104,7 @@ void Dock::destroy()
 
 void Dock::timeStep(const unsigned long time)
 {
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
     _animationRef().update( time );
     // takes current animation frame and put it into foreground
@@ -216,7 +216,7 @@ const Tile& Dock::getQueueTile() const
 void Dock::requestGoods(GoodStock& stock)
 {
   int maxRequest = std::min( stock.qty(), _d->requestGoods.getMaxStore( stock.type() ) );
-  maxRequest -= _d->exportGoods.getQty( stock.type() );
+  maxRequest -= _d->exportGoods.qty( stock.type() );
 
   if( maxRequest > 0 )
   {
@@ -230,7 +230,7 @@ void Dock::importingGoods(GoodStock& stock)
 
   //try sell goods
   int traderMaySell = std::min( stock.qty(), cityOrders.capacity( stock.type() ) );
-  int dockMayStore = _d->importGoods.getFreeQty( stock.type() );
+  int dockMayStore = _d->importGoods.freeQty( stock.type() );
 
   traderMaySell = std::min( traderMaySell, dockMayStore );
   if( traderMaySell > 0 )
@@ -412,7 +412,7 @@ void Dock::_tryReceiveGoods()
     }
 
     Good::Type gtype = (Good::Type)i;
-    if( _d->requestGoods.getQty( gtype ) > 0 )
+    if( _d->requestGoods.qty( gtype ) > 0 )
     {
       CartSupplierPtr cart = CartSupplier::create( _getCity() );
       int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( gtype ) );

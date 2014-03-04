@@ -38,7 +38,7 @@ void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 {
   Point screenPos = tile.mapPos() + offset;
 
-  TileOverlayPtr overlay = tile.getOverlay();
+  TileOverlayPtr overlay = tile.overlay();
 
   if( overlay.isValid() )
   {

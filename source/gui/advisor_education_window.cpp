@@ -121,7 +121,7 @@ public:
 AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 256 ) ) );
 
   setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );
@@ -205,10 +205,10 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
   foreach( it, servBuildings )
   {
     ServiceBuildingPtr serv = *it;
-    if( serv->getWorkersCount() > 0 )
+    if( serv->numberWorkers() > 0 )
     {
       ret.buildingWork++;
-      ret.peoplesStuding += maxStuding * serv->getWorkersCount() / serv->getMaxWorkers();
+      ret.peoplesStuding += maxStuding * serv->numberWorkers() / serv->maxWorkers();
     }
   }
 

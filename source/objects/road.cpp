@@ -36,7 +36,7 @@ Road::Road() : Construction( construction::road, Size(1) )
 void Road::build( PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap& tilemap = city->getTilemap();
-  TileOverlayPtr overlay = tilemap.at( pos ).getOverlay();
+  TileOverlayPtr overlay = tilemap.at( pos ).overlay();
 
   Construction::build( city, pos );
   setPicture( computePicture() );
@@ -86,7 +86,7 @@ bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
   if( is_free ) 
     return true; // we try to build on free tile
 
-  TileOverlayPtr overlay  = city->getTilemap().at( pos ).getOverlay();
+  TileOverlayPtr overlay  = city->getTilemap().at( pos ).overlay();
 
   return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
 }

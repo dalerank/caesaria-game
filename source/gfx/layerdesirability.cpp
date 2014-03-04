@@ -40,7 +40,7 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
   tile.setWasDrawn();
 
-  if( tile.getOverlay().isNull() )
+  if( tile.overlay().isNull() )
   {
     //draw background
     if( tile.getFlag( Tile::isConstructible ) && tile.getDesirability() != 0 )
@@ -59,8 +59,8 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
   else
   {
-    TileOverlayPtr overlay = tile.getOverlay();
-    switch( overlay->getType() )
+    TileOverlayPtr overlay = tile.overlay();
+    switch( overlay->type() )
     {
     //roads
     case construction::road:

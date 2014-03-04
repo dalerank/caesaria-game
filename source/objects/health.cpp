@@ -31,7 +31,7 @@ unsigned int Doctor::getWalkerDistance() const{ return 26; }
 
 void Doctor::deliverService()
 {
-  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }
@@ -65,7 +65,7 @@ void Baths::timeStep(const unsigned long time)
     bool haveWater = false;
     TilesArray tiles = helper.getArea( this );
     foreach( tile, tiles ) { haveWater |= (*tile)->getWaterService( WTR_RESERVOIR ) > 0; }
-    _haveReservorWater = (haveWater && getWorkersCount() > 0);
+    _haveReservorWater = (haveWater && numberWorkers() > 0);
 
     if( _haveReservorWater )
     {
@@ -89,7 +89,7 @@ void Baths::timeStep(const unsigned long time)
 
 void Baths::deliverService()
 {
-  if( _haveReservorWater && getWorkersCount() > 0 && getWalkers().empty() )
+  if( _haveReservorWater && numberWorkers() > 0 && getWalkers().empty() )
   {
     ServiceBuilding::deliverService();
   }
@@ -101,7 +101,7 @@ Barber::Barber() : ServiceBuilding(Service::barber, building::barber, Size(1))
 
 void Barber::deliverService()
 {
-  if( getWalkers().empty() && getWorkersCount() )
+  if( getWalkers().empty() && numberWorkers() )
   {
     ServiceBuilding::deliverService();
   }

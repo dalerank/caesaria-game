@@ -30,23 +30,23 @@ namespace gui
 InfoboxColosseum::InfoboxColosseum(Widget *parent, const Tile &tile)
   : InfoboxConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
-  CollosseumPtr colloseum = ptr_cast<Collosseum>(tile.getOverlay());
+  CollosseumPtr colloseum = ptr_cast<Collosseum>(tile.overlay());
   setConstruction( ptr_cast<Construction>( colloseum ) );
   setTitle( _( MetaDataHolder::getPrettyName( building::colloseum ) ) );
 
-  _updateWorkersLabel( Point( 40, 150), 542, colloseum->getMaxWorkers(), colloseum->getWorkersCount() );
+  _updateWorkersLabel( Point( 40, 150), 542, colloseum->maxWorkers(), colloseum->numberWorkers() );
   
   if( colloseum->isNeedGladiators() )
   {
-    new Label( this, Rect( 35, 190, getWidth() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
+    new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
   }
   else
   {
     std::string text = StringHelper::format( 0xff, "Animal contest runs for another %d days", 0 );
-    new Label( this, Rect( 35, 200, getWidth() - 35, 200 + 20 ), text );
+    new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
     text = StringHelper::format( 0xff, "Gladiator bouts runs for another %d days", 0 );
-    new Label( this, Rect( 35, 220, getWidth() - 35, 220 + 20 ), text );
+    new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
   }
 }
 

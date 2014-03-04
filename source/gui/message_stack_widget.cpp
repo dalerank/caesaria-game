@@ -53,7 +53,7 @@ WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rect
 
   Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
   _d->lbBackgorund->draw( emlbPic, 4, 2 );
-  _d->lbBackgorund->draw( emlbPic, getWidth() - emlbPic.getWidth()-4, 2 );
+  _d->lbBackgorund->draw( emlbPic, width() - emlbPic.getWidth()-4, 2 );
 }
 
 void WindowMessageStack::draw( GfxEngine& painter )
@@ -76,7 +76,7 @@ void WindowMessageStack::addMessage( std::string message )
     removeChild( *getChildren().begin() );
   }
 
-  Label* lbMessage = new Label( this, Rect( 0, 0, getWidth(), 20), message );
+  Label* lbMessage = new Label( this, Rect( 0, 0, width(), 20), message );
   lbMessage->setTextAlignment( alignCenter, alignCenter );
   lbMessage->setBackgroundPicture( *_d->lbBackgorund );
   new WidgetDeleter( lbMessage, 5000 );
@@ -87,8 +87,8 @@ void WindowMessageStack::addMessage( std::string message )
 WindowMessageStack* WindowMessageStack::create( Widget* parent )
 {
   WindowMessageStack* wnd = new WindowMessageStack( parent, WindowMessageStack::defaultID,
-                                                    Rect( 0, 0, parent->getWidth() / 2, 92 ) );
-  wnd->setPosition( Point( parent->getWidth() / 4, 33 ) );
+                                                    Rect( 0, 0, parent->width() / 2, 92 ) );
+  wnd->setPosition( Point( parent->width() / 4, 33 ) );
   wnd->sendToBack();
 
   return wnd;

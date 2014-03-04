@@ -211,7 +211,7 @@ void WaterSource::_produceWater( const TilePos* points, const int size )
       continue;
     }
 
-    SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).getOverlay() );
+    SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
     
     if( ws.isValid() )
     {     
@@ -324,8 +324,8 @@ bool Fountain::haveReservoirAccess() const
   TilesArray reachedTiles = _getCity()->getTilemap().getArea( pos() - offset, pos() + offset );
   foreach( tile, reachedTiles )
   {
-    TileOverlayPtr overlay = (*tile)->getOverlay();
-    if( overlay != 0 && (building::reservoir == overlay->getType()) )
+    TileOverlayPtr overlay = (*tile)->overlay();
+    if( overlay != 0 && (building::reservoir == overlay->type()) )
     {
       return true;
     }

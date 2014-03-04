@@ -83,7 +83,7 @@ public:
   {
     TileOverlayPtr ret = BaseCreator<T>::create();
 
-    const MetaData& info = MetaDataHolder::instance().getData( ret->getType() );
+    const MetaData& info = MetaDataHolder::instance().getData( ret->type() );
     init( ret, info );
 
     return ret;

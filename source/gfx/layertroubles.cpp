@@ -39,17 +39,17 @@ void LayerTroubles::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
-  if( tile.getOverlay().isNull() )
+  if( tile.overlay().isNull() )
   {
     //draw background
     engine.drawPicture( tile.getPicture(), screenPos );
   }
   else
   {
-    TileOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.overlay();
 
     int educationLevel = -1;
-    switch( overlay->getType() )
+    switch( overlay->type() )
     {
       //fire buildings and roads
     case construction::road:
@@ -111,7 +111,7 @@ void LayerTroubles::handleEvent(NEvent& event)
 
       if( tile != 0 )
       {
-        ConstructionPtr constr = ptr_cast<Construction>( tile->getOverlay() );
+        ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
         if( constr.isValid() )
         {
           text = constr->getTrouble();

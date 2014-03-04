@@ -35,8 +35,8 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 74 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
-  FactoryPtr rawmb = ptr_cast<Factory>( tile.getOverlay() );
-  _type = rawmb->getType();
+  FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
+  _type = rawmb->type();
 
   setConstruction( ptr_cast<Construction>( rawmb ) );
 
@@ -51,7 +51,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
     new Image( this, Point( 10, 10 ), pic );
   }
 
-  _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->getMaxWorkers(), rawmb->getWorkersCount() );
+  _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maxWorkers(), rawmb->numberWorkers() );
 
   if( lbDamage != NULL )
   {
@@ -67,7 +67,7 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
     lbProgress->setText( text );
   }
 
-  std::string title = MetaDataHolder::getPrettyName( rawmb->getType() );
+  std::string title = MetaDataHolder::getPrettyName( rawmb->type() );
   _getTitle()->setText( _(title) );
 
   if( lbProductivity != NULL )

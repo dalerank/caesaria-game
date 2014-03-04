@@ -79,7 +79,7 @@ void TopMenu::draw( GfxEngine& engine )
 
   _d->updateDate();
 
-  engine.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
+  engine.drawPicture( *_d->bgPicture, screenLeft(), getScreenTop() );
 
   MainMenu::draw( engine );
 }
@@ -124,11 +124,11 @@ void TopMenu::Impl::showAboutInfo()
 }
 
 TopMenu::TopMenu( Widget* parent, const int height ) 
-: MainMenu( parent, Rect( 0, 0, parent->getWidth(), height ) ),
+: MainMenu( parent, Rect( 0, 0, parent->width(), height ) ),
   _d( new Impl )
 {
   setupUI( GameSettings::rcpath( "/gui/topmenu.gui" ) );
-  setGeometry( Rect( 0, 0, parent->getWidth(), height ) );
+  setGeometry( Rect( 0, 0, parent->width(), height ) );
 
   PicturesArray p_marble;
   for (int i = 1; i<=12; ++i)
@@ -140,7 +140,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   int i = 0;
   unsigned int x = 0;
-  while (x < getWidth())
+  while (x < width())
   {
     const Picture& pic = p_marble[i%10];
     _d->bgPicture->draw( pic, x, 0);
@@ -149,15 +149,15 @@ TopMenu::TopMenu( Widget* parent, const int height )
   }
   _d->lbPopulation = findChildA<Label*>( "lbPopulation", false, this );
   if( _d->lbPopulation )
-    _d->lbPopulation->setPosition( Point( getWidth() - populationLabelOffset, 0 ) );
+    _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
 
   _d->lbFunds = findChildA<Label*>( "lbFunds", false, this  );
   if( _d->lbFunds )
-    _d->lbFunds->setPosition(  Point( getWidth() - fundLabelOffset, 0) );
+    _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
 
   _d->lbDate = findChildA<Label*>( "lbDate", false, this );
   if( _d->lbDate )
-    _d->lbDate->setPosition( Point( getWidth() - dateLabelOffset, 0) );
+    _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );
 
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();

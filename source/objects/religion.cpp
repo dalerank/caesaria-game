@@ -43,7 +43,7 @@ RomeDivinityPtr Temple::getDivinity() const
 
 void Temple::deliverService()
 {
-  if( getWalkers().empty() && getWorkersCount() > 0 )
+  if( getWalkers().empty() && numberWorkers() > 0 )
   {
     ServiceBuilding::deliverService();
   }

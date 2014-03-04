@@ -127,12 +127,12 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 {
-  TileOverlayPtr overlay = tile.getOverlay();
+  TileOverlayPtr overlay = tile.overlay();
 
   if (overlay == NULL)
     return;
 
-  TileOverlay::Type type = overlay->getType();
+  TileOverlay::Type type = overlay->type();
 
   switch(type)
   {
@@ -257,7 +257,7 @@ void Minimap::draw(GfxEngine& painter)
     _d->lastTimeUpdate = DateTime::getElapsedTime();
   }
 
-  painter.drawPicture( *_d->minimap, getScreenLeft(), getScreenTop() ); // 152, 145
+  painter.drawPicture( *_d->minimap, screenLeft(), getScreenTop() ); // 152, 145
 
   Widget::draw( painter );
 }

@@ -181,7 +181,7 @@ void Fort::timeStep( const unsigned long time )
 {
   if( time % 15 == 1 )
   {
-    if( getWorkersCount() <= 0 )
+    if( numberWorkers() <= 0 )
     {
       if( _animationRef().isRunning() )
       {

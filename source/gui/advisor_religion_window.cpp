@@ -122,7 +122,7 @@ public:
 AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
                Size( 640, 280 ) ) );
 
   Label* title = new Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
@@ -135,7 +135,7 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   //main _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
   //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( 35, 62, getWidth() - 35, 62 + 130 ), PictureDecorator::blackFrame );
+  PictureDecorator::draw( *_d->background, Rect( 35, 62, width() - 35, 62 + 130 ), PictureDecorator::blackFrame );
 
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 264 );
   _d->background->draw( icon, Point( 11, 11 ) );
@@ -181,7 +181,7 @@ void AdvisorReligionWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
 
   Widget::draw( painter );
 }

@@ -43,7 +43,7 @@ Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
 
 void Barracks::deliverTrainee()
 { 
-  if( getWalkers().size() == 0 && _d->store.getFreeQty() > 0 )
+  if( getWalkers().size() == 0 && _d->store.freeQty() > 0 )
   {
     CartSupplierPtr walker = CartSupplier::create( _getCity() );
     walker->send2city( this, Good::weapon, 100 );
@@ -54,7 +54,7 @@ void Barracks::deliverTrainee()
     }
   }
 
-  if( _d->store.getQty( Good::weapon ) >= 100 )
+  if( _d->store.qty( Good::weapon ) >= 100 )
   {
     TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::soldier );
     trainee->send2City( this, false );
@@ -72,7 +72,7 @@ void Barracks::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
 
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
     if( _animationRef().isStopped() )
     {
@@ -87,7 +87,7 @@ void Barracks::timeStep(const unsigned long time)
 
 bool Barracks::isNeedWeapons() const
 {
-  return _d->store.getFreeQty() >= 100;
+  return _d->store.freeQty() >= 100;
 }
 
 void Barracks::storeGoods(GoodStock& stock, const int amount)

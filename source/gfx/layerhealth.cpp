@@ -56,17 +56,17 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
-  if( tile.getOverlay().isNull() )
+  if( tile.overlay().isNull() )
   {
     //draw background
     engine.drawPicture( tile.getPicture(), screenPos );
   }
   else
   {
-    TileOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.overlay();
 
     int healthLevel = -1;
-    switch( overlay->getType() )
+    switch( overlay->type() )
     {
       //fire buildings and roads
     case construction::road:
@@ -79,7 +79,7 @@ void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::hospital:
     case building::barber:
     case building::baths:
-      needDrawAnimations = _flags.count( overlay->getType() );
+      needDrawAnimations = _flags.count( overlay->type() );
       if( needDrawAnimations )
       {
         engine.drawPicture( tile.getPicture(), screenPos );
@@ -145,7 +145,7 @@ void LayerHealth::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->getOverlay() );
+        HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house != 0 )
         {
           std::string typeName;

@@ -66,7 +66,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
 	const int s = DEFAULT_SCROLLBAR_SIZE;
 
-  _d->scrollBar = new ScrollBar( this, Rect( getWidth() - s, 0, getWidth(), getHeight()), false );
+  _d->scrollBar = new ScrollBar( this, Rect( width() - s, 0, width(), getHeight()), false );
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
@@ -96,7 +96,7 @@ void ListBox::_updateTexture()
 {
   Size size = getSize();
 
-  if( _d->background && _d->background->getSize() != size )
+  if( _d->background && _d->background->size() != size )
   {
     _d->background.reset();
     _d->picture.reset();
@@ -106,9 +106,9 @@ void ListBox::_updateTexture()
   {    
     _d->background.reset( Picture::create( size ) );
     _d->picture.reset( Picture::create( size ) );
-    PictureDecorator::draw( *_d->background, Rect( 0, 0, getWidth() - _d->scrollBar->getWidth(), getHeight() ), PictureDecorator::blackFrame );
+    PictureDecorator::draw( *_d->background, Rect( 0, 0, width() - _d->scrollBar->width(), getHeight() ), PictureDecorator::blackFrame );
     PictureDecorator::draw( *_d->background,
-                            Rect( getWidth() - _d->scrollBar->getWidth(), 0, getWidth(), getHeight() ), 
+                            Rect( width() - _d->scrollBar->width(), 0, width(), getHeight() ), 
                             PictureDecorator::whiteArea  );
   }
 }
@@ -163,8 +163,8 @@ void ListBox::removeItem(unsigned int id)
 
 int ListBox::getItemAt(Point pos ) const
 {
-  if ( 	pos.x() < getScreenLeft() || pos.x() >= getScreenRight()
-      ||	pos.y() < getScreenTop() || pos.y() >= getScreenBottom() )
+  if ( 	pos.x() < screenLeft() || pos.x() >= getScreenRight()
+      ||	pos.y() < getScreenTop() || pos.y() >= screenBottom() )
   {
 	  return -1;
   }
@@ -496,7 +496,7 @@ void ListBox::_SelectNew(int ypos)
 
     _d->needItemsRepackTextures = true;
 
-    _d->selectedItemIndex = getItemAt( Point( getScreenLeft(), ypos ) );
+    _d->selectedItemIndex = getItemAt( Point( screenLeft(), ypos ) );
     if( _d->selectedItemIndex<0 && !_d->items.empty() )
         _d->selectedItemIndex = 0;
 
@@ -592,7 +592,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
         Point offset;
         if( refItem.getHorizontalAlign() == alignCenter )
         {
-          offset.setX( (getWidth() - refItem.getIcon().getWidth()) / 2 );
+          offset.setX( (width() - refItem.getIcon().getWidth()) / 2 );
         }
         _d->picture->draw( refItem.getIcon(), frameRect.UpperLeftCorner + Point( 0, -_d->scrollBar->getPos() ) + offset );
       }
@@ -834,7 +834,7 @@ ListBoxItem&ListBox::addItem(Picture pic)
 
 void ListBox::fitText(const std::string& text)
 {
-  StringArray items = _d->font.breakText( text, getWidth() - _d->scrollBar->getWidth() );
+  StringArray items = _d->font.breakText( text, width() - _d->scrollBar->width() );
   addItems( items );
 }
 

@@ -36,7 +36,7 @@ unsigned int CityStatistic::getCurrentWorkersNumber(PlayerCityPtr city)
   WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
 
   int workersNumber = 0;
-  foreach( bld, buildings ) { workersNumber += (*bld)->getWorkersCount(); }
+  foreach( bld, buildings ) { workersNumber += (*bld)->numberWorkers(); }
 
   return workersNumber;
 }
@@ -48,7 +48,7 @@ unsigned int CityStatistic::getVacantionsNumber(PlayerCityPtr city)
   WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
 
   int workersNumber = 0;
-  foreach( bld, buildings ) { workersNumber += (*bld)->getMaxWorkers(); }
+  foreach( bld, buildings ) { workersNumber += (*bld)->maxWorkers(); }
 
   return workersNumber;
 }
@@ -108,7 +108,7 @@ unsigned int CityStatistic::getFoodStock(PlayerCityPtr city)
   int foodSum = 0;
 
   GranaryList granaries = helper.find<Granary>( building::granary );
-  foreach( gr, granaries ) { foodSum += (*gr)->getGoodStore().getQty(); }
+  foreach( gr, granaries ) { foodSum += (*gr)->getGoodStore().qty(); }
 
   return foodSum;
 }
@@ -148,7 +148,7 @@ CityStatistic::GoodsMap CityStatistic::getGoodsMap(PlayerCityPtr city)
     for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type goodType = (Good::Type)i;
-      cityGoodsAvailable[ goodType ] += (*wh)->getGoodStore().getQty( goodType );
+      cityGoodsAvailable[ goodType ] += (*wh)->getGoodStore().qty( goodType );
     }
   }
 

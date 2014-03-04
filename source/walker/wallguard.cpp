@@ -231,7 +231,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 
     foreach( tile, tiles )
     {
-      FortificationPtr f = ptr_cast<Fortification>( (*tile)->getOverlay() );
+      FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
       if( f.isValid() && f->mayPatrol() )
       {
         ret.push_back( f );

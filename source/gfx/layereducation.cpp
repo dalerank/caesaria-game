@@ -71,17 +71,17 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   tile.setWasDrawn();
 
   bool needDrawAnimations = false;
-  if( tile.getOverlay().isNull() )
+  if( tile.overlay().isNull() )
   {
     //draw background
     engine.drawPicture( tile.getPicture(), screenPos );
   }
   else
   {
-    TileOverlayPtr overlay = tile.getOverlay();
+    TileOverlayPtr overlay = tile.overlay();
 
     int educationLevel = -1;
-    switch( overlay->getType() )
+    switch( overlay->type() )
     {
       //fire buildings and roads
     case construction::road:
@@ -93,7 +93,7 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::school:
     case building::library:
     case building::academy:
-      needDrawAnimations = _flags.count( overlay->getType() );
+      needDrawAnimations = _flags.count( overlay->type() );
       if( needDrawAnimations )
       {
         engine.drawPicture( tile.getPicture(), screenPos );
@@ -171,7 +171,7 @@ void LayerEducation::handleEvent(NEvent& event)
       int lvlValue = -1;
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->getOverlay() );
+        HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house != 0 )
         {
           std::string typeName;

@@ -59,12 +59,12 @@ bool Gatehouse::_update( PlayerCityPtr city, TilePos pos )
   freemap[ northEast ] = tmap.at( pos + TilePos( 1, 1 ) ).getFlag( Tile::isConstructible );
 
   bool rmap[ countDirection ] = { 0 };
-  rmap[ noneDirection ] = is_kind_of<Road>( tmap.at( pos ).getOverlay() );
-  rmap[ north ] = is_kind_of<Road>( tmap.at( pos + TilePos( 0, 1 ) ).getOverlay() );
-  rmap[ northEast ] = is_kind_of<Road>( tmap.at( pos + TilePos( 1, 1 ) ).getOverlay() );
-  rmap[ east  ] = is_kind_of<Road>( tmap.at( pos + TilePos( 1, 0 ) ).getOverlay() );
-  rmap[ west ] = is_kind_of<Road>( tmap.at( pos + TilePos( -1, 0 ) ).getOverlay() );
-  rmap[ northWest ] = is_kind_of<Road>(  tmap.at( pos + TilePos( -1, 1 ) ).getOverlay() );
+  rmap[ noneDirection ] = is_kind_of<Road>( tmap.at( pos ).overlay() );
+  rmap[ north ] = is_kind_of<Road>( tmap.at( pos + TilePos( 0, 1 ) ).overlay() );
+  rmap[ northEast ] = is_kind_of<Road>( tmap.at( pos + TilePos( 1, 1 ) ).overlay() );
+  rmap[ east  ] = is_kind_of<Road>( tmap.at( pos + TilePos( 1, 0 ) ).overlay() );
+  rmap[ west ] = is_kind_of<Road>( tmap.at( pos + TilePos( -1, 0 ) ).overlay() );
+  rmap[ northWest ] = is_kind_of<Road>(  tmap.at( pos + TilePos( -1, 1 ) ).overlay() );
 
   int index = 150;
   if( (rmap[ noneDirection ] && rmap[ north ]) ||

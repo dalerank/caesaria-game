@@ -105,8 +105,8 @@ public:
 
   void init(Warehouse &_warehouse);
 
-  virtual int getQty(const Good::Type &goodType) const;
-  virtual int getQty() const;
+  virtual int qty(const Good::Type &goodType) const;
+  virtual int qty() const;
   virtual int capacity() const;
   virtual void setCapacity( const int maxcap);
   virtual int capacity(const Good::Type& goodType ) const;
@@ -145,9 +145,9 @@ WarehouseStore::WarehouseStore()
 
 void WarehouseStore::init(Warehouse &warehouse){  _warehouse = &warehouse; }
 
-int WarehouseStore::getQty(const Good::Type &goodType) const
+int WarehouseStore::qty(const Good::Type &goodType) const
 {
-  if( _warehouse->getWorkersCount() == 0 )
+  if( _warehouse->numberWorkers() == 0 )
     return 0;
 
   int amount = 0;
@@ -163,11 +163,11 @@ int WarehouseStore::getQty(const Good::Type &goodType) const
   return amount;
 }
 
-int WarehouseStore::getQty() const {  return getQty( Good::goodCount ); }
+int WarehouseStore::qty() const {  return qty( Good::goodCount ); }
 
 int WarehouseStore::getMaxStore(const Good::Type goodType)
 {
-  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->getWorkersCount() == 0 )
+  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->numberWorkers() == 0 )
   { 
     return 0;
   }
@@ -375,7 +375,7 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
 
 void Warehouse::timeStep(const unsigned long time)
 {
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
    _animationRef().update( time );
    _d->animFlag.update( time );
@@ -453,7 +453,7 @@ void Warehouse::_resolveDeliverMode()
   {
     Good::Type gType = (Good::Type)goodType;
     GoodOrders::Order order = _d->goodStore.getOrder( gType );
-    int goodFreeQty = math::clamp( _d->goodStore.getFreeQty( gType ), 0, 400 );
+    int goodFreeQty = math::clamp( _d->goodStore.freeQty( gType ), 0, 400 );
 
     if( GoodOrders::deliver == order && goodFreeQty > 0 )
     {
@@ -472,11 +472,11 @@ void Warehouse::_resolveDeliverMode()
 void Warehouse::_resolveDevastationMode()
 {
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  if( (_d->goodStore.getQty() > 0) && getWalkers().empty() )
+  if( (_d->goodStore.qty() > 0) && getWalkers().empty() )
   {
     for( int goodType=Good::wheat; goodType <= Good::goodCount; goodType++ )
     {
-      int goodQty = _d->goodStore.getQty( (Good::Type)goodType );
+      int goodQty = _d->goodStore.qty( (Good::Type)goodType );
       goodQty = math::clamp( goodQty, 0, 400);
 
       if( goodQty > 0 )

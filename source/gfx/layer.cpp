@@ -51,9 +51,9 @@ public:
 
 void Layer::registerTileForRendering(Tile& tile)
 {
-  if( tile.getOverlay() != 0 )
+  if( tile.overlay() != 0 )
   {
-    Renderer::PassQueue passQueue = tile.getOverlay()->getPassQueue();
+    Renderer::PassQueue passQueue = tile.overlay()->getPassQueue();
     foreach( pass, passQueue )
     {
       _d->renderQueue[ *pass ].push_back( &tile );
@@ -174,10 +174,10 @@ TilesArray Layer::_getSelectedArea()
 
 void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass)
 {
-  if( tile.getOverlay().isNull() )
+  if( tile.overlay().isNull() )
     return;
 
-  const PicturesArray& pictures = tile.getOverlay()->getPictures( pass );
+  const PicturesArray& pictures = tile.overlay()->getPictures( pass );
 
   for( PicturesArray::const_iterator it=pictures.begin(); it != pictures.end(); it++ )
   {
@@ -222,11 +222,16 @@ void Layer::_setTooltipText(std::string text)
 {
   if( !_d->tooltipPic.isNull() && (_d->tooltipText != text))
   {
-    _d->tooltipPic->fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic->getSize() ) );
     Font font = Font::create( FONT_2 );
-
     _d->tooltipText = text;
-    Size size =  font.getSize( text );
+    Size size = font.getSize( text );
+
+    if( _d->tooltipPic->size() != size )
+    {
+      _d->tooltipPic.reset( Picture::create( size ) );
+    }
+
+    _d->tooltipPic->fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic->size() ) );
     _d->tooltipPic->fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
     _d->tooltipPic->fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
     font.draw( *_d->tooltipPic, text, Point(), false );
@@ -306,7 +311,7 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
     return;
 
   Tile* baseTile = area.front();
-  TileOverlayPtr overlay = baseTile->getOverlay();
+  TileOverlayPtr overlay = baseTile->overlay();
   Picture *pic = NULL;
   int leftBorderAtI = baseTile->i();
   int rightBorderAtJ = overlay->getSize().height() - 1 + baseTile->j();

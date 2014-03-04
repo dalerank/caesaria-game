@@ -273,10 +273,10 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
       if( _horizontal )
       {
           if( _d->upButton && _d->upButton->isVisible() )
-              _d->backgroundRect.UpperLeftCorner += Point( _d->upButton->getWidth(), 0 );
+              _d->backgroundRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
 
           if( _d->downButton && _d->downButton->isVisible() )
-              _d->backgroundRect.LowerRightCorner -= Point( _d->downButton->getWidth(), 0 );
+              _d->backgroundRect.LowerRightCorner -= Point( _d->downButton->width(), 0 );
       }
       else
       {
@@ -305,15 +305,15 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
       // recalculate slider rectangle
       if( _horizontal )
       {
-        _d->sliderRect.UpperLeftCorner.setX( getScreenLeft() + _lastSliderPos - _drawLenght/2 );
+        _d->sliderRect.UpperLeftCorner.setX( screenLeft() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->isVisible() )
-           _d->sliderRect.UpperLeftCorner += Point( _d->upButton->getWidth(), 0 );
+           _d->sliderRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
         
         _d->sliderRect.LowerRightCorner.setX( _d->sliderRect.UpperLeftCorner.x() + _drawLenght );
       }
       else
       {
-        _d->sliderRect.UpperLeftCorner.setX( getScreenLeft() + (getWidth() - _d->sliderTexture.getWidth()) / 2 );
+        _d->sliderRect.UpperLeftCorner.setX( screenLeft() + (width() - _d->sliderTexture.getWidth()) / 2 );
         _d->sliderRect.UpperLeftCorner.setY( getScreenTop() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->isVisible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->getHeight() );
@@ -356,13 +356,13 @@ int ScrollBar::_getPosFromMousePos(const Point& pos) const
 	float w, p;
     if (_horizontal)
 	{
-		w = getWidth() - float(getHeight())*3.0f;
-		p = pos.x() - getScreenLeft() - getHeight()*1.5f;
+		w = width() - float(getHeight())*3.0f;
+		p = pos.x() - screenLeft() - getHeight()*1.5f;
 	}
 	else
 	{
-		w = getHeight() - float(getWidth())*3.0f;
-		p = pos.y() - getScreenTop() - getWidth()*1.5f;
+		w = getHeight() - float(width())*3.0f;
+		p = pos.y() - getScreenTop() - width()*1.5f;
 	}
     return (int) ( p/w * getRange() ) + _minValue;
 }
@@ -380,16 +380,16 @@ void ScrollBar::setPos(int pos)
     int borderMargin = -borderMarginRect.UpperLeftCorner.x();
     borderMargin -= borderMarginRect.LowerRightCorner.x();
 
-    float f = ( getWidth() + borderMargin - ( getHeight()*2.0f + _drawLenght)) / getRange();
+    float f = ( width() + borderMargin - ( getHeight()*2.0f + _drawLenght)) / getRange();
     _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.x();
 	}
 	else
 	{
-    _drawLenght = getWidth() * 3;
+    _drawLenght = width() * 3;
     int borderMargin = -borderMarginRect.UpperLeftCorner.y();
     borderMargin -= borderMarginRect.LowerRightCorner.y();
 
-    float f = ( getHeight() + borderMargin - ( getWidth()*0.0f + _drawLenght)) / getRange();
+    float f = ( getHeight() + borderMargin - ( width()*0.0f + _drawLenght)) / getRange();
     _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.y();
 	}
 }
@@ -519,7 +519,7 @@ void ScrollBar::refreshControls_()
          _d->upButton = _CreateButton( Rect(0, 0, h, h), alignUpperLeft, alignUpperLeft, alignUpperLeft, alignLowerRight, 2 );
 
     if (!_d->downButton)
-         _d->downButton = _CreateButton( Rect( getWidth()-h, 0, getWidth(), h), 
+         _d->downButton = _CreateButton( Rect( width()-h, 0, width(), h), 
                                          alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight, 3 );
 	}
 	else
@@ -572,13 +572,13 @@ void ScrollBar::load( const VariantMap& in )
 void ScrollBar::setBackgroundImage( const Picture& pixmap )
 {
 	_d->texture = pixmap;
-  _d->textureRect = Rect( Point(0,0), pixmap.getSize() );
+  _d->textureRect = Rect( Point(0,0), pixmap.size() );
 }
 
 void ScrollBar::setSliderImage( const Picture& pixmap, const ElementState state )
 {
   (state == stNormal ? _d->sliderPictureUp : _d->sliderPictureDown ) = pixmap;
-	_d->sliderTextureRect = Rect( Point(0,0), pixmap.getSize() );
+	_d->sliderTextureRect = Rect( Point(0,0), pixmap.size() );
 }
 
 void ScrollBar::setHorizontal( bool horizontal )

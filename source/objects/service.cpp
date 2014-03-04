@@ -58,7 +58,7 @@ void ServiceBuilding::_setLastSendService(DateTime time) { _d->dateLastSend = ti
 
 int ServiceBuilding::getTime2NextService() const
 {
-  float koeff = ( getWorkersCount() > 0 ) ? (float)getMaxWorkers() / (float)getWorkersCount() : 1.f;
+  float koeff = ( numberWorkers() > 0 ) ? (float)maxWorkers() / (float)numberWorkers() : 1.f;
   return (int)(getServiceDelay() * koeff);
 }
 
@@ -129,14 +129,14 @@ unsigned int ServiceBuilding::getWalkerDistance() const{  return 5; }
 
 std::string ServiceBuilding::getWorkersState() const
 {
-  std::string srvcType = MetaDataHolder::getTypename( getType() );
+  std::string srvcType = MetaDataHolder::getTypename( type() );
   std::string state = "unknown";
 
   if( getWalkers().size() > 0 )
   {
     state = "on_patrol";
   }
-  else if( getWorkersCount() > 0 && _d->serviceTimer < _d->serviceDelay / 4 )
+  else if( numberWorkers() > 0 && _d->serviceTimer < _d->serviceDelay / 4 )
   {
     state = "ready_for_work";
   }

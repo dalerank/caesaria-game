@@ -475,7 +475,7 @@ void ContextMenu::recalculateSize_()
 	for (i=0; i<_d->items.size(); ++i)
 	{
 		ContextMenuItem* refItem = _d->items[i];
-		Rect rectangle( 0, refItem->getOffset(), getWidth(), refItem->getOffset() + refItem->getDim().height() );
+		Rect rectangle( 0, refItem->getOffset(), width(), refItem->getOffset() + refItem->getDim().height() );
 		refItem->setGeometry( rectangle );
 
 		if( refItem->getSubMenu() )

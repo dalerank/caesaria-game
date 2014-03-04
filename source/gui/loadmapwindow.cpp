@@ -59,7 +59,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
 : Widget( parent, id, rect ), _d( new Impl )
 {
   // create the title
-  _d->lbTitle = new Label( this, Rect( 16, 10, getWidth()-16, 10 + 30 ), "", true );
+  _d->lbTitle = new Label( this, Rect( 16, 10, width()-16, 10 + 30 ), "", true );
   _d->lbTitle->setFont( Font::create( FONT_3 ) );
   _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
   _d->directory = dir;
@@ -69,7 +69,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   _d->btnHelp = new TexturedButton( this, Point( 14, getHeight() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
 
-  _d->files = new ListBox( this, Rect( 10, _d->lbTitle->getBottom(), getWidth() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 
+  _d->files = new ListBox( this, Rect( 10, _d->lbTitle->bottom(), width() - 10, _d->btnHelp->getTop() - 5 ), -1, true, true, false ); 
   _d->files->setItemFont( Font::create( FONT_2_WHITE ) );
   _d->files->setItemDefaultColor( ListBoxItem::LBC_TEXT, 0xffffffff );
   _d->files->setItemDefaultColor( ListBoxItem::LBC_TEXT_HIGHLIGHT, 0xff000000 );
@@ -98,7 +98,7 @@ void LoadMapWindow::Impl::fillFiles()
 
 void LoadMapWindow::draw( GfxEngine& engine )
 {
-  engine.drawPicture( getBgPicture(), getScreenLeft(), getScreenTop() );
+  engine.drawPicture( getBgPicture(), screenLeft(), getScreenTop() );
   Widget::draw( engine );
 }
 

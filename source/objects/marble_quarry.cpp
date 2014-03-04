@@ -31,7 +31,7 @@ MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, constants::buil
 
 void MarbleQuarry::timeStep( const unsigned long time )
 {
-  bool mayAnimate = getWorkersCount() > 0;
+  bool mayAnimate = numberWorkers() > 0;
 
   if( mayAnimate && _animationRef().isStopped() )
   {

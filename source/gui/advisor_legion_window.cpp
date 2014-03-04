@@ -36,7 +36,7 @@ public:
 AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id ) 
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->getWidth() - 640 )/2, parent->getHeight() / 2 - 242 ),
+  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->getHeight() / 2 - 242 ),
                      Size( 640, 416 ) ) );
 
   _d->background.reset( Picture::create( getSize() ) );
@@ -46,13 +46,13 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id )
   //buttons background
   PictureDecorator::draw( *_d->background, Rect( Point( 32, 70 ), Size( 574, 270 )), PictureDecorator::blackFrame );
 
-  gui::Label* title = new gui::Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40) );
+  gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
   title->setText( _("##advlegion_window_title##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 
-  _d->alarm = new gui::Label( this, Rect( 60, getHeight()-60, getWidth() - 60, getHeight() - 40 ), _("##advlegion_noalarm##") );
-  _d->helpRequest = new gui::Label( this, Rect( 60, getHeight()-40, getWidth() - 60, getHeight() - 20 ), _("##advlegion_norequest##") );
+  _d->alarm = new gui::Label( this, Rect( 60, getHeight()-60, width() - 60, getHeight() - 40 ), _("##advlegion_noalarm##") );
+  _d->helpRequest = new gui::Label( this, Rect( 60, getHeight()-40, width() - 60, getHeight() - 20 ), _("##advlegion_norequest##") );
 }
 
 void AdvisorLegionWindow::draw( GfxEngine& painter )
@@ -60,7 +60,7 @@ void AdvisorLegionWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
 
   Widget::draw( painter );
 }

@@ -71,7 +71,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 
   foreach( it, buildings )
   {
-    if( (*it)->getType() == building::burningRuins )
+    if( (*it)->type() == building::burningRuins )
     {
       p = (*it)->pos();
       return true;
@@ -107,7 +107,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   foreach( it, buildings )
   {
     BuildingPtr building = *it;
-    if( building->getType() != building::burningRuins )
+    if( building->type() != building::burningRuins )
       continue;
 
     if( building->pos().distanceFrom( pos() ) < 1.5f )
@@ -124,7 +124,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
   foreach( it, buildings )
   {
     BuildingPtr building = *it;
-    if( building->getType() != building::burningRuins )
+    if( building->type() != building::burningRuins )
       continue;
 
     Pathway tmp = PathwayHelper::create( pos(), building->pos(), PathwayHelper::allTerrain );
@@ -218,7 +218,7 @@ bool Prefect::_findFire()
 void Prefect::_brokePathway(TilePos p)
 {
   TileOverlayPtr overlay = _getCity()->getOverlay( p );
-  if( overlay.isValid() && overlay->getType() == building::burningRuins )
+  if( overlay.isValid() && overlay->type() == building::burningRuins )
   {
     setSpeed( 0 );
     _setAction( acFight );
@@ -359,8 +359,8 @@ void Prefect::_centerTile()
 
   case Impl::go2fire:
   {
-    BuildingPtr building = ptr_cast<Building>( _getNextTile().getOverlay() );
-    if( building.isValid() && building->getType() == building::burningRuins )
+    BuildingPtr building = ptr_cast<Building>( _getNextTile().overlay() );
+    if( building.isValid() && building->type() == building::burningRuins )
     {
       _d->action = Impl::fightFire;
       _d->endPatrolPoint = building->pos();
@@ -387,8 +387,8 @@ void Prefect::timeStep(const unsigned long time)
   {
   case Impl::fightFire:
   {    
-    BuildingPtr building = ptr_cast<Building>( _getNextTile().getOverlay() );
-    bool inFire = (building.isValid() && building->getType() == building::burningRuins );
+    BuildingPtr building = ptr_cast<Building>( _getNextTile().overlay() );
+    bool inFire = (building.isValid() && building->type() == building::burningRuins );
 
     if( inFire )
     {

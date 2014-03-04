@@ -133,21 +133,21 @@ public:
 
   virtual unsigned int getHeight() const;
 
-  virtual unsigned int getWidth() const;
+  virtual unsigned int width() const;
 
   virtual int getScreenTop() const;
 
-  virtual int getScreenLeft() const;
+  virtual int screenLeft() const;
 
-  virtual int getBottom() const;
+  virtual int bottom() const;
 
   virtual void setBottom(int b);
 
-  virtual int getScreenBottom() const;
+  virtual int screenBottom() const;
 
   virtual int getScreenRight() const;
 
-  virtual Point getLeftdownCorner() const;
+  virtual Point leftdownCorner() const;
 
   virtual Point getRightupCorner() const;
 

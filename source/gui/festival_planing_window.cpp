@@ -89,7 +89,7 @@ FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityP
 {
   Size size( 625, 320 );
 
-  Rect rectangle( Point( (parent->getWidth() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
+  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->getHeight() - size.height())/2 ), size );
   FestivalPlaningWindow* ret = new FestivalPlaningWindow( parent, id, rectangle, city);
 
   return ret;
@@ -117,7 +117,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->godBtns.front()->setPressed( true );
   _d->currentDivinity = romeDivCeres;
 
-  _d->title = new Label( this, Rect( 16, 16, getWidth() - 16, 16 + 30), _("##title##") );
+  _d->title = new Label( this, Rect( 16, 16, width() - 16, 16 + 30), _("##title##") );
   _d->title->setFont( Font::create( FONT_3 ) );
   _d->title->setTextAlignment( alignCenter, alignCenter );
 
@@ -128,12 +128,12 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->festivalType = Impl::smallFest;
 
   _d->btnHelp = new TexturedButton( this, Point( 52, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  _d->btnExit = new TexturedButton( this, Point( getWidth() - 74, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnExit = new TexturedButton( this, Point( width() - 74, getHeight() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
   int greatFestivalCost = math::clamp( _d->city->getPopulation() / 10, 100, 9999 );
 
-  _d->btnSmallFestival = new PushButton( this, Rect( 95, 170, getWidth() - 95, 170 + 25),
+  _d->btnSmallFestival = new PushButton( this, Rect( 95, 170, width() - 95, 170 + 25),
                                          StringHelper::format( 0xff, "%s %d", _("##small_festival##"), greatFestivalCost / 4 ),
                                          Impl::festId+Impl::smallFest, false, PushButton::whiteBorderUp );
   _d->btnSmallFestival->setTextAlignment( alignUpperLeft, alignCenter );
@@ -167,7 +167,7 @@ void FestivalPlaningWindow::draw( GfxEngine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
   }
 
   Widget::draw( painter );

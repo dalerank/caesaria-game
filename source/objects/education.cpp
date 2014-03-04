@@ -28,7 +28,7 @@ int School::getVisitorsNumber() const {  return 75; }
 
 void School::deliverService()
 {
-  if( getWorkersCount() <= 0 )
+  if( numberWorkers() <= 0 )
     return;
 
   if( getWalkers().size() < 3 )
@@ -55,7 +55,7 @@ int Academy::getVisitorsNumber() const {  return 100; }
 
 void Academy::deliverService()
 {
-  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }
@@ -65,7 +65,7 @@ unsigned int Academy::getWalkerDistance() const{  return 26; }
 
 std::string Academy::getSound() const
 {
-  return (isActive() && getWorkersCount() > 0
+  return (isActive() && numberWorkers() > 0
           ? ServiceBuilding::getSound()
           : "");
 }

@@ -50,10 +50,10 @@ void FireWorkers::_exec(Game& game, unsigned int)
                                                  _center + TilePos( curRange, curRange ) );
     foreach( tile, perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = ptr_cast<WorkingBuilding>( (*tile)->getOverlay() );
+      WorkingBuildingPtr wrkBuilding = ptr_cast<WorkingBuilding>( (*tile)->overlay() );
       if( wrkBuilding.isValid() )
       {
-        int bldWorkersCount = wrkBuilding->getWorkersCount();
+        int bldWorkersCount = wrkBuilding->numberWorkers();
         wrkBuilding->removeWorkers( _workers );
         _workers -= math::clamp<int>( bldWorkersCount, 0, _workers );
       }

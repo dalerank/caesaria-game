@@ -175,7 +175,7 @@ void Menu::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->bgPicture, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->bgPicture, screenLeft(), getScreenTop() );
     
   Widget::draw( painter );
 }
@@ -324,7 +324,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
      buildMenu->initialize();
 
      int y = math::clamp< int >( parent->getScreenTop() - getScreenTop(), 0, _environment->getRootWidget()->getHeight() - buildMenu->getHeight() );
-     buildMenu->setPosition( Point( -(int)buildMenu->getWidth() - 5, y ) );
+     buildMenu->setPosition( Point( -(int)buildMenu->width() - 5, y ) );
    }
 }
 
@@ -359,7 +359,7 @@ void ExtentMenu::minimize()
   _d->minimizeButton->setTooltipText( _("##hide_bigpanel##") );
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
-  Point stopPos = getRelativeRect().UpperLeftCorner + Point( getWidth(), 0 );
+  Point stopPos = getRelativeRect().UpperLeftCorner + Point( width(), 0 );
   new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
 
   events::GameEventPtr e = events::PlaySound::create( "panel", 3, 256 );
@@ -368,7 +368,7 @@ void ExtentMenu::minimize()
 
 void ExtentMenu::maximize()
 {
-  Point stopPos = getRelativeRect().UpperLeftCorner - Point( getWidth(), 0 );
+  Point stopPos = getRelativeRect().UpperLeftCorner - Point( width(), 0 );
   show();
   new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
@@ -465,7 +465,7 @@ void ExtentMenu::draw( GfxEngine& painter )
 
 void ExtentMenu::toggleOverlays()
 {
-  _d->overlaysMenu->setPosition( Point( getScreenLeft() - 170, 74 ) );
+  _d->overlaysMenu->setPosition( Point( screenLeft() - 170, 74 ) );
   _d->overlaysMenu->setVisible( !_d->overlaysMenu->isVisible() );
 }
 

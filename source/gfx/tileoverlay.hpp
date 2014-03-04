@@ -69,7 +69,7 @@ public:
   std::string getName();  // landoverlay debug name
   void setName( const std::string& name );
 
-  Type getType() const;
+  Type type() const;
   Group getClass() const;
   void setType(const Type type);
 

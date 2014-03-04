@@ -92,7 +92,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
     {
       Good::Type gtype = Good::Type(i);
       int qty = warehouse->getGoodStore().getMaxRetrieve( gtype );
-      int need = basket.getFreeQty( gtype );
+      int need = basket.freeQty( gtype );
       rating = need > 0 ? ( qty ) : 0;
     }
 
@@ -118,7 +118,7 @@ DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
     // for every warehouse within range
     WarehousePtr warehouse= ptr_cast<Warehouse>( pathWayIt->first );
 
-    if( warehouse->getGoodStore().getFreeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
+    if( warehouse->getGoodStore().freeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
     else { pathWayIt++; }    
   }
 
@@ -225,7 +225,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         for( int n = Good::wheat; n<Good::goodCount; ++n )
         {
           Good::Type goodType = (Good::Type) n;
-          int needQty = buy.getFreeQty( goodType );
+          int needQty = buy.freeQty( goodType );
           int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.getExportLimit( goodType ) * 100, 0, 9999 );
           
           if( needQty > 0 && maySell > 0)
@@ -283,7 +283,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         for (int n = Good::wheat; n<Good::goodCount; ++n)
         {
           Good::Type goodType = (Good::Type)n;
-          int qty4sell = sell.getQty( goodType );
+          int qty4sell = sell.qty( goodType );
           if( qty4sell > 0 && cityOrders.capacity( goodType ) > 0 )
           {
             int maySells = std::min( qty4sell, warehouse->getGoodStore().getMaxStore( goodType ) );

@@ -31,12 +31,12 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
 
   setConstruction( ptr_cast<Construction>( _working ) );
 
-  std::string title = MetaDataHolder::getPrettyName( _working->getType() );
+  std::string title = MetaDataHolder::getPrettyName( _working->type() );
   setTitle( _(title) );
 
-  _updateWorkersLabel( Point( 32, 150 ), 542, _working->getMaxWorkers(), _working->getWorkersCount() );
+  _updateWorkersLabel( Point( 32, 150 ), 542, _working->maxWorkers(), _working->numberWorkers() );
 
-  Label* lb = new Label( this, Rect( 16, 50, getWidth() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
+  Label* lb = new Label( this, Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
   lb->setFont( Font::create( FONT_2 ) );
   lb->setWordwrap( true );
 
@@ -51,7 +51,7 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
     DateTime time = srvc->getLastSendService();
     text += StringHelper::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
   }
-  new Label( this, Rect( 50, getHeight() - 30, getWidth() - 50, getHeight() - 10 ), text );
+  new Label( this, Rect( 50, getHeight() - 30, width() - 50, getHeight() - 10 ), text );
 }
 
 void InfoboxWorkingBuilding::setText(const std::string& text)
@@ -62,7 +62,7 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
     if( !text.empty() )
       messages.push_back( text );
 
-    if( _working->getMaxWorkers() > 0 )
+    if( _working->maxWorkers() > 0 )
     {
       messages.push_back( _working->getWorkersProblem() );
     }
@@ -73,7 +73,7 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
 
 void InfoboxWorkingBuilding::showDescription()
 {
-  DictionaryWindow::show( getEnvironment()->getRootWidget(), _working->getType() );
+  DictionaryWindow::show( getEnvironment()->getRootWidget(), _working->type() );
 }
 
 WorkingBuildingPtr InfoboxWorkingBuilding::_getBuilding()

@@ -47,7 +47,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   if( rectangle.getSize() == Size( 0, 0 ) )
   {
     Size defaultSize( 480, 160 );
-    Rect defaultRect( Point( (parent->getWidth() - defaultSize.width())/2,(parent->getHeight() - defaultSize.height())/2),
+    Rect defaultRect( Point( (parent->width() - defaultSize.width())/2,(parent->getHeight() - defaultSize.height())/2),
                       defaultSize );
     setGeometry( defaultRect );
   }
@@ -55,24 +55,24 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   _d->background.reset( Picture::create( getSize() ) );
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
   
-  Label* lbTitle = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 40), title );
+  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
   lbTitle->setTextAlignment( alignCenter, alignCenter );
 
-  Label* lbText = new Label( this, Rect( 10, 55, getWidth() - 10, 55 + 55 ), text );
+  Label* lbText = new Label( this, Rect( 10, 55, width() - 10, 55 + 55 ), text );
   lbText->setTextAlignment( alignCenter, alignCenter );
 
   if( buttons == btnOk || buttons == btnCancel )
   {
-    new TexturedButton( this, Point( getWidth() / 2 - 20, getHeight() - 50),
+    new TexturedButton( this, Point( width() / 2 - 20, getHeight() - 50),
                         Size( 39, 26 ), buttons,
                         buttons == btnOk ? okBtnPicId : cancelBtnPicId );
   }
   else if( buttons == (btnOk | btnCancel) )
   {
-    new TexturedButton( this, Point( getWidth() / 2 - 24 - 16, getHeight() - 50),
+    new TexturedButton( this, Point( width() / 2 - 24 - 16, getHeight() - 50),
                         Size( 39, 26 ), btnOk, okBtnPicId );
-    new TexturedButton( this, Point( getWidth() / 2 + 16, getHeight() - 50 ),
+    new TexturedButton( this, Point( width() / 2 + 16, getHeight() - 50 ),
                         Size( 39, 26 ), btnCancel, cancelBtnPicId );
   }
 }
@@ -120,7 +120,7 @@ void DialogBox::draw( GfxEngine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
   }
 
   Widget::draw( painter );

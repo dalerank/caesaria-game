@@ -130,10 +130,7 @@ Picture GoodHelper::getPicture( Good::Type type, bool emp )
   return Picture();
 }
 
-GoodHelper::~GoodHelper()
-{
-
-}
+GoodHelper::~GoodHelper() {}
 
 std::string GoodHelper::getName( Good::Type type )
 {

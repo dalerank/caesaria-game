@@ -31,26 +31,26 @@ namespace gui
 InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
 {
-   MarketPtr market = ptr_cast<Market>( tile.getOverlay() );
+   MarketPtr market = ptr_cast<Market>( tile.overlay() );
 
    setConstruction( ptr_cast<Construction>( market ));
 
-   Label* lbAbout = new Label( this, Rect( 15, 25, getWidth() - 15, 36) );
+   Label* lbAbout = new Label( this, Rect( 15, 25, width() - 15, 36) );
    lbAbout->setWordwrap( true );
    lbAbout->setFont( Font::create( FONT_1 ) );
    lbAbout->setTextAlignment( alignUpperLeft, alignCenter );
 
-   std::string title = MetaDataHolder::getPrettyName( market->getType() );
+   std::string title = MetaDataHolder::getPrettyName( market->type() );
    setTitle( _( title ) );
 
-   if( market->getWorkersCount() > 0 )
+   if( market->numberWorkers() > 0 )
    {
      GoodStore& goods = market->getGoodStore();
      int furageSum = 0;
      // for all furage types of good
      for (int goodType = 0; goodType<Good::olive; ++goodType)
      {
-       furageSum += goods.getQty( (Good::Type)goodType );
+       furageSum += goods.qty( (Good::Type)goodType );
      }
 
      int paintY = 100;
@@ -83,7 +83,7 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
      lbAbout->setText( _("##market_no_workers##") );
    }
 
-   _updateWorkersLabel( Point( 32, 8 ), 542, market->getMaxWorkers(), market->getWorkersCount() );
+   _updateWorkersLabel( Point( 32, 8 ), 542, market->maxWorkers(), market->numberWorkers() );
 }
 
 InfoBoxMarket::~InfoBoxMarket() {}
@@ -92,9 +92,9 @@ void InfoBoxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int 
 {
   int startOffset = 25;
 
-  int offset = ( getWidth() - startOffset * 2 ) / 5;
+  int offset = ( width() - startOffset * 2 ) / 5;
   std::string goodName = GoodHelper::getName( goodType );
-  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().getQty( goodType ) );
+  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().qty( goodType ) );
 
   // pictures of goods
   Picture pic = GoodHelper::getPicture( goodType );

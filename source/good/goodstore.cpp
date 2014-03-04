@@ -40,16 +40,15 @@ GoodStore::GoodStore() : _d( new Impl )
 int GoodStore::getMaxRetrieve(const Good::Type goodType)
 {
   // current good quantity
-  int qty = getQty(goodType);
+  int rqty = qty(goodType);
 
   // remove all retrieval reservations
-  for( Reservations::iterator i=_d->retrieveReservations.begin();
-       i != _d->retrieveReservations.end(); i++)
+  foreach( i, _d->retrieveReservations)
   {
-    qty -= i->stock.qty();
+    rqty -= i->stock.qty();
   }
 
-  return qty;
+  return rqty;
 }
 
 
@@ -185,7 +184,7 @@ void GoodStore::storeAll( GoodStore& goodStore)
     // for all types of good (except G_NONE)
     Good::Type goodType = (Good::Type) n;
     GoodStock stock( goodType, 9999, 0 );
-    goodStore.retrieve( stock, goodStore.getQty( goodType ) );
+    goodStore.retrieve( stock, goodStore.qty( goodType ) );
     if( !stock.empty() )
     {
       store(stock, stock.qty());
@@ -260,14 +259,14 @@ void GoodStore::removeExpired(DateTime date)
 Reservations& GoodStore::_getStoreReservations() {  return _d->storeReservations; }
 Reservations& GoodStore::_getRetrieveReservations(){   return _d->retrieveReservations;}
 
-int GoodStore::getFreeQty( const Good::Type& goodType ) const
+int GoodStore::freeQty( const Good::Type& goodType ) const
 {
-  return capacity( goodType ) - getQty( goodType );
+  return capacity( goodType ) - qty( goodType );
 }
 
-int GoodStore::getFreeQty() const
+int GoodStore::freeQty() const
 {
-  return capacity() - getQty();
+  return capacity() - qty();
 }
 
 const ReserveInfo Reservations::invalid = { GoodStock(), DateTime(), 0 };

@@ -139,7 +139,7 @@ void PushButton::_updateTexture( ElementState state )
   PictureRef& curTxs = _d->buttonStates[ state ].background;
   PictureRef& textTxs = _d->buttonStates[ state ].textPicture;
 
-  if( !curTxs.isNull() && curTxs->getSize() != btnSize )
+  if( !curTxs.isNull() && curTxs->size() != btnSize )
   {
     _d->releaseTexture( state );
   }
@@ -207,7 +207,7 @@ void PushButton::_updateTexture( ElementState state )
   Font stFont = _d->buttonStates[ state ].font;
   if( textTxs && stFont.isValid() )
   {
-    Rect textRect = stFont.calculateTextRect( getText(), Rect( 0, 0, getWidth(), getHeight() ),
+    Rect textRect = stFont.calculateTextRect( getText(), Rect( 0, 0, width(), getHeight() ),
                                               getHorizontalTextAlign(), getVerticalTextAlign() );
     textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
     stFont.draw( *textTxs, getText(), textRect.UpperLeftCorner + _d->textOffset );
@@ -263,7 +263,7 @@ bool PushButton::isPushButton() const
 
 void PushButton::setPicture(Picture picture, ElementState state )
 {
-  Rect rectangle( Point(0,0), picture.getSize() );
+  Rect rectangle( Point(0,0), picture.size() );
 
   _d->buttonStates[ state ].bgTexture = picture;
   _d->buttonStates[ state ].rectangle = rectangle;
@@ -492,7 +492,7 @@ void PushButton::draw( GfxEngine& painter )
   {
     if( state.background )
     {
-      painter.drawPicture( *state.background, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+      painter.drawPicture( *state.background, screenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
 
 //             if( isEnabled() &&
 //                 ( hoverImageOpacity <= 0xff ) &&
@@ -512,7 +512,7 @@ void PushButton::draw( GfxEngine& painter )
 
   if( state.textPicture )
   {
-    painter.drawPicture( *state.textPicture, getScreenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *state.textPicture, screenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
   }
 
   drawIcon( painter );

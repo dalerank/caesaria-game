@@ -98,9 +98,9 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
       tile.setMasterTile( _d->masterTile );
       tile.setPicture( &_d->picture );
 
-      if( tile.getOverlay().isValid() && tile.getOverlay() != this )
+      if( tile.overlay().isValid() && tile.overlay() != this )
       {
-        tile.getOverlay()->deleteLater();
+        tile.overlay()->deleteLater();
       }
 
       tile.setOverlay( this );
@@ -177,7 +177,7 @@ TilePos TileOverlay::pos() const
 
 std::string TileOverlay::getSound() const
 {
-  const MetaData& md = MetaDataHolder::instance().getData( getType() );
+  const MetaData& md = MetaDataHolder::instance().getData( type() );
   return md.getSound();
 }
 
@@ -201,4 +201,4 @@ bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
 Renderer::PassQueue TileOverlay::getPassQueue() const{  return defaultPassQueue;}
 std::string TileOverlay::getName(){  return _d->name;}
 TileOverlay::~TileOverlay(){}  // what we shall to do here?
-TileOverlay::Type TileOverlay::getType() const{   return _d->overlayType;}
+TileOverlay::Type TileOverlay::type() const{   return _d->overlayType;}

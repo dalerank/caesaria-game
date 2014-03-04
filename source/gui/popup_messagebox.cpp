@@ -45,18 +45,18 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
                                  const std::string& receiver, int id ) 
   : Widget( parent, id, Rect( 0, 0, 590, 320 ) ), _d( new Impl )
 {
-  setPosition( Point( (parent->getWidth() - getWidth())/2, (parent->getHeight() - getHeight()) / 2 ) );
+  setPosition( Point( (parent->width() - width())/2, (parent->getHeight() - getHeight()) / 2 ) );
   
-  Label* lbTitle = new Label( this, Rect( 10, 10, getWidth() - 10, 10 + 30), title );
+  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 30), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
   lbTitle->setTextAlignment( alignCenter, alignCenter );
 
   _d->background.reset( Picture::create( getSize() ) );
   //main _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
-  PictureDecorator::draw( *_d->background, Rect( Point( 18, 50 ), Size( getWidth() - 34, 220 ) ), PictureDecorator::blackFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 18, 50 ), Size( width() - 34, 220 ) ), PictureDecorator::blackFrame );
 
-  _d->btnExit = new TexturedButton( this, Point( getWidth() - 40, getHeight() - 40 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnExit = new TexturedButton( this, Point( width() - 40, getHeight() - 40 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
   CONNECT( _d->btnExit, onClicked(), this, PopupMessageBox::deleteLater );
 
@@ -75,7 +75,7 @@ void PopupMessageBox::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, getScreenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
 
   Widget::draw( painter );
 }

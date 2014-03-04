@@ -47,9 +47,9 @@ void LayerBuild::_discardPreview()
 {
   foreach( tile, _d->buildTiles )
   {
-    if( (*tile)->getOverlay().isValid() )
+    if( (*tile)->overlay().isValid() )
     {
-      (*tile)->getOverlay()->deleteLater();
+      (*tile)->overlay()->deleteLater();
     }
 
     delete *tile;
@@ -188,7 +188,7 @@ void LayerBuild::_buildAll()
     Tile* tile = *it;
     if( cnstr->canBuild( _getCity(), tile->pos(), TilesArray() ) && tile->isMasterTile())
     {
-      events::GameEventPtr event = events::BuildEvent::create( tile->pos(), cnstr->getType() );
+      events::GameEventPtr event = events::BuildEvent::create( tile->pos(), cnstr->type() );
       event->dispatch();
       buildOk = true;
     }
@@ -294,7 +294,7 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
     Tile* postTile = *it;
     postTile->resetWasDrawn();
 
-    ConstructionPtr ptr_construction = ptr_cast<Construction>( postTile->getOverlay() );
+    ConstructionPtr ptr_construction = ptr_cast<Construction>( postTile->overlay() );
     engine.resetTileDrawMask();
 
     if( ptr_construction.isValid()
@@ -313,7 +313,7 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 {
   Point screenPos = tile.mapPos() + offset;
 
-  TileOverlayPtr overlay = tile.getOverlay();
+  TileOverlayPtr overlay = tile.overlay();
   const TilesArray& postTiles = _d->buildTiles;
 
   if( overlay.isValid() )

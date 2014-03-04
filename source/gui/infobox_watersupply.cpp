@@ -35,10 +35,10 @@ InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
 {
   setTitle( _("##fountain##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );
 
-  FountainPtr fountain = ptr_cast<Fountain>( tile.getOverlay() );
+  FountainPtr fountain = ptr_cast<Fountain>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( fountain ) );
 
   std::string text;
@@ -71,10 +71,10 @@ InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
 {
   setTitle( _("##reservoir##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );
 
-  ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.getOverlay() );
+  ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( reservoir ) );
 
   std::string text;
@@ -100,10 +100,10 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
 {
   setTitle( _("##well##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, getWidth() - 25, getHeight() - 55 ) );
+  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, getHeight() - 55 ) );
   _getInfo()->setWordwrap( true );
 
-  WellPtr well = ptr_cast<Well>( tile.getOverlay() );
+  WellPtr well = ptr_cast<Well>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( well ) );
 
   std::string text;
@@ -114,7 +114,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
     bool haveHouseInArea = false;
     foreach( tile, coverageArea )
     {
-      haveHouseInArea |= is_kind_of<House>( (*tile)->getOverlay() );
+      haveHouseInArea |= is_kind_of<House>( (*tile)->overlay() );
     }
 
     if( !haveHouseInArea )
@@ -126,7 +126,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
       bool houseNeedWell = false;
       foreach( tile, coverageArea)
       {
-        HousePtr house = ptr_cast<House>( (*tile)->getOverlay() );
+        HousePtr house = ptr_cast<House>( (*tile)->overlay() );
         if( house.isValid() )
         {
           houseNeedWell |= ( house->getServiceValue( Service::fontain ) == 0 );

@@ -79,7 +79,7 @@ void LayerDestroy::render( GfxEngine& engine )
     Tile* tile = *it;
     hashDestroyArea.insert( tile->j() * 1000 + tile->i() );
 
-    TileOverlayPtr overlay = tile->getOverlay();
+    TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
     {
       TilesArray overlayArea = tmap.getArea( overlay->pos(), overlay->getSize() );
@@ -223,7 +223,7 @@ void LayerDestroy::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 {
   Point screenPos = tile.mapPos() + offset;
 
-  TileOverlayPtr overlay = tile.getOverlay();
+  TileOverlayPtr overlay = tile.overlay();
 
   if( overlay.isValid() )
   {

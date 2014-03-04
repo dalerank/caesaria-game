@@ -165,7 +165,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       for( int n = Good::wheat; n<Good::goodCount; n++ )
       {
         Good::Type goodType = (Good::Type)n;
-        int needQty = buy.getFreeQty( goodType );
+        int needQty = buy.freeQty( goodType );
         int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.getExportLimit( goodType ) * 100, 0, needQty );
 
         if( maySell > 0)
@@ -197,7 +197,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       for( int n = Good::wheat; n<Good::goodCount; ++n )
       {
         Good::Type goodType = (Good::Type) n;
-        int needQty = buy.getFreeQty( goodType );
+        int needQty = buy.freeQty( goodType );
 
         if( needQty > 0 )
         {
@@ -210,7 +210,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       nextState = stWaitGoods;
       waitInterval = anyBuy ? GameDate::ticksInMonth() / 4 : 0;
 
-      if( 0 == buy.getFreeQty() ) //all done
+      if( 0 == buy.freeQty() ) //all done
       {
         nextState = stGoOutFromCity;
       }
@@ -266,7 +266,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       for( int n = Good::wheat; n<Good::goodCount; ++n)
       {
         Good::Type goodType = (Good::Type)n;
-        if( sell.getQty( goodType ) > 0 && cityOrders.capacity( goodType ) > 0)
+        if( sell.qty( goodType ) > 0 && cityOrders.capacity( goodType ) > 0)
         {
           myDock->importingGoods( sell.getStock( goodType ) );
           anySell = true;

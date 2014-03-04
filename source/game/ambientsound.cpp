@@ -35,7 +35,7 @@ struct SoundEmitter
   SoundEmitter( Tile* t, TilePos& cam ) : camerapos( cam )
   {
     tile = t;
-    overlay = t->getOverlay();
+    overlay = t->overlay();
   }
 
   bool operator < ( const SoundEmitter& a ) const

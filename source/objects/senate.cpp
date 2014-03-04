@@ -157,7 +157,7 @@ int Senate::getStatus(Senate::Status status) const
 
 void Senate::deliverService()
 {
-  if( getWorkersCount() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _getCity() );
     walker->setMaxDistance( getWalkerDistance() );

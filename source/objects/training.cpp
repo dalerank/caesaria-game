@@ -41,7 +41,7 @@ void TrainingBuilding::timeStep(const unsigned long time)
 {
    WorkingBuilding::timeStep(time);
 
-   if( getWorkersCount() <= 0 )
+   if( numberWorkers() <= 0 )
    {
      return;
    }
@@ -103,7 +103,7 @@ void ActorColony::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
 
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
     if( _animationRef().isStopped() )
     {
@@ -132,7 +132,7 @@ void GladiatorSchool::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
 
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
     if( _animationRef().isStopped() )
     {
@@ -156,7 +156,7 @@ void LionsNursery::timeStep(const unsigned long time)
 
   if( time % 15 == 1 )
   {
-    if( getWorkersCount() > 0 )
+    if( numberWorkers() > 0 )
     {
       if( _animationRef().isStopped() )
       {
@@ -199,7 +199,7 @@ void WorkshopChariot::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
 
-  if( getWorkersCount() > 0 )
+  if( numberWorkers() > 0 )
   {
     if( _animationRef().isStopped() )
     {

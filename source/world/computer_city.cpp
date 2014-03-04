@@ -83,7 +83,7 @@ void ComputerCity::save( VariantMap& options ) const
       vm_sells[ tname ] = maxSellStock / 100;
     }
 
-    int sold = _d->sellStore.getQty( gtype );
+    int sold = _d->sellStore.qty( gtype );
     if( sold > 0 )
     {
       vm_sold[ tname ] = sold / 100;
@@ -95,7 +95,7 @@ void ComputerCity::save( VariantMap& options ) const
       vm_buys[ tname ] = maxBuyStock / 100;
     }
 
-    int bought = _d->buyStore.getQty( gtype );
+    int bought = _d->buyStore.qty( gtype );
     if( bought > 0 )
     {
       vm_bought[ tname ] = bought / 100;
@@ -199,7 +199,7 @@ void ComputerCity::arrivedMerchant( MerchantPtr merchant )
   for( int i=Good::none; i < Good::goodCount; i ++ )
   {
     Good::Type gtype = Good::Type ( i );
-    int qty = sellGoods.getFreeQty( gtype );
+    int qty = sellGoods.freeQty( gtype );
     GoodStock stock( gtype, qty, qty );
     _d->realSells.store( stock, qty );
   }
@@ -250,12 +250,12 @@ void ComputerCity::timeStep( unsigned int time )
         buyGoods.setCapacity( gtype, _d->buyStore.capacity( gtype ) );
 
         //how much space left
-        int maxQty = (std::min)( _d->sellStore.capacity( gtype ) / 4, sellGoods.getFreeQty() );
+        int maxQty = (std::min)( _d->sellStore.capacity( gtype ) / 4, sellGoods.freeQty() );
         
         //we want send merchants to all routes
         maxQty /= routes.size();
 
-        int qty = math::clamp( _d->sellStore.getQty( gtype ), 0, maxQty );
+        int qty = math::clamp( _d->sellStore.qty( gtype ), 0, maxQty );
 
         //have no goods to sell
         if( qty == 0 )

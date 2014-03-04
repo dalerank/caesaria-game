@@ -30,13 +30,13 @@ public:
 
   void setCapacity(const int maxQty);
   int capacity() const;
-  int getQty() const;
+  int qty() const;
 
   void resize( const GoodStore& other );
 
   GoodStock& getStock(const Good::Type &goodType);  
 
-  virtual int getQty(const Good::Type &goodType) const;
+  virtual int qty(const Good::Type &goodType) const;
   int capacity(const Good::Type &goodType) const;
   void setCapacity(const Good::Type &goodType, const int maxQty);
   void setQty(const Good::Type &goodType, const int currentQty);
