@@ -24,7 +24,7 @@
 #include "city/city.hpp"
 #include "gamedate.hpp"
 #include "game.hpp"
-#include "divinity.hpp"
+#include "religion/pantheon.hpp"
 #include "settings.hpp"
 #include "events/dispatcher.hpp"
 
@@ -53,7 +53,7 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   vm[ "city" ] = vm_city;
 
   VariantMap vm_pantheon;
-  DivinePantheon::getInstance().save( vm_pantheon );
+  religion::Pantheon::getInstance().save( vm_pantheon );
   vm[ "pantheon" ] = vm_pantheon;
 
   SaveAdapter::save( vm, filename );

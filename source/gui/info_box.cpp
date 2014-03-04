@@ -35,7 +35,7 @@
 #include "objects/entertainment.hpp"
 #include "objects/house.hpp"
 #include "objects/religion.hpp"
-#include "game/divinity.hpp"
+#include "religion/romedivinity.hpp"
 #include "objects/warehouse.hpp"
 #include "gfx/engine.hpp"
 #include "gui/special_orders_window.hpp"

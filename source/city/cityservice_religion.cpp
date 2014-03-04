@@ -19,14 +19,17 @@
 #include "core/position.hpp"
 #include "game/gamedate.hpp"
 #include "objects/religion.hpp"
-#include "game/divinity.hpp"
+#include "religion/pantheon.hpp"
 #include "events/event.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
+#include "core/logger.hpp"
+#include "core/safetycast.hpp"
 
 using namespace constants;
+using namespace religion;
 
 namespace city
 {
@@ -36,6 +39,17 @@ class Religion::Impl
 public:
   PlayerCityPtr city;
   DateTime lastDate;
+  struct TempleInfo
+  {
+    int smallTempleNum;
+    int bigTempleNum;
+
+    TempleInfo() : smallTempleNum( 0 ), bigTempleNum( 0 ) {}
+  };
+
+  typedef std::map< RomeDivinityPtr, TempleInfo > TemplesMap;
+  TemplesMap templesCoverity;
+  TempleInfo maxTemples;
 
   void updateRelation( RomeDivinityPtr divn );
 };
@@ -59,14 +73,43 @@ Religion::Religion(PlayerCityPtr city )
 
 void Religion::update( const unsigned int time )
 {
+  Logger::warning( "Religion: start update relations" );
   if( _d->lastDate.month() == GameDate::current().month() )
     return;
 
   _d->lastDate = GameDate::current();
 
-  DivinePantheon::Divinities divinities = DivinePantheon::getInstance().getAll();
+  Pantheon::Divinities divinities = Pantheon::getInstance().getAll();
 
-  foreach( it, divinities ) { _d->updateRelation( *it ); }
+  //clear temples info
+  _d->templesCoverity.clear();
+
+  //update temples info
+  CityHelper helper( _d->city );
+  TempleList temples = helper.find<Temple>( building::religionGroup );
+  foreach( it, temples)
+  {
+    Impl::TempleInfo& info = _d->templesCoverity[ (*it)->getDivinity() ];
+    TemplePtr temple = ptr_cast<Temple>( *it );
+    if( temple.isValid() && temple->getDivinity().isValid() )
+    {
+       if( is_kind_of<BigTemple>( temple ) ) { info.bigTempleNum++; }
+       else { info.smallTempleNum++; }
+    }
+  }
+
+  _d->maxTemples = Impl::TempleInfo();
+  foreach( it, divinities )
+  {
+    Impl::TempleInfo& info = _d->templesCoverity[ *it ];
+    _d->maxTemples.bigTempleNum = std::max<int>( info.bigTempleNum, _d->maxTemples.bigTempleNum );
+    _d->maxTemples.smallTempleNum = std::max<int>( info.smallTempleNum, _d->maxTemples.smallTempleNum );
+  }
+
+  foreach( it, divinities )
+  {
+    _d->updateRelation( *it );
+  }
 }
 
 void Religion::Impl::updateRelation(RomeDivinityPtr divn)
@@ -75,9 +118,24 @@ void Religion::Impl::updateRelation(RomeDivinityPtr divn)
   int peopleReached = 0;
   TempleList temples = helper.find<Temple>( building::religionGroup );
 
-  foreach( temple, temples ) { peopleReached += ( (*temple)->getDivinity() == divn ? (*temple)->getParishionerNumber() : 0 ); }
+  foreach( temple, temples )
+  {
+    if( (*temple)->getDivinity() == divn )
+    {
+      peopleReached += (*temple)->getParishionerNumber();
+    }
+  }
 
   float faithIncome = (float)peopleReached / (float)(city->getPopulation()+1);
+  Impl::TempleInfo& myTemples = templesCoverity[ divn ];
+
+  float faithAddiction = 0;
+  float smallTempleKoeff = ( myTemples.smallTempleNum < maxTemples.smallTempleNum ? 0.8 : 1 );
+  float bigTempleKoeff = ( myTemples.bigTempleNum < maxTemples.bigTempleNum ? 0.5 : 1 );
+
+  faithAddiction *= ( smallTempleKoeff * bigTempleKoeff );
+
+  Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->getName().c_str(), faithIncome, divn->getRelation() );
   divn->updateRelation( faithIncome, city );
 }
 

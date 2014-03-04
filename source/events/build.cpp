@@ -64,7 +64,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
         helper.updateDesirability( construction, true );
 
         game.getCity()->addOverlay( _overlay );
-        game.getCity()->getFunds().resolveIssue( FundIssue( CityFunds::buildConstruction,
+        game.getCity()->getFunds().resolveIssue( FundIssue( city::Funds::buildConstruction,
                                                             -(int)buildingData.getOption( "cost" ) ) );
 
         GameEventPtr e = PlaySound::create( "buildok", 1, 256 );
@@ -86,7 +86,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
         WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( construction );
         if( wb.isValid() && wb->maxWorkers() > 0 )
         {
-          int worklessCount = CityStatistic::getWorklessNumber( game.getCity() );
+          int worklessCount = city::Statistic::getWorklessNumber( game.getCity() );
           if( worklessCount < wb->maxWorkers() )
           {
             GameEventPtr e = WarningMessageEvent::create( "##city_need_more_workers##" );

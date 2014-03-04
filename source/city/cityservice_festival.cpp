@@ -18,8 +18,10 @@
 #include "cityservice_festival.hpp"
 #include "game/gamedate.hpp"
 #include "city.hpp"
-#include "game/divinity.hpp"
+#include "religion/pantheon.hpp"
 #include "events/showfeastwindow.hpp"
+
+using namespace religion;
 
 namespace city
 {
@@ -74,7 +76,7 @@ void Festival::update( const unsigned int time )
   {
     _d->lastFestivalDate = GameDate::current();
     _d->festivalDate = DateTime( -550, 1, 1 );
-    DivinePantheon::doFestival( _d->divinity, _d->festivalType );
+    Pantheon::doFestival( _d->divinity, _d->festivalType );
 
     const char* titles[3] = { "##small_festival##", "##middle_festival##", "##great_festival##" };
     const char* text[3] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };

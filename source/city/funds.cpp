@@ -18,12 +18,14 @@
 #include "trade_options.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
+#include <map>
 
 using namespace constants;
 
-#include <map>
+namespace city
+{
 
-class CityFunds::Impl
+class Funds::Impl
 {
 public:
   int taxRate;
@@ -31,7 +33,7 @@ public:
   int money;
   int lastYearUpdate;
 
-  typedef std::map< CityFunds::IssueType, int > IssuesValue;
+  typedef std::map< city::Funds::IssueType, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;
   IssuesHistory history;
 
@@ -39,7 +41,7 @@ oc3_signals public:
   Signal1<int> onChangeSignal;
 };
 
-CityFunds::CityFunds() : _d( new Impl )
+Funds::Funds() : _d( new Impl )
 {
   _d->money = 0;
   _d->workerSalary = 30;
@@ -47,7 +49,7 @@ CityFunds::CityFunds() : _d( new Impl )
   _d->history.push_back( Impl::IssuesValue() );
 }
 
-void CityFunds::resolveIssue( FundIssue issue )
+void Funds::resolveIssue( FundIssue issue )
 {
   switch( issue.type )
   {
@@ -69,15 +71,15 @@ void CityFunds::resolveIssue( FundIssue issue )
   _d->onChangeSignal.emit( _d->money );
 }
 
-int CityFunds::getValue() const {  return _d->money; }
+int Funds::getValue() const {  return _d->money; }
 
-int CityFunds::getProfit() const
+int Funds::getProfit() const
 {
-  int balanceLastYear = getIssueValue( CityFunds::balance, lastYear );
+  int balanceLastYear = getIssueValue( city::Funds::balance, lastYear );
   return _d->money - balanceLastYear;
 }
 
-void CityFunds::updateHistory( const DateTime& date )
+void Funds::updateHistory( const DateTime& date )
 {
   if( _d->lastYearUpdate == date.year() )
   {
@@ -85,8 +87,8 @@ void CityFunds::updateHistory( const DateTime& date )
   }
 
   Impl::IssuesValue& step = _d->history.front();
-  step[ CityFunds::balance ] = _d->money;
-  step[ CityFunds::profit ] = getProfit();
+  step[ Funds::balance ] = _d->money;
+  step[ Funds::profit ] = getProfit();
 
   _d->lastYearUpdate = date.year();
   _d->history.insert( _d->history.begin(), Impl::IssuesValue() );
@@ -97,7 +99,7 @@ void CityFunds::updateHistory( const DateTime& date )
   }
 }
 
-int CityFunds::getIssueValue( IssueType type, int age ) const
+int Funds::getIssueValue( IssueType type, int age ) const
 {
   if( (unsigned int)age >= _d->history.size() )
     return 0;
@@ -108,12 +110,12 @@ int CityFunds::getIssueValue( IssueType type, int age ) const
   return ( it == step.end() ) ? 0 : it->second;
 }
 
-int CityFunds::getTaxRate() const{  return _d->taxRate;}
-void CityFunds::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
-int CityFunds::getWorkerSalary() const{  return _d->workerSalary;}
-void CityFunds::setWorkerSalary(const unsigned int value){  _d->workerSalary = value;}
+int Funds::getTaxRate() const{  return _d->taxRate;}
+void Funds::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
+int Funds::getWorkerSalary() const{  return _d->workerSalary;}
+void Funds::setWorkerSalary(const unsigned int value){  _d->workerSalary = value;}
 
-VariantMap CityFunds::save() const
+VariantMap Funds::save() const
 {
   VariantMap ret;
 
@@ -140,7 +142,7 @@ VariantMap CityFunds::save() const
   return ret;
 }
 
-void CityFunds::load( const VariantMap& stream )
+void Funds::load( const VariantMap& stream )
 {
   _d->money = (int)stream.get( "money", 0 );
   _d->taxRate = (int)stream.get( "taxRate", 7 );
@@ -165,5 +167,7 @@ void CityFunds::load( const VariantMap& stream )
   }
 }
 
-CityFunds::~CityFunds(){}
-Signal1<int>& CityFunds::onChange(){  return _d->onChangeSignal; }
+Funds::~Funds(){}
+Signal1<int>& Funds::onChange(){  return _d->onChangeSignal; }
+
+}//end namespace city

@@ -14,14 +14,15 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "religion.hpp"
-#include "game/divinity.hpp"
 #include "city/helper.hpp"
+#include "religion/pantheon.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
 
 using namespace constants;
+using namespace religion;
 
 class Temple::Impl
 {
@@ -59,43 +60,43 @@ Temple::~Temple()
 
 }
 
-TempleCeres::TempleCeres() : SmallTemple( DivinePantheon::ceres(), building::templeCeres, 45 )
+TempleCeres::TempleCeres() : SmallTemple( Pantheon::ceres(), building::templeCeres, 45 )
 {
 }
 
-BigTempleCeres::BigTempleCeres() : BigTemple( DivinePantheon::ceres(), building::cathedralCeres, 46 )
+BigTempleCeres::BigTempleCeres() : BigTemple( Pantheon::ceres(), building::cathedralCeres, 46 )
 {
 }
 
-TempleNeptune::TempleNeptune() : SmallTemple( DivinePantheon::neptune(), building::templeNeptune, 47 )
+TempleNeptune::TempleNeptune() : SmallTemple( Pantheon::neptune(), building::templeNeptune, 47 )
 {
 }
 
-BigTempleNeptune::BigTempleNeptune() : BigTemple( DivinePantheon::neptune(), building::cathedralNeptune, 48 )
+BigTempleNeptune::BigTempleNeptune() : BigTemple( Pantheon::neptune(), building::cathedralNeptune, 48 )
 {
 }
 
-TempleMars::TempleMars() : SmallTemple( DivinePantheon::mars(), building::templeMars, 51 )
+TempleMars::TempleMars() : SmallTemple( Pantheon::mars(), building::templeMars, 51 )
 {
 }
 
-BigTempleMars::BigTempleMars() : BigTemple( DivinePantheon::mars(), building::cathedralMars, 52 )
+BigTempleMars::BigTempleMars() : BigTemple( Pantheon::mars(), building::cathedralMars, 52 )
 {
 }
 
-TempleVenus::TempleVenus() : SmallTemple( DivinePantheon::venus(), building::templeVenus, 53 )
+TempleVenus::TempleVenus() : SmallTemple( Pantheon::venus(), building::templeVenus, 53 )
 {
 }
 
-BigTempleVenus::BigTempleVenus() : BigTemple( DivinePantheon::venus(), building::cathedralVenus, 54 )
+BigTempleVenus::BigTempleVenus() : BigTemple( Pantheon::venus(), building::cathedralVenus, 54 )
 {
 }
 
-TempleMercure::TempleMercure() : SmallTemple( DivinePantheon::mercury(), building::templeMercury, 49 )
+TempleMercure::TempleMercure() : SmallTemple( Pantheon::mercury(), building::templeMercury, 49 )
 {
 }
 
-BigTempleMercure::BigTempleMercure() : BigTemple( DivinePantheon::mercury(), building::cathedralMercury, 50 )
+BigTempleMercure::BigTempleMercure() : BigTemple( Pantheon::mercury(), building::cathedralMercury, 50 )
 {
 }
 
@@ -150,7 +151,7 @@ unsigned int BigTemple::getParishionerNumber() const
 
 void BigTemple::build(PlayerCityPtr city, const TilePos& pos)
 {
-  CityStatistic::GoodsMap goods = CityStatistic::getGoodsMap( city );
+  city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city );
   if( goods[ Good::marble ] >= 2 )
   {
     Temple::build( city, pos );

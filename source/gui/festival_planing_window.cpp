@@ -25,8 +25,10 @@
 #include "city/funds.hpp"
 #include "gfx/engine.hpp"
 #include "core/stringhelper.hpp"
-#include "game/divinity.hpp"
+#include "religion/pantheon.hpp"
 #include "core/logger.hpp"
+
+using namespace religion;
 
 namespace gui
 {
@@ -76,7 +78,7 @@ public:
 
   void updateTitle()
   {
-    RomeDivinityPtr divinity = DivinePantheon::get( currentDivinity );
+    RomeDivinityPtr divinity = Pantheon::get( currentDivinity );
 
     std::string text = StringHelper::format( 0xff, "##hold_%s_festival##", divinity.isValid()
                                                                                 ? divinity->getDebugName().c_str()

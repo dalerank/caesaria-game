@@ -31,7 +31,10 @@ struct FundIssue
   FundIssue( int t, int m ) : type( t ), money( m ) {}
 };
 
-class CityFunds
+namespace city
+{
+
+class Funds
 {
 public:
   enum IssueType { unknown=0, taxIncome=1, 
@@ -44,8 +47,8 @@ public:
                    issueTypeCount };
   enum { thisYear=0, lastYear=1 };
 
-  CityFunds();
-  ~CityFunds();
+  Funds();
+  ~Funds();
 
   void resolveIssue( FundIssue issue );
 
@@ -72,5 +75,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYFUNDS_H_INCLUDED__

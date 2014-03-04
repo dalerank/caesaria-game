@@ -13,20 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_DINIVITY_H_INCLUDED__
-#define __CAESARIA_DINIVITY_H_INCLUDED__
+#ifndef __CAESARIA_ROME_DINIVITY_H_INCLUDED__
+#define __CAESARIA_ROME_DINIVITY_H_INCLUDED__
 
 #include "core/referencecounted.hpp"
-#include "enums.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
-#include "vfs/path.hpp"
-#include "service.hpp"
+#include "game/service.hpp"
 #include "core/variant.hpp"
+
+namespace religion
+{
 
 typedef enum
 {
-  romeDivCeres = 0, 
+  romeDivCeres = 0,
   romeDivMars,
   romeDivNeptune,
   romeDivVenus,
@@ -34,6 +35,16 @@ typedef enum
 
   romeDivCount=0xff
 } RomeDivinityType;
+
+const char* const divNames[] =
+{
+  "ceres",
+  "mars",
+  "neptune",
+  "venus",
+  "mercury",
+  0
+};
 
 class RomeDivinity : public ReferenceCounted
 {
@@ -51,34 +62,8 @@ public:
   virtual void setInternalName(const std::string &newName) = 0;
 };
 
-class DivinePantheon
-{
-public:
-  typedef std::vector< RomeDivinityPtr > Divinities;
+PREDEFINE_CLASS_SMARTPOINTER_LIST(RomeDivinity,List)
 
-  static DivinePantheon& getInstance();
-
-  Divinities getAll();
-
-  void load(const VariantMap& stream );
-  void save(VariantMap& stream);
-
-  static void doFestival( RomeDivinityType who, int type);
-
-  static RomeDivinityPtr ceres();
-  static RomeDivinityPtr mars();
-  static RomeDivinityPtr neptune();
-  static RomeDivinityPtr venus();
-  static RomeDivinityPtr mercury();
-
-  static RomeDivinityPtr get( RomeDivinityType name );
-  static RomeDivinityPtr get( std::string name );
-
-private:
-  DivinePantheon();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
+}//end namespace religion
 
 #endif //__CAESARIA_DINIVITY_H_INCLUDED__

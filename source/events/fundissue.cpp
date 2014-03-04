@@ -39,7 +39,7 @@ GameEventPtr FundIssueEvent::import(Good::Type good, int qty)
   FundIssueEvent* ev = new FundIssueEvent();
   ev->_gtype = good;
   ev->_qty = qty;
-  ev->_type = CityFunds::importGoods;
+  ev->_type = city::Funds::importGoods;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
@@ -50,7 +50,7 @@ GameEventPtr FundIssueEvent::exportg(Good::Type good, int qty)
   FundIssueEvent* ev = new FundIssueEvent();
   ev->_gtype = good;
   ev->_qty = qty;
-  ev->_type = CityFunds::exportGoods;
+  ev->_type = city::Funds::exportGoods;
   GameEventPtr ret( ev );
   ret->drop();
   return ret;
@@ -63,12 +63,12 @@ bool FundIssueEvent::_mayExec(Game& game, unsigned int time) const
 
 void FundIssueEvent::_exec(Game& game, unsigned int )
 {
-  if( _type == CityFunds::importGoods )
+  if( _type == city::Funds::importGoods )
   {
     int price = game.getCity()->getTradeOptions().getSellPrice( _gtype );
     _value = -price * _qty / 100;
   }
-  else if( _type == CityFunds::exportGoods )
+  else if( _type == city::Funds::exportGoods )
   {
     int price = game.getCity()->getTradeOptions().getBuyPrice( _gtype );
     _value = price * _qty / 100;

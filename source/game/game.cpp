@@ -29,7 +29,6 @@
 #include "scene/level.hpp"
 #include "gui/environment.hpp"
 #include "settings.hpp"
-#include "divinity.hpp"
 #include "vfs/filesystem.hpp"
 #include "enums.hpp"
 #include "gfx/animation_bank.hpp"
@@ -48,6 +47,7 @@
 #include "objects/house_level.hpp"
 #include "walker/name_generator.hpp"
 #include "core/foreach.hpp"
+#include "religion/pantheon.hpp"
 
 #include <list>
 
@@ -127,7 +127,7 @@ void Game::Impl::initGuiEnvironment()
 void Game::Impl::initPantheon( vfs::Path filename)
 {
   VariantMap pantheon = SaveAdapter::load( filename );
-  DivinePantheon::getInstance().load( pantheon );
+  religion::Pantheon::getInstance().load( pantheon );
 }
 
 void Game::Impl::initPictures(vfs::Path resourcePath)

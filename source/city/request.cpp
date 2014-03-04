@@ -65,7 +65,7 @@ void RqGood::exec( PlayerCityPtr city )
 
 bool RqGood::mayExec( PlayerCityPtr city ) const
 {
-  CityStatistic::GoodsMap gm = CityStatistic::getGoodsMap( city );
+  city::Statistic::GoodsMap gm = city::Statistic::getGoodsMap( city );
 
   _d->description = StringHelper::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), gm[ _d->stock.type() ] / 100 );
   if( gm[ _d->stock.type() ] >= _d->stock.capacity() * 100 )
@@ -138,7 +138,7 @@ void RqGood::success( PlayerCityPtr city )
   city->updateFavour( _d->winFavour );
   if( _d->winMoney )
   {
-    events::GameEventPtr e = events::FundIssueEvent::create( CityFunds::donation, _d->winMoney );
+    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, _d->winMoney );
     e->dispatch();
   }
 }

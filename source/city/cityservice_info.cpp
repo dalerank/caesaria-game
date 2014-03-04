@@ -74,18 +74,18 @@ void Info::update( const unsigned int time )
     last.funds = _d->city->getFunds().getValue();    
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
 
-    int foodStock = CityStatistic::getFoodStock( _d->city );
-    int foodMontlyConsumption = CityStatistic::getFoodMonthlyConsumption( _d->city );
+    int foodStock = city::Statistic::getFoodStock( _d->city );
+    int foodMontlyConsumption = city::Statistic::getFoodMonthlyConsumption( _d->city );
     last.monthWithFood = foodMontlyConsumption > 0 ? (foodStock / foodMontlyConsumption) : 0;
 
-    int foodProducing = CityStatistic::getFoodProducing( _d->city );
+    int foodProducing = city::Statistic::getFoodProducing( _d->city );
     int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
     last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -1;
 
-    last.needWorkers = CityStatistic::getVacantionsNumber( _d->city );
-    last.workless = CityStatistic::getWorklessPercent( _d->city );
+    last.needWorkers = city::Statistic::getVacantionsNumber( _d->city );
+    last.workless = city::Statistic::getWorklessPercent( _d->city );
     last.payDiff = _d->city->getEmpire()->getWorkerSalary() - _d->city->getFunds().getWorkerSalary();
     last.tax = _d->city->getFunds().getTaxRate();
   }

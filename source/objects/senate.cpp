@@ -145,7 +145,7 @@ int Senate::getStatus(Senate::Status status) const
 {
   switch(status)
   {
-  case workless: return CityStatistic::getWorklessPercent( _getCity() );
+  case workless: return city::Statistic::getWorklessPercent( _getCity() );
   case culture: return _getCity()->getCulture();
   case prosperity: return _getCity()->getProsperity();
   case peace: return _getCity()->getPeace();

@@ -22,7 +22,10 @@
 #include "good/good.hpp"
 #include "predefinitions.hpp"
 
-class CityStatistic
+namespace city
+{
+
+class Statistic
 {
 public:
   typedef std::map< Good::Type, int > GoodsMap;
@@ -38,5 +41,7 @@ public:
   static unsigned int getFoodProducing( PlayerCityPtr city );
   static GoodsMap getGoodsMap( PlayerCityPtr city );
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSTATISTIC_H_INCLUDED__

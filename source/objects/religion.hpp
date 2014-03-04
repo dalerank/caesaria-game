@@ -17,19 +17,20 @@
 #define __CAESARIA_RELIGION_BIULDING_H_INCLUDED__
 
 #include "service.hpp"
+#include "religion/romedivinity.hpp"
 
 class Temple : public ServiceBuilding
 {
 public:
   virtual ~Temple();
 
-  RomeDivinityPtr getDivinity() const;
+  religion::RomeDivinityPtr getDivinity() const;
 
   virtual unsigned int getParishionerNumber() const = 0;
   virtual void deliverService();
 
 protected:
-  Temple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size );
+  Temple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size );
 
   virtual unsigned int getWalkerDistance() const;
 
@@ -41,14 +42,14 @@ private:
 class SmallTemple : public Temple
 {
 protected:
-  SmallTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
+  SmallTemple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
   virtual unsigned int getParishionerNumber() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
-  BigTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
+  BigTemple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
   virtual unsigned int getParishionerNumber() const;
 
   virtual void build(PlayerCityPtr city, const TilePos &pos);

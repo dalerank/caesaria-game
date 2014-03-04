@@ -147,7 +147,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
   if( currentCity != 0 )
   {
     unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->getName() );
-    events::GameEventPtr e = events::FundIssueEvent::create( CityFunds::otherExpenditure, -(int)cost );
+    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::otherExpenditure, -(int)cost );
     e->dispatch();
     empire->createTradeRoute( ourCity, currentCity->getName() );
 

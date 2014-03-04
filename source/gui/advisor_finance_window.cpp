@@ -46,7 +46,7 @@ public:
   gui::Label* lbTaxRateNow;
   TexturedButton* btnHelp;
 
-  void drawReportRow( const Point& pos, const std::string& title, CityFunds::IssueType type );
+  void drawReportRow( const Point& pos, const std::string& title, city::Funds::IssueType type );
   void updateTaxRateNowLabel();
   int calculateTaxValue();
 };
@@ -93,32 +93,32 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   Point startPoint( 75, 145 );
   Point offset( 0, 17 );
 
-  _d->drawReportRow( startPoint, _("##Taxes##"), CityFunds::taxIncome );
-  _d->drawReportRow( startPoint + offset, _("##Trade##"), CityFunds::exportGoods );
-  _d->drawReportRow( startPoint + offset * 2, _("##Donations##"), CityFunds::donation );
-  _d->drawReportRow( startPoint + offset * 3, _("##Debet##"), CityFunds::debet );
+  _d->drawReportRow( startPoint, _("##Taxes##"), city::Funds::taxIncome );
+  _d->drawReportRow( startPoint + offset, _("##Trade##"), city::Funds::exportGoods );
+  _d->drawReportRow( startPoint + offset * 2, _("##Donations##"), city::Funds::donation );
+  _d->drawReportRow( startPoint + offset * 3, _("##Debet##"), city::Funds::debet );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 200, 0 ), Size( 72, 1) ) );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 340, 0 ), Size( 72, 1) ) );
   
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 4, _("##Import##"), CityFunds::importGoods );
-  _d->drawReportRow( startPoint + offset * 5, _("##Wages##"), CityFunds::workersWages );
-  _d->drawReportRow( startPoint + offset * 6, _("##Buildings##"), CityFunds::buildConstruction );
-  _d->drawReportRow( startPoint + offset * 7, _("##Percents##"), CityFunds::creditPercents );
-  _d->drawReportRow( startPoint + offset * 8, _("##Salary##"), CityFunds::playerSalary );
+  _d->drawReportRow( startPoint + offset * 4, _("##Import##"), city::Funds::importGoods );
+  _d->drawReportRow( startPoint + offset * 5, _("##Wages##"), city::Funds::workersWages );
+  _d->drawReportRow( startPoint + offset * 6, _("##Buildings##"), city::Funds::buildConstruction );
+  _d->drawReportRow( startPoint + offset * 7, _("##Percents##"), city::Funds::creditPercents );
+  _d->drawReportRow( startPoint + offset * 8, _("##Salary##"), city::Funds::playerSalary );
    
-  _d->drawReportRow( startPoint + offset * 9, _("##Other##"), CityFunds::otherExpenditure );
-  _d->drawReportRow( startPoint + offset * 10, _("##Empire tax##"), CityFunds::empireTax );
+  _d->drawReportRow( startPoint + offset * 9, _("##Other##"), city::Funds::otherExpenditure );
+  _d->drawReportRow( startPoint + offset * 10, _("##Empire tax##"), city::Funds::empireTax );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 200, 0 ), Size( 72, 1) ) );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 340, 0 ), Size( 72, 1) ) );
 
-  _d->drawReportRow( startPoint + offset * 11, _("##Credit##"), CityFunds::credit );
+  _d->drawReportRow( startPoint + offset * 11, _("##Credit##"), city::Funds::credit );
 
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 12, _("##Profit##"), CityFunds::profit );
+  _d->drawReportRow( startPoint + offset * 12, _("##Profit##"), city::Funds::profit );
   
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 13, _("##Balance##"), CityFunds::balance );
+  _d->drawReportRow( startPoint + offset * 13, _("##Balance##"), city::Funds::balance );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
@@ -137,12 +137,12 @@ void AdvisorFinanceWindow::draw( GfxEngine& painter )
 }
 
 
-void AdvisorFinanceWindow::Impl::drawReportRow(const Point& pos, const std::string& title, CityFunds::IssueType type)
+void AdvisorFinanceWindow::Impl::drawReportRow(const Point& pos, const std::string& title, city::Funds::IssueType type)
 {
   Font font = Font::create( FONT_1 );
 
-  int lyvalue = city->getFunds().getIssueValue( type, CityFunds::lastYear );
-  int tyvalue = city->getFunds().getIssueValue( type, CityFunds::thisYear );
+  int lyvalue = city->getFunds().getIssueValue( type, city::Funds::lastYear );
+  int tyvalue = city->getFunds().getIssueValue( type, city::Funds::thisYear );
 
   font.draw( *background, title, pos, false );
   font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0), false );

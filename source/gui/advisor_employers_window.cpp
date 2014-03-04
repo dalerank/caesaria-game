@@ -133,9 +133,9 @@ void AdvisorEmployerWindow::Impl::decreaseSalary()
 
 void AdvisorEmployerWindow::Impl::updateWorkersState()
 {
-  int workers = CityStatistic::getAvailableWorkersNumber( city );
-  int worklessPercent = CityStatistic::getWorklessPercent( city );
-  int withoutWork = CityStatistic::getWorklessNumber( city );
+  int workers = city::Statistic::getAvailableWorkersNumber( city );
+  int worklessPercent = city::Statistic::getWorklessPercent( city );
+  int withoutWork = city::Statistic::getWorklessNumber( city );
   std::string strWorkerState = StringHelper::format( 0xff, "%d %s     %d %s  ( %d%% )",
                                                      workers, _("##advemployer_panel_workers##"),
                                                      withoutWork, _("##advemployer_panel_workless##"),
@@ -151,7 +151,7 @@ void AdvisorEmployerWindow::Impl::updateYearlyWages()
 {
   if( lbYearlyWages )
   {
-    int wages = CityStatistic::getMontlyWorkersWages( city ) * DateTime::monthInYear;
+    int wages = city::Statistic::getMontlyWorkersWages( city ) * DateTime::monthInYear;
     std::string wagesStr = StringHelper::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
 
     lbYearlyWages->setText( wagesStr );

@@ -31,7 +31,11 @@
 class CityBuildOptions;
 class CityTradeOptions;
 class CityWinTargets;
-class CityFunds;
+
+namespace city
+{
+  class Funds;
+}
 
 struct BorderInfo
 {
@@ -73,7 +77,7 @@ public:
   ClimateType getClimate() const;
   void setClimate(const ClimateType);
 
-  CityFunds& getFunds() const;
+  city::Funds& getFunds() const;
 
   int getPopulation() const;
   int getProsperity() const;

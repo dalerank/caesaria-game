@@ -24,12 +24,14 @@
 #include "city/funds.hpp"
 #include "objects/farm.hpp"
 #include "objects/warehouse.hpp"
+#include <map>
 
 using namespace constants;
 
-#include <map>
+namespace city
+{
 
-unsigned int CityStatistic::getCurrentWorkersNumber(PlayerCityPtr city)
+unsigned int Statistic::getCurrentWorkersNumber(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -41,7 +43,7 @@ unsigned int CityStatistic::getCurrentWorkersNumber(PlayerCityPtr city)
   return workersNumber;
 }
 
-unsigned int CityStatistic::getVacantionsNumber(PlayerCityPtr city)
+unsigned int Statistic::getVacantionsNumber(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -53,7 +55,7 @@ unsigned int CityStatistic::getVacantionsNumber(PlayerCityPtr city)
   return workersNumber;
 }
 
-unsigned int CityStatistic::getAvailableWorkersNumber(PlayerCityPtr city)
+unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -68,7 +70,7 @@ unsigned int CityStatistic::getAvailableWorkersNumber(PlayerCityPtr city)
   return workersNumber;
 }
 
-unsigned int CityStatistic::getMontlyWorkersWages(PlayerCityPtr city)
+unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
 {
   int workersNumber = getCurrentWorkersNumber( city );
 
@@ -84,7 +86,7 @@ unsigned int CityStatistic::getMontlyWorkersWages(PlayerCityPtr city)
   return wages;
 }
 
-unsigned int CityStatistic::getWorklessNumber(PlayerCityPtr city)
+unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -96,12 +98,12 @@ unsigned int CityStatistic::getWorklessNumber(PlayerCityPtr city)
   return worklessNumber;
 }
 
-unsigned int CityStatistic::getWorklessPercent(PlayerCityPtr city)
+unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 {
   return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
 }
 
-unsigned int CityStatistic::getFoodStock(PlayerCityPtr city)
+unsigned int Statistic::getFoodStock(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -113,7 +115,7 @@ unsigned int CityStatistic::getFoodStock(PlayerCityPtr city)
   return foodSum;
 }
 
-unsigned int CityStatistic::getFoodMonthlyConsumption(PlayerCityPtr city)
+unsigned int Statistic::getFoodMonthlyConsumption(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -125,7 +127,7 @@ unsigned int CityStatistic::getFoodMonthlyConsumption(PlayerCityPtr city)
   return foodComsumption;
 }
 
-unsigned int CityStatistic::getFoodProducing(PlayerCityPtr city)
+unsigned int Statistic::getFoodProducing(PlayerCityPtr city)
 {
   CityHelper helper( city );
 
@@ -137,7 +139,7 @@ unsigned int CityStatistic::getFoodProducing(PlayerCityPtr city)
   return foodProducing;
 }
 
-CityStatistic::GoodsMap CityStatistic::getGoodsMap(PlayerCityPtr city)
+Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)
 {
   CityHelper helper( city );
   GoodsMap cityGoodsAvailable;
@@ -154,3 +156,5 @@ CityStatistic::GoodsMap CityStatistic::getGoodsMap(PlayerCityPtr city)
 
   return cityGoodsAvailable;
 }
+
+}//end namespace city

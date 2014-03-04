@@ -21,7 +21,7 @@
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "core/predefinitions.hpp"
-#include "game/divinity.hpp"
+#include "religion/romedivinity.hpp"
 #include "core/variant.hpp"
 
 namespace city
@@ -35,7 +35,7 @@ public:
 
   DateTime getLastFestivalDate() const;
   DateTime getNextFestivalDate() const;
-  void assignFestival( RomeDivinityType name , int size);
+  void assignFestival( religion::RomeDivinityType name , int size);
 
   void update( const unsigned int time );
 

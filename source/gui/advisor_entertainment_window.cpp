@@ -31,7 +31,7 @@
 #include "objects/house_level.hpp"
 #include "objects/entertainment.hpp"
 #include "city/cityservice_festival.hpp"
-#include "game/divinity.hpp"
+#include "religion/romedivinity.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
@@ -215,7 +215,7 @@ void AdvisorEntertainmentWindow::Impl::assignFestival(int divinityType, int fest
 {
   if( srvc.isValid() )
   {
-    srvc->assignFestival( (RomeDivinityType)divinityType, festSize );
+    srvc->assignFestival( (religion::RomeDivinityType)divinityType, festSize );
   }
 }
 

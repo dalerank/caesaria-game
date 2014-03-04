@@ -17,11 +17,13 @@
 
 #include "infobox_temple.hpp"
 #include "objects/religion.hpp"
-#include "game/divinity.hpp"
+#include "religion/romedivinity.hpp"
 #include "core/gettext.hpp"
+#include "religion/romedivinity.hpp"
 #include "image.hpp"
 
 using namespace constants;
+using namespace religion;
 
 namespace gui
 {

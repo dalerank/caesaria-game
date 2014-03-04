@@ -146,7 +146,7 @@ class PlayerCity::Impl
 public:
   int lastMonthCount;
   int population;
-  CityFunds funds;  // amount of money
+  city::Funds funds;  // amount of money
   std::string name;
   world::EmpirePtr empire;
   PlayerPtr player;
@@ -193,7 +193,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->borderInfo.roadExit = TilePos( 0, 0 );
   _d->borderInfo.boatEntry = TilePos( 0, 0 );
   _d->borderInfo.boatExit = TilePos( 0, 0 );
-  _d->funds.resolveIssue( FundIssue( CityFunds::donation, 1000 ) );
+  _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
   _d->population = 0;
   _d->needRecomputeAllRoads = false;
   _d->funds.setTaxRate( 7 );
@@ -327,7 +327,7 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   payWages( city );
 
   int playerSalary = player->getSalary();
-  funds.resolveIssue( FundIssue( CityFunds::playerSalary, -playerSalary ) );
+  funds.resolveIssue( FundIssue( city::Funds::playerSalary, -playerSalary ) );
   player->appendMoney( playerSalary );
 
   funds.updateHistory( GameDate::current() );
@@ -398,7 +398,7 @@ const BorderInfo& PlayerCity::getBorderInfo() const { return _d->borderInfo; }
 Tilemap&          PlayerCity::getTilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::getClimate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
-CityFunds&        PlayerCity::getFunds() const      {  return _d->funds;   }
+city::Funds&        PlayerCity::getFunds() const      {  return _d->funds;   }
 int               PlayerCity::getPopulation() const {   return _d->population; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
@@ -412,13 +412,13 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
   SenateList senates = hlp.find< Senate >( building::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
-  funds.resolveIssue( FundIssue( CityFunds::taxIncome, lastMonthTax ) );
+  funds.resolveIssue( FundIssue( city::Funds::taxIncome, lastMonthTax ) );
 }
 
 void PlayerCity::Impl::payWages(PlayerCityPtr city)
 {
-  int wages = CityStatistic::getMontlyWorkersWages( city );
-  funds.resolveIssue( FundIssue( CityFunds::workersWages, -wages ) );
+  int wages = city::Statistic::getMontlyWorkersWages( city );
+  funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
 }
 
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )

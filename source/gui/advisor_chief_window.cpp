@@ -112,8 +112,8 @@ void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::
 
 void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
 {
-  int needWorkersNumber = CityStatistic::getVacantionsNumber( city );
-  int workless = CityStatistic::getWorklessPercent( city );
+  int needWorkersNumber = city::Statistic::getVacantionsNumber( city );
+  int workless = city::Statistic::getWorklessPercent( city );
   std::string text;
   if( needWorkersNumber > 0 ) { text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );  }
   else if( workless > 10 )  {   text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );  }

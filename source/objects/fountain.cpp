@@ -180,7 +180,6 @@ void Fountain::_initAnimation()
 {
   _animationRef().clear();
   _animationRef().load( ResourceGroup::utilitya, _lastPicId+1, fontainSizeAnim );
-  //animLoader.fill_animation_reverse(_animation, "utilitya", 25, 7);
   _animationRef().setDelay( 2 );
   _animationRef().stop();
 

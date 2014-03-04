@@ -218,7 +218,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       if( warehouse.isValid() )
       {
-        CityStatistic::GoodsMap cityGoodsAvailable = CityStatistic::getGoodsMap( city );
+        city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
 
         CityTradeOptions& options = city->getTradeOptions();
         //try buy goods

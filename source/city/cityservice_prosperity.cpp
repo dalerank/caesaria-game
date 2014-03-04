@@ -124,7 +124,7 @@ void ProsperityRating::update( const unsigned int time )
     bool haveHippodrome = !helper.find<Hippodrome>( building::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome > 0 ? 1 : 0);
 
-    _d->worklessPercent = CityStatistic::getWorklessPercent( _d->city );
+    _d->worklessPercent = city::Statistic::getWorklessPercent( _d->city );
     bool unemploymentLess5percent = _d->worklessPercent < 5;
     bool unemploymentMore15percent = _d->worklessPercent > 15;
     _d->prosperityExtend += (unemploymentLess5percent ? 1 : 0);

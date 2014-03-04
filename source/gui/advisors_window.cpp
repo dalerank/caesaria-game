@@ -201,7 +201,7 @@ AdvisorsWindow* AdvisorsWindow::create(Widget* parent, int id, const constants::
 
 void AdvisorsWindow::Impl::sendMoney2City(int money)
 {
- events::GameEventPtr event = events::FundIssueEvent::create( CityFunds::donation, money );
+ events::GameEventPtr event = events::FundIssueEvent::create( city::Funds::donation, money );
  event->dispatch();
 }
 
