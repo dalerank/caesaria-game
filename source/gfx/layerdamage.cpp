@@ -66,6 +66,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::engineerPost:
       needDrawAnimations = true;
       engine.drawPicture( tile.getPicture(), screenPos );
+      drawTilePass( engine, tile, offset, Renderer::foreground );
       break;
 
       //houses
