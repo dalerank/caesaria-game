@@ -45,7 +45,7 @@ public:
   void set( float i ) { _value = math::clamp<float>( i, _min, _max); }
   float value() const { return _value; }
 
-  int getMax() const { return _max; }
+  int max() const { return _max; }
   void setMax( int value ) { _max = value; set( _value ); }
 
   operator float() const { return _value; }

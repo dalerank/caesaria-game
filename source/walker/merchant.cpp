@@ -34,6 +34,7 @@
 #include "world/merchant.hpp"
 #include "core/stacktrace.hpp"
 #include "events/fundissue.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -86,7 +87,6 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
   {
     // for every warehouse within range
     WarehousePtr warehouse = ptr_cast<Warehouse>( routeIt->first );
-
     int rating = 0;
     for( int i=Good::wheat; i<Good::goodCount; i++ )
     {
@@ -221,6 +221,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
 
         CityTradeOptions& options = city->getTradeOptions();
+        GoodStore& whStore = warehouse->getGoodStore();
         //try buy goods
         for( int n = Good::wheat; n<Good::goodCount; ++n )
         {
@@ -230,13 +231,12 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
           
           if( needQty > 0 && maySell > 0)
           {
-            int mayBuy = std::min( needQty, warehouse->getGoodStore().getMaxRetrieve( goodType ) );
+            int mayBuy = std::min( needQty, whStore.getMaxRetrieve( goodType ) );
             mayBuy = std::min( mayBuy, maySell );
             if( mayBuy > 0 )
             {
-              // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
               GoodStock& stock = buy.getStock( goodType );
-              warehouse->getGoodStore().retrieve( stock, mayBuy );
+              whStore.retrieve( stock, mayBuy );
 
               events::GameEventPtr e = events::FundIssueEvent::exportg( goodType, mayBuy );
               e->dispatch();
@@ -245,14 +245,29 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         }
       }
 
+      if( buy.qty() == 0 )
+      {
+        Logger::warning( "LandMerchant: [%d,%d] wait while store buying goods on my animals", position.i(), position.j() );
+        wlk->setThinks( "##landmerchant_say_about_store_goods##" );
+        waitInterval = GameDate::ticksInMonth() / 2;
+      }
+
       nextState = stGoOutFromCity;
-      waitInterval = 60;
       resolveState( city, wlk, position );
     }
   break;
 
   case stGoOutFromCity:
     {
+      if( sell.freeQty() == 0 && buy.qty() == 0 )
+      {
+        wlk->setThinks( "##landmerchant_noany_trade##" );
+      }
+      else
+      {
+        wlk->setThinks( "##landmerchant_good_deals##" );
+      }
+
       // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
       Pathway pathWay = PathwayHelper::create( position, city->getBorderInfo().roadExit, PathwayHelper::allTerrain );
       if( pathWay.isValid() )
@@ -323,7 +338,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
   break;
 
   default:
-    Logger::warning( "Merchant: unknown state resolved" );
+    Logger::warning( "LandMerchant: unknown state resolved" );
   }
 }
 

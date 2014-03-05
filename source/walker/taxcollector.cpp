@@ -64,19 +64,17 @@ std::string TaxCollector::getThinks() const
   TilePos offset( 2, 2 );
   HouseList houses = helper.find<House>( building::house, pos() - offset, pos() + offset );
   unsigned int poorHouseCounter=0;
+  unsigned int richHouseCounter=0;
 
   foreach( h, houses )
   {
-    if( (*h)->getSpec().taxRate() < 10 )
-    {
-      poorHouseCounter++;
-    }
+    HouseLevel::ID level = (HouseLevel::ID)(*h)->getSpec().level();
+    if( level < HouseLevel::bigDomus ) poorHouseCounter++;
+    else if( level >= HouseLevel::smallVilla ) richHouseCounter++;
   }
 
-  if( poorHouseCounter > houses.size() / 2 )
-  {
-    return "##tax_collector_very_little_tax##";
-  }
+  if( poorHouseCounter > houses.size() / 2 ) { return "##tax_collector_very_little_tax##";  }
+  if( richHouseCounter > houses.size() / 2 ) { return "##tax_collector_high_tax##";  }
 
   return ServiceWalker::getThinks();
 }

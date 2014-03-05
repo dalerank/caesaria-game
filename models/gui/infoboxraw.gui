@@ -17,5 +17,6 @@
     geometryf : [ 0.05, 0.22, 0.95, 0.39 ]
     font : "FONT_2"
     multiline : true
+    textAlign : [ "upperLeft", "center" ]
   }
 }

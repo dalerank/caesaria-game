@@ -282,6 +282,11 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
   case stBackToBaseCity:
   {
+    if( sell.freeQty() == 0 && buy.qty() == 0 )
+    {
+      wlk->setThinks( "##seamerchant_noany_trade##" );
+    }
+
     // walker on exit from city
     wlk->deleteLater();
     world::EmpirePtr empire = city->getEmpire();

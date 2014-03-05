@@ -41,7 +41,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   setTitle( _(title) );
 
   // paint progress
-  std::string text = StringHelper::format( 0xff, "%s %d%%", _("##production_ready_at##"), factory->getProgress() );
+  std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->getProgress() );
   Label* lbPr = new Label( this, Rect( _getTitle()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
   lbPr->setFont( Font::create( FONT_2 ) );
 
@@ -56,9 +56,9 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
     Label* lbStockInfo = new Label( this, Rect( _getTitle()->leftdownCorner() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
 
-    std::string text = StringHelper::format( 0xff, "##%s_%s##: %d %s",
-                                             GoodHelper::getTypeName( factory->inStockRef().type() ).c_str(),
-                                             "factory_stock",
+    std::string whatStock = StringHelper::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
+    std::string text = StringHelper::format( 0xff, "%s, %d %s",
+                                             _(whatStock),
                                              factory->inStockRef().qty() / 100,
                                              _("##factory_units##") );
 

@@ -47,7 +47,7 @@ protected:
 class GranarySpecialOrdersWindow : public BaseSpecialOrdersWindow
 {
 public:
-  static const int defaultHeight = 450;
+  static const int defaultHeight = 250;
   GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
 
   void toggleDevastation();

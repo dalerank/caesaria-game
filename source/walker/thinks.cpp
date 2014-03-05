@@ -59,6 +59,8 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     troubles << "##citizen_gods_angry3##";
     troubles << "##citizen_gods_angry4##";
     troubles << "##citizen_gods_angry5##";
+    troubles << "##citizen_gods_angry6##";
+    troubles << "##citizen_gods_angry7##";
   }
 
   if( params.colloseumCoverage < 3 )
@@ -77,6 +79,8 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     troubles << "##citizen_low_entertainment##";
     troubles << "##citizen_low_entertainment2##";
     troubles << "##citizen_low_entertainment3##";
+    troubles << "##citizen_low_entertainment4##";
+    troubles << "##citizen_low_entertainment5#";
   }
   else if( params.entertainment < 20 )
   {
@@ -108,6 +112,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     troubles << "##citizen_high_workless6##";
     troubles << "##citizen_high_workless7##";
     troubles << "##citizen_high_workless8##";
+    troubles << "##citizen_high_workless9##";
   }
 
   if( params.tax > 10 )

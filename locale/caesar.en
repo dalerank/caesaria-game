@@ -1,6 +1,4 @@
 {
-"##cancel##":"Cancel"
-"##emperor_favour_16##":"The Emperor is excited with your performance."
 "##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
 "##1_entertainment_access##":"This dwelling barely has access to any entertainment"
 "##2_entertainment_access##":"This dwelling has some access to entertainment venues"
@@ -81,6 +79,7 @@
 "##artist_colony_bad_work##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can train an actor in three months."
 "##artist_colony_full_work##":"We are pleased to announce that, with full employment, we are helping up to four new actors every month."
 "##artist_colony_no_workers##":"This colony is deserted. Without mentors in its employ, no new actors will be produced."
+"##artist_colony_patrly_workers##":"We are slightly understaffed, and so can produce two new actors each month, at most."
 "##artist_colony_slow_work##":"We need employees badly. It will be a struggle to turn out one new actor over the next two months."
 "##artist_colony##":"Actor colony"
 "##avesome_amphitheater_access##":"This house was recently passed by an actor or a gladiator. It will have amphitheater access for a long time"
@@ -148,6 +147,7 @@
 "##buildings##":"Construction"
 "##caesar_assign_new_title##":"Caesar has promoted you to the rank of"
 "##caesar_salary##":"Caesar's salary of"
+"##cancel##":"Cancel"
 "##cancelBtnTooltip##":"Cancel this operation"
 "##cant_demolish_bridge_with_people##":"Can't demolish bridge with people on it"
 "##captured_city##":"A captured city"
@@ -161,6 +161,7 @@
 "##charioteer##":"Charioteer"
 "##charioter_so_hungry##":"Hungry? I could eat a horse, there's so little food here!"
 "##chatioteer_school_bad_work##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can build one chariot in three months."
+"##chatioteer_school_no_workers##":"With no builders, no new chariots will be produced. The hippodrome, if operational, could suffer as a result."
 "##chatioteer_school##":"Chariot maker"
 "##chest_of_sapphire##":"A chest of sapphires"
 "##chief_advisor##":"Chief Advisor"
@@ -172,6 +173,8 @@
 "##citizen_gods_angry3##":"May the gods take pity on me! It's not my fault the governor mocks them!"
 "##citizen_gods_angry4##":"The gods are angry with this place!"
 "##citizen_gods_angry5##":"The gods are angry. I wish the governor would build more temples!"
+"##citizen_gods_angry6##":"We're in danger ! This city has no respect for the gods! "
+"##citizen_gods_angry7##":"We're in trouble! The gods are annoyed with us!"
 "##citizen_good_education##":"This city is more cultured than any in the Empire!"
 "##citizen_high_workless##":"I'm lucky to have a job, with unemployment this high"
 "##citizen_high_workless2##":"If I don't find work soon, I'll need to move to a new city."
@@ -184,6 +187,7 @@
 "##citizen_low_entertainment##":"My lessons are more entertaining than this city!"
 "##citizen_low_entertainment2##":"This city is so boring! I want to see more shows!"
 "##citizen_low_entertainment3##":"This must be the most boring city in the Empire!"
+"##citizen_low_entertainment4##":"You can't get a good night out in this place!"
 "##citizen_low_salary##":"My dog wouldn't work for the wages they pay here! I'm leaving!"
 "##citizen_need_workers##":"I'm amazed by how many jobs not filled there are here"
 "##citizen_need_workers2##":"I've heard there are jobs here. I want to be a lion tamer!"
@@ -207,6 +211,8 @@
 "##city_sounds_off##":"City sounds are off"
 "##city_sounds_on##":"City sounds are on"
 "##city##":"City"
+"##clay_factory_stock##":"Stored clay,"
+"##clay_pit_bad_work##":"With hardly any diggers at this pit, production is at a virtual standstill. It will produce little clay over the coming year."
 "##clay_pit_full_work##":"This pit has all the employees it needs, and is working flat out to produce clay."
 "##clay_pit_info##":"Mine clay for trade, or to supply pottery workshops. People need pottery to inhabit insulae. You may also trade pottery with other provinces."
 "##clay_pit_need_close_to_water##":"Build clay pits close to water"
@@ -324,6 +330,7 @@
 "##emperor_favour_13##":"The Emperor is very pleased with your performance."
 "##emperor_favour_14##":"The Emperor is very excited with your performance."
 "##emperor_favour_15##":"The Emperor is pleased with your performance."
+"##emperor_favour_16##":"The Emperor is excited with your performance."
 "##emperor_favour_17##":"The Emperor is extremely excited with your performance."
 "##emperor_favour_18##":"The Emperor is overjoyed with your performance."
 "##emperor_favour_19##":"The Emperor is more than satisfied with your performance."
@@ -424,11 +431,12 @@
 "##fullscreen_on##":"Full screen"
 "##funds_tooltip##":"Funds"
 "##furniture_need##":"Furniture needed"
-"##furniture_workshop_bad_work##":"Very few carpenters work here. Furniture production is very slow as a result."
+"##furniture_workshop_bad_work##":"With hardly any craftsmen at this workshop, production is at a virtual standstill. It will produce little furniture over the coming year."
 "##furniture_workshop_full_work##":"This workshop is at full employment, and is working flat out to produce furniture."
 "##furniture_workshop_info##":"The carpenters at this workshop make fine furniture from lumber. Some citizens want furniture for their own homes, or you can trade any surplus."
 "##furniture_workshop_need_resource##":"This workshop needs a shipment of timber from a warehouse or a lumber yard to produce furniture."
 "##furniture_workshop_need_some_workers##":"This workshop is understaffed, and takes longer to produce furniture than it should."
+"##furniture_workshop_slow_work##":"Very few carpenters work here. Furniture production is very slow as a result."
 "##furniture_workshop##":"Furniture workshop"
 "##furniture##":"Furniture"
 "##game_is_paused##":"Game Paused ('P' Key Continues)"
@@ -440,6 +448,7 @@
 "##gladiator_pit_bad_work##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can train a gladiator in three months."
 "##gladiator_pit_full_work##":"We are pleased to announce that, with full employment, we are training up to four new gladiators every month."
 "##gladiator_pit_no_workers##":"With no training staff, this school cannot train any new gladiators."
+"##gladiator_pit_patrly_workers##":"We are slightly understaffed, and so can train at most two new gladiators each month."
 "##gladiator_pit##":"Gladiator school"
 "##gmenu_about##":"About"
 "##gmenu_advisors##":"Adviser"
@@ -463,11 +472,15 @@
 "##goto_empire_map##":"Go to the map of the Empire"
 "##goto##":"Go to"
 "##governor_palace_1_info##":"Your home is one of the city's most desirable addresses."
+"##governor_palace_1##":"Governor's house"
+"##governor_palace_2##":"Governor's villa"
+"##governor_palace_3##":"Governor's palace"
 "##granaries_holds##":"Granaries hold"
 "##granary_holds##":"Granary holds"
 "##granary_info##":"Full granaries are vital for keeping the people's bellies filled and attracting new citizens. A granary can store grain, meat or fish, vegetables and fruit."
 "##granary_orders##":"Granary instructions"
 "##granery##":"Granary"
+"##grape_factory_stock##":"Stored grapes,"
 "##grape##":"Vines"
 "##grass##":"Grass"
 "##gree_manuscript##":"A Greek manuscript"
@@ -512,6 +525,7 @@
 "##import##":"Imports"
 "##infobox_tooltip_exit##":"Close this window"
 "##infobox_tooltip_help##":"Show help for this window"
+"##iron_factory_stock##":"Stored iron,"
 "##iron_mine_bad_work##":"Very few people work in this mine. Iron production is slow as a result."
 "##iron_mine_bad_work##":"With hardly any miners here, output has nearly stopped. It will produce little iron over the coming year."
 "##iron_mine_collapse##":"Iron mine collapse"
@@ -549,6 +563,7 @@
 "##library##":"Library"
 "##lion_pit_bad_work##":"I have no staff other than myself. I cannot be expected to work under these conditions! At best, I can provide a lion in three months."
 "##lion_pit_no_workers##":"With no handlers, this lion pit will not supply any new lions for the games."
+"##lion_pit_patrly_workers##":"We are slightly understaffed, and so can only provide two new lions each month at most."
 "##lion_pit_work##":"We are pleased to announce that, with full employment, we can provide up to four new lions every month."
 "##lion_pit##":"Lion pit"
 "##lion_so_hungry##":"If food doesn't arrive soon, this lion'll eat his own tamer! Me!"
@@ -735,7 +750,9 @@
 "##oil_workshop##":"Oil workshop"
 "##oil##":"Oil"
 "##ok##":"OK"
+"##olive_factory_stock##":"Stored olives,"
 "##olive_farm_bad_work##":"There are very few people working here. Olive production is slow as a result."
+"##olive_farm_bad_work##":"With hardly any workers in this grove, most trees are bare of olives."
 "##olive_farm_info##":"Olives are most valuable for their oil. Workshops press olives to yield oil for cooking, lighting, lubrication and preservation."
 "##olive_farm_need_some_workers##":"This grove is working below maximum capacity. Olive production could be better with more workers."
 "##olive_farm_patrly_workers##":"This grove is understaffed. It is taking longer to produce olives than it should."
@@ -777,7 +794,6 @@
 "##ovrm_school##":"School"
 "##ovrm_tax##":"Tax"
 "##ovrm_text##":"Overlays"
-"##ovrm_text##":""
 "##ovrm_theatres##":"Theatres"
 "##ovrm_tooltip##":""
 "##ovrm_troubles##":"Troubles"
@@ -797,8 +813,8 @@
 "##population_registered_as_taxpayers##":"of the population are registered for tax"
 "##population##":"Population"
 "##pottery_bad_work##":"Very few people work here. Pottery production is slow as a result."
-"##pottery_workshiop_full_work##":"This workshop has all the employees it needs. It is working flat out to produce pottery."
 "##pottery_workshop_bad_work##":"With hardly any employees at this workshop, production is at a virtual standstill. It will produce little pottery over the coming year."
+"##pottery_workshop_full_work##":"This workshop has all the employees it needs. It is working flat out to produce pottery."
 "##pottery_workshop_info##":"Here, potters mould clay into pots that citizens use for storing commodities. Trade pottery, or let your markets distribute it so that people can build better housing."
 "##pottery_workshop_need_resource##":"This workshop needs clay delivered to it, from a warehouse or a clay pit, to produce pottery."
 "##pottery_workshop_need_som_workers##":"This workshop is understaffed, and it takes longer to produce pottery than it should."
@@ -948,14 +964,15 @@
 "##templeBtnTooltip##":"Тemples"
 "##temples##":"Temples"
 "##theater_full_access##":"This house has theater access"
+"##theater_full_work##":"This theater is currently staging plays from local actors, who usually draw a good audience."
 "##theater_need_actors##":"Theaters and amphitheaters are always looking for fresh new talent."
 "##theater_no_access##":"This house has no access to a theater"
 "##theater_no_have_any_shows##":"This theater never has any shows. It needs real actors to provide entertainment for it."
 "##theater_no_workers##":"Breezes are the only thing stirring in this theater. Without workers, it provides no drama for the locals."
-"##theater_now_local_show##":"This theater is currently staging plays from local actors, who usually draw a good audience."
 "##theater##":"Theater"
 "##theaters##":"Theaters"
 "##this_year##":"So far this year"
+"##timber_factory_stock##":"Stored timber,"
 "##timber_mill_need_trees##":"Build timber yards next to trees"
 "##timber##":"Timber"
 "##to_trade_advisor##":"To Trade Advisor"
@@ -999,6 +1016,7 @@
 "##vegetable##":"Vegetables"
 "##very_high_fire_risk##":"Very high fire risk"
 "##very_low_fire_risk##":"Very low fire risk"
+"##vinard_bad_work##":"With hardly any employees at this vineyard, very few grapes will survive to the harvest."
 "##vinard_full_work##":"This vineyard has all the employees it needs. The vines are frequently heavy with fat, juicy grapes."
 "##vinard_full_work##":"This grove has all the employees it needs. Tree limbs regularly sag under heavy loads of olives."
 "##vinard_info##":"The grapes from these vines were bred specifically for winemaking. Workshops make fine wine for your own patricians, and for export."
@@ -1026,7 +1044,9 @@
 "##war_desc##":"(War)"
 "##warehouse_info##":"Goods produced for trade need warehouse storage. Caravans visit warehouses to buy and sell goods, and docks draw their goods from nearby warehouses."
 "##warehouse_no_workers##":"Skeleton staff only. Will not dispatch or receive goods"
+"##warehouse_orders##":"Warehouse instructions"
 "##warehouse##":"Warehouse"
+"##warehouseman##":"Warehouseman"
 "##warehouses##":"Warehouses"
 "##warning_amphitheater_access##":"This house has not been passed by an actor or a gladiator for a while. It will soon lose amphitheater access"
 "##warning_barber_access##":"Unless a barber walks by soon, this house will lose barber access"
@@ -1088,6 +1108,7 @@
 "##wndrt_peace_tooltip##":"Click here for advice about your Peace rating"
 "##wndrt_prosperity_tooltip##":"Click here for advice about your Prosperity rating"
 "##workers_yearly_wages_is##":"Estimated annual bill of"
+"##wrath_of_neptune_title##":"Wrath of Neptune"
 "##wt_emmigrant##":"Emigrant"
 "##wt_endeavor##":"Endeavor"
 "##wt_gladiator##":"Gladiator"
@@ -1104,27 +1125,6 @@
 "##yes##":"Yes"
 "#save_map##":"Save map"
 "Variable":"ENGLISH (v1.1)"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

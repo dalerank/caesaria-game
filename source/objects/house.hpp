@@ -29,13 +29,13 @@ class GoodStore;
 class HouseLevel
 {
 public:
-  enum { smallHovel=1, bigTent,
-         smallHut, bigHut,
-         smallDomus, bigDomus,
-         smallMansion, bigMansion,
-         smallInsula, middleInsula, bigInsula, greatInsula,
-         smallVilla,  middleVilla,  bigVilla,  greatVilla,
-         smallPalace, middlePalace, bigPalace, greatPalace } ID;
+  typedef enum { smallHovel=1, bigTent,
+                 smallHut, bigHut,
+                 smallDomus, bigDomus,
+                 smallMansion, bigMansion,
+                 smallInsula, middleInsula, bigInsula, greatInsula,
+                 smallVilla,  middleVilla,  bigVilla,  greatVilla,
+                 smallPalace, middlePalace, bigPalace, greatPalace } ID;
 };
 
 class House : public Building
@@ -63,7 +63,7 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual TilesArray getEnterArea() const;
 
-  virtual double getState( Param param) const;  
+  virtual double getState( ParameterType param) const;
 
   int getWorkersCount() const;
 
@@ -108,6 +108,9 @@ private:
   void _makeOldHabitants();
   void _updateHabitants(const CitizenGroup& group);
   void _checkEvolve();
+  void _updateTax();
+  void _updateMorale();
+  void _checkHomeless();
 
   class Impl;
   ScopedPtr< Impl > _d;

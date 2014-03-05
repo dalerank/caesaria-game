@@ -191,6 +191,60 @@ void House::_checkEvolve()
   }
 }
 
+void House::_updateTax()
+{
+  _d->taxCheckInterval = GameDate::current();
+  float cityTax = _getCity()->getFunds().getTaxRate() / 100.f;
+  appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
+}
+
+void House::_updateMorale()
+{
+  const int currentHabtn = getHabitants().count();
+
+  if( currentHabtn == 0 )
+    return;
+
+  const Service& srvc = _d->services[ Service::recruter ];
+
+  int unemploymentPrc = srvc.value() / srvc.max() * 100;
+  updateState( House::morale, unemploymentPrc > 10 ? (-unemploymentPrc / 5.f) : +1 );
+
+  if( _d->spec.getMinFoodLevel() > 0 )
+  {
+    int foodStoreQty = 0;
+    for( int k=Good::wheat; k <= Good::vegetable; k++ )
+    {
+      foodStoreQty += _d->goodStore.qty( (Good::Type)k );
+    }
+    const uint habtnConsumeGoodQty = currentHabtn / 2;
+    int monthWithFood = foodStoreQty / (habtnConsumeGoodQty+1);
+
+    updateState( House::morale, math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. ) );
+  }
+
+  appendServiceValue( Service::crime, _d->spec.crime() * ((100 - getState( House::morale )) / 100.f * math::random(4)) );
+}
+
+void House::_checkHomeless()
+{
+  int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
+  if( homelessCount > 0 )
+  {
+    homelessCount /= (homelessCount > 4 ? 2 : 1);
+    CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
+
+    int workersFireCount = homeless.count( CitizenGroup::mature );
+    if( workersFireCount > 0 )
+    {
+      events::GameEventPtr e = events::FireWorkers::create( pos(), workersFireCount );
+      e->dispatch();
+    }
+
+    Immigrant::send2city( _getCity(), homeless, getTile(), "##immigrant_no_home##" );
+  }
+}
+
 void House::timeStep(const unsigned long time)
 {
   if( _d->habitants.empty()  )
@@ -206,6 +260,7 @@ void House::timeStep(const unsigned long time)
   {
     _d->consumeServices();
     _d->updateHealthLevel( this );
+    cancelService( Service::recruter );
   }
 
   if( time % getSpec().getFoodConsumptionInterval() == 0 )
@@ -220,30 +275,10 @@ void House::timeStep(const unsigned long time)
 
   if( _d->taxCheckInterval.month() != GameDate::current().month() )
   {
-    _d->taxCheckInterval = GameDate::current();
-    float cityTax = _getCity()->getFunds().getTaxRate() / 100.f;
-    appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
-
+    _updateTax();
     _checkEvolve();    
-
-    appendServiceValue( Service::crime, _d->spec.crime() + 2 );
-    cancelService( Service::recruter );
-
-    int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
-    if( homelessCount > 0 )
-    {
-      homelessCount /= (homelessCount > 4 ? 2 : 1);
-      CitizenGroup homeless = _d->habitants.retrieve( homelessCount );
-
-      int workersFireCount = homeless.count( CitizenGroup::mature );
-      if( workersFireCount > 0 )
-      {
-        events::GameEventPtr e = events::FireWorkers::create( pos(), workersFireCount );
-        e->dispatch();
-      }
-
-      Immigrant::send2city( _getCity(), homeless, getTile(), "##immigrant_no_home##" );
-    }
+    _updateMorale();
+    _checkHomeless();
   }
 
   Building::timeStep( time );
@@ -654,7 +689,7 @@ TilesArray House::getEnterArea() const
   }
 }
 
-double House::getState(Param param) const
+double House::getState( ParameterType param) const
 {
   switch( (int)param )
   {
@@ -675,10 +710,7 @@ void House::_update()
   _d->initGoodStore( getSize().getArea() );
 }
 
-int House::getRoadAccessDistance() const
-{
-  return 2;
-}
+int House::getRoadAccessDistance() const {  return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {
@@ -743,10 +775,7 @@ std::string House::getTrouble() const
   return ret;
 }
 
-bool House::isCheckedDesirability() const
-{
-  return _getCity()->getBuildOptions().isCheckDesirability();
-}
+bool House::isCheckedDesirability() const {  return _getCity()->getBuildOptions().isCheckDesirability(); }
 
 void House::save( VariantMap& stream ) const
 {
@@ -842,7 +871,7 @@ int House::Impl::getFoodLevel() const
 int House::getWorkersCount() const
 {
   const Service& srvc = _d->services[ Service::recruter ];
-  return srvc.getMax() - srvc.value();
+  return srvc.max() - srvc.value();
 }
 
 bool House::isEducationNeed(Service::Type type) const
@@ -947,30 +976,49 @@ void House::Impl::consumeGoods( HousePtr house )
 
 void House::Impl::consumeFoods(HousePtr house)
 {
-  int consumeQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::ticksInMonth();
+  const int foodLevel = spec.getMinFoodLevel();
+  if( foodLevel == 0 )
+    return;
 
-  int foodLevel = spec.getMinFoodLevel();
+  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::ticksInMonth();
 
   int availableFoodLevel = 0;
   for( int afl=Good::wheat; afl <= Good::vegetable; afl++ )
   {
     availableFoodLevel += ( goodStore.qty( (Good::Type)afl ) > 0 ? 1 : 0 );
   }
-
   availableFoodLevel = std::min( availableFoodLevel, foodLevel );
-  int currentConsumedGood = 0;
+  bool haveFoods4Eating = ( availableFoodLevel > 0 );
 
-  for( int k=Good::wheat; k <= Good::vegetable; k++ )
+  if( haveFoods4Eating )
   {
-    if( currentConsumedGood >= availableFoodLevel )
-      break;
-
-    Good::Type gType = (Good::Type)k;
-    int vQty = std::min( goodStore.qty( gType ), consumeQty / availableFoodLevel );
-    if( vQty > 0 )
+    int alsoNeedFood = needFoodQty;
+    while( alsoNeedFood > 0 )
     {
-      currentConsumedGood++;
-      goodStore.setQty( gType, std::max( goodStore.qty( gType ) - vQty, 0) );
+      int realConsumedQty = 0;
+      for( int k=Good::wheat; k <= Good::vegetable; k++ )
+      {
+        Good::Type gType = (Good::Type)k;
+        int vQty = std::min( goodStore.qty( gType ), needFoodQty / availableFoodLevel );
+        vQty = std::min( vQty, alsoNeedFood );
+        if( vQty > 0 )
+        {
+          realConsumedQty += vQty;
+          alsoNeedFood -= vQty;
+          goodStore.setQty( gType, std::max( goodStore.qty( gType ) - vQty, 0) );
+        }
+      }
+
+      if( realConsumedQty == 0 )
+      {
+        haveFoods4Eating = false;
+        break;
+      }
     }
+  }
+
+  if( !haveFoods4Eating )
+  {
+    Logger::warning( "House: [%dx%d] have no food for habitants", house->pos().i(), house->pos().j() );
   }
 }
