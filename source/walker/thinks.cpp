@@ -113,6 +113,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     troubles << "##citizen_high_workless7##";
     troubles << "##citizen_high_workless8##";
     troubles << "##citizen_high_workless9##";
+    troubles << "##citizen_high_workless10##";
   }
 
   if( params.tax > 10 )
@@ -139,10 +140,12 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   else if( params.lifeValue > 75 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_good_life##" );
+    troubles << "##citizen_good_life##";
   }
   else if( params.lifeValue > 50 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_average_life##" );
+    troubles << "##citizen_average_life_1##";
   }
 
   if( params.education > 90 )

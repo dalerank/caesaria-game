@@ -112,8 +112,9 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::engineer, new BaseCreator< Engineer >() );
   addCreator( walker::doctor, new ServicemanCreator( Service::doctor ) );
   addCreator( walker::sheep, new BaseCreator< Sheep >() );
-  addCreator( walker::marketLady, new BaseCreator< MarketLady >() );
+  addCreator( walker::marketBuyer, new BaseCreator< MarketLady >() );
   addCreator( walker::marketKid, new BaseCreator< MarketKid >() );
+  addCreator( walker::marketLady, new ServicemanCreator( Service::market ) );
   addCreator( walker::bathlady, new ServicemanCreator( Service::baths ) );
   addCreator( walker::actor, new ServicemanCreator( Service::theater ) );
   addCreator( walker::gladiator, new ServicemanCreator( Service::amphitheater ) );

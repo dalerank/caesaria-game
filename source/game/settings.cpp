@@ -78,7 +78,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
-  _d->options[ emigrantSalaryKoeff ] = 2.f;
+  _d->options[ emigrantSalaryKoeff ] = 5.f;
 }
 
 void GameSettings::set( const std::string& option, const Variant& value )

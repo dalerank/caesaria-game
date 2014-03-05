@@ -47,6 +47,8 @@ public:
     int lifeValue;
     int education;
     int payDiff;
+    int cityWages;
+    int romeWages;
 
     Parameters()
     {
@@ -66,6 +68,8 @@ public:
       lifeValue = 0;
       payDiff = 0;
       education = 0;
+      cityWages = 0;
+      romeWages = 0;
     }
   };
 

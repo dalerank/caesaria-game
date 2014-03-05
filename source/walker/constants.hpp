@@ -64,6 +64,7 @@ enum Type{
   librarian,
   teacher,
   locust,
+  marketBuyer,
   all = 0xff,
   any = all
 };

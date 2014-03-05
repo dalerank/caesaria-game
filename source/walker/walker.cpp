@@ -619,6 +619,7 @@ public:
     append( walker::legionary,  "legionary",    "##wt_legionary##" );
     append( walker::corpse,     "corpse",       "##wt_corpse##" );
     append( walker::lion,       "lion",         "##wt_lion##" );
+    append( walker::marketBuyer,"marker_buyer",  "##wt_market_buyer##" );
     append( walker::britonSoldier, "briton_soldier", "##wt_briton_soldier##" );
     append( walker::fishPlace,  "fish_place",   "##wt_endeavor##" );
     append( walker::seaMerchant,"sea_merchant", "##wt_sea_merchant##" );

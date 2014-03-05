@@ -88,6 +88,8 @@ void Info::update( const unsigned int time )
     last.workless = city::Statistic::getWorklessPercent( _d->city );
     last.payDiff = _d->city->getEmpire()->getWorkerSalary() - _d->city->getFunds().getWorkerSalary();
     last.tax = _d->city->getFunds().getTaxRate();
+    last.cityWages = _d->city->getFunds().getWorkerSalary();
+    last.romeWages = _d->city->getEmpire()->getWorkerSalary();
   }
 }
 

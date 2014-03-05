@@ -162,6 +162,10 @@ std::string Migration::getReason() const
       return "##migration_lack_jobs##";
     if( params.workless > (int)GameSettings::get( GameSettings::worklessCitizenAway ) )
       return "##migration_people_away##";
+    if( params.romeWages - params.cityWages > 5 )
+      return "##low_wage_broke_migration##";
+    if( params.romeWages - params.cityWages > 1 )
+      return "##low_wage_lack_migration##";
   }
   return "##migration_peoples_arrived_in_city##";
 }
