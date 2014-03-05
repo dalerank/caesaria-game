@@ -32,6 +32,7 @@ public:
   virtual bool mayWork() const;
 
   virtual unsigned int getConsumeQty() const;
+  virtual std::string getWorkersProblem() const;
 
 private:
   virtual void _updatePicture( constants::Direction direction );

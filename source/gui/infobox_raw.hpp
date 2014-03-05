@@ -21,11 +21,11 @@
 namespace gui
 {
 
-class InfoBoxRawMaterial : public InfoboxConstruction
+class InfoboxRawMaterial : public InfoboxConstruction
 {
 public:  
-  InfoBoxRawMaterial( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxRawMaterial();
+  InfoboxRawMaterial( Widget* parent, const Tile& tile );
+  virtual ~InfoboxRawMaterial();
 
   virtual void showDescription();
 

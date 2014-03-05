@@ -39,7 +39,7 @@ namespace {
   Signal0<> invalidBtnClickedSignal;
 }
 
-InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
+InfoboxSenate::InfoboxSenate( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
   SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
@@ -58,19 +58,19 @@ InfoBoxSenate::InfoBoxSenate( Widget* parent, const Tile& tile )
 
   new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
   TexturedButton* btnAdvisor = new TexturedButton( this, Point( 350, 215 ), Size(28), advisorBtnId, 289 );
-  CONNECT( btnAdvisor, onClicked(), this, InfoBoxSenate::_showRatingAdvisor );
-  CONNECT( btnAdvisor, onClicked(), this, InfoBoxSenate::deleteLater );
+  CONNECT( btnAdvisor, onClicked(), this, InfoboxSenate::_showRatingAdvisor );
+  CONNECT( btnAdvisor, onClicked(), this, InfoboxSenate::deleteLater );
 }
 
-InfoBoxSenate::~InfoBoxSenate() {}
+InfoboxSenate::~InfoboxSenate() {}
 
-Signal0<>& InfoBoxSenate::onButtonAdvisorClicked()
+Signal0<>& InfoboxSenate::onButtonAdvisorClicked()
 {
   TexturedButton* btn = safety_cast<TexturedButton*>( findChild( advisorBtnId, true ) );
   return btn ? btn->onClicked() : invalidBtnClickedSignal;
 }
 
-void InfoBoxSenate::_showRatingAdvisor()
+void InfoboxSenate::_showRatingAdvisor()
 {
   events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::ratings );
   e->dispatch();

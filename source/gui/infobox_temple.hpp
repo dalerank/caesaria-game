@@ -21,11 +21,11 @@
 namespace gui
 {
 
-class InfoBoxTemple : public InfoboxConstruction
+class InfoboxTemple : public InfoboxConstruction
 {
 public:
-  InfoBoxTemple( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxTemple();
+  InfoboxTemple( Widget* parent, const Tile& tile );
+  virtual ~InfoboxTemple();
 };
 
 }//end namespace gui

@@ -33,7 +33,7 @@ public:
     int year() const;
     unsigned char minutes() const;
     unsigned char day() const;
-    unsigned char getDayOfWeek() const;
+    unsigned char dayOfWeek() const;
     unsigned char seconds() const;
 
     void setHour( unsigned char hour );
@@ -77,6 +77,7 @@ public:
 
     static const char* getDayName( unsigned char d );
     static const char* getMonthName( unsigned char d );
+    int getDaysInMonth() const;
 
     //unsigned char getMonthLength() const;
     //unsigned char getWeekNumber() const;

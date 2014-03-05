@@ -29,8 +29,8 @@
 
 using namespace std;
 
-const char* dayNames[ DateTime::dayInWeek ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-const char* monthNames[ DateTime::monthInYear ] = { "January", "February", "March", "April",
+const char* const dayNames[ DateTime::dayInWeek ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+const char* const monthNames[ DateTime::monthInYear ] = { "January", "February", "March", "April",
                                                     "May", "June", "July", "August", "September",
                                                     "October", "November", "December" };
 
@@ -46,66 +46,18 @@ void _convertToDateTime( DateTime& dateTime, const tm& val )
     dateTime.setYear(val.tm_year + 1900);
 }
 
-int DateTime::_getDaysToDate( const long other ) const
-{
-    return abs( (int)(_toJd() - other ) );
-}
-
-int DateTime::getDaysToDate( const DateTime& future ) const
-{
-    return _getDaysToDate( future._toJd() );
-}
-
-int DateTime::_isEquale( const long b )
-{
-    return _toJd() == b ? dateEquale : (_toJd() < b ? dateLess : dateMore ) ;
-}
-
-int DateTime::equale( const DateTime& b )
-{
-    return _isEquale( b._toJd() );
-}
-
-int DateTime::_getMonthToDate( const long end )
-{
-    return _getDaysToDate( end ) / 30;
-}
-
-int DateTime::getMonthToDate( const DateTime& end )
-{
-    return _getMonthToDate( end._toJd() );
-}
-
-bool DateTime::operator!=( const DateTime& other ) const
-{
-    return _toJd() != other._toJd();
-}
-
-bool DateTime::operator==( const DateTime& other ) const
-{
-    return _toJd() == other._toJd();
-}
-
-bool DateTime::operator<=( const DateTime& other ) const
-{
-    return _toJd() <= other._toJd();
-}
-
-bool DateTime::operator<( const DateTime& other ) const
-{
-    return _toJd() < other._toJd();
-}
-
-bool DateTime::operator>=( const DateTime& other ) const
-{
-    return _toJd() >= other._toJd();
-}
-
-bool DateTime::operator>( const DateTime& other ) const
-{
-    return _toJd() > other._toJd();
-}
-
+int DateTime::_getDaysToDate( const long other ) const {    return abs( (int)(_toJd() - other ) );}
+int DateTime::getDaysToDate( const DateTime& future ) const{    return _getDaysToDate( future._toJd() );}
+int DateTime::_isEquale( const long b ){    return _toJd() == b ? dateEquale : (_toJd() < b ? dateLess : dateMore ) ;}
+int DateTime::equale( const DateTime& b ){    return _isEquale( b._toJd() );}
+int DateTime::_getMonthToDate( const long end ){    return _getDaysToDate( end ) / 30;}
+int DateTime::getMonthToDate( const DateTime& end ){    return _getMonthToDate( end._toJd() );}
+bool DateTime::operator!=( const DateTime& other ) const{    return _toJd() != other._toJd();}
+bool DateTime::operator==( const DateTime& other ) const{    return _toJd() == other._toJd();}
+bool DateTime::operator<=( const DateTime& other ) const{    return _toJd() <= other._toJd();}
+bool DateTime::operator<( const DateTime& other ) const{    return _toJd() < other._toJd();}
+bool DateTime::operator>=( const DateTime& other ) const{    return _toJd() >= other._toJd();}
+bool DateTime::operator>( const DateTime& other ) const{    return _toJd() > other._toJd();}
 bool DateTime::isValid() const
 {   
     return (_year > -4573 && _year < 9999)
@@ -225,30 +177,16 @@ DateTime DateTime::getCurrenTime()
   return DateTime( d.tm_year+1900, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec );
 }
 
-unsigned char DateTime::getDayOfWeek() const
+unsigned char DateTime::dayOfWeek() const {  return ( (int) ( _toJd() % 7L ) ); }
+const char* DateTime::getDayName( unsigned char d ){   return dayNames[ d ];}
+const char* DateTime::getMonthName( unsigned char d ){  return monthNames[ d ];}
+int DateTime::getDaysInMonth() const
 {
-  return ( (int) ( _toJd() % 7L ) );
-}
-
-const char* DateTime::getDayName( unsigned char d )
-{
-   return dayNames[ d ];
-}
-
-const char* DateTime::getMonthName( unsigned char d )
-{
-    return monthNames[ d ];
-}
-
-/*unsigned char DateTime::getMonthLength() const
-{
-    tm d = _getOsLocalTime( to_time_t() );
-    int month = d.tm_mon+1;
-    return ( month!=2
-                ?( (month%2) ^ (month>7) )+30
-                :( ((!(d.tm_year % 400) || !( d.tm_year % 4 )) && ( d.tm_year % 25 )) ? 29 : 28 )
+    return ( _month!=2
+                ?( (_month%2) ^ (_month>7) )+30
+                :( ((!(_year % 400) || !( _year % 4 )) && ( _year % 25 )) ? 29 : 28 )
            );
-}*/
+}
 
 /*unsigned char DateTime::getWeekNumber() const
 {

@@ -29,18 +29,28 @@
 namespace gui
 {
 
-InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
+InfoboxWarehouse::InfoboxWarehouse( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
   _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
   setConstruction( ptr_cast<Construction>( _warehouse ) );
 
+  /*StringArray warnings;
+  if( _warehouse->onlyDispatchGoods() )  { warnings << "##warehouse_low_personal_warning##";  }
+  if( _warehouse->getGoodStore().freeQty() == 0 ) { warnings << "##warehouse_full_warning##";  }
+
+  if( !warnings.empty() )
+  {
+    Label* lb = new Label( this, Rect( 20, height() - 54, width() - 20, height() - 34 ), _(warnings.rand()) );
+    lb->setTextAlignment( alignCenter, alignCenter );
+  }*/
+
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width()) / 2, height() - 34 ), btnOrdersSize ),
                                           _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
 
-  CONNECT( btnOrders, onClicked(), this, InfoBoxWarehouse::showSpecialOrdersWindow );
+  CONNECT( btnOrders, onClicked(), this, InfoboxWarehouse::showSpecialOrdersWindow );
 
   std::string title = MetaDataHolder::getPrettyName( _warehouse->type() );
   setTitle( _(title) );
@@ -70,9 +80,9 @@ InfoBoxWarehouse::InfoBoxWarehouse( Widget* parent, const Tile& tile )
   _updateWorkersLabel( Point( 20, 10 ), 542, _warehouse->maxWorkers(), _warehouse->numberWorkers() );
 }
 
-InfoBoxWarehouse::~InfoBoxWarehouse() {}
+InfoboxWarehouse::~InfoboxWarehouse() {}
 
-void InfoBoxWarehouse::showSpecialOrdersWindow()
+void InfoboxWarehouse::showSpecialOrdersWindow()
 {
   Point pos;
   if( getTop() > (int)getParent()->height() / 2 )
@@ -87,7 +97,7 @@ void InfoBoxWarehouse::showSpecialOrdersWindow()
   new WarehouseSpecialOrdersWindow( getParent(), pos, _warehouse );
 }
 
-void InfoBoxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
+void InfoboxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
 {
   std::string goodName = GoodHelper::getName( goodType );
   int qty = _warehouse->getGoodStore().qty(goodType);

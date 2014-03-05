@@ -12,40 +12,37 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_AMPHITHEATER_H_INCLUDED__
-#define __CAESARIA_AMPHITHEATER_H_INCLUDED__
+#ifndef __CAESARIA_COLOSSEUM_H_INCLUDED__
+#define __CAESARIA_COLOSSEUM_H_INCLUDED__
 
 #include "entertainment.hpp"
 
-class Amphitheater : public EntertainmentBuilding
+class Colosseum : public EntertainmentBuilding
 {
 public:
-  Amphitheater();
-
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-
+  Colosseum();
   virtual void deliverService();
-  virtual void timeStep(const unsigned long time);
-  virtual std::string getSound() const;
   virtual Service::Type getService() const;
+  virtual void build(PlayerCityPtr city, const TilePos& pos);
+  virtual std::string getTrouble() const;
 
-  virtual std::string getWorkersState() const;
-  virtual void save(VariantMap& stream) const;
-  virtual void load(const VariantMap& stream);
+  bool isNeedGladiators() const;
+  bool isShowGladiatorBattles() const;
+  bool isShowLionBattles() const;
 
-  DateTime getLastShowDate() const;
-  DateTime getLastBoutsDate() const;
+  DateTime getLastAnimalBoutDate() const;
+  DateTime getLastGladiatorBoutDate() const;
 
-  bool isShowGladiatorBouts() const;
-  bool isActorsShow() const;
-
-  bool isNeed( constants::walker::Type type );
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 private:
   Service::Type _getServiceManType() const;
 
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
-#endif //__CAESARIA_AMPHITHEATER_H_INCLUDED__
+#endif //__CAESARIA_COLOSSEUM_H_INCLUDED__

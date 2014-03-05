@@ -22,6 +22,7 @@
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
 #include "good/goodstore.hpp"
+#include "game/gamedate.hpp"
 #include "constants.hpp"
 
 using namespace constants;
@@ -31,12 +32,14 @@ class Wharf::Impl
 public:
   enum { southPic=54, northPic=52, westPic=55, eastPic=53 };
   FishingBoatPtr boat;
+  int checkInterval;
 };
 
 Wharf::Wharf() : CoastalFactory(Good::none, Good::fish, building::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
   setPicture( ResourceGroup::wharf, Impl::northPic );
+  _d->checkInterval = GameDate::ticksInMonth() / 4;
 }
 
 void Wharf::destroy()
@@ -56,7 +59,7 @@ void Wharf::timeStep(const unsigned long time)
   CoastalFactory::timeStep(time);
 
   //try get good from storage building for us
-  if( time % 22 == 1 && numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     receiveGood();
     deliverGood();
@@ -118,6 +121,30 @@ bool Wharf::mayWork() const
 {
   bool mayWork = CoastalFactory::mayWork();
   return (mayWork && _d->boat.isValid());
+}
+
+std::string Wharf::getWorkersProblem() const
+{
+  std::string ret = CoastalFactory::getWorkersProblem();
+
+  if( ret.empty() )
+  {
+    if( _d->boat.isValid() )
+    {
+      switch( _d->boat->state() )
+      {
+      case FishingBoat::catchFish: ret = "##wharf_our_boat_fishing##"; break;
+      case FishingBoat::back2base: ret = _d->boat->getFishQty() > 0
+                                            ? "##wharf_out_boat_return_with_fish##"
+                                            : "##wharf_our_boat_return##";
+      break;
+
+      case FishingBoat::go2fishplace: ret = "##wharf_out_boat_ready_fishing##"; break;
+      }
+    }
+  }
+
+  return ret;
 }
 
 void Wharf::_updatePicture(Direction direction)

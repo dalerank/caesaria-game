@@ -28,7 +28,7 @@ using namespace constants;
 namespace gui
 {
 
-InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
+InfoboxMarket::InfoboxMarket( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
 {
    MarketPtr market = ptr_cast<Market>( tile.overlay() );
@@ -86,9 +86,9 @@ InfoBoxMarket::InfoBoxMarket( Widget* parent, const Tile& tile )
    _updateWorkersLabel( Point( 32, 8 ), 542, market->maxWorkers(), market->numberWorkers() );
 }
 
-InfoBoxMarket::~InfoBoxMarket() {}
+InfoboxMarket::~InfoboxMarket() {}
 
-void InfoBoxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int index, int paintY )
+void InfoboxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int index, int paintY )
 {
   int startOffset = 25;
 

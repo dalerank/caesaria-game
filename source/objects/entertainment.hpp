@@ -66,20 +66,6 @@ public:
   virtual void deliverService();
 };
 
-class Collosseum : public EntertainmentBuilding
-{
-public:
-  Collosseum();
-  virtual void deliverService();
-  virtual Service::Type getService() const;
-  virtual void build(PlayerCityPtr city, const TilePos& pos);
-  virtual std::string getTrouble() const;
-
-  bool isNeedGladiators() const;
-  bool isShowGladiatorBattles() const;
-  bool isShowLionBattles() const;
-};
-
 class Hippodrome : public EntertainmentBuilding
 {
 public:

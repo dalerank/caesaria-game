@@ -217,6 +217,9 @@ public:
     btnIncrease = new TexturedButton( this, Point( 220 + 24, 3 ), Size( 24 ), -1, 605 );
     btnDecrease->hide();
     btnIncrease->hide();
+
+    btnDecrease->setTooltipText( _("##export_btn_tooltip##") );
+    btnIncrease->setTooltipText( _("##export_btn_tooltip##") );
   }
 
   virtual void _updateTexture( ElementState state )

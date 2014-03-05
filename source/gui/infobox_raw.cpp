@@ -31,7 +31,7 @@ using namespace constants;
 namespace gui
 {
 
-InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
+InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 74 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
@@ -77,11 +77,11 @@ InfoBoxRawMaterial::InfoBoxRawMaterial( Widget* parent, const Tile& tile )
   }
 }
 
-InfoBoxRawMaterial::~InfoBoxRawMaterial()
+InfoboxRawMaterial::~InfoboxRawMaterial()
 {
 }
 
-void InfoBoxRawMaterial::showDescription()
+void InfoboxRawMaterial::showDescription()
 {
   DictionaryWindow::show( getEnvironment()->getRootWidget(), _type );
 }

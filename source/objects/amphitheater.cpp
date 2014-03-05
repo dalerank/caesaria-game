@@ -21,12 +21,20 @@
 #include "training.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "game/gamedate.hpp"
+#include "walker/serviceman.hpp"
 #include "objects/constants.hpp"
 
 using namespace constants;
 
+class Amphitheater::Impl
+{
+public:
+  DateTime lastDateGl, lastDateShow;
+};
 
-Amphitheater::Amphitheater() : EntertainmentBuilding(Service::amphitheater, building::amphitheater, Size(3))
+Amphitheater::Amphitheater()
+  : EntertainmentBuilding(Service::amphitheater, building::amphitheater, Size(3)), _d( new Impl )
 {
   _fgPicturesRef().resize(2);
 
@@ -84,19 +92,68 @@ void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
 
 void Amphitheater::deliverService()
 {
-  EntertainmentBuilding::deliverService();
+  int saveWalkesNumber = getWalkers().size();
+  Service::Type lastSrvc = getService();
 
-  _fgPicturesRef()[0] = _animationRef().isRunning()
-                         ? Picture::load( ResourceGroup::entertaiment, 12 )
-                         : Picture::getInvalid();
+  EntertainmentBuilding::deliverService();
 
   if( _animationRef().isRunning())
   {
     _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
+    int currentWalkerNumber = getWalkers().size();
+    if( saveWalkesNumber != currentWalkerNumber )
+    {
+      (lastSrvc == Service::colloseum
+        ? _d->lastDateGl : _d->lastDateShow ) = GameDate::current();
+    }
   }
   else
   {
     _fgPicturesRef().front() = Picture::getInvalid();
     _fgPicturesRef().back() = Picture::getInvalid();
   }
+}
+
+void Amphitheater::save(VariantMap& stream) const
+{
+  EntertainmentBuilding::save( stream );
+  stream[ "lastGdate" ] = _d->lastDateGl;
+  stream[ "lastSdate" ] = _d->lastDateShow;
+}
+
+void Amphitheater::load(const VariantMap& stream)
+{
+  EntertainmentBuilding::load( stream );
+  _d->lastDateGl = stream.get( "lastGdate" ).toDateTime();
+  _d->lastDateShow = stream.get( "lastSdate" ).toDateTime();
+}
+
+DateTime Amphitheater::getLastShowDate() const{  return _d->lastDateShow;}
+DateTime Amphitheater::getLastBoutsDate() const{  return _d->lastDateGl;}
+
+Service::Type Amphitheater::_getServiceManType() const
+{
+  WalkerList walkers = getWalkers();
+  if( walkers.empty() )
+    return Service::srvCount;
+
+  ServiceWalkerPtr srvc = ptr_cast<ServiceWalker>( walkers.front() );
+  return (srvc.isValid() ? srvc->getService() : Service::srvCount);
+}
+
+bool Amphitheater::isShowGladiatorBouts() const { return _getServiceManType() == Service::amphitheater; }
+bool Amphitheater::isActorsShow() const { return _getServiceManType() == Service::theater; }
+
+bool Amphitheater::isNeed(walker::Type type)
+{
+  switch( type )
+  {
+  case walker::gladiator:
+  case walker::actor:
+    return getTraineeValue( type ) == 0;
+
+  default: break;
+  }
+
+  return false;
 }

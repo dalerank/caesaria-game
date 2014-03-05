@@ -40,6 +40,10 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
+  bool onlyDispatchGoods() const;
+
+  virtual std::string getTrouble() const;
+
 private:
   void _resolveDevastationMode();
   void _resolveDeliverMode();

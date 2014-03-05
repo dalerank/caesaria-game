@@ -261,7 +261,10 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
     {
       if( sell.freeQty() == 0 && buy.qty() == 0 )
       {
-        wlk->setThinks( "##landmerchant_noany_trade##" );
+        StringArray th;
+        th << "##landmerchart_noany_trade2##";
+        th << "##landmerchant_noany_trade##";
+        wlk->setThinks( th.rand() );
       }
       else
       {

@@ -82,8 +82,8 @@ public:
     append( Good::fish, "fish", _("##fish##") );
     append( Good::meat, "meat", _("##meat##") );
     append( Good::fruit, "fruit", _("##fruits##"));
-    append( Good::vegetable, "vegetable", _("##vegetables##") );
-    append( Good::olive, "olive", _("##olives##") );
+    append( Good::vegetable, "vegetable", _("##vegetable##") );
+    append( Good::olive, "olive", _("##olive##") );
     append( Good::oil, "oil", _("##oil##") );
     append( Good::grape, "grape", _("##grape##") );
     append( Good::wine, "wine", _("##wine##") );

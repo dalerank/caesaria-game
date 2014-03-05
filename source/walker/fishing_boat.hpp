@@ -21,6 +21,8 @@
 class FishingBoat : public Ship
 {
 public:
+  typedef enum { go2fishplace, catchFish, back2base, finishCatch, unloadFish, ready2Catch, wait } State;
+
   static FishingBoatPtr create( PlayerCityPtr city );
 
   void send2city( CoastalFactoryPtr base, TilePos start);
@@ -30,11 +32,13 @@ public:
 
   virtual void timeStep(const unsigned long time);
   void startCatch();
-  void back2base();
+  void return2base();
 
   void setBase( CoastalFactoryPtr base );
+  State state() const;
 
   bool isBusy() const;
+  int getFishQty() const;
 
   virtual void die();
 protected:

@@ -61,6 +61,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     troubles << "##citizen_gods_angry5##";
     troubles << "##citizen_gods_angry6##";
     troubles << "##citizen_gods_angry7##";
+    troubles << "##citizen_gods_angry8##";
   }
 
   if( params.colloseumCoverage < 3 )
@@ -114,6 +115,9 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     troubles << "##citizen_high_workless8##";
     troubles << "##citizen_high_workless9##";
     troubles << "##citizen_high_workless10##";
+    troubles << "##citizen_high_workless11##";
+    troubles << "##citizen_high_workless12##";
+    troubles << "##citizen_high_workless13##";
   }
 
   if( params.tax > 10 )

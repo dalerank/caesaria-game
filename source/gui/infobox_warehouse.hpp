@@ -21,11 +21,11 @@
 namespace gui
 {
 
-class InfoBoxWarehouse : public InfoboxConstruction
+class InfoboxWarehouse : public InfoboxConstruction
 {
 public:
-  InfoBoxWarehouse( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxWarehouse();
+  InfoboxWarehouse( Widget* parent, const Tile& tile );
+  virtual ~InfoboxWarehouse();
 
   void drawGood( const Good::Type &goodType, int col, int paintY);
   void showSpecialOrdersWindow();

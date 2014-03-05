@@ -61,6 +61,7 @@
 #include "elevation.hpp"
 #include "dock.hpp"
 #include "fountain.hpp"
+#include "colosseum.hpp"
 #include <map>
 
 using namespace constants;
@@ -190,7 +191,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   // entertainment
   ADD_CREATOR(building::theater,      Theater,      WorkingBuildingCreator );
   ADD_CREATOR(building::amphitheater, Amphitheater, WorkingBuildingCreator );
-  ADD_CREATOR(building::colloseum,    Collosseum,   WorkingBuildingCreator );
+  ADD_CREATOR(building::colloseum,    Colosseum,   WorkingBuildingCreator );
   ADD_CREATOR(building::actorColony,  ActorColony,  WorkingBuildingCreator );
   ADD_CREATOR(building::gladiatorSchool, GladiatorSchool, WorkingBuildingCreator );
   ADD_CREATOR(building::lionsNursery, LionsNursery, WorkingBuildingCreator );

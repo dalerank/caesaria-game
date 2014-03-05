@@ -22,11 +22,11 @@
 namespace gui
 {
 
-class InfoBoxSenate : public InfoboxSimple
+class InfoboxSenate : public InfoboxSimple
 {
 public:
-  InfoBoxSenate( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxSenate();
+  InfoboxSenate( Widget* parent, const Tile& tile );
+  virtual ~InfoboxSenate();
 
 public oc3_signals:
   Signal0<>& onButtonAdvisorClicked();

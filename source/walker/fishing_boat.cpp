@@ -33,12 +33,11 @@ using namespace constants;
 
 class FishingBoat::Impl
 {
-public:
-  typedef enum { go2fishplace, catchFish, back2base, finishCatch, unloadFish, ready2Catch, wait } Mode;
+public:  
   CoastalFactoryPtr base;
   TilePos destination;
   GoodStock stock;
-  Mode mode;
+  FishingBoat::State mode;
 
   Pathway findFishingPlace(PlayerCityPtr city, TilePos pos);
 };
@@ -58,7 +57,7 @@ void FishingBoat::load( const VariantMap& stream )
   Ship::load( stream );
   _d->destination = stream.get( "destination" );
   _d->stock.load( stream.get( "stock" ).toList() );
-  _d->mode = (Impl::Mode)stream.get( "mode", (int)Impl::wait ).toInt();
+  _d->mode = (State)stream.get( "mode", (int)wait ).toInt();
 
   _d->base = ptr_cast<CoastalFactory>(_getCity()->getOverlay( (TilePos)stream.get( "base" ) ) );
   if( _d->base.isValid() )
@@ -75,7 +74,7 @@ void FishingBoat::timeStep(const unsigned long time)
   {
     switch( _d->mode )
     {
-    case Impl::ready2Catch:
+    case ready2Catch:
     {
       _animationRef().clear();
       _setAnimation( gfx::fishingBoat );
@@ -85,12 +84,12 @@ void FishingBoat::timeStep(const unsigned long time)
         setPathway( way );
         go();
 
-        _d->mode = Impl::go2fishplace;
+        _d->mode = go2fishplace;
       }
     }
     break;
 
-    case Impl::catchFish:
+    case catchFish:
     {
       _animationRef().clear();
       _setAnimation( gfx::fishingBoatWork );
@@ -105,17 +104,17 @@ void FishingBoat::timeStep(const unsigned long time)
       }
       else
       {
-        _d->mode = Impl::ready2Catch;
+        _d->mode = ready2Catch;
       }
 
       if( _d->stock.qty() == _d->stock.capacity() )
       {
-        _d->mode = Impl::finishCatch;
+        _d->mode = finishCatch;
       }
     }
     break;
 
-    case Impl::finishCatch:
+    case finishCatch:
     {
       if( _d->base != 0 )
       {
@@ -124,7 +123,7 @@ void FishingBoat::timeStep(const unsigned long time)
 
         if( way.isValid() )
         {
-          _d->mode = Impl::back2base;
+          _d->mode = back2base;
           setPathway( way );
           go();
         }
@@ -140,11 +139,11 @@ void FishingBoat::timeStep(const unsigned long time)
     }
     break;
 
-    case Impl::go2fishplace: break;
-    case Impl::back2base: break;
-    case Impl::wait: break;
+    case go2fishplace: break;
+    case back2base: break;
+    case wait: break;
 
-    case Impl::unloadFish:
+    case unloadFish:
       if( _d->stock.qty() > 0 && _d->base != 0 )
       {
         _d->stock.setQty( math::clamp( _d->stock.qty()-10, 0, 100 ) );
@@ -153,36 +152,23 @@ void FishingBoat::timeStep(const unsigned long time)
 
       if( _d->stock.qty() == 0 )
       {
-        _d->mode = Impl::ready2Catch;
+        _d->mode = ready2Catch;
       }
     break;
     }
   }
 }
 
-void FishingBoat::startCatch()
-{
-  _d->mode = Impl::ready2Catch;
-}
-
-void FishingBoat::back2base()
-{
-  _d->mode = Impl::finishCatch;
-}
-
-void FishingBoat::setBase(CoastalFactoryPtr base)
-{
-  _d->base = base;
-}
-
-bool FishingBoat::isBusy() const
-{
-  return _d->mode != Impl::wait;
-}
+void FishingBoat::startCatch() {  _d->mode = ready2Catch; }
+void FishingBoat::return2base(){  _d->mode = finishCatch; }
+void FishingBoat::setBase(CoastalFactoryPtr base){  _d->base = base;}
+FishingBoat::State FishingBoat::state() const{  return _d->mode;}
+bool FishingBoat::isBusy() const{  return _d->mode != wait; }
+int FishingBoat::getFishQty() const{  return _d->stock.qty(); }
 
 void FishingBoat::die()
 {
-  _d->mode = Impl::wait;
+  _d->mode = wait;
   _d->base = 0;
   _animationRef().load( ResourceGroup::carts, 265, 8 );
   _animationRef().setDelay( 4 );
@@ -195,7 +181,7 @@ FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
   _setAnimation( gfx::fishingBoat );
   _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );
-  _d->mode = Impl::wait;
+  _d->mode = wait;
   _d->stock.setType( Good::fish );
   _d->stock.setCapacity( 100 );
 }
@@ -214,8 +200,8 @@ void FishingBoat::_reachedPathway()
 
   switch( _d->mode )
   {
-  case Impl::go2fishplace: _d->mode = Impl::catchFish; break;
-  case Impl::back2base: _d->mode = Impl::unloadFish; break;
+  case go2fishplace: _d->mode = catchFish; break;
+  case back2base: _d->mode = unloadFish; break;
   default: break;
   }
 }

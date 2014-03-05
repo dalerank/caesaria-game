@@ -22,11 +22,11 @@ namespace gui
 {
 
 // info box about a market
-class InfoBoxMarket : public InfoboxConstruction
+class InfoboxMarket : public InfoboxConstruction
 {
 public:
-   InfoBoxMarket( Widget* parent, const Tile& tile );
-   virtual ~InfoBoxMarket();
+   InfoboxMarket( Widget* parent, const Tile& tile );
+   virtual ~InfoboxMarket();
    
    void drawGood( MarketPtr market, const Good::Type &goodType, int, int );
 };

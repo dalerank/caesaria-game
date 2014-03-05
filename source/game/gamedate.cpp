@@ -22,10 +22,7 @@ public:
   DateTime current;
 };
 
-DateTime GameDate::current()
-{
-  return instance()._d->current;
-}
+DateTime GameDate::current() {  return instance()._d->current; }
 
 GameDate& GameDate::instance()
 {
@@ -33,19 +30,18 @@ GameDate& GameDate::instance()
   return inst;
 }
 
-unsigned int GameDate::ticksInMonth()
-{
-  return 250;
-}
+unsigned int GameDate::ticksInMonth() {  return 250; }
 
 void GameDate::timeStep( unsigned int time )
 {
-  if( time % ticksInMonth() == 1 )
+  unsigned int dftime = time % ticksInMonth();
+  DateTime& date = instance()._d->current;
+  if( dftime == 1 )
   {
-    // every X seconds
-    GameDate& inst = instance();
-    inst._d->current.appendMonth( 1 );
-  }
+    // every X seconds    
+    date.appendMonth( 1 );
+  }  
+  date.setDay( (dftime * date.getDaysInMonth() ) / ticksInMonth() );
 }
 
 void GameDate::init( const DateTime& date )
@@ -59,7 +55,4 @@ GameDate::GameDate() : _d( new Impl )
   _d->current = DateTime( -350, 0, 0 );
 }
 
-GameDate::~GameDate()
-{
-
-}
+GameDate::~GameDate(){}

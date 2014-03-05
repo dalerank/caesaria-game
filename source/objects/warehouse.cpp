@@ -167,7 +167,7 @@ int WarehouseStore::qty() const {  return qty( Good::goodCount ); }
 
 int WarehouseStore::getMaxStore(const Good::Type goodType)
 {
-  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->numberWorkers() == 0 )
+  if( getOrder( goodType ) == GoodOrders::reject || isDevastation() || _warehouse->onlyDispatchGoods() )
   { 
     return 0;
   }
@@ -440,6 +440,22 @@ void Warehouse::load( const VariantMap& stream )
   }
 
   computePictures();
+}
+
+bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maxWorkers() / 3; }
+
+std::string Warehouse::getTrouble() const
+{
+  std::string ret = WorkingBuilding::getTrouble();
+
+  if( ret.empty() )
+  {
+    if( onlyDispatchGoods() )  { ret = "##warehouse_low_personal_warning##";  }
+    else if( getGoodStore().freeQty() == 0 ) { ret = "##warehouse_full_warning##";  }
+    else if( isGettingFull() ) { ret == "##warehouse_gettinfull_warning##"; }
+  }
+
+  return ret;
 }
 
 void Warehouse::_resolveDeliverMode()

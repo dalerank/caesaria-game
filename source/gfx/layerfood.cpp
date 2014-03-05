@@ -21,19 +21,21 @@
 #include "game/resourcegroup.hpp"
 #include "city/helper.hpp"
 #include "layerconstants.hpp"
+#include "core/event.hpp"
+#include "gfx/tilemap_camera.hpp"
+#include "core/gettext.hpp"
+#include "good/goodstore.hpp"
 
 using namespace constants;
 
-int LayerFood::getType() const
-{
-  return citylayer::food;
-}
+int LayerFood::getType() const {  return citylayer::food; }
 
 Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::marketLady );
   ret.insert( walker::marketKid );
+  ret.insert( walker::marketBuyer );
 
   return ret;
 }
@@ -64,6 +66,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::granary:
       pic = tile.getPicture();
       needDrawAnimations = true;
+      drawTilePass( engine, tile, offset, Renderer::foreground );
     break;
 
       //houses
@@ -75,7 +78,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         foodLevel = house->getState( (Construction::Param)House::food );
         needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
       }
-      break;
+    break;
 
       //other buildings
     default:
@@ -100,6 +103,50 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
+}
+
+void LayerFood::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        HousePtr house = ptr_cast<House>( tile->overlay() );
+        if( house.isValid() )
+        {
+          GoodStore& st = house->getGoodStore();
+          int foodQty = 0;
+          for( int k=Good::wheat; k <= Good::vegetable; k++ )
+          {
+            foodQty += st.qty( (Good::Type)k );
+          }
+          int monthWithFood = 2 * foodQty / house->getHabitants().count();
+
+          switch( monthWithFood )
+          {
+          case 0: text = "##house_have_not_food##"; break;
+          case 1: text = "##house_food_only_for_month##"; break;
+          case 2: case 3: text = "##house_have_some_food##"; break;
+          default: text = "##house_have_much_food##"; break;
+          }
+        }
+      }
+
+      _setTooltipText( _(text) );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerPtr LayerFood::create(TilemapCamera& camera, PlayerCityPtr city)

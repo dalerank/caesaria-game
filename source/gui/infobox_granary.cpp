@@ -31,7 +31,7 @@ using namespace constants;
 namespace gui
 {
 
-InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
+InfoboxGranary::InfoboxGranary( Widget* parent, const Tile& tile )
   : InfoboxConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
   _granary = ptr_cast<Granary>( tile.overlay() );
@@ -41,7 +41,7 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width())/ 2, height() - 34 ), btnOrdersSize),
                                          _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );
-  CONNECT( btnOrders, onClicked(), this, InfoBoxGranary::showSpecialOrdersWindow );
+  CONNECT( btnOrders, onClicked(), this, InfoboxGranary::showSpecialOrdersWindow );
 
   std::string title = MetaDataHolder::getPrettyName( _granary->type() );
   setTitle( _(title) );
@@ -62,11 +62,11 @@ InfoBoxGranary::InfoBoxGranary( Widget* parent, const Tile& tile )
   _updateWorkersLabel( Point( 32, lbUnits->bottom() + 60 ), 542, _granary->maxWorkers(), _granary->numberWorkers() );
 }
 
-InfoBoxGranary::~InfoBoxGranary()
+InfoboxGranary::~InfoboxGranary()
 {
 }
 
-void InfoBoxGranary::showSpecialOrdersWindow()
+void InfoboxGranary::showSpecialOrdersWindow()
 {
   Point pos;
   if( getTop() > (int)getParent()->height() / 2 )
@@ -81,7 +81,7 @@ void InfoBoxGranary::showSpecialOrdersWindow()
   new GranarySpecialOrdersWindow( getParent(), pos, _granary );
 }
 
-void InfoBoxGranary::drawGood( Good::Type goodType, int col, int paintY)
+void InfoboxGranary::drawGood( Good::Type goodType, int col, int paintY)
 {
   std::string goodName = GoodHelper::getTypeName( goodType );
   int qty = _granary->getGoodStore().qty(goodType);

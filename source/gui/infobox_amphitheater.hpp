@@ -13,24 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_LAYERFOOD_H_INCLUDED__
-#define __CAESARIA_LAYERFOOD_H_INCLUDED__
+#ifndef _CAESARIA_INFOBOX_AMPHITHEATER_H_INCLUDE_
+#define _CAESARIA_INFOBOX_AMPHITHEATER_H_INCLUDE_
 
-#include "layer.hpp"
-#include "city_renderer.hpp"
+#include "infobox_construction.hpp"
 
-class LayerFood : public Layer
+namespace gui
+{
+
+class InfoboxAmphitheater : public InfoboxConstruction
 {
 public:
-  virtual int getType() const;
-  virtual VisibleWalkers getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
-
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
-  virtual void handleEvent(NEvent& event);
-
-private:
-  LayerFood( TilemapCamera& camera, PlayerCityPtr city );
+  InfoboxAmphitheater( Widget* parent, const Tile& tile );
+  virtual ~InfoboxAmphitheater();
 };
 
-#endif //__CAESARIA_LAYERFOOD_H_INCLUDED__
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_AMPHITHEATER_H_INCLUDE_

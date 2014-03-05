@@ -22,11 +22,11 @@ namespace gui
 {
 
 // info box about a granary
-class InfoBoxGranary : public InfoboxConstruction
+class InfoboxGranary : public InfoboxConstruction
 {
 public:
-  InfoBoxGranary( Widget* parent, const Tile& tile );
-  virtual ~InfoBoxGranary();
+  InfoboxGranary( Widget* parent, const Tile& tile );
+  virtual ~InfoboxGranary();
   
   void drawGood(Good::Type goodType, int, int);
   void showSpecialOrdersWindow();
