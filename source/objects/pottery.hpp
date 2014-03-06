@@ -27,6 +27,8 @@ public:
   virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void timeStep(const unsigned long time);
   virtual void deliverGood();
+protected:
+  virtual void _storeChanged();
 };
 
 

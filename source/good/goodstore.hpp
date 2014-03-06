@@ -69,6 +69,7 @@ public:
   virtual int capacity(const Good::Type& goodType ) const = 0;
   virtual int freeQty( const Good::Type& goodType ) const;
   virtual int freeQty() const;
+  virtual bool empty() const;
 
   // returns the max quantity that can be stored now
   virtual int getMaxStore(const Good::Type goodType) = 0;

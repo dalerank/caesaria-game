@@ -162,7 +162,7 @@ void Farm::timeStep(const unsigned long time)
 {
   Factory::timeStep(time);
 
-  if( mayWork() && getProgress() < 100 )
+  if( (time % 10 == 1) && mayWork() && getProgress() < 100 )
   {
     computePictures();
   }

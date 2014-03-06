@@ -127,6 +127,8 @@ void Fountain::build(PlayerCityPtr city, const TilePos& pos )
   ServiceBuilding::build( city, pos );
 
   setPicture( ResourceGroup::waterbuildings, fontainEmpty );
+  _lastPicId = simpleFountain;
+  _initAnimation();
 }
 
 bool Fountain::isNeedRoadAccess() const {  return false; }

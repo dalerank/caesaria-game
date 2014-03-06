@@ -69,7 +69,7 @@ void WindowMessageStack::beforeDraw(GfxEngine& painter)
 {
   Widget::Widgets wds = getChildren();
   unsigned int myWidth = width();
-  int speed = std::max<int>( 20, myWidth / (painter.getFps()+1) );
+  int speed = std::max<int>( 20, 2 * myWidth / (painter.getFps()+1) );
 
   foreach( widget, wds )
   {    

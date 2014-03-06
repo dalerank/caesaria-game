@@ -72,6 +72,7 @@ public:
 
 protected:
   virtual bool _mayDeliverGood() const;
+  virtual void _storeChanged();
 
 protected:
   class Impl;
@@ -95,10 +96,12 @@ public:
 class WeaponsWorkshop : public Factory
 {
 public:
-   WeaponsWorkshop();
+  WeaponsWorkshop();
 
-   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
-   virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
+protected:
+  virtual void _storeChanged();
 };
 
 class FurnitureWorkshop : public Factory
@@ -108,23 +111,30 @@ public:
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 
   FurnitureWorkshop();
+protected:
+  virtual void _storeChanged();
 };
 
 class Winery : public Factory
 {
 public:
-   Winery();
-   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
-   virtual void build(PlayerCityPtr city, const TilePos &pos);
+  Winery();
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
+
+protected:
+  virtual void _storeChanged();
 };
 
 class Creamery : public Factory
 {
 public:
-   Creamery();
+  Creamery();
 
-   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
-   virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
+protected:
+  virtual void _storeChanged();
 };
 
 #endif //_CAESARIA_FACTORY_BUILDING_H_INCLUDE_

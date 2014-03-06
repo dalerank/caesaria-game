@@ -107,7 +107,7 @@ GoodStock GoodStore::getRetrieveReservation(const long reservationID, const bool
 
   if( info.id == 0 )
   {
-    Logger::warning( "GoodStor::getRetrieveReservation unknown reservationID");
+    Logger::warning( "GoodStore::getRetrieveReservation unknown reservationID");
     return GoodStock();
   }
 
@@ -152,7 +152,7 @@ void GoodStore::store( GoodStock &stock, const int amount)
   }
   else
   {
-    Logger::warning( "GoodStore:: store impossible to store %d of %s",
+    Logger::warning( "GoodStore: store impossible to store %d of %s",
                      stock.qty(),
                      GoodHelper::getName( stock.type() ).c_str() );
   }
@@ -225,30 +225,12 @@ void GoodStore::load( const VariantMap& stream )
   }
 }
 
-bool GoodStore::isDevastation() const
-{
-  return _d->devastation;
-}
+bool GoodStore::isDevastation() const{  return _d->devastation;}
+void GoodStore::setDevastation( bool value ){  _d->devastation = value;}
 
-void GoodStore::setDevastation( bool value )
-{
-  _d->devastation = value;
-}
-
-GoodStore::~GoodStore()
-{
-
-}
-
-void GoodStore::setOrder( const Good::Type type, const GoodOrders::Order order )
-{
-  _d->goodOrders.set( type, order );
-}
-
-GoodOrders::Order GoodStore::getOrder(const Good::Type type ) const
-{
-  return _d->goodOrders.get( type );
-}
+GoodStore::~GoodStore() {}
+void GoodStore::setOrder( const Good::Type type, const GoodOrders::Order order ){  _d->goodOrders.set( type, order );}
+GoodOrders::Order GoodStore::getOrder(const Good::Type type ) const{  return _d->goodOrders.get( type );}
 
 void GoodStore::removeExpired(DateTime date)
 {
@@ -258,17 +240,9 @@ void GoodStore::removeExpired(DateTime date)
 
 Reservations& GoodStore::_getStoreReservations() {  return _d->storeReservations; }
 Reservations& GoodStore::_getRetrieveReservations(){   return _d->retrieveReservations;}
-
-int GoodStore::freeQty( const Good::Type& goodType ) const
-{
-  return capacity( goodType ) - qty( goodType );
-}
-
-int GoodStore::freeQty() const
-{
-  return capacity() - qty();
-}
-
+int GoodStore::freeQty( const Good::Type& goodType ) const{ return capacity( goodType ) - qty( goodType );}
+int GoodStore::freeQty() const{  return capacity() - qty();}
+bool GoodStore::empty() const{  return qty() == 0;}
 const ReserveInfo Reservations::invalid = { GoodStock(), DateTime(), 0 };
 Reservations::Reservations(){  _idCounter = 1; }
 

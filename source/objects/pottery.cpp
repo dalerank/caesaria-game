@@ -19,6 +19,7 @@
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "constants.hpp"
+#include "good/goodstore.hpp"
 
 using namespace constants;
 
@@ -26,7 +27,7 @@ Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::pottery, Size(
 {
   _animationRef().load(ResourceGroup::commerce, 133, 7);
   _animationRef().setDelay( 3 );
-  _fgPicturesRef().resize(2);
+  _fgPicturesRef().resize( 3 );
 }
 
 bool Pottery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
@@ -52,4 +53,10 @@ void Pottery::timeStep( const unsigned long time )
 void Pottery::deliverGood()
 {
   Factory::deliverGood();
+}
+
+void Pottery::_storeChanged()
+{
+  _fgPicturesRef()[2] = store().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 157 );
+  _fgPicturesRef()[2].setOffset( 20, 15 );
 }

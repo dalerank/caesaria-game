@@ -72,11 +72,11 @@ Religion::Religion(PlayerCityPtr city )
 }
 
 void Religion::update( const unsigned int time )
-{
-  Logger::warning( "Religion: start update relations" );
+{  
   if( _d->lastDate.month() == GameDate::current().month() )
     return;
 
+  Logger::warning( "Religion: start update relations" );
   _d->lastDate = GameDate::current();
 
   Pantheon::Divinities divinities = Pantheon::instance().all();

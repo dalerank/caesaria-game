@@ -75,20 +75,9 @@ int SimpleGoodStore::qty() const
   return qty;
 }
 
-GoodStock& SimpleGoodStore::getStock(const Good::Type &goodType)
-{
-  return *(_gsd->stocks[goodType].object());
-}
-
-int SimpleGoodStore::qty(const Good::Type &goodType) const
-{
-  return _gsd->stocks[goodType]->qty();
-}
-
-int SimpleGoodStore::capacity(const Good::Type &goodType) const
-{
-  return _gsd->stocks[goodType]->capacity();
-}
+GoodStock& SimpleGoodStore::getStock(const Good::Type &goodType){  return *(_gsd->stocks[goodType].object());}
+int SimpleGoodStore::qty(const Good::Type &goodType) const{  return _gsd->stocks[goodType]->qty();}
+int SimpleGoodStore::capacity(const Good::Type &goodType) const{  return _gsd->stocks[goodType]->capacity();}
 
 void SimpleGoodStore::setCapacity(const Good::Type &goodType, const int maxQty)
 {
@@ -106,10 +95,7 @@ void SimpleGoodStore::setCapacity(const Good::Type &goodType, const int maxQty)
   }
 }
 
-void SimpleGoodStore::setQty(const Good::Type &goodType, const int currentQty)
-{
-  _gsd->stocks[goodType]->setQty( currentQty );
-}
+void SimpleGoodStore::setQty(const Good::Type &goodType, const int currentQty){  _gsd->stocks[goodType]->setQty( currentQty );}
 
 int SimpleGoodStore::getMaxStore(const Good::Type goodType)
 {
