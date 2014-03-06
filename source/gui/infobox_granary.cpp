@@ -48,9 +48,9 @@ InfoboxGranary::InfoboxGranary( Widget* parent, const Tile& tile )
 
   // summary: total stock, free capacity
   std::string desc = StringHelper::format( 0xff, "%d %s, %s %d",
-                                           _granary->getGoodStore().qty(),
+                                           _granary->store().qty(),
                                            _("##units_in_stock##"), _("##freespace_for##"),
-                                           _granary->getGoodStore().freeQty() );
+                                           _granary->store().freeQty() );
 
   Label* lbUnits = new Label( this, Rect( _getTitle()->leftdownCorner(), Size( width() - 16, 40 )), desc );
 
@@ -84,7 +84,7 @@ void InfoboxGranary::showSpecialOrdersWindow()
 void InfoboxGranary::drawGood( Good::Type goodType, int col, int paintY)
 {
   std::string goodName = GoodHelper::getTypeName( goodType );
-  int qty = _granary->getGoodStore().qty(goodType);
+  int qty = _granary->store().qty(goodType);
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
 
   // pictures of goods

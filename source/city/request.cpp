@@ -63,7 +63,7 @@ void RqGood::exec( PlayerCityPtr city )
   }
 }
 
-bool RqGood::mayExec( PlayerCityPtr city ) const
+bool RqGood::isReady( PlayerCityPtr city ) const
 {
   city::Statistic::GoodsMap gm = city::Statistic::getGoodsMap( city );
 

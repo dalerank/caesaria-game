@@ -100,7 +100,7 @@ void InfoboxWarehouse::showSpecialOrdersWindow()
 void InfoboxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
 {
   std::string goodName = GoodHelper::getName( goodType );
-  int qty = _warehouse->getGoodStore().qty(goodType);
+  int qty = _warehouse->store().qty(goodType);
 
   // pictures of goods
   const Picture& pic = GoodHelper::getPicture( goodType );

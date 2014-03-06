@@ -133,7 +133,7 @@ void Granary::timeStep(const unsigned long time)
   }
 }
 
-GoodStore& Granary::getGoodStore() {  return _d->goodStore; }
+GoodStore& Granary::store() {  return _d->goodStore; }
 
 void Granary::computePictures()
 {

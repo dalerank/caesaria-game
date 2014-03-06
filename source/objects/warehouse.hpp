@@ -35,12 +35,14 @@ public:
 
   virtual void timeStep(const unsigned long time);
   void computePictures();
-  GoodStore& getGoodStore();
+  GoodStore& store();
+  const GoodStore& store() const;
   
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
   bool onlyDispatchGoods() const;
+  bool isGettingFull() const;
 
   virtual std::string getTrouble() const;
 

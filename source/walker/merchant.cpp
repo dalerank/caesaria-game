@@ -91,7 +91,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
     for( int i=Good::wheat; i<Good::goodCount; i++ )
     {
       Good::Type gtype = Good::Type(i);
-      int qty = warehouse->getGoodStore().getMaxRetrieve( gtype );
+      int qty = warehouse->store().getMaxRetrieve( gtype );
       int need = basket.freeQty( gtype );
       rating = need > 0 ? ( qty ) : 0;
     }
@@ -118,7 +118,7 @@ DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
     // for every warehouse within range
     WarehousePtr warehouse= ptr_cast<Warehouse>( pathWayIt->first );
 
-    if( warehouse->getGoodStore().freeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
+    if( warehouse->store().freeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
     else { pathWayIt++; }    
   }
 
@@ -221,7 +221,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
 
         CityTradeOptions& options = city->getTradeOptions();
-        GoodStore& whStore = warehouse->getGoodStore();
+        GoodStore& whStore = warehouse->store();
         //try buy goods
         for( int n = Good::wheat; n<Good::goodCount; ++n )
         {
@@ -304,12 +304,12 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
           int qty4sell = sell.qty( goodType );
           if( qty4sell > 0 && cityOrders.capacity( goodType ) > 0 )
           {
-            int maySells = std::min( qty4sell, warehouse->getGoodStore().getMaxStore( goodType ) );
+            int maySells = std::min( qty4sell, warehouse->store().getMaxStore( goodType ) );
             if( maySells != 0 )
             {
               // std::cout << "extra retrieve qty=" << qty << " basket=" << _basket.getStock(goodType)._currentQty << std::endl;
               GoodStock& stock = sell.getStock( goodType );
-              warehouse->getGoodStore().store( stock, maySells );
+              warehouse->store().store( stock, maySells );
               
               events::GameEventPtr e = events::FundIssueEvent::import( goodType, maySells );
               e->dispatch();

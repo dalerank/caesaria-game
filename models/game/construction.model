@@ -568,7 +568,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
-    productRate : 2.4
+    productRate : 9.6
     sound : [ "wheatfarm", 1 ]
   }, 
 
@@ -577,7 +577,7 @@
     cost : 40,
     desirability : { base : -2, 	range : 2,	step : 1 }
     employers : 10
-    productRate : 2.4
+    productRate : 9.6
     class : "food"
     sound : [ "vegetablefarm", 1 ]
   },
@@ -587,7 +587,7 @@
     cost : 40,
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
-    productRate : 2.4
+    productRate : 9.6
     class : "food"
   },
   
@@ -597,6 +597,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    productRate : 9.6
     sound : [ "olivesfarm", 1 ]
   },
 
@@ -606,6 +607,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    productRate : 4.8
     sound : [ "grapefarm", 1 ]
   },
 
@@ -615,6 +617,7 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
+    productRate : 4.8
     sound : [ "meatfarm", 1 ]
   },
 
@@ -624,6 +627,7 @@
     desirability : { base : -6,	range : 6,	step : 1 }
     employers : 10
     class : "rawmaterial"
+    productRate : 2.4
     sound : [ "marblequarry", 1 ]
   },
 
@@ -633,6 +637,7 @@
     desirability : { base : -6,	range : 6,	step : 1 }
     employers : 10
     class : "rawmaterial"
+    productRate : 2.4
     sound : [ "ironmine", 1 ]
   },
   
@@ -642,6 +647,7 @@
     desirability : { base : -4,	range : 4,	step : 1 }
     employers : 10
     class : "rawmaterial"
+    productRate : 4.8
     sound : [ "lumbermill", 1 ]
   },
 
@@ -651,7 +657,7 @@
     desirability : { base : -3,	range : 3,	step : 1 }
     employers : 10
     image : [ "commerce", 61 ]
-    productRate : 2.4
+    productRate : 4.8
     class : "rawmaterial"
     animation : { rc : "commerce", start : 62, count : 10, offset : [ 14, 32 ], delay : 3 }
     sound : [ "claypit", 1 ]
@@ -662,6 +668,7 @@
     cost : 45,
     desirability : { base : -1,	range : 1,	step : 1 }
     employers : 10
+    productRate : 4.8
     class : "industry"
   },
 
@@ -671,6 +678,7 @@
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
     class : "industry"
+    productRate : 4.8
     sound : [ "creamery", 1 ]
   },
   
@@ -679,6 +687,7 @@
     cost : 50,
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
+    productRate : 2.4
     class : "industry"
   },
   
@@ -688,6 +697,7 @@
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
     class : "industry"
+    productRate : 2.4
     sound : [ "furniture", 1 ]
   },
   
@@ -697,6 +707,7 @@
     desirability : { base : -4,	range : 2,	step : 2 }
     employers : 10
     class : "industry"
+    productRate : 4.8
     image : [ "commerce", 132 ]
   }
 }

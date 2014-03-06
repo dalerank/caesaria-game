@@ -79,9 +79,9 @@ void CartSupplier::_reachedPathway()
     FactoryPtr f = ptr_cast<Factory>( building );
     GranaryPtr g = ptr_cast<Granary>( building );
     WarehousePtr w = ptr_cast<Warehouse>( building );
-    if( f.isValid() ) { storage = &f->getGoodStore(); }
-    else if( g.isValid() ) { storage = &g->getGoodStore(); }
-    else if( w.isValid() ){ storage = &w->getGoodStore(); }
+    if( f.isValid() ) { storage = &f->store(); }
+    else if( g.isValid() ) { storage = &g->store(); }
+    else if( w.isValid() ){ storage = &w->store(); }
 
     if( storage )
     {
@@ -101,9 +101,9 @@ void CartSupplier::_reachedPathway()
     FactoryPtr f = ptr_cast<Factory>( building );
     GranaryPtr g = ptr_cast<Granary>( building );
     WarehousePtr w = ptr_cast<Warehouse>( building );
-    if( f.isValid() ) { storage = &f->getGoodStore(); }
-    else if( g.isValid() ) { storage = &g->getGoodStore(); }
-    else if( w.isValid() ){ storage = &w->getGoodStore(); }
+    if( f.isValid() ) { storage = &f->store(); }
+    else if( g.isValid() ) { storage = &g->store(); }
+    else if( w.isValid() ){ storage = &w->store(); }
 
     if( storage )
     {
@@ -183,7 +183,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
     PathwayPtr pathWay= pathWayIt->second;
 
     SmartPtr< T > destBuilding = ptr_cast<T>( building );
-    int qty = destBuilding->getGoodStore().getMaxRetrieve( what );
+    int qty = destBuilding->store().getMaxRetrieve( what );
     if( qty > max_qty )
     {
       res = destBuilding;
@@ -197,7 +197,7 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const TileOverlay::
     // a warehouse/granary has been found!
     // reserve some goods from that warehouse/granary
     int qty = math::clamp( needQty, 0, max_qty );
-    reservId = res->getGoodStore().reserveRetrieval( what, qty, GameDate::current() );
+    reservId = res->store().reserveRetrieval( what, qty, GameDate::current() );
     return res->pos();
   }
   else
@@ -266,9 +266,9 @@ void CartSupplier::_reserveStorage()
   FactoryPtr f = ptr_cast<Factory>( b );
   GranaryPtr g = ptr_cast<Granary>( b );
   WarehousePtr w = ptr_cast<Warehouse>( b );
-  if( f.isValid() ) { storage = &f->getGoodStore(); }
-  else if( g.isValid() ) { storage = &g->getGoodStore(); }
-  else if( w.isValid() ){ storage = &w->getGoodStore(); }
+  if( f.isValid() ) { storage = &f->store(); }
+  else if( g.isValid() ) { storage = &g->store(); }
+  else if( w.isValid() ){ storage = &w->store(); }
 
   if( storage != 0 )
   {

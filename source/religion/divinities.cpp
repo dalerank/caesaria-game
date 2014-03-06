@@ -182,7 +182,7 @@ void RomeDivinityMercury::updateRelation(float income, PlayerCityPtr city)
     WarehouseList whs = helper.find<Warehouse>( building::warehouse );
     foreach( it, whs )
     {
-      GoodStore& store = (*it)->getGoodStore();
+      GoodStore& store = (*it)->store();
       for( int i=Good::none; i < Good::goodCount; i++ )
       {
         Good::Type gtype = (Good::Type)i;

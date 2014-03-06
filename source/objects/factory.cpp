@@ -107,7 +107,7 @@ void Factory::timeStep(const unsigned long time)
 
       if( GameDate::current().month() % 3 == 1 )
       {
-        getGoodStore().removeExpired( GameDate::current() );
+        store().removeExpired( GameDate::current() );
       }
     }
   }
@@ -148,8 +148,8 @@ void Factory::timeStep(const unsigned long time)
   {
     //ok... factory is work, produce goods
     float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
-    float timeKoeff = DateTime::monthInYear / (float)GameDate::ticksInMonth();
-    float work = timeKoeff * _d->productionRate * workersRatio;  // work is proportional to time and factory speed
+    float timeKoeff = 1 / (float)GameDate::ticksInMonth();
+    float work = timeKoeff * (_d->productionRate / DateTime::monthInYear) * workersRatio;  // work is proportional to time and factory speed
     if( _d->produceGood )
     {
       _d->progress += work;
@@ -207,7 +207,7 @@ void Factory::deliverGood()
   }
 }
 
-GoodStore& Factory::getGoodStore() {   return _d->goodStore; }
+GoodStore& Factory::store() {   return _d->goodStore; }
 
 std::string Factory::getTrouble() const
 {
@@ -234,13 +234,8 @@ void Factory::load( const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
   _d->goodStore.load( stream.get( "goodStore" ).toMap() );
-  _d->progress = (float)stream.get( "progress", 0.f ); // approximation
-
-  Variant value = stream.get( "productionRate", 9.6f );
-  if( value.isValid() )
-  {
-    _d->productionRate = (float)value;
-  }
+  _d->progress = (float)stream.get( "progress", 0.f );
+  _d->productionRate = (float)stream.get( "productionRate", 9.6f );
 }
 
 Factory::~Factory(){}

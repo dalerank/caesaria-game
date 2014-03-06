@@ -223,13 +223,13 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
 
   if (stock.type() != reservedStock.type())
   {
-    Logger::warning( "GoodType does not match reservation" );
+    Logger::warning( "Warehouse: GoodType does not match reservation" );
     return;
   }
 
   if (stock.qty() < reservedStock.qty())
   {
-    Logger::warning( "Quantity does not match reservation" );
+    Logger::warning( "Warehouse: Quantity does not match reservation" );
     return;
   }
 
@@ -282,14 +282,14 @@ void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reser
 
   if( stock.type() != reservedStock.type() )
   {   
-    Logger::warning( "GoodType does not match reservation need=%s have=%s",
+    Logger::warning( "Warehouse: GoodType does not match reservation need=%s have=%s",
                      GoodHelper::getName(reservedStock.type()).c_str(),
                      GoodHelper::getName(stock.type()).c_str() );
     return;
   }
   if( stock.capacity() < stock.qty() + reservedStock.qty() )
   {
-    Logger::warning( "Retrieve stock[%s] less reserve qty, decrease from %d to &%d",
+    Logger::warning( "Warehouse: Retrieve stock[%s] less reserve qty, decrease from %d to &%d",
                      GoodHelper::getName(stock.type()).c_str(),
                      reservedStock.qty(), stock.freeQty() );
     reservedStock.setQty( stock.freeQty() );
@@ -410,7 +410,8 @@ void Warehouse::computePictures()
   }
 }
 
-GoodStore& Warehouse::getGoodStore() {   return _d->goodStore; }
+GoodStore& Warehouse::store() {   return _d->goodStore; }
+const GoodStore& Warehouse::store() const {   return _d->goodStore; }
 
 void Warehouse::save( VariantMap& stream ) const
 {
@@ -444,6 +445,17 @@ void Warehouse::load( const VariantMap& stream )
 
 bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maxWorkers() / 3; }
 
+bool Warehouse::isGettingFull() const
+{
+  foreach( whTile, _d->subTiles )
+  {
+    if( whTile->_stock.qty() == 0 )
+      return false;
+  }
+
+  return true;
+}
+
 std::string Warehouse::getTrouble() const
 {
   std::string ret = WorkingBuilding::getTrouble();
@@ -451,7 +463,7 @@ std::string Warehouse::getTrouble() const
   if( ret.empty() )
   {
     if( onlyDispatchGoods() )  { ret = "##warehouse_low_personal_warning##";  }
-    else if( getGoodStore().freeQty() == 0 ) { ret = "##warehouse_full_warning##";  }
+    else if( store().freeQty() == 0 ) { ret = "##warehouse_full_warning##";  }
     else if( isGettingFull() ) { ret == "##warehouse_gettinfull_warning##"; }
   }
 

@@ -26,7 +26,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   void computePictures();
-  GoodStore& getGoodStore();
+  GoodStore& store();
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);

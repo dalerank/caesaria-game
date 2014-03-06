@@ -110,7 +110,7 @@ unsigned int Statistic::getFoodStock(PlayerCityPtr city)
   int foodSum = 0;
 
   GranaryList granaries = helper.find<Granary>( building::granary );
-  foreach( gr, granaries ) { foodSum += (*gr)->getGoodStore().qty(); }
+  foreach( gr, granaries ) { foodSum += (*gr)->store().qty(); }
 
   return foodSum;
 }
@@ -150,7 +150,7 @@ Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)
     for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type goodType = (Good::Type)i;
-      cityGoodsAvailable[ goodType ] += (*wh)->getGoodStore().qty( goodType );
+      cityGoodsAvailable[ goodType ] += (*wh)->store().qty( goodType );
     }
   }
 

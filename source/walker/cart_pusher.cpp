@@ -83,9 +83,9 @@ void CartPusher::_reachedPathway()
     FactoryPtr factory = ptr_cast<Factory>(_d->consumerBuilding);
 
     GoodStore* goodStore = 0;
-    if( granary.isValid() ) { goodStore = &granary->getGoodStore(); }
-    else if( warehouse.isValid() ) { goodStore = &warehouse->getGoodStore(); }
-    else if( factory.isValid() ) { goodStore = &factory->getGoodStore(); }
+    if( granary.isValid() ) { goodStore = &granary->store(); }
+    else if( warehouse.isValid() ) { goodStore = &warehouse->store(); }
+    else if( factory.isValid() ) { goodStore = &factory->store(); }
 
     if( goodStore )
     {
@@ -269,7 +269,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
     // for every factory within range
     SmartPtr<T> building = ptr_cast<T>( pathWayIt->first );
 
-    if( stock.qty() >  building->getGoodStore().getMaxStore( stock.type() ) )
+    if( stock.qty() > building->store().getMaxStore( stock.type() ) )
     {
       pathWayList.erase( pathWayIt++ );
     }
@@ -296,7 +296,7 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   if( res.isValid() )
   {
     SmartPtr<T> ptr = ptr_cast<T>( res );
-    reservationID = ptr->getGoodStore().reserveStorage( stock, GameDate::current() );
+    reservationID = ptr->store().reserveStorage( stock, GameDate::current() );
     if (reservationID != 0)
     {
       oPathWay = *(shortestPath.object());

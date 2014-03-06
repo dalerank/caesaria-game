@@ -86,12 +86,12 @@ void Wharf::timeStep(const unsigned long time)
 
   if( getProgress() >= 100.0 )
   {
-    if( getGoodStore().qty( getOutGoodType() ) < getGoodStore().capacity( getOutGoodType() )  )
+    if( store().qty( getOutGoodType() ) < store().capacity( getOutGoodType() )  )
     {
       updateProgress( -100.f );
       //gcc fix for temporaly ref object
       GoodStock tmpStock( getOutGoodType(), 100, 100 );
-      getGoodStore().store( tmpStock, 100 );
+      store().store( tmpStock, 100 );
     }
   }
   else

@@ -71,7 +71,7 @@ public:
 
   void updateBtnText()
   {
-    GoodOrders::Order rule = _storageBuilding->getGoodStore().getOrder( _type );
+    GoodOrders::Order rule = _storageBuilding->store().getOrder( _type );
     const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
     _btnChangeRule->setFont( Font::create( rule == GoodOrders::reject ? FONT_1_RED : FONT_1_WHITE ) );
     _btnChangeRule->setText( _(ruleName[ rule ]) );
@@ -79,8 +79,8 @@ public:
 
   void changeGranaryRule()
   {
-    GoodOrders::Order rule = _storageBuilding->getGoodStore().getOrder( _type );
-    _storageBuilding->getGoodStore().setOrder( _type, GoodOrders::Order( (rule+1) % (GoodOrders::none)) );
+    GoodOrders::Order rule = _storageBuilding->store().getOrder( _type );
+    _storageBuilding->store().setOrder( _type, GoodOrders::Order( (rule+1) % (GoodOrders::none)) );
     updateBtnText();
   }
 
@@ -186,7 +186,7 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
   _granary = granary;
   for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
   {
-    const GoodOrders::Order rule = granary->getGoodStore().getOrder( (Good::Type)goodType );
+    const GoodOrders::Order rule = granary->store().getOrder( (Good::Type)goodType );
     
     if( rule != GoodOrders::none )
     {
@@ -204,13 +204,13 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
 
 void GranarySpecialOrdersWindow::toggleDevastation()
 {
-  _granary->getGoodStore().setDevastation( !_granary->getGoodStore().isDevastation() );
+  _granary->store().setDevastation( !_granary->store().isDevastation() );
   _updateBtnDevastation();
 }
 
 void GranarySpecialOrdersWindow::_updateBtnDevastation()
 {
-  _btnToggleDevastation->setText( _granary->getGoodStore().isDevastation() 
+  _btnToggleDevastation->setText( _granary->store().isDevastation() 
                                     ? _("##stop_granary_devastation##")
                                     : _("##devastate_granary##") );
 }
@@ -224,7 +224,7 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   int index=0;
   for( int goodType=Good::wheat; goodType <= Good::marble; goodType++ )
   {
-    const GoodOrders::Order rule = _warehouse->getGoodStore().getOrder( (Good::Type)goodType );
+    const GoodOrders::Order rule = _warehouse->store().getOrder( (Good::Type)goodType );
 
     if( rule != GoodOrders::none )
     {
@@ -245,13 +245,13 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
 
 void WarehouseSpecialOrdersWindow::toggleDevastation()
 {
-  _warehouse->getGoodStore().setDevastation( !_warehouse->getGoodStore().isDevastation() );
+  _warehouse->store().setDevastation( !_warehouse->store().isDevastation() );
   _updateBtnDevastation();
 }
 
 void WarehouseSpecialOrdersWindow::_updateBtnDevastation()
 {
-  _btnToggleDevastation->setText( _warehouse->getGoodStore().isDevastation() 
+  _btnToggleDevastation->setText( _warehouse->store().isDevastation() 
                                       ? _("##stop_warehouse_devastation##")
                                       : _("##devastate_warehouse##") );
 }

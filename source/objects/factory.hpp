@@ -41,7 +41,7 @@ public:
   Good::Type getInGoodType() const;
   Good::Type getOutGoodType() const;
 
-  GoodStore& getGoodStore();
+  GoodStore& store();
 
   virtual std::string getTrouble() const;
 

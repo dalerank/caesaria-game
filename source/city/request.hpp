@@ -34,7 +34,7 @@ class Request : public ReferenceCounted
 public:
   virtual ~Request() {}
 
-  virtual bool mayExec( PlayerCityPtr ) const { return false; }
+  virtual bool isReady( PlayerCityPtr ) const { return false; }
   virtual void exec( PlayerCityPtr ) {}
   virtual void success( PlayerCityPtr ) { _isDeleted = true; }
   virtual void fail( PlayerCityPtr ) { _isDeleted = true; }
@@ -61,7 +61,7 @@ public:
 
   virtual ~RqGood();
   virtual void exec( PlayerCityPtr city );
-  virtual bool mayExec( PlayerCityPtr city ) const;
+  virtual bool isReady( PlayerCityPtr city ) const;
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream );
