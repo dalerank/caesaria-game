@@ -789,9 +789,9 @@ void EditBox::beforeDraw( GfxEngine& painter )
     if( _d->needUpdateTexture )
     {
       _d->needUpdateTexture = false;
-      if( !_d->picture || ( _d->picture && getSize() != _d->picture->size()) )
+      if( !_d->picture || ( _d->picture && size() != _d->picture->size()) )
       {
-        _d->picture.reset( Picture::create( getSize() ) );
+        _d->picture.reset( Picture::create( size() ) );
       }
 
       if( _d->cursorPic.isNull() )
@@ -800,9 +800,9 @@ void EditBox::beforeDraw( GfxEngine& painter )
         _d->cursorPic->fill( 0xff000000, Rect( 0, 0, 0, 0) );
       }
 
-      if( !_d->textPicture || ( _d->textPicture && getSize() != _d->textPicture->size()) )
+      if( !_d->textPicture || ( _d->textPicture && size() != _d->textPicture->size()) )
       {
-        _d->textPicture.reset( Picture::create( getSize() ) );
+        _d->textPicture.reset( Picture::create( size() ) );
         _d->textPicture->fill( 0x00000000, Rect( 0, 0, 0, 0) );
       }
 
@@ -815,9 +815,9 @@ void EditBox::beforeDraw( GfxEngine& painter )
         PictureDecorator::draw( *_d->picture, Rect( 0, 0, width(), height() ), PictureDecorator::blackFrame );
       }
 
-      Rect localClipRect = getAbsoluteRect();
+      Rect localClipRect = absoluteRect();
       _d->markAreaRect = Rect( 0, 0, -1, -1 );
-      localClipRect.clipAgainst( getAbsoluteClippingRect() );
+      localClipRect.clipAgainst( absoluteClippingRect() );
 
       NColor simpleTextColor, markTextColor;
 
@@ -889,7 +889,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
              //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
              Rect curTextureRect( Point( 0, 0), _d->currentTextRect.getSize() );
              curTextureRect = _d->lastBreakFont.calculateTextRect( rText, curTextureRect, getHorizontalTextAlign(), getVerticalTextAlign() );
-             curTextureRect += (_d->currentTextRect.UpperLeftCorner - getAbsoluteRect().UpperLeftCorner );
+             curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
 
              _d->lastBreakFont.draw( *_d->textPicture, rText, curTextureRect.UpperLeftCorner );
 
@@ -1002,12 +1002,12 @@ void EditBox::draw( GfxEngine& painter )
 	// draw the text
   if( _d->picture )
   {
-    painter.drawPicture( *_d->picture, screenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->picture, screenLeft(), screenTop() );
   }
 
   if( _d->textPicture )
   {
-    painter.drawPicture( *_d->textPicture, _d->textOffset.x() + screenLeft(), _d->textOffset.y() + getScreenTop() );
+    painter.drawPicture( *_d->textPicture, _d->textOffset.x() + screenLeft(), _d->textOffset.y() + screenTop() );
   }
 
   if( focus )
@@ -1047,7 +1047,7 @@ void EditBox::setText(const std::string& text)
 	_setText( _d->text );
 }
 
-std::string EditBox::getText() const
+std::string EditBox::text() const
 {
 	return __ucs2utf8( _d->text );
 }
@@ -1137,7 +1137,7 @@ bool EditBox::_processMouse(const NEvent& event)
 		}
 		else
 		{
-			if( !getAbsoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
+			if( !absoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
 			{
 				return false;
 			}
@@ -1350,7 +1350,7 @@ void EditBox::setTextRect(int line, const std::string& tempText )
 	
   d.setHeight( d.height() + font.getKerningHeight() );
 
-  _d->currentTextRect = getAbsoluteRect();
+  _d->currentTextRect = absoluteRect();
 
   _d->currentTextRect.UpperLeftCorner += Point( -_d->horizScrollPos, d.height() * line - _d->vertScrollPos );
   _d->currentTextRect.LowerRightCorner = Point( _d->currentTextRect.right() +_d->horizScrollPos, _d->currentTextRect.UpperLeftCorner.y() + d.height() );
@@ -1459,8 +1459,8 @@ void EditBox::calculateScrollPos()
 
 		int cEnd = cStart + font.getSize( "_ " ).width();
 
-		if ( getScreenRight() < cEnd)
-			_d->horizScrollPos = cEnd - getScreenRight();
+		if ( screenRight() < cEnd)
+			_d->horizScrollPos = cEnd - screenRight();
 		else if ( screenLeft() > cStart)
 			_d->horizScrollPos = cStart - screenLeft();
 		else
@@ -1474,9 +1474,9 @@ void EditBox::calculateScrollPos()
   {
     _d->vertScrollPos = _d->currentTextRect.LowerRightCorner.y() - screenBottom() + _d->vertScrollPos;
   }
-  else if ( getScreenTop() > _d->currentTextRect.UpperLeftCorner.y() + _d->vertScrollPos)
+  else if ( screenTop() > _d->currentTextRect.UpperLeftCorner.y() + _d->vertScrollPos)
   {
-    _d->vertScrollPos = _d->currentTextRect.UpperLeftCorner.y() - getScreenTop() + _d->vertScrollPos;
+    _d->vertScrollPos = _d->currentTextRect.UpperLeftCorner.y() - screenTop() + _d->vertScrollPos;
   }
 	else
 		_d->vertScrollPos = 0;

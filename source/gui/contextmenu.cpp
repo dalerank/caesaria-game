@@ -377,7 +377,7 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
   _d->lastHighlihted = -1;
 	for (i=0; i<(int)_d->items.size(); ++i)
 	{
-		if (_d->items[i]->isEnabled() && _d->items[i]->getAbsoluteRect().isPointInside( p ))
+		if (_d->items[i]->isEnabled() && _d->items[i]->absoluteRect().isPointInside( p ))
 		{
 			_d->highlihted = i;
       _d->changeTime = DateTime::getElapsedTime();
@@ -456,7 +456,7 @@ void ContextMenu::recalculateSize_()
 		{
 			Font font = refItem->getFont();
 			if( font.isValid() )
-				refItem->setDim( font.getSize( refItem->getText() ) + Size( 40, 0 ) );
+				refItem->setDim( font.getSize( refItem->text() ) + Size( 40, 0 ) );
 
 			maxSize.setWidth( std::max<unsigned int>( refItem->getDim().width(), maxSize.width() ) );
 		}
@@ -482,7 +482,7 @@ void ContextMenu::recalculateSize_()
 		{
 			// move submenu
 			ContextMenu* subMenu = refItem->getSubMenu();
-			const Size subMenuSize = subMenu->getAbsoluteRect().getSize();
+			const Size subMenuSize = subMenu->absoluteRect().getSize();
 
       Rect subRect( maxSize.width()-5, refItem->getOffset(), 
 			              maxSize.width()+subMenuSize.width()-5, refItem->getOffset() +subMenuSize.height() );
@@ -491,8 +491,8 @@ void ContextMenu::recalculateSize_()
       Widget * root = getEnvironment()->getRootWidget();
       if( root && ContextMenuItem::alignAuto == refItem->getSubMenuAlignment() )
       {
-        Rect rectRoot( root->getAbsoluteRect() );
-				if ( getAbsoluteRect().UpperLeftCorner.x() + subRect.LowerRightCorner.x() > rectRoot.LowerRightCorner.x() )
+        Rect rectRoot( root->absoluteRect() );
+				if ( absoluteRect().UpperLeftCorner.x() + subRect.LowerRightCorner.x() > rectRoot.LowerRightCorner.x() )
 				{
 					subRect.UpperLeftCorner.setX( -subMenuSize.width() );
 					subRect.LowerRightCorner.setX( 0 );
@@ -511,7 +511,7 @@ void ContextMenu::recalculateSize_()
 				break;
 
 				case ContextMenuItem::alignHorizCenter:
-					subRect.UpperLeftCorner.setX( ( getAbsoluteRect().getWidth() - subMenuSize.width() ) / 2 );
+					subRect.UpperLeftCorner.setX( ( absoluteRect().getWidth() - subMenuSize.width() ) / 2 );
 					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.x() + subMenuSize.width() );
 				break;
 				}

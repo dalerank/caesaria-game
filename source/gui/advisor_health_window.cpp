@@ -134,10 +134,10 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
-  _d->background.reset( Picture::create( getSize() ) );
+  _d->background.reset( Picture::create( size() ) );
 
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 261 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
@@ -175,7 +175,7 @@ void AdvisorHealthWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

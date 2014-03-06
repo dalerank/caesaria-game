@@ -96,7 +96,7 @@ bool MainMenu::onEvent(const NEvent& event)
 
 				Point p(event.mouse.getPosition() );
 				bool shouldCloseSubMenu = hasOpenSubMenu_();
-				if (!getAbsoluteClippingRect().isPointInside(p))
+				if (!absoluteClippingRect().isPointInside(p))
 				{
 					shouldCloseSubMenu = false;
 				}
@@ -112,7 +112,7 @@ bool MainMenu::onEvent(const NEvent& event)
 			case mouseLbtnRelease:
 			{
         Point p(event.mouse.getPosition() );
-				if (!getAbsoluteClippingRect().isPointInside(p))
+				if (!absoluteClippingRect().isPointInside(p))
 				{
 					int t = sendClick_(p);
 					if ((t==0 || t==1) && isFocused())
@@ -177,7 +177,7 @@ void MainMenu::recalculateSize_()
 		}
 		else
 		{
-      Size itemSize = font.getSize( refItem->getText() ) + Size( 20, 0 );
+      Size itemSize = font.getSize( refItem->text() ) + Size( 20, 0 );
       itemSize.setHeight( height() );
 			refItem->setDim( itemSize );
 		}
@@ -197,7 +197,7 @@ void MainMenu::recalculateSize_()
 		if( refItem->getSubMenu() )
 		{
 			// move submenu
-      Size itemSize = refItem->getSubMenu()->getAbsoluteRect().getSize();
+      Size itemSize = refItem->getSubMenu()->absoluteRect().getSize();
 
 			refItem->getSubMenu()->setGeometry( Rect( refItem->getOffset(), hg,
 																								refItem->getOffset() + itemSize.width()-5, hg+itemSize.height() ));

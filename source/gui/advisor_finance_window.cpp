@@ -63,10 +63,10 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
-  _d->background.reset( Picture::create( getSize() ) );
+  _d->background.reset( Picture::create( size() ) );
 
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
   //buttons _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( Point( 70, 50 ), Size( width() - 86, 70 ) ), PictureDecorator::blackFrame);
 
@@ -131,7 +131,7 @@ void AdvisorFinanceWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

@@ -118,7 +118,7 @@ void OverlaysMenu::_addButton(const int ovType, const std::string& name, const P
 
 bool OverlaysMenu::isPointInside( const Point& point ) const
 {
-  Rect clickedRect = const_cast< OverlaysMenu* >( this )->getEnvironment()->getRootWidget()->getAbsoluteRect();
+  Rect clickedRect = const_cast< OverlaysMenu* >( this )->getEnvironment()->getRootWidget()->absoluteRect();
   return clickedRect.isPointInside( point );
 }
 

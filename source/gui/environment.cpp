@@ -234,7 +234,7 @@ Widget* GuiEnv::createWidget(const std::string& type, Widget* parent)
 
 WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 {
-  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->getTooltipText(), true, Label::bgSimpleWhite );
+  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->tooltipText(), true, Label::bgSimpleWhite );
   elm->setSubElement(true);
 
   Size size( elm->getTextWidth() + 20, elm->getTextHeight() + 2 );
@@ -255,7 +255,7 @@ void GuiEnv::drawTooltip_( unsigned int time )
          && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != getRootWidget()
     		 && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
          || (time - _d->toolTip.LastTime >= _d->toolTip.RelaunchTime && time - _d->toolTip.LastTime < _d->toolTip.LaunchTime))
-		     && _d->hoveredNoSubelement->getTooltipText().size()
+		     && _d->hoveredNoSubelement->tooltipText().size()
         )
     {
       if( _d->hoveredNoSubelement.isValid() )
@@ -348,7 +348,7 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 Widget* GuiEnv::getNextWidget(bool reverse, bool group)
 {
     // start the search at the root of the current tab group
-    Widget *startPos = getFocus() ? getFocus()->getTabGroup() : 0;
+    Widget *startPos = getFocus() ? getFocus()->tabgroup() : 0;
     int startOrder = -1;
 
     // if we're searching for a group
@@ -357,7 +357,7 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
         startOrder = startPos->getTabOrder();
     }
     else
-        if (!group && getFocus() && !getFocus()->hasTabGroup())
+        if (!group && getFocus() && !getFocus()->hasTabgroup())
         {
             startOrder = getFocus()->getTabOrder();
             if (startOrder == -1)
@@ -502,7 +502,7 @@ Widget* GuiEnv::getHoveredElement() const {  return _d->hovered.object(); }
 void GuiEnv::beforeDraw()
 {
   const Size screenSize( _d->engine->getScreenSize() );
-  const Point rigthDown = getRootWidget()->getAbsoluteRect().LowerRightCorner;
+  const Point rigthDown = getRootWidget()->absoluteRect().LowerRightCorner;
   
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {

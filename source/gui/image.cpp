@@ -76,7 +76,7 @@ Image::Image(Widget* parent, Point pos, Picture pic, int id)
 
 void Image::_updateTexture( GfxEngine& painter )
 {
-  Size imageSize = getSize();
+  Size imageSize = size();
 
   if( _d->background && _d->background->size() != imageSize )
   {
@@ -104,7 +104,7 @@ void Image::_updateTexture( GfxEngine& painter )
     case Image::image:
       _d->background->draw( _d->bgPicture,
                             Rect( Point(0, 0), _d->bgPicture.size()),
-                            Rect( Point( 0, 0 ), getSize() ), false );
+                            Rect( Point( 0, 0 ), size() ), false );
     break;
     }
   }    
@@ -128,7 +128,7 @@ void Image::draw( GfxEngine& painter )
   // draw background
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *_d->background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

@@ -94,9 +94,9 @@ ListBox::~ListBox()
 
 void ListBox::_updateTexture()
 {
-  Size size = getSize();
+  Size s = size();
 
-  if( _d->background && _d->background->size() != size )
+  if( _d->background && _d->background->size() != s )
   {
     _d->background.reset();
     _d->picture.reset();
@@ -104,8 +104,8 @@ void ListBox::_updateTexture()
 
   if( !_d->background )
   {    
-    _d->background.reset( Picture::create( size ) );
-    _d->picture.reset( Picture::create( size ) );
+    _d->background.reset( Picture::create( s ) );
+    _d->picture.reset( Picture::create( s ) );
     PictureDecorator::draw( *_d->background, Rect( 0, 0, width() - _d->scrollBar->width(), height() ), PictureDecorator::blackFrame );
     PictureDecorator::draw( *_d->background,
                             Rect( width() - _d->scrollBar->width(), 0, width(), height() ), 
@@ -163,8 +163,8 @@ void ListBox::removeItem(unsigned int id)
 
 int ListBox::getItemAt(Point pos ) const
 {
-  if ( 	pos.x() < screenLeft() || pos.x() >= getScreenRight()
-      ||	pos.y() < getScreenTop() || pos.y() >= screenBottom() )
+  if ( 	pos.x() < screenLeft() || pos.x() >= screenRight()
+      ||	pos.y() < screenTop() || pos.y() >= screenBottom() )
   {
 	  return -1;
   }
@@ -174,7 +174,7 @@ int ListBox::getItemAt(Point pos ) const
 	  return -1;
   }
 
-  int item = ((pos.y() - getScreenTop() - 1) + _d->scrollBar->getPos()) / _d->itemHeight;
+  int item = ((pos.y() - screenTop() - 1) + _d->scrollBar->getPos()) / _d->itemHeight;
   
   if ( item < 0 || item >= (int)_d->items.size())
   {
@@ -558,7 +558,7 @@ NColor ListBox::_GetCurrentItemColor( const ListBoxItem& item, bool selected )
 
 Rect ListBox::getItemTextRect_()
 {
-  Rect frameRect( Point( 0, 0 ), getSize() );
+  Rect frameRect( Point( 0, 0 ), size() );
   if( _d->scrollBar->isVisible() )
       frameRect.LowerRightCorner.setX( frameRect.LowerRightCorner.x() - DEFAULT_SCROLLBAR_SIZE );
 
@@ -636,7 +636,7 @@ void ListBox::draw( GfxEngine& painter )
   if ( !isVisible() )
 		return;
 
-	painter.drawPicture( *_d->picture, getAbsoluteRect().UpperLeftCorner );
+	painter.drawPicture( *_d->picture, absoluteRect().UpperLeftCorner );
 
 	Widget::draw( painter );
 }

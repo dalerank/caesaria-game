@@ -113,7 +113,7 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
   if( _d->lbText && blackArea.getWidth() == 0 )
   {
     Rect r = _d->lbText->getRelativeRect();
-    r.LowerRightCorner = _d->btnExit->getRightupCorner();
+    r.LowerRightCorner = _d->btnExit->rightupCorner();
     _d->lbText->setGeometry( r );
   }
 
@@ -137,7 +137,7 @@ void InfoboxSimple::draw( GfxEngine& engine )
 bool InfoboxSimple::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
-  return getParent()->getAbsoluteRect().isPointInside( point );
+  return getParent()->absoluteRect().isPointInside( point );
 }
 
 bool InfoboxSimple::onEvent( const NEvent& event)

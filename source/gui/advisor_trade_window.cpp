@@ -131,8 +131,8 @@ public:
   EmpirePricesWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city  )
     : Widget( parent, id, rectangle )
   {
-    background.reset( Picture::create( getSize() ) );
-    PictureDecorator::draw( *background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+    background.reset( Picture::create( size() ) );
+    PictureDecorator::draw( *background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
     Font font = Font::create( FONT_3 );
     font.draw( *background, _("##rome_prices##"), Point( 10, 10 ), false );
@@ -172,7 +172,7 @@ public:
     if( !isVisible() )
       return;
 
-    painter.drawPicture( *background, getAbsoluteRect().UpperLeftCorner );
+    painter.drawPicture( *background, absoluteRect().UpperLeftCorner );
 
     Widget::draw( painter );
   }
@@ -236,7 +236,7 @@ public:
 
         Font font = getFont( state );        
         std::string text = (order == CityTradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
-        Rect textRect = font.calculateTextRect( text, Rect( Point( 0, 0), getSize() ), getHorizontalTextAlign(), getVerticalTextAlign() );
+        Rect textRect = font.calculateTextRect( text, Rect( Point( 0, 0), size() ), getHorizontalTextAlign(), getVerticalTextAlign() );
         font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner );
       }
       break;
@@ -282,8 +282,8 @@ public:
   {
     _city = city;
     _type = type;
-    _background.reset( Picture::create( getSize() ) );
-    PictureDecorator::draw( *_background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+    _background.reset( Picture::create( size() ) );
+    PictureDecorator::draw( *_background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
     const Picture& iconGood = GoodHelper::getPicture( type );
     _background->draw( iconGood, Point( 10, 10 ) );
@@ -320,7 +320,7 @@ public:
     if( !isVisible() )
       return;
 
-    painter.drawPicture( *_background, screenLeft(), getScreenTop() );
+    painter.drawPicture( *_background, screenLeft(), screenTop() );
 
     Widget::draw( painter );
   }
@@ -531,10 +531,10 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 
-  _d->background.reset( Picture::create( getSize() ) );
+  _d->background.reset( Picture::create( size() ) );
   _d->city = city;
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   _d->btnEmpireMap = new PushButton( this, Rect( Point( 100, 398), Size( 200, 24 ) ), _("##empire_map##"), -1, false, PushButton::whiteBorderUp );
   _d->btnPrices = new PushButton( this, Rect( Point( 400, 398), Size( 200, 24 ) ), _("##show_prices##"), -1, false, PushButton::whiteBorderUp );
@@ -553,7 +553,7 @@ void AdvisorTradeWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

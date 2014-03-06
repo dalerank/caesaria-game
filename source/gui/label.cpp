@@ -109,7 +109,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 
 void Label::_updateTexture( GfxEngine& painter )
 {
-  Size labelSize = getSize();
+  Size labelSize = size();
 
   if( _d->background && _d->background->size() != labelSize )
   {
@@ -144,7 +144,7 @@ void Label::_updateTexture( GfxEngine& painter )
   }
   else
   {
-    Rect r( Point( 0, 0 ), getSize() );
+    Rect r( Point( 0, 0 ), size() );
     switch( _d->backgroundMode )
     {
     case bgSimpleWhite:
@@ -168,8 +168,8 @@ void Label::_updateTexture( GfxEngine& painter )
 
   if( _d->font.isValid() )
   {
-    Rect frameRect( Point( 0, 0 ), getSize() );
-    string rText = _d->prefix + getText();
+    Rect frameRect( Point( 0, 0 ), size() );
+    string rText = _d->prefix + text();
 
     if( rText.size() && _d->font.isValid() )
     {
@@ -179,13 +179,13 @@ void Label::_updateTexture( GfxEngine& painter )
         Rect textRect = _d->font.calculateTextRect( rText, frameRect, getHorizontalTextAlign(), getVerticalTextAlign() );
 
         textRect += _d->textOffset;
-        _d->font.draw( *_d->textPicture, getText(), textRect.left(), textRect.top() );
+        _d->font.draw( *_d->textPicture, text(), textRect.left(), textRect.top() );
       }
       else
       {
         if( _d->font != _d->lastBreakFont )
         {
-            _d->breakText( getText(), getSize() );
+            _d->breakText( text(), size() );
         }
 
         Rect r = frameRect;
@@ -208,9 +208,7 @@ void Label::_updateTexture( GfxEngine& painter )
 }
 
 //! destructor
-Label::~Label()
-{
-}
+Label::~Label() {}
 
 //! draws the element and its children
 void Label::draw( GfxEngine& painter )
@@ -221,17 +219,17 @@ void Label::draw( GfxEngine& painter )
   // draw background
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, getAbsoluteRect().UpperLeftCorner, &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *_d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   if( _d->icon.isValid() )
   {
-    painter.drawPicture( _d->icon, getAbsoluteRect().UpperLeftCorner + _d->iconOffset, &getAbsoluteClippingRectRef() );
+    painter.drawPicture( _d->icon, absoluteRect().UpperLeftCorner + _d->iconOffset, &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture )
   {
-    painter.drawPicture( *_d->textPicture, getAbsoluteRect().UpperLeftCorner, &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *_d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -263,54 +261,32 @@ void Label::setBackgroundMode( BackgroundMode mode )
 }
 
 //! Sets whether to draw the border
-void Label::setBorderVisible(bool draw)
-{
-  _d->isBorderVisible = draw;
-}
-
-
-void Label::setTextRestrainedInside(bool restrainTextInside)
-{
-  _d->RestrainTextInside = restrainTextInside;
-}
-
-
-bool Label::isTextRestrainedInside() const
-{
-  return _d->RestrainTextInside;
-}
-
+void Label::setBorderVisible(bool draw) {  _d->isBorderVisible = draw;}
+void Label::setTextRestrainedInside(bool restrainTextInside){  _d->RestrainTextInside = restrainTextInside;}
+bool Label::isTextRestrainedInside() const{  return _d->RestrainTextInside;}
 
 //! Enables or disables word wrap for using the static text as
 //! multiline text control.
 void Label::setWordwrap(bool enable)
 {
   _d->isWordwrap = enable;
-  _d->breakText( getText(), getSize() );
+  _d->breakText( text(), size() );
   _d->needUpdatePicture = true;
 }
 
-bool Label::isWordWrapEnabled() const
-{
-  return _d->isWordwrap;
-}
+bool Label::isWordWrapEnabled() const {  return _d->isWordwrap; }
 
 void Label::setRightToLeft(bool rtl)
 {
   if( _d->RightToLeft != rtl )
   {
     _d->RightToLeft = rtl;
-    _d->breakText( getText(), getSize() );
+    _d->breakText( text(), size() );
     _d->needUpdatePicture = true;
   }
 }
 
-
-bool Label::isRightToLeft() const
-{
-	return _d->RightToLeft;
-}
-
+bool Label::isRightToLeft() const{	return _d->RightToLeft;}
 
 //! Breaks the single text line.
 void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
@@ -530,18 +506,15 @@ void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 
 
 //! Sets the new caption of this element.
-void Label::setText(const string& text)
+void Label::setText(const string& newText)
 {
-  Widget::setText( text );
+  Widget::setText( newText );
 
-  _d->breakText( getText(), getSize() );
+  _d->breakText( text(), size() );
   _d->needUpdatePicture = true;
 }
 
-Signal0<>& Label::onClicked()
-{
-  return _d->onClickedSignal;
-}
+Signal0<>& Label::onClicked() {  return _d->onClickedSignal; }
 
 //! Returns the height of the text in pixels when it is drawn.
 int Label::getTextHeight() const
@@ -581,14 +554,11 @@ int Label::getTextWidth() const
     }
     else
     {
-      return font.getSize( getText() ).width();
+      return font.getSize( text() ).width();
     }
 }
 
-void Label::setPadding( const Rect& margin )
-{
-  _d->textMargin = margin;
-}
+void Label::setPadding( const Rect& margin ) {  _d->textMargin = margin; }
 
 void Label::beforeDraw( GfxEngine& painter )
 {
@@ -602,10 +572,7 @@ void Label::beforeDraw( GfxEngine& painter )
   Widget::beforeDraw( painter );
 }
 
-Label::BackgroundMode Label::getBackgroundMode() const
-{
-  return _d->backgroundMode;
-}
+Label::BackgroundMode Label::getBackgroundMode() const {  return _d->backgroundMode; }
 
 bool Label::isBorderVisible() const {  return _d->isBorderVisible; }
 
@@ -641,10 +608,7 @@ void Label::setTextAlignment( Alignment horizontal, Alignment vertical )
   _d->needUpdatePicture = true;
 }
 
-void Label::_resizeEvent()
-{
-  _d->needUpdatePicture = true;
-}
+void Label::_resizeEvent() {  _d->needUpdatePicture = true; }
 
 void Label::setLineIntervalOffset( const int offset )
 {
@@ -664,19 +628,8 @@ void Label::setupUI(const VariantMap& ui)
   setBackgroundMode( helper.findType( ui.get( "bgtype" ).toString() ));
 }
 
-void Label::setTextOffset(Point offset)
-{
-  _d->textOffset = offset;
-}
-
-PictureRef& Label::getPicture()
-{
-  return _d->background;
-}
-
-PictureRef& Label::getTextPicture()
-{
-  return _d->textPicture;
-}
+void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
+PictureRef& Label::getPicture(){  return _d->background;}
+PictureRef& Label::getTextPicture(){  return _d->textPicture;}
 
 }//end namespace gui

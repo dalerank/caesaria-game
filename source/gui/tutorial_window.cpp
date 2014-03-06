@@ -33,7 +33,7 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
   _locker.activate();
 
   setupUI( GameSettings::rcpath( "/gui/tutorial_window.gui" ) );
-  Size pSize = getParent()->getSize() - getSize();
+  Size pSize = getParent()->size() - size();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
   Label* lbTitle = findChildA<Label*>( "lbTitle", true );

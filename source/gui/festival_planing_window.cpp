@@ -106,9 +106,9 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
   _d->city = city;
-  _d->background.reset( Picture::create( getSize() ) );
+  _d->background.reset( Picture::create( size() ) );
 
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   _d->addImage( this, romeDivCeres, 0, 17 );
   _d->addImage( this, romeDivNeptune, 1, 18 );
@@ -169,7 +169,7 @@ void FestivalPlaningWindow::draw( GfxEngine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->background, screenLeft(), screenTop() );
   }
 
   Widget::draw( painter );

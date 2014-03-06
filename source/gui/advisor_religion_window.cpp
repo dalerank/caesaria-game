@@ -131,10 +131,10 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
-  _d->background.reset( Picture::create( getSize() ) );
+  _d->background.reset( Picture::create( size() ) );
 
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
   //buttons _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( 35, 62, width() - 35, 62 + 130 ), PictureDecorator::blackFrame );
 
@@ -182,7 +182,7 @@ void AdvisorReligionWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

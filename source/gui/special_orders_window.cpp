@@ -126,10 +126,10 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
 
   CONNECT( _d->btnExit, onClicked(), this, GranarySpecialOrdersWindow::deleteLater );
 
-  _d->bgPicture.reset( Picture::create( getSize() ) );
+  _d->bgPicture.reset( Picture::create( size() ) );
 
   // draws the box and the inner black box
-  PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
   _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->height() -5 ) );
@@ -143,14 +143,14 @@ BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow()
 
 void BaseSpecialOrdersWindow::draw( GfxEngine& engine )
 {
-  engine.drawPicture( *_d->bgPicture, screenLeft(), getScreenTop() );
+  engine.drawPicture( *_d->bgPicture, screenLeft(), screenTop() );
   Widget::draw( engine );
 }
 
 bool BaseSpecialOrdersWindow::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
-  return getParent()->getAbsoluteRect().isPointInside( point );
+  return getParent()->absoluteRect().isPointInside( point );
 }
 
 bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)

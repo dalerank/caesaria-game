@@ -30,13 +30,15 @@ public:
 
   // draw on screen
   virtual void draw( GfxEngine& engine );
-
-  bool onEvent(const NEvent& event);
+  virtual void beforeDraw(GfxEngine &painter);
+  virtual bool onEvent(const NEvent& event);
 
   void addMessage( std::string );
  
 private:
   WindowMessageStack( Widget* parent, int id, const Rect& rectangle );
+
+  void _update();
 
   class Impl;
   ScopedPtr< Impl > _d;

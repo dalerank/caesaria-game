@@ -85,7 +85,7 @@ public:
 void StartMenu::Impl::resolveShowLoadGameWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
-  Size rootSize = parent->getSize();
+  Size rootSize = parent->size();
   Size windowSize( 512, 384 );
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
@@ -103,7 +103,7 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 void StartMenu::Impl::resolveShowChangeLanguageWindow()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
-  Size rootSize = parent->getSize();
+  Size rootSize = parent->size();
   Size windowSize( 512, 384 );
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
@@ -147,7 +147,7 @@ void StartMenu::Impl::resolveChangePlayerName()
 {
   gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->getGui()->getRootWidget() );
 
-  playerName = dlg->getText();
+  playerName = dlg->text();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
   CONNECT( dlg, onClose(), this, Impl::resolveNewGame );
 }
@@ -160,7 +160,7 @@ void StartMenu::Impl::resolveNewGame()
 void StartMenu::Impl::resolveCredits()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
-  Size rootSize = parent->getSize();
+  Size rootSize = parent->size();
   Size windowSize( 512, 384 );
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
@@ -192,7 +192,7 @@ void StartMenu::Impl::resolveCredits()
 void StartMenu::Impl::resolvePlayMission()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
-  Size rootSize = parent->getSize();
+  Size rootSize = parent->size();
   Size windowSize( 512, 384 );
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );
@@ -208,7 +208,7 @@ void StartMenu::Impl::resolvePlayMission()
 void StartMenu::Impl::resolveShowLoadMapWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
-  Size rootSize = parent->getSize();
+  Size rootSize = parent->size();
   Size windowSize( 512, 384 );
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
              windowSize );

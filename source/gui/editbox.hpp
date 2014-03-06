@@ -107,7 +107,7 @@ public:
 
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
-  virtual std::string getText() const;
+  virtual std::string text() const;
 
   //! Sets the maximum amount of characters which may be entered in the box.
   //! \param max: Maximum amount of characters. If 0, the character amount is

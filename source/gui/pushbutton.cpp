@@ -135,7 +135,7 @@ PushButton::PushButton( Widget* parent,
 
 void PushButton::_updateTexture( ElementState state )
 {
-  Size btnSize = getSize();      
+  Size btnSize = size();      
   PictureRef& curTxs = _d->buttonStates[ state ].background;
   PictureRef& textTxs = _d->buttonStates[ state ].textPicture;
 
@@ -169,7 +169,7 @@ void PushButton::_updateTexture( ElementState state )
       PictureDecorator::Mode mode = (state == stNormal || state == stDisabled)
                                       ? PictureDecorator::smallGreyPanel
                                       : PictureDecorator::smallBrownPanel;
-      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), mode );
     }
     break;
 
@@ -178,22 +178,22 @@ void PushButton::_updateTexture( ElementState state )
       PictureDecorator::Mode mode = (state == stNormal || state == stDisabled)
                                         ? PictureDecorator::lightgreyPanel
                                         : PictureDecorator::greyPanel;
-      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), mode );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), mode );
     }
     break;
 
     case whiteBorderUp:
     {
-      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteArea );
-      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ),
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteArea );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ),
                               state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
 
     case blackBorderUp:
     {
-      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::blackArea );
-      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), getSize() ),
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), PictureDecorator::blackArea );
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ),
                               state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
@@ -207,10 +207,10 @@ void PushButton::_updateTexture( ElementState state )
   Font stFont = _d->buttonStates[ state ].font;
   if( textTxs && stFont.isValid() )
   {
-    Rect textRect = stFont.calculateTextRect( getText(), Rect( 0, 0, width(), height() ),
+    Rect textRect = stFont.calculateTextRect( text(), Rect( 0, 0, width(), height() ),
                                               getHorizontalTextAlign(), getVerticalTextAlign() );
     textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( *textTxs, getText(), textRect.UpperLeftCorner + _d->textOffset );
+    stFont.draw( *textTxs, text(), textRect.UpperLeftCorner + _d->textOffset );
   }
 }
 
@@ -411,7 +411,7 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 {
 	bool wasPressed = isPressed();
 
-	if ( !getAbsoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
+	if ( !absoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
 	{
 		if (!isPushButton())
 			setPressed(false);
@@ -435,7 +435,7 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 {
 	if( _environment->hasFocus(this) &&
-		!getAbsoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
+		!absoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
 	{
 		removeFocus();
 		return false;
@@ -492,7 +492,7 @@ void PushButton::draw( GfxEngine& painter )
   {
     if( state.background )
     {
-      painter.drawPicture( *state.background, screenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+      painter.drawPicture( *state.background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
 
 //             if( isEnabled() &&
 //                 ( hoverImageOpacity <= 0xff ) &&
@@ -512,7 +512,7 @@ void PushButton::draw( GfxEngine& painter )
 
   if( state.textPicture )
   {
-    painter.drawPicture( *state.textPicture, screenLeft(), getScreenTop(), &getAbsoluteClippingRectRef() );
+    painter.drawPicture( *state.textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   drawIcon( painter );

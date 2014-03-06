@@ -39,9 +39,9 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id )
   setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                      Size( 640, 416 ) ) );
 
-  _d->background.reset( Picture::create( getSize() ) );
+  _d->background.reset( Picture::create( size() ) );
   //main background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   //buttons background
   PictureDecorator::draw( *_d->background, Rect( Point( 32, 70 ), Size( 574, 270 )), PictureDecorator::blackFrame );
@@ -60,7 +60,7 @@ void AdvisorLegionWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

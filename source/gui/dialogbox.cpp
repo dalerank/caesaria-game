@@ -52,8 +52,8 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
     setGeometry( defaultRect );
   }
 
-  _d->background.reset( Picture::create( getSize() ) );
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  _d->background.reset( Picture::create( size() ) );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
@@ -120,7 +120,7 @@ void DialogBox::draw( GfxEngine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->background, screenLeft(), screenTop() );
   }
 
   Widget::draw( painter );

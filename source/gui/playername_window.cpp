@@ -48,10 +48,10 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 
 WindowPlayerName::~WindowPlayerName(){}
 
-std::string WindowPlayerName::getText()
+std::string WindowPlayerName::text()
 {
   const EditBox* ed = findChildA<EditBox*>( "edPlayerName", true, this );
-  return ed ? ed->getText() : "";
+  return ed ? ed->text() : "";
 }
 
 Signal0<>& WindowPlayerName::onClose(){  return _d->onCloseSignal;}

@@ -79,7 +79,7 @@ void TopMenu::draw( GfxEngine& engine )
 
   _d->updateDate();
 
-  engine.drawPicture( *_d->bgPicture, screenLeft(), getScreenTop() );
+  engine.drawPicture( *_d->bgPicture, screenLeft(), screenTop() );
 
   MainMenu::draw( engine );
 }
@@ -113,7 +113,7 @@ void TopMenu::Impl::updateDate()
 void TopMenu::Impl::showAboutInfo()
 {
   Widget* parent = lbDate->getEnvironment()->getRootWidget();
-  Size pSize = parent->getSize();
+  Size pSize = parent->size();
   Size mySize( 500, 300 );
   Rect rect( Point( (pSize.width() - mySize.width()) / 2, (pSize.height() - mySize.height()) / 2 ), mySize );
   Label* bg = new Label( parent, rect, "", false, Label::bgWhiteFrame );
@@ -136,7 +136,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
     p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
   }
 
-  _d->bgPicture.reset( Picture::create( getSize() ) );
+  _d->bgPicture.reset( Picture::create( size() ) );
 
   int i = 0;
   unsigned int x = 0;

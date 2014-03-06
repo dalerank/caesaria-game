@@ -75,7 +75,7 @@ void InfoboxGranary::showSpecialOrdersWindow()
   }
   else
   {
-    pos = getAbsoluteRect().UpperLeftCorner;
+    pos = absoluteRect().UpperLeftCorner;
   }
 
   new GranarySpecialOrdersWindow( getParent(), pos, _granary );

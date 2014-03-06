@@ -94,7 +94,7 @@ public:
 
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    Size  size = parent->getSize();
+    Size  size = parent->size();
     WorkingBuildingPtr building = ptr_cast<WorkingBuilding>( city->getOverlay( pos ) );
     if( building.isValid() )
     {
@@ -127,7 +127,7 @@ public:
 
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    Size  size = parent->getSize();
+    Size  size = parent->size();
     InfoboxSimple* infoBox = new InfoboxSimple( parent, Rect( 0, 0, 510, 300 ) );
     infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, 
                                   size.height() - infoBox->height()) );
@@ -263,7 +263,7 @@ void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
   
   if( infoBox && infoBox->isAutoPosition() )
   {
-    Size rSize = gui->getRootWidget()->getSize();
+    Size rSize = gui->getRootWidget()->size();
     int y = ( gui->getCursorPos().y() < rSize.height() / 2 )
                 ? rSize.height() - infoBox->height() - 5
                 : 30;

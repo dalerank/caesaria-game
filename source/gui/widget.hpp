@@ -135,21 +135,23 @@ public:
 
   virtual unsigned int width() const;
 
-  virtual int getScreenTop() const;
+  virtual int screenTop() const;
 
   virtual int screenLeft() const;
 
   virtual int bottom() const;
 
+  virtual Point center() const;
+
   virtual void setBottom(int b);
 
   virtual int screenBottom() const;
 
-  virtual int getScreenRight() const;
+  virtual int screenRight() const;
 
   virtual Point leftdownCorner() const;
 
-  virtual Point getRightupCorner() const;
+  virtual Point rightupCorner() const;
 
   virtual unsigned int getArea() const;
 
@@ -157,7 +159,7 @@ public:
 
   virtual Rect convertLocalToScreen( const Rect& localPoint ) const;
 
-  virtual Size getSize() const;
+  virtual Size size() const;
 
   //! Updates the absolute position.
   virtual void updateAbsolutePosition();
@@ -226,13 +228,13 @@ public:
   //! Sets whether this element is a container for a group of elements which can be navigated using the tab key.
   /** For example, windows are tab groups.
   Groups can be navigated using ctrl+tab, providing isTabStop is true. */
-  virtual void setTabGroup(bool isGroup);
+  virtual void setTabgroup(bool isGroup);
 
   //! Returns true if this element is a tab group.
-  virtual bool hasTabGroup() const;
+  virtual bool hasTabgroup() const;
 
   //! Returns the container element which holds all elements in this element's tab group.
-  virtual Widget* getTabGroup();
+  virtual Widget* tabgroup();
 
   //! Returns true if element is enabled
   /** Currently elements do _not_ care about parent-states.
@@ -248,13 +250,13 @@ public:
   virtual void setText(const std::string& text);
 
   //! Returns caption of this element.
-  virtual std::string getText() const;
+  virtual std::string text() const;
 
   //! Sets the new caption of this element.
   virtual void setTooltipText(const std::string& text);
 
   //! Returns caption of this element.
-  virtual std::string getTooltipText() const;
+  virtual std::string tooltipText() const;
 
   //! Returns id. Can be used to identify the element.
   virtual int getID() const;
@@ -334,6 +336,9 @@ public:
   void setLeft( int newLeft );
 
   //!
+  void setCenter( Point center );
+
+  //!
   int getLeft() const;
 
   //!
@@ -353,13 +358,13 @@ public:
   //void setRelativeRectProportional(const RectF& r, GeometryType mode=ProportionalGeometry );
 
   //! Gets the absolute rectangle of this element
-  Rect getAbsoluteRect() const;
+  Rect absoluteRect() const;
 
   //! Returns the visible area of the element.
-  Rect getAbsoluteClippingRect() const;
+  Rect absoluteClippingRect() const;
 
   //! Returns the visible area of the element.
-  Rect& getAbsoluteClippingRectRef() const;
+  Rect& absoluteClippingRectRef() const;
 
   //! Sets whether the element will ignore its parent's clipping rectangle
   /** \param noClip If true, the element will not be clipped by its parent's clipping rectangle. */
@@ -373,9 +378,9 @@ public:
   /** If set to 0,0, there is no maximum size */
   void setMaxSize( const Size& size);
 
-  Size getMaxSize() const;
+  Size maxSize() const;
 
-  Size getMinSize() const;
+  Size minSize() const;
 
   //! Sets the minimum size allowed for this element
   void setMinSize( const Size& size);

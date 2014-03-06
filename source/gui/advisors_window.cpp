@@ -79,7 +79,7 @@ PushButton* AdvisorsWindow::addButton( const int pos, const int picId, std::stri
 }
 
 AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
-: Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
+: Widget( parent, id, Rect( Point(0, 0), parent->size() ) ), _d( new Impl )
 {
   _d->locker.activate();
   // use some clipping to remove the right and bottom areas

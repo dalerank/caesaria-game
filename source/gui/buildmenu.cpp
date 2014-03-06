@@ -109,7 +109,7 @@ void BuildMenu::initialize()
     BuildButton *button = dynamic_cast< BuildButton* >( *widget );
     if( button )
     {
-        textSize = font.getSize( button->getText());
+        textSize = font.getSize( button->text());
         max_text_width = std::max(max_text_width, textSize.width() );
 
         std::string text = StringHelper::format( 0xff, "%i", button->getCost() );
@@ -196,7 +196,7 @@ BuildMenu* BuildMenu::create(const BuildMenuType menuType, Widget* parent )
 
 bool BuildMenu::isPointInside( const Point& point ) const
 {
-  Rect clickedRect = _environment->getRootWidget()->getAbsoluteRect();
+  Rect clickedRect = _environment->getRootWidget()->absoluteRect();
   clickedRect.LowerRightCorner = Point( getParent()->screenLeft(), _environment->getRootWidget()->height() );
   return clickedRect.isPointInside( point );
 }

@@ -29,7 +29,7 @@ public:
   WindowPlayerName( Widget* parent );
   ~WindowPlayerName();
 
-  virtual std::string getText();
+  virtual std::string text();
 
 public oc3_signals:
   Signal0<>& onClose();

@@ -71,9 +71,9 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
   _d->locker.activate();
-  _d->background.reset( Picture::create( getSize() ) );
+  _d->background.reset( Picture::create( size() ) );
 
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   Label* lbToCity = new Label( this, Rect( width() / 2, height() - 40, width() - 110, height() - 10 ), _("##mission_wnd_tocity##" ) );
   lbToCity->setTextAlignment( alignCenter, alignCenter );
@@ -109,7 +109,7 @@ void MissionTargetsWindow::draw( GfxEngine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+    painter.drawPicture( *_d->background, screenLeft(), screenTop() );
   }
 
   Widget::draw( painter );

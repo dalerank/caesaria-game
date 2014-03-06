@@ -19,7 +19,7 @@ ModalScreen::ModalScreen( Widget* parent, int id)
 	setAlignment(alignUpperLeft, alignLowerRight, alignUpperLeft, alignLowerRight);
 
 	// this element is a tab group
-	setTabGroup(true);
+	setTabgroup(true);
 }
 
 bool ModalScreen::_canTakeFocus(Widget* target) const
@@ -149,7 +149,7 @@ void ModalScreen::draw( GfxEngine& painter )
 		{
 			if( (*w)->isVisible())
 			{
-				r = (*w)->getAbsoluteRect();
+				r = (*w)->absoluteRect();
 				r.LowerRightCorner += Point( 1, 1 );
 				r.UpperLeftCorner -= Point( 1, 1 );
 

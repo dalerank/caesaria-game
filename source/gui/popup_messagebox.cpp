@@ -51,9 +51,9 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   lbTitle->setFont( Font::create( FONT_3 ) );
   lbTitle->setTextAlignment( alignCenter, alignCenter );
 
-  _d->background.reset( Picture::create( getSize() ) );
+  _d->background.reset( Picture::create( size() ) );
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
   PictureDecorator::draw( *_d->background, Rect( Point( 18, 50 ), Size( width() - 34, 220 ) ), PictureDecorator::blackFrame );
 
   _d->btnExit = new TexturedButton( this, Point( width() - 40, height() - 40 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
@@ -75,7 +75,7 @@ void PopupMessageBox::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), getScreenTop() );
+  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

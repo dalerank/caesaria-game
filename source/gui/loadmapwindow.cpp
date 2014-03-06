@@ -77,10 +77,10 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   CONNECT( _d->files, onItemSelectedAgain(), _d.data(), Impl::resolveFileSelected );
   _d->fillFiles();
 
-  _d->bgPicture.reset( Picture::create( getSize() ) );
+  _d->bgPicture.reset( Picture::create( size() ) );
 
   // draws the box and the inner black box
-  PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), getSize() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 }
 
 LoadMapWindow::~LoadMapWindow()
@@ -98,7 +98,7 @@ void LoadMapWindow::Impl::fillFiles()
 
 void LoadMapWindow::draw( GfxEngine& engine )
 {
-  engine.drawPicture( getBgPicture(), screenLeft(), getScreenTop() );
+  engine.drawPicture( getBgPicture(), screenLeft(), screenTop() );
   Widget::draw( engine );
 }
 
@@ -110,7 +110,7 @@ Picture& LoadMapWindow::getBgPicture()
 bool LoadMapWindow::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
-  return getParent()->getAbsoluteRect().isPointInside( point );
+  return getParent()->absoluteRect().isPointInside( point );
 }
 
 bool LoadMapWindow::onEvent( const NEvent& event)

@@ -32,17 +32,6 @@ class WindowMessageStack::Impl
 {
 public:
   PictureRef lbBackgorund;
-
-  void updatePositions( Widget::Widgets& childs, const Rect& rectangle )
-  {
-    Point offsetLb( 0, 0 );
-    Point offset( 0, 23 );
-    foreach( widget, childs )
-    {
-      (*widget)->setPosition( offsetLb );
-      offsetLb += offset;
-    }
-  }
 };
 
 WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rectangle ) 
@@ -64,10 +53,39 @@ void WindowMessageStack::draw( GfxEngine& painter )
   Widget::draw( painter );
 }
 
-bool WindowMessageStack::onEvent( const NEvent& event )
+void WindowMessageStack::_update()
 {
-  return false;
+  Point offsetLb( width() / 2, 12 );
+  Point offset( 0, 23 );
+  Widgets wds = getChildren();
+  foreach( widget, wds )
+  {
+    (*widget)->setCenter( offsetLb );
+    offsetLb += offset;
+  }
 }
+
+void WindowMessageStack::beforeDraw(GfxEngine& painter)
+{
+  Widget::Widgets wds = getChildren();
+  unsigned int myWidth = width();
+  int speed = std::max<int>( 20, myWidth / (painter.getFps()+1) );
+
+  foreach( widget, wds )
+  {    
+    unsigned int wd = (*widget)->width();
+    if( wd != myWidth )
+    {
+      Point center = (*widget)->center();
+      (*widget)->setWidth( math::clamp<unsigned int>( wd+speed, 0, myWidth ) );
+      (*widget)->setCenter( center );
+    }
+  }
+
+  Widget::beforeDraw( painter );
+}
+
+bool WindowMessageStack::onEvent( const NEvent& ) {  return false; }
 
 void WindowMessageStack::addMessage( std::string message )
 {
@@ -76,12 +94,12 @@ void WindowMessageStack::addMessage( std::string message )
     removeChild( *getChildren().begin() );
   }
 
-  Label* lbMessage = new Label( this, Rect( 0, 0, width(), 20), message );
+  Label* lbMessage = new Label( this, Rect( 0, 0, 2, 20), message );
   lbMessage->setTextAlignment( alignCenter, alignCenter );
   lbMessage->setBackgroundPicture( *_d->lbBackgorund );
   new WidgetDeleter( lbMessage, 5000 );
 
-  _d->updatePositions( const_cast< Widget::Widgets& >( getChildren() ), getRelativeRect() );
+  _update();
 }
 
 WindowMessageStack* WindowMessageStack::create( Widget* parent )

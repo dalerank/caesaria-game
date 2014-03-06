@@ -91,7 +91,7 @@ void InfoboxWarehouse::showSpecialOrdersWindow()
   }
   else
   {
-    pos = getAbsoluteRect().UpperLeftCorner;
+    pos = absoluteRect().UpperLeftCorner;
   }
 
   new WarehouseSpecialOrdersWindow( getParent(), pos, _warehouse );

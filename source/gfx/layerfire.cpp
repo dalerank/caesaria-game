@@ -126,7 +126,7 @@ void LayerFire::handleEvent(NEvent& event)
         if( constr != 0 )
         {
           int fireLevel = math::clamp<int>( constr->getState( Construction::fire ), 0, 100 );
-          text = fireLevelName[ fireLevel / 16 ];
+          text = fireLevelName[ math::clamp( fireLevel / 16, 0, 5 ) ];
         }
       }
 

@@ -269,7 +269,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
 
     if( _d->needRecalculateParams )
     {
-      _d->backgroundRect = getAbsoluteRect();
+      _d->backgroundRect = absoluteRect();
       if( _horizontal )
       {
           if( _d->upButton && _d->upButton->isVisible() )
@@ -298,7 +298,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
   if( needRecalculateSliderParams )
   {
     _lastSliderPos = _sliderPos;
-    _d->sliderRect = getAbsoluteRect();
+    _d->sliderRect = absoluteRect();
 
     if( !math::isEqual( getRange(), 0.f ) )
     {
@@ -314,7 +314,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
       else
       {
         _d->sliderRect.UpperLeftCorner.setX( screenLeft() + (width() - _d->sliderTexture.getWidth()) / 2 );
-        _d->sliderRect.UpperLeftCorner.setY( getScreenTop() + _lastSliderPos - _drawLenght/2 );
+        _d->sliderRect.UpperLeftCorner.setY( screenTop() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->isVisible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
 
@@ -336,7 +336,7 @@ void ScrollBar::draw( GfxEngine& painter )
   //draw background
   if( _d->texture.isValid() )
   {
-      painter.drawPicture( _d->texture, getAbsoluteRect().UpperLeftCorner );
+      painter.drawPicture( _d->texture, absoluteRect().UpperLeftCorner );
   }
 
   //draw slider
@@ -362,7 +362,7 @@ int ScrollBar::_getPosFromMousePos(const Point& pos) const
 	else
 	{
 		w = height() - float(width())*3.0f;
-		p = pos.y() - getScreenTop() - width()*1.5f;
+		p = pos.y() - screenTop() - width()*1.5f;
 	}
     return (int) ( p/w * getRange() ) + _minValue;
 }

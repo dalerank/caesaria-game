@@ -296,10 +296,10 @@ void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 }
 
 EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
- : Widget( parent, id, Rect( Point(0, 0), parent->getSize() ) ), _d( new Impl )
+ : Widget( parent, id, Rect( Point(0, 0), parent->size() ) ), _d( new Impl )
 {
   // use some clipping to remove the right and bottom areas
-  _d->border.reset( Picture::create( getSize() ) );
+  _d->border.reset( Picture::create( size() ) );
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;
   _d->lbCityTitle = new Label( this, Rect( Point( (width() - 240) / 2 + 60, height() - 132 ), Size( 240, 32 )) );

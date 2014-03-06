@@ -38,7 +38,7 @@ WinMissionWindow::WinMissionWindow(Widget* parent, std::string newTitle, bool ma
   Logger::warning( "WinMissionWindow: show" );
   _d->locker.activate();
 
-  Size pSize = getParent()->getSize() - getSize();
+  Size pSize = getParent()->size() - size();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
   new Label( this, Rect( 0, 0, width(), height()), "", false, Label::bgWhiteFrame );
