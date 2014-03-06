@@ -34,6 +34,7 @@
 #include "city/statistic.hpp"
 #include "city/requestdispatcher.hpp"
 #include "game/player.hpp"
+#include "dialogbox.hpp"
 
 namespace gui
 {
@@ -83,7 +84,15 @@ public oc3_signals:
   Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
-  void _executeRequest() {  _onExecRequestSignal.emit( _request ); }
+  void _acceptRequest()  { _onExecRequestSignal.emit( _request );  }
+
+  void _executeRequest()
+  {
+    DialogBox* dialog = new DialogBox( getParent(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnYes | DialogBox::btnNo );
+    CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
+    CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
+    CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
+  }
 
   Signal1<city::request::RequestPtr> _onExecRequestSignal;
   city::request::RequestPtr _request;
@@ -215,7 +224,7 @@ void AdvisorEmperorWindow::_updateRequests()
     {
       if( !(*request)->isDeleted() )
       {
-        bool mayExec = (*request)->mayExec( _d->city );
+        bool mayExec = (*request)->isReady( _d->city );
         RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( request, reqs.begin() ), *request );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
