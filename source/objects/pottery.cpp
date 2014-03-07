@@ -58,5 +58,5 @@ void Pottery::deliverGood()
 void Pottery::_storeChanged()
 {
   _fgPicturesRef()[2] = store().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 157 );
-  _fgPicturesRef()[2].setOffset( 30, 5 );
+  _fgPicturesRef()[2].setOffset( 45, -10 );
 }

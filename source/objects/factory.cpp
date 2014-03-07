@@ -271,6 +271,8 @@ void Factory::load( const VariantMap& stream)
   _d->store.load( stream.get( "goodStore" ).toMap() );
   _d->progress = (float)stream.get( "progress", 0.f );
   _d->productionRate = (float)stream.get( "productionRate", 9.6f );
+
+  _storeChanged();
 }
 
 Factory::~Factory(){}
