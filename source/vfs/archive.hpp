@@ -34,7 +34,8 @@ public:
     zip=0,
     gzip,
     unknown,
-    folder
+    folder,
+    sg2
   } Type;
 
   //! Opens a file based on its name
