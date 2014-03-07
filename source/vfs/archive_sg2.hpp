@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ARCHIVE_SG2_HPP
-#define ARCHIVE_SG2_HPP
+#ifndef _CAESARIA_ARCHIVE_SG2_HPP_INCLUDE_
+#define _CAESARIA_ARCHIVE_SG2_HPP_INCLUDE_
 
 #include "filesystem.hpp"
 #include "file.hpp"
@@ -58,7 +58,7 @@ struct SgHeader
     uint32_t filesize_555;
     uint32_t filesize_external;
 } PACK_STRUCT;
-itk
+
 struct SgBitmapRecord
 {
     char filename[65];
@@ -141,10 +141,11 @@ public:
 
 private:
   //std::map<std::string, std::ifstream> _555List;
-  std::map<std::string, SgFileEntry> FileInfo;
-
+  typedef std::map<std::string, SgFileEntry> FileInfo;
+  FileInfo _fileInfo;
+  NFile _file;
 }; // class Sg2ArchiveReader
 
-}
+} //end namespace vfs
 
-#endif // ARCHIVE_SG2_HPP
+#endif // _CAESARIA_ARCHIVE_SG2_HPP_INCLUDE_

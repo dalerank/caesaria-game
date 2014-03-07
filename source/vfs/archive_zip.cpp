@@ -138,10 +138,7 @@ ZipArchiveReader::ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePath
 	}
 }
 
-ZipArchiveReader::~ZipArchiveReader()
-{
-}
-
+ZipArchiveReader::~ZipArchiveReader(){}
 
 //! get the archive type
 Archive::Type ZipArchiveReader::getType() const
@@ -151,10 +148,7 @@ Archive::Type ZipArchiveReader::getType() const
             : Archive::zip;
 }
 
-const Entries* ZipArchiveReader::getFileList() const
-{
-	return this;
-}
+const Entries* ZipArchiveReader::getFileList() const {	return this; }
 
 
 //! scans for a local header, returns false if there is no more local file header.
@@ -405,14 +399,14 @@ bool ZipArchiveReader::scanCentralDirectoryHeader()
 //! opens a file by file name
 NFile ZipArchiveReader::createAndOpenFile(const Path& filename)
 {
-    int index = findFile( filename, false );
+	int index = findFile( filename, false );
 
-	if (index != -1)
-    {
-		return createAndOpenFile(index);
-    }
+  if (index != -1)
+  {
+    return createAndOpenFile(index);
+  }
 
-    return NFile();
+  return NFile();
 }
 
 //! Used for LZMA decompression. The lib has no default memory management

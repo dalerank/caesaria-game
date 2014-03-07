@@ -16,23 +16,27 @@
 #include "archive_sg2.hpp"
 
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 
 #include <sstream>
 #include <iomanip>
 #include <iostream>
 
-vfs::Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem* fileSystem) :
+namespace vfs
+{
+
+Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem* fileSystem) :
   _fileSystem(fileSystem)
 {
 }
 
-bool vfs::Sg2ArchiveLoader::isALoadableFileFormat(const Path& filename) const
+bool Sg2ArchiveLoader::isALoadableFileFormat(const Path& filename) const
 {
   std::string fileExtension = filename.getExtension();
   return StringHelper::isEquale( fileExtension, ".sg2", StringHelper::equaleIgnoreCase );
 }
 
-bool vfs::Sg2ArchiveLoader::isALoadableFileFormat(vfs::NFile file) const
+bool Sg2ArchiveLoader::isALoadableFileFormat(vfs::NFile file) const
 {
   SgHeader header;
   file.read(&header, sizeof(header));
@@ -46,12 +50,12 @@ bool vfs::Sg2ArchiveLoader::isALoadableFileFormat(vfs::NFile file) const
   return false;
 }
 
-bool vfs::Sg2ArchiveLoader::isALoadableFileFormat(vfs::Archive::Type fileType) const
+bool Sg2ArchiveLoader::isALoadableFileFormat(vfs::Archive::Type fileType) const
 {
   return fileType == Archive::sg2;
 }
 
-vfs::ArchivePtr vfs::Sg2ArchiveLoader::createArchive(const Path& filename, bool ignoreCase, bool ignorePaths) const
+ArchivePtr Sg2ArchiveLoader::createArchive(const Path& filename, bool ignoreCase, bool ignorePaths) const
 {
   ArchivePtr archive;
   NFile file = _fileSystem->createAndOpenFile(filename, Entity::fmRead );
@@ -64,7 +68,7 @@ vfs::ArchivePtr vfs::Sg2ArchiveLoader::createArchive(const Path& filename, bool 
   return archive;
 }
 
-vfs::ArchivePtr vfs::Sg2ArchiveLoader::createArchive(vfs::NFile file, bool ignoreCase, bool ignorePaths) const
+ArchivePtr Sg2ArchiveLoader::createArchive(NFile file, bool ignoreCase, bool ignorePaths) const
 {
   ArchivePtr archive;
   if( file.isOpen() )
@@ -74,14 +78,16 @@ vfs::ArchivePtr vfs::Sg2ArchiveLoader::createArchive(vfs::NFile file, bool ignor
     SgHeader header;
     file.read(&header, sizeof(header));
 
-    //archive = new Sg2ArchiveReader(file);
+    archive = new Sg2ArchiveReader(file);
     archive->drop();
   }
   return archive;
 }
 
-vfs::Sg2ArchiveReader::Sg2ArchiveReader(NFile file)
+Sg2ArchiveReader::Sg2ArchiveReader(NFile file)
 {
+  _file = file;
+
   SgHeader header;
   file.seek(0);
   file.read(&header, sizeof(header));
@@ -124,8 +130,8 @@ vfs::Sg2ArchiveReader::Sg2ArchiveReader(NFile file)
         p555_1[p555_1.length()-3] = p555_1[p555_1.length()-2] = p555_1[p555_1.length()-1] = '5';
         p555_2[p555_2.length()-3] = p555_2[p555_2.length()-2] = p555_2[p555_2.length()-1] = '5';
 
-        if ( Path(p555_2).exist())
-          p555 = p555_2;
+        if ( Path(p555_1).exist())
+          p555 = p555_1;
         else if (Path(p555_2).exist())
           p555 = p555_2;
         else
@@ -141,51 +147,42 @@ vfs::Sg2ArchiveReader::Sg2ArchiveReader(NFile file)
       }
 
       // Construct name
-      std::ostringstream oss;
-      oss << bmp_name << '_';
-      oss << std::setfill('0') << std::setw(6) << i - sbr.start_index;
-      oss << ".bmp";
+      std::string name = StringHelper::format( 0xff, "%s_%05.bmp", bmp_name.c_str(), i - sbr.start_index );
 
-      FileInfo[oss.str()];
-      FileInfo[oss.str()].fileName555 = p555;
-      FileInfo[oss.str()].sgImageRecord = sir;
+      _fileInfo[name];
+      _fileInfo[name].fileName555 = p555;
+      _fileInfo[name].sgImageRecord = sir;
 
-      this->addItem(oss.str(), sir.offset, sir.length, false);
-      std::cout << oss.str() << std::endl;
+      addItem( name, sir.offset, sir.length, false);
+      Logger::warning( "Sg2ArchiveReader: Find " + name );
     } // image loop
   } // bitmap loop
   sort();
 }
 
-vfs::Sg2ArchiveReader::~Sg2ArchiveReader()
-{
-}
+Sg2ArchiveReader::~Sg2ArchiveReader() {}
 
-std::string vfs::Sg2ArchiveReader::getTypeName() const
-{
-  return "Sg2Reader";
-}
+std::string Sg2ArchiveReader::getTypeName() const {  return "Sg2Reader";}
+Archive::Type Sg2ArchiveReader::getType() const{  return Archive::sg2;}
+const Entries* Sg2ArchiveReader::getFileList() const{  return this;}
 
-vfs::Archive::Type vfs::Sg2ArchiveReader::getType() const
+NFile Sg2ArchiveReader::createAndOpenFile(unsigned int index)
 {
-  return Archive::sg2;
-}
-
-const vfs::Entries* vfs::Sg2ArchiveReader::getFileList() const
-{
-  return this;
-}
-
-vfs::NFile vfs::Sg2ArchiveReader::createAndOpenFile(unsigned int index)
-{
-  // TODO: Implement createandopenfile
+  FileInfo::iterator it = _fileInfo.begin();
+  std::advance( it, index );
   return NFile();
 }
 
-vfs::NFile vfs::Sg2ArchiveReader::createAndOpenFile(const Path& filename)
+NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
 {
-  // TODO: Implement createandopenfile
+  FileInfo::iterator it = _fileInfo.find( filename.toString() );
+
+  if( it != _fileInfo.end() )
+  {
+    return NFile();
+  }
+
   return NFile();
 }
 
-
+}//end namespace vfs

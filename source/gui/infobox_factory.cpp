@@ -57,10 +57,11 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
     lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
 
     std::string whatStock = StringHelper::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
-    std::string text = StringHelper::format( 0xff, "%s, %d %s",
-                                             _(whatStock),
+    std::string text = StringHelper::format( 0xff, "%d %s %s %d",
                                              factory->inStockRef().qty() / 100,
-                                             _("##factory_units##") );
+                                             _(whatStock),
+                                             _("##factory_units##"),
+                                             factory->outStockRef().qty() / 100 );
 
     lbStockInfo->setText( text );
     lbStockInfo->setTextOffset( Point( 30, 0 ) );

@@ -20,6 +20,7 @@
 #include "entries.hpp"
 #include "archive_zip.hpp"
 #include "core/logger.hpp"
+#include "archive_sg2.hpp"
 
 #if defined (CAESARIA_PLATFORM_WIN)
 	#include <direct.h> // for _chdir
@@ -87,6 +88,7 @@ FileSystem::FileSystem() : _d( new Impl )
   getWorkingDirectory();
 
   _d->archiveLoaders.push_back(new ZipArchiveLoader(this));
+  _d->archiveLoaders.push_back(new Sg2ArchiveLoader(this));
 }
 
 
