@@ -1,23 +1,23 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3. If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA. If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2013 Rovanion Luckey, rovanion.luckey@gmail.com
 
 
-               Installation of openCaesar3 on Linux
+               Installation of CaesarIA on Linux
 =======================================================================
 
 Open up a terminal and follow the instructions below. Terminal
@@ -25,10 +25,6 @@ commands are denoted with a "$", this character should not be included
 with the commands. Depending on which distribution and version you are
 running the instructions will differ. To find out what you are
 running, run: 
-$ cat /etc/*-release
-If your distribution is not listed in these instructions, feel free
-to add instructions for it.
-
 
 1 Install dependencies
 ======================
@@ -40,16 +36,12 @@ $ sudo apt-get install build-essential g++ zlib1g-dev \
 libsdl1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev \
 qt4-dev-tools ctags libqxt-dev git cmake p7zip-full wget
 
-
-
 1.b Fedora:
 
 1.b.1 Base dependencies
 $ sudo yum install make automake gcc gcc-c++ \
 zlib-devel SDL-devel SDL_mixer-devel SDL_ttf-devel \
 qt-devel ctags cmake git p7zip wget libpng12-devel
-
-
 
 1.c openSUSE 12.3
 
@@ -61,35 +53,31 @@ libpng-devel
 2 Building the game
 ===================
 
-First move your terminal to where you want openCaesar 3 to be installed, e.g: 
+First move your terminal to where you want CaesarIA to be installed, e.g: 
 $ mkdir games && cd games
-We will then download the source code from github and compile it:
-$ git clone git://github.com/gecube/opencaesar3.git
-$ cd opencaesar3
+$ git clone git://bitbucket.org/dalerank/caesaria.git
+$ cd caesaria
 $ cmake ./
 $ make
 
+After compiling you have new folder caesaria-test with caesaria.linux and updater.linux
 
 3 Installing resources
 ======================
 
 These resources are images, videos and sound needed to run the
-game. The following commands will download an archive and extract the
-needed files into the resources folder: 
-$ wget https://www.dropbox.com/s/xp3101bw5i4ltq1/resources.7z 
-$ 7za x resources.7z
-$ rm resources.7z
-
+game. The following commands will download all gameneeded files into 
+the current folder: 
+$ cd caesaria-test
+$ ./updater.linux
 
 4 Running the game
 ==================
 
-In order to start the game, simply execute the caesar3 binary now
-located in your opencaesar3 folder:
-$ ./caesar3
-
-
-
+In order to start the game, simply execute the CaesarIA binary now
+located in your CaesarIA-test folder:
+$ cd caesaria-test
+$ ./caesaria.linux
 
 5 Appendix: SGReader and extracting resources
 =============================================
@@ -104,8 +92,8 @@ resources than those just on the original Caesar 3 CD.
 5.1 Compiling SGReader
 
 Go to the sgreader folder in the folder where you installed openCaesar3,
-in this guide it was ~/games/openceasar3/ :
-$ cd ~/games/opencaesar3/cgreader
+in this guide it was ~/games/caesaria/ :
+$ cd ~/games/caesaria/sgreader
 Then compile the code and launch SGReader:
 $ cmake ./
 $ make
@@ -131,5 +119,5 @@ $ cd ..
 $ ./install --pic-dir ~/caesar3_extract --data-dir ~/caesar3_orig
 
 
-Though note as mentioned above that openCaesar 3 requires more
+Though note as mentioned above that CaesarIA requires more
 resources than those just on the original Caesar 3 CD.
