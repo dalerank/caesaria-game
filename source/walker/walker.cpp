@@ -76,8 +76,8 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->walkerGraphic = gfx::unknown;
   _d->health = 100;
 
-  _d->speed = 0.8 + math::random( 40 ) / 100.f;  // default speed
-  _d->speedMultiplier = 1.f;
+  _d->speed = 1.f; // default speed
+  _d->speedMultiplier = 0.8 + math::random( 40 ) / 100.f;;
   _d->isDeleted = false;
 
   _d->midTilePos = Point( 7, 7 );
@@ -94,7 +94,7 @@ void Walker::timeStep(const unsigned long time)
   case Walker::acMove:
     _walk();
 
-    if( _d->speed > 0.f )
+    if( _d->getSpeed() > 0.f )
     {
       _updateAnimation( time );
     }
@@ -331,7 +331,6 @@ void Walker::_centerTile()
    }
 }
 
-
 void Walker::_reachedPathway()
 {
   _d->action.action = acNone;  // stop moving
@@ -449,7 +448,7 @@ const Picture& Walker::getMainPicture()
     }
   }
 
-  return _d->animation.getFrame();
+  return _d->animation.currentFrame();
 }
 
 void Walker::save( VariantMap& stream ) const
@@ -487,7 +486,7 @@ void Walker::load( const VariantMap& stream)
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
-  _d->speedMultiplier = (float)stream.get( "speedMul" );
+  _d->speedMultiplier = (float)stream.get( "speedMul", 1.f );
 
   Variant value = stream.get( "animationType" );
   if( value.isValid() )
@@ -504,7 +503,7 @@ void Walker::load( const VariantMap& stream)
   
   if( _d->speedMultiplier < 0.1 ) //Sometime this have this error in save file
   {
-    Logger::warning( "Wrong speed multiplier for %d", _d->uid );
+    Logger::warning( "Walker: Wrong speed multiplier for %d", _d->uid );
     _d->speedMultiplier = 1;
   }
 

@@ -101,7 +101,7 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
   _animationRef().setDelay( 4 );
 
   _fgPicturesRef()[0] = Picture::load( ResourceGroup::commerce, 141);
-  _fgPicturesRef()[5] = _animationRef().getFrame();
+  _fgPicturesRef()[5] = _animationRef().currentFrame();
   computePictures();
 
   _d->devastateThis = false;  
@@ -114,7 +114,7 @@ void Granary::timeStep(const unsigned long time)
   {
     _animationRef().update( time );
 
-    _fgPicturesRef()[5] = _animationRef().getFrame();
+    _fgPicturesRef()[5] = _animationRef().currentFrame();
 
     if( time % (GameDate::ticksInMonth() / 2) == 1 )
     {

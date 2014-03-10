@@ -69,7 +69,7 @@ FarmTile::FarmTile(const Good::Type outGood, const TilePos& pos )
 
 void FarmTile::computePicture(const int percent)
 {
-  PicturesArray& pictures = _animation.getFrames();
+  PicturesArray& pictures = _animation.frames();
 
   int picIdx = (percent * (pictures.size()-1)) / 100;
   _picture = pictures[picIdx];

@@ -108,7 +108,7 @@ void Dock::timeStep(const unsigned long time)
   {
     _animationRef().update( time );
     // takes current animation frame and put it into foreground
-    _fgPicturesRef()[0] = _animationRef().getFrame();
+    _fgPicturesRef()[0] = _animationRef().currentFrame();
   }
 
   if( time % (GameDate::ticksInMonth()/6) == 1 )

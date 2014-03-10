@@ -42,10 +42,10 @@ void BurningRuins::timeStep(const unsigned long time)
   Building::timeStep(time);
 
   _animationRef().update( time );
-  const Picture& pic = _animationRef().getFrame();
+  const Picture& pic = _animationRef().currentFrame();
   if( pic.isValid() )
   {
-     _fgPicturesRef().back() = _animationRef().getFrame();
+     _fgPicturesRef().back() = _animationRef().currentFrame();
   }
 
   if( time % 50 == 0 )
@@ -214,7 +214,7 @@ PlagueRuins::PlagueRuins() : Ruins( building::plagueRuins )
 void PlagueRuins::timeStep(const unsigned long time)
 {
   _animationRef().update( time );
-  _fgPicturesRef()[ 0 ] = _animationRef().getFrame();
+  _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
 
   if (time % 16 == 0 )
   {

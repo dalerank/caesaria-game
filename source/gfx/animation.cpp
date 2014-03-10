@@ -31,16 +31,16 @@ void Animation::start(bool loop)
   _d->loop = loop;
 }
 
-PicturesArray& Animation::getFrames() {  return _pictures;}
-const PicturesArray& Animation::getFrames() const{  return _pictures;}
-unsigned int Animation::getFrameCount() const{  return _pictures.size();}
+PicturesArray& Animation::frames() {  return _pictures;}
+const PicturesArray& Animation::frames() const{  return _pictures;}
+unsigned int Animation::frameCount() const{  return _pictures.size();}
 
 void Animation::setOffset( const Point& offset )
 {
   foreach( pic, _pictures ) { pic->setOffset( offset ); }
 }
 
-Point Animation::getOffset() const
+Point Animation::offset() const
 {
   if( _pictures.empty() )
   {
@@ -70,14 +70,14 @@ void Animation::update( unsigned int time )
   }
 }
 
-const Picture& Animation::getFrame() const
+const Picture& Animation::currentFrame() const
 {
   return ( _animIndex >= 0 && _animIndex < (int)_pictures.size())
                   ? _pictures[_animIndex] 
                   : Picture::getInvalid();
 }
 
-int Animation::getIndex() const {  return _animIndex;}
+int Animation::index() const {  return _animIndex;}
 void Animation::setIndex(int index){  _animIndex = math::clamp<int>( index, 0, _pictures.size()-1 );}
 
 Animation::Animation() : _d( new Impl )

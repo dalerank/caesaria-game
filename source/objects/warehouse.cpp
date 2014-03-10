@@ -354,8 +354,8 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
 
   _fgPicturesRef()[ 0 ] = Picture::load(ResourceGroup::warehouse, 1);
   _fgPicturesRef()[ 1 ] = Picture::load(ResourceGroup::warehouse, 18);
-  _fgPicturesRef()[ 2 ] = _animationRef().getFrame();
-  _fgPicturesRef()[ 3 ] = _d->animFlag.getFrame();
+  _fgPicturesRef()[ 2 ] = _animationRef().currentFrame();
+  _fgPicturesRef()[ 3 ] = _d->animFlag.currentFrame();
 
   // add subTiles in Z-order (from far to near)
   _d->subTiles.clear();
@@ -380,8 +380,8 @@ void Warehouse::timeStep(const unsigned long time)
    _animationRef().update( time );
    _d->animFlag.update( time );
 
-   _fgPicturesRef()[2] = _animationRef().getFrame();
-   _fgPicturesRef()[3] = _d->animFlag.getFrame();
+   _fgPicturesRef()[2] = _animationRef().currentFrame();
+   _fgPicturesRef()[3] = _d->animFlag.currentFrame();
   }
 
   if( (time % _d->devastateModeInterval == 1 ) )

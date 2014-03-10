@@ -347,7 +347,7 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 
     if( tile.getAnimation().isValid() )
     {
-      engine.drawPicture( tile.getAnimation().getFrame(), screenPos );
+      engine.drawPicture( tile.getAnimation().currentFrame(), screenPos );
     }
 
     drawTilePass( engine, tile, offset, Renderer::foreground );

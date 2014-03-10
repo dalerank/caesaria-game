@@ -91,7 +91,7 @@ void FishPlace::load(const VariantMap& stream)
 
 const Picture& FishPlace::getMainPicture()
 {
-  return _d->animation.getFrame();
+  return _d->animation.currentFrame();
 }
 
 void FishPlace::send2city(TilePos pos)

@@ -121,7 +121,7 @@ void WallGuard::timeStep(const unsigned long time)
       EnemySoldierPtr p = _d->findNearbyEnemy( enemies, pos() );
       turn( p->pos() );
 
-      if( _animationRef().getIndex() == (int)(_animationRef().getFrameCount()-1) )
+      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
       {
         SpearPtr spear = Spear::create( _getCity() );
         spear->toThrow( pos(), p->pos() );

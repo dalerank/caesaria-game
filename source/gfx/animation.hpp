@@ -35,24 +35,24 @@ public:
   void start(bool loop=true);
   void stop();
 
-  PicturesArray& getFrames();
-  const PicturesArray& getFrames() const;
+  PicturesArray& frames();
+  const PicturesArray& frames() const;
 
-  unsigned int getFrameCount() const;
+  unsigned int frameCount() const;
 
-  int getIndex() const;
+  int index() const;
   void setIndex( int index );
 
   int size() const;
 
   void update( unsigned int time );
-  const Picture& getFrame() const;
+  const Picture& currentFrame() const;
 
   void setDelay( const unsigned int delay );
   void setLoop( bool loop );
 
   void setOffset( const Point& offset );
-  Point getOffset() const;
+  Point offset() const;
 
   bool isRunning() const;
   bool isStopped() const;

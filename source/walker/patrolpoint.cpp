@@ -40,7 +40,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
   Point extOffset( 15, 0 );
   Animation anim;
   anim.load( prefix, startPos, stepNumber );
-  anim.setOffset( anim.getOffset() + Point( 0, 52 )  + extOffset );
+  anim.setOffset( anim.offset() + Point( 0, 52 )  + extOffset );
   pp->_d->standart.addOffset( extOffset.x(), extOffset.y() );
 
   pp->_d->animation = anim;
@@ -55,7 +55,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
 void PatrolPoint::getPictureList(PicturesArray& oPics)
 {
   oPics.push_back( _d->standart );
-  oPics.push_back( _d->animation.getFrame() );
+  oPics.push_back( _d->animation.currentFrame() );
 }
 
 PatrolPoint::PatrolPoint( PlayerCityPtr city )

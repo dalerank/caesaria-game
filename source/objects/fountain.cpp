@@ -42,8 +42,8 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
   //setPicture( ResourceGroup::utilitya, 10 );
 
   _waterIncreaseInterval = GameDate::ticksInMonth() / 3;
-  _initAnimation();
   _fgPicturesRef().resize(1);
+  _initAnimation();
   _lastPicId = simpleFountain;
 
   setState( Construction::inflammability, 0 );
@@ -183,6 +183,7 @@ void Fountain::_initAnimation()
   _animationRef().clear();
   _animationRef().load( ResourceGroup::utilitya, _lastPicId+1, fontainSizeAnim );
   _animationRef().setDelay( 2 );
+  _fgPicturesRef()[0] = Picture::getInvalid();
   _animationRef().stop();
 
   switch ( _lastPicId )

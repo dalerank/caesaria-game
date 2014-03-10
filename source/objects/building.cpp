@@ -220,5 +220,5 @@ TriumphalArch::TriumphalArch() : Building( building::triumphalArch, Size(3) )
   _animationRef().load("land3a", 44, 1);
   _animationRef().setOffset( Point( 63, 97 ) );
   _fgPicturesRef().resize(1);
-  _fgPicturesRef()[0] = _animationRef().getFrame();
+  _fgPicturesRef()[0] = _animationRef().currentFrame();
 }

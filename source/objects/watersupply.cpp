@@ -148,7 +148,7 @@ void Reservoir::timeStep(const unsigned long time)
   _animationRef().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPicturesRef()[ 0 ] = _animationRef().getFrame();
+  _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
 }
 
 bool Reservoir::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const

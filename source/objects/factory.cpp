@@ -190,12 +190,11 @@ void Factory::timeStep(const unsigned long time)
       _d->progress += work;
 
       _animationRef().update( time );
-      const Picture& pic = _animationRef().getFrame();
-      if( pic.isValid() )
+      const Picture& pic = _animationRef().currentFrame();
+      if( pic.isValid() && !_fgPicturesRef().empty() )
       {
         // animation of the working factory
-        int level = _fgPicturesRef().size()-1;
-        _fgPicturesRef()[level] = _animationRef().getFrame();
+        _fgPicturesRef().back() = _animationRef().currentFrame();
       }
     }
   }
@@ -384,8 +383,8 @@ void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
 
 void WeaponsWorkshop::_storeChanged()
 {
-  _fgPicturesRef()[2] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 156 );
-  _fgPicturesRef()[2].setOffset( 20, 15 );
+  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 156 );
+  _fgPicturesRef()[1].setOffset( 20, 15 );
 }
 
 bool FurnitureWorkshop::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
@@ -414,8 +413,8 @@ FurnitureWorkshop::FurnitureWorkshop() : Factory(Good::timber, Good::furniture, 
 
 void FurnitureWorkshop::_storeChanged()
 {
-  _fgPicturesRef()[2] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 155 );
-  _fgPicturesRef()[2].setOffset( 40, -10 );
+  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 155 );
+  _fgPicturesRef()[1].setOffset( 47, 0 );
 }
 
 Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
@@ -444,8 +443,8 @@ void Winery::build(PlayerCityPtr city, const TilePos& pos)
 
 void Winery::_storeChanged()
 {
-  _fgPicturesRef()[2] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 153 );
-  _fgPicturesRef()[2].setOffset( 40, -10 );
+  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 153 );
+  _fgPicturesRef()[1].setOffset( 40, -10 );
 }
 
 Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(2) )
@@ -474,6 +473,6 @@ void Creamery::build(PlayerCityPtr city, const TilePos& pos)
 
 void Creamery::_storeChanged()
 {
-  _fgPicturesRef()[2] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 154 );
-  _fgPicturesRef()[2].setOffset( 40, -5 );
+  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 154 );
+  _fgPicturesRef()[1].setOffset( 40, -5 );
 }
