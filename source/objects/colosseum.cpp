@@ -100,9 +100,9 @@ void Colosseum::build(PlayerCityPtr city, const TilePos& pos)
   }
 }
 
-std::string Colosseum::getTrouble() const
+std::string Colosseum::troubleDesc() const
 {
-  std::string ret = EntertainmentBuilding::getTrouble();
+  std::string ret = EntertainmentBuilding::troubleDesc();
 
   if( !ret.empty() )
     return ret;

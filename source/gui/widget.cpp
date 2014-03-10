@@ -33,10 +33,7 @@ void Widget::beforeDraw( GfxEngine& painter )
   foreach( widget, _d->children ) { (*widget)->beforeDraw( painter ); }
 }
 
-GuiEnv* Widget::getEnvironment()
-{
-    return _environment;
-}
+GuiEnv* Widget::getEnvironment() {  return _environment; }
 
 void Widget::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
@@ -51,15 +48,8 @@ void Widget::setTextAlignment( Alignment horizontal, Alignment vertical )
     _d->textVertAlign = vertical;
 }
 
-void Widget::setMaxWidth( unsigned int width )
-{
-    _d->maxSize.setWidth( width );
-}
-
-unsigned int Widget::height() const
-{
-    return getRelativeRect().getHeight();
-}
+void Widget::setMaxWidth( unsigned int width ) {    _d->maxSize.setWidth( width );}
+unsigned int Widget::height() const{    return getRelativeRect().getHeight(); }
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : _d( new Impl ),
@@ -129,9 +119,7 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
 	updateAbsolutePosition();
 }
 
-void Widget::_resizeEvent()
-{
-}
+void Widget::_resizeEvent(){}
 
 void Widget::setPosition( const Point& position )
 {
@@ -165,15 +153,8 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   updateAbsolutePosition();
 }
 
-Rect Widget::absoluteRect() const
-{
-    return _d->absoluteRect;
-}
-
-Rect Widget::absoluteClippingRect() const
-{
-    return _d->absoluteClippingRect;
-}
+Rect Widget::absoluteRect() const {    return _d->absoluteRect;}
+Rect Widget::absoluteClippingRect() const{    return _d->absoluteClippingRect;}
 
 void Widget::setNotClipped( bool noClip )
 {
@@ -503,31 +484,24 @@ bool Widget::getNextWidget( int startOrder, bool reverse, bool group, Widget*& f
     return false;
 }
 
-// void Widget::save( core::VariantArray* out ) const
-// {
-//     out->AddString( SerializeHelper::styleProp, getStyle().getName() );
-//     out->AddFloat( SerializeHelper::opacityProp, getOpacity() );
-//     out->AddString( SerializeHelper::internalNameProp, _d->internalName );
-//     out->AddEnum( SerializeHelper::hTextAlignProp, _d->textHorzAlign, NrpAlignmentNames );
-//     out->AddEnum( SerializeHelper::vTextAlignProp, _d->textVertAlign, NrpAlignmentNames );
-//     out->AddInt( SerializeHelper::idProp, _id );
-//     out->AddString( SerializeHelper::captionProp, getText() );
-//     out->AddString( SerializeHelper::tooltipProp, getTooltipText() );
-//     out->AddRect( SerializeHelper::rectangleProp, _d->desiredRect );
-//     out->AddSize( SerializeHelper::minSizeProp, _minSize );
-//     out->AddSize( SerializeHelper::maxSizeProp, _maxSize );
-//     out->AddEnum( SerializeHelper::leftAlignProp, _alignLeft, NrpAlignmentNames);
-//     out->AddEnum( SerializeHelper::rightAlignProp, _alignRight, NrpAlignmentNames);
-//     out->AddEnum( SerializeHelper::topAlignProp, _alignTop, NrpAlignmentNames);
-//     out->AddEnum( SerializeHelper::bottomAlignProp, _alignBottom, NrpAlignmentNames);
-//     out->AddBool( SerializeHelper::visibleProp, _isVisible);
-//     out->AddBool( SerializeHelper::enabledProp, _isEnabled);
-//     out->AddBool( SerializeHelper::tabStopProp, _isTabStop);
-//     out->AddBool( SerializeHelper::tabGroupProp, _isTabGroup);
-//     out->AddInt( SerializeHelper::tabOrderProp, _tabOrder);
-//     out->AddBool( SerializeHelper::noClipProp, _noClip);
-// }
-// 
+static int __convStr2RelPos( Widget* w, std::string s )
+{
+  s = StringHelper::trim( s );
+  std::string dd = s.substr( 0, 2 );
+  int lenght = 0;
+  if( dd == "pw" ) { lenght = w->getParent()->width(); }
+  else if( dd == "ph" ) { lenght = w->getParent()->height(); }
+  else dd = "";
+
+  if( !dd.empty() )
+  {
+    int sign = s.substr( 2, 1 ) == "-" ? -1 : 1;
+    int value = StringHelper::toInt( s.substr( 3 ) );
+    return lenght + sign * value;
+  }
+  else { return StringHelper::toInt( s );  }
+}
+
 void Widget::setupUI( const VariantMap& ui )
 {
   //setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
@@ -558,10 +532,16 @@ void Widget::setupUI( const VariantMap& ui )
                 ahelper.findType( ui.get( "topAlign" ).toString() ),
                 ahelper.findType( ui.get( "bottomAlign" ).toString() ));*/
 
-  tmp = ui.get( "geometry" );
-  if( tmp.isValid() )
+  VariantList aRectList = ui.get( "geometry" ).toList();
+  if( !aRectList.empty() )
   {
-    setGeometry( tmp.toRect() );
+    Rect cRect(
+       __convStr2RelPos( this, aRectList.get( 0 ).toString() ),
+       __convStr2RelPos( this, aRectList.get( 1 ).toString() ),
+       __convStr2RelPos( this, aRectList.get( 2 ).toString() ),
+       __convStr2RelPos( this, aRectList.get( 3 ).toString() ) );
+
+    setGeometry( cRect );
   }
 
   tmp = ui.get( "geometryf" );

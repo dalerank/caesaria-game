@@ -48,7 +48,7 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
   if( is_kind_of<ServiceBuilding>( _working ) )
   {
     ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );
-    DateTime time = srvc->getLastSendService();
+    DateTime time = srvc->lastSendService();
     text += StringHelper::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
   }
   new Label( this, Rect( 50, height() - 30, width() - 50, height() - 10 ), text );

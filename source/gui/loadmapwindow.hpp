@@ -37,8 +37,6 @@ public:
 
   void draw( GfxEngine& engine );  // draw on screen
 
-  Picture& getBgPicture();
-
   bool onEvent( const NEvent& event);
 
   bool isPointInside(const Point& point) const;

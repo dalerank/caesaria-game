@@ -43,7 +43,7 @@ public:
 
   GoodStore& store();
 
-  virtual std::string getTrouble() const;
+  virtual std::string troubleDesc() const;
 
   // called when the factory has made 100 good units
   virtual void deliverGood();

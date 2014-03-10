@@ -27,7 +27,7 @@ public:
   virtual void deliverService();
   virtual Service::Type getService() const;
   virtual void build(PlayerCityPtr city, const TilePos& pos);
-  virtual std::string getTrouble() const;
+  virtual std::string troubleDesc() const;
 
   bool isNeedGladiators() const;
   bool isShowGladiatorBattles() const;

@@ -44,7 +44,7 @@ public:
   bool onlyDispatchGoods() const;
   bool isGettingFull() const;
 
-  virtual std::string getTrouble() const;
+  virtual std::string troubleDesc() const;
 
 private:
   void _resolveDevastationMode();

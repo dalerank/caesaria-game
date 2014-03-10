@@ -189,7 +189,7 @@ FarmWheat::FarmWheat() : Farm(Good::wheat, building::wheatFarm)
 {
 }
 
-std::string FarmWheat::getTrouble() const
+std::string FarmWheat::troubleDesc() const
 {
   city::Helper helper( _getCity() );
 
@@ -199,7 +199,7 @@ std::string FarmWheat::getTrouble() const
     return "##trouble_farm_was_blighted_by_locust##";
   }
 
-  return Factory::getTrouble();
+  return Factory::troubleDesc();
 }
 
 FarmOlive::FarmOlive() : Farm(Good::olive, building::oliveFarm)

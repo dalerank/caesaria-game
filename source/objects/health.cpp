@@ -27,7 +27,7 @@ Doctor::Doctor() : ServiceBuilding(Service::doctor, building::doctor, Size(1))
 {
 }
 
-unsigned int Doctor::getWalkerDistance() const{ return 26; }
+unsigned int Doctor::walkerDistance() const{ return 26; }
 
 void Doctor::deliverService()
 {
@@ -47,7 +47,7 @@ Baths::Baths() : ServiceBuilding(Service::baths, building::baths, Size(2) )
   _fgPicturesRef().resize(1);
 }
 
-unsigned int Baths::getWalkerDistance() const {  return 35;}
+unsigned int Baths::walkerDistance() const {  return 35;}
 
 void Baths::build(PlayerCityPtr city, const TilePos& pos)
 {
@@ -107,4 +107,4 @@ void Barber::deliverService()
   }
 }
 
-unsigned int Barber::getWalkerDistance() const {  return 35; }
+unsigned int Barber::walkerDistance() const {  return 35; }

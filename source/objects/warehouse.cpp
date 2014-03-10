@@ -456,9 +456,9 @@ bool Warehouse::isGettingFull() const
   return true;
 }
 
-std::string Warehouse::getTrouble() const
+std::string Warehouse::troubleDesc() const
 {
-  std::string ret = WorkingBuilding::getTrouble();
+  std::string ret = WorkingBuilding::troubleDesc();
 
   if( ret.empty() )
   {

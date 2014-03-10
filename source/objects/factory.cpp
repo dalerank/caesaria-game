@@ -244,9 +244,9 @@ void Factory::deliverGood()
 
 GoodStore& Factory::store() {   return _d->store; }
 
-std::string Factory::getTrouble() const
+std::string Factory::troubleDesc() const
 {
-  std::string ret = WorkingBuilding::getTrouble();
+  std::string ret = WorkingBuilding::troubleDesc();
 
   if( ret.empty() && !haveMaterial() )
   {

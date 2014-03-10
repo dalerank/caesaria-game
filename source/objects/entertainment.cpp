@@ -24,6 +24,7 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -42,10 +43,7 @@ EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
   _d->showCounter = 0;
 }
 
-EntertainmentBuilding::~EntertainmentBuilding()
-{
-
-}
+EntertainmentBuilding::~EntertainmentBuilding() {}
 
 void EntertainmentBuilding::deliverService()
 {
@@ -87,8 +85,8 @@ void EntertainmentBuilding::deliverService()
   }
 }
 
-int EntertainmentBuilding::getVisitorsNumber() const{  return 0;}
-unsigned int EntertainmentBuilding::getWalkerDistance() const {  return 35; }
+int EntertainmentBuilding::visitorsNumber() const{  return 0;}
+unsigned int EntertainmentBuilding::walkerDistance() const {  return 35; }
 
 float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 {
@@ -99,7 +97,7 @@ float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 }
 
 bool EntertainmentBuilding::isShow() const { return getAnimation().isRunning(); }
-unsigned int EntertainmentBuilding::getShowsCount() const { return _d->showCounter; }
+unsigned int EntertainmentBuilding::showsCount() const { return _d->showCounter; }
 
 void EntertainmentBuilding::save(VariantMap& stream) const
 {
@@ -113,7 +111,7 @@ void EntertainmentBuilding::load(const VariantMap& stream)
   _d->showCounter = (int)stream.get( "showCounter" );
 }
 
-EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::getNecessaryWalkers() const { return _d->necWalkers; }
+EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::necessaryWalkers() const { return _d->necWalkers; }
 void EntertainmentBuilding::_addNecessaryWalker(walker::Type type){  _d->necWalkers.push_back( type );}
 
 bool EntertainmentBuilding::_isWalkerReady()
@@ -145,7 +143,7 @@ void Theater::build(PlayerCityPtr city, const TilePos& pos)
 }
 
 void Theater::timeStep(const unsigned long time) {  EntertainmentBuilding::timeStep( time );}
-int Theater::getVisitorsNumber() const {  return 500; }
+int Theater::visitorsNumber() const {  return 500; }
 
 void Theater::deliverService()
 {
@@ -176,9 +174,9 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::
   _addNecessaryWalker( walker::charioter );
 }
 
-std::string Hippodrome::getTrouble() const
+std::string Hippodrome::troubleDesc() const
 {
-  std::string ret = EntertainmentBuilding::getTrouble();
+  std::string ret = EntertainmentBuilding::troubleDesc();
 
   if( ret.empty() )
   {

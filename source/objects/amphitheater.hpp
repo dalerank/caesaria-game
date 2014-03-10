@@ -30,7 +30,7 @@ public:
   virtual std::string getSound() const;
   virtual Service::Type getService() const;
 
-  virtual std::string getWorkersState() const;
+  virtual std::string workersStateDesc() const;
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 

@@ -85,7 +85,7 @@ void Market::deliverService()
   }
 }
 
-unsigned int Market::getWalkerDistance() const {  return 26; }
+unsigned int Market::walkerDistance() const {  return 26; }
 GoodStore& Market::getGoodStore(){  return _d->goodStore; }
 
 std::list<Good::Type> Market::getMostNeededGoods()

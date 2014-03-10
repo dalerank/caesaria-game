@@ -31,18 +31,18 @@ public:
   virtual ~EntertainmentBuilding();
 
   virtual void deliverService();
-  virtual int getVisitorsNumber() const;
+  virtual int visitorsNumber() const;
 
-  virtual unsigned int getWalkerDistance() const;
+  virtual unsigned int walkerDistance() const;
 
   virtual float evaluateTrainee(constants::walker::Type  traineeType);
   virtual bool isShow() const;
-  virtual unsigned int getShowsCount() const;
+  virtual unsigned int showsCount() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual NecessaryWalkers getNecessaryWalkers() const;
+  virtual NecessaryWalkers necessaryWalkers() const;
 
 protected:
   void _addNecessaryWalker( constants::walker::Type type );
@@ -61,7 +61,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual int getVisitorsNumber() const;
+  virtual int visitorsNumber() const;
 
   virtual void deliverService();
 };
@@ -70,7 +70,7 @@ class Hippodrome : public EntertainmentBuilding
 {
 public:
    Hippodrome();
-   virtual std::string getTrouble() const;
+   virtual std::string troubleDesc() const;
 
    bool isRacesCarry() const;
 };

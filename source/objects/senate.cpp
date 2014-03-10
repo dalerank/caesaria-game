@@ -98,7 +98,7 @@ void Senate::build(PlayerCityPtr city, const TilePos& pos)
   _updateUnemployers();
 }
 
-unsigned int Senate::getWalkerDistance() const {  return 26; }
+unsigned int Senate::walkerDistance() const {  return 26; }
 
 void Senate::timeStep(const unsigned long time)
 {
@@ -160,7 +160,7 @@ void Senate::deliverService()
   if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _getCity() );
-    walker->setMaxDistance( getWalkerDistance() );
+    walker->setMaxDistance( walkerDistance() );
     walker->send2City( this );
 
     if( !walker->isDeleted() )

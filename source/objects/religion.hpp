@@ -32,7 +32,7 @@ public:
 protected:
   Temple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size );
 
-  virtual unsigned int getWalkerDistance() const;
+  virtual unsigned int walkerDistance() const;
 
 private:
   class Impl;

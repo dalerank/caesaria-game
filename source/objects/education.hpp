@@ -27,7 +27,7 @@ public:
 
   virtual void deliverService();
 
-  virtual unsigned int getWalkerDistance() const;
+  virtual unsigned int walkerDistance() const;
 };
 
 class Library : public ServiceBuilding
@@ -46,7 +46,7 @@ public:
    int getVisitorsNumber() const;
    virtual void deliverService();
    virtual std::string getSound() const;
-   virtual unsigned int getWalkerDistance() const;
+   virtual unsigned int walkerDistance() const;
 };
 
 

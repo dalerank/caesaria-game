@@ -60,16 +60,16 @@ Service::Type Amphitheater::getService() const
   return gldValue > 0 ? Service::amphitheater : Service::theater;
 }
 
-std::string Amphitheater::getWorkersState() const
+std::string Amphitheater::workersStateDesc() const
 {
   if( numberWorkers() > 0 )
   {
-    if( getShowsCount() == 0 ) { return "##amphitheater_have_never_show##"; }
+    if( showsCount() == 0 ) { return "##amphitheater_have_never_show##"; }
     if( getTraineeValue( walker::gladiator ) == 0 ) { return "##amphitheater_have_only_shows##"; }
     if( getTraineeValue( walker::actor ) == 0 ) { return "##amphitheater_have_only_battles##"; }
   }
 
-  return EntertainmentBuilding::getWorkersState();
+  return EntertainmentBuilding::workersStateDesc();
 }
 
 void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)

@@ -49,9 +49,9 @@ public:
 
   virtual std::string getError() const;
   virtual std::string getWorkersProblem() const;
-  virtual std::string getWorkersState() const;
+  virtual std::string workersStateDesc() const;
 
-  virtual std::string getTrouble() const;
+  virtual std::string troubleDesc() const;
 
 protected:
   void _setError(const std::string& err);

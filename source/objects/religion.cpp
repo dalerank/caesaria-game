@@ -50,7 +50,7 @@ void Temple::deliverService()
   }
 }
 
-unsigned int Temple::getWalkerDistance() const
+unsigned int Temple::walkerDistance() const
 {
   return 26;
 }

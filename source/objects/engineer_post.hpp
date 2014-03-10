@@ -27,7 +27,7 @@ public:
     virtual void timeStep(const unsigned long time);
     virtual void deliverService();
 
-    virtual unsigned int getWalkerDistance() const;
+    virtual unsigned int walkerDistance() const;
 };
 
 #endif

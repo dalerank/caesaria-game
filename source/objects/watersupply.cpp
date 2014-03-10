@@ -60,7 +60,7 @@ void Reservoir::destroy()
   Construction::destroy();
 }
 
-std::string Reservoir::getTrouble() const
+std::string Reservoir::troubleDesc() const
 {
   return haveWater() ? "" : "##trouble_too_far_from_water##";
 }

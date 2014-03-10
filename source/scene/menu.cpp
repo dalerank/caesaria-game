@@ -85,16 +85,12 @@ public:
 void StartMenu::Impl::resolveShowLoadGameWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
-  Size rootSize = parent->size();
-  Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
-             windowSize );
 
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
   std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
 
   result = StartMenu::loadSavedGame;
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect, savesPath, defaultExt,-1 );
+  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
@@ -208,13 +204,9 @@ void StartMenu::Impl::resolvePlayMission()
 void StartMenu::Impl::resolveShowLoadMapWnd()
 {
   gui::Widget* parent = game->getGui()->getRootWidget();
-  Size rootSize = parent->size();
-  Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
-             windowSize );
 
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent,
-                                                    rect,
+                                                    Rect(),
                                                     GameSettings::rcpath( "/maps/" ), ".map",
                                                     -1 );
 

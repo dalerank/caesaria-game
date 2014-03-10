@@ -40,7 +40,7 @@ public:
 
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 
-  virtual unsigned int getWalkerDistance() const;
+  virtual unsigned int walkerDistance() const;
 
   virtual void timeStep(const unsigned long time);
 private:

@@ -37,7 +37,7 @@ void School::deliverService()
   }
 }
 
-unsigned int School::getWalkerDistance() const {  return 26; }
+unsigned int School::walkerDistance() const {  return 26; }
 
 Library::Library() : ServiceBuilding(Service::library, building::library, Size(2))
 {
@@ -61,7 +61,7 @@ void Academy::deliverService()
   }
 }
 
-unsigned int Academy::getWalkerDistance() const{  return 26; }
+unsigned int Academy::walkerDistance() const{  return 26; }
 
 std::string Academy::getSound() const
 {

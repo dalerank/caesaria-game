@@ -763,9 +763,9 @@ std::string House::getSound() const
   return StringHelper::format( 0xff, "house_%05d.wav", _d->houseLevel*10+1 );
 }
 
-std::string House::getTrouble() const
+std::string House::troubleDesc() const
 {
-  std::string ret = Building::getTrouble();
+  std::string ret = Building::troubleDesc();
 
   if( ret.empty() )
   {

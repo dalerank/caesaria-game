@@ -44,7 +44,7 @@ class FarmWheat : public Farm
 {
 public:
   FarmWheat();
-  virtual std::string getTrouble() const;
+  virtual std::string troubleDesc() const;
 };
 
 class FarmOlive : public Farm

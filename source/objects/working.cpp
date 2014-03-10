@@ -70,9 +70,9 @@ std::string WorkingBuilding::getWorkersProblem() const
   return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), workKoeffStr[ (int)workKoeff ] );
 }
 
-std::string WorkingBuilding::getTrouble() const
+std::string WorkingBuilding::troubleDesc() const
 {
-  std::string trouble = Building::getTrouble();
+  std::string trouble = Building::troubleDesc();
 
   if( trouble.empty() && numberWorkers() < maxWorkers() / 2 )
   {
@@ -82,7 +82,7 @@ std::string WorkingBuilding::getTrouble() const
   return trouble;
 }
 
-std::string WorkingBuilding::getWorkersState() const { return ""; }
+std::string WorkingBuilding::workersStateDesc() const { return ""; }
 void WorkingBuilding::setMaxWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
 int WorkingBuilding::maxWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}

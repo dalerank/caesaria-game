@@ -1,0 +1,44 @@
+{  
+  geometry : [ 0, 0, 512, 384 ]
+
+  lbBackground#Label : {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbTitle#Label : {
+      font : "FONT_3"
+      geometry : [ 16, 10, "pw-16", 40 ]
+      text : "##title##"
+      textAlign : [ "center", "center" ]
+    }
+    
+    lbxFiles#ListBox : {
+      geometry : [ 10, 40, "pw-10", "ph-45" ]
+    }
+           
+    btnExit#TexturedButton : {
+      geometry : [ 472, "ph-39", 496, "ph-15" ]
+      normal : [ "paneling", 532 ]
+      hovered : [ "paneling", 533 ]
+      pressed : [ "paneling", 534 ]
+      disabled : [ "paneling", 535 ]
+      tooltip : "##fileload_exit_tlp##"
+    }
+
+    btnLoad#PushButton : {
+      geometry : [ 50, "ph-39", "pw-50", "ph-15" ]
+      text : "##continue##"
+      tooltip : "##fileload_load_tlp##"
+      bgtype : "whiteBorderUp"
+    }
+
+    btnHelp#TexturedButton : {
+      geometry : [ 14, "ph-39", 38, "ph-15" ]
+      normal : [ "paneling", 528 ]
+      hovered : [ "paneling", 529 ]
+      pressed : [ "paneling", 530 ]
+      disabled : [ "paneling", 531 ]
+      tooltip : "##fileload_help_tlp##"
+    }
+  }
+}

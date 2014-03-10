@@ -58,7 +58,7 @@ bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& 
   return is_constructible;
 }
 
-std::string Construction::getTrouble() const
+std::string Construction::troubleDesc() const
 {
   if( isNeedRoadAccess() && getAccessRoads().empty() )
   {

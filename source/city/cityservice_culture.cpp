@@ -126,7 +126,7 @@ void CultureRating::update( const unsigned int time )
     TheaterList theaters = helper.find<Theater>( building::theater );
     foreach( theater, theaters )
     {
-      _d->theaterVisitors += (*theater)->getVisitorsNumber();
+      _d->theaterVisitors += (*theater)->visitorsNumber();
     }
     _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
     _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );

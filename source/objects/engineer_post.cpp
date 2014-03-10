@@ -58,7 +58,7 @@ void EngineerPost::deliverService()
   }
 }
 
-unsigned int EngineerPost::getWalkerDistance() const
+unsigned int EngineerPost::walkerDistance() const
 {
   return 26;
 }

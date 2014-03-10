@@ -47,19 +47,19 @@ ServiceBuilding::ServiceBuilding(const Service::Type service,
    _d->service = service;
    setMaxWorkers(5);
    setWorkers(0);
-   setServiceDelay( 80 );
+   setServiceDelay( GameDate::ticksInMonth() / 4 );
    _d->serviceTimer = 0;
    _d->serviceRange = 30;
 }
 
 void ServiceBuilding::setServiceDelay( const int delay ){  _d->serviceDelay = delay;}
-DateTime ServiceBuilding::getLastSendService() const { return _d->dateLastSend; }
+DateTime ServiceBuilding::lastSendService() const { return _d->dateLastSend; }
 void ServiceBuilding::_setLastSendService(DateTime time) { _d->dateLastSend = time; }
 
-int ServiceBuilding::getTime2NextService() const
+int ServiceBuilding::time2NextService() const
 {
   float koeff = ( numberWorkers() > 0 ) ? (float)maxWorkers() / (float)numberWorkers() : 1.f;
-  return (int)(getServiceDelay() * koeff);
+  return (int)(serviceDelay() * koeff);
 }
 
 Service::Type ServiceBuilding::getService() const{   return _d->service;}
@@ -71,7 +71,7 @@ void ServiceBuilding::timeStep(const unsigned long time)
    if (_d->serviceTimer == 0)
    {
       deliverService();
-      _d->serviceTimer = getTime2NextService();
+      _d->serviceTimer = time2NextService();
    }
    else if (_d->serviceTimer > 0)
    {
@@ -95,7 +95,7 @@ void ServiceBuilding::deliverService()
 {
   // make a service walker and send him to his wandering
   ServiceWalkerPtr serviceman = ServiceWalker::create( _getCity(), getService() );
-  serviceman->setMaxDistance( getWalkerDistance() );
+  serviceman->setMaxDistance( walkerDistance() );
   serviceman->send2City( BuildingPtr( this ) );
 
   if( !serviceman->isDeleted() )
@@ -123,11 +123,11 @@ void ServiceBuilding::load( const VariantMap& stream )
   _d->serviceRange = (int)stream.get( "range", 30 );
 }
 
-int ServiceBuilding::getServiceDelay() const{  return _d->serviceDelay;}
+int ServiceBuilding::serviceDelay() const{  return _d->serviceDelay;}
 ServiceBuilding::~ServiceBuilding() {}
-unsigned int ServiceBuilding::getWalkerDistance() const{  return 5; }
+unsigned int ServiceBuilding::walkerDistance() const{  return 5; }
 
-std::string ServiceBuilding::getWorkersState() const
+std::string ServiceBuilding::workersStateDesc() const
 {
   std::string srvcType = MetaDataHolder::getTypename( type() );
   std::string state = "unknown";

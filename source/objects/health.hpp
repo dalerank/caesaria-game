@@ -23,7 +23,7 @@ class Doctor : public ServiceBuilding
 public:
   Doctor();
 
-  virtual unsigned int getWalkerDistance() const;
+  virtual unsigned int walkerDistance() const;
   virtual void deliverService();
 };
 
@@ -40,7 +40,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual void deliverService();
-  virtual unsigned int getWalkerDistance() const;
+  virtual unsigned int walkerDistance() const;
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 
 protected:
@@ -53,7 +53,7 @@ public:
   Barber();
 
   virtual void deliverService();
-  virtual unsigned int getWalkerDistance() const;
+  virtual unsigned int walkerDistance() const;
 };
 
 #endif //__CAESARIA_HEALTHBUILDINGS_H_INCLUDED__

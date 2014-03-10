@@ -114,7 +114,7 @@ void LayerTroubles::handleEvent(NEvent& event)
         ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
         if( constr.isValid() )
         {
-          text = constr->getTrouble();
+          text = constr->troubleDesc();
         }
       }
 

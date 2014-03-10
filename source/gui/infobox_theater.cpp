@@ -34,7 +34,7 @@ InfoboxTheater::InfoboxTheater(Widget *parent, const Tile &tile)
   _getInfo()->setTextAlignment( alignUpperLeft, alignCenter);
   _updateWorkersLabel( Point( 40, 150), 542, theater->maxWorkers(), theater->numberWorkers() );
   
-  if( theater->getShowsCount() == 0 )
+  if( theater->showsCount() == 0 )
   {
     setText( "##theater_no_have_any_shows##" );
   }
