@@ -91,7 +91,7 @@ void TraineeWalker::_cancelPath()
 {
   if( _d->destination.isValid() )
   {
-    _d->destination->cancelTrainee( getType() );
+    _d->destination->cancelTrainee( type() );
   }
 }
 
@@ -134,7 +134,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
       BuildingPtr bld = *it;
       Pathway way = PathwayHelper::create( startPos, bld.object(),
                                            roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
-      float curNeed = bld->evaluateTrainee( getType() );
+      float curNeed = bld->evaluateTrainee( type() );
       if( way.isValid()
           && _d->maxNeed < curNeed
           && way.getLength() <minDistance)
@@ -173,7 +173,7 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
     // for every building within range
     BuildingPtr building = ptr_cast<Building>( item->first );
 
-    float need = building->evaluateTrainee( getType() );
+    float need = building->evaluateTrainee( type() );
     if (need > _d->maxNeed)
     {
       _d->maxNeed = need;
@@ -194,7 +194,7 @@ void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
 
   if( !isDeleted() && _d->destination.isValid() )
   {
-    _d->destination->reserveTrainee( getType() );
+    _d->destination->reserveTrainee( type() );
     _getCity()->addWalker( this );
   }
 }
@@ -216,7 +216,7 @@ void TraineeWalker::save( VariantMap& stream ) const
   stream[ "originBldPos" ] = _d->base->pos();
   stream[ "destBldPos" ] = _d->destination->pos();
   stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "traineeType" ] = getType();
+  stream[ "traineeType" ] = type();
   stream[ "type" ] = (int)walker::trainee;
 }
 
@@ -224,7 +224,7 @@ void TraineeWalker::load( const VariantMap& stream )
 {
   Walker::load(stream);
 
-  _init( getType() );
+  _init( type() );
 
   city::Helper helper( _getCity() );
   _d->base = helper.find<Building>( building::any, stream.get( "originBldPos" ).toTilePos() );

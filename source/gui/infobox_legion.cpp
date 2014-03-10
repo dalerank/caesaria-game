@@ -38,9 +38,9 @@ public:
   Label* lbFormationText;
 };
 
-InfoboxLegion::InfoboxLegion(Widget* parent, PatrolPointPtr patrolPoint )
+InfoboxLegion::InfoboxLegion(Widget* parent, WalkerList walkers )
   : InfoboxSimple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
-{
+{  
   Widget::setupUI( GameSettings::rcpath( "/gui/legionopts.gui") );
 
   _d->lbFormationTitle = findChildA<Label*>( "lbFormationTitle", true, this );
@@ -52,9 +52,7 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PatrolPointPtr patrolPoint )
   _addFormationButton( 3, 32 );
 }
 
-InfoboxLegion::~InfoboxLegion()
-{
-}
+InfoboxLegion::~InfoboxLegion() {}
 
 bool InfoboxLegion::onEvent(const NEvent& event)
 {

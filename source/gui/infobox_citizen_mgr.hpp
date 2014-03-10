@@ -17,14 +17,36 @@
 #ifndef _CAESARIA_INFOBOX_CITIZEN_MGR_H_INCLUDE_
 #define _CAESARIA_INFOBOX_CITIZEN_MGR_H_INCLUDE_
 
-#include "widget.hpp"
+#include "info_box.hpp"
+#include "walker/predefinitions.hpp"
+#include "walker/constants.hpp"
 
 class InfoboxManager;
+
+class InfoboxCitizenCreator : public ReferenceCounted
+{
+public:
+  virtual gui::InfoboxSimple* create( gui::Widget* parent, WalkerList walkers ) = 0;
+};
+
+typedef SmartPtr<InfoboxCitizenCreator> InfoboxCitizenCreatorPtr;
 
 class InfoboxCitizenManager
 {
 public:
-  static void loadInfoboxes( InfoboxManager& manager );
+  static InfoboxCitizenManager& instance();
+
+  void loadInfoboxes( InfoboxManager& manager );
+  virtual ~InfoboxCitizenManager();
+
+  void addCreator( constants::walker::Type type, InfoboxCitizenCreatorPtr c );
+
+  gui::InfoboxSimple* show( gui::Widget* parent, WalkerList walkers );
+private:
+  InfoboxCitizenManager();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_

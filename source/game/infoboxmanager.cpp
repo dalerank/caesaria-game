@@ -160,7 +160,7 @@ InfoboxManager::InfoboxManager() : _d( new Impl )
 {
   _d->showDebugInfo = true;
 
-  InfoboxCitizenManager::loadInfoboxes( *this );
+  InfoboxCitizenManager::instance().loadInfoboxes( *this );
 
 #define ADD_INFOBOX(typen, creator) addInfobox(typen, CAESARIA_STR_EXT(typen), new creator)
   ADD_INFOBOX( building::reservoir,    BaseInfoboxCreator<InfoboxReservoir>() );

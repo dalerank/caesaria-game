@@ -82,7 +82,7 @@ void RomeSoldier::die()
 {
   Soldier::die();
 
-  switch( getType() )
+  switch( type() )
   {
   case walker::legionary:
     Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 705, 712 );
@@ -258,7 +258,7 @@ void RomeSoldier::_reachedPathway()
 
   case Impl::go2position:
   {
-    if( _getCity()->getWalkers( getType(), pos() ).size() != 1 ) //only me in this tile
+    if( _getCity()->getWalkers( type(), pos() ).size() != 1 ) //only me in this tile
     {
       _back2fort();
     }

@@ -88,7 +88,7 @@ Walker::~Walker()
 {
 }
 
-walker::Type Walker::getType() const
+walker::Type Walker::type() const
 {
   return _d->walkerType;
 }
@@ -378,8 +378,8 @@ const Tile& Walker::_getNextTile() const
 
 int Walker::getI() const{   return _d->pos.i();}
 int Walker::getJ() const{   return _d->pos.j();}
-Point Walker::getMapPos() const{  return Point( 2*(_d->posOnMap.x() + _d->posOnMap.y()), _d->posOnMap.x() - _d->posOnMap.y() );}
-Point Walker::getSubPos() const{  return _d->tileOffset; }
+Point Walker::getMappos() const{  return Point( 2*(_d->posOnMap.x() + _d->posOnMap.y()), _d->posOnMap.x() - _d->posOnMap.y() );}
+Point Walker::getSubpos() const{  return _d->tileOffset; }
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}

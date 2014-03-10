@@ -212,7 +212,7 @@ void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camO
     {
       if( (*picRef).isValid() )
       {
-        engine.drawPicture( *picRef, (*w)->getMapPos() + camOffset );
+        engine.drawPicture( *picRef, (*w)->getMappos() + camOffset );
       }
     }
   }

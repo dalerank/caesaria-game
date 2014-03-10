@@ -154,8 +154,8 @@ void Building::cancelTrainee(walker::Type traineeType) { _reservedTrainees.erase
 
 void Building::updateTrainee(  TraineeWalkerPtr walker )
 {
-   _reservedTrainees.erase( walker->getType() );
-   _d->traineeMap[ walker->getType() ] += walker->getValue() ;
+   _reservedTrainees.erase( walker->type() );
+   _d->traineeMap[ walker->type() ] += walker->getValue() ;
 }
 
 void Building::setTraineeValue(walker::Type type, int value)

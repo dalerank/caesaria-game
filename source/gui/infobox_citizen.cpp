@@ -54,16 +54,16 @@ InfoboxCitizen::InfoboxCitizen(Widget* parent, const WalkerList& walkers )
     wlk = walkers.front();
     lbName->setText( wlk->getName() );
 
-    std::string walkerType = WalkerHelper::getPrettyTypeName( wlk->getType() );
+    std::string walkerType = WalkerHelper::getPrettyTypeName( wlk->type() );
     lbType->setText( _(walkerType) );
-    lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->getType() ) );
+    lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->type() ) );
 
     lbThinks->setText( wlk->getThinks() );
   }
 
   if( wlk.isValid() )
   {
-    switch( wlk->getType() )
+    switch( wlk->type() )
     {
     case walker::merchant:
     {

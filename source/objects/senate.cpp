@@ -71,7 +71,7 @@ bool Senate::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& around
 
 void Senate::applyService(ServiceWalkerPtr walker)
 {
-  switch( walker->getType() )
+  switch( walker->type() )
   {
   case walker::taxCollector:
   {

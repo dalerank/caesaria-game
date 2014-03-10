@@ -333,9 +333,9 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   funds.updateHistory( GameDate::current() );
 }
 
-WalkerList PlayerCity::getWalkers( walker::Type type )
+WalkerList PlayerCity::getWalkers( walker::Type rtype )
 {
-  if( type == walker::all )
+  if( rtype == walker::all )
   {
     return _d->walkerList;
   }
@@ -343,7 +343,7 @@ WalkerList PlayerCity::getWalkers( walker::Type type )
   WalkerList res;
   foreach( w, _d->walkerList )
   {
-    if( (*w)->getType() == type  )
+    if( (*w)->type() == rtype  )
     {
       res.push_back( *w );
     }
@@ -352,12 +352,12 @@ WalkerList PlayerCity::getWalkers( walker::Type type )
   return res;
 }
 
-WalkerList PlayerCity::getWalkers(walker::Type type, TilePos startPos, TilePos stopPos)
+WalkerList PlayerCity::getWalkers(walker::Type rtype, TilePos startPos, TilePos stopPos)
 {
   TilePos invalidPos( -1, -1 );
 
   if( startPos == invalidPos )
-    return getWalkers( type );
+    return getWalkers( rtype );
 
   WalkerList ret;
   if( stopPos == invalidPos )
@@ -372,7 +372,7 @@ WalkerList PlayerCity::getWalkers(walker::Type type, TilePos startPos, TilePos s
 
     foreach( w, current )
     {
-      if( (*w)->getType() == type || type == walker::any )
+      if( (*w)->type() == rtype || rtype == walker::any )
       {
         ret.push_back( *w );
       }

@@ -20,13 +20,21 @@
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "infobox_citizen.hpp"
+#include "core/logger.hpp"
 #include "infobox_land.hpp"
-
+#include <vector>
 
 using namespace  constants;
 
+class InfoboxCitizenManager::Impl
+{
+public:
+  typedef std::map< walker::Type, InfoboxCitizenCreatorPtr> Creators;
+  Creators creators;
+};
+
 template< class T >
-class CitizenInfoboxCreator : public InfoboxCreator
+class CitizenInfoboxParser : public InfoboxCreator
 {
 public:
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
@@ -40,22 +48,64 @@ public:
     }
     else
     {
-      PatrolPointList pp = helper.find<PatrolPoint>( walker::patrolPoint, pos );
-      if( pp.empty() )
-      {
-        return new gui::InfoboxCitizen( parent, walkers );
-      }
-      else
-      {
-        return new gui::InfoboxLegion( parent, pp.front() );
-      }
+      return InfoboxCitizenManager::instance().show( parent, walkers );
     }
   }
 };
 
+template< class T >
+class SpecificCitizenInfoboxCreator : public InfoboxCitizenCreator
+{
+public:
+  gui::InfoboxSimple* create(  gui::Widget* parent, WalkerList walkers )
+  {
+    return new T( parent, walkers );
+  }
+};
+
+InfoboxCitizenManager& InfoboxCitizenManager::instance()
+{
+  static InfoboxCitizenManager inst;
+  return inst;
+}
+
 void InfoboxCitizenManager::loadInfoboxes(InfoboxManager& manager)
 {
-  manager.addInfobox( construction::road,         CAESARIA_STR_EXT(Road),   new CitizenInfoboxCreator<gui::InfoboxLand>() );
-  manager.addInfobox( construction::plaza,        CAESARIA_STR_EXT(Plaza),  new CitizenInfoboxCreator<gui::InfoboxLand>() );
-  manager.addInfobox( building::unknown,          CAESARIA_STR_EXT(unknown), new CitizenInfoboxCreator<gui::InfoboxLand>() );
+  manager.addInfobox( construction::road,         CAESARIA_STR_EXT(Road),   new CitizenInfoboxParser<gui::InfoboxLand>() );
+  manager.addInfobox( construction::plaza,        CAESARIA_STR_EXT(Plaza),  new CitizenInfoboxParser<gui::InfoboxLand>() );
+  manager.addInfobox( building::unknown,          CAESARIA_STR_EXT(unknown), new CitizenInfoboxParser<gui::InfoboxLand>() );
+
+  addCreator( walker::patrolPoint, new SpecificCitizenInfoboxCreator<gui::InfoboxLegion>() );
+}
+
+InfoboxCitizenManager::~InfoboxCitizenManager() {}
+
+void InfoboxCitizenManager::addCreator( constants::walker::Type type, InfoboxCitizenCreatorPtr c)
+{
+  Impl::Creators::iterator it = _d->creators.find( type );
+  if( it != _d->creators.end() )
+  {
+    Logger::warning( "InfoboxCitizenManager: also have infobox creator for type %s", WalkerHelper::getTypename( type ).c_str() );
+    return;
+  }
+
+  _d->creators[ type ] = c;
+}
+
+gui::InfoboxSimple* InfoboxCitizenManager::show( gui::Widget* parent, WalkerList walkers )
+{
+  Impl::Creators::iterator it = _d->creators.find( walkers.empty() ? walker::unknown : walkers.front()->type() );
+  if( it == _d->creators.end() )
+  {
+    return new gui::InfoboxCitizen( parent, walkers );
+  }
+  else
+  {
+    return it->second->create( parent, walkers );
+  }
+}
+
+InfoboxCitizenManager::InfoboxCitizenManager() : _d( new Impl )
+{
+
 }

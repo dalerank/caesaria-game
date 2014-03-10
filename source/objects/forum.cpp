@@ -53,7 +53,7 @@ void Forum::deliverService()
 
 void Forum::applyService(ServiceWalkerPtr walker)
 {
-  switch( walker->getType() )
+  switch( walker->type() )
   {
   case walker::taxCollector:
   {

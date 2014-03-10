@@ -89,7 +89,7 @@ void WallGuard::die()
 {
   Soldier::die();
 
-  switch( getType() )
+  switch( type() )
   {
   case walker::romeGuard:
     Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 233, 240 );

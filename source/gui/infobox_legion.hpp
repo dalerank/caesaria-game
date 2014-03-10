@@ -16,9 +16,6 @@
 #ifndef _CAESARIA_INFOBOX_LEGION_H_INCLUDE_
 #define _CAESARIA_INFOBOX_LEGION_H_INCLUDE_
 
-#include <string>
-#include <list>
-
 #include "info_box.hpp"
 
 namespace gui
@@ -27,7 +24,7 @@ namespace gui
 class InfoboxLegion : public InfoboxSimple
 {
 public:
-  InfoboxLegion(Widget* parent, PatrolPointPtr patrolPoint );
+  InfoboxLegion(Widget* parent, WalkerList walkers );
   virtual ~InfoboxLegion();
 
   virtual bool onEvent(const NEvent &event);

@@ -43,7 +43,7 @@ public:
   virtual ~Walker();
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
-  virtual constants::walker::Type getType() const;
+  virtual constants::walker::Type type() const;
   // position and movement
 
   int getJ() const;
@@ -51,8 +51,8 @@ public:
   TilePos pos() const;
   void setPos( const TilePos& pos );
 
-  virtual Point getMapPos() const;
-  Point getSubPos() const;
+  virtual Point getMappos() const;
+  Point getSubpos() const;
 
   virtual void setPathway(const Pathway& pathway);
   const Pathway& getPathway() const;

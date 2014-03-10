@@ -35,12 +35,12 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   if( is_kind_of<Animal>( walker ) )
   {
-    std::string text = StringHelper::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->getType() ).c_str() );
+    std::string text = StringHelper::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->type() ).c_str() );
     return text;
   }
 
   StringArray troubles = own;
-  std::string walkerTypename = WalkerHelper::getTypename( walker->getType() );
+  std::string walkerTypename = WalkerHelper::getTypename( walker->type() );
   city::Info::Parameters params = info->getLast();
   if( params.monthWithFood < 3 )
   {

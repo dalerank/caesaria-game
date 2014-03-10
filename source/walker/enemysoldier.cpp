@@ -121,15 +121,15 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   TilePos offset( range, range );
   TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
 
-  walker::Type type;
+  walker::Type rtype;
   foreach( tile, tiles )
   {
     WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->pos() );
 
     for( WalkerList::iterator i=tileWalkers.begin();i!=tileWalkers.end(); i++ )
     {
-      type = (*i)->getType();
-      if( type == getType() || is_kind_of<Animal>(*i) || type  == walker::corpse )
+      rtype = (*i)->type();
+      if( rtype == type() || is_kind_of<Animal>(*i) || rtype  == walker::corpse )
         continue;
 
       walkers.push_back( *i );
@@ -352,7 +352,7 @@ void EnemySoldier::die()
 {
   Soldier::die();
 
-  switch( getType() )
+  switch( type() )
   {
   case walker::britonSoldier:
     Corpse::create( _getCity(), pos(), ResourceGroup::celts, 393, 400 );
@@ -377,7 +377,7 @@ void EnemySoldier::save( VariantMap& stream ) const
 {
   Soldier::save( stream );
 
-  stream[ "type" ] = (int)getType();
+  stream[ "type" ] = (int)type();
   stream[ "animation" ] =
   stream[ "EsAction" ] = (int)_d->action;
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(EnemySoldier) ) );
