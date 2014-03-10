@@ -66,7 +66,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->maxDistance = 25;
-  _d->stock.setCapacity( 400 );
+  _d->stock.setCapacity( defaultCartCapacity );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -107,20 +107,9 @@ void CartPusher::_reachedPathway()
   }
 }
 
-GoodStock& CartPusher::getStock()
-{
-   return _d->stock;
-}
-
-void CartPusher::setProducerBuilding(BuildingPtr building)
-{
-   _d->producerBuilding = building;
-}
-
-void CartPusher::setConsumerBuilding(BuildingPtr building)
-{
-   _d->consumerBuilding = building;
-}
+GoodStock& CartPusher::getStock() {   return _d->stock;}
+void CartPusher::setProducerBuilding(BuildingPtr building){   _d->producerBuilding = building;}
+void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuilding = building;}
 
 BuildingPtr CartPusher::getProducerBuilding()
 {

@@ -145,8 +145,9 @@ void Empire::save( VariantMap& stream ) const
     vm_objects[ (*obj)->getName() ] = (*obj)->save();
   }
 
-  stream[ "cities" ] = vm_cities;
-  stream[ "trade" ] = _d->trading.save();
+  stream[ "cities"  ] = vm_cities;
+  stream[ "objects" ] = vm_objects;
+  stream[ "trade"   ] = _d->trading.save();
   stream[ "enabled" ] = _d->available;
 }
 

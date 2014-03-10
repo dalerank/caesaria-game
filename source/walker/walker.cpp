@@ -76,7 +76,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->walkerGraphic = gfx::unknown;
   _d->health = 100;
 
-  _d->speed = 1.f;  // default speed
+  _d->speed = 0.8 + math::random( 40 ) / 100.f;  // default speed
   _d->speedMultiplier = 1.f;
   _d->isDeleted = false;
 
@@ -84,14 +84,8 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->remainMove = PointF( 0, 0 );
 }
 
-Walker::~Walker()
-{
-}
-
-walker::Type Walker::type() const
-{
-  return _d->walkerType;
-}
+Walker::~Walker() {}
+walker::Type Walker::type() const{  return _d->walkerType;}
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -236,8 +230,10 @@ void Walker::_walk()
   int tmpY = _d->tileOffset.y();
   int tmpJ = _d->pos.j();
   int tmpI = _d->pos.i();
-  while (amountI+amountJ > 0)
+  int infinityLoopGuard = 0;
+  while( amountI+amountJ > 0 && infinityLoopGuard < 100 )
   {
+    infinityLoopGuard++;
     switch (_d->action.direction)
     {
     case constants::north:
@@ -280,7 +276,7 @@ void Walker::_walk()
        Logger::warning( "Invalid move direction: %d", _d->action.direction);
        _d->action.direction = constants::noneDirection;
     break;
-    }
+    }    
 
     _d->tileOffset = Point( tmpX, tmpY );
     _d->pos = TilePos( tmpI, tmpJ );
@@ -296,10 +292,6 @@ void Walker::_walk()
        // walker is now on the middle of the tile!
        _centerTile();
     }
-
-    // if (midTile) std::cout << "walker mid tile" << std::endl;
-    // if (newTile) std::cout << "walker new tile" << std::endl;
-    // if (amount != 0) std::cout << "walker remaining step :" << amount << std::endl;
   }
 
   Tile& offtile = newTile

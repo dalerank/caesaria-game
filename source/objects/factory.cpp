@@ -384,7 +384,7 @@ void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
 
 void WeaponsWorkshop::_storeChanged()
 {
-  _fgPicturesRef()[2] = store().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 156 );
+  _fgPicturesRef()[2] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 156 );
   _fgPicturesRef()[2].setOffset( 20, 15 );
 }
 
@@ -414,8 +414,8 @@ FurnitureWorkshop::FurnitureWorkshop() : Factory(Good::timber, Good::furniture, 
 
 void FurnitureWorkshop::_storeChanged()
 {
-  _fgPicturesRef()[2] = store().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 155 );
-  _fgPicturesRef()[2].setOffset( 20, 15 );
+  _fgPicturesRef()[2] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 155 );
+  _fgPicturesRef()[2].setOffset( 40, -10 );
 }
 
 Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
@@ -444,8 +444,8 @@ void Winery::build(PlayerCityPtr city, const TilePos& pos)
 
 void Winery::_storeChanged()
 {
-  _fgPicturesRef()[2] = store().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 153 );
-  _fgPicturesRef()[2].setOffset( 20, 15 );
+  _fgPicturesRef()[2] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 153 );
+  _fgPicturesRef()[2].setOffset( 40, -10 );
 }
 
 Creamery::Creamery() : Factory(Good::olive, Good::oil, building::creamery, Size(2) )
@@ -474,6 +474,6 @@ void Creamery::build(PlayerCityPtr city, const TilePos& pos)
 
 void Creamery::_storeChanged()
 {
-  _fgPicturesRef()[2] = store().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 154 );
-  _fgPicturesRef()[2].setOffset( 20, 15 );
+  _fgPicturesRef()[2] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 154 );
+  _fgPicturesRef()[2].setOffset( 40, -5 );
 }

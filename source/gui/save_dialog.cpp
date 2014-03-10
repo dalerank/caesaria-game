@@ -26,6 +26,7 @@
 #include "vfs/entries.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
+#include "gameautopause.hpp"
 
 namespace gui
 {
@@ -33,6 +34,7 @@ namespace gui
 class SaveDialog::Impl
 {
 public:
+  GameAutoPause locker;
   PictureRef background;
   PushButton* btnOk;
   PushButton* btnCancel;
@@ -70,7 +72,8 @@ void SaveDialog::Impl::findFiles()
 SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id )
 : Widget( parent, id, Rect( 0, 0, 385, 336 ) ), _d( new Impl )
 {
-  setPosition( Point( (parent->width() - width())/2, (parent->height() - height()) / 2 ) );
+  _d->locker.activate();
+  setCenter( parent->center() );
   
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 30) );
   title->setText( "Save city" );

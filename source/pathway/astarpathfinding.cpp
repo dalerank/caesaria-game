@@ -223,6 +223,8 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
 
   // Define points to work with
   AStarPoint* start = at( startPos );
+  if( !start )
+    return false;
   APoints endPoints;
 
   foreach( tile, arrivedArea ) { endPoints.push_back( at( (*tile)->pos() ) ); }

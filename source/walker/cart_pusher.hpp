@@ -26,6 +26,7 @@
 class CartPusher : public Walker
 {
 public:
+  static const int defaultCartCapacity = 100;
   static CartPusherPtr create( PlayerCityPtr city );
 
   void setProducerBuilding( BuildingPtr building );
