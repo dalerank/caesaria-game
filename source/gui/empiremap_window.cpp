@@ -309,39 +309,39 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->tradeInfo = new Widget( this, -1, Rect( 0, height() - 120, width(), height() ) );
 
   const Picture& backgr = Picture::load( ResourceGroup::empirepnls, 4 );
-  for( unsigned int y=height() - 120; y < height(); y+=backgr.getHeight() )
+  for( unsigned int y=height() - 120; y < height(); y+=backgr.height() )
   {
-    for( unsigned int x=0; x < width(); x += backgr.getWidth() )
+    for( unsigned int x=0; x < width(); x += backgr.width() )
     {
       _d->border->draw( backgr, x, y );
     }
   }
 
   const Picture& lrBorderPic = Picture::load( ResourceGroup::empirepnls, 1 );
-  for( unsigned int y = 0; y < height(); y += lrBorderPic.getHeight() )
+  for( unsigned int y = 0; y < height(); y += lrBorderPic.height() )
   {
     _d->border->draw( lrBorderPic, 0, y );
-    _d->border->draw( lrBorderPic, width() - lrBorderPic.getWidth(), y );
+    _d->border->draw( lrBorderPic, width() - lrBorderPic.width(), y );
   }
 
   const Picture& tdBorderPic = Picture::load( ResourceGroup::empirepnls, 2 );
-  for( unsigned int x = 0; x < width(); x += tdBorderPic.getWidth() )
+  for( unsigned int x = 0; x < width(); x += tdBorderPic.width() )
   {
     _d->border->draw( tdBorderPic, x, 0 );
-    _d->border->draw( tdBorderPic, x, height() - tdBorderPic.getHeight() );
+    _d->border->draw( tdBorderPic, x, height() - tdBorderPic.height() );
     _d->border->draw( tdBorderPic, x, height() - 120 );
   }
 
   const Picture& corner = Picture::load( ResourceGroup::empirepnls, 3 );
   _d->border->draw( corner, 0, 0 );    //left top
-  _d->border->draw( corner, 0, height() - corner.getHeight() ); //top right
-  _d->border->draw( corner, width() - corner.getWidth(), 0 ); //left bottom
-  _d->border->draw( corner, width() - corner.getWidth(), height() - corner.getHeight() ); //bottom right
+  _d->border->draw( corner, 0, height() - corner.height() ); //top right
+  _d->border->draw( corner, width() - corner.width(), 0 ); //left bottom
+  _d->border->draw( corner, width() - corner.width(), height() - corner.height() ); //bottom right
   _d->border->draw( corner, 0, height() - 120 ); //left middle
-  _d->border->draw( corner, width() - corner.getWidth(), height() - 120 ); //right middle
+  _d->border->draw( corner, width() - corner.width(), height() - 120 ); //right middle
 
-  _d->border->fill( 0x00000000, Rect( corner.getWidth(), corner.getHeight(), 
-                                      width() - corner.getWidth(), height() - 120 ) );
+  _d->border->fill( 0x00000000, Rect( corner.width(), corner.height(), 
+                                      width() - corner.width(), height() - 120 ) );
 
   _d->leftEagle = Picture::load( ResourceGroup::empirepnls, 7 );
   _d->rightEagle = Picture::load( ResourceGroup::empirepnls, 8 );
@@ -421,12 +421,12 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
   engine.drawPicture( *_d->border, Point( 0, 0 ) );
 
-  engine.drawPicture( _d->leftEagle, _d->eagleOffset.width(), height() - 120 + _d->eagleOffset.height() - _d->leftEagle.getHeight() - 10 );
-  engine.drawPicture( _d->rightEagle, width() - _d->eagleOffset.width() - _d->rightEagle.getWidth(),
-                      height() - 120 + _d->eagleOffset.height() - _d->rightEagle.getHeight() - 10 );
+  engine.drawPicture( _d->leftEagle, _d->eagleOffset.width(), height() - 120 + _d->eagleOffset.height() - _d->leftEagle.height() - 10 );
+  engine.drawPicture( _d->rightEagle, width() - _d->eagleOffset.width() - _d->rightEagle.width(),
+                      height() - 120 + _d->eagleOffset.height() - _d->rightEagle.height() - 10 );
 
-  engine.drawPicture( _d->centerPicture, (width() - _d->centerPicture.getWidth()) / 2,
-                      height() - 120 - _d->centerPicture.getHeight() + 20 );
+  engine.drawPicture( _d->centerPicture, (width() - _d->centerPicture.width()) / 2,
+                      height() - 120 - _d->centerPicture.height() + 20 );
 
   Widget::draw( engine );
 }
@@ -467,9 +467,9 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
         {
           // gui window should not be dragged outside its parent
           if( _d->offset.x() > 0
-              || _d->offset.x() + _d->empireMap.getWidth() < (int)width()
+              || _d->offset.x() + _d->empireMap.width() < (int)width()
               || _d->offset.y() > 0
-              || _d->offset.y() + _d->empireMap.getHeight() < (int)height()-120 )
+              || _d->offset.y() + _d->empireMap.height() < (int)height()-120 )
           {
             break;
           }
@@ -477,8 +477,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
           _d->offset += (event.mouse.getPosition() - _d->dragStartPosition);
           _d->dragStartPosition = event.mouse.getPosition();
 
-          _d->offset.setX( math::clamp<int>( _d->offset.x(), -_d->empireMap.getWidth() + width(), 0 ) );
-          _d->offset.setY( math::clamp<int>( _d->offset.y(), -_d->empireMap.getHeight() + height() - 120, 0 ) );
+          _d->offset.setX( math::clamp<int>( _d->offset.x(), -_d->empireMap.width() + width(), 0 ) );
+          _d->offset.setY( math::clamp<int>( _d->offset.y(), -_d->empireMap.height() + height() - 120, 0 ) );
         }
       }
     break;

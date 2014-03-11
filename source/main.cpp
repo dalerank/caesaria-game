@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
   Logger::registerWriter( Logger::filelog );
 
   vfs::Directory workdir = vfs::Path( argv[0] ).directory();
-  Logger::warning( "Working directory is " + workdir.toString() );
+  Logger::warning( "Options: working directory is " + workdir.toString() );
 
   GameSettings::getInstance().setwdir( workdir.toString() );
 
@@ -21,17 +21,33 @@ int main(int argc, char* argv[])
     if( !strcmp( argv[i], "-R" ) )
     {
       const char* opts = argv[i+1];
-      Logger::warning( "Setting workdir to %s", opts  );
+      Logger::warning( "Options: setting workdir to %s", opts  );
       GameSettings::getInstance().setwdir( std::string( opts, strlen( opts ) ) );
       i++;
     }
 
     if( !strcmp( argv[i], "-Lc" ) )
     {      
-      Logger::warning( "Setting language to " + std::string( argv[i+1] ) );
+      Logger::warning( "Options: setting language to " + std::string( argv[i+1] ) );
       GameSettings::set( GameSettings::language, Variant( std::string( argv[i+1] ) ) );
       i++;
     }
+
+    if( !strcmp( argv[i], "-c3gfx" ) )
+    {
+      Logger::warning( "Options: using native C3 resources from" + std::string( argv[i+1] ) );
+      GameSettings::set( GameSettings::c3gfx, Variant( std::string( argv[i+1] ) ) );
+      i++;
+    }
+  }
+
+  vfs::Path testPics = GameSettings::rcpath( "/pics/pics.zip" );
+  if( !testPics.exist() )
+  {
+    Logger::warning( "Critical: Not found graphics data. Use precompiled CaesarIA archive or set\n"
+                     "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
+                     "forexample, \"-c3gfx c:/games/caesar3/\"" );
+    return 0;
   }
 
   try

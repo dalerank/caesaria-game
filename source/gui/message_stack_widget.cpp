@@ -42,7 +42,7 @@ WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rect
 
   Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
   _d->lbBackgorund->draw( emlbPic, 4, 2 );
-  _d->lbBackgorund->draw( emlbPic, width() - emlbPic.getWidth()-4, 2 );
+  _d->lbBackgorund->draw( emlbPic, width() - emlbPic.width()-4, 2 );
 }
 
 void WindowMessageStack::draw( GfxEngine& painter )

@@ -7,7 +7,7 @@ set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 aux_source_directory(. UPD_SRC_LIST)
 file(GLOB UPD_INC_LIST "*.hpp")
 
-set(UPD_CORE_SOURCES_LIST
+set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/stringhelper.cpp"
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
@@ -16,9 +16,17 @@ set(UPD_CORE_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/thread.cpp"
       "${BASE_SOURCE_DIR}/core/threadevent.cpp"
       "${BASE_SOURCE_DIR}/core/threadtask.cpp"
-      "${BASE_SOURCE_DIR}/core/variant.cpp" )
+      "${BASE_SOURCE_DIR}/core/variant.cpp"
+      "${BASE_SOURCE_DIR}/vfs/directory.cpp"
+      "${BASE_SOURCE_DIR}/vfs/file.cpp"
+      "${BASE_SOURCE_DIR}/vfs/path.cpp"
+      "${BASE_SOURCE_DIR}/vfs/entries.cpp"
+      "${BASE_SOURCE_DIR}/vfs/filesystem.cpp"
+      "${BASE_SOURCE_DIR}/vfs/archive_zip.cpp"
+      "${BASE_SOURCE_DIR}/vfs/memfile.cpp"
+      "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
+)
 
-file(GLOB UPD_VFS_SOURCES_LIST "${BASE_SOURCE_DIR}/vfs/*.*")
 file(GLOB HTTP_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/http/*.*")
 
 include_directories( ${BASE_SOURCE_DIR} )
@@ -26,7 +34,7 @@ include_directories( ${DEP_DIR} )
 
 add_executable(${PROJECT_NAME}
                ${UPD_SRC_LIST} ${UPD_INC_LIST}
-               ${UPD_CORE_SOURCES_LIST} ${UPD_VFS_SOURCES_LIST}
+               ${UPD_DEP_SOURCES_LIST}
                ${HTTP_SOURCES_LIST} )
 
 if( BUILD_ZLIB )

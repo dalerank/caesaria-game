@@ -131,7 +131,7 @@ void Level::initialize()
 
   installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
 
-  Rect rPanelRect( engine.getScreenWidth() - rPanelPic.getWidth(), topMenuHeight,
+  Rect rPanelRect( engine.getScreenWidth() - rPanelPic.width(), topMenuHeight,
                    engine.getScreenWidth(), engine.getScreenHeight() );
 
   _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);

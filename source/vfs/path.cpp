@@ -204,10 +204,7 @@ Path::Path() : _d( new Impl )
   _d->path = "";
 }
 
-const std::string& Path::toString() const
-{
-  return _d->path;
-}
+const std::string& Path::toString() const {  return _d->path; }
 
 std::string Path::removeExtension() const
 {
@@ -220,10 +217,7 @@ std::string Path::removeExtension() const
   return toString();
 }
 
-Path::~Path()
-{
-
-}
+Path::~Path(){}
 
 Path Path::getAbsolutePath() const
 {
@@ -438,17 +432,17 @@ bool Path::operator==( const Path& other ) const
 
 bool Path::operator==( const std::string& other ) const
 {
-    return toString() == other;
+  return toString() == other;
 }
 
 char &Path::operator [](const unsigned int index)
 {
-    return _d->path[index];
+  return _d->path[index];
 }
 
 bool Path::isExtension(const std::string &ext, bool checkCase) const
 {
-    return StringHelper::isEquale( getExtension(), ext, checkCase ? StringHelper::equaleCase : StringHelper::equaleIgnoreCase );
+  return StringHelper::isEquale( getExtension(), ext, checkCase ? StringHelper::equaleCase : StringHelper::equaleIgnoreCase );
 }
 
 Path& Path::operator=( const Path& other )

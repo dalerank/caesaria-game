@@ -704,7 +704,7 @@ void House::_update()
   int picId = ( _d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
   Picture pic = Picture::load( ResourceGroup::housing, picId );
   setPicture( pic );
-  setSize( Size( (pic.getWidth() + 2 ) / 60 ) );
+  setSize( Size( (pic.width() + 2 ) / 60 ) );
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * getSize().getArea();
   _d->services[ Service::forum ].setMax( _d->spec.taxRate() * _d->maxHabitants );
   _d->initGoodStore( getSize().getArea() );

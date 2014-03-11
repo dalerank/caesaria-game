@@ -203,7 +203,7 @@ void Minimap::Impl::updateImage()
       int c1, c2;
       getTerrainColours( tile, c1, c2);
 
-      if( pnt.x() >= fullmap->getWidth()-1 || pnt.y() >= fullmap->getHeight() )
+      if( pnt.x() >= fullmap->width()-1 || pnt.y() >= fullmap->height() )
         continue;
 
       fullmap->setPixel( pnt, c1);

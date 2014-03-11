@@ -48,6 +48,7 @@
 #include "walker/name_generator.hpp"
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
+#include "vfs/archive_sg2.hpp"
 
 #include <list>
 
@@ -112,11 +113,22 @@ void Game::mountArchives()
 
   vfs::FileSystem& fs = vfs::FileSystem::instance();
 
-  fs.mountArchive( GameSettings::rcpath( "/pics/pics_wait.zip" ) );
-  fs.mountArchive( GameSettings::rcpath( "/pics/pics.zip" ) );
-  fs.mountArchive( GameSettings::rcpath( "/pics/pics_oc3.zip" ) );
-  fs.mountArchive( GameSettings::rcpath( "/pics/pics_celts.zip" ) );
-  fs.mountArchive( GameSettings::rcpath( "/audio/wavs_buildings.zip") );
+  Variant c3res = GameSettings::get( GameSettings::c3gfx );
+  if( c3res.isValid() )
+  {
+    fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
+
+    std::string gfxDir = vfs::Path( c3res.toString() ).addEndSlash().toString();
+    fs.mountArchive( gfxDir + "celts.sg2" );
+  }
+  else
+  {
+    fs.mountArchive( GameSettings::rcpath( "/pics/pics_wait.zip" ) );
+    fs.mountArchive( GameSettings::rcpath( "/pics/pics.zip" ) );
+    fs.mountArchive( GameSettings::rcpath( "/pics/pics_oc3.zip" ) );
+    fs.mountArchive( GameSettings::rcpath( "/pics/pics_celts.zip" ) );
+    fs.mountArchive( GameSettings::rcpath( "/audio/wavs_buildings.zip") );
+  }
 }
 
 void Game::Impl::initGuiEnvironment()

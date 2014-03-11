@@ -76,7 +76,7 @@ public:
 
       int month2comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
       font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
-      font.draw( *pic, gr->getDescription(), 5, pic->getHeight() - 20 );
+      font.draw( *pic, gr->getDescription(), 5, pic->height() - 20 );
     }
   }
 

@@ -282,13 +282,13 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
   const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
-  ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
+  ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), bground.height() + bottom.height() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
-  ret->_d->bgPicture->draw( bottom,  0, bground.getHeight() );
+  ret->_d->bgPicture->draw( bottom,  0, bground.height() );
   ret->_d->city = city;  
   ret->_d->updateBuildingOptions();
 
-  ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
+  ret->setGeometry( Rect( 0, 0, bground.width(), ret->_d->bgPicture->height() ) );
   CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
 
   return ret;
@@ -341,14 +341,14 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
   const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-  ret->_d->bgPicture.reset( Picture::create( Size( bground.getWidth(), bground.getHeight() + bottom.getHeight() ) ) );
+  ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), bground.height() + bottom.height() ) ) );
   ret->_d->bgPicture->draw( bground, 0, 0);
-  ret->_d->bgPicture->draw( bottom, 0, bground.getHeight() );
+  ret->_d->bgPicture->draw( bottom, 0, bground.height() );
 
   ret->_d->city = city;
   ret->_d->updateBuildingOptions();
 
-  ret->setGeometry( Rect( 0, 0, bground.getWidth(), ret->_d->bgPicture->getHeight() ) );
+  ret->setGeometry( Rect( 0, 0, bground.width(), ret->_d->bgPicture->height() ) );
   CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
 
   return ret;

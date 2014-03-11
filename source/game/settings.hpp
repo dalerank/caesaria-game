@@ -45,6 +45,7 @@ public:
   static const char* workDir;
   static const char* adviserEnabled;
   static const char* lastTranslation;
+  static const char* c3gfx;
 
   static GameSettings& getInstance();
 

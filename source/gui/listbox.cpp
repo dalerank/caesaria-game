@@ -592,7 +592,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
         Point offset;
         if( refItem.getHorizontalAlign() == alignCenter )
         {
-          offset.setX( (width() - refItem.getIcon().getWidth()) / 2 );
+          offset.setX( (width() - refItem.getIcon().width()) / 2 );
         }
         _d->picture->draw( refItem.getIcon(), frameRect.UpperLeftCorner + Point( 0, -_d->scrollBar->getPos() ) + offset );
       }

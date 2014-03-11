@@ -14,10 +14,11 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 
-#ifndef PICTURE_HPP
-#define PICTURE_HPP
+#ifndef _CAESARIA_PICTURE_HPP_INCLUDE_
+#define _CAESARIA_PICTURE_HPP_INCLUDE_
 
 #include <vector>
 #include <string>
@@ -55,8 +56,8 @@ public:
   void scale( Size size );
   SDL_Surface* getSurface() const;
   Point getOffset() const;
-  int getWidth() const;
-  int getHeight() const;
+  int width() const;
+  int height() const;
 
   void draw( const Picture &srcpic, int x, int y, bool useAlpha=true );
   void draw( const Picture &srcpic, const Point& pos, bool useAlpha=true );
@@ -64,6 +65,7 @@ public:
   void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
 
   void fill( const NColor& color, const Rect& rect );
+  void save( const std::string& filename );
 
   // lock/unlock the given surface for pixel access
   void lock();
@@ -112,4 +114,4 @@ public:
   }
 };
 
-#endif
+#endif //_CAESARIA_PICTURE_HPP_INCLUDE_

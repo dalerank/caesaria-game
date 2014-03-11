@@ -61,7 +61,7 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
       Picture pic = Picture::load( text.substr( imgSeparator.length() ) );
       ListBoxItem& item = lbx->addItem( pic );
       item.setItemTextAlignment( alignCenter, alignUpperLeft );
-      int lineCount = pic.getHeight() / lbx->getItemHeight();
+      int lineCount = pic.height() / lbx->getItemHeight();
       StringArray lines;
       lines.resize( lineCount );
       lbx->addItems( lines );

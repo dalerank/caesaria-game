@@ -106,26 +106,30 @@ Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
 Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resource_name) const
 {
    Point offset( 0, 0 );
-   // decode the picture name => to set the offset manually
-   // resource_name = "buildings/Govt_00005.png"
+
    int dot_pos = resource_name.find('.');
    std::string filename = resource_name.substr(0, dot_pos);
 
-   Point pic_info = PictureInfoBank::instance().getOffset(filename);
+   if( surface )
+   {
+     // decode the picture name => to set the offset manually
+     // resource_name = "buildings/Govt_00005.png"
+     Point pic_info = PictureInfoBank::instance().getOffset(filename);
 
-   if (pic_info.x() == -1 && pic_info.y() == -1)
-   {
-      // this is a tiled picture=> automatic offset correction
-      offset.setY( surface->h-15*((surface->w+2)/60) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
-   }
-   else if (pic_info.x() == -2 && pic_info.y() == -2)
-   {
-      // this is a walker picture=> automatic offset correction
-      offset = Point( -surface->w/2, int(surface->h*3./4.) );
-   }
-   else
-   {
-      offset = pic_info;
+     if (pic_info.x() == -1 && pic_info.y() == -1)
+     {
+        // this is a tiled picture=> automatic offset correction
+        offset.setY( surface->h-15*((surface->w+2)/60) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
+     }
+     else if (pic_info.x() == -2 && pic_info.y() == -2)
+     {
+        // this is a walker picture=> automatic offset correction
+        offset = Point( -surface->w/2, int(surface->h*3./4.) );
+     }
+     else
+     {
+        offset = pic_info;
+     }
    }
 
    Picture pic;
@@ -157,7 +161,4 @@ PictureBank::PictureBank() : _d( new Impl )
 
 }
 
-PictureBank::~PictureBank()
-{
-
-}
+PictureBank::~PictureBank(){}

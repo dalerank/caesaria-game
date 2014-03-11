@@ -66,7 +66,7 @@ public:
     PictureRef& background = _getBackground( state );
     background->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
     background->draw( _goodPicture, 15, 0, false );
-    background->draw( _goodPicture, width() - 20 - _goodPicture.getWidth(), 0, false );
+    background->draw( _goodPicture, width() - 20 - _goodPicture.width(), 0, false );
 
     if( _getTextPicture( state ) != 0 )
     {

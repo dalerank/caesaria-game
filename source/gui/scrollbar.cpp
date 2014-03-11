@@ -313,7 +313,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
       }
       else
       {
-        _d->sliderRect.UpperLeftCorner.setX( screenLeft() + (width() - _d->sliderTexture.getWidth()) / 2 );
+        _d->sliderRect.UpperLeftCorner.setX( screenLeft() + (width() - _d->sliderTexture.width()) / 2 );
         _d->sliderRect.UpperLeftCorner.setY( screenTop() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->isVisible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->height() );

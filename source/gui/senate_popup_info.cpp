@@ -44,7 +44,7 @@ public:
   {
     lastUpdateTime = DateTime::getElapsedTime();
 
-    background->fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background->getWidth()-2, background->getHeight()-2 ) );
+    background->fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background->width()-2, background->height()-2 ) );
     font.draw( *background, StringHelper::format( 0xff, "%d %%", senate->getStatus( Senate::workless ) ), ratingStartPos, false );
     font.draw( *background, StringHelper::format( 0xff, "%d", senate->getStatus( Senate::culture ) ), ratingStartPos + offset, false );
     font.draw( *background, StringHelper::format( 0xff, "%d", senate->getStatus( Senate::prosperity ) ), ratingStartPos + offset * 2, false );

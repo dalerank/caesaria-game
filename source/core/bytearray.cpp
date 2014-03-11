@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "bytearray.hpp"
+#include "math.hpp"
 
 static const unsigned long crc_table[1][256] =
 {
@@ -116,12 +117,21 @@ ByteArray& ByteArray::operator=(const std::string& str)
   return *this;
 }
 
-const char* ByteArray::data() const
+ByteArray ByteArray::copy(unsigned int start, int length) const
 {
-  return &(*this)[0];
+  ByteArray ret;
+  if( length < 0 )
+  {
+    ret.resize( math::clamp<int>( length - start, 0, length ) );
+  }
+  else
+  {
+    ret.resize( length );
+  }
+
+  memcpy( ret.data(), data() + start, length );
+  return ret;
 }
 
-char* ByteArray::data()
-{
-  return &(*this)[0];
-}
+const char* ByteArray::data() const {  return &(*this)[0]; }
+char* ByteArray::data(){  return &(*this)[0]; }

@@ -144,7 +144,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   {
     const Picture& pic = p_marble[i%10];
     _d->bgPicture->draw( pic, x, 0);
-    x += pic.getWidth();
+    x += pic.width();
     i++;
   }
   _d->lbPopulation = findChildA<Label*>( "lbPopulation", false, this );

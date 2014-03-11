@@ -23,6 +23,8 @@
 
 #include <map>
 
+class Picture;
+
 namespace vfs
 {
 
@@ -103,7 +105,6 @@ struct SgImageRecord
 
 #undef PACK_STRUCT
 
-
 //! Loader for original sg2 files shipped with Caesar3
 class Sg2ArchiveLoader : public ArchiveLoader
 {
@@ -120,10 +121,10 @@ private:
     vfs::FileSystem* _fileSystem;
 };
 
-struct SgFileEntry : public SgImageRecord
+struct SgFileEntry
 {
-  std::string fileName555;
-  SgImageRecord sgImageRecord;
+  std::string fn;
+  SgImageRecord sr;
 };
 
 class Sg2ArchiveReader : public virtual Archive, virtual Entries
@@ -144,6 +145,15 @@ private:
   typedef std::map<std::string, SgFileEntry> FileInfo;
   FileInfo _fileInfo;
   NFile _file;
+
+  void _loadSpriteImage(Picture& img, SgFileEntry& rec);
+  void _writeTransparentImage(Picture& img, const unsigned char* buffer, int length);
+  void _writeIsometricTile(Picture& img, const unsigned char* buffer, int offset_x, int offset_y, int tile_width, int tile_height);
+  void _writeIsometricBase(Picture& img, SgImageRecord& rec, const unsigned char* buffer);
+  ByteArray _readData(const std::string& filename, unsigned int start, unsigned int data_length);
+  void _loadIsometricImage(Picture& pic, SgFileEntry& rec);
+  void _loadPlainImage( Picture& pic, SgFileEntry& rec);
+  void _set555Pixel( Picture& img, int x, int y, unsigned short color);
 }; // class Sg2ArchiveReader
 
 } //end namespace vfs

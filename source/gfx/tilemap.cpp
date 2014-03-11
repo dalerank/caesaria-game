@@ -267,7 +267,7 @@ void Tilemap::load( const VariantMap& stream )
 
       tile->setOriginalImgId( imgId );
 
-      int tile_size = (pic.getWidth()+2)/60;  // size of the multi-tile. the multi-tile is a square.
+      int tile_size = (pic.width()+2)/60;  // size of the multi-tile. the multi-tile is a square.
 
       // master is the left-most subtile
       Tile* master = (tile_size == 1) ? NULL : tile;

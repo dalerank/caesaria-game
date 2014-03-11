@@ -148,7 +148,7 @@ void InfoboxHouse::drawHabitants( HousePtr house )
   _getBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants
-  Label* lbHabitants = new Label( this, Rect( 60, 157, width() - 16, 157 + citPic.getHeight() ) );
+  Label* lbHabitants = new Label( this, Rect( 60, 157, width() - 16, 157 + citPic.height() ) );
 
   std::string freeRoomText;
   int current = house->getHabitants().count();

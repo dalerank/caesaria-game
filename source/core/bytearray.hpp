@@ -27,6 +27,8 @@ public:
 
   ByteArray& operator=( const std::string& str );
 
+  ByteArray copy( unsigned int start, int length=-1) const;
+
   const char* data() const;
 
   char* data();

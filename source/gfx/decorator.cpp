@@ -33,8 +33,8 @@ void PictureDecorator::drawFrame(Picture &dstpic, const Rect& rectangle, const i
 
    // draws the inside of the box
   const Picture& bg = Picture::load( ResourceGroup::panelBackground, picId+4);
-  const int sw = bg.getWidth();
-  const int sh = bg.getHeight();
+  const int sw = bg.width();
+  const int sh = bg.height();
   for (int j = 0; j<(rectangle.getHeight()/sh-1); ++j)
   {
      for (int i = 0; i<(rectangle.getWidth()/sw-1); ++i)
@@ -76,8 +76,8 @@ void PictureDecorator::drawBorder(Picture &dstpic, const Rect& rectangle, const 
   // pics are: 0TopLeft, 1Top, 2TopRight, 3Right, 4BottomRight, 5Bottom, 6BottomLeft, 7Left
   // draws horizontal borders
   const Picture& topborder = Picture::load( ResourceGroup::panelBackground, offset+1);
-  const int sw = topborder.getWidth();
-  const int sh = topborder.getHeight();
+  const int sw = topborder.width();
+  const int sh = topborder.height();
   const Picture& bottomBorder = Picture::load( ResourceGroup::panelBackground, offset+5);
   for (int i = 0; i<(rectangle.getWidth()/sw-1); ++i)
   {

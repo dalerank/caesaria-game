@@ -54,8 +54,8 @@ Image::Image(Widget* parent, Rect rectangle, Picture pic, Mode mode, int id)
   if( mode == Image::image )
   {
     mode = Image::fit;
-    setWidth( pic.getWidth() );
-    setHeight( pic.getHeight() );
+    setWidth( pic.width() );
+    setHeight( pic.height() );
   }
 
   _d->bgPicture = pic;
@@ -97,8 +97,8 @@ void Image::_updateTexture( GfxEngine& painter )
     case Image::native: _d->background->draw( _d->bgPicture, Point( 0, 0 ), true ); break;
 
     case Image::fit:
-      _d->background->draw( _d->bgPicture, Point( width() - _d->bgPicture.getWidth(),
-                                                  height() - _d->bgPicture.getHeight() ) / 2, false );
+      _d->background->draw( _d->bgPicture, Point( width() - _d->bgPicture.width(),
+                                                  height() - _d->bgPicture.height() ) / 2, false );
     break;
 
     case Image::image:

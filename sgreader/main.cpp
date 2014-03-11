@@ -6,7 +6,7 @@
 #include <QApplication>
 #include <QCoreApplication>
 
-#include <QxtCommandOptions>
+//#include <QxtCommandOptions>
 
 #include "gui/extractthread.h"
 
@@ -79,7 +79,7 @@ int startGUIApp(int argc, char **argv)
 }
 
 int main(int argc, char **argv) {
-	QxtCommandOptions options;
+/*	QxtCommandOptions options;
 	
 //	options.add("no-gui", "Runs program in console mode");
 	options.add("input", "Sets input filename", QxtCommandOptions::ValueRequired);
@@ -106,11 +106,11 @@ int main(int argc, char **argv) {
 	bool isoutput = options.count("output");  
 	bool issystem = options.count("system");  
 
-	if (!isinput && !isoutput)
+	if (!isinput && !isoutput)*/
 	{	
 	    return startGUIApp(argc, argv);
 	}
-	else
+	/*else
 	{
 	    QCoreApplication app(argc, argv);
 	    ConsoleWorker *cw = new ConsoleWorker(&app);
@@ -128,6 +128,6 @@ int main(int argc, char **argv) {
 	    QTimer::singleShot(0, cw, SLOT(run()));
 	    
 	    return app.exec();	
-	}
+	}*/
 	return 0;
 }

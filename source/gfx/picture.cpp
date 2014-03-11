@@ -83,8 +83,8 @@ void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Surface* Picture::getSurface() const{  return _d->surface;}
 Point Picture::getOffset() const{  return _d->offset;}
-int Picture::getWidth() const{  return _d->size.width();}
-int Picture::getHeight() const{  return _d->size.height();}
+int Picture::width() const{  return _d->size.width();}
+int Picture::height() const{  return _d->size.height();}
 void Picture::setName(std::string &name){  _d->name = name;}
 std::string Picture::getName() const{  return _d->name;}
 Size Picture::size() const{  return _d->size; }
@@ -287,10 +287,7 @@ Picture& Picture::operator=( const Picture& other )
   return *this;
 }
 
-Picture::~Picture()
-{
-
-}
+Picture::~Picture(){}
 
 /*unsigned int& Picture::getGlTextureID() const
 {
@@ -312,6 +309,11 @@ void Picture::fill( const NColor& color, const Rect& rect )
   SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(), 
                                                                                            color.getBlue(), color.getAlpha() )); 
   SDL_UnlockSurface(source);
+}
+
+void Picture::save(const std::string& filename)
+{
+  SDL_SaveBMP( _d->surface, filename.c_str() );
 }
 
 Picture* Picture::create( const Size& size )
