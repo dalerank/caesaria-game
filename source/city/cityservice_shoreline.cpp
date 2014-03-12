@@ -104,7 +104,7 @@ void CityServiceShoreline::update( const unsigned int time )
     }
 
     std::string picName = TileHelper::convId2PicName( picId );
-    if( picName != (tile->getPicture().getName()+".png") )
+    if( picName != tile->getPicture().name())
     {
       tile->setPicture( picName );
     }

@@ -47,7 +47,7 @@ public:
   bool seek(long finalPos, bool relativeMovement = false);
 
   //! returns size of file
-  long getSize() const;
+  long size() const;
 
   //! returns if file is open
   bool isOpen() const;
@@ -64,7 +64,7 @@ public:
 
   NFile& operator=(const NFile& other );
 
-  static unsigned long getSize( vfs::Path filename );
+  static unsigned long size( vfs::Path filename );
   static NFile open( Path fileName, Entity::Mode mode=Entity::fmRead );
   static bool remove( Path filename );
   static bool rename( Path oldpath, Path newpath );

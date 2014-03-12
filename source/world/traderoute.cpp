@@ -181,7 +181,7 @@ VariantMap Traderoute::save() const
   VariantList vl_pictures;
   foreach( pic, _d->pictures )
   {
-    vl_pictures.push_back( Variant( pic->getName() ) );
+    vl_pictures.push_back( Variant( pic->name() ) );
   }
   ret[ "pictures" ] = vl_pictures;
   ret[ "seaRoute" ] = _d->seaRoute;
@@ -200,7 +200,7 @@ void Traderoute::load(const VariantMap& stream)
   VariantList pictures = stream.get( "pictures" ).toList();
   for( VariantList::iterator i=pictures.begin(); i != pictures.end(); i++ )
   {
-    _d->pictures.push_back( Picture::load( (*i).toString() + ".png" ) );
+    _d->pictures.push_back( Picture::load( (*i).toString() ) );
   }
 
   VariantMap merchants = stream.get( "merchants" ).toMap();

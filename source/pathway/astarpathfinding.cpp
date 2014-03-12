@@ -50,7 +50,7 @@ public:
     void reset( int width, int height )
     {
     	_size = Size( width, height );
-    	resize( _size.getArea() );
+    	resize( _size.area() );
     }
     
     void init( Tile* tile )

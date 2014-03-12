@@ -32,7 +32,7 @@ public:
   virtual bool seek(long finalPos, bool relativeMovement = false) = 0;
 
   //! returns size of file
-  virtual long getSize() const = 0;
+  virtual long size() const = 0;
 
   //! returns if file is open
   virtual bool isOpen() const = 0;

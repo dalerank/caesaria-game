@@ -59,7 +59,7 @@ VariantMap RomeDivinityBase::save() const
   VariantMap ret;
   ret[ "name" ] = Variant( _name );
   ret[ "service" ] = Variant( ServiceHelper::getName( _service ) );
-  ret[ "image" ] = Variant( _pic.getName() + ".png" );
+  ret[ "image" ] = Variant( _pic.name() );
   ret[ "relation" ] = _relation;
   ret[ "lastFestivalDate" ] = _lastFestival;
   ret[ "lastActionDate"] = _lastActionDate;

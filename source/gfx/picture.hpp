@@ -50,7 +50,7 @@ public:
   void addOffset(int x, int y);
 
   void setName(std::string &name);  // for save game
-  std::string getName() const;
+  std::string name() const;
   Picture* clone() const;
   void setAlpha( unsigned char value );
   void scale( Size size );
@@ -65,7 +65,6 @@ public:
   void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
 
   void fill( const NColor& color, const Rect& rect );
-  void save( const std::string& filename );
 
   // lock/unlock the given surface for pixel access
   void lock();

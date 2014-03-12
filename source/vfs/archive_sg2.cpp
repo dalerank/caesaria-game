@@ -19,9 +19,11 @@
 #include "core/logger.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
+#include "gfx/pictureconverter.hpp"
 #include "filenative_impl.hpp"
 #include "core/rectangle.hpp"
 #include "core/color.hpp"
+#include "vfs/memfile.hpp"
 
 #include <sstream>
 #include <iomanip>
@@ -171,54 +173,12 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file)
         }
       }
 
-      Picture* result = Picture::create( Size( sir.width, sir.height ) );
-      result->fill( 0, Rect() ); // Transparent black
-
       // Construct name
-      std::string name = StringHelper::format( 0xff, "%s_%05d.bmp", bmp_name.c_str(), i - sbr.start_index );
+      std::string name = StringHelper::format( 0xff, "%s_%05d.bmp", bmp_name.c_str(), i - sbr.start_index + 1);
 
       _fileInfo[name];
       _fileInfo[name].fn = p555;
       _fileInfo[name].sr = sir;
-
-      switch(sir.type)
-      {
-        case 0:
-        case 1:
-        case 10:
-        case 12:
-        case 13:
-          Logger::warning( "Find plain image %s", name.c_str() );
-          _loadPlainImage( *result, _fileInfo[name] );
-          //result->save( "base/" + name );
-          break;
-
-        case 30:
-          Logger::warning( "Find isometric image %s", name.c_str() );
-          _loadIsometricImage( *result, _fileInfo[name] );
-          //result->save( "base/" + name );
-        break;
-
-        case 256:
-        case 257:
-        case 276:
-          Logger::warning( "Find sprite image %s", name.c_str() );
-          _loadSpriteImage( *result, _fileInfo[name] );
-          //result->save( "base/" + name );
-        break;
-
-        default:
-          Logger::warning("Unknown image type: %d", sir.type);
-        break;
-      }
-
-      /*if( sir.alpha_length )
-      {
-        quint8 *alpha_buffer = &(buffer[workRecord->length]);
-        loadAlphaMask(&result, alpha_buffer);
-      }*/
-
-
 
       addItem( name, sir.offset, sir.length, false);
     } // image loop
@@ -370,7 +330,7 @@ void Sg2ArchiveReader::_writeIsometricTile( Picture& img, const unsigned char* b
 		for (x = start; x < end; x++, i += 2)
 		{
 			_set555Pixel( img, offset_x + x, offset_y + y,
-										(unsigned char)(buffer[i+1] << 8) | (unsigned char)buffer[i]);
+									(buffer[i+1] << 8) | buffer[i]);
 		}
 	}
 
@@ -381,7 +341,7 @@ void Sg2ArchiveReader::_writeIsometricTile( Picture& img, const unsigned char* b
 		for (x = start; x < end; x++, i += 2)
 		{
 			_set555Pixel( img, offset_x + x, offset_y + y,
-										(unsigned char)(buffer[i+1] << 8) | (unsigned char)buffer[i]);
+										(buffer[i+1] << 8) | buffer[i]);
 		}
 	}
 }
@@ -398,7 +358,7 @@ void Sg2ArchiveReader::_writeTransparentImage( Picture& img, const unsigned char
 		if (c == 255)
 		{
 			/* The next byte is the number of pixels to skip */
-			x += (unsigned char)buffer[i++];
+			x += buffer[i++];
 			while (x >= width)
 			{
 				y++; x -= width;
@@ -439,18 +399,19 @@ void Sg2ArchiveReader::_loadPlainImage( Picture& pic, SgFileEntry& rec)
 	}
 
 	int i = 0;
+	unsigned char* rdata = (unsigned char*)data.data();
 	for (int y = 0; y < (int)rec.sr.height; y++)
 	{
 		for (int x = 0; x < (int)rec.sr.width; x++, i+= 2)
 		{
-			_set555Pixel( pic, x, y, (unsigned char)data[i] | (unsigned char)(data[i+1] << 8));
+			_set555Pixel( pic, x, y, rdata[i] | (rdata[i+1] << 8));
 		}
 	}
 }
 
 void Sg2ArchiveReader::_set555Pixel( Picture& img, int x, int y, unsigned short color)
 {
-	if (color == 0xf81f)
+	if(color == 0xf81f)
 	{
 		return;
 	}
@@ -479,7 +440,52 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
 
   if( it != _fileInfo.end() )
   {
-    return NFile();
+    SgImageRecord& sir = it->second.sr;
+
+    PictureRef result;
+    result.init( Size( sir.width, sir.height ) );
+    result->fill( 0, Rect() ); // Transparent black
+
+    switch(sir.type)
+    {
+      case 0:
+      case 1:
+      case 10:
+      case 12:
+      case 13:
+        Logger::warning( "Find plain image " + filename.toString() );
+        _loadPlainImage( *result, it->second );
+        PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+        break;
+
+      case 30:
+        Logger::warning( "Find isometric image " + filename.toString() );
+        _loadIsometricImage( *result, it->second );
+        PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+      break;
+
+      case 256:
+      case 257:
+      case 276:
+        Logger::warning( "Find sprite image " + filename.toString() );
+        _loadSpriteImage( *result, it->second );
+        PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+      break;
+
+      default:
+        Logger::warning("Unknown image type: %d", sir.type);
+      break;
+    }
+
+    ByteArray data = PictureConverter::save( *result );
+    NFile memfile = MemoryFile::create( data, filename );
+    return memfile;
+
+    /*if( sir.alpha_length )
+    {
+      quint8 *alpha_buffer = &(buffer[workRecord->length]);
+      loadAlphaMask(&result, alpha_buffer);
+    }*/
   }
 
   return NFile();

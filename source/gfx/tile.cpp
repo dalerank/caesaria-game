@@ -194,7 +194,7 @@ int Tile::getWaterService(WaterService type) const{  return (_terrain.watersrvc 
 
 std::string TileHelper::convId2PicName( const unsigned int imgId )
 {
-  // example: for land1a_00004.png, pfx=land1a and id=4
+  // example: for land1a_00004, pfx=land1a and id=4
   std::string res_pfx;  // resource name prefix
   int res_id = imgId;   // id of resource
 
@@ -236,13 +236,13 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
     // THROW("Unknown image Id " << imgId);
   }
 
-  std::string ret_str = StringHelper::format( 0xff, "%s_%05d.png", res_pfx.c_str(), res_id );
+  std::string ret_str = StringHelper::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );
   return ret_str;
 }
 
 int TileHelper::convPicName2Id( const std::string &pic_name )
 {
-  // example: for land1a_00004.png, return 244+4=248
+  // example: for land1a_00004, return 244+4=248
   std::string res_pfx;  // resource name prefix = land1a
   int res_id;   // idx of resource = 4
 

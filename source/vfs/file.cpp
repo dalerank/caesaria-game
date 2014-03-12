@@ -88,9 +88,9 @@ bool NFile::seek(long finalPos, bool relativeMovement)
 
 
 //! returns size of file
-long NFile::getSize() const
+long NFile::size() const
 {
-	return _entity.isValid() ? _entity->getSize() : 0;
+  return _entity.isValid() ? _entity->size() : 0;
 }
 
 
@@ -113,7 +113,7 @@ ByteArray NFile::read( unsigned int sizeToRead)
 ByteArray NFile::readAll()
 {
   seek( 0 );
-  return read( getSize() );
+  return read( size() );
 }
 
 //! returns name of file
@@ -153,10 +153,10 @@ NFile& NFile::operator=( const NFile& other )
   return *this;
 }
 
-unsigned long NFile::getSize(vfs::Path filename)
+unsigned long NFile::size(vfs::Path filename)
 {
   NFile file = NFile::open( filename );
-  return file.getSize();
+  return file.size();
 }
 
 bool NFile::remove( Path filename )

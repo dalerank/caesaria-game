@@ -275,7 +275,7 @@ void Updater::DetermineLocalVersion()
 				continue;
 			}
 
-			std::size_t candidateFilesize = vfs::NFile::getSize( candidate );
+			std::size_t candidateFilesize = vfs::NFile::size( candidate );
 
 			if (candidateFilesize != f->second.filesize)
 			{
@@ -316,7 +316,7 @@ void Updater::DetermineLocalVersion()
 		VersionTotal& total = _localVersions.insert(LocalVersionBreakdown::value_type(version, VersionTotal())).first->second;
 
 		total.numFiles++;
-		total.filesize += vfs::NFile::getSize( i->first );
+		total.filesize += vfs::NFile::size( i->first );
 	}
 
 	Logger::warning( "The local files are matching %d different versions.", _localVersions.size() );
@@ -515,7 +515,7 @@ bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFi
 		}
 
 		// Compare file size
-		std::size_t fileSize = vfs::NFile::getSize( localFile );
+		std::size_t fileSize = vfs::NFile::size( localFile );
 
 		if (fileSize != releaseFile.filesize)
 		{
@@ -802,7 +802,7 @@ bool Updater::NewUpdaterAvailable()
 
 	vfs::Path myPath = vfs::Directory::getApplicationDir()/_executable;
 	ByteArray crcData = vfs::NFile::open( myPath ).readAll();
-	unsigned int fileSize = vfs::NFile::getSize( myPath );
+	unsigned int fileSize = vfs::NFile::size( myPath );
 
 	unsigned int crc = crcData.crc32( 0 );
 	

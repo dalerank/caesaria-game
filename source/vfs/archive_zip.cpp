@@ -233,7 +233,7 @@ bool ZipArchiveReader::scanGZipHeader()
         entry.header.FilenameLength = ZipFileName.toString().size();
 
 		entry.header.CompressionMethod = header.compressionMethod;
-        entry.header.DataDescriptor.CompressedSize = (File.getSize() - 8) - File.getPos();
+        entry.header.DataDescriptor.CompressedSize = (File.size() - 8) - File.getPos();
 
 		// seek to file end
         File.seek(entry.header.DataDescriptor.CompressedSize, true);
@@ -321,7 +321,7 @@ bool ZipArchiveReader::scanZipHeader(bool ignoreGPBits)
 		FileInfo.clear();
         _getItems().clear();
 		// First place where the end record could be stored
-        File.seek(File.getSize()-22);
+        File.seek(File.size()-22);
 		const char endID[] = {0x50, 0x4b, 0x05, 0x06, 0x0};
 		char tmp[5]={'\0'};
 		bool found=false;

@@ -249,11 +249,11 @@ bool Download::checkIntegrity()
 	{
 		//Logger::warning( "Checking filesize of downloaded file, expecting %d", _requiredFilesize);
 
-		if( vfs::NFile::getSize(_tempFilename) != _requiredFilesize)
+		if( vfs::NFile::size(_tempFilename) != _requiredFilesize)
 		{
 			Logger::warning( "Downloaded file has the wrong size, expected %d but found %d",
 											 _requiredFilesize,
-											 vfs::NFile::getSize(_tempFilename) );
+											 vfs::NFile::size(_tempFilename) );
 			return false; // failed the file size check
 		}
 		else

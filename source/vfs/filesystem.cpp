@@ -91,9 +91,7 @@ FileSystem::FileSystem() : _d( new Impl )
 
 
 //! destructor
-FileSystem::~FileSystem()
-{
-}
+FileSystem::~FileSystem() {}
 
 NFile FileSystem::loadFileFromArchive( const Path& filePath )
 {

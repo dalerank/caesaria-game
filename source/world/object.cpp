@@ -53,7 +53,7 @@ VariantMap Object::save() const
 {
   VariantMap ret;
   ret[ "location" ] = _d->location;
-  ret[ "picture" ] = Variant( _d->pic.getName() );
+  ret[ "picture" ] = Variant( _d->pic.name() );
   ret[ "name" ] = Variant( _d->name );
 
   return ret;
@@ -63,7 +63,7 @@ void Object::load(const VariantMap& stream)
 {
   _d->location = stream.get( "location" ).toPoint();
   _d->name = stream.get( "name" ).toString();
-  _d->pic = Picture::load( stream.get( "picture" ).toString() + ".png" );
+  _d->pic = Picture::load( stream.get( "picture" ).toString() );
 }
 
 Object::~Object() {}

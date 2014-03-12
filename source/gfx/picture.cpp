@@ -86,7 +86,7 @@ Point Picture::getOffset() const{  return _d->offset;}
 int Picture::width() const{  return _d->size.width();}
 int Picture::height() const{  return _d->size.height();}
 void Picture::setName(std::string &name){  _d->name = name;}
-std::string Picture::getName() const{  return _d->name;}
+std::string Picture::name() const{  return _d->name;}
 Size Picture::size() const{  return _d->size; }
 bool Picture::isValid() const{  return _d->surface != 0;}
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
@@ -303,17 +303,19 @@ void Picture::fill( const NColor& color, const Rect& rect )
 {
   SDL_Surface* source = _d->surface;
 
-  SDL_LockSurface( source );
-  SDL_Rect sdlRect = { (short)rect.left(), (short)rect.top(), (Uint16)rect.getWidth(), (Uint16)rect.getHeight() };
+  if( _d->surface )
+  {
+    SDL_LockSurface( source );
+    SDL_Rect sdlRect = { (short)rect.left(), (short)rect.top(), (Uint16)rect.getWidth(), (Uint16)rect.getHeight() };
 
-  SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(), 
-                                                                                           color.getBlue(), color.getAlpha() )); 
-  SDL_UnlockSurface(source);
-}
-
-void Picture::save(const std::string& filename)
-{
-  SDL_SaveBMP( _d->surface, filename.c_str() );
+    SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(),
+                                                                                             color.getBlue(), color.getAlpha() ));
+    SDL_UnlockSurface(source);
+  }
+  else
+  {
+    Logger::warning( "Picture: surface not loading " + _d->name );
+  }
 }
 
 Picture* Picture::create( const Size& size )
@@ -324,10 +326,7 @@ Picture* Picture::create( const Size& size )
   return ret;
 }
 
-const Picture& Picture::getInvalid()
-{
-  return _invalidPicture;
-}
+const Picture& Picture::getInvalid() {  return _invalidPicture; }
 
 void Picture::Impl::zoomSurface(SDL_Surface* src, SDL_Surface* dst)
 {

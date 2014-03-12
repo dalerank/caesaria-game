@@ -39,7 +39,7 @@ public:
 
     SizeF toSizeF() const;
 
-    int getArea() const { return _x * _y; }
+    int area() const { return _x * _y; }
 
     bool operator==(const Size& other) const{ return (_x == other._x) && ( _y == other._y ); }
     bool operator!=(const Size& other) const{ return (_x != other._x ) || ( _y != other._y ); }

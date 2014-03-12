@@ -202,7 +202,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   Picture* pic = GfxEngine::instance().createPicture( Size( Width, Height ) );
   GfxEngine::instance().loadPicture( *pic );
 
-  if( pic->size().getArea() == 0 )
+  if( pic->size().area() == 0 )
   {
     Logger::warning( "LOAD PNG: Internal PNG create image struct failure %s", file.getFileName().toString().c_str() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);

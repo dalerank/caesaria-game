@@ -45,7 +45,7 @@ public:
   virtual bool seek(long finalPos, bool relativeMovement = false);
 
   //! returns size of file
-  virtual long getSize() const;
+  virtual long size() const;
 
   virtual bool isOpen() const;
 
@@ -71,7 +71,7 @@ private:
 
   void *Buffer;
   long Len;
-  long Pos;
+  long _pos;
   Path Filename;
   bool deleteMemoryWhenDropped;
 };

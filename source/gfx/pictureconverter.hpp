@@ -17,6 +17,7 @@
 #define __CAESARIA_PICTURECONVERTER_H_INCLUDE_
 
 #include "core/rectangle.hpp"
+#include "core/bytearray.hpp"
 
 class Picture;
 
@@ -27,6 +28,8 @@ public:
     static void rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset );
     static void maskColor( Picture& dst, const Picture& src, int rmask=0x00ff0000, int gmask=0x0000ff00, 
                            int bmask=0x000000ff, int amask=0xff000000 );
+    static ByteArray save( Picture& pic );
+    static void save(Picture& pic, const std::string& filename , const std::string& type="PNG");
 
 private:
     PictureConverter();

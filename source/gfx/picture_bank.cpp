@@ -33,6 +33,7 @@
 #include "core/logger.hpp"
 #include "picture_info_bank.hpp"
 #include "engine.hpp"
+#include "core/foreach.hpp"
 #include "loader.hpp"
 #include "vfs/file.hpp"
 
@@ -41,8 +42,10 @@ class PictureBank::Impl
 public:
   typedef std::map< unsigned int, Picture> Pictures;
   typedef Pictures::iterator ItPicture;
+  StringArray availableExentions;
 
   Pictures resources;  // key=image name, value=picture
+  Picture tryLoadPicture( const std::string& name );
 };
 
 PictureBank& PictureBank::instance()
@@ -76,21 +79,17 @@ Picture& PictureBank::getPicture(const std::string &name)
   if( it == _d->resources.end() )
   {
     //can't find image in valid resources, try load from hdd
-    vfs::NFile file = vfs::NFile::open( name );
+    const Picture& pic = _d->tryLoadPicture( name );
 
-    if( file.isOpen() )
+    if( pic.isValid() )
     {
-      Picture tmpPicture = PictureLoader::instance().load( file );
-      setPicture( name, tmpPicture );
-
-      return _d->resources[ hash ];
+      setPicture( name, pic );
     }
     else
     {
-      Logger::warning( "Unknown resource %s", name.c_str() );
-      _d->resources[ hash ] = Picture::getInvalid();
-      return _d->resources[ hash ];
+      _d->resources[ hash ] = pic;
     }
+    return _d->resources[ hash ];
   }
 
   return it->second;
@@ -98,7 +97,7 @@ Picture& PictureBank::getPicture(const std::string &name)
 
 Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
 {
-   std::string resource_name = StringHelper::format( 0xff, "%s_%05d.png", prefix.c_str(),idx );
+   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(),idx );
 
    return getPicture(resource_name);
 }
@@ -113,7 +112,6 @@ Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resour
    if( surface )
    {
      // decode the picture name => to set the offset manually
-     // resource_name = "buildings/Govt_00005.png"
      Point pic_info = PictureInfoBank::instance().getOffset(filename);
 
      if (pic_info.x() == -1 && pic_info.y() == -1)
@@ -142,23 +140,45 @@ Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resour
 void PictureBank::createResources()
 {
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001.png", *originalPic.getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001", *originalPic.getSurface() );
 
   Picture* fullReservoir = originalPic.clone(); //mem leak on destroy picloader
   fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002.png", *fullReservoir->getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002", *fullReservoir->getSurface() );
 
   Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003.png", *emptyFontainOrig.getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003", *emptyFontainOrig.getSurface() );
 
   Picture* fullFontain = emptyFontainOrig.clone();  //mem leak on destroy picloader
   fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004.png", *fullFontain->getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004", *fullFontain->getSurface() );
 }
 
 PictureBank::PictureBank() : _d( new Impl )
 {
-
+  _d->availableExentions << ".bmp";
+  _d->availableExentions << ".png";
 }
 
 PictureBank::~PictureBank(){}
+
+
+Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
+{
+  foreach( itExt, availableExentions )
+  {
+    vfs::Path realFilename( name + *itExt );
+
+    if( realFilename.exist() )
+    {
+      vfs::NFile file = vfs::NFile::open( realFilename );
+      if(  file.isOpen() )
+      {
+        return PictureLoader::instance().load( file );
+      }
+    }
+  }
+
+  Logger::warning( "PictureBank: Unknown resource %s", name.c_str() );
+  return Picture::getInvalid();
+}

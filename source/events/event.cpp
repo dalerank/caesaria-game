@@ -135,7 +135,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
 
         Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
         tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
-        tile->setOriginalImgId( TileHelper::convPicName2Id( pic.getName() ) );
+        tile->setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
       }
     }
 

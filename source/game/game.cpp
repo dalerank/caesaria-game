@@ -119,7 +119,8 @@ void Game::mountArchives()
     fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
 
     std::string gfxDir = vfs::Path( c3res.toString() ).addEndSlash().toString();
-    fs.mountArchive( gfxDir + "celts.sg2" );
+    fs.mountArchive( gfxDir + "CELTS.SG2" );
+    fs.mountArchive( gfxDir + "C3.SG2" );
   }
   else
   {

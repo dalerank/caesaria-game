@@ -56,19 +56,14 @@ public:
 };
 
 
-Picture& GfxSdlEngine::getScreen()
-{
-  return _d->screen;
-}
+Picture& GfxSdlEngine::getScreen(){  return _d->screen; }
 
 GfxSdlEngine::GfxSdlEngine() : GfxEngine(), _d( new Impl )
 {
   resetTileDrawMask();
 }
 
-GfxSdlEngine::~GfxSdlEngine()
-{
-}
+GfxSdlEngine::~GfxSdlEngine(){}
 
 void GfxSdlEngine::deletePicture( Picture* pic )
 {
@@ -140,6 +135,11 @@ void GfxSdlEngine::exit()
 void GfxSdlEngine::loadPicture( Picture& ioPicture )
 {
   // convert pixel format
+  if( !ioPicture.getSurface() )
+  {
+    Logger::warning( "GfxSdlEngine: cannot load NULL surface " + ioPicture.name() );
+    return;
+  }
   SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
   
   if( newImage == NULL ) 

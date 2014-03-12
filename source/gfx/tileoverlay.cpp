@@ -144,7 +144,7 @@ void TileOverlay::save( VariantMap& stream ) const
   config.push_back( getTile().pos() );
 
   stream[ "config" ] = config;
-  stream[ "picture" ] = Variant( _d->picture.getName() );
+  stream[ "picture" ] = Variant( _d->picture.name() );
   stream[ "pictureOffset" ] = _d->picture.getOffset();
   stream[ "size" ] = _d->size;
   stream[ "isDeleted" ] = _d->isDeleted;
@@ -156,7 +156,7 @@ void TileOverlay::load( const VariantMap& stream )
   _d->name = stream.get( "name" ).toString();
   _d->size = stream.get( "size", Size(1) ).toSize();
   //_d->overlayType = (LandOverlayType)stream.get( "overlayType" ).toInt();
-  _d->picture = Picture::load( stream.get( "picture" ).toString() + ".png" );
+  _d->picture = Picture::load( stream.get( "picture" ).toString() );
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   _d->isDeleted = stream.get( "isDeleted", false ).toBool();  
 }

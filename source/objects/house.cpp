@@ -325,7 +325,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       TilesArray::iterator delIt=area.begin();
       HousePtr selfHouse = ptr_cast<House>( (*delIt)->overlay() );
 
-      _d->initGoodStore( Size( getSize().width() + 1 ).getArea() );
+      _d->initGoodStore( Size( getSize().width() + 1 ).area() );
 
       delIt++; //don't remove himself
       for( ; delIt != area.end(); delIt++ )
@@ -456,7 +456,7 @@ void House::_levelDown()
 
     Tilemap& tmap = _getCity()->getTilemap();
 
-    if( getSize().getArea() > 1 )
+    if( getSize().area() > 1 )
     {
       TilesArray perimetr = tmap.getArea( pos(), Size(2) );
       int peoplesPerHouse = getHabitants().count() / 4;
@@ -705,9 +705,9 @@ void House::_update()
   Picture pic = Picture::load( ResourceGroup::housing, picId );
   setPicture( pic );
   setSize( Size( (pic.width() + 2 ) / 60 ) );
-  _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * getSize().getArea();
+  _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * getSize().area();
   _d->services[ Service::forum ].setMax( _d->spec.taxRate() * _d->maxHabitants );
-  _d->initGoodStore( getSize().getArea() );
+  _d->initGoodStore( getSize().area() );
 }
 
 int House::getRoadAccessDistance() const {  return 2; }
@@ -820,7 +820,7 @@ void House::load( const VariantMap& stream )
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
   _d->currentYear = GameDate::current().year();
 
-  _d->initGoodStore( getSize().getArea() );
+  _d->initGoodStore( getSize().area() );
 
   _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
   VariantList vl_services = stream.get( "services" ).toList();

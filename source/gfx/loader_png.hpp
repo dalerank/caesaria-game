@@ -1,5 +1,5 @@
 // this file was created by rt (www.tomkorp.com), based on ttk's png-reader
-// i wanted to be able to read in PNG images with opencaesar :)
+// i wanted to be able to read in PNG images with CaesarIA :)
 
 #ifndef __CAESARIA_PICTURELOADER_PNG_H_INCLUDED__
 #define __CAESARIA_PICTURELOADER_PNG_H_INCLUDED__

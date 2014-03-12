@@ -94,7 +94,7 @@ public:
     void resize( Size size )
     {
       _size = size;
-      std::vector< EmPoint >::resize( _size.getArea() );
+      std::vector< EmPoint >::resize( _size.area() );
     }
 
     EmPoint* operator[]( const TilePos& pos )

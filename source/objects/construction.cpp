@@ -50,7 +50,7 @@ bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& 
   TilesArray area = tilemap.getArea( pos, getSize() );
 
   //on over map size
-  if( (int)area.size() != getSize().getArea() )
+  if( (int)area.size() != getSize().area() )
     return false;
 
   foreach( tile, area ) {is_constructible &= (*tile)->getFlag( Tile::isConstructible );}

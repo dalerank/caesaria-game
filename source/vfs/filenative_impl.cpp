@@ -81,7 +81,7 @@ bool FileNative::seek(long finalPos, bool relativeMovement)
 }
 
 //! returns size of file
-long FileNative::getSize() const
+long FileNative::size() const
 {
 	return _size;
 }
