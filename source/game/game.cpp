@@ -49,6 +49,7 @@
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
+#include "gfx/logo.hpp"
 
 #include <list>
 
@@ -112,6 +113,7 @@ void Game::mountArchives()
   Logger::warning( "Game: mount archives begin" );
 
   vfs::FileSystem& fs = vfs::FileSystem::instance();
+  splash::initialize( "logo_00001" );
 
   Variant c3res = GameSettings::get( GameSettings::c3gfx );
   if( c3res.isValid() )

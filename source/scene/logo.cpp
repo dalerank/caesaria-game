@@ -41,7 +41,7 @@ void SplashScreen::initialize()
 {
   GfxEngine& engine = GfxEngine::instance();
 
-  _d->bgPicture = Picture::load("c3title", 2);
+  _d->bgPicture = Picture::load("logo", 1);
 
   // center the bgPicture on the screen
   Size s = (engine.getScreenSize() - _d->bgPicture.size()) / 2;

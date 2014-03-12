@@ -453,23 +453,23 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
       case 10:
       case 12:
       case 13:
-        Logger::warning( "Find plain image " + filename.toString() );
+        //Logger::warning( "Find plain image " + filename.toString() );
         _loadPlainImage( *result, it->second );
-        PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+        //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
         break;
 
       case 30:
-        Logger::warning( "Find isometric image " + filename.toString() );
+        //Logger::warning( "Find isometric image " + filename.toString() );
         _loadIsometricImage( *result, it->second );
-        PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+        //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
       break;
 
       case 256:
       case 257:
       case 276:
-        Logger::warning( "Find sprite image " + filename.toString() );
+        //Logger::warning( "Find sprite image " + filename.toString() );
         _loadSpriteImage( *result, it->second );
-        PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+        //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
       break;
 
       default:
