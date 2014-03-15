@@ -14,7 +14,7 @@
 #ifdef ANDROID
 int SDL_main(int argc, char* argv[])
 #else
-int main(int argc, char* argvp[])
+int main(int argc, char* argv[])
 #endif
 {
   Logger::registerWriter( Logger::consolelog );
