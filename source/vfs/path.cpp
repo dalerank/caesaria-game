@@ -24,7 +24,7 @@
   #include <io.h>
 #elif defined(CAESARIA_PLATFORM_UNIX) 
   #ifdef CAESARIA_PLATFORM_LINUX
-    #include <sys/io.h>
+    //#include <sys/io.h>
     #include <linux/limits.h>
   #elif defined(CAESARIA_PLATFORM_MACOSX)
     #include <libproc.h>

@@ -22,7 +22,10 @@
 #if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
 extern "C"
 {
+#ifndef ANDROID
  int	usleep(useconds_t useconds);
+#endif
+ 
 #ifdef NANO_SECOND_SLEEP
  int 	nanosleep(const struct timespec *rqtp, struct timespec *rmtp);
 #endif

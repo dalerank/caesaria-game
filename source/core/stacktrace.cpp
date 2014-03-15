@@ -19,7 +19,7 @@
 #include "stacktrace.hpp"
 
 #include <stdlib.h>
-#ifdef CAESARIA_PLATFORM_LINUX
+#if defined(CAESARIA_PLATFORM_LINUX) && !defined(ANDROID)
   #include <execinfo.h>
 #endif
 #include <cxxabi.h>
@@ -30,7 +30,7 @@
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
 void Stacktrace::print(unsigned int starting_frame, unsigned int max_frames)
 {
-#ifdef CAESARIA_PLATFORM_LINUX
+#if defined(CAESARIA_PLATFORM_LINUX) && !defined(ANDROID)
   Logger::warning("Stacktrace::begin :");
 
   // storage array for stack trace address data

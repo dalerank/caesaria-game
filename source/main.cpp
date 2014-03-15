@@ -5,13 +5,26 @@
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "core/stacktrace.hpp"
+#include <SDL.h>
 
-int main(int argc, char* argv[])
+#if defined(CAESARIA_PLATFORM_WIN)
+  #undef main
+#endif
+
+#ifdef ANDROID
+int SDL_main(int argc, char* argv[])
+#else
+int main(int argc, char* argvp[])
+#endif
 {
   Logger::registerWriter( Logger::consolelog );
   Logger::registerWriter( Logger::filelog );
 
+#ifdef ANDROID
+  vfs::Directory workdir( std::string("/sdcard/Android/data/net.dalerank.caesaria/files") );   
+#else
   vfs::Directory workdir = vfs::Path( argv[0] ).directory();
+#endif
   Logger::warning( "Options: working directory is " + workdir.toString() );
 
   GameSettings::getInstance().setwdir( workdir.toString() );
