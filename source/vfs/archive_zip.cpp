@@ -119,7 +119,7 @@ bool ZipArchiveLoader::isALoadableFileFormat( NFile file ) const
 // -----------------------------------------------------------------------------
 
 ZipArchiveReader::ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip)
- : Entries( (file.isOpen() ? file.getFileName() : Path("") ), ignoreCase ? Path::ignoreCase : Path::equaleCase, ignorePaths),
+ : Entries( (file.isOpen() ? file.path() : Path("") ), ignoreCase ? Path::ignoreCase : Path::equaleCase, ignorePaths),
    File(file), IsGZip(isGZip)
 {
 	#ifdef _DEBUG
@@ -198,7 +198,7 @@ bool ZipArchiveReader::scanGZipHeader()
 		}
 		else
 		{
-            ZipFileName = File.getFileName().getBasename();
+            ZipFileName = File.path().getBasename();
 
 			// rename tgz to tar or remove gz extension
             int length = ZipFileName.toString().size();

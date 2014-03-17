@@ -146,14 +146,16 @@ private:
   FileInfo _fileInfo;
   NFile _file;
 
-  void _loadSpriteImage(Picture& img, SgFileEntry& rec);
+  void _loadSpriteImage(Picture& img, const SgFileEntry& rec);
   void _writeTransparentImage(Picture& img, const unsigned char* buffer, int length);
   void _writeIsometricTile(Picture& img, const unsigned char* buffer, int offset_x, int offset_y, int tile_width, int tile_height);
-  void _writeIsometricBase(Picture& img, SgImageRecord& rec, const unsigned char* buffer);
-  ByteArray _readData(const std::string& filename, unsigned int start, unsigned int data_length);
-  void _loadIsometricImage(Picture& pic, SgFileEntry& rec);
-  void _loadPlainImage( Picture& pic, SgFileEntry& rec);
+  void _writeIsometricBase(Picture& img, const SgImageRecord& rec, const unsigned char* buffer);
+  ByteArray _readData( const SgFileEntry& rec );
+  void _loadIsometricImage(Picture& pic, const SgFileEntry& rec);
+  void _loadPlainImage( Picture& pic, const SgFileEntry& rec);
   void _set555Pixel( Picture& img, int x, int y, unsigned short color);
+  std::string _findFilenameCaseInsensitive(std::string directory, std::string filename);
+  std::string _find555File(const SgFileEntry& rec);
 }; // class Sg2ArchiveReader
 
 } //end namespace vfs

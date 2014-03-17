@@ -216,7 +216,7 @@ void FileNative::openFile()
 }
 
 //! returns name of file
-const Path& FileNative::getFileName() const
+const Path& FileNative::path() const
 {
 	return _name;
 }

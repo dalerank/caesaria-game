@@ -117,9 +117,9 @@ ByteArray NFile::readAll()
 }
 
 //! returns name of file
-const Path& NFile::getFileName() const
+const Path& NFile::path() const
 {
-	return _entity.isValid() ? _entity->getFileName() : purePath;
+	return _entity.isValid() ? _entity->path() : purePath;
 }
 
 //! returns how much was read

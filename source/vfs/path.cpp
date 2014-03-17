@@ -142,7 +142,7 @@ Path Path::removeEndSlash() const
 
 bool Path::exist() const
 {
-    return FileSystem::instance().existFile( *this );
+  return FileSystem::instance().existFile( *this );
 }
 
 bool Path::isFolder() const
@@ -215,6 +215,11 @@ std::string Path::removeExtension() const
   }
 
   return toString();
+}
+
+Path Path::changeExtension( const std::string& newExtension ) const
+{
+  return Path( this->removeExtension() + newExtension );
 }
 
 Path::~Path(){}

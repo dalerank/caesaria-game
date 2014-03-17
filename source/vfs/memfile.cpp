@@ -224,7 +224,7 @@ bool MemoryFile::isEof() const
 }
 
 //! returns name of file
-const Path& MemoryFile::getFileName() const
+const Path& MemoryFile::path() const
 {
 	return Filename;
 }

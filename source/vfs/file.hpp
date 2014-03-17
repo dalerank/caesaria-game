@@ -56,7 +56,7 @@ public:
   long getPos() const;
 
   //! returns name of file
-  const Path& getFileName() const;
+  const Path& path() const;
 
   bool isEof() const;
 

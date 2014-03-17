@@ -23,6 +23,7 @@
 #include "filenative_impl.hpp"
 #include "core/rectangle.hpp"
 #include "core/color.hpp"
+#include "vfs/directory.hpp"
 #include "vfs/memfile.hpp"
 
 #include <sstream>
@@ -129,55 +130,49 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file)
     std::string bmp_name_full = sbr.filename;
     std::string bmp_name = bmp_name_full.substr(0, bmp_name_full.length() - 4);
 
+    Logger::warning( "Start reading info for section: " + bmp_name );
     if( bmp_name == "system" )
       continue;
 
     // Load images
-    for(uint32_t i = sbr.start_index; i < sbr.end_index; ++i)
+    for(uint32_t i = sbr.start_index; i < sbr.start_index+sbr.num_images; ++i)
     {
       SgImageRecord sir;
       file.seek(sgHeagerSize + maxBitmapRecords*sgRecordSize + (i * sizeof(SgImageRecord)) );
       file.read(&sir, sizeof(sir));
 
-      //FIXME: Skip external 555 files
-      if (sir.flags[0] != 0)
-        continue;
-
-      // Locate appropriate 555 file
-      std::string p555;
-      if( sir.flags[0] )
-      {
-        p555 = file.getFileName().directory();
-        p555.push_back('/');
-        std::string p555_1 = p555 + sbr.filename;
-        std::string p555_2 = p555 + "555/" + sbr.filename;
-        p555_1[p555_1.length()-3] = p555_1[p555_1.length()-2] = p555_1[p555_1.length()-1] = '5';
-        p555_2[p555_2.length()-3] = p555_2[p555_2.length()-2] = p555_2[p555_2.length()-1] = '5';
-
-        if ( Path(p555_1).exist())
-          p555 = p555_1;
-        else if (Path(p555_2).exist())
-          p555 = p555_2;
-        else
-          continue; // skip to next bitmap
-      }
-      else
-      {
-        p555 = file.getFileName().toString();
-        p555[p555.length()-3] = p555[p555.length()-2] = p555[p555.length()-1] = '5';
-
-        if (!Path(p555).exist())
-        {
-          Logger::warning( "Cannot found 555 file %s", p555.c_str() );
-          continue; // skip to next bitmap
-        }
-      }
 
       // Construct name
       std::string name = StringHelper::format( 0xff, "%s_%05d.bmp", bmp_name.c_str(), i - sbr.start_index + 1);
+      // Locate appropriate 555 file
+      Path p555;
+      bool isExternal = false;
+      if( sir.flags[0] > 0 )
+      {
+        Directory p555_d = file.path().directory();
+        Path tmpPath = p555_d/Path( sbr.filename ).changeExtension( ".555" );
+        SgFileEntry tmpEntry = { tmpPath.toString(), sir };
+        p555 = _find555File( tmpEntry );
+        isExternal = true;
+        //std::string p555_2 = p555 + "555/" + sbr.filename;
+        //p555_1[p555_1.length()-3] = p555_1[p555_1.length()-2] = p555_1[p555_1.length()-1] = '5';
+        //p555_2[p555_2.length()-3] = p555_2[p555_2.length()-2] = p555_2[p555_2.length()-1] = '5';
+
+        //Logger::warning( "File %s maybe in external 555 file: %s", name.c_str(), p555.toString().c_str() );
+      }
+      else
+      {
+        p555 = file.path().changeExtension( ".555" );
+      }
+
+      if( !p555.exist() )
+      {
+        Logger::warning( "Cannot found 555 file for image %s in file %s", name.c_str(), p555.toString().c_str() );
+        continue; // skip to next bitmap
+      }
 
       _fileInfo[name];
-      _fileInfo[name].fn = p555;
+      _fileInfo[name].fn = p555.toString();
       _fileInfo[name].sr = sir;
 
       addItem( name, sir.offset, sir.length, false);
@@ -199,23 +194,70 @@ NFile Sg2ArchiveReader::createAndOpenFile(unsigned int index)
   return NFile();
 }
 
-void Sg2ArchiveReader::_loadSpriteImage( Picture& img, SgFileEntry& rec)
+void Sg2ArchiveReader::_loadSpriteImage( Picture& img, const SgFileEntry& rec)
 {
-	ByteArray buffer = _readData( rec.fn, rec.sr.offset - rec.sr.flags[0], rec.sr.length );
+	ByteArray buffer = _readData( rec );
 	_writeTransparentImage( img, (unsigned char*)buffer.data(), rec.sr.length);
 }
 
-ByteArray Sg2ArchiveReader::_readData( const std::string& filename, unsigned int start, unsigned int data_length )
+std::string Sg2ArchiveReader::_find555File( const SgFileEntry& rec )
 {
-	FileNative z5file( filename );
-	z5file.seek( start );
+	// Fetch basename of the file
+	// either the same name as sg(2|3) or from file record
+	Path filename;
+	if( rec.sr.flags[0] > 0 )
+	{
+		filename = rec.fn;
+	}
+	else
+	{
+		filename = _file.path();
+	}
 
+	// Change the extension to .555
+	filename = Path( filename.removeExtension() + ".555" );
+
+	Path path = _findFilenameCaseInsensitive( _file.path().directory(), filename.getBasename().toString() );
+	if( path.exist() )
+	{
+		return path.toString();
+	}
+
+	return rec.fn;
+}
+
+std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( std::string dir, std::string filename )
+{
+	Directory directory( dir );
+	filename = StringHelper::localeLower( filename );
+
+	Entries::Items files = directory.getEntries( Path::ignoreCase ).getItems();
+	for(int i = 0; i < files.size(); i++)
+	{
+		if( filename == StringHelper::localeLower( files[i].name.toString() ) )
+		{
+			return files[i].fullName.toString();
+		}
+		//qDebug() << "No match: " << files[i];
+	}
+
+	return std::string();
+}
+
+ByteArray Sg2ArchiveReader::_readData(const SgFileEntry& rec )
+{
+	std::string filename = rec.fn;
+	unsigned int start = rec.sr.offset - rec.sr.flags[0];
+	unsigned int data_length = rec.sr.length;
+
+	FileNative z5file( filename, Entity::fmRead );
 	if (!z5file.isOpen() )
 	{
 		Logger::warning( "Unable to open 555 file %s", filename.c_str() );
 		return ByteArray();
 	}
 
+	z5file.seek( start );
 	if( data_length <= 0 )
 	{
 		Logger::warning( "Data length: %d", data_length); // not an error per se
@@ -235,14 +277,14 @@ ByteArray Sg2ArchiveReader::_readData( const std::string& filename, unsigned int
 	return data;
 }
 
-void Sg2ArchiveReader::_loadIsometricImage( Picture& pic, SgFileEntry& rec )
+void Sg2ArchiveReader::_loadIsometricImage( Picture& pic, const SgFileEntry& rec )
 {
-	char* buffer = _readData( rec.fn, rec.sr.offset - rec.sr.flags[0], rec.sr.length ).data();
+	char* buffer = _readData( rec ).data();
 	_writeIsometricBase( pic, rec.sr, (unsigned char*)buffer );
 	_writeTransparentImage( pic, (unsigned char*)&buffer[rec.sr.uncompressed_length], rec.sr.length - rec.sr.uncompressed_length);
 }
 
-void Sg2ArchiveReader::_writeIsometricBase( Picture& img, SgImageRecord& rec, const unsigned char* buffer )
+void Sg2ArchiveReader::_writeIsometricBase( Picture& img, const SgImageRecord& rec, const unsigned char* buffer )
 {
 	int i = 0, x, y;
 	int width, height, height_offset;
@@ -380,7 +422,7 @@ void Sg2ArchiveReader::_writeTransparentImage( Picture& img, const unsigned char
 	}
 }
 
-void Sg2ArchiveReader::_loadPlainImage( Picture& pic, SgFileEntry& rec)
+void Sg2ArchiveReader::_loadPlainImage( Picture& pic, const SgFileEntry& rec)
 {
 	// Check whether the image data is OK
 	if (rec.sr.height * rec.sr.width * 2 != (int)rec.sr.length)
@@ -390,7 +432,7 @@ void Sg2ArchiveReader::_loadPlainImage( Picture& pic, SgFileEntry& rec)
 	}
 
 	unsigned int need_length = rec.sr.length;
-	ByteArray data = _readData( rec.fn, rec.sr.offset - rec.sr.flags[0], need_length );
+	ByteArray data = _readData( rec );
 	if( data.size() != need_length )
 	{
 		Logger::warning( "Unable to read %d bytes from file (read %d bytes)",

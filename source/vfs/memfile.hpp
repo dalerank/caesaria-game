@@ -61,7 +61,7 @@ public:
   virtual bool isEof() const;
 
   //! returns name of file
-  virtual const Path& getFileName() const;
+  virtual const Path& path() const;
 
   static NFile create( void* memory, long len, const Path& fileName, bool deleteMemoryWhenDropped );
   static NFile create( ByteArray data, const Path& fileName );

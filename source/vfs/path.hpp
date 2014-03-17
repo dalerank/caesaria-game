@@ -51,6 +51,7 @@ public:
  
   const std::string& toString() const;
   std::string removeExtension() const;
+  Path changeExtension( const std::string& newExtension ) const;
 
   void splitToDirPathExt( Path* path, Path* filename=0, Path* extension=0 );
 

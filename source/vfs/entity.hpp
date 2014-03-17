@@ -41,7 +41,7 @@ public:
   virtual long getPos() const = 0;
 
   //! returns name of file
-  virtual const Path& getFileName() const = 0;
+  virtual const Path& path() const = 0;
 
   virtual bool isEof() const = 0;
 

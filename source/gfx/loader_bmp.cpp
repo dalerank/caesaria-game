@@ -53,7 +53,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
 
   if( pic.size().area() == 0 )
   {
-    Logger::warning( "LOAD BMP: Internal create image struct failure " + file.getFileName().toString() );
+    Logger::warning( "LOAD BMP: Internal create image struct failure " + file.path().toString() );
     return Picture::getInvalid();
   }
 

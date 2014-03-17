@@ -295,13 +295,13 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 {
   if( !file.isOpen() || archiveType == Archive::folder)
   {
-    Logger::warning( "Cannot open archive " + file.getFileName().getAbsolutePath().toString() );
+    Logger::warning( "Cannot open archive " + file.path().getAbsolutePath().toString() );
     return ArchivePtr();
   }
 
   if( file.isOpen() )
   {
-    ArchivePtr archive = _d->changeArchivePassword( file.getFileName(), password );
+    ArchivePtr archive = _d->changeArchivePassword( file.path(), password );
 
     if( archive.isValid() )
     {
@@ -315,7 +315,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
       // try to load archive based on file name
       for (i = _d->archiveLoaders.size()-1; i >=0 ; --i)
       {
-        if (_d->archiveLoaders[i]->isALoadableFileFormat( file.getFileName() ) )
+        if (_d->archiveLoaders[i]->isALoadableFileFormat( file.path() ) )
         {
           archive = _d->archiveLoaders[i]->createArchive( file, ignoreCase, ignorePaths );
           if (archive.isValid())
@@ -369,7 +369,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 
     if( archive.isValid() )
     {
-      Logger::warning( "Mount archive %s", file.getFileName().toString().c_str() );
+      Logger::warning( "Mount archive %s", file.path().toString().c_str() );
       _d->openArchives.push_back(archive);
 
       if (password.size())
@@ -381,7 +381,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
     }
     else
     {
-      Logger::warning( "Could not create archive for %s", file.getFileName().toString().c_str() );
+      Logger::warning( "Could not create archive for %s", file.path().toString().c_str() );
     }
   }
 
@@ -569,7 +569,7 @@ Entries FileSystem::getFileList()
   Path rpath = StringHelper::replace( getWorkingDirectory().toString(), "\\", "/" );
   rpath = rpath.addEndSlash();
   
-  Logger::warning( "FileSystem: start listing directory" );
+  //Logger::warning( "FileSystem: start listing directory" );
 
 	//! Construct from native filesystem
   if ( _d->fileSystemType == fsNative )
@@ -596,7 +596,7 @@ Entries FileSystem::getFileList()
 			//entry.isDirectory = true;
 			//Files.push_back(entry);
 		#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-            Logger::warning( "FileSystem: start listing directory on unix" );
+			//Logger::warning( "FileSystem: start listing directory on unix" );
 			// --------------------------------------------
 			//! Linux version
 			ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
@@ -630,7 +630,7 @@ Entries FileSystem::getFileList()
 					}
 					#endif*/
 					
-					Logger::warning( "FileSystem: find file " + std::string( dirEntry->d_name ) );
+					//Logger::warning( "FileSystem: find file " + std::string( dirEntry->d_name ) );
 					ret.addItem( Path( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
 				}
 				closedir(dirHandle);

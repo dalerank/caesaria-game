@@ -59,7 +59,7 @@ Picture PictureLoader::load( vfs::NFile file )
   // try to load file based on file extension
   foreach( loader, _d->loaders )
   {
-    if( (*loader)->isALoadableFileExtension(file.getFileName()) ||
+    if( (*loader)->isALoadableFileExtension(file.path()) ||
         (*loader)->isALoadableFileFormat(file) )
     {
       // reset file position which might have changed due to previous loadImage calls
