@@ -14,43 +14,17 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
+#ifndef _CAESARIA_WORKSHOP_CHARIOT_H_INCLUDE_
+#define _CAESARIA_WORKSHOP_CHARIOT_H_INCLUDE_
 
-#ifndef _CAESARIA_TRAINING_H_INCLUDE_
-#define _CAESARIA_TRAINING_H_INCLUDE_
+#include "training.hpp"
 
-#include "working.hpp"
-
-class TrainingBuilding : public WorkingBuilding
+class WorkshopChariot : public TrainingBuilding
 {
 public:
-   TrainingBuilding(const TileOverlay::Type type, const Size& size);
-
-   virtual void timeStep(const unsigned long time);
-
-   // called when a trainee is created
-   virtual void deliverTrainee() = 0;
-
-   virtual void save( VariantMap& stream) const;
-   virtual void load( const VariantMap& stream);
-
-private:
-   int _trainingTimer;
-   int _trainingDelay;
-};
-
-class GladiatorSchool : public TrainingBuilding
-{
-public:
-   GladiatorSchool();
-   virtual void deliverTrainee();
-   virtual void timeStep(const unsigned long time);
-};
-
-class LionsNursery : public TrainingBuilding
-{
-public:
-   LionsNursery();
+   WorkshopChariot();
    virtual void deliverTrainee();
    virtual void timeStep(const unsigned long time);
 };

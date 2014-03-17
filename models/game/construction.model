@@ -393,22 +393,22 @@
   
   governor_palace_1 : {
     cost : 150,
-    desirability : { base : 12, 	range : 6,	step : -2 }
-    employers : 5
+    desirability : { base : 12, 	range : 3,	step : -2 }
+    employers : 0
     class : "administration"
   }, 
   
   governor_palace_2 : {
     cost : 400,
     desirability : { base : 20, 	range : 4,	step : -4 }
-    employers : 20
+    employers : 0
     class : "administration"
   }, 
 
   governor_palace_3 : {
     cost : 700,
     desirability : { base : 28, 	range : 7,	step : -4 }
-    employers : 50
+    employers : 0
     class : "administration"
   },
   

@@ -64,6 +64,7 @@
 #include "colosseum.hpp"
 #include "hippodrome.hpp"
 #include "theater.hpp"
+#include "workshop_chariot.hpp"
 #include "actor_colony.hpp"
 #include <map>
 

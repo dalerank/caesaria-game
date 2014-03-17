@@ -146,14 +146,12 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file)
       std::string name = StringHelper::format( 0xff, "%s_%05d.bmp", bmp_name.c_str(), i - sbr.start_index + 1);
       // Locate appropriate 555 file
       Path p555;
-      bool isExternal = false;
-      if( sir.flags[0] > 0 )
+      if( sir.flags[0] > 0 ) //is external resource file???
       {
         Directory p555_d = file.path().directory();
         Path tmpPath = p555_d/Path( sbr.filename ).changeExtension( ".555" );
         SgFileEntry tmpEntry = { tmpPath.toString(), sir };
         p555 = _find555File( tmpEntry );
-        isExternal = true;
         //std::string p555_2 = p555 + "555/" + sbr.filename;
         //p555_1[p555_1.length()-3] = p555_1[p555_1.length()-2] = p555_1[p555_1.length()-1] = '5';
         //p555_2[p555_2.length()-3] = p555_2[p555_2.length()-2] = p555_2[p555_2.length()-1] = '5';

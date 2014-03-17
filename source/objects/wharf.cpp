@@ -140,6 +140,9 @@ std::string Wharf::getWorkersProblem() const
       break;
 
       case FishingBoat::go2fishplace: ret = "##wharf_out_boat_ready_fishing##"; break;
+
+      default:
+      break;
       }
     }
   }

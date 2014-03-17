@@ -144,35 +144,3 @@ void LionsNursery::deliverTrainee()
     addWalker( tamer.object() );
   }
 }
-
-
-WorkshopChariot::WorkshopChariot() : TrainingBuilding( building::chariotSchool, Size(3) )
-{
-  _fgPicturesRef().resize(1);
-}
-
-void WorkshopChariot::deliverTrainee()
-{
-   // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::charioter );
-  trainee->send2City( this );
-}
-
-void WorkshopChariot::timeStep(const unsigned long time)
-{
-  TrainingBuilding::timeStep( time );
-
-  if( numberWorkers() > 0 )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
-}
-
-
