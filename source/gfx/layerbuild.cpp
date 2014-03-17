@@ -73,16 +73,16 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
     return;
   }
 
-  int size = overlay->getSize().width();
+  Size size = overlay->getSize();
 
   if( overlay->canBuild( _getCity(), pos, _d->buildTiles ) )
   {
     //bldCommand->setCanBuild(true);
     Tilemap& tmap = _getCity()->getTilemap();
     Tile *masterTile=0;
-    for (int dj = 0; dj < size; ++dj)
+    for (int dj = 0; dj < size.height(); ++dj)
     {
-      for (int di = 0; di < size; ++di)
+      for (int di = 0; di < size.width(); ++di)
       {
         Tile* tile = new Tile( tmap.at( pos + TilePos( di, dj ) ));  // make a copy of tile
 
@@ -108,9 +108,9 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
     //TilemapArea area = til
     Tilemap& tmap = _getCity()->getTilemap();
-    for (int dj = 0; dj < size; ++dj)
+    for (int dj = 0; dj < size.height(); ++dj)
     {
-      for (int di = 0; di < size; ++di)
+      for (int di = 0; di < size.width(); ++di)
       {
         TilePos rPos = pos + TilePos( di, dj );
         if( !tmap.isInside( rPos ) )

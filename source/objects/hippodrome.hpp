@@ -19,14 +19,38 @@
 #define __CAESARIA_HIPPODROME_H_INCLUDED__
 
 #include "entertainment.hpp"
+#include "core/direction.hpp"
 
 class Hippodrome : public EntertainmentBuilding
 {
 public:
-   Hippodrome();
-   virtual std::string troubleDesc() const;
+  Hippodrome();
+  virtual std::string troubleDesc() const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual void destroy();
 
-   bool isRacesCarry() const;
+  bool isRacesCarry() const;
+private:
+  void _init(bool onBuild=false);
+  void _checkDirection(PlayerCityPtr city, TilePos pos);
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
+
+class HippodromeSection : public Building
+{
+public:
+  HippodromeSection( Hippodrome& base );
+
+  virtual ~HippodromeSection();
+  virtual void destroy();
+private:
+  TilePos _basepos;
+};
+
+typedef SmartPtr<HippodromeSection> HippodromeSectionPtr;
+
 
 #endif //__CAESARIA_BUILDING_ENTERTAINMENT_H_INCLUDED__

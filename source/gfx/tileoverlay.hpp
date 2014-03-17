@@ -82,6 +82,7 @@ protected:
   PlayerCityPtr _getCity() const;
   PicturesArray& _fgPicturesRef();
   Picture& _getPicture();
+  Picture&_fgPicture(unsigned int index);
 
 private:
   class Impl;

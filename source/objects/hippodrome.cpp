@@ -19,19 +19,48 @@
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
 #include "gfx/picture.hpp"
+#include "city/city.hpp"
+#include "events/event.hpp"
 
 using namespace constants;
 
-Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(5) )
+HippodromeSection::HippodromeSection( Hippodrome& base ) : Building( building::fortArea, Size(5) )
 {
-  setPicture( ResourceGroup::hippodrome, 5 );
-  Picture logo = Picture::load( ResourceGroup::hippodrome, 3);
-  Picture logo1 = Picture::load( ResourceGroup::hippodrome, 1);
-  logo.setOffset( Point( 150,181 ) );
-  logo1.setOffset( Point( 300,310 ) );
+  setPicture( ResourceGroup::security, 13 );
+
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
+
+  _basepos = base.pos();
+}
+
+HippodromeSection::~HippodromeSection(){}
+
+void HippodromeSection::destroy()
+{
+  Building::destroy();
+
+  HippodromePtr hp = ptr_cast<Hippodrome>( _getCity()->getOverlay( _basepos ) );
+  if( hp.isValid() )
+  {
+    events::GameEventPtr e = events::ClearLandEvent::create( _basepos );
+    e->dispatch();
+    _basepos = TilePos( -1, -1 );
+  }
+}
+
+class Hippodrome::Impl
+{
+public:
+  Direction direction;
+  HippodromeSectionPtr sectionMiddle, sectionEnd;
+};
+
+Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(15,5) ), _d( new Impl )
+{
   _fgPicturesRef().resize(5);
-  _fgPicturesRef()[0] = logo;
-  _fgPicturesRef()[1] = logo1;
+  _d->direction = west;
+  _init();
 
   _addNecessaryWalker( walker::charioter );
 }
@@ -48,4 +77,158 @@ std::string Hippodrome::troubleDesc() const
   return ret;
 }
 
+bool Hippodrome::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+{
+  const_cast<Hippodrome*>( this )->_checkDirection( city, pos );
+  if( _d->direction != noneDirection )
+  {
+    const_cast<Hippodrome*>( this )->_init();
+  }
+
+  return _d->direction != noneDirection;
+}
+
+void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
+{
+  _checkDirection( city, pos );
+
+  setSize( Size( 5 ) );
+  EntertainmentBuilding::build( city, pos );
+
+  switch( _d->direction )
+  {
+  case north:
+  {
+    _d->sectionMiddle = new HippodromeSection( *this );
+    _d->sectionMiddle->build( city, pos + TilePos( 0, 5 ) );
+    city->addOverlay( _d->sectionMiddle.object() );
+    _d->sectionMiddle->drop();
+
+    _d->sectionEnd = new HippodromeSection( *this );
+    _d->sectionEnd->build( city, pos + TilePos( 0, 10 ) );
+    city->addOverlay( _d->sectionEnd.object() );
+    _d->sectionEnd->drop();
+  }
+  break;
+
+  case west:
+  {
+    _d->sectionMiddle = new HippodromeSection( *this );
+    _d->sectionMiddle->build( city, pos + TilePos( 5, 0 ) );
+    _d->sectionMiddle->drop();
+
+    _d->sectionEnd = new HippodromeSection( *this );
+    _d->sectionEnd->build( city, pos + TilePos( 10, 0 ) );
+    _d->sectionEnd->drop();
+  }
+  break;
+
+  default:
+    _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
+  }
+
+  _init( true );
+}
+
+void Hippodrome::destroy()
+{
+  EntertainmentBuilding::destroy();
+
+  if( _d->sectionEnd.isValid() )
+  {
+    events::GameEventPtr e = events::ClearLandEvent::create( _d->sectionEnd->pos() );
+    e->dispatch();
+    _d->sectionEnd = 0;
+  }
+
+  if( _d->sectionMiddle.isValid() )
+  {
+    events::GameEventPtr e = events::ClearLandEvent::create( _d->sectionMiddle->pos() );
+    e->dispatch();
+    _d->sectionMiddle = 0;
+  }
+}
+
 bool Hippodrome::isRacesCarry() const{ return getTraineeValue( walker::charioter ) > 0; }
+
+void Hippodrome::_init( bool onBuild )
+{
+  if( onBuild )
+  {
+    _fgPicture( 0 ) = Picture::getInvalid();
+    _fgPicture( 1 ) = Picture::getInvalid();
+  }
+
+  switch( _d->direction )
+  {
+  case north:
+  {
+    setPicture( ResourceGroup::hippodrome, 5 );
+    Picture sectionMdl = Picture::load( ResourceGroup::hippodrome, 3);
+    Picture sectionEnd = Picture::load( ResourceGroup::hippodrome, 1);
+
+    if( onBuild )
+    {
+      sectionMdl.setOffset( 0, sectionMdl.height() / 2 + 16 );
+      sectionEnd.setOffset( 0, sectionEnd.height() / 2 + 43 );
+      _d->sectionMiddle->setPicture( sectionMdl );
+      _d->sectionEnd->setPicture( sectionEnd );
+    }
+    else
+    {
+      sectionMdl.setOffset( 150, 181 );
+      sectionEnd.setOffset( 300, 310 );
+      _fgPicture( 0 ) = sectionMdl;
+      _fgPicture( 1 ) = sectionEnd;
+    }
+  }
+  break;
+
+  case west:
+  {
+    Picture pic = Picture::load( ResourceGroup::hippodrome, 10 );
+    pic.setOffset( 0, pic.height() / 2 + 42 );
+    setPicture( pic );
+    Picture sectionMdl = Picture::load( ResourceGroup::hippodrome, 12);
+    Picture sectionEnd = Picture::load( ResourceGroup::hippodrome, 14);
+
+    if( onBuild )
+    {
+      sectionMdl.setOffset( 0, sectionMdl.height() / 2 + 16 );
+      sectionEnd.setOffset( 0, sectionEnd.height() / 2 + 16 );
+      _d->sectionMiddle->setPicture( sectionMdl );
+      _d->sectionEnd->setPicture( sectionEnd );
+    }
+    else
+    {
+      sectionMdl.setOffset( 150, 31 );
+      sectionEnd.setOffset( 300, -43 );
+      _fgPicture( 0 ) = sectionMdl;
+      _fgPicture( 1 ) = sectionEnd;
+    }
+  }
+  break;
+
+  default:
+    _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
+  }
+}
+
+void Hippodrome::_checkDirection(PlayerCityPtr city, TilePos pos)
+{
+  const_cast<Hippodrome*>( this )->setSize( Size( 15, 5 ) );
+  _d->direction = west;
+  bool mayBuild = EntertainmentBuilding::canBuild( city, pos, TilesArray() ); //check horizontal direction
+
+  if( !mayBuild )
+  {
+    _d->direction = north;
+    const_cast<Hippodrome*>( this )->setSize( Size( 5, 15 ) );
+    mayBuild = EntertainmentBuilding::canBuild( city, pos, TilesArray() ); //check vertical direction
+  }
+
+  if( !mayBuild )
+  {
+    _d->direction = noneDirection;
+  }
+}

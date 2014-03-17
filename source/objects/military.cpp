@@ -107,9 +107,7 @@ FortArea::FortArea() : Building( building::fortArea, Size(4) ),
   setState( Construction::collapsibility, 0 );
 }
 
-FortArea::~FortArea()
-{
-}
+FortArea::~FortArea() {}
 
 bool FortArea::isFlat() const {  return true; }
 bool FortArea::isWalkable() const{  return true;}

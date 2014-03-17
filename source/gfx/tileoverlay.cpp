@@ -90,9 +90,9 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
   _d->city = city;
   _d->masterTile = &tilemap.at( pos );
 
-  for (int dj = 0; dj < _d->size.width(); ++dj)
+  for (int dj = 0; dj < _d->size.height(); ++dj)
   {
-    for (int di = 0; di < _d->size.height(); ++di)
+    for (int di = 0; di < _d->size.width(); ++di)
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
       tile.setMasterTile( _d->masterTile );
@@ -188,7 +188,8 @@ Animation& TileOverlay::_animationRef(){  return _d->animation;}
 Tile* TileOverlay::_getMasterTile(){  return _d->masterTile;}
 PlayerCityPtr TileOverlay::_getCity() const{ return _d->city;}
 PicturesArray& TileOverlay::_fgPicturesRef(){  return _d->fgPictures; }
-Picture&TileOverlay::_getPicture(){  return _d->picture;}
+Picture& TileOverlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
+Picture& TileOverlay::_getPicture(){  return _d->picture;}
 TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
 const Picture& TileOverlay::getPicture() const{  return _d->picture;}
