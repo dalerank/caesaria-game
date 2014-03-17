@@ -100,13 +100,11 @@ void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
   case north:
   {
     _d->sectionMiddle = new HippodromeSection( *this );
-    _d->sectionMiddle->build( city, pos + TilePos( 0, 5 ) );
-    city->addOverlay( _d->sectionMiddle.object() );
+    _d->sectionMiddle->build( city, pos + TilePos( 0, 5 ) );    
     _d->sectionMiddle->drop();
 
     _d->sectionEnd = new HippodromeSection( *this );
-    _d->sectionEnd->build( city, pos + TilePos( 0, 10 ) );
-    city->addOverlay( _d->sectionEnd.object() );
+    _d->sectionEnd->build( city, pos + TilePos( 0, 10 ) );    
     _d->sectionEnd->drop();
   }
   break;
@@ -125,9 +123,12 @@ void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
 
   default:
     _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
+    return;
   }
 
   _init( true );
+  city->addOverlay( _d->sectionMiddle.object() );
+  city->addOverlay( _d->sectionEnd.object() );
 }
 
 void Hippodrome::destroy()
