@@ -23,15 +23,17 @@
 #include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "objects/constants.hpp"
+#include "core/priorities.hpp"
 #include "pathway/pathway_helper.hpp"
 
 using namespace constants;
 
+typedef Priorities<TileOverlay::Type> NecessaryBuildings;
+
 class TraineeWalker::Impl
 {
 public:
-  std::list<TileOverlay::Type> buildingNeed;  // list of buildings needing this trainee
-
+  NecessaryBuildings necBuildings;  // list of buildings needing this trainee
   BuildingPtr base;
   BuildingPtr destination;
   int maxDistance;
@@ -43,7 +45,6 @@ TraineeWalker::TraineeWalker(PlayerCityPtr city, walker::Type traineeType)
 {
   _setType( traineeType );
   _d->maxDistance = 30;
-
   _init( traineeType );
 }
 
@@ -53,29 +54,30 @@ void TraineeWalker::_init(walker::Type traineeType)
   {
   case walker::actor:
     _setAnimation( gfx::actor );
-    _d->buildingNeed.push_back(building::theater);
-    _d->buildingNeed.push_back(building::amphitheater);
+    _d->necBuildings << building::theater
+                     << building::amphitheater;
   break;
 
   case walker::gladiator:
+    _d->necBuildings << building::amphitheater
+                     << building::colloseum;
     _setAnimation( gfx::gladiator );
-    _d->buildingNeed.push_back(building::amphitheater);
-    _d->buildingNeed.push_back(building::colloseum);
   break;
 
   case walker::lionTamer:
     _setAnimation( gfx::tamer );
-    _d->buildingNeed.push_back(building::colloseum);
-  break;
-
-  case walker::charioter:
-    _setAnimation( gfx::unknown );  // TODO
+    _d->necBuildings << building::colloseum;
   break;
 
   case walker::soldier:
     _setAnimation( gfx::soldier );
-    _d->buildingNeed.push_back( building::militaryAcademy );
-    _d->buildingNeed.push_back( building::fortLegionaire );
+    _d->necBuildings << building::militaryAcademy
+                     << building::fortLegionaire;
+  break;
+
+  case walker::charioter:
+    _setAnimation( gfx::charioter );
+    _d->necBuildings << building::hippodrome;
   break;
 
   default:
@@ -95,10 +97,7 @@ void TraineeWalker::_cancelPath()
   }
 }
 
-void TraineeWalker::setBase(Building &originBuilding)
-{
-  _d->destination = &originBuilding;
-}
+void TraineeWalker::setBase(Building &originBuilding){  _d->destination = &originBuilding;}
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
@@ -114,7 +113,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   city::Helper helper( _getCity() );
 
   BuildingList buildings;
-  foreach( buildingType, _d->buildingNeed )
+  foreach( buildingType, _d->necBuildings )
   {
     BuildingList tmpBuildings = helper.find<Building>( *buildingType );
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
@@ -182,10 +181,7 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
   }
 }
 
-int TraineeWalker::getValue() const
-{
-  return 100;
-}
+int TraineeWalker::getValue() const{  return 100;}
 
 void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
 {
@@ -236,10 +232,7 @@ void TraineeWalker::load( const VariantMap& stream )
   _init( wtype );
 }
 
-TraineeWalker::~TraineeWalker()
-{
-
-}
+TraineeWalker::~TraineeWalker(){}
 
 TraineeWalkerPtr TraineeWalker::create(PlayerCityPtr city, walker::Type traineeType )
 {

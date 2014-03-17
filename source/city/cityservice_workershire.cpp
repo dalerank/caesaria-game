@@ -21,6 +21,7 @@
 #include "walker/workerhunter.hpp"
 #include "core/foreach.hpp"
 #include "objects/constants.hpp"
+#include "core/priorities.hpp"
 #include "game/gamedate.hpp"
 #include <map>
 
@@ -30,20 +31,12 @@ using namespace std;
 namespace city
 {
 
-class Priorities : public std::vector< TileOverlay::Type >
-{
-public:
-  inline Priorities& operator<<( const TileOverlay::Type& type )
-  {
-    push_back( type );
-    return *this;
-  }
-};
+typedef Priorities<TileOverlay::Type> HirePriorities;
 
 class WorkersHire::Impl
 {
 public:
-  Priorities priorities;
+  HirePriorities priorities;
   WalkerList hrInCity;
   PlayerCityPtr city;
 };

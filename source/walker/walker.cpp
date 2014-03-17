@@ -535,7 +535,7 @@ void Walker::_updatePathway( const Pathway& pathway)
   _computeDirection();
 }
 
-void Walker::_setAnimation( gfx::Type type)
+void Walker::_setAnimation( gfx::Type type )
 {
   if( _d->walkerGraphic != type )
   {
