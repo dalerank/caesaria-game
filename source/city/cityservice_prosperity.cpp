@@ -25,6 +25,7 @@
 #include "game/gamedate.hpp"
 #include "city/funds.hpp"
 #include "world/empire.hpp"
+#include "objects/hippodrome.hpp"
 #include "objects/constants.hpp"
 
 using namespace  constants;

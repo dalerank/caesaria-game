@@ -17,44 +17,46 @@
 #ifndef __CAESARIA_RESOURCENAMES_H_INCLUDE_
 #define __CAESARIA_RESOURCENAMES_H_INCLUDE_
 
+#define __RCG_NAME static const char*
 class ResourceGroup
 {
 public:
-  static const char* panelBackground;
-  static const char* menuMiddleIcons;
-  static const char* festivalimg;
-  static const char* land2a;
-  static const char* land3a;
-  static const char* animals;
-  static const char* sprites;
-  static const char* buildingEngineer;
-  static const char* utilitya;
-  static const char* commerce;
-  static const char* security;
-  static const char* transport;
-  static const char* aqueduct;
-  static const char* waterbuildings;
-  static const char* road;
-  static const char* land1a;
-  static const char* entertaiment;
-  static const char* warehouse;
-  static const char* housing;
-  static const char* govt;
-  static const char* carts;
-  static const char* wharf;
-  static const char* shipyard;
-  static const char* waterOverlay;
-  static const char* foodOverlay;
-  static const char* empirebits;
-  static const char* empirepnls;
-  static const char* citizen1;
-  static const char* citizen2;
-  static const char* citizen3;
-  static const char* citizen4;
-  static const char* citizen5;
-  static const char* lion;
-  static const char* wall;
-  static const char* celts;
+  __RCG_NAME panelBackground;
+  __RCG_NAME menuMiddleIcons;
+  __RCG_NAME festivalimg;
+  __RCG_NAME land2a;
+  __RCG_NAME land3a;
+  __RCG_NAME animals;
+  __RCG_NAME sprites;
+  __RCG_NAME buildingEngineer;
+  __RCG_NAME utilitya;
+  __RCG_NAME commerce;
+  __RCG_NAME security;
+  __RCG_NAME transport;
+  __RCG_NAME aqueduct;
+  __RCG_NAME waterbuildings;
+  __RCG_NAME road;
+  __RCG_NAME land1a;
+  __RCG_NAME entertaiment;
+  __RCG_NAME warehouse;
+  __RCG_NAME housing;
+  __RCG_NAME govt;
+  __RCG_NAME carts;
+  __RCG_NAME wharf;
+  __RCG_NAME shipyard;
+  __RCG_NAME waterOverlay;
+  __RCG_NAME foodOverlay;
+  __RCG_NAME empirebits;
+  __RCG_NAME empirepnls;
+  __RCG_NAME citizen1;
+  __RCG_NAME citizen2;
+  __RCG_NAME citizen3;
+  __RCG_NAME citizen4;
+  __RCG_NAME citizen5;
+  __RCG_NAME lion;
+  __RCG_NAME wall;
+  __RCG_NAME hippodrome;
+  __RCG_NAME celts;
 };
 
 class ResourceMenu

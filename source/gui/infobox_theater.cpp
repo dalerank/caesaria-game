@@ -16,7 +16,7 @@
 #include "infobox_theater.hpp"
 #include "gfx/tile.hpp"
 #include "objects/constants.hpp"
-#include "objects/entertainment.hpp"
+#include "objects/theater.hpp"
 #include "core/gettext.hpp"
 #include "label.hpp"
 

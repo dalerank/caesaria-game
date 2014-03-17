@@ -39,14 +39,6 @@ private:
    int _trainingDelay;
 };
 
-class ActorColony : public TrainingBuilding
-{
-public:
-   ActorColony();
-   virtual void deliverTrainee();
-   virtual void timeStep(const unsigned long time);
-};
-
 class GladiatorSchool : public TrainingBuilding
 {
 public:

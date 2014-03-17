@@ -78,43 +78,6 @@ void TrainingBuilding::load( const VariantMap& stream )
   _trainingDelay = (int)stream.get( "trainingDelay", 80 );
 }
 
-ActorColony::ActorColony() : TrainingBuilding( building::actorColony, Size(3) )
-{
-  _fgPicturesRef().resize(1);
-}
-
-void ActorColony::deliverTrainee()
-{
-  if( !getWalkers().empty() )
-  {
-    return;
-  }
-
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::actor );
-  trainee->send2City( this );
-
-  if( !trainee->isDeleted() )
-  {
-    addWalker( trainee.object() );
-  }
-}
-
-void ActorColony::timeStep(const unsigned long time)
-{
-  TrainingBuilding::timeStep( time );
-
-  if( numberWorkers() > 0 )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
-}
 
 GladiatorSchool::GladiatorSchool() : TrainingBuilding( building::gladiatorSchool, Size(3))
 {

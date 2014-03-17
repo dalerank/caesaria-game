@@ -52,27 +52,4 @@ protected:
   ScopedPtr<Impl> _d;
 };
 
-class Theater : public EntertainmentBuilding
-{
-public:
-  Theater();
-
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-
-  virtual void timeStep(const unsigned long time);
-
-  virtual int visitorsNumber() const;
-
-  virtual void deliverService();
-};
-
-class Hippodrome : public EntertainmentBuilding
-{
-public:
-   Hippodrome();
-   virtual std::string troubleDesc() const;
-
-   bool isRacesCarry() const;
-};
-
 #endif //__CAESARIA_BUILDING_ENTERTAINMENT_H_INCLUDED__

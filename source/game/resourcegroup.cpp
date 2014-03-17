@@ -15,38 +15,41 @@
 
 #include "resourcegroup.hpp"
 
-const char* ResourceGroup::panelBackground = "paneling";
-const char* ResourceGroup::menuMiddleIcons = "panelwindows";
-const char* ResourceGroup::festivalimg     = "panelwindows";
-const char* ResourceGroup::land1a          = "land1a";
-const char* ResourceGroup::land2a          = "land2a";
-const char* ResourceGroup::land3a          = "land3a";
-const char* ResourceGroup::lion            = "citizen03";
-const char* ResourceGroup::animals         = "citizen04";
-const char* ResourceGroup::citizen1        = "citizen01";
-const char* ResourceGroup::citizen2        = "citizen02";
-const char* ResourceGroup::citizen3        = "citizen03";
-const char* ResourceGroup::citizen4        = "citizen04";
-const char* ResourceGroup::citizen5        = "citizen05";
-const char* ResourceGroup::sprites         = "sprites";
-const char* ResourceGroup::buildingEngineer= "transport";  
-const char* ResourceGroup::wharf           = "transport"; 
-const char* ResourceGroup::shipyard        = "transport";
-const char* ResourceGroup::transport       = "transport"; 
-const char* ResourceGroup::utilitya        = "utilitya";
-const char* ResourceGroup::commerce        = "commerce";
-const char* ResourceGroup::security        = "security";
-const char* ResourceGroup::aqueduct        = "land2a";
-const char* ResourceGroup::waterbuildings  = "waterbuildings";
-const char* ResourceGroup::road            = "land2a";
-const char* ResourceGroup::entertaiment    = "entertainment";
-const char* ResourceGroup::warehouse       = "warehouse";
-const char* ResourceGroup::housing         = "housng1a";
-const char* ResourceGroup::govt            = "govt";
-const char* ResourceGroup::carts           = "carts";
-const char* ResourceGroup::waterOverlay    = "land2a";
-const char* ResourceGroup::foodOverlay     = "land2a";
-const char* ResourceGroup::empirebits      = "empire_bits";
-const char* ResourceGroup::empirepnls      = "empire_panels";
-const char* ResourceGroup::wall            = "land2a";
-const char* ResourceGroup::celts            = "celts";
+#define __RCG_NAME_IMP(a,b) const char* ResourceGroup::a = b;
+
+__RCG_NAME_IMP(panelBackground , "paneling")
+__RCG_NAME_IMP(menuMiddleIcons , "panelwindows")
+__RCG_NAME_IMP(festivalimg     , "panelwindows")
+__RCG_NAME_IMP(land1a          , "land1a")
+__RCG_NAME_IMP(land2a          , "land2a")
+__RCG_NAME_IMP(land3a          , "land3a")
+__RCG_NAME_IMP(lion            , "citizen03")
+__RCG_NAME_IMP(animals         , "citizen04")
+__RCG_NAME_IMP(citizen1        , "citizen01")
+__RCG_NAME_IMP(citizen2        , "citizen02")
+__RCG_NAME_IMP(citizen3        , "citizen03")
+__RCG_NAME_IMP(citizen4        , "citizen04")
+__RCG_NAME_IMP(citizen5        , "citizen05")
+__RCG_NAME_IMP(sprites         , "sprites")
+__RCG_NAME_IMP(buildingEngineer, "transport")
+__RCG_NAME_IMP(wharf           , "transport")
+__RCG_NAME_IMP(shipyard        , "transport")
+__RCG_NAME_IMP(transport       , "transport")
+__RCG_NAME_IMP(utilitya        , "utilitya")
+__RCG_NAME_IMP(commerce        , "commerce")
+__RCG_NAME_IMP(security        , "security")
+__RCG_NAME_IMP(aqueduct        , "land2a")
+__RCG_NAME_IMP(waterbuildings  , "waterbuildings")
+__RCG_NAME_IMP(road            , "land2a")
+__RCG_NAME_IMP(entertaiment    , "entertainment")
+__RCG_NAME_IMP(warehouse       , "warehouse")
+__RCG_NAME_IMP(housing         , "housng1a")
+__RCG_NAME_IMP(govt            , "govt")
+__RCG_NAME_IMP(carts           , "carts")
+__RCG_NAME_IMP(waterOverlay    , "land2a")
+__RCG_NAME_IMP(foodOverlay     , "land2a")
+__RCG_NAME_IMP(empirebits      , "empire_bits")
+__RCG_NAME_IMP(empirepnls      , "empire_panels")
+__RCG_NAME_IMP(wall            , "land2a")
+__RCG_NAME_IMP(celts           , "celts")
+__RCG_NAME_IMP(hippodrome      , "circus")

@@ -23,7 +23,8 @@
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
 #include "walker/serviceman.hpp"
-#include "objects/constants.hpp"
+#include "constants.hpp"
+#include "actor_colony.hpp"
 
 using namespace constants;
 

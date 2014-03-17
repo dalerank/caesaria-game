@@ -35,6 +35,7 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
+#include "objects/hippodrome.hpp"
 
 using namespace constants;
 

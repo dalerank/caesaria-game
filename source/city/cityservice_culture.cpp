@@ -26,6 +26,7 @@
 #include "objects/religion.hpp"
 #include "objects/education.hpp"
 #include "objects/constants.hpp"
+#include "objects/theater.hpp"
 
 using namespace constants;
 
