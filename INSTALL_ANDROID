@@ -1,0 +1,83 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA. If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2013 Rovanion Luckey, rovanion.luckey@gmail.com
+
+
+               Installation of CaesarIA on Android
+=======================================================================
+
+Open up a terminal and follow the instructions below. Terminal
+commands are denoted with a "$", this character should not be included
+with the commands. Depending on which distribution and version you are
+running the instructions will differ. To find out what you are
+running, run: 
+
+1. Install AndroidSDK/NDK
+download sdk from http://developer.android.com/sdk for Linux, which is packaged as a Tar/GZ archive.
+download ndk from http://developer.android.com/sdk/ndk for Linux, packaged as a Tar/BZ2 archive this time.
+Uncompress the downloaded archives separately into the directories of your choice (for example, ~/dev/android-sdk and ~/android-ndk-r9b)
+
+2. Export path to sdk/ndk in $PATH
+edit ~/.bashrc
+
+export ANDROID_SDK=~/dev/android-sdk
+export ANDROID_NDK=~/dev/android-ndk-r9b
+export PATH="$PATH:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$ANDROID_NDK"
+
+Save the file and log out from your current session. Log in again and open a terminal. 
+
+3.Update sdk for staring work
+$ android
+The Android SDK and AVD Manager window shows up.
+download latest build tools and 4.0.3 android developes enviroment
+
+4. Install java ant
+$ sudo apt-get install ant
+
+5. Checkout pelya/commangergenius
+$ mkdir projects
+$ cd projects
+$ git clone https://github.com/pelya/commandergenius
+
+6. Checkout caesaria
+$ cd commandergenius/project/jni/application
+$ git clone https://bitbucket.org/dalerank/caesaria
+
+Download archive from http://sourceforge.net/projects/opencaesar3/files/bin/caesaria_win_2014-02-25.zip/download 
+and unpack it somewhere, forexample ~/caesaria-data. Goto ~/caesaria-data/resources and pack all files and folders to "cache.zip"
+$ mkdir ~/commandergenius/project/jni/application/caesaria/AndroidData
+$ cp ~/caesaria/resources/cache.zip ~/commandergenius/project/jni/application/caesaria/AndroidData/cache.zip
+
+7. Building apk
+===================
+$ rm project/jni/application/src
+$ ln -s caesaria project/jni/application/caesaria/
+$ ./changeAppSettings.sh
+$ android update project -p project
+$ ./build.sh
+
+It will compile a bunch of libs under project/libs/armeabi,
+create Android package file ~/projects/commandergenius/project/bin/MainActivity-release-unsigned.apk
+
+8. Signing apk
+$ keytool -genkey -v -keystore rs.keystore -alias caesaria -keyalg RSA -keysize 2048 -validity 10000
+$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore rs.keystore ~/projects/commandergenius/project/bin/MainActivity-release-unsigned.apk caesaria
+$ mv ~/projects/commandergenius/project/bin/MainActivity-release-unsigned.apk ~/projects/caesaria.apk
+
+9. Install on device
+$ adb uninstall net.dalerank.caesaria
+$ adb install ~/projects/caesaria.apk 
+or copy caesaria.apk on device and install nativelly

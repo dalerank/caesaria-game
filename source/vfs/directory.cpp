@@ -25,7 +25,7 @@
   #include <shlobj.h>
 #elif defined(CAESARIA_PLATFORM_UNIX) 
   #if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
-    #include <sys/io.h>
+    //#include <sys/io.h>
     #include <linux/limits.h>
     #include <pwd.h>
   #elif defined(CAESARIA_PLATFORM_MACOSX)

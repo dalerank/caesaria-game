@@ -53,10 +53,6 @@
 
 #include <list>
 
-#if defined(CAESARIA_PLATFORM_WIN)
-  #undef main
-#endif
-
 class Game::Impl
 {
 public:

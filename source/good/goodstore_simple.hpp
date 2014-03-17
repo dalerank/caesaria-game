@@ -26,11 +26,11 @@ public:
   //using GoodStore::applyRetrieveReservation;
 
   SimpleGoodStore();
-  ~SimpleGoodStore();
+  virtual ~SimpleGoodStore();
 
   void setCapacity(const int maxQty);
-  int capacity() const;
-  int qty() const;
+  virtual int capacity() const;
+  virtual int qty() const;
 
   void resize( const GoodStore& other );
 
