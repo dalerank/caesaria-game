@@ -24,14 +24,54 @@
 
 using namespace constants;
 
-HippodromeSection::HippodromeSection( Hippodrome& base ) : Building( building::fortArea, Size(5) )
+HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction direction, Type type )
+  : Building( building::fortArea, Size(5) )
 {
-  setPicture( ResourceGroup::security, 13 );
-
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
 
   _basepos = base.pos();
+  _direction = direction;
+
+  Picture pic;
+  switch( type )
+  {
+  case middle:
+    switch( _direction )
+    {
+    case north:
+      pic = Picture::load( ResourceGroup::hippodrome, 3);
+      pic.setOffset( 0, pic.height() / 2 + 16 );
+    break;
+
+    case west:
+      pic = Picture::load( ResourceGroup::hippodrome, 12);
+      pic.setOffset( 0, pic.height() / 2 + 16 );
+    break;
+
+    default: break;
+    }
+  break;
+
+  case ended:
+    switch( _direction )
+    {
+    case north:
+      pic = Picture::load( ResourceGroup::hippodrome, 1);
+      pic.setOffset( 0, pic.height() / 2 + 43 );
+    break;
+
+    case west:
+      pic = Picture::load( ResourceGroup::hippodrome, 14);
+      pic.setOffset( 0, pic.height() / 2 + 16 );
+    break;
+
+    default: break;
+    }
+  break;
+  }
+
+  setPicture( pic );
 }
 
 HippodromeSection::~HippodromeSection(){}
@@ -95,36 +135,10 @@ void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
   setSize( Size( 5 ) );
   EntertainmentBuilding::build( city, pos );
 
-  switch( _d->direction )
-  {
-  case north:
-  {
-    _d->sectionMiddle = new HippodromeSection( *this );
-    _d->sectionMiddle->build( city, pos + TilePos( 0, 5 ) );    
-    _d->sectionMiddle->drop();
+  TilePos offset = _d->direction == north ? TilePos( 0, 5 ) : TilePos( 5, 0 );
 
-    _d->sectionEnd = new HippodromeSection( *this );
-    _d->sectionEnd->build( city, pos + TilePos( 0, 10 ) );    
-    _d->sectionEnd->drop();
-  }
-  break;
-
-  case west:
-  {
-    _d->sectionMiddle = new HippodromeSection( *this );
-    _d->sectionMiddle->build( city, pos + TilePos( 5, 0 ) );
-    _d->sectionMiddle->drop();
-
-    _d->sectionEnd = new HippodromeSection( *this );
-    _d->sectionEnd->build( city, pos + TilePos( 10, 0 ) );
-    _d->sectionEnd->drop();
-  }
-  break;
-
-  default:
-    _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
-    return;
-  }
+  _d->sectionMiddle = _addSection( HippodromeSection::middle, offset );
+  _d->sectionEnd = _addSection( HippodromeSection::ended, offset * 2 );
 
   _init( true );
   city->addOverlay( _d->sectionMiddle.object() );
@@ -168,14 +182,7 @@ void Hippodrome::_init( bool onBuild )
     Picture sectionMdl = Picture::load( ResourceGroup::hippodrome, 3);
     Picture sectionEnd = Picture::load( ResourceGroup::hippodrome, 1);
 
-    if( onBuild )
-    {
-      sectionMdl.setOffset( 0, sectionMdl.height() / 2 + 16 );
-      sectionEnd.setOffset( 0, sectionEnd.height() / 2 + 43 );
-      _d->sectionMiddle->setPicture( sectionMdl );
-      _d->sectionEnd->setPicture( sectionEnd );
-    }
-    else
+    if( !onBuild )
     {
       sectionMdl.setOffset( 150, 181 );
       sectionEnd.setOffset( 300, 310 );
@@ -193,14 +200,7 @@ void Hippodrome::_init( bool onBuild )
     Picture sectionMdl = Picture::load( ResourceGroup::hippodrome, 12);
     Picture sectionEnd = Picture::load( ResourceGroup::hippodrome, 14);
 
-    if( onBuild )
-    {
-      sectionMdl.setOffset( 0, sectionMdl.height() / 2 + 16 );
-      sectionEnd.setOffset( 0, sectionEnd.height() / 2 + 16 );
-      _d->sectionMiddle->setPicture( sectionMdl );
-      _d->sectionEnd->setPicture( sectionEnd );
-    }
-    else
+    if( !onBuild )
     {
       sectionMdl.setOffset( 150, 31 );
       sectionEnd.setOffset( 300, -43 );
@@ -213,6 +213,43 @@ void Hippodrome::_init( bool onBuild )
   default:
     _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
   }
+}
+
+void Hippodrome::_initAnimation()
+{
+  if( !isRacesCarry() )
+  {
+    _fgPicture( 2 ) = Picture::getInvalid();
+    _fgPicture( 3 ) = Picture::getInvalid();
+    _fgPicture( 4 ) = Picture::getInvalid();
+    return;
+  }
+
+  switch(_d->direction)
+  {
+  case north:
+    _fgPicture( 2 ) = Picture::load( ResourceGroup::hippodrome, 7 );
+    _fgPicture( 3 ) = Picture::load( ResourceGroup::hippodrome, 8 );
+    _fgPicture( 4 ) = Picture::load( ResourceGroup::hippodrome, 9 );
+  break;
+
+  case west:
+    _fgPicture( 2 ) = Picture::load( ResourceGroup::hippodrome, 7 );
+    _fgPicture( 3 ) = Picture::load( ResourceGroup::hippodrome, 8 );
+    _fgPicture( 4 ) = Picture::load( ResourceGroup::hippodrome, 9 );
+  break;
+
+  default: break;
+  }
+}
+
+HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TilePos offset )
+{
+  HippodromeSectionPtr ret = new HippodromeSection( *this, _d->direction, type );
+  ret->build( _city(), pos() + offset );
+  ret->drop();
+
+  return ret;
 }
 
 void Hippodrome::_checkDirection(PlayerCityPtr city, TilePos pos)

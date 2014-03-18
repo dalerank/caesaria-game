@@ -21,6 +21,20 @@
 #include "entertainment.hpp"
 #include "core/direction.hpp"
 
+class HippodromeSection : public Building
+{
+public:
+  typedef enum { middle, ended } Type;
+  HippodromeSection( Hippodrome& base, constants::Direction direction, Type type );
+
+  virtual ~HippodromeSection();
+  virtual void destroy();
+private:
+  TilePos _basepos;
+  constants::Direction _direction;
+};
+typedef SmartPtr<HippodromeSection> HippodromeSectionPtr;
+
 class Hippodrome : public EntertainmentBuilding
 {
 public:
@@ -33,24 +47,12 @@ public:
   bool isRacesCarry() const;
 private:
   void _init(bool onBuild=false);
+  void _initAnimation();
+  HippodromeSectionPtr _addSection( HippodromeSection::Type type, TilePos offset );
   void _checkDirection(PlayerCityPtr city, TilePos pos);
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
-
-class HippodromeSection : public Building
-{
-public:
-  HippodromeSection( Hippodrome& base );
-
-  virtual ~HippodromeSection();
-  virtual void destroy();
-private:
-  TilePos _basepos;
-};
-
-typedef SmartPtr<HippodromeSection> HippodromeSectionPtr;
-
 
 #endif //__CAESARIA_BUILDING_ENTERTAINMENT_H_INCLUDED__
