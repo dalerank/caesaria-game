@@ -112,7 +112,7 @@ void TopMenu::Impl::updateDate()
 
 void TopMenu::Impl::showAboutInfo()
 {
-  Widget* parent = lbDate->getEnvironment()->getRootWidget();
+  Widget* parent = lbDate->getEnvironment()->rootWidget();
   Size pSize = parent->size();
   Size mySize( 500, 300 );
   Rect rect( Point( (pSize.width() - mySize.width()) / 2, (pSize.height() - mySize.height()) / 2 ), mySize );

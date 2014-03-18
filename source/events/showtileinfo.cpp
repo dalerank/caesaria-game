@@ -62,7 +62,7 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   break;
   }
 
-  InfoboxManager::getInstance().showHelp( game.getCity(), game.getGui(), _pos );
+  InfoboxManager::getInstance().showHelp( game.getCity(), game.gui(), _pos );
 }
 
 bool ShowTileInfo::_mayExec(Game&, unsigned int ) const { return true; }

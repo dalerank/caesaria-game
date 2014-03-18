@@ -95,7 +95,7 @@ GuiEnv::~GuiEnv()
 {
 }
 
-Widget* GuiEnv::getRootWidget()
+Widget* GuiEnv::rootWidget()
 {
 	return this;
 }
@@ -252,7 +252,7 @@ void GuiEnv::drawTooltip_( unsigned int time )
 {
     // launch tooltip
     if ( _d->toolTip.element.isNull()
-         && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != getRootWidget()
+         && _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement.object() != rootWidget()
     		 && (time - _d->toolTip.EnterTime >= _d->toolTip.LaunchTime
          || (time - _d->toolTip.LastTime >= _d->toolTip.RelaunchTime && time - _d->toolTip.LastTime < _d->toolTip.LaunchTime))
 		     && _d->hoveredNoSubelement->tooltipText().size()
@@ -290,7 +290,7 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
   _d->lastHoveredMousePos = mousePos;
 
 	// Get the real Hovered
-  _d->hovered = getRootWidget()->getElementFromPoint( mousePos );
+  _d->hovered = rootWidget()->getElementFromPoint( mousePos );
 
   if( _d->toolTip.element.isValid() && _d->hovered == _d->toolTip.element )
   {
@@ -299,11 +299,11 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
     _d->toolTip.element->deleteLater();
     _d->toolTip.element->hide();
     _d->toolTip.element = WidgetPtr();
-    _d->hovered = getRootWidget()->getElementFromPoint( mousePos );
+    _d->hovered = rootWidget()->getElementFromPoint( mousePos );
   }
 
   // for tooltips we want the element itself and not some of it's subelements
-  if( _d->hovered != getRootWidget() )
+  if( _d->hovered != rootWidget() )
 	{
 		_d->hoveredNoSubelement = _d->hovered;
 		while ( _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement->isSubElement() )
@@ -375,7 +375,7 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
         }
 
         if (group || !startPos)
-            startPos = getRootWidget(); // start at the root
+            startPos = rootWidget(); // start at the root
 
         // find the element
         Widget *closest = 0;
@@ -387,7 +387,7 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
         else if (first)
             return first; // go to the end or the start
         else if (group)
-            return getRootWidget(); // no group found? root group
+            return rootWidget(); // no group found? root group
         else
             return 0;
 }
@@ -502,7 +502,7 @@ Widget* GuiEnv::getHoveredElement() const {  return _d->hovered.object(); }
 void GuiEnv::beforeDraw()
 {
   const Size screenSize( _d->engine->getScreenSize() );
-  const Point rigthDown = getRootWidget()->absoluteRect().LowerRightCorner;
+  const Point rigthDown = rootWidget()->absoluteRect().LowerRightCorner;
   
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {

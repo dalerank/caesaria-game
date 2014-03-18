@@ -258,12 +258,12 @@ void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 
   InfoboxSimple* infoBox = findConstructor != _d->constructors.end()
-                                  ? findConstructor->second->create( city, gui->getRootWidget(), pos )
+                                  ? findConstructor->second->create( city, gui->rootWidget(), pos )
                                   : 0;
   
   if( infoBox && infoBox->isAutoPosition() )
   {
-    Size rSize = gui->getRootWidget()->size();
+    Size rSize = gui->rootWidget()->size();
     int y = ( gui->getCursorPos().y() < rSize.height() / 2 )
                 ? rSize.height() - infoBox->height() - 5
                 : 30;

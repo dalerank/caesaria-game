@@ -294,15 +294,15 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
     TilesArray area = tmap.getArea( tile().pos(), Size(2) );
     bool mayGrow = true;
 
-    foreach( tile, area )
+    foreach( it, area )
     {
-      if( *tile == NULL )
+      if( *it == NULL )
       {
         mayGrow = false;   //some broken, can't grow
         break;
       }
 
-      HousePtr house = ptr_cast<House>( (*tile)->overlay() );
+      HousePtr house = ptr_cast<House>( (*it)->overlay() );
       if( house != NULL && house->getSpec().level() == level4grow )
       {
         if( house->size().width() > 1 )  //bigger house near, can't grow
@@ -354,7 +354,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       _d->picIdOffset = 0;
       _update();
 
-      build( _city(), tile().pos() );
+      build( _city(), pos() );
       //set new desirability level
       helper.updateDesirability( this, true );
     }

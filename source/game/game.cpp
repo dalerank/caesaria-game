@@ -49,6 +49,7 @@
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
+#include "scene/briefing.hpp"
 #include "gfx/logo.hpp"
 
 #include <list>
@@ -57,6 +58,7 @@ class Game::Impl
 {
 public:
   ScreenType nextScreen;
+  std::string nextFilename;
   scene::Base* currentScreen;
   GfxEngine* engine;
   gui::GuiEnv* gui;
@@ -125,7 +127,9 @@ void Game::mountArchives()
   VariantMap archives = SaveAdapter::load( archivesFile );
   foreach( a, archives )
   {
-    fs.mountArchive( GameSettings::rcpath( a->second.toString() ) );
+    vfs::Path absArchivePath = GameSettings::rcpath( a->second.toString() );
+    Logger::warningIf( !absArchivePath.exist(), "Game: cannot load archive " + absArchivePath.toString() );
+    fs.mountArchive( absArchivePath );
   }
 }
 
@@ -152,6 +156,33 @@ void Game::Impl::initPictures(vfs::Path resourcePath)
   PictureBank::instance().createResources();
 }
 
+void Game::setScreenBriefing()
+{
+  scene::Briefing screen( *this, *_d->engine, GameSettings::rcpath( _d->nextFilename ).toString() );
+  screen.initialize();
+  _d->currentScreen = &screen;
+
+  while( !screen.isStopped() )
+  {
+    screen.update( *_d->engine );
+  }
+
+  switch( screen.getResult() )
+  {
+    case scene::Briefing::loadMission:
+    {
+      load( screen.getMapName() );
+      Logger::warning( "Briefing: end loading map" );
+
+      _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
+    }
+    break;
+
+    default:
+      _CAESARIA_DEBUG_BREAK_IF( "Unexpected result event" );
+   }
+}
+
 void Game::setScreenMenu()
 {
   scene::StartMenu screen( *this, *_d->engine );
@@ -168,8 +199,7 @@ void Game::setScreenMenu()
   switch( screen.getResult() )
   {
     case scene::StartMenu::startNewGame:
-    {
-      /* temporary*/     
+    {  
       std::srand( DateTime::getElapsedTime() );
       std::string startMission = "/missions/tutorial.mission";
       Logger::warning( "Start new career with mission " + startMission );
@@ -177,6 +207,9 @@ void Game::setScreenMenu()
       load( startMission );
       _d->player->setName( screen.getPlayerName() );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
+
+      /*_d->nextFilename = "/missions/mission3.briefing";
+      _d->nextScreen = SCREEN_BRIEFING;*/
     }
     break;
 
@@ -187,7 +220,6 @@ void Game::setScreenMenu()
     case scene::StartMenu::loadSavedGame:
     case scene::StartMenu::loadMission:
     {        
-      //load( GameSettings::rcpath( "/savs/timgad.sav" ).toString() );
       load( screen.getMapName() );
       Logger::warning( "screen menu: end loading map" );
 
@@ -252,10 +284,12 @@ void Game::setScreenGame()
     events::Dispatcher::instance().update( *this, _d->time );
   }
 
+  _d->nextFilename = screen.nextFilename();
   switch( screen.getResult() )
   {
-    case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
-    case scene::Level::loadGame: load( screen.getMapName() ); _d->nextScreen = SCREEN_GAME; break;
+    case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;    
+    case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  load( screen.nextFilename() ); break;
+    case scene::Level::loadBriefing: _d->nextScreen = SCREEN_BRIEFING; break;
     case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
     default: _d->nextScreen = SCREEN_QUIT;
   }
@@ -264,7 +298,7 @@ void Game::setScreenGame()
 PlayerPtr Game::getPlayer() const { return _d->player; }
 PlayerCityPtr Game::getCity() const { return _d->city; }
 world::EmpirePtr Game::getEmpire() const { return _d->empire; }
-gui::GuiEnv* Game::getGui() const { return _d->gui; }
+gui::GuiEnv* Game::gui() const { return _d->gui; }
 GfxEngine*Game::getEngine() const { return _d->engine; }
 scene::Base*Game::getScene() const { return _d->currentScreen; }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
@@ -330,7 +364,7 @@ void Game::load(std::string filename)
 
   Logger::warning( "Game: try find loader" );
   GameLoader loader;
-  _d->loadOk = loader.load( fPath, *this);
+  _d->loadOk = loader.load( fPath, *this );
   
   if( !_d->loadOk )
   {
@@ -395,6 +429,7 @@ void Game::exec()
      {
      case SCREEN_MENU:        setScreenMenu();     break;
      case SCREEN_GAME:        setScreenGame();     break;
+     case SCREEN_BRIEFING:    setScreenBriefing(); break;
 
      default:
         Logger::warning( "Unexpected next screen type %d", _d->nextScreen );

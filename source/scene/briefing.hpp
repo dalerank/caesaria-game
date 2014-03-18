@@ -14,52 +14,50 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-
-#ifndef _CAESARIA_SCENE_LEVEL_H_INCLUDE_
-#define _CAESARIA_SCENE_LEVEL_H_INCLUDE_
+#ifndef _CAESARIA_SCENE_BRIEFING_H_INCLUDE_
+#define _CAESARIA_SCENE_BRIEFING_H_INCLUDE_
 
 #include "base.hpp"
-#include "core/predefinitions.hpp"
 #include "core/scopedptr.hpp"
-#include "game/game.hpp"
+#include "core/predefinitions.hpp"
+#include <string>
 
 class Game;
 
 namespace scene
 {
 
-class Level: public Base
+// displays the newGame/loadGame/quitGame menu
+class Briefing : public Base
 {
 public:
-  typedef enum {mainMenu=0, loadGame, loadBriefing, quitGame} ResultType;
-  Level( Game& game, GfxEngine& engine );
-  ~Level();
+  enum
+  {
+    loadMission,
+    unlknowState=0xff
+  } Result;
 
-  void initialize();
-  std::string nextFilename() const;
+  Briefing( Game& game, GfxEngine& engine, std::string filename );
+  ~Briefing();
 
-  virtual void handleEvent( NEvent& event );
+  virtual void handleEvent( NEvent& event);
+
+  // draws the menu/menubar/etc... on the screen
   virtual void draw();
-  virtual void animate( unsigned int time );
-  virtual void afterFrame();
-  virtual int getResult() const;
+  virtual void initialize();
 
-  virtual bool installEventHandler(EventHandlerPtr);
+  std::string getMapName() const;
 
-  void setCameraPos( TilePos pos );
+  int getResult() const;
+  bool isStopped() const;
 
 private:
-  void _resolveEndGame();
-  void _resolveExitGame();
-  void _resolveSwitchMap();
-  void _resolveFastLoad();
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
 }//end namespace scene
 
-#endif //_CAESARIA_SCENE_LEVEL_H_INCLUDE_
+#endif //_CAESARIA_SCENE_BRIEFING_H_INCLUDE_

@@ -132,9 +132,10 @@ Path Path::removeEndSlash() const
   if( pathTo.empty() )
       return "";
 
-  if( (*pathTo.rbegin()) == '/' || (*pathTo.rbegin()) == '\\' )
+  char lastChar = *pathTo.rbegin();
+  if( lastChar == '/' || lastChar == '\\' )
   {
-      pathTo.erase( pathTo.rbegin().base() );
+      pathTo.resize( pathTo.size() - 1 );
   }
 
   return pathTo;

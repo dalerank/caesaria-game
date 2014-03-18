@@ -488,7 +488,7 @@ void ContextMenu::recalculateSize_()
 			              maxSize.width()+subMenuSize.width()-5, refItem->getOffset() +subMenuSize.height() );
 
       // if it would be drawn beyond the right border, then add it to the left side
-      Widget * root = getEnvironment()->getRootWidget();
+      Widget * root = getEnvironment()->rootWidget();
       if( root && ContextMenuItem::alignAuto == refItem->getSubMenuAlignment() )
       {
         Rect rectRoot( root->absoluteRect() );

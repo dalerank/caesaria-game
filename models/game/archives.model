@@ -2,6 +2,7 @@
   main : "/pics/pics.zip"
   oc3  : "/pics/pics_oc3.zip"
   wait : "/pics/pics_wait.zip"
+  celts : "/pics/celts.zip"
   carthago : "/pics/pics_carthage.zip"
   sounds : "/audio/wavs_buildings.zip"
 }

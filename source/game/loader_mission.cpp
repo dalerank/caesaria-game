@@ -42,7 +42,6 @@ public:
 
 GameLoaderMission::GameLoaderMission()
 {
-
 }
 
 bool GameLoaderMission::load( const std::string& filename, Game& game )

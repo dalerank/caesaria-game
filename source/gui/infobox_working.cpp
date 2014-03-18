@@ -73,7 +73,7 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
 
 void InfoboxWorkingBuilding::showDescription()
 {
-  DictionaryWindow::show( getEnvironment()->getRootWidget(), _working->type() );
+  DictionaryWindow::show( getEnvironment()->rootWidget(), _working->type() );
 }
 
 WorkingBuildingPtr InfoboxWorkingBuilding::_getBuilding()

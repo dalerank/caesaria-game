@@ -43,7 +43,7 @@ void ShowTutorialWindow::_exec(Game& game, unsigned int)
   if( _tutorial.empty() )
     return;
 
-  gui::TutorialWindow* wnd = new gui::TutorialWindow( game.getGui()->getRootWidget(), _tutorial );
+  gui::TutorialWindow* wnd = new gui::TutorialWindow( game.gui()->rootWidget(), _tutorial );
   wnd->show();
 }
 

@@ -12,7 +12,7 @@
     prosperity : 0
     peace : 0
     favour : 0
-    next : "/missions/capua.mission"
+    next : "/missions/mission3.briefing"
     title : "##win_clerk_title##"
     may_continue : false
     short : "##tt2_caption##"

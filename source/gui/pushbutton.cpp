@@ -215,14 +215,8 @@ void PushButton::_updateTexture( ElementState state )
 }
 
 //! destructor
-PushButton::~PushButton()
-{
-}
-
-void PushButton::setIsPushButton( bool value )
-{
-  _d->isPushButton = value;
-}
+PushButton::~PushButton(){}
+void PushButton::setIsPushButton( bool value ){  _d->isPushButton = value;}
 
 void PushButton::setupUI(const VariantMap &ui)
 {
@@ -251,15 +245,8 @@ void PushButton::setupUI(const VariantMap &ui)
   if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stDisabled );
 }
 
-void PushButton::setTextOffset(const Point& offset)
-{
-  _d->textOffset = offset;
-}
-
-bool PushButton::isPushButton() const
-{
-  return _d->isPushButton;
-}
+void PushButton::setTextOffset(const Point& offset) {  _d->textOffset = offset;}
+bool PushButton::isPushButton() const {  return _d->isPushButton; }
 
 void PushButton::setPicture(Picture picture, ElementState state )
 {

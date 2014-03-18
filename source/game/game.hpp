@@ -50,11 +50,12 @@ public:
 
   void setScreenMenu();
   void setScreenGame();
+  void setScreenBriefing();
 
   PlayerPtr getPlayer() const;
   PlayerCityPtr getCity() const;
   world::EmpirePtr getEmpire() const;
-  gui::GuiEnv* getGui() const;
+  gui::GuiEnv* gui() const;
   GfxEngine* getEngine() const;
   scene::Base* getScene() const;
 

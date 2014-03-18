@@ -42,7 +42,7 @@ bool ShowEmpireMapWindow::_mayExec(Game& game, unsigned int time) const
 
 void ShowEmpireMapWindow::_exec(Game& game, unsigned int)
 {
-  List<gui::EmpireMapWindow*> wndList = game.getGui()->getRootWidget()->findChildren<gui::EmpireMapWindow*>();
+  List<gui::EmpireMapWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::EmpireMapWindow*>();
 
   if( _show )
   {
@@ -52,7 +52,7 @@ void ShowEmpireMapWindow::_exec(Game& game, unsigned int)
     }
     else
     {
-      gui::EmpireMapWindow::create( game.getEmpire(), game.getCity(), game.getGui()->getRootWidget(), -1 );
+      gui::EmpireMapWindow::create( game.getEmpire(), game.getCity(), game.gui()->rootWidget(), -1 );
     }
   }
   else

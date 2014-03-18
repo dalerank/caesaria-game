@@ -42,7 +42,7 @@ public:
               const BackgroundStyle bgtyle=grayBorderLine);
 
 	//! destructor
-	~PushButton();
+	virtual ~PushButton();
 
 	//! called if an event happened.
 	virtual bool onEvent(const NEvent& event);

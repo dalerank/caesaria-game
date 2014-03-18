@@ -47,7 +47,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     return;
   }
 
-  List<gui::AdvisorsWindow*> wndList = game.getGui()->getRootWidget()->findChildren<gui::AdvisorsWindow*>();
+  List<gui::AdvisorsWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::AdvisorsWindow*>();
 
   if( _show )
   {
@@ -58,7 +58,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     }
     else
     {
-      gui::AdvisorsWindow::create( game.getGui()->getRootWidget(), -1, _advisor, game.getCity() );
+      gui::AdvisorsWindow::create( game.gui()->rootWidget(), -1, _advisor, game.getCity() );
     }
   }
   else

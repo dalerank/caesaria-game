@@ -84,7 +84,7 @@ public:
 
 void StartMenu::Impl::resolveShowLoadGameWnd()
 {
-  gui::Widget* parent = game->getGui()->getRootWidget();
+  gui::Widget* parent = game->gui()->rootWidget();
 
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
   std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
@@ -98,7 +98,7 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 
 void StartMenu::Impl::resolveShowChangeLanguageWindow()
 {
-  gui::Widget* parent = game->getGui()->getRootWidget();
+  gui::Widget* parent = game->gui()->rootWidget();
   Size rootSize = parent->size();
   Size windowSize( 512, 384 );
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
@@ -141,7 +141,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 
 void StartMenu::Impl::resolveChangePlayerName()
 {
-  gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->getGui()->getRootWidget() );
+  gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->gui()->rootWidget() );
 
   playerName = dlg->text();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
@@ -155,7 +155,7 @@ void StartMenu::Impl::resolveNewGame()
 
 void StartMenu::Impl::resolveCredits()
 {
-  gui::Widget* parent = game->getGui()->getRootWidget();
+  gui::Widget* parent = game->gui()->rootWidget();
   Size rootSize = parent->size();
   Size windowSize( 512, 384 );
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
@@ -187,7 +187,7 @@ void StartMenu::Impl::resolveCredits()
 
 void StartMenu::Impl::resolvePlayMission()
 {
-  gui::Widget* parent = game->getGui()->getRootWidget();
+  gui::Widget* parent = game->gui()->rootWidget();
   Size rootSize = parent->size();
   Size windowSize( 512, 384 );
   Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
@@ -203,7 +203,7 @@ void StartMenu::Impl::resolvePlayMission()
 
 void StartMenu::Impl::resolveShowLoadMapWnd()
 {
-  gui::Widget* parent = game->getGui()->getRootWidget();
+  gui::Widget* parent = game->gui()->rootWidget();
 
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent,
                                                     Rect(),
@@ -227,14 +227,14 @@ StartMenu::~StartMenu() {}
 
 void StartMenu::draw()
 {
-  _d->game->getGui()->beforeDraw();
+  _d->game->gui()->beforeDraw();
 
   _d->engine->drawPicture(_d->bgPicture, 0, 0);
 
-  _d->game->getGui()->draw();
+  _d->game->gui()->draw();
 }
 
-void StartMenu::handleEvent( NEvent& event ){  _d->game->getGui()->handleEvent( event );}
+void StartMenu::handleEvent( NEvent& event ){  _d->game->gui()->handleEvent( event );}
 
 void StartMenu::initialize()
 {
@@ -246,9 +246,9 @@ void StartMenu::initialize()
            -( _d->engine->getScreenHeight() - _d->bgPicture.height() ) / 2 );
   _d->bgPicture.setOffset( p );
 
-  _d->game->getGui()->clear();
+  _d->game->gui()->clear();
 
-  _d->menu = new gui::StartMenu( _d->game->getGui()->getRootWidget() );
+  _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
   gui::PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveChangePlayerName );

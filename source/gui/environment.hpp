@@ -37,7 +37,7 @@ public:
 
   double getVersion() const;
 
-  Widget* getRootWidget();								//  
+  Widget* rootWidget();								//  
   Widget* getFocus() const;
   Point getCursorPos() const;
 

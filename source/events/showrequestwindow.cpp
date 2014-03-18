@@ -40,7 +40,7 @@ void ShowRequestInfo::_exec(Game& game, unsigned int)
 {
   if( _request.isValid() )
   {
-    gui::EmperrorRequestWindow* wnd = gui::EmperrorRequestWindow::create( game.getGui()->getRootWidget(), _request, _reqAvailable );
+    gui::EmperrorRequestWindow* wnd = gui::EmperrorRequestWindow::create( game.gui()->rootWidget(), _request, _reqAvailable );
     wnd->show();
   }
 }

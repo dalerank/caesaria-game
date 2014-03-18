@@ -166,7 +166,7 @@ bool ShowInfoboxEvent::_mayExec(Game& game, unsigned int time) const{  return tr
 
 void ShowInfoboxEvent::_exec( Game& game, unsigned int )
 {
-  gui::InfoboxText* msgWnd = new gui::InfoboxText( game.getGui()->getRootWidget(), _title, _text );
+  gui::InfoboxText* msgWnd = new gui::InfoboxText( game.gui()->rootWidget(), _title, _text );
   msgWnd->show();
 }
 
@@ -185,7 +185,7 @@ bool Pause::_mayExec(Game& game, unsigned int time) const{  return true;}
 
 void Pause::_exec(Game& game, unsigned int)
 {
-  gui::Widget* rootWidget = game.getGui()->getRootWidget();
+  gui::Widget* rootWidget = game.gui()->rootWidget();
   gui::Label* wdg = safety_cast< gui::Label* >( rootWidget->findChild( windowGamePausedId ) );
 
   switch( _mode )
@@ -255,7 +255,7 @@ bool WarningMessageEvent::_mayExec(Game& game, unsigned int time) const
 void WarningMessageEvent::_exec(Game& game, unsigned int)
 {
   gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(
-                                      game.getGui()->getRootWidget()->findChild( gui::WindowMessageStack::defaultID ) );
+                                      game.gui()->rootWidget()->findChild( gui::WindowMessageStack::defaultID ) );
 
   if( window && !_text.empty() )
   {

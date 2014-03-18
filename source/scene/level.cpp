@@ -121,30 +121,30 @@ void Level::initialize()
 {
   PlayerCityPtr city = _d->game->getCity();
   _d->renderer.initialize( city, _d->engine );
-  _d->game->getGui()->clear();
+  _d->game->gui()->clear();
 
   const int topMenuHeight = 23;
   const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
 
   GfxEngine& engine = GfxEngine::instance();
-  gui::GuiEnv& gui = *_d->game->getGui();
+  gui::GuiEnv& gui = *_d->game->gui();
 
   installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
 
   Rect rPanelRect( engine.getScreenWidth() - rPanelPic.width(), topMenuHeight,
                    engine.getScreenWidth(), engine.getScreenHeight() );
 
-  _d->rightPanel = MenuRigthPanel::create( gui.getRootWidget(), rPanelRect, rPanelPic);
+  _d->rightPanel = MenuRigthPanel::create( gui.rootWidget(), rPanelRect, rPanelPic);
 
-  _d->topMenu = new TopMenu( gui.getRootWidget(), topMenuHeight );
+  _d->topMenu = new TopMenu( gui.rootWidget(), topMenuHeight );
   _d->topMenu->setPopulation( _d->game->getCity()->getPopulation() );
   _d->topMenu->setFunds( _d->game->getCity()->getFunds().getValue() );
 
-  _d->menu = Menu::create( gui.getRootWidget(), -1, city );
+  _d->menu = Menu::create( gui.rootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->width() - _d->rightPanel->width(),
                                  _d->topMenu->height() ) );
 
-  _d->extMenu = ExtentMenu::create( gui.getRootWidget(), -1, city );
+  _d->extMenu = ExtentMenu::create( gui.rootWidget(), -1, city );
   _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->width() - _d->rightPanel->width(),
                                      _d->topMenu->height() ) );
 
@@ -152,12 +152,12 @@ void Level::initialize()
                                city->getTilemap(),
                                city->getClimate() );
 
-  WindowMessageStack::create( gui.getRootWidget() );
+  WindowMessageStack::create( gui.rootWidget() );
 
   _d->rightPanel->bringToFront();
   _d->renderer.camera().setViewport( engine.getScreenSize() );
 
-  new SenatePopupInfo( gui.getRootWidget(), _d->renderer );
+  new SenatePopupInfo( gui.rootWidget(), _d->renderer );
 
   _d->game->getCity()->addService( city::AmbientSound::create( _d->game->getCity(), _d->renderer.camera() ) );
 
@@ -198,7 +198,7 @@ void Level::initialize()
   _d->renderer.camera().setCenter( city->getCameraPos() );
 }
 
-std::string Level::getMapName() const{  return _d->mapToLoad;}
+std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
 void Level::Impl::showSaveDialog()
 {
@@ -210,7 +210,7 @@ void Level::Impl::showSaveDialog()
     vfs::Directory::createByPath( saveDir );
   }
 
-  SaveDialog* dialog = new SaveDialog( game->getGui()->getRootWidget(), saveDir, defaultExt, -1 );
+  SaveDialog* dialog = new SaveDialog( game->gui()->rootWidget(), saveDir, defaultExt, -1 );
   CONNECT( dialog, onFileSelected(), game, Game::save );
 }
 
@@ -222,7 +222,7 @@ void Level::Impl::setVideoOptions()
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
-  GameSpeedOptionsWindow* dialog = new GameSpeedOptionsWindow( game->getGui()->getRootWidget(),
+  GameSpeedOptionsWindow* dialog = new GameSpeedOptionsWindow( game->gui()->rootWidget(),
                                                                game->getTimeMultiplier(),
                                                                0 );
 
@@ -272,7 +272,12 @@ vfs::Path Level::Impl::getFastSaveName()
   return saveDir/filename;
 }
 
-void Level::_resolveSwitchMap() { _d->result = Level::loadGame;  stop(); }
+void Level::_resolveSwitchMap()
+{
+  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isExtension( ".briefing" );
+  _d->result = isNextBriefing ? Level::loadBriefing : Level::loadGame;
+  stop();
+}
 
 void Level::Impl::showEmpireMapWindow()
 {
@@ -287,8 +292,8 @@ void Level::draw()
 { 
   _d->renderer.render();
 
-  _d->game->getGui()->beforeDraw();
-  _d->game->getGui()->draw();
+  _d->game->gui()->beforeDraw();
+  _d->game->gui()->draw();
 }
 
 void Level::animate( unsigned int time ) {  _d->renderer.animate( time ); }
@@ -312,7 +317,7 @@ void Level::afterFrame()
     {
       std::string newTitle = wt.getNewTitle();
 
-      gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->getGui()->getRootWidget(), newTitle, false );
+      gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(), newTitle, false );
 
       _d->mapToLoad = wt.getNextMission();
 
@@ -324,7 +329,7 @@ void Level::afterFrame()
 void Level::handleEvent( NEvent& event )
 {
   //After MouseDown events are send to the same target till MouseUp
-  GuiEnv& gui = *_d->game->getGui();
+  GuiEnv& gui = *_d->game->gui();
 
   static enum _MouseEventTarget
   {
@@ -454,7 +459,7 @@ void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->getGui()->getRootWidget(), game->getCity() ); }
+void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->gui()->rootWidget(), game->getCity() ); }
 void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
 void Level::_resolveExitGame(){  _d->result = Level::quitGame;  stop();}
 

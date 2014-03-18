@@ -90,7 +90,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
     default:
       if( _d->haveChanges )
       {
-        Widget* parent = getEnvironment()->getRootWidget();
+        Widget* parent = getEnvironment()->rootWidget();
         DialogBox* dlg = new DialogBox( parent, Rect(), "",
                                         _("##need_restart_for_apply_changes##"), DialogBox::btnOk );
         CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );

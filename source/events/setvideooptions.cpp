@@ -35,7 +35,7 @@ GameEventPtr SetVideoSettings::create()
 
 void SetVideoSettings::_exec(Game& game, unsigned int)
 {
-  gui::VideoOptionsWindow* dialog = new gui::VideoOptionsWindow( game.getGui()->getRootWidget(),
+  gui::VideoOptionsWindow* dialog = new gui::VideoOptionsWindow( game.gui()->rootWidget(),
                                                                  game.getEngine()->getAvailableModes(),
                                                                  game.getEngine()->isFullscreen() );
 

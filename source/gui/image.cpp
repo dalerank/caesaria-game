@@ -47,7 +47,7 @@ Image::Image( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( ne
 	_d->mode = Image::fit;
 }
 
-Image::Image(Widget* parent, Rect rectangle, Picture pic, Mode mode, int id)
+Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int id)
 : Widget( parent, id, rectangle),
 	_d( new Impl )
 {
@@ -65,7 +65,7 @@ Image::Image(Widget* parent, Rect rectangle, Picture pic, Mode mode, int id)
 #endif
 }
 
-Image::Image(Widget* parent, Point pos, Picture pic, int id)
+Image::Image(Widget* parent, Point pos, const Picture& pic, int id)
 	: Widget( parent, id, Rect( pos, pic.size() ) ),
 		_d( new Impl )
 {
@@ -115,9 +115,7 @@ void Image::_updateTexture( GfxEngine& painter )
 }
 
 //! destructor
-Image::~Image()
-{
-}
+Image::~Image() {}
 
 //! draws the element and its children
 void Image::draw( GfxEngine& painter )
@@ -135,11 +133,7 @@ void Image::draw( GfxEngine& painter )
 }
 
 
-Signal0<>& Image::onClicked()
-{
-  return _d->onClickedSignal;
-}
-
+Signal0<>& Image::onClicked(){  return _d->onClickedSignal;}
 
 void Image::beforeDraw( GfxEngine& painter )
 {
@@ -159,10 +153,7 @@ void Image::setPicture(Picture picture )
   _d->needUpdateTexture = true;
 }
 
-void Image::_resizeEvent()
-{
-  _d->needUpdateTexture = true;
-}
+void Image::_resizeEvent() {  _d->needUpdateTexture = true;}
 
 void Image::setupUI(const VariantMap& ui)
 {
@@ -176,9 +167,6 @@ void Image::setupUI(const VariantMap& ui)
   else { _d->mode = Image::fit; }
 }
 
-PictureRef& Image::getPicture()
-{
-  return _d->background;
-}
+PictureRef& Image::getPicture() {  return _d->background;}
 
 }//end namespace gui

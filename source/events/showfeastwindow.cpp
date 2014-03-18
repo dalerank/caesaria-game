@@ -46,9 +46,9 @@ bool ShowFeastWindow::_mayExec(Game& game, unsigned int time) const
 
 void ShowFeastWindow::_exec(Game& game, unsigned int)
 {
-  gui::GuiEnv* env = game.getGui();
+  gui::GuiEnv* env = game.gui();
 
-  gui::FilmWidget* dlg = new gui::FilmWidget( env->getRootWidget(), "" );
+  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "" );
   dlg->setText( _text );
   dlg->setTitle( _title );
   dlg->setReceiver( _receiver );
