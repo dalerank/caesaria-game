@@ -120,3 +120,13 @@ Animation& Animation::operator=( const Animation& other )
 
 int Animation::size() const {  return _pictures.size();}
 bool Animation::isValid() const{  return _pictures.size() > 0;}
+
+void Animation::addFrame(const std::string& resource, int index)
+{
+  _pictures.push_back( Picture::load( resource, index ) );
+}
+
+void Animation::addFrame(const Picture& pic)
+{
+  _pictures.push_back( pic );
+}

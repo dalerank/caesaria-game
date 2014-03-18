@@ -29,9 +29,12 @@ public:
 
   virtual ~HippodromeSection();
   virtual void destroy();
+
+  void setAnimationVisible( bool visible );
 private:
   TilePos _basepos;
   constants::Direction _direction;
+  Type _type;
 };
 typedef SmartPtr<HippodromeSection> HippodromeSectionPtr;
 
@@ -41,13 +44,13 @@ public:
   Hippodrome();
   virtual std::string troubleDesc() const;
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+  virtual void deliverService();
   virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void destroy();
 
   bool isRacesCarry() const;
 private:
   void _init(bool onBuild=false);
-  void _initAnimation();
   HippodromeSectionPtr _addSection( HippodromeSection::Type type, TilePos offset );
   void _checkDirection(PlayerCityPtr city, TilePos pos);
 

@@ -24,31 +24,45 @@
 
 using namespace constants;
 
+const Point hippodromeSectionOffset[] = {
+  Point(), Point( 0, 43 ), Point(),
+  Point( 0, 16 ), //3
+  Point(), Point(), Point(),
+  Point( 0, 85 ), //7
+  Point( 0, 95 ), //8
+  Point( 60, 95 ), //9
+  Point(),
+  Point(),
+  Point( 0, 16 ), //12
+  Point(),
+  Point( 0, 16 ), //14
+  Point(),
+  Point( 145, 85 ), //16
+  Point( 120, 95 ), //17
+  Point( 120, 95 ) //18
+};
+
 HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction direction, Type type )
   : Building( building::fortArea, Size(5) )
 {
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
 
+  _fgPicturesRef().resize( 1 );
+
   _basepos = base.pos();
   _direction = direction;
+  _type =  type;
 
-  Picture pic;
+  int pictureIndex = 0;
+  int animIndex = 0;
   switch( type )
   {
   case middle:
     switch( _direction )
     {
-    case north:
-      pic = Picture::load( ResourceGroup::hippodrome, 3);
-      pic.setOffset( 0, pic.height() / 2 + 16 );
-    break;
-
-    case west:
-      pic = Picture::load( ResourceGroup::hippodrome, 12);
-      pic.setOffset( 0, pic.height() / 2 + 16 );
-    break;
-
+    case north: pictureIndex = 3; animIndex = 8; break;
+    case west:  pictureIndex = 12; animIndex = 17; break;
     default: break;
     }
   break;
@@ -56,22 +70,19 @@ HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction dir
   case ended:
     switch( _direction )
     {
-    case north:
-      pic = Picture::load( ResourceGroup::hippodrome, 1);
-      pic.setOffset( 0, pic.height() / 2 + 43 );
-    break;
-
-    case west:
-      pic = Picture::load( ResourceGroup::hippodrome, 14);
-      pic.setOffset( 0, pic.height() / 2 + 16 );
-    break;
-
+    case north: pictureIndex = 1; animIndex = 7; break;
+    case west:  pictureIndex = 14; animIndex = 18; break;
     default: break;
     }
   break;
   }
 
+  Picture pic = Picture::load( ResourceGroup::hippodrome, pictureIndex );
+  pic.setOffset( Point( 0, pic.height() / 2) + hippodromeSectionOffset[ pictureIndex ] );
   setPicture( pic );
+
+  _animationRef().addFrame( ResourceGroup::hippodrome, animIndex );
+  _animationRef().setOffset( hippodromeSectionOffset[ animIndex ]);
 }
 
 HippodromeSection::~HippodromeSection(){}
@@ -89,6 +100,13 @@ void HippodromeSection::destroy()
   }
 }
 
+void HippodromeSection::setAnimationVisible(bool visible)
+{
+  _fgPicture( 0 ) = !visible
+                          ? Picture::getInvalid()
+                          : animation().frames()[ 0 ];
+}
+
 class Hippodrome::Impl
 {
 public:
@@ -100,7 +118,7 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::
 {
   _fgPicturesRef().resize(5);
   _d->direction = west;
-  _init();
+  _init();  
 
   _addNecessaryWalker( walker::charioter );
 }
@@ -128,6 +146,27 @@ bool Hippodrome::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aro
   return _d->direction != noneDirection;
 }
 
+void Hippodrome::deliverService()
+{
+  EntertainmentBuilding::deliverService();
+
+  if( animation().isStopped() )
+  {
+    _fgPicture( 0 ) = Picture::getInvalid();
+    _fgPicture( 1 ) = Picture::getInvalid();
+    _fgPicture( 2 ) = Picture::getInvalid();
+    _fgPicture( 3 ) = Picture::getInvalid();
+    _fgPicture( 4 ) = Picture::getInvalid();
+  }
+  else
+  {
+
+  }
+
+  _d->sectionEnd->setAnimationVisible( animation().isRunning() );
+  _d->sectionMiddle->setAnimationVisible( animation().isRunning() );
+}
+
 void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
 {
   _checkDirection( city, pos );
@@ -143,6 +182,10 @@ void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
   _init( true );
   city->addOverlay( _d->sectionMiddle.object() );
   city->addOverlay( _d->sectionEnd.object() );
+
+  _d->sectionEnd->setAnimationVisible( true );
+  _d->sectionMiddle->setAnimationVisible( true );
+  _animationRef().start();
 }
 
 void Hippodrome::destroy()
@@ -164,7 +207,7 @@ void Hippodrome::destroy()
   }
 }
 
-bool Hippodrome::isRacesCarry() const{ return getTraineeValue( walker::charioter ) > 0; }
+bool Hippodrome::isRacesCarry() const { return animation().isRunning(); }
 
 void Hippodrome::_init( bool onBuild )
 {
@@ -174,72 +217,45 @@ void Hippodrome::_init( bool onBuild )
     _fgPicture( 1 ) = Picture::getInvalid();
   }
 
+  _animationRef().clear();
+
   switch( _d->direction )
   {
   case north:
   {
     setPicture( ResourceGroup::hippodrome, 5 );
-    Picture sectionMdl = Picture::load( ResourceGroup::hippodrome, 3);
-    Picture sectionEnd = Picture::load( ResourceGroup::hippodrome, 1);
-
+    _animationRef().addFrame( ResourceGroup::hippodrome, 9 );
+    _animationRef().setOffset( hippodromeSectionOffset[ 9 ] );
     if( !onBuild )
     {
-      sectionMdl.setOffset( 150, 181 );
-      sectionEnd.setOffset( 300, 310 );
-      _fgPicture( 0 ) = sectionMdl;
-      _fgPicture( 1 ) = sectionEnd;
+      _fgPicture( 0 ) = Picture::load( ResourceGroup::hippodrome, 3);
+      _fgPicture( 0 ).setOffset( 150, 181 );
+      _fgPicture( 1 ) = Picture::load( ResourceGroup::hippodrome, 1);
+      _fgPicture( 1 ).setOffset( 300, 310 );
     }
   }
   break;
 
   case west:
   {
+    _animationRef().addFrame( ResourceGroup::hippodrome, 16 );
+    _animationRef().setOffset( hippodromeSectionOffset[ 16 ] );
     Picture pic = Picture::load( ResourceGroup::hippodrome, 10 );
     pic.setOffset( 0, pic.height() / 2 + 42 );
     setPicture( pic );
-    Picture sectionMdl = Picture::load( ResourceGroup::hippodrome, 12);
-    Picture sectionEnd = Picture::load( ResourceGroup::hippodrome, 14);
 
     if( !onBuild )
     {
-      sectionMdl.setOffset( 150, 31 );
-      sectionEnd.setOffset( 300, -43 );
-      _fgPicture( 0 ) = sectionMdl;
-      _fgPicture( 1 ) = sectionEnd;
+      _fgPicture( 0 ) = Picture::load( ResourceGroup::hippodrome, 12);
+      _fgPicture( 0 ).setOffset( 150, 31 );
+      _fgPicture( 1 ) = Picture::load( ResourceGroup::hippodrome, 14 );
+      _fgPicture( 1 ).setOffset( 300, -43 );
     }
   }
   break;
 
   default:
     _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
-  }
-}
-
-void Hippodrome::_initAnimation()
-{
-  if( !isRacesCarry() )
-  {
-    _fgPicture( 2 ) = Picture::getInvalid();
-    _fgPicture( 3 ) = Picture::getInvalid();
-    _fgPicture( 4 ) = Picture::getInvalid();
-    return;
-  }
-
-  switch(_d->direction)
-  {
-  case north:
-    _fgPicture( 2 ) = Picture::load( ResourceGroup::hippodrome, 7 );
-    _fgPicture( 3 ) = Picture::load( ResourceGroup::hippodrome, 8 );
-    _fgPicture( 4 ) = Picture::load( ResourceGroup::hippodrome, 9 );
-  break;
-
-  case west:
-    _fgPicture( 2 ) = Picture::load( ResourceGroup::hippodrome, 7 );
-    _fgPicture( 3 ) = Picture::load( ResourceGroup::hippodrome, 8 );
-    _fgPicture( 4 ) = Picture::load( ResourceGroup::hippodrome, 9 );
-  break;
-
-  default: break;
   }
 }
 

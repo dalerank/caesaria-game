@@ -63,6 +63,8 @@ public:
              bool reverse = false, const int step = 1);
 
   bool isValid() const;
+  void addFrame( const Picture& pic );
+  void addFrame(const std::string& resource, int index);
 private:
   PicturesArray _pictures;
   int _animIndex;  // index of the current frame
