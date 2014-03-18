@@ -46,6 +46,7 @@ public:
   static const char* adviserEnabled;
   static const char* lastTranslation;
   static const char* c3gfx;
+  static const char* archivesModel;
 
   static GameSettings& getInstance();
 

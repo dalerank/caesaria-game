@@ -20,7 +20,8 @@
 #include "loader_map.hpp"
 #include "loader_sav.hpp"
 #include "loader_oc3save.hpp"
-#include "loader_oc3mission.hpp"
+#include "loader_mission.hpp"
+#include "loader_briefing.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/stringhelper.hpp"
@@ -121,6 +122,7 @@ void GameLoader::Impl::initLoaders()
   loaders.push_back( GameAbstractLoaderPtr( new GameLoaderC3Sav() ) );
   loaders.push_back( GameAbstractLoaderPtr( new GameLoaderOc3() ) );
   loaders.push_back( GameAbstractLoaderPtr( new GameLoaderMission() ) );
+  loaders.push_back( GameAbstractLoaderPtr( new GameLoaderBriefing() ) );
 }
 
 bool GameLoader::load( vfs::Path filename, Game& game )

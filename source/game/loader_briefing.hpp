@@ -13,16 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_SCENARIO_OC3MISSION_LOADER_H_INCLUDED__
-#define __CAESARIA_SCENARIO_OC3MISSION_LOADER_H_INCLUDED__
+#ifndef __CAESARIA_SCENARIO_BRIEFING_LOADER_H_INCLUDED__
+#define __CAESARIA_SCENARIO_BRIEFING_LOADER_H_INCLUDED__
 
 #include "abstractloader.hpp"
 #include "core/scopedptr.hpp"
 
-class GameLoaderMission : public GameAbstractLoader
+class GameLoaderBriefing : public GameAbstractLoader
 {
 public:
-  GameLoaderMission();
+  GameLoaderBriefing();
 
   bool load(const std::string& filename, Game& oScenario);
   bool isLoadableFileExtension( const std::string& filename );
@@ -32,4 +32,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__CAESARIA_SCENARIO_BRIEFING_LOADER_H_INCLUDED__

@@ -42,6 +42,7 @@ const char* GameSettings::workDir = "workDir";
 const char* GameSettings::adviserEnabled = "adviserEnabled";
 const char* GameSettings::c3gfx = "c3gfx";
 const char* GameSettings::lastTranslation = "lastTranslation";
+const char* GameSettings::archivesModel = "archivesModel";
 
 const vfs::Path defaultSaveDir = "saves";
 const vfs::Path defaultResDir = "resources";
@@ -71,6 +72,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ ctNamesModel        ] = Variant( std::string( "/names.model" ) );
   _d->options[ settingsPath        ] = Variant( std::string( "/settings.model" ) );
   _d->options[ langModel           ] = Variant( std::string( "/language.model" ) );
+  _d->options[ archivesModel       ] = Variant( std::string( "/archives.model" ) );
   _d->options[ language            ] = Variant( std::string( "en" ) );
   _d->options[ fastsavePostfix     ] = Variant( std::string( "_fastsave") );
   _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );

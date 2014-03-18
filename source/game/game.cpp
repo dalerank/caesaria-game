@@ -106,27 +106,26 @@ void Game::initSound()
 
 void Game::mountArchives()
 {
-  Logger::warning( "Game: mount archives begin" );
-
   vfs::FileSystem& fs = vfs::FileSystem::instance();
+  Logger::warning( "Game: initialize sg2 archive loader" );
+  fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
+
+  Logger::warning( "Game: mount archives begin" );
   splash::initialize( "logo_00001" );
 
   Variant c3res = GameSettings::get( GameSettings::c3gfx );
   if( c3res.isValid() )
   {
-    fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
-
     std::string gfxDir = vfs::Path( c3res.toString() ).addEndSlash().toString();
     fs.mountArchive( gfxDir + "CELTS.SG2" );
     fs.mountArchive( gfxDir + "C3.SG2" );
   }
-  else
+
+  vfs::Path archivesFile = GameSettings::rcpath( GameSettings::archivesModel );
+  VariantMap archives = SaveAdapter::load( archivesFile );
+  foreach( a, archives )
   {
-    fs.mountArchive( GameSettings::rcpath( "/pics/pics_wait.zip" ) );
-    fs.mountArchive( GameSettings::rcpath( "/pics/pics.zip" ) );
-    fs.mountArchive( GameSettings::rcpath( "/pics/pics_oc3.zip" ) );
-    fs.mountArchive( GameSettings::rcpath( "/pics/pics_celts.zip" ) );
-    fs.mountArchive( GameSettings::rcpath( "/audio/wavs_buildings.zip") );
+    fs.mountArchive( GameSettings::rcpath( a->second.toString() ) );
   }
 }
 

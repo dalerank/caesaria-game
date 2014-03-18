@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "loader_oc3mission.hpp"
+#include "loader_mission.hpp"
 #include "gfx/tile.hpp"
 #include "core/exception.hpp"
 #include "gfx/picture.hpp"
