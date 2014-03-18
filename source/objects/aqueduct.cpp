@@ -70,15 +70,15 @@ void Aqueduct::destroy()
 {
   Construction::destroy();
 
-  if( _getCity().isValid() )
+  if( _city().isValid() )
   {
-    TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos( 2, 2 ), Size( 5 ) );
+    TilesArray area = _city()->getTilemap().getArea( pos() - TilePos( 2, 2 ), Size( 5 ) );
     foreach( tile, area )
     {
       AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->overlay() );
       if( aq.isValid() )
       {
-        aq->updatePicture( _getCity() );
+        aq->updatePicture( _city() );
       }
     }
   }
@@ -346,7 +346,7 @@ bool Aqueduct::isNeedRoadAccess() const
 
 void Aqueduct::_waterStateChanged()
 {
-  updatePicture( _getCity() );
+  updatePicture( _city() );
 }
 
 void Aqueduct::addWater( const WaterSource& source )

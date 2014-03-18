@@ -94,7 +94,7 @@ void ServiceBuilding::destroy()
 void ServiceBuilding::deliverService()
 {
   // make a service walker and send him to his wandering
-  ServiceWalkerPtr serviceman = ServiceWalker::create( _getCity(), getService() );
+  ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), getService() );
   serviceman->setMaxDistance( walkerDistance() );
   serviceman->send2City( BuildingPtr( this ) );
 

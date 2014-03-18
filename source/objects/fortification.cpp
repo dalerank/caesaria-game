@@ -84,21 +84,21 @@ void Fortification::destroy()
 {
   Construction::destroy();
 
-  if( _getCity().isValid() )
+  if( _city().isValid() )
   {
-    TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArray area = _city()->getTilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
     foreach( tile, area )
     {
       FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
       if( f.isValid()  )
       {
-        f->updatePicture( _getCity() );
+        f->updatePicture( _city() );
       }
     }
   }
 }
 
-Point Fortification::getOffset(Tile& tile, const Point& subpos) const
+Point Fortification::offset(Tile& tile, const Point& subpos) const
 {
   switch( _d->index )
   {

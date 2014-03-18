@@ -34,9 +34,9 @@ public:
   TileOverlay( const Type type, const Size& size=Size(1));
   virtual ~TileOverlay();
 
-  Tile& getTile() const;  // master tile, in case of multi-tile area
+  Tile& tile() const;  // master tile, in case of multi-tile area
   TilePos pos() const;
-  Size getSize() const;  // size in tiles (1=1x1, 2=2x2, ...)
+  Size size() const;  // size in tiles (1=1x1, 2=2x2, ...)
   void setSize( const Size& size );
 
   bool isDeleted() const;  // returns true if the overlay should be forgotten
@@ -50,7 +50,7 @@ public:
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete
 
-  virtual Point getOffset( Tile& tile, const Point& subpos ) const;
+  virtual Point offset( Tile& tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
@@ -61,12 +61,12 @@ public:
   virtual std::string getSound() const;
 
   void setAnimation( const Animation& animation );
-  const Animation& getAnimation() const;
+  const Animation& animation() const;
 
   virtual const PicturesArray& getPictures( Renderer::Pass pass ) const;
   virtual Renderer::PassQueue getPassQueue() const;
 
-  std::string getName();  // landoverlay debug name
+  std::string name();  // landoverlay debug name
   void setName( const std::string& name );
 
   Type type() const;
@@ -78,11 +78,11 @@ public:
 
 protected:
   Animation& _animationRef();
-  Tile* _getMasterTile();
-  PlayerCityPtr _getCity() const;
+  Tile* _masterTile();
+  PlayerCityPtr _city() const;
   PicturesArray& _fgPicturesRef();
-  Picture& _getPicture();
   Picture&_fgPicture(unsigned int index);
+  Picture& _pictureRef();
 
 private:
   class Impl;

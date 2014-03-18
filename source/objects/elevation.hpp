@@ -29,7 +29,7 @@ public:
   virtual void initTerrain(Tile &terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual Point getOffset( Tile& tile, const Point &subpos) const;
+  virtual Point offset( Tile& tile, const Point &subpos) const;
   virtual bool isDestructible() const;
 };
 

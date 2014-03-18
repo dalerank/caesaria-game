@@ -84,7 +84,7 @@ public:
     }
   }
 
-  Point getOffset( Tile& , const Point& subpos ) const
+  Point offset( Tile& , const Point& subpos ) const
   {
     switch( _index )
     {
@@ -391,7 +391,7 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
 
 bool LowBridge::canDestroy() const
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   foreach( subtile, _d->subtiles )
   {
     WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->pos() );
@@ -415,7 +415,7 @@ void LowBridge::destroy()
 
     std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 
-    Tile& mapTile = _getCity()->getTilemap().at( (*it)->_pos );
+    Tile& mapTile = _city()->getTilemap().at( (*it)->_pos );
     mapTile.setPicture( &Picture::load( picName ) );
     TileHelper::decode( mapTile, (*it)->_info );
   }

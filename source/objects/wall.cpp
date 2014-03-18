@@ -60,16 +60,16 @@ void Wall::destroy()
 {
   Construction::destroy();
 
-  if( _getCity().isValid() )
+  if( _city().isValid() )
   {
-    TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArray area = _city()->getTilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
 
     foreach( tile, area )
     {
       WallPtr wall = ptr_cast<Wall>( (*tile)->overlay() );
       if( wall.isValid()  )
       {
-        wall->updatePicture( _getCity() );
+        wall->updatePicture( _city() );
       }
     }
   }

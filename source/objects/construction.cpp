@@ -47,10 +47,10 @@ bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& 
   bool is_constructible = true;
 
   //return area for available tiles
-  TilesArray area = tilemap.getArea( pos, getSize() );
+  TilesArray area = tilemap.getArea( pos, size() );
 
   //on over map size
-  if( (int)area.size() != getSize().area() )
+  if( (int)area.size() != size().area() )
     return false;
 
   foreach( tile, area ) {is_constructible &= (*tile)->getFlag( Tile::isConstructible );}
@@ -101,12 +101,12 @@ void Construction::build(PlayerCityPtr city, const TilePos& pos )
 void Construction::computeAccessRoads()
 {
   _d->accessRoads.clear();
-  if( !_getMasterTile() )
+  if( !_masterTile() )
       return;
 
-  Tilemap& tilemap = _getCity()->getTilemap();
+  Tilemap& tilemap = _city()->getTilemap();
 
-  int s = getSize().width();
+  int s = size().width();
   for( int dst=1; dst <= getRoadAccessDistance(); dst++ )
   {
     TilesArray rect = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
@@ -133,14 +133,14 @@ void Construction::burn()
 {
   deleteLater();
 
-  events::GameEventPtr event = events::DisasterEvent::create( getTile(), events::DisasterEvent::fire );
+  events::GameEventPtr event = events::DisasterEvent::create( tile(), events::DisasterEvent::fire );
   event->dispatch();
 }
 
 void Construction::collapse()
 {
   deleteLater();
-  events::GameEventPtr event = events::DisasterEvent::create( getTile(), events::DisasterEvent::collapse );
+  events::GameEventPtr event = events::DisasterEvent::create( tile(), events::DisasterEvent::collapse );
   event->dispatch();
 }
 
@@ -188,8 +188,8 @@ TilesArray Construction::getEnterArea() const
 {
   TilesArray tiles;
 
-  int s = getSize().width();
-  TilesArray near = _getCity()->getTilemap().getRectangle( pos() - TilePos(1, 1),
+  int s = size().width();
+  TilesArray near = _city()->getTilemap().getRectangle( pos() - TilePos(1, 1),
                                                                   pos() + TilePos(s, s),
                                                                   !Tilemap::checkCorners );
 

@@ -87,7 +87,7 @@ GladiatorSchool::GladiatorSchool() : TrainingBuilding( building::gladiatorSchool
 void GladiatorSchool::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::gladiator );
+  TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::gladiator );
   trainee->send2City( this );
 }
 
@@ -136,7 +136,7 @@ void LionsNursery::timeStep(const unsigned long time)
 void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  LionTamerPtr tamer = LionTamer::create( _getCity() );
+  LionTamerPtr tamer = LionTamer::create( _city() );
   tamer->send2City( this, true );
 
   if( !tamer->isDeleted() )

@@ -227,9 +227,9 @@ unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->
 
 int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
 {
-  city::Helper helper( house->_getCity() );
+  city::Helper helper( house->_city() );
 
-  Size size = house->getSize();
+  Size size = house->size();
   TilePos offset( size.width(), size.height() );
   TilePos housePos = house->pos();
   HouseList houses = helper.find<House>( constants::building::house, housePos - offset, housePos + offset );
@@ -575,9 +575,9 @@ HouseSpecification HouseSpecification::next() const
 
 int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oMissingRequirement) const
 {
-  PlayerCityPtr city = house->_getCity();
+  PlayerCityPtr city = house->_city();
 
-  TilesArray area = city->getTilemap().getArea( house->pos() - TilePos( 2, 2 ), house->getSize() + Size( 4 ) );
+  TilesArray area = city->getTilemap().getArea( house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
 
   float middleDesirbl = (float)area.front()->getDesirability();
 

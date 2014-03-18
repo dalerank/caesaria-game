@@ -66,9 +66,9 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
 
 void FortLegionnaire::_readyNewSoldier()
 {
-  RomeSoldierPtr soldier = RomeSoldier::create( _getCity(), walker::legionary );
+  RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
 
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   TilesArray tiles = helper.getAroundTiles( this );
 
   foreach( tile, tiles)
@@ -116,7 +116,7 @@ void FortArea::destroy()
 {
   Building::destroy();
 
-  FortPtr fort = ptr_cast<Fort>( _getCity()->getOverlay( _d->basePos ) );
+  FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
   if( fort.isValid() )
   {
     events::GameEventPtr e = events::ClearLandEvent::create( _d->basePos );
@@ -232,19 +232,19 @@ TilePos Fort::getFreeSlot() const
   }
 
 
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   TilesArray tiles = helper.getArea( patrolPos - TilePos( 0, 3), patrolPos );
 
   for( int range=1; range < 5; range++ )
   {
     TilePos offset( range, range );
-    TilesArray tmpTiles = _getCity()->getTilemap().getRectangle( patrolPos - offset, patrolPos + offset );
+    TilesArray tmpTiles = _city()->getTilemap().getRectangle( patrolPos - offset, patrolPos + offset );
     tiles.insert( tiles.end(), tmpTiles.begin(), tmpTiles.end() );
   }
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    WalkerList wlist = _getCity()->getWalkers( walker::any, (*it)->pos() );
+    WalkerList wlist = _city()->getWalkers( walker::any, (*it)->pos() );
     if( !wlist.empty() ) { it = tiles.erase( it ); }
     else { it++; }
   }

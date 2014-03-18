@@ -121,7 +121,7 @@ std::string Colosseum::troubleDesc() const
 
 bool Colosseum::isNeedGladiators() const
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   GladiatorSchoolList colloseums = helper.find<GladiatorSchool>( building::gladiatorSchool );
 
   return colloseums.empty();

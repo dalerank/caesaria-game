@@ -73,7 +73,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
     return;
   }
 
-  Size size = overlay->getSize();
+  Size size = overlay->size();
 
   if( overlay->canBuild( _getCity(), pos, _d->buildTiles ) )
   {

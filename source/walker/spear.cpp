@@ -59,12 +59,12 @@ void Spear::toThrow(TilePos src, TilePos dst)
   TileOverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
-    _d->height = ov->getOffset( tile, Point( 7, 7 ) ).y();
+    _d->height = ov->offset( tile, Point( 7, 7 ) ).y();
     Tile& dTile = _getCity()->getTilemap().at( dst );
     ov = dTile.overlay();
     if( ov.isValid() )
     {
-      float dHeight = ov->getOffset( dTile, Point( 7, 7) ).y();
+      float dHeight = ov->offset( dTile, Point( 7, 7) ).y();
       _d->deltaHeight = (dHeight - _d->height) / 20.f;
     }
   }

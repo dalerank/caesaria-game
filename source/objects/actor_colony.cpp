@@ -35,7 +35,7 @@ void ActorColony::deliverTrainee()
     return;
   }
 
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::actor );
+  TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::actor );
   trainee->send2City( this );
 
   if( !trainee->isDeleted() )

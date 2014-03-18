@@ -41,7 +41,7 @@ void Forum::deliverService()
 {
   if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
-    TaxCollectorPtr walker = TaxCollector::create( _getCity() );
+    TaxCollectorPtr walker = TaxCollector::create( _city() );
     walker->send2City( this );
 
     if( !walker->isDeleted() )

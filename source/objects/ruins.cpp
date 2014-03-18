@@ -73,7 +73,7 @@ void BurningRuins::timeStep(const unsigned long time)
         _animationRef().setOffset( Point( 14, 18 ) );
       }
 
-      Tilemap& tmap = _getCity()->getTilemap();
+      Tilemap& tmap = _city()->getTilemap();
       for( int range=1; range < 3; range++ )
       {
         TilePos offset( range, range );
@@ -124,9 +124,9 @@ void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   //while burning can't remove it
-  getTile().setFlag( Tile::tlTree, false );
-  getTile().setFlag( Tile::tlRoad, false );
-  getTile().setFlag( Tile::tlRock, true );
+  tile().setFlag( Tile::tlTree, false );
+  tile().setFlag( Tile::tlRoad, false );
+  tile().setFlag( Tile::tlRock, true );
 }   
 
 bool BurningRuins::isWalkable() const{  return (getState( Construction::fire ) == 0);}
@@ -163,7 +163,7 @@ void BurnedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos);
 
-  getTile().setFlag( Tile::tlRock, false );
+  tile().setFlag( Tile::tlRock, false );
 }
 
 bool BurnedRuins::isWalkable() const{  return true; }
@@ -191,8 +191,8 @@ void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   //while burning can't remove it
-  getTile().setFlag( Tile::tlTree, false );
-  getTile().setFlag( Tile::tlRoad, false );
+  tile().setFlag( Tile::tlTree, false );
+  tile().setFlag( Tile::tlRoad, false );
   setPicture( ResourceGroup::land2a, 111 + rand() % 8  );
 }
 
@@ -264,9 +264,9 @@ void PlagueRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   //while burning can't remove it
-  getTile().setFlag( Tile::tlTree, false );
-  getTile().setFlag( Tile::tlRoad, false );
-  getTile().setFlag( Tile::tlRock, true );
+  tile().setFlag( Tile::tlTree, false );
+  tile().setFlag( Tile::tlRoad, false );
+  tile().setFlag( Tile::tlRock, true );
 }
 
 bool PlagueRuins::isWalkable() const{  return (getState( Construction::fire ) == 0);}

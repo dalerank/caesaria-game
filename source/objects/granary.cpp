@@ -184,7 +184,7 @@ void Granary::_resolveDeliverMode()
 
     if( GoodOrders::deliver == order && goodFreeQty > 0 )
     {
-      CartSupplierPtr walker = CartSupplier::create( _getCity() );
+      CartSupplierPtr walker = CartSupplier::create( _city() );
       walker->send2city( BuildingPtr( this ), gType, goodFreeQty );
 
       if( !walker->isDeleted() )
@@ -206,7 +206,7 @@ void Granary::_tryDevastateGranary()
     if( goodQty > 0 )
     {
       GoodStock stock( (Good::Type)goodType, goodQty, goodQty);
-      CartPusherPtr walker = CartPusher::create( _getCity() );
+      CartPusherPtr walker = CartPusher::create( _city() );
       walker->send2city( BuildingPtr( this ), stock );
 
       if( !walker->isDeleted() )

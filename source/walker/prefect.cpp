@@ -176,7 +176,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
       if( healthLevel < 1 )
       {
         house->deleteLater();
-        events::GameEventPtr e = events::DisasterEvent::create( house->getTile(), events::DisasterEvent::plague );
+        events::GameEventPtr e = events::DisasterEvent::create( house->tile(), events::DisasterEvent::plague );
         e->dispatch();
       }
     }

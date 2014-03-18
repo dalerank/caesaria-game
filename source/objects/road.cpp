@@ -100,8 +100,8 @@ void Road::initTerrain(Tile& terrain)
 
 Picture Road::computePicture()
 {
-  int i = getTile().i();
-  int j = getTile().j();
+  int i = tile().i();
+  int j = tile().j();
 
   TilesArray roads = getAccessRoads();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
@@ -268,7 +268,7 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
 
   bool is_constructible = true;
 
-  TilesArray area = tilemap.getArea( pos, getSize() ); // something very complex ???
+  TilesArray area = tilemap.getArea( pos, size() ); // something very complex ???
   foreach( tile, area )
   {
     is_constructible &= (*tile)->getFlag( Tile::tlRoad );

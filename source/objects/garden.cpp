@@ -59,7 +59,7 @@ void Garden::build(PlayerCityPtr city, const TilePos& p )
   Construction::build( city, p );
   setPicture( ResourceGroup::entertaiment, theGrid[p.i() % 2][p.j() % 2] );
 
-  if( getSize().area() == 1 )
+  if( size().area() == 1 )
   {
     TilesArray tilesAround = city->getTilemap().getRectangle( pos() - TilePos( 1, 1),
                                                               pos() + TilePos( 1, 1 ) );
@@ -80,36 +80,36 @@ void Garden::load(const VariantMap& stream)
 
   //rebuild that garden have size=1 on basic build
   //after loading size may change to 2
-  if( getSize().area() > 1 )
+  if( size().area() > 1 )
   {
-    Construction::build( _getCity(), pos() );
+    Construction::build( _city(), pos() );
   }
 }
 
 Desirability Garden::getDesirability() const
 {
   Desirability ret = Construction::getDesirability();
-  ret.base *= getSize().area();
-  ret.range *= getSize().width();
-  ret.step *= getSize().width();
+  ret.base *= size().area();
+  ret.range *= size().width();
+  ret.step *= size().width();
 
   return ret;
 }
 
 std::string Garden::getSound() const
 {
-  return StringHelper::format( 0xff, "garden_%05d.wav", getSize().area() );
+  return StringHelper::format( 0xff, "garden_%05d.wav", size().area() );
 }
 
 void Garden::update()
 {
-  TilesArray nearTiles = _getCity()->getTilemap().getArea( pos(), Size(2) );
+  TilesArray nearTiles = _city()->getTilemap().getArea( pos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( tile, nearTiles )
   {
     GardenPtr garden = ptr_cast<Garden>( (*tile)->overlay() );
-    canGrow2squareGarden &= (garden.isValid() && garden->getSize().area() <= 2 );
+    canGrow2squareGarden &= (garden.isValid() && garden->size().area() <= 2 );
   }
 
   if( canGrow2squareGarden )
@@ -125,10 +125,10 @@ void Garden::update()
       }
     }
 
-    city::Helper helper( _getCity() );
+    city::Helper helper( _city() );
     helper.updateDesirability( this, false );
     setSize( 2 );
-    Construction::build( _getCity(), pos() );
+    Construction::build( _city(), pos() );
     setPicture( ResourceGroup::entertaiment, 114 + rand() % 3 );
     helper.updateDesirability( this, true );
   }

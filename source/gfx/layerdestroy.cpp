@@ -82,7 +82,7 @@ void LayerDestroy::render( GfxEngine& engine )
     TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
     {
-      TilesArray overlayArea = tmap.getArea( overlay->pos(), overlay->getSize() );
+      TilesArray overlayArea = tmap.getArea( overlay->pos(), overlay->size() );
       foreach( ovelayTile, overlayArea )
       {
         hashDestroyArea.insert( (*ovelayTile)->j() * 1000 + (*ovelayTile)->i() );

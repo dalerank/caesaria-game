@@ -110,7 +110,7 @@ public:
     }
   }
 
-  Point getOffset( Tile& tile, const Point& subpos ) const
+  Point offset( Tile& tile, const Point& subpos ) const
   {
     switch( _index )
     {
@@ -405,7 +405,7 @@ void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
 
 bool HighBridge::canDestroy() const
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   foreach( subtile, _d->subtiles )
   {
     WalkerList walkers = helper.find<Walker>( walker::any, (*subtile)->pos() );
@@ -421,7 +421,7 @@ bool HighBridge::canDestroy() const
 
 void HighBridge::destroy()
 { 
-  PlayerCityPtr city = _getCity();
+  PlayerCityPtr city = _city();
   foreach( it,  _d->subtiles )
   {
     HighBridgeSubTilePtr subtile = *it;

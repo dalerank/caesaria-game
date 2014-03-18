@@ -194,7 +194,7 @@ void House::_checkEvolve()
 void House::_updateTax()
 {
   _d->taxCheckInterval = GameDate::current();
-  float cityTax = _getCity()->getFunds().getTaxRate() / 100.f;
+  float cityTax = _city()->getFunds().getTaxRate() / 100.f;
   appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
 }
 
@@ -241,7 +241,7 @@ void House::_checkHomeless()
       e->dispatch();
     }
 
-    Immigrant::send2city( _getCity(), homeless, getTile(), "##immigrant_no_home##" );
+    Immigrant::send2city( _city(), homeless, tile(), "##immigrant_no_home##" );
   }
 }
 
@@ -286,12 +286,12 @@ void House::timeStep(const unsigned long time)
 
 void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int startBigPic, const char desirability )
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
 
-  if( getSize() == 1 )
+  if( size() == 1 )
   {
-    Tilemap& tmap = _getCity()->getTilemap();
-    TilesArray area = tmap.getArea( getTile().pos(), Size(2) );
+    Tilemap& tmap = _city()->getTilemap();
+    TilesArray area = tmap.getArea( tile().pos(), Size(2) );
     bool mayGrow = true;
 
     foreach( tile, area )
@@ -305,7 +305,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       HousePtr house = ptr_cast<House>( (*tile)->overlay() );
       if( house != NULL && house->getSpec().level() == level4grow )
       {
-        if( house->getSize().width() > 1 )  //bigger house near, can't grow
+        if( house->size().width() > 1 )  //bigger house near, can't grow
         {
           mayGrow = false;
           break;
@@ -325,7 +325,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       TilesArray::iterator delIt=area.begin();
       HousePtr selfHouse = ptr_cast<House>( (*delIt)->overlay() );
 
-      _d->initGoodStore( Size( getSize().width() + 1 ).area() );
+      _d->initGoodStore( Size( size().width() + 1 ).area() );
 
       delIt++; //don't remove himself
       for( ; delIt != area.end(); delIt++ )
@@ -354,7 +354,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       _d->picIdOffset = 0;
       _update();
 
-      build( _getCity(), getTile().pos() );
+      build( _city(), tile().pos() );
       //set new desirability level
       helper.updateDesirability( this, true );
     }
@@ -368,7 +368,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
   //now upgrade groud area to new desirability
   helper.updateDesirability( this, true );
 
-  bool bigSize = getSize().width() > 1;
+  bool bigSize = size().width() > 1;
   _d->houseId = bigSize ? startBigPic : startSmallPic; 
   _d->picIdOffset = bigSize ? 0 : ( (rand() % 10 > 6) ? 1 : 0 );
 }
@@ -425,11 +425,11 @@ void House::_levelUp()
 
 void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability )
 {
-  bool bigSize = getSize().width() > 1;
+  bool bigSize = size().width() > 1;
   _d->houseId = bigSize ? bigPic : smallPic;
   _d->picIdOffset = bigSize ? 0 : ( rand() % 10 > 6 ? 1 : 0 );
 
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   //clear current desirability influence
   helper.updateDesirability( this, false );
 
@@ -454,9 +454,9 @@ void House::_levelDown()
     _d->houseId = 1;
     _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
 
-    Tilemap& tmap = _getCity()->getTilemap();
+    Tilemap& tmap = _city()->getTilemap();
 
-    if( getSize().area() > 1 )
+    if( size().area() > 1 )
     {
       TilesArray perimetr = tmap.getArea( pos(), Size(2) );
       int peoplesPerHouse = getHabitants().count() / 4;
@@ -680,7 +680,7 @@ TilesArray House::getEnterArea() const
   if( isWalkable() )
   {
     TilesArray ret;
-    ret.push_back( &getTile() );
+    ret.push_back( &tile() );
     return ret;
   }
   else
@@ -705,9 +705,9 @@ void House::_update()
   Picture pic = Picture::load( ResourceGroup::housing, picId );
   setPicture( pic );
   setSize( Size( (pic.width() + 2 ) / 60 ) );
-  _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * getSize().area();
+  _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * size().area();
   _d->services[ Service::forum ].setMax( _d->spec.taxRate() * _d->maxHabitants );
-  _d->initGoodStore( getSize().area() );
+  _d->initGoodStore( size().area() );
 }
 
 int House::getRoadAccessDistance() const {  return 2; }
@@ -740,7 +740,7 @@ void House::destroy()
   do
   {
     CitizenGroup homeless = _d->habitants.retrieve( std::min<int>( _d->habitants.count(), maxCitizenInGroup ) );
-    Immigrant::send2city( _getCity(), homeless, getTile(), "##immigrant_thrown_from_house##" );
+    Immigrant::send2city( _city(), homeless, tile(), "##immigrant_thrown_from_house##" );
   }
   while( _d->habitants.count() >= maxCitizenInGroup );
 
@@ -775,7 +775,7 @@ std::string House::troubleDesc() const
   return ret;
 }
 
-bool House::isCheckedDesirability() const {  return _getCity()->getBuildOptions().isCheckDesirability(); }
+bool House::isCheckedDesirability() const {  return _city()->getBuildOptions().isCheckDesirability(); }
 
 void House::save( VariantMap& stream ) const
 {
@@ -820,7 +820,7 @@ void House::load( const VariantMap& stream )
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
   _d->currentYear = GameDate::current().year();
 
-  _d->initGoodStore( getSize().area() );
+  _d->initGoodStore( size().area() );
 
   _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
   VariantList vl_services = stream.get( "services" ).toList();
@@ -831,7 +831,7 @@ void House::load( const VariantMap& stream )
     _d->services[ type ] = (*it).toFloat(); //serviceValue
   }
 
-  Building::build( _getCity(), pos() );
+  Building::build( _city(), pos() );
   _update();
 }
 

@@ -33,7 +33,7 @@ void Helper::updateDesirability( ConstructionPtr construction, bool onBuild )
   int mul = ( onBuild ? 1 : -1);
 
   //change desirability in selfarea
-  TilesArray area = tilemap.getArea( construction->pos(), construction->getSize() );
+  TilesArray area = tilemap.getArea( construction->pos(), construction->size() );
   foreach( tile, area )
   {
     (*tile)->appendDesirability( mul * dsrbl.base );
@@ -44,7 +44,7 @@ void Helper::updateDesirability( ConstructionPtr construction, bool onBuild )
   for( int curRange=1; curRange <= dsrbl.range; curRange++ )
   {
     TilesArray perimetr = tilemap.getRectangle( construction->pos() - TilePos( curRange, curRange ),
-                                                 construction->getSize() + Size( 2 * curRange ) );
+                                                 construction->size() + Size( 2 * curRange ) );
     foreach( tile, perimetr )
     {
       (*tile)->appendDesirability( current );
@@ -56,12 +56,12 @@ void Helper::updateDesirability( ConstructionPtr construction, bool onBuild )
 
 TilesArray Helper::getArea(TileOverlayPtr overlay)
 {
-  return _city->getTilemap().getArea( overlay->pos(), overlay->getSize() );
+  return _city->getTilemap().getArea( overlay->pos(), overlay->size() );
 }
 
 TilesArray Helper::getAroundTiles(TileOverlayPtr overlay)
 {
-  return _city->getTilemap().getArea( overlay->pos()-TilePos(1,1), overlay->getSize()+Size(2) );
+  return _city->getTilemap().getArea( overlay->pos()-TilePos(1,1), overlay->size()+Size(2) );
 }
 
 TilesArray Helper::getArea(TilePos start, TilePos stop)

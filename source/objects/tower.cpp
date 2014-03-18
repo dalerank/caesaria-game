@@ -103,7 +103,7 @@ void Tower::_rebuildWays()
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
     TilePos offset( range, range );
-    TilesArray tiles = _getCity()->getTilemap().getRectangle( pos() - offset,
+    TilesArray tiles = _city()->getTilemap().getRectangle( pos() - offset,
                                                               pos() + offset );
     foreach( tile, tiles )
     {
@@ -149,7 +149,7 @@ void Tower::deliverService()
     Impl::PatrolWays::iterator it = _d->patrolWays.begin();
     std::advance( it, rand() % _d->patrolWays.size() );
 
-    WallGuardPtr guard = WallGuard::create( _getCity(), walker::romeGuard );
+    WallGuardPtr guard = WallGuard::create( _city(), walker::romeGuard );
     guard->send2city( this, *it );
 
     if( !guard->isDeleted() )
@@ -161,7 +161,7 @@ void Tower::deliverService()
 
 TilesArray Tower::getEnterArea() const
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   TilesArray tiles = helper.getAroundTiles( const_cast< Tower* >( this )  );
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )

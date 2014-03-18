@@ -36,7 +36,7 @@ bool Elevation::isWalkable() const{  return true;}
 bool Elevation::isFlat() const{  return true;
 }
 
-Point Elevation::getOffset( Tile& tile, const Point& subpos) const
+Point Elevation::offset( Tile& tile, const Point& subpos) const
 {
   //TilePos delta = pos() - tile.pos();
 

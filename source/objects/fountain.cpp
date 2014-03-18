@@ -57,10 +57,10 @@ void Fountain::deliverService()
   if( !_haveReservoirWater )
     return;
 
-  ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
+  ServiceWalkerPtr walker = ServiceWalker::create( _city(), getService() );
   walker->setBase( BuildingPtr( this ) );
   walker->setReachDistance( 4 );
-  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().pos() );
+  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
   foreach( b, reachedBuildings ) { (*b)->applyService( walker ); }
 }
@@ -70,7 +70,7 @@ void Fountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( time % _waterIncreaseInterval == 1 )
   {
-    if( getTile().getWaterService( WTR_RESERVOIR ) > 0 /*&& getWorkersCount() > 0*/ )
+    if( tile().getWaterService( WTR_RESERVOIR ) > 0 /*&& getWorkersCount() > 0*/ )
     {
       _haveReservoirWater = true;
       _animationRef().start();
@@ -89,7 +89,7 @@ void Fountain::timeStep(const unsigned long time)
     }
 
     TilePos offset( 4, 4 );
-    Tilemap& tmap = _getCity()->getTilemap();
+    Tilemap& tmap = _city()->getTilemap();
     TilesArray reachedTiles = tmap.getArea( pos() - offset, pos() + offset );
 
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
@@ -98,7 +98,7 @@ void Fountain::timeStep(const unsigned long time)
   if( time % GameDate::ticksInMonth() == 1 )
   {
     int desPic[] = { simpleFountain, prettyFountain, awesomeFountain, patricianFountain };
-    int currentId = desPic[ math::clamp<int>( getTile().getDesirability() / 25, 0, 3 ) ];
+    int currentId = desPic[ math::clamp<int>( tile().getDesirability() / 25, 0, 3 ) ];
     if( currentId != _lastPicId )
     {
       _lastPicId = currentId;
@@ -137,7 +137,7 @@ bool Fountain::isActive() const {  return ServiceBuilding::isActive() && _haveRe
 bool Fountain::haveReservoirAccess() const
 {
   TilePos offset( 10, 10 );
-  TilesArray reachedTiles = _getCity()->getTilemap().getArea( pos() - offset, pos() + offset );
+  TilesArray reachedTiles = _city()->getTilemap().getArea( pos() - offset, pos() + offset );
   foreach( tile, reachedTiles )
   {
     TileOverlayPtr overlay = (*tile)->overlay();
@@ -154,8 +154,8 @@ void Fountain::destroy()
 {
   ServiceBuilding::destroy();
 
-  Tilemap& tmap = _getCity()->getTilemap();
-  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + getSize() );
+  Tilemap& tmap = _city()->getTilemap();
+  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
   foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_FONTAIN, 20 ); }
 }

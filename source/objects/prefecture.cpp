@@ -76,7 +76,7 @@ void Prefecture::deliverService()
   if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     bool fireDetect = _d->fireDetect.i() >= 0;
-    PrefectPtr walker = Prefect::create( _getCity() );
+    PrefectPtr walker = Prefect::create( _city() );
     walker->setMaxDistance( 26 );
 
     //bool patrol = true;
@@ -84,7 +84,7 @@ void Prefecture::deliverService()
     {
       TilePos startPos = getAccessRoads().front()->pos();
 
-      Tilemap& tmap = _getCity()->getTilemap();
+      Tilemap& tmap = _city()->getTilemap();
       TilesArray arrivedArea = tmap.getArea( _d->fireDetect - TilePos( 1, 1), _d->fireDetect + TilePos( 1, 1 ) );
       Pathway pathway = Pathfinder::getInstance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
       //patrol = !pathFounded;

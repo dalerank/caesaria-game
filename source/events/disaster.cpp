@@ -77,7 +77,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
     {
       overlay->deleteLater();
       rPos = overlay->pos();
-      size = overlay->getSize();
+      size = overlay->size();
     }
 
     switch( _type )

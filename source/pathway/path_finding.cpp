@@ -70,7 +70,7 @@ void Propagator::init(TilePos origin)
 void Propagator::init( ConstructionPtr origin)
 {
    // init propagation on access roads
-  _d->origin = &origin->getTile();
+  _d->origin = &origin->tile();
   init( origin->getAccessRoads() );
 }
 

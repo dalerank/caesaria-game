@@ -60,7 +60,7 @@ void Baths::timeStep(const unsigned long time)
 {
   if( time % (GameDate::ticksInMonth() / 4) == 1 )
   {
-    city::Helper helper( _getCity() );
+    city::Helper helper( _city() );
 
     bool haveWater = false;
     TilesArray tiles = helper.getArea( this );

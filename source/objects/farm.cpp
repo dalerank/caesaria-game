@@ -104,7 +104,7 @@ bool Farm::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
   bool is_constructible = Construction::canBuild( city, pos, aroundTiles );
   bool on_meadow = false;
 
-  TilesArray area = city->getTilemap().getArea( pos, getSize() );
+  TilesArray area = city->getTilemap().getArea( pos, size() );
   foreach( tile, area )
   {
     on_meadow |= (*tile)->getFlag( Tile::tlMeadow );
@@ -191,7 +191,7 @@ FarmWheat::FarmWheat() : Farm(Good::wheat, building::wheatFarm)
 
 std::string FarmWheat::troubleDesc() const
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
 
   LocustList lc = helper.find<Locust>( walker::locust, pos() );
   if( !lc.empty() )

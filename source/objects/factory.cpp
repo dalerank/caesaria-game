@@ -222,7 +222,7 @@ void Factory::deliverGood()
   int qty = _d->store.qty( _d->outGoodType );
   if( _mayDeliverGood() && qty >= 100 )
   {      
-    CartPusherPtr walker = CartPusher::create( _getCity() );
+    CartPusherPtr walker = CartPusher::create( _city() );
 
     GoodStock pusherStock( _d->outGoodType, qty, 0 ); 
     _d->store.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
@@ -294,7 +294,7 @@ void Factory::receiveGood()
   qty = math::clamp<unsigned int>( qty, 0, 100 );
   if( _mayDeliverGood() && qty > 0 )
   {
-    CartSupplierPtr walker = CartSupplier::create( _getCity() );
+    CartSupplierPtr walker = CartSupplier::create( _city() );
     walker->send2city( this, getInGoodType(), qty );
 
     if( !walker->isDeleted() )
@@ -322,7 +322,7 @@ bool TimberLogger::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& 
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = city->getTilemap();
-   TilesArray area = tilemap.getRectangle( pos + TilePos( -1, -1 ), getSize() + Size( 2 ), Tilemap::checkCorners );
+   TilesArray area = tilemap.getRectangle( pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
    foreach( tile, area )
    {
      near_forest |= (*tile)->getFlag( Tile::tlTree );

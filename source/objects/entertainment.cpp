@@ -96,7 +96,7 @@ float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
   return ServiceBuilding::evaluateTrainee( traineeType );
 }
 
-bool EntertainmentBuilding::isShow() const { return getAnimation().isRunning(); }
+bool EntertainmentBuilding::isShow() const { return animation().isRunning(); }
 unsigned int EntertainmentBuilding::showsCount() const { return _d->showCounter; }
 
 void EntertainmentBuilding::save(VariantMap& stream) const

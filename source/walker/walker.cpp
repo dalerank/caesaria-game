@@ -299,7 +299,7 @@ void Walker::_walk()
                     : tile;
 
   Point overlayOffset = offtile.overlay().isValid()
-                             ? offtile.overlay()->getOffset( offtile, _d->tileOffset )
+                             ? offtile.overlay()->offset( offtile, _d->tileOffset )
                              : Point( 0, 0 );
 
   _d->posOnMap = Point( _d->pos.i(), _d->pos.j() )*15 + _d->tileOffset + overlayOffset;

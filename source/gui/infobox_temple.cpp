@@ -36,7 +36,7 @@ InfoboxTemple::InfoboxTemple( Widget* parent, const Tile& tile )
 
   setConstruction( ptr_cast<Construction>( temple ) );
 
-  bool bigTemple = temple->getSize().width() > 2;
+  bool bigTemple = temple->size().width() > 2;
   std::string desc = _( divn->getShortDescription() );
   std::string text = _( StringHelper::format( 0xff, "##%s_%s_temple##",
                                                  bigTemple ? "big" : "small",

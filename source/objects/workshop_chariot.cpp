@@ -37,7 +37,7 @@ WorkshopChariot::WorkshopChariot() : TrainingBuilding( building::chariotSchool, 
 void WorkshopChariot::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  TraineeWalkerPtr trainee = TraineeWalker::create( _getCity(), walker::charioter );
+  TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::charioter );
   trainee->send2City( this );
 }
 

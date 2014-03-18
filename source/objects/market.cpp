@@ -71,7 +71,7 @@ void Market::deliverService()
   if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketLadyPtr buyer = MarketLady::create( _getCity() );
+    MarketLadyPtr buyer = MarketLady::create( _city() );
     buyer->send2City( this );
 
     if( !buyer->isDeleted() )

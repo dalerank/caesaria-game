@@ -38,10 +38,10 @@ Well::Well() : ServiceBuilding( Service::well, building::well, Size(1) )
 
 void Well::deliverService()
 {
-  ServiceWalkerPtr walker = ServiceWalker::create( _getCity(), getService() );
+  ServiceWalkerPtr walker = ServiceWalker::create( _city(), getService() );
   walker->setBase( BuildingPtr( this ) );
 
-  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( getTile().pos() );
+  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
   foreach( it, reachedBuildings) { (*it)->applyService( walker ); }
 }
@@ -54,7 +54,7 @@ TilesArray Well::getCoverageArea() const
   TilesArray ret;
 
   TilePos offset( wellServiceRange, wellServiceRange );
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   ret = helper.getArea( pos() - offset, pos() + offset );
   return ret;
 }

@@ -40,7 +40,7 @@ void HippodromeSection::destroy()
 {
   Building::destroy();
 
-  HippodromePtr hp = ptr_cast<Hippodrome>( _getCity()->getOverlay( _basepos ) );
+  HippodromePtr hp = ptr_cast<Hippodrome>( _city()->getOverlay( _basepos ) );
   if( hp.isValid() )
   {
     events::GameEventPtr e = events::ClearLandEvent::create( _basepos );

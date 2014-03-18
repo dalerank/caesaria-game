@@ -138,18 +138,18 @@ int Senate::collectTaxes()
   return save;
 }
 
-unsigned int Senate::getFunds() const {  return _getCity()->getFunds().getValue(); }
+unsigned int Senate::getFunds() const {  return _city()->getFunds().getValue(); }
 std::string Senate::getError() const {  return _d->errorStr; }
 
 int Senate::getStatus(Senate::Status status) const
 {
   switch(status)
   {
-  case workless: return city::Statistic::getWorklessPercent( _getCity() );
-  case culture: return _getCity()->getCulture();
-  case prosperity: return _getCity()->getProsperity();
-  case peace: return _getCity()->getPeace();
-  case favour: return _getCity()->getFavour();
+  case workless: return city::Statistic::getWorklessPercent( _city() );
+  case culture: return _city()->getCulture();
+  case prosperity: return _city()->getProsperity();
+  case peace: return _city()->getPeace();
+  case favour: return _city()->getFavour();
   }
 
   return 0;
@@ -159,7 +159,7 @@ void Senate::deliverService()
 {
   if( numberWorkers() > 0 && getWalkers().size() == 0 )
   {
-    TaxCollectorPtr walker = TaxCollector::create( _getCity() );
+    TaxCollectorPtr walker = TaxCollector::create( _city() );
     walker->setMaxDistance( walkerDistance() );
     walker->send2City( this );
 

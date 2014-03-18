@@ -68,7 +68,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::highBridge:
       pic = tile.getPicture();
       needDrawAnimations = true;
-      areaSize = overlay->getSize();
+      areaSize = overlay->size();
     break;
 
     default:

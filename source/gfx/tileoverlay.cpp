@@ -68,7 +68,7 @@ void TileOverlay::setPicture(Picture picture)
 
   if (_d->masterTile != NULL)
   {
-    Tilemap &tilemap = _getCity()->getTilemap();
+    Tilemap &tilemap = _city()->getTilemap();
     // _master_tile == NULL is cloneable buildings
     TilePos pos = _d->masterTile->pos();
 
@@ -109,7 +109,7 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
   }
 }
 
-Tile& TileOverlay::getTile() const
+Tile& TileOverlay::tile() const
 {
   if( !_d->masterTile )
   {
@@ -141,7 +141,7 @@ void TileOverlay::save( VariantMap& stream ) const
                       ? Variant( md.getData( _d->overlayType ).getName() )
                       : Variant( getDebugName() ) );
 
-  config.push_back( getTile().pos() );
+  config.push_back( tile().pos() );
 
   stream[ "config" ] = config;
   stream[ "picture" ] = Variant( _d->picture.name() );
@@ -183,23 +183,23 @@ std::string TileOverlay::getSound() const
 
 void TileOverlay::setName( const std::string& name ){  _d->name = name;}
 void TileOverlay::setSize( const Size& size ){  _d->size = size;}
-Point TileOverlay::getOffset( Tile&, const Point& ) const{  return Point( 0, 0 );}
+Point TileOverlay::offset( Tile&, const Point& ) const{  return Point( 0, 0 );}
 Animation& TileOverlay::_animationRef(){  return _d->animation;}
-Tile* TileOverlay::_getMasterTile(){  return _d->masterTile;}
-PlayerCityPtr TileOverlay::_getCity() const{ return _d->city;}
+Tile* TileOverlay::_masterTile(){  return _d->masterTile;}
+PlayerCityPtr TileOverlay::_city() const{ return _d->city;}
 PicturesArray& TileOverlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture& TileOverlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
-Picture& TileOverlay::_getPicture(){  return _d->picture;}
+Picture& TileOverlay::_pictureRef(){  return _d->picture;}
 TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
 const Picture& TileOverlay::getPicture() const{  return _d->picture;}
 void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}
-const Animation&TileOverlay::getAnimation() const { return _d->animation;}
+const Animation&TileOverlay::animation() const { return _d->animation;}
 void TileOverlay::deleteLater(){  _d->isDeleted  = true;}
 void TileOverlay::destroy(){}
-Size TileOverlay::getSize() const{  return _d->size;}
+Size TileOverlay::size() const{  return _d->size;}
 bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
-Renderer::PassQueue TileOverlay::getPassQueue() const{  return defaultPassQueue;}
-std::string TileOverlay::getName(){  return _d->name;}
+Renderer::PassQueue TileOverlay::getPassQueue() const{ return defaultPassQueue;}
+std::string TileOverlay::name(){  return _d->name;}
 TileOverlay::~TileOverlay(){}  // what we shall to do here?
 TileOverlay::Type TileOverlay::type() const{   return _d->overlayType;}

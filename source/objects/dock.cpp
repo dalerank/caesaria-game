@@ -72,7 +72,7 @@ bool Dock::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
 {
   bool is_constructible = true;//Construction::canBuild( city, pos );
 
-  Direction direction = _d->getDirection( city, pos, getSize() );
+  Direction direction = _d->getDirection( city, pos, size() );
 
   const_cast< Dock* >( this )->_setDirection( direction );
 
@@ -81,9 +81,9 @@ bool Dock::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
 
 void Dock::build(PlayerCityPtr city, const TilePos& pos)
 {
-  _setDirection( _d->getDirection( city, pos, getSize() ) );
+  _setDirection( _d->getDirection( city, pos, size() ) );
 
-  TilesArray area = city->getTilemap().getArea( pos, getSize() );
+  TilesArray area = city->getTilemap().getArea( pos, size() );
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
 
@@ -92,7 +92,7 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
 
 void Dock::destroy()
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
 
   TilesArray area = helper.getArea( this );
 
@@ -152,7 +152,7 @@ void Dock::load(const VariantMap& stream)
 
 bool Dock::isBusy() const
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, getLandingTile().pos() );
 
   return !merchants.empty();
@@ -160,7 +160,7 @@ bool Dock::isBusy() const
 
 const Tile& Dock::getLandingTile() const
 {
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _city()->getTilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -177,7 +177,7 @@ const Tile& Dock::getLandingTile() const
 
 int Dock::getQueueSize() const
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   TilePos offset( 3, 3 );
   SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant,
                                                         pos() - offset, pos() + offset );
@@ -193,7 +193,7 @@ int Dock::getQueueSize() const
 
 const Tile& Dock::getQueueTile() const
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   TilePos offset( 3, 3 );
   TilesArray tiles = helper.getArea( pos() - offset, pos() + offset );
 
@@ -202,7 +202,7 @@ const Tile& Dock::getQueueTile() const
     bool saveTile = false;
     if( (*it)->getFlag( Tile::tlDeepWater ) )
     {
-      saveTile = _getCity()->getWalkers( walker::seaMerchant, (*it)->pos() ).empty();
+      saveTile = _city()->getWalkers( walker::seaMerchant, (*it)->pos() ).empty();
     }
 
     if( !saveTile ) { it = tiles.erase( it ); }
@@ -210,7 +210,7 @@ const Tile& Dock::getQueueTile() const
   }
 
   TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles[ rand() % tiles.size() ]->pos();
-  return _getCity()->getTilemap().at( pos );
+  return _city()->getTilemap().at( pos );
 }
 
 void Dock::requestGoods(GoodStock& stock)
@@ -226,7 +226,7 @@ void Dock::requestGoods(GoodStock& stock)
 
 void Dock::importingGoods(GoodStock& stock)
 {
-  const GoodStore& cityOrders = _getCity()->getBuys();
+  const GoodStore& cityOrders = _city()->getBuys();
 
   //try sell goods
   int traderMaySell = std::min( stock.qty(), cityOrders.capacity( stock.type() ) );
@@ -376,7 +376,7 @@ void Dock::_tryDeliverGoods()
 
     if( qty > 0 )
     {
-      CartPusherPtr walker = CartPusher::create( _getCity() );
+      CartPusherPtr walker = CartPusher::create( _city() );
       GoodStock pusherStock( gtype, qty, 0 );
       _d->importGoods.retrieve( pusherStock, qty );
       walker->send2city( BuildingPtr( this ), pusherStock );
@@ -414,7 +414,7 @@ void Dock::_tryReceiveGoods()
     Good::Type gtype = (Good::Type)i;
     if( _d->requestGoods.qty( gtype ) > 0 )
     {
-      CartSupplierPtr cart = CartSupplier::create( _getCity() );
+      CartSupplierPtr cart = CartSupplier::create( _city() );
       int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( gtype ) );
       cart->send2city( this, gtype, qty );
 

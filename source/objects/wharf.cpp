@@ -44,7 +44,7 @@ Wharf::Wharf() : CoastalFactory(Good::none, Good::fish, building::wharf, Size(2)
 
 void Wharf::destroy()
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
 
   if( _d->boat.isValid() )
   {

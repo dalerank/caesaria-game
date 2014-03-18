@@ -77,7 +77,7 @@ void Shipyard::timeStep(const unsigned long time)
   {    
     if( _d->boat.isValid() )
     {
-      WharfPtr wharf = _d->findFreeWharf( _getCity() );
+      WharfPtr wharf = _d->findFreeWharf( _city() );
 
       if( wharf.isValid() )
       {
@@ -87,7 +87,7 @@ void Shipyard::timeStep(const unsigned long time)
       }
     }
 
-    if( !_d->isNeedCreateBoat( _getCity() ) )
+    if( !_d->isNeedCreateBoat( _city() ) )
       return;
   }
 
@@ -100,7 +100,7 @@ void Shipyard::timeStep(const unsigned long time)
     {
       updateProgress( -100.f );
 
-      _d->boat = FishingBoat::create( _getCity() );
+      _d->boat = FishingBoat::create( _city() );
       _d->boat->send2city( this, getLandingTile().pos() );
     }
   }
