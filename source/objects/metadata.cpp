@@ -208,7 +208,7 @@ Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
   return it != _d->options.end() ? it->second : defaultVal;
 }
 
-MetaData &MetaData::operator=(const MetaData &a)
+MetaData& MetaData::operator=(const MetaData &a)
 {
   _d->tileovType = a._d->tileovType;
   _d->name = a._d->name;

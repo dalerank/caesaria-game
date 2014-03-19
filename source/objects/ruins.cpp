@@ -19,10 +19,11 @@
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "events/build.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -48,12 +49,24 @@ void BurningRuins::timeStep(const unsigned long time)
      _fgPicturesRef().back() = _animationRef().currentFrame();
   }
 
-  if( time % 50 == 0 )
+  if( time % (GameDate::ticksInMonth() / 8) == 0 )
   {
     _animationRef().setDelay( math::random( 6 ) );
+
+    TilePos offset( 2, 2 );
+    city::Helper helper( _city() );
+    BuildingList buildings = helper.find<Building>( building::any, pos() - offset, pos() + offset );
+
+    foreach( it, buildings)
+    {
+      if( (*it)->getClass() != building::disasterGroup )
+      {
+        (*it)->updateState( Construction::fire, 0.5 );
+      }
+    }
   }
 
-  if (time % 16 == 0 )
+  if (time % (GameDate::ticksInMonth() / 16) == 0 )
   {
     if( getState( Construction::fire ) > 0 )
     {
@@ -71,23 +84,7 @@ void BurningRuins::timeStep(const unsigned long time)
         _animationRef().clear();
         _animationRef().load(ResourceGroup::land2a, 224, 8);
         _animationRef().setOffset( Point( 14, 18 ) );
-      }
-
-      Tilemap& tmap = _city()->getTilemap();
-      for( int range=1; range < 3; range++ )
-      {
-        TilePos offset( range, range );
-        TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
-
-        foreach( tile, tiles)
-        {
-          BuildingPtr b = ptr_cast<Building>( (*tile)->overlay() );
-          if( b.isValid() && b->getClass() != building::disasterGroup )
-          {
-            b->updateState( Construction::fire, 0.5 );
-          }
-        }
-      }
+      }      
     }
     else
     {
@@ -147,7 +144,7 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
   if ( Service::prefect == walker->getService() )
   {
     double delta =  walker->getServiceValue() / 10;
-    updateState( Construction::fire, delta );
+    updateState( Construction::fire, -delta );
   }
 }
 
@@ -216,7 +213,7 @@ void PlagueRuins::timeStep(const unsigned long time)
   _animationRef().update( time );
   _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
 
-  if (time % 16 == 0 )
+  if (time % GameDate::ticksInMonth() / 16 == 0 )
   {
     if( getState( Construction::fire ) > 0 )
     {

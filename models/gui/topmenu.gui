@@ -1,7 +1,7 @@
 {  
 	lbPopulation#Label : {
     geometry : [ 0, 0, 120, 23 ]
-    image : "paneling_00015.png"
+    image : "paneling_00015"
     font : "FONT_2_WHITE"
     textAlign : [ "center", "center" ]
     tooltipText : "##population_tooltip##"
@@ -11,7 +11,7 @@
     geometry : [ 0, 0, 120, 23 ]
     font : "FONT_2_YELLOW"
     textAlign : [ "center", "center" ]
-    image : "paneling_00015.png"
+    image : "paneling_00015"
     tooltipText : "##funds_tooltip##"
   }
   
@@ -19,7 +19,7 @@
     geometry : [ 0, 0, 120, 23 ]
     font : "FONT_2_WHITE"
     textAlign : [ "center", "center" ]
-    image : "paneling_00015.png"
+    image : "paneling_00015"
     tooltipText : "##date_tooltip##"
   }
   
