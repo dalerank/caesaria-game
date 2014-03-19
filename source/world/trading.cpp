@@ -22,6 +22,7 @@
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "game/gamedate.hpp"
 
 namespace world
 {
@@ -32,21 +33,22 @@ public:
   EmpirePtr empire;
   typedef std::map< unsigned int, TraderoutePtr > TradeRoutes;
   TradeRoutes routes;
+  int updateInterval;
 };
 
 Trading::Trading() : _d( new Impl )
 {
-  
+  _d->updateInterval = GameDate::ticksInMonth() / 20;
 }
 
 void Trading::update( unsigned int time )
 {
-  if( time % 22 != 1 )
-    return;
-
-  for( Impl::TradeRoutes::iterator it=_d->routes.begin(); it != _d->routes.end(); it++ )
+  if( time % _d->updateInterval == 1 )
   {
-    it->second->update( time );
+    for( Impl::TradeRoutes::iterator it=_d->routes.begin(); it != _d->routes.end(); it++ )
+    {
+      it->second->update( time );
+    }
   }
 }
 

@@ -33,13 +33,13 @@ public:
   static const unsigned int maxSheeps = 10;
   PlayerCityPtr city;
   DateTime lastTimeUpdate;
+  int updateInteval;
 };
 
 SrvcPtr Animals::create(PlayerCityPtr city)
 {
   Animals* ret = new Animals();
   ret->_d->city = city;
-  ret->_d->lastTimeUpdate = GameDate::current();
 
   return ret;
 }
@@ -48,7 +48,7 @@ std::string Animals::getDefaultName() { return "animals"; }
 
 void Animals::update(const unsigned int time)
 {
-  if( time % 16 != 1 )
+  if( time % _d->updateInteval != 1 )
     return;
 
   if( _d->lastTimeUpdate.month() != GameDate::current().month() )
@@ -86,7 +86,8 @@ void Animals::update(const unsigned int time)
 Animals::Animals()
   : Srvc( Animals::getDefaultName() ), _d( new Impl )
 {
-
+  _d->lastTimeUpdate = GameDate::current();
+  _d->updateInteval = GameDate::ticksInMonth() / 4;
 }
 
 }//end namespace city

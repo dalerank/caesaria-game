@@ -26,6 +26,7 @@
 #include "events/event.hpp"
 #include "walker/patrolpoint.hpp"
 #include "barracks.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -40,6 +41,7 @@ public:
   FortAreaPtr area;
   unsigned int maxSoldier;
   PatrolPointPtr patrolPoint;
+  int updateInterval;
 };
 
 FortLegionnaire::FortLegionnaire() : Fort( building::fortLegionaire, 16 )
@@ -141,9 +143,10 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   Picture area = Picture::load(ResourceGroup::security, 13 );
   area.setOffset(Tile( TilePos(3,0)).mapPos() + Point(0,-30));
 
+  _d->updateInterval = GameDate::ticksInMonth() / 10;
   _fgPicturesRef().resize(2);
-  _fgPicturesRef()[ 0 ] = logo;
-  _fgPicturesRef()[ 1 ] = area;
+  _fgPicture( 0 ) = logo;
+  _fgPicture( 1 ) = area;
 
   _d->area = new FortArea();
   _d->area->drop();
@@ -167,7 +170,7 @@ Fort::~Fort() {}
 
 void Fort::timeStep( const unsigned long time )
 {
-  if( time % 15 == 1 )
+  if( time % _d->updateInterval == 1 )
   {
     if( numberWorkers() <= 0 )
     {

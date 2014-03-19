@@ -26,6 +26,10 @@
 namespace events
 {
 
+namespace {
+ const int checkInterval = 50;
+}
+
 class PostponeEvent::Impl
 {
 public:
@@ -99,7 +103,7 @@ void PostponeEvent::_exec(Game& game, unsigned int)
 
 bool PostponeEvent::_mayExec(Game& game, unsigned int time ) const
 {
-  if( time % 25 == 1 )
+  if( time % checkInterval == 1 )
   {
     bool dateCondition = true;
     if( _d->date.year() != -1000 )

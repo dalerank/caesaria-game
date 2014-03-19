@@ -22,12 +22,13 @@
 #include "city/city.hpp"
 #include "walker/serviceman.hpp"
 #include "objects/constants.hpp"
-
+#include "game/gamedate.hpp"
 
 class Market::Impl
 {
 public:
   SimpleGoodStore goodStore;
+  int updateInterval;
 
   bool isAnyGoodStored()
   {
@@ -59,7 +60,7 @@ Market::Market() : ServiceBuilding(Service::market, constants::building::market,
   _d( new Impl )
 {
   _fgPicturesRef().resize(1);  // animation
-
+  _d->updateInterval = GameDate::ticksInMonth() / 10;
   _d->initStore();
 
   _animationRef().load( ResourceGroup::commerce, 2, 10 );
@@ -142,7 +143,7 @@ void Market::load( const VariantMap& stream)
 
 void Market::timeStep(const unsigned long time)
 {
-  if( time % 16 == 0 )
+  if( time % _d->updateInterval == 0 )
   {
     if( numberWorkers() > 0 )
     {

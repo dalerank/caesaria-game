@@ -26,6 +26,7 @@
 #include "animals.hpp"
 #include "enemysoldier.hpp"
 #include "core/foreach.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -36,6 +37,7 @@ public:
                  patrol } State;
   FortPtr base;
   State action;
+  int attackInterval;
   gfx::Type walk;
   gfx::Type fight;
   TilePos patrolPosition;
@@ -49,6 +51,7 @@ RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type ) : Soldier( cit
 
   _init( type );
   _d->patrolPosition = TilePos( -1, -1 );
+  _d->attackInterval = GameDate::ticksInMonth() / 20;
 }
 
 void RomeSoldier::_init( walker::Type type )
@@ -118,7 +121,7 @@ void RomeSoldier::timeStep(const unsigned long time)
   break;
 
   case Impl::patrol:
-    if( time % 15 == 1 )
+    if( time % _d->attackInterval == 1 )
     {
       _tryAttack();
     }

@@ -56,6 +56,17 @@
                       "clay", "marble", "timber", "iron" ]
       }
 
+      Capua : {
+        location : [ 820, 560 ]
+
+        sea : true
+        land : true
+        available : true
+
+        sells : { furniture : 25, pottery : 25 }
+        buys : { weapons : 25 }
+      }
+
       Carthago : {
         location : [ 640, 760 ]
 
@@ -70,8 +81,8 @@
 
       Syracusae : {
         location : [ 840, 720 ]
-        sells : { meat : 25, marble : 20 }
-        buys : { olive : 40, oil : 15, furniture : 25 }
+        sells : { clay : 25, weapons : 20 }
+        buys : { wine : 15, furniture : 25 }
         land : true
         sea : true
         available : true

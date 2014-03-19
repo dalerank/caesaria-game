@@ -27,6 +27,7 @@
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "walker/lion_tamer.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -34,33 +35,44 @@ TrainingBuilding::TrainingBuilding(const Type type, const Size& size )
   : WorkingBuilding( type, size )
 {
    _trainingTimer = 0;
-   _trainingDelay = 80;
+   _trainingDelay = GameDate::ticksInMonth() / 4;
 }
 
 void TrainingBuilding::timeStep(const unsigned long time)
 {
    WorkingBuilding::timeStep(time);
 
-   if( numberWorkers() <= 0 )
+   if( numberWorkers() <= 0  )
    {
-     return;
+     if( _animationRef().isRunning() )
+     {
+      _fgPicturesRef().back() = Picture::getInvalid();
+      _animationRef().stop();
+     }
    }
+   else
+   {
+     if( _animationRef().isStopped() )
+     {
+       _animationRef().start();
+     }
 
-   if( _trainingTimer == 0 )
-   {
-      deliverTrainee();
-      _trainingTimer = _trainingDelay;
-   }
-   else if (_trainingTimer > 0)
-   {
-      _trainingTimer -= 1;
-   }
+     _animationRef().update( time );
+     const Picture& pic = _animationRef().currentFrame();
+     if( pic.isValid() )
+     {
+        _fgPicturesRef().back() = _animationRef().currentFrame();
+     }
 
-   _animationRef().update( time );
-   const Picture& pic = _animationRef().currentFrame();
-   if( pic.isValid() )
-   {
-      _fgPicturesRef().back() = _animationRef().currentFrame();
+     if( _trainingTimer == 0 )
+     {
+        deliverTrainee();
+        _trainingTimer = _trainingDelay;
+     }
+     else if (_trainingTimer > 0)
+     {
+        _trainingTimer -= 1;
+     }
    }
 }
 
@@ -116,21 +128,6 @@ LionsNursery::LionsNursery() : TrainingBuilding( building::lionsNursery, Size(3)
 void LionsNursery::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
-
-  if( time % 15 == 1 )
-  {
-    if( numberWorkers() > 0 )
-    {
-      if( _animationRef().isStopped() )
-      {
-        _animationRef().start();
-      }
-    }
-    else if( _animationRef().isRunning() )
-    {
-      _animationRef().stop();
-    }
-  }
 }
 
 void LionsNursery::deliverTrainee()

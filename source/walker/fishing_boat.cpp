@@ -28,6 +28,7 @@
 #include "objects/predefinitions.hpp"
 #include "walker/fish_place.hpp"
 #include "gfx/tilesarray.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -35,6 +36,7 @@ class FishingBoat::Impl
 {
 public:  
   CoastalFactoryPtr base;
+  int updateInterval;
   TilePos destination;
   GoodStock stock;
   FishingBoat::State mode;
@@ -70,7 +72,7 @@ void FishingBoat::timeStep(const unsigned long time)
 {
   Ship::timeStep( time );
 
-  if( time % 16 == 1 )
+  if( time % _d->updateInterval == 1 )
   {
     switch( _d->mode )
     {
@@ -170,6 +172,7 @@ void FishingBoat::die()
 {
   _d->mode = wait;
   _d->base = 0;
+  _d->updateInterval = GameDate::ticksInMonth() / 20;
   _animationRef().load( ResourceGroup::carts, 265, 8 );
   _animationRef().setDelay( 4 );
 

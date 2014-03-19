@@ -27,7 +27,7 @@ namespace city
 {
 
 struct SoundEmitter
-{
+{  
   Tile* tile;
   TileOverlayPtr overlay;
   TilePos& camerapos;
@@ -110,7 +110,7 @@ AmbientSound::AmbientSound(PlayerCityPtr city )
 
 void AmbientSound::update( const unsigned int time )
 {
-  if( time % 5 != 1 )
+  if( time % 20 != 1 )
     return;
 
   Tile* tile = _d->camera->getCenterTile();

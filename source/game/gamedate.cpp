@@ -30,7 +30,7 @@ GameDate& GameDate::instance()
   return inst;
 }
 
-unsigned int GameDate::ticksInMonth() {  return 250; }
+unsigned int GameDate::ticksInMonth() {  return 500; }
 
 void GameDate::timeStep( unsigned int time )
 {

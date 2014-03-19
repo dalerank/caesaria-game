@@ -45,6 +45,7 @@ public:
   bool alsoResolved;
   int serviceTimer;
   int produceTimer;
+  int decreaseWaterInterval;
   std::string errorStr;
 };
 
@@ -169,6 +170,7 @@ WaterSource::WaterSource(const Type type, const Size& size )
 {
   _d->water = 0;
   _d->lastWaterState = false;
+  _d->decreaseWaterInterval = GameDate::ticksInMonth() / 10;
 }
 
 WaterSource::~WaterSource(){}
@@ -184,7 +186,7 @@ bool WaterSource::haveWater() const{  return _d->water > 0;}
 
 void WaterSource::timeStep( const unsigned long time )
 {
-  if( time % 22 == 1)
+  if( time % _d->decreaseWaterInterval == 1)
   {
     _d->water = math::clamp( _d->water-1, 0, 16 );
     if( _d->lastWaterState != (_d->water > 0) )

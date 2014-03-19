@@ -22,6 +22,7 @@
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -33,6 +34,7 @@ public:
   int currentIndex;
   int stopIndex;
   int time;
+  int updateInterval;
   int delay;
   bool loop;
   Picture picture;
@@ -84,6 +86,7 @@ Corpse::Corpse( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
   _d->rcGroup = "";
   _d->time = 0;
   _d->delay = 0;
+  _d->updateInterval = GameDate::ticksInMonth() / 20;
   _d->loop = false;
 
   setName( _("##corpse##") );
@@ -114,7 +117,7 @@ void Corpse::timeStep(const unsigned long time)
 
   _d->time++;
 
-  if( ( time % 8 == 1 ) && getHealth() <= 0 )
+  if( ( time % _d->updateInterval == 1 ) && getHealth() <= 0 )
   {
     updateHealth( -1 );
 

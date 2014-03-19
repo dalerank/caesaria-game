@@ -29,6 +29,7 @@
 #include "objects/fortification.hpp"
 #include "walker/spear.hpp"
 #include "core/foreach.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -41,6 +42,7 @@ public:
   State action;
   gfx::Type walk;
   gfx::Type fight;
+  int ckeckEnemiesInterval;
   TilePos patrolPosition;
   int wait;
   double strikeForce, resistance;
@@ -56,6 +58,7 @@ WallGuard::WallGuard( PlayerCityPtr city, walker::Type type ) : Soldier( city ),
   _init( type );
   _d->patrolPosition = TilePos( -1, -1 );
   _d->wait = 0;
+  _d->ckeckEnemiesInterval = GameDate::ticksInMonth() / 20;
 }
 
 void WallGuard::_init( walker::Type type )
@@ -141,7 +144,7 @@ void WallGuard::timeStep(const unsigned long time)
   break;
 
   case Impl::patrol:
-    if( time % 15 == 1 )
+    if( time % _d->ckeckEnemiesInterval == 1 )
     {
       bool haveEnemies = _tryAttack();
       if( !haveEnemies )
