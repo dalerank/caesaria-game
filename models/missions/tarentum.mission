@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Capua.sav"
+  map : "/maps/Tarentum.sav"
   funds : 8000
   date : "-350.01.01"
   finish : "-300.01.01"
@@ -8,16 +8,18 @@
   win :
   {
     population : 2500
-    culture : 35
+    culture : 30
     prosperity : 10
-    peace : 20
-    favour : 60
+    peace : 10
+    favour : 40
     next : "/missions/tutorial4.briefing"
     title : "##win_engineer_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##capua_title##"
-    overview :  [ "##capua_overview##" ]
+    caption : "##tarentum_3_title##"
+    overview :  [ "##tarentum_3_overview##",
+                  "@img=picture5_00013",
+                  "##tarentum_3_overview_2##"]
   }
 	
   empire : {
@@ -77,16 +79,7 @@
                       "fish", "timber", "clay" ]
       }
 
-      Tarentum : {
-        location : [ 900, 600 ]
 
-        land : true
-        sea : true
-        available : true
-
-        sells : {	wine : 25, furniture : 25 }
-        buys : { pottery : 25 }
-      }
     }
   }
   		
@@ -131,6 +124,7 @@
       forum_1 : false
       garden : true
       low_bridge : true
+      gatehouse : true
       high_bridge : true
       clay_pit : true
       pottery_workshop : true

@@ -69,12 +69,12 @@ public:
   void setPicture( const Picture* picture );
   void setPicture( const char* rc, const int index );
   void setPicture( const std::string& name );
-  const Picture& getPicture() const;
+  const Picture& picture() const;
 
   // used for multi-tile graphics: current displayed picture
   // background of constructible tiles is 1x1 => master used for foreground
   // non-constructible tiles have no foreground => master used for background
-  Tile* getMasterTile() const;
+  Tile* masterTile() const;
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
 
@@ -85,7 +85,7 @@ public:
 
   void animate( unsigned int time );
 
-  const Animation& getAnimation() const;
+  const Animation& animation() const;
   void setAnimation( const Animation& animation );
 
   bool isWalkable( bool ) const;
@@ -96,7 +96,7 @@ public:
   int getDesirability() const;
   TileOverlayPtr overlay() const;
   void setOverlay( TileOverlayPtr overlay );
-  unsigned int getOriginalImgId() const;
+  unsigned int originalImgId() const;
   void setOriginalImgId( unsigned short int id );
 
   void fillWaterService( WaterService type, int value=1 );

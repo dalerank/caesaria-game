@@ -36,8 +36,6 @@ std::set<int> LayerSimple::getVisibleWalkers() const
 
 void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 {
-  Point screenPos = tile.mapPos() + offset;
-
   TileOverlayPtr overlay = tile.overlay();
 
   if( overlay.isValid() )
@@ -48,12 +46,9 @@ void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
   if( !tile.getFlag( Tile::wasDrawn ) )
   {
     tile.setWasDrawn();
-    engine.drawPicture( tile.getPicture(), screenPos );
+    drawTilePass( engine, tile, offset, Renderer::ground );
 
-    if( tile.getAnimation().isValid() )
-    {
-      engine.drawPicture( tile.getAnimation().currentFrame(), screenPos );
-    }
+    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
 
     drawTilePass( engine, tile, offset, Renderer::foreground );
   }

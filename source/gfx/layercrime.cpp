@@ -46,7 +46,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.getPicture(), screenPos );
+    engine.drawPicture( tile.picture(), screenPos );
   }
   else
   {
@@ -58,7 +58,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case construction::road:
     case construction::plaza:
     case building::prefecture:
-      engine.drawPicture( tile.getPicture(), screenPos );
+      engine.drawPicture( tile.picture(), screenPos );
       drawTilePass( engine, tile, offset, Renderer::foreground );
       needDrawAnimations = true;
     break;

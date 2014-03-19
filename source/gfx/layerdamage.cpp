@@ -51,7 +51,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.getPicture(), screenPos );
+    engine.drawPicture( tile.picture(), screenPos );
   }
   else
   {
@@ -65,7 +65,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::collapsedRuins:
     case building::engineerPost:
       needDrawAnimations = true;
-      engine.drawPicture( tile.getPicture(), screenPos );
+      engine.drawPicture( tile.picture(), screenPos );
       drawTilePass( engine, tile, offset, Renderer::foreground );
       break;
 

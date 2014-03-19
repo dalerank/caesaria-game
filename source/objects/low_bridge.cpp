@@ -262,13 +262,13 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
     return;
   }*/
 
-  int imdId = tile.getOriginalImgId();
+  int imdId = tile.originalImgId();
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {    
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
-      imdId = (*it)->getOriginalImgId();
+      imdId = (*it)->originalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
       {
         stop = (*it)->pos();
@@ -282,7 +282,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
     TilesArray tiles = tilemap.getArea( curPos, curPos + TilePos( 10, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
-      imdId = (*it)->getOriginalImgId();
+      imdId = (*it)->originalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
         stop = (*it)->pos();
@@ -296,7 +296,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
     TilesArray tiles = tilemap.getArea( curPos, curPos + TilePos( 0, 10) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
-      imdId = (*it)->getOriginalImgId();
+      imdId = (*it)->originalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
         stop = (*it)->pos();
@@ -310,7 +310,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
     {
-      imdId = (*it)->getOriginalImgId();
+      imdId = (*it)->originalImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
         stop = (*it)->pos();
@@ -377,8 +377,8 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
       LowBridgeSubTilePtr subtile = _d->subtiles[ index ];
       TilePos buildPos = pos + subtile->_pos * signSum;
       Tile& tile = tilemap.at( buildPos );
-      subtile->setPicture( tile.getPicture() );
-      subtile->_imgId = tile.getOriginalImgId();
+      subtile->setPicture( tile.picture() );
+      subtile->_imgId = tile.originalImgId();
       subtile->_info = TileHelper::encode( tile );
       subtile->_parent = this;
       

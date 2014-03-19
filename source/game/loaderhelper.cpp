@@ -60,7 +60,7 @@ std::string LoaderHelper::getDefaultCityName(unsigned int location)
 
 void LoaderHelper::decodeTerrain(Tile &oTile, PlayerCityPtr city )
 {
-  if (!oTile.isMasterTile() && oTile.getMasterTile()!=NULL)
+  if (!oTile.isMasterTile() && oTile.masterTile()!=NULL)
     return;
 
   TileOverlayPtr overlay; // This is the overlay object, if any
@@ -71,7 +71,7 @@ void LoaderHelper::decodeTerrain(Tile &oTile, PlayerCityPtr city )
   }
   else /*if( oTile.getFlag( Tile::tlBuilding ) )*/
   {
-    switch ( oTile.getOriginalImgId() )
+    switch ( oTile.originalImgId() )
     {
       case 0xb0e:
       case 0xb0f:
@@ -96,7 +96,7 @@ void LoaderHelper::decodeTerrain(Tile &oTile, PlayerCityPtr city )
       case 0x34f:
       case 0x350:
         overlay = TileOverlayFactory::getInstance().create( building::elevation );
-        overlay->setPicture( Picture::load( TileHelper::convId2PicName( oTile.getOriginalImgId() ) ) );
+        overlay->setPicture( Picture::load( TileHelper::convId2PicName( oTile.originalImgId() ) ) );
       break;
     }
   }
@@ -104,7 +104,7 @@ void LoaderHelper::decodeTerrain(Tile &oTile, PlayerCityPtr city )
   //terrain.setOverlay( overlay );
   if( overlay != NULL )
   {
-    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.getOriginalImgId() );
+    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.originalImgId() );
     overlay->build( city, oTile.pos() );
     city->getOverlays().push_back(overlay);
   }

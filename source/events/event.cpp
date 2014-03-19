@@ -117,7 +117,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
 
       if( tile->getFlag( Tile::tlMeadow ) || tile->getFlag( Tile::tlWater ) )
       {
-        tile->setPicture( TileHelper::convId2PicName( tile->getOriginalImgId() ) );
+        tile->setPicture( TileHelper::convId2PicName( tile->originalImgId() ) );
       }
       else
       {

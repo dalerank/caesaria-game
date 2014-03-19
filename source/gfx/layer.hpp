@@ -33,9 +33,15 @@ public:
 
   virtual int getType() const = 0;
   virtual VisibleWalkers getVisibleWalkers() const = 0;
+
+  //draw gfx before walkers
+  virtual void drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const int depth, bool force );
+
+  //draw gfx active tile
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset ) = 0;
 
-  virtual void drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const int depth, bool force );
+  //draw gfx after walkers
+  virtual void drawTileW( GfxEngine& engine, Tile& tile, const Point& offset, const int depth );
 
   virtual void handleEvent( NEvent& event );
   virtual void drawTilePass(GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass );

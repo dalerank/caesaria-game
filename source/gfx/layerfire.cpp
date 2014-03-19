@@ -48,7 +48,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.getPicture(), screenPos );
+    engine.drawPicture( tile.picture(), screenPos );
   }
   else
   {
@@ -67,7 +67,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::fountain:
     case building::lowBridge:
     case building::highBridge:
-      engine.drawPicture( tile.getPicture(), screenPos );
+      engine.drawPicture( tile.picture(), screenPos );
       drawTilePass( engine, tile, offset, Renderer::foreground );
       needDrawAnimations = true;
     break;

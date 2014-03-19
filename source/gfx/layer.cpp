@@ -174,14 +174,29 @@ TilesArray Layer::_getSelectedArea()
 
 void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass)
 {
-  if( tile.overlay().isNull() )
-    return;
-
-  const PicturesArray& pictures = tile.overlay()->getPictures( pass );
-
-  for( PicturesArray::const_iterator it=pictures.begin(); it != pictures.end(); it++ )
+  Point screenPos = tile.mapPos() + offset;
+  switch( pass )
   {
-    engine.drawPicture( *it, tile.mapPos() + offset );
+  case Renderer::ground: engine.drawPicture( tile.picture(), screenPos ); break;
+
+  case Renderer::groundAnimation:
+    if( tile.animation().isValid() )
+    {
+      engine.drawPicture( tile.animation().currentFrame(), screenPos );
+    }
+  break;
+
+  default:
+    if( tile.overlay().isNull() )
+      return;
+
+    const PicturesArray& pictures = tile.overlay()->getPictures( pass );
+
+    for( PicturesArray::const_iterator it=pictures.begin(); it != pictures.end(); it++ )
+    {
+      engine.drawPicture( *it, screenPos );
+    }
+  break;
   }
 }
 
@@ -250,7 +265,7 @@ void Layer::render( GfxEngine& engine)
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
-    Tile* master = tile->getMasterTile();
+    Tile* master = tile->masterTile();
 
     if( !tile->isFlat() )
       continue;
@@ -279,17 +294,37 @@ void Layer::render( GfxEngine& engine)
     drawTileR( engine, *tile, camOffset, z, false );
 
     _drawWalkers( engine, *tile, camOffset );
+
+    drawTileW( engine, *tile, camOffset, z );
   }
 }
 
-void Layer::drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const int depth, bool force )
+void Layer::drawTileW( GfxEngine& engine, Tile& tile, const Point& offset, const int depth)
+{
+  Tile* master = tile.masterTile();
+
+  if( 0 == master )    // single-tile
+  {
+    drawTilePass( engine, tile, offset, Renderer::overWalker  );
+    return;
+  }
+
+  // multi-tile: draw the master tile.
+  // and it is time to draw the master tile
+  //if( master->pos().z() == depth )
+  {
+    drawTilePass( engine, *master, offset, Renderer::overWalker );
+  }
+}
+
+void Layer::drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const int depth, bool force)
 {
   if( tile.isFlat() && !force )
   {
     return;  // tile has already been drawn!
   }
 
-  Tile* master = tile.getMasterTile();
+  Tile* master = tile.masterTile();
 
   if( 0 == master )    // single-tile
   {

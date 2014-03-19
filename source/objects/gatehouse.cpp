@@ -123,20 +123,9 @@ void Gatehouse::load(const VariantMap& stream)
   Building::load( stream );
 }
 
-bool Gatehouse::isWalkable() const
-{
-  return true;
-}
-
-bool Gatehouse::isRoad() const
-{
-  return true;
-}
-
-Renderer::PassQueue Gatehouse::getPassQueue() const
-{
-  return gatehousePass;
-}
+bool Gatehouse::isWalkable() const {  return true; }
+bool Gatehouse::isRoad() const {  return true; }
+Renderer::PassQueue Gatehouse::getPassQueue() const{  return gatehousePass;}
 
 const PicturesArray& Gatehouse::getPictures(Renderer::Pass pass) const
 {

@@ -62,14 +62,14 @@ void Tile::setPicture(const Picture *picture) {  _picture = picture; }
 void Tile::setPicture(const char* rc, const int index){  setPicture( &Picture::load( rc, index ) );}
 void Tile::setPicture(const std::string& name){ setPicture( &Picture::load( name ) );}
 
-const Picture& Tile::getPicture() const
+const Picture& Tile::picture() const
 {
   _CAESARIA_DEBUG_BREAK_IF( !_picture && "error: picture is null");
 
   return *_picture;
 }
 
-Tile* Tile::getMasterTile() const{  return _master;}
+Tile* Tile::masterTile() const{  return _master;}
 void Tile::setMasterTile(Tile* master){  _master = master;}
 
 bool Tile::isFlat() const
@@ -102,7 +102,7 @@ void Tile::animate(unsigned int time)
   }
 }
 
-const Animation&Tile::getAnimation() const{  return _animation;}
+const Animation&Tile::animation() const{  return _animation;}
 void Tile::setAnimation(const Animation& animation){ _animation = animation;}
 
 bool Tile::isWalkable( bool alllands ) const
@@ -173,7 +173,7 @@ void Tile::appendDesirability(int value){ _terrain.desirability += value; }
 int Tile::getDesirability() const{  return _terrain.desirability;}
 TileOverlayPtr Tile::overlay() const{ return _overlay;}
 void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
-unsigned int Tile::getOriginalImgId() const{  return _terrain.imgid;}
+unsigned int Tile::originalImgId() const{  return _terrain.imgid;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
 
 void Tile::fillWaterService(WaterService type, int value)

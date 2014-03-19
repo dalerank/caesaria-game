@@ -40,7 +40,7 @@ void CityServiceShoreline::Impl::checkMap( PlayerCityPtr city )
 
   foreach( tile, tiles )
   {
-    int imgId = (*tile)->getOriginalImgId();
+    int imgId = (*tile)->originalImgId();
     if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) )
     {
       slTiles.push_back( *tile );
@@ -83,7 +83,7 @@ void CityServiceShoreline::update( const unsigned int time )
     if( tile->overlay().isValid() )
       continue;
 
-    int picId = tile->getOriginalImgId();
+    int picId = tile->originalImgId();
     if( tile->getDesirability() > 10 )
     {
       switch( picId )
@@ -104,7 +104,7 @@ void CityServiceShoreline::update( const unsigned int time )
     }
 
     std::string picName = TileHelper::convId2PicName( picId );
-    if( picName != tile->getPicture().name())
+    if( picName != tile->picture().name())
     {
       tile->setPicture( picName );
     }

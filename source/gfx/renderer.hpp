@@ -14,7 +14,8 @@ class Renderer : public ReferenceCounted
 public:
   typedef enum {
                   none = 0, //non pass active
-                  ground=12,                  
+                  ground=12,
+                  groundAnimation,
                   foreground = 24, //solid overlays
                   building=32,
                   overWalker,

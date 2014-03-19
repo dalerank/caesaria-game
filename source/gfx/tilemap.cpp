@@ -227,7 +227,7 @@ void Tilemap::save( VariantMap& stream ) const
     Tile* tile = *it;
     bitsetInfo.push_back( TileHelper::encode( *tile ) );
     desInfo.push_back( tile->getDesirability() );
-    idInfo.push_back( tile->getOriginalImgId() );
+    idInfo.push_back( tile->originalImgId() );
   }
 
   stream[ "bitset" ]       = bitsetInfo;
@@ -260,7 +260,7 @@ void Tilemap::load( const VariantMap& stream )
     tile->appendDesirability( (*desirabilityIt).toInt() );
 
     int imgId = (*imgIdIt).toInt();
-    if( !tile->getMasterTile() && imgId != 0 )
+    if( !tile->masterTile() && imgId != 0 )
     {
       std::string picName = TileHelper::convId2PicName( imgId );
       Picture& pic = Picture::load( picName );

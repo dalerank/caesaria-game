@@ -194,7 +194,7 @@ const TilesArray& TilemapCamera::getTiles() const
           _d->tiles.push_back( tile );
         }
 
-        Tile* master = tile->getMasterTile();
+        Tile* master = tile->masterTile();
         if( master != NULL )
         {
           Point pos = master->mapPos() + _d->offset;

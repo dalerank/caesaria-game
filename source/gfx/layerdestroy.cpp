@@ -95,7 +95,7 @@ void LayerDestroy::render( GfxEngine& engine )
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
-    Tile* master = tile->getMasterTile();
+    Tile* master = tile->masterTile();
 
     if( !tile->isFlat() )
       continue;
@@ -233,11 +233,11 @@ void LayerDestroy::drawTile( GfxEngine& engine, Tile& tile, Point offset )
   if( !tile.getFlag( Tile::wasDrawn ) )
   {
     tile.setWasDrawn();
-    engine.drawPicture( tile.getPicture(), screenPos );
+    engine.drawPicture( tile.picture(), screenPos );
 
-    if( tile.getAnimation().isValid() )
+    if( tile.animation().isValid() )
     {
-      engine.drawPicture( tile.getAnimation().currentFrame(), screenPos );
+      engine.drawPicture( tile.animation().currentFrame(), screenPos );
     }
 
     drawTilePass( engine, tile, offset, Renderer::foreground );

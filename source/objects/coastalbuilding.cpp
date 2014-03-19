@@ -36,7 +36,7 @@ public:
 
   bool isFlatCoast( const Tile& tile ) const
   {
-    int imgId = tile.getOriginalImgId();
+    int imgId = tile.originalImgId();
     return (imgId >= 372 && imgId <= 387);
   }
 

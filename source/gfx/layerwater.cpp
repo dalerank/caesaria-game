@@ -49,7 +49,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.getPicture(), screenPos );
+    engine.drawPicture( tile.picture(), screenPos );
   }
   else
   {
@@ -66,7 +66,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case building::aqueduct:
     case building::lowBridge:
     case building::highBridge:
-      pic = tile.getPicture();
+      pic = tile.picture();
       needDrawAnimations = true;
       areaSize = overlay->size();
     break;

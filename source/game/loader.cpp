@@ -93,7 +93,7 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
   water.load( ResourceGroup::land1a, 127, 7, true );
   foreach( tile, area )
   {
-    int rId = (*tile)->getOriginalImgId() - 364;
+    int rId = (*tile)->originalImgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
       water.setIndex( rId );

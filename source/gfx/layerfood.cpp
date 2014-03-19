@@ -50,7 +50,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.getPicture(), screenPos );
+    engine.drawPicture( tile.picture(), screenPos );
   }
   else
   {
@@ -64,7 +64,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case construction::plaza:
     case building::market:
     case building::granary:
-      pic = tile.getPicture();
+      pic = tile.picture();
       needDrawAnimations = true;
       drawTilePass( engine, tile, offset, Renderer::foreground );
     break;

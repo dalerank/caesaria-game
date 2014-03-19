@@ -191,7 +191,7 @@ void Fountain::_initAnimation()
   case simpleFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
   case prettyFountain: _animationRef().setOffset( Point( 9, 41 ) ); break;
   case awesomeFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
-  case patricianFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
+  case patricianFountain: _animationRef().setOffset( Point( 14, 26 ) ); break;
   default: break;
   }
 }

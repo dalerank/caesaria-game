@@ -54,7 +54,7 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     }
     else
     {
-      engine.drawPicture( tile.getPicture(), screenPos );
+      engine.drawPicture( tile.picture(), screenPos );
     }
   }
   else
@@ -65,7 +65,7 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     //roads
     case construction::road:
     case construction::plaza:
-      engine.drawPicture( tile.getPicture(), screenPos );
+      engine.drawPicture( tile.picture(), screenPos );
       registerTileForRendering( tile );
     break;
 
