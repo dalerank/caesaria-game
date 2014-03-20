@@ -72,6 +72,7 @@
 #include "world/empiremap.hpp"
 #include "walker/seamerchant.hpp"
 #include "cityservice_factory.hpp"
+#include "sound/player.hpp"
 #include <set>
 
 using namespace constants;
@@ -216,6 +217,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( city::Fishery::create( this ) );
   addService( city::Disorder::create( this ) );
   addService( city::request::Dispatcher::create( this ) );
+  addService( audio::Player::create( this ) );
 }
 
 void PlayerCity::timeStep( unsigned int time )

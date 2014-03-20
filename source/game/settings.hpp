@@ -47,6 +47,7 @@ public:
   static const char* lastTranslation;
   static const char* c3gfx;
   static const char* archivesModel;
+  static const char* soundThemesModel;
 
   static GameSettings& getInstance();
 

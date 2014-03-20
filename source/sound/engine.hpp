@@ -49,6 +49,8 @@ public:
   int play( vfs::Path filename, int volume, SoundType type );
   int play( std::string rc, int index, int volume, SoundType type );
 
+  bool isPlaying( vfs::Path filename ) const;
+
   void stop( vfs::Path filename );
   void stop( int channel );
 private:

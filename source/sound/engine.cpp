@@ -246,6 +246,18 @@ int Engine::play(std::string rc, int index, int volume, SoundType type)
   return play( filename, volume, type );
 }
 
+bool Engine::isPlaying(vfs::Path filename) const
+{
+  Impl::Samples::iterator i = _d->samples.find( filename.toString() );
+
+  if( i == _d->samples.end() )
+  {
+    return false;
+  }
+
+  return (i->second.channel >= 0 && Mix_Playing( i->second.channel ) > 0);
+}
+
 void Engine::stop( vfs::Path filename )
 {
   Impl::Samples::iterator i = _d->samples.find( filename.toString() );
