@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "topmenu.hpp"
 
@@ -63,6 +65,7 @@ oc3_signals public:
   Signal0<> onSaveSignal;
   Signal0<> onLoadSignal;
   Signal0<> onShowVideoOptionsSignal;
+  Signal0<> onShowSoundOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
   Signal1<advisor::Type> onRequestAdvisorSignal;
 };
@@ -176,11 +179,12 @@ TopMenu::TopMenu( Widget* parent, const int height )
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubMenu();
   ContextMenuItem* screen = options->addItem( _("##screen_settings##"), -1, true, false, false, false );
-  /*ContextMenuItem* sound = */options->addItem( _("##sound_settings##"), -1, true, false, false, false );
+  ContextMenuItem* sound = options->addItem( _("##sound_settings##"), -1, true, false, false, false );
   ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
 
   CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::emit );
   CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::emit );
+  CONNECT( sound,  onClicked(), &_d->onShowSoundOptionsSignal,     Signal0<>::emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   ContextMenu* helpMenu = tmp->addSubMenu();
@@ -204,13 +208,14 @@ TopMenu::TopMenu( Widget* parent, const int height )
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 }
 
-Signal0<>& TopMenu::onExit() {  return _d->onExitSignal;}
-Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal;}
-Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal;}
-Signal1<advisor::Type>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal;}
-Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal;}
-Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal;}
-Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal;}
+Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }
+Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
+Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
+Signal1<advisor::Type>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
+Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
+Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }
+Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
+Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
 void TopMenu::Impl::resolveAdvisorShow(int id) { onRequestAdvisorSignal.emit( (advisor::Type)id ); }
 
 }//end namespace gui

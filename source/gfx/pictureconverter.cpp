@@ -105,7 +105,6 @@ void PictureConverter::save(Picture& pic, const std::string& filename, const std
 
 ByteArray PictureConverter::save(Picture& pic)
 {
-  int result;
   SDL_RWops *rout;
 
   ByteArray rdata;
@@ -116,7 +115,7 @@ ByteArray PictureConverter::save(Picture& pic)
     return ByteArray();
   }
 
-  result = SDL_SaveBMP_RW( pic.getSurface(), rout, 0 );
+  SDL_SaveBMP_RW( pic.getSurface(), rout, 0 );
 
   // Write the bmp out...
   unsigned int size = *(unsigned int*)(&rdata[2]);

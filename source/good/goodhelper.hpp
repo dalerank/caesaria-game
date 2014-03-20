@@ -12,10 +12,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
-#ifndef __OPENCAESAR3_GOODHELPER_H_INCLUDED__
-#define __OPENCAESAR3_GOODHELPER_H_INCLUDED__
+#ifndef __CAESARIA_GOODHELPER_H_INCLUDED__
+#define __CAESARIA_GOODHELPER_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
 #include "gfx/picture.hpp"
@@ -42,4 +43,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //__CAESARIA_GOODHELPER_H_INCLUDED__

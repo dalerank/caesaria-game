@@ -67,7 +67,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
         game.getCity()->getFunds().resolveIssue( FundIssue( city::Funds::buildConstruction,
                                                             -(int)buildingData.getOption( "cost" ) ) );
 
-        GameEventPtr e = PlaySound::create( "buildok", 1, 256 );
+        GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
         e->dispatch();
 
         if( construction->isNeedRoadAccess() && construction->getAccessRoads().empty() )

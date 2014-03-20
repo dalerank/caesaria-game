@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_SOUND_ENGINE_H_INCLUDE_
 #define _CAESARIA_SOUND_ENGINE_H_INCLUDE_
@@ -22,6 +23,7 @@
 
 #include "vfs/path.hpp"
 #include "core/variant.hpp"
+#include "constants.hpp"
 
 namespace audio
 {
@@ -29,12 +31,10 @@ namespace audio
 class Engine
 {
 public:
-  typedef enum { ambient=0, theme, game } SoundType;
-
   static Engine& instance();
 
-  void setVolume(SoundType type , int value);
-  int volume(SoundType type) const;
+  void setVolume( SoundType type , int value);
+  int volume( SoundType type) const;
 
   int maxVolumeValue() const;
 
@@ -56,6 +56,7 @@ public:
 private:
   Engine();
   bool _loadSound( vfs::Path filename );
+  void _updateSamplesVolume();
 
   class Impl;
   ScopedPtr< Impl > _d;

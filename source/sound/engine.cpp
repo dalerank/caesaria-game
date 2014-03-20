@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "engine.hpp"
 
@@ -26,6 +27,7 @@
 #include "game/settings.hpp"
 #include "core/exception.hpp"
 #include "core/logger.hpp"
+#include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "vfs/file.hpp"
 
@@ -41,6 +43,8 @@ struct Sample
 {
   int channel;
   std::string sound;
+  audio::SoundType typeSound;
+  int volume;
   Mix_Chunk* chunk;
 };
 
@@ -51,7 +55,7 @@ public:
   bool useSound;
 
   typedef std::map< std::string, Sample > Samples;
-  typedef std::map< Engine::SoundType, int > Volumes;
+  typedef std::map< audio::SoundType, int > Volumes;
   Samples samples;
   Volumes volumes;
 };
@@ -62,28 +66,26 @@ Engine& Engine::instance()
    return _instance;
 }
 
-void Engine::setVolume(Engine::SoundType type, int value)
+void Engine::setVolume( audio::SoundType type, int value)
 {
   _d->volumes[ type ] = value;
+  _updateSamplesVolume();
 }
 
-int Engine::volume(Engine::SoundType type) const
+int Engine::volume( audio::SoundType type) const
 {
   Impl::Volumes::const_iterator it = _d->volumes.find( type );
   return it != _d->volumes.end() ? it->second : 0;
 }
 
-int Engine::maxVolumeValue() const
-{
-  return MIX_MAX_VOLUME;
-}
+int Engine::maxVolumeValue() const {  return 100; }
 
 Engine::Engine() : _d( new Impl )
 {
   _d->useSound = false;
-  _d->volumes[ game ] = maxVolumeValue();
-  _d->volumes[ theme ] = maxVolumeValue() / 2;
-  _d->volumes[ ambient ] = maxVolumeValue() / 4;
+  _d->volumes[ gameSound ] = maxVolumeValue();
+  _d->volumes[ themeSound ] = maxVolumeValue() / 2;
+  _d->volumes[ ambientSound ] = maxVolumeValue() / 4;
 }
 
 Engine::~Engine() {}
@@ -152,18 +154,18 @@ void Engine::exit()
 VariantMap Engine::save() const
 {
   VariantMap ret;
-  ret[ "ambient" ] = _d->volumes[ ambient ];
-  ret[ "theme"   ] = _d->volumes[ theme ];
-  ret[ "game"    ] = _d->volumes[ game ];
+  ret[ "ambient" ] = _d->volumes[ ambientSound ];
+  ret[ "theme"   ] = _d->volumes[ themeSound ];
+  ret[ "game"    ] = _d->volumes[ gameSound ];
 
   return ret;
 }
 
 void Engine::load(const VariantMap& stream)
 {
-  _d->volumes[ ambient ] = stream.get( "ambient" );
-  _d->volumes[ theme ] = stream.get( "theme" );
-  _d->volumes[ game ] = stream.get( "game" );
+  _d->volumes[ ambientSound ] = stream.get( "ambient" );
+  _d->volumes[ themeSound ] = stream.get( "theme" );
+  _d->volumes[ gameSound ] = stream.get( "game" );
 }
 
 bool Engine::_loadSound(vfs::Path filename)
@@ -227,12 +229,15 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
         i->second.channel = Mix_PlayChannel(-1, i->second.chunk, 0);
       }
 
-      int result = math::clamp( volValue, 0, maxVolumeValue() );
-      float typeVolume = volume( type ) / 100.f;
-      float gameVolume = volume( Engine::game ) / 100.f;
+      i->second.typeSound = type;
+      i->second.volume = volValue;
 
-      result = (int)(result * typeVolume * gameVolume );
-      Mix_Volume( i->second.channel, result);
+      float result = math::clamp( volValue, 0, maxVolumeValue() ) / 100.f;
+      float typeVolume = volume( type ) / 100.f;
+      float gameVolume = volume( audio::gameSound ) / 100.f;
+
+      result = ( result * typeVolume * gameVolume ) * (2 * MIX_MAX_VOLUME);
+      Mix_Volume( i->second.channel, (int)result);
       return i->second.channel;
     }
   }
@@ -283,6 +288,23 @@ void Engine::stop(int channel)
 
       _d->samples.erase( it );
       return;
+    }
+  }
+}
+
+void Engine::_updateSamplesVolume()
+{
+  foreach( it, _d->samples )
+  {
+    const Sample& sample = it->second;
+    if( sample.channel >= 0 )
+    {
+      float result = math::clamp<int>( sample.volume, 0, maxVolumeValue() ) / 100.f;
+      float typeVolume = volume( sample.typeSound ) / 100.f;
+      float gameVolume = volume( audio::gameSound ) / 100.f;
+
+      result = ( result * typeVolume * gameVolume ) * (2 * MIX_MAX_VOLUME);
+      Mix_Volume( sample.channel, (int)result );
     }
   }
 }

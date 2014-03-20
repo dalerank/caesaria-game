@@ -362,7 +362,7 @@ void ExtentMenu::minimize()
   Point stopPos = getRelativeRect().UpperLeftCorner + Point( width(), 0 );
   new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
 
-  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 256 );
+  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
   e->dispatch();
 }
 
@@ -372,7 +372,7 @@ void ExtentMenu::maximize()
   show();
   new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
-  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 256 );
+  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
   e->dispatch();
 }
 
@@ -484,7 +484,7 @@ void Menu::Impl::initActionButton(PushButton* btn, Point pos)
 
 void Menu::Impl::playSound()
 {
-  events::GameEventPtr e = events::PlaySound::create( "panel", rand() % 2 + 1, 256 );
+  events::GameEventPtr e = events::PlaySound::create( "panel", rand() % 2 + 1, 100 );
   e->dispatch();
 }
 

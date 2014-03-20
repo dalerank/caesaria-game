@@ -74,7 +74,7 @@ void Player::update( const unsigned int time )
       _d->lastIndex = (_d->lastIndex+1) % _d->playlist.size();
       path = _d->playlist[ _d->lastIndex ];
 
-      engine.play( path, 100, audio::Engine::theme );
+      engine.play( path, 100, audio::themeSound );
     }
   }
 }

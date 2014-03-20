@@ -15,28 +15,30 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
-#define _CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
+#ifndef _CAESARIA_WINDOW_SOUND_OPTIONS_H_INCLUDE_
+#define _CAESARIA_WINDOW_SOUND_OPTIONS_H_INCLUDE_
 
-#include "widget.hpp"
+#include "gui/widget.hpp"
 #include "core/signals.hpp"
+#include "gfx/engine.hpp"
+#include "sound/constants.hpp"
 
 namespace gui
 {
 
-class GameSpeedOptionsWindow : public Widget
+class SoundOptionsWindow : public Widget
 {
 public:
-  GameSpeedOptionsWindow( Widget* parent, int gameSpeed, int scrollSpeed );
+  SoundOptionsWindow( Widget* parent,
+                      int gameSound, int ambientSound, int themeSound );
 
   //! Деструктор
-  virtual ~GameSpeedOptionsWindow(void);
+  virtual ~SoundOptionsWindow(void);
 
   virtual bool onEvent(const NEvent &event);
 
 public oc3_signals:
-  Signal1<int>& onGameSpeedChange();
-  Signal1<int>& onScrollSpeedChange();
+  Signal2<audio::SoundType, int>& onSoundChange();
 
 private:
   void _update();
@@ -45,6 +47,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-}//end namespace gui
+} //end namespace gui
 
-#endif //_CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_
+#endif //_CAESARIA_WINDOW_SOUND_OPTIONS_H_INCLUDE_

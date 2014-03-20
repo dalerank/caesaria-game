@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "window_gamespeed_options.hpp"
 #include "gfx/engine.hpp"
@@ -44,14 +46,12 @@ GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, in
 
   setupUI( GameSettings::rcpath( "/gui/speedoptions.gui" ) );
 
-  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
+  setCenter( parent->center() );
 
   _update();
 }
 
-GameSpeedOptionsWindow::~GameSpeedOptionsWindow( void )
-{
-}
+GameSpeedOptionsWindow::~GameSpeedOptionsWindow( void ) {}
 
 bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
 {
@@ -80,15 +80,8 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<int>& GameSpeedOptionsWindow::onGameSpeedChange()
-{
-  return _d->onGameSpeedChangeSignal;
-}
-
-Signal1<int>& GameSpeedOptionsWindow::onScrollSpeedChange()
-{
-  return _d->onScrollSpeedChangeSignal;
-}
+Signal1<int>& GameSpeedOptionsWindow::onGameSpeedChange() {  return _d->onGameSpeedChangeSignal;}
+Signal1<int>& GameSpeedOptionsWindow::onScrollSpeedChange(){  return _d->onScrollSpeedChangeSignal;}
 
 void GameSpeedOptionsWindow::_update()
 {

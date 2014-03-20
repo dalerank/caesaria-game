@@ -208,7 +208,7 @@ void BuildMenu::setBuildOptions( const CityBuildOptions& options )
 
 void BuildMenu::_resolveButtonClick()
 {
-  events::GameEventPtr e = events::PlaySound::create( "icon", 1, 256 );
+  events::GameEventPtr e = events::PlaySound::create( "icon", 1, 100 );
   e->dispatch();
 }
 

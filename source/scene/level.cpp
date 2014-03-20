@@ -61,6 +61,8 @@
 #include "gui/win_mission_window.hpp"
 #include "events/showempiremapwindow.hpp"
 #include "events/showadvisorwindow.hpp"
+#include "gui/sound_options_window.hpp"
+#include "sound/engine.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -102,6 +104,7 @@ public:
   void showGameSpeedOptionsDialog();
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
+  void showSoundOptionsWindow();
   void makeEnemy();
   void makeFastSave();
   vfs::Path getFastSaveName();
@@ -167,6 +170,7 @@ void Level::initialize()
   CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
+  CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
 
   CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
@@ -244,6 +248,17 @@ void Level::Impl::saveCameraPos(Point p)
   {
     game->getCity()->setCameraPos( tile->pos() );
   }
+}
+
+void Level::Impl::showSoundOptionsWindow()
+{
+  audio::Engine& e = audio::Engine::instance();
+  SoundOptionsWindow* dialog = new SoundOptionsWindow( game->gui()->rootWidget(),
+                                                       e.volume( audio::gameSound ),
+                                                       e.volume( audio::ambientSound ),
+                                                       e.volume( audio::themeSound ) );
+
+  CONNECT( dialog, onSoundChange(), &e, audio::Engine::setVolume );
 }
 
 void Level::Impl::makeEnemy()
