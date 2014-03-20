@@ -94,7 +94,6 @@
   {
     "health_upper#health_updater" : {
       date : "-350.01.01"
-      type : "good_request"
       endTime : "348.01.01"
       value : 30
     }
