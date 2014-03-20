@@ -21,6 +21,7 @@
 #include <string>
 
 #include "vfs/path.hpp"
+#include "core/variant.hpp"
 
 namespace audio
 {
@@ -28,24 +29,34 @@ namespace audio
 class Engine
 {
 public:
-   static Engine& instance();
+  typedef enum { ambient=0, theme, game } SoundType;
 
-   ~Engine();
+  static Engine& instance();
 
-   void init();
-   void exit();
+  void setVolume(SoundType type , int value);
+  int volume(SoundType type) const;
 
-   bool load( vfs::Path filename );
-   void play( vfs::Path filename, int volume );
-   void play( std::string rc, int index, int volume );
+  int maxVolumeValue() const;
 
-   void stop( vfs::Path filename );
-   void stop( int channel );
+  ~Engine();
+
+  void init();
+  void exit();
+
+  VariantMap save() const;
+  void load(const VariantMap& stream);
+
+  int play( vfs::Path filename, int volume, SoundType type );
+  int play( std::string rc, int index, int volume, SoundType type );
+
+  void stop( vfs::Path filename );
+  void stop( int channel );
 private:
-   Engine();
+  Engine();
+  bool _loadSound( vfs::Path filename );
 
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 } //end namespace audio

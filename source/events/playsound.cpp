@@ -47,7 +47,7 @@ GameEventPtr PlaySound::create(std::string filename, int volume)
 
 void PlaySound::_exec(Game&, unsigned int)
 {
-  audio::Engine::instance().play( _sound, _volume );
+  audio::Engine::instance().play( _sound, _volume, audio::Engine::ambient );
 }
 
 bool PlaySound::_mayExec(Game& game, unsigned int time) const

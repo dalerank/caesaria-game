@@ -64,7 +64,7 @@
         available : true
 
         sells : { furniture : 25, pottery : 25 }
-        buys : { weapons : 25 }
+        buys : { weapon : 25 }
       }
 
       Carthago : {
@@ -81,7 +81,7 @@
 
       Syracusae : {
         location : [ 840, 720 ]
-        sells : { clay : 25, weapons : 20 }
+        sells : { clay : 25, weapon : 20 }
         buys : { wine : 15, furniture : 25 }
         land : true
         sea : true
@@ -137,9 +137,9 @@
       low_bridge : true
       gatehouse : true
       high_bridge : true
-      clay_pit : true
       pottery_workshop : true
       dock : true
+      iron_mine : true
       hippodrome : false
       charioter_school : false
       prefecture : true
@@ -149,14 +149,12 @@
       small_neptune_temple : true
       small_mercury_temple : true
       market : true
-      oil_workshop : true
+      wine_workshop : true
       lumber_mill : true
-      furniture_workshop : true
       granery : true
       warehouse : true
       wheat_farm : true
-      fig_farm : true
-      olive_farm : true
+      vinard : true
       senate_1 : true
     }
   }

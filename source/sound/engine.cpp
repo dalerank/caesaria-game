@@ -51,7 +51,9 @@ public:
   bool useSound;
 
   typedef std::map< std::string, Sample > Samples;
+  typedef std::map< Engine::SoundType, int > Volumes;
   Samples samples;
+  Volumes volumes;
 };
 
 Engine& Engine::instance()
@@ -60,14 +62,31 @@ Engine& Engine::instance()
    return _instance;
 }
 
+void Engine::setVolume(Engine::SoundType type, int value)
+{
+  _d->volumes[ type ] = value;
+}
+
+int Engine::volume(Engine::SoundType type) const
+{
+  Impl::Volumes::const_iterator it = _d->volumes.find( type );
+  return it != _d->volumes.end() ? it->second : 0;
+}
+
+int Engine::maxVolumeValue() const
+{
+  return MIX_MAX_VOLUME;
+}
+
 Engine::Engine() : _d( new Impl )
 {
   _d->useSound = false;
+  _d->volumes[ game ] = maxVolumeValue();
+  _d->volumes[ theme ] = maxVolumeValue() / 2;
+  _d->volumes[ ambient ] = maxVolumeValue() / 4;
 }
 
-Engine::~Engine()
-{
-}
+Engine::~Engine() {}
 
 void Engine::init()
 {
@@ -127,10 +146,27 @@ void Engine::init()
 
 void Engine::exit()
 {
-   Mix_CloseAudio();
+  Mix_CloseAudio();
 }
 
-bool Engine::load(vfs::Path filename)
+VariantMap Engine::save() const
+{
+  VariantMap ret;
+  ret[ "ambient" ] = _d->volumes[ ambient ];
+  ret[ "theme"   ] = _d->volumes[ theme ];
+  ret[ "game"    ] = _d->volumes[ game ];
+
+  return ret;
+}
+
+void Engine::load(const VariantMap& stream)
+{
+  _d->volumes[ ambient ] = stream.get( "ambient" );
+  _d->volumes[ theme ] = stream.get( "theme" );
+  _d->volumes[ game ] = stream.get( "game" );
+}
+
+bool Engine::_loadSound(vfs::Path filename)
 {
   if(_d->useSound>0 && _d->samples.size()<Impl::maxSamplesNumner)
   {
@@ -168,11 +204,11 @@ bool Engine::load(vfs::Path filename)
   return true;
 }
 
-void Engine::play( vfs::Path filename, int volume)
+int Engine::play( vfs::Path filename, int volValue, SoundType type )
 {
   if(_d->useSound )
   {
-    bool isLoading = load( filename );
+    bool isLoading = _loadSound( filename );
 
     if( isLoading )
     {
@@ -180,7 +216,7 @@ void Engine::play( vfs::Path filename, int volume)
 
       if( i == _d->samples.end() )
       {
-        return;
+        return -1;
       }
 
       if( (i->second.channel == -1 )
@@ -191,15 +227,23 @@ void Engine::play( vfs::Path filename, int volume)
         i->second.channel = Mix_PlayChannel(-1, i->second.chunk, 0);
       }
 
-      Mix_Volume( i->second.channel,(volume*MIX_MAX_VOLUME)/256);
+      int result = math::clamp( volValue, 0, maxVolumeValue() );
+      float typeVolume = volume( type ) / 100.f;
+      float gameVolume = volume( Engine::game ) / 100.f;
+
+      result = (int)(result * typeVolume * gameVolume );
+      Mix_Volume( i->second.channel, result);
+      return i->second.channel;
     }
   }
+
+  return -1;
 }
 
-void Engine::play(std::string rc, int index, int volume)
+int Engine::play(std::string rc, int index, int volume, SoundType type)
 {
   std::string filename = StringHelper::format( 0xff, "%s_%05d.wav", rc.c_str(), index );
-  play( filename, volume );
+  return play( filename, volume, type );
 }
 
 void Engine::stop( vfs::Path filename )

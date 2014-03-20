@@ -160,7 +160,7 @@ void AmbientSound::update( const unsigned int time )
     {
       processedSounds.insert( sound );
 
-      ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1))  );
+      ae.play( sound, 256 / (3 *(i->getDistance( _d->cameraPos )+1)), audio::Engine::ambient  );
     }
   }
 }

@@ -100,7 +100,8 @@ WorkersHire::WorkersHire(PlayerCityPtr city )
                   << building::dock
                   << building::library
                   << building::hippodrome
-                  << building::chariotSchool;
+                  << building::chariotSchool
+                  << building::winery;
 }
 
 bool WorkersHire::_haveHr( WorkingBuildingPtr building )

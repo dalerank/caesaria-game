@@ -145,7 +145,8 @@ Good::Type GoodHelper::getType( const std::string& name )
   if( type == getInstance()._d->getInvalid() )
   {
     Logger::warning( "Can't find type for goodName %s", name.c_str() );
-    _CAESARIA_DEBUG_BREAK_IF( "Can't find type for goodName" );
+    return Good::none;
+    //_CAESARIA_DEBUG_BREAK_IF( "Can't find type for goodName" );
   }
 
   return type;
