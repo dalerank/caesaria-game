@@ -17,6 +17,7 @@
 #define __CAESARIA_LOADER_HELPER_H_INCLUDED__
 
 #include "city/predefinitions.hpp"
+#include <string>
 
 namespace gfx
 {
