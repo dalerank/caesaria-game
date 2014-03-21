@@ -168,8 +168,10 @@ void StartMenu::Impl::resolveCredits()
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
-  lbx->addItem( "gathanase" );
+  gui::ListBoxItem& item = lbx->addItem( "Developers");
+  item.setItemTextAlignment( alignCenter, alignCenter );
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
+  lbx->addItem( "gathanase" );
   lbx->addItem( "gecube (gb12335@gmail.com)" );
   lbx->addItem( "tracertong" );
   lbx->addItem( "hellium" );

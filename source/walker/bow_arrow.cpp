@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "spear.hpp"
+#include "bow_arrow.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
@@ -22,15 +22,15 @@
 
 using namespace constants;
 
-SpearPtr Spear::create(PlayerCityPtr city)
+BowArrowPtr BowArrow::create(PlayerCityPtr city)
 {
-  SpearPtr ret( new Spear( city ) );
+  BowArrowPtr ret( new BowArrow( city ) );
   ret->drop();
 
   return ret;
 }
 
-void Spear::_onTarget()
+void BowArrow::_onTarget()
 {
   WalkerList walkers = _getCity()->getWalkers( walker::any, dstPos() );
   foreach( w, walkers )
@@ -40,13 +40,13 @@ void Spear::_onTarget()
   }
 }
 
-const char* Spear::rcGroup() const {  return ResourceGroup::sprites; }
-int Spear::rcStartIndex() const { return 114; }
+const char* BowArrow::rcGroup() const {  return ResourceGroup::sprites; }
+int BowArrow::rcStartIndex() const { return 130; }
 
-Spear::Spear(PlayerCityPtr city) : ThrowingWeapon( city )
+BowArrow::BowArrow(PlayerCityPtr city) : ThrowingWeapon( city )
 {
-  _setType( walker::spear );
+  _setType( walker::bow_arrow );
   _setAnimation( gfx::unknown );
 
-  setName( _("##spear##") );
+  setName( _("##bow_arrow##") );
 }

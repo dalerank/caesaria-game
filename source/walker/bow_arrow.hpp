@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_SPEAR_H_INCLUDED__
-#define __CAESARIA_SPEAR_H_INCLUDED__
+#ifndef __CAESARIA_BOW_ARROW_H_INCLUDED__
+#define __CAESARIA_BOW_ARROW_H_INCLUDED__
 
 #include "throwing_weapon.hpp"
 
-class Spear : public ThrowingWeapon
+class BowArrow : public ThrowingWeapon
 {
 public:
-  static SpearPtr create( PlayerCityPtr city );
+  static BowArrowPtr create( PlayerCityPtr city );
 
 protected:
   virtual void _onTarget();
@@ -29,7 +29,7 @@ protected:
   virtual int rcStartIndex() const;
 
 private:
-  Spear( PlayerCityPtr city );
+  BowArrow( PlayerCityPtr city );
 };
 
-#endif //__CAESARIA_SPEAR_H_INCLUDED__
+#endif //__CAESARIA_BOW_ARROW_H_INCLUDED__

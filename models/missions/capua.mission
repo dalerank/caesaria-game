@@ -10,7 +10,7 @@
     population : 2500
     culture : 35
     prosperity : 10
-    peace : 20
+    peace : 0
     favour : 60
     next : "/missions/tutorial4.briefing"
     title : "##win_engineer_title##"

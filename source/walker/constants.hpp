@@ -65,6 +65,7 @@ enum Type{
   teacher,
   locust,
   marketBuyer,
+  bow_arrow,
   all = 0xff,
   any = all
 };

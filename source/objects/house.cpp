@@ -217,7 +217,7 @@ void House::_updateMorale()
     {
       foodStoreQty += _d->goodStore.qty( (Good::Type)k );
     }
-    const uint habtnConsumeGoodQty = currentHabtn / 2;
+    const unsigned int habtnConsumeGoodQty = currentHabtn / 2;
     int monthWithFood = foodStoreQty / (habtnConsumeGoodQty+1);
 
     updateState( House::morale, math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. ) );
