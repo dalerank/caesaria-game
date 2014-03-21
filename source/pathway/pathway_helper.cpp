@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "objects/construction.hpp"
 #include "pathway_helper.hpp"
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/helper.hpp"
-#include "objects/construction.hpp"
 
 Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
                                WayType type/*=roadOnly */ )

@@ -57,7 +57,7 @@ private:
 public:
 	ConsoleUpdater(int argc, char* argv[]);
 
-	~ConsoleUpdater();
+	virtual ~ConsoleUpdater();
 
 	Outcome GetOutcome();
 

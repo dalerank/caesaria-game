@@ -36,7 +36,7 @@ TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
   Size pSize = getParent()->size() - size();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
-  Label* lbTitle = findChildA<Label*>( "lbTitle", true );
+  Label* lbTitle = findChildA<Label*>( "lbTitle", true, this );
 
   ListBox* lbx = findChildA<ListBox*>( "lbxHelp", true, this );
   TexturedButton* btn = findChildA<TexturedButton*>( "btnExit", true, this );

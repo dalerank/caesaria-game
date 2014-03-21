@@ -22,7 +22,11 @@
 #if defined(CAESARIA_PLATFORM_LINUX) && !defined(ANDROID)
   #include <execinfo.h>
 #endif
-#include <cxxabi.h>
+
+#ifndef CAESARIA_PLATFORM_HAIKU
+  #include <cxxabi.h>
+#endif
+
 #include "scopedptr.hpp"
 #include "bytearray.hpp"
 #include "logger.hpp"

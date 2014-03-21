@@ -21,7 +21,7 @@
 #include "constants.hpp"
 #include "util.hpp"
 
-#ifdef CAESARIA_PLATFORM_UNIX
+#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
   #include <limits.h>
   #include <unistd.h>
   #include <sys/stat.h>

@@ -40,8 +40,8 @@ public:
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     city::Helper helper( city );
-    WalkerList walkers = helper.find<Walker>( walker::any, pos );
-
+    WalkerList walkers = city->getWalkers( walker::any, pos );
+    
     if( walkers.empty() )
     {
       return new T( parent, city->getTilemap().at( pos ) );
