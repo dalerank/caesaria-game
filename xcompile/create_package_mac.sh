@@ -9,7 +9,7 @@ rm -rf build
 #mkdir build 
 #cd build
 cmake -DCMAKE_BUILD_TYPE=Release .
-#make -j5
+make -j5
 
 cd ~/projects/caesaria-test
 
