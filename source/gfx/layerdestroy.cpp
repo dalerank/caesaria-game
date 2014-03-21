@@ -236,7 +236,7 @@ void LayerDestroy::handleEvent(NEvent& event)
   }
 }
 
-int LayerDestroy::type() const {  return citylayer::destroy; }
+int LayerDestroy::type() const {  return citylayer::destroyd; }
 
 std::set<int> LayerDestroy::getVisibleWalkers() const
 {

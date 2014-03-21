@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "objects/warehouse.hpp"
 #include "city/helper.hpp"
 #include "mars.hpp"
-#include "objects/warehouse.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
