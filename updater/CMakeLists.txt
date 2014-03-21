@@ -73,17 +73,15 @@ endif(WIN32)
 
 if(UNIX)
   target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
-  target_link_libraries( ${PROJECT_NAME} pthread )
 
-  set(EXECUTABLE_FILENAME "updater.linux")
+  if(HAIKU)
+    target_link_libraries( ${PROJECT_NAME} root network )
+    set(EXECUTABLE_FILENAME "updater.haiku") 
+  else(HAIKU)
+    target_link_libraries( ${PROJECT_NAME} pthread )
+    set(EXECUTABLE_FILENAME "updater.linux")
+  endif(HAIKU)
 endif(UNIX)
-
-if(HAIKU)
-  target_link_libraries( ${PROJECT_NAME} ${CURLLIB_NAME} )
-  target_link_libraries( ${PROJECT_NAME} root )
-
-  set(EXECUTABLE_FILENAME "updater.haiku")
-endif(HAIKU)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "updater.macos")
@@ -126,5 +124,8 @@ endif(EXT_BINDIR)
 
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wno-unused-value")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+  if(NOT HAIKU)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-value")
+  endif(NOT HAIKU)
 endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

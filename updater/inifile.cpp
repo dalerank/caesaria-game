@@ -20,6 +20,7 @@
 #include <set>
 #include <fstream>
 #include <sstream>
+#include <iterator>
 
 namespace updater
 {
@@ -54,9 +55,14 @@ IniFilePtr IniFile::ConstructFromFile(vfs::Path filename)
 IniFilePtr IniFile::ConstructFromStream(std::istream& stream)
 {
 	// Read the whole stream into a string
-
-	std::string buffer(std::istreambuf_iterator<char>(stream), (std::istreambuf_iterator<char>()));
-
+#ifdef CAESARIA_PLATFORM_HAIKU
+    std::string buffer;
+    std::ostringstream ors;
+    ors << stream.rdbuf();
+    buffer = ors.str();
+#else
+	std::string buffer(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>());
+#endif
 	return ConstructFromString(buffer);
 }
 

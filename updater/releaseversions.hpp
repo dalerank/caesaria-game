@@ -28,6 +28,7 @@ class ReleaseVersions :
 	public IniFile::SectionVisitor
 {
 public:
+	virtual ~ReleaseVersions() {}
 	void LoadFromIniFile(IniFilePtr iniFile)
 	{
 		iniFile->ForeachSection(*this);
