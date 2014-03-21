@@ -5,13 +5,14 @@
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "core/stacktrace.hpp"
-#include <SDL.h>
+
 
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
 #endif
 
-#ifdef ANDROID
+#if defined(ANDROID) 
+#include <SDL.h>
 int SDL_main(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
