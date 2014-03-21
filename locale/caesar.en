@@ -1,6 +1,4 @@
-{
-"##colloseum_haveno_gladiator_bouts##":"No current gladiator combat"
-"##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
+{"##0_entertainment_access##":"This dwelling has no access to any entertainment whatsoever"
 "##1_entertainment_access##":"This dwelling barely has access to any entertainment"
 "##2_entertainment_access##":"This dwelling has some access to entertainment venues"
 "##3_entertainment_access##":"This dwelling has very limited access to entertainment venues"
@@ -226,6 +224,8 @@
 "##city_cyrene##":"Cyrene"
 "##city_damascus##":"Damascus"
 "##city_has_debt##":"City has a debt to Rome of"
+"##city_has_runout_debt##":"Your city has run out of money. Caesar has decided to give you more funds, but he will not so generous next time. Export goods to generate more funds for the city."
+"##city_have_goods_for_request##":"Your warehouses report that you now have enough of these goods to fullfil the request from the Emperor."
 "##city_have##":"City treasury has assets of"
 "##city_health##":"City health"
 "##city_need_more_workers##":"Your city needs more workers"
@@ -258,6 +258,7 @@
 "##collapse_immitent##":"Collapse imminent"
 "##collapsed_ruins_info##":"These crumbled remains of old buildings lower the desirability of land in their vicinity."
 "##colloseum_haveno_animal_bouts##":"No current animal bouts"
+"##colloseum_haveno_gladiator_bouts##":"No current gladiator combat"
 "##colloseum_haveno_gladiatorpit##":"Build a gladiator school to stage fights here"
 "##colloseum_info##":"Colosseums and amphitheaters always need new gladiators to replace the losers."
 "##colloseum_no_workers##":"This colosseum is closed. With no employees to run it, it is useless as a leisure amenity."
@@ -376,6 +377,7 @@
 "##employers##":"Employed workforce"
 "##emw_bought##":"Bought"
 "##emw_buy##":"Buys"
+"##enemy_attack_city##":"Enemies of rome are at the outskirts of your city. Expect them to drop in for an urn or two of wine - and whatever else strikes their fancy!"
 "##engineer_building_allok##":"I'm hardly needed; these buildings are in great condition."
 "##engineer_gods_angry##":"Citizen! All is not well. The gods are angry."
 "##engineer_have_trouble_buildings##":"These structures were in poor condition; I came along just in time"
@@ -678,12 +680,11 @@
 "##missing_barber##":"This house cannot evolve, as it has no local access to a barber."
 "##missing_bath##":"This house cannot evolve, as it does not have access to a local bath-house."
 "##missing_baths_degrade##":"This house will devolve soon, as it has lost bath-house access."
-"##missing_clinic##":"This house cannot evolve, as it effectively has no health provision. It does not have access to a clinic, or a hospital."
-"##missing_clinic##":"This house cannot evolve, as it wants greater health provision. There is local access to a hospital, but a doctor's clinic needs to be built nearby."
 "##missing_college_degrade##":"This house will devolve soon. Its previously excellent access to education was downgraded when it lost access to its academy."
 "##missing_college##":"This house cannot evolve, as its already excellent access to education needs to be improved by access to an academy."
 "##missing_doctor_degrade##":"This house will devolve soon, as it now has woeful health provision. Not only does it lack access to a clinic, but hospital access is also less than perfect."
 "##missing_doctor_degrade##":"This house will devolve soon, as its health provision has been cut. There is local access to a hospital, but doctors' clinics are hard to find."
+"##missing_doctor_or_hospital##":"This house cannot evolve, as it effectively has no health provision. It does not have access to a clinic, or a hospital."
 "##missing_entertainment_also##":"This house cannot evolve, as there is too little entertainment to be found in the location."
 "##missing_entertainment_amph##":"This house cannot evolve, as there is hardly any entertainment to be found in the location."
 "##missing_entertainment_colloseum##":"This house cannot evolve, as there is some entertainment to be found in the location, but not enough."
@@ -700,6 +701,7 @@
 "##missing_furniture_degrade##":"This house will devolve soon, as it has run out of furniture and its local market has at best an erratic supply."
 "##missing_furniture##":"This house cannot evolve. It needs supplies of furniture provided to it by its local market before a wealthier class of citizen will move in."
 "##missing_hospital_degrade##":"This house will devolve soon, as its health provision has been cut. Doctor clinic coverage is good, but there is no local access to a hospital."
+"##missing_hospital##":"This house cannot evolve, as it wants greater health provision. There is local access to a hospital, but a doctor's clinic needs to be built nearby."
 "##missing_hospital##":"This house cannot evolve, as it wants greater health provision. Doctor's clinic coverage is good, but there is no local access to a hospital."
 "##missing_library_degrade##":"This house will devolve soon. Its access to education has been downgraded, as it has lost access to its library."
 "##missing_library##":"This house cannot evolve, as its access to education needs to be improved by access to a library."
@@ -1189,9 +1191,6 @@
 "##yes##":"Yes"
 "#save_map##":"Save map"
 "Variable":"ENGLISH (v1.1)"
-
-
-
 
 
 
