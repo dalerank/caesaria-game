@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "mercury.hpp"
 #include "city/city.hpp"
+#include "mercury.hpp"
 #include "objects/warehouse.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"

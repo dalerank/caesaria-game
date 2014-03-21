@@ -20,6 +20,7 @@
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
 #include "label.hpp"
+#include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"

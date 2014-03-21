@@ -71,7 +71,7 @@ public:
 
   Tile* random() const
   {
-    return size() > 0 ? at( math::random( size() ) ) : 0;
+    return size() > 0 ? (*this)[ math::random( size() ) ] : 0;
   }
 };
 

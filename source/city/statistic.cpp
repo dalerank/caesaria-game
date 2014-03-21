@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "statistic.hpp"
+#include "objects/construction.hpp"
 #include "helper.hpp"
 #include "trade_options.hpp"
 #include "objects/house.hpp"
