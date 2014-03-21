@@ -51,7 +51,7 @@ void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what,
   	  bList.push_back( c );
   } 
 #else
-  std::list< SmartPtr<T> > bList = helper.find<T>( tmpe	 );
+  std::list< SmartPtr<T> > bList = helper.find<T>( btype );
 #endif
   foreach( it, bList )
   {
