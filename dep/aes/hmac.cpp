@@ -34,6 +34,7 @@
 */
 
 #include "hmac.h"
+#include <string.h>
 
 /* initialise the HMAC context to zero */
 void hmac_sha_begin(hmac_ctx cx[1])
