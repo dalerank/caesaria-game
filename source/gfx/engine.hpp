@@ -45,8 +45,8 @@ public:
   void setScreenSize( Size size );
   Size getScreenSize() const;
 
-  int getScreenWidth() const;
-  int getScreenHeight() const;
+  int screenWidth() const;
+  int screenHeight() const;
 
   bool isFullscreen() const;
   void setFullscreen(bool enabled );

@@ -134,8 +134,8 @@ void Level::initialize()
 
   installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
 
-  Rect rPanelRect( engine.getScreenWidth() - rPanelPic.width(), topMenuHeight,
-                   engine.getScreenWidth(), engine.getScreenHeight() );
+  Rect rPanelRect( engine.screenWidth() - rPanelPic.width(), topMenuHeight,
+                   engine.screenWidth(), engine.screenHeight() );
 
   _d->rightPanel = MenuRigthPanel::create( gui.rootWidget(), rPanelRect, rPanelPic);
 
@@ -144,11 +144,11 @@ void Level::initialize()
   _d->topMenu->setFunds( _d->game->getCity()->getFunds().getValue() );
 
   _d->menu = Menu::create( gui.rootWidget(), -1, city );
-  _d->menu->setPosition( Point( engine.getScreenWidth() - _d->menu->width() - _d->rightPanel->width(),
+  _d->menu->setPosition( Point( engine.screenWidth() - _d->menu->width() - _d->rightPanel->width(),
                                  _d->topMenu->height() ) );
 
   _d->extMenu = ExtentMenu::create( gui.rootWidget(), -1, city );
-  _d->extMenu->setPosition( Point( engine.getScreenWidth() - _d->extMenu->width() - _d->rightPanel->width(),
+  _d->extMenu->setPosition( Point( engine.screenWidth() - _d->extMenu->width() - _d->rightPanel->width(),
                                      _d->topMenu->height() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
@@ -242,7 +242,7 @@ void Level::Impl::resolveWarningMessage(std::string text )
 
 void Level::Impl::saveCameraPos(Point p)
 {
-  Tile* tile = renderer.camera().at( Point( engine->getScreenWidth()/2, engine->getScreenHeight()/2 ), false );
+  Tile* tile = renderer.camera().at( Point( engine->screenWidth()/2, engine->screenHeight()/2 ), false );
 
   if( tile )
   {

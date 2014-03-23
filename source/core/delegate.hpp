@@ -16,7 +16,7 @@
 #ifndef __CAESARIA_DELEGATES_H_INCLUDE_
 #define __CAESARIA_DELEGATES_H_INCLUDE_
 
-#include <memory.h> // to allow <,> comparisons
+#include <string.h> // to allow <,> comparisons
 
 ////////////////////////////////////////////////////////////////////////////////
 //						Configuration options
