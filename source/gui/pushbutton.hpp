@@ -30,18 +30,18 @@ namespace gui
 class PushButton : public Widget
 {
 public:
-  typedef enum { grayBorderLine, smallGrayBorderLine, whiteBorderUp,
-                 blackBorderUp, noBackground } BackgroundStyle;
+  typedef enum { greyBorderLine, greyBorderLineSmall, whiteBorderUp,
+                 blackBorderUp, noBackground, greyBorderLineBig  } BackgroundStyle;
 
 	PushButton( Widget* );
 
 	//! constructor
 	PushButton( Widget* parent,
-			        const Rect& rectangle,
-              const std::string& caption="",
-              int id=-1, 
-			        bool noclip=false,
-              const BackgroundStyle bgtyle=grayBorderLine);
+                const Rect& rectangle,
+                const std::string& caption="",
+                int id=-1,
+                bool noclip=false,
+                const BackgroundStyle bgtyle=greyBorderLine);
 
 	//! destructor
 	virtual ~PushButton();

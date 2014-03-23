@@ -38,7 +38,7 @@ WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rect
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
   _d->lbBackgorund.reset( Picture::create( Size( rectangle.getWidth(), 20 ) ) );
-  PictureDecorator::draw( *_d->lbBackgorund, rectangle, PictureDecorator::smallBrownPanel );
+  PictureDecorator::draw( *_d->lbBackgorund, rectangle, PictureDecorator::brownPanelSmall );
 
   Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
   _d->lbBackgorund->draw( emlbPic, 4, 2 );

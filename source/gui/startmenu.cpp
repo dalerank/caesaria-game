@@ -45,20 +45,32 @@ StartMenu::~StartMenu() {}
 
 PushButton* StartMenu::addButton( const std::string& caption, int id )
 {
-    Size btnSize( 200, 25 );
-    int offsetY = 40;
+#ifdef CAESARIA_PLATFORM_ANDROID
+  Size btnSize( 300, 50 );
+  Font btnFont = Font::create( FONT_3 );
+  PushButton::BackgroundStyle style = PushButton::greyBorderLineBig;
+  int offsetY = 60;
+#else
+  Size btnSize( 200, 25 );
+  Font btnFont = Font::create( FONT_2 );
+  PushButton::BackgroundStyle style = PushButton::greyBorderLine;
+  int offsetY = 40;
+#endif
 
-    PushButton* btn = new PushButton( this, Rect( Point( 0, 0 ), btnSize ), caption, id ); 
 
-    Point offsetBtn( ( width() - btnSize.width() ) / 2, ( height() - offsetY * 5 ) / 2 );
-    List< PushButton* > buttons = findChildren< PushButton* >(); 
-    foreach( btn, buttons )
-    {
-      (*btn)->setPosition( offsetBtn );
-      offsetBtn += Point( 0, offsetY );
-    }
+  PushButton* newButton = new PushButton( this, Rect( Point( 0, 0 ), btnSize ), caption, id, false, style );
+  newButton->setFont( btnFont );
 
-    return btn;
+  List< PushButton* > buttons = findChildren< PushButton* >();
+  Point offsetBtn( ( width() - btnSize.width() ) / 2, ( height() - offsetY * buttons.size() ) / 2 );
+
+  foreach( btn, buttons )
+  {
+    (*btn)->setPosition( offsetBtn );
+    offsetBtn += Point( 0, offsetY );
+  }
+
+  return newButton;
 }
 
 }//end namespace gui

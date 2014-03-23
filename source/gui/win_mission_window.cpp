@@ -56,7 +56,7 @@ WinMissionWindow::WinMissionWindow(Widget* parent, std::string newTitle, bool ma
   lb->setTextAlignment( alignCenter, alignCenter );
 
   PushButton* btn = new PushButton( this, Rect( 35, 115, width() - 35, 115 + 20 ), _("##accept_promotion##"),
-                                    -1, false, PushButton::smallGrayBorderLine );
+                                    -1, false, PushButton::greyBorderLineSmall );
 
   CONNECT( btn, onClicked(), &_d->onNextMissionSignal, Signal0<>::emit );
   CONNECT( btn, onClicked(), this, WinMissionWindow::deleteLater );

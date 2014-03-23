@@ -35,8 +35,8 @@ public:
   BackgroundStyleHelper()
     : EnumsHelper<PushButton::BackgroundStyle>(PushButton::noBackground)
   {
-    append( PushButton::grayBorderLine, "grayBorderLine" );
-    append( PushButton::smallGrayBorderLine, "smallGrayBorderLine" );
+    append( PushButton::greyBorderLine, "grayBorderLine" );
+    append( PushButton::greyBorderLineSmall, "smallGrayBorderLine" );
     append( PushButton::whiteBorderUp, "whiteBorderUp" );
     append( PushButton::blackBorderUp, "blackBorderUp" );
     append( PushButton::noBackground, "noBackground" );
@@ -111,7 +111,7 @@ PushButton::PushButton(Widget* parent )
   _d->currentButtonState = stNormal;
   _d->lastButtonState = StateCount;
   _d->pressed = false;
-  _d->bgStyle = grayBorderLine;
+  _d->bgStyle = greyBorderLine;
   setTextAlignment( alignCenter, alignCenter );
 }
 
@@ -166,16 +166,25 @@ void PushButton::_updateTexture( ElementState state )
   {
     switch( _d->bgStyle )
     {
-    case smallGrayBorderLine:
+    case greyBorderLineSmall:
     {
       PictureDecorator::Mode mode = (state == stNormal || state == stDisabled)
-                                      ? PictureDecorator::smallGreyPanel
-                                      : PictureDecorator::smallBrownPanel;
+                                      ? PictureDecorator::greyPanelSmall
+                                      : PictureDecorator::brownPanelSmall;
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), mode );
     }
     break;
 
-    case grayBorderLine:
+    case greyBorderLineBig:
+    {
+      PictureDecorator::Mode mode = (state == stNormal || state == stDisabled)
+                                        ? PictureDecorator::greyPanelBig
+                                        : PictureDecorator::lightgreyPanelBig;
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), mode );
+    }
+    break;
+
+    case greyBorderLine:
     {
       PictureDecorator::Mode mode = (state == stNormal || state == stDisabled)
                                         ? PictureDecorator::lightgreyPanel
