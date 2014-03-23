@@ -23,7 +23,7 @@
 #ifdef CAESARIA_PLATFORM_WIN
 #define getline_def getline_fp
 #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  #ifdef ANDROID
+  #ifdef CAESARIA_PLATFORM_ANDROID
     #define getline_def getline_fp
   #else
     #define getline_def getline
@@ -97,7 +97,7 @@ long FileNative::getPos() const
 }
 
 
-#if defined(CAESARIA_PLATFORM_WIN) || defined(ANDROID)
+#if defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_ANDROID)
 size_t getline_fp(char **linebuf, size_t *linebufsz, FILE *file)
 {
     int delimiter = '\n';
@@ -129,7 +129,7 @@ size_t getline_fp(char **linebuf, size_t *linebufsz, FILE *file)
 
 	return idx;
 }
-#endif //define(CAESARIA_PLATFORM_WIN) || define(ANDROID)
+#endif //defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_ANDROID)
 
 ByteArray FileNative::readLine()
 {

@@ -41,9 +41,7 @@ StartMenu::StartMenu( Widget* parent )
 {
 }
 
-StartMenu::~StartMenu()
-{
-}
+StartMenu::~StartMenu() {}
 
 PushButton* StartMenu::addButton( const std::string& caption, int id )
 {

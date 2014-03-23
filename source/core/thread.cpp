@@ -22,7 +22,7 @@
 #if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 extern "C"
 {
-#ifndef ANDROID
+#ifndef CAESARIA_PLATFORM_ANDROID
  int	usleep(useconds_t useconds);
 #endif
  
