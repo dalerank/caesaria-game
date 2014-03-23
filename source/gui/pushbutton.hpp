@@ -76,6 +76,7 @@ public:
   virtual void setIconOffset( Point offset );
 
   virtual void setBackgroundStyle( const BackgroundStyle style );
+  virtual void setBackgroundStyle( const std::string& style );
 
   virtual void setFont( const Font& font, ElementState state );
 

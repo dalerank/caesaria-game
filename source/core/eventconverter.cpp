@@ -181,134 +181,132 @@ void EventConverter::Impl::createKeyMap()
 
 NEvent EventConverter::get( const SDL_Event& sdlEvent )
 {
-    NEvent ret;
-    //SDLMod modState = SDL_GetModState();
-    //Uint32 msState = SDL_GetMouseState();
+  NEvent ret;
 
-    switch ( sdlEvent.type )
+  switch( sdlEvent.type )
+  {
+  case SDL_MOUSEMOTION:
+  {
+    ret.EventType = sEventMouse;
+    ret.mouse.type = mouseMoved;
+    Uint8 *keys = SDL_GetKeyState(NULL);
+
+    _d->mouseX = ret.mouse.x = sdlEvent.motion.x;
+    _d->mouseY = ret.mouse.y = sdlEvent.motion.y;
+
+    ret.mouse.control = keys[SDLK_LCTRL];
+    ret.mouse.shift = keys[SDLK_LSHIFT];
+    ret.mouse.buttonStates = _d->mouseButtonStates;
+  }
+  break;
+
+  case SDL_MOUSEBUTTONDOWN:
+  case SDL_MOUSEBUTTONUP:
+  {
+    ret.EventType = sEventMouse;
+    Uint8 *keys = SDL_GetKeyState(NULL);
+
+    ret.mouse.x = sdlEvent.button.x;
+    ret.mouse.y = sdlEvent.button.y;
+
+    ret.mouse.control = keys[SDLK_LCTRL];
+    ret.mouse.shift = keys[SDLK_LSHIFT];
+    ret.mouse.type = mouseMoved;
+
+    switch(sdlEvent.button.button)
     {
-    case SDL_MOUSEMOTION:
-    {
-        ret.EventType = sEventMouse;
-        ret.mouse.type = mouseMoved;
-        Uint8 *keys = SDL_GetKeyState(NULL);
+    case SDL_BUTTON_LEFT:
+      if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
+      {
+          ret.mouse.type = mouseLbtnPressed;
+          _d->mouseButtonStates |= mbsmLeft;
+      }
+      else
+      {
+          ret.mouse.type = mouseLbtnRelease;
+          _d->mouseButtonStates &= !mbsmLeft;
+      }
+    break;
 
-        _d->mouseX = ret.mouse.x = sdlEvent.motion.x;
-        _d->mouseY = ret.mouse.y = sdlEvent.motion.y;
+    case SDL_BUTTON_RIGHT:
+      if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
+      {
+          ret.mouse.type = mouseRbtnPressed;
+          _d->mouseButtonStates |= mbsmRight;
+      }
+      else
+      {
+          ret.mouse.type = mouseRbtnRelease;
+          _d->mouseButtonStates &= !mbsmRight;
+      }
+    break;
 
-        ret.mouse.control = keys[SDLK_LCTRL];
+    case SDL_BUTTON_MIDDLE:
+      if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
+      {
+        ret.mouse.type = mouseMbtnPressed;
+        _d->mouseButtonStates |= mbsmMiddle;
+      }
+      else
+      {ret.mouse.control = keys[SDLK_LCTRL];
         ret.mouse.shift = keys[SDLK_LSHIFT];
-        ret.mouse.buttonStates = _d->mouseButtonStates;
-    }
+        ret.mouse.type = mouseMbtnRelease;
+        _d->mouseButtonStates &= !mbsmMiddle;
+      }
     break;
 
-    case SDL_MOUSEBUTTONDOWN:
-    case SDL_MOUSEBUTTONUP:
+    case SDL_BUTTON_WHEELUP:
+      ret.mouse.type = mouseWheel;
+      ret.mouse.wheel = 1.0f;
+    break;
+
+    case SDL_BUTTON_WHEELDOWN:
+      ret.mouse.type = mouseWheel;
+      ret.mouse.wheel = -1.0f;
+    break;
+    }
+
+    ret.mouse.buttonStates = _d->mouseButtonStates;
+
+    if( ret.mouse.type != mouseMoved )
     {
-        ret.EventType = sEventMouse;
-        Uint8 *keys = SDL_GetKeyState(NULL);
-
-        ret.mouse.x = sdlEvent.button.x;
-        ret.mouse.y = sdlEvent.button.y;
-
-        ret.mouse.control = keys[SDLK_LCTRL];
-        ret.mouse.shift = keys[SDLK_LSHIFT];
-        ret.mouse.type = mouseMoved;
-
-        switch(sdlEvent.button.button)
+      if( ret.mouse.type >= mouseLbtnPressed && ret.mouse.type <= mouseMbtnPressed )
+      {
+        int clicks = _d->checkSuccessiveClicks(ret.mouse.x, ret.mouse.y, ret.mouse.type);
+        if ( clicks == 2 )
         {
-        case SDL_BUTTON_LEFT:
-            if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
-            {
-                ret.mouse.type = mouseLbtnPressed;
-                _d->mouseButtonStates |= mbsmLeft;
-            }
-            else
-            {
-                ret.mouse.type = mouseLbtnRelease;
-                _d->mouseButtonStates &= !mbsmLeft;
-            }
-            break;
-
-        case SDL_BUTTON_RIGHT:
-            if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
-            {
-                ret.mouse.type = mouseRbtnPressed;
-                _d->mouseButtonStates |= mbsmRight;
-            }
-            else
-            {
-                ret.mouse.type = mouseRbtnRelease;
-                _d->mouseButtonStates &= !mbsmRight;
-            }
-            break;
-
-        case SDL_BUTTON_MIDDLE:
-          if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
-          {
-            ret.mouse.type = mouseMbtnPressed;
-            _d->mouseButtonStates |= mbsmMiddle;
-          }
-          else
-          {ret.mouse.control = keys[SDLK_LCTRL];
-            ret.mouse.shift = keys[SDLK_LSHIFT];
-            ret.mouse.type = mouseMbtnRelease;
-            _d->mouseButtonStates &= !mbsmMiddle;
-          }
-        break;
-
-        case SDL_BUTTON_WHEELUP:
-            ret.mouse.type = mouseWheel;
-            ret.mouse.wheel = 1.0f;
-            break;
-
-        case SDL_BUTTON_WHEELDOWN:
-            ret.mouse.type = mouseWheel;
-            ret.mouse.wheel = -1.0f;
-            break;
+          ret.mouse.type = (MouseEventType)(mouseLbtDblClick + ret.mouse.type-mouseLbtnPressed);
         }
-
-        ret.mouse.buttonStates = _d->mouseButtonStates;
-
-        if( ret.mouse.type != mouseMoved )
-        {           
-          if( ret.mouse.type >= mouseLbtnPressed && ret.mouse.type <= mouseMbtnPressed )
-          {
-            int clicks = _d->checkSuccessiveClicks(ret.mouse.x, ret.mouse.y, ret.mouse.type);
-            if ( clicks == 2 )
-            {
-              ret.mouse.type = (MouseEventType)(mouseLbtDblClick + ret.mouse.type-mouseLbtnPressed);
-            }
-            else if ( clicks == 3 )
-            {
-              ret.mouse.type = (MouseEventType)(mouseLbtnTrplClick + ret.mouse.type-mouseLbtnPressed);
-            }
-          }
+        else if ( clicks == 3 )
+        {
+          ret.mouse.type = (MouseEventType)(mouseLbtnTrplClick + ret.mouse.type-mouseLbtnPressed);
         }
+      }
     }
-    break;
+  }
+  break;
 
-    case SDL_KEYDOWN:
-    case SDL_KEYUP:
-        {
-            std::map< int, int >::iterator itSym = _d->KeyMap.find(sdlEvent.key.keysym.sym);
+  case SDL_KEYDOWN:
+  case SDL_KEYUP:
+  {
+    std::map< int, int >::iterator itSym = _d->KeyMap.find(sdlEvent.key.keysym.sym);
 
-            KeyCode key = (KeyCode)0;
-            if( itSym != _d->KeyMap.end() )
-                key = (KeyCode)itSym->second;
+    KeyCode key = (KeyCode)0;
+    if( itSym != _d->KeyMap.end() )
+        key = (KeyCode)itSym->second;
 
-            ret.EventType = sEventKeyboard;
-            ret.keyboard.key = key;
-            ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
-            ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
-            ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
-            ret.keyboard.symbol =  sdlEvent.key.keysym.unicode;
-        }
-        break;
+    ret.EventType = sEventKeyboard;
+    ret.keyboard.key = key;
+    ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
+    ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
+    ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
+    ret.keyboard.symbol =  sdlEvent.key.keysym.unicode;
+  }
+  break;
 
-    case SDL_QUIT:
-        //Close = true;
-    break;
+  case SDL_QUIT:
+      //Close = true;
+  break;
 
 //     case SDL_ACTIVEEVENT:
 //         if ((sdlEvent.active.state == SDL_APPMOUSEFOCUS) ||
@@ -336,11 +334,11 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
 //         postEventFromUser(ret);
 //         break;
 
-    default:
-        break;
-    } // end switch
+  default:
+      break;
+  } // end switch
 
-    return ret;
+  return ret;
 }
 
 int EventConverter::Impl::checkSuccessiveClicks(int mouseX, int mouseY, MouseEventType inputEvent )

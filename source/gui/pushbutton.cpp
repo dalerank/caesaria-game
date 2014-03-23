@@ -36,6 +36,7 @@ public:
     : EnumsHelper<PushButton::BackgroundStyle>(PushButton::noBackground)
   {
     append( PushButton::greyBorderLine, "grayBorderLine" );
+    append( PushButton::greyBorderLineBig, "greyBorderLineBig" );
     append( PushButton::greyBorderLineSmall, "smallGrayBorderLine" );
     append( PushButton::whiteBorderUp, "whiteBorderUp" );
     append( PushButton::blackBorderUp, "blackBorderUp" );
@@ -580,6 +581,16 @@ void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
   _d->bgStyle = style;
   _resizeEvent();
+}
+
+void PushButton::setBackgroundStyle(const std::string &strStyle)
+{
+  BackgroundStyleHelper helper;
+  PushButton::BackgroundStyle style = helper.findType( strStyle );
+  if( style != noBackground )
+  {
+    setBackgroundStyle( style );
+  }
 }
 
 }//end namespace gui
