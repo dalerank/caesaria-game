@@ -37,7 +37,7 @@
 */
 
 #include <memory.h>
-
+#include <string.h>
 #include "fileenc.h"
 
 /* subroutine for data encryption/decryption    */

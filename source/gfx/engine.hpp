@@ -45,8 +45,8 @@ public:
   void setScreenSize( Size size );
   Size getScreenSize() const;
 
-  int getScreenWidth() const;
-  int getScreenHeight() const;
+  int screenWidth() const;
+  int screenHeight() const;
 
   bool isFullscreen() const;
   void setFullscreen(bool enabled );
@@ -73,6 +73,7 @@ public:
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int getFps() const = 0;
   virtual Modes getAvailableModes() const = 0;
+  virtual Point mousePos() const = 0;
 
 protected:
   static GfxEngine* _instance;

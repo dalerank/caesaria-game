@@ -69,6 +69,8 @@ class MirrorList : public std::vector<Mirror>, public IniFile::SectionVisitor
 public:
 	MirrorList()
 	{}
+	
+	virtual ~MirrorList() {}
 
 	// Construct this mirror list from the given ini file
 	MirrorList(IniFilePtr iniFile)

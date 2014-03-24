@@ -5,13 +5,14 @@
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "core/stacktrace.hpp"
-#include <SDL.h>
+
 
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
 #endif
 
-#ifdef ANDROID
+#if defined(CAESARIA_PLATFORM_ANDROID)
+#include <SDL.h>
 int SDL_main(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
@@ -20,7 +21,7 @@ int main(int argc, char* argv[])
   Logger::registerWriter( Logger::consolelog );
   Logger::registerWriter( Logger::filelog );
 
-#ifdef ANDROID
+#ifdef CAESARIA_PLATFORM_ANDROID
   vfs::Directory workdir( std::string("/sdcard/Android/data/net.dalerank.caesaria/files") );   
 #else
   vfs::Directory workdir = vfs::Path( argv[0] ).directory();

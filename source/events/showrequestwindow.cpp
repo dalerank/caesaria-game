@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "city/city.hpp"
 #include "showrequestwindow.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
 #include "gui/requestwindow.hpp"
 #include "gui/environment.hpp"
 

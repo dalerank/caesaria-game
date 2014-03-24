@@ -20,6 +20,7 @@
 #include <set>
 #include <fstream>
 #include <sstream>
+#include <iterator>
 
 namespace updater
 {
@@ -53,11 +54,13 @@ IniFilePtr IniFile::ConstructFromFile(vfs::Path filename)
 
 IniFilePtr IniFile::ConstructFromStream(std::istream& stream)
 {
-	// Read the whole stream into a string
-
-	std::string buffer(std::istreambuf_iterator<char>(stream), (std::istreambuf_iterator<char>()));
-
-	return ConstructFromString(buffer);
+  // Read the whole stream into a string
+  std::string buffer;
+  std::ostringstream ors;
+  ors << stream.rdbuf();
+  buffer = ors.str();
+    
+  return ConstructFromString(buffer);
 }
 
 IniFilePtr IniFile::ConstructFromString(const std::string& str)

@@ -26,8 +26,8 @@ public:
                  blackArea,      //black marble rectangular area
                  lightgreyPanel, //lightgray text button background
                  greyPanel,        //gray text button background
-                 smallBrownPanel,   //
-                 smallGreyPanel,
+                 greyPanelSmall,   //
+                 brownPanelSmall,
                  whiteBorder,       //white marble border
                  blackBorder,      //black marble border
                  brownBorder,      // draws brown borders
@@ -35,9 +35,10 @@ public:
                  whiteFrame,       //white marble rectangular area with borders
                  blackFrame,         //black marble rectangular area with borders
                  brownFrame,        //brown rectangular area with borders
-                 greyFrame          //grey rectangular area with borders
+                 greyFrame,          //grey rectangular area with borders
+                 greyPanelBig,
+                 lightgreyPanelBig
                } Mode;
-  static PictureDecorator& instance();
 
   static void draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha=true );
 
@@ -53,9 +54,6 @@ public:
 
   // draws a rectangular perimeter
   static void drawBorder(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha);
-
-private:
-  PictureDecorator();
 };
 
 #endif //_CAESARIA_PICTURE_DECORATOR_INCLUDE_H_

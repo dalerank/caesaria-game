@@ -260,10 +260,15 @@ GfxEngine::Modes GfxSdlEngine::getAvailableModes() const
   return ret;
 }
 
-unsigned int GfxSdlEngine::getFps() const
+Point GfxSdlEngine::mousePos() const
 {
-  return _d->fps;
+  int x,y;
+  SDL_GetMouseState(&x,&y);
+
+  return Point( x, y );
 }
+
+unsigned int GfxSdlEngine::getFps() const {  return _d->fps; }
 
 void GfxSdlEngine::setFlag( int flag, int value )
 {
@@ -276,10 +281,7 @@ void GfxSdlEngine::setFlag( int flag, int value )
   }
 }
 
-void GfxSdlEngine::delay( const unsigned int msec )
-{
-  SDL_Delay( msec );
-}
+void GfxSdlEngine::delay( const unsigned int msec ) {  SDL_Delay( msec ); }
 
 bool GfxSdlEngine::haveEvent( NEvent& event )
 {

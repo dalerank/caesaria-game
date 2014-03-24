@@ -19,7 +19,7 @@
 #include <string>
 #include <map>
 #include <set>
-#include <istream>
+#include <fstream>
 #include <vector>
 #include "core/smartptr.hpp"
 #include "vfs/path.hpp"

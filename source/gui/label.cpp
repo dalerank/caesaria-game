@@ -158,7 +158,7 @@ void Label::_updateTexture( GfxEngine& painter )
       PictureDecorator::draw( *_d->background, r, PictureDecorator::brownBorder );
     break;
 
-    case bgSmBrown: PictureDecorator::draw( *_d->background, r, PictureDecorator::smallBrownPanel ); break;
+    case bgSmBrown: PictureDecorator::draw( *_d->background, r, PictureDecorator::brownPanelSmall ); break;
     case bgWhiteFrame: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteFrame ); break;
     case bgBlackFrame: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackFrame ); break;
     case bgNone: _d->background.reset(); break;

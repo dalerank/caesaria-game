@@ -14,11 +14,11 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "removegoods.hpp"
-#include "city/helper.hpp"
-#include "game/game.hpp"
+#include "good/goodstore.hpp"
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
-#include "good/goodstore.hpp"
+#include "city/helper.hpp"
+#include "game/game.hpp"
 
 using namespace constants;
 
@@ -41,7 +41,18 @@ template<class T>
 void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what, int& qty )
 {
   city::Helper helper( city );
-  std::list< SmartPtr<T> > bList = helper.find<T>(btype );
+#ifdef CAESARIA_PLATFORM_HAIKU
+  std::list< SmartPtr<T> > bList;
+  TileOverlayList plist = city->getOverlays();
+  foreach( pit, plist )
+  {
+  	SmartPtr<T> c = ptr_cast<T>( *pit );
+  	if( c.isValid() )
+  	  bList.push_back( c );
+  } 
+#else
+  std::list< SmartPtr<T> > bList = helper.find<T>( btype );
+#endif
   foreach( it, bList )
   {
     if( qty <= 0 )

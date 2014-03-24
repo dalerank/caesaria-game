@@ -39,7 +39,6 @@ public:
 
 GameLoaderC3Sav::GameLoaderC3Sav() : _d( new Impl )
 {
-
 }
 
 void SkipCompressed( std::fstream& f )
@@ -53,7 +52,7 @@ void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
   unsigned int size = ioCity->getTilemap().getSize();
 
-  const std::fstream::pos_type savePos = f.tellg();
+  const unsigned int savePos = f.tellg();
 
   // init road entry/exit point
   unsigned short int i = 0;

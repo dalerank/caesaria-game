@@ -17,8 +17,8 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 
-#ifndef GFX_SDL_ENGINE_HPP
-#define GFX_SDL_ENGINE_HPP
+#ifndef _CAESARIA_SDL_ENGINE_H_INCLUDE_
+#define _CAESARIA_SDL_ENGINE_H_INCLUDE_
 
 #include "engine.hpp"
 #include "picture.hpp"
@@ -58,6 +58,7 @@ public:
   virtual void createScreenshot( const std::string& filename );
 
   virtual Modes getAvailableModes() const;
+  virtual Point mousePos() const;
 
 //non virtual functions: need to debug functional
   Picture& getScreen();
@@ -67,4 +68,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif
+#endif //_CAESARIA_SDL_ENGINE_H_INCLUDE_

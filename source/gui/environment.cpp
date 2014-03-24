@@ -82,7 +82,7 @@ GuiEnv::GuiEnv( GfxEngine& painter )
   _d->toolTip.LaunchTime = 1000;
   _d->toolTip.RelaunchTime = 500;
 
-  setGeometry( Rect( 0, 0, painter.getScreenWidth(), painter.getScreenHeight() ) );
+  setGeometry( Rect( 0, 0, painter.screenWidth(), painter.screenHeight() ) );
 }
 
 //! Returns if the element has focus

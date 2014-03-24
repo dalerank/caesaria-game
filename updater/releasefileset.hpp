@@ -98,10 +98,10 @@ struct ReleaseFile
 	bool isWrongOS() const
 	{
 #ifdef CAESARIA_PLATFORM_LINUX
-		if( file.isExtension(".exe") || file.isExtension(".dll") || file.isExtension(".macos") || file.isExtension( ".haiku" ) )
+		if( file.isExtension(".exe") || file.isExtension(".dll") || file.isExtension(".macos") )
 			return true;
 #elif defined(CAESARIA_PLATFORM_WIN)
-		if( file.isExtension(".linux") || file.isExtension(".macos") || file.isExtension( ".haiku" ) )
+		if( file.isExtension(".linux") || file.isExtension(".macos") )
 			return true;
 #elif defined(CAESARIA_PLATFORM_MACOSX)
 		if( file.isExtension(".linux") || file.isExtension(".exe") || file.isExtension(".dll"))
@@ -128,14 +128,8 @@ class ReleaseFileSet :
 public:
 	ReleaseFileSet()
 	{}
-
-	// Construct a set by specifying the INI file it is described in
-	// The INI file is usually the crc_info.txt file on the servers
-	static ReleaseFileSet LoadFromIniFile(IniFilePtr iniFile)
-	{
-		ReleaseFileSet set;
-
-		class Visitor :	public IniFile::SectionVisitor
+	
+	class Visitor :	public IniFile::SectionVisitor
 		{
 		private:
 			ReleaseFileSet& _set;
@@ -145,33 +139,17 @@ public:
 				_set(set)
 			{}
 				
-			void VisitSection(const IniFile& iniFile, const std::string& section)
-			{
-				if( StringHelper::startsWith( section, "File" ) )
-				{
-					vfs::Path filename = section.substr(5);
+		    void VisitSection(const IniFile& iniFile, const std::string& section); 	
+		};
 
-					ReleaseFile rfile(filename);
-					if( rfile.isWrongOS() )
-						return;
-
-					std::pair<ReleaseFileSet::iterator, bool> result = _set.insert(	ReleaseFileSet::value_type(filename.toString(), rfile));
-					
-					result.first->second.crc = CRC::ParseFromString(iniFile.GetValue(section, "crc"));
-					result.first->second.filesize = StringHelper::toUint( iniFile.GetValue(section, "filesize") );
-
-					if( filename.isExtension( ".zip") )
-					{
-						result.first->second.isArchive = true;
-					}
-					else
-					{
-						result.first->second.isArchive = false;
-					}
-				}
-			}
-		} _visitor(set);
-
+	// Construct a set by specifying the INI file it is described in
+	// The INI file is usually the crc_info.txt file on the servers
+	static ReleaseFileSet LoadFromIniFile(IniFilePtr iniFile)
+	{
+		ReleaseFileSet set;	
+		
+		Visitor _visitor( set );
+		
 		// Traverse the settings using the ReleaseFileSet as visitor
 		iniFile->ForeachSection(_visitor);
 

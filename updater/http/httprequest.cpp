@@ -275,7 +275,7 @@ size_t HttpRequest::WriteFileCallback(void* ptr, size_t size, size_t nmemb, Http
 		return 0; // cancel the process
 	}
 
-	self->_destStream.write(static_cast<const char*>(ptr), bytesToCopy);
+	self->_destStream.write( (const char*)ptr, bytesToCopy);
 
 	self->UpdateProgress();
 

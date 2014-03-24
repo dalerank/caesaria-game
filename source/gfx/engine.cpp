@@ -50,12 +50,12 @@ void GfxEngine::setScreenSize( Size size )
   _srcSize = size;
 }
 
-int GfxEngine::getScreenWidth() const
+int GfxEngine::screenWidth() const
 {
   return _srcSize.width();
 }
 
-int GfxEngine::getScreenHeight() const
+int GfxEngine::screenHeight() const
 {
   return _srcSize.height();
 }

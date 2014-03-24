@@ -94,7 +94,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
   CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );
 
-  _d->files = findChildA<ListBox*>( "lbxFiles", true );
+  _d->files = findChildA<ListBox*>( "lbxFiles", true, this );
   if( _d->files )
   {
     _d->files->setItemFont( Font::create( FONT_2_WHITE ) );

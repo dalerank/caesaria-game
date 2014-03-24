@@ -19,10 +19,10 @@
 #include <memory.h>
 #include <errno.h>
 
-#if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 extern "C"
 {
-#ifndef ANDROID
+#ifndef CAESARIA_PLATFORM_ANDROID
  int	usleep(useconds_t useconds);
 #endif
  
@@ -796,7 +796,7 @@ bool Thread::Start()
 			m_state = ThreadStateFault;
 			return false;
 		}
-#elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 		pthread_attr_t attr;
 
 		pthread_attr_init(&attr);
