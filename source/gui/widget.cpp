@@ -57,7 +57,6 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
   _environment( parent ? parent->getEnvironment() : 0 )
 {
   _d->isVisible = true;
-  _d->eventHandler = 0;
   _d->maxSize = Size(0,0);
   _d->minSize = Size(1,1);
   _d->parent = parent;
@@ -735,8 +734,11 @@ void Widget::remove()
 
 bool Widget::onEvent( const NEvent& event )
 {
-  if( _d->eventHandler )
-      _d->eventHandler->onEvent( event );
+  foreach( item, _d->eventHandlers )
+  {
+    (*item)->onEvent( event );
+  }
+
 
   if (event.EventType == sEventMouse)
     if (getParent() && (getParent()->getParent() == NULL))
@@ -789,7 +791,6 @@ void Widget::setID( int id ) {  _d->id = id; }
 const Widget::Widgets& Widget::getChildren() const{  return _d->children;}
 Size Widget::maxSize() const{    return _d->maxSize;}
 Size Widget::minSize() const{    return _d->minSize;}
-void Widget::installEventHandler( Widget* elementHandler ){  _d->eventHandler = elementHandler;}
 bool Widget::isHovered() const{  return _environment->isHovered( this );}
 bool Widget::isFocused() const{  return _environment->hasFocus( this );}
 Rect Widget::getClientRect() const{  return Rect( 0, 0, width(), height() );}
@@ -805,7 +806,7 @@ int Widget::screenRight() const { return absoluteRect().right(); }
 Point Widget::leftupCorner() const { return Point( left(), top() ); }
 Point Widget::leftdownCorner() const { return Point( left(), bottom() ); }
 Point Widget::rightupCorner() const { return Point( right(), top() ); }
-unsigned int Widget::getArea() const { return absoluteRect().getArea(); }
+Point Widget::rightdownCorner() const { return Point( right(), bottom() ); }
 Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _d->absoluteRect.UpperLeftCorner;}
 Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _d->absoluteRect.UpperLeftCorner;}
 void Widget::move( const Point& relativeMovement ){  setGeometry( _d->desiredRect + relativeMovement );}
@@ -826,6 +827,11 @@ void Widget::show() {  setVisible( true ); }
 Alignment Widget::getHorizontalTextAlign() const{  return _d->textHorzAlign; }
 Alignment Widget::getVerticalTextAlign() const{  return _d->textVertAlign;}
 void Widget::deleteLater(){  _environment->deleteLater( this ); }
+
+void Widget::installEventHandler( Widget* elementHandler )
+{
+  _d->eventHandlers.insert( elementHandler );
+}
 
 void Widget::setCenter(Point center)
 {

@@ -155,7 +155,7 @@ public:
 
   virtual Point rightupCorner() const;
 
-  virtual unsigned int getArea() const;
+  virtual Point rightdownCorner() const;
 
   virtual Point convertLocalToScreen( const Point& localPoint ) const;
 

@@ -176,9 +176,14 @@ void Level::initialize()
   TexturedButton* btnExit = new TexturedButton( gui.rootWidget(), btnShowHelp->leftupCorner() - Point( pic.width(), 0),
                                                 pic.size(), -1, 654 );
 
+  pic = Picture::load( ResourceGroup::panelBackground, 657 );
+  TexturedButton* btnMenu = new TexturedButton( gui.rootWidget(), Point( 0, engine.screenHeight() - pic.height() ),
+                                                pic.size(), -1, 657 );
+
   //connect elements
   CONNECT( btnShowHelp, onClicked(), _d.data(), Impl::showTileHelp );
   CONNECT( btnExit, onClicked(), this, Level::_resolveEscapeButton );
+  //CONNECT( btnMenu, onClicked(), this, Level::showAndroidMenu );
 
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
   CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );

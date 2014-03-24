@@ -17,6 +17,7 @@
 #define __CAESARIA_WIDGET_PRIVATE_H_INCLUDE_
 
 #include "widget.hpp"
+#include <set>
 
 namespace gui
 {
@@ -29,7 +30,7 @@ public:
 	//OpacityMap opacity;
 	//ColorMap overrideColors;
 	//ElementStyle* style;
-	Widget* eventHandler;
+	std::set<Widget*> eventHandlers;
 
   //! maximum and minimum size of the element
   Size maxSize, minSize;
