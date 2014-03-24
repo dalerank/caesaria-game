@@ -19,9 +19,7 @@
 namespace gui
 {
 
-WidgetDeleter::~WidgetDeleter(void)
-{
-}
+WidgetDeleter::~WidgetDeleter(void) {}
 
 WidgetDeleter::WidgetDeleter( Widget* parent, size_t time )
 		: WidgetAnimator( parent, 0 )

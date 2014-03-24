@@ -53,18 +53,18 @@ void BuildEvent::_exec( Game& game, unsigned int )
   const MetaData& buildingData = MetaDataHolder::instance().getData( _overlay->type() );
   if( _overlay.isValid() )
   {
-    _overlay->build( game.getCity(), _pos );
+    _overlay->build( game.city(), _pos );
 
     if( !_overlay->isDeleted() )
     {
       ConstructionPtr construction = ptr_cast<Construction>( _overlay );
       if( construction.isValid() )
       {
-        city::Helper helper( game.getCity() );
+        city::Helper helper( game.city() );
         helper.updateDesirability( construction, true );
 
-        game.getCity()->addOverlay( _overlay );
-        game.getCity()->getFunds().resolveIssue( FundIssue( city::Funds::buildConstruction,
+        game.city()->addOverlay( _overlay );
+        game.city()->getFunds().resolveIssue( FundIssue( city::Funds::buildConstruction,
                                                             -(int)buildingData.getOption( "cost" ) ) );
 
         GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
@@ -86,7 +86,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
         WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( construction );
         if( wb.isValid() && wb->maxWorkers() > 0 )
         {
-          int worklessCount = city::Statistic::getWorklessNumber( game.getCity() );
+          int worklessCount = city::Statistic::getWorklessNumber( game.city() );
           if( worklessCount < wb->maxWorkers() )
           {
             GameEventPtr e = WarningMessageEvent::create( "##city_need_more_workers##" );

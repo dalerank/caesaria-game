@@ -41,7 +41,7 @@ bool FireWorkers::_mayExec(Game& game, unsigned int time) const
 
 void FireWorkers::_exec(Game& game, unsigned int)
 {
-  Tilemap& tilemap = game.getCity()->getTilemap();
+  Tilemap& tilemap = game.city()->getTilemap();
   const int defaultFireWorkersDistance = 40;
 
   for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )

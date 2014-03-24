@@ -295,12 +295,12 @@ void Game::setScreenGame()
   }
 }
 
-PlayerPtr Game::getPlayer() const { return _d->player; }
-PlayerCityPtr Game::getCity() const { return _d->city; }
-world::EmpirePtr Game::getEmpire() const { return _d->empire; }
+PlayerPtr Game::player() const { return _d->player; }
+PlayerCityPtr Game::city() const { return _d->city; }
+world::EmpirePtr Game::empire() const { return _d->empire; }
 gui::GuiEnv* Game::gui() const { return _d->gui; }
-GfxEngine*Game::getEngine() const { return _d->engine; }
-scene::Base*Game::getScene() const { return _d->currentScreen; }
+GfxEngine*Game::engine() const { return _d->engine; }
+scene::Base*Game::scene() const { return _d->currentScreen; }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -321,7 +321,7 @@ Game::Game() : _d( new Impl )
 
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
 void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<int>( percent, 10, 300 );}
-int Game::getTimeMultiplier() const{  return _d->timeMultiplier;}
+int Game::timeMultiplier() const{  return _d->timeMultiplier;}
 
 Game::~Game(){}
 

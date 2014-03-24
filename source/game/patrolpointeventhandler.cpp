@@ -64,7 +64,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
       {
         if( _d->patrolPoint.isNull() )
         {
-          PlayerCityPtr city = _d->game->getCity();
+          PlayerCityPtr city = _d->game->city();
           WalkerList walkers = city->getWalkers( walker::patrolPoint, tile->pos() );
           if( !walkers.empty() )
           {            

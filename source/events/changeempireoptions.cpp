@@ -48,7 +48,7 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
   Variant empire_enabled = em_opts.get( "enabled" );
   if( empire_enabled.isValid() )
   {
-    game.getEmpire()->setAvailable( empire_enabled );
+    game.empire()->setAvailable( empire_enabled );
   }
 
   Variant adv_enabled = adv_options.get( "enabled" );

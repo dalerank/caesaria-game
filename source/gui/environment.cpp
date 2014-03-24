@@ -91,14 +91,9 @@ bool GuiEnv::hasFocus( const Widget* element) const
     return ( _d->focusedElement.object() == element );
 }
 
-GuiEnv::~GuiEnv()
-{
-}
+GuiEnv::~GuiEnv() {}
 
-Widget* GuiEnv::rootWidget()
-{
-	return this;
-}
+Widget* GuiEnv::rootWidget() {	return this; }
 
 void GuiEnv::Impl::threatDeletionQueue()
 {

@@ -75,7 +75,7 @@ bool ClearLandEvent::_mayExec(Game& game, unsigned int time) const{  return true
 
 void ClearLandEvent::_exec( Game& game, unsigned int )
 {
-  Tilemap& tmap = game.getCity()->getTilemap();
+  Tilemap& tmap = game.city()->getTilemap();
 
   Tile& cursorTile = tmap.at( _pos );
 
@@ -145,7 +145,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
     //
     if( deleteRoad )
     {
-      game.getCity()->updateRoads();
+      game.city()->updateRoads();
     }
   }
 }

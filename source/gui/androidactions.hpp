@@ -13,35 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "movecamera.hpp"
-#include "sound/engine.hpp"
-#include "game/game.hpp"
-#include "scene/level.hpp"
+#ifndef _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+#define _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
 
-namespace events
+#include "widget.hpp"
+#include "core/signals.hpp"
+
+namespace gui
 {
 
-GameEventPtr MoveCamera::create( TilePos pos )
+class AndroidActionsBar : public Widget
 {
-  MoveCamera* e = new MoveCamera();
-  e->_pos = pos;
+public:
+  virtual void beforeDraw(GfxEngine &painter);
+  AndroidActionsBar( Widget* parent );
 
-  GameEventPtr ret( e );
-  ret->drop();
+public oc3_signals:
+  Signal0<>& onRequestTileHelp();
+  Signal0<>& onEscapeClicked();
+  Signal0<>& onRequestMenu();
 
-  return ret;
-}
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
 
-void MoveCamera::_exec(Game& game, unsigned int)
-{
-  scene::Level* level = safety_cast<scene::Level*>( game.scene() );
+}//end namesapce gui
 
-  if( level )
-  {
-    level->setCameraPos( _pos );
-  }
-}
-
-bool MoveCamera::_mayExec(Game& , unsigned int ) const { return true; }
-
-}
+#endif //_CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_

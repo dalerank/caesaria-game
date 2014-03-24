@@ -85,15 +85,15 @@ bool GameLoaderC3Map::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
-  _d->initClimate(f, game.getCity() );
+  _d->initClimate(f, game.city() );
 
-  _d->loadCity(f, game.getCity() );
+  _d->loadCity(f, game.city() );
 
-  _d->initEntryExit(f, game.getCity());
+  _d->initEntryExit(f, game.city());
 
-  _d->initCameraStartPos(f, game.getCity() );
+  _d->initCameraStartPos(f, game.city() );
 
-  game.getEmpire()->setCitiesAvailable( true );
+  game.empire()->setCitiesAvailable( true );
 
   f.close();
 

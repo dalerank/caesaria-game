@@ -37,7 +37,7 @@ GameEventPtr WinMission::create()
 void WinMission::_exec(Game& game, unsigned int)
 {
   Logger::warning( "WinMission: exec ");
-  PlayerCityPtr city = game.getCity();
+  PlayerCityPtr city = game.city();
 
   const CityWinTargets& wt = city->getWinTargets();
   std::string nextMission = wt.getNextMission();

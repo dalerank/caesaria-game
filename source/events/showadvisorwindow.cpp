@@ -58,7 +58,7 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     }
     else
     {
-      gui::AdvisorsWindow::create( game.gui()->rootWidget(), -1, _advisor, game.getCity() );
+      gui::AdvisorsWindow::create( game.gui()->rootWidget(), -1, _advisor, game.city() );
     }
   }
   else

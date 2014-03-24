@@ -39,10 +39,10 @@ class Widget : public virtual ReferenceCounted
 {
 public:       
   typedef List<Widget*> Widgets;
-	typedef Widgets::iterator ChildIterator;
-	typedef Widgets::const_iterator ConstChildIterator;
+  typedef Widgets::iterator ChildIterator;
+  typedef Widgets::const_iterator ConstChildIterator;
 
-	typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
+  typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
   enum { noId=-1 };
 
   Widget( Widget* parent, int id, const Rect& rectangle );
@@ -52,26 +52,6 @@ public:
 
   std::string getInternalName() const;
   void setInternalName( const std::string& name );
-
-  template< class T >
-  T findChild( const std::string& internalName, bool recursiveFind = false, Widget* t=0)
-  {
-      Widgets::const_iterator it = getChildren().begin();
-      for( ; it != getChildren().end(); it++ )
-      {
-          if( (*it)->getInternalName() == internalName )
-              return safety_cast< T >( *it );
-
-          if( recursiveFind )
-          {
-              T chElm = (*it)->findChild< T >( internalName, recursiveFind );
-              if( chElm )
-                  return chElm;
-          }
-      }
-
-      return 0;
-  }
 
   template< class T >
   List< T > findChildren()
@@ -476,12 +456,11 @@ enum ElementState
   StateCount
 };
 
-#ifdef CAESARIA_PLATFORM_HAIKU
 template< class T >
-inline T findChildA( const std::string& internalName, bool recursiveFind, Widget* parent )
+inline T findChildA( const std::string& internalName, bool recursiveFind, Widget* p )
 {
-  Widget::Widgets::const_iterator it = parent->getChildren().begin();
-  for( ; it != parent->getChildren().end(); it++ )
+  Widget::Widgets::const_iterator it = p->getChildren().begin();
+  for( ; it != p->getChildren().end(); it++ )
   {
     if( (*it)->getInternalName() == internalName )
       return safety_cast< T >( *it );
@@ -495,9 +474,6 @@ inline T findChildA( const std::string& internalName, bool recursiveFind, Widget
   }
   return 0;
 }
-#else
-	#define findChildA findChild
-#endif
 
 
 }//end namespace gui

@@ -44,8 +44,8 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   case next:
   case prew:
   {
-    city::Helper helper( game.getCity() );
-    ConstructionPtr c =  ptr_cast<Construction>( game.getCity()->getOverlay( _pos ) );
+    city::Helper helper( game.city() );
+    ConstructionPtr c =  ptr_cast<Construction>( game.city()->getOverlay( _pos ) );
     c = (_mode == next ? helper.next( c ) : helper.prew( c ));
 
     if( c.isValid() )
@@ -62,7 +62,7 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   break;
   }
 
-  InfoboxManager::getInstance().showHelp( game.getCity(), game.gui(), _pos );
+  InfoboxManager::getInstance().showHelp( game.city(), game.gui(), _pos );
 }
 
 bool ShowTileInfo::_mayExec(Game&, unsigned int ) const { return true; }

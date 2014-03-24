@@ -65,6 +65,7 @@
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
 #include "events/showtileinfo.hpp"
+#include "gui/androidactions.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -114,7 +115,7 @@ public:
   vfs::Path getFastSaveName();
 };
 
-Level::Level(Game& game , GfxEngine& engine ) : _d( new Impl )
+Level::Level(Game& game, GfxEngine& engine ) : _d( new Impl )
 {
   _d->topMenu = NULL;
   _d->game = &game;
@@ -126,7 +127,7 @@ Level::~Level() {}
 
 void Level::initialize()
 {
-  PlayerCityPtr city = _d->game->getCity();
+  PlayerCityPtr city = _d->game->city();
   _d->renderer.initialize( city, _d->engine );
   _d->game->gui()->clear();
 
@@ -144,8 +145,8 @@ void Level::initialize()
   _d->rightPanel = MenuRigthPanel::create( gui.rootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = new TopMenu( gui.rootWidget(), topMenuHeight );
-  _d->topMenu->setPopulation( _d->game->getCity()->getPopulation() );
-  _d->topMenu->setFunds( _d->game->getCity()->getFunds().getValue() );
+  _d->topMenu->setPopulation( _d->game->city()->getPopulation() );
+  _d->topMenu->setFunds( _d->game->city()->getFunds().getValue() );
 
   _d->menu = Menu::create( gui.rootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.screenWidth() - _d->menu->width() - _d->rightPanel->width(),
@@ -166,24 +167,14 @@ void Level::initialize()
 
   new SenatePopupInfo( gui.rootWidget(), _d->renderer );
 
-  _d->game->getCity()->addService( city::AmbientSound::create( _d->game->getCity(), _d->renderer.camera() ) );
+  _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
-  Picture pic = Picture::load( ResourceGroup::panelBackground, 651 );
-  TexturedButton* btnShowHelp = new TexturedButton( gui.rootWidget(), Point( engine.screenWidth() - pic.width(), engine.screenHeight()-pic.height() ),
-                                                    pic.size(), -1, 651 );
-
-  pic = Picture::load( ResourceGroup::panelBackground, 654 );
-  TexturedButton* btnExit = new TexturedButton( gui.rootWidget(), btnShowHelp->leftupCorner() - Point( pic.width(), 0),
-                                                pic.size(), -1, 654 );
-
-  pic = Picture::load( ResourceGroup::panelBackground, 657 );
-  TexturedButton* btnMenu = new TexturedButton( gui.rootWidget(), Point( 0, engine.screenHeight() - pic.height() ),
-                                                pic.size(), -1, 657 );
+  AndroidActionsBar* androidBar = new AndroidActionsBar( _d->game->gui()->rootWidget() );
 
   //connect elements
-  CONNECT( btnShowHelp, onClicked(), _d.data(), Impl::showTileHelp );
-  CONNECT( btnExit, onClicked(), this, Level::_resolveEscapeButton );
-  //CONNECT( btnMenu, onClicked(), this, Level::showAndroidMenu );
+  CONNECT( androidBar, onRequestTileHelp(), _d.data(), Impl::showTileHelp );
+  CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
+  CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
 
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
   CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
@@ -247,7 +238,7 @@ void Level::Impl::setVideoOptions()
 void Level::Impl::showGameSpeedOptionsDialog()
 {
   GameSpeedOptionsWindow* dialog = new GameSpeedOptionsWindow( game->gui()->rootWidget(),
-                                                               game->getTimeMultiplier(),
+                                                               game->timeMultiplier(),
                                                                0 );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
@@ -266,7 +257,7 @@ void Level::Impl::saveCameraPos(Point p)
 
   if( tile )
   {
-    game->getCity()->setCameraPos( tile->pos() );
+    game->city()->setCameraPos( tile->pos() );
   }
 }
 
@@ -283,16 +274,16 @@ void Level::Impl::showSoundOptionsWindow()
 
 void Level::Impl::makeEnemy()
 {
-  EnemySoldierPtr enemy = EnemySoldier::create( game->getCity(),
+  EnemySoldierPtr enemy = EnemySoldier::create( game->city(),
                                                 constants::walker::britonSoldier );
-  enemy->send2City( game->getCity()->getBorderInfo().roadEntry );
+  enemy->send2City( game->city()->getBorderInfo().roadEntry );
 }
 
 void Level::Impl::makeFastSave() { game->save( getFastSaveName().toString() ); }
 
 void Level::Impl::showTileHelp()
 {
-  const Tile& tile = game->getCity()->getTilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
+  const Tile& tile = game->city()->getTilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
   events::GameEventPtr e = events::ShowTileInfo::create( tile.pos() );
   e->dispatch();
 }
@@ -316,9 +307,32 @@ void Level::_resolveEscapeButton()
   handleEvent( e );
 }
 
+void Level::_showIngameMenu()
+{
+#ifdef CAESARIA_PLATFORM_ANDROID
+  gui::Widget* p = _d->game->gui()->rootWidget();
+  gui::Widget* menu = new Label( p, Rect( 0, 0, 500, 450 ), "", false, Label::bgWhiteFrame );
+  menu->setCenter( p->center() );
+  menu->setupUI( GameSettings::rcpath( "/gui/ingamemenu_android.gui") );
+
+  PushButton* btnContinue = findChildA<PushButton*>( "btnContinue", true, menu );
+  PushButton* btnSave = findChildA<PushButton*>( "btnSave", true, menu );
+  PushButton* btnLoad = findChildA<PushButton*>( "btnLoad", true, menu );
+  PushButton* btnRestart = findChildA<PushButton*>( "btnRestart", true, menu );
+  PushButton* btnMainMenu = findChildA<PushButton*>( "btnMainMenu", true, menu );
+  PushButton* btnExit = findChildA<PushButton*>( "btnExit", true, menu );
+
+  CONNECT( btnContinue, onClicked(), menu, Label::deleteLater );
+  CONNECT( btnExit, onClicked(), this, Level::_resolveExitGame );
+  CONNECT( btnSave, onClicked(), _d.data(), Impl::showSaveDialog );
+  //CONNECT( btnLoad, onClicked(), _d.data(), Impl::showSaveDialog  );
+  CONNECT( btnMainMenu, onClicked(), this, Level::_resolveEndGame );
+#endif
+}
+
 vfs::Path Level::Impl::getFastSaveName()
 {
-  vfs::Path filename = game->getCity()->getName()
+  vfs::Path filename = game->city()->getName()
                        + GameSettings::get( GameSettings::fastsavePostfix ).toString()
                        + GameSettings::get( GameSettings::saveExt ).toString();
 
@@ -337,7 +351,7 @@ void Level::_resolveSwitchMap()
 void Level::Impl::showEmpireMapWindow()
 {
   events::GameEventPtr e;
-  if( game->getEmpire()->isAvailable() ) { e = events::ShowEmpireMapWindow::create( true ); }
+  if( game->empire()->isAvailable() ) { e = events::ShowEmpireMapWindow::create( true ); }
   else {  e = events::WarningMessageEvent::create( "##not_available##" ); }
 
   if( e.isValid() ) e->dispatch();
@@ -358,7 +372,7 @@ void Level::afterFrame()
   if( _d->lastDate.month() != GameDate::current().month() )
   {
     _d->lastDate = GameDate::current();
-    PlayerCityPtr city = _d->game->getCity();
+    PlayerCityPtr city = _d->game->city();
     const CityWinTargets& wt = city->getWinTargets();
 
     int culture = city->getCulture();
@@ -371,7 +385,6 @@ void Level::afterFrame()
     if( success )
     {
       std::string newTitle = wt.getNewTitle();
-
       gui::WinMissionWindow* wnd = new gui::WinMissionWindow( _d->game->gui()->rootWidget(), newTitle, false );
 
       _d->mapToLoad = wt.getNextMission();
@@ -402,8 +415,7 @@ void Level::handleEvent( NEvent& event )
     case KEY_SUBTRACT:
     case KEY_ADD:
     {
-      events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS ||
-                                                              event.keyboard.key == KEY_SUBTRACT)
+      events::GameEventPtr e = events::ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
                                                             ? -10 : +10 );
       e->dispatch();
     }
@@ -423,15 +435,13 @@ void Level::handleEvent( NEvent& event )
     }
     break;
 
-    case KEY_F10:	_d->makeScreenShot(); break;
-
-		case KEY_F5: _d->makeFastSave(); break;
-		case KEY_F9: _resolveFastLoad(); break;
-
-		case KEY_F11:
-			if( event.keyboard.pressed )
-				_d->makeEnemy();
-		break;
+    case KEY_F5: _d->makeFastSave(); break;
+    case KEY_F9: _resolveFastLoad(); break;
+    case KEY_F10:_d->makeScreenShot(); break;
+    case KEY_F11:
+        if( event.keyboard.pressed )
+            _d->makeEnemy();
+    break;
 
     default:
     break;
@@ -515,7 +525,7 @@ void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->gui()->rootWidget(), game->getCity() ); }
+void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->gui()->rootWidget(), game->city() ); }
 void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
 void Level::_resolveExitGame(){  _d->result = Level::quitGame;  stop();}
 

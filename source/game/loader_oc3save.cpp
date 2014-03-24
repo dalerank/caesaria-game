@@ -47,10 +47,10 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
     Locale::addTranslation( lastTr.toString() );
     GameSettings::set( GameSettings::lastTranslation, lastTr );
 
-    game.getPlayer()->load( vm[ "player" ].toMap() );
-    game.getCity()->load( vm[ "city" ].toMap() );
+    game.player()->load( vm[ "player" ].toMap() );
+    game.city()->load( vm[ "city" ].toMap() );
 
-    game.getEmpire()->load( vm[ "empire" ].toMap() );
+    game.empire()->load( vm[ "empire" ].toMap() );
 
     religion::Pantheon::instance().load( vm[ "pantheon" ].toMap() );
 

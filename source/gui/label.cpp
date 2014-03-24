@@ -625,7 +625,9 @@ void Label::setupUI(const VariantMap& ui)
   setWordwrap( (bool)ui.get( "multiline", false ) );
 
   BackgroundModeHelper helper;
-  setBackgroundMode( helper.findType( ui.get( "bgtype" ).toString() ));
+  Label::BackgroundMode mode = helper.findType( ui.get( "bgtype" ).toString() );
+  if( mode != bgNone )
+    setBackgroundMode( mode );
 }
 
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}

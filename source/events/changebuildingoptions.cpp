@@ -46,10 +46,10 @@ bool ChangeBuildingOptions::_mayExec(Game& game, unsigned int time) const {  ret
 void ChangeBuildingOptions::_exec(Game& game, unsigned int)
 {
   CityBuildOptions options;
-  options = game.getCity()->getBuildOptions();
+  options = game.city()->getBuildOptions();
   options.load( _vars );
 
-  game.getCity()->setBuildOptions( options );
+  game.city()->setBuildOptions( options );
 }
 
 }

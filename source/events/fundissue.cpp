@@ -65,16 +65,16 @@ void FundIssueEvent::_exec(Game& game, unsigned int )
 {
   if( _type == city::Funds::importGoods )
   {
-    int price = game.getCity()->getTradeOptions().getSellPrice( _gtype );
+    int price = game.city()->getTradeOptions().getSellPrice( _gtype );
     _value = -price * _qty / 100;
   }
   else if( _type == city::Funds::exportGoods )
   {
-    int price = game.getCity()->getTradeOptions().getBuyPrice( _gtype );
+    int price = game.city()->getTradeOptions().getBuyPrice( _gtype );
     _value = price * _qty / 100;
   }
 
-  game.getCity()->getFunds().resolveIssue( FundIssue( _type, _value ) );
+  game.city()->getFunds().resolveIssue( FundIssue( _type, _value ) );
 }
 
 } //end namespace events

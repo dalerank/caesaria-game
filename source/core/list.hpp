@@ -1,20 +1,20 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __OPENCAESAR3_LIST_H_INCLUDED__
-#define __OPENCAESAR3_LIST_H_INCLUDED__
+#ifndef __CAESARIA_LIST_H_INCLUDED__
+#define __CAESARIA_LIST_H_INCLUDED__
 
 #include "math.hpp"
 #include "allocator.hpp"
@@ -142,7 +142,7 @@ public:
 
 
 	//! Copy constructor.
-	List(const List<T>& other) : _first(0), _last(0), _size(0)
+    List(const List<T>& other) : _first(0), _last(0), _size(0)
 	{
 		*this = other;
 	}
@@ -176,10 +176,7 @@ public:
 
 	//! Returns amount of elements in list.
 	/** \return Amount of elements in the list. */
-	unsigned int size() const
-	{
-		return _size;
-	}
+    unsigned int size() const 	{		return _size;	}
 
 	//! Clears the list, deletes all elements in the list.
 	/** All existing iterators of this list will be invalid. */
@@ -201,17 +198,11 @@ public:
 
 	//! Checks for empty list.
 	/** \return True if the list is empty and false if not. */
-	bool empty() const
-	{
-		return (_first == 0);
-	}
+    bool empty() const 	{		return (_first == 0);	}
 
   //! Adds an element at the end of the list.
   /** \param element Element to add to the list. */
-  void append(const T& element)
-  {
-      push_back( element );
-  }
+  void append(const T& element)   {      push_back( element );  }
 
 	//! Adds an element at the end of the list.
 	/** \param element Element to add to the list. */
@@ -259,65 +250,31 @@ public:
 
 	//! Gets first node.
 	/** \return A list iterator pointing to the beginning of the list. */
-	iterator begin()
-	{
-		return iterator(_first);
-	}
-
+    iterator begin() 	{		return iterator(_first);	}
 
 	//! Gets first node.
 	/** \return A const list iterator pointing to the beginning of the list. */
-	const_iterator begin() const
-	{
-		return const_iterator(_first);
-	}
+    const_iterator begin() const 	{		return const_iterator(_first); }
 
 
 	//! Gets end node.
 	/** \return List iterator pointing to null. */
-	iterator end()
-	{
-		return iterator(0);
-	}
-
+    iterator end() 	{		return iterator(0);	}
 
 	//! Gets end node.
 	/** \return Const list iterator pointing to null. */
-	const_iterator end() const
-	{
-		return const_iterator(0);
-	}
-
+    const_iterator end() const 	{		return const_iterator(0);	}
 
 	//! Gets last element.
 	/** \return List iterator pointing to the last element of the list. */
-	iterator getLast()
-	{
-		return iterator(_last);
-	}
-
-  T& back()
-  {
-    return _last->Element;
-  }
-
-  const T& front() const
-  {
-    return _first->Element;
-  }
-
-  T& front()
-  {
-    return _first->Element;
-  }
-
+    iterator getLast() 	{		return iterator(_last);	}
+  T& back()  {    return _last->Element;  }
+  const T& back() const  {    return _last->Element;  }
+  const T& front() const  {    return _first->Element;  }
+  T& front()  {    return _first->Element;  }
 	//! Gets last element.
 	/** \return Const list iterator pointing to the last element of the list. */
-	const_iterator getLast() const
-	{
-		return const_iterator(_last);
-	}
-
+	const_iterator getLast() const	{		return const_iterator(_last);	}
 
 	//! Inserts an element after an element.
 	/** \param it iterator pointing to element after which the new element
@@ -366,10 +323,7 @@ public:
 			_first = node;
 	}
 
-  void pop_front()
-  {
-    erase( iterator(_first) );
-  }
+  void pop_front()   {    erase( iterator(_first) );  }
 
 
 	//! Erases an element.
@@ -430,5 +384,4 @@ private:
   Allocator<SKListNode> _allocator;
 };
 
-#endif
-
+#endif//__CAESARIA_LIST_H_INCLUDED__

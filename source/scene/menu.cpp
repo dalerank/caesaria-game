@@ -168,7 +168,7 @@ void StartMenu::Impl::resolveCredits()
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
-  gui::ListBoxItem& item = lbx->addItem( "Developers");
+  gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
   item.setItemTextAlignment( alignCenter, alignCenter );
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
   lbx->addItem( "gathanase" );
@@ -183,6 +183,9 @@ void StartMenu::Impl::resolveCredits()
   lbx->addItem( "nickers (2nickers@gmail.com)" );
   lbx->addItem( "ImperatorPrime" );
   lbx->addItem( "veprbl" );
+  gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
+  testers.setItemTextAlignment( alignCenter, alignCenter );
+  lbx->addItem( "Radek Liška" );
 
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
 }

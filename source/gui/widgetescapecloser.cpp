@@ -43,4 +43,4 @@ bool WidgetEscapeCloser::onEvent(const NEvent& event)
   return false;
 }
 
-}
+}//end namespace gui

@@ -123,7 +123,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
   f.read((char*)&tmp, 4); // read dummy
 
   std::string cityName = LoaderHelper::getDefaultCityName( tmp );
-  game.getCity()->setName( cityName );
+  game.city()->setName( cityName );
   
   f.read((char*)&tmp, 4); // read scenario flag
   
@@ -212,13 +212,13 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     f.read((char*)&tmp, 4); //mapsize
 
     int size = tmp;
-    PlayerCityPtr oCity = game.getCity();
+    PlayerCityPtr oCity = game.city();
     Tilemap& oTilemap = oCity->getTilemap();
 
     oTilemap.resize(size);
     oCity->setCameraPos( TilePos( 0, 0 ) );
 
-    initEntryExit( f, game.getCity() );
+    initEntryExit( f, game.city() );
 
     f.seekg(1312, std::ios::cur);
     char climate;
@@ -233,7 +233,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
   std::map< int, std::map< int, unsigned char > > edgeData;
 
-  game.getCity()->setCameraPos( TilePos( size/2, size/2 ) );
+  game.city()->setCameraPos( TilePos( size/2, size/2 ) );
 
   for (int itA = 0; itA < size; ++itA)
   {

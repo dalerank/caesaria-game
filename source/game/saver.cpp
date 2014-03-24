@@ -32,7 +32,7 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
 {
   VariantMap vm;
   vm[ "version" ] = 1;
-  vm[ "timemultiplier" ] = game.getTimeMultiplier();
+  vm[ "timemultiplier" ] = game.timeMultiplier();
 
   VariantMap vm_scenario;
   vm_scenario[ "date" ] = GameDate::current();
@@ -41,15 +41,15 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   vm[ "scenario" ] = vm_scenario;
 
   VariantMap vm_empire;
-  game.getEmpire()->save( vm_empire );
+  game.empire()->save( vm_empire );
   vm[ "empire" ] = vm_empire;
 
   VariantMap plm;
-  game.getPlayer()->save( plm );
+  game.player()->save( plm );
   vm[ "player" ] = plm;
 
   VariantMap vm_city;
-  game.getCity()->save( vm_city );
+  game.city()->save( vm_city );
   vm[ "city" ] = vm_city;
 
   VariantMap vm_pantheon;

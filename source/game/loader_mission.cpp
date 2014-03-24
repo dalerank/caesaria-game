@@ -55,7 +55,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     GameLoader mapLoader;
     mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
 
-    PlayerCityPtr city = game.getCity();
+    PlayerCityPtr city = game.city();
     city->getFunds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
 
     GameDate::init( vm[ "date" ].toDateTime() );
@@ -67,9 +67,9 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
       e->dispatch();
     }
 
-    game.getEmpire()->setCitiesAvailable( false );
+    game.empire()->setCitiesAvailable( false );
 
-    game.getEmpire()->load( vm[ "empire" ].toMap() );
+    game.empire()->load( vm[ "empire" ].toMap() );
 
     CityWinTargets targets;
     Variant winOptions = vm[ "win" ];

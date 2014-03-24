@@ -52,12 +52,12 @@ public:
   void setScreenGame();
   void setScreenBriefing();
 
-  PlayerPtr getPlayer() const;
-  PlayerCityPtr getCity() const;
-  world::EmpirePtr getEmpire() const;
+  PlayerPtr player() const;
+  PlayerCityPtr city() const;
+  world::EmpirePtr empire() const;
   gui::GuiEnv* gui() const;
-  GfxEngine* getEngine() const;
-  scene::Base* getScene() const;
+  GfxEngine* engine() const;
+  scene::Base* scene() const;
 
   void setPaused( bool value );
   bool isPaused() const;
@@ -67,7 +67,7 @@ public:
 
   void changeTimeMultiplier(int percent);
   void setTimeMultiplier( int percent );
-  int getTimeMultiplier() const;
+  int timeMultiplier() const;
 
 public oc3_signals:
   Signal1<std::string>& onSaveAccepted();

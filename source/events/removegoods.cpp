@@ -72,8 +72,8 @@ void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what,
 
 void RemoveGoods::_exec( Game& game, unsigned int time )
 {
-  _removeGoodFrom<Warehouse>( game.getCity(), building::warehouse, _type, _qty );
-  _removeGoodFrom<Granary>( game.getCity(), building::granary, _type, _qty );
+  _removeGoodFrom<Warehouse>( game.city(), building::warehouse, _type, _qty );
+  _removeGoodFrom<Granary>( game.city(), building::granary, _type, _qty );
 }
 
 bool RemoveGoods::_mayExec(Game&, unsigned int) const { return true; }

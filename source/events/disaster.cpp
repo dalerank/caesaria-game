@@ -64,7 +64,7 @@ GameEventPtr DisasterEvent::create( const Tile& tile, Type type )
 
 void DisasterEvent::_exec( Game& game, unsigned int )
 {
-  Tilemap& tmap = game.getCity()->getTilemap();
+  Tilemap& tmap = game.city()->getTilemap();
   Tile& tile = tmap.at( _pos );
   TilePos rPos = _pos;
 
@@ -115,7 +115,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
 
     std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##"),
                                   _("##alarm_plague_in_city##") };
-    game.getCity()->onDisasterEvent().emit( _pos, dstr2string[_type] );
+    game.city()->onDisasterEvent().emit( _pos, dstr2string[_type] );
   }
 }
 

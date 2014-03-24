@@ -37,11 +37,11 @@ void RandomDamage::_exec( Game& game, unsigned int time )
 {
   if( time % GameDate::ticksInMonth() == 0 && !_isDeleted )
   {
-    int population = game.getCity()->getPopulation();
+    int population = game.city()->getPopulation();
     if( population > _minPopulation && population < _maxPopulation )
     {
       _isDeleted = true;
-      city::Helper helper( game.getCity() );
+      city::Helper helper( game.city() );
       HouseList houses = helper.find<House>( building::house );
       for( unsigned int k=0; k < houses.size() / 4; k++ )
       {

@@ -1,0 +1,37 @@
+{  
+  btnContinue#PushButton : { 
+    geometry : [ 30, 30, "pw-30", 80 ]
+    bgtype : "greyBorderLineBig"
+    text : "##gmenu_file_continue##"
+  }
+
+  btnSave#PushButton : { 
+    geometry : [ 30, 100, "pw-30", 150 ]
+    bgtype : "greyBorderLineBig"
+    text : "##gmenu_file_save##"
+  }
+  
+  btnLoad#PushButton : { 
+    geometry : [ 30, 170, "pw-30", 220 ]
+    bgtype : "greyBorderLineBig"
+    text : "##gmenu_file_loadgame##"
+  }
+  
+  btnResart#PushButton : { 
+    geometry : [ 30, 240, "pw-30", 290 ]
+    bgtype : "greyBorderLineBig"
+    text : "##gmenu_file_restart##"
+  }
+  
+  btnMainMenu#PushButton : { 
+    geometry : [ 30, 310, "pw-30", 360 ]
+    bgtype : "greyBorderLineBig"
+    text : "##gmenu_file_mainmenu##"
+  }
+  
+  btnExit#PushButton : { 
+    geometry : [ 30, 380, "pw-30", 430 ]
+    bgtype : "greyBorderLineBig"
+    text : "##gmenu_exit_game##"
+  }
+}

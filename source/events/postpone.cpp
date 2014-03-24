@@ -69,7 +69,7 @@ PostponeEvent::~PostponeEvent(){}
 void PostponeEvent::_exec(Game& game, unsigned int)
 {
   Logger::warning( "Start event name=" + _d->name + " type=" + _d->type );
-  PlayerCityPtr city = game.getCity();
+  PlayerCityPtr city = game.city();
   if( "city_request" == _d->type )
   {    
     city::SrvcPtr service = city->findService( city::request::Dispatcher::getDefaultName() );
@@ -114,7 +114,7 @@ bool PostponeEvent::_mayExec(Game& game, unsigned int time ) const
     bool popCondition = true;
     if( _d->population > 0 )
     {
-      popCondition = game.getCity()->getPopulation() > _d->population;
+      popCondition = game.city()->getPopulation() > _d->population;
     }
 
     _d->mayDelete = dateCondition && popCondition;

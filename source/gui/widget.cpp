@@ -776,7 +776,7 @@ void Widget::setHeight( unsigned int height )
 void Widget::setEnabled(bool enabled){  _d->isEnabled = enabled;}
 std::string Widget::getInternalName() const{    return _d->internalName;}
 void Widget::setInternalName( const std::string& name ){    _d->internalName = name;}
-Widget* Widget::getParent() const{    return _d->parent;}
+Widget* Widget::getParent() const {    return _d->parent;}
 Rect Widget::getRelativeRect() const{  return _d->relativeRect;}
 bool Widget::isNotClipped() const{  return _d->noClip;}
 void Widget::setVisible( bool visible ){  _d->isVisible = visible;}
