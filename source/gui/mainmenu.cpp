@@ -94,13 +94,13 @@ bool MainMenu::onEvent(const NEvent& event)
 
     	  bringToFront();
 
-				Point p(event.mouse.getPosition() );
+				Point p(event.mouse.pos() );
 				bool shouldCloseSubMenu = hasOpenSubMenu_();
 				if (!absoluteClippingRect().isPointInside(p))
 				{
 					shouldCloseSubMenu = false;
 				}
-				isHighlighted_( event.mouse.getPosition(), true);
+				isHighlighted_( event.mouse.pos(), true);
 				if ( shouldCloseSubMenu )
 				{
           getEnvironment()->removeFocus(this);
@@ -111,7 +111,7 @@ bool MainMenu::onEvent(const NEvent& event)
 
 			case mouseLbtnRelease:
 			{
-        Point p(event.mouse.getPosition() );
+				Point p(event.mouse.pos() );
 				if (!absoluteClippingRect().isPointInside(p))
 				{
 					int t = sendClick_(p);
@@ -127,7 +127,7 @@ bool MainMenu::onEvent(const NEvent& event)
 				if (getEnvironment()->hasFocus(this) && getHoveredIndex() >= 0)
 				{
 				  int oldHighLighted = getHoveredIndex();
-					isHighlighted_( event.mouse.getPosition(), true);
+					isHighlighted_( event.mouse.pos(), true);
 					if ( getHoveredIndex() < 0 )
           {
             setHoverIndex_( oldHighLighted );   // keep last hightlight active when moving outside the area

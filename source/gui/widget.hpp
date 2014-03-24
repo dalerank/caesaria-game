@@ -151,9 +151,11 @@ public:
 
   virtual Point leftdownCorner() const;
 
+  virtual Point leftupCorner() const;
+
   virtual Point rightupCorner() const;
 
-  virtual unsigned int getArea() const;
+  virtual Point rightdownCorner() const;
 
   virtual Point convertLocalToScreen( const Point& localPoint ) const;
 
@@ -339,13 +341,13 @@ public:
   void setCenter( Point center );
 
   //!
-  int getLeft() const;
+  int left() const;
 
   //!
-  int getRight() const;
+  int right() const;
 
   //!
-  int getTop() const;
+  int top() const;
 
   //!
   void setTop( int newTop );

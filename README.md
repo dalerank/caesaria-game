@@ -1,5 +1,8 @@
 ![CaesarIA](/logo.png)
+
 ![BuildStatus](https://drone.io/bitbucket.org/dalerank/caesaria/status.png)
+
+![IndieDb Rating](http://button.indiedb.com/popularity/medium/games/27823.png)
 
 CaesarIA is remake of Caesar III in the big and seamless world of Ancient Rome. You can build the small village with some of gardens and a workshop where you want.
 You also can perform tasks of an emperor or build the whole city and broke attacks of barbarians, Egyptians or carfagens which want to steal your goods and to kill your inhabitants!
@@ -23,6 +26,41 @@ CaesarIA is build using following excellent libraries:
   * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
     
 Releases:
+##### 2014-03-21
+  * Now may use native Caesar III(c) resources without repack to zip archives, use cmd option -c3gfx /path/to/caesar3_folder 
+  * Add Tarrentum mission (3 military)
+  * Add sound options window
+  * Add background music player
+  * Increased interval between month change
+  * Add drawing sprites over walkers in constuctions
+  * Capua mission improved.
+  * Add briefing screen for mission select
+  * Now may load custom archives list, see game/resources/archives.model
+  * Now hippodrome and chariot workshop work correctly
+  * Fixed chariot animation
+  * Governor's houses now not need workers
+  * Add project and compile instructions for Android build
+  * Existence of necessary goods is displayed near factory
+  * Loading window (map, mission or save) now show button for continue
+  * Fixed farm broke carts when overload output store
+  * Add animation for short information messages
+  * Add confirmation dialog before dispatch emperor requesting goods
+  * Factory production rates correct, now production rate equale carts/year
+  * Granary now say about itself troubles
+  * Now may open emperor adviser from senate infobox
+  * MarketLady and MarketBuyer now load correctly, before those can lose here goods 
+  * Add house morale calculating
+  * Add Mercury and Nepture divinities
+  * Fountain now evolve/devolbe such terrain around
+  * Factory now not applying any goods without workers
+  * Buildings animated on crime/damage layer now 
+  * Now may switch netween same type buildings from infobox (keyboard button "," and "." )
+  * Amphitheater now generate gladiators or actors when possible
+  * Add citizens ideas about eduacation state in city
+  * Engineer now have own ideas about city
+  * BurningRuins have different animation interval by building
+  * updater not download haiku-os specific file on windows
+
 ##### 2014-02-25
   * Localization improved
   * MarketLady append market access to house, when it buy something 

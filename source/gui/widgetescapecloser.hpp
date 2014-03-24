@@ -13,23 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_LAYERSIMPLE_H_INCLUDED__
-#define __CAESARIA_LAYERSIMPLE_H_INCLUDED__
+#ifndef _CAESARIA_WIDGETESCAPECLOSER_H_INCLUDE_
+#define _CAESARIA_WIDGETESCAPECLOSER_H_INCLUDE_
 
-#include "core/referencecounted.hpp"
-#include "gfx/layer.hpp"
+#include "widget.hpp"
 
-class LayerSimple : public Layer
+namespace gui
+{
+
+class WidgetEscapeCloser : public Widget
 {
 public:
-  virtual int getType() const;
-  virtual std::set<int> getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  static void insertTo( Widget* parent );
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
-
-protected:
-  LayerSimple( TilemapCamera& camera, PlayerCityPtr city );
+  virtual bool onEvent(const NEvent &event);
+private:
+  WidgetEscapeCloser( Widget* parent );
 };
 
-#endif //__CAESARIA_LAYERSIMPLE_H_INCLUDED__
+}//end namesapce gui
+
+#endif //_CAESARIA_WIDGETESCAPECLOSER_H_INCLUDE_

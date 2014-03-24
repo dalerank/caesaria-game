@@ -55,6 +55,7 @@ private:
   void _resolveExitGame();
   void _resolveSwitchMap();
   void _resolveFastLoad();
+  void _resolveEscapeButton();
 
   class Impl;
   ScopedPtr< Impl > _d;

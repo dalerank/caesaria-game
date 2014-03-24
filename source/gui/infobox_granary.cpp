@@ -69,7 +69,7 @@ InfoboxGranary::~InfoboxGranary()
 void InfoboxGranary::showSpecialOrdersWindow()
 {
   Point pos;
-  if( getTop() > (int)getParent()->height() / 2 )
+  if( top() > (int)getParent()->height() / 2 )
   {
     pos = Point( screenLeft(), screenBottom() - GranarySpecialOrdersWindow::defaultHeight );
   }

@@ -164,7 +164,7 @@ void CityRenderer::handleEvent( NEvent& event )
 {
   if( event.EventType == sEventMouse )
   {
-    _d->currentCursorPos = event.mouse.getPosition();
+    _d->currentCursorPos = event.mouse.pos();
   }
 
   _d->currentLayer->handleEvent( event );
@@ -194,4 +194,8 @@ void CityRenderer::animate(unsigned int time)
 TilemapCamera& CityRenderer::camera() {  return _d->camera; }
 Renderer::ModePtr CityRenderer::getMode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
+TilePos CityRenderer::getTilePos( Point point ) const
+{
+  return _d->camera.at( point, true )->pos();
+}
 Tilemap& CityRenderer::getTilemap(){   return *_d->tilemap; }

@@ -83,7 +83,7 @@ void Layer::handleEvent(NEvent& event)
     case mouseMoved:
     {
       Point savePos = _d->lastCursorPos;
-      _d->lastCursorPos = event.mouse.getPosition();
+      _d->lastCursorPos = event.mouse.pos();
       if( !event.mouse.isLeftPressed() || _d->startCursorPos.x() < 0 )
       {
         _d->startCursorPos = _d->lastCursorPos;
@@ -105,7 +105,7 @@ void Layer::handleEvent(NEvent& event)
 
     case mouseLbtnRelease:            // left button
     {
-      Tile* tile = _d->camera->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
       {
         break;
@@ -123,7 +123,7 @@ void Layer::handleEvent(NEvent& event)
 
     case mouseRbtnRelease:
     {
-      Tile* tile = _d->camera->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile )
       {
         events::GameEventPtr e = events::ShowTileInfo::create( tile->pos() );

@@ -269,7 +269,7 @@ bool Minimap::onEvent(const NEvent& event)
   if( sEventMouse == event.EventType
       && mouseLbtnRelease == event.mouse.type )
   {
-    Point clickPosition = event.mouse.getPosition() - absoluteRect().UpperLeftCorner;
+    Point clickPosition = event.mouse.pos() - absoluteRect().UpperLeftCorner;
 
     int mapsize = _d->tilemap->getSize();
 

@@ -229,7 +229,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 				{
 					// menu might be removed if it loses focus in sendClick, so grab a reference
 					grab();
-					const unsigned int t = sendClick_( event.mouse.getPosition() );
+					const unsigned int t = sendClick_( event.mouse.pos() );
 	 				if( (t==0 || t==1) && isFocused() )
 						removeFocus();
 					drop();
@@ -239,7 +239,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 				return true;
 			case mouseMoved:
 				if( isHovered() )
-					isHighlighted_( event.mouse.getPosition(), true);
+					isHighlighted_( event.mouse.pos(), true);
 				return true;
 			default:
 				break;

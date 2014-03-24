@@ -213,7 +213,7 @@ void LayerBuild::handleEvent(NEvent& event)
     {
     case mouseMoved:
     {
-      _setLastCursorPos( event.mouse.getPosition() );
+      _setLastCursorPos( event.mouse.pos() );
       if( !event.mouse.isLeftPressed() || _getStartCursorPos().x() < 0 )
       {
         _setStartCursorPos( _getLastCursorPos() );
@@ -232,7 +232,7 @@ void LayerBuild::handleEvent(NEvent& event)
 
     case mouseLbtnRelease:            // left button
     {
-      Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _getCamera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
       {
         break;

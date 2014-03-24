@@ -402,7 +402,7 @@ bool GuiEnv::handleEvent( const NEvent& event )
         break;
 
     case sEventMouse:
-        _d->cursorPos = event.mouse.getPosition();
+        _d->cursorPos = event.mouse.pos();
         switch( event.mouse.type )
         {
         case mouseLbtnPressed:
