@@ -1,0 +1,8 @@
+{  
+  geometryf : [ 0, 0, 1, 1 ]
+
+  buttonSize : [ 300, 50 ]
+  buttonFont : "FONT_3"
+  buttonStyle : "greyBorderLineBig"
+  buttonOffset : 60
+}
