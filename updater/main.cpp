@@ -33,9 +33,9 @@ int main(int argc, char* argv[])
 	// Start logging
 	Logger::registerWriter( Logger::consolelog );
 
-	Logger::warning( "Updater v%s (c) 2012-2013 by dalerank is"
-									 "part of CaesarIA (http://github.com/gecube/opencaesar3).",
-									 "0.0.3");
+	Logger::warning( "Updater v%s (c) 2012-2014 by dalerank is"
+									 " part of CaesarIA (http://bitbucket.org/dalerank/caesaria).",
+									 "0.0.4");
 	Logger::warning( "" );
 
 	UpdaterOptions localOptions( argc, argv );

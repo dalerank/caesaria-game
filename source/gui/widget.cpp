@@ -802,8 +802,9 @@ int Widget::screenTop() const { return absoluteRect().top(); }
 int Widget::screenLeft() const { return absoluteRect().left(); }
 int Widget::screenBottom() const { return absoluteRect().bottom(); }
 int Widget::screenRight() const { return absoluteRect().right(); }
-Point Widget::leftdownCorner() const { return Point( getLeft(), bottom() ); }
-Point Widget::rightupCorner() const { return Point( getRight(), getTop() ); }
+Point Widget::leftupCorner() const { return Point( left(), top() ); }
+Point Widget::leftdownCorner() const { return Point( left(), bottom() ); }
+Point Widget::rightupCorner() const { return Point( right(), top() ); }
 unsigned int Widget::getArea() const { return absoluteRect().getArea(); }
 Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _d->absoluteRect.UpperLeftCorner;}
 Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _d->absoluteRect.UpperLeftCorner;}
@@ -815,11 +816,11 @@ bool Widget::isVisible() const{  return _d->isVisible;}
 bool Widget::isSubElement() const{  return _d->isSubElement;}
 void Widget::setSubElement( bool subElement ){  _d->isSubElement = subElement;}
 void Widget::setTabStop( bool enable ){  _d->isTabStop = enable;}
-void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, getTop() ) ); }
-void Widget::setTop( int newTop ) { setPosition( Point( getLeft(), newTop ) );  }
-int Widget::getTop() const { return getRelativeRect().UpperLeftCorner.y(); }
-int Widget::getLeft() const { return getRelativeRect().UpperLeftCorner.x(); }
-int Widget::getRight() const { return getRelativeRect().LowerRightCorner.x(); }
+void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, top() ) ); }
+void Widget::setTop( int newTop ) { setPosition( Point( left(), newTop ) );  }
+int Widget::top() const { return getRelativeRect().UpperLeftCorner.y(); }
+int Widget::left() const { return getRelativeRect().UpperLeftCorner.x(); }
+int Widget::right() const { return getRelativeRect().LowerRightCorner.x(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
 Alignment Widget::getHorizontalTextAlign() const{  return _d->textHorzAlign; }

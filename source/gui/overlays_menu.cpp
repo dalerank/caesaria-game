@@ -51,7 +51,7 @@ void OverlaysMenu::_addButtons(const int type )
   Point offset( 0, 27 );
   if( Widget* wdg = findChild( type ) )
   {
-    startPos = Point( -1 * (int)width() - 10, wdg->getTop() );
+    startPos = Point( -1 * (int)width() - 10, wdg->top() );
   }
 
   switch( type )

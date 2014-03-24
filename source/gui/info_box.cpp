@@ -107,7 +107,7 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
   {
     _d->lbBlackFrame->setVisible( blackArea.getSize().area() > 0 );
     _d->lbBlackFrame->setGeometry( blackArea );
-    lastPos.setY( _d->lbBlackFrame->getTop() - 10 );
+    lastPos.setY( _d->lbBlackFrame->top() - 10 );
   }
 
   if( _d->lbText && blackArea.getWidth() == 0 )

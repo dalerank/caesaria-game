@@ -125,7 +125,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 				break;
 		case sEventMouse:
 			{
-        _d->cursorPos =event.mouse.getPosition();
+				_d->cursorPos =event.mouse.pos();
 				bool isInside = isPointInside ( _d->cursorPos );
 				switch(event.mouse.type)
 				{

@@ -26,7 +26,7 @@ public:
   virtual std::set<int> getVisibleWalkers() const;
   virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create(TilemapCamera& camera, PlayerCityPtr city );
+  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
 
 protected:
   LayerSimple( TilemapCamera& camera, PlayerCityPtr city );

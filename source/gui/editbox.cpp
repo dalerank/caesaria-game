@@ -1103,7 +1103,7 @@ bool EditBox::_processMouse(const NEvent& event)
 	case mouseLbtnRelease:
 		if (_environment->hasFocus(this))
 		{
-			Point rpos = event.mouse.getPosition() - _d->textOffset;
+			Point rpos = event.mouse.pos() - _d->textOffset;
 			_d->cursorPos = getCursorPos(rpos.x(), rpos.y());
 			if (_d->mouseMarking)
 			{
@@ -1129,7 +1129,7 @@ bool EditBox::_processMouse(const NEvent& event)
 		if (!_environment->hasFocus(this))
 		{
 			_d->mouseMarking = true;
-			Point rpos = event.mouse.getPosition() - _d->textOffset;
+			Point rpos = event.mouse.pos() - _d->textOffset;
 			_d->cursorPos = getCursorPos( rpos.x(), rpos.y() );
 			setTextMarkers(_d->cursorPos, _d->cursorPos );
 			calculateScrollPos();
@@ -1137,7 +1137,7 @@ bool EditBox::_processMouse(const NEvent& event)
 		}
 		else
 		{
-			if( !absoluteClippingRect().isPointInside( event.mouse.getPosition() ) )
+			if( !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
 			{
 				return false;
 			}

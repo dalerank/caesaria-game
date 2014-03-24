@@ -421,7 +421,7 @@ bool ListBox::onEvent(const NEvent& event)
 
 			case sEventMouse:
 			{
-				Point p = event.mouse.getPosition();
+				Point p = event.mouse.pos();
 
 				switch(event.mouse.type)
 				{

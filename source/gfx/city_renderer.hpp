@@ -52,6 +52,8 @@ public:
 
   Point getOffset() const;
 
+  TilePos getTilePos( Point point ) const;
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

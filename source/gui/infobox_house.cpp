@@ -128,7 +128,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
     lb->setLineIntervalOffset( -6 );
     lb->setText( _("##house_provide_food_themselves##") );
     lb->setWordwrap( true );
-    startY = lb->getTop();
+    startY = lb->top();
   }
 
   drawGood( house, Good::pottery, 0, 1, startY );

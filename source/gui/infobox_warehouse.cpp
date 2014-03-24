@@ -85,7 +85,7 @@ InfoboxWarehouse::~InfoboxWarehouse() {}
 void InfoboxWarehouse::showSpecialOrdersWindow()
 {
   Point pos;
-  if( getTop() > (int)getParent()->height() / 2 )
+  if( top() > (int)getParent()->height() / 2 )
   {
     pos = Point( screenLeft(), screenBottom() - WarehouseSpecialOrdersWindow::defaultHeight );
   }

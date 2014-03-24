@@ -62,7 +62,9 @@
 #include "events/showempiremapwindow.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "gui/sound_options_window.hpp"
+#include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
+#include "events/showtileinfo.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -86,6 +88,7 @@ public:
   AlarmEventHolder alarmsHolder;
   DateTime lastDate;
   std::string mapToLoad;
+  TilePos selectedTilePos;
   bool isPaused;
 
   int result;
@@ -107,6 +110,7 @@ public:
   void showSoundOptionsWindow();
   void makeEnemy();
   void makeFastSave();
+  void showTileHelp();
   vfs::Path getFastSaveName();
 };
 
@@ -164,7 +168,18 @@ void Level::initialize()
 
   _d->game->getCity()->addService( city::AmbientSound::create( _d->game->getCity(), _d->renderer.camera() ) );
 
+  Picture pic = Picture::load( ResourceGroup::panelBackground, 651 );
+  TexturedButton* btnShowHelp = new TexturedButton( gui.rootWidget(), Point( engine.screenWidth() - pic.width(), engine.screenHeight()-pic.height() ),
+                                                    pic.size(), -1, 651 );
+
+  pic = Picture::load( ResourceGroup::panelBackground, 654 );
+  TexturedButton* btnExit = new TexturedButton( gui.rootWidget(), btnShowHelp->leftupCorner() - Point( pic.width(), 0),
+                                                pic.size(), -1, 654 );
+
   //connect elements
+  CONNECT( btnShowHelp, onClicked(), _d.data(), Impl::showTileHelp );
+  CONNECT( btnExit, onClicked(), this, Level::_resolveEscapeButton );
+
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
   CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
   CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
@@ -268,12 +283,32 @@ void Level::Impl::makeEnemy()
   enemy->send2City( game->getCity()->getBorderInfo().roadEntry );
 }
 
-void Level::Impl::makeFastSave() {  game->save( getFastSaveName().toString() ); }
+void Level::Impl::makeFastSave() { game->save( getFastSaveName().toString() ); }
+
+void Level::Impl::showTileHelp()
+{
+  const Tile& tile = game->getCity()->getTilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
+  events::GameEventPtr e = events::ShowTileInfo::create( tile.pos() );
+  e->dispatch();
+}
 
 void Level::_resolveFastLoad()
 {
   _d->mapToLoad = _d->getFastSaveName().toString();
   _resolveSwitchMap();
+}
+
+void Level::_resolveEscapeButton()
+{
+  NEvent e;
+
+  e.EventType = sEventKeyboard;
+  e.keyboard.key = KEY_ESCAPE;
+  e.keyboard.pressed = true;
+  e.keyboard.shift = false;
+  e.keyboard.control = false;
+  e.keyboard.symbol = 0;
+  handleEvent( e );
 }
 
 vfs::Path Level::Impl::getFastSaveName()
@@ -431,6 +466,7 @@ void Level::handleEvent( NEvent& event )
 
     case _MET_TILES:
       _d->renderer.handleEvent( event );
+      _d->selectedTilePos = _d->renderer.getTilePos( event.mouse.pos() );
     break;
 
     default:

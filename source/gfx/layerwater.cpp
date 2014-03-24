@@ -136,7 +136,7 @@ void LayerWater::handleEvent(NEvent& event)
     {
     case mouseMoved:
     {
-      Tile* tile = _getCamera()->at( event.mouse.getPosition(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _getCamera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
       if( tile != 0 )
       {
