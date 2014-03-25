@@ -999,14 +999,14 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     case Variant::Map:
         if ( Variant::typeToName( Variant::Type( d->type ) ) == "map<string, Variant>" )
         {
-            VariantMap* tmp = static_cast< VariantMap*>(d->data.ptr);
-            VariantMap* rMap = static_cast<VariantMap*>(result);
+          VariantMap* tmp = static_cast< VariantMap*>(d->data.ptr);
+          VariantMap* rMap = static_cast<VariantMap*>(result);
 
-            rMap->clear();
-            foreach( it, tmp )
-            {
-              rMap->insert( std::make_pair( it->first, it->second ) );   
-            }
+          rMap->clear();
+          foreach( it, *tmp )
+          {
+            rMap->insert( std::make_pair( it->first, it->second ) );
+          }
         } 
         else 
         {

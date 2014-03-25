@@ -235,6 +235,11 @@ GameEventPtr ChangeSpeed::create(int value)
 
 bool ChangeSpeed::_mayExec(Game& game, unsigned int) const{  return true;}
 
+ChangeSpeed::ChangeSpeed()
+{
+  _value = 0;
+}
+
 void ChangeSpeed::_exec(Game& game, unsigned int)
 {
   game.changeTimeMultiplier( _value );
