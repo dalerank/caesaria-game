@@ -26,6 +26,7 @@
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "funds.hpp"
+#include "core/foreach.hpp"
 #include "statistic.hpp"
 
 namespace city
@@ -101,7 +102,7 @@ VariantMap Info::save() const
   VariantMap ret;
 
   int step=0;
-  for( Impl::History::iterator i=_d->params.begin(); i != _d->params.end(); i++ )
+  foreach( i, _d->params )
   {
     VariantList step_values;
 
@@ -131,7 +132,7 @@ VariantMap Info::save() const
 
 void Info::load(const VariantMap& stream)
 {
-  for( VariantMap::const_iterator i=stream.begin(); i != stream.end(); i++ )
+  for( VariantMap::const_iterator i=stream.begin(); i != stream.end(); ++i )
   {
     Parameters p;
 

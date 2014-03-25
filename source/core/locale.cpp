@@ -31,7 +31,7 @@ static void __loadTranslator( vfs::Path filename )
   VariantMap trs = SaveAdapter::load( directory/filename );
   Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
 
-  for( VariantMap::iterator it=trs.begin(); it != trs.end(); it++ )
+  foreach( it, trs )
   {
     int hash = StringHelper::hash( it->first );
     Translator::iterator trIt = translator.find( hash );

@@ -53,7 +53,7 @@ void Timers::update( const unsigned int time )
     else
     {
       (*it)->update( time );
-      it++;
+      ++it;
     }
   }
 }

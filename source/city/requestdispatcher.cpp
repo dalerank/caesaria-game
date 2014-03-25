@@ -98,7 +98,7 @@ void Dispatcher::update(const unsigned int time)
     for( RequestList::iterator i=_d->requests.begin(); i != _d->requests.end(); )
     {
       if( (*i)->isDeleted() ) { i = _d->requests.erase( i ); }
-      else { i++; }
+      else { ++i; }
     }
   }
 }

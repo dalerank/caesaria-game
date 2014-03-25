@@ -95,7 +95,7 @@ public:
 
   void write( const std::string& message, bool newline=true )
   {
-    for( Writers::iterator i=writers.begin(); i != writers.end(); i++  )
+    foreach( i, writers )
     {
       if( i->second.isValid() )
       {

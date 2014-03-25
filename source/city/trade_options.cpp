@@ -59,14 +59,14 @@ public:
       }
 
       VariantList::const_iterator it=stream.begin();
-      sellPrice = it->toUInt(); it++;
-      buyPrice = it->toUInt(); it++;
-      exportLimit = it->toUInt(); it++;
-      importLimit = it->toUInt(); it++;
-      soldGoods = it->toUInt(); it++;
-      bougthGoods = it->toUInt(); it++;
-      stacking = it->toBool(); it++;
-      order = (CityTradeOptions::Order)it->toInt(); it++;
+      sellPrice = it->toUInt(); ++it;
+      buyPrice = it->toUInt(); ++it;
+      exportLimit = it->toUInt(); ++it;
+      importLimit = it->toUInt(); ++it;
+      soldGoods = it->toUInt(); ++it;
+      bougthGoods = it->toUInt(); ++it;
+      stacking = it->toBool(); ++it;
+      order = (CityTradeOptions::Order)it->toInt(); ++it;
       vendor = it->toBool();
     }
   };
@@ -258,7 +258,7 @@ void CityTradeOptions::setOrder( Good::Type type, Order order )
 
 void CityTradeOptions::load( const VariantMap& stream )
 {
-  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); it++ )
+  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); ++it )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
 
@@ -279,7 +279,7 @@ VariantMap CityTradeOptions::save() const
 {
   VariantMap ret;
 
-  for( Impl::GoodsInfo::iterator it=_d->goods.begin(); it != _d->goods.end(); it++ )
+  for( Impl::GoodsInfo::iterator it=_d->goods.begin(); it != _d->goods.end(); ++it )
   {
     ret[ GoodHelper::getTypeName( it->first ) ] = it->second.save();
   }

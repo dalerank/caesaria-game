@@ -67,7 +67,6 @@ void* _THKERNEL( void* lpvData )
 #endif
 {
 	Thread *pThread = (Thread *)lpvData;
-	ThreadType_t lastType;
 	/*
 	 *
 	 * initialization
@@ -75,17 +74,17 @@ void* _THKERNEL( void* lpvData )
 	 */
 
 
-		pThread->m_mutex.lock();
-		pThread->m_state = ThreadStateWaiting;
-		pThread->m_bRunning = true;
+	pThread->m_mutex.lock();
+	pThread->m_state = ThreadStateWaiting;
+	pThread->m_bRunning = true;
 #ifndef CAESARIA_PLATFORM_WIN
-		pThread->m_dwId = Thread::getID();
+	pThread->m_dwId = Thread::getID();
 #endif
 	pThread->m_mutex.unlock();
 	
 	while( true )
 	{
-		lastType = pThread->m_type;
+		ThreadType_t  lastType = pThread->m_type;
 
 		if( lastType == ThreadTypeHomogeneous ||
 			lastType == ThreadTypeSpecialized ||

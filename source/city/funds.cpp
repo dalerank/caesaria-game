@@ -18,6 +18,7 @@
 #include "trade_options.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
+#include "core/foreach.hpp"
 #include <map>
 
 using namespace constants;
@@ -125,10 +126,10 @@ VariantMap Funds::save() const
   ret[ "lastUpdate" ] = _d->lastYearUpdate;
   
   VariantList history;
-  for( Impl::IssuesHistory::iterator stepIt=_d->history.begin(); stepIt != _d->history.end(); stepIt++ )
+  foreach(  stepIt, _d->history )
   {
     VariantList stepHistory;
-    for( Impl::IssuesValue::iterator it = (*stepIt).begin(); it != (*stepIt).end(); it++ )
+    foreach( it, *stepIt )
     {
       stepHistory.push_back( it->first );
       stepHistory.push_back( it->second );
@@ -151,7 +152,7 @@ void Funds::load( const VariantMap& stream )
 
   VariantList history = stream.get( "history" ).toList();
   _d->history.clear();
-  for( VariantList::iterator it = history.begin(); it != history.end(); it++ )
+  foreach( it, history )
   {
     _d->history.push_back( Impl::IssuesValue() );
     Impl::IssuesValue& last = _d->history.back();
@@ -159,8 +160,8 @@ void Funds::load( const VariantMap& stream )
     VariantList::const_iterator stepIt=historyStep.begin(); 
     while( stepIt != historyStep.end() )
     {
-      IssueType type = (IssueType)stepIt->toInt(); stepIt++;
-      int value = stepIt->toInt(); stepIt++;
+      IssueType type = (IssueType)stepIt->toInt(); ++stepIt;
+      int value = stepIt->toInt(); ++stepIt;
       
       last[ type ] = value;
     }

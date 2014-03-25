@@ -294,7 +294,7 @@ void PlayerCity::timeStep( unsigned int time )
       serviceIt = _d->services.erase(serviceIt);
     }
     else
-      serviceIt++;
+      ++serviceIt;
   }
 
   if( _d->needRecomputeAllRoads )

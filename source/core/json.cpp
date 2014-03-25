@@ -35,8 +35,7 @@ static std::string sanitizeString(std::string str)
 static std::string join(const StringArray& rlist, const std::string& sep)
 {
   std::string res;
-  for( StringArray::const_iterator it = rlist.begin();
-       it != rlist.end(); it++ )
+  for( StringArray::const_iterator it = rlist.begin(); it != rlist.end(); ++it )
   {
     if(!res.empty())
     {
@@ -62,10 +61,10 @@ Variant Json::parse(const std::string &json)
 Variant Json::parse(const std::string& json, bool &success )
 {
   success = true;
-  int index = 0;
   //Return an empty Variant if the JSON data is either null or empty
   if( !json.empty() )
   {
+    int index = 0;
     std::string data = json;
     //We'll start from index 0
 
@@ -102,7 +101,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
   {
     StringArray values;
     const VariantList rlist = data.toList();
-    for( VariantList::const_iterator it = rlist.begin(); it != rlist.end(); it++)
+    for( VariantList::const_iterator it = rlist.begin(); it != rlist.end(); ++it)
     {
       std::string serializedValue = serialize( *it, "" );
       if( serializedValue.empty() )
@@ -152,7 +151,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       {
         str = "{ \n";
         StringArray pairs;
-        for( VariantMap::iterator it = vmap.begin(); it != vmap.end(); it++ )
+        foreach( it, vmap )
         {        
           std::string serializedValue = serialize( it->second, tab + "  ");
           if( serializedValue.empty())
@@ -287,7 +286,6 @@ Variant Json::parseValue(const std::string &json, int &index, bool &success)
 Variant Json::parseObject(const std::string &json, int &index, bool &success)
 {
   VariantMap rmap;
-  int token;
   //Get rid of the whitespace and increment index
   Json::nextToken(json, index);
 
@@ -296,7 +294,7 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
   while(!done)
   {
     //Get the upcoming token
-    token = Json::lookAhead(json, index);
+    int token = Json::lookAhead(json, index);
 
     switch( token )
     {
@@ -441,7 +439,6 @@ Variant Json::parseArray(const std::string &json, int &index, bool &success)
  */
 void Json::parseComment(const std::string &json, int &index, bool &success)
 {
-  char c;
   success = false;
   index+=2;
 
@@ -453,7 +450,7 @@ void Json::parseComment(const std::string &json, int &index, bool &success)
       break;
     }
 
-    c = json[index++];
+    char c = json[index++];
 
     if(c == '/' && json[ index - 2 ] == '*' )
     {

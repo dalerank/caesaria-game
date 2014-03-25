@@ -239,7 +239,7 @@ void Migration::Impl::createMigrationFromCity()
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {
     int houseWorkless = (*i)->getServiceValue( Service::recruter );
-    if( !(*i)->getEnterArea().empty() && houseWorkless > minWorkersNumber ) { i++; }
+    if( !(*i)->getEnterArea().empty() && houseWorkless > minWorkersNumber ) { ++i; }
     else { i = houses.erase( i ); }
   }
 

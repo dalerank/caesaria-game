@@ -38,7 +38,10 @@ int StringHelper::vformat(std::string& str, int max_size, const char* format, va
   int length = vsnprintf(buffer_ptr, max_size, format, argument_list);
   buffer_ptr[length >= 0 ? length : max_size] = '\0';
 
-  _CAESARIA_DEBUG_BREAK_IF( length == -1 && "String::sprintf: String truncated when processing " );
+  if( length <= 0 )
+  {
+    Logger::warning( "String::sprintf: String truncated when processing " + str );
+  }
  
   str = buffer_ptr;
 
@@ -261,7 +264,9 @@ StringArray StringHelper::split( std::string str, std::string spl )
 bool StringHelper::isEqualen( const std::string& str1, const std::string& str2, unsigned int n )
 {
   unsigned int i;
-  for(i=0; str1[i] && str2[i] && i < n; ++i)
+  unsigned int minStrLenght = math::min<unsigned int>( str1.length(), str2.length() );
+  n = math::min<unsigned int>( n, minStrLenght );
+  for(i=0; i < n && str1[i] && str2[i]; ++i)
   {
     if (str1[i] != str2[i])
     {

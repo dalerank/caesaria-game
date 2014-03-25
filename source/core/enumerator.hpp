@@ -29,7 +29,7 @@ public:
 
   T findType( const std::string& name ) const
   {
-    for( typename Equales::const_iterator it=_equales.begin(); it != _equales.end(); it++ )
+    for( typename Equales::const_iterator it=_equales.begin(); it != _equales.end(); ++it )
     {
       if( name == it->second )
       {

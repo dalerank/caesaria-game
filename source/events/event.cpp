@@ -183,6 +183,8 @@ GameEventPtr Pause::create( Mode mode )
 
 bool Pause::_mayExec(Game& game, unsigned int time) const{  return true;}
 
+Pause::Pause() : _mode( unknown ) {}
+
 void Pause::_exec(Game& game, unsigned int)
 {
   gui::Widget* rootWidget = game.gui()->rootWidget();

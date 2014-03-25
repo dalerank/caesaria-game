@@ -134,6 +134,7 @@ void Religion::Impl::updateRelation(RomeDivinityPtr divn)
   float bigTempleKoeff = ( myTemples.bigTempleNum < maxTemples.bigTempleNum ? 0.5 : 1 );
 
   faithAddiction *= ( smallTempleKoeff * bigTempleKoeff );
+  faithIncome *= faithAddiction;
 
   Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->getName().c_str(), faithIncome, divn->getRelation() );
   divn->updateRelation( faithIncome, city );

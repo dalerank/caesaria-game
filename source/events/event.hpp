@@ -85,7 +85,7 @@ private:
 class Pause : public GameEvent
 {
 public:
-  typedef enum { toggle, pause, play, hidepause, hideplay } Mode;
+  typedef enum { toggle, pause, play, hidepause, hideplay, unknown } Mode;
   static GameEventPtr create( Mode mode );
 
 protected:
@@ -93,6 +93,7 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  Pause();
   Mode _mode;
 };
 
@@ -106,6 +107,7 @@ protected:
   virtual bool _mayExec( Game& game, unsigned int ) const;
 
 private:
+  ChangeSpeed();
   int _value;
 };
 

@@ -26,7 +26,7 @@
 class Exception
 {
 public:
-   Exception(const std::string &aDescription) : _desc( aDescription )
+   Exception(std::string aDescription) : _desc( aDescription )
    {
    }
 

@@ -33,7 +33,7 @@ const float FI = 1.618f;
 #undef PI
 #endif
 //! Constant for PI.
-const float PI		= 3.14159265359f;
+const float PI = 3.14159265359f;
 
 //! Constant for reciprocal of PI.
 const float RECIPROCAL_PI	= 1.0f/PI;

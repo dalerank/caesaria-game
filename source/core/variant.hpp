@@ -23,6 +23,7 @@
 #include "size.hpp"
 #include "position.hpp"
 #include "rectangle.hpp"
+#include "foreach.hpp"
 
 #include <list>
 #include <map>
@@ -282,8 +283,8 @@ public:
   template<class T>
   VariantList( std::vector<T> array )
   {
-    typename std::vector<T>::iterator it = array.begin();
-    for( ; it != array.end(); it++ )
+    //typename std::vector<T>::iterator it = array.begin();
+    foreach( it, array )
     {
       push_back( Variant(*it) );
     }
@@ -294,7 +295,7 @@ template<class T>
 typename std::vector<T>& operator<<(std::vector<T>& v, const VariantList& vars)
 {
   VariantList::const_iterator it = vars.begin();
-  for( ; it != vars.end(); it++ )
+  for( ; it != vars.end(); ++it )
   {
     v.push_back( (T)(*it) );
   }
@@ -316,7 +317,7 @@ public:
 
   VariantMap& operator=(const VariantMap& other )
   {
-    for( VariantMap::const_iterator it=other.begin(); it != other.end(); it++ )
+    for( VariantMap::const_iterator it=other.begin(); it != other.end(); ++it )
     {
       (*this)[ it->first ] = it->second;
     }

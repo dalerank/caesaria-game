@@ -77,14 +77,8 @@ void Fishery::update( const unsigned int time )
   FishPlaceList::iterator fit = _d->places.begin();
   while( fit != _d->places.end() )
   {
-    if( (*fit)->isDeleted() )
-    {
-      fit = _d->places.erase( fit );
-    }
-    else
-    {
-      fit++;
-    }
+    if( (*fit)->isDeleted() )     {      fit = _d->places.erase( fit );    }
+    else    {      ++fit;    }
   }
 }
 

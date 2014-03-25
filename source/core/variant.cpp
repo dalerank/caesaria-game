@@ -607,9 +607,8 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         case Variant::List:
         {
           const VariantList *list = v_cast< VariantList >(d);
-          VariantList::const_iterator it = list->begin(); 
-          s->setWidth( it->toInt() ); it++;
-          s->setHeight( it->toInt() );
+          s->setWidth( list->get( 0, 0 ).toInt() );
+          s->setHeight( list->get( 1, 0 ).toInt() );
         }
         break;
 		           
@@ -667,7 +666,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         TilePos *pos = static_cast< TilePos* >( result );
         const VariantList *list = v_cast< VariantList >(d);
         VariantList::const_iterator it = list->begin(); 
-        pos->setI( it->toInt() ); it++;
+        pos->setI( it->toInt() ); ++it;
         pos->setJ( it->toInt() );
       }
     break;
@@ -677,9 +676,8 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
       {
         Point *pos = static_cast< Point* >( result );
         const VariantList *list = v_cast< VariantList >(d);
-        VariantList::const_iterator it = list->begin(); 
-        pos->setX( it->toInt() ); it++;
-        pos->setY( it->toInt() );
+        pos->setX( list->get( 0, 0 ).toInt() );
+        pos->setY( list->get( 1, 0 ).toInt() );
       }
       else if (d->type == Variant::NPoint)
         *static_cast<PointF*>(result) = v_cast<Point>(d)->toPointF();
@@ -692,9 +690,8 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
       {
         PointF *pos = static_cast< PointF* >( result );
         const VariantList *list = v_cast< VariantList >(d);
-        VariantList::const_iterator it = list->begin(); 
-        pos->setX( it->toFloat() ); it++;
-        pos->setY( it->toFloat() );
+        pos->setX( list->get( 0, 0 ).toFloat() );
+        pos->setY( list->get( 1, 0 ).toFloat() );
       }
       else if (d->type == Variant::NPointF)
         *static_cast<Point*>(result) = v_cast<PointF>(d)->toPoint();
@@ -707,12 +704,10 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
       {
         Rect *rect = static_cast< Rect* >( result );
         const VariantList *list = v_cast< VariantList >(d);
-        VariantList::const_iterator it = list->begin();
-
-        int x1 = it->toInt(); it++;
-        int y1 = it->toInt(); it++;
-        int x2 = it->toInt(); it++;
-        int y2 = it->toInt(); it++;
+        int x1 = list->get( 0, 0 ).toInt();
+        int y1 = list->get( 1, 0 ).toInt();
+        int x2 = list->get( 2, 0 ).toInt();
+        int y2 = list->get( 3, 0 ).toInt();
 
         *rect = Rect( x1, y1, x2, y2 );
       }
@@ -725,12 +720,10 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
       {
         RectF *rect = static_cast< RectF* >( result );
         const VariantList *list = v_cast< VariantList >(d);
-        VariantList::const_iterator it = list->begin();
-
-        float x1 = it->toFloat(); it++;
-        float y1 = it->toFloat(); it++;
-        float x2 = it->toFloat(); it++;
-        float y2 = it->toFloat(); it++;
+        float x1 = list->get( 0, 0 ).toFloat();
+        float y1 = list->get( 1, 0 ).toFloat();
+        float x2 = list->get( 2, 0 ).toFloat();
+        float y2 = list->get( 3, 0 ).toFloat();
 
         *rect = RectF( x1, y1, x2, y2 );
       }
@@ -1010,9 +1003,10 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
             VariantMap* rMap = static_cast<VariantMap*>(result);
 
             rMap->clear();
-            VariantMap::iterator it = tmp->begin();
-            for( ; it != tmp->end(); it++ )
+            foreach( it, tmp )
+            {
               rMap->insert( std::make_pair( it->first, it->second ) );   
+            }
         } 
         else 
         {
@@ -1956,6 +1950,8 @@ bool Variant::isValid() const
 Variant2Handler::Variant2Handler()
 {
 	construct = constructNewVariant;
+	compare = 0;
+	canConvert = 0;
 	convert = convertVariantType2Type;
 	clear = clearVariant;
   isNull = checkVariantNull;
@@ -1964,7 +1960,7 @@ Variant2Handler::Variant2Handler()
 
 StringArray& operator<<(StringArray &strlist, const VariantList &vars)
 {
-  for( VariantList::const_iterator it=vars.begin(); it != vars.end(); it++ )
+  for( VariantList::const_iterator it=vars.begin(); it != vars.end(); ++it )
   {
     strlist.push_back( (*it).toString() );
   }
