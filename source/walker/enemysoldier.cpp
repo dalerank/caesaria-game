@@ -167,6 +167,15 @@ void EnemySoldier::_init(walker::Type type)
     _d->strikeForce = 3;
     _d->resistance = 1;
   break;
+
+  case walker::etruscanArcher:
+    _setAnimation( gfx::etruscanArcherMove );
+    _d->walkAnimation = gfx::etruscanArcherMove;
+    _d->fightAnimation = gfx::etruscanArcherFight;
+    _d->strikeForce = 3;
+    _d->resistance = 1;
+  break;
+
   default:
     _CAESARIA_DEBUG_BREAK_IF("not work yet");
   }
@@ -344,9 +353,7 @@ void EnemySoldier::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
-EnemySoldier::~EnemySoldier()
-{
-}
+EnemySoldier::~EnemySoldier() {}
 
 EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, constants::walker::Type type )
 {

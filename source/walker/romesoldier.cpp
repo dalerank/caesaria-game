@@ -60,8 +60,8 @@ void RomeSoldier::_init( walker::Type type )
   switch( type )
   {
   case walker::legionary:
-    _setAnimation( gfx::legionaryGo );
-    _d->walk = gfx::legionaryGo;
+    _setAnimation( gfx::legionaryMove );
+    _d->walk = gfx::legionaryMove;
     _d->fight = gfx::legionaryFight;
     _d->strikeForce = 3;
     _d->resistance = 1;

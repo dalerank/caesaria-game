@@ -23,6 +23,7 @@
 #include "good/good.hpp"
 #include "core/direction.hpp"
 #include "constants.hpp"
+#include "vfs/path.hpp"
 
 #include <map>
 
@@ -34,8 +35,10 @@ public:
   static AnimationBank& instance();
 
   // loads all cart graphics
-  static void loadCarts();
-  static void loadWalkers();
+  void loadCarts();
+  void loadWalkers();
+
+  void loadAnimation( vfs::Path model );
 
   static const Picture& getCart( int cartID, constants::Direction direction );
 

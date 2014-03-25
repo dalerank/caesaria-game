@@ -1,0 +1,14 @@
+{
+  etruscanSoldier : {
+    Move : [ "etruscan", 249, 12 ]
+    Fight : [ "etruscan", 345, 6 ]
+    Die : [ "etruscan", 393, 1 ]
+  }
+
+  etruscanArcher : {
+    Move : [ "etruscan", 401, 12 ]
+    Fight : [ "etruscan", 497, 6 ]
+    Die : [ "etruscan", 593, 1 ]
+  }
+}
+

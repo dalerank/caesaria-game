@@ -66,6 +66,7 @@
 #include "events/showtileinfo.hpp"
 #include "gui/androidactions.hpp"
 #include "events/setsoundoptions.hpp"
+#include "walker/walkers_factory.hpp"
 #include "core/foreach.hpp"
 
 using namespace gui;
@@ -273,9 +274,12 @@ void Level::Impl::showSoundOptionsWindow()
 
 void Level::Impl::makeEnemy()
 {
-  EnemySoldierPtr enemy = EnemySoldier::create( game->city(),
-                                                constants::walker::britonSoldier );
-  enemy->send2City( game->city()->getBorderInfo().roadEntry );
+  WalkerPtr wlk = WalkerManager::instance().create( constants::walker::etruscanArcher, game->city() );
+  EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
+  if( enemy.isValid() )
+  {
+    enemy->send2City( game->city()->getBorderInfo().roadEntry );
+  }
 }
 
 void Level::Impl::makeFastSave() { game->save( getFastSaveName().toString() ); }

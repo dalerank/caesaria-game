@@ -76,7 +76,7 @@ void TraineeWalker::_init(walker::Type traineeType)
   break;
 
   case walker::charioter:
-    _setAnimation( gfx::charioter );
+    _setAnimation( gfx::charioterMove );
     _d->necBuildings << building::hippodrome;
   break;
 

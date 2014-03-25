@@ -87,7 +87,7 @@ void EnemyArcher::timeStep(const unsigned long time)
   {
   case EnemySoldier::fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( 1 );
+    WalkerList enemies = _findEnemiesInRange( _d->attackDistance );
 
     if( !enemies.empty() )
     {
@@ -105,7 +105,7 @@ void EnemyArcher::timeStep(const unsigned long time)
 
   case EnemySoldier::destroyBuilding:
   {
-    BuildingList buildings = _findBuildingsInRange( 1 );
+    BuildingList buildings = _findBuildingsInRange( _d->attackDistance );
 
     if( !buildings.empty() )
     {

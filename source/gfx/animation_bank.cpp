@@ -21,7 +21,9 @@
 #include "gfx/picture.hpp"
 #include "core/logger.hpp"
 #include "walker/emigrant.hpp"
-#include <vector>
+#include "core/saveadapter.hpp"
+#include "gfx/typehelper.hpp"
+#include <map>
 
 using namespace constants;
 
@@ -52,7 +54,7 @@ class AnimationBank::Impl
 public:
   std::map< int, PicturesArray > carts;
   
-  typedef std::vector< AnimationBank::MovementAnimation > Animations;
+  typedef std::map< gfx::Type, AnimationBank::MovementAnimation > Animations;
   Animations animations; // anim[WalkerGraphic][WalkerAction]
 
   // fills the cart pictures
@@ -62,6 +64,7 @@ public:
   AnimationBank::MovementAnimation loadAnimation(const std::string& prefix,
                                                  const int start, const int size,
                                                  Walker::Action wa=Walker::acMove );
+  AnimationBank::MovementAnimation loadAnimation( const VariantList& desc );
 
   void loadCarts();
   void loadWalkers();
@@ -95,8 +98,6 @@ void AnimationBank::Impl::loadCarts()
 
 void AnimationBank::Impl::loadWalkers()
 {
-  animations.resize( gfx::countType );
-
   animations[gfx::unknown          ] = AnimationBank::MovementAnimation();
   animations[gfx::citizenGo        ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
   animations[gfx::bathladyGo       ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
@@ -133,15 +134,15 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::fishingBoatWork  ] = loadAnimation( ResourceGroup::carts, 257, 1 );
   animations[gfx::homelessSit      ] = loadAnimation( ResourceGroup::citizen2, 1015, 1 );
   animations[gfx::lion             ] = loadAnimation( ResourceGroup::lion, 1, 12 );
-  animations[gfx::charioter        ] = loadAnimation( ResourceGroup::citizen5, 1, 12 );
+  animations[gfx::charioterMove        ] = loadAnimation( ResourceGroup::citizen5, 1, 12 );
   animations[gfx::britonSoldier    ] = loadAnimation( ResourceGroup::celts, 249, 12 );
   animations[gfx::britonSoldierFight]= loadAnimation( ResourceGroup::celts, 345, 6, Walker::acFight );
   animations[gfx::soldier          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
-  animations[gfx::legionaryGo      ] = loadAnimation( ResourceGroup::citizen3, 553, 12 );
+  animations[gfx::legionaryMove     ] = loadAnimation( ResourceGroup::citizen3, 553, 12 );
   animations[gfx::legionaryFight   ] = loadAnimation( ResourceGroup::citizen3, 649, 6, Walker::acFight );
-  animations[gfx::guardGo          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
+  animations[gfx::guardMove          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
   animations[gfx::guardFigth       ] = loadAnimation( ResourceGroup::citizen3, 192, 6, Walker::acFight );
-  animations[gfx::seaMerchant      ] = loadAnimation( ResourceGroup::carts, 241, 1 );
+  animations[gfx::seaMerchantMove      ] = loadAnimation( ResourceGroup::carts, 241, 1 );
 }
 
 AnimationBank& AnimationBank::instance()
@@ -158,7 +159,7 @@ void AnimationBank::loadCarts()
 {
   Logger::warning( "Loading cart graphics" );
 
-  instance()._d->loadCarts();  
+  _d->loadCarts();
 }
 
 AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::string& prefix,
@@ -180,6 +181,15 @@ AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::
   return ioMap;
 }
 
+AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation(const VariantList& desc)
+{
+  std::string rcGroup = desc.get( 0 ).toString();
+  int startIndex = desc.get( 1 );
+  int frameNumber = desc.get( 2 );
+
+  return loadAnimation( rcGroup, startIndex, frameNumber );
+}
+
 const AnimationBank::MovementAnimation& AnimationBank::getWalker( gfx::Type anim)
 {
   AnimationBank& inst = instance();
@@ -195,7 +205,31 @@ const AnimationBank::MovementAnimation& AnimationBank::getWalker( gfx::Type anim
 void AnimationBank::loadWalkers()
 {
   Logger::warning( "Start loading walkers graphics" );
-  instance()._d->loadWalkers();
+  _d->loadWalkers();
+}
+
+void AnimationBank::loadAnimation(vfs::Path model)
+{
+  VariantMap items = SaveAdapter::load( model );
+
+  foreach( i, items )
+  {
+    std::string baseType = i->first;
+
+    VariantMap actions = i->second.toMap();
+
+    foreach( ac, actions )
+    {
+      std::string actionName = baseType + ac->first;
+
+      gfx::Type type = GfxTypeHelper::instance().findType( actionName );
+      if( type != gfx::unknown )
+      {
+        _d->animations[ type ] = _d->loadAnimation( ac->second.toList() );
+      }
+    }
+
+  }
 }
 
 PicturesArray AnimationBank::Impl::fillCart( const std::string &prefix, const int start, bool back )

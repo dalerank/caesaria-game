@@ -67,8 +67,8 @@ void WallGuard::_init( walker::Type type )
   switch( type )
   {
   case walker::romeGuard:
-    _setAnimation( gfx::guardGo );
-    _d->walk = gfx::guardGo;
+    _setAnimation( gfx::guardMove );
+    _d->walk = gfx::guardMove;
     _d->fight = gfx::guardFigth;
     _d->strikeForce = 3;
     _d->resistance = 1;
