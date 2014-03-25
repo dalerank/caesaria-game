@@ -19,6 +19,7 @@
 #include "http/mirrordownload.hpp"
 #include "http/httprequest.hpp"
 #include "constants.hpp"
+#include "core/foreach.hpp"
 #include "util.hpp"
 
 #if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
@@ -77,6 +78,11 @@ void Updater::setBinaryAsExecutable()
 		// set the executable bit on binary
 		_markFileAsExecutable( path2exe );
 	}
+}
+
+void Updater::removeDownload(std::string itemname)
+{
+	_downloadQueue.removeItem( itemname );
 }
 
 void Updater::_markFileAsExecutable(vfs::Path path )
@@ -553,14 +559,16 @@ void Updater::PrepareUpdateStep(std::string prefix)
 {
 	vfs::Directory targetdir = getTargetDir();
 
-	// Create a download for each of the files
-    for( ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i )
+  // Create a download for each of the files
+  foreach( i, _downloadQueue )
 	{
 		DownloadPtr download(new MirrorDownload(_conn, _mirrors, i->second.file.toString(), targetdir.getFilePath(prefix+i->second.file.toString() ) )) ;
-        download->EnableCrcCheck( true );
-        download->EnableFilesizeCheck( true );
-        download->SetRequiredCrc( i->second.crc );
-        download->SetRequiredFilesize( i->second.filesize );
+
+    download->EnableCrcCheck( true );
+    download->EnableFilesizeCheck( true );
+    download->SetRequiredCrc( i->second.crc );
+    download->SetRequiredFilesize( i->second.filesize );
+
 		i->second.downloadId = _downloadManager->AddDownload(download);
 	}
 }
@@ -731,7 +739,7 @@ void Updater::PrepareUpdateBatchFile()
 #endif
 }
 
-void Updater::CleanupUpdateStep()
+void Updater::cleanupUpdateStep()
 {
 	for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
 	{

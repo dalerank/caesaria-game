@@ -116,6 +116,8 @@ public:
 	std::string GetLocalVersion();
 	std::string GetNewestVersion();
 
+	void removeDownload( std::string itemname );
+
 private:
 	void run();
 

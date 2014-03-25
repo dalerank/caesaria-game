@@ -988,8 +988,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         } 
         else if( Variant::typeToName( Variant::Type( d->type ) ) == "list<Variant>" )
         {
-            *static_cast<VariantList*>(result) =
-              *static_cast< VariantList* >(d->data.ptr);
+            *static_cast<VariantList*>(result) = *static_cast< VariantList* >(d->data.ptr);
         } 
         else 
         {

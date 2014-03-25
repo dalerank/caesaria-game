@@ -88,49 +88,19 @@ void UpdateController::Abort()
 	}
 }
 
-bool UpdateController::AllThreadsDone()
-{
-	return _synchronizer == NULL;
-}
+bool UpdateController::AllThreadsDone() {	return _synchronizer == NULL;}
+std::size_t UpdateController::GetNumMirrors(){	return _updater.GetNumMirrors(); }
+bool UpdateController::NewUpdaterAvailable(){	return _updater.NewUpdaterAvailable();}
+bool UpdateController::LocalFilesNeedUpdate(){	return _updater.LocalFilesNeedUpdate();}
+std::size_t UpdateController::GetTotalDownloadSize(){	return _updater.GetTotalDownloadSize();}
+std::size_t UpdateController::GetTotalBytesDownloaded(){	return _updater.GetTotalBytesDownloaded();}
+std::size_t UpdateController::GetNumFilesToBeUpdated(){	return _updater.GetNumFilesToBeUpdated();}
+std::string UpdateController::GetLocalVersion(){	return _updater.GetDeterminedLocalVersion();}
+std::string UpdateController::GetNewestVersion(){	return _updater.GetNewestVersion();}
 
-std::size_t UpdateController::GetNumMirrors()
+void UpdateController::removeDownload(std::string itemname)
 {
-	return _updater.GetNumMirrors();
-}
-
-bool UpdateController::NewUpdaterAvailable()
-{
-	return _updater.NewUpdaterAvailable();
-}
-
-bool UpdateController::LocalFilesNeedUpdate()
-{
-	return _updater.LocalFilesNeedUpdate();
-}
-
-std::size_t UpdateController::GetTotalDownloadSize()
-{
-	return _updater.GetTotalDownloadSize();
-}
-
-std::size_t UpdateController::GetTotalBytesDownloaded()
-{
-	return _updater.GetTotalBytesDownloaded();
-}
-
-std::size_t UpdateController::GetNumFilesToBeUpdated()
-{
-	return _updater.GetNumFilesToBeUpdated();
-}
-
-std::string UpdateController::GetLocalVersion()
-{
-	return _updater.GetDeterminedLocalVersion();
-}
-
-std::string UpdateController::GetNewestVersion()
-{
-	return _updater.GetNewestVersion();
+	_updater.removeDownload( itemname );
 }
 
 void UpdateController::run()
@@ -201,7 +171,7 @@ void UpdateController::performStep(int step)
 		// Prepare, Download, Apply
 		_updater.PrepareUpdateStep(TEMP_FILE_PREFIX);
 		_updater.PerformUpdateStep();
-		_updater.CleanupUpdateStep();
+		_updater.cleanupUpdateStep();
 		break;
 	
 	case DownloadDifferentialUpdate:
@@ -213,7 +183,7 @@ void UpdateController::performStep(int step)
 	case DownloadFullUpdate:
 		_updater.PrepareUpdateStep("");
 		_updater.PerformUpdateStep();
-		_updater.CleanupUpdateStep();
+		_updater.cleanupUpdateStep();
 		break;
 
 	case PostUpdateCleanup:

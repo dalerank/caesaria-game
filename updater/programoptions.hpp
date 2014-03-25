@@ -32,13 +32,15 @@ protected:
 
 	// The command line arguments for reference
 	StringArray _cmdLineArgs;
+	std::string _runPath;
 
 public:
-	virtual ~ProgramOptions()
-	{}
+	virtual ~ProgramOptions()	{}
 
 	void ParseFromCommandLine(int argc, char* argv[])
 	{
+		_runPath = argv[0];
+
 		for (int i = 0; i < argc; i++)
 		{
 			std::string optName = (*argv[i] == '-' ? argv[i] : "");
@@ -62,6 +64,8 @@ public:
 			}
 		}
 	}
+
+	std::string runPath() const 	{		return _runPath;	}
 
 	void Set(const std::string& key)
 	{

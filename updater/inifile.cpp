@@ -170,7 +170,7 @@ IniFile::Options IniFile::GetAllKeyValues(const std::string& section) const
 
 void IniFile::ForeachSection(SectionVisitor& visitor) const
 {
-	for (Sections::const_iterator i = _settings.begin();
+	for( Sections::const_iterator i = _settings.begin();
 		 i != _settings.end(); /* in-loop increment */)
 	{
 		visitor.VisitSection(*this, (*i++).first);

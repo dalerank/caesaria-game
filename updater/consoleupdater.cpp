@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "consoleupdater.hpp"
+#include "core/saveadapter.hpp"
 
 #include "util.hpp"
 
@@ -70,9 +71,7 @@ ConsoleUpdater::ConsoleUpdater(int argc, char* argv[]) :
 	_d->outcome = ConsoleUpdater::None;
 }
 
-ConsoleUpdater::~ConsoleUpdater()
-{
-}
+ConsoleUpdater::~ConsoleUpdater() {}
 
 ConsoleUpdater::Outcome ConsoleUpdater::GetOutcome()
 {
@@ -89,6 +88,7 @@ void ConsoleUpdater::run()
 		return;
 	}
 
+	//VariantMap saveSettings = SaveAdapter::load( "/resources/settings.model" );
 	_controller.StartOrContinue();
 
 	// Main loop, just keep the controller object going
@@ -281,6 +281,13 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 																									numFiles,
 																									(numFiles == 1 ? "file needs" : "files need"),
 																									sizeStr.c_str() );
+
+		vfs::Path settingsPath( "resources/settings.model" );
+		if( settingsPath.exist() )
+		{
+			Logger::warning( "User also have own settings, remove it from downloading list" );
+			_controller.removeDownload( settingsPath.toString() );
+		}
 
 		// Print a summary
 		if( _controller.NewUpdaterAvailable() )

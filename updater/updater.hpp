@@ -259,7 +259,7 @@ public:
 	void PerformUpdateStep();
 
 	// Performs any post-update step actions, if any
-	void CleanupUpdateStep();
+	void cleanupUpdateStep();
 
 	std::size_t GetNumFilesToBeUpdated();
 
@@ -296,6 +296,8 @@ public:
 	void PrepareUpdateBatchFile();
 
 	void setBinaryAsExecutable();
+
+	void removeDownload( std::string itemname );
 
 private:
 	// Throws if mirrors are empty

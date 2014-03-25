@@ -23,6 +23,7 @@
 #include "vfs/entries.hpp"
 #include "vfs/file.hpp"
 #include "vfs/directory.hpp"
+#include "core/foreach.hpp"
 #include "core/logger.hpp"
 
 namespace updater
@@ -98,13 +99,15 @@ struct ReleaseFile
 	bool isWrongOS() const
 	{
 #ifdef CAESARIA_PLATFORM_LINUX
-		if( file.isExtension(".exe") || file.isExtension(".dll") || file.isExtension(".macos") )
+		if( file.isExtension(".exe") || file.isExtension(".dll") || file.isExtension(".macos") || file.isExtension(".haiku") )
 			return true;
+#elif defined(CAESARIA_PLATFORM_HAIKU)
+		if( file.isExtension(".linux") || file.isExtension(".exe") || file.isExtension(".dll") || file.isExtension(".macos"))
 #elif defined(CAESARIA_PLATFORM_WIN)
-		if( file.isExtension(".linux") || file.isExtension(".macos") )
+		if( file.isExtension(".linux") || file.isExtension(".macos") || file.isExtension(".haiku") )
 			return true;
 #elif defined(CAESARIA_PLATFORM_MACOSX)
-		if( file.isExtension(".linux") || file.isExtension(".exe") || file.isExtension(".dll"))
+		if( file.isExtension(".linux") || file.isExtension(".exe") || file.isExtension(".dll") || file.isExtension(".haiku"))
 			return true;
 #endif
 		return false;
@@ -130,17 +133,29 @@ public:
 	{}
 	
 	class Visitor :	public IniFile::SectionVisitor
-		{
-		private:
-			ReleaseFileSet& _set;
+	{
+	private:
+		ReleaseFileSet& _set;
 
-		public:
-			Visitor(ReleaseFileSet& set) :
-				_set(set)
-			{}
-				
-		    void VisitSection(const IniFile& iniFile, const std::string& section); 	
-		};
+	public:
+		Visitor(ReleaseFileSet& set) :
+			_set(set)
+		{}
+
+			void VisitSection(const IniFile& iniFile, const std::string& section);
+	};
+
+	void removeItem( const std::string& itemName )
+	{
+		foreach( i, *this )
+		{
+			if( i->first == itemName )
+			{
+				erase( i );
+				break;
+			}
+		}
+	}
 
 	// Construct a set by specifying the INI file it is described in
 	// The INI file is usually the crc_info.txt file on the servers
