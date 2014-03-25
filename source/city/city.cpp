@@ -398,7 +398,7 @@ const BorderInfo& PlayerCity::getBorderInfo() const { return _d->borderInfo; }
 Tilemap&          PlayerCity::getTilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::getClimate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
-city::Funds&        PlayerCity::getFunds() const      {  return _d->funds;   }
+city::Funds&        PlayerCity::funds() const      {  return _d->funds;   }
 int               PlayerCity::getPopulation() const {   return _d->population; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )

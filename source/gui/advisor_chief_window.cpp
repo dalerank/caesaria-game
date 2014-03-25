@@ -125,7 +125,7 @@ void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
 void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
 {
   std::string text;
-  int profit = city->getFunds().getProfit();
+  int profit = city->funds().getProfit();
   if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
   else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
 

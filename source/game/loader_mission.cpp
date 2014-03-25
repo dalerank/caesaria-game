@@ -56,7 +56,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
 
     PlayerCityPtr city = game.city();
-    city->getFunds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
+    city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
 
     GameDate::init( vm[ "date" ].toDateTime() );
 

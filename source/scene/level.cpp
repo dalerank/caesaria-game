@@ -147,7 +147,7 @@ void Level::initialize()
 
   _d->topMenu = new TopMenu( gui.rootWidget(), topMenuHeight );
   _d->topMenu->setPopulation( _d->game->city()->getPopulation() );
-  _d->topMenu->setFunds( _d->game->city()->getFunds().getValue() );
+  _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
 
   _d->menu = Menu::create( gui.rootWidget(), -1, city );
   _d->menu->setPosition( Point( engine.screenWidth() - _d->menu->width() - _d->rightPanel->width(),

@@ -17,6 +17,8 @@
 #include "gui/video_options_window.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
+#include "city/city.hpp"
+#include "city/funds.hpp"
 #include "gfx/engine.hpp"
 #include "core/stringhelper.hpp"
 #include "gui/environment.hpp"
@@ -33,6 +35,7 @@ GameEventPtr ShowFeastWindow::create(std::string text, std::string title, std::s
   e->_text = text;
   e->_receiver = receiver;
   e->_title = title;
+
   GameEventPtr ret( e );
   ret->drop();
 
@@ -53,9 +56,6 @@ void ShowFeastWindow::_exec(Game& game, unsigned int)
   dlg->setTitle( _title );
   dlg->setReceiver( _receiver );
   dlg->setTime( GameDate::current() );
-
-  game.pause();
-  CONNECT( dlg, onClose(), &game, Game::play );
 }
 
 }

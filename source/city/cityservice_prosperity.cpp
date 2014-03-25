@@ -66,9 +66,9 @@ ProsperityRating::ProsperityRating(PlayerCityPtr city )
   _d->houseCapTrand = 0;
   _d->prosperityExtend = 0;
   _d->makeProfit = false;
-  _d->lastYearBalance = city->getFunds().getValue();
+  _d->lastYearBalance = city->funds().treasury();
   _d->worklessPercent = 0;
-  _d->workersSalary = city->getFunds().getWorkerSalary();
+  _d->workersSalary = city->funds().getWorkerSalary();
   _d->lastYearProsperity = 0;
   _d->percentPlebs = 0;
 }
@@ -111,7 +111,7 @@ void ProsperityRating::update( const unsigned int time )
     _d->prosperity = math::clamp<int>( prosperityCap, 0, _d->prosperity + 2 );
     _d->houseCapTrand = _d->prosperity - saveValue;
 
-    int currentFunds = _d->city->getFunds().getValue();
+    int currentFunds = _d->city->funds().treasury();
     _d->makeProfit = _d->lastYearBalance < currentFunds;
     _d->lastYearBalance = currentFunds;
     _d->prosperityExtend = (_d->makeProfit ? 2 : -1);
@@ -134,7 +134,7 @@ void ProsperityRating::update( const unsigned int time )
     bool havePatrician = patricianCount > 0;
     _d->prosperityExtend += (havePatrician ? 1 : 0);
 
-    _d->workersSalary = _d->city->getFunds().getWorkerSalary() - _d->city->getEmpire()->getWorkerSalary();
+    _d->workersSalary = _d->city->funds().getWorkerSalary() - _d->city->getEmpire()->getWorkerSalary();
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
    

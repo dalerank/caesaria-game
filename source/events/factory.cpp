@@ -21,6 +21,7 @@
 #include "showtutorialwindow.hpp"
 #include "changebuildingoptions.hpp"
 #include "changeempireoptions.hpp"
+#include "cityindebt.hpp"
 
 namespace events
 {
@@ -76,6 +77,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<ChangeEmpireOptions>( "empire_options" );
   addCreator<RandomDamage>( "random_collapse" );
   addCreator<RandomFire>( "random_fire" );
+  addCreator<CityIndebt>( "city_indebt" );
 }
 
 }//end namespace events

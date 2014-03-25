@@ -64,7 +64,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
         helper.updateDesirability( construction, true );
 
         game.city()->addOverlay( _overlay );
-        game.city()->getFunds().resolveIssue( FundIssue( city::Funds::buildConstruction,
+        game.city()->funds().resolveIssue( FundIssue( city::Funds::buildConstruction,
                                                             -(int)buildingData.getOption( "cost" ) ) );
 
         GameEventPtr e = PlaySound::create( "buildok", 1, 100 );

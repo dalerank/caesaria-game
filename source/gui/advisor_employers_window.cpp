@@ -160,8 +160,8 @@ void AdvisorEmployerWindow::Impl::updateYearlyWages()
 
 void AdvisorEmployerWindow::Impl::changeSalary(int relative)
 {
-  int currentSalary = city->getFunds().getWorkerSalary();
-  city->getFunds().setWorkerSalary( currentSalary+relative );
+  int currentSalary = city->funds().getWorkerSalary();
+  city->funds().setWorkerSalary( currentSalary+relative );
   updateSalaryLabel();
 }
 

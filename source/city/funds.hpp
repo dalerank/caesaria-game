@@ -62,7 +62,7 @@ public:
   int getWorkerSalary() const;
   void setWorkerSalary( const unsigned int value );
 
-  int getValue() const;
+  int treasury() const;
   int getProfit() const;
 
   VariantMap save() const;

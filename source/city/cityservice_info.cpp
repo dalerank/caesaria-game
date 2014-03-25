@@ -72,7 +72,7 @@ void Info::update( const unsigned int time )
     Parameters& last = _d->params.back();
     last.date = _d->lastDate;
     last.population = _d->city->getPopulation();
-    last.funds = _d->city->getFunds().getValue();    
+    last.funds = _d->city->funds().treasury();    
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
 
     int foodStock = city::Statistic::getFoodStock( _d->city );
@@ -87,9 +87,9 @@ void Info::update( const unsigned int time )
 
     last.needWorkers = city::Statistic::getVacantionsNumber( _d->city );
     last.workless = city::Statistic::getWorklessPercent( _d->city );
-    last.payDiff = _d->city->getEmpire()->getWorkerSalary() - _d->city->getFunds().getWorkerSalary();
-    last.tax = _d->city->getFunds().getTaxRate();
-    last.cityWages = _d->city->getFunds().getWorkerSalary();
+    last.payDiff = _d->city->getEmpire()->getWorkerSalary() - _d->city->funds().getWorkerSalary();
+    last.tax = _d->city->funds().getTaxRate();
+    last.cityWages = _d->city->funds().getWorkerSalary();
     last.romeWages = _d->city->getEmpire()->getWorkerSalary();
   }
 }

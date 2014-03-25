@@ -106,9 +106,9 @@
       date : "-350.01.01"
       type : "city_indebt"
       count : 2
-      money : 5000
+      emperorMoney : 5000
       video : "city_indebt.bik"
-      text : "##city_has_runout_debt##"
+      text : "##city_has_runout_money##"
     }
 
     "emperor_request_vines#city_request" : {

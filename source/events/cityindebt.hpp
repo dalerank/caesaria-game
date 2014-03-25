@@ -15,36 +15,35 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_POSTPONEEVENT_H_INCLUDE_
-#define _CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_
+#define _CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class PostponeEvent : public GameEvent
+class CityIndebt : public GameEvent
 {
 public:
-  static GameEventPtr create(const std::string& type, const VariantMap& stream );
+  static GameEventPtr create();
 
-  virtual ~PostponeEvent();
   virtual bool isDeleted() const;
-
+  virtual void load(const VariantMap &);
   virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream );
 
 protected:
-  virtual bool _mayExec( Game& game, unsigned int ) const;
   virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec( Game &game, unsigned int time) const;
 
 private:
-  PostponeEvent();
+  CityIndebt();
 
-  class Impl;
-  ScopedPtr<Impl> _d;
+  int _emperorMoney;
+  std::string _text;
+  bool _isDeleted;
 };
 
 }
 
-#endif //_CAESARIA_POSTPONEEVENT_H_INCLUDE_
+#endif //_CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_

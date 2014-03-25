@@ -75,7 +75,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
 
   Font fontWhite = Font::create( FONT_1_WHITE );
 
-  std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->getFunds().getValue(), _("##denaries##") );
+  std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->funds().treasury(), _("##denaries##") );
   fontWhite.draw( *_d->background, moneyStr, 70, 55, false );
   fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75, false );
 
@@ -141,8 +141,8 @@ void AdvisorFinanceWindow::Impl::drawReportRow(const Point& pos, const std::stri
 {
   Font font = Font::create( FONT_1 );
 
-  int lyvalue = city->getFunds().getIssueValue( type, city::Funds::lastYear );
-  int tyvalue = city->getFunds().getIssueValue( type, city::Funds::thisYear );
+  int lyvalue = city->funds().getIssueValue( type, city::Funds::lastYear );
+  int tyvalue = city->funds().getIssueValue( type, city::Funds::thisYear );
 
   font.draw( *background, title, pos, false );
   font.draw( *background, StringHelper::format( 0xff, "%d", lyvalue ), pos + Point( 215, 0), false );
@@ -153,7 +153,7 @@ void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()
 {
   int taxValue = calculateTaxValue();
   std::string strCurretnTax = StringHelper::format( 0xff, "%d%% %s %d %s",
-                                                    city->getFunds().getTaxRate(), _("##may_collect_about##"),
+                                                    city->funds().getTaxRate(), _("##may_collect_about##"),
                                                     taxValue, _("##denaries##") );
   lbTaxRateNow->setText( strCurretnTax );
 }
@@ -165,7 +165,7 @@ int AdvisorFinanceWindow::Impl::calculateTaxValue()
   HouseList houses = helper.find<House>( building::house );
 
   float taxValue = 0.f;
-  float taxRate = city->getFunds().getTaxRate();
+  float taxRate = city->funds().getTaxRate();
   foreach( house, houses )
   {
     int maxhb = (*house)->getMaxHabitants();

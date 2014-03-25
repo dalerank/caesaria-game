@@ -22,6 +22,7 @@
 #include "texturedbutton.hpp"
 #include "label.hpp"
 #include "core/logger.hpp"
+#include "gameautopause.hpp"
 
 namespace gui
 {
@@ -29,6 +30,7 @@ namespace gui
 class FilmWidget::Impl
 {
 public:
+  GameAutoPause locker;
   Label* lbTitle;
   TexturedButton* btnExit;
   Label* lbTime;
@@ -42,6 +44,7 @@ public oc3_signals:
 FilmWidget::FilmWidget(Widget* parent, vfs::Path film )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
+  _d->locker.activate();
   _d->lbMessage = 0;
 
   setupUI( GameSettings::rcpath( "/gui/filmwidget.gui" ) );
@@ -58,9 +61,7 @@ FilmWidget::FilmWidget(Widget* parent, vfs::Path film )
   CONNECT( _d->btnExit, onClicked(), this, FilmWidget::deleteLater );
 }
 
-FilmWidget::~FilmWidget( void )
-{
-}
+FilmWidget::~FilmWidget( void ) {}
 
 void FilmWidget::setText(const std::string& text)
 {
@@ -85,10 +86,7 @@ void FilmWidget::setTime(DateTime time)
                                                               time.year() < 0 ? "BC" : "AD" ) );
 }
 
-Signal0<>& FilmWidget::onClose()
-{
-  return _d->onCloseSignal;
-}
+Signal0<>& FilmWidget::onClose() {  return _d->onCloseSignal; }
 
 
 }//end namespace gui

@@ -77,7 +77,7 @@ public:
   ClimateType getClimate() const;
   void setClimate(const ClimateType);
 
-  city::Funds& getFunds() const;
+  city::Funds& funds() const;
 
   int getPopulation() const;
   int getProsperity() const;

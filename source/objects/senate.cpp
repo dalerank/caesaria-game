@@ -138,7 +138,7 @@ int Senate::collectTaxes()
   return save;
 }
 
-unsigned int Senate::getFunds() const {  return _city()->getFunds().getValue(); }
+unsigned int Senate::getFunds() const {  return _city()->funds().treasury(); }
 std::string Senate::getError() const {  return _d->errorStr; }
 
 int Senate::getStatus(Senate::Status status) const

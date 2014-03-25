@@ -74,7 +74,7 @@ void FundIssueEvent::_exec(Game& game, unsigned int )
     _value = price * _qty / 100;
   }
 
-  game.city()->getFunds().resolveIssue( FundIssue( _type, _value ) );
+  game.city()->funds().resolveIssue( FundIssue( _type, _value ) );
 }
 
 } //end namespace events
