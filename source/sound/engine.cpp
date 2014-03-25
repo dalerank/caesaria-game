@@ -151,23 +151,6 @@ void Engine::exit()
   Mix_CloseAudio();
 }
 
-VariantMap Engine::save() const
-{
-  VariantMap ret;
-  ret[ "ambient" ] = _d->volumes[ ambientSound ];
-  ret[ "theme"   ] = _d->volumes[ themeSound ];
-  ret[ "game"    ] = _d->volumes[ gameSound ];
-
-  return ret;
-}
-
-void Engine::load(const VariantMap& stream)
-{
-  _d->volumes[ ambientSound ] = stream.get( "ambient" );
-  _d->volumes[ themeSound ] = stream.get( "theme" );
-  _d->volumes[ gameSound ] = stream.get( "game" );
-}
-
 bool Engine::_loadSound(vfs::Path filename)
 {
   if(_d->useSound>0 && _d->samples.size()<Impl::maxSamplesNumner)

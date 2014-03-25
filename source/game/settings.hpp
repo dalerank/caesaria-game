@@ -50,6 +50,9 @@ public:
   static const char* c3gfx;
   static const char* archivesModel;
   static const char* soundThemesModel;
+  static const char* soundVolume;
+  static const char* ambientVolume;
+  static const char* musicVolume;
 
   static GameSettings& getInstance();
 

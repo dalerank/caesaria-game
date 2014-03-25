@@ -39,6 +39,7 @@ public:
 
 public oc3_signals:
   Signal2<audio::SoundType, int>& onSoundChange();
+  Signal0<>& onClose();
 
 private:
   void _update();

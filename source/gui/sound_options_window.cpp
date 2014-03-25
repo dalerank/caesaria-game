@@ -42,6 +42,7 @@ public:
 
 public oc3_signals:
   Signal2<audio::SoundType, int> onSoundChangeSignal;
+  Signal0<> onCloseSignal;
 };
 
 SoundOptionsWindow::SoundOptionsWindow(Widget* parent, int gameSound, int ambientSound, int themeSound )
@@ -71,12 +72,18 @@ bool SoundOptionsWindow::onEvent(const NEvent& event)
     case 1: case 2: _d->current.game += (id == 1 ? -10 : +10 );       _update(); break;
     case 11: case 12: _d->current.ambient += (id == 11 ? -10 : +10 ); _update(); break;
     case 21: case 22: _d->current.theme += (id == 21 ? -10 : +10 );   _update(); break;
-    case 1001: deleteLater(); break;
+
+    case 1001:
+      _d->onCloseSignal.emit();
+      deleteLater();
+    break;
+
     case 1002:
     {
       _d->onSoundChangeSignal.emit( audio::gameSound, _d->save.game );
       _d->onSoundChangeSignal.emit( audio::ambientSound, _d->save.ambient );
       _d->onSoundChangeSignal.emit( audio::themeSound, _d->save.theme );
+      _d->onCloseSignal.emit();
       deleteLater();
     }
     break;
@@ -89,10 +96,8 @@ bool SoundOptionsWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<audio::SoundType, int>&SoundOptionsWindow::onSoundChange()
-{
-  return _d->onSoundChangeSignal;
-}
+Signal2<audio::SoundType, int>&SoundOptionsWindow::onSoundChange() {  return _d->onSoundChangeSignal;}
+Signal0<>&SoundOptionsWindow::onClose(){  return _d->onCloseSignal;}
 
 void SoundOptionsWindow::_update()
 {

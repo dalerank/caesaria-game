@@ -15,15 +15,15 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_SETVIDEOOPTIONS_H_INCLUDE_
-#define _CAESARIA_EVENT_SETVIDEOOPTIONS_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_SETSOUNDOPTIONS_H_INCLUDE_
+#define _CAESARIA_EVENT_SETSOUNDOPTIONS_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class SetVideoSettings : public GameEvent
+class SetSoundOptions : public GameEvent
 {
 public:
   static GameEventPtr create();
@@ -32,10 +32,9 @@ private:
   virtual bool _mayExec(Game&, unsigned int) const;
   virtual void _exec( Game& game, unsigned int );
 
-  void _setResolution(Size);
-  void _setFullscreen(bool);
+  void _saveSoundSettings();
 };
 
 }
 
-#endif //_CAESARIA_EVENT_SETVIDEOOPTIONS_H_INCLUDE_
+#endif //_CAESARIA_EVENT_SETSOUNDOPTIONS_H_INCLUDE_

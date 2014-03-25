@@ -103,7 +103,12 @@ void Game::Impl::initVideo()
 void Game::initSound()
 {
   Logger::warning( "init sound engine" );
-  audio::Engine::instance().init();
+  audio::Engine& ae = audio::Engine::instance();
+
+  ae.init();
+  ae.setVolume( audio::ambientSound, GameSettings::get( GameSettings::ambientVolume ) );
+  ae.setVolume( audio::themeSound, GameSettings::get( GameSettings::musicVolume ) );
+  ae.setVolume( audio::gameSound, GameSettings::get( GameSettings::soundVolume ) );
 }
 
 void Game::mountArchives()

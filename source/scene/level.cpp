@@ -61,11 +61,11 @@
 #include "gui/win_mission_window.hpp"
 #include "events/showempiremapwindow.hpp"
 #include "events/showadvisorwindow.hpp"
-#include "gui/sound_options_window.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
 #include "events/showtileinfo.hpp"
 #include "gui/androidactions.hpp"
+#include "events/setsoundoptions.hpp"
 #include "core/foreach.hpp"
 
 using namespace gui;
@@ -267,13 +267,8 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  audio::Engine& e = audio::Engine::instance();
-  SoundOptionsWindow* dialog = new SoundOptionsWindow( game->gui()->rootWidget(),
-                                                       e.volume( audio::gameSound ),
-                                                       e.volume( audio::ambientSound ),
-                                                       e.volume( audio::themeSound ) );
-
-  CONNECT( dialog, onSoundChange(), &e, audio::Engine::setVolume );
+  events::GameEventPtr e = events::SetSoundOptions::create();
+  e->dispatch();
 }
 
 void Level::Impl::makeEnemy()

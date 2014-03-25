@@ -46,6 +46,9 @@ const char* GameSettings::c3gfx = "c3gfx";
 const char* GameSettings::lastTranslation = "lastTranslation";
 const char* GameSettings::archivesModel = "archivesModel";
 const char* GameSettings::soundThemesModel = "soundThemesModel";
+const char* GameSettings::soundVolume = "soundVolume";
+const char* GameSettings::ambientVolume = "ambientVolume";
+const char* GameSettings::musicVolume = "musicVolume";
 
 const vfs::Path defaultSaveDir = "saves";
 const vfs::Path defaultResDir = "resources";
@@ -80,6 +83,9 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ language            ] = Variant( std::string( "en" ) );
   _d->options[ fastsavePostfix     ] = Variant( std::string( "_fastsave") );
   _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
+  _d->options[ soundVolume         ] = 100;
+  _d->options[ ambientVolume       ] = 50;
+  _d->options[ musicVolume         ] = 25;
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
   _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );
@@ -150,9 +156,16 @@ void GameSettings::load()
 
 void GameSettings::save()
 {
-  VariantMap saveSettings;
-  saveSettings[ GameSettings::fullscreen ] = get( GameSettings::fullscreen );
-  saveSettings[ GameSettings::resolution ] = get( GameSettings::resolution );
+  StringArray items;
+  items << GameSettings::fullscreen
+        << GameSettings::resolution
+        << GameSettings::soundVolume
+        << GameSettings::ambientVolume
+        << GameSettings::musicVolume
+        << GameSettings::language;
 
-  SaveAdapter::save( saveSettings,  rcpath( GameSettings::settingsPath ) );
+  VariantMap saveSettings;
+  foreach( it, items) { saveSettings[ *it ] = get( *it );  }
+
+  SaveAdapter::save( saveSettings, rcpath( GameSettings::settingsPath ) );
 }

@@ -34,7 +34,7 @@ public:
   static Engine& instance();
 
   void setVolume( SoundType type , int value);
-  int volume( SoundType type) const;
+  int volume( SoundType type ) const;
 
   int maxVolumeValue() const;
 
@@ -42,9 +42,6 @@ public:
 
   void init();
   void exit();
-
-  VariantMap save() const;
-  void load(const VariantMap& stream);
 
   int play( vfs::Path filename, int volume, SoundType type );
   int play( std::string rc, int index, int volume, SoundType type );
