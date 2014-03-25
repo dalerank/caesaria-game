@@ -48,7 +48,7 @@ Gatehouse::Gatehouse() : Building( building::gatehouse, Size( 2 ) ), _d( new Imp
 
 bool Gatehouse::_update( PlayerCityPtr city, TilePos pos )
 {
-  Tilemap& tmap = city->getTilemap();
+  Tilemap& tmap = city->tilemap();
 
   _d->direction = noneDirection;
 

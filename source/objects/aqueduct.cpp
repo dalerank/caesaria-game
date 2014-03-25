@@ -46,7 +46,7 @@ Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
 
 void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
 {
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have aqueduct here
@@ -72,7 +72,7 @@ void Aqueduct::destroy()
 
   if( _city().isValid() )
   {
-    TilesArray area = _city()->getTilemap().getArea( pos() - TilePos( 2, 2 ), Size( 5 ) );
+    TilesArray area = _city()->tilemap().getArea( pos() - TilePos( 2, 2 ), Size( 5 ) );
     foreach( tile, area )
     {
       AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->overlay() );
@@ -103,7 +103,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
       return true; // we try to build on free tile
 
   // we can place on road
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   Tile& terrain = tilemap.at( pos );
 
   // we can't build on plazas
@@ -194,7 +194,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
 const Picture& Aqueduct::getPicture(PlayerCityPtr city, TilePos p, const TilesArray& tmp ) const
 {
   // find correct picture as for roads
-  Tilemap& tmap = city->getTilemap();
+  Tilemap& tmap = city->tilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 

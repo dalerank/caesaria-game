@@ -64,7 +64,7 @@ GameEventPtr DisasterEvent::create( const Tile& tile, Type type )
 
 void DisasterEvent::_exec( Game& game, unsigned int )
 {
-  Tilemap& tmap = game.city()->getTilemap();
+  Tilemap& tmap = game.city()->tilemap();
   Tile& tile = tmap.at( _pos );
   TilePos rPos = _pos;
 

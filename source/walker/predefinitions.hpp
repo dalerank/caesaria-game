@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WALKER_PREDEFINITIONS_H_INCLUDED__
 #define __CAESARIA_WALKER_PREDEFINITIONS_H_INCLUDED__
@@ -32,6 +34,8 @@ PREDEFINE_CLASS_SMARTPOINTER_LIST(FishPlace,List)
 PREDEFINE_CLASS_SMARTPOINTER_LIST(SeaMerchant,List)
 PREDEFINE_CLASS_SMARTPOINTER_LIST(Merchant,List)
 PREDEFINE_CLASS_SMARTPOINTER_LIST(Locust,List)
+PREDEFINE_CLASS_SMARTPOINTER_LIST(EnemyArcher,List)
+
 PREDEFINE_CLASS_SMARTPOINTER(ServiceWalker)
 PREDEFINE_CLASS_SMARTPOINTER(TraineeWalker)
 PREDEFINE_CLASS_SMARTPOINTER(MarketLady)

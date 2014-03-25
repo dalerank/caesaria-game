@@ -221,7 +221,7 @@ void Migration::Impl::createMigrationToCity()
     return;
   }
 
-  Tile& roadTile = city->getTilemap().at( city->getBorderInfo().roadEntry );
+  Tile& roadTile = city->tilemap().at( city->getBorderInfo().roadEntry );
 
   EmigrantPtr emigrant = Emigrant::create( city );
 

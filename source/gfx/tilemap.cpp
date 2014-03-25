@@ -104,12 +104,12 @@ Tile* Tilemap::at(Point pos, bool overborder)
 
   if( overborder )
   {
-      i = math::clamp( i, 0, getSize() - 1 );
-      j = math::clamp( j, 0, getSize() - 1 );
+      i = math::clamp( i, 0, size() - 1 );
+      j = math::clamp( j, 0, size() - 1 );
   }
   // std::cout << "ij ("<<i<<","<<j<<")"<<std::endl;
 
-  if (i>=0 && j>=0 && i < getSize() && j < getSize())
+  if (i>=0 && j>=0 && i < size() && j < size())
   {
     // valid coordinate
     return &at( TilePos( i, j ) );
@@ -140,7 +140,7 @@ const Tile& Tilemap::at( const TilePos& ij ) const
   return const_cast<Tilemap*>( this )->at( ij.i(), ij.j() );
 }
 
-int Tilemap::getSize() const
+int Tilemap::size() const
 {
   return _d->size;
 }

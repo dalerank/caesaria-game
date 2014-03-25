@@ -27,7 +27,7 @@ const TilePos Helper::invalidPos = TilePos( -1, -1 );
 
 void Helper::updateDesirability( ConstructionPtr construction, bool onBuild )
 {
-  Tilemap& tilemap = _city->getTilemap();
+  Tilemap& tilemap = _city->tilemap();
 
   const Desirability& dsrbl = construction->getDesirability();
   int mul = ( onBuild ? 1 : -1);
@@ -56,17 +56,17 @@ void Helper::updateDesirability( ConstructionPtr construction, bool onBuild )
 
 TilesArray Helper::getArea(TileOverlayPtr overlay)
 {
-  return _city->getTilemap().getArea( overlay->pos(), overlay->size() );
+  return _city->tilemap().getArea( overlay->pos(), overlay->size() );
 }
 
 TilesArray Helper::getAroundTiles(TileOverlayPtr overlay)
 {
-  return _city->getTilemap().getArea( overlay->pos()-TilePos(1,1), overlay->size()+Size(2) );
+  return _city->tilemap().getArea( overlay->pos()-TilePos(1,1), overlay->size()+Size(2) );
 }
 
 TilesArray Helper::getArea(TilePos start, TilePos stop)
 {
-  return _city->getTilemap().getArea( start, stop );
+  return _city->tilemap().getArea( start, stop );
 }
 
 float Helper::getBalanceKoeff()

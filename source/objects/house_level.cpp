@@ -577,7 +577,7 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 {
   PlayerCityPtr city = house->_city();
 
-  TilesArray area = city->getTilemap().getArea( house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
+  TilesArray area = city->tilemap().getArea( house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
 
   float middleDesirbl = (float)area.front()->getDesirability();
 

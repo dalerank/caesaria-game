@@ -290,7 +290,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
 
   if( size() == 1 )
   {
-    Tilemap& tmap = _city()->getTilemap();
+    Tilemap& tmap = _city()->tilemap();
     TilesArray area = tmap.getArea( tile().pos(), Size(2) );
     bool mayGrow = true;
 
@@ -454,7 +454,7 @@ void House::_levelDown()
     _d->houseId = 1;
     _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
 
-    Tilemap& tmap = _city()->getTilemap();
+    Tilemap& tmap = _city()->tilemap();
 
     if( size().area() > 1 )
     {

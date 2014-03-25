@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "enemysoldier.hpp"
 #include "core/position.hpp"
@@ -36,14 +38,7 @@ using namespace constants;
 
 class EnemySoldier::Impl
 {
-public:
-  typedef enum { check4attack=0,
-                 go2position,
-                 go2enemy,
-                 fightEnemy,
-                 destroyBuilding,
-                 doNothing } EsAction;
-    
+public:  
   EsAction action;
   unsigned int strikeForce;
   unsigned int resistance;
@@ -51,10 +46,10 @@ public:
   gfx::Type walkAnimation;
 };
 
-EnemySoldier::EnemySoldier(PlayerCityPtr city )
+EnemySoldier::EnemySoldier( PlayerCityPtr city )
 : Soldier( city ), _d( new Impl )
 {
-  _d->action = Impl::check4attack;
+  _d->action = check4attack;
 }
 
 void EnemySoldier::_changeTile()
@@ -67,7 +62,7 @@ bool EnemySoldier::_tryAttack()
   BuildingList buildings = _findBuildingsInRange( 1 );
   if( !buildings.empty() )
   {
-    _d->action = Impl::destroyBuilding;
+    _d->action = destroyBuilding;
     setSpeed( 0.f );
     _setAction( acFight );
     _setAnimation( _d->fightAnimation );
@@ -79,7 +74,7 @@ bool EnemySoldier::_tryAttack()
     WalkerList enemies = _findEnemiesInRange( 1 );
     if( !enemies.empty() )
     {
-      _d->action = Impl::fightEnemy;
+      _d->action = fightEnemy;
       setSpeed( 0.f );
       _setAction( acFight );
       _setAnimation( _d->fightAnimation );
@@ -89,6 +84,16 @@ bool EnemySoldier::_tryAttack()
   }
 
   return false;
+}
+
+void EnemySoldier::_setSubAction(EnemySoldier::EsAction action)
+{
+  _d->action = action;
+}
+
+EnemySoldier::EsAction EnemySoldier::_getSubAction() const
+{
+  return _d->action;
 }
 
 void EnemySoldier::_brokePathway(TilePos pos)
@@ -104,8 +109,8 @@ void EnemySoldier::_reachedPathway()
   Soldier::_reachedPathway();
   switch( _d->action )
   {
-  case Impl::check4attack:
-  case Impl::go2position:
+  case check4attack:
+  case go2position:
     _check4attack();
   break;
 
@@ -115,7 +120,7 @@ void EnemySoldier::_reachedPathway()
 
 WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->tilemap();
   WalkerList walkers;
 
   TilePos offset( range, range );
@@ -137,6 +142,17 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   }
 
   return walkers;
+}
+
+gfx::Type EnemySoldier::_getAnimation(Action ac) const
+{
+  switch( ac )
+  {
+  case Walker::acMove: return _d->walkAnimation;
+  case Walker::acFight: return _d->fightAnimation;
+  }
+
+  return gfx::unknown;
 }
 
 void EnemySoldier::_init(walker::Type type)
@@ -201,7 +217,7 @@ void EnemySoldier::_check4attack()
 
   if( pathway.isValid() )
   {
-    _d->action = Impl::go2position;
+    _d->action = go2position;
     setSpeed( 1.0 );
     _setAnimation( _d->walkAnimation );
     setPathway( pathway );
@@ -218,7 +234,7 @@ void EnemySoldier::_check4attack()
 BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
 {
   BuildingList ret;
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->tilemap();
 
   TilePos offset( range, range );
   TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
@@ -261,16 +277,16 @@ void EnemySoldier::_centerTile()
 {
   switch( _d->action )
   {
-  case Impl::doNothing:
+  case doNothing:
   break; 
 
-  case Impl::check4attack:
+  case check4attack:
   {
     _check4attack();
   }
   break;
 
-  case Impl::go2position:
+  case go2position:
   {
     if( _tryAttack() )
       return;
@@ -289,7 +305,7 @@ void EnemySoldier::timeStep(const unsigned long time)
 
   switch( _d->action )
   {
-  case Impl::fightEnemy:
+  case fightEnemy:
   {
     WalkerList enemies = _findEnemiesInRange( 1 );
 
@@ -307,7 +323,7 @@ void EnemySoldier::timeStep(const unsigned long time)
   }
   break;
 
-  case Impl::destroyBuilding:
+  case destroyBuilding:
   {
     BuildingList buildings = _findBuildingsInRange( 1 );
 
@@ -367,7 +383,7 @@ void EnemySoldier::load( const VariantMap& stream )
 {
   Soldier::load( stream );
  
-  _d->action = (Impl::EsAction)stream.get( "EsAction" ).toInt();
+  _d->action = (EsAction)stream.get( "EsAction" ).toInt();
 
   _init( (walker::Type)stream.get( "type" ).toInt() );
   _getCity()->addWalker( this );

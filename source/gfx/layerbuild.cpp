@@ -78,7 +78,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   if( overlay->canBuild( _getCity(), pos, _d->buildTiles ) )
   {
     //bldCommand->setCanBuild(true);
-    Tilemap& tmap = _getCity()->getTilemap();
+    Tilemap& tmap = _getCity()->tilemap();
     Tile *masterTile=0;
     for (int dj = 0; dj < size.height(); ++dj)
     {
@@ -107,7 +107,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
     Picture& redPicture = Picture::load("oc3_land", 2);
 
     //TilemapArea area = til
-    Tilemap& tmap = _getCity()->getTilemap();
+    Tilemap& tmap = _getCity()->tilemap();
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -152,7 +152,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
     Tile* startTile = _getCamera()->at( _getStartCursorPos(), true );  // tile under the cursor (or NULL)
     Tile* stopTile  = _getCamera()->at( _getLastCursorPos(),  true );
 
-    TilesArray pathWay = RoadPropagator::createPath( _getCity()->getTilemap(),
+    TilesArray pathWay = RoadPropagator::createPath( _getCity()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
                                                      _d->roadAssignment );
     for( TilesArray::iterator it=pathWay.begin(); it != pathWay.end(); it++ )

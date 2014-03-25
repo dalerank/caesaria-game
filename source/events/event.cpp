@@ -1,4 +1,4 @@
- // This file is part of CaesarIA.
+// This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "event.hpp"
 #include "objects/objects_factory.hpp"
@@ -75,7 +77,7 @@ bool ClearLandEvent::_mayExec(Game& game, unsigned int time) const{  return true
 
 void ClearLandEvent::_exec( Game& game, unsigned int )
 {
-  Tilemap& tmap = game.city()->getTilemap();
+  Tilemap& tmap = game.city()->tilemap();
 
   Tile& cursorTile = tmap.at( _pos );
 

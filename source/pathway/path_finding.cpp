@@ -46,7 +46,7 @@ public:
 Propagator::Propagator(PlayerCityPtr city ) : _d( new Impl )
 {
    _d->city = city;
-   _d->tilemap = &city->getTilemap();
+   _d->tilemap = &city->tilemap();
    _d->allLands = false;
    _d->allDirections = true;
 }

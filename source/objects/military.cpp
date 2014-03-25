@@ -241,7 +241,7 @@ TilePos Fort::getFreeSlot() const
   for( int range=1; range < 5; range++ )
   {
     TilePos offset( range, range );
-    TilesArray tmpTiles = _city()->getTilemap().getRectangle( patrolPos - offset, patrolPos + offset );
+    TilesArray tmpTiles = _city()->tilemap().getRectangle( patrolPos - offset, patrolPos + offset );
     tiles.insert( tiles.end(), tmpTiles.begin(), tmpTiles.end() );
   }
 

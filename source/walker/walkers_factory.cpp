@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "walkers_factory.hpp"
 #include "trainee.hpp"
@@ -38,6 +40,9 @@
 #include "merchant.hpp"
 #include "engineer.hpp"
 #include "workerhunter.hpp"
+#include "spear.hpp"
+#include "bow_arrow.hpp"
+#include "enemyarcher.hpp"
 #include <map>
 
 using namespace constants;
@@ -135,6 +140,10 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::librarian, new ServicemanCreator( Service::library ) );
   addCreator( walker::teacher, new ServicemanCreator( Service::academy ) );
   addCreator( walker::recruter, new BaseCreator<Recruter>() );
+  addCreator( walker::spear, new BaseCreator<Spear>() );
+  addCreator( walker::bow_arrow, new BaseCreator<BowArrow>() );
+  addCreator( walker::etruscanSoldier, new SoldierCreator<EnemySoldier>( walker::etruscanSoldier ) );
+  addCreator( walker::etruscanArcher, new SoldierCreator<EnemyArcher>( walker::etruscanArcher ) );
 }
 
 WalkerManager::~WalkerManager(){}
@@ -152,7 +161,7 @@ WalkerPtr WalkerManager::create(const walker::Type walkerType, PlayerCityPtr cit
   return WalkerPtr();
 }
 
-WalkerManager& WalkerManager::getInstance()
+WalkerManager& WalkerManager::instance()
 {
   static WalkerManager inst;
   return inst;

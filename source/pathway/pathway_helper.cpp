@@ -117,10 +117,10 @@ Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walk
   int loopCounter = 0; //loop limiter
   do
   {
-    const Tilemap& tmap = city->getTilemap();
+    const Tilemap& tmap = city->tilemap();
 
     TilePos destPos( std::rand() % walkRadius - walkRadius / 2, std::rand() % walkRadius - walkRadius / 2 );
-    destPos = (startPos+destPos).fit( TilePos( 0, 0 ), TilePos( tmap.getSize()-1, tmap.getSize()-1 ) );
+    destPos = (startPos+destPos).fit( TilePos( 0, 0 ), TilePos( tmap.size()-1, tmap.size()-1 ) );
 
     if( tmap.at( destPos ).isWalkable( true) )
     {

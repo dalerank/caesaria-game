@@ -191,7 +191,7 @@ void Walker::_walk()
      return;
   }
 
-  Tile& tile = _d->city->getTilemap().at( pos() );
+  Tile& tile = _d->city->tilemap().at( pos() );
 
   switch (_d->action.direction)
   {
@@ -295,7 +295,7 @@ void Walker::_walk()
   }
 
   Tile& offtile = newTile
-                    ? _d->city->getTilemap().at( pos() )
+                    ? _d->city->tilemap().at( pos() )
                     : tile;
 
   Point overlayOffset = offtile.overlay().isValid()
@@ -307,7 +307,7 @@ void Walker::_walk()
 
 void Walker::_changeTile()
 {
-   Tilemap& tilemap = _d->city->getTilemap();
+   Tilemap& tilemap = _d->city->tilemap();
    Tile& currentTile = tilemap.at( _d->pos );
    _d->updateSpeedMultiplier( currentTile );
 }
@@ -364,7 +364,7 @@ const Tile& Walker::_getNextTile() const
   default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
   }
 
-  return _d->city->getTilemap().at( p );
+  return _d->city->tilemap().at( p );
 }
 
 int Walker::getI() const{   return _d->pos.i();}
@@ -473,7 +473,7 @@ void Walker::save( VariantMap& stream ) const
 
 void Walker::load( const VariantMap& stream)
 {
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->tilemap();
 
   _d->tileOffset = stream.get( "tileoffset" );
   _d->name = stream.get( "name" ).toString();
@@ -618,6 +618,8 @@ public:
     append( walker::scholar,    "scholar",      "##wt_scholar##" );
     append( walker::teacher,    "teacher",      "##wt_teacher##" );
     append( walker::librarian,  "librarian",    "##wt_librarian##" );
+    append( walker::etruscanSoldier,"etruscan_soldier", "##wt_etruscan_soldier##" );
+    append( walker::etruscanArcher, "etruscan_archer", "##wt_etruscan_archer##" );
   }
 };
 

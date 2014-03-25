@@ -173,7 +173,7 @@ void RomeSoldier::load(const VariantMap& stream)
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->tilemap();
   WalkerList walkers;
 
   TilePos offset( range, range );

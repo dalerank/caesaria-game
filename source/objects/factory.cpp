@@ -321,7 +321,7 @@ bool TimberLogger::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& 
    bool is_constructible = WorkingBuilding::canBuild( city, pos, aroundTiles );
    bool near_forest = false;  // tells if the factory is next to a forest
 
-   Tilemap& tilemap = city->getTilemap();
+   Tilemap& tilemap = city->tilemap();
    TilesArray area = tilemap.getRectangle( pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
    foreach( tile, area )
    {
@@ -348,7 +348,7 @@ bool IronMine::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& arou
   bool is_constructible = WorkingBuilding::canBuild( city, pos, aroundTiles );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), pos + TilePos(3, 3), Tilemap::checkCorners );
 
   foreach( it, perimetr ) { near_mountain |= (*it)->getFlag( Tile::tlRock ); }

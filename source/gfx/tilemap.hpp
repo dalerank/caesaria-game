@@ -55,7 +55,7 @@ public:
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
   TilesArray getArea(TilePos start, TilePos stop );
   TilesArray getArea(TilePos start, Size size );
-  int getSize() const;
+  int size() const;
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);

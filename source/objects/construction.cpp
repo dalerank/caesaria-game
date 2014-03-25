@@ -42,7 +42,7 @@ Construction::Construction(const Type type, const Size& size)
 
 bool Construction::canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& ) const
 {
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
 
   bool is_constructible = true;
 
@@ -104,7 +104,7 @@ void Construction::computeAccessRoads()
   if( !_masterTile() )
       return;
 
-  Tilemap& tilemap = _city()->getTilemap();
+  Tilemap& tilemap = _city()->tilemap();
 
   int s = size().width();
   for( int dst=1; dst <= getRoadAccessDistance(); dst++ )
@@ -189,7 +189,7 @@ TilesArray Construction::getEnterArea() const
   TilesArray tiles;
 
   int s = size().width();
-  TilesArray near = _city()->getTilemap().getRectangle( pos() - TilePos(1, 1),
+  TilesArray near = _city()->tilemap().getRectangle( pos() - TilePos(1, 1),
                                                                   pos() + TilePos(s, s),
                                                                   !Tilemap::checkCorners );
 

@@ -44,7 +44,7 @@ public:
     
     if( walkers.empty() )
     {
-      return new T( parent, city->getTilemap().at( pos ) );
+      return new T( parent, city->tilemap().at( pos ) );
     }
     else
     {

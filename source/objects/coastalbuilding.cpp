@@ -64,7 +64,7 @@ void CoastalFactory::build(PlayerCityPtr city, const TilePos& pos)
 {
   _setDirection( _d->getDirection( city, pos ) );
 
-  TilesArray area = city->getTilemap().getArea( pos, size() );
+  TilesArray area = city->tilemap().getArea( pos, size() );
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
 
@@ -106,7 +106,7 @@ void CoastalFactory::assignBoat(ShipPtr)
 
 const Tile& CoastalFactory::getLandingTile() const
 {
-  Tilemap& tmap = _city()->getTilemap();
+  Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -134,7 +134,7 @@ void CoastalFactory::_setDirection(Direction direction)
 
 Direction CoastalFactory::Impl::getDirection(PlayerCityPtr city, TilePos pos)
 {
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
 
   const Tile& t00 = tilemap.at( pos );
   const Tile& t10 = tilemap.at( pos + TilePos( 1, 0 ) );

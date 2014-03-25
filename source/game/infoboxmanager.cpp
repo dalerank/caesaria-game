@@ -57,7 +57,7 @@ class BaseInfoboxCreator : public InfoboxCreator
 public:
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    return new T( parent, city->getTilemap().at( pos ) );
+    return new T( parent, city->tilemap().at( pos ) );
   }
 };
 
@@ -69,11 +69,11 @@ public:
     HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
     if( house->getHabitants().count() > 0 )
     {
-      return new InfoboxHouse( parent, city->getTilemap().at( pos ) );
+      return new InfoboxHouse( parent, city->tilemap().at( pos ) );
     }
     else
     {
-      return new InfoboxFreeHouse( parent, city->getTilemap().at( pos ) );
+      return new InfoboxFreeHouse( parent, city->tilemap().at( pos ) );
     }
   }
 };
@@ -244,7 +244,7 @@ InfoboxManager& InfoboxManager::getInstance()
 
 void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
 {
-  Tile& tile = city->getTilemap().at( pos );
+  Tile& tile = city->tilemap().at( pos );
   TileOverlayPtr overlay = tile.overlay();
   TileOverlay::Type type;
 

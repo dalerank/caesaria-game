@@ -50,7 +50,7 @@ void SkipCompressed( std::fstream& f )
 
 void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
-  unsigned int size = ioCity->getTilemap().getSize();
+  unsigned int size = ioCity->tilemap().size();
 
   const unsigned int savePos = f.tellg();
 
@@ -213,7 +213,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
     int size = tmp;
     PlayerCityPtr oCity = game.city();
-    Tilemap& oTilemap = oCity->getTilemap();
+    Tilemap& oTilemap = oCity->tilemap();
 
     oTilemap.resize(size);
     oCity->setCameraPos( TilePos( 0, 0 ) );

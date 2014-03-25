@@ -68,7 +68,7 @@ void TileOverlay::setPicture(Picture picture)
 
   if (_d->masterTile != NULL)
   {
-    Tilemap &tilemap = _city()->getTilemap();
+    Tilemap &tilemap = _city()->tilemap();
     // _master_tile == NULL is cloneable buildings
     TilePos pos = _d->masterTile->pos();
 
@@ -85,7 +85,7 @@ void TileOverlay::setPicture(Picture picture)
 
 void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
 {
-  Tilemap &tilemap = city->getTilemap();
+  Tilemap &tilemap = city->tilemap();
 
   _d->city = city;
   _d->masterTile = &tilemap.at( pos );

@@ -192,7 +192,7 @@ void HighBridge::initTerrain(Tile& terrain )
 
 void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir )
 {
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   //Picture& water = Picture::load( "land1a", 120 );
   switch( dir )
   {
@@ -296,7 +296,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 {
   start = curPos;
 
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   Tile& tile = tilemap.at( curPos );
 
   /*if( tile.getFlag( Tile::tlRoad ) )
@@ -379,7 +379,7 @@ void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
   _d->subtiles.clear();
   _fgPicturesRef().clear();
 
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
 
   _checkParams( city, _d->direction, startPos, endPos, pos );
 
@@ -431,7 +431,7 @@ void HighBridge::destroy()
 
     std::string picName = TileHelper::convId2PicName( subtile->_imgId );
 
-    Tile& mapTile = city->getTilemap().at( subtile->_pos );
+    Tile& mapTile = city->tilemap().at( subtile->_pos );
     mapTile.setPicture( &Picture::load( picName ) );
 
     TileHelper::decode( mapTile, subtile->_info );

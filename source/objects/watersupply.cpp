@@ -52,7 +52,7 @@ public:
 void Reservoir::destroy()
 {
   //now remove water flag from near tiles
-  Tilemap& tmap = _city()->getTilemap();
+  Tilemap& tmap = _city()->tilemap();
   TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
   foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_RESERVOIR, 20 ); }
@@ -100,7 +100,7 @@ bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
 {
   bool near_water = false;  // tells if the factory is next to a mountain
 
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
 
   foreach( tile, perimetr) { near_water |= (*tile)->getFlag( Tile::tlWater ); }
@@ -133,7 +133,7 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( time % _d->serviceTimer == 1 )
   {
-    Tilemap& tmap = _city()->getTilemap();
+    Tilemap& tmap = _city()->tilemap();
     TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_RESERVOIR ); }
@@ -203,7 +203,7 @@ void WaterSource::timeStep( const unsigned long time )
 
 void WaterSource::_produceWater( const TilePos* points, const int size )
 {
-  Tilemap& tilemap = _city()->getTilemap();
+  Tilemap& tilemap = _city()->tilemap();
 
   for( int index=0; index < size; index++ )
   {

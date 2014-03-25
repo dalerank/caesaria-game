@@ -13,38 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
-#define _CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_ENEMYARCHER_INCLUDE_H_
+#define _CAESARIA_ENEMYARCHER_INCLUDE_H_
 
-#include "event.hpp"
+#include "enemysoldier.hpp"
 #include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
 
-namespace events
-{
-
-class RandomFire : public GameEvent
+class EnemyArcher : public EnemySoldier
 {
 public:
-  static GameEventPtr create();
-  virtual bool isDeleted() const;
+  static EnemyArcherPtr create( PlayerCityPtr city, constants::walker::Type type );
 
+  void send2city( TilePos pos );
+
+  virtual void timeStep(const unsigned long time);
+
+  virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
-  virtual VariantMap save() const;
 
 protected:
-  virtual void _exec(Game &game, unsigned int time);
-  virtual bool _mayExec(Game &game, unsigned int time) const;
+  bool _tryAttack();
 
 private:
-  RandomFire();
+  EnemyArcher(PlayerCityPtr city);
 
   class Impl;
-  ScopedPtr<Impl> _d;
+  ScopedPtr< Impl > _d;
 };
 
-}//namespace events
 
-#endif //_CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
+#endif //_CAESARIA_ENEMYARCHER_INCLUDE_H_

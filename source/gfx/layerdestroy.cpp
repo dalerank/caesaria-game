@@ -68,7 +68,7 @@ void LayerDestroy::render( GfxEngine& engine )
 
   const TilesArray& visibleTiles = _getCamera()->getTiles();
 
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->tilemap();
 
   std::set<int> hashDestroyArea;
   TilesArray destroyArea = _getSelectedArea();

@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-
 #ifndef _CAESARIA_WALLGUARD_INCLUDE_H_
 #define _CAESARIA_WALLGUARD_INCLUDE_H_
 
@@ -35,7 +34,6 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
-
 
 protected:
   virtual void _centerTile();

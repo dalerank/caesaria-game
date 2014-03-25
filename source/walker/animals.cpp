@@ -102,7 +102,7 @@ void Sheep::_reachedPathway()
 {
   Walker::_reachedPathway();
 
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->tilemap();
   if( tmap.at( pos() ).getFlag( Tile::tlMeadow ) )
   {
     updateHealth( +100 );

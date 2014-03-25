@@ -99,7 +99,7 @@ void TilemapCamera::setCenter(TilePos pos )
 {
   _d->center = pos;
 
-  setCenter( Point( pos.i() + pos.j(), _d->tilemap->getSize() - 1 + pos.j() - pos.i() ) );
+  setCenter( Point( pos.i() + pos.j(), _d->tilemap->size() - 1 + pos.j() - pos.i() ) );
 
   _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
 }
@@ -161,10 +161,10 @@ const TilesArray& TilemapCamera::getTiles() const
   if( _d->tiles.empty() )
   {
     _d->offset.setX( _d->screenSize.width() / 2 - 30 * (_d->centerMapXZ.x() + 1) + 1 );
-    _d->offset.setY( _d->screenSize.height()/ 2 + 15 * (_d->centerMapXZ.y() - _d->tilemap->getSize() + 1) - 30 );
+    _d->offset.setY( _d->screenSize.height()/ 2 + 15 * (_d->centerMapXZ.y() - _d->tilemap->size() + 1) - 30 );
 
-    int mapSize = _d->tilemap->getSize();
-    int zm = _d->tilemap->getSize() + 1;
+    int mapSize = _d->tilemap->size();
+    int zm = _d->tilemap->size() + 1;
     int cx = _d->centerMapXZ.x();
     int cz = _d->centerMapXZ.y();
 
@@ -233,7 +233,7 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
 {
   MovableOrders ret = { true, true, true, true };
 
-  int mapSize = tilemap->getSize();
+  int mapSize = tilemap->size();
   Point mapOffset = Point( screenSize.width() / 2 - 30 * (centerMapXZ.x() + 1) + 1,
                            screenSize.height() / 2 + 15 * (centerMapXZ.y()-mapSize + 1) - 30 );
 

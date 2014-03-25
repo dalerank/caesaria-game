@@ -39,7 +39,7 @@ bool ClayPit::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& around
   bool is_constructible = Construction::canBuild( city, pos, aroundTiles );
   bool near_water = false;
 
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
 
   foreach( tile, perimetr )  {  near_water |= (*tile)->getFlag( Tile::tlWater ); }

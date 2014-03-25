@@ -86,7 +86,7 @@ void Fortification::destroy()
 
   if( _city().isValid() )
   {
-    TilesArray area = _city()->getTilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArray area = _city()->tilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
     foreach( tile, area )
     {
       FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
@@ -127,7 +127,7 @@ const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos p,
                                              const TilesArray& tmp) const
 {
   // find correct picture as for roads
-  Tilemap& tmap = city->getTilemap();
+  Tilemap& tmap = city->tilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 

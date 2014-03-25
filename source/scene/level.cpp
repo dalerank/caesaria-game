@@ -158,7 +158,7 @@ void Level::initialize()
                                      _d->topMenu->height() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
-                               city->getTilemap(),
+                               city->tilemap(),
                                city->getClimate() );
 
   WindowMessageStack::create( gui.rootWidget() );
@@ -282,7 +282,7 @@ void Level::Impl::makeFastSave() { game->save( getFastSaveName().toString() ); }
 
 void Level::Impl::showTileHelp()
 {
-  const Tile& tile = game->city()->getTilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
+  const Tile& tile = game->city()->tilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
   events::GameEventPtr e = events::ShowTileInfo::create( tile.pos() );
   e->dispatch();
 }

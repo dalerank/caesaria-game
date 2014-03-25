@@ -163,7 +163,7 @@ void LowBridge::initTerrain(Tile& terrain )
 
 void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir )
 {
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   //Picture& water = Picture::load( "land1a", 120 );
   switch( dir )
   {
@@ -253,7 +253,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
 {
   start = curPos;
 
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   Tile& tile = tilemap.at( curPos );
 
   /*if( tile.getFlag( Tile::tlRoad ) )
@@ -336,7 +336,7 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
   _d->subtiles.clear();
   _fgPicturesRef().clear();
 
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
 
   _checkParams( city, _d->direction, startPos, endPos, pos );
   int signSum = 1;
@@ -415,7 +415,7 @@ void LowBridge::destroy()
 
     std::string picName = TileHelper::convId2PicName( (*it)->_imgId );
 
-    Tile& mapTile = _city()->getTilemap().at( (*it)->_pos );
+    Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
     mapTile.setPicture( &Picture::load( picName ) );
     TileHelper::decode( mapTile, (*it)->_info );
   }

@@ -384,7 +384,7 @@ WalkerList PlayerCity::getWalkers(walker::Type rtype, TilePos startPos, TilePos 
 
 void PlayerCity::setBorderInfo(const BorderInfo& info)
 {
-  int size = getTilemap().getSize();
+  int size = tilemap().size();
   TilePos start( 0, 0 );
   TilePos stop( size-1, size-1 );
   _d->borderInfo.roadEntry = info.roadEntry.fit( start, stop );
@@ -395,7 +395,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
 
 TileOverlayList&  PlayerCity::getOverlays()         { return _d->overlayList; }
 const BorderInfo& PlayerCity::getBorderInfo() const { return _d->borderInfo; }
-Tilemap&          PlayerCity::getTilemap()          { return _d->tilemap; }
+Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::getClimate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
 city::Funds&        PlayerCity::funds() const      {  return _d->funds;   }
@@ -564,7 +564,7 @@ void PlayerCity::load( const VariantMap& stream )
     VariantMap walkerInfo = item->second.toMap();
     int walkerType = (int)walkerInfo.get( "type", 0 );
 
-    WalkerPtr walker = WalkerManager::getInstance().create( walker::Type( walkerType ), this );
+    WalkerPtr walker = WalkerManager::instance().create( walker::Type( walkerType ), this );
     if( walker.isValid() )
     {
       walker->load( walkerInfo );

@@ -54,8 +54,8 @@ void Animals::update(const unsigned int time)
   if( _d->lastTimeUpdate.month() != GameDate::current().month() )
   {
     _d->lastTimeUpdate = GameDate::current();
-    Tilemap& tmap = _d->city->getTilemap();
-    TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.getSize() ) );
+    Tilemap& tmap = _d->city->tilemap();
+    TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
     TilesArray::iterator it=border.begin();
     while( it != border.end() )
     {

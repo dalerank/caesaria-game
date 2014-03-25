@@ -62,13 +62,13 @@ void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap
 {
   unsigned int idOffset = 0;
   TilePos tlOffset;
-  if( tlPos.i() == 0 || tlPos.i() == tileMap.getSize() - 1 )
+  if( tlPos.i() == 0 || tlPos.i() == tileMap.size() - 1 )
   {
     tlOffset = TilePos( 0, 1 );
     idOffset = (tlPos.i() == 0 ? 1 : 3 );
 
   }
-  else if( tlPos.j() == 0 || tlPos.j() == tileMap.getSize() - 1 )
+  else if( tlPos.j() == 0 || tlPos.j() == tileMap.size() - 1 )
   {
     tlOffset = TilePos( 1, 0 );
     idOffset = (tlPos.j() == 0 ? 2 : 0 );
@@ -85,7 +85,7 @@ void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap
 
 void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
 {
-  TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.getSize() ) );
+  TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
 
   Animation water;
   water.setDelay( 12 );
@@ -105,7 +105,7 @@ void GameLoader::Impl::initWaterTileAnimation( Tilemap& tmap )
 
 void GameLoader::Impl::finalize( Game& game )
 {
-  Tilemap& tileMap = game.city()->getTilemap();
+  Tilemap& tileMap = game.city()->tilemap();
 
   // exit and entry can't point to one tile or .... can!
   const BorderInfo& border = game.city()->getBorderInfo();

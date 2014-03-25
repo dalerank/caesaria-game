@@ -124,7 +124,7 @@ void AmbientSound::update( const unsigned int time )
 
   //add new emitters
   TilePos offset( 3, 3 );
-  TilesArray tiles = _d->city->getTilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
+  TilesArray tiles = _d->city->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
 
   foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
 

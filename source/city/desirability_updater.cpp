@@ -106,8 +106,8 @@ void DesirabilityUpdater::Impl::update(bool positive)
   if( city.isNull() )
     return;
 
-  int size = city->getTilemap().getSize();
-  TilesArray tiles = city->getTilemap().getArea( TilePos( 0, 0), Size( size ) );
+  int size = city->tilemap().size();
+  TilesArray tiles = city->tilemap().getArea( TilePos( 0, 0), Size( size ) );
 
   foreach( it, tiles )
   {

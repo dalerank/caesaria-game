@@ -169,7 +169,7 @@ TilesArray Layer::_getSelectedArea()
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
 
-  return _getCity()->getTilemap().getArea( outStartPos, outStopPos );
+  return _getCity()->tilemap().getArea( outStartPos, outStopPos );
 }
 
 void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass)

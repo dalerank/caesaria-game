@@ -109,7 +109,7 @@ bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
 
 void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 {
-  Tilemap& oTilemap = oCity->getTilemap();
+  Tilemap& oTilemap = oCity->tilemap();
 
   /* get number of city */
 
@@ -275,7 +275,7 @@ void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity)
 
 void GameLoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 {
-  unsigned int size = ioCity->getTilemap().getSize();
+  unsigned int size = ioCity->tilemap().size();
 
   // init road entry/exit point
   unsigned short int i = 0;

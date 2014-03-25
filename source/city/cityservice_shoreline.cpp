@@ -35,8 +35,8 @@ public:
 
 void CityServiceShoreline::Impl::checkMap( PlayerCityPtr city )
 {
-  int mapSize = city->getTilemap().getSize();
-  TilesArray tiles = city->getTilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
+  int mapSize = city->tilemap().size();
+  TilesArray tiles = city->tilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
 
   foreach( tile, tiles )
   {

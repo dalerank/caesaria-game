@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
-#define _CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_ENEMYATTACK_EVENT_H_INCLUDE_
+#define _CAESARIA_ENEMYATTACK_EVENT_H_INCLUDE_
 
 #include "event.hpp"
 #include "predefinitions.hpp"
@@ -25,7 +25,7 @@
 namespace events
 {
 
-class RandomFire : public GameEvent
+class EnemyAttack : public GameEvent
 {
 public:
   static GameEventPtr create();
@@ -39,7 +39,7 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  RandomFire();
+  EnemyAttack();
 
   class Impl;
   ScopedPtr<Impl> _d;
@@ -47,4 +47,4 @@ private:
 
 }//namespace events
 
-#endif //_CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_
+#endif //_CAESARIA_ENEMYATTACK_EVENT_H_INCLUDE_

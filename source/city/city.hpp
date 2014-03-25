@@ -87,7 +87,7 @@ public:
   int getFavour() const;
   void updateFavour( int value );
 
-  Tilemap& getTilemap();
+  Tilemap& tilemap();
 
   std::string getName() const; 
   void setName( const std::string& name );

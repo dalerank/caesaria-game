@@ -65,7 +65,7 @@ void Fishery::update( const unsigned int time )
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    FishPlacePtr fishplace = ptr_cast<FishPlace>( WalkerManager::getInstance().create( walker::fishPlace, _d->city ) );
+    FishPlacePtr fishplace = ptr_cast<FishPlace>( WalkerManager::instance().create( walker::fishPlace, _d->city ) );
 
     if( fishplace.isValid() )
     {

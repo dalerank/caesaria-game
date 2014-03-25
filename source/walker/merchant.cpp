@@ -138,7 +138,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
-      Tilemap& tmap = city->getTilemap();
+      Tilemap& tmap = city->tilemap();
       pathPropagator.init( tmap.at( position ) );
       pathPropagator.setAllDirections( false );
       pathPropagator.propagate( maxDistance );
@@ -181,7 +181,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
-      Tilemap& tmap = city->getTilemap();
+      Tilemap& tmap = city->tilemap();
       pathPropagator.init( tmap.at( position ) );
       pathPropagator.setAllDirections( false );
       pathPropagator.propagate( maxDistance );

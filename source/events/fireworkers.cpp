@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "fireworkers.hpp"
 #include "game/game.hpp"
@@ -41,7 +43,7 @@ bool FireWorkers::_mayExec(Game& game, unsigned int time) const
 
 void FireWorkers::_exec(Game& game, unsigned int)
 {
-  Tilemap& tilemap = game.city()->getTilemap();
+  Tilemap& tilemap = game.city()->tilemap();
   const int defaultFireWorkersDistance = 40;
 
   for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )

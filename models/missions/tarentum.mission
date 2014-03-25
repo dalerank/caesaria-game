@@ -127,14 +127,14 @@
       items : {
         troop_soldiers : {
           type : "soldier"
-          animation : "etruscanSoldier"
+          animation : "etruscan_soldier"
           count : 3
           location : "random"
         }
 
         troop_archers : {
           type : "archer"
-          animation : "etruscanArcher"
+          animation : "etruscan_archer"
           count : 2
           location : "random"
         }

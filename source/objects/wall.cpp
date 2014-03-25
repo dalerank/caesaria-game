@@ -36,7 +36,7 @@ Wall::Wall() : Building( building::wall, Size(1) )
 
 void Wall::build(PlayerCityPtr city, const TilePos& pos )
 {
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
   Tile& terrain = tilemap.at( pos );
 
   // we can't build if already have wall here
@@ -62,7 +62,7 @@ void Wall::destroy()
 
   if( _city().isValid() )
   {
-    TilesArray area = _city()->getTilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArray area = _city()->tilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
 
     foreach( tile, area )
     {
@@ -100,7 +100,7 @@ bool Wall::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
 const Picture& Wall::getPicture(PlayerCityPtr city, TilePos p, const TilesArray& tmp) const
 {
   // find correct picture as for roads
-  Tilemap& tmap = city->getTilemap();
+  Tilemap& tmap = city->tilemap();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 

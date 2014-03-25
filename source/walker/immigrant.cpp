@@ -131,7 +131,7 @@ void Immigrant::_reachedPathway()
   }
   else
   {
-    TilesArray area = _getCity()->getTilemap().getArea( pos() - TilePos(1,1),
+    TilesArray area = _getCity()->tilemap().getArea( pos() - TilePos(1,1),
                                                          pos() + TilePos(1,1) );
     foreach( it, area )  //have destination
     {
@@ -142,7 +142,7 @@ void Immigrant::_reachedPathway()
       int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
       if( freeRoom > 0 )
       {
-        Tilemap& tmap = _getCity()->getTilemap();
+        Tilemap& tmap = _getCity()->tilemap();
         Pathway pathway;
         pathway.init( tmap, tmap.at( pos() ) );
         pathway.setNextTile( *tile );

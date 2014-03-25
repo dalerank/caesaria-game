@@ -85,7 +85,7 @@ CityRenderer::~CityRenderer() {}
 void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
 {
   _d->city = city;
-  _d->tilemap = &city->getTilemap();
+  _d->tilemap = &city->tilemap();
   _d->camera.init( *_d->tilemap );
   _d->engine = engine;
 

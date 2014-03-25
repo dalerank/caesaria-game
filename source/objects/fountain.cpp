@@ -89,7 +89,7 @@ void Fountain::timeStep(const unsigned long time)
     }
 
     TilePos offset( 4, 4 );
-    Tilemap& tmap = _city()->getTilemap();
+    Tilemap& tmap = _city()->tilemap();
     TilesArray reachedTiles = tmap.getArea( pos() - offset, pos() + offset );
 
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
@@ -114,7 +114,7 @@ bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
 {
   bool ret = Construction::canBuild( city, pos, aroundTiles );
 
-  Tilemap& tmap = city->getTilemap();
+  Tilemap& tmap = city->tilemap();
   const Tile& tile = tmap.at( pos );
   int picid = (tile.getWaterService( WTR_RESERVOIR ) > 0 ? fontainFull : fontainEmpty );
   const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings, picid );
@@ -137,7 +137,7 @@ bool Fountain::isActive() const {  return ServiceBuilding::isActive() && _haveRe
 bool Fountain::haveReservoirAccess() const
 {
   TilePos offset( 10, 10 );
-  TilesArray reachedTiles = _city()->getTilemap().getArea( pos() - offset, pos() + offset );
+  TilesArray reachedTiles = _city()->tilemap().getArea( pos() - offset, pos() + offset );
   foreach( tile, reachedTiles )
   {
     TileOverlayPtr overlay = (*tile)->overlay();
@@ -154,7 +154,7 @@ void Fountain::destroy()
 {
   ServiceBuilding::destroy();
 
-  Tilemap& tmap = _city()->getTilemap();
+  Tilemap& tmap = _city()->tilemap();
   TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
   foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_FONTAIN, 20 ); }

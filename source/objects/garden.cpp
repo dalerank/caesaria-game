@@ -61,7 +61,7 @@ void Garden::build(PlayerCityPtr city, const TilePos& p )
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = city->getTilemap().getRectangle( pos() - TilePos( 1, 1),
+    TilesArray tilesAround = city->tilemap().getRectangle( pos() - TilePos( 1, 1),
                                                               pos() + TilePos( 1, 1 ) );
     foreach( tile, tilesAround )
     {
@@ -103,7 +103,7 @@ std::string Garden::getSound() const
 
 void Garden::update()
 {
-  TilesArray nearTiles = _city()->getTilemap().getArea( pos(), Size(2) );
+  TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( tile, nearTiles )

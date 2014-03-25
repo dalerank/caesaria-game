@@ -195,7 +195,7 @@ void WallGuard::load(const VariantMap& stream)
 
 EnemySoldierList WallGuard::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->tilemap();
   EnemySoldierList walkers;
 
   for( unsigned int i=0; i < range; i++ )
@@ -225,7 +225,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 {
   FortificationList ret;
 
-  Tilemap& tmap = _getCity()->getTilemap();
+  Tilemap& tmap = _getCity()->tilemap();
   for( int range=1; range < 8; range++ )
   {
     TilePos offset( range, range );

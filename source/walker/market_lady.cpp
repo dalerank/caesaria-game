@@ -199,7 +199,7 @@ void MarketLady::_reachedPathway()
    else
    {
       // get goods from destination building
-      TileOverlayPtr building = _getCity()->getTilemap().at( _d->destBuildingPos ).overlay();
+      TileOverlayPtr building = _getCity()->tilemap().at( _d->destBuildingPos ).overlay();
       
       if( is_kind_of<Granary>( building ) )
       {

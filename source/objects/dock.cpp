@@ -83,7 +83,7 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
 {
   _setDirection( _d->getDirection( city, pos, size() ) );
 
-  TilesArray area = city->getTilemap().getArea( pos, size() );
+  TilesArray area = city->tilemap().getArea( pos, size() );
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
 
@@ -160,7 +160,7 @@ bool Dock::isBusy() const
 
 const Tile& Dock::getLandingTile() const
 {
-  Tilemap& tmap = _city()->getTilemap();
+  Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -210,7 +210,7 @@ const Tile& Dock::getQueueTile() const
   }
 
   TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles[ rand() % tiles.size() ]->pos();
-  return _city()->getTilemap().at( pos );
+  return _city()->tilemap().at( pos );
 }
 
 void Dock::requestGoods(GoodStock& stock)
@@ -299,7 +299,7 @@ bool Dock::Impl::isFlatCoast(const Tile& tile) const
 
 Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
 {
-  Tilemap& tilemap = city->getTilemap();
+  Tilemap& tilemap = city->tilemap();
 
   int s = size.width();
   TilesArray constructibleTiles = tilemap.getArea( pos + TilePos( 0, 1 ), pos + TilePos( s-1, s-1 ) );

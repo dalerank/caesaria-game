@@ -49,7 +49,7 @@ public:
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
 
-  Point getOffset() { return Point( 146/2 - center.x(), 112/2 + center.y() - tilemap->getSize()*2); }
+  Point getOffset() { return Point( 146/2 - center.x(), 112/2 + center.y() - tilemap->size()*2); }
 
 public oc3_signals:
   Signal1<TilePos> onCenterChangeSignal;
@@ -61,7 +61,7 @@ Minimap::Minimap(Widget* parent, Rect rect, const Tilemap& tilemap, int climate)
   _d->tilemap = &tilemap;
   _d->climate = climate;
   _d->lastTimeUpdate = 0;
-  _d->fullmap.reset( Picture::create( Size( _d->tilemap->getSize() * 2 ) ) );
+  _d->fullmap.reset( Picture::create( Size( _d->tilemap->size() * 2 ) ) );
   _d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
   _d->colors = new MinimapColors( (ClimateType)climate );
   setTooltipText( _("##minimap_tooltip##") );
@@ -185,7 +185,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::updateImage()
 {
-  int mapsize = tilemap->getSize();
+  int mapsize = tilemap->size();
 
   fullmap->lock();
   // here we can draw anything
@@ -271,7 +271,7 @@ bool Minimap::onEvent(const NEvent& event)
   {
     Point clickPosition = event.mouse.pos() - absoluteRect().UpperLeftCorner;
 
-    int mapsize = _d->tilemap->getSize();
+    int mapsize = _d->tilemap->size();
 
     clickPosition -= _d->getOffset();
     TilePos tpos;

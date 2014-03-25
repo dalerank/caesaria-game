@@ -22,6 +22,7 @@
 #include "changebuildingoptions.hpp"
 #include "changeempireoptions.hpp"
 #include "cityindebt.hpp"
+#include "enemy_attack.hpp"
 
 namespace events
 {
@@ -78,6 +79,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<RandomDamage>( "random_collapse" );
   addCreator<RandomFire>( "random_fire" );
   addCreator<CityIndebt>( "city_indebt" );
+  addCreator<EnemyAttack>( "enemy_attack" );
 }
 
 }//end namespace events

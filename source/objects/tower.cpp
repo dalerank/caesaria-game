@@ -65,7 +65,7 @@ void Tower::load(const VariantMap& stream)
 
 bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
 {
-  Tilemap& tmap = city->getTilemap();
+  Tilemap& tmap = city->tilemap();
 
   bool freeMap[ countDirection ] = { 0 };
   freeMap[ noneDirection ] = tmap.at( pos ).getFlag( Tile::isConstructible );
@@ -103,7 +103,7 @@ void Tower::_rebuildWays()
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
     TilePos offset( range, range );
-    TilesArray tiles = _city()->getTilemap().getRectangle( pos() - offset,
+    TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset,
                                                               pos() + offset );
     foreach( tile, tiles )
     {

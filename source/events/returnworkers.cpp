@@ -36,7 +36,7 @@ GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
 
 void ReturnWorkers::_exec(Game& game, unsigned int time)
 {
-  Tilemap& tilemap = game.city()->getTilemap();
+  Tilemap& tilemap = game.city()->tilemap();
   const int defaultFireWorkersDistance = 40;
   for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
   {

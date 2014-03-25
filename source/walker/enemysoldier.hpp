@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ENEMYSOLDIER_PREFECT_H_INCLUDED__
 #define __CAESARIA_ENEMYSOLDIER_PREFECT_H_INCLUDED__
@@ -21,6 +23,13 @@
 class EnemySoldier : public Soldier
 {
 public:
+  typedef enum { check4attack=0,
+                 go2position,
+                 go2enemy,
+                 fightEnemy,
+                 destroyBuilding,
+                 doNothing } EsAction;
+
   static EnemySoldierPtr create( PlayerCityPtr city, constants::walker::Type type );
 
   virtual void timeStep(const unsigned long time);
@@ -38,17 +47,22 @@ protected:
   virtual void _changeTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
+  virtual bool _tryAttack();
+
+  void _setSubAction( EsAction action );
+  EsAction _getSubAction() const;
+
+  void _init( constants::walker::Type type );
+  BuildingList _findBuildingsInRange(unsigned int range);
+  WalkerList _findEnemiesInRange(unsigned int range);
+  virtual constants::gfx::Type _getAnimation( Walker::Action ac ) const;
+  virtual void _check4attack();
 
   EnemySoldier( PlayerCityPtr city );
 
 private:
   Pathway _findPathway2NearestEnemy(unsigned int range);
   Pathway _findPathway2NearestConstruction(unsigned int range);
-  WalkerList _findEnemiesInRange(unsigned int range);
-  BuildingList _findBuildingsInRange(unsigned int range);
-  bool _tryAttack();
-  void _init( constants::walker::Type type );
-  void _check4attack();
 
   class Impl;
   ScopedPtr< Impl > _d;

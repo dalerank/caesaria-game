@@ -113,12 +113,12 @@ void Pathfinder::update( const Tilemap& tilemap )
   Logger::warning( "Pathfinder: start updating" );
   _d->tilemap = const_cast< Tilemap* >( &tilemap );
 
-  Logger::warning( "Pathfinder: resizing grid to %d", tilemap.getSize() );
-  int size = tilemap.getSize();
+  Logger::warning( "Pathfinder: resizing grid to %d", tilemap.size() );
+  int size = tilemap.size();
   _d->grid.reset( size, size );
 
   Logger::warning( "Pathfinder: allocation AStarPoints" );
-  TilesArray tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.getSize() ) );
+  TilesArray tiles = _d->tilemap->getArea( TilePos( 0, 0 ), Size( tilemap.size() ) );
   foreach( tile, tiles )
   {
     _d->grid.init( *tile );

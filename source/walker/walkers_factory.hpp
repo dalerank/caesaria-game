@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WALKERMANAGER_H_INCLUDED__
 #define __CAESARIA_WALKERMANAGER_H_INCLUDED__
@@ -29,7 +31,7 @@ public:
 class WalkerManager
 {
 public:
-  static WalkerManager& getInstance();
+  static WalkerManager& instance();
 
   bool canCreate( constants::walker::Type type ) const;
 
