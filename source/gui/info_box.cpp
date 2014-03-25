@@ -54,6 +54,7 @@
 #include "core/foreach.hpp"
 #include "dictionary.hpp"
 #include "gameautopause.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace constants;
 
@@ -84,6 +85,7 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
 : Widget( parent, id, rect ), _d( new Impl )
 {
   _d->autopause.activate();
+  WidgetEscapeCloser::insertTo( this );
 
   // create the title
   Widget::setupUI( GameSettings::rcpath( "/gui/infobox.gui" ) );
@@ -125,9 +127,7 @@ void InfoboxSimple::setText( const std::string& text )
   if( _d->lbText ) { _d->lbText->setText( text ); }
 }
 
-InfoboxSimple::~InfoboxSimple()
-{
-}
+InfoboxSimple::~InfoboxSimple() {}
 
 void InfoboxSimple::draw( GfxEngine& engine )
 {
@@ -220,9 +220,6 @@ InfoboxText::InfoboxText(Widget* parent, const std::string& title, const std::st
   _d->lbText->setText( message );
 }
 
-InfoboxText::~InfoboxText()
-{
-
-}
+InfoboxText::~InfoboxText() {}
 
 }//end namespace gui

@@ -54,12 +54,15 @@ GroupBox::~GroupBox()
 //! draws the element and its children
 void GroupBox::draw( GfxEngine& painter )
 {
-    if (!isVisible())
-        return;
+  if (!isVisible())
+      return;
 
+  if( !_d->texture.isNull() )
+  {
     painter.drawPicture( *_d->texture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+  }
 
-    Widget::draw( painter );
+  Widget::draw( painter );
 }
 
 //! Returns true if the image is scaled to fit, false if not

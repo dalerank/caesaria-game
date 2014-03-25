@@ -22,8 +22,6 @@
 #include "objects/working.hpp"
 #include "predefinitions.hpp"
 
-class Widget;
-
 class ServiceBuilding : public WorkingBuilding
 {
 public:

@@ -66,6 +66,7 @@
 #include "sound/engine.hpp"
 #include "events/showtileinfo.hpp"
 #include "gui/androidactions.hpp"
+#include "core/foreach.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -169,13 +170,16 @@ void Level::initialize()
 
   _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
+  //specific andtroid actions bar
+#ifdef CAESARIA_PLATFORM_ANDROID
   AndroidActionsBar* androidBar = new AndroidActionsBar( _d->game->gui()->rootWidget() );
 
-  //connect elements
   CONNECT( androidBar, onRequestTileHelp(), _d.data(), Impl::showTileHelp );
   CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
   CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
+#endif
 
+  //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
   CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
   CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
@@ -304,7 +308,14 @@ void Level::_resolveEscapeButton()
   e.keyboard.shift = false;
   e.keyboard.control = false;
   e.keyboard.symbol = 0;
-  handleEvent( e );
+
+  Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
+  foreach( it, children )
+  {
+    bool handled = (*it)->onEvent( e );
+    if( handled )
+      return;
+  }
 }
 
 void Level::_showIngameMenu()

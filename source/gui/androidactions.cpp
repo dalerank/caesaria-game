@@ -33,15 +33,15 @@ AndroidActionsBar::AndroidActionsBar( Widget* parent)
   : Widget( parent, -1, Rect( 0, parent->height() - 72, parent->width(), parent->height() ) ), _d( new Impl )
 {
   Picture pic = Picture::load( ResourceGroup::panelBackground, 651 );
-  _d->btnShowHelp = new TexturedButton( parent, Point( width() - pic.width(), 0 ),
+  _d->btnShowHelp = new TexturedButton( this, Point( width() - pic.width(), 0 ),
                                         pic.size(), -1, 651 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 654 );
-  _d->btnExit = new TexturedButton( parent, _d->btnShowHelp->leftupCorner() - Point( pic.width(), 0),
+  _d->btnExit = new TexturedButton( this, _d->btnShowHelp->leftupCorner() - Point( pic.width(), 0),
                                     pic.size(), -1, 654 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 657 );
-  _d->btnMenu = new TexturedButton( parent, Point( 0, 0 ), pic.size(), -1, 657 );
+  _d->btnMenu = new TexturedButton( this, Point( 0, 0 ), pic.size(), -1, 657 );
 }
 
 Signal0<> &AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }

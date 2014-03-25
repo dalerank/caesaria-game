@@ -736,9 +736,10 @@ bool Widget::onEvent( const NEvent& event )
 {
   foreach( item, _d->eventHandlers )
   {
-    (*item)->onEvent( event );
+    bool handled = (*item)->onEvent( event );
+    if( handled )
+      return true;
   }
-
 
   if (event.EventType == sEventMouse)
     if (getParent() && (getParent()->getParent() == NULL))

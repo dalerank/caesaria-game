@@ -636,7 +636,10 @@ void ListBox::draw( GfxEngine& painter )
   if ( !isVisible() )
 		return;
 
-	painter.drawPicture( *_d->picture, absoluteRect().UpperLeftCorner );
+	if( !_d->picture.isNull() )
+	{
+		painter.drawPicture( *_d->picture, absoluteRect().UpperLeftCorner );
+	}
 
 	Widget::draw( painter );
 }

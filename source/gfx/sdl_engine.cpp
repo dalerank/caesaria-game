@@ -181,7 +181,7 @@ void GfxSdlEngine::endRenderFrame()
   }
 }
 
-void GfxSdlEngine::drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect )
+void GfxSdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;

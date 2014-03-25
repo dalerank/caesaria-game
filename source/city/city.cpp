@@ -83,7 +83,7 @@ class WGrid
 public:
   void clear()
   {
-    for( Grid::iterator it=_grid.begin(); it != _grid.end(); it++ )
+    foreach( it, _grid )
     {
       it->second.clear();
     }
@@ -111,7 +111,7 @@ public:
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
       WalkerList& d = _grid[ hash( pos ) ];
-      for( WalkerList::iterator it=d.begin(); it != d.end(); it++ )
+      foreach( it, d )
       {
         if( *it == a )
         {
@@ -291,7 +291,6 @@ void PlayerCity::timeStep( unsigned int time )
     if( (*serviceIt)->isDeleted() )
     {
       (*serviceIt)->destroy();
-
       serviceIt = _d->services.erase(serviceIt);
     }
     else

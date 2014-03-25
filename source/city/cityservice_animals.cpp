@@ -59,14 +59,8 @@ void Animals::update(const unsigned int time)
     TilesArray::iterator it=border.begin();
     while( it != border.end() )
     {
-      if( !(*it)->isWalkable(true) )
-      {
-        it = border.erase( it );
-      }
-      else
-      {
-        it++;
-      }
+      if( !(*it)->isWalkable(true) )       {        it = border.erase( it );      }
+      else  { ++it; }
     }
 
     WalkerList sheeps = _d->city->getWalkers( walker::sheep );
