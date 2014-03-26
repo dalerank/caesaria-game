@@ -138,7 +138,7 @@ protected:
 	T *d;
 
 private:
-	_CAESARIA_DISABLE_COPY(ScopedPtr)
+	__DISABLE_COPY(ScopedPtr)
 };
 
 template <class T, class Cleanup>
@@ -173,7 +173,7 @@ public:
 	}
 
 private:
-	_CAESARIA_DISABLE_COPY(ScopedArrayPtr)
+	__DISABLE_COPY(ScopedArrayPtr)
 };
 
 #endif //__CAESARIA_SCOPEDPTR_H_INCLUDE_

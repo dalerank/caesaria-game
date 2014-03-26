@@ -112,7 +112,7 @@ Animation& Animation::operator=( const Animation& other )
   _pictures = other._pictures;
   _animIndex = other._animIndex;  // index of the current frame
   _frameDelay = other._frameDelay;
-  _lastTimeUpdate = _lastTimeUpdate;
+  _lastTimeUpdate = other._lastTimeUpdate;
   _d->loop = other._d->loop;
 
   return *this;

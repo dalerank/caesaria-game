@@ -32,12 +32,12 @@ void CTask::setId(ThreadID* pid)
 
 bool CTask::wait(int timeoutSeconds)
 {
-	timeoutSeconds = timeoutSeconds * 1000;
+	timeoutSeconds *= 1000;
 
-	if( getStatus() != TaskStatusCompleted && timeoutSeconds > 0 )
+	while( getStatus() != TaskStatusCompleted && timeoutSeconds > 0 )
 	{
 		Thread::msleep( 100 );
-		timeoutSeconds = timeoutSeconds - 100;
+		timeoutSeconds -= 100;
 	}
 
 	if( getStatus() == TaskStatusCompleted ) return true;

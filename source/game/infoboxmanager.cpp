@@ -278,13 +278,16 @@ void InfoboxManager::setShowDebugInfo( const bool showInfo ) {  _d->showDebugInf
 
 void InfoboxManager::addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor )
 {
-  bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();
-  _CAESARIA_DEBUG_BREAK_IF( alreadyHaveConstructor && "already have constructor for this type");
+  bool alreadyHaveConstructor = _d->name2typeMap.find( typeName ) != _d->name2typeMap.end();  
 
   if( !alreadyHaveConstructor )
   {
     _d->name2typeMap[ typeName ] = type;
     _d->constructors[ type ] = ctor;
+  }
+  else
+  {
+    Logger::warning( "InfoboxManager: already have constructor for type " + typeName );
   }
 }
 

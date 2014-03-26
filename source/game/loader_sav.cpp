@@ -23,6 +23,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "vfs/path.hpp"
 #include "loaderhelper.hpp"
 
 #include <fstream>
@@ -316,5 +317,5 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
 bool GameLoaderC3Sav::isLoadableFileExtension( const std::string& filename )
 {
-  return filename.substr( filename.size() - 4, -1 ) == ".sav";
+  return vfs::Path( filename ).isExtension( ".sav" );
 }

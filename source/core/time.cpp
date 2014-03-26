@@ -127,7 +127,7 @@ DateTime::DateTime( const DateTime& time )
 
 DateTime::DateTime( const char* strValue )
 {
-  sscanf( strValue, "%04u.%02u.%02u:%02u.%02u.%02u",
+  sscanf( strValue, "%04d.%02u.%02u:%02u.%02u.%02u",
           &_year, &_month, &_day, &_hour, &_minutes, &_seconds );
 }
 

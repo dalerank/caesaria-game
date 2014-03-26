@@ -32,7 +32,7 @@
 
 using namespace constants;
 
-class LayerBuild::Impl
+class __PRIVATE_IMPL(LayerBuild)
 {
 public:
   bool multiBuilding;
@@ -45,7 +45,8 @@ public:
 
 void LayerBuild::_discardPreview()
 {
-  foreach( tile, _d->buildTiles )
+  __D_IMPL(d,LayerBuild)
+  foreach( tile, d->buildTiles )
   {
     if( (*tile)->overlay().isValid() )
     {
@@ -55,12 +56,13 @@ void LayerBuild::_discardPreview()
     delete *tile;
   }
 
-  _d->buildTiles.clear();
+  d->buildTiles.clear();
 }
 
 void LayerBuild::_checkPreviewBuild(TilePos pos)
 {
-  BuildModePtr bldCommand = ptr_cast<BuildMode>(_d->renderer->getMode() );
+  __D_IMPL(d,LayerBuild);
+  BuildModePtr bldCommand = ptr_cast<BuildMode>(d->renderer->getMode() );
 
   if (bldCommand.isNull())
     return;
@@ -75,7 +77,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
   Size size = overlay->size();
 
-  if( overlay->canBuild( _getCity(), pos, _d->buildTiles ) )
+  if( overlay->canBuild( _getCity(), pos, d->buildTiles ) )
   {
     //bldCommand->setCanBuild(true);
     Tilemap& tmap = _getCity()->tilemap();
@@ -95,7 +97,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
-        _d->buildTiles.push_back( tile );
+        d->buildTiles.push_back( tile );
       }
     }
   }
@@ -124,7 +126,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         tile->setFlag( Tile::clearAll, true );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
         tile->setOverlay( 0 );
-        _d->buildTiles.push_back( tile );
+        d->buildTiles.push_back( tile );
       }
     }
   }
@@ -132,7 +134,8 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
 void LayerBuild::_updatePreviewTiles( bool force )
 {
-  if( !_d->multiBuilding )
+  __D_IMPL(d,LayerBuild);
+  if( !d->multiBuilding )
     _setStartCursorPos( _getLastCursorPos() );
 
   Tile* curTile = _getCamera()->at( _getLastCursorPos(), true );
@@ -140,21 +143,21 @@ void LayerBuild::_updatePreviewTiles( bool force )
   if( !curTile )
     return;
 
-  if( curTile && !force && _d->lastTilePos == curTile->pos() )
+  if( curTile && !force && d->lastTilePos == curTile->pos() )
     return;
 
-  _d->lastTilePos = curTile->pos();
+  d->lastTilePos = curTile->pos();
 
   _discardPreview();
 
-  if( _d->borderBuilding )
+  if( d->borderBuilding )
   {
     Tile* startTile = _getCamera()->at( _getStartCursorPos(), true );  // tile under the cursor (or NULL)
     Tile* stopTile  = _getCamera()->at( _getLastCursorPos(),  true );
 
     TilesArray pathWay = RoadPropagator::createPath( _getCity()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
-                                                     _d->roadAssignment );
+                                                     d->roadAssignment );
     for( TilesArray::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
     {
       _checkPreviewBuild( (*it)->pos() );
@@ -170,7 +173,8 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
 void LayerBuild::_buildAll()
 {
-  BuildModePtr bldCommand = ptr_cast<BuildMode>( _d->renderer->getMode() );
+  __D_IMPL(d,LayerBuild);
+  BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->getMode() );
   if( bldCommand.isNull() )
     return;
 
@@ -183,7 +187,7 @@ void LayerBuild::_buildAll()
   }
 
   bool buildOk = false;
-  foreach( it, _d->buildTiles )
+  foreach( it, d->buildTiles )
   {
     Tile* tile = *it;
     if( cnstr->canBuild( _getCity(), tile->pos(), TilesArray() ) && tile->isMasterTile())
@@ -288,6 +292,7 @@ std::set<int> LayerBuild::getVisibleWalkers() const
 
 void LayerBuild::_drawBuildTiles(GfxEngine& engine)
 {
+  __D_IMPL(_d,LayerBuild);
   Point offset = _getCamera()->getOffset();
   foreach( it, _d->buildTiles )
   {
@@ -311,6 +316,7 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
 
 void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
 {
+  __D_IMPL(_d,LayerBuild);
   Point screenPos = tile.mapPos() + offset;
 
   TileOverlayPtr overlay = tile.overlay();
@@ -363,6 +369,7 @@ void LayerBuild::render(GfxEngine& engine)
 
 void LayerBuild::init(Point cursor)
 {
+  __D_IMPL(_d,LayerBuild);
   Layer::init( cursor );
 
   BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->getMode() );
@@ -384,7 +391,9 @@ LayerBuild::~LayerBuild()
 }
 
 LayerBuild::LayerBuild(CityRenderer* renderer, PlayerCityPtr city)
-  : Layer( renderer->camera(), city ), _d( new Impl )
+  : Layer( renderer->camera(), city ),
+    __INIT_IMPL(LayerBuild)
 {
+  __D_IMPL(_d, LayerBuild)
   _d->renderer = renderer;  
 }

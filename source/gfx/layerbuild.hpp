@@ -42,8 +42,7 @@ private:
 
   LayerBuild( CityRenderer* renderer, PlayerCityPtr city );
 
-  class Impl;
-  ScopedPtr<Impl> _d;
+  __DECLARE_IMPL(LayerBuild)
 };
 
 #endif //__CAESARIA_LAYERBUILD_H_INCLUDED__
