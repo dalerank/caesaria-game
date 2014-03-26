@@ -104,23 +104,20 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
   uint32_t tmp;
 
   // need to rewrite better
-  short int     *pGraphicGrid = (short int     *)malloc(52488);
-  unsigned char *pEdgeGrid    = (unsigned char *)malloc(26244);
-  short int     *pTerrainGrid = (short int     *)malloc(52488);
-  unsigned char *pRndmTerGrid = (unsigned char *)malloc(26244);
-  unsigned char *pRandomGrid  = (unsigned char *)malloc(26244);
-  unsigned char *pZeroGrid    = (unsigned char *)malloc(26244);
-  
-  if( pGraphicGrid == NULL || pEdgeGrid == NULL || pTerrainGrid == NULL ||
-      pRndmTerGrid == NULL || pRandomGrid == NULL || pZeroGrid == NULL )
+  std::vector<short int> graphicGrid; graphicGrid.resize( 52488, 0 );
+  std::vector<unsigned char> edgeGrid; edgeGrid.resize( 26244, 0 );
+  std::vector<short int> terrainGrid; terrainGrid.resize( 52488, 0 );
+  std::vector<unsigned char> rndmTerGrid; rndmTerGrid.resize(26244, 0);
+  std::vector<unsigned char> randomGrid; randomGrid.resize( 26244, 0 );
+  std::vector<unsigned char> zeroGrid; zeroGrid.resize( 26244, 0 );
+    
+  if( !f.is_open() )
   {
-    THROW("NOT ENOUGH MEMORY!!!! FATAL");
-  }    
+    Logger::warning( "GameLoaderC3Sav: can't open file " );
+    return false;
+  }
   
-  if (!f.is_open())
-    THROW("can't open file");
-  
-  f.read((char*)&tmp, 4); // read dummy
+  f.read( (char*)&tmp, 4); // read dummy
 
   std::string cityName = LoaderHelper::getDefaultCityName( tmp );
   game.city()->setName( cityName );
@@ -130,21 +127,21 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
   try
   {
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    std::cout << "length of compressed ids is " << tmp << std::endl;
+    Logger::warning( "GameLoaderC3Sav: length of compressed ids is %d", tmp );
     PKWareInputStream *pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < 162 * 162; i++)
     {
-      pGraphicGrid[i] = pk->readShort();
+      graphicGrid[i] = pk->readShort();
     }
     pk->empty();
     delete pk;
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    std::cout << "length of compressed egdes is " << tmp << std::endl;
+    Logger::warning( "GameLoaderC3Sav: length of compressed egdes is %d", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < 162 * 162; i++)
     {
-      pEdgeGrid[i] = pk->readByte();
+      edgeGrid[i] = pk->readByte();
     }
     pk->empty();
     delete pk;
@@ -152,11 +149,11 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f); // skip building ids
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    std::cout << "length of compressed terraindata is " << tmp << std::endl;
+    Logger::warning( "GameLoaderC3Sav: length of compressed terraindata is %d", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < 162 * 162; i++)
     {
-      pTerrainGrid[i] = pk->readShort();
+      terrainGrid[i] = pk->readShort();
     }
     pk->empty();
     delete pk;
@@ -166,7 +163,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f);
     SkipCompressed(f);
     
-    f.read((char*)pRandomGrid, 26244);
+    f.read((char*)randomGrid.data(), 26244);
     
     SkipCompressed(f);
     SkipCompressed(f);
@@ -176,7 +173,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     
     // here goes walkers array
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    std::cout << "length of compressed walkers data is " << tmp << std::endl;
+    Logger::warning( "GameLoaderC3Sav: length of compressed walkers data is %d", tmp );
     pk = new PKWareInputStream(&f, false, tmp);    
     for (int j = 0; j < 1000; j++)
     {
@@ -191,6 +188,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     delete pk;
     int length;
     f.read((char*)&length, 4); // read next length :-)
+
     if (length <= 0)
       f.seekg(1200, std::ios::cur);
     else
@@ -245,11 +243,11 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
       int index = 162 * (border_size + itA) + border_size + itB;
 
       Tile& tile = oTilemap.at(i, j);
-      tile.setPicture( TileHelper::convId2PicName( pGraphicGrid[index] ) );
-      tile.setOriginalImgId( pGraphicGrid[index] );
+      tile.setPicture( TileHelper::convId2PicName( graphicGrid[index] ) );
+      tile.setOriginalImgId( graphicGrid[index] );
 
-      edgeData[ i ][ j ] = pEdgeGrid[index];
-      TileHelper::decode( tile, pTerrainGrid[index] );
+      edgeData[ i ][ j ] = edgeGrid[index];
+      TileHelper::decode( tile, terrainGrid[index] );
     }
   }    
 
