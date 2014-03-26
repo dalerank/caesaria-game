@@ -34,7 +34,7 @@ Emigrant::Emigrant( PlayerCityPtr city ) : Immigrant( city )
   setPeoples( peoples );
 
   _setType( walker::emigrant );
-  _setAnimation( gfx::cartPusher2 );
+  _setAnimation( gfx::cartPusher2Move );
 }
 
 const Picture& Emigrant::getCartPicture()

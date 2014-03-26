@@ -153,6 +153,7 @@ void Game::Impl::initPictures(vfs::Path resourcePath)
 {
   AnimationBank::instance().loadCarts();
   AnimationBank::instance().loadWalkers();
+  AnimationBank::instance().loadAnimation( GameSettings::rcpath( GameSettings::walkerModel ) );
   
   Logger::warning( "Load fonts" );
   FontCollection::instance().initialize( resourcePath.toString() );

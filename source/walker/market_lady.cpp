@@ -46,7 +46,7 @@ public:
 MarketLady::MarketLady(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-   _setAnimation( gfx::marketlady );
+   _setAnimation( gfx::marketladyMove );
    _setType( walker::marketBuyer );
    _d->maxDistance = 25;
    _d->basket.setCapacity(800);  // this is a big basket!

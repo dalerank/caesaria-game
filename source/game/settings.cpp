@@ -49,6 +49,7 @@ const char* GameSettings::soundThemesModel = "soundThemesModel";
 const char* GameSettings::soundVolume = "soundVolume";
 const char* GameSettings::ambientVolume = "ambientVolume";
 const char* GameSettings::musicVolume = "musicVolume";
+const char* GameSettings::walkerModel = "walkerModel";
 
 const vfs::Path defaultSaveDir = "saves";
 const vfs::Path defaultResDir = "resources";
@@ -83,6 +84,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ language            ] = Variant( std::string( "en" ) );
   _d->options[ fastsavePostfix     ] = Variant( std::string( "_fastsave") );
   _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
+  _d->options[ walkerModel         ] = Variant( std::string( "/walker.model" ) );
   _d->options[ soundVolume         ] = 100;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ musicVolume         ] = 25;

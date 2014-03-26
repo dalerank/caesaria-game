@@ -64,7 +64,7 @@ public:
 Merchant::Merchant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setAnimation( gfx::horseMerchant );
+  _setAnimation( gfx::horseMerchantMove );
   _setType( walker::merchant );
   _d->maxDistance = 60;
   _d->waitInterval = 0;

@@ -55,7 +55,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _setType( walker::prefect );
   _d->water = 0;
   _d->action = Impl::patrol;
-  _setAnimation( gfx::prefect );
+  _setAnimation( gfx::prefectMove );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -150,7 +150,7 @@ void Prefect::_back2Prefecture()
   if( pathway.isValid() )
   {
     _d->action = Impl::patrol;
-    _setAnimation( gfx::prefect );
+    _setAnimation( gfx::prefectMove );
     _updatePathway( pathway );
     _d->endPatrolPoint = pathway.destination().pos();
     setSpeed( 1 );
@@ -191,7 +191,7 @@ void Prefect::_back2Patrol()
   if( pathway.isValid() )
   {
     _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
-    _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefect );
+    _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
     _updatePathway( pathway );
     setSpeed( 1 );
     go();
@@ -465,7 +465,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
   _d->action = water > 0 ? Impl::findFire : Impl::patrol;
   _d->water = water;
-  _setAnimation( water > 0 ? gfx::prefectDragWater : gfx::prefect );
+  _setAnimation( water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
 
   if( water > 0 )
   {
@@ -511,7 +511,7 @@ void Prefect::load( const VariantMap& stream )
   _d->water = (int)stream.get( "water" );
   _d->endPatrolPoint = stream.get( "endPoint" );
 
-  _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefect );
+  _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
 
   PrefecturePtr prefecture = ptr_cast<Prefecture>( getBase() );
   if( prefecture.isValid() )

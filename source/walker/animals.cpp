@@ -83,7 +83,7 @@ void Animal::_findNewWay( const TilePos& start )
 
 Sheep::Sheep( PlayerCityPtr city ) : Animal( city )
 {
-  _setAnimation( gfx::sheep );
+  _setAnimation( gfx::sheepMove );
   _setType( walker::sheep );
   setName( _("##Sheep##") );
 

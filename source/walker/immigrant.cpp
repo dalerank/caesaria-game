@@ -42,7 +42,7 @@ Immigrant::Immigrant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::immigrant );
-  _setAnimation( gfx::homeless );
+  _setAnimation( gfx::homelessMove );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
   _d->stamina = rand() % 80 + 20;
@@ -267,7 +267,7 @@ void Immigrant::timeStep(const unsigned long time)
     _d->stamina = math::clamp( _d->stamina+1, 0.f, 100.f );
     if( _d->stamina >= 100 )
     {
-      _setAnimation( gfx::homeless );
+      _setAnimation( gfx::homelessMove );
       _setAction( Walker::acMove );
       _animationRef().clear();
     }

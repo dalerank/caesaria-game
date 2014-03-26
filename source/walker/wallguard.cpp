@@ -53,7 +53,7 @@ public:
 WallGuard::WallGuard( PlayerCityPtr city, walker::Type type ) : Soldier( city ), _d( new Impl )
 {
   _setType( type );
-  _setAnimation( gfx::soldier );
+  _setAnimation( gfx::soldierMove );
 
   _init( type );
   _d->patrolPosition = TilePos( -1, -1 );

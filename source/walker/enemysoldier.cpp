@@ -150,6 +150,7 @@ gfx::Type EnemySoldier::_getAnimation(Action ac) const
   {
   case Walker::acMove: return _d->walkAnimation;
   case Walker::acFight: return _d->fightAnimation;
+  default: break;
   }
 
   return gfx::unknown;
@@ -161,8 +162,8 @@ void EnemySoldier::_init(walker::Type type)
   switch( type )
   {
   case walker::britonSoldier:
-    _setAnimation( gfx::britonSoldier );
-    _d->walkAnimation = gfx::britonSoldier;
+    _setAnimation( gfx::britonSoldierMove );
+    _d->walkAnimation = gfx::britonSoldierMove;
     _d->fightAnimation = gfx::britonSoldierFight;
     _d->strikeForce = 3;
     _d->resistance = 1;
