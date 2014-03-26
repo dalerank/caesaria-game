@@ -32,6 +32,7 @@
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "animals.hpp"
+#include "spear.hpp"
 #include "core/foreach.hpp"
 
 using namespace constants;
@@ -39,15 +40,16 @@ using namespace constants;
 class EnemyArcher::Impl
 {
 public:  
-  EnemySoldier::EsAction action;
   unsigned int attackDistance;
+  unsigned int wait;
 };
 
 EnemyArcher::EnemyArcher(PlayerCityPtr city)
   : EnemySoldier( city ), _d( new Impl )
 {
-  _d->action = EnemySoldier::check4attack;
-  _d->attackDistance = 6;
+  _setSubAction( EnemySoldier::check4attack );
+  _d->attackDistance = 6;  
+  _d->wait = 0;
 }
 
 bool EnemyArcher::_tryAttack()
@@ -55,7 +57,7 @@ bool EnemyArcher::_tryAttack()
   BuildingList buildings = _findBuildingsInRange( _d->attackDistance );
   if( !buildings.empty() )
   {
-    _d->action = EnemySoldier::destroyBuilding;
+    _setSubAction( EnemySoldier::destroyBuilding );
     setSpeed( 0.f );
     _setAction( acFight );
     _setAnimation( _getAnimation( Walker::acFight ) );
@@ -67,7 +69,7 @@ bool EnemyArcher::_tryAttack()
     WalkerList enemies = _findEnemiesInRange( _d->attackDistance );
     if( !enemies.empty() )
     {
-      _d->action = EnemySoldier::fightEnemy;
+      _setSubAction( EnemySoldier::fightEnemy );
       setSpeed( 0.f );
       _setAction( acFight );
       _setAnimation( _getAnimation( Walker::acFight ) );
@@ -79,8 +81,21 @@ bool EnemyArcher::_tryAttack()
   return false;
 }
 
+void EnemyArcher::_fire( TilePos p )
+{
+  SpearPtr spear = Spear::create( _getCity() );
+  spear->toThrow( pos(), p );
+  _d->wait = 30;
+}
+
 void EnemyArcher::timeStep(const unsigned long time)
 {
+  if( _d->wait > 0 )
+  {
+    _d->wait--;
+    return;
+  }
+
   Soldier::timeStep( time );
 
   switch( _getSubAction() )
@@ -93,8 +108,12 @@ void EnemyArcher::timeStep(const unsigned long time)
     {
       WalkerPtr p = enemies.front();
       turn( p->pos() );
-      p->updateHealth( -3 );
-      p->acceptAction( Walker::acFight, pos() );
+
+      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      {
+        _fire( p->pos() );
+        _updateAnimation( time+1 );
+      }
     }
     else
     {
@@ -110,9 +129,13 @@ void EnemyArcher::timeStep(const unsigned long time)
     if( !buildings.empty() )
     {
       BuildingPtr b = buildings.front();
-
       turn( b->pos() );
-      b->updateState( Construction::damage, 1 );
+
+      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      {
+        _fire( b->pos() );
+        _updateAnimation( time+1 );
+      }
     }
     else
     {

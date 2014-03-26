@@ -44,7 +44,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / 20.f;
   _d->currentPos = _d->srcPos.toPointF();
 
-  _setPosOnMap( _d->currentPos.toPoint() );
+  _setPosOnMap( _d->srcPos );
 
   _getCity()->addWalker( this );
   Tile& tile = _getCity()->tilemap().at( src );

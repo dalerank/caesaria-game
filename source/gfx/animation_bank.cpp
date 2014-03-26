@@ -64,7 +64,7 @@ public:
   AnimationBank::MovementAnimation loadAnimation(const std::string& prefix,
                                                  const int start, const int size,
                                                  Walker::Action wa=Walker::acMove );
-  AnimationBank::MovementAnimation loadAnimation( const VariantList& desc );
+  AnimationBank::MovementAnimation loadAnimation(const VariantMap& desc );
 
   void loadCarts();
   void loadWalkers();
@@ -181,16 +181,17 @@ AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::
   return ioMap;
 }
 
-AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation(const VariantList& desc)
+AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation(const VariantMap& desc)
 {
-  std::string rcGroup = desc.get( 0 ).toString();
-  int startIndex = desc.get( 1 );
-  int frameNumber = desc.get( 2 );
+  std::string rcGroup = desc.get( "rc" ).toString();
+  int startIndex = desc.get( "start" );
+  int frameNumber = desc.get( "frames" );
+  int action = desc.get( "action" );
 
-  return loadAnimation( rcGroup, startIndex, frameNumber );
+  return loadAnimation( rcGroup, startIndex, frameNumber, (Walker::Action)action );
 }
 
-const AnimationBank::MovementAnimation& AnimationBank::getWalker( gfx::Type anim)
+const AnimationBank::MovementAnimation& AnimationBank::getWalker( gfx::Type anim )
 {
   AnimationBank& inst = instance();
   if( anim >= inst._d->animations.size() )
@@ -225,7 +226,7 @@ void AnimationBank::loadAnimation(vfs::Path model)
       gfx::Type type = GfxTypeHelper::instance().findType( actionName );
       if( type != gfx::unknown )
       {
-        _d->animations[ type ] = _d->loadAnimation( ac->second.toList() );
+        _d->animations[ type ] = _d->loadAnimation( ac->second.toMap() );
       }
     }
 

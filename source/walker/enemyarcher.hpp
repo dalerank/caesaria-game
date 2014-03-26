@@ -35,6 +35,7 @@ public:
 
 protected:
   bool _tryAttack();
+  virtual void _fire(TilePos pos );
 
 private:
   EnemyArcher(PlayerCityPtr city);
@@ -42,6 +43,5 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
 
 #endif //_CAESARIA_ENEMYARCHER_INCLUDE_H_

@@ -1,14 +1,15 @@
 {
+  notes : { acMove : 1, acFight : 2, acDie : 3 }
   etruscanSoldier : {
-    Move : [ "etruscan", 249, 12 ]
-    Fight : [ "etruscan", 345, 6 ]
-    Die : [ "etruscan", 393, 1 ]
+    Move : { rc : "etruscan", start : 249, frames : 12, action : 1 }
+    Fight : { rc : "etruscan", start : 345, frames : 6, action : 2 }
+    Die : { rc : "etruscan", start : 393, frames : 1, action : 3 }
   }
 
   etruscanArcher : {
-    Move : [ "etruscan", 401, 12 ]
-    Fight : [ "etruscan", 497, 6 ]
-    Die : [ "etruscan", 593, 1 ]
+    Move : { rc : "etruscan", start : 401, frames : 12, action : 1 }
+    Fight : { rc : "etruscan", start : 497, frames : 6, action : 2 }
+    Die : { rc : "etruscan", start : 593, frames : 1, action : 3 }
   }
 }
 

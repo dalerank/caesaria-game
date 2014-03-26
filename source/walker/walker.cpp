@@ -519,7 +519,7 @@ void Walker::turn(TilePos p)
   int angle = (int)ceil( t / 45.f);
 
   Direction directions[] = { east, southEast, south, southWest,
-                             west, northWest, north, northEast };
+                             west, northWest, north, northEast, northEast };
 
   if( _d->action.direction != directions[ angle ] )
   {
