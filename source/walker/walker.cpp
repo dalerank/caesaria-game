@@ -118,11 +118,9 @@ void Walker::timeStep(const unsigned long time)
 
 void Walker::setPos( const TilePos& pos )
 {
-   _d->pos = pos;
-
-   _d->tileOffset = _d->midTilePos;
-
-   _d->posOnMap = Point( _d->pos.i(), _d->pos.j() ) * 15 + _d->tileOffset;
+  _d->pos = pos;
+  _d->tileOffset = _d->midTilePos;
+  _d->posOnMap = Point( _d->pos.i(), _d->pos.j() ) * 15 + _d->tileOffset;
 }
 
 void Walker::setPathway( const Pathway& pathway)
@@ -552,7 +550,7 @@ void Walker::_updateAnimation( const unsigned int time )
   }
 }
 
-void Walker::_setPosOnMap(Point pos){  _d->posOnMap = pos;}
+void Walker::_setPosOnMap(Point pos) { _d->posOnMap = pos; }
 
 void Walker::_updateThinks()
 {

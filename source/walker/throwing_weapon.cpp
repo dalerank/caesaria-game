@@ -69,8 +69,11 @@ void ThrowingWeapon::timeStep(const unsigned long time)
   switch( getAction() )
   {
   case Walker::acMove:
+  {
     _d->currentPos += _d->deltaMove;
     _d->height += _d->deltaHeight;
+    TilePos ij( (_d->currentPos.x() - 7) / 15, (_d->currentPos.y() - 7) / 15 );
+    setPos( ij );
     _setPosOnMap( _d->currentPos.toPoint() - Point( 0, _d->height ) );
 
     if( _d->currentPos.IsEqual( _d->dstPos.toPointF(), 3.f ) )
@@ -78,6 +81,7 @@ void ThrowingWeapon::timeStep(const unsigned long time)
       _d->currentPos = _d->dstPos.toPointF();
      _reachedPathway();
     }
+  }
   break;
 
   default:

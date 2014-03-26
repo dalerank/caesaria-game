@@ -284,8 +284,6 @@ void Layer::render( GfxEngine& engine)
   }
 
   // SECOND PART: draw all sprites, impassable land and buildings
-  //WalkerList walkerList = _getVisibleWalkerList();
-
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
