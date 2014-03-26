@@ -58,7 +58,7 @@ public:
   {
       List< T > ret;
       ConstChildIterator it = getChildren().begin();
-      for( ; it != getChildren().end(); it++ )
+      for( ; it != getChildren().end(); ++it )
       {
           if( T elm = safety_cast< T >( *it ) )
               ret.push_back( elm );
@@ -460,7 +460,7 @@ template< class T >
 inline T findChildA( const std::string& internalName, bool recursiveFind, Widget* p )
 {
   Widget::Widgets::const_iterator it = p->getChildren().begin();
-  for( ; it != p->getChildren().end(); it++ )
+  for( ; it != p->getChildren().end(); ++it )
   {
     if( (*it)->getInternalName() == internalName )
       return safety_cast< T >( *it );

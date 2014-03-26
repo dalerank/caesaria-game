@@ -7,7 +7,7 @@
 class ConsoleError
 {
 public:
-	ConsoleError(const std::string str="", const int code=-1);
+	ConsoleError(const std::string& str="", const int code=-1);
 	ConsoleError(const ConsoleError& err);
 
 	virtual ~ConsoleError();
@@ -17,7 +17,7 @@ public:
 	const std::string getMessage() const;
 	const int getCode() const;
 protected:
-	void setMessage(const std::string str);
+	void setMessage(const std::string& str);
 	void setCode(const int code);
 private:
 	std::string errorMessage;

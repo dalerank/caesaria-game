@@ -166,8 +166,9 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 
     case guiButtonClicked:
       {
-        for( Impl::SubmenuButtons::iterator it=_d->buttons.begin(); it != _d->buttons.end(); it++ )
+        foreach( it, _d->buttons)
           (*it)->deleteLater();
+
         _d->buttons.clear();
                 
         _d->onSelectOverlayTypeSignal.emit( event.gui.caller->getID() );

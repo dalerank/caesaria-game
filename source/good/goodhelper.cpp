@@ -71,7 +71,7 @@ public:
   typedef std::map<Good::Type, std::string > GoodNames;
   GoodNames goodName;  // index=GoodType, value=Good
 
-  void append( Good::Type type, const std::string& name, const std::string prName )
+  void append( Good::Type type, const std::string& name, const std::string& prName )
   {
     EnumsHelper<Good::Type>::append( type, name );
     goodName[ type ] = prName;

@@ -158,7 +158,8 @@ void LayerBuild::_updatePreviewTiles( bool force )
     TilesArray pathWay = RoadPropagator::createPath( _getCity()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
                                                      d->roadAssignment );
-    for( TilesArray::iterator it=pathWay.begin(); it != pathWay.end(); it++ )
+
+    foreach( it, pathWay )
     {
       _checkPreviewBuild( (*it)->pos() );
     }

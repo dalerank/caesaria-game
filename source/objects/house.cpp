@@ -824,11 +824,11 @@ void House::load( const VariantMap& stream )
 
   _d->services[ Service::recruter ].setMax( _d->habitants.count( CitizenGroup::mature ) );
   VariantList vl_services = stream.get( "services" ).toList();
-  for( VariantList::iterator it = vl_services.begin(); it != vl_services.end(); it++ )
+
+  for( unsigned int i=0; i < vl_services.size(); i++ )
   {
-    Service::Type type = Service::Type( (int)(*it) );
-    it++;
-    _d->services[ type ] = (*it).toFloat(); //serviceValue
+    Service::Type type = Service::Type( vl_services.get( i ).toInt() );
+    _d->services[ type ] = vl_services.get( i+1 ).toFloat(); //serviceValue
   }
 
   Building::build( _city(), pos() );

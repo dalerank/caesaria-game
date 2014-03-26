@@ -57,7 +57,7 @@ void Dispatcher::update(Game& game, unsigned int time )
     e->tryExec( game, time );
 
     if( e->isDeleted() ) { it = _d->events.erase( it ); }
-    else { it++; }
+    else { ++it; }
   }
 }
 
@@ -75,8 +75,7 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  for( VariantMap::const_iterator it=stream.begin();
-       it != stream.end(); it++ )
+  for( VariantMap::const_iterator it=stream.begin(); it != stream.end(); ++it )
   {
     GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
 

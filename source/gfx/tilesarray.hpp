@@ -26,7 +26,7 @@ class TilesArray : public std::vector<Tile*>
 public:
   bool contain( TilePos tilePos ) const
   {
-    for( const_iterator it=begin(); it != end(); it++ )
+    for( const_iterator it=begin(); it != end(); ++it )
     {
       if( (*it)->pos() == tilePos )
         return true;

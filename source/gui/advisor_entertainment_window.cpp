@@ -56,11 +56,10 @@ class EntertainmentInfoLabel : public Label
 public:
   EntertainmentInfoLabel( Widget* parent, const Rect& rect,
                           const TileOverlay::Type service, InfrastructureInfo info  )
-    : Label( parent, rect )
-  {
-    _service = service;
-    _info = info;
-
+    : Label( parent, rect ),
+      _service( service ),
+      _info( info )
+  {    
     setFont( Font::create( FONT_1_WHITE ) );
   }
 

@@ -42,6 +42,10 @@
 #include <dlfcn.h>
 #endif
 
+namespace {
+  enum { screenBpp24 = 24, screenBpp32 = 32 };
+}
+
 class GfxSdlEngine::Impl
 {
 public:
@@ -94,7 +98,7 @@ void GfxSdlEngine::init()
 
   unsigned int flags = SDL_DOUBLEBUF | SDL_SWSURFACE;
   flags |= (getFlag( GfxEngine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
-  int systemBpp = 32;
+  int systemBpp = screenBpp32;
     
 #ifdef CAESARIA_PLATFORM_MACOSX
   void* cocoa_lib;
@@ -102,7 +106,7 @@ void GfxSdlEngine::init()
   void (*nsappload)(void);
   nsappload = (void(*)()) dlsym( cocoa_lib, "NSApplicationLoad" );
   nsappload();
-  systemBpp = 24;
+  systemBpp = screenBpp24;
 #endif
  
   Logger::warning( StringHelper::format( 0xff, "GrafixEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );

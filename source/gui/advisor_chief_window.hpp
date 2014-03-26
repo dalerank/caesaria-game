@@ -32,8 +32,7 @@ public:
   virtual void draw( GfxEngine& painter );
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(AdvisorChiefWindow)
 };
 
 }//end namespace gui

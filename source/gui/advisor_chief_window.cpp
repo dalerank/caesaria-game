@@ -39,8 +39,7 @@ using namespace constants;
 namespace gui
 {
 
-
-class AdvisorChiefWindow::Impl
+class __PRIVATE_IMPL(AdvisorChiefWindow)
 {
 public:
   PlayerCityPtr city;
@@ -57,8 +56,9 @@ public:
 };
 
 AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), __INIT_IMPL( AdvisorChiefWindow )
 {
+  __D_IMPL(_d, AdvisorChiefWindow)
   _d->city = city;
   setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 420 ) ) );
@@ -93,6 +93,7 @@ void AdvisorChiefWindow::draw( GfxEngine& painter )
   if( !isVisible() )
     return;
 
+  __D_IMPL(_d, AdvisorChiefWindow)
   painter.drawPicture( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );

@@ -64,7 +64,10 @@ void Tile::setPicture(const std::string& name){ setPicture( &Picture::load( name
 
 const Picture& Tile::picture() const
 {
-  _CAESARIA_DEBUG_BREAK_IF( !_picture && "error: picture is null");
+  if( !_picture )
+  {
+    return Picture::getInvalid();
+  }
 
   return *_picture;
 }

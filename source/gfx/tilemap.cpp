@@ -252,7 +252,7 @@ void Tilemap::load( const VariantMap& stream )
 
   TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
   for( TilesArray::iterator it = tiles.begin(); it != tiles.end();
-       it++, imgIdIt++, bitsetInfoIt++, desirabilityIt++ )
+       ++it, ++imgIdIt, ++bitsetInfoIt, ++desirabilityIt )
   {
     Tile* tile = *it;
 

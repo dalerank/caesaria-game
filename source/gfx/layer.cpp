@@ -192,7 +192,7 @@ void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer:
 
     const PicturesArray& pictures = tile.overlay()->getPictures( pass );
 
-    for( PicturesArray::const_iterator it=pictures.begin(); it != pictures.end(); it++ )
+    for( PicturesArray::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
     {
       engine.drawPicture( *it, screenPos );
     }
@@ -348,7 +348,7 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
   Picture *pic = NULL;
   int leftBorderAtI = baseTile->i();
   int rightBorderAtJ = overlay->size().height() - 1 + baseTile->j();
-  for( TilesArray::const_iterator it=area.begin(); it != area.end(); it++ )
+  for( TilesArray::const_iterator it=area.begin(); it != area.end(); ++it )
   {
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )

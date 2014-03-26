@@ -41,6 +41,7 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
 
   //setPicture( ResourceGroup::utilitya, 10 );
 
+  _haveReservoirWater = false;
   _waterIncreaseInterval = GameDate::ticksInMonth() / 3;
   _fgPicturesRef().resize(1);
   _initAnimation();

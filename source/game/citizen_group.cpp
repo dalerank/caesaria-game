@@ -18,7 +18,7 @@
 int CitizenGroup::count() const
 {
   int ret = 0;
-  for( Peoples::const_iterator t=_hb.begin(); t != _hb.end(); t++ ){ ret += *t; }
+  for( Peoples::const_iterator t=_hb.begin(); t != _hb.end(); ++t ){ ret += *t; }
   return ret;
 }
 
@@ -99,7 +99,7 @@ VariantList CitizenGroup::save() const
   VariantList ret;
 
   int index=0;
-  for( Peoples::const_iterator g = _hb.begin(); g != _hb.end(); g++, index++ )
+  for( Peoples::const_iterator g = _hb.begin(); g != _hb.end(); ++g, index++ )
   {
     if( *g > 0 )
     {
@@ -115,7 +115,7 @@ VariantList CitizenGroup::save() const
 
 void CitizenGroup::load(const VariantList& stream)
 {
-  for( VariantList::const_iterator g=stream.begin(); g != stream.end(); g++ )
+  for( VariantList::const_iterator g=stream.begin(); g != stream.end(); ++g )
   {
     VariantList gv = (*g).toList();
     int age = gv.get( 0, 0 );

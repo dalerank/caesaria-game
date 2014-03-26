@@ -169,7 +169,7 @@ VariantMap SimpleGoodStore::save() const
 
   VariantList stockSave;
   for( Impl::StockList::const_iterator itStock = _gsd->stocks.begin();
-       itStock != _gsd->stocks.end(); itStock++)
+       itStock != _gsd->stocks.end(); ++itStock )
   {
     stockSave.push_back( (*itStock)->save() );
   }

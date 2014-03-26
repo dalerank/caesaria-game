@@ -29,7 +29,10 @@ namespace gui
 
 void Widget::beforeDraw( GfxEngine& painter )
 {
-  _CAESARIA_DEBUG_BREAK_IF( !_d->parent && "Parent must be exists" );
+  if( !_d->parent )
+    return;
+  //"Parent must be exists";
+
   foreach( widget, _d->children ) { (*widget)->beforeDraw( painter ); }
 }
 
@@ -727,7 +730,7 @@ void Widget::animate( unsigned int timeMs )
 
 void Widget::remove()
 {
-  _CAESARIA_DEBUG_BREAK_IF( !getParent() && "parent must be exist for element" );
+  //"parent must be exist for element"
   if( getParent() )
       getParent()->removeChild( this );
 }

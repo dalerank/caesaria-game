@@ -53,11 +53,8 @@ class EducationInfoLabel : public Label
 public:
   EducationInfoLabel( Widget* parent, const Rect& rect, const TileOverlay::Type service,
                       const InfrastructureInfo& info )
-    : Label( parent, rect )
+    : Label( parent, rect ), _service( service ), _info( info )
   {
-    _service = service;
-    _info = info;
-
     setFont( Font::create( FONT_1_WHITE ) );
   }
 

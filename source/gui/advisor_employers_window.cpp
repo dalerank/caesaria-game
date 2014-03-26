@@ -43,9 +43,9 @@ class EmployerButton : public PushButton
 {
 public:
   EmployerButton( Widget* parent, const Point& pos, int index, const std::string& caption, int need, int have )
-    : PushButton( parent, Rect( pos + employerButtonOffset * index, employerButtonSize), "", index, false, PushButton::blackBorderUp )
+    : PushButton( parent, Rect( pos + employerButtonOffset * index, employerButtonSize), "", index, false, PushButton::blackBorderUp ),
+      _title( caption )
   {
-    _title = caption;
     _needWorkers = need;
     _haveWorkers = have;
   }

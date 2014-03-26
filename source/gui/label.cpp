@@ -64,7 +64,9 @@ public:
   PictureRef textPicture;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
+           isBorderVisible( false ),
            OverrideBGColorEnabled(false), isWordwrap(false),
+           backgroundMode( Label::bgNone ),
            RestrainTextInside(true), RightToLeft(false),
            needUpdatePicture(false), lineIntervalOffset( 0 )
   {
@@ -291,22 +293,20 @@ bool Label::isRightToLeft() const{	return _d->RightToLeft;}
 //! Breaks the single text line.
 void Label::Impl::breakText( const std::string& text, const Size& wdgSize )
 {
-    if (!isWordwrap)
-            return;
+  if (!isWordwrap)
+          return;
 
-    brokenText.clear();
+  brokenText.clear();
 
-    _CAESARIA_DEBUG_BREAK_IF( !font.isValid() && "Font must be exists" );
+  if( !font.isValid() )
+      return;
 
-    if( !font.isValid() )
-        return;
+  lastBreakFont = font;
 
-    lastBreakFont = font;
-
-    string line;
-    string word;
-    string whitespace;
-    string rText = prefix + text;
+  string line;
+  string word;
+  string whitespace;
+  string rText = prefix + text;
 	int size = rText.size();
 	int length = 0;
 	int elWidth = wdgSize.width();

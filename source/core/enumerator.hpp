@@ -46,7 +46,7 @@ public:
     return it != _equales.end() ? it->second : "";
   }
 
-  void append( T key, const std::string name )
+  void append( T key, const std::string& name )
   {
     _equales[ key ] = name;
   }

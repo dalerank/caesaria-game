@@ -843,7 +843,7 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  for( StringArray::const_iterator it=strings.begin(); it != strings.end(); it++ )
+  for( StringArray::const_iterator it=strings.begin(); it != strings.end(); ++it )
   { addItem( *it ); }
 }
 

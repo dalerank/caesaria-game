@@ -43,7 +43,7 @@ FileNative::FileNative(const Path& fileName, Entity::Mode mode)
 	openFile();
 }
 
-FileNative::FileNative() : _file( 0 )
+FileNative::FileNative() : _file( 0 ), _size( 0 ), _mode( fmRead )
 {
 
 }
@@ -85,16 +85,10 @@ bool FileNative::seek(long finalPos, bool relativeMovement)
 }
 
 //! returns size of file
-long FileNative::size() const
-{
-	return _size;
-}
+long FileNative::size() const{	return _size;}
 
 //! returns where in the file we are.
-long FileNative::getPos() const
-{
-	return ftell(_file);
-}
+long FileNative::getPos() const {	return ftell(_file);}
 
 
 #if defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_ANDROID)
@@ -221,10 +215,7 @@ void FileNative::openFile()
 }
 
 //! returns name of file
-const Path& FileNative::path() const
-{
-	return _name;
-}
+const Path& FileNative::path() const {	return _name;}
 
 //! returns how much was read
 int FileNative::write(const void* buffer, unsigned int sizeToWrite)
@@ -243,10 +234,7 @@ int FileNative::write( const ByteArray& bArray )
   return (int)fwrite( bArray.data(), 1, bArray.size(), _file );
 }
 
-bool FileNative::isOpen() const
-{
-	return _file != 0;
-}
+bool FileNative::isOpen() const{	return _file != 0;}
 
 void FileNative::flush()
 {

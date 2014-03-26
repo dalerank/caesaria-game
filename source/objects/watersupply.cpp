@@ -67,7 +67,8 @@ std::string Reservoir::troubleDesc() const
 }
 
 Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
-{
+{  
+  _isWaterSource = false;
   _d->serviceTimer = GameDate::ticksInMonth() / 4;
   _d->produceTimer = GameDate::ticksInMonth() / 15;
   setPicture( ResourceGroup::waterbuildings, 1 );

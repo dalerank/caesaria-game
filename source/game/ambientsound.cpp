@@ -147,7 +147,7 @@ void AmbientSound::update( const unsigned int time )
   //create emitters map
   std::set< std::string > processedSounds;
   for( Impl::Emitters::reverse_iterator i=_d->emitters.rbegin();
-       i != _d->emitters.rend(); i++ )
+       i != _d->emitters.rend(); ++i )
   {
     std::string sound = i->getSound();
 

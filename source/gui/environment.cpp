@@ -119,7 +119,11 @@ void GuiEnv::clear()
 
 void GuiEnv::draw()
 {
-  _CAESARIA_DEBUG_BREAK_IF( !_d->preRenderFunctionCalled && "Called OnPreRender() function needed" );
+  if( !_d->preRenderFunctionCalled )
+  {
+   //Logger::warning( "Called OnPreRender() function needed" );
+   return;
+  }
 
   Widget::draw( *_d->engine );
 

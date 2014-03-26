@@ -34,6 +34,8 @@ public:
   LowBridgeSubTile( const TilePos& pos, int index )
     : Construction( building::lowBridge, Size( 1 ) )
   {
+    _info = 0;
+    _imgId = 0;
     _pos = pos;
     _index = index;
     _parent = 0;

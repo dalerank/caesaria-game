@@ -61,11 +61,12 @@ public:
 
   Impl() : currentTextRect(0,0,1,1)
 	{
+		oldCursorPos = 0;
 		mouseMarking = false;
 		overrideColorEnabled = false;
 		markBegin = 0;
 		markEnd = 0;
-		border = border;
+		border = false;
 		drawBackground = true;
 		overrideColor = NColor(101,255,255,255);
 		cursorPos = 0;

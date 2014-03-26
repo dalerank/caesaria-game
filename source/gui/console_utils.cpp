@@ -1,6 +1,6 @@
 #include "console_utils.hpp"
 
-ConsoleError::ConsoleError(const std::string str, const int code) : errorMessage(str), errorCode(code)
+ConsoleError::ConsoleError(const std::string& str, const int code) : errorMessage(str), errorCode(code)
 {
 }
 
@@ -16,7 +16,7 @@ const ConsoleError& ConsoleError::operator = (const ConsoleError& err)
 
 const std::string ConsoleError::getMessage() const{ 	return errorMessage; }
 const int ConsoleError::getCode() const{	return errorCode; }
-void ConsoleError::setMessage(const std::string str){	errorMessage = str;}
+void ConsoleError::setMessage(const std::string& str){	errorMessage = str;}
 void ConsoleError::setCode(const int code){	errorCode = code;}
 
 ConsoleParser::ConsoleParser(const std::string& line) : cmdLine(line)

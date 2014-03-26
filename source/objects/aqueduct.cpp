@@ -130,7 +130,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
     foreach( tile, perimetr )
     {
       AqueductPtr bldAqueduct;
-      for( TilesArray::const_iterator it=aroundTiles.begin(); it != aroundTiles.end(); it++ )
+      for( TilesArray::const_iterator it=aroundTiles.begin(); it != aroundTiles.end(); ++it )
       {
         if( (*it)->pos() == (*tile)->pos() )
         {

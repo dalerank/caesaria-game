@@ -33,7 +33,7 @@ namespace scene
 class StartMenu : public Base
 {
 public:
-  enum
+  typedef enum
   {
     startNewGame=0,
     loadMap,

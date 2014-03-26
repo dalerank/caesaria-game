@@ -288,7 +288,8 @@ void Pathway::prettyPrint() const
       case west: strDir += "W";  break;
       case northWest: strDir += "NW"; break;
       default:
-        _CAESARIA_DEBUG_BREAK_IF( "Unexpected Direction:" || direction);
+        //"Unexpected Direction:"
+        _CAESARIA_DEBUG_BREAK_IF( direction );
       break;
       }
 

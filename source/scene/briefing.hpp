@@ -33,7 +33,7 @@ namespace scene
 class Briefing : public Base
 {
 public:
-  enum
+  typedef enum
   {
     loadMission,
     unlknowState=0xff

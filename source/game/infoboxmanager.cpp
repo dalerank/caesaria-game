@@ -84,10 +84,8 @@ public:
   ServiceBaseInfoboxCreator( const std::string& caption,
                              const std::string& descr,
                              bool drawWorkers=false )
+    : title( caption ), text( descr ), isDrawWorkers( drawWorkers )
   {
-    title = caption;
-    text = descr;
-    isDrawWorkers = drawWorkers;
   }
   
   virtual ~ServiceBaseInfoboxCreator() {}

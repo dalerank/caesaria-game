@@ -87,6 +87,7 @@ std::string RomeDivinityBase::getMoodDescription() const
 
 RomeDivinityBase::RomeDivinityBase()
 {
+  _relation = 0;
 }
 
 void RomeDivinityBase::setInternalName(const std::string& newName)

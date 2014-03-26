@@ -248,7 +248,7 @@ Reservations::Reservations(){  _idCounter = 1; }
 
 const ReserveInfo& Reservations::get(unsigned long id) const
 {
-  for( Reservations::const_iterator i=begin(); i != end(); i++ )
+  for( Reservations::const_iterator i=begin(); i != end(); ++i )
   {
     if( (*i).id == id )
       return *i;
@@ -273,7 +273,7 @@ unsigned long Reservations::push(const GoodStock& stock, DateTime time)
 
 bool Reservations::pop(unsigned int id)
 {
-  for( Reservations::iterator i=begin(); i != end(); i++ )
+  for( Reservations::iterator i=begin(); i != end(); ++i )
   {
     if( (*i).id == id )
     {
@@ -301,7 +301,7 @@ VariantMap Reservations::save() const
 
   stream[ "idCounter" ] = static_cast<int>(_idCounter);
   VariantList vm_reservations;
-  for( const_iterator i=begin(); i != end(); i++ )
+  for( const_iterator i=begin(); i != end(); ++i )
   {
     vm_reservations.push_back( (int)(*i).id );
     vm_reservations.push_back( (*i).stock.save() );
@@ -317,12 +317,12 @@ void Reservations::load(const VariantMap& stream)
   _idCounter = (int)stream.get( "idCounter" );
 
   VariantList vm_reservations = stream.get( "items" ).toList();
-  for( VariantList::iterator it=vm_reservations.begin(); it != vm_reservations.end(); it++ )
+  for( unsigned int i=0; i < vm_reservations.size(); i+=3 )
   {
     ReserveInfo info;
-    info.id = (*it).toInt(); it++;
-    info.stock.load( (*it).toList() ); it++;
-    info.time = (*it).toDateTime();
+    info.id = vm_reservations.get( i ).toInt();
+    info.stock.load( vm_reservations.get( i+1 ).toList() );
+    info.time = vm_reservations.get( i+2 ).toDateTime();
 
     insert( info );
   }
