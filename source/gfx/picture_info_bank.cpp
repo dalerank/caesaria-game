@@ -39,13 +39,13 @@ PictureInfoBank& PictureInfoBank::instance()
 PictureInfoBank::PictureInfoBank() : _d( new Impl )
 {
   // tiles
-  Point offset( -1, -1 );
-  _d->setRange("land1a", 1, 303, offset);
+  Point offset = getDefaultOffset( tileOffset );
+  _d->setRange( ResourceGroup::land1a, 1, 303, offset);
   _d->setRange("oc3_land", 1, 2, offset);
   _d->setRange( ResourceGroup::land2a, 1, 151, offset);
   _d->setRange( ResourceGroup::land2a, 187, 195, offset); //burning ruins start animation
   _d->setRange( ResourceGroup::land2a, 214, 231, offset); //burning ruins middle animation
-  _d->setRange( "land3a", 47, 92, offset);
+  _d->setRange( ResourceGroup::land3a, 47, 92, offset);
   _d->setRange( "plateau", 1, 44, offset);
   _d->setRange( ResourceGroup::commerce, 1, 167, offset);
   _d->setRange( ResourceGroup::transport, 1, 93, offset);
@@ -120,7 +120,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::sprites, 48, 68, Point( -32, 52 ) );
 
   // walkers
-  offset = Point( -2, -2 );
+  offset = getDefaultOffset( walkerOffset );
   _d->setRange("citizen01", 1, 1240, offset);
   _d->setRange("citizen02", 1, 1030, offset);
   _d->setRange("citizen03", 1, 1128, offset);
@@ -137,7 +137,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
 
 void PictureInfoBank::Impl::setRange(const std::string& preffix, const int first, const int last, const Point& data)
 {
-  for (int i = first; i<=last; ++i)
+  for( int i = first; i<=last; ++i)
   {
     setOne(preffix, i, data);
   }
@@ -167,7 +167,25 @@ Point PictureInfoBank::getOffset(const std::string& resource_name)
   return (*it).second;
 }
 
-PictureInfoBank::~PictureInfoBank()
+void PictureInfoBank::setOffset(const std::string& preffix, const int index, const Point& data)
 {
+  _d->setOne( preffix, index, data );
+}
 
+void PictureInfoBank::setOffset(const std::string& preffix, const int index, const int count, const Point& data)
+{
+  _d->setRange( preffix, index, index + count, data );
+}
+
+PictureInfoBank::~PictureInfoBank() {}
+
+Point PictureInfoBank::getDefaultOffset(PictureInfoBank::OffsetType type) const
+{
+  switch( type )
+  {
+  case walkerOffset: return Point( -2, -2 );
+  case tileOffset: return Point( -1, -1 );
+  }
+
+  return Point();
 }

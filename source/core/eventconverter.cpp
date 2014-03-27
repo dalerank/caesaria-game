@@ -128,7 +128,7 @@ void EventConverter::Impl::createKeyMap()
     KeyMap[ SDLK_LSUPER]= KEY_LWIN;
     KeyMap[ SDLK_RSUPER]= KEY_RWIN;
     // apps missing
-    KeyMap[ SDLK_POWER]=KEY_SLEEP; //??
+    KeyMap[ SDLK_POWER]=  KEY_SLEEP; //??
 
     KeyMap[ SDLK_KP0]= KEY_NUMPAD0;
     KeyMap[ SDLK_KP1]= KEY_NUMPAD1;
@@ -150,7 +150,7 @@ void EventConverter::Impl::createKeyMap()
     KeyMap[ SDLK_F1]=  KEY_F1;
     KeyMap[ SDLK_F2]=  KEY_F2;
     KeyMap[ SDLK_F3]=  KEY_F3;
-    KeyMap[ SDLK_F4]= KEY_F4;
+    KeyMap[ SDLK_F4]=  KEY_F4;
     KeyMap[ SDLK_F5]=  KEY_F5;
     KeyMap[ SDLK_F6]=  KEY_F6;
     KeyMap[ SDLK_F7]=  KEY_F7;
@@ -161,22 +161,22 @@ void EventConverter::Impl::createKeyMap()
     KeyMap[ SDLK_F12]= KEY_F12;
     KeyMap[ SDLK_F13]= KEY_F13;
     KeyMap[ SDLK_F14]= KEY_F14;
-    KeyMap[ SDLK_F15]=KEY_F15;
+    KeyMap[ SDLK_F15]= KEY_F15;
     // no higher F-keys
 
     KeyMap[ SDLK_NUMLOCK]= KEY_NUMLOCK;
     KeyMap[ SDLK_SCROLLOCK]= KEY_SCROLL;
-    KeyMap[ SDLK_LSHIFT]= KEY_LSHIFT;
-    KeyMap[ SDLK_RSHIFT]= KEY_RSHIFT;
-    KeyMap[ SDLK_LCTRL]= KEY_LCONTROL;
-    KeyMap[ SDLK_RCTRL]=  KEY_RCONTROL;
-    KeyMap[ SDLK_LALT]=  KEY_LMENU;
-    KeyMap[ SDLK_RALT]=  KEY_RMENU;
+    KeyMap[ SDLK_LSHIFT]=  KEY_LSHIFT;
+    KeyMap[ SDLK_RSHIFT]=  KEY_RSHIFT;
+    KeyMap[ SDLK_LCTRL]=   KEY_LCONTROL;
+    KeyMap[ SDLK_RCTRL]=   KEY_RCONTROL;
+    KeyMap[ SDLK_LALT]=    KEY_LMENU;
+    KeyMap[ SDLK_RALT]=    KEY_RMENU;
 
-    KeyMap[ SDLK_PLUS]=   KEY_PLUS;
-    KeyMap[ SDLK_COMMA]=  KEY_COMMA;
-    KeyMap[ SDLK_MINUS]=  KEY_MINUS;
-    KeyMap[ SDLK_PERIOD]= KEY_PERIOD;
+    KeyMap[ SDLK_PLUS]=    KEY_PLUS;
+    KeyMap[ SDLK_COMMA]=   KEY_COMMA;
+    KeyMap[ SDLK_MINUS]=   KEY_MINUS;
+    KeyMap[ SDLK_PERIOD]=  KEY_PERIOD;
 }
 
 NEvent EventConverter::get( const SDL_Event& sdlEvent )
@@ -218,26 +218,26 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     case SDL_BUTTON_LEFT:
       if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
       {
-          ret.mouse.type = mouseLbtnPressed;
-          _d->mouseButtonStates |= mbsmLeft;
+        ret.mouse.type = mouseLbtnPressed;
+        _d->mouseButtonStates |= mbsmLeft;
       }
       else
       {
-          ret.mouse.type = mouseLbtnRelease;
-          _d->mouseButtonStates &= !mbsmLeft;
+        ret.mouse.type = mouseLbtnRelease;
+        _d->mouseButtonStates &= !mbsmLeft;
       }
     break;
 
     case SDL_BUTTON_RIGHT:
       if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
       {
-          ret.mouse.type = mouseRbtnPressed;
-          _d->mouseButtonStates |= mbsmRight;
+        ret.mouse.type = mouseRbtnPressed;
+        _d->mouseButtonStates |= mbsmRight;
       }
       else
       {
-          ret.mouse.type = mouseRbtnRelease;
-          _d->mouseButtonStates &= !mbsmRight;
+        ret.mouse.type = mouseRbtnRelease;
+        _d->mouseButtonStates &= !mbsmRight;
       }
     break;
 
@@ -248,7 +248,8 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
         _d->mouseButtonStates |= mbsmMiddle;
       }
       else
-      {ret.mouse.control = keys[SDLK_LCTRL];
+      {
+        ret.mouse.control = keys[SDLK_LCTRL];
         ret.mouse.shift = keys[SDLK_LSHIFT];
         ret.mouse.type = mouseMbtnRelease;
         _d->mouseButtonStates &= !mbsmMiddle;

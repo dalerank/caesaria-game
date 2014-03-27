@@ -91,12 +91,33 @@ void ThrowingWeapon::timeStep(const unsigned long time)
 
 void ThrowingWeapon::turn(TilePos p)
 {
-  float t = (p - pos()).getAngleICW();
+  PointF prPos = PointF( p.i(), p.j() ) * 15 + PointF( 7, 7 );
+  float t = (_d->currentPos - prPos).getAngle();
   int angle = (int)( t / 22.5f);// 0 is east
 
-  int index = 0;
-  if( angle > 13 ) { index = rcStartIndex() + (angle - 14); }
-  else  { index = rcStartIndex() + 2 + angle; }
+  int index = rcStartIndex();
+  switch( angle )
+  {
+  case 0: index = rcStartIndex() + 12; break;
+  case 1: index = rcStartIndex() + 14; break;
+  case 2: index = rcStartIndex() + 15; break;
+  case 3: index = rcStartIndex(); break;
+  case 4: index = rcStartIndex() + 1; break;
+  case 5: index = rcStartIndex() + 2; break;
+  case 6: index = rcStartIndex() + 2; break;
+  case 7: index = rcStartIndex() + 3; break;
+  case 8: index = rcStartIndex() + 5; break;
+  case 9: index = rcStartIndex() + 6; break;
+  case 10: index = rcStartIndex() + 7; break;
+  case 11: index = rcStartIndex() + 8; break;
+  case 12: index = rcStartIndex() + 9; break;
+  case 13: index = rcStartIndex() + 10; break;
+  case 14: index = rcStartIndex() + 11; break;
+  case 15: index = rcStartIndex() + 11; break;
+  }
+
+  //if( angle > 13 ) { index = rcStartIndex() + (angle - 14); }
+  //else  { index = rcStartIndex() + 2 + angle; }
 
   _d->pic = Picture::load( rcGroup(), index );
 }

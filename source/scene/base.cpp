@@ -58,19 +58,6 @@ void Base::update( GfxEngine &engine )
   NEvent nEvent;
   while( engine.haveEvent( nEvent )  )
   {
-#ifdef CAESARIA_PLATFORM_ANDROID
-    if( nEvent.EventType == sEventMouse && nEvent.mouse.type == mouseLbtnPressed )
-    {
-      NEvent andSubEvent;
-      andSubEvent.EventType = sEventMouse;
-      andSubEvent.mouse.type = mouseMoved;
-      Point p = engine.mousePos();
-      andSubEvent.mouse.x = p.x();
-      andSubEvent.mouse.y = p.y();
-
-      handleEvent( andSubEvent );
-    }
-#endif
     handleEvent( nEvent );
   }
 

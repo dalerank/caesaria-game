@@ -35,7 +35,7 @@ void BowArrow::_onTarget()
   WalkerList walkers = _getCity()->getWalkers( walker::any, dstPos() );
   foreach( w, walkers )
   {
-    (*w)->updateHealth( -10 );
+    (*w)->updateHealth( -3 );
     (*w)->acceptAction( Walker::acFight, startPos() );
   }
 }

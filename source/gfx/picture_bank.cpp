@@ -112,14 +112,14 @@ Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resour
    if( surface )
    {
      // decode the picture name => to set the offset manually
-     Point pic_info = PictureInfoBank::instance().getOffset(filename);
+     Point pic_info = PictureInfoBank::instance().getOffset( filename );
 
-     if (pic_info.x() == -1 && pic_info.y() == -1)
+     if( pic_info == Point( -1, -1 ) )
      {
         // this is a tiled picture=> automatic offset correction
         offset.setY( surface->h-15*((surface->w+2)/60) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
      }
-     else if (pic_info.x() == -2 && pic_info.y() == -2)
+     else if( pic_info == Point( -2, -2 ) )
      {
         // this is a walker picture=> automatic offset correction
         offset = Point( -surface->w/2, int(surface->h*3./4.) );

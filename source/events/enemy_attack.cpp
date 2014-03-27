@@ -55,7 +55,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
       VariantMap soldiers = i->second.toMap();
 
       std::string soldierType = soldiers.get( "type" ).toString();
-      std::string animation = soldiers.get( "animation" ).toString();
+      //std::string animation = soldiers.get( "animation" ).toString();
       int soldierNumber = soldiers.get( "count" );
       TilePos location( -1, -1 );
       Variant vLocation = soldiers.get( "location" );

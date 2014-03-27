@@ -25,10 +25,14 @@
 class PictureInfoBank
 {
 public:
+  typedef enum { walkerOffset=0, tileOffset } OffsetType;
   static PictureInfoBank& instance();
   ~PictureInfoBank();
 
-  Point getOffset(const std::string &resource_name);   // image name ("Govt_00005")
+  Point getDefaultOffset( OffsetType type ) const;
+  Point getOffset(const std::string &resource_name);
+  void setOffset(const std::string &preffix, const int index, const Point& data);
+  void setOffset(const std::string &preffix, const int index, const int count, const Point& data);
 
 private:
   PictureInfoBank();

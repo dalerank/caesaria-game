@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ENEMYSOLDIER_PREFECT_H_INCLUDED__
-#define __CAESARIA_ENEMYSOLDIER_PREFECT_H_INCLUDED__
+#ifndef __CAESARIA_ENEMYSOLDIER_H_INCLUDED__
+#define __CAESARIA_ENEMYSOLDIER_H_INCLUDED__
 
 #include "soldier.hpp"
 
@@ -68,4 +68,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_ENEMYSOLDIER_PREFECT_H_INCLUDED__
+#endif //__CAESARIA_ENEMYSOLDIER_H_INCLUDED__

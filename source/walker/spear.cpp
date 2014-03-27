@@ -38,6 +38,14 @@ void Spear::_onTarget()
     (*w)->updateHealth( -10 );
     (*w)->acceptAction( Walker::acFight, startPos() );
   }
+
+  TileOverlayPtr overlay = _getCity()->getOverlay( dstPos() );
+
+  ConstructionPtr c = ptr_cast<Construction>( overlay );
+  if( c.isValid() )
+  {
+    c->updateState( Construction::damage, 5 );
+  }
 }
 
 const char* Spear::rcGroup() const {  return ResourceGroup::sprites; }

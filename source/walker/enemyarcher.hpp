@@ -34,7 +34,7 @@ public:
   virtual void load(const VariantMap &stream);
 
 protected:
-  bool _tryAttack();
+  virtual bool _tryAttack();
   virtual void _fire(TilePos pos );
 
 private:

@@ -59,7 +59,7 @@ public:
   virtual void registerTileForRendering(Tile&);
   virtual int getNextLayer() const;
 
-  ~Layer();
+  virtual ~Layer();
 protected:
   void _setLastCursorPos( Point pos );
   Point _getLastCursorPos() const;

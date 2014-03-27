@@ -23,6 +23,7 @@
 #include "walker/emigrant.hpp"
 #include "core/saveadapter.hpp"
 #include "gfx/typehelper.hpp"
+#include "picture_info_bank.hpp"
 #include <map>
 
 using namespace constants;
@@ -47,6 +48,7 @@ namespace{
   static const Point backCartOffsetSouthWest  = Point( -20, 20 );
 
   static const int noneGoodsPicId = 1;
+  static const int stepInFrame = 8;
 }
 
 class AnimationBank::Impl
@@ -98,9 +100,9 @@ void AnimationBank::Impl::loadCarts()
 
 void AnimationBank::Impl::loadWalkers()
 {
-  animations[gfx::unknown          ] = AnimationBank::MovementAnimation();
-  animations[gfx::citizenMove        ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
-  animations[gfx::bathladyMove       ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
+  animations[gfx::unknown              ] = AnimationBank::MovementAnimation();
+  animations[gfx::citizenMove          ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
+  animations[gfx::bathladyMove         ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
   animations[gfx::priestMove           ] = loadAnimation( ResourceGroup::citizen1, 209, 12);
   animations[gfx::actorMove            ] = loadAnimation( ResourceGroup::citizen1, 313, 12);
   animations[gfx::tamerMove            ] = loadAnimation( ResourceGroup::citizen1, 417, 12);
@@ -115,9 +117,9 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::protestorMove        ] = loadAnimation( ResourceGroup::citizen2, 351, 12);
   animations[gfx::barberMove           ] = loadAnimation( ResourceGroup::citizen2, 463, 12);
   animations[gfx::prefectMove          ] = loadAnimation( ResourceGroup::citizen2, 615, 12);
-  animations[gfx::prefectDragWater ] = loadAnimation( ResourceGroup::citizen2, 767, 12);
-  animations[gfx::prefectFightFire ] = loadAnimation( ResourceGroup::citizen2, 863, 6, Walker::acFight );
-  animations[gfx::prefectFight     ] = loadAnimation( ResourceGroup::citizen2, 719, 6, Walker::acFight );
+  animations[gfx::prefectDragWater     ] = loadAnimation( ResourceGroup::citizen2, 767, 12);
+  animations[gfx::prefectFightFire     ] = loadAnimation( ResourceGroup::citizen2, 863, 6, Walker::acFight );
+  animations[gfx::prefectFight         ] = loadAnimation( ResourceGroup::citizen2, 719, 6, Walker::acFight );
   animations[gfx::homelessMove         ] = loadAnimation( ResourceGroup::citizen2, 911, 12);
   animations[gfx::patricianMove        ] = loadAnimation( ResourceGroup::citizen3, 713, 12);
   animations[gfx::doctorMove           ] = loadAnimation( ResourceGroup::citizen3, 817, 12);
@@ -131,17 +133,17 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::marketkidMove        ] = loadAnimation( ResourceGroup::carts, 369, 12);
   animations[gfx::sheepMove            ] = loadAnimation( ResourceGroup::animals, 153, 5 );
   animations[gfx::fishingBoatMove      ] = loadAnimation( ResourceGroup::carts, 249, 1 );
-  animations[gfx::fishingBoatWork  ] = loadAnimation( ResourceGroup::carts, 257, 1 );
-  animations[gfx::homelessSit      ] = loadAnimation( ResourceGroup::citizen2, 1015, 1 );
+  animations[gfx::fishingBoatWork      ] = loadAnimation( ResourceGroup::carts, 257, 1 );
+  animations[gfx::homelessSit          ] = loadAnimation( ResourceGroup::citizen2, 1015, 1 );
   animations[gfx::lionMove             ] = loadAnimation( ResourceGroup::lion, 1, 12 );
   animations[gfx::charioterMove        ] = loadAnimation( ResourceGroup::citizen5, 1, 12 );
   animations[gfx::britonSoldierMove    ] = loadAnimation( ResourceGroup::celts, 249, 12 );
-  animations[gfx::britonSoldierFight]= loadAnimation( ResourceGroup::celts, 345, 6, Walker::acFight );
+  animations[gfx::britonSoldierFight   ] = loadAnimation( ResourceGroup::celts, 345, 6, Walker::acFight );
   animations[gfx::soldierMove          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
-  animations[gfx::legionaryMove     ] = loadAnimation( ResourceGroup::citizen3, 553, 12 );
-  animations[gfx::legionaryFight   ] = loadAnimation( ResourceGroup::citizen3, 649, 6, Walker::acFight );
-  animations[gfx::guardMove          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
-  animations[gfx::guardFigth       ] = loadAnimation( ResourceGroup::citizen3, 192, 6, Walker::acFight );
+  animations[gfx::legionaryMove        ] = loadAnimation( ResourceGroup::citizen3, 553, 12 );
+  animations[gfx::legionaryFight       ] = loadAnimation( ResourceGroup::citizen3, 649, 6, Walker::acFight );
+  animations[gfx::guardMove            ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
+  animations[gfx::guardFigth           ] = loadAnimation( ResourceGroup::citizen3, 192, 6, Walker::acFight );
   animations[gfx::seaMerchantMove      ] = loadAnimation( ResourceGroup::carts, 241, 1 );
 }
 
@@ -169,24 +171,29 @@ AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::
   MovementAnimation ioMap;
   DirectedAction action={ wa, north };
 
-  action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, 8);
-  action.direction = northEast;  ioMap[action].load( prefix, start+1, size, Animation::straight, 8);
-  action.direction = east;       ioMap[action].load( prefix, start+2, size, Animation::straight, 8);
-  action.direction = southEast;  ioMap[action].load( prefix, start+3, size, Animation::straight, 8);
-  action.direction = south;      ioMap[action].load( prefix, start+4, size, Animation::straight, 8);
-  action.direction = southWest;  ioMap[action].load( prefix, start+5, size, Animation::straight, 8);
-  action.direction = west;       ioMap[action].load( prefix, start+6, size, Animation::straight, 8);
-  action.direction = northWest;  ioMap[action].load( prefix, start+7, size, Animation::straight, 8);
+  action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, stepInFrame);
+  action.direction = northEast;  ioMap[action].load( prefix, start+1, size, Animation::straight, stepInFrame);
+  action.direction = east;       ioMap[action].load( prefix, start+2, size, Animation::straight, stepInFrame);
+  action.direction = southEast;  ioMap[action].load( prefix, start+3, size, Animation::straight, stepInFrame);
+  action.direction = south;      ioMap[action].load( prefix, start+4, size, Animation::straight, stepInFrame);
+  action.direction = southWest;  ioMap[action].load( prefix, start+5, size, Animation::straight, stepInFrame);
+  action.direction = west;       ioMap[action].load( prefix, start+6, size, Animation::straight, stepInFrame);
+  action.direction = northWest;  ioMap[action].load( prefix, start+7, size, Animation::straight, stepInFrame);
 
   return ioMap;
 }
 
 AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation(const VariantMap& desc)
 {
+  PictureInfoBank& pib = PictureInfoBank::instance();
   std::string rcGroup = desc.get( "rc" ).toString();
   int startIndex = desc.get( "start" );
   int frameNumber = desc.get( "frames" );
   int action = desc.get( "action" );
+  //creating information about animation offset
+  Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
+  offset = desc.get( "offset", offset ).toPoint();
+  pib.setOffset( rcGroup, startIndex, frameNumber * stepInFrame, offset );
 
   return loadAnimation( rcGroup, startIndex, frameNumber, (Walker::Action)action );
 }

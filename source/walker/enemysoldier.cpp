@@ -86,15 +86,8 @@ bool EnemySoldier::_tryAttack()
   return false;
 }
 
-void EnemySoldier::_setSubAction(EnemySoldier::EsAction action)
-{
-  _d->action = action;
-}
-
-EnemySoldier::EsAction EnemySoldier::_getSubAction() const
-{
-  return _d->action;
-}
+void EnemySoldier::_setSubAction(EnemySoldier::EsAction action) {  _d->action = action; }
+EnemySoldier::EsAction EnemySoldier::_getSubAction() const{  return _d->action; }
 
 void EnemySoldier::_brokePathway(TilePos pos)
 {
@@ -111,7 +104,13 @@ void EnemySoldier::_reachedPathway()
   {
   case check4attack:
   case go2position:
-    _check4attack();
+  {
+    bool findAny4attack = _tryAttack();
+    if( !findAny4attack )
+    {
+      _check4attack();
+    }
+  }
   break;
 
   default: break;
