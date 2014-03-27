@@ -82,7 +82,7 @@ public:
 
   virtual void setFont( const Font& font );
 
-  virtual Font& getFont( ElementState state );
+  virtual Font getFont( ElementState state );
 
   virtual void setIsPushButton( bool value );
 
@@ -110,12 +110,11 @@ protected:
  
   virtual void _updateTexture( ElementState state );
 
-  PictureRef& _getBackground( ElementState state );
-  PictureRef& _getTextPicture( ElementState state );
+  PictureRef& _backgroundRef( ElementState state );
+  PictureRef& _textPictureRef( ElementState state );
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(PushButton)
 };
 
 }//end namespace gui

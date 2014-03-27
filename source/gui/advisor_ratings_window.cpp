@@ -50,7 +50,7 @@ public:
     PushButton::_updateTexture( state );
 
     Font digitFont = Font::create( FONT_3 );
-    PictureRef& pic = _getBackground( state );
+    PictureRef& pic = _backgroundRef( state );
     digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), width() / 2 - 10, 15, false );
 
     Font targetFont = Font::create( FONT_1 );

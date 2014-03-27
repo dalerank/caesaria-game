@@ -63,15 +63,15 @@ public:
   {
     PushButton::_updateTexture( state );
 
-    PictureRef& background = _getBackground( state );
+    PictureRef& background = _backgroundRef( state );
     background->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
     background->draw( _goodPicture, 15, 0, false );
     background->draw( _goodPicture, width() - 20 - _goodPicture.width(), 0, false );
 
-    if( _getTextPicture( state ) != 0 )
+    if( _textPictureRef( state ) != 0 )
     {
       Font font = getFont( state );    
-      PictureRef& textPic = _getTextPicture( state );
+      PictureRef& textPic = _textPictureRef( state );
       font.draw( *textPic, _goodName, 55, 0 );   
       font.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0 );
       font.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0 );
@@ -237,7 +237,7 @@ public:
         Font font = getFont( state );        
         std::string text = (order == CityTradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
         Rect textRect = font.calculateTextRect( text, Rect( Point( 0, 0), size() ), getHorizontalTextAlign(), getVerticalTextAlign() );
-        font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner );
+        font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner );
       }
       break;
 
@@ -249,11 +249,11 @@ public:
           Font font = getFont( state );
           std::string text = _("##trade_btn_export_text##");
           Rect textRect = font.calculateTextRect( text, Rect( 0, 0, width() / 2, height() ), getHorizontalTextAlign(), getVerticalTextAlign() );
-          font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, true );
+          font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner, true );
 
           text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
           textRect = font.calculateTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), getHorizontalTextAlign(), getVerticalTextAlign() );
-          font.draw( *_getTextPicture( state ), text, textRect.UpperLeftCorner, true );
+          font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner, true );
         }
       break;
 

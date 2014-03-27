@@ -99,7 +99,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
     rating = math::clamp( rating - routeIt->second->getLength(), 0, 999 );
     warehouseRating[ rating ] = DirectRoute( routeIt->first, *routeIt->second.object() );
 
-    routeIt++;
+    ++routeIt;
   }
 
   //have only available warehouses, find nearest of it
@@ -119,7 +119,7 @@ DirectRoute getWarehouse4Sells( Propagator &pathPropagator,
     WarehousePtr warehouse= ptr_cast<Warehouse>( pathWayIt->first );
 
     if( warehouse->store().freeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
-    else { pathWayIt++; }    
+    else { ++pathWayIt; }
   }
 
   //have only available warehouses, find nearest of it

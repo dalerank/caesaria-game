@@ -264,15 +264,14 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
     }
     else
     {
-      pathWayIt++;
+      ++pathWayIt;
     }
   }
 
   //find shortest path
   int maxLength = 999;
   PathwayPtr shortestPath = 0;
-  for( DirectRoutes::iterator pathIt = pathWayList.begin();
-       pathIt != pathWayList.end(); pathIt++ )
+  foreach( pathIt, pathWayList )
   {
     if( pathIt->second->getLength() < maxLength )
     {

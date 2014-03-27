@@ -562,7 +562,7 @@ void Widget::setupUI( const VariantMap& ui )
 
   setNotClipped( ui.get( "noclipped", false ).toBool() );
 
-  for( VariantMap::const_iterator it=ui.begin(); it != ui.end(); it++ )
+  for( VariantMap::const_iterator it=ui.begin(); it != ui.end(); ++it )
   {
     if( it->second.type() != Variant::Map )
       continue;

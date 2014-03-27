@@ -189,7 +189,7 @@ int WarehouseStore::getMaxStore(const Good::Type goodType)
 
   // add reservations
   Reservations& r = _getStoreReservations();
-  for( Reservations::iterator i=r.begin(); i != r.end(); i++ )
+  foreach( i, r )
   {
     const GoodStock& reservationStock = i->stock;
     maxStore[ reservationStock.type() ] += reservationStock.qty();

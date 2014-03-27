@@ -118,56 +118,55 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
 
   if( priorityGoods.size() > 0 )
   {
-     // we have something to buy!
+    // we have something to buy!
+    // get the list of buildings within reach
+    Pathway pathWay;
+    Propagator pathPropagator( _getCity() );
+    pathPropagator.init( ptr_cast<Construction>( _d->market ) );
+    pathPropagator.setAllDirections( false );
+    pathPropagator.propagate( _d->maxDistance);
 
-     // get the list of buildings within reach
-     Pathway pathWay;
-     Propagator pathPropagator( _getCity() );
-     pathPropagator.init( ptr_cast<Construction>( _d->market ) );
-     pathPropagator.setAllDirections( false );
-     pathPropagator.propagate( _d->maxDistance);
+    // try to find the most needed good
+    foreach( goodType, priorityGoods )
+    {
+      _d->priorityGood = *goodType;
 
-     // try to find the most needed good
-     foreach( goodType, priorityGoods )
-     {
-        _d->priorityGood = *goodType;
+      if( _d->priorityGood == Good::wheat || _d->priorityGood == Good::fish
+          || _d->priorityGood == Good::meat || _d->priorityGood == Good::fruit
+          || _d->priorityGood == Good::vegetable)
+      {
+        // try get that good from a granary
+        _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, building::granary, _d->market,
+                                                              _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
-        if( _d->priorityGood == Good::wheat || _d->priorityGood == Good::fish
-            || _d->priorityGood == Good::meat || _d->priorityGood == Good::fruit
-            || _d->priorityGood == Good::vegetable)
+        if( _d->destBuildingPos.i() < 0 )
         {
-           // try get that good from a granary
-           _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, building::granary, _d->market,
-                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
-
-           if( _d->destBuildingPos.i() < 0 )
-           {
-             _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
-                                                                   _d->basket, _d->priorityGood, pathWay, _d->reservationID );
-           }
-        }
-        else
-        {
-           // try get that good from a warehouse
-           _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
+          _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
         }
+      }
+      else
+      {
+        // try get that good from a warehouse
+        _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, building::warehouse, _d->market,
+                                                                _d->basket, _d->priorityGood, pathWay, _d->reservationID );
+      }
 
-        if( _d->destBuildingPos.i() >= 0 )
-        {
-           // we found a destination!
-           setPos( pathWay.getStartPos() );
-           setPathway( pathWay );
-           break;
-        }
-     }
+      if( _d->destBuildingPos.i() >= 0 )
+      {
+        // we found a destination!
+        setPos( pathWay.getStartPos() );
+        setPathway( pathWay );
+         break;
+      }
+    }
   }
 
   if( _d->destBuildingPos.i() < 0)
   {
-     // we have nothing to buy, or cannot find what we need to buy
-     deleteLater();
-     return;
+    // we have nothing to buy, or cannot find what we need to buy
+    deleteLater();
+    return;
   }
 }
 

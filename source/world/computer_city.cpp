@@ -139,7 +139,7 @@ void ComputerCity::load( const VariantMap& options )
   }
 
   const VariantMap& sells_vm = options.get( "sells" ).toMap();
-  for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); it++ )
+  for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); ++it )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
     _d->sellStore.setCapacity( gtype, it->second.toInt() * 100 );
@@ -147,21 +147,21 @@ void ComputerCity::load( const VariantMap& options )
   }
 
   const VariantMap& sold_vm = options.get( "sold" ).toMap();
-  for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); it++ )
+  for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); ++it )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
     _d->sellStore.setQty( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& buys_vm = options.get( "buys" ).toMap();
-  for( VariantMap::const_iterator it=buys_vm.begin(); it != buys_vm.end(); it++ )
+  for( VariantMap::const_iterator it=buys_vm.begin(); it != buys_vm.end(); ++it )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
     _d->buyStore.setCapacity( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& bought_vm = options.get( "bought" ).toMap();
-  for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); it++ )
+  for( VariantMap::const_iterator it=bought_vm.begin(); it != bought_vm.end(); ++it )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
     _d->buyStore.setQty( gtype, it->second.toInt() * 100 );

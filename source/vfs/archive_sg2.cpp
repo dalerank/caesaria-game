@@ -104,10 +104,8 @@ ArchivePtr Sg2ArchiveLoader::createArchive(NFile file, bool ignoreCase, bool ign
   return archive;
 }
 
-Sg2ArchiveReader::Sg2ArchiveReader(NFile file)
+Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 {
-  _file = file;
-
   SgHeader header;
   file.seek(0);
   file.read(&header, sizeof(header));

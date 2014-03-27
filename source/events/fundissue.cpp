@@ -63,6 +63,9 @@ bool FundIssueEvent::_mayExec(Game& game, unsigned int time) const
   return true;
 }
 
+FundIssueEvent::FundIssueEvent() : _type( 0 ), _value( 0 ), _gtype( Good::none ), _qty( 0 )
+{}
+
 void FundIssueEvent::_exec(Game& game, unsigned int )
 {
   if( _type == city::Funds::importGoods )

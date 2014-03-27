@@ -32,8 +32,7 @@ public:
   void draw( GfxEngine& painter );
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(AdvisorEducationWindow)
 };
 
 } //end namespace gui

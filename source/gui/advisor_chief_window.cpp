@@ -39,7 +39,7 @@ using namespace constants;
 namespace gui
 {
 
-class __PRIVATE_IMPL(AdvisorChiefWindow)
+class AdvisorChiefWindow::Impl
 {
 public:
   PlayerCityPtr city;

@@ -131,7 +131,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   {
     WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->pos() );
 
-    for( WalkerList::iterator i=tileWalkers.begin();i!=tileWalkers.end(); i++ )
+    foreach( i, tileWalkers )
     {
       rtype = (*i)->type();
       if( rtype == type() || is_kind_of<Animal>(*i) || rtype  == walker::corpse )

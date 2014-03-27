@@ -116,13 +116,15 @@ public:
 };
 
 AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+: Widget( parent, id, Rect( 0, 0, 1, 1 ) ),
+  __INIT_IMPL(AdvisorEducationWindow)
 {
   setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 256 ) ) );
 
   setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );
   
+  __D_IMPL(_d,AdvisorEducationWindow)
   _d->lbBackframe = findChildA<Label*>( "lbBlackframe", true, this );
   _d->lbCityInfo = findChildA<Label*>( "lbCityInfo", true, this );
   _d->lbCityTrouble = findChildA<Label*>( "lbCityTrouble", true, this);
@@ -165,7 +167,6 @@ void AdvisorEducationWindow::draw( GfxEngine& painter )
 
   Widget::draw( painter );
 }
-
 
 InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
 {

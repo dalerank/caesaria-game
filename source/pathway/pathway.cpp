@@ -170,7 +170,7 @@ constants::Direction Pathway::getNextDirection()
 
 bool Pathway::isDestination() const
 {
-  bool res;
+  bool res = false;
   if (_d->isReverse)
   {
 #if defined(CAESARIA_PLATFORM_WIN)
@@ -340,7 +340,7 @@ void Pathway::load( const VariantMap& stream )
   _d->origin = &_d->tilemap->at( stream.get( "startPos" ).toTilePos() );
   _d->destination = _d->origin->pos(); //stream.get( "stopPos" ).toTilePos();
   VariantList directions = stream.get( "directions" ).toList();
-  for( VariantList::iterator it = directions.begin(); it != directions.end(); it++ )
+  foreach( it, directions )
   {
     Direction dir = (Direction)(*it).toInt();
     setNextDirection( dir );

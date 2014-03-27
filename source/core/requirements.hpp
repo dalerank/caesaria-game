@@ -89,8 +89,7 @@
   friend class Impl;
 
 #define __INIT_IMPL(Class) _d##Class( new Impl )
-#define __PRIVATE_IMPL(Class) Class::Impl
-
 #define __D_IMPL(a,Class) ScopedPtr<Impl>& a = _d##Class;
+#define __D_IMPL_CONST(a,Class) const ScopedPtr<Impl>& a = _d##Class;
 
 #endif //__CAESARIA_REQUIREMENTS_INCLUDE_

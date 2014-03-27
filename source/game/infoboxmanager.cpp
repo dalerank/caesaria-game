@@ -115,11 +115,9 @@ class InfoboxBasicCreator : public InfoboxCreator
 {
 public:
   InfoboxBasicCreator( const std::string& caption,
-                       const std::string& desc )
-  {
-    title = caption;
-    text = desc;
-  }
+                       const std::string& desc ):
+    title( caption ), text( desc )
+  {}
   
   virtual ~InfoboxBasicCreator() {}
 

@@ -249,7 +249,7 @@ TilePos Fort::getFreeSlot() const
   {
     WalkerList wlist = _city()->getWalkers( walker::any, (*it)->pos() );
     if( !wlist.empty() ) { it = tiles.erase( it ); }
-    else { it++; }
+    else { ++it; }
   }
 
   if( !tiles.empty() )

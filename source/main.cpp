@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
     game.initialize();
     game.exec();
   }
-  catch( Exception e )
+  catch( Exception& e )
   {
     Logger::warning( "Critical error: %s", e.getDescription().c_str() );
     Stacktrace::print();

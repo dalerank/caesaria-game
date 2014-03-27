@@ -92,7 +92,7 @@ void Protestor::timeStep(const unsigned long time)
     {
       HousePtr h = ptr_cast<House>( *it );
       if( h->getSpec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
-      else { it++; }
+      else { ++it; }
     }
 
     Pathway pathway = _d->findTarget( _getCity(), constructions, pos() );
@@ -115,7 +115,6 @@ void Protestor::timeStep(const unsigned long time)
   {
     city::Helper helper( _getCity() );
     ConstructionList constructions = helper.find<Construction>( building::house );
-    constructions = helper.find<Construction>( building::any );
 
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
@@ -175,7 +174,7 @@ void Protestor::timeStep(const unsigned long time)
       {
         if( (*it)->type() == construction::road || (*it)->getClass() == building::disasterGroup )
         { it=constructions.erase( it ); }
-        else { it++; }
+        else { ++it; }
       }
 
        if( constructions.empty() )

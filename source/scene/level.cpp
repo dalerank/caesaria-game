@@ -462,7 +462,7 @@ void Level::handleEvent( NEvent& event )
   {
     (*it)->handleEvent( event );
     if( (*it)->finished() ) { it = _d->eventHandlers.erase( it ); }
-    else{ it++; }
+    else{ ++it; }
   }
 
   bool eventResolved = false;

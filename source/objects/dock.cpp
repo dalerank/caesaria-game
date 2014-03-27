@@ -185,7 +185,7 @@ int Dock::getQueueSize() const
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
   {
     if( !(*it)->isWaitFreeDock() ) { it = merchants.erase( it ); }
-    else { it++; }
+    else { ++it; }
   }
 
   return merchants.size();
@@ -206,7 +206,7 @@ const Tile& Dock::getQueueTile() const
     }
 
     if( !saveTile ) { it = tiles.erase( it ); }
-    else { it++; }
+    else { ++it; }
   }
 
   TilePos pos = tiles.empty() ? TilePos( -1, -1 ) : tiles[ rand() % tiles.size() ]->pos();
@@ -332,7 +332,7 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
 bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
 {
   bool ret = true;
-  for( TilesArray::const_iterator i=tiles.begin(); i != tiles.end(); i++ )
+  for( TilesArray::const_iterator i=tiles.begin(); i != tiles.end(); ++i )
   {
     ret &= (*i)->getFlag( Tile::isConstructible );
   }
@@ -343,7 +343,7 @@ bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
 bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
 {
   bool ret = true;
-  for( TilesArray::const_iterator i=tiles.begin(); i != tiles.end(); i++ )
+  for( TilesArray::const_iterator i=tiles.begin(); i != tiles.end(); ++i )
   {
     ret &= (*i)->getFlag( Tile::tlWater ) && isFlatCoast( *(*i) );
   }

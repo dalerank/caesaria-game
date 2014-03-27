@@ -59,15 +59,15 @@ public:
   {
     PushButton::_updateTexture( state );
 
-    Font& font = getFont( state );
+    Font font = getFont( state );
 
-    if( font.isValid() && _cost >= 0)
+    if( font.isValid() && _cost >= 0 )
     {           
-        char buffer[32];
-        sprintf( buffer, "%d", _cost );
-        Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, width()-10, height() ),
+      char buffer[32];
+      sprintf( buffer, "%d", _cost );
+      Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, width()-10, height() ),
                                                 alignLowerRight, getVerticalTextAlign() );
-        font.draw( *_getTextPicture( state ), buffer, textRect.left(), textRect.top() );
+      font.draw( *_textPictureRef( state ), buffer, textRect.left(), textRect.top() );
     }
   }
 

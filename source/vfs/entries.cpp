@@ -1,19 +1,22 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with openCaesar3.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerank@gmail.com
 
 #include "entries.hpp"
+#include "core/foreach.hpp"
 
 namespace vfs
 {
@@ -75,8 +78,7 @@ Entries& Entries::operator=( const Entries& other )
 
   _d->files.clear();
 
-  ItemIt it = other._d->files.begin();
-  for( ; it != other._d->files.end(); it++ )
+  foreach( it, other._d->files )
   {
     _d->files.push_back( *it );
   }
@@ -214,7 +216,7 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
     entry.fullName = entry.fullName.getBasename();
   }
 
-  for( Items::iterator it=_d->files.begin(); it != _d->files.end(); it++ )
+  foreach( it, _d->files )
   {
     if( (*it).fullName == entry.fullName )
     {
@@ -244,7 +246,7 @@ Entries Entries::filter(int flags, const std::string &options)
   bool isDirectory = (flags & Entries::directory) > 0;
   bool checkFileExt = (flags & Entries::extFilter) > 0;
 
-  for( Items::iterator it=_d->files.begin(); it != _d->files.end(); it++ )
+  foreach( it, _d->files )
   {
     bool mayAdd = true;
     if( isFile ) { mayAdd = !(*it).isDirectory; }

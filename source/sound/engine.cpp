@@ -263,7 +263,7 @@ void Engine::stop( vfs::Path filename )
 
 void Engine::stop(int channel)
 {
-  for( Impl::Samples::iterator it=_d->samples.begin(); it != _d->samples.end(); it++ )
+  foreach( it,_d->samples )
   {
     if( it->second.channel == channel )
     {

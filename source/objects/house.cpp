@@ -327,8 +327,8 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
 
       _d->initGoodStore( Size( size().width() + 1 ).area() );
 
-      delIt++; //don't remove himself
-      for( ; delIt != area.end(); delIt++ )
+      ++delIt; //don't remove himself
+      for( ; delIt != area.end(); ++delIt )
       {
         HousePtr house = ptr_cast<House>( (*delIt)->overlay() );
         if( house.isValid() )

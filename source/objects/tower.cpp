@@ -167,7 +167,7 @@ TilesArray Tower::getEnterArea() const
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
     FortificationPtr wall = ptr_cast<Fortification>( (*it)->overlay() );
-    if( wall.isValid() && wall->isTowerEnter() ) { it++; }
+    if( wall.isValid() && wall->isTowerEnter() ) { ++it; }
     else { it = tiles.erase( it ); }
   }
 

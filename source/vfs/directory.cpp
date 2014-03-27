@@ -18,6 +18,7 @@
 #include "filesystem.hpp"
 #include "entries.hpp"
 #include "core/logger.hpp"
+#include "core/foreach.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #include <windows.h>
@@ -77,7 +78,7 @@ bool Directory::createByPath( Directory dir )
     changeCurrentDir( "/" );
 #endif
 
-    for( StringArray::iterator iter=path.begin(); iter != path.end(); iter++)
+    foreach( iter, path )
     {
       current += *iter;
       Path path = current;

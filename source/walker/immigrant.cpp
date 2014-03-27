@@ -60,7 +60,7 @@ HousePtr Immigrant::_findBlankHouse()
     if( (*itHouse)->getAccessRoads().size() > 0 && 
         ( (*itHouse)->getHabitants().count() < (*itHouse)->getMaxHabitants() ) )
     {
-      itHouse++;
+      ++itHouse;
     }
     else
     {

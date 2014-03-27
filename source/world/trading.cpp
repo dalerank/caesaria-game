@@ -45,7 +45,7 @@ void Trading::update( unsigned int time )
 {
   if( time % _d->updateInterval == 1 )
   {
-    for( Impl::TradeRoutes::iterator it=_d->routes.begin(); it != _d->routes.end(); it++ )
+    foreach( it,_d->routes )
     {
       it->second->update( time );
     }
@@ -61,7 +61,7 @@ VariantMap Trading::save() const
 {
   VariantMap ret;
   VariantMap routes;
-  for( Impl::TradeRoutes::iterator it=_d->routes.begin(); it != _d->routes.end(); it++ )
+  foreach( it,_d->routes )
   {
     routes[ it->second->getName() ] = it->second->save();
   }
@@ -73,7 +73,7 @@ VariantMap Trading::save() const
 void Trading::load(const VariantMap& stream)
 {
   VariantMap routes = stream.get( "routes" ).toMap();
-  for( VariantMap::iterator it=routes.begin(); it != routes.end(); it++ )
+  foreach( it, routes )
   {
     std::string routeName = it->first;
     unsigned int delimPos = routeName.find( "<->" );
@@ -152,7 +152,7 @@ TraderouteList Trading::getRoutes( const std::string& begin )
 
   CityPtr city = _d->empire->getCity( begin );
 
-  for( Impl::TradeRoutes::iterator it = _d->routes.begin(); it != _d->routes.end(); it++ )
+  foreach( it, _d->routes )
   {
     if( it->second->getBeginCity() == city || it->second->getEndCity() == city )
     {

@@ -121,4 +121,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
 
 bool DisasterEvent::_mayExec(Game&, unsigned int) const{  return true;}
 
+DisasterEvent::DisasterEvent() : _type( count ),_infoType( 0 )
+{}
+
 } //end namespace events

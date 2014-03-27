@@ -68,7 +68,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
 
         for( TilesArray::iterator t=tiles.begin(); t != tiles.end(); )
         {
-          if( !(*t)->isWalkable( true ) ) { tiles.erase( t ); }
+          if( !(*t)->isWalkable( true ) ) { t = tiles.erase( t ); }
           else { ++t; }
         }
 

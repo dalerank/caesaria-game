@@ -625,6 +625,8 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       bz_ctx.next_out = pBuf.data();
 			bz_ctx.avail_out = uncompressedSize;
 			err = BZ2_bzDecompress(&bz_ctx);
+			err;
+
 			err = BZ2_bzDecompressEnd(&bz_ctx);
 
       if (err != BZ_OK)

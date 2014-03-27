@@ -69,11 +69,10 @@ bool CityIndebt::_mayExec(Game& game, unsigned int time) const
   return false;
 }
 
-CityIndebt::CityIndebt()
+CityIndebt::CityIndebt() : _text( "##city_indebt_text##" )
 {
   _emperorMoney = 0;
   _isDeleted = false;
-  _text = "##city_indebt_text##";
 }
 
 void CityIndebt::_exec(Game& game, unsigned int)

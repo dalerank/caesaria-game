@@ -32,6 +32,8 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  PlaySound();
+
   std::string _sound;
   int _volume;
 };

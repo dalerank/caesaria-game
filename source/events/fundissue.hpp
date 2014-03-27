@@ -35,6 +35,8 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  FundIssueEvent();
+
   int _type;
   int _value;
   Good::Type _gtype;

@@ -231,7 +231,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
 
-      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanSW );
       }
@@ -276,7 +276,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
-      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {        
         _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanSW );
       }
@@ -309,7 +309,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
   {    
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379 )
@@ -323,7 +323,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
     TilesArray tiles = tilemap.getArea( curPos, curPos + TilePos( 10, 0) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
@@ -337,7 +337,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
   {
     TilesArray tiles = tilemap.getArea( curPos, curPos + TilePos( 0, 10) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
@@ -351,7 +351,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
   {
     TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); it++ )
+    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->originalImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )

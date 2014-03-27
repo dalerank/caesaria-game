@@ -101,7 +101,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       if( !docks.empty() )
       {
         DockList freeDocks;
-        for( DockList::iterator dock=docks.begin(); dock != docks.end(); dock++ )
+        foreach( dock, docks )
         {
           if( !(*dock)->isBusy() )
           {
@@ -312,7 +312,7 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
   DockPtr minQueueDock;
   int minQueue = 999;
 
-  for( DockList::const_iterator it=docks.begin(); it != docks.end(); it++ )
+  for( DockList::const_iterator it=docks.begin(); it != docks.end(); ++it )
   {
     int currentQueueSize = (*it)->getQueueSize();
     if( currentQueueSize < minQueue )
@@ -336,8 +336,8 @@ Pathway SeaMerchant::Impl::findNearbyDock(const DockList& docks, TilePos positio
   DockList::const_iterator i = docks.begin();
   Pathway ret = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::water );
 
-  i++;
-  for( ; i != docks.end(); i++ )
+  ++i;
+  for( ; i != docks.end(); ++i )
   {
     Pathway tmp = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::water );
     if( tmp.getLength() < ret.getLength() )

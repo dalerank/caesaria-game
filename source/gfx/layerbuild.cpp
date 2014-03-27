@@ -32,7 +32,7 @@
 
 using namespace constants;
 
-class __PRIVATE_IMPL(LayerBuild)
+class LayerBuild::Impl
 {
 public:
   bool multiBuilding;

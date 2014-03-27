@@ -73,15 +73,8 @@ void Traderoute::update( unsigned int time )
   Impl::MerchantList::iterator it=_d->merchants.begin();
   while( it != _d->merchants.end() )
   {
-    if( (*it)->isDeleted() )
-    {
-      it = _d->merchants.erase( it );
-    }
-    else
-    {
-      (*it)->update( time );
-      it++;
-    }
+    if( (*it)->isDeleted() )     {     it = _d->merchants.erase( it );    }
+    else  {      (*it)->update( time );      ++it;  }
   }
 }
 
@@ -192,19 +185,19 @@ VariantMap Traderoute::save() const
 void Traderoute::load(const VariantMap& stream)
 {
   VariantList points = stream.get( "points" ).toList();
-  for( VariantList::iterator i=points.begin(); i != points.end(); i++ )
+  foreach( i, points )
   {
     _d->points.push_back( (*i).toPoint() );
   }
 
   VariantList pictures = stream.get( "pictures" ).toList();
-  for( VariantList::iterator i=pictures.begin(); i != pictures.end(); i++ )
+  foreach( i, pictures )
   {
     _d->pictures.push_back( Picture::load( (*i).toString() ) );
   }
 
   VariantMap merchants = stream.get( "merchants" ).toMap();
-  for( VariantMap::const_iterator it=merchants.begin(); it != merchants.end(); it++ )
+  for( VariantMap::const_iterator it=merchants.begin(); it != merchants.end(); ++it )
   {
     SimpleGoodStore sell, buy;
     addMerchant( _d->begin, sell, buy );

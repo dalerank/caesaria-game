@@ -35,6 +35,7 @@ protected:
   virtual bool _mayExec(Game&, unsigned int) const;
 
 private:
+  DisasterEvent();
   TilePos _pos;
   Type _type;
   int _infoType;

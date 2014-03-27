@@ -52,4 +52,7 @@ void PlaySound::_exec(Game&, unsigned int)
 
 bool PlaySound::_mayExec(Game&, unsigned int) const{  return true; }
 
+PlaySound::PlaySound() : _sound( ""), _volume( 0 )
+{}
+
 }
