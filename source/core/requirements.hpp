@@ -86,6 +86,7 @@
 #define __DECLARE_IMPL(Class) \
   class Impl; \
   ScopedPtr<Impl> _d##Class; \
+  const ScopedPtr<Impl>& _dfunc() const { return _d##Class; } \
   friend class Impl;
 
 #define __INIT_IMPL(Class) _d##Class( new Impl )

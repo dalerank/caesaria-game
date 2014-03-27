@@ -24,7 +24,7 @@ class Animation
 public:
   static const bool reverse = true;
   static const bool straight = false;
-  static const bool isLoop = true;
+  static const bool loopAnimation = true;
 
   Animation();
   virtual ~Animation();
@@ -50,6 +50,7 @@ public:
 
   void setDelay( const unsigned int delay );
   void setLoop( bool loop );
+  bool isLoop() const;
 
   void setOffset( const Point& offset );
   Point offset() const;
@@ -71,8 +72,7 @@ private:
   unsigned int _frameDelay;
   unsigned int _lastTimeUpdate;
 
-  class Impl;
-  ScopedPtr<Impl> _d;
+  __DECLARE_IMPL(Animation)
 };
 
 #endif //__CAESARIA_ANIMATION_H_INCLUDE_

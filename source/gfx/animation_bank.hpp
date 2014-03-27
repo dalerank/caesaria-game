@@ -42,8 +42,7 @@ public:
 
   static const Picture& getCart( int cartID, constants::Direction direction );
 
-  static const MovementAnimation& getWalker( const constants::gfx::Type walkerGraphic );
-
+  static const MovementAnimation& getWalker( int walkerGraphic );
 private:
   AnimationBank();
 

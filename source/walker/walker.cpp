@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "walker.hpp"
 
@@ -85,7 +87,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
 }
 
 Walker::~Walker() {}
-walker::Type Walker::type() const{  return _d->walkerType;}
+walker::Type Walker::type() const{ return _d->walkerType; }
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -584,15 +586,15 @@ public:
     append( walker::immigrant,  "immigrant",    "##wt_immigrant##" );
     append( walker::emigrant,   "emmigrant",    "##wt_emmigrant##" );
     append( walker::soldier,    "soldier",      "##wt_soldier##" );
-    append( walker::cartPusher, "cart_pusher",  "##wt_cart_pushher##" );
-    append( walker::marketLady, "market_lady",  "##wt_market_lady##" );
-    append( walker::marketKid,  "market_lady_helper", "##wt_market_lady_helper##" );
+    append( walker::cartPusher, "cartPusher",  "##wt_cart_pushher##" );
+    append( walker::marketLady, "marketLady",  "##wt_market_lady##" );
+    append( walker::marketKid,  "marketKid", "##wt_market_lady_helper##" );
     append( walker::serviceman, "serviceman",   "##wt_serviceman##" );
     append( walker::trainee,    "trainee",      "##wt_trainee##" );
     append( walker::recruter,   "recruter",     "##wt_recruter##" );
     append( walker::prefect,    "prefect",      "##wt_prefect##" );
     append( walker::priest,     "priest",       "##wt_priest##"  );
-    append( walker::taxCollector,"tax_collector", "##wt_tax_collector##" );
+    append( walker::taxCollector,"taxCollector", "##wt_tax_collector##" );
     append( walker::merchant,   "merchant",     "##wt_merchant##" );
     append( walker::engineer,   "engineer",     "##wt_engineer##" );
     append( walker::doctor,     "doctor",       "##wt_doctor##" );
@@ -602,22 +604,22 @@ public:
     append( walker::gladiator,  "gladiator",    "##wt_gladiator##" );
     append( walker::barber,     "barber",       "##wt_barber##"  );
     append( walker::surgeon,    "surgeon",      "##wt_surgeon##" );
-    append( walker::lionTamer,  "lion_tamer",   "##wt_lion_tamer" );
-    append( walker::fishingBoat,"fishing_boat", "##fishing_boat##" );
+    append( walker::lionTamer,  "lionTamer",   "##wt_lion_tamer" );
+    append( walker::fishingBoat,"fishingBoat", "##fishing_boat##" );
     append( walker::protestor,  "protestor",    "##wt_protestor##" );
     append( walker::legionary,  "legionary",    "##wt_legionary##" );
     append( walker::corpse,     "corpse",       "##wt_corpse##" );
     append( walker::lion,       "lion",         "##wt_lion##" );
-    append( walker::marketBuyer,"marker_buyer",  "##wt_market_buyer##" );
-    append( walker::britonSoldier, "briton_soldier", "##wt_briton_soldier##" );
-    append( walker::fishPlace,  "fish_place",   "##wt_endeavor##" );
-    append( walker::seaMerchant,"sea_merchant", "##wt_sea_merchant##" );
+    append( walker::marketBuyer,"markerBuyer",  "##wt_market_buyer##" );
+    append( walker::britonSoldier, "britonSoldier", "##wt_briton_soldier##" );
+    append( walker::fishPlace,  "fishPlace",   "##wt_fishPlace##" );
+    append( walker::seaMerchant,"seaMerchant", "##wt_seaMerchant##" );
     append( walker::all,        "unknown",      "##wt_unknown##" );
     append( walker::scholar,    "scholar",      "##wt_scholar##" );
     append( walker::teacher,    "teacher",      "##wt_teacher##" );
     append( walker::librarian,  "librarian",    "##wt_librarian##" );
-    append( walker::etruscanSoldier,"etruscan_soldier", "##wt_etruscan_soldier##" );
-    append( walker::etruscanArcher, "etruscan_archer", "##wt_etruscan_archer##" );
+    append( walker::etruscanSoldier,"etruscanSoldier", "##wt_etruscanSoldier##" );
+    append( walker::etruscanArcher, "etruscanArcher", "##wt_etruscanArcher##" );
   }
 };
 

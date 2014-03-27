@@ -21,7 +21,7 @@ namespace constants
 
 typedef enum
 { 
-  noneDirection,
+  noneDirection=0,
   north,
   northWest,
   west,

@@ -1,15 +1,19 @@
 {
   notes : { acMove : 1, acFight : 2, acDie : 3 }
+  citizen : {
+    move : { rc : "citizen01", start : 1, frames : 12, action : 1, step : 8 }
+  }
+
   etruscanSoldier : {
-    Move : { rc : "etruscan", start : 249, frames : 12, action : 1 }
-    Fight : { rc : "etruscan", start : 345, frames : 6, action : 2 }
-    Die : { rc : "etruscan", start : 393, frames : 1, action : 3 }
+    move : { rc : "etruscan", start : 249, frames : 12, action : 1, step : 8 }
+    fight : { rc : "etruscan", start : 345, frames : 6, action : 2, step : 8 }
+    die : { rc : "etruscan", start : 393, frames : 1, action : 3, step : 0 }
   }
 
   etruscanArcher : {
-    Move : { rc : "etruscan", start : 401, frames : 12, action : 1 }
-    Fight : { rc : "etruscan", start : 497, frames : 6, action : 2 }
-    Die : { rc : "etruscan", start : 593, frames : 1, action : 3 }
+    move : { rc : "etruscan", start : 401, frames : 12, action : 1, step : 8 }
+    fight : { rc : "etruscan", start : 497, frames : 6, action : 2, step : 8 }
+    die : { rc : "etruscan", start : 593, frames : 1, action : 3, step : 0 }
   }
 }
 

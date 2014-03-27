@@ -26,6 +26,7 @@ public:
 
 void Animation::start(bool loop)
 {
+  __D_IMPL(_d, Animation)
   _animIndex = 0;
   _lastTimeUpdate = 0;
   _d->loop = loop;
@@ -66,7 +67,7 @@ void Animation::update( unsigned int time )
 
   if( _animIndex >= (int)_pictures.size() ) 
   {
-    _animIndex = _d->loop ? 0 : -1;
+    _animIndex = isLoop() ? 0 : -1;
   }
 }
 
@@ -80,16 +81,17 @@ const Picture& Animation::currentFrame() const
 int Animation::index() const {  return _animIndex;}
 void Animation::setIndex(int index){  _animIndex = math::clamp<int>( index, 0, _pictures.size()-1 );}
 
-Animation::Animation() : _d( new Impl )
+Animation::Animation() : __INIT_IMPL(Animation)
 {
   _frameDelay = 0;
   start( true );
 }
 
 Animation::~Animation() {}
-Animation::Animation(const Animation& other) : _d( new Impl ){  *this = other;}
+Animation::Animation(const Animation& other) : __INIT_IMPL(Animation){  *this = other;}
 void Animation::setDelay( const unsigned int delay ){  _frameDelay = delay;}
-void Animation::setLoop( bool loop ){  _d->loop = loop;}
+void Animation::setLoop( bool loop ){ __D_IMPL(_d,Animation); _d->loop = loop;}
+bool Animation::isLoop() const {  __D_IMPL_CONST(_d,Animation); return _d->loop; }
 
 void Animation::load( const std::string &prefix, const int start, const int number, 
                       bool reverse /*= false*/, const int step /*= 1*/ )
@@ -109,11 +111,12 @@ void Animation::stop(){  _animIndex = -1;}
 
 Animation& Animation::operator=( const Animation& other )
 {
+  __D_IMPL(_d,Animation)
   _pictures = other._pictures;
   _animIndex = other._animIndex;  // index of the current frame
   _frameDelay = other._frameDelay;
   _lastTimeUpdate = other._lastTimeUpdate;
-  _d->loop = other._d->loop;
+  _d->loop = other.isLoop();
 
   return *this;
 }

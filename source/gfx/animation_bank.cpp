@@ -22,7 +22,7 @@
 #include "core/logger.hpp"
 #include "walker/emigrant.hpp"
 #include "core/saveadapter.hpp"
-#include "gfx/typehelper.hpp"
+#include "walker/walker.hpp"
 #include "picture_info_bank.hpp"
 #include <map>
 
@@ -48,25 +48,33 @@ namespace{
   static const Point backCartOffsetSouthWest  = Point( -20, 20 );
 
   static const int noneGoodsPicId = 1;
-  static const int stepInFrame = 8;
+  static const int defaultStepInFrame = 8;
 }
+
+struct ActionAnimation
+{
+  int ownerType;
+  AnimationBank::MovementAnimation actions;
+};
 
 class AnimationBank::Impl
 {
 public:
+  typedef std::map< int, ActionAnimation > Animations;
+
   std::map< int, PicturesArray > carts;
   
-  typedef std::map< gfx::Type, AnimationBank::MovementAnimation > Animations;
-  Animations animations; // anim[WalkerGraphic][WalkerAction]
+  Animations animations;
 
   // fills the cart pictures
   // prefix: image prefix
   // start: index of the first frame
   PicturesArray fillCart( const std::string &prefix, const int start, bool back );
-  AnimationBank::MovementAnimation loadAnimation(const std::string& prefix,
+  AnimationBank::MovementAnimation loadAnimation(int who, const std::string& prefix,
                                                  const int start, const int size,
-                                                 Walker::Action wa=Walker::acMove );
-  AnimationBank::MovementAnimation loadAnimation(const VariantMap& desc );
+                                                 Walker::Action wa=Walker::acMove,
+                                                 const int step = defaultStepInFrame );
+  AnimationBank::MovementAnimation loadAnimation(int who, const VariantMap& desc );
 
   void loadCarts();
   void loadWalkers();
@@ -100,9 +108,10 @@ void AnimationBank::Impl::loadCarts()
 
 void AnimationBank::Impl::loadWalkers()
 {
-  animations[gfx::unknown              ] = AnimationBank::MovementAnimation();
-  animations[gfx::citizenMove          ] = loadAnimation( ResourceGroup::citizen1, 1, 12 );
-  animations[gfx::bathladyMove         ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
+  loadAnimation( walker::unknown, ResourceGroup::citizen1, 1, 12, Walker::acMove );
+
+  loadAnimation( walker::citizen, ResourceGroup::citizen1, 1, 12, Walker::acMove );
+ /* animations[gfx::bathladyMove         ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
   animations[gfx::priestMove           ] = loadAnimation( ResourceGroup::citizen1, 209, 12);
   animations[gfx::actorMove            ] = loadAnimation( ResourceGroup::citizen1, 313, 12);
   animations[gfx::tamerMove            ] = loadAnimation( ResourceGroup::citizen1, 417, 12);
@@ -144,7 +153,7 @@ void AnimationBank::Impl::loadWalkers()
   animations[gfx::legionaryFight       ] = loadAnimation( ResourceGroup::citizen3, 649, 6, Walker::acFight );
   animations[gfx::guardMove            ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
   animations[gfx::guardFigth           ] = loadAnimation( ResourceGroup::citizen3, 192, 6, Walker::acFight );
-  animations[gfx::seaMerchantMove      ] = loadAnimation( ResourceGroup::carts, 241, 1 );
+  animations[gfx::seaMerchantMove      ] = loadAnimation( ResourceGroup::carts, 241, 1 );*/
 }
 
 AnimationBank& AnimationBank::instance()
@@ -164,50 +173,60 @@ void AnimationBank::loadCarts()
   _d->loadCarts();
 }
 
-AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( const std::string& prefix,
+AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
                                                                      const int start, const int size,
-                                                                     Walker::Action wa )
+                                                                     Walker::Action wa, const int step )
 {
   MovementAnimation ioMap;
-  DirectedAction action={ wa, north };
+  DirectedAction action= { wa, noneDirection };
 
-  action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, stepInFrame);
-  action.direction = northEast;  ioMap[action].load( prefix, start+1, size, Animation::straight, stepInFrame);
-  action.direction = east;       ioMap[action].load( prefix, start+2, size, Animation::straight, stepInFrame);
-  action.direction = southEast;  ioMap[action].load( prefix, start+3, size, Animation::straight, stepInFrame);
-  action.direction = south;      ioMap[action].load( prefix, start+4, size, Animation::straight, stepInFrame);
-  action.direction = southWest;  ioMap[action].load( prefix, start+5, size, Animation::straight, stepInFrame);
-  action.direction = west;       ioMap[action].load( prefix, start+6, size, Animation::straight, stepInFrame);
-  action.direction = northWest;  ioMap[action].load( prefix, start+7, size, Animation::straight, stepInFrame);
-
+  if( step == 0 )
+  {
+    action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, 1 );
+  }
+  else
+  {
+    action.direction = north;      ioMap[action].load( prefix, start,   size, Animation::straight, step);
+    action.direction = northEast;  ioMap[action].load( prefix, start+1, size, Animation::straight, step);
+    action.direction = east;       ioMap[action].load( prefix, start+2, size, Animation::straight, step);
+    action.direction = southEast;  ioMap[action].load( prefix, start+3, size, Animation::straight, step);
+    action.direction = south;      ioMap[action].load( prefix, start+4, size, Animation::straight, step);
+    action.direction = southWest;  ioMap[action].load( prefix, start+5, size, Animation::straight, step);
+    action.direction = west;       ioMap[action].load( prefix, start+6, size, Animation::straight, step);
+    action.direction = northWest;  ioMap[action].load( prefix, start+7, size, Animation::straight, step);
+  }
   return ioMap;
 }
 
-AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation(const VariantMap& desc)
+AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
 {
   PictureInfoBank& pib = PictureInfoBank::instance();
   std::string rcGroup = desc.get( "rc" ).toString();
   int startIndex = desc.get( "start" );
   int frameNumber = desc.get( "frames" );
   int action = desc.get( "action" );
+  int step = desc.get( "step", defaultStepInFrame );
+
   //creating information about animation offset
   Point offset = pib.getDefaultOffset( PictureInfoBank::walkerOffset );
   offset = desc.get( "offset", offset ).toPoint();
-  pib.setOffset( rcGroup, startIndex, frameNumber * stepInFrame, offset );
+  pib.setOffset( rcGroup, startIndex, frameNumber * (step == 0 ? 1 : step), offset );
 
-  return loadAnimation( rcGroup, startIndex, frameNumber, (Walker::Action)action );
+  return loadAnimation( type, rcGroup, startIndex, frameNumber, (Walker::Action)action, step );
 }
 
-const AnimationBank::MovementAnimation& AnimationBank::getWalker( gfx::Type anim )
+const AnimationBank::MovementAnimation& AnimationBank::getWalker( int anim )
 {
   AnimationBank& inst = instance();
-  if( anim >= inst._d->animations.size() )
+
+  Impl::Animations::iterator it = inst._d->animations.find( anim );
+  if( it == inst._d->animations.end() )
   {
     Logger::warning( "Can't find animation map for type %d", anim );
-    return inst._d->animations[ gfx::unknown ];
+    return inst._d->animations[ walker::unknown ].actions;
   }
 
-  return inst._d->animations[ anim ];
+  return it->second.actions;
 }
 
 void AnimationBank::loadWalkers()
@@ -222,18 +241,18 @@ void AnimationBank::loadAnimation(vfs::Path model)
 
   foreach( i, items )
   {
-    std::string baseType = i->first;
-
     VariantMap actions = i->second.toMap();
 
     foreach( ac, actions )
     {
-      std::string actionName = baseType + ac->first;
-
-      gfx::Type type = GfxTypeHelper::instance().findType( actionName );
-      if( type != gfx::unknown )
+      walker::Type wtype = WalkerHelper::getType( i->first );
+      if( wtype != walker::unknown )
       {
-        _d->animations[ type ] = _d->loadAnimation( ac->second.toMap() );
+        _d->loadAnimation( wtype, ac->second.toMap() );
+      }
+      else
+      {
+        Logger::warning( "AnimationBank: cannot find type " + i->first );
       }
     }
 

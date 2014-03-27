@@ -70,6 +70,7 @@ enum Type{
   bow_arrow,
   etruscanSoldier,
   etruscanArcher,
+  citizen,
   all = 0xff,
   any = all
 };
