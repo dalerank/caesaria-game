@@ -137,18 +137,6 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   return walkers;
 }
 
-/*gfx::Type EnemySoldier::_getAnimation(Action ac) const
-{
-  switch( ac )
-  {
-  case Walker::acMove: return _d->walkAnimation;
-  case Walker::acFight: return _d->fightAnimation;
-  default: break;
-  }
-
-  return gfx::unknown;
-}*/
-
 void EnemySoldier::_init(walker::Type type)
 {
   _setType( type );
@@ -165,7 +153,9 @@ void EnemySoldier::_init(walker::Type type)
   break;
 
   default:
-    _CAESARIA_DEBUG_BREAK_IF("not work yet");
+    _d->strikeForce = 3;
+    _d->resistance = 1;
+    //_CAESARIA_DEBUG_BREAK_IF("not work yet");
   }
 
   setName( NameGenerator::rand( NameGenerator::male ) );

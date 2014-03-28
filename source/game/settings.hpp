@@ -53,6 +53,7 @@ public:
   static const char* soundVolume;
   static const char* ambientVolume;
   static const char* musicVolume;
+  static const char* animationsModel;
   static const char* walkerModel;
 
   static GameSettings& getInstance();

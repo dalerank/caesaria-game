@@ -59,15 +59,15 @@ enum Type{
   patrolPoint,
   romeGuard,
   lion,
-  spear,
+  spear,  //34
   fishPlace,
   seaMerchant,
   scholar,
   librarian,
   teacher,
-  locust,
+  locust, //40
   marketBuyer,
-  bow_arrow,
+  bow_arrow, //42
   etruscanSoldier,
   etruscanArcher,
   citizen,

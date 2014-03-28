@@ -1,0 +1,177 @@
+{
+  /*notes_action : { acNone : 0, acMove : 1, acFight : 2, acDie : 3, acWork : 4 }*/
+
+  citizen : {
+    move : { rc : "citizen01", start : 1, frames : 12, action : 1, step : 8 }
+  }
+
+  recruter : {
+    move : { rc : "citizen01", start : 1, frames : 12, action : 1, step : 8 }
+  }
+
+  etruscanSoldier : {
+    move : { rc : "etruscan", start : 249, frames : 12, action : 1, step : 8 }
+    fight : { rc : "etruscan", start : 345, frames : 6, action : 2, step : 8 }
+    die : { rc : "etruscan", start : 393, frames : 1, action : 3, step : 0 }
+  }
+
+  etruscanArcher : {
+    move : { rc : "etruscan", start : 401, frames : 12, action : 1, step : 8 }
+    fight : { rc : "etruscan", start : 497, frames : 6, action : 2, step : 8 }
+    die : { rc : "etruscan", start : 593, frames : 1, action : 3, step : 0 }
+  }
+
+  bathlady : {
+    move : { rc : "citizen01", start : 105, frames : 12, action : 1, step : 8 }
+  }
+
+  priest : {
+    move : { rc : "citizen01", start : 209, frames : 12, action : 1, step : 8 }
+  }
+
+  actor : {
+    move : { rc : "citizen01", start : 313, frames : 12, action : 1, step : 8 }
+  }
+
+  lionTamer : {
+    move : { rc : "citizen01", start : 417, frames : 12, action : 1, step : 8 }
+  }
+
+  taxCollector : {
+    move : { rc : "citizen01", start : 617, frames : 12, action : 1, step : 8 }
+  }
+
+  scholar : {
+    move : { rc : "citizen01", start : 721, frames : 12, action : 1, step : 8 }
+  }
+
+  marketLady : {
+    move : { rc : "citizen01", start : 825, frames : 12, action : 1, step : 8 }
+  }
+
+  cartPusher : {
+    move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
+  }
+
+  emmigrant :
+    move : { rc : "citizen01", start : 1033, frames : 12, action : 1, step : 8 }
+  }
+
+  engineer : {
+    move : { rc : "citizen01", start : 1137, frames : 12, action : 1, step : 8 }
+  }
+
+  gladiator : {
+    move : { rc : "citizen02", start : 1, frames : 12, action : 1, step : 8 }
+  }
+
+  /*
+  gladiator2 : {
+    move : { rc : "citizen02", start : 199, frames : 12, action : 1, step : 8 }
+  }
+  */
+
+  protestor : {
+    move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }
+  }
+
+  barber : {
+    move : { rc : "citizen02", start : 463, frames : 12, action : 1, step : 8 }
+  }
+
+  prefect : {
+    notes : { acDragWater : 6, acFightFire : 7 }
+    move : { rc : "citizen02", start : 615, frames : 12, action : 1, step : 8 }
+    dragWater : { rc : "citizen02", start : 767, frames : 12, action : 6, step : 8 }
+    fightFire : { rc : "citizen02", start : 863, frames : 6, action : 7, step : 8 }
+    fight : { rc : "citizen02", start : 719, frames : 6, action : 2, step : 8 }
+  }
+
+  immigrant : {
+    move : { rc : "citizen02", start : 911, frames : 12, action : 1, step : 8 }
+    sit : { rc : "citizen02", start : 1015, frames : 1, action : 0, step : 8 }
+  }
+
+  doctor : {
+    move : { rc : "citizen03", start : 817, frames : 12, action : 1, step : 8 }
+  }
+
+  /*
+  patrician : {
+    move : { rc : "citizen03", start : 713, frames : 12, action : 1, step : 8 }
+  }
+
+  patrician2 : {
+    move : { rc : "citizen03", start : 921, frames : 12, action : 1, step : 8 }
+  }
+  */
+
+  teacher : {
+    move : { rc : "citizen03", start : 1025, frames : 12, action : 1, step : 8 }
+  }
+
+  soldier : {
+    move : { rc : "citizen03", start : 97, frames : 12, action : 1, step : 8 }
+  }
+
+  /*
+  javelineer : {
+    move : { rc : "citizen03", start : 241, frames : 12, action : 1, step : 8 }
+  }
+  */
+
+  horseman : {
+    move : { rc : "citizen04", start : 1, frames : 12, action : 1, step : 8 }
+  }
+
+  merchant : {
+    move : { rc : "carts", start : 145, frames : 12, action : 1, step : 8 }
+  }
+
+  /*
+  camelMerchant : {
+    move : { rc : "carts", start : 273, frames : 12, action : 1, step : 8 }
+  }
+  */
+
+  marketKid : {
+    move : { rc : "carts", start : 369, frames : 12, action : 1, step : 8 }
+  }
+
+  sheep : {
+    move : { rc : "citizen04", start : 153, frames : 5, action : 1, step : 8 }
+  }
+
+  fishingBoat : {
+    move : { rc : "carts", start : 249, frames : 1, action : 1, step : 8 }
+    work : { rc : "carts", start : 257, frames : 1, action : 4, step : 8 }
+  }
+
+  lion : {
+    move : { rc : "citizen03", start : 1, frames : 12, action : 1, step : 8 }
+  }
+
+  charioteer : {
+    move : { rc : "citizen05", start : 1, frames : 12, action : 1, step : 8 }
+  }
+
+  britonSoldier : {
+    move : { rc : "celts", start : 249, frames : 12, action : 1, step : 8 }
+    fight : { rc : "celts", start : 345, frames : 6, action : 3, step : 8 }
+  }
+
+  legionary : {
+    move : { rc : "citizen03", start : 553, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen03", start : 649, frames : 6, action : 3, step : 8 }
+  }
+
+  romeGuard : {
+    move : { rc : "citizen03", start : 97, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen03", start : 192, frames : 6, action : 3, step : 8 }
+  }
+
+  seaMerchant : {
+    move : { rc : "carts", start : 241, frames : 1, action : 1, step : 8 }
+  }
+}
+

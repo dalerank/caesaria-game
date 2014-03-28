@@ -83,7 +83,7 @@ VariantMap RqGood::save() const
 {
   VariantMap ret = Request::save();
   ret[ "date" ] = _d->date;
-  ret[ "type" ] = Variant( typeName() );
+  ret[ "rectype" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();
   VariantMap vm_win;

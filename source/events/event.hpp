@@ -44,6 +44,9 @@ protected:
   virtual void _exec( Game& game, unsigned int time ) = 0;
   virtual bool _mayExec( Game& game, unsigned int time ) const = 0;
 
+  std::string _type,
+              _name;
+
   GameEvent() {}
 };
 

@@ -575,7 +575,7 @@ public:
     append( walker::unknown,    "unknown" );
     append( walker::immigrant,  "immigrant"    );
     append( walker::citizen,    "citizen" );
-    append( walker::emmigrant,   "emmigrant" );
+    append( walker::emmigrant,  "emmigrant" );
     append( walker::soldier,    "soldier" );
     append( walker::cartPusher, "cartPusher" );
     append( walker::marketLady, "marketLady" );
@@ -612,7 +612,9 @@ public:
     append( walker::etruscanSoldier,"etruscanSoldier" );
     append( walker::charioteer, "charioteer" );
     append( walker::etruscanArcher, "etruscanArcher" );
+    append( walker::spear, "spear" );
     append( walker::romeGuard,  "romeGuard" );
+    append( walker::bow_arrow, "bow_arrow" );
   }
 };
 

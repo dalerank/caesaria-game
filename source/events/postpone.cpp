@@ -38,8 +38,6 @@ public:
   DateTime date;
   int population;
   bool mayDelete;
-  std::string name;
-  std::string type;
   VariantMap options;
 };
 
@@ -48,21 +46,21 @@ GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& s
   PostponeEvent* pe = new PostponeEvent();
 
   std::string::size_type reshPos = type.find( "#" );
-  pe->_d->name = type;
-  pe->_d->type = reshPos != std::string::npos
+  pe->_name = type;
+  pe->_type = reshPos != std::string::npos
                       ? type.substr( reshPos+1 )
                       : type;
 
   pe->load( stream );
-  Logger::warningIf( pe->_d->type.empty(), "Unknown postpone event" );
+  Logger::warningIf( pe->_type.empty(), "PostponeEvent: unknown postpone event" );
 
   GameEventPtr ret( pe );
   ret->drop();
 
-  if( pe->_d->type.empty() )
+  if( pe->_type.empty() )
     return GameEventPtr();
 
-  Logger::warning( "Load postpone event " + pe->_d->name );
+  Logger::warning( "PostponeEvent: load event " + pe->_name );
   return ret;
 }
 
@@ -70,9 +68,9 @@ PostponeEvent::~PostponeEvent(){}
 
 void PostponeEvent::_exec(Game& game, unsigned int)
 {
-  Logger::warning( "Start event name=" + _d->name + " type=" + _d->type );
+  Logger::warning( "Start event name=" + _name + " type=" + _type );
   PlayerCityPtr city = game.city();
-  if( "city_request" == _d->type )
+  if( "city_request" == _type )
   {    
     city::SrvcPtr service = city->findService( city::request::Dispatcher::getDefaultName() );
     city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( service );
@@ -85,7 +83,7 @@ void PostponeEvent::_exec(Game& game, unsigned int)
     return;
   }
 
-  GameEventPtr e = GameEventFactory::create( _d->type );
+  GameEventPtr e = GameEventFactory::create( _type );
   if( e.isValid() )
   {
     e->load( _d->options );
@@ -93,7 +91,7 @@ void PostponeEvent::_exec(Game& game, unsigned int)
     return;
   }
 
-  city::SrvcPtr srvc = city::ServiceFactory::create( _d->name, city );
+  city::SrvcPtr srvc = city::ServiceFactory::create( _name, city );
   if( srvc.isValid() )
   {
     srvc->load( _d->options );
@@ -130,17 +128,16 @@ bool PostponeEvent::isDeleted() const{  return _d->mayDelete; }
 VariantMap PostponeEvent::save() const
 {
   VariantMap ret = _d->options;
-  ret[ "eventType" ] = Variant( _d->type );
-  ret[ "eventName" ] = Variant( _d->name );
+  ret[ "type" ] = Variant( _type );
+  ret[ "name" ] = Variant( _name );
   return ret;
 }
 
 void PostponeEvent::load(const VariantMap& stream)
 {  
+  GameEvent::load( stream );
   _d->date = stream.get( "date", DateTime( -1000, 1, 1 ) ).toDateTime();
   _d->population = (int)stream.get( "population", 0 );
-  _d->type = stream.get( "eventType", Variant( _d->type ) ).toString();
-  _d->name = stream.get( "eventName", Variant( _d->name ) ).toString();
   _d->options = stream;
 }
 

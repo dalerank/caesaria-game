@@ -41,8 +41,7 @@ protected:
 private:
   EnemyAttack();
 
-  class Impl;
-  ScopedPtr<Impl> _d;
+  __DECLARE_IMPL(EnemyAttack)
 };
 
 }//namespace events

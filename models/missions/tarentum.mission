@@ -113,7 +113,7 @@
 
     "emperor_request_vines#city_request" : {
       date : "-347.05.01"
-      type : "good_request"
+      reqtype : "good_request"
       month : 12
       good : { grape : 10 }
       success : { favour : 10 }
@@ -121,20 +121,18 @@
     }
 
     "barbarian_invasion#enemy_attack" : {
-      date : "-347.07.01"
+      date : "-349.07.01"
       type : "enemy_attack"
       video : "enemy_attack.bik"
       items : {
         troop_soldiers : {
-          type : "soldier"
-          animation : "etruscan_soldier"
+          type : "etruscanSoldier"
           count : 3
           location : "random"
         }
 
         troop_archers : {
-          type : "archer"
-          animation : "etruscan_archer"
+          type : "etruscanArcher"
           count : 2
           location : "random"
         }

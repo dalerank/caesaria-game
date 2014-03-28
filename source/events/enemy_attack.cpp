@@ -48,59 +48,64 @@ GameEventPtr EnemyAttack::create()
 
 void EnemyAttack::_exec( Game& game, unsigned int time)
 {
-  if( time % GameDate::ticksInMonth() == 0 && !_d->isDeleted )
-  {    
-    foreach( i, _d->items )
+  __D_IMPL(_d,EnemyAttack);
+
+  if( _d->isDeleted )
+    return;
+
+  foreach( i, _d->items )
+  {
+    VariantMap soldiers = i->second.toMap();
+
+    std::string soldierType = soldiers.get( "type" ).toString();
+    int soldierNumber = soldiers.get( "count" );
+    TilePos location( -1, -1 );
+    Variant vLocation = soldiers.get( "location" );
+
+    if( vLocation.toString() == "random" )
     {
-      VariantMap soldiers = i->second.toMap();
+      Tilemap& tmap = game.city()->tilemap();
+      int lastIndex = tmap.size();
+      TilesArray tiles = tmap.getRectangle( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
 
-      std::string soldierType = soldiers.get( "type" ).toString();
-      //std::string animation = soldiers.get( "animation" ).toString();
-      int soldierNumber = soldiers.get( "count" );
-      TilePos location( -1, -1 );
-      Variant vLocation = soldiers.get( "location" );
-
-      if( vLocation.toString() == "random" )
+      for( TilesArray::iterator t=tiles.begin(); t != tiles.end(); )
       {
-        Tilemap& tmap = game.city()->tilemap();
-        int lastIndex = tmap.size();
-        TilesArray tiles = tmap.getRectangle( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
-
-        for( TilesArray::iterator t=tiles.begin(); t != tiles.end(); )
-        {
-          if( !(*t)->isWalkable( true ) ) { t = tiles.erase( t ); }
-          else { ++t; }
-        }
-
-        Tile* tile = tiles[ math::random( tiles.size() ) ];
-        if( tile )
-        {
-          location = tile->pos();
-        }
-      }
-      else
-      {
-
+        if( !(*t)->isWalkable( true ) ) { t = tiles.erase( t ); }
+        else { ++t; }
       }
 
-      walker::Type wtype = WalkerHelper::getType( soldierType );
-      WalkerPtr wlk = WalkerManager::instance().create( wtype, game.city() );
+      Tile* tile = tiles[ math::random( tiles.size() ) ];
+      if( tile )
+      {
+        location = tile->pos();
+      }
+    }
+    else
+    {
+
+    }
+
+    walker::Type wtype = WalkerHelper::getType( soldierType );
+    WalkerPtr wlk = WalkerManager::instance().create( wtype, game.city() );
+    for( int k=0; k < soldierNumber; k++ )
+    {
       EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
       if( enemy.isValid() )
       {
         enemy->send2City( location );
       }
     }
-
-    events::Dispatcher::instance().load( _d->events );
   }
+
+  events::Dispatcher::instance().load( _d->events );
 }
 
 bool EnemyAttack::_mayExec(Game&, unsigned int) const { return true; }
-bool EnemyAttack::isDeleted() const {  return _d->isDeleted; }
+bool EnemyAttack::isDeleted() const {  __D_IMPL_CONST(_d,EnemyAttack); return _d->isDeleted; }
 
 void EnemyAttack::load(const VariantMap& stream)
 {
+  __D_IMPL(_d,EnemyAttack)
   _d->events = stream.get( "exec" ).toMap();
   _d->items = stream.get( "items" ).toMap();
 }
@@ -109,14 +114,17 @@ VariantMap EnemyAttack::save() const
 {
   VariantMap ret;
 
+  __D_IMPL_CONST(_d,EnemyAttack);
+
   ret[ "exec" ] = _d->events;
   ret[ "items" ] = _d->items;
 
   return ret;
 }
 
-EnemyAttack::EnemyAttack() : _d( new Impl )
+EnemyAttack::EnemyAttack() : __INIT_IMPL(EnemyAttack)
 {
+  __D_IMPL(_d,EnemyAttack)
   _d->isDeleted = false;
 }
 

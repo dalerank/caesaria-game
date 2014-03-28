@@ -45,7 +45,7 @@
 using namespace constants;
 
 namespace {
-  enum { maxNegativeStep=-3, maxPositiveStep=3 };
+  enum { maxNegativeStep=-2, maxPositiveStep=2 };
 }
 
 class House::Impl
@@ -195,7 +195,7 @@ void House::_updateTax()
 {
   _d->taxCheckInterval = GameDate::current();
   float cityTax = _city()->funds().getTaxRate() / 100.f;
-  appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / 12.f) );
+  appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthInYear) );
 }
 
 void House::_updateMorale()

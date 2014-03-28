@@ -152,7 +152,7 @@ void Game::Impl::initPantheon( vfs::Path filename)
 void Game::Impl::initPictures(vfs::Path resourcePath)
 {
   AnimationBank::instance().loadCarts();
-  AnimationBank::instance().loadAnimation( GameSettings::rcpath( GameSettings::walkerModel ) );
+  AnimationBank::instance().loadAnimation( GameSettings::rcpath( GameSettings::animationsModel ) );
   
   Logger::warning( "Load fonts" );
   FontCollection::instance().initialize( resourcePath.toString() );

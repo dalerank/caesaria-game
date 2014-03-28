@@ -57,8 +57,18 @@ bool GameEvent::tryExec(Game& game, unsigned int time)
 
 bool GameEvent::isDeleted() const { return true; }
 void events::GameEvent::dispatch() { Dispatcher::instance().append( this );}
-VariantMap GameEvent::save() const { return VariantMap(); }
-void GameEvent::load(const VariantMap&) {}
+VariantMap GameEvent::save() const
+{
+  VariantMap ret;
+  ret[ "type" ] = Variant( _type );
+  ret[ "name" ] = Variant( _name );
+  return ret;
+}
+void GameEvent::load(const VariantMap& stream)
+{
+  _type = stream.get( "type", Variant( _type ) ).toString();
+  _name = stream.get( "name", Variant( _name ) ).toString();
+}
 
 static const int windowGamePausedId = StringHelper::hash( "gamepause" );
 

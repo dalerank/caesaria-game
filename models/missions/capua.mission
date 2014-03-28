@@ -100,7 +100,7 @@
 
     "emperor_request_oil#city_request" : {
       date : "-348.06.01"
-      type : "good_request"
+      reqtype : "good_request"
       month : 12
       good : { oil : 10 }
       success : { favour : 10 }
