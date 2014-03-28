@@ -54,6 +54,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
   if( _d->isDeleted )
     return;
 
+  _d->isDeleted = true;
   foreach( i, _d->items )
   {
     VariantMap soldiers = i->second.toMap();

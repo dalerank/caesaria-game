@@ -328,15 +328,10 @@ void EnemySoldier::send2City( TilePos pos )
 void EnemySoldier::die()
 {
   Soldier::die();
-
-  switch( type() )
+  WalkerPtr wlk = Corpse::create( _getCity(), this );
+  if( wlk->isDeleted() )
   {
-  case walker::britonSoldier:
-    Corpse::create( _getCity(), pos(), ResourceGroup::celts, 393, 400 );
-  break;
-
-  default:
-    _CAESARIA_DEBUG_BREAK_IF("not work yet");
+     Corpse::create( _getCity(), pos(), ResourceGroup::celts, 393, 400 );
   }
 }
 

@@ -21,6 +21,7 @@
 class Animation::Impl
 {
 public:
+  unsigned int frameDelay;
   bool loop;
 };
 
@@ -29,6 +30,7 @@ void Animation::start(bool loop)
   __D_IMPL(_d, Animation)
   _animIndex = 0;
   _lastTimeUpdate = 0;
+  _d->frameDelay = 1;
   _d->loop = loop;
 }
 
@@ -53,12 +55,14 @@ Point Animation::offset() const
 
 void Animation::update( unsigned int time )
 {  
+  __D_IMPL(_d,Animation)
+
   if( _animIndex < 0 )
     return;
 
-  if( _frameDelay > 0 )
+  if( _d->frameDelay > 0 )
   {
-    if( time - _lastTimeUpdate < _frameDelay )
+    if( time - _lastTimeUpdate < _d->frameDelay )
       return;
   }
 
@@ -83,13 +87,15 @@ void Animation::setIndex(int index){  _animIndex = math::clamp<int>( index, 0, _
 
 Animation::Animation() : __INIT_IMPL(Animation)
 {
-  _frameDelay = 0;
+  setDelay( 0 );
   start( true );
 }
 
 Animation::~Animation() {}
 Animation::Animation(const Animation& other) : __INIT_IMPL(Animation){  *this = other;}
-void Animation::setDelay( const unsigned int delay ){  _frameDelay = delay;}
+
+void Animation::setDelay( const unsigned int delay ){ __D_IMPL(_d,Animation); _d->frameDelay = delay;}
+unsigned int Animation::delay() const{  __D_IMPL_CONST(_d,Animation); return _d->frameDelay; }
 void Animation::setLoop( bool loop ){ __D_IMPL(_d,Animation); _d->loop = loop;}
 bool Animation::isLoop() const {  __D_IMPL_CONST(_d,Animation); return _d->loop; }
 
@@ -104,6 +110,35 @@ void Animation::load( const std::string &prefix, const int start, const int numb
   }
 }
 
+VariantMap Animation::save() const
+{
+  __D_IMPL_CONST(d,Animation)
+  VariantMap ret;
+  ret[ "index" ] = _animIndex;
+  ret[ "delay" ] = d->frameDelay;
+  ret[ "loop"  ] = d->loop;
+
+  VariantList pics;
+  foreach( i, _pictures)
+    pics << Variant( (*i).name() );
+
+  ret[ "pictures" ] = pics;
+
+  return ret;
+}
+
+void Animation::load(const VariantMap &stream)
+{
+  __D_IMPL(d,Animation)
+  _animIndex = stream.get( "index" );
+  d->frameDelay = (int)stream.get( "delay" );
+  d->loop = stream.get( "loop" );
+
+  VariantList vl_pics;
+  foreach( i, vl_pics )
+    _pictures.push_back( Picture::load( (*i).toString() ) );
+}
+
 void Animation::clear() { _pictures.clear();}
 bool Animation::isRunning() const{  return _animIndex >= 0;}
 bool Animation::isStopped() const{  return _animIndex == -1;}
@@ -114,7 +149,7 @@ Animation& Animation::operator=( const Animation& other )
   __D_IMPL(_d,Animation)
   _pictures = other._pictures;
   _animIndex = other._animIndex;  // index of the current frame
-  _frameDelay = other._frameDelay;
+  _d->frameDelay = other.delay();
   _lastTimeUpdate = other._lastTimeUpdate;
   _d->loop = other.isLoop();
 

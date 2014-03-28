@@ -47,10 +47,7 @@ void Animal::send2City(const TilePos &start )
   }
 }
 
-Animal::~Animal()
-{
-
-}
+Animal::~Animal() {}
 
 void Animal::save( VariantMap& stream ) const
 {
@@ -82,7 +79,6 @@ void Animal::_findNewWay( const TilePos& start )
 
 Sheep::Sheep( PlayerCityPtr city ) : Animal( city )
 {
-  //_setAnimation( gfx::sheepMove );
   _setType( walker::sheep );
   setName( _("##Sheep##") );
 

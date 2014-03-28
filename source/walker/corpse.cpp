@@ -22,6 +22,7 @@
 #include "core/gettext.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "gfx/animation_bank.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;
@@ -29,15 +30,10 @@ using namespace constants;
 class Corpse::Impl
 {
 public:
-  std::string rcGroup;
-  int startIndex;
-  int currentIndex;
-  int stopIndex;
-  int time;
+  unsigned int time;
   int updateInterval;
-  int delay;
+  int lastFrameIndex;
   bool loop;
-  Picture picture;
 };
 
 WalkerPtr Corpse::create(PlayerCityPtr city)
@@ -50,42 +46,60 @@ WalkerPtr Corpse::create(PlayerCityPtr city)
   return ret;
 }
 
-void Corpse::create(PlayerCityPtr city, TilePos pos,
-                    std::string rcGroup, int startIndex, int stopIndex,
-                    bool loop )
+WalkerPtr Corpse::create( PlayerCityPtr city, WalkerPtr wlk )
+{
+  AnimationBank::MovementAnimation ma = AnimationBank::find( wlk->type() );
+  DirectedAction action = { acDie, north };
+  Animation animation = ma[ action ];
+
+  if( animation.isValid() )
+  {
+    Corpse* corpse = new Corpse( city );
+    corpse->setPos( wlk->pos() );
+    corpse->_animationRef() = animation;
+
+    WalkerPtr ret( corpse );
+    ret->drop();
+
+    return ret;
+  }
+
+  return WalkerPtr();
+}
+
+WalkerPtr Corpse::create( PlayerCityPtr city, TilePos pos,
+                          std::string rcGroup, int startIndex, int stopIndex,
+                          bool loop )
 {
   Corpse* corpse = new Corpse( city );
   corpse->setPos( pos );
-  corpse->_d->startIndex = startIndex;
-  corpse->_d->currentIndex = startIndex+1;
-  corpse->_d->stopIndex = stopIndex;
-  corpse->_d->rcGroup = rcGroup;
   corpse->_d->time = 0;
-  corpse->_d->delay = 1;
   corpse->_d->loop = loop;
 
   if( !rcGroup.empty() )
   {
-    corpse->_d->picture = Picture::load( rcGroup, startIndex );
+    corpse->_animationRef().load( rcGroup, startIndex, stopIndex - startIndex );
+    corpse->_animationRef().setLoop( false );
+    corpse->_animationRef().setDelay( 1 );
+    corpse->_d->lastFrameIndex = corpse->_animationRef().index();
+  }
+  else
+  {
+    corpse->deleteLater();
   }
 
   WalkerPtr ret( corpse );
   ret->drop();
 
   city->addWalker( ret );
+  return ret;
 }
 
 Corpse::Corpse( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 {
   _setType( walker::corpse );
-  //_setAnimation( gfx::unknown );
 
-  _d->startIndex = 0;
-  _d->currentIndex = 0;
-  _d->stopIndex = 0;
-  _d->rcGroup = "";
   _d->time = 0;
-  _d->delay = 0;
   _d->updateInterval = GameDate::ticksInMonth() / 20;
   _d->loop = false;
 
@@ -93,26 +107,15 @@ Corpse::Corpse( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
   _setHealth( 0 );
 }
 
-Corpse::~Corpse()
-{
-}
+Corpse::~Corpse(){}
 
 void Corpse::timeStep(const unsigned long time)
 {
-  if( _d->time >= _d->delay  )
+  _animationRef().update( time );
+  if( !_animationRef().isLoop() && _d->time >= _animationRef().delay() )
   {
     _d->time = 0;
-
-    if( _d->currentIndex < _d->stopIndex )
-    {
-      _d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
-      _d->currentIndex++;
-      _d->delay *= 2;
-    }
-    else if( _d->loop )
-    {
-      _d->currentIndex = _d->startIndex;
-    }
+    _animationRef().setDelay( _animationRef().delay() * 2 );
   }
 
   _d->time++;
@@ -132,12 +135,8 @@ void Corpse::save( VariantMap& stream ) const
 {
   Walker::save( stream );
 
-  stream[ "rc" ] = Variant( _d->rcGroup );
-  stream[ "start" ] = _d->startIndex;
-  stream[ "index" ] = _d->currentIndex;
-  stream[ "stop" ] = _d->stopIndex;
+  stream[ "animation" ] = _animationRef().save();
   stream[ "time" ] = _d->time;
-  stream[ "delay" ] = _d->delay;
   stream[ "loop" ] = _d->loop;
 }
 
@@ -145,18 +144,13 @@ void Corpse::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->rcGroup = stream.get( "rc" ).toString();
-  _d->startIndex = stream.get( "start" );
-  _d->currentIndex = stream.get( "index" );
-  _d->stopIndex = stream.get( "stop" );
-  _d->time = stream.get( "time" );
-  _d->delay = stream.get( "delay" );
+  _d->time = (int)stream.get( "time" );
   _d->loop = stream.get( "loop" );
 
-  _d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
+  _animationRef().load( stream.get( "animation" ).toMap() );
 }
 
 const Picture& Corpse::getMainPicture()
 {
-  return _d->picture;
+  return _animationRef().currentFrame();
 }

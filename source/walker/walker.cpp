@@ -384,6 +384,7 @@ void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Pathway& Walker::_pathwayRef() {  return _d->pathway; }
 const Pathway& Walker::getPathway() const {  return _d->pathway; }
 Animation& Walker::_animationRef() {  return _d->animation;}
+const Animation& Walker::_animationRef() const {  return _d->animation;}
 void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 void Walker::_setType(walker::Type type){  _d->type = type;}

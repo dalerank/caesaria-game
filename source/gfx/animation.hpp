@@ -17,6 +17,7 @@
 #define __CAESARIA_ANIMATION_H_INCLUDE_
 
 #include "picture.hpp"
+#include "core/variant.hpp"
 
 // several frames for a basic visual animation
 class Animation
@@ -49,6 +50,8 @@ public:
   const Picture& currentFrame() const;
 
   void setDelay( const unsigned int delay );
+  unsigned int delay() const;
+
   void setLoop( bool loop );
   bool isLoop() const;
 
@@ -62,6 +65,8 @@ public:
   void load( const std::string &prefix,
              const int start, const int number,
              bool reverse = false, const int step = 1);
+  VariantMap save() const;
+  void load( const VariantMap& stream );
 
   bool isValid() const;
   void addFrame( const Picture& pic );
@@ -69,7 +74,6 @@ public:
 private:
   PicturesArray _pictures;
   int _animIndex;  // index of the current frame
-  unsigned int _frameDelay;
   unsigned int _lastTimeUpdate;
 
   __DECLARE_IMPL(Animation)

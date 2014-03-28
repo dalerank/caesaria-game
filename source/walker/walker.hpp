@@ -106,6 +106,7 @@ protected:
   virtual void _updatePathway(const Pathway& pathway );
 
   Animation& _animationRef();
+  const Animation &_animationRef() const;
   void _setAction( Walker::Action action, int animIndex=-1 );
   void _setDirection( constants::Direction direction );
 
