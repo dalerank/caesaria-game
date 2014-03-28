@@ -1,5 +1,11 @@
 {
-	warning : true
-  error : true
-  info : true  
+   etruscanSoldier : {
+     strikeForce : 3
+     resistance : 1
+   }
+
+  etruscanArcher : {
+     strikeForce : 3
+     resistance : 1
+  }
 }

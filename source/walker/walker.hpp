@@ -47,8 +47,6 @@ public:
   virtual constants::walker::Type type() const;
   // position and movement
 
-  int getJ() const;
-
   TilePos pos() const;
   void setPos( const TilePos& pos );
 
@@ -60,8 +58,7 @@ public:
 
   virtual void turn( TilePos pos );
 
-  //void setDestinationIJ( const TilePos& pos );
-  void setSpeed(const float speed);  
+  void setSpeed(const float speed);
   void setUniqueId( const UniqueId uid );
 
   constants::Direction getDirection();
@@ -86,9 +83,7 @@ public:
   virtual void die();
 
   virtual void getPictureList(PicturesArray& oPics);
-  virtual const Picture& getMainPicture();
 
-  // state
   bool isDeleted() const;  // returns true if the walker should be forgotten
   void deleteLater();
 
@@ -102,8 +97,7 @@ protected:
   virtual void _reachedPathway();  // called when the walker is at his destination
   virtual void _changeDirection(); // called when the walker changes direction
   virtual void _brokePathway(TilePos pos);
-
-  int getI() const;
+  virtual const Picture& getMainPicture();
 
 protected:
   Pathway& _pathwayRef();

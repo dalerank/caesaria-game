@@ -39,7 +39,7 @@ using namespace constants;
 class Prefect::Impl
 {
 public:
-  typedef enum { animDragWater=6, animFightFire = 7 };
+  enum { animDragWater=6, animFightFire = 7 };
   typedef enum { patrol=0,
                  findFire, go2fire, fightFire,
                  go2protestor, fightProtestor,

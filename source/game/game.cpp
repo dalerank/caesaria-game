@@ -51,6 +51,7 @@
 #include "vfs/archive_sg2.hpp"
 #include "scene/briefing.hpp"
 #include "gfx/logo.hpp"
+#include "walker/info.hpp"
 
 #include <list>
 
@@ -404,8 +405,8 @@ void Game::initialize()
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
   _d->initGuiEnvironment();
+  WalkerInfo::instance().initialize( GameSettings::rcpath( GameSettings::walkerModel ) );
   initSound();
-  //SoundEngine::instance().play_music("resources/sound/drums.wav");
   mountArchives();  // init some quick pictures for screenWait
 
   scene::SplashScreen screen;

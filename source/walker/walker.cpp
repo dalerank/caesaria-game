@@ -364,8 +364,6 @@ const Tile& Walker::_getNextTile() const
   return _d->city->tilemap().at( p );
 }
 
-int Walker::getI() const{   return _d->pos.i();}
-int Walker::getJ() const{   return _d->pos.j();}
 Point Walker::getMappos() const{  return Point( 2*(_d->posOnMap.x() + _d->posOnMap.y()), _d->posOnMap.x() - _d->posOnMap.y() );}
 Point Walker::getSubpos() const{  return _d->tileOffset; }
 bool Walker::isDeleted() const{   return _d->isDeleted;}
