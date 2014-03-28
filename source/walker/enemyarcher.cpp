@@ -60,7 +60,6 @@ bool EnemyArcher::_tryAttack()
     _setSubAction( EnemySoldier::destroyBuilding );
     setSpeed( 0.f );
     _setAction( acFight );
-    _changeDirection();
     return true;
   }
   else
@@ -71,7 +70,6 @@ bool EnemyArcher::_tryAttack()
       _setSubAction( EnemySoldier::fightEnemy );
       setSpeed( 0.f );
       _setAction( acFight );
-      _changeDirection();
       return true;
     }
   }

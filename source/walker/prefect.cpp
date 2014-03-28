@@ -39,6 +39,7 @@ using namespace constants;
 class Prefect::Impl
 {
 public:
+  typedef enum { animDragWater=6, animFightFire = 7 };
   typedef enum { patrol=0,
                  findFire, go2fire, fightFire,
                  go2protestor, fightProtestor,
@@ -114,8 +115,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     {
       turn( building->pos() );
       _d->action = Impl::fightFire;
-      _setAction( acFight );
-      //_setAnimation( gfx::prefectFightFire );
+      _setAction( acFight, Impl::animFightFire  );
       setSpeed( 0.f );
       return true;
     }
@@ -221,9 +221,8 @@ void Prefect::_brokePathway(TilePos p)
   if( overlay.isValid() && overlay->type() == building::burningRuins )
   {
     setSpeed( 0 );
-    _setAction( acFight );
+    _setAction( acFight, Impl::animFightFire );
     _d->action = Impl::fightFire;
-    //_setAnimation( gfx::prefectFightFire );
     return;
   }
   else if( _d->water > 0 )
@@ -235,8 +234,7 @@ void Prefect::_brokePathway(TilePos p)
     {
       setSpeed( 1.f );
       _d->action = Impl::findFire;
-      //_setAnimation( gfx::prefectDragWater );
-
+      _setAction( acMove, Impl::animDragWater );
       setPathway( pathway );
       go();
       return;
@@ -346,7 +344,6 @@ void Prefect::_centerTile()
         _d->action = Impl::fightProtestor;
         setSpeed( 0.f );
         _setAction( acFight );
-        //_setAnimation( gfx::prefectFight );
         return;
       }
     }
@@ -364,8 +361,7 @@ void Prefect::_centerTile()
     {
       _d->action = Impl::fightFire;
       _d->endPatrolPoint = building->pos();
-      //_setAnimation( gfx::prefectFightFire );
-      _setAction( acFight );
+      _setAction( acFight, Impl::animFightFire );
       setSpeed( 0.f );
       return;
     }

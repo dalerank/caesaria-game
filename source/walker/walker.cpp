@@ -393,6 +393,10 @@ void Walker::_setHealth(double value){  _d->health = value;}
 
 void Walker::_setAction( Walker::Action action, int animIndex )
 {
+  if( _d->action.action != action )
+  {
+    _animationRef().clear();
+  }
   _d->action.action = action;
   _d->action.animation = (animIndex==-1) ? action : animIndex;
 }
@@ -560,53 +564,55 @@ public:
   typedef std::map< walker::Type, std::string > PrettyNames;
   PrettyNames prettyTypenames;
 
-  void append( walker::Type type, const std::string& typeName, const std::string& prettyTypename )
+  void append( walker::Type type, const std::string& typeName )
   {
     EnumsHelper<walker::Type>::append( type, typeName );
-    prettyTypenames[ type ] = prettyTypename;
+    prettyTypenames[ type ] = "##wt_" + typeName + "##";
   }
 
   Impl() : EnumsHelper<walker::Type>( walker::unknown )
   {
-    append( walker::unknown,    "none",         "##wt_none##" );
-    append( walker::immigrant,  "immigrant",    "##wt_immigrant##" );
-    append( walker::citizen,    "citizen",      "##wt_citizen##" );
-    append( walker::emigrant,   "emmigrant",    "##wt_emmigrant##" );
-    append( walker::soldier,    "soldier",      "##wt_soldier##" );
-    append( walker::cartPusher, "cartPusher",   "##wt_cart_pushher##" );
-    append( walker::marketLady, "marketLady",   "##wt_market_lady##" );
-    append( walker::marketKid,  "marketKid",    "##wt_market_lady_helper##" );
-    append( walker::serviceman, "serviceman",   "##wt_serviceman##" );
-    append( walker::trainee,    "trainee",      "##wt_trainee##" );
-    append( walker::recruter,   "recruter",     "##wt_recruter##" );
-    append( walker::prefect,    "prefect",      "##wt_prefect##" );
-    append( walker::priest,     "priest",       "##wt_priest##"  );
-    append( walker::taxCollector,"taxCollector","##wt_tax_collector##" );
-    append( walker::merchant,   "merchant",     "##wt_merchant##" );
-    append( walker::engineer,   "engineer",     "##wt_engineer##" );
-    append( walker::doctor,     "doctor",       "##wt_doctor##" );
-    append( walker::sheep,      "sheep",        "##wt_animal_sheep##" );
-    append( walker::bathlady,   "bathlady",     "##wt_bathlady##" );
-    append( walker::actor,      "actor",        "##wt_actor##" );
-    append( walker::gladiator,  "gladiator",    "##wt_gladiator##" );
-    append( walker::barber,     "barber",       "##wt_barber##"  );
-    append( walker::surgeon,    "surgeon",      "##wt_surgeon##" );
-    append( walker::lionTamer,  "lionTamer",    "##wt_lion_tamer" );
-    append( walker::fishingBoat,"fishingBoat",  "##fishing_boat##" );
-    append( walker::protestor,  "protestor",    "##wt_protestor##" );
-    append( walker::legionary,  "legionary",    "##wt_legionary##" );
-    append( walker::corpse,     "corpse",       "##wt_corpse##" );
-    append( walker::lion,       "lion",         "##wt_lion##" );
-    append( walker::marketBuyer,"markerBuyer",  "##wt_market_buyer##" );
-    append( walker::britonSoldier, "britonSoldier", "##wt_briton_soldier##" );
-    append( walker::fishPlace,  "fishPlace",   "##wt_fishPlace##" );
-    append( walker::seaMerchant,"seaMerchant", "##wt_seaMerchant##" );
-    append( walker::all,        "unknown",      "##wt_unknown##" );
-    append( walker::scholar,    "scholar",      "##wt_scholar##" );
-    append( walker::teacher,    "teacher",      "##wt_teacher##" );
-    append( walker::librarian,  "librarian",    "##wt_librarian##" );
-    append( walker::etruscanSoldier,"etruscanSoldier", "##wt_etruscanSoldier##" );
-    append( walker::etruscanArcher, "etruscanArcher", "##wt_etruscanArcher##" );
+    append( walker::unknown,    "unknown" );
+    append( walker::immigrant,  "immigrant"    );
+    append( walker::citizen,    "citizen" );
+    append( walker::emigrant,   "emmigrant" );
+    append( walker::soldier,    "soldier" );
+    append( walker::cartPusher, "cartPusher" );
+    append( walker::marketLady, "marketLady" );
+    append( walker::marketKid,  "marketKid" );
+    append( walker::serviceman, "serviceman" );
+    append( walker::trainee,    "trainee" );
+    append( walker::recruter,   "recruter" );
+    append( walker::prefect,    "prefect" );
+    append( walker::priest,     "priest" );
+    append( walker::taxCollector,"taxCollector" );
+    append( walker::merchant,   "merchant");
+    append( walker::engineer,   "engineer" );
+    append( walker::doctor,     "doctor" );
+    append( walker::sheep,      "sheep" );
+    append( walker::bathlady,   "bathlady" );
+    append( walker::actor,      "actor" );
+    append( walker::gladiator,  "gladiator" );
+    append( walker::barber,     "barber" );
+    append( walker::surgeon,    "surgeon" );
+    append( walker::lionTamer,  "lionTamer" );
+    append( walker::fishingBoat,"fishingBoat" );
+    append( walker::protestor,  "protestor" );
+    append( walker::legionary,  "legionary" );
+    append( walker::corpse,     "corpse" );
+    append( walker::lion,       "lion" );
+    append( walker::marketBuyer,"markerBuyer" );
+    append( walker::britonSoldier, "britonSoldier" );
+    append( walker::fishPlace,  "fishPlace" );
+    append( walker::seaMerchant,"seaMerchant" );
+    append( walker::all,        "unknown" );
+    append( walker::scholar,    "scholar" );
+    append( walker::teacher,    "teacher" );
+    append( walker::librarian,  "librarian" );
+    append( walker::etruscanSoldier,"etruscanSoldier" );
+    append( walker::charioteer, "charioteer" );
+    append( walker::etruscanArcher, "etruscanArcher" );
+    append( walker::romeGuard,  "romeGuard" );
   }
 };
 

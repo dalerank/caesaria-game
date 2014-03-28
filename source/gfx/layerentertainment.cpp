@@ -222,7 +222,7 @@ LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city
     _visibleWalkers.insert( walker::actor );
     _visibleWalkers.insert( walker::gladiator );
     _visibleWalkers.insert( walker::lionTamer );
-    _visibleWalkers.insert( walker::charioter );
+    _visibleWalkers.insert( walker::charioteer );
   break;
 
   case citylayer::theater:
@@ -255,7 +255,7 @@ LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city
     _flags.insert( building::hippodrome );
     _flags.insert( building::chariotSchool );
 
-    _visibleWalkers.insert( walker::charioter );
+    _visibleWalkers.insert( walker::charioteer );
   break;
 
   default: break;

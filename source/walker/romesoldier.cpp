@@ -198,7 +198,6 @@ bool RomeSoldier::_tryAttack()
     _d->action = Impl::fightEnemy;
     setSpeed( 0.f );
     _setAction( acFight );
-    //_setAnimation( _d->fight );
     _changeDirection();
     return true;
   }

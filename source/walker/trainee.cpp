@@ -52,38 +52,12 @@ void TraineeWalker::_init(walker::Type traineeType)
 {
   switch( traineeType )
   {
-  case walker::actor:
-    //_setAnimation( gfx::actorMove );
-    _d->necBuildings << building::theater
-                     << building::amphitheater;
-  break;
-
-  case walker::gladiator:
-    _d->necBuildings << building::amphitheater
-                     << building::colloseum;
-    //_setAnimation( gfx::gladiatorMove );
-  break;
-
-  case walker::lionTamer:
-    //_setAnimation( gfx::tamerMove );
-    _d->necBuildings << building::colloseum;
-  break;
-
-  case walker::soldier:
-    //_setAnimation( gfx::soldierMove );
-    _d->necBuildings << building::militaryAcademy
-                     << building::fortLegionaire;
-  break;
-
-  case walker::charioter:
-    //_setAnimation( gfx::charioterMove );
-    _d->necBuildings << building::hippodrome;
-  break;
-
-  default:
-  case walker::unknown:
-  case walker::all:
-    break;
+  case walker::actor:     _d->necBuildings << building::theater << building::amphitheater;  break;
+  case walker::gladiator:    _d->necBuildings << building::amphitheater                     << building::colloseum;  break;
+  case walker::lionTamer:    _d->necBuildings << building::colloseum;  break;
+  case walker::soldier:    _d->necBuildings << building::militaryAcademy                     << building::fortLegionaire;  break;
+  case walker::charioteer:    _d->necBuildings << building::hippodrome;  break;
+  default: break;
   }
 
   setName( NameGenerator::rand( NameGenerator::male ) );

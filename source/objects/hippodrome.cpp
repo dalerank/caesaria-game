@@ -120,7 +120,7 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::
   _d->direction = west;
   _init();  
 
-  _addNecessaryWalker( walker::charioter );
+  _addNecessaryWalker( walker::charioteer );
 }
 
 std::string Hippodrome::troubleDesc() const

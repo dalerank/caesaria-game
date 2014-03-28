@@ -44,7 +44,7 @@ enum Type{
   actor,
   gladiator,
   lionTamer,
-  charioter,
+  charioteer,
   sheep,//20
   barber,
   surgeon,

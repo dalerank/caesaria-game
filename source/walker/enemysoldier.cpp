@@ -63,7 +63,6 @@ bool EnemySoldier::_tryAttack()
     _d->action = destroyBuilding;
     setSpeed( 0.f );
     _setAction( acFight );
-    _changeDirection();
     return true;
   }
   else
@@ -74,7 +73,6 @@ bool EnemySoldier::_tryAttack()
       _d->action = fightEnemy;
       setSpeed( 0.f );
       _setAction( acFight );
-      _changeDirection();
       return true;
     }
   }

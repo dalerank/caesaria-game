@@ -181,7 +181,7 @@ const AnimationBank::MovementAnimation& AnimationBank::find( int type )
 
 void AnimationBank::loadAnimation(vfs::Path model)
 {
-  Logger::warning( "AnimationBank::Start loading animations from " + model.toString() );
+  Logger::warning( "AnimationBank: start loading animations from " + model.toString() );
   _d->loadAnimation( 0, ResourceGroup::citizen1, 1, 12, Walker::acMove );
 
   VariantMap items = SaveAdapter::load( model );
@@ -202,7 +202,6 @@ void AnimationBank::loadAnimation(vfs::Path model)
         Logger::warning( "AnimationBank: cannot find type " + i->first );
       }
     }
-
   }
 }
 

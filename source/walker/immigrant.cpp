@@ -259,9 +259,7 @@ void Immigrant::timeStep(const unsigned long time)
     _d->stamina = math::clamp( _d->stamina-1, 0.f, 100.f );
     if( _d->stamina == 0 )
     {
-      //_setAnimation( gfx::homelessSit );
       _setAction( Walker::acNone );
-      _animationRef().clear();
     }
   break;
 
@@ -269,9 +267,7 @@ void Immigrant::timeStep(const unsigned long time)
     _d->stamina = math::clamp( _d->stamina+1, 0.f, 100.f );
     if( _d->stamina >= 100 )
     {
-      //_setAnimation( gfx::homelessMove );
       _setAction( Walker::acMove );
-      _animationRef().clear();
     }
   break;
 

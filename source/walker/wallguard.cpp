@@ -266,7 +266,6 @@ bool WallGuard::_tryAttack()
       _d->action = Impl::attackEnemy;
       setSpeed( 0.f );
       _setAction( acFight );
-      //_setAnimation( _d->fight );
       _changeDirection();
     }
     else
@@ -295,7 +294,6 @@ bool WallGuard::_tryAttack()
         _updatePathway( *shortestWay.object() );
         _d->action = Impl::go2position;
         _setAction( acMove );
-        //_setAnimation( _d->walk );
         setSpeed( 1.f );
         go();
         return true;

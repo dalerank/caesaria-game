@@ -286,7 +286,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   HippodromeList hippodromes = helper.find<Hippodrome>( building::hippodrome );
   foreach( h, hippodromes )
   {
-    if( (*h)->evaluateTrainee( walker::charioter ) == 100 ) { troubles.push_back( "##no_chariots##" ); }
+    if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles.push_back( "##no_chariots##" ); }
   }
 
   if( nextLevel > 0 )
