@@ -40,8 +40,6 @@ public:
                  patrol, go2tower } State;
   TowerPtr base;
   State action;
-  gfx::Type walk;
-  gfx::Type fight;
   int ckeckEnemiesInterval;
   TilePos patrolPosition;
   int wait;
@@ -53,7 +51,7 @@ public:
 WallGuard::WallGuard( PlayerCityPtr city, walker::Type type ) : Soldier( city ), _d( new Impl )
 {
   _setType( type );
-  _setAnimation( gfx::soldierMove );
+  //_setAnimation( gfx::soldierMove );
 
   _init( type );
   _d->patrolPosition = TilePos( -1, -1 );
@@ -67,9 +65,6 @@ void WallGuard::_init( walker::Type type )
   switch( type )
   {
   case walker::romeGuard:
-    _setAnimation( gfx::guardMove );
-    _d->walk = gfx::guardMove;
-    _d->fight = gfx::guardFigth;
     _d->strikeForce = 3;
     _d->resistance = 1;
   break;
@@ -271,7 +266,7 @@ bool WallGuard::_tryAttack()
       _d->action = Impl::attackEnemy;
       setSpeed( 0.f );
       _setAction( acFight );
-      _setAnimation( _d->fight );
+      //_setAnimation( _d->fight );
       _changeDirection();
     }
     else
@@ -300,7 +295,7 @@ bool WallGuard::_tryAttack()
         _updatePathway( *shortestWay.object() );
         _d->action = Impl::go2position;
         _setAction( acMove );
-        _setAnimation( _d->walk );
+        //_setAnimation( _d->walk );
         setSpeed( 1.f );
         go();
         return true;
@@ -321,7 +316,7 @@ void WallGuard::_back2tower()
     if( !enter.empty() )
     {
       setSpeed( 1.f );
-      _setAnimation( _d->walk );
+      //_setAnimation( _d->walk );
       Pathway way = _d->base->getWay( pos(), enter.front()->pos() );
       setPathway( way );
       go();

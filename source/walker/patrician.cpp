@@ -36,7 +36,7 @@ Patrician::Patrician(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::patrician );
-  _setAnimation( rand() % 100 ? gfx::patricianMove : gfx::patrician2Move );
+  //_setAnimation( rand() % 100 ? gfx::patricianMove : gfx::patrician2Move );
 
   setName( _("##patrician##") );
 }
@@ -78,14 +78,14 @@ void Patrician::die()
 {
   Walker::die();
 
-  if( _getAnimationType() == gfx::patricianMove )
+  /*if( _getAnimationType() == gfx::patricianMove )
   {
     Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 809, 816 );
   }
   else
   {
     Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 1017, 1024 );
-  }
+  }*/
 }
 
 void Patrician::send2City(TilePos start )

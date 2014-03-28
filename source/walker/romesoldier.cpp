@@ -38,8 +38,6 @@ public:
   FortPtr base;
   State action;
   int attackInterval;
-  gfx::Type walk;
-  gfx::Type fight;
   TilePos patrolPosition;
   double strikeForce, resistance;
 };
@@ -47,7 +45,7 @@ public:
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type ) : Soldier( city ), _d( new Impl )
 {
   _setType( type );
-  _setAnimation( gfx::soldierMove );
+  //_setAnimation( gfx::soldierMove );
 
   _init( type );
   _d->patrolPosition = TilePos( -1, -1 );
@@ -60,9 +58,6 @@ void RomeSoldier::_init( walker::Type type )
   switch( type )
   {
   case walker::legionary:
-    _setAnimation( gfx::legionaryMove );
-    _d->walk = gfx::legionaryMove;
-    _d->fight = gfx::legionaryFight;
     _d->strikeForce = 3;
     _d->resistance = 1;
   break;
@@ -203,7 +198,7 @@ bool RomeSoldier::_tryAttack()
     _d->action = Impl::fightEnemy;
     setSpeed( 0.f );
     _setAction( acFight );
-    _setAnimation( _d->fight );
+    //_setAnimation( _d->fight );
     _changeDirection();
     return true;
   }

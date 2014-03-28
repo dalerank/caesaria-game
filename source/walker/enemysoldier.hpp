@@ -55,7 +55,6 @@ protected:
   void _init( constants::walker::Type type );
   BuildingList _findBuildingsInRange(unsigned int range);
   WalkerList _findEnemiesInRange(unsigned int range);
-  virtual constants::gfx::Type _getAnimation( Walker::Action ac ) const;
   virtual void _check4attack();
 
   EnemySoldier( PlayerCityPtr city );

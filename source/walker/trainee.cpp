@@ -53,7 +53,7 @@ void TraineeWalker::_init(walker::Type traineeType)
   switch( traineeType )
   {
   case walker::actor:
-    _setAnimation( gfx::actorMove );
+    //_setAnimation( gfx::actorMove );
     _d->necBuildings << building::theater
                      << building::amphitheater;
   break;
@@ -61,22 +61,22 @@ void TraineeWalker::_init(walker::Type traineeType)
   case walker::gladiator:
     _d->necBuildings << building::amphitheater
                      << building::colloseum;
-    _setAnimation( gfx::gladiatorMove );
+    //_setAnimation( gfx::gladiatorMove );
   break;
 
   case walker::lionTamer:
-    _setAnimation( gfx::tamerMove );
+    //_setAnimation( gfx::tamerMove );
     _d->necBuildings << building::colloseum;
   break;
 
   case walker::soldier:
-    _setAnimation( gfx::soldierMove );
+    //_setAnimation( gfx::soldierMove );
     _d->necBuildings << building::militaryAcademy
                      << building::fortLegionaire;
   break;
 
   case walker::charioter:
-    _setAnimation( gfx::charioterMove );
+    //_setAnimation( gfx::charioterMove );
     _d->necBuildings << building::hippodrome;
   break;
 

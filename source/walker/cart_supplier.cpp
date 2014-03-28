@@ -53,7 +53,7 @@ public:
 CartSupplier::CartSupplier( PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setAnimation( gfx::cartPusherMove );
+  //_setAnimation( gfx::cartPusherMove );
   _setType( walker::cartPusher );
 
   _d->storageBuildingPos = TilePos( -1, -1 );

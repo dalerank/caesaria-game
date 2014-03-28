@@ -21,5 +21,5 @@ using namespace constants;
 Soldier::Soldier( PlayerCityPtr city ) : Walker( city )
 {
   _setType( walker::soldier );
-  _setAnimation( gfx::horsemanMove );
+  //_setAnimation( gfx::horsemanMove );
 }

@@ -31,7 +31,6 @@
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
-#include "gfx/constants.hpp"
 
 typedef unsigned int UniqueId;
 class Pathway;
@@ -111,10 +110,9 @@ protected:
   virtual void _updatePathway(const Pathway& pathway );
 
   Animation& _animationRef();
-  void _setAction( Walker::Action action );
+  void _setAction( Walker::Action action, int animIndex=-1 );
   void _setDirection( constants::Direction direction );
-  void _setAnimation( constants::gfx::Type type );
-  constants::gfx::Type _getAnimationType() const;
+
   void _setType( constants::walker::Type type );
   PlayerCityPtr _getCity() const;
   void _setHealth( double value );

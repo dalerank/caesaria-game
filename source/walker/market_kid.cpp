@@ -63,7 +63,7 @@ MarketKid::MarketKid(PlayerCityPtr city )
   _d->delay = 0;
   _d->birthTime = 0;
   _d->basket.setCapacity( 100 );
-  _setAnimation( gfx::marketkidMove );
+  //_setAnimation( gfx::marketkidMove );
   _setType( walker::marketKid );
 
   setName( NameGenerator::rand( NameGenerator::male ) );

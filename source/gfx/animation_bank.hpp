@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ANIMATION_BANK_H_INCLUDED__
 #define __CAESARIA_ANIMATION_BANK_H_INCLUDED__
@@ -22,7 +23,6 @@
 #include "walker/action.hpp"
 #include "good/good.hpp"
 #include "core/direction.hpp"
-#include "constants.hpp"
 #include "vfs/path.hpp"
 
 #include <map>
@@ -36,13 +36,12 @@ public:
 
   // loads all cart graphics
   void loadCarts();
-  void loadWalkers();
 
   void loadAnimation( vfs::Path model );
 
   static const Picture& getCart( int cartID, constants::Direction direction );
 
-  static const MovementAnimation& getWalker( int walkerGraphic );
+  static const MovementAnimation& find( int type );
 private:
   AnimationBank();
 

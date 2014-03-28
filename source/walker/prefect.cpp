@@ -55,7 +55,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _setType( walker::prefect );
   _d->water = 0;
   _d->action = Impl::patrol;
-  _setAnimation( gfx::prefectMove );
+  //_setAnimation( gfx::prefectMove );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -115,7 +115,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
       turn( building->pos() );
       _d->action = Impl::fightFire;
       _setAction( acFight );
-      _setAnimation( gfx::prefectFightFire );
+      //_setAnimation( gfx::prefectFightFire );
       setSpeed( 0.f );
       return true;
     }
@@ -132,7 +132,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     {
       _d->action = Impl::go2fire;
       _updatePathway( tmp );
-      _setAnimation( gfx::prefectDragWater );
+      //_setAnimation( gfx::prefectDragWater );
       setSpeed( 1 );
       go();
       return true;
@@ -150,7 +150,7 @@ void Prefect::_back2Prefecture()
   if( pathway.isValid() )
   {
     _d->action = Impl::patrol;
-    _setAnimation( gfx::prefectMove );
+    //_setAnimation( gfx::prefectMove );
     _updatePathway( pathway );
     _d->endPatrolPoint = pathway.destination().pos();
     setSpeed( 1 );
@@ -191,7 +191,7 @@ void Prefect::_back2Patrol()
   if( pathway.isValid() )
   {
     _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
-    _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
+    //_setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
     _updatePathway( pathway );
     setSpeed( 1 );
     go();
@@ -223,7 +223,7 @@ void Prefect::_brokePathway(TilePos p)
     setSpeed( 0 );
     _setAction( acFight );
     _d->action = Impl::fightFire;
-    _setAnimation( gfx::prefectFightFire );
+    //_setAnimation( gfx::prefectFightFire );
     return;
   }
   else if( _d->water > 0 )
@@ -235,7 +235,7 @@ void Prefect::_brokePathway(TilePos p)
     {
       setSpeed( 1.f );
       _d->action = Impl::findFire;
-      _setAnimation( gfx::prefectDragWater );
+      //_setAnimation( gfx::prefectDragWater );
 
       setPathway( pathway );
       go();
@@ -346,7 +346,7 @@ void Prefect::_centerTile()
         _d->action = Impl::fightProtestor;
         setSpeed( 0.f );
         _setAction( acFight );
-        _setAnimation( gfx::prefectFight );
+        //_setAnimation( gfx::prefectFight );
         return;
       }
     }
@@ -364,7 +364,7 @@ void Prefect::_centerTile()
     {
       _d->action = Impl::fightFire;
       _d->endPatrolPoint = building->pos();
-      _setAnimation( gfx::prefectFightFire );
+      //_setAnimation( gfx::prefectFightFire );
       _setAction( acFight );
       setSpeed( 0.f );
       return;
@@ -465,7 +465,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
   _d->action = water > 0 ? Impl::findFire : Impl::patrol;
   _d->water = water;
-  _setAnimation( water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
+  //_setAnimation( water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
 
   if( water > 0 )
   {
@@ -511,7 +511,7 @@ void Prefect::load( const VariantMap& stream )
   _d->water = (int)stream.get( "water" );
   _d->endPatrolPoint = stream.get( "endPoint" );
 
-  _setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
+  //_setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
 
   PrefecturePtr prefecture = ptr_cast<Prefecture>( getBase() );
   if( prefecture.isValid() )

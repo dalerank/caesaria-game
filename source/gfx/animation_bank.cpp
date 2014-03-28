@@ -14,6 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+
 
 #include "gfx/animation_bank.hpp"
 #include "core/position.hpp"
@@ -70,14 +72,13 @@ public:
   // prefix: image prefix
   // start: index of the first frame
   PicturesArray fillCart( const std::string &prefix, const int start, bool back );
-  AnimationBank::MovementAnimation loadAnimation(int who, const std::string& prefix,
+  void loadAnimation(int who, const std::string& prefix,
                                                  const int start, const int size,
                                                  Walker::Action wa=Walker::acMove,
                                                  const int step = defaultStepInFrame );
-  AnimationBank::MovementAnimation loadAnimation(int who, const VariantMap& desc );
+  void loadAnimation(int who, const VariantMap& desc );
 
   void loadCarts();
-  void loadWalkers();
 };
 
 void AnimationBank::Impl::loadCarts()
@@ -106,56 +107,6 @@ void AnimationBank::Impl::loadCarts()
   carts[Good::fish] = fillCart( ResourceGroup::carts, 697, frontCart);
 }
 
-void AnimationBank::Impl::loadWalkers()
-{
-  loadAnimation( walker::unknown, ResourceGroup::citizen1, 1, 12, Walker::acMove );
-
-  loadAnimation( walker::citizen, ResourceGroup::citizen1, 1, 12, Walker::acMove );
- /* animations[gfx::bathladyMove         ] = loadAnimation( ResourceGroup::citizen1, 105, 12);
-  animations[gfx::priestMove           ] = loadAnimation( ResourceGroup::citizen1, 209, 12);
-  animations[gfx::actorMove            ] = loadAnimation( ResourceGroup::citizen1, 313, 12);
-  animations[gfx::tamerMove            ] = loadAnimation( ResourceGroup::citizen1, 417, 12);
-  animations[gfx::taxCollectorMove     ] = loadAnimation( ResourceGroup::citizen1, 617, 12);
-  animations[gfx::scholarMove          ] = loadAnimation( ResourceGroup::citizen1, 721, 12);
-  animations[gfx::marketladyMove       ] = loadAnimation( ResourceGroup::citizen1, 825, 12);
-  animations[gfx::cartPusherMove       ] = loadAnimation( ResourceGroup::citizen1, 929, 12);
-  animations[gfx::cartPusher2Move      ] = loadAnimation( ResourceGroup::citizen1, 1033, 12);
-  animations[gfx::engineerMove         ] = loadAnimation( ResourceGroup::citizen1, 1137, 12);
-  animations[gfx::gladiatorMove        ] = loadAnimation( ResourceGroup::citizen2, 1, 12);
-  animations[gfx::gladiator2Move       ] = loadAnimation( ResourceGroup::citizen2, 199, 12);
-  animations[gfx::protestorMove        ] = loadAnimation( ResourceGroup::citizen2, 351, 12);
-  animations[gfx::barberMove           ] = loadAnimation( ResourceGroup::citizen2, 463, 12);
-  animations[gfx::prefectMove          ] = loadAnimation( ResourceGroup::citizen2, 615, 12);
-  animations[gfx::prefectDragWater     ] = loadAnimation( ResourceGroup::citizen2, 767, 12);
-  animations[gfx::prefectFightFire     ] = loadAnimation( ResourceGroup::citizen2, 863, 6, Walker::acFight );
-  animations[gfx::prefectFight         ] = loadAnimation( ResourceGroup::citizen2, 719, 6, Walker::acFight );
-  animations[gfx::homelessMove         ] = loadAnimation( ResourceGroup::citizen2, 911, 12);
-  animations[gfx::patricianMove        ] = loadAnimation( ResourceGroup::citizen3, 713, 12);
-  animations[gfx::doctorMove           ] = loadAnimation( ResourceGroup::citizen3, 817, 12);
-  animations[gfx::patrician2Move       ] = loadAnimation( ResourceGroup::citizen3, 921, 12);
-  animations[gfx::teacherMove          ] = loadAnimation( ResourceGroup::citizen3, 1025, 12);
-  animations[gfx::soldierMove          ] = loadAnimation( ResourceGroup::citizen3, 553, 12);
-  animations[gfx::javelineerMove       ] = loadAnimation( ResourceGroup::citizen3, 241, 12);
-  animations[gfx::horsemanMove         ] = loadAnimation( ResourceGroup::citizen4, 1, 12);
-  animations[gfx::horseMerchantMove    ] = loadAnimation( ResourceGroup::carts, 145, 12);
-  animations[gfx::camelMerchantMove    ] = loadAnimation( ResourceGroup::carts, 273, 12);
-  animations[gfx::marketkidMove        ] = loadAnimation( ResourceGroup::carts, 369, 12);
-  animations[gfx::sheepMove            ] = loadAnimation( ResourceGroup::animals, 153, 5 );
-  animations[gfx::fishingBoatMove      ] = loadAnimation( ResourceGroup::carts, 249, 1 );
-  animations[gfx::fishingBoatWork      ] = loadAnimation( ResourceGroup::carts, 257, 1 );
-  animations[gfx::homelessSit          ] = loadAnimation( ResourceGroup::citizen2, 1015, 1 );
-  animations[gfx::lionMove             ] = loadAnimation( ResourceGroup::lion, 1, 12 );
-  animations[gfx::charioterMove        ] = loadAnimation( ResourceGroup::citizen5, 1, 12 );
-  animations[gfx::britonSoldierMove    ] = loadAnimation( ResourceGroup::celts, 249, 12 );
-  animations[gfx::britonSoldierFight   ] = loadAnimation( ResourceGroup::celts, 345, 6, Walker::acFight );
-  animations[gfx::soldierMove          ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
-  animations[gfx::legionaryMove        ] = loadAnimation( ResourceGroup::citizen3, 553, 12 );
-  animations[gfx::legionaryFight       ] = loadAnimation( ResourceGroup::citizen3, 649, 6, Walker::acFight );
-  animations[gfx::guardMove            ] = loadAnimation( ResourceGroup::citizen3, 97, 12 );
-  animations[gfx::guardFigth           ] = loadAnimation( ResourceGroup::citizen3, 192, 6, Walker::acFight );
-  animations[gfx::seaMerchantMove      ] = loadAnimation( ResourceGroup::carts, 241, 1 );*/
-}
-
 AnimationBank& AnimationBank::instance()
 {
   static AnimationBank inst;
@@ -173,11 +124,11 @@ void AnimationBank::loadCarts()
   _d->loadCarts();
 }
 
-AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
+void AnimationBank::Impl::loadAnimation( int who, const std::string& prefix,
                                                                      const int start, const int size,
                                                                      Walker::Action wa, const int step )
 {
-  MovementAnimation ioMap;
+  MovementAnimation& ioMap = animations[ who ].actions;
   DirectedAction action= { wa, noneDirection };
 
   if( step == 0 )
@@ -195,10 +146,9 @@ AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( int who, co
     action.direction = west;       ioMap[action].load( prefix, start+6, size, Animation::straight, step);
     action.direction = northWest;  ioMap[action].load( prefix, start+7, size, Animation::straight, step);
   }
-  return ioMap;
 }
 
-AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
+void AnimationBank::Impl::loadAnimation( int type, const VariantMap& desc)
 {
   PictureInfoBank& pib = PictureInfoBank::instance();
   std::string rcGroup = desc.get( "rc" ).toString();
@@ -212,31 +162,28 @@ AnimationBank::MovementAnimation AnimationBank::Impl::loadAnimation( int type, c
   offset = desc.get( "offset", offset ).toPoint();
   pib.setOffset( rcGroup, startIndex, frameNumber * (step == 0 ? 1 : step), offset );
 
-  return loadAnimation( type, rcGroup, startIndex, frameNumber, (Walker::Action)action, step );
+  loadAnimation( type, rcGroup, startIndex, frameNumber, (Walker::Action)action, step );
 }
 
-const AnimationBank::MovementAnimation& AnimationBank::getWalker( int anim )
+const AnimationBank::MovementAnimation& AnimationBank::find( int type )
 {
   AnimationBank& inst = instance();
 
-  Impl::Animations::iterator it = inst._d->animations.find( anim );
+  Impl::Animations::iterator it = inst._d->animations.find( type );
   if( it == inst._d->animations.end() )
   {
-    Logger::warning( "Can't find animation map for type %d", anim );
+    Logger::warning( "Can't find animation map for type %d", type );
     return inst._d->animations[ walker::unknown ].actions;
   }
 
   return it->second.actions;
 }
 
-void AnimationBank::loadWalkers()
-{
-  Logger::warning( "Start loading walkers graphics" );
-  _d->loadWalkers();
-}
-
 void AnimationBank::loadAnimation(vfs::Path model)
 {
+  Logger::warning( "AnimationBank::Start loading animations from " + model.toString() );
+  _d->loadAnimation( 0, ResourceGroup::citizen1, 1, 12, Walker::acMove );
+
   VariantMap items = SaveAdapter::load( model );
 
   foreach( i, items )

@@ -26,7 +26,7 @@ Ship::Ship(PlayerCityPtr city )
   : Walker( city )
 {
   _setType( walker::unknown );
-  _setAnimation( gfx::unknown );
+  //_setAnimation( gfx::unknown );
 
   setName( _("##ship##") );
 }

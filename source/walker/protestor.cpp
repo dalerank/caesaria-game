@@ -47,7 +47,7 @@ public:
 
 Protestor::Protestor(PlayerCityPtr city) : Walker( city ), _d( new Impl )
 {    
-  _setAnimation( gfx::protestorMove );
+  //_setAnimation( gfx::protestorMove );
   _setType( walker::protestor );
 
   _d->destroyInterval = GameDate::ticksInMonth() / 20;

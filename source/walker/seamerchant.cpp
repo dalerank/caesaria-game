@@ -68,7 +68,7 @@ public:
 SeaMerchant::SeaMerchant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  _setAnimation( gfx::seaMerchantMove );
+  //_setAnimation( gfx::seaMerchantMove );
   _setType( walker::seaMerchant );
   _d->waitInterval = 0;
   _d->tryDockCount = 0;

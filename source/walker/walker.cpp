@@ -39,8 +39,7 @@ class Walker::Impl
 {
 public:
   PlayerCityPtr city;
-  walker::Type walkerType;
-  gfx::Type walkerGraphic;
+  walker::Type type;
   bool isDeleted;
   float speed;
   TilePos pos;
@@ -74,8 +73,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->city = city;
   _d->action.action = Walker::acMove;
   _d->action.direction = constants::noneDirection;
-  _d->walkerType = walker::unknown;
-  _d->walkerGraphic = gfx::unknown;
+  _d->type = walker::unknown;
   _d->health = 100;
 
   _d->speed = 1.f; // default speed
@@ -87,7 +85,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
 }
 
 Walker::~Walker() {}
-walker::Type Walker::type() const{ return _d->walkerType; }
+walker::Type Walker::type() const{ return _d->type; }
 
 void Walker::timeStep(const unsigned long time)
 {
@@ -133,7 +131,6 @@ void Walker::setPathway( const Pathway& pathway)
 }
 
 void Walker::setSpeed(const float speed){   _d->speed = speed;}
-gfx::Type Walker::_getAnimationType() const{   return _d->walkerGraphic;}
 
 // ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
 void Walker::inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
@@ -388,12 +385,17 @@ void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Pathway& Walker::_pathwayRef() {  return _d->pathway; }
 const Pathway& Walker::getPathway() const {  return _d->pathway; }
 Animation& Walker::_animationRef() {  return _d->animation;}
-void Walker::_setAction( Walker::Action action ) {  _d->action.action = action; }
 void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
-void Walker::_setType(walker::Type type){  _d->walkerType = type;}
+void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_getCity() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
+
+void Walker::_setAction( Walker::Action action, int animIndex )
+{
+  _d->action.action = action;
+  _d->action.animation = (animIndex==-1) ? action : animIndex;
+}
 
 std::string Walker::getThinks() const
 {
@@ -415,8 +417,8 @@ const Picture& Walker::getMainPicture()
 {
   if( !_d->animation.isValid() )
   {
-    const AnimationBank::MovementAnimation& animMap = AnimationBank::getWalker( _getAnimationType() );
-    std::map<DirectedAction, Animation>::const_iterator itAnimMap;
+    const AnimationBank::MovementAnimation& animMap = AnimationBank::find( type() );
+    AnimationBank::MovementAnimation::const_iterator itAnimMap;
     if (_d->action.action == acNone || _d->action.direction == constants::noneDirection )
     {
       DirectedAction action;
@@ -454,14 +456,13 @@ const Picture& Walker::getMainPicture()
 void Walker::save( VariantMap& stream ) const
 {
   stream[ "name" ] = Variant( _d->name );
-  stream[ "type" ] = (int)_d->walkerType;
+  stream[ "type" ] = (int)_d->type;
   stream[ "pathway" ] =  _d->pathway.save();
   stream[ "health" ] = _d->health;
   stream[ "action" ] = (int)_d->action.action;
   stream[ "direction" ] = (int)_d->action.direction;
   stream[ "pos" ] = _d->pos;
   stream[ "tileoffset" ] = _d->tileOffset;
-  stream[ "animationType" ] = (int)_d->walkerGraphic;
   stream[ "mappos" ] = _d->posOnMap;
   stream[ "speed" ] = _d->speed;
   stream[ "midTile" ] = _d->midTilePos;
@@ -488,16 +489,10 @@ void Walker::load( const VariantMap& stream)
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->speedMultiplier = (float)stream.get( "speedMul", 1.f );
 
-  Variant value = stream.get( "animationType" );
-  if( value.isValid() )
-  {
-    _d->walkerGraphic = (gfx::Type)value.toInt();
-  }
-
   if( !_d->pathway.isValid() )
   {
     Logger::warning( "Walker: wrong way for %s:%s at [%d,%d]",
-                     WalkerHelper::getTypename( _d->walkerType ).c_str(), _d->name.c_str(),
+                     WalkerHelper::getTypename( _d->type ).c_str(), _d->name.c_str(),
                      _d->pos.i(), _d->pos.j() );
   }
   
@@ -533,15 +528,6 @@ void Walker::_updatePathway( const Pathway& pathway)
   _d->pathway = pathway;
   _d->pathway.begin();
   _computeDirection();
-}
-
-void Walker::_setAnimation( gfx::Type type )
-{
-  if( _d->walkerGraphic != type )
-  {
-    _d->walkerGraphic = type;
-    _d->animation = Animation();
-  }
 }
 
 void Walker::_updateAnimation( const unsigned int time )
@@ -584,17 +570,18 @@ public:
   {
     append( walker::unknown,    "none",         "##wt_none##" );
     append( walker::immigrant,  "immigrant",    "##wt_immigrant##" );
+    append( walker::citizen,    "citizen",      "##wt_citizen##" );
     append( walker::emigrant,   "emmigrant",    "##wt_emmigrant##" );
     append( walker::soldier,    "soldier",      "##wt_soldier##" );
-    append( walker::cartPusher, "cartPusher",  "##wt_cart_pushher##" );
-    append( walker::marketLady, "marketLady",  "##wt_market_lady##" );
-    append( walker::marketKid,  "marketKid", "##wt_market_lady_helper##" );
+    append( walker::cartPusher, "cartPusher",   "##wt_cart_pushher##" );
+    append( walker::marketLady, "marketLady",   "##wt_market_lady##" );
+    append( walker::marketKid,  "marketKid",    "##wt_market_lady_helper##" );
     append( walker::serviceman, "serviceman",   "##wt_serviceman##" );
     append( walker::trainee,    "trainee",      "##wt_trainee##" );
     append( walker::recruter,   "recruter",     "##wt_recruter##" );
     append( walker::prefect,    "prefect",      "##wt_prefect##" );
     append( walker::priest,     "priest",       "##wt_priest##"  );
-    append( walker::taxCollector,"taxCollector", "##wt_tax_collector##" );
+    append( walker::taxCollector,"taxCollector","##wt_tax_collector##" );
     append( walker::merchant,   "merchant",     "##wt_merchant##" );
     append( walker::engineer,   "engineer",     "##wt_engineer##" );
     append( walker::doctor,     "doctor",       "##wt_doctor##" );
@@ -604,8 +591,8 @@ public:
     append( walker::gladiator,  "gladiator",    "##wt_gladiator##" );
     append( walker::barber,     "barber",       "##wt_barber##"  );
     append( walker::surgeon,    "surgeon",      "##wt_surgeon##" );
-    append( walker::lionTamer,  "lionTamer",   "##wt_lion_tamer" );
-    append( walker::fishingBoat,"fishingBoat", "##fishing_boat##" );
+    append( walker::lionTamer,  "lionTamer",    "##wt_lion_tamer" );
+    append( walker::fishingBoat,"fishingBoat",  "##fishing_boat##" );
     append( walker::protestor,  "protestor",    "##wt_protestor##" );
     append( walker::legionary,  "legionary",    "##wt_legionary##" );
     append( walker::corpse,     "corpse",       "##wt_corpse##" );

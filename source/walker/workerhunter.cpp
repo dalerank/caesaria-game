@@ -32,9 +32,9 @@ using namespace constants;
 Recruter::Recruter(PlayerCityPtr city )
  : ServiceWalker( city, Service::recruter )
 {    
-    _workersNeeded = 0;
-    _setAnimation( gfx::citizenMove );
-    _setType( walker::recruter );
+  _workersNeeded = 0;
+  //_setAnimation( gfx::citizenMove );
+  _setType( walker::recruter );
 }
 
 void Recruter::hireWorkers( const int workers )

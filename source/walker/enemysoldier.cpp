@@ -39,11 +39,9 @@ using namespace constants;
 class EnemySoldier::Impl
 {
 public:  
-  EsAction action;
+  EnemySoldier::EsAction action;
   unsigned int strikeForce;
   unsigned int resistance;
-  gfx::Type fightAnimation;
-  gfx::Type walkAnimation;
 };
 
 EnemySoldier::EnemySoldier( PlayerCityPtr city )
@@ -65,7 +63,6 @@ bool EnemySoldier::_tryAttack()
     _d->action = destroyBuilding;
     setSpeed( 0.f );
     _setAction( acFight );
-    _setAnimation( _d->fightAnimation );
     _changeDirection();
     return true;
   }
@@ -77,7 +74,6 @@ bool EnemySoldier::_tryAttack()
       _d->action = fightEnemy;
       setSpeed( 0.f );
       _setAction( acFight );
-      _setAnimation( _d->fightAnimation );
       _changeDirection();
       return true;
     }
@@ -143,7 +139,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   return walkers;
 }
 
-gfx::Type EnemySoldier::_getAnimation(Action ac) const
+/*gfx::Type EnemySoldier::_getAnimation(Action ac) const
 {
   switch( ac )
   {
@@ -153,7 +149,7 @@ gfx::Type EnemySoldier::_getAnimation(Action ac) const
   }
 
   return gfx::unknown;
-}
+}*/
 
 void EnemySoldier::_init(walker::Type type)
 {
@@ -161,17 +157,11 @@ void EnemySoldier::_init(walker::Type type)
   switch( type )
   {
   case walker::britonSoldier:
-    _setAnimation( gfx::britonSoldierMove );
-    _d->walkAnimation = gfx::britonSoldierMove;
-    _d->fightAnimation = gfx::britonSoldierFight;
     _d->strikeForce = 3;
     _d->resistance = 1;
   break;
 
   case walker::etruscanArcher:
-    _setAnimation( gfx::etruscanArcherMove );
-    _d->walkAnimation = gfx::etruscanArcherMove;
-    _d->fightAnimation = gfx::etruscanArcherFight;
     _d->strikeForce = 3;
     _d->resistance = 1;
   break;
@@ -228,7 +218,7 @@ void EnemySoldier::_check4attack()
   {
     _d->action = go2position;
     setSpeed( 1.0 );
-    _setAnimation( _d->walkAnimation );
+    //_setAnimation( _d->walkAnimation );
     setPathway( pathway );
     go();
   }
