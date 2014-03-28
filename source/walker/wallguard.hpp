@@ -40,7 +40,6 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
 
-  void _init( constants::walker::Type type);
   void _back2tower();
   void _back2patrol();
   bool _tryAttack();

@@ -25,9 +25,18 @@
 class Soldier : public Walker
 {
 public:
-   Soldier(PlayerCityPtr city);
-private:
+  Soldier(PlayerCityPtr city, constants::walker::Type type);
 
+  float resistance() const;
+  void setResistance( float value );
+
+  float strike() const;
+  void setStrike( float value );
+
+  virtual void initialize(const VariantMap &options);
+  virtual ~Soldier();
+private:
+  __DECLARE_IMPL(Soldier)
 };
 
 

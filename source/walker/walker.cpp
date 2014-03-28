@@ -78,7 +78,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->health = 100;
 
   _d->speed = 1.f; // default speed
-  _d->speedMultiplier = 0.8 + math::random( 40 ) / 100.f;;
+  _d->speedMultiplier = 0.8 + math::random( 40 ) / 100.f;
   _d->isDeleted = false;
 
   _d->midTilePos = Point( 7, 7 );
@@ -125,7 +125,7 @@ void Walker::setPos( const TilePos& pos )
 }
 
 void Walker::setPathway( const Pathway& pathway)
-{ 
+{
   _d->pathway = pathway;
   _d->pathway.begin();
   _centerTile();
@@ -370,8 +370,8 @@ Point Walker::getSubpos() const{  return _d->tileOffset; }
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
-Direction Walker::getDirection(){  return _d->action.direction;}
-Walker::Action Walker::getAction(){  return (Walker::Action)_d->action.action;}
+Direction Walker::getDirection() const {  return _d->action.direction;}
+Walker::Action Walker::getAction() const {  return (Walker::Action)_d->action.action;}
 double Walker::getHealth() const{  return _d->health;}
 void Walker::updateHealth(double value) {  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );}
 void Walker::acceptAction(Walker::Action, TilePos){}
@@ -398,6 +398,12 @@ void Walker::_setAction( Walker::Action action, int animIndex )
   }
   _d->action.action = action;
   _d->action.animation = (animIndex==-1) ? action : animIndex;
+}
+
+void Walker::initialize(const VariantMap &options)
+{
+  _d->speed = options.get( "speed", 1.f ); // default speed
+  _d->speedMultiplier = options.get( "speedMultiplier", 0.8f + math::random( 40 ) / 100.f );
 }
 
 std::string Walker::getThinks() const
@@ -541,14 +547,14 @@ void Walker::_updateAnimation( const unsigned int time )
   }
 }
 
-void Walker::_setPosOnMap(Point pos) { _d->posOnMap = pos; }
+void Walker::_setWpos(Point pos) { _d->posOnMap = pos; }
 
 void Walker::_updateThinks()
 {
   _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
 }
 
-Point Walker::_getPosOnMap() const{  return _d->posOnMap;}
+Point Walker::_wpos() const{  return _d->posOnMap;}
 void Walker::go(){ _d->action.action = acMove; }      // default action
 
 void Walker::die()

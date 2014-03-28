@@ -61,16 +61,8 @@ public:
 class ServicemanCreator : public WalkerCreator
 {
 public:
-  WalkerPtr create( PlayerCityPtr city )
-  {
-    return ServiceWalker::create( city, serviceType ).object();
-  }
-
-  ServicemanCreator( const Service::Type type )
-  {
-    serviceType = type;
-  }
-
+  WalkerPtr create( PlayerCityPtr city )   {  return ServiceWalker::create( city, serviceType ).object();  }
+  ServicemanCreator( const Service::Type type )  {    serviceType = type;  }
   Service::Type serviceType;
 };
 
@@ -78,16 +70,8 @@ template< class T >
 class SoldierCreator : public WalkerCreator
 {
 public:
-  WalkerPtr create( PlayerCityPtr city )
-  {
-    return T::create( city, rtype ).object();
-  }
-
-  SoldierCreator( const walker::Type type )
-  {
-    rtype = type;
-  }
-
+  WalkerPtr create( PlayerCityPtr city )   { return T::create( city, rtype ).object();  }
+  SoldierCreator( const walker::Type type )  {    rtype = type;  }
   walker::Type rtype;
 };
 
@@ -158,7 +142,7 @@ WalkerPtr WalkerManager::create(const walker::Type walkerType, PlayerCityPtr cit
     return ptr_cast<Walker>( findConstructor->second->create( city ) );
   }
 
-  Logger::warning( "Can't create walker from type %d", walkerType );
+  Logger::warning( "WalkerManager: cannot create walker from type %d", walkerType );
   return WalkerPtr();
 }
 
@@ -175,7 +159,7 @@ void WalkerManager::addCreator( const walker::Type type, WalkerCreator* ctor )
   bool alreadyHaveConstructor = _d->constructors.find( type ) != _d->constructors.end();
   if( alreadyHaveConstructor )
   {
-    Logger::warning( "Already have constructor for type %s", typeName.c_str() );
+    Logger::warning( "WalkerManager: also have constructor for type %s", typeName.c_str() );
     return;
   }
   else

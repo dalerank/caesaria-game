@@ -61,8 +61,8 @@ public:
   void setSpeed(const float speed);
   void setUniqueId( const UniqueId uid );
 
-  constants::Direction getDirection();
-  Walker::Action getAction();
+  constants::Direction getDirection() const;
+  Walker::Action getAction() const;
 
   virtual double getHealth() const;
   virtual void updateHealth(double value);
@@ -86,6 +86,8 @@ public:
 
   bool isDeleted() const;  // returns true if the walker should be forgotten
   void deleteLater();
+
+  virtual void initialize( const VariantMap& options );
 
 protected:
   void _walk();
@@ -111,9 +113,9 @@ protected:
   PlayerCityPtr _getCity() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
-  void _setPosOnMap( Point pos );
+  void _setWpos( Point pos );
   virtual void _updateThinks();
-  Point _getPosOnMap() const;
+  Point _wpos() const;
 
 private:
    /* useful method for subtile movement computation
@@ -127,9 +129,9 @@ private:
   void inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
   void dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
 
-private:   
+private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_WALKER_H_INCLUDE_

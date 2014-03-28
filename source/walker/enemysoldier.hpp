@@ -52,12 +52,11 @@ protected:
   void _setSubAction( EsAction action );
   EsAction _getSubAction() const;
 
-  void _init( constants::walker::Type type );
   BuildingList _findBuildingsInRange(unsigned int range);
   WalkerList _findEnemiesInRange(unsigned int range);
   virtual void _check4attack();
 
-  EnemySoldier( PlayerCityPtr city );
+  EnemySoldier( PlayerCityPtr city, constants::walker::Type type );
 
 private:
   Pathway _findPathway2NearestEnemy(unsigned int range);

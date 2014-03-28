@@ -26,7 +26,6 @@ Ship::Ship(PlayerCityPtr city )
   : Walker( city )
 {
   _setType( walker::unknown );
-  //_setAnimation( gfx::unknown );
 
   setName( _("##ship##") );
 }
@@ -38,7 +37,4 @@ void Ship::die()
   Corpse::create( _getCity(), pos(), ResourceGroup::carts, 265, 272, true );
 }
 
-Ship::~Ship()
-{
-
-}
+Ship::~Ship(){}

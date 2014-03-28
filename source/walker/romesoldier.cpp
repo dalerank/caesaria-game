@@ -42,30 +42,13 @@ public:
   double strikeForce, resistance;
 };
 
-RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type ) : Soldier( city ), _d( new Impl )
+RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
+    : Soldier( city, type ), _d( new Impl )
 {
-  _setType( type );
-  //_setAnimation( gfx::soldierMove );
+  setName( NameGenerator::rand( NameGenerator::male ) );
 
-  _init( type );
   _d->patrolPosition = TilePos( -1, -1 );
   _d->attackInterval = GameDate::ticksInMonth() / 20;
-}
-
-void RomeSoldier::_init( walker::Type type )
-{
-  _setType( type );
-  switch( type )
-  {
-  case walker::legionary:
-    _d->strikeForce = 3;
-    _d->resistance = 1;
-  break;
-  default:
-    _CAESARIA_DEBUG_BREAK_IF( __FILE__": function not work yet");
-  }
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 RomeSoldierPtr RomeSoldier::create(PlayerCityPtr city, walker::Type type)

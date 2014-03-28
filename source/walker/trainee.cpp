@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include "trainee.hpp"
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
@@ -193,8 +192,6 @@ void TraineeWalker::save( VariantMap& stream ) const
 void TraineeWalker::load( const VariantMap& stream )
 {
   Walker::load(stream);
-
-  _init( type() );
 
   city::Helper helper( _getCity() );
   _d->base = helper.find<Building>( building::any, stream.get( "originBldPos" ).toTilePos() );

@@ -33,6 +33,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "animals.hpp"
 #include "spear.hpp"
+#include "helper.hpp"
 #include "core/foreach.hpp"
 
 using namespace constants;
@@ -44,8 +45,8 @@ public:
   unsigned int wait;
 };
 
-EnemyArcher::EnemyArcher(PlayerCityPtr city)
-  : EnemySoldier( city ), _d( new Impl )
+EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
+  : EnemySoldier( city, type ), _d( new Impl )
 {
   _setSubAction( EnemySoldier::check4attack );
   _d->attackDistance = 6;  
@@ -145,8 +146,8 @@ void EnemyArcher::timeStep(const unsigned long time)
 
 EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, constants::walker::Type type )
 {
-  EnemyArcherPtr ret( new EnemyArcher( city ) );
-  ret->_init( type );
+  EnemyArcherPtr ret( new EnemyArcher( city, type ) );
+  ret->initialize( WalkerHelper::getOptions( type ) );
   ret->drop();
 
   return ret;

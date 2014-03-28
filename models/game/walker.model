@@ -1,11 +1,11 @@
 {
    etruscanSoldier : {
-     strikeForce : 3
+     strike : 3
      resistance : 1
    }
 
   etruscanArcher : {
-     strikeForce : 3
+     strike : 3
      resistance : 1
   }
 }

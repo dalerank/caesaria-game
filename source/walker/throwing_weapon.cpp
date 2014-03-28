@@ -44,7 +44,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / 20.f;
   _d->currentPos = _d->srcPos.toPointF();
 
-  _setPosOnMap( _d->srcPos );
+  _setWpos( _d->srcPos );
 
   _getCity()->addWalker( this );
   Tile& tile = _getCity()->tilemap().at( src );
@@ -74,7 +74,7 @@ void ThrowingWeapon::timeStep(const unsigned long time)
     _d->height += _d->deltaHeight;
     TilePos ij( (_d->currentPos.x() - 7) / 15, (_d->currentPos.y() - 7) / 15 );
     setPos( ij );
-    _setPosOnMap( _d->currentPos.toPoint() - Point( 0, _d->height ) );
+    _setWpos( _d->currentPos.toPoint() - Point( 0, _d->height ) );
 
     if( _d->currentPos.IsEqual( _d->dstPos.toPointF(), 3.f ) )
     {

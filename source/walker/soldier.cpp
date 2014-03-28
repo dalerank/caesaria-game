@@ -18,8 +18,32 @@
 
 using namespace constants;
 
-Soldier::Soldier( PlayerCityPtr city ) : Walker( city )
+class Soldier::Impl
 {
-  _setType( walker::soldier );
-  //_setAnimation( gfx::horsemanMove );
+public:
+  float strikeForce;
+  float resistance;
+
+  Impl() : strikeForce ( 3.f ), resistance( 1.f ) {}
+};
+
+Soldier::Soldier(PlayerCityPtr city, walker::Type type)
+    : Walker( city ), __INIT_IMPL(Soldier)
+{
+  _setType( type );
 }
+
+float Soldier::resistance() const { __D_IMPL_CONST(_d,Soldier); return _d->resistance; }
+void Soldier::setResistance(float value) {  __D_IMPL(_d,Soldier); _d->resistance = value;  }
+float Soldier::strike() const { __D_IMPL_CONST(_d,Soldier); return _d->strikeForce; }
+void Soldier::setStrike(float value) { __D_IMPL(_d,Soldier); _d->strikeForce = value; }
+
+void Soldier::initialize(const VariantMap &options)
+{
+  Walker::initialize( options );
+  setResistance( options.get( "resistance", 1.f ) );
+  setStrike( options.get( "strike", 3.f ) );
+}
+
+Soldier::~Soldier() {}
+

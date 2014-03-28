@@ -38,7 +38,7 @@ protected:
   virtual void _fire(TilePos pos );
 
 private:
-  EnemyArcher(PlayerCityPtr city);
+  EnemyArcher(PlayerCityPtr city, constants::walker::Type type);
 
   class Impl;
   ScopedPtr< Impl > _d;

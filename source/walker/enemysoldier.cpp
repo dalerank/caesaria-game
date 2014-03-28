@@ -31,6 +31,7 @@
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "helper.hpp"
 #include "animals.hpp"
 #include "core/foreach.hpp"
 
@@ -40,12 +41,10 @@ class EnemySoldier::Impl
 {
 public:  
   EnemySoldier::EsAction action;
-  unsigned int strikeForce;
-  unsigned int resistance;
 };
 
-EnemySoldier::EnemySoldier( PlayerCityPtr city )
-: Soldier( city ), _d( new Impl )
+EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
+: Soldier( city, type ), _d( new Impl )
 {
   _d->action = check4attack;
 }
@@ -135,30 +134,6 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   }
 
   return walkers;
-}
-
-void EnemySoldier::_init(walker::Type type)
-{
-  _setType( type );
-  switch( type )
-  {
-  case walker::britonSoldier:
-    _d->strikeForce = 3;
-    _d->resistance = 1;
-  break;
-
-  case walker::etruscanArcher:
-    _d->strikeForce = 3;
-    _d->resistance = 1;
-  break;
-
-  default:
-    _d->strikeForce = 3;
-    _d->resistance = 1;
-    //_CAESARIA_DEBUG_BREAK_IF("not work yet");
-  }
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
@@ -335,8 +310,9 @@ EnemySoldier::~EnemySoldier() {}
 
 EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, constants::walker::Type type )
 {
-  EnemySoldierPtr ret( new EnemySoldier( city ) );
-  ret->_init( type );
+  EnemySoldierPtr ret( new EnemySoldier( city, type ) );
+  ret->setName( NameGenerator::rand( NameGenerator::male ) );
+  ret->initialize( WalkerHelper::getOptions( type ) );
   ret->drop();
 
   return ret;
@@ -369,9 +345,6 @@ void EnemySoldier::load( const VariantMap& stream )
   Soldier::load( stream );
  
   _d->action = (EsAction)stream.get( "EsAction" ).toInt();
-
-  _init( (walker::Type)stream.get( "type" ).toInt() );
-  _getCity()->addWalker( this );
 }
 
 void EnemySoldier::save( VariantMap& stream ) const
@@ -381,5 +354,5 @@ void EnemySoldier::save( VariantMap& stream ) const
   stream[ "type" ] = (int)type();
   stream[ "animation" ] =
   stream[ "EsAction" ] = (int)_d->action;
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(EnemySoldier) ) );
+  stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
 }

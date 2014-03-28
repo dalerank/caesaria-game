@@ -26,6 +26,7 @@
 #include "constants.hpp"
 #include "corpse.hpp"
 #include "core/foreach.hpp"
+#include "helper.hpp"
 
 using namespace constants;
 
@@ -47,10 +48,7 @@ void Recruter::hireWorkers( const int workers )
   }
 }
 
-int Recruter::getWorkersNeeded() const
-{
-    return _workersNeeded;
-}
+int Recruter::getWorkersNeeded() const { return _workersNeeded; }
 
 void Recruter::_changeTile()
 {
@@ -75,6 +73,8 @@ void Recruter::_changeTile()
 RecruterPtr Recruter::create(PlayerCityPtr city )
 { 
   RecruterPtr ret( new Recruter( city ) );
+  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
+
   ret->drop();
   return ret;
 }
