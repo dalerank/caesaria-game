@@ -49,11 +49,9 @@
     move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
   }
 
-  /*
-  cartPusher2 : {
+  emmigrant :
     move : { rc : "citizen01", start : 1033, frames : 12, action : 1, step : 8 }
   }
-  */
 
   engineer : {
     move : { rc : "citizen01", start : 1137, frames : 12, action : 1, step : 8 }

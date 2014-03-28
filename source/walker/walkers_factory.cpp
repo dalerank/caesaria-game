@@ -108,7 +108,7 @@ public:
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  addCreator( walker::emigrant, new BaseCreator<Emigrant>() );
+  addCreator( walker::emmigrant, new BaseCreator<Emigrant>() );
   addCreator( walker::immigrant, new BaseCreator<Immigrant>() );
   addCreator( walker::cartPusher, new BaseCreator<CartPusher>() );
   addCreator( walker::prefect, new BaseCreator<Prefect>() );

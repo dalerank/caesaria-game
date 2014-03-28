@@ -47,7 +47,7 @@ namespace{
   static const Point backCartOffsetSouthEast  = Point( -20, 40 );
   static const Point backCartOffsetNorthWest  = Point( -20, 20 );
   static const Point backCartOffsetNorthEast  = Point( -30, 30 );
-  static const Point backCartOffsetSouthWest  = Point( -20, 20 );
+  static const Point backCartOffsetSouthWest  = Point( -0, 30 );
 
   static const int noneGoodsPicId = 1;
   static const int defaultStepInFrame = 8;

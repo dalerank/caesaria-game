@@ -575,7 +575,7 @@ public:
     append( walker::unknown,    "unknown" );
     append( walker::immigrant,  "immigrant"    );
     append( walker::citizen,    "citizen" );
-    append( walker::emigrant,   "emmigrant" );
+    append( walker::emmigrant,   "emmigrant" );
     append( walker::soldier,    "soldier" );
     append( walker::cartPusher, "cartPusher" );
     append( walker::marketLady, "marketLady" );
@@ -660,7 +660,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   switch( type )
   {
   case walker::immigrant: index=9; break;
-  case walker::emigrant: index=4; break;
+  case walker::emmigrant: index=4; break;
   case walker::doctor: index = 2; break;
   case walker::cartPusher: index=51; break;
   case walker::marketLady: index=12; break;

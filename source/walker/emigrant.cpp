@@ -33,7 +33,7 @@ Emigrant::Emigrant( PlayerCityPtr city ) : Immigrant( city )
   peoples[ CitizenGroup::childMin ] = 2;
   setPeoples( peoples );
 
-  _setType( walker::emigrant );
+  _setType( walker::emmigrant );
   //_setAnimation( gfx::cartPusher2Move );
 }
 

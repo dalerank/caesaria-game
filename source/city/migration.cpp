@@ -214,7 +214,7 @@ void Migration::Impl::createMigrationToCity()
     return;
   }
 
-  WalkerList walkers = city->getWalkers( walker::emigrant );
+  WalkerList walkers = city->getWalkers( walker::emmigrant );
 
   if( vh <= walkers.size() * 5 )
   {
