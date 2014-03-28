@@ -81,7 +81,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _d->houseId = houseId;
   _d->taxCheckInterval = DateTime( -400, 1, 1 );
   _d->picIdOffset = ( math::random( 10 ) > 6 ? 1 : 0 );
-  HouseSpecHelper& helper = HouseSpecHelper::getInstance();
+  HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = helper.getHouseLevel( houseId );
   _d->spec = helper.getHouseLevelSpec( _d->houseLevel );
   setName( _d->spec.levelName() );
@@ -418,7 +418,7 @@ void House::_levelUp()
   break;
   }
 
-  _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
+  _d->spec = HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel);
 
   _update();
 }
@@ -445,7 +445,7 @@ void House::_levelDown()
     return;
 
   _d->houseLevel--;
-  _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
+  _d->spec = HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel);
 
   switch (_d->houseLevel)
   {
@@ -809,7 +809,7 @@ void House::load( const VariantMap& stream )
   _d->houseId = (int)stream.get( "houseId", 0 );
   _d->houseLevel = (int)stream.get( "houseLevel", 0 );
   //_d->healthLevel = (float)stream.get( "healthLevel", 0 );
-  _d->spec = HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel);
+  _d->spec = HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel);
 
   _d->desirability.base = (int)stream.get( "desirability", 0 );
   _d->desirability.step = _d->desirability.base < 0 ? 1 : -1;

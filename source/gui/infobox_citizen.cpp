@@ -21,6 +21,7 @@
 #include "walker/merchant.hpp"
 #include "game/settings.hpp"
 #include "walker/constants.hpp"
+#include "walker/helper.hpp"
 #include "core/gettext.hpp"
 
 using namespace constants;

@@ -49,8 +49,12 @@ void Base::stop(){ _isStopped = true;}
 void Base::update( GfxEngine &engine )
 {
   static unsigned int lastclock = DateTime::getElapsedTime();
-  static unsigned int currentclock = 0;
+  static unsigned int currentclock = 0;  
   static unsigned int ref_delay = 1000 / 20;  // 20fps
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  ref_delay = 0;
+#endif
 
   drawFrame( engine );
   afterFrame();

@@ -92,7 +92,7 @@ private:
 class HouseSpecHelper
 {
 public:
-  static HouseSpecHelper& getInstance();
+  static HouseSpecHelper& instance();
 
   HouseSpecification getHouseLevelSpec(const int houseLevel);
   int getHouseLevel(const int houseId);

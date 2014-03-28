@@ -132,21 +132,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-class WalkerHelper
-{
-public:
-  static WalkerHelper& instance();
-
-  static std::string getTypename( constants::walker::Type type );
-  static constants::walker::Type getType( const std::string& name );
-  static std::string getPrettyTypeName( constants::walker::Type type );
-  static Picture getBigPicture( constants::walker::Type type );
-
-  virtual ~WalkerHelper();
-private:
-  WalkerHelper();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
 #endif //_CAESARIA_WALKER_H_INCLUDE_

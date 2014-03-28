@@ -43,6 +43,7 @@
 #include "spear.hpp"
 #include "bow_arrow.hpp"
 #include "enemyarcher.hpp"
+#include "helper.hpp"
 #include <map>
 
 using namespace constants;

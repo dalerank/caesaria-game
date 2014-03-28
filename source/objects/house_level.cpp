@@ -570,7 +570,7 @@ HouseSpecification::HouseSpecification( const HouseSpecification& other ) : _d( 
 
 HouseSpecification HouseSpecification::next() const
 {
-  return HouseSpecHelper::getInstance().getHouseLevelSpec(_d->houseLevel+1);
+  return HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel+1);
 }
 
 int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oMissingRequirement) const
@@ -621,7 +621,7 @@ public:
   HouseLevelSpecsEqMap level_by_id;  // key=houseId, value=houseLevel
 };
 
-HouseSpecHelper& HouseSpecHelper::getInstance()
+HouseSpecHelper& HouseSpecHelper::instance()
 {
   static HouseSpecHelper inst;
   return inst;

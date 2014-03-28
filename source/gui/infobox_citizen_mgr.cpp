@@ -21,6 +21,7 @@
 #include "gfx/tilemap.hpp"
 #include "infobox_citizen.hpp"
 #include "core/logger.hpp"
+#include "walker/helper.hpp"
 #include "infobox_land.hpp"
 #include <vector>
 

@@ -24,7 +24,7 @@
 #include "core/logger.hpp"
 #include "walker/emigrant.hpp"
 #include "core/saveadapter.hpp"
-#include "walker/walker.hpp"
+#include "walker/helper.hpp"
 #include "picture_info_bank.hpp"
 #include <map>
 

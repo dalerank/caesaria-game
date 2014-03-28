@@ -24,6 +24,7 @@
 #include "core/logger.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
+#include "walker/helper.hpp"
 
 using namespace constants;
 

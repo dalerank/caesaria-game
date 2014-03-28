@@ -34,10 +34,7 @@ NameGenerator& NameGenerator::instance()
   return inst;
 }
 
-NameGenerator::~NameGenerator()
-{
-
-}
+NameGenerator::~NameGenerator(){}
 
 std::string NameGenerator::rand( NameType type )
 {
@@ -59,18 +56,15 @@ void NameGenerator::initialize(const vfs::Path &filename)
 {
   VariantMap names = SaveAdapter::load( filename );
 
-  NameGenerator& ng = instance();
-  ng._d->female.clear();
-  ng._d->male.clear();
-  ng._d->surname.clear();
+  _d->female.clear();
+  _d->male.clear();
+  _d->surname.clear();
 
   VariantMap ctNames = names.get( "citizens" ).toMap();
-  ng._d->male << ctNames.get( "male" ).toList();
-  ng._d->female << ctNames.get( "female" ).toList();
-  ng._d->surname << ctNames.get( "surname" ).toList();
+  _d->male << ctNames.get( "male" ).toList();
+  _d->female << ctNames.get( "female" ).toList();
+  _d->surname << ctNames.get( "surname" ).toList();
 }
 
 NameGenerator::NameGenerator() : _d( new Impl )
-{
-
-}
+{}

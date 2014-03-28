@@ -51,7 +51,7 @@
 #include "vfs/archive_sg2.hpp"
 #include "scene/briefing.hpp"
 #include "gfx/logo.hpp"
-#include "walker/info.hpp"
+#include "walker/helper.hpp"
 
 #include <list>
 
@@ -405,7 +405,6 @@ void Game::initialize()
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
   _d->initGuiEnvironment();
-  WalkerInfo::instance().initialize( GameSettings::rcpath( GameSettings::walkerModel ) );
   initSound();
   mountArchives();  // init some quick pictures for screenWait
 
@@ -414,9 +413,10 @@ void Game::initialize()
   screen.update( *_d->engine );
 
   _d->initPictures( GameSettings::rcpath() );
-  NameGenerator::initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
-  HouseSpecHelper::getInstance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
+  NameGenerator::instance().initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
+  HouseSpecHelper::instance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
   MetaDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
+  WalkerHelper::instance().initialize( GameSettings::rcpath( GameSettings::walkerModel ) );
   _d->initPantheon( GameSettings::rcpath( GameSettings::pantheonModel ) );
 
   if( GameSettings::get( "no-fade" ).isNull() )

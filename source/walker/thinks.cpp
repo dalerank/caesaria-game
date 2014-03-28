@@ -19,6 +19,7 @@
 #include "walker.hpp"
 #include "constants.hpp"
 #include "animals.hpp"
+#include "helper.hpp"
 #include "core/stringhelper.hpp"
 
 using namespace constants;
