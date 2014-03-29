@@ -45,7 +45,7 @@ protected:
 protected:
   Prefect( PlayerCityPtr city );
 
-  bool _looks4Protestor(TilePos& pos);
+  WalkerPtr _looks4Enemy( int range);
   bool _looks4Fire( ReachedBuildings& buildings, TilePos& pos );
   bool _checkPath2NearestFire( const ReachedBuildings& buildings );
   void _serveBuildings( ReachedBuildings& reachedBuildings );

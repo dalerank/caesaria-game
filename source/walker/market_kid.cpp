@@ -63,7 +63,6 @@ MarketKid::MarketKid(PlayerCityPtr city )
   _d->delay = 0;
   _d->birthTime = 0;
   _d->basket.setCapacity( 100 );
-  //_setAnimation( gfx::marketkidMove );
   _setType( walker::marketKid );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -78,7 +77,7 @@ void MarketKid::send2City( MarketPtr destination )
     _d->marketPos = destination->pos();
     _pathwayRef().rbegin();
     _centerTile();
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
   else
   {
@@ -125,7 +124,7 @@ void MarketKid::_reachedPathway()
 
   deleteLater();
 
-  city::Helper cityh( _getCity() );
+  city::Helper cityh( _city() );
   MarketPtr market = cityh.find<Market>( building::market, _d->marketPos );
   if( market.isValid() )
   {
@@ -137,7 +136,7 @@ void MarketKid::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), pos(), ResourceGroup::carts, 465, 472 );
+  Corpse::create( _city(), pos(), ResourceGroup::carts, 465, 472 );
 }
 
 void MarketKid::_updateThinks()
@@ -145,7 +144,7 @@ void MarketKid::_updateThinks()
   StringArray ownThinks;
   ownThinks << "##market_kid_say_1##";
 
-  setThinks( WalkerThinks::check( this, _getCity(), ownThinks ) );
+  setThinks( WalkerThinks::check( this, _city(), ownThinks ) );
 }
 
 GoodStock& MarketKid::getBasket(){  return _d->basket;}

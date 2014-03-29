@@ -38,7 +38,7 @@ class Pathway;
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
-  typedef enum { acNone, acMove, acFight, acDie, acMax } Action;
+  typedef enum { acNone, acMove, acFight, acDie, acWork, acMax } Action;
 
   Walker( PlayerCityPtr city );
   virtual ~Walker();
@@ -59,6 +59,7 @@ public:
   virtual void turn( TilePos pos );
 
   void setSpeed(const float speed);
+  void setSpeedMultiplier( float koeff );
   void setUniqueId( const UniqueId uid );
 
   constants::Direction getDirection() const;
@@ -88,6 +89,7 @@ public:
   void deleteLater();
 
   virtual void initialize( const VariantMap& options );
+  virtual int agressive() const;
 
 protected:
   void _walk();
@@ -107,11 +109,11 @@ protected:
 
   Animation& _animationRef();
   const Animation &_animationRef() const;
-  void _setAction( Walker::Action action, int animIndex=-1 );
+  void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
 
   void _setType( constants::walker::Type type );
-  PlayerCityPtr _getCity() const;
+  PlayerCityPtr _city() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos( Point pos );

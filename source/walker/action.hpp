@@ -24,7 +24,6 @@ struct DirectedAction
 {
   int action;
   constants::Direction direction;
-  int animation;
 
   inline bool operator<( const DirectedAction &a ) const
   {

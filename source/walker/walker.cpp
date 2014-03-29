@@ -56,29 +56,28 @@ public:
   std::string name;
   int health;
   std::string thinks;
+  float tileSpeedKoeff;
   AbilityList abilities;
 
-  float getSpeed() const
-  {
-    return speedMultiplier * speed;
-  }
+  float getSpeed() const   {  return speedMultiplier * speed * tileSpeedKoeff;  }
 
   void updateSpeedMultiplier( const Tile& tile ) 
   {
-    speedMultiplier = (tile.getFlag( Tile::tlRoad ) || tile.getFlag( Tile::tlGarden )) ? 1.f : 0.5f;
+    tileSpeedKoeff = (tile.getFlag( Tile::tlRoad ) || tile.getFlag( Tile::tlGarden )) ? 1.f : 0.5f;
   }
 };
 
 Walker::Walker(PlayerCityPtr city) : _d( new Impl )
 {
   _d->city = city;
+  _d->tileSpeedKoeff = 1.f;
   _d->action.action = Walker::acMove;
   _d->action.direction = constants::noneDirection;
   _d->type = walker::unknown;
   _d->health = 100;
 
   _d->speed = 1.f; // default speed
-  _d->speedMultiplier = 0.8 + math::random( 40 ) / 100.f;
+  _d->speedMultiplier = 1.f;
   _d->isDeleted = false;
 
   _d->midTilePos = Point( 7, 7 );
@@ -132,6 +131,7 @@ void Walker::setPathway( const Pathway& pathway)
 }
 
 void Walker::setSpeed(const float speed){   _d->speed = speed;}
+void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 // ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
 void Walker::inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
@@ -388,17 +388,16 @@ const Animation& Walker::_animationRef() const {  return _d->animation;}
 void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 void Walker::_setType(walker::Type type){  _d->type = type;}
-PlayerCityPtr Walker::_getCity() const{  return _d->city;}
+PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
 
-void Walker::_setAction( Walker::Action action, int animIndex )
+void Walker::_setAction( Walker::Action action )
 {
-  if( _d->action.action != action )
+  if( _d->action.action != action  )
   {
     _animationRef().clear();
   }
   _d->action.action = action;
-  _d->action.animation = (animIndex==-1) ? action : animIndex;
 }
 
 void Walker::initialize(const VariantMap &options)
@@ -406,6 +405,8 @@ void Walker::initialize(const VariantMap &options)
   _d->speed = options.get( "speed", 1.f ); // default speed
   _d->speedMultiplier = options.get( "speedMultiplier", 0.8f + math::random( 40 ) / 100.f );
 }
+
+int Walker::agressive() const { return 0; }
 
 std::string Walker::getThinks() const
 {
@@ -484,7 +485,7 @@ void Walker::save( VariantMap& stream ) const
 
 void Walker::load( const VariantMap& stream)
 {
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
 
   _d->tileOffset = stream.get( "tileoffset" );
   _d->name = stream.get( "name" ).toString();
@@ -552,7 +553,7 @@ void Walker::_setWpos(Point pos) { _d->posOnMap = pos; }
 
 void Walker::_updateThinks()
 {
-  _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
+  _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _city() );
 }
 
 Point Walker::_wpos() const{  return _d->posOnMap;}

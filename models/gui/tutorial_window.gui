@@ -1,7 +1,7 @@
 {  
   geometry : [ 0, 0, 590, 450 ]
-  
-	lbBackground#Label : 
+
+  lbBackground#Label :
   {
     geometryf : [ 0.0, 0.0, 1, 1 ]
     bgtype : "whiteFrame"
@@ -16,7 +16,7 @@
     
     imgAdvisor#Image : {
       geometry : [ 10, 10, 70, 70 ]
-      image : "picture2_00001.png"
+      image : "picture2_00001"
       mode : "image"
     }
        

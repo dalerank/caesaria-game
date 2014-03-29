@@ -68,7 +68,6 @@ public:
 SeaMerchant::SeaMerchant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  //_setAnimation( gfx::seaMerchantMove );
   _setType( walker::seaMerchant );
   _d->waitInterval = 0;
   _d->tryDockCount = 0;
@@ -351,12 +350,12 @@ Pathway SeaMerchant::Impl::findNearbyDock(const DockList& docks, TilePos positio
 void SeaMerchant::_reachedPathway()
 {
   Walker::_reachedPathway();
-  _d->resolveState( _getCity(), this );
+  _d->resolveState( _city(), this );
 }
 
 void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 {
-  Pathway pathway = PathwayHelper::create( walker->pos(), city->getBorderInfo().boatExit, PathwayHelper::water );
+  Pathway pathway = PathwayHelper::create( walker->pos(), city->borderInfo().boatExit, PathwayHelper::water );
   if( !pathway.isValid() )
   {
     walker->deleteLater();
@@ -386,12 +385,12 @@ DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 void SeaMerchant::send2city()
 {
   _d->nextState = Impl::stFindDock;
-  setPos( _getCity()->getBorderInfo().boatEntry );
-  _d->resolveState( _getCity(), this );
+  setPos( _city()->borderInfo().boatEntry );
+  _d->resolveState( _city(), this );
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }
 
@@ -429,7 +428,7 @@ void SeaMerchant::timeStep(const unsigned long time)
   {
   case Impl::stWaitGoods:
   case Impl::stWaitFreeDock:
-    _d->resolveState( _getCity(), this );
+    _d->resolveState( _city(), this );
   break;
 
   default: break;

@@ -64,7 +64,6 @@ public:
 Merchant::Merchant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  //_setAnimation( gfx::horseMerchantMove );
   _setType( walker::merchant );
   _d->maxDistance = 60;
   _d->waitInterval = 0;
@@ -272,7 +271,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       }
 
       // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-      Pathway pathWay = PathwayHelper::create( position, city->getBorderInfo().roadExit, PathwayHelper::allTerrain );
+      Pathway pathWay = PathwayHelper::create( position, city->borderInfo().roadExit, PathwayHelper::allTerrain );
       if( pathWay.isValid() )
       {
         wlk->setPos( pathWay.getStartPos() );
@@ -348,18 +347,18 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 void Merchant::_reachedPathway()
 {
   Walker::_reachedPathway();
-  _d->resolveState( _getCity(), this, pos() );
+  _d->resolveState( _city(), this, pos() );
 }
 
 void Merchant::send2city()
 {
   _d->nextState = Impl::stFindWarehouseForSelling;
-  setPos( _getCity()->getBorderInfo().roadEntry );
-  _d->resolveState( _getCity(), this, pos() );
+  setPos( _city()->borderInfo().roadEntry );
+  _d->resolveState( _city(), this, pos() );
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }
 
@@ -389,7 +388,7 @@ void Merchant::load( const VariantMap& stream)
   else
   {
     _d->nextState = Impl::stBackToBaseCity;
-    _d->resolveState( _getCity(), this, pos() );
+    _d->resolveState( _city(), this, pos() );
   }
 }
 

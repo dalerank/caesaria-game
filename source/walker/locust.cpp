@@ -61,7 +61,6 @@ void Locust::create(PlayerCityPtr city, TilePos pos, int time)
 Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 {
   _setType( walker::locust );
-  //_setAnimation( gfx::unknown );
 
   _d->time = 0;
   _d->grubInterval = GameDate::ticksInMonth() / 2;
@@ -80,7 +79,7 @@ void Locust::timeStep(const unsigned long time)
 
   if( time % _d->grubInterval == 1 )
   {
-    city::Helper helper( _getCity() );
+    city::Helper helper( _city() );
     FarmPtr farm = helper.find<Farm>( building::any, pos() );
     if( farm.isValid() && farm->type() != building::pigFarm )
     {

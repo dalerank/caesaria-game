@@ -25,7 +25,6 @@
 #include "pathway.hpp"
 #include "gfx/tileoverlay.hpp"
 #include "route.hpp"
-#include <list>
 
 class Propagator
 {

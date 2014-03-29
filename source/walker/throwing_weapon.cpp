@@ -41,18 +41,18 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   _d->dstPos = Point( dst.i(), dst.j() ) * 15 + Point( 7, 7 );
   _d->srcPos = Point( src.i(), src.j() ) * 15 + Point( 7, 7 );
 
-  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / 20.f;
+  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (dst.distanceFrom( src) * 2.f);
   _d->currentPos = _d->srcPos.toPointF();
 
   _setWpos( _d->srcPos );
 
-  _getCity()->addWalker( this );
-  Tile& tile = _getCity()->tilemap().at( src );
+  _city()->addWalker( this );
+  Tile& tile = _city()->tilemap().at( src );
   TileOverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
     _d->height = ov->offset( tile, Point( 7, 7 ) ).y();
-    Tile& dTile = _getCity()->tilemap().at( dst );
+    Tile& dTile = _city()->tilemap().at( dst );
     ov = dTile.overlay();
     if( ov.isValid() )
     {

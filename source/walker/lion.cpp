@@ -46,7 +46,6 @@ void Lion::_reachedPathway()
 Lion::Lion(PlayerCityPtr city) : Animal( city )
 {
   _setType( walker::lion );
-  //_setAnimation( gfx::lionMove );
 
   setName( _("##Lion##") );
 }

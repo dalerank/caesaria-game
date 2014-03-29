@@ -44,7 +44,6 @@ Immigrant::Immigrant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::immigrant );
-  //_setAnimation( gfx::homelessMove );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
   _d->stamina = rand() % 80 + 20;
@@ -52,7 +51,7 @@ Immigrant::Immigrant(PlayerCityPtr city )
 
 HousePtr Immigrant::_findBlankHouse()
 {
-  city::Helper hlp( _getCity() );
+  city::Helper hlp( _city() );
   HouseList houses = hlp.find< House >( building::house );
   HousePtr blankHouse;
 
@@ -94,7 +93,7 @@ void Immigrant::_findPath2blankHouse( TilePos startPoint )
   if( !pathway.isValid() )
   {
     pathway = PathwayHelper::create( startPoint,
-                                     _getCity()->getBorderInfo().roadExit,
+                                     _city()->borderInfo().roadExit,
                                      PathwayHelper::allTerrain );
   }
 
@@ -115,13 +114,13 @@ void Immigrant::_reachedPathway()
   bool gooutCity = true;
   Walker::_reachedPathway();
 
-  if( pos() == _getCity()->getBorderInfo().roadExit )
+  if( pos() == _city()->borderInfo().roadExit )
   {
     deleteLater();
     return;
   }
 
-  HousePtr house = ptr_cast<House>( _getCity()->getOverlay( pos() ) );
+  HousePtr house = ptr_cast<House>( _city()->getOverlay( pos() ) );
   if( house.isValid() )
   {
     int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
@@ -133,7 +132,7 @@ void Immigrant::_reachedPathway()
   }
   else
   {
-    TilesArray area = _getCity()->tilemap().getArea( pos() - TilePos(1,1),
+    TilesArray area = _city()->tilemap().getArea( pos() - TilePos(1,1),
                                                          pos() + TilePos(1,1) );
     foreach( it, area )  //have destination
     {
@@ -144,7 +143,7 @@ void Immigrant::_reachedPathway()
       int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
       if( freeRoom > 0 )
       {
-        Tilemap& tmap = _getCity()->tilemap();
+        Tilemap& tmap = _city()->tilemap();
         Pathway pathway;
         pathway.init( tmap, tmap.at( pos() ) );
         pathway.setNextTile( *tile );
@@ -202,14 +201,14 @@ ImmigrantPtr Immigrant::send2city( PlayerCityPtr city, const CitizenGroup& peopl
 void Immigrant::send2city( const Tile& startTile )
 {
   _findPath2blankHouse( startTile.pos() );
-  _getCity()->addWalker( this );
+  _city()->addWalker( this );
 }
 
 void Immigrant::leaveCity( const Tile& tile)
 {
   setPos( tile.pos() );
   Pathway pathway = PathwayHelper::create( tile.pos(),
-                                           _getCity()->getBorderInfo().roadExit,
+                                           _city()->borderInfo().roadExit,
                                            PathwayHelper::allTerrain );
 
   if( !pathway.isValid() )
@@ -218,7 +217,7 @@ void Immigrant::leaveCity( const Tile& tile)
     return;
   }
 
-  _getCity()->addWalker( this );
+  _city()->addWalker( this );
   setPathway( pathway );
   go();
 }
@@ -294,5 +293,5 @@ void Immigrant::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), pos(), ResourceGroup::citizen2, 1007, 1014 );
+  Corpse::create( _city(), pos(), ResourceGroup::citizen2, 1007, 1014 );
 }

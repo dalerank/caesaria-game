@@ -172,7 +172,7 @@ public:
 };
 
 MetaData::MetaData(const TileOverlay::Type buildingType, const std::string& name )
-  : _d( new Impl ), _prettyName( "##" + name + "##" )
+  : _prettyName( "##" + name + "##" ), _d( new Impl )
 {
   _d->tileovType = buildingType;
   _d->group = building::unknownGroup;

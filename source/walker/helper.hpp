@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WALKERINFO_H_INCLUDE_
-#define _CAESARIA_WALKERINFO_H_INCLUDE_
+#ifndef _CAESARIA_WALKERHELPER_H_INCLUDE_
+#define _CAESARIA_WALKERHELPER_H_INCLUDE_
 
 #include "core/requirements.hpp"
 #include "vfs/path.hpp"
@@ -45,4 +45,49 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //_CAESARIA_WALKERINFO_H_INCLUDE_
+template< class Dst, class Src >
+inline std::list<SmartPtr<Dst> >& operator<<(std::list<SmartPtr<Dst> >& dstList, const std::list< SmartPtr<Src> >& srcList )
+{
+  foreach( it, srcList )
+  {
+    SmartPtr<Dst> ptr = ptr_cast<Dst>( *it );
+    if( ptr.isValid() )
+        dstList.push_back( ptr );
+  }
+
+  return dstList;
+}
+
+template< class Dst >
+inline std::list<SmartPtr<Dst> >& operator<<(std::list<SmartPtr<Dst> >& dstList, const WalkerList& srcList )
+{
+  foreach( it, srcList )
+  {
+    SmartPtr<Dst> ptr = ptr_cast<Dst>( *it );
+    if( ptr.isValid() )
+        dstList.push_back( ptr );
+  }
+
+  return dstList;
+}
+
+template< class Wlk >
+SmartPtr<Wlk> findNearestWalker( TilePos pos, const std::list< SmartPtr< Wlk > >& walkers )
+{
+  SmartPtr< Wlk > p;
+
+  int minDistance=99;
+  for( typename std::list< SmartPtr< Wlk > >::const_iterator it=walkers.begin(); it != walkers.end(); ++it )
+  {
+    int distance = (*it)->pos().distanceFrom( pos );
+    if( distance < minDistance )
+    {
+      minDistance =  distance;
+      p = *it;
+    }
+  }
+
+  return p;
+}
+
+#endif //_CAESARIA_WALKERHELPER_H_INCLUDE_

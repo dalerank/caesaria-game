@@ -36,7 +36,6 @@ public:
 FishPlace::FishPlace( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 {
   _setType( walker::fishPlace );
-  //_setAnimation( gfx::unknown );
   setSpeed( 0.1f );
 
   setName( _("##ship##") );
@@ -96,7 +95,7 @@ const Picture& FishPlace::getMainPicture()
 
 void FishPlace::send2city(TilePos pos)
 {
-  Pathway pathway = Pathfinder::getInstance().getPath( pos, _getCity()->getBorderInfo().boatExit,
+  Pathway pathway = Pathfinder::getInstance().getPath( pos, _city()->borderInfo().boatExit,
                                                        Pathfinder::waterOnly );
   if( !pathway.isValid() )
   {
@@ -104,7 +103,7 @@ void FishPlace::send2city(TilePos pos)
   }
   else
   {
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
     setPos( pos );
     setPathway( pathway );
     go();

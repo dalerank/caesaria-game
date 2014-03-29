@@ -34,7 +34,6 @@ Recruter::Recruter(PlayerCityPtr city )
  : ServiceWalker( city, Service::recruter )
 {    
   _workersNeeded = 0;
-  //_setAnimation( gfx::citizenMove );
   _setType( walker::recruter );
 }
 
@@ -89,5 +88,5 @@ void Recruter::die()
 {
   ServiceWalker::die();
 
-  Corpse::create( _getCity(), pos(), ResourceGroup::citizen1, 97, 104 );
+  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 97, 104 );
 }

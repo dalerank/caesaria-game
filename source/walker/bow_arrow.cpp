@@ -32,7 +32,7 @@ BowArrowPtr BowArrow::create(PlayerCityPtr city)
 
 void BowArrow::_onTarget()
 {
-  WalkerList walkers = _getCity()->getWalkers( walker::any, dstPos() );
+  WalkerList walkers = _city()->getWalkers( walker::any, dstPos() );
   foreach( w, walkers )
   {
     (*w)->updateHealth( -3 );
@@ -46,7 +46,6 @@ int BowArrow::rcStartIndex() const { return 130; }
 BowArrow::BowArrow(PlayerCityPtr city) : ThrowingWeapon( city )
 {
   _setType( walker::bow_arrow );
-  //_setAnimation( gfx::unknown );
 
   setName( _("##bow_arrow##") );
 }

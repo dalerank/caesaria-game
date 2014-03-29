@@ -32,14 +32,14 @@ SpearPtr Spear::create(PlayerCityPtr city)
 
 void Spear::_onTarget()
 {
-  WalkerList walkers = _getCity()->getWalkers( walker::any, dstPos() );
+  WalkerList walkers = _city()->getWalkers( walker::any, dstPos() );
   foreach( w, walkers )
   {
     (*w)->updateHealth( -10 );
     (*w)->acceptAction( Walker::acFight, startPos() );
   }
 
-  TileOverlayPtr overlay = _getCity()->getOverlay( dstPos() );
+  TileOverlayPtr overlay = _city()->getOverlay( dstPos() );
 
   ConstructionPtr c = ptr_cast<Construction>( overlay );
   if( c.isValid() )
@@ -54,7 +54,6 @@ int Spear::rcStartIndex() const { return 114; }
 Spear::Spear(PlayerCityPtr city) : ThrowingWeapon( city )
 {
   _setType( walker::spear );
-  //_setAnimation( gfx::unknown );
 
   setName( _("##spear##") );
 }

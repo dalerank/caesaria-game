@@ -278,7 +278,7 @@ void Level::Impl::makeEnemy()
   EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
   if( enemy.isValid() )
   {
-    enemy->send2City( game->city()->getBorderInfo().roadEntry );
+    enemy->send2City( game->city()->borderInfo().roadEntry );
   }
 }
 

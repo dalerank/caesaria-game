@@ -83,7 +83,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   _d->maxNeed = 0;  // need of this trainee in buildings
  
   Pathway finalPath;
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
 
   BuildingList buildings;
   foreach( buildingType, _d->necBuildings )
@@ -164,7 +164,7 @@ void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
   if( !isDeleted() && _d->destination.isValid() )
   {
     _d->destination->reserveTrainee( type() );
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }
 
@@ -193,7 +193,7 @@ void TraineeWalker::load( const VariantMap& stream )
 {
   Walker::load(stream);
 
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   _d->base = helper.find<Building>( building::any, stream.get( "originBldPos" ).toTilePos() );
   _d->destination = helper.find<Building>( building::any, stream.get( "destBldPos" ).toTilePos() );
   _d->maxDistance = (int)stream.get( "maxDistance" );

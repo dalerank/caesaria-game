@@ -66,7 +66,7 @@ void RomeSoldier::die()
   switch( type() )
   {
   case walker::legionary:
-    Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 705, 712 );
+    Corpse::create( _city(), pos(), ResourceGroup::citizen3, 705, 712 );
   break;
 
   default:
@@ -136,7 +136,7 @@ void RomeSoldier::load(const VariantMap& stream)
   _d->patrolPosition = stream.get( "patrolPosition" );
 
   TilePos basePosition = stream.get( "base" );
-  FortPtr fort = ptr_cast<Fort>( _getCity()->getOverlay( basePosition ) );
+  FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( basePosition ) );
 
   if( fort.isValid() )
   {
@@ -151,7 +151,7 @@ void RomeSoldier::load(const VariantMap& stream)
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
   WalkerList walkers;
 
   TilePos offset( range, range );
@@ -159,7 +159,7 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 
   foreach( tile, tiles )
   {
-    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->pos() );
+    WalkerList tileWalkers = _city()->getWalkers( walker::any, (*tile)->pos() );
 
     foreach( w, tileWalkers )
     {
@@ -238,7 +238,7 @@ void RomeSoldier::_reachedPathway()
 
   case Impl::go2position:
   {
-    if( _getCity()->getWalkers( type(), pos() ).size() != 1 ) //only me in this tile
+    if( _city()->getWalkers( type(), pos() ).size() != 1 ) //only me in this tile
     {
       _back2fort();
     }
@@ -306,6 +306,6 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }
