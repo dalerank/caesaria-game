@@ -1,4 +1,4 @@
-![CaesarIA](/logo.png)
+![CaesarIA](https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2013/Nov/12/caesaria-logo-3368332030-11_avatar.png)
 
 ![BuildStatus](https://drone.io/bitbucket.org/dalerank/caesaria/status.png)
 
@@ -17,16 +17,18 @@ land or maritime trade routes.
 
 Building CaesarIA
 -------------------
-See INSTALL_LINUX.md or INSTALL_WINDOWS.md depending on which operating system you are running.
+See INSTALL_LINUX or INSTALL_WINDOWS depending on which operating system you are running.
 
 #### External dependencies
 CaesarIA is build using following excellent libraries:
+
   * SDL - http://www.libsdl.org/
   * SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
   * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
     
 Releases:
 ##### 2014-03-21
+
   * Now may use native Caesar III(c) resources without repack to zip archives, use cmd option -c3gfx /path/to/caesar3_folder 
   * Add Tarrentum mission (3 military)
   * Add sound options window
@@ -62,6 +64,7 @@ Releases:
   * updater not download haiku-os specific file on windows
 
 ##### 2014-02-25
+
   * Localization improved
   * MarketLady append market access to house, when it buy something 
   * MarketLady now buy foods from warehouse also
@@ -87,8 +90,8 @@ Releases:
   * Tutrorial mission now use map from original story
   * City funds history fixed step add
 
-
 ##### 2014-02-12
+
   * MacOS X an Haiku support
   * Mission engine and event dispatcher improved
   * more citizen thinks 
@@ -105,6 +108,7 @@ Releases:
   * goods consumption fixed
 
 ##### 2013-17-11
+
   * Garden desirability improved
   * House upgrade logic improved
   * Migrants pathfinder logic improved
