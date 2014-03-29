@@ -109,7 +109,7 @@ protected:
 
   Animation& _animationRef();
   const Animation &_animationRef() const;
-  void _setAction( Walker::Action action, int animIndex=-1 );
+  void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
 
   void _setType( constants::walker::Type type );

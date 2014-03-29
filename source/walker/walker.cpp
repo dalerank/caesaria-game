@@ -391,14 +391,13 @@ void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
 
-void Walker::_setAction( Walker::Action action, int animIndex )
+void Walker::_setAction( Walker::Action action )
 {
-  if( _d->action.action != action )
+  if( _d->action.action != action  )
   {
     _animationRef().clear();
   }
   _d->action.action = action;
-  _d->action.animation = (animIndex==-1) ? action : animIndex;
 }
 
 void Walker::initialize(const VariantMap &options)

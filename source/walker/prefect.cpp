@@ -36,10 +36,14 @@
 
 using namespace constants;
 
+namespace {
+  const Walker::Action acDragWater = Walker::Action( Walker::acMax + 1 );
+  const Walker::Action acFightFire = Walker::Action( Walker::acMax + 2 );
+}
+
 class Prefect::Impl
 {
 public:
-  enum { animDragWater=6, animFightFire = 7 };
   typedef enum { patrol=0,
                  findFire, go2fire, fightFire,
                  go2enemy, fightEnemy,
@@ -108,8 +112,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->pos().distanceFrom( pos() ) < 1.5f )
     {
       turn( building->pos() );
-      _d->action = Impl::fightFire;
-      _setAction( acFight, Impl::animFightFire  );
+      _setAction( acFightFire  );
       setSpeed( 0.f );
       return true;
     }
@@ -126,7 +129,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     {
       _d->action = Impl::go2fire;
       _updatePathway( tmp );
-      _setAction( acMove, Impl::animDragWater );
+      _setAction( acDragWater );
       setSpeed( 1 );
       go();
       return true;
@@ -184,7 +187,7 @@ void Prefect::_back2Patrol()
   if( pathway.isValid() )
   {
     _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
-    _setAction( acMove, _d->water > 0 ? Impl::animDragWater : acMove );
+    _setAction( _d->water > 0 ? acDragWater : acMove );
     _updatePathway( pathway );
     setSpeed( 1 );
     go();
@@ -214,7 +217,7 @@ void Prefect::_brokePathway(TilePos p)
   if( overlay.isValid() && overlay->type() == building::burningRuins )
   {
     setSpeed( 0 );
-    _setAction( acFight, Impl::animFightFire );
+    _setAction( acFightFire );
     _d->action = Impl::fightFire;
     return;
   }
@@ -227,7 +230,7 @@ void Prefect::_brokePathway(TilePos p)
     {
       setSpeed( 1.f );
       _d->action = Impl::findFire;
-      _setAction( acMove, Impl::animDragWater );
+      _setAction( acDragWater );
       setPathway( pathway );
       go();
       return;
@@ -353,7 +356,7 @@ void Prefect::_centerTile()
     {
       _d->action = Impl::fightFire;
       _d->endPatrolPoint = building->pos();
-      _setAction( acFight, Impl::animFightFire );
+      _setAction( acFightFire );
       setSpeed( 0.f );
       return;
     }
@@ -371,8 +374,23 @@ void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
 
+  switch( getAction() )
+  {
+  case acDragWater:
+    _walk();
+    _updateAnimation( time );
+  break;
+
+  case acFightFire:
+    _updateAnimation( time );
+  break;
+
+  default: break;
+  }
+
   switch( _d->action )
   {
+
   case Impl::fightFire:
   {    
     BuildingPtr building = ptr_cast<Building>( _getNextTile().overlay() );
@@ -444,7 +462,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
   _d->action = water > 0 ? Impl::findFire : Impl::patrol;
   _d->water = water;
-  _setAction( getAction(), water > 0 ? Impl::animDragWater : acMove );
+  _setAction( water > 0 ? acDragWater : acMove );
 
   if( water > 0 )
   {
@@ -490,7 +508,7 @@ void Prefect::load( const VariantMap& stream )
   _d->water = (int)stream.get( "water" );
   _d->endPatrolPoint = stream.get( "endPoint" );
 
-  _setAction( getAction(), _d->water > 0 ? Impl::animDragWater : acMove );
+  _setAction( _d->water > 0 ? acDragWater : acMove );
 
   PrefecturePtr prefecture = ptr_cast<Prefecture>( getBase() );
   if( prefecture.isValid() )

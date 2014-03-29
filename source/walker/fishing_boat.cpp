@@ -93,7 +93,7 @@ void FishingBoat::timeStep(const unsigned long time)
     case catchFish:
     {
       _animationRef().clear();
-      _setAction( getAction(), acWork );
+      _setAction( acWork );
 
       city::Helper helper( _city() );
       FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos() );
