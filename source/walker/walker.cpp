@@ -128,6 +128,7 @@ void Walker::setPathway( const Pathway& pathway)
 }
 
 void Walker::setSpeed(const float speed){   _d->speed = speed;}
+float Walker::speed() const{    return _d->speed;}
 void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 // ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center

@@ -59,6 +59,7 @@ public:
   virtual void turn( TilePos pos );
 
   void setSpeed(const float speed);
+  float speed() const;
   void setSpeedMultiplier( float koeff );
   void setUniqueId( const UniqueId uid );
 
