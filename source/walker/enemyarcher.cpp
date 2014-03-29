@@ -80,7 +80,7 @@ bool EnemyArcher::_tryAttack()
 
 void EnemyArcher::_fire( TilePos p )
 {
-  SpearPtr spear = Spear::create( _getCity() );
+  SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), p );
   _d->wait = 30;
 }

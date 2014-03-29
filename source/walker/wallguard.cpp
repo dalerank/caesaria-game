@@ -72,7 +72,7 @@ void WallGuard::die()
   switch( type() )
   {
   case walker::romeGuard:
-    Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 233, 240 );
+    Corpse::create( _city(), pos(), ResourceGroup::citizen3, 233, 240 );
   break;
 
   default:
@@ -103,7 +103,7 @@ void WallGuard::timeStep(const unsigned long time)
 
       if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
       {
-        SpearPtr spear = Spear::create( _getCity() );
+        SpearPtr spear = Spear::create( _city() );
         spear->toThrow( pos(), p->pos() );
         _d->wait = 60;
         _updateAnimation( time+1 );
@@ -157,7 +157,7 @@ void WallGuard::load(const VariantMap& stream)
   _d->patrolPosition = stream.get( "patrolPosition" );
 
   TilePos basePosition = stream.get( "base" );
-  TowerPtr tower = ptr_cast<Tower>( _getCity()->getOverlay( basePosition ) );
+  TowerPtr tower = ptr_cast<Tower>( _city()->getOverlay( basePosition ) );
 
   if( tower.isValid() )
   {
@@ -172,7 +172,7 @@ void WallGuard::load(const VariantMap& stream)
 
 EnemySoldierList WallGuard::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
   EnemySoldierList walkers;
 
   for( unsigned int i=0; i < range; i++ )
@@ -182,7 +182,7 @@ EnemySoldierList WallGuard::_findEnemiesInRange( unsigned int range )
 
     foreach( tile, tiles )
     {
-      WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->pos() );
+      WalkerList tileWalkers = _city()->getWalkers( walker::any, (*tile)->pos() );
 
       foreach( w, tileWalkers )
       {
@@ -202,7 +202,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 {
   FortificationList ret;
 
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
   for( int range=1; range < 8; range++ )
   {
     TilePos offset( range, range );
@@ -402,7 +402,7 @@ void WallGuard::send2city( TowerPtr base, Pathway pathway )
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }
 

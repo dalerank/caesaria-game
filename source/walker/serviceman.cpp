@@ -111,7 +111,7 @@ Service::Type ServiceWalker::getService() const {  return _d->service; }
 
 void ServiceWalker::_computeWalkerPath()
 {  
-  Propagator pathPropagator( _getCity() );
+  Propagator pathPropagator( _city() );
   pathPropagator.init( ptr_cast<Construction>( _d->base ) );
   pathPropagator.setAllDirections( false );
 
@@ -173,7 +173,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
   int reachDistance = getReachDistance();
   TilePos start = pos - TilePos( reachDistance, reachDistance );
   TilePos stop = pos + TilePos( reachDistance, reachDistance );
-  TilesArray reachedTiles = _getCity()->tilemap().getArea( start, stop );
+  TilesArray reachedTiles = _city()->tilemap().getArea( start, stop );
   foreach( it, reachedTiles )
   {
     BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
@@ -257,7 +257,7 @@ void ServiceWalker::send2City( BuildingPtr base )
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( WalkerPtr( this ));
+    _city()->addWalker( WalkerPtr( this ));
   }
 }
 
@@ -306,7 +306,7 @@ void ServiceWalker::load( const VariantMap& stream )
   _d->reachDistance = (int)stream.get( "reachDistance" );
 
   TilePos basePos = stream.get( "base" ).toTilePos();
-  TileOverlayPtr overlay = _getCity()->tilemap().at( basePos ).overlay();
+  TileOverlayPtr overlay = _city()->tilemap().at( basePos ).overlay();
 
   _d->base = ptr_cast<Building>( overlay );
   if( _d->base.isNull() )
@@ -382,7 +382,7 @@ void ServiceWalker::die()
 
   if( start >= 0 )
   {
-    Corpse::create( _getCity(), pos(), rcGroup, start, stop );
+    Corpse::create( _city(), pos(), rcGroup, start, stop );
   }
 }
 

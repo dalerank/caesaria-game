@@ -84,7 +84,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 
 bool Prefect::_looks4Protestor( TilePos& p )
 {
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   TilePos offset( 3, 3 );
   ProtestorList protestors = helper.find<Protestor>( walker::protestor, pos() - offset, pos() + offset );
 
@@ -217,7 +217,7 @@ bool Prefect::_findFire()
 
 void Prefect::_brokePathway(TilePos p)
 {
-  TileOverlayPtr overlay = _getCity()->getOverlay( p );
+  TileOverlayPtr overlay = _city()->getOverlay( p );
   if( overlay.isValid() && overlay->type() == building::burningRuins )
   {
     setSpeed( 0 );
@@ -416,7 +416,7 @@ void Prefect::timeStep(const unsigned long time)
 
   case Impl::fightProtestor:
   {
-    city::Helper helper( _getCity() );
+    city::Helper helper( _city() );
     ProtestorList protestors = helper.find<Protestor>( walker::protestor,
                                                        pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
@@ -467,7 +467,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   {
     setBase( prefecture.object() );
 
-    _getCity()->addWalker( WalkerPtr( this ));
+    _city()->addWalker( WalkerPtr( this ));
   }
   else
   {
@@ -484,7 +484,7 @@ void Prefect::die()
 {
   ServiceWalker::die();
 
-  Corpse::create( _getCity(), pos(), ResourceGroup::citizen2, 711, 718 );
+  Corpse::create( _city(), pos(), ResourceGroup::citizen2, 711, 718 );
 }
 
 std::string Prefect::getThinks() const
@@ -513,7 +513,7 @@ void Prefect::load( const VariantMap& stream )
   if( prefecture.isValid() )
   {
     prefecture->addWalker( WalkerPtr( this ) );
-    _getCity()->addWalker( WalkerPtr( this ) );
+    _city()->addWalker( WalkerPtr( this ) );
   }
   
   if( prefecture.isNull() )

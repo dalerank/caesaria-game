@@ -71,7 +71,7 @@ void PatrolPoint::timeStep(const unsigned long time)
 
 void PatrolPoint::acceptPosition()
 {
-  FortPtr fort = ptr_cast<Fort>( _getCity()->getOverlay( _d->basePos ) );
+  FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
   if( fort.isValid() )
   {
     fort->changePatrolArea();

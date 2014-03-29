@@ -123,7 +123,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
     // we have something to buy!
     // get the list of buildings within reach
     Pathway pathWay;
-    Propagator pathPropagator( _getCity() );
+    Propagator pathPropagator( _city() );
     pathPropagator.init( ptr_cast<Construction>( _d->market ) );
     pathPropagator.setAllDirections( false );
     pathPropagator.propagate( _d->maxDistance);
@@ -200,7 +200,7 @@ void MarketLady::_reachedPathway()
    else
    {
       // get goods from destination building
-      TileOverlayPtr building = _getCity()->tilemap().at( _d->destBuildingPos ).overlay();
+      TileOverlayPtr building = _city()->tilemap().at( _d->destBuildingPos ).overlay();
       
       if( is_kind_of<Granary>( building ) )
       {
@@ -263,7 +263,7 @@ void MarketLady::_reachedPathway()
           GoodStock& currentStock = _d->basket.getStock( (Good::Type)gtype );
           if( currentStock.qty() > 0 )
           {
-            MarketKidPtr boy = MarketKid::create( _getCity(), this );
+            MarketKidPtr boy = MarketKid::create( _city(), this );
             GoodStock& boyBasket =  boy->getBasket();
             boyBasket.setType( (Good::Type)gtype );
             boyBasket.setCapacity( 100 );
@@ -289,7 +289,7 @@ void MarketLady::send2City( MarketPtr market )
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( WalkerPtr( this ) );
+    _city()->addWalker( WalkerPtr( this ) );
   }
 }
 
@@ -311,7 +311,7 @@ void MarketLady::load( const VariantMap& stream)
   _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
   _d->priorityGood = (Good::Type)stream.get( "priorityGood" ).toInt();
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
-  city::Helper helper( _getCity() );
+  city::Helper helper( _city() );
   _d->market = helper.find<Market>( building::market, tpos );
   _d->basket.load( stream.get( "basket" ).toMap() );
   _d->maxDistance = stream.get( "maxDistance" ).toInt();

@@ -87,14 +87,16 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
 
     }
 
-    walker::Type wtype = WalkerHelper::getType( soldierType );
-    WalkerPtr wlk = WalkerManager::instance().create( wtype, game.city() );
+    walker::Type wtype = WalkerHelper::getType( soldierType );   
     for( int k=0; k < soldierNumber; k++ )
     {
+      WalkerPtr wlk = WalkerManager::instance().create( wtype, game.city() );
       EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
       if( enemy.isValid() )
       {
         enemy->send2City( location );
+        enemy->wait( math::random( k * 30 ) );
+        enemy->setSpeed( 0.7 + math::random( 60 ) / 100.f  );
       }
     }
   }
@@ -103,7 +105,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
 }
 
 bool EnemyAttack::_mayExec(Game&, unsigned int) const { return true; }
-bool EnemyAttack::isDeleted() const {  __D_IMPL_CONST(_d,EnemyAttack); return _d->isDeleted; }
+bool EnemyAttack::isDeleted() const { __D_IMPL_CONST(_d,EnemyAttack); return _d->isDeleted; }
 
 void EnemyAttack::load(const VariantMap& stream)
 {

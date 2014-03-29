@@ -37,6 +37,8 @@ public:
   virtual void load( const VariantMap& stream );
   virtual void save( VariantMap& stream ) const;
 
+  virtual void wait( unsigned int time );
+
   virtual void send2City( TilePos pos );
   virtual void die();
 

@@ -67,7 +67,7 @@ public:
   TileOverlayList& getOverlays();
 
   void setBorderInfo( const BorderInfo& info );
-  const BorderInfo& getBorderInfo() const;
+  const BorderInfo& borderInfo() const;
 
   PlayerPtr getPlayer() const;
   

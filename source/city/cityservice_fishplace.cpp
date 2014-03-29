@@ -69,7 +69,7 @@ void Fishery::update( const unsigned int time )
 
     if( fishplace.isValid() )
     {
-      fishplace->send2city( _d->city->getBorderInfo().boatEntry );
+      fishplace->send2city( _d->city->borderInfo().boatEntry );
       _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
     }
   }

@@ -111,7 +111,7 @@ protected:
   void _setDirection( constants::Direction direction );
 
   void _setType( constants::walker::Type type );
-  PlayerCityPtr _getCity() const;
+  PlayerCityPtr _city() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos( Point pos );

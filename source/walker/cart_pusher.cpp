@@ -186,7 +186,7 @@ void CartPusher::computeWalkerDestination()
 {
    // get the list of buildings within reach
    Pathway pathWay;
-   Propagator pathPropagator( _getCity() );
+   Propagator pathPropagator( _city() );
    pathPropagator.setAllDirections( false );
    _d->consumerBuilding = 0;
 
@@ -351,7 +351,7 @@ void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }
 
@@ -394,7 +394,7 @@ void CartPusher::load( const VariantMap& stream )
   _d->stock.load( stream.get( "stock" ).toList() );
 
   TilePos prPos( stream.get( "producerPos" ).toTilePos() );
-  Tile& prTile = _getCity()->tilemap().at( prPos );
+  Tile& prTile = _city()->tilemap().at( prPos );
   _d->producerBuilding = ptr_cast<Building>( prTile.overlay() );
   
   if( is_kind_of<WorkingBuilding>( _d->producerBuilding ) )
@@ -404,7 +404,7 @@ void CartPusher::load( const VariantMap& stream )
   }
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );
-  _d->consumerBuilding = ptr_cast<Building>( _getCity()->getOverlay( cnsmPos ) );
+  _d->consumerBuilding = ptr_cast<Building>( _city()->getOverlay( cnsmPos ) );
 
   _d->maxDistance = stream.get( "maxDistance" ).toInt();
   _d->reservationID = stream.get( "reservationID" ).toInt();
@@ -414,7 +414,7 @@ void CartPusher::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), pos(), ResourceGroup::citizen1, 1025, 1032 );
+  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1025, 1032 );
 }
 
 std::string CartPusher::getThinks() const

@@ -394,7 +394,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
 }
 
 TileOverlayList&  PlayerCity::getOverlays()         { return _d->overlayList; }
-const BorderInfo& PlayerCity::getBorderInfo() const { return _d->borderInfo; }
+const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::getClimate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }

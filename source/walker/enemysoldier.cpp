@@ -33,6 +33,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "helper.hpp"
 #include "animals.hpp"
+#include "throwing_weapon.hpp"
 #include "core/foreach.hpp"
 
 using namespace constants;
@@ -41,12 +42,14 @@ class EnemySoldier::Impl
 {
 public:  
   EnemySoldier::EsAction action;
+  unsigned int waitInterval;
 };
 
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
 : Soldier( city, type ), _d( new Impl )
 {
   _d->action = check4attack;
+  _d->waitInterval = 0;
 }
 
 void EnemySoldier::_changeTile()
@@ -112,24 +115,28 @@ void EnemySoldier::_reachedPathway()
 
 WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
   WalkerList walkers;
 
-  TilePos offset( range, range );
-  TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
-
-  walker::Type rtype;
-  foreach( tile, tiles )
+  for( int k=0; k <= range; k ++ )
   {
-    WalkerList tileWalkers = _getCity()->getWalkers( walker::any, (*tile)->pos() );
+    TilePos offset( k, k );
+    TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
 
-    foreach( i, tileWalkers )
+    walker::Type rtype;
+    foreach( tile, tiles )
     {
-      rtype = (*i)->type();
-      if( rtype == type() || is_kind_of<Animal>(*i) || rtype  == walker::corpse )
-        continue;
+      WalkerList tileWalkers = _city()->getWalkers( walker::any, (*tile)->pos() );
 
-      walkers.push_back( *i );
+      foreach( i, tileWalkers )
+      {
+        rtype = (*i)->type();
+        if( rtype == type() || is_kind_of<Animal>(*i) || rtype  == walker::corpse
+            || is_kind_of<EnemySoldier>(*i) || is_kind_of<ThrowingWeapon>(*i))
+          continue;
+
+        walkers.push_back( *i );
+      }
     }
   }
 
@@ -168,20 +175,19 @@ void EnemySoldier::_check4attack()
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::create( pos(), _getCity()->getBorderInfo().boatExit,
+    pathway = PathwayHelper::create( pos(), _city()->borderInfo().roadExit,
                                      PathwayHelper::allTerrain );
   }
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _getCity(), pos(), 20 );
+    pathway = PathwayHelper::randomWay( _city(), pos(), 20 );
   }
 
   if( pathway.isValid() )
   {
     _d->action = go2position;
     setSpeed( 1.0 );
-    //_setAnimation( _d->walkAnimation );
     setPathway( pathway );
     go();
   }
@@ -196,17 +202,20 @@ void EnemySoldier::_check4attack()
 BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
 {
   BuildingList ret;
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
 
-  TilePos offset( range, range );
-  TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
-
-  foreach( it, tiles )
+  for( unsigned int k=0; k <= range; k++ )
   {
-    BuildingPtr b = ptr_cast<Building>( (*it)->overlay() );
-    if( b.isValid() && b->getClass() != building::disasterGroup )
+    TilePos offset( k, k );
+    TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
+
+    foreach( it, tiles )
     {
-      ret.push_back( b );
+      BuildingPtr b = ptr_cast<Building>( (*it)->overlay() );
+      if( b.isValid() && b->getClass() != building::disasterGroup )
+      {
+        ret.push_back( b );
+      }
     }
   }
 
@@ -263,6 +272,12 @@ void EnemySoldier::_centerTile()
 
 void EnemySoldier::timeStep(const unsigned long time)
 {
+  if( _d->waitInterval > 0 )
+  {
+    _d->waitInterval--;
+    return;
+  }
+
   Soldier::timeStep( time );
 
   switch( _d->action )
@@ -322,16 +337,16 @@ void EnemySoldier::send2City( TilePos pos )
 {
   setPos( pos );
   _check4attack();
-  _getCity()->addWalker( WalkerPtr( this ));
+  _city()->addWalker( this );
 }
 
 void EnemySoldier::die()
 {
   Soldier::die();
-  WalkerPtr wlk = Corpse::create( _getCity(), this );
+  WalkerPtr wlk = Corpse::create( _city(), this );
   if( wlk->isDeleted() )
   {
-     Corpse::create( _getCity(), pos(), ResourceGroup::celts, 393, 400 );
+     Corpse::create( _city(), pos(), ResourceGroup::celts, 393, 400 );
   }
 }
 
@@ -340,6 +355,7 @@ void EnemySoldier::load( const VariantMap& stream )
   Soldier::load( stream );
  
   _d->action = (EsAction)stream.get( "EsAction" ).toInt();
+  _d->waitInterval = (int)stream.get( "wait" );
 }
 
 void EnemySoldier::save( VariantMap& stream ) const
@@ -349,5 +365,11 @@ void EnemySoldier::save( VariantMap& stream ) const
   stream[ "type" ] = (int)type();
   stream[ "animation" ] =
   stream[ "EsAction" ] = (int)_d->action;
+  stream[ "wait" ] = _d->waitInterval;
   stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
+}
+
+void EnemySoldier::wait(unsigned int time)
+{
+  _d->waitInterval = time;
 }

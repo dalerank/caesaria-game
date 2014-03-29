@@ -89,5 +89,5 @@ void Recruter::die()
 {
   ServiceWalker::die();
 
-  Corpse::create( _getCity(), pos(), ResourceGroup::citizen1, 97, 104 );
+  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 97, 104 );
 }

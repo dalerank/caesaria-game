@@ -43,7 +43,7 @@ void Animal::send2City(const TilePos &start )
 {
   if( !isDeleted() )
   {
-    _getCity()->addWalker( WalkerPtr( this ) );
+    _city()->addWalker( WalkerPtr( this ) );
   }
 }
 
@@ -63,7 +63,7 @@ void Animal::load( const VariantMap& stream )
 
 void Animal::_findNewWay( const TilePos& start )
 {
-  Pathway pathway = PathwayHelper::randomWay( _getCity(), start, 10 );
+  Pathway pathway = PathwayHelper::randomWay( _city(), start, 10 );
 
   if( pathway.isValid() )
   {
@@ -97,7 +97,7 @@ void Sheep::_reachedPathway()
 {
   Walker::_reachedPathway();
 
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
   if( tmap.at( pos() ).getFlag( Tile::tlMeadow ) )
   {
     updateHealth( +100 );
@@ -118,7 +118,7 @@ void Sheep::die()
 {
   Animal::die();
 
-  Corpse::create( _getCity(), pos(), "citizen04", 257, 264 );
+  Corpse::create( _city(), pos(), "citizen04", 257, 264 );
 }
 
 void Sheep::send2City(const TilePos &start )
@@ -127,6 +127,6 @@ void Sheep::send2City(const TilePos &start )
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }

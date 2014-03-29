@@ -94,7 +94,7 @@ void Emigrant::die()
 {
   Walker::die();
 
-  Corpse::create( _getCity(), pos(), ResourceGroup::citizen1, 1129, 1136 );
+  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1129, 1136 );
 }
 
 EmigrantPtr Emigrant::create(PlayerCityPtr city )

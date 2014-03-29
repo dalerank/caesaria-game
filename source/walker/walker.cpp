@@ -58,10 +58,7 @@ public:
   std::string thinks;
   AbilityList abilities;
 
-  float getSpeed() const
-  {
-    return speedMultiplier * speed;
-  }
+  float getSpeed() const   {  return speedMultiplier * speed;  }
 
   void updateSpeedMultiplier( const Tile& tile ) 
   {
@@ -78,7 +75,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->health = 100;
 
   _d->speed = 1.f; // default speed
-  _d->speedMultiplier = 0.8 + math::random( 40 ) / 100.f;
+  _d->speedMultiplier = 1.f;
   _d->isDeleted = false;
 
   _d->midTilePos = Point( 7, 7 );
@@ -388,7 +385,7 @@ const Animation& Walker::_animationRef() const {  return _d->animation;}
 void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 void Walker::_setType(walker::Type type){  _d->type = type;}
-PlayerCityPtr Walker::_getCity() const{  return _d->city;}
+PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
 
 void Walker::_setAction( Walker::Action action, int animIndex )
@@ -484,7 +481,7 @@ void Walker::save( VariantMap& stream ) const
 
 void Walker::load( const VariantMap& stream)
 {
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
 
   _d->tileOffset = stream.get( "tileoffset" );
   _d->name = stream.get( "name" ).toString();
@@ -552,7 +549,7 @@ void Walker::_setWpos(Point pos) { _d->posOnMap = pos; }
 
 void Walker::_updateThinks()
 {
-  _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _getCity() );
+  _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _city() );
 }
 
 Point Walker::_wpos() const{  return _d->posOnMap;}

@@ -46,13 +46,13 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
   _setWpos( _d->srcPos );
 
-  _getCity()->addWalker( this );
-  Tile& tile = _getCity()->tilemap().at( src );
+  _city()->addWalker( this );
+  Tile& tile = _city()->tilemap().at( src );
   TileOverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
     _d->height = ov->offset( tile, Point( 7, 7 ) ).y();
-    Tile& dTile = _getCity()->tilemap().at( dst );
+    Tile& dTile = _city()->tilemap().at( dst );
     ov = dTile.overlay();
     if( ov.isValid() )
     {

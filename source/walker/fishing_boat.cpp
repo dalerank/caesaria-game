@@ -61,7 +61,7 @@ void FishingBoat::load( const VariantMap& stream )
   _d->stock.load( stream.get( "stock" ).toList() );
   _d->mode = (State)stream.get( "mode", (int)wait ).toInt();
 
-  _d->base = ptr_cast<CoastalFactory>(_getCity()->getOverlay( (TilePos)stream.get( "base" ) ) );
+  _d->base = ptr_cast<CoastalFactory>(_city()->getOverlay( (TilePos)stream.get( "base" ) ) );
   if( _d->base.isValid() )
   {
     _d->base->assignBoat( this );
@@ -80,7 +80,7 @@ void FishingBoat::timeStep(const unsigned long time)
     {
       _animationRef().clear();
       //_setAnimation( gfx::fishingBoatMove );
-      Pathway way = _d->findFishingPlace( _getCity(), pos() );
+      Pathway way = _d->findFishingPlace( _city(), pos() );
       if( way.isValid() )
       {
         setPathway( way );
@@ -96,7 +96,7 @@ void FishingBoat::timeStep(const unsigned long time)
       _animationRef().clear();
       //_setAnimation( gfx::fishingBoatWork );
 
-      city::Helper helper( _getCity() );
+      city::Helper helper( _city() );
       FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos() );
 
       if( !places.empty() )
@@ -250,6 +250,6 @@ void FishingBoat::send2city( CoastalFactoryPtr base, TilePos start )
   if( !isDeleted() )
   {
     setPos( start );
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }

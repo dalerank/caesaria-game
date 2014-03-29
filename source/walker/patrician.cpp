@@ -60,7 +60,7 @@ void Patrician::load( const VariantMap& stream )
 
 void Patrician::_findNewWay( const TilePos& start )
 {
-  Pathway pathway = PathwayHelper::randomWay( _getCity(), start, 10 );
+  Pathway pathway = PathwayHelper::randomWay( _city(), start, 10 );
 
   if( pathway.isValid() )
   {
@@ -94,6 +94,6 @@ void Patrician::send2City(TilePos start )
 
   if( !isDeleted() )
   {
-    _getCity()->addWalker( this );
+    _city()->addWalker( this );
   }
 }
