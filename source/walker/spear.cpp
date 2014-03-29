@@ -54,7 +54,6 @@ int Spear::rcStartIndex() const { return 114; }
 Spear::Spear(PlayerCityPtr city) : ThrowingWeapon( city )
 {
   _setType( walker::spear );
-  //_setAnimation( gfx::unknown );
 
   setName( _("##spear##") );
 }

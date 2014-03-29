@@ -79,7 +79,6 @@ void FishingBoat::timeStep(const unsigned long time)
     case ready2Catch:
     {
       _animationRef().clear();
-      //_setAnimation( gfx::fishingBoatMove );
       Pathway way = _d->findFishingPlace( _city(), pos() );
       if( way.isValid() )
       {
@@ -94,7 +93,7 @@ void FishingBoat::timeStep(const unsigned long time)
     case catchFish:
     {
       _animationRef().clear();
-      //_setAnimation( gfx::fishingBoatWork );
+      _setAction( getAction(), acWork );
 
       city::Helper helper( _city() );
       FishPlaceList places = helper.find<FishPlace>( walker::fishPlace, pos() );
@@ -130,8 +129,7 @@ void FishingBoat::timeStep(const unsigned long time)
           go();
         }
 
-        _animationRef().clear();
-        //_setAnimation( gfx::fishingBoatMove );
+        _setAction( acMove );
       }
       else
       {
@@ -181,7 +179,6 @@ void FishingBoat::die()
 
 FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
 {
-  //_setAnimation( gfx::fishingBoatMove );
   _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );
   _d->mode = wait;

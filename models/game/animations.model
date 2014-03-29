@@ -80,7 +80,7 @@
   }
 
   prefect : {
-    notes : { acDragWater : 6, acFightFire : 7 }
+    notes : { dragWater : 6, fightFire : 7 }
     move : { rc : "citizen02", start : 615, frames : 12, action : 1, step : 8 }
     dragWater : { rc : "citizen02", start : 767, frames : 12, action : 6, step : 8 }
     fightFire : { rc : "citizen02", start : 863, frames : 6, action : 7, step : 8 }

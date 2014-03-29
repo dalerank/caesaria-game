@@ -44,7 +44,6 @@ Immigrant::Immigrant(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
   _setType( walker::immigrant );
-  //_setAnimation( gfx::homelessMove );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
   _d->stamina = rand() % 80 + 20;

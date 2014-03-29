@@ -296,7 +296,6 @@ void WallGuard::_back2tower()
     if( !enter.empty() )
     {
       setSpeed( 1.f );
-      //_setAnimation( _d->walk );
       Pathway way = _d->base->getWay( pos(), enter.front()->pos() );
       setPathway( way );
       go();

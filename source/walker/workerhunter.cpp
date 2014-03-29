@@ -34,7 +34,6 @@ Recruter::Recruter(PlayerCityPtr city )
  : ServiceWalker( city, Service::recruter )
 {    
   _workersNeeded = 0;
-  //_setAnimation( gfx::citizenMove );
   _setType( walker::recruter );
 }
 

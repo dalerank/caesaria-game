@@ -46,7 +46,6 @@ int BowArrow::rcStartIndex() const { return 130; }
 BowArrow::BowArrow(PlayerCityPtr city) : ThrowingWeapon( city )
 {
   _setType( walker::bow_arrow );
-  //_setAnimation( gfx::unknown );
 
   setName( _("##bow_arrow##") );
 }

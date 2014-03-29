@@ -38,7 +38,7 @@ class Pathway;
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
-  typedef enum { acNone, acMove, acFight, acDie, acMax } Action;
+  typedef enum { acNone, acMove, acFight, acDie, acWork, acMax } Action;
 
   Walker( PlayerCityPtr city );
   virtual ~Walker();

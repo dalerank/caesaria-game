@@ -126,7 +126,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     {
       _d->action = Impl::go2fire;
       _updatePathway( tmp );
-      //_setAnimation( gfx::prefectDragWater );
+      _setAction( acMove, Impl::animDragWater );
       setSpeed( 1 );
       go();
       return true;
@@ -144,7 +144,6 @@ void Prefect::_back2Prefecture()
   if( pathway.isValid() )
   {
     _d->action = Impl::patrol;
-    //_setAnimation( gfx::prefectMove );
     _updatePathway( pathway );
     _d->endPatrolPoint = pathway.destination().pos();
     setSpeed( 1 );
@@ -185,7 +184,7 @@ void Prefect::_back2Patrol()
   if( pathway.isValid() )
   {
     _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
-    //_setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
+    _setAction( acMove, _d->water > 0 ? Impl::animDragWater : acMove );
     _updatePathway( pathway );
     setSpeed( 1 );
     go();
@@ -429,14 +428,9 @@ void Prefect::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
-Prefect::~Prefect()
-{
-}
+Prefect::~Prefect() {}
 
-float Prefect::getServiceValue() const
-{
-  return 5;
-}
+float Prefect::getServiceValue() const {  return 5; }
 
 PrefectPtr Prefect::create(PlayerCityPtr city )
 {
@@ -450,7 +444,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
   _d->action = water > 0 ? Impl::findFire : Impl::patrol;
   _d->water = water;
-  //_setAnimation( water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
+  _setAction( getAction(), water > 0 ? Impl::animDragWater : acMove );
 
   if( water > 0 )
   {
@@ -496,7 +490,7 @@ void Prefect::load( const VariantMap& stream )
   _d->water = (int)stream.get( "water" );
   _d->endPatrolPoint = stream.get( "endPoint" );
 
-  //_setAnimation( _d->water > 0 ? gfx::prefectDragWater : gfx::prefectMove );
+  _setAction( getAction(), _d->water > 0 ? Impl::animDragWater : acMove );
 
   PrefecturePtr prefecture = ptr_cast<Prefecture>( getBase() );
   if( prefecture.isValid() )
@@ -520,5 +514,5 @@ void Prefect::save( VariantMap& stream ) const
   stream[ "water" ] = _d->water;
   stream[ "prefectAction" ] = (int)_d->action;
   stream[ "endPoint" ] = _d->endPatrolPoint;
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(walker::prefect) ) );
+  stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
 }

@@ -61,7 +61,6 @@ public:
 CartPusher::CartPusher(PlayerCityPtr city )
   : Walker( city ), _d( new Impl )
 {
-  //_setAnimation( gfx::cartPusherMove );
   _setType( walker::cartPusher );
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
