@@ -56,19 +56,21 @@ public:
   std::string name;
   int health;
   std::string thinks;
+  float tileSpeedKoeff;
   AbilityList abilities;
 
-  float getSpeed() const   {  return speedMultiplier * speed;  }
+  float getSpeed() const   {  return speedMultiplier * speed * tileSpeedKoeff;  }
 
   void updateSpeedMultiplier( const Tile& tile ) 
   {
-    speedMultiplier = (tile.getFlag( Tile::tlRoad ) || tile.getFlag( Tile::tlGarden )) ? 1.f : 0.5f;
+    tileSpeedKoeff = (tile.getFlag( Tile::tlRoad ) || tile.getFlag( Tile::tlGarden )) ? 1.f : 0.5f;
   }
 };
 
 Walker::Walker(PlayerCityPtr city) : _d( new Impl )
 {
   _d->city = city;
+  _d->tileSpeedKoeff = 1.f;
   _d->action.action = Walker::acMove;
   _d->action.direction = constants::noneDirection;
   _d->type = walker::unknown;
@@ -129,6 +131,7 @@ void Walker::setPathway( const Pathway& pathway)
 }
 
 void Walker::setSpeed(const float speed){   _d->speed = speed;}
+void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 // ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
 void Walker::inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
@@ -403,6 +406,8 @@ void Walker::initialize(const VariantMap &options)
   _d->speed = options.get( "speed", 1.f ); // default speed
   _d->speedMultiplier = options.get( "speedMultiplier", 0.8f + math::random( 40 ) / 100.f );
 }
+
+int Walker::agressive() const { return 0; }
 
 std::string Walker::getThinks() const
 {

@@ -42,7 +42,9 @@ public:
   virtual void send2City( TilePos pos );
   virtual void die();
 
-  ~EnemySoldier();
+  virtual ~EnemySoldier();
+
+  virtual int agressive() const;
 
 protected:
   virtual void _centerTile();

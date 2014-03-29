@@ -41,7 +41,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   _d->dstPos = Point( dst.i(), dst.j() ) * 15 + Point( 7, 7 );
   _d->srcPos = Point( src.i(), src.j() ) * 15 + Point( 7, 7 );
 
-  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / 20.f;
+  _d->deltaMove = ( _d->dstPos - _d->srcPos ).toPointF() / (dst.distanceFrom( src) * 2.f);
   _d->currentPos = _d->srcPos.toPointF();
 
   _setWpos( _d->srcPos );

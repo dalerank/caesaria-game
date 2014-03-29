@@ -251,6 +251,8 @@ void Protestor::load(const VariantMap& stream)
   _d->state = (Impl::State)stream.get( "state" ).toInt();
 }
 
+int Protestor::agressive() const { return 1; }
+
 Pathway Protestor::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
 {  
   if( !constructions.empty() )

@@ -30,9 +30,9 @@
 #include "objects/constants.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
-#include "protestor.hpp"
 #include "events/disaster.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "walker/helper.hpp"
 
 using namespace constants;
 
@@ -42,7 +42,7 @@ public:
   enum { animDragWater=6, animFightFire = 7 };
   typedef enum { patrol=0,
                  findFire, go2fire, fightFire,
-                 go2protestor, fightProtestor,
+                 go2enemy, fightEnemy,
                  doNothing } PrefectAction;
     
   int water;
@@ -56,7 +56,6 @@ Prefect::Prefect(PlayerCityPtr city )
   _setType( walker::prefect );
   _d->water = 0;
   _d->action = Impl::patrol;
-  //_setAnimation( gfx::prefectMove );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -82,25 +81,20 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
   return false;
 }
 
-bool Prefect::_looks4Protestor( TilePos& p )
+WalkerPtr Prefect::_looks4Enemy( int range )
 {
-  city::Helper helper( _city() );
-  TilePos offset( 3, 3 );
-  ProtestorList protestors = helper.find<Protestor>( walker::protestor, pos() - offset, pos() + offset );
+  TilePos offset( range, range );
+  WalkerList walkers = _city()->getWalkers( walker::any, pos() - offset, pos() + offset );
 
-  int minDistance=99;
-  foreach( it, protestors )
+  for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
   {
-    ProtestorPtr protestor = *it;
-    int distance = protestor->pos().distanceFrom( pos() );
-    if( distance < minDistance )
-    {
-      minDistance =  distance;
-      p = protestor->pos();
-    }
+    if( (*it)->agressive() == 0 ) { it = walkers.erase( it ); }
+    else { ++it; }
   }
 
-  return !protestors.empty();
+  WalkerPtr enemy = findNearestWalker( pos(), walkers );
+
+  return enemy;
 }
 
 bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
@@ -289,12 +283,12 @@ void Prefect::_centerTile()
   {
     TilePos protestorPos, firePos;
     ReachedBuildings reachedBuildings;
-    bool haveProtestorNear = _looks4Protestor( protestorPos );
+    WalkerPtr enemy = _looks4Enemy( 5 );
     bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );
 
-    if( haveProtestorNear )
+    if( enemy.isValid() )
     {      
-      Pathway pathway = PathwayHelper::create( pos(), protestorPos, PathwayHelper::allTerrain );
+      Pathway pathway = PathwayHelper::create( pos(), enemy->pos(), PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {
@@ -302,7 +296,7 @@ void Prefect::_centerTile()
         _updatePathway( pathway );
         go();
 
-        _d->action = Impl::go2protestor;
+        _d->action = Impl::go2enemy;
       }
     }
     else if( haveBurningRuinsNear )
@@ -333,15 +327,14 @@ void Prefect::_centerTile()
   }
   break;
 
-  case Impl::go2protestor:
+  case Impl::go2enemy:
   {
-    TilePos protestorPos;
-    bool haveProtestorNear = _looks4Protestor( protestorPos );
-    if( haveProtestorNear )
+    WalkerPtr enemy = _looks4Enemy( 5 );
+    if( enemy.isValid() )
     {
-      if(  protestorPos.distanceFrom( pos() ) < 1.5f  )
+      if( enemy->pos().distanceFrom( pos() ) < 1.5f  )
       {
-        _d->action = Impl::fightProtestor;
+        _d->action = Impl::fightEnemy;
         setSpeed( 0.f );
         _setAction( acFight );
         return;
@@ -369,7 +362,7 @@ void Prefect::_centerTile()
   break;
 
   case Impl::fightFire:
-  case Impl::fightProtestor:
+  case Impl::fightEnemy:
   break;
   }
   Walker::_centerTile();
@@ -414,20 +407,16 @@ void Prefect::timeStep(const unsigned long time)
   }
   break;
 
-  case Impl::fightProtestor:
+  case Impl::fightEnemy:
   {
-    city::Helper helper( _city() );
-    ProtestorList protestors = helper.find<Protestor>( walker::protestor,
-                                                       pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+    WalkerPtr enemy = _looks4Enemy(  1 );
 
-    if( !protestors.empty() )
+    if( enemy.isValid() )
     {
-      ProtestorPtr p = protestors.front();
+      turn( enemy->pos() );
 
-      turn( p->pos() );
-
-      p->updateHealth( -3 );
-      p->acceptAction( Walker::acFight, pos() );
+      enemy->updateHealth( -3 );
+      enemy->acceptAction( Walker::acFight, pos() );
     }
     else
     {

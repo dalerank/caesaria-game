@@ -59,6 +59,7 @@ public:
   virtual void turn( TilePos pos );
 
   void setSpeed(const float speed);
+  void setSpeedMultiplier( float koeff );
   void setUniqueId( const UniqueId uid );
 
   constants::Direction getDirection() const;
@@ -88,6 +89,7 @@ public:
   void deleteLater();
 
   virtual void initialize( const VariantMap& options );
+  virtual int agressive() const;
 
 protected:
   void _walk();

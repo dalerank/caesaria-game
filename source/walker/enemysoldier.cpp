@@ -118,7 +118,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
   Tilemap& tmap = _city()->tilemap();
   WalkerList walkers;
 
-  for( int k=0; k <= range; k ++ )
+  for( unsigned int k=0; k <= range; k ++ )
   {
     TilePos offset( k, k );
     TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
@@ -166,12 +166,14 @@ Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
 
 void EnemySoldier::_check4attack()
 {
+  //try find any walkers in range
   Pathway pathway = _findPathway2NearestEnemy( 20 );
 
   if( !pathway.isValid() )
   {
-    pathway = _findPathway2NearestConstruction( 20 );
-  }
+    int size = _city()->tilemap().size();
+    pathway = _findPathway2NearestConstruction( size/2 );
+  }   
 
   if( !pathway.isValid() )
   {
@@ -322,6 +324,8 @@ void EnemySoldier::timeStep(const unsigned long time)
 }
 
 EnemySoldier::~EnemySoldier() {}
+
+int EnemySoldier::agressive() const { return 2; }
 
 EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, constants::walker::Type type )
 {
