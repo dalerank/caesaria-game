@@ -17,7 +17,6 @@
 #include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "walker/walkers_factory.hpp"
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
 
@@ -31,6 +30,7 @@ class Fishery::Impl
 public:
   PlayerCityPtr city;
   unsigned int maxFishPlace;
+  int failedCounter;
 
   FishPlaceList places;
 };
@@ -49,6 +49,7 @@ Fishery::Fishery( PlayerCityPtr city )
   : Srvc( Fishery::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
+  _d->failedCounter = 0;
   _d->maxFishPlace = 1;
 }
 
@@ -65,21 +66,26 @@ void Fishery::update( const unsigned int time )
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    FishPlacePtr fishplace = ptr_cast<FishPlace>( WalkerManager::instance().create( walker::fishPlace, _d->city ) );
+    FishPlacePtr fishplace = FishPlace::create( _d->city );
+    fishplace->send2city( _d->city->borderInfo().boatEntry );
 
-    if( fishplace.isValid() )
+    if( fishplace->isDeleted() )
     {
-      fishplace->send2city( _d->city->borderInfo().boatEntry );
-      _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
+      _d->failedCounter++;
+      return;
     }
+
+    _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
   }
 
   FishPlaceList::iterator fit = _d->places.begin();
   while( fit != _d->places.end() )
   {
     if( (*fit)->isDeleted() )     {      fit = _d->places.erase( fit );    }
-    else    {      ++fit;    }
+    else {  ++fit;    }
   }
 }
+
+bool Fishery::isDeleted() const { _d->failedCounter > 3; }
 
 }//end namespace city
