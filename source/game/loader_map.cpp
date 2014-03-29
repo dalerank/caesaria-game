@@ -123,18 +123,18 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 
   f.seekg(kSize, std::ios::beg);
 
-  int size;  // 32bits
+  int map_size;  // 32bits
   int size_2;
-  f.read((char*)&size,   4);
+  f.read((char*)&map_size,   4);
   f.read((char*)&size_2, 4);
-  Logger::warning( "Map size is %d", size );
+  Logger::warning( "Map size is %d", map_size );
 
-  if (size != size_2)
+  if (map_size != size_2)
   {
-    THROW("Horisontal and vertical map sizes are different!");
+    THROW("Horizontal and vertical map sizes are different!");
   }
 
-  oTilemap.resize(size);
+  oTilemap.resize(map_size);
 
   // need to rewrite better
   ScopedPtr<short> pGraphicGrid( new short[26244] );
@@ -143,13 +143,13 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   ScopedPtr<unsigned char> pRndmTerGrid( new unsigned char[26244] );
   ScopedPtr<unsigned char> pRandomGrid( new unsigned char[26244] );
   ScopedPtr<unsigned char> pZeroGrid( new unsigned char[26244] );
-  
+
   if( pGraphicGrid.isNull() || pEdgeGrid.isNull() || pTerrainGrid.isNull() ||
       pRndmTerGrid.isNull() || pRandomGrid.isNull() || pZeroGrid.isNull() )
   {
     THROW("NOT ENOUGH MEMORY!!!! FATAL");
-  }  
-  
+  }
+
   // here also make copy of original arrays in memory
 
   f.seekg(kGraphicGrid, std::ios::beg);
@@ -168,16 +168,16 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   std::map< int, std::map< int, unsigned char > > edgeData;
 
   // loads the graphics map
-  int border_size = (162 - size) / 2;
+  int border_size = (162 - map_size) / 2;
 
-  for (int itA = 0; itA < size; ++itA)
+  for (int itA = 0; itA < map_size; ++itA)
   {
-    for (int itB = 0; itB < size; ++itB)
+    for (int itB = 0; itB < map_size; ++itB)
     {
       int i = itB;
-      int j = size - itA - 1;
+      int j = map_size - itA - 1;
 
-      int index = 162 * (border_size + itA) + border_size + itB;  
+      int index = 162 * (border_size + itA) + border_size + itB;
 
       Tile& tile = oTilemap.at(i, j);
       tile.setPicture( TileHelper::convId2PicName( pGraphicGrid.data()[index] ) );
@@ -185,12 +185,12 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 
       edgeData[ i ][ j ] =  pEdgeGrid.data()[index];
       TileHelper::decode( tile, pTerrainGrid.data()[index] );
-    }    
+    }
   }
 
-  for (int i = 0; i < size; ++i)
+  for (int i = 0; i < map_size; ++i)
   {
-    for (int j = 0; j < size; ++j)
+    for (int j = 0; j < map_size; ++j)
     {
       unsigned char ed = edgeData[ i ][ j ];
       if( ed == 0x00)
@@ -200,7 +200,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 	      {
 	        int dj;
 	        try
-	        {	
+	        {
 	          // find size, 5 is maximal size for building
 	          for (dj = 0; dj < 5; ++dj)
 	          {
@@ -218,13 +218,13 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 	          size = dj + 1;
 	        }
 	      }
-	
+
 				Logger::warning( "Multi-tile x %d at (%d,%d)", size, i, j );
-	      	
+
 	      Tile& master = oTilemap.at(i, j - size + 1);
-      	
+
         Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
-      	
+
 	      for (int di = 0; di < size; ++di)
         {
 	        for (int dj = 0; dj < size; ++dj)
@@ -232,10 +232,10 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 						oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
 	        }
         }
-    	
+
         Logger::warning( " decoding " );
       }
-      
+
       // Check if it is building and type of building
       //if (ttile.getMasterTile() == NULL)
       LoaderHelper::decodeTerrain( oTilemap.at( i, j ), oCity );
