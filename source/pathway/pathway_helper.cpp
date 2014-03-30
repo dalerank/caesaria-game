@@ -100,7 +100,7 @@ DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, consta
       }
       else
       {
-        if( ret.way().getLength() > path.getLength() )
+        if( ret.way().length() > path.length() )
         {
           ret.second = path;
           ret.first = *it;

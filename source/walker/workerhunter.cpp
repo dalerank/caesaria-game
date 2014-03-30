@@ -49,9 +49,9 @@ void Recruter::hireWorkers( const int workers )
 
 int Recruter::getWorkersNeeded() const { return _workersNeeded; }
 
-void Recruter::_changeTile()
+void Recruter::_centerTile()
 {
-  Walker::_changeTile();
+  Walker::_centerTile();
 
   if( _workersNeeded )
   {

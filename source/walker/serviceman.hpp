@@ -55,7 +55,7 @@ public:
 
 protected:
   virtual void _reachedPathway();
-  virtual void _changeTile();  // called when the walker is on a new tile
+  virtual void _centerTile();  // called when the walker is on a new tile
 
 protected:
   ServiceWalker( PlayerCityPtr city, const Service::Type service );

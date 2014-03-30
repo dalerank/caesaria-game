@@ -37,9 +37,9 @@ public:
   std::map< std::string, float > history;
 };
 
-void TaxCollector::_changeTile()
+void TaxCollector::_centerTile()
 {
-  Walker::_changeTile();
+  Walker::_centerTile();
 
   ReachedBuildings buildings = getReachedBuildings( pos() );
   foreach( it, buildings )

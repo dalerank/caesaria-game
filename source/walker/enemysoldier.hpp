@@ -48,7 +48,6 @@ public:
 
 protected:
   virtual void _centerTile();
-  virtual void _changeTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual bool _tryAttack();

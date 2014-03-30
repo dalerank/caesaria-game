@@ -109,7 +109,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
       float curNeed = bld->evaluateTrainee( type() );
       if( way.isValid()
           && _d->maxNeed < curNeed
-          && way.getLength() <minDistance)
+          && way.length() <minDistance)
       {
         _d->maxNeed = curNeed;
         droute = DirectRoute( bld.object(), way );

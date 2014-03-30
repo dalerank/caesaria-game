@@ -33,7 +33,7 @@ public:
   virtual std::string getThinks() const;
 
 protected:
-  virtual void _changeTile();
+  virtual void _centerTile();
   virtual void _reachedPathway();
 
 private:

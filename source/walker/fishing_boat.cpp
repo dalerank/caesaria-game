@@ -206,12 +206,6 @@ void FishingBoat::_reachedPathway()
   }
 }
 
-void FishingBoat::_changeTile()
-{
-  Walker::_changeTile();
-  _animationRef().setDelay( 3 );
-}
-
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 {
   city::Helper helper( city );

@@ -339,7 +339,7 @@ Pathway SeaMerchant::Impl::findNearbyDock(const DockList& docks, TilePos positio
   for( ; i != docks.end(); ++i )
   {
     Pathway tmp = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::water );
-    if( tmp.getLength() < ret.getLength() )
+    if( tmp.length() < ret.length() )
     {
       ret = tmp;
     }

@@ -52,11 +52,6 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
   _d->waitInterval = 0;
 }
 
-void EnemySoldier::_changeTile()
-{
-  Walker::_changeTile();
-}
-
 bool EnemySoldier::_tryAttack()
 {
   BuildingList buildings = _findBuildingsInRange( 1 );

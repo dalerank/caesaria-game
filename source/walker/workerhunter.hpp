@@ -27,12 +27,15 @@ public:
   static RecruterPtr create( PlayerCityPtr city );
 
   int getWorkersNeeded() const;
-  virtual void _changeTile();
   void hireWorkers( const int workers );
 
   void send2City( WorkingBuildingPtr building, const int workersNeeded );
 
   virtual void die();
+
+protected:
+  virtual void _centerTile();
+
 private:
   Recruter( PlayerCityPtr city );
 

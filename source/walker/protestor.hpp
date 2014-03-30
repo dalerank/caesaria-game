@@ -24,8 +24,6 @@ public:
   static ProtestorPtr create( PlayerCityPtr city );
   virtual ~Protestor();
 
-  virtual void _changeTile();
-  virtual void _reachedPathway();
   virtual void timeStep(const unsigned long time);
   void send2City( HousePtr house );
 
@@ -35,6 +33,9 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual int agressive() const;
+
+protected:
+  virtual void _reachedPathway();
 
 private:
   Protestor( PlayerCityPtr city );

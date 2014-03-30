@@ -103,7 +103,4 @@ EmigrantPtr Emigrant::create(PlayerCityPtr city )
   return newEmigrant;
 }
 
-Emigrant::~Emigrant()
-{
-
-}
+Emigrant::~Emigrant(){}

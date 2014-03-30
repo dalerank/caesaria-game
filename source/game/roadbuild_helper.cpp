@@ -50,7 +50,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
 
   if( way.isValid() )
   {
-    return way.getAllTiles();
+    return way.allTiles();
   }
 
   TilesArray ret;

@@ -36,9 +36,9 @@ public:
 
 bool operator<(const Pathway& v1, const Pathway& v2)
 {
-  if( v1.getLength()!=v2.getLength() )
+  if( v1.length()!=v2.length() )
   {
-    return v1.getLength() < v2.getLength();
+    return v1.length() < v2.length();
   }
 
   // compare memory address
@@ -87,16 +87,16 @@ void Pathway::init( Tilemap& tilemap, Tile &origin)
   _d->tileList.push_back(&origin);
 }
 
-int Pathway::getLength() const
+int Pathway::length() const
 {
   // TODO: various lands have various travel time (road easier to travel than open country)
   return _d->directionList.size();
 }
 
-const Tile& Pathway::getOrigin() const {  return *_d->origin; }
+const Tile& Pathway::front() const {  return *_d->origin; }
 TilePos Pathway::getStartPos() const { return _d->origin ? _d->origin->pos() : TilePos( -1, -1); }
 bool Pathway::isReverse() const {  return _d->isReverse; }
-const TilesArray& Pathway::getAllTiles() const {  return _d->tileList; }
+const TilesArray& Pathway::allTiles() const {  return _d->tileList; }
 
 const Tile& Pathway::destination() const
 {
@@ -303,7 +303,7 @@ void Pathway::prettyPrint() const
 VariantMap Pathway::save() const
 {
   VariantMap stream;
-  if( getLength() == 0 ) //not save empty way
+  if( length() == 0 ) //not save empty way
   {
     return VariantMap();
   }
@@ -320,14 +320,14 @@ VariantMap Pathway::save() const
 
   stream[ "directions" ] = directions;
   stream[ "reverse" ] = _d->isReverse;
-  stream[ "step" ] = getStep();
+  stream[ "step" ] = curStep();
 
   return stream;
 }
 
 bool Pathway::isValid() const
 {
-  return getLength() != 0;
+  return length() != 0;
 }
 
 void Pathway::load( const VariantMap& stream )
@@ -370,7 +370,7 @@ Pathway& Pathway::operator=( const Pathway& other )
 Pathway Pathway::copy(int start, int stop) const
 {
   Pathway ret;
-  if( start >= getLength() )
+  if( start >= length() )
   {
     return ret;
   }
@@ -385,7 +385,7 @@ Pathway Pathway::copy(int start, int stop) const
   return ret;
 }
 
-unsigned int Pathway::getStep() const
+unsigned int Pathway::curStep() const
 {
   if(_d->isReverse)
   {

@@ -43,7 +43,6 @@ public:
   virtual void die();
 protected:
   virtual void _reachedPathway();
-  virtual void _changeTile();
 
 private:
   FishingBoat( PlayerCityPtr city );

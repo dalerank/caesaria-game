@@ -64,11 +64,6 @@ Prefect::Prefect(PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-void Prefect::_changeTile()
-{
-  Walker::_changeTile();
-}
-
 bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& p )
 {
   buildings = getReachedBuildings( pos() );
