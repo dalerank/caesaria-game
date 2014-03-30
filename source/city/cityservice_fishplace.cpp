@@ -55,6 +55,7 @@ Fishery::Fishery( PlayerCityPtr city )
 
 void Fishery::update( const unsigned int time )
 {  
+  return;
   if( time % (GameDate::ticksInMonth()/2) != 1 )
     return;
 
@@ -86,6 +87,6 @@ void Fishery::update( const unsigned int time )
   }
 }
 
-bool Fishery::isDeleted() const { _d->failedCounter > 3; }
+bool Fishery::isDeleted() const { return _d->failedCounter > 3; }
 
 }//end namespace city

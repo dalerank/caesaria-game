@@ -352,7 +352,7 @@ void Prefect::_centerTile()
 
   case Impl::go2fire:
   {
-    BuildingPtr building = ptr_cast<Building>( _getNextTile().overlay() );
+    BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
     if( building.isValid() && building->type() == building::burningRuins )
     {
       turn( building->pos() );
@@ -395,7 +395,7 @@ void Prefect::timeStep(const unsigned long time)
 
   case Impl::fightFire:
   {    
-    BuildingPtr building = ptr_cast<Building>( _getNextTile().overlay() );
+    BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
     bool inFire = (building.isValid() && building->type() == building::burningRuins );
 
     if( inFire )

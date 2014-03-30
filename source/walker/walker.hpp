@@ -95,7 +95,7 @@ public:
 protected:
   void _walk();
   void _computeDirection();
-  const Tile& _getNextTile() const;
+  const Tile& _nextTile() const;
 
   virtual void _changeTile();  // called when the walker is on a new tile
   virtual void _centerTile();  // called when the walker is on the middle of a tile
@@ -120,18 +120,6 @@ protected:
   void _setWpos( Point pos );
   virtual void _updateThinks();
   Point _wpos() const;
-
-private:
-   /* useful method for subtile movement computation
-      si   = subtile coordinate in the current tile
-      i    = tile coordinate
-      amount = amount of the increase, returns remaining movement if any
-      midPos = position of the midtile (so that walkers are not all exactly on the middle of the tile)
-      newTile = return true if we are now on a new tile
-      midTile = return true if we got above the treshold
-    */
-  void inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
-  void dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile);
 
 private:
   class Impl;

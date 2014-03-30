@@ -44,7 +44,7 @@ public:
 
   void begin();
   void rbegin();
-  constants::Direction getNextDirection();
+  constants::Direction nextDirection();
   bool isDestination() const;
 
   void setNextDirection(constants::Direction direction);

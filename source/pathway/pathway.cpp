@@ -130,7 +130,7 @@ void Pathway::toggleDirection()
   }
 }
 
-constants::Direction Pathway::getNextDirection()
+constants::Direction Pathway::nextDirection()
 {
   Direction res = noneDirection;
   if( _d->isReverse )
