@@ -79,7 +79,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         fireLevel = (int)house->getState( Construction::fire );
         needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
 
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
       }
     break;
@@ -93,7 +93,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
           fireLevel = (int)constr->getState( Construction::fire );
         }
 
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
       }
     break;
@@ -118,7 +118,7 @@ void LayerFire::handleEvent(NEvent& event)
     {
     case mouseMoved:
     {
-      Tile* tile = _getCamera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
       if( tile != 0 )
       {

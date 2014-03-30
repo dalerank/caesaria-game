@@ -51,6 +51,7 @@ public:
 
 void Layer::registerTileForRendering(Tile& tile)
 {
+  __D_IMPL(_d,Layer)
   if( tile.overlay() != 0 )
   {
     Renderer::PassQueue passQueue = tile.overlay()->getPassQueue();
@@ -64,6 +65,7 @@ void Layer::registerTileForRendering(Tile& tile)
 void Layer::renderPass( GfxEngine& engine, Renderer::Pass pass )
 {
   // building foregrounds and animations
+  __D_IMPL(_d,Layer)
   Impl::TileQueue& tiles = _d->renderQueue[ pass ];
   Point offset = _d->camera->getOffset();
   foreach( tile, tiles )
@@ -76,6 +78,7 @@ void Layer::renderPass( GfxEngine& engine, Renderer::Pass pass )
 
 void Layer::handleEvent(NEvent& event)
 {
+  __D_IMPL(_d,Layer)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -155,6 +158,7 @@ void Layer::handleEvent(NEvent& event)
 
 TilesArray Layer::_getSelectedArea()
 {
+  __D_IMPL(_d,Layer)
   TilePos outStartPos, outStopPos;
 
   Tile* startTile = _d->camera->at( _d->startCursorPos, true );  // tile under the cursor (or NULL)
@@ -169,7 +173,7 @@ TilesArray Layer::_getSelectedArea()
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
 
-  return _getCity()->tilemap().getArea( outStartPos, outStopPos );
+  return _city()->tilemap().getArea( outStartPos, outStopPos );
 }
 
 void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass)
@@ -207,7 +211,7 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
   WalkerList walkerList;
   foreach( wtAct, visibleWalkers )
   {
-    WalkerList foundWalkers = _getCity()->getWalkers( (walker::Type)*wtAct, pos );
+    WalkerList foundWalkers = _city()->getWalkers( (walker::Type)*wtAct, pos );
     walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
   }
 
@@ -235,6 +239,7 @@ void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camO
 
 void Layer::_setTooltipText(std::string text)
 {
+  __D_IMPL(_d,Layer)
   if( !_d->tooltipPic.isNull() && (_d->tooltipText != text))
   {
     Font font = Font::create( FONT_2 );
@@ -255,11 +260,12 @@ void Layer::_setTooltipText(std::string text)
 
 void Layer::render( GfxEngine& engine)
 {
+  __D_IMPL(_d,Layer)
   // center the map on the screen
   const TilesArray& visibleTiles = _d->camera->getTiles();
   Point camOffset = _d->camera->getOffset();
 
-  _getCamera()->startFrame();
+  _camera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
   foreach( it, visibleTiles )
@@ -360,6 +366,7 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
 
 void Layer::drawColumn(GfxEngine& engine, const Point& pos, const int percent)
 {
+  __D_IMPL(_d,Layer)
   engine.drawPicture( _d->footColumn, pos + Point( 10, -21 ) );
 
   int roundPercent = ( percent / 10 ) * 10;
@@ -377,6 +384,7 @@ void Layer::drawColumn(GfxEngine& engine, const Point& pos, const int percent)
 
 void Layer::init( Point cursor )
 {
+  __D_IMPL(_d,Layer)
   _d->lastCursorPos = cursor;
   _d->startCursorPos = cursor;
   _d->nextLayer = getType();
@@ -384,6 +392,7 @@ void Layer::init( Point cursor )
 
 void Layer::afterRender(GfxEngine& engine)
 {
+  __D_IMPL(_d,Layer)
   if( !_d->tooltipText.empty() )
   {
     engine.drawPicture( *_d->tooltipPic, _d->lastCursorPos );
@@ -391,8 +400,9 @@ void Layer::afterRender(GfxEngine& engine)
 }
 
 Layer::Layer( TilemapCamera& camera, PlayerCityPtr city )
-  : _d( new Impl )
+  : __INIT_IMPL(Layer)
 {
+  __D_IMPL(_d,Layer)
   _d->camera = &camera;
   _d->city = city;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
@@ -400,17 +410,18 @@ Layer::Layer( TilemapCamera& camera, PlayerCityPtr city )
 
 void Layer::_loadColumnPicture(int picId)
 {
+  __D_IMPL(_d,Layer)
   _d->footColumn = Picture::load( ResourceGroup::sprites, picId + 2 );
   _d->bodyColumn = Picture::load( ResourceGroup::sprites, picId + 1 );
   _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
 }
 
-int Layer::getNextLayer() const{ return _d->nextLayer; }
-TilemapCamera* Layer::_getCamera(){  return _d->camera;}
-PlayerCityPtr Layer::_getCity(){  return _d->city;}
-void Layer::_setNextLayer(int layer) { _d->nextLayer = layer;}
+int Layer::getNextLayer() const{ __D_IMPL_CONST(_d,Layer)  return _d->nextLayer; }
+TilemapCamera* Layer::_camera(){ __D_IMPL(_d,Layer)   return _d->camera;}
+PlayerCityPtr Layer::_city(){  __D_IMPL(_d,Layer)  return _d->city;}
+void Layer::_setNextLayer(int layer) { __D_IMPL(_d,Layer)  _d->nextLayer = layer;}
 Layer::~Layer(){}
-void Layer::_setLastCursorPos(Point pos){   _d->lastCursorPos = pos; }
-void Layer::_setStartCursorPos(Point pos){  _d->startCursorPos = pos; }
-Point Layer::_getStartCursorPos() const{ return _d->startCursorPos; }
-Point Layer::_getLastCursorPos() const {  return _d->lastCursorPos; }
+void Layer::_setLastCursorPos(Point pos){ __D_IMPL(_d,Layer)    _d->lastCursorPos = pos; }
+void Layer::_setStartCursorPos(Point pos){ __D_IMPL(_d,Layer)   _d->startCursorPos = pos; }
+Point Layer::_startCursorPos() const{ __D_IMPL_CONST(_d,Layer)  return _d->startCursorPos; }
+Point Layer::_lastCursorPos() const { __D_IMPL_CONST(_d,Layer)   return _d->lastCursorPos; }

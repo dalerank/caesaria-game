@@ -67,7 +67,7 @@ void LayerTax::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //houses
     case building::house:
       {
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = ptr_cast<House>( overlay );
         taxLevel = house->getServiceValue( Service::forum );
@@ -78,7 +78,7 @@ void LayerTax::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;

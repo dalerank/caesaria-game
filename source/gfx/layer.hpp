@@ -62,10 +62,10 @@ public:
   virtual ~Layer();
 protected:
   void _setLastCursorPos( Point pos );
-  Point _getLastCursorPos() const;
+  Point _lastCursorPos() const;
   WalkerList _getVisibleWalkerList( const VisibleWalkers& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
-  Point _getStartCursorPos() const;
+  Point _startCursorPos() const;
   void _drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset);
   void _setTooltipText( std::string text );
   void _loadColumnPicture( int picId );
@@ -73,12 +73,11 @@ protected:
   TilesArray _getSelectedArea();
 
   Layer( TilemapCamera& camera, PlayerCityPtr city );
-  TilemapCamera* _getCamera();
-  PlayerCityPtr _getCity();
+  TilemapCamera* _camera();
+  PlayerCityPtr _city();
   void _setNextLayer(int layer);
 
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Layer)
 };
 
 typedef SmartPtr<Layer> LayerPtr;

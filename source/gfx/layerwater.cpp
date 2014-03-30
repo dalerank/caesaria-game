@@ -84,7 +84,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       tileNumber += (haveWater ? OverlayPic::haveWater : 0);
       tileNumber += tile.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
-      city::Helper helper( _getCity() );
+      city::Helper helper( _city() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
       pic = Picture::getInvalid();
@@ -108,7 +108,7 @@ void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlBuilding ) ) )
   {
-    Tilemap& tilemap = _getCity()->tilemap();
+    Tilemap& tilemap = _city()->tilemap();
     TilesArray area = tilemap.getArea( tile.pos(), areaSize );
 
     foreach( it, area )
@@ -136,7 +136,7 @@ void LayerWater::handleEvent(NEvent& event)
     {
     case mouseMoved:
     {
-      Tile* tile = _getCamera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
       if( tile != 0 )
       {
