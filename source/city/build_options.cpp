@@ -98,7 +98,7 @@ bool CityBuildOptions::isGroupAvailable(const BuildMenuType type) const
 {
   switch( type )
   {
-  case BM_FARM:         return isBuildingsAvailble( building::wheatFarm, building::pigFarm );
+  case BM_FARM:         return isBuildingsAvailble( building::wheatFarm, building::pigFarm ); break;
   case BM_WATER:        return isBuildingsAvailble( building::reservoir, building::well ); break;
   case BM_HEALTH:       return isBuildingsAvailble( building::doctor, building::barber ); break;
   case BM_RAW_MATERIAL: return isBuildingsAvailble( building::marbleQuarry, building::clayPit ); break;
