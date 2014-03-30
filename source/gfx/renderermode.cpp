@@ -41,15 +41,8 @@ LayerMode::LayerMode(int type) : _d( new Impl )
   //_d->type = citylayer::simple;
 }
 
-int LayerMode::getType() const
-{
-  return _d->type;
-}
-
-void LayerMode::_setType(int type)
-{
-  _d->type = type;
-}
+int LayerMode::getType() const {  return _d->type;}
+void LayerMode::_setType(int type){  _d->type = type;}
 
 class BuildMode::Impl
 {
@@ -60,25 +53,10 @@ public:
     ConstructionPtr construction;
 };
 
-bool BuildMode::isBorderBuilding() const
-{
-    return _d->isBorderBuilding;
-}
-
-bool BuildMode::isMultiBuilding() const
-{
-  return _d->isMultiBuilding;
-}
-
-bool BuildMode::isRoadAssignment() const
-{
-  return _d->isRoadAssignment;
-}
-
-ConstructionPtr BuildMode::getContruction() const
-{
-    return _d->construction;
-}
+bool BuildMode::isBorderBuilding() const {    return _d->isBorderBuilding;}
+bool BuildMode::isMultiBuilding() const{  return _d->isMultiBuilding;}
+bool BuildMode::isRoadAssignment() const{  return _d->isRoadAssignment;}
+ConstructionPtr BuildMode::getContruction() const{    return _d->construction;}
 
 DestroyMode::DestroyMode() : LayerMode( citylayer::destroy )
 {
@@ -106,7 +84,7 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
   case construction::road:
     newCommand->_d->isBorderBuilding = true;
     newCommand->_d->isMultiBuilding = true;
-    newCommand->_d->isRoadAssignment = true;
+    newCommand->_d->isRoadAssignment = false;
   break;
 
   case building::aqueduct:

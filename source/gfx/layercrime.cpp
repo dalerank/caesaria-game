@@ -70,7 +70,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
         fireLevel = (int)house->getServiceValue( Service::crime );
         needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
 
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
       }
     break;
@@ -78,7 +78,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
       }
     break;

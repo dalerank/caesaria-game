@@ -62,13 +62,13 @@ void LayerDestroy::_drawTileInSelArea( GfxEngine& engine, Tile& tile, Tile* mast
 void LayerDestroy::render( GfxEngine& engine )
 {
   // center the map on the screen
-  Point cameraOffset = _getCamera()->getOffset();
+  Point cameraOffset = _camera()->getOffset();
 
-  _getCamera()->startFrame();
+  _camera()->startFrame();
 
-  const TilesArray& visibleTiles = _getCamera()->getTiles();
+  const TilesArray& visibleTiles = _camera()->getTiles();
 
-  Tilemap& tmap = _getCity()->tilemap();
+  Tilemap& tmap = _city()->tilemap();
 
   std::set<int> hashDestroyArea;
   TilesArray destroyArea = _getSelectedArea();
@@ -152,29 +152,29 @@ void LayerDestroy::handleEvent(NEvent& event)
     case mouseMoved:
     {
       _setLastCursorPos( event.mouse.pos() );
-      if( !event.mouse.isLeftPressed() || _getStartCursorPos().x() < 0 )
+      if( !event.mouse.isLeftPressed() || _startCursorPos().x() < 0 )
       {
-        _setStartCursorPos( _getLastCursorPos() );
+        _setStartCursorPos( _lastCursorPos() );
       }
     }
     break;
 
     case mouseLbtnPressed:
     {
-      _setStartCursorPos( _getLastCursorPos() );
+      _setStartCursorPos( _lastCursorPos() );
     }
     break;
 
     case mouseLbtnRelease:            // left button
     {
-      Tile* tile = _getCamera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
       {
         break;
       }
 
       _clearAll();
-      _setStartCursorPos( _getLastCursorPos() );
+      _setStartCursorPos( _lastCursorPos() );
     }
     break;
 
@@ -192,9 +192,9 @@ void LayerDestroy::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _getCamera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = _camera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
-    TilemapCamera* cam = _getCamera();
+    TilemapCamera* cam = _camera();
     switch( event.keyboard.key )
     {
     case KEY_UP:    cam->moveUp   ( moveValue ); break;

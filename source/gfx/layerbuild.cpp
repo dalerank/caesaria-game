@@ -77,10 +77,10 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
   Size size = overlay->size();
 
-  if( overlay->canBuild( _getCity(), pos, d->buildTiles ) )
+  if( overlay->canBuild( _city(), pos, d->buildTiles ) )
   {
     //bldCommand->setCanBuild(true);
-    Tilemap& tmap = _getCity()->tilemap();
+    Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
     for (int dj = 0; dj < size.height(); ++dj)
     {
@@ -109,7 +109,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
     Picture& redPicture = Picture::load("oc3_land", 2);
 
     //TilemapArea area = til
-    Tilemap& tmap = _getCity()->tilemap();
+    Tilemap& tmap = _city()->tilemap();
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -136,9 +136,9 @@ void LayerBuild::_updatePreviewTiles( bool force )
 {
   __D_IMPL(d,LayerBuild);
   if( !d->multiBuilding )
-    _setStartCursorPos( _getLastCursorPos() );
+    _setStartCursorPos( _lastCursorPos() );
 
-  Tile* curTile = _getCamera()->at( _getLastCursorPos(), true );
+  Tile* curTile = _camera()->at( _lastCursorPos(), true );
 
   if( !curTile )
     return;
@@ -152,10 +152,10 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
   if( d->borderBuilding )
   {
-    Tile* startTile = _getCamera()->at( _getStartCursorPos(), true );  // tile under the cursor (or NULL)
-    Tile* stopTile  = _getCamera()->at( _getLastCursorPos(),  true );
+    Tile* startTile = _camera()->at( _startCursorPos(), true );  // tile under the cursor (or NULL)
+    Tile* stopTile  = _camera()->at( _lastCursorPos(),  true );
 
-    TilesArray pathWay = RoadPropagator::createPath( _getCity()->tilemap(),
+    TilesArray pathWay = RoadPropagator::createPath( _city()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
                                                      d->roadAssignment );
 
@@ -191,7 +191,7 @@ void LayerBuild::_buildAll()
   foreach( it, d->buildTiles )
   {
     Tile* tile = *it;
-    if( cnstr->canBuild( _getCity(), tile->pos(), TilesArray() ) && tile->isMasterTile())
+    if( cnstr->canBuild( _city(), tile->pos(), TilesArray() ) && tile->isMasterTile())
     {
       events::GameEventPtr event = events::BuildEvent::create( tile->pos(), cnstr->type() );
       event->dispatch();
@@ -219,9 +219,9 @@ void LayerBuild::handleEvent(NEvent& event)
     case mouseMoved:
     {
       _setLastCursorPos( event.mouse.pos() );
-      if( !event.mouse.isLeftPressed() || _getStartCursorPos().x() < 0 )
+      if( !event.mouse.isLeftPressed() || _startCursorPos().x() < 0 )
       {
-        _setStartCursorPos( _getLastCursorPos() );
+        _setStartCursorPos( _lastCursorPos() );
       }
 
       _updatePreviewTiles(false);
@@ -230,21 +230,21 @@ void LayerBuild::handleEvent(NEvent& event)
 
     case mouseLbtnPressed:
     {
-      _setStartCursorPos( _getLastCursorPos() );
+      _setStartCursorPos( _lastCursorPos() );
       _updatePreviewTiles( false );
     }
     break;
 
     case mouseLbtnRelease:            // left button
     {
-      Tile* tile = _getCamera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
       {
         break;
       }
 
       _buildAll();
-      _setStartCursorPos( _getLastCursorPos() );
+      _setStartCursorPos( _lastCursorPos() );
       _updatePreviewTiles( true );
     }
     break;
@@ -264,9 +264,9 @@ void LayerBuild::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _getCamera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = _camera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
-    TilemapCamera* cam = _getCamera();
+    TilemapCamera* cam = _camera();
     switch( event.keyboard.key )
     {
     case KEY_UP:    cam->moveUp   ( moveValue ); break;
@@ -278,10 +278,7 @@ void LayerBuild::handleEvent(NEvent& event)
   }
 }
 
-int LayerBuild::getType() const
-{
-  return citylayer::build;
-}
+int LayerBuild::getType() const {  return citylayer::build;}
 
 std::set<int> LayerBuild::getVisibleWalkers() const
 {
@@ -294,7 +291,7 @@ std::set<int> LayerBuild::getVisibleWalkers() const
 void LayerBuild::_drawBuildTiles(GfxEngine& engine)
 {
   __D_IMPL(_d,LayerBuild);
-  Point offset = _getCamera()->getOffset();
+  Point offset = _camera()->getOffset();
   foreach( it, _d->buildTiles )
   {
     Tile* postTile = *it;
@@ -304,7 +301,7 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
     engine.resetTileDrawMask();
 
     if( ptr_construction.isValid()
-        && ptr_construction->canBuild( _getCity(), postTile->pos(), _d->buildTiles ) )
+        && ptr_construction->canBuild( _city(), postTile->pos(), _d->buildTiles ) )
     {
       engine.setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
@@ -329,7 +326,7 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
     if( cntr.isValid() && postTiles.size() > 0 )
     {
       tile.setWasDrawn();
-      const Picture& pic = cntr->getPicture( _getCity(), tile.pos(), postTiles );
+      const Picture& pic = cntr->getPicture( _city(), tile.pos(), postTiles );
       engine.drawPicture( pic, screenPos );
 
       drawTilePass( engine, tile, offset, Renderer::foreground );
@@ -387,9 +384,7 @@ LayerPtr LayerBuild::create(CityRenderer* renderer, PlayerCityPtr city)
   return ret;
 }
 
-LayerBuild::~LayerBuild()
-{
-}
+LayerBuild::~LayerBuild() {}
 
 LayerBuild::LayerBuild(CityRenderer* renderer, PlayerCityPtr city)
   : Layer( renderer->camera(), city ),

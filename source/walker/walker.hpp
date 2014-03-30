@@ -38,7 +38,7 @@ class Pathway;
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
-  typedef enum { acNone, acMove, acFight, acDie, acWork, acMax } Action;
+  typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
 
   Walker( PlayerCityPtr city );
   virtual ~Walker();
@@ -59,6 +59,7 @@ public:
   virtual void turn( TilePos pos );
 
   void setSpeed(const float speed);
+  float speed() const;
   void setSpeedMultiplier( float koeff );
   void setUniqueId( const UniqueId uid );
 

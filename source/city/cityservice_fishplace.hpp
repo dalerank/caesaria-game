@@ -31,6 +31,7 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   void update( const unsigned int time );
+  virtual bool isDeleted() const;
 
 private:
   Fishery( PlayerCityPtr city );

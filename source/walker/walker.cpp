@@ -100,11 +100,8 @@ void Walker::timeStep(const unsigned long time)
     }
   break;
 
-  case Walker::acFight:
-    _updateAnimation( time );
-  break;
-
   default:
+    _updateAnimation( time );
   break;
   }
 
@@ -131,6 +128,7 @@ void Walker::setPathway( const Pathway& pathway)
 }
 
 void Walker::setSpeed(const float speed){   _d->speed = speed;}
+float Walker::speed() const{    return _d->speed;}
 void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 // ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
@@ -430,19 +428,9 @@ const Picture& Walker::getMainPicture()
   {
     const AnimationBank::MovementAnimation& animMap = AnimationBank::find( type() );
     AnimationBank::MovementAnimation::const_iterator itAnimMap;
-    if (_d->action.action == acNone || _d->action.direction == constants::noneDirection )
+    if( _d->action.direction == constants::noneDirection )
     {
-      DirectedAction action;
-      action.action = acMove;       // default action
-      if (_d->action.direction == constants::noneDirection)
-      {
-         action.direction = constants::north;  // default direction
-      }
-      else
-      {
-         action.direction = _d->action.direction;  // last direction of the walker
-      }
-
+      DirectedAction action = { _d->action.action, constants::north };
       itAnimMap = animMap.find(action);
     }
     else

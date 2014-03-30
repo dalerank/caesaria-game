@@ -100,7 +100,7 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       }
       else
       {
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;
@@ -114,7 +114,7 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
         needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
 
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     break;
@@ -122,7 +122,7 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
       //other buildings
     default:
       {
-        city::Helper helper( _getCity() );
+        city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
       }
     break;
@@ -165,7 +165,7 @@ void LayerEducation::handleEvent(NEvent& event)
     {
     case mouseMoved:
     {
-      Tile* tile = _getCamera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
       std::string levelName = "";
       int lvlValue = -1;

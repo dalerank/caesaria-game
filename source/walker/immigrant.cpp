@@ -46,7 +46,7 @@ Immigrant::Immigrant(PlayerCityPtr city )
   _setType( walker::immigrant );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
-  _d->stamina = rand() % 80 + 20;
+  _d->stamina = math::random( 80 ) + 20;
 }
 
 HousePtr Immigrant::_findBlankHouse()
@@ -223,30 +223,12 @@ void Immigrant::leaveCity( const Tile& tile)
 }
 
 
-Immigrant::~Immigrant()
-{
+Immigrant::~Immigrant(){}
 
-}
-
-void Immigrant::setCartPicture( const Picture& pic )
-{
-  _d->cartPicture = pic;
-}
-
-const Picture& Immigrant::getCartPicture()
-{
-  return _d->cartPicture;
-}
-
-const CitizenGroup& Immigrant::_getPeoples() const
-{
-  return _d->peoples;
-}
-
-void Immigrant::setPeoples( const CitizenGroup& peoples )
-{
-  _d->peoples = peoples;
-}
+void Immigrant::setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
+const Picture& Immigrant::getCartPicture(){  return _d->cartPicture;}
+const CitizenGroup& Immigrant::_getPeoples() const{  return _d->peoples;}
+void Immigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
 
 void Immigrant::timeStep(const unsigned long time)
 {

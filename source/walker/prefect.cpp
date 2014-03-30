@@ -336,6 +336,7 @@ void Prefect::_centerTile()
     {
       if( enemy->pos().distanceFrom( pos() ) < 1.5f  )
       {
+        turn( enemy->pos() );
         _d->action = Impl::fightEnemy;
         setSpeed( 0.f );
         _setAction( acFight );
@@ -354,6 +355,7 @@ void Prefect::_centerTile()
     BuildingPtr building = ptr_cast<Building>( _getNextTile().overlay() );
     if( building.isValid() && building->type() == building::burningRuins )
     {
+      turn( building->pos() );
       _d->action = Impl::fightFire;
       _d->endPatrolPoint = building->pos();
       _setAction( acFightFire );
@@ -374,7 +376,7 @@ void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
 
-  switch( getAction() )
+  switch( (int)getAction() )
   {
   case acDragWater:
     _walk();
@@ -422,6 +424,12 @@ void Prefect::timeStep(const unsigned long time)
       _back2Prefecture();
     }
   }
+  break;
+
+  case Impl::findFire:
+  case Impl::go2fire:
+      if( speed() == 0.f )
+          _back2Patrol();
   break;
 
   case Impl::fightEnemy:
