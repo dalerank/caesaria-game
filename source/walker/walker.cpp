@@ -100,12 +100,11 @@ public:
   float speed;
   TilePos pos;
   UniqueId uid;
-  Point midTilePos;  // subtile coordinate in the current tile, at starting position
   float speedMultiplier;
-  //Point tileOffset; // subtile coordinate in the current tile: 0..15
   Animation animation;  // current animation
-  PointF wpos; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
-  PointF nextwpos;  // remaining movement
+  PointF wpos;      // current world position
+  PointF subSpeed;
+  PointF nextwpos;  // next way point
   Pathway pathway;
   DirectedAction action;
   std::string name;
@@ -137,9 +136,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->speed = 1.f; // default speed
   _d->speedMultiplier = 1.f;
   _d->isDeleted = false;
-
-  _d->midTilePos = Point( 7, 7 );
-  //_d->remainMove = PointF( 0, 0 );
+  _d->centerReached = false;
 }
 
 Walker::~Walker() {}
@@ -175,7 +172,8 @@ void Walker::setPos( const TilePos& pos )
 {
   _d->pos = pos;
   //_d->tileOffset = _d->midTilePos;
-  _d->wpos = PointF( _d->pos.i(), _d->pos.j() ) * 15 + _d->midTilePos.toPointF();
+  const Tile& tile =_d->city->tilemap().at( pos );
+  _d->wpos = tile.center().toPointF();
 }
 
 void Walker::setPathway( const Pathway& pathway)
@@ -223,9 +221,9 @@ void Walker::_walk()
   break;
   }
 
-  PointF delta = _d->nextwpos - _d->wpos;
-  delta.rx() = math::signnum( delta.x() ) * _d->finalSpeed() * speedKoeff;
-  delta.ry() = math::signnum( delta.y() ) * _d->finalSpeed() * speedKoeff;
+  PointF delta = _d->subSpeed;
+  delta.rx() = delta.x() * _d->finalSpeed() * speedKoeff;
+  delta.ry() = delta.y() * _d->finalSpeed() * speedKoeff;
 
   PointF tmp = _d->wpos;
   TilePos saveMpos( tmp.x() / 15, tmp.y() / 15 );
@@ -242,7 +240,8 @@ void Walker::_walk()
       _d->lastCenterDst = crntDst;
     }
     else
-    {
+    {      
+      _d->pathway.next();
       _centerTile();
     }
   }
@@ -250,7 +249,7 @@ void Walker::_walk()
   if( saveMpos != Mpos )
   {
     _d->pos = Mpos;
-    _d->lastCenterDst = 99.f;
+    //_d->lastCenterDst = 99.f;
     _changeTile();
   }
 
@@ -306,7 +305,7 @@ void Walker::_walk()
        dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
     break;
 
-    default:
+    default:pos
        Logger::warning( "Invalid move direction: %d", _d->action.direction);
        _d->action.direction = constants::noneDirection;
     break;
@@ -350,7 +349,7 @@ void Walker::_centerTile()
   if( _d->centerReached )
       return;
 
-  if (_d->pathway.isDestination())
+  if( _d->pathway.isDestination() )
   {
     _reachedPathway();
   }
@@ -363,9 +362,8 @@ void Walker::_centerTile()
     {
       _brokePathway( tile.pos() );
     }
-    _d->nextwpos = PointF( tile.i(), tile.j() )*15 + PointF( 7, 7 );
+    _d->centerReached = true;
   }
-  _d->centerReached = true;
 }
 
 void Walker::_reachedPathway()
@@ -377,7 +375,10 @@ void Walker::_reachedPathway()
 void Walker::_computeDirection()
 {
   Direction lastDirection = _d->action.direction;
-  _d->action.direction = _d->pathway.nextDirection();
+  _d->action.direction = _d->pathway.direction();
+  _d->nextwpos = _nextTile().center().toPointF();
+  _d->lastCenterDst = _d->wpos.getDistanceFrom( _d->nextwpos );
+  _d->subSpeed = ( _d->nextwpos - _d->wpos ) / 15.f;
 
   if( lastDirection != _d->action.direction )
   {
@@ -404,8 +405,8 @@ const Tile& Walker::_nextTile() const
   return _d->city->tilemap().at( p );
 }
 
-Point Walker::getMappos() const{  return Point( 2*(_d->wpos.x() + _d->wpos.y()), _d->wpos.x() - _d->wpos.y() );}
-Point Walker::getSubpos() const{  return /*_d->tileOffset*/ _d->midTilePos; }
+Point Walker::getMappos() const{ const PointF p = _d->wpos; return Point( 2*(p.x() + p.y()), p.x() - p.y() );}
+Point Walker::subtpos() const{  return /*_d->tileOffset*/ Point( 7, 7); }
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
@@ -501,14 +502,13 @@ void Walker::save( VariantMap& stream ) const
   stream[ "health" ] = _d->health;
   stream[ "action" ] = (int)_d->action.action;
   stream[ "direction" ] = (int)_d->action.direction;
-  stream[ "pos" ] = _d->pos;
-  //stream[ "tileoffset" ] = _d->tileOffset;
-  stream[ "mappos" ] = _d->wpos;
+  stream[ "location" ] = _d->pos;
+  stream[ "tileSpdKoeff" ] = _d->tileSpeedKoeff;
+  stream[ "wpos" ] = _d->wpos;
+  stream[ "nextwpos" ] = _d->nextwpos;
   stream[ "speed" ] = _d->speed;
-  stream[ "midTile" ] = _d->midTilePos;
   stream[ "speedMul" ] = (float)_d->speedMultiplier;
   stream[ "uid" ] = (unsigned int)_d->uid;
-  //stream[ "remainmove" ] = _d->remainMove;
   stream[ "thinks" ] = Variant( _d->thinks );
 }
 
@@ -518,12 +518,13 @@ void Walker::load( const VariantMap& stream)
 
   //_d->tileOffset = stream.get( "tileoffset" );
   _d->name = stream.get( "name" ).toString();
-  _d->wpos = stream.get( "mappos" ).toPointF();
-  _d->pos = stream.get( "pos" );
+  _d->wpos = stream.get( "wpos" ).toPointF();
+  _d->pos = stream.get( "location" );
   _d->pathway.init( tmap, tmap.at( 0, 0 ) );
   _d->pathway.load( stream.get( "pathway" ).toMap() );
   _d->thinks = stream.get( "thinks" ).toString();
-
+  _d->tileSpeedKoeff = stream.get( "tileSpdKoeff" );
+  _d->nextwpos = stream.get( "nextwpos" ).toPointF();
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
@@ -543,8 +544,6 @@ void Walker::load( const VariantMap& stream)
   }
 
   _d->speed = (float)stream.get( "speed" );
-  _d->midTilePos = stream.get( "midTile" );
-  //_d->remainMove = stream.get( "remainmove" ).toPointF();
   _d->health = (double)stream.get( "health" );
 }
 
@@ -568,8 +567,6 @@ void Walker::_updatePathway( const Pathway& pathway)
   _d->pathway = pathway;
   _d->pathway.begin();  
   _computeDirection();
-  const Tile& tile = _nextTile();
-  _d->nextwpos = PointF( tile.i(), tile.j() )*15 + PointF( 7, 7 );
 }
 
 void Walker::_updateAnimation( const unsigned int time )

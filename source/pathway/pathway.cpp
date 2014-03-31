@@ -65,10 +65,7 @@ Pathway::Pathway() : _d( new Impl )
   _d->isReverse = false;
 }
 
-Pathway::~Pathway()
-{
-
-}
+Pathway::~Pathway(){}
 
 Pathway::Pathway(const Pathway &copy) : _d( new Impl )
 {
@@ -116,6 +113,22 @@ void Pathway::rbegin()
   _d->isReverse = true;
 }
 
+constants::Direction Pathway::direction()
+{
+  if(_d->isReverse )
+  {
+    if( _d->directionIt_reverse != _d->directionList.rend() )
+      return *_d->directionIt_reverse;
+  }
+  else
+  {
+    if( _d->directionIt != _d->directionList.end() )
+     return *_d->directionIt;
+  }
+
+  return constants::noneDirection;
+}
+
 void Pathway::toggleDirection()
 {
   if( _d->isReverse )
@@ -130,17 +143,17 @@ void Pathway::toggleDirection()
   }
 }
 
-constants::Direction Pathway::nextDirection()
+void Pathway::next()
 {
-  Direction res = noneDirection;
   if( _d->isReverse )
   {
     if (_d->directionIt_reverse == _d->directionList.rend())
     {
       // end of path!
-      return noneDirection;
+      return;
     }
-    int direction = (int) *_d->directionIt_reverse;
+
+    /*int direction = (int) *_d->directionIt_reverse;
     if( direction != (int) noneDirection )
     {
       if (direction + 4 < (int) countDirection)
@@ -151,21 +164,19 @@ constants::Direction Pathway::nextDirection()
       {
         res = (Direction) (direction-4);
       }
-    }
+    }*/
     _d->directionIt_reverse++;
   }
   else
   {
-    if (_d->directionIt == _d->directionList.end())
+    if( _d->directionIt == _d->directionList.end())
     {
       // end of path!
-      return noneDirection;
+      return;
     }
-    res = *_d->directionIt;
+
     _d->directionIt++;
   }
-
-  return res;
 }
 
 bool Pathway::isDestination() const
@@ -182,7 +193,7 @@ bool Pathway::isDestination() const
   }
   else
   {
-    res = (_d->directionIt == _d->directionList.end());
+    res = ( _d->directionIt == _d->directionList.end() );
   }
 
   return res;

@@ -152,7 +152,7 @@ void ListBox::removeItem(unsigned int id)
   else if ((unsigned int)_d->selectedItemIndex > id)
 	{
      _d->selectedItemIndex -= 1;
-     _d->selectTime = DateTime::getElapsedTime();
+     _d->selectTime = DateTime::elapsedTime();
 	}
 
   _d->items.erase( _d->items.begin() + id);
@@ -204,7 +204,7 @@ void ListBox::setSelected(int id)
 {
     _d->selectedItemIndex = ((unsigned int)id>=_d->items.size() ? -1 : id);
 
-    _d->selectTime = DateTime::getElapsedTime();
+    _d->selectTime = DateTime::elapsedTime();
     _d->needItemsRepackTextures = true;
 
     _RecalculateScrollPos();
@@ -315,7 +315,7 @@ bool ListBox::onEvent(const NEvent& event)
 			else if (event.keyboard.pressed && event.keyboard.symbol)
 			{
 				// change selection based on text as it is typed.
-                unsigned int now = DateTime::getElapsedTime();
+                unsigned int now = DateTime::elapsedTime();
 
 				if (now - _d->lastKeyTime < 500)
 				{
@@ -491,7 +491,7 @@ bool ListBox::onEvent(const NEvent& event)
 
 void ListBox::_SelectNew(int ypos)
 {
-    unsigned int now = DateTime::getElapsedTime();
+    unsigned int now = DateTime::elapsedTime();
     int oldSelected = _d->selectedItemIndex;
 
     _d->needItemsRepackTextures = true;

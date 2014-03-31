@@ -323,7 +323,7 @@ void PushButton::setPressed( bool pressed )
   __D_IMPL(_d,PushButton);
   if( _d->pressed != pressed)
   {
-    _d->clickTime = DateTime::getElapsedTime();
+    _d->clickTime = DateTime::elapsedTime();
     _d->pressed = pressed;
   }
 }

@@ -63,6 +63,7 @@ public:
   int i() const;
   int j() const;
   TilePos pos() const;
+  Point center() const;
   Point mapPos() const;
 
   // displayed picture

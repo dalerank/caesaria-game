@@ -278,7 +278,7 @@ void ServiceWalker::_reachedPathway()
   }
   else
   {
-    // walker finished service => get back to service building
+    // walker finished service => get back to service building    
     _pathwayRef().rbegin();
     _computeDirection();
     go();

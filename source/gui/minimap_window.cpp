@@ -251,10 +251,10 @@ void Minimap::draw(GfxEngine& painter)
   if( !isVisible() )
     return;
 
-  if( DateTime::getElapsedTime() - _d->lastTimeUpdate > 250 )
+  if( DateTime::elapsedTime() - _d->lastTimeUpdate > 250 )
   {
     _d->updateImage();
-    _d->lastTimeUpdate = DateTime::getElapsedTime();
+    _d->lastTimeUpdate = DateTime::elapsedTime();
   }
 
   painter.drawPicture( *_d->minimap, screenLeft(), screenTop() ); // 152, 145

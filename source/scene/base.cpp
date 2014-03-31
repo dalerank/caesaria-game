@@ -26,6 +26,9 @@
 namespace scene
 {
 
+//1000 / 30
+#define TICK_PER_FRAME 33
+
 Base::Base()
 {
   _isStopped = false;
@@ -48,13 +51,7 @@ void Base::stop(){ _isStopped = true;}
 
 void Base::update( GfxEngine &engine )
 {
-  static unsigned int lastclock = DateTime::getElapsedTime();
-  static unsigned int currentclock = 0;  
-  static unsigned int ref_delay = 1000 / 20;  // 20fps
-
-#ifdef CAESARIA_PLATFORM_ANDROID
-  ref_delay = 0;
-#endif
+  static unsigned int lastTimeUpdate = DateTime::elapsedTime();
 
   drawFrame( engine );
   afterFrame();
@@ -65,12 +62,12 @@ void Base::update( GfxEngine &engine )
     handleEvent( nEvent );
   }
 
-  // sets a fix frameRate
-  currentclock = DateTime::getElapsedTime();
-  unsigned int delay = math::clamp<int>( ref_delay - (currentclock - lastclock), 0, ref_delay );
-
-  lastclock = currentclock;
-  engine.delay( delay );
+  unsigned int ticks = DateTime::elapsedTime() - lastTimeUpdate;
+  if( ticks < TICK_PER_FRAME )
+  {
+    engine.delay( TICK_PER_FRAME - ticks );
+  }
+  lastTimeUpdate = DateTime::elapsedTime();
 }
 
 bool Base::isStopped() const{  return _isStopped;}

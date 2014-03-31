@@ -79,7 +79,7 @@ HousePtr Immigrant::_findBlankHouse()
   return blankHouse;
 }
 
-void Immigrant::_findPath2blankHouse( TilePos startPoint )
+Pathway Immigrant::_findPath2blankHouse( TilePos startPoint )
 {
   HousePtr house = _findBlankHouse();  
 
@@ -97,16 +97,7 @@ void Immigrant::_findPath2blankHouse( TilePos startPoint )
                                      PathwayHelper::allTerrain );
   }
 
-  if( pathway.isValid() )
-  {
-    setPos( startPoint );
-    setPathway( pathway );
-    go();
-  }
-  else
-  {
-    die();
-  }
+  return pathway;
 }
 
 void Immigrant::_reachedPathway()
@@ -132,21 +123,20 @@ void Immigrant::_reachedPathway()
   }
   else
   {
-    TilesArray area = _city()->tilemap().getArea( pos() - TilePos(1,1),
-                                                         pos() + TilePos(1,1) );
-    foreach( it, area )  //have destination
+    city::Helper helper( _city() );
+    TilePos offset( 1, 1 );
+    HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
+    foreach( it, houses )  //have destination
     {
-      Tile* tile = *it;
-      HousePtr house = ptr_cast<House>( tile->overlay() );
-      if( !house.isValid() )
-        continue;
+      HousePtr house = *it;
+
       int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
       if( freeRoom > 0 )
       {
         Tilemap& tmap = _city()->tilemap();
         Pathway pathway;
         pathway.init( tmap, tmap.at( pos() ) );
-        pathway.setNextTile( *tile );
+        pathway.setNextTile( house->tile() );
 
         gooutCity = false;
         _updatePathway( pathway );
@@ -158,7 +148,16 @@ void Immigrant::_reachedPathway()
 
   if( gooutCity )
   {
-    _findPath2blankHouse( pos() );
+    Pathway way = _findPath2blankHouse( pos() );
+    if( way.isValid() )
+    {
+      _updatePathway( way );
+      go();
+    }
+    else
+    {
+      die();
+    }
   }
   else
   {
@@ -199,8 +198,10 @@ ImmigrantPtr Immigrant::send2city( PlayerCityPtr city, const CitizenGroup& peopl
 }
 
 void Immigrant::send2city( const Tile& startTile )
-{
-  _findPath2blankHouse( startTile.pos() );
+{    
+  Pathway way = _findPath2blankHouse( startTile.pos() );
+  setPos( startTile.pos() );
+  setPathway( way );
   _city()->addWalker( this );
 }
 

@@ -266,7 +266,7 @@ void ContextMenu::setVisible(bool visible)
 void ContextMenu::setHoverIndex_( int index )
 {
   _d->highlihted = index;
-  _d->changeTime = DateTime::getElapsedTime();
+  _d->changeTime = DateTime::elapsedTime();
 }
 
 //! sends a click Returns:
@@ -368,7 +368,7 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 		if (_d->items[openmenu]->isEnabled() && _d->items[openmenu]->getSubMenu()->isHighlighted_(p, canOpenSubMenu))
 		{
 			_d->highlihted = openmenu;
-      _d->changeTime = DateTime::getElapsedTime();
+      _d->changeTime = DateTime::elapsedTime();
 			return true;
 		}
 	}
@@ -380,7 +380,7 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 		if (_d->items[i]->isEnabled() && _d->items[i]->absoluteRect().isPointInside( p ))
 		{
 			_d->highlihted = i;
-      _d->changeTime = DateTime::getElapsedTime();
+      _d->changeTime = DateTime::elapsedTime();
 
 			// make submenus visible/invisible
 			if( _d->highlihted != _d->lastHighlihted )

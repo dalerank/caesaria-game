@@ -208,7 +208,7 @@ DateTime DateTime::getTime() const
     return ret;
 }
 
-unsigned int DateTime::getElapsedTime()
+unsigned int DateTime::elapsedTime()
 {
 #if defined(CAESARIA_PLATFORM_WIN)
   return ::GetTickCount();

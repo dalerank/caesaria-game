@@ -42,7 +42,7 @@ PositionAnimator::PositionAnimator( Widget* node,
 
 	_d->stopPos = stopPos;
 	_d->time = time;
-  _d->lastTimeUpdate = DateTime::getElapsedTime();
+  _d->lastTimeUpdate = DateTime::elapsedTime();
 
 	restart();
 }
@@ -65,8 +65,8 @@ void PositionAnimator::beforeDraw( GfxEngine& painter )
 			if( _d->stopPos.y() == ANIMATOR_UNUSE_VALUE )
 				_d->stopPos.setY( int(_d->currentPos.y() ) );
 
-      float fps = 1000.f / float( DateTime::getElapsedTime() - _d->lastTimeUpdate + 1 );
-      _d->lastTimeUpdate = DateTime::getElapsedTime();
+      float fps = 1000.f / float( DateTime::elapsedTime() - _d->lastTimeUpdate + 1 );
+      _d->lastTimeUpdate = DateTime::elapsedTime();
 			float step = _d->stopPos.getDistanceFrom( _d->startPos ) / float( fps * ( _d->time / 1000.f ) );
 			float offsetX = _d->stopPos.x() - _d->currentPos.x();
 			float signX = offsetX < 0 ? -1.f : 1.f;

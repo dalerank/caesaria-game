@@ -87,9 +87,10 @@ bool Tile::isFlat() const
            : !(_terrain.rock || _terrain.tree || _terrain.aqueduct) );
 }
 
-TilePos Tile::pos() const{  return _pos;}
+TilePos Tile::pos() const{  return _pos; }
+Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * 15 + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
-Point Tile::mapPos() const{  return Point( 30 * ( i() + j()), 15 * (i() - j()) );}
+Point Tile::mapPos() const{  return Point( 30 * ( _pos.i() + _pos.j() ), 15 * ( _pos.i() - _pos.j() ) );}
 
 void Tile::animate(unsigned int time)
 {

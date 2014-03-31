@@ -77,7 +77,7 @@ void GfxSdlEngine::deletePicture( Picture* pic )
 
 void GfxSdlEngine::init()
 {
-  _d->lastUpdateFps = DateTime::getElapsedTime();
+  _d->lastUpdateFps = DateTime::elapsedTime();
   _d->fps = 0;
   _d->showDebugInfo = false;
 
@@ -177,9 +177,9 @@ void GfxSdlEngine::endRenderFrame()
   SDL_Flip( _d->screen.getSurface() ); //Refresh the screen
   _d->fps++;
 
-  if( DateTime::getElapsedTime() - _d->lastUpdateFps > 1000 )
+  if( DateTime::elapsedTime() - _d->lastUpdateFps > 1000 )
   {
-    _d->lastUpdateFps = DateTime::getElapsedTime();
+    _d->lastUpdateFps = DateTime::elapsedTime();
     _d->lastFps = _d->fps;
     _d->fps = 0;
   }
@@ -272,7 +272,7 @@ Point GfxSdlEngine::mousePos() const
   return Point( x, y );
 }
 
-unsigned int GfxSdlEngine::getFps() const {  return _d->fps; }
+unsigned int GfxSdlEngine::fps() const {  return _d->fps; }
 
 void GfxSdlEngine::setFlag( int flag, int value )
 {

@@ -25,12 +25,12 @@ WidgetDeleter::WidgetDeleter( Widget* parent, size_t time )
 		: WidgetAnimator( parent, 0 )
 {
   _delay = time;
-  _startTime = DateTime::getElapsedTime();
+  _startTime = DateTime::elapsedTime();
 }
 
 void WidgetDeleter::draw( GfxEngine& painter )
 {
-  if( DateTime::getElapsedTime() - _startTime > _delay )
+  if( DateTime::elapsedTime() - _startTime > _delay )
     getParent()->deleteLater();
 }
 

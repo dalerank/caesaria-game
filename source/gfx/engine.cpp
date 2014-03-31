@@ -15,11 +15,9 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #include "engine.hpp"
 
 #include "core/exception.hpp"
-
 
 GfxEngine* GfxEngine::_instance = NULL;
 

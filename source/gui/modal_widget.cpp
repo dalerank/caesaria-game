@@ -119,7 +119,7 @@ bool ModalScreen::onEvent(const NEvent& event)
 				}
 				else
 				{
-					_mouseDownTime = DateTime::getElapsedTime();
+					_mouseDownTime = DateTime::elapsedTime();
 				}
 				return true;
 			}
@@ -139,7 +139,7 @@ bool ModalScreen::onEvent(const NEvent& event)
 	case sEventMouse:
 		if( event.mouse.type == mouseLbtnPressed )
 		{
-			_mouseDownTime = DateTime::getElapsedTime();
+			_mouseDownTime = DateTime::elapsedTime();
 		}
 	
 	default:
@@ -155,7 +155,7 @@ bool ModalScreen::onEvent(const NEvent& event)
 //! draws the element and its children
 void ModalScreen::draw( GfxEngine& painter )
 {
-	unsigned int now = DateTime::getElapsedTime();
+	unsigned int now = DateTime::elapsedTime();
 
 	if( now - _mouseDownTime < 300 && (now / 70) % 2 )
 	{
