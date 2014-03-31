@@ -104,17 +104,6 @@ protected:
   virtual void _storeChanged();
 };
 
-class FurnitureWorkshop : public Factory
-{
-public:
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-
-  FurnitureWorkshop();
-protected:
-  virtual void _storeChanged();
-};
-
 class Winery : public Factory
 {
 public:

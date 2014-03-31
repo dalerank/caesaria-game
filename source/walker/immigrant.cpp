@@ -201,8 +201,12 @@ void Immigrant::send2city( const Tile& startTile )
 {    
   Pathway way = _findPath2blankHouse( startTile.pos() );
   setPos( startTile.pos() );
-  setPathway( way );
-  _city()->addWalker( this );
+
+  if( way.isValid() )
+  {
+    setPathway( way );
+    _city()->addWalker( this );
+  }
 }
 
 void Immigrant::leaveCity( const Tile& tile)

@@ -12,36 +12,25 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_TAXCOLLECTOR_H_INCLUDED__
-#define __CAESARIA_TAXCOLLECTOR_H_INCLUDED__
 
-#include "serviceman.hpp"
+#ifndef _CAESARIA_FURNITURE_WORKSHOP_H_INCLUDE_
+#define _CAESARIA_FURNITURE_WORKSHOP_H_INCLUDE_
 
-class TaxCollector;
-typedef SmartPtr< TaxCollector > TaxCollectorPtr;
+#include "factory.hpp"
 
-class TaxCollector : public ServiceWalker
+class FurnitureWorkshop : public Factory
 {
 public:
-  static TaxCollectorPtr create( PlayerCityPtr city );
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
-  int getMoney() const;
-
-  virtual void load(const VariantMap &stream);
-  virtual void save(VariantMap &stream) const;
-  virtual std::string getThinks() const;
-
+  FurnitureWorkshop();
 protected:
-  virtual void _centerTile();
-  virtual void _reachedPathway();
-  virtual void _noWay();
-
-private:
-  TaxCollector( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  virtual void _storeChanged();
 };
 
-#endif //__CAESARIA_TAXCOLLECTOR_H_INCLUDED__
+#endif //_CAESARIA_FURNITURE_WORKSHOP_H_INCLUDE_

@@ -102,6 +102,7 @@ protected:
   virtual void _reachedPathway();  // called when the walker is at his destination
   virtual void _changeDirection(); // called when the walker changes direction
   virtual void _brokePathway(TilePos pos);
+  virtual void _noWay();
   virtual const Picture& getMainPicture();
 
 protected:

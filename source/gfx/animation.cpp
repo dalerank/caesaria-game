@@ -30,7 +30,6 @@ void Animation::start(bool loop)
   __D_IMPL(_d, Animation)
   _animIndex = 0;
   _lastTimeUpdate = 0;
-  _d->frameDelay = 1;
   _d->loop = loop;
 }
 

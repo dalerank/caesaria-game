@@ -118,8 +118,10 @@ void TaxCollector::_reachedPathway()
     }
   }
 
-  ServiceWalker::_reachedPathway();  
+  ServiceWalker::_reachedPathway();
 }
+
+void TaxCollector::_noWay(){  die();  }
 
 void TaxCollector::load(const VariantMap& stream)
 {

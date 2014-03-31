@@ -65,6 +65,7 @@
 #include "hippodrome.hpp"
 #include "theater.hpp"
 #include "workshop_chariot.hpp"
+#include "furniture_workshop.hpp"
 #include "actor_colony.hpp"
 #include <map>
 
@@ -121,7 +122,7 @@ public:
         anim.setOffset( v_offset.toPoint() );
       }
 
-      anim.setDelay( anMap.get( "delay", 1 ).toInt() );
+      anim.setDelay( (int)anMap.get( "delay", 1 ) );
 
       construction->setAnimation( anim );
     }

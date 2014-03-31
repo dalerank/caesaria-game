@@ -54,7 +54,7 @@ city::SrvcPtr Dispatcher::create(PlayerCityPtr city)
 
 bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 {
-  const std::string type = stream.get( "type" ).toString();
+  const std::string type = stream.get( "reqtype" ).toString();
   if( type == RqGood::typeName() )
   {
     RequestPtr r = RqGood::create( stream );

@@ -137,8 +137,9 @@ void Walker::_walk()
 {
   if( constants::noneDirection == _d->action.direction )
   {
-     // nothing to do
-     return;
+    // nothing to do
+    _noWay();
+    return;
   }
 
   float speedKoeff = 1.f;
@@ -159,6 +160,7 @@ void Walker::_walk()
 
   default:
      Logger::warning( "Walker: invalid move direction: %d", _d->action.direction );
+     _d->action.action = acNone;
      _d->action.direction = constants::noneDirection;
      return;
   break;
@@ -269,6 +271,7 @@ Point Walker::getMappos() const{ const PointF p = _d->wpos; return Point( 2*(p.x
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
+void Walker::_noWay(){}
 Direction Walker::getDirection() const {  return _d->action.direction;}
 Walker::Action Walker::getAction() const {  return (Walker::Action)_d->action.action;}
 double Walker::getHealth() const{  return _d->health;}

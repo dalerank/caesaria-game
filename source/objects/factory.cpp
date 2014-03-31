@@ -387,36 +387,6 @@ void WeaponsWorkshop::_storeChanged()
   _fgPicturesRef()[1].setOffset( 20, 15 );
 }
 
-bool FurnitureWorkshop::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
-{
-  return Factory::canBuild( city, pos, aroundTiles );
-}
-
-void FurnitureWorkshop::build(PlayerCityPtr city, const TilePos& pos)
-{
-  Factory::build( city, pos );
-
-  city::Helper helper( city );
-  bool haveTimberLogger = !helper.find<TimberLogger>( building::timberLogger ).empty();
-
-  _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
-}
-
-FurnitureWorkshop::FurnitureWorkshop() : Factory(Good::timber, Good::furniture, building::furnitureWorkshop, Size(2) )
-{
-  setPicture( ResourceGroup::commerce, 117 );
-
-  _animationRef().load(ResourceGroup::commerce, 118, 14);
-  _animationRef().setDelay( 4 );
-  _fgPicturesRef().resize( 3 );
-}
-
-void FurnitureWorkshop::_storeChanged()
-{
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 155 );
-  _fgPicturesRef()[1].setOffset( 47, 0 );
-}
-
 Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 86 );
