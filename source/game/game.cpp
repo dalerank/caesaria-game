@@ -134,6 +134,7 @@ void Game::mountArchives()
   foreach( a, archives )
   {
     vfs::Path absArchivePath = GameSettings::rcpath( a->second.toString() );
+    Logger::warning( "Game: try mount archive " + absArchivePath.toString() );
     Logger::warningIf( !absArchivePath.exist(), "Game: cannot load archive " + absArchivePath.toString() );
     fs.mountArchive( absArchivePath );
   }

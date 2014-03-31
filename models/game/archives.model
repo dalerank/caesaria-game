@@ -5,6 +5,7 @@
   celts : "/pics/pics_celts.zip"
   carthago : "/pics/pics_carthage.zip"
   sounds : "/audio/wavs_buildings.zip"
+  tutorial : "/pics/pics_tutorial.zip"
   etruscans : "/pics/pics_etruscan.zip"
   sound_themes : "/audio/themes.zip"
 }

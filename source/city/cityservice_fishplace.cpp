@@ -55,7 +55,6 @@ Fishery::Fishery( PlayerCityPtr city )
 
 void Fishery::update( const unsigned int time )
 {  
-  return;
   if( time % (GameDate::ticksInMonth()/2) != 1 )
     return;
 

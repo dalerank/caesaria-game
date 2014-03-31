@@ -48,8 +48,6 @@ std::string Animals::getDefaultName() { return "animals"; }
 
 void Animals::update(const unsigned int time)
 {
-  return;
-
   if( time % _d->updateInteval != 1 )
     return;
 

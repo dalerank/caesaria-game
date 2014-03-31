@@ -283,11 +283,11 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 					}
 				}
 
-				Logger::warning( "Multi-tile x %d at (%d,%d)", size, i, j );
+				//Logger::warning( "Multi-tile x %d at (%d,%d)", size, i, j );
 
 				Tile& master = oTilemap.at(i, j - size + 1);
 
-				Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
+				//Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
 
         for (int di = 0; di < size; ++di)
         {
@@ -297,7 +297,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
           }
         }
 
-        Logger::warning( " decoding " );
+        //Logger::warning( " decoding " );
       }
 
       // Check if it is building and type of building

@@ -249,7 +249,12 @@ void Immigrant::timeStep(const unsigned long time)
     _d->stamina = math::clamp( _d->stamina+1, 0.f, 100.f );
     if( _d->stamina >= 100 )
     {
-      _setAction( Walker::acMove );
+      Pathway way = _findPath2blankHouse( pos() );
+      if( way.isValid() )
+      {
+        _updatePathway( way );
+      }
+      go();
     }
   break;
 

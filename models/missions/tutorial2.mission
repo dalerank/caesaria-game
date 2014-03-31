@@ -19,13 +19,13 @@
     maxHouseLevel : "big_villa"
     caption : "##tt2_caption##"
     overview :  [ "##tutorial_markets_text##",
-                  "@img=picture2_00008.png",
+                  "@img=picture2_00008",
                   "##tutorial_granary_text##",
-                  "@img=picture3_00006.png",
+                  "@img=picture3_00006",
                   "##tutorial_granary_text2##",
-                  "@img=picture3_00005.png",
+                  "@img=picture3_00005",
                   "##tutorial_priority##",
-                  "@img=picture3_00004.png" ]
+                  "@img=picture3_00004" ]
   }
 	
   empire : {

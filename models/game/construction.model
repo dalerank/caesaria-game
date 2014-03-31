@@ -699,6 +699,7 @@
     class : "industry"
     productRate : 2.4
     sound : [ "furniture", 1 ]
+    animation : { rc : "commerce", start : 133, count : 7, delay : 3 }
   },
   
   pottery_workshop :
