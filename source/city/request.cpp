@@ -22,6 +22,7 @@
 #include "city/funds.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
+#include "events/infobox.hpp"
 
 namespace  city
 {
@@ -152,6 +153,10 @@ void RqGood::fail( PlayerCityPtr city )
     _finishedDate.appendMonth( _d->failAppendMonth );
     _d->failAppendMonth = 0;
     setAnnounced( false );
+
+    std::string text = StringHelper::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
+    events::GameEventPtr e = events::ShowInfoboxEvent::create( "##request_failed##", text );
+    e->dispatch();
   }
   else
   {

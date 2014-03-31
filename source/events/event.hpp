@@ -62,19 +62,6 @@ private:
   TilePos _pos;
 };
 
-class ShowInfoboxEvent : public GameEvent
-{
-public:
-  static GameEventPtr create( const std::string& title, const std::string& text );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  std::string _title, _text;
-};
-
 class WarningMessageEvent : public GameEvent
 {
 public:

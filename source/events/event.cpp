@@ -162,27 +162,6 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
   }
 }
 
-GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::string& text )
-{
-  ShowInfoboxEvent* ev = new ShowInfoboxEvent();
-  ev->_title = title;
-  ev->_text = text;
-
-  GameEventPtr ret( ev );
-  ret->drop();
-
-  return ret;
-}
-
-bool ShowInfoboxEvent::_mayExec(Game& game, unsigned int time) const{  return true;}
-
-void ShowInfoboxEvent::_exec( Game& game, unsigned int )
-{
-  gui::InfoboxText* msgWnd = new gui::InfoboxText( game.gui()->rootWidget(), _title, _text );
-  msgWnd->show();
-}
-
-
 GameEventPtr Pause::create( Mode mode )
 {
   Pause* e = new Pause();

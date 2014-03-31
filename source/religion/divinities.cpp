@@ -18,7 +18,7 @@
 #include "game/gamedate.hpp"
 #include "city/helper.hpp"
 #include "objects/farm.hpp"
-#include "events/event.hpp"
+#include "events/infobox.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "walker/fishing_boat.hpp"
