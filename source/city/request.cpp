@@ -161,6 +161,10 @@ void RqGood::fail( PlayerCityPtr city )
   else
   {
     Request::fail( city );
+
+    std::string text = StringHelper::format( 0xff, "You failed request" );
+    events::GameEventPtr e = events::ShowInfoboxEvent::create( "##request_failed##", text );
+    e->dispatch();
   }
 }
 
