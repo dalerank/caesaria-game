@@ -51,7 +51,7 @@ public:
   void setPos( const TilePos& pos );
 
   virtual Point getMappos() const;
-  Point subtpos() const;
+  Point tilesubpos() const;
 
   virtual void setPathway(const Pathway& pathway);
   const Pathway& getPathway() const;

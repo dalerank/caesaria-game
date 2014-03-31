@@ -36,61 +36,6 @@
 
 using namespace constants;
 
-/* useful method for subtile movement computation
-   si   = subtile coordinate in the current tile
-   i    = tile coordinate
-   amount = amount of the increase, returns remaining movement if any
-   midPos = position of the midtile (so that walkers are not all exactly on the middle of the tile)
-   newTile = return true if we are now on a new tile
-   midTile = return true if we got above the treshold
- */
-// ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
-void inc(float &ioSI, float &ioI, float &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
-{
-   float delta = ioAmount;
-   if ((ioSI<iMidPos) && (ioSI+delta>=iMidPos))  // midpos is ahead and inside the current movement
-   {
-      // we will stop at the mid tile!
-      delta = iMidPos - ioSI;
-      oMidTile = true;
-   }
-
-   if (ioSI+delta>15)  // the start of next tile is inside the current movement
-   {
-      // we will stop at the beginning of the new tile!
-      delta = 16 - ioSI;
-      oNewTile = true;
-      ioI += 1;  // next tile
-      ioSI = ioSI - 15;
-   }
-
-   ioAmount -= delta;
-   ioSI += delta;
-}
-
-// ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
-void dec(float &ioSI, float &ioI, float &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
-{
-   float delta = ioAmount;
-   if ((ioSI>iMidPos) && (ioSI-delta<=iMidPos))  // midpos is ahead and inside the current movement
-   {
-      // we will stop at the mid tile!
-      delta = ioSI - iMidPos;
-      oMidTile = true;
-   }
-
-   if (ioSI-delta<0)  // the start of next tile is inside the current movement
-   {
-      // we will stop at the beginning of the new tile!
-      delta = ioSI+1;
-      oNewTile = true;
-      ioI -= 1;  // next tile
-      ioSI = ioSI + 15;
-   }
-
-   ioAmount -= delta;
-   ioSI -= delta;
-}
 class Walker::Impl
 {
 public:
@@ -196,8 +141,6 @@ void Walker::_walk()
      return;
   }
 
-  //Tile& tile = _d->city->tilemap().at( pos() );
-
   float speedKoeff = 1.f;
   switch( _d->action.direction )
   {
@@ -249,91 +192,8 @@ void Walker::_walk()
   if( saveMpos != Mpos )
   {
     _d->pos = Mpos;
-    //_d->lastCenterDst = 99.f;
     _changeTile();
   }
-
-  /*bool newTile = false;
-  bool midTile = false;
-  float amountI = remainMove.x();
-  float amountJ = remainMove.y();
-  //remainMove -= PointF( amountI, amountJ );
-
-  float tmpX = _d->tileOffset.x();
-  float tmpY = _d->tileOffset.y();
-  float tmpJ = _d->pos.j();
-  float tmpI = _d->pos.i();
-  int infinityLoopGuard = 0;
-  while( amountI+amountJ > 0 && infinityLoopGuard < 100 )
-  {
-    infinityLoopGuard++;
-    switch (_d->action.direction)
-    {
-    case constants::north:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-    break;
-
-    case constants::northEast:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::east:
-       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::southEast:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::south:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-    break;
-
-    case constants::southWest:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::west:
-       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::northWest:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    default:pos
-       Logger::warning( "Invalid move direction: %d", _d->action.direction);
-       _d->action.direction = constants::noneDirection;
-    break;
-    }    
-
-    _d->tileOffset = Point( tmpX, tmpY );
-    _d->pos = TilePos( tmpI, tmpJ );
-
-    if( newTile ) // walker is now on a new tile!
-    {       
-       _changeTile();
-    }
-
-    if( midTile ) // walker is now on the middle of the tile!
-    {
-      _centerTile();
-    }
-  }*/
-
-  /*Tile& offtile = newTile
-                    ? _d->city->tilemap().at( pos() )
-                    : tile;
-
-  Point overlayOffset = offtile.overlay().isValid()
-                             ? offtile.overlay()->offset( offtile, _d->tileOffset )
-                             : Point( 0, 0 );*/
-
-  //_d->wpos = Point( _d->pos.i(), _d->pos.j() )*15 + _d->tileOffset + overlayOffset;
 }
 
 void Walker::_changeTile()
@@ -406,7 +266,6 @@ const Tile& Walker::_nextTile() const
 }
 
 Point Walker::getMappos() const{ const PointF p = _d->wpos; return Point( 2*(p.x() + p.y()), p.x() - p.y() );}
-Point Walker::subtpos() const{  return /*_d->tileOffset*/ Point( 7, 7); }
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
@@ -430,6 +289,12 @@ void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
+
+Point Walker::tilesubpos() const
+{
+  Point tmp = Point( _d->pos.i(), _d->pos.j() ) * 15 + Point( 7, 7 );
+  return _d->wpos.toPoint() - tmp;
+}
 
 void Walker::_setAction( Walker::Action action )
 {
@@ -510,16 +375,18 @@ void Walker::save( VariantMap& stream ) const
   stream[ "speedMul" ] = (float)_d->speedMultiplier;
   stream[ "uid" ] = (unsigned int)_d->uid;
   stream[ "thinks" ] = Variant( _d->thinks );
+  stream[ "subspeed" ] = _d->subSpeed;
+  stream[ "lastCenterDst" ] = _d->lastCenterDst;
 }
 
 void Walker::load( const VariantMap& stream)
 {
   Tilemap& tmap = _city()->tilemap();
 
-  //_d->tileOffset = stream.get( "tileoffset" );
   _d->name = stream.get( "name" ).toString();
   _d->wpos = stream.get( "wpos" ).toPointF();
   _d->pos = stream.get( "location" );
+  _d->lastCenterDst = stream.get( "lastCenterDst" );
   _d->pathway.init( tmap, tmap.at( 0, 0 ) );
   _d->pathway.load( stream.get( "pathway" ).toMap() );
   _d->thinks = stream.get( "thinks" ).toString();
@@ -528,6 +395,7 @@ void Walker::load( const VariantMap& stream)
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
+  _d->subSpeed = stream.get( "subspeed" ).toPointF();
   _d->speedMultiplier = (float)stream.get( "speedMul", 1.f );
 
   if( !_d->pathway.isValid() )

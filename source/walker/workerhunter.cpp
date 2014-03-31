@@ -61,8 +61,8 @@ void Recruter::_centerTile()
     foreach( it, houses ) { (*it)->applyService( ServiceWalkerPtr( this ) ); }
   }
   else
-  {
-    if( !_pathwayRef().isReverse() )
+  {    
+    if( !_pathwayRef().isReverse() ) //return2Base();
     {
       _pathwayRef().toggleDirection();
     }

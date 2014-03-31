@@ -118,7 +118,15 @@ constants::Direction Pathway::direction()
   if(_d->isReverse )
   {
     if( _d->directionIt_reverse != _d->directionList.rend() )
-      return *_d->directionIt_reverse;
+    {
+     constants::Direction inverseDir[] = { noneDirection,
+                                           south, southEast,
+                                           east,  northEast,
+                                           north, northWest,
+                                           west,  southWest,
+                                           countDirection };
+     return inverseDir[ *_d->directionIt_reverse ];
+    }
   }
   else
   {
