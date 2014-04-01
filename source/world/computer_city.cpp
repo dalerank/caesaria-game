@@ -57,7 +57,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
 }
 
 std::string ComputerCity::getName() const {  return _d->name;}
-Point ComputerCity::getLocation() const{  return _d->location;}
+Point ComputerCity::location() const{  return _d->location;}
 void ComputerCity::setLocation( const Point& location ){  _d->location = location;}
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isRomeCity() const{  return _d->romeCity;}

@@ -396,7 +396,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
 TileOverlayList&  PlayerCity::getOverlays()         { return _d->overlayList; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
-ClimateType       PlayerCity::getClimate() const    { return _d->climate;    }
+ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
 city::Funds&        PlayerCity::funds() const      {  return _d->funds;   }
 int               PlayerCity::getPopulation() const {   return _d->population; }
@@ -608,10 +608,7 @@ void PlayerCity::load( const VariantMap& stream )
 
 void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlayList.push_back( overlay ); }
 
-PlayerCity::~PlayerCity()
-{
-  _d->services.clear();
-}
+PlayerCity::~PlayerCity() {}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
@@ -643,12 +640,12 @@ const CityBuildOptions& PlayerCity::getBuildOptions() const { return _d->buildOp
 const CityWinTargets& PlayerCity::getWinTargets() const {   return _d->targets; }
 void PlayerCity::setWinTargets(const CityWinTargets& targets) { _d->targets = targets; }
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
-PlayerPtr PlayerCity::getPlayer() const { return _d->player; }
+PlayerPtr PlayerCity::player() const { return _d->player; }
 std::string PlayerCity::getName() const {  return _d->name; }
 void PlayerCity::setName( const std::string& name ) {   _d->name = name;}
 CityTradeOptions& PlayerCity::getTradeOptions() { return _d->tradeOptions; }
 void PlayerCity::setLocation( const Point& location ) {   _d->location = location; }
-Point PlayerCity::getLocation() const {   return _d->location; }
+Point PlayerCity::location() const {   return _d->location; }
 const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSells(); }
 const GoodStore& PlayerCity::getBuys() const {   return _d->tradeOptions.getBuys(); }
 unsigned int PlayerCity::getTradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
@@ -657,13 +654,18 @@ void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
-TilePos PlayerCity::getCameraPos() const {return _d->cameraStart; }
+TilePos PlayerCity::cameraPos() const {return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( service ); }
 
 int PlayerCity::getProsperity() const
 {
   SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::getDefaultName() ) );
   return csPrsp.isValid() ? csPrsp->getValue() : 0;
+}
+
+void PlayerCity::clean()
+{
+  _d->services.clear();
 }
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )

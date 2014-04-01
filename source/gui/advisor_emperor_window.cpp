@@ -137,7 +137,7 @@ public:
 
 void AdvisorEmperorWindow::_showChangeSalaryWindow()
 {
-  PlayerPtr pl = _d->city->getPlayer();
+  PlayerPtr pl = _d->city->player();
   ChangeSalaryWindow* dialog = new ChangeSalaryWindow( parent(), pl->salary() );
 
   CONNECT( dialog, onChangeSalary(), pl.object(), Player::setSalary )
@@ -145,7 +145,7 @@ void AdvisorEmperorWindow::_showChangeSalaryWindow()
 
 void AdvisorEmperorWindow::_showSend2CityWindow()
 {
-  PlayerPtr pl = _d->city->getPlayer();
+  PlayerPtr pl = _d->city->player();
   CityDonationindow* dialog = new CityDonationindow( parent(), pl->money() );
 
   CONNECT( dialog, onSendMoney(), _d.data(), Impl::sendMoney );
@@ -203,7 +203,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
                Size( 640, 432 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
-  title->setText( city->getPlayer()->getName() );
+  title->setText( city->player()->getName() );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 
@@ -243,7 +243,7 @@ void AdvisorEmperorWindow::draw( GfxEngine& painter )
 
 void AdvisorEmperorWindow::Impl::sendMoney( int money )
 {
-  city->getPlayer()->appendMoney( -money );
+  city->player()->appendMoney( -money );
   events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, money );
   e->dispatch();
 }

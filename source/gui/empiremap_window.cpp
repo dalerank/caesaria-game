@@ -86,7 +86,7 @@ void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
   currentCity = 0;
   foreach( city, cities )
   {
-    Rect rect( (*city)->getLocation(), Size( 40 ) );
+    Rect rect( (*city)->location(), Size( 40 ) );
     if( rect.isPointInside( pos ) )
     {
       currentCity = (*city);
@@ -372,18 +372,18 @@ void EmpireMapWindow::draw( GfxEngine& engine )
   engine.drawPicture( _d->empireMap, _d->offset );  
 
   world::CityList cities = _d->empire->getCities();
-  foreach( city, cities )
+  foreach( it, cities )
   {
-    Point location = (*city)->getLocation();
+    Point location = (*it)->location();
     int index = 3;
-    if( is_kind_of<PlayerCity>( *city ) )  //maybe it our city
+    if( is_kind_of<PlayerCity>( *it ) )  //maybe it our city
     {
       index = 0;
     }
-    else if( is_kind_of<world::ComputerCity>( *city ) )
+    else if( is_kind_of<world::ComputerCity>( *it ) )
     {
       index = 2;
-      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( *city );
+      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( *it );
       if( ccity->isDistantCity() )      {        index = 3;       }
       else if( ccity->isRomeCity() )       {        index = 1;      }
     }

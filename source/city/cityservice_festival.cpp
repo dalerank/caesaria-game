@@ -79,7 +79,7 @@ void Festival::update( const unsigned int time )
     const char* text[3] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
     events::GameEventPtr e = events::ShowFeastWindow::create( text[ id ], titles[ id ],
-                                                              _city.getPlayer()->getName() );
+                                                              _city.player()->getName() );
     e->dispatch();
   }
 }

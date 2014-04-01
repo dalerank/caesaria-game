@@ -84,7 +84,7 @@ void Empire::initialize(vfs::Path filename , vfs::Path filemap)
     CityPtr city = ComputerCity::create( this, item->first );
     addCity( city );
     city->load( item->second.toMap() );
-    _d->emap.setCity( city->getLocation() );
+    _d->emap.setCity( city->location() );
   }
 }
 
@@ -202,12 +202,12 @@ void Empire::createTradeRoute(std::string start, std::string stop )
     PointsArray lpnts, spnts;
     if( land )
     {
-      lpnts = _d->emap.getRoute( startCity->getLocation(), stopCity->getLocation(), EmpireMap::land );
+      lpnts = _d->emap.getRoute( startCity->location(), stopCity->location(), EmpireMap::land );
     }
 
     if( sea )
     {
-      spnts = _d->emap.getRoute( startCity->getLocation(), stopCity->getLocation(), EmpireMap::sea );
+      spnts = _d->emap.getRoute( startCity->location(), stopCity->location(), EmpireMap::sea );
     }
 
     if( !lpnts.empty() || !spnts.empty() )
@@ -263,7 +263,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
     return ret;
   }
 
-  city->setLocation( ret->getLocation() );
+  city->setLocation( ret->location() );
   _d->cities.remove( ret );
   _d->cities.push_back( city );
   _d->playerCityName = city->getName();
@@ -281,7 +281,7 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
 
   if( startCity != 0 && stopCity != 0 )
   {
-    int distance2City = (int)startCity->getLocation().getDistanceFrom( stopCity->getLocation() ); 
+    int distance2City = (int)startCity->location().getDistanceFrom( stopCity->location() ); 
     distance2City = (distance2City / 100 + 1 ) * 200;
 
     return distance2City;

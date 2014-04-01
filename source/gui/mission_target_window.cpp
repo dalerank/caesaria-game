@@ -123,7 +123,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
   _d->lbPeace->setVisible( wint.needPeace() > 0 );
   _d->lbFavour->setVisible( wint.needFavour() > 0 );
   _d->lbProsperity->setVisible( wint.needProsperity() > 0 );
-  _d->title->setText( _d->city->getPlayer()->getName()  );
+  _d->title->setText( _d->city->player()->getName()  );
   _d->lbShortDesc->setVisible( !wint.getShortDesc().empty() );
 
   std::string text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );

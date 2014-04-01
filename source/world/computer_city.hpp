@@ -29,7 +29,7 @@ public:
   ~ComputerCity();
 
   virtual std::string getName() const;
-  virtual Point getLocation() const;
+  virtual Point location() const;
   virtual void setLocation( const Point& location );
 
   bool isDistantCity() const;
