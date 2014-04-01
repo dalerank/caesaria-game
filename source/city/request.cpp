@@ -84,7 +84,7 @@ VariantMap RqGood::save() const
 {
   VariantMap ret = Request::save();
   ret[ "date" ] = _d->date;
-  ret[ "rectype" ] = Variant( typeName() );
+  ret[ "reqtype" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();
   VariantMap vm_win;
@@ -149,14 +149,15 @@ void RqGood::fail( PlayerCityPtr city )
   city->updateFavour( _d->failFavour );
   if( _d->failAppendMonth > 0 )
   {
-    _d->date = _finishedDate;
-    _finishedDate.appendMonth( _d->failAppendMonth );
-    _d->failAppendMonth = 0;
-    setAnnounced( false );
+    _d->date = _finishedDate;    
 
     std::string text = StringHelper::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
     events::GameEventPtr e = events::ShowInfoboxEvent::create( "##request_failed##", text );
     e->dispatch();
+
+    _finishedDate.appendMonth( _d->failAppendMonth );
+    _d->failAppendMonth = 0;
+    setAnnounced( false );
   }
   else
   {

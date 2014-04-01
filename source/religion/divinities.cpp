@@ -76,7 +76,7 @@ void RomeDivinityBase::updateRelation(float income, PlayerCityPtr city)
   _relation = math::clamp<float>( _relation + (income - getDefaultDecrease()) * cityBalanceKoeff, 0, 100 );
 }
 
-std::string RomeDivinityBase::getMoodDescription() const
+std::string RomeDivinityBase::moodDescription() const
 {
   if( _moodDescr.empty() )
     return "no_descriptions_divinity_mood";
@@ -90,15 +90,13 @@ RomeDivinityBase::RomeDivinityBase()
   _relation = 0;
 }
 
-void RomeDivinityBase::setInternalName(const std::string& newName)
-{
-  ReferenceCounted::setDebugName( newName );
-}
+void RomeDivinityBase::setInternalName(const std::string& newName){  setDebugName( newName );}
+std::string RomeDivinityBase::internalName() const{  return getDebugName();}
 
 RomeDivinityPtr RomeDivinityCeres::create()
 {
   RomeDivinityPtr ret( new RomeDivinityCeres() );
-  ret->setInternalName( divNames[ romeDivCeres ] );
+  ret->setInternalName( baseDivinityNames[ romeDivCeres ] );
   ret->drop();
 
   return ret;
@@ -108,7 +106,7 @@ void RomeDivinityCeres::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinityBase::updateRelation( income, city );
 
-  if( getRelation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
+  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
     _lastActionDate = GameDate::current();
     events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_ceres_title##"),
@@ -128,7 +126,7 @@ void RomeDivinityCeres::updateRelation(float income, PlayerCityPtr city)
 RomeDivinityPtr RomeDivinityNeptune::create()
 {
   RomeDivinityPtr ret( new RomeDivinityNeptune() );
-  ret->setInternalName( divNames[ romeDivNeptune ] );
+  ret->setInternalName( baseDivinityNames[ romeDivNeptune ] );
   ret->drop();
 
   return ret;
@@ -138,7 +136,7 @@ void RomeDivinityNeptune::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinityBase::updateRelation( income, city );
 
-  if( getRelation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
+  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
     _lastActionDate = GameDate::current();
     events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_neptune_title##"),
@@ -162,7 +160,7 @@ void RomeDivinityNeptune::updateRelation(float income, PlayerCityPtr city)
 RomeDivinityPtr RomeDivinityMercury::create()
 {
   RomeDivinityPtr ret( new RomeDivinityMercury() );
-  ret->setInternalName( divNames[ romeDivMercury ] );
+  ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
   ret->drop();
 
   return ret;
@@ -172,7 +170,7 @@ void RomeDivinityMercury::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinityBase::updateRelation( income, city );
 
-  if( getRelation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
+  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
     _lastActionDate = GameDate::current();
     events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_mercury_title##"),

@@ -60,7 +60,7 @@ RomeDivinityPtr Pantheon::get(std::string name)
   Divinities divines = instance().all();
   foreach( current, divines )
   {
-    if( (*current)->getName() == name || (*current)->getDebugName() == name )
+    if( (*current)->name() == name || (*current)->internalName() == name )
       return *current;
   }
 
@@ -76,19 +76,19 @@ RomeDivinityPtr Pantheon::ceres() {  return instance().get( romeDivCeres );}
 
 void Pantheon::load( const VariantMap& stream )
 {  
-  for( int index=0; divNames[ index ] != 0; index++ )
+  for( int index=0; baseDivinityNames[ index ] != 0; index++ )
   {
-    RomeDivinityPtr divn = get( divNames[ index ] );
+    RomeDivinityPtr divn = get( baseDivinityNames[ index ] );
 
     if( divn.isNull() )
     {
       divn = RomeDivinityPtr( new RomeDivinityBase() );
-      divn->setInternalName( divNames[ index ] );
+      divn->setInternalName( baseDivinityNames[ index ] );
       divn->drop();
       _d->divinties.push_back( divn );
     }
 
-    divn->load( stream.get( divNames[ index ] ).toMap() );
+    divn->load( stream.get( baseDivinityNames[ index ] ).toMap() );
   }
 }
 
@@ -98,7 +98,7 @@ void Pantheon::save(VariantMap& stream)
 
   foreach( current, divines )
   {
-    stream[ (*current)->getName() ] = (*current)->save();
+    stream[ (*current)->internalName() ] = (*current)->save();
   }
 }
 

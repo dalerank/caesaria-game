@@ -915,7 +915,7 @@ DateTime House::getLastTaxation() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::getDesirability() const {  return _d->desirability; }
 bool House::isWalkable() const{  return (_d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0); }
-bool House::isFlat() const {   return isWalkable(); }
+bool House::isFlat() const { return false; }//isWalkable(); }
 const CitizenGroup& House::getHabitants() const  {  return _d->habitants; }
 GoodStore& House::getGoodStore(){   return _d->goodStore;}
 const HouseSpecification& House::getSpec() const{   return _d->spec; }

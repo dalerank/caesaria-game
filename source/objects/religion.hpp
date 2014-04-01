@@ -26,7 +26,7 @@ public:
 
   religion::RomeDivinityPtr getDivinity() const;
 
-  virtual unsigned int getParishionerNumber() const = 0;
+  virtual unsigned int parishionerNumber() const = 0;
   virtual void deliverService();
 
 protected:
@@ -43,14 +43,14 @@ class SmallTemple : public Temple
 {
 protected:
   SmallTemple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
-  virtual unsigned int getParishionerNumber() const;
+  virtual unsigned int parishionerNumber() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
   BigTemple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
-  virtual unsigned int getParishionerNumber() const;
+  virtual unsigned int parishionerNumber() const;
 
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 };
@@ -113,14 +113,14 @@ class BigTempleMercure : public BigTemple
 {
 public:
   BigTempleMercure();
-  virtual unsigned int getParishionerNumber() const;
+  virtual unsigned int parishionerNumber() const;
 };
 
 class TempleOracle : public BigTemple
 {
 public:
   TempleOracle();
-  virtual unsigned int getParishionerNumber() const;
+  virtual unsigned int parishionerNumber() const;
 
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 };

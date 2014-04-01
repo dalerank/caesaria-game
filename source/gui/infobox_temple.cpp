@@ -37,7 +37,7 @@ InfoboxTemple::InfoboxTemple( Widget* parent, const Tile& tile )
   setConstruction( ptr_cast<Construction>( temple ) );
 
   bool bigTemple = temple->size().width() > 2;
-  std::string desc = _( divn->getShortDescription() );
+  std::string desc = _( divn->shortDescription() );
   std::string text = _( StringHelper::format( 0xff, "##%s_%s_temple##",
                                                  bigTemple ? "big" : "small",
                                                  divn->getDebugName().c_str() ) );
@@ -45,11 +45,11 @@ InfoboxTemple::InfoboxTemple( Widget* parent, const Tile& tile )
 
   _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maxWorkers(), temple->numberWorkers() );
 
-  Image* img = new Image( this, Point( 192, 140 ), divn->getPicture() );
-  bool goodRelation = divn->getRelation() >= 50;
+  Image* img = new Image( this, Point( 192, 140 ), divn->picture() );
+  bool goodRelation = divn->relation() >= 50;
 
   std::string descr = StringHelper::format(0xff, "##%s_%s_info##",
-                                                  divn->getDebugName().c_str(),
+                                                  divn->internalName().c_str(),
                                                   goodRelation ? "goodmood" : "badmood" );
   img->setTooltipText( _(descr) );
 }
