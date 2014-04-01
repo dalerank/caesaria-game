@@ -85,7 +85,7 @@ InfoboxWarehouse::~InfoboxWarehouse() {}
 void InfoboxWarehouse::showSpecialOrdersWindow()
 {
   Point pos;
-  if( top() > (int)getParent()->height() / 2 )
+  if( top() > (int)parent()->height() / 2 )
   {
     pos = Point( screenLeft(), screenBottom() - WarehouseSpecialOrdersWindow::defaultHeight );
   }
@@ -94,7 +94,7 @@ void InfoboxWarehouse::showSpecialOrdersWindow()
     pos = absoluteRect().UpperLeftCorner;
   }
 
-  new WarehouseSpecialOrdersWindow( getParent(), pos, _warehouse );
+  new WarehouseSpecialOrdersWindow( parent(), pos, _warehouse );
 }
 
 void InfoboxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )

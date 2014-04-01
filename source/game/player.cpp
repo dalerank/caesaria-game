@@ -15,8 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-
 #include "player.hpp"
 #include "core/variant.hpp"
 
@@ -31,8 +29,8 @@ public:
 
 Player::Player() : _d( new Impl )
 {
-   _d->funds = 0;
-   _d->salary = 0;
+  _d->funds = 0;
+  _d->salary = 0;
 }
 
 PlayerPtr Player::create()
@@ -45,8 +43,8 @@ PlayerPtr Player::create()
 
 void Player::save( VariantMap& stream ) const
 {
-  stream[ "money" ] = _d->funds;
-  stream[ "name" ] = Variant( _d->name );
+  stream[ "money"  ] = _d->funds;
+  stream[ "name"   ] = Variant( _d->name );
   stream[ "salary" ] = _d->salary;
 }
 
@@ -57,37 +55,10 @@ void Player::load( const VariantMap& stream )
   _d->salary = (int)stream.get( "salary" );
 }
 
-void Player::appendMoney( int money )
-{
-  _d->funds += money;
-}
-
-int Player::getMoney() const
-{
-  return _d->funds;
-}
-
-Player::~Player()
-{
-
-}
-
-void Player::setName( const std::string& name )
-{
-  _d->name = name;
-}
-
-std::string Player::getName() const
-{
-  return _d->name;
-}
-
-int Player::getSalary() const
-{
-  return _d->salary;
-}
-
-void Player::setSalary( const int value )
-{
-  _d->salary = value;
-}
+void Player::appendMoney( int money ){  _d->funds += money;}
+int Player::money() const{  return _d->funds;}
+Player::~Player(){}
+void Player::setName( const std::string& name ){  _d->name = name;}
+std::string Player::getName() const{  return _d->name;}
+int Player::salary() const{  return _d->salary;}
+void Player::setSalary(  int value ){  _d->salary = value;}

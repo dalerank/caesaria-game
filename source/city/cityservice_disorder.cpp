@@ -34,7 +34,6 @@ namespace city
 class Disorder::Impl
 {
 public:
-  PlayerCityPtr city;
   int minCrimeLevel;
 };
 
@@ -48,9 +47,8 @@ SrvcPtr Disorder::create( PlayerCityPtr city )
 std::string Disorder::getDefaultName(){  return "disorder";}
 
 Disorder::Disorder(PlayerCityPtr city )
-  : Srvc( Disorder::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Disorder::getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->minCrimeLevel = defaultCrimeLevel;
 }
 
@@ -59,10 +57,10 @@ void Disorder::update( const unsigned int time )
   if( time % (GameDate::ticksInMonth()/2) != 1 )
     return;
 
-  Helper helper( _d->city );
+  Helper helper( &_city );
   HouseList houses = helper.find<House>( building::house );
 
-  WalkerList walkers = _d->city->getWalkers( walker::protestor );
+  WalkerList walkers = _city.getWalkers( walker::protestor );
   float cityCrimeKoeff = helper.getBalanceKoeff();
 
   HouseList criminalizedHouse;
@@ -81,7 +79,7 @@ void Disorder::update( const unsigned int time )
     std::advance( it, rand() % criminalizedHouse.size() );
     (*it)->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
 
-    ProtestorPtr protestor = Protestor::create( _d->city );
+    ProtestorPtr protestor = Protestor::create( &_city );
     protestor->send2City( *it );
   }
 }

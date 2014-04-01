@@ -16,9 +16,9 @@
 #ifndef __CAESARIA_CITYSERVICE_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_H_INCLUDED__
 
-#include "core/referencecounted.hpp"
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
+#include "predefinitions.hpp"
 
 namespace city
 {
@@ -39,11 +39,12 @@ public:
   virtual void load(const VariantMap& stream) {}
 
 protected:
-  Srvc( const std::string& name ) : _name( name )
+  Srvc( PlayerCity& city, const std::string& name ) : _name( name ), _city( city )
   {
   }
 
   std::string _name;
+  PlayerCity& _city;
 };
 
 typedef SmartPtr<Srvc> SrvcPtr;

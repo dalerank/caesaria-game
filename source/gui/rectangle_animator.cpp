@@ -64,7 +64,7 @@ void RectangleAnimator::Impl::restart( Widget* parent )
 
 void RectangleAnimator::beforeDraw(GfxEngine &painter)
 {
-	if( isEnabled() && getParent() && isFlag( isActive ) )
+	if( isEnabled() && parent() && isFlag( isActive ) )
 	{
 		bool mayRemove = true;
 
@@ -99,7 +99,7 @@ void RectangleAnimator::beforeDraw(GfxEngine &painter)
     if( mayRemove )
         updateFinished_();
 
-    getParent()->setGeometry( _d->currentRect.toRect() );
+    parent()->setGeometry( _d->currentRect.toRect() );
   }
 
   WidgetAnimator::beforeDraw( painter );
@@ -111,17 +111,17 @@ void RectangleAnimator::updateFinished_()
 
     if( !isFlag( debug ) )
     {
-        getParent()->setVisible( isFlag( showParent ) );
+        parent()->setVisible( isFlag( showParent ) );
 
         afterFinished_();
     }
     else
     {
-        getParent()->setGeometry( _d->startRect );
+        parent()->setGeometry( _d->startRect );
     }
 }
 
-void RectangleAnimator::restart() {	_d->restart( getParent() );}
+void RectangleAnimator::restart() {	_d->restart( parent() );}
 void RectangleAnimator::setStopRect( const Rect& r ){	_d->stopRect = r;}
 unsigned int RectangleAnimator::getTime() const{	return _d->time;}
 void RectangleAnimator::setTime( unsigned int t ){	_d->time = t;}

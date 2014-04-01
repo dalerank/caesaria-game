@@ -43,9 +43,9 @@ Signal1<bool>& ContextMenuItem::onChecked()
 
 ContextMenu* ContextMenuItem::addSubMenu( int id )
 {
-  ContextMenu* sub = new ContextMenu( getParent(), Rect(0,0,100,100), id, false, false);
+  ContextMenu* sub = new ContextMenu( parent(), Rect(0,0,100,100), id, false, false);
   setSubMenu( sub );
-  getParent()->bringChildToFront( sub );
+  parent()->bringChildToFront( sub );
   return sub;
 }
 
@@ -65,10 +65,10 @@ void ContextMenuItem::setSubMenu( ContextMenu* menu )
   {
     menu->setAllowFocus( false );
     if( menu->isFocused() )
-      getParent()->setFocus();
+      parent()->setFocus();
   }
 
-  if( ContextMenu* parentCntx = safety_cast< ContextMenu* >( getParent() ) )
+  if( ContextMenu* parentCntx = safety_cast< ContextMenu* >( parent() ) )
     parentCntx->updateItems();
 }
 

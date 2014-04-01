@@ -27,13 +27,13 @@
 namespace gui
 {
 
-TutorialWindow::TutorialWindow( Widget* parent, vfs::Path tutorial )
-  : Widget( parent, -1, Rect( 0, 0, 590, 450 ))
+TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
+  : Widget( p, -1, Rect( 0, 0, 590, 450 ))
 {
   _locker.activate();
 
   setupUI( GameSettings::rcpath( "/gui/tutorial_window.gui" ) );
-  Size pSize = getParent()->size() - size();
+  Size pSize = parent()->size() - size();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
   Label* lbTitle = findChildA<Label*>( "lbTitle", true, this );

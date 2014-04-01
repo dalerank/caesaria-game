@@ -48,7 +48,6 @@ static const CoveragePoints academiesPoints = { {1.0, 10}, {0.86,7 }, {0.71,4 },
 class CultureRating::Impl
 {
 public:
-  PlayerCityPtr city;
   DateTime lastDate;
   int culture;
   int parishionersCount;
@@ -91,9 +90,8 @@ SrvcPtr CultureRating::create(PlayerCityPtr city )
 }
 
 CultureRating::CultureRating(PlayerCityPtr city )
-  : Srvc( getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->lastDate = GameDate::current();
   _d->culture = 0;
 }
@@ -111,9 +109,9 @@ void CultureRating::update( const unsigned int time )
     _d->libraryVisitors = 0;
     _d->schoolVisitors = 0;
     _d->collegeVisitors = 0;
-    int cityPopulation = _d->city->getPopulation();
+    int cityPopulation = _city.getPopulation();
 
-    Helper helper( _d->city );
+    Helper helper( &_city );
 
     TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( temple, temples )

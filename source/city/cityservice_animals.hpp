@@ -31,7 +31,7 @@ public:
   void update( const unsigned int time );
 
 private:
-  Animals();
+  Animals(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

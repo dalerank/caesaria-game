@@ -204,9 +204,8 @@ PlayerCity::PlayerCity() : _d( new Impl )
 
   addService( city::Migration::create( this ) );
   addService( city::WorkersHire::create( this ) );
-  addService( city::SrvcPtr( &city::Timers::getInstance() ) );
   addService( city::ProsperityRating::create( this ) );
-  addService( CityServiceShoreline::create( this ) );
+  addService( city::Shoreline::create( this ) );
   addService( city::Info::create( this ) );
   addService( city::CultureRating::create( this ) );
   addService( city::Animals::create( this ) );
@@ -284,6 +283,7 @@ void PlayerCity::timeStep( unsigned int time )
   }
 
   CityServices::iterator serviceIt=_d->services.begin();
+  city::Timers::getInstance().update( time );
   while( serviceIt != _d->services.end() )
   {
     (*serviceIt)->update( time );
@@ -326,7 +326,7 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   calculatePopulation( city );
   payWages( city );
 
-  int playerSalary = player->getSalary();
+  int playerSalary = player->salary();
   funds.resolveIssue( FundIssue( city::Funds::playerSalary, -playerSalary ) );
   player->appendMoney( playerSalary );
 
@@ -608,7 +608,10 @@ void PlayerCity::load( const VariantMap& stream )
 
 void PlayerCity::addOverlay( TileOverlayPtr overlay ) { _d->overlayList.push_back( overlay ); }
 
-PlayerCity::~PlayerCity(){}
+PlayerCity::~PlayerCity()
+{
+  _d->services.clear();
+}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {

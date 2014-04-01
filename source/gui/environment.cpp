@@ -15,7 +15,6 @@
 
 #include "environment.hpp"
 
-#include "widgetprivate.hpp"
 #include "core/rectangle.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
@@ -274,7 +273,7 @@ void GuiEnv::drawTooltip_( unsigned int time )
       // got invisible or removed in the meantime?
       if( _d->hoveredNoSubelement.isNull()
           || !_d->hoveredNoSubelement->isVisible() 
-          || !_d->hoveredNoSubelement->getParent() )
+          || !_d->hoveredNoSubelement->parent() )
       {
         _d->toolTip.element->deleteLater();
         _d->toolTip.element = WidgetPtr();
@@ -307,7 +306,7 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 		_d->hoveredNoSubelement = _d->hovered;
 		while ( _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement->isSubElement() )
 		{
-			_d->hoveredNoSubelement = _d->hoveredNoSubelement->getParent();
+			_d->hoveredNoSubelement = _d->hoveredNoSubelement->parent();
 		}
 	}
   else
@@ -364,9 +363,9 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
                 // this element is not part of the tab cycle,
                 // but its parent might be...
                 Widget *el = getFocus();
-                while (el && el->getParent() && startOrder == -1)
+                while (el && el->parent() && startOrder == -1)
                 {
-                    el = el->getParent();
+                    el = el->parent();
                     startOrder = el->getTabOrder();
                 }
 
@@ -513,9 +512,10 @@ void GuiEnv::beforeDraw()
 
   updateHoveredElement( _d->cursorPos );
 
-  foreach( widget, Widget::_d->children )
+  const Widgets& children = getChildren();
+  for( Widgets::const_iterator i=children.begin(); i != children.end(); ++i )
   {
-    (*widget)->beforeDraw( *_d->engine );
+    (*i)->beforeDraw( *_d->engine );
   }
 
   if( _d->toolTip.element.isValid() )

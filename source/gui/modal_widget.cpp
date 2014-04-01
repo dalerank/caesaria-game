@@ -44,20 +44,20 @@ bool ModalScreen::_canTakeFocus(Widget* target) const
     return (target && ((const Widget*)target == this // this element can take it
                         || isMyChild(target)    // own children also
                         || ( safety_cast< ModalScreen* >( target ) != 0 )// other modals also fine
-                        || ( target->getParent() && ( safety_cast< ModalScreen* >( target->getParent() ) != 0) )))   // children of other modals will do
+                        || ( target->parent() && ( safety_cast< ModalScreen* >( target->parent() ) != 0) )))   // children of other modals will do
             ;
 }
 
 bool ModalScreen::isVisible() const
 {
     // any parent invisible?
-    Widget* parentElement = getParent();
+    Widget* parentElement = parent();
     while ( parentElement )
     {
         if ( !parentElement->isVisible() )
             return false;
 
-        parentElement = parentElement->getParent();
+        parentElement = parentElement->parent();
     }
 
     // if we have no children then the modal is probably abused as a way to block input

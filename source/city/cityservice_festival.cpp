@@ -58,7 +58,7 @@ void Festival::assignFestival( RomeDivinityType name, int size )
 }
 
 Festival::Festival(PlayerCityPtr city )
-: Srvc( getDefaultName() ), _d( new Impl )
+: Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastFestivalDate = DateTime( -350, 0, 0 );

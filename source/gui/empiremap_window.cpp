@@ -286,7 +286,7 @@ void EmpireMapWindow::Impl::resetInfoPanel()
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
-  DialogBox* dialog = new DialogBox( tradeInfo->getParent(), Rect( 0, 0, 0, 0 ), 
+  DialogBox* dialog = new DialogBox( tradeInfo->parent(), Rect( 0, 0, 0, 0 ), 
                                      _("##emp_open_trade_route##"), _("##emp_pay_open_this_route_question##"), 
                                      DialogBox::btnOk | DialogBox::btnCancel  );
 

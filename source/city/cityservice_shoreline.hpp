@@ -20,7 +20,9 @@
 #include "game/predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
-class CityServiceShoreline : public city::Srvc
+namespace  city {
+
+class Shoreline : public city::Srvc
 {
 public:
   static city::SrvcPtr create( PlayerCityPtr city );
@@ -28,10 +30,12 @@ public:
   void update( const unsigned int time );
 
 private:
-  CityServiceShoreline( PlayerCityPtr city );
+  Shoreline( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
+
+}//end namespace city
 #endif //__CAESARIA_CITYSERVICE_SHORELINE_H_INCLUDED__

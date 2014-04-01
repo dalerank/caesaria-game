@@ -54,7 +54,7 @@ SrvcPtr WorkersHire::create(PlayerCityPtr city )
 string WorkersHire::getDefaultName(){ return "workershire"; }
 
 WorkersHire::WorkersHire(PlayerCityPtr city )
-  : Srvc( WorkersHire::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), WorkersHire::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->priorities  << building::prefecture

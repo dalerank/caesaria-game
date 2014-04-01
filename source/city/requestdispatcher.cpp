@@ -31,20 +31,17 @@ namespace request
 class Dispatcher::Impl
 {
 public:
-  PlayerCityPtr city;
-
   RequestList requests;
 };
 
-Dispatcher::Dispatcher()
-  : Srvc( getDefaultName() ), _d( new Impl )
+Dispatcher::Dispatcher( PlayerCityPtr city )
+  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
 }
 
 city::SrvcPtr Dispatcher::create(PlayerCityPtr city)
 {
-  Dispatcher* cd = new Dispatcher();
-  cd->_d->city = city;
+  Dispatcher* cd = new Dispatcher( city );
 
   SrvcPtr ret( cd );
   ret->drop();
@@ -84,10 +81,10 @@ void Dispatcher::update(const unsigned int time)
       RequestPtr request = *rq;
       if( request->getFinishedDate() <= GameDate::current() )
       {
-        request->fail( _d->city );
+        request->fail( &_city );
       }
 
-      if( !request->isAnnounced() && request->isReady( _d->city ) )
+      if( !request->isAnnounced() && request->isReady( &_city ) )
       {
         events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
         request->setAnnounced( true );

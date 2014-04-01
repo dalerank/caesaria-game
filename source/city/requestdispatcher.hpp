@@ -43,7 +43,7 @@ public:
   RequestList getRequests() const;
 
 private:
-  Dispatcher();
+  Dispatcher( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

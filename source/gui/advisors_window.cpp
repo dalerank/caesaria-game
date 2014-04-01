@@ -133,14 +133,7 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   {
   case advisor::employers: _d->advisorPanel = new AdvisorEmployerWindow( _d->city, this, advisor::employers ); break;
   case advisor::military: _d->advisorPanel = new AdvisorLegionWindow( this, advisor::military ); break;
-  case advisor::empire:
-    {
-      AdvisorEmperorWindow* wnd = new AdvisorEmperorWindow( _d->city, this, advisor::empire );
-
-      _d->advisorPanel = wnd;
-      CONNECT( wnd, onSendMoney(), _d.data(), Impl::sendMoney2City );
-    }
-  break;
+  case advisor::empire: _d->advisorPanel = new AdvisorEmperorWindow( _d->city, this, advisor::empire ); break;
   case advisor::ratings: _d->advisorPanel = new AdvisorRatingsWindow( this, advisor::ratings, _d->city ); break;
   case advisor::trading:
     {
@@ -207,7 +200,7 @@ void AdvisorsWindow::Impl::sendMoney2City(int money)
 
 void AdvisorsWindow::Impl::showEmpireMapWindow()
 {
-  advisorPanel->getParent()->deleteLater();
+  advisorPanel->parent()->deleteLater();
   events::GameEventPtr event = events::ShowEmpireMapWindow::create( true );
   event->dispatch();
 }

@@ -13,35 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
-#define _CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
+#ifndef _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
+#define _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
 
-#include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
+#include "gui/widget.hpp"
+#include "core/signals.hpp"
 
-namespace city
+namespace gui
 {
 
-class DesirabilityUpdater : public Srvc
+class ChangeSalaryWindow : public Widget
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
-  virtual void update( const unsigned int time);
-  static std::string getDefaultName();
-  virtual bool isDeleted() const;
-  virtual void destroy();
+  ChangeSalaryWindow(Widget* p, int salary );
 
-  virtual void load(const VariantMap &stream);
-  virtual VariantMap save() const;
+  virtual ~ChangeSalaryWindow();
+public oc3_signals:
+  Signal1<int>& onChangeSalary();
 
 private:
-  DesirabilityUpdater(PlayerCityPtr city);
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  __DECLARE_IMPL(ChangeSalaryWindow)
 };
 
-}
+} //end namespace gui
 
-#endif //_CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
+#endif //_CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_

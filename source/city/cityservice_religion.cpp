@@ -65,7 +65,7 @@ SrvcPtr Religion::create(PlayerCityPtr city)
 std::string Religion::getDefaultName() { return "religion"; }
 
 Religion::Religion(PlayerCityPtr city )
-  : Srvc( Religion::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Religion::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();

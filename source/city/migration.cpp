@@ -45,30 +45,14 @@ public:
   int updateTickInerval;
   DateTime lastUpdate;
 
-  float getMigrationKoeff()
-  {
-    return ( std::min<float>( city->getPopulation(), 300 ) / 300.f );
-  }
-
-  Info::Parameters getLastParams()
-  {
-    SmartPtr<Info> info = ptr_cast<Info>( city->findService( Info::getDefaultName() ) );
-
-    Info::Parameters params;
-    if( info.isValid() )
-    {
-      params = info->getLast();
-    }
-
-    return params;
-  }
-
+  float getMigrationKoeff();
+  Info::Parameters getLastParams();
   void createMigrationToCity();
   void createMigrationFromCity();
   unsigned int calcVacantHouse();
 };
 
-SrvcPtr Migration::create(PlayerCityPtr city )
+SrvcPtr Migration::create(PlayerCityPtr city)
 {
   SrvcPtr ret( new Migration( city ) );
   ret->drop();
@@ -77,7 +61,7 @@ SrvcPtr Migration::create(PlayerCityPtr city )
 }
 
 Migration::Migration( PlayerCityPtr city )
-: Srvc( getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastMonthMigration = 0;
@@ -118,7 +102,6 @@ void Migration::update( const unsigned int time )
 
   emigrantsIndesirability *= migrationKoeff;
   Logger::warning( "MigrationSrvc: current indesrbl=%d", emigrantsIndesirability );
-
 
   int goddesRandom = math::random( maxIndesirability );
   if( goddesRandom > emigrantsIndesirability )
@@ -204,6 +187,24 @@ unsigned int Migration::Impl::calcVacantHouse()
   }
 
   return vh;
+}
+
+float Migration::Impl::getMigrationKoeff()
+{
+  return ( std::min<float>( city->getPopulation(), 300 ) / 300.f );
+}
+
+Info::Parameters Migration::Impl::getLastParams()
+{
+  SmartPtr<Info> info = ptr_cast<Info>( city->findService( Info::getDefaultName() ) );
+
+  Info::Parameters params;
+  if( info.isValid() )
+  {
+    params = info->getLast();
+  }
+
+  return params;
 }
 
 void Migration::Impl::createMigrationToCity()

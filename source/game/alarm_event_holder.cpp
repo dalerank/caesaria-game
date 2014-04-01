@@ -33,26 +33,26 @@ typedef std::vector< AlarmEvent > AlarmEvents;
 class AlarmEventHolder::Impl
 {
 public:
-   AlarmEvents alarms;
-   unsigned int currentIndex;
-   TimerPtr alarmDeleter;
+  AlarmEvents alarms;
+  unsigned int currentIndex;
+  TimerPtr alarmDeleter;
 
-   void popFront()
-   {
-     if( alarms.empty() )
-     {
-       currentIndex = 0;
-       return;
-     }
+  void popFront()
+  {
+    if( alarms.empty() )
+    {
+      currentIndex = 0;
+      return;
+    }
 
-     alarms.erase( alarms.begin() );
-     currentIndex = math::clamp<int>( currentIndex, 0, alarms.size() - 1 );
-     onAlarmChangeSignal.emit( alarms.size() > 0 );
-   }
+    alarms.erase( alarms.begin() );
+    currentIndex = math::clamp<int>( currentIndex, 0, alarms.size() - 1 );
+    onAlarmChangeSignal.emit( alarms.size() > 0 );
+  }
 
-oc3_signals public:
-   Signal1<bool> onAlarmChangeSignal;
-   Signal1<TilePos> onMoveToAlarmSignal;
+public oc3_signals:
+  Signal1<bool> onAlarmChangeSignal;
+  Signal1<TilePos> onMoveToAlarmSignal;
 };
 
 AlarmEventHolder::AlarmEventHolder() : _d( new Impl )
@@ -93,10 +93,7 @@ TilePos AlarmEventHolder::getCurrentPos() const
   return _d->alarms[ _d->currentIndex ].position;
 }
 
-bool AlarmEventHolder::haveAlarms() const
-{
-  return !_d->alarms.empty();
-}
+bool AlarmEventHolder::haveAlarms() const {  return !_d->alarms.empty(); }
 
 std::string AlarmEventHolder::getCurrentMessage() const
 {
@@ -106,12 +103,5 @@ std::string AlarmEventHolder::getCurrentMessage() const
   return _d->alarms[ _d->currentIndex ].message;
 }
 
-Signal1<bool>& AlarmEventHolder::onAlarmChange()
-{
-  return _d->onAlarmChangeSignal;
-}
-
-Signal1<TilePos>& AlarmEventHolder::onMoveToAlarm()
-{
-  return _d->onMoveToAlarmSignal;
-}
+Signal1<bool>& AlarmEventHolder::onAlarmChange() {  return _d->onAlarmChangeSignal; }
+Signal1<TilePos>& AlarmEventHolder::onMoveToAlarm(){  return _d->onMoveToAlarmSignal;}

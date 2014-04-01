@@ -49,7 +49,7 @@ class PlayerCity : public world::City
 {
 public:
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
-  ~PlayerCity();
+  virtual ~PlayerCity();
 
   virtual void timeStep( unsigned int time );  // performs one simulation step
 

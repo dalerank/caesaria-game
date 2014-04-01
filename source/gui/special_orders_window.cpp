@@ -150,7 +150,7 @@ void BaseSpecialOrdersWindow::draw( GfxEngine& engine )
 bool BaseSpecialOrdersWindow::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
-  return getParent()->absoluteRect().isPointInside( point );
+  return parent()->absoluteRect().isPointInside( point );
 }
 
 bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)

@@ -35,7 +35,7 @@ public:
   virtual VariantMap save() const;
 
 private:
-  HealthUpdater();
+  HealthUpdater(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr<Impl> _d;

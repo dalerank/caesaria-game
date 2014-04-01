@@ -37,7 +37,7 @@ bool WidgetEscapeCloser::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventKeyboard && event.keyboard.pressed && event.keyboard.key == KEY_ESCAPE )
   {
-    getParent()->deleteLater();
+    parent()->deleteLater();
     return true;
   }
 

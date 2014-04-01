@@ -151,7 +151,7 @@ bool MainMenu::onEvent(const NEvent& event)
 
 void MainMenu::recalculateSize_()
 {
-	Rect parentRect = getParent()->getClientRect(); // client rect of parent  
+	Rect parentRect = parent()->getClientRect(); // client rect of parent  
 
 	//AbstractSkin* skin = getEnvironment()->getSkin();
   Font font = Font::create( FONT_2_WHITE );

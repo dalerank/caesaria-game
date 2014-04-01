@@ -23,17 +23,19 @@
 #include "core/foreach.hpp"
 #include "gfx/tileoverlay.hpp"
 
-class CityServiceShoreline::Impl
+namespace city
+{
+
+class Shoreline::Impl
 {
 public:
   TilesArray slTiles;
   int lastTimeUpdate;
-  PlayerCityPtr city;
 
   void checkMap(PlayerCityPtr city );
 };
 
-void CityServiceShoreline::Impl::checkMap( PlayerCityPtr city )
+void Shoreline::Impl::checkMap( PlayerCityPtr city )
 {
   int mapSize = city->tilemap().size();
   TilesArray tiles = city->tilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
@@ -48,24 +50,23 @@ void CityServiceShoreline::Impl::checkMap( PlayerCityPtr city )
   }
 }
 
-city::SrvcPtr CityServiceShoreline::create(PlayerCityPtr city )
+city::SrvcPtr Shoreline::create(PlayerCityPtr city )
 {
-  city::SrvcPtr ret( new CityServiceShoreline( city ) );
+  city::SrvcPtr ret( new Shoreline( city ) );
   ret->drop();
 
   return ret;
 }
 
-std::string CityServiceShoreline::getDefaultName(){ return "shoreline"; }
+std::string Shoreline::getDefaultName(){ return "shoreline"; }
 
-CityServiceShoreline::CityServiceShoreline( PlayerCityPtr city )
-  : city::Srvc( CityServiceShoreline::getDefaultName() ), _d( new Impl )
+Shoreline::Shoreline( PlayerCityPtr city )
+  : city::Srvc( *city.object(), Shoreline::getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->lastTimeUpdate = 0;  
 }
 
-void CityServiceShoreline::update( const unsigned int time )
+void Shoreline::update( const unsigned int time )
 {
   if( (time - _d->lastTimeUpdate) < 50 )
     return;
@@ -74,7 +75,7 @@ void CityServiceShoreline::update( const unsigned int time )
 
   if( _d->slTiles.empty() )
   {
-    _d->checkMap( _d->city );
+    _d->checkMap( &_city );
   }
 
   foreach( it, _d->slTiles )
@@ -111,3 +112,5 @@ void CityServiceShoreline::update( const unsigned int time )
 
   }
 }
+
+}//end namespace city

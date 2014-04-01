@@ -197,7 +197,7 @@ BuildMenu* BuildMenu::create(const BuildMenuType menuType, Widget* parent )
 bool BuildMenu::isPointInside( const Point& point ) const
 {
   Rect clickedRect = _environment->rootWidget()->absoluteRect();
-  clickedRect.LowerRightCorner = Point( getParent()->screenLeft(), _environment->rootWidget()->height() );
+  clickedRect.LowerRightCorner = Point( parent()->screenLeft(), _environment->rootWidget()->height() );
   return clickedRect.isPointInside( point );
 }
 

@@ -35,13 +35,13 @@ public:
    void setName( const std::string& name );
    std::string getName() const;
 
-   int getSalary() const;
+   int salary() const;
    void setSalary( const int value );
 
    void appendMoney( int money );
-   int getMoney() const;
+   int money() const;
 
-   ~Player();
+   virtual ~Player();
 private:
    Player();
 

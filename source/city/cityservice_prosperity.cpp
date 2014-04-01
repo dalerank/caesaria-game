@@ -36,7 +36,6 @@ namespace city
 class ProsperityRating::Impl
 {
 public:
-  PlayerCityPtr city;
   DateTime lastDate;
   int prosperity;
   int houseCapTrand;
@@ -58,9 +57,8 @@ SrvcPtr ProsperityRating::create(PlayerCityPtr city )
 }
 
 ProsperityRating::ProsperityRating(PlayerCityPtr city )
-  : Srvc( getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->lastDate = GameDate::current();
   _d->prosperity = 0;
   _d->houseCapTrand = 0;
@@ -82,14 +80,14 @@ void ProsperityRating::update( const unsigned int time )
   {
     _d->lastDate = GameDate::current();
 
-    if( _d->city->getPopulation() == 0 )
+    if( _city.getPopulation() == 0 )
     {
       _d->prosperity = 0;
       _d->prosperityExtend = 0;
       return;
     }
 
-    Helper helper( _d->city );
+    Helper helper( &_city );
     HouseList houses = helper.find<House>( building::house );
 
     int prosperityCap = 0;
@@ -111,21 +109,21 @@ void ProsperityRating::update( const unsigned int time )
     _d->prosperity = math::clamp<int>( prosperityCap, 0, _d->prosperity + 2 );
     _d->houseCapTrand = _d->prosperity - saveValue;
 
-    int currentFunds = _d->city->funds().treasury();
+    int currentFunds = _city.funds().treasury();
     _d->makeProfit = _d->lastYearBalance < currentFunds;
     _d->lastYearBalance = currentFunds;
     _d->prosperityExtend = (_d->makeProfit ? 2 : -1);
 
-    bool more10PercentIsPatrician = (patricianCount / (float)_d->city->getPopulation()) > 0.1;
+    bool more10PercentIsPatrician = (patricianCount / (float)_city.getPopulation()) > 0.1;
     _d->prosperityExtend += (more10PercentIsPatrician ? 1 : 0);
 
-    _d->percentPlebs = plebsCount * 100/ (float)_d->city->getPopulation();
+    _d->percentPlebs = plebsCount * 100/ (float)_city.getPopulation();
     _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
 
     bool haveHippodrome = !helper.find<Hippodrome>( building::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome ? 1 : 0);
 
-    _d->worklessPercent = city::Statistic::getWorklessPercent( _d->city );
+    _d->worklessPercent = city::Statistic::getWorklessPercent( &_city );
     bool unemploymentLess5percent = _d->worklessPercent < 5;
     bool unemploymentMore15percent = _d->worklessPercent > 15;
     _d->prosperityExtend += (unemploymentLess5percent ? 1 : 0);
@@ -134,7 +132,7 @@ void ProsperityRating::update( const unsigned int time )
     bool havePatrician = patricianCount > 0;
     _d->prosperityExtend += (havePatrician ? 1 : 0);
 
-    _d->workersSalary = _d->city->funds().getWorkerSalary() - _d->city->getEmpire()->getWorkerSalary();
+    _d->workersSalary = _city.funds().getWorkerSalary() - _city.getEmpire()->getWorkerSalary();
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
    

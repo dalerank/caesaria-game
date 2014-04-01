@@ -25,7 +25,7 @@
 namespace city
 {
 
-class Timers : public Srvc
+class Timers
 {
 public:
   static Timers& getInstance();
@@ -33,7 +33,7 @@ public:
   void update( const unsigned int time );
   void addTimer( TimerPtr timer );
 
-  ~Timers();
+  virtual ~Timers();
 private:
   Timers();
 

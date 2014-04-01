@@ -46,7 +46,7 @@ SrvcPtr Fishery::create( PlayerCityPtr city )
 std::string Fishery::getDefaultName() {  return "fishery";}
 
 Fishery::Fishery( PlayerCityPtr city )
-  : Srvc( Fishery::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Fishery::getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->failedCounter = 0;

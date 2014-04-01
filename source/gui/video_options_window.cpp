@@ -110,7 +110,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
     _d->haveChanges = true;
     ListBox* lbx = safety_cast< ListBox* >( event.gui.caller );
 
-    int tag = lbx->getSelectedItem().getTag();
+    int tag = lbx->getSelectedItem().tag();
 
     _d->onScreenSizeChangeSignal.emit( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
   }

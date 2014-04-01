@@ -50,7 +50,7 @@ SrvcPtr Info::create(PlayerCityPtr city )
 }
 
 Info::Info( PlayerCityPtr city )
-  : Srvc( getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
   _d->city = city;
   _d->lastDate = GameDate::current();

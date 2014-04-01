@@ -13,35 +13,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
-#define _CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
+#ifndef _CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
+#define _CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
 
-#include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
+#include "gui/widget.hpp"
+#include "core/signals.hpp"
+#include "gfx/engine.hpp"
+#include "gfx/tileoverlay.hpp"
 
-namespace city
+namespace gui
 {
 
-class DesirabilityUpdater : public Srvc
+class CityDonationindow : public Widget
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
-  virtual void update( const unsigned int time);
-  static std::string getDefaultName();
-  virtual bool isDeleted() const;
-  virtual void destroy();
+  CityDonationindow( Widget* parent, int money );
 
-  virtual void load(const VariantMap &stream);
-  virtual VariantMap save() const;
+  virtual ~CityDonationindow();
+  virtual bool onEvent(const NEvent &event);
 
-private:
-  DesirabilityUpdater(PlayerCityPtr city);
+public oc3_signals:
+  Signal1<int>& onSendMoney();
 
-  class Impl;
-  ScopedPtr<Impl> _d;
+private:  
+  __DECLARE_IMPL(CityDonationindow)
 };
 
-}
+} //end namespace gui
 
-#endif //_CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
+#endif //_CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_

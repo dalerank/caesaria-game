@@ -37,7 +37,7 @@ Timers& Timers::getInstance()
   return inst;
 }
 
-Timers::Timers() : Srvc( "timers" ), _d( new Impl )
+Timers::Timers() : _d( new Impl )
 { 
 }
 

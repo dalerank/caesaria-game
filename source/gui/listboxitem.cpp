@@ -93,7 +93,7 @@ void ListBoxItem::setItemTextAlignment( Alignment horizontal, Alignment vertical
 
 ListBoxItem::~ListBoxItem(){}
 void ListBoxItem::setTag( int tag ){	_d->tag = tag;}
-int ListBoxItem::getTag() const{	return _d->tag;}
+int ListBoxItem::tag() const{	return _d->tag;}
 bool ListBoxItem::isEnabled() const{    return _d->enabled;}
 void ListBoxItem::setEnabled( bool en ){    _d->enabled = en;}
 ElementState ListBoxItem::getState() const{    return _d->state;}
