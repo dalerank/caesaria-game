@@ -42,7 +42,7 @@ public:
   virtual void setAvailable( bool value ) {}
   virtual void arrivedMerchant( MerchantPtr ) = 0;
   virtual unsigned int getTradeType() const = 0;
-  virtual EmpirePtr getEmpire() const = 0;
+  virtual EmpirePtr empire() const = 0;
 
   virtual const GoodStore& getSells() const = 0;
   virtual const GoodStore& getBuys() const = 0;

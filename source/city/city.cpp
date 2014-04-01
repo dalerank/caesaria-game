@@ -652,7 +652,7 @@ Point PlayerCity::getLocation() const {   return _d->location; }
 const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSells(); }
 const GoodStore& PlayerCity::getBuys() const {   return _d->tradeOptions.getBuys(); }
 unsigned int PlayerCity::getTradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
-world::EmpirePtr PlayerCity::getEmpire() const {   return _d->empire; }
+world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }

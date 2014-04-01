@@ -112,7 +112,7 @@ public:
   virtual const GoodStore& getSells() const;
   virtual const GoodStore& getBuys() const;
   virtual unsigned int getTradeType() const;
-  virtual world::EmpirePtr getEmpire() const;
+  virtual world::EmpirePtr empire() const;
 
   void updateRoads();
    

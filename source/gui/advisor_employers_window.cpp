@@ -168,7 +168,7 @@ void AdvisorEmployerWindow::Impl::changeSalary(int relative)
 void AdvisorEmployerWindow::Impl::updateSalaryLabel()
 {
   int pay = 30;
-  int romePay = city->getEmpire()->getWorkerSalary();
+  int romePay = city->empire()->getWorkerSalary();
   std::string salaryString = StringHelper::format( 0xff, "%s %d (%s %d)",
                                                    _("##advemployer_panel_denaries##"), pay,
                                                    _("##advemployer_panel_romepay##"), romePay );

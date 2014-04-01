@@ -40,7 +40,6 @@ class WorkersHire::Impl
 public:
   HirePriorities priorities;
   WalkerList hrInCity;
-  PlayerCityPtr city;
 };
 
 SrvcPtr WorkersHire::create(PlayerCityPtr city )
@@ -56,7 +55,6 @@ string WorkersHire::getDefaultName(){ return "workershire"; }
 WorkersHire::WorkersHire(PlayerCityPtr city )
   : Srvc( *city.object(), WorkersHire::getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->priorities  << building::prefecture
                   << building::engineerPost
                   << building::clayPit
@@ -123,7 +121,7 @@ bool WorkersHire::_haveHr( WorkingBuildingPtr building )
 
 void WorkersHire::_hireByType(const TileOverlay::Type type )
 {
-  Helper hlp( _d->city );
+  Helper hlp( &_city );
   WorkingBuildingList buildings = hlp.find< WorkingBuilding >( type );
   foreach( it, buildings )
   {
@@ -133,7 +131,7 @@ void WorkersHire::_hireByType(const TileOverlay::Type type )
 
     if( wrkbld->getAccessRoads().size() > 0 && wrkbld->numberWorkers() < wrkbld->maxWorkers() )
     {
-      RecruterPtr hr = Recruter::create( _d->city );
+      RecruterPtr hr = Recruter::create( &_city );
       hr->setMaxDistance( 20 );
       hr->send2City( wrkbld, wrkbld->maxWorkers() - wrkbld->numberWorkers());
     }
@@ -147,7 +145,7 @@ void WorkersHire::update( const unsigned int time )
 
   //unsigned int vacantPop=0;
 
-  _d->hrInCity = _d->city->getWalkers( walker::recruter );
+  _d->hrInCity = _city.getWalkers( walker::recruter );
 
   foreach( pr, _d->priorities )
   {

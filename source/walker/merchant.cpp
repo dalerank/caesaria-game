@@ -327,7 +327,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
   {
     // walker on exit from city
     wlk->deleteLater();
-    world::EmpirePtr empire = city->getEmpire();
+    world::EmpirePtr empire = city->empire();
     const std::string& ourCityName = city->getName();
     world::TraderoutePtr route = empire->getTradeRoute( ourCityName, baseCityName );
     if( route.isValid() )

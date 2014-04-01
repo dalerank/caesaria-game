@@ -36,7 +36,6 @@ class Info::Impl
 {
 public:
   typedef std::vector< Info::Parameters > History;
-  PlayerCityPtr city;
   DateTime lastDate;
   History params;
 };
@@ -52,7 +51,6 @@ SrvcPtr Info::create(PlayerCityPtr city )
 Info::Info( PlayerCityPtr city )
   : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->lastDate = GameDate::current();
   _d->params.resize( 12 );
 }
@@ -71,26 +69,26 @@ void Info::update( const unsigned int time )
 
     Parameters& last = _d->params.back();
     last.date = _d->lastDate;
-    last.population = _d->city->getPopulation();
-    last.funds = _d->city->funds().treasury();    
+    last.population = _city.getPopulation();
+    last.funds = _city.funds().treasury();
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
 
-    int foodStock = city::Statistic::getFoodStock( _d->city );
-    int foodMontlyConsumption = city::Statistic::getFoodMonthlyConsumption( _d->city );
+    int foodStock = city::Statistic::getFoodStock( &_city );
+    int foodMontlyConsumption = city::Statistic::getFoodMonthlyConsumption( &_city );
     last.monthWithFood = foodMontlyConsumption > 0 ? (foodStock / foodMontlyConsumption) : 0;
 
-    int foodProducing = city::Statistic::getFoodProducing( _d->city );
+    int foodProducing = city::Statistic::getFoodProducing( &_city );
     int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
     last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -1;
 
-    last.needWorkers = city::Statistic::getVacantionsNumber( _d->city );
-    last.workless = city::Statistic::getWorklessPercent( _d->city );
-    last.payDiff = _d->city->getEmpire()->getWorkerSalary() - _d->city->funds().getWorkerSalary();
-    last.tax = _d->city->funds().getTaxRate();
-    last.cityWages = _d->city->funds().getWorkerSalary();
-    last.romeWages = _d->city->getEmpire()->getWorkerSalary();
+    last.needWorkers = city::Statistic::getVacantionsNumber( &_city );
+    last.workless = city::Statistic::getWorklessPercent( &_city );
+    last.payDiff = _city.empire()->getWorkerSalary() - _city.funds().getWorkerSalary();
+    last.tax = _city.funds().getTaxRate();
+    last.cityWages = _city.funds().getWorkerSalary();
+    last.romeWages = _city.empire()->getWorkerSalary();
   }
 }
 
