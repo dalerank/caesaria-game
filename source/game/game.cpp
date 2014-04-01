@@ -134,6 +134,7 @@ void Game::mountArchives()
   foreach( a, archives )
   {
     vfs::Path absArchivePath = GameSettings::rcpath( a->second.toString() );
+    Logger::warning( "Game: try mount archive " + absArchivePath.toString() );
     Logger::warningIf( !absArchivePath.exist(), "Game: cannot load archive " + absArchivePath.toString() );
     fs.mountArchive( absArchivePath );
   }
@@ -206,7 +207,7 @@ void Game::setScreenMenu()
   {
     case scene::StartMenu::startNewGame:
     {  
-      std::srand( DateTime::getElapsedTime() );
+      std::srand( DateTime::elapsedTime() );
       std::string startMission = "/missions/tutorial.mission";
       Logger::warning( "Start new career with mission " + startMission );
 

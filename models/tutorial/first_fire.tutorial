@@ -1,8 +1,8 @@
 {  
  title : "##tutorial_fire##"
  items : [ "##tutorial_prefecture_info##",
-           "@img=picture2_00005.png", 
+           "@img=picture2_00005", 
            "##tutorial_prefect_detect_fire##",
-           "@img=picture2_00006.png",
+           "@img=picture2_00006",
            "##tutorial_ruins_info##"]
 }

@@ -61,12 +61,12 @@ public:
 
     if( _divinity.isValid() )
     {
-      _lastFestival = _divinity->getLastFestivalDate().getMonthToDate( GameDate::current() );
-      _mood = _divinity->getRelation();
+      _lastFestival = _divinity->lastFestivalDate().getMonthToDate( GameDate::current() );
+      _mood = _divinity->relation();
 
-      font.draw( *texture, _divinity->getName(), 0, 0 );
+      font.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
-      fontBlack.draw( *texture, StringHelper::format( 0xff, "(%s)", _divinity->getShortDescription().c_str() ), 80, 0 );
+      fontBlack.draw( *texture, StringHelper::format( 0xff, "(%s)", _divinity->shortDescription().c_str() ), 80, 0 );
       font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
       font.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
       font.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );

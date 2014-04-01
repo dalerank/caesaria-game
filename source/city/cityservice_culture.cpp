@@ -118,7 +118,7 @@ void CultureRating::update( const unsigned int time )
     TempleList temples = helper.find<Temple>( building::religionGroup );
     foreach( temple, temples )
     {
-      _d->parishionersCount += (*temple)->getParishionerNumber();
+      _d->parishionersCount += (*temple)->parishionerNumber();
     }
 
     _d->religionCoverage = _d->parishionersCount / (float)cityPopulation;

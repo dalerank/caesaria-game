@@ -32,7 +32,7 @@
 #include "city/funds.hpp"
 #include "good/goodhelper.hpp"
 #include "game/settings.hpp"
-#include "events/event.hpp"
+#include "events/infobox.hpp"
 #include "core/logger.hpp"
 #include "world/merchant.hpp"
 #include "core/foreach.hpp"

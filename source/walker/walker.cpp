@@ -45,21 +45,22 @@ public:
   float speed;
   TilePos pos;
   UniqueId uid;
-  Point midTilePos;  // subtile coordinate in the current tile, at starting position
   float speedMultiplier;
-  Point tileOffset; // subtile coordinate in the current tile: 0..15
   Animation animation;  // current animation
-  Point posOnMap; // subtile coordinate across all tiles: 0..15*mapsize (ii=15*i+si)
-  PointF remainMove;  // remaining movement
+  PointF wpos;      // current world position
+  PointF subSpeed;
+  PointF nextwpos;  // next way point
   Pathway pathway;
   DirectedAction action;
   std::string name;
+  float lastCenterDst;
+  bool centerReached;
   int health;
   std::string thinks;
   float tileSpeedKoeff;
   AbilityList abilities;
 
-  float getSpeed() const   {  return speedMultiplier * speed * tileSpeedKoeff;  }
+  float finalSpeed() const   {  return speedMultiplier * speed * tileSpeedKoeff;  }
 
   void updateSpeedMultiplier( const Tile& tile ) 
   {
@@ -75,13 +76,12 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->action.direction = constants::noneDirection;
   _d->type = walker::unknown;
   _d->health = 100;
-
+  _d->lastCenterDst = 99.f;
+  _d->centerReached = false;
   _d->speed = 1.f; // default speed
   _d->speedMultiplier = 1.f;
   _d->isDeleted = false;
-
-  _d->midTilePos = Point( 7, 7 );
-  _d->remainMove = PointF( 0, 0 );
+  _d->centerReached = false;
 }
 
 Walker::~Walker() {}
@@ -94,7 +94,7 @@ void Walker::timeStep(const unsigned long time)
   case Walker::acMove:
     _walk();
 
-    if( _d->getSpeed() > 0.f )
+    if( _d->finalSpeed() > 0.f )
     {
       _updateAnimation( time );
     }
@@ -116,189 +116,86 @@ void Walker::timeStep(const unsigned long time)
 void Walker::setPos( const TilePos& pos )
 {
   _d->pos = pos;
-  _d->tileOffset = _d->midTilePos;
-  _d->posOnMap = Point( _d->pos.i(), _d->pos.j() ) * 15 + _d->tileOffset;
+  //_d->tileOffset = _d->midTilePos;
+  const Tile& tile =_d->city->tilemap().at( pos );
+  _d->wpos = tile.center().toPointF();
 }
 
 void Walker::setPathway( const Pathway& pathway)
 {
   _d->pathway = pathway;
   _d->pathway.begin();
+  _d->centerReached = false;
   _centerTile();
 }
 
 void Walker::setSpeed(const float speed){   _d->speed = speed;}
-float Walker::speed() const{    return _d->speed;}
+float Walker::speed() const{ return _d->speed;}
 void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
-
-// ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
-void Walker::inc(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
-{
-   int delta = ioAmount;
-   if ((ioSI<iMidPos) && (ioSI+delta>=iMidPos))  // midpos is ahead and inside the current movement
-   {
-      // we will stop at the mid tile!
-      delta = iMidPos - ioSI;
-      oMidTile = true;
-   }
-
-   if (ioSI+delta>15)  // the start of next tile is inside the current movement
-   {
-      // we will stop at the beginning of the new tile!
-      delta = 16 - ioSI;
-      oNewTile = true;
-      ioI += 1;  // next tile
-      ioSI = ioSI - 15;
-   }
-
-   ioAmount -= delta;
-   ioSI += delta;
-}
-
-// ioSI: subtile index, ioI: tile index, ioAmount: distance, iMidPos: subtile offset 0, oNewTile: true if tile change, oMidTile: true if on tile center
-void Walker::dec(int &ioSI, int &ioI, int &ioAmount, const int iMidPos, bool &oNewTile, bool &oMidTile)
-{
-   int delta = ioAmount;
-   if ((ioSI>iMidPos) && (ioSI-delta<=iMidPos))  // midpos is ahead and inside the current movement
-   {
-      // we will stop at the mid tile!
-      delta = ioSI - iMidPos;
-      oMidTile = true;
-   }
-
-   if (ioSI-delta<0)  // the start of next tile is inside the current movement
-   {
-      // we will stop at the beginning of the new tile!
-      delta = ioSI+1;
-      oNewTile = true;
-      ioI -= 1;  // next tile
-      ioSI = ioSI + 15;
-   }
-
-   ioAmount -= delta;
-   ioSI -= delta;
-}
 
 void Walker::_walk()
 {
   if( constants::noneDirection == _d->action.direction )
   {
-     // nothing to do
-     return;
+    // nothing to do
+    _noWay();
+    return;
   }
 
-  Tile& tile = _d->city->tilemap().at( pos() );
-
-  switch (_d->action.direction)
+  float speedKoeff = 1.f;
+  switch( _d->action.direction )
   {
   case constants::north:
   case constants::south:
-    _d->remainMove += PointF( 0, _d->getSpeed() );
-  break;
-
   case constants::east:
   case constants::west:
-    _d->remainMove += PointF( _d->getSpeed(), 0 );
   break;
 
   case constants::northEast:
   case constants::southWest:
   case constants::southEast:
   case constants::northWest:
-     _d->remainMove += PointF( _d->getSpeed() * 0.7f, _d->getSpeed() * 0.7f );
+     speedKoeff = 0.7f;
   break;
 
   default:
-     Logger::warning( "Invalid move direction: %d", _d->action.direction );
+     Logger::warning( "Walker: invalid move direction: %d", _d->action.direction );
+     _d->action.action = acNone;
      _d->action.direction = constants::noneDirection;
+     return;
   break;
   }
 
+  PointF delta = _d->subSpeed;
+  delta.rx() = delta.x() * _d->finalSpeed() * speedKoeff;
+  delta.ry() = delta.y() * _d->finalSpeed() * speedKoeff;
 
-  bool newTile = false;
-  bool midTile = false;
-  int amountI = int(_d->remainMove.x());
-  int amountJ = int(_d->remainMove.y());
-  _d->remainMove -= Point( amountI, amountJ ).toPointF();
+  PointF tmp = _d->wpos;
+  TilePos saveMpos( tmp.x() / 15, tmp.y() / 15 );
+  _d->wpos += delta;
 
-  // std::cout << "walker step, amount :" << amount << std::endl;
-  int tmpX = _d->tileOffset.x();
-  int tmpY = _d->tileOffset.y();
-  int tmpJ = _d->pos.j();
-  int tmpI = _d->pos.i();
-  int infinityLoopGuard = 0;
-  while( amountI+amountJ > 0 && infinityLoopGuard < 100 )
+  tmp = _d->wpos;
+  TilePos Mpos( tmp.x() / 15, tmp.y() / 15 );
+
+  if( !_d->centerReached  )
   {
-    infinityLoopGuard++;
-    switch (_d->action.direction)
+    float crntDst = _d->wpos.getDistanceFrom( _d->nextwpos );
+    if( crntDst < _d->lastCenterDst )
     {
-    case constants::north:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-    break;
-
-    case constants::northEast:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::east:
-       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::southEast:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-       inc(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::south:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-    break;
-
-    case constants::southWest:
-       dec(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::west:
-       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    case constants::northWest:
-       inc(tmpY, tmpJ, amountJ, _d->midTilePos.y(), newTile, midTile);
-       dec(tmpX, tmpI, amountI, _d->midTilePos.x(), newTile, midTile);
-    break;
-
-    default:
-       Logger::warning( "Invalid move direction: %d", _d->action.direction);
-       _d->action.direction = constants::noneDirection;
-    break;
-    }    
-
-    _d->tileOffset = Point( tmpX, tmpY );
-    _d->pos = TilePos( tmpI, tmpJ );
-
-    if (newTile)
-    {
-       // walker is now on a new tile!
-       _changeTile();
+      _d->lastCenterDst = crntDst;
     }
-
-    if (midTile)
-    {
-       // walker is now on the middle of the tile!
-       _centerTile();
+    else
+    {      
+      _d->pathway.next();
+      _centerTile();
     }
   }
 
-  Tile& offtile = newTile
-                    ? _d->city->tilemap().at( pos() )
-                    : tile;
-
-  Point overlayOffset = offtile.overlay().isValid()
-                             ? offtile.overlay()->offset( offtile, _d->tileOffset )
-                             : Point( 0, 0 );
-
-  _d->posOnMap = Point( _d->pos.i(), _d->pos.j() )*15 + _d->tileOffset + overlayOffset;
+  if( saveMpos != Mpos )
+  {
+    _d->pos = Mpos;
+    _changeTile();
+  }
 }
 
 void Walker::_changeTile()
@@ -306,25 +203,29 @@ void Walker::_changeTile()
    Tilemap& tilemap = _d->city->tilemap();
    Tile& currentTile = tilemap.at( _d->pos );
    _d->updateSpeedMultiplier( currentTile );
+   _d->centerReached = false;
 }
 
 void Walker::_centerTile()
 {
-   // std::cout << "Walker is on mid tile! coord=" << _i << "," << _j << std::endl;
-   if (_d->pathway.isDestination())
-   {
-      _reachedPathway();
-   }
-   else
-   {
-      // compute the direction to reach the destination
-      _computeDirection();
-      const Tile& tile = _getNextTile();
-      if( tile.i() < 0 || !tile.isWalkable( true ) )
-      {
-        _brokePathway( tile.pos() );
-      }
-   }
+  if( _d->centerReached )
+      return;
+
+  if( _d->pathway.isDestination() )
+  {
+    _reachedPathway();
+  }
+  else
+  {
+    // compute the direction to reach the destination
+    _computeDirection();
+    const Tile& tile = _nextTile();
+    if( tile.i() < 0 || !tile.isWalkable( true ) )
+    {
+      _brokePathway( tile.pos() );
+    }
+    _d->centerReached = true;
+  }
 }
 
 void Walker::_reachedPathway()
@@ -336,7 +237,10 @@ void Walker::_reachedPathway()
 void Walker::_computeDirection()
 {
   Direction lastDirection = _d->action.direction;
-  _d->action.direction = _d->pathway.getNextDirection();
+  _d->action.direction = _d->pathway.direction();
+  _d->nextwpos = _nextTile().center().toPointF();
+  _d->lastCenterDst = _d->wpos.getDistanceFrom( _d->nextwpos );
+  _d->subSpeed = ( _d->nextwpos - _d->wpos ) / 15.f;
 
   if( lastDirection != _d->action.direction )
   {
@@ -344,7 +248,7 @@ void Walker::_computeDirection()
   }
 }
 
-const Tile& Walker::_getNextTile() const
+const Tile& Walker::_nextTile() const
 {
   TilePos p = pos();
   switch( _d->action.direction )
@@ -363,11 +267,11 @@ const Tile& Walker::_getNextTile() const
   return _d->city->tilemap().at( p );
 }
 
-Point Walker::getMappos() const{  return Point( 2*(_d->posOnMap.x() + _d->posOnMap.y()), _d->posOnMap.x() - _d->posOnMap.y() );}
-Point Walker::getSubpos() const{  return _d->tileOffset; }
+Point Walker::getMappos() const{ const PointF p = _d->wpos; return Point( 2*(p.x() + p.y()), p.x() - p.y() );}
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
+void Walker::_noWay(){}
 Direction Walker::getDirection() const {  return _d->action.direction;}
 Walker::Action Walker::getAction() const {  return (Walker::Action)_d->action.action;}
 double Walker::getHealth() const{  return _d->health;}
@@ -388,6 +292,12 @@ void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
+
+Point Walker::tilesubpos() const
+{
+  Point tmp = Point( _d->pos.i(), _d->pos.j() ) * 15 + Point( 7, 7 );
+  return _d->wpos.toPoint() - tmp;
+}
 
 void Walker::_setAction( Walker::Action action )
 {
@@ -460,32 +370,35 @@ void Walker::save( VariantMap& stream ) const
   stream[ "health" ] = _d->health;
   stream[ "action" ] = (int)_d->action.action;
   stream[ "direction" ] = (int)_d->action.direction;
-  stream[ "pos" ] = _d->pos;
-  stream[ "tileoffset" ] = _d->tileOffset;
-  stream[ "mappos" ] = _d->posOnMap;
+  stream[ "location" ] = _d->pos;
+  stream[ "tileSpdKoeff" ] = _d->tileSpeedKoeff;
+  stream[ "wpos" ] = _d->wpos;
+  stream[ "nextwpos" ] = _d->nextwpos;
   stream[ "speed" ] = _d->speed;
-  stream[ "midTile" ] = _d->midTilePos;
   stream[ "speedMul" ] = (float)_d->speedMultiplier;
   stream[ "uid" ] = (unsigned int)_d->uid;
-  stream[ "remainmove" ] = _d->remainMove;
   stream[ "thinks" ] = Variant( _d->thinks );
+  stream[ "subspeed" ] = _d->subSpeed;
+  stream[ "lastCenterDst" ] = _d->lastCenterDst;
 }
 
 void Walker::load( const VariantMap& stream)
 {
   Tilemap& tmap = _city()->tilemap();
 
-  _d->tileOffset = stream.get( "tileoffset" );
   _d->name = stream.get( "name" ).toString();
-  _d->posOnMap = stream.get( "mappos" );
-  _d->pos = stream.get( "pos" );
+  _d->wpos = stream.get( "wpos" ).toPointF();
+  _d->pos = stream.get( "location" );
+  _d->lastCenterDst = stream.get( "lastCenterDst" );
   _d->pathway.init( tmap, tmap.at( 0, 0 ) );
   _d->pathway.load( stream.get( "pathway" ).toMap() );
   _d->thinks = stream.get( "thinks" ).toString();
-
+  _d->tileSpeedKoeff = stream.get( "tileSpdKoeff" );
+  _d->nextwpos = stream.get( "nextwpos" ).toPointF();
   _d->action.action = (Walker::Action) stream.get( "action" ).toInt();
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
+  _d->subSpeed = stream.get( "subspeed" ).toPointF();
   _d->speedMultiplier = (float)stream.get( "speedMul", 1.f );
 
   if( !_d->pathway.isValid() )
@@ -502,8 +415,6 @@ void Walker::load( const VariantMap& stream)
   }
 
   _d->speed = (float)stream.get( "speed" );
-  _d->midTilePos = stream.get( "midTile" );
-  _d->remainMove = stream.get( "remainmove" ).toPointF();
   _d->health = (double)stream.get( "health" );
 }
 
@@ -525,7 +436,7 @@ void Walker::turn(TilePos p)
 void Walker::_updatePathway( const Pathway& pathway)
 {
   _d->pathway = pathway;
-  _d->pathway.begin();
+  _d->pathway.begin();  
   _computeDirection();
 }
 
@@ -537,14 +448,14 @@ void Walker::_updateAnimation( const unsigned int time )
   }
 }
 
-void Walker::_setWpos(Point pos) { _d->posOnMap = pos; }
+void Walker::_setWpos( Point pos) { _d->wpos = pos.toPointF(); }
 
 void Walker::_updateThinks()
 {
   _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _city() );
 }
 
-Point Walker::_wpos() const{  return _d->posOnMap;}
+Point Walker::_wpos() const{  return _d->wpos.toPoint();}
 void Walker::go(){ _d->action.action = acMove; }      // default action
 
 void Walker::die()

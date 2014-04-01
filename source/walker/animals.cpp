@@ -108,12 +108,6 @@ void Sheep::_reachedPathway()
 
 void Sheep::_brokePathway(TilePos p){  _findNewWay( pos() );}
 
-void Sheep::_changeTile()
-{
-  Walker::_changeTile();
-  _animationRef().setDelay( 3 );
-}
-
 void Sheep::die()
 {
   Animal::die();

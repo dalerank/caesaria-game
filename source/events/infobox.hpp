@@ -12,34 +12,29 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WORKERSHUNTER_H_INCLUDE_
-#define __CAESARIA_WORKERSHUNTER_H_INCLUDE_
+#ifndef _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
+#define _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
 
-#include "serviceman.hpp"
+#include "event.hpp"
 
-class Recruter;
-typedef SmartPtr<Recruter> RecruterPtr;
+namespace events
+{
 
-class Recruter : public ServiceWalker
+class ShowInfoboxEvent : public GameEvent
 {
 public:
-  static RecruterPtr create( PlayerCityPtr city );
-
-  int getWorkersNeeded() const;
-  void hireWorkers( const int workers );
-
-  void send2City( WorkingBuildingPtr building, const int workersNeeded );
-
-  virtual void die();
+  static GameEventPtr create( const std::string& title, const std::string& text );
 
 protected:
-  virtual void _centerTile();
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  Recruter( PlayerCityPtr city );
-
-  int _workersNeeded;
+  std::string _title, _text;
 };
 
-#endif//__CAESARIA_WORKERSHUNTER_H_INCLUDE_
+} //end namespace events
+#endif //_CAESARIA_INFOBOX_EVENT_H_INCLUDE_

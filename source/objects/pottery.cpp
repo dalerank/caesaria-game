@@ -25,8 +25,6 @@ using namespace constants;
 
 Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::pottery, Size(2))
 {
-  _animationRef().load(ResourceGroup::commerce, 133, 7);
-  _animationRef().setDelay( 3 );
   _fgPicturesRef().resize( 3 );
 }
 

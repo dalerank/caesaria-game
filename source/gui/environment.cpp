@@ -127,7 +127,7 @@ void GuiEnv::draw()
 
   Widget::draw( *_d->engine );
 
-  drawTooltip_( DateTime::getElapsedTime() );
+  drawTooltip_( DateTime::elapsedTime() );
 
   // make sure tooltip is always on top
   //if(_d->toolTip.Element.isValid() )
@@ -338,7 +338,7 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 
     if( _d->hoveredNoSubelement.isValid() )
     {
-      _d->toolTip.EnterTime = DateTime::getElapsedTime();
+      _d->toolTip.EnterTime = DateTime::elapsedTime();
     }
   }
 }

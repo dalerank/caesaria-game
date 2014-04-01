@@ -272,10 +272,10 @@ BuildingPtr reserveShortestPath( const TileOverlay::Type buildingType,
   PathwayPtr shortestPath = 0;
   foreach( pathIt, pathWayList )
   {
-    if( pathIt->second->getLength() < maxLength )
+    if( pathIt->second->length() < maxLength )
     {
       shortestPath = pathIt->second;
-      maxLength = pathIt->second->getLength();
+      maxLength = pathIt->second->length();
       res = ptr_cast<Building>( pathIt->first );
     }
   }

@@ -54,11 +54,6 @@ Protestor::Protestor(PlayerCityPtr city) : Walker( city ), _d( new Impl )
   addAbility( Illness::create( 0.3, 4) );
 }
 
-void Protestor::_changeTile()
-{
-  Walker::_changeTile();
-}
-
 void Protestor::_reachedPathway()
 {
   Walker::_reachedPathway();

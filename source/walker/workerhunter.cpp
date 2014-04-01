@@ -49,9 +49,9 @@ void Recruter::hireWorkers( const int workers )
 
 int Recruter::getWorkersNeeded() const { return _workersNeeded; }
 
-void Recruter::_changeTile()
+void Recruter::_centerTile()
 {
-  Walker::_changeTile();
+  Walker::_centerTile();
 
   if( _workersNeeded )
   {
@@ -61,8 +61,8 @@ void Recruter::_changeTile()
     foreach( it, houses ) { (*it)->applyService( ServiceWalkerPtr( this ) ); }
   }
   else
-  {
-    if( !_pathwayRef().isReverse() )
+  {    
+    if( !_pathwayRef().isReverse() ) //return2Base();
     {
       _pathwayRef().toggleDirection();
     }

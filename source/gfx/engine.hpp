@@ -71,7 +71,7 @@ public:
   virtual Picture* createPicture(const Size& size ) = 0;
 
   virtual void createScreenshot( const std::string& filename ) = 0;
-  virtual unsigned int getFps() const = 0;
+  virtual unsigned int fps() const = 0;
   virtual Modes getAvailableModes() const = 0;
   virtual Point mousePos() const = 0;
 

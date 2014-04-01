@@ -37,9 +37,9 @@ public:
   std::map< std::string, float > history;
 };
 
-void TaxCollector::_changeTile()
+void TaxCollector::_centerTile()
 {
-  Walker::_changeTile();
+  Walker::_centerTile();
 
   ReachedBuildings buildings = getReachedBuildings( pos() );
   foreach( it, buildings )
@@ -118,8 +118,10 @@ void TaxCollector::_reachedPathway()
     }
   }
 
-  ServiceWalker::_reachedPathway();  
+  ServiceWalker::_reachedPathway();
 }
+
+void TaxCollector::_noWay(){  die();  }
 
 void TaxCollector::load(const VariantMap& stream)
 {

@@ -34,23 +34,27 @@ public:
 
   void init( Tilemap& tilemap, Tile& origin );
 
-  int getLength() const;
-  const Tile& getOrigin() const;
+  int length() const;
+
+  const Tile& front() const;
+  const Tile& destination() const;
+
   TilePos getStartPos() const;
 
-  const Tile& destination() const;
   bool isReverse() const;
-  unsigned int getStep() const;
+  unsigned int curStep() const;
 
   void begin();
   void rbegin();
-  constants::Direction getNextDirection();
+  void next();
+
+  constants::Direction direction();
   bool isDestination() const;
 
   void setNextDirection(constants::Direction direction);
   void setNextTile( const Tile& tile);
   bool contains(Tile& tile);
-  const TilesArray& getAllTiles() const;
+  const TilesArray& allTiles() const;
 
   void prettyPrint() const;
   void toggleDirection();

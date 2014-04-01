@@ -32,21 +32,22 @@ public:
 
   virtual VariantMap save() const;
 
-  virtual std::string getName() const { return _name; }
-  virtual std::string getShortDescription() const { return _shortDesc; }
-  virtual Service::Type getServiceType() const { return _service; }
-  virtual const Picture& getPicture() const { return _pic; }
-  virtual float getRelation() const { return _relation; }
+  virtual std::string name() const { return _name; }
+  virtual std::string shortDescription() const { return _shortDesc; }
+  virtual Service::Type serviceType() const { return _service; }
+  virtual const Picture& picture() const { return _pic; }
+  virtual float relation() const { return _relation; }
   virtual float getDefaultDecrease() const { return 2.f; }
-  virtual DateTime getLastFestivalDate() const { return _lastFestival; }
+  virtual DateTime lastFestivalDate() const { return _lastFestival; }
 
   virtual void updateRelation( float income, PlayerCityPtr city );
 
-  virtual std::string getMoodDescription() const;
+  virtual std::string moodDescription() const;
 
   RomeDivinityBase();
 
   virtual void setInternalName(const std::string &newName);
+  virtual std::string internalName() const;
 
 protected:
   std::string _name;

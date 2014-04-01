@@ -123,7 +123,7 @@ void Propagator::propagate(const int maxDistance)
       //std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
       int tileLength = 1;
-      if (pathWay->getLength() + tileLength > maxDistance)
+      if (pathWay->length() + tileLength > maxDistance)
       {
          // we processed all paths within range. stop the propagation
          //std::cout << "MaxDistance reached. stop propagation" << std::endl;
@@ -244,7 +244,7 @@ PathwayList Propagator::getWays(const int maxDistance)
 
     PathwayPtr pathWay( new Pathway( *const_cast<PathwayPtr&>( *firstBranch ).object() ) );
 
-    while( pathWay->getLength() < maxDistance)
+    while( pathWay->length() < maxDistance)
     {
        // propagate branch until maxDistance is reached
        if ((nbLoops++)>100000)
@@ -332,9 +332,9 @@ DirectRoute Propagator::getShortestRoute(const DirectRoutes& routes )
     // for every warehouse within range
     PathwayPtr pathWay = pathWayIt->second;
 
-    if( pathWay->getLength() < minLength )
+    if( pathWay->length() < minLength )
     {
-      minLength = pathWay->getLength();
+      minLength = pathWay->length();
       ret = DirectRoute( pathWayIt->first, *pathWay.object() );
     }
   }

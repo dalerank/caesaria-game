@@ -103,9 +103,4 @@ public:
   }
 };
 
-inline std::ostream & operator << (std::ostream& os, const TilePos& tp)
-{
-  return os << "(" << tp.i() << "," << tp.j() << ")";
-}
-
 #endif //__CAESARIA_POSITION_H_INCLUDED__

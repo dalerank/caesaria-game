@@ -1013,7 +1013,7 @@ void EditBox::draw( GfxEngine& painter )
 
   if( focus )
 	{
-		unsigned int t = DateTime::getElapsedTime() % 1000;
+		unsigned int t = DateTime::elapsedTime() % 1000;
     if( t < 500 )
     {
       painter.drawPicture( *_d->cursorPic, _d->textOffset + _d->cursorRect.UpperLeftCorner );

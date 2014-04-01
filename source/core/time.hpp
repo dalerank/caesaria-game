@@ -92,7 +92,7 @@ public:
     bool operator!=( const DateTime& other ) const;
 
     static DateTime getCurrenTime();
-    static unsigned int getElapsedTime();
+    static unsigned int elapsedTime();
 
 private:
     unsigned int _seconds;

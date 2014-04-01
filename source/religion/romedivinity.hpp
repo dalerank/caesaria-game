@@ -36,7 +36,7 @@ typedef enum
   romeDivCount=0xff
 } RomeDivinityType;
 
-const char* const divNames[] =
+const char* const baseDivinityNames[] =
 {
   "ceres",
   "mars",
@@ -49,17 +49,18 @@ const char* const divNames[] =
 class RomeDivinity : public ReferenceCounted
 {
 public:
-  virtual std::string getName() const = 0;
-  virtual float getRelation() const = 0;
-  virtual Service::Type getServiceType() const = 0;
-  virtual std::string getShortDescription() const = 0;
-  virtual const Picture& getPicture() const = 0;
+  virtual std::string name() const = 0;
+  virtual float relation() const = 0;
+  virtual Service::Type serviceType() const = 0;
+  virtual std::string shortDescription() const = 0;
+  virtual const Picture& picture() const = 0;
   virtual void updateRelation( float income, PlayerCityPtr city ) = 0;
-  virtual DateTime getLastFestivalDate() const = 0;
-  virtual std::string getMoodDescription() const = 0;
+  virtual DateTime lastFestivalDate() const = 0;
+  virtual std::string moodDescription() const = 0;
   virtual void load( const VariantMap& vm ) = 0;
   virtual VariantMap save() const = 0;
   virtual void setInternalName(const std::string &newName) = 0;
+  virtual std::string internalName() const = 0;
 };
 
 PREDEFINE_CLASS_SMARTPOINTER_LIST(RomeDivinity,List)

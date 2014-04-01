@@ -365,7 +365,7 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
 
   foreach( pathPoint, lPath ) { oPathWay.setNextTile( tilemap->at( (*pathPoint)->getPos() ) ); }
 
-  return oPathWay.getLength() > 0;
+  return oPathWay.length() > 0;
 }
 
 Pathfinder& Pathfinder::getInstance()

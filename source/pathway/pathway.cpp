@@ -36,9 +36,9 @@ public:
 
 bool operator<(const Pathway& v1, const Pathway& v2)
 {
-  if( v1.getLength()!=v2.getLength() )
+  if( v1.length()!=v2.length() )
   {
-    return v1.getLength() < v2.getLength();
+    return v1.length() < v2.length();
   }
 
   // compare memory address
@@ -65,10 +65,7 @@ Pathway::Pathway() : _d( new Impl )
   _d->isReverse = false;
 }
 
-Pathway::~Pathway()
-{
-
-}
+Pathway::~Pathway(){}
 
 Pathway::Pathway(const Pathway &copy) : _d( new Impl )
 {
@@ -87,16 +84,16 @@ void Pathway::init( Tilemap& tilemap, Tile &origin)
   _d->tileList.push_back(&origin);
 }
 
-int Pathway::getLength() const
+int Pathway::length() const
 {
   // TODO: various lands have various travel time (road easier to travel than open country)
   return _d->directionList.size();
 }
 
-const Tile& Pathway::getOrigin() const {  return *_d->origin; }
+const Tile& Pathway::front() const {  return *_d->origin; }
 TilePos Pathway::getStartPos() const { return _d->origin ? _d->origin->pos() : TilePos( -1, -1); }
 bool Pathway::isReverse() const {  return _d->isReverse; }
-const TilesArray& Pathway::getAllTiles() const {  return _d->tileList; }
+const TilesArray& Pathway::allTiles() const {  return _d->tileList; }
 
 const Tile& Pathway::destination() const
 {
@@ -116,6 +113,30 @@ void Pathway::rbegin()
   _d->isReverse = true;
 }
 
+constants::Direction Pathway::direction()
+{
+  if(_d->isReverse )
+  {
+    if( _d->directionIt_reverse != _d->directionList.rend() )
+    {
+     constants::Direction inverseDir[] = { noneDirection,
+                                           south, southEast,
+                                           east,  northEast,
+                                           north, northWest,
+                                           west,  southWest,
+                                           countDirection };
+     return inverseDir[ *_d->directionIt_reverse ];
+    }
+  }
+  else
+  {
+    if( _d->directionIt != _d->directionList.end() )
+     return *_d->directionIt;
+  }
+
+  return constants::noneDirection;
+}
+
 void Pathway::toggleDirection()
 {
   if( _d->isReverse )
@@ -130,17 +151,17 @@ void Pathway::toggleDirection()
   }
 }
 
-constants::Direction Pathway::getNextDirection()
+void Pathway::next()
 {
-  Direction res = noneDirection;
   if( _d->isReverse )
   {
     if (_d->directionIt_reverse == _d->directionList.rend())
     {
       // end of path!
-      return noneDirection;
+      return;
     }
-    int direction = (int) *_d->directionIt_reverse;
+
+    /*int direction = (int) *_d->directionIt_reverse;
     if( direction != (int) noneDirection )
     {
       if (direction + 4 < (int) countDirection)
@@ -151,21 +172,19 @@ constants::Direction Pathway::getNextDirection()
       {
         res = (Direction) (direction-4);
       }
-    }
+    }*/
     _d->directionIt_reverse++;
   }
   else
   {
-    if (_d->directionIt == _d->directionList.end())
+    if( _d->directionIt == _d->directionList.end())
     {
       // end of path!
-      return noneDirection;
+      return;
     }
-    res = *_d->directionIt;
+
     _d->directionIt++;
   }
-
-  return res;
 }
 
 bool Pathway::isDestination() const
@@ -182,7 +201,7 @@ bool Pathway::isDestination() const
   }
   else
   {
-    res = (_d->directionIt == _d->directionList.end());
+    res = ( _d->directionIt == _d->directionList.end() );
   }
 
   return res;
@@ -303,7 +322,7 @@ void Pathway::prettyPrint() const
 VariantMap Pathway::save() const
 {
   VariantMap stream;
-  if( getLength() == 0 ) //not save empty way
+  if( length() == 0 ) //not save empty way
   {
     return VariantMap();
   }
@@ -320,14 +339,14 @@ VariantMap Pathway::save() const
 
   stream[ "directions" ] = directions;
   stream[ "reverse" ] = _d->isReverse;
-  stream[ "step" ] = getStep();
+  stream[ "step" ] = curStep();
 
   return stream;
 }
 
 bool Pathway::isValid() const
 {
-  return getLength() != 0;
+  return length() != 0;
 }
 
 void Pathway::load( const VariantMap& stream )
@@ -370,7 +389,7 @@ Pathway& Pathway::operator=( const Pathway& other )
 Pathway Pathway::copy(int start, int stop) const
 {
   Pathway ret;
-  if( start >= getLength() )
+  if( start >= length() )
   {
     return ret;
   }
@@ -385,7 +404,7 @@ Pathway Pathway::copy(int start, int stop) const
   return ret;
 }
 
-unsigned int Pathway::getStep() const
+unsigned int Pathway::curStep() const
 {
   if(_d->isReverse)
   {

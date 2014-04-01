@@ -19,7 +19,7 @@
     maxHouseLevel : "big_villa"
     caption : "##new_village##"
     overview :  [ "##tutorial_text##",
-                  "@img=picture2_00002.png" ]
+                  "@img=picture2_00002" ]
   }
 	
   empire : {

@@ -122,7 +122,7 @@ void Religion::Impl::updateRelation(RomeDivinityPtr divn)
   {
     if( (*temple)->getDivinity() == divn )
     {
-      peopleReached += (*temple)->getParishionerNumber();
+      peopleReached += (*temple)->parishionerNumber();
     }
   }
 
@@ -136,7 +136,7 @@ void Religion::Impl::updateRelation(RomeDivinityPtr divn)
   faithAddiction *= ( smallTempleKoeff * bigTempleKoeff );
   faithIncome *= faithAddiction;
 
-  Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->getName().c_str(), faithIncome, divn->getRelation() );
+  Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->name().c_str(), faithIncome, divn->relation() );
   divn->updateRelation( faithIncome, city );
 }
 

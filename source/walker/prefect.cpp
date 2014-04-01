@@ -64,11 +64,6 @@ Prefect::Prefect(PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-void Prefect::_changeTile()
-{
-  Walker::_changeTile();
-}
-
 bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& p )
 {
   buildings = getReachedBuildings( pos() );
@@ -352,7 +347,7 @@ void Prefect::_centerTile()
 
   case Impl::go2fire:
   {
-    BuildingPtr building = ptr_cast<Building>( _getNextTile().overlay() );
+    BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
     if( building.isValid() && building->type() == building::burningRuins )
     {
       turn( building->pos() );
@@ -395,7 +390,7 @@ void Prefect::timeStep(const unsigned long time)
 
   case Impl::fightFire:
   {    
-    BuildingPtr building = ptr_cast<Building>( _getNextTile().overlay() );
+    BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
     bool inFire = (building.isValid() && building->type() == building::burningRuins );
 
     if( inFire )

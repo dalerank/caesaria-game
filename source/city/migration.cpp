@@ -228,6 +228,7 @@ void Migration::Impl::createMigrationToCity()
   if( emigrant.isValid() )
   {
     emigrant->send2city( roadTile );
+    emigrant->setSpeedMultiplier( 0.8f + math::random( 40 ) / 100.f );
   }
 }
 

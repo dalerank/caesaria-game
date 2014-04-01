@@ -94,6 +94,11 @@ inline T clamp(const T& value, const T& low, const T& high)
   return math::min<T>( mx, high);
 }
 
+inline int signnum( float x )
+{
+  return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
+}
+
 //! Utility function to convert a radian value to degrees
 /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
 \param radians	The radians value to convert to degrees.

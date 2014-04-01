@@ -54,7 +54,7 @@ public:
   // creates a picture with the given size, it will need to be loaded by the graphic engine
   virtual Picture* createPicture(const Size& size);
 
-  virtual unsigned int getFps() const;
+  virtual unsigned int fps() const;
   virtual void createScreenshot( const std::string& filename );
 
   virtual Modes getAvailableModes() const;

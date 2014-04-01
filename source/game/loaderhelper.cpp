@@ -104,7 +104,7 @@ void LoaderHelper::decodeTerrain(Tile &oTile, PlayerCityPtr city )
   //terrain.setOverlay( overlay );
   if( overlay != NULL )
   {
-    Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.originalImgId() );
+    //Logger::warning( "Building at ( %d, %d ) with ID: %x", oTile.i(), oTile.j(), oTile.originalImgId() );
     overlay->build( city, oTile.pos() );
     city->getOverlays().push_back(overlay);
   }

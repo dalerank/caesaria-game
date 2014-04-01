@@ -44,7 +44,7 @@ public:
 
   void updateRatings( SenatePtr senate )
   {
-    lastUpdateTime = DateTime::getElapsedTime();
+    lastUpdateTime = DateTime::elapsedTime();
 
     background->fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background->width()-2, background->height()-2 ) );
     font.draw( *background, StringHelper::format( 0xff, "%d %%", senate->getStatus( Senate::workless ) ), ratingStartPos, false );
@@ -89,7 +89,7 @@ void SenatePopupInfo::draw( GfxEngine& painter )
 
     if( senate.isValid() )
     {
-      if( DateTime::getElapsedTime() - _d->lastUpdateTime > 2000 )
+      if( DateTime::elapsedTime() - _d->lastUpdateTime > 2000 )
       {
         _d->updateRatings( senate );
       }

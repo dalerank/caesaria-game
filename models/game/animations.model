@@ -49,6 +49,10 @@
     move : { rc : "citizen01", start : 825, frames : 12, action : 1, step : 8 }
   }
 
+  marketBuyer : {
+    move : { rc : "citizen01", start : 825, frames : 12, action : 1, step : 8 }
+  }
+
   cartPusher : {
     move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
   }

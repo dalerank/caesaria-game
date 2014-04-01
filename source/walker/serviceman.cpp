@@ -140,7 +140,7 @@ void ServiceWalker::_computeWalkerPath()
 
 void ServiceWalker::_cancelPath()
 {
-  TilesArray pathTileList = getPathway().getAllTiles();
+  TilesArray pathTileList = getPathway().allTiles();
 
   foreach( tile, pathTileList )
   {
@@ -188,7 +188,7 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
 {
   // evaluate all buildings along the path
   ServiceWalker::ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  const TilesArray& pathTileList = pathWay->getAllTiles();
+  const TilesArray& pathTileList = pathWay->allTiles();
 
   int distance = 0;
   float res = 0.0;
@@ -218,7 +218,7 @@ void ServiceWalker::_reservePath( const Pathway& pathWay)
 {
   // reserve all buildings along the path
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
-  const TilesArray& pathTileList = pathWay.getAllTiles();
+  const TilesArray& pathTileList = pathWay.allTiles();
 
   for( TilesArray::const_iterator itTile = pathTileList.begin(); itTile != pathTileList.end(); ++itTile)
   {
@@ -259,9 +259,9 @@ void ServiceWalker::send2City( BuildingPtr base )
   }
 }
 
-void ServiceWalker::_changeTile()
+void ServiceWalker::_centerTile()
 {
-  Walker::_changeTile();
+  Walker::_centerTile();
 
   ReachedBuildings reachedBuildings = getReachedBuildings( pos() );
 
@@ -278,7 +278,7 @@ void ServiceWalker::_reachedPathway()
   }
   else
   {
-    // walker finished service => get back to service building
+    // walker finished service => get back to service building    
     _pathwayRef().rbegin();
     _computeDirection();
     go();

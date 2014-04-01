@@ -51,7 +51,6 @@ public:
 protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
-  virtual void _changeTile();
 
 private:
   Sheep( PlayerCityPtr city );

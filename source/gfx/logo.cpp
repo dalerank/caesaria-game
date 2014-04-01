@@ -19223,9 +19223,9 @@ void initialize( const std::string& name)
 {
 	Picture* pic = Picture::create( Size( width, height ) );
 	char const* ptr = data;
-	for( int y = 0; y < height; y++ )
+	for( unsigned int y = 0; y < height; y++ )
 	{
-		for( int x=0; x < width; x++ )
+		for( unsigned int x=0; x < width; x++ )
 		{
 			char pixel[4];
 			PIXEL( ptr, pixel)

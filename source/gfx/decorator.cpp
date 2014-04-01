@@ -125,8 +125,8 @@ void PictureDecorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, 
   case lightgreyPanel: drawPanel( dstpic, rectangle, 22, useAlpha ); break;
   case greyPanelBig: drawPanel( dstpic, rectangle, 631, useAlpha ); break;
   case lightgreyPanelBig: drawPanel( dstpic, rectangle, 634, useAlpha ); break;
-  case greyPanelSmall: drawPanel( dstpic, rectangle, 65, useAlpha ); break;
-  case brownPanelSmall: drawPanel( dstpic, rectangle, 68, useAlpha ); break;
+  case greyPanelSmall: drawPanel( dstpic, rectangle, 68, useAlpha ); break;
+  case brownPanelSmall: drawPanel( dstpic, rectangle, 65, useAlpha ); break;
   case whiteBorder: drawBorder( dstpic, rectangle, 336, 468, 347, 358, 10, 12, 335, 467, 346, 478, useAlpha );  break;
   case blackBorder: drawBorder( dstpic, rectangle, 480, 522, 486, 492, 5, 7, 479, 521, 485, 527, useAlpha ); break;
   case brownBorder: drawBorder(dstpic, rectangle, 555, useAlpha ); break;

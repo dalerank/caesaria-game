@@ -35,11 +35,10 @@ public:
 
   virtual std::string getThinks() const;
 
-  ~Prefect();
+  virtual ~Prefect();
 
 protected:
   virtual void _centerTile();
-  virtual void _changeTile();
   virtual void _reachedPathway();
 
 protected:

@@ -12,34 +12,25 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WORKERSHUNTER_H_INCLUDE_
-#define __CAESARIA_WORKERSHUNTER_H_INCLUDE_
 
-#include "serviceman.hpp"
+#ifndef _CAESARIA_FURNITURE_WORKSHOP_H_INCLUDE_
+#define _CAESARIA_FURNITURE_WORKSHOP_H_INCLUDE_
 
-class Recruter;
-typedef SmartPtr<Recruter> RecruterPtr;
+#include "factory.hpp"
 
-class Recruter : public ServiceWalker
+class FurnitureWorkshop : public Factory
 {
 public:
-  static RecruterPtr create( PlayerCityPtr city );
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
-  int getWorkersNeeded() const;
-  void hireWorkers( const int workers );
-
-  void send2City( WorkingBuildingPtr building, const int workersNeeded );
-
-  virtual void die();
-
+  FurnitureWorkshop();
 protected:
-  virtual void _centerTile();
-
-private:
-  Recruter( PlayerCityPtr city );
-
-  int _workersNeeded;
+  virtual void _storeChanged();
 };
 
-#endif//__CAESARIA_WORKERSHUNTER_H_INCLUDE_
+#endif //_CAESARIA_FURNITURE_WORKSHOP_H_INCLUDE_

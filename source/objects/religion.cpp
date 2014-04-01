@@ -31,16 +31,13 @@ public:
 };
 
 Temple::Temple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size )
-: ServiceBuilding( divinity->getServiceType(), type, size ), _td( new Impl )
+: ServiceBuilding( divinity->serviceType(), type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
   setPicture( ResourceGroup::security, imgId );
 }
 
-RomeDivinityPtr Temple::getDivinity() const
-{
-  return _td->divinity;
-}
+RomeDivinityPtr Temple::getDivinity() const {  return _td->divinity; }
 
 void Temple::deliverService()
 {
@@ -50,15 +47,9 @@ void Temple::deliverService()
   }
 }
 
-unsigned int Temple::walkerDistance() const
-{
-  return 26;
-}
+unsigned int Temple::walkerDistance() const {  return 26;}
 
-Temple::~Temple()
-{
-
-}
+Temple::~Temple(){}
 
 TempleCeres::TempleCeres() : SmallTemple( Pantheon::ceres(), building::templeCeres, 45 )
 {
@@ -100,7 +91,7 @@ BigTempleMercure::BigTempleMercure() : BigTemple( Pantheon::mercury(), building:
 {
 }
 
-unsigned int BigTempleMercure::getParishionerNumber() const
+unsigned int BigTempleMercure::parishionerNumber() const
 {
   return 300;
 }
@@ -112,10 +103,7 @@ TempleOracle::TempleOracle() : BigTemple( RomeDivinityPtr(), building::oracle, 5
   _fgPicturesRef().resize(1);
 }
 
-unsigned int TempleOracle::getParishionerNumber() const
-{
-  return 500;
-}
+unsigned int TempleOracle::parishionerNumber() const {  return 500; }
 
 void TempleOracle::build(PlayerCityPtr city, const TilePos& pos)
 {
@@ -133,10 +121,7 @@ SmallTemple::SmallTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int 
   setMaxWorkers( 2 );
 }
 
-unsigned int SmallTemple::getParishionerNumber() const
-{
-  return 150;
-}
+unsigned int SmallTemple::parishionerNumber() const {  return 150;}
 
 BigTemple::BigTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
@@ -144,10 +129,7 @@ BigTemple::BigTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgI
   setMaxWorkers( 8 );
 }
 
-unsigned int BigTemple::getParishionerNumber() const
-{
-  return 300;
-}
+unsigned int BigTemple::parishionerNumber() const {  return 300;}
 
 void BigTemple::build(PlayerCityPtr city, const TilePos& pos)
 {

@@ -32,7 +32,7 @@
     desirability : { base : 4, range : 4, step : -1 }
     employers : 12
     class : "entertainment"    
-    animation : { rc : "entertainment", start : 2, count : 10, offset : [ 100, 49 ], delay : 2 }
+    animation : { rc : "entertainment", start : 2, count : 10, offset : [ 100, 49 ], delay : 3 }
     image : [ "entertainment", 1 ]
     sound : [ "ampitheatre", 1 ]
   },
@@ -43,7 +43,7 @@
     employers : 8
     class : "entertainment"
     image : [ "entertainment", 13 ]
-    animation : { rc : "entertainment", start : 14, count : 21, offset : [ 60, 36 ], delay : 2 }
+    animation : { rc : "entertainment", start : 14, count : 21, offset : [ 60, 36 ], delay : 3 }
     sound : [ "theatre", 1 ]
   },
 
@@ -699,6 +699,8 @@
     class : "industry"
     productRate : 2.4
     sound : [ "furniture", 1 ]
+    image : [ "commerce", 117 ]
+    animation : { rc : "commerce", start : 118, count : 14, delay : 4 }
   },
   
   pottery_workshop :
@@ -709,5 +711,6 @@
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]
+    animation : { rc : "commerce", start : 133, count : 7, delay : 3 }
   }
 }
