@@ -61,7 +61,6 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
   tile.setWasDrawn();
 
-  bool needDrawAnimations = false;
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -69,6 +68,7 @@ void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
   else
   {
+    bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
 
     int entertainmentLevel = -1;

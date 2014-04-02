@@ -40,6 +40,11 @@ bool ShowEmpireMapWindow::_mayExec(Game& game, unsigned int time) const
   return true;
 }
 
+ShowEmpireMapWindow::ShowEmpireMapWindow() : _show( false )
+{
+
+}
+
 void ShowEmpireMapWindow::_exec(Game& game, unsigned int)
 {
   List<gui::EmpireMapWindow*> wndList = game.gui()->rootWidget()->findChildren<gui::EmpireMapWindow*>();

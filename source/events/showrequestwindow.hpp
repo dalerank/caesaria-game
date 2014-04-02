@@ -32,6 +32,8 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  ShowRequestInfo();
+
   city::request::RequestPtr _request;
   bool _reqAvailable;
 };

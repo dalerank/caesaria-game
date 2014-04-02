@@ -89,7 +89,8 @@ void Emperor::sendGift(const std::string& cityname, int money)
     relation = it->second;
   }
 
-  int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.getMonthToDate( GameDate::current() ), 0, (int)DateTime::monthInYear );
+  int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.getMonthToDate( GameDate::current() ),
+                                            0, (int)DateTime::monthInYear );
   const int maxFavourUpdate = 5;
 
   float timeKoeff = monthFromLastGift / (float)DateTime::monthInYear;

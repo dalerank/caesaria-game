@@ -31,6 +31,8 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  ShowAdvisorWindow();
+
   bool _show;
   constants::advisor::Type _advisor;
 };

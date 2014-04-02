@@ -41,6 +41,8 @@ bool FireWorkers::_mayExec(Game& game, unsigned int time) const
   return true;
 }
 
+FireWorkers::FireWorkers() : _workers( 0 ) {}
+
 void FireWorkers::_exec(Game& game, unsigned int)
 {
   Tilemap& tilemap = game.city()->tilemap();

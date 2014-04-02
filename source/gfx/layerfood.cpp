@@ -46,7 +46,6 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
   tile.setWasDrawn();
 
-  bool needDrawAnimations = false;
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -54,6 +53,7 @@ void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
   else
   {
+    bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
     Picture pic;
     int foodLevel = -1;

@@ -70,7 +70,6 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
   tile.setWasDrawn();
 
-  bool needDrawAnimations = false;
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -78,6 +77,7 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
   else
   {
+    bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
 
     int educationLevel = -1;
@@ -167,15 +167,14 @@ void LayerEducation::handleEvent(NEvent& event)
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
-      std::string levelName = "";
-      int lvlValue = -1;
+      std::string levelName = "";      
       if( tile != 0 )
       {
         HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house != 0 )
         {
           std::string typeName;
-          lvlValue = _getLevelValue( house );
+          int lvlValue = _getLevelValue( house );
           switch( _type )
           {
           case citylayer::education:

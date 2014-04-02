@@ -44,7 +44,6 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
   tile.setWasDrawn();
 
-  bool needDrawAnimations = false;
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -52,6 +51,7 @@ void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
   else
   {
+    bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
     int fireLevel = 0;
     switch( overlay->type() )

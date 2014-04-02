@@ -62,4 +62,9 @@ void ReturnWorkers::_exec(Game& game, unsigned int time)
 }
 
 bool ReturnWorkers::_mayExec(Game&, unsigned int) const { return true; }
+
+ReturnWorkers::ReturnWorkers() : _workers( 0 )
+{
+
+}
 }

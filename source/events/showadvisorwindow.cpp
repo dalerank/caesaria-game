@@ -37,6 +37,11 @@ GameEventPtr ShowAdvisorWindow::create(bool show, constants::advisor::Type advis
 
 bool ShowAdvisorWindow::_mayExec(Game& game, unsigned int time) const {  return true; }
 
+ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::count )
+{
+
+}
+
 void ShowAdvisorWindow::_exec(Game& game, unsigned int)
 {
   Variant advEnabled = GameSettings::get( GameSettings::adviserEnabled );
