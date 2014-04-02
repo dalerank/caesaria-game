@@ -22,10 +22,39 @@
 namespace world
 {
 
+struct Relation
+{
+  int value;
+  DateTime lastGiftDate;
+  int lastGiftValue;
+
+  Relation() : value( 0 ), lastGiftDate( DateTime( -351, 1, 1 ) ), lastGiftValue( 0 )
+  {
+
+  }
+
+  VariantMap save() const
+  {
+    VariantMap ret;
+    ret[ "value" ] = value;
+    ret[ "lastGiftDate" ] = lastGiftDate;
+    ret[ "lastGiftValue" ] = lastGiftValue;
+
+    return ret;
+  }
+
+  void load( const VariantMap& stream )
+  {
+    value = stream.get( "value" );
+    lastGiftDate = stream.get( "lastGiftDate" ).toDateTime();
+    lastGiftValue = stream.get( "lastGiftValue" );
+  }
+};
+
 class Emperor::Impl
 {
 public:
-  typedef std::map< std::string, int > Relations;
+  typedef std::map< std::string, Relation > Relations;
   Relations relations;
 };
 
@@ -34,26 +63,25 @@ Emperor::Emperor() : __INIT_IMPL(Emperor)
 
 }
 
-Emperor::~Emperor()
-{
-
-}
+Emperor::~Emperor(){}
 
 int Emperor::relation(const std::string& cityname)
 {
   __D_IMPL(d,Emperor)
   Impl::Relations::iterator i = d->relations.find( cityname );
-  return ( i == d->relations.end() ? 0 : i->second );
+  return ( i == d->relations.end() ? 0 : i->second.value );
 }
 
 void Emperor::updateRelation(const std::string& cityname, int value)
 {
   __D_IMPL(d,Emperor)
-  Impl::Relations::iterator i = d->relations.find( cityname );
-  if( i != d->relations.end() )
-  {
-    i->second = math::clamp<int>( i->second + value, 0, 100 );
-  }
+  int current = d->relations[ cityname ].value;
+  d->relations[ cityname ].value = math::clamp<int>( current + value, 0, 100 );
+}
+
+void Emperor::sendGift(const std::string& cityname, int money)
+{
+
 }
 
 VariantMap Emperor::save() const
@@ -64,7 +92,7 @@ VariantMap Emperor::save() const
   VariantMap vm_relations;
   foreach( it, r )
   {
-    vm_relations[ it->first ] = it->second;
+    vm_relations[ it->first ] = it->second.save();
   }
 
   ret[ "relations" ] = vm_relations;
@@ -78,7 +106,9 @@ void Emperor::load(const VariantMap& stream)
   Impl::Relations& relations = _dfunc()->relations;
   foreach( it, vm_relations )
   {
-    relations[ it->first ] = it->second;
+    Relation r;
+    r.load( it->second.toMap() );
+    relations[ it->first ] = r;
   }
 }
 

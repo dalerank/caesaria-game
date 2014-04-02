@@ -13,32 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
-#define _CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
+#ifndef _CAESARIA_EMPERORGIFT_WINDOW_H_INCLUDE_
+#define _CAESARIA_EMPERORGIFT_WINDOW_H_INCLUDE_
 
 #include "gui/widget.hpp"
 #include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "gfx/tileoverlay.hpp"
 
 namespace gui
 {
 
-class CityDonationWindow : public Widget
+class EmperorGiftWindow : public Widget
 {
 public:
-  CityDonationWindow( Widget* parent, int money );
-
-  virtual ~CityDonationWindow();
-  virtual bool onEvent(const NEvent &event);
+  EmperorGiftWindow( Widget* parent, int money );
+  ~EmperorGiftWindow();
 
 public oc3_signals:
-  Signal1<int>& onSendMoney();
+  Signal1<int>& onSendGift();
 
-private:  
-  __DECLARE_IMPL(CityDonationWindow)
+private:
+  __DECLARE_IMPL(EmperorGiftWindow)
 };
 
 } //end namespace gui
 
-#endif //_CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
+#endif //_CAESARIA_EMPERORGIFT_WINDOW_H_INCLUDE_

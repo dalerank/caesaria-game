@@ -39,7 +39,10 @@
 #include "events/fundissue.hpp"
 #include "change_salary_window.hpp"
 #include "city/funds.hpp"
+#include "world/empire.hpp"
+#include "world/emperor.hpp"
 #include "city_donation_window.hpp"
+#include "emperorgiftwindow.hpp"
 
 namespace gui
 {
@@ -119,15 +122,8 @@ public:
   bool isRequestsUpdated;
 
   void sendMoney( int money );
-
-  void resolveRequest( city::request::RequestPtr request )
-  {
-    if( request.isValid() )
-    {
-      request->exec( city );
-      isRequestsUpdated = true;
-    }
-  }
+  void sendGift( int money );
+  void resolveRequest( city::request::RequestPtr request );
 
   std::string getEmperorFavourStr()
   {
@@ -139,6 +135,7 @@ void AdvisorEmperorWindow::_showChangeSalaryWindow()
 {
   PlayerPtr pl = _d->city->player();
   ChangeSalaryWindow* dialog = new ChangeSalaryWindow( parent(), pl->salary() );
+  dialog->show();
 
   CONNECT( dialog, onChangeSalary(), pl.object(), Player::setSalary )
 }
@@ -146,9 +143,19 @@ void AdvisorEmperorWindow::_showChangeSalaryWindow()
 void AdvisorEmperorWindow::_showSend2CityWindow()
 {
   PlayerPtr pl = _d->city->player();
-  CityDonationindow* dialog = new CityDonationindow( parent(), pl->money() );
+  CityDonationWindow* dialog = new CityDonationWindow( parent(), pl->money() );
+  dialog->show();
 
   CONNECT( dialog, onSendMoney(), _d.data(), Impl::sendMoney );
+}
+
+void AdvisorEmperorWindow::_showGiftWindow()
+{
+  PlayerPtr pl = _d->city->player();
+  EmperorGiftWindow* dialog = new EmperorGiftWindow( parent(), pl->money() );
+  dialog->show();
+
+  CONNECT( dialog, onSendGift(), _d.data(), Impl::sendGift );
 }
 
 void AdvisorEmperorWindow::_updateRequests()
@@ -225,6 +232,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   _d->btnChangeSalary = new PushButton( this, Rect( Point( 70, 395), Size( 500, 20 ) ), "Change salary", -1, false, PushButton::blackBorderUp );  
   CONNECT( _d->btnChangeSalary, onClicked(), this, AdvisorEmperorWindow::_showChangeSalaryWindow );
   CONNECT( _d->btnSend2City, onClicked(), this, AdvisorEmperorWindow::_showSend2CityWindow );
+  CONNECT( _d->btnSendGift, onClicked(), this, AdvisorEmperorWindow::_showGiftWindow );
 }
 
 void AdvisorEmperorWindow::draw( GfxEngine& painter )
@@ -246,6 +254,21 @@ void AdvisorEmperorWindow::Impl::sendMoney( int money )
   city->player()->appendMoney( -money );
   events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, money );
   e->dispatch();
+}
+
+void AdvisorEmperorWindow::Impl::sendGift(int money)
+{
+  city->player()->appendMoney( -money );
+  city->empire()->emperor().sendGift( city->getName(), money );
+}
+
+void AdvisorEmperorWindow::Impl::resolveRequest(city::request::RequestPtr request)
+{
+  if( request.isValid() )
+  {
+    request->exec( city );
+    isRequestsUpdated = true;
+  }
 }
 
 }//end namespace gui

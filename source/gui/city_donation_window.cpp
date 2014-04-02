@@ -22,20 +22,20 @@
 namespace gui
 {
 
-class CityDonationindow::Impl
+class CityDonationWindow::Impl
 {
 public:
   int wantSend, maxMoney;
 
 public oc3_slots:
-  void sendMoney() { sendMoneySignal.emit( wantSend); }
+  void sendMoney() { sendMoneySignal.emit( wantSend ); }
 
 public oc3_signals:
   Signal1<int> sendMoneySignal;
 };
 
-CityDonationindow::CityDonationindow( Widget* p, int money )
-  : Widget( p, -1, Rect( 0, 0, 1, 1 ) ), __INIT_IMPL(CityDonationindow)
+CityDonationWindow::CityDonationWindow( Widget* p, int money )
+  : Widget( p, -1, Rect( 0, 0, 1, 1 ) ), __INIT_IMPL(CityDonationWindow)
 {
   _dfunc()->maxMoney = money;
   _dfunc()->wantSend = 0;
@@ -47,13 +47,13 @@ CityDonationindow::CityDonationindow( Widget* p, int money )
   PushButton* btnCancel = findChildA<PushButton*>( "btnCancel", true, this );
 
   CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendMoney );
-  CONNECT( btnSend, onClicked(), this, CityDonationindow::deleteLater );
-  CONNECT( btnCancel, onClicked(), this, CityDonationindow::deleteLater );
+  CONNECT( btnSend, onClicked(), this, CityDonationWindow::deleteLater );
+  CONNECT( btnCancel, onClicked(), this, CityDonationWindow::deleteLater );
 }
 
-CityDonationindow::~CityDonationindow() {}
+CityDonationWindow::~CityDonationWindow() {}
 
-bool CityDonationindow::onEvent(const NEvent& event)
+bool CityDonationWindow::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -71,6 +71,6 @@ bool CityDonationindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<int>&CityDonationindow::onSendMoney() { return _dfunc()->sendMoneySignal;}
+Signal1<int>& CityDonationWindow::onSendMoney() { return _dfunc()->sendMoneySignal; }
 
 }//end namespace gui
