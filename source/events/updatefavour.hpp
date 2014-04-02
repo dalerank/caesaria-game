@@ -13,36 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_UPDATEFAVOUR_H_INCLUDE_
+#define _CAESARIA_EVENT_UPDATEFAVOUR_H_INCLUDE_
 
-#include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
+#include "event.hpp"
 
-namespace city
+namespace events
 {
 
-class CultureRating : public Srvc
+class UpdateFavour : public GameEvent
 {
 public:
-  typedef enum { ccSchool, ccLibrary, ccAcademy, ccReligion, ccTheatres } Coverage;
-  static SrvcPtr create( PlayerCityPtr city );
+  static GameEventPtr create(std::string cityname, int value );
 
-  void update( const unsigned int time );
-  int getValue() const;
-
-  int coverage( Coverage type ) const;
-
-  static std::string getDefaultName();
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  CultureRating( PlayerCityPtr city );
+  UpdateFavour();
 
-  class Impl;
-  ScopedPtr< Impl > _d;
+  std::string _cityname;
+  int _value;
 };
 
-}//end namespace city
+}
 
-#endif //__CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__
+#endif //_CAESARIA_EVENT_UPDATEFAVOUR_H_INCLUDE_

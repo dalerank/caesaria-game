@@ -150,7 +150,7 @@ TraderouteList Trading::getRoutes( const std::string& begin )
 {
   TraderouteList ret;
 
-  CityPtr city = _d->empire->getCity( begin );
+  CityPtr city = _d->empire->findCity( begin );
 
   foreach( it, _d->routes )
   {

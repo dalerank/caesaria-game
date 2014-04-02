@@ -23,6 +23,7 @@
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
 #include "events/infobox.hpp"
+#include "events/updatefavour.hpp"
 
 namespace  city
 {
@@ -136,23 +137,27 @@ void RqGood::load(const VariantMap& stream)
 void RqGood::success( PlayerCityPtr city )
 {
   Request::success( city );
-  city->updateFavour( _d->winFavour );
   if( _d->winMoney )
   {
-    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, _d->winMoney );
+    events::GameEventPtr e = events::UpdateFavour::create( city->getName(), _d->winFavour );
+    e->dispatch();
+
+    e = events::FundIssueEvent::create( city::Funds::donation, _d->winMoney );
     e->dispatch();
   }
 }
 
 void RqGood::fail( PlayerCityPtr city )
 {
-  city->updateFavour( _d->failFavour );
+  events::GameEventPtr e = events::UpdateFavour::create( city->getName(), _d->failFavour );
+  e->dispatch();
+
   if( _d->failAppendMonth > 0 )
   {
     _d->date = _finishedDate;    
 
     std::string text = StringHelper::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
-    events::GameEventPtr e = events::ShowInfoboxEvent::create( "##request_failed##", text );
+    e = events::ShowInfoboxEvent::create( "##request_failed##", text );
     e->dispatch();
 
     _finishedDate.appendMonth( _d->failAppendMonth );
@@ -164,7 +169,7 @@ void RqGood::fail( PlayerCityPtr city )
     Request::fail( city );
 
     std::string text = StringHelper::format( 0xff, "You failed request" );
-    events::GameEventPtr e = events::ShowInfoboxEvent::create( "##request_failed##", text );
+    e = events::ShowInfoboxEvent::create( "##request_failed##", text );
     e->dispatch();
   }
 }

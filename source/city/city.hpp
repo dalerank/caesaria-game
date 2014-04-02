@@ -85,7 +85,6 @@ public:
   int getPeace() const;
 
   int getFavour() const;
-  void updateFavour( int value );
 
   Tilemap& tilemap();
 

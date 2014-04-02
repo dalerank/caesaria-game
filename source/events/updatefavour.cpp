@@ -12,27 +12,36 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
+#include "updatefavour.hpp"
+#include "game/game.hpp"
+#include "world/empire.hpp"
+#include "world/emperor.hpp"
 
-#include "core/smartptr.hpp"
-#include "core/predefinitions.hpp"
-
-namespace world
+namespace events
 {
 
-PREDEFINE_CLASS_SMARTPOINTER_LIST(Traderoute,List)
-PREDEFINE_CLASS_SMARTPOINTER(Merchant)
-PREDEFINE_CLASS_SMARTPOINTER(Empire)
-PREDEFINE_CLASS_SMARTPOINTER(Emperor)
-PREDEFINE_CLASS_SMARTPOINTER(EmpireMap)
-PREDEFINE_CLASS_SMARTPOINTER(ComputerCity)
-PREDEFINE_CLASS_SMARTPOINTER_LIST(Object,List)
-PREDEFINE_CLASS_SMARTPOINTER_LIST(City,List)
+GameEventPtr UpdateFavour::create(std::string cityname, int value)
+{
+  UpdateFavour* e = new UpdateFavour();
+  e->_cityname = cityname;
+  e->_value = value;
 
+  GameEventPtr ret( e );
+  ret->drop();
+
+  return ret;
 }
 
-#endif //__CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
+void UpdateFavour::_exec(Game& game, unsigned int)
+{
+  world::Emperor& emperor = game.empire()->emperor();
+  emperor.updateRelation( _cityname, _value );
+}
+
+bool UpdateFavour::_mayExec(Game&, unsigned int) const{  return true; }
+
+UpdateFavour::UpdateFavour() : _cityname( ""), _value( 0 )
+{}
+
+}

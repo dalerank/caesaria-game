@@ -36,6 +36,7 @@ public:
 protected:
   void _showChangeSalaryWindow();
   void _showSend2CityWindow();
+  void _showGiftWindow();
   void _updateRequests();
 
 private:

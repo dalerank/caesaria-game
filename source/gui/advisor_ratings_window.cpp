@@ -125,11 +125,11 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
     }
 
     StringArray troubles;
-    if( culture->getCoverage( city::CultureRating::ccSchool ) < 100 ) { troubles.push_back( _("##have_less_school_in_city##") ); }
-    if( culture->getCoverage( city::CultureRating::ccLibrary ) < 100 ) { troubles.push_back( _("##have_less_library_in_city##" ) ); }
-    if( culture->getCoverage( city::CultureRating::ccAcademy ) < 100 ) { troubles.push_back( _("##have_less_academy_in_city##" ) ); }
-    if( culture->getCoverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_temples_in_city##" ) ); }
-    if( culture->getCoverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_theatres_in_city##" ) ); }
+    if( culture->coverage( city::CultureRating::ccSchool ) < 100 ) { troubles.push_back( _("##have_less_school_in_city##") ); }
+    if( culture->coverage( city::CultureRating::ccLibrary ) < 100 ) { troubles.push_back( _("##have_less_library_in_city##" ) ); }
+    if( culture->coverage( city::CultureRating::ccAcademy ) < 100 ) { troubles.push_back( _("##have_less_academy_in_city##" ) ); }
+    if( culture->coverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_temples_in_city##" ) ); }
+    if( culture->coverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_theatres_in_city##" ) ); }
 
     if( !troubles.empty() )
     {

@@ -162,7 +162,7 @@ void CultureRating::update( const unsigned int time )
 
 int CultureRating::getValue() const {  return _d->culture; }
 
-int CultureRating::getCoverage( Coverage type) const
+int CultureRating::coverage( Coverage type) const
 {
   switch( type )
   {

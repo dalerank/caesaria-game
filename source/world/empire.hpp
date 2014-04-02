@@ -31,19 +31,20 @@ class Empire : public ReferenceCounted, public Serializable
 {
 public:
   static EmpirePtr create();
-  ~Empire();
-  CityList getCities() const;
+  virtual ~Empire();
+  CityList cities() const;
 
-  CityPtr getCity( const std::string& name ) const;
+  CityPtr findCity( const std::string& name ) const;
   CityPtr addCity( CityPtr city );
   CityPtr initPlayerCity( CityPtr city );
 
-  ObjectList getObjects() const;
+  ObjectList objects() const;
 
   void initialize( vfs::Path filename, vfs::Path filemap );
   void timeStep( unsigned int time );
 
-  const EmpireMap& getEmpireMap() const;
+  const EmpireMap& map() const;
+  Emperor& emperor();
 
   void createTradeRoute( std::string start, std::string stop );
   TraderoutePtr getTradeRoute( unsigned int index );

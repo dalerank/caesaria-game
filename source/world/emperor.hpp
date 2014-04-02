@@ -12,37 +12,35 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__
+#ifndef __CAESARIA_EMPEROR_H_INCLUDED__
+#define __CAESARIA_EMPEROR_H_INCLUDED__
 
-#include "cityservice.hpp"
+#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
+#include "core/variant.hpp"
 
-namespace city
+namespace world
 {
 
-class CultureRating : public Srvc
+class Emperor
 {
 public:
-  typedef enum { ccSchool, ccLibrary, ccAcademy, ccReligion, ccTheatres } Coverage;
-  static SrvcPtr create( PlayerCityPtr city );
+  Emperor();
+  ~Emperor();
 
-  void update( const unsigned int time );
-  int getValue() const;
+  int relation( const std::string& cityname );
+  void updateRelation( const std::string& cityname, int value );
 
-  int coverage( Coverage type ) const;
-
-  static std::string getDefaultName();
+  VariantMap save() const;
+  void load( const VariantMap& stream );
 
 private:
-  CultureRating( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Emperor)
 };
 
-}//end namespace city
+}
 
-#endif //__CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__
+#endif //__CAESARIA_EMPEROR_H_INCLUDED__

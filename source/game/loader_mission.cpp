@@ -32,6 +32,7 @@
 #include "events/postpone.hpp"
 #include "gamedate.hpp"
 #include "core/logger.hpp"
+#include "world/emperor.hpp"
 #include "core/locale.hpp"
 
 class GameLoaderMission::Impl
@@ -81,6 +82,8 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     CityBuildOptions options;
     options.load( vm[ "buildoptions" ].toMap() );
     city->setBuildOptions( options  );
+
+    game.empire()->emperor().updateRelation( city->getName(), 50 );
 
     std::string missionName = vfs::Path( filename ).getBasename( false ).toString();
     Locale::addTranslation( missionName );

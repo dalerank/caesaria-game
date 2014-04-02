@@ -81,7 +81,7 @@ public:
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 {
-  world::CityList cities = empire->getCities();
+  world::CityList cities = empire->cities();
 
   currentCity = 0;
   foreach( city, cities )
@@ -151,7 +151,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
     e->dispatch();
     empire->createTradeRoute( ourCity, currentCity->getName() );
 
-    PlayerCityPtr plCity = ptr_cast<PlayerCity>( empire->getCity( ourCity ) );
+    PlayerCityPtr plCity = ptr_cast<PlayerCity>( empire->findCity( ourCity ) );
     if( plCity.isValid() )
     {
       city::Helper helper( plCity );
@@ -371,7 +371,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
   engine.drawPicture( _d->empireMap, _d->offset );  
 
-  world::CityList cities = _d->empire->getCities();
+  world::CityList cities = _d->empire->cities();
   foreach( it, cities )
   {
     Point location = (*it)->location();
@@ -391,7 +391,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
     engine.drawPicture( _d->citypics[ index ], _d->offset + location );
   }  
 
-  world::ObjectList objects = _d->empire->getObjects();
+  world::ObjectList objects = _d->empire->objects();
   foreach( obj, objects )
   {
     Point location = (*obj)->getLocation();
