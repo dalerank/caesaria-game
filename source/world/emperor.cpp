@@ -17,6 +17,7 @@
 
 #include "emperor.hpp"
 #include "core/foreach.hpp"
+#include "game/gamedate.hpp"
 #include <map>
 
 namespace world
@@ -81,7 +82,21 @@ void Emperor::updateRelation(const std::string& cityname, int value)
 
 void Emperor::sendGift(const std::string& cityname, int money)
 {
+  Relation relation;
+  Impl::Relations::iterator it = _dfunc()->relations.find( cityname );
+  if( it != _dfunc()->relations.end() )
+  {
+    relation = it->second;
+  }
 
+  int monthFromLastGift = math::clamp<int>( relation.lastGiftDate.getMonthToDate( GameDate::current() ), 0, (int)DateTime::monthInYear );
+  const int maxFavourUpdate = 5;
+
+  float timeKoeff = monthFromLastGift / (float)DateTime::monthInYear;
+  float priceKoeff = math::max<float>( money - relation.lastGiftValue, 0.f ) / money;
+  int favourUpdate = maxFavourUpdate * timeKoeff * priceKoeff;
+
+  updateRelation( cityname, favourUpdate );
 }
 
 VariantMap Emperor::save() const
