@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe01_00002"
+  title : "270 BC - Fourth assignment"
+	
+  items : {
+    tarraco : {
+      title : "Tarraco: a peaceful province"
+      location : [ 120, 210 ]
+      mission : "/missions/tarraco.mission"
+    }
+
+    syracusae : {
+      title : "Tarentum: somewhat dangerous province"
+      mission : "/missions/syracusae.mission"
+      location : [ 330, 280 ]
+    }
+  }
+}
