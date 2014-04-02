@@ -32,13 +32,13 @@ public oc3_signals:
   Signal1<int> onContinueRulesSignal;
 };
 
-WinMissionWindow::WinMissionWindow(Widget* parent, std::string newTitle, bool mayContinue )
-  : Widget( parent, -1, Rect( 0, 0, 540, 240 )), _d( new Impl )
+WinMissionWindow::WinMissionWindow(Widget* p, std::string newTitle, bool mayContinue )
+  : Widget( p, -1, Rect( 0, 0, 540, 240 )), _d( new Impl )
 {
   Logger::warning( "WinMissionWindow: show" );
   _d->locker.activate();
 
-  Size pSize = getParent()->size() - size();
+  Size pSize = parent()->size() - size();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
   new Label( this, Rect( 0, 0, width(), height()), "", false, Label::bgWhiteFrame );

@@ -29,8 +29,6 @@ namespace city
 class Festival::Impl
 {
 public:
-  PlayerCityPtr city;
-
   DateTime lastFestivalDate;
   DateTime festivalDate;
   RomeDivinityType divinity;  
@@ -58,9 +56,8 @@ void Festival::assignFestival( RomeDivinityType name, int size )
 }
 
 Festival::Festival(PlayerCityPtr city )
-: Srvc( getDefaultName() ), _d( new Impl )
+: Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->lastFestivalDate = DateTime( -350, 0, 0 );
   _d->festivalDate = DateTime( -550, 0, 0 );
 }
@@ -82,7 +79,7 @@ void Festival::update( const unsigned int time )
     const char* text[3] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
     events::GameEventPtr e = events::ShowFeastWindow::create( text[ id ], titles[ id ],
-                                                              _d->city->getPlayer()->getName() );
+                                                              _city.player()->getName() );
     e->dispatch();
   }
 }

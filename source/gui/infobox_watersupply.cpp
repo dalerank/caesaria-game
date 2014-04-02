@@ -64,7 +64,7 @@ InfoboxFontain::~InfoboxFontain(){}
 
 void InfoboxFontain::showDescription()
 {
-  DictionaryWindow::show( getParent(), building::fountain );
+  DictionaryWindow::show( parent(), building::fountain );
 }
 
 InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
@@ -93,7 +93,7 @@ InfoboxReservoir::~InfoboxReservoir() {}
 
 void InfoboxReservoir::showDescription()
 {
-  DictionaryWindow::show( getParent(), building::reservoir );
+  DictionaryWindow::show( parent(), building::reservoir );
 }
 
 InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
@@ -152,7 +152,7 @@ InfoboxWell::~InfoboxWell() {}
 
 void InfoboxWell::showDescription()
 {
-  DictionaryWindow::show( getParent(), building::well );
+  DictionaryWindow::show( parent(), building::well );
 }
 
 

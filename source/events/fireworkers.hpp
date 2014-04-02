@@ -33,6 +33,8 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  FireWorkers();
+
   TilePos _center;
   unsigned int _workers;
 };

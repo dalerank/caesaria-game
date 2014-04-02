@@ -32,7 +32,7 @@ public:
   void update( const unsigned int time );
   int getValue() const;
 
-  int getCoverage( Coverage type ) const;
+  int coverage( Coverage type ) const;
 
   static std::string getDefaultName();
 

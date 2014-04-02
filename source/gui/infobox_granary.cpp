@@ -69,7 +69,7 @@ InfoboxGranary::~InfoboxGranary()
 void InfoboxGranary::showSpecialOrdersWindow()
 {
   Point pos;
-  if( top() > (int)getParent()->height() / 2 )
+  if( top() > (int)parent()->height() / 2 )
   {
     pos = Point( screenLeft(), screenBottom() - GranarySpecialOrdersWindow::defaultHeight );
   }
@@ -78,7 +78,7 @@ void InfoboxGranary::showSpecialOrdersWindow()
     pos = absoluteRect().UpperLeftCorner;
   }
 
-  new GranarySpecialOrdersWindow( getParent(), pos, _granary );
+  new GranarySpecialOrdersWindow( parent(), pos, _granary );
 }
 
 void InfoboxGranary::drawGood( Good::Type goodType, int col, int paintY)

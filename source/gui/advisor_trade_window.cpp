@@ -504,7 +504,7 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
 
 void AdvisorTradeWindow::Impl::showGoodOrderManageWindow(Good::Type type )
 {
-  Widget* parent = gbInfo->getParent();
+  Widget* parent = gbInfo->parent();
   int stackedGoods = getStackedGoodsQty( type ) ;
   GoodOrderManageWindow* wnd = new GoodOrderManageWindow( parent, Rect( 50, 130, parent->width() - 45, parent->height() -60 ), 
                                                           city, type, stackedGoods );
@@ -514,7 +514,7 @@ void AdvisorTradeWindow::Impl::showGoodOrderManageWindow(Good::Type type )
 
 void AdvisorTradeWindow::Impl::showGoodsPriceWindow()
 {
-  Widget* parent = gbInfo->getParent();
+  Widget* parent = gbInfo->parent();
   Size size( 610, 180 );
   new EmpirePricesWindow( parent, -1, Rect( Point( ( parent->width() - size.width() ) / 2,
                                                    ( parent->height() - size.height() ) / 2), size ), city );

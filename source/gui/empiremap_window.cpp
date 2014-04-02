@@ -81,12 +81,12 @@ public:
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 {
-  world::CityList cities = empire->getCities();
+  world::CityList cities = empire->cities();
 
   currentCity = 0;
   foreach( city, cities )
   {
-    Rect rect( (*city)->getLocation(), Size( 40 ) );
+    Rect rect( (*city)->location(), Size( 40 ) );
     if( rect.isPointInside( pos ) )
     {
       currentCity = (*city);
@@ -151,7 +151,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
     e->dispatch();
     empire->createTradeRoute( ourCity, currentCity->getName() );
 
-    PlayerCityPtr plCity = ptr_cast<PlayerCity>( empire->getCity( ourCity ) );
+    PlayerCityPtr plCity = ptr_cast<PlayerCity>( empire->findCity( ourCity ) );
     if( plCity.isValid() )
     {
       city::Helper helper( plCity );
@@ -286,7 +286,7 @@ void EmpireMapWindow::Impl::resetInfoPanel()
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
-  DialogBox* dialog = new DialogBox( tradeInfo->getParent(), Rect( 0, 0, 0, 0 ), 
+  DialogBox* dialog = new DialogBox( tradeInfo->parent(), Rect( 0, 0, 0, 0 ), 
                                      _("##emp_open_trade_route##"), _("##emp_pay_open_this_route_question##"), 
                                      DialogBox::btnOk | DialogBox::btnCancel  );
 
@@ -371,19 +371,19 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
   engine.drawPicture( _d->empireMap, _d->offset );  
 
-  world::CityList cities = _d->empire->getCities();
-  foreach( city, cities )
+  world::CityList cities = _d->empire->cities();
+  foreach( it, cities )
   {
-    Point location = (*city)->getLocation();
+    Point location = (*it)->location();
     int index = 3;
-    if( is_kind_of<PlayerCity>( *city ) )  //maybe it our city
+    if( is_kind_of<PlayerCity>( *it ) )  //maybe it our city
     {
       index = 0;
     }
-    else if( is_kind_of<world::ComputerCity>( *city ) )
+    else if( is_kind_of<world::ComputerCity>( *it ) )
     {
       index = 2;
-      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( *city );
+      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( *it );
       if( ccity->isDistantCity() )      {        index = 3;       }
       else if( ccity->isRomeCity() )       {        index = 1;      }
     }
@@ -391,7 +391,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
     engine.drawPicture( _d->citypics[ index ], _d->offset + location );
   }  
 
-  world::ObjectList objects = _d->empire->getObjects();
+  world::ObjectList objects = _d->empire->objects();
   foreach( obj, objects )
   {
     Point location = (*obj)->getLocation();

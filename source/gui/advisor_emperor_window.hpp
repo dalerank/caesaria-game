@@ -31,17 +31,12 @@ class AdvisorEmperorWindow : public Widget
 public:
   AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( GfxEngine& painter );
-
-  bool onEvent(const NEvent &event);
-
-public oc3_signals:
-  Signal1<int>& onChangeSalary();
-  Signal1<int>& onSendMoney();
+  virtual void draw( GfxEngine& painter );
 
 protected:
   void _showChangeSalaryWindow();
   void _showSend2CityWindow();
+  void _showGiftWindow();
   void _updateRequests();
 
 private:

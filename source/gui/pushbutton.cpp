@@ -251,6 +251,7 @@ void PushButton::setupUI(const VariantMap &ui)
     setBackgroundStyle( helper.findType( tmp.toString() ) );
   }
 
+  setIsPushButton( (bool)ui.get( "pushbutton" ) );
   _d->textOffset = ui.get( "textOffset" ).toPoint();
 
   VariantList vlist = ui.get( "normal" ).toList();
@@ -335,7 +336,7 @@ bool PushButton::onEvent(const NEvent& event)
 {
   if( !isEnabled() )
   {
-    return getParent()->onEvent(event);
+    return parent()->onEvent(event);
   }
 
   switch(event.EventType)
@@ -402,12 +403,12 @@ bool PushButton::onEvent(const NEvent& event)
   break;
   }
 
-	return getParent() ? getParent()->onEvent(event) : false;
+	return parent() ? parent()->onEvent(event) : false;
 }
 
 void PushButton::_btnClicked()
 {
-  getParent()->onEvent( NEvent::Gui( this, 0, guiButtonClicked ) );
+  parent()->onEvent( NEvent::Gui( this, 0, guiButtonClicked ) );
 
   onClicked().emit();
 }

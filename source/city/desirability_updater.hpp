@@ -36,7 +36,7 @@ public:
   virtual VariantMap save() const;
 
 private:
-  DesirabilityUpdater();
+  DesirabilityUpdater(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr<Impl> _d;

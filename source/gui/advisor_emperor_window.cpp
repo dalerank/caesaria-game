@@ -35,6 +35,14 @@
 #include "city/requestdispatcher.hpp"
 #include "game/player.hpp"
 #include "dialogbox.hpp"
+#include "game/settings.hpp"
+#include "events/fundissue.hpp"
+#include "change_salary_window.hpp"
+#include "city/funds.hpp"
+#include "world/empire.hpp"
+#include "world/emperor.hpp"
+#include "city_donation_window.hpp"
+#include "emperorgiftwindow.hpp"
 
 namespace gui
 {
@@ -88,7 +96,7 @@ private:
 
   void _executeRequest()
   {
-    DialogBox* dialog = new DialogBox( getParent(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOk | DialogBox::btnCancel );
+    DialogBox* dialog = new DialogBox( parent(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOk | DialogBox::btnCancel );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
     CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
     CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
@@ -102,7 +110,6 @@ class AdvisorEmperorWindow::Impl
 {
 public:
   PlayerCityPtr city;
-  int wantSend;
   PictureRef background;
   gui::Label* lbEmperorFavour;
   gui::Label* lbEmperorFavourDesc;
@@ -114,84 +121,41 @@ public:
   GameAutoPause autoPause;
   bool isRequestsUpdated;
 
-  void sendMoney()
-  {
-    onSendMoneySignal.emit( wantSend );
-  }
-
-  void resolveRequest( city::request::RequestPtr request )
-  {
-    if( request.isValid() )
-    {
-      request->exec( city );
-      isRequestsUpdated = true;
-    }
-  }
+  void sendMoney( int money );
+  void sendGift( int money );
+  void resolveRequest( city::request::RequestPtr request );
 
   std::string getEmperorFavourStr()
   {
     return StringHelper::format( 0xff, "##emperor_favour_%02d##", (int)(city->getFavour() / 100.f) * 20 );
   }
-
-public oc3_signals:
-  Signal1<int> onChangeSalarySignal;
-  Signal1<int> onSendMoneySignal;
 };
 
 void AdvisorEmperorWindow::_showChangeSalaryWindow()
 {
-  Point startPos( (width() - 510) / 2, (height() -400)/2 );
-  Rect wdgRect( startPos, Size( 510, 400 ) );
-  GroupBox* gb = new GroupBox( this, wdgRect, -1, GroupBox::whiteFrame );
+  PlayerPtr pl = _d->city->player();
+  ChangeSalaryWindow* dialog = new ChangeSalaryWindow( parent(), pl->salary() );
+  dialog->show();
 
-  new gui::Label( gb, Rect( 15, 15, gb->width() - 15, 35), _("##set_mayor_salary##"),  false, gui::Label::bgNone );
-  ListBox* lbx = new ListBox( gb, Rect( 16, 50, gb->width() - 16, gb->height() - 100 ) );
-  lbx->setItemHeight( 22 );
-  lbx->setTextAlignment( alignCenter, alignCenter );
-  lbx->setItemFont( Font::create( FONT_2_WHITE ) );
-
-  ListBoxItem* item = &lbx->addItem( _("##citizen_salary##") ); item->setTag( 0 );
-  item = &lbx->addItem( _("##clerk_salary##") ); item->setTag( 2 );
-  item = &lbx->addItem( _("##engineer_salary##") ); item->setTag( 5 );
-  item = &lbx->addItem( _("##architect_salary##") ); item->setTag( 8 );
-  item = &lbx->addItem( _("##questor_salary##") ); item->setTag( 12 );
-  item = &lbx->addItem( _("##procurate_salary##") ); item->setTag( 20 );
-  item = &lbx->addItem( _("##edil_salary##") ); item->setTag( 30 );
-  item = &lbx->addItem( _("##pretor_salary##") ); item->setTag( 40 );
-  item = &lbx->addItem( _("##consoul_salary##") ); item->setTag( 60 );
-  item = &lbx->addItem( _("##proconsoul_salary##") ); item->setTag( 80 );
-  item = &lbx->addItem( _("##caesar_salary##") ); item->setTag( 100 );
-
-  PushButton* btn = new PushButton( gb, Rect( Point( 176, gb->height() - 32 ), Size( 160, 20) ), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
-  CONNECT( btn, onClicked(), gb, GroupBox::deleteLater );
+  CONNECT( dialog, onChangeSalary(), pl.object(), Player::setSalary )
 }
 
 void AdvisorEmperorWindow::_showSend2CityWindow()
 {
-  _d->wantSend = 0;
-  GroupBox* gb = new GroupBox( this, Rect( Point( 50, 175 ), Size( 510, 160 )), -1, GroupBox::whiteFrame );
+  PlayerPtr pl = _d->city->player();
+  CityDonationWindow* dialog = new CityDonationWindow( parent(), pl->money() );
+  dialog->show();
 
-  gui::Label* lbTitle = new gui::Label( gb, Rect( 85, 15, gb->width() - 85, 40), _("##send_money_to_city##"),  false, gui::Label::bgNone );
-  lbTitle->setTextAlignment( alignCenter, alignCenter );
-  lbTitle->setFont( Font::create( FONT_3 ) );
-  new gui::Label( gb, Rect( Point( 50, 50), Size( 415, 60 ) ), "", false, gui::Label::bgBlack );
+  CONNECT( dialog, onSendMoney(), _d.data(), Impl::sendMoney );
+}
 
-  Point start( 65, 55 );
-  Point offset( 80, 0 );
-  Size btnSize( 65, 15 );
-  new PushButton( gb, Rect( start, btnSize ), "0", 0x0f00, false, PushButton::blackBorderUp ); start += offset;
-  new PushButton( gb, Rect( start, btnSize ), "500", 0x0f01, false,PushButton::blackBorderUp ); start += offset;
-  new PushButton( gb, Rect( start, btnSize ), "2000", 0x0f04, false, PushButton::blackBorderUp ); start += offset;
-  new PushButton( gb, Rect( start, btnSize ), "5000", 0x0f0a, false, PushButton::blackBorderUp ); start += offset;
-  new PushButton( gb, Rect( start, btnSize ), _("##send_all##"), 0xf0ff, false,PushButton::blackBorderUp );
+void AdvisorEmperorWindow::_showGiftWindow()
+{
+  PlayerPtr pl = _d->city->player();
+  EmperorGiftWindow* dialog = new EmperorGiftWindow( parent(), pl->money() );
+  dialog->show();
 
-  Rect btnRect = Rect( 80, gb->height() - 35, 80 + 160, gb->height() - 15 );
-  PushButton* btnSend = new PushButton( gb, btnRect, _("##send_money##"), -1, false, PushButton::whiteBorderUp );
-  PushButton* btnCancel = new PushButton( gb, btnRect + Point( 190, 0), _("##cancel##"), -1, false, PushButton::whiteBorderUp );
-
-  CONNECT( btnSend, onClicked(), _d.data(), Impl::sendMoney );
-  CONNECT( btnSend, onClicked(), gb, GroupBox::deleteLater );
-  CONNECT( btnCancel, onClicked(), gb, GroupBox::deleteLater );
+  CONNECT( dialog, onSendGift(), _d.data(), Impl::sendGift );
 }
 
 void AdvisorEmperorWindow::_updateRequests()
@@ -235,35 +199,6 @@ void AdvisorEmperorWindow::_updateRequests()
   _d->isRequestsUpdated = false;
 }
 
-bool AdvisorEmperorWindow::onEvent(const NEvent& event)
-{
-  if( event.EventType == sEventGui  )
-  {
-    if( event.gui.type == guiListboxChanged )
-    {
-      if( ListBox* lstBox = safety_cast< ListBox* >( event.gui.caller ) )
-      {
-        _d->onChangeSalarySignal.emit( lstBox->getSelectedItem().getTag() );
-      }
-    }
-    else if( event.gui.type == guiButtonClicked )
-    {
-      int id = event.gui.caller->getID();
-      if( id > 0 && ((id & 0x0f00) == 0x0f00) )
-      {
-        int multiplier = id & 0xff;
-        int money = _d->city->getPlayer()->getMoney();
-        _d->wantSend = math::clamp( (multiplier == 0xff ? money : (multiplier * 500)), 0, money);
-      }
-    }
-  }
-
-  return Widget::onEvent( event );
-}
-
-Signal1<int>&AdvisorEmperorWindow::onChangeSalary() {  return _d->onChangeSalarySignal;}
-Signal1<int>&AdvisorEmperorWindow::onSendMoney(){  return _d->onSendMoneySignal;}
-
 AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
@@ -275,7 +210,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
                Size( 640, 432 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
-  title->setText( city->getPlayer()->getName() );
+  title->setText( city->player()->getName() );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 
@@ -297,6 +232,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   _d->btnChangeSalary = new PushButton( this, Rect( Point( 70, 395), Size( 500, 20 ) ), "Change salary", -1, false, PushButton::blackBorderUp );  
   CONNECT( _d->btnChangeSalary, onClicked(), this, AdvisorEmperorWindow::_showChangeSalaryWindow );
   CONNECT( _d->btnSend2City, onClicked(), this, AdvisorEmperorWindow::_showSend2CityWindow );
+  CONNECT( _d->btnSendGift, onClicked(), this, AdvisorEmperorWindow::_showGiftWindow );
 }
 
 void AdvisorEmperorWindow::draw( GfxEngine& painter )
@@ -311,6 +247,28 @@ void AdvisorEmperorWindow::draw( GfxEngine& painter )
   }
 
   Widget::draw( painter );
+}
+
+void AdvisorEmperorWindow::Impl::sendMoney( int money )
+{
+  city->player()->appendMoney( -money );
+  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, money );
+  e->dispatch();
+}
+
+void AdvisorEmperorWindow::Impl::sendGift(int money)
+{
+  city->player()->appendMoney( -money );
+  city->empire()->emperor().sendGift( city->getName(), money );
+}
+
+void AdvisorEmperorWindow::Impl::resolveRequest(city::request::RequestPtr request)
+{
+  if( request.isValid() )
+  {
+    request->exec( city );
+    isRequestsUpdated = true;
+  }
 }
 
 }//end namespace gui

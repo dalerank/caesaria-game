@@ -212,7 +212,7 @@ bool Menu::onEvent(const NEvent& event)
         default:
             if( _d->lastPressed != event.gui.caller )
             {
-                if( event.gui.caller->getParent() == this )
+                if( event.gui.caller->parent() == this )
                     _d->lastPressed = event.gui.caller;
                 
                 if( PushButton* btn = safety_cast< PushButton* >( event.gui.caller ) )
@@ -376,10 +376,8 @@ void ExtentMenu::maximize()
   e->dispatch();
 }
 
-
-
-ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
-    : Menu( parent, id, rectangle )
+ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
+    : Menu( p, id, rectangle )
 {
   _d->minimizeButton->deleteLater();
   _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##show_bigpanel##") );
@@ -429,7 +427,7 @@ ExtentMenu::ExtentMenu(Widget* parent, int id, const Rect& rectangle )
   _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
   _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
 
-  _d->overlaysMenu = new OverlaysMenu( getParent(), Rect( 0, 0, 160, 1 ), -1 );
+  _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
 
   _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), _("##ovrm_text##") );

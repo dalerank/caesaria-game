@@ -49,7 +49,7 @@ void WidgetAnimator::afterFinished_()
 {
 	if( isFlag( removeParent ) )
 	{
-		getParent()->deleteLater();
+		parent()->deleteLater();
 	}
     else if( isFlag( removeSelf ) )
         deleteLater();    

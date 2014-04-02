@@ -50,7 +50,7 @@ Signal0<> &AndroidActionsBar::onRequestMenu() { return _d->btnMenu->onClicked();
 
 void AndroidActionsBar::beforeDraw(GfxEngine &painter)
 {
-  if( getParent()->getChildren().back() != this )
+  if( parent()->getChildren().back() != this )
   {
     bringToFront();
   }

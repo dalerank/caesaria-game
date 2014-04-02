@@ -31,6 +31,7 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  ShowEmpireMapWindow();
   bool _show;
 };
 

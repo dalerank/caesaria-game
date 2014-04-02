@@ -188,7 +188,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 				if (event.gui.caller == this && !isMyChild(event.gui.element) && _d->allowFocus)
 				{
 					// set event parent of submenus
-					Widget* p = _d->eventParent ? _d->eventParent : getParent();
+					Widget* p = _d->eventParent ? _d->eventParent : parent();
 					setEventParent(p);
 
 					NEvent event;
@@ -314,7 +314,7 @@ unsigned int ContextMenu::sendClick_(const Point& p)
 		if( _d->eventParent )
  			_d->eventParent->onEvent(event);
 		else 
-			getParent()->onEvent(event);
+			parent()->onEvent(event);
 
 		ContextMenuItem* tItem = getSelectedItem();
 		if( tItem )

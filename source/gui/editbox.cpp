@@ -1500,7 +1500,7 @@ void EditBox::setTextMarkers(int begin, int end)
 //! send some gui event to parent
 void EditBox::sendGuiEvent( unsigned int type)
 {
-    getParent()->onEvent( NEvent::Gui( this, 0, (GuiEventType)type ));
+    parent()->onEvent( NEvent::Gui( this, 0, (GuiEventType)type ));
 }
 
 //! Writes attributes of the element.

@@ -46,7 +46,7 @@ public:
 protected:
   virtual void _btnClicked()
   {
-    Widgets widgets = getParent()->getChildren();
+    Widgets widgets = parent()->getChildren();
     foreach( it, widgets)
     {
       MissionButton* btn = safety_cast<MissionButton*>( *it );

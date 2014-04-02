@@ -37,7 +37,6 @@ namespace city
 class Religion::Impl
 {
 public:
-  PlayerCityPtr city;
   DateTime lastDate;
   struct TempleInfo
   {
@@ -51,7 +50,7 @@ public:
   TemplesMap templesCoverity;
   TempleInfo maxTemples;
 
-  void updateRelation( RomeDivinityPtr divn );
+  void updateRelation( PlayerCity& city, RomeDivinityPtr divn );
 };
 
 SrvcPtr Religion::create(PlayerCityPtr city)
@@ -65,9 +64,8 @@ SrvcPtr Religion::create(PlayerCityPtr city)
 std::string Religion::getDefaultName() { return "religion"; }
 
 Religion::Religion(PlayerCityPtr city )
-  : Srvc( Religion::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Religion::getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->lastDate = GameDate::current();
 }
 
@@ -85,7 +83,7 @@ void Religion::update( const unsigned int time )
   _d->templesCoverity.clear();
 
   //update temples info
-  Helper helper( _d->city );
+  Helper helper( &_city );
   TempleList temples = helper.find<Temple>( building::religionGroup );
   foreach( it, temples)
   {
@@ -108,13 +106,13 @@ void Religion::update( const unsigned int time )
 
   foreach( it, divinities )
   {
-    _d->updateRelation( *it );
+    _d->updateRelation( _city, *it );
   }
 }
 
-void Religion::Impl::updateRelation(RomeDivinityPtr divn)
+void Religion::Impl::updateRelation( PlayerCity& city, RomeDivinityPtr divn)
 {
-  Helper helper( city );
+  Helper helper( &city );
   int peopleReached = 0;
   TempleList temples = helper.find<Temple>( building::religionGroup );
 
@@ -126,7 +124,7 @@ void Religion::Impl::updateRelation(RomeDivinityPtr divn)
     }
   }
 
-  float faithIncome = (float)peopleReached / (float)(city->getPopulation()+1);
+  float faithIncome = (float)peopleReached / (float)(city.getPopulation()+1);
   Impl::TempleInfo& myTemples = templesCoverity[ divn ];
 
   float faithAddiction = 0;
@@ -137,7 +135,7 @@ void Religion::Impl::updateRelation(RomeDivinityPtr divn)
   faithIncome *= faithAddiction;
 
   Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->name().c_str(), faithIncome, divn->relation() );
-  divn->updateRelation( faithIncome, city );
+  divn->updateRelation( faithIncome, &city );
 }
 
 }//end namespace city

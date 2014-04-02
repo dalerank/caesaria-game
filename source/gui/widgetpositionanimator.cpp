@@ -49,13 +49,13 @@ PositionAnimator::PositionAnimator( Widget* node,
 
 void PositionAnimator::restart()
 {
-	_d->startPos = getParent() ? getParent()->getRelativeRect().UpperLeftCorner : Point( 0, 0 );
+	_d->startPos = parent() ? parent()->getRelativeRect().UpperLeftCorner : Point( 0, 0 );
 	_d->currentPos = _d->startPos.toPointF();
 }
 
 void PositionAnimator::beforeDraw( GfxEngine& painter )
 {
-	if( isEnabled() && getParent() && isFlag( isActive ) )
+	if( isEnabled() && parent() && isFlag( isActive ) )
 	{
     if( fabs(_d->currentPos.x() - _d->stopPos.x() ) > 0.5f 
         || fabs( _d->currentPos.y() - _d->stopPos.y() ) > 0.5f )
@@ -76,7 +76,7 @@ void PositionAnimator::beforeDraw( GfxEngine& painter )
       _d->currentPos += PointF( signX * std::min<float>( step, fabs( offsetX ) ),
                                 signY * std::min<float>( step, fabs( offsetY ) ) );
 
-			getParent()->setPosition( _d->currentPos.toPoint() );
+			parent()->setPosition( _d->currentPos.toPoint() );
 		}
 		else
 		{
@@ -84,11 +84,11 @@ void PositionAnimator::beforeDraw( GfxEngine& painter )
 
 			if( isFlag( debug ) )
 			{
-				getParent()->setPosition( _d->startPos );
+				parent()->setPosition( _d->startPos );
                 return;
 			}
 
-			getParent()->setVisible( isFlag( showParent ) );
+			parent()->setVisible( isFlag( showParent ) );
 
             afterFinished_();
 		}

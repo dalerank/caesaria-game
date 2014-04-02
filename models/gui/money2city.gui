@@ -1,0 +1,70 @@
+{  
+  geometry : [ 0, 0, 510, 160 ]
+      
+  lbBackground#Label : {
+    geometryf : [ 0, 0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbTitle#Label : {
+      geometry : [ 85, 15, "pw-85", 40 ]
+      text : "##send_money_to_city##"   
+      textAlign : [ "center", "center" ]
+      font : "FONT_3"
+    }
+    
+    lbBlack#Label : {
+      geometry : [ 50, 50, 465, 110 ]    
+      bgtype : "black"
+      
+      btn0#PushButton : {
+        geometry : [ 15, 15, 80, 30 ]
+        font : "FONT_2"
+        text : "0"
+        pushbutton : false
+        id : 3840  /*0x0F00*/
+        bgtype : "blackBorderUp"
+      }
+      
+      btn500#PushButton : {
+        geometry : [ 95, 15, 160, 30 ]
+        font : "FONT_2"
+        text : "500"
+        pushbutton : false
+        id : 3841  /*0x0F01*/
+        bgtype : "blackBorderUp"
+      }
+      
+      btn2000#PushButton : {
+        geometry : [ 175, 15, 240, 30 ]
+        font : "FONT_2"
+        text : "2000"
+        pushbutton : false
+        id : 3844  /*0x0F03*/
+        bgtype : "blackBorderUp"
+      }
+      
+      btnAll#PushButton : {
+        geometry : [ 255, 15, 320, 30 ]
+        font : "FONT_2"
+        pushbutton : false
+        text : "##send_all##"
+        id : 61695  /*0xF0ff*/
+        bgtype : "blackBorderUp"
+      }
+    }
+    
+    btnSend#PushButton : {
+      geometry : [ 80, "ph-35", 240, "ph-15" ] 
+      font : "FONT_2"
+      text : "##send_money##"      
+      bgtype : "whiteBorderUp"
+    }
+    
+    btnCancel#PushButton : {
+      geometry : [ 270, "ph-35", 430, "ph-15" ] 
+      font : "FONT_2"
+      text : "##cancel##"      
+      bgtype : "whiteBorderUp"
+    }
+  }
+}

@@ -30,7 +30,6 @@ namespace city
 class HealthUpdater::Impl
 {
 public:
-  PlayerCityPtr city;
   DateTime endTime;
   VariantMap events;
   bool isDeleted;
@@ -39,8 +38,7 @@ public:
 
 SrvcPtr HealthUpdater::create( PlayerCityPtr city )
 {
-  HealthUpdater* e = new HealthUpdater();
-  e->_d->city = city;
+  HealthUpdater* e = new HealthUpdater( city );
 
   SrvcPtr ret( e );
   ret->drop();
@@ -55,7 +53,7 @@ void HealthUpdater::update( const unsigned int time)
     _d->isDeleted = (_d->endTime < GameDate::current());
 
     Logger::warning( "HealthUpdater: execute service" );
-    Helper helper( _d->city );
+    Helper helper( &_city );
     HouseList houses = helper.find<House>( building::house );
     foreach( it, houses )
     {
@@ -86,7 +84,8 @@ VariantMap HealthUpdater::save() const
   return ret;
 }
 
-HealthUpdater::HealthUpdater() : Srvc( HealthUpdater::getDefaultName() ), _d( new Impl )
+HealthUpdater::HealthUpdater( PlayerCityPtr city )
+  : Srvc( *city.object(), HealthUpdater::getDefaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
 }

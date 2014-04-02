@@ -23,6 +23,7 @@
 #include "gfx/decorator.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "core/gettext.hpp"
 
 #define DEFAULT_SCROLLBAR_SIZE 39
 
@@ -202,12 +203,12 @@ void ListBox::clear()
 //! sets the selected item. Set this to -1 if no item should be selected
 void ListBox::setSelected(int id)
 {
-    _d->selectedItemIndex = ((unsigned int)id>=_d->items.size() ? -1 : id);
+  _d->selectedItemIndex = ((unsigned int)id>=_d->items.size() ? -1 : id);
 
-    _d->selectTime = DateTime::elapsedTime();
-    _d->needItemsRepackTextures = true;
+  _d->selectTime = DateTime::elapsedTime();
+  _d->needItemsRepackTextures = true;
 
-    _RecalculateScrollPos();
+  _RecalculateScrollPos();
 }
 
 //! sets the selected item. Set this to -1 if no item should be selected
@@ -226,7 +227,7 @@ void ListBox::setSelected( const std::string& item )
 
 void ListBox::_IndexChanged( unsigned int eventType )
 {
-    getParent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
+    parent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
 
     //_CallLuaFunction( eventType );
 
@@ -854,5 +855,35 @@ Signal1<std::string>& ListBox::onItemSelectedAgain(){  return _d->onItemSelected
 Signal1<const ListBoxItem&>& ListBox::onItemSelected(){  return _d->onItemSelectedSignal;}
 void ListBox::setItemFont( Font font ){ _d->font = font; }
 void ListBox::setItemTextOffset( Point p ) { _d->itemTextOffset = p; }
+
+void ListBox::setupUI(const VariantMap& ui)
+{
+  Widget::setupUI( ui );
+
+  int itemheight = ui.get( "itemheight" );
+  if( itemheight != 0 ) setItemHeight( itemheight );
+
+  std::string fontname = ui.get( "itemfont" ).toString();
+  if( !fontname.empty() ) setItemFont( Font::create( fontname ) );
+
+  VariantList items = ui.get( "items" ).toList();
+  foreach( i, items )
+  {
+    VariantMap vm = (*i).toMap();
+    if( vm.empty() )
+    {
+      addItem( (*i).toString() );
+    }
+    else
+    {
+      std::string fontName = vm.get( "font" ).toString();
+      std::string text = vm.get( "text" ).toString();
+      int tag = vm.get( "tag" );
+      Font font = fontName.empty() ? getFont() : Font::create( fontName );
+      ListBoxItem& item = addItem( _(text), font );
+      item.setTag( tag );
+    }
+  }
+}
 
 }//end namespace gui

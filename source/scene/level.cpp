@@ -160,7 +160,7 @@ void Level::initialize()
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
                                city->tilemap(),
-                               city->getClimate() );
+                               city->climate() );
 
   WindowMessageStack::create( gui.rootWidget() );
 
@@ -215,7 +215,7 @@ void Level::initialize()
   CONNECT( mmap, onCenterChange(), &_d->renderer.camera(), TilemapCamera::setCenter );
 
   _d->showMissionTaretsWindow();
-  _d->renderer.camera().setCenter( city->getCameraPos() );
+  _d->renderer.camera().setCenter( city->cameraPos() );
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}

@@ -31,20 +31,18 @@ namespace city
 class DesirabilityUpdater::Impl
 {
 public:
-  PlayerCityPtr city;
   DateTime endTime;
   VariantMap events;
   bool isDeleted;
   int value;
   bool alsoInfluence;
 
-  void update( bool positive );
+  void update(PlayerCity& city, bool positive );
 };
 
 SrvcPtr DesirabilityUpdater::create( PlayerCityPtr city )
 {
-  DesirabilityUpdater* e = new DesirabilityUpdater();
-  e->_d->city = city;
+  DesirabilityUpdater* e = new DesirabilityUpdater( city );
 
   SrvcPtr ret( e );
   ret->drop();
@@ -61,7 +59,7 @@ void DesirabilityUpdater::update( const unsigned int time)
     if( !_d->alsoInfluence )
     {      
       _d->alsoInfluence = true;
-      _d->update( true );
+      _d->update( _city, true );
     }
 
     events::Dispatcher::instance().load( _d->events );
@@ -70,11 +68,7 @@ void DesirabilityUpdater::update( const unsigned int time)
 
 std::string DesirabilityUpdater::getDefaultName() { return "desirability_updater"; }
 bool DesirabilityUpdater::isDeleted() const {  return _d->isDeleted; }
-
-void DesirabilityUpdater::destroy()
-{
-  _d->update( false );
-}
+void DesirabilityUpdater::destroy(){ _d->update( _city, false );}
 
 void DesirabilityUpdater::load(const VariantMap& stream)
 {
@@ -95,19 +89,16 @@ VariantMap DesirabilityUpdater::save() const
   return ret;
 }
 
-DesirabilityUpdater::DesirabilityUpdater() : Srvc( DesirabilityUpdater::getDefaultName() ), _d( new Impl )
+DesirabilityUpdater::DesirabilityUpdater( PlayerCityPtr city ) : Srvc( *city.object(), DesirabilityUpdater::getDefaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
   _d->alsoInfluence = false;
 }
 
-void DesirabilityUpdater::Impl::update(bool positive)
+void DesirabilityUpdater::Impl::update( PlayerCity& city, bool positive)
 {
-  if( city.isNull() )
-    return;
-
-  int size = city->tilemap().size();
-  TilesArray tiles = city->tilemap().getArea( TilePos( 0, 0), Size( size ) );
+  int size = city.tilemap().size();
+  TilesArray tiles = city.tilemap().getArea( TilePos( 0, 0), Size( size ) );
 
   foreach( it, tiles )
   {

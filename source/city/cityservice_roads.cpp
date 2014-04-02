@@ -36,7 +36,6 @@ public:
   typedef std::pair< ConstructionPtr, int > UpdateInfo;
   typedef std::vector< UpdateInfo > Updates;
 
-  PlayerCityPtr city;
   int defaultIncreasePaved;
   int defaultDecreasePaved;
 
@@ -56,9 +55,8 @@ SrvcPtr Roads::create(PlayerCityPtr city)
 std::string Roads::getDefaultName(){  return "roads";}
 
 Roads::Roads(PlayerCityPtr city )
-  : Srvc( Roads::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Roads::getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;
   _d->lastTimeUpdate = GameDate::current();
@@ -75,7 +73,7 @@ void Roads::update( const unsigned int time )
   std::vector< TileOverlay::Type > btypes;
   btypes.push_back( building::senate );
 
-  Helper helper( _d->city );
+  Helper helper( &_city );
 
 
   Impl::Updates positions;

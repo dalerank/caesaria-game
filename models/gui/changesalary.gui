@@ -1,0 +1,48 @@
+{
+  geometry : [ 0, 0, 510, 400 ]
+  
+  lbBackground#Label : {
+    geometryf : [ 0, 0, 1, 1 ]
+    bgtype : "whiteFrame"
+
+    lbTitle#Label : {
+      geometry : [ 15, 15, "pw-15", 35 ]
+      text : "##set_mayor_salary##"
+      font : "FONT_2"
+    }
+
+    lbxTitles#ListBox : {
+      geometry : [ 16, 50, "pw-16", "ph-100" ]
+      textAlign : [ "center", "center" ]
+      itemfont : "FONT_2_WHITE"
+      itemheight : 22
+
+      items : [
+	{ text : "##clerk_salary##", tag : 2 }
+	{ text : "##engineer_salary##", tag : 5 }
+	{ text : "##architect_salary##", tag : 8 }
+	{ text : "##questor_salary##", tag : 12 }
+	{ text : "##procurate_salary##", tag : 20 }
+	{ text : "##edil_salary##", tag : 30 }
+	{ text : "##pretor_salary##", tag : 40 }
+	{ text : "##consoul_salary##", tag : 60 }
+	{ text : "##proconsoul_salary##", tag : 80 }
+	{ text : "##caesar_salary##", tag : 100 }
+      ]
+    }
+    
+    btnOk#PushButton : {
+      geometry : [ 176, "ph-55", 336, "ph-35" ]
+      text : "##ok##"
+      bgtype : "whiteBorderUp"
+      font : "FONT_2"
+    }
+
+    btnCancel#PushButton : {
+      geometry : [ 176, "ph-32", 336, "ph-12" ]
+      text : "##cancel##"
+      bgtype : "whiteBorderUp"
+      font : "FONT_2"
+    }
+  }
+}

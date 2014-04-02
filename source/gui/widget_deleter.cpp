@@ -31,7 +31,7 @@ WidgetDeleter::WidgetDeleter( Widget* parent, size_t time )
 void WidgetDeleter::draw( GfxEngine& painter )
 {
   if( DateTime::elapsedTime() - _startTime > _delay )
-    getParent()->deleteLater();
+    parent()->deleteLater();
 }
 
 }//end namespace gui

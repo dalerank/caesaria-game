@@ -28,7 +28,7 @@ class Migration : public Srvc
 public:
   static SrvcPtr create( PlayerCityPtr city );
 
-  void update( const unsigned int time );
+  virtual void update( const unsigned int time );
 
   int getValue() const;
   std::string getReason() const;

@@ -29,7 +29,7 @@ public:
   ~ComputerCity();
 
   virtual std::string getName() const;
-  virtual Point getLocation() const;
+  virtual Point location() const;
   virtual void setLocation( const Point& location );
 
   bool isDistantCity() const;
@@ -45,7 +45,7 @@ public:
   virtual const GoodStore& getSells() const;
   virtual const GoodStore& getBuys() const;
 
-  virtual EmpirePtr getEmpire() const;
+  virtual EmpirePtr empire() const;
   virtual unsigned int getTradeType() const;
 
   virtual void arrivedMerchant( MerchantPtr );

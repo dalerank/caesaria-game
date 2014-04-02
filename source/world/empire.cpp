@@ -27,6 +27,7 @@
 #include "traderoute.hpp"
 #include "object.hpp"
 #include "empiremap.hpp"
+#include "emperor.hpp"
 
 namespace world
 {
@@ -38,6 +39,7 @@ public:
   Trading trading;
   EmpireMap emap;
   ObjectList objects;
+  Emperor emperor;
   bool available;
 
   std::string playerCityName;
@@ -51,7 +53,7 @@ Empire::Empire() : _d( new Impl )
   _d->available = true;
 }
 
-CityList Empire::getCities() const
+CityList Empire::cities() const
 {
   CityList ret;
   foreach( city, _d->cities )
@@ -84,13 +86,13 @@ void Empire::initialize(vfs::Path filename , vfs::Path filemap)
     CityPtr city = ComputerCity::create( this, item->first );
     addCity( city );
     city->load( item->second.toMap() );
-    _d->emap.setCity( city->getLocation() );
+    _d->emap.setCity( city->location() );
   }
 }
 
 CityPtr Empire::addCity( CityPtr city )
 {
-  CityPtr ret = getCity( city->getName() );
+  CityPtr ret = findCity( city->getName() );
 
   if( ret.isValid() )
   {
@@ -112,7 +114,7 @@ EmpirePtr Empire::create()
   return ret;
 }
 
-CityPtr Empire::getCity( const std::string& name ) const
+CityPtr Empire::findCity( const std::string& name ) const
 {
   foreach( city, _d->cities )
   {
@@ -149,6 +151,7 @@ void Empire::save( VariantMap& stream ) const
   stream[ "objects" ] = vm_objects;
   stream[ "trade"   ] = _d->trading.save();
   stream[ "enabled" ] = _d->available;
+  stream[ "emperor" ] = _d->emperor.save();
 }
 
 void Empire::load( const VariantMap& stream )
@@ -157,7 +160,7 @@ void Empire::load( const VariantMap& stream )
 
   foreach( item, cities )
   {
-    CityPtr city = getCity( item->first );
+    CityPtr city = findCity( item->first );
     if( city != 0 )
     {
       city->load( item->second.toMap() );
@@ -175,6 +178,8 @@ void Empire::load( const VariantMap& stream )
 
   _d->trading.load( stream.get( "trade").toMap() );
   _d->available = (bool)stream.get( "enabled", true );
+
+  _d->emperor.load( stream.get( "emperor" ).toMap() );
 }
 
 void Empire::setCitiesAvailable(bool value)
@@ -188,8 +193,8 @@ void Empire::setAvailable(bool value) { _d->available = value; }
 
 void Empire::createTradeRoute(std::string start, std::string stop )
 {
-  CityPtr startCity = getCity( start );
-  CityPtr stopCity = getCity( stop );
+  CityPtr startCity = findCity( start );
+  CityPtr stopCity = findCity( stop );
 
   if( startCity != 0 && stopCity != 0 )
   {
@@ -202,12 +207,12 @@ void Empire::createTradeRoute(std::string start, std::string stop )
     PointsArray lpnts, spnts;
     if( land )
     {
-      lpnts = _d->emap.getRoute( startCity->getLocation(), stopCity->getLocation(), EmpireMap::land );
+      lpnts = _d->emap.getRoute( startCity->location(), stopCity->location(), EmpireMap::land );
     }
 
     if( sea )
     {
-      spnts = _d->emap.getRoute( startCity->getLocation(), stopCity->getLocation(), EmpireMap::sea );
+      spnts = _d->emap.getRoute( startCity->location(), stopCity->location(), EmpireMap::sea );
     }
 
     if( !lpnts.empty() || !spnts.empty() )
@@ -252,9 +257,11 @@ void Empire::timeStep( unsigned int time )
   }
 }
 
+Emperor& Empire::emperor() {  return _d->emperor;}
+
 CityPtr Empire::initPlayerCity( CityPtr city )
 {
-  CityPtr ret = getCity( city->getName() );
+  CityPtr ret = findCity( city->getName() );
 
   if( ret.isNull() )
   {
@@ -263,7 +270,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
     return ret;
   }
 
-  city->setLocation( ret->getLocation() );
+  city->setLocation( ret->location() );
   _d->cities.remove( ret );
   _d->cities.push_back( city );
   _d->playerCityName = city->getName();
@@ -271,17 +278,17 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   return ret;
 }
 
-ObjectList Empire::getObjects() const{  return _d->objects;}
+ObjectList Empire::objects() const{  return _d->objects; }
 TraderouteList Empire::getTradeRoutes( const std::string& startCity ){  return _d->trading.getRoutes( startCity );}
 
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
-  CityPtr startCity = empire->getCity( start );
-  CityPtr stopCity = empire->getCity( stop );
+  CityPtr startCity = empire->findCity( start );
+  CityPtr stopCity = empire->findCity( stop );
 
   if( startCity != 0 && stopCity != 0 )
   {
-    int distance2City = (int)startCity->getLocation().getDistanceFrom( stopCity->getLocation() ); 
+    int distance2City = (int)startCity->location().getDistanceFrom( stopCity->location() ); 
     distance2City = (distance2City / 100 + 1 ) * 200;
 
     return distance2City;

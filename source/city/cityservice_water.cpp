@@ -30,7 +30,7 @@ city::SrvcPtr CityServiceWater::create(PlayerCityPtr city )
 }
 
 CityServiceWater::CityServiceWater(PlayerCityPtr city )
-  : city::Srvc( "water" ), _d( new Impl )
+  : city::Srvc( *city.object(), "water" ), _d( new Impl )
 {
   _d->city = city;
 }

@@ -32,9 +32,7 @@ oc3_signals public:
   Signal0<> onTimeoutSignal;
 };
 
-Timer::~Timer(void)
-{
-}
+Timer::~Timer(void) {}
 
 Timer::Timer() : _d( new Impl ) 
 {
@@ -79,32 +77,9 @@ void Timer::update( unsigned int time )
   }
 }
 
-void Timer::setTime( unsigned int time )
-{
-  _d->time = time;
-}
-
-void Timer::setLoop( bool loop )
-{
-  _d->loop = loop;
-}
-
-Signal1<int>& Timer::onTimeoutA()
-{
-  return _d->onTimeoutASignal;
-}
-
-Signal0<>& Timer::onTimeout()
-{
-  return _d->onTimeoutSignal;
-}
-
-bool Timer::isActive() const
-{
-  return _d->isActive;
-}
-
-void Timer::destroy()
-{
-  _d->isActive = false; 
-}
+void Timer::setTime( unsigned int time ) {  _d->time = time;}
+void Timer::setLoop( bool loop ) {  _d->loop = loop;}
+Signal1<int>& Timer::onTimeoutA(){  return _d->onTimeoutASignal;}
+Signal0<>& Timer::onTimeout(){  return _d->onTimeoutSignal;}
+bool Timer::isActive() const{  return _d->isActive;}
+void Timer::destroy(){  _d->isActive = false; }

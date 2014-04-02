@@ -55,6 +55,7 @@ public:
   static const char* musicVolume;
   static const char* animationsModel;
   static const char* walkerModel;
+  static const char* giftsModel;
 
   static GameSettings& getInstance();
 

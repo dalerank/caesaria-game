@@ -37,7 +37,7 @@ public:
   int lastIndex;
 };
 
-Player::Player() : Srvc( "audio_player" ), _d( new Impl )
+Player::Player( PlayerCityPtr city ) : Srvc( *city.object(), "audio_player" ), _d( new Impl )
 { 
   vfs::Path path = GameSettings::rcpath( GameSettings::soundThemesModel );
 
@@ -52,7 +52,7 @@ Player::Player() : Srvc( "audio_player" ), _d( new Impl )
 
 city::SrvcPtr Player::create(PlayerCityPtr city)
 {
-  Player* pl = new Player();
+  Player* pl = new Player( city );
   city::SrvcPtr ret( pl );
   pl->drop();
 
@@ -79,6 +79,11 @@ void Player::update( const unsigned int time )
   }
 }
 
-Player::~Player() {}
+Player::~Player()
+{
+  audio::Engine& engine = audio::Engine::instance();
+  vfs::Path path = _d->playlist[ _d->lastIndex ];
+  engine.stop( path );
+}
 
 }//end namespace audio

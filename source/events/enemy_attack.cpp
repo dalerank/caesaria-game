@@ -105,7 +105,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
 }
 
 bool EnemyAttack::_mayExec(Game&, unsigned int) const { return true; }
-bool EnemyAttack::isDeleted() const { __D_IMPL_CONST(_d,EnemyAttack); return _d->isDeleted; }
+bool EnemyAttack::isDeleted() const { return _dfunc()->isDeleted; }
 
 void EnemyAttack::load(const VariantMap& stream)
 {

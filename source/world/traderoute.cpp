@@ -54,7 +54,7 @@ public:
       }
     }
 
-    CityPtr city = empire->getCity( merchant->getDestCityName() );
+    CityPtr city = empire->findCity( merchant->getDestCityName() );
     if( city.isValid() )
     {
       city->arrivedMerchant( merchant );
@@ -64,8 +64,8 @@ public:
   }
 };
 
-CityPtr Traderoute::getBeginCity() const {  return _d->empire->getCity( _d->begin );}
-CityPtr Traderoute::getEndCity() const{  return _d->empire->getCity( _d->end );}
+CityPtr Traderoute::getBeginCity() const {  return _d->empire->findCity( _d->begin );}
+CityPtr Traderoute::getEndCity() const{  return _d->empire->findCity( _d->end );}
 std::string Traderoute::getName() const{  return _d->begin + "<->" + _d->end;}
 
 void Traderoute::update( unsigned int time )

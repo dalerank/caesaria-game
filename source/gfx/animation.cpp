@@ -93,10 +93,10 @@ Animation::Animation() : __INIT_IMPL(Animation)
 Animation::~Animation() {}
 Animation::Animation(const Animation& other) : __INIT_IMPL(Animation){  *this = other;}
 
-void Animation::setDelay( const unsigned int delay ){ __D_IMPL(_d,Animation); _d->frameDelay = delay;}
-unsigned int Animation::delay() const{  __D_IMPL_CONST(_d,Animation); return _d->frameDelay; }
-void Animation::setLoop( bool loop ){ __D_IMPL(_d,Animation); _d->loop = loop;}
-bool Animation::isLoop() const {  __D_IMPL_CONST(_d,Animation); return _d->loop; }
+void Animation::setDelay( const unsigned int delay ){ _dfunc()->frameDelay = delay;}
+unsigned int Animation::delay() const{  return _dfunc()->frameDelay; }
+void Animation::setLoop( bool loop ){ _dfunc()->loop = loop;}
+bool Animation::isLoop() const { return _dfunc()->loop; }
 
 void Animation::load( const std::string &prefix, const int start, const int number, 
                       bool reverse /*= false*/, const int step /*= 1*/ )

@@ -67,4 +67,9 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
 
 bool ShowTileInfo::_mayExec(Game&, unsigned int ) const { return true; }
 
+ShowTileInfo::ShowTileInfo() : _mode( count )
+{
+
+}
+
 }

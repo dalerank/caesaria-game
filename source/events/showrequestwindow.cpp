@@ -36,6 +36,11 @@ GameEventPtr ShowRequestInfo::create( city::request::RequestPtr request, bool av
 
 bool ShowRequestInfo::_mayExec(Game&, unsigned int) const {  return true; }
 
+ShowRequestInfo::ShowRequestInfo() : _reqAvailable( false )
+{
+
+}
+
 void ShowRequestInfo::_exec(Game& game, unsigned int)
 {
   if( _request.isValid() )

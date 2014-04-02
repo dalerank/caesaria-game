@@ -26,20 +26,17 @@ using namespace constants;
 namespace city
 {
 
-
 class Animals::Impl
 {
 public:
   static const unsigned int maxSheeps = 10;
-  PlayerCityPtr city;
   DateTime lastTimeUpdate;
   int updateInteval;
 };
 
 SrvcPtr Animals::create(PlayerCityPtr city)
 {
-  Animals* ret = new Animals();
-  ret->_d->city = city;
+  Animals* ret = new Animals( city );
 
   return ret;
 }
@@ -54,7 +51,7 @@ void Animals::update(const unsigned int time)
   if( _d->lastTimeUpdate.month() != GameDate::current().month() )
   {
     _d->lastTimeUpdate = GameDate::current();
-    Tilemap& tmap = _d->city->tilemap();
+    Tilemap& tmap = _city.tilemap();
     TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
     TilesArray::iterator it=border.begin();
     while( it != border.end() )
@@ -63,10 +60,10 @@ void Animals::update(const unsigned int time)
       else  { ++it; }
     }
 
-    WalkerList sheeps = _d->city->getWalkers( walker::sheep );
+    WalkerList sheeps = _city.getWalkers( walker::sheep );
     if( sheeps.size() < Impl::maxSheeps )
     {
-      WalkerPtr sheep = Sheep::create( _d->city );
+      WalkerPtr sheep = Sheep::create( &_city );
       if( sheep.isValid() )
       {
         TilesArray::iterator it = border.begin();
@@ -77,8 +74,8 @@ void Animals::update(const unsigned int time)
   }
 }
 
-Animals::Animals()
-  : Srvc( Animals::getDefaultName() ), _d( new Impl )
+Animals::Animals( PlayerCityPtr city )
+  : Srvc( *city.object(), Animals::getDefaultName() ), _d( new Impl )
 {
   _d->lastTimeUpdate = GameDate::current();
   _d->updateInteval = GameDate::ticksInMonth() / 4;

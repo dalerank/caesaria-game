@@ -300,7 +300,7 @@ public:
 
   //non overriding methods
   //!!! Returns parent of this element.
-  Widget* getParent() const;
+  Widget* parent() const;
 
   //!
   void deleteLater();
@@ -415,6 +415,8 @@ public:
   bool getNextWidget( int startOrder, bool reverse, bool group,
                       Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
+  void setParent( Widget* parent );
+
 protected:
 
   /*!
@@ -425,6 +427,8 @@ protected:
    */
   virtual void _resizeEvent();
 
+  Widgets& _getChildren();
+
 protected:
   // not virtual because needed in constructor
   void addChild_(Widget* child);
@@ -434,11 +438,7 @@ protected:
   // not virtual because needed in constructor
   void recalculateAbsolutePosition(bool recursive);	
 
-  class Impl;
-  ScopedPtr< Impl > _d;
-
-  //! tells the element how to act when its parent is resized
-  Alignment _alignLeft, _alignRight, _alignTop, _alignBottom;
+  __DECLARE_IMPL(Widget)
 
   //! GUI Environment
   GuiEnv* _environment;

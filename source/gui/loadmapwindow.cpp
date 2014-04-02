@@ -128,7 +128,7 @@ void LoadMapWindow::draw( GfxEngine& engine )
 bool LoadMapWindow::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
-  return getParent()->absoluteRect().isPointInside( point );
+  return parent()->absoluteRect().isPointInside( point );
 }
 
 bool LoadMapWindow::onEvent( const NEvent& event)

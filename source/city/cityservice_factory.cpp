@@ -94,7 +94,7 @@ ServiceFactory::ServiceFactory() : _d( new Impl )
   addCreator<Migration>();
   addCreator<WorkersHire>();
   addCreator<ProsperityRating>();
-  addCreator<CityServiceShoreline>();
+  addCreator<Shoreline>();
   addCreator<Info>();
   addCreator<CultureRating>();
   addCreator<Animals>();

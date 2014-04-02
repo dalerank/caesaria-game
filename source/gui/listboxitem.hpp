@@ -57,7 +57,7 @@ public:
   void setText( const std::string& text );
   const std::string& getText() const;
 	void setTag( int tag );
-	int getTag() const;
+	int tag() const;
 	Picture getIcon() const;
 	void setIcon( Picture pic );
 

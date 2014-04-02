@@ -351,7 +351,6 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
 
   Tile* baseTile = area.front();
   TileOverlayPtr overlay = baseTile->overlay();
-  Picture *pic = NULL;
   int leftBorderAtI = baseTile->i();
   int rightBorderAtJ = overlay->size().height() - 1 + baseTile->j();
   for( TilesArray::const_iterator it=area.begin(); it != area.end(); ++it )
@@ -359,7 +358,7 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
-    pic = &Picture::load(resourceGroup, tileBorders + tileId);
+    Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
     engine.drawPicture( *pic, tile->mapPos() + offset );
   }
 }

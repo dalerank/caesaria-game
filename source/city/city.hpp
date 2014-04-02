@@ -49,12 +49,12 @@ class PlayerCity : public world::City
 {
 public:
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
-  ~PlayerCity();
+  virtual ~PlayerCity();
 
   virtual void timeStep( unsigned int time );  // performs one simulation step
 
   void setLocation( const Point& location );
-  Point getLocation() const;
+  Point location() const;
 
   WalkerList getWalkers( constants::walker::Type type );
   WalkerList getWalkers( constants::walker::Type type, TilePos startPos, TilePos stopPos=TilePos( -1, -1 ) );
@@ -69,12 +69,12 @@ public:
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
 
-  PlayerPtr getPlayer() const;
+  PlayerPtr player() const;
   
   void setCameraPos(const TilePos pos);
-  TilePos getCameraPos() const;
+  TilePos cameraPos() const;
      
-  ClimateType getClimate() const;
+  ClimateType climate() const;
   void setClimate(const ClimateType);
 
   city::Funds& funds() const;
@@ -85,7 +85,6 @@ public:
   int getPeace() const;
 
   int getFavour() const;
-  void updateFavour( int value );
 
   Tilemap& tilemap();
 
@@ -112,9 +111,11 @@ public:
   virtual const GoodStore& getSells() const;
   virtual const GoodStore& getBuys() const;
   virtual unsigned int getTradeType() const;
-  virtual world::EmpirePtr getEmpire() const;
+  virtual world::EmpirePtr empire() const;
 
   void updateRoads();
+
+  void clean();
    
 oc3_signals public:
   Signal1<int>& onPopulationChanged();

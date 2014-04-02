@@ -450,5 +450,9 @@ void Game::reset()
   _d->empire = world::Empire::create();
   _d->player = Player::create();
   _d->pauseCounter = 0;
+  if( _d->city.isValid() )
+  {
+    _d->city->clean();
+  }
   _d->city = PlayerCity::create( _d->empire, _d->player );
 }

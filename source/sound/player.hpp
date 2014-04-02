@@ -32,9 +32,9 @@ public:
 
   void update( const unsigned int time );
 
-  ~Player();
+  virtual ~Player();
 private:
-  Player();
+  Player(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

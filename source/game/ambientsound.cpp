@@ -83,7 +83,6 @@ struct SoundEmitter
 class AmbientSound::Impl
 {
 public:
-  PlayerCityPtr city;
   TilemapCamera* camera;
   TilePos cameraPos;
 
@@ -102,10 +101,9 @@ SrvcPtr AmbientSound::create(PlayerCityPtr city, TilemapCamera& camera )
   return p;
 }
 
-AmbientSound::AmbientSound(PlayerCityPtr city )
-: Srvc( "ambientsound" ), _d( new Impl )
+AmbientSound::AmbientSound( PlayerCityPtr city )
+: Srvc( *city.object(), "ambientsound" ), _d( new Impl )
 {
-  _d->city = city;
 }
 
 void AmbientSound::update( const unsigned int time )
@@ -124,7 +122,7 @@ void AmbientSound::update( const unsigned int time )
 
   //add new emitters
   TilePos offset( 3, 3 );
-  TilesArray tiles = _d->city->tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
+  TilesArray tiles = _city.tilemap().getArea( _d->cameraPos - offset, _d->cameraPos + offset );
 
   foreach( tile, tiles ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
 

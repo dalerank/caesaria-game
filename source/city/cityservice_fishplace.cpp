@@ -28,7 +28,6 @@ namespace city
 class Fishery::Impl
 {
 public:
-  PlayerCityPtr city;
   unsigned int maxFishPlace;
   int failedCounter;
 
@@ -46,9 +45,8 @@ SrvcPtr Fishery::create( PlayerCityPtr city )
 std::string Fishery::getDefaultName() {  return "fishery";}
 
 Fishery::Fishery( PlayerCityPtr city )
-  : Srvc( Fishery::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Fishery::getDefaultName() ), _d( new Impl )
 {
-  _d->city = city;
   _d->failedCounter = 0;
   _d->maxFishPlace = 1;
 }
@@ -60,14 +58,14 @@ void Fishery::update( const unsigned int time )
 
   if( _d->places.empty() )
   {
-    Helper helper( _d->city );
+    Helper helper( &_city );
     _d->places = helper.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    FishPlacePtr fishplace = FishPlace::create( _d->city );
-    fishplace->send2city( _d->city->borderInfo().boatEntry );
+    FishPlacePtr fishplace = FishPlace::create( &_city );
+    fishplace->send2city( _city.borderInfo().boatEntry );
 
     if( fishplace->isDeleted() )
     {

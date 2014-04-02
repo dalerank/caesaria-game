@@ -71,6 +71,9 @@ public:
 
   std::string text;
 
+  //! tells the element how to act when its parent is resized
+  Alignment alignLeft, alignRight, alignTop, alignBottom;
+
   //! id
   int id;
 

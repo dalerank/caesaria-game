@@ -256,9 +256,6 @@ void Engine::stop( vfs::Path filename )
   }
 
   Mix_HaltChannel( i->second.channel );
-  Mix_FreeChunk( i->second.chunk );
-
-  _d->samples.erase( i );
 }
 
 void Engine::stop(int channel)
@@ -286,7 +283,7 @@ void Engine::_updateSamplesVolume()
       float typeVolume = volume( sample.typeSound ) / 100.f;
       float gameVolume = volume( audio::gameSound ) / 100.f;
 
-      result = ( result * typeVolume * gameVolume ) * (2 * MIX_MAX_VOLUME);
+      result = ( result * typeVolume * gameVolume ) * ( 2 * MIX_MAX_VOLUME );
       Mix_Volume( sample.channel, (int)result );
     }
   }
