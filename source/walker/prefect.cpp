@@ -35,6 +35,7 @@
 #include "walker/helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
   const Walker::Action acDragWater = Walker::Action( Walker::acMax + 1 );

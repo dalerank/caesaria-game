@@ -20,8 +20,6 @@
 #include "core/scopedptr.hpp"
 #include "gfx/tilemap.hpp"
 
-class Tilemap;
-
 class RoadPropagator
 {
 public:
@@ -29,7 +27,7 @@ public:
   * returns True if a path exists
   * the path is returned in oPathWay
   */
-  static TilesArray createPath( Tilemap& tileMap,
+  static gfx::TilesArray createPath( gfx::Tilemap& tileMap,
                                 TilePos startTile, TilePos destination,
                                 bool roadAssignment=false );
 };

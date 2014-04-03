@@ -29,6 +29,7 @@
 #include "core/logger.hpp"
 
 using namespace religion;
+using namespace gfx;
 
 namespace gui
 {
@@ -162,7 +163,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   CONNECT( _d->btnYes, onClicked(), this, FestivalPlaningWindow::deleteLater );
 }
 
-void FestivalPlaningWindow::draw( GfxEngine& painter )
+void FestivalPlaningWindow::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

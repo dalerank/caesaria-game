@@ -22,6 +22,9 @@
 
 #include <SDL.h>
 
+namespace gfx
+{
+
 void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset )
 {
     SDL_Surface* source = const_cast< Picture& >( src ).getSurface();
@@ -219,3 +222,5 @@ SDL_GetRGBA( *pixel_ptr, fmt, &r, &g, &b, &a );
 SDL_UnlockSurface(surface);
 }       
 }           */
+
+}//end namespace gfx

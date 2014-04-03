@@ -25,7 +25,7 @@ public:
   Fountain();
 
   virtual void build( PlayerCityPtr city, const TilePos& pos );
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
   virtual bool isNeedRoadAccess() const;

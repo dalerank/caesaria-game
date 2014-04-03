@@ -24,6 +24,8 @@
 #include "texturedbutton.hpp"
 #include "label.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 

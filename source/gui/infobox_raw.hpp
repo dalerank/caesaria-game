@@ -24,7 +24,7 @@ namespace gui
 class InfoboxRawMaterial : public InfoboxConstruction
 {
 public:  
-  InfoboxRawMaterial( Widget* parent, const Tile& tile );
+  InfoboxRawMaterial( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxRawMaterial();
 
   virtual void showDescription();

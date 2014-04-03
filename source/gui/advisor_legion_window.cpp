@@ -21,9 +21,69 @@
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
+#include "texturedbutton.hpp"
+#include "objects/military.hpp"
+#include "walker/soldier.hpp"
+
+using namespace gfx;
 
 namespace gui
 {
+
+namespace {
+  Point legionButtonOffset = Point( 35, 73 );
+  Size legionButtonSize = Size( 570, 40 );
+}
+
+class LegionButton : public PushButton
+{
+public:
+  LegionButton( Widget* parent, const Point& pos, int index, FortPtr fort )
+    : PushButton( parent, Rect( pos + legionButtonOffset * index, legionButtonSize), "", -1, false, PushButton::blackBorderUp )
+  {
+    _fort = fort;
+    _resizeEvent();
+
+    TexturedButton* gotoLegion = new TexturedButton( this, Point( 300, 4 ), Size( 24 ), -1, ResourceGroup::panelBackground, 563, 563, 563, 563 );
+    TexturedButton* return2fort = new TexturedButton( this, Point( 370, 4 ), Size( 24 ), -1, ResourceGroup::panelBackground, 564, 564, 565, 565 );
+    TexturedButton* empireService = new TexturedButton( this, Point( 440, 4 ), Size( 24 ), -1, ResourceGroup::panelBackground, 566, 566, 567, 567 );
+  }
+
+  virtual void _updateTexture( ElementState state )
+  {
+    PushButton::_updateTexture( state );
+
+    PictureRef& pic = _textPictureRef( state );
+
+    Font fontW = Font::create( FONT_1_WHITE );
+    Font fontB = Font::create( FONT_1 );
+
+    if( _fort.isValid() )
+    {
+      pic->draw( _fort->legionEmblem(), Point( 2, 2 ), false );
+
+      fontW.draw( *pic, _fort->legionName(), 40, 2 );
+
+      std::string qtyStr = StringHelper::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
+      fontB.draw( *pic, qtyStr, 40, 20 );
+
+      int moraleValue = _fort->legionMorale() / 10;
+      std::string moraleStr = StringHelper::format( 0xff, "##legion_morale_%d##", moraleValue );
+      fontB.draw( *pic, _( moraleStr ), 150, 2 );
+    }
+  }
+
+public oc3_signals:
+  Signal1<FortPtr> onShowLegionSignal;
+  Signal1<FortPtr> onLegionRetreatSignal;
+  Signal1<FortPtr> onEmpireServiceSignal;
+
+private oc3_slots:
+  void _resolveMove2Legion();
+
+private:
+  FortPtr _fort;
+};
 
 class AdvisorLegionWindow::Impl
 {
@@ -55,7 +115,7 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id )
   _d->helpRequest = new gui::Label( this, Rect( 60, height()-40, width() - 60, height() - 20 ), _("##advlegion_norequest##") );
 }
 
-void AdvisorLegionWindow::draw( GfxEngine& painter )
+void AdvisorLegionWindow::draw( Engine& painter )
 {
   if( !isVisible() )
     return;

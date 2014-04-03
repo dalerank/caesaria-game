@@ -25,6 +25,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 void LayerDestroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea();
@@ -35,7 +38,7 @@ void LayerDestroy::_clearAll()
   }
 }
 
-void LayerDestroy::_drawTileInSelArea( GfxEngine& engine, Tile& tile, Tile* master, const Point& offset )
+void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset )
 {
   if( master==NULL )
   {
@@ -59,7 +62,7 @@ void LayerDestroy::_drawTileInSelArea( GfxEngine& engine, Tile& tile, Tile* mast
 }
 
 
-void LayerDestroy::render( GfxEngine& engine )
+void LayerDestroy::render( Engine& engine )
 {
   // center the map on the screen
   Point cameraOffset = _camera()->getOffset();
@@ -194,13 +197,12 @@ void LayerDestroy::handleEvent(NEvent& event)
     bool pressed = event.keyboard.pressed;
     int moveValue = _camera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
-    TilemapCamera* cam = _camera();
     switch( event.keyboard.key )
     {
-    case KEY_UP:    cam->moveUp   ( moveValue ); break;
-    case KEY_DOWN:  cam->moveDown ( moveValue ); break;
-    case KEY_RIGHT: cam->moveRight( moveValue ); break;
-    case KEY_LEFT:  cam->moveLeft ( moveValue ); break;
+    case KEY_UP:    _camera()->moveUp   ( moveValue ); break;
+    case KEY_DOWN:  _camera()->moveDown ( moveValue ); break;
+    case KEY_RIGHT: _camera()->moveRight( moveValue ); break;
+    case KEY_LEFT:  _camera()->moveLeft ( moveValue ); break;
     default: break;
     }
   }
@@ -219,7 +221,7 @@ std::set<int> LayerDestroy::getVisibleWalkers() const
   return ret;
 }
 
-void LayerDestroy::drawTile( GfxEngine& engine, Tile& tile, Point offset )
+void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -244,7 +246,7 @@ void LayerDestroy::drawTile( GfxEngine& engine, Tile& tile, Point offset )
   }
 }
 
-LayerPtr LayerDestroy::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerDestroy::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerDestroy( camera, city ) );
   ret->drop();
@@ -252,8 +254,10 @@ LayerPtr LayerDestroy::create(TilemapCamera& camera, PlayerCityPtr city)
   return ret;
 }
 
-LayerDestroy::LayerDestroy(TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _clearPic = Picture::load( "oc3_land", 2 );
 }
+
+}//end namespace gfx

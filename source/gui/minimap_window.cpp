@@ -26,6 +26,7 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 
+using namespace gfx;
 using namespace constants;
 
 namespace gui
@@ -246,7 +247,7 @@ namespace {
   static const int kYellow = 0xFFFF00;
 }
 
-void Minimap::draw(GfxEngine& painter)
+void Minimap::draw(Engine& painter)
 {
   if( !isVisible() )
     return;

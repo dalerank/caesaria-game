@@ -15,17 +15,18 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-#ifndef __CAESARIA_PICLOADER_H_INCLUDED__
-#define __CAESARIA_PICLOADER_H_INCLUDED__
+#ifndef __CAESARIA_PICTURE_BANK_H_INCLUDED__
+#define __CAESARIA_PICTURE_BANK_H_INCLUDED__
 
 #include "picture.hpp"
 #include "walker/action.hpp"
 #include "good/good.hpp"
 #include "core/scopedptr.hpp"
 
-class GfxEngine;
-
 // loads pictures from files
+namespace gfx
+{
+
 class PictureBank
 {
 public:
@@ -57,4 +58,5 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_PICLOADER_H_INCLUDED__
+}//end namespace gfx
+#endif //__CAESARIA_PICTURE_BANK_H_INCLUDED__

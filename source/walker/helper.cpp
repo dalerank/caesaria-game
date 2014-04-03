@@ -21,6 +21,7 @@
 #include "core/saveadapter.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class WalkerHelper::Impl : public EnumsHelper<walker::Type>
 {

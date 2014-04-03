@@ -18,7 +18,6 @@
 
 #include "gui/widget.hpp"
 #include "core/signals.hpp"
-#include "gfx/engine.hpp"
 #include "gfx/tileoverlay.hpp"
 
 namespace gui
@@ -27,9 +26,8 @@ namespace gui
 class DictionaryWindow : public Widget
 {
 public:
-  static void show( Widget* parent, TileOverlay::Type type );
+  static void show( Widget* parent, gfx::TileOverlay::Type type );
 
-  //! Деструктор
   virtual ~DictionaryWindow();
   virtual bool onEvent(const NEvent &event);
 

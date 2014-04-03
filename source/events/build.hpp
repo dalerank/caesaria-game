@@ -24,8 +24,8 @@ namespace events
 class BuildEvent : public GameEvent
 {
 public:
-  static GameEventPtr create( const TilePos&, TileOverlay::Type type );
-  static GameEventPtr create( const TilePos&, TileOverlayPtr overlay );
+  static GameEventPtr create( const TilePos&, gfx::TileOverlay::Type type );
+  static GameEventPtr create( const TilePos&, gfx::TileOverlayPtr overlay );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -33,7 +33,7 @@ protected:
 
 private:
   TilePos _pos;
-  TileOverlayPtr _overlay;
+  gfx::TileOverlayPtr _overlay;
 };
 
 } //end namespace events

@@ -32,12 +32,12 @@ public:
 
   virtual ~Pathway();
 
-  void init( Tilemap& tilemap, Tile& origin );
+  void init( gfx::Tilemap& tilemap, gfx::Tile& origin );
 
   int length() const;
 
-  const Tile& front() const;
-  const Tile& destination() const;
+  const gfx::Tile& front() const;
+  const gfx::Tile& destination() const;
 
   TilePos getStartPos() const;
 
@@ -52,9 +52,9 @@ public:
   bool isDestination() const;
 
   void setNextDirection(constants::Direction direction);
-  void setNextTile( const Tile& tile);
-  bool contains(Tile& tile);
-  const TilesArray& allTiles() const;
+  void setNextTile( const gfx::Tile& tile);
+  bool contains( gfx::Tile& tile);
+  const gfx::TilesArray& allTiles() const;
 
   void prettyPrint() const;
   void toggleDirection();
@@ -73,6 +73,6 @@ private:
 };
 
 bool operator<(const Pathway& v1, const Pathway& v2);
-typedef Delegate2< const Tile*, bool& > TilePossibleCondition;
+typedef Delegate2< const gfx::Tile*, bool& > TilePossibleCondition;
 
 #endif //__CAESARIA_PATHWAY_H_INCLUDED__

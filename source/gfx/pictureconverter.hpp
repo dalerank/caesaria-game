@@ -18,8 +18,10 @@
 
 #include "core/rectangle.hpp"
 #include "core/bytearray.hpp"
+#include "picture.hpp"
 
-class Picture;
+namespace gfx
+{
 
 class PictureConverter
 {
@@ -37,4 +39,5 @@ private:
     
 };
 
+}//end namespace gfx
 #endif //__CAESARIA_PICTURECONVERTER_H_INCLUDE_

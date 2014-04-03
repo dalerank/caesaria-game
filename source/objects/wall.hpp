@@ -25,8 +25,8 @@ public:
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
 
-  virtual void initTerrain(Tile& terrain);
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
+  virtual void initTerrain( gfx::Tile& terrain);
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
@@ -34,9 +34,9 @@ public:
 
   void updatePicture(PlayerCityPtr city);
 
-  const Picture& getPicture(PlayerCityPtr city,
+  const gfx::Picture& getPicture(PlayerCityPtr city,
                             TilePos pos,
-                            const TilesArray& tmp ) const;
+                            const gfx::TilesArray& tmp ) const;
 };
 
 #endif // __CAESARIA_WALL_H_INCLUDED__

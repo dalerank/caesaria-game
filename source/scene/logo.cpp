@@ -24,6 +24,8 @@
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 
+using namespace gfx;
+
 namespace scene
 {
 
@@ -39,29 +41,29 @@ SplashScreen::~SplashScreen() {}
 
 void SplashScreen::initialize()
 {
-  GfxEngine& engine = GfxEngine::instance();
+  Engine& engine = Engine::instance();
 
   _d->bgPicture = Picture::load("logo", 1);
 
   // center the bgPicture on the screen
-  Size s = (engine.getScreenSize() - _d->bgPicture.size()) / 2;
+  Size s = (engine.screenSize() - _d->bgPicture.size()) / 2;
   _d->bgPicture.setOffset( Point( s.width(), -s.height() ) );
 }
 
 void SplashScreen::draw()
 {
-  GfxEngine& engine = GfxEngine::instance();
+  Engine& engine = Engine::instance();
 
   engine.drawPicture( _d->bgPicture, 0, 0);
 }
 
 void SplashScreen::fadeOut()
 {
-  GfxEngine& engine = GfxEngine::instance();
+  Engine& engine = Engine::instance();
   engine.loadPicture( _d->bgPicture );
 
   PictureRef pf;
-  pf.init( engine.getScreenSize() );
+  pf.init( engine.screenSize() );
   for( int k=0; k < 0xff; k+=3 )
   {
     engine.startRenderFrame();
@@ -73,6 +75,6 @@ void SplashScreen::fadeOut()
   }
 }
 
-int SplashScreen::getResult() const { return 0; }
+int SplashScreen::result() const { return 0; }
 
 }//end namespace scene

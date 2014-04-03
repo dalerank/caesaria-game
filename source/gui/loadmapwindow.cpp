@@ -120,7 +120,7 @@ void LoadMapWindow::Impl::fillFiles()
   }
 }
 
-void LoadMapWindow::draw( GfxEngine& engine )
+void LoadMapWindow::draw(gfx::Engine& engine )
 {
   Widget::draw( engine );
 }

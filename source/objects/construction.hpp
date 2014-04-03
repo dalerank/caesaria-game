@@ -26,7 +26,7 @@
 #include "objects/metadata.hpp"
 #include "gfx/tilesarray.hpp"
 
-class Construction : public TileOverlay
+class Construction : public gfx::TileOverlay
 {
 public:
   typedef int ParameterType;
@@ -34,7 +34,7 @@ public:
   Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 
-  virtual bool canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const;  // returns true if it can be built there
+  virtual bool canBuild( PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;  // returns true if it can be built there
   virtual std::string getError() const;
   virtual std::string troubleDesc() const;
   virtual void build( PlayerCityPtr city, const TilePos& pos );
@@ -42,10 +42,10 @@ public:
   virtual void collapse();
 
   virtual bool isNeedRoadAccess() const;
-  virtual TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
+  virtual gfx::TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
-  virtual TilesArray getEnterArea() const;
+  virtual gfx::TilesArray getEnterArea() const;
 
   virtual Desirability getDesirability() const;
   virtual bool canDestroy() const;
@@ -56,8 +56,9 @@ public:
   virtual double getState( ParameterType name ) const;
 
   virtual void timeStep(const unsigned long time);
-  virtual const Picture& getPicture() const;
-  virtual const Picture& getPicture( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const;
+  virtual const gfx::Picture& getPicture() const;
+  virtual const gfx::Picture& getPicture( PlayerCityPtr city, TilePos pos,
+                                          const gfx::TilesArray& aroundTiles ) const;
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);

@@ -28,13 +28,13 @@
 #include "world/city.hpp"
 #include "walker/constants.hpp"
 
-class CityBuildOptions;
-class CityTradeOptions;
-class CityWinTargets;
 
 namespace city
 {
   class Funds;
+  class WinTargets;
+  class TradeOptions;
+  class BuildOptions;
 }
 
 struct BorderInfo
@@ -64,7 +64,7 @@ public:
   void addService( city::SrvcPtr service );
   city::SrvcPtr findService( const std::string& name ) const;
 
-  TileOverlayList& getOverlays();
+  gfx::TileOverlayList& getOverlays();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
@@ -86,7 +86,7 @@ public:
 
   int getFavour() const;
 
-  Tilemap& tilemap();
+  gfx::Tilemap& tilemap();
 
   std::string getName() const; 
   void setName( const std::string& name );
@@ -95,16 +95,16 @@ public:
   virtual void load( const VariantMap& stream);
 
   // add construction
-  void addOverlay(TileOverlayPtr overlay);
-  TileOverlayPtr getOverlay( const TilePos& pos ) const;
+  void addOverlay( gfx::TileOverlayPtr overlay);
+  gfx::TileOverlayPtr getOverlay( const TilePos& pos ) const;
 
-  const CityBuildOptions& getBuildOptions() const;
-  void setBuildOptions( const CityBuildOptions& options );
+  const city::BuildOptions& getBuildOptions() const;
+  void setBuildOptions( const city::BuildOptions& options );
 
-  const CityWinTargets& getWinTargets() const;
-  void setWinTargets( const CityWinTargets& targets );
+  const city::WinTargets& getWinTargets() const;
+  void setWinTargets( const city::WinTargets& targets );
 
-  CityTradeOptions& getTradeOptions();
+  city::TradeOptions& getTradeOptions();
 
   virtual void arrivedMerchant( world::MerchantPtr merchant );
 

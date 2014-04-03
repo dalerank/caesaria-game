@@ -28,6 +28,8 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -38,7 +40,6 @@ public:
   PushButton* btnExit;
   PushButton* btnHelp; 
   Label* lbText;
-
 };
 
 PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title, 
@@ -72,7 +73,7 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   _d->lbText = new Label( this, Rect( Point( 20, 100 ), Size( 550, 165 )), text );
 }
 
-void PopupMessageBox::draw( GfxEngine& painter )
+void PopupMessageBox::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

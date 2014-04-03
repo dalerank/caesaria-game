@@ -24,6 +24,7 @@
 #include "core/direction.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
 static const Renderer::Pass rpass[2] = { Renderer::building, Renderer::overWalker };
@@ -33,7 +34,7 @@ static const Renderer::PassQueue gatehousePass = Renderer::PassQueue( rpass, rpa
 class Gatehouse::Impl
 {
 public:
-  PicturesArray gatehouseSprite;
+  Pictures gatehouseSprite;
   Direction direction;
 };
 
@@ -127,7 +128,7 @@ bool Gatehouse::isWalkable() const {  return true; }
 bool Gatehouse::isRoad() const {  return true; }
 Renderer::PassQueue Gatehouse::getPassQueue() const{  return gatehousePass;}
 
-const PicturesArray& Gatehouse::getPictures(Renderer::Pass pass) const
+const Pictures& Gatehouse::getPictures(Renderer::Pass pass) const
 {
   switch( pass )
   {

@@ -30,6 +30,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 TrainingBuilding::TrainingBuilding(const Type type, const Size& size )
   : WorkingBuilding( type, size )

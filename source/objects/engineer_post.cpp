@@ -20,6 +20,8 @@
 #include "core/position.hpp"
 #include "constants.hpp"
 
+using namespace gfx;
+
 EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::building::engineerPost, Size(1) )
 {
   setPicture( ResourceGroup::buildingEngineer, 56 );
@@ -52,7 +54,7 @@ void EngineerPost::timeStep(const unsigned long time)
 
 void EngineerPost::deliverService()
 {
-  if( numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }

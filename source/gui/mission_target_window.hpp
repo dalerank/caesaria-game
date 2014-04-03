@@ -29,7 +29,7 @@ public:
   static MissionTargetsWindow* create( Widget* parent, PlayerCityPtr city , int id=-1 );
   ~MissionTargetsWindow();
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
   void setCity( PlayerCityPtr city );
 
 private:

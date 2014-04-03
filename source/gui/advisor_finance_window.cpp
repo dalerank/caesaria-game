@@ -32,6 +32,7 @@
 #include "objects/constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -126,7 +127,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   new TexturedButton( this, Point( 185+24, 70 ), Size( 24 ), -1, 605 );
 }
 
-void AdvisorFinanceWindow::draw( GfxEngine& painter )
+void AdvisorFinanceWindow::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

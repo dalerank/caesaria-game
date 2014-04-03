@@ -30,6 +30,7 @@
 #include "core/foreach.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace events
 {

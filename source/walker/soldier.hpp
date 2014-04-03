@@ -33,6 +33,8 @@ public:
   float strike() const;
   void setStrike( float value );
 
+  int morale() const;
+
   virtual void initialize(const VariantMap &options);
   virtual ~Soldier();
 private:

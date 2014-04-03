@@ -23,6 +23,8 @@
 #include "gfx/tile.hpp"
 #include "core/foreach.hpp"
 
+using namespace gfx;
+
 namespace events
 {
 

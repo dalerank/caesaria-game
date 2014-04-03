@@ -31,6 +31,8 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -102,7 +104,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->lbxHelp->setItemTextOffset( Point( 10, 0 ) );
 }
 
-void MissionTargetsWindow::draw( GfxEngine& painter )
+void MissionTargetsWindow::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -118,7 +120,7 @@ void MissionTargetsWindow::draw( GfxEngine& painter )
 void MissionTargetsWindow::setCity(PlayerCityPtr city)
 {
   _d->city = city;
-  const CityWinTargets& wint = _d->city->getWinTargets();
+  const city::WinTargets& wint = _d->city->getWinTargets();
   _d->lbCulture->setVisible( wint.needCulture() > 0 );
   _d->lbPeace->setVisible( wint.needPeace() > 0 );
   _d->lbFavour->setVisible( wint.needFavour() > 0 );

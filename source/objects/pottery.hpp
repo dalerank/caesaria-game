@@ -23,7 +23,7 @@ class Pottery : public Factory
 public:
   Pottery();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
   virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void timeStep(const unsigned long time);
   virtual void deliverGood();

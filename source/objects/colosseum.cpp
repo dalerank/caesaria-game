@@ -26,8 +26,10 @@
 #include "objects/constants.hpp"
 #include "walker/serviceman.hpp"
 #include "game/gamedate.hpp"
+#include "walker/helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Colosseum::Impl
 {
@@ -50,15 +52,15 @@ Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, building::col
 
 void Colosseum::deliverService()
 {
-  int saveWalkesNumber = getWalkers().size();
-  Service::Type lastSrvc = getService();
+  int saveWalkesNumber = walkers().size();
+  Service::Type lastSrvc = serviceType();
 
   EntertainmentBuilding::deliverService();
 
   if( _animationRef().isRunning() )
   {
     _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 50 );
-    int currentWalkerNumber = getWalkers().size();
+    int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
       (lastSrvc == Service::colloseum
@@ -72,7 +74,7 @@ void Colosseum::deliverService()
   }
 }
 
-Service::Type Colosseum::getService() const
+Service::Type Colosseum::serviceType() const
 {
   int lionValue = getTraineeValue( walker::lionTamer );
   return lionValue > 0 ? Service::colloseum : Service::amphitheater;
@@ -129,12 +131,9 @@ bool Colosseum::isNeedGladiators() const
 
 Service::Type Colosseum::_getServiceManType() const
 {
-  WalkerList walkers = getWalkers();
-  if( walkers.empty() )
-    return Service::srvCount;
-
-  ServiceWalkerPtr srvc = ptr_cast<ServiceWalker>( walkers.front() );
-  return (srvc.isValid() ? srvc->getService() : Service::srvCount);
+  ServiceWalkerList servicemen;
+  servicemen << walkers();
+  return (!servicemen.empty() ? servicemen.front()->getService() : Service::srvCount);
 }
 
 bool Colosseum::isShowGladiatorBattles() const {  return _getServiceManType() == Service::amphitheater; }

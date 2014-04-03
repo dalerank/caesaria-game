@@ -23,7 +23,11 @@
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
 
-class Picture;
+
+namespace gfx
+{
+	class Picture;
+}
 
 namespace gui
 {
@@ -41,13 +45,13 @@ public:
 	//! destructor
 	virtual ~ScrollBar();
 
-  virtual void beforeDraw( GfxEngine& painter );
+	virtual void beforeDraw( gfx::Engine& painter );
 
 	//! called if an event happened.
 	virtual bool onEvent(const NEvent& event);
 
 	//! draws the element and its children
-	virtual void draw( GfxEngine& painter );
+	virtual void draw( gfx::Engine& painter );
 
 	virtual void afterPaint(unsigned int timeMs);
 
@@ -82,14 +86,14 @@ public:
 	virtual void setPos(int pos);
 
 	//! sets the texture which draw
-  virtual void setBackgroundImage( const Picture& pixmap );
+	virtual void setBackgroundImage( const gfx::Picture& pixmap );
 
 	//! gets the UpButton
 	virtual PushButton* getUpButton();
 
 	virtual PushButton* getDownButton();
 
-	virtual void setSliderImage( const Picture& pixmap, const ElementState state );
+	virtual void setSliderImage( const gfx::Picture& pixmap, const ElementState state );
 
 	//! Writes attributes of the element.
 	virtual void save( VariantMap& out ) const;

@@ -49,7 +49,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
 
 	Picture pic;
 	pic.init( temp, Point(0, 0) );
-	GfxEngine::instance().loadPicture( pic );
+	Engine::instance().loadPicture( pic );
 
   if( pic.size().area() == 0 )
   {

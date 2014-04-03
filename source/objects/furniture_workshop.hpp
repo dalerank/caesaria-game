@@ -25,7 +25,7 @@
 class FurnitureWorkshop : public Factory
 {
 public:
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 
   FurnitureWorkshop();

@@ -19,41 +19,43 @@
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
 class MenuRigthPanel::Impl
 {
 public:
-    PictureRef picture; 
+  PictureRef picture;
 };
 
 MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
 {
 }
 
-void MenuRigthPanel::draw( GfxEngine& engine )
+void MenuRigthPanel::draw( gfx::Engine& engine )
 {
-    engine.drawPicture( *_d->picture, screenLeft(), screenTop() );
+  engine.drawPicture( *_d->picture, screenLeft(), screenTop() );
 }
 
 MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
 {
-    MenuRigthPanel* ret = new MenuRigthPanel( parent );
+  MenuRigthPanel* ret = new MenuRigthPanel( parent );
 
-    ret->setGeometry( rectangle );
-    
-    ret->_d->picture.reset( Picture::create( rectangle.getSize() ) );
-    //SDL_SetAlpha( ret->_d->picture->getSurface(), 0, 0 );  // remove surface alpha
+  ret->setGeometry( rectangle );
 
-    int y = 0;
-    while( y <  ret->_d->picture->height() )
-    {
-        ret->_d->picture->draw( tilePic, Point( 0, y ) );
-        y += tilePic.height();
-    }
+  ret->_d->picture.reset( Picture::create( rectangle.getSize() ) );
+  //SDL_SetAlpha( ret->_d->picture->getSurface(), 0, 0 );  // remove surface alpha
 
-    return ret;
+  int y = 0;
+  while( y <  ret->_d->picture->height() )
+  {
+      ret->_d->picture->draw( tilePic, Point( 0, y ) );
+      y += tilePic.height();
+  }
+
+  return ret;
 }
 
 }//end namespace gui

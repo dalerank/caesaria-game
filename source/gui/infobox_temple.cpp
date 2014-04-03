@@ -24,6 +24,7 @@
 
 using namespace constants;
 using namespace religion;
+using namespace gfx;
 
 namespace gui
 {

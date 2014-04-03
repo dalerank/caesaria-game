@@ -1,0 +1,161 @@
+{
+  version : 1
+  map : "/maps/Tarraco.map"
+  funds : 8000
+  date : "-270.01.01"
+  finish : "-170.01.01"
+	
+  win :
+  {
+    population : 2500
+    culture : 45
+    prosperity : 25
+    peace : 30
+    favour : 70
+    next : "/missions/tutorial5.briefing"
+    title : "##win_engineer_title##"
+    may_continue : false
+    maxHouseLevel : "big_villa"
+    caption : "##famine_in_the_empire##"
+    overview :  [ "##tarraco_overview##" ]
+  }
+	
+  empire : {
+    enabled : true
+
+    objects : {
+      ship : {
+        location : [ 709, 604 ]
+        name : "ship"
+        picture : "empire_bits_00112"
+      }
+
+    }
+
+    cities :
+    {
+      Brundisium : {
+        location : [ 940, 560 ]
+        romecity : true
+        sea : true
+        land : true
+        available : true
+      }
+
+      "Leptis Magna" : {
+        location : [ 820, 920 ]
+
+        sea : true
+        land : true
+        distant : true
+        available : true
+
+        resources : [ "wheat", "vegetable", "olive", "fish",
+                      "clay", "marble", "timber", "iron" ]
+      }
+
+      Capua : {
+        location : [ 820, 560 ]
+
+        sea : true
+        land : true
+        available : true
+
+        sells : { furniture : 25, pottery : 25 }
+        buys : { weapon : 25 }
+      }
+
+      Carthago : {
+        location : [ 640, 760 ]
+
+        sea : true
+        land : true
+        distant : true
+        available : true
+
+        resources : [ "wheat", "olive", "wine", "fish",
+                      "timber", "clay", "marble", "iron" ]
+      }
+
+      Syracusae : {
+        location : [ 840, 720 ]
+        sells : { clay : 25, weapon : 20 }
+        buys : { wine : 15, furniture : 25 }
+        land : true
+        sea : true
+        available : true
+        resources : [ "wheat", "vegetable", "fruit", "wine",
+                      "fish", "timber", "clay" ]
+      }
+
+
+    }
+  }
+  		
+  events :
+  {
+    "city_indebt#city_indebt" : {
+      date : "-350.01.01"
+      type : "city_indebt"
+      count : 2
+      emperorMoney : 5000
+      video : "city_indebt.bik"
+      text : "##city_has_runout_money##"
+    }
+
+    "emperor_request_vines#city_request" : {
+      date : "-347.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { grape : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+  }
+	
+  buildoptions :
+  {
+    farm : "disable_all"
+    raw_material : "disable_all"
+    factory : "disable_all"
+    water : "enabled"
+    health : "enabled"
+    religion : "disable_all"
+    education : "enabled"
+    entertainment : "enabled"
+    govt : "enabled"
+    engineering : "disable_all"
+    security : "disable_all"
+    check_desirability : true
+                   
+    buildings : 
+    { 
+      engineering_post : true
+      plaza : true
+      forum_1 : false
+      garden : true
+      low_bridge : true
+      gatehouse : true
+      high_bridge : true
+      pottery_workshop : true
+      dock : true
+      iron_mine : true
+      hippodrome : false
+      charioter_school : false
+      prefecture : true
+      small_ceres_temple : true
+      small_venus_temple : true
+      small_mars_temple : true
+      small_neptune_temple : true
+      small_mercury_temple : true
+      market : true
+      wine_workshop : true
+      lumber_mill : true
+      granery : true
+      warehouse : true
+      wheat_farm : true
+      vinard : true
+      senate_1 : true
+    }
+  }
+}

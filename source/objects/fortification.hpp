@@ -25,14 +25,14 @@ public:
   ~Fortification();
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
-  const Picture& getPicture(PlayerCityPtr city,
+  const gfx::Picture& getPicture(PlayerCityPtr city,
                             TilePos pos,
-                            const TilesArray& tmp ) const;
+                            const gfx::TilesArray& tmp ) const;
 
   int getDirection() const;
 
   virtual void destroy();
-  virtual Point offset(Tile &tile, const Point &subpos) const;
+  virtual Point offset(gfx::Tile &tile, const Point &subpos) const;
 
   void updatePicture(PlayerCityPtr city);
   bool isTowerEnter() const;

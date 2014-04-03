@@ -28,6 +28,8 @@
 #include "pathway/pathway_helper.hpp"
 #include "core/logger.hpp"
 
+using namespace gfx;
+
 // comparison (for sorting list of tiles by their coordinates)
 bool
 compare_tiles_(const Tile * first, const Tile * second)

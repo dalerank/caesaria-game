@@ -27,6 +27,7 @@
 #include "constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class CoastalFactory::Impl
 {

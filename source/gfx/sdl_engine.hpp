@@ -26,11 +26,14 @@
 
 // This is the SDL engine
 // It does a dumb drawing from back to front
-class GfxSdlEngine : public GfxEngine
+namespace gfx
+{
+
+class SdlEngine : public Engine
 {
 public:
-  GfxSdlEngine();
-  ~GfxSdlEngine();
+  SdlEngine();
+  virtual ~SdlEngine();
 
   virtual void init();
   virtual void exit();
@@ -68,4 +71,5 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+}//end namespace gfx
 #endif //_CAESARIA_SDL_ENGINE_H_INCLUDE_

@@ -19,6 +19,7 @@
 #include "city/cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
+#include "gfx/camera.hpp"
 
 namespace city
 {
@@ -26,7 +27,7 @@ namespace city
 class AmbientSound : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city, TilemapCamera& camera );
+  static SrvcPtr create(PlayerCityPtr city, gfx::Camera* camera );
 
   void update( const unsigned int time );
 private:

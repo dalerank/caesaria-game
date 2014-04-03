@@ -26,6 +26,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerHealth::getType() const
 {
   return _type;
@@ -49,7 +52,7 @@ int LayerHealth::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void LayerHealth::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -184,8 +187,8 @@ void LayerHealth::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerHealth::LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type)
-  : Layer( camera, city )
+LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 9 );
   _type = type;
@@ -210,3 +213,5 @@ LayerHealth::LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type)
   break;
   }
 }
+
+}//end namespace gfx

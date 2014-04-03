@@ -30,7 +30,7 @@ public:
   virtual ~EmpireMapWindow();
 
   // draw on screen
-  virtual void draw( GfxEngine& engine );
+  virtual void draw( gfx::Engine& engine );
 
   //resolve event
   virtual bool onEvent(const NEvent& event);

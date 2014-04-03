@@ -19,6 +19,8 @@
 #include "gfx/tilemap.hpp"
 #include "city/helper.hpp"
 
+using namespace gfx;
+
 Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
                                WayType type/*=roadOnly */ )
 {

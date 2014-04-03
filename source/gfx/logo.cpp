@@ -19221,7 +19221,7 @@ static const char* const data =
 
 void initialize( const std::string& name)
 {
-	Picture* pic = Picture::create( Size( width, height ) );
+	gfx::Picture* pic = gfx::Picture::create( Size( width, height ) );
 	char const* ptr = data;
 	for( unsigned int y = 0; y < height; y++ )
 	{
@@ -19233,7 +19233,7 @@ void initialize( const std::string& name)
 		}
 	}
 
-	PictureBank::instance().setPicture( name, *pic );
+	gfx::PictureBank::instance().setPicture( name, *pic );
 }
 
 }//end namespace splash

@@ -26,7 +26,7 @@ class AdvisorLegionWindow : public Widget
 public:
   AdvisorLegionWindow( Widget* parent, int id );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 private:
   class Impl;

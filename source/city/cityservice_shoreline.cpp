@@ -23,6 +23,8 @@
 #include "core/foreach.hpp"
 #include "gfx/tileoverlay.hpp"
 
+using namespace gfx;
+
 namespace city
 {
 

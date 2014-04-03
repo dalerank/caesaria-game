@@ -38,6 +38,7 @@
 #include "events/playsound.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -170,7 +171,7 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
 
 
 
-void Menu::draw( GfxEngine& painter )
+void Menu::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -453,7 +454,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
   return Menu::onEvent( event );
 }
 
-void ExtentMenu::draw( GfxEngine& painter )
+void ExtentMenu::draw(Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -488,7 +489,7 @@ void Menu::Impl::playSound()
 
 void Menu::Impl::updateBuildingOptions()
 {
-  const CityBuildOptions& options = city->getBuildOptions();
+  const city::BuildOptions& options = city->getBuildOptions();
   waterButton->setEnabled( options.isGroupAvailable( BM_WATER ) );
   administrationButton->setEnabled( options.isGroupAvailable( BM_ADMINISTRATION ) );
   entertainmentButton->setEnabled( options.isGroupAvailable( BM_ENTERTAINMENT ) );

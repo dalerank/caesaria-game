@@ -18,14 +18,14 @@
 
 #include "scene/base.hpp"
 #include "core/scopedptr.hpp"
+#include "gfx/renderer.hpp"
 
 class Game;
-class CityRenderer;
 
 class PatrolPointEventHandler : public scene::EventHandler
 {
 public:
-  static scene::EventHandlerPtr create( Game& game, CityRenderer& renderer );
+  static scene::EventHandlerPtr create( Game& game, gfx::Renderer& renderer );
 
   virtual void handleEvent(NEvent &event);
   virtual bool finished() const;
@@ -33,7 +33,7 @@ public:
   virtual ~PatrolPointEventHandler();
 
 private:
-  PatrolPointEventHandler( Game& game, CityRenderer& renderer );
+  PatrolPointEventHandler( Game& game, gfx::Renderer& renderer );
 
   class Impl;
   ScopedPtr< Impl > _d;

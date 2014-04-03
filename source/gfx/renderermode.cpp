@@ -21,6 +21,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 class LayerMode::Impl
 {
 public:
@@ -113,3 +116,5 @@ BuildMode::BuildMode()
   : LayerMode( citylayer::build ), _d( new Impl )
 {
 }
+
+}//end namespace gfx

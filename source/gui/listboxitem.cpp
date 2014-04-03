@@ -15,6 +15,8 @@
 
 #include "listboxitem.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 

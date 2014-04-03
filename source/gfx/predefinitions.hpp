@@ -16,17 +16,19 @@
 #ifndef __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
 #define __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
 
-#include "core/smartptr.hpp"
 #include "core/predefinitions.hpp"
 
-PREDEFINE_CLASS_SMARTPOINTER_LIST(TileOverlay,List)
-PREDEFINE_CLASS_SMARTPOINTER_LIST(Layer,List)
-
+namespace gfx
+{
 class Tile;
 class Picture;
 class Tilemap;
 class TilemapCamera;
 class TilesArray;
 class CityRenderer;
+
+PREDEFINE_CLASS_SMARTPOINTER_LIST(TileOverlay,List)
+PREDEFINE_CLASS_SMARTPOINTER_LIST(Layer,List)
+}
 
 #endif //__CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__

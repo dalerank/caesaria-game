@@ -45,7 +45,7 @@ public:
 
    int getVisitorsNumber() const;
    virtual void deliverService();
-   virtual std::string getSound() const;
+   virtual std::string sound() const;
    virtual unsigned int walkerDistance() const;
 };
 

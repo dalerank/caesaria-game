@@ -25,7 +25,7 @@ namespace gui
 class AndroidActionsBar : public Widget
 {
 public:
-  virtual void beforeDraw(GfxEngine &painter);
+  virtual void beforeDraw( gfx::Engine& painter);
   AndroidActionsBar( Widget* parent );
 
 public oc3_signals:

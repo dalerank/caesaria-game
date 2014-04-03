@@ -31,7 +31,7 @@ class SaveDialog : public Widget
 public:
   SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id );
 
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
 oc3_signals public:
   Signal1<std::string>& onFileSelected();

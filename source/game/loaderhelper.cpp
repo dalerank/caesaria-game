@@ -20,6 +20,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 std::string LoaderHelper::getDefaultCityName(unsigned int location)
 {

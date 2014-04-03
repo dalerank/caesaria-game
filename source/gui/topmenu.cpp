@@ -21,6 +21,7 @@
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
 #include "contextmenuitem.hpp"
+#include "gfx/picturesarray.hpp"
 #include "core/stringhelper.hpp"
 #include "core/time.hpp"
 #include "gfx/engine.hpp"
@@ -34,6 +35,7 @@
 #include "widgetescapecloser.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -76,7 +78,7 @@ oc3_signals public:
   return MainMenu::onEvent(event);
 }*/
 
-void TopMenu::draw( GfxEngine& engine )
+void TopMenu::draw(gfx::Engine& engine )
 {
   if( !isVisible() )
     return;
@@ -135,7 +137,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   setupUI( GameSettings::rcpath( "/gui/topmenu.gui" ) );
   setGeometry( Rect( 0, 0, parent->width(), height ) );
 
-  PicturesArray p_marble;
+  Pictures p_marble;
   for (int i = 1; i<=12; ++i)
   {
     p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));

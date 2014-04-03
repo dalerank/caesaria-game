@@ -32,17 +32,17 @@ public:
 
   static EmigrantPtr create( PlayerCityPtr city);
 
-  virtual void getPictureList(PicturesArray &oPics);
+  virtual void getPictureList( gfx::Pictures &oPics);
   virtual void timeStep(const unsigned long time);
 
   virtual void die();
 
-  ~Emigrant();
+  virtual ~Emigrant();
 protected:
   virtual void _changeDirection();
 
 protected:
-  const Picture& getCartPicture();
+  const gfx::Picture& _cartPicture();
 
   Emigrant( PlayerCityPtr city );
 };

@@ -33,6 +33,8 @@
 
 #include <vector>
 
+using namespace gfx;
+
 typedef SmartPtr< GameAbstractLoader > GameAbstractLoaderPtr;
 
 class GameLoader::Impl

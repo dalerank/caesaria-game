@@ -23,6 +23,8 @@
 #include "gui/environment.hpp"
 #include "game/resourcegroup.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -259,7 +261,7 @@ void ScrollBar::afterPaint( unsigned int timeMs )
 	}
 }
 
-void ScrollBar::beforeDraw( GfxEngine& painter )
+void ScrollBar::beforeDraw(gfx::Engine& painter )
 {
     if( !isVisible() )
         return;
@@ -330,7 +332,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
 
 
 //! draws the element and its children
-void ScrollBar::draw( GfxEngine& painter )
+void ScrollBar::draw(gfx::Engine& painter )
 {
 	if (!isVisible())
 		return;

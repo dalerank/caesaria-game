@@ -31,6 +31,7 @@
 #include "gatehouse.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Fortification::Impl
 {

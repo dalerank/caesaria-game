@@ -25,7 +25,7 @@ namespace gui
 class InfoboxGranary : public InfoboxConstruction
 {
 public:
-  InfoboxGranary( Widget* parent, const Tile& tile );
+  InfoboxGranary( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxGranary();
   
   void drawGood(Good::Type goodType, int, int);

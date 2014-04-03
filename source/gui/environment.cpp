@@ -23,6 +23,8 @@
 #include "core/foreach.hpp"
 #include "widget_factory.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -51,7 +53,7 @@ public:
   Widget::Widgets deletionQueue;
 
   Rect _desiredRect;
-  GfxEngine* engine;
+  gfx::Engine* engine;
   Point cursorPos;
   WidgetFactory factory;
 
@@ -59,7 +61,7 @@ public:
   void threatDeletionQueue();
 };
 
-GuiEnv::GuiEnv( GfxEngine& painter )
+GuiEnv::GuiEnv(Engine& painter )
   : Widget( 0, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
   setDebugName( "GuiEnv" );
@@ -81,7 +83,7 @@ GuiEnv::GuiEnv( GfxEngine& painter )
   _d->toolTip.LaunchTime = 1000;
   _d->toolTip.RelaunchTime = 500;
 
-  setGeometry( Rect( 0, 0, painter.screenWidth(), painter.screenHeight() ) );
+  setGeometry( Rect( Point(), painter.screenSize() ) );
 }
 
 //! Returns if the element has focus
@@ -499,7 +501,7 @@ Widget* GuiEnv::getHoveredElement() const {  return _d->hovered.object(); }
 
 void GuiEnv::beforeDraw()
 {
-  const Size screenSize( _d->engine->getScreenSize() );
+  const Size screenSize( _d->engine->screenSize() );
   const Point rigthDown = rootWidget()->absoluteRect().LowerRightCorner;
   
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )

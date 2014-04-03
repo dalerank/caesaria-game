@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
 
 #include "empiremap_window.hpp"
-#include "gfx/picture.hpp"
+#include "gfx/picturesarray.hpp"
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
 #include "texturedbutton.hpp"
@@ -41,6 +41,7 @@
 #include "events/showadvisorwindow.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -364,7 +365,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   CONNECT( _d->btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow );
 }
 
-void EmpireMapWindow::draw( GfxEngine& engine )
+void EmpireMapWindow::draw(gfx::Engine& engine )
 {
   if( !isVisible() )
     return;
@@ -407,7 +408,7 @@ void EmpireMapWindow::draw( GfxEngine& engine )
 
     world::MerchantPtr merchant = route->getMerchant( 0 );
     const PointsArray& points = route->getPoints();
-    const PicturesArray& pictures = route->getPictures();
+    const Pictures& pictures = route->getPictures();
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
       engine.drawPicture( pictures[ index ], _d->offset + points[ index ] );

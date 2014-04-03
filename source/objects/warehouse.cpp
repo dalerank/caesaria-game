@@ -39,6 +39,8 @@
 
 #include <list>
 
+using namespace gfx;
+
 class WarehouseTile : public ReferenceCounted
 {
 public:
@@ -472,7 +474,7 @@ std::string Warehouse::troubleDesc() const
 
 void Warehouse::_resolveDeliverMode()
 {
-  if( getWalkers().size() > 0 )
+  if( walkers().size() > 0 )
   {
     return;
   }
@@ -500,7 +502,7 @@ void Warehouse::_resolveDeliverMode()
 void Warehouse::_resolveDevastationMode()
 {
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  if( (_d->goodStore.qty() > 0) && getWalkers().empty() )
+  if( (_d->goodStore.qty() > 0) && walkers().empty() )
   {
     for( int goodType=Good::wheat; goodType <= Good::goodCount; goodType++ )
     {

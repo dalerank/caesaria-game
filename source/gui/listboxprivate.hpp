@@ -28,8 +28,8 @@ namespace gui
 class ListBox::Impl
 {
 public:
-  PictureRef background;
-  PictureRef picture;
+  gfx::PictureRef background;
+  gfx::PictureRef picture;
   std::vector< ListBoxItem > items;
   NColor itemDefaultColorText;
   NColor itemDefaultColorTextHighlight;

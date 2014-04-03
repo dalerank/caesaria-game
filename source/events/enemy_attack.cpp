@@ -27,6 +27,7 @@
 #include "walker/helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace events
 {

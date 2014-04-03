@@ -27,15 +27,15 @@ public:
 
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
-  virtual std::string getSound() const;
-  virtual Service::Type getService() const;
+  virtual std::string sound() const;
+  virtual Service::Type serviceType() const;
 
   virtual std::string workersStateDesc() const;
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  DateTime getLastShowDate() const;
-  DateTime getLastBoutsDate() const;
+  DateTime lastShowDate() const;
+  DateTime lastBoutsDate() const;
 
   bool isShowGladiatorBouts() const;
   bool isActorsShow() const;

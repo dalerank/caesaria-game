@@ -76,6 +76,7 @@
 #include <set>
 
 using namespace constants;
+using namespace gfx;
 
 typedef std::vector< city::SrvcPtr > CityServices;
 
@@ -165,9 +166,9 @@ public:
   Tilemap tilemap;
   TilePos cameraStart;
   Point location;
-  CityBuildOptions buildOptions;
-  CityTradeOptions tradeOptions;
-  CityWinTargets targets;
+  city::BuildOptions buildOptions;
+  city::TradeOptions tradeOptions;
+  city::WinTargets targets;
 
   ClimateType climate;   
   UniqueId walkerIdCount;
@@ -623,7 +624,7 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
   return city::SrvcPtr();
 }
 
-void PlayerCity::setBuildOptions(const CityBuildOptions& options)
+void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 {
   _d->buildOptions = options;
   _d->onChangeBuildingOptionsSignal.emit();
@@ -632,14 +633,14 @@ void PlayerCity::setBuildOptions(const CityBuildOptions& options)
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
 Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
-const CityBuildOptions& PlayerCity::getBuildOptions() const { return _d->buildOptions; }
-const CityWinTargets& PlayerCity::getWinTargets() const {   return _d->targets; }
-void PlayerCity::setWinTargets(const CityWinTargets& targets) { _d->targets = targets; }
+const city::BuildOptions& PlayerCity::getBuildOptions() const { return _d->buildOptions; }
+const city::WinTargets& PlayerCity::getWinTargets() const {   return _d->targets; }
+void PlayerCity::setWinTargets(const city::WinTargets& targets) { _d->targets = targets; }
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::player() const { return _d->player; }
 std::string PlayerCity::getName() const {  return _d->name; }
 void PlayerCity::setName( const std::string& name ) {   _d->name = name;}
-CityTradeOptions& PlayerCity::getTradeOptions() { return _d->tradeOptions; }
+city::TradeOptions& PlayerCity::getTradeOptions() { return _d->tradeOptions; }
 void PlayerCity::setLocation( const Point& location ) {   _d->location = location; }
 Point PlayerCity::location() const {   return _d->location; }
 const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSells(); }

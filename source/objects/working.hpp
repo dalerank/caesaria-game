@@ -45,7 +45,7 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void addWalker( WalkerPtr walker );
-  virtual const WalkerList& getWalkers() const;
+  virtual const WalkerList& walkers() const;
 
   virtual std::string getError() const;
   virtual std::string getWorkersProblem() const;

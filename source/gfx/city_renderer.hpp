@@ -18,21 +18,24 @@
 
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
-#include "renderermode.hpp"
-#include "renderer.hpp"
+#include "gfx/renderermode.hpp"
+#include "gfx/renderer.hpp"
 #include "predefinitions.hpp"
 #include "gfx/engine.hpp"
 
+namespace gfx
+{
+
 /* Draws the tilemap area on the screen thanks to the GfxEngine, and handle user events */
-class CityRenderer : public Renderer
+class CityRenderer : public gfx::Renderer
 {
 public:
   CityRenderer();
   ~CityRenderer();
 
-  void initialize(PlayerCityPtr city, GfxEngine* engine);
+  void initialize(PlayerCityPtr city, gfx::Engine* engine);
 
-  TilemapCamera& camera();
+  gfx::Camera* camera();
 
   // draws the tilemap on the screen,
   // using a dumb back to front drawing of all pictures.
@@ -40,7 +43,7 @@ public:
 
   void handleEvent( NEvent& event);
 
-  Tilemap& getTilemap();
+  gfx::Tilemap& getTilemap();
 
   // sets the current command
   void setMode( Renderer::ModePtr command );
@@ -54,9 +57,13 @@ public:
 
   TilePos getTilePos( Point point ) const;
 
+  void setViewport( const Size& size );
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace gfx
 
 #endif //__CAESARIA_CITYRENDERER_H_INCLUDED__

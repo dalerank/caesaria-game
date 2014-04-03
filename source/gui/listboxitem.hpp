@@ -58,8 +58,8 @@ public:
   const std::string& getText() const;
 	void setTag( int tag );
 	int tag() const;
-	Picture getIcon() const;
-	void setIcon( Picture pic );
+	gfx::Picture getIcon() const;
+	void setIcon( gfx::Picture pic );
 
   bool isEnabled() const;
   void setEnabled( bool en );

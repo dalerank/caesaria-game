@@ -25,6 +25,7 @@
 #include "game/resourcegroup.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 Emigrant::Emigrant( PlayerCityPtr city ) : Immigrant( city )
 {
@@ -36,17 +37,17 @@ Emigrant::Emigrant( PlayerCityPtr city ) : Immigrant( city )
   _setType( walker::emmigrant );
 }
 
-const Picture& Emigrant::getCartPicture()
+const Picture& Emigrant::_cartPicture()
 {
-  if( !Immigrant::getCartPicture().isValid() )
+  if( !Immigrant::_cartPicture().isValid() )
   {
-    setCartPicture( AnimationBank::getCart( G_EMIGRANT_CART1, getDirection()) );
+    _setCartPicture( AnimationBank::getCart( G_EMIGRANT_CART1, getDirection()) );
   }
 
-  return Immigrant::getCartPicture();
+  return Immigrant::_cartPicture();
 }
 
-void Emigrant::getPictureList(PicturesArray &oPics)
+void Emigrant::getPictureList( Pictures& oPics)
 {
   oPics.clear();
 
@@ -57,20 +58,20 @@ void Emigrant::getPictureList(PicturesArray &oPics)
   case constants::northWest:
   case constants::north:
   case constants::northEast:
-    oPics.push_back( getCartPicture() );
+    oPics.push_back( _cartPicture() );
     oPics.push_back( getMainPicture() );
   break;
 
   case constants::east:
   case constants::southEast:
-    oPics.push_back( getCartPicture() );
+    oPics.push_back( _cartPicture() );
     oPics.push_back( getMainPicture() );
   break;
 
   case constants::south:
   case constants::southWest:
     oPics.push_back( getMainPicture() );
-    oPics.push_back( getCartPicture() );
+    oPics.push_back( _cartPicture() );
   break;
 
   default:
@@ -81,7 +82,7 @@ void Emigrant::getPictureList(PicturesArray &oPics)
 void Emigrant::_changeDirection()
 {
   Immigrant::_changeDirection();
-  setCartPicture( Picture() );  // need to get the new graphic
+  _setCartPicture( Picture() );  // need to get the new graphic
 }
 
 void Emigrant::timeStep(const unsigned long time)

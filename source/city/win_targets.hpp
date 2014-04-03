@@ -26,11 +26,14 @@
 
 class VariantMap;
 
-class CityWinTargets : public ReferenceCounted
+namespace city
+{
+
+class WinTargets : public ReferenceCounted
 {
 public:
-  CityWinTargets();
-  ~CityWinTargets();
+  WinTargets();
+  ~WinTargets();
 
   int needCulture() const;
   int needProsperity() const;
@@ -49,11 +52,13 @@ public:
   void load( const VariantMap& stream );
   VariantMap save() const;
 
-  CityWinTargets& operator=(const CityWinTargets& a);
+  WinTargets& operator=(const WinTargets& a);
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_WIN_TARGETS_H_INCLUDED__

@@ -61,7 +61,7 @@ public:
   virtual bool hasServiceAccess( Service::Type service );
   virtual float getServiceValue( Service::Type service );
   virtual void setServiceValue(Service::Type service, float value );
-  virtual TilesArray getEnterArea() const;
+  virtual gfx::TilesArray getEnterArea() const;
 
   virtual double getState( ParameterType param) const;
 
@@ -92,7 +92,7 @@ public:
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
 
-  virtual std::string getSound() const;
+  virtual std::string sound() const;
   virtual std::string troubleDesc() const;
 
   bool isCheckedDesirability() const;

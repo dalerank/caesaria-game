@@ -31,7 +31,7 @@ public:
   static std::string getTypename( constants::walker::Type type );
   static constants::walker::Type getType( const std::string& name );
   static std::string getPrettyTypeName( constants::walker::Type type );
-  static Picture getBigPicture( constants::walker::Type type );
+  static gfx::Picture getBigPicture( constants::walker::Type type );
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const constants::walker::Type type );
 

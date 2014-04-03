@@ -24,6 +24,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerCrime::getType() const
 {
   return citylayer::crime;
@@ -36,7 +39,7 @@ Layer::VisibleWalkers LayerCrime::getVisibleWalkers() const
   return ret;
 }
 
-void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -96,7 +99,7 @@ void LayerCrime::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerCrime::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerCrime::create(Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerCrime( camera, city ) );
   ret->drop();
@@ -104,8 +107,10 @@ LayerPtr LayerCrime::create(TilemapCamera& camera, PlayerCityPtr city)
   return ret;
 }
 
-LayerCrime::LayerCrime(TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerCrime::LayerCrime( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 18 );
 }
+
+}//end namespace gfx

@@ -19,7 +19,10 @@
 #include "widget.hpp"
 #include <memory>
 
-class GfxEngine;
+namespace gfx
+{
+  class Engine;
+}
 
 namespace gui
 {
@@ -27,7 +30,7 @@ namespace gui
 class GuiEnv : Widget
 {
 public:
-  GuiEnv( GfxEngine& painter );
+  GuiEnv( gfx::Engine& painter );
 
   ~GuiEnv();
 

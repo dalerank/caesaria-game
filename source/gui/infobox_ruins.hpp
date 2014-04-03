@@ -24,7 +24,7 @@ namespace gui
 class InfoboxRuins : public InfoboxSimple
 {
 public:
-  InfoboxRuins( Widget* parent, const Tile& tile );
+  InfoboxRuins( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxRuins();
 };
 

@@ -25,7 +25,7 @@ namespace gui
 class InfoboxMarket : public InfoboxConstruction
 {
 public:
-   InfoboxMarket( Widget* parent, const Tile& tile );
+   InfoboxMarket( Widget* parent, const gfx::Tile& tile );
    virtual ~InfoboxMarket();
    
    void drawGood( MarketPtr market, const Good::Type &goodType, int, int );

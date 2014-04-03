@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include "military.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
@@ -27,12 +26,60 @@
 #include "walker/patrolpoint.hpp"
 #include "barracks.hpp"
 #include "game/gamedate.hpp"
+#include "game/settings.hpp"
+#include "core/saveadapter.hpp"
+#include "walker/helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
 Renderer::Pass _fpq[] = { Renderer::building, Renderer::animations };
 static Renderer::PassQueue fortPassQueue( _fpq, _fpq + 2 );
+
+struct LegionEmblem
+{
+  std::string name;
+  Picture pic;
+};
+
+}
+
+static LegionEmblem _findFreeEmblem( PlayerCityPtr city )
+{
+  FortList forts;
+  forts << city->getOverlays();
+
+  std::vector<LegionEmblem> availableEmblems;
+  VariantMap emblemsModel = SaveAdapter::load( GameSettings::rcpath( GameSettings::emblemsModel ) );
+  foreach( it, emblemsModel )
+  {
+    VariantMap vm_emblem = it->second.toMap();
+    LegionEmblem newEmblem;
+
+    newEmblem.name = vm_emblem[ "name" ].toString();
+    newEmblem.pic = Picture::load( vm_emblem[ "img" ].toString() );
+    if( !newEmblem.name.empty() && newEmblem.pic.isValid() )
+    {
+      availableEmblems.push_back( newEmblem );
+    }
+  }
+
+  foreach( f, forts )
+  {
+    foreach( it, availableEmblems )
+    {
+      if( (*f)->legionEmblem().name() == (*it).pic.name() )
+      {
+        availableEmblems.erase( it );
+        break;
+      }
+    }
+  }
+
+  return availableEmblems.size() > 0
+                       ? availableEmblems[ math::random( availableEmblems.size() ) ]
+                       : LegionEmblem();
 }
 
 class Fort::Impl
@@ -42,6 +89,7 @@ public:
   unsigned int maxSoldier;
   PatrolPointPtr patrolPoint;
   int updateInterval;
+  LegionEmblem emblem;
 };
 
 FortLegionnaire::FortLegionnaire() : Fort( building::fortLegionaire, 16 )
@@ -57,8 +105,8 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
                                         ResourceGroup::sprites, 21, 8,
                                         pos + TilePos( 3, 3 ) ) );
 
-  city::Helper helper( city );
-  BarracksList barracks = helper.find<Barracks>( building::barracks );
+  BarracksList barracks;
+  barracks << city->getOverlays();
 
   if( barracks.empty() )
   {
@@ -141,9 +189,10 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   logo.setOffset( Point( 80, 10 ) );
 
   Picture area = Picture::load(ResourceGroup::security, 13 );
-  area.setOffset(Tile( TilePos(3,0)).mapPos() + Point(0,-30));
+  area.setOffset( Tile( TilePos(3,0) ).mapPos() + Point(0,-30) );
 
   _d->updateInterval = GameDate::ticksInMonth() / 10;
+
   _fgPicturesRef().resize(2);
   _fgPicture( 0 ) = logo;
   _fgPicture( 1 ) = area;
@@ -159,7 +208,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
 
 float Fort::evaluateTrainee(walker::Type traineeType)
 {
-  int currentForce = getWalkers().size() * 100;
+  int currentForce = walkers().size() * 100;
   int traineeForce = WorkingBuilding::evaluateTrainee( traineeType );
   int maxForce = _d->maxSoldier * 100;
 
@@ -192,7 +241,7 @@ void Fort::timeStep( const unsigned long time )
     // all trainees are there for the show!
     if( traineeLevel / 100 >= 1 )
     {
-      if( getWalkers().size() < _d->maxSoldier )
+      if( walkers().size() < _d->maxSoldier )
       {
         _readyNewSoldier();
         setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
@@ -265,16 +314,32 @@ TilePos Fort::getFreeSlot() const
 
 void Fort::changePatrolArea()
 {
-  WalkerList walkers = getWalkers();
+  RomeSoldierList sldrs;
+  sldrs << walkers();
 
-  foreach( it, walkers )
+  foreach( it, sldrs )
   {
-    RomeSoldierPtr soldier = ptr_cast<RomeSoldier>( *it );
-    if( soldier.isValid() )
-    {
-      soldier->send2patrol();
-    }
+    (*it)->send2patrol();
   }
+}
+
+Picture Fort::legionEmblem() const { return _d->emblem.pic; }
+std::string Fort::legionName() const{  return _d->emblem.name; }
+
+int Fort::legionMorale() const
+{
+  SoldierList sldrs = soldiers();
+  if( sldrs.empty() )
+    return 0;
+
+  SoldierList::iterator it=sldrs.begin();
+  int morale = (*it)->morale(); ++it;
+  for( ; it != sldrs.begin(); ++it )
+  {
+    morale = ( morale + (*it)->morale() ) / 2;
+  }
+
+  return morale;
 }
 
 void Fort::save(VariantMap& stream) const
@@ -298,10 +363,17 @@ void Fort::load(const VariantMap& stream)
   _d->maxSoldier = stream.get( "soldierNumber", 16 ).toUInt();
 }
 
-void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint)
+SoldierList Fort::soldiers() const
 {
-  _d->patrolPoint = patrolPoint;
+  SoldierList soldiers;
+  soldiers << walkers();
+
+  return soldiers;
 }
+
+void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }
+void Fort::_setEmblem(Picture pic) { _d->emblem.pic = pic; }
+void Fort::_setName(const std::string& name) { _d->emblem.name = name; }
 
 bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
@@ -317,6 +389,8 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
 
   _d->area->build( city, pos + TilePos( 3, 0 ) );
   _d->area->setBase( this );
+
+  _d->emblem = _findFreeEmblem( city );
 
   city->addOverlay( _d->area.object() );
 

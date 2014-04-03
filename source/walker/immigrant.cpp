@@ -31,6 +31,7 @@
 #include "corpse.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Immigrant::Impl
 {
@@ -230,8 +231,8 @@ void Immigrant::leaveCity( const Tile& tile)
 
 Immigrant::~Immigrant(){}
 
-void Immigrant::setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
-const Picture& Immigrant::getCartPicture(){  return _d->cartPicture;}
+void Immigrant::_setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
+const Picture& Immigrant::_cartPicture(){  return _d->cartPicture;}
 const CitizenGroup& Immigrant::_getPeoples() const{  return _d->peoples;}
 void Immigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
 

@@ -70,6 +70,7 @@
 #include <map>
 
 using namespace constants;
+using namespace gfx;
 
 template< class T > class BaseCreator : public TileOverlayConstructor
 {

@@ -35,7 +35,7 @@ public:
                    const std::string& receiver="",
                    int id=-1 );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 private:
   class Impl;

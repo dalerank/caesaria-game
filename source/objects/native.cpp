@@ -22,6 +22,7 @@
 #include "constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 NativeBuilding::NativeBuilding(const Type type, const Size& size )
 : Building( type, size )

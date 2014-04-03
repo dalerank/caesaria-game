@@ -27,7 +27,7 @@
 namespace gui
 {
 
-void Widget::beforeDraw( GfxEngine& painter )
+void Widget::beforeDraw(gfx::Engine& painter )
 {
   __D_IMPL(d,Widget)
   if( !d->parent )
@@ -296,7 +296,7 @@ void Widget::removeChild( Widget* child )
     }
 }
 
-void Widget::draw( GfxEngine& painter )
+void Widget::draw(gfx::Engine& painter )
 {
   if ( isVisible() )
   {

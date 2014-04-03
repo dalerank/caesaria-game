@@ -31,6 +31,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class FarmTile
 {
@@ -70,7 +71,7 @@ FarmTile::FarmTile(const Good::Type outGood, const TilePos& pos )
 
 void FarmTile::computePicture(const int percent)
 {
-  PicturesArray& pictures = _animation.frames();
+  Pictures& pictures = _animation.frames();
 
   int picIdx = (percent * (pictures.size()-1)) / 100;
   _picture = pictures[picIdx];

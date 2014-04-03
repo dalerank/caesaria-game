@@ -26,6 +26,8 @@
 #include "gfx/engine.hpp"
 #include "core/color.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -466,7 +468,7 @@ ElementState PushButton::_getActiveButtonState()
   return stDisabled;
 }
 
-void PushButton::beforeDraw( GfxEngine& painter )
+void PushButton::beforeDraw(gfx::Engine& painter )
 {
   // todo:	move sprite up and text down if the pressed state has a sprite
   // draw sprites for focused and mouse-over
@@ -485,7 +487,7 @@ void PushButton::beforeDraw( GfxEngine& painter )
 bool PushButton::isBodyVisible() const { __D_IMPL_CONST(_d,PushButton); return _d->drawBody; }
 
 //! draws the element and its children
-void PushButton::draw( GfxEngine& painter )
+void PushButton::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -527,7 +529,7 @@ void PushButton::draw( GfxEngine& painter )
   Widget::draw( painter );
 }
 
-void PushButton::drawIcon( GfxEngine& painter )
+void PushButton::drawIcon( gfx::Engine& painter )
 {
   __D_IMPL(_d,PushButton);
   const ButtonState& bstate = _d->buttonStates[ _d->currentButtonState ];

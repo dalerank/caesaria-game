@@ -22,6 +22,7 @@
 #include "constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 Doctor::Doctor() : ServiceBuilding(Service::doctor, building::doctor, Size(1))
 {
@@ -31,7 +32,7 @@ unsigned int Doctor::walkerDistance() const{ return 26; }
 
 void Doctor::deliverService()
 {
-  if( numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }
@@ -89,7 +90,7 @@ void Baths::timeStep(const unsigned long time)
 
 void Baths::deliverService()
 {
-  if( _haveReservorWater && numberWorkers() > 0 && getWalkers().empty() )
+  if( _haveReservorWater && numberWorkers() > 0 && walkers().empty() )
   {
     ServiceBuilding::deliverService();
   }
@@ -101,7 +102,7 @@ Barber::Barber() : ServiceBuilding(Service::barber, building::barber, Size(1))
 
 void Barber::deliverService()
 {
-  if( getWalkers().empty() && numberWorkers() )
+  if( walkers().empty() && numberWorkers() )
   {
     ServiceBuilding::deliverService();
   }

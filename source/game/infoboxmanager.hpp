@@ -40,8 +40,8 @@ public:
   void showHelp( PlayerCityPtr city, gui::GuiEnv* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
 
-  void addInfobox( const TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor );
-  bool canCreate( const TileOverlay::Type type ) const;
+  void addInfobox( const gfx::TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor );
+  bool canCreate( const gfx::TileOverlay::Type type ) const;
 private:
   InfoboxManager();
   ~InfoboxManager();

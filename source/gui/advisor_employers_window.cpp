@@ -32,6 +32,7 @@
 #include "city/statistic.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -254,7 +255,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
   _d->updateYearlyWages();
 }
 
-void AdvisorEmployerWindow::draw( GfxEngine& painter )
+void AdvisorEmployerWindow::draw(Engine& painter )
 {
   if( !isVisible() )
     return;

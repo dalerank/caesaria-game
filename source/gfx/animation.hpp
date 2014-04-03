@@ -16,10 +16,13 @@
 #ifndef __CAESARIA_ANIMATION_H_INCLUDE_
 #define __CAESARIA_ANIMATION_H_INCLUDE_
 
-#include "picture.hpp"
+#include "picturesarray.hpp"
 #include "core/variant.hpp"
 
 // several frames for a basic visual animation
+namespace gfx
+{
+
 class Animation
 {
 public:
@@ -36,8 +39,8 @@ public:
   void start(bool loop=true);
   void stop();
 
-  PicturesArray& frames();
-  const PicturesArray& frames() const;
+  Pictures& frames();
+  const Pictures& frames() const;
 
   unsigned int frameCount() const;
 
@@ -72,11 +75,11 @@ public:
   void addFrame( const Picture& pic );
   void addFrame(const std::string& resource, int index);
 private:
-  PicturesArray _pictures;
+  Pictures _pictures;
   int _animIndex;  // index of the current frame
-  unsigned int _lastTimeUpdate;
 
   __DECLARE_IMPL(Animation)
 };
 
+}//end namespace gfx
 #endif //__CAESARIA_ANIMATION_H_INCLUDE_

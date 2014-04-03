@@ -29,6 +29,7 @@
 
 using namespace constants;
 using namespace std;
+using namespace gfx;
 
 namespace city
 {

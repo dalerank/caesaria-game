@@ -24,6 +24,7 @@
 #include "core/gettext.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class FishPlace::Impl
 {

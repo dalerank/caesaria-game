@@ -35,6 +35,7 @@
 #include "core/foreach.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Walker::Impl
 {
@@ -326,7 +327,7 @@ std::string Walker::getThinks() const
   return _d->thinks;
 }
 
-void Walker::getPictureList(PicturesArray& oPics)
+void Walker::getPictureList(gfx::Pictures& oPics)
 {
    oPics.clear();
    oPics.push_back( getMainPicture() );

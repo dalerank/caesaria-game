@@ -26,6 +26,7 @@
 #include <vector>
 
 using namespace constants;
+using namespace gfx;
 
 class LowBridgeSubTile : public Construction
 {

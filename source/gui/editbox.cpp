@@ -23,6 +23,8 @@
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -783,7 +785,7 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
   }
 }
 
-void EditBox::beforeDraw( GfxEngine& painter )
+void EditBox::beforeDraw(Engine& painter )
 {
     int startPos = 0;
 
@@ -982,7 +984,7 @@ void EditBox::beforeDraw( GfxEngine& painter )
 }
 
 //! draws the element and its children
-void EditBox::draw( GfxEngine& painter )
+void EditBox::draw( Engine& painter )
 {
 	if (!isVisible())
 		return;

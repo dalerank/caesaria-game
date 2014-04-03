@@ -30,7 +30,7 @@ WidgetAnimator::~WidgetAnimator( void )
 {
 }
 
-void WidgetAnimator::beforeDraw( GfxEngine& painter )
+void WidgetAnimator::beforeDraw(gfx::Engine& painter )
 {
     //! draw self area in debug mode
     if( isFlag( debug ) )

@@ -72,14 +72,14 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     game.empire()->load( vm[ "empire" ].toMap() );
 
-    CityWinTargets targets;
+    city::WinTargets targets;
     Variant winOptions = vm[ "win" ];
     Logger::warningIf( winOptions.isNull(), "Cannot load mission win options from file " + filename );
 
     targets.load( winOptions.toMap() );
     city->setWinTargets( targets );
 
-    CityBuildOptions options;
+    city::BuildOptions options;
     options.load( vm[ "buildoptions" ].toMap() );
     city->setBuildOptions( options  );
 

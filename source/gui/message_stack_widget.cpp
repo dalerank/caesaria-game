@@ -23,6 +23,8 @@
 #include "core/stringhelper.hpp"
 #include <list>
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -45,7 +47,7 @@ WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rect
   _d->lbBackgorund->draw( emlbPic, width() - emlbPic.width()-4, 2 );
 }
 
-void WindowMessageStack::draw( GfxEngine& painter )
+void WindowMessageStack::draw(gfx::Engine& painter )
 {
   if( !isVisible() || getChildren().empty() )
     return;
@@ -65,7 +67,7 @@ void WindowMessageStack::_update()
   }
 }
 
-void WindowMessageStack::beforeDraw(GfxEngine& painter)
+void WindowMessageStack::beforeDraw(gfx::Engine& painter)
 {
   Widget::Widgets wds = getChildren();
   unsigned int myWidth = width();

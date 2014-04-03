@@ -18,23 +18,28 @@
 
 #include "layer.hpp"
 
+namespace gfx
+{
+
 class LayerHealth : public Layer
 {
 public:
   virtual int getType() const;
   virtual VisibleWalkers getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
   static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);
 
 private:
-  LayerHealth( TilemapCamera& camera, PlayerCityPtr city, int type );
+  LayerHealth(Camera& camera, PlayerCityPtr city, int type );
   int _getLevelValue(HousePtr house);
 
   std::set<int> _flags;
   std::set<int> _walkers;
   int _type;
 };
+
+}//end namespace gfx
 
 #endif //__CAESARIA_LAYERHEALTH_H_INCLUDED__

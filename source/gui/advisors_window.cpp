@@ -49,6 +49,7 @@
 #include "events/showempiremapwindow.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -155,7 +156,7 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   }
 }
 
-void AdvisorsWindow::draw( GfxEngine& engine )
+void AdvisorsWindow::draw(gfx::Engine& engine )
 {
   if( !isVisible() )
     return;

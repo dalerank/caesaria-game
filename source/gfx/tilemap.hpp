@@ -25,6 +25,9 @@
 #include "core/scopedptr.hpp"
 #include "gfx/tilesarray.hpp"
 
+namespace gfx
+{
+
 // Square Map of the Tiles.
 class Tilemap : public Serializable
 {
@@ -68,5 +71,5 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-
+}//end namespace gfx
 #endif //__OPENCAESAR3_TILEMAP_H_INCLUDED__

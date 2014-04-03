@@ -39,7 +39,7 @@ public:
 	virtual void addChild(Widget* child);
 
 	//! draws the element and its children
-	virtual void draw( GfxEngine& painter );
+	virtual void draw( gfx::Engine& painter );
 
   //! Modalscreen is not a typical element, but rather acts like a state for it's children.
   //! isVisible is overriden to give this a useful behaviour, so that a modal will no longer

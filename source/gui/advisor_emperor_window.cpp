@@ -44,6 +44,8 @@
 #include "city_donation_window.hpp"
 #include "emperorgiftwindow.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -235,7 +237,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   CONNECT( _d->btnSendGift, onClicked(), this, AdvisorEmperorWindow::_showGiftWindow );
 }
 
-void AdvisorEmperorWindow::draw( GfxEngine& painter )
+void AdvisorEmperorWindow::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

@@ -27,7 +27,7 @@ namespace gui
 class InfoboxHouse : public InfoboxSimple
 {
 public:
-   InfoboxHouse( Widget* parent, const Tile& tile);
+   InfoboxHouse( Widget* parent, const gfx::Tile& tile);
    virtual ~InfoboxHouse();
 
    void drawHabitants(HousePtr house);

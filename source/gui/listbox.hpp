@@ -67,7 +67,7 @@ public:
   virtual bool onEvent(const NEvent& event);
 
   //! draws the element and its children
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   //! removes an item from the list
   virtual void removeItem(unsigned int id);
@@ -137,7 +137,7 @@ public:
   //! \return
   //! returns the id of the new created item
   virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 );
-  virtual ListBoxItem& addItem( Picture pic );
+  virtual ListBoxItem& addItem( gfx::Picture pic );
 
   virtual void fitText( const std::string& text );
 
@@ -147,7 +147,7 @@ public:
 
   virtual int getSelected();
 
-  virtual void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( gfx::Engine& painter );
 
   virtual void setItemTextOffset(Point p);
 

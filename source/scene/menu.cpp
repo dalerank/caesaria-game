@@ -38,6 +38,8 @@
 #include "core/locale.hpp"
 #include "core/saveadapter.hpp"
 
+using namespace gfx;
+
 namespace scene
 {
 
@@ -49,7 +51,7 @@ public:
   int result;
   bool isStopped;
   Game* game;
-  GfxEngine* engine;
+  Engine* engine;
   std::string fileMap;
   std::string playerName;
 
@@ -220,7 +222,7 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
   wnd->setTitle( _("##mainmenu_loadmap##") );
 }
 
-StartMenu::StartMenu( Game& game, GfxEngine& engine ) : _d( new Impl )
+StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )
 {
   _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
@@ -247,8 +249,9 @@ void StartMenu::initialize()
   _d->bgPicture = Picture::load("title", 1);
 
   // center the bgPicture on the screen
-  Point p( (_d->engine->screenWidth() - _d->bgPicture.width()) / 2,
-           -( _d->engine->screenHeight() - _d->bgPicture.height() ) / 2 );
+  Size scrSize = _d->engine->screenSize();
+  Point p( (scrSize.width() - _d->bgPicture.width()) / 2,
+           -( scrSize.height() - _d->bgPicture.height() ) / 2 );
   _d->bgPicture.setOffset( p );
 
   _d->game->gui()->clear();
@@ -277,7 +280,7 @@ void StartMenu::initialize()
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 }
 
-int StartMenu::getResult() const{  return _d->result;}
+int StartMenu::result() const{  return _d->result;}
 bool StartMenu::isStopped() const{  return _d->isStopped;}
 std::string StartMenu::getMapName() const{  return _d->fileMap;}
 std::string StartMenu::getPlayerName() const { return _d->playerName; }

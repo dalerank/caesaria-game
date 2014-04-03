@@ -24,6 +24,7 @@
 #include "gfx/tilemap.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace city
 {

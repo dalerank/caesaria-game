@@ -35,7 +35,7 @@ public:
   virtual std::string name() const { return _name; }
   virtual std::string shortDescription() const { return _shortDesc; }
   virtual Service::Type serviceType() const { return _service; }
-  virtual const Picture& picture() const { return _pic; }
+  virtual const gfx::Picture& picture() const { return _pic; }
   virtual float relation() const { return _relation; }
   virtual float getDefaultDecrease() const { return 2.f; }
   virtual DateTime lastFestivalDate() const { return _lastFestival; }
@@ -56,7 +56,7 @@ protected:
   DateTime _lastFestival;
   DateTime _lastActionDate;
   float _relation;
-  Picture _pic;
+  gfx::Picture _pic;
   StringArray _moodDescr;
 };
 

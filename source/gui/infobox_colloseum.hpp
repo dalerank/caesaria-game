@@ -24,7 +24,7 @@ namespace gui
 class InfoboxColosseum : public InfoboxConstruction
 {
 public:
-  InfoboxColosseum( Widget* parent, const Tile& tile );
+  InfoboxColosseum( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxColosseum();
 };
 

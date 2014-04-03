@@ -158,7 +158,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() && emptyDock )
     {
-      CityTradeOptions& options = city->getTradeOptions();
+      city::TradeOptions& options = city->getTradeOptions();
       city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
       //request goods
       for( int n = Good::wheat; n<Good::goodCount; n++ )

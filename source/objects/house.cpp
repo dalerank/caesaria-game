@@ -43,6 +43,7 @@
 #include "city/build_options.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
@@ -755,7 +756,7 @@ void House::destroy()
   Building::destroy();
 }
 
-std::string House::getSound() const
+std::string House::sound() const
 {
   if( !_d->habitants.count() )
     return "";

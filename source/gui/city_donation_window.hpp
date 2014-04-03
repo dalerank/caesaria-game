@@ -18,8 +18,6 @@
 
 #include "gui/widget.hpp"
 #include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "gfx/tileoverlay.hpp"
 
 namespace gui
 {

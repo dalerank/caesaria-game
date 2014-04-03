@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
-#define __CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
+#ifndef __CAESARIA_LAYERMODE_H_INCLUDE_
+#define __CAESARIA_LAYERMODE_H_INCLUDE_
 
 #include "gfx/renderer.hpp"
 #include "core/scopedptr.hpp"
@@ -22,6 +22,9 @@
 #include "core/referencecounted.hpp"
 #include "core/smartptr.hpp"
 #include "objects/construction.hpp"
+
+namespace gfx
+{
 
 class LayerMode : public Renderer::Mode
 {
@@ -65,4 +68,6 @@ public:
 typedef SmartPtr< BuildMode > BuildModePtr;
 typedef SmartPtr< LayerMode > LayerModePtr;
 
-#endif  //__CAESARIA_TILEMAPCHANGECOMMAND_H_INCLUDE_
+}//end namespace gfx
+
+#endif  //__CAESARIA_LAYERMODE_H_INCLUDE_

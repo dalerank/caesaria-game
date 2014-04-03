@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 // govt 4  - senate
 // govt 9  - advanced senate
 // govt 5 ~ 8 - senate flags
@@ -157,7 +158,7 @@ int Senate::getStatus(Senate::Status status) const
 
 void Senate::deliverService()
 {
-  if( numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _city() );
     walker->setMaxDistance( walkerDistance() );

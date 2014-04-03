@@ -36,7 +36,7 @@ Base::Base()
 
 Base::~Base() {}
 
-void Base::drawFrame( GfxEngine &engine )
+void Base::drawFrame(gfx::Engine& engine )
 {
    engine.startRenderFrame();
    
@@ -49,7 +49,7 @@ void Base::handleEvent( NEvent& event) {}
 void Base::afterFrame() {}
 void Base::stop(){ _isStopped = true;}
 
-void Base::update( GfxEngine &engine )
+void Base::update(gfx::Engine& engine )
 {
   static unsigned int lastTimeUpdate = DateTime::elapsedTime();
 

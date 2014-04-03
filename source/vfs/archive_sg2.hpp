@@ -23,7 +23,10 @@
 
 #include <map>
 
-class Picture;
+namespace gfx
+{
+  class Picture;
+}
 
 namespace vfs
 {
@@ -146,14 +149,14 @@ private:
   FileInfo _fileInfo;
   NFile _file;
 
-  void _loadSpriteImage(Picture& img, const SgFileEntry& rec);
-  void _writeTransparentImage(Picture& img, const unsigned char* buffer, int length);
-  void _writeIsometricTile(Picture& img, const unsigned char* buffer, int offset_x, int offset_y, int tile_width, int tile_height);
-  void _writeIsometricBase(Picture& img, const SgImageRecord& rec, const unsigned char* buffer);
+  void _loadSpriteImage( gfx::Picture& img, const SgFileEntry& rec);
+  void _writeTransparentImage( gfx::Picture& img, const unsigned char* buffer, int length);
+  void _writeIsometricTile( gfx::Picture& img, const unsigned char* buffer, int offset_x, int offset_y, int tile_width, int tile_height);
+  void _writeIsometricBase( gfx::Picture& img, const SgImageRecord& rec, const unsigned char* buffer);
   ByteArray _readData( const SgFileEntry& rec );
-  void _loadIsometricImage(Picture& pic, const SgFileEntry& rec);
-  void _loadPlainImage( Picture& pic, const SgFileEntry& rec);
-  void _set555Pixel( Picture& img, int x, int y, unsigned short color);
+  void _loadIsometricImage( gfx::Picture& pic, const SgFileEntry& rec);
+  void _loadPlainImage( gfx::Picture& pic, const SgFileEntry& rec);
+  void _set555Pixel( gfx::Picture& img, int x, int y, unsigned short color);
   std::string _findFilenameCaseInsensitive(std::string directory, std::string filename);
   std::string _find555File(const SgFileEntry& rec);
 }; // class Sg2ArchiveReader

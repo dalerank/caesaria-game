@@ -33,7 +33,7 @@ public:
   static EmperrorRequestWindow* create(Widget* parent, city::request::RequestPtr request , bool mayExec);
   ~EmperrorRequestWindow();
 
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
   virtual void setText(const std::string &text);
   virtual bool onEvent(const NEvent &event);
 

@@ -24,7 +24,7 @@ namespace gui
 class InfoboxWarehouse : public InfoboxConstruction
 {
 public:
-  InfoboxWarehouse( Widget* parent, const Tile& tile );
+  InfoboxWarehouse( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxWarehouse();
 
   void drawGood( const Good::Type &goodType, int col, int paintY);

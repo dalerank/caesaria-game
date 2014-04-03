@@ -55,13 +55,15 @@
 
 #include <list>
 
+using namespace gfx;
+
 class Game::Impl
 {
 public:
   ScreenType nextScreen;
   std::string nextFilename;
   scene::Base* currentScreen;
-  GfxEngine* engine;
+  gfx::Engine* engine;
   gui::GuiEnv* gui;
 
   world::EmpirePtr empire;
@@ -91,13 +93,13 @@ void Game::Impl::initLocale( std::string localePath)
 void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
-  engine = new GfxSdlEngine();
+  engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
     
   Logger::warning( "GraficEngine: try set fullscreen mode" );
-  engine->setFlag( GfxEngine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
+  engine->setFlag( gfx::Engine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
   engine->init();
 }
 
@@ -174,7 +176,7 @@ void Game::setScreenBriefing()
     screen.update( *_d->engine );
   }
 
-  switch( screen.getResult() )
+  switch( screen.result() )
   {
     case scene::Briefing::loadMission:
     {
@@ -203,7 +205,7 @@ void Game::setScreenMenu()
 
   reset();
 
-  switch( screen.getResult() )
+  switch( screen.result() )
   {
     case scene::StartMenu::startNewGame:
     {  
@@ -239,7 +241,7 @@ void Game::setScreenMenu()
       load( screen.getMapName() );
       Logger::warning( "screen menu: end loading map" );
 
-      CityBuildOptions bopts;
+      city::BuildOptions bopts;
       bopts = _d->city->getBuildOptions();
       bopts.setGroupAvailable( BM_MAX, true );
       _d->city->setBuildOptions( bopts );
@@ -292,7 +294,7 @@ void Game::setScreenGame()
   }
 
   _d->nextFilename = screen.nextFilename();
-  switch( screen.getResult() )
+  switch( screen.result() )
   {
     case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;    
     case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  load( screen.nextFilename() ); break;
@@ -306,8 +308,8 @@ PlayerPtr Game::player() const { return _d->player; }
 PlayerCityPtr Game::city() const { return _d->city; }
 world::EmpirePtr Game::empire() const { return _d->empire; }
 gui::GuiEnv* Game::gui() const { return _d->gui; }
-GfxEngine*Game::engine() const { return _d->engine; }
-scene::Base*Game::scene() const { return _d->currentScreen; }
+gfx::Engine* Game::engine() const { return _d->engine; }
+scene::Base* Game::scene() const { return _d->currentScreen; }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -427,7 +429,7 @@ void Game::initialize()
 void Game::exec()
 {
   _d->nextScreen = SCREEN_MENU;
-  _d->engine->setFlag( GfxEngine::debugInfo, 1 );
+  _d->engine->setFlag( gfx::Engine::debugInfo, 1 );
 
   while(_d->nextScreen != SCREEN_QUIT)
   {

@@ -27,6 +27,9 @@
 
 #include <map>
 
+namespace gfx
+{
+
 class AnimationBank
 {
 public:
@@ -48,5 +51,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace gfx
 
 #endif  //__CAESARIA_ANIMATION_BANK_H_INCLUDED__

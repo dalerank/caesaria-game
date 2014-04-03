@@ -34,13 +34,13 @@ public:
 
   static Pathfinder& getInstance();
 
-  void update( const Tilemap& tmap );
+  void update( const gfx::Tilemap& tmap );
 
-  Pathway getPath( TilePos start, TilesArray arrivedArea, int flags );
+  Pathway getPath( TilePos start, gfx::TilesArray arrivedArea, int flags );
 
   Pathway getPath( TilePos start, TilePos stop, int flags );
 
-  Pathway getPath(const Tile& start, const Tile& stop, int flags);
+  Pathway getPath(const gfx::Tile& start, const gfx::Tile& stop, int flags);
 
   void setCondition( const TilePossibleCondition& condition );
   void resetCondition();

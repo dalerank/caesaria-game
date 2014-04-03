@@ -34,7 +34,7 @@ class Level: public Base
 {
 public:
   typedef enum {mainMenu=0, loadGame, loadBriefing, quitGame} ResultType;
-  Level( Game& game, GfxEngine& engine );
+  Level( Game& game, gfx::Engine& engine );
   ~Level();
 
   void initialize();
@@ -44,7 +44,7 @@ public:
   virtual void draw();
   virtual void animate( unsigned int time );
   virtual void afterFrame();
-  virtual int getResult() const;
+  virtual int result() const;
 
   virtual bool installEventHandler(EventHandlerPtr);
 

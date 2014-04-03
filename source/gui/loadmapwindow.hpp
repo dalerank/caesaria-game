@@ -21,8 +21,6 @@
 #include "vfs/path.hpp"
 #include "core/signals.hpp"
 
-class Picture;
-
 namespace gui
 {
 
@@ -33,9 +31,9 @@ public:
     const vfs::Directory& dir, const std::string& ext,
     int id );
   
-  ~LoadMapWindow();
+  virtual ~LoadMapWindow();
 
-  void draw( GfxEngine& engine );  // draw on screen
+  void draw( gfx::Engine& engine );  // draw on screen
 
   bool onEvent( const NEvent& event);
 

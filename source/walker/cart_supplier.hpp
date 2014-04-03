@@ -31,9 +31,9 @@ public:
   void setDestinationBuilding( BuildingPtr building );
   void setBaseBuilding( BuildingPtr building );
   
-  virtual const Picture& getCartPicture();
+  virtual const gfx::Picture& getCartPicture();
   
-  virtual void getPictureList( PicturesArray &oPics);
+  virtual void getPictureList( gfx::Pictures& oPics);
 
   void send2city(BuildingPtr building, Good::Type what, const int qty );
 

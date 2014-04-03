@@ -23,12 +23,13 @@
 #include "walker/patrolpoint.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class PatrolPointEventHandler::Impl
 {
 public:
   Game* game;
-  CityRenderer* renderer;
+  Renderer* renderer;
   PatrolPointPtr patrolPoint;
   TilePos savePatrolPos;
 };
@@ -36,13 +37,13 @@ public:
 bool PatrolPointEventHandler::finished() const{  return false;}
 PatrolPointEventHandler::~PatrolPointEventHandler(){}
 
-PatrolPointEventHandler::PatrolPointEventHandler(Game& game, CityRenderer& renderer) : _d( new Impl )
+PatrolPointEventHandler::PatrolPointEventHandler(Game& game, gfx::Renderer& renderer) : _d( new Impl )
 {
   _d->game = &game;
   _d->renderer = &renderer;
 }
 
-scene::EventHandlerPtr PatrolPointEventHandler::create( Game& game, CityRenderer& renderer )
+scene::EventHandlerPtr PatrolPointEventHandler::create( Game& game, gfx::Renderer& renderer )
 {
   scene::EventHandlerPtr handler( new PatrolPointEventHandler( game, renderer ) );
   handler->drop();
@@ -59,7 +60,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
     {
     case mouseLbtnRelease:
     {
-      Tile* tile = _d->renderer->camera().at( event.mouse.pos(), true );
+      Tile* tile = _d->renderer->camera()->at( event.mouse.pos(), true );
       if( tile )
       {
         if( _d->patrolPoint.isNull() )
@@ -93,7 +94,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
     {
       if( _d->patrolPoint.isValid() )
       {
-        Tile* tile = _d->renderer->camera().at( event.mouse.pos(), true );
+        Tile* tile = _d->renderer->camera()->at( event.mouse.pos(), true );
         if( tile )
         {
           _d->patrolPoint->setPos( tile->pos() );

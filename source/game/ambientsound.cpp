@@ -23,6 +23,8 @@
 
 #include <set>
 
+using namespace gfx;
+
 namespace city
 {
 
@@ -48,7 +50,7 @@ struct SoundEmitter
   {
     if( overlay.isValid() )
     {
-      return overlay->getSound();
+      return overlay->sound();
     }
     else
     {
@@ -83,17 +85,17 @@ struct SoundEmitter
 class AmbientSound::Impl
 {
 public:
-  TilemapCamera* camera;
+  Camera* camera;
   TilePos cameraPos;
 
   typedef std::set< SoundEmitter > Emitters;
   Emitters emitters;
 };
 
-SrvcPtr AmbientSound::create(PlayerCityPtr city, TilemapCamera& camera )
+SrvcPtr AmbientSound::create(PlayerCityPtr city, gfx::Camera* camera )
 {
   AmbientSound* ret = new AmbientSound( city );
-  ret->_d->camera = &camera;
+  ret->_d->camera = camera;
 
   city::SrvcPtr p( ret );
   p->drop();
@@ -111,7 +113,7 @@ void AmbientSound::update( const unsigned int time )
   if( time % 20 != 1 )
     return;
 
-  Tile* tile = _d->camera->getCenterTile();
+  Tile* tile = _d->camera->center();
 
   if( !tile )
     return;

@@ -30,6 +30,9 @@
 class Rect;
 class NColor;
 struct SDL_Surface;
+
+namespace gfx
+{
   
 // an image with offset, this is the basic rendered object
 class Picture : public ReferenceCounted
@@ -89,8 +92,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-typedef std::vector<Picture> PicturesArray;
-
 struct PictureRefDeleter
 {
   static inline void cleanup( Picture* pic )
@@ -112,5 +113,7 @@ public:
     reset( Picture::create( size ) );
   }
 };
+
+}//end namespace gfx
 
 #endif //_CAESARIA_PICTURE_HPP_INCLUDE_

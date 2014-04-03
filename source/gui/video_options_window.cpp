@@ -43,7 +43,7 @@ public:
   bool haveChanges;
 };
 
-VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, bool fullscreen )
+VideoOptionsWindow::VideoOptionsWindow(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->locker.activate();

@@ -23,6 +23,7 @@
 #include "game/resourcegroup.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 bool FurnitureWorkshop::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {

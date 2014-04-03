@@ -18,7 +18,10 @@
 
 #include "core/referencecounted.hpp"
 #include "gfx/layer.hpp"
-#include "city_renderer.hpp"
+#include "renderer.hpp"
+
+namespace gfx
+{
 
 class LayerBuild : public Layer
 {
@@ -26,23 +29,24 @@ public:
   virtual void handleEvent(NEvent &event);
   virtual int getType() const;
   virtual std::set<int> getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );  
-  virtual void render(GfxEngine &engine);
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
+  virtual void render( Engine &engine);
   virtual void init(Point cursor);
 
-  static LayerPtr create( CityRenderer* renderer, PlayerCityPtr city );
+  static LayerPtr create( Renderer* renderer, PlayerCityPtr city );
 
-  ~LayerBuild();
+  virtual ~LayerBuild();
 private:
   void _updatePreviewTiles(bool force);
   void _checkPreviewBuild(TilePos pos);
   void _discardPreview();
   void _buildAll();
-  void _drawBuildTiles( GfxEngine& engine );
+  void _drawBuildTiles( Engine& engine );
 
-  LayerBuild( CityRenderer* renderer, PlayerCityPtr city );
+  LayerBuild( Renderer* renderer, PlayerCityPtr city );
 
   __DECLARE_IMPL(LayerBuild)
 };
 
+}//end namespace gfx
 #endif //__CAESARIA_LAYERBUILD_H_INCLUDED__

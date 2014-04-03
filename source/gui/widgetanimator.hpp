@@ -37,7 +37,7 @@ public:
     //! Деструктор
     virtual ~WidgetAnimator(void);
 
-    void beforeDraw( GfxEngine& painter );
+    void beforeDraw( gfx::Engine& painter );
 
 protected:
     virtual void afterFinished_();

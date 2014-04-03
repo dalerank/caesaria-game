@@ -17,13 +17,16 @@
 #define _CAESARIA_TILEOVERLAY_H_INCLUDE_
 
 #include "predefinitions.hpp"
-#include "picture.hpp"
-#include "animation.hpp"
+#include "gfx/picture.hpp"
+#include "gfx/animation.hpp"
 #include "game/enums.hpp"
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
-#include "renderer.hpp"
+#include "gfx/renderer.hpp"
 #include "game/predefinitions.hpp"
+
+namespace gfx
+{
 
 class TileOverlay : public Serializable, public ReferenceCounted
 {
@@ -34,7 +37,7 @@ public:
   TileOverlay( const Type type, const Size& size=Size(1));
   virtual ~TileOverlay();
 
-  Tile& tile() const;  // master tile, in case of multi-tile area
+  gfx::Tile& tile() const;  // master tile, in case of multi-tile area
   TilePos pos() const;
   Size size() const;  // size in tiles (1=1x1, 2=2x2, ...)
   void setSize( const Size& size );
@@ -45,12 +48,12 @@ public:
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual bool isFlat() const;
-  virtual void initTerrain( Tile& terrain ) = 0;
+  virtual void initTerrain( gfx::Tile& terrain ) = 0;
 
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete
 
-  virtual Point offset( Tile& tile, const Point& subpos ) const;
+  virtual Point offset( gfx::Tile& tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic
@@ -58,13 +61,13 @@ public:
   virtual void setPicture(const char* resource, const int index);
 
   virtual const Picture& getPicture() const;
-  virtual std::string getSound() const;
+  virtual std::string sound() const;
 
-  void setAnimation( const Animation& animation );
-  const Animation& animation() const;
+  void setAnimation( const gfx::Animation& animation );
+  const gfx::Animation& animation() const;
 
-  virtual const PicturesArray& getPictures( Renderer::Pass pass ) const;
-  virtual Renderer::PassQueue getPassQueue() const;
+  virtual const gfx::Pictures& getPictures( gfx::Renderer::Pass pass ) const;
+  virtual gfx::Renderer::PassQueue getPassQueue() const;
 
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );
@@ -77,10 +80,10 @@ public:
   virtual void load( const VariantMap& stream );
 
 protected:
-  Animation& _animationRef();
-  Tile* _masterTile();
+  gfx::Animation& _animationRef();
+  gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;
-  PicturesArray& _fgPicturesRef();
+  gfx::Pictures& _fgPicturesRef();
   Picture&_fgPicture(unsigned int index);
   Picture& _pictureRef();
 
@@ -89,4 +92,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //_OPENCAESAR3_TILEOVERLAY_H_INCLUDE_
+}//end namespace gfx
+
+#endif //_CAESARIA_TILEOVERLAY_H_INCLUDE_

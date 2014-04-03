@@ -23,6 +23,8 @@
 #include "objects/metadata.hpp"
 #include "core/event.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 

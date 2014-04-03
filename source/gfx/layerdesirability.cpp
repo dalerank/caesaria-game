@@ -23,6 +23,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerDesirability::getType() const
 {
   return citylayer::desirability;
@@ -33,7 +36,7 @@ std::set<int> LayerDesirability::getVisibleWalkers() const
   return std::set<int>();
 }
 
-void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mapPos() + offset;
@@ -91,12 +94,12 @@ void LayerDesirability::drawTile(GfxEngine& engine, Tile& tile, Point offset)
 
   if( tile.getDesirability() != 0 )
   {
-    GfxSdlEngine* painter = static_cast< GfxSdlEngine* >( &engine );
+    SdlEngine* painter = static_cast< SdlEngine* >( &engine );
     _debugFont.draw( painter->getScreen(), StringHelper::format( 0xff, "%d", tile.getDesirability() ), screenPos + Point( 20, -15 ), false );
   }
 }
 
-LayerPtr LayerDesirability::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerDesirability( camera, city ) );
   ret->drop();
@@ -104,8 +107,10 @@ LayerPtr LayerDesirability::create(TilemapCamera& camera, PlayerCityPtr city)
   return ret;
 }
 
-LayerDesirability::LayerDesirability(TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerDesirability::LayerDesirability( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _debugFont = Font::create( "FONT_1" );
 }
+
+}//end namespace gfx

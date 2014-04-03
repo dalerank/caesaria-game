@@ -53,7 +53,7 @@ public:
   virtual float relation() const = 0;
   virtual Service::Type serviceType() const = 0;
   virtual std::string shortDescription() const = 0;
-  virtual const Picture& picture() const = 0;
+  virtual const gfx::Picture& picture() const = 0;
   virtual void updateRelation( float income, PlayerCityPtr city ) = 0;
   virtual DateTime lastFestivalDate() const = 0;
   virtual std::string moodDescription() const = 0;

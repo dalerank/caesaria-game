@@ -71,6 +71,7 @@
 
 using namespace gui;
 using namespace constants;
+using namespace gfx;
 
 namespace scene
 {
@@ -84,7 +85,7 @@ public:
   gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
   gui::Menu* menu;
-  GfxEngine* engine;
+  Engine* engine;
   gui::ExtentMenu* extMenu;
   CityRenderer renderer;
   Game* game; // current game
@@ -117,7 +118,7 @@ public:
   vfs::Path getFastSaveName();
 };
 
-Level::Level(Game& game, GfxEngine& engine ) : _d( new Impl )
+Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
 {
   _d->topMenu = NULL;
   _d->game = &game;
@@ -136,13 +137,13 @@ void Level::initialize()
   const int topMenuHeight = 23;
   const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
 
-  GfxEngine& engine = GfxEngine::instance();
+  Engine& engine = Engine::instance();
   gui::GuiEnv& gui = *_d->game->gui();
 
   installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
 
-  Rect rPanelRect( engine.screenWidth() - rPanelPic.width(), topMenuHeight,
-                   engine.screenWidth(), engine.screenHeight() );
+  Rect rPanelRect( engine.screenSize().width() - rPanelPic.width(), topMenuHeight,
+                   engine.screenSize().width(), engine.screenSize().height() );
 
   _d->rightPanel = MenuRigthPanel::create( gui.rootWidget(), rPanelRect, rPanelPic);
 
@@ -151,11 +152,11 @@ void Level::initialize()
   _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
 
   _d->menu = Menu::create( gui.rootWidget(), -1, city );
-  _d->menu->setPosition( Point( engine.screenWidth() - _d->menu->width() - _d->rightPanel->width(),
+  _d->menu->setPosition( Point( engine.screenSize().width() - _d->menu->width() - _d->rightPanel->width(),
                                  _d->topMenu->height() ) );
 
   _d->extMenu = ExtentMenu::create( gui.rootWidget(), -1, city );
-  _d->extMenu->setPosition( Point( engine.screenWidth() - _d->extMenu->width() - _d->rightPanel->width(),
+  _d->extMenu->setPosition( Point( engine.screenSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
                                      _d->topMenu->height() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
@@ -165,7 +166,7 @@ void Level::initialize()
   WindowMessageStack::create( gui.rootWidget() );
 
   _d->rightPanel->bringToFront();
-  _d->renderer.camera().setViewport( engine.getScreenSize() );
+  _d->renderer.setViewport( engine.screenSize() );
 
   new SenatePopupInfo( gui.rootWidget(), _d->renderer );
 
@@ -207,15 +208,15 @@ void Level::initialize()
 
   CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
-  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), &_d->renderer.camera(), TilemapCamera::setCenter );
+  CONNECT( &_d->alarmsHolder, onMoveToAlarm(), _d->renderer.camera(), Camera::setCenter );
   CONNECT( &_d->alarmsHolder, onAlarmChange(), _d->extMenu, ExtentMenu::setAlarmEnabled );
 
-  CONNECT( &_d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter );
-  CONNECT( &_d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
-  CONNECT( mmap, onCenterChange(), &_d->renderer.camera(), TilemapCamera::setCenter );
+  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter );
+  CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
+  CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter );
 
   _d->showMissionTaretsWindow();
-  _d->renderer.camera().setCenter( city->cameraPos() );
+  _d->renderer.camera()->setCenter( city->cameraPos() );
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
@@ -247,7 +248,7 @@ void Level::Impl::showGameSpeedOptionsDialog()
                                                                0 );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
-  CONNECT( dialog, onScrollSpeedChange(), &renderer.camera(), TilemapCamera::setScrollSpeed );
+  CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
 }
 
 void Level::Impl::resolveWarningMessage(std::string text )
@@ -258,7 +259,8 @@ void Level::Impl::resolveWarningMessage(std::string text )
 
 void Level::Impl::saveCameraPos(Point p)
 {
-  Tile* tile = renderer.camera().at( Point( engine->screenWidth()/2, engine->screenHeight()/2 ), false );
+  Size scrSize = engine->screenSize();
+  Tile* tile = renderer.camera()->at( Point( scrSize.width()/2, scrSize.height()/2 ), false );
 
   if( tile )
   {
@@ -383,7 +385,7 @@ void Level::afterFrame()
   {
     _d->lastDate = GameDate::current();
     PlayerCityPtr city = _d->game->city();
-    const CityWinTargets& wt = city->getWinTargets();
+    const city::WinTargets& wt = city->getWinTargets();
 
     int culture = city->getCulture();
     int prosperity = city->getProsperity();
@@ -525,10 +527,10 @@ void Level::Impl::makeScreenShot()
                                                time.hour(), time.minutes(), time.seconds() );
   Logger::warning( "creating screenshot %s", filename.c_str() );
 
-  GfxEngine::instance().createScreenshot( filename );
+  Engine::instance().createScreenshot( filename );
 }
 
-int Level::getResult() const {  return _d->result; }
+int Level::result() const {  return _d->result; }
 bool Level::installEventHandler(EventHandlerPtr handler) {  _d->eventHandlers.push_back( handler ); return true; }
 void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
 void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
@@ -547,7 +549,7 @@ void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
 
 void Level::setCameraPos(TilePos pos)
 {
-  _d->renderer.camera().setCenter( pos );
+  _d->renderer.camera()->setCenter( pos );
 }
 
 

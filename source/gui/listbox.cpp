@@ -27,6 +27,8 @@
 
 #define DEFAULT_SCROLLBAR_SIZE 39
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -566,7 +568,7 @@ Rect ListBox::getItemTextRect_()
   return frameRect;
 }
 
-void ListBox::beforeDraw( GfxEngine& painter)
+void ListBox::beforeDraw(gfx::Engine& painter)
 {
   if ( !isVisible() )
       return;
@@ -632,7 +634,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 }
 
 //! draws the element and its children
-void ListBox::draw( GfxEngine& painter )
+void ListBox::draw(gfx::Engine& painter )
 {
   if ( !isVisible() )
 		return;

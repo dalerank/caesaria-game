@@ -30,6 +30,8 @@
 #include "city/cityservice_prosperity.hpp"
 #include "core/logger.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -197,7 +199,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 27), 60, 50 );
 
-  const CityWinTargets& targets = city->getWinTargets();
+  const city::WinTargets& targets = city->getWinTargets();
 
   Font font = Font::create( FONT_2 );
   font.draw( *_d->background, StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ), 225, 15, false );
@@ -228,7 +230,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
-void AdvisorRatingsWindow::draw( GfxEngine& painter )
+void AdvisorRatingsWindow::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

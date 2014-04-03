@@ -43,9 +43,9 @@ public:
   bool needRecalculateParams;
   Point cursorPos;
 
-	Picture texture;
-  Picture sliderPictureUp, sliderPictureDown;
-	Picture sliderTexture;
+  gfx::Picture texture;
+  gfx::Picture sliderPictureUp, sliderPictureDown;
+  gfx::Picture sliderTexture;
 };
 
 }//end namespace gui

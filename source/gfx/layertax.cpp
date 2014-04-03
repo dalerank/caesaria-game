@@ -23,6 +23,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerTax::getType() const
 {
   return citylayer::tax;
@@ -36,7 +39,7 @@ Layer::VisibleWalkers LayerTax::getVisibleWalkers() const
   return ret;
 }
 
-void LayerTax::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -95,7 +98,7 @@ void LayerTax::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerTax::create(TilemapCamera& camera, PlayerCityPtr city )
+LayerPtr LayerTax::create( Camera& camera, PlayerCityPtr city )
 {
   LayerPtr ret( new LayerTax( camera, city ) );
   ret->drop();
@@ -103,8 +106,10 @@ LayerPtr LayerTax::create(TilemapCamera& camera, PlayerCityPtr city )
   return ret;
 }
 
-LayerTax::LayerTax( TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerTax::LayerTax( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 9 );
 }
+
+}//end namespace gfx

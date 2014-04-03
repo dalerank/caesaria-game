@@ -40,6 +40,7 @@
 #include "city/statistic.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace events
 {
@@ -211,6 +212,8 @@ void Pause::_exec(Game& game, unsigned int)
   case hideplay:
     game.setPaused( _mode == hidepause );
   break;
+
+  default: break;
   }
 }
 

@@ -26,6 +26,7 @@
 #include "objects/warehouse.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace religion
 {

@@ -21,6 +21,9 @@
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
 
+namespace gfx
+{
+
 namespace {
   int waterDecreaseInterval = GameDate::ticksInMonth() / 2;
 }
@@ -306,3 +309,5 @@ Tile& TileHelper::getInvalid()
   static Tile invalidTile( TilePos( -1, -1) );
   return invalidTile;
 }
+
+}//end namespace gfx

@@ -22,12 +22,15 @@
 
 class GoodStore;
 
-class CityTradeOptions
+namespace city
+{
+
+class TradeOptions
 {
 public:
   typedef enum { importing=0, noTrade, exporting, stacking, disabled } Order;
-  CityTradeOptions();
-  ~CityTradeOptions();
+  TradeOptions();
+  ~TradeOptions();
 
   int getExportLimit( Good::Type type ) const;
   void setExportLimit( Good::Type type, int qty );
@@ -58,5 +61,7 @@ public:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //_CAESARIA_CITYTRADEOPTIONS_INCLUDE_H_

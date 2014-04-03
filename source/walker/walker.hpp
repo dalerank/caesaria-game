@@ -84,7 +84,7 @@ public:
   virtual void go();
   virtual void die();
 
-  virtual void getPictureList(PicturesArray& oPics);
+  virtual void getPictureList( gfx::Pictures& oPics);
 
   bool isDeleted() const;  // returns true if the walker should be forgotten
   void deleteLater();
@@ -95,7 +95,7 @@ public:
 protected:
   void _walk();
   void _computeDirection();
-  const Tile& _nextTile() const;
+  const gfx::Tile& _nextTile() const;
 
   virtual void _changeTile();  // called when the walker is on a new tile
   virtual void _centerTile();  // called when the walker is on the middle of a tile
@@ -103,14 +103,14 @@ protected:
   virtual void _changeDirection(); // called when the walker changes direction
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
-  virtual const Picture& getMainPicture();
+  virtual const gfx::Picture& getMainPicture();
 
 protected:
   Pathway& _pathwayRef();
   virtual void _updatePathway(const Pathway& pathway );
 
-  Animation& _animationRef();
-  const Animation &_animationRef() const;
+  gfx::Animation& _animationRef();
+  const gfx::Animation &_animationRef() const;
   void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
 

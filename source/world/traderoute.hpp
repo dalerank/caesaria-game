@@ -23,7 +23,7 @@
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/position.hpp"
-#include "gfx/picture.hpp"
+#include "gfx/picturesarray.hpp"
 
 class GoodStore;
 
@@ -43,7 +43,7 @@ public:
   void update( unsigned int time );
   PointsArray getPoints( bool reverse=false ) const;
   void setPoints(const PointsArray& points , bool seaRoute);
-  const PicturesArray& getPictures() const;
+  const gfx::Pictures& getPictures() const;
 
   bool isSeaRoute() const;
 

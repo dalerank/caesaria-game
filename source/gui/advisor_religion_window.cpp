@@ -33,6 +33,7 @@
 
 using namespace constants;
 using namespace religion;
+using namespace gfx;
 
 namespace gui
 {
@@ -52,7 +53,7 @@ public:
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
-  virtual void _updateTexture( GfxEngine& painter )
+  virtual void _updateTexture( gfx::Engine& painter )
   {
     Label::_updateTexture( painter );
 
@@ -177,7 +178,7 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
-void AdvisorReligionWindow::draw( GfxEngine& painter )
+void AdvisorReligionWindow::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #ifndef __CAESARIA_WELL_H_INCLUDED__
 #define __CAESARIA_WELL_H_INCLUDED__
 
@@ -30,7 +29,7 @@ public:
   virtual bool isNeedRoadAccess() const;
 
   virtual bool isDestructible() const;
-  TilesArray getCoverageArea() const;
+  gfx::TilesArray getCoverageArea() const;
 };
 
 #endif //__CAESARIA_WELL_H_INCLUDED__

@@ -19,6 +19,8 @@
 #include "core/position.hpp"
 #include "gfx/tile.hpp"
 
+using namespace gfx;
+
 class AStarPoint
 {
 

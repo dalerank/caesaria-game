@@ -20,6 +20,7 @@
 #include "core/color.hpp"
 
 using namespace std;
+using namespace gfx;
 
 namespace gui
 {
@@ -109,7 +110,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
   setText( text );
 }
 
-void Label::_updateTexture( GfxEngine& painter )
+void Label::_updateTexture(gfx::Engine& painter )
 {
   Size labelSize = size();
 
@@ -213,7 +214,7 @@ void Label::_updateTexture( GfxEngine& painter )
 Label::~Label() {}
 
 //! draws the element and its children
-void Label::draw( GfxEngine& painter )
+void Label::draw(gfx::Engine& painter )
 {
   if ( !isVisible() )
     return;
@@ -560,7 +561,7 @@ int Label::getTextWidth() const
 
 void Label::setPadding( const Rect& margin ) {  _d->textMargin = margin; }
 
-void Label::beforeDraw( GfxEngine& painter )
+void Label::beforeDraw(gfx::Engine& painter )
 {
   if( _d->needUpdatePicture )
   {

@@ -19,19 +19,23 @@
 #include "layer.hpp"
 #include "city_renderer.hpp"
 
+namespace gfx
+{
+
 class LayerReligion : public Layer
 {
 public:
   virtual int getType() const;
   virtual VisibleWalkers getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
   virtual void handleEvent(NEvent& event);
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+  static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  LayerReligion(TilemapCamera& camera, PlayerCityPtr city );
+  LayerReligion( Camera& camera, PlayerCityPtr city );
   std::set<int> _flags;
 };
 
+}//end namespace gfx
 #endif //__CAESARIA_LAYERRELIGION_H_INCLUDED__
