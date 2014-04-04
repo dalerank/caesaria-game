@@ -13,25 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_SMARTLIST_H_INCLUDE__
+#define __CAESARIA_SMARTLIST_H_INCLUDE__
 
 #include "smartptr.hpp"
-#include "position.hpp"
-#include "smartlist.hpp"
+#include "foreach.hpp"
+#include <list>
 
-#include <vector>
+template <class T>
+class SmartList : public std::list< SmartPtr< T > >
+{
+public:
+  template< class Src >
+  SmartList& operator<<( const SmartList<Src>& srcList )
+  {
+    foreach( it, srcList )
+    {
+      SmartPtr<T> ptr = ptr_cast<T>( *it );
+      if( ptr.isValid() )
+          this->push_back( ptr );
+    }
 
-#define PREDEFINE_CLASS_SMARTPOINTER(a) class a; typedef SmartPtr<a> a##Ptr;
-#define PREDEFINE_CLASS_SMARTLIST(a,b) PREDEFINE_CLASS_SMARTPOINTER(a); typedef SmartList< a > a##b;
+    return *this;
+  }
+};
 
-class TilePos;
-class Size;
-class VariantMap;
-class DateTime;
-typedef long unsigned int ThreadID;
-
-typedef std::vector< TilePos > TilePosArray;
-typedef std::vector< Point > PointsArray;
-
-#endif //__CAESARIA_PREDEFINITIONS_H_INCLUDED__
+#endif //__CAESARIA_SMARTLIST_H_INCLUDE__

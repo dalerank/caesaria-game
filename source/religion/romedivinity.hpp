@@ -63,7 +63,7 @@ public:
   virtual std::string internalName() const = 0;
 };
 
-PREDEFINE_CLASS_SMARTPOINTER_LIST(RomeDivinity,List)
+PREDEFINE_CLASS_SMARTLIST(RomeDivinity,List)
 
 }//end namespace religion
 

@@ -45,39 +45,13 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-template< class Dst, class Src >
-inline std::list<SmartPtr<Dst> >& operator<<(std::list<SmartPtr<Dst> >& dstList, const std::list< SmartPtr<Src> >& srcList )
-{
-  foreach( it, srcList )
-  {
-    SmartPtr<Dst> ptr = ptr_cast<Dst>( *it );
-    if( ptr.isValid() )
-        dstList.push_back( ptr );
-  }
-
-  return dstList;
-}
-
-template< class Dst >
-inline std::list<SmartPtr<Dst> >& operator<<(std::list<SmartPtr<Dst> >& dstList, const WalkerList& srcList )
-{
-  foreach( it, srcList )
-  {
-    SmartPtr<Dst> ptr = ptr_cast<Dst>( *it );
-    if( ptr.isValid() )
-        dstList.push_back( ptr );
-  }
-
-  return dstList;
-}
-
 template< class Wlk >
-SmartPtr<Wlk> findNearestWalker( TilePos pos, const std::list< SmartPtr< Wlk > >& walkers )
+SmartPtr<Wlk> findNearestWalker( TilePos pos, const SmartList<Wlk>& walkers )
 {
   SmartPtr< Wlk > p;
 
   int minDistance=99;
-  for( typename std::list< SmartPtr< Wlk > >::const_iterator it=walkers.begin(); it != walkers.end(); ++it )
+  for( typename SmartList<Wlk>::const_iterator it=walkers.begin(); it != walkers.end(); ++it )
   {
     int distance = (*it)->pos().distanceFrom( pos );
     if( distance < minDistance )

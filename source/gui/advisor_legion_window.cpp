@@ -93,7 +93,7 @@ public:
   gui::Label* helpRequest;
 };
 
-AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id ) 
+AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
@@ -113,6 +113,12 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id )
 
   _d->alarm = new gui::Label( this, Rect( 60, height()-60, width() - 60, height() - 40 ), _("##advlegion_noalarm##") );
   _d->helpRequest = new gui::Label( this, Rect( 60, height()-40, width() - 60, height() - 20 ), _("##advlegion_norequest##") );
+
+  int index=0;
+  foreach( it, forts )
+  {
+    LegionButton* btn = new LegionButton( this, legionButtonOffset, index++, *it );
+  }
 }
 
 void AdvisorLegionWindow::draw( Engine& painter )

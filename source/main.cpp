@@ -6,7 +6,6 @@
 #include "vfs/directory.hpp"
 #include "core/stacktrace.hpp"
 
-
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
 #endif

@@ -37,12 +37,12 @@ public:
   Helper( PlayerCityPtr city ) : _city( city ) {}
 
   template< class T >
-  std::list< SmartPtr< T > > find( const gfx::TileOverlay::Type type );
+  SmartList< T > find( const gfx::TileOverlay::Type type );
 
   template< class T >
-  std::list< SmartPtr< T > > find( constants::building::Group group )
+  SmartList< T > find( constants::building::Group group )
   {
-    std::list< SmartPtr< T > > ret;
+    SmartList< T > ret;
     gfx::TileOverlayList& buildings = _city->getOverlays();
     foreach( item, buildings )
     {
@@ -69,10 +69,10 @@ public:
   }  
 
   template< class T >
-  std::list< SmartPtr< T > > find( constants::walker::Type type,
-                                   TilePos start, TilePos stop=Helper::invalidPos )
+  SmartList< T > find( constants::walker::Type type,
+                       TilePos start, TilePos stop=Helper::invalidPos )
   {
-    std::list< SmartPtr< T > > ret;
+    SmartList< T > ret;
 
     WalkerList walkers = _city->getWalkers( type, start, stop );
     foreach( w, walkers )
@@ -88,9 +88,9 @@ public:
   }
 
   template< class T >
-  std::list< SmartPtr< T > > find( const gfx::TileOverlay::Type type, TilePos start, TilePos stop )
+  SmartList< T > find( const gfx::TileOverlay::Type type, TilePos start, TilePos stop )
   {
-    std::set< SmartPtr< T > > tmp;
+    SmartList< T > ret;
 
     gfx::TilesArray area = getArea( start, stop );
     foreach( tile, area )
@@ -98,23 +98,17 @@ public:
       SmartPtr<T> obj = ptr_cast< T >( (*tile)->overlay() );
       if( obj.isValid() && (obj->type() == type || type == constants::building::any) )
       {
-        tmp.insert( obj );
+        ret.push_back( obj );
       }
     }    
-
-    std::list< SmartPtr< T > > ret;
-    foreach( obj, tmp )
-    {
-      ret.push_back( *obj );
-    }
 
     return ret;
   }
 
   template< class T >
-  std::list< SmartPtr< T > > find( constants::building::Group group, TilePos start, TilePos stop )
+  SmartList< T > find( constants::building::Group group, TilePos start, TilePos stop )
   {
-    std::set< SmartPtr< T > > tmp;
+    SmartList< T > ret;
 
     gfx::TilesArray area = getArea( start, stop );
 
@@ -123,21 +117,15 @@ public:
       SmartPtr<T> obj = ptr_cast< T >((*tile)->overlay());
       if( obj.isValid() && (obj->getClass() == group || group == constants::building::anyGroup) )
       {
-        tmp.insert( obj );
+        ret.push_back( obj );
       }
-    }
-
-    std::list< SmartPtr< T > > ret;
-    foreach( obj, tmp )
-    {
-      ret.push_back( obj );
     }
 
     return ret;
   }
 
   template< class T >
-  std::list< SmartPtr< T > > getProducers( const Good::Type goodtype );
+  SmartList< T > getProducers( const Good::Type goodtype );
 
   template< class T >
   SmartPtr< T > next( const SmartPtr< T > current );
@@ -162,7 +150,7 @@ SmartPtr<T> Helper::prew(const SmartPtr<T> current)
   if( current.isNull() )
     return SmartPtr<T>();
 
-  std::list< SmartPtr< T > > objects = find<T>( current->type() );
+  SmartList< T > objects = find<T>( current->type() );
   foreach( obj, objects )
   {
     if( current == *obj )
@@ -177,9 +165,9 @@ SmartPtr<T> Helper::prew(const SmartPtr<T> current)
 }
 
 template< class T >
-std::list< SmartPtr< T > > Helper::find( const gfx::TileOverlay::Type type )
+SmartList< T > Helper::find( const gfx::TileOverlay::Type type )
 {
-  std::list< SmartPtr< T > > ret;
+  SmartList< T > ret;
   gfx::TileOverlayList& buildings = _city->getOverlays();
   foreach( item, buildings )
   {
@@ -194,9 +182,9 @@ std::list< SmartPtr< T > > Helper::find( const gfx::TileOverlay::Type type )
 }
 
 template< class T >
-std::list< SmartPtr< T > > Helper::getProducers( const Good::Type goodtype )
+SmartList<T> Helper::getProducers( const Good::Type goodtype )
 {
-  std::list< SmartPtr< T > > ret;
+  SmartList< T > ret;
   gfx::TileOverlayList& overlays = _city->getOverlays();
   foreach( item, overlays )
   {
@@ -216,7 +204,7 @@ SmartPtr< T > Helper::next( const SmartPtr< T > current )
   if( current.isNull() )
     return SmartPtr<T>();
 
-  std::list< SmartPtr< T > > objects = find<T>( current->type() );
+  SmartList< T > objects = find<T>( current->type() );
   foreach( obj, objects )
   {
     if( current == *obj )

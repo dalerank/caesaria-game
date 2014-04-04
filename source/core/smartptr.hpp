@@ -166,11 +166,9 @@ public:
 };
 
 template<class A, class B>
-inline SmartPtr<A> ptr_cast( SmartPtr<B> ptr )
-{ return safety_cast<A*>( ptr.object() ); }
+inline SmartPtr<A> ptr_cast( SmartPtr<B> ptr ) { return safety_cast<A*>( ptr.object() ); }
 
 template<class A, class B>
-inline bool is_kind_of( SmartPtr<B> ptr )
-{ return safety_cast<A*>( ptr.object() ) != 0; }
+inline bool is_kind_of( SmartPtr<B> ptr ) { return safety_cast<A*>( ptr.object() ) != 0; }
 
 #endif //__CAESARIA_SMARTPTR_H_INCLUDE_

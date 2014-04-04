@@ -25,7 +25,7 @@ namespace events
 class Dispatcher::Impl
 {
 public:
-  typedef std::list< GameEventPtr > Events;
+  typedef SmartList< GameEvent > Events;
 
   Events events;
 };
