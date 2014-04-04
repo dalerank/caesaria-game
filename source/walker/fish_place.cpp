@@ -66,10 +66,8 @@ FishPlacePtr FishPlace::create(PlayerCityPtr city)
   return ret;
 }
 
-FishPlace::~FishPlace()
-{
+FishPlace::~FishPlace(){}
 
-}
 void FishPlace::timeStep(const unsigned long time)
 {
   Walker::timeStep( time );

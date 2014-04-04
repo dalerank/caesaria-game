@@ -32,8 +32,8 @@ namespace gui
 {
 
 namespace {
-  Point legionButtonOffset = Point( 35, 73 );
-  Size legionButtonSize = Size( 565, 40 );
+  Point legionButtonOffset = Point( 0, 50 );
+  Size legionButtonSize = Size( 565, 42 );
 }
 
 class LegionButton : public PushButton
@@ -126,6 +126,11 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts
 
   _d->alarm = new gui::Label( this, Rect( 60, height()-60, width() - 60, height() - 40 ), _("##advlegion_noalarm##") );
   _d->helpRequest = new gui::Label( this, Rect( 60, height()-40, width() - 60, height() - 20 ), _("##advlegion_norequest##") );
+
+  new gui::Label( this, Rect( 290, 60, 340, 80 ), _("##advlegion_morale##") );
+  new gui::Label( this, Rect( 380, 50, 435, 80 ), _("##advlegion_gotolegion##") );
+  new gui::Label( this, Rect( 465, 50, 520, 80 ), _("##advlegion_return2fort##") );
+  new gui::Label( this, Rect( 550, 50, 600, 80 ), _("##advlegion_empireservice##") );
 
   int index=0;
   foreach( it, forts )

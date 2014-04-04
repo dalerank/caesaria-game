@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Tarraco.map"
+  map : "/maps/Tarraco2.sav"
   funds : 8000
   date : "-270.01.01"
   finish : "-170.01.01"
@@ -87,8 +87,6 @@
         resources : [ "wheat", "vegetable", "fruit", "wine",
                       "fish", "timber", "clay" ]
       }
-
-
     }
   }
   		
@@ -103,14 +101,14 @@
       text : "##city_has_runout_money##"
     }
 
-    "emperor_request_vines#city_request" : {
+    /*"emperor_request_vines#city_request" : {
       date : "-347.05.01"
       reqtype : "good_request"
       month : 12
       good : { grape : 10 }
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 24 }
-    }
+    }*/
   }
 	
   buildoptions :

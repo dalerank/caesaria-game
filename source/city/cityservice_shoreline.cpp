@@ -22,6 +22,7 @@
 #include "core/time.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "walker/watergarbage.hpp"
 
 using namespace gfx;
 
@@ -72,6 +73,9 @@ void Shoreline::update( const unsigned int time )
 {
   if( (time - _d->lastTimeUpdate) < 50 )
     return;
+
+  WaterGarbage* wg = new WaterGarbage( &_city );
+  wg->send2City( _city.borderInfo().boatEntry );
 
   _d->lastTimeUpdate = time;
 
