@@ -24,6 +24,7 @@
 #include "texturedbutton.hpp"
 #include "objects/military.hpp"
 #include "walker/soldier.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -32,7 +33,7 @@ namespace gui
 
 namespace {
   Point legionButtonOffset = Point( 35, 73 );
-  Size legionButtonSize = Size( 570, 40 );
+  Size legionButtonSize = Size( 565, 40 );
 }
 
 class LegionButton : public PushButton
@@ -44,9 +45,19 @@ public:
     _fort = fort;
     _resizeEvent();
 
-    TexturedButton* gotoLegion = new TexturedButton( this, Point( 300, 4 ), Size( 24 ), -1, ResourceGroup::panelBackground, 563, 563, 563, 563 );
-    TexturedButton* return2fort = new TexturedButton( this, Point( 370, 4 ), Size( 24 ), -1, ResourceGroup::panelBackground, 564, 564, 565, 565 );
-    TexturedButton* empireService = new TexturedButton( this, Point( 440, 4 ), Size( 24 ), -1, ResourceGroup::panelBackground, 566, 566, 567, 567 );
+    PushButton* gotoLegion    = new PushButton( this, Rect( 360, 5, 360 + 32, 6 + 32 ), "", -1, false, PushButton::blackBorderUp );
+    gotoLegion->setIcon( ResourceGroup::panelBackground, 563 );
+    gotoLegion->setIconOffset( Point( 4, 4 ) );
+    PushButton* return2fort   = new PushButton( this, Rect( 450, 5, 450 + 32, 6 +32 ), "", -1, false, PushButton::blackBorderUp );
+    return2fort->setIcon(  ResourceGroup::panelBackground, 564 );
+    return2fort->setIconOffset( Point( 4, 4 ) );
+    PushButton* empireService = new PushButton( this, Rect( 530, 5, 530 + 32, 6 + 32), "", -1, false, PushButton::blackBorderUp );
+    empireService->setIcon( ResourceGroup::panelBackground, 566 );
+    empireService->setIconOffset( Point( 4, 4 ) );
+
+    CONNECT( gotoLegion, onClicked(), this, LegionButton::_resolveMove2Legion );
+    CONNECT( return2fort, onClicked(), this, LegionButton::_resolveReturnLegion2Fort );
+    CONNECT( empireService, onClicked(), this, LegionButton::_resolveEmpireService );
   }
 
   virtual void _updateTexture( ElementState state )
@@ -60,16 +71,16 @@ public:
 
     if( _fort.isValid() )
     {
-      pic->draw( _fort->legionEmblem(), Point( 2, 2 ), false );
+      pic->draw( _fort->legionEmblem(), Point( 6, 4 ), false );
 
-      fontW.draw( *pic, _fort->legionName(), 40, 2 );
+      fontW.draw( *pic, _fort->legionName(), 70, 4 );
 
       std::string qtyStr = StringHelper::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
-      fontB.draw( *pic, qtyStr, 40, 20 );
+      fontB.draw( *pic, qtyStr, 70, 22 );
 
       int moraleValue = _fort->legionMorale() / 10;
       std::string moraleStr = StringHelper::format( 0xff, "##legion_morale_%d##", moraleValue );
-      fontB.draw( *pic, _( moraleStr ), 150, 2 );
+      fontB.draw( *pic, _( moraleStr ), 180, 15 );
     }
   }
 
@@ -79,7 +90,9 @@ public oc3_signals:
   Signal1<FortPtr> onEmpireServiceSignal;
 
 private oc3_slots:
-  void _resolveMove2Legion();
+  void _resolveMove2Legion() { onShowLegionSignal.emit( _fort ); }
+  void _resolveReturnLegion2Fort() { onLegionRetreatSignal.emit( _fort ); }
+  void _resolveEmpireService() { onEmpireServiceSignal.emit( _fort ); }
 
 private:
   FortPtr _fort;
