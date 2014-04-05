@@ -48,7 +48,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
 {  
   int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly;
   flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
-  Pathway way = Pathfinder::getInstance().getPath( startPos, stopPos, flags );
+  Pathway way = Pathfinder::instance().getPath( startPos, stopPos, flags );
 
   if( way.isValid() )
   {

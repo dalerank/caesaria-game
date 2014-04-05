@@ -371,7 +371,7 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
   return oPathWay.length() > 0;
 }
 
-Pathfinder& Pathfinder::getInstance()
+Pathfinder& Pathfinder::instance()
 {
   static Pathfinder inst;
   return inst;

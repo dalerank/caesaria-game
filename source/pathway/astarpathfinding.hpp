@@ -32,7 +32,7 @@ public:
                  everyWhere=0x80, fourDirection=0x100,
                  customCondition=0x200, ignoreRoad=0x400 } Flags;
 
-  static Pathfinder& getInstance();
+  static Pathfinder& instance();
 
   void update( const gfx::Tilemap& tmap );
 

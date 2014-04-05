@@ -88,7 +88,7 @@ void Prefecture::deliverService()
 
       Tilemap& tmap = _city()->tilemap();
       TilesArray arrivedArea = tmap.getArea( _d->fireDetect - TilePos( 1, 1), _d->fireDetect + TilePos( 1, 1 ) );
-      Pathway pathway = Pathfinder::getInstance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
+      Pathway pathway = Pathfinder::instance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
       //patrol = !pathFounded;
 
       if( pathway.isValid() )

@@ -186,7 +186,7 @@ std::string TileOverlay::sound() const
 
 void TileOverlay::setName( const std::string& name ){  _d->name = name;}
 void TileOverlay::setSize( const Size& size ){  _d->size = size;}
-Point TileOverlay::offset( Tile&, const Point& ) const{  return Point( 0, 0 );}
+Point TileOverlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
 Animation& TileOverlay::_animationRef(){  return _d->animation;}
 Tile* TileOverlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr TileOverlay::_city() const{ return _d->city;}

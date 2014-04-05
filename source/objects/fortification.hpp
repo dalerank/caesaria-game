@@ -32,7 +32,7 @@ public:
   int getDirection() const;
 
   virtual void destroy();
-  virtual Point offset(gfx::Tile &tile, const Point &subpos) const;
+  virtual Point offset( const gfx::Tile &tile, const Point &subpos) const;
 
   void updatePicture(PlayerCityPtr city);
   bool isTowerEnter() const;

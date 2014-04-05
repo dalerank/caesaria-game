@@ -396,7 +396,7 @@ void Game::load(std::string filename)
   }
 
   Logger::warning( "Game: initialize pathfinder" );
-  Pathfinder::getInstance().update( _d->city->tilemap() );
+  Pathfinder::instance().update( _d->city->tilemap() );
 
   Logger::warning( "Load game end" );
   return;

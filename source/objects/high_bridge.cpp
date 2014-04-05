@@ -111,7 +111,7 @@ public:
     }
   }
 
-  Point offset( Tile& tile, const Point& subpos ) const
+  Point offset( const Tile& tile, const Point& subpos ) const
   {
     switch( _index )
     {

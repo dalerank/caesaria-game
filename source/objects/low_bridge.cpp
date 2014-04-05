@@ -28,6 +28,11 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+  Point spanswOffset = Point( -8, 25 );
+
+}
+
 class LowBridgeSubTile : public Construction
 {
 public:
@@ -86,7 +91,7 @@ public:
     }
   }
 
-  Point offset( Tile& , const Point& subpos ) const
+  Point offset( const Tile& , const Point& subpos ) const
   {
     switch( _index )
     {
@@ -94,7 +99,7 @@ public:
     case spanSE:    return Point( -15, 12 );
     case descentSE: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
     case descentSW: return Point( -subpos.y()*0.5, subpos.y()*0.9 );
-    case spanSW:    return Point( -8, 25 );
+    case spanSW:    return spanswOffset;
     case liftingSW: return Point( subpos.y()*0.6, 20-subpos.y()*0.4 );
 
     default: return Point( 0, 0 );

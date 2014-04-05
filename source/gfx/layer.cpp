@@ -234,7 +234,7 @@ void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffs
     {
       if( (*picRef).isValid() )
       {
-        engine.drawPicture( *picRef, (*w)->getMappos() + camOffset );
+        engine.drawPicture( *picRef, (*w)->screenpos() + camOffset );
       }
     }
   }

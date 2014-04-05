@@ -18,6 +18,7 @@
 #include "core/variant.hpp"
 #include "city/city.hpp"
 #include "pathway/path_finding.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "name_generator.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/tilemap.hpp"
@@ -96,7 +97,7 @@ void ServiceWalker::_init(const Service::Type service)
   setName( NameGenerator::rand( nameType ));
 }
 
-BuildingPtr ServiceWalker::getBase() const
+BuildingPtr ServiceWalker::base() const
 {
   if( _d->base.isNull() )
   {
@@ -283,6 +284,28 @@ void ServiceWalker::_reachedPathway()
     _pathwayRef().rbegin();
     _computeDirection();
     go();
+  }
+}
+
+void ServiceWalker::_brokePathway(TilePos p)
+{
+  Walker::_brokePathway( p );
+  if( base().isValid() )
+  {
+    Pathway way = PathwayHelper::create( pos(), base()->pos(), PathwayHelper::roadFirst );
+    if( way.isValid() )
+    {
+      setPathway( way );
+      go();
+    }
+    else
+    {
+      die();
+    }
+  }
+  else
+  {
+    die();
   }
 }
 

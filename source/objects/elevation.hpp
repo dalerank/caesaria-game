@@ -29,7 +29,7 @@ public:
   virtual void initTerrain(gfx::Tile &terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual Point offset( gfx::Tile& tile, const Point &subpos) const;
+  virtual Point offset( const gfx::Tile& tile, const Point &subpos) const;
   virtual bool isDestructible() const;
 };
 

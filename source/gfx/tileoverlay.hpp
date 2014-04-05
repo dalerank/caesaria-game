@@ -53,7 +53,7 @@ public:
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete
 
-  virtual Point offset( gfx::Tile& tile, const Point& subpos ) const;
+  virtual Point offset(const Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
 
   // graphic

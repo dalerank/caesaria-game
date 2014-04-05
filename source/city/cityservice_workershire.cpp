@@ -112,7 +112,7 @@ bool WorkersHire::_haveHr( WorkingBuildingPtr building )
     RecruterPtr hr = ptr_cast<Recruter>( *w );
     if( hr.isValid() )
     {
-      if( hr->getBase() == building.object() )
+      if( hr->base() == building.object() )
         return true;
     }
   }
