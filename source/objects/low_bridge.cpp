@@ -29,7 +29,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-  Point spanswOffset = Point( -8, 25 );
+  Point spanswOffset = Point( 10, -25 );
 
 }
 
@@ -46,7 +46,7 @@ public:
     _index = index;
     _parent = 0;
     _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()) - 2, 15*(_pos.j()-_pos.i()) - 12 ) );
+    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()) ) );
   }
 
   ~LowBridgeSubTile() {}
@@ -61,7 +61,7 @@ public:
     _fgPicturesRef().clear();
     _pos = pos;
     _picture = Picture::load( ResourceGroup::transport, _index );
-    _picture.addOffset( Point( 10, -10 ) );
+    _picture.addOffset( Point( 6, -6 ) );
     _fgPicturesRef().push_back( _picture );
   }
 
@@ -98,9 +98,9 @@ public:
     case liftingSE: return Point( -subpos.x()*0.9, subpos.x()*0.7 );
     case spanSE:    return Point( -15, 12 );
     case descentSE: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
-    case descentSW: return Point( -subpos.y()*0.5, subpos.y()*0.9 );
+    case descentSW: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
     case spanSW:    return spanswOffset;
-    case liftingSW: return Point( subpos.y()*0.6, 20-subpos.y()*0.4 );
+    case liftingSW: return Point( subpos.y()*0.6, -25+subpos.y() );
 
     default: return Point( 0, 0 );
     }
@@ -165,7 +165,6 @@ LowBridge::LowBridge() : Construction( constants::building::lowBridge, Size(1) )
 
 void LowBridge::initTerrain(Tile& terrain )
 {
-
 }
 
 void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir )

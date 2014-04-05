@@ -292,7 +292,7 @@ void ServiceWalker::_brokePathway(TilePos p)
   Walker::_brokePathway( p );
   if( base().isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), base()->pos(), PathwayHelper::roadFirst );
+    Pathway way = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ), PathwayHelper::roadFirst );
     if( way.isValid() )
     {
       setPathway( way );
