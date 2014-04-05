@@ -64,7 +64,13 @@ void SplashScreen::fadeOut()
 
   PictureRef pf;
   pf.init( engine.screenSize() );
-  for( int k=0; k < 0xff; k+=3 )
+  int offset = 3;
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  offset = 12;
+#endif
+
+  for( int k=0; k < 0xff; k+=offset )
   {
     engine.startRenderFrame();
     pf->fill( NColor(k, 0, 0, 0), Rect() );

@@ -265,22 +265,22 @@ enum MouseEventType
     mouseLbtnPressed = 0,
 
     //! Middle mouse button was pressed down.
-    mouseMbtnPressed,
+    mouseMbtnPressed, //1
 
     //! Right mouse button was pressed down.
-    mouseRbtnPressed,
+    mouseRbtnPressed, //2
 
     //! Left mouse button was left up.
-    mouseLbtnRelease,
+    mouseLbtnRelease, //3
 
     //! Middle mouse button was left up.
-    mouseMbtnRelease,
+    mouseMbtnRelease, //4
 
     //! Right mouse button was left up.
-    mouseRbtnRelease,
+    mouseRbtnRelease, //5
 
     //! The mouse cursor changed its position.
-    mouseMoved,
+    mouseMoved, //6
 
     //! The mouse wheel was moved. Use Wheel value in event data to find out
     //! in what direction and how fast.

@@ -19,7 +19,7 @@
 #include "objects/wharf.hpp"
 #include "good/good.hpp"
 #include "walker/fish_place.hpp"
-#include "pathway/astarpathfinding.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "core/stringhelper.hpp"
 #include "pathway/pathway.hpp"
 #include "game/resourcegroup.hpp"
@@ -119,8 +119,8 @@ void FishingBoat::timeStep(const unsigned long time)
     {
       if( _d->base != 0 )
       {
-        Pathway way = Pathfinder::getInstance().getPath( pos(), _d->base->getLandingTile().pos(),
-                                                         Pathfinder::waterOnly );
+        Pathway way = PathwayHelper::create( pos(), _d->base->getLandingTile().pos(),
+                                             PathwayHelper::deepWater );
 
         if( way.isValid() )
         {
@@ -226,8 +226,7 @@ Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 
   if( nearest != 0 )
   {
-    Pathway way = Pathfinder::getInstance().getPath( pos, nearest->pos(),
-                                                     Pathfinder::waterOnly );
+    Pathway way = PathwayHelper::create( pos, nearest->pos(), PathwayHelper::deepWater );
 
     return way;
   }

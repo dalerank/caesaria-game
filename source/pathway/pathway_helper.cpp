@@ -41,6 +41,7 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
   }
   break;
 
+  case deepWater: return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
   case water: return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::waterOnly );
 
   default:

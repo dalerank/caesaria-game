@@ -151,6 +151,8 @@
       lumber_mill : true
       granery : true
       warehouse : true
+      fruit_farm : true
+      meat_farm : true
       wheat_farm : true
       vinard : true
       senate_1 : true

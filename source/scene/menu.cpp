@@ -249,10 +249,8 @@ void StartMenu::initialize()
   _d->bgPicture = Picture::load("title", 1);
 
   // center the bgPicture on the screen
-  Size scrSize = _d->engine->screenSize();
-  Point p( (scrSize.width() - _d->bgPicture.width()) / 2,
-           -( scrSize.height() - _d->bgPicture.height() ) / 2 );
-  _d->bgPicture.setOffset( p );
+  Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
+  _d->bgPicture.setOffset( Point( tmpSize.width(), -tmpSize.height() ) );
 
   _d->game->gui()->clear();
 

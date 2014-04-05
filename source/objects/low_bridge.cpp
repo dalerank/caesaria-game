@@ -41,15 +41,14 @@ public:
     _index = index;
     _parent = 0;
     _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()) - 10 ) );
+    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()) - 2, 15*(_pos.j()-_pos.i()) - 12 ) );
   }
 
-  ~LowBridgeSubTile()
-  {
-  }
+  ~LowBridgeSubTile() {}
 
   std::string getError() const { return _parent ? _parent->getError() : "";  }
   bool isWalkable() const { return true;  }
+  bool isNeedRoadAccess() const { return false; }
 
   void build( PlayerCityPtr city, const TilePos& pos )
   {
@@ -69,7 +68,7 @@ public:
     terrain.setFlag( Tile::tlRoad, true );
   }
 
-  bool canDestroy() const  {    return _parent->canDestroy();  }
+  bool canDestroy() const  {  return _parent ? _parent->canDestroy() : true;  }
 
   void destroy()
   {

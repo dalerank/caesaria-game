@@ -22,6 +22,7 @@
 #include "core/time.hpp"
 #include "core/foreach.hpp"
 #include "widget_factory.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -394,12 +395,12 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
 
 //! posts an input event to the environment
 bool GuiEnv::handleEvent( const NEvent& event )
-{
+{  
   switch(event.EventType)
   {
     case sEventGui:
-        // hey, why is the user sending gui events..?
-        break;
+      // hey, why is the user sending gui events..?
+    break;
 
     case sEventMouse:
         _d->cursorPos = event.mouse.pos();
@@ -407,38 +408,48 @@ bool GuiEnv::handleEvent( const NEvent& event )
         {
         case mouseLbtnPressed:
         case mouseRbtnPressed:
+        {
             if ( (_d->hovered.isValid() && _d->hovered != getFocus()) || !getFocus() )
             {
-                setFocus( _d->hovered.object() );
+              Logger::warning( "gui: set focus" );
+              setFocus( _d->hovered.object() );
             }
 
             // sending input to focus
-            if (getFocus() && getFocus()->onEvent(event))
+            Widget* inFocus = getFocus();
+            if( inFocus )
+            {
+              Logger::warning( "gui: infocus" );
+              bool eventResolved = getFocus()->onEvent(event);
+              if( eventResolved )
+              {
+                Logger::warning( "gui: event resolved" );
                 return true;
+              }
+            }
 
             // focus could have died in last call
-            if (!getFocus() && _d->hovered.isValid() )
-            {
-
-                return _d->hovered->onEvent(event);
+            inFocus = getFocus();
+            if( !inFocus && _d->hovered.isValid() )
+            {                
+              return _d->hovered->onEvent(event);
             }
+        }
         break;
 
         case mouseLbtnRelease:
-//             if( _dragObjectSave && _hovered )
-//             {
-//                 _hovered->onEvent( NEvent::Drop( event.MouseEvent.getPosition(), _dragObjectSave ) );
-//                 _dragObjectSave = NULL;
-//             }
-//             else
-                if( getFocus() )
-                    return getFocus()->onEvent( event );
+           if( getFocus() )
+           {
+             Logger::warning( "gui: release" );
+             return getFocus()->onEvent( event );
+           }
         break;
 
         default:
             if( _d->hovered.isValid() )
             {
-                return _d->hovered->onEvent( event );
+              Logger::warning( "gui def: check %d", event.mouse.type );
+              return _d->hovered->onEvent( event );
             }
         break;
         }

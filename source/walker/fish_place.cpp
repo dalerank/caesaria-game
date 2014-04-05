@@ -17,7 +17,7 @@
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
-#include "pathway/astarpathfinding.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
 #include "constants.hpp"
@@ -94,8 +94,8 @@ const Picture& FishPlace::getMainPicture()
 
 void FishPlace::send2city(TilePos pos)
 {
-  Pathway pathway = Pathfinder::getInstance().getPath( pos, _city()->borderInfo().boatExit,
-                                                       Pathfinder::waterOnly );
+  Pathway pathway = PathwayHelper::create( pos, _city()->borderInfo().boatExit,
+                                           PathwayHelper::deepWater );
   if( !pathway.isValid() )
   {
     deleteLater();

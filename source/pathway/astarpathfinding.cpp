@@ -99,13 +99,14 @@ public:
   bool aStar(TilePos start, TilesArray arrivedArea, Pathway& oPathWay, int flags );
 
   void isRoad( const Tile* tile, bool& possible );
+  void isDeepWater( const Tile* tile, bool& possible );
   void isWater( const Tile* tile, bool& possible );
   void isTerrain( const Tile* tile, bool& possible );
 };
 
 Pathfinder::Pathfinder() : _d( new Impl )
 {
-  _d->maxLoopCount = 2400;
+  _d->maxLoopCount = 4800;
 }
 
 void Pathfinder::update( const Tilemap& tilemap )
@@ -198,7 +199,8 @@ bool _inArea( APoints& area, AStarPoint* end )
 
 void Pathfinder::Impl::isRoad( const Tile* tile, bool& possible ) {  possible = tile ? tile->isWalkable( false ) : false; }
 void Pathfinder::Impl::isTerrain( const Tile* tile, bool& possible ) { possible = tile ? tile->isWalkable( true ) : false; }
-void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = tile ? tile->getFlag( Tile::tlDeepWater ) : false; }
+void Pathfinder::Impl::isDeepWater( const Tile* tile, bool& possible ) { possible = tile ? tile->getFlag( Tile::tlDeepWater ) : false; }
+void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = tile ? tile->getFlag( Tile::tlWater ) : false; }
 
 bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
@@ -215,6 +217,7 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
   if( (flags & customCondition)) {}
   else if( (flags & roadOnly) > 0 ) { condition = makeDelegate( this, &Impl::isRoad); }
   else if( (flags & terrainOnly) > 0 ) { condition = makeDelegate( this, &Impl::isTerrain ); }
+  else if( (flags & deepWaterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isDeepWater ); }
   else if( (flags & waterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isWater ); }
   else
   {
