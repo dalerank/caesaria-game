@@ -45,7 +45,7 @@ public:
   Point getCursorPos() const;
 
   virtual bool isHovered( const Widget* element );
-  Widget* getHoveredElement() const;
+  Widget* hovered() const;
 
   virtual void draw();
   virtual void beforeDraw();
@@ -61,9 +61,9 @@ public:
   void clear();
    
 private:    
-  void drawTooltip_( unsigned int time );
-  void updateHoveredElement( const Point& mousePos);
-  Widget* getNextWidget(bool reverse, bool group); 
+  void _drawTooltip( unsigned int time );
+  void _updateHovered( const Point& mousePos);
+  Widget* next(bool reverse, bool group);
 
   class Impl;
   ScopedPtr<Impl> _d;

@@ -415,7 +415,7 @@ public:
     *  \param includeInvisible: includes invisible elements in the search (default=false)
     *  \return true if successfully found an element, false to continue searching/fail 
 	 */
-  bool getNextWidget( int startOrder, bool reverse, bool group,
+  bool next( int startOrder, bool reverse, bool group,
                       Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
   void setParent( Widget* parent );

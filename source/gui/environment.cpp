@@ -113,7 +113,7 @@ void GuiEnv::clear()
   // Remove the focus
   setFocus( this );
 
-  updateHoveredElement( Point( -9999, -9999 ) );
+  _updateHovered( Point( -9999, -9999 ) );
 
   for( ConstChildIterator it = getChildren().begin(); it != getChildren().end(); it++ )
     deleteLater( *it );
@@ -129,7 +129,7 @@ void GuiEnv::draw()
 
   Widget::draw( *_d->engine );
 
-  drawTooltip_( DateTime::elapsedTime() );
+  _drawTooltip( DateTime::elapsedTime() );
 
   // make sure tooltip is always on top
   //if(_d->toolTip.Element.isValid() )
@@ -249,7 +249,7 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 }
 
 //
-void GuiEnv::drawTooltip_( unsigned int time )
+void GuiEnv::_drawTooltip( unsigned int time )
 {
     // launch tooltip
     if ( _d->toolTip.element.isNull()
@@ -284,7 +284,7 @@ void GuiEnv::drawTooltip_( unsigned int time )
     }
 }
 
-void GuiEnv::updateHoveredElement( const Point& mousePos )
+void GuiEnv::_updateHovered( const Point& mousePos )
 {
   WidgetPtr lastHovered = _d->hovered;
   WidgetPtr lastHoveredNoSubelement = _d->hoveredNoSubelement;
@@ -346,7 +346,7 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 }
 
 //! Returns the next element in the tab group starting at the focused element
-Widget* GuiEnv::getNextWidget(bool reverse, bool group)
+Widget* GuiEnv::next(bool reverse, bool group)
 {
     // start the search at the root of the current tab group
     Widget *startPos = getFocus() ? getFocus()->tabgroup() : 0;
@@ -381,7 +381,7 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
         // find the element
         Widget *closest = 0;
         Widget *first = 0;
-        startPos->getNextWidget(startOrder, reverse, group, first, closest);
+        startPos->next(startOrder, reverse, group, first, closest);
 
         if (closest)
             return closest; // we found an element
@@ -480,10 +480,10 @@ bool GuiEnv::handleEvent( const NEvent& event )
                 event.keyboard.pressed &&
                 event.keyboard.key == KEY_TAB)
             {
-                Widget *next = getNextWidget(event.keyboard.shift, event.keyboard.control);
-                if (next && next != getFocus())
+                Widget *wdg = next(event.keyboard.shift, event.keyboard.control);
+                if (wdg && wdg != getFocus())
                 {
-                    if (setFocus(next))
+                    if( setFocus(wdg) )
                         return true;
                 }
             }
@@ -508,7 +508,7 @@ bool GuiEnv::handleEvent( const NEvent& event )
   return false;
 }
 
-Widget* GuiEnv::getHoveredElement() const {  return _d->hovered.object(); }
+Widget* GuiEnv::hovered() const {  return _d->hovered.object(); }
 
 void GuiEnv::beforeDraw()
 {
@@ -523,7 +523,7 @@ void GuiEnv::beforeDraw()
 
   _d->threatDeletionQueue();
 
-  updateHoveredElement( _d->cursorPos );
+  _updateHovered( _d->cursorPos );
 
   const Widgets& children = getChildren();
   for( Widgets::const_iterator i=children.begin(); i != children.end(); ++i )

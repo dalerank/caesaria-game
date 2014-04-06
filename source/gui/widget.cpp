@@ -320,7 +320,7 @@ void Widget::setTabOrder( int index )
     if (el)
     {
         // find the highest element number
-        el->getNextWidget(-1, true, _d->isTabGroup, first, closest, true);
+        el->next(-1, true, _d->isTabGroup, first, closest, true);
         if (first)
         {
             _d->tabOrder = first->getTabOrder() + 1;
@@ -438,7 +438,7 @@ Widget* Widget::findChild( int id, bool searchchildren/*=false*/ ) const
   return e;
 }
 
-bool Widget::getNextWidget( int startOrder, bool reverse, bool group, Widget*& first, Widget*& closest, bool includeInvisible/*=false*/ ) const
+bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Widget*& closest, bool includeInvisible/*=false*/ ) const
 {
     // we'll stop searching if we find this number
     int wanted = startOrder + ( reverse ? -1 : 1 );
@@ -500,7 +500,7 @@ bool Widget::getNextWidget( int startOrder, bool reverse, bool group, Widget*& f
                     }
             }
             // search within children
-            if ((*it)->getNextWidget(startOrder, reverse, group, first, closest))
+            if ((*it)->next(startOrder, reverse, group, first, closest))
             {
                 return true;
             }

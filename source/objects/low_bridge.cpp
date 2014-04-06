@@ -100,7 +100,7 @@ public:
     case descentSE: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
     case descentSW: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
     case spanSW:    return spanswOffset;
-    case liftingSW: return Point( subpos.y()*0.6, -25+subpos.y() );
+    case liftingSW: return Point( subpos.y()*0.6, -25-subpos.y() );
 
     default: return Point( 0, 0 );
     }
