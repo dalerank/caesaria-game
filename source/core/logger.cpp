@@ -30,6 +30,10 @@
 #include <fstream>
 #include <map>
 
+#ifdef CAESARIA_PLATFORM_ANDROID
+#include <android/log.h>
+#endif
+
 class FileLogWriter : public LogWriter
 {
 private:
@@ -80,9 +84,14 @@ class ConsoleLogWriter : public LogWriter
 public:
 	void write( std::string str, bool newline )
 	{
-		std::cout << str;
-		if( newline ) std::cout << std::endl;
-		else std::cout << std::flush;
+#ifdef CAESARIA_PLATFORM_ANDROID
+      str.append( newline ? "\n" : "" );
+      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, str.c_str() );
+#else
+      std::cout << str;
+      if( newline ) std::cout << std::endl;
+      else std::cout << std::flush;
+#endif
 	}
 };
 

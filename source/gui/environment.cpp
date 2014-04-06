@@ -184,10 +184,7 @@ bool GuiEnv::setFocus( Widget* element )
     return true;
 }
 
-Widget* GuiEnv::getFocus() const
-{
-  return _d->focusedElement.object();
-}
+Widget* GuiEnv::getFocus() const { return _d->focusedElement.object(); }
 
 bool GuiEnv::isHovered( const Widget* element )
 {
@@ -230,7 +227,7 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 
 Widget* GuiEnv::createWidget(const std::string& type, Widget* parent)
 {
-	return _d->factory.create( type, parent );
+  return _d->factory.create( type, parent );
 }
 
 WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
@@ -457,37 +454,36 @@ bool GuiEnv::handleEvent( const NEvent& event )
 
     case sEventKeyboard:
         {
-            /*if( _console && _console->InitKey() == (int)event.KeyboardEvent.Char )							//
+          /*if( _console && _console->InitKey() == (int)event.KeyboardEvent.Char )							//
+          {
+              if( _console && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )
+                  _console->ToggleVisible();
+
+              return true;
+          }*/
+
+          /*if( _console && _console->isVisible() && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )						//
+          {																//
+              _console->KeyPress( event );
+              return true;
+          }*/
+
+          if( getFocus() && getFocus()->onEvent(event))
+            return true;
+
+          // For keys we handle the event before changing focus to give elements the chance for catching the TAB
+          // Send focus changing event
+          if( event.EventType == sEventKeyboard &&
+              event.keyboard.pressed &&
+              event.keyboard.key == KEY_TAB)
+          {
+            Widget *wdg = next(event.keyboard.shift, event.keyboard.control);
+            if (wdg && wdg != getFocus())
             {
-                if( _console && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )
-                    _console->ToggleVisible();
-
-                return true;
-            }*/
-
-            /*if( _console && _console->isVisible() && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )						//
-            {																//
-                _console->KeyPress( event );
-                return true;
-            }*/
-
-            if (getFocus() && getFocus()->onEvent(event))
-                return true;
-
-            // For keys we handle the event before changing focus to give elements the chance for catching the TAB
-            // Send focus changing event
-            if( event.EventType == sEventKeyboard &&
-                event.keyboard.pressed &&
-                event.keyboard.key == KEY_TAB)
-            {
-                Widget *wdg = next(event.keyboard.shift, event.keyboard.control);
-                if (wdg && wdg != getFocus())
-                {
-                    if( setFocus(wdg) )
-                        return true;
-                }
+                if( setFocus(wdg) )
+                    return true;
             }
-
+          }
         }
         break;
 
