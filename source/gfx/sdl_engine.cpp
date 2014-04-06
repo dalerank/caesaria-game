@@ -267,7 +267,7 @@ Engine::Modes SdlEngine::getAvailableModes() const
   return ret;
 }
 
-Point SdlEngine::mousePos() const
+Point SdlEngine::cursorPos() const
 {
   int x,y;
   SDL_GetMouseState(&x,&y);

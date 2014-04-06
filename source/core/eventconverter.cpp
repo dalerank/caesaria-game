@@ -198,7 +198,6 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     ret.mouse.control = keys[SDLK_LCTRL];
     ret.mouse.shift = keys[SDLK_LSHIFT];
     ret.mouse.buttonStates = _d->mouseButtonStates;
-    Logger::warning( "EVC: Mouse move ad %d %d", _d->mouseX, _d->mouseY );
   }
   break;
 
@@ -220,13 +219,11 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     case SDL_BUTTON_LEFT:
       if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
       {
-        Logger::warning( "EVC: Mouse state down" );
         ret.mouse.type = mouseLbtnPressed;
         _d->mouseButtonStates |= mbsmLeft;
       }
       else
       {
-        Logger::warning( "EVC: Mouse state up" );
         ret.mouse.type = mouseLbtnRelease;
         _d->mouseButtonStates &= !mbsmLeft;
       }

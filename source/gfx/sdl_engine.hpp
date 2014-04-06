@@ -61,7 +61,7 @@ public:
   virtual void createScreenshot( const std::string& filename );
 
   virtual Modes getAvailableModes() const;
-  virtual Point mousePos() const;
+  virtual Point cursorPos() const;
 
 //non virtual functions: need to debug functional
   Picture& getScreen();

@@ -369,35 +369,26 @@ bool PushButton::onEvent(const NEvent& event)
    break;
 
    case sEventGui:
-    switch(event.gui.type)
-    {
-    case guiElementFocusLost:
-      if (event.gui.caller == this && !isPushButton())
-      {
-        setPressed(false);
-      }
-    break;
+     switch(event.gui.type)
+     {
+     case guiElementFocusLost:
+       if (event.gui.caller == this && !isPushButton())
+       {
+         setPressed(false);
+       }
+     break;
 
-    default:
-    break;
-    }
+     default:
+     break;
+     }
   break;
 
   case sEventMouse:
     switch( event.mouse.type  )
     {
-    case mouseMoved:
-        Logger::warning( "mouse move to %d %d ", event.mouse.x, event.mouse.y );
-    break;
-
-    case mouseLbtnPressed:
-        Logger::warning( "mouse press");
-        return _leftMouseBtnPressed( event );
-
-    case mouseLbtnRelease:
-        Logger::warning( "mouse release" );
-        return _btnMouseUp( event );
-
+    case mouseMoved:     break;
+    case mouseLbtnPressed:        return _leftMouseBtnPressed( event );
+    case mouseLbtnRelease:        return _btnMouseUp( event );
     default:
     break;
     }
@@ -407,7 +398,7 @@ bool PushButton::onEvent(const NEvent& event)
   break;
   }
 
-	return parent() ? parent()->onEvent(event) : false;
+  return parent() ? parent()->onEvent(event) : false;
 }
 
 void PushButton::_btnClicked()

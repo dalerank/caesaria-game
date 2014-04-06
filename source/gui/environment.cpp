@@ -302,29 +302,30 @@ void GuiEnv::_updateHovered( const Point& mousePos )
 
   // for tooltips we want the element itself and not some of it's subelements
   if( _d->hovered != rootWidget() )
-	{
-		_d->hoveredNoSubelement = _d->hovered;
-		while ( _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement->isSubElement() )
-		{
-			_d->hoveredNoSubelement = _d->hoveredNoSubelement->parent();
-		}
-	}
+  {
+    _d->hoveredNoSubelement = _d->hovered;
+    while ( _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement->isSubElement() )
+    {
+      _d->hoveredNoSubelement = _d->hoveredNoSubelement->parent();
+    }
+  }
   else
-	{
+  {
     _d->hoveredNoSubelement = 0;
-	}
+  }
 
   if( _d->hovered != lastHovered )
   {
     if( lastHovered.isValid() )
-		{
-			lastHovered->onEvent( NEvent::Gui( lastHovered.object(), 0, guiElementLeft ) );
-		}
+    {
+      lastHovered->onEvent( NEvent::Gui( lastHovered.object(), 0, guiElementLeft ) );
+    }
 
     if( _d->hovered.isValid() )
-		{
-			_d->hovered->onEvent( NEvent::Gui( _d->hovered.object(), _d->hovered.object(), guiElementHovered ) );
-		}
+    {
+      Logger::warning( "guienv: element hovered");
+      _d->hovered->onEvent( NEvent::Gui( _d->hovered.object(), _d->hovered.object(), guiElementHovered ) );
+    }
   }
 
   if ( lastHoveredNoSubelement != _d->hoveredNoSubelement )
@@ -401,6 +402,13 @@ bool GuiEnv::handleEvent( const NEvent& event )
 
     case sEventMouse:
         _d->cursorPos = event.mouse.pos();
+
+//!!! android fix. update hovered element on every mouse event,
+//!   that beforeDraw() function cannot do it correctly
+#ifdef CAESARIA_PLATFORM_ANDROID
+        _updateHovered( _d->cursorPos );
+#endif
+//!!! end android fix
         switch( event.mouse.type )
         {
         case mouseLbtnPressed:
@@ -408,7 +416,6 @@ bool GuiEnv::handleEvent( const NEvent& event )
         {
             if ( (_d->hovered.isValid() && _d->hovered != getFocus()) || !getFocus() )
             {
-              Logger::warning( "gui: set focus" );
               setFocus( _d->hovered.object() );
             }
 
@@ -416,11 +423,9 @@ bool GuiEnv::handleEvent( const NEvent& event )
             Widget* inFocus = getFocus();
             if( inFocus )
             {
-              Logger::warning( "gui: infocus" );
               bool eventResolved = getFocus()->onEvent(event);
               if( eventResolved )
               {
-                Logger::warning( "gui: event resolved" );
                 return true;
               }
             }
@@ -435,19 +440,17 @@ bool GuiEnv::handleEvent( const NEvent& event )
         break;
 
         case mouseLbtnRelease:
-           if( getFocus() )
-           {
-             Logger::warning( "gui: release" );
-             return getFocus()->onEvent( event );
-           }
+          if( getFocus() )
+          {
+            return getFocus()->onEvent( event );
+          }
         break;
 
         default:
-            if( _d->hovered.isValid() )
-            {
-              Logger::warning( "gui def: check %d", event.mouse.type );
-              return _d->hovered->onEvent( event );
-            }
+          if( _d->hovered.isValid() )
+          {
+            return _d->hovered->onEvent( event );
+          }
         break;
         }
     break;
