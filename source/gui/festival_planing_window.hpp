@@ -28,7 +28,7 @@ class FestivalPlaningWindow : public Widget
 {
 public:
   static FestivalPlaningWindow* create( Widget* parent, PlayerCityPtr city, int id );
-  ~FestivalPlaningWindow();
+  virtual ~FestivalPlaningWindow();
 
   virtual void draw( gfx::Engine& painter );
 

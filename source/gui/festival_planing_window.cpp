@@ -37,8 +37,7 @@ namespace gui
 class FestivalPlaningWindow::Impl
 {
 public:
-  static const int divId=0x200;
-  typedef enum { festId=0x400, smallFest=1, middleFest, greatFest } FestID;
+  typedef enum { divId=0x200, festId=0x400, smallFest=1, middleFest, greatFest } FestID;
   PictureRef background;
   Label* title;
   Label* festivalName;
@@ -98,10 +97,7 @@ FestivalPlaningWindow* FestivalPlaningWindow::create(Widget* parent, PlayerCityP
   return ret;
 }
 
-FestivalPlaningWindow::~FestivalPlaningWindow()
-{
-
-}
+FestivalPlaningWindow::~FestivalPlaningWindow(){}
 
 FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city)
   : Widget( parent, id, rectangle ), _d( new Impl )
@@ -181,7 +177,7 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     PushButton* btn = safety_cast< PushButton* >( event.gui.caller );
-    if( btn && (btn->getID() & 0x0200) )
+    if( btn && (btn->getID() & Impl::divId ) )
     {
       foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
 
@@ -190,11 +186,12 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
 
       _d->updateTitle();
     }
-    else if( btn && (btn->getID() & 0x0400) )
+    else if( btn && (btn->getID() & Impl::festId ) )
     {
-      const char* titles[] = { "", _("##small_festival##"), _("##middle_festival##"),  _("##great_festival##") };
-      _d->festivalType = btn->getID() & 0xf;
-      _d->festivalName->setText( titles[ _d->festivalType ] );      
+      StringArray titles;
+      titles << "" << "##small_festival##" << "##middle_festival##" << "##great_festival##";
+      _d->festivalType = (btn->getID() & 0xf);
+      _d->festivalName->setText( _( titles[ _d->festivalType ] ) );
     }
 
     return true;
@@ -203,9 +200,6 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<int,int>& FestivalPlaningWindow::onFestivalAssign()
-{
-  return _d->onFestivalAssignSignal;
-}
+Signal2<int,int>& FestivalPlaningWindow::onFestivalAssign() {  return _d->onFestivalAssignSignal;}
 
 }//end namespace gui

@@ -437,23 +437,19 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 
 bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 {
-  Logger::warning( "_leftMouseBtnPressed enter" );
   if( _environment->hasFocus(this) &&
       !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
   {
-    Logger::warning( "_leftMouseBtnPressed remove focus");
     removeFocus();
     return false;
   }
 
   if( !isPushButton() )
   {
-    Logger::warning( "_leftMouseBtnPressed pressed" );
     setPressed(true);
   }
 
   setFocus();
-  Logger::warning( "_leftMouseBtnPressed exit");
   return true;
 }
 
