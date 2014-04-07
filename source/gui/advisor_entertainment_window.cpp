@@ -217,6 +217,7 @@ void AdvisorEntertainmentWindow::Impl::assignFestival(int divinityType, int fest
   if( srvc.isValid() )
   {
     srvc->assignFestival( (religion::RomeDivinityType)divinityType, festSize );
+    updateFestivalInfo();
   }
 }
 

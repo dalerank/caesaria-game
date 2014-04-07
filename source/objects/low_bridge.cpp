@@ -36,7 +36,7 @@ namespace {
 class LowBridgeSubTile : public Construction
 {
 public:
-  enum { liftingSE=67, spanSE=68, descentSE=69, liftingSW=70, spanSW=71, descentSW=72 };
+  enum { liftingWest=67, spanWest=68, descentWest=69, liftingNorth=70, spanNorth=71, descentNorth=72 };
   LowBridgeSubTile( const TilePos& pos, int index )
     : Construction( building::lowBridge, Size( 1 ) )
   {
@@ -95,12 +95,12 @@ public:
   {
     switch( _index )
     {
-    case liftingSE: return Point( -subpos.x()*0.9, subpos.x()*0.7 );
-    case spanSE:    return Point( -15, 12 );
-    case descentSE: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
-    case descentSW: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
-    case spanSW:    return spanswOffset;
-    case liftingSW: return Point( subpos.y()*0.6, -25-subpos.y() );
+    case liftingWest: return Point( -subpos.x()*0.9, subpos.x()*0.7 );
+    case spanWest:    return Point( -15, 12 );
+    case descentWest: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
+    case descentNorth: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
+    case spanNorth:    return spanswOffset;
+    case liftingNorth: return Point( subpos.y()*0.6, -25-subpos.y() );
 
     default: return Point( 0, 0 );
     }
@@ -180,12 +180,12 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
       foreach( it, tiles )
       {
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSE );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
       }
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
     }
   break;
 
@@ -196,12 +196,12 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
       }
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentNorth );
     }
     break;
 
@@ -215,13 +215,13 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
       foreach( it, tiles )
       {        
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSE );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
     }
   break;
 
@@ -235,13 +235,13 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {        
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentNorth );
     }
   break;
 

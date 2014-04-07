@@ -52,7 +52,7 @@
     
     lbIcon#Label : {
       geometry : [ 10, 10, 50, 50 ]
-      image : "paneling_00263.png"
+      image : "paneling_00263"
     }
     
     btnHelp#TexturedButton : {

@@ -36,6 +36,7 @@
 #include "core/foreach.hpp"
 #include "loader.hpp"
 #include "vfs/file.hpp"
+#include "core/color.hpp"
 
 class PictureBank::Impl
 {

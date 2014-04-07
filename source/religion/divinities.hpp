@@ -23,7 +23,10 @@
 namespace religion
 {
 
-class RomeDivinityBase : public RomeDivinity
+namespace rome
+{
+
+class RomeDivinity : public Divinity
 {
 public:
   void load( const VariantMap& vm );
@@ -44,7 +47,7 @@ public:
 
   virtual std::string moodDescription() const;
 
-  RomeDivinityBase();
+  RomeDivinity();
 
   virtual void setInternalName(const std::string &newName);
   virtual std::string internalName() const;
@@ -60,26 +63,29 @@ protected:
   StringArray _moodDescr;
 };
 
-class RomeDivinityCeres : public RomeDivinityBase
+
+class Ceres : public RomeDivinity
 {
 public:
-  static RomeDivinityPtr create();
+  static DivinityPtr create();
   virtual void updateRelation(float income, PlayerCityPtr city);
 };
 
-class RomeDivinityNeptune : public RomeDivinityBase
+class Neptune : public RomeDivinity
 {
 public:
-  static RomeDivinityPtr create();
+  static DivinityPtr create();
   virtual void updateRelation(float income, PlayerCityPtr city);
 };
 
-class RomeDivinityMercury : public RomeDivinityBase
+class Mercury : public RomeDivinity
 {
 public:
-  static RomeDivinityPtr create();
+  static DivinityPtr create();
   virtual void updateRelation(float income, PlayerCityPtr city);
 };
+
+}//end namespace rome
 
 }//end namespace religion
 

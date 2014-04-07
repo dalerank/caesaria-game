@@ -33,7 +33,10 @@
 #include "gamedate.hpp"
 #include "core/logger.hpp"
 #include "world/emperor.hpp"
+#include "religion/pantheon.hpp"
 #include "core/locale.hpp"
+
+using namespace religion;
 
 class GameLoaderMission::Impl
 {
@@ -74,7 +77,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     city::WinTargets targets;
     Variant winOptions = vm[ "win" ];
-    Logger::warningIf( winOptions.isNull(), "Cannot load mission win options from file " + filename );
+    Logger::warningIf( winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename );
 
     targets.load( winOptions.toMap() );
     city->setWinTargets( targets );
@@ -89,6 +92,13 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     Locale::addTranslation( missionName );
     GameSettings::set( GameSettings::lastTranslation, Variant( missionName ) );
 
+    //reseting divinities festival date
+    DivinityList gods = rome::Pantheon::instance().all();
+    foreach( it, gods )
+    {
+      rome::Pantheon::doFestival( (*it)->name(), 0 );
+    }
+
     return true;
   }
  
@@ -97,6 +107,5 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
 bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
 {
-  vfs::Path path( filename );
-  return path.isExtension( ".mission" );
+  return vfs::Path( filename ).isExtension( ".mission" );
 }

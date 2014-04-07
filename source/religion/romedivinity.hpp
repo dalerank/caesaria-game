@@ -46,7 +46,7 @@ const char* const baseDivinityNames[] =
   0
 };
 
-class RomeDivinity : public ReferenceCounted
+class Divinity : public ReferenceCounted
 {
 public:
   virtual std::string name() const = 0;
@@ -63,7 +63,7 @@ public:
   virtual std::string internalName() const = 0;
 };
 
-PREDEFINE_CLASS_SMARTLIST(RomeDivinity,List)
+PREDEFINE_CLASS_SMARTLIST(Divinity,List)
 
 }//end namespace religion
 

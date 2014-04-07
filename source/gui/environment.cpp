@@ -323,7 +323,6 @@ void GuiEnv::_updateHovered( const Point& mousePos )
 
     if( _d->hovered.isValid() )
     {
-      Logger::warning( "guienv: element hovered");
       _d->hovered->onEvent( NEvent::Gui( _d->hovered.object(), _d->hovered.object(), guiElementHovered ) );
     }
   }

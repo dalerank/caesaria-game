@@ -5,9 +5,8 @@
 		shortDesc : "Fertility",
 		type : "goddess",
 		service : "srvc_temple_ceres",
-    relation : 100
-		image : "picture1_00013.png"
-    relation : 100
+    image : "picture1_00013"
+    relation : 50
   },
 	
   mars :
@@ -16,9 +15,8 @@
 		shortDesc : "War",
 		type : "god",
 		service : "srvc_temple_mars",
-    relation : 100
-		image : "picture1_00012.png"
-    relation : 100
+    image : "picture1_00012"
+    relation : 50
 	},
 	
   neptune :
@@ -27,9 +25,8 @@
 		shortDesc : ""
 		type : "god",
     service : "srvc_temple_neptune"
-    relation : 100
-		image : "picture1_00015.png"
-    relation : 100
+    image : "picture1_00015"
+    relation : 50
 	},
 	
   venus :
@@ -38,9 +35,8 @@
 		shortDesc : ""
 		type : "goddes"
     service : "srvc_temple_venus"
-    relation : 100
-		image : "picture1_00011.png"
-    relation : 100
+    image : "picture1_00011"
+    relation : 50
 	},		
 	
   mercury :
@@ -49,8 +45,7 @@
 		shortDesc : ""
 		type : "god",
 		service : "srvc_temple_mercury"
-    relation : 100
-		image : "picture1_00014.png"
-    relation : 100
+    image : "picture1_00014"
+    relation : 50
 	}
  }

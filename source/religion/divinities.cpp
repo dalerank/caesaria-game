@@ -31,7 +31,10 @@ using namespace gfx;
 namespace religion
 {
 
-void RomeDivinityBase::load(const VariantMap& vm)
+namespace rome
+{
+
+void RomeDivinity::load(const VariantMap& vm)
 {
   if( vm.empty() )
     return;
@@ -48,14 +51,32 @@ void RomeDivinityBase::load(const VariantMap& vm)
   {
     _moodDescr << vm.get( "moodDescription" ).toList();
   }
+  else
+  {
+    _moodDescr << "##god_wrathful##"
+               << "##god_irriated##"
+               << "##god_veryangry##"
+               << "##god_verypoor##"
+               << "##god_quitepoor##"
+               << "##god_poor##"
+               << "##god_displeased##"
+               << "##god_indifferent##"
+               << "##god_pleased##"
+               << "##god_good##"
+               << "##god_verygood##"
+               << "##god_charmed##"
+               << "##god_happy##"
+               << "##god_excellent##"
+               << "##god_exalted##";
+  }
 }
 
-void RomeDivinityBase::assignFestival(int type)
+void RomeDivinity::assignFestival(int type)
 {
   _relation = math::clamp<float>( _relation + type * 10, 0, 100 );
 }
 
-VariantMap RomeDivinityBase::save() const
+VariantMap RomeDivinity::save() const
 {
   VariantMap ret;
   ret[ "name" ] = Variant( _name );
@@ -69,7 +90,7 @@ VariantMap RomeDivinityBase::save() const
   return ret;
 }
 
-void RomeDivinityBase::updateRelation(float income, PlayerCityPtr city)
+void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
   city::Helper helper( city );
   float cityBalanceKoeff = helper.getBalanceKoeff();
@@ -77,35 +98,35 @@ void RomeDivinityBase::updateRelation(float income, PlayerCityPtr city)
   _relation = math::clamp<float>( _relation + (income - getDefaultDecrease()) * cityBalanceKoeff, 0, 100 );
 }
 
-std::string RomeDivinityBase::moodDescription() const
+std::string RomeDivinity::moodDescription() const
 {
   if( _moodDescr.empty() )
     return "no_descriptions_divinity_mood";
 
   int delim = 100 / _moodDescr.size();
-  return _moodDescr[ _relation / delim ];
+  return _moodDescr[ math::clamp<int>( _relation / delim, 0, _moodDescr.size()-1 ) ];
 }
 
-RomeDivinityBase::RomeDivinityBase()
+RomeDivinity::RomeDivinity()
 {
   _relation = 0;
 }
 
-void RomeDivinityBase::setInternalName(const std::string& newName){  setDebugName( newName );}
-std::string RomeDivinityBase::internalName() const{  return getDebugName();}
+void RomeDivinity::setInternalName(const std::string& newName){  setDebugName( newName );}
+std::string RomeDivinity::internalName() const{  return getDebugName();}
 
-RomeDivinityPtr RomeDivinityCeres::create()
+DivinityPtr Ceres::create()
 {
-  RomeDivinityPtr ret( new RomeDivinityCeres() );
+  DivinityPtr ret( new Ceres() );
   ret->setInternalName( baseDivinityNames[ romeDivCeres ] );
   ret->drop();
 
   return ret;
 }
 
-void RomeDivinityCeres::updateRelation(float income, PlayerCityPtr city)
+void Ceres::updateRelation(float income, PlayerCityPtr city)
 {
-  RomeDivinityBase::updateRelation( income, city );
+  RomeDivinity::updateRelation( income, city );
 
   if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
@@ -124,18 +145,18 @@ void RomeDivinityCeres::updateRelation(float income, PlayerCityPtr city)
   }
 }
 
-RomeDivinityPtr RomeDivinityNeptune::create()
+DivinityPtr Neptune::create()
 {
-  RomeDivinityPtr ret( new RomeDivinityNeptune() );
+  DivinityPtr ret( new Neptune() );
   ret->setInternalName( baseDivinityNames[ romeDivNeptune ] );
   ret->drop();
 
   return ret;
 }
 
-void RomeDivinityNeptune::updateRelation(float income, PlayerCityPtr city)
+void Neptune::updateRelation(float income, PlayerCityPtr city)
 {
-  RomeDivinityBase::updateRelation( income, city );
+  RomeDivinity::updateRelation( income, city );
 
   if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
@@ -158,18 +179,18 @@ void RomeDivinityNeptune::updateRelation(float income, PlayerCityPtr city)
   }
 }
 
-RomeDivinityPtr RomeDivinityMercury::create()
+DivinityPtr Mercury::create()
 {
-  RomeDivinityPtr ret( new RomeDivinityMercury() );
+  DivinityPtr ret( new Mercury() );
   ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
   ret->drop();
 
   return ret;
 }
 
-void RomeDivinityMercury::updateRelation(float income, PlayerCityPtr city)
+void Mercury::updateRelation(float income, PlayerCityPtr city)
 {
-  RomeDivinityBase::updateRelation( income, city );
+  RomeDivinity::updateRelation( income, city );
 
   if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
@@ -196,5 +217,7 @@ void RomeDivinityMercury::updateRelation(float income, PlayerCityPtr city)
     }
   }
 }
+
+}//end namespace rome
 
 }//end namespace religion

@@ -150,7 +150,7 @@ void Game::Impl::initGuiEnvironment()
 void Game::Impl::initPantheon( vfs::Path filename)
 {
   VariantMap pantheon = SaveAdapter::load( filename );
-  religion::Pantheon::instance().load( pantheon );
+  religion::rome::Pantheon::instance().load( pantheon );
 }
 
 void Game::Impl::initPictures(vfs::Path resourcePath)
