@@ -55,7 +55,7 @@ DivinityPtr Pantheon::get( RomeDivinityType name )
   return get( baseDivinityNames[ name ] );
 }
 
-DivinityPtr Pantheon::get(std::string name)
+DivinityPtr Pantheon::get( const std::string& name)
 {
   DivinityList divines = instance().all();
   foreach( current, divines )
@@ -103,6 +103,15 @@ void Pantheon::save(VariantMap& stream)
 }
 
 void Pantheon::doFestival( RomeDivinityType who, int type )
+{
+  DivinityPtr divn = get( who );
+  if( divn.isValid() )
+  {
+    ptr_cast<rome::RomeDivinity>(divn)->assignFestival( type );
+  }
+}
+
+void Pantheon::doFestival(const std::string& who, int type)
 {
   DivinityPtr divn = get( who );
   if( divn.isValid() )

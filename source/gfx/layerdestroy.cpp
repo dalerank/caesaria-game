@@ -223,8 +223,6 @@ std::set<int> LayerDestroy::getVisibleWalkers() const
 
 void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
 {
-  Point screenPos = tile.mapPos() + offset;
-
   TileOverlayPtr overlay = tile.overlay();
 
   if( overlay.isValid() )
@@ -235,12 +233,9 @@ void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
   if( !tile.getFlag( Tile::wasDrawn ) )
   {
     tile.setWasDrawn();
-    engine.drawPicture( tile.picture(), screenPos );
+    drawTilePass( engine, tile, offset, Renderer::ground );
 
-    if( tile.animation().isValid() )
-    {
-      engine.drawPicture( tile.animation().currentFrame(), screenPos );
-    }
+    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
 
     drawTilePass( engine, tile, offset, Renderer::foreground );
   }

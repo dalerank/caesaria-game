@@ -352,11 +352,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     tile.setWasDrawn();
     engine.drawPicture( tile.picture(), screenPos );
 
-    if( tile.animation().isValid() )
-    {
-      engine.drawPicture( tile.animation().currentFrame(), screenPos );
-    }
-
+    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
     drawTilePass( engine, tile, offset, Renderer::foreground );
   }
 }

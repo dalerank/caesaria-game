@@ -63,7 +63,6 @@ public:
     if( _divinity.isValid() )
     {
       _lastFestival = _divinity->lastFestivalDate().getMonthToDate( GameDate::current() );
-      _mood = _divinity->relation();
 
       font.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
@@ -71,7 +70,7 @@ public:
       font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
       font.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
       font.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _mood ), 420, 0 );
+      font.draw( *texture, _divinity->moodDescription(), 420, 0 );
     }
     else
     {
@@ -147,7 +146,7 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   font.draw( *_d->background, _("##small##"), 240, 47, false );
   font.draw( *_d->background, _("##large##"), 297, 47, false );
   font.draw( *_d->background, _("##Fest.##"), 370, 47, false );
-  font.draw( *_d->background, _("##Mood##"), 450, 47, false );
+  font.draw( *_d->background, _("##rladv_mood##"), 450, 47, false );
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );

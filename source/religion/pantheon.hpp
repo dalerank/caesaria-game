@@ -39,6 +39,7 @@ public:
   void save(VariantMap& stream);
 
   static void doFestival( RomeDivinityType who, int type );
+  static void doFestival( const std::string& who, int type );
 
   DivinityList all();
   static DivinityPtr ceres();
@@ -48,7 +49,7 @@ public:
   static DivinityPtr mercury();
 
   static DivinityPtr get( RomeDivinityType name );
-  static DivinityPtr get( std::string name );
+  static DivinityPtr get( const std::string& name );
 
 private:
   Pantheon();

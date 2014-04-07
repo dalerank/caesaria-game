@@ -51,6 +51,24 @@ void RomeDivinity::load(const VariantMap& vm)
   {
     _moodDescr << vm.get( "moodDescription" ).toList();
   }
+  else
+  {
+    _moodDescr << "##god_wrathful##"
+               << "##god_irriated##"
+               << "##god_veryangry##"
+               << "##god_verypoor##"
+               << "##god_quitepoor##"
+               << "##god_poor##"
+               << "##god_displeased##"
+               << "##god_indifferent##"
+               << "##god_pleased##"
+               << "##god_good##"
+               << "##god_verygood##"
+               << "##god_charmed##"
+               << "##god_happy##"
+               << "##god_excellent##"
+               << "##god_exalted##";
+  }
 }
 
 void RomeDivinity::assignFestival(int type)
@@ -86,7 +104,7 @@ std::string RomeDivinity::moodDescription() const
     return "no_descriptions_divinity_mood";
 
   int delim = 100 / _moodDescr.size();
-  return _moodDescr[ _relation / delim ];
+  return _moodDescr[ math::clamp<int>( _relation / delim, 0, _moodDescr.size()-1 ) ];
 }
 
 RomeDivinity::RomeDivinity()
