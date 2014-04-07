@@ -220,6 +220,12 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     }
     break;
 
+    case Variant::UInt:
+    {
+      str = StringHelper::format( 0xff, "%d", data.toInt() );
+    }
+    break;
+
     default:
       if ( data.canConvert( Variant::LongLong ) ) // any signed number?
       {
