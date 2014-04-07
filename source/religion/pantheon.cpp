@@ -28,10 +28,13 @@ using namespace constants;
 namespace religion
 {
 
+namespace rome
+{
+
 class Pantheon::Impl
 {
 public:  
-  Pantheon::Divinities divinties;
+  DivinityList divinties;
 };
 
 Pantheon& Pantheon::instance()
@@ -42,47 +45,44 @@ Pantheon& Pantheon::instance()
 
 Pantheon::Pantheon() : _d( new Impl )
 {
-  _d->divinties.push_back( RomeDivinityCeres::create() );
-  _d->divinties.push_back( RomeDivinityNeptune::create() );
-  _d->divinties.push_back( RomeDivinityMercury::create() );
+  _d->divinties.push_back( rome::Ceres::create() );
+  _d->divinties.push_back( rome::Neptune::create() );
+  _d->divinties.push_back( rome::Mercury::create() );
 }
 
-RomeDivinityPtr Pantheon::get( RomeDivinityType name )
+DivinityPtr Pantheon::get( RomeDivinityType name )
 {
-  if( (unsigned int)name > instance()._d->divinties.size() )
-    return RomeDivinityPtr();
-
-  return instance()._d->divinties[ name ];
+  return get( baseDivinityNames[ name ] );
 }
 
-RomeDivinityPtr Pantheon::get(std::string name)
+DivinityPtr Pantheon::get(std::string name)
 {
-  Divinities divines = instance().all();
+  DivinityList divines = instance().all();
   foreach( current, divines )
   {
     if( (*current)->name() == name || (*current)->internalName() == name )
       return *current;
   }
 
-  return RomeDivinityPtr();
+  return DivinityPtr();
 }
 
-Pantheon::Divinities Pantheon::all(){ return _d->divinties; }
-RomeDivinityPtr Pantheon::mars(){  return get( romeDivMars ); }
-RomeDivinityPtr Pantheon::neptune() { return get( romeDivNeptune ); }
-RomeDivinityPtr Pantheon::venus(){ return get( romeDivVenus ); }
-RomeDivinityPtr Pantheon::mercury(){  return get( romeDivMercury ); }
-RomeDivinityPtr Pantheon::ceres() {  return instance().get( romeDivCeres );}
+DivinityList Pantheon::all(){ return _d->divinties; }
+DivinityPtr Pantheon::mars(){  return get( romeDivMars ); }
+DivinityPtr Pantheon::neptune() { return get( romeDivNeptune ); }
+DivinityPtr Pantheon::venus(){ return get( romeDivVenus ); }
+DivinityPtr Pantheon::mercury(){  return get( romeDivMercury ); }
+DivinityPtr Pantheon::ceres() {  return instance().get( romeDivCeres );}
 
 void Pantheon::load( const VariantMap& stream )
 {  
   for( int index=0; baseDivinityNames[ index ] != 0; index++ )
   {
-    RomeDivinityPtr divn = get( baseDivinityNames[ index ] );
+    DivinityPtr divn = get( baseDivinityNames[ index ] );
 
     if( divn.isNull() )
     {
-      divn = RomeDivinityPtr( new RomeDivinityBase() );
+      divn = DivinityPtr( new rome::RomeDivinity() );
       divn->setInternalName( baseDivinityNames[ index ] );
       divn->drop();
       _d->divinties.push_back( divn );
@@ -94,7 +94,7 @@ void Pantheon::load( const VariantMap& stream )
 
 void Pantheon::save(VariantMap& stream)
 {
-  Divinities divines = instance().all();
+  DivinityList divines = instance().all();
 
   foreach( current, divines )
   {
@@ -104,11 +104,13 @@ void Pantheon::save(VariantMap& stream)
 
 void Pantheon::doFestival( RomeDivinityType who, int type )
 {
-  RomeDivinityPtr divn = get( who );
+  DivinityPtr divn = get( who );
   if( divn.isValid() )
   {
-    ptr_cast<RomeDivinityBase>(divn)->assignFestival( type );
+    ptr_cast<rome::RomeDivinity>(divn)->assignFestival( type );
   }
 }
+
+}//end namespace rome
 
 }//end namespace religion

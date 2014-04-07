@@ -41,7 +41,7 @@ namespace gui
 class ReligionInfoLabel : public Label
 {
 public:
-  ReligionInfoLabel( Widget* parent, const Rect& rect, RomeDivinityPtr divinity, 
+  ReligionInfoLabel( Widget* parent, const Rect& rect, DivinityPtr divinity,
                      int smallTempleCount, int bigTempleCount  )
     : Label( parent, rect )
   {
@@ -81,7 +81,7 @@ public:
   }
 
 private:
-  RomeDivinityPtr _divinity;
+  DivinityPtr _divinity;
   int _smallTempleCount;
   int _bigTempleCount;
   int _lastFestival;
@@ -152,27 +152,27 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );
   Impl::InfrastructureInfo info = _d->getInfo( city, building::templeCeres, building::cathedralCeres );
-  _d->lbCeresInfo = new ReligionInfoLabel( this, Rect( startPoint, labelSize ), Pantheon::ceres(),
+  _d->lbCeresInfo = new ReligionInfoLabel( this, Rect( startPoint, labelSize ), rome::Pantheon::ceres(),
                                            info.smallTemplCount, info.bigTempleCount );
 
   info = _d->getInfo( city, building::templeNeptune, building::cathedralNeptune );
-  _d->lbNeptuneInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), Pantheon::neptune(),
+  _d->lbNeptuneInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), rome::Pantheon::neptune(),
                                              info.smallTemplCount, info.bigTempleCount );
 
   info = _d->getInfo( city, building::templeMercury, building::cathedralMercury );
-  _d->lbMercuryInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), Pantheon::mercury(),
+  _d->lbMercuryInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), rome::Pantheon::mercury(),
                                              info.smallTemplCount, info.bigTempleCount );
 
   info = _d->getInfo( city, building::templeMars, building::cathedralMars );
-  _d->lbMarsInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), Pantheon::mars(),
+  _d->lbMarsInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), rome::Pantheon::mars(),
                                           info.smallTemplCount, info.bigTempleCount );
 
   info = _d->getInfo( city, building::templeVenus, building::cathedralVenus );
-  _d->lbVenusInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 80), labelSize), Pantheon::venus(),
+  _d->lbVenusInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 80), labelSize), rome::Pantheon::venus(),
                                            info.smallTemplCount, info.bigTempleCount );
 
   info = _d->getInfo( city, building::oracle, building::oracle );
-  _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), RomeDivinityPtr(),
+  _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), DivinityPtr(),
                                             info.smallTemplCount, 0 );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );

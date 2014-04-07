@@ -52,7 +52,7 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
 
     game.empire()->load( vm[ "empire" ].toMap() );
 
-    religion::Pantheon::instance().load( vm[ "pantheon" ].toMap() );
+    religion::rome::Pantheon::instance().load( vm[ "pantheon" ].toMap() );
 
     return true;
   }

@@ -27,17 +27,17 @@ using namespace religion;
 class Temple::Impl
 {
 public:
-  RomeDivinityPtr divinity;
+  DivinityPtr divinity;
 };
 
-Temple::Temple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size )
+Temple::Temple( DivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size )
 : ServiceBuilding( divinity->serviceType(), type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
   setPicture( ResourceGroup::security, imgId );
 }
 
-RomeDivinityPtr Temple::getDivinity() const {  return _td->divinity; }
+DivinityPtr Temple::getDivinity() const {  return _td->divinity; }
 
 void Temple::deliverService()
 {
@@ -51,43 +51,43 @@ unsigned int Temple::walkerDistance() const {  return 26;}
 
 Temple::~Temple(){}
 
-TempleCeres::TempleCeres() : SmallTemple( Pantheon::ceres(), building::templeCeres, 45 )
+TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), building::templeCeres, 45 )
 {
 }
 
-BigTempleCeres::BigTempleCeres() : BigTemple( Pantheon::ceres(), building::cathedralCeres, 46 )
+BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), building::cathedralCeres, 46 )
 {
 }
 
-TempleNeptune::TempleNeptune() : SmallTemple( Pantheon::neptune(), building::templeNeptune, 47 )
+TempleNeptune::TempleNeptune() : SmallTemple( rome::Pantheon::neptune(), building::templeNeptune, 47 )
 {
 }
 
-BigTempleNeptune::BigTempleNeptune() : BigTemple( Pantheon::neptune(), building::cathedralNeptune, 48 )
+BigTempleNeptune::BigTempleNeptune() : BigTemple( rome::Pantheon::neptune(), building::cathedralNeptune, 48 )
 {
 }
 
-TempleMars::TempleMars() : SmallTemple( Pantheon::mars(), building::templeMars, 51 )
+TempleMars::TempleMars() : SmallTemple( rome::Pantheon::mars(), building::templeMars, 51 )
 {
 }
 
-BigTempleMars::BigTempleMars() : BigTemple( Pantheon::mars(), building::cathedralMars, 52 )
+BigTempleMars::BigTempleMars() : BigTemple( rome::Pantheon::mars(), building::cathedralMars, 52 )
 {
 }
 
-TempleVenus::TempleVenus() : SmallTemple( Pantheon::venus(), building::templeVenus, 53 )
+TempleVenus::TempleVenus() : SmallTemple( rome::Pantheon::venus(), building::templeVenus, 53 )
 {
 }
 
-BigTempleVenus::BigTempleVenus() : BigTemple( Pantheon::venus(), building::cathedralVenus, 54 )
+BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), building::cathedralVenus, 54 )
 {
 }
 
-TempleMercure::TempleMercure() : SmallTemple( Pantheon::mercury(), building::templeMercury, 49 )
+TempleMercure::TempleMercure() : SmallTemple( rome::Pantheon::mercury(), building::templeMercury, 49 )
 {
 }
 
-BigTempleMercure::BigTempleMercure() : BigTemple( Pantheon::mercury(), building::cathedralMercury, 50 )
+BigTempleMercure::BigTempleMercure() : BigTemple( rome::Pantheon::mercury(), building::cathedralMercury, 50 )
 {
 }
 
@@ -96,7 +96,7 @@ unsigned int BigTempleMercure::parishionerNumber() const
   return 300;
 }
 
-TempleOracle::TempleOracle() : BigTemple( RomeDivinityPtr(), building::oracle, 55 )
+TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), building::oracle, 55 )
 {
   _animationRef().load( ResourceGroup::security, 56, 6);
   _animationRef().setOffset( Point( 9, 30 ) );
@@ -115,7 +115,7 @@ void TempleOracle::build(PlayerCityPtr city, const TilePos& pos)
   }
 }
 
-SmallTemple::SmallTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId )
+SmallTemple::SmallTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(2) )
 {
   setMaxWorkers( 2 );
@@ -123,7 +123,7 @@ SmallTemple::SmallTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int 
 
 unsigned int SmallTemple::parishionerNumber() const {  return 150;}
 
-BigTemple::BigTemple( RomeDivinityPtr divinity, TileOverlay::Type type, int imgId )
+BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
 {
   setMaxWorkers( 8 );

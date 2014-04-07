@@ -79,7 +79,7 @@ public:
 
   void updateTitle()
   {
-    RomeDivinityPtr divinity = Pantheon::get( currentDivinity );
+    DivinityPtr divinity = rome::Pantheon::get( currentDivinity );
 
     std::string text = StringHelper::format( 0xff, "##hold_%s_festival##", divinity.isValid()
                                                                                 ? divinity->getDebugName().c_str()

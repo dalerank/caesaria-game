@@ -27,13 +27,18 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+  const Point spanswOffset = Point( 10, -40 );
+
+}
+
 class HighBridgeSubTile : public Construction
 {
 public:
-   enum { liftingSE=73, spanSE=74, footingSE=79, descentSE=75,
-          liftingSW=76, spanSW=77, footingSW=80, descentSW=78,
-          liftingSE2=173, descentSE2=175,
-          liftingSW2=176, descentSW2=178 };
+   enum { liftingWest=73, spanWest=74, footingWest=79, descentWest=75,
+          liftingNorth=76, spanNorth=77, footingNorth=80, descentNorth=78,
+          liftingWestL=173, descentWestL=175,
+          liftingNorthL=176, descentNorthL=178 };
   HighBridgeSubTile( const TilePos& pos, int index )
     : Construction( building::lowBridge, Size( 1 ) )
   {
@@ -49,30 +54,23 @@ public:
   {
     switch( _index )
     {
-    case liftingSW2: _picture.addOffset( -29, -16 ); break;
-    case descentSW2: _picture.addOffset( -29, -16 ); break;
-    
-    case liftingSE2:  _picture.addOffset( -28, 1 ); break;
-    case liftingSE: _picture.addOffset( 3, -14 ); break;
-    case spanSE: _picture.addOffset( 8, -13 ); break;
-    case descentSE2: _picture.addOffset( -22, 2 );  break;
-    case descentSE: _picture.addOffset( 8, -13 ); break;
+    case liftingNorthL: _picture.addOffset( -29, -16 ); break;
+    case descentNorthL: _picture.addOffset( -29, -16 ); break;
+    case liftingWestL:  _picture.addOffset( -28, 1 ); break;
+    case liftingWest: _picture.addOffset( 3, -14 ); break;
+    case spanWest: _picture.addOffset( 8, -13 ); break;
+    case descentWestL: _picture.addOffset( -22, 2 );  break;
+    case descentWest: _picture.addOffset( 8, -13 ); break;
     }
   }
 
   bool canDestroy() const
   {
-    return _parent->canDestroy();
+    return _parent ? _parent->canDestroy() : false;
   }
 
-  ~HighBridgeSubTile()
-  {
-  }
-
-  bool isWalkable() const
-  {
-    return true;
-  }
+  ~HighBridgeSubTile()   {}
+  bool isWalkable() const   {    return true;  }
 
   void build( PlayerCityPtr city, const TilePos& pos )
   {
@@ -115,14 +113,15 @@ public:
   {
     switch( _index )
     {
-    case liftingSE: return Point( 0, subpos.x() );
-    case spanSE:    return Point( 0, 10 );
-    case footingSE: return Point( 0, 10 );
-    case descentSE: return Point( 0, 10 - subpos.x() );
-    case descentSW: return Point( -subpos.y(), 0 );
-    case spanSW:    return Point( -10, 0 );
-    case footingSW: return Point( -10, 0 );
-    case liftingSW: return Point( -(10 - subpos.y()), 0 );
+    case liftingWest: return Point( 0, subpos.x() );
+    case spanWest:    return Point( 0, 10 );
+    case footingWest: return Point( 0, 10 );
+    case descentWest: return Point( 0, 10 - subpos.x() );
+    case descentNorth: return Point( 0, subpos.y() * 2 );
+    case spanNorth:    return spanswOffset;
+    case footingNorth: return Point( -10, 0 );
+    case liftingNorth: return Point(  0, -30 - subpos.y() * 1.5 );
+    case liftingNorthL: return Point( 0, -18 - subpos.y() * 1.1 );
 
     default: return Point( 0, 0 );
     }
@@ -188,7 +187,6 @@ HighBridge::HighBridge() : Construction( building::highBridge, Size(1) ), _d( ne
 
 void HighBridge::initTerrain(Tile& terrain )
 {
-
 }
 
 void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir )
@@ -205,17 +203,17 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
       
       tiles.erase( tiles.begin() );
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingSE );
-      _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingSE2 );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingWest );
+      _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingWestL );
       tiles.erase( tiles.begin() );
 
       foreach( tile, tiles )
       {
-        _d->addSpan( (*tile)->pos() - startPos, HighBridgeSubTile::spanSE );
+        _d->addSpan( (*tile)->pos() - startPos, HighBridgeSubTile::spanWest );
       }
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentSE2 );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentWest );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentWestL );
     }
   break;
 
@@ -229,16 +227,16 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       TilePos liftPos = tiles.front()->pos();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingNorth );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingNorthL );
 
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {
-        _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanNorth );
       }
 
-      _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentSW2 );
-      _d->addSpan( liftPos - startPos - TilePos( 0, 1 ), HighBridgeSubTile::descentSW );    
+      _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentNorthL );
+      _d->addSpan( liftPos - startPos - TilePos( 0, 1 ), HighBridgeSubTile::descentNorth );
     }
     break;
 
@@ -250,17 +248,17 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       tiles.pop_back();
 
       tiles.erase( tiles.begin() );
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingSE );
-      _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingSE2 );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), HighBridgeSubTile::liftingWest );
+      _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingWestL );
       tiles.erase( tiles.begin() );
 
       foreach( tile, tiles )
       {        
-        _d->addSpan( (*tile)->pos() - startPos, HighBridgeSubTile::spanSE );
+        _d->addSpan( (*tile)->pos() - startPos, HighBridgeSubTile::spanWest );
       }
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentSE );
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentSE2 );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentWest );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 2, 0 ), HighBridgeSubTile::descentWestL );
     }
   break;
 
@@ -275,14 +273,14 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       TilePos liftPos = tiles.front()->pos();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingSW );
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingSW2 );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingNorth );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingNorthL );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {        
-        _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanNorth );
       }
-      _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentSW2 );
-      _d->addSpan( liftPos - startPos - TilePos( 0, 1 ), HighBridgeSubTile::descentSW );
+      _d->addSpan( liftPos - startPos, HighBridgeSubTile::descentNorthL );
+      _d->addSpan( liftPos - startPos - TilePos( 0, 1 ), HighBridgeSubTile::descentNorth );
     }
   break;
 

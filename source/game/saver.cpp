@@ -53,7 +53,7 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   vm[ "city" ] = vm_city;
 
   VariantMap vm_pantheon;
-  religion::Pantheon::instance().save( vm_pantheon );
+  religion::rome::Pantheon::instance().save( vm_pantheon );
   vm[ "pantheon" ] = vm_pantheon;
 
   SaveAdapter::save( vm, filename );

@@ -30,6 +30,35 @@
         picture : "empire_bits_00112"
       }
 
+      aqueduct : {
+        location : [ 170, 630 ]
+        name : "aqueduct"
+        picture : "empire_bits_00107"
+      }
+
+      palms : {
+        location : [ 490, 790 ]
+        name : "palms"
+        picture : "empire_bits_00111"
+      }
+
+      colosseum : {
+        location : [ 735, 495 ]
+        name : "colosseum"
+        picture : "empire_bits_00114"
+      }
+
+      rocks : {
+        location : [ 240, 460 ]
+        name : "rocks"
+        picture : "empire_bits_00106"
+      }
+
+      rocks2 : {
+        location : [ 530, 380 ]
+        name : "rocks2"
+        picture : "empire_bits_00115"
+      }
     }
 
     cities :
@@ -61,8 +90,8 @@
         land : true
         available : true
 
-        sells : { furniture : 25, pottery : 25 }
-        buys : { weapon : 25 }
+        sells : { lumber : 25 }
+        buys : { wheat : 25, friut : 25 }
       }
 
       Carthago : {
@@ -77,6 +106,17 @@
                       "timber", "clay", "marble", "iron" ]
       }
 
+      Tarentum : {
+        location : [ 900, 600 ]
+
+        land : true
+        sea : true
+        available : true
+
+        sells : { furniture : 25 }
+        buys : { pottery : 25, marble : 15 }
+      }
+
       Syracusae : {
         location : [ 840, 720 ]
         sells : { clay : 25, weapon : 20 }
@@ -86,6 +126,24 @@
         available : true
         resources : [ "wheat", "vegetable", "fruit", "wine",
                       "fish", "timber", "clay" ]
+      }
+
+      Corinthus : {
+        location : [ 1160, 760 ]
+
+        distant : true
+        sea : true
+        land : true
+
+        resources : [ "wheat", "fruit", "olive", "fish", "clay" ]
+      }
+
+      Athenae : {
+        location : [ 1200, 700 ]
+
+        sea : true
+        land : true
+        distant : true
       }
     }
   }
@@ -117,8 +175,8 @@
     raw_material : "disable_all"
     factory : "disable_all"
     water : "enabled"
+    religion : "enabled"
     health : "enabled"
-    religion : "disable_all"
     education : "enabled"
     entertainment : "enabled"
     govt : "enabled"
@@ -133,7 +191,6 @@
       forum_1 : false
       garden : true
       low_bridge : true
-      gatehouse : true
       high_bridge : true
       pottery_workshop : true
       dock : true
@@ -141,20 +198,13 @@
       hippodrome : false
       charioter_school : false
       prefecture : true
-      small_ceres_temple : true
-      small_venus_temple : true
-      small_mars_temple : true
-      small_neptune_temple : true
-      small_mercury_temple : true
       market : true
-      wine_workshop : true
       lumber_mill : true
       granery : true
       warehouse : true
       fruit_farm : true
       meat_farm : true
       wheat_farm : true
-      vinard : true
       senate_1 : true
     }
   }

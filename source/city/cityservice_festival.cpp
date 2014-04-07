@@ -73,7 +73,7 @@ void Festival::update( const unsigned int time )
   {
     _d->lastFestivalDate = GameDate::current();
     _d->festivalDate = DateTime( -550, 1, 1 );
-    Pantheon::doFestival( _d->divinity, _d->festivalType );
+    rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
     const char* titles[3] = { "##small_festival##", "##middle_festival##", "##great_festival##" };
     const char* text[3] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };

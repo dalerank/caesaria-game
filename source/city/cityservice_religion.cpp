@@ -46,11 +46,11 @@ public:
     TempleInfo() : smallTempleNum( 0 ), bigTempleNum( 0 ) {}
   };
 
-  typedef std::map< RomeDivinityPtr, TempleInfo > TemplesMap;
+  typedef std::map< DivinityPtr, TempleInfo > TemplesMap;
   TemplesMap templesCoverity;
   TempleInfo maxTemples;
 
-  void updateRelation( PlayerCity& city, RomeDivinityPtr divn );
+  void updateRelation( PlayerCity& city, DivinityPtr divn );
 };
 
 SrvcPtr Religion::create(PlayerCityPtr city)
@@ -77,7 +77,7 @@ void Religion::update( const unsigned int time )
   Logger::warning( "Religion: start update relations" );
   _d->lastDate = GameDate::current();
 
-  Pantheon::Divinities divinities = Pantheon::instance().all();
+  DivinityList divinities = rome::Pantheon::instance().all();
 
   //clear temples info
   _d->templesCoverity.clear();
@@ -110,7 +110,7 @@ void Religion::update( const unsigned int time )
   }
 }
 
-void Religion::Impl::updateRelation( PlayerCity& city, RomeDivinityPtr divn)
+void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
 {
   Helper helper( &city );
   int peopleReached = 0;

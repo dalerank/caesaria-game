@@ -74,7 +74,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     city::WinTargets targets;
     Variant winOptions = vm[ "win" ];
-    Logger::warningIf( winOptions.isNull(), "Cannot load mission win options from file " + filename );
+    Logger::warningIf( winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename );
 
     targets.load( winOptions.toMap() );
     city->setWinTargets( targets );
