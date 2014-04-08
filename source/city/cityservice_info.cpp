@@ -59,7 +59,7 @@ Info::Info( PlayerCityPtr city )
 
 void Info::update( const unsigned int time )
 {
-  if( time % GameDate::ticksInMonth() != 1 )
+  if( time % GameDate::ticksInMonth() / 2 != 1 )
     return;
 
   if( GameDate::current().month() != _d->lastDate.month() )
@@ -71,7 +71,6 @@ void Info::update( const unsigned int time )
     test.title = "Test title";
     test.type = 0;
     addMessage( test );
-
 
     _d->lastDate = GameDate::current();
 

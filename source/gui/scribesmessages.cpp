@@ -62,7 +62,7 @@ protected:
     VariantMap options = item.data().toMap();
     DateTime time = options[ "date" ].toDateTime();
 
-    font.draw( texture, DateTimeHelper::toStr( time ), pos, false );
+    font.draw( texture, DateTimeHelper::toStr( time ), pos + Point( 20, 0 ), false );
     font.draw( texture, item.text(), Point( width() / 2, pos.y() ), false );
   }
 

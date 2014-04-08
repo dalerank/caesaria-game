@@ -67,7 +67,7 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
 
   Font font2 = Font::create( FONT_2_WHITE );
-  font2.draw( *_d->background, time, 20, 50 );
+  font2.draw( *_d->background, time, 20, 50, false );
   font2.draw( *_d->background, receiver, 180, 50 );
 
   _d->lbText = new Label( this, Rect( Point( 20, 100 ), Size( 550, 165 )), text );
