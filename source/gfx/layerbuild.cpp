@@ -276,6 +276,7 @@ void LayerBuild::handleEvent(NEvent& event)
     case KEY_DOWN:  _camera()->moveDown ( moveValue ); break;
     case KEY_RIGHT: _camera()->moveRight( moveValue ); break;
     case KEY_LEFT:  _camera()->moveLeft ( moveValue ); break;
+    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); _discardPreview(); break;
     default: break;
     }
   }

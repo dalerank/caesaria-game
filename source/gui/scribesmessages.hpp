@@ -12,24 +12,35 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_C3SAV_LOADER_H_INCLUDED__
-#define __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+#ifndef __CAESARIA_SCRIBES_MESSAGES_WINDOW_H_INCLUDED__
+#define __CAESARIA_SCRIBES_MESSAGES_WINDOW_H_INCLUDED__
 
-#include "abstractloader.hpp"
 #include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
+#include "widget.hpp"
+#include "core/signals.hpp"
 
-class GameLoaderC3Sav : public GameAbstractLoader
+namespace gui
+{
+
+class ScribesMessagestWindow : public Widget
 {
 public:
-  GameLoaderC3Sav();
+  ScribesMessagestWindow(Widget* parent, PlayerCityPtr city);
+  virtual ~ScribesMessagestWindow();
 
-  bool load(const std::string& filename, Game& game);
-  bool isLoadableFileExtension( const std::string& filename );
+  virtual void draw( gfx::Engine& painter );
 
 private:
+  void _showMessage( int index );
+  void _removeMessage( int index );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif // __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+}//end namespace gui
+#endif //__CAESARIA_SCRIBES_MESSAGES_WINDOW_H_INCLUDED__

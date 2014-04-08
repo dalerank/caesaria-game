@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "contextmenuitem.hpp"
-#include "contextmenuitemprivate.h"
+#include "contextmenuitemprivate.hpp"
 #include "contextmenu.hpp"
 
 using namespace gfx;

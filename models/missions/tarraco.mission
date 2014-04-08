@@ -193,13 +193,15 @@
       low_bridge : true
       high_bridge : true
       pottery_workshop : true
+      furniture_workshop : true
       dock : true
       iron_mine : true
       hippodrome : false
-      charioter_school : false
+      chatioteer_school : false
       prefecture : true
+      clay_pit : true
+      quarry : true
       market : true
-      lumber_mill : true
       granery : true
       warehouse : true
       fruit_farm : true

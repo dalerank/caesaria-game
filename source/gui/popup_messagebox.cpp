@@ -83,4 +83,9 @@ void PopupMessageBox::draw(gfx::Engine& painter )
   Widget::draw( painter );
 }
 
+PopupMessageBox* PopupMessageBox::information(Widget* parent, const std::string& title, const std::string& text, const std::string& time)
+{
+  return new PopupMessageBox( parent, title, text, time );
+}
+
 }//end namespace gui

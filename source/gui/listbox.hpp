@@ -47,12 +47,12 @@ public:
   virtual ~ListBox();
 
   //! returns amount of list items
-  virtual unsigned int getItemCount() const;
+  virtual unsigned int itemCount() const;
 
   //! returns string of a list item. the id may be a value from 0 to itemCount-1
-  virtual ListBoxItem& getItem(unsigned int id);
+  virtual ListBoxItem& item(unsigned int id);
 
-  virtual ListBoxItem& getSelectedItem();
+  virtual ListBoxItem& selectedItem();
 
   //! clears the list
   virtual void clear();
@@ -73,7 +73,7 @@ public:
   virtual void removeItem(unsigned int id);
 
   //! get the the id of the item at the given absolute coordinates
-  virtual int getItemAt( Point pos ) const;
+  virtual int itemAt( Point pos ) const;
 
   //! set all item colors of specified type at given index to color
   virtual void setItemOverrideColor( unsigned int index, const int color, 
@@ -104,7 +104,7 @@ public:
   virtual int getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const;
 
   //! return the default color which is used for the given colorType
-  virtual NColor getItemDefaultColor( ListBoxItem::ColorType colorType) const;
+  virtual NColor itemDefaultColor( ListBoxItem::ColorType colorType) const;
 
   //! set default color which will used for the given colorType
   virtual void setItemDefaultColor( ListBoxItem::ColorType colorType, NColor color );
@@ -124,7 +124,7 @@ public:
   //! set global itemHeight
   virtual void setItemHeight( int height );
 
-  virtual int getItemHeight() const;
+  virtual int itemHeight() const;
 
   virtual void setItemAlignment( int index, Alignment horizontal, Alignment vertical );
 
@@ -145,7 +145,7 @@ public:
 
   virtual Font getFont() const;
 
-  virtual int getSelected();
+  virtual int selected();
 
   virtual void beforeDraw( gfx::Engine& painter );
 
@@ -160,16 +160,18 @@ oc3_signals public:
 protected:
   //! Update the position and size of the listbox, and update the scrollbar
   virtual void _resizeEvent();
+  virtual void _drawItemIcon(gfx::Picture& texture, ListBoxItem& item, const Point& pos );
+  virtual void _drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos );
 
 private:
-  void _SelectNew(int ypos);
-  void _RecalculateScrollPos();
+  void _selectNew(int ypos);
+  void _recalculateScrollPos();
 
-  void _IndexChanged( unsigned int eventType );
+  void _indexChanged( unsigned int eventType );
   ElementState _GetCurrentItemState( unsigned int index, bool hl );
   Rect getItemTextRect_();
-  Font _GetCurrentItemFont( const ListBoxItem& item, bool selected );
-  NColor _GetCurrentItemColor( const ListBoxItem& item, bool selected );
+  Font _getCurrentItemFont( const ListBoxItem& item, bool selected );
+  NColor _getCurrentItemColor( const ListBoxItem& item, bool selected );
   void _updateTexture();
   class Impl;
   ScopedPtr< Impl > _d;

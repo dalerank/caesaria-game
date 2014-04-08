@@ -23,7 +23,7 @@
 #include "contextmenuitem.hpp"
 #include "gfx/picturesarray.hpp"
 #include "core/stringhelper.hpp"
-#include "core/time.hpp"
+#include "game/datetimehelper.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
 #include "game/gamedate.hpp"
@@ -107,13 +107,7 @@ void TopMenu::Impl::updateDate()
   if( !lbDate || saveDate.month() == GameDate::current().month() )
     return;
 
-  saveDate = GameDate::current();
-
-  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", saveDate.month() + 1).c_str() );
-  std::string age = _( StringHelper::format( 0xff, "##age_%s##", saveDate.year() > 0 ? "ad" : "bc" ).c_str() );
-  std::string text = StringHelper::format( 0xff, "%s %d %s",
-                                           month.c_str(), abs( saveDate.year() ), age.c_str());
-  lbDate->setText( text );
+  lbDate->setText( DateTimeHelper::toStr( GameDate::current() ) );
 }
 
 void TopMenu::Impl::showAboutInfo()

@@ -66,7 +66,9 @@
 #include "events/showtileinfo.hpp"
 #include "gui/androidactions.hpp"
 #include "events/setsoundoptions.hpp"
+#include "gui/widgetescapecloser.hpp"
 #include "walker/walkers_factory.hpp"
+#include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
 
 using namespace gui;
@@ -115,6 +117,8 @@ public:
   void makeEnemy();
   void makeFastSave();
   void showTileHelp();
+  void showMessagesWindow();
+
   vfs::Path getFastSaveName();
 };
 
@@ -205,6 +209,7 @@ void Level::initialize()
   CONNECT( _d->extMenu, onEmpireMapShow(), _d.data(), Impl::showEmpireMapWindow );
   CONNECT( _d->extMenu, onAdvisorsWindowShow(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(), Impl::showMissionTaretsWindow );
+  CONNECT( _d->extMenu, onMessagesShow(), _d.data(), Impl::showMessagesWindow );
 
   CONNECT( city, onDisasterEvent(), &_d->alarmsHolder, AlarmEventHolder::add );
   CONNECT( _d->extMenu, onSwitchAlarm(), &_d->alarmsHolder, AlarmEventHolder::next );
@@ -293,6 +298,11 @@ void Level::Impl::showTileHelp()
   e->dispatch();
 }
 
+void Level::Impl::showMessagesWindow()
+{
+  new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+}
+
 void Level::_resolveFastLoad()
 {
   _d->mapToLoad = _d->getFastSaveName().toString();
@@ -324,8 +334,10 @@ void Level::_showIngameMenu()
 #ifdef CAESARIA_PLATFORM_ANDROID
   gui::Widget* p = _d->game->gui()->rootWidget();
   gui::Widget* menu = new Label( p, Rect( 0, 0, 500, 450 ), "", false, Label::bgWhiteFrame );
+
   menu->setCenter( p->center() );
   menu->setupUI( GameSettings::rcpath( "/gui/ingamemenu_android.gui") );
+  new WidgetEscapeCloser( menu );
 
   PushButton* btnContinue = findChildA<PushButton*>( "btnContinue", true, menu );
   PushButton* btnSave = findChildA<PushButton*>( "btnSave", true, menu );

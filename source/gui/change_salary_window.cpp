@@ -46,9 +46,9 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, int salary)
   ListBox* lbx = findChildA<ListBox*>( "lbxTitles", true, this );
   if( lbx )
   {
-    for( int i=0; i < lbx->getItemCount(); i++ )
+    for( int i=0; i < lbx->itemCount(); i++ )
     {
-      ListBoxItem& item = lbx->getItem( i );
+      ListBoxItem& item = lbx->item( i );
       if( item.tag() > salary )
       {
         lbx->setSelected( i - 1 );

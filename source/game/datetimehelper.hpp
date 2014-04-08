@@ -13,23 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_C3SAV_LOADER_H_INCLUDED__
-#define __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+#ifndef _CAESARIA_DATETIMEHELPER_INCLUDE_H_
+#define _CAESARIA_DATETIMEHELPER_INCLUDE_H_
 
-#include "abstractloader.hpp"
-#include "core/scopedptr.hpp"
+#include "core/time.hpp"
+#include <string>
 
-class GameLoaderC3Sav : public GameAbstractLoader
+class DateTimeHelper
 {
 public:
-  GameLoaderC3Sav();
-
-  bool load(const std::string& filename, Game& game);
-  bool isLoadableFileExtension( const std::string& filename );
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  static std::string toStr(const DateTime& time);
 };
 
-#endif // __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+#endif //_CAESARIA_DATETIMEHELPER_INCLUDE_H_

@@ -47,7 +47,7 @@ public:
 
   void resolveItemSelected( const ListBoxItem& item )
   {
-    saveItemText = item.getText();
+    saveItemText = item.text();
     if( btnLoad )
       btnLoad->setEnabled( !saveItemText.empty() );
   }

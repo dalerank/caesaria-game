@@ -55,29 +55,32 @@ public:
   ~ListBoxItem();
 
   void setText( const std::string& text );
-  const std::string& getText() const;
+  const std::string& text() const;
 	void setTag( int tag );
 	int tag() const;
-	gfx::Picture getIcon() const;
+	gfx::Picture icon() const;
 	void setIcon( gfx::Picture pic );
 
   bool isEnabled() const;
   void setEnabled( bool en );
   // A multicolor extension
 
-  const Alignment& getHorizontalAlign() const;
-  const Alignment& getVerticalAlign() const;
+  const Alignment& horizontalAlign() const;
+  const Alignment& verticalAlign() const;
 
   bool isAlignEnabled() const;
 
-  float getCurrentHovered() const;
+  float currentHovered() const;
   void updateHovered( float delta );
 
-  ElementState getState() const;
+  ElementState state() const;
   void setState( const ElementState& state );
 
-  Point getOffset() const;
+  Point offset() const;
   void setOffset( Point p );
+
+  Variant data() const;
+  void setData( const Variant& value );
 
   struct ListItemOverrideColor
   {
@@ -88,7 +91,7 @@ public:
   };
 
 	//!sets the item text alignment
-	void setItemTextAlignment( Alignment horizontal, Alignment vertical );
+	void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   ListItemOverrideColor OverrideColors[ LBC_COUNT ];
 

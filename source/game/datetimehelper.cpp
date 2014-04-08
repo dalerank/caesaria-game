@@ -13,23 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_C3SAV_LOADER_H_INCLUDED__
-#define __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+#include "datetimehelper.hpp"
+#include "core/stringhelper.hpp"
+#include "core/gettext.hpp"
 
-#include "abstractloader.hpp"
-#include "core/scopedptr.hpp"
-
-class GameLoaderC3Sav : public GameAbstractLoader
+std::string DateTimeHelper::toStr(const DateTime& time)
 {
-public:
-  GameLoaderC3Sav();
+  std::string month = StringHelper::format( 0xff, "##month_%d_short##", time.month() + 1);
+  std::string age = StringHelper::format( 0xff, "##age_%s##", time.year() > 0 ? "ad" : "bc" );
+  std::string text = StringHelper::format( 0xff, "%s %d %s", _( month ), abs( time.year() ), _( age ) );
 
-  bool load(const std::string& filename, Game& game);
-  bool isLoadableFileExtension( const std::string& filename );
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-#endif // __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+  return text;
+}

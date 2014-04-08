@@ -73,6 +73,18 @@ public:
     }
   };
 
+  struct ScribeMessage
+  {
+    std::string text;
+    std::string title;
+    int type;
+    DateTime date;
+    bool opened;
+    Variant ext;
+  };
+
+  typedef std::list<ScribeMessage> Messages;
+
   static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
@@ -82,6 +94,12 @@ public:
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
+
+  const Messages& messages() const;
+  const ScribeMessage& getMessage( int index ) const;
+  void changeMessage( int index, ScribeMessage& message );
+  void removeMessage( int index );
+  void addMessage( const ScribeMessage& message );
 
 private:
   Info( PlayerCityPtr city );

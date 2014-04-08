@@ -38,8 +38,9 @@ public:
 
   Impl() : EnumsHelper<walker::Type>( walker::unknown )
   {
+      append( walker::all,        "unknown" );
 
-#define __REG_WTYPE(type) append(walker::type, ##type);
+#define __REG_WTYPE(a) append( walker::a, CAESARIA_STR_A(a));
     __REG_WTYPE( unknown )
     __REG_WTYPE( immigrant )
     __REG_WTYPE( citizen )
@@ -73,7 +74,6 @@ public:
     __REG_WTYPE( britonSoldier )
     __REG_WTYPE( fishPlace )
     __REG_WTYPE( seaMerchant )
-    append( walker::all,        "unknown" );
     __REG_WTYPE( scholar )
     __REG_WTYPE( teacher )
     __REG_WTYPE( librarian )

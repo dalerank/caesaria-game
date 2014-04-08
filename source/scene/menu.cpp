@@ -129,7 +129,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
   VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
   foreach( it, languages )
   {
-    if( item.getText() == it->first )
+    if( item.text() == it->first )
     {
       lang = it->second.toString();
       break;
@@ -171,7 +171,7 @@ void StartMenu::Impl::resolveCredits()
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
   gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
-  item.setItemTextAlignment( alignCenter, alignCenter );
+  item.setTextAlignment( alignCenter, alignCenter );
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
   lbx->addItem( "gathanase" );
   lbx->addItem( "gecube (gb12335@gmail.com)" );
@@ -186,7 +186,7 @@ void StartMenu::Impl::resolveCredits()
   lbx->addItem( "ImperatorPrime" );
   lbx->addItem( "veprbl" );
   gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
-  testers.setItemTextAlignment( alignCenter, alignCenter );
+  testers.setTextAlignment( alignCenter, alignCenter );
   lbx->addItem( "Radek Liška" );
 
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );

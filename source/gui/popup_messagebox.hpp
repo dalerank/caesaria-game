@@ -37,6 +37,11 @@ public:
 
   void draw( gfx::Engine& painter );
 
+  static PopupMessageBox* information( Widget* parent,
+                                       const std::string& title,
+                                       const std::string& text,
+                                       const std::string& time );
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

@@ -154,8 +154,8 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
     {
       Picture pic = Picture::load( text.substr( 5 ) );
       ListBoxItem& item = _d->lbxHelp->addItem( pic );
-      item.setItemTextAlignment( alignCenter, alignUpperLeft );
-      int lineCount = pic.height() / _d->lbxHelp->getItemHeight();
+      item.setTextAlignment( alignCenter, alignUpperLeft );
+      int lineCount = pic.height() / _d->lbxHelp->itemHeight();
       StringArray lines;
       lines.resize( lineCount );
       _d->lbxHelp->addItems( lines );

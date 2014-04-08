@@ -36,8 +36,10 @@ class Info::Impl
 {
 public:
   typedef std::vector< Info::Parameters > History;
+
   DateTime lastDate;
   History params;
+  Info::Messages messages;
 };
 
 SrvcPtr Info::create(PlayerCityPtr city )
@@ -62,6 +64,15 @@ void Info::update( const unsigned int time )
 
   if( GameDate::current().month() != _d->lastDate.month() )
   {
+    ScribeMessage test;
+    test.date = GameDate::current();
+    test.opened = false;
+    test.text = "Test message";
+    test.title = "Test title";
+    test.type = 0;
+    addMessage( test );
+
+
     _d->lastDate = GameDate::current();
 
     _d->params.erase( _d->params.begin() );
@@ -154,6 +165,40 @@ void Info::load(const VariantMap& stream)
   }
 
   _d->params.resize( DateTime::monthInYear );
+}
+
+const Info::Messages& Info::messages() const { return _d->messages; }
+
+const Info::ScribeMessage& Info::getMessage(int index) const
+{
+  static ScribeMessage invalidMessage;
+  Messages::iterator it = _d->messages.begin();
+  std::advance( it, index );
+  if( it != _d->messages.end() )
+    return *it;
+
+  return invalidMessage;
+}
+
+void Info::changeMessage(int index, ScribeMessage& message)
+{
+  Messages::iterator it = _d->messages.begin();
+  std::advance( it, index );
+  if( it != _d->messages.end() )
+    *it = message;
+}
+
+void Info::removeMessage(int index)
+{
+  Messages::iterator it = _d->messages.begin();
+  std::advance( it, index );
+  if( it != _d->messages.end() )
+    _d->messages.erase( it );
+}
+
+void Info::addMessage(const Info::ScribeMessage& message)
+{
+  _d->messages.push_front( message );
 }
 
 }//end namespace city
