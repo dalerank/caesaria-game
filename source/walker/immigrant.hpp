@@ -52,7 +52,7 @@ protected:
   Immigrant( PlayerCityPtr city );
 
   HousePtr _findBlankHouse();
-  Pathway _findPath2blankHouse(TilePos startPoint );
+  Pathway _findSomeWay(TilePos startPoint );
 
 protected:
   const CitizenGroup& _getPeoples() const;

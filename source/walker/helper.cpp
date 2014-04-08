@@ -38,49 +38,51 @@ public:
 
   Impl() : EnumsHelper<walker::Type>( walker::unknown )
   {
-    append( walker::unknown,    "unknown" );
-    append( walker::immigrant,  "immigrant"    );
-    append( walker::citizen,    "citizen" );
-    append( walker::emmigrant,  "emmigrant" );
-    append( walker::soldier,    "soldier" );
-    append( walker::cartPusher, "cartPusher" );
-    append( walker::marketLady, "marketLady" );
-    append( walker::marketKid,  "marketKid" );
-    append( walker::serviceman, "serviceman" );
-    append( walker::trainee,    "trainee" );
-    append( walker::recruter,   "recruter" );
-    append( walker::prefect,    "prefect" );
-    append( walker::priest,     "priest" );
-    append( walker::taxCollector,"taxCollector" );
-    append( walker::merchant,   "merchant");
-    append( walker::engineer,   "engineer" );
-    append( walker::doctor,     "doctor" );
-    append( walker::sheep,      "sheep" );
-    append( walker::bathlady,   "bathlady" );
-    append( walker::actor,      "actor" );
-    append( walker::gladiator,  "gladiator" );
-    append( walker::barber,     "barber" );
-    append( walker::surgeon,    "surgeon" );
-    append( walker::lionTamer,  "lionTamer" );
-    append( walker::fishingBoat,"fishingBoat" );
-    append( walker::protestor,  "protestor" );
-    append( walker::legionary,  "legionary" );
-    append( walker::corpse,     "corpse" );
-    append( walker::lion,       "lion" );
-    append( walker::marketBuyer,"markerBuyer" );
-    append( walker::britonSoldier, "britonSoldier" );
-    append( walker::fishPlace,  "fishPlace" );
-    append( walker::seaMerchant,"seaMerchant" );
+
+#define __REG_WTYPE(type) append(walker::type, ##type);
+    __REG_WTYPE( unknown )
+    __REG_WTYPE( immigrant )
+    __REG_WTYPE( citizen )
+    __REG_WTYPE( emmigrant )
+    __REG_WTYPE( soldier )
+    __REG_WTYPE(  cartPusher )
+    __REG_WTYPE( marketLady )
+    __REG_WTYPE( marketKid )
+    __REG_WTYPE( serviceman )
+    __REG_WTYPE( trainee )
+    __REG_WTYPE( recruter )
+    __REG_WTYPE( prefect )
+    __REG_WTYPE( priest );
+    __REG_WTYPE( taxCollector);
+    __REG_WTYPE( merchant )
+    __REG_WTYPE( engineer )
+    __REG_WTYPE( doctor )
+    __REG_WTYPE( sheep )
+    __REG_WTYPE( bathlady )
+    __REG_WTYPE( actor )
+    __REG_WTYPE( gladiator )
+    __REG_WTYPE( barber )
+    __REG_WTYPE( surgeon )
+    __REG_WTYPE( lionTamer )
+    __REG_WTYPE( fishingBoat )
+    __REG_WTYPE( protestor )
+    __REG_WTYPE( legionary )
+    __REG_WTYPE( corpse )
+    __REG_WTYPE( lion )
+    __REG_WTYPE( marketBuyer )
+    __REG_WTYPE( britonSoldier )
+    __REG_WTYPE( fishPlace )
+    __REG_WTYPE( seaMerchant )
     append( walker::all,        "unknown" );
-    append( walker::scholar,    "scholar" );
-    append( walker::teacher,    "teacher" );
-    append( walker::librarian,  "librarian" );
-    append( walker::etruscanSoldier,"etruscanSoldier" );
-    append( walker::charioteer, "charioteer" );
-    append( walker::etruscanArcher, "etruscanArcher" );
-    append( walker::spear, "spear" );
-    append( walker::romeGuard,  "romeGuard" );
-    append( walker::bow_arrow, "bow_arrow" );
+    __REG_WTYPE( scholar )
+    __REG_WTYPE( teacher )
+    __REG_WTYPE( librarian )
+    __REG_WTYPE( etruscanSoldier )
+    __REG_WTYPE( charioteer )
+    __REG_WTYPE( etruscanArcher )
+    __REG_WTYPE( spear )
+    __REG_WTYPE( romeGuard )
+    __REG_WTYPE( bow_arrow )
   }
 };
 
