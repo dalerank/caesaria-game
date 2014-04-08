@@ -42,6 +42,7 @@ public:
 	PushButton* downButton;
   bool needRecalculateParams;
   Point cursorPos;
+  unsigned int lastTimeChange;
 
   gfx::Picture texture;
   gfx::Picture sliderPictureUp, sliderPictureDown;

@@ -56,16 +56,16 @@ public:
 	virtual void afterPaint(unsigned int timeMs);
 
 	//! gets the maximum value of the scrollbar.
-	virtual int getMax() const;
+	virtual int maxValue() const;
 
 	//! sets the maximum value of the scrollbar.
-	virtual void setMax(int max);
+	virtual void setMaxValue(int max);
 
 	//! gets the minimum value of the scrollbar.
-	virtual int getMin() const;
+	virtual int minValue() const;
 
 	//! sets the minimum value of the scrollbar.
-	virtual void setMin(int max);
+	virtual void setMinValue(int max);
 
 	//! gets the small step value
 	virtual int getSmallStep() const;
@@ -80,26 +80,20 @@ public:
 	virtual void setLargeStep(int step);
 
 	//! gets the current position of the scrollbar
-	virtual int getPos() const;
+	virtual int position() const;
 
 	//! sets the position of the scrollbar
-	virtual void setPos(int pos);
+	virtual void setPosition(int pos);
 
 	//! sets the texture which draw
 	virtual void setBackgroundImage( const gfx::Picture& pixmap );
 
 	//! gets the UpButton
-	virtual PushButton* getUpButton();
+	virtual PushButton* upButton();
 
-	virtual PushButton* getDownButton();
+	virtual PushButton* downButton();
 
 	virtual void setSliderImage( const gfx::Picture& pixmap, const ElementState state );
-
-	//! Writes attributes of the element.
-	virtual void save( VariantMap& out ) const;
-
-	//! Reads attributes of the element
-	virtual void load( const VariantMap& in );
 
   virtual void setHorizontal( bool horizontal );
   virtual void setVisibleFilledArea( bool vis );
@@ -111,7 +105,7 @@ public oc3_signals:
 
 protected:
 	void _resizeEvent();
-  void refreshControls_();
+	void _refreshControls();
 
   virtual int _getPosFromMousePos(const Point& p) const;
 
@@ -133,14 +127,13 @@ protected:
   int _smallStep;
   int _largeStep;
   int _desiredPos;
-  unsigned int _lastTimeChange;
 
 	class Impl;
 	ScopedPtr< Impl > _d;
 
   void _resolvePositionChanged();
   std::string _GetFullStyleName();
-  PushButton* _CreateButton( const Rect& rectangle,
+  PushButton* _createButton( const Rect& rectangle,
                              Alignment left, Alignment rigth, Alignment top, Alignment bottom, int type );
 };
 
