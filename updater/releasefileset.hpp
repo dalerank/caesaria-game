@@ -107,7 +107,7 @@ struct ReleaseFile
 		if( file.isExtension(".linux") || file.isExtension(".macos") || file.isExtension(".haiku") )
 			return true;
 #elif defined(CAESARIA_PLATFORM_MACOSX)
-		if( file.isExtension(".linux") || file.isExtension(".exe") || file.isExtension(".dll") || file.isExtension(".haiku"))
+		if( file.isMyExtension(".linux") || file.isMyExtension(".exe") || file.isMyExtension(".dll") || file.isMyExtension(".haiku"))
 			return true;
 #endif
 		return false;
