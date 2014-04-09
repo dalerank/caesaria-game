@@ -33,21 +33,21 @@ public:
   virtual ~GroupBox();
 
   //! sets an background image
-  virtual void setBackgroundImage( const Picture& image);
+  virtual void setBackgroundImage( const gfx::Picture& image);
 
   //! Gets the background image
-  virtual const Picture& getBackgroundImage() const;
+  virtual const gfx::Picture& getBackgroundImage() const;
 
   //! sets if the image should scale to fit the element
   virtual void setScaleBackgroundImage(bool alignScale);
   virtual bool isBackgroundImageScaled() const;
 
   //! draws the element and its children
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   virtual void setStyle( Style style );
 
-  virtual void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( gfx::Engine& painter );
 
   //! Writes attributes of the element.
   //virtual void save(VariantArray* out) const;

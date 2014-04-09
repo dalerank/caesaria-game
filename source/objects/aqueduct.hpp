@@ -25,20 +25,20 @@ public:
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
 
-  virtual void initTerrain(Tile& terrain);
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const;
+  virtual void initTerrain( gfx::Tile& terrain);
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
   virtual bool isRoad() const;
-  virtual std::string getSound() const;
+  virtual std::string sound() const;
 
   void updatePicture(PlayerCityPtr city);
   void addWater( const WaterSource& source );
 
-  virtual const Picture& getPicture( PlayerCityPtr city,
+  virtual const gfx::Picture& getPicture( PlayerCityPtr city,
                                      TilePos pos,
-                                     const TilesArray& tmp ) const;
+                                     const gfx::TilesArray& tmp ) const;
 protected:
   virtual void _waterStateChanged();
 };

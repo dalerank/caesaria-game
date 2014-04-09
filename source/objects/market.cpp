@@ -23,6 +23,9 @@
 #include "walker/serviceman.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "walker/helper.hpp"
+
+using namespace gfx;
 
 class Market::Impl
 {
@@ -69,7 +72,7 @@ Market::Market() : ServiceBuilding(Service::market, constants::building::market,
 
 void Market::deliverService()
 {
-  if( numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
     MarketLadyPtr buyer = MarketLady::create( _city() );
@@ -160,14 +163,11 @@ void Market::timeStep(const unsigned long time)
       }
     }
 
-    WalkerList walkers = getWalkers();
-    if( walkers.size() > 0 && _d->goodStore.qty() == 0 )
+    ServiceWalkerList servicemen;
+    servicemen << walkers();
+    if( servicemen.size() > 0 && _d->goodStore.qty() == 0 )
     {
-      ServiceWalkerPtr walker = ptr_cast<ServiceWalker>( walkers.front() );
-      if( walker.isValid() )
-      {
-        walker->return2Base();
-      }
+      servicemen.front()->return2Base();
     }
   }
 

@@ -24,7 +24,7 @@ namespace gui
 class InfoboxTheater : public InfoboxWorkingBuilding
 {
 public:
-  InfoboxTheater( Widget* parent, const Tile& tile );
+  InfoboxTheater( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxTheater();
 };
 

@@ -26,6 +26,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerEntertainment::getType() const
 {
   return _type;
@@ -55,7 +58,7 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void LayerEntertainment::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -204,8 +207,8 @@ void LayerEntertainment::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city, int type )
-  : Layer( camera, city )
+LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int type )
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 9 );
   _type = type;
@@ -261,3 +264,5 @@ LayerEntertainment::LayerEntertainment(TilemapCamera& camera, PlayerCityPtr city
   default: break;
   }
 }
+
+}//end namespace gfx

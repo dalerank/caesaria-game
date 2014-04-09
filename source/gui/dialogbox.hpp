@@ -32,7 +32,7 @@ public:
 
   bool onEvent(const NEvent& event);
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 oc3_signals public:  
   Signal1<int>& onResult();

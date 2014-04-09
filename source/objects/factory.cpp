@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class FactoryStore : public SimpleGoodStore
 {
@@ -135,7 +136,7 @@ void Factory::timeStep(const unsigned long time)
   //try get good from storage building for us
   if( time % (GameDate::ticksInMonth()/4) == 1 )
   {
-    if( numberWorkers() > 0 && getWalkers().size() == 0 )
+    if( numberWorkers() > 0 && walkers().size() == 0 )
     {
       receiveGood();
       deliverGood();      
@@ -275,7 +276,7 @@ void Factory::load( const VariantMap& stream)
 }
 
 Factory::~Factory(){}
-bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( getWalkers().size() == 0 );}
+bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}

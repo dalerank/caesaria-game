@@ -27,7 +27,10 @@
 #include "core/variant.hpp"
 #include "vfs/path.hpp"
 
-class GfxEngine;
+namespace gfx
+{
+ class Engine;
+}
 struct NEvent;
 
 namespace gui
@@ -74,7 +77,7 @@ public:
   virtual void setFocus();
 	virtual void removeFocus();
 
-  virtual void beforeDraw( GfxEngine& painter );
+	virtual void beforeDraw( gfx::Engine& painter );
 
   virtual Rect getClientRect() const;
 
@@ -160,7 +163,7 @@ public:
   virtual void remove();
 
   //! Draws the element and its children.
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   virtual void animate( unsigned int timeMs );
 	
@@ -412,7 +415,7 @@ public:
     *  \param includeInvisible: includes invisible elements in the search (default=false)
     *  \return true if successfully found an element, false to continue searching/fail 
 	 */
-  bool getNextWidget( int startOrder, bool reverse, bool group,
+  bool next( int startOrder, bool reverse, bool group,
                       Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
   void setParent( Widget* parent );

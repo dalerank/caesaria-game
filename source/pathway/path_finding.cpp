@@ -28,6 +28,8 @@
 #include "core/logger.hpp"
 #include "objects/building.hpp"
 
+using namespace gfx;
+
 class Propagator::Impl
 {
 public:

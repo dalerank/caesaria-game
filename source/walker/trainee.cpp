@@ -26,6 +26,7 @@
 #include "pathway/pathway_helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 typedef Priorities<TileOverlay::Type> NecessaryBuildings;
 

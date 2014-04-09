@@ -71,6 +71,7 @@ enum Type{
   etruscanSoldier,
   etruscanArcher,
   citizen,
+  waterGarbage,
   all = 0xff,
   any = all
 };

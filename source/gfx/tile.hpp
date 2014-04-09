@@ -19,7 +19,11 @@
 #include "core/position.hpp"
 #include "gfx/animation.hpp"
 #include "game/enums.hpp"
+#include "tileoverlay.hpp"
 #include "predefinitions.hpp"
+
+namespace gfx
+{
 
 class Picture;
 
@@ -86,8 +90,8 @@ public:
 
   void animate( unsigned int time );
 
-  const Animation& animation() const;
-  void setAnimation( const Animation& animation );
+  const gfx::Animation& animation() const;
+  void setAnimation( const gfx::Animation& animation );
 
   bool isWalkable( bool ) const;
   bool getFlag( Type type ) const;
@@ -110,7 +114,7 @@ private:
   Terrain _terrain;    // infos about the tile (building, tree, road, water, rock...)
   Picture const* _picture; // displayed picture
   bool _wasDrawn;
-  Animation _animation;
+  gfx::Animation _animation;
   TileOverlayPtr _overlay;
 };
 
@@ -124,5 +128,7 @@ public:
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();
 };
+
+}//end namespace gfx
 
 #endif //__CAESARIA_TILE_H_INCLUDED__

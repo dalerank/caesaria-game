@@ -32,7 +32,7 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual const Picture& getMainPicture();
+  virtual const gfx::Picture& getMainPicture();
   void send2city( TilePos pos );
 
 private:

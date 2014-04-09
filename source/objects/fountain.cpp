@@ -31,6 +31,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
                awesomeFountain=18, patricianFountain=26 } FontainConstant;
@@ -58,7 +59,7 @@ void Fountain::deliverService()
   if( !_haveReservoirWater )
     return;
 
-  ServiceWalkerPtr walker = ServiceWalker::create( _city(), getService() );
+  ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
   walker->setBase( BuildingPtr( this ) );
   walker->setReachDistance( 4 );
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );

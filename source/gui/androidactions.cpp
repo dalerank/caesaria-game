@@ -18,6 +18,8 @@
 #include "environment.hpp"
 #include "texturedbutton.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -48,7 +50,7 @@ Signal0<> &AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onCl
 Signal0<> &AndroidActionsBar::onEscapeClicked() { return _d->btnExit->onClicked(); }
 Signal0<> &AndroidActionsBar::onRequestMenu() { return _d->btnMenu->onClicked(); }
 
-void AndroidActionsBar::beforeDraw(GfxEngine &painter)
+void AndroidActionsBar::beforeDraw(gfx::Engine& painter)
 {
   if( parent()->getChildren().back() != this )
   {

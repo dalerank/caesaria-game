@@ -27,6 +27,7 @@
 #include "infobox_factory.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -68,7 +69,7 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
   }
 
   std::string title = MetaDataHolder::getPrettyName( rawmb->type() );
-  _getTitle()->setText( _(title) );
+  _title()->setText( _(title) );
 
   if( lbProductivity != NULL )
   {

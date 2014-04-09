@@ -68,7 +68,7 @@ void Shipyard::destroy()
 void Shipyard::timeStep(const unsigned long time)
 {
   //try get good from storage building for us
-  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && walkers().size() == 0 )
   {
     receiveGood();
   }

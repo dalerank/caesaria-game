@@ -20,6 +20,7 @@
 #include "core/color.hpp"
 
 using namespace std;
+using namespace gfx;
 
 namespace gui
 {
@@ -74,7 +75,7 @@ Image::Image(Widget* parent, Point pos, const Picture& pic, int id)
   _d->needUpdateTexture = true;
 }
 
-void Image::_updateTexture( GfxEngine& painter )
+void Image::_updateTexture(gfx::Engine& painter )
 {
   Size imageSize = size();
 
@@ -118,7 +119,7 @@ void Image::_updateTexture( GfxEngine& painter )
 Image::~Image() {}
 
 //! draws the element and its children
-void Image::draw( GfxEngine& painter )
+void Image::draw(gfx::Engine& painter )
 {
   if ( !isVisible() )
     return;
@@ -135,7 +136,7 @@ void Image::draw( GfxEngine& painter )
 
 Signal0<>& Image::onClicked(){  return _d->onClickedSignal;}
 
-void Image::beforeDraw( GfxEngine& painter )
+void Image::beforeDraw(gfx::Engine& painter )
 {
   if( _d->needUpdateTexture )
   {
@@ -147,7 +148,7 @@ void Image::beforeDraw( GfxEngine& painter )
   Widget::beforeDraw( painter );
 }
 
-void Image::setPicture(Picture picture )
+void Image::setPicture( Picture picture )
 {
   _d->bgPicture = picture;
   _d->needUpdateTexture = true;

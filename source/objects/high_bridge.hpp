@@ -25,8 +25,8 @@ class HighBridge : public Construction
 public:
   HighBridge();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;
-  virtual void initTerrain( Tile& terrain );
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
+  virtual void initTerrain( gfx::Tile& terrain );
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual bool canDestroy() const;
   virtual void destroy();

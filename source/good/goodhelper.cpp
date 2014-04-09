@@ -25,6 +25,8 @@
 #include "core/logger.hpp"
 #include <vector>
 
+using namespace gfx;
+
 static const int empPicId[ Good::goodCount+1 ] = { PicID::bad,
                                        /*G_WHEAT*/11, 
                                        /*G_FISH*/27,

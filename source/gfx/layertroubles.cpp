@@ -29,10 +29,13 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerTroubles::getType() const{  return citylayer::troubles;}
 Layer::VisibleWalkers LayerTroubles::getVisibleWalkers() const{  return std::set<int>();}
 
-void LayerTroubles::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -90,7 +93,7 @@ void LayerTroubles::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerTroubles::create(TilemapCamera& camera, PlayerCityPtr city )
+LayerPtr LayerTroubles::create( Camera& camera, PlayerCityPtr city )
 {
   LayerPtr ret( new LayerTroubles( camera, city ) );
   ret->drop();
@@ -129,8 +132,10 @@ void LayerTroubles::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerTroubles::LayerTroubles( TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerTroubles::LayerTroubles( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 9 );
 }
+
+}//end namespace gfx

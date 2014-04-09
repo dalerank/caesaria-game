@@ -23,11 +23,15 @@
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "tilemap.hpp"
+#include "camera.hpp"
 #include "core/position.hpp"
 #include "core/signals.hpp"
 
+namespace gfx
+{
+
 /* A subset of the tilemap, this is the visible area. Has convenient methods to sort tiles per depth */
-class TilemapCamera
+class TilemapCamera : public Camera
 {
 public:
   TilemapCamera();
@@ -57,13 +61,14 @@ public:
   void setScrollSpeed( int speed );
   int getScrollSpeed() const;
 
-  Tile* at(Point pos, bool overborder ) const;
-  Tile* getCenterTile() const;
+  Tile* at( const Point& pos, bool overborder ) const;
+  Tile* at( const TilePos& pos ) const;
+  Tile* center() const;
 
   void startFrame();
 
 public oc3_signals:
-  Signal1<Point>& onPositionChanged();
+  virtual Signal1<Point>& onPositionChanged();
   
 private:
   void setCenter(Point pos);
@@ -71,5 +76,7 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace gfx
 
 #endif //_CAESARIA_TILEMAP_CAMERA_H_INCLUDE_

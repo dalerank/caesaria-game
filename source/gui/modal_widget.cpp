@@ -153,7 +153,7 @@ bool ModalScreen::onEvent(const NEvent& event)
 
 
 //! draws the element and its children
-void ModalScreen::draw( GfxEngine& painter )
+void ModalScreen::draw(gfx::Engine& painter )
 {
 	unsigned int now = DateTime::elapsedTime();
 

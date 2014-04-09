@@ -27,6 +27,9 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
+namespace gfx
+{
+
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
 typedef std::vector< Tile > Row;
 
@@ -287,7 +290,6 @@ void Tilemap::load( const VariantMap& stream )
   }
 }
 
-Tilemap::~Tilemap()
-{
+Tilemap::~Tilemap(){}
 
-}
+}//end namespace gfx

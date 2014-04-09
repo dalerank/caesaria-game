@@ -47,7 +47,7 @@ public:
 
   void resolveItemSelected( const ListBoxItem& item )
   {
-    saveItemText = item.getText();
+    saveItemText = item.text();
     if( btnLoad )
       btnLoad->setEnabled( !saveItemText.empty() );
   }
@@ -98,8 +98,8 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   if( _d->files )
   {
     _d->files->setItemFont( Font::create( FONT_2_WHITE ) );
-    _d->files->setItemDefaultColor( ListBoxItem::LBC_TEXT, 0xffffffff );
-    _d->files->setItemDefaultColor( ListBoxItem::LBC_TEXT_HIGHLIGHT, 0xff000000 );
+    _d->files->setItemDefaultColor( ListBoxItem::simple, 0xffffffff );
+    _d->files->setItemDefaultColor( ListBoxItem::hovered, 0xff000000 );
   }
 
   CONNECT( _d->files, onItemSelected(), _d.data(), Impl::resolveItemSelected )
@@ -120,7 +120,7 @@ void LoadMapWindow::Impl::fillFiles()
   }
 }
 
-void LoadMapWindow::draw( GfxEngine& engine )
+void LoadMapWindow::draw(gfx::Engine& engine )
 {
   Widget::draw( engine );
 }

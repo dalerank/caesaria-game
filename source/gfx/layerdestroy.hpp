@@ -20,24 +20,28 @@
 #include "gfx/layer.hpp"
 #include "city_renderer.hpp"
 
+namespace gfx
+{
+
 class LayerDestroy : public Layer
 {
 public:
   virtual void handleEvent( NEvent& event );
   virtual int getType() const;
   virtual std::set<int> getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
-  virtual void render(GfxEngine& engine);
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
+  virtual void render( Engine& engine);
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+  static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  LayerDestroy( TilemapCamera& camera, PlayerCityPtr city );
+  LayerDestroy( Camera& camera, PlayerCityPtr city );
 
-  void _drawTileInSelArea(GfxEngine& engine, Tile& tile, Tile* master, const Point& offset);
+  void _drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset);
   void _clearAll();
 
   Picture _clearPic;
 };
 
+}//end namespace gfx
 #endif //__CAESARIA_LAYERDESTROY_H_INCLUDED__

@@ -22,31 +22,35 @@
 #include "core/variant.hpp"
 #include "gfx/tileoverlay.hpp"
 
-class CityBuildOptions : public ReferenceCounted
+namespace city
+{
+
+class BuildOptions : public ReferenceCounted
 {
 public:
-  CityBuildOptions();
-  ~CityBuildOptions();
+  BuildOptions();
+  ~BuildOptions();
 
-  void setBuildingAvailble( const TileOverlay::Type type, bool mayBuild );
+  void setBuildingAvailble( const gfx::TileOverlay::Type type, bool mayBuild );
   void setGroupAvailable(const BuildMenuType type, Variant mayBuild );
   bool isGroupAvailable(const BuildMenuType type ) const;
 
-  bool isBuildingAvailble( const TileOverlay::Type type ) const;
+  bool isBuildingAvailble( const gfx::TileOverlay::Type type ) const;
 
   void clear();
 
   void load( const VariantMap& options );
   VariantMap save() const;
 
-  CityBuildOptions& operator=(const CityBuildOptions& a);
+  BuildOptions& operator=(const BuildOptions& a);
 
-  void setBuildingAvailble(const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild);
-  bool isBuildingsAvailble(const TileOverlay::Type start, const TileOverlay::Type stop) const;
+  void setBuildingAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop, bool mayBuild);
+  bool isBuildingsAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop) const;
   bool isCheckDesirability() const;
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
+}//end namespace city
 #endif //__CAESARIA_BUILD_OPTIONS_H_INCLUDED__

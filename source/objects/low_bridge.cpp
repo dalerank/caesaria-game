@@ -26,11 +26,17 @@
 #include <vector>
 
 using namespace constants;
+using namespace gfx;
+
+namespace {
+  Point spanswOffset = Point( 10, -25 );
+
+}
 
 class LowBridgeSubTile : public Construction
 {
 public:
-  enum { liftingSE=67, spanSE=68, descentSE=69, liftingSW=70, spanSW=71, descentSW=72 };
+  enum { liftingWest=67, spanWest=68, descentWest=69, liftingNorth=70, spanNorth=71, descentNorth=72 };
   LowBridgeSubTile( const TilePos& pos, int index )
     : Construction( building::lowBridge, Size( 1 ) )
   {
@@ -40,15 +46,14 @@ public:
     _index = index;
     _parent = 0;
     _picture = Picture::load( ResourceGroup::transport, index );
-    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()) - 10 ) );
+    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()) ) );
   }
 
-  ~LowBridgeSubTile()
-  {
-  }
+  ~LowBridgeSubTile() {}
 
   std::string getError() const { return _parent ? _parent->getError() : "";  }
   bool isWalkable() const { return true;  }
+  bool isNeedRoadAccess() const { return false; }
 
   void build( PlayerCityPtr city, const TilePos& pos )
   {
@@ -56,7 +61,7 @@ public:
     _fgPicturesRef().clear();
     _pos = pos;
     _picture = Picture::load( ResourceGroup::transport, _index );
-    _picture.addOffset( Point( 10, -10 ) );
+    _picture.addOffset( Point( 6, -6 ) );
     _fgPicturesRef().push_back( _picture );
   }
 
@@ -68,7 +73,7 @@ public:
     terrain.setFlag( Tile::tlRoad, true );
   }
 
-  bool canDestroy() const  {    return _parent->canDestroy();  }
+  bool canDestroy() const  {  return _parent ? _parent->canDestroy() : true;  }
 
   void destroy()
   {
@@ -86,16 +91,16 @@ public:
     }
   }
 
-  Point offset( Tile& , const Point& subpos ) const
+  Point offset( const Tile& , const Point& subpos ) const
   {
     switch( _index )
     {
-    case liftingSE: return Point( -subpos.x()*0.9, subpos.x()*0.7 );
-    case spanSE:    return Point( -15, 12 );
-    case descentSE: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
-    case descentSW: return Point( -subpos.y()*0.5, subpos.y()*0.9 );
-    case spanSW:    return Point( -8, 25 );
-    case liftingSW: return Point( subpos.y()*0.6, 20-subpos.y()*0.4 );
+    case liftingWest: return Point( -subpos.x()*0.9, subpos.x()*0.7 );
+    case spanWest:    return Point( -15, 12 );
+    case descentWest: return Point( -10 + subpos.x(), 12 - subpos.x() * 0.7 );
+    case descentNorth: return Point( -subpos.y()*0.5, subpos.y()*1.3 );
+    case spanNorth:    return spanswOffset;
+    case liftingNorth: return Point( subpos.y()*0.6, -25-subpos.y() );
 
     default: return Point( 0, 0 );
     }
@@ -160,7 +165,6 @@ LowBridge::LowBridge() : Construction( constants::building::lowBridge, Size(1) )
 
 void LowBridge::initTerrain(Tile& terrain )
 {
-
 }
 
 void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, constants::Direction dir )
@@ -176,12 +180,12 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
       foreach( it, tiles )
       {
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSE );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
       }
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
     }
   break;
 
@@ -192,12 +196,12 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
       }
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentNorth );
     }
     break;
 
@@ -211,13 +215,13 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingSE );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
       foreach( it, tiles )
       {        
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSE );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentSE );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
     }
   break;
 
@@ -231,13 +235,13 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       tiles.pop_back();
       tiles.erase( tiles.begin() );
 
-      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingSW );
+      _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
       for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
       {        
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanSW );
+        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
         //_d->subtiles.push_back( LowBridgeSubTile( (*it)->getIJ() - startPos, water ) );
       }
-      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentSW );
+      _d->addSpan( tiles.front()->pos() - startPos - TilePos( 0, 1 ), LowBridgeSubTile::descentNorth );
     }
   break;
 

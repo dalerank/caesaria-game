@@ -31,6 +31,8 @@
 #include <stdint.h>
 #include <map>
 
+using namespace gfx;
+
 class GameLoaderC3Sav::Impl
 {
 public:

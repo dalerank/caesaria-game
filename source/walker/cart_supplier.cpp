@@ -36,6 +36,7 @@
 #include "core/direction.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class CartSupplier::Impl
 {
@@ -134,7 +135,7 @@ void CartSupplier::_changeDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartSupplier::getPictureList(PicturesArray &oPics)
+void CartSupplier::getPictureList( Pictures& oPics)
 {
    oPics.clear();
 

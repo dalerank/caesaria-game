@@ -31,6 +31,7 @@
 #include "objects/service.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -50,7 +51,7 @@ public:
     setFont( Font::create( FONT_1 ) );
   }
 
-  virtual void _updateTexture( GfxEngine& painter )
+  virtual void _updateTexture( gfx::Engine& painter )
   {
     Label::_updateTexture( painter );
 
@@ -170,7 +171,7 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
-void AdvisorHealthWindow::draw( GfxEngine& painter )
+void AdvisorHealthWindow::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

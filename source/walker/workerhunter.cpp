@@ -39,7 +39,7 @@ Recruter::Recruter(PlayerCityPtr city )
 
 void Recruter::hireWorkers( const int workers )
 {
-  WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( getBase() );
+  WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
   if( wbase.isValid() ) 
   {
     _workersNeeded = math::clamp( _workersNeeded - workers, 0, 0xff );

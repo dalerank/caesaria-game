@@ -25,6 +25,8 @@
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 
+using namespace gfx;
+
 class Construction::Impl
 {
 public:

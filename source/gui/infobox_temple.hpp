@@ -24,7 +24,7 @@ namespace gui
 class InfoboxTemple : public InfoboxConstruction
 {
 public:
-  InfoboxTemple( Widget* parent, const Tile& tile );
+  InfoboxTemple( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxTemple();
 };
 

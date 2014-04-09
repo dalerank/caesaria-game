@@ -28,7 +28,7 @@ class AdvisorRatingsWindow : public Widget
 public:
   AdvisorRatingsWindow( Widget* parent, int id, const PlayerCityPtr city );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 private:
   class Impl;

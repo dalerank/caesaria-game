@@ -50,10 +50,10 @@ public:
 	virtual bool onEvent(const NEvent& event);
 
   //! prepare render state
-  virtual void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( gfx::Engine& painter );
 
   //! override render function 
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   virtual void setText(const std::string& text );
 
@@ -65,10 +65,10 @@ public:
 
   virtual bool isBodyVisible() const;
 
-  virtual void drawIcon( GfxEngine& painter );
+  virtual void drawIcon( gfx::Engine& painter );
 
   virtual void setPicture( const std::string& rcname, int index);
-  virtual void setPicture( Picture picture, ElementState state );
+  virtual void setPicture( gfx::Picture picture, ElementState state );
   virtual void setPicture( const std::string& rcname, int index, ElementState state );
 
   virtual void setIcon( const std::string& rcname, int index, ElementState state );
@@ -110,8 +110,8 @@ protected:
  
   virtual void _updateTexture( ElementState state );
 
-  PictureRef& _backgroundRef( ElementState state );
-  PictureRef& _textPictureRef( ElementState state );
+  gfx::PictureRef& _backgroundRef( ElementState state );
+  gfx::PictureRef& _textPictureRef( ElementState state );
 
 private:
   __DECLARE_IMPL(PushButton)

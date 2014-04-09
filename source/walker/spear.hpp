@@ -26,7 +26,7 @@ public:
 protected:
   virtual void _onTarget();
   virtual const char* rcGroup() const;
-  virtual int rcStartIndex() const;
+  virtual int _rcStartIndex() const;
 
 private:
   Spear( PlayerCityPtr city );

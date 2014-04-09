@@ -19,6 +19,8 @@
 #include "core/variant.hpp"
 #include "empire.hpp"
 
+using namespace gfx;
+
 namespace world
 {
 

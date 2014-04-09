@@ -25,7 +25,7 @@ namespace gui
 class InfoboxSenate : public InfoboxSimple
 {
 public:
-  InfoboxSenate( Widget* parent, const Tile& tile );
+  InfoboxSenate( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxSenate();
 
 public oc3_signals:

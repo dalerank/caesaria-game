@@ -38,7 +38,7 @@ public:
   void fadeOut();
 
 protected:
-	int getResult() const;
+	int result() const;
 
 private:
   class Impl;

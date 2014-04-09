@@ -23,14 +23,19 @@
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "city/city.hpp"
-#include "tilemap_camera.hpp"
 #include "core/event.hpp"
 #include "sdl_engine.hpp"
 #include "core/font.hpp"
 #include "objects/fortification.hpp"
 #include "core/stringhelper.hpp"
+#include "camera.hpp"
+#include "renderermode.hpp"
+#include "events/warningmessage.hpp"
 
 using namespace constants;
+
+namespace gfx
+{
 
 class LayerBuild::Impl
 {
@@ -39,7 +44,7 @@ public:
   TilePos lastTilePos;
   bool borderBuilding;
   bool roadAssignment;
-  CityRenderer* renderer;
+  Renderer* renderer;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
 
@@ -62,7 +67,7 @@ void LayerBuild::_discardPreview()
 void LayerBuild::_checkPreviewBuild(TilePos pos)
 {
   __D_IMPL(d,LayerBuild);
-  BuildModePtr bldCommand = ptr_cast<BuildMode>(d->renderer->getMode() );
+  BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->getMode() );
 
   if (bldCommand.isNull())
     return;
@@ -266,13 +271,13 @@ void LayerBuild::handleEvent(NEvent& event)
     bool pressed = event.keyboard.pressed;
     int moveValue = _camera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
-    TilemapCamera* cam = _camera();
     switch( event.keyboard.key )
     {
-    case KEY_UP:    cam->moveUp   ( moveValue ); break;
-    case KEY_DOWN:  cam->moveDown ( moveValue ); break;
-    case KEY_RIGHT: cam->moveRight( moveValue ); break;
-    case KEY_LEFT:  cam->moveLeft ( moveValue ); break;
+    case KEY_UP:    _camera()->moveUp   ( moveValue ); break;
+    case KEY_DOWN:  _camera()->moveDown ( moveValue ); break;
+    case KEY_RIGHT: _camera()->moveRight( moveValue ); break;
+    case KEY_LEFT:  _camera()->moveLeft ( moveValue ); break;
+    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); _discardPreview(); break;
     default: break;
     }
   }
@@ -288,7 +293,7 @@ std::set<int> LayerBuild::getVisibleWalkers() const
   return ret;
 }
 
-void LayerBuild::_drawBuildTiles(GfxEngine& engine)
+void LayerBuild::_drawBuildTiles( Engine& engine)
 {
   __D_IMPL(_d,LayerBuild);
   Point offset = _camera()->getOffset();
@@ -312,7 +317,7 @@ void LayerBuild::_drawBuildTiles(GfxEngine& engine)
   engine.resetTileDrawMask();
 }
 
-void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
+void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 {
   __D_IMPL(_d,LayerBuild);
   Point screenPos = tile.mapPos() + offset;
@@ -349,16 +354,12 @@ void LayerBuild::drawTile( GfxEngine& engine, Tile& tile, Point offset )
     tile.setWasDrawn();
     engine.drawPicture( tile.picture(), screenPos );
 
-    if( tile.animation().isValid() )
-    {
-      engine.drawPicture( tile.animation().currentFrame(), screenPos );
-    }
-
+    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
     drawTilePass( engine, tile, offset, Renderer::foreground );
   }
 }
 
-void LayerBuild::render(GfxEngine& engine)
+void LayerBuild::render( Engine& engine)
 {
   Layer::render( engine );
 
@@ -376,7 +377,7 @@ void LayerBuild::init(Point cursor)
   _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;
 }
 
-LayerPtr LayerBuild::create(CityRenderer* renderer, PlayerCityPtr city)
+LayerPtr LayerBuild::create(Renderer* renderer, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerBuild( renderer, city ) );
   ret->drop();
@@ -386,10 +387,12 @@ LayerPtr LayerBuild::create(CityRenderer* renderer, PlayerCityPtr city)
 
 LayerBuild::~LayerBuild() {}
 
-LayerBuild::LayerBuild(CityRenderer* renderer, PlayerCityPtr city)
+LayerBuild::LayerBuild( Renderer* renderer, PlayerCityPtr city)
   : Layer( renderer->camera(), city ),
     __INIT_IMPL(LayerBuild)
 {
   __D_IMPL(_d, LayerBuild)
   _d->renderer = renderer;  
 }
+
+}//end namespace gfx

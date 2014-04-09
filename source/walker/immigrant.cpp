@@ -31,6 +31,7 @@
 #include "corpse.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Immigrant::Impl
 {
@@ -79,7 +80,7 @@ HousePtr Immigrant::_findBlankHouse()
   return blankHouse;
 }
 
-Pathway Immigrant::_findPath2blankHouse( TilePos startPoint )
+Pathway Immigrant::_findSomeWay( TilePos startPoint )
 {
   HousePtr house = _findBlankHouse();  
 
@@ -148,7 +149,7 @@ void Immigrant::_reachedPathway()
 
   if( gooutCity )
   {
-    Pathway way = _findPath2blankHouse( pos() );
+    Pathway way = _findSomeWay( pos() );
     if( way.isValid() )
     {
       _updatePathway( way );
@@ -165,14 +166,18 @@ void Immigrant::_reachedPathway()
   }
 }
 
-void Immigrant::_brokePathway(TilePos pos)
+void Immigrant::_brokePathway(TilePos p)
 {
-  /*TileOverlayPtr overlay = _getCity()->getTilemap().at( pos ).getOverlay();
-  if( !overlay.is<House>() )
+  Pathway way = _findSomeWay( pos() );
+  if( way.isValid() )
   {
-    _d->destination = getIJ();
-    _reachedPathway();
-  }*/
+    setPathway( way );
+    go();
+  }
+  else
+  {
+    die();
+  }
 }
 
 ImmigrantPtr Immigrant::create(PlayerCityPtr city )
@@ -199,7 +204,7 @@ ImmigrantPtr Immigrant::send2city( PlayerCityPtr city, const CitizenGroup& peopl
 
 void Immigrant::send2city( const Tile& startTile )
 {    
-  Pathway way = _findPath2blankHouse( startTile.pos() );
+  Pathway way = _findSomeWay( startTile.pos() );
   setPos( startTile.pos() );
 
   if( way.isValid() )
@@ -230,8 +235,8 @@ void Immigrant::leaveCity( const Tile& tile)
 
 Immigrant::~Immigrant(){}
 
-void Immigrant::setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
-const Picture& Immigrant::getCartPicture(){  return _d->cartPicture;}
+void Immigrant::_setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
+const Picture& Immigrant::_cartPicture(){  return _d->cartPicture;}
 const CitizenGroup& Immigrant::_getPeoples() const{  return _d->peoples;}
 void Immigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
 
@@ -253,7 +258,7 @@ void Immigrant::timeStep(const unsigned long time)
     _d->stamina = math::clamp( _d->stamina+1, 0.f, 100.f );
     if( _d->stamina >= 100 )
     {
-      Pathway way = _findPath2blankHouse( pos() );
+      Pathway way = _findSomeWay( pos() );
       if( way.isValid() )
       {
         _updatePathway( way );

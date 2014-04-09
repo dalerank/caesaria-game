@@ -39,8 +39,8 @@ public:
     unlknowState=0xff
   } Result;
 
-  Briefing( Game& game, GfxEngine& engine, std::string filename );
-  ~Briefing();
+  Briefing( Game& game, gfx::Engine& engine, std::string filename );
+  virtual ~Briefing();
 
   virtual void handleEvent( NEvent& event);
 
@@ -50,8 +50,8 @@ public:
 
   std::string getMapName() const;
 
-  int getResult() const;
-  bool isStopped() const;
+  virtual int result() const;
+  virtual bool isStopped() const;
 
 private:
   class Impl;

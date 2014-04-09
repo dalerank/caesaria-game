@@ -199,8 +199,8 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   }
 
   // Create the image structure to be filled by png data
-  Picture* pic = GfxEngine::instance().createPicture( Size( Width, Height ) );
-  GfxEngine::instance().loadPicture( *pic );
+  Picture* pic = Engine::instance().createPicture( Size( Width, Height ) );
+  Engine::instance().loadPicture( *pic );
 
   if( pic->size().area() == 0 )
   {
@@ -232,7 +232,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   if( setjmp( png_jmpbuf( png_ptr ) ) )
   {
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-    GfxEngine::instance().deletePicture( pic );
+    Engine::instance().deletePicture( pic );
     return Picture::getInvalid();
   }
 

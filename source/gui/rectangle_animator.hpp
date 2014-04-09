@@ -35,7 +35,7 @@ public:
 
   ~RectangleAnimator(void);
 
-  void beforeDraw(GfxEngine &painter);
+  void beforeDraw( gfx::Engine& painter);
  
   void setStopRect( const Rect& r );
 

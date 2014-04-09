@@ -20,11 +20,14 @@
 #include "core/smartptr.hpp"
 #include "engine.hpp"
 #include "tile.hpp"
-#include "renderer.hpp"
+//#include "renderer.hpp"
 #include "game/predefinitions.hpp"
 #include "core/signals.hpp"
 
 #include <set>
+
+namespace gfx
+{
 
 class Layer : public ReferenceCounted
 {
@@ -35,26 +38,26 @@ public:
   virtual VisibleWalkers getVisibleWalkers() const = 0;
 
   //draw gfx before walkers
-  virtual void drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const int depth, bool force );
+  virtual void drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
 
   //draw gfx active tile
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset ) = 0;
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset ) = 0;
 
   //draw gfx after walkers
-  virtual void drawTileW( GfxEngine& engine, Tile& tile, const Point& offset, const int depth );
+  virtual void drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth );
 
   virtual void handleEvent( NEvent& event );
-  virtual void drawTilePass(GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass );
-  virtual void drawArea( GfxEngine& engine, const TilesArray& area, Point offset,
+  virtual void drawTilePass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass );
+  virtual void drawArea( Engine& engine, const TilesArray& area, Point offset,
                          std::string resourceGroup, int tileId );
 
-  virtual void drawColumn(GfxEngine& engine, const Point& pos, const int percent );
+  virtual void drawColumn( Engine& engine, const Point& pos, const int percent );
   virtual void init( Point cursor );
 
-  virtual void beforeRender(GfxEngine& engine) {}
-  virtual void afterRender(GfxEngine& engine);
-  virtual void render(GfxEngine& engine);
-  virtual void renderPass(GfxEngine& engine, Renderer::Pass pass);
+  virtual void beforeRender( Engine& engine) {}
+  virtual void afterRender( Engine& engine);
+  virtual void render( Engine& engine);
+  virtual void renderPass( Engine& engine, Renderer::Pass pass);
 
   virtual void registerTileForRendering(Tile&);
   virtual int getNextLayer() const;
@@ -66,14 +69,14 @@ protected:
   WalkerList _getVisibleWalkerList( const VisibleWalkers& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
-  void _drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset);
+  void _drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
   void _setTooltipText( std::string text );
   void _loadColumnPicture( int picId );
 
   TilesArray _getSelectedArea();
 
-  Layer( TilemapCamera& camera, PlayerCityPtr city );
-  TilemapCamera* _camera();
+  Layer(Camera* camera, PlayerCityPtr city );
+  Camera* _camera();
   PlayerCityPtr _city();
   void _setNextLayer(int layer);
 
@@ -81,5 +84,7 @@ protected:
 };
 
 typedef SmartPtr<Layer> LayerPtr;
+
+}
 
 #endif //__CAESAIRAS_LAYER_H_INCLUDED__

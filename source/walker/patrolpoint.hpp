@@ -26,7 +26,7 @@ public:
   static PatrolPointPtr create( PlayerCityPtr city, FortPtr base,
                                 std::string prefix, int startPos, int stepNumber, TilePos position );
 
-  virtual void getPictureList(PicturesArray& oPics);
+  virtual void getPictureList( gfx::Pictures& oPics);
   virtual void timeStep(const unsigned long time);
 
   void acceptPosition();

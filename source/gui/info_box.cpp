@@ -57,6 +57,7 @@
 #include "widgetescapecloser.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -129,7 +130,7 @@ void InfoboxSimple::setText( const std::string& text )
 
 InfoboxSimple::~InfoboxSimple() {}
 
-void InfoboxSimple::draw( GfxEngine& engine )
+void InfoboxSimple::draw(gfx::Engine& engine )
 {
   Widget::draw( engine );
 }
@@ -178,7 +179,7 @@ void InfoboxSimple::setupUI(const VariantMap& ui)
   _d->isAutoPosition = ui.get( "autoPosition", true );
 }
 
-Label* InfoboxSimple::_getTitle(){  return _d->lbTitle;}
+Label* InfoboxSimple::_title(){  return _d->lbTitle;}
 
 Label*InfoboxSimple::_getInfo(){ return _d->lbText; }
 Label* InfoboxSimple::_getBlackFrame(){  return _d->lbBlackFrame; }

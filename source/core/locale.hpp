@@ -27,5 +27,4 @@ public:
   static const char* translate( const std::string& text);
 };
 
-
 #endif //__CAESARIA_LOCALE_H_INCLUDED__

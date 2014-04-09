@@ -60,12 +60,12 @@ void EntertainmentBuilding::deliverService()
   // all trainees are there for the show!
   if( isWalkerReady )
   {
-    if( getWalkers().empty() )
+    if( walkers().empty() )
     {
       ServiceBuilding::deliverService();
       _d->showCounter++;
 
-      if( !getWalkers().empty() )
+      if( !walkers().empty() )
       {
         _animationRef().start();
         decreaseLevel = 25;
@@ -73,7 +73,7 @@ void EntertainmentBuilding::deliverService()
     }
   }
 
-  if( getWalkers().empty() )
+  if( walkers().empty() )
   {
     _animationRef().stop(); //have no actors for the show
   }

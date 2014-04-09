@@ -25,7 +25,7 @@ namespace gui
 class InfoboxFontain : public InfoboxConstruction
 {
 public:
-   InfoboxFontain( Widget* parent, const Tile& tile );
+   InfoboxFontain( Widget* parent, const gfx::Tile& tile );
    virtual ~InfoboxFontain();
 
    virtual void showDescription();
@@ -34,7 +34,7 @@ public:
 class InfoboxWell : public InfoboxConstruction
 {
 public:
-  InfoboxWell( Widget* parent, const Tile& tile );
+  InfoboxWell( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxWell();
 
   virtual void showDescription();
@@ -43,7 +43,7 @@ public:
 class InfoboxReservoir : public InfoboxConstruction
 {
 public:
-  InfoboxReservoir( Widget* parent, const Tile& tile );
+  InfoboxReservoir( Widget* parent, const gfx::Tile& tile );
   virtual ~InfoboxReservoir();
 
   virtual void showDescription();

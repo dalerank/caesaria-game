@@ -92,7 +92,7 @@ bool WorkingBuilding::isActive() const { return _d->isActive; }
 void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( numberWorkers() + workers ); }
 void WorkingBuilding::removeWorkers(const unsigned int workers) { setWorkers( numberWorkers() - workers ); }
 WorkingBuilding::~WorkingBuilding(){}
-const WalkerList& WorkingBuilding::getWalkers() const {  return _d->walkerList; }
+const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 std::string WorkingBuilding::getError() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
 

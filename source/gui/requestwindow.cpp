@@ -84,7 +84,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
   CONNECT( btnAdvisor, onClicked(), this, EmperrorRequestWindow::deleteLater );
 }
 
-void EmperrorRequestWindow::draw( GfxEngine& painter )
+void EmperrorRequestWindow::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

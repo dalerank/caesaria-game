@@ -41,7 +41,7 @@ void BowArrow::_onTarget()
 }
 
 const char* BowArrow::rcGroup() const {  return ResourceGroup::sprites; }
-int BowArrow::rcStartIndex() const { return 130; }
+int BowArrow::_rcStartIndex() const { return 130; }
 
 BowArrow::BowArrow(PlayerCityPtr city) : ThrowingWeapon( city )
 {

@@ -23,8 +23,9 @@ class Soldier::Impl
 public:
   float strikeForce;
   float resistance;
+  int morale;
 
-  Impl() : strikeForce ( 3.f ), resistance( 1.f ) {}
+  Impl() : strikeForce ( 3.f ), resistance( 1.f ), morale( 0 ) {}
 };
 
 Soldier::Soldier(PlayerCityPtr city, walker::Type type)
@@ -33,10 +34,13 @@ Soldier::Soldier(PlayerCityPtr city, walker::Type type)
   _setType( type );
 }
 
-float Soldier::resistance() const { __D_IMPL_CONST(_d,Soldier); return _d->resistance; }
-void Soldier::setResistance(float value) {  __D_IMPL(_d,Soldier); _d->resistance = value;  }
-float Soldier::strike() const { __D_IMPL_CONST(_d,Soldier); return _d->strikeForce; }
-void Soldier::setStrike(float value) { __D_IMPL(_d,Soldier); _d->strikeForce = value; }
+float Soldier::resistance() const { return _dfunc()->resistance; }
+void Soldier::setResistance(float value) { _dfunc()->resistance = value;  }
+
+float Soldier::strike() const { return _dfunc()->strikeForce; }
+void Soldier::setStrike(float value) { _dfunc()->strikeForce = value; }
+
+int Soldier::morale() const { return _dfunc()->morale; }
 
 void Soldier::initialize(const VariantMap &options)
 {

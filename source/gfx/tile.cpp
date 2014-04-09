@@ -21,8 +21,12 @@
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
 
+namespace gfx
+{
+
 namespace {
   int waterDecreaseInterval = GameDate::ticksInMonth() / 2;
+  Animation invalidAnimation;
 }
 
 void Tile::Terrain::reset()
@@ -106,7 +110,7 @@ void Tile::animate(unsigned int time)
   }
 }
 
-const Animation&Tile::animation() const{  return _animation;}
+const Animation& Tile::animation() const{  return _overlay.isValid() ? invalidAnimation : _animation; }
 void Tile::setAnimation(const Animation& animation){ _animation = animation;}
 
 bool Tile::isWalkable( bool alllands ) const
@@ -306,3 +310,5 @@ Tile& TileHelper::getInvalid()
   static Tile invalidTile( TilePos( -1, -1) );
   return invalidTile;
 }
+
+}//end namespace gfx

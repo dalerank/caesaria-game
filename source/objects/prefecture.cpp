@@ -25,6 +25,8 @@
 #include "city/city.hpp"
 #include "objects/constants.hpp"
 
+using namespace gfx;
+
 class Prefecture::Impl
 {
 public:
@@ -73,7 +75,7 @@ void Prefecture::timeStep(const unsigned long time)
 
 void Prefecture::deliverService()
 {
-  if( numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     bool fireDetect = _d->fireDetect.i() >= 0;
     PrefectPtr walker = Prefect::create( _city() );
@@ -86,7 +88,7 @@ void Prefecture::deliverService()
 
       Tilemap& tmap = _city()->tilemap();
       TilesArray arrivedArea = tmap.getArea( _d->fireDetect - TilePos( 1, 1), _d->fireDetect + TilePos( 1, 1 ) );
-      Pathway pathway = Pathfinder::getInstance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
+      Pathway pathway = Pathfinder::instance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
       //patrol = !pathFounded;
 
       if( pathway.isValid() )

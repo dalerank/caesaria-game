@@ -26,28 +26,29 @@
 namespace religion
 {
 
+namespace rome
+{
+
 class Pantheon
 {
 public:
-  typedef std::vector< RomeDivinityPtr > Divinities;
-
   static Pantheon& instance();
-
 
   void load(const VariantMap& stream );
   void save(VariantMap& stream);
 
-  static void doFestival( RomeDivinityType who, int type);
+  static void doFestival( RomeDivinityType who, int type );
+  static void doFestival( const std::string& who, int type );
 
-  Divinities all();
-  static RomeDivinityPtr ceres();
-  static RomeDivinityPtr mars();
-  static RomeDivinityPtr neptune();
-  static RomeDivinityPtr venus();
-  static RomeDivinityPtr mercury();
+  DivinityList all();
+  static DivinityPtr ceres();
+  static DivinityPtr mars();
+  static DivinityPtr neptune();
+  static DivinityPtr venus();
+  static DivinityPtr mercury();
 
-  static RomeDivinityPtr get( RomeDivinityType name );
-  static RomeDivinityPtr get( std::string name );
+  static DivinityPtr get( RomeDivinityType name );
+  static DivinityPtr get( const std::string& name );
 
 private:
   Pantheon();
@@ -55,6 +56,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace rome
 
 }//end namespace religion
 

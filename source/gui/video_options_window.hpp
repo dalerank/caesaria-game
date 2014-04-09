@@ -29,7 +29,7 @@ class VideoOptionsWindow : public Widget
 {
 public:
   VideoOptionsWindow( Widget* parent,
-                      GfxEngine::Modes modes,
+                      gfx::Engine::Modes modes,
                       bool fullscreen );
 
   //! Деструктор

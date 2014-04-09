@@ -21,6 +21,9 @@
 #include <vector>
 #include <cstring>
 
+namespace gfx
+{
+
 class TilesArray : public std::vector<Tile*>
 {
 public:
@@ -54,5 +57,7 @@ public:
     return *this;
   }
 };
+
+}//end namespace
 
 #endif //_CAESARIA_TILESARRAY_INCLUDE_H_

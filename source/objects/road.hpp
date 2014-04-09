@@ -23,19 +23,19 @@ class Road : public Construction
 public:
   Road();
 
-  virtual Picture computePicture();
+  virtual gfx::Picture computePicture();
   void updatePicture();
 
   virtual void build( PlayerCityPtr city, const TilePos& pos );
-  virtual void initTerrain(Tile &terrain);
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;
+  virtual void initTerrain( gfx::Tile &terrain);
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual void appendPaved( int value );
   int getPavedValue() const;
-  virtual Renderer::PassQueue getPassQueue() const;
+  virtual gfx::Renderer::PassQueue getPassQueue() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -48,9 +48,9 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual void initTerrain(Tile& terrain);
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;
-  virtual Picture computePicture();
+  virtual void initTerrain( gfx::Tile& terrain);
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
+  virtual gfx::Picture computePicture();
   virtual void appendPaved(int value);
 };
 

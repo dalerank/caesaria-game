@@ -20,13 +20,13 @@
 #include "game/gamedate.hpp"
 #include "objects/religion.hpp"
 #include "religion/pantheon.hpp"
-#include "events/event.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
 #include "core/safetycast.hpp"
+#include "events/showinfobox.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -38,6 +38,7 @@ class Religion::Impl
 {
 public:
   DateTime lastDate;
+  DateTime lastUnhappyMessageDate;
   struct TempleInfo
   {
     int smallTempleNum;
@@ -46,11 +47,11 @@ public:
     TempleInfo() : smallTempleNum( 0 ), bigTempleNum( 0 ) {}
   };
 
-  typedef std::map< RomeDivinityPtr, TempleInfo > TemplesMap;
+  typedef std::map< DivinityPtr, TempleInfo > TemplesMap;
   TemplesMap templesCoverity;
-  TempleInfo maxTemples;
+  TempleInfo maxTemples;  
 
-  void updateRelation( PlayerCity& city, RomeDivinityPtr divn );
+  void updateRelation( PlayerCity& city, DivinityPtr divn );
 };
 
 SrvcPtr Religion::create(PlayerCityPtr city)
@@ -67,6 +68,7 @@ Religion::Religion(PlayerCityPtr city )
   : Srvc( *city.object(), Religion::getDefaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
+  _d->lastUnhappyMessageDate = GameDate::current();
 }
 
 void Religion::update( const unsigned int time )
@@ -77,7 +79,7 @@ void Religion::update( const unsigned int time )
   Logger::warning( "Religion: start update relations" );
   _d->lastDate = GameDate::current();
 
-  Pantheon::Divinities divinities = Pantheon::instance().all();
+  DivinityList divinities = rome::Pantheon::instance().all();
 
   //clear temples info
   _d->templesCoverity.clear();
@@ -87,11 +89,11 @@ void Religion::update( const unsigned int time )
   TempleList temples = helper.find<Temple>( building::religionGroup );
   foreach( it, temples)
   {
-    Impl::TempleInfo& info = _d->templesCoverity[ (*it)->getDivinity() ];
-    TemplePtr temple = ptr_cast<Temple>( *it );
-    if( temple.isValid() && temple->getDivinity().isValid() )
+    if( (*it)->getDivinity().isValid() )
     {
-       if( is_kind_of<BigTemple>( temple ) ) { info.bigTempleNum++; }
+       Impl::TempleInfo& info = _d->templesCoverity[ (*it)->getDivinity() ];
+
+       if( is_kind_of<BigTemple>( *it ) ) { info.bigTempleNum++; }
        else { info.smallTempleNum++; }
     }
   }
@@ -110,7 +112,23 @@ void Religion::update( const unsigned int time )
   }
 }
 
-void Religion::Impl::updateRelation( PlayerCity& city, RomeDivinityPtr divn)
+VariantMap Religion::save() const
+{
+  VariantMap ret = Srvc::save();
+
+  ret[ "lastUnhappyDate" ] = _d->lastUnhappyMessageDate;
+
+  return ret;
+}
+
+void Religion::load(const VariantMap& stream)
+{
+  Srvc::load( stream );
+
+  _d->lastUnhappyMessageDate = stream.get( "lastUnhappyDate", GameDate::current() ).toDateTime();
+}
+
+void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
 {
   Helper helper( &city );
   int peopleReached = 0;
@@ -136,6 +154,14 @@ void Religion::Impl::updateRelation( PlayerCity& city, RomeDivinityPtr divn)
 
   Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->name().c_str(), faithIncome, divn->relation() );
   divn->updateRelation( faithIncome, &city );
+
+  if( divn->relation() < 30 && lastUnhappyMessageDate.getDaysToDate( GameDate::current() ) > 6 )
+  {
+    lastUnhappyMessageDate = GameDate::current();
+    events::GameEventPtr e = events::ShowInfobox::create( _("##gods_unhappy_title##"), _("##gods_unhappy_text##"),
+                                                          events::ShowInfobox::send2scribe );
+    e->dispatch();
+  }
 }
 
 }//end namespace city

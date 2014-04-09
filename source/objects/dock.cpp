@@ -33,6 +33,7 @@
 #include "pathway/pathway.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Dock::Impl
 {
@@ -366,7 +367,7 @@ void Dock::_tryDeliverGoods()
 {
   for( int i=Good::wheat; i < Good::goodCount; i++ )
   {
-    if( getWalkers().size() > 2 )
+    if( walkers().size() > 2 )
     {
       return;
     }
@@ -406,7 +407,7 @@ void Dock::_tryReceiveGoods()
 {
   for( int i=Good::wheat; i < Good::goodCount; i++ )
   {
-    if( getWalkers().size() >= 2 )
+    if( walkers().size() >= 2 )
     {
       return;
     }

@@ -29,6 +29,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 class Layer::Impl
 {
 public:
@@ -37,7 +40,7 @@ public:
 
   Point lastCursorPos;
   Point startCursorPos;
-  TilemapCamera* camera;
+  Camera* camera;
   PlayerCityPtr city;
   PictureRef tooltipPic;
   int nextLayer;
@@ -62,7 +65,7 @@ void Layer::registerTileForRendering(Tile& tile)
   }
 }
 
-void Layer::renderPass( GfxEngine& engine, Renderer::Pass pass )
+void Layer::renderPass( Engine& engine, Renderer::Pass pass )
 {
   // building foregrounds and animations
   __D_IMPL(_d,Layer)
@@ -176,7 +179,7 @@ TilesArray Layer::_getSelectedArea()
   return _city()->tilemap().getArea( outStartPos, outStopPos );
 }
 
-void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer::Pass pass)
+void Layer::drawTilePass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass)
 {
   Point screenPos = tile.mapPos() + offset;
   switch( pass )
@@ -194,9 +197,9 @@ void Layer::drawTilePass( GfxEngine& engine, Tile& tile, Point offset, Renderer:
     if( tile.overlay().isNull() )
       return;
 
-    const PicturesArray& pictures = tile.overlay()->getPictures( pass );
+    const Pictures& pictures = tile.overlay()->getPictures( pass );
 
-    for( PicturesArray::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
+    for( Pictures::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
     {
       engine.drawPicture( *it, screenPos );
     }
@@ -218,9 +221,9 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
   return walkerList;
 }
 
-void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camOffset )
+void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
-  PicturesArray pictureList;
+  Pictures pictureList;
   WalkerList walkers = _getVisibleWalkerList( getVisibleWalkers(), tile.pos() );
 
   foreach( w, walkers )
@@ -231,7 +234,7 @@ void Layer::_drawWalkers( GfxEngine& engine, const Tile& tile, const Point& camO
     {
       if( (*picRef).isValid() )
       {
-        engine.drawPicture( *picRef, (*w)->getMappos() + camOffset );
+        engine.drawPicture( *picRef, (*w)->screenpos() + camOffset );
       }
     }
   }
@@ -258,7 +261,7 @@ void Layer::_setTooltipText(std::string text)
   }
 }
 
-void Layer::render( GfxEngine& engine)
+void Layer::render( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   // center the map on the screen
@@ -303,7 +306,7 @@ void Layer::render( GfxEngine& engine)
   }
 }
 
-void Layer::drawTileW( GfxEngine& engine, Tile& tile, const Point& offset, const int depth)
+void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth)
 {
   Tile* master = tile.masterTile();
 
@@ -321,7 +324,7 @@ void Layer::drawTileW( GfxEngine& engine, Tile& tile, const Point& offset, const
   }
 }
 
-void Layer::drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const int depth, bool force)
+void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
 {
   if( tile.isFlat() && !force )
   {
@@ -344,7 +347,7 @@ void Layer::drawTileR( GfxEngine& engine, Tile& tile, const Point& offset, const
   }
 }
 
-void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, std::string resourceGroup, int tileId)
+void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std::string resourceGroup, int tileId)
 {
   if( area.empty() )
     return;
@@ -363,7 +366,7 @@ void Layer::drawArea(GfxEngine& engine, const TilesArray& area, Point offset, st
   }
 }
 
-void Layer::drawColumn(GfxEngine& engine, const Point& pos, const int percent)
+void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
 {
   __D_IMPL(_d,Layer)
   engine.drawPicture( _d->footColumn, pos + Point( 10, -21 ) );
@@ -389,7 +392,7 @@ void Layer::init( Point cursor )
   _d->nextLayer = getType();
 }
 
-void Layer::afterRender(GfxEngine& engine)
+void Layer::afterRender( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   if( !_d->tooltipText.empty() )
@@ -398,11 +401,11 @@ void Layer::afterRender(GfxEngine& engine)
   }
 }
 
-Layer::Layer( TilemapCamera& camera, PlayerCityPtr city )
+Layer::Layer( Camera* camera, PlayerCityPtr city )
   : __INIT_IMPL(Layer)
 {
   __D_IMPL(_d,Layer)
-  _d->camera = &camera;
+  _d->camera = camera;
   _d->city = city;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
 }
@@ -415,12 +418,14 @@ void Layer::_loadColumnPicture(int picId)
   _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
 }
 
-int Layer::getNextLayer() const{ __D_IMPL_CONST(_d,Layer)  return _d->nextLayer; }
-TilemapCamera* Layer::_camera(){ __D_IMPL(_d,Layer)   return _d->camera;}
-PlayerCityPtr Layer::_city(){  __D_IMPL(_d,Layer)  return _d->city;}
-void Layer::_setNextLayer(int layer) { __D_IMPL(_d,Layer)  _d->nextLayer = layer;}
+int Layer::getNextLayer() const{ return _dfunc()->nextLayer; }
+Camera* Layer::_camera(){ return _dfunc()->camera;}
+PlayerCityPtr Layer::_city(){ return _dfunc()->city;}
+void Layer::_setNextLayer(int layer) { _dfunc()->nextLayer = layer;}
 Layer::~Layer(){}
-void Layer::_setLastCursorPos(Point pos){ __D_IMPL(_d,Layer)    _d->lastCursorPos = pos; }
-void Layer::_setStartCursorPos(Point pos){ __D_IMPL(_d,Layer)   _d->startCursorPos = pos; }
-Point Layer::_startCursorPos() const{ __D_IMPL_CONST(_d,Layer)  return _d->startCursorPos; }
-Point Layer::_lastCursorPos() const { __D_IMPL_CONST(_d,Layer)   return _d->lastCursorPos; }
+void Layer::_setLastCursorPos(Point pos){ _dfunc()->lastCursorPos = pos; }
+void Layer::_setStartCursorPos(Point pos){ _dfunc()->startCursorPos = pos; }
+Point Layer::_startCursorPos() const{ return _dfunc()->startCursorPos; }
+Point Layer::_lastCursorPos() const { return _dfunc()->lastCursorPos; }
+
+}

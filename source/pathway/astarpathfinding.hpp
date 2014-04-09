@@ -27,20 +27,20 @@ class Pathfinder
 public:
   typedef enum { noFlags=0x0,
                  checkStart=0x1, checkStop=0x2,
-                 roadOnly=0x4, waterOnly=0x8, terrainOnly=0x10,
-                 traversePath=0x20,
+                 roadOnly=0x4, deepWaterOnly=0x8, terrainOnly=0x10,
+                 waterOnly=0x20, traversePath=0x40,
                  everyWhere=0x80, fourDirection=0x100,
                  customCondition=0x200, ignoreRoad=0x400 } Flags;
 
-  static Pathfinder& getInstance();
+  static Pathfinder& instance();
 
-  void update( const Tilemap& tmap );
+  void update( const gfx::Tilemap& tmap );
 
-  Pathway getPath( TilePos start, TilesArray arrivedArea, int flags );
+  Pathway getPath( TilePos start, gfx::TilesArray arrivedArea, int flags );
 
   Pathway getPath( TilePos start, TilePos stop, int flags );
 
-  Pathway getPath(const Tile& start, const Tile& stop, int flags);
+  Pathway getPath(const gfx::Tile& start, const gfx::Tile& stop, int flags);
 
   void setCondition( const TilePossibleCondition& condition );
   void resetCondition();

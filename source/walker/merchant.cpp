@@ -37,6 +37,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Merchant::Impl
 {
@@ -219,7 +220,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       {
         city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
 
-        CityTradeOptions& options = city->getTradeOptions();
+        city::TradeOptions& options = city->getTradeOptions();
         GoodStore& whStore = warehouse->store();
         //try buy goods
         for( int n = Good::wheat; n<Good::goodCount; ++n )

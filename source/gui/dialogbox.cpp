@@ -21,6 +21,8 @@
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -111,7 +113,7 @@ Signal0<>& DialogBox::onCancel()
   return _d->onCancelSignal;
 }
 
-void DialogBox::draw( GfxEngine& painter )
+void DialogBox::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
   {

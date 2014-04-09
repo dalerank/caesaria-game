@@ -28,7 +28,7 @@ class PushButton;
 class BaseSpecialOrdersWindow : public Widget
 {
 public:
-  virtual void draw( GfxEngine& engine );  // draw on screen
+  virtual void draw( gfx::Engine& engine );  // draw on screen
 
   virtual bool onEvent( const NEvent& event);
 

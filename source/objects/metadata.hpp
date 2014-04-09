@@ -34,7 +34,7 @@ class MetaData
 
   static MetaData invalid;
 public:
-  MetaData( const TileOverlay::Type type, const std::string& name );
+  MetaData( const gfx::TileOverlay::Type type, const std::string& name );
   MetaData( const MetaData& a );
 
   ~MetaData();
@@ -43,9 +43,9 @@ public:
   std::string getSound() const;
   std::string getPrettyName() const;
   std::string getDescription() const;
-  TileOverlay::Type getType() const;
-  TileOverlay::Group getGroup() const;
-  Picture getBasePicture() const;
+  gfx::TileOverlay::Type getType() const;
+  gfx::TileOverlay::Group getGroup() const;
+  gfx::Picture getBasePicture() const;
   Desirability getDesirbility() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
@@ -54,7 +54,6 @@ public:
 
 private:
   std::string _prettyName;  // pretty-print name  (i18n, ex:"Iron mine")
-  Picture _basePicture;
 
   class Impl;
   ScopedPtr< Impl > _d;
@@ -67,18 +66,18 @@ public:
    static MetaDataHolder& instance();
 
    void addData(const MetaData& data);
-   const MetaData& getData(const TileOverlay::Type buildingType) const;
-   bool hasData(const TileOverlay::Type buildingType) const;
+   const MetaData& getData(const gfx::TileOverlay::Type buildingType) const;
+   bool hasData(const gfx::TileOverlay::Type buildingType) const;
 
    // return factory that consume goodType
-   TileOverlay::Type getConsumerType(const Good::Type inGoodType) const;
+   gfx::TileOverlay::Type getConsumerType(const Good::Type inGoodType) const;
 
-   static TileOverlay::Type getType( const std::string& name );
-   static std::string getTypename( TileOverlay::Type type );
-   static TileOverlay::Group getClass( const std::string& name );
+   static gfx::TileOverlay::Type getType( const std::string& name );
+   static std::string getTypename( gfx::TileOverlay::Type type );
+   static gfx::TileOverlay::Group getClass( const std::string& name );
 
-   static std::string getPrettyName( TileOverlay::Type type );
-   static std::string getDescription( TileOverlay::Type type );
+   static std::string getPrettyName( gfx::TileOverlay::Type type );
+   static std::string getDescription( gfx::TileOverlay::Type type );
 
    void initialize( const vfs::Path& filename );
 private:

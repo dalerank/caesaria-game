@@ -32,7 +32,7 @@ public:
   static Menu* create( Widget* parent, int id, PlayerCityPtr city );
 
   // draw on screen
-  virtual void draw( GfxEngine& engine );
+  virtual void draw( gfx::Engine& engine );
 
   virtual bool onEvent(const NEvent& event);
 
@@ -64,7 +64,7 @@ public:
 
   virtual bool onEvent(const NEvent& event);
 
-  virtual void draw( GfxEngine& engine );
+  virtual void draw( gfx::Engine& engine );
 
   void toggleOverlays();
 
@@ -75,6 +75,7 @@ oc3_signals public:
   Signal0<>& onEmpireMapShow();
   Signal0<>& onAdvisorsWindowShow();
   Signal0<>& onSwitchAlarm();
+  Signal0<>& onMessagesShow();
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:

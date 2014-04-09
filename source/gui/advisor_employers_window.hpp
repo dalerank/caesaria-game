@@ -28,7 +28,7 @@ class AdvisorEmployerWindow : public Widget
 public:
   AdvisorEmployerWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 private:
   class Impl;

@@ -22,6 +22,8 @@
 #include "constants.hpp"
 #include "core/foreach.hpp"
 
+using namespace gfx;
+
 MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, constants::building::marbleQuarry, Size(2) )
 {
   _animationRef().load( ResourceGroup::commerce, 44, 10);

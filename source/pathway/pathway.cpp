@@ -19,7 +19,8 @@
 #include "core/direction.hpp"
 #include "core/logger.hpp"
 
-using namespace  constants;
+using namespace constants;
+using namespace gfx;
 
 class Directions : public std::vector<constants::Direction>
 {

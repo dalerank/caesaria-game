@@ -12,29 +12,17 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
-#define _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_DATETIMEHELPER_INCLUDE_H_
+#define _CAESARIA_DATETIMEHELPER_INCLUDE_H_
 
-#include "event.hpp"
+#include "core/time.hpp"
+#include <string>
 
-namespace events
-{
-
-class ShowInfoboxEvent : public GameEvent
+class DateTimeHelper
 {
 public:
-  static GameEventPtr create( const std::string& title, const std::string& text );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  std::string _title, _text;
+  static std::string toStr(const DateTime& time);
 };
 
-} //end namespace events
-#endif //_CAESARIA_INFOBOX_EVENT_H_INCLUDE_
+#endif //_CAESARIA_DATETIMEHELPER_INCLUDE_H_

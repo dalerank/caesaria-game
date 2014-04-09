@@ -33,6 +33,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
 static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::building);

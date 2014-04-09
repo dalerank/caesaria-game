@@ -56,6 +56,7 @@ public:
   static const char* animationsModel;
   static const char* walkerModel;
   static const char* giftsModel;
+  static const char* emblemsModel;
 
   static GameSettings& getInstance();
 

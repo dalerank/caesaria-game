@@ -28,7 +28,7 @@ class AdvisorEntertainmentWindow : public Widget
 public:
   AdvisorEntertainmentWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 private:
   void _showFestivalWindow();

@@ -40,17 +40,17 @@ public:
   * param oCompletedBranches: result of the propagation: road=destination, pathWay=path
   */
   void init(TilePos origin);
-  void init(Tile& origin);
-  void init(const TilesArray& origin);
+  void init(gfx::Tile& origin);
+  void init(const gfx::TilesArray& origin);
   void init(const ConstructionPtr origin);
   void propagate(const int maxDistance);
 
   /** returns all paths starting at origin */
   PathwayList getWays(const int maxDistance);
-  DirectRoutes getRoutes(const TileOverlay::Type buildingType);
+  DirectRoutes getRoutes(const gfx::TileOverlay::Type buildingType);
 
   DirectRoute getShortestRoute( const DirectRoutes& routes );
-  DirectRoute getShortestRoute( const TileOverlay::Type buildingType );
+  DirectRoute getShortestRoute( const gfx::TileOverlay::Type buildingType );
 
 private:
   class Impl;

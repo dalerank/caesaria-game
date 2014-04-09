@@ -30,7 +30,7 @@ public:
 
   virtual ~ServiceBuilding();
 
-  virtual Service::Type getService() const;
+  virtual Service::Type serviceType() const;
   virtual void timeStep(const unsigned long time);
   virtual void destroy();  // handles the walkers
 

@@ -18,6 +18,8 @@
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -46,13 +48,10 @@ GroupBox::GroupBox( Widget* parent, const Rect& rectangle, int id, Style style)
 
 
 //! destructor
-GroupBox::~GroupBox()
-{
-}
-
+GroupBox::~GroupBox() {}
 
 //! draws the element and its children
-void GroupBox::draw( GfxEngine& painter )
+void GroupBox::draw(gfx::Engine& painter )
 {
   if (!isVisible())
       return;
@@ -93,7 +92,7 @@ void GroupBox::setStyle( Style style )
   _d->needUpdateTexture = true;
 }
 
-void GroupBox::beforeDraw( GfxEngine& painter )
+void GroupBox::beforeDraw(gfx::Engine& painter )
 {
   if( _d->needUpdateTexture )
   {

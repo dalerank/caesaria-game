@@ -24,13 +24,13 @@ class Temple : public ServiceBuilding
 public:
   virtual ~Temple();
 
-  religion::RomeDivinityPtr getDivinity() const;
+  religion::DivinityPtr getDivinity() const;
 
   virtual unsigned int parishionerNumber() const = 0;
   virtual void deliverService();
 
 protected:
-  Temple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size );
+  Temple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size );
 
   virtual unsigned int walkerDistance() const;
 
@@ -42,14 +42,14 @@ private:
 class SmallTemple : public Temple
 {
 protected:
-  SmallTemple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
+  SmallTemple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId );
   virtual unsigned int parishionerNumber() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
-  BigTemple( religion::RomeDivinityPtr divinity, TileOverlay::Type type, int imgId );
+  BigTemple( religion::DivinityPtr divinity, TileOverlay::Type type, int imgId );
   virtual unsigned int parishionerNumber() const;
 
   virtual void build(PlayerCityPtr city, const TilePos &pos);

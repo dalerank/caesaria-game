@@ -19,7 +19,10 @@
 #include "widget.hpp"
 #include <memory>
 
-class GfxEngine;
+namespace gfx
+{
+  class Engine;
+}
 
 namespace gui
 {
@@ -27,7 +30,7 @@ namespace gui
 class GuiEnv : Widget
 {
 public:
-  GuiEnv( GfxEngine& painter );
+  GuiEnv( gfx::Engine& painter );
 
   ~GuiEnv();
 
@@ -42,7 +45,7 @@ public:
   Point getCursorPos() const;
 
   virtual bool isHovered( const Widget* element );
-  Widget* getHoveredElement() const;
+  Widget* hovered() const;
 
   virtual void draw();
   virtual void beforeDraw();
@@ -58,9 +61,9 @@ public:
   void clear();
    
 private:    
-  void drawTooltip_( unsigned int time );
-  void updateHoveredElement( const Point& mousePos);
-  Widget* getNextWidget(bool reverse, bool group); 
+  void _drawTooltip( unsigned int time );
+  void _updateHovered( const Point& mousePos);
+  Widget* next(bool reverse, bool group);
 
   class Impl;
   ScopedPtr<Impl> _d;

@@ -158,7 +158,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() && emptyDock )
     {
-      CityTradeOptions& options = city->getTradeOptions();
+      city::TradeOptions& options = city->getTradeOptions();
       city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
       //request goods
       for( int n = Good::wheat; n<Good::goodCount; n++ )
@@ -324,7 +324,7 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
   Pathway ret;
   if( minQueueDock.isValid() )
   {
-    ret = PathwayHelper::create( position, (*i)->getQueueTile().pos(), PathwayHelper::water );
+    ret = PathwayHelper::create( position, (*i)->getQueueTile().pos(), PathwayHelper::deepWater );
   }
 
   return ret;
@@ -333,12 +333,12 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
 Pathway SeaMerchant::Impl::findNearbyDock(const DockList& docks, TilePos position)
 {
   DockList::const_iterator i = docks.begin();
-  Pathway ret = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::water );
+  Pathway ret = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::deepWater );
 
   ++i;
   for( ; i != docks.end(); ++i )
   {
-    Pathway tmp = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::water );
+    Pathway tmp = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::deepWater );
     if( tmp.length() < ret.length() )
     {
       ret = tmp;
@@ -355,7 +355,7 @@ void SeaMerchant::_reachedPathway()
 
 void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 {
-  Pathway pathway = PathwayHelper::create( walker->pos(), city->borderInfo().boatExit, PathwayHelper::water );
+  Pathway pathway = PathwayHelper::create( walker->pos(), city->borderInfo().boatExit, PathwayHelper::deepWater );
   if( !pathway.isValid() )
   {
     walker->deleteLater();

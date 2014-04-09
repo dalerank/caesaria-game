@@ -27,6 +27,8 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -78,7 +80,7 @@ public:
   gui::Label* cityCaption;
   gui::TexturedButton* btnContinue;
   Game* game;
-  GfxEngine* engine;
+  gfx::Engine* engine;
   std::string fileMap;
   std::string filename;
 
@@ -91,7 +93,7 @@ public:
   }
 };
 
-Briefing::Briefing( Game& game, GfxEngine& engine, std::string filename ) : _d( new Impl )
+Briefing::Briefing( Game& game, Engine& engine, std::string filename ) : _d( new Impl )
 {
   _d->isStopped = false;
   _d->game = &game;
@@ -153,7 +155,7 @@ void Briefing::initialize()
   }
 }
 
-int Briefing::getResult() const{  return Briefing::loadMission;}
+int Briefing::result() const{  return Briefing::loadMission;}
 bool Briefing::isStopped() const{  return _d->isStopped;}
 std::string Briefing::getMapName() const{  return _d->fileMap;}
 

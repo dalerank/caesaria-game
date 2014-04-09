@@ -25,7 +25,7 @@ class Colosseum : public EntertainmentBuilding
 public:
   Colosseum();
   virtual void deliverService();
-  virtual Service::Type getService() const;
+  virtual Service::Type serviceType() const;
   virtual void build(PlayerCityPtr city, const TilePos& pos);
   virtual std::string troubleDesc() const;
 

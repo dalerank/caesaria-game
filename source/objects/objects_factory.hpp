@@ -23,19 +23,19 @@
 class TileOverlayConstructor
 {
 public:
-  virtual TileOverlayPtr create() = 0;
+  virtual gfx::TileOverlayPtr create() = 0;
 };
 
 class TileOverlayFactory
 {
 public:
     static TileOverlayFactory& getInstance();
-    TileOverlayPtr create( const TileOverlay::Type type ) const;
-    TileOverlayPtr create( const std::string& typeName ) const;
+    gfx::TileOverlayPtr create( const gfx::TileOverlay::Type type ) const;
+    gfx::TileOverlayPtr create( const std::string& typeName ) const;
 
-    bool canCreate( const TileOverlay::Type type ) const;
+    bool canCreate( const gfx::TileOverlay::Type type ) const;
 
-    void addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
+    void addCreator( const gfx::TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
 private:
     TileOverlayFactory();
 

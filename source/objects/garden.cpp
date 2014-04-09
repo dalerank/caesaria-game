@@ -21,6 +21,8 @@
 #include "constants.hpp"
 #include "core/stringhelper.hpp"
 
+using namespace gfx;
+
 Garden::Garden() : Construction(constants::construction::garden, Size(1) )
 {
   // always set picture to 110 (tree garden) here, for sake of building preview
@@ -96,7 +98,7 @@ Desirability Garden::getDesirability() const
   return ret;
 }
 
-std::string Garden::getSound() const
+std::string Garden::sound() const
 {
   return StringHelper::format( 0xff, "garden_%05d.wav", size().area() );
 }

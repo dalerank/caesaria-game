@@ -15,9 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include <iostream>
-#include <memory>
-
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "core/time.hpp"
@@ -25,6 +22,9 @@
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
 #include "core/color.hpp"
+#include "core/logger.hpp"
+
+using namespace gfx;
 
 namespace gui
 {
@@ -231,11 +231,7 @@ void PushButton::_updateTexture( ElementState state )
 
 //! destructor
 PushButton::~PushButton(){}
-void PushButton::setIsPushButton( bool value )
-{
-  __D_IMPL(_d,PushButton)
-  _d->isPushButton = value;
-}
+void PushButton::setIsPushButton( bool value ){  _dfunc()->isPushButton = value; }
 
 void PushButton::setupUI(const VariantMap &ui)
 {
@@ -267,8 +263,8 @@ void PushButton::setupUI(const VariantMap &ui)
   if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stDisabled );
 }
 
-void PushButton::setTextOffset(const Point& offset) { __D_IMPL(_d,PushButton); _d->textOffset = offset;}
-bool PushButton::isPushButton() const { __D_IMPL_CONST(_d,PushButton); return _d->isPushButton; }
+void PushButton::setTextOffset(const Point& offset) { _dfunc()->textOffset = offset;}
+bool PushButton::isPushButton() const { return _dfunc()->isPushButton; }
 
 void PushButton::setPicture(Picture picture, ElementState state )
 {
@@ -287,8 +283,7 @@ void PushButton::setPicture(const std::string& rcname, int index, ElementState s
 
 void PushButton::setIcon( const std::string& rcname, int index, ElementState state)
 {
-  __D_IMPL(_d,PushButton);
-  _d->buttonStates[ state ].iconTexture = Picture::load( rcname, index );
+  _dfunc()->buttonStates[ state ].iconTexture = Picture::load( rcname, index );
 }
 
 void PushButton::setIconOffset(Point offset)
@@ -329,7 +324,7 @@ void PushButton::setPressed( bool pressed )
   }
 }
 
-bool PushButton::isPressed() const {  __D_IMPL_CONST(_d,PushButton); return _d->pressed; }
+bool PushButton::isPressed() const {  return _dfunc()->pressed; }
 
 //! called if an event happened.
 bool PushButton::onEvent(const NEvent& event)
@@ -374,26 +369,26 @@ bool PushButton::onEvent(const NEvent& event)
    break;
 
    case sEventGui:
-    switch(event.gui.type)
-    {
-    case guiElementFocusLost:
-      if (event.gui.caller == this && !isPushButton())
-      {
-        setPressed(false);
-      }
-    break;
+     switch(event.gui.type)
+     {
+     case guiElementFocusLost:
+       if (event.gui.caller == this && !isPushButton())
+       {
+         setPressed(false);
+       }
+     break;
 
-    default:
-    break;
-    }
+     default:
+     break;
+     }
   break;
 
   case sEventMouse:
     switch( event.mouse.type  )
     {
-    case mouseLbtnPressed: return _leftMouseBtnPressed( event );
-    case mouseLbtnRelease: return _btnMouseUp( event );
-
+    case mouseMoved:     break;
+    case mouseLbtnPressed:        return _leftMouseBtnPressed( event );
+    case mouseLbtnRelease:        return _btnMouseUp( event );
     default:
     break;
     }
@@ -403,7 +398,7 @@ bool PushButton::onEvent(const NEvent& event)
   break;
   }
 
-	return parent() ? parent()->onEvent(event) : false;
+  return parent() ? parent()->onEvent(event) : false;
 }
 
 void PushButton::_btnClicked()
@@ -413,7 +408,7 @@ void PushButton::_btnClicked()
   onClicked().emit();
 }
 
-Signal0<>& PushButton::onClicked() { __D_IMPL(_d,PushButton); return _d->onClickedSignal; }
+Signal0<>& PushButton::onClicked() { return _dfunc()->onClickedSignal; }
 
 bool PushButton::_btnMouseUp( const NEvent& event )
 {
@@ -433,7 +428,7 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 		setPressed(!isPressed());
 	}
 
-	if ((!isPushButton() && wasPressed ) ||
+    if((!isPushButton() && wasPressed ) ||
 		(isPushButton() && wasPressed != isPressed()))
 		_btnClicked();
 
@@ -442,18 +437,20 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 
 bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 {
-	if( _environment->hasFocus(this) &&
-		!absoluteClippingRect().isPointInside( event.mouse.pos() ) )
-	{
-		removeFocus();
-		return false;
-	}
+  if( _environment->hasFocus(this) &&
+      !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
+  {
+    removeFocus();
+    return false;
+  }
 
-	if (!isPushButton())
-		setPressed(true);
+  if( !isPushButton() )
+  {
+    setPressed(true);
+  }
 
-	setFocus();
-	return true;
+  setFocus();
+  return true;
 }
 
 ElementState PushButton::_getActiveButtonState()
@@ -466,7 +463,7 @@ ElementState PushButton::_getActiveButtonState()
   return stDisabled;
 }
 
-void PushButton::beforeDraw( GfxEngine& painter )
+void PushButton::beforeDraw( gfx::Engine& painter )
 {
   // todo:	move sprite up and text down if the pressed state has a sprite
   // draw sprites for focused and mouse-over
@@ -485,7 +482,7 @@ void PushButton::beforeDraw( GfxEngine& painter )
 bool PushButton::isBodyVisible() const { __D_IMPL_CONST(_d,PushButton); return _d->drawBody; }
 
 //! draws the element and its children
-void PushButton::draw( GfxEngine& painter )
+void PushButton::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -527,7 +524,7 @@ void PushButton::draw( GfxEngine& painter )
   Widget::draw( painter );
 }
 
-void PushButton::drawIcon( GfxEngine& painter )
+void PushButton::drawIcon( gfx::Engine& painter )
 {
   __D_IMPL(_d,PushButton);
   const ButtonState& bstate = _d->buttonStates[ _d->currentButtonState ];
@@ -543,45 +540,28 @@ void PushButton::drawIcon( GfxEngine& painter )
 
 void PushButton::setText( const std::string& text )
 {
-	Widget::setText( text );
-
+  Widget::setText( text );
   _resizeEvent();
 }
 
 void PushButton::setFont( const Font& font, ElementState state )
 {
-  __D_IMPL(_d,PushButton);
-  _d->buttonStates[ state ].font = font;
+  _dfunc()->buttonStates[ state ].font = font;
   _updateTexture( state );
 }
 
 void PushButton::setFont( const Font& font )
 {
-  __D_IMPL(_d,PushButton);
   for( int i=0; i != StateCount; i++ )
   {
-    _d->buttonStates[ ElementState(i) ].font = font;
+    _dfunc()->buttonStates[ ElementState(i) ].font = font;
     _updateTexture( ElementState(i) );
   }
 }
 
-PictureRef& PushButton::_backgroundRef( ElementState state )
-{
-  __D_IMPL(_d,PushButton);
-  return _d->buttonStates[ state ].background;
-}
-
-PictureRef& PushButton::_textPictureRef( ElementState state )
-{
-  __D_IMPL(_d,PushButton);
-  return _d->buttonStates[ state ].textPicture;
-}
-
-Font PushButton::getFont( ElementState state )
-{
-  __D_IMPL(_d,PushButton);
-  return _d->buttonStates[ state ].font;
-}
+PictureRef& PushButton::_backgroundRef( ElementState state ){  return _dfunc()->buttonStates[ state ].background;}
+PictureRef& PushButton::_textPictureRef( ElementState state ) {  return _dfunc()->buttonStates[ state ].textPicture;}
+Font PushButton::getFont( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
 
 void PushButton::_resizeEvent()
 {
@@ -593,8 +573,7 @@ void PushButton::_resizeEvent()
 
 void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
-  __D_IMPL(_d,PushButton);
-  _d->bgStyle = style;
+  _dfunc()->bgStyle = style;
   _resizeEvent();
 }
 

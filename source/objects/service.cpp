@@ -30,6 +30,8 @@
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
 
+using namespace gfx;
+
 class ServiceBuilding::Impl
 {
 public:
@@ -62,7 +64,7 @@ int ServiceBuilding::time2NextService() const
   return (int)(serviceDelay() * koeff);
 }
 
-Service::Type ServiceBuilding::getService() const{   return _d->service;}
+Service::Type ServiceBuilding::serviceType() const{   return _d->service;}
 
 void ServiceBuilding::timeStep(const unsigned long time)
 {
@@ -94,7 +96,7 @@ void ServiceBuilding::destroy()
 void ServiceBuilding::deliverService()
 {
   // make a service walker and send him to his wandering
-  ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), getService() );
+  ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
   serviceman->setMaxDistance( walkerDistance() );
   serviceman->send2City( BuildingPtr( this ) );
 
@@ -132,7 +134,7 @@ std::string ServiceBuilding::workersStateDesc() const
   std::string srvcType = MetaDataHolder::getTypename( type() );
   std::string state = "unknown";
 
-  if( getWalkers().size() > 0 )
+  if( walkers().size() > 0 )
   {
     state = "on_patrol";
   }

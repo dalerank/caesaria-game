@@ -28,7 +28,7 @@ public:
   Fort( constants::building::Type type, int picIdLogo );
   virtual ~Fort();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray &aroundTiles) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 
   virtual bool isNeedRoadAccess() const;
@@ -40,12 +40,20 @@ public:
   virtual TilePos getFreeSlot() const;
   virtual void changePatrolArea();
 
+  virtual gfx::Picture legionEmblem() const;
+  virtual std::string legionName() const;
+  virtual int legionMorale() const;
+
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+
+  virtual SoldierList soldiers() const;
 
 protected:
   virtual void _readyNewSoldier() {}
   virtual void _setPatrolPoint( PatrolPointPtr patrolPoint );
+  virtual void _setEmblem( gfx::Picture pic );
+  virtual void _setName( const std::string& name );
 
 private:  
   class Impl;

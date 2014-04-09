@@ -42,11 +42,14 @@
 #include <dlfcn.h>
 #endif
 
+namespace gfx
+{
+
 namespace {
   enum { screenBpp24 = 24, screenBpp32 = 32 };
 }
 
-class GfxSdlEngine::Impl
+class SdlEngine::Impl
 {
 public:
   Picture screen;
@@ -60,22 +63,22 @@ public:
 };
 
 
-Picture& GfxSdlEngine::getScreen(){  return _d->screen; }
+Picture& SdlEngine::getScreen(){  return _d->screen; }
 
-GfxSdlEngine::GfxSdlEngine() : GfxEngine(), _d( new Impl )
+SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 {
   resetTileDrawMask();
 }
 
-GfxSdlEngine::~GfxSdlEngine(){}
+SdlEngine::~SdlEngine(){}
 
-void GfxSdlEngine::deletePicture( Picture* pic )
+void SdlEngine::deletePicture( Picture* pic )
 {
   if( pic )
     unloadPicture( *pic );
 }
 
-void GfxSdlEngine::init()
+void SdlEngine::init()
 {
   _d->lastUpdateFps = DateTime::elapsedTime();
   _d->fps = 0;
@@ -97,7 +100,7 @@ void GfxSdlEngine::init()
   }
 
   unsigned int flags = SDL_DOUBLEBUF | SDL_SWSURFACE;
-  flags |= (getFlag( GfxEngine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
+  flags |= (getFlag( Engine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
   int systemBpp = screenBpp32;
     
 #ifdef CAESARIA_PLATFORM_MACOSX
@@ -127,7 +130,7 @@ void GfxSdlEngine::init()
 }
 
 
-void GfxSdlEngine::exit()
+void SdlEngine::exit()
 {
   TTF_Quit();
   SDL_Quit();
@@ -136,7 +139,7 @@ void GfxSdlEngine::exit()
 /* Convert picture to SDL surface and then put surface into Picture class
  */
 
-void GfxSdlEngine::loadPicture( Picture& ioPicture )
+void SdlEngine::loadPicture( Picture& ioPicture )
 {
   // convert pixel format
   if( !ioPicture.getSurface() )
@@ -155,18 +158,18 @@ void GfxSdlEngine::loadPicture( Picture& ioPicture )
   ioPicture.init( newImage, ioPicture.getOffset() );
 }
 
-void GfxSdlEngine::unloadPicture( Picture& ioPicture )
+void SdlEngine::unloadPicture( Picture& ioPicture )
 {
   SDL_FreeSurface( ioPicture.getSurface() );
   ioPicture = Picture();
 }
 
-void GfxSdlEngine::startRenderFrame()
+void SdlEngine::startRenderFrame()
 {
   SDL_FillRect( _d->screen.getSurface(), NULL, 0 );  // black background for a complete redraw
 }
 
-void GfxSdlEngine::endRenderFrame()
+void SdlEngine::endRenderFrame()
 {
   if( _d->showDebugInfo )
   {
@@ -185,7 +188,7 @@ void GfxSdlEngine::endRenderFrame()
   }
 }
 
-void GfxSdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, Rect* clipRect )
+void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;
@@ -213,12 +216,12 @@ void GfxSdlEngine::drawPicture(const Picture& picture, const int dx, const int d
   }
 }
 
-void GfxSdlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* clipRect )
+void SdlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* clipRect )
 {
   drawPicture( picture, pos.x(), pos.y(), clipRect );
 }
 
-void GfxSdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
+void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
 {
   _d->rmask = rmask;
   _d->gmask = gmask;
@@ -226,12 +229,12 @@ void GfxSdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
   _d->amask = amask;
 }
 
-void GfxSdlEngine::resetTileDrawMask()
+void SdlEngine::resetTileDrawMask()
 {
   _d->rmask = _d->gmask = _d->bmask = _d->amask = 0;
 }
 
-Picture* GfxSdlEngine::createPicture(const Size& size )
+Picture* SdlEngine::createPicture(const Size& size )
 {
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0, 0, 0, 0 );
@@ -244,12 +247,12 @@ Picture* GfxSdlEngine::createPicture(const Size& size )
   return pic;
 }
 
-void GfxSdlEngine::createScreenshot( const std::string& filename )
+void SdlEngine::createScreenshot( const std::string& filename )
 {
   IMG_SavePNG( filename.c_str(), _d->screen.getSurface(), -1 );
 }
 
-GfxEngine::Modes GfxSdlEngine::getAvailableModes() const
+Engine::Modes SdlEngine::getAvailableModes() const
 {
   Modes ret;
 
@@ -264,7 +267,7 @@ GfxEngine::Modes GfxSdlEngine::getAvailableModes() const
   return ret;
 }
 
-Point GfxSdlEngine::mousePos() const
+Point SdlEngine::cursorPos() const
 {
   int x,y;
   SDL_GetMouseState(&x,&y);
@@ -272,11 +275,11 @@ Point GfxSdlEngine::mousePos() const
   return Point( x, y );
 }
 
-unsigned int GfxSdlEngine::fps() const {  return _d->fps; }
+unsigned int SdlEngine::fps() const {  return _d->fps; }
 
-void GfxSdlEngine::setFlag( int flag, int value )
+void SdlEngine::setFlag( int flag, int value )
 {
-  GfxEngine::setFlag( flag, value );
+  Engine::setFlag( flag, value );
 
   if( flag == debugInfo )
   {
@@ -285,9 +288,9 @@ void GfxSdlEngine::setFlag( int flag, int value )
   }
 }
 
-void GfxSdlEngine::delay( const unsigned int msec ) {  SDL_Delay( msec ); }
+void SdlEngine::delay( const unsigned int msec ) {  SDL_Delay( msec ); }
 
-bool GfxSdlEngine::haveEvent( NEvent& event )
+bool SdlEngine::haveEvent( NEvent& event )
 {
   SDL_Event sdlEvent;
 
@@ -299,3 +302,5 @@ bool GfxSdlEngine::haveEvent( NEvent& event )
 
   return false;
 }
+
+}//end namespace gfx

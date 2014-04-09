@@ -28,32 +28,31 @@ class Immigrant : public Walker
 public:
   static ImmigrantPtr create( PlayerCityPtr city );
   static ImmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
-                                 const Tile& startTile, std::string thinks );
+                                 const gfx::Tile& startTile, std::string thinks );
 
-  void send2city( const Tile& startTile );
-  void leaveCity( const Tile& tile );
+  void send2city( const gfx::Tile& startTile );
+  void leaveCity( const gfx::Tile& tile );
 
   void setPeoples( const CitizenGroup& peoples );
   virtual void timeStep(const unsigned long time);
 
-  ~Immigrant();
+  virtual ~Immigrant();
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
   virtual void die();
 
-
 protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
 
-  void setCartPicture( const Picture& pic );
-  virtual const Picture& getCartPicture();
+  void _setCartPicture( const gfx::Picture& pic );
+  virtual const gfx::Picture& _cartPicture();
   
   Immigrant( PlayerCityPtr city );
 
   HousePtr _findBlankHouse();
-  Pathway _findPath2blankHouse(TilePos startPoint );
+  Pathway _findSomeWay(TilePos startPoint );
 
 protected:
   const CitizenGroup& _getPeoples() const;

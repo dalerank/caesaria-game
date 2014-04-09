@@ -31,7 +31,7 @@ class AdvisorEmperorWindow : public Widget
 public:
   AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
 protected:
   void _showChangeSalaryWindow();

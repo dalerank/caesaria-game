@@ -43,7 +43,7 @@ Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
 
 void Barracks::deliverTrainee()
 { 
-  if( getWalkers().size() == 0 && _d->store.freeQty() > 0 )
+  if( walkers().size() == 0 && _d->store.freeQty() > 0 )
   {
     CartSupplierPtr walker = CartSupplier::create( _city() );
     walker->send2city( this, Good::weapon, 100 );

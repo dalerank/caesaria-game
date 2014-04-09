@@ -106,9 +106,9 @@ void TaxCollector::_reachedPathway()
 {
   if( _pathwayRef().isReverse() )
   {
-    if( getBase().isValid() )
+    if( base().isValid() )
     {
-      getBase()->applyService( this );
+      base()->applyService( this );
     }
 
     Logger::warning( "TaxCollector: path history" );

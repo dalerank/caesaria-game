@@ -31,6 +31,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class WaterSource::Impl
 {

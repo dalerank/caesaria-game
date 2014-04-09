@@ -30,6 +30,8 @@
 #include <iomanip>
 #include <iostream>
 
+using namespace gfx;
+
 namespace vfs
 {
 

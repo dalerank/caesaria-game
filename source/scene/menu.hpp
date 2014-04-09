@@ -44,8 +44,8 @@ public:
     unlknowState=0xff
   } Result;
 
-  StartMenu( Game& game, GfxEngine& engine );
-  ~StartMenu();
+  StartMenu( Game& game, gfx::Engine& engine );
+  virtual ~StartMenu();
 
   virtual void handleEvent( NEvent& event);
 
@@ -56,7 +56,7 @@ public:
   std::string getMapName() const;
   std::string getPlayerName() const;
 
-  int getResult() const;
+  int result() const;
   bool isStopped() const;
 
 private:

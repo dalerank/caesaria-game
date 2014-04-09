@@ -24,6 +24,7 @@
 #include "ability.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Animal::Impl
 {

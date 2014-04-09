@@ -27,13 +27,15 @@
 
 #define DEFAULT_SCROLLBAR_SIZE 39
 
+using namespace gfx;
+
 namespace gui
 {
 
 //! constructor
 ListBox::ListBox( Widget* parent,const Rect& rectangle,
 			            int id, bool clip,
-			            bool drawBack, bool moveOverSelect)
+									bool drawBack, bool mos)
 : Widget( parent, id, rectangle),
 	_d( new Impl )
 {
@@ -59,11 +61,11 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   setDebugName( "ListBox");
 #endif
 
-	setFlag( LBF_SELECT_ON_MOVE, false );
-	setFlag( LBF_MOVEOVER_SELECT, moveOverSelect );
-	setFlag( LBF_AUTOSCROLL, true );
-	setFlag( LBF_HIGHLIGHTWHEN_NOTFOCUSED, true );
-	setFlag( LBF_DRAWBACK, drawBack );
+	setFlag( selectOnMove, false );
+	setFlag( moveOverSelect, mos );
+	setFlag( autoscroll, true );
+	setFlag( hightlightNotinfocused, true );
+	setFlag( drawBackground, drawBack );
 
 	const int s = DEFAULT_SCROLLBAR_SIZE;
 
@@ -74,7 +76,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->scrollBar->setTabStop(false);
   _d->scrollBar->setAlignment(alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight);
   _d->scrollBar->setVisible(false);
-  _d->scrollBar->setPos(0);
+  _d->scrollBar->setPosition(0);
 
 	setNotClipped(!clip);
 
@@ -88,10 +90,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 }
 
 //! destructor
-ListBox::~ListBox()
-{
-}
-
+ListBox::~ListBox() {}
 
 void ListBox::_updateTexture()
 {
@@ -115,14 +114,10 @@ void ListBox::_updateTexture()
 }
 
 //! returns amount of list items
-unsigned int ListBox::getItemCount() const
-{
-  return _d->items.size();
-}
-
+unsigned int ListBox::itemCount() const {  return _d->items.size(); }
 
 //! returns string of a list item. the may be a value from 0 to itemCount-1
-ListBoxItem& ListBox::getItem(unsigned int id)
+ListBoxItem& ListBox::item(unsigned int id)
 {
 	if( id >= _d->items.size() )
 	{
@@ -133,10 +128,7 @@ ListBoxItem& ListBox::getItem(unsigned int id)
 	return _d->items[ id ];
 }
 
-ListBoxItem& ListBox::getSelectedItem()
-{
-	return getItem( getSelected() );
-}
+ListBoxItem& ListBox::selectedItem() {	return item( selected() ); }
 
 //! adds a list item, returns id of item
 void ListBox::removeItem(unsigned int id)
@@ -162,7 +154,7 @@ void ListBox::removeItem(unsigned int id)
 }
 
 
-int ListBox::getItemAt(Point pos ) const
+int ListBox::itemAt(Point pos ) const
 {
   if ( 	pos.x() < screenLeft() || pos.x() >= screenRight()
       ||	pos.y() < screenTop() || pos.y() >= screenBottom() )
@@ -175,7 +167,7 @@ int ListBox::getItemAt(Point pos ) const
 	  return -1;
   }
 
-  int item = ((pos.y() - screenTop() - 1) + _d->scrollBar->getPos()) / _d->itemHeight;
+  int item = ((pos.y() - screenTop() - 1) + _d->scrollBar->position()) / _d->itemHeight;
   
   if ( item < 0 || item >= (int)_d->items.size())
   {
@@ -194,7 +186,7 @@ void ListBox::clear()
 
   if (_d->scrollBar)
   {
-    _d->scrollBar->setPos(0);
+    _d->scrollBar->setPosition(0);
   }
 
   _d->recalculateItemHeight( _d->font, height() );
@@ -208,7 +200,7 @@ void ListBox::setSelected(int id)
   _d->selectTime = DateTime::elapsedTime();
   _d->needItemsRepackTextures = true;
 
-  _RecalculateScrollPos();
+  _recalculateScrollPos();
 }
 
 //! sets the selected item. Set this to -1 if no item should be selected
@@ -218,14 +210,14 @@ void ListBox::setSelected( const std::string& item )
 
   for ( index = 0; index < (int) _d->items.size(); ++index )
   {
-    if ( _d->items[index].getText() == item )
+    if ( _d->items[index].text() == item )
 		  break;
   }
 
   setSelected ( index );
 }
 
-void ListBox::_IndexChanged( unsigned int eventType )
+void ListBox::_indexChanged( unsigned int eventType )
 {
     parent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
 
@@ -237,7 +229,7 @@ void ListBox::_IndexChanged( unsigned int eventType )
       _d->indexSelected.emit( _d->selectedItemIndex );
       if( _d->selectedItemIndex >= 0 )
       {
-        _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].getText() );
+        _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].text() );
         _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
       }
     break;
@@ -246,7 +238,7 @@ void ListBox::_IndexChanged( unsigned int eventType )
       _d->indexSelectedAgain.emit( _d->selectedItemIndex );
       if( _d->selectedItemIndex >= 0 )
       {
-          _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].getText() );
+          _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].text() );
       }
     break;
 
@@ -296,20 +288,20 @@ bool ListBox::onEvent(const NEvent& event)
           _d->selectedItemIndex = 0;
         }
         
-        _RecalculateScrollPos();
+        _recalculateScrollPos();
         _d->needItemsRepackTextures = true;
 
 				// post the news
-				if( oldSelected != _d->selectedItemIndex && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ) )
+				if( oldSelected != _d->selectedItemIndex && !_d->selecting && !isFlag( moveOverSelect ) )
 				{
-					_IndexChanged( guiListboxChanged );
+					_indexChanged( guiListboxChanged );
 				}
 
 				return true;
 			}
 			else if (!event.keyboard.pressed && ( event.keyboard.key == KEY_RETURN || event.keyboard.key == KEY_SPACE ) )
 			{
-				_IndexChanged( guiListboxSelectedAgain );
+				_indexChanged( guiListboxSelectedAgain );
 
 				return true;
 			}
@@ -339,8 +331,8 @@ bool ListBox::onEvent(const NEvent& event)
                         // dont change selection if the key buffer matches the current item
         if (_d->selectedItemIndex > -1 && _d->keyBuffer.size() > 1)
 				{
-					if( _d->items[ _d->selectedItemIndex ].getText().size() >= _d->keyBuffer.size()
-							&& StringHelper::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].getText().substr( 0,_d->keyBuffer.size() ),
+					if( _d->items[ _d->selectedItemIndex ].text().size() >= _d->keyBuffer.size()
+							&& StringHelper::isEquale( _d->keyBuffer, _d->items[_d->selectedItemIndex].text().substr( 0,_d->keyBuffer.size() ),
 																				StringHelper::equaleIgnoreCase ) )
 					{
 						return true;
@@ -350,14 +342,14 @@ bool ListBox::onEvent(const NEvent& event)
 				int current;
 				for( current = start+1; current < (int)_d->items.size(); ++current)
 				{
-					if( _d->items[current].getText().size() >= _d->keyBuffer.size())
+					if( _d->items[current].text().size() >= _d->keyBuffer.size())
 					{
-						if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr(0,_d->keyBuffer.size()),
+						if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].text().substr(0,_d->keyBuffer.size()),
                                         StringHelper::equaleIgnoreCase ) )
 						{
-							if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
+							if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( moveOverSelect ))
 							{
-								_IndexChanged( guiListboxChanged );
+								_indexChanged( guiListboxChanged );
 							}
 
 							setSelected(current);
@@ -368,14 +360,14 @@ bool ListBox::onEvent(const NEvent& event)
 
 				for( current = 0; current <= start; ++current)
 				{
-					if( _d->items[current].getText().size() >= _d->keyBuffer.size())
+					if( _d->items[current].text().size() >= _d->keyBuffer.size())
 					{
-						if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].getText().substr( 0,_d->keyBuffer.size() ),
+						if( StringHelper::isEquale( _d->keyBuffer, _d->items[current].text().substr( 0,_d->keyBuffer.size() ),
 																				StringHelper::equaleIgnoreCase ) )
 						{
-							if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( LBF_MOVEOVER_SELECT ))
+							if ( _d->selectedItemIndex != current && !_d->selecting && !isFlag( moveOverSelect ))
 							{
-								_IndexChanged( guiListboxChanged );
+								_indexChanged( guiListboxChanged );
 							}
 
               setSelected(current);
@@ -428,7 +420,7 @@ bool ListBox::onEvent(const NEvent& event)
 				{
 				case mouseWheel:
 					{
-						_d->scrollBar->setPos(_d->scrollBar->getPos() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
+						_d->scrollBar->setPosition(_d->scrollBar->position() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
 						_d->needItemsRepackTextures = true;
 						return true;
 					}
@@ -439,9 +431,9 @@ bool ListBox::onEvent(const NEvent& event)
 						_d->dragEventSended = false;
 						_d->selecting = true;
 
-            if (isPointInside(p) && isFlag( LBF_SELECT_ON_MOUSE_DOWN ) )
+            if (isPointInside(p) && isFlag( selectOnMDown ) )
             {
-              _SelectNew(event.mouse.y);
+              _selectNew(event.mouse.y);
             }
 
 						return true;
@@ -452,9 +444,9 @@ bool ListBox::onEvent(const NEvent& event)
 				  {
 						_d->selecting = false;
 
-            if (isPointInside(p) && !isFlag( LBF_SELECT_ON_MOUSE_DOWN ) )
+            if (isPointInside(p) && !isFlag( selectOnMDown ) )
             {
-              _SelectNew(event.mouse.y);
+              _selectNew(event.mouse.y);
             }
 
 						return true;
@@ -462,11 +454,11 @@ bool ListBox::onEvent(const NEvent& event)
 				break;
 
         case mouseMoved:
-          if( _d->selecting && isFlag( LBF_SELECT_ON_MOVE )/* || isFlag( LBF_MOVEOVER_SELECT )*/ )
+          if( _d->selecting && isFlag( selectOnMove ) )
           {
             if (isPointInside(p))
             {
-              _SelectNew(event.mouse.y);
+              _selectNew(event.mouse.y);
               return true;
             }
           }
@@ -490,25 +482,25 @@ bool ListBox::onEvent(const NEvent& event)
 	return Widget::onEvent(event);
 }
 
-void ListBox::_SelectNew(int ypos)
+void ListBox::_selectNew(int ypos)
 {
-    unsigned int now = DateTime::elapsedTime();
-    int oldSelected = _d->selectedItemIndex;
+  unsigned int now = DateTime::elapsedTime();
+  int oldSelected = _d->selectedItemIndex;
 
-    _d->needItemsRepackTextures = true;
+  _d->needItemsRepackTextures = true;
 
-    _d->selectedItemIndex = getItemAt( Point( screenLeft(), ypos ) );
-    if( _d->selectedItemIndex<0 && !_d->items.empty() )
-        _d->selectedItemIndex = 0;
+  _d->selectedItemIndex = itemAt( Point( screenLeft(), ypos ) );
+  if( _d->selectedItemIndex<0 && !_d->items.empty() )
+      _d->selectedItemIndex = 0;
 
-    _RecalculateScrollPos();
+  _recalculateScrollPos();
 
-		GuiEventType eventType = (_d->selectedItemIndex == oldSelected && now < _d->selectTime + 500)
-									? guiListboxSelectedAgain
-									: guiListboxChanged;
-    _d->selectTime = now;
+	GuiEventType eventType = (_d->selectedItemIndex == oldSelected && now < _d->selectTime + 500)
+								? guiListboxSelectedAgain
+								: guiListboxChanged;
+	_d->selectTime = now;
 	// post the news
-    _IndexChanged( eventType );
+	_indexChanged( eventType );
 }
 
 //! Update the position and size of the listbox, and update the scrollbar
@@ -518,7 +510,7 @@ void ListBox::_resizeEvent()
     _d->recalculateItemHeight( _d->font, height() );
 }
 
-ElementState ListBox::_GetCurrentItemState( unsigned int index, bool hl )
+ElementState ListBox::_getCurrentItemState( unsigned int index, bool hl )
 {
     if( _d->items[ index ].isEnabled() )
     {
@@ -534,9 +526,9 @@ ElementState ListBox::_GetCurrentItemState( unsigned int index, bool hl )
     return stDisabled;
 }
 
-Font ListBox::_GetCurrentItemFont( const ListBoxItem& item, bool selected )
+Font ListBox::_getCurrentItemFont( const ListBoxItem& item, bool selected )
 {
-  Font itemFont = item.OverrideColors[ selected ? ListBoxItem::LBC_TEXT_HIGHLIGHT : ListBoxItem::LBC_TEXT ].font;
+  Font itemFont = item.OverrideColors[ selected ? ListBoxItem::hovered : ListBoxItem::simple ].font;
 
   if( !itemFont.isValid() )
       itemFont = _d->font;
@@ -544,15 +536,15 @@ Font ListBox::_GetCurrentItemFont( const ListBoxItem& item, bool selected )
 	return itemFont;
 }
 
-NColor ListBox::_GetCurrentItemColor( const ListBoxItem& item, bool selected )
+NColor ListBox::_getCurrentItemColor( const ListBoxItem& item, bool selected )
 {
   NColor ret = 0;
-  ListBoxItem::ColorType tmpState = selected ? ListBoxItem::LBC_TEXT_HIGHLIGHT : ListBoxItem::LBC_TEXT;
+  ListBoxItem::ColorType tmpState = selected ? ListBoxItem::hovered : ListBoxItem::simple;
 
   if( item.OverrideColors[ tmpState ].Use )
     ret = item.OverrideColors[ tmpState ].color;
   else if( ret == 0 )
-    ret = getItemDefaultColor( tmpState );
+    ret = itemDefaultColor( tmpState );
 
   return ret;
 }
@@ -566,7 +558,17 @@ Rect ListBox::getItemTextRect_()
   return frameRect;
 }
 
-void ListBox::beforeDraw( GfxEngine& painter)
+void ListBox::_drawItemIcon(Picture& texture, ListBoxItem& item, const Point& pos)
+{
+  texture.draw( item.icon(), pos );
+}
+
+void ListBox::_drawItemText(Picture& texture, Font font, ListBoxItem& item, const Point& pos)
+{
+  font.draw( texture, item.text(), pos, false );
+}
+
+void ListBox::beforeDraw(gfx::Engine& painter)
 {
   if ( !isVisible() )
       return;
@@ -577,49 +579,48 @@ void ListBox::beforeDraw( GfxEngine& painter)
 
     _d->picture->draw( *_d->background, 0, 0 );
 
-    bool hl = ( isFlag( LBF_HIGHLIGHTWHEN_NOTFOCUSED ) || isFocused() || _d->scrollBar->isFocused() );
+    bool hl = ( isFlag( hightlightNotinfocused ) || isFocused() || _d->scrollBar->isFocused() );
     Rect frameRect = getItemTextRect_();
     frameRect.LowerRightCorner.setY( frameRect.top() + _d->itemHeight );
 
     Alignment itemTextHorizontalAlign, itemTextVerticalAlign;
     Font currentFont;
 
-    for (int i=0; i<(int)_d->items.size(); ++i)
+    for( int i = 0; i < (int)_d->items.size();  i++ )
     {
-      ListBoxItem& refItem = _d->items[i];
+      ListBoxItem& refItem = _d->items[ i ];
 
-      if( refItem.getIcon().isValid() )
+      if( refItem.icon().isValid() )
       {
         Point offset;
-        if( refItem.getHorizontalAlign() == alignCenter )
+        if( refItem.horizontalAlign() == alignCenter )
         {
-          offset.setX( (width() - refItem.getIcon().width()) / 2 );
+          offset.setX( (width() - refItem.icon().width()) / 2 );
         }
-        _d->picture->draw( refItem.getIcon(), frameRect.UpperLeftCorner + Point( 0, -_d->scrollBar->getPos() ) + offset );
+
+        _drawItemIcon( *_d->picture, refItem, frameRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + offset );
       }
 
-      int mnY = frameRect.LowerRightCorner.y() - _d->scrollBar->getPos();
-      int mxY = frameRect.UpperLeftCorner.y() - _d->scrollBar->getPos();
-      if( !refItem.getText().empty() && mnY >= 0 && mxY <= (int)height() )
+      int mnY = frameRect.bottom() - _d->scrollBar->position();
+      int mxY = frameRect.top() - _d->scrollBar->position();
+      if( !refItem.text().empty() && mnY >= 0 && mxY <= (int)height() )
       {
-        refItem.setState( _GetCurrentItemState( i, hl ) );
+        refItem.setState( _getCurrentItemState( i, hl ) );
 
-        itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.getHorizontalAlign() : getHorizontalTextAlign();
-        itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.getVerticalAlign() : getVerticalTextAlign();
+        itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.horizontalAlign() : getHorizontalTextAlign();
+        itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.verticalAlign() : getVerticalTextAlign();
 
-        currentFont = _GetCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
-        currentFont.setColor( _GetCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
+        currentFont = _getCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
+        currentFont.setColor( _getCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
 
-        Rect textRect = currentFont.calculateTextRect( refItem.getText(), frameRect,
+        Rect textRect = currentFont.calculateTextRect( refItem.text(), frameRect,
                                                        itemTextHorizontalAlign, itemTextVerticalAlign );
 
         //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
 
         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-        currentFont.draw( *_d->picture, refItem.getText(),
-                          textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->getPos() ) + refItem.getOffset(),
-                          false );
+        _drawItemText( *_d->picture, currentFont, refItem,textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
       }
 
       frameRect += Point( 0, _d->itemHeight );
@@ -632,7 +633,7 @@ void ListBox::beforeDraw( GfxEngine& painter)
 }
 
 //! draws the element and its children
-void ListBox::draw( GfxEngine& painter )
+void ListBox::draw(gfx::Engine& painter )
 {
   if ( !isVisible() )
 		return;
@@ -645,25 +646,25 @@ void ListBox::draw( GfxEngine& painter )
 	Widget::draw( painter );
 }
 
-void ListBox::_RecalculateScrollPos()
+void ListBox::_recalculateScrollPos()
 {
-	if (!isFlag( LBF_AUTOSCROLL ))
+	if (!isFlag( autoscroll ))
 		return;
 
-  const int selPos = (_d->selectedItemIndex == -1 ? _d->totalItemHeight : _d->selectedItemIndex * _d->itemHeight) - _d->scrollBar->getPos();
+  const int selPos = (_d->selectedItemIndex == -1 ? _d->totalItemHeight : _d->selectedItemIndex * _d->itemHeight) - _d->scrollBar->position();
 
 	if (selPos < 0)
 	{
-    _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos );
+    _d->scrollBar->setPosition( _d->scrollBar->position() + selPos );
 	}
 	else if (selPos > (int)height() - _d->itemHeight)
 	{
-    _d->scrollBar->setPos( _d->scrollBar->getPos() + selPos - height() + _d->itemHeight );
+    _d->scrollBar->setPosition( _d->scrollBar->position() + selPos - height() + _d->itemHeight );
 	}
 }
 
-void ListBox::setAutoScrollEnabled(bool scroll) {	setFlag( LBF_AUTOSCROLL, scroll );}
-bool ListBox::isAutoScrollEnabled() const{	return isFlag( LBF_AUTOSCROLL );}
+void ListBox::setAutoScrollEnabled(bool scroll) {	setFlag( autoscroll, scroll );}
+bool ListBox::isAutoScrollEnabled() const{	return isFlag( autoscroll );}
 
 void ListBox::save(VariantMap& out) const
 {
@@ -712,12 +713,12 @@ void ListBox::swapItems(unsigned int index1, unsigned int index2)
 
 void ListBox::setItemOverrideColor(unsigned int index, const int color, ListBoxItem::ColorType colorType )
 {
-  if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::LBC_COUNT )
+  if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
         return;
 
-  if( colorType == ListBoxItem::LBC_ALL )
+  if( colorType == ListBoxItem::all )
   {
-    for ( unsigned int c=0; c < ListBoxItem::LBC_COUNT; ++c )
+    for ( unsigned int c=0; c < ListBoxItem::count; ++c )
     {
       _d->items[index].OverrideColors[c].Use = true;
       _d->items[index].OverrideColors[c].color = color;
@@ -732,7 +733,7 @@ void ListBox::setItemOverrideColor(unsigned int index, const int color, ListBoxI
 
 void ListBox::resetItemOverrideColor(unsigned int index)
 {
-  for (unsigned int c=0; c < (unsigned int)ListBoxItem::LBC_COUNT; ++c )
+  for (unsigned int c=0; c < (unsigned int)ListBoxItem::count; ++c )
 	{
 		_d->items[index].OverrideColors[c].Use = false;
 	}
@@ -741,7 +742,7 @@ void ListBox::resetItemOverrideColor(unsigned int index)
 
 void ListBox::resetItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType)
 {
-  if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::LBC_COUNT )
+  if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
 		return;
 
     _d->items[index].OverrideColors[colorType].Use = false;
@@ -750,7 +751,7 @@ void ListBox::resetItemOverrideColor(unsigned int index, ListBoxItem::ColorType 
 
 bool ListBox::hasItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const
 {
-    if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::LBC_COUNT )
+    if ( index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
 		return false;
 
     return _d->items[index].OverrideColors[colorType].Use;
@@ -758,23 +759,23 @@ bool ListBox::hasItemOverrideColor(unsigned int index, ListBoxItem::ColorType co
 
 int ListBox::getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const
 {
-  if ( (unsigned int)index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::LBC_COUNT )
+  if ( (unsigned int)index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
 		return 0;
 
   return _d->items[index].OverrideColors[colorType].color;
 }
 
-NColor ListBox::getItemDefaultColor( ListBoxItem::ColorType colorType) const
+NColor ListBox::itemDefaultColor( ListBoxItem::ColorType colorType) const
 {
 	switch ( colorType )
 	{
-		case ListBoxItem::LBC_TEXT:
+		case ListBoxItem::simple:
 			return _d->itemDefaultColorText;
-		case ListBoxItem::LBC_TEXT_HIGHLIGHT:
+		case ListBoxItem::hovered:
 			return _d->itemDefaultColorTextHighlight;
-		case ListBoxItem::LBC_ICON:
+		case ListBoxItem::iconSimple:
 			return 0xffffffff;
-		case ListBoxItem::LBC_ICON_HIGHLIGHT:
+		case ListBoxItem::iconHovered:
 			return 0xff0f0f0f;
 		default:
 			return 0;
@@ -785,9 +786,9 @@ void ListBox::setItemDefaultColor( ListBoxItem::ColorType colorType, NColor colo
 {
   switch( colorType )
   {
-  case ListBoxItem::LBC_TEXT:
+  case ListBoxItem::simple:
     _d->itemDefaultColorText = color;
-  case ListBoxItem::LBC_TEXT_HIGHLIGHT:
+  case ListBoxItem::hovered:
     _d->itemDefaultColorTextHighlight = color;
   default: break;
   }
@@ -799,12 +800,11 @@ void ListBox::setItemHeight( int height )
   _d->itemHeightOverride = 1;
 }
 
-int ListBox::getItemHeight() const { return _d->itemHeight; }
+int ListBox::itemHeight() const { return _d->itemHeight; }
 
 void ListBox::setItemAlignment(int index, Alignment horizontal, Alignment vertical)
 {
-  ListBoxItem& item = getItem( index );
-  item.setItemTextAlignment( horizontal, vertical );
+  item( index ).setTextAlignment( horizontal, vertical );
   _d->needItemsRepackTextures = true;
 }
 
@@ -815,9 +815,9 @@ ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int col
   i.setState( stNormal );
   i.setOffset( _d->itemTextOffset );
   //i.currentHovered = 255;
-  i.OverrideColors[ ListBoxItem::LBC_TEXT ].font = font.isValid() ? font : _d->font;
-  i.OverrideColors[ ListBoxItem::LBC_TEXT ].color = color;
-  i.setItemTextAlignment( getHorizontalTextAlign(), getVerticalTextAlign() );
+  i.OverrideColors[ ListBoxItem::simple ].font = font.isValid() ? font : _d->font;
+  i.OverrideColors[ ListBoxItem::simple ].color = color;
+  i.setTextAlignment( getHorizontalTextAlign(), getVerticalTextAlign() );
 
   _d->needItemsRepackTextures = true;
 
@@ -849,8 +849,8 @@ void ListBox::addItems(const StringArray& strings)
 }
 
 Font ListBox::getFont() const{  return _d->font;}
-void ListBox::setDrawBackground(bool draw){    setFlag( LBF_DRAWBACK, draw );} //! Sets whether to draw the background
-int ListBox::getSelected() {    return _d->selectedItemIndex; }
+void ListBox::setDrawBackground(bool draw){    setFlag( drawBackground, draw );} //! Sets whether to draw the background
+int ListBox::selected() {    return _d->selectedItemIndex; }
 Signal1<std::string>& ListBox::onItemSelectedAgain(){  return _d->onItemSelectedAgainSignal;}
 Signal1<const ListBoxItem&>& ListBox::onItemSelected(){  return _d->onItemSelectedSignal;}
 void ListBox::setItemFont( Font font ){ _d->font = font; }

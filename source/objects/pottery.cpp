@@ -22,6 +22,7 @@
 #include "good/goodstore.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 Pottery::Pottery() : Factory(Good::clay, Good::pottery, building::pottery, Size(2))
 {

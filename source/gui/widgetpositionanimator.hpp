@@ -32,7 +32,7 @@ public:
 
     ~PositionAnimator(void);
 
-	void beforeDraw( GfxEngine& painter );
+  void beforeDraw( gfx::Engine& painter );
 
 	virtual void restart();
 

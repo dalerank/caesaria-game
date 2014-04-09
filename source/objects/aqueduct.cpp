@@ -29,6 +29,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
 {
@@ -372,7 +373,7 @@ bool Aqueduct::isRoad() const
   return _isRoad();
 }
 
-std::string Aqueduct::getSound() const
+std::string Aqueduct::sound() const
 {
-  return ( _getWater() == 0 ? "" : WaterSource::getSound() );
+  return ( _getWater() == 0 ? "" : WaterSource::sound() );
 }

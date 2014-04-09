@@ -35,8 +35,8 @@ public:
   BuildingPtr getConsumerBuilding();
   GoodStock& getStock();
 
-  Picture& getCartPicture();
-  virtual void getPictureList(PicturesArray& oPics);
+  gfx::Picture& getCartPicture();
+  virtual void getPictureList( gfx::Pictures& oPics);
 
   void send2city( BuildingPtr building, GoodStock& carry );
 

@@ -17,16 +17,17 @@
 #define __CAESARIA_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 
 #include "widget.hpp"
-#include "core/scopedptr.hpp"
+#include "objects/predefinitions.hpp"
+
 namespace gui
 {
 
 class AdvisorLegionWindow : public Widget
 {
 public:
-  AdvisorLegionWindow( Widget* parent, int id );
+  AdvisorLegionWindow(Widget* parent, int id , FortList forts);
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 private:
   class Impl;

@@ -19,9 +19,12 @@
 
 #include "core/exception.hpp"
 
-GfxEngine* GfxEngine::_instance = NULL;
+namespace gfx
+{
 
-GfxEngine& GfxEngine::instance()
+Engine* Engine::_instance = NULL;
+
+Engine& Engine::instance()
 {
    if (_instance == NULL)
    {
@@ -31,55 +34,24 @@ GfxEngine& GfxEngine::instance()
 }
 
 
-GfxEngine::GfxEngine()
+Engine::Engine()
 {
   _srcSize = Size( 0 );
   _instance = this;
 }
 
-GfxEngine::~GfxEngine()
-{
-  _instance = NULL;
-}
+Engine::~Engine() {  _instance = NULL; }
 
+void Engine::setScreenSize( Size size ) {  _srcSize = size;}
+bool Engine::isFullscreen() const{  return getFlag( fullscreen ) > 0; }
+void Engine::setFullscreen(bool enabled){  setFlag( fullscreen, enabled ? 1 : 0 );}
+Size Engine::screenSize() const{  return _srcSize;}
+void Engine::setFlag( int flag, int value ){  _flags[ flag ] = value;}
 
-void GfxEngine::setScreenSize( Size size )
-{
-  _srcSize = size;
-}
-
-int GfxEngine::screenWidth() const
-{
-  return _srcSize.width();
-}
-
-int GfxEngine::screenHeight() const
-{
-  return _srcSize.height();
-}
-
-bool GfxEngine::isFullscreen() const
-{
-  return getFlag( fullscreen ) > 0;
-}
-
-void GfxEngine::setFullscreen(bool enabled)
-{
-  setFlag( fullscreen, enabled ? 1 : 0 );
-}
-
-Size GfxEngine::getScreenSize() const
-{
-  return _srcSize;
-}
-
-void GfxEngine::setFlag( int flag, int value )
-{
-  _flags[ flag ] = value;
-}
-
-int GfxEngine::getFlag(int flag) const
+int Engine::getFlag(int flag) const
 {
   std::map< int, int >::const_iterator it = _flags.find( flag );
   return it != _flags.end() ? it->second : 0;
 }
+
+}//end namespace gfx

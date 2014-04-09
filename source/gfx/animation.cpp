@@ -18,23 +18,27 @@
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 
+namespace gfx
+{
+
 class Animation::Impl
 {
 public:
   unsigned int frameDelay;
   bool loop;
+  unsigned int lastTimeUpdate;
 };
 
 void Animation::start(bool loop)
 {
-  __D_IMPL(_d, Animation)
+  __D_IMPL(d, Animation)
   _animIndex = 0;
-  _lastTimeUpdate = 0;
-  _d->loop = loop;
+  d->lastTimeUpdate = 0;
+  d->loop = loop;
 }
 
-PicturesArray& Animation::frames() {  return _pictures;}
-const PicturesArray& Animation::frames() const{  return _pictures;}
+Pictures& Animation::frames() {  return _pictures;}
+const Pictures& Animation::frames() const{  return _pictures;}
 unsigned int Animation::frameCount() const{  return _pictures.size();}
 
 void Animation::setOffset( const Point& offset )
@@ -61,12 +65,12 @@ void Animation::update( unsigned int time )
 
   if( _d->frameDelay > 0 )
   {
-    if( time - _lastTimeUpdate < _d->frameDelay )
+    if( time - _d->lastTimeUpdate < _d->frameDelay )
       return;
   }
 
   _animIndex += 1;
-  _lastTimeUpdate = time;
+  _d->lastTimeUpdate = time;
 
   if( _animIndex >= (int)_pictures.size() ) 
   {
@@ -149,7 +153,7 @@ Animation& Animation::operator=( const Animation& other )
   _pictures = other._pictures;
   _animIndex = other._animIndex;  // index of the current frame
   _d->frameDelay = other.delay();
-  _lastTimeUpdate = other._lastTimeUpdate;
+  _d->lastTimeUpdate = other._dfunc()->lastTimeUpdate;
   _d->loop = other.isLoop();
 
   return *this;
@@ -167,3 +171,5 @@ void Animation::addFrame(const Picture& pic)
 {
   _pictures.push_back( pic );
 }
+
+}//end namespace gfx

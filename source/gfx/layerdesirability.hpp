@@ -20,17 +20,22 @@
 #include "city_renderer.hpp"
 #include "core/font.hpp"
 
+namespace gfx
+{
+
 class LayerDesirability : public Layer
 {
 public:
   virtual int getType() const;
   virtual std::set<int> getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+  static LayerPtr create( Camera& camera, PlayerCityPtr city );
 private:
-  LayerDesirability( TilemapCamera& camera, PlayerCityPtr city );
+  LayerDesirability( Camera& camera, PlayerCityPtr city );
   Font _debugFont;
 };
 
-#endif //__OPENCAESAR3_LAYERRENDERER_H_INCLUDED__
+}//end namespace gfx
+
+#endif //__CAESARIA_LAYERDESIRABILITY_H_INCLUDED__

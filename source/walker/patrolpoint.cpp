@@ -21,6 +21,7 @@
 #include "city/city.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class PatrolPoint::Impl
 {
@@ -52,7 +53,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
   return ptr;
 }
 
-void PatrolPoint::getPictureList(PicturesArray& oPics)
+void PatrolPoint::getPictureList( gfx::Pictures& oPics)
 {
   oPics.push_back( _d->standart );
   oPics.push_back( _d->animation.currentFrame() );

@@ -28,7 +28,7 @@ public:
   static ServiceWalkerPtr create( PlayerCityPtr city, const Service::Type service );
 
   Service::Type getService() const;
-  BuildingPtr getBase() const;
+  BuildingPtr base() const;
 
   void setBase( BuildingPtr base );
 
@@ -51,10 +51,11 @@ public:
   virtual void setPathway(const Pathway& pathway);
   virtual void die();
 
-  ~ServiceWalker();
+  virtual ~ServiceWalker();
 
 protected:
   virtual void _reachedPathway();
+  virtual void _brokePathway(TilePos pos);
   virtual void _centerTile();  // called when the walker is on a new tile
 
 protected:

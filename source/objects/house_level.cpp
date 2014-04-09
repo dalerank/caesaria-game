@@ -36,6 +36,8 @@
 #include <map>
 #include <list>
 
+using namespace gfx;
+
 class HouseSpecification::Impl
 {
 public:

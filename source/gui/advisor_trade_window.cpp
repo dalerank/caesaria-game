@@ -37,6 +37,7 @@
 #include "objects/constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -45,7 +46,7 @@ class TradeGoodInfo : public PushButton
 {
 public:
   TradeGoodInfo( Widget* parent, const Rect& rect, Good::Type good, int qty, bool enable,
-                 CityTradeOptions::Order trade, int tradeQty )
+                 city::TradeOptions::Order trade, int tradeQty )
     : PushButton( parent, rect, "" )
   {
     _type = good;
@@ -80,13 +81,13 @@ public:
       std::string tradeStateText = ruleName[ _tradeOrder ];
       switch( _tradeOrder )
       {
-      case CityTradeOptions::noTrade:
-      case CityTradeOptions::stacking:
-      case CityTradeOptions::importing: 
+      case city::TradeOptions::noTrade:
+      case city::TradeOptions::stacking:
+      case city::TradeOptions::importing:
         tradeStateText = ruleName[ _tradeOrder ];
       break;
       
-      case CityTradeOptions::exporting:
+      case city::TradeOptions::exporting:
         tradeStateText = StringHelper::format( 0xff, "%s %d", ruleName[ _tradeOrder ].c_str(), _tradeQty );
       break;
 
@@ -115,7 +116,7 @@ private:
   int _qty;
   bool _enable;
   bool _stacking;
-  CityTradeOptions::Order _tradeOrder;
+  city::TradeOptions::Order _tradeOrder;
   int _tradeQty;
   Good::Type _type;
   std::string _goodName;
@@ -137,7 +138,7 @@ public:
     Font font = Font::create( FONT_3 );
     font.draw( *background, _("##rome_prices##"), Point( 10, 10 ), false );
 
-    CityTradeOptions& ctrade = city->getTradeOptions();
+    city::TradeOptions& ctrade = city->getTradeOptions();
     font = Font::create( FONT_1 );
     Point startPos( 140, 50 );
     for( int i=Good::wheat; i < Good::goodCount; i++ )
@@ -167,7 +168,7 @@ public:
     font.draw( *background, _("##click_rmb_for_exit##"), Point( 140, height() - 30 ), false ); 
   }
 
-  virtual void draw( GfxEngine& painter )
+  virtual void draw( gfx::Engine& painter )
   {
     if( !isVisible() )
       return;
@@ -228,20 +229,20 @@ public:
 
     switch( order )
     {
-      case CityTradeOptions::importing:
-      case CityTradeOptions::noTrade:
+      case city::TradeOptions::importing:
+      case city::TradeOptions::noTrade:
       {
         btnDecrease->hide();
         btnIncrease->hide();
 
         Font font = getFont( state );        
-        std::string text = (order == CityTradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
+        std::string text = (order == city::TradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
         Rect textRect = font.calculateTextRect( text, Rect( Point( 0, 0), size() ), getHorizontalTextAlign(), getVerticalTextAlign() );
         font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner );
       }
       break;
 
-      case CityTradeOptions::exporting:
+      case city::TradeOptions::exporting:
         {
           btnDecrease->show();
           btnIncrease->show();
@@ -261,14 +262,14 @@ public:
     }
   }
 
-  void setTradeState( CityTradeOptions::Order o, int qty )
+  void setTradeState( city::TradeOptions::Order o, int qty )
   {
     order = o;
     goodsQty = qty;
     _resizeEvent();
   }
   
-  CityTradeOptions::Order order;
+  city::TradeOptions::Order order;
   int goodsQty;
   TexturedButton* btnDecrease;
   TexturedButton* btnIncrease;
@@ -315,7 +316,7 @@ public:
     CONNECT( _btnStackingState, onClicked(), this, GoodOrderManageWindow::toggleStackingGoods );
   }
 
-  void draw( GfxEngine& painter )
+  void draw( gfx::Engine& painter )
   {
     if( !isVisible() )
       return;
@@ -327,22 +328,22 @@ public:
 
   void increaseQty()
   {
-    CityTradeOptions& ctrade = _city->getTradeOptions();
+    city::TradeOptions& ctrade = _city->getTradeOptions();
     ctrade.setExportLimit( _type, math::clamp( ctrade.getExportLimit( _type )+1, 0, 999 ) );
     updateTradeState();
   }
 
   void decreaseQty()
   {
-    CityTradeOptions& ctrade = _city->getTradeOptions();
+    city::TradeOptions& ctrade = _city->getTradeOptions();
     ctrade.setExportLimit( _type, math::clamp( ctrade.getExportLimit( _type )-1, 0, 999 ) );
     updateTradeState();
   }
 
   void updateTradeState()
   {
-    CityTradeOptions& ctrade = _city->getTradeOptions();
-    CityTradeOptions::Order order = ctrade.getOrder( _type );
+    city::TradeOptions& ctrade = _city->getTradeOptions();
+    city::TradeOptions::Order order = ctrade.getOrder( _type );
     int qty = ctrade.getExportLimit( _type );
     _btnTradeState->setTradeState( order, qty );
   }
@@ -457,13 +458,13 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
 
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->width(), 20 );
-  CityTradeOptions& copt = city->getTradeOptions();
+  city::TradeOptions& copt = city->getTradeOptions();
   for( int i=Good::wheat, indexOffset=0; i < Good::goodCount; i++ )
   {
     Good::Type gtype = Good::Type( i );
 
-    CityTradeOptions::Order tradeState = copt.getOrder( gtype );
-    if( tradeState == CityTradeOptions::disabled )
+    city::TradeOptions::Order tradeState = copt.getOrder( gtype );
+    if( tradeState == city::TradeOptions::disabled )
     {
       continue;
     }
@@ -548,7 +549,7 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
   _d->updateGoodsInfo();
 }
 
-void AdvisorTradeWindow::draw( GfxEngine& painter )
+void AdvisorTradeWindow::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

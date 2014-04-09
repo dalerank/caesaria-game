@@ -172,8 +172,8 @@ class Variant
     Variant( const PointF& pt);
     //Variant( const Line& line);
     //Variant( const LineF& line);
-	  Variant( const Rect& rect);
-		Variant( const RectF& rect);
+    Variant( const Rect& rect);
+    Variant( const RectF& rect);
     //Variant( const Color& color);
 
     Variant& operator=( const Variant& other);

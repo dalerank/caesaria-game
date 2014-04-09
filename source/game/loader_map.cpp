@@ -27,6 +27,7 @@
 #include "loaderhelper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 #include <fstream>
 #include <map>
