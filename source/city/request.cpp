@@ -22,7 +22,7 @@
 #include "city/funds.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
-#include "events/infobox.hpp"
+#include "events/showinfobox.hpp"
 #include "events/updatefavour.hpp"
 
 namespace  city
@@ -157,7 +157,7 @@ void RqGood::fail( PlayerCityPtr city )
     _d->date = _finishedDate;    
 
     std::string text = StringHelper::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
-    e = events::ShowInfoboxEvent::create( "##request_failed##", text );
+    e = events::ShowInfobox::create( "##request_failed##", text );
     e->dispatch();
 
     _finishedDate.appendMonth( _d->failAppendMonth );
@@ -169,7 +169,7 @@ void RqGood::fail( PlayerCityPtr city )
     Request::fail( city );
 
     std::string text = StringHelper::format( 0xff, "You failed request" );
-    e = events::ShowInfoboxEvent::create( "##request_failed##", text );
+    e = events::ShowInfobox::create( "##request_failed##", text );
     e->dispatch();
   }
 }

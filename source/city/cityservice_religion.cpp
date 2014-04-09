@@ -26,7 +26,7 @@
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
 #include "core/safetycast.hpp"
-#include "events/scribemessage.hpp"
+#include "events/showinfobox.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -141,7 +141,8 @@ void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
 
   if( divn->relation() < 30 )
   {
-    events::GameEventPtr e = events::ScribeMessage::create( _("##gods_unhappy_title##"), _("##gods_unhappy_text##") );
+    events::GameEventPtr e = events::ShowInfobox::create( _("##gods_unhappy_title##"), _("##gods_unhappy_text##"),
+                                                          events::ShowInfobox::send2scribe );
     e->dispatch();
   }
 }

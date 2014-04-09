@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "infobox.hpp"
+#include "showinfobox.hpp"
 #include "gui/info_box.hpp"
 #include "game/game.hpp"
 #include "gui/environment.hpp"
@@ -26,9 +26,9 @@ using namespace constants;
 namespace events
 {
 
-GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::string& text, bool send2scribe )
+GameEventPtr ShowInfobox::create( const std::string& title, const std::string& text, bool send2scribe )
 {
-  ShowInfoboxEvent* ev = new ShowInfoboxEvent();
+  ShowInfobox* ev = new ShowInfobox();
   ev->_title = title;
   ev->_text = text;
   ev->_send2scribe = send2scribe;
@@ -39,9 +39,9 @@ GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::stri
   return ret;
 }
 
-bool ShowInfoboxEvent::_mayExec(Game& game, unsigned int time) const{  return true;}
+bool ShowInfobox::_mayExec(Game& game, unsigned int time) const{  return true;}
 
-void ShowInfoboxEvent::_exec( Game& game, unsigned int )
+void ShowInfobox::_exec( Game& game, unsigned int )
 {
   gui::InfoboxText* msgWnd = new gui::InfoboxText( game.gui()->rootWidget(), _title, _text );
   msgWnd->show();

@@ -18,7 +18,7 @@
 #include "game/gamedate.hpp"
 #include "city/helper.hpp"
 #include "objects/farm.hpp"
-#include "events/infobox.hpp"
+#include "events/showinfobox.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "walker/fishing_boat.hpp"
@@ -131,9 +131,9 @@ void Ceres::updateRelation(float income, PlayerCityPtr city)
   if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
     _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_ceres_title##"),
+    events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
                                                                    _("##wrath_of_ceres_description##"),
-                                                                   events::ShowInfoboxEvent::send2scribe );
+                                                                   events::ShowInfobox::send2scribe );
     event->dispatch();
 
     city::Helper helper( city );
@@ -162,8 +162,9 @@ void Neptune::updateRelation(float income, PlayerCityPtr city)
   if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
     _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_neptune_title##"),
-                                                                   _("##wrath_of_neptune_description##") );
+    events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
+                                                                   _("##wrath_of_neptune_description##"),
+                                                                   events::ShowInfobox::send2scribe );
     event->dispatch();
 
     city::Helper helper( city );
@@ -196,8 +197,9 @@ void Mercury::updateRelation(float income, PlayerCityPtr city)
   if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
   {
     _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_mercury_title##"),
-                                                                   _("##wrath_of_mercury_description##") );
+    events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_mercury_title##"),
+                                                                   _("##wrath_of_mercury_description##"),
+                                                                   events::ShowInfobox::send2scribe );
     event->dispatch();
 
     city::Helper helper( city );

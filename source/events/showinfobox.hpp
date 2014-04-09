@@ -23,7 +23,7 @@
 namespace events
 {
 
-class ShowInfoboxEvent : public GameEvent
+class ShowInfobox : public GameEvent
 {
 public:
   static const bool send2scribe = true;

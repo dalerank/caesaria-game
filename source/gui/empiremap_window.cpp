@@ -32,7 +32,7 @@
 #include "city/funds.hpp"
 #include "good/goodhelper.hpp"
 #include "game/settings.hpp"
-#include "events/infobox.hpp"
+#include "events/showinfobox.hpp"
 #include "core/logger.hpp"
 #include "world/merchant.hpp"
 #include "core/foreach.hpp"
@@ -159,7 +159,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
       DockList docks = helper.find<Dock>( constants::building::dock );
       if( docks.empty() )
       {
-        events::GameEventPtr e = events::ShowInfoboxEvent::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
+        events::GameEventPtr e = events::ShowInfobox::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
         e->dispatch();
       }
     }
