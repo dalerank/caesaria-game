@@ -145,7 +145,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
 
   _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
   _d->lbxHelp->setItemTextOffset( Point( 20, 0 ) );
-  _d->lbxHelp->setItemDefaultColor( ListBoxItem::LBC_TEXT, 0xffe0e0e0 );
+  _d->lbxHelp->setItemDefaultColor( ListBoxItem::simple, 0xffe0e0e0 );
 
   foreach( it, wint.getOverview() )
   {

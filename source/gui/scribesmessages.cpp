@@ -29,6 +29,7 @@
 #include "core/event.hpp"
 #include "popup_messagebox.hpp"
 #include "texturedbutton.hpp"
+#include "core/color.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -41,6 +42,21 @@ class ScribesListBox : public ListBox
 public:
   ScribesListBox( Widget* p, const Rect& rect ) : ListBox( p, rect )
   {
+    setFlag( selectOnMove, true );
+  }
+
+  virtual ListBoxItem& addItem( const std::string& text, Font font=Font(), const int color=0 )
+  {
+    ListBoxItem& item = ListBox::addItem( text, font, color );
+
+    ListBoxItem::OverrideColor& itemfc = item.OverrideColors[ ListBoxItem::simple ];
+    item.OverrideColors[ ListBoxItem::hovered ].font = itemfc.font;
+    item.OverrideColors[ ListBoxItem::hovered ].Use = true;
+    item.OverrideColors[ ListBoxItem::hovered ].color = 0xffff0000;
+
+    item.setIcon( Picture::load( ResourceGroup::panelBackground, 111 ));
+
+    return item;
   }
 
 public oc3_signals:
@@ -51,10 +67,10 @@ protected:
   virtual void _drawItemIcon(gfx::Picture &texture, ListBoxItem &item, const Point &pos)
   {
     VariantMap options = item.data().toMap();
-    bool opened = options[ "opened" ];
-    bool critical = options[ "critical" ];
-    int imgIndex = (critical ? 111 : 113) + (opened ? 1 : 0);
-    texture.draw( Picture::load( ResourceGroup::panelBackground, imgIndex ), pos );
+    bool opened = options.get( "opened", false );
+    bool critical = options.get( "critical", false );
+    int imgIndex = (critical ? 113 : 111) + (opened ? 1 : 0);
+    texture.draw( Picture::load( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
   }
 
   virtual void _drawItemText(gfx::Picture &texture, Font font, ListBoxItem &item, const Point &pos)
@@ -62,7 +78,7 @@ protected:
     VariantMap options = item.data().toMap();
     DateTime time = options[ "date" ].toDateTime();
 
-    font.draw( texture, DateTimeHelper::toStr( time ), pos + Point( 20, 0 ), false );
+    font.draw( texture, DateTimeHelper::toStr( time ), pos + Point( 30, 0 ), false );
     font.draw( texture, item.text(), Point( width() / 2, pos.y() ), false );
   }
 
@@ -135,7 +151,7 @@ void ScribesMessagestWindow::_fillMessages()
     foreach( it, messages )
     {
       const city::Info::ScribeMessage& mt = *it;
-      ListBoxItem& item = _d->lbxMessages->addItem( mt.text );
+      ListBoxItem& item = _d->lbxMessages->addItem( mt.title );
       VariantMap options;
       options[ "opened" ] = mt.opened;
       options[ "date"   ] = mt.date;
@@ -151,9 +167,13 @@ void ScribesMessagestWindow::_showMessage(int index)
   SmartPtr<city::Info> srvc = ptr_cast<city::Info>( _d->city->findService( city::Info::getDefaultName() ) );
   if( srvc.isValid() )
   {
-    const city::Info::ScribeMessage& mt = srvc->getMessage( index );
+    city::Info::ScribeMessage mt = srvc->getMessage( index );
+    mt.opened = true;
+    srvc->changeMessage( index, mt );
     PopupMessageBox::information( parent(), mt.title, mt.text, DateTimeHelper::toStr( mt.date ) );
   }
+
+  _fillMessages();
 }
 
 void ScribesMessagestWindow::_removeMessage(int index)

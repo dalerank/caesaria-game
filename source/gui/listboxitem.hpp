@@ -33,19 +33,19 @@ public:
   enum ColorType
   {
     //! Color of text
-    LBC_TEXT=0,
+    simple=0,
     //! Color of selected text
-    LBC_TEXT_HIGHLIGHT,
+    hovered,
     //! Color of icon
-    LBC_ICON,
+    iconSimple,
     //! Color of selected icon
-    LBC_ICON_HIGHLIGHT,
+    iconHovered,
     //! Not used, just counts the number of available colors
-    LBC_BACKGROUND,
+    background,
 
-    LBC_ALL,
+    all,
 
-    LBC_COUNT
+    count
   };
 
   ListBoxItem();
@@ -82,9 +82,9 @@ public:
   Variant data() const;
   void setData( const Variant& value );
 
-  struct ListItemOverrideColor
+  struct OverrideColor
   {
-    ListItemOverrideColor() : Use(false), color( 0 ) {}
+    OverrideColor() : Use(false), color( 0 ) {}
     bool Use;
     Font font;
     int /*Color*/ color;
@@ -93,7 +93,7 @@ public:
 	//!sets the item text alignment
 	void setTextAlignment( Alignment horizontal, Alignment vertical );
 
-  ListItemOverrideColor OverrideColors[ LBC_COUNT ];
+	OverrideColor OverrideColors[ count ];
 
 	static ListBoxItem& getInvalidItem(); 
 

@@ -72,7 +72,7 @@ ListBoxItem& ListBoxItem::operator=( const ListBoxItem& other )
 	_d->text = other._d->text;
 	_d->data = other._d->data;
 
-	for( unsigned int i=0; i < LBC_COUNT;i++ )
+	for( unsigned int i=0; i < count;i++ )
 	{
 		OverrideColors[ i ].Use = other.OverrideColors[ i ].Use;
 		OverrideColors[ i ].font = other.OverrideColors[ i ].font;

@@ -27,21 +27,21 @@
 namespace gui
 {
 
-typedef enum { LBF_SELECT_ON_MOVE=0, LBF_SELECT_ON_MOUSE_DOWN,
-               LBF_DRAWBACK, LBF_AUTOSCROLL, LBF_MOVEOVER_SELECT, 
-               LBF_HIGHLIGHTWHEN_NOTFOCUSED, LBF_COUNT } LISTBOX_FLAG;
+typedef enum { selectOnMove=0, selectOnMDown,
+               drawBackground, autoscroll, moveOverSelect,
+               hightlightNotinfocused, count } Flag;
 
 class ScrollBar;
 
-class ListBox : public Widget, public FlagHolder<LISTBOX_FLAG>
+class ListBox : public Widget, public FlagHolder<Flag>
 {
 public:
-  typedef enum { selectOnMove=true, selectOnClick=false } SelectMode;
+  typedef enum { selectOnMouseMove=true, selectOnClick=false } SelectMode;
 
   //! constructor
-  ListBox( Widget* parent,
+  ListBox(Widget* parent,
            const Rect& rectangle=Rect( 0, 0, 1, 1), int id=-1, bool clip=true,
-           bool drawBack=false, bool moveOverSelect=false);
+           bool drawBack=false, bool mos=false);
 
   //! destructor
   virtual ~ListBox();
@@ -77,7 +77,7 @@ public:
 
   //! set all item colors of specified type at given index to color
   virtual void setItemOverrideColor( unsigned int index, const int color, 
-                                     ListBoxItem::ColorType colorType=ListBoxItem::LBC_ALL );
+                                     ListBoxItem::ColorType colorType=ListBoxItem::all );
 
   //! set whether the listbox should scroll to newly selected items
   virtual void setAutoScrollEnabled(bool scroll);
@@ -168,7 +168,7 @@ private:
   void _recalculateScrollPos();
 
   void _indexChanged( unsigned int eventType );
-  ElementState _GetCurrentItemState( unsigned int index, bool hl );
+  ElementState _getCurrentItemState( unsigned int index, bool hl );
   Rect getItemTextRect_();
   Font _getCurrentItemFont( const ListBoxItem& item, bool selected );
   NColor _getCurrentItemColor( const ListBoxItem& item, bool selected );
