@@ -40,18 +40,12 @@ GameEventPtr RemoveGoods::create( Good::Type type, int qty  )
 template<class T>
 void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what, int& qty )
 {
-  city::Helper helper( city );
+  SmartList<T> bList;	
 #ifdef CAESARIA_PLATFORM_HAIKU
-  std::list< SmartPtr<T> > bList;
-  TileOverlayList plist = city->getOverlays();
-  foreach( pit, plist )
-  {
-  	SmartPtr<T> c = ptr_cast<T>( *pit );
-  	if( c.isValid() )
-  	  bList.push_back( c );
-  } 
+  bList << city->getOverlays();
 #else
-  SmartList<T> bList = helper.find<T>( btype );
+  city::Helper helper( city );
+  bList = helper.find<T>( btype );
 #endif
   foreach( it, bList )
   {
