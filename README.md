@@ -27,6 +27,29 @@ CaesarIA is build using following excellent libraries:
   * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
     
 Releases:
+##### 2014-04-09
+  * prefects attack enemy soldiers
+  * atlas of animations redesign, fast search in the atlas, settings of animations in the configuration file
+  * fish places cease to appear if in the city there is no river, or not access to the river
+  * fix bug with a freeze citizens after loading game
+  * road construction is corrected, now it no use existing roads
+  * movement system for citizens use control points, not direction list
+  * can use different speeds of movement for citizens
+  * localization of the first training mission is corrected
+  * city services reset when loading new game or saved
+  * fix crash a sound theme at card change (pc)
+  * add emperor and opportunity to send him gifts is added
+  * add briefing for 4 missions and prepare of mission in Tarraco
+  * In a repository stable branch is added, from where it is possible to download last stable sources
+  * added garbage on water
+  * way search now use deep water and shoal different
+  * Employees try to find a way to the base if on a way was broken, instead of removal from map before
+  * It is corrected shifts for low/ship bridges. Also bridges are drawn without auxiliary тайлов.
+  * add ADB console ouptut
+  * Now it is possible to hold a festival
+  * fix the admission of processing of some events of a touchscreen on the android (the buttons are pressed by one tap)
+  * loading games on android Is corrected 
+
 ##### 2014-03-21
 
   * Now may use native Caesar III(c) resources without repack to zip archives, use cmd option -c3gfx /path/to/caesar3_folder 

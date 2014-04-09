@@ -71,7 +71,8 @@ public:
   static std::string localeLower( const std::string& str );
   static char localeLower( char x );
 
-  static int vformat(std::string& str, int max_size, const char* format, va_list argument_list);;
+  static int vformat(std::string& str, int max_size, const char* format, va_list argument_list);
+  static void useStackTrace( bool enabled );
 
   static std::string trim( const std::string& str );
 };

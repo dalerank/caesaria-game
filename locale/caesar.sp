@@ -1,4 +1,5 @@
-{"##0_entertainment_access##":"Esta vivienda no tiene acceso a ningún tipo de entretenimiento."
+{
+"##0_entertainment_access##":"Esta vivienda no tiene acceso a ningún tipo de entretenimiento."
 "##1_entertainment_access##":"Esta vivienda apenas tiene acceso a entretenimientos."
 "##2_entertainment_access##":"Esta vivienda tiene algo de acceso a actividades de entretenimiento."
 "##3_entertainment_access##":"Esta vivienda tiene acceso muy limitado a actividades de entretenimiento."
@@ -170,7 +171,7 @@
 "##chatioteer_school_bad_work##":"Necesitamos personal urgentemente. Intentaremos terminar una cuadriga en los próximos dos meses."
 "##chatioteer_school_no_workers##":"Sin artesanos no se harán nuevas cuadrigas. El hipódromo, de estar operativo, podría sufrir las consecuencias."
 "##chatioteer_school##":"Taller de cuadrigas"
-"##chest_of_sapphire##":"Un cofre de zafiros"
+"##egift_chest_of_sapphire##":"Un cofre de zafiros"
 "##chief_advisor##":"Asesor jefe"
 "##children##":"Niños"
 "##citizen_are_rioting##":"¡Los ciudadanos están amotinándose!"
@@ -345,8 +346,8 @@
 "##emigrant##":"Emigrante"
 "##emmigrant_average_life##":"Tal y como están las cosas, la ciudad va bien."
 "##emmigrant_where_my_home##":"Soy nuevo aquí ¿conoces algún lugar donde pueda vivir?"
-"##emperor_favour_0##":"El emperador está furioso contigo."
-"##emperor_favour_1##":"El emperador está tan terriblemente enfadado que incluso ha pensado mandarte al exilio."
+"##emperor_favour_00##":"El emperador está furioso contigo."
+"##emperor_favour_01##":"El emperador está tan terriblemente enfadado que incluso ha pensado mandarte al exilio."
 "##emperor_favour_10##":"El emperador se muestra contradictorio contigo."
 "##emperor_favour_11##":"El emperador piensa que puedes hacerlo bien."
 "##emperor_favour_12##":"El emperador está satisfecho contigo."
@@ -357,15 +358,15 @@
 "##emperor_favour_17##":"El emperador está extremadamente entusiasmado con tu actuación."
 "##emperor_favour_18##":"El emperador está encantado con tu actuación."
 "##emperor_favour_19##":"El emperador está más que satisfecho con tu actuación."
-"##emperor_favour_2##":"El emperador está extremadamente enfadado contigo."
+"##emperor_favour_02##":"El emperador está extremadamente enfadado contigo."
 "##emperor_favour_20##":"El emperador está increíblemente encantado; hasta piensa nombrarte su heredero."
-"##emperor_favour_3##":"El emperador está muy enfadado contigo."
-"##emperor_favour_4##":"El emperador está enfadado contigo."
-"##emperor_favour_5##":"El emperador está extremadamente decepcionado contigo."
-"##emperor_favour_6##":"El emperador está totalmente decepcionado contigo."
-"##emperor_favour_7##":"El emperador está decepcionado contigo."
-"##emperor_favour_8##":"El emperador está algo decepcionado contigo."
-"##emperor_favour_9##":"El emperador está un poco preocupado contigo."
+"##emperor_favour_03##":"El emperador está muy enfadado contigo."
+"##emperor_favour_04##":"El emperador está enfadado contigo."
+"##emperor_favour_05##":"El emperador está extremadamente decepcionado contigo."
+"##emperor_favour_06##":"El emperador está totalmente decepcionado contigo."
+"##emperor_favour_07##":"El emperador está decepcionado contigo."
+"##emperor_favour_08##":"El emperador está algo decepcionado contigo."
+"##emperor_favour_09##":"El emperador está un poco preocupado contigo."
 "##emperor_request##":"Solicitud imperial"
 "##emperor##":"Emperador"
 "##emperror_legion_at_out_gates##":"Una legión de tropas del emperador se encuentra a nuestras puertas."
@@ -498,7 +499,7 @@
 "##god_mercury_short##":""
 "##god_neptune_short##":""
 "##god_venus_short##":""
-"##golden_chariot##":"Un carro de oro"
+"##egift_golden_chariot##":"Un carro de oro"
 "##goth_warrior##":"Guerrero godo"
 "##goto_empire_map##":"Ir al mapa del Imperio"
 "##goto##":"Ir a la"
@@ -514,7 +515,7 @@
 "##grape_factory_stock##":"Uvas almacenadas,"
 "##grape##":"Viñas"
 "##grass##":"Césped"
-"##gree_manuscript##":"Un manuscrito griego"
+"##egift_gree_manuscript##":"Un manuscrito griego"
 "##greek_soldier##":"Soldado griego"
 "##have_food_for##":"comida para"
 "##have_no_food_on_next_month##":"nada de comida para el próximo mes."
@@ -884,11 +885,11 @@
 "##prefecture_ready_for_work##":"Nuestro prefecto se prepara para el trabajo."
 "##prefecture_slow_work##":"Tenemos muy poco personal. A veces no hay prefecto en dos semanas."
 "##prefecture##":"Prefectura"
-"##present_educated_slave##":"Un esclavo educado"
-"##present_egyptian_glassware##":"Vajilla egipcia"
-"##present_gaulish_bodyguards##":"Guardias personales galos"
-"##present_gepards_and_giraffes##":"Guepardos y una jirafa"
-"##present_troupe_preforming_slaves##":"Una tropa de esclavos"
+"##egift_educated_slave##":"Un esclavo educado"
+"##egift_egyptian_glassware##":"Vajilla egipcia"
+"##egift_gaulish_bodyguards##":"Guardias personales galos"
+"##egift_gepards_and_giraffes##":"Guepardos y una jirafa"
+"##egift_troupe_preforming_slaves##":"Una tropa de esclavos"
 "##priest_gods_angry##":"¡Aaagh! ¡Los dioses se han enfadado! ¡Estamos condenados!"
 "##priest_high_workless##":"Con tanto paro doy gracias a los dioses por mi empleo."
 "##priest_low_entertainment##":"La ciudad es aburrida. ¡Incluso a los sacerdotes nos gusta ver pelear a los gladiadores de vez en cuando!"
@@ -1193,6 +1194,7 @@
 "Variable":"ESPAÑOL (v1.0)"
 
 
+"##egift_soldier_from_pergamaum##":"Soldado de Pérgamo"
 
 
 
@@ -1253,6 +1255,7 @@
 
 
 
+"##god_charmed##":"muy contento"
 
 
 
@@ -1321,6 +1324,7 @@
 
 
 
+"##god_displeased##":"desencantado"
 
 
 
@@ -1346,6 +1350,8 @@
 
 
 
+"##god_exalted##":"exaltado"
+"##god_excellent##":"Excelente"
 
 
 
@@ -1373,6 +1379,7 @@
 
 
 
+"##egift_generous##":"Generoso:"
 
 
 
@@ -1382,6 +1389,7 @@
 
 
 
+"##god_good##":"Buena"
 
 
 
@@ -1395,6 +1403,7 @@
 
 
 
+"##god_happy##":"feliz"
 
 
 
@@ -1429,6 +1438,7 @@
 
 
 
+"##god_indifferent##":"indiferente"
 
 
 
@@ -1436,6 +1446,7 @@
 
 
 
+"##god_irriated##":"irritado"
 
 
 
@@ -1450,6 +1461,7 @@
 
 
 
+"##egift_lavish##":"Lujoso:"
 
 
 
@@ -1487,6 +1499,7 @@
 
 
 
+"##egift_modest##":"Modesto:"
 
 
 
@@ -1629,12 +1642,15 @@
 
 
 
+"##egift_persian_carpets##":"Alfombras persas"
 
 
 
 
 
 
+"##god_pleased##":"contento"
+"##god_poor##":"Pobre"
 
 
 
@@ -1669,6 +1685,7 @@
 
 
 
+"##god_quitepoor##":"Bastante pobres"
 
 
 
@@ -1748,6 +1765,8 @@
 
 
 
+"##dispatch_gift##":"Mandar un regalo."
+"##dispatch_git_title##":"Enviar regalo al emperador"
 
 
 
@@ -1758,6 +1777,7 @@
 
 
 
+"##wt_sheep##":"Ovejas"
 
 
 
@@ -1875,6 +1895,7 @@
 
 
 
+"##rladv_mood##":"El dios está"
 
 
 
@@ -2042,13 +2063,16 @@
 
 
 
+"##god_veryangry##":"muy enfadado"
 
 
+"##god_verygood##":"Muy buena"
 
 
 
 
 
+"##god_verypoor##":"Muy pobre"
 
 
 
@@ -2110,30 +2134,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"##god_wrathful##":"colérico"
 
 
 

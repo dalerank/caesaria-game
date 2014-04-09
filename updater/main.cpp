@@ -21,7 +21,7 @@
 #include "updateroptions.hpp"
 #include "updater.hpp"
 #include "packager.hpp"
-
+#include "core/stringhelper.hpp"
 #include "util.hpp"
 
 #include "consoleupdater.hpp"
@@ -35,10 +35,15 @@ int main(int argc, char* argv[])
 
 	Logger::warning( "Updater v%s (c) 2012-2014 by dalerank is"
 									 " part of CaesarIA (http://bitbucket.org/dalerank/caesaria).",
-									 "0.0.5");
-	Logger::warning( "" );
+									 LIB_UPDATE_VERSION );
+	Logger::warning( "\n" );
 
 	UpdaterOptions localOptions( argc, argv );
+
+	if( localOptions.isSet( "verbose") )
+	{
+		StringHelper::useStackTrace( true );
+	}
 
 	if( localOptions.isSet( "update" ) || localOptions.isSet( "release" ))
 	{
