@@ -30,6 +30,9 @@ public:
   static std::string getDefaultName();
   void update( const unsigned int time );
 
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap& stream);
+
 private:
   Religion( PlayerCityPtr city );
 

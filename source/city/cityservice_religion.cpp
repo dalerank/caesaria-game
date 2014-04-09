@@ -112,6 +112,22 @@ void Religion::update( const unsigned int time )
   }
 }
 
+VariantMap Religion::save() const
+{
+  VariantMap ret = Srvc::save();
+
+  ret[ "lastUnhappyDate" ] = _d->lastUnhappyMessageDate;
+
+  return ret;
+}
+
+void Religion::load(const VariantMap& stream)
+{
+  Srvc::load( stream );
+
+  _d->lastUnhappyMessageDate = stream.get( "lastUnhappyDate", GameDate::current() ).toDateTime();
+}
+
 void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
 {
   Helper helper( &city );
@@ -139,8 +155,9 @@ void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
   Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->name().c_str(), faithIncome, divn->relation() );
   divn->updateRelation( faithIncome, &city );
 
-  if( divn->relation() < 30 )
+  if( divn->relation() < 30 && lastUnhappyMessageDate.getDaysToDate( GameDate::current() ) > 6 )
   {
+    lastUnhappyMessageDate = GameDate::current();
     events::GameEventPtr e = events::ShowInfobox::create( _("##gods_unhappy_title##"), _("##gods_unhappy_text##"),
                                                           events::ShowInfobox::send2scribe );
     e->dispatch();
