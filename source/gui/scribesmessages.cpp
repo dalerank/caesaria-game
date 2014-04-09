@@ -109,7 +109,26 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
   TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
   TexturedButton* btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
 
-  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ) );
+  _fillMessages();
+
+  CONNECT( _d->lbxMessages, onShowMessage, this, ScribesMessagestWindow::_showMessage );
+  CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessagestWindow::_removeMessage );
+  CONNECT( btnExit, onClicked(), this, ScribesMessagestWindow::deleteLater );
+}
+
+void ScribesMessagestWindow::draw(gfx::Engine& painter )
+{
+  if( !isVisible() )
+    return;
+
+  Widget::draw( painter );
+}
+
+void ScribesMessagestWindow::_fillMessages()
+{
+  _d->lbxMessages->clear();
+
+  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( _d->city->findService( city::Info::getDefaultName() ) );
   if( srvc.isValid() )
   {
     const city::Info::Messages& messages = srvc->messages();
@@ -125,18 +144,6 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
       item.setData( options );
     }
   }
-
-  CONNECT( _d->lbxMessages, onShowMessage, this, ScribesMessagestWindow::_showMessage );
-  CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessagestWindow::_removeMessage );
-  CONNECT( btnExit, onClicked(), this, ScribesMessagestWindow::deleteLater );
-}
-
-void ScribesMessagestWindow::draw(gfx::Engine& painter )
-{
-  if( !isVisible() )
-    return;
-
-  Widget::draw( painter );
 }
 
 void ScribesMessagestWindow::_showMessage(int index)
@@ -156,6 +163,8 @@ void ScribesMessagestWindow::_removeMessage(int index)
   {
     srvc->removeMessage( index );
   }
+
+  _fillMessages();
 }
 
 }//end namespace gui

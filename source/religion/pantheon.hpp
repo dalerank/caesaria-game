@@ -34,7 +34,6 @@ class Pantheon
 public:
   static Pantheon& instance();
 
-
   void load(const VariantMap& stream );
   void save(VariantMap& stream);
 

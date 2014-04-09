@@ -20,13 +20,13 @@
 #include "game/gamedate.hpp"
 #include "objects/religion.hpp"
 #include "religion/pantheon.hpp"
-#include "events/event.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
 #include "core/safetycast.hpp"
+#include "events/scribemessage.hpp"
 
 using namespace constants;
 using namespace religion;
@@ -38,6 +38,7 @@ class Religion::Impl
 {
 public:
   DateTime lastDate;
+  DateTime lastUnhappyMessageDate;
   struct TempleInfo
   {
     int smallTempleNum;
@@ -48,7 +49,7 @@ public:
 
   typedef std::map< DivinityPtr, TempleInfo > TemplesMap;
   TemplesMap templesCoverity;
-  TempleInfo maxTemples;
+  TempleInfo maxTemples;  
 
   void updateRelation( PlayerCity& city, DivinityPtr divn );
 };
@@ -67,6 +68,7 @@ Religion::Religion(PlayerCityPtr city )
   : Srvc( *city.object(), Religion::getDefaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
+  _d->lastUnhappyMessageDate = GameDate::current();
 }
 
 void Religion::update( const unsigned int time )
@@ -87,11 +89,11 @@ void Religion::update( const unsigned int time )
   TempleList temples = helper.find<Temple>( building::religionGroup );
   foreach( it, temples)
   {
-    Impl::TempleInfo& info = _d->templesCoverity[ (*it)->getDivinity() ];
-    TemplePtr temple = ptr_cast<Temple>( *it );
-    if( temple.isValid() && temple->getDivinity().isValid() )
+    if( (*it)->getDivinity().isValid() )
     {
-       if( is_kind_of<BigTemple>( temple ) ) { info.bigTempleNum++; }
+       Impl::TempleInfo& info = _d->templesCoverity[ (*it)->getDivinity() ];
+
+       if( is_kind_of<BigTemple>( *it ) ) { info.bigTempleNum++; }
        else { info.smallTempleNum++; }
     }
   }
@@ -136,6 +138,12 @@ void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
 
   Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->name().c_str(), faithIncome, divn->relation() );
   divn->updateRelation( faithIncome, &city );
+
+  if( divn->relation() < 30 )
+  {
+    events::GameEventPtr e = events::ScribeMessage::create( _("##gods_unhappy_title##"), _("##gods_unhappy_text##") );
+    e->dispatch();
+  }
 }
 
 }//end namespace city

@@ -16,28 +16,16 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "event.hpp"
-#include "objects/objects_factory.hpp"
-#include "city/city.hpp"
-#include "core/gettext.hpp"
-#include "city/funds.hpp"
-#include "gui/environment.hpp"
-#include "gui/info_box.hpp"
-#include "gfx/tilemap.hpp"
-#include "game/game.hpp"
 #include "dispatcher.hpp"
 #include "core/stringhelper.hpp"
-#include "gui/label.hpp"
-#include "world/empire.hpp"
+#include "game/game.hpp"
+#include "city/city.hpp"
+#include "gfx/tilemap.hpp"
+#include "warningmessage.hpp"
+#include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
-#include "gui/advisors_window.hpp"
-#include "city/trade_options.hpp"
-#include "gui/message_stack_widget.hpp"
-#include "game/settings.hpp"
-#include "objects/constants.hpp"
-#include "gfx/tilesarray.hpp"
-#include "playsound.hpp"
-#include "city/helper.hpp"
-#include "city/statistic.hpp"
+#include "gui/environment.hpp"
+#include "gui/label.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -237,31 +225,6 @@ ChangeSpeed::ChangeSpeed()
 void ChangeSpeed::_exec(Game& game, unsigned int)
 {
   game.changeTimeMultiplier( _value );
-}
-
-GameEventPtr WarningMessageEvent::create(const std::string& text)
-{
-  WarningMessageEvent* ev = new WarningMessageEvent();
-  ev->_text = text;
-  GameEventPtr ret( ev );
-  ret->drop();
-  return ret;
-}
-
-bool WarningMessageEvent::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
-
-void WarningMessageEvent::_exec(Game& game, unsigned int)
-{
-  gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(
-                                      game.gui()->rootWidget()->findChild( gui::WindowMessageStack::defaultID ) );
-
-  if( window && !_text.empty() )
-  {
-    window->addMessage( _(_text) );
-  }
 }
 
 } //end namespace events

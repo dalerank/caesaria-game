@@ -70,6 +70,7 @@
 #include "walker/walkers_factory.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
+#include "events/warningmessage.hpp"
 
 using namespace gui;
 using namespace constants;

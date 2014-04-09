@@ -132,7 +132,8 @@ void Ceres::updateRelation(float income, PlayerCityPtr city)
   {
     _lastActionDate = GameDate::current();
     events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_ceres_title##"),
-                                                                   _("##wrath_of_ceres_description##") );
+                                                                   _("##wrath_of_ceres_description##"),
+                                                                   events::ShowInfoboxEvent::send2scribe );
     event->dispatch();
 
     city::Helper helper( city );

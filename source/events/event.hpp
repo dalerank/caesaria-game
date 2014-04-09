@@ -11,7 +11,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+// along with Caesa    std::string text = rIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
@@ -60,18 +60,6 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 private:
   TilePos _pos;
-};
-
-class WarningMessageEvent : public GameEvent
-{
-public:
-  static GameEventPtr create( const std::string& text );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-private:
-  std::string _text;
 };
 
 class Pause : public GameEvent

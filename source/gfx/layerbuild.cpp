@@ -30,6 +30,7 @@
 #include "core/stringhelper.hpp"
 #include "camera.hpp"
 #include "renderermode.hpp"
+#include "events/warningmessage.hpp"
 
 using namespace constants;
 

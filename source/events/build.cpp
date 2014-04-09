@@ -20,6 +20,7 @@
 #include "city/funds.hpp"
 #include "playsound.hpp"
 #include "city/statistic.hpp"
+#include "warningmessage.hpp"
 
 using namespace constants;
 using namespace gfx;

@@ -64,14 +64,6 @@ void Info::update( const unsigned int time )
 
   if( GameDate::current().month() != _d->lastDate.month() )
   {
-    ScribeMessage test;
-    test.date = GameDate::current();
-    test.opened = false;
-    test.text = "Test message";
-    test.title = "Test title";
-    test.type = 0;
-    addMessage( test );
-
     _d->lastDate = GameDate::current();
 
     _d->params.erase( _d->params.begin() );

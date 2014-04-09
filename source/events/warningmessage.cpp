@@ -15,41 +15,41 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "infobox.hpp"
-#include "gui/info_box.hpp"
+#include "warningmessage.hpp"
+#include "gui/message_stack_widget.hpp"
 #include "game/game.hpp"
 #include "gui/environment.hpp"
-#include "scribemessage.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace events
 {
 
-GameEventPtr ShowInfoboxEvent::create( const std::string& title, const std::string& text, bool send2scribe )
-{
-  ShowInfoboxEvent* ev = new ShowInfoboxEvent();
-  ev->_title = title;
-  ev->_text = text;
-  ev->_send2scribe = send2scribe;
 
+GameEventPtr WarningMessageEvent::create(const std::string& text)
+{
+  WarningMessageEvent* ev = new WarningMessageEvent();
+  ev->_text = text;
   GameEventPtr ret( ev );
   ret->drop();
-
   return ret;
 }
 
-bool ShowInfoboxEvent::_mayExec(Game& game, unsigned int time) const{  return true;}
-
-void ShowInfoboxEvent::_exec( Game& game, unsigned int )
+bool WarningMessageEvent::_mayExec(Game& game, unsigned int time) const
 {
-  gui::InfoboxText* msgWnd = new gui::InfoboxText( game.gui()->rootWidget(), _title, _text );
-  msgWnd->show();
+  return true;
+}
 
-  if( _send2scribe )
+void WarningMessageEvent::_exec(Game& game, unsigned int)
+{
+  gui::WindowMessageStack* window = safety_cast<gui::WindowMessageStack*>(
+                                      game.gui()->rootWidget()->findChild( gui::WindowMessageStack::defaultID ) );
+
+  if( window && !_text.empty() )
   {
-    GameEventPtr e = ScribeMessage::create( _title, _text );
-    e->dispatch();
+    window->addMessage( _(_text) );
   }
 }
 

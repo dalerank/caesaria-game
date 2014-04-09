@@ -15,28 +15,25 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
-#define _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_WARNINGMESSAGE_EVENT_H_INCLUDE_
+#define _CAESARIA_WARNINGMESSAGE_EVENT_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class ShowInfoboxEvent : public GameEvent
+class WarningMessageEvent : public GameEvent
 {
 public:
-  static const bool send2scribe = true;
-  static GameEventPtr create( const std::string& title, const std::string& text,  bool send2scribe=false );
+  static GameEventPtr create( const std::string& text );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
-
 private:
-  std::string _title, _text;
-  bool _send2scribe;
+  std::string _text;
 };
 
 } //end namespace events
-#endif //_CAESARIA_INFOBOX_EVENT_H_INCLUDE_
+#endif //_CAESARIA_WARNINGMESSAGE_EVENT_H_INCLUDE_
