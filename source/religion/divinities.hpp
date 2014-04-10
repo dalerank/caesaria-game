@@ -63,21 +63,6 @@ protected:
   StringArray _moodDescr;
 };
 
-
-class Ceres : public RomeDivinity
-{
-public:
-  static DivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
-};
-
-class Neptune : public RomeDivinity
-{
-public:
-  static DivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
-};
-
 class Mercury : public RomeDivinity
 {
 public:

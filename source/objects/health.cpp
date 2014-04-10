@@ -57,6 +57,8 @@ void Baths::build(PlayerCityPtr city, const TilePos& pos)
   //CityHelper helper( city );
 }
 
+bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservorWater; }
+
 void Baths::timeStep(const unsigned long time)
 {
   if( time % (GameDate::ticksInMonth() / 4) == 1 )
@@ -67,22 +69,6 @@ void Baths::timeStep(const unsigned long time)
     TilesArray tiles = helper.getArea( this );
     foreach( tile, tiles ) { haveWater |= (*tile)->getWaterService( WTR_RESERVOIR ) > 0; }
     _haveReservorWater = (haveWater && numberWorkers() > 0);
-
-    if( _haveReservorWater )
-    {
-      if( _animationRef().isStopped() )
-      {
-        _animationRef().start();        
-      }
-    }
-    else
-    {
-      if( _animationRef().isRunning() )
-      {
-        _animationRef().stop();
-        _fgPicturesRef().back() = Picture::getInvalid();
-      }
-    }
   }
 
   ServiceBuilding::timeStep( time );

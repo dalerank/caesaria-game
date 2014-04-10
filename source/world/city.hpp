@@ -37,11 +37,11 @@ public:
   virtual void setLocation( const Point& location ) = 0;
 
   // performs one simulation step
-  virtual void timeStep( unsigned int time ) = 0;  
+  virtual void timeStep( unsigned int time ) = 0;
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
   virtual void arrivedMerchant( MerchantPtr ) = 0;
-  virtual unsigned int getTradeType() const = 0;
+  virtual unsigned int tradeType() const = 0;
   virtual EmpirePtr empire() const = 0;
 
   virtual const GoodStore& getSells() const = 0;

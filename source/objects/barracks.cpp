@@ -71,24 +71,9 @@ void Barracks::deliverTrainee()
 void Barracks::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
-
-  if( numberWorkers() > 0 )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
 }
 
-bool Barracks::isNeedWeapons() const
-{
-  return _d->store.freeQty() >= 100;
-}
+bool Barracks::isNeedWeapons() const {  return _d->store.freeQty() >= 100; }
 
 void Barracks::storeGoods(GoodStock& stock, const int amount)
 {

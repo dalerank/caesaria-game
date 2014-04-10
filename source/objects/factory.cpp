@@ -148,21 +148,8 @@ void Factory::timeStep(const unsigned long time)
     }
   }
 
-  //start/stop animation when workers found
-  bool mayAnimate = mayWork();
-
-  if( mayAnimate && _animationRef().isStopped() )
-  {
-    _animationRef().start();
-  }
-
-  if( !mayAnimate && _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
-
   //no workers or no good in stock... stop animate
-  if( !mayAnimate )
+  if( !mayWork() )
   {
     return;
   }
@@ -182,14 +169,8 @@ void Factory::timeStep(const unsigned long time)
   }
   else
   {
-    //ok... factory is work, produce goods
-    float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
-    float timeKoeff = 1 / (float)GameDate::ticksInMonth();
-    float work = 100.f * timeKoeff * (_d->productionRate / DateTime::monthInYear) * workersRatio;  // work is proportional to time and factory speed
     if( _d->produceGood )
     {
-      _d->progress += work;
-
       _animationRef().update( time );
       const Picture& pic = _animationRef().currentFrame();
       if( pic.isValid() && !_fgPicturesRef().empty() )
@@ -197,6 +178,13 @@ void Factory::timeStep(const unsigned long time)
         // animation of the working factory
         _fgPicturesRef().back() = _animationRef().currentFrame();
       }
+
+      //ok... factory is work, produce goods
+      float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
+      float timeKoeff = 1 / (float)GameDate::ticksInMonth();
+      float work = 100.f * timeKoeff * (_d->productionRate / DateTime::monthsInYear) * workersRatio;  // work is proportional to time and factory speed
+
+      _d->progress += work;
     }
   }
 

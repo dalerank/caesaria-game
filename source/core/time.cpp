@@ -29,8 +29,8 @@
 
 using namespace std;
 
-const char* const dayNames[ DateTime::dayInWeek ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-const char* const monthNames[ DateTime::monthInYear ] = { "January", "February", "March", "April",
+const char* const dayNames[ DateTime::daysInWeek ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+const char* const monthNames[ DateTime::monthsInYear ] = { "January", "February", "March", "April",
                                                     "May", "June", "July", "August", "September",
                                                     "October", "November", "December" };
 
@@ -108,6 +108,8 @@ DateTime& DateTime::appendMonth( int m/*=1 */ )
   return *this;
 }
 
+DateTime&DateTime::appendWeek(int weekNumber){  return appendDay( weekNumber * 7 ); }
+
 DateTime DateTime::getDate() const
 {
     DateTime ret( *this );
@@ -145,7 +147,8 @@ DateTime::DateTime( int y, unsigned char m, unsigned char d,
 DateTime::DateTime()
 {
     _seconds = _minutes = _hour = 0;
-    _year = _day = _month = 0;
+    _year = -9999;
+    _day = _month = 0;
 }
 
 unsigned char DateTime::hour() const {    return _hour;}
@@ -180,7 +183,7 @@ DateTime DateTime::getCurrenTime()
 unsigned char DateTime::dayOfWeek() const {  return ( (int) ( _toJd() % 7L ) ); }
 const char* DateTime::getDayName( unsigned char d ){   return dayNames[ d ];}
 const char* DateTime::getMonthName( unsigned char d ){  return monthNames[ d ];}
-int DateTime::getDaysInMonth() const
+int DateTime::daysInMonth() const
 {
     return ( _month!=2
                 ?( (_month%2) ^ (_month>7) )+30

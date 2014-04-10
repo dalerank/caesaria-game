@@ -51,7 +51,7 @@ public:
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
 
-  virtual void timeStep( unsigned int time );  // performs one simulation step
+  virtual void timeStep(unsigned int time);  // performs one simulation step
 
   void setLocation( const Point& location );
   Point location() const;
@@ -64,7 +64,7 @@ public:
   void addService( city::SrvcPtr service );
   city::SrvcPtr findService( const std::string& name ) const;
 
-  gfx::TileOverlayList& getOverlays();
+  gfx::TileOverlayList& overlays();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
@@ -110,7 +110,7 @@ public:
 
   virtual const GoodStore& getSells() const;
   virtual const GoodStore& getBuys() const;
-  virtual unsigned int getTradeType() const;
+  virtual unsigned int tradeType() const;
   virtual world::EmpirePtr empire() const;
 
   void updateRoads();

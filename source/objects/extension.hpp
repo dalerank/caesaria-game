@@ -15,31 +15,31 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WALKER_ABILITY_H_INCLUDED__
-#define __CAESARIA_WALKER_ABILITY_H_INCLUDED__
+#ifndef __CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__
+#define __CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__
 
 #include "core/referencecounted.hpp"
-#include "walker.hpp"
+#include "construction.hpp"
 
-class Ability : public ReferenceCounted
+class ConstructionExtension : public ReferenceCounted
 {
 public:
-  virtual void run( WalkerPtr parent, unsigned int time ) = 0;
+  virtual void run( gfx::TileOverlayPtr parent, unsigned int time ) = 0;
+  virtual bool isDeleted() const = 0;
 };
 
-class Illness : public Ability
+class FactoryProgressUpdater : public ConstructionExtension
 {
 public:
-  static AbilityPtr create( double strong, unsigned int delay );
+  static ConstructionExtensionPtr assignTo( FactoryPtr factory, float value, int time );
 
-  virtual void run(WalkerPtr parent, unsigned int time);
-
+  virtual void run( gfx::TileOverlayPtr parent, unsigned int time );
+  virtual bool isDeleted() const;
 private:
-  Illness( int strong, int delay );
+  FactoryProgressUpdater();
 
-  double _strong;
-  unsigned int _time;
-  unsigned int _delay;
+  float _value;
+  int _time;
 };
 
-#endif //__CAESARIA_WALKER_ABILITY_H_INCLUDED__
+#endif //__CAESARIA_CONSTRUCTION_EXTENSION_H_INCLUDED__

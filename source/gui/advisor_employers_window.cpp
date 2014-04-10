@@ -152,7 +152,7 @@ void AdvisorEmployerWindow::Impl::updateYearlyWages()
 {
   if( lbYearlyWages )
   {
-    int wages = city::Statistic::getMontlyWorkersWages( city ) * DateTime::monthInYear;
+    int wages = city::Statistic::getMontlyWorkersWages( city ) * DateTime::monthsInYear;
     std::string wagesStr = StringHelper::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
 
     lbYearlyWages->setText( wagesStr );

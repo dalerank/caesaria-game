@@ -138,7 +138,7 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   case advisor::military:
   {
     FortList forts;
-    forts << _d->city->getOverlays();
+    forts << _d->city->overlays();
     _d->advisorPanel = new AdvisorLegionWindow( this, advisor::military, forts );
   }
   break;

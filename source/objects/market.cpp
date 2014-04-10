@@ -148,21 +148,6 @@ void Market::timeStep(const unsigned long time)
 {
   if( time % _d->updateInterval == 0 )
   {
-    if( numberWorkers() > 0 )
-    {
-      if( _animationRef().isStopped() )
-      {
-        _animationRef().start();
-      }
-    }
-    else
-    {
-      if( _animationRef().isRunning() )
-      {
-        _animationRef().stop();
-      }
-    }
-
     ServiceWalkerList servicemen;
     servicemen << walkers();
     if( servicemen.size() > 0 && _d->goodStore.qty() == 0 )

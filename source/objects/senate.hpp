@@ -43,8 +43,10 @@ public:
   virtual unsigned int walkerDistance() const;
 
   virtual void timeStep(const unsigned long time);
+
 private:
   void _updateUnemployers();
+  void _updateRatings();
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -21,6 +21,8 @@
 #include "events/returnworkers.hpp"
 #include "core/stringhelper.hpp"
 
+using namespace gfx;
+
 class WorkingBuilding::Impl
 {
 public:
@@ -29,6 +31,7 @@ public:
   bool isActive;
   WalkerList walkerList;
   std::string errorStr;
+  bool clearAnimationOnStop;
 };
 
 WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
@@ -37,6 +40,7 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
   _d->currentWorkers = 0;
   _d->maxWorkers = 0;
   _d->isActive = true;
+  _d->clearAnimationOnStop = true;
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
@@ -87,6 +91,7 @@ void WorkingBuilding::setMaxWorkers(const int maxWorkers) { _d->maxWorkers = max
 int WorkingBuilding::maxWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
 int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
+bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
 void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( numberWorkers() + workers ); }
@@ -106,6 +111,45 @@ void WorkingBuilding::timeStep( const unsigned long time )
     if( (*it)->isDeleted() ) { it = _d->walkerList.erase( it ); }
     else { ++it; }
   }
+
+  _updateAnimation( time );
+}
+
+void WorkingBuilding::_updateAnimation( const unsigned int time )
+{
+  if( time % 25 == 1 )
+
+  if( mayWork()  )
+  {
+    if( _animationRef().isStopped() )
+    {
+      _animationRef().start();
+    }
+
+    _animationRef().update( time );
+    const Picture& pic = _animationRef().currentFrame();
+    if( pic.isValid() )
+    {
+       _fgPicturesRef().back() = _animationRef().currentFrame();
+    }
+  }
+  else
+  {
+    if( _animationRef().isRunning() )
+    {
+      if( _d->clearAnimationOnStop )
+      {
+        _fgPicturesRef().back() = Picture::getInvalid();
+      }
+
+     _animationRef().stop();
+    }
+  }
+}
+
+void WorkingBuilding::_setClearAnimationOnStop(bool value)
+{
+  _d->clearAnimationOnStop = value;
 }
 
 void WorkingBuilding::addWalker( WalkerPtr walker )

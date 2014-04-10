@@ -29,9 +29,9 @@ public:
   virtual void deliverService();
   virtual void timeStep(const unsigned long time);
   virtual bool isNeedRoadAccess() const;
-  virtual bool isActive() const;
   virtual bool haveReservoirAccess() const;
   virtual void destroy();
+  virtual bool mayWork() const;
 
   virtual void load( const VariantMap& stream);
   virtual void save(VariantMap &stream) const;

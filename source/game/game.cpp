@@ -268,6 +268,8 @@ void Game::setScreenGame()
   Logger::warning( "game: start initialize" );
   screen.initialize();
   _d->currentScreen = &screen;
+  GameDate& cdate = GameDate::instance();
+  _d->time = cdate.current().day() * GameDate::ticksInMonth() / cdate.current().daysInMonth();
 
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
@@ -280,11 +282,10 @@ void Game::setScreenGame()
 
       while( (_d->time - _d->saveTime) > 1 )
       {
-        _d->empire->timeStep( _d->time );
+        _d->saveTime++;
 
-        GameDate::timeStep( _d->time );
-
-        _d->saveTime += 1;
+        cdate.timeStep( _d->saveTime );
+        _d->empire->timeStep( _d->saveTime );
 
         screen.animate( _d->saveTime );
       }
@@ -385,7 +386,7 @@ void Game::load(std::string filename)
   _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
 
   Logger::warning( "Game: calculate road access for buildings" );
-  TileOverlayList& llo = _d->city->getOverlays();
+  TileOverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
     ConstructionPtr construction = ptr_cast<Construction>( *overlay );

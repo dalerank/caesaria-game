@@ -199,8 +199,8 @@ void Empire::createTradeRoute(std::string start, std::string stop )
   if( startCity != 0 && stopCity != 0 )
   {
     TraderoutePtr route = _d->trading.createRoute( start, stop );
-    EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->getTradeType();
-    EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->getTradeType();
+    EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
+    EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->tradeType();
     bool land = (startType & EmpireMap::land) && (stopType & EmpireMap::land);
     bool sea = (startType & EmpireMap::sea) && (stopType & EmpireMap::sea);
 

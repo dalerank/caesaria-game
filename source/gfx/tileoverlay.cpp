@@ -63,7 +63,7 @@ void TileOverlay::setType(const Type type)
    _d->name = bd.getName();
 }
 
-void TileOverlay::timeStep(const unsigned long time) {}
+void TileOverlay::timeStep(const unsigned long) {}
 
 void TileOverlay::setPicture(Picture picture)
 {

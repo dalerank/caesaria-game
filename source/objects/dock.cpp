@@ -43,6 +43,7 @@ public:
   SimpleGoodStore exportGoods;
   SimpleGoodStore importGoods;
   SimpleGoodStore requestGoods;
+  DateTime dateSendGoods;
   std::vector<int> saveTileInfo;
   Direction direction;
 
@@ -67,6 +68,7 @@ Dock::Dock(): WorkingBuilding( building::dock, Size(3) ), _d( new Impl )
 
   _fgPicturesRef().resize(1);
   _animationRef().setDelay( 5 );
+  _setClearAnimationOnStop( false );
 }
 
 bool Dock::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -105,17 +107,16 @@ void Dock::destroy()
 
 void Dock::timeStep(const unsigned long time)
 {
-  if( numberWorkers() > 0 )
+  if( time % 25 == 0 )
   {
-    _animationRef().update( time );
-    // takes current animation frame and put it into foreground
-    _fgPicturesRef()[0] = _animationRef().currentFrame();
-  }
+    if( _d->dateSendGoods < GameDate::current() )
+    {
+      _tryReceiveGoods();
+      _tryDeliverGoods();
 
-  if( time % (GameDate::ticksInMonth()/6) == 1 )
-  {
-    _tryReceiveGoods();
-    _tryDeliverGoods();
+      _d->dateSendGoods = GameDate::current();
+      _d->dateSendGoods.appendWeek();
+    }
   }
 
   WorkingBuilding::timeStep( time );
@@ -129,6 +130,7 @@ void Dock::save(VariantMap& stream) const
   stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
   stream[ "exportGoods" ] = _d->exportGoods.save();
   stream[ "importGoods" ] = _d->importGoods.save();
+  stream[ "dateSendGoods"] = _d->dateSendGoods;
   stream[ "requestGoods" ] = _d->requestGoods.save();
 }
 
@@ -147,6 +149,8 @@ void Dock::load(const VariantMap& stream)
 
   tmp = stream.get( "requestGoods" );
   if( tmp.isValid() ) _d->requestGoods.load( tmp.toMap() );
+
+  _d->dateSendGoods = stream.get( "dateSendGoods" ).toDateTime();
 
   _updatePicture( _d->direction );
 }

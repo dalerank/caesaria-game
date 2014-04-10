@@ -22,6 +22,8 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "divinities.hpp"
+#include "ceres.hpp"
+#include "neptune.hpp"
 
 using namespace constants;
 

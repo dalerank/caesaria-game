@@ -62,7 +62,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     PlayerCityPtr city = game.city();
     city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
 
-    GameDate::init( vm[ "date" ].toDateTime() );
+    GameDate::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm[ "events" ].toMap();
     foreach( it, vm_events )

@@ -217,7 +217,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( audio::Player::create( this ) );
 }
 
-void PlayerCity::timeStep( unsigned int time )
+void PlayerCity::timeStep(unsigned int time)
 {
   if( _d->lastMonthCount != GameDate::current().month() )
   {
@@ -233,7 +233,7 @@ void PlayerCity::timeStep( unsigned int time )
   }
 
   WalkerList::iterator walkerIt = _d->walkerList.begin();
-  while (walkerIt != _d->walkerList.end())
+  while( walkerIt != _d->walkerList.end() )
   {
     try
     {
@@ -392,7 +392,7 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-TileOverlayList&  PlayerCity::getOverlays()         { return _d->overlayList; }
+TileOverlayList&  PlayerCity::overlays()         { return _d->overlayList; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
@@ -645,7 +645,7 @@ void PlayerCity::setLocation( const Point& location ) {   _d->location = locatio
 Point PlayerCity::location() const {   return _d->location; }
 const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSells(); }
 const GoodStore& PlayerCity::getBuys() const {   return _d->tradeOptions.getBuys(); }
-unsigned int PlayerCity::getTradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
+unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }

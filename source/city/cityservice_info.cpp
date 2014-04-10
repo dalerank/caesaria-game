@@ -80,7 +80,7 @@ void Info::update( const unsigned int time )
     last.monthWithFood = foodMontlyConsumption > 0 ? (foodStock / foodMontlyConsumption) : 0;
 
     int foodProducing = city::Statistic::getFoodProducing( &_city );
-    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
+    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthsInYear;
     last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -1;
@@ -155,7 +155,7 @@ void Info::load(const VariantMap& stream)
     _d->params.push_back( p );
   }
 
-  _d->params.resize( DateTime::monthInYear );
+  _d->params.resize( DateTime::monthsInYear );
 }
 
 const Info::Messages& Info::messages() const { return _d->messages; }

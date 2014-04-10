@@ -15,14 +15,7 @@
 
 #include "gamedate.hpp"
 
-class GameDate::Impl
-{
-public:
-  DateTime lastDateUpdate;
-  DateTime current;
-};
-
-DateTime GameDate::current() {  return instance()._d->current; }
+DateTime GameDate::current() {  return instance()._current; }
 
 GameDate& GameDate::instance()
 {
@@ -35,24 +28,24 @@ unsigned int GameDate::ticksInMonth() {  return 500; }
 void GameDate::timeStep( unsigned int time )
 {
   unsigned int dftime = time % ticksInMonth();
-  DateTime& date = instance()._d->current;
-  if( dftime == 1 )
+  if( time > _nextTickChange )
   {
+    _nextTickChange += ticksInMonth();
     // every X seconds    
-    date.appendMonth( 1 );
+    _current.appendMonth();
   }  
-  date.setDay( (dftime * date.getDaysInMonth() ) / ticksInMonth() );
+  _current.setDay( (dftime * _current.daysInMonth()) / ticksInMonth() );
 }
 
 void GameDate::init( const DateTime& date )
 {
-  instance()._d->current = date;
-  instance()._d->lastDateUpdate = date;
+  _current = date;
+  _nextTickChange = ticksInMonth();
 }
 
-GameDate::GameDate() : _d( new Impl )
+GameDate::GameDate()
 {
-  _d->current = DateTime( -350, 0, 0 );
+  _current = DateTime( -350, 0, 0 );
 }
 
 GameDate::~GameDate(){}

@@ -14,6 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012 Dalerank, dalerankn7@gmail.com
+
 
 #include "construction.hpp"
 
@@ -24,6 +26,7 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
+#include "extension.hpp"
 
 using namespace gfx;
 
@@ -33,6 +36,7 @@ public:
   typedef std::map<int, double> Params;
   TilesArray accessRoads;
   Params params;
+  ConstructionExtensionList extensions;
 };
 
 Construction::Construction(const Type type, const Size& size)
@@ -124,12 +128,7 @@ void Construction::computeAccessRoads()
   }
 }
 
-int Construction::getRoadAccessDistance() const
-{
-  return 1;
-  // it is default value
-  // for houses - 2
-}
+int Construction::getRoadAccessDistance() const{  return 1; }
 
 void Construction::burn()
 {
@@ -184,6 +183,11 @@ void Construction::load( const VariantMap& stream )
   }
 }
 
+void Construction::addExtension(ConstructionExtensionPtr ext)
+{
+  _d->extensions.push_back( ext );
+}
+
 double Construction::getState( ParameterType param) const { return _d->params[ param ]; }
 
 TilesArray Construction::getEnterArea() const
@@ -210,13 +214,22 @@ void Construction::timeStep(const unsigned long time)
 {
   if( getState( Construction::damage ) >= 100 )
   {
-    Logger::warning( "Building destroyed!" );
+    Logger::warning( "Building destroyed at %d,%d!", pos().i(), pos().j() );
     collapse();
   }
   else if( getState( Construction::fire ) >= 100 )
   {
-    Logger::warning( "Building catch fire!" );
+    Logger::warning( "Building catch fire at %d,%d!", pos().i(), pos().j() );
     burn();
+  }
+
+  for( ConstructionExtensionList::iterator it=_d->extensions.begin();
+       it != _d->extensions.end(); )
+  {
+    (*it)->run( this, time );
+
+    if( (*it)->isDeleted() ) { it = _d->extensions.erase( it ); }
+    else { ++it; }
   }
 
   TileOverlay::timeStep( time );

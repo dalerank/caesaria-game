@@ -43,7 +43,7 @@ public:
   SmartList< T > find( constants::building::Group group )
   {
     SmartList< T > ret;
-    gfx::TileOverlayList& buildings = _city->getOverlays();
+    gfx::TileOverlayList& buildings = _city->overlays();
     foreach( item, buildings )
     {
       SmartPtr< T > b = ptr_cast< T >(*item);
@@ -168,7 +168,7 @@ template< class T >
 SmartList< T > Helper::find( const gfx::TileOverlay::Type type )
 {
   SmartList< T > ret;
-  gfx::TileOverlayList& buildings = _city->getOverlays();
+  gfx::TileOverlayList& buildings = _city->overlays();
   foreach( item, buildings )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );
@@ -185,7 +185,7 @@ template< class T >
 SmartList<T> Helper::getProducers( const Good::Type goodtype )
 {
   SmartList< T > ret;
-  gfx::TileOverlayList& overlays = _city->getOverlays();
+  gfx::TileOverlayList& overlays = _city->overlays();
   foreach( item, overlays )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );

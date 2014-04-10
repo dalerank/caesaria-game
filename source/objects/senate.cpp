@@ -97,20 +97,25 @@ void Senate::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
   _updateUnemployers();
+  _updateRatings();
 }
 
 unsigned int Senate::walkerDistance() const {  return 26; }
 
+void Senate::_updateRatings()
+{
+  _fgPicturesRef()[ 0 ].setOffset( 140, -30 + getStatus( Senate::culture ) / 2 );
+  _fgPicturesRef()[ 1 ].setOffset( 170, -25 + getStatus( Senate::prosperity ) / 2 );
+  _fgPicturesRef()[ 2 ].setOffset( 200, -15 + getStatus( Senate::peace ) / 2 );
+  _fgPicturesRef()[ 3 ].setOffset( 230, -10 + getStatus( Senate::favour ) / 2 );
+}
+
 void Senate::timeStep(const unsigned long time)
 {
-  if( time % GameDate::ticksInMonth() == 0 )
+  if( time % GameDate::ticksInMonth() == 1 )
   {
     _updateUnemployers();
-
-    _fgPicturesRef()[ 0 ].setOffset( 140, -30 + getStatus( Senate::culture ) / 2 );
-    _fgPicturesRef()[ 1 ].setOffset( 170, -25 + getStatus( Senate::prosperity ) / 2 );
-    _fgPicturesRef()[ 2 ].setOffset( 200, -15 + getStatus( Senate::peace ) / 2 );
-    _fgPicturesRef()[ 3 ].setOffset( 230, -10 + getStatus( Senate::favour ) / 2 );
+    _updateRatings();
   }
 
   ServiceBuilding::timeStep( time );

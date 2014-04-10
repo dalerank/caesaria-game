@@ -73,7 +73,7 @@ void Shipyard::timeStep(const unsigned long time)
     receiveGood();
   }
 
-  if( time % GameDate::ticksInMonth() == 1 )
+  if( time % (GameDate::ticksInMonth()/2) == 1 )
   {    
     if( _d->boat.isValid() )
     {

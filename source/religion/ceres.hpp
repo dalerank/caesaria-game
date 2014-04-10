@@ -13,32 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_GAMEDATE_H_INCLUDED__
-#define __CAESARIA_GAMEDATE_H_INCLUDED__
-  
-#include "core/time.hpp"
-#include "core/scopedptr.hpp"
+#ifndef __CAESARIA_ROME_DIVINITY_CERES_H_INCLUDED__
+#define __CAESARIA_ROME_DIVINITY_CERES_H_INCLUDED__
 
-class GameDate
+#include "divinities.hpp"
+
+namespace religion
+{
+
+namespace rome
+{
+
+class Ceres : public RomeDivinity
 {
 public:
-  static DateTime current();
+  static DivinityPtr create();
+  virtual void updateRelation(float income, PlayerCityPtr city);
 
-  void timeStep( unsigned int time );
-
-  void init( const DateTime& date );
-
-  static GameDate& instance();
-
-  static unsigned int ticksInMonth();
-
-  ~GameDate();
-
-private:
-  GameDate();
-
-  DateTime _current;
-  unsigned int _nextTickChange;
+protected:
+  void _wrath( PlayerCityPtr city );
+  void _blessing( PlayerCityPtr city );
 };
 
-#endif //__CAESARIA_GAMEDATE_H_INCLUDED__
+}//end namespace rome
+
+}//end namespace religion
+
+#endif //__CAESARIA_ROME_DIVINITY_CERES_H_INCLUDED__

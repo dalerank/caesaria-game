@@ -34,21 +34,6 @@ EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, constants::bu
 
 void EngineerPost::timeStep(const unsigned long time)
 {
-  bool mayAnimate = numberWorkers() > 0;
-
-  if( mayAnimate )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-    _fgPicturesRef().back() = Picture::getInvalid();
-  }
-
   ServiceBuilding::timeStep( time );
 }
 

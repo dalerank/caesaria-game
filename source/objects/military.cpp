@@ -48,7 +48,7 @@ struct LegionEmblem
 static LegionEmblem _findFreeEmblem( PlayerCityPtr city )
 {
   FortList forts;
-  forts << city->getOverlays();
+  forts << city->overlays();
 
   std::vector<LegionEmblem> availableEmblems;
   VariantMap emblemsModel = SaveAdapter::load( GameSettings::rcpath( GameSettings::emblemsModel ) );
@@ -106,7 +106,7 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
                                         pos + TilePos( 3, 3 ) ) );
 
   BarracksList barracks;
-  barracks << city->getOverlays();
+  barracks << city->overlays();
 
   if( barracks.empty() )
   {
@@ -221,22 +221,6 @@ void Fort::timeStep( const unsigned long time )
 {
   if( time % _d->updateInterval == 1 )
   {
-    if( numberWorkers() <= 0 )
-    {
-      if( _animationRef().isRunning() )
-      {
-        _animationRef().stop();
-        return;
-      }
-    }
-    else
-    {
-      if( _animationRef().isStopped() )
-      {
-        _animationRef().start();
-      }
-    }
-
     int traineeLevel = getTraineeValue( walker::soldier );
     // all trainees are there for the show!
     if( traineeLevel / 100 >= 1 )

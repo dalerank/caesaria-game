@@ -12,33 +12,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_GAMEDATE_H_INCLUDED__
-#define __CAESARIA_GAMEDATE_H_INCLUDED__
-  
-#include "core/time.hpp"
-#include "core/scopedptr.hpp"
+#ifndef __CAESARIA_MESSAGEBOX_INCLUDE_HPP__
+#define __CAESARIA_MESSAGEBOX_INCLUDE_HPP__
 
-class GameDate
+#include <string>
+
+class MessageBox
 {
 public:
-  static DateTime current();
-
-  void timeStep( unsigned int time );
-
-  void init( const DateTime& date );
-
-  static GameDate& instance();
-
-  static unsigned int ticksInMonth();
-
-  ~GameDate();
-
-private:
-  GameDate();
-
-  DateTime _current;
-  unsigned int _nextTickChange;
+  static void error( const std::string& title, const std::string& text );
 };
 
-#endif //__CAESARIA_GAMEDATE_H_INCLUDED__
+#endif //__CAESARIA_MESSAGEBOX_INCLUDE_HPP__
