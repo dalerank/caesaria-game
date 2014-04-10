@@ -159,7 +159,7 @@
       text : "##city_has_runout_money##"
     }
 
-    emperor_request_vines#city_request : {
+    emperor_request_pottery1#city_request : {
       date : "-269.05.01"
       reqtype : "good_request"
       month : 24

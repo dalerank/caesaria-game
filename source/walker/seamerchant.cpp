@@ -333,12 +333,12 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
 Pathway SeaMerchant::Impl::findNearbyDock(const DockList& docks, TilePos position)
 {
   DockList::const_iterator i = docks.begin();
-  Pathway ret = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::deepWater );
+  Pathway ret = PathwayHelper::create( position, (*i)->landingTile().pos(), PathwayHelper::deepWater );
 
   ++i;
   for( ; i != docks.end(); ++i )
   {
-    Pathway tmp = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::deepWater );
+    Pathway tmp = PathwayHelper::create( position, (*i)->landingTile().pos(), PathwayHelper::deepWater );
     if( tmp.length() < ret.length() )
     {
       ret = tmp;
@@ -373,7 +373,7 @@ DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
   DockList docks = helper.find<Dock>( building::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
-    if( (*dock)->getLandingTile().pos() == walker->pos() )
+    if( (*dock)->landingTile().pos() == walker->pos() )
     {
       return *dock;
     }

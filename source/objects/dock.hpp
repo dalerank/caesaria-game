@@ -37,7 +37,7 @@ public:
 
   bool isBusy() const;
 
-  const gfx::Tile& getLandingTile() const;
+  const gfx::Tile& landingTile() const;
   const gfx::Tile& getQueueTile() const;
 
   int getQueueSize() const;

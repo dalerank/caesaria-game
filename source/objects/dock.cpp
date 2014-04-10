@@ -30,7 +30,7 @@
 #include "game/gamedate.hpp"
 #include "walker/cart_pusher.hpp"
 #include "events/fundissue.hpp"
-#include "pathway/pathway.hpp"
+#include "pathway/pathway_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -89,6 +89,13 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
   TilesArray area = city->tilemap().getArea( pos, size() );
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
+
+  TilePos landingPos = landingTile().pos();
+  Pathway way = PathwayHelper::create( landingPos, city->borderInfo().boatEntry, PathwayHelper::deepWater );
+  if( !way.isValid() )
+  {
+    _setError( "##inland_lake_has_no_access_to_sea##" );
+  }
 
   WorkingBuilding::build( city, pos );
 }
@@ -158,12 +165,12 @@ void Dock::load(const VariantMap& stream)
 bool Dock::isBusy() const
 {
   city::Helper helper( _city() );
-  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, getLandingTile().pos() );
+  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, landingTile().pos() );
 
   return !merchants.empty();
 }
 
-const Tile& Dock::getLandingTile() const
+const Tile& Dock::landingTile() const
 {
   Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
