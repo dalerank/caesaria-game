@@ -63,13 +63,6 @@ protected:
   StringArray _moodDescr;
 };
 
-class Mercury : public RomeDivinity
-{
-public:
-  static DivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
-};
-
 }//end namespace rome
 
 }//end namespace religion

@@ -12,34 +12,31 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
-#define _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
+#ifndef __CAESARIA_ROME_DIVINITY_VENUS_H_INCLUDED__
+#define __CAESARIA_ROME_DIVINITY_VENUS_H_INCLUDED__
 
-#include "event.hpp"
+#include "divinities.hpp"
 
-namespace events
+namespace religion
 {
 
-class ShowInfobox : public GameEvent
+namespace rome
+{
+
+class Venus : public RomeDivinity
 {
 public:
-  static const bool send2scribe = true;
-  static GameEventPtr create();
-  static GameEventPtr create( const std::string& title, const std::string& text,  bool send2scribe=false );
-
-  virtual void load(const VariantMap &);
+  static DivinityPtr create();
+  virtual void updateRelation(float income, PlayerCityPtr city);
 
 protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  std::string _title, _text;
-  bool _send2scribe;
+  void _wrath( PlayerCityPtr city );
+  void _blessing( PlayerCityPtr city );
 };
 
-} //end namespace events
-#endif //_CAESARIA_INFOBOX_EVENT_H_INCLUDE_
+}//end namespace rome
+
+}//end namespace religion
+
+#endif //__CAESARIA_ROME_DIVINITY_VENUS_H_INCLUDED__

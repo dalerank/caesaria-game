@@ -167,6 +167,14 @@
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 12 }
     }
+
+    population_milestone_500#messagebox : {
+      date : "-350.01.01"
+      population : 500
+      send2scribe : true
+      title : "##population_mileston##"
+      text : "##500_citzens_in_city##"
+    }
   }
 	
   buildoptions :

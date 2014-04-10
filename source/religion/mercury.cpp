@@ -13,12 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "neptune.hpp"
-#include "game/gamedate.hpp"
+#include "mercury.hpp"
+#include "city/city.hpp"
+#include "objects/warehouse.hpp"
 #include "events/showinfobox.hpp"
+#include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
-#include "walker/ship.hpp"
+#include "good/goodstore.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -29,17 +30,16 @@ namespace religion
 namespace rome
 {
 
-
-DivinityPtr Neptune::create()
+DivinityPtr Mercury::create()
 {
-  DivinityPtr ret( new Neptune() );
-  ret->setInternalName( baseDivinityNames[ romeDivNeptune ] );
+  DivinityPtr ret( new Mercury() );
+  ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
   ret->drop();
 
   return ret;
 }
 
-void Neptune::updateRelation(float income, PlayerCityPtr city)
+void Mercury::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
 
@@ -50,23 +50,29 @@ void Neptune::updateRelation(float income, PlayerCityPtr city)
   }
 }
 
-void Neptune::_wrath(PlayerCityPtr city)
+void Mercury::_wrath(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
-                                                            _("##wrath_of_neptune_description##"),
+  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_mercury_title##"),
+                                                            _("##wrath_of_mercury_description##"),
                                                             events::ShowInfobox::send2scribe );
   event->dispatch();
 
-  city::Helper helper( city );
-  ShipList boats = helper.find<Ship>( walker::any, city::Helper::invalidPos );
+  WarehouseList whs;
+  whs << city->overlays();
 
-  int destroyBoats = math::random( boats.size() );
-  for( int i=0; i < destroyBoats; i++ )
+  foreach( it, whs )
   {
-    ShipList::iterator it = boats.begin();
-    std::advance( it, math::random( boats.size() ) );
-    (*it)->deleteLater();
-    boats.erase( it );
+    GoodStore& store = (*it)->store();
+    for( int i=Good::none; i < Good::goodCount; i++ )
+    {
+      Good::Type gtype = (Good::Type)i;
+      int goodQty = math::random( store.qty( gtype ) );
+      if( goodQty > 0 )
+      {
+        GoodStock rmStock( gtype, goodQty );
+        store.retrieve( rmStock, goodQty );
+      }
+    }
   }
 }
 

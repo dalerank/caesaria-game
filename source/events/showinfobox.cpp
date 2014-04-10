@@ -26,6 +26,13 @@ using namespace constants;
 namespace events
 {
 
+GameEventPtr ShowInfobox::create()
+{
+  GameEventPtr ret( new ShowInfobox() );
+  ret->drop();
+  return ret;
+}
+
 GameEventPtr ShowInfobox::create( const std::string& title, const std::string& text, bool send2scribe )
 {
   ShowInfobox* ev = new ShowInfobox();
@@ -37,6 +44,13 @@ GameEventPtr ShowInfobox::create( const std::string& title, const std::string& t
   ret->drop();
 
   return ret;
+}
+
+void ShowInfobox::load(const VariantMap& stream)
+{
+  _title = stream.get( "title" ).toString();
+  _text = stream.get( "text" ).toString();
+  _send2scribe = stream.get( "send2scribe" );
 }
 
 bool ShowInfobox::_mayExec(Game& game, unsigned int time) const{  return true;}

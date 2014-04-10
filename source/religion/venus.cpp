@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "neptune.hpp"
+#include "venus.hpp"
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"
+#include "objects/extension.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
-#include "walker/ship.hpp"
+#include "city/city.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -29,45 +29,48 @@ namespace religion
 namespace rome
 {
 
-
-DivinityPtr Neptune::create()
+DivinityPtr Venus::create()
 {
-  DivinityPtr ret( new Neptune() );
-  ret->setInternalName( baseDivinityNames[ romeDivNeptune ] );
+  DivinityPtr ret( new Venus() );
+  ret->setInternalName( baseDivinityNames[ romeDivVenus ] );
   ret->drop();
 
   return ret;
 }
 
-void Neptune::updateRelation(float income, PlayerCityPtr city)
+void Venus::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
 
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
+  int monthFromLastAction = _lastActionDate.getMonthToDate( GameDate::current() );
+  if( relation() < 1 && monthFromLastAction > 10 )
   {
     _lastActionDate = GameDate::current();
     _wrath( city );
   }
+
+  if( relation() > 98 && monthFromLastAction > 8 )
+  {
+    _lastActionDate = GameDate::current();
+
+    _blessing( city );
+  }
 }
 
-void Neptune::_wrath(PlayerCityPtr city)
+void Venus::_wrath( PlayerCityPtr city )
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
-                                                            _("##wrath_of_neptune_description##"),
+  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_venus_title##"),
+                                                            _("##wrath_of_venus_description##"),
                                                             events::ShowInfobox::send2scribe );
   event->dispatch();
 
-  city::Helper helper( city );
-  ShipList boats = helper.find<Ship>( walker::any, city::Helper::invalidPos );
+}
 
-  int destroyBoats = math::random( boats.size() );
-  for( int i=0; i < destroyBoats; i++ )
-  {
-    ShipList::iterator it = boats.begin();
-    std::advance( it, math::random( boats.size() ) );
-    (*it)->deleteLater();
-    boats.erase( it );
-  }
+void Venus::_blessing(PlayerCityPtr city)
+{
+  events::GameEventPtr event = events::ShowInfobox::create( _("##blessing_of_venus_title##"),
+                                                            _("##blessing_of_venus_description##") );
+  event->dispatch();
 }
 
 }//end namespace rome

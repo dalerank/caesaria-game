@@ -115,46 +115,6 @@ RomeDivinity::RomeDivinity()
 void RomeDivinity::setInternalName(const std::string& newName){  setDebugName( newName );}
 std::string RomeDivinity::internalName() const{  return getDebugName();}
 
-DivinityPtr Mercury::create()
-{
-  DivinityPtr ret( new Mercury() );
-  ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
-  ret->drop();
-
-  return ret;
-}
-
-void Mercury::updateRelation(float income, PlayerCityPtr city)
-{
-  RomeDivinity::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_mercury_title##"),
-                                                                   _("##wrath_of_mercury_description##"),
-                                                                   events::ShowInfobox::send2scribe );
-    event->dispatch();
-
-    city::Helper helper( city );
-    WarehouseList whs = helper.find<Warehouse>( building::warehouse );
-    foreach( it, whs )
-    {
-      GoodStore& store = (*it)->store();
-      for( int i=Good::none; i < Good::goodCount; i++ )
-      {
-        Good::Type gtype = (Good::Type)i;
-        int goodQty = math::random( store.qty( gtype ) );
-        if( goodQty > 0 )
-        {
-          GoodStock rmStock( gtype, goodQty );
-          store.retrieve( rmStock, goodQty );
-        }
-      }
-    }
-  }
-}
-
 }//end namespace rome
 
 }//end namespace religion
