@@ -39,17 +39,18 @@ public:
   virtual void success( PlayerCityPtr ) { _isDeleted = true; }
   virtual void fail( PlayerCityPtr ) { _isDeleted = true; }
   virtual bool isDeleted() const { return _isDeleted; }
-  virtual const DateTime& getFinishedDate() const { return _finishedDate; }
+  virtual DateTime startDate() const { return _startDate; }
+  virtual DateTime finishedDate() const { return _finishDate; }
   virtual bool isAnnounced() const { return _isAnnounced; }
   virtual void setAnnounced( bool value ) { _isAnnounced = value; }
 
   virtual VariantMap save() const;
-  virtual void load( const VariantMap& stream ) {}
+  virtual void load( const VariantMap& stream );
   virtual std::string getDescription() const{  return ""; }
 
 protected:
   bool _isDeleted, _isAnnounced;
-  DateTime _finishedDate;
+  DateTime _finishDate, _startDate;
 
   Request( DateTime finish );
 };

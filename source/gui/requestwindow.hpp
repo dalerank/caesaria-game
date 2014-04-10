@@ -30,7 +30,8 @@ namespace gui
 class EmperrorRequestWindow : public Widget
 {
 public:
-  static EmperrorRequestWindow* create(Widget* parent, city::request::RequestPtr request , bool mayExec);
+  static EmperrorRequestWindow* create(Widget* parent, city::request::RequestPtr request,
+                                       bool mayExec);
   ~EmperrorRequestWindow();
 
   virtual void draw( gfx::Engine& painter );

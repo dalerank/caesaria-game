@@ -118,31 +118,32 @@ void WorkingBuilding::timeStep( const unsigned long time )
 void WorkingBuilding::_updateAnimation( const unsigned int time )
 {
   if( time % 25 == 1 )
-
-  if( mayWork()  )
   {
-    if( _animationRef().isStopped() )
+    if( mayWork()  )
     {
-      _animationRef().start();
-    }
-
-    _animationRef().update( time );
-    const Picture& pic = _animationRef().currentFrame();
-    if( pic.isValid() )
-    {
-       _fgPicturesRef().back() = _animationRef().currentFrame();
-    }
-  }
-  else
-  {
-    if( _animationRef().isRunning() )
-    {
-      if( _d->clearAnimationOnStop )
+      if( _animationRef().isStopped() )
       {
-        _fgPicturesRef().back() = Picture::getInvalid();
+        _animationRef().start();
       }
 
-     _animationRef().stop();
+      _animationRef().update( time );
+      const Picture& pic = _animationRef().currentFrame();
+      if( pic.isValid() )
+      {
+         _fgPicturesRef().back() = _animationRef().currentFrame();
+      }
+    }
+    else
+    {
+      if( _animationRef().isRunning() )
+      {
+        if( _d->clearAnimationOnStop )
+        {
+          _fgPicturesRef().back() = Picture::getInvalid();
+        }
+
+       _animationRef().stop();
+      }
     }
   }
 }

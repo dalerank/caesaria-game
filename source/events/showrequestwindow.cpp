@@ -22,11 +22,12 @@
 namespace events
 {
 
-GameEventPtr ShowRequestInfo::create( city::request::RequestPtr request, bool available4exec)
+GameEventPtr ShowRequestInfo::create(city::request::RequestPtr request, bool available4exec, const std::string& message)
 {
   ShowRequestInfo* e = new ShowRequestInfo();
   e->_request = request;
   e->_reqAvailable = available4exec;
+  e->_message = message;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -38,7 +39,6 @@ bool ShowRequestInfo::_mayExec(Game&, unsigned int) const {  return true; }
 
 ShowRequestInfo::ShowRequestInfo() : _reqAvailable( false )
 {
-
 }
 
 void ShowRequestInfo::_exec(Game& game, unsigned int)
@@ -46,6 +46,10 @@ void ShowRequestInfo::_exec(Game& game, unsigned int)
   if( _request.isValid() )
   {
     gui::EmperrorRequestWindow* wnd = gui::EmperrorRequestWindow::create( game.gui()->rootWidget(), _request, _reqAvailable );
+    if( !_message.empty() )
+    {
+      wnd->setText( _message );
+    }
     wnd->show();
   }
 }

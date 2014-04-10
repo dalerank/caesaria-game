@@ -24,6 +24,8 @@
 #include "core/gettext.hpp"
 #include "events/showinfobox.hpp"
 #include "events/updatefavour.hpp"
+#include "game/gamedate.hpp"
+#include "events/showrequestwindow.hpp"
 
 namespace  city
 {
@@ -34,9 +36,9 @@ namespace request
 class RqGood::Impl
 {
 public:
-  DateTime date;
   unsigned int months2comply;
   GoodStock stock;
+  bool alsoRemind;
   int winFavour, winMoney;
   int failFavour, failMoney, failAppendMonth;
   std::string description;
@@ -75,6 +77,14 @@ bool RqGood::isReady( PlayerCityPtr city ) const
     return true;
   }
 
+  if( !_d->alsoRemind && (_startDate.getMonthToDate( GameDate::current() ) > 12) )
+  {
+    const_cast<RqGood*>( this )->_d->alsoRemind = true;
+
+    events::GameEventPtr e = events::ShowRequestInfo::create( const_cast<RqGood*>( this ), true );
+    e->dispatch();
+  }
+
   _d->description += std::string( "      " ) + _( "##unable_fullfill_request##" );
   return false;
 }
@@ -84,7 +94,7 @@ std::string RqGood::typeName() {  return "good_request";}
 VariantMap RqGood::save() const
 {
   VariantMap ret = Request::save();
-  ret[ "date" ] = _d->date;
+
   ret[ "reqtype" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
   ret[ "good" ] = _d->stock.save();
@@ -104,8 +114,9 @@ VariantMap RqGood::save() const
 
 void RqGood::load(const VariantMap& stream)
 {
-  _d->date = stream.get( "date" ).toDateTime();
+  Request::load( stream );
   _d->months2comply = (int)stream.get( "month" );
+
 
   Variant vm_goodt = stream.get( "good" );
   if( vm_goodt.type() == Variant::Map )
@@ -130,19 +141,27 @@ void RqGood::load(const VariantMap& stream)
   _d->failFavour = vm_fail.get( "favour" );
   _d->failMoney = vm_fail.get( "money" );
   _d->failAppendMonth = vm_fail.get( "appendMonth" );
-  _finishedDate = _d->date;
-  _finishedDate.appendMonth( _d->months2comply );
+
+  Variant v_finish = stream.get( "finish" );
+  if( v_finish.isNull() )
+  {
+    _finishDate = _startDate;
+    _finishDate.appendMonth( _d->months2comply );
+  }
 }
 
 void RqGood::success( PlayerCityPtr city )
 {
   Request::success( city );
-  if( _d->winMoney )
+  if( _d->winMoney > 0 )
+  {
+    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, _d->winMoney );
+    e->dispatch();
+  }
+
+  if( _d->winFavour > 0 )
   {
     events::GameEventPtr e = events::UpdateFavour::create( city->getName(), _d->winFavour );
-    e->dispatch();
-
-    e = events::FundIssueEvent::create( city::Funds::donation, _d->winMoney );
     e->dispatch();
   }
 }
@@ -154,13 +173,13 @@ void RqGood::fail( PlayerCityPtr city )
 
   if( _d->failAppendMonth > 0 )
   {
-    _d->date = _finishedDate;    
+    _startDate = _finishDate;
 
     std::string text = StringHelper::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
     e = events::ShowInfobox::create( "##request_failed##", text );
     e->dispatch();
 
-    _finishedDate.appendMonth( _d->failAppendMonth );
+    _finishDate.appendMonth( _d->failAppendMonth );
     _d->failAppendMonth = 0;
     setAnnounced( false );
   }
@@ -177,19 +196,32 @@ void RqGood::fail( PlayerCityPtr city )
 std::string RqGood::getDescription() const {  return _d->description; }
 int RqGood::getQty() const { return _d->stock.capacity(); }
 Good::Type RqGood::getGoodType() const { return _d->stock.type(); }
-RqGood::RqGood() : Request( DateTime() ), _d( new Impl ) {}
+
+RqGood::RqGood() : Request( DateTime() ), _d( new Impl )
+{
+  _d->alsoRemind = false;
+}
 
 VariantMap Request::save() const
 {
   VariantMap ret;
   ret[ "deleted" ] = _isDeleted;
   ret[ "announced" ] = _isAnnounced;
-  ret[ "finish" ] = _finishedDate;
+  ret[ "finish" ] = _finishDate;
+  ret[ "start" ] = _startDate;
 
   return ret;
 }
 
-Request::Request(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishedDate( finish )
+void Request::load(const VariantMap& stream)
+{
+  _isDeleted = stream.get( "deleted" );
+  _isAnnounced = stream.get( "announced" );
+  _finishDate = stream.get( "finish" ).toDateTime();
+  _startDate = stream.get( "date" ).toDateTime();
+}
+
+Request::Request(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishDate( finish )
 {
 
 }

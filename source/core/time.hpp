@@ -62,7 +62,7 @@ public:
 
     int equale( const DateTime& b );
 
-    int getMonthToDate( const DateTime& end );
+    int getMonthToDate( const DateTime& end ) const;
 
     DateTime& appendMonth( int month=1 );
     DateTime& appendWeek( int weekNumber=1 );
@@ -104,7 +104,7 @@ private:
 
     long _toJd() const;
 
-    int _getMonthToDate( const long end );
+    int _getMonthToDate( const long end ) const;
 
     int _isEquale( const long b );
 
