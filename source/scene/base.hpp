@@ -73,6 +73,7 @@ protected:
 
   //WidgetEvent _wevent;  // event to pass to the main loop
   bool _isStopped;  // screen needs to stop its loop
+  int _delayTicks;
 };
 
 }//end namespace scene

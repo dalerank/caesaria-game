@@ -154,24 +154,26 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstr
   dstRect.w = dstrect.getWidth();
   dstRect.h = dstrect.getHeight();
 
+  SDL_Surface* surface = _d->surface;
   if( useAlpha )
   {
-    SDL_BlitSurface(srcimg, &srcRect, _d->surface, &dstRect);
+    SDL_BlitSurface(srcimg, &srcRect, surface, &dstRect);
   }
   else
   {
-    SDL_Surface* tmpSurface = SDL_ConvertSurface( srcimg, _d->surface->format, SDL_SWSURFACE);
+    SDL_Surface* tmpSurface = SDL_ConvertSurface( srcimg, surface->format, SDL_SWSURFACE);
     SDL_SetAlpha( tmpSurface, 0, 0 );
 
-    SDL_BlitSurface(tmpSurface, &srcRect, _d->surface, &dstRect);
+    SDL_BlitSurface(tmpSurface, &srcRect, surface, &dstRect);
     SDL_FreeSurface( tmpSurface );
   }
 }
 
 void Picture::draw( const Picture &srcpic, const Point& pos, bool useAlpha )
 {
+  const Point& offset = srcpic._d->offset;
   draw( srcpic, Rect( Point( 0, 0 ), srcpic.size() ), 
-                Rect( pos + Point( srcpic._d->offset.x(), -srcpic._d->offset.y() ), srcpic.size() ), useAlpha );
+                Rect( pos + Point( offset.x(), -offset.y() ), srcpic.size() ), useAlpha );
 
 }
 

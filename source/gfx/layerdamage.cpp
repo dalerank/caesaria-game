@@ -67,8 +67,9 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::plaza:
     case building::collapsedRuins:
     case building::engineerPost:
+    case building::burningRuins:
       needDrawAnimations = true;
-      engine.drawPicture( tile.picture(), screenPos );
+      drawTilePass( engine, tile, offset, Renderer::ground );
       drawTilePass( engine, tile, offset, Renderer::foreground );
       break;
 

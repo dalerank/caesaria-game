@@ -55,7 +55,7 @@ Sg2ArchiveLoader::Sg2ArchiveLoader(vfs::FileSystem* fileSystem) :
 
 bool Sg2ArchiveLoader::isALoadableFileFormat(const Path& filename) const
 {
-  return filename.isExtension( ".sg2", false );
+  return filename.isMyExtension( ".sg2", false );
 }
 
 bool Sg2ArchiveLoader::isALoadableFileFormat(vfs::NFile file) const
@@ -215,7 +215,7 @@ std::string Sg2ArchiveReader::_find555File( const SgFileEntry& rec )
 	// Change the extension to .555
 	filename = Path( filename.removeExtension() + ".555" );
 
-	Path path = _findFilenameCaseInsensitive( _file.path().directory(), filename.getBasename().toString() );
+	Path path = _findFilenameCaseInsensitive( _file.path().directory(), filename.baseName().toString() );
 	if( path.exist() )
 	{
 		return path.toString();
@@ -229,12 +229,12 @@ std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( std::string dir, std
 	Directory directory( dir );
 	filename = StringHelper::localeLower( filename );
 
-	Entries::Items files = directory.getEntries( Path::ignoreCase ).getItems();
+	Entries::Items files = directory.getEntries( Path::ignoreCase ).items();
 	for(int i = 0; i < files.size(); i++)
 	{
 		if( filename == StringHelper::localeLower( files[i].name.toString() ) )
 		{
-			return files[i].fullName.toString();
+			return files[i].abspath().toString();
 		}
 		//qDebug() << "No match: " << files[i];
 	}

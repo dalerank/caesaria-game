@@ -52,10 +52,18 @@ namespace {
 class SdlEngine::Impl
 {
 public:
+  typedef struct
+  {
+    int red;
+    int green;
+    int blue;
+    int alpha;
+  }MaskInfo;
+
   Picture screen;
   Picture maskedPic;
   
-  int rmask, gmask, bmask, amask;
+  MaskInfo mask;
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
   Font debugFont;
@@ -193,26 +201,28 @@ void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, 
   if( !picture.isValid() )
       return;
 
+  Picture& screen = _d->screen;
   if( clipRect != 0 )
   {
     SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
-    SDL_SetClipRect( _d->screen.getSurface(), &r );
+    SDL_SetClipRect( screen.getSurface(), &r );
   }
 
-  if( _d->rmask || _d->gmask || _d->bmask || _d->amask  )
+  const Impl::MaskInfo& mask = _d->mask;
+  if( mask.red || mask.green|| mask.blue || mask.alpha )
   {
-    PictureConverter::maskColor( _d->maskedPic, picture, _d->rmask, _d->gmask, _d->bmask, _d->amask );
+    PictureConverter::maskColor( _d->maskedPic, picture, mask.red, mask.green, mask.blue, mask.alpha );
 
-    _d->screen.draw( _d->maskedPic, dx, dy );
+    screen.draw( _d->maskedPic, dx, dy );
   }
   else
   {
-    _d->screen.draw( picture, dx, dy );
+    screen.draw( picture, dx, dy );
   }
 
   if( clipRect != 0 )
   {
-    SDL_SetClipRect( _d->screen.getSurface(), 0 );
+    SDL_SetClipRect( screen.getSurface(), 0 );
   }
 }
 
@@ -223,16 +233,14 @@ void SdlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* cli
 
 void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
 {
-  _d->rmask = rmask;
-  _d->gmask = gmask;
-  _d->bmask = bmask;
-  _d->amask = amask;
+  Impl::MaskInfo& mask = _d->mask;
+  mask.red = rmask;
+  mask.green = gmask;
+  mask.blue = bmask;
+  mask.alpha = amask;
 }
 
-void SdlEngine::resetTileDrawMask()
-{
-  _d->rmask = _d->gmask = _d->bmask = _d->amask = 0;
-}
+void SdlEngine::resetTileDrawMask() {  memset( &_d->mask, 0, sizeof( Impl::MaskInfo ) ); }
 
 Picture* SdlEngine::createPicture(const Size& size )
 {
@@ -288,7 +296,7 @@ void SdlEngine::setFlag( int flag, int value )
   }
 }
 
-void SdlEngine::delay( const unsigned int msec ) {  SDL_Delay( msec ); }
+void SdlEngine::delay( const unsigned int msec ) { SDL_Delay( std::max<unsigned int>( msec, 0 ) ); }
 
 bool SdlEngine::haveEvent( NEvent& event )
 {

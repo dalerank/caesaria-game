@@ -88,7 +88,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     game.empire()->emperor().updateRelation( city->getName(), 50 );
 
-    std::string missionName = vfs::Path( filename ).getBasename( false ).toString();
+    std::string missionName = vfs::Path( filename ).baseName( false ).toString();
     Locale::addTranslation( missionName );
     GameSettings::set( GameSettings::lastTranslation, Variant( missionName ) );
 
@@ -107,5 +107,5 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
 bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
 {
-  return vfs::Path( filename ).isExtension( ".mission" );
+  return vfs::Path( filename ).isMyExtension( ".mission" );
 }

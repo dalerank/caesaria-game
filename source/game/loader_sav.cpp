@@ -323,5 +323,5 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
 bool GameLoaderC3Sav::isLoadableFileExtension( const std::string& filename )
 {
-  return vfs::Path( filename ).isExtension( ".sav" );
+  return vfs::Path( filename ).isMyExtension( ".sav" );
 }

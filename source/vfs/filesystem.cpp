@@ -62,7 +62,7 @@ ArchivePtr FileSystem::Impl::changeArchivePassword(const Path& filename, const s
   {
     // TODO: This should go into a path normalization method
     // We need to check for directory names with trailing slash and without
-    const Path absPath = filename.getAbsolutePath();
+    const Path absPath = filename.absolutePath();
     const Path arcPath = openArchives[idx]->getFileList()->getPath();
     if( (absPath == arcPath) || (arcPath == (absPath.toString() + "/")) )
     {
@@ -118,7 +118,7 @@ NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
   }
 	
   // Create the file using an absolute path so that it matches
-  FSEntityPtr ptr( new FileNative( filename.getAbsolutePath(), mode ) );
+  FSEntityPtr ptr( new FileNative( filename.absolutePath(), mode ) );
   ptr->drop();
   return NFile( ptr );
 }
@@ -188,7 +188,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   archive = _d->changeArchivePassword(filename, password );
   if( archive.isValid() )
   {
-    Logger::warning( "Open archive " + filename.getAbsolutePath().toString() );
+    Logger::warning( "Open archive " + filename.absolutePath().toString() );
     return archive;
   }
 
@@ -295,7 +295,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 {
   if( !file.isOpen() || archiveType == Archive::folder)
   {
-    Logger::warning( "Cannot open archive " + file.path().getAbsolutePath().toString() );
+    Logger::warning( "Cannot open archive " + file.path().absolutePath().toString() );
     return ArchivePtr();
   }
 

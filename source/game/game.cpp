@@ -367,7 +367,7 @@ void Game::load(std::string filename)
       Logger::warning( "Cannot find file " + fPath.toString() );
       Logger::warning( "Try find file in resource's folder " );
 
-      fPath = GameSettings::rcpath( filename ).getAbsolutePath();
+      fPath = GameSettings::rcpath( filename ).absolutePath();
       if( !fPath.exist() )
       {
         Logger::warning( "Cannot find file " + fPath.toString() );

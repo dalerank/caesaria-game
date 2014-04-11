@@ -17,7 +17,7 @@ void ReleaseFileSet::Visitor::VisitSection(const IniFile& iniFile, const std::st
 					result.first->second.crc = CRC::ParseFromString(iniFile.GetValue(section, "crc"));
 					result.first->second.filesize = StringHelper::toUint( iniFile.GetValue(section, "filesize") );
 
-					if( filename.isExtension( ".zip") )
+					if( filename.isMyExtension( ".zip") )
 					{
 						result.first->second.isArchive = true;
 					}

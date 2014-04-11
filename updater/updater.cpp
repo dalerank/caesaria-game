@@ -262,7 +262,7 @@ void Updater::DetermineLocalVersion()
 			vfs::Directory folder = getTargetDir();
 			vfs::Path candidate = folder.getFilePath( f->second.file );
 
-			if( StringHelper::isEquale( candidate.getBasename().toString(), _executable.getBasename().toString(), StringHelper::equaleIgnoreCase ) )
+			if( StringHelper::isEquale( candidate.baseName().toString(), _executable.baseName().toString(), StringHelper::equaleIgnoreCase ) )
 			{
 				Logger::warning( "IGNORE" );
 				continue;
@@ -693,8 +693,8 @@ void Updater::PrepareUpdateBatchFile()
 
 	std::ofstream batch(_updateBatchFile.toString().c_str());
 
-	vfs::Path tempUpdater = temporaryUpdater.getBasename();
-	vfs::Path updater = _executable.getBasename();
+	vfs::Path tempUpdater = temporaryUpdater.baseName();
+	vfs::Path updater = _executable.baseName();
 
 	// Append the current set of command line arguments to the new instance
 	std::string arguments;
@@ -935,8 +935,7 @@ void Updater::PostUpdateCleanup()
 	{
 		if( StringHelper::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
 		{
-			vfs::Path p = i->fullName;
-			vfs::NFile::remove( p );
+			vfs::NFile::remove( i->abspath() );
 		}		
 	}
 }
