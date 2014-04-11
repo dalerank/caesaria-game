@@ -28,13 +28,13 @@ static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePath
     if( i->name.isDirectoryEntry() )
       continue;
 
-    if( i->fullName.isFolder() )
+    if( i->abspath().isFolder() )
     {
-      __gartherFiles( basedir, i->fullName, files );
+      __gartherFiles( basedir, i->abspath(), files );
     }
     else
     {
-      files.push_back( basedir.getRelativePathTo( i->fullName ) );
+      files.push_back( basedir.getRelativePathTo( i->abspath() ) );
     }
   }
 }
@@ -69,7 +69,7 @@ void Packager::createUpdate( bool release )
       sectionName = StringHelper::format( 0xff, "Version%s File %s", _crver.c_str(), baseName.c_str() );
     }
 
-    ByteArray data = vfs::NFile::open( (*i).getAbsolutePath() ).readAll();
+    ByteArray data = vfs::NFile::open( (*i).absolutePath() ).readAll();
 
     unsigned int crc = data.crc32( 0 );
     vinfo->SetValue( sectionName, "crc", StringHelper::format( 0xff, "%x", crc ) );

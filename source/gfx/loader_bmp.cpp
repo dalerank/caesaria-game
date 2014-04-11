@@ -10,7 +10,7 @@
 //! based on the file extension (e.g. ".tga")
 bool PictureLoaderBmp::isALoadableFileExtension(const vfs::Path& filename) const
 {
-  return filename.isExtension( ".bmp" );
+  return filename.isMyExtension( ".bmp" );
 }
 
 //! returns true if the file maybe is able to be loaded by this class

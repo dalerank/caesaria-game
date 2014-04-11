@@ -44,7 +44,7 @@ void PNGAPI user_read_data_fcn(png_structp png_ptr, png_bytep data, png_size_t l
 //! based on the file extension (e.g. ".tga")
 bool PictureLoaderPng::isALoadableFileExtension(const vfs::Path& filename) const
 {
-  return filename.isExtension( ".png" );
+  return filename.isMyExtension( ".png" );
 }
 
 

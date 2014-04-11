@@ -45,11 +45,16 @@ public:
   bool isFolder() const;
   bool isDirectoryEntry() const;
 
-  std::string getExtension() const;
+  std::string extension() const;
+
+  //Returns the suffix of the file.
+  //The suffix consists of all characters in the file after (but not including) the last '.'.
+  std::string suffix() const;
   
   Path addEndSlash() const;
   Path removeBeginSlash() const;
   Path removeEndSlash() const;
+  char lastChar() const;
  
   const std::string& toString() const;
   std::string removeExtension() const;
@@ -65,19 +70,19 @@ public:
   Path flattenFilename( const Path& root = "/" ) const;
 
   //! Converts a relative path to an absolute (unique) path, resolving symbolic links
-  Path getAbsolutePath() const;
+  Path absolutePath() const;
 
   bool operator==(const Path& other) const;
   bool operator==(const std::string& other) const;
 
   char& operator[](const unsigned int index);
 
-  bool isExtension( const std::string& ext, bool checkCase=true ) const;
+  bool isMyExtension( const std::string& ext, bool checkCase=true ) const;
 
   //! Returns the base part of a filename, i.e. the name without the directory
   //! part. If no directory is prefixed, the full name is returned.
   /** \param filename: The file to get the basename from */
-  Path getBasename( bool keepExtension=true ) const;
+  Path baseName( bool keepExtension=true ) const;
 
   Path getRelativePathTo( const Directory& directory ) const;
 

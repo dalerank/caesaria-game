@@ -368,7 +368,7 @@ vfs::Path Level::Impl::getFastSaveName()
 
 void Level::_resolveSwitchMap()
 {
-  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isExtension( ".briefing" );
+  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
   _d->result = isNextBriefing ? Level::loadBriefing : Level::loadGame;
   stop();
 }

@@ -312,8 +312,8 @@ Path Directory::getRelativePathTo(Path path) const
   if ( toString().empty() || path.toString().empty() )
     return *this;
 
-  Path path1 = getAbsolutePath();
-  Path path2( Directory( path.directory() ).getAbsolutePath() );
+  Path path1 = absolutePath();
+  Path path2( Directory( path.directory() ).absolutePath() );
   StringArray list1, list2;
 
   list1 = StringHelper::split( path1.toString(), "/\\");
@@ -344,7 +344,7 @@ Path Directory::getRelativePathTo(Path path) const
     path1 = path1.toString() + list2[ i ] + "/";
   }
 
-  return path1.toString() + path.getBasename().toString();
+  return path1.toString() + path.baseName().toString();
 }
 
 } //end namespace io
