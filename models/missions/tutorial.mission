@@ -35,7 +35,7 @@
     "tutorial#random_fire" : {
       population : 30
       exec : {
-        "step1_.video#filwidget" : {
+        "step_1.video#messagebox" : {
           title : "##city_fire_title##"
           text : "##city_fire_text##"
           video : "/smk/city_fire.smk"

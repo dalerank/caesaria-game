@@ -1,7 +1,7 @@
 {  
   geometry : [ 0, 0, 415, 450 ]
   
-	lbBackground#Label : 
+  lbBackground#Label :
   {
     geometryf : [ 0.0, 0.0, 1, 1 ]
     bgtype : "whiteFrame"

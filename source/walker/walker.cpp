@@ -467,7 +467,7 @@ void Walker::_updateThinks()
 }
 
 Point Walker::_wpos() const{  return _d->wpos.toPoint();}
-void Walker::go(){ _d->action.action = acMove; }      // default action
+void Walker::go(){ _setAction( acMove ); }      // default action
 
 void Walker::die()
 {

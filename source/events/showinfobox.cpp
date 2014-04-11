@@ -20,6 +20,7 @@
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "scribemessage.hpp"
+#include "gui/film_widget.hpp"
 
 using namespace constants;
 
@@ -33,11 +34,12 @@ GameEventPtr ShowInfobox::create()
   return ret;
 }
 
-GameEventPtr ShowInfobox::create( const std::string& title, const std::string& text, bool send2scribe )
+GameEventPtr ShowInfobox::create(const std::string& title, const std::string& text, bool send2scribe , const vfs::Path &video)
 {
   ShowInfobox* ev = new ShowInfobox();
   ev->_title = title;
   ev->_text = text;
+  ev->_video = video;
   ev->_send2scribe = send2scribe;
 
   GameEventPtr ret( ev );
@@ -51,14 +53,25 @@ void ShowInfobox::load(const VariantMap& stream)
   _title = stream.get( "title" ).toString();
   _text = stream.get( "text" ).toString();
   _send2scribe = stream.get( "send2scribe" );
+  _video = stream.get( "video" ).toString();
 }
 
 bool ShowInfobox::_mayExec(Game& game, unsigned int time) const{  return true;}
 
 void ShowInfobox::_exec( Game& game, unsigned int )
 {
-  gui::InfoboxText* msgWnd = new gui::InfoboxText( game.gui()->rootWidget(), _title, _text );
-  msgWnd->show();
+  if( _video.toString().empty() )
+  {
+    gui::InfoboxText* msgWnd = new gui::InfoboxText( game.gui()->rootWidget(), _title, _text );
+    msgWnd->show();
+  }
+  else
+  {
+    gui::FilmWidget* wnd = new gui::FilmWidget( game.gui()->rootWidget(), _video );
+    wnd->setTitle( _title );
+    wnd->setText( _text );
+    wnd->show();
+  }
 
   if( _send2scribe )
   {

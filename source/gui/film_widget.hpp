@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_FILM_WIDGET_H_INCLUDE_
 #define _CAESARIA_FILM_WIDGET_H_INCLUDE_
@@ -26,7 +28,7 @@ namespace gui
 class FilmWidget : public Widget
 {
 public:
-  FilmWidget( Widget* parent, vfs::Path film );
+  FilmWidget( Widget* parent, const vfs::Path& film );
 
   //! Деструктор
   virtual ~FilmWidget(void);

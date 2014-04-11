@@ -46,7 +46,7 @@ GameEventPtr RandomFire::create()
 
 void RandomFire::_exec( Game& game, unsigned int time)
 {
-  if( time % GameDate::ticksInMonth() == 0 && !_d->isDeleted )
+  if( time % (GameDate::ticksInMonth()/3) == 0 && !_d->isDeleted )
   {
     int population = game.city()->getPopulation();
     if( population > _d->minPopulation && population < _d->maxPopulation )

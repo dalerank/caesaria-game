@@ -28,7 +28,8 @@ class ShowInfobox : public GameEvent
 public:
   static const bool send2scribe = true;
   static GameEventPtr create();
-  static GameEventPtr create( const std::string& title, const std::string& text,  bool send2scribe=false );
+  static GameEventPtr create( const std::string& title, const std::string& text,
+                              bool send2scribe=false, const vfs::Path& video="" );
 
   virtual void load(const VariantMap &);
 
@@ -39,6 +40,7 @@ protected:
 private:
   std::string _title, _text;
   bool _send2scribe;
+  vfs::Path _video;
 };
 
 } //end namespace events

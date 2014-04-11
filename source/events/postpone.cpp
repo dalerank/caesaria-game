@@ -130,6 +130,8 @@ VariantMap PostponeEvent::save() const
   VariantMap ret = _d->options;
   ret[ "type" ] = Variant( _type );
   ret[ "name" ] = Variant( _name );
+  ret[ "date" ] = _d->date;
+  ret[ "population" ] = _d->population;
   return ret;
 }
 

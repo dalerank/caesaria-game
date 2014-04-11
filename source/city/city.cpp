@@ -219,6 +219,12 @@ PlayerCity::PlayerCity() : _d( new Impl )
 
 void PlayerCity::timeStep(unsigned int time)
 {
+  //check population every week
+  if( GameDate::current().day() % 7 == 0 )
+  {
+    _d->calculatePopulation( this );
+  }
+
   if( _d->lastMonthCount != GameDate::current().month() )
   {
     _d->lastMonthCount = GameDate::current().month();
@@ -322,7 +328,6 @@ void PlayerCity::timeStep(unsigned int time)
 void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 {
   collectTaxes( city );
-  calculatePopulation( city );
   payWages( city );
 
   int playerSalary = player->salary();
