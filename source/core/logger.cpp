@@ -42,57 +42,71 @@ private:
 	Mutex _mutex;
 
 public:
-	FileLogWriter(const std::string& path) :
-		_logFile(fopen(path.c_str(), "w"))
+	FileLogWriter(const std::string& path)
 	{
 		DateTime t = DateTime::getCurrenTime();
 
-		fputs("Caesaria logfile created: ", _logFile);
-		fputs(StringHelper::format( 0xff, "%02d:%02d:%02d",
-																t.hour(), t.minutes(), t.seconds()).c_str(),
-					_logFile);
-		fputs("\n", _logFile);
+		_logFile = fopen(path.c_str(), "w");
+
+		if( _logFile )
+		{
+			fputs("Caesaria logfile created: ", _logFile);
+			fputs(StringHelper::format( 0xff, "%02d:%02d:%02d",
+																	t.hour(), t.minutes(), t.seconds()).c_str(),
+						_logFile);
+			fputs("\n", _logFile);
+		}
 	}
 
 	~FileLogWriter()
 	{
 		DateTime t = DateTime::getCurrenTime();
 
-		fputs("Caesaria logfile closed: ", _logFile);
-		fputs( StringHelper::format( 0xff, "%02d:%02d:%02d",
-																t.hour(), t.minutes(), t.seconds()).c_str(),
-					 _logFile);
-		fputs("\n", _logFile);
+		if( _logFile )
+		{
+			fputs("Caesaria logfile closed: ", _logFile);
+			fputs( StringHelper::format( 0xff, "%02d:%02d:%02d",
+																	t.hour(), t.minutes(), t.seconds()).c_str(),
+						 _logFile);
+			fputs("\n", _logFile);
 
-		fflush(_logFile);
+			fflush(_logFile);
+		}
 	}
 
-	void write( std::string str, bool )
+	virtual bool isActive() const { return _logFile != 0; }
+
+	virtual void write( std::string str, bool )
 	{
 		// Don't write progress stuff into the logfile
 		// Make sure only one thread is writing to the file at a time
-		MutexLocker locker(&_mutex);
+		if( _logFile )
+		{
+			MutexLocker locker(&_mutex);
 
-		fputs(str.c_str(), _logFile);
-		fputs("\n", _logFile);
-		fflush(_logFile);
+			fputs(str.c_str(), _logFile);
+			fputs("\n", _logFile);
+			fflush(_logFile);
+		}
 	}
 };
 
 class ConsoleLogWriter : public LogWriter
 {
 public:
-	void write( std::string str, bool newline )
+	virtual void write( std::string str, bool newline )
 	{
 #ifdef CAESARIA_PLATFORM_ANDROID
       str.append( newline ? "\n" : "" );
       __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, str.c_str() );
 #else
-      std::cout << str;
-      if( newline ) std::cout << std::endl;
-      else std::cout << std::flush;
+    std::cout << str;
+    if( newline ) std::cout << std::endl;
+    else std::cout << std::flush;
 #endif
 	}
+
+	virtual bool isActive() const { return true; }
 };
 
 class Logger::Impl
@@ -125,12 +139,12 @@ void Logger::warning( const char* fmt, ... )
 
   va_end(argument_list);
 
-  getInstance()._d->write( ret );
+  instance()._d->write( ret );
 }
 
-void Logger::warning(const std::string& text) {  getInstance()._d->write( text );}
+void Logger::warning(const std::string& text) {  instance()._d->write( text );}
 void Logger::warningIf(bool warn, const std::string& text){  if( warn ) warning( text ); }
-void Logger::update(const std::string& text, bool newline){  getInstance()._d->write( text, newline ); }
+void Logger::update(const std::string& text, bool newline){  instance()._d->write( text, newline ); }
 
 void Logger::registerWriter(Logger::Type type)
 {
@@ -156,16 +170,13 @@ void Logger::registerWriter(Logger::Type type)
   }
 }
 
-Logger& Logger::getInstance()
+Logger& Logger::instance()
 {
   static Logger inst;
   return inst;
 }
 
-Logger::~Logger()
-{
-
-}
+Logger::~Logger() {}
 
 Logger::Logger() : _d( new Impl )
 {
@@ -173,6 +184,9 @@ Logger::Logger() : _d( new Impl )
 
 void Logger::registerWriter(std::string name, LogWriterPtr writer)
 {
-  getInstance()._d->writers[ name ] = writer;
+  if( writer.isValid() && writer->isActive() )
+  {
+    instance()._d->writers[ name ] = writer;
+  }
 }
 
