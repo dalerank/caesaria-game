@@ -278,9 +278,9 @@ void StartMenu::initialize()
   btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 
-  gui::SmkViewer* smkv = new gui::SmkViewer( _d->game->gui()->rootWidget(), Rect( 300, 300, 600, 600 ), gui::SmkViewer::video );
+  /*gui::SmkViewer* smkv = new gui::SmkViewer( _d->game->gui()->rootWidget(), Rect( 300, 300, 600, 600 ), gui::SmkViewer::video );
   smkv->setFilename( GameSettings::rcpath( "/smk/1C.smk" ) );
-  CONNECT( smkv, onFinish(), smkv, gui::SmkViewer::deleteLater );
+  CONNECT( smkv, onFinish(), smkv, gui::SmkViewer::deleteLater );*/
 }
 
 int StartMenu::result() const{  return _d->result;}
