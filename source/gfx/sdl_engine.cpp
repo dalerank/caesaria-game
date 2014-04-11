@@ -240,10 +240,7 @@ void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
   mask.alpha = amask;
 }
 
-void SdlEngine::resetTileDrawMask()
-{
-  memset( &_d->mask, 0, sizeof( Impl::MaskInfo ) );
-}
+void SdlEngine::resetTileDrawMask() {  memset( &_d->mask, 0, sizeof( Impl::MaskInfo ) ); }
 
 Picture* SdlEngine::createPicture(const Size& size )
 {
