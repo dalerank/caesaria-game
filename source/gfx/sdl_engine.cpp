@@ -296,7 +296,7 @@ void SdlEngine::setFlag( int flag, int value )
   }
 }
 
-void SdlEngine::delay( const unsigned int msec ) {  SDL_Delay( msec ); }
+void SdlEngine::delay( const unsigned int msec ) { SDL_Delay( std::max<unsigned int>( msec, 0 ) ); }
 
 bool SdlEngine::haveEvent( NEvent& event )
 {

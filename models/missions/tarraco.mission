@@ -175,6 +175,19 @@
       title : "##population_mileston##"
       text : "##500_citzens_in_city##"
     }
+
+    earthquake#earthquake : {
+      date : "-268.06.01"
+      start : [ 0, 20 ]
+      end : [ 20, 20 ]
+      exec : {
+        disaster#filmwidget : {
+          title : "##earthquake_title##"
+          text : "##earthquake_text##"
+          video : "earhquake.smk"
+        }
+      }
+    }
   }
 	
   buildoptions :
