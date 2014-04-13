@@ -39,8 +39,8 @@ public:
   virtual std::string shortDescription() const { return _shortDesc; }
   virtual Service::Type serviceType() const { return _service; }
   virtual const gfx::Picture& picture() const { return _pic; }
-  virtual float relation() const { return _relation; }
-  virtual float getDefaultDecrease() const { return 2.f; }
+  virtual float relation() const;
+  virtual float monthDecrease() const { return 1.f; }
   virtual DateTime lastFestivalDate() const { return _lastFestival; }
 
   virtual void updateRelation( float income, PlayerCityPtr city );

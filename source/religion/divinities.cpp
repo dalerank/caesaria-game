@@ -34,6 +34,10 @@ namespace religion
 namespace rome
 {
 
+namespace {
+  int minMoodByPop[]
+}
+
 void RomeDivinity::load(const VariantMap& vm)
 {
   if( vm.empty() )
@@ -90,12 +94,16 @@ VariantMap RomeDivinity::save() const
   return ret;
 }
 
+float RomeDivinity::relation() const
+{
+  int festivalFactor = 12 - std::min( 40, _lastFestival.getMonthToDate( GameDate::current() ) );
+  return _relation + festivalFactor;
+}
+
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
-  city::Helper helper( city );
-  float cityBalanceKoeff = helper.getBalanceKoeff();
-
-  _relation = math::clamp<float>( _relation + (income - getDefaultDecrease()) * cityBalanceKoeff, 0, 100 );
+  int minMoodbyPop = 50 - math::clamp( city->getPopulation() / 10, 0, 50 );
+  _relation = math::clamp<float>( _relation + (income - monthDecrease()) * cityBalanceKoeff, minMoodbyPop, 100 );
 }
 
 std::string RomeDivinity::moodDescription() const

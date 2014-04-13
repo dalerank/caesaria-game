@@ -39,17 +39,18 @@ class Religion::Impl
 public:
   DateTime lastDate;
   DateTime lastUnhappyMessageDate;
-  struct TempleInfo
+  struct CoverageInfo
   {
     int smallTempleNum;
     int bigTempleNum;
+    int parishionerNumber;
 
-    TempleInfo() : smallTempleNum( 0 ), bigTempleNum( 0 ) {}
+    CoverageInfo() : smallTempleNum( 0 ), bigTempleNum( 0 ), parishionerNumber( 0 ) {}
   };
 
-  typedef std::map< DivinityPtr, TempleInfo > TemplesMap;
+  typedef std::map< DivinityPtr, CoverageInfo > TemplesMap;
   TemplesMap templesCoverity;
-  TempleInfo maxTemples;  
+  int oraclesNumber;
 
   void updateRelation( PlayerCity& city, DivinityPtr divn );
 };
@@ -86,28 +87,55 @@ void Religion::update( const unsigned int time )
 
   //update temples info
   Helper helper( &_city );
-  TempleList temples = helper.find<Temple>( building::religionGroup );
+  TempleList temples = helper.find<Temple>( building::religionGroup );  
   foreach( it, temples)
   {
     if( (*it)->getDivinity().isValid() )
     {
-       Impl::TempleInfo& info = _d->templesCoverity[ (*it)->getDivinity() ];
+      Impl::CoverageInfo& info = _d->templesCoverity[ (*it)->getDivinity() ];
 
-       if( is_kind_of<BigTemple>( *it ) ) { info.bigTempleNum++; }
-       else { info.smallTempleNum++; }
+      if( is_kind_of<BigTemple>( *it ) ) { info.bigTempleNum++; }
+      else { info.smallTempleNum++; }
+
+      info.parishionerNumber += (*it)->parishionerNumber();
     }
   }
 
-  _d->maxTemples = Impl::TempleInfo();
-  foreach( it, divinities )
+  TempleOracleList oracles;
+  oracles << temples;
+
+  //add parishioners to all divinities by oracles
+  foreach( itDivn, divinities )
   {
-    Impl::TempleInfo& info = _d->templesCoverity[ *it ];
-    _d->maxTemples.bigTempleNum = std::max<int>( info.bigTempleNum, _d->maxTemples.bigTempleNum );
-    _d->maxTemples.smallTempleNum = std::max<int>( info.smallTempleNum, _d->maxTemples.smallTempleNum );
+    Impl::CoverageInfo& info = _d->templesCoverity[ *itDivn ];
+
+    foreach( itOracle, oracles )
+    {
+      info.parishionerNumber += (*itOracle)->parishionerNumber();
+    }
   }
 
   foreach( it, divinities )
   {
+    (*it)->setEffectPoint( 0 );
+  }
+
+  if( _d->templesCoverity.size() > 0 )
+  {
+    Impl::TemplesMap maxTemples;
+    maxTemples.insert( *_d->templesCoverity.begin() );
+    foreach( it, _d->templesCoverity )
+    {
+      if(  )
+      divnList.push_back( );
+
+      Impl::CoverageInfo& info = _d->templesCoverity[ *it ];
+
+    }
+  }
+
+  foreach( it, divinities )
+  {       
     _d->updateRelation( _city, *it );
   }
 }
@@ -128,29 +156,10 @@ void Religion::load(const VariantMap& stream)
   _d->lastUnhappyMessageDate = stream.get( "lastUnhappyDate", GameDate::current() ).toDateTime();
 }
 
-void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
+void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn, )
 {
-  Helper helper( &city );
-  int peopleReached = 0;
-  TempleList temples = helper.find<Temple>( building::religionGroup );
-
-  foreach( temple, temples )
-  {
-    if( (*temple)->getDivinity() == divn )
-    {
-      peopleReached += (*temple)->parishionerNumber();
-    }
-  }
-
-  float faithIncome = (float)peopleReached / (float)(city.getPopulation()+1);
-  Impl::TempleInfo& myTemples = templesCoverity[ divn ];
-
-  float faithAddiction = 0;
-  float smallTempleKoeff = ( myTemples.smallTempleNum < maxTemples.smallTempleNum ? 0.8 : 1 );
-  float bigTempleKoeff = ( myTemples.bigTempleNum < maxTemples.bigTempleNum ? 0.5 : 1 );
-
-  faithAddiction *= ( smallTempleKoeff * bigTempleKoeff );
-  faithIncome *= faithAddiction;
+  Impl::CoverageInfo& myTemples = templesCoverity[ divn ];
+  float faithIncome = (float)myTemples.parishionerNumber / (float)(city.getPopulation()+1);
 
   Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->name().c_str(), faithIncome, divn->relation() );
   divn->updateRelation( faithIncome, &city );
