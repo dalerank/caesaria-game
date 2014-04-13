@@ -264,7 +264,7 @@ void House::timeStep(const unsigned long time)
     cancelService( Service::recruter );
   }
 
-  if( time % getSpec().getFoodConsumptionInterval() == 0 )
+  if( time % getSpec().foodConsumptionInterval() == 0 )
   {
     _d->consumeFoods( this );
   }
@@ -276,10 +276,14 @@ void House::timeStep(const unsigned long time)
 
   if( _d->taxCheckInterval.month() != GameDate::current().month() )
   {
-    _updateTax();
-    _checkEvolve();    
+    _updateTax(); 
     _updateMorale();
     _checkHomeless();
+  }
+
+  if( GameDate::isWeekChanged() )
+  {
+    _checkEvolve();
   }
 
   Building::timeStep( time );
@@ -776,7 +780,7 @@ std::string House::troubleDesc() const
   return ret;
 }
 
-bool House::isCheckedDesirability() const {  return _city()->getBuildOptions().isCheckDesirability(); }
+bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCheckDesirability(); }
 
 void House::save( VariantMap& stream ) const
 {
@@ -981,7 +985,8 @@ void House::Impl::consumeFoods(HousePtr house)
   if( foodLevel == 0 )
     return;
 
-  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::ticksInMonth();
+
+  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / GameDate::days2ticks( 30 );
 
   int availableFoodLevel = 0;
   for( int afl=Good::wheat; afl <= Good::vegetable; afl++ )

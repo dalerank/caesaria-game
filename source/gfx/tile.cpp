@@ -25,7 +25,7 @@ namespace gfx
 {
 
 namespace {
-  int waterDecreaseInterval = GameDate::ticksInMonth() / 2;
+  int waterDecreaseInterval = GameDate::days2ticks( 15 );
   Animation invalidAnimation;
 }
 

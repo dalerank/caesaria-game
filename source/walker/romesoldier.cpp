@@ -38,7 +38,6 @@ public:
                  patrol } State;
   FortPtr base;
   State action;
-  int attackInterval;
   TilePos patrolPosition;
   double strikeForce, resistance;
 };
@@ -49,7 +48,6 @@ RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
   setName( NameGenerator::rand( NameGenerator::male ) );
 
   _d->patrolPosition = TilePos( -1, -1 );
-  _d->attackInterval = GameDate::ticksInMonth() / 20;
 }
 
 RomeSoldierPtr RomeSoldier::create(PlayerCityPtr city, walker::Type type)
@@ -100,7 +98,7 @@ void RomeSoldier::timeStep(const unsigned long time)
   break;
 
   case Impl::patrol:
-    if( time % _d->attackInterval == 1 )
+    if( GameDate::current().day() % 2 == 0 )
     {
       _tryAttack();
     }

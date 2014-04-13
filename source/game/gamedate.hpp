@@ -22,23 +22,30 @@
 class GameDate
 {
 public:
-  static DateTime current();
-
   void timeStep( unsigned int time );
 
   void init( const DateTime& date );
 
   static GameDate& instance();
 
-  static unsigned int ticksInMonth();
+  static inline DateTime current() { return instance()._current; }
+  static inline bool isDayChanged() { return instance()._dayChange; }
+  static inline bool isWeekChanged() { return instance()._weekChange; }
+  static inline bool isMonthChanged() { return instance()._monthChange; }
+  static inline bool isYearChanged() { return instance()._yearChange; }
 
-  ~GameDate();
+  static unsigned int days2ticks( unsigned int days );
 
 private:
   GameDate();
 
   DateTime _current;
-  unsigned int _nextTickChange;
+
+  //time event flags, it set once by step if availabe, next step reset those
+  bool _dayChange;
+  bool _weekChange;
+  bool _monthChange;
+  bool _yearChange;
 };
 
 #endif //__CAESARIA_GAMEDATE_H_INCLUDED__

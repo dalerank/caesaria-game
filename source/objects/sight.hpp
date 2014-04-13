@@ -13,33 +13,38 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
-#define _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+#ifndef _CAESARIA_SIGHT_H_INCLUDE_
+#define _CAESARIA_SIGHT_H_INCLUDE_
 
-#include "widget.hpp"
-#include "core/signals.hpp"
+#include "building.hpp"
 
-namespace gui
-{
-
-class AndroidActionsBar : public Widget
+class SmallStatue : public Building
 {
 public:
-  virtual void beforeDraw( gfx::Engine& painter);
-  AndroidActionsBar( Widget* parent );
-
-public oc3_signals:
-  Signal0<>& onRequestTileHelp();
-  Signal0<>& onEscapeClicked();
-  Signal0<>& onRequestMenu();
-
-private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+  SmallStatue();
+  bool isNeedRoadAccess() const;
 };
 
-}//end namesapce gui
+class MediumStatue : public Building
+{
+public:
+  MediumStatue();
+  bool isNeedRoadAccess() const;
+};
 
-#endif //_CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+class BigStatue : public Building
+{
+public:
+  BigStatue();
+  bool isNeedRoadAccess() const;
+};
+
+class TriumphalArch : public Building
+{
+public:
+  TriumphalArch();
+};
+
+#endif //_CAESARIA_BUILDING_H_INCLUDE_

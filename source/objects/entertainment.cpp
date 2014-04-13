@@ -80,7 +80,7 @@ void EntertainmentBuilding::deliverService()
 
   foreach( item, _d->necWalkers )
   {
-    int level = getTraineeValue( *item );
+    int level = traineeValue( *item );
     setTraineeValue( *item, math::clamp( level - decreaseLevel, 0, 100) );
   }
 }
@@ -118,7 +118,7 @@ bool EntertainmentBuilding::_isWalkerReady()
 {
   int maxLevel = 0;
   foreach( item, _d->necWalkers )
-  {  maxLevel = std::max( maxLevel, getTraineeValue( *item ) ); }
+  {  maxLevel = std::max( maxLevel, traineeValue( *item ) ); }
 
   return maxLevel;
 }

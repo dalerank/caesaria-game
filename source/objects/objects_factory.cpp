@@ -67,6 +67,7 @@
 #include "workshop_chariot.hpp"
 #include "furniture_workshop.hpp"
 #include "actor_colony.hpp"
+#include "sight.hpp"
 #include <map>
 
 using namespace constants;

@@ -138,7 +138,7 @@ public:
     Font font = Font::create( FONT_3 );
     font.draw( *background, _("##rome_prices##"), Point( 10, 10 ), false );
 
-    city::TradeOptions& ctrade = city->getTradeOptions();
+    city::TradeOptions& ctrade = city->tradeOptions();
     font = Font::create( FONT_1 );
     Point startPos( 140, 50 );
     for( int i=Good::wheat; i < Good::goodCount; i++ )
@@ -328,21 +328,21 @@ public:
 
   void increaseQty()
   {
-    city::TradeOptions& ctrade = _city->getTradeOptions();
+    city::TradeOptions& ctrade = _city->tradeOptions();
     ctrade.setExportLimit( _type, math::clamp( ctrade.getExportLimit( _type )+1, 0, 999 ) );
     updateTradeState();
   }
 
   void decreaseQty()
   {
-    city::TradeOptions& ctrade = _city->getTradeOptions();
+    city::TradeOptions& ctrade = _city->tradeOptions();
     ctrade.setExportLimit( _type, math::clamp( ctrade.getExportLimit( _type )-1, 0, 999 ) );
     updateTradeState();
   }
 
   void updateTradeState()
   {
-    city::TradeOptions& ctrade = _city->getTradeOptions();
+    city::TradeOptions& ctrade = _city->tradeOptions();
     city::TradeOptions::Order order = ctrade.getOrder( _type );
     int qty = ctrade.getExportLimit( _type );
     _btnTradeState->setTradeState( order, qty );
@@ -350,7 +350,7 @@ public:
 
   void changeTradeState()
   {
-    _city->getTradeOptions().switchOrder( _type );
+    _city->tradeOptions().switchOrder( _type );
     updateTradeState();
     _onOrderChangedSignal.emit();
   }
@@ -371,7 +371,7 @@ public:
 
   void updateIndustryState()
   {
-    bool industryActive = _city->getTradeOptions().isVendor( _type );
+    bool industryActive = _city->tradeOptions().isVendor( _type );
     _btnIndustryState->setVisible( industryActive );
 
     if( !industryActive )
@@ -411,8 +411,8 @@ public:
 
   void toggleStackingGoods()
   {
-    bool isStacking = _city->getTradeOptions().isGoodsStacking( _type );
-    _city->getTradeOptions().setStackMode( _type, !isStacking );
+    bool isStacking = _city->tradeOptions().isGoodsStacking( _type );
+    _city->tradeOptions().setStackMode( _type, !isStacking );
 
     updateStackingState();
     _onOrderChangedSignal.emit();
@@ -420,7 +420,7 @@ public:
 
   void updateStackingState()
   {
-    bool isStacking = _city->getTradeOptions().isGoodsStacking( _type );
+    bool isStacking = _city->tradeOptions().isGoodsStacking( _type );
     std::string text;
     if( isStacking )
     {
@@ -458,7 +458,7 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
 
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->width(), 20 );
-  city::TradeOptions& copt = city->getTradeOptions();
+  city::TradeOptions& copt = city->tradeOptions();
   for( int i=Good::wheat, indexOffset=0; i < Good::goodCount; i++ )
   {
     Good::Type gtype = Good::Type( i );

@@ -29,11 +29,11 @@ class VariantMap;
 namespace city
 {
 
-class WinTargets : public ReferenceCounted
+class VictoryConditions : public ReferenceCounted
 {
 public:
-  WinTargets();
-  ~WinTargets();
+  VictoryConditions();
+  ~VictoryConditions();
 
   int needCulture() const;
   int needProsperity() const;
@@ -52,7 +52,7 @@ public:
   void load( const VariantMap& stream );
   VariantMap save() const;
 
-  WinTargets& operator=(const WinTargets& a);
+  VictoryConditions& operator=(const VictoryConditions& a);
 
 private:
   class Impl;

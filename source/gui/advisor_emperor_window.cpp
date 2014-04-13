@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_emperor_window.hpp"
 #include "gfx/decorator.hpp"
@@ -84,7 +86,7 @@ public:
 
       font.draw( *pic, GoodHelper::getTypeName( gr->getGoodType() ), 60, 2 );
 
-      int month2comply = GameDate::current().getMonthToDate( gr->finishedDate() );
+      int month2comply = GameDate::current().monthsTo( gr->finishedDate() );
       font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
       font.draw( *pic, gr->getDescription(), 5, pic->height() - 20 );
     }
@@ -129,7 +131,7 @@ public:
 
   std::string getEmperorFavourStr()
   {
-    return StringHelper::format( 0xff, "##emperor_favour_%02d##", (int)(city->getFavour() / 100.f) * 20 );
+    return StringHelper::format( 0xff, "##emperor_favour_%02d##", (int)(city->favour() / 100.f) * 20 );
   }
 };
 
@@ -212,7 +214,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
                Size( 640, 432 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
-  title->setText( city->player()->getName() );
+  title->setText( city->player()->name() );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 
@@ -223,7 +225,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   //buttons _d->_d->background  
   PictureDecorator::draw( *_d->background, Rect( 66, 325, 66 + 510, 325 + 94 ), PictureDecorator::blackFrame );
   
-  _d->lbEmperorFavour = new gui::Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), StringHelper::format( 0xff, "%s %d", "##advemp_emperor_favour##", _d->city->getFavour() ) );
+  _d->lbEmperorFavour = new gui::Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), StringHelper::format( 0xff, "%s %d", "##advemp_emperor_favour##", _d->city->favour() ) );
   _d->lbEmperorFavourDesc = new gui::Label( this, _d->lbEmperorFavour->getRelativeRect() + Point( 0, 20 ), _d->getEmperorFavourStr() );
 
   _d->lbPost = new gui::Label( this, Rect( Point( 70, 336 ), Size( 240, 26 ) ), "Post");

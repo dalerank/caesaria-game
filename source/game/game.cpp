@@ -253,7 +253,7 @@ void Game::setScreenMenu()
       Logger::warning( "screen menu: end loading map" );
 
       city::BuildOptions bopts;
-      bopts = _d->city->getBuildOptions();
+      bopts = _d->city->buildOptions();
       bopts.setGroupAvailable( BM_MAX, true );
       _d->city->setBuildOptions( bopts );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
@@ -280,7 +280,7 @@ void Game::setScreenGame()
   screen.initialize();
   _d->currentScreen = &screen;
   GameDate& cdate = GameDate::instance();
-  _d->time = cdate.current().day() * GameDate::ticksInMonth() / cdate.current().daysInMonth();
+  _d->time = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth();
 
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )

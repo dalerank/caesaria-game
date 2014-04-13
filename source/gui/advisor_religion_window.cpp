@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_religion_window.hpp"
 #include "gfx/picture.hpp"
@@ -62,7 +64,7 @@ public:
 
     if( _divinity.isValid() )
     {
-      _lastFestival = _divinity->lastFestivalDate().getMonthToDate( GameDate::current() );
+      _lastFestival = _divinity->lastFestivalDate().monthsTo( GameDate::current() );
 
       font.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );

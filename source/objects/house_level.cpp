@@ -224,7 +224,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
 }
 
 unsigned int HouseSpecification::getServiceConsumptionInterval() const{  return _d->srvcInterval;}
-unsigned int HouseSpecification::getFoodConsumptionInterval() const{  return _d->foodInterval; }
+unsigned int HouseSpecification::foodConsumptionInterval() const{  return _d->foodInterval; }
 unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->goodInterval; }
 
 int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement)
@@ -560,9 +560,9 @@ HouseSpecification::~HouseSpecification() {}
 
 HouseSpecification::HouseSpecification() : _d( new Impl )
 {
-  _d->srvcInterval = GameDate::ticksInMonth() / 16;
-  _d->foodInterval = GameDate::ticksInMonth();
-  _d->goodInterval = GameDate::ticksInMonth() / 2;
+  _d->srvcInterval = GameDate::days2ticks( 2 );
+  _d->foodInterval = GameDate::days2ticks( 30 );
+  _d->goodInterval = GameDate::days2ticks( 15 );
 }
 
 HouseSpecification::HouseSpecification( const HouseSpecification& other ) : _d( new Impl )

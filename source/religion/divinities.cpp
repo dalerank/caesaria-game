@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "divinities.hpp"
 #include "gfx/picture.hpp"
@@ -34,10 +36,6 @@ namespace religion
 namespace rome
 {
 
-namespace {
-  int minMoodByPop[]
-}
-
 void RomeDivinity::load(const VariantMap& vm)
 {
   if( vm.empty() )
@@ -49,6 +47,11 @@ void RomeDivinity::load(const VariantMap& vm)
   _relation = (float)vm.get( "relation", 100.f );
   _lastFestival = vm.get( "lastFestivalDate", GameDate::current() ).toDateTime() ;
   _shortDesc = vm.get( "shortDesc" ).toString();
+  _wrathPoints = vm.get( "wrath" );
+  _blessingDone = vm.get( "blessingDone" );
+  _smallCurseDone = vm.get( "smallCurseDone");
+  _needRelation = vm.get( "needRelation" );
+  _effectPoints = vm.get( "effectPoints" );
 
   Variant value = vm.get( "moodDescription" );
   if( value.isValid() )
@@ -88,22 +91,44 @@ VariantMap RomeDivinity::save() const
   ret[ "image" ] = Variant( _pic.name() );
   ret[ "relation" ] = _relation;
   ret[ "lastFestivalDate" ] = _lastFestival;
-  ret[ "lastActionDate"] = _lastActionDate;
   ret[ "shortDesc" ] = Variant( _shortDesc );
+  ret[ "wrath" ] = _wrathPoints;
+  ret[ "blessingDone" ] = _blessingDone;
+  ret[ "smallCurseDone" ] = _smallCurseDone;
+  ret[ "needRelation" ] = _needRelation;
+  ret[ "effectPoints" ] = _effectPoints;
 
   return ret;
 }
 
 float RomeDivinity::relation() const
 {
-  int festivalFactor = 12 - std::min( 40, _lastFestival.getMonthToDate( GameDate::current() ) );
+  int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );
   return _relation + festivalFactor;
 }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
-  int minMoodbyPop = 50 - math::clamp( city->getPopulation() / 10, 0, 50 );
-  _relation = math::clamp<float>( _relation + (income - monthDecrease()) * cityBalanceKoeff, minMoodbyPop, 100 );
+  int minMoodbyPop = 50 - math::clamp( city->population() / 10, 0, 50 );
+  _needRelation = math::clamp<float>( _needRelation + (income - monthDecrease()), minMoodbyPop, 100 );
+
+  _relation += math::signnum( (_needRelation + _effectPoints) - _relation );
+
+  if( _relation <= 50 )
+  {
+    _blessingDone = false;
+    int wrathDelta = 0;
+    if( _relation > 0 && _relation < 10 ) { wrathDelta = 5; }
+    else if( _relation >= 10 && _relation < 20 ) { wrathDelta = 2; }
+    else if( _relation >= 20 && _relation < 40 ) { wrathDelta = 1; }
+    _wrathPoints = math::clamp<int>( _wrathPoints + wrathDelta, 0, 50 );
+  }
+
+  if( _relation >= 50 )
+  {
+    _smallCurseDone = false;
+    _wrathPoints = 0;
+  }
 }
 
 std::string RomeDivinity::moodDescription() const
@@ -115,9 +140,35 @@ std::string RomeDivinity::moodDescription() const
   return _moodDescr[ math::clamp<int>( _relation / delim, 0, _moodDescr.size()-1 ) ];
 }
 
+void RomeDivinity::checkAction( PlayerCityPtr city )
+{
+  if( _relation >= 100 && !_blessingDone )
+  {
+    _doBlessing( city );
+    _blessingDone = true;
+    _relation -= 50;
+  }
+  else if( _wrathPoints >= 20 && !_smallCurseDone && _lastFestival.monthsTo( GameDate::current() ) > 3 )
+  {
+    _doSmallCurse( city );
+    _smallCurseDone = true;
+    _wrathPoints = 0;
+    _relation += 12;
+  }
+  else if( _wrathPoints >= 50 && _lastFestival.monthsTo( GameDate::current() ) > 3 )
+  {
+    _doWrath( city );
+    _wrathPoints = 0;
+    _relation += 30;
+  }
+}
+
 RomeDivinity::RomeDivinity()
 {
-  _relation = 0;
+  _relation = 50;
+  _needRelation = 50;
+  _blessingDone = 0;
+  _smallCurseDone = 0;
 }
 
 void RomeDivinity::setInternalName(const std::string& newName){  setDebugName( newName );}

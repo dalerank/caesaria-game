@@ -134,7 +134,7 @@ void Factory::timeStep(const unsigned long time)
   WorkingBuilding::timeStep(time);
 
   //try get good from storage building for us
-  if( time % (GameDate::ticksInMonth()/4) == 1 )
+  if( GameDate::isWeekChanged() )
   {
     if( numberWorkers() > 0 && walkers().size() == 0 )
     {
@@ -171,17 +171,10 @@ void Factory::timeStep(const unsigned long time)
   {
     if( _d->produceGood )
     {
-      _animationRef().update( time );
-      const Picture& pic = _animationRef().currentFrame();
-      if( pic.isValid() && !_fgPicturesRef().empty() )
-      {
-        // animation of the working factory
-        _fgPicturesRef().back() = _animationRef().currentFrame();
-      }
-
       //ok... factory is work, produce goods
+
       float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
-      float timeKoeff = 1 / (float)GameDate::ticksInMonth();
+      float timeKoeff = 1 / (float)GameDate::days2ticks( 365 );
       float work = 100.f * timeKoeff * (_d->productionRate / DateTime::monthsInYear) * workersRatio;  // work is proportional to time and factory speed
 
       _d->progress += work;

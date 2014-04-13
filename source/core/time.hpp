@@ -54,15 +54,15 @@ public:
 
     DateTime( time_t time );
 
-    DateTime getDate() const;
+    DateTime date() const;
 
     DateTime getTime() const;
 
-    int getDaysToDate( const DateTime& future ) const;
+    int daysTo( const DateTime& future ) const;
 
     int equale( const DateTime& b );
 
-    int getMonthToDate( const DateTime& end ) const;
+    int monthsTo( const DateTime& end ) const;
 
     DateTime& appendMonth( int month=1 );
     DateTime& appendWeek( int weekNumber=1 );

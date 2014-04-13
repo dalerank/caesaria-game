@@ -59,7 +59,10 @@ public:
   virtual std::string moodDescription() const = 0;
   virtual void load( const VariantMap& vm ) = 0;
   virtual VariantMap save() const = 0;
+  virtual void setEffectPoint( int value ) = 0;
   virtual void setInternalName(const std::string &newName) = 0;
+  virtual int wrathPoints() const = 0;
+  virtual void checkAction( PlayerCityPtr city ) = 0;
   virtual std::string internalName() const = 0;
 };
 

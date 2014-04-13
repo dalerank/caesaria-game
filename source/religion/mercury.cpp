@@ -42,15 +42,9 @@ DivinityPtr Mercury::create()
 void Mercury::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    _wrath( city );
-  }
 }
 
-void Mercury::_wrath(PlayerCityPtr city)
+void Mercury::_doWrath(PlayerCityPtr city)
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_mercury_title##"),
                                                             _("##wrath_of_mercury_description##"),
@@ -74,6 +68,16 @@ void Mercury::_wrath(PlayerCityPtr city)
       }
     }
   }
+}
+
+void Mercury::_doSmallCurse(PlayerCityPtr city)
+{
+
+}
+
+void Mercury::_doBlessing(PlayerCityPtr city)
+{
+
 }
 
 }//end namespace rome

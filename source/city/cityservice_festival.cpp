@@ -20,17 +20,29 @@
 #include "city.hpp"
 #include "religion/pantheon.hpp"
 #include "events/showfeastwindow.hpp"
+#include "events/updatecitysentiment.hpp"
 
 using namespace religion;
 
 namespace city
 {
 
+namespace {
+  typedef enum { ftSmall=0, ftMiddle, ftBig, ftCount } FestType;
+  int firstFestivalSentinment[ftCount] = { 7, 9, 12 };
+  int secondFesivalSentiment[ftCount] = { 2, 3, 5 };
+
+  const char* festivalTitles[ftCount] = { "##small_festival##", "##middle_festival##", "##great_festival##" };
+  const char* festivalDesc[ftCount] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
+}
+
 class Festival::Impl
 {
 public:
+  DateTime prevFestivalDate;
   DateTime lastFestivalDate;
   DateTime festivalDate;
+
   RomeDivinityType divinity;  
   int festivalType;
 };
@@ -44,43 +56,56 @@ SrvcPtr Festival::create(PlayerCityPtr city )
 }
 
 std::string Festival::getDefaultName() {  return "festival";}
-DateTime Festival::getLastFestivalDate() const{  return _d->lastFestivalDate;}
-DateTime Festival::getNextFestivalDate() const{  return _d->festivalDate; }
+DateTime Festival::lastFestivalDate() const{  return _d->lastFestivalDate;}
+DateTime Festival::nextFestivalDate() const{  return _d->festivalDate; }
 
 void Festival::assignFestival( RomeDivinityType name, int size )
 {
   _d->festivalType = size;
   _d->festivalDate = GameDate::current();
-  _d->festivalDate.appendMonth( size * 3 );
+  _d->festivalDate.appendMonth( 2 + size );
   _d->divinity = name;
 }
 
 Festival::Festival(PlayerCityPtr city )
 : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
-  _d->lastFestivalDate = DateTime( -350, 0, 0 );
+  _d->lastFestivalDate = GameDate::current();
   _d->festivalDate = DateTime( -550, 0, 0 );
+  _d->prevFestivalDate = DateTime( -550, 0, 0 );
 }
 
 void Festival::update( const unsigned int time )
 {
-  if( time % (GameDate::ticksInMonth() / 2) != 1 )
+  if( !GameDate::isWeekChanged() )
     return;
 
-  const DateTime current = GameDate::current();
-  if( _d->festivalDate.year() == current.year()
-      && _d->festivalDate.month() == current.month() )
+  const DateTime currentDate = GameDate::current();
+  if( _d->festivalDate.year() == currentDate.year()
+      && _d->festivalDate.month() == currentDate.month() )
   {
-    _d->lastFestivalDate = GameDate::current();
+    int sentimentValue = 0;
+
+    if( _d->prevFestivalDate.monthsTo( currentDate ) >= 12 )
+    {
+      int* sentimentValues = (_d->lastFestivalDate.monthsTo( GameDate::current() ) < 12)
+                                  ? secondFesivalSentiment
+                                  : firstFestivalSentinment;
+
+      sentimentValue = sentimentValues[ _d->festivalType ];
+    }
+
+    _d->prevFestivalDate = _d->lastFestivalDate;
+    _d->lastFestivalDate = currentDate;
     _d->festivalDate = DateTime( -550, 1, 1 );
 
     rome::Pantheon::doFestival( _d->divinity, _d->festivalType );
 
-    const char* titles[3] = { "##small_festival##", "##middle_festival##", "##great_festival##" };
-    const char* text[3] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
     int id = math::clamp<int>( _d->festivalType, 0, 3 );
-    events::GameEventPtr e = events::ShowFeastWindow::create( text[ id ], titles[ id ],
-                                                              _city.player()->getName() );
+    events::GameEventPtr e = events::ShowFeastWindow::create( festivalDesc[ id ], festivalTitles[ id ], _city.player()->name() );
+    e->dispatch();
+
+    e = events::UpdateCitySentiment::create( sentimentValue );
     e->dispatch();
   }
 }
@@ -89,6 +114,7 @@ VariantMap Festival::save() const
 {
   VariantMap ret;
   ret[ "lastDate" ] = _d->lastFestivalDate;
+  ret[ "prevDate" ] = _d->prevFestivalDate;
   ret[ "nextDate" ] = _d->festivalDate;
   ret[ "divinity" ] = (int)_d->divinity;
   ret[ "festival" ] = _d->festivalType;
@@ -99,6 +125,7 @@ VariantMap Festival::save() const
 void Festival::load(VariantMap stream)
 {
   _d->lastFestivalDate = stream[ "lastDate" ].toDateTime();
+  _d->prevFestivalDate = stream[ "prevDate" ].toDateTime();
   _d->festivalDate = stream[ "nextDate" ].toDateTime();
   _d->divinity = (RomeDivinityType)stream[ "divinity" ].toInt();
   _d->festivalType = (int)stream[ "festival" ];

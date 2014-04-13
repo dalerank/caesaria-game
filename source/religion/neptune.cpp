@@ -42,15 +42,9 @@ DivinityPtr Neptune::create()
 void Neptune::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    _wrath( city );
-  }
 }
 
-void Neptune::_wrath(PlayerCityPtr city)
+void Neptune::_doWrath(PlayerCityPtr city)
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
                                                             _("##wrath_of_neptune_description##"),
@@ -68,6 +62,16 @@ void Neptune::_wrath(PlayerCityPtr city)
     (*it)->deleteLater();
     boats.erase( it );
   }
+}
+
+void Neptune::_doSmallCurse(PlayerCityPtr city)
+{
+
+}
+
+void Neptune::_doBlessing(PlayerCityPtr city)
+{
+
 }
 
 }//end namespace rome

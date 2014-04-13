@@ -47,11 +47,11 @@ void _convertToDateTime( DateTime& dateTime, const tm& val )
 }
 
 int DateTime::_getDaysToDate( const long other ) const {    return abs( (int)(_toJd() - other ) );}
-int DateTime::getDaysToDate( const DateTime& future ) const{    return _getDaysToDate( future._toJd() );}
+int DateTime::daysTo( const DateTime& future ) const{    return _getDaysToDate( future._toJd() );}
 int DateTime::_isEquale( const long b ){    return _toJd() == b ? dateEquale : (_toJd() < b ? dateLess : dateMore ) ;}
 int DateTime::equale( const DateTime& b ){    return _isEquale( b._toJd() );}
 int DateTime::_getMonthToDate( const long end ) const {    return _getDaysToDate( end ) / 30;}
-int DateTime::getMonthToDate( const DateTime& end ) const {    return _getMonthToDate( end._toJd() );}
+int DateTime::monthsTo( const DateTime& end ) const {    return _getMonthToDate( end._toJd() );}
 bool DateTime::operator!=( const DateTime& other ) const{    return _toJd() != other._toJd();}
 bool DateTime::operator==( const DateTime& other ) const{    return _toJd() == other._toJd();}
 bool DateTime::operator<=( const DateTime& other ) const{    return _toJd() <= other._toJd();}
@@ -110,21 +110,21 @@ DateTime& DateTime::appendMonth( int m/*=1 */ )
 
 DateTime&DateTime::appendWeek(int weekNumber){  return appendDay( weekNumber * 7 ); }
 
-DateTime DateTime::getDate() const
+DateTime DateTime::date() const
 {
-    DateTime ret( *this );
-    ret._minutes = ret._hour = ret._seconds = 0;
-    return ret;
+  DateTime ret( *this );
+  ret._minutes = ret._hour = ret._seconds = 0;
+  return ret;
 }
 
 DateTime::DateTime( const DateTime& time )
 {
-    _seconds = time._seconds;
-    _minutes = time._minutes;
-    _hour = time._hour;
-    _day = time._day;
-    _month = time._month;
-    _year = time._year;
+  _seconds = time._seconds;
+  _minutes = time._minutes;
+  _hour = time._hour;
+  _day = time._day;
+  _month = time._month;
+  _year = time._year;
 }
 
 DateTime::DateTime( const char* strValue )
@@ -136,19 +136,19 @@ DateTime::DateTime( const char* strValue )
 DateTime::DateTime( int y, unsigned char m, unsigned char d, 
                     unsigned char h, unsigned char mm, unsigned char s )
 {
-   _year = y;
-   _month = m;
-   _day = d;
-   _hour = h;
-   _minutes = mm;
-   _seconds = s;
+  _year = y;
+  _month = m;
+  _day = d;
+  _hour = h;
+  _minutes = mm;
+  _seconds = s;
 }
 
 DateTime::DateTime()
 {
-    _seconds = _minutes = _hour = 0;
-    _year = -9999;
-    _day = _month = 0;
+  _seconds = _minutes = _hour = 0;
+  _year = -9999;
+  _day = _month = 0;
 }
 
 unsigned char DateTime::hour() const {    return _hour;}
@@ -190,19 +190,6 @@ int DateTime::daysInMonth() const
                 :( ((!(_year % 400) || !( _year % 4 )) && ( _year % 25 )) ? 29 : 28 )
            );
 }
-
-/*unsigned char DateTime::getWeekNumber() const
-{
-    tm beginTime;
-    beginTime.tm_hour = beginTime.tm_min = beginTime.tm_sec = 0;
-    beginTime.tm_year = getYear() - 1900;
-    beginTime.tm_mon = 0;
-    beginTime.tm_mday = 1; //
-    time_t crtDay = mktime( &beginTime );
-    tm d = _getOsLocalTime( crtDay );
-    int _1_jan_day_of_week = (d.tm_wday+5)%7; //
-    return (int)((to_time_t()-crtDay)/(24*60*60) + _1_jan_day_of_week)/7; //
-}*/
 
 DateTime DateTime::getTime() const
 {

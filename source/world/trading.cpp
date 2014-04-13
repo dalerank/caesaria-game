@@ -33,17 +33,15 @@ public:
   EmpirePtr empire;
   typedef std::map< unsigned int, TraderoutePtr > TradeRoutes;
   TradeRoutes routes;
-  int updateInterval;
 };
 
 Trading::Trading() : _d( new Impl )
 {
-  _d->updateInterval = GameDate::ticksInMonth() / 20;
 }
 
 void Trading::update( unsigned int time )
 {
-  if( time % _d->updateInterval == 1 )
+  if( GameDate::isDayChanged() )
   {
     foreach( it,_d->routes )
     {

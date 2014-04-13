@@ -1,9 +1,9 @@
 {  
  title : "##tutorial_first_collapse##"
  items : [ "##tutorial_engineer_info##",
-           "@img=picture2_00010.png", 
+           "@img=picture2_00010",
            "##tutorial_engineer_senate##",
-           "@img=picture2_00011.png",
+           "@img=picture2_00011",
            "##tutorial_collapse_building##",
-           "@img=picture2_00012.png" ]
+           "@img=picture2_00012" ]
 }

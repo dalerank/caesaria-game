@@ -58,7 +58,7 @@ VariantMap CityIndebt::save() const
 
 bool CityIndebt::_mayExec(Game& game, unsigned int time) const
 {
-  if( time % GameDate::ticksInMonth() == 1 )
+  if( GameDate::isWeekChanged() )
   {
     if( game.city()->funds().treasury() < 0 )
     {

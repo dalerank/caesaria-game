@@ -41,23 +41,9 @@ DivinityPtr Venus::create()
 void Venus::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
-
-  int monthFromLastAction = _lastActionDate.getMonthToDate( GameDate::current() );
-  if( relation() < 1 && monthFromLastAction > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    _wrath( city );
-  }
-
-  if( relation() > 98 && monthFromLastAction > 8 )
-  {
-    _lastActionDate = GameDate::current();
-
-    _blessing( city );
-  }
 }
 
-void Venus::_wrath( PlayerCityPtr city )
+void Venus::_doWrath( PlayerCityPtr city )
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_venus_title##"),
                                                             _("##wrath_of_venus_description##"),
@@ -66,11 +52,16 @@ void Venus::_wrath( PlayerCityPtr city )
 
 }
 
-void Venus::_blessing(PlayerCityPtr city)
+void Venus::_doBlessing(PlayerCityPtr city)
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##blessing_of_venus_title##"),
                                                             _("##blessing_of_venus_description##") );
   event->dispatch();
+}
+
+void Venus::_doSmallCurse(PlayerCityPtr city)
+{
+
 }
 
 }//end namespace rome

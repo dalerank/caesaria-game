@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_prosperity.hpp"
 #include "city/helper.hpp"
@@ -73,14 +75,14 @@ ProsperityRating::ProsperityRating(PlayerCityPtr city )
 
 void ProsperityRating::update( const unsigned int time )
 {
-  if( time % (GameDate::ticksInMonth()/2) != 1 )
+  if( !GameDate::isMonthChanged() )
     return;
 
   if( abs( GameDate::current().year() - _d->lastDate.year() ) == 1 )
   {
     _d->lastDate = GameDate::current();
 
-    if( _city.getPopulation() == 0 )
+    if( _city.population() == 0 )
     {
       _d->prosperity = 0;
       _d->prosperityExtend = 0;
@@ -114,10 +116,10 @@ void ProsperityRating::update( const unsigned int time )
     _d->lastYearBalance = currentFunds;
     _d->prosperityExtend = (_d->makeProfit ? 2 : -1);
 
-    bool more10PercentIsPatrician = (patricianCount / (float)_city.getPopulation()) > 0.1;
+    bool more10PercentIsPatrician = (patricianCount / (float)_city.population()) > 0.1;
     _d->prosperityExtend += (more10PercentIsPatrician ? 1 : 0);
 
-    _d->percentPlebs = plebsCount * 100/ (float)_city.getPopulation();
+    _d->percentPlebs = plebsCount * 100/ (float)_city.population();
     _d->prosperityExtend += (_d->percentPlebs < 30 ? 1 : 0);
 
     bool haveHippodrome = !helper.find<Hippodrome>( building::hippodrome ).empty();

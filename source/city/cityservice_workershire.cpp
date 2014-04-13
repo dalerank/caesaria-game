@@ -141,7 +141,7 @@ void WorkersHire::_hireByType(const TileOverlay::Type type )
 
 void WorkersHire::update( const unsigned int time )
 {
-  if( time % (GameDate::ticksInMonth()/2) != 1 )
+  if( !GameDate::isWeekChanged() )
     return;
 
   //unsigned int vacantPop=0;

@@ -13,33 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
-#define _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_UPDATECITYSENTIMENT_H_INCLUDE_
+#define _CAESARIA_EVENT_UPDATECITYSENTIMENT_H_INCLUDE_
 
-#include "widget.hpp"
-#include "core/signals.hpp"
+#include "event.hpp"
 
-namespace gui
+namespace events
 {
 
-class AndroidActionsBar : public Widget
+class UpdateCitySentiment : public GameEvent
 {
 public:
-  virtual void beforeDraw( gfx::Engine& painter);
-  AndroidActionsBar( Widget* parent );
+  static GameEventPtr create( int value );
 
-public oc3_signals:
-  Signal0<>& onRequestTileHelp();
-  Signal0<>& onEscapeClicked();
-  Signal0<>& onRequestMenu();
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &, unsigned int) const;
 
 private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+  int _value;
 };
 
-}//end namesapce gui
+}
 
-#endif //_CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+#endif //_CAESARIA_EVENT_UPDATECITYSENTIMENT_H_INCLUDE_

@@ -72,7 +72,7 @@ void FishingBoat::timeStep(const unsigned long time)
 {
   Ship::timeStep( time );
 
-  if( _d->dateUpdate.getDaysToDate( GameDate::current() ) > 0 )
+  if( _d->dateUpdate.daysTo( GameDate::current() ) > 0 )
   {
     _d->dateUpdate = GameDate::current();
 

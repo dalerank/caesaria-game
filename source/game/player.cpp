@@ -59,6 +59,6 @@ void Player::appendMoney( int money ){  _d->funds += money;}
 int Player::money() const{  return _d->funds;}
 Player::~Player(){}
 void Player::setName( const std::string& name ){  _d->name = name;}
-std::string Player::getName() const{  return _d->name;}
+std::string Player::name() const{  return _d->name;}
 int Player::salary() const{  return _d->salary;}
 void Player::setSalary(  int value ){  _d->salary = value;}

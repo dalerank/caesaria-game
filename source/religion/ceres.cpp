@@ -42,23 +42,9 @@ DivinityPtr Ceres::create()
 void Ceres::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
-
-  int monthFromLastAction = _lastActionDate.getMonthToDate( GameDate::current() );
-  if( relation() < 1 && monthFromLastAction > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    _wrath( city );
-  }
-
-  if( relation() > 98 && monthFromLastAction > 8 )
-  {
-    _lastActionDate = GameDate::current();
-
-    _blessing( city );
-  }
 }
 
-void Ceres::_wrath( PlayerCityPtr city )
+void Ceres::_doWrath( PlayerCityPtr city )
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
                                                             _("##wrath_of_ceres_description##"),
@@ -74,7 +60,7 @@ void Ceres::_wrath( PlayerCityPtr city )
   }
 }
 
-void Ceres::_blessing(PlayerCityPtr city)
+void Ceres::_doBlessing(PlayerCityPtr city)
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##blessing_of_ceres_title##"),
                                                             _("##blessing_of_ceres_description##") );
@@ -85,8 +71,13 @@ void Ceres::_blessing(PlayerCityPtr city)
 
   foreach( farm, farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 0.1, GameDate::ticksInMonth() * 2 );
+    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 0.1, GameDate::days2ticks( 60 ) );
   }
+}
+
+void Ceres::_doSmallCurse(PlayerCityPtr city)
+{
+
 }
 
 }//end namespace rome

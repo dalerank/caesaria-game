@@ -290,7 +290,7 @@ void Reservations::removeExpired(DateTime currentDate, int monthNumber)
   for( iterator i=begin(); i != end(); )
   {
     DateTime date = i->time;
-    if( date.getMonthToDate( currentDate ) > monthNumber ) { erase( i++ ); }
+    if( date.monthsTo( currentDate ) > monthNumber ) { erase( i++ ); }
     else { ++i; }
   }
 }

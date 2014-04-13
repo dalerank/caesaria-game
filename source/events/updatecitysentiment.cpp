@@ -15,24 +15,36 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
-#define _CAESARIA_EVENT_WINMISSION_H_INCLUDE_
-
-#include "event.hpp"
+#include "updatecitysentiment.hpp"
+#include "game/game.hpp"
+#include "city/city.hpp"
+#include "city/cityservice_sentiment.hpp"
 
 namespace events
 {
 
-class WinMission : public GameEvent
+GameEventPtr UpdateCitySentiment::create( int value )
 {
-public:
-  static GameEventPtr create();
+  UpdateCitySentiment* e = new UpdateCitySentiment();
+  e->_value = value;
 
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int) const;
-};
+  GameEventPtr ret( e );
+  ret->drop();
 
+  return ret;
 }
 
-#endif //_CAESARIA_EVENT_WINMISSION_H_INCLUDE_
+bool UpdateCitySentiment::_mayExec(Game&, unsigned int) const {  return true; }
+
+void UpdateCitySentiment::_exec(Game& game, unsigned int)
+{
+  PlayerCityPtr city = game.city();
+
+  SmartPtr<city::Sentiment> srvc = ptr_cast<city::Sentiment>( city->findService( city::Sentiment::getDefaultName() ) );
+  if( srvc.isValid() )
+  {
+    srvc->update( _value );
+  }
+}
+
+}

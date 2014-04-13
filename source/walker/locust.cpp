@@ -35,7 +35,6 @@ public:
   int time;
   bool loop;
   Picture picture;
-  int grubInterval;
 };
 
 WalkerPtr Locust::create(PlayerCityPtr city)
@@ -64,7 +63,6 @@ Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
   _setType( walker::locust );
 
   _d->time = 0;
-  _d->grubInterval = GameDate::ticksInMonth() / 2;
 
   setName( _("##locust##") );
   _setHealth( 0 );
@@ -78,7 +76,7 @@ void Locust::timeStep(const unsigned long time)
 {
   _d->counter++;
 
-  if( time % _d->grubInterval == 1 )
+  if( GameDate::isWeekChanged() )
   {
     city::Helper helper( _city() );
     FarmPtr farm = helper.find<Farm>( building::any, pos() );
