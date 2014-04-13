@@ -173,7 +173,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     {
      realPath = name + *itExt;
 
-      if( realFilename.exist() )
+      if( realPath.exist() )
       {
         break;
       }

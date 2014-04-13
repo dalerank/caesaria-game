@@ -87,7 +87,7 @@
     notes : { dragWater : 6, fightFire : 7 }
     move : { rc : "citizen02", start : 615, frames : 12, action : 1, step : 8 }
     dragWater : { rc : "citizen02", start : 767, frames : 12, action : 6, step : 8 }
-    fightFire : { rc : "citizen02", start : 863, frames : 6, action : 7, step : 8 }
+    fightFire : { rc : "citizen02", start : 863, frames : 6, action : 7, step : 8, delay : 3 }
     fight : { rc : "citizen02", start : 719, frames : 6, action : 2, step : 8 }
   }
 

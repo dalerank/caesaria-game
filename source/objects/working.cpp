@@ -137,7 +137,7 @@ void WorkingBuilding::_updateAnimation( const unsigned int time )
     {
       if( _animationRef().isRunning() )
       {
-        if( _d->clearAnimationOnStop )
+        if( _d->clearAnimationOnStop && !_fgPicturesRef().empty() )
         {
           _fgPicturesRef().back() = Picture::getInvalid();
         }

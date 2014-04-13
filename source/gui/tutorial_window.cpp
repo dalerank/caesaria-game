@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "tutorial_window.hpp"
 #include "core/saveadapter.hpp"
@@ -19,6 +21,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "game/settings.hpp"
+#include "events/playsound.hpp"
 #include "core/stringhelper.hpp"
 #include "core/gettext.hpp"
 #include "texturedbutton.hpp"
@@ -52,7 +55,14 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
 
   StringArray items = vm.get( "items" ).toStringArray();
   std::string title = vm.get( "title" ).toString();
+  std::string sound = vm.get( "sound" ).toString();
+
   if( lbTitle ) lbTitle->setText( _( title ) );
+  if( !sound.empty() )
+  {
+    events::GameEventPtr e = events::PlaySound::create( sound, 100 );
+    e->dispatch();
+  }
 
   const std::string imgSeparator = "@img=";
   foreach( it, items )
