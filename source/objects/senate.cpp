@@ -112,7 +112,7 @@ void Senate::_updateRatings()
 
 void Senate::timeStep(const unsigned long time)
 {
-  if( time % GameDate::ticksInMonth() == 1 )
+  if( GameDate::isMonthChanged() )
   {
     _updateUnemployers();
     _updateRatings();

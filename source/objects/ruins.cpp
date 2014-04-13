@@ -50,10 +50,8 @@ void BurningRuins::timeStep(const unsigned long time)
      _fgPicturesRef().back() = _animationRef().currentFrame();
   }
 
-  if( time % (GameDate::ticksInMonth() / 8) == 0 )
+  if( GameDate::isDayChanged() )
   {
-    _animationRef().setDelay( math::random( 6 ) );
-
     TilePos offset( 2, 2 );
     city::Helper helper( _city() );
     BuildingList buildings = helper.find<Building>( building::any, pos() - offset, pos() + offset );
@@ -62,13 +60,10 @@ void BurningRuins::timeStep(const unsigned long time)
     {
       if( (*it)->getClass() != building::disasterGroup )
       {
-        (*it)->updateState( Construction::fire, 0.5 );
+        (*it)->updateState( Construction::fire, 1 );
       }
     }
-  }
 
-  if (time % (GameDate::ticksInMonth() / 16) == 0 )
-  {
     if( getState( Construction::fire ) > 0 )
     {
       updateState( Construction::fire, -1 );
@@ -85,14 +80,19 @@ void BurningRuins::timeStep(const unsigned long time)
         _animationRef().clear();
         _animationRef().load(ResourceGroup::land2a, 224, 8);
         _animationRef().setOffset( Point( 14, 18 ) );
-      }      
+      }
     }
     else
     {
       deleteLater();
       _animationRef().clear();
       _fgPicturesRef().clear();
-    }        
+    }
+  }
+
+  if( GameDate::isWeekChanged() )
+  {
+    _animationRef().setDelay( math::random( 6 ) );
   }
 }
 
@@ -214,7 +214,7 @@ void PlagueRuins::timeStep(const unsigned long time)
   _animationRef().update( time );
   _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
 
-  if (time % GameDate::ticksInMonth() / 16 == 0 )
+  if( GameDate::isDayChanged() )
   {
     if( getState( Construction::fire ) > 0 )
     {

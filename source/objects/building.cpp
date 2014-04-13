@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "building.hpp"
 
@@ -52,7 +53,7 @@ Building::Building(const TileOverlay::Type type, const Size& size )
 {
   setState( Construction::inflammability, 1 );
   setState( Construction::collapsibility, 1 );
-  _d->stateDecreaseInterval = GameDate::ticksInMonth() / 25;
+  _d->stateDecreaseInterval = GameDate::days2ticks( 1 );
 }
 
 Building::~Building() {}
@@ -72,7 +73,7 @@ void Building::initTerrain( Tile &tile )
 
 void Building::timeStep(const unsigned long time)
 {
-  if( time % _d->stateDecreaseInterval == 1)
+  if( time % _d->stateDecreaseInterval == 1 )
   {
     updateState( Construction::damage, getState( Construction::collapsibility ) );
     updateState( Construction::fire, getState( Construction::inflammability ) );
@@ -143,7 +144,7 @@ float Building::evaluateTrainee(walker::Type traineeType)
       return 0.0;
    }
 
-   int trValue = getTraineeValue( traineeType );
+   int trValue = traineeValue( traineeType );
    if( trValue >= 0 )
    {
       res = (float)( 100 - trValue );
@@ -166,62 +167,10 @@ void Building::setTraineeValue(walker::Type type, int value)
   _d->traineeMap[ type ] = value;
 }
 
-int Building::getTraineeValue(walker::Type traineeType) const
+int Building::traineeValue(walker::Type traineeType) const
 {
   Impl::TraineeMap::iterator i = _d->traineeMap.find( traineeType );
   return i != _d->traineeMap.end() ? i->second : -1;
 }
 
 Renderer::PassQueue Building::getPassQueue() const {  return buildingPassQueue;}
-
-
-
-// govt     1  - small statue        1 x 1
-// govt     2  - medium statue       2 x 2
-// govt     3  - big statue          3 x 3
-
-// land3a 43 44 - triumphal arch
-// land3a 45 46 - triumphal arch
-
-// transport 93 - missionaire post   2 x 2
-// circus    1 ~ 18 hippodrome    5x(5 x 5)
-
-SmallStatue::SmallStatue() : Building( building::smallStatue, Size(1) )
-{
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
-
-  setPicture( ResourceGroup::govt, 1 );
-}
-
-bool SmallStatue::isNeedRoadAccess() const {  return false; }
-
-MediumStatue::MediumStatue() : Building( building::middleStatue, Size(2) )
-{
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
-
-  setPicture( ResourceGroup::govt, 2);
-}
-
-bool MediumStatue::isNeedRoadAccess() const {  return false; }
-
-BigStatue::BigStatue() : Building( building::bigStatue, Size(3))
-{
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
-
-  setPicture( ResourceGroup::govt, 3 );
-}
-
-bool BigStatue::isNeedRoadAccess() const {  return false;}
-
-// second arch pictures is land3a 45 + 46	
-TriumphalArch::TriumphalArch() : Building( building::triumphalArch, Size(3) )
-{
-  setPicture( ResourceGroup::land3a, 43 );
-  _animationRef().load("land3a", 44, 1);
-  _animationRef().setOffset( Point( 63, 97 ) );
-  _fgPicturesRef().resize(1);
-  _fgPicturesRef()[0] = _animationRef().currentFrame();
-}

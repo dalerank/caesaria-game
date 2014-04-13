@@ -43,7 +43,7 @@ Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Siz
   //setPicture( ResourceGroup::utilitya, 10 );
 
   _haveReservoirWater = false;
-  _waterIncreaseInterval = GameDate::ticksInMonth() / 3;
+  _waterIncreaseInterval = GameDate::days2ticks( 7 );
   _fgPicturesRef().resize(1);
   _initAnimation();
   _lastPicId = simpleFountain;
@@ -94,7 +94,7 @@ void Fountain::timeStep(const unsigned long time)
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
   }
 
-  if( time % (GameDate::ticksInMonth()/2) == 1 )
+  if( GameDate::isWeekChanged() )
   {
     int desPic[] = { simpleFountain, prettyFountain, awesomeFountain, patricianFountain };
     int currentId = desPic[ math::clamp<int>( tile().getDesirability() / 25, 0, 3 ) ];

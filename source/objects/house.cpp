@@ -264,7 +264,7 @@ void House::timeStep(const unsigned long time)
     cancelService( Service::recruter );
   }
 
-  if( time % getSpec().getFoodConsumptionInterval() == 0 )
+  if( time % getSpec().foodConsumptionInterval() == 0 )
   {
     _d->consumeFoods( this );
   }
@@ -981,7 +981,8 @@ void House::Impl::consumeFoods(HousePtr house)
   if( foodLevel == 0 )
     return;
 
-  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::ticksInMonth();
+
+  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / GameDate::days2ticks( 30 );
 
   int availableFoodLevel = 0;
   for( int afl=Good::wheat; afl <= Good::vegetable; afl++ )

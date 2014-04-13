@@ -76,7 +76,7 @@ void Colosseum::deliverService()
 
 Service::Type Colosseum::serviceType() const
 {
-  int lionValue = getTraineeValue( walker::lionTamer );
+  int lionValue = traineeValue( walker::lionTamer );
   return lionValue > 0 ? Service::colloseum : Service::amphitheater;
 }
 

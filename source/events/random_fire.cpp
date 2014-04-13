@@ -17,7 +17,7 @@
 
 #include "random_fire.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/city.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
@@ -46,24 +46,23 @@ GameEventPtr RandomFire::create()
 
 void RandomFire::_exec( Game& game, unsigned int time)
 {
-  if( time % GameDate::ticksInMonth() == 0 && !_d->isDeleted )
+  int population = game.city()->population();
+  if( population > _d->minPopulation && population < _d->maxPopulation )
   {
-    int population = game.city()->population();
-    if( population > _d->minPopulation && population < _d->maxPopulation )
-    {
-      Logger::warning( "Execute random fire service" );
-      _d->isDeleted = true;
-      city::Helper helper( game.city() );
-      HouseList houses = helper.find<House>( building::house );
-      for( unsigned int k=0; k < houses.size() / 4; k++ )
-      {
-        HouseList::iterator it = houses.begin();
-        std::advance( it, math::random( houses.size() ) );
-        (*it)->burn();
-      }
+    Logger::warning( "Execute random fire service" );
+    _d->isDeleted = true;
 
-      events::Dispatcher::instance().load( _d->events );
+    HouseList houses;
+    houses << game.city()->overlays();
+
+    for( unsigned int k=0; k < houses.size() / 4; k++ )
+    {
+      HouseList::iterator it = houses.begin();
+      std::advance( it, math::random( houses.size() ) );
+      (*it)->burn();
     }
+
+    events::Dispatcher::instance().load( _d->events );
   }
 }
 

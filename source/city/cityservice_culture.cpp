@@ -98,7 +98,7 @@ CultureRating::CultureRating(PlayerCityPtr city )
 
 void CultureRating::update( const unsigned int time )
 {
-  if( time % (GameDate::ticksInMonth() / 2) != 1 )
+  if( !GameDate::isMonthChanged() )
     return;
 
   if( _d->lastDate.monthsTo( GameDate::current() ) > 0 )

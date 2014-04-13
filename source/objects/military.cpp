@@ -88,7 +88,6 @@ public:
   FortAreaPtr area;
   unsigned int maxSoldier;
   PatrolPointPtr patrolPoint;
-  int updateInterval;
   LegionEmblem emblem;
 };
 
@@ -191,8 +190,6 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   Picture area = Picture::load(ResourceGroup::security, 13 );
   area.setOffset( Tile( TilePos(3,0) ).mapPos() + Point(0,-30) );
 
-  _d->updateInterval = GameDate::ticksInMonth() / 10;
-
   _fgPicturesRef().resize(2);
   _fgPicture( 0 ) = logo;
   _fgPicture( 1 ) = area;
@@ -219,9 +216,9 @@ Fort::~Fort() {}
 
 void Fort::timeStep( const unsigned long time )
 {
-  if( time % _d->updateInterval == 1 )
+  if( GameDate::isWeekChanged() )
   {
-    int traineeLevel = getTraineeValue( walker::soldier );
+    int traineeLevel = traineeValue( walker::soldier );
     // all trainees are there for the show!
     if( traineeLevel / 100 >= 1 )
     {

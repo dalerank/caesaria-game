@@ -71,7 +71,7 @@ void ServiceBuilding::timeStep(const unsigned long time)
   if( time % 25 == 1 )
   {
     int serviceDelay = time2NextService();
-    if( _d->dateLastSend.getDaysToDate( GameDate::current() ) > serviceDelay )
+    if( _d->dateLastSend.daysTo( GameDate::current() ) > serviceDelay )
     {
        deliverService();
        _d->dateLastSend = GameDate::current();
@@ -130,7 +130,7 @@ std::string ServiceBuilding::workersStateDesc() const
   {
     state = "on_patrol";
   }
-  else if( numberWorkers() > 0 && _d->dateLastSend.getDaysToDate( GameDate::current() ) < 2 )
+  else if( numberWorkers() > 0 && _d->dateLastSend.daysTo( GameDate::current() ) < 2 )
   {
     state = "ready_for_work";
   }

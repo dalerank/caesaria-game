@@ -48,7 +48,7 @@ InfoboxAmphitheater::InfoboxAmphitheater(Widget *parent, const Tile &tile)
     if( amph->isShowGladiatorBouts() )
     {
       DateTime lastGlBoutDate = amph->lastBoutsDate();
-      text = StringHelper::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.getDaysToDate( GameDate::current() ), "##days##" );
+      text = StringHelper::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( GameDate::current() ), "##days##" );
     }
     new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
@@ -56,7 +56,7 @@ InfoboxAmphitheater::InfoboxAmphitheater(Widget *parent, const Tile &tile)
     if( amph->isActorsShow() )
     {
       DateTime lastShowDate = amph->lastShowDate();
-      text = StringHelper::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.getDaysToDate( GameDate::current() ), "##days##" );
+      text = StringHelper::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( GameDate::current() ), "##days##" );
     }
 
     new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );

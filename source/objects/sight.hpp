@@ -15,35 +15,36 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
-#define _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_SIGHT_H_INCLUDE_
+#define _CAESARIA_SIGHT_H_INCLUDE_
 
-#include "event.hpp"
+#include "building.hpp"
 
-namespace events
-{
-
-class RandomDamage : public GameEvent
+class SmallStatue : public Building
 {
 public:
-  static GameEventPtr create();
-  virtual bool isDeleted() const;
-
-  virtual void load(const VariantMap& stream);
-  virtual VariantMap save() const;
-
-protected:
-  virtual void _exec(Game &game, unsigned int time);
-  virtual bool _mayExec(Game &game, unsigned int time) const;
-
-private:
-  RandomDamage();
-
-  int _minPopulation, _maxPopulation;
-  VariantMap _events;
-  bool _isDeleted;
+  SmallStatue();
+  bool isNeedRoadAccess() const;
 };
 
-}//end namespace events
+class MediumStatue : public Building
+{
+public:
+  MediumStatue();
+  bool isNeedRoadAccess() const;
+};
 
-#endif //_CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
+class BigStatue : public Building
+{
+public:
+  BigStatue();
+  bool isNeedRoadAccess() const;
+};
+
+class TriumphalArch : public Building
+{
+public:
+  TriumphalArch();
+};
+
+#endif //_CAESARIA_BUILDING_H_INCLUDE_

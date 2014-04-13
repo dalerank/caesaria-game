@@ -269,7 +269,7 @@ void Game::setScreenGame()
   screen.initialize();
   _d->currentScreen = &screen;
   GameDate& cdate = GameDate::instance();
-  _d->time = cdate.current().day() * GameDate::ticksInMonth() / cdate.current().daysInMonth();
+  _d->time = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth();
 
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )

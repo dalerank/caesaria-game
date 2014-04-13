@@ -85,7 +85,7 @@ void Ceres::_blessing(PlayerCityPtr city)
 
   foreach( farm, farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 0.1, GameDate::ticksInMonth() * 2 );
+    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 0.1, GameDate::days2ticks( 60 ) );
   }
 }
 

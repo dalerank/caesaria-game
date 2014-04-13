@@ -54,11 +54,11 @@ public:
 
     DateTime( time_t time );
 
-    DateTime getDate() const;
+    DateTime date() const;
 
     DateTime getTime() const;
 
-    int getDaysToDate( const DateTime& future ) const;
+    int daysTo( const DateTime& future ) const;
 
     int equale( const DateTime& b );
 

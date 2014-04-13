@@ -155,7 +155,7 @@ void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
   Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->name().c_str(), faithIncome, divn->relation() );
   divn->updateRelation( faithIncome, &city );
 
-  if( divn->relation() < 30 && lastUnhappyMessageDate.getDaysToDate( GameDate::current() ) > 6 )
+  if( divn->relation() < 30 && lastUnhappyMessageDate.daysTo( GameDate::current() ) > 6 )
   {
     lastUnhappyMessageDate = GameDate::current();
     events::GameEventPtr e = events::ShowInfobox::create( _("##gods_unhappy_title##"), _("##gods_unhappy_text##"),

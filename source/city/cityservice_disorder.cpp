@@ -56,7 +56,7 @@ Disorder::Disorder(PlayerCityPtr city )
 
 void Disorder::update( const unsigned int time )
 {
-  if( time % (GameDate::ticksInMonth()/2) != 1 )
+  if( !GameDate::isWeekChanged() )
     return;
 
   Helper helper( &_city );

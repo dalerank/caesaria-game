@@ -32,14 +32,12 @@ class Wharf::Impl
 public:
   enum { southPic=54, northPic=52, westPic=55, eastPic=53 };
   FishingBoatPtr boat;
-  int checkInterval;
 };
 
 Wharf::Wharf() : CoastalFactory(Good::none, Good::fish, building::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
   setPicture( ResourceGroup::wharf, Impl::northPic );
-  _d->checkInterval = GameDate::ticksInMonth() / 4;
 }
 
 void Wharf::destroy()
@@ -59,7 +57,7 @@ void Wharf::timeStep(const unsigned long time)
   CoastalFactory::timeStep(time);
 
   //try get good from storage building for us
-  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && walkers().size() == 0 )
+  if( GameDate::isWeekChanged() && numberWorkers() > 0 && walkers().size() == 0 )
   {
     receiveGood();
     deliverGood();

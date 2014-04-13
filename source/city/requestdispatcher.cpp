@@ -74,7 +74,7 @@ std::string Dispatcher::getDefaultName(){  return "requests";}
 
 void Dispatcher::update(const unsigned int time)
 {
-  if( time % (GameDate::ticksInMonth() / 4) == 1)
+  if( GameDate::isWeekChanged() )
   {
     foreach( rq, _d->requests )
     {

@@ -75,7 +75,7 @@ ProsperityRating::ProsperityRating(PlayerCityPtr city )
 
 void ProsperityRating::update( const unsigned int time )
 {
-  if( time % (GameDate::ticksInMonth()/2) != 1 )
+  if( !GameDate::isMonthChanged() )
     return;
 
   if( abs( GameDate::current().year() - _d->lastDate.year() ) == 1 )

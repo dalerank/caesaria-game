@@ -86,7 +86,6 @@ class Farm::Impl
 public:
   typedef std::vector<FarmTile> SubTiles;
   SubTiles subTiles;
-  int updateInterval;
   Picture pictureBuilding;  // we need to change its offset
 };
 
@@ -95,7 +94,6 @@ Farm::Farm(const Good::Type outGood, const Type type )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
   _d->pictureBuilding.addOffset( 30, 15);
-  _d->updateInterval = GameDate::ticksInMonth() / 20;
 
   setPicture( _d->pictureBuilding );
   outStockRef().setCapacity( 500 );
@@ -166,7 +164,7 @@ void Farm::timeStep(const unsigned long time)
 {
   Factory::timeStep(time);
 
-  if( (time % _d->updateInterval == 1) && mayWork() && getProgress() < 100 )
+  if( GameDate::isDayChanged() && mayWork() && getProgress() < 100 )
   {
     computePictures();
   }

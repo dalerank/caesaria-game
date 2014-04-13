@@ -26,7 +26,6 @@ class Sentiment::Impl
 {
 public:
   int value;
-  int updateInterval;
 };
 
 city::SrvcPtr Sentiment::create(PlayerCityPtr city )
@@ -41,12 +40,11 @@ Sentiment::Sentiment(PlayerCityPtr city )
   : city::Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
   _d->value = 50;
-  _d->updateInterval = GameDate::ticksInMonth() / 2;
 }
 
 void Sentiment::update( const unsigned int time )
 {
-  if( time % _d->updateInterval != 1 )
+  if( !GameDate::isWeekChanged() )
     return;
 
 

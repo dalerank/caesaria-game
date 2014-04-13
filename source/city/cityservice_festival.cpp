@@ -77,7 +77,7 @@ Festival::Festival(PlayerCityPtr city )
 
 void Festival::update( const unsigned int time )
 {
-  if( time % (GameDate::ticksInMonth() / 2) != 1 )
+  if( !GameDate::isWeekChanged() )
     return;
 
   const DateTime currentDate = GameDate::current();

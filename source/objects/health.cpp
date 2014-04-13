@@ -61,7 +61,7 @@ bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservo
 
 void Baths::timeStep(const unsigned long time)
 {
-  if( time % (GameDate::ticksInMonth() / 4) == 1 )
+  if( GameDate::isWeekChanged() )
   {
     city::Helper helper( _city() );
 

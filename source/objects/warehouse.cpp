@@ -132,7 +132,6 @@ public:
 
   WhTiles subTiles;
   WarehouseStore goodStore;
-  int devastateModeInterval;
 };
 
 WarehouseStore::WarehouseStore()
@@ -352,7 +351,6 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
   _animationRef().setDelay( 4 );
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
-  _d->devastateModeInterval = GameDate::ticksInMonth() / 5;
 
   _setClearAnimationOnStop( false );
 
@@ -386,7 +384,7 @@ void Warehouse::timeStep(const unsigned long time)
    _fgPicturesRef()[3] = _d->animFlag.currentFrame();
   }
 
-  if( (time % _d->devastateModeInterval == 1 ) )
+  if( GameDate::isWeekChanged() )
   {
     if( _d->goodStore.isDevastation() )
     {

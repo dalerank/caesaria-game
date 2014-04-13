@@ -48,7 +48,7 @@ public:
 
   bool checkHouse( HousePtr house, std::string* retMissing = 0);
   unsigned int getServiceConsumptionInterval() const;
-  unsigned int getFoodConsumptionInterval() const;
+  unsigned int foodConsumptionInterval() const;
   unsigned int getGoodConsumptionInterval() const;
 
   int findLowLevelHouseNearby( HousePtr house, std::string &oMissingRequirement );
