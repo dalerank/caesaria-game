@@ -21,6 +21,8 @@
 #include "gfx/engine.hpp"
 #include "core/logger.hpp"
 
+#include <stdio.h>
+
 using namespace std;
 using namespace gfx;
 
@@ -47,10 +49,12 @@ public:
 
   //unsigned char *palette_data;
   unsigned char *image_data;
+  unsigned char* pallete;
 
   int colors[256];
 
   void updateTexture(gfx::Engine& painter, const Size& size );
+  void updatePallete();
   void nextFrame();
 
 public oc3_signals:
@@ -64,19 +68,24 @@ SmkViewer::SmkViewer( Widget* parent )
   _d->mode = native;
 }
 
-void SmkViewer::beforeDraw(gfx::Engine& painter )
+void SmkViewer::beforeDraw( gfx::Engine& painter )
 {
+  if( isFocused() && _d->s != NULL && DateTime::elapsedTime() - _d->lastFrameTime > (_d->usecsInFrame / 1000) )
+  {
+    _d->lastFrameTime = DateTime::elapsedTime();
+    _d->needUpdateTexture = true;
+
+    _d->nextFrame();
+
+    _d->updatePallete();
+    /* Retrieve the palette and image */
+    _d->image_data = smk_get_video( _d->s );
+  }
+
   if( _d->needUpdateTexture )
   {
     _d->needUpdateTexture = false;
     _d->updateTexture( painter, size() );
-  }
-
-  if( _d->s != NULL && DateTime::elapsedTime() - _d->lastFrameTime > (_d->usecsInFrame / 1000) )
-  {
-    _d->lastFrameTime = DateTime::elapsedTime();
-    _d->nextFrame();
-    _d->needUpdateTexture = true;
   }
 
   Widget::beforeDraw( painter );
@@ -84,7 +93,7 @@ void SmkViewer::beforeDraw(gfx::Engine& painter )
 
 void SmkViewer::setFilename(const vfs::Path& path)
 {
-  _d->s = smk_open_file( path.toString().c_str(), SMK_MODE_DISK );
+  _d->s = smk_open_file( path.toString().c_str(), SMK_MODE_MEMORY );
   if( _d->s != NULL )
   {
     smk_info_all( _d->s, &_d->currentFrame, &_d->frameCount, &_d->usecsInFrame );
@@ -95,27 +104,20 @@ void SmkViewer::setFilename(const vfs::Path& path)
                      _d->videoWidth, _d->videoHeight, _d->frameCount, 1000000.0 / _d->usecsInFrame );
 
     smk_enable_video( _d->s, 1 );
+
     /* process first frame */
     smk_first( _d->s );
+    _d->updatePallete();
+    _d->image_data = smk_get_video(_d->s);
 
-    unsigned char* pal = smk_get_palette( _d->s );
     _d->lastFrameTime = DateTime::elapsedTime();
-
-    for( int i = 0; i < 256; i++)
-    {
-      int c = ( 0xff000000 + (pal[(i * 3) + 2]<<16)
-               + (pal[(i * 3) + 1]<<8)
-               + pal[(i * 3)] );
-
-      _d->colors[ i ] = c;
-
-      if( _d->mode == SmkViewer::video )
-      {
-        setWidth( _d->videoWidth );
-        setHeight( _d->videoHeight );
-      }
-    }
     _d->needUpdateTexture = true;
+
+    if( _d->mode == SmkViewer::video )
+    {
+      setWidth( _d->videoWidth );
+      setHeight( _d->videoHeight );
+    }
   }
 }
 
@@ -147,22 +149,32 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 
   // draw button background
   //background->fill( 0x0000000, Rect() );
-  if( s )
+  background->lock();
+
+  for( int i = videoHeight - 1; i >= 0; i--)
   {
-    /* Retrieve the palette and image */
-    image_data = smk_get_video(s);
-
-    background->lock();
-
-    for( int i = videoHeight - 1; i >= 0; i--)
+    for( int j = 0; j < videoWidth; j++ )
     {
-      for( int j = 0; j < videoWidth; j++ )
-      {
-        unsigned char index = image_data[i * videoWidth + j];
-        background->setPixel( Point( j, i ), colors[ index ] );
-      }
+      unsigned char index = image_data[i * videoWidth + j];
+      background->setPixel( Point( j, i ), colors[ index ] );
     }
   }
+
+  background->unlock();
+}
+
+void SmkViewer::Impl::updatePallete()
+{
+    pallete = smk_get_palette( s );
+
+    for( int i = 0; i < 256; i++)
+    {
+      int c = ( 0xff000000 + (pallete[(i * 3) + 2])
+                + (pallete[(i * 3) + 1]<<8)
+                + (pallete[(i * 3)]<<16) );
+
+      colors[ i ] = c;
+    }
 }
 
 void SmkViewer::Impl::nextFrame()

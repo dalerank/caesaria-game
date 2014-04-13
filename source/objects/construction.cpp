@@ -136,13 +136,18 @@ void Construction::burn()
 
   events::GameEventPtr event = events::DisasterEvent::create( tile(), events::DisasterEvent::fire );
   event->dispatch();
+
+  Logger::warning( "Building catch fire at %d,%d!", pos().i(), pos().j() );
 }
 
 void Construction::collapse()
 {
   deleteLater();
+
   events::GameEventPtr event = events::DisasterEvent::create( tile(), events::DisasterEvent::collapse );
   event->dispatch();
+
+  Logger::warning( "Building collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
 Desirability Construction::getDesirability() const
@@ -213,13 +218,11 @@ TilesArray Construction::getEnterArea() const
 void Construction::timeStep(const unsigned long time)
 {
   if( getState( Construction::damage ) >= 100 )
-  {
-    Logger::warning( "Building destroyed at %d,%d!", pos().i(), pos().j() );
+  {    
     collapse();
   }
   else if( getState( Construction::fire ) >= 100 )
   {
-    Logger::warning( "Building catch fire at %d,%d!", pos().i(), pos().j() );
     burn();
   }
 

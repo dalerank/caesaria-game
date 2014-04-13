@@ -76,8 +76,9 @@ void Building::timeStep(const unsigned long time)
   if( time % _d->stateDecreaseInterval == 1 )
   {
     city::Helper helper( _city() );
-    updateState( Construction::damage, getState( Construction::collapsibility ) * helper.getBalanceKoeff() );
-    updateState( Construction::fire, getState( Construction::inflammability ) * helper.getBalanceKoeff() );
+    float popkoeff = helper.getBalanceKoeff();
+    updateState( Construction::damage, popkoeff * getState( Construction::collapsibility ) );
+    updateState( Construction::fire, popkoeff * getState( Construction::inflammability ) );
   }
 
   Construction::timeStep(time);
