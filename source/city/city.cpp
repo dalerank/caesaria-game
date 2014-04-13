@@ -146,7 +146,6 @@ private:
 class PlayerCity::Impl
 {
 public:
-  int lastMonthCount;
   int population;
   city::Funds funds;  // amount of money
   std::string name;
@@ -199,7 +198,6 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
-  _d->lastMonthCount = GameDate::current().month();
 
   addService( city::Migration::create( this ) );
   addService( city::WorkersHire::create( this ) );
@@ -219,10 +217,14 @@ PlayerCity::PlayerCity() : _d( new Impl )
 
 void PlayerCity::timeStep(unsigned int time)
 {
-  if( _d->lastMonthCount != GameDate::current().month() )
+  if( GameDate::isMonthChanged() )
   {
-    _d->lastMonthCount = GameDate::current().month();
     _d->monthStep( this, GameDate::current() );
+  }
+
+  if( GameDate::isWeekChanged() )
+  {
+    _d->calculatePopulation( this );
   }
 
   //update walkers access map
@@ -322,7 +324,6 @@ void PlayerCity::timeStep(unsigned int time)
 void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 {
   collectTaxes( city );
-  calculatePopulation( city );
   payWages( city );
 
   int playerSalary = player->salary();
@@ -521,7 +522,6 @@ void PlayerCity::load( const VariantMap& stream )
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
-  _d->lastMonthCount = GameDate::current().month();
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );

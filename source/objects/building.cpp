@@ -25,7 +25,7 @@
 #include "core/variant.hpp"
 #include "walker/trainee.hpp"
 #include "core/stringhelper.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"
@@ -75,8 +75,9 @@ void Building::timeStep(const unsigned long time)
 {
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    updateState( Construction::damage, getState( Construction::collapsibility ) );
-    updateState( Construction::fire, getState( Construction::inflammability ) );
+    city::Helper helper( _city() );
+    updateState( Construction::damage, getState( Construction::collapsibility ) * helper.getBalanceKoeff() );
+    updateState( Construction::fire, getState( Construction::inflammability ) * helper.getBalanceKoeff() );
   }
 
   Construction::timeStep(time);

@@ -45,7 +45,7 @@ void GameDate::timeStep( unsigned int time )
     _current.appendDay();
     _dayChange = true;
 
-    _weekChange = save.day() == 0;
+    _weekChange = (_current.day() % 7) == 0;
     _monthChange = save.month() != _current.month();
     _yearChange = save.year() != _current.year();
   }  

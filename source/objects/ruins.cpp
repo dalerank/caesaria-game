@@ -60,7 +60,7 @@ void BurningRuins::timeStep(const unsigned long time)
     {
       if( (*it)->getClass() != building::disasterGroup )
       {
-        (*it)->updateState( Construction::fire, 1 );
+        (*it)->updateState( Construction::fire, 0.2 );
       }
     }
 
@@ -108,15 +108,8 @@ void BurningRuins::destroy()
   event->dispatch();
 }
 
-int BurningRuins::getMaxWorkers() const
-{
-  return 0;
-}
-
-void BurningRuins::burn()
-{
-
-}
+int BurningRuins::getMaxWorkers() const {  return 0;}
+void BurningRuins::burn(){}
 
 void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
@@ -144,7 +137,7 @@ void BurningRuins::applyService(ServiceWalkerPtr walker)
 {
   if ( Service::prefect == walker->getService() )
   {
-    double delta =  walker->getServiceValue() / 10;
+    double delta =  walker->getServiceValue() / 2;
     updateState( Construction::fire, -delta );
   }
 }

@@ -166,17 +166,26 @@ PictureBank::~PictureBank(){}
 
 Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
 {
-  foreach( itExt, availableExentions )
+  vfs::Path realPath( name );
+  if( realPath.extension().empty() )
   {
-    vfs::Path realFilename( name + *itExt );
-
-    if( realFilename.exist() )
+    foreach( itExt, availableExentions )
     {
-      vfs::NFile file = vfs::NFile::open( realFilename );
-      if(  file.isOpen() )
+     realPath = name + *itExt;
+
+      if( realFilename.exist() )
       {
-        return PictureLoader::instance().load( file );
+        break;
       }
+    }
+  }
+
+  if( realPath.exist() )
+  {
+    vfs::NFile file = vfs::NFile::open( realPath );
+    if(  file.isOpen() )
+    {
+      return PictureLoader::instance().load( file );
     }
   }
 
