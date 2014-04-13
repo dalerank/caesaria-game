@@ -41,7 +41,7 @@ namespace vfs
 
 static const Path purePath = "";
 
-NFile NFile::open(Path fileName, Entity::Mode mode)
+NFile NFile::open(const Path& fileName, Entity::Mode mode)
 {
   return FileSystem::instance().createAndOpenFile( fileName, mode );
 }

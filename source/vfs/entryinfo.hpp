@@ -31,11 +31,6 @@ public:
 	was created with the ignoreCase flag then the file name will be lower case. */
 	Path name;
 
-	//! The name of the file including the path
-	/** If this is a file or folder in the virtual filesystem and the archive was
-	created with the ignoreDirs flag then it will be the same as name. */
-	Path fullName;
-
 	//! The size of the file in bytes
 	unsigned int size;
 
@@ -56,7 +51,7 @@ public:
 		if (isDirectory != other.isDirectory)
 			return false;
 
-		return StringHelper::isEquale( fullName.toString(), other.fullName.toString(), StringHelper::equaleIgnoreCase );
+		return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
 	}
 
 	//! The < operator is provided so that CFileList can sort and quickly search the list.
@@ -65,8 +60,24 @@ public:
 		if (isDirectory != other.isDirectory)
 			return isDirectory;
 
-    return StringHelper::isEquale( fullName.toString(), other.fullName.toString(), StringHelper::equaleIgnoreCase );
+		return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
 	}
+
+	void setAbspath( const Path& p )
+	{
+		_fullpath = p;
+		_fpHash = StringHelper::hash( _fullpath.toString() );
+	}
+
+	inline const Path& abspath() const { return _fullpath; }
+	inline bool isAbspathEquale( const EntryInfo& a ) const { return _fpHash == a._fpHash; }
+
+private:
+	//! The name of the file including the path
+	/** If this is a file or folder in the virtual filesystem and the archive was
+	created with the ignoreDirs flag then it will be the same as name. */
+	Path _fullpath;
+	unsigned _fpHash;
 };
 
 } // end namspace vfs

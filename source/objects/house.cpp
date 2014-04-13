@@ -43,6 +43,7 @@
 #include "city/build_options.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
@@ -195,7 +196,7 @@ void House::_updateTax()
 {
   _d->taxCheckInterval = GameDate::current();
   float cityTax = _city()->funds().getTaxRate() / 100.f;
-  appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthInYear) );
+  appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear) );
 }
 
 void House::_updateMorale()
@@ -514,7 +515,7 @@ void House::_levelDown()
 void House::buyMarket( ServiceWalkerPtr walker )
 {
   // std::cout << "House buyMarket" << std::endl;
-  MarketPtr market = ptr_cast<Market>( walker->getBase() );
+  MarketPtr market = ptr_cast<Market>( walker->base() );
   if( market.isNull() )
     return;
 
@@ -639,7 +640,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   case Service::market:
   {
-    MarketPtr market = ptr_cast<Market>( walker->getBase() );
+    MarketPtr market = ptr_cast<Market>( walker->base() );
     GoodStore &marketStore = market->getGoodStore();
     GoodStore &houseStore = getGoodStore();
     for (int i = 0; i < Good::goodCount; ++i)
@@ -755,7 +756,7 @@ void House::destroy()
   Building::destroy();
 }
 
-std::string House::getSound() const
+std::string House::sound() const
 {
   if( !_d->habitants.count() )
     return "";

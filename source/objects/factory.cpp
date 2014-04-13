@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class FactoryStore : public SimpleGoodStore
 {
@@ -135,7 +136,7 @@ void Factory::timeStep(const unsigned long time)
   //try get good from storage building for us
   if( time % (GameDate::ticksInMonth()/4) == 1 )
   {
-    if( numberWorkers() > 0 && getWalkers().size() == 0 )
+    if( numberWorkers() > 0 && walkers().size() == 0 )
     {
       receiveGood();
       deliverGood();      
@@ -147,21 +148,8 @@ void Factory::timeStep(const unsigned long time)
     }
   }
 
-  //start/stop animation when workers found
-  bool mayAnimate = mayWork();
-
-  if( mayAnimate && _animationRef().isStopped() )
-  {
-    _animationRef().start();
-  }
-
-  if( !mayAnimate && _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
-
   //no workers or no good in stock... stop animate
-  if( !mayAnimate )
+  if( !mayWork() )
   {
     return;
   }
@@ -181,14 +169,8 @@ void Factory::timeStep(const unsigned long time)
   }
   else
   {
-    //ok... factory is work, produce goods
-    float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
-    float timeKoeff = 1 / (float)GameDate::ticksInMonth();
-    float work = 100.f * timeKoeff * (_d->productionRate / DateTime::monthInYear) * workersRatio;  // work is proportional to time and factory speed
     if( _d->produceGood )
     {
-      _d->progress += work;
-
       _animationRef().update( time );
       const Picture& pic = _animationRef().currentFrame();
       if( pic.isValid() && !_fgPicturesRef().empty() )
@@ -196,6 +178,13 @@ void Factory::timeStep(const unsigned long time)
         // animation of the working factory
         _fgPicturesRef().back() = _animationRef().currentFrame();
       }
+
+      //ok... factory is work, produce goods
+      float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
+      float timeKoeff = 1 / (float)GameDate::ticksInMonth();
+      float work = 100.f * timeKoeff * (_d->productionRate / DateTime::monthsInYear) * workersRatio;  // work is proportional to time and factory speed
+
+      _d->progress += work;
     }
   }
 
@@ -275,7 +264,7 @@ void Factory::load( const VariantMap& stream)
 }
 
 Factory::~Factory(){}
-bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( getWalkers().size() == 0 );}
+bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}

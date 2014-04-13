@@ -31,6 +31,7 @@
 #include "gatehouse.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Fortification::Impl
 {
@@ -98,7 +99,7 @@ void Fortification::destroy()
   }
 }
 
-Point Fortification::offset(Tile& tile, const Point& subpos) const
+Point Fortification::offset( const Tile& tile, const Point& subpos) const
 {
   switch( _d->index )
   {

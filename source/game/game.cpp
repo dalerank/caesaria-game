@@ -52,8 +52,11 @@
 #include "scene/briefing.hpp"
 #include "gfx/logo.hpp"
 #include "walker/helper.hpp"
+#include "core/messagebox.hpp"
 
 #include <list>
+
+using namespace gfx;
 
 class Game::Impl
 {
@@ -61,7 +64,7 @@ public:
   ScreenType nextScreen;
   std::string nextFilename;
   scene::Base* currentScreen;
-  GfxEngine* engine;
+  gfx::Engine* engine;
   gui::GuiEnv* gui;
 
   world::EmpirePtr empire;
@@ -91,13 +94,13 @@ void Game::Impl::initLocale( std::string localePath)
 void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
-  engine = new GfxSdlEngine();
+  engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
     
   Logger::warning( "GraficEngine: try set fullscreen mode" );
-  engine->setFlag( GfxEngine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
+  engine->setFlag( gfx::Engine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
   engine->init();
 }
 
@@ -125,8 +128,18 @@ void Game::mountArchives()
   if( c3res.isValid() )
   {
     std::string gfxDir = vfs::Path( c3res.toString() ).addEndSlash().toString();
+    vfs::ArchivePtr mainArchive = fs.mountArchive( gfxDir + "C3.SG2" );
+    if( mainArchive.isNull() )
+    {
+      std::string errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
+                             "original game archive C3.SG2 not found in folder " + c3res.toString() +
+                             "!!!.\nBe sure that you copy all .sg2 and .map files to it folder";
+      MessageBox::error( "Resources error", errorStr );
+      Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
+      exit( -1 ); //kill application
+    }
+
     fs.mountArchive( gfxDir + "CELTS.SG2" );
-    fs.mountArchive( gfxDir + "C3.SG2" );
   }
 
   vfs::Path archivesFile = GameSettings::rcpath( GameSettings::archivesModel );
@@ -148,7 +161,7 @@ void Game::Impl::initGuiEnvironment()
 void Game::Impl::initPantheon( vfs::Path filename)
 {
   VariantMap pantheon = SaveAdapter::load( filename );
-  religion::Pantheon::instance().load( pantheon );
+  religion::rome::Pantheon::instance().load( pantheon );
 }
 
 void Game::Impl::initPictures(vfs::Path resourcePath)
@@ -174,7 +187,7 @@ void Game::setScreenBriefing()
     screen.update( *_d->engine );
   }
 
-  switch( screen.getResult() )
+  switch( screen.result() )
   {
     case scene::Briefing::loadMission:
     {
@@ -203,7 +216,7 @@ void Game::setScreenMenu()
 
   reset();
 
-  switch( screen.getResult() )
+  switch( screen.result() )
   {
     case scene::StartMenu::startNewGame:
     {  
@@ -239,7 +252,7 @@ void Game::setScreenMenu()
       load( screen.getMapName() );
       Logger::warning( "screen menu: end loading map" );
 
-      CityBuildOptions bopts;
+      city::BuildOptions bopts;
       bopts = _d->city->getBuildOptions();
       bopts.setGroupAvailable( BM_MAX, true );
       _d->city->setBuildOptions( bopts );
@@ -266,6 +279,8 @@ void Game::setScreenGame()
   Logger::warning( "game: start initialize" );
   screen.initialize();
   _d->currentScreen = &screen;
+  GameDate& cdate = GameDate::instance();
+  _d->time = cdate.current().day() * GameDate::ticksInMonth() / cdate.current().daysInMonth();
 
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
@@ -278,11 +293,10 @@ void Game::setScreenGame()
 
       while( (_d->time - _d->saveTime) > 1 )
       {
-        _d->empire->timeStep( _d->time );
+        _d->saveTime++;
 
-        GameDate::timeStep( _d->time );
-
-        _d->saveTime += 1;
+        cdate.timeStep( _d->saveTime );
+        _d->empire->timeStep( _d->saveTime );
 
         screen.animate( _d->saveTime );
       }
@@ -292,7 +306,7 @@ void Game::setScreenGame()
   }
 
   _d->nextFilename = screen.nextFilename();
-  switch( screen.getResult() )
+  switch( screen.result() )
   {
     case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;    
     case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  load( screen.nextFilename() ); break;
@@ -306,8 +320,8 @@ PlayerPtr Game::player() const { return _d->player; }
 PlayerCityPtr Game::city() const { return _d->city; }
 world::EmpirePtr Game::empire() const { return _d->empire; }
 gui::GuiEnv* Game::gui() const { return _d->gui; }
-GfxEngine*Game::engine() const { return _d->engine; }
-scene::Base*Game::scene() const { return _d->currentScreen; }
+gfx::Engine* Game::engine() const { return _d->engine; }
+scene::Base* Game::scene() const { return _d->currentScreen; }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -353,7 +367,7 @@ void Game::load(std::string filename)
       Logger::warning( "Cannot find file " + fPath.toString() );
       Logger::warning( "Try find file in resource's folder " );
 
-      fPath = GameSettings::rcpath( filename ).getAbsolutePath();
+      fPath = GameSettings::rcpath( filename ).absolutePath();
       if( !fPath.exist() )
       {
         Logger::warning( "Cannot find file " + fPath.toString() );
@@ -383,7 +397,7 @@ void Game::load(std::string filename)
   _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
 
   Logger::warning( "Game: calculate road access for buildings" );
-  TileOverlayList& llo = _d->city->getOverlays();
+  TileOverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
     ConstructionPtr construction = ptr_cast<Construction>( *overlay );
@@ -394,7 +408,7 @@ void Game::load(std::string filename)
   }
 
   Logger::warning( "Game: initialize pathfinder" );
-  Pathfinder::getInstance().update( _d->city->tilemap() );
+  Pathfinder::instance().update( _d->city->tilemap() );
 
   Logger::warning( "Load game end" );
   return;
@@ -427,7 +441,7 @@ void Game::initialize()
 void Game::exec()
 {
   _d->nextScreen = SCREEN_MENU;
-  _d->engine->setFlag( GfxEngine::debugInfo, 1 );
+  _d->engine->setFlag( gfx::Engine::debugInfo, 1 );
 
   while(_d->nextScreen != SCREEN_QUIT)
   {

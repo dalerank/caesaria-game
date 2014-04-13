@@ -45,7 +45,7 @@ public:
   Entries( const Entries& other );
 
   //! Destructor
-  ~Entries();
+  virtual ~Entries();
 
   //! Add as a file or folder to the list
   /** \param fullPath The file name including path, up to the root of the file list.
@@ -61,7 +61,9 @@ public:
   //! Returns the amount of files in the filelist.
   unsigned int getFileCount() const;
 
-  const Items& getItems() const;
+  const Items& items() const;
+
+  const EntryInfo& item( unsigned int index ) const;
 
   //! Gets the name of a file in the list, based on an index.
   const Path& getFileName(unsigned int index) const;
@@ -97,7 +99,7 @@ public:
   ConstItemIt end() const;
 
 protected:
-  Items& _getItems();
+  Items& _items();
 
 private:
   class Impl;
@@ -108,7 +110,7 @@ private:
 
 inline StringArray& operator<<( StringArray& array, const vfs::Entries& flist )
 {
-  const vfs::Entries::Items& items = flist.getItems();
+  const vfs::Entries::Items& items = flist.items();
   for( vfs::Entries::ConstItemIt it=items.begin(); it != items.end(); ++it)
   {
     array.push_back( (*it).name.toString() );

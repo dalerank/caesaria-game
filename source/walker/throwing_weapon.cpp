@@ -21,6 +21,7 @@
 #include "core/foreach.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class ThrowingWeapon::Impl
 {
@@ -95,25 +96,25 @@ void ThrowingWeapon::turn(TilePos p)
   float t = (_d->currentPos - prPos).getAngle();
   int angle = (int)( t / 22.5f);// 0 is east
 
-  int index = rcStartIndex();
+  int index = _rcStartIndex();
   switch( angle )
   {
-  case 0: index = rcStartIndex() + 12; break;
-  case 1: index = rcStartIndex() + 14; break;
-  case 2: index = rcStartIndex() + 15; break;
-  case 3: index = rcStartIndex(); break;
-  case 4: index = rcStartIndex() + 1; break;
-  case 5: index = rcStartIndex() + 2; break;
-  case 6: index = rcStartIndex() + 2; break;
-  case 7: index = rcStartIndex() + 3; break;
-  case 8: index = rcStartIndex() + 5; break;
-  case 9: index = rcStartIndex() + 6; break;
-  case 10: index = rcStartIndex() + 7; break;
-  case 11: index = rcStartIndex() + 8; break;
-  case 12: index = rcStartIndex() + 9; break;
-  case 13: index = rcStartIndex() + 10; break;
-  case 14: index = rcStartIndex() + 11; break;
-  case 15: index = rcStartIndex() + 11; break;
+  case 0: index = _rcStartIndex() + 12; break;
+  case 1: index = _rcStartIndex() + 14; break;
+  case 2: index = _rcStartIndex() + 15; break;
+  case 3: index = _rcStartIndex(); break;
+  case 4: index = _rcStartIndex() + 1; break;
+  case 5: index = _rcStartIndex() + 2; break;
+  case 6: index = _rcStartIndex() + 2; break;
+  case 7: index = _rcStartIndex() + 3; break;
+  case 8: index = _rcStartIndex() + 5; break;
+  case 9: index = _rcStartIndex() + 6; break;
+  case 10: index = _rcStartIndex() + 7; break;
+  case 11: index = _rcStartIndex() + 8; break;
+  case 12: index = _rcStartIndex() + 9; break;
+  case 13: index = _rcStartIndex() + 10; break;
+  case 14: index = _rcStartIndex() + 11; break;
+  case 15: index = _rcStartIndex() + 11; break;
   }
 
   //if( angle > 13 ) { index = rcStartIndex() + (angle - 14); }

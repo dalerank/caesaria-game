@@ -23,6 +23,7 @@
 #include "core/foreach.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
 static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);

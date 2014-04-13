@@ -19,27 +19,30 @@
 #include "gfx/tilemap.hpp"
 #include "city/helper.hpp"
 
-Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos,
-                               WayType type/*=roadOnly */ )
+using namespace gfx;
+
+Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos, WayType type/*=roadOnly */ )
 {
+  Pathfinder& p = Pathfinder::instance();
   switch( type )
   {
-  case allTerrain: return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::terrainOnly );
-  case roadOnly: return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::roadOnly );
+  case allTerrain: return p.getPath( startPos, stopPos, Pathfinder::terrainOnly );
+  case roadOnly: return p.getPath( startPos, stopPos, Pathfinder::roadOnly );
 
   case roadFirst:
   {
-    Pathway ret = Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::roadOnly );
+    Pathway ret = p.getPath( startPos, stopPos, Pathfinder::roadOnly );
     if( !ret.isValid() )
     {
-      ret = Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::roadOnly );
+      ret = p.getPath( startPos, stopPos, Pathfinder::roadOnly );
     }
 
     return ret;
   }
   break;
 
-  case water: return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::waterOnly );
+  case deepWater: return p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
+  case water: return p.getPath( startPos, stopPos, Pathfinder::waterOnly );
 
   default:
   break;
@@ -52,16 +55,16 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
 {
   switch( type )
   {
-  case allTerrain: return Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
-  case roadOnly: return Pathfinder::getInstance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+  case allTerrain: return Pathfinder::instance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
+  case roadOnly: return Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
 
   case roadFirst:
   {
-    Pathway ret = Pathfinder::getInstance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+    Pathway ret = Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
 
     if( !ret.isValid() )
     {
-      ret = Pathfinder::getInstance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
+      ret = Pathfinder::instance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
     }
 
     return ret;
@@ -78,8 +81,8 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
 
 Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition)
 {
-  Pathfinder::getInstance().setCondition( condition );
-  return Pathfinder::getInstance().getPath( startPos, stopPos, Pathfinder::customCondition );
+  Pathfinder::instance().setCondition( condition );
+  return Pathfinder::instance().getPath( startPos, stopPos, Pathfinder::customCondition );
 }
 
 DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, constants::building::Type buildingType, PathwayHelper::WayType type)

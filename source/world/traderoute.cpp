@@ -25,6 +25,8 @@
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 
+using namespace gfx;
+
 namespace world
 {
 
@@ -38,7 +40,7 @@ public:
   EmpirePtr empire;
   PointsArray points;
   bool seaRoute;
-  PicturesArray pictures;
+  gfx::Pictures pictures;
 
   typedef std::vector<MerchantPtr> MerchantList;
   MerchantList merchants;
@@ -119,7 +121,7 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
   }
 }
 
-const PicturesArray&Traderoute::getPictures() const {  return _d->pictures;}
+const gfx::Pictures& Traderoute::getPictures() const {  return _d->pictures;}
 bool Traderoute::isSeaRoute() const{  return _d->seaRoute;}
 
 void Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy )

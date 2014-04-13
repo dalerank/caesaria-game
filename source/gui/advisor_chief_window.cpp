@@ -35,6 +35,7 @@
 #include "city/cityservice_info.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -88,7 +89,7 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   _d->drawFoodConsumption( startPoint + offset * 4 );
 }
 
-void AdvisorChiefWindow::draw( GfxEngine& painter )
+void AdvisorChiefWindow::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

@@ -30,6 +30,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {

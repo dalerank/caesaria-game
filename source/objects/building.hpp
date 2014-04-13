@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
 #ifndef _CAESARIA_BUILDING_H_INCLUDE_
 #define _CAESARIA_BUILDING_H_INCLUDE_
 
@@ -25,7 +24,6 @@
 #include <set>
 
 #include "construction.hpp"
-#include "gfx/tileoverlay.hpp"
 #include "good/good.hpp"
 #include "core/scopedptr.hpp"
 #include "gfx/animation.hpp"
@@ -40,7 +38,7 @@ class Building : public Construction
 public:
   Building(const Type type, const Size& size=Size(1) );
   virtual ~Building();
-  virtual void initTerrain(Tile& terrain);
+  virtual void initTerrain( gfx::Tile& terrain);
 
   virtual void timeStep(const unsigned long time);
   virtual void storeGoods(GoodStock &stock, const int amount = -1);
@@ -60,7 +58,7 @@ public:
   virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
   virtual void setTraineeValue( constants::walker::Type type, int value ); // trainee arrives
 
-  virtual Renderer::PassQueue getPassQueue() const;
+  virtual gfx::Renderer::PassQueue getPassQueue() const;
 
 protected:
   std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way

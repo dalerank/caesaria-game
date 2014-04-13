@@ -19,6 +19,8 @@
 #include "environment.hpp"
 #include "gfx/engine.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -62,7 +64,7 @@ void RectangleAnimator::Impl::restart( Widget* parent )
   parent->setGeometry( startRect );
 }
 
-void RectangleAnimator::beforeDraw(GfxEngine &painter)
+void RectangleAnimator::beforeDraw( Engine& painter)
 {
 	if( isEnabled() && parent() && isFlag( isActive ) )
 	{

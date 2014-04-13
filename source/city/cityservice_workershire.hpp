@@ -35,7 +35,7 @@ public:
 private:
   WorkersHire( PlayerCityPtr city );
 
-  void _hireByType( const TileOverlay::Type type );
+  void _hireByType( const gfx::TileOverlay::Type type );
   bool _haveHr( WorkingBuildingPtr building );
  
   class Impl;

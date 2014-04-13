@@ -18,6 +18,7 @@
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "game/settings.hpp"
+#include "warningmessage.hpp"
 #include "city/city.hpp"
 
 using namespace constants;

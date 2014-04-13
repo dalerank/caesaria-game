@@ -30,7 +30,7 @@ ActorColony::ActorColony() : TrainingBuilding( building::actorColony, Size(3) )
 
 void ActorColony::deliverTrainee()
 {
-  if( !getWalkers().empty() )
+  if( !walkers().empty() )
   {
     return;
   }
@@ -47,16 +47,4 @@ void ActorColony::deliverTrainee()
 void ActorColony::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
-
-  if( numberWorkers() > 0 )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
 }

@@ -79,7 +79,7 @@ void Dispatcher::update(const unsigned int time)
     foreach( rq, _d->requests )
     {
       RequestPtr request = *rq;
-      if( request->getFinishedDate() <= GameDate::current() )
+      if( request->finishedDate() <= GameDate::current() )
       {
         request->fail( &_city );
       }

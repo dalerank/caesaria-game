@@ -42,10 +42,11 @@ public:
 	PushButton* downButton;
   bool needRecalculateParams;
   Point cursorPos;
+  unsigned int lastTimeChange;
 
-	Picture texture;
-  Picture sliderPictureUp, sliderPictureDown;
-	Picture sliderTexture;
+  gfx::Picture texture;
+  gfx::Picture sliderPictureUp, sliderPictureDown;
+  gfx::Picture sliderTexture;
 };
 
 }//end namespace gui

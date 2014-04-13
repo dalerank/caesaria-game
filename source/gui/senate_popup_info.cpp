@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "senate_popup_info.hpp"
-#include "gfx/city_renderer.hpp"
+#include "gfx/renderer.hpp"
 #include "objects/senate.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
@@ -28,6 +28,8 @@
 #include "core/time.hpp"
 #include "gfx/tilemap_camera.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -38,7 +40,7 @@ public:
   Point ratingStartPos;
   Point offset;
   Font font;
-  CityRenderer* mapRenderer;
+  gfx::Renderer* cityRenderer;
   PictureRef background;  
   int lastUpdateTime;
 
@@ -55,10 +57,10 @@ public:
   }
 };
 
-SenatePopupInfo::SenatePopupInfo( Widget* parent, CityRenderer& mapRenderer ) :
+SenatePopupInfo::SenatePopupInfo( Widget* parent, gfx::Renderer& mapRenderer ) :
   Widget( parent, -1, Rect( -1, -1, 0, 0 )), _d( new Impl )
 {
-  _d->mapRenderer = &mapRenderer;
+  _d->cityRenderer = &mapRenderer;
   _d->startPos = Point( 6, 6 );
   _d->ratingStartPos = Point( 186, 6 );
   _d->offset = Point( 0, 14 );
@@ -77,11 +79,11 @@ SenatePopupInfo::SenatePopupInfo( Widget* parent, CityRenderer& mapRenderer ) :
   _d->font.draw( *_d->background, _("##senatepp_favour_rating##"), _d->startPos + _d->offset * 4, false );
 }
 
-void SenatePopupInfo::draw( GfxEngine& painter )
+void SenatePopupInfo::draw(gfx::Engine& painter )
 {
   Point cursorPos = getEnvironment()->getCursorPos();
 
-  Tile* tile = _d->mapRenderer->camera().at( cursorPos, false );
+  Tile* tile = _d->cityRenderer->camera()->at( cursorPos, false );
 
   if( tile && tile->overlay().isValid() )
   {

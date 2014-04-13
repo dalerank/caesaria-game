@@ -31,7 +31,7 @@ public:
   static AdvisorsWindow* create(Widget* parent, int id, const constants::advisor::Type type, PlayerCityPtr city  );
 
   // draw on screen
-  void draw( GfxEngine& engine );
+  void draw( gfx::Engine& engine );
 
   void showAdvisor( const constants::advisor::Type type );
 

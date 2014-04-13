@@ -27,16 +27,17 @@ namespace scene
 {
 
 //1000 / 30
-#define TICK_PER_FRAME 33
+#define DELAY_33_FPS 33
 
 Base::Base()
 {
   _isStopped = false;
+  _delayTicks = 0;
 }
 
 Base::~Base() {}
 
-void Base::drawFrame( GfxEngine &engine )
+void Base::drawFrame(gfx::Engine& engine )
 {
    engine.startRenderFrame();
    
@@ -49,7 +50,7 @@ void Base::handleEvent( NEvent& event) {}
 void Base::afterFrame() {}
 void Base::stop(){ _isStopped = true;}
 
-void Base::update( GfxEngine &engine )
+void Base::update(gfx::Engine& engine )
 {
   static unsigned int lastTimeUpdate = DateTime::elapsedTime();
 
@@ -62,11 +63,12 @@ void Base::update( GfxEngine &engine )
     handleEvent( nEvent );
   }
 
-  unsigned int ticks = DateTime::elapsedTime() - lastTimeUpdate;
-  if( ticks < TICK_PER_FRAME )
+  _delayTicks = DateTime::elapsedTime() - lastTimeUpdate;
+  if( _delayTicks < DELAY_33_FPS )
   {
-    engine.delay( TICK_PER_FRAME - ticks );
+    engine.delay( DELAY_33_FPS - _delayTicks );
   }
+
   lastTimeUpdate = DateTime::elapsedTime();
 }
 

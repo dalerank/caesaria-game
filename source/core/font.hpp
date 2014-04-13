@@ -24,7 +24,10 @@
 #include "core/stringarray.hpp"
 #include "core/color.hpp"
 
-class Picture;
+namespace gfx
+{
+ class Picture;
+}
 
 enum FontType { FONT_0, FONT_1, FONT_1_WHITE, FONT_1_RED, 
                 FONT_2, FONT_2_RED, FONT_2_WHITE, FONT_2_YELLOW, 
@@ -61,8 +64,8 @@ public:
   Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
                           Alignment horizontalAlign, Alignment verticalAlign );
 
-  void draw(Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
-  void draw(Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );
+  void draw(gfx::Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
+  void draw(gfx::Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );
 
   unsigned int getWidthFromCharacter( unsigned int c ) const;
   int getCharacterFromPos(const std::wstring& text, int pixel_x) const;

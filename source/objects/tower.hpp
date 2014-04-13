@@ -29,11 +29,11 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const TilesArray&) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray&) const;
 
   virtual void deliverService();
 
-  virtual TilesArray getEnterArea() const;
+  virtual gfx::TilesArray getEnterArea() const;
 
   void resetPatroling();
   PathwayList getWays(TilePos start, FortificationList dest );

@@ -35,6 +35,7 @@
 #include "walker/helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
   const Walker::Action acDragWater = Walker::Action( Walker::acMax + 1 );
@@ -136,7 +137,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 { 
-  Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( getBase() ),
+  Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ),
                                            PathwayHelper::roadFirst );
 
   if( pathway.isValid() )
@@ -240,7 +241,7 @@ void Prefect::_reachedPathway()
   switch( _d->action )
   {
   case Impl::patrol:
-    if( getBase()->getEnterArea().contain( pos() )  )
+    if( base()->getEnterArea().contain( pos() )  )
     {
       deleteLater();
       _d->action = Impl::doNothing;
@@ -302,9 +303,9 @@ void Prefect::_centerTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      if( getBase().isValid() )
+      if( base().isValid() )
       {
-        PrefecturePtr ptr = ptr_cast<Prefecture>( getBase() );
+        PrefecturePtr ptr = ptr_cast<Prefecture>( base() );
         if( ptr.isValid() )
           ptr->fireDetect( firePos );
 
@@ -513,7 +514,7 @@ void Prefect::load( const VariantMap& stream )
 
   _setAction( _d->water > 0 ? acDragWater : acMove );
 
-  PrefecturePtr prefecture = ptr_cast<Prefecture>( getBase() );
+  PrefecturePtr prefecture = ptr_cast<Prefecture>( base() );
   if( prefecture.isValid() )
   {
     prefecture->addWalker( WalkerPtr( this ) );

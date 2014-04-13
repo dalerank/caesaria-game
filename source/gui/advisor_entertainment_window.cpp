@@ -38,6 +38,7 @@
 #include "objects/hippodrome.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -68,7 +69,7 @@ public:
     return _info;
   }
 
-  virtual void _updateTexture( GfxEngine& painter )
+  virtual void _updateTexture( gfx::Engine& painter )
   {
     Label::_updateTexture( painter );
 
@@ -158,7 +159,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widge
   _d->updateFestivalInfo();
 }
 
-void AdvisorEntertainmentWindow::draw( GfxEngine& painter )
+void AdvisorEntertainmentWindow::draw( Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -216,6 +217,7 @@ void AdvisorEntertainmentWindow::Impl::assignFestival(int divinityType, int fest
   if( srvc.isValid() )
   {
     srvc->assignFestival( (religion::RomeDivinityType)divinityType, festSize );
+    updateFestivalInfo();
   }
 }
 

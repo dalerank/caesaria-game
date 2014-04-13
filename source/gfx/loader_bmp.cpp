@@ -10,7 +10,7 @@
 //! based on the file extension (e.g. ".tga")
 bool PictureLoaderBmp::isALoadableFileExtension(const vfs::Path& filename) const
 {
-  return filename.isExtension( ".bmp" );
+  return filename.isMyExtension( ".bmp" );
 }
 
 //! returns true if the file maybe is able to be loaded by this class
@@ -49,7 +49,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
 
 	Picture pic;
 	pic.init( temp, Point(0, 0) );
-	GfxEngine::instance().loadPicture( pic );
+	Engine::instance().loadPicture( pic );
 
   if( pic.size().area() == 0 )
   {

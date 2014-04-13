@@ -26,23 +26,23 @@ namespace gui
 class InfoboxFactory : public InfoboxConstruction
 {
 public:
-  InfoboxFactory( Widget* parent, const Tile& tile );
+  InfoboxFactory( Widget* parent, const gfx::Tile& tile );
 
   virtual void showDescription();
 private:
-  TileOverlay::Type _type;
+  gfx::TileOverlay::Type _type;
 };
 
 class InfoboxShipyard : public InfoboxFactory
 {
 public:
-  InfoboxShipyard( Widget* parent, const Tile& tile );
+  InfoboxShipyard( Widget* parent, const gfx::Tile& tile );
 };
 
 class InfoboxWharf : public InfoboxFactory
 {
 public:
-  InfoboxWharf( Widget* parent, const Tile& tile );
+  InfoboxWharf( Widget* parent, const gfx::Tile& tile );
 };
 
 

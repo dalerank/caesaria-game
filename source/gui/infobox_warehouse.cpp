@@ -26,6 +26,8 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -56,7 +58,7 @@ InfoboxWarehouse::InfoboxWarehouse( Widget* parent, const Tile& tile )
   setTitle( _(title) );
 
   // summary: total stock, free capacity
-  int _paintY = _getTitle() ? _getTitle()->bottom() : 50;
+  int _paintY = _title() ? _title()->bottom() : 50;
 
   drawGood(Good::wheat,     0, _paintY+0);
   drawGood(Good::vegetable, 0, _paintY+25);

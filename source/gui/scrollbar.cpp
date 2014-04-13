@@ -23,6 +23,8 @@
 #include "gui/environment.hpp"
 #include "game/resourcegroup.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -34,11 +36,12 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
     _overrideBgColorEnabled( false ), _visibleFilledArea( true ),
     _overrideBgColor( 0 ), _value(0), _sliderPos(0), _lastSliderPos( 0 ),
     _drawLenght(0), _minValue(0), _maxVallue(100),
-    _smallStep(10), _largeStep(50), _desiredPos(0), _lastTimeChange(0),
+    _smallStep(10), _largeStep(50), _desiredPos(0),
 	_d( new Impl )
 {
 	_d->upButton = 0;
 	_d->downButton = 0;
+	_d->lastTimeChange = 0l;
 
   _d->sliderPictureUp = Picture::load( ResourceGroup::panelBackground, 61 );
   _d->sliderPictureDown = Picture::load( ResourceGroup::panelBackground, 53 );
@@ -47,7 +50,7 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
    setDebugName("ScrollBar");
 #endif
 
-  refreshControls_();
+	_refreshControls();
 
 	setNotClipped(noclip);
 
@@ -55,7 +58,7 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	setTabStop(true);
 	setTabOrder(-1);
 
-	setPos(0);
+	setPosition(0);
 }
 
 Signal1<int>& ScrollBar::onPositionChanged() {	return _d->onPositionChanged; }
@@ -83,12 +86,12 @@ bool ScrollBar::onEvent(const NEvent& event)
 				bool absorb = true;
 				switch (event.keyboard.key)
 				{
-				case KEY_LEFT: case KEY_UP: setPos(_value-_smallStep); break;
-				case KEY_RIGHT:	case KEY_DOWN: setPos(_value+_smallStep); break;
-				case KEY_HOME: setPos(_minValue);	break;
-				case KEY_PRIOR: setPos(_value-_largeStep); break;
-				case KEY_END: setPos(_maxVallue);	break;
-				case KEY_NEXT: setPos(_value+_largeStep); break;
+				case KEY_LEFT: case KEY_UP: setPosition(_value-_smallStep); break;
+				case KEY_RIGHT:	case KEY_DOWN: setPosition(_value+_smallStep); break;
+				case KEY_HOME: setPosition(_minValue);	break;
+				case KEY_PRIOR: setPosition(_value-_largeStep); break;
+				case KEY_END: setPosition(_maxVallue);	break;
+				case KEY_NEXT: setPosition(_value+_largeStep); break;
 				default:absorb = false;
 				}
 
@@ -105,11 +108,11 @@ bool ScrollBar::onEvent(const NEvent& event)
 			{
 				if (event.gui.caller == _d->upButton)
         {
-          setPos(_value-_smallStep);
+          setPosition(_value-_smallStep);
         }
 				else if (event.gui.caller == _d->downButton)
         {
-          setPos(_value+_smallStep);
+          setPosition(_value+_smallStep);
         }
 				
         _resolvePositionChanged();
@@ -132,7 +135,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 				case mouseWheel:
 					if( isFocused() )
 					{
-						setPos(	getPos() +
+						setPosition(	position() +
 										( (int)event.mouse.wheel * _smallStep * (_horizontal ? 1 : -1 ) )	);
 
 						_resolvePositionChanged();
@@ -182,7 +185,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 
               if( _draggedBySlider )
 							{
-								setPos(newPos);
+								setPosition(newPos);
 							}
 							else
 							{
@@ -196,7 +199,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 
 						if (_draggedBySlider)
 						{
-							setPos(newPos);
+							setPosition(newPos);
 						}
 						else
 						{
@@ -233,23 +236,23 @@ void ScrollBar::afterPaint( unsigned int timeMs )
   if( !isVisible() )
       return;
 
-  if( _dragging && !_draggedBySlider && _trayClick && timeMs > _lastTimeChange + 200 )
+	if( _dragging && !_draggedBySlider && _trayClick && timeMs > _d->lastTimeChange + 200 )
 	{
-    _lastTimeChange = timeMs;
+		_d->lastTimeChange = timeMs;
 
     const int oldPos = _value;
 
     if (_desiredPos >= _value + _largeStep)
     {
-      setPos(_value + _largeStep);
+      setPosition(_value + _largeStep);
     }
 		else if (_desiredPos <= _value - _largeStep)
     {
-      setPos(_value - _largeStep);
+      setPosition(_value - _largeStep);
     }
 		else if (_desiredPos >= _value - _largeStep && _desiredPos <= _value + _largeStep)
     {
-      setPos(_desiredPos);
+      setPosition(_desiredPos);
     }
 
     if (_value != oldPos )
@@ -259,7 +262,7 @@ void ScrollBar::afterPaint( unsigned int timeMs )
 	}
 }
 
-void ScrollBar::beforeDraw( GfxEngine& painter )
+void ScrollBar::beforeDraw(gfx::Engine& painter )
 {
     if( !isVisible() )
         return;
@@ -311,7 +314,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
         if( _d->upButton && _d->upButton->isVisible() )
            _d->sliderRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
         
-        _d->sliderRect.LowerRightCorner.setX( _d->sliderRect.UpperLeftCorner.x() + _drawLenght );
+        _d->sliderRect.LowerRightCorner.setX( _d->sliderRect.left() + _drawLenght );
       }
       else
       {
@@ -320,7 +323,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
         if( _d->upButton && _d->upButton->isVisible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
 
-        _d->sliderRect.LowerRightCorner.setY( _d->sliderRect.UpperLeftCorner.y() + _drawLenght );
+        _d->sliderRect.LowerRightCorner.setY( _d->sliderRect.top() + _drawLenght );
       }
     }
   }
@@ -330,7 +333,7 @@ void ScrollBar::beforeDraw( GfxEngine& painter )
 
 
 //! draws the element and its children
-void ScrollBar::draw( GfxEngine& painter )
+void ScrollBar::draw(gfx::Engine& painter )
 {
 	if (!isVisible())
 		return;
@@ -338,7 +341,7 @@ void ScrollBar::draw( GfxEngine& painter )
   //draw background
   if( _d->texture.isValid() )
   {
-      painter.drawPicture( _d->texture, absoluteRect().UpperLeftCorner );
+    painter.drawPicture( _d->texture, absoluteRect().UpperLeftCorner );
   }
 
   //draw slider
@@ -350,7 +353,6 @@ void ScrollBar::draw( GfxEngine& painter )
 	// draw buttons
 	Widget::draw( painter );
 }
-
 
 //!
 int ScrollBar::_getPosFromMousePos(const Point& pos) const
@@ -366,17 +368,17 @@ int ScrollBar::_getPosFromMousePos(const Point& pos) const
 		w = height() - float(width())*3.0f;
 		p = pos.y() - screenTop() - width()*1.5f;
 	}
-    return (int) ( p/w * getRange() ) + _minValue;
+	return (int) ( p/w * getRange() ) + _minValue;
 }
 
 
 //! sets the position of the scrollbar
-void ScrollBar::setPos(int pos)
+void ScrollBar::setPosition(int pos)
 {
   _value = math::clamp( pos, _minValue, _maxVallue );
 
   const Rect& borderMarginRect = Rect( 0, 0, 0, 0 );
-  if (_horizontal)
+  if( _horizontal )
 	{
     _drawLenght = height() * 3;
     int borderMargin = -borderMarginRect.UpperLeftCorner.x();
@@ -387,59 +389,35 @@ void ScrollBar::setPos(int pos)
 	}
 	else
 	{
-    _drawLenght = width() * 3;
-    int borderMargin = -borderMarginRect.UpperLeftCorner.y();
-    borderMargin -= borderMarginRect.LowerRightCorner.y();
+		int top = _d->upButton->isVisible() ? _d->upButton->height() : 0;
+		_drawLenght = top	+ ( _d->downButton->isVisible() ? _d->downButton->height() : 0 );
+		int borderMargin = -borderMarginRect.top() - borderMarginRect.bottom();
+		int sliderHeight = _d->sliderTexture.height();
 
-    float f = ( height() + borderMargin - ( width()*0.0f + _drawLenght)) / getRange();
-    _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.y();
+    float f = ( height() + borderMargin - _drawLenght - sliderHeight) / getRange();
+    _sliderPos = top + (int)( ( ( _value - _minValue ) * f) ) + borderMarginRect.top();
 	}
 }
 
 
 //! gets the small step value
-int ScrollBar::getSmallStep() const
-{
-    return _smallStep;
-}
-
+int ScrollBar::getSmallStep() const {    return _smallStep;}
 
 //! sets the small step value
-void ScrollBar::setSmallStep(int step)
-{
-	if (step > 0)
-        _smallStep = step;
-	else
-        _smallStep = 10;
-}
-
+void ScrollBar::setSmallStep(int step) {  _smallStep = step > 0 ? step : 10;}
 
 //! gets the small step value
-int ScrollBar::getLargeStep() const
-{
-    return _largeStep;
-}
-
+int ScrollBar::getLargeStep() const {    return _largeStep;}
 
 //! sets the small step value
-void ScrollBar::setLargeStep(int step)
-{
-	if (step > 0)
-        _largeStep = step;
-	else
-        _largeStep = 50;
-}
+ void ScrollBar::setLargeStep(int step){  _largeStep = step > 0 ? step : 50;}
 
-
-//! gets the maximum value of the scrollbar.
-int ScrollBar::getMax() const
-{
-    return _maxVallue;
-}
+// ! gets the maximum value of the scrollbar.
+int ScrollBar::maxValue() const{  return _maxVallue;}
 
 
 //! sets the maximum value of the scrollbar.
-void ScrollBar::setMax(int max)
+void ScrollBar::setMaxValue(int max)
 {
   _maxVallue = std::max<int>( max, _minValue );
 
@@ -450,18 +428,14 @@ void ScrollBar::setMax(int max)
 	if( _d->downButton )
 		_d->downButton->setEnabled(enable);
 
-    setPos(_value);
+	setPosition(_value);
 }
 
 //! gets the maximum value of the scrollbar.
-int ScrollBar::getMin() const
-{
-    return _minValue;
-}
-
+int ScrollBar::minValue() const {    return _minValue;}
 
 //! sets the minimum value of the scrollbar.
-void ScrollBar::setMin(int min)
+void ScrollBar::setMinValue(int min)
 {
   _minValue = std::min<int>( min, _maxVallue );
 
@@ -473,17 +447,14 @@ void ScrollBar::setMin(int min)
 	if( _d->downButton)
 		_d->downButton->setEnabled(enable);
 
-  setPos(_value);
+	setPosition(_value);
 }
 
 
 //! gets the current position of the scrollbar
-int ScrollBar::getPos() const
-{
-    return _value;
-}
+int ScrollBar::position() const {    return _value;}
 
-PushButton* ScrollBar::_CreateButton( const Rect& rectangle, 
+PushButton* ScrollBar::_createButton( const Rect& rectangle,
                                       Alignment left, Alignment rigth, Alignment top, Alignment bottom, int type )
 {
     PushButton* btn = new PushButton( this, rectangle );
@@ -512,16 +483,16 @@ PushButton* ScrollBar::_CreateButton( const Rect& rectangle,
 }
 
 //! refreshes the position and text on child buttons
-void ScrollBar::refreshControls_()
+void ScrollBar::_refreshControls()
 {
   if (_horizontal)
 	{
 		int h = height();
 		if( !_d->upButton )
-         _d->upButton = _CreateButton( Rect(0, 0, h, h), alignUpperLeft, alignUpperLeft, alignUpperLeft, alignLowerRight, 2 );
+				 _d->upButton = _createButton( Rect(0, 0, h, h), alignUpperLeft, alignUpperLeft, alignUpperLeft, alignLowerRight, 2 );
 
     if (!_d->downButton)
-         _d->downButton = _CreateButton( Rect( width()-h, 0, width(), h), 
+         _d->downButton = _createButton( Rect( width()-h, 0, width(), h),
                                          alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight, 3 );
 	}
 	else
@@ -529,47 +500,17 @@ void ScrollBar::refreshControls_()
 	  //int w = getWidth();
 		if (!_d->upButton)
     {
-      _d->upButton = _CreateButton( Rect(0,0, 39, 26), alignUpperLeft, alignLowerRight, alignUpperLeft, alignUpperLeft, 0 );
+      _d->upButton = _createButton( Rect(0,0, 39, 26), alignUpperLeft, alignLowerRight, alignUpperLeft, alignUpperLeft, 0 );
     }
 
     if (!_d->downButton)
     {
-      _d->downButton = _CreateButton( Rect(0, height()-26, 39, height()), 
+      _d->downButton = _createButton( Rect(0, height()-26, 39, height()),
                                       alignUpperLeft, alignLowerRight, alignLowerRight, alignLowerRight, 1 );
     }
 	}
 }
 
-
-//! Writes attributes of the element.
-void ScrollBar::save( VariantMap& out ) const
-{
-// 	Widget::save( out );
-// 
-//     out->AddBool( SerializeHelper::horizontalProp, _horizontal);
-//     out->AddInt ( SerializeHelper::valueProp,		_value);
-//     out->AddVector2d( SerializeHelper::intervalProp, core::Vector2F( (float)_minValue, (float)_maxVallue ) );
-//     out->AddInt ( smallStepProp, _smallStep);
-//     out->AddInt ( largeStepProp, _largeStep);
-//     out->AddBool( filledAreaVisibleProp, _visibleFilledArea );
-}
-
-
-//! Reads attributes of the element
-void ScrollBar::load( const VariantMap& in )
-{
-// 	Widget::load( in );
-// 
-//     _horizontal = in->getAttributeAsBool( SerializeHelper::horizontalProp );
-//     setMin( (int)in->getAttributeAsVector2d( SerializeHelper::intervalProp ).X );
-// 	setMax( (int)in->getAttributeAsVector2d( SerializeHelper::intervalProp ).Y );
-//     setPos( in->getAttributeAsInt( SerializeHelper::valueProp ));
-// 	setSmallStep( in->getAttributeAsInt( smallStepProp ) );
-// 	setLargeStep(in->getAttributeAsInt( largeStepProp ));
-//     setVisibleFilledArea( in->getAttributeAsBool( filledAreaVisibleProp ) );
-// 
-//     refreshControls_();
-}
 
 void ScrollBar::setBackgroundImage( const Picture& pixmap )
 {
@@ -583,29 +524,10 @@ void ScrollBar::setSliderImage( const Picture& pixmap, const ElementState state 
 	_d->sliderTextureRect = Rect( Point(0,0), pixmap.size() );
 }
 
-void ScrollBar::setHorizontal( bool horizontal )
-{
-    _horizontal = horizontal;
-}
-
-PushButton* ScrollBar::getUpButton()
-{
-    return _d->upButton;
-}
-
-PushButton* ScrollBar::getDownButton()
-{
-    return _d->downButton;
-}
-
-void ScrollBar::setVisibleFilledArea( bool vis )
-{
-    _visibleFilledArea = vis;
-}
-
-float ScrollBar::getRange() const
-{
-	return (float) ( _maxVallue - _minValue );
-}
+void ScrollBar::setHorizontal( bool horizontal ) {    _horizontal = horizontal;}
+PushButton* ScrollBar::upButton(){    return _d->upButton;}
+PushButton* ScrollBar::downButton(){    return _d->downButton;}
+void ScrollBar::setVisibleFilledArea( bool vis ){    _visibleFilledArea = vis;}
+float ScrollBar::getRange() const{	return (float) ( _maxVallue - _minValue );}
 
 }//end namespace gui

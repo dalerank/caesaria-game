@@ -30,12 +30,13 @@
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
 
+using namespace gfx;
+
 class ServiceBuilding::Impl
 {
 public:
   int serviceDelay;
   Service::Type service;
-  int serviceTimer;
   int serviceRange;
   DateTime dateLastSend;
 };
@@ -47,8 +48,7 @@ ServiceBuilding::ServiceBuilding(const Service::Type service,
    _d->service = service;
    setMaxWorkers(5);
    setWorkers(0);
-   setServiceDelay( GameDate::ticksInMonth() / 4 );
-   _d->serviceTimer = 0;
+   setServiceDelay( DateTime::daysInWeek );
    _d->serviceRange = 30;
 }
 
@@ -62,39 +62,32 @@ int ServiceBuilding::time2NextService() const
   return (int)(serviceDelay() * koeff);
 }
 
-Service::Type ServiceBuilding::getService() const{   return _d->service;}
+Service::Type ServiceBuilding::serviceType() const{   return _d->service;}
 
 void ServiceBuilding::timeStep(const unsigned long time)
 {
-   WorkingBuilding::timeStep(time);   
+  WorkingBuilding::timeStep(time);
 
-   if (_d->serviceTimer == 0)
-   {
-      deliverService();
-      _d->serviceTimer = time2NextService();
-   }
-   else if (_d->serviceTimer > 0)
-   {
-      _d->serviceTimer -= 1;
-   }
-
-   _animationRef().update( time );
-   const Picture& pic = _animationRef().currentFrame();
-   if( pic.isValid() )
-   {
-      _fgPicturesRef().back() = _animationRef().currentFrame();
-   }
-}
+  if( time % 25 == 1 )
+  {
+    int serviceDelay = time2NextService();
+    if( _d->dateLastSend.getDaysToDate( GameDate::current() ) > serviceDelay )
+    {
+       deliverService();
+       _d->dateLastSend = GameDate::current();
+    }
+  }
+ }
 
 void ServiceBuilding::destroy()
 {
-   WorkingBuilding::destroy();
+  WorkingBuilding::destroy();
 }
 
 void ServiceBuilding::deliverService()
 {
   // make a service walker and send him to his wandering
-  ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), getService() );
+  ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
   serviceman->setMaxDistance( walkerDistance() );
   serviceman->send2City( BuildingPtr( this ) );
 
@@ -110,15 +103,16 @@ int ServiceBuilding::getServiceRange() const {   return _d->serviceRange;}
 void ServiceBuilding::save( VariantMap& stream ) const 
 {
   WorkingBuilding::save( stream );
-  stream[ "timer" ] = _d->serviceTimer;
+  stream[ "dateLastSend" ] = _d->dateLastSend;
   stream[ "delay" ] = _d->serviceDelay;
   stream[ "range" ] = _d->serviceRange;
+
 }
 
 void ServiceBuilding::load( const VariantMap& stream )
 {
   WorkingBuilding::load( stream );
-  _d->serviceTimer = (int)stream.get( "timer", 0 );
+  _d->dateLastSend = (int)stream.get( "dateLastSend", 0 );
   _d->serviceDelay = (int)stream.get( "delay", 80 );
   _d->serviceRange = (int)stream.get( "range", 30 );
 }
@@ -132,11 +126,11 @@ std::string ServiceBuilding::workersStateDesc() const
   std::string srvcType = MetaDataHolder::getTypename( type() );
   std::string state = "unknown";
 
-  if( getWalkers().size() > 0 )
+  if( walkers().size() > 0 )
   {
     state = "on_patrol";
   }
-  else if( numberWorkers() > 0 && _d->serviceTimer < _d->serviceDelay / 4 )
+  else if( numberWorkers() > 0 && _d->dateLastSend.getDaysToDate( GameDate::current() ) < 2 )
   {
     state = "ready_for_work";
   }

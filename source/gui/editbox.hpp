@@ -103,7 +103,7 @@ public:
   virtual bool onEvent( const NEvent& event );
 
   //! draws the element and its children
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
@@ -132,7 +132,7 @@ public:
   //! Reads attributes of the element
   virtual void setupUI(const VariantMap& ui);
 
-  void beforeDraw( GfxEngine& painter );
+  void beforeDraw( gfx::Engine& painter );
 
 oc3_signals public:
   Signal1<std::string>& onTextChanged();

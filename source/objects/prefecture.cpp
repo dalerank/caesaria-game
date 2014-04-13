@@ -25,6 +25,8 @@
 #include "city/city.hpp"
 #include "objects/constants.hpp"
 
+using namespace gfx;
+
 class Prefecture::Impl
 {
 public:
@@ -44,36 +46,16 @@ Prefecture::Prefecture()
   _fgPicturesRef().resize(1);
 }
 
-Prefecture::~Prefecture()
-{
-
-}
+Prefecture::~Prefecture() {}
 
 void Prefecture::timeStep(const unsigned long time)
 {
-  bool mayAnimate = numberWorkers() > 0;
-
-  if( mayAnimate  )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().setIndex( 0 );
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().setIndex( -1 );
-    _animationRef().stop();
-    _fgPicturesRef().back() = Picture::getInvalid();
-  }
-
   ServiceBuilding::timeStep( time );
 }
 
 void Prefecture::deliverService()
 {
-  if( numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     bool fireDetect = _d->fireDetect.i() >= 0;
     PrefectPtr walker = Prefect::create( _city() );
@@ -86,7 +68,7 @@ void Prefecture::deliverService()
 
       Tilemap& tmap = _city()->tilemap();
       TilesArray arrivedArea = tmap.getArea( _d->fireDetect - TilePos( 1, 1), _d->fireDetect + TilePos( 1, 1 ) );
-      Pathway pathway = Pathfinder::getInstance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
+      Pathway pathway = Pathfinder::instance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
       //patrol = !pathFounded;
 
       if( pathway.isValid() )

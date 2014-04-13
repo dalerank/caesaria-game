@@ -23,6 +23,7 @@
 #include "constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
  const unsigned int wellServiceRange = 2;
@@ -38,7 +39,7 @@ Well::Well() : ServiceBuilding( Service::well, building::well, Size(1) )
 
 void Well::deliverService()
 {
-  ServiceWalkerPtr walker = ServiceWalker::create( _city(), getService() );
+  ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
   walker->setBase( BuildingPtr( this ) );
 
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );

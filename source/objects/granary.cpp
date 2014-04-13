@@ -24,6 +24,8 @@
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
 
+using namespace gfx;
+
 class GranaryGoodStore : public SimpleGoodStore
 {
 public:
@@ -110,24 +112,20 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
 void Granary::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep( time );
-  if( numberWorkers() > 0 )
+  if( !mayWork() )
+    return;
+
+  if( time % (GameDate::ticksInMonth() / 2) == 1 )
   {
-    _animationRef().update( time );
-
-    _fgPicturesRef()[5] = _animationRef().currentFrame();
-
-    if( time % (GameDate::ticksInMonth() / 2) == 1 )
+    if(  walkers().empty() )
     {
-      if(  getWalkers().empty() )
+      if( _d->goodStore.isDevastation() )
       {
-        if( _d->goodStore.isDevastation() )
-        {
-          _tryDevastateGranary();
-        }
-        else
-        {
-          _resolveDeliverMode();
-        }
+        _tryDevastateGranary();
+      }
+      else
+      {
+        _resolveDeliverMode();
       }
     }
   }
@@ -171,7 +169,7 @@ void Granary::load( const VariantMap& stream)
 
 void Granary::_resolveDeliverMode()
 {
-  if( getWalkers().size() > 0 )
+  if( walkers().size() > 0 )
   {
     return;
   }

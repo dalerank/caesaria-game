@@ -5,7 +5,7 @@
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "core/stacktrace.hpp"
-
+#include "core/messagebox.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main

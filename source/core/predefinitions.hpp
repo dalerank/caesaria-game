@@ -18,12 +18,12 @@
 
 #include "smartptr.hpp"
 #include "position.hpp"
+#include "smartlist.hpp"
 
-#include <list>
 #include <vector>
 
 #define PREDEFINE_CLASS_SMARTPOINTER(a) class a; typedef SmartPtr<a> a##Ptr;
-#define PREDEFINE_CLASS_SMARTPOINTER_LIST(a,b) PREDEFINE_CLASS_SMARTPOINTER(a); typedef std::list< a##Ptr > a##b;
+#define PREDEFINE_CLASS_SMARTLIST(a,b) PREDEFINE_CLASS_SMARTPOINTER(a); typedef SmartList< a > a##b;
 
 class TilePos;
 class Size;

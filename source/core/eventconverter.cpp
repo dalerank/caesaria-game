@@ -15,6 +15,7 @@
 
 #include "eventconverter.hpp"
 #include "time.hpp"
+#include "logger.hpp"
 #include <map>
 
 struct SMouseMultiClicks
@@ -202,7 +203,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
 
   case SDL_MOUSEBUTTONDOWN:
   case SDL_MOUSEBUTTONUP:
-  {
+  {    
     ret.EventType = sEventMouse;
     Uint8 *keys = SDL_GetKeyState(NULL);
 

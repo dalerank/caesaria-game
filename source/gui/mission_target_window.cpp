@@ -31,6 +31,8 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -102,7 +104,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->lbxHelp->setItemTextOffset( Point( 10, 0 ) );
 }
 
-void MissionTargetsWindow::draw( GfxEngine& painter )
+void MissionTargetsWindow::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -118,7 +120,7 @@ void MissionTargetsWindow::draw( GfxEngine& painter )
 void MissionTargetsWindow::setCity(PlayerCityPtr city)
 {
   _d->city = city;
-  const CityWinTargets& wint = _d->city->getWinTargets();
+  const city::WinTargets& wint = _d->city->getWinTargets();
   _d->lbCulture->setVisible( wint.needCulture() > 0 );
   _d->lbPeace->setVisible( wint.needPeace() > 0 );
   _d->lbFavour->setVisible( wint.needFavour() > 0 );
@@ -143,7 +145,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
 
   _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
   _d->lbxHelp->setItemTextOffset( Point( 20, 0 ) );
-  _d->lbxHelp->setItemDefaultColor( ListBoxItem::LBC_TEXT, 0xffe0e0e0 );
+  _d->lbxHelp->setItemDefaultColor( ListBoxItem::simple, 0xffe0e0e0 );
 
   foreach( it, wint.getOverview() )
   {
@@ -152,8 +154,8 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
     {
       Picture pic = Picture::load( text.substr( 5 ) );
       ListBoxItem& item = _d->lbxHelp->addItem( pic );
-      item.setItemTextAlignment( alignCenter, alignUpperLeft );
-      int lineCount = pic.height() / _d->lbxHelp->getItemHeight();
+      item.setTextAlignment( alignCenter, alignUpperLeft );
+      int lineCount = pic.height() / _d->lbxHelp->itemHeight();
       StringArray lines;
       lines.resize( lineCount );
       _d->lbxHelp->addItems( lines );

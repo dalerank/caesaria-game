@@ -37,9 +37,8 @@ public:
   InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
   virtual ~InfoboxSimple();
 
-  virtual void draw( GfxEngine& engine );  // draw on screen
+  virtual void draw( gfx::Engine& engine );  // draw on screen
 
-  Picture& getBgPicture();
 
   virtual bool onEvent( const NEvent& event);
 
@@ -55,8 +54,9 @@ public:
   virtual void showDescription() {}
 
 protected:
+  gfx::Picture& _background();
   virtual void _afterCreate() {}
-  Label* _getTitle();
+  Label* _title();
   Label* _getInfo();
   Label* _getBlackFrame();
   PushButton* _getBtnExit();
@@ -69,7 +69,7 @@ protected:
 class InfoboxBuilding : public InfoboxSimple
 {
 public:
-   InfoboxBuilding( Widget* parent, const Tile& tile );
+   InfoboxBuilding( Widget* parent, const gfx::Tile& tile );
 };
 
 class InfoboxText : public InfoboxSimple

@@ -18,6 +18,9 @@
 
 #include "picture.hpp"
 
+namespace gfx
+{
+
 // utility class to draw the user interface
 class PictureDecorator
 {
@@ -55,5 +58,7 @@ public:
   // draws a rectangular perimeter
   static void drawBorder(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha);
 };
+
+}//end namespace gfx
 
 #endif //_CAESARIA_PICTURE_DECORATOR_INCLUDE_H_

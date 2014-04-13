@@ -39,6 +39,8 @@
 
 #include <list>
 
+using namespace gfx;
+
 class WarehouseTile : public ReferenceCounted
 {
 public:
@@ -352,6 +354,8 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
   _d->devastateModeInterval = GameDate::ticksInMonth() / 5;
 
+  _setClearAnimationOnStop( false );
+
   _fgPicturesRef()[ 0 ] = Picture::load(ResourceGroup::warehouse, 1);
   _fgPicturesRef()[ 1 ] = Picture::load(ResourceGroup::warehouse, 18);
   _fgPicturesRef()[ 2 ] = _animationRef().currentFrame();
@@ -377,10 +381,8 @@ void Warehouse::timeStep(const unsigned long time)
 {
   if( numberWorkers() > 0 )
   {
-   _animationRef().update( time );
    _d->animFlag.update( time );
 
-   _fgPicturesRef()[2] = _animationRef().currentFrame();
    _fgPicturesRef()[3] = _d->animFlag.currentFrame();
   }
 
@@ -472,7 +474,7 @@ std::string Warehouse::troubleDesc() const
 
 void Warehouse::_resolveDeliverMode()
 {
-  if( getWalkers().size() > 0 )
+  if( walkers().size() > 0 )
   {
     return;
   }
@@ -500,7 +502,7 @@ void Warehouse::_resolveDeliverMode()
 void Warehouse::_resolveDevastationMode()
 {
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  if( (_d->goodStore.qty() > 0) && getWalkers().empty() )
+  if( (_d->goodStore.qty() > 0) && walkers().empty() )
   {
     for( int goodType=Good::wheat; goodType <= Good::goodCount; goodType++ )
     {

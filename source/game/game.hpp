@@ -24,10 +24,8 @@
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "scene/base.hpp"
+#include "gfx/engine.hpp"
 
-#include <string>
-
-class GfxEngine;
 class Scene;
 
 class Game
@@ -56,7 +54,7 @@ public:
   PlayerCityPtr city() const;
   world::EmpirePtr empire() const;
   gui::GuiEnv* gui() const;
-  GfxEngine* engine() const;
+  gfx::Engine* engine() const;
   scene::Base* scene() const;
 
   void setPaused( bool value );

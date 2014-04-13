@@ -57,6 +57,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 class CityRenderer::Impl
 {
 public: 
@@ -65,7 +68,7 @@ public:
   PlayerCityPtr city;     // city to display
   Tilemap* tilemap;
   gui::GuiEnv* guienv;
-  GfxEngine* engine;
+  Engine* engine;
   TilemapCamera camera;  // visible map area
   Layers layers;
   Point currentCursorPos;
@@ -82,7 +85,7 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize(PlayerCityPtr city, GfxEngine* engine)
+void CityRenderer::initialize(PlayerCityPtr city, Engine* engine)
 {
   _d->city = city;
   _d->tilemap = &city->tilemap();
@@ -191,11 +194,11 @@ void CityRenderer::animate(unsigned int time)
   }
 }
 
-TilemapCamera& CityRenderer::camera() {  return _d->camera; }
+Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::getMode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
-TilePos CityRenderer::getTilePos( Point point ) const
-{
-  return _d->camera.at( point, true )->pos();
-}
+TilePos CityRenderer::getTilePos( Point point ) const{  return _d->camera.at( point, true )->pos();}
+void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
 Tilemap& CityRenderer::getTilemap(){   return *_d->tilemap; }
+
+}//end namespace gfx

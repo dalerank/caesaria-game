@@ -406,7 +406,7 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 	return false;
 }
 
-void ContextMenu::beforeDraw( GfxEngine& painter )
+void ContextMenu::beforeDraw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -429,7 +429,7 @@ void ContextMenu::beforeDraw( GfxEngine& painter )
 }
 
 //! draws the element and its children
-void ContextMenu::draw( GfxEngine& painter )
+void ContextMenu::draw(gfx::Engine& painter )
 {
   if ( !isVisible() )
     return;

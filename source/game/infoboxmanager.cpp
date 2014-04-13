@@ -50,6 +50,7 @@
 
 using namespace constants;
 using namespace gui;
+using namespace gfx;
 
 template< class T >
 class BaseInfoboxCreator : public InfoboxCreator

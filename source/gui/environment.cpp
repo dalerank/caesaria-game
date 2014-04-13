@@ -22,6 +22,9 @@
 #include "core/time.hpp"
 #include "core/foreach.hpp"
 #include "widget_factory.hpp"
+#include "core/logger.hpp"
+
+using namespace gfx;
 
 namespace gui
 {
@@ -51,7 +54,7 @@ public:
   Widget::Widgets deletionQueue;
 
   Rect _desiredRect;
-  GfxEngine* engine;
+  gfx::Engine* engine;
   Point cursorPos;
   WidgetFactory factory;
 
@@ -59,7 +62,7 @@ public:
   void threatDeletionQueue();
 };
 
-GuiEnv::GuiEnv( GfxEngine& painter )
+GuiEnv::GuiEnv(Engine& painter )
   : Widget( 0, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
   setDebugName( "GuiEnv" );
@@ -81,7 +84,7 @@ GuiEnv::GuiEnv( GfxEngine& painter )
   _d->toolTip.LaunchTime = 1000;
   _d->toolTip.RelaunchTime = 500;
 
-  setGeometry( Rect( 0, 0, painter.screenWidth(), painter.screenHeight() ) );
+  setGeometry( Rect( Point(), painter.screenSize() ) );
 }
 
 //! Returns if the element has focus
@@ -110,7 +113,7 @@ void GuiEnv::clear()
   // Remove the focus
   setFocus( this );
 
-  updateHoveredElement( Point( -9999, -9999 ) );
+  _updateHovered( Point( -9999, -9999 ) );
 
   for( ConstChildIterator it = getChildren().begin(); it != getChildren().end(); it++ )
     deleteLater( *it );
@@ -126,7 +129,7 @@ void GuiEnv::draw()
 
   Widget::draw( *_d->engine );
 
-  drawTooltip_( DateTime::elapsedTime() );
+  _drawTooltip( DateTime::elapsedTime() );
 
   // make sure tooltip is always on top
   //if(_d->toolTip.Element.isValid() )
@@ -181,10 +184,7 @@ bool GuiEnv::setFocus( Widget* element )
     return true;
 }
 
-Widget* GuiEnv::getFocus() const
-{
-  return _d->focusedElement.object();
-}
+Widget* GuiEnv::getFocus() const { return _d->focusedElement.object(); }
 
 bool GuiEnv::isHovered( const Widget* element )
 {
@@ -227,7 +227,7 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 
 Widget* GuiEnv::createWidget(const std::string& type, Widget* parent)
 {
-	return _d->factory.create( type, parent );
+  return _d->factory.create( type, parent );
 }
 
 WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
@@ -246,7 +246,7 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 }
 
 //
-void GuiEnv::drawTooltip_( unsigned int time )
+void GuiEnv::_drawTooltip( unsigned int time )
 {
     // launch tooltip
     if ( _d->toolTip.element.isNull()
@@ -281,7 +281,7 @@ void GuiEnv::drawTooltip_( unsigned int time )
     }
 }
 
-void GuiEnv::updateHoveredElement( const Point& mousePos )
+void GuiEnv::_updateHovered( const Point& mousePos )
 {
   WidgetPtr lastHovered = _d->hovered;
   WidgetPtr lastHoveredNoSubelement = _d->hoveredNoSubelement;
@@ -302,29 +302,29 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 
   // for tooltips we want the element itself and not some of it's subelements
   if( _d->hovered != rootWidget() )
-	{
-		_d->hoveredNoSubelement = _d->hovered;
-		while ( _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement->isSubElement() )
-		{
-			_d->hoveredNoSubelement = _d->hoveredNoSubelement->parent();
-		}
-	}
+  {
+    _d->hoveredNoSubelement = _d->hovered;
+    while ( _d->hoveredNoSubelement.isValid() && _d->hoveredNoSubelement->isSubElement() )
+    {
+      _d->hoveredNoSubelement = _d->hoveredNoSubelement->parent();
+    }
+  }
   else
-	{
+  {
     _d->hoveredNoSubelement = 0;
-	}
+  }
 
   if( _d->hovered != lastHovered )
   {
     if( lastHovered.isValid() )
-		{
-			lastHovered->onEvent( NEvent::Gui( lastHovered.object(), 0, guiElementLeft ) );
-		}
+    {
+      lastHovered->onEvent( NEvent::Gui( lastHovered.object(), 0, guiElementLeft ) );
+    }
 
     if( _d->hovered.isValid() )
-		{
-			_d->hovered->onEvent( NEvent::Gui( _d->hovered.object(), _d->hovered.object(), guiElementHovered ) );
-		}
+    {
+      _d->hovered->onEvent( NEvent::Gui( _d->hovered.object(), _d->hovered.object(), guiElementHovered ) );
+    }
   }
 
   if ( lastHoveredNoSubelement != _d->hoveredNoSubelement )
@@ -343,7 +343,7 @@ void GuiEnv::updateHoveredElement( const Point& mousePos )
 }
 
 //! Returns the next element in the tab group starting at the focused element
-Widget* GuiEnv::getNextWidget(bool reverse, bool group)
+Widget* GuiEnv::next(bool reverse, bool group)
 {
     // start the search at the root of the current tab group
     Widget *startPos = getFocus() ? getFocus()->tabgroup() : 0;
@@ -378,7 +378,7 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
         // find the element
         Widget *closest = 0;
         Widget *first = 0;
-        startPos->getNextWidget(startOrder, reverse, group, first, closest);
+        startPos->next(startOrder, reverse, group, first, closest);
 
         if (closest)
             return closest; // we found an element
@@ -392,89 +392,100 @@ Widget* GuiEnv::getNextWidget(bool reverse, bool group)
 
 //! posts an input event to the environment
 bool GuiEnv::handleEvent( const NEvent& event )
-{
+{  
   switch(event.EventType)
   {
     case sEventGui:
-        // hey, why is the user sending gui events..?
-        break;
+      // hey, why is the user sending gui events..?
+    break;
 
     case sEventMouse:
         _d->cursorPos = event.mouse.pos();
+
+//!!! android fix. update hovered element on every mouse event,
+//!   that beforeDraw() function cannot do it correctly
+#ifdef CAESARIA_PLATFORM_ANDROID
+        _updateHovered( _d->cursorPos );
+#endif
+//!!! end android fix
         switch( event.mouse.type )
         {
         case mouseLbtnPressed:
         case mouseRbtnPressed:
+        {
             if ( (_d->hovered.isValid() && _d->hovered != getFocus()) || !getFocus() )
             {
-                setFocus( _d->hovered.object() );
+              setFocus( _d->hovered.object() );
             }
 
             // sending input to focus
-            if (getFocus() && getFocus()->onEvent(event))
+            Widget* inFocus = getFocus();
+            if( inFocus )
+            {
+              bool eventResolved = getFocus()->onEvent(event);
+              if( eventResolved )
+              {
                 return true;
+              }
+            }
 
             // focus could have died in last call
-            if (!getFocus() && _d->hovered.isValid() )
-            {
-
-                return _d->hovered->onEvent(event);
+            inFocus = getFocus();
+            if( !inFocus && _d->hovered.isValid() )
+            {                
+              return _d->hovered->onEvent(event);
             }
+        }
         break;
 
         case mouseLbtnRelease:
-//             if( _dragObjectSave && _hovered )
-//             {
-//                 _hovered->onEvent( NEvent::Drop( event.MouseEvent.getPosition(), _dragObjectSave ) );
-//                 _dragObjectSave = NULL;
-//             }
-//             else
-                if( getFocus() )
-                    return getFocus()->onEvent( event );
+          if( getFocus() )
+          {
+            return getFocus()->onEvent( event );
+          }
         break;
 
         default:
-            if( _d->hovered.isValid() )
-            {
-                return _d->hovered->onEvent( event );
-            }
+          if( _d->hovered.isValid() )
+          {
+            return _d->hovered->onEvent( event );
+          }
         break;
         }
     break;
 
     case sEventKeyboard:
         {
-            /*if( _console && _console->InitKey() == (int)event.KeyboardEvent.Char )							//
+          /*if( _console && _console->InitKey() == (int)event.KeyboardEvent.Char )							//
+          {
+              if( _console && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )
+                  _console->ToggleVisible();
+
+              return true;
+          }*/
+
+          /*if( _console && _console->isVisible() && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )						//
+          {																//
+              _console->KeyPress( event );
+              return true;
+          }*/
+
+          if( getFocus() && getFocus()->onEvent(event))
+            return true;
+
+          // For keys we handle the event before changing focus to give elements the chance for catching the TAB
+          // Send focus changing event
+          if( event.EventType == sEventKeyboard &&
+              event.keyboard.pressed &&
+              event.keyboard.key == KEY_TAB)
+          {
+            Widget *wdg = next(event.keyboard.shift, event.keyboard.control);
+            if (wdg && wdg != getFocus())
             {
-                if( _console && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )
-                    _console->ToggleVisible();
-
-                return true;
-            }*/
-
-            /*if( _console && _console->isVisible() && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )						//
-            {																//
-                _console->KeyPress( event );
-                return true;
-            }*/
-
-            if (getFocus() && getFocus()->onEvent(event))
-                return true;
-
-            // For keys we handle the event before changing focus to give elements the chance for catching the TAB
-            // Send focus changing event
-            if( event.EventType == sEventKeyboard &&
-                event.keyboard.pressed &&
-                event.keyboard.key == KEY_TAB)
-            {
-                Widget *next = getNextWidget(event.keyboard.shift, event.keyboard.control);
-                if (next && next != getFocus())
-                {
-                    if (setFocus(next))
-                        return true;
-                }
+                if( setFocus(wdg) )
+                    return true;
             }
-
+          }
         }
         break;
 
@@ -495,11 +506,11 @@ bool GuiEnv::handleEvent( const NEvent& event )
   return false;
 }
 
-Widget* GuiEnv::getHoveredElement() const {  return _d->hovered.object(); }
+Widget* GuiEnv::hovered() const {  return _d->hovered.object(); }
 
 void GuiEnv::beforeDraw()
 {
-  const Size screenSize( _d->engine->getScreenSize() );
+  const Size screenSize( _d->engine->screenSize() );
   const Point rigthDown = rootWidget()->absoluteRect().LowerRightCorner;
   
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
@@ -510,7 +521,7 @@ void GuiEnv::beforeDraw()
 
   _d->threatDeletionQueue();
 
-  updateHoveredElement( _d->cursorPos );
+  _updateHovered( _d->cursorPos );
 
   const Widgets& children = getChildren();
   for( Widgets::const_iterator i=children.begin(); i != children.end(); ++i )

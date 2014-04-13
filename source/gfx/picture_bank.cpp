@@ -36,6 +36,7 @@
 #include "core/foreach.hpp"
 #include "loader.hpp"
 #include "vfs/file.hpp"
+#include "core/color.hpp"
 
 class PictureBank::Impl
 {
@@ -97,7 +98,7 @@ Picture& PictureBank::getPicture(const std::string &name)
 
 Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
 {
-   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(),idx );
+   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(), idx );
 
    return getPicture(resource_name);
 }

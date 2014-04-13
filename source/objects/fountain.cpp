@@ -31,6 +31,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
                awesomeFountain=18, patricianFountain=26 } FontainConstant;
@@ -58,7 +59,7 @@ void Fountain::deliverService()
   if( !_haveReservoirWater )
     return;
 
-  ServiceWalkerPtr walker = ServiceWalker::create( _city(), getService() );
+  ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
   walker->setBase( BuildingPtr( this ) );
   walker->setReachDistance( 4 );
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
@@ -74,18 +75,15 @@ void Fountain::timeStep(const unsigned long time)
     if( tile().getWaterService( WTR_RESERVOIR ) > 0 /*&& getWorkersCount() > 0*/ )
     {
       _haveReservoirWater = true;
-      _animationRef().start();
     }
     else
     {
       //remove fontain service from tiles
       _haveReservoirWater = false;
-      _animationRef().stop();
     }
 
-    if( !isActive() )
+    if( !mayWork() )
     {
-      _fgPicturesRef().front() = Picture::getInvalid();
       return;
     }
 
@@ -96,7 +94,7 @@ void Fountain::timeStep(const unsigned long time)
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
   }
 
-  if( time % GameDate::ticksInMonth() == 1 )
+  if( time % (GameDate::ticksInMonth()/2) == 1 )
   {
     int desPic[] = { simpleFountain, prettyFountain, awesomeFountain, patricianFountain };
     int currentId = desPic[ math::clamp<int>( tile().getDesirability() / 25, 0, 3 ) ];
@@ -133,7 +131,6 @@ void Fountain::build(PlayerCityPtr city, const TilePos& pos )
 }
 
 bool Fountain::isNeedRoadAccess() const {  return false; }
-bool Fountain::isActive() const {  return ServiceBuilding::isActive() && _haveReservoirWater; }
 
 bool Fountain::haveReservoirAccess() const
 {
@@ -160,6 +157,8 @@ void Fountain::destroy()
 
   foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_FONTAIN, 20 ); }
 }
+
+bool Fountain::mayWork() const {  return ServiceBuilding::isActive() && _haveReservoirWater; }
 
 void Fountain::load(const VariantMap& stream)
 {

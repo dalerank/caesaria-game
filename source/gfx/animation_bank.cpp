@@ -30,6 +30,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 namespace{
   static const Point frontCartOffsetSouth = Point( -33, 22 );
   static const Point frontCartOffsetWest  = Point( -31, 35 );
@@ -64,18 +67,18 @@ class AnimationBank::Impl
 public:
   typedef std::map< int, ActionAnimation > Animations;
 
-  std::map< int, PicturesArray > carts;
+  std::map< int, Pictures > carts;
   
   Animations animations;
 
   // fills the cart pictures
   // prefix: image prefix
   // start: index of the first frame
-  PicturesArray fillCart( const std::string &prefix, const int start, bool back );
+  Pictures fillCart( const std::string &prefix, const int start, bool back );
   void loadAnimation(int who, const std::string& prefix,
-                                                 const int start, const int size,
-                                                 Walker::Action wa=Walker::acMove,
-                                                 const int step = defaultStepInFrame );
+                     const int start, const int size,
+                     Walker::Action wa=Walker::acMove,
+                     const int step = defaultStepInFrame );
   void loadAnimation(int who, const VariantMap& desc );
 
   void loadCarts();
@@ -205,9 +208,9 @@ void AnimationBank::loadAnimation(vfs::Path model)
   }
 }
 
-PicturesArray AnimationBank::Impl::fillCart( const std::string &prefix, const int start, bool back )
+Pictures AnimationBank::Impl::fillCart( const std::string &prefix, const int start, bool back )
 {
-  PicturesArray ioCart;
+  Pictures ioCart;
 
   ioCart.resize(countDirection);
 
@@ -237,3 +240,5 @@ const Picture& AnimationBank::getCart(int cartId, constants::Direction direction
 {
   return instance()._d->carts[ cartId ][ direction ];
 }
+
+}//end namespace gfx

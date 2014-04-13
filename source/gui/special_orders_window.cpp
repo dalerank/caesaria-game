@@ -31,6 +31,8 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -52,7 +54,7 @@ public:
     CONNECT( _btnChangeRule, onClicked(), this, OrderGoodWidget::changeGranaryRule );
   }
 
-  virtual void _updateTexture( GfxEngine& painter )
+  virtual void _updateTexture( gfx::Engine& painter )
   {
     Label::_updateTexture( painter );
 
@@ -136,12 +138,9 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
 }
 
 
-BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow()
-{
-  
-}
+BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}
 
-void BaseSpecialOrdersWindow::draw( GfxEngine& engine )
+void BaseSpecialOrdersWindow::draw(gfx::Engine& engine )
 {
   engine.drawPicture( *_d->bgPicture, screenLeft(), screenTop() );
   Widget::draw( engine );

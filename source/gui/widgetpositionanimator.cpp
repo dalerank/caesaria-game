@@ -53,7 +53,7 @@ void PositionAnimator::restart()
 	_d->currentPos = _d->startPos.toPointF();
 }
 
-void PositionAnimator::beforeDraw( GfxEngine& painter )
+void PositionAnimator::beforeDraw(gfx::Engine& painter )
 {
 	if( isEnabled() && parent() && isFlag( isActive ) )
 	{

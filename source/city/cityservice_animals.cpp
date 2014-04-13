@@ -22,6 +22,7 @@
 #include "walker/constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace city
 {

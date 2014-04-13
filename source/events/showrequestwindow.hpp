@@ -25,7 +25,9 @@ namespace events
 class ShowRequestInfo : public GameEvent
 {
 public:
-  static GameEventPtr create( city::request::RequestPtr request, bool available4exec=false );
+  static GameEventPtr create( city::request::RequestPtr request,
+                              bool available4exec=false,
+                              const std::string& message="");
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -36,6 +38,7 @@ private:
 
   city::request::RequestPtr _request;
   bool _reqAvailable;
+  std::string _message;
 };
 
 }

@@ -23,7 +23,11 @@
 #include "core/smartptr.hpp"
 
 struct NEvent;
-class GfxEngine;
+
+namespace gfx
+{
+  class Engine;
+}
 
 namespace scene
 {
@@ -51,16 +55,16 @@ public:
   virtual void afterFrame();
 
   // runs the screen (main loop), returns _wevent
-  void update( GfxEngine& engine );
+  void update( gfx::Engine& engine );
   void stop();
 
   // draws the complete frame
-  void drawFrame( GfxEngine &engine );
+  void drawFrame( gfx::Engine &engine );
 
   virtual void initialize() = 0;
   virtual bool isStopped() const;
 
-  virtual int getResult() const = 0;
+  virtual int result() const = 0;
 
   virtual bool installEventHandler( EventHandlerPtr );
 
@@ -69,6 +73,7 @@ protected:
 
   //WidgetEvent _wevent;  // event to pass to the main loop
   bool _isStopped;  // screen needs to stop its loop
+  int _delayTicks;
 };
 
 }//end namespace scene

@@ -30,6 +30,8 @@
 #include "vfs/directory.hpp"
 #include "gameautopause.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -104,7 +106,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
   _d->findFiles();
 }
 
-void SaveDialog::draw( GfxEngine& painter )
+void SaveDialog::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

@@ -23,6 +23,7 @@
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
 
+using namespace gfx;
 using namespace constants;
 
 namespace gui
@@ -46,7 +47,7 @@ InfoboxAmphitheater::InfoboxAmphitheater(Widget *parent, const Tile &tile)
     std::string text = _("##amphitheater_haveno_gladiator_bouts##");
     if( amph->isShowGladiatorBouts() )
     {
-      DateTime lastGlBoutDate = amph->getLastBoutsDate();
+      DateTime lastGlBoutDate = amph->lastBoutsDate();
       text = StringHelper::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.getDaysToDate( GameDate::current() ), "##days##" );
     }
     new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
@@ -54,7 +55,7 @@ InfoboxAmphitheater::InfoboxAmphitheater(Widget *parent, const Tile &tile)
     text = _("##amphitheater_haveno_shows##");
     if( amph->isActorsShow() )
     {
-      DateTime lastShowDate = amph->getLastShowDate();
+      DateTime lastShowDate = amph->lastShowDate();
       text = StringHelper::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.getDaysToDate( GameDate::current() ), "##days##" );
     }
 

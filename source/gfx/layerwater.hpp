@@ -19,18 +19,23 @@
 #include "layer.hpp"
 #include "city_renderer.hpp"
 
+namespace gfx
+{
+
 class LayerWater : public Layer
 {
 public:
   virtual int getType() const;
   virtual std::set<int> getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+  static LayerPtr create( Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);
 private:
-  LayerWater( TilemapCamera& camera, PlayerCityPtr city );
+  LayerWater( Camera& camera, PlayerCityPtr city );
   std::set<int> _flags;
 };
+
+}//end namespace gfx
 
 #endif //__CAESARIA_LAYERWATER_H_INCLUDED__

@@ -28,7 +28,7 @@ public:
   {
     fire, collapse, plague, count
   } Type;
-  static GameEventPtr create(const Tile& tile, Type type );
+  static GameEventPtr create(const gfx::Tile& tile, Type type );
 
 protected:
   virtual void _exec( Game& game, unsigned int );

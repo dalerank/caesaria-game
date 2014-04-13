@@ -28,6 +28,8 @@
 #include "pathway/pathway_helper.hpp"
 #include "core/logger.hpp"
 
+using namespace gfx;
+
 // comparison (for sorting list of tiles by their coordinates)
 bool
 compare_tiles_(const Tile * first, const Tile * second)
@@ -46,7 +48,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
 {  
   int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly;
   flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
-  Pathway way = Pathfinder::getInstance().getPath( startPos, stopPos, flags );
+  Pathway way = Pathfinder::instance().getPath( startPos, stopPos, flags );
 
   if( way.isValid() )
   {

@@ -15,38 +15,36 @@
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 
-
-#ifndef GFX_ENGINE_HPP
-#define GFX_ENGINE_HPP
+#ifndef __CAESARIA_GFX_ENGINE_H_INCLUDE__
+#define __CAESARIA_GFX_ENGINE_H_INCLUDE__
 
 #include "picture.hpp"
 #include "core/size.hpp"
 #include <map>
-#include <vector>
 
 struct NEvent;
 
-class GfxEngine
+namespace gfx
+{
+
+class Engine
 {
 public:
   typedef Size Mode;
   typedef std::vector<Size> Modes;
 
   typedef enum { fullscreen=0, debugInfo } Flags;
-  static GfxEngine& instance();
+  static Engine& instance();
 
-  GfxEngine();
-  virtual ~GfxEngine();
+  Engine();
+  virtual ~Engine();
   virtual void init() = 0;
   virtual void exit() = 0;
   virtual void delay( const unsigned int msec ) = 0;
   virtual bool haveEvent( NEvent& event ) = 0;
 
   void setScreenSize( Size size );
-  Size getScreenSize() const;
-
-  int screenWidth() const;
-  int screenHeight() const;
+  Size screenSize() const;
 
   bool isFullscreen() const;
   void setFullscreen(bool enabled );
@@ -73,13 +71,14 @@ public:
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int fps() const = 0;
   virtual Modes getAvailableModes() const = 0;
-  virtual Point mousePos() const = 0;
+  virtual Point cursorPos() const = 0;
 
 protected:
-  static GfxEngine* _instance;
+  static Engine* _instance;
 
   Size _srcSize;
   std::map< int, int > _flags;
 };
 
-#endif
+}//end namespace gfx
+#endif //__CAESARIA_GFX_ENGINE_H_INCLUDE__

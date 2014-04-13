@@ -26,6 +26,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Corpse::Impl
 {

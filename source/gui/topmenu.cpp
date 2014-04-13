@@ -21,8 +21,9 @@
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
 #include "contextmenuitem.hpp"
+#include "gfx/picturesarray.hpp"
 #include "core/stringhelper.hpp"
-#include "core/time.hpp"
+#include "game/datetimehelper.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
 #include "game/gamedate.hpp"
@@ -34,6 +35,7 @@
 #include "widgetescapecloser.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -76,7 +78,7 @@ oc3_signals public:
   return MainMenu::onEvent(event);
 }*/
 
-void TopMenu::draw( GfxEngine& engine )
+void TopMenu::draw(gfx::Engine& engine )
 {
   if( !isVisible() )
     return;
@@ -105,13 +107,7 @@ void TopMenu::Impl::updateDate()
   if( !lbDate || saveDate.month() == GameDate::current().month() )
     return;
 
-  saveDate = GameDate::current();
-
-  std::string month = _( StringHelper::format( 0xff, "##month_%d_short##", saveDate.month() + 1).c_str() );
-  std::string age = _( StringHelper::format( 0xff, "##age_%s##", saveDate.year() > 0 ? "ad" : "bc" ).c_str() );
-  std::string text = StringHelper::format( 0xff, "%s %d %s",
-                                           month.c_str(), abs( saveDate.year() ), age.c_str());
-  lbDate->setText( text );
+  lbDate->setText( DateTimeHelper::toStr( GameDate::current() ) );
 }
 
 void TopMenu::Impl::showAboutInfo()
@@ -135,7 +131,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   setupUI( GameSettings::rcpath( "/gui/topmenu.gui" ) );
   setGeometry( Rect( 0, 0, parent->width(), height ) );
 
-  PicturesArray p_marble;
+  Pictures p_marble;
   for (int i = 1; i<=12; ++i)
   {
     p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));

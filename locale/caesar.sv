@@ -1,4 +1,5 @@
-{"##0_entertainment_access##":"Denna boning har inte tillgång till underhållning överhuvudtaget"
+{
+"##0_entertainment_access##":"Denna boning har inte tillgång till underhållning överhuvudtaget"
 "##1_entertainment_access##":"Denna boning har knappt tillgång till underhållning"
 "##2_entertainment_access##":"Denna boning har viss tillgång till underhållning"
 "##3_entertainment_access##":"Denna boning har mycket begränsad tillgång till underhållning"
@@ -170,7 +171,7 @@
 "##chatioteer_school_bad_work##":"Vi lider av svår personalbrist, och kommer att få kämpa för att bygga en enda ny vagn under de kommande två månaderna."
 "##chatioteer_school_no_workers##":"Utan hantverkare kan inga nya vagnar produceras. Som resultat kan hippodromen, om den är i drift, bli lidande."
 "##chatioteer_school##":"Skola för körsvenner"
-"##chest_of_sapphire##":"En kista med safirer"
+"##egift_chest_of_sapphire##":"En kista med safirer"
 "##chief_advisor##":"Huvudrådgivare"
 "##children##":"Barn"
 "##citizen_are_rioting##":"Medborgarna gör uppror!"
@@ -345,8 +346,8 @@
 "##emigrant##":"Emigrant"
 "##emmigrant_average_life##":"Stad som stad... Den här verkar rätt bra."
 "##emmigrant_where_my_home##":"Jag är ny i staden. Vet du var man kan få tag i en bostad?"
-"##emperor_favour_0##":"Kejsaren är rasande på dig."
-"##emperor_favour_1##":"Kejsaren är så otroligt arg att han talar om att landsförvisa dig."
+"##emperor_favour_00##":"Kejsaren är rasande på dig."
+"##emperor_favour_01##":"Kejsaren är så otroligt arg att han talar om att landsförvisa dig."
 "##emperor_favour_10##":"Kejsaren är fundersam vad gäller dig."
 "##emperor_favour_11##":"Kejsaren tror du kan bevisa dig värdefull ."
 "##emperor_favour_12##":"Kejsaren är tillfreds med dig."
@@ -357,15 +358,15 @@
 "##emperor_favour_17##":"Kejsaren är extremt entusiastisk över vad du gjort."
 "##emperor_favour_18##":"Kejsaren är utom sig av glädje över vad du gjort."
 "##emperor_favour_19##":"Kejsaren är mer än tillfreds med vad du gjort."
-"##emperor_favour_2##":"Kejsaren är vansinnigt arg på dig."
+"##emperor_favour_02##":"Kejsaren är vansinnigt arg på dig."
 "##emperor_favour_20##":"Kejsaren är så otroligt nöjd att han talar om att utnämna dig till sin arvinge."
-"##emperor_favour_3##":"Kejsaren är mycket arg på dig."
-"##emperor_favour_4##":"Kejsaren är arg på dig."
-"##emperor_favour_5##":"Kejsaren är extremt missnöjd med dig."
-"##emperor_favour_6##":"Kejsaren är mycket missnöjd med dig."
-"##emperor_favour_7##":"Kejsaren är missnöjd med dig."
-"##emperor_favour_8##":"Kejsaren är något missnöjd med dig."
-"##emperor_favour_9##":"Kejsaren är tveksam vad gäller dig."
+"##emperor_favour_03##":"Kejsaren är mycket arg på dig."
+"##emperor_favour_04##":"Kejsaren är arg på dig."
+"##emperor_favour_05##":"Kejsaren är extremt missnöjd med dig."
+"##emperor_favour_06##":"Kejsaren är mycket missnöjd med dig."
+"##emperor_favour_07##":"Kejsaren är missnöjd med dig."
+"##emperor_favour_08##":"Kejsaren är något missnöjd med dig."
+"##emperor_favour_09##":"Kejsaren är tveksam vad gäller dig."
 "##emperor_request##":"Kejserlig begäran"
 "##emperor##":"Imperiet"
 "##emperror_legion_at_out_gates##":"En legion av kejsarens trupper står vid portarna"
@@ -498,7 +499,7 @@
 "##god_mercury_short##":""
 "##god_neptune_short##":""
 "##god_venus_short##":""
-"##golden_chariot##":"En gyllene vagn"
+"##egift_golden_chariot##":"En gyllene vagn"
 "##goth_warrior##":"En gotisk soldat"
 "##goto_empire_map##":"Gå till kartan över imperiet"
 "##goto##":"Gå till"
@@ -514,7 +515,7 @@
 "##grape_factory_stock##":"Lagrade druvor,"
 "##grape##":"Vindruvor"
 "##grass##":"Gräs"
-"##gree_manuscript##":"Ett grekiskt manuskript"
+"##egift_gree_manuscript##":"Ett grekiskt manuskript"
 "##greek_soldier##":"En grekisk soldat"
 "##have_food_for##":"- livsmedel för"
 "##have_no_food_on_next_month##":"- inga livsmedel kommande månad"
@@ -884,11 +885,11 @@
 "##prefecture_ready_for_work##":"Vår prefekt förbereder sig för sin tjänst."
 "##prefecture_slow_work##":"Vi har alldeles för få prefekter. Det händer att inga prefekter lämnar stationen på upp till två veckor åt gången."
 "##prefecture##":"Prefektur"
-"##present_educated_slave##":"En utbildad slav"
-"##present_egyptian_glassware##":"Egyptiska glasvaror"
-"##present_gaulish_bodyguards##":"Galliska livvakter"
-"##present_gepards_and_giraffes##":"Geparder och giraffer"
-"##present_troupe_preforming_slaves##":"En grupp uppträdande slavar"
+"##egift_educated_slave##":"En utbildad slav"
+"##egift_egyptian_glassware##":"Egyptiska glasvaror"
+"##egift_gaulish_bodyguards##":"Galliska livvakter"
+"##egift_gepards_and_giraffes##":"Geparder och giraffer"
+"##egift_troupe_preforming_slaves##":"En grupp uppträdande slavar"
 "##priest_gods_angry##":"Aaagh!! Gudarna är vreda. Vi går under!"
 "##priest_high_workless##":"I dessa tider av arbetslöshet tackar jag gudarna att jag har jobb."
 "##priest_low_entertainment##":"Denna stad är så tråkig. Även en präst tycker om gladiatorspel då och då."
@@ -1193,6 +1194,7 @@
 "Variable":"SVENSKA (v1.0)"
 
 
+"##egift_soldier_from_pergamaum##":"En soldat från Pergamon"
 
 
 
@@ -1253,6 +1255,7 @@
 
 
 
+"##god_charmed##":"Charmerade"
 
 
 
@@ -1321,6 +1324,7 @@
 
 
 
+"##god_displeased##":"Missnöjda"
 
 
 
@@ -1346,6 +1350,8 @@
 
 
 
+"##god_exalted##":"Begeistrade"
+"##god_excellent##":"Utmärkt"
 
 
 
@@ -1373,6 +1379,7 @@
 
 
 
+"##egift_generous##":"Generös:"
 
 
 
@@ -1382,6 +1389,7 @@
 
 
 
+"##god_good##":"Bra"
 
 
 
@@ -1395,6 +1403,7 @@
 
 
 
+"##god_happy##":"Glada"
 
 
 
@@ -1429,6 +1438,7 @@
 
 
 
+"##god_indifferent##":"Likgiltiga"
 
 
 
@@ -1436,6 +1446,7 @@
 
 
 
+"##god_irriated##":"Sårade"
 
 
 
@@ -1450,6 +1461,7 @@
 
 
 
+"##egift_lavish##":"Frikostig:"
 
 
 
@@ -1487,6 +1499,7 @@
 
 
 
+"##egift_modest##":"Blygsam:"
 
 
 
@@ -1629,12 +1642,15 @@
 
 
 
+"##egift_persian_carpets##":"Persiska mattor"
 
 
 
 
 
 
+"##god_pleased##":"Nöjda"
+"##god_poor##":"Dålig"
 
 
 
@@ -1669,6 +1685,7 @@
 
 
 
+"##god_quitepoor##":"Mycket dålig"
 
 
 
@@ -1748,6 +1765,8 @@
 
 
 
+"##dispatch_gift##":"Sänd en gåva"
+"##dispatch_git_title##":"Sänd gåva till kejsaren"
 
 
 
@@ -1758,6 +1777,7 @@
 
 
 
+"##wt_sheep##":"Får"
 
 
 
@@ -1875,6 +1895,7 @@
 
 
 
+"##rladv_mood##":"Gudarna är"
 
 
 
@@ -2042,13 +2063,16 @@
 
 
 
+"##god_veryangry##":"Vredgade"
 
 
+"##god_verygood##":"Mycket bra"
 
 
 
 
 
+"##god_verypoor##":"Mycket dålig"
 
 
 
@@ -2110,30 +2134,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"##god_wrathful##":"Rasande"
 
 
 

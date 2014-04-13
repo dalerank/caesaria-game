@@ -29,8 +29,8 @@
 
 using namespace std;
 
-const char* const dayNames[ DateTime::dayInWeek ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-const char* const monthNames[ DateTime::monthInYear ] = { "January", "February", "March", "April",
+const char* const dayNames[ DateTime::daysInWeek ] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+const char* const monthNames[ DateTime::monthsInYear ] = { "January", "February", "March", "April",
                                                     "May", "June", "July", "August", "September",
                                                     "October", "November", "December" };
 
@@ -50,8 +50,8 @@ int DateTime::_getDaysToDate( const long other ) const {    return abs( (int)(_t
 int DateTime::getDaysToDate( const DateTime& future ) const{    return _getDaysToDate( future._toJd() );}
 int DateTime::_isEquale( const long b ){    return _toJd() == b ? dateEquale : (_toJd() < b ? dateLess : dateMore ) ;}
 int DateTime::equale( const DateTime& b ){    return _isEquale( b._toJd() );}
-int DateTime::_getMonthToDate( const long end ){    return _getDaysToDate( end ) / 30;}
-int DateTime::getMonthToDate( const DateTime& end ){    return _getMonthToDate( end._toJd() );}
+int DateTime::_getMonthToDate( const long end ) const {    return _getDaysToDate( end ) / 30;}
+int DateTime::getMonthToDate( const DateTime& end ) const {    return _getMonthToDate( end._toJd() );}
 bool DateTime::operator!=( const DateTime& other ) const{    return _toJd() != other._toJd();}
 bool DateTime::operator==( const DateTime& other ) const{    return _toJd() == other._toJd();}
 bool DateTime::operator<=( const DateTime& other ) const{    return _toJd() <= other._toJd();}
@@ -108,6 +108,8 @@ DateTime& DateTime::appendMonth( int m/*=1 */ )
   return *this;
 }
 
+DateTime&DateTime::appendWeek(int weekNumber){  return appendDay( weekNumber * 7 ); }
+
 DateTime DateTime::getDate() const
 {
     DateTime ret( *this );
@@ -127,7 +129,7 @@ DateTime::DateTime( const DateTime& time )
 
 DateTime::DateTime( const char* strValue )
 {
-  sscanf( strValue, "%04d.%02u.%02u:%02u.%02u.%02u",
+  sscanf( strValue, "%d.%u.%u:%u.%u.%u",
           &_year, &_month, &_day, &_hour, &_minutes, &_seconds );
 }
 
@@ -145,7 +147,8 @@ DateTime::DateTime( int y, unsigned char m, unsigned char d,
 DateTime::DateTime()
 {
     _seconds = _minutes = _hour = 0;
-    _year = _day = _month = 0;
+    _year = -9999;
+    _day = _month = 0;
 }
 
 unsigned char DateTime::hour() const {    return _hour;}
@@ -180,7 +183,7 @@ DateTime DateTime::getCurrenTime()
 unsigned char DateTime::dayOfWeek() const {  return ( (int) ( _toJd() % 7L ) ); }
 const char* DateTime::getDayName( unsigned char d ){   return dayNames[ d ];}
 const char* DateTime::getMonthName( unsigned char d ){  return monthNames[ d ];}
-int DateTime::getDaysInMonth() const
+int DateTime::daysInMonth() const
 {
     return ( _month!=2
                 ?( (_month%2) ^ (_month>7) )+30

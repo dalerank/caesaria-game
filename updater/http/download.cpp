@@ -75,7 +75,7 @@ void Download::Start()
 	}
 
 	// Construct the temporary filename
-	vfs::Path filename = _destFilename.getBasename();
+	vfs::Path filename = _destFilename.baseName();
 	vfs::Directory folder = _destFilename.directory();
 
 	if ( !folder.exist() )
@@ -240,7 +240,7 @@ vfs::Path Download::GetDestFilename() const
 
 std::string Download::GetFilename() const
 {
-	return _destFilename.getBasename().toString();
+	return _destFilename.baseName().toString();
 }
 
 bool Download::checkIntegrity()

@@ -43,7 +43,7 @@ public:
   bool haveChanges;
 };
 
-VideoOptionsWindow::VideoOptionsWindow(Widget* parent, GfxEngine::Modes modes, bool fullscreen )
+VideoOptionsWindow::VideoOptionsWindow(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->locker.activate();
@@ -110,7 +110,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
     _d->haveChanges = true;
     ListBox* lbx = safety_cast< ListBox* >( event.gui.caller );
 
-    int tag = lbx->getSelectedItem().tag();
+    int tag = lbx->selectedItem().tag();
 
     _d->onScreenSizeChangeSignal.emit( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
   }

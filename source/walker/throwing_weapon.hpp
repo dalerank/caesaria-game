@@ -28,7 +28,7 @@ public:
 
   virtual void turn(TilePos pos);
 
-  virtual const Picture& getMainPicture();
+  virtual const gfx::Picture& getMainPicture();
 
   TilePos dstPos() const;
   TilePos startPos() const;
@@ -40,7 +40,7 @@ protected:
 
   virtual void _onTarget() = 0;
   virtual const char* rcGroup() const = 0;
-  virtual int rcStartIndex() const = 0;
+  virtual int _rcStartIndex() const = 0;
 
   ThrowingWeapon( PlayerCityPtr city );
 

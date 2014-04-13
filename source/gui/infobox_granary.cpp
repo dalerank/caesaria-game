@@ -27,6 +27,7 @@
 #include "good/goodhelper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -52,7 +53,7 @@ InfoboxGranary::InfoboxGranary( Widget* parent, const Tile& tile )
                                            _("##units_in_stock##"), _("##freespace_for##"),
                                            _granary->store().freeQty() );
 
-  Label* lbUnits = new Label( this, Rect( _getTitle()->leftdownCorner(), Size( width() - 16, 40 )), desc );
+  Label* lbUnits = new Label( this, Rect( _title()->leftdownCorner(), Size( width() - 16, 40 )), desc );
 
   drawGood(Good::wheat, 0, lbUnits->bottom() );
   drawGood(Good::meat, 0, lbUnits->bottom() + 25);

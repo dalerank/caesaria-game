@@ -28,9 +28,9 @@ class FestivalPlaningWindow : public Widget
 {
 public:
   static FestivalPlaningWindow* create( Widget* parent, PlayerCityPtr city, int id );
-  ~FestivalPlaningWindow();
+  virtual ~FestivalPlaningWindow();
 
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   virtual bool onEvent(const NEvent &event);
 

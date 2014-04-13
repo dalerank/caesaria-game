@@ -27,6 +27,7 @@
 #include "loaderhelper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 #include <fstream>
 #include <map>
@@ -104,7 +105,7 @@ GameLoaderC3Map::GameLoaderC3Map() : _d( new Impl ) {}
 
 bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
 {
-  return vfs::Path( filename ).isExtension( ".map" );
+  return vfs::Path( filename ).isMyExtension( ".map" );
 }
 
 void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)

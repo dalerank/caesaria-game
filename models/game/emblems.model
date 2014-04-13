@@ -1,0 +1,12 @@
+{
+  eagles  : { name : "##lgn_eagles##",  img : "sprites_00069" }
+  rabbits : { name : "##lgn_rabbits##", img : "sprites_00070" }
+  snakes  : { name : "##lgn_snakes##",  img : "sprites_00071" }
+  fish    : { name : "##lgn_fish##",    img : "sprites_00072" }
+  stallion: { name : "##lgn_stallion##",img : "sprites_00073" }
+  horses  : { name : "##lgn_horses##",  img : "sprites_00074" }
+  caesar  : { name : "##lgn_caesar##",  img : "sprites_00075" }
+  turtles : { name : "##lgn_turtles##", img : "sprites_00076" }
+  dragons : { name : "##lgn_dragons##", img : "sprites_00077" }
+  lions   : { name : "##lgn_lions##",   img : "sprites_00078" }
+}

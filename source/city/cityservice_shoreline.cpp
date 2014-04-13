@@ -22,6 +22,10 @@
 #include "core/time.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tileoverlay.hpp"
+#include "walker/watergarbage.hpp"
+#include "game/gamedate.hpp"
+
+using namespace gfx;
 
 namespace city
 {
@@ -31,6 +35,7 @@ class Shoreline::Impl
 public:
   TilesArray slTiles;
   int lastTimeUpdate;
+  int nextWaterGarbage;
 
   void checkMap(PlayerCityPtr city );
 };
@@ -64,12 +69,20 @@ Shoreline::Shoreline( PlayerCityPtr city )
   : city::Srvc( *city.object(), Shoreline::getDefaultName() ), _d( new Impl )
 {
   _d->lastTimeUpdate = 0;  
+  _d->nextWaterGarbage = 0;
 }
 
 void Shoreline::update( const unsigned int time )
 {
-  if( (time - _d->lastTimeUpdate) < 50 )
+  if( (time - _d->lastTimeUpdate) < GameDate::ticksInMonth()/4 )
     return;
+
+  if( time > _d->nextWaterGarbage )
+  {
+    WaterGarbage* wg = new WaterGarbage( &_city );
+    wg->send2City( _city.borderInfo().boatEntry );
+    _d->nextWaterGarbage = time + math::random(GameDate::ticksInMonth() / 2);
+  }
 
   _d->lastTimeUpdate = time;
 

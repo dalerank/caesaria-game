@@ -17,7 +17,7 @@
 
 #include "json.hpp"
 #include "stringhelper.hpp"
-#include <iostream>
+//#include <iostream>
 
 static std::string sanitizeString(std::string str)
 {
@@ -51,8 +51,8 @@ static std::string join(const StringArray& rlist, const std::string& sep)
  */
 Variant Json::parse(const std::string &json)
 {
-        bool success = true;
-        return Json::parse(json, success);
+  bool success = true;
+  return Json::parse(json, success);
 }
 
 /**
@@ -92,54 +92,35 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
   std::string str;
   success = true;
 
-  if( !data.isValid() ) // invalid or null?
+  if( data.isNull() ) // invalid or null?
   {
-    str = "null";
+    return "null";
   }
 
-  else if( (data.type() == Variant::List) || (data.type() == Variant::NStringArray) ) // variant is a list?
+  switch( data.type() )
   {
-    StringArray values;
-    const VariantList rlist = data.toList();
-    for( VariantList::const_iterator it = rlist.begin(); it != rlist.end(); ++it)
+    case Variant::List:
+    case Variant::NStringArray: // variant is a list?
     {
-      std::string serializedValue = serialize( *it, "" );
-      if( serializedValue.empty() )
+      StringArray values;
+      const VariantList rlist = data.toList();
+      for( VariantList::const_iterator it = rlist.begin(); it != rlist.end(); ++it)
       {
-          success = false;
-          break;
+        std::string serializedValue = serialize( *it, "" );
+        if( serializedValue.empty() )
+        {
+            success = false;
+            break;
+        }
+
+        values.push_back( serializedValue );
       }
 
-      values.push_back( serializedValue );
+      str = "[ " + join( values, ", " ) + " ]";
     }
+    break;
 
-    str = "[ " + join( values, ", " ) + " ]";
-  }
-// 	else if(data.type() == Variant::Hash) // variant is a hash?
-// 	{
-// 		const VariantHash vhash = data.toHash();
-// 		QHashIterator<std::string, Variant> it( vhash );
-// 		str = "{ ";
-// 		QList<QByteArray> pairs;
-// 
-// 		while(it.hasNext())
-// 		{
-// 			it.next();
-//               QByteArray serializedValue = serialize(it.value(), "");
-// 
-// 			if(serializedValue.isNull())
-// 			{
-// 				success = false;
-// 				break;
-// 			}
-// 
-//               pairs << tab.toAscii() + sanitizeString(it.key()).toUtf8() + " : " + serializedValue;
-// 		}
-// 
-// 		str += join(pairs, ", ");
-// 		str += " }";
-// 	}
-    else if(data.type() == Variant::Map) // variant is a map?
+    case Variant::Map: // variant is a map?
     {
       VariantMap vmap = data.toMap();
       
@@ -168,11 +149,17 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
         str += std::string( "\n" ) + rtab + "}";
       }
     }
-    else if((data.type() == Variant::String) || (data.type() == Variant::NByteArray)) // a string or a byte array?
+    break;
+
+    case Variant::String:
+    case Variant::NByteArray: // a string or a byte array?
     {
-            str = sanitizeString( data.toString() );
+      str = sanitizeString( data.toString() );
     }
-    else if(data.type() == Variant::Double || data.type() == Variant::Float) // double?
+    break;
+
+    case Variant::Double:
+    case Variant::Float: // double?
     {
       // TODO: cheap hack - almost locale independent double formatting
       str = StringHelper::format( 0xff, "\"%f\"", data.toDouble() );
@@ -182,22 +169,30 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
          str += ".0";
       }
     }
-    else if( data.type() == Variant::NTilePos)
+    break;
+
+    case Variant::NTilePos:
     {
-      TilePos pos = data.toTilePos();
+      const TilePos& pos = data.toTilePos();
       str = StringHelper::format( 0xff, "[ %d, %d ]", pos.i(), pos.j() );
     }
-    else if( data.type() == Variant::NSize)
+    break;
+
+    case Variant::NSize:
     {
-      Size size = data.toSize();
+      const Size& size = data.toSize();
       str = StringHelper::format( 0xff, "[ %d, %d ]", size.width(), size.height() );
     }
-    else if( data.type() == Variant::NPoint)
+    break;
+
+    case Variant::NPoint:
     {
-      Point pos = data.toPoint();
+      const Point& pos = data.toPoint();
       str = StringHelper::format( 0xff, "[ %d, %d ]", pos.x(), pos.y() );
     }
-    else if( data.type() == Variant::NPointF)
+    break;
+
+    case Variant::NPointF:
     {
       PointF pos = data.toPointF();
       // TODO: cheap hack - almost locale independent double formatting
@@ -205,40 +200,54 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       std::string posY = StringHelper::replace(StringHelper::format( 0xff, "%f", pos.y()), ",", ".");
       str = StringHelper::format( 0xff, "[ \"%s\", \"%s\" ]", posX.c_str(), posY.c_str() );
     }
-    else if (data.type() == Variant::Bool) // boolean value?
+    break;
+
+    case Variant::Bool: // boolean value?
     {
       str = data.toBool() ? "true" : "false";
     }
-    else if (data.type() == Variant::ULongLong) // large unsigned number?
+    break;
+
+    case Variant::ULongLong: // large unsigned number?
     {
       str = StringHelper::format( 0xff, "%u", data.toULongLong() );
     }
-    else if ( data.canConvert( Variant::LongLong ) ) // any signed number?
-    {
-      str = StringHelper::format( 0xff, "%d", data.toLongLong() );
-    }
-    else if (data.canConvert( Variant::Long ))
-    {
-      str = StringHelper::format( 0xff, "%d", data.toLongLong() );
-    }
-    else if (data.canConvert( Variant::String ) ) // can value be converted to string?
-    {
-      // this will catch Date, DateTime, Url, ...
-      str = sanitizeString( data.toString() );
-    }
-    else
-    {
-      success = false;
-    }
+    break;
 
-    if (success)
+    case Variant::Int: // simple int?
     {
-      return str;
+      str = StringHelper::format( 0xff, "%d", data.toInt() );
     }
-    else
+    break;
+
+    case Variant::UInt:
     {
-      return std::string();
+      str = StringHelper::format( 0xff, "%d", data.toInt() );
     }
+    break;
+
+    default:
+      if ( data.canConvert( Variant::LongLong ) ) // any signed number?
+      {
+        str = StringHelper::format( 0xff, "%d", data.toLongLong() );
+      }
+      else if (data.canConvert( Variant::Long ))
+      {
+        str = StringHelper::format( 0xff, "%d", data.toLongLong() );
+      }
+      else if (data.canConvert( Variant::String ) ) // can value be converted to string?
+      {
+        // this will catch Date, DateTime, Url, ...
+        str = sanitizeString( data.toString() );
+      }
+      else
+      {
+        success = false;
+      }
+    break;
+  }
+
+  return success ? str : std::string();
 }
 
 /**

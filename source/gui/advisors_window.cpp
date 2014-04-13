@@ -46,9 +46,12 @@
 #include "image.hpp"
 #include "gameautopause.hpp"
 #include "events/fundissue.hpp"
+#include "core/smartlist.hpp"
+#include "objects/military.hpp"
 #include "events/showempiremapwindow.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -132,7 +135,14 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   switch( type )
   {
   case advisor::employers: _d->advisorPanel = new AdvisorEmployerWindow( _d->city, this, advisor::employers ); break;
-  case advisor::military: _d->advisorPanel = new AdvisorLegionWindow( this, advisor::military ); break;
+  case advisor::military:
+  {
+    FortList forts;
+    forts << _d->city->overlays();
+    _d->advisorPanel = new AdvisorLegionWindow( this, advisor::military, forts );
+  }
+  break;
+
   case advisor::empire: _d->advisorPanel = new AdvisorEmperorWindow( _d->city, this, advisor::empire ); break;
   case advisor::ratings: _d->advisorPanel = new AdvisorRatingsWindow( this, advisor::ratings, _d->city ); break;
   case advisor::trading:
@@ -155,7 +165,7 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   }
 }
 
-void AdvisorsWindow::draw( GfxEngine& engine )
+void AdvisorsWindow::draw(gfx::Engine& engine )
 {
   if( !isVisible() )
     return;

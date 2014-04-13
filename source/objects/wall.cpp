@@ -28,6 +28,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 Wall::Wall() : Building( building::wall, Size(1) )
 {

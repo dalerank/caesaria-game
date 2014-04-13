@@ -68,12 +68,12 @@ void Shipyard::destroy()
 void Shipyard::timeStep(const unsigned long time)
 {
   //try get good from storage building for us
-  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && walkers().size() == 0 )
   {
     receiveGood();
   }
 
-  if( time % GameDate::ticksInMonth() == 1 )
+  if( time % (GameDate::ticksInMonth()/2) == 1 )
   {    
     if( _d->boat.isValid() )
     {

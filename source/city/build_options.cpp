@@ -20,10 +20,14 @@
 #include <map>
 
 using namespace constants;
+using namespace gfx;
+
+namespace city
+{
 
 static const char* disableAll = "disable_all";
 
-class CityBuildOptions::Impl
+class BuildOptions::Impl
 {
 public:
   typedef std::map< TileOverlay::Type, bool > BuildingRules;
@@ -32,25 +36,25 @@ public:
   bool checkDesirability;
 };
 
-CityBuildOptions::CityBuildOptions() : _d( new Impl )
+BuildOptions::BuildOptions() : _d( new Impl )
 {
   _d->checkDesirability = true;
 }
 
-CityBuildOptions::~CityBuildOptions() {}
+BuildOptions::~BuildOptions() {}
 
-void CityBuildOptions::setBuildingAvailble( const TileOverlay::Type type, bool mayBuild )
+void BuildOptions::setBuildingAvailble( const TileOverlay::Type type, bool mayBuild )
 {
   _d->rules[ type ] = mayBuild;
 }
 
-void CityBuildOptions::setBuildingAvailble( const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild )
+void BuildOptions::setBuildingAvailble( const TileOverlay::Type start, const TileOverlay::Type stop, bool mayBuild )
 {
   for( int i=start; i <= stop; i++ )
     _d->rules[ (TileOverlay::Type)i ] = mayBuild;
 }
 
-bool CityBuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const TileOverlay::Type stop ) const
+bool BuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const TileOverlay::Type stop ) const
 {
   bool available = false;
   for( int i=start; i <= stop; i++ )
@@ -59,9 +63,9 @@ bool CityBuildOptions::isBuildingsAvailble( const TileOverlay::Type start, const
   return available;
 }
 
-bool CityBuildOptions::isCheckDesirability() const {  return _d->checkDesirability; }
+bool BuildOptions::isCheckDesirability() const {  return _d->checkDesirability; }
 
-void CityBuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
+void BuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb )
 {
   if( vmb.isNull() )
     return;
@@ -94,7 +98,7 @@ void CityBuildOptions::setGroupAvailable( const BuildMenuType type, Variant vmb 
   }
 }
 
-bool CityBuildOptions::isGroupAvailable(const BuildMenuType type) const
+bool BuildOptions::isGroupAvailable(const BuildMenuType type) const
 {
   switch( type )
   {
@@ -119,9 +123,9 @@ bool CityBuildOptions::isGroupAvailable(const BuildMenuType type) const
   return false;
 }
 
-void CityBuildOptions::clear() {  _d->rules.clear(); }
+void BuildOptions::clear() {  _d->rules.clear(); }
 
-void CityBuildOptions::load(const VariantMap& options)
+void BuildOptions::load(const VariantMap& options)
 {
   setGroupAvailable( BM_FARM, options.get( "farm" ) );
   setGroupAvailable( BM_RAW_MATERIAL, options.get( "raw_material" ) );
@@ -148,7 +152,7 @@ void CityBuildOptions::load(const VariantMap& options)
     _d->checkDesirability = (bool)chDes;
 }
 
-VariantMap CityBuildOptions::save() const
+VariantMap BuildOptions::save() const
 {
   VariantMap blds;
   foreach( it, _d->rules )
@@ -162,7 +166,7 @@ VariantMap CityBuildOptions::save() const
   return ret;
 }
 
-CityBuildOptions& CityBuildOptions::operator=(const CityBuildOptions& a)
+BuildOptions& BuildOptions::operator=(const city::BuildOptions& a)
 {
   _d->rules = a._d->rules;
   _d->checkDesirability = a._d->checkDesirability;
@@ -170,8 +174,10 @@ CityBuildOptions& CityBuildOptions::operator=(const CityBuildOptions& a)
   return *this;
 }
 
-bool CityBuildOptions::isBuildingAvailble(const TileOverlay::Type type ) const
+bool BuildOptions::isBuildingAvailble(const TileOverlay::Type type ) const
 {
   Impl::BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second : true);
 }
+
+}//end namespace city

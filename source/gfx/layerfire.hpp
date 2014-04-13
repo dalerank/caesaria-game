@@ -19,18 +19,23 @@
 #include "layer.hpp"
 #include "city_renderer.hpp"
 
+namespace gfx
+{
+
 class LayerFire : public Layer
 {
 public:
   virtual int getType() const;
   virtual std::set<int> getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
   virtual void handleEvent( NEvent& event );
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+  static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  LayerFire( TilemapCamera& camera, PlayerCityPtr city );
+  LayerFire( Camera& camera, PlayerCityPtr city );
 };
+
+}//end namespace gfx
 
 #endif //__CAESARIA_LAYERFIRE_H_INCLUDED__

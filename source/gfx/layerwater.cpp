@@ -27,6 +27,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerWater::getType() const
 {
   return citylayer::water;
@@ -37,7 +40,7 @@ std::set<int> LayerWater::getVisibleWalkers() const
   return std::set<int>();
 }
 
-void LayerWater::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -170,7 +173,7 @@ void LayerWater::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerWater::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerWater::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerWater( camera, city ) );
   ret->drop();
@@ -178,7 +181,9 @@ LayerPtr LayerWater::create(TilemapCamera& camera, PlayerCityPtr city)
   return ret;
 }
 
-LayerWater::LayerWater(TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerWater::LayerWater( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
 }
+
+}//end namespace gfx

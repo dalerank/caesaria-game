@@ -30,9 +30,10 @@
 #include "game/gamedate.hpp"
 #include "walker/cart_pusher.hpp"
 #include "events/fundissue.hpp"
-#include "pathway/pathway.hpp"
+#include "pathway/pathway_helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Dock::Impl
 {
@@ -42,6 +43,7 @@ public:
   SimpleGoodStore exportGoods;
   SimpleGoodStore importGoods;
   SimpleGoodStore requestGoods;
+  DateTime dateSendGoods;
   std::vector<int> saveTileInfo;
   Direction direction;
 
@@ -66,6 +68,7 @@ Dock::Dock(): WorkingBuilding( building::dock, Size(3) ), _d( new Impl )
 
   _fgPicturesRef().resize(1);
   _animationRef().setDelay( 5 );
+  _setClearAnimationOnStop( false );
 }
 
 bool Dock::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -87,6 +90,13 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
 
+  TilePos landingPos = landingTile().pos();
+  Pathway way = PathwayHelper::create( landingPos, city->borderInfo().boatEntry, PathwayHelper::deepWater );
+  if( !way.isValid() )
+  {
+    _setError( "##inland_lake_has_no_access_to_sea##" );
+  }
+
   WorkingBuilding::build( city, pos );
 }
 
@@ -104,17 +114,16 @@ void Dock::destroy()
 
 void Dock::timeStep(const unsigned long time)
 {
-  if( numberWorkers() > 0 )
+  if( time % 25 == 0 )
   {
-    _animationRef().update( time );
-    // takes current animation frame and put it into foreground
-    _fgPicturesRef()[0] = _animationRef().currentFrame();
-  }
+    if( _d->dateSendGoods < GameDate::current() )
+    {
+      _tryReceiveGoods();
+      _tryDeliverGoods();
 
-  if( time % (GameDate::ticksInMonth()/6) == 1 )
-  {
-    _tryReceiveGoods();
-    _tryDeliverGoods();
+      _d->dateSendGoods = GameDate::current();
+      _d->dateSendGoods.appendWeek();
+    }
   }
 
   WorkingBuilding::timeStep( time );
@@ -128,6 +137,7 @@ void Dock::save(VariantMap& stream) const
   stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
   stream[ "exportGoods" ] = _d->exportGoods.save();
   stream[ "importGoods" ] = _d->importGoods.save();
+  stream[ "dateSendGoods"] = _d->dateSendGoods;
   stream[ "requestGoods" ] = _d->requestGoods.save();
 }
 
@@ -147,18 +157,20 @@ void Dock::load(const VariantMap& stream)
   tmp = stream.get( "requestGoods" );
   if( tmp.isValid() ) _d->requestGoods.load( tmp.toMap() );
 
+  _d->dateSendGoods = stream.get( "dateSendGoods" ).toDateTime();
+
   _updatePicture( _d->direction );
 }
 
 bool Dock::isBusy() const
 {
   city::Helper helper( _city() );
-  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, getLandingTile().pos() );
+  SeaMerchantList merchants = helper.find<SeaMerchant>( walker::seaMerchant, landingTile().pos() );
 
   return !merchants.empty();
 }
 
-const Tile& Dock::getLandingTile() const
+const Tile& Dock::landingTile() const
 {
   Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
@@ -366,7 +378,7 @@ void Dock::_tryDeliverGoods()
 {
   for( int i=Good::wheat; i < Good::goodCount; i++ )
   {
-    if( getWalkers().size() > 2 )
+    if( walkers().size() > 2 )
     {
       return;
     }
@@ -406,7 +418,7 @@ void Dock::_tryReceiveGoods()
 {
   for( int i=Good::wheat; i < Good::goodCount; i++ )
   {
-    if( getWalkers().size() >= 2 )
+    if( walkers().size() >= 2 )
     {
       return;
     }

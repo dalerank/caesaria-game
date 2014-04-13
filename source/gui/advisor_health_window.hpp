@@ -29,7 +29,7 @@ class AdvisorHealthWindow : public Widget
 public:
   AdvisorHealthWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 private:
   class Impl;

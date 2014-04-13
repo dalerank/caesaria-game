@@ -21,6 +21,7 @@
 #include "core/foreach.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 SpearPtr Spear::create(PlayerCityPtr city)
 {
@@ -49,7 +50,7 @@ void Spear::_onTarget()
 }
 
 const char* Spear::rcGroup() const {  return ResourceGroup::sprites; }
-int Spear::rcStartIndex() const { return 114; }
+int Spear::_rcStartIndex() const { return 114; }
 
 Spear::Spear(PlayerCityPtr city) : ThrowingWeapon( city )
 {

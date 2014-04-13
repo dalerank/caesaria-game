@@ -27,6 +27,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerReligion::getType() const
 {
   return citylayer::religion;
@@ -40,7 +43,7 @@ Layer::VisibleWalkers LayerReligion::getVisibleWalkers() const
   return ret;
 }
 
-void LayerReligion::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -143,7 +146,7 @@ void LayerReligion::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerReligion::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerReligion::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerReligion( camera, city ) );
   ret->drop();
@@ -151,8 +154,10 @@ LayerPtr LayerReligion::create(TilemapCamera& camera, PlayerCityPtr city)
   return ret;
 }
 
-LayerReligion::LayerReligion(TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerReligion::LayerReligion( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 9 );
 }
+
+}//end namespace gfx

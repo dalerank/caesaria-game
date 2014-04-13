@@ -23,6 +23,7 @@
 #include "events/event.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 const Point hippodromeSectionOffset[] = {
   Point(), Point( 0, 43 ), Point(),

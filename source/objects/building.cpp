@@ -24,7 +24,7 @@
 #include "core/variant.hpp"
 #include "walker/trainee.hpp"
 #include "core/stringhelper.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/event.hpp"
@@ -33,6 +33,7 @@
 #include "game/gamedate.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace {
 static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::building);
@@ -43,6 +44,7 @@ class Building::Impl
 public:
   typedef std::map< constants::walker::Type, int> TraineeMap;
   TraineeMap traineeMap;  // current level of trainees working in the building (0..200)
+  int stateDecreaseInterval;
 };
 
 Building::Building(const TileOverlay::Type type, const Size& size )
@@ -50,6 +52,7 @@ Building::Building(const TileOverlay::Type type, const Size& size )
 {
   setState( Construction::inflammability, 1 );
   setState( Construction::collapsibility, 1 );
+  _d->stateDecreaseInterval = GameDate::ticksInMonth() / 25;
 }
 
 Building::~Building() {}
@@ -69,13 +72,15 @@ void Building::initTerrain( Tile &tile )
 
 void Building::timeStep(const unsigned long time)
 {
-   if (time % (GameDate::ticksInMonth() / 4 ) == 0)
-   {
-      updateState( Construction::damage, getState( Construction::collapsibility ) );
-      updateState( Construction::fire, getState( Construction::inflammability ) );
-   }
+  if( time % _d->stateDecreaseInterval == 1)
+  {
+    city::Helper helper( _city() );
+    float popkoeff = helper.getBalanceKoeff();
+    updateState( Construction::damage, popkoeff * getState( Construction::collapsibility ) );
+    updateState( Construction::fire, popkoeff * getState( Construction::inflammability ) );
+  }
 
-   Construction::timeStep(time);
+  Construction::timeStep(time);
 }
 
 void Building::storeGoods(GoodStock &stock, const int amount)

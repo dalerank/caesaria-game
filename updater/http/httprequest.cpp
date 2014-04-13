@@ -77,7 +77,7 @@ void HttpRequest::InitRequest()
 	curl_easy_setopt(_handle, CURLOPT_WRITEDATA, this);
 
 	// Set agent
-	std::string agent = StringHelper::format( 0xff, "The Dark Mod Updater / libtdm_update v%s/%s",
+	std::string agent = StringHelper::format( 0xff, "Caesaria Updater v%s/%s",
 																									LIB_UPDATE_VERSION,
 																									LIB_UPDATE_PLATFORM );
 	curl_easy_setopt(_handle, CURLOPT_USERAGENT, agent.c_str());

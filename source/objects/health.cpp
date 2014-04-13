@@ -22,6 +22,7 @@
 #include "constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 Doctor::Doctor() : ServiceBuilding(Service::doctor, building::doctor, Size(1))
 {
@@ -31,7 +32,7 @@ unsigned int Doctor::walkerDistance() const{ return 26; }
 
 void Doctor::deliverService()
 {
-  if( numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }
@@ -56,6 +57,8 @@ void Baths::build(PlayerCityPtr city, const TilePos& pos)
   //CityHelper helper( city );
 }
 
+bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservorWater; }
+
 void Baths::timeStep(const unsigned long time)
 {
   if( time % (GameDate::ticksInMonth() / 4) == 1 )
@@ -66,22 +69,6 @@ void Baths::timeStep(const unsigned long time)
     TilesArray tiles = helper.getArea( this );
     foreach( tile, tiles ) { haveWater |= (*tile)->getWaterService( WTR_RESERVOIR ) > 0; }
     _haveReservorWater = (haveWater && numberWorkers() > 0);
-
-    if( _haveReservorWater )
-    {
-      if( _animationRef().isStopped() )
-      {
-        _animationRef().start();        
-      }
-    }
-    else
-    {
-      if( _animationRef().isRunning() )
-      {
-        _animationRef().stop();
-        _fgPicturesRef().back() = Picture::getInvalid();
-      }
-    }
   }
 
   ServiceBuilding::timeStep( time );
@@ -89,7 +76,7 @@ void Baths::timeStep(const unsigned long time)
 
 void Baths::deliverService()
 {
-  if( _haveReservorWater && numberWorkers() > 0 && getWalkers().empty() )
+  if( _haveReservorWater && numberWorkers() > 0 && walkers().empty() )
   {
     ServiceBuilding::deliverService();
   }
@@ -101,7 +88,7 @@ Barber::Barber() : ServiceBuilding(Service::barber, building::barber, Size(1))
 
 void Barber::deliverService()
 {
-  if( getWalkers().empty() && numberWorkers() )
+  if( walkers().empty() && numberWorkers() )
   {
     ServiceBuilding::deliverService();
   }

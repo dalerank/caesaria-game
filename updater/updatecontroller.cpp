@@ -24,7 +24,7 @@ namespace updater
 UpdateController::UpdateController(IUpdateView& view, vfs::Path executableName, UpdaterOptions& options) :
 	_view(view),
 	_curStep(Init),
-	_updater(options, executableName.getBasename()),
+	_updater(options, executableName.baseName()),
 	_abortFlag(false),
 	_differentialUpdatePerformed(false)
 {

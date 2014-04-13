@@ -32,6 +32,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -63,7 +64,7 @@ public:
     return _info;
   }
 
-  virtual void _updateTexture( GfxEngine& painter )
+  virtual void _updateTexture( gfx::Engine& painter )
   {
     Label::_updateTexture( painter );
 
@@ -160,7 +161,7 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles[ rand() % troubles.size() ] ) ); }
 }
 
-void AdvisorEducationWindow::draw( GfxEngine& painter )
+void AdvisorEducationWindow::draw( gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

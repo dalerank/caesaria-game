@@ -279,6 +279,6 @@ void ComputerCity::timeStep( unsigned int time )
 }
 
 EmpirePtr ComputerCity::empire() const { return _d->empire; }
-unsigned int ComputerCity::getTradeType() const { return _d->tradeType; }
+unsigned int ComputerCity::tradeType() const { return _d->tradeType; }
 
 }//end namespace world

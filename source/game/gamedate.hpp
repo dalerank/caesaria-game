@@ -24,9 +24,9 @@ class GameDate
 public:
   static DateTime current();
 
-  static void timeStep( unsigned int time );
+  void timeStep( unsigned int time );
 
-  static void init( const DateTime& date );
+  void init( const DateTime& date );
 
   static GameDate& instance();
 
@@ -37,8 +37,8 @@ public:
 private:
   GameDate();
 
-  class Impl;
-  ScopedPtr< Impl > _d;
+  DateTime _current;
+  unsigned int _nextTickChange;
 };
 
 #endif //__CAESARIA_GAMEDATE_H_INCLUDED__

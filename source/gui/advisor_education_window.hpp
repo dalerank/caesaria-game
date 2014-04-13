@@ -29,7 +29,7 @@ class AdvisorEducationWindow : public Widget
 public:
   AdvisorEducationWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 private:
   __DECLARE_IMPL(AdvisorEducationWindow)

@@ -29,8 +29,8 @@ public:
   static WindowMessageStack* create( Widget* parent );
 
   // draw on screen
-  virtual void draw( GfxEngine& engine );
-  virtual void beforeDraw(GfxEngine &painter);
+  virtual void draw( gfx::Engine& engine );
+  virtual void beforeDraw( gfx::Engine& painter);
   virtual bool onEvent(const NEvent& event);
 
   void addMessage( std::string );

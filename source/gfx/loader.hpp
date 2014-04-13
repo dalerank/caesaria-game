@@ -22,6 +22,8 @@
 #include "core/scopedptr.hpp"
 #include "vfs/file.hpp"
 
+using namespace gfx;
+
 //! Class which is able to create a picture(sdl surface) from a file.
 class AbstractPictureLoader : public ReferenceCounted
 {

@@ -96,7 +96,7 @@ Entries::ConstItemIt Entries::end() const
   return _d->files.end();
 }
 
-Entries::Items &Entries::_getItems()
+Entries::Items &Entries::_items()
 {
   return _d->files;
 }
@@ -130,7 +130,7 @@ const Path& Entries::getFullFileName(unsigned int index) const
   if (index >= _d->files.size())
     return emptyFileListEntry;
 
-  return _d->files[index].fullName;
+  return _d->files[index].abspath();
 }
 
 //! adds a file or folder
@@ -153,13 +153,13 @@ unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsign
 
   entry.name = _d->checkCase( entry.name );
 
-  entry.fullName = entry.name;
+  entry.setAbspath( entry.name );
 
-  entry.name = entry.name.getBasename();
+  entry.name = entry.name.baseName();
 
   if(_d->ignorePaths )
   {
-    entry.fullName = entry.name;
+    entry.setAbspath( entry.name );
   }
 
   _d->files.push_back(entry);
@@ -199,26 +199,25 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
 {
   EntryInfo entry;
   // we only need fullName to be set for the search
-  entry.fullName = StringHelper::replace( filename.toString(), "\\", "/" );
+  entry.setAbspath( StringHelper::replace( filename.toString(), "\\", "/" ) );
   entry.isDirectory = isDirectory;
 
   // remove trailing slash
-  if( *entry.fullName.toString().rbegin() == '/' )
+  if( entry.abspath().lastChar() == '/' )
   {
     entry.isDirectory = true;
   }
-  entry.fullName = entry.fullName.removeEndSlash();
-
-  entry.fullName = _d->checkCase( entry.fullName.toString() );
+  entry.setAbspath( entry.abspath().removeEndSlash() );
+  entry.setAbspath( _d->checkCase( entry.abspath() ) );
 
   if( _d->ignorePaths )
   {
-    entry.fullName = entry.fullName.getBasename();
+    entry.setAbspath( entry.abspath().baseName() );
   }
 
   foreach( it, _d->files )
   {
-    if( (*it).fullName == entry.fullName )
+    if( (*it).isAbspathEquale( entry ) )
     {
       return std::distance( _d->files.begin(), it );
     }
@@ -254,7 +253,7 @@ Entries Entries::filter(int flags, const std::string &options)
 
     if( mayAdd && !(*it).isDirectory && checkFileExt )
     {
-      mayAdd = (*it).fullName.isExtension( options );
+      mayAdd = (*it).abspath().isMyExtension( options );
     }
 
     if( mayAdd )
@@ -266,9 +265,11 @@ Entries Entries::filter(int flags, const std::string &options)
   return ret;
 }
 
-const Entries::Items& Entries::getItems() const
+const Entries::Items& Entries::items() const {  return _d->files; }
+
+const EntryInfo& Entries::item(unsigned int index) const
 {
-  return _d->files;
+  return _d->files[ index ];
 }
 
 } //end namespace io

@@ -18,7 +18,7 @@
 #include "game/gamedate.hpp"
 #include "city/helper.hpp"
 #include "objects/farm.hpp"
-#include "events/infobox.hpp"
+#include "events/showinfobox.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "walker/fishing_boat.hpp"
@@ -26,11 +26,15 @@
 #include "objects/warehouse.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace religion
 {
 
-void RomeDivinityBase::load(const VariantMap& vm)
+namespace rome
+{
+
+void RomeDivinity::load(const VariantMap& vm)
 {
   if( vm.empty() )
     return;
@@ -47,14 +51,32 @@ void RomeDivinityBase::load(const VariantMap& vm)
   {
     _moodDescr << vm.get( "moodDescription" ).toList();
   }
+  else
+  {
+    _moodDescr << "##god_wrathful##"
+               << "##god_irriated##"
+               << "##god_veryangry##"
+               << "##god_verypoor##"
+               << "##god_quitepoor##"
+               << "##god_poor##"
+               << "##god_displeased##"
+               << "##god_indifferent##"
+               << "##god_pleased##"
+               << "##god_good##"
+               << "##god_verygood##"
+               << "##god_charmed##"
+               << "##god_happy##"
+               << "##god_excellent##"
+               << "##god_exalted##";
+  }
 }
 
-void RomeDivinityBase::assignFestival(int type)
+void RomeDivinity::assignFestival(int type)
 {
   _relation = math::clamp<float>( _relation + type * 10, 0, 100 );
 }
 
-VariantMap RomeDivinityBase::save() const
+VariantMap RomeDivinity::save() const
 {
   VariantMap ret;
   ret[ "name" ] = Variant( _name );
@@ -68,7 +90,7 @@ VariantMap RomeDivinityBase::save() const
   return ret;
 }
 
-void RomeDivinityBase::updateRelation(float income, PlayerCityPtr city)
+void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
   city::Helper helper( city );
   float cityBalanceKoeff = helper.getBalanceKoeff();
@@ -76,124 +98,23 @@ void RomeDivinityBase::updateRelation(float income, PlayerCityPtr city)
   _relation = math::clamp<float>( _relation + (income - getDefaultDecrease()) * cityBalanceKoeff, 0, 100 );
 }
 
-std::string RomeDivinityBase::moodDescription() const
+std::string RomeDivinity::moodDescription() const
 {
   if( _moodDescr.empty() )
     return "no_descriptions_divinity_mood";
 
   int delim = 100 / _moodDescr.size();
-  return _moodDescr[ _relation / delim ];
+  return _moodDescr[ math::clamp<int>( _relation / delim, 0, _moodDescr.size()-1 ) ];
 }
 
-RomeDivinityBase::RomeDivinityBase()
+RomeDivinity::RomeDivinity()
 {
   _relation = 0;
 }
 
-void RomeDivinityBase::setInternalName(const std::string& newName){  setDebugName( newName );}
-std::string RomeDivinityBase::internalName() const{  return getDebugName();}
+void RomeDivinity::setInternalName(const std::string& newName){  setDebugName( newName );}
+std::string RomeDivinity::internalName() const{  return getDebugName();}
 
-RomeDivinityPtr RomeDivinityCeres::create()
-{
-  RomeDivinityPtr ret( new RomeDivinityCeres() );
-  ret->setInternalName( baseDivinityNames[ romeDivCeres ] );
-  ret->drop();
-
-  return ret;
-}
-
-void RomeDivinityCeres::updateRelation(float income, PlayerCityPtr city)
-{
-  RomeDivinityBase::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_ceres_title##"),
-                                                                   _("##wrath_of_ceres_description##") );
-    event->dispatch();
-
-    city::Helper helper( city );
-    FarmList farms = helper.find<Farm>( building::any );
-
-    foreach( farm, farms )
-    {
-      (*farm)->updateProgress( -(*farm)->getProgress() );
-    }
-  }
-}
-
-RomeDivinityPtr RomeDivinityNeptune::create()
-{
-  RomeDivinityPtr ret( new RomeDivinityNeptune() );
-  ret->setInternalName( baseDivinityNames[ romeDivNeptune ] );
-  ret->drop();
-
-  return ret;
-}
-
-void RomeDivinityNeptune::updateRelation(float income, PlayerCityPtr city)
-{
-  RomeDivinityBase::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_neptune_title##"),
-                                                                   _("##wrath_of_neptune_description##") );
-    event->dispatch();
-
-    city::Helper helper( city );
-    FishingBoatList boats = helper.find<FishingBoat>( walker::fishingBoat, city::Helper::invalidPos );
-
-    int destroyBoats = math::random( boats.size() );
-    for( int i=0; i < destroyBoats; i++ )
-    {
-      FishingBoatList::iterator it = boats.begin();
-      std::advance( it, math::random( boats.size() ) );
-      (*it)->deleteLater();
-      boats.erase( it );
-    }
-  }
-}
-
-RomeDivinityPtr RomeDivinityMercury::create()
-{
-  RomeDivinityPtr ret( new RomeDivinityMercury() );
-  ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
-  ret->drop();
-
-  return ret;
-}
-
-void RomeDivinityMercury::updateRelation(float income, PlayerCityPtr city)
-{
-  RomeDivinityBase::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfoboxEvent::create( _("##wrath_of_mercury_title##"),
-                                                                   _("##wrath_of_mercury_description##") );
-    event->dispatch();
-
-    city::Helper helper( city );
-    WarehouseList whs = helper.find<Warehouse>( building::warehouse );
-    foreach( it, whs )
-    {
-      GoodStore& store = (*it)->store();
-      for( int i=Good::none; i < Good::goodCount; i++ )
-      {
-        Good::Type gtype = (Good::Type)i;
-        int goodQty = math::random( store.qty( gtype ) );
-        if( goodQty > 0 )
-        {
-          GoodStock rmStock( gtype, goodQty );
-          store.retrieve( rmStock, goodQty );
-        }
-      }
-    }
-  }
-}
+}//end namespace rome
 
 }//end namespace religion

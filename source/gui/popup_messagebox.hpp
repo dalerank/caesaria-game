@@ -35,7 +35,12 @@ public:
                    const std::string& receiver="",
                    int id=-1 );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
+
+  static PopupMessageBox* information( Widget* parent,
+                                       const std::string& title,
+                                       const std::string& text,
+                                       const std::string& time );
 
 private:
   class Impl;

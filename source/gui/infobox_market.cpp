@@ -24,6 +24,7 @@
 #include "core/stringhelper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {

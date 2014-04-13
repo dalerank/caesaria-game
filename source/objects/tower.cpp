@@ -26,6 +26,7 @@
 #include "pathway/pathway_helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Tower::Impl
 {
@@ -144,7 +145,7 @@ void Tower::deliverService()
     _rebuildWays();
   }
 
-  if( numberWorkers() > 0 && !_d->patrolWays.empty() && getWalkers().empty() )
+  if( numberWorkers() > 0 && !_d->patrolWays.empty() && walkers().empty() )
   {
     Impl::PatrolWays::iterator it = _d->patrolWays.begin();
     std::advance( it, rand() % _d->patrolWays.size() );

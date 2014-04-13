@@ -21,6 +21,9 @@
 #include "core/rectangle.hpp"
 #include "game/resourcegroup.hpp"
 
+namespace gfx
+{
+
 void PictureDecorator::drawFrame(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha)
 {
    // pics are: 0TopLeft, 1Top, 2TopRight, 3Left, 4Center, 5Right, 6BottomLeft, 7Bottom, 8BottomRight
@@ -194,3 +197,5 @@ void PictureDecorator::drawArea(Picture &dstpic, const Rect& rectangle, int picI
     }
   }
 }
+
+}//end namespace gfx

@@ -33,7 +33,7 @@ public:
   TopMenu( Widget* parent, const int height );
 
   // draw on screen
-  void draw( GfxEngine& engine );
+  void draw( gfx::Engine& engine );
 
   void setFunds( int value );
   void setPopulation( int value );

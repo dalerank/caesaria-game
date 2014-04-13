@@ -34,7 +34,7 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  virtual const Picture& getMainPicture();
+  virtual const gfx::Picture& getMainPicture();
 
 protected:
   Locust( PlayerCityPtr city );

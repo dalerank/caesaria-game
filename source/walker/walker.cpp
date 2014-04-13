@@ -35,6 +35,7 @@
 #include "core/foreach.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Walker::Impl
 {
@@ -267,7 +268,17 @@ const Tile& Walker::_nextTile() const
   return _d->city->tilemap().at( p );
 }
 
-Point Walker::getMappos() const{ const PointF p = _d->wpos; return Point( 2*(p.x() + p.y()), p.x() - p.y() );}
+Point Walker::screenpos() const
+{
+  const Tile& tile = _d->city->tilemap().at( pos() );
+  Point offset;
+  if( tile.overlay().isValid() )
+      offset = tile.overlay()->offset( tile, tilesubpos() );
+
+  const PointF p = _d->wpos;
+  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + offset;
+}
+
 bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
@@ -296,7 +307,7 @@ void Walker::_setHealth(double value){  _d->health = value;}
 Point Walker::tilesubpos() const
 {
   Point tmp = Point( _d->pos.i(), _d->pos.j() ) * 15 + Point( 7, 7 );
-  return _d->wpos.toPoint() - tmp;
+  return tmp - _d->wpos.toPoint();
 }
 
 void Walker::_setAction( Walker::Action action )
@@ -326,7 +337,7 @@ std::string Walker::getThinks() const
   return _d->thinks;
 }
 
-void Walker::getPictureList(PicturesArray& oPics)
+void Walker::getPictureList(gfx::Pictures& oPics)
 {
    oPics.clear();
    oPics.push_back( getMainPicture() );
@@ -456,7 +467,7 @@ void Walker::_updateThinks()
 }
 
 Point Walker::_wpos() const{  return _d->wpos.toPoint();}
-void Walker::go(){ _d->action.action = acMove; }      // default action
+void Walker::go(){ _setAction( acMove ); }      // default action
 
 void Walker::die()
 {

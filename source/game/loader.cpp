@@ -33,6 +33,8 @@
 
 #include <vector>
 
+using namespace gfx;
+
 typedef SmartPtr< GameAbstractLoader > GameAbstractLoaderPtr;
 
 class GameLoader::Impl
@@ -142,6 +144,7 @@ bool GameLoader::load( vfs::Path filename, Game& game )
       return loadok;
     }
   }
+  Logger::warning( "GameLoader: not found loader for " + filename.toString() );
 
   return false; // failed to load
 }

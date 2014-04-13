@@ -22,14 +22,14 @@ class Garden : public Construction
 {
 public:
   Garden();
-  virtual void initTerrain(Tile& terrain);
+  virtual void initTerrain(gfx::Tile& terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
   virtual void build(PlayerCityPtr city, const TilePos& pos );
   virtual void load(const VariantMap &stream);
   virtual Desirability getDesirability() const;
-  virtual std::string getSound() const;
+  virtual std::string sound() const;
 
   void update();
 };

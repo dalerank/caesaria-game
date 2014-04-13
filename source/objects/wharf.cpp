@@ -59,27 +59,14 @@ void Wharf::timeStep(const unsigned long time)
   CoastalFactory::timeStep(time);
 
   //try get good from storage building for us
-  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && getWalkers().size() == 0 )
+  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && walkers().size() == 0 )
   {
     receiveGood();
     deliverGood();
   }
 
-  //start/stop animation when workers found
-  bool mayAnimate = mayWork();
-
-  if( mayAnimate && _animationRef().isStopped() )
-  {
-    _animationRef().start();
-  }
-
-  if( !mayAnimate && _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
-
   //no workers or no good in stock... stop animate
-  if( !mayAnimate )
+  if( !mayWork() )
   {
     return;
   }

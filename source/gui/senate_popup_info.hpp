@@ -20,8 +20,7 @@
 
 #include "widget.hpp"
 #include "core/scopedptr.hpp"
-
-class CityRenderer;
+#include "gfx/renderer.hpp"
 
 namespace gui
 {
@@ -29,9 +28,9 @@ namespace gui
 class SenatePopupInfo : public Widget
 {
 public:
-  SenatePopupInfo(Widget* parent, CityRenderer& mapRenderer );
+  SenatePopupInfo(Widget* parent, gfx::Renderer& mapRenderer );
 
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 private:
   class Impl;
   ScopedPtr< Impl > _d;

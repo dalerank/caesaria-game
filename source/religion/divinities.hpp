@@ -23,7 +23,10 @@
 namespace religion
 {
 
-class RomeDivinityBase : public RomeDivinity
+namespace rome
+{
+
+class RomeDivinity : public Divinity
 {
 public:
   void load( const VariantMap& vm );
@@ -35,7 +38,7 @@ public:
   virtual std::string name() const { return _name; }
   virtual std::string shortDescription() const { return _shortDesc; }
   virtual Service::Type serviceType() const { return _service; }
-  virtual const Picture& picture() const { return _pic; }
+  virtual const gfx::Picture& picture() const { return _pic; }
   virtual float relation() const { return _relation; }
   virtual float getDefaultDecrease() const { return 2.f; }
   virtual DateTime lastFestivalDate() const { return _lastFestival; }
@@ -44,7 +47,7 @@ public:
 
   virtual std::string moodDescription() const;
 
-  RomeDivinityBase();
+  RomeDivinity();
 
   virtual void setInternalName(const std::string &newName);
   virtual std::string internalName() const;
@@ -56,30 +59,11 @@ protected:
   DateTime _lastFestival;
   DateTime _lastActionDate;
   float _relation;
-  Picture _pic;
+  gfx::Picture _pic;
   StringArray _moodDescr;
 };
 
-class RomeDivinityCeres : public RomeDivinityBase
-{
-public:
-  static RomeDivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
-};
-
-class RomeDivinityNeptune : public RomeDivinityBase
-{
-public:
-  static RomeDivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
-};
-
-class RomeDivinityMercury : public RomeDivinityBase
-{
-public:
-  static RomeDivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
-};
+}//end namespace rome
 
 }//end namespace religion
 

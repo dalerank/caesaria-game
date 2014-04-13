@@ -44,6 +44,8 @@
 #include "city_donation_window.hpp"
 #include "emperorgiftwindow.hpp"
 
+using namespace gfx;
+
 namespace gui
 {
 
@@ -82,7 +84,7 @@ public:
 
       font.draw( *pic, GoodHelper::getTypeName( gr->getGoodType() ), 60, 2 );
 
-      int month2comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
+      int month2comply = GameDate::current().getMonthToDate( gr->finishedDate() );
       font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
       font.draw( *pic, gr->getDescription(), 5, pic->height() - 20 );
     }
@@ -235,7 +237,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   CONNECT( _d->btnSendGift, onClicked(), this, AdvisorEmperorWindow::_showGiftWindow );
 }
 
-void AdvisorEmperorWindow::draw( GfxEngine& painter )
+void AdvisorEmperorWindow::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

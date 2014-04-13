@@ -42,7 +42,7 @@ public:
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
   virtual void build(PlayerCityPtr city, const TilePos &pos);
-
+  virtual bool mayWork() const;
 protected:
   bool _haveReservorWater;
 };

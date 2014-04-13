@@ -31,10 +31,10 @@ public:
   static GoodHelper& getInstance();
 
   static std::string getName( Good::Type type );
-  static Picture getPicture( Good::Type type, bool emp=false );
+  static gfx::Picture getPicture( Good::Type type, bool emp=false );
   static Good::Type getType( const std::string& name );
   static std::string getTypeName( Good::Type type );
-  static Picture getCartPicture( const GoodStock& stock, constants::Direction direction );
+  static gfx::Picture getCartPicture( const GoodStock& stock, constants::Direction direction );
   ~GoodHelper();
 private:
   GoodHelper();

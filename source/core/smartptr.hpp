@@ -41,12 +41,12 @@ public:
   {
     if (obj==0) return;
      
-  //check if last reference
-  unsigned int lastRef = obj->getReferenceCount();
-  obj->drop();
+    //check if last reference
+    unsigned int lastRef = obj->getReferenceCount();
+    obj->drop();
 
-  if ( lastRef == 1)
-    obj = 0;
+    if ( lastRef == 1)
+      obj = 0;
   }
   
   void referenceObject(void *aVObj)
@@ -69,35 +69,14 @@ public:
     obj->grab();
   }
 
-  void detachObject()
-  {
-    obj = 0;
-  }
-
-  void attachObject(void *anObj)
-  {
-    obj = (T*)anObj;
-  }
+  void detachObject()   { obj = 0; }
+  void attachObject(void * anObj) {    obj = (T*)anObj;   }
+  T* object()   {    return obj;  }
+  T* operator->() const   { return obj; }
   
-  T* object()
-  {
-    return obj;
-  }
+  SmartPtr()   { obj = 0;  }
 
-  T* operator->() const
-  {
-    return obj;
-  }
-  
-  SmartPtr()
-  {
-    obj = 0;
-  }
-
-  ~SmartPtr()
-  {
-    dereferenceObject();
-  }
+  ~SmartPtr()  { dereferenceObject();  }
 
   SmartPtr& operator=(const SmartPtr<T> &aPtr)
   {
@@ -118,59 +97,29 @@ public:
     referenceObject(aPtr.obj);
   }
 
-  bool operator==(const SmartPtr<T> &aPtr) const
+  bool operator==(const SmartPtr<T> &aPtr) const   {    return (obj == aPtr.obj);  }
+  bool operator!=(const SmartPtr<T> &aPtr) const  {     return (obj != aPtr.obj);  }
+  bool operator<(const SmartPtr<T> &aPtr ) const  {    return (obj < aPtr.obj);  }
+  bool operator==(void *ptr) const  {    return ((void*)obj == ptr);  }
+
+  template<class Src>
+  SmartPtr& operator<<( SmartPtr<Src> ptr )
   {
-    return (obj == aPtr.obj);
+    dereferenceObject();
+    *this = safety_cast<T*>( ptr.object() );
+    return *this;
   }
 
-  bool operator!=(const SmartPtr<T> &aPtr) const
-  {
-    return (obj != aPtr.obj);
-  }
-
-  bool operator<(const SmartPtr<T> &aPtr ) const
-  {
-    return (obj < aPtr.obj);
-  }
-
-  bool operator==(void *ptr) const
-  {
-    return ((void*)obj == ptr);
-  }
-
-  /*operator bool() 
-  {
-    return (obj != 0);
-  }
-  */
-
-  bool operator != (void *ptr) const
-  {
-    return ((void*)obj != ptr);
-  }
-
-  T& operator[] (int index)
-  {
-    return (*obj)[index];
-  }
-
-  bool isNull() const
-  {
-    return obj == 0;
-  }
-
-  bool isValid() const
-  {
-    return obj != 0;
-  }
+  bool operator != (void *ptr) const   {    return ((void*)obj != ptr);  }
+  T& operator[] (int index)  {    return (*obj)[index];  }
+  bool isNull() const  {    return obj == 0;  }
+  bool isValid() const   {    return obj != 0;  }
 };
 
 template<class A, class B>
-inline SmartPtr<A> ptr_cast( SmartPtr<B> ptr )
-{ return safety_cast<A*>( ptr.object() ); }
+inline SmartPtr<A> ptr_cast( SmartPtr<B> ptr ) { return safety_cast<A*>( ptr.object() ); }
 
 template<class A, class B>
-inline bool is_kind_of( SmartPtr<B> ptr )
-{ return safety_cast<A*>( ptr.object() ) != 0; }
+inline bool is_kind_of( SmartPtr<B> ptr ) { return safety_cast<A*>( ptr.object() ) != 0; }
 
 #endif //__CAESARIA_SMARTPTR_H_INCLUDE_

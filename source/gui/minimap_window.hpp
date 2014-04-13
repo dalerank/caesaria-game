@@ -23,7 +23,10 @@
 #include "gfx/picture.hpp"
 #include "core/signals.hpp"
 
-class Tilemap;
+namespace gfx
+{
+  class Tilemap;
+}
 
 namespace gui
 {
@@ -31,9 +34,9 @@ namespace gui
 class Minimap : public Widget
 {
 public:
-  Minimap(Widget* parent, Rect rect, const Tilemap& tilemap, int climate );
+  Minimap(Widget* parent, Rect rect, const gfx::Tilemap& tilemap, int climate );
 
-  virtual void draw(GfxEngine &painter);
+  virtual void draw( gfx::Engine& painter);
 
   void setCenter( Point pos );
 

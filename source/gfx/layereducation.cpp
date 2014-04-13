@@ -26,6 +26,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerEducation::getType() const
 {
   return _type;
@@ -64,7 +67,7 @@ int LayerEducation::_getLevelValue( HousePtr house ) const
   return 0;
 }
 
-void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -139,7 +142,7 @@ void LayerEducation::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerEducation::create(TilemapCamera& camera, PlayerCityPtr city, int type )
+LayerPtr LayerEducation::create( Camera& camera, PlayerCityPtr city, int type )
 {
   LayerPtr ret( new LayerEducation( camera, city, type ) );
   ret->drop();
@@ -217,8 +220,8 @@ void LayerEducation::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerEducation::LayerEducation( TilemapCamera& camera, PlayerCityPtr city, int type)
-  : Layer( camera, city )
+LayerEducation::LayerEducation( Camera& camera, PlayerCityPtr city, int type)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 9 );
   _type = type;
@@ -231,3 +234,5 @@ LayerEducation::LayerEducation( TilemapCamera& camera, PlayerCityPtr city, int t
   case citylayer::academy: _flags.insert( building::academy ); _walkers.insert( walker::teacher ); break;
   }
 }
+
+}//end namespace gfx

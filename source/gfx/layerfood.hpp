@@ -19,18 +19,23 @@
 #include "layer.hpp"
 #include "city_renderer.hpp"
 
+namespace gfx
+{
+
 class LayerFood : public Layer
 {
 public:
   virtual int getType() const;
   virtual VisibleWalkers getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city );
+  static LayerPtr create( Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);
 
 private:
-  LayerFood( TilemapCamera& camera, PlayerCityPtr city );
+  LayerFood( Camera& camera, PlayerCityPtr city );
 };
+
+}//end namespace gfx
 
 #endif //__CAESARIA_LAYERFOOD_H_INCLUDED__

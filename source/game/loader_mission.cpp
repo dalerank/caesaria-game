@@ -33,7 +33,10 @@
 #include "gamedate.hpp"
 #include "core/logger.hpp"
 #include "world/emperor.hpp"
+#include "religion/pantheon.hpp"
 #include "core/locale.hpp"
+
+using namespace religion;
 
 class GameLoaderMission::Impl
 {
@@ -59,7 +62,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     PlayerCityPtr city = game.city();
     city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
 
-    GameDate::init( vm[ "date" ].toDateTime() );
+    GameDate::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm[ "events" ].toMap();
     foreach( it, vm_events )
@@ -72,22 +75,29 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     game.empire()->load( vm[ "empire" ].toMap() );
 
-    CityWinTargets targets;
+    city::WinTargets targets;
     Variant winOptions = vm[ "win" ];
-    Logger::warningIf( winOptions.isNull(), "Cannot load mission win options from file " + filename );
+    Logger::warningIf( winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename );
 
     targets.load( winOptions.toMap() );
     city->setWinTargets( targets );
 
-    CityBuildOptions options;
+    city::BuildOptions options;
     options.load( vm[ "buildoptions" ].toMap() );
     city->setBuildOptions( options  );
 
     game.empire()->emperor().updateRelation( city->getName(), 50 );
 
-    std::string missionName = vfs::Path( filename ).getBasename( false ).toString();
+    std::string missionName = vfs::Path( filename ).baseName( false ).toString();
     Locale::addTranslation( missionName );
     GameSettings::set( GameSettings::lastTranslation, Variant( missionName ) );
+
+    //reseting divinities festival date
+    DivinityList gods = rome::Pantheon::instance().all();
+    foreach( it, gods )
+    {
+      rome::Pantheon::doFestival( (*it)->name(), 0 );
+    }
 
     return true;
   }
@@ -97,6 +107,5 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
 bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
 {
-  vfs::Path path( filename );
-  return path.isExtension( ".mission" );
+  return vfs::Path( filename ).isMyExtension( ".mission" );
 }

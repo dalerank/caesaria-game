@@ -25,6 +25,11 @@
 #include <iostream>
 #include <stdint.h>
 #include <sstream>
+#include "stacktrace.hpp"
+
+namespace {
+ static bool outputStacktraceLog = false;
+}
 
 int StringHelper::vformat(std::string& str, int max_size, const char* format, va_list argument_list)
 {
@@ -40,7 +45,9 @@ int StringHelper::vformat(std::string& str, int max_size, const char* format, va
 
   if( length <= 0 )
   {
-    Logger::warning( "String::sprintf: String truncated when processing " + str );
+    Logger::warning( "String::vformat: String truncated when processing " + str );
+    if( outputStacktraceLog )
+      Stacktrace::print();
   }
  
   str = buffer_ptr;
@@ -50,6 +57,8 @@ int StringHelper::vformat(std::string& str, int max_size, const char* format, va
 
   return length;
 }
+
+void StringHelper::useStackTrace(bool enabled) {  outputStacktraceLog = enabled;}
 
 std::string StringHelper::trim(const std::string& str)
 {

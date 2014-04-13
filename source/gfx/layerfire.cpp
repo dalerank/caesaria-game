@@ -27,6 +27,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 static const char* fireLevelName[] = { "##very_low_fire_risk##", "##very_low_fire_risk##", "##low_fire_risk##",
                                        "##some_fire_risk##", "##very_high_fire_risk##", "##extreme_fire_risk##" };
 
@@ -38,7 +41,7 @@ int LayerFire::getType() const {  return citylayer::fire; }
 
 std::set<int> LayerFire::getVisibleWalkers() const {  return layerFireWalkers; }
 
-void LayerFire::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -141,7 +144,7 @@ void LayerFire::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerFire::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerFire::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerFire( camera, city ) );
   ret->drop();
@@ -149,9 +152,11 @@ LayerPtr LayerFire::create(TilemapCamera& camera, PlayerCityPtr city)
   return ret;
 }
 
-LayerFire::LayerFire(TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerFire::LayerFire( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 18 );
   layerFireWalkers.insert( walker::prefect );
 }
+
+}//end namespace gfx

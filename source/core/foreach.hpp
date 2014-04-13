@@ -19,6 +19,6 @@
 #define foreach(m_itname,m_container) \
        for( __typeof__((m_container).begin()) m_itname=(m_container).begin() ; \
        m_itname!=(m_container).end() ; \
-       m_itname++ )
+       ++m_itname )
 
 #endif //__CAESARIA_FOREACH_INCLUDE_H__

@@ -21,6 +21,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerSimple::getType() const
 {
   return citylayer::simple;
@@ -34,7 +37,7 @@ std::set<int> LayerSimple::getVisibleWalkers() const
   return ret;
 }
 
-void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
+void LayerSimple::drawTile( Engine& engine, Tile& tile, Point offset )
 {
   TileOverlayPtr overlay = tile.overlay();
 
@@ -54,7 +57,7 @@ void LayerSimple::drawTile( GfxEngine& engine, Tile& tile, Point offset )
   }
 }
 
-LayerPtr LayerSimple::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerSimple( camera, city ) );
   ret->drop();
@@ -62,7 +65,9 @@ LayerPtr LayerSimple::create(TilemapCamera& camera, PlayerCityPtr city)
   return ret;
 }
 
-LayerSimple::LayerSimple(TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerSimple::LayerSimple( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
 }
+
+}//end namespace gfx

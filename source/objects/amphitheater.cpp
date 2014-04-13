@@ -25,8 +25,10 @@
 #include "walker/serviceman.hpp"
 #include "constants.hpp"
 #include "actor_colony.hpp"
+#include "walker/helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Amphitheater::Impl
 {
@@ -48,14 +50,14 @@ void Amphitheater::timeStep(const unsigned long time)
   EntertainmentBuilding::timeStep( time );
 }
 
-std::string Amphitheater::getSound() const
+std::string Amphitheater::sound() const
 {
   return (isActive() && numberWorkers() > 0
-            ? WorkingBuilding::getSound()
+            ? WorkingBuilding::sound()
             : "");
 }
 
-Service::Type Amphitheater::getService() const
+Service::Type Amphitheater::serviceType() const
 {
   int gldValue = getTraineeValue( walker::gladiator );
   return gldValue > 0 ? Service::amphitheater : Service::theater;
@@ -93,15 +95,15 @@ void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
 
 void Amphitheater::deliverService()
 {
-  int saveWalkesNumber = getWalkers().size();
-  Service::Type lastSrvc = getService();
+  int saveWalkesNumber = walkers().size();
+  Service::Type lastSrvc = serviceType();
 
   EntertainmentBuilding::deliverService();
 
   if( _animationRef().isRunning())
   {
     _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
-    int currentWalkerNumber = getWalkers().size();
+    int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
       (lastSrvc == Service::colloseum
@@ -129,17 +131,14 @@ void Amphitheater::load(const VariantMap& stream)
   _d->lastDateShow = stream.get( "lastSdate" ).toDateTime();
 }
 
-DateTime Amphitheater::getLastShowDate() const{  return _d->lastDateShow;}
-DateTime Amphitheater::getLastBoutsDate() const{  return _d->lastDateGl;}
+DateTime Amphitheater::lastShowDate() const { return _d->lastDateShow; }
+DateTime Amphitheater::lastBoutsDate() const{ return _d->lastDateGl; }
 
 Service::Type Amphitheater::_getServiceManType() const
 {
-  WalkerList walkers = getWalkers();
-  if( walkers.empty() )
-    return Service::srvCount;
-
-  ServiceWalkerPtr srvc = ptr_cast<ServiceWalker>( walkers.front() );
-  return (srvc.isValid() ? srvc->getService() : Service::srvCount);
+  ServiceWalkerList servicemen;
+  servicemen << walkers();
+  return (!servicemen.empty() ? servicemen.front()->getService() : Service::srvCount);
 }
 
 bool Amphitheater::isShowGladiatorBouts() const { return _getServiceManType() == Service::amphitheater; }

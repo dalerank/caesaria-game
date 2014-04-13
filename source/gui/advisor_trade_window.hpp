@@ -29,7 +29,7 @@ class AdvisorTradeWindow : public Widget
 public:
   AdvisorTradeWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( GfxEngine& painter );
+  void draw( gfx::Engine& painter );
 
 oc3_signals public:
   Signal0<>& onEmpireMapRequest();

@@ -21,6 +21,7 @@
 #include "label.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {

@@ -31,18 +31,18 @@ public:
   //! constructor
   Image(Widget* parent );
 
-  Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode=image, int id=-1);
-  Image(Widget* parent, Point pos, const Picture& pic, int id=-1);
+  Image(Widget* parent, Rect rectangle, const gfx::Picture& pic, Mode mode=image, int id=-1);
+  Image(Widget* parent, Point pos, const gfx::Picture& pic, int id=-1);
 
   //! destructor
   virtual ~Image();
 
   //! draws the element and its children
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
-  virtual void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( gfx::Engine& painter );
 
-  virtual void setPicture( Picture picture );
+  virtual void setPicture( gfx::Picture picture );
 
   virtual void setupUI( const VariantMap& ui );
     
@@ -51,8 +51,8 @@ oc3_signals public:
 
 protected:
   virtual void _resizeEvent();
-  virtual void _updateTexture( GfxEngine& );
-  PictureRef& getPicture();
+  virtual void _updateTexture( gfx::Engine& );
+  gfx::PictureRef& getPicture();
 
 private:
 

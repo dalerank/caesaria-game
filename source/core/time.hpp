@@ -25,8 +25,8 @@ public:
     typedef enum { dateLess=-1, dateEquale=0, dateMore=1 } DATE_EQUALE_FEEL;
 
     static const DateTime invalid;
-    static const int dayInWeek = 7;
-    static const int monthInYear = 12;
+    static const int daysInWeek = 7;
+    static const int monthsInYear = 12;
 
     unsigned char hour() const;
     unsigned char month() const;
@@ -62,10 +62,10 @@ public:
 
     int equale( const DateTime& b );
 
-    int getMonthToDate( const DateTime& end );
+    int getMonthToDate( const DateTime& end ) const;
 
     DateTime& appendMonth( int month=1 );
-
+    DateTime& appendWeek( int weekNumber=1 );
     DateTime& appendDay( int dayNumber=1 );
 
     //DateTime& appendMinutes( int minute );
@@ -77,7 +77,7 @@ public:
 
     static const char* getDayName( unsigned char d );
     static const char* getMonthName( unsigned char d );
-    int getDaysInMonth() const;
+    int daysInMonth() const;
 
     //unsigned char getMonthLength() const;
     //unsigned char getWeekNumber() const;
@@ -104,7 +104,7 @@ private:
 
     long _toJd() const;
 
-    int _getMonthToDate( const long end );
+    int _getMonthToDate( const long end ) const;
 
     int _isEquale( const long b );
 

@@ -73,7 +73,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     if( img ) { img->setPicture( GoodHelper::getPicture( gr->getGoodType() )); }
 
     lb = findChildA<Label*>( "lbInterval", true, this );
-    int month2Comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
+    int month2Comply = GameDate::current().getMonthToDate( gr->finishedDate() );
     if( lb ) { lb->setText( StringHelper::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
   }
 
@@ -84,7 +84,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
   CONNECT( btnAdvisor, onClicked(), this, EmperrorRequestWindow::deleteLater );
 }
 
-void EmperrorRequestWindow::draw( GfxEngine& painter )
+void EmperrorRequestWindow::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;

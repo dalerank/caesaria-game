@@ -355,7 +355,7 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 
 void ConsoleUpdater::OnFailure(UpdateStep step, const std::string& errorMessage)
 {
-	Logger::warning( "");
+	Logger::warning( "\n");
 	Logger::warning( errorMessage );
 
 	_done = true; // break main loop
@@ -396,7 +396,7 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 			PrintProgress();
 
 			// Add a line break when a new file starts
-			Logger::warning( "" );
+			Logger::warning( "\n" );
 
 			Logger::warning( StringHelper::format( 0xff, " Downloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toString().c_str() ) );
 		}
@@ -415,7 +415,7 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 		if( info.progressFraction >= 1 && !_progressDone)
 		{
 			_progressDone = true;
-			Logger::warning( "" );
+			Logger::warning( "\n" );
 		}
 		break;
 
@@ -429,7 +429,7 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
 		// Add a new line if we're done here
 		if (info.progressFraction >= 1)
 		{
-			Logger::warning( "");
+			Logger::warning( "\n");
 		}
 	break;
 
@@ -487,7 +487,7 @@ void ConsoleUpdater::PrintProgress()
 		line += " " + verb;
 
 		std::size_t remainingLength = line.length() > 79 ? 0 : 79 - line.length();
-		line += GetShortenedString(_info.file.getBasename().toString(), remainingLength);
+		line += GetShortenedString(_info.file.baseName().toString(), remainingLength);
 	}
 	break;
 

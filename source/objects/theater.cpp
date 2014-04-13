@@ -22,6 +22,7 @@
 #include "actor_colony.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, Size(2))
 {

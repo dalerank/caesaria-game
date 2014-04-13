@@ -25,6 +25,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_damage_risk##",
                                          "##some_damage_risk##", "##very_high_damage_risk##",
                                          "##extreme_damage_risk##" };
@@ -41,7 +44,7 @@ std::set<int> LayerDamage::getVisibleWalkers() const
   return ret;
 }
 
-void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -64,8 +67,9 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
     case construction::plaza:
     case building::collapsedRuins:
     case building::engineerPost:
+    case building::burningRuins:
       needDrawAnimations = true;
-      engine.drawPicture( tile.picture(), screenPos );
+      drawTilePass( engine, tile, offset, Renderer::ground );
       drawTilePass( engine, tile, offset, Renderer::foreground );
       break;
 
@@ -107,7 +111,7 @@ void LayerDamage::drawTile(GfxEngine& engine, Tile& tile, Point offset)
   }
 }
 
-LayerPtr LayerDamage::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerDamage::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerDamage( camera, city ) );
   ret->drop();
@@ -149,8 +153,10 @@ void LayerDamage::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerDamage::LayerDamage( TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerDamage::LayerDamage( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 15 );
 }
+
+}//end namespace gfx

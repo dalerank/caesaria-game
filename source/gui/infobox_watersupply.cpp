@@ -27,6 +27,7 @@
 #include "objects/watersupply.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {

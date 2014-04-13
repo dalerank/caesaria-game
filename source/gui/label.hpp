@@ -39,7 +39,7 @@ public:
   virtual ~Label();
 
   //! draws the element and its children
-  virtual void draw( GfxEngine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   virtual void setPadding( const Rect& margin );
 
@@ -49,7 +49,7 @@ public:
   //! Sets whether to draw the background
   virtual void setBackgroundMode( BackgroundMode mode );
 
-  virtual void beforeDraw( GfxEngine& painter );
+  virtual void beforeDraw( gfx::Engine& painter );
 
   //! Return background draw
   virtual BackgroundMode getBackgroundMode() const;
@@ -94,9 +94,9 @@ public:
 
   virtual void setPrefixText( const std::string& prefix );
 
-  virtual void setBackgroundPicture( const Picture& picture, Point offset=Point() );
+  virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
 
-  virtual void setIcon( const Picture& icon, Point offset=Point() );
+  virtual void setIcon( const gfx::Picture& icon, Point offset=Point() );
 
   virtual void setFont( const Font& font );
 
@@ -113,9 +113,9 @@ oc3_signals public:
 
 protected:
   virtual void _resizeEvent();
-  virtual void _updateTexture( GfxEngine& painter );
-  PictureRef& getPicture();
-  PictureRef& getTextPicture();
+  virtual void _updateTexture( gfx::Engine& painter );
+  gfx::PictureRef& getPicture();
+  gfx::PictureRef& getTextPicture();
 
 private:
 

@@ -1,11 +1,11 @@
-// This file is part of openCaesar3.
+// This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -28,19 +28,27 @@
 #include "events/dispatcher.hpp"
 #include "core/locale.hpp"
 #include "settings.hpp"
+#include "core/logger.hpp"
 
 static const int currentVesion = 1;
 
 bool GameLoaderOc3::load( const std::string& filename, Game& game )
 {
+  Logger::warning( "GameLoaderOc3: start loading from " + filename );
   VariantMap vm = SaveAdapter::load( filename );
-  
-  if( currentVesion == (int)vm[ "version" ] )
+  if( vm.empty() )
   {
+    Logger::warning( "GameLoaderOc3: empty file " + filename );
+    return false;
+  }
+  
+  int fileVersion = vm[ "version" ];
+  if( currentVesion == fileVersion )
+  {      
     VariantMap scenario_vm = vm[ "scenario" ].toMap();
     game.setTimeMultiplier( (int)vm[ "timemultiplier"] );
 
-    GameDate::init( scenario_vm[ "date" ].toDateTime() );
+    GameDate::instance().init( scenario_vm[ "date" ].toDateTime() );
     events::Dispatcher::instance().load( scenario_vm[ "events" ].toMap() );
 
     Variant lastTr = scenario_vm[ "translation" ];
@@ -52,11 +60,12 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
 
     game.empire()->load( vm[ "empire" ].toMap() );
 
-    religion::Pantheon::instance().load( vm[ "pantheon" ].toMap() );
+    religion::rome::Pantheon::instance().load( vm[ "pantheon" ].toMap() );
 
     return true;
   }
- 
+
+  Logger::warning( "GameLoaderOc3: unsupported version %d", fileVersion );
   return false;
 }
 

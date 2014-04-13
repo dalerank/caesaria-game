@@ -17,13 +17,14 @@
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
-#include "pathway/astarpathfinding.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
 #include "constants.hpp"
 #include "core/gettext.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class FishPlace::Impl
 {
@@ -65,10 +66,8 @@ FishPlacePtr FishPlace::create(PlayerCityPtr city)
   return ret;
 }
 
-FishPlace::~FishPlace()
-{
+FishPlace::~FishPlace(){}
 
-}
 void FishPlace::timeStep(const unsigned long time)
 {
   Walker::timeStep( time );
@@ -95,8 +94,8 @@ const Picture& FishPlace::getMainPicture()
 
 void FishPlace::send2city(TilePos pos)
 {
-  Pathway pathway = Pathfinder::getInstance().getPath( pos, _city()->borderInfo().boatExit,
-                                                       Pathfinder::waterOnly );
+  Pathway pathway = PathwayHelper::create( pos, _city()->borderInfo().boatExit,
+                                           PathwayHelper::deepWater );
   if( !pathway.isValid() )
   {
     deleteLater();

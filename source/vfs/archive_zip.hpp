@@ -156,32 +156,32 @@ class ZipArchiveLoader : public ArchiveLoader
 {
 public:
 
-      //! Constructor
+  //! Constructor
   ZipArchiveLoader( vfs::FileSystem* fs );
 
-      //! returns true if the file maybe is able to be loaded by this class
-      //! based on the file extension (e.g. ".zip")
-      virtual bool isALoadableFileFormat(const Path& filename) const;
+  //! returns true if the file maybe is able to be loaded by this class
+  //! based on the file extension (e.g. ".zip")
+  virtual bool isALoadableFileFormat(const Path& filename) const;
 
-      //! Check if the file might be loaded by this class
-      /** Check might look into the file.
-      \param file File handle to check.
-      \return True if file seems to be loadable. */
+  //! Check if the file might be loaded by this class
+  /** Check might look into the file.
+  \param file File handle to check.
+  \return True if file seems to be loadable. */
   virtual bool isALoadableFileFormat( NFile file ) const;
 
-      //! Check to see if the loader can create archives of this type.
-      /** Check based on the archive type.
-      \param fileType The archive type to check.
-      \return True if the archile loader supports this type, false if not */
+  //! Check to see if the loader can create archives of this type.
+  /** Check based on the archive type.
+  \param fileType The archive type to check.
+  \return True if the archile loader supports this type, false if not */
   virtual bool isALoadableFileFormat( Archive::Type fileType) const;
 
-      //! Creates an archive from the filename
-      /** \param file File handle to check.
-      \return Pointer to newly created archive, or 0 upon error. */
+  //! Creates an archive from the filename
+  /** \param file File handle to check.
+  \return Pointer to newly created archive, or 0 upon error. */
   virtual ArchivePtr createArchive(const Path& filename, bool ignoreCase, bool ignorePaths) const;
 
-      //! creates/loads an archive from the file.
-      //! \return Pointer to the created archive. Returns 0 if loading failed.
+  //! creates/loads an archive from the file.
+  //! \return Pointer to the created archive. Returns 0 if loading failed.
   virtual ArchivePtr createArchive(NFile file, bool ignoreCase, bool ignorePaths) const;
 
 private:

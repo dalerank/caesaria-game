@@ -34,7 +34,7 @@ public:
 
   virtual void deliverService();  
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles)const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles)const;
 
   virtual void applyService(ServiceWalkerPtr walker);
 
@@ -43,8 +43,10 @@ public:
   virtual unsigned int walkerDistance() const;
 
   virtual void timeStep(const unsigned long time);
+
 private:
   void _updateUnemployers();
+  void _updateRatings();
 
   class Impl;
   ScopedPtr< Impl > _d;

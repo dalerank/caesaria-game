@@ -38,6 +38,7 @@
 #include "events/playsound.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 namespace gui
 {
@@ -170,7 +171,7 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
 
 
 
-void Menu::draw( GfxEngine& painter )
+void Menu::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -434,9 +435,6 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
   
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
-  //CONNECT( _d->empireButton, onClicked(), &_d->onEmpireMapShowSignal, Signal0<>::emit );
-  //CONNECT( _d->senateButton, onClicked(), &_d->onAdvisorsWndShowSignal, Signal0<>::emit );
-  //CONNECT( _d->disasterButton, onClicked(), &_d->onSwitchAlarmSignal, Signal0<>::emit );
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
@@ -453,7 +451,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
   return Menu::onEvent( event );
 }
 
-void ExtentMenu::draw( GfxEngine& painter )
+void ExtentMenu::draw(Engine& painter )
 {
   if( !isVisible() )
     return;
@@ -471,8 +469,9 @@ Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSe
 Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked(); }
 Signal0<>& ExtentMenu::onAdvisorsWindowShow(){  return _d->senateButton->onClicked(); }
 Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked(); }
+Signal0<>&ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
 void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
-Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked();}
+Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
 
 void Menu::Impl::initActionButton(PushButton* btn, Point pos)
 {
@@ -488,7 +487,7 @@ void Menu::Impl::playSound()
 
 void Menu::Impl::updateBuildingOptions()
 {
-  const CityBuildOptions& options = city->getBuildOptions();
+  const city::BuildOptions& options = city->getBuildOptions();
   waterButton->setEnabled( options.isGroupAvailable( BM_WATER ) );
   administrationButton->setEnabled( options.isGroupAvailable( BM_ADMINISTRATION ) );
   entertainmentButton->setEnabled( options.isGroupAvailable( BM_ENTERTAINMENT ) );

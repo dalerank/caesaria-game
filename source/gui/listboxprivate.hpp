@@ -28,8 +28,8 @@ namespace gui
 class ListBox::Impl
 {
 public:
-  PictureRef background;
-  PictureRef picture;
+  gfx::PictureRef background;
+  gfx::PictureRef picture;
   std::vector< ListBoxItem > items;
   NColor itemDefaultColorText;
   NColor itemDefaultColorTextHighlight;
@@ -75,7 +75,7 @@ oc3_signals public:
 		if( newLength != totalItemHeight )
 		{
 			totalItemHeight = newLength;
-			scrollBar->setMax( std::max<int>( 0, totalItemHeight - height ) );
+			scrollBar->setMaxValue( std::max<int>( 0, totalItemHeight - height ) );
 			int minItemHeight = itemHeight > 0 ? itemHeight : 1;
 			scrollBar->setSmallStep ( minItemHeight );
 			scrollBar->setLargeStep ( 2*minItemHeight );

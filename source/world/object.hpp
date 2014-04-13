@@ -34,8 +34,8 @@ public:
   virtual std::string getName() const;
   virtual Point getLocation() const;
   virtual void setLocation( const Point& location );
-  virtual Picture getPicture() const;
-  virtual void setPicture( Picture pic );
+  virtual gfx::Picture getPicture() const;
+  virtual void setPicture( gfx::Picture pic );
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
 

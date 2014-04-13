@@ -19,15 +19,18 @@
 #include "tilemap.hpp"
 #include "core/logger.hpp"
 
+namespace gfx
+{
+
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::foreground);
-static PicturesArray invalidPictures;
+static Pictures invalidPictures;
 }
 
 class TileOverlay::Impl
 {
 public:  
-  PicturesArray fgPictures;
+  Pictures fgPictures;
   TileOverlay::Type overlayType;
   TileOverlay::Group overlayClass;
   Tile* masterTile;  // left-most tile if multi-tile, or "this" if single-tile
@@ -60,7 +63,7 @@ void TileOverlay::setType(const Type type)
    _d->name = bd.getName();
 }
 
-void TileOverlay::timeStep(const unsigned long time) {}
+void TileOverlay::timeStep(const unsigned long) {}
 
 void TileOverlay::setPicture(Picture picture)
 {
@@ -120,7 +123,7 @@ Tile& TileOverlay::tile() const
   return *_d->masterTile;
 }
 
-const PicturesArray& TileOverlay::getPictures( Renderer::Pass pass ) const
+const Pictures& TileOverlay::getPictures( Renderer::Pass pass ) const
 {
   switch( pass )
   {
@@ -175,7 +178,7 @@ TilePos TileOverlay::pos() const
   return _d->masterTile->pos();
 }
 
-std::string TileOverlay::getSound() const
+std::string TileOverlay::sound() const
 {
   const MetaData& md = MetaDataHolder::instance().getData( type() );
   return md.getSound();
@@ -183,11 +186,11 @@ std::string TileOverlay::getSound() const
 
 void TileOverlay::setName( const std::string& name ){  _d->name = name;}
 void TileOverlay::setSize( const Size& size ){  _d->size = size;}
-Point TileOverlay::offset( Tile&, const Point& ) const{  return Point( 0, 0 );}
+Point TileOverlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
 Animation& TileOverlay::_animationRef(){  return _d->animation;}
 Tile* TileOverlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr TileOverlay::_city() const{ return _d->city;}
-PicturesArray& TileOverlay::_fgPicturesRef(){  return _d->fgPictures; }
+gfx::Pictures& TileOverlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture& TileOverlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
 Picture& TileOverlay::_pictureRef(){  return _d->picture;}
 TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
@@ -203,3 +206,5 @@ Renderer::PassQueue TileOverlay::getPassQueue() const{ return defaultPassQueue;}
 std::string TileOverlay::name(){  return _d->name;}
 TileOverlay::~TileOverlay(){}  // what we shall to do here?
 TileOverlay::Type TileOverlay::type() const{   return _d->overlayType;}
+
+}//end namespace gfx

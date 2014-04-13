@@ -34,6 +34,7 @@
 #include "core/logger.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 // used to display the building name and its cost
 namespace gui
@@ -201,10 +202,7 @@ bool BuildMenu::isPointInside( const Point& point ) const
   return clickedRect.isPointInside( point );
 }
 
-void BuildMenu::setBuildOptions( const CityBuildOptions& options )
-{
-  _options = options;
-}
+void BuildMenu::setBuildOptions( const city::BuildOptions& options ) {  _options = options; }
 
 void BuildMenu::_resolveButtonClick()
 {

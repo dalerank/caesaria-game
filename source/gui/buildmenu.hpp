@@ -41,18 +41,18 @@ public:
   void addSubmenuButton(const BuildMenuType menuType, const std::string &text);
 
   // add the button in the menu.
-  void addBuildButton(const TileOverlay::Type buildingType);
+  void addBuildButton(const gfx::TileOverlay::Type buildingType);
 
   virtual bool isPointInside(const Point& point) const;
 
   virtual void initialize();
 
-  void setBuildOptions(const CityBuildOptions& options );
+  void setBuildOptions(const city::BuildOptions& options );
 
 protected:
   void _resolveButtonClick();
 
-  CityBuildOptions _options;
+  city::BuildOptions _options;
 };
 
 class BuildMenu_water : public BuildMenu

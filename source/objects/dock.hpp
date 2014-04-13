@@ -27,7 +27,7 @@ public:
   Dock();
   ~Dock();
 
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const TilesArray& aroundTiles) const;  // returns true if it can be built there
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
   virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void destroy();
 
@@ -37,8 +37,8 @@ public:
 
   bool isBusy() const;
 
-  const Tile& getLandingTile() const;
-  const Tile& getQueueTile() const;
+  const gfx::Tile& landingTile() const;
+  const gfx::Tile& getQueueTile() const;
 
   int getQueueSize() const;
 

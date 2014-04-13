@@ -37,6 +37,9 @@
 #include "gui/listbox.hpp"
 #include "core/locale.hpp"
 #include "core/saveadapter.hpp"
+#include "gui/smkviewer.hpp"
+
+using namespace gfx;
 
 namespace scene
 {
@@ -49,7 +52,7 @@ public:
   int result;
   bool isStopped;
   Game* game;
-  GfxEngine* engine;
+  Engine* engine;
   std::string fileMap;
   std::string playerName;
 
@@ -127,7 +130,7 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
   VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
   foreach( it, languages )
   {
-    if( item.getText() == it->first )
+    if( item.text() == it->first )
     {
       lang = it->second.toString();
       break;
@@ -169,7 +172,7 @@ void StartMenu::Impl::resolveCredits()
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
   gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
-  item.setItemTextAlignment( alignCenter, alignCenter );
+  item.setTextAlignment( alignCenter, alignCenter );
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
   lbx->addItem( "gathanase" );
   lbx->addItem( "gecube (gb12335@gmail.com)" );
@@ -184,7 +187,7 @@ void StartMenu::Impl::resolveCredits()
   lbx->addItem( "ImperatorPrime" );
   lbx->addItem( "veprbl" );
   gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
-  testers.setItemTextAlignment( alignCenter, alignCenter );
+  testers.setTextAlignment( alignCenter, alignCenter );
   lbx->addItem( "Radek Liška" );
 
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
@@ -220,7 +223,7 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
   wnd->setTitle( _("##mainmenu_loadmap##") );
 }
 
-StartMenu::StartMenu( Game& game, GfxEngine& engine ) : _d( new Impl )
+StartMenu::StartMenu( Game& game, Engine& engine ) : _d( new Impl )
 {
   _d->bgPicture = Picture::getInvalid();
   _d->isStopped = false;
@@ -247,9 +250,8 @@ void StartMenu::initialize()
   _d->bgPicture = Picture::load("title", 1);
 
   // center the bgPicture on the screen
-  Point p( (_d->engine->screenWidth() - _d->bgPicture.width()) / 2,
-           -( _d->engine->screenHeight() - _d->bgPicture.height() ) / 2 );
-  _d->bgPicture.setOffset( p );
+  Size tmpSize = (_d->engine->screenSize() - _d->bgPicture.size())/2;
+  _d->bgPicture.setOffset( Point( tmpSize.width(), -tmpSize.height() ) );
 
   _d->game->gui()->clear();
 
@@ -275,9 +277,13 @@ void StartMenu::initialize()
 
   btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
+
+  /*gui::SmkViewer* smkv = new gui::SmkViewer( _d->game->gui()->rootWidget(), Rect( 300, 300, 600, 600 ), gui::SmkViewer::video );
+  smkv->setFilename( GameSettings::rcpath( "/smk/1C.smk" ) );
+  CONNECT( smkv, onFinish(), smkv, gui::SmkViewer::deleteLater );*/
 }
 
-int StartMenu::getResult() const{  return _d->result;}
+int StartMenu::result() const{  return _d->result;}
 bool StartMenu::isStopped() const{  return _d->isStopped;}
 std::string StartMenu::getMapName() const{  return _d->fileMap;}
 std::string StartMenu::getPlayerName() const { return _d->playerName; }

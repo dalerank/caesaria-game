@@ -12,14 +12,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
 #define _CAESARIA_CITY_DONATION_WINDOW_H_INCLUDE_
 
 #include "gui/widget.hpp"
 #include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "gfx/tileoverlay.hpp"
 
 namespace gui
 {

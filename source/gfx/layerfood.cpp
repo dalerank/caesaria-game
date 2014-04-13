@@ -28,6 +28,9 @@
 
 using namespace constants;
 
+namespace gfx
+{
+
 int LayerFood::getType() const {  return citylayer::food; }
 
 Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
@@ -40,7 +43,7 @@ Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
   return ret;
 }
 
-void LayerFood::drawTile(GfxEngine& engine, Tile& tile, Point offset)
+void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -149,7 +152,7 @@ void LayerFood::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr LayerFood::create(TilemapCamera& camera, PlayerCityPtr city)
+LayerPtr LayerFood::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerFood( camera, city ) );
   ret->drop();
@@ -157,8 +160,10 @@ LayerPtr LayerFood::create(TilemapCamera& camera, PlayerCityPtr city)
   return ret;
 }
 
-LayerFood::LayerFood(TilemapCamera& camera, PlayerCityPtr city)
-  : Layer( camera, city )
+LayerFood::LayerFood( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
   _loadColumnPicture( 18 );
 }
+
+}//end namespace gfx

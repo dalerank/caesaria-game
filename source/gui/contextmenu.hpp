@@ -92,7 +92,7 @@ public:
 	virtual bool onEvent(const NEvent& event);
 
 	//! draws the element and its children
-	virtual void draw( GfxEngine& painter );
+	virtual void draw( gfx::Engine& painter );
 
 	//! Returns the selected item in the menu
   virtual int getSelectedIndex() const;
@@ -113,7 +113,7 @@ public:
 
 	virtual void setAllowFocus( bool enabled );
 
-	void beforeDraw( GfxEngine& painter );
+	void beforeDraw( gfx::Engine& painter );
 
 	float getOpacity( unsigned int index=0 ) const;
 

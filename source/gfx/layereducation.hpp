@@ -18,18 +18,21 @@
 
 #include "layer.hpp"
 
+namespace gfx
+{
+
 class LayerEducation : public Layer
 {
 public:
   virtual int getType() const;
   virtual VisibleWalkers getVisibleWalkers() const;
-  virtual void drawTile( GfxEngine& engine, Tile& tile, Point offset );
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create( TilemapCamera& camera, PlayerCityPtr city, int type );
+  static LayerPtr create( Camera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);
 
 private:
-  LayerEducation( TilemapCamera& camera, PlayerCityPtr city, int type );
+  LayerEducation( Camera& camera, PlayerCityPtr city, int type );
   int _getLevelValue(HousePtr house ) const;
   std::string _getAccessLevel( int lvl ) const;
 
@@ -38,4 +41,5 @@ private:
   int _type;
 };
 
+}//end namespace gfx
 #endif //__CAESARIA_LAYEREDUCATIONH_H_INCLUDED__

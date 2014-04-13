@@ -21,6 +21,8 @@
 #include "color.hpp"
 #include <map>
 
+using namespace gfx;
+
 class Font::Impl
 {
 public:

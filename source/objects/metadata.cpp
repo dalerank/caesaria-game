@@ -27,6 +27,7 @@
 #include "constants.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 MetaData MetaData::invalid = MetaData( building::unknown, "unknown" );
 
@@ -167,11 +168,12 @@ public:
   TileOverlay::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
+  Picture picture;
   StringArray desc;
   VariantMap options;
 };
 
-MetaData::MetaData(const TileOverlay::Type buildingType, const std::string& name )
+MetaData::MetaData(const gfx::TileOverlay::Type buildingType, const std::string& name )
   : _prettyName( "##" + name + "##" ), _d( new Impl )
 {
   _d->tileovType = buildingType;
@@ -198,7 +200,7 @@ std::string MetaData::getDescription() const
 }
 
 TileOverlay::Type MetaData::getType() const {  return _d->tileovType;}
-Picture MetaData::getBasePicture() const{  return _basePicture;}
+Picture MetaData::getBasePicture() const{  return _d->picture;}
 Desirability MetaData::getDesirbility() const{  return _d->desirability;}
 
 Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
@@ -213,7 +215,7 @@ MetaData& MetaData::operator=(const MetaData &a)
   _d->name = a._d->name;
   _prettyName = a._prettyName;
   _d->sound = a._d->sound;
-  _basePicture = a._basePicture;
+  _d->picture = a._d->picture;
   _d->group = a._d->group;
   _d->desirability = a._d->desirability;
   _d->desc = a._d->desc;
@@ -351,7 +353,7 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     VariantList basePic = options[ "image" ].toList();
     if( !basePic.empty() )
     {
-      bData._basePicture = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
+      bData._d->picture = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
     }
 
     VariantList soundVl = options[ "sound" ].toList();

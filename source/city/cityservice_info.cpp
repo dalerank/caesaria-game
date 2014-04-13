@@ -36,8 +36,10 @@ class Info::Impl
 {
 public:
   typedef std::vector< Info::Parameters > History;
+
   DateTime lastDate;
   History params;
+  Info::Messages messages;
 };
 
 SrvcPtr Info::create(PlayerCityPtr city )
@@ -57,7 +59,7 @@ Info::Info( PlayerCityPtr city )
 
 void Info::update( const unsigned int time )
 {
-  if( time % GameDate::ticksInMonth() != 1 )
+  if( time % GameDate::ticksInMonth() / 2 != 1 )
     return;
 
   if( GameDate::current().month() != _d->lastDate.month() )
@@ -78,7 +80,7 @@ void Info::update( const unsigned int time )
     last.monthWithFood = foodMontlyConsumption > 0 ? (foodStock / foodMontlyConsumption) : 0;
 
     int foodProducing = city::Statistic::getFoodProducing( &_city );
-    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
+    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthsInYear;
     last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -1;
@@ -153,7 +155,41 @@ void Info::load(const VariantMap& stream)
     _d->params.push_back( p );
   }
 
-  _d->params.resize( DateTime::monthInYear );
+  _d->params.resize( DateTime::monthsInYear );
+}
+
+const Info::Messages& Info::messages() const { return _d->messages; }
+
+const Info::ScribeMessage& Info::getMessage(int index) const
+{
+  static ScribeMessage invalidMessage;
+  Messages::iterator it = _d->messages.begin();
+  std::advance( it, index );
+  if( it != _d->messages.end() )
+    return *it;
+
+  return invalidMessage;
+}
+
+void Info::changeMessage(int index, ScribeMessage& message)
+{
+  Messages::iterator it = _d->messages.begin();
+  std::advance( it, index );
+  if( it != _d->messages.end() )
+    *it = message;
+}
+
+void Info::removeMessage(int index)
+{
+  Messages::iterator it = _d->messages.begin();
+  std::advance( it, index );
+  if( it != _d->messages.end() )
+    _d->messages.erase( it );
+}
+
+void Info::addMessage(const Info::ScribeMessage& message)
+{
+  _d->messages.push_front( message );
 }
 
 }//end namespace city
