@@ -276,10 +276,14 @@ void House::timeStep(const unsigned long time)
 
   if( _d->taxCheckInterval.month() != GameDate::current().month() )
   {
-    _updateTax();
-    _checkEvolve();    
+    _updateTax(); 
     _updateMorale();
     _checkHomeless();
+  }
+
+  if( GameDate::isWeekChanged() )
+  {
+    _checkEvolve();
   }
 
   Building::timeStep( time );
