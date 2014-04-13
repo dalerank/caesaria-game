@@ -114,7 +114,7 @@ bool PostponeEvent::_mayExec(Game& game, unsigned int time ) const
     bool popCondition = true;
     if( _d->population > 0 )
     {
-      popCondition = game.city()->getPopulation() > _d->population;
+      popCondition = game.city()->population() > _d->population;
     }
 
     _d->mayDelete = dateCondition && popCondition;

@@ -158,7 +158,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() && emptyDock )
     {
-      city::TradeOptions& options = city->getTradeOptions();
+      city::TradeOptions& options = city->tradeOptions();
       city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
       //request goods
       for( int n = Good::wheat; n<Good::goodCount; n++ )
@@ -231,7 +231,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     }
     else
     {
-      if( landingDate.getMonthToDate( GameDate::current() ) > 2 )
+      if( landingDate.monthsTo( GameDate::current() ) > 2 )
       {
         nextState = stGoOutFromCity;
         resolveState( city, wlk );

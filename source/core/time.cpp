@@ -51,7 +51,7 @@ int DateTime::getDaysToDate( const DateTime& future ) const{    return _getDaysT
 int DateTime::_isEquale( const long b ){    return _toJd() == b ? dateEquale : (_toJd() < b ? dateLess : dateMore ) ;}
 int DateTime::equale( const DateTime& b ){    return _isEquale( b._toJd() );}
 int DateTime::_getMonthToDate( const long end ) const {    return _getDaysToDate( end ) / 30;}
-int DateTime::getMonthToDate( const DateTime& end ) const {    return _getMonthToDate( end._toJd() );}
+int DateTime::monthsTo( const DateTime& end ) const {    return _getMonthToDate( end._toJd() );}
 bool DateTime::operator!=( const DateTime& other ) const{    return _toJd() != other._toJd();}
 bool DateTime::operator==( const DateTime& other ) const{    return _toJd() == other._toJd();}
 bool DateTime::operator<=( const DateTime& other ) const{    return _toJd() <= other._toJd();}

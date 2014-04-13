@@ -109,11 +109,11 @@ void Migration::update( const unsigned int time )
     _d->updateTickInerval = math::random( GameDate::ticksInMonth() / 2 ) + 10;
   }
 
-  if( _d->lastUpdate.getMonthToDate( GameDate::current() ) > 0 )
+  if( _d->lastUpdate.monthsTo( GameDate::current() ) > 0 )
   {
     _d->lastUpdate = GameDate::current();
-    _d->lastMonthMigration = _city.getPopulation() - _d->lastMonthPopulation;
-    _d->lastMonthPopulation = _city.getPopulation();
+    _d->lastMonthMigration = _city.population() - _d->lastMonthPopulation;
+    _d->lastMonthPopulation = _city.population();
 
     Logger::warning( "MigrationSrvc: current workless=%f indesrbl=%f",
                         params.workless * migrationKoeff,
@@ -190,7 +190,7 @@ unsigned int Migration::Impl::calcVacantHouse( PlayerCity& city )
 
 float Migration::Impl::getMigrationKoeff( PlayerCity& city )
 {
-  return ( std::min<float>( city.getPopulation(), 300 ) / 300.f );
+  return ( std::min<float>( city.population(), 300 ) / 300.f );
 }
 
 Info::Parameters Migration::Impl::getLastParams( PlayerCity& city )

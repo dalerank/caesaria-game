@@ -22,7 +22,7 @@
 #include "game.hpp"
 #include "core/saveadapter.hpp"
 #include "loader.hpp"
-#include "city/win_targets.hpp"
+#include "city/victoryconditions.hpp"
 #include "city/build_options.hpp"
 #include "objects/metadata.hpp"
 #include "city/funds.hpp"
@@ -75,12 +75,12 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     game.empire()->load( vm[ "empire" ].toMap() );
 
-    city::WinTargets targets;
+    city::VictoryConditions targets;
     Variant winOptions = vm[ "win" ];
     Logger::warningIf( winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename );
 
     targets.load( winOptions.toMap() );
-    city->setWinTargets( targets );
+    city->setVictoryConditions( targets );
 
     city::BuildOptions options;
     options.load( vm[ "buildoptions" ].toMap() );

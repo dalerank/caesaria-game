@@ -48,7 +48,7 @@ void RandomFire::_exec( Game& game, unsigned int time)
 {
   if( time % GameDate::ticksInMonth() == 0 && !_d->isDeleted )
   {
-    int population = game.city()->getPopulation();
+    int population = game.city()->population();
     if( population > _d->minPopulation && population < _d->maxPopulation )
     {
       Logger::warning( "Execute random fire service" );

@@ -72,7 +72,7 @@ TilesArray Helper::getArea(TilePos start, TilePos stop)
 
 float Helper::getBalanceKoeff()
 {
-  return atan( _city->getPopulation() / 5000.f );
+  return atan( _city->population() / 5000.f );
 }
 
 }//end namespace city

@@ -13,33 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
-#define _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+#ifndef __CAESARIA_CITYSERVICE_SENTIMENT_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_SENTIMENT_H_INCLUDED__
 
-#include "widget.hpp"
-#include "core/signals.hpp"
+#include "cityservice.hpp"
+#include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
 
-namespace gui
+namespace city
 {
 
-class AndroidActionsBar : public Widget
+class Sentiment : public city::Srvc
 {
 public:
-  virtual void beforeDraw( gfx::Engine& painter);
-  AndroidActionsBar( Widget* parent );
+  static city::SrvcPtr create( PlayerCityPtr city );
+  static std::string getDefaultName();
+  virtual void update( const unsigned int time );
+  int value() const;
+  void append( int value );
 
-public oc3_signals:
-  Signal0<>& onRequestTileHelp();
-  Signal0<>& onEscapeClicked();
-  Signal0<>& onRequestMenu();
-
+  virtual VariantMap save() const;
+  virtual void load( VariantMap stream );
 private:
+  Sentiment( PlayerCityPtr city );
+
   class Impl;
-  ScopedPtr<Impl> _d;
+  ScopedPtr< Impl > _d;
 };
 
-}//end namesapce gui
+}//end namespace city
 
-#endif //_CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
+#endif //__CAESARIA_CITYSERVICE_SENTIMENT_H_INCLUDED__

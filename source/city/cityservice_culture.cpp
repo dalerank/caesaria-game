@@ -101,7 +101,7 @@ void CultureRating::update( const unsigned int time )
   if( time % (GameDate::ticksInMonth() / 2) != 1 )
     return;
 
-  if( _d->lastDate.getMonthToDate( GameDate::current() ) > 0 )
+  if( _d->lastDate.monthsTo( GameDate::current() ) > 0 )
   {
     _d->lastDate = GameDate::current();
     _d->parishionersCount = 0;
@@ -109,7 +109,7 @@ void CultureRating::update( const unsigned int time )
     _d->libraryVisitors = 0;
     _d->schoolVisitors = 0;
     _d->collegeVisitors = 0;
-    int cityPopulation = _city.getPopulation();
+    int cityPopulation = _city.population();
 
     Helper helper( &_city );
 

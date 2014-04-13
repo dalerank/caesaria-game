@@ -242,7 +242,7 @@ void Game::setScreenMenu()
       Logger::warning( "screen menu: end loading map" );
 
       city::BuildOptions bopts;
-      bopts = _d->city->getBuildOptions();
+      bopts = _d->city->buildOptions();
       bopts.setGroupAvailable( BM_MAX, true );
       _d->city->setBuildOptions( bopts );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;

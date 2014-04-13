@@ -62,7 +62,7 @@ public:
 
     int equale( const DateTime& b );
 
-    int getMonthToDate( const DateTime& end ) const;
+    int monthsTo( const DateTime& end ) const;
 
     DateTime& appendMonth( int month=1 );
     DateTime& appendWeek( int weekNumber=1 );

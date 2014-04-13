@@ -71,7 +71,7 @@ void Info::update( const unsigned int time )
 
     Parameters& last = _d->params.back();
     last.date = _d->lastDate;
-    last.population = _city.getPopulation();
+    last.population = _city.population();
     last.funds = _city.funds().treasury();
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
 

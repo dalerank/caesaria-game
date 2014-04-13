@@ -42,7 +42,7 @@ void Venus::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
 
-  int monthFromLastAction = _lastActionDate.getMonthToDate( GameDate::current() );
+  int monthFromLastAction = _lastActionDate.monthsTo( GameDate::current() );
   if( relation() < 1 && monthFromLastAction > 10 )
   {
     _lastActionDate = GameDate::current();

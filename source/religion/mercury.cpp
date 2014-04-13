@@ -43,7 +43,7 @@ void Mercury::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
 
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
+  if( relation() < 1 && _lastActionDate.monthsTo( GameDate::current() ) > 10 )
   {
     _lastActionDate = GameDate::current();
     _wrath( city );

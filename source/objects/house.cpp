@@ -776,7 +776,7 @@ std::string House::troubleDesc() const
   return ret;
 }
 
-bool House::isCheckedDesirability() const {  return _city()->getBuildOptions().isCheckDesirability(); }
+bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCheckDesirability(); }
 
 void House::save( VariantMap& stream ) const
 {

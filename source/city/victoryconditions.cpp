@@ -15,14 +15,14 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "win_targets.hpp"
+#include "victoryconditions.hpp"
 #include "objects/house_level.hpp"
 #include "core/variant.hpp"
 
 namespace city
 {
 
-class WinTargets::Impl
+class VictoryConditions::Impl
 {
 public:
   int maxHouseLevel;
@@ -39,7 +39,7 @@ public:
               newTitle;
 };
 
-WinTargets::WinTargets() : _d( new Impl )
+VictoryConditions::VictoryConditions() : _d( new Impl )
 {
   _d->success = false;
   _d->maxHouseLevel = 30;
@@ -50,12 +50,12 @@ WinTargets::WinTargets() : _d( new Impl )
   _d->peace = 0;
 }
 
-WinTargets::~WinTargets()
+VictoryConditions::~VictoryConditions()
 {
 
 }
 
-bool WinTargets::isSuccess( int culture, int prosperity,
+bool VictoryConditions::isSuccess( int culture, int prosperity,
                                 int favour, int peace,
                                 int population ) const
 {
@@ -69,7 +69,7 @@ bool WinTargets::isSuccess( int culture, int prosperity,
   return _d->success;
 }
 
-void WinTargets::load( const VariantMap& stream )
+void VictoryConditions::load( const VariantMap& stream )
 {
   _d->maxHouseLevel = HouseSpecHelper::instance().getHouseLevel( stream.get( "maxHouseLevel" ).toString() );
   _d->success = stream.get( "success" ).toBool();
@@ -85,7 +85,7 @@ void WinTargets::load( const VariantMap& stream )
   _d->newTitle = stream.get( "title" ).toString();
 }
 
-VariantMap WinTargets::save() const
+VariantMap VictoryConditions::save() const
 {
   VariantMap ret;
   ret[ "success" ] = _d->success;
@@ -103,7 +103,7 @@ VariantMap WinTargets::save() const
   return ret;
 }
 
-WinTargets&WinTargets::operator=(const WinTargets& a)
+VictoryConditions&VictoryConditions::operator=(const VictoryConditions& a)
 {
   _d->maxHouseLevel = a._d->maxHouseLevel;
   _d->success = a._d->success;
@@ -121,14 +121,14 @@ WinTargets&WinTargets::operator=(const WinTargets& a)
   return *this;
 }
 
-int WinTargets::needCulture() const{  return _d->culture;}
-int WinTargets::needProsperity() const{  return _d->prosperity;}
-int WinTargets::needFavour() const{  return _d->favour;}
-int WinTargets::needPeace() const{  return _d->peace;}
-std::string WinTargets::getShortDesc() const {  return _d->shortDesc;}
-std::string WinTargets::getNextMission() const { return _d->nextMission; }
-std::string WinTargets::getNewTitle() const { return _d->newTitle; }
-int WinTargets::needPopulation() const{  return _d->population;}
-const StringArray& WinTargets::getOverview() const{  return _d->overview;}
+int VictoryConditions::needCulture() const{  return _d->culture;}
+int VictoryConditions::needProsperity() const{  return _d->prosperity;}
+int VictoryConditions::needFavour() const{  return _d->favour;}
+int VictoryConditions::needPeace() const{  return _d->peace;}
+std::string VictoryConditions::getShortDesc() const {  return _d->shortDesc;}
+std::string VictoryConditions::getNextMission() const { return _d->nextMission; }
+std::string VictoryConditions::getNewTitle() const { return _d->newTitle; }
+int VictoryConditions::needPopulation() const{  return _d->population;}
+const StringArray& VictoryConditions::getOverview() const{  return _d->overview;}
 
 }//end namespace city

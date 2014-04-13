@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "city.hpp"
 #include "request.hpp"
@@ -77,7 +79,7 @@ bool RqGood::isReady( PlayerCityPtr city ) const
     return true;
   }
 
-  if( !_d->alsoRemind && (_startDate.getMonthToDate( GameDate::current() ) > 12) )
+  if( !_d->alsoRemind && (_startDate.monthsTo( GameDate::current() ) > 12) )
   {
     const_cast<RqGood*>( this )->_d->alsoRemind = true;
 

@@ -15,6 +15,10 @@
 
 #include "gamedate.hpp"
 
+namespace {
+  unsigned int tickInDay = 25;
+}
+
 DateTime GameDate::current() {  return instance()._current; }
 
 GameDate& GameDate::instance()
@@ -23,7 +27,7 @@ GameDate& GameDate::instance()
   return inst;
 }
 
-unsigned int GameDate::ticksInMonth() {  return 500; }
+unsigned int GameDate::ticksInMonth() { return 500; }
 
 void GameDate::timeStep( unsigned int time )
 {

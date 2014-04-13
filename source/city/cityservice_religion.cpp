@@ -142,7 +142,7 @@ void Religion::Impl::updateRelation(PlayerCity& city, DivinityPtr divn)
     }
   }
 
-  float faithIncome = (float)peopleReached / (float)(city.getPopulation()+1);
+  float faithIncome = (float)peopleReached / (float)(city.population()+1);
   Impl::TempleInfo& myTemples = templesCoverity[ divn ];
 
   float faithAddiction = 0;

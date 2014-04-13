@@ -33,14 +33,14 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
 
-  DateTime getLastFestivalDate() const;
-  DateTime getNextFestivalDate() const;
+  DateTime lastFestivalDate() const;
+  DateTime nextFestivalDate() const;
   void assignFestival( religion::RomeDivinityType name , int size);
 
-  void update( const unsigned int time );
+  virtual void update( const unsigned int time );
 
-  VariantMap save() const;
-  void load( VariantMap stream );
+  virtual VariantMap save() const;
+  virtual void load( VariantMap stream );
 
 private:
   Festival( PlayerCityPtr city );

@@ -37,7 +37,7 @@ void RandomDamage::_exec( Game& game, unsigned int time )
 {
   if( time % GameDate::ticksInMonth() == 0 && !_isDeleted )
   {
-    int population = game.city()->getPopulation();
+    int population = game.city()->population();
     if( population > _minPopulation && population < _maxPopulation )
     {
       _isDeleted = true;

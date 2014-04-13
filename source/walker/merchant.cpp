@@ -220,7 +220,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       {
         city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
 
-        city::TradeOptions& options = city->getTradeOptions();
+        city::TradeOptions& options = city->tradeOptions();
         GoodStore& whStore = warehouse->store();
         //try buy goods
         for( int n = Good::wheat; n<Good::goodCount; ++n )
