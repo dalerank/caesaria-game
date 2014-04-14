@@ -59,7 +59,7 @@ public:
 	virtual CloseMode getCloseHandling() const;
 
 	//! Returns amount of menu items
-	virtual unsigned int getItemCount() const;
+	virtual unsigned int itemCount() const;
 
 	//! Adds a menu item.
   virtual ContextMenuItem* addItem( const std::string& text, int commandid,
@@ -77,7 +77,7 @@ public:
 	virtual void addSeparator();
 
 	//! Returns text of the menu item.
-	virtual ContextMenuItem* getItem( unsigned int idx ) const;
+	virtual ContextMenuItem* item( unsigned int idx ) const;
 
 	//! Sets text of the menu item.
 	virtual void updateItems();
@@ -95,9 +95,9 @@ public:
 	virtual void draw( gfx::Engine& painter );
 
 	//! Returns the selected item in the menu
-  virtual int getSelectedIndex() const;
+	virtual int selected() const;
 
-  virtual ContextMenuItem* getSelectedItem() const;
+	virtual ContextMenuItem* selectedItem() const;
 
 	//! Sets the visible state of this element.
 	virtual void setVisible( bool visible );
@@ -117,27 +117,27 @@ public:
 
 	float getOpacity( unsigned int index=0 ) const;
 
-	int getHoveredIndex() const;
+	int hovered() const;
 
 oc3_signals public:
   virtual Signal1<int>& onItemAction();
 	
 protected:
-	void setHoverIndex_( int index );
+	void _setHovered( int index );
 
-	void closeAllSubMenus_();
-	bool hasOpenSubMenu_() const;
+	void _closeAllSubMenus();
+	bool _hasOpenSubMenu() const;
 
-	virtual void recalculateSize_();
+	virtual void _recalculateSize();
 
 	//! returns true, if an element was highlighted
-	virtual bool isHighlighted_(const Point& p, bool canOpenSubMenu);
+	virtual bool _isHighlighted(const Point& p, bool canOpenSubMenu);
 
 	//! sends a click Returns:
 	//! 0 if click went outside of the element,
 	//! 1 if a valid button was clicked,
 	//! 2 if a nonclickable element was clicked
-	virtual unsigned int sendClick_(const Point& p);
+	virtual unsigned int _sendClick(const Point& p);
 	
 	void setItemVisible( unsigned int index, bool visible );
 
