@@ -78,7 +78,7 @@
       adviser : { enabled : true }
     }
 
-    "enable_advisors#empire_options" : {
+    "enable_empire#empire_options" : {
       population : 600
       empire : { enabled : true }
     }

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_religion.hpp"
 #include "city/helper.hpp"
@@ -151,6 +153,11 @@ void Religion::update( const unsigned int time )
 
   if( GameDate::isMonthChanged() )
   {
+    int goddesRandom = math::random( 20 );
+    //only for trird, seven, ace event
+    if( !(goddesRandom == 3 || goddesRandom == 7 || goddesRandom == 11) )
+      return;
+
     DivinityList divinities = rome::Pantheon::instance().all();
 
     //check gods wrath and mood
@@ -190,6 +197,7 @@ void Religion::update( const unsigned int time )
       }
       randomGod = *it;
     }
+
 
     if( randomGod.isValid() )
     {

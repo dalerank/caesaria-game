@@ -42,7 +42,7 @@ public:
   virtual Service::Type serviceType() const { return _service; }
   virtual const gfx::Picture& picture() const { return _pic; }
   virtual float relation() const;
-  virtual float monthDecrease() const { return 1.f; }
+  virtual float monthDecrease() const { return 0.5f; }
   virtual void setEffectPoint( int value ) { _effectPoints = value; }
   virtual int wrathPoints() const { return _wrathPoints; }
   virtual DateTime lastFestivalDate() const { return _lastFestival; }

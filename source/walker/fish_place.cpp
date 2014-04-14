@@ -108,3 +108,8 @@ void FishPlace::send2city(TilePos pos)
     go();
   }
 }
+
+void FishPlace::_reachedPathway()
+{
+  deleteLater();
+}
