@@ -791,11 +791,6 @@ static char smk_render_palette(struct smk_video_t *s, unsigned char *p, unsigned
 			{
 				memcpy(&t[i],&s->palette[j],k);
 			}*/
-			/* smkmalloc already set t to 0 */
-			/* else
-			{
-				memset(&t[i],0,k);
-			} */
 			i += k;
 			j += k;
 		}
@@ -824,14 +819,10 @@ static char smk_render_palette(struct smk_video_t *s, unsigned char *p, unsigned
 				goto error;
 			}
 
-			/*if (s->palette)
+			if (s->palette)
 			{
 				memcpy(&t[i],&s->palette[j],k);
-			}*/
-			/* else
-			{
-				memset(&t[i],0,k);
-			} */
+			}
 			i += k;
 			j += k;
 		}
