@@ -26,7 +26,7 @@ class EmperorGiftWindow : public Widget
 {
 public:
   EmperorGiftWindow( Widget* parent, int money );
-  ~EmperorGiftWindow();
+  virtual ~EmperorGiftWindow();
 
 public oc3_signals:
   Signal1<int>& onSendGift();

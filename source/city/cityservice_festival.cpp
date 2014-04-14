@@ -122,13 +122,13 @@ VariantMap Festival::save() const
   return ret;
 }
 
-void Festival::load(VariantMap stream)
+void Festival::load( const VariantMap& stream)
 {
-  _d->lastFestivalDate = stream[ "lastDate" ].toDateTime();
-  _d->prevFestivalDate = stream[ "prevDate" ].toDateTime();
-  _d->festivalDate = stream[ "nextDate" ].toDateTime();
-  _d->divinity = (RomeDivinityType)stream[ "divinity" ].toInt();
-  _d->festivalType = (int)stream[ "festival" ];
+  _d->lastFestivalDate = stream.get( "lastDate" ).toDateTime();
+  _d->prevFestivalDate = stream.get( "prevDate" ).toDateTime();
+  _d->festivalDate = stream.get( "nextDate" ).toDateTime();
+  _d->divinity = (RomeDivinityType)stream.get( "divinity" ).toInt();
+  _d->festivalType = (int)stream.get( "festival" );
 }
 
 }//end namespace city

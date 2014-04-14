@@ -56,7 +56,7 @@
     btnSend#PushButton : {
       geometry : [ 80, "ph-35", 240, "ph-15" ] 
       font : "FONT_2"
-      text : "##send_money##"      
+      text : "##give_money##"
       bgtype : "whiteBorderUp"
     }
     

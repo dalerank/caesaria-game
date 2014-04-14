@@ -33,6 +33,7 @@
 #include "texturedbutton.hpp"
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
+#include "listbox.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -113,10 +114,9 @@ void TopMenu::Impl::updateDate()
 void TopMenu::Impl::showAboutInfo()
 {
   Widget* parent = lbDate->getEnvironment()->rootWidget();
-  Label* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  bg->setupUI( GameSettings::rcpath( "/gui/about.gui" ) );
   bg->setCenter( parent->center() );
-  bg->setText( _("##about_caesaria_game##") );
-  bg->setTextAlignment( alignCenter, alignCenter );
 
   TexturedButton* btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   WidgetEscapeCloser::insertTo( bg );

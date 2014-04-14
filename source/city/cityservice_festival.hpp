@@ -40,7 +40,7 @@ public:
   virtual void update( const unsigned int time );
 
   virtual VariantMap save() const;
-  virtual void load( VariantMap stream );
+  virtual void load(const VariantMap& stream );
 
 private:
   Festival( PlayerCityPtr city );

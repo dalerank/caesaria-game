@@ -31,7 +31,7 @@ class AdvisorReligionWindow : public Widget
 public:
   AdvisorReligionWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
 
 private:
   class Impl;

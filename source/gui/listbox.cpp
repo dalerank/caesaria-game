@@ -668,16 +668,6 @@ void ListBox::_recalculateScrollPos()
 void ListBox::setAutoScrollEnabled(bool scroll) {	setFlag( autoscroll, scroll );}
 bool ListBox::isAutoScrollEnabled() const{	return isFlag( autoscroll );}
 
-void ListBox::save(VariantMap& out) const
-{
-
-}
-
-void ListBox::load(const VariantMap& in)
-{
-
-}
-
 void ListBox::setItem(unsigned int index, std::string text)
 {
   if ( index >= _d->items.size() )
@@ -687,7 +677,6 @@ void ListBox::setItem(unsigned int index, std::string text)
   _d->needItemsRepackTextures = true;
   _d->recalculateItemHeight( _d->font, height() );
 }
-
 
 //! Insert the item at the given index
 //! Return the index on success or -1 on failure.

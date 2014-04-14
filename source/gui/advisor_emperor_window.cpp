@@ -114,7 +114,6 @@ class AdvisorEmperorWindow::Impl
 {
 public:
   PlayerCityPtr city;
-  PictureRef background;
   gui::Label* lbEmperorFavour;
   gui::Label* lbEmperorFavourDesc;
   gui::Label* lbPost;
@@ -165,7 +164,6 @@ void AdvisorEmperorWindow::_showGiftWindow()
 void AdvisorEmperorWindow::_updateRequests()
 {
   Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
-  PictureDecorator::draw( *_d->background, reqsRect, PictureDecorator::blackFrame );
 
   List<RequestButton*> btns = findChildren<RequestButton*>();
   foreach( btn, btns )
@@ -184,7 +182,8 @@ void AdvisorEmperorWindow::_updateRequests()
   if( reqs.empty() )
   {
     Label* lb = new Label( this, reqsRect, _("##have_no_requests##") );
-    lb->setTextAlignment( alignCenter, alignCenter );
+    lb->setWordwrap( true );
+    lb->setTextAlignment( alignUpperLeft, alignCenter );
   }
   else
   {
@@ -210,30 +209,27 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
   _d->city = city;
   _d->isRequestsUpdated = true;
 
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-               Size( 640, 432 ) ) );
+  setupUI( GameSettings::rcpath( "/gui/emperoropts.gui") );
+  setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
+  gui::Label* title = findChildA<Label*>( "lbTitle", true, this );
   title->setText( city->player()->name() );
-  title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignCenter, alignCenter );
 
-  _d->background.reset( Picture::create( size() ) );
-  //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  _d->lbEmperorFavour = findChildA<Label*>( "lbEmperorFavour", true, this );
+  if( _d->lbEmperorFavour )
+    _d->lbEmperorFavour->setText( StringHelper::format( 0xff, "%s %d", _("##advemp_emperor_favour##"), _d->city->favour() ) );
 
-  //buttons _d->_d->background  
-  PictureDecorator::draw( *_d->background, Rect( 66, 325, 66 + 510, 325 + 94 ), PictureDecorator::blackFrame );
-  
-  _d->lbEmperorFavour = new gui::Label( this, Rect( Point( 58, 44 ), Size( 550, 20 ) ), StringHelper::format( 0xff, "%s %d", "##advemp_emperor_favour##", _d->city->favour() ) );
-  _d->lbEmperorFavourDesc = new gui::Label( this, _d->lbEmperorFavour->getRelativeRect() + Point( 0, 20 ), _d->getEmperorFavourStr() );
+  _d->lbEmperorFavourDesc = findChildA<Label*>( "lbEmperorFavourDesc", true, this );
+  if( _d->lbEmperorFavourDesc )
+    _d->lbEmperorFavourDesc->setText( _d->getEmperorFavourStr() );
 
-  _d->lbPost = new gui::Label( this, Rect( Point( 70, 336 ), Size( 240, 26 ) ), "Post");
-  _d->lbPrimaryFunds = new gui::Label( this, Rect( Point( 70, 370 ), Size( 240, 20 ) ), "PrimaryFunds 0" );
+  _d->lbPost = findChildA<Label*>( "lbPost", true, this );
+  _d->lbPrimaryFunds = findChildA<Label*>( "lbPrimaryFunds", true, this );
 
-  _d->btnSendGift = new PushButton( this, Rect( Point( 322, 343), Size( 250, 20 ) ), "Send gift", -1, false, PushButton::blackBorderUp );
-  _d->btnSend2City = new PushButton( this, Rect( Point( 322, 370), Size( 250, 20 ) ), "Send to city", -1, false, PushButton::blackBorderUp );
-  _d->btnChangeSalary = new PushButton( this, Rect( Point( 70, 395), Size( 500, 20 ) ), "Change salary", -1, false, PushButton::blackBorderUp );  
+  _d->btnSendGift = findChildA<PushButton*>( "btnSendGift", true, this );
+  _d->btnSend2City = findChildA<PushButton*>( "btnSend2City", true, this );
+  _d->btnChangeSalary = findChildA<PushButton*>( "btnChangeSalary", true, this );
+
   CONNECT( _d->btnChangeSalary, onClicked(), this, AdvisorEmperorWindow::_showChangeSalaryWindow );
   CONNECT( _d->btnSend2City, onClicked(), this, AdvisorEmperorWindow::_showSend2CityWindow );
   CONNECT( _d->btnSendGift, onClicked(), this, AdvisorEmperorWindow::_showGiftWindow );
@@ -244,7 +240,6 @@ void AdvisorEmperorWindow::draw(gfx::Engine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
   if( _d->isRequestsUpdated )
   {
     _updateRequests();

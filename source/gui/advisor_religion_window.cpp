@@ -72,11 +72,19 @@ public:
       font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
       font.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
       font.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
-      font.draw( *texture, _divinity->moodDescription(), 420, 0 );
+
+      int xOffset = 400, k=0;
+      Picture pic = Picture::load( ResourceGroup::panelBackground, 334 );
+      for( k; k < _divinity->wrathPoints() / 15; k++ )
+      {
+        texture->draw( pic, Point( xOffset + k * 15, 0), false );
+      }
+
+      font.draw( *texture, _divinity->moodDescription(), xOffset + k * 15, 0 );
     }
     else
     {
-      font.draw( *texture, _("##Oracles_in_city##"), 0, 0 );
+      font.draw( *texture, _("##oracles_in_city##"), 0, 0 );
       font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
     }
   }
@@ -128,8 +136,8 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 280 ) ) );
 
-  Label* title = new Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
-  title->setText( _("##Religion advisor##") );
+  Label* title = new Label( this, Rect( 60, 10, 60 + 280, 10 + 40) );
+  title->setText( _("##religion_advisor##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
@@ -140,14 +148,14 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   //buttons _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( 35, 62, width() - 35, 62 + 130 ), PictureDecorator::blackFrame );
 
-  Picture& icon = Picture::load( ResourceGroup::panelBackground, 264 );
+  Picture icon = Picture::load( ResourceGroup::panelBackground, 264 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##Temples##"), 268, 32, false );
+  font.draw( *_d->background, _("##temples##"), 268, 32, false );
   font.draw( *_d->background, _("##small##"), 240, 47, false );
   font.draw( *_d->background, _("##large##"), 297, 47, false );
-  font.draw( *_d->background, _("##Fest.##"), 370, 47, false );
+  font.draw( *_d->background, _("##test_t##"), 370, 47, false );
   font.draw( *_d->background, _("##rladv_mood##"), 450, 47, false );
 
   Point startPoint( 42, 65 );

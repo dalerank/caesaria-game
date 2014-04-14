@@ -87,12 +87,6 @@ public:
   //! returns true if automatic scrolling is enabled, false if not.
   virtual bool isAutoScrollEnabled() const;
 
-  //! Writes attributes of the element.
-  virtual void save( VariantMap& out ) const;
-
-  //! Reads attributes of the element
-  virtual void load( const VariantMap& in );
-
   //! clear all item colors at index
   virtual void resetItemOverrideColor(unsigned int index);
 
