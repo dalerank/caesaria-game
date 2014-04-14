@@ -124,14 +124,7 @@ void WorkingBuilding::_updateAnimation( const unsigned int time )
       if( _animationRef().isStopped() )
       {
         _animationRef().start();
-      }
-
-      _animationRef().update( time );
-      const Picture& pic = _animationRef().currentFrame();
-      if( pic.isValid() )
-      {
-         _fgPicturesRef().back() = _animationRef().currentFrame();
-      }
+      }      
     }
     else
     {
@@ -145,6 +138,13 @@ void WorkingBuilding::_updateAnimation( const unsigned int time )
        _animationRef().stop();
       }
     }
+  }
+
+  _animationRef().update( time );
+  const Picture& pic = _animationRef().currentFrame();
+  if( pic.isValid() )
+  {
+     _fgPicturesRef().back() = _animationRef().currentFrame();
   }
 }
 

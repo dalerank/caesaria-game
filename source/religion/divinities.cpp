@@ -110,7 +110,7 @@ float RomeDivinity::relation() const
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
   int minMoodbyPop = 50 - math::clamp( city->population() / 10, 0, 50 );
-  _needRelation = math::clamp<float>( _needRelation + (income - monthDecrease()), minMoodbyPop, 100 );
+  _needRelation = math::clamp<float>( _needRelation + (income - monthDecrease())/4.f, minMoodbyPop, 100 );
 
   _relation += math::signnum( (_needRelation + _effectPoints) - _relation );
 

@@ -222,7 +222,7 @@ void Religion::Impl::updateRelation( PlayerCity& city, DivinityPtr divn )
   Logger::warning( "Religion: faith income for %s is %f[r=%f]", divn->name().c_str(), faithIncome, divn->relation() );
   divn->updateRelation( faithIncome, &city );
 
-  if( divn->relation() < 30 && lastMessageDate.daysTo( GameDate::current() ) > 6 )
+  if( divn->relation() < 30 && lastMessageDate.monthsTo( GameDate::current() ) > 6 )
   {
     lastMessageDate = GameDate::current();
     std::string text = divn->relation() < 10 ? "##gods_wrathful_text##" : "##gods_unhappy_text##";

@@ -345,7 +345,7 @@ Warehouse::Warehouse() : WorkingBuilding( constants::building::warehouse, Size( 
 {
    // _name = _("Entrepot");
   setPicture( ResourceGroup::warehouse, 19 );
-  _fgPicturesRef().resize(12);  // 8 tiles + 4
+  _fgPicturesRef().resize(12+1);  // 8 tiles + 4 + 1 animation slot
 
   _animationRef().load( ResourceGroup::warehouse, 2, 16 );
   _animationRef().setDelay( 4 );

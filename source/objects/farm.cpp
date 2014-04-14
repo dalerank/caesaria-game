@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "farm.hpp"
 #include "core/position.hpp"
@@ -128,7 +130,7 @@ void Farm::init()
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
 
-  _fgPicturesRef().resize(5);
+  _fgPicturesRef().resize(5+1);
   computePictures();
 }
 
@@ -168,6 +170,12 @@ void Farm::timeStep(const unsigned long time)
   {
     computePictures();
   }
+}
+
+void Farm::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Factory::build( city, pos );
+  computePictures();
 }
 
 void Farm::save( VariantMap& stream ) const
