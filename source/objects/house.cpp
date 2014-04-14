@@ -195,7 +195,7 @@ void House::_checkEvolve()
 void House::_updateTax()
 {
   _d->taxCheckInterval = GameDate::current();
-  float cityTax = _city()->funds().getTaxRate() / 100.f;
+  float cityTax = _city()->funds().taxRate() / 100.f;
   appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear) );
 }
 

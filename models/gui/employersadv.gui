@@ -6,6 +6,11 @@
     geometryf : [ 0.0, 0.0, 1, 1 ]
     bgtype : "whiteFrame"
     
+    lbIcon#Label : {
+      geometry : [ 10, 10, 50, 50 ]
+      image : "paneling_00255"
+    }
+
     lbBlackframe#Label : {
       geometry : [ 32, 70, 608, 308 ]
       bgtype : "blackFrame"
@@ -28,7 +33,7 @@
         text : "##advemployer_panel_salary##"    
       }
       
-      btnIncreaseSalary#TexturedButton : {
+      btnDecreaseSalary#TexturedButton : {
         geometry : [ 96, 4, 120, 28 ]
         normal : [ "paneling", 601 ]
         hovered : [ "paneling", 602 ]
@@ -36,7 +41,7 @@
         disabled : [ "paneling", 301 ]
       }
       
-      btnDecreaseSalary#TexturedButton : {
+      btnIncreaseSalary#TexturedButton : {
         geometry : [ 120, 4, 144, 28 ] 
         normal : [ "paneling", 605 ]
         hovered : [ "paneling", 606 ]

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_employers_window.hpp"
 #include "gfx/decorator.hpp"
@@ -30,6 +32,7 @@
 #include "objects/constants.hpp"
 #include "objects/working.hpp"
 #include "city/statistic.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -161,14 +164,15 @@ void AdvisorEmployerWindow::Impl::updateYearlyWages()
 
 void AdvisorEmployerWindow::Impl::changeSalary(int relative)
 {
-  int currentSalary = city->funds().getWorkerSalary();
+  int currentSalary = city->funds().workerSalary();
   city->funds().setWorkerSalary( currentSalary+relative );
   updateSalaryLabel();
+  updateYearlyWages();
 }
 
 void AdvisorEmployerWindow::Impl::updateSalaryLabel()
 {
-  int pay = 30;
+  int pay = city->funds().workerSalary();
   int romePay = city->empire()->getWorkerSalary();
   std::string salaryString = StringHelper::format( 0xff, "%s %d (%s %d)",
                                                    _("##advemployer_panel_denaries##"), pay,
@@ -233,6 +237,11 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
   setPosition( Point( (parent->width() - width()) / 2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
+
+  TexturedButton* btnIncrease = findChildA<TexturedButton*>( "btnIncreaseSalary", true, this );
+  TexturedButton* btnDecrease = findChildA<TexturedButton*>( "btnDecreaseSalary", true, this );
+  CONNECT( btnIncrease, onClicked(), _d.data(), Impl::increaseSalary );
+  CONNECT( btnDecrease, onClicked(), _d.data(), Impl::decreaseSalary );
 
   //buttons _d->_d->background
   Point startPos = Point( 32, 70 ) + Point( 8, 8 );

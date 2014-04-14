@@ -87,9 +87,9 @@ void Info::update( const unsigned int time )
 
     last.needWorkers = city::Statistic::getVacantionsNumber( &_city );
     last.workless = city::Statistic::getWorklessPercent( &_city );
-    last.payDiff = _city.empire()->getWorkerSalary() - _city.funds().getWorkerSalary();
-    last.tax = _city.funds().getTaxRate();
-    last.cityWages = _city.funds().getWorkerSalary();
+    last.payDiff = _city.empire()->getWorkerSalary() - _city.funds().workerSalary();
+    last.tax = _city.funds().taxRate();
+    last.cityWages = _city.funds().workerSalary();
     last.romeWages = _city.empire()->getWorkerSalary();
   }
 }

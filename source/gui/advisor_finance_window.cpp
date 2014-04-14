@@ -116,7 +116,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   _d->drawReportRow( startPoint + offset * 11, _("##Credit##"), city::Funds::credit );
 
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 12, _("##Profit##"), city::Funds::profit );
+  _d->drawReportRow( startPoint + offset * 12, _("##Profit##"), city::Funds::cityProfit );
   
   startPoint += Point( 0, 6 );
   _d->drawReportRow( startPoint + offset * 13, _("##Balance##"), city::Funds::balance );
@@ -154,7 +154,7 @@ void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()
 {
   int taxValue = calculateTaxValue();
   std::string strCurretnTax = StringHelper::format( 0xff, "%d%% %s %d %s",
-                                                    city->funds().getTaxRate(), _("##may_collect_about##"),
+                                                    city->funds().taxRate(), _("##may_collect_about##"),
                                                     taxValue, _("##denaries##") );
   lbTaxRateNow->setText( strCurretnTax );
 }
@@ -166,7 +166,7 @@ int AdvisorFinanceWindow::Impl::calculateTaxValue()
   HouseList houses = helper.find<House>( building::house );
 
   float taxValue = 0.f;
-  float taxRate = city->funds().getTaxRate();
+  float taxRate = city->funds().taxRate();
   foreach( house, houses )
   {
     int maxhb = (*house)->getMaxHabitants();

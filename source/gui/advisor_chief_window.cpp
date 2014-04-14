@@ -129,7 +129,7 @@ void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
 void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
 {
   std::string text;
-  int profit = city->funds().getProfit();
+  int profit = city->funds().profit();
   if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
   else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
 
@@ -151,7 +151,8 @@ void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
 
 void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
 {
-  SmartPtr< city::Info > info = ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ) );
+  city::InfoPtr info;
+  info << city->findService( city::Info::getDefaultName() );
 
   std::string text = _("##food_stock_unknown_reason##");
   if( info.isValid() )
@@ -174,7 +175,8 @@ void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
 void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
 {
   std::string text;
-  SmartPtr< city::Info > info = ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ));
+  city::InfoPtr info;
+  info << ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ));
 
   switch( info->getLast().foodKoeff )
   {

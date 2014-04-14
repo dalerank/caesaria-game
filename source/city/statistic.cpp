@@ -79,7 +79,7 @@ unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
 
   //wages all worker in year
   //workers take salary in sestertius 1/100 part of dinarius
-  int wages = workersNumber * city->funds().getWorkerSalary() / 100;
+  int wages = workersNumber * city->funds().workerSalary() / 100;
 
   wages = std::max<int>( wages, 1 );
 
