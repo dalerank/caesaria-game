@@ -332,13 +332,11 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
 
 	// get number of open submenu
 	int openmenu = -1;
-	int i;
-	for (i=0; i<(int)_d->items.size(); ++i)
+	foreach( it, _d->items )
 	{
-		ContextMenuItem* rItem = _d->items[i];
-		if( rItem->isEnabled() && rItem->getSubMenu() && rItem->getSubMenu()->isVisible() )
+		if( (*it)->isEnabled() && (*it)->getSubMenu() && (*it)->getSubMenu()->isVisible() )
 		{
-			openmenu = i;
+			openmenu = std::distance( _d->items.begin(), it );
 			break;
 		}
 	}
@@ -361,11 +359,11 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
 
 	// highlight myself
   _d->lastHighlihted = -1;
-  for(i=0; i<(int)_d->items.size(); ++i)
+  foreach( it, _d->items )
 	{		
-		if (_d->items[i]->isEnabled() && _d->items[i]->absoluteRect().isPointInside( p ))
+		if ( (*it)->isEnabled() && (*it)->absoluteRect().isPointInside( p ))
 		{
-			_d->highlihted = i;
+			_d->highlihted = std::distance( _d->items.begin(), it );
       _d->changeTime = DateTime::elapsedTime();
 
 			// make submenus visible/invisible

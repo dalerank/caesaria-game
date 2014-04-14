@@ -139,6 +139,27 @@ unsigned int Statistic::getFoodProducing(PlayerCityPtr city)
   return foodProducing;
 }
 
+unsigned int Statistic::getTaxValue(PlayerCityPtr city)
+{
+  HouseList houses;
+  houses << city->overlays();
+
+  float taxValue = 0.f;
+  float taxRate = city->funds().taxRate();
+  foreach( house, houses )
+  {
+    int maxhb = (*house)->getMaxHabitants();
+    if( maxhb == 0 )
+      continue;
+
+    int maturehb = (*house)->getHabitants().count( CitizenGroup::mature );
+    int housetax = (*house)->getSpec().taxRate();
+    taxValue += housetax * maturehb * taxRate / maxhb;
+  }
+
+  return taxValue;
+}
+
 Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)
 {
   Helper helper( city );
