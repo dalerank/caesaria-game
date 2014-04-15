@@ -225,7 +225,11 @@ void Religion::load(const VariantMap& stream)
 void Religion::Impl::updateRelation( PlayerCity& city, DivinityPtr divn )
 {
   Impl::CoverageInfo& myTemples = templesCoverity[ divn ];
-  int faithValue = 100 * myTemples.parishionerNumber / (city.population()+1);
+  int faithValue = 0;
+  if( city.population() > 0 )
+  {
+    faithValue = 100 * myTemples.parishionerNumber / city.population();
+  }
 
   Logger::warning( "Religion: set faith income for %s is %f[r=%f]", divn->name().c_str(), faithValue, divn->relation() );
   divn->updateRelation( faithValue, &city );

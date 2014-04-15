@@ -91,12 +91,12 @@ public:
   LegionEmblem emblem;
 };
 
-FortLegionnaire::FortLegionnaire() : Fort( building::fortLegionaire, 16 )
+FortLegionary::FortLegionary() : Fort( building::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
 }
 
-void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
+void FortLegionary::build(PlayerCityPtr city, const TilePos& pos)
 {
   Fort::build( city, pos );
 
@@ -113,7 +113,7 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
   }
 }
 
-void FortLegionnaire::_readyNewSoldier()
+void FortLegionary::_readyNewSoldier()
 {
   RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
 
@@ -139,6 +139,11 @@ FortMounted::FortMounted() : Fort( constants::building::fortMounted, 15 )
 FortJaveline::FortJaveline() : Fort( building::fortJavelin, 14 )
 {
   setPicture( ResourceGroup::security, 12 );
+}
+
+void FortJaveline::_readyNewSoldier()
+{
+
 }
 
 class FortArea::Impl
