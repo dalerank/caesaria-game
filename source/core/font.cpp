@@ -19,6 +19,8 @@
 #include "exception.hpp"
 #include <SDL_ttf.h>
 #include "color.hpp"
+#include "vfs/directory.hpp"
+#include "core/messagebox.hpp"
 #include <map>
 
 using namespace gfx;
@@ -314,7 +316,9 @@ void FontCollection::addFont(const int key, const std::string& name, const std::
   TTF_Font* ttf = TTF_OpenFont(pathFont.c_str(), size);
   if( ttf == NULL )
   {
-    THROW("Cannot load font file:" << pathFont << ", error:" << TTF_GetError());
+    std::string errorStr = "Cannot load font file:" + pathFont.c_str() + "\n, error:" + TTF_GetError();
+    MessageBox::error( errorStr );
+    THROW( errorStr );
   }
 
   Font font0;
@@ -327,7 +331,9 @@ void FontCollection::addFont(const int key, const std::string& name, const std::
 
 void FontCollection::initialize(const std::string &resourcePath)
 {
-  std::string full_font_path = resourcePath + "/FreeSerif.ttf";
+  vfs::Directory resDir( resourcePath );
+  vfs::Path fontDir( "FreeSerif.ttf" );
+  vfs::Path full_font_path = resDir/fontDir;
 
   NColor black( 255, 0, 0, 0 );
   NColor red( 255, 160, 0, 0 );  // dim red
