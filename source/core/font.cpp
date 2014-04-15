@@ -316,8 +316,8 @@ void FontCollection::addFont(const int key, const std::string& name, const std::
   TTF_Font* ttf = TTF_OpenFont(pathFont.c_str(), size);
   if( ttf == NULL )
   {
-    std::string errorStr = "Cannot load font file:" + pathFont.c_str() + "\n, error:" + TTF_GetError();
-    MessageBox::error( errorStr );
+    std::string errorStr = "Cannot load font file:" + pathFont + "\n, error:" + TTF_GetError();
+    MessageBox::error( "Critical error", errorStr );
     THROW( errorStr );
   }
 
@@ -340,15 +340,15 @@ void FontCollection::initialize(const std::string &resourcePath)
   NColor white( 255, 215, 215, 215 );  // dim white
   NColor yellow( 255, 160, 160, 0 );
 
-  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      full_font_path, 12, black );
-  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      full_font_path, 16, black );
-  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),full_font_path, 16, white );
-  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  full_font_path, 16, red );
-  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      full_font_path, 18, black );
-  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  full_font_path, 18, red );
-  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),full_font_path, 18, white );
-  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), full_font_path, 18, yellow );
-  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path, 28, black);
+  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      full_font_path.toString(), 12, black );
+  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      full_font_path.toString(), 16, black );
+  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),full_font_path.toString(), 16, white );
+  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  full_font_path.toString(), 16, red );
+  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      full_font_path.toString(), 18, black );
+  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  full_font_path.toString(), 18, red );
+  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),full_font_path.toString(), 18, white );
+  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), full_font_path.toString(), 18, yellow );
+  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path.toString(), 28, black);
 }
 
 static StringArray _font_breakText(const std::string& text, const Font& f, int elWidth, bool RightToLeft )
