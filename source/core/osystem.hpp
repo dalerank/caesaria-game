@@ -15,15 +15,16 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MESSAGEBOX_INCLUDE_HPP__
-#define __CAESARIA_MESSAGEBOX_INCLUDE_HPP__
+#ifndef __CAESARIA_OSYSTEM_INCLUDE_HPP__
+#define __CAESARIA_OSYSTEM_INCLUDE_HPP__
 
 #include <string>
 
-class MessageBox
+class OSystem
 {
 public:
   static void error( const std::string& title, const std::string& text );
+  static void openUrl( const std::string& url );
 };
 
-#endif //__CAESARIA_MESSAGEBOX_INCLUDE_HPP__
+#endif //__CAESARIA_OSYSTEM_INCLUDE_HPP__

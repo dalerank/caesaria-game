@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "font.hpp"
 #include "gfx/picture.hpp"
@@ -20,7 +22,7 @@
 #include <SDL_ttf.h>
 #include "color.hpp"
 #include "vfs/directory.hpp"
-#include "core/messagebox.hpp"
+#include "core/osystem.hpp"
 #include <map>
 
 using namespace gfx;
@@ -317,7 +319,7 @@ void FontCollection::addFont(const int key, const std::string& name, const std::
   if( ttf == NULL )
   {
     std::string errorStr = "Cannot load font file:" + pathFont + "\n, error:" + TTF_GetError();
-    MessageBox::error( "Critical error", errorStr );
+    OSystem::error( "Critical error", errorStr );
     THROW( errorStr );
   }
 
