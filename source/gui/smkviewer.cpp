@@ -93,6 +93,9 @@ void SmkViewer::beforeDraw( gfx::Engine& painter )
 
 void SmkViewer::setFilename(const vfs::Path& path)
 {
+  if( !path.exist() )
+    return;
+
   _d->s = smk_open_file( path.toString().c_str(), SMK_MODE_MEMORY );
   if( _d->s != NULL )
   {

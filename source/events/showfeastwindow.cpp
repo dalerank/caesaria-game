@@ -53,7 +53,7 @@ void ShowFeastWindow::_exec(Game& game, unsigned int)
 {
   gui::GuiEnv* env = game.gui();
 
-  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "" );
+  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "/smk/Festival3_Glad.smk" );
   dlg->setText( _text );
   dlg->setTitle( _title );
   dlg->setReceiver( _receiver );
