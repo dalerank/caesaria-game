@@ -29,8 +29,8 @@ class Player : public Serializable, public ReferenceCounted
 public:
    static PlayerPtr create();
 
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+   virtual void save( VariantMap& stream) const;
+   virtual void load( const VariantMap& stream);
 
    void setName( const std::string& name );
    std::string name() const;

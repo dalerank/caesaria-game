@@ -65,7 +65,7 @@ void RomeSoldier::die()
   switch( type() )
   {
   case walker::legionary:
-    Corpse::create( _city(), pos(), ResourceGroup::citizen3, 705, 712 );
+    Corpse::create(_city(), this );
   break;
 
   default:

@@ -83,6 +83,8 @@ class FortMounted : public Fort
 {
 public:  
   FortMounted();
+
+  virtual void _readyNewSoldier();
 };
 
 class FortArea : public Building

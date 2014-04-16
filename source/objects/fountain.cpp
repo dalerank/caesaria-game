@@ -36,7 +36,7 @@ using namespace gfx;
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
                awesomeFountain=18, patricianFountain=26 } FontainConstant;
 
-Fountain::Fountain() : ServiceBuilding(Service::fontain, building::fountain, Size(1))
+Fountain::Fountain() : ServiceBuilding(Service::fountain, building::fountain, Size(1))
 {  
   //std::srand( DateTime::getElapsedTime() );
 

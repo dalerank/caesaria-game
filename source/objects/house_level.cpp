@@ -256,7 +256,7 @@ int HouseSpecification::computeWaterLevel(HousePtr house, std::string &oMissingR
 {
   // no water=0, well=1, fountain=2
   int res = 0;
-  if (house->hasServiceAccess(Service::fontain))
+  if (house->hasServiceAccess(Service::fountain))
   {
     res = 2;
   }

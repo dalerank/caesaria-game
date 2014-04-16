@@ -136,6 +136,24 @@ FortMounted::FortMounted() : Fort( constants::building::fortMounted, 15 )
   setPicture( ResourceGroup::security, 12 );
 }
 
+void FortMounted::_readyNewSoldier()
+{
+  RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::romeHorseman );
+
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getAroundTiles( this );
+
+  foreach( tile, tiles)
+  {
+    if( (*tile)->isWalkable( true ) )
+    {
+      soldier->send2city( this, (*tile)->pos() );
+      addWalker( soldier.object() );
+      return;
+    }
+  }
+}
+
 FortJaveline::FortJaveline() : Fort( building::fortJavelin, 14 )
 {
   setPicture( ResourceGroup::security, 12 );

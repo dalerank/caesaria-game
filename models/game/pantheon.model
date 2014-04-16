@@ -4,7 +4,7 @@
 		name : "Ceres",
 		shortDesc : "Fertility",
 		type : "goddess",
-		service : "srvc_temple_ceres",
+    service : "religionCeres",
     image : "picture1_00013"
     relation : 50
   },
@@ -14,7 +14,7 @@
 		name : "Mars",
 		shortDesc : "War",
 		type : "god",
-		service : "srvc_temple_mars",
+    service : "religionMars",
     image : "picture1_00012"
     relation : 50
 	},
@@ -24,7 +24,7 @@
 		name : "Neptune"
 		shortDesc : ""
 		type : "god",
-    service : "srvc_temple_neptune"
+    service : "religionNeptune"
     image : "picture1_00015"
     relation : 50
 	},
@@ -34,7 +34,7 @@
     name : "Venus"
 		shortDesc : ""
 		type : "goddes"
-    service : "srvc_temple_venus"
+    service : "religionVenus"
     image : "picture1_00011"
     relation : 50
 	},		
@@ -44,7 +44,7 @@
 		name : "Mercury"
 		shortDesc : ""
 		type : "god",
-		service : "srvc_temple_mercury"
+    service : "religionMercury"
     image : "picture1_00014"
     relation : 50
 	}
