@@ -176,19 +176,23 @@ void StartMenu::Impl::resolveCredits()
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
   lbx->addItem( "gathanase" );
   lbx->addItem( "gecube (gb12335@gmail.com)" );
+  lbx->addItem( "pecunia (pecunia@heavengames.com) game mechanics" );
   lbx->addItem( "tracertong" );
   lbx->addItem( "hellium" );
   lbx->addItem( "pufik6666" );
   lbx->addItem( "andreibranescu" );
   lbx->addItem( "AMDmi3 (amdmi3@amdmi3.ru)" );
-  lbx->addItem( "akuskis" );
+  lbx->addItem( "akuskis () aqueduct system" );
   lbx->addItem( "Rovanion" );
   lbx->addItem( "nickers (2nickers@gmail.com)" );
   lbx->addItem( "ImperatorPrime" );
   lbx->addItem( "veprbl" );
+  lbx->addItem( "ramMASTER" );
+  lbx->addItem( "Greg Kennedy(kennedy.greg@gmail.com) smk decoder" );
   gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
   testers.setTextAlignment( alignCenter, alignCenter );
   lbx->addItem( "Radek Liška" );
+  lbx->addItem( "Dimitrius" );
 
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
 }

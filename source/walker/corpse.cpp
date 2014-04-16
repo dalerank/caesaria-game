@@ -101,7 +101,7 @@ Corpse::Corpse( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
   _setType( walker::corpse );
 
   _d->time = 0;
-  _d->updateInterval = GameDate::ticksInMonth() / 20;
+  _d->updateInterval = GameDate::days2ticks( 1 );
   _d->loop = false;
 
   setName( _("##corpse##") );

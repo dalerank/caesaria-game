@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "layerbuild.hpp"
 #include "objects/aqueduct.hpp"
@@ -20,7 +22,6 @@
 #include "game/roadbuild_helper.hpp"
 #include "core/logger.hpp"
 #include "events/build.hpp"
-#include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "city/city.hpp"
 #include "core/event.hpp"
@@ -31,6 +32,7 @@
 #include "camera.hpp"
 #include "renderermode.hpp"
 #include "events/warningmessage.hpp"
+#include "city/funds.hpp"
 
 using namespace constants;
 
@@ -188,11 +190,17 @@ void LayerBuild::_buildAll()
 
   if( !cnstr.isValid() )
   {
-    Logger::warning( "No construction for build" );
+    Logger::warning( "LayerBuild: No construction for build" );
     return;
   }
 
-  bool buildOk = false;
+  if( _city()->funds().treasury() < -5000 )
+  {
+    events::GameEventPtr event = events::WarningMessageEvent::create( "##out_of_credit##" );
+    return;
+  }
+
+  bool buildOk = false;  
   foreach( it, d->buildTiles )
   {
     Tile* tile = *it;
@@ -209,7 +217,7 @@ void LayerBuild::_buildAll()
     std::string errorStr = cnstr->getError();
 
     events::GameEventPtr event = events::WarningMessageEvent::create( errorStr.empty()
-                                                                      ? _("##need_build_on_cleared_area##")
+                                                                      ? "##need_build_on_cleared_area##"
                                                                       : errorStr );
     event->dispatch();
   }

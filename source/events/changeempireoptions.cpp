@@ -54,7 +54,7 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
   Variant adv_enabled = adv_options.get( "enabled" );
   if( adv_enabled.isValid() )
   {
-    GameSettings::set( GameSettings::adviserEnabled, (bool)adv_enabled );
+    GameSettings::set( GameSettings::adviserEnabled, adv_enabled );
   }
 }
 

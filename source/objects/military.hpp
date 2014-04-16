@@ -60,10 +60,10 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-class FortLegionnaire : public Fort
+class FortLegionary : public Fort
 {
 public:  
-  FortLegionnaire();
+  FortLegionary();
 
   virtual void build(PlayerCityPtr city, const TilePos &pos);
 
@@ -75,6 +75,8 @@ class FortJaveline : public Fort
 {
 public:  
   FortJaveline();
+
+  virtual void _readyNewSoldier();
 };
 
 class FortMounted : public Fort

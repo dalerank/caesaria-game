@@ -25,15 +25,18 @@ class FishPlace : public Walker
 public:
   static FishPlacePtr create( PlayerCityPtr city );
 
-  ~FishPlace();
+  virtual ~FishPlace();
 
   virtual void timeStep(const unsigned long time);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual const gfx::Picture& getMainPicture();
   void send2city( TilePos pos );
+
+protected:
+  virtual void _reachedPathway();
+  virtual const gfx::Picture& getMainPicture();
 
 private:
   FishPlace( PlayerCityPtr city );

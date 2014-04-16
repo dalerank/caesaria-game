@@ -15,15 +15,36 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MESSAGEBOX_INCLUDE_HPP__
-#define __CAESARIA_MESSAGEBOX_INCLUDE_HPP__
+#include "updatecitysentiment.hpp"
+#include "game/game.hpp"
+#include "city/city.hpp"
+#include "city/cityservice_sentiment.hpp"
 
-#include <string>
-
-class MessageBox
+namespace events
 {
-public:
-  static void error( const std::string& title, const std::string& text );
-};
 
-#endif //__CAESARIA_MESSAGEBOX_INCLUDE_HPP__
+GameEventPtr UpdateCitySentiment::create( int value )
+{
+  UpdateCitySentiment* e = new UpdateCitySentiment();
+  e->_value = value;
+
+  GameEventPtr ret( e );
+  ret->drop();
+
+  return ret;
+}
+
+bool UpdateCitySentiment::_mayExec(Game&, unsigned int) const {  return true; }
+
+void UpdateCitySentiment::_exec(Game& game, unsigned int)
+{
+  PlayerCityPtr city = game.city();
+
+  SmartPtr<city::Sentiment> srvc = ptr_cast<city::Sentiment>( city->findService( city::Sentiment::getDefaultName() ) );
+  if( srvc.isValid() )
+  {
+    srvc->update( _value );
+  }
+}
+
+}

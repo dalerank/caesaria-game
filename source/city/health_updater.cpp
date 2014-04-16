@@ -48,7 +48,7 @@ SrvcPtr HealthUpdater::create( PlayerCityPtr city )
 
 void HealthUpdater::update( const unsigned int time)
 {
-  if( time % GameDate::ticksInMonth() == 0 )
+  if( GameDate::isMonthChanged() )
   {
     _d->isDeleted = (_d->endTime < GameDate::current());
 

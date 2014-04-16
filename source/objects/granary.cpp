@@ -115,7 +115,7 @@ void Granary::timeStep(const unsigned long time)
   if( !mayWork() )
     return;
 
-  if( time % (GameDate::ticksInMonth() / 2) == 1 )
+  if( GameDate::isWeekChanged() )
   {
     if(  walkers().empty() )
     {

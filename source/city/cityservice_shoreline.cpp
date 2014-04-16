@@ -74,14 +74,14 @@ Shoreline::Shoreline( PlayerCityPtr city )
 
 void Shoreline::update( const unsigned int time )
 {
-  if( (time - _d->lastTimeUpdate) < GameDate::ticksInMonth()/4 )
+  if( !GameDate::isWeekChanged() )
     return;
 
   if( time > _d->nextWaterGarbage )
   {
     WaterGarbage* wg = new WaterGarbage( &_city );
     wg->send2City( _city.borderInfo().boatEntry );
-    _d->nextWaterGarbage = time + math::random(GameDate::ticksInMonth() / 2);
+    _d->nextWaterGarbage = time + math::random( GameDate::days2ticks( 10 ) );
   }
 
   _d->lastTimeUpdate = time;

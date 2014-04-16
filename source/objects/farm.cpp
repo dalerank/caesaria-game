@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "farm.hpp"
 #include "core/position.hpp"
@@ -86,7 +88,6 @@ class Farm::Impl
 public:
   typedef std::vector<FarmTile> SubTiles;
   SubTiles subTiles;
-  int updateInterval;
   Picture pictureBuilding;  // we need to change its offset
 };
 
@@ -95,7 +96,6 @@ Farm::Farm(const Good::Type outGood, const Type type )
 {
   _d->pictureBuilding = Picture::load( ResourceGroup::commerce, 12);  // farm building
   _d->pictureBuilding.addOffset( 30, 15);
-  _d->updateInterval = GameDate::ticksInMonth() / 20;
 
   setPicture( _d->pictureBuilding );
   outStockRef().setCapacity( 500 );
@@ -130,7 +130,7 @@ void Farm::init()
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 1 ) ));
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 0 ) ));
 
-  _fgPicturesRef().resize(5);
+  _fgPicturesRef().resize(5+1);
   computePictures();
 }
 
@@ -166,10 +166,16 @@ void Farm::timeStep(const unsigned long time)
 {
   Factory::timeStep(time);
 
-  if( (time % _d->updateInterval == 1) && mayWork() && getProgress() < 100 )
+  if( GameDate::isDayChanged() && mayWork() && getProgress() < 100 )
   {
     computePictures();
   }
+}
+
+void Farm::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Factory::build( city, pos );
+  computePictures();
 }
 
 void Farm::save( VariantMap& stream ) const

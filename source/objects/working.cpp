@@ -124,20 +124,13 @@ void WorkingBuilding::_updateAnimation( const unsigned int time )
       if( _animationRef().isStopped() )
       {
         _animationRef().start();
-      }
-
-      _animationRef().update( time );
-      const Picture& pic = _animationRef().currentFrame();
-      if( pic.isValid() )
-      {
-         _fgPicturesRef().back() = _animationRef().currentFrame();
-      }
+      }      
     }
     else
     {
       if( _animationRef().isRunning() )
       {
-        if( _d->clearAnimationOnStop )
+        if( _d->clearAnimationOnStop && !_fgPicturesRef().empty() )
         {
           _fgPicturesRef().back() = Picture::getInvalid();
         }
@@ -145,6 +138,13 @@ void WorkingBuilding::_updateAnimation( const unsigned int time )
        _animationRef().stop();
       }
     }
+  }
+
+  _animationRef().update( time );
+  const Picture& pic = _animationRef().currentFrame();
+  if( pic.isValid() )
+  {
+     _fgPicturesRef().back() = _animationRef().currentFrame();
   }
 }
 

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ADVISOR_RELIGION_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_RELIGION_WINDOW_H_INCLUDED__
@@ -29,7 +31,7 @@ class AdvisorReligionWindow : public Widget
 public:
   AdvisorReligionWindow( PlayerCityPtr city, Widget* parent, int id );
 
-  void draw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
 
 private:
   class Impl;

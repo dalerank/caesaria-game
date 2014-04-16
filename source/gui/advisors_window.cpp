@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisors_window.hpp"
 
@@ -93,7 +95,7 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
 
   new gui::Image( this, tabButtonPos, Picture::load( ResourceGroup::menuMiddleIcons, 14 ) );
   addButton( advisor::employers,     255, _("##visit_labor_advisor##"        ));
-  addButton( advisor::military,        256, _("##visit_military_advisor##"     ));
+  addButton( advisor::military,      256, _("##visit_military_advisor##"     ));
   addButton( advisor::empire,        257, _("##visit_imperial_advisor##"     ));
   addButton( advisor::ratings,       258, _("##visit_rating_advisor##"       ));
   addButton( advisor::trading,       259, _("##visit_trade_advisor##"        ));

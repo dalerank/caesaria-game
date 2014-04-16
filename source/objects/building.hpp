@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_BUILDING_H_INCLUDE_
 #define _CAESARIA_BUILDING_H_INCLUDE_
@@ -53,7 +54,7 @@ public:
   virtual float evaluateTrainee( constants::walker::Type traineeType);  // returns >0 if trainee is needed
   void reserveTrainee( constants::walker::Type traineeType ); // trainee will come
   void cancelTrainee( constants::walker::Type traineeType );  // trainee will not come
-  int getTraineeValue( constants::walker::Type traineeType ) const;
+  int traineeValue( constants::walker::Type traineeType ) const;
 
   virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
   virtual void setTraineeValue( constants::walker::Type type, int value ); // trainee arrives
@@ -66,33 +67,6 @@ protected:
 
   class Impl;
   ScopedPtr< Impl > _d;
-};
-
-class SmallStatue : public Building
-{
-public:
-  SmallStatue();
-  bool isNeedRoadAccess() const;
-};
-
-class MediumStatue : public Building
-{
-public:
-  MediumStatue();
-  bool isNeedRoadAccess() const;
-};
-
-class BigStatue : public Building
-{
-public:
-  BigStatue();
-  bool isNeedRoadAccess() const;
-};
-
-class TriumphalArch : public Building
-{
-public:
-  TriumphalArch();
 };
 
 #endif //_CAESARIA_BUILDING_H_INCLUDE_

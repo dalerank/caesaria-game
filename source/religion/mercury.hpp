@@ -31,7 +31,9 @@ public:
   virtual void updateRelation(float income, PlayerCityPtr city);
 
 protected:
-  void _wrath( PlayerCityPtr city );
+  virtual void _doWrath( PlayerCityPtr city );
+  virtual void _doBlessing( PlayerCityPtr city );
+  virtual void _doSmallCurse( PlayerCityPtr city );
 };
 
 }//end namespace rome

@@ -49,7 +49,6 @@ public:
 SrvcPtr Roads::create(PlayerCityPtr city)
 {
   Roads* ret = new Roads( city );
-
   return SrvcPtr( ret );
 }
 

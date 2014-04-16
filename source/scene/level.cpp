@@ -21,7 +21,7 @@
 #include <algorithm>
 
 #include "gfx/engine.hpp"
-#include "city/win_targets.hpp"
+#include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
 #include "game/resourcegroup.hpp"
@@ -153,7 +153,7 @@ void Level::initialize()
   _d->rightPanel = MenuRigthPanel::create( gui.rootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = new TopMenu( gui.rootWidget(), topMenuHeight );
-  _d->topMenu->setPopulation( _d->game->city()->getPopulation() );
+  _d->topMenu->setPopulation( _d->game->city()->population() );
   _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
 
   _d->menu = Menu::create( gui.rootWidget(), -1, city );
@@ -398,13 +398,13 @@ void Level::afterFrame()
   {
     _d->lastDate = GameDate::current();
     PlayerCityPtr city = _d->game->city();
-    const city::WinTargets& wt = city->getWinTargets();
+    const city::VictoryConditions& wt = city->victoryConditions();
 
-    int culture = city->getCulture();
-    int prosperity = city->getProsperity();
-    int favour = city->getFavour();
-    int peace = city->getFavour();
-    int population = city->getPopulation();
+    int culture = city->culture();
+    int prosperity = city->prosperity();
+    int favour = city->favour();
+    int peace = city->favour();
+    int population = city->population();
     bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
 
     if( success )

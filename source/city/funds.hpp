@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYFUNDS_H_INCLUDED__
 #define __CAESARIA_CITYFUNDS_H_INCLUDED__
@@ -42,7 +44,7 @@ public:
                    importGoods, workersWages, 
                    buildConstruction, creditPercents, 
                    playerSalary, otherExpenditure,
-                   empireTax, debet, credit, profit,
+                   empireTax, debet, credit, cityProfit,
                    balance,
                    issueTypeCount };
   enum { thisYear=0, lastYear=1 };
@@ -56,14 +58,14 @@ public:
 
   int getIssueValue( IssueType type, int age=thisYear ) const;
 
-  int getTaxRate() const;
+  int taxRate() const;
   void setTaxRate( const unsigned int value );
 
-  int getWorkerSalary() const;
+  int workerSalary() const;
   void setWorkerSalary( const unsigned int value );
 
   int treasury() const;
-  int getProfit() const;
+  int profit() const;
 
   VariantMap save() const;
   void load( const VariantMap& stream );

@@ -20,7 +20,7 @@
     btnSend#PushButton : {
       geometry : [ 34, 200, 290, 220 ] 
       font : "FONT_2"
-      text : "##dispatch_gifty##"      
+      text : "##dispatch_gift##"
       bgtype : "whiteBorderUp"
     }
     

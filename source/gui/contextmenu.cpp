@@ -53,28 +53,16 @@ ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
 }
 
 //! destructor
-ContextMenu::~ContextMenu()
-{
-}
+ContextMenu::~ContextMenu() {}
 
 //! set behaviour when menus are closed
-void ContextMenu::setCloseHandling(CloseMode onClose)
-{
-  _d->closeHandling = onClose;
-}
+void ContextMenu::setCloseHandling(CloseMode onClose) {  _d->closeHandling = onClose;}
 
 //! get current behaviour when the menue will be closed
-ContextMenu::CloseMode ContextMenu::getCloseHandling() const
-{
-  return _d->closeHandling;
-}
+ContextMenu::CloseMode ContextMenu::getCloseHandling() const {  return _d->closeHandling;}
 
 //! Returns amount of menu items
-unsigned int ContextMenu::getItemCount() const
-{
-  return _d->items.size();
-}
-
+unsigned int ContextMenu::itemCount() const {  return _d->items.size();}
 
 //! Adds a menu item.
 ContextMenuItem* ContextMenu::addItem( const std::string& text, int commandId,
@@ -131,14 +119,11 @@ ContextMenuItem* ContextMenu::findItem( int commandId, unsigned int idxStartSear
 }
 
 //! Adds a separator item to the menu
-void ContextMenu::addSeparator()
-{
-  addItem(0, -1, true, false, false, false);
-}
+void ContextMenu::addSeparator() {  addItem(0, -1, true, false, false, false); }
 
 
 //! Returns text of the menu item.
-ContextMenuItem* ContextMenu::getItem( unsigned int idx ) const
+ContextMenuItem* ContextMenu::item( unsigned int idx ) const
 {
   if( idx >= _d->items.size() )
     return NULL;
@@ -147,10 +132,7 @@ ContextMenuItem* ContextMenu::getItem( unsigned int idx ) const
 }
 
 //! Sets text of the menu item.
-void ContextMenu::updateItems()
-{
-  _d->needRecalculateItems = true;
-}
+void ContextMenu::updateItems() {  _d->needRecalculateItems = true; }
 
 //! Removes a menu item
 void ContextMenu::removeItem(unsigned int idx)
@@ -178,7 +160,6 @@ bool ContextMenu::onEvent(const NEvent& event)
 {
 	if( isEnabled() )
 	{
-
 		switch(event.EventType)
 		{
 		case sEventGui:
@@ -229,7 +210,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 				{
 					// menu might be removed if it loses focus in sendClick, so grab a reference
 					grab();
-					const unsigned int t = sendClick_( event.mouse.pos() );
+					const unsigned int t = _sendClick( event.mouse.pos() );
 	 				if( (t==0 || t==1) && isFocused() )
 						removeFocus();
 					drop();
@@ -239,7 +220,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 				return true;
 			case mouseMoved:
 				if( isHovered() )
-					isHighlighted_( event.mouse.pos(), true);
+					_isHighlighted( event.mouse.pos(), true);
 				return true;
 			default:
 				break;
@@ -257,13 +238,13 @@ bool ContextMenu::onEvent(const NEvent& event)
 //! Sets the visible state of this element.
 void ContextMenu::setVisible(bool visible)
 {
-  setHoverIndex_( -1 );
-  closeAllSubMenus_();
+  _setHovered( -1 );
+  _closeAllSubMenus();
 
   Widget::setVisible( visible );
 }
 
-void ContextMenu::setHoverIndex_( int index )
+void ContextMenu::_setHovered( int index )
 {
   _d->highlihted = index;
   _d->changeTime = DateTime::elapsedTime();
@@ -273,7 +254,7 @@ void ContextMenu::setHoverIndex_( int index )
 //! 0 if click went outside of the element,
 //! 1 if a valid button was clicked,
 //! 2 if a nonclickable element was clicked
-unsigned int ContextMenu::sendClick_(const Point& p)
+unsigned int ContextMenu::_sendClick(const Point& p)
 {
 	unsigned int t = 0;
 
@@ -290,7 +271,7 @@ unsigned int ContextMenu::sendClick_(const Point& p)
 	// delegate click operation to submenu
 	if (openmenu != -1)
 	{
-		t = _d->items[j]->getSubMenu()->sendClick_( p );
+		t = _d->items[j]->getSubMenu()->_sendClick( p );
 		if (t != 0)
 			return t; // clicked something
 	}
@@ -304,7 +285,7 @@ unsigned int ContextMenu::sendClick_(const Point& p)
 			_d->items[_d->highlihted]->getSubMenu() )
 			return 2;
 
-		getSelectedItem()->toggleCheck();
+		selectedItem()->toggleCheck();
 
 		NEvent event;
 		event.EventType = sEventGui;
@@ -316,7 +297,7 @@ unsigned int ContextMenu::sendClick_(const Point& p)
 		else 
 			parent()->onEvent(event);
 
-		ContextMenuItem* tItem = getSelectedItem();
+		ContextMenuItem* tItem = selectedItem();
 		if( tItem )
     {
 			tItem->onClicked().emit();
@@ -334,7 +315,7 @@ void ContextMenu::setItemVisible( unsigned int index, bool visible )
 	if( index >= _d->items.size() )
 		return;
 
-	ContextMenu* menuPtr = getItem( index )->getSubMenu();
+	ContextMenu* menuPtr = item( index )->getSubMenu();
 	if( menuPtr )
 	{
 		menuPtr->setVisible( visible );
@@ -342,7 +323,7 @@ void ContextMenu::setItemVisible( unsigned int index, bool visible )
 }
 
 //! returns true, if an element was highligted
-bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
+bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
 {
 	if (!isEnabled())
 	{
@@ -351,13 +332,11 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 
 	// get number of open submenu
 	int openmenu = -1;
-	int i;
-	for (i=0; i<(int)_d->items.size(); ++i)
+	foreach( it, _d->items )
 	{
-		ContextMenuItem* rItem = _d->items[i];
-		if( rItem->isEnabled() && rItem->getSubMenu() && rItem->getSubMenu()->isVisible() )
+		if( (*it)->isEnabled() && (*it)->getSubMenu() && (*it)->getSubMenu()->isVisible() )
 		{
-			openmenu = i;
+			openmenu = std::distance( _d->items.begin(), it );
 			break;
 		}
 	}
@@ -365,7 +344,7 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 	// delegate highlight operation to submenu
 	if (openmenu != -1)
 	{
-		if (_d->items[openmenu]->isEnabled() && _d->items[openmenu]->getSubMenu()->isHighlighted_(p, canOpenSubMenu))
+		if (_d->items[openmenu]->isEnabled() && _d->items[openmenu]->getSubMenu()->_isHighlighted(p, canOpenSubMenu))
 		{
 			_d->highlihted = openmenu;
       _d->changeTime = DateTime::elapsedTime();
@@ -373,19 +352,24 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 		}
 	}
 
+	foreach( it, _d->items )
+	{
+		(*it)->setHovered( false );
+	}
+
 	// highlight myself
   _d->lastHighlihted = -1;
-	for (i=0; i<(int)_d->items.size(); ++i)
-	{
-		if (_d->items[i]->isEnabled() && _d->items[i]->absoluteRect().isPointInside( p ))
+  foreach( it, _d->items )
+	{		
+		if ( (*it)->isEnabled() && (*it)->absoluteRect().isPointInside( p ))
 		{
-			_d->highlihted = i;
+			_d->highlihted = std::distance( _d->items.begin(), it );
       _d->changeTime = DateTime::elapsedTime();
 
 			// make submenus visible/invisible
 			if( _d->highlihted != _d->lastHighlihted )
 			{
-				closeAllSubMenus_();
+				_closeAllSubMenus();
 
 				setItemVisible( _d->lastHighlihted, false );
 
@@ -397,6 +381,7 @@ bool ContextMenu::isHighlighted_( const Point& p, bool canOpenSubMenu )
 				}
 
 				_d->lastHighlihted = _d->highlihted;
+				rItem->setHovered( true );
 			}
 			return true;
 		}
@@ -422,7 +407,7 @@ void ContextMenu::beforeDraw(gfx::Engine& painter )
   if( _d->needRecalculateItems )
   {
     _d->needRecalculateItems = false;
-    recalculateSize_();
+    _recalculateSize();
   }
 
   Widget::beforeDraw( painter );
@@ -437,7 +422,7 @@ void ContextMenu::draw(gfx::Engine& painter )
   Widget::draw( painter );
 }
 
-void ContextMenu::recalculateSize_()
+void ContextMenu::_recalculateSize()
 {
 	Rect rect;
 	rect.UpperLeftCorner = getRelativeRect().UpperLeftCorner;
@@ -537,14 +522,14 @@ void ContextMenu::recalculateSize_()
 }
 
 //! Returns the selected item in the menu
-int ContextMenu::getSelectedIndex() const
+int ContextMenu::selected() const
 {
   return _d->highlihted;
 }
 
-ContextMenuItem *ContextMenu::getSelectedItem() const
+ContextMenuItem *ContextMenu::selectedItem() const
 {
-  return getItem( _d->highlihted );
+  return item( _d->highlihted );
 }
 
 //! Writes attributes of the element.
@@ -694,7 +679,7 @@ void ContextMenu::setEventParent( Widget *parent )
 }
 
 
-bool ContextMenu::hasOpenSubMenu_() const
+bool ContextMenu::_hasOpenSubMenu() const
 {
 	for (unsigned int i=0; i<_d->items.size(); ++i)
 		if( _d->items[i]->getSubMenu() && _d->items[i]->getSubMenu()->isVisible() )
@@ -704,7 +689,7 @@ bool ContextMenu::hasOpenSubMenu_() const
 }
 
 
-void ContextMenu::closeAllSubMenus_()
+void ContextMenu::_closeAllSubMenus()
 {
 	for (unsigned int i=0; i<_d->items.size(); ++i)
 		if( _d->items[i]->getSubMenu() )
@@ -724,7 +709,7 @@ void ContextMenu::setAllowFocus( bool enabled )
 	_d->allowFocus = enabled;
 }
 
-int ContextMenu::getHoveredIndex() const
+int ContextMenu::hovered() const
 {
 	return _d->highlihted;
 }

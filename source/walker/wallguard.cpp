@@ -41,7 +41,6 @@ public:
                  patrol, go2tower } State;
   TowerPtr base;
   State action;
-  int ckeckEnemiesInterval;
   TilePos patrolPosition;
   int wait;
   double strikeForce, resistance;
@@ -55,7 +54,6 @@ WallGuard::WallGuard( PlayerCityPtr city, walker::Type type ) : Soldier( city, t
 
   _d->patrolPosition = TilePos( -1, -1 );
   _d->wait = 0;
-  _d->ckeckEnemiesInterval = GameDate::ticksInMonth() / 20;
 }
 
 WallGuardPtr WallGuard::create(PlayerCityPtr city, walker::Type type)
@@ -122,7 +120,7 @@ void WallGuard::timeStep(const unsigned long time)
   break;
 
   case Impl::patrol:
-    if( time % _d->ckeckEnemiesInterval == 1 )
+    if( GameDate::isDayChanged() )
     {
       bool haveEnemies = _tryAttack();
       if( !haveEnemies )

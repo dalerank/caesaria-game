@@ -12,12 +12,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_finance_window.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "gui/pushbutton.hpp"
 #include "gui/label.hpp"
+#include "city/statistic.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
@@ -30,6 +33,7 @@
 #include "city/funds.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -49,6 +53,8 @@ public:
 
   void drawReportRow( const Point& pos, const std::string& title, city::Funds::IssueType type );
   void updateTaxRateNowLabel();
+  void decreaseTax();
+  void increaseTax();
   int calculateTaxValue();
 };
 
@@ -60,7 +66,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
                Size( 640, 420 ) ) );
 
   gui::Label* title = new gui::Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
-  title->setText( _("##Finance advisor##") );
+  title->setText( _("##finance_advisor##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
 
@@ -68,63 +74,65 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
 
   //main _d->_d->background
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
-  //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 70, 50 ), Size( width() - 86, 70 ) ), PictureDecorator::blackFrame);
 
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 265 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
   Font fontWhite = Font::create( FONT_1_WHITE );
 
+  //buttons _d->_d->background
+  PictureDecorator::draw( *_d->background, Rect( Point( 70, 50 ), Size( width() - 86, 70 ) ), PictureDecorator::blackFrame);
   std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->funds().treasury(), _("##denaries##") );
-  fontWhite.draw( *_d->background, moneyStr, 70, 55, false );
-  fontWhite.draw( *_d->background, _("##tax_rate##"), 65, 75, false );
+  fontWhite.draw( *_d->background, moneyStr, 75, 55, false );
+  fontWhite.draw( *_d->background, _("##tax_rate##"), 75, 75, false );
 
   _d->lbTaxRateNow = new gui::Label( this, Rect( 245, 75, 245 + 350, 75 + 20 ), "" );
   _d->lbTaxRateNow->setFont( fontWhite );
   _d->updateTaxRateNowLabel();
 
   std::string strRegPaeyrs = StringHelper::format( 0xff, "%d%% %s", 0, _("##population_registered_as_taxpayers##") );
-  fontWhite.draw( *_d->background, strRegPaeyrs, 70, 95, false );
+  fontWhite.draw( *_d->background, strRegPaeyrs, 75, 95, false );
 
   Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##Last year##"), 265, 130, false );
-  font.draw( *_d->background, _("##This year##"), 400, 130, false );
+  font.draw( *_d->background, _("##last_year##"), 265, 130, false );
+  font.draw( *_d->background, _("##this_year##"), 400, 130, false );
 
   Point startPoint( 75, 145 );
   Point offset( 0, 17 );
 
-  _d->drawReportRow( startPoint, _("##Taxes##"), city::Funds::taxIncome );
-  _d->drawReportRow( startPoint + offset, _("##Trade##"), city::Funds::exportGoods );
-  _d->drawReportRow( startPoint + offset * 2, _("##Donations##"), city::Funds::donation );
-  _d->drawReportRow( startPoint + offset * 3, _("##Debet##"), city::Funds::debet );
+  _d->drawReportRow( startPoint, _("##taxes##"), city::Funds::taxIncome );
+  _d->drawReportRow( startPoint + offset, _("##trade##"), city::Funds::exportGoods );
+  _d->drawReportRow( startPoint + offset * 2, _("##donations##"), city::Funds::donation );
+  _d->drawReportRow( startPoint + offset * 3, _("##debet##"), city::Funds::debet );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 200, 0 ), Size( 72, 1) ) );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 3 + Point( 340, 0 ), Size( 72, 1) ) );
   
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 4, _("##Import##"), city::Funds::importGoods );
-  _d->drawReportRow( startPoint + offset * 5, _("##Wages##"), city::Funds::workersWages );
-  _d->drawReportRow( startPoint + offset * 6, _("##Buildings##"), city::Funds::buildConstruction );
-  _d->drawReportRow( startPoint + offset * 7, _("##Percents##"), city::Funds::creditPercents );
-  _d->drawReportRow( startPoint + offset * 8, _("##Salary##"), city::Funds::playerSalary );
+  _d->drawReportRow( startPoint + offset * 4, _("##import_fn##"), city::Funds::importGoods );
+  _d->drawReportRow( startPoint + offset * 5, _("##wages##"), city::Funds::workersWages );
+  _d->drawReportRow( startPoint + offset * 6, _("##buildings##"), city::Funds::buildConstruction );
+  _d->drawReportRow( startPoint + offset * 7, _("##percents##"), city::Funds::creditPercents );
+  _d->drawReportRow( startPoint + offset * 8, _("##pn_salary##"), city::Funds::playerSalary );
    
-  _d->drawReportRow( startPoint + offset * 9, _("##Other##"), city::Funds::otherExpenditure );
-  _d->drawReportRow( startPoint + offset * 10, _("##Empire tax##"), city::Funds::empireTax );
+  _d->drawReportRow( startPoint + offset * 9, _("##other##"), city::Funds::otherExpenditure );
+  _d->drawReportRow( startPoint + offset * 10, _("##empire_tax##"), city::Funds::empireTax );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 200, 0 ), Size( 72, 1) ) );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 340, 0 ), Size( 72, 1) ) );
 
-  _d->drawReportRow( startPoint + offset * 11, _("##Credit##"), city::Funds::credit );
+  _d->drawReportRow( startPoint + offset * 11, _("##credit##"), city::Funds::credit );
 
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 12, _("##Profit##"), city::Funds::profit );
+  _d->drawReportRow( startPoint + offset * 12, _("##profit##"), city::Funds::cityProfit );
   
   startPoint += Point( 0, 6 );
-  _d->drawReportRow( startPoint + offset * 13, _("##Balance##"), city::Funds::balance );
+  _d->drawReportRow( startPoint + offset * 13, _("##balance##"), city::Funds::balance );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
-  new TexturedButton( this, Point( 185, 70 ), Size( 24 ), -1, 601 );
-  new TexturedButton( this, Point( 185+24, 70 ), Size( 24 ), -1, 605 );
+  TexturedButton* btnDecreaseTax = new TexturedButton( this, Point( 185, 73 ), Size( 24 ), -1, 601 );
+  TexturedButton* btnIncreaseTax = new TexturedButton( this, Point( 185+24, 73 ), Size( 24 ), -1, 605 );
+  CONNECT( btnDecreaseTax, onClicked(), _d.data(), Impl::decreaseTax );
+  CONNECT( btnIncreaseTax, onClicked(), _d.data(), Impl::increaseTax );
 }
 
 void AdvisorFinanceWindow::draw(gfx::Engine& painter )
@@ -152,33 +160,23 @@ void AdvisorFinanceWindow::Impl::drawReportRow(const Point& pos, const std::stri
 
 void AdvisorFinanceWindow::Impl::updateTaxRateNowLabel()
 {
-  int taxValue = calculateTaxValue();
+  int taxValue = city::Statistic::getTaxValue( city );
   std::string strCurretnTax = StringHelper::format( 0xff, "%d%% %s %d %s",
-                                                    city->funds().getTaxRate(), _("##may_collect_about##"),
+                                                    city->funds().taxRate(), _("##may_collect_about##"),
                                                     taxValue, _("##denaries##") );
   lbTaxRateNow->setText( strCurretnTax );
 }
 
-int AdvisorFinanceWindow::Impl::calculateTaxValue()
+void AdvisorFinanceWindow::Impl::decreaseTax()
 {
-  city::Helper helper( city );
+  city->funds().setTaxRate( city->funds().taxRate() - 1 );
+  updateTaxRateNowLabel();
+}
 
-  HouseList houses = helper.find<House>( building::house );
-
-  float taxValue = 0.f;
-  float taxRate = city->funds().getTaxRate();
-  foreach( house, houses )
-  {
-    int maxhb = (*house)->getMaxHabitants();
-    if( maxhb == 0 )
-      continue;
-
-    int maturehb = (*house)->getHabitants().count( CitizenGroup::mature );
-    int housetax = (*house)->getSpec().taxRate();
-    taxValue += housetax * maturehb * taxRate / maxhb;
-  }
-
-  return taxValue;
+void AdvisorFinanceWindow::Impl::increaseTax()
+{
+  city->funds().setTaxRate( city->funds().taxRate() + 1 );
+  updateTaxRateNowLabel();
 }
 
 }//end namespace gui

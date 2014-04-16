@@ -34,6 +34,7 @@ public:
 
 protected:
   const gfx::Picture& getMainPicture();
+  virtual void _reachedPathway();
 
 private:
   gfx::Animation _animation;

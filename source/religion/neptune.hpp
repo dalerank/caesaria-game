@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_GOD_NEPTUNE_H_INCLUDED__
 #define __CAESARIA_GOD_NEPTUNE_H_INCLUDED__
@@ -31,7 +33,9 @@ public:
   virtual void updateRelation(float income, PlayerCityPtr city);
 
 protected:
-  void _wrath( PlayerCityPtr city );
+  void _doWrath( PlayerCityPtr city );
+  void _doSmallCurse( PlayerCityPtr city );
+  void _doBlessing( PlayerCityPtr city );
 };
 
 

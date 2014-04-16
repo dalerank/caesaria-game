@@ -108,6 +108,8 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+typedef SmartPtr<Info> InfoPtr;
+
 }//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_INFO_H_INCLUDED__

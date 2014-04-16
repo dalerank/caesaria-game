@@ -33,7 +33,7 @@ public:
    void load( const VariantMap& stream);
 
    void setName( const std::string& name );
-   std::string getName() const;
+   std::string name() const;
 
    int salary() const;
    void setSalary( const int value );

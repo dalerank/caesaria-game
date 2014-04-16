@@ -214,7 +214,7 @@ ComputerCity::~ComputerCity() {}
 void ComputerCity::timeStep( unsigned int time )
 {
   //one year before step need
-  if( _d->lastTimeUpdate.getMonthToDate( GameDate::current() ) > 11 )
+  if( _d->lastTimeUpdate.monthsTo( GameDate::current() ) > 11 )
   {
     _d->merchantsNumber = math::clamp<unsigned int>( _d->merchantsNumber-1, 0, 2 );
     _d->lastTimeUpdate = GameDate::current();
@@ -228,7 +228,7 @@ void ComputerCity::timeStep( unsigned int time )
     }
   }
 
-  if( _d->lastTimeMerchantSend.getMonthToDate( GameDate::current() ) > 2 ) 
+  if( _d->lastTimeMerchantSend.monthsTo( GameDate::current() ) > 2 ) 
   {
     TraderouteList routes = _d->empire->getTradeRoutes( getName() );
     _d->lastTimeMerchantSend = GameDate::current();

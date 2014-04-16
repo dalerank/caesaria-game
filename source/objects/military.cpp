@@ -88,16 +88,15 @@ public:
   FortAreaPtr area;
   unsigned int maxSoldier;
   PatrolPointPtr patrolPoint;
-  int updateInterval;
   LegionEmblem emblem;
 };
 
-FortLegionnaire::FortLegionnaire() : Fort( building::fortLegionaire, 16 )
+FortLegionary::FortLegionary() : Fort( building::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
 }
 
-void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
+void FortLegionary::build(PlayerCityPtr city, const TilePos& pos)
 {
   Fort::build( city, pos );
 
@@ -114,7 +113,7 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
   }
 }
 
-void FortLegionnaire::_readyNewSoldier()
+void FortLegionary::_readyNewSoldier()
 {
   RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
 
@@ -140,6 +139,11 @@ FortMounted::FortMounted() : Fort( constants::building::fortMounted, 15 )
 FortJaveline::FortJaveline() : Fort( building::fortJavelin, 14 )
 {
   setPicture( ResourceGroup::security, 12 );
+}
+
+void FortJaveline::_readyNewSoldier()
+{
+
 }
 
 class FortArea::Impl
@@ -191,8 +195,6 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   Picture area = Picture::load(ResourceGroup::security, 13 );
   area.setOffset( Tile( TilePos(3,0) ).mapPos() + Point(0,-30) );
 
-  _d->updateInterval = GameDate::ticksInMonth() / 10;
-
   _fgPicturesRef().resize(2);
   _fgPicture( 0 ) = logo;
   _fgPicture( 1 ) = area;
@@ -219,9 +221,9 @@ Fort::~Fort() {}
 
 void Fort::timeStep( const unsigned long time )
 {
-  if( time % _d->updateInterval == 1 )
+  if( GameDate::isWeekChanged() )
   {
-    int traineeLevel = getTraineeValue( walker::soldier );
+    int traineeLevel = traineeValue( walker::soldier );
     // all trainees are there for the show!
     if( traineeLevel / 100 >= 1 )
     {

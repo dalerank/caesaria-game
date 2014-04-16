@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "neptune.hpp"
 #include "game/gamedate.hpp"
@@ -42,15 +44,9 @@ DivinityPtr Neptune::create()
 void Neptune::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    _wrath( city );
-  }
 }
 
-void Neptune::_wrath(PlayerCityPtr city)
+void Neptune::_doWrath(PlayerCityPtr city)
 {
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
                                                             _("##wrath_of_neptune_description##"),
@@ -68,6 +64,16 @@ void Neptune::_wrath(PlayerCityPtr city)
     (*it)->deleteLater();
     boats.erase( it );
   }
+}
+
+void Neptune::_doSmallCurse(PlayerCityPtr city)
+{
+
+}
+
+void Neptune::_doBlessing(PlayerCityPtr city)
+{
+
 }
 
 }//end namespace rome

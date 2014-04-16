@@ -321,7 +321,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    {
      buildMenu->setNotClipped( true );
 
-     buildMenu->setBuildOptions( _d->city->getBuildOptions() );
+     buildMenu->setBuildOptions( _d->city->buildOptions() );
      buildMenu->initialize();
 
      int y = math::clamp< int >( parent->screenTop() - screenTop(), 0, _environment->rootWidget()->height() - buildMenu->height() );
@@ -487,7 +487,7 @@ void Menu::Impl::playSound()
 
 void Menu::Impl::updateBuildingOptions()
 {
-  const city::BuildOptions& options = city->getBuildOptions();
+  const city::BuildOptions& options = city->buildOptions();
   waterButton->setEnabled( options.isGroupAvailable( BM_WATER ) );
   administrationButton->setEnabled( options.isGroupAvailable( BM_ADMINISTRATION ) );
   entertainmentButton->setEnabled( options.isGroupAvailable( BM_ENTERTAINMENT ) );

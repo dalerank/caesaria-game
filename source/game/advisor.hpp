@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #ifndef _CAESARIA_ADVISOR_INCLUDE_H_
 #define _CAESARIA_ADVISOR_INCLUDE_H_
 
