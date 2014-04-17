@@ -241,10 +241,10 @@ void Empire::createTradeRoute(std::string start, std::string stop )
   }
 }
 
-TraderoutePtr Empire::getTradeRoute( unsigned int index ) {  return _d->trading.getRoute( index ); }
+TraderoutePtr Empire::getTradeRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
 TraderoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
 {
-  return _d->trading.getRoute( start, stop ); 
+  return _d->trading.findRoute( start, stop ); 
 }
 
 void Empire::timeStep( unsigned int time )
@@ -279,7 +279,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
 }
 
 ObjectList Empire::objects() const{  return _d->objects; }
-TraderouteList Empire::getTradeRoutes( const std::string& startCity ){  return _d->trading.getRoutes( startCity );}
+TraderouteList Empire::getTradeRoutes( const std::string& startCity ){  return _d->trading.routes( startCity );}
 
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
@@ -298,6 +298,6 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
 }
 
 
-TraderouteList Empire::getTradeRoutes(){  return _d->trading.getRoutes();}
+TraderouteList Empire::getTradeRoutes(){  return _d->trading.routes();}
 
 }//end namespace world
