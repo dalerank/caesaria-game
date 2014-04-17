@@ -41,6 +41,7 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
   _d->maxWorkers = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
+  _animationRef().stop();
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const

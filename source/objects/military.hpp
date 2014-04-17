@@ -37,7 +37,7 @@ public:
 
   virtual void destroy();
 
-  virtual TilePos getFreeSlot() const;
+  virtual TilePos freeSlot() const;
   virtual void changePatrolArea();
 
   virtual gfx::Picture legionEmblem() const;
@@ -76,6 +76,7 @@ class FortJaveline : public Fort
 public:  
   FortJaveline();
 
+protected:
   virtual void _readyNewSoldier();
 };
 
@@ -83,7 +84,9 @@ class FortMounted : public Fort
 {
 public:  
   FortMounted();
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
 
+protected:
   virtual void _readyNewSoldier();
 };
 
