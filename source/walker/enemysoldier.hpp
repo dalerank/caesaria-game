@@ -62,6 +62,7 @@ protected:
   EnemySoldier( PlayerCityPtr city, constants::walker::Type type );
 
 private:
+  Pathway _findFreeSlot(const int range);
   Pathway _findPathway2NearestEnemy(unsigned int range);
   Pathway _findPathway2NearestConstruction(unsigned int range);
 

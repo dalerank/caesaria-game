@@ -52,7 +52,7 @@
 #include "scene/briefing.hpp"
 #include "gfx/logo.hpp"
 #include "walker/helper.hpp"
-#include "core/messagebox.hpp"
+#include "core/osystem.hpp"
 
 #include <list>
 
@@ -134,7 +134,7 @@ void Game::mountArchives()
       std::string errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
                              "original game archive C3.SG2 not found in folder " + c3res.toString() +
                              "!!!.\nBe sure that you copy all .sg2 and .map files to it folder";
-      MessageBox::error( "Resources error", errorStr );
+      OSystem::error( "Resources error", errorStr );
       Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
       exit( -1 ); //kill application
     }

@@ -562,7 +562,7 @@ void House::applyService( ServiceWalkerPtr walker )
   switch (service)
   {
   case Service::well:
-  case Service::fontain:
+  case Service::fountain:
   case Service::religionNeptune:
   case Service::religionCeres:
   case Service::religionVenus:
@@ -933,7 +933,7 @@ void House::appendServiceValue( Service::Type srvc, float value){  setServiceVal
 
 void House::Impl::updateHealthLevel( HousePtr house )
 {
-  float delim = 1 + (((services[Service::well] > 0 || services[Service::fontain] > 0) ? 1 : 0))
+  float delim = 1 + (((services[Service::well] > 0 || services[Service::fountain] > 0) ? 1 : 0))
       + ((services[Service::doctor] > 0 || services[Service::hospital] > 0) ? 1 : 0)
       + (services[Service::baths] > 0 ? 0.7 : 0)
       + (services[Service::barber] > 0 ? 0.3 : 0);

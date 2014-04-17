@@ -28,12 +28,12 @@ namespace city
 {
 
 namespace {
-  typedef enum { ftSmall=0, ftMiddle, ftBig, ftCount } FestType;
+  typedef enum { ftNone=0, ftSmall, ftMiddle, ftBig, ftCount } FestType;
   int firstFestivalSentinment[ftCount] = { 7, 9, 12 };
   int secondFesivalSentiment[ftCount] = { 2, 3, 5 };
 
-  const char* festivalTitles[ftCount] = { "##small_festival##", "##middle_festival##", "##great_festival##" };
-  const char* festivalDesc[ftCount] = { "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
+  const char* festivalTitles[ftCount] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
+  const char* festivalDesc[ftCount] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
 }
 
 class Festival::Impl

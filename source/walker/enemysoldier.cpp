@@ -97,16 +97,60 @@ void EnemySoldier::_reachedPathway()
   case check4attack:
   case go2position:
   {
-    bool findAny4attack = _tryAttack();
-    if( !findAny4attack )
+    EnemySoldierList walkers;
+    walkers << _city()->getWalkers( walker::all, pos() );
+    foreach( it, walkers )
     {
-      _check4attack();
+      if( *it == this )
+      {
+        walkers.erase( it );
+        break;
+      }
+    }
+
+    if( !walkers.empty() )
+    {
+      const int defaultRange = 10;
+      Pathway way2freeslot = _findFreeSlot( defaultRange );
+      if( way2freeslot.isValid() )
+      {
+        _updatePathway( way2freeslot );
+      }
+    }
+    else
+    {
+      bool findAny4attack = _tryAttack();
+      if( !findAny4attack )
+      {
+        _check4attack();
+      }
     }
   }
   break;
 
   default: break;
   }
+}
+
+Pathway EnemySoldier::_findFreeSlot( const int range )
+{
+  for( int currentRange=0; currentRange <= range; currentRange++ )
+  {
+    TilePos offset( currentRange, currentRange );
+    TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset );
+    tiles = tiles.walkableTiles( true );
+
+    foreach( itile, tiles )
+    {
+      Pathway pathway = PathwayHelper::create( pos(), (*itile)->pos(), PathwayHelper::allTerrain );
+      if( pathway.isValid() )
+      {
+        return pathway;
+      }
+    }
+  }
+
+  return Pathway();
 }
 
 WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )

@@ -91,12 +91,12 @@ public:
   LegionEmblem emblem;
 };
 
-FortLegionnaire::FortLegionnaire() : Fort( building::fortLegionaire, 16 )
+FortLegionary::FortLegionary() : Fort( building::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
 }
 
-void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
+void FortLegionary::build(PlayerCityPtr city, const TilePos& pos)
 {
   Fort::build( city, pos );
 
@@ -113,7 +113,7 @@ void FortLegionnaire::build(PlayerCityPtr city, const TilePos& pos)
   }
 }
 
-void FortLegionnaire::_readyNewSoldier()
+void FortLegionary::_readyNewSoldier()
 {
   RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
 
@@ -136,9 +136,49 @@ FortMounted::FortMounted() : Fort( constants::building::fortMounted, 15 )
   setPicture( ResourceGroup::security, 12 );
 }
 
+void FortMounted::build(PlayerCityPtr city, const TilePos& pos)
+{
+  Fort::build( city, pos );
+
+  _setPatrolPoint( PatrolPoint::create( city, this,
+                                        ResourceGroup::sprites, 39, 8,
+                                        pos + TilePos( 3, 3 ) ) );
+
+  BarracksList barracks;
+  barracks << city->overlays();
+
+  if( barracks.empty() )
+  {
+    _setError( "##need_barracks_for_work##" );
+  }
+}
+
+void FortMounted::_readyNewSoldier()
+{
+  RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::romeHorseman );
+
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getAroundTiles( this );
+
+  foreach( tile, tiles)
+  {
+    if( (*tile)->isWalkable( true ) )
+    {
+      soldier->send2city( this, (*tile)->pos() );
+      addWalker( soldier.object() );
+      return;
+    }
+  }
+}
+
 FortJaveline::FortJaveline() : Fort( building::fortJavelin, 14 )
 {
   setPicture( ResourceGroup::security, 12 );
+}
+
+void FortJaveline::_readyNewSoldier()
+{
+
 }
 
 class FortArea::Impl
@@ -251,7 +291,7 @@ void Fort::destroy()
   }
 }
 
-TilePos Fort::getFreeSlot() const
+TilePos Fort::freeSlot() const
 {
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
@@ -327,7 +367,10 @@ void Fort::save(VariantMap& stream) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "patrolPoint" ] = _d->patrolPoint->pos();
+  if( _d->patrolPoint.isValid() )
+  {
+    stream[ "patrolPoint" ] =  _d->patrolPoint->pos();
+  }
   stream[ "soldierNumber"] = _d->maxSoldier;
 }
 
@@ -335,11 +378,8 @@ void Fort::load(const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
 
-  TilePos patrolPos = stream.get( "patrolPoint" );
-  if(  _d->patrolPoint.isValid() )
-  {
-    _d->patrolPoint->setPos( patrolPos );
-  }
+  TilePos patrolPos = stream.get( "patrolPoint", pos() + TilePos( 3, 4 ) );
+  _d->patrolPoint->setPos( patrolPos );
 
   _d->maxSoldier = stream.get( "soldierNumber", 16 ).toUInt();
 }

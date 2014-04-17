@@ -131,7 +131,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
         HousePtr house = ptr_cast<House>( (*tile)->overlay() );
         if( house.isValid() )
         {
-          houseNeedWell |= ( house->getServiceValue( Service::fontain ) == 0 );
+          houseNeedWell |= ( house->getServiceValue( Service::fountain ) == 0 );
         }
       }
 

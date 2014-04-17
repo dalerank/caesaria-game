@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "messagebox.hpp"
+#include "osystem.hpp"
 #include "platform.hpp"
 
 #ifdef CAESARIA_PLATFORM_LINUX
@@ -36,7 +36,7 @@ const char* getDialogCommand()
   #include <windows.h>
 #endif
 
-void MessageBox::error(const std::string& title, const std::string& text)
+void OSystem::error(const std::string& title, const std::string& text)
 {
 #if defined(CAESARIA_PLATFORM_LINUX)
   const char * dialogCommand = getDialogCommand();
@@ -50,5 +50,15 @@ void MessageBox::error(const std::string& title, const std::string& text)
   // fail-safe method here, using stdio perhaps, depends on your application
 #elif defined(CAESARIA_PLATFORM_WIN)
   MessageBox(NULL, text.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
+#endif
+}
+
+void OSystem::openUrl(const std::string& url)
+{
+#ifdef CAESARIA_PLATFORM_LINUX
+  std::string command = "xdg-open " + url;
+  ::system( command.c_str() );
+#elif defined(CAESARIA_PLATFORM_WIN)
+  ShellExecuteA(0, 0, url.c_str(), 0, 0 , SW_SHOW );
 #endif
 }

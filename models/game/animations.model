@@ -124,8 +124,10 @@
   }
   */
 
-  horseman : {
+  romeHorseman : {
     move : { rc : "citizen04", start : 1, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen04", start : 97, frames : 6, action : 2, step : 8 }
+    die : { rc : "citizen04", start : 144, frames : 1, action : 3, step : 0 }
   }
 
   merchant : {
@@ -144,6 +146,8 @@
 
   sheep : {
     move : { rc : "citizen04", start : 153, frames : 5, action : 1, step : 8 }
+    sit : { rc : "citizen04", start : 249, frames : 1, action : 0, step : 8 }
+    die : { rc : "citizen04", start : 257, frames : 1, action : 3, step : 0 }
   }
 
   fishingBoat : {

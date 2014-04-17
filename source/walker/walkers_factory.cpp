@@ -117,6 +117,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::protestor, new BaseCreator<Protestor>() );
   addCreator( walker::britonSoldier, new SoldierCreator<EnemySoldier>( walker::britonSoldier ) );
   addCreator( walker::legionary, new SoldierCreator<RomeSoldier>( walker::legionary ) );
+  addCreator( walker::romeHorseman, new SoldierCreator<RomeSoldier>( walker::romeHorseman ) );
   addCreator( walker::lion, new BaseCreator< Lion >() );
   addCreator( walker::lionTamer, new BaseCreator< LionTamer >() );
   addCreator( walker::fishPlace, new BaseCreator< FishPlace >() );
