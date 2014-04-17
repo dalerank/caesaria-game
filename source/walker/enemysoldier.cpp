@@ -97,33 +97,10 @@ void EnemySoldier::_reachedPathway()
   case check4attack:
   case go2position:
   {
-    EnemySoldierList walkers;
-    walkers << _city()->getWalkers( walker::all, pos() );
-    foreach( it, walkers )
+    bool findAny4attack = _tryAttack();
+    if( !findAny4attack )
     {
-      if( *it == this )
-      {
-        walkers.erase( it );
-        break;
-      }
-    }
-
-    if( !walkers.empty() )
-    {
-      const int defaultRange = 10;
-      Pathway way2freeslot = _findFreeSlot( defaultRange );
-      if( way2freeslot.isValid() )
-      {
-        _updatePathway( way2freeslot );
-      }
-    }
-    else
-    {
-      bool findAny4attack = _tryAttack();
-      if( !findAny4attack )
-      {
-        _check4attack();
-      }
+      _check4attack();
     }
   }
   break;
@@ -151,6 +128,21 @@ Pathway EnemySoldier::_findFreeSlot( const int range )
   }
 
   return Pathway();
+}
+
+bool EnemySoldier::_move2freePos()
+{
+  const int defaultRange = 10;
+  Pathway way2freeslot = _findFreeSlot( defaultRange );
+  if( way2freeslot.isValid() )
+  {
+    _updatePathway( way2freeslot );
+    go();
+    _d->action = go2position;
+    return true;
+  }
+
+  return false;
 }
 
 WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
@@ -286,28 +278,55 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
   return Pathway();
 }
 
+bool EnemySoldier::_isCurrentPosBusy()
+{
+  bool needMeMove = false;
+  EnemySoldierList walkers;
+  walkers << _city()->getWalkers( walker::all, pos() );
+  foreach( it, walkers )
+  {
+    if( *it == this )
+    {
+      needMeMove = (it == walkers.begin());
+      walkers.erase( it );
+      break;
+    }
+  }
+
+  return ( !walkers.empty() && needMeMove );
+}
+
 void EnemySoldier::_centerTile()
 {
-  switch( _d->action )
-  {
-  case doNothing:
-  break; 
+  bool isPosBusy = _isCurrentPosBusy();
 
-  case check4attack:
+  if( isPosBusy )
   {
-    _check4attack();
+    _move2freePos();
   }
-  break;
-
-  case go2position:
+  else
   {
-    if( _tryAttack() )
-      return;
-  }
-  break;
+    switch( _d->action )
+    {
+    case doNothing:
+    break;
 
-  default:
-  break;
+    case check4attack:
+    {
+      _check4attack();
+    }
+    break;
+
+    case go2position:
+    {
+      if( _tryAttack() )
+        return;
+    }
+    break;
+
+    default:
+    break;
+    }
   }
   Walker::_centerTile();
 }

@@ -65,6 +65,8 @@ private:
   Pathway _findFreeSlot(const int range);
   Pathway _findPathway2NearestEnemy(unsigned int range);
   Pathway _findPathway2NearestConstruction(unsigned int range);
+  bool _isCurrentPosBusy();
+  bool _move2freePos();
 
   class Impl;
   ScopedPtr< Impl > _d;
