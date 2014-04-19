@@ -148,7 +148,7 @@ void TileOverlay::save( VariantMap& stream ) const
 
   stream[ "config" ] = config;
   stream[ "picture" ] = Variant( _d->picture.name() );
-  stream[ "pictureOffset" ] = _d->picture.getOffset();
+  stream[ "pictureOffset" ] = _d->picture.offset();
   stream[ "size" ] = _d->size;
   stream[ "isDeleted" ] = _d->isDeleted;
   stream[ "name" ] = Variant( _d->name );

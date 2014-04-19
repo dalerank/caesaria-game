@@ -220,12 +220,12 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   ScopedPtr<unsigned char*> RowPointers( (unsigned char**)new png_bytep[ Height ] );
 
   // Fill array of pointers to rows in image data
-  SDL_LockSurface( pic->getSurface() );
-  unsigned char* data = (unsigned char*)pic->getSurface()->pixels;
+  SDL_LockSurface( pic->surface() );
+  unsigned char* data = (unsigned char*)pic->surface()->pixels;
   for(unsigned int i=0; i<Height; ++i)
   {
     RowPointers.data()[i] = data;
-    data += pic->getSurface()->pitch;
+    data += pic->surface()->pitch;
   }
 
   // for proper error handling
@@ -242,7 +242,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_read_end( png_ptr, NULL );
   png_destroy_read_struct( &png_ptr, &info_ptr, 0 ); // Clean up memory
 
-  SDL_UnlockSurface(pic->getSurface());
+  SDL_UnlockSurface(pic->surface());
 
   return *pic;
 }

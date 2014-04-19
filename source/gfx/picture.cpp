@@ -84,8 +84,8 @@ void Picture::setOffset(int x, int y) { _d->offset = Point( x, y ); }
 void Picture::addOffset( Point offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
-SDL_Surface* Picture::getSurface() const{  return _d->surface;}
-Point Picture::getOffset() const{  return _d->offset;}
+SDL_Surface* Picture::surface() const{  return _d->surface;}
+Point Picture::offset() const{  return _d->offset;}
 int Picture::width() const{  return _d->size.width();}
 int Picture::height() const{  return _d->size.height();}
 void Picture::setName(std::string &name){  _d->name = name;}
@@ -136,7 +136,7 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Point& pos
 
 void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )
 {
-  SDL_Surface *srcimg = srcpic.getSurface();
+  SDL_Surface *srcimg = srcpic.surface();
 
   if( !(srcimg && _d->surface) )
   {
@@ -199,7 +199,7 @@ void Picture::unlock()
   }
 }
 
-int Picture::getPixel(Point pos )
+int Picture::pixel(Point pos )
 {
   // validate arguments
   if( _d->surface == NULL || pos.x() < 0 || pos.y() < 0

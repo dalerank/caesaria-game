@@ -53,7 +53,7 @@ Point Animation::offset() const
     return Point();
   }
 
-  return _pictures.front().getOffset();
+  return _pictures.front().offset();
 }
 
 void Animation::update( unsigned int time )

@@ -150,31 +150,31 @@ void SdlEngine::exit()
 void SdlEngine::loadPicture( Picture& ioPicture )
 {
   // convert pixel format
-  if( !ioPicture.getSurface() )
+  if( !ioPicture.surface() )
   {
     Logger::warning( "GfxSdlEngine: cannot load NULL surface " + ioPicture.name() );
     return;
   }
-  SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
+  SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.surface() );
   
   if( newImage == NULL ) 
   {
     THROW("Cannot convert surface, maybe out of memory");
   }
-  SDL_FreeSurface(ioPicture.getSurface());
+  SDL_FreeSurface(ioPicture.surface());
 
-  ioPicture.init( newImage, ioPicture.getOffset() );
+  ioPicture.init( newImage, ioPicture.offset() );
 }
 
 void SdlEngine::unloadPicture( Picture& ioPicture )
 {
-  SDL_FreeSurface( ioPicture.getSurface() );
+  SDL_FreeSurface( ioPicture.surface() );
   ioPicture = Picture();
 }
 
 void SdlEngine::startRenderFrame()
 {
-  SDL_FillRect( _d->screen.getSurface(), NULL, 0 );  // black background for a complete redraw
+  SDL_FillRect( _d->screen.surface(), NULL, 0 );  // black background for a complete redraw
 }
 
 void SdlEngine::endRenderFrame()
@@ -185,7 +185,7 @@ void SdlEngine::endRenderFrame()
     _d->debugFont.draw( _d->screen, debugText, 4, 22, false );
   }
 
-  SDL_Flip( _d->screen.getSurface() ); //Refresh the screen
+  SDL_Flip( _d->screen.surface() ); //Refresh the screen
   _d->fps++;
 
   if( DateTime::elapsedTime() - _d->lastUpdateFps > 1000 )
@@ -205,7 +205,7 @@ void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, 
   if( clipRect != 0 )
   {
     SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
-    SDL_SetClipRect( screen.getSurface(), &r );
+    SDL_SetClipRect( screen.surface(), &r );
   }
 
   const Impl::MaskInfo& mask = _d->mask;
@@ -222,7 +222,7 @@ void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, 
 
   if( clipRect != 0 )
   {
-    SDL_SetClipRect( screen.getSurface(), 0 );
+    SDL_SetClipRect( screen.surface(), 0 );
   }
 }
 
@@ -257,7 +257,7 @@ Picture* SdlEngine::createPicture(const Size& size )
 
 void SdlEngine::createScreenshot( const std::string& filename )
 {
-  IMG_SavePNG( filename.c_str(), _d->screen.getSurface(), -1 );
+  IMG_SavePNG( filename.c_str(), _d->screen.surface(), -1 );
 }
 
 Engine::Modes SdlEngine::getAvailableModes() const
