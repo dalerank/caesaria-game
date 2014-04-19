@@ -326,9 +326,11 @@ void SgImage::writeIsometricBase(QImage *img, const quint8 *buffer) {
 	}
 	
 	i = 0;
-	for (y = 0; y < (size + (size - 1)); y++) {
+	for (y = 0; y < (size + (size - 1)); y++)
+	{
 		x_offset = (y < size ? (size - y - 1) : (y - size + 1)) * tile_height;
-		for (x = 0; x < (y < size ? y + 1 : 2 * size - y - 1); x++, i++) {
+		for (x = 0; x < (y < size ? y + 1 : 2 * size - y - 1); x++, i++)
+		  {
 			writeIsometricTile(img, &buffer[i * tile_bytes],
 				x_offset, y_offset, tile_width, tile_height);
 			x_offset += tile_width + 2;

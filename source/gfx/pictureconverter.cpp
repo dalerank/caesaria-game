@@ -25,6 +25,9 @@
 namespace gfx
 {
 
+static const char* pngType = "PNG";
+static const char* bmpType = "BMP";
+
 void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset )
 {
     SDL_Surface* source = const_cast< Picture& >( src ).getSurface();
@@ -96,37 +99,61 @@ void PictureConverter::maskColor( Picture& dst, const Picture& src, int rmask, i
 
 void PictureConverter::save(Picture& pic, const std::string& filename, const std::string& type)
 {
-  if( type == "PNG" )
+  if( type == pngType )
   {
     IMG_SavePNG( filename.c_str(), pic.getSurface(), -1 );
   }
-  else if( type == "BMP" )
+  else if( type == bmpType )
   {
     SDL_SaveBMP( pic.getSurface(), filename.c_str() );
   }
 }
 
-ByteArray PictureConverter::save(Picture& pic)
+ByteArray PictureConverter::save(Picture& pic, const std::string &type)
 {
   SDL_RWops *rout;
-
   ByteArray rdata;
-  rdata.resize( pic.size().area() * 4 * 2 );
 
-  if(!(rout = SDL_RWFromMem( rdata.data(), rdata.size() ) ) )
+  if( type == bmpType )
   {
-    return ByteArray();
+    rdata.resize( pic.size().area() * 4 * 2 );
+
+    if(!(rout = SDL_RWFromMem( rdata.data(), rdata.size() ) ) )
+    {
+      return ByteArray();
+    }
+
+    SDL_SaveBMP_RW( pic.getSurface(), rout, 0 );
+
+    // Write the bmp out...
+    unsigned int size = *(unsigned int*)(&rdata[2]);
+    rdata.resize( size );
+
+    // and we're done
+    SDL_RWclose(rout);
+    return rdata;
+  }
+  else if( type == pngType )
+  {
+    rdata.resize( pic.size().area() * 4 * 2 );
+
+    if(!(rout = SDL_RWFromMem( rdata.data(), rdata.size() ) ) )
+    {
+      return ByteArray();
+    }
+
+    IMG_SavePNG_RW( rout, pic.getSurface(), 0 );
+
+    // Write the bmp out...
+    unsigned int size = SDL_RWtell( rout );
+    rdata.resize( size );
+
+    // and we're done
+    SDL_RWclose(rout);
+    return rdata;
   }
 
-  SDL_SaveBMP_RW( pic.getSurface(), rout, 0 );
-
-  // Write the bmp out...
-  unsigned int size = *(unsigned int*)(&rdata[2]);
-  rdata.resize( size );
-
-  // and we're done
-  SDL_RWclose(rout);
-  return rdata;
+  return ByteArray();
 }
 
 void PictureConverter::convToGrayscale( Picture& dst, const Picture& src )

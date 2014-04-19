@@ -143,7 +143,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
 
       // Construct name
-      std::string name = StringHelper::format( 0xff, "%s_%05d.bmp", bmp_name.c_str(), i - sbr.start_index + 1);
+      std::string name = StringHelper::format( 0xff, "%s_%05d.png", bmp_name.c_str(), i - sbr.start_index + 1);
       // Locate appropriate 555 file
       Path p555;
       if( sir.flags[0] > 0 ) //is external resource file???
@@ -277,9 +277,10 @@ ByteArray Sg2ArchiveReader::_readData(const SgFileEntry& rec )
 
 void Sg2ArchiveReader::_loadIsometricImage( Picture& pic, const SgFileEntry& rec )
 {
-	char* buffer = _readData( rec ).data();
-	_writeIsometricBase( pic, rec.sr, (unsigned char*)buffer );
-	_writeTransparentImage( pic, (unsigned char*)&buffer[rec.sr.uncompressed_length], rec.sr.length - rec.sr.uncompressed_length);
+	ByteArray buffer = _readData( rec );
+	_writeIsometricBase( pic, rec.sr, (unsigned char*)buffer.data() );
+	_writeTransparentImage( pic, (unsigned char*)&buffer[rec.sr.uncompressed_length],
+				rec.sr.length - rec.sr.uncompressed_length);
 }
 
 void Sg2ArchiveReader::_writeIsometricBase( Picture& img, const SgImageRecord& rec, const unsigned char* buffer )
@@ -349,7 +350,8 @@ void Sg2ArchiveReader::_writeIsometricBase( Picture& img, const SgImageRecord& r
 		x_offset = (y < size ? (size - y - 1) : (y - size + 1)) * tile_height;
 		for (x = 0; x < (y < size ? y + 1 : 2 * size - y - 1); x++, i++)
 		{
-			_writeIsometricTile( img, &buffer[i * tile_bytes], x_offset, y_offset, tile_width, tile_height);
+			_writeIsometricTile( img, &buffer[i * tile_bytes],
+					     x_offset, y_offset, tile_width, tile_height);
 			x_offset += tile_width + 2;
 		}
 		y_offset += tile_height / 2;
@@ -370,7 +372,7 @@ void Sg2ArchiveReader::_writeIsometricTile( Picture& img, const unsigned char* b
 		for (x = start; x < end; x++, i += 2)
 		{
 			_set555Pixel( img, offset_x + x, offset_y + y,
-									(buffer[i+1] << 8) | buffer[i]);
+				      (buffer[i+1] << 8) | buffer[i]);
 		}
 	}
 
@@ -381,7 +383,7 @@ void Sg2ArchiveReader::_writeIsometricTile( Picture& img, const unsigned char* b
 		for (x = start; x < end; x++, i += 2)
 		{
 			_set555Pixel( img, offset_x + x, offset_y + y,
-										(buffer[i+1] << 8) | buffer[i]);
+					(buffer[i+1] << 8) | buffer[i]);
 		}
 	}
 }
@@ -517,7 +519,7 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
       break;
     }
 
-    ByteArray data = PictureConverter::save( *result );
+    ByteArray data = PictureConverter::save( *result, "PNG" );
     NFile memfile = MemoryFile::create( data, filename );
     return memfile;
 
