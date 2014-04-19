@@ -124,6 +124,7 @@ void Game::mountArchives()
   Logger::warning( "Game: mount archives begin" );
   splash::initialize( "logo_00001" );
 
+  std::string errorStr;
   Variant c3res = GameSettings::get( GameSettings::c3gfx );
   if( c3res.isValid() )
   {
@@ -131,15 +132,29 @@ void Game::mountArchives()
     vfs::ArchivePtr mainArchive = fs.mountArchive( gfxDir + "C3.SG2" );
     if( mainArchive.isNull() )
     {
-      std::string errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
-                             "original game archive C3.SG2 not found in folder " + c3res.toString() +
-                             "!!!.\nBe sure that you copy all .sg2 and .map files to it folder";
-      OSystem::error( "Resources error", errorStr );
-      Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
-      exit( -1 ); //kill application
+      errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
+                 "original game archive C3.SG2 not found in folder " + c3res.toString() +
+                 "!!!.\nBe sure that you copy all .sg2 and .map files to it folder";
     }
 
     fs.mountArchive( gfxDir + "CELTS.SG2" );
+  }
+  else
+  {
+    vfs::Path testPics = GameSettings::rcpath( GameSettings::testArchive );
+    if( !testPics.exist() )
+    {
+      errorStr = "Critical: Not found graphics set. Use precompiled CaesarIA archive or set\n"
+                 "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
+                 "forexample, \"-c3gfx c:/games/caesar3/\"";
+    }
+  }
+
+  if( !errorStr.empty() )
+  {
+    OSystem::error( "Resources error", errorStr );
+    Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
+    exit( -1 ); //kill application
   }
 
   vfs::Path archivesFile = GameSettings::rcpath( GameSettings::archivesModel );
