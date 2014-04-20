@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "empiremap_window.hpp"
 #include "gfx/picturesarray.hpp"
@@ -39,6 +41,7 @@
 #include "world/object.hpp"
 #include "events/fundissue.hpp"
 #include "events/showadvisorwindow.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -306,6 +309,8 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->lbCityTitle = new Label( this, Rect( Point( (width() - 240) / 2 + 60, height() - 132 ), Size( 240, 32 )) );
   _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
   _d->offset = GameSettings::get( empMapOffset ).toPoint();
+
+  WidgetEscapeCloser::insertTo( this );
 
   _d->tradeInfo = new Widget( this, -1, Rect( 0, height() - 120, width(), height() ) );
 

@@ -38,7 +38,7 @@ GameEventPtr SetVideoSettings::create()
 void SetVideoSettings::_exec(Game& game, unsigned int)
 {
   gui::VideoOptionsWindow* dialog = new gui::VideoOptionsWindow( game.gui()->rootWidget(),
-                                                                 game.engine()->getAvailableModes(),
+                                                                 game.engine()->modes(),
                                                                  game.engine()->isFullscreen() );
 
   CONNECT( dialog, onSreenSizeChange(), this, SetVideoSettings::_setResolution );

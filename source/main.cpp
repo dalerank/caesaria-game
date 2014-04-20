@@ -45,14 +45,14 @@ int main(int argc, char* argv[])
 #endif
   Logger::warning( "Options: working directory is " + workdir.toString() );
 
-  GameSettings::getInstance().setwdir( workdir.toString() );
+  GameSettings::instance().setwdir( workdir.toString() );
   for (int i = 0; i < (argc - 1); i++)
   {
     if( !strcmp( argv[i], "-R" ) )
     {
       const char* opts = argv[i+1];
       Logger::warning( "Options: setting workdir to %s", opts  );
-      GameSettings::getInstance().setwdir( std::string( opts, strlen( opts ) ) );
+      GameSettings::instance().setwdir( std::string( opts, strlen( opts ) ) );
       i++;
     }
     else if( !strcmp( argv[i], "-Lc" ) )

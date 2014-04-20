@@ -30,11 +30,13 @@
 #include "objects/fortification.hpp"
 #include "core/stringhelper.hpp"
 #include "camera.hpp"
+#include "gui/dialogbox.hpp"
 #include "renderermode.hpp"
 #include "events/warningmessage.hpp"
 #include "city/funds.hpp"
 
 using namespace constants;
+using namespace gui;
 
 namespace gfx
 {
@@ -77,7 +79,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
   ConstructionPtr overlay = bldCommand->getContruction();
 
-  if (!overlay.isValid())
+  if( !overlay.isValid() )
   {
     return;
   }
@@ -256,9 +258,10 @@ void LayerBuild::handleEvent(NEvent& event)
         break;
       }
 
-      _buildAll();
-      _setStartCursorPos( _lastCursorPos() );
-      _updatePreviewTiles( true );
+#ifndef CAESARIA_PLATFORM_ANDROID
+      _finishBuild();
+#endif
+
     }
     break;
 
@@ -286,9 +289,28 @@ void LayerBuild::handleEvent(NEvent& event)
     case KEY_RIGHT: _camera()->moveRight( moveValue ); break;
     case KEY_LEFT:  _camera()->moveLeft ( moveValue ); break;
     case KEY_ESCAPE: _setNextLayer( citylayer::simple ); _discardPreview(); break;
+    case KEY_RETURN:
+    {
+      if( !event.keyboard.pressed )  //button was left up
+      {
+        Tile* tile = _camera()->at( _lastCursorPos(), false );  // tile under the cursor (or NULL)
+        if( tile != 0 )
+        {
+          _finishBuild();
+        }
+      }
+    }
+    break;
     default: break;
     }
   }
+}
+
+void LayerBuild::_finishBuild()
+{
+  _buildAll();
+  _setStartCursorPos( _lastCursorPos() );
+  _updatePreviewTiles( true );
 }
 
 int LayerBuild::getType() const {  return citylayer::build;}
@@ -395,12 +417,11 @@ LayerPtr LayerBuild::create(Renderer* renderer, PlayerCityPtr city)
 
 LayerBuild::~LayerBuild() {}
 
-LayerBuild::LayerBuild( Renderer* renderer, PlayerCityPtr city)
+LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
   : Layer( renderer->camera(), city ),
     __INIT_IMPL(LayerBuild)
 {
-  __D_IMPL(_d, LayerBuild)
-  _d->renderer = renderer;  
+  _dfunc()->renderer = renderer;
 }
 
 }//end namespace gfx

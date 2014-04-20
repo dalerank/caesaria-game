@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "mission_target_window.hpp"
 #include "game/resourcegroup.hpp"
@@ -30,6 +32,7 @@
 #include "city/victoryconditions.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace gfx;
 
@@ -56,24 +59,21 @@ public:
 
 MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr city, int id )
 {
-  Size size( 610, 430 );
-
-  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->height() - size.height())/2 ), size );
-  MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, rectangle );
+  MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, Rect( 0, 0, 610, 430 ) );
+  ret->setCenter( parent->center() );
   ret->setCity( city );
   return ret;
 }
 
-MissionTargetsWindow::~MissionTargetsWindow()
-{
-
-}
+MissionTargetsWindow::~MissionTargetsWindow() {}
 
 MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle ) 
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
   _d->locker.activate();
   _d->background.reset( Picture::create( size() ) );
+
+  WidgetEscapeCloser::insertTo( this );
 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 

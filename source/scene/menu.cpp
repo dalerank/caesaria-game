@@ -38,6 +38,7 @@
 #include "core/locale.hpp"
 #include "core/saveadapter.hpp"
 #include "gui/smkviewer.hpp"
+#include "gui/dialogbox.hpp"
 
 using namespace gfx;
 
@@ -78,6 +79,7 @@ public:
   void resolveChangePlayerName();
   void resolveShowChangeLanguageWindow();
   void resolveChangeLanguage(const gui::ListBoxItem&);
+  void fitScreenResolution();
   void reload()
   {
     result = StartMenu::reloadScreen;
@@ -97,6 +99,14 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
+}
+
+void StartMenu::Impl::fitScreenResolution()
+{
+  gfx::Engine::Modes modes = game->engine()->modes();
+  GameSettings::set( GameSettings::resolution, Variant( modes.front() ) );
+  GameSettings::set( GameSettings::screenFitted, true );
+  GameSettings::save();
 }
 
 void StartMenu::Impl::resolveShowChangeLanguageWindow()
@@ -282,9 +292,19 @@ void StartMenu::initialize()
   btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
 
-  /*gui::SmkViewer* smkv = new gui::SmkViewer( _d->game->gui()->rootWidget(), Rect( 300, 300, 600, 600 ), gui::SmkViewer::video );
-  smkv->setFilename( GameSettings::rcpath( "/smk/1C.smk" ) );
-  CONNECT( smkv, onFinish(), smkv, gui::SmkViewer::deleteLater );*/
+#ifdef CAESARIA_PLATFORM_ANDROID
+  bool screenFitted = GameSettings::get( GameSettings::screenFitted );
+  if( !screenFitted )
+  {
+    gui::DialogBox* dialog = new gui::DialogBox( _d->game->gui()->rootWidget(),  Rect( 0, 0, 400, 150 ),
+                                                 "Information", "Is need autofit screen resolution?",
+                                                 gui::DialogBox::btnOk | gui::DialogBox::btnCancel );
+    CONNECT(dialog, onOk(), dialog, gui::DialogBox::deleteLater );
+    CONNECT(dialog, onCancel(), dialog, gui::DialogBox::deleteLater );
+    CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
+    dialog->show();
+  }
+#endif
 }
 
 int StartMenu::result() const{  return _d->result;}

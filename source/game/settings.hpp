@@ -59,9 +59,11 @@ public:
   __GS_PROPERTY(giftsModel)
   __GS_PROPERTY(emblemsModel)
   __GS_PROPERTY(testArchive)
+  __GS_PROPERTY(screenFitted)
+  __GS_PROPERTY(needAcceptBuild)
 #undef __GS_PROPERTY
 
-  static GameSettings& getInstance();
+  static GameSettings& instance();
 
   static void set( const std::string& option, const Variant& value );
   static Variant get( const std::string& option );

@@ -260,7 +260,7 @@ void SdlEngine::createScreenshot( const std::string& filename )
   IMG_SavePNG( filename.c_str(), _d->screen.surface(), -1 );
 }
 
-Engine::Modes SdlEngine::getAvailableModes() const
+Engine::Modes SdlEngine::modes() const
 {
   Modes ret;
 

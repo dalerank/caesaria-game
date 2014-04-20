@@ -60,7 +60,7 @@ public:
   virtual unsigned int fps() const;
   virtual void createScreenshot( const std::string& filename );
 
-  virtual Modes getAvailableModes() const;
+  virtual Modes modes() const;
   virtual Point cursorPos() const;
 
 //non virtual functions: need to debug functional

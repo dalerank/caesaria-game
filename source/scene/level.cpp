@@ -136,7 +136,7 @@ Level::~Level() {}
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
-  _d->renderer.initialize( city, _d->engine );
+  _d->renderer.initialize( city, _d->engine, _d->game->gui() );
   _d->game->gui()->clear();
 
   const int topMenuHeight = 23;

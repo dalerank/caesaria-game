@@ -29,6 +29,8 @@
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "gameautopause.hpp"
+#include "core/gettext.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace gfx;
 
@@ -78,9 +80,11 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
 {
   _d->locker.activate();
   setCenter( parent->center() );
+
+  WidgetEscapeCloser::insertTo( this );
   
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 30) );
-  title->setText( "Save city" );
+  title->setText( _("##save_city##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignCenter, alignCenter );
 
@@ -93,14 +97,15 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
   _d->extension = fileExt;
 
   _d->lbxSaves = new ListBox( this, Rect( 18, 70, 18 + 356, 70 + 205 ) );
-  CONNECT( _d->lbxSaves, onItemSelectedAgain(), _d.data(), Impl::resolveListboxChange );
  
   new Label( this, Rect( 18, 296, width() / 2, 297 + 30 ), "Continue?" );
   _d->btnOk = new TexturedButton( this, Point( 217, 297 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
-  CONNECT( _d->btnOk, onClicked(), _d.data(), Impl::resolveButtonOkClick );
-  CONNECT( _d->btnOk, onClicked(), this, SaveDialog::deleteLater );
 
   _d->btnCancel = new TexturedButton( this, Point( 265, 297), Size( 39, 26 ), -1, ResourceMenu::cancelBtnPicId );
+
+  CONNECT( _d->lbxSaves, onItemSelectedAgain(), _d.data(), Impl::resolveListboxChange );
+  CONNECT( _d->btnOk, onClicked(), _d.data(), Impl::resolveButtonOkClick );
+  CONNECT( _d->btnOk, onClicked(), this, SaveDialog::deleteLater );
   CONNECT( _d->btnCancel, onClicked(), this, SaveDialog::deleteLater );
 
   _d->findFiles();
@@ -116,9 +121,6 @@ void SaveDialog::draw(gfx::Engine& painter )
   Widget::draw( painter );
 }
 
-Signal1<std::string>& SaveDialog::onFileSelected()
-{
-  return _d->onFileSelectedSignal;
-}
+Signal1<std::string>& SaveDialog::onFileSelected() {  return _d->onFileSelectedSignal; }
 
 }//end namespace gui

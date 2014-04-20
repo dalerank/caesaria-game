@@ -12,11 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "city_renderer.hpp"
-
-#include <list>
-#include <vector>
 
 #include "tile.hpp"
 #include "engine.hpp"
@@ -85,10 +84,11 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize(PlayerCityPtr city, Engine* engine)
+void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::GuiEnv* guienv )
 {
   _d->city = city;
   _d->tilemap = &city->tilemap();
+  _d->guienv = guienv;
   _d->camera.init( *_d->tilemap );
   _d->engine = engine;
 

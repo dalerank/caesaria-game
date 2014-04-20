@@ -55,6 +55,8 @@ __REG_PROPERTY(walkerModel)
 __REG_PROPERTY(giftsModel)
 __REG_PROPERTY(emblemsModel )
 __REG_PROPERTY(testArchive )
+__REG_PROPERTY(screenFitted)
+__REG_PROPERTY(needAcceptBuild)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -67,7 +69,7 @@ public:
   VariantMap options;
 };
 
-GameSettings& GameSettings::getInstance()
+GameSettings& GameSettings::instance()
 {
   static GameSettings inst;
   return inst;
@@ -95,6 +97,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ giftsModel          ] = Variant( std::string( "/gifts.model" ) );
   _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
   _d->options[ testArchive         ] = Variant( std::string( "/pics/pics.zip" ) );
+  _d->options[ needAcceptBuild     ] = true;
   _d->options[ soundVolume         ] = 100;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ musicVolume         ] = 25;
@@ -104,16 +107,22 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
+#ifdef CAESARIA_PLATFORM_ANDROID
+  _d->options[ needAcceptBuild     ] = true;
+#endif
 }
 
 void GameSettings::set( const std::string& option, const Variant& value )
 {
-  getInstance()._d->options[ option ] = value;
+  instance()._d->options[ option ] = value;
 }
 
 Variant GameSettings::get( const std::string& option )
 {
-  return getInstance()._d->options[ option ];
+  VariantMap::iterator it = instance()._d->options.find( option );
+  return  instance()._d->options.end() == it
+              ? Variant()
+              : it->second;
 }
 
 void GameSettings::setwdir( const std::string& wdirstr )
@@ -168,16 +177,5 @@ void GameSettings::load()
 
 void GameSettings::save()
 {
-  StringArray items;
-  items << GameSettings::fullscreen
-        << GameSettings::resolution
-        << GameSettings::soundVolume
-        << GameSettings::ambientVolume
-        << GameSettings::musicVolume
-        << GameSettings::language;
-
-  VariantMap saveSettings;
-  foreach( it, items) { saveSettings[ *it ] = get( *it );  }
-
-  SaveAdapter::save( saveSettings, rcpath( GameSettings::settingsPath ) );
+  SaveAdapter::save( instance()._d->options, rcpath( GameSettings::settingsPath ) );
 }

@@ -35,6 +35,7 @@
 #include "city/migration.hpp"
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -70,6 +71,8 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   title->setText( _("##advisor_chief##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( alignUpperLeft, alignCenter );
+
+  WidgetEscapeCloser::insertTo( this );
 
   _d->background.reset( Picture::create( size() ) );
 

@@ -27,6 +27,7 @@
 #include "city/city.hpp"
 #include "core/logger.hpp"
 #include "core/event.hpp"
+#include "widgetescapecloser.hpp"
 #include "popup_messagebox.hpp"
 #include "texturedbutton.hpp"
 #include "core/color.hpp"
@@ -118,6 +119,8 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
 
   setupUI( GameSettings::rcpath( "/gui/scribesmessages.gui" ) );
   setCenter( p->center() );
+
+  WidgetEscapeCloser::insertTo( this );
 
   WidgetEscapeCloser::insertTo( this );
   _d->lbxMessages= new ScribesListBox( this, Rect( 16, 60, width() - 16, height() - 50 ) );

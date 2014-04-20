@@ -43,6 +43,7 @@ private:
   void _checkPreviewBuild(TilePos pos);
   void _discardPreview();
   void _buildAll();
+  void _finishBuild();
   void _drawBuildTiles( Engine& engine );
 
   LayerBuild( Renderer* renderer, PlayerCityPtr city );
