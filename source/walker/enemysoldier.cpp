@@ -56,9 +56,11 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
 bool EnemySoldier::_tryAttack()
 {
   BuildingList buildings = _findBuildingsInRange( 1 );
+  TilePos targetPos;
   if( !buildings.empty() )
   {
     _d->action = destroyBuilding;
+    targetPos = buildings.front()->pos();
     fight();
   }
   else
@@ -66,6 +68,7 @@ bool EnemySoldier::_tryAttack()
     WalkerList enemies = _findEnemiesInRange( 1 );
     if( !enemies.empty() )
     {
+      targetPos = enemies.front()->pos();
       _d->action = fightEnemy;
       fight();
     }
@@ -76,7 +79,7 @@ bool EnemySoldier::_tryAttack()
     bool isPosBusy = _isTileBusy( pos() );
     if( isPosBusy )
     {
-      _move2freePos();
+      _move2freePos( targetPos );
     }
   }
 
@@ -114,7 +117,7 @@ void EnemySoldier::_reachedPathway()
   }
 }
 
-Pathway EnemySoldier::_findFreeSlot( const int range )
+Pathway EnemySoldier::_findFreeSlot( TilePos target, const int range )
 {
   for( int currentRange=1; currentRange <= range; currentRange++ )
   {
@@ -122,11 +125,15 @@ Pathway EnemySoldier::_findFreeSlot( const int range )
     TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset );
     tiles = tiles.walkableTiles( true );
 
+    float crntDistance = target.distanceFrom( pos() );
     foreach( itile, tiles )
     {
       EnemySoldierList eslist;
       eslist << _city()->getWalkers( walker::any, (*itile)->pos() );
       if( !eslist.empty() )
+        continue;
+
+      if( target.distanceFrom( (*itile)->pos() ) > crntDistance )
         continue;
 
       Pathway pathway = PathwayHelper::create( pos(), (*itile)->pos(), PathwayHelper::allTerrain );
@@ -140,10 +147,10 @@ Pathway EnemySoldier::_findFreeSlot( const int range )
   return Pathway();
 }
 
-bool EnemySoldier::_move2freePos()
+bool EnemySoldier::_move2freePos( TilePos target )
 {
   const int defaultRange = 10;
-  Pathway way2freeslot = _findFreeSlot( defaultRange );
+  Pathway way2freeslot = _findFreeSlot( target, defaultRange );
   if( way2freeslot.isValid() )
   {
     _updatePathway( way2freeslot );

@@ -56,9 +56,11 @@ EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
 bool EnemyArcher::_tryAttack()
 {
   BuildingList buildings = _findBuildingsInRange( _d->attackDistance );
+  TilePos targetPos;
   if( !buildings.empty() )
   {
     _setSubAction( EnemySoldier::destroyBuilding );
+    targetPos = buildings.front()->pos();
     fight();
   }
   else
@@ -67,6 +69,7 @@ bool EnemyArcher::_tryAttack()
     if( !enemies.empty() )
     {
       _setSubAction( EnemySoldier::fightEnemy );
+      targetPos = enemies.front()->pos();
       fight();
     }
   }
@@ -76,7 +79,7 @@ bool EnemyArcher::_tryAttack()
     bool isPosBusy = _isTileBusy( pos() );
     if( isPosBusy )
     {
-      _move2freePos();
+      _move2freePos( targetPos );
     }
   }
 
