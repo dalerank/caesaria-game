@@ -162,6 +162,7 @@
     emperor_request_pottery1#city_request : {
       date : "-269.05.01"
       reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
       month : 24
       good : { pottery : 10 }
       success : { favour : 10 }
@@ -172,6 +173,7 @@
       date : "-350.01.01"
       population : 500
       send2scribe : true
+      video : "/smk/Population1.smk"
       title : "##population_mileston##"
       text : "##500_citzens_in_city##"
     }

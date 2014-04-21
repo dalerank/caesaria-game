@@ -22,6 +22,7 @@
 #include "texturedbutton.hpp"
 #include "listbox.hpp"
 #include "image.hpp"
+#include "smkviewer.hpp"
 #include "core/logger.hpp"
 #include <map>
 
@@ -65,12 +66,10 @@ WidgetFactory::WidgetFactory() : _d( new Impl )
   addCreator( CAESARIA_STR_EXT(PushButton),     new BaseWidgetCreator<PushButton>() );
   addCreator( CAESARIA_STR_EXT(ListBox),        new BaseWidgetCreator<ListBox>() );
   addCreator( CAESARIA_STR_EXT(Image),          new BaseWidgetCreator<Image>() );
+  addCreator( CAESARIA_STR_EXT(SmkViewer),      new BaseWidgetCreator<SmkViewer>() );
 }
 
-WidgetFactory::~WidgetFactory()
-{
-
-}
+WidgetFactory::~WidgetFactory() {}
 
 void WidgetFactory::addCreator( const std::string& typeName, WidgetCreator* ctor )
 {

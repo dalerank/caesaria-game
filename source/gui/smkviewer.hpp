@@ -29,7 +29,7 @@ class SmkViewer : public Widget
 public:
   typedef enum { native=0, video, count } Mode;
   //! constructor
-  SmkViewer(Widget* parent );
+  SmkViewer(Widget* parent);
 
   SmkViewer(Widget* parent, const Rect& rectangle, Mode mode=native );
 

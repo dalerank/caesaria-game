@@ -1,0 +1,59 @@
+{  
+  geometry : [ 0, 0, 415, 450 ]
+
+  lbBackground#Label :
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+
+    smkViewer#SmkViewer : {
+      geometry : [ 10, 10, "pw-10", 302 ]
+      file : ""
+    }
+
+    lbBlackframe#Label : {
+      font : "FONT_2_WHITE"
+      geometry : [ 10, 304, "pw-10", "ph-50" ]
+      textAlign : [ "center", "center" ]
+      bgtype : "blackFrame"
+
+      lbText#Label : {
+        geometry : [ 5, 55, 430, 100 ]
+        font : "FONT_2_WHITE"
+        text : "##rome_need_some_goods##"
+      }
+
+      lbQty#Label : {
+        geometry : [ 10, 110, 30, 135 ]
+        font : "FONT_2_WHITE"
+      }
+
+      imgIcon#Image : {
+        geometry : [ 40, 110, 64, 134 ]
+        mode : "image"
+      }
+
+      lbInterval#Label : {
+        geometry : [ 200, 110, 420, 135 ]
+        font : "FONT_2_WHITE"
+      }
+    }
+
+    btnAdvisor#TexturedButton : {
+      geometry : [ 18, 280, 46, 308 ]
+      normal : [ "paneling", 286 ]
+      hovered : [ "paneling", 287 ]
+      pressed : [ "paneling", 288 ]
+      disabled : [ "paneling", 286 ]
+    }
+
+    btnExit#TexturedButton :
+    {
+      geometry : [ 440, 284, 464, 308 ]
+      normal : [ "paneling", 532 ]
+      hovered : [ "paneling", 533 ]
+      pressed : [ "paneling", 534 ]
+      disabled : [ "paneling", 535 ]
+    }
+  }
+}

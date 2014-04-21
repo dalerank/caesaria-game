@@ -31,8 +31,8 @@ class EmperrorRequestWindow : public Widget
 {
 public:
   static EmperrorRequestWindow* create(Widget* parent, city::request::RequestPtr request,
-                                       bool mayExec);
-  ~EmperrorRequestWindow();
+                                       bool mayExec, const std::string &video="");
+  virtual ~EmperrorRequestWindow();
 
   virtual void draw( gfx::Engine& painter );
   virtual void setText(const std::string &text);
