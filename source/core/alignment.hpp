@@ -12,31 +12,40 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ALIGNMENT_H_INCLUDED__
 #define __CAESARIA_ALIGNMENT_H_INCLUDED__
 
 #include "enumerator.hpp"
 
-enum Alignment
+namespace align
+{
+
+enum Type
 {
   //! Aligned to parent's top or left side (default)
-  alignUpperLeft=0,
+  upperLeft=0,
   //! Aligned to parent's bottom or right side
-  alignLowerRight,
+  lowerRight,
   //! Aligned to the center of parent
-  alignCenter,
+  center,
   //! Stretched to fit parent
-  alignScale,
+  scale,
   //!
-  alignAuto
+  automatic
 };
 
-class AlignHelper : public EnumsHelper<Alignment>
+class Helper : public EnumsHelper<align::Type>
 {
 public:
-  AlignHelper();
+  Helper();
 };
+
+} // end namespacce align
+
+typedef align::Type Alignment;
 
 #endif // __CAESARIA_ALIGNMENT_H_INCLUDED__
 

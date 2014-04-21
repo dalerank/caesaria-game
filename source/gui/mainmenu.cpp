@@ -28,15 +28,12 @@ MainMenu::MainMenu( Widget* parent, const Rect& rectangle, const int id )
 {
   setCloseHandling( cmIgnore );
 #ifdef _DEBUG
-	setDebugName( "MainMenu" );
+  setDebugName( "MainMenu" );
 #endif
 
-	//const ElementStyle& style = getStyle().getSubStyle( NES_ITEM );
-	setTextAlignment( alignCenter, alignCenter );
-
-	setNotClipped(false);
-
-	_recalculateSize();
+  setTextAlignment( align::center, align::center );
+  setNotClipped(false);
+  _recalculateSize();
 }
 
 ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool enabled, bool hasSubMenu, bool checked, bool autoChecking)

@@ -174,7 +174,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
 void EmpireMapWindow::Impl::drawCityInfo()
 {
   Label* lb = new Label( tradeInfo, Rect( Point( 0, tradeInfo->height() - 70), Size( tradeInfo->width(), 30) ) );
-  lb->setTextAlignment( alignCenter, alignUpperLeft );
+  lb->setTextAlignment( align::center, align::upperLeft );
   if( is_kind_of<PlayerCity>( currentCity ) )
   {
     lb->setText( _("##empiremap_our_city##") );

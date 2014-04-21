@@ -182,7 +182,7 @@ void StartMenu::Impl::resolveCredits()
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
   gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
-  item.setTextAlignment( alignCenter, alignCenter );
+  item.setTextAlignment( align::center, align::center );
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
   lbx->addItem( "gathanase" );
   lbx->addItem( "gecube (gb12335@gmail.com)" );
@@ -200,7 +200,7 @@ void StartMenu::Impl::resolveCredits()
   lbx->addItem( "ramMASTER" );
   lbx->addItem( "Greg Kennedy(kennedy.greg@gmail.com) smk decoder" );
   gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
-  testers.setTextAlignment( alignCenter, alignCenter );
+  testers.setTextAlignment( align::center, align::center );
   lbx->addItem( "Radek Liška" );
   lbx->addItem( "Dimitrius" );
 

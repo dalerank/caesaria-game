@@ -48,15 +48,15 @@ ListBoxItem::ListBoxItem() : _d( new Impl )
 {
   _d->currentHovered = 0.f;
   _d->enabled = true;
-  _d->horizontal = alignUpperLeft;
-  _d->vertical = alignCenter;
+  _d->horizontal = align::upperLeft;
+  _d->vertical = align::center;
   _d->alignEnabled = false;
   _d->state = stNormal;
 }
 
 ListBoxItem::ListBoxItem( const ListBoxItem& other ) : _d( new Impl )
 {
-	*this = other;
+  *this = other;
 }
 
 ListBoxItem& ListBoxItem::operator=( const ListBoxItem& other )

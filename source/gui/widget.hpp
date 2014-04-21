@@ -98,7 +98,7 @@ public:
 	*	\param vertical: ALIGN_UPPERLEFT to align with top edge,
 	*					 ALIGN_LOWEERRIGHT for bottom edge, or ALIGN_CENTER for centered text (default). 
 	*/
-  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
+  virtual void setTextAlignment( align::Type horizontal, align::Type vertical );
 
   virtual Alignment getHorizontalTextAlign() const;
 

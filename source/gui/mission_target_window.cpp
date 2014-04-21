@@ -78,7 +78,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   Label* lbToCity = new Label( this, Rect( width() / 2, height() - 40, width() - 110, height() - 10 ), _("##mission_wnd_tocity##" ) );
-  lbToCity->setTextAlignment( alignCenter, alignCenter );
+  lbToCity->setTextAlignment( align::center, align::center );
 
   TexturedButton* btnExit = new TexturedButton( this, Point( width() - 110, height() - 40), Size( 27 ), -1, 179 );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
@@ -89,7 +89,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   GroupBox* gbTargets = new GroupBox( this, Rect( 16, 64, width() - 64, 64 + 80), Widget::noId, GroupBox::blackFrame );
   Label* lbTtargets = new Label( gbTargets, Rect( 15, 0, 490, 28), _("##mission_wnd_targets_title##") );
   lbTtargets->setFont( Font::create( FONT_1_WHITE ) );
-  lbTtargets->setTextAlignment( alignUpperLeft, alignUpperLeft );
+  lbTtargets->setTextAlignment( align::upperLeft, align::upperLeft );
 
   _d->lbPopulation = new Label( gbTargets, Rect( 16, 32, 16 + 240, 32 + 20), _("##mission_wnd_population##"), false, Label::bgSmBrown );
   _d->lbProsperity = new Label( gbTargets, Rect( 16, 54, 16 + 240, 54 + 20), _("##mission_wnd_prosperity##"), false, Label::bgSmBrown );
@@ -154,7 +154,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
     {
       Picture pic = Picture::load( text.substr( 5 ) );
       ListBoxItem& item = _d->lbxHelp->addItem( pic );
-      item.setTextAlignment( alignCenter, alignUpperLeft );
+      item.setTextAlignment( align::center, align::upperLeft );
       int lineCount = pic.height() / _d->lbxHelp->itemHeight();
       StringArray lines;
       lines.resize( lineCount );

@@ -57,6 +57,7 @@ __REG_PROPERTY(emblemsModel )
 __REG_PROPERTY(testArchive )
 __REG_PROPERTY(screenFitted)
 __REG_PROPERTY(needAcceptBuild)
+__REG_PROPERTY(sg2model)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -81,6 +82,7 @@ GameSettings::GameSettings() : _d( new Impl )
   setwdir( application_path );
 
   _d->options[ pantheonModel       ] = Variant( std::string( "/pantheon.model" ) );
+  _d->options[ sg2model            ] = Variant( std::string( "/sg2.model" ) );
   _d->options[ houseModel          ] = Variant( std::string( "/house.model" ) );
   _d->options[ constructionModel   ] = Variant( std::string( "/construction.model" ) );
   _d->options[ citiesModel         ] = Variant( std::string( "/cities.model" ) );

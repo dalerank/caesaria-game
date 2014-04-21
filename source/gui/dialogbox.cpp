@@ -60,10 +60,10 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
-  lbTitle->setTextAlignment( alignCenter, alignCenter );
+  lbTitle->setTextAlignment( align::center, align::center );
 
   Label* lbText = new Label( this, Rect( 10, 55, width() - 10, 55 + 55 ), text );
-  lbText->setTextAlignment( alignCenter, alignCenter );
+  lbText->setTextAlignment( align::center, align::center );
 
   if( (buttons & btnOk) || (buttons & btnCancel) )
   {

@@ -68,7 +68,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   gui::Label* title = new gui::Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
   title->setText( _("##finance_advisor##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignUpperLeft, alignCenter );
+  title->setTextAlignment( align::upperLeft, align::center );
 
   _d->background.reset( Picture::create( size() ) );
 

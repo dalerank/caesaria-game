@@ -118,7 +118,7 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   // create the title
   _d->lbTitle = new Label( this, Rect( 50, 10, width()-50, 10 + 30 ), "", true );
   _d->lbTitle->setFont( Font::create( FONT_3 ) );
-  _d->lbTitle->setTextAlignment( alignCenter, alignCenter );
+  _d->lbTitle->setTextAlignment( align::center, align::center );
 
   _d->btnExit = new TexturedButton( this, Point( 472, height() - 39 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );

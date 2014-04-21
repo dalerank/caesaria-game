@@ -31,7 +31,7 @@ InfoboxLand::InfoboxLand( Widget* parent, const Tile& tile )
 { 
   Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
   lbText->setFont( Font::create( FONT_2 ) );
-  lbText->setTextAlignment( alignUpperLeft, alignCenter );
+  lbText->setTextAlignment( align::upperLeft, align::center );
   lbText->setWordwrap( true );
 
   if( tile.getFlag( Tile::tlTree ) )

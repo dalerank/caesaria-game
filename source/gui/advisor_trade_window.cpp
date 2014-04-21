@@ -530,7 +530,7 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
   title->setText( _("##Trade advisor##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignCenter, alignCenter );
+  title->setTextAlignment( align::center, align::center );
 
   _d->background.reset( Picture::create( size() ) );
   _d->city = city;

@@ -93,7 +93,7 @@ Label::Label( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( ne
 {
 	_d->isBorderVisible = false;
 	_d->backgroundMode = bgNone;
-	setTextAlignment( alignAuto, alignAuto );
+	setTextAlignment( align::automatic, align::automatic );
 }
 
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
@@ -108,7 +108,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
     setDebugName( "label");
   #endif
 
-  setTextAlignment( alignAuto, alignAuto );
+  setTextAlignment( align::automatic, align::automatic );
   setText( text );
 }
 

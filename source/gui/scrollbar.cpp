@@ -489,28 +489,27 @@ void ScrollBar::_refreshControls()
 	{
 		int h = height();
 		if( !_d->upButton )
-				 _d->upButton = _createButton( Rect(0, 0, h, h), alignUpperLeft, alignUpperLeft, alignUpperLeft, alignLowerRight, 2 );
+			 _d->upButton = _createButton( Rect(0, 0, h, h), align::upperLeft, align::upperLeft, align::upperLeft, align::lowerRight, 2 );
 
     if (!_d->downButton)
          _d->downButton = _createButton( Rect( width()-h, 0, width(), h),
-                                         alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight, 3 );
+                                         align::lowerRight, align::lowerRight, align::upperLeft, align::lowerRight, 3 );
 	}
 	else
 	{
 	  //int w = getWidth();
 		if (!_d->upButton)
     {
-      _d->upButton = _createButton( Rect(0,0, 39, 26), alignUpperLeft, alignLowerRight, alignUpperLeft, alignUpperLeft, 0 );
+      _d->upButton = _createButton( Rect(0,0, 39, 26), align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft, 0 );
     }
 
     if (!_d->downButton)
     {
       _d->downButton = _createButton( Rect(0, height()-26, 39, height()),
-                                      alignUpperLeft, alignLowerRight, alignLowerRight, alignLowerRight, 1 );
+                                      align::upperLeft, align::lowerRight, align::lowerRight, align::lowerRight, 1 );
     }
 	}
 }
-
 
 void ScrollBar::setBackgroundImage( const Picture& pixmap )
 {

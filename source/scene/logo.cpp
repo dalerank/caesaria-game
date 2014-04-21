@@ -23,6 +23,7 @@
 #include "gfx/picture.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
+#include "core/font.hpp"
 
 using namespace gfx;
 
@@ -32,7 +33,9 @@ namespace scene
 class SplashScreen::Impl
 {
 public:
-	Picture bgPicture;	
+  Picture bgPicture;
+  PictureRef textPicture;
+  std::string text;
 };
 
 SplashScreen::SplashScreen() : _d( new Impl ) {}
@@ -48,6 +51,9 @@ void SplashScreen::initialize()
   // center the bgPicture on the screen
   Size s = (engine.screenSize() - _d->bgPicture.size()) / 2;
   _d->bgPicture.setOffset( Point( s.width(), -s.height() ) );
+  _d->textPicture.init( Size( _d->bgPicture.width(), 30 ) );
+  _d->textPicture->setOffset( Point( (engine.screenSize().width() - _d->textPicture->width()) / 2,
+                                      _d->bgPicture.offset().y() - _d->bgPicture.height() - 5 ) );
 }
 
 void SplashScreen::draw()
@@ -55,6 +61,20 @@ void SplashScreen::draw()
   Engine& engine = Engine::instance();
 
   engine.drawPicture( _d->bgPicture, 0, 0);
+
+  if( !_d->text.empty() )
+  {
+    Font textFont = Font::create( FONT_2_WHITE ) ;
+
+    Rect textRect = textFont.calculateTextRect( _d->text, Rect( Point(), _d->textPicture->size() ), align::center, align::center );
+
+    _d->textPicture->fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPicture->size() ) );
+    //_d->textPicture->fill( 0xffffffff, Rect( Point( 1, 1 ), _d->textPicture->size() - Size( 2, 2 ) ) );
+
+    textFont.draw( *_d->textPicture, _d->text, textRect.left(), textRect.top(), false );
+
+    engine.drawPicture( *_d->textPicture, 0, 0 );
+  }
 }
 
 void SplashScreen::fadeOut()
@@ -79,6 +99,14 @@ void SplashScreen::fadeOut()
     //engine.delay( 1 );
     engine.endRenderFrame();
   }
+}
+
+void SplashScreen::setText(std::string text)
+{
+  _d->text = text;
+
+  Engine& engine = Engine::instance();
+  update( engine );
 }
 
 int SplashScreen::result() const { return 0; }

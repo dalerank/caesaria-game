@@ -122,7 +122,7 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts
   gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
   title->setText( _("##advlegion_window_title##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignCenter, alignCenter );
+  title->setTextAlignment( align::center, align::center );
 
   _d->alarm = new gui::Label( this, Rect( 60, height()-60, width() - 60, height() - 40 ), _("##advlegion_noalarm##") );
   _d->helpRequest = new gui::Label( this, Rect( 60, height()-40, width() - 60, height() - 20 ), _("##advlegion_norequest##") );

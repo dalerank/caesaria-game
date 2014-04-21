@@ -41,7 +41,7 @@ public:
   RatingButton( Widget* parent, Point pos, std::string title, std::string tooltip )
     : PushButton( parent, Rect( pos, Size( 108, 65 )), _(title), -1, false, PushButton::whiteBorderUp )
   {
-    setTextAlignment( alignCenter, alignUpperLeft );
+    setTextAlignment( align::center, align::upperLeft );
     setTooltipText( _(tooltip) );
     _value = 0;
     _target = 0;
@@ -187,7 +187,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   Label* title = new Label( this, Rect( 60, 10, 225, 10 + 40) );
   title->setText( _("##wnd_ratings_title##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignUpperLeft, alignCenter );
+  title->setTextAlignment( align::upperLeft, align::center );
 
   _d->background.reset( Picture::create( size() ) );
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );

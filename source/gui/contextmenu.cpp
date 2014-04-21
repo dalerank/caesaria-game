@@ -44,7 +44,7 @@ ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
 
   setNotClipped(true);
 
-  setTextAlignment( alignCenter, alignUpperLeft );
+  setTextAlignment( align::center, align::upperLeft );
 
   _d->allowFocus = allowFocus;
   _d->changeTime = 0;

@@ -70,7 +70,7 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   gui::Label* title = new gui::Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
   title->setText( _("##advisor_chief##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignUpperLeft, alignCenter );
+  title->setTextAlignment( align::upperLeft, align::center );
 
   WidgetEscapeCloser::insertTo( this );
 

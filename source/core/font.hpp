@@ -64,7 +64,7 @@ public:
   bool operator!=(const Font& other) const;
 
   Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
-                          Alignment horizontalAlign, Alignment verticalAlign );
+                          align::Type horizontalAlign, align::Type verticalAlign );
 
   void draw(gfx::Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
   void draw(gfx::Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );

@@ -183,7 +183,7 @@ void AdvisorEmperorWindow::_updateRequests()
   {
     Label* lb = new Label( this, reqsRect, _("##have_no_requests##") );
     lb->setWordwrap( true );
-    lb->setTextAlignment( alignUpperLeft, alignCenter );
+    lb->setTextAlignment( align::upperLeft, align::center );
   }
   else
   {

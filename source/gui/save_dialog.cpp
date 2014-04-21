@@ -86,7 +86,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 30) );
   title->setText( _("##save_city##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignCenter, alignCenter );
+  title->setTextAlignment( align::center, align::center );
 
   _d->background.reset( Picture::create( size() ) );
   //main _d->_d->background

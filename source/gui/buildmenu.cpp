@@ -52,7 +52,7 @@ public:
     Font fontRed = Font::create( FONT_2_RED );
 
     setFont( fontRed, stHovered );
-    setTextAlignment( alignUpperLeft, alignCenter );
+    setTextAlignment( align::upperLeft, align::center );
     setTextOffset( Point( 15, 0 ) );
   }
 
@@ -67,7 +67,7 @@ public:
       char buffer[32];
       sprintf( buffer, "%d", _cost );
       Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, width()-10, height() ),
-                                                alignLowerRight, getVerticalTextAlign() );
+                                                align::lowerRight, getVerticalTextAlign() );
       font.draw( *_textPictureRef( state ), buffer, textRect.left(), textRect.top() );
     }
   }

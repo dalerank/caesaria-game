@@ -242,7 +242,7 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 
   rect -= Point( size.width() + 20, -20 );
   elm->setGeometry( rect );
-  elm->setTextAlignment( alignCenter, alignCenter );
+  elm->setTextAlignment( align::center, align::center );
 
   return elm;
 }

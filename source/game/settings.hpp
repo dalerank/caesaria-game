@@ -61,6 +61,7 @@ public:
   __GS_PROPERTY(testArchive)
   __GS_PROPERTY(screenFitted)
   __GS_PROPERTY(needAcceptBuild)
+  __GS_PROPERTY(sg2model)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();

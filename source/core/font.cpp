@@ -153,8 +153,8 @@ bool Font::operator!=( const Font& other ) const
   return !( _d->ttfFont == other._d->ttfFont );
 }
 
-Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect, 
-                             Alignment horizontalAlign, Alignment verticalAlign )
+Rect Font::calculateTextRect(const std::string& text, const Rect& baseRect,
+                             align::Type horizontalAlign, align::Type verticalAlign )
 {
   Rect resultRect;
   Size d = getSize( text );
@@ -162,12 +162,12 @@ Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect,
   // justification
   switch (horizontalAlign)
   {
-  case alignCenter:
+  case align::center:
     // align to h centre
     resultRect.UpperLeftCorner.setX( (baseRect.getWidth()/2) - (d.width()/2) );
     resultRect.LowerRightCorner.setX( (baseRect.getWidth()/2) + (d.width()/2) );
     break;
-  case alignLowerRight:
+  case align::lowerRight:
     // align to right edge
     resultRect.UpperLeftCorner.setX( baseRect.getWidth() - d.width() );
     resultRect.LowerRightCorner.setX( baseRect.getWidth() );
@@ -180,12 +180,12 @@ Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect,
 
   switch (verticalAlign)
   {
-  case alignCenter:
+  case align::center:
     // align to v centre
     resultRect.UpperLeftCorner.setY( (baseRect.getHeight()/2) - (d.height()/2) );
     resultRect.LowerRightCorner.setY( (baseRect.getHeight()/2) + (d.height()/2) );
     break;
-  case alignLowerRight:
+  case align::lowerRight:
     // align to bottom edge
     resultRect.UpperLeftCorner.setY( baseRect.getHeight() - d.height() );
     resultRect.LowerRightCorner.setY( baseRect.getHeight() );

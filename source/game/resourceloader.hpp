@@ -13,39 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerank@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_SCENE_LOGO_HPP_INCLUDE_
-#define _CAESARIA_SCENE_LOGO_HPP_INCLUDE_
+#ifndef _CAESARIA_RESOURCELOADER_INCLUDE_H_
+#define _CAESARIA_RESOURCELOADER_INCLUDE_H_
 
-#include "base.hpp"
+#include "core/signals.hpp"
 #include "core/scopedptr.hpp"
+#include "vfs/path.hpp"
 
-namespace scene
-{
-
-// displays a background image
-class SplashScreen: public Base
+class ResourceLoader
 {
 public:
-  SplashScreen();
-  virtual ~SplashScreen();
+  ResourceLoader();
+  ~ResourceLoader();
 
-  void initialize();
+  void loadFromModel( vfs::Path path2model );
 
-  virtual void draw();
-  void fadeOut();
-  void setText( std::string text );
-
-protected:
-  virtual int result() const;
+public oc3_signals:
+  Signal1<std::string> &onStartLoading();
 
 private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-}//end namespace scene
-
-#endif //_CAESARIA_SCENE_LOGO_HPP_INCLUDE_
+#endif //_CAESARIA_RESOURCELOADER_INCLUDE_H_

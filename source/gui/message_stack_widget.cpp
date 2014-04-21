@@ -97,7 +97,7 @@ void WindowMessageStack::addMessage( std::string message )
   }
 
   Label* lbMessage = new Label( this, Rect( 0, 0, 2, 20), message );
-  lbMessage->setTextAlignment( alignCenter, alignCenter );
+  lbMessage->setTextAlignment( align::center, align::center );
   lbMessage->setBackgroundPicture( *_d->lbBackgorund );
   new WidgetDeleter( lbMessage, 5000 );
 

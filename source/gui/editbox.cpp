@@ -124,7 +124,7 @@ void EditBox::_init()
 
   calculateScrollPos();
 
-  setTextAlignment( alignUpperLeft, alignCenter );
+  setTextAlignment( align::upperLeft, align::center );
 }
 
 void EditBox::_setText(const std::wstring& r)
