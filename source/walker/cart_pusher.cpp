@@ -225,7 +225,7 @@ void CartPusher::computeWalkerDestination()
      setConsumerBuilding( destBuilding );
      setPos( pathWay.getStartPos() );
      setPathway( pathWay );
-     setSpeed( 1 );
+     go();
    }
    else
    {
@@ -236,7 +236,7 @@ void CartPusher::computeWalkerDestination()
      else
      {
        _setDirection( constants::north );
-       setSpeed( 0 );
+       Walker::wait();
        setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
        _walk();
      }

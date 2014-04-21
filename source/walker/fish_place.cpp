@@ -37,7 +37,7 @@ public:
 FishPlace::FishPlace( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
 {
   _setType( walker::fishPlace );
-  setSpeed( 0.1f );
+  setSpeedMultiplier( 0.1f );
 
   setName( _("##ship##") );
 

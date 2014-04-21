@@ -59,9 +59,7 @@ bool EnemyArcher::_tryAttack()
   if( !buildings.empty() )
   {
     _setSubAction( EnemySoldier::destroyBuilding );
-    setSpeed( 0.f );
-    _setAction( acFight );
-    return true;
+    fight();
   }
   else
   {
@@ -69,13 +67,20 @@ bool EnemyArcher::_tryAttack()
     if( !enemies.empty() )
     {
       _setSubAction( EnemySoldier::fightEnemy );
-      setSpeed( 0.f );
-      _setAction( acFight );
-      return true;
+      fight();
     }
   }
 
-  return false;
+  if( action() == acFight )
+  {
+    bool isPosBusy = _isTileBusy( pos() );
+    if( isPosBusy )
+    {
+      _move2freePos();
+    }
+  }
+
+  return action() == acFight;
 }
 
 void EnemyArcher::_fire( TilePos p )

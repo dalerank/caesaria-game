@@ -244,7 +244,7 @@ void Immigrant::timeStep(const unsigned long time)
 {
   Walker::timeStep( time );
 
-  switch( getAction() )
+  switch( action() )
   {
   case Walker::acMove:
     _d->stamina = math::clamp( _d->stamina-1, 0.f, 100.f );

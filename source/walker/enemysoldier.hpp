@@ -58,6 +58,8 @@ protected:
   BuildingList _findBuildingsInRange(unsigned int range);
   WalkerList _findEnemiesInRange(unsigned int range);
   virtual void _check4attack();
+  bool _isTileBusy( TilePos p);
+  bool _move2freePos();
 
   EnemySoldier( PlayerCityPtr city, constants::walker::Type type );
 
@@ -65,8 +67,6 @@ private:
   Pathway _findFreeSlot(const int range);
   Pathway _findPathway2NearestEnemy(unsigned int range);
   Pathway _findPathway2NearestConstruction(unsigned int range);
-  bool _isCurrentPosBusy();
-  bool _move2freePos();
 
   class Impl;
   ScopedPtr< Impl > _d;

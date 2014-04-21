@@ -34,6 +34,12 @@ Soldier::Soldier(PlayerCityPtr city, walker::Type type)
   _setType( type );
 }
 
+void Soldier::fight()
+{
+  setSpeed( 0.f );
+  _setAction( acFight );
+}
+
 float Soldier::resistance() const { return _dfunc()->resistance; }
 void Soldier::setResistance(float value) { _dfunc()->resistance = value;  }
 

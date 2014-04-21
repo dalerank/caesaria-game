@@ -67,7 +67,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
 void ThrowingWeapon::timeStep(const unsigned long time)
 {
-  switch( getAction() )
+  switch( action() )
   {
   case Walker::acMove:
   {

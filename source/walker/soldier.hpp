@@ -27,6 +27,8 @@ class Soldier : public Walker
 public:
   Soldier(PlayerCityPtr city, constants::walker::Type type);
 
+  virtual void fight();
+
   float resistance() const;
   void setResistance( float value );
 

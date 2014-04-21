@@ -284,7 +284,7 @@ void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetc
 void Walker::_brokePathway( TilePos pos ){}
 void Walker::_noWay(){}
 Direction Walker::getDirection() const {  return _d->action.direction;}
-Walker::Action Walker::getAction() const {  return (Walker::Action)_d->action.action;}
+Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
 double Walker::getHealth() const{  return _d->health;}
 void Walker::updateHealth(double value) {  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );}
 void Walker::acceptAction(Walker::Action, TilePos){}
@@ -467,7 +467,18 @@ void Walker::_updateThinks()
 }
 
 Point Walker::_wpos() const{  return _d->wpos.toPoint();}
-void Walker::go(){ _setAction( acMove ); }      // default action
+
+void Walker::go( float speed )
+{
+  setSpeed( speed );
+  _setAction( acMove );
+}
+
+void Walker::wait(int ticks)
+{
+  setSpeed( 0.f );
+  _setAction( acNone );
+}      // default action
 
 void Walker::die()
 {

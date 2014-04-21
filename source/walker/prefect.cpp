@@ -128,7 +128,6 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
       _d->action = Impl::go2fire;
       _updatePathway( tmp );
       _setAction( acDragWater );
-      setSpeed( 1 );
       go();
       return true;
     }
@@ -147,7 +146,6 @@ void Prefect::_back2Prefecture()
     _d->action = Impl::patrol;
     _updatePathway( pathway );
     _d->endPatrolPoint = pathway.destination().pos();
-    setSpeed( 1 );
     go();
   }
   else
@@ -187,7 +185,6 @@ void Prefect::_back2Patrol()
     _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
     _setAction( _d->water > 0 ? acDragWater : acMove );
     _updatePathway( pathway );
-    setSpeed( 1 );
     go();
   }
   else
@@ -214,7 +211,7 @@ void Prefect::_brokePathway(TilePos p)
   TileOverlayPtr overlay = _city()->getOverlay( p );
   if( overlay.isValid() && overlay->type() == building::burningRuins )
   {
-    setSpeed( 0 );
+    setSpeed( 0.f );
     _setAction( acFightFire );
     _d->action = Impl::fightFire;
     return;
@@ -226,7 +223,6 @@ void Prefect::_brokePathway(TilePos p)
     Pathway pathway = PathwayHelper::create( pos(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
     {
-      setSpeed( 1.f );
       _d->action = Impl::findFire;
       _setAction( acDragWater );
       setPathway( pathway );
@@ -292,9 +288,8 @@ void Prefect::_centerTile()
 
       if( pathway.isValid() )
       {
-        setSpeed( 1.5f );
         _updatePathway( pathway );
-        go();
+        go( 1.5f );
 
         _d->action = Impl::go2enemy;
       }
@@ -374,7 +369,7 @@ void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
 
-  switch( (int)getAction() )
+  switch( (int)action() )
   {
   case acDragWater:
     _walk();

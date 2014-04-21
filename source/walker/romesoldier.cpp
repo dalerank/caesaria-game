@@ -178,8 +178,7 @@ bool RomeSoldier::_tryAttack()
   if( !enemies.empty() )
   {
     _d->action = Impl::fightEnemy;
-    setSpeed( 0.f );
-    _setAction( acFight );
+    fight();
     _changeDirection();
     return true;
   }

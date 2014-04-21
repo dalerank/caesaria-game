@@ -245,8 +245,7 @@ bool WallGuard::_tryAttack()
     if( soldierInAttackRange.isValid() )
     {
       _d->action = Impl::attackEnemy;
-      setSpeed( 0.f );
-      _setAction( acFight );
+      fight();
       _changeDirection();
     }
     else
@@ -275,7 +274,6 @@ bool WallGuard::_tryAttack()
         _updatePathway( *shortestWay.object() );
         _d->action = Impl::go2position;
         _setAction( acMove );
-        setSpeed( 1.f );
         go();
         return true;
       }
@@ -294,7 +292,6 @@ void WallGuard::_back2tower()
 
     if( !enter.empty() )
     {
-      setSpeed( 1.f );
       Pathway way = _d->base->getWay( pos(), enter.front()->pos() );
       setPathway( way );
       go();

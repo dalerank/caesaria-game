@@ -59,9 +59,7 @@ bool EnemySoldier::_tryAttack()
   if( !buildings.empty() )
   {
     _d->action = destroyBuilding;
-    setSpeed( 0.f );
-    _setAction( acFight );
-    return true;
+    fight();
   }
   else
   {
@@ -69,13 +67,20 @@ bool EnemySoldier::_tryAttack()
     if( !enemies.empty() )
     {
       _d->action = fightEnemy;
-      setSpeed( 0.f );
-      _setAction( acFight );
-      return true;
+      fight();
     }
   }
 
-  return false;
+  if( action() == acFight )
+  {
+    bool isPosBusy = _isTileBusy( pos() );
+    if( isPosBusy )
+    {
+      _move2freePos();
+    }
+  }
+
+  return action() == acFight;
 }
 
 void EnemySoldier::_setSubAction(EnemySoldier::EsAction action) {  _d->action = action; }
@@ -111,7 +116,7 @@ void EnemySoldier::_reachedPathway()
 
 Pathway EnemySoldier::_findFreeSlot( const int range )
 {
-  for( int currentRange=0; currentRange <= range; currentRange++ )
+  for( int currentRange=1; currentRange <= range; currentRange++ )
   {
     TilePos offset( currentRange, currentRange );
     TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset );
@@ -119,6 +124,11 @@ Pathway EnemySoldier::_findFreeSlot( const int range )
 
     foreach( itile, tiles )
     {
+      EnemySoldierList eslist;
+      eslist << _city()->getWalkers( walker::any, (*itile)->pos() );
+      if( !eslist.empty() )
+        continue;
+
       Pathway pathway = PathwayHelper::create( pos(), (*itile)->pos(), PathwayHelper::allTerrain );
       if( pathway.isValid() )
       {
@@ -221,7 +231,6 @@ void EnemySoldier::_check4attack()
   if( pathway.isValid() )
   {
     _d->action = go2position;
-    setSpeed( 1.0 );
     setPathway( pathway );
     go();
   }
@@ -278,16 +287,16 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
   return Pathway();
 }
 
-bool EnemySoldier::_isCurrentPosBusy()
+bool EnemySoldier::_isTileBusy( TilePos p)
 {
   bool needMeMove = false;
   EnemySoldierList walkers;
-  walkers << _city()->getWalkers( walker::all, pos() );
+  walkers << _city()->getWalkers( walker::all, p );
   foreach( it, walkers )
   {
     if( *it == this )
     {
-      needMeMove = (it == walkers.begin());
+      needMeMove = (it != walkers.begin());
       walkers.erase( it );
       break;
     }
@@ -298,35 +307,22 @@ bool EnemySoldier::_isCurrentPosBusy()
 
 void EnemySoldier::_centerTile()
 {
-  bool isPosBusy = _isCurrentPosBusy();
-
-  if( isPosBusy )
+  switch( _d->action )
   {
-    _move2freePos();
-  }
-  else
-  {
-    switch( _d->action )
-    {
-    case doNothing:
-    break;
+  case doNothing:
+  break;
 
-    case check4attack:
-    {
-      _check4attack();
-    }
-    break;
+  case check4attack: _check4attack(); break;
 
-    case go2position:
+  case go2position:
     {
       if( _tryAttack() )
         return;
     }
-    break;
+  break;
 
-    default:
-    break;
-    }
+  default:
+  break;
   }
   Walker::_centerTile();
 }
