@@ -15,8 +15,6 @@
 
 // Make getline declaration available on e.g. FreeBSD (see getline(3))
 // Should precede other includes
-#define _WITH_GETLINE
-
 #include "filenative_impl.hpp"
 #include "core/logger.hpp"
 

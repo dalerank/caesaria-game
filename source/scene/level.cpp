@@ -177,12 +177,13 @@ void Level::initialize()
 
   _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
-  //specific andtroid actions bar
+  //specific android actions bar
 #ifdef CAESARIA_PLATFORM_ANDROID
   AndroidActionsBar* androidBar = new AndroidActionsBar( _d->game->gui()->rootWidget() );
 
   CONNECT( androidBar, onRequestTileHelp(), _d.data(), Impl::showTileHelp );
   CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
+  CONNECT( androidBar, onEnterClicked(), this, Level::_resolveEnterButton );
   CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
 #endif
 
@@ -316,19 +317,28 @@ void Level::_resolveEscapeButton()
 
   e.EventType = sEventKeyboard;
   e.keyboard.key = KEY_ESCAPE;
-  e.keyboard.pressed = true;
+  e.keyboard.pressed = false;
   e.keyboard.shift = false;
   e.keyboard.control = false;
   e.keyboard.symbol = 0;
 
-  Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
-  foreach( it, children )
-  {
-    bool handled = (*it)->onEvent( e );
-    if( handled )
-      return;
-  }
+  handleEvent( e );
 }
+
+void Level::_resolveEnterButton()
+{
+  NEvent e;
+
+  e.EventType = sEventKeyboard;
+  e.keyboard.key = KEY_RETURN;
+  e.keyboard.pressed = false;
+  e.keyboard.shift = false;
+  e.keyboard.control = false;
+  e.keyboard.symbol = 0;
+
+  handleEvent( e );
+}
+
 
 void Level::_showIngameMenu()
 {
@@ -466,6 +476,17 @@ void Level::handleEvent( NEvent& event )
     case KEY_F11:
         if( event.keyboard.pressed )
             _d->makeEnemy();
+    break;
+    case KEY_ESCAPE:
+    {
+        Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
+        foreach( it, children )
+        {
+          bool handled = (*it)->onEvent( event );
+          if( handled )
+              break;
+        }
+    }
     break;
 
     default:

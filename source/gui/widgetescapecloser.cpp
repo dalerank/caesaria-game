@@ -35,7 +35,7 @@ void WidgetEscapeCloser::insertTo(Widget* parent)
 
 bool WidgetEscapeCloser::onEvent(const NEvent& event)
 {
-  if( event.EventType == sEventKeyboard && event.keyboard.pressed && event.keyboard.key == KEY_ESCAPE )
+  if( event.EventType == sEventKeyboard && !event.keyboard.pressed && event.keyboard.key == KEY_ESCAPE )
   {
     parent()->deleteLater();
     return true;

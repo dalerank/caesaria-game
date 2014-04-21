@@ -33,6 +33,7 @@ public:
 public oc3_signals:
   Signal0<>& onRequestTileHelp();
   Signal0<>& onEscapeClicked();
+  Signal0<>& onEnterClicked();
   Signal0<>& onRequestMenu();
 
 private:

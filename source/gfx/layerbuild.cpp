@@ -293,11 +293,7 @@ void LayerBuild::handleEvent(NEvent& event)
     {
       if( !event.keyboard.pressed )  //button was left up
       {
-        Tile* tile = _camera()->at( _lastCursorPos(), false );  // tile under the cursor (or NULL)
-        if( tile != 0 )
-        {
-          _finishBuild();
-        }
+        _finishBuild();
       }
     }
     break;
