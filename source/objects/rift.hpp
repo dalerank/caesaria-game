@@ -15,12 +15,29 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "military_academy.hpp"
-#include "constants.hpp"
+#ifndef __CAESARIA_RIFT_H_INCLUDE__
+#define __CAESARIA_RIFT_H_INCLUDE__
 
-using namespace constants;
+#include "gfx/tileoverlay.hpp"
 
-MilitaryAcademy::MilitaryAcademy()
-  : WorkingBuilding( building::militaryAcademy, Size(3) )
+class Rift : public gfx::TileOverlay
 {
-}
+public:
+  Rift();
+
+  virtual gfx::Picture computePicture();
+  void updatePicture();
+  RiftList neighbors() const;
+
+  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual void initTerrain( gfx::Tile &terrain);
+  virtual bool isWalkable() const;
+  virtual bool isFlat() const;
+  virtual bool isNeedRoadAccess() const;
+  virtual void destroy();
+
+  virtual void load(const VariantMap &stream);
+  virtual gfx::Renderer::PassQueue getPassQueue() const;
+};
+
+#endif //__CAESARIA_RIFT_H_INCLUDE__

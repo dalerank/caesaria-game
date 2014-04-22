@@ -68,6 +68,11 @@ public:
 
     return ret;
   }
+
+  Tile* random() const
+  {
+    return size() > 0 ? at( math::random( size() ) ) : 0;
+  }
 };
 
 }//end namespace

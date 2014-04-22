@@ -179,14 +179,14 @@
     }
 
     earthquake#earthquake : {
-      date : "-268.06.01"
+      date : "-270.03.01"
       start : [ 0, 20 ]
-      end : [ 20, 20 ]
+      end : [ 20, 0 ]
       exec : {
-        disaster#filmwidget : {
+        disaster#messagebox : {
           title : "##earthquake_title##"
           text : "##earthquake_text##"
-          video : "earhquake.smk"
+          video : "/smk/QUAKE.SMK"
         }
       }
     }

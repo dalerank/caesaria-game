@@ -15,12 +15,36 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "military_academy.hpp"
-#include "constants.hpp"
+#ifndef _CAESARIA_EARTHQUAKE_EVENT_H_INCLUDE_
+#define _CAESARIA_EARTHQUAKE_EVENT_H_INCLUDE_
 
-using namespace constants;
+#include "event.hpp"
+#include "predefinitions.hpp"
+#include "core/scopedptr.hpp"
 
-MilitaryAcademy::MilitaryAcademy()
-  : WorkingBuilding( building::militaryAcademy, Size(3) )
+namespace events
 {
-}
+
+class EarthQuake : public GameEvent
+{
+public:
+  static GameEventPtr create();
+  virtual bool isDeleted() const;
+
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
+
+protected:
+  virtual void _exec(Game &game, unsigned int time);
+  virtual bool _mayExec(Game &game, unsigned int time) const;
+
+private:
+  EarthQuake();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
+}//namespace events
+
+#endif //_CAESARIA_EARTHQUAKE_EVENT_H_INCLUDE_

@@ -12,9 +12,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
-#define __CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
+#ifndef __CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_
+#define __CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_
 
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
@@ -43,4 +45,4 @@ private:
     ScopedPtr< Impl > _d;
 };
 
-#endif  //__CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
+#endif  //__CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_

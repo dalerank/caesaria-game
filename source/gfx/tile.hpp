@@ -58,7 +58,7 @@ class Tile
 public:
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding, tlAqueduct,
                  tlGarden, tlElevation, tlWall, tlDeepWater,
-                 isConstructible, isDestructible, clearAll,
+                 isConstructible, isDestructible, tlRift, clearAll,
                  wasDrawn } Type;
 
   explicit Tile(const TilePos& pos);

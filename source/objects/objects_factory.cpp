@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "objects_factory.hpp"
 #include "service.hpp"
@@ -68,6 +70,7 @@
 #include "furniture_workshop.hpp"
 #include "actor_colony.hpp"
 #include "sight.hpp"
+#include "rift.hpp"
 #include <map>
 
 using namespace constants;
@@ -210,9 +213,9 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(construction::road,     Road, ConstructionCreator );
 
   // administration
-  addCreator(building::forum,        CAESARIA_STR_EXT(Forum) , new WorkingBuildingCreator<Forum>() );
-  addCreator(building::senate,       CAESARIA_STR_EXT(Senate), new WorkingBuildingCreator<Senate>() );
-  addCreator(building::governorHouse,CAESARIA_STR_EXT(GovernorsHouse) , new ConstructionCreator<GovernorsHouse>() );
+  ADD_CREATOR(building::forum,        Forum, WorkingBuildingCreator );
+  ADD_CREATOR(building::senate,       Senate, WorkingBuildingCreator );
+  ADD_CREATOR(building::governorHouse,GovernorsHouse, ConstructionCreator );
   addCreator(building::governorVilla,CAESARIA_STR_EXT(GovernorsVilla) , new ConstructionCreator<GovernorsVilla>() );
   addCreator(building::governorPalace, CAESARIA_STR_EXT(GovernorsPalace), new ConstructionCreator<GovernorsPalace>() );
   addCreator(building::smallStatue,    CAESARIA_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
@@ -241,8 +244,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 
 
   // commerce
-  addCreator(building::market,     CAESARIA_STR_EXT(Market)  , new WorkingBuildingCreator<Market>() );
-  addCreator(building::warehouse,  CAESARIA_STR_EXT(Warehouse), new WorkingBuildingCreator<Warehouse>() );
+  ADD_CREATOR(building::market,     Market, WorkingBuildingCreator );
+  ADD_CREATOR(building::warehouse,  Warehouse, WorkingBuildingCreator );
   addCreator(building::granary,      CAESARIA_STR_EXT(Granary)  , new WorkingBuildingCreator<Granary>() );
 
   // farms
@@ -313,6 +316,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
 
   //places
   ADD_CREATOR( building::elevation, Elevation, BaseCreator );
+  ADD_CREATOR( building::rift, Rift, BaseCreator );
 }
 
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )

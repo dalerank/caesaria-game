@@ -24,6 +24,7 @@
 #include "cityindebt.hpp"
 #include "enemy_attack.hpp"
 #include "showinfobox.hpp"
+#include "earthquake.hpp"
 
 namespace events
 {
@@ -82,6 +83,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<CityIndebt>( "city_indebt" );
   addCreator<EnemyAttack>( "enemy_attack" );
   addCreator<ShowInfobox>( "messagebox" );
+  addCreator<EarthQuake>( "earthquake" );
 }
 
 }//end namespace events
