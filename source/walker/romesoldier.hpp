@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
-
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_ROMESOLDIER_INCLUDE_H_
 #define _CAESARIA_ROMESOLDIER_INCLUDE_H_
@@ -22,7 +21,6 @@
 #include "soldier.hpp"
 #include "objects/predefinitions.hpp"
 
-/** Soldier, friend or enemy */
 class RomeSoldier : public Soldier
 {
 public:
@@ -36,6 +34,9 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+
+  virtual ~RomeSoldier();
+
 protected:
   virtual void _centerTile();
   virtual void _reachedPathway();
@@ -48,9 +49,9 @@ protected:
   WalkerList _findEnemiesInRange(unsigned int range);
 
   Pathway _findPathway2NearestEnemy(unsigned int range);
-private:
   RomeSoldier(PlayerCityPtr city, constants::walker::Type type);
 
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

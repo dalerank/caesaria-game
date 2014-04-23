@@ -52,10 +52,15 @@ void TraineeWalker::_init(walker::Type traineeType)
 {
   switch( traineeType )
   {
-  case walker::actor:     _d->necBuildings << building::theater << building::amphitheater;  break;
-  case walker::gladiator:    _d->necBuildings << building::amphitheater                     << building::colloseum;  break;
+  case walker::actor:     _d->necBuildings << building::theater
+                                           << building::amphitheater;  break;
+  case walker::gladiator:    _d->necBuildings << building::amphitheater
+                                              << building::colloseum;  break;
   case walker::lionTamer:    _d->necBuildings << building::colloseum;  break;
-  case walker::soldier:    _d->necBuildings << building::militaryAcademy                     << building::fortLegionaire;  break;
+  case walker::soldier:    _d->necBuildings << building::militaryAcademy
+                                            << building::fortLegionaire
+                                            << building::fortMounted
+                                            << building::fortJavelin;  break;
   case walker::charioteer:    _d->necBuildings << building::hippodrome;  break;
   default: break;
   }

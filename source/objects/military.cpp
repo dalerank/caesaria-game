@@ -28,6 +28,7 @@
 #include "game/gamedate.hpp"
 #include "game/settings.hpp"
 #include "core/saveadapter.hpp"
+#include "walker/romehorseman.hpp"
 #include "walker/helper.hpp"
 
 using namespace constants;
@@ -155,7 +156,7 @@ void FortMounted::build(PlayerCityPtr city, const TilePos& pos)
 
 void FortMounted::_readyNewSoldier()
 {
-  RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::romeHorseman );
+  RomeHorsemanPtr soldier = RomeHorseman::create( _city() );
 
   city::Helper helper( _city() );
   TilesArray tiles = helper.getAroundTiles( this );

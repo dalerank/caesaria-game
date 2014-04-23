@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "romesoldier.hpp"
 #include "city/city.hpp"
@@ -24,6 +24,8 @@
 #include "pathway/pathway_helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "animals.hpp"
+#include "core/logger.hpp"
+#include "helper.hpp"
 #include "enemysoldier.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
@@ -62,15 +64,8 @@ void RomeSoldier::die()
 {
   Soldier::die();
 
-  switch( type() )
-  {
-  case walker::legionary:
-    Corpse::create(_city(), this );
-  break;
-
-  default:
-    _CAESARIA_DEBUG_BREAK_IF("not work yet");
-  }
+  WalkerPtr w = Corpse::create(_city(), this );
+  Logger::warningIf( w.isNull(), "RomeSoldier: cannot create corpse for type " + WalkerHelper::getTypename( type() ) );
 }
 
 void RomeSoldier::timeStep(const unsigned long time)
@@ -145,7 +140,12 @@ void RomeSoldier::load(const VariantMap& stream)
   else
   {
     die();
-  }
+    }
+}
+
+RomeSoldier::~RomeSoldier()
+{
+
 }
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
