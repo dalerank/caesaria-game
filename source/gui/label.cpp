@@ -85,15 +85,15 @@ public:
   void breakText( const std::string& text, const Size& size );
 
 public oc3_signals:
-	Signal0<> onClickedSignal;
+  Signal0<> onClickedSignal;
 };
 
 //! constructor
 Label::Label( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
-	_d->isBorderVisible = false;
-	_d->backgroundMode = bgNone;
-	setTextAlignment( align::automatic, align::automatic );
+  _d->isBorderVisible = false;
+  _d->backgroundMode = bgNone;
+  setTextAlignment( align::automatic, align::automatic );
 }
 
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,

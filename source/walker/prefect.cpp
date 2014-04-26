@@ -31,6 +31,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
+#include "events/showinfobox.hpp"
 #include "game/resourcegroup.hpp"
 #include "events/disaster.hpp"
 #include "pathway/pathway_helper.hpp"
@@ -55,6 +56,7 @@ public:
   int water;
   TilePos endPatrolPoint;
   PrefectAction action;
+  int fumigateHouseNumber;
 };
 
 Prefect::Prefect(PlayerCityPtr city )
@@ -62,6 +64,7 @@ Prefect::Prefect(PlayerCityPtr city )
 {
   _setType( walker::prefect );
   _d->water = 0;
+  _d->fumigateHouseNumber = 0;
   _d->action = Impl::patrol;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -168,8 +171,17 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
       if( healthLevel < 1 )
       {
         house->deleteLater();
+        _d->fumigateHouseNumber++;
         events::GameEventPtr e = events::DisasterEvent::create( house->tile(), events::DisasterEvent::plague );
         e->dispatch();
+
+        if( _d->fumigateHouseNumber > 5 )
+        {
+          e = events::ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
+                                           events::ShowInfobox::send2scribe, "/smk/SICK.SMK" );
+          e->dispatch();
+          _d->fumigateHouseNumber = -999;
+        }
       }
     }
   }

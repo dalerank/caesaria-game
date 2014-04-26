@@ -48,7 +48,7 @@ public:
   unsigned long   a_rate[7];
 
   //unsigned char *palette_data;
-  unsigned char *image_data;
+  unsigned char* image_data;
   unsigned char* pallete;
 
   int colors[256];
@@ -56,6 +56,8 @@ public:
   void updateTexture(gfx::Engine& painter, const Size& size );
   void updatePallete();
   void nextFrame();
+
+  Impl() : s( 0 ), image_data( 0 ) {}
 
 public oc3_signals:
   Signal0<> onFinishSignal;
@@ -133,7 +135,7 @@ SmkViewer::SmkViewer(Widget* parent, const Rect& rectangle, Mode mode)
   _d->needUpdateTexture = true;
   #ifdef _DEBUG
     setDebugName( "Image");
-#endif
+  #endif
 }
 
 void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
@@ -154,12 +156,15 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
   //background->fill( 0x0000000, Rect() );
   background->lock();
 
-  for( int i = videoHeight - 1; i >= 0; i--)
+  if( s )
   {
-    for( int j = 0; j < videoWidth; j++ )
+    for( int i = videoHeight - 1; i >= 0; i--)
     {
-      unsigned char index = image_data[i * videoWidth + j];
-      background->setPixel( Point( j, i ), colors[ index ] );
+      for( int j = 0; j < videoWidth; j++ )
+      {
+        unsigned char index = image_data[i * videoWidth + j];
+        background->setPixel( Point( j, i ), colors[ index ] );
+      }
     }
   }
 
