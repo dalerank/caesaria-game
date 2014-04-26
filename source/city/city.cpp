@@ -220,6 +220,24 @@ void PlayerCity::timeStep(unsigned int time)
   if( GameDate::isMonthChanged() )
   {
     _d->monthStep( this, GameDate::current() );
+
+    if( GameDate::isYearChanged() )
+    {
+      int profit = _d->funds.getIssueValue( city::Funds::cityProfit, city::Funds::lastYear );
+      int empireTax = 0;
+      if( profit <= 0 )
+      {
+        empireTax = (population() / 1000) * 100;
+      }
+      else
+      {
+        int minimumExpireTax = (population() / 1000) * 100 + 50;
+        empireTax = math::clamp( profit / 4, minimumExpireTax, 9999 );
+      }
+
+      FundIssue issue( city::Funds::empireTax, -empireTax );
+      _d->funds.resolveIssue( issue );
+    }
   }
 
   if( GameDate::isWeekChanged() )

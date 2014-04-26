@@ -74,7 +74,7 @@ void Funds::resolveIssue( FundIssue issue )
   _d->onChangeSignal.emit( _d->money );
 }
 
-int Funds::treasury() const {  return _d->money; }
+int Funds::treasury() const { return _d->money; }
 
 int Funds::profit() const
 {
