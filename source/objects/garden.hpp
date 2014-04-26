@@ -30,8 +30,11 @@ public:
   virtual void load(const VariantMap &stream);
   virtual Desirability getDesirability() const;
   virtual std::string sound() const;
+  virtual void setPicture(gfx::Picture picture);
 
   void update();
+private:
+  bool _flat;
 };
 
 #endif //__CAESARIA_GARDEN_H_INCLUDED__
