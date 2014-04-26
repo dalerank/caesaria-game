@@ -84,6 +84,7 @@ public:
     __REG_WTYPE( romeGuard )
     __REG_WTYPE( bow_arrow )
     __REG_WTYPE( romeHorseman )
+    __REG_WTYPE( romeSpearman )
   }
 };
 

@@ -46,6 +46,7 @@ public:
   float speed;
   TilePos pos;
   UniqueId uid;
+  unsigned int waitInterval;
   float speedMultiplier;
   Animation animation;  // current animation
   PointF wpos;      // current world position
@@ -83,6 +84,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->speedMultiplier = 1.f;
   _d->isDeleted = false;
   _d->centerReached = false;
+  _d->waitInterval = 0;
 }
 
 Walker::~Walker() {}
@@ -101,8 +103,19 @@ void Walker::timeStep(const unsigned long time)
     }
   break;
 
-  default:
+  case Walker::acFight:
     _updateAnimation( time );
+  break;
+
+  case Walker::acNone:
+    if( _d->waitInterval > 0 )
+    {
+      _d->waitInterval--;
+      if( _d->waitInterval == 0 )
+      {
+        _waitFinished();
+      }
+    }
   break;
   }
 
@@ -283,6 +296,8 @@ bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
 void Walker::_noWay(){}
+
+void Walker::_waitFinished() { }
 Direction Walker::getDirection() const {  return _d->action.direction;}
 Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
 double Walker::getHealth() const{  return _d->health;}
@@ -476,6 +491,7 @@ void Walker::go( float speed )
 
 void Walker::wait(int ticks)
 {
+  _d->waitInterval = ticks;
   setSpeed( 0.f );
   _setAction( acNone );
 }      // default action

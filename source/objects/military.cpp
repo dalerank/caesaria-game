@@ -30,6 +30,7 @@
 #include "core/saveadapter.hpp"
 #include "walker/romehorseman.hpp"
 #include "walker/helper.hpp"
+#include "walker/romearcher.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -179,7 +180,20 @@ FortJaveline::FortJaveline() : Fort( building::fortJavelin, 14 )
 
 void FortJaveline::_readyNewSoldier()
 {
+  RomeArcherPtr soldier = RomeArcher::create( _city() );
 
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getAroundTiles( this );
+
+  foreach( tile, tiles)
+  {
+    if( (*tile)->isWalkable( true ) )
+    {
+      soldier->send2city( this, (*tile)->pos() );
+      addWalker( soldier.object() );
+      return;
+    }
+  }
 }
 
 class FortArea::Impl

@@ -29,6 +29,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
+#include "city/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "helper.hpp"
@@ -39,45 +40,39 @@
 using namespace constants;
 using namespace gfx;
 
-class EnemySoldier::Impl
-{
-public:  
-  EnemySoldier::EsAction action;
-  unsigned int waitInterval;
-};
-
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
-: Soldier( city, type ), _d( new Impl )
+: Soldier( city, type )
 {
-  _d->action = check4attack;
-  _d->waitInterval = 0;
+  _setSubAction( check4attack );
 }
 
 bool EnemySoldier::_tryAttack()
 {
-  BuildingList buildings = _findBuildingsInRange( 1 );
+  BuildingList buildings = _findBuildingsInRange( attackDistance() );
   TilePos targetPos;
   if( !buildings.empty() )
   {
-    _d->action = destroyBuilding;
+    _setSubAction( Soldier::destroyBuilding );
     targetPos = buildings.front()->pos();
     fight();
   }
   else
   {
-    WalkerList enemies = _findEnemiesInRange( 1 );
+    WalkerList enemies = _findEnemiesInRange( attackDistance() );
     if( !enemies.empty() )
     {
+      _setSubAction( Soldier::fightEnemy );
       targetPos = enemies.front()->pos();
-      _d->action = fightEnemy;
       fight();
     }
   }
 
   if( action() == acFight )
   {
-    bool isPosBusy = _isTileBusy( pos() );
-    if( isPosBusy )
+    city::Helper helper( _city() );
+    bool needMeMove = false;
+    helper.isTileBusy<EnemySoldier>( pos(), needMeMove );
+    if( needMeMove )
     {
       _move2freePos( targetPos );
     }
@@ -86,8 +81,10 @@ bool EnemySoldier::_tryAttack()
   return action() == acFight;
 }
 
-void EnemySoldier::_setSubAction(EnemySoldier::EsAction action) {  _d->action = action; }
-EnemySoldier::EsAction EnemySoldier::_getSubAction() const{  return _d->action; }
+void EnemySoldier::_waitFinished()
+{
+  _setSubAction( check4attack );
+}
 
 void EnemySoldier::_brokePathway(TilePos pos)
 {
@@ -100,7 +97,7 @@ void EnemySoldier::_brokePathway(TilePos pos)
 void EnemySoldier::_reachedPathway()
 {
   Soldier::_reachedPathway();
-  switch( _d->action )
+  switch( _subAction() )
   {
   case check4attack:
   case go2position:
@@ -115,51 +112,6 @@ void EnemySoldier::_reachedPathway()
 
   default: break;
   }
-}
-
-Pathway EnemySoldier::_findFreeSlot( TilePos target, const int range )
-{
-  for( int currentRange=1; currentRange <= range; currentRange++ )
-  {
-    TilePos offset( currentRange, currentRange );
-    TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset );
-    tiles = tiles.walkableTiles( true );
-
-    float crntDistance = target.distanceFrom( pos() );
-    foreach( itile, tiles )
-    {
-      EnemySoldierList eslist;
-      eslist << _city()->getWalkers( walker::any, (*itile)->pos() );
-      if( !eslist.empty() )
-        continue;
-
-      if( target.distanceFrom( (*itile)->pos() ) > crntDistance )
-        continue;
-
-      Pathway pathway = PathwayHelper::create( pos(), (*itile)->pos(), PathwayHelper::allTerrain );
-      if( pathway.isValid() )
-      {
-        return pathway;
-      }
-    }
-  }
-
-  return Pathway();
-}
-
-bool EnemySoldier::_move2freePos( TilePos target )
-{
-  const int defaultRange = 10;
-  Pathway way2freeslot = _findFreeSlot( target, defaultRange );
-  if( way2freeslot.isValid() )
-  {
-    _updatePathway( way2freeslot );
-    go();
-    _d->action = go2position;
-    return true;
-  }
-
-  return false;
 }
 
 WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
@@ -216,7 +168,7 @@ Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
 void EnemySoldier::_check4attack()
 {
   //try find any walkers in range
-  Pathway pathway = _findPathway2NearestEnemy( 20 );
+  Pathway pathway = _findPathway2NearestEnemy( 10 );
 
   if( !pathway.isValid() )
   {
@@ -232,12 +184,12 @@ void EnemySoldier::_check4attack()
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _city(), pos(), 20 );
+    pathway = PathwayHelper::randomWay( _city(), pos(), 10 );
   }
 
   if( pathway.isValid() )
   {
-    _d->action = go2position;
+    _setSubAction( go2position );
     setPathway( pathway );
     go();
   }
@@ -294,27 +246,9 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
   return Pathway();
 }
 
-bool EnemySoldier::_isTileBusy( TilePos p)
-{
-  bool needMeMove = false;
-  EnemySoldierList walkers;
-  walkers << _city()->getWalkers( walker::all, p );
-  foreach( it, walkers )
-  {
-    if( *it == this )
-    {
-      needMeMove = (it != walkers.begin());
-      walkers.erase( it );
-      break;
-    }
-  }
-
-  return ( !walkers.empty() && needMeMove );
-}
-
 void EnemySoldier::_centerTile()
 {
-  switch( _d->action )
+  switch( _subAction() )
   {
   case doNothing:
   break;
@@ -336,15 +270,9 @@ void EnemySoldier::_centerTile()
 
 void EnemySoldier::timeStep(const unsigned long time)
 {
-  if( _d->waitInterval > 0 )
-  {
-    _d->waitInterval--;
-    return;
-  }
-
   Soldier::timeStep( time );
 
-  switch( _d->action )
+  switch( _subAction() )
   {
   case fightEnemy:
   {
@@ -419,9 +347,6 @@ void EnemySoldier::die()
 void EnemySoldier::load( const VariantMap& stream )
 {
   Soldier::load( stream );
- 
-  _d->action = (EsAction)stream.get( "EsAction" ).toInt();
-  _d->waitInterval = (int)stream.get( "wait" );
 }
 
 void EnemySoldier::save( VariantMap& stream ) const
@@ -429,13 +354,5 @@ void EnemySoldier::save( VariantMap& stream ) const
   Soldier::save( stream );
 
   stream[ "type" ] = (int)type();
-  stream[ "animation" ] =
-  stream[ "EsAction" ] = (int)_d->action;
-  stream[ "wait" ] = _d->waitInterval;
   stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
-}
-
-void EnemySoldier::wait(unsigned int time)
-{
-  _d->waitInterval = time;
 }

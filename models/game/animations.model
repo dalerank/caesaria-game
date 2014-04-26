@@ -176,6 +176,13 @@
   romeGuard : {
     move : { rc : "citizen03", start : 97, frames : 12, action : 1, step : 8 }
     fight : { rc : "citizen03", start : 192, frames : 6, action : 3, step : 8 }
+    die : { rc : "citizen03", start : 232, frames : 1, action : 3, step : 0 }
+  }
+
+  romeSpearman : {
+    move : { rc : "citizen03", start : 241, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen03", start : 337, frames : 6, action : 2, step : 8 }
+    die : { rc : "citizen03", start : 385, frames : 1, action : 3, step : 0 }
   }
 
   seaMerchant : {

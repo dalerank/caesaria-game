@@ -180,8 +180,8 @@
 
     earthquake#earthquake : {
       date : "-270.03.01"
-      start : [ 0, 20 ]
-      end : [ 20, 0 ]
+      start : [ 14, 77 ]
+      end : [ 33, 64 ]
       exec : {
         disaster#messagebox : {
           title : "##earthquake_title##"

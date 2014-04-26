@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_SOLDIER_INCLUDE_H_
 #define _CAESARIA_SOLDIER_INCLUDE_H_
@@ -25,6 +25,15 @@
 class Soldier : public Walker
 {
 public:
+  typedef enum { check4attack=0,
+                 go2position,
+                 go2enemy,
+                 fightEnemy,
+                 destroyBuilding,
+                 back2base,
+                 patrol,
+                 doNothing } SldrAction;
+
   Soldier(PlayerCityPtr city, constants::walker::Type type);
 
   virtual void fight();
@@ -37,8 +46,20 @@ public:
 
   int morale() const;
 
+  virtual void wait(int ticks);
   virtual void initialize(const VariantMap &options);
   virtual ~Soldier();
+
+  virtual unsigned int attackDistance() const;
+  virtual void setAttackDistance( unsigned int distance );
+
+protected:
+  SldrAction _subAction() const;
+  void _setSubAction( SldrAction action );
+
+  virtual bool _move2freePos(TilePos target);
+  virtual BuildingList _findBuildingsInRange(unsigned int range) = 0;
+  virtual WalkerList _findEnemiesInRange(unsigned int range) = 0;
 private:
   __DECLARE_IMPL(Soldier)
 };

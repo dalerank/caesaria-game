@@ -41,6 +41,8 @@ public:
    void appendMoney( int money );
    int money() const;
 
+   unsigned int color() const;
+
    virtual ~Player();
 private:
    Player();

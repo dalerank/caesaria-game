@@ -23,21 +23,12 @@
 class EnemySoldier : public Soldier
 {
 public:
-  typedef enum { check4attack=0,
-                 go2position,
-                 go2enemy,
-                 fightEnemy,
-                 destroyBuilding,
-                 doNothing } EsAction;
-
   static EnemySoldierPtr create( PlayerCityPtr city, constants::walker::Type type );
 
   virtual void timeStep(const unsigned long time);
 
   virtual void load( const VariantMap& stream );
   virtual void save( VariantMap& stream ) const;
-
-  virtual void wait( unsigned int time );
 
   virtual void send2City( TilePos pos );
   virtual void die();
@@ -51,15 +42,11 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual bool _tryAttack();
+  virtual void _waitFinished();
 
-  void _setSubAction( EsAction action );
-  EsAction _getSubAction() const;
-
-  BuildingList _findBuildingsInRange(unsigned int range);
-  WalkerList _findEnemiesInRange(unsigned int range);
+  virtual BuildingList _findBuildingsInRange(unsigned int range);
+  virtual WalkerList _findEnemiesInRange(unsigned int range);
   virtual void _check4attack();
-  bool _isTileBusy( TilePos p);
-  bool _move2freePos(TilePos target);
 
   EnemySoldier( PlayerCityPtr city, constants::walker::Type type );
 
@@ -67,9 +54,6 @@ private:
   Pathway _findFreeSlot(TilePos target, const int range);
   Pathway _findPathway2NearestEnemy(unsigned int range);
   Pathway _findPathway2NearestConstruction(unsigned int range);
-
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
 #endif //__CAESARIA_ENEMYSOLDIER_H_INCLUDED__

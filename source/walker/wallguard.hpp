@@ -39,13 +39,15 @@ protected:
   virtual void _centerTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
+  virtual void _waitFinished();
 
   void _back2tower();
   void _back2patrol();
   bool _tryAttack();
   FortificationList _findNearestWalls( EnemySoldierPtr enemy );
 
-  EnemySoldierList _findEnemiesInRange(unsigned int range);
+  BuildingList _findBuildingsInRange(unsigned int range);
+  WalkerList _findEnemiesInRange(unsigned int range);
 
   Pathway _attackEnemyInRange(unsigned int range);
 private:

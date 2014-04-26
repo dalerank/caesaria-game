@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "romesoldier.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
@@ -36,10 +36,7 @@ using namespace gfx;
 class RomeSoldier::Impl
 {
 public:
-  typedef enum { doNothing=0, back2fort, go2position, fightEnemy,
-                 patrol } State;
   FortPtr base;
-  State action;
   TilePos patrolPosition;
   double strikeForce, resistance;
 };
@@ -72,11 +69,11 @@ void RomeSoldier::timeStep(const unsigned long time)
 {
   Soldier::timeStep( time );
 
-  switch( _d->action )
+  switch( _subAction() )
   {
-  case Impl::fightEnemy:
+  case fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( 1 );
+    WalkerList enemies = _findEnemiesInRange( attackDistance() );
 
     if( !enemies.empty() )
     {
@@ -92,7 +89,7 @@ void RomeSoldier::timeStep(const unsigned long time)
   }
   break;
 
-  case Impl::patrol:
+  case patrol:
     if( GameDate::current().day() % 2 == 0 )
     {
       _tryAttack();
@@ -112,7 +109,6 @@ void RomeSoldier::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "crtAction" ] = (int)_d->action;
   stream[ "base" ] = _d->base->pos();
   stream[ "strikeForce" ] = _d->strikeForce;
   stream[ "resistance" ] = _d->resistance;
@@ -124,7 +120,6 @@ void RomeSoldier::load(const VariantMap& stream)
 {
   Soldier::load( stream );
 
-  _d->action = (Impl::State)stream.get( "crtAction" ).toInt();
   _d->strikeForce = stream.get( "strikeForce" );
   _d->resistance = stream.get( "resistance" );
   _d->patrolPosition = stream.get( "patrolPosition" );
@@ -143,10 +138,7 @@ void RomeSoldier::load(const VariantMap& stream)
     }
 }
 
-RomeSoldier::~RomeSoldier()
-{
-
-}
+RomeSoldier::~RomeSoldier(){}
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
@@ -172,18 +164,42 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   return walkers;
 }
 
+BuildingList RomeSoldier ::_findBuildingsInRange(unsigned int) { return BuildingList(); }
+
+
 bool RomeSoldier::_tryAttack()
 {
-  WalkerList enemies = _findEnemiesInRange( 1 );
-  if( !enemies.empty() )
+  BuildingList buildings = _findBuildingsInRange( attackDistance() );
+  TilePos targetPos;
+  if( !buildings.empty() )
   {
-    _d->action = Impl::fightEnemy;
+    _setSubAction( Soldier::destroyBuilding );
+    targetPos = buildings.front()->pos();
     fight();
-    _changeDirection();
-    return true;
+  }
+  else
+  {
+    WalkerList enemies = _findEnemiesInRange( attackDistance() );
+    if( !enemies.empty() )
+    {
+      _setSubAction( Soldier::fightEnemy );
+      targetPos = enemies.front()->pos();
+      fight();
+    }
   }
 
-  return false;
+  if( action() == acFight )
+  {
+    city::Helper helper( _city() );
+    bool needMove = false;
+    helper.isTileBusy<Soldier>( pos(), needMove );
+    if( needMove )
+    {
+      _move2freePos( targetPos );
+    }
+  }
+
+  return action() == acFight;
 }
 
 Pathway RomeSoldier::_findPathway2NearestEnemy( unsigned int range )
@@ -216,7 +232,7 @@ void RomeSoldier::_back2fort()
     if( way.isValid() )
     {
       setPathway( way );
-      _d->action = Impl::go2position;
+      _setSubAction( go2position );
       go();
       return;
     }
@@ -231,10 +247,10 @@ void RomeSoldier::_reachedPathway()
 {
   Soldier::_reachedPathway();
 
-  switch( _d->action )
+  switch( _subAction() )
   {
 
-  case Impl::go2position:
+  case go2position:
   {
     if( _city()->getWalkers( type(), pos() ).size() != 1 ) //only me in this tile
     {
@@ -242,7 +258,7 @@ void RomeSoldier::_reachedPathway()
     }
     else
     {
-      _d->action = Impl::patrol;
+      _setSubAction( patrol );
     }
   }
   break;
@@ -268,7 +284,7 @@ void RomeSoldier::_brokePathway(TilePos p)
     }
     else
     {
-      _d->action = Impl::patrol;
+      _setSubAction( patrol );
       _setAction( acNone );
       setPathway( Pathway() );
     }
@@ -277,12 +293,12 @@ void RomeSoldier::_brokePathway(TilePos p)
 
 void RomeSoldier::_centerTile()
 {
-  switch( _d->action )
+  switch( _subAction() )
   {
-  case Impl::doNothing:
+  case doNothing:
   break;
 
-  case Impl::go2position:
+  case go2position:
   {
     if( _tryAttack() )
       return;

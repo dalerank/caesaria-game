@@ -34,14 +34,10 @@ public:
   virtual void load(const VariantMap &stream);
 
 protected:
-  virtual bool _tryAttack();
-  virtual void _fire(TilePos pos );
-
+  virtual void _fire(TilePos pos );  
+  virtual void _waitFinished();
 private:
   EnemyArcher(PlayerCityPtr city, constants::walker::Type type);
-
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
 #endif //_CAESARIA_ENEMYARCHER_INCLUDE_H_

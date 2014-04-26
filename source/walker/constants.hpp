@@ -73,6 +73,7 @@ enum Type{
   citizen,
   waterGarbage,
   romeHorseman,
+  romeSpearman,
   all = 0xff,
   any = all
 };

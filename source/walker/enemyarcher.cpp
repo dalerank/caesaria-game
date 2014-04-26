@@ -38,76 +38,34 @@
 
 using namespace constants;
 
-class EnemyArcher::Impl
-{
-public:  
-  unsigned int attackDistance;
-  unsigned int wait;
-};
-
 EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
-  : EnemySoldier( city, type ), _d( new Impl )
+  : EnemySoldier( city, type )
 {
-  _setSubAction( EnemySoldier::check4attack );
-  _d->attackDistance = 6;  
-  _d->wait = 0;
-}
-
-bool EnemyArcher::_tryAttack()
-{
-  BuildingList buildings = _findBuildingsInRange( _d->attackDistance );
-  TilePos targetPos;
-  if( !buildings.empty() )
-  {
-    _setSubAction( EnemySoldier::destroyBuilding );
-    targetPos = buildings.front()->pos();
-    fight();
-  }
-  else
-  {
-    WalkerList enemies = _findEnemiesInRange( _d->attackDistance );
-    if( !enemies.empty() )
-    {
-      _setSubAction( EnemySoldier::fightEnemy );
-      targetPos = enemies.front()->pos();
-      fight();
-    }
-  }
-
-  if( action() == acFight )
-  {
-    bool isPosBusy = _isTileBusy( pos() );
-    if( isPosBusy )
-    {
-      _move2freePos( targetPos );
-    }
-  }
-
-  return action() == acFight;
+  _setSubAction( Soldier::check4attack );
+  setAttackDistance( 6 );
 }
 
 void EnemyArcher::_fire( TilePos p )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), p );
-  _d->wait = 30;
+  wait( 30 );
+}
+
+void EnemyArcher::_waitFinished()
+{
+  _setSubAction( check4attack );
 }
 
 void EnemyArcher::timeStep(const unsigned long time)
 {
-  if( _d->wait > 0 )
-  {
-    _d->wait--;
-    return;
-  }
-
   Soldier::timeStep( time );
 
-  switch( _getSubAction() )
+  switch( _subAction() )
   {
-  case EnemySoldier::fightEnemy:
+  case Soldier::fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( _d->attackDistance );
+    WalkerList enemies = _findEnemiesInRange( attackDistance() );
 
     if( !enemies.empty() )
     {
@@ -127,9 +85,9 @@ void EnemyArcher::timeStep(const unsigned long time)
   }
   break;
 
-  case EnemySoldier::destroyBuilding:
+  case Soldier::destroyBuilding:
   {
-    BuildingList buildings = _findBuildingsInRange( _d->attackDistance );
+    BuildingList buildings = _findBuildingsInRange( attackDistance() );
 
     if( !buildings.empty() )
     {

@@ -46,7 +46,8 @@ protected:
   void _back2fort();
   bool _tryAttack();
 
-  WalkerList _findEnemiesInRange(unsigned int range);
+  virtual WalkerList _findEnemiesInRange(unsigned int range);
+  virtual BuildingList _findBuildingsInRange(unsigned int range);
 
   Pathway _findPathway2NearestEnemy(unsigned int range);
   RomeSoldier(PlayerCityPtr city, constants::walker::Type type);
