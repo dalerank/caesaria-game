@@ -26,6 +26,7 @@
 #include "tilemap_camera.hpp"
 #include "city/city.hpp"
 #include "core/font.hpp"
+#include "layerconstants.hpp"
 
 using namespace constants;
 
@@ -154,6 +155,7 @@ void Layer::handleEvent(NEvent& event)
     case KEY_DOWN:  _d->camera->moveDown ( moveValue ); break;
     case KEY_RIGHT: _d->camera->moveRight( moveValue ); break;
     case KEY_LEFT:  _d->camera->moveLeft ( moveValue ); break;
+    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;
     default: break;
     }
   }

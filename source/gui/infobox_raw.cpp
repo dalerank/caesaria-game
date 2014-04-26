@@ -46,9 +46,9 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
   //Label* lbAbout = findChildA<Label*>( "lbAbout", true, this );
   Label* lbProductivity = findChildA<Label*>( "lbProductivity", true, this );
 
-  if( rawmb->getOutGoodType() != Good::none )
+  if( rawmb->produceGoodType() != Good::none )
   {
-    Picture pic = GoodHelper::getPicture( rawmb->getOutGoodType() );
+    Picture pic = GoodHelper::getPicture( rawmb->produceGoodType() );
     new Image( this, Point( 10, 10 ), pic );
   }
 

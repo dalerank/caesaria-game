@@ -122,7 +122,7 @@ bool Farm::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
 
 void Farm::init()
 {
-  Good::Type farmType = getOutGoodType();
+  Good::Type farmType = produceGoodType();
   // add subTiles in draw order
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 0, 0 ) ));
   _d->subTiles.push_back(FarmTile(farmType, TilePos( 2, 2 ) ));

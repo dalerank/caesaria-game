@@ -244,7 +244,7 @@ SmartList<T> Helper::getProducers( const Good::Type goodtype )
   foreach( item, overlays )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );
-    if( b.isValid() && b->getOutGoodType() == goodtype )
+    if( b.isValid() && b->produceGoodType() == goodtype )
     {
       ret.push_back( b );
     }

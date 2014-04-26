@@ -38,8 +38,8 @@ public:
 
   GoodStock& outStockRef();
 
-  Good::Type getInGoodType() const;
-  Good::Type getOutGoodType() const;
+  Good::Type consumeGoodType() const;
+  Good::Type produceGoodType() const;
 
   GoodStore& store();
 

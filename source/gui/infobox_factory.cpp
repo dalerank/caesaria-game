@@ -46,9 +46,9 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   Label* lbPr = new Label( this, Rect( _title()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
   lbPr->setFont( Font::create( FONT_2 ) );
 
-  if( factory->getOutGoodType() != Good::none )
+  if( factory->produceGoodType() != Good::none )
   {
-    new Image( this, Point( 10, 10), GoodHelper::getPicture( factory->getOutGoodType() ) );
+    new Image( this, Point( 10, 10), GoodHelper::getPicture( factory->produceGoodType() ) );
   }
 
   // paint picture of in good

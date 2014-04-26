@@ -109,7 +109,7 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
 GoodStock& Factory::inStockRef(){   return _d->store.getStock(_d->inGoodType);}
 const GoodStock& Factory::inStockRef() const { return _d->store.getStock(_d->inGoodType);}
 GoodStock& Factory::outStockRef(){  return _d->store.getStock(_d->outGoodType);}
-Good::Type Factory::getInGoodType() const{  return _d->inGoodType; }
+Good::Type Factory::consumeGoodType() const{  return _d->inGoodType; }
 int Factory::getProgress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
 void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
 
@@ -128,7 +128,7 @@ bool Factory::mayWork() const
   return false;
 }
 
-bool Factory::haveMaterial() const {  return (getInGoodType() != Good::none && !inStockRef().empty()); }
+bool Factory::haveMaterial() const {  return (consumeGoodType() != Good::none && !inStockRef().empty()); }
 void Factory::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep(time);
@@ -229,9 +229,9 @@ std::string Factory::troubleDesc() const
 {
   std::string ret = WorkingBuilding::troubleDesc();
 
-  if( ret.empty() && !haveMaterial() )
+  if( ret.empty() && !haveMaterial() && consumeGoodType() != Good::none )
   {
-    std::string goodname = GoodHelper::getTypeName( getInGoodType() );
+    std::string goodname = GoodHelper::getTypeName( consumeGoodType() );
     ret = StringHelper::format( 0xff, "##trouble_need_%s##", goodname.c_str() );
   }
 
@@ -264,20 +264,20 @@ void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
 float Factory::getProductRate() const{  return _d->productionRate;}
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}
-Good::Type Factory::getOutGoodType() const{  return _d->outGoodType;}
+Good::Type Factory::produceGoodType() const{  return _d->outGoodType;}
 
 void Factory::receiveGood()
 {
   //send cart supplier if stock not full
-  if( getInGoodType() == Good::none )
+  if( consumeGoodType() == Good::none )
     return;
 
-  unsigned int qty = _d->store.getMaxStore( getInGoodType() );
+  unsigned int qty = _d->store.getMaxStore( consumeGoodType() );
   qty = math::clamp<unsigned int>( qty, 0, 100 );
   if( _mayDeliverGood() && qty > 0 )
   {
     CartSupplierPtr walker = CartSupplier::create( _city() );
-    walker->send2city( this, getInGoodType(), qty );
+    walker->send2city( this, consumeGoodType(), qty );
 
     if( !walker->isDeleted() )
     {
