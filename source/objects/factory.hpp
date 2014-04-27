@@ -93,17 +93,6 @@ public:
    bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
 };
 
-class WeaponsWorkshop : public Factory
-{
-public:
-  WeaponsWorkshop();
-
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-protected:
-  virtual void _storeChanged();
-};
-
 class Winery : public Factory
 {
 public:

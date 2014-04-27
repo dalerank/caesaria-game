@@ -91,19 +91,18 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
                   const TileOverlay::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
-   _d->productionRate = 2.f;
-   _d->progress = 0.0f;
-   _d->isActive = true;
-   _d->produceGood = false;
-   _d->inGoodType = inType;
-   _d->outGoodType = outType;
-   _d->finishedQty = 100;
-
-   _d->store.factory = this;
-   _d->store.setCapacity( 1000 );
-   _d->store.setCapacity(_d->inGoodType, 200);
-   _d->store.setCapacity(_d->outGoodType, 200);
-   CONNECT( &_d->store, onChangeState, this, Factory::_storeChanged );
+  _d->productionRate = 2.f;
+  _d->progress = 0.0f;
+  _d->isActive = true;
+  _d->produceGood = false;
+  _d->inGoodType = inType;
+  _d->outGoodType = outType;
+  _d->finishedQty = 100;
+  _d->store.factory = this;
+  _d->store.setCapacity( 1000 );
+  _d->store.setCapacity(_d->inGoodType, 200);
+  _d->store.setCapacity(_d->outGoodType, 200);
+  CONNECT( &_d->store, onChangeState, this, Factory::_storeChanged );
 }
 
 GoodStock& Factory::inStockRef(){   return _d->store.getStock(_d->inGoodType);}
@@ -229,6 +228,12 @@ std::string Factory::troubleDesc() const
 {
   std::string ret = WorkingBuilding::troubleDesc();
 
+  if( !isActive() )
+  {
+    std::string goodname = GoodHelper::getTypeName( consumeGoodType() );
+    ret = StringHelper::format( 0xff, "##trade_advisor_blocked_%s_production##", goodname.c_str() );
+  }
+
   if( ret.empty() && !haveMaterial() && consumeGoodType() != Good::none )
   {
     std::string goodname = GoodHelper::getTypeName( consumeGoodType() );
@@ -338,35 +343,6 @@ bool IronMine::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& arou
   const_cast< IronMine* >( this )->_setError( near_mountain ? "" : _("##iron_mine_need_mountain_near##"));
 
   return (is_constructible && near_mountain);
-}
-
-WeaponsWorkshop::WeaponsWorkshop() : Factory(Good::iron, Good::weapon, building::weaponsWorkshop, Size(2) )
-{
-  setPicture( ResourceGroup::commerce, 108);
-
-  _animationRef().load( ResourceGroup::commerce, 109, 6);
-  _fgPicturesRef().resize(2);
-}
-
-bool WeaponsWorkshop::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
-{
-  return Factory::canBuild( city, pos, aroundTiles );
-}
-
-void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
-{
-  Factory::build( city, pos );
-
-  city::Helper helper( city );
-  bool haveIronMine = !helper.find<Building>( building::ironMine ).empty();
-
-  _setError( haveIronMine ? "" : "##need_iron_for_work##" );
-}
-
-void WeaponsWorkshop::_storeChanged()
-{
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 156 );
-  _fgPicturesRef()[1].setOffset( 20, 15 );
 }
 
 Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )

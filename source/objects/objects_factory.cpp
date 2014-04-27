@@ -71,6 +71,7 @@
 #include "actor_colony.hpp"
 #include "sight.hpp"
 #include "rift.hpp"
+#include "weaponsworkshop.hpp"
 #include <map>
 
 using namespace constants;
@@ -270,9 +271,9 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(building::pottery,  Pottery, FactoryCreator );
 
   // utility
-  addCreator(building::engineerPost, CAESARIA_STR_EXT(EngineerPost), new WorkingBuildingCreator<EngineerPost>() );
-  addCreator(building::lowBridge,    CAESARIA_STR_EXT(LowBridge), new ConstructionCreator<LowBridge>() );
-  ADD_CREATOR(building::highBridge,   HighBridge, ConstructionCreator );
+  ADD_CREATOR(building::engineerPost, EngineerPost, WorkingBuildingCreator );
+  ADD_CREATOR(building::lowBridge,  LowBridge, ConstructionCreator );
+  ADD_CREATOR(building::highBridge, HighBridge, ConstructionCreator );
   ADD_CREATOR(building::dock,       Dock    , WorkingBuildingCreator );
   ADD_CREATOR(building::shipyard,   Shipyard, FactoryCreator );
   ADD_CREATOR(building::wharf,      Wharf   , FactoryCreator );
@@ -298,15 +299,15 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::hospital,   CAESARIA_STR_EXT(Hospital), new WorkingBuildingCreator<Hospital>() );
 
   // education
-  addCreator(building::school,     CAESARIA_STR_EXT(School) , new WorkingBuildingCreator<School>() );
-  addCreator(building::library,    CAESARIA_STR_EXT(Library), new WorkingBuildingCreator<Library>() );
-  addCreator(building::academy,    CAESARIA_STR_EXT(Academy), new WorkingBuildingCreator<Academy>() );
-  addCreator(building::missionaryPost, CAESARIA_STR_EXT(MissionaryPost), new ConstructionCreator<MissionaryPost>() );
+  ADD_CREATOR(building::school,   School, WorkingBuildingCreator );
+  ADD_CREATOR(building::library,  Library, WorkingBuildingCreator );
+  ADD_CREATOR(building::academy,    Academy, WorkingBuildingCreator );
+  ADD_CREATOR(building::missionaryPost, MissionaryPost, ConstructionCreator );
 
   // natives
-  addCreator(building::nativeHut, CAESARIA_STR_EXT(NativeHut)   , new ConstructionCreator<NativeHut>() );
-  addCreator(building::nativeCenter, CAESARIA_STR_EXT(NativeCenter), new ConstructionCreator<NativeCenter>() );
-  addCreator(building::nativeField, CAESARIA_STR_EXT(NativeField) , new ConstructionCreator<NativeField>() );
+  ADD_CREATOR(building::nativeHut, NativeHut, ConstructionCreator );
+  ADD_CREATOR(building::nativeCenter, NativeCenter, ConstructionCreator );
+  ADD_CREATOR(building::nativeField, NativeField, ConstructionCreator );
 
   //damages
   ADD_CREATOR(building::burningRuins, BurningRuins, ConstructionCreator );
