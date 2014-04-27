@@ -34,7 +34,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void destroy();  // handles the walkers
 
-  int getServiceRange() const;  // max distance from building to road for road to propose the service
+  int serviceRange() const;  // max distance from building to road for road to propose the service
   virtual int serviceDelay() const;
   void setServiceDelay( const int delay );
 

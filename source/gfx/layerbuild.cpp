@@ -216,7 +216,7 @@ void LayerBuild::_buildAll()
 
   if( !buildOk )
   {
-    std::string errorStr = cnstr->getError();
+    std::string errorStr = cnstr->errorDesc();
 
     events::GameEventPtr event = events::WarningMessageEvent::create( errorStr.empty()
                                                                       ? "##need_build_on_cleared_area##"

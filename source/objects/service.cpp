@@ -98,7 +98,7 @@ void ServiceBuilding::deliverService()
   }
 }
 
-int ServiceBuilding::getServiceRange() const {   return _d->serviceRange;}
+int ServiceBuilding::serviceRange() const {   return _d->serviceRange;}
 
 void ServiceBuilding::save( VariantMap& stream ) const 
 {

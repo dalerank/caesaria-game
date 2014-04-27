@@ -18,47 +18,9 @@
 #ifndef __CAESARIA_MILITARY_BUILDING_H_INCLUDED__
 #define __CAESARIA_MILITARY_BUILDING_H_INCLUDED__
 
-#include "working.hpp"
+#include "fort.hpp"
 #include "constants.hpp"
 #include "walker/walker.hpp"
-
-class Fort : public WorkingBuilding
-{
-public:
-  Fort( constants::building::Type type, int picIdLogo );
-  virtual ~Fort();
-
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-
-  virtual bool isNeedRoadAccess() const;
-  virtual float evaluateTrainee( constants::walker::Type traineeType);
-  virtual void timeStep(const unsigned long time);
-
-  virtual void destroy();
-
-  virtual TilePos freeSlot() const;
-  virtual void changePatrolArea();
-
-  virtual gfx::Picture legionEmblem() const;
-  virtual std::string legionName() const;
-  virtual int legionMorale() const;
-
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
-
-  virtual SoldierList soldiers() const;
-
-protected:
-  virtual void _readyNewSoldier() {}
-  virtual void _setPatrolPoint( PatrolPointPtr patrolPoint );
-  virtual void _setEmblem( gfx::Picture pic );
-  virtual void _setName( const std::string& name );
-
-private:  
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
 
 class FortLegionary : public Fort
 {
@@ -88,25 +50,6 @@ public:
 
 protected:
   virtual void _readyNewSoldier();
-};
-
-class FortArea : public Building
-{
-public:
-  FortArea();
-
-  virtual ~FortArea();
-
-  virtual bool isFlat() const;
-  virtual bool isWalkable() const;
-
-  virtual void destroy();
-
-  void setBase( FortPtr base );
-private:
-  class Impl;
-
-  ScopedPtr< Impl > _d;
 };
 
 #endif //__CAESARIA_MILITARY_BUILDING_H_INCLUDED__

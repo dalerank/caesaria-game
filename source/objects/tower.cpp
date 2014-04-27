@@ -24,6 +24,7 @@
 #include "core/direction.hpp"
 #include "walker/wallguard.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "walker/trainee.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -45,7 +46,8 @@ public:
   }
 };
 
-Tower::Tower() : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), _d( new Impl )
+Tower::Tower()
+  : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), _d( new Impl )
 {
   setMaxWorkers( 6 );
   setPicture( ResourceGroup::land2a, 149 );
@@ -145,7 +147,12 @@ void Tower::deliverService()
     _rebuildWays();
   }
 
-  if( numberWorkers() > 0 && !_d->patrolWays.empty() && walkers().empty() )
+  int trValue = traineeValue( walker::soldier );
+
+  if( numberWorkers() > 0
+      && !_d->patrolWays.empty()
+      && walkers().empty()
+      && trValue > 0 )
   {
     Impl::PatrolWays::iterator it = _d->patrolWays.begin();
     std::advance( it, rand() % _d->patrolWays.size() );
@@ -199,4 +206,12 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
 Pathway Tower::getWay(TilePos start, TilePos stop)
 {
   return PathwayHelper::create( start, stop, makeDelegate( _d.data(), &Impl::mayPatroling ) );
+}
+
+float Tower::evaluateTrainee(walker::Type traineeType)
+{
+  int limiter = ( traineeType == walker::soldier ) ? 4 : 1;
+  float value = ServiceBuilding::evaluateTrainee( traineeType );
+
+  return (value / limiter);
 }

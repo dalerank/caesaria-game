@@ -86,7 +86,7 @@ std::string Construction::troubleDesc() const
   return "";
 }
 
-std::string Construction::getError() const { return ""; }
+std::string Construction::errorDesc() const { return ""; }
 TilesArray Construction::getAccessRoads() const {   return _d->accessRoads; }
 bool Construction::canDestroy() const {  return true; }
 void Construction::destroy() {  TileOverlay::destroy(); }

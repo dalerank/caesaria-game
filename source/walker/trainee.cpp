@@ -60,7 +60,8 @@ void TraineeWalker::_init(walker::Type traineeType)
   case walker::soldier:    _d->necBuildings << building::militaryAcademy
                                             << building::fortLegionaire
                                             << building::fortMounted
-                                            << building::fortJavelin;  break;
+                                            << building::fortJavelin
+                                            << building::tower;  break;
   case walker::charioteer:    _d->necBuildings << building::hippodrome;  break;
   default: break;
   }
@@ -160,7 +161,7 @@ void TraineeWalker::checkDestination(const TileOverlay::Type buildingType, Propa
   }
 }
 
-int TraineeWalker::getValue() const{  return 100;}
+int TraineeWalker::value() const{ return 100; }
 
 void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
 {

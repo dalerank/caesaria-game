@@ -173,11 +173,10 @@ int CultureRating::coverage( Coverage type) const
   case covAcademy: return _d->collegeCoverage * 100;
   case covReligion: return _d->religionCoverage * 100;
   case covTheatres: return _d->theatersCoverage * 100;
+  default: return 0;
   }
-
-  return 0;
 }
 
-std::string CultureRating::getDefaultName() {  return CAESARIA_STR_EXT(CityServiceCulture); }
+std::string CultureRating::getDefaultName() { return CAESARIA_STR_EXT(CultureRating); }
 
 }//end namespace city

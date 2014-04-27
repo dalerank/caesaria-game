@@ -78,7 +78,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
           e->dispatch();
         }
 
-        std::string error = construction->getError();
+        std::string error = construction->errorDesc();
         if( !error.empty() )
         {
           GameEventPtr e = WarningMessageEvent::create( error );
@@ -102,7 +102,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
       ConstructionPtr construction = ptr_cast<Construction>( _overlay );
       if( construction.isValid() )
       {
-        GameEventPtr e = WarningMessageEvent::create( construction->getError() );
+        GameEventPtr e = WarningMessageEvent::create( construction->errorDesc() );
         e->dispatch();
       }
     }

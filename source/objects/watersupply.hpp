@@ -30,7 +30,7 @@ public:
   virtual void timeStep(const unsigned long time);
   int getId() const;
 
-  virtual std::string getError() const;
+  virtual std::string errorDesc() const;
 
 protected:
   void _setError( const std::string& error );

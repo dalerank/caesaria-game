@@ -51,7 +51,7 @@ public:
 
   ~LowBridgeSubTile() {}
 
-  std::string getError() const { return _parent ? _parent->getError() : "";  }
+  std::string errorDesc() const { return _parent ? _parent->errorDesc() : "";  }
   bool isWalkable() const { return true;  }
   bool isNeedRoadAccess() const { return false; }
 
@@ -427,7 +427,7 @@ void LowBridge::destroy()
   }
 }
 
-std::string LowBridge::getError() const  { return _d->error; }
+std::string LowBridge::errorDesc() const  { return _d->error; }
 bool LowBridge::isNeedRoadAccess() const { return false; }
 
 void LowBridge::save(VariantMap& stream) const

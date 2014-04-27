@@ -488,7 +488,7 @@ void HighBridge::destroy()
   }
 }
 
-std::string HighBridge::getError() const {  return _d->error;}
+std::string HighBridge::errorDesc() const {  return _d->error;}
 bool HighBridge::isNeedRoadAccess() const{  return false;}
 
 void HighBridge::save(VariantMap& stream) const

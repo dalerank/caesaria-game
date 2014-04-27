@@ -30,7 +30,7 @@ public:
 
   int getStatus( Status status ) const;
 
-  virtual std::string getError() const;
+  virtual std::string errorDesc() const;
 
   virtual void deliverService();  
 

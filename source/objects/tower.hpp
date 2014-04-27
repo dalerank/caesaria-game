@@ -38,6 +38,8 @@ public:
   void resetPatroling();
   PathwayList getWays(TilePos start, FortificationList dest );
   Pathway getWay(TilePos start, TilePos stop);
+  virtual float evaluateTrainee(constants::walker::Type traineeType);
+
 protected:
   void _rebuildWays();
 

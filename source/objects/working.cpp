@@ -99,7 +99,7 @@ void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( numb
 void WorkingBuilding::removeWorkers(const unsigned int workers) { setWorkers( numberWorkers() - workers ); }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
-std::string WorkingBuilding::getError() const { return _d->errorStr;}
+std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
 
 void WorkingBuilding::timeStep( const unsigned long time )

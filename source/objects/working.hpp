@@ -49,10 +49,9 @@ public:
   virtual void addWalker( WalkerPtr walker );
   virtual const WalkerList& walkers() const;
 
-  virtual std::string getError() const;
+  virtual std::string errorDesc() const;
   virtual std::string workersProblemDesc() const;
   virtual std::string workersStateDesc() const;
-
   virtual std::string troubleDesc() const;
 
 protected:
