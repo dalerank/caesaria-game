@@ -73,7 +73,7 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
 
   if( lbProductivity != NULL )
   {
-    std::string text = rawmb->getWorkersProblem();
+    std::string text = rawmb->workersProblemDesc();
     lbProductivity->setText( _(text) );
   }
 }

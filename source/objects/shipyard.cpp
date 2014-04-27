@@ -113,9 +113,9 @@ bool Shipyard::mayWork() const
 
 unsigned int Shipyard::getConsumeQty() const {  return 1000; }
 
-std::string Shipyard::getWorkersProblem() const
+std::string Shipyard::workersProblemDesc() const
 {
-  std::string ret = CoastalFactory::getWorkersProblem();
+  std::string ret = CoastalFactory::workersProblemDesc();
 
   if( ret.empty() && !_d->creatingBoat )
   {

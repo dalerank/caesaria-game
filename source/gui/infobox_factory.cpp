@@ -70,7 +70,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
   _getInfo()->move( Point( 0, 15 ));
 
-  std::string workInfo = factory->getWorkersProblem();
+  std::string workInfo = factory->workersProblemDesc();
   setText( _(workInfo) );
 
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->maxWorkers(), factory->numberWorkers() );

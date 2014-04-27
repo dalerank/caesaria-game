@@ -190,7 +190,7 @@ TileOverlayPtr TileOverlayFactory::create( const std::string& typeName ) const
   return TileOverlayPtr();
 }
 
-TileOverlayFactory& TileOverlayFactory::getInstance()
+TileOverlayFactory& TileOverlayFactory::instance()
 {
   static TileOverlayFactory inst;
   return inst;
@@ -217,7 +217,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(building::forum,        Forum, WorkingBuildingCreator );
   ADD_CREATOR(building::senate,       Senate, WorkingBuildingCreator );
   ADD_CREATOR(building::governorHouse,GovernorsHouse, ConstructionCreator );
-  addCreator(building::governorVilla,CAESARIA_STR_EXT(GovernorsVilla) , new ConstructionCreator<GovernorsVilla>() );
+  ADD_CREATOR(building::governorVilla,GovernorsVilla, ConstructionCreator );
   addCreator(building::governorPalace, CAESARIA_STR_EXT(GovernorsPalace), new ConstructionCreator<GovernorsPalace>() );
   addCreator(building::smallStatue,    CAESARIA_STR_EXT(SmallStatue), new ConstructionCreator<SmallStatue>() );
   addCreator(building::middleStatue,    CAESARIA_STR_EXT(MediumStatue), new ConstructionCreator<MediumStatue>() );
@@ -236,7 +236,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(building::fortLegionaire, CAESARIA_STR_EXT(FortLegionary), new WorkingBuildingCreator<FortLegionary>() );
   addCreator(building::fortJavelin, CAESARIA_STR_EXT(FortJaveline)   , new WorkingBuildingCreator<FortJaveline>() );
   addCreator(building::fortMounted, CAESARIA_STR_EXT(FortMounted)  , new WorkingBuildingCreator<FortMounted>() );
-  addCreator(building::militaryAcademy, CAESARIA_STR_EXT(MilitaryAcademy), new WorkingBuildingCreator<MilitaryAcademy>() );
+  ADD_CREATOR(building::militaryAcademy, MilitaryAcademy, WorkingBuildingCreator );
   addCreator(building::barracks,   CAESARIA_STR_EXT(Barracks)        , new WorkingBuildingCreator<Barracks>() );
   ADD_CREATOR( building::wall,          Wall, ConstructionCreator );
   ADD_CREATOR( building::fortification, Fortification, ConstructionCreator );
@@ -280,10 +280,10 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   ADD_CREATOR(building::triumphalArch, TriumphalArch, ConstructionCreator );
 
   // religion
-  addCreator(building::templeCeres,  CAESARIA_STR_EXT(TempleCeres)  , new WorkingBuildingCreator<TempleCeres>() );
-  addCreator(building::templeNeptune, CAESARIA_STR_EXT(TempleNeptune), new WorkingBuildingCreator<TempleNeptune>() );
-  addCreator(building::templeMars,CAESARIA_STR_EXT(TempleMars)   , new WorkingBuildingCreator<TempleMars>() );
-  addCreator(building::templeVenus, CAESARIA_STR_EXT(TempleVenus)  , new WorkingBuildingCreator<TempleVenus>() );
+  ADD_CREATOR(building::templeCeres,  TempleCeres, WorkingBuildingCreator );
+  ADD_CREATOR(building::templeNeptune, TempleNeptune, WorkingBuildingCreator );
+  ADD_CREATOR(building::templeMars, TempleMars, WorkingBuildingCreator );
+  ADD_CREATOR(building::templeVenus, TempleVenus, WorkingBuildingCreator );
   addCreator(building::templeMercury, CAESARIA_STR_EXT(TempleMercure), new WorkingBuildingCreator<TempleMercure>() );
   addCreator(building::cathedralCeres, CAESARIA_STR_EXT(BigTempleCeres)  , new WorkingBuildingCreator<BigTempleCeres>() );
   addCreator(building::cathedralNeptune, CAESARIA_STR_EXT(BigTempleNeptune), new WorkingBuildingCreator<BigTempleNeptune>() );

@@ -467,7 +467,7 @@ void House::_levelDown()
       int peoplesPerHouse = getHabitants().count() / 4;
       foreach( tile, perimetr )
       {
-        HousePtr house = ptr_cast<House>( TileOverlayFactory::getInstance().create( building::house ) );
+        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( building::house ) );
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
         house->_d->houseId = HouseLevel::smallHovel;
         house->_update();

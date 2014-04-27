@@ -31,7 +31,7 @@ public:
   virtual void assignBoat( ShipPtr boat );
 
   virtual bool mayWork() const;
-  virtual std::string getWorkersProblem() const;
+  virtual std::string workersProblemDesc() const;
 
 private:
   virtual void _updatePicture( constants::Direction direction );

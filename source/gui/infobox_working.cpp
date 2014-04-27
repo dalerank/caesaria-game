@@ -66,7 +66,7 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
 
     if( _working->maxWorkers() > 0 )
     {
-      messages.push_back( _working->getWorkersProblem() );
+      messages.push_back( _working->workersProblemDesc() );
     }
 
     lb->setText( _( messages.rand() ) );

@@ -25,6 +25,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "walker/helper.hpp"
 
 using namespace constants;
 
@@ -109,6 +110,26 @@ void EntertainmentBuilding::load(const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
   _d->showCounter = (int)stream.get( "showCounter" );
+}
+
+std::string EntertainmentBuilding::troubleDesc() const
+{
+  std::string ret = ServiceBuilding::troubleDesc();
+
+  if( ret.empty() )
+  {
+    foreach( item, _d->necWalkers )
+    {
+      int level = traineeValue( *item );
+      if( level == 0 )
+      {
+        ret = StringHelper::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( *item ) );
+        break;
+      }
+    }
+  }
+
+  return ret;
 }
 
 EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::necessaryWalkers() const { return _d->necWalkers; }

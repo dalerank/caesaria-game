@@ -98,7 +98,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
     foreach( tile, clearedTiles )
     {
       TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins, building::plagueRuins };
-      TileOverlayPtr ov = TileOverlayFactory::getInstance().create( dstr2constr[_type] );
+      TileOverlayPtr ov = TileOverlayFactory::instance().create( dstr2constr[_type] );
       if( ov.isValid() )
       {
         SmartPtr< Ruins > ruins = ptr_cast< Ruins >( ov );

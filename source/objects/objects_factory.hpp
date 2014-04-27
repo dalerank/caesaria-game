@@ -31,18 +31,17 @@ public:
 class TileOverlayFactory
 {
 public:
-    static TileOverlayFactory& getInstance();
-    gfx::TileOverlayPtr create( const gfx::TileOverlay::Type type ) const;
-    gfx::TileOverlayPtr create( const std::string& typeName ) const;
+  static TileOverlayFactory& instance();
+  gfx::TileOverlayPtr create( const gfx::TileOverlay::Type type ) const;
+  gfx::TileOverlayPtr create( const std::string& typeName ) const;
 
-    bool canCreate( const gfx::TileOverlay::Type type ) const;
-
-    void addCreator( const gfx::TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
+  bool canCreate( const gfx::TileOverlay::Type type ) const;
+  void addCreator( const gfx::TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
 private:
-    TileOverlayFactory();
+  TileOverlayFactory();
 
-    class Impl;
-    ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif  //__CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_

@@ -108,9 +108,9 @@ bool Wharf::mayWork() const
   return (mayWork && _d->boat.isValid());
 }
 
-std::string Wharf::getWorkersProblem() const
+std::string Wharf::workersProblemDesc() const
 {
-  std::string ret = CoastalFactory::getWorkersProblem();
+  std::string ret = CoastalFactory::workersProblemDesc();
 
   if( ret.empty() )
   {

@@ -63,7 +63,7 @@ bool Senate::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& around
   {
     city::Helper helper( city );
     bool isSenatePresent = !helper.find<Building>(building::senate).empty();
-    _d->errorStr = isSenatePresent ? _("##can_build_only_once##") : "";
+    _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }
 

@@ -63,7 +63,7 @@ void WorkingBuilding::load( const VariantMap& stream)
     _d->maxWorkers = value;
 }
 
-std::string WorkingBuilding::getWorkersProblem() const
+std::string WorkingBuilding::workersProblemDesc() const
 {
   std::string factoryType = MetaDataHolder::getTypename( type() );
   float workKoeff = (numberWorkers() / (float)maxWorkers()) * 6.f;
@@ -81,7 +81,7 @@ std::string WorkingBuilding::troubleDesc() const
 
   if( trouble.empty() && numberWorkers() < maxWorkers() / 2 )
   {
-    trouble = getWorkersProblem();
+    trouble = workersProblemDesc();
   }
 
   return trouble;

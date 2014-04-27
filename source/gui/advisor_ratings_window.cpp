@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_ratings_window.hpp"
 #include "gfx/picture.hpp"
@@ -31,6 +33,7 @@
 #include "core/logger.hpp"
 
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -120,22 +123,28 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
 
   if( culture != 0 )
   {
-    if( culture->getValue() == 0 )
+    if( culture->value() == 0 )
     {
       lbRatingInfo->setText( _("##no_culture_building_in_city##") );
       return;
     }
 
     StringArray troubles;
-    if( culture->coverage( city::CultureRating::ccSchool ) < 100 ) { troubles.push_back( _("##have_less_school_in_city##") ); }
-    if( culture->coverage( city::CultureRating::ccLibrary ) < 100 ) { troubles.push_back( _("##have_less_library_in_city##" ) ); }
-    if( culture->coverage( city::CultureRating::ccAcademy ) < 100 ) { troubles.push_back( _("##have_less_academy_in_city##" ) ); }
-    if( culture->coverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_temples_in_city##" ) ); }
-    if( culture->coverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_theatres_in_city##" ) ); }
+
+    const char* covTypename[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
+    for( int k=CultureRating::covSchool; k < CultureRating::covCount; k++)
+    {
+      int coverage = culture->coverage( CultureRating::Coverage(k) );
+      if( coverage < 100 )
+      {
+        std::string troubleDesc = StringHelper::format( 0xff, "##have_less_%s_in_city_%d##", covTypename[ k ], coverage / 50 );
+        troubles.push_back( troubleDesc );
+      }
+    }
 
     if( !troubles.empty() )
     {
-      lbRatingInfo->setText( troubles[ (int)(rand() % troubles.size())] );
+      lbRatingInfo->setText( _( troubles.rand() ) );
     }
   }
 }

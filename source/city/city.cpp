@@ -559,7 +559,7 @@ void PlayerCity::load( const VariantMap& stream )
     TileOverlay::Type overlayType = (TileOverlay::Type)config.get( 0 ).toInt();
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
-    TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( overlayType );
+    TileOverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && pos.i() >= 0 )
     {
       overlay->build( this, pos );
@@ -696,7 +696,7 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 int PlayerCity::culture() const
 {
   SmartPtr<city::CultureRating> csClt = ptr_cast<city::CultureRating>( findService( city::CultureRating::getDefaultName() ) );
-  return csClt.isValid() ? csClt->getValue() : 0;
+  return csClt.isValid() ? csClt->value() : 0;
 }
 
 int PlayerCity::peace() const

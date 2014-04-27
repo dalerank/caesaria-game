@@ -69,7 +69,7 @@ void LoaderHelper::decodeTerrain(Tile &oTile, PlayerCityPtr city )
 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
-    overlay = TileOverlayFactory::getInstance().create( construction::road );
+    overlay = TileOverlayFactory::instance().create( construction::road );
   }
   else /*if( oTile.getFlag( Tile::tlBuilding ) )*/
   {
@@ -79,25 +79,25 @@ void LoaderHelper::decodeTerrain(Tile &oTile, PlayerCityPtr city )
       case 0xb0f:
       case 0xb0b:
       case 0xb0c:
-        overlay = TileOverlayFactory::getInstance().create( building::nativeHut );
+        overlay = TileOverlayFactory::instance().create( building::nativeHut );
       break;
 
       case 0xb10:
       case 0xb0d:
-        overlay =  TileOverlayFactory::getInstance().create( building::nativeCenter );
+        overlay =  TileOverlayFactory::instance().create( building::nativeCenter );
         Logger::warning( "creation of Native center at (%d,%d)", oTile.i(), oTile.j() );
       break;
 
       case 0xb11:
       case 0xb44:
-        overlay = TileOverlayFactory::getInstance().create( building::nativeField );
+        overlay = TileOverlayFactory::instance().create( building::nativeField );
       break;
 
       case 0x34d:
       case 0x34e:
       case 0x34f:
       case 0x350:
-        overlay = TileOverlayFactory::getInstance().create( building::elevation );
+        overlay = TileOverlayFactory::instance().create( building::elevation );
         overlay->setPicture( Picture::load( TileHelper::convId2PicName( oTile.originalImgId() ) ) );
       break;
     }

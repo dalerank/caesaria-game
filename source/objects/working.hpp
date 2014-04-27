@@ -50,7 +50,7 @@ public:
   virtual const WalkerList& walkers() const;
 
   virtual std::string getError() const;
-  virtual std::string getWorkersProblem() const;
+  virtual std::string workersProblemDesc() const;
   virtual std::string workersStateDesc() const;
 
   virtual std::string troubleDesc() const;
