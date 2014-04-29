@@ -77,6 +77,7 @@ public:
   }
 
   void openGreenlightPage() { OSystem::openUrl( "http://steamcommunity.com/sharedfiles/filedetails/?id=249746982" ); }
+  void openHomePage() { OSystem::openUrl( "https://bitbucket.org/dalerank/caesaria/wiki/Home" ); }
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
   void resolveChangePlayerName();
@@ -282,6 +283,15 @@ void StartMenu::initialize()
   btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stHovered );
   btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stDisabled );
   CONNECT( btnGreenlight, onClicked(), _d.data(), Impl::openGreenlightPage );
+
+  Size scrSize = _d->engine->screenSize();
+  gui::TexturedButton* btnHomePage = new gui::TexturedButton( _d->game->gui()->rootWidget(),
+                                                              Point( scrSize.width() - 97, scrSize.height() - 75 ), Size( 97, 75 ), -1, 0 );
+  btnHomePage->setPicture( Picture::load( "logo_rdt.png" ), gui::stNormal );
+  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stPressed );
+  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stHovered );
+  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stDisabled );
+  CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
 
   gui::PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveChangePlayerName );

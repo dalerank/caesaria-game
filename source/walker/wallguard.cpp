@@ -30,6 +30,8 @@
 #include "walker/spear.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "core/logger.hpp"
+#include "walker/helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -44,13 +46,16 @@ public:
   EnemySoldierPtr findNearbyEnemy(EnemySoldierList enemies , TilePos pos);
 };
 
-WallGuard::WallGuard( PlayerCityPtr city, walker::Type type ) : Soldier( city, type ), _d( new Impl )
+WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
+  : RomeSoldier( city, type ), _d( new Impl )
 {
   setName( NameGenerator::rand( NameGenerator::male ) );
 
-  setAttackDistance( 7 );
+  setAttackDistance( 5 );
   _d->patrolPosition = TilePos( -1, -1 );
 }
+
+WallGuard::~WallGuard(){}
 
 WallGuardPtr WallGuard::create(PlayerCityPtr city, walker::Type type)
 {
@@ -71,7 +76,7 @@ void WallGuard::die()
   break;
 
   default:
-    _CAESARIA_DEBUG_BREAK_IF("not work yet");
+    Logger::warning( "Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
   }
 }
 
@@ -93,9 +98,7 @@ void WallGuard::timeStep(const unsigned long time)
 
       if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
       {
-        SpearPtr spear = Spear::create( _city() );
-        spear->toThrow( pos(), p->pos() );
-        wait( 30 );
+        _fire( p->pos() );
         _updateAnimation( time+1 );
       }
     }
@@ -158,34 +161,6 @@ void WallGuard::load(const VariantMap& stream)
   }
 }
 
-WalkerList WallGuard::_findEnemiesInRange( unsigned int range )
-{
-  Tilemap& tmap = _city()->tilemap();
-  WalkerList walkers;
-
-  for( unsigned int i=0; i < range; i++ )
-  {
-    TilePos offset( i, i );
-    TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
-
-    foreach( tile, tiles )
-    {
-      WalkerList tileWalkers = _city()->getWalkers( walker::any, (*tile)->pos() );
-
-      foreach( w, tileWalkers )
-      {
-        EnemySoldierPtr e = ptr_cast<EnemySoldier>( *w );
-        if( e.isValid() )
-        {
-          walkers.push_back( *w );
-        }
-      }
-    }
-  }
-
-  return walkers;
-}
-
 FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 {
   FortificationList ret;
@@ -210,15 +185,10 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
   return ret;
 }
 
-BuildingList WallGuard::_findBuildingsInRange(unsigned int range)
-{
-  return BuildingList();
-}
-
 bool WallGuard::_tryAttack()
 {
   EnemySoldierList enemies;
-  enemies << _findEnemiesInRange( 10 );
+  enemies << _findEnemiesInRange( attackDistance() * 2 );
 
   if( !enemies.empty() )
   {
@@ -361,6 +331,13 @@ void WallGuard::_brokePathway(TilePos p)
 void WallGuard::_waitFinished()
 {
   _setSubAction( check4attack );
+}
+
+void WallGuard::_fire( TilePos target )
+{
+  SpearPtr spear = Spear::create( _city() );
+  spear->toThrow( pos(), target );
+  wait( 30 );
 }
 
 void WallGuard::_centerTile()

@@ -121,11 +121,11 @@ void Corpse::timeStep(const unsigned long time)
 
   _d->time++;
 
-  if( ( time % _d->updateInterval == 1 ) && getHealth() <= 0 )
+  if( ( time % _d->updateInterval == 1 ) && health() <= 0 )
   {
     updateHealth( -1 );
 
-    if( getHealth() <= -100 )
+    if( health() <= -100 )
     {
       deleteLater();
     }

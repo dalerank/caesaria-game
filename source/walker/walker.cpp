@@ -117,11 +117,14 @@ void Walker::timeStep(const unsigned long time)
       }
     }
   break;
+
+  default:
+  break;
   }
 
   foreach( it, _d->abilities) { (*it)->run( this, time ); }
 
-  if( getHealth() <= 0 )
+  if( health() <= 0 )
   {
     die();
   }
@@ -250,7 +253,7 @@ void Walker::_reachedPathway()
 
 void Walker::_computeDirection()
 {
-  Direction lastDirection = _d->action.direction;
+  const Direction lastDirection = _d->action.direction;
   _d->action.direction = _d->pathway.direction();
   _d->nextwpos = _nextTile().center().toPointF();
   _d->lastCenterDst = _d->wpos.getDistanceFrom( _d->nextwpos );
@@ -300,7 +303,7 @@ void Walker::_noWay(){}
 void Walker::_waitFinished() { }
 Direction Walker::getDirection() const {  return _d->action.direction;}
 Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
-double Walker::getHealth() const{  return _d->health;}
+double Walker::health() const{  return _d->health;}
 void Walker::updateHealth(double value) {  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );}
 void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }

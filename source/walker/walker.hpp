@@ -66,7 +66,7 @@ public:
   constants::Direction getDirection() const;
   Walker::Action action() const;
 
-  virtual double getHealth() const;
+  virtual double health() const;
   virtual void updateHealth(double value);
   virtual void acceptAction( Action action, TilePos pos );
 

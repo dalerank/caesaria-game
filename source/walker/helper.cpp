@@ -85,6 +85,7 @@ public:
     __REG_WTYPE( bow_arrow )
     __REG_WTYPE( romeHorseman )
     __REG_WTYPE( romeSpearman )
+    __REG_WTYPE( catapult )
   }
 };
 

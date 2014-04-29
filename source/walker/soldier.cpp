@@ -20,6 +20,7 @@
 #include "city/helper.hpp"
 
 using namespace constants;
+using namespace gfx;
 
 class Soldier::Impl
 {
@@ -92,4 +93,3 @@ unsigned int Soldier::attackDistance() const{ return _dfunc()->attackDistance; }
 Soldier::SldrAction Soldier::_subAction() const { return _dfunc()->action; }
 void Soldier::_setSubAction(Soldier::SldrAction action){ _dfunc()->action = action; }
 void Soldier::setAttackDistance(unsigned int distance) { _dfunc()->attackDistance = distance; }
-

@@ -25,6 +25,7 @@
 #include "walker/wallguard.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walker/trainee.hpp"
+#include "walker/catapult.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -37,6 +38,7 @@ public:
   PatrolWays patrolWays;
   unsigned int areaHash;
   Point offset;
+  CatapultPtr catapult;
   bool needResetWays;
 
   void mayPatroling( const Tile* tile, bool& ret )
@@ -165,6 +167,20 @@ void Tower::deliverService()
       addWalker( guard.object() );
     }
   }
+
+  if( trValue > 1 )
+  {
+    if( _d->catapult.isNull() )
+    {
+      _d->catapult = Catapult::create( _city() );
+      _d->catapult->setPos( pos() );
+    }
+  }
+
+  if( _d->catapult.isValid() )
+  {
+    _d->catapult->setActive( trValue > 1 );
+  }
 }
 
 TilesArray Tower::getEnterArea() const
@@ -182,10 +198,7 @@ TilesArray Tower::getEnterArea() const
   return tiles;
 }
 
-void Tower::resetPatroling()
-{
-  _d->needResetWays = true;
-}
+void Tower::resetPatroling() {  _d->needResetWays = true; }
 
 PathwayList Tower::getWays(TilePos start, FortificationList dest)
 {

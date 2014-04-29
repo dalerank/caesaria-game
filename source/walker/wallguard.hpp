@@ -18,11 +18,11 @@
 #ifndef _CAESARIA_WALLGUARD_INCLUDE_H_
 #define _CAESARIA_WALLGUARD_INCLUDE_H_
 
-#include "soldier.hpp"
+#include "romesoldier.hpp"
 #include "objects/predefinitions.hpp"
 
 /** Soldier, friend or enemy */
-class WallGuard : public Soldier
+class WallGuard : public RomeSoldier
 {
 public:
   static WallGuardPtr create( PlayerCityPtr city, constants::walker::Type type );
@@ -40,19 +40,19 @@ protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _waitFinished();
+  virtual void _fire( TilePos target );
 
   void _back2tower();
   void _back2patrol();
   bool _tryAttack();
   FortificationList _findNearestWalls( EnemySoldierPtr enemy );
 
-  BuildingList _findBuildingsInRange(unsigned int range);
-  WalkerList _findEnemiesInRange(unsigned int range);
-
   Pathway _attackEnemyInRange(unsigned int range);
-private:
+
   WallGuard(PlayerCityPtr city, constants::walker::Type type);
 
+  virtual ~WallGuard();
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
