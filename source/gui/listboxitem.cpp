@@ -31,6 +31,7 @@ public:
   ElementState state;
   bool enabled;
   Point offset;
+  std::string url;
 
   Alignment horizontal;
   Alignment vertical;
@@ -104,6 +105,8 @@ ElementState ListBoxItem::state() const{    return _d->state;}
 void ListBoxItem::setState( const ElementState& st ){    _d->state = st;}
 Point ListBoxItem::offset() const{  return _d->offset;}
 void ListBoxItem::setOffset(Point p){  _d->offset = p;}
+void ListBoxItem::setUrl(const std::string& url) { _d->url = url; }
+const std::string&ListBoxItem::url() const { return _d->url; }
 Variant ListBoxItem::data() const{ return _d->data; }
 void ListBoxItem::setData(const Variant& value){ _d->data = value; }
 float ListBoxItem::currentHovered() const {   return _d->currentHovered;}

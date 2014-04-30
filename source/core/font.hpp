@@ -54,7 +54,7 @@ public:
 
   Font& operator=(const Font& other);
 
-  int getColor() const;
+  int color() const;
   void setColor( const NColor& color );
 
   bool isValid() const;

@@ -528,7 +528,7 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
                Size( 640, 432 ) ) );
 
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
-  title->setText( _("##Trade advisor##") );
+  title->setText( _("##trade_advisor##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( align::center, align::center );
 

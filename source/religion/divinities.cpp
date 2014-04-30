@@ -80,7 +80,8 @@ void RomeDivinity::load(const VariantMap& vm)
 
 void RomeDivinity::assignFestival(int type)
 {
-  _relation = math::clamp<float>( _relation + type * 10, 0, 100 );
+  //_relation = math::clamp<float>( _relation + type * 10, 0, 100 );
+  _lastFestival = GameDate::current();
 }
 
 VariantMap RomeDivinity::save() const

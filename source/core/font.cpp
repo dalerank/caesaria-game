@@ -105,10 +105,7 @@ unsigned int Font::getWidthFromCharacter( unsigned int c ) const
   return advance;
 }
 
-unsigned int Font::getKerningHeight() const
-{
-  return 3;
-}
+unsigned int Font::getKerningHeight() const {  return 3; }
 
 int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
 {
@@ -128,17 +125,14 @@ int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
   return -1;
 }
 
-int Font::getColor() const
+int Font::color() const
 {
   int ret = 0;
   ret = (_d->color.unused << 24 ) + (_d->color.r << 16) + (_d->color.g << 8) + _d->color.b;
   return ret;
 }
 
-bool Font::isValid() const
-{
-  return _d->ttfFont != 0;
-}
+bool Font::isValid() const {  return _d->ttfFont != 0; }
 
 Size Font::getSize( const std::string& text ) const
 {
@@ -236,10 +230,7 @@ void Font::draw( Picture &dstpic, const std::string &text, const Point& pos, boo
   draw( dstpic, text, pos.x(), pos.y(), useAlpha );
 }
 
-Font::~Font()
-{
-
-}
+Font::~Font() {}
 
 Font& Font::operator=( const Font& other )
 {

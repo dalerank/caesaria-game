@@ -155,7 +155,6 @@ void ListBox::removeItem(unsigned int id)
   _d->recalculateItemHeight( _d->font, height() );
 }
 
-
 int ListBox::itemAt(Point pos ) const
 {
   if ( 	pos.x() < screenLeft() || pos.x() >= screenRight()
@@ -221,32 +220,36 @@ void ListBox::setSelected( const std::string& item )
 
 void ListBox::_indexChanged( unsigned int eventType )
 {
-    parent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
+  parent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
 
-    //_CallLuaFunction( eventType );
+  //_CallLuaFunction( eventType );
 
-    switch( eventType )
+  switch( eventType )
+  {
+  case guiListboxChanged:
+  {
+    _d->indexSelected.emit( _d->selectedItemIndex );
+    if( _d->selectedItemIndex >= 0 )
     {
-    case guiListboxChanged:
-      _d->indexSelected.emit( _d->selectedItemIndex );
-      if( _d->selectedItemIndex >= 0 )
-      {
-        _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].text() );
-        _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
-      }
-    break;
-
-    case guiListboxSelectedAgain:
-      _d->indexSelectedAgain.emit( _d->selectedItemIndex );
-      if( _d->selectedItemIndex >= 0 )
-      {
-          _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].text() );
-      }
-    break;
-
-    default:
-    break;
+      _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].text() );
+      _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
     }
+  }
+  break;
+
+  case guiListboxSelectedAgain:
+  {
+    _d->indexSelectedAgain.emit( _d->selectedItemIndex );
+    if( _d->selectedItemIndex >= 0 )
+    {
+        _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].text() );
+    }
+  }
+  break;
+
+  default:
+  break;
+  }
 }
 
 //! called if an event happened.
@@ -622,7 +625,12 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 
         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-        _drawItemText( *_d->picture, currentFont, refItem,textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+        _drawItemText( *_d->picture, currentFont, refItem, textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+        if( !refItem.url().empty() )
+        {
+          textRect.UpperLeftCorner.setY( textRect.LowerRightCorner.y() - 1 );
+          _d->picture->fill( currentFont.color(), textRect  + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+        }
       }
 
       frameRect += Point( 0, _d->itemHeight );
@@ -873,6 +881,7 @@ void ListBox::setupUI(const VariantMap& ui)
       Font font = fontName.empty() ? getFont() : Font::create( fontName );
       ListBoxItem& item = addItem( _(text), font );
       item.setTag( tag );
+      item.setUrl( vm.get( "url").toString() );
     }
   }
 }

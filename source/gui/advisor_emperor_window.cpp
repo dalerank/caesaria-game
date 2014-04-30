@@ -221,7 +221,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
 
   _d->lbEmperorFavourDesc = findChildA<Label*>( "lbEmperorFavourDesc", true, this );
   if( _d->lbEmperorFavourDesc )
-    _d->lbEmperorFavourDesc->setText( _d->getEmperorFavourStr() );
+    _d->lbEmperorFavourDesc->setText( _( _d->getEmperorFavourStr() ) );
 
   _d->lbPost = findChildA<Label*>( "lbPost", true, this );
   _d->lbPrimaryFunds = findChildA<Label*>( "lbPrimaryFunds", true, this );

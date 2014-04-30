@@ -31,11 +31,14 @@
       "Programmers, which interesting in joining the "
       "development team. Sound artists to create new sound "
       "effects for the game, or to find charge free sounds "
-      "we can use. "Graphical artists to create new graphic "
+      "we can use. Graphical artists to create new graphic "
       "set for the game, menus, etc."
       ""
       { text : "Donations", font : "FONT_3" }
-      "see http://bitbucket.org/dalerank/caesaria/wiki/Donations"
+      { text : "see http://bitbucket.org/dalerank/caesaria/wiki/Donations",
+        url : "http://bitbucket.org/dalerank/caesaria/wiki/Donations", font : "FONT_2_RED" },
+      "",
+      ""
     ]
   }
 

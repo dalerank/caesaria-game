@@ -61,7 +61,7 @@ public:
     case building::baths: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
     case building::barber: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
     case building::hospital: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
-    case building::doctor: buildingStr = _("##doctor##"); peoplesStr = _("##peoples##"); break;
+    case building::doctor: buildingStr = _("##ovrm_clinics##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 

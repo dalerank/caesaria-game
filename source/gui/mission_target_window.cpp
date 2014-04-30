@@ -102,6 +102,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->lbxHelp = new ListBox( this, Rect( 16, 152, width() - 20, height() - 40 ) );
   _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
   _d->lbxHelp->setItemTextOffset( Point( 10, 0 ) );
+  _d->lbxHelp->setItemHeight( 16 );
 }
 
 void MissionTargetsWindow::draw( gfx::Engine& painter )

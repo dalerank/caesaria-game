@@ -51,7 +51,7 @@
     
     btnSendGift#PushButton : {
       geometry : [ 322, 343, 572, 363 ]
-      text : "##send_gift##"
+      text : "##dispatch_gift##"
       bgtype : "blackBorderUp"
     }
     
@@ -63,7 +63,7 @@
     
     btnChangeSalary#PushButton : {
       geometry : [ 70, 395, 570, 415 ]
-      text : "##change_salary##"
+      text : "##set_mayor_salary##"
       bgtype : "blackBorderUp"
     }
   }
