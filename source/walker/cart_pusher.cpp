@@ -236,7 +236,7 @@ void CartPusher::computeWalkerDestination()
      else
      {
        _setDirection( constants::north );
-       Walker::wait();
+       Walker::wait( -1 );
        setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
        _walk();
      }

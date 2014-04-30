@@ -41,10 +41,10 @@ protected:
   virtual void _centerTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
+  virtual bool _tryAttack();
+  virtual void _back2base();
 
   void _init( constants::walker::Type type);
-  void _back2fort();
-  bool _tryAttack();
 
   virtual WalkerList _findEnemiesInRange(unsigned int range);
   virtual BuildingList _findBuildingsInRange(unsigned int range);

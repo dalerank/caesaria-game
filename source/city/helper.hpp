@@ -60,14 +60,14 @@ public:
   }
 
   template<class T>
-  bool isTileBusy( TilePos p, bool& needMeMove )
+  bool isTileBusy( TilePos p, WalkerPtr caller, bool& needMeMove )
   {
     needMeMove = false;
     SmartList<T> walkers;
     walkers << _city->getWalkers( constants::walker::all, p );
     foreach( it, walkers )
     {
-      if( *it == this )
+      if( *it == caller.object() )
       {
         needMeMove = (it != walkers.begin());
         walkers.erase( it );

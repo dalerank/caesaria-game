@@ -42,8 +42,6 @@ public:
   TowerPtr base;
   TilePos patrolPosition;
   double strikeForce, resistance;
-
-  EnemySoldierPtr findNearbyEnemy(EnemySoldierList enemies , TilePos pos);
 };
 
 WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
@@ -86,28 +84,43 @@ void WallGuard::timeStep(const unsigned long time)
 
   switch( _subAction() )
   {
-  case check4attack:
+  case fightEnemy:
   {
     EnemySoldierList enemies;
     enemies << _findEnemiesInRange( attackDistance() );
 
     if( !enemies.empty() )
     {
-      EnemySoldierPtr p = _d->findNearbyEnemy( enemies, pos() );
-      turn( p->pos() );
-
-      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      if( _animationRef().atEnd() )
       {
+        EnemySoldierPtr p = _findNearbyEnemy( enemies );
+        turn( p->pos() );
         _fire( p->pos() );
         _updateAnimation( time+1 );
       }
     }
     else
     {
+      _back2base();
+    }
+  }
+  break;
+
+  case check4attack:
+  {
+    EnemySoldierList enemies;
+    enemies << _findEnemiesInRange( attackDistance() );
+
+    if( !enemies.empty() )
+    {    
+      fight();      
+    }
+    else
+    {
       bool haveEnemies = _tryAttack();
       if( !haveEnemies )
       {
-        _back2tower();
+        _back2base();
       }
     }
   }
@@ -119,7 +132,7 @@ void WallGuard::timeStep(const unsigned long time)
       bool haveEnemies = _tryAttack();
       if( !haveEnemies )
       {
-        _back2tower();
+        _back2base();
       }
     }
   break;
@@ -128,11 +141,17 @@ void WallGuard::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
+void WallGuard::fight()
+{
+  Soldier::fight();
+  _setSubAction( Soldier::fightEnemy );
+}
+
 void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base->pos();
+  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
   stream[ "strikeForce" ] = _d->strikeForce;
   stream[ "resistance" ] = _d->resistance;
   stream[ "patrolPosition" ] = _d->patrolPosition;
@@ -159,6 +178,11 @@ void WallGuard::load(const VariantMap& stream)
   {
     die();
   }
+}
+
+void WallGuard::setBase(TowerPtr tower)
+{
+  _d->base = tower;
 }
 
 FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
@@ -193,19 +217,7 @@ bool WallGuard::_tryAttack()
   if( !enemies.empty() )
   {
     //find nearest walkable wall
-    EnemySoldierPtr soldierInAttackRange;
-    double minDistance = 8;
-
-    //enemy in attack range
-    foreach( enemy, enemies )
-    {
-      double tmpDistance = (*enemy)->pos().distanceFrom( pos() );
-      if( tmpDistance < minDistance )
-      {
-        minDistance = tmpDistance;
-        soldierInAttackRange = *enemy;
-      }
-    }
+    EnemySoldierPtr soldierInAttackRange = _findNearbyEnemy( enemies );
 
     if( soldierInAttackRange.isValid() )
     {
@@ -216,7 +228,7 @@ bool WallGuard::_tryAttack()
     else
     {
       PathwayPtr shortestWay;
-      minDistance = 999;
+      int minDistance = 999;
       foreach( it, enemies )
       {
         EnemySoldierPtr enemy = *it;
@@ -247,7 +259,7 @@ bool WallGuard::_tryAttack()
   return false;
 }
 
-void WallGuard::_back2tower()
+void WallGuard::_back2base()
 {
   if( _d->base.isValid() )
   {
@@ -289,7 +301,7 @@ void WallGuard::_reachedPathway()
     bool haveEnemies = _tryAttack();
     if( !haveEnemies )
     {
-      _back2tower();
+      _back2base();
       _setSubAction( back2base );
     }
   }
@@ -323,7 +335,7 @@ void WallGuard::_brokePathway(TilePos p)
     {
       _setSubAction( patrol );
       setPathway( Pathway() );
-      wait( 0 );
+      wait( GameDate::days2ticks( 7 ) );
     }
   }
 }
@@ -337,7 +349,7 @@ void WallGuard::_fire( TilePos target )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), target );
-  wait( 30 );
+  wait( GameDate::days2ticks( 1 ) / 2 );
 }
 
 void WallGuard::_centerTile()
@@ -361,10 +373,10 @@ void WallGuard::_centerTile()
   Walker::_centerTile();
 }
 
-void WallGuard::send2city( TowerPtr base, Pathway pathway )
+void WallGuard::send2city( TowerPtr tower, Pathway pathway )
 {
   setPos( pathway.getStartPos() );
-  _d->base = base;
+  setBase( tower );
 
   setPathway( pathway );
   go();
@@ -377,13 +389,13 @@ void WallGuard::send2city( TowerPtr base, Pathway pathway )
   }
 }
 
-EnemySoldierPtr WallGuard::Impl::findNearbyEnemy(EnemySoldierList enemies, TilePos pos)
+EnemySoldierPtr WallGuard::_findNearbyEnemy(EnemySoldierList enemies )
 {
   EnemySoldierPtr ret;
   double minDistance = 999;
   foreach( it, enemies )
   {
-    double tmpDistance = pos.distanceFrom( (*it)->pos() );
+    double tmpDistance = pos().distanceFrom( (*it)->pos() );
     if( tmpDistance > 2 && tmpDistance < minDistance )
     {
       minDistance = tmpDistance;

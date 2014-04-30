@@ -26,6 +26,7 @@ using namespace gfx;
 class ThrowingWeapon::Impl
 {
 public:
+  Point offset;
   Point srcPos;
   Point dstPos;
   PointF deltaMove;
@@ -48,12 +49,12 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   _setWpos( _d->srcPos );
 
   _city()->addWalker( this );
-  Tile& tile = _city()->tilemap().at( src );
+  const Tile& tile = _city()->tilemap().at( src );
   TileOverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
     _d->height = ov->offset( tile, Point( 7, 7 ) ).y();
-    Tile& dTile = _city()->tilemap().at( dst );
+    const Tile& dTile = _city()->tilemap().at( dst );
     ov = dTile.overlay();
     if( ov.isValid() )
     {
@@ -65,19 +66,27 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   turn( dst );
 }
 
+Point ThrowingWeapon::screenpos() const
+{
+  const Point& p = _wpos();
+  return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
+}
+
 void ThrowingWeapon::timeStep(const unsigned long time)
 {
   switch( action() )
   {
   case Walker::acMove:
   {
+    PointF saveCurrent = _d->currentPos;
     _d->currentPos += _d->deltaMove;
     _d->height += _d->deltaHeight;
     TilePos ij( (_d->currentPos.x() - 7) / 15, (_d->currentPos.y() - 7) / 15 );
     setPos( ij );
-    _setWpos( _d->currentPos.toPoint() - Point( 0, _d->height ) );
+    _setWpos( _d->currentPos.toPoint() );
 
-    if( _d->currentPos.IsEqual( _d->dstPos.toPointF(), 3.f ) )
+    if( saveCurrent.getDistanceFrom( _d->dstPos.toPointF() ) <
+        _d->currentPos.getDistanceFrom( _d->dstPos.toPointF() ) )
     {
       _d->currentPos = _d->dstPos.toPointF();
      _reachedPathway();
@@ -103,36 +112,41 @@ void ThrowingWeapon::turn(TilePos p)
   case 1: index = _rcStartIndex() + 14; break;
   case 2: index = _rcStartIndex() + 15; break;
   case 3: index = _rcStartIndex(); break;
-  case 4: index = _rcStartIndex() + 1; break;
+  case 4: index = _rcStartIndex() + 2; break;
   case 5: index = _rcStartIndex() + 2; break;
-  case 6: index = _rcStartIndex() + 2; break;
-  case 7: index = _rcStartIndex() + 3; break;
-  case 8: index = _rcStartIndex() + 5; break;
+  case 6: index = _rcStartIndex() + 4; break;
+  case 7: index = _rcStartIndex() + 5; break;
+  case 8: index = _rcStartIndex() + 6; break;
   case 9: index = _rcStartIndex() + 6; break;
-  case 10: index = _rcStartIndex() + 7; break;
-  case 11: index = _rcStartIndex() + 8; break;
-  case 12: index = _rcStartIndex() + 9; break;
+  case 10: index = _rcStartIndex() + 8; break;
+  case 11: index = _rcStartIndex() + 9; break;
+  case 12: index = _rcStartIndex() + 10; break;
   case 13: index = _rcStartIndex() + 10; break;
-  case 14: index = _rcStartIndex() + 11; break;
-  case 15: index = _rcStartIndex() + 11; break;
+  case 14: index = _rcStartIndex() + 10; break;
+  case 15: index = _rcStartIndex() + 13; break;
   }
 
   //if( angle > 13 ) { index = rcStartIndex() + (angle - 14); }
   //else  { index = rcStartIndex() + 2 + angle; }
 
   _d->pic = Picture::load( rcGroup(), index );
+  _d->pic.setOffset( _d->offset );
 }
 
 const Picture& ThrowingWeapon::getMainPicture() {  return _d->pic; }
 TilePos ThrowingWeapon::dstPos() const {  return _d->dst; }
 TilePos ThrowingWeapon::startPos() const{  return _d->from; }
-
 ThrowingWeapon::~ThrowingWeapon() {}
 
 void ThrowingWeapon::_reachedPathway()
 {
   _onTarget();
   deleteLater();
+}
+
+void ThrowingWeapon::setPicOffset(Point offset)
+{
+  _d->offset = offset;
 }
 
 ThrowingWeapon::ThrowingWeapon(PlayerCityPtr city) : Walker( city ), _d( new Impl )

@@ -35,6 +35,7 @@
 #include "spear.hpp"
 #include "helper.hpp"
 #include "core/foreach.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -49,17 +50,21 @@ void EnemyArcher::_fire( TilePos p )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), p );
-  wait( 30 );
+  wait( GameDate::days2ticks( 1 ) / 2 );
 }
 
 void EnemyArcher::_waitFinished()
 {
-  _setSubAction( check4attack );
+  //_setSubAction( check4attack );
+  _tryAttack();
 }
 
 void EnemyArcher::timeStep(const unsigned long time)
 {
   Soldier::timeStep( time );
+
+  if( waitInterval() > 0 )
+    return;
 
   switch( _subAction() )
   {
@@ -72,7 +77,7 @@ void EnemyArcher::timeStep(const unsigned long time)
       WalkerPtr p = enemies.front();
       turn( p->pos() );
 
-      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      if( _animationRef().atEnd() )
       {
         _fire( p->pos() );
         _updateAnimation( time+1 );
@@ -94,7 +99,7 @@ void EnemyArcher::timeStep(const unsigned long time)
       BuildingPtr b = buildings.front();
       turn( b->pos() );
 
-      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      if( _animationRef().atEnd() )
       {
         _fire( b->pos() );
         _updateAnimation( time+1 );

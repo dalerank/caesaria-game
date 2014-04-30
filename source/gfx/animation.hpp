@@ -61,6 +61,8 @@ public:
   void setOffset( const Point& offset );
   Point offset() const;
 
+  bool atEnd() const;
+
   bool isRunning() const;
   bool isStopped() const;
 

@@ -102,7 +102,7 @@ void RomeSoldier::timeStep(const unsigned long time)
 
 void RomeSoldier::send2patrol()
 {
-  _back2fort();
+  _back2base();
 }
 
 void RomeSoldier::save(VariantMap& stream) const
@@ -146,7 +146,7 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   WalkerList walkers;
 
   TilePos offset( range, range );
-  TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
+  TilesArray tiles = tmap.getArea( pos() - offset, pos() + offset );
 
   foreach( tile, tiles )
   {
@@ -192,7 +192,7 @@ bool RomeSoldier::_tryAttack()
   {
     city::Helper helper( _city() );
     bool needMove = false;
-    helper.isTileBusy<Soldier>( pos(), needMove );
+    helper.isTileBusy<Soldier>( pos(), this, needMove );
     if( needMove )
     {
       _move2freePos( targetPos );
@@ -223,7 +223,7 @@ Pathway RomeSoldier::_findPathway2NearestEnemy( unsigned int range )
   return Pathway();
 }
 
-void RomeSoldier::_back2fort()
+void RomeSoldier::_back2base()
 {
   if( _d->base.isValid() )
   {
@@ -254,7 +254,7 @@ void RomeSoldier::_reachedPathway()
   {
     if( _city()->getWalkers( type(), pos() ).size() != 1 ) //only me in this tile
     {
-      _back2fort();
+      _back2base();
     }
     else
     {
@@ -316,7 +316,7 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
 {
   setPos( pos );
   _d->base = base;
-  _back2fort();
+  _back2base();
 
   if( !isDeleted() )
   {

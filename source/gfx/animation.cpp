@@ -56,6 +56,11 @@ Point Animation::offset() const
   return _pictures.front().offset();
 }
 
+bool Animation::atEnd() const
+{
+  return _animIndex == (int)( _pictures.size()-1 );
+}
+
 void Animation::update( unsigned int time )
 {  
   __D_IMPL(_d,Animation)

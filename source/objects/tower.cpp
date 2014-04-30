@@ -168,12 +168,13 @@ void Tower::deliverService()
     }
   }
 
-  //if( trValue > 1 )
+  if( trValue > 1 )
   {
     if( _d->catapult.isNull() )
     {
       _d->catapult = Catapult::create( _city() );
       _d->catapult->setPos( pos()+TilePos( 1, 0 ) );
+      _d->catapult->setBase( this );
     }
   }
 

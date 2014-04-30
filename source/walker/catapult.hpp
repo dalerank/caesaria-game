@@ -33,7 +33,9 @@ public:
 
 protected:
   Catapult( PlayerCityPtr city );
-  virtual void _back2tower();
+  virtual void _back2base();
+  virtual bool _tryAttack();
+  virtual void _fire(TilePos target);
 
 private:
   bool _isActive;

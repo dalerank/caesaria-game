@@ -92,34 +92,37 @@ walker::Type Walker::type() const{ return _d->type; }
 
 void Walker::timeStep(const unsigned long time)
 {
-  switch(_d->action.action)
+  if( _d->waitInterval > 0 )
   {
-  case Walker::acMove:
-    _walk();
-
-    if( _d->finalSpeed() > 0.f )
+    _d->waitInterval--;
+    if( _d->waitInterval == 0 )
     {
-      _updateAnimation( time );
+      _waitFinished();
     }
-  break;
-
-  case Walker::acFight:
-    _updateAnimation( time );
-  break;
-
-  case Walker::acNone:
-    if( _d->waitInterval > 0 )
+  }
+  else
+  {
+    switch(_d->action.action)
     {
-      _d->waitInterval--;
-      if( _d->waitInterval == 0 )
+    case Walker::acMove:
+      _walk();
+
+      if( _d->finalSpeed() > 0.f )
       {
-        _waitFinished();
+        _updateAnimation( time );
       }
-    }
-  break;
+    break;
 
-  default:
-  break;
+    case Walker::acFight:
+      _updateAnimation( time );
+    break;
+
+    case Walker::acNone:
+    break;
+
+    default:
+    break;
+    }
   }
 
   foreach( it, _d->abilities) { (*it)->run( this, time ); }
@@ -495,9 +498,14 @@ void Walker::go( float speed )
 void Walker::wait(int ticks)
 {
   _d->waitInterval = ticks;
-  setSpeed( 0.f );
-  _setAction( acNone );
-}      // default action
+  if( ticks < 0 )
+  {
+    _setAction( acNone );
+    setSpeed( 0.f );
+  }
+}
+
+int Walker::waitInterval() const { return _d->waitInterval; }
 
 void Walker::die()
 {

@@ -25,16 +25,15 @@ public:
   void toThrow( TilePos src, TilePos dst );
 
   virtual void timeStep(const unsigned long time);
-
+  virtual Point screenpos() const;
   virtual void turn(TilePos pos);
-
+  virtual void setPicOffset( Point offset );
   virtual const gfx::Picture& getMainPicture();
 
   TilePos dstPos() const;
   TilePos startPos() const;
 
   virtual ~ThrowingWeapon();
-
 protected:
   virtual void _reachedPathway();
 

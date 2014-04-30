@@ -36,6 +36,7 @@ public:
 protected:
   virtual void _fire(TilePos pos );  
   virtual void _waitFinished();
+
 private:
   EnemyArcher(PlayerCityPtr city, constants::walker::Type type);
 };

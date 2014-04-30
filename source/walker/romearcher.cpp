@@ -18,6 +18,7 @@
 #include "romearcher.hpp"
 #include "city/helper.hpp"
 #include "spear.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 
@@ -32,7 +33,7 @@ void RomeArcher::_fire( TilePos p )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->toThrow( pos(), p );
-  wait( 30 );
+  wait( GameDate::days2ticks( 1 ) / 2 );
 }
 
 RomeArcherPtr RomeArcher::create(PlayerCityPtr city, walker::Type type)

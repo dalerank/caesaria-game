@@ -84,25 +84,10 @@ public:
 		return d;
 	}
 
-	inline bool operator!() const
-	{
-		return !d;
-	}
-
-	inline operator bool() const
-	{
-		return isNull() ? 0 : &ScopedPtr::d;
-	}
-
-	inline T *data() const
-	{
-		return d;
-	}
-
-	inline bool isNull() const
-	{
-		return !d;
-	}
+	inline bool operator!() const {		return !d;	}
+	inline operator bool() const {	return !isNull();	}
+	inline T *data() const	{	return d;	}
+	inline bool isNull() const {	return !d;	}
 
 	inline void reset(T *other = 0)
 	{

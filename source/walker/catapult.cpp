@@ -20,6 +20,9 @@
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
+#include "enemysoldier.hpp"
+#include "game/gamedate.hpp"
+#include "spear.hpp"
 
 using namespace constants;
 
@@ -27,7 +30,7 @@ namespace {
   const int attackDistance = 16;
 }
 
-Catapult::Catapult(PlayerCityPtr city )
+Catapult::Catapult( PlayerCityPtr city )
   : WallGuard( city, walker::catapult )
 {
   _setType( walker::catapult );
@@ -57,9 +60,43 @@ void Catapult::setActive(bool active)
   _setAction( active ? acWork : acNone );
 }
 
+bool Catapult::_tryAttack()
+{
+  EnemySoldierList enemies;
+  enemies << _findEnemiesInRange( attackDistance() );
+
+  if( !enemies.empty() )
+  {
+    //find nearest walkable wall
+    EnemySoldierPtr soldierInAttackRange = _findNearbyEnemy( enemies );
+
+    if( soldierInAttackRange.isValid() )
+    {
+      _setSubAction( fightEnemy );
+      fight();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void Catapult::_fire( TilePos target )
+{
+  SpearPtr spear = Spear::create( _city() );
+  spear->setPicInfo( ResourceGroup::sprites, 146 );
+  spear->setPicOffset( Point( -15, 15 ));
+  spear->toThrow( pos(), target );
+  wait( GameDate::days2ticks( 1 ) / 2 );
+}
+
 void Catapult::timeStep(const unsigned long time)
 {
   WallGuard::timeStep( time );
 }
 
-void Catapult::_back2tower() {}
+void Catapult::_back2base()
+{
+  _setSubAction( Soldier::patrol );
+  _setAction( acWork );
+}

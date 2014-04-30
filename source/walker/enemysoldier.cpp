@@ -44,6 +44,7 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
 : Soldier( city, type )
 {
   _setSubAction( check4attack );
+  setAttackDistance( 1 );
 }
 
 bool EnemySoldier::_tryAttack()
@@ -71,7 +72,7 @@ bool EnemySoldier::_tryAttack()
   {
     city::Helper helper( _city() );
     bool needMeMove = false;
-    helper.isTileBusy<EnemySoldier>( pos(), needMeMove );
+    helper.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
     if( needMeMove )
     {
       _move2freePos( targetPos );
@@ -276,7 +277,7 @@ void EnemySoldier::timeStep(const unsigned long time)
   {
   case fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( 1 );
+    WalkerList enemies = _findEnemiesInRange( attackDistance() );
 
     if( !enemies.empty() )
     {
@@ -294,7 +295,7 @@ void EnemySoldier::timeStep(const unsigned long time)
 
   case destroyBuilding:
   {
-    BuildingList buildings = _findBuildingsInRange( 1 );
+    BuildingList buildings = _findBuildingsInRange( attackDistance() );
 
     if( !buildings.empty() )
     {

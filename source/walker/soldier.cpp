@@ -57,7 +57,10 @@ int Soldier::morale() const { return _dfunc()->morale; }
 
 void Soldier::wait(int ticks)
 {
-  _setSubAction( doNothing );
+  if( ticks < 0 )
+  {
+    _setSubAction( doNothing );
+  }
   Walker::wait( ticks );
 }
 
@@ -66,7 +69,12 @@ void Soldier::initialize(const VariantMap &options)
   Walker::initialize( options );
   setResistance( options.get( "resistance", 1.f ) );
   setStrike( options.get( "strike", 3.f ) );
-  setAttackDistance( (int)options.get( "attackDistance", 1 ) );
+
+  Variant ad = options.get( "attackDistance" );
+  if( ad.isValid() )
+  {
+    setAttackDistance( math::clamp( ad.toInt(), 1, 99 ) );
+  }
 }
 
 bool Soldier::_move2freePos( TilePos target )
