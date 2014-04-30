@@ -44,6 +44,8 @@ CatapultPtr Catapult::create(PlayerCityPtr city)
   CatapultPtr ret( new Catapult( city ) );
   ret->drop();
 
+  city->addWalker( ret.object() );
+
   return ret;
 }
 
@@ -54,3 +56,10 @@ void Catapult::setActive(bool active)
   _isActive = active;
   _setAction( active ? acWork : acNone );
 }
+
+void Catapult::timeStep(const unsigned long time)
+{
+  WallGuard::timeStep( time );
+}
+
+void Catapult::_back2tower() {}

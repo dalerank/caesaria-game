@@ -41,8 +41,8 @@ protected:
   virtual void _brokePathway(TilePos pos);
   virtual void _waitFinished();
   virtual void _fire( TilePos target );
+  virtual void _back2tower();
 
-  void _back2tower();
   void _back2patrol();
   bool _tryAttack();
   FortificationList _findNearestWalls( EnemySoldierPtr enemy );

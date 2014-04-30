@@ -168,12 +168,12 @@ void Tower::deliverService()
     }
   }
 
-  if( trValue > 1 )
+  //if( trValue > 1 )
   {
     if( _d->catapult.isNull() )
     {
       _d->catapult = Catapult::create( _city() );
-      _d->catapult->setPos( pos() );
+      _d->catapult->setPos( pos()+TilePos( 1, 0 ) );
     }
   }
 
@@ -199,6 +199,11 @@ TilesArray Tower::getEnterArea() const
 }
 
 void Tower::resetPatroling() {  _d->needResetWays = true; }
+
+Point Tower::offset(const Tile& tile, const Point& subpos) const
+{
+  return Point( 0, -65 );
+}
 
 PathwayList Tower::getWays(TilePos start, FortificationList dest)
 {

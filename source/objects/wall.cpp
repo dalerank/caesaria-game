@@ -91,14 +91,14 @@ bool Wall::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
 
   if( ret )
   {
-    Picture pic = const_cast< Wall* >( this )->getPicture( city, pos, aroundTiles );
+    Picture pic = const_cast< Wall* >( this )->picture( city, pos, aroundTiles );
     const_cast< Wall* >( this )->setPicture( pic );
   }
 
   return ret;
 }
 
-const Picture& Wall::getPicture(PlayerCityPtr city, TilePos p, const TilesArray& tmp) const
+const Picture& Wall::picture(PlayerCityPtr city, TilePos p, const TilesArray& tmp) const
 {
   // find correct picture as for roads
   Tilemap& tmap = city->tilemap();
@@ -235,7 +235,7 @@ const Picture& Wall::getPicture(PlayerCityPtr city, TilePos p, const TilesArray&
 
 void Wall::updatePicture(PlayerCityPtr city)
 {
-  setPicture( getPicture( city, TilePos(), TilesArray() ) );
+  setPicture( picture( city, TilePos(), TilesArray() ) );
 }
 
 bool Wall::isNeedRoadAccess() const

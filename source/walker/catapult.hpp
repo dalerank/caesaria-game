@@ -29,9 +29,11 @@ public:
   virtual ~Catapult();
 
   void setActive( bool active );
+  virtual void timeStep(const unsigned long time);
 
 protected:
   Catapult( PlayerCityPtr city );
+  virtual void _back2tower();
 
 private:
   bool _isActive;

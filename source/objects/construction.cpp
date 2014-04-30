@@ -91,7 +91,7 @@ TilesArray Construction::getAccessRoads() const {   return _d->accessRoads; }
 bool Construction::canDestroy() const {  return true; }
 void Construction::destroy() {  TileOverlay::destroy(); }
 bool Construction::isNeedRoadAccess() const{  return true; }
-const Picture& Construction::getPicture() const {  return TileOverlay::getPicture(); }
+const Picture& Construction::picture() const {  return TileOverlay::picture(); }
 Construction::~Construction() {}
 
 void Construction::build(PlayerCityPtr city, const TilePos& pos )
@@ -238,8 +238,8 @@ void Construction::timeStep(const unsigned long time)
   TileOverlay::timeStep( time );
 }
 
-const Picture& Construction::getPicture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+const Picture& Construction::picture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
-  return getPicture();
+  return picture();
 }
 

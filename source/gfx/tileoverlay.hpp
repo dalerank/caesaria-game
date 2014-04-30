@@ -60,7 +60,7 @@ public:
   virtual void setPicture(Picture picture);
   virtual void setPicture(const char* resource, const int index);
 
-  virtual const Picture& getPicture() const;
+  virtual const Picture& picture() const;
   virtual std::string sound() const;
 
   void setAnimation( const gfx::Animation& animation );

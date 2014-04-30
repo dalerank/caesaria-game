@@ -102,7 +102,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
-        tile->setPicture( &overlay->getPicture() );
+        tile->setPicture( &overlay->picture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -357,7 +357,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     if( cntr.isValid() && postTiles.size() > 0 )
     {
       tile.setWasDrawn();
-      const Picture& pic = cntr->getPicture( _city(), tile.pos(), postTiles );
+      const Picture& pic = cntr->picture( _city(), tile.pos(), postTiles );
       engine.drawPicture( pic, screenPos );
 
       drawTilePass( engine, tile, offset, Renderer::foreground );

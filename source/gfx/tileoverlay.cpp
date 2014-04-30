@@ -195,7 +195,7 @@ Picture& TileOverlay::_fgPicture( unsigned int index ){  return _d->fgPictures[i
 Picture& TileOverlay::_pictureRef(){  return _d->picture;}
 TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
-const Picture& TileOverlay::getPicture() const{  return _d->picture;}
+const Picture& TileOverlay::picture() const{  return _d->picture;}
 void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}
 const Animation&TileOverlay::animation() const { return _d->animation;}
 void TileOverlay::deleteLater(){  _d->isDeleted  = true;}

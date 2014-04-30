@@ -36,7 +36,7 @@ public:
   void updatePicture(PlayerCityPtr city);
   void addWater( const WaterSource& source );
 
-  virtual const gfx::Picture& getPicture( PlayerCityPtr city,
+  virtual const gfx::Picture& picture( PlayerCityPtr city,
                                      TilePos pos,
                                      const gfx::TilesArray& tmp ) const;
 protected:
