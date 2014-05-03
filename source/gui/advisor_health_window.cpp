@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_health_window.hpp"
 #include "gfx/decorator.hpp"
@@ -61,7 +63,7 @@ public:
     case building::baths: buildingStr = _("##bath##"); peoplesStr = _("##peoples##"); break;
     case building::barber: buildingStr = _("##barber##"); peoplesStr = _("##peoples##"); break;
     case building::hospital: buildingStr = _("##hospital##"); peoplesStr = _("##patients##"); break;
-    case building::doctor: buildingStr = _("##ovrm_clinics##"); peoplesStr = _("##peoples##"); break;
+    case building::doctor: buildingStr = _("##clinics##"); peoplesStr = _("##peoples##"); break;
     default: break;
     }
 
@@ -131,7 +133,7 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
                Size( 640, 290 ) ) );
 
   Label* title = new Label( this, Rect( 60, 10, width() - 10, 10 + 40) );
-  title->setText( _("##Health advisor##") );
+  title->setText( _("##health_advisor##") );
   title->setFont( Font::create( FONT_3 ) );
   title->setTextAlignment( align::upperLeft, align::center );
 

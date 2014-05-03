@@ -46,7 +46,7 @@ public:
   float speed;
   TilePos pos;
   UniqueId uid;
-  unsigned int waitInterval;
+  int waitInterval;
   float speedMultiplier;
   Animation animation;  // current animation
   PointF wpos;      // current world position

@@ -80,7 +80,7 @@ public:
         texture->draw( pic, Point( xOffset + k * 15, 0), false );
       }
 
-      font.draw( *texture, _divinity->moodDescription(), xOffset + k * 15, 0 );
+      font.draw( *texture, _( _divinity->moodDescription() ), xOffset + k * 15, 0 );
     }
     else
     {
