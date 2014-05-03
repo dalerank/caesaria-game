@@ -308,7 +308,8 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       }
 
       HousePtr house = ptr_cast<House>( (*it)->overlay() );
-      if( house != NULL && house->getSpec().level() == level4grow )
+      if( house != NULL &&
+          (house->getSpec().level() == level4grow || house->getHabitants().count() == 0) )
       {
         if( house->size().width() > 1 )  //bigger house near, can't grow
         {
