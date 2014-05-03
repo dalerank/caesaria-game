@@ -118,16 +118,29 @@ bool Factory::mayWork() const
     return false;
 
   GoodStock& inStock = const_cast< Factory* >( this )->inStockRef();
+  bool mayContinue = false;
   if( inStock.type() == Good::none )
-    return true;
+  {
+    mayContinue = true;
+  }
+  else
+  {
+    mayContinue = ( haveMaterial() || _d->produceGood );
+  }
 
-  if( haveMaterial() || _d->produceGood )
-    return true;
+  GoodStock& outStock = const_cast< Factory* >( this )->outStockRef();
+  mayContinue &= (outStock.freeQty() > 0);
 
-  return false;
+  return mayContinue;
+}
+
+void Factory::_removeSpoiledGoods()
+{
+  store().removeExpired( GameDate::current() );
 }
 
 bool Factory::haveMaterial() const {  return (consumeGoodType() != Good::none && !inStockRef().empty()); }
+
 void Factory::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep(time);
@@ -143,7 +156,7 @@ void Factory::timeStep(const unsigned long time)
 
     if( GameDate::current().month() % 3 == 1 )
     {
-      store().removeExpired( GameDate::current() );
+      _removeSpoiledGoods();
     }
   }
 

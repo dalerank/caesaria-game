@@ -31,6 +31,8 @@ MarbleQuarry::MarbleQuarry()
   _animationRef().load( ResourceGroup::commerce, 44, 10);
   _animationRef().setDelay( 4 );
   _fgPicturesRef().resize(2);
+
+  _setClearAnimationOnStop( false );
 }
 
 void MarbleQuarry::timeStep( const unsigned long time )

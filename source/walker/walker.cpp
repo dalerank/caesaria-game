@@ -155,7 +155,8 @@ void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 void Walker::_walk()
 {
-  if( constants::noneDirection == _d->action.direction )
+  if( constants::noneDirection == _d->action.direction
+      || !_pathwayRef().isValid() )
   {
     // nothing to do
     _noWay();

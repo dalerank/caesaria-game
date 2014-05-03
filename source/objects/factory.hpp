@@ -72,6 +72,7 @@ public:
 protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();
+  virtual void _removeSpoiledGoods();
 
 protected:
   class Impl;
