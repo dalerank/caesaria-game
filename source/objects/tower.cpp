@@ -25,7 +25,7 @@
 #include "walker/wallguard.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walker/trainee.hpp"
-#include "walker/catapult.hpp"
+#include "walker/balista.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -38,7 +38,7 @@ public:
   PatrolWays patrolWays;
   unsigned int areaHash;
   Point offset;
-  CatapultPtr catapult;
+  BalistaPtr catapult;
   bool needResetWays;
 
   void mayPatroling( const Tile* tile, bool& ret )
@@ -172,7 +172,7 @@ void Tower::deliverService()
   {
     if( _d->catapult.isNull() )
     {
-      _d->catapult = Catapult::create( _city() );
+      _d->catapult = Balista::create( _city() );
       _d->catapult->setPos( pos()+TilePos( 1, 0 ) );
       _d->catapult->setBase( this );
     }

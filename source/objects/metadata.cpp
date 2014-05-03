@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "metadata.hpp"
 
@@ -36,6 +37,7 @@ class BuildingTypeHelper : public EnumsHelper<TileOverlay::Type>
 public:
   BuildingTypeHelper() : EnumsHelper<TileOverlay::Type>( building::unknown )
   {
+#define __REG_TOTYPE(a) append(building::a, CAESARIA_STR_EXT(a) );
     append( building::amphitheater,   "amphitheater");
     append( building::theater,        "theater" );
     append( building::hippodrome,     "hippodrome" );
@@ -125,6 +127,7 @@ public:
     append( building::fortification,  "fortification" );
     append( building::elevation, "elevation" );
     append( building::unknown,        "" );
+#undef __REG_TOTYPE
  }
 };
 

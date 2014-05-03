@@ -87,7 +87,7 @@ public:
   unsigned int finishedQty;
 };
 
-Factory::Factory(const Good::Type inType, const Good::Type outType,
+Factory::Factory( const Good::Type inType, const Good::Type outType,
                   const TileOverlay::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
@@ -101,7 +101,7 @@ Factory::Factory(const Good::Type inType, const Good::Type outType,
   _d->store.factory = this;
   _d->store.setCapacity( 1000 );
   _d->store.setCapacity(_d->inGoodType, 200);
-  _d->store.setCapacity(_d->outGoodType, 200);
+  _d->store.setCapacity(_d->outGoodType, 100);
   CONNECT( &_d->store, onChangeState, this, Factory::_storeChanged );
 }
 

@@ -621,7 +621,7 @@
     sound : [ "meatfarm", 1 ]
   },
 
-  quarry : 
+  quarry :
   {
     cost : 50,
     desirability : { base : -6,	range : 6,	step : 1 }
@@ -629,6 +629,7 @@
     class : "rawmaterial"
     productRate : 2.4
     sound : [ "marblequarry", 1 ]
+    image : [ "commerce", 43 ]
   },
 
   iron_mine :
@@ -641,7 +642,7 @@
     sound : [ "ironmine", 1 ]
   },
   
-  lumber_mill : 
+  lumber_mill :
   {
     cost : 40,
     desirability : { base : -4,	range : 4,	step : 1 }
@@ -651,7 +652,7 @@
     sound : [ "lumbermill", 1 ]
   },
 
-  clay_pit : 
+  clay_pit :
   {
     cost : 40,
     desirability : { base : -3,	range : 3,	step : 1 }

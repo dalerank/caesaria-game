@@ -74,7 +74,7 @@ enum Type{
   waterGarbage,
   romeHorseman,
   romeSpearman,
-  catapult,//49
+  balista,//49
   all = 0xff,
   any = all
 };

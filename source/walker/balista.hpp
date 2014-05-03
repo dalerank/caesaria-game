@@ -15,24 +15,24 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_CATAPULT_INCLUDE_H_
-#define _CAESARIA_CATAPULT_INCLUDE_H_
+#ifndef _CAESARIA_BALISTA_INCLUDE_H_
+#define _CAESARIA_BALISTA_INCLUDE_H_
 
 #include "wallguard.hpp"
 #include "core/predefinitions.hpp"
 
-class Catapult : public WallGuard
+class Balista : public WallGuard
 {
 public:
-  static CatapultPtr create( PlayerCityPtr city );
+  static BalistaPtr create( PlayerCityPtr city );
 
-  virtual ~Catapult();
+  virtual ~Balista();
 
   void setActive( bool active );
   virtual void timeStep(const unsigned long time);
 
 protected:
-  Catapult( PlayerCityPtr city );
+  Balista( PlayerCityPtr city );
   virtual void _back2base();
   virtual bool _tryAttack();
   virtual void _fire(TilePos target);
@@ -41,4 +41,4 @@ private:
   bool _isActive;
 };
 
-#endif //_CAESARIA_CATAPULT_INCLUDE_H_
+#endif //_CAESARIA_BALISTA_INCLUDE_H_

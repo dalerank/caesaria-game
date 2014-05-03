@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "catapult.hpp"
+#include "balista.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
@@ -30,21 +30,21 @@ namespace {
   const int attackDistance = 16;
 }
 
-Catapult::Catapult( PlayerCityPtr city )
-  : WallGuard( city, walker::catapult )
+Balista::Balista( PlayerCityPtr city )
+  : WallGuard( city, walker::balista )
 {
-  _setType( walker::catapult );
+  _setType( walker::balista );
   setSpeedMultiplier( 0.f );
   setAttackDistance( 8 );
 
   _isActive = false;
 
-  setName( _("##catapult##") );
+  setName( _("##balista##") );
 }
 
-CatapultPtr Catapult::create(PlayerCityPtr city)
+BalistaPtr Balista::create(PlayerCityPtr city)
 {
-  CatapultPtr ret( new Catapult( city ) );
+  BalistaPtr ret( new Balista( city ) );
   ret->drop();
 
   city->addWalker( ret.object() );
@@ -52,15 +52,15 @@ CatapultPtr Catapult::create(PlayerCityPtr city)
   return ret;
 }
 
-Catapult::~Catapult(){}
+Balista::~Balista(){}
 
-void Catapult::setActive(bool active)
+void Balista::setActive(bool active)
 {
   _isActive = active;
   _setAction( active ? acWork : acNone );
 }
 
-bool Catapult::_tryAttack()
+bool Balista::_tryAttack()
 {
   EnemySoldierList enemies;
   enemies << _findEnemiesInRange( attackDistance() );
@@ -81,7 +81,7 @@ bool Catapult::_tryAttack()
   return false;
 }
 
-void Catapult::_fire( TilePos target )
+void Balista::_fire( TilePos target )
 {
   SpearPtr spear = Spear::create( _city() );
   spear->setPicInfo( ResourceGroup::sprites, 146 );
@@ -90,12 +90,12 @@ void Catapult::_fire( TilePos target )
   wait( GameDate::days2ticks( 1 ) / 2 );
 }
 
-void Catapult::timeStep(const unsigned long time)
+void Balista::timeStep(const unsigned long time)
 {
   WallGuard::timeStep( time );
 }
 
-void Catapult::_back2base()
+void Balista::_back2base()
 {
   _setSubAction( Soldier::patrol );
   _setAction( acWork );
