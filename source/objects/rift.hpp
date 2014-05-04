@@ -35,6 +35,7 @@ public:
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
+  virtual bool isDestructible() const;
 
   virtual void load(const VariantMap &stream);
   virtual gfx::Renderer::PassQueue getPassQueue() const;

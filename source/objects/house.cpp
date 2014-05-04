@@ -36,7 +36,6 @@
 #include "constants.hpp"
 #include "events/build.hpp"
 #include "events/fireworkers.hpp"
-#include "objects/desirability.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "city/funds.hpp"

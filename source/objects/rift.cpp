@@ -40,16 +40,11 @@ void Rift::build( PlayerCityPtr city, const TilePos& pos )
   TileOverlay::build( city, pos );
   setPicture( computePicture() );
 
-  // update adjacent roads
-  /*foreach( Tile* tile, _accessRoads )
+  RiftList rifts = neighbors();
+  foreach( it, rifts )
   {
-    RoadPtr road = tile->getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
-    if( road.isValid() )
-    {
-      road->computeAccessRoads();
-      road->setPicture(road->computePicture());
-    }
-  }*/
+    (*it)->updatePicture();
+  }
 }
 
 void Rift::initTerrain(Tile& terrain)
@@ -64,9 +59,9 @@ RiftList Rift::neighbors() const
   RiftList ret;
 
   TilePos offset( 1, 1 );
-  TilesArray rifts = _city()->tilemap().getRectangle( pos() - offset, pos() + offset, false );
+  TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset, false );
 
-  for( TilesArray::iterator it=rifts.begin(); it != rifts.end(); ++it )
+  foreach( it, tiles )
   {
     RiftPtr rt = ptr_cast<Rift>( (*it)->overlay() );
     if( rt.isValid() )
@@ -123,17 +118,15 @@ Picture Rift::computePicture()
 
 bool Rift::isWalkable() const{  return false;}
 bool Rift::isFlat() const {  return true;}
+bool Rift::isNeedRoadAccess() const {  return false;}
+void Rift::destroy() {}
+bool Rift::isDestructible() const {  return false;}
+Renderer::PassQueue Rift::getPassQueue() const {  return riftPassQueue; }
 
 void Rift::updatePicture()
 {
   setPicture( computePicture() );
 }
-
-bool Rift::isNeedRoadAccess() const {  return false;}
-
-void Rift::destroy() {}
-
-Renderer::PassQueue Rift::getPassQueue() const {  return riftPassQueue; }
 
 void Rift::load(const VariantMap& stream)
 {

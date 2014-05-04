@@ -23,6 +23,7 @@
 #include "core/logger.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/rift.hpp"
+#include "events/disaster.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -53,7 +54,7 @@ bool EarthQuake::isDeleted() const
 
 void EarthQuake::_exec( Game& game, unsigned int time)
 {
-  if( GameDate::isWeekChanged() && time != _d->lastTimeUpdate )
+  if( GameDate::isDayChanged() && time != _d->lastTimeUpdate )
   {
     _d->lastTimeUpdate = time;
     Logger::warning( "Execute earthquake event" );
@@ -62,23 +63,13 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     Tile* currentTile = &tmap.at( _d->currentPoint );
     if( currentTile )
     {
-      bool mayDestruct = currentTile->getFlag( Tile::isConstructible ) || currentTile->getFlag( Tile::isDestructible );
+      bool mayDestruct = currentTile->getFlag( Tile::isConstructible );
+      mayDestruct |= is_kind_of<Construction>( currentTile->overlay() );
+
       if( mayDestruct )
       {
-        ConstructionPtr c = ptr_cast<Construction>( currentTile->overlay() );
-        if( c.isValid() )
-        {
-          c->collapse();
-        }
-
-        Rift* r = new Rift();
-        r->build( game.city(), currentTile->pos() );
-
-        RiftList rifts = r->neighbors();
-        foreach( it, rifts )
-        {
-          (*it)->updatePicture();
-        }
+        events::GameEventPtr e = events::DisasterEvent::create( *currentTile, DisasterEvent::rift );
+        e->dispatch();
 
         //calculate next point
         TilePos offset( 1, 1 );
@@ -87,7 +78,8 @@ void EarthQuake::_exec( Game& game, unsigned int time)
         int lastDst = _d->currentPoint.distanceFrom( _d->endPoint);
         for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
         {
-          mayDestruct = (*it)->getFlag( Tile::isConstructible ) || (*it)->getFlag( Tile::isDestructible );
+          mayDestruct = (*it)->getFlag( Tile::isConstructible );
+          mayDestruct |= is_kind_of<Construction>( (*it)->overlay() );
           int curDst = (*it)->pos().distanceFrom( _d->endPoint );
           if( !mayDestruct || (curDst > lastDst) ) { it = nextPoints.erase( it ); }
           else { ++it; }

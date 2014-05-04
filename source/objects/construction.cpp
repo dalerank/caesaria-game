@@ -150,11 +150,6 @@ void Construction::collapse()
   Logger::warning( "Building collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
-Desirability Construction::getDesirability() const
-{
-  return MetaDataHolder::instance().getData( type() ).getDesirbility();
-}
-
 void Construction::setState( ParameterType param, double value)
 {
   _d->params[ param ] = math::clamp<double>( value, 0.f, 100.f );

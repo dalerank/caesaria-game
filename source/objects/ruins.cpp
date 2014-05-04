@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "ruins.hpp"
 #include "game/resourcegroup.hpp"
@@ -102,7 +104,7 @@ void BurningRuins::destroy()
 
   BurnedRuinsPtr p( new BurnedRuins() );
   p->drop();
-  p->setInfo( getInfo() );
+  p->setInfo( info() );
 
   events::GameEventPtr event = events::BuildEvent::create( pos(), p.object() );
   event->dispatch();
@@ -242,7 +244,7 @@ void PlagueRuins::destroy()
 
   BurnedRuinsPtr p( new BurnedRuins() );
   p->drop();
-  p->setInfo( getInfo() );
+  p->setInfo( info() );
 
   events::GameEventPtr event = events::BuildEvent::create( pos(), p.object() );
   event->dispatch();

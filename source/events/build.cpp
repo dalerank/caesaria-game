@@ -45,29 +45,34 @@ GameEventPtr BuildEvent::create(const TilePos& pos, TileOverlayPtr overlay)
   return ret;
 }
 
-bool BuildEvent::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
+bool BuildEvent::_mayExec(Game&, unsigned int) const {  return true;}
 
 void BuildEvent::_exec( Game& game, unsigned int )
-{
-  const MetaData& buildingData = MetaDataHolder::instance().getData( _overlay->type() );
-  if( _overlay.isValid() )
-  {
-    _overlay->build( game.city(), _pos );
+{  
+  if( _overlay.isNull() )
+    return;
 
-    if( !_overlay->isDeleted() )
-    {
+  TileOverlayPtr ctOv = game.city()->getOverlay( _pos );
+
+  bool mayBuild = true;
+  if( ctOv.isValid() )
+  {
+    mayBuild = ctOv->isDestructible();
+  }
+
+  if( !_overlay->isDeleted() && mayBuild )
+  {
+      _overlay->build( game.city(), _pos );
+      city::Helper helper( game.city() );
+      helper.updateDesirability( _overlay, true );
+      game.city()->addOverlay( _overlay );
+
       ConstructionPtr construction = ptr_cast<Construction>( _overlay );
       if( construction.isValid() )
       {
-        city::Helper helper( game.city() );
-        helper.updateDesirability( construction, true );
-
-        game.city()->addOverlay( _overlay );
+        const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
         game.city()->funds().resolveIssue( FundIssue( city::Funds::buildConstruction,
-                                                            -(int)buildingData.getOption( "cost" ) ) );
+                                                      -(int)buildingData.getOption( "cost" ) ) );
 
         GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
         e->dispatch();
@@ -95,7 +100,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
             e->dispatch();
           }
         }
-      }
+      }      
     }
     else
     {
@@ -106,7 +111,6 @@ void BuildEvent::_exec( Game& game, unsigned int )
         e->dispatch();
       }
     }
-  }
 }
 
 } //end namespace events

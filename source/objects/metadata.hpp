@@ -25,7 +25,6 @@
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
 #include "gfx/tileoverlay.hpp"
-#include "desirability.hpp"
 
 // contains some metaData for a building type
 class MetaData
@@ -66,7 +65,7 @@ public:
    static MetaDataHolder& instance();
 
    void addData(const MetaData& data);
-   const MetaData& getData(const gfx::TileOverlay::Type buildingType) const;
+   static const MetaData& getData(const gfx::TileOverlay::Type buildingType);
    bool hasData(const gfx::TileOverlay::Type buildingType) const;
 
    // return factory that consume goodType
@@ -80,6 +79,8 @@ public:
    static std::string getDescription( gfx::TileOverlay::Type type );
 
    void initialize( const vfs::Path& filename );
+
+   ~MetaDataHolder();
 private:
    MetaDataHolder();
 

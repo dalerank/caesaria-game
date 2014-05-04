@@ -195,7 +195,7 @@ enum Type
   forum2,
   senate2,
   elevation,
-  rift,
+  rift,//90
   typeCount,
   userType=1000
 }; //end Type

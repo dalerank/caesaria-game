@@ -12,6 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 
 #include "tileoverlay.hpp"
 #include "objects/metadata.hpp"
@@ -53,10 +56,14 @@ TileOverlay::TileOverlay(const Type type, const Size& size)
   setType( type );
 }
 
+Desirability TileOverlay::desirability() const
+{
+  return MetaDataHolder::getData( type() ).getDesirbility();
+}
 
 void TileOverlay::setType(const Type type)
 {
-  const MetaData& bd = MetaDataHolder::instance().getData( type );
+  const MetaData& bd = MetaDataHolder::getData( type );
 
    _d->overlayType = type;
    _d->overlayClass = bd.getGroup();

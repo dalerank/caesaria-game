@@ -47,7 +47,6 @@ public:
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
   virtual gfx::TilesArray getEnterArea() const;
 
-  virtual Desirability getDesirability() const;
   virtual bool canDestroy() const;
   virtual void destroy();
 

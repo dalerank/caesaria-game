@@ -20,7 +20,8 @@
 
 namespace gfx
 {
-class Tile;
+
+  class Tile;
 class Picture;
 class Tilemap;
 class TilemapCamera;
@@ -29,6 +30,7 @@ class CityRenderer;
 
 PREDEFINE_CLASS_SMARTLIST(TileOverlay,List)
 PREDEFINE_CLASS_SMARTLIST(Layer,List)
+
 }
 
 #endif //__CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__

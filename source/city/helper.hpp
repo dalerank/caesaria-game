@@ -193,7 +193,7 @@ public:
   gfx::TilesArray getArea( TilePos start, TilePos stop );
   float getBalanceKoeff();
 
-  void updateDesirability( ConstructionPtr construction, bool onBuild );
+  void updateDesirability(gfx::TileOverlayPtr overlay, bool onBuild );
 
 protected:
   PlayerCityPtr _city;

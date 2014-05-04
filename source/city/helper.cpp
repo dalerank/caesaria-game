@@ -26,15 +26,15 @@ namespace city
 
 const TilePos Helper::invalidPos = TilePos( -1, -1 );
 
-void Helper::updateDesirability( ConstructionPtr construction, bool onBuild )
+void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
 {
   Tilemap& tilemap = _city->tilemap();
 
-  const Desirability& dsrbl = construction->getDesirability();
+  const Desirability& dsrbl = overlay->desirability();
   int mul = ( onBuild ? 1 : -1);
 
   //change desirability in selfarea
-  TilesArray area = tilemap.getArea( construction->pos(), construction->size() );
+  TilesArray area = tilemap.getArea( overlay->pos(), overlay->size() );
   foreach( tile, area )
   {
     (*tile)->appendDesirability( mul * dsrbl.base );
@@ -44,8 +44,8 @@ void Helper::updateDesirability( ConstructionPtr construction, bool onBuild )
   int current = mul * dsrbl.base;
   for( int curRange=1; curRange <= dsrbl.range; curRange++ )
   {
-    TilesArray perimetr = tilemap.getRectangle( construction->pos() - TilePos( curRange, curRange ),
-                                                 construction->size() + Size( 2 * curRange ) );
+    TilesArray perimetr = tilemap.getRectangle( overlay->pos() - TilePos( curRange, curRange ),
+                                                 overlay->size() + Size( 2 * curRange ) );
     foreach( tile, perimetr )
     {
       (*tile)->appendDesirability( current );

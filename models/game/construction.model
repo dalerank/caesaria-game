@@ -88,7 +88,7 @@
     animation : { rc : "entertainment", start : 63, count : 18, offset : [ 78, 21 ], delay : 2 }
   },
   
-  artist_colony : {
+  actorColony : {
     cost : 50,
     desirability : { base : -2, range : 3, step : 1 }
     employers : 5

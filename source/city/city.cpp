@@ -455,12 +455,8 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
 void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay)
 {
-  ConstructionPtr constr = ptr_cast<Construction>( overlay );
-  if( constr.isValid() )
-  {
-    city::Helper helper( city );
-    helper.updateDesirability( constr, false );
-  }
+  city::Helper helper( city );
+  helper.updateDesirability( overlay, false );
 }
 
 void PlayerCity::save( VariantMap& stream) const

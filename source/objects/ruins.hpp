@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_RUINS_H_INCLUDE_
 #define __CAESARIA_RUINS_H_INCLUDE_
@@ -24,7 +26,7 @@ class Ruins : public Building
 public:
   Ruins( constants::building::Type type );
   void setInfo( std::string parent ) { _parent = parent; }
-  std::string getInfo() const { return _parent; }
+  std::string info() const { return _parent; }
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

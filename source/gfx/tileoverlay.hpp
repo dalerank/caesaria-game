@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_TILEOVERLAY_H_INCLUDE_
 #define _CAESARIA_TILEOVERLAY_H_INCLUDE_
@@ -24,6 +26,15 @@
 #include "core/scopedptr.hpp"
 #include "gfx/renderer.hpp"
 #include "game/predefinitions.hpp"
+
+struct Desirability
+{
+ Desirability() : base( 0 ), range( 0 ), step( 0 ) {}
+
+ int base;
+ int range;
+ int step;
+};
 
 namespace gfx
 {
@@ -68,6 +79,7 @@ public:
 
   virtual const gfx::Pictures& getPictures( gfx::Renderer::Pass pass ) const;
   virtual gfx::Renderer::PassQueue getPassQueue() const;
+  Desirability desirability() const;
 
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );

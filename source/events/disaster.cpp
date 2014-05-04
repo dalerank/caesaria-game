@@ -69,7 +69,15 @@ void DisasterEvent::_exec( Game& game, unsigned int )
   Tile& tile = tmap.at( _pos );
   TilePos rPos = _pos;
 
-  if( tile.getFlag( Tile::isDestructible ) )
+  bool mayContinue = tile.getFlag( Tile::isDestructible );
+
+  if( _type == DisasterEvent::rift )
+  {
+    mayContinue = tile.getFlag( Tile::isConstructible );
+    mayContinue |= is_kind_of<Construction>( tile.overlay() );
+  }
+
+  if( mayContinue )
   {
     Size size( 1 );
 
@@ -97,26 +105,51 @@ void DisasterEvent::_exec( Game& game, unsigned int )
     TilesArray clearedTiles = tmap.getArea( rPos, size );
     foreach( tile, clearedTiles )
     {
-      TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins, building::plagueRuins };
-      TileOverlayPtr ov = TileOverlayFactory::instance().create( dstr2constr[_type] );
-      if( ov.isValid() )
-      {
-        SmartPtr< Ruins > ruins = ptr_cast< Ruins >( ov );
-        if( ruins.isValid() )
-        {
-          std::string typev = _infoType > 1000
-                                ? StringHelper::format( 0xff, "house%02d", _infoType - 1000 )
-                                : MetaDataHolder::getTypename( _infoType );
-          ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", typev.c_str() ) );
-        }
+      bool needBuildRuins = !( _type == DisasterEvent::rift && (*tile)->pos() == _pos );
 
-        Dispatcher::instance().append( BuildEvent::create( (*tile)->pos(), ov ) );
+      TileOverlayPtr ov;
+      if( needBuildRuins )
+      {
+        TileOverlay::Type dstr2constr[] = { building::burningRuins, building::collapsedRuins,
+                                            building::plagueRuins, building::collapsedRuins };
+
+        ov = TileOverlayFactory::instance().create( dstr2constr[_type] );
+
+        if( ov.isValid() )
+        {
+          SmartPtr< Ruins > ruins = ptr_cast< Ruins >( ov );
+          if( ruins.isValid() )
+          {
+            std::string typev = _infoType > 1000
+                                  ? StringHelper::format( 0xff, "house%02d", _infoType - 1000 )
+                                  : MetaDataHolder::getTypename( _infoType );
+            ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", typev.c_str() ) );
+          }
+        }
       }
+      else
+      {
+        ov = TileOverlayFactory::instance().create( building::rift );
+
+        TilePos offset( 1, 1 );
+        TilesArray tiles = game.city()->tilemap().getRectangle( _pos - offset, _pos + offset, false );
+
+        /*foreach( it, tiles )
+        {
+          ConstructionPtr c = ptr_cast<Construction>( (*it)->overlay() );
+          if( c.isValid() )
+          {
+            c->burn();
+          }
+        }*/
+      }
+
+      Dispatcher::instance().append( BuildEvent::create( (*tile)->pos(), ov ) );
     }
 
-    std::string dstr2string[] = { _("##alarm_fire_in_city##"), _("##alarm_building_collapsed##"),
-                                  _("##alarm_plague_in_city##") };
-    game.city()->onDisasterEvent().emit( _pos, dstr2string[_type] );
+    std::string dstr2string[] = { "##alarm_fire_in_city##", "##alarm_building_collapsed##",
+                                  "##alarm_plague_in_city##", "##alarm_earthquake##" };
+    game.city()->onDisasterEvent().emit( _pos, _( dstr2string[_type] ) );
   }
 }
 
