@@ -32,13 +32,10 @@ class PushButton;
 class StartMenu : public Widget
 {
 public:
-    StartMenu( Widget* parent );
-    virtual ~StartMenu();
+  StartMenu( Widget* parent );
+  virtual ~StartMenu();
 
-    //draw on screen
-    //virtual void draw( GfxEngine& engine );
-
-    PushButton* addButton( const std::string& caption, int id );
+  PushButton* addButton( const std::string& caption, int id );
 };
 
 }//end namespace gui

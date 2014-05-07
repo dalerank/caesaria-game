@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "listbox.hpp"
 #include "listboxprivate.hpp"
@@ -74,11 +76,11 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
   _d->scrollBar->setTabStop(false);
-  _d->scrollBar->setAlignment(alignLowerRight, alignLowerRight, alignUpperLeft, alignLowerRight);
+  _d->scrollBar->setAlignment( align::lowerRight, align::lowerRight, align::upperLeft, align::lowerRight);
   _d->scrollBar->setVisible(false);
   _d->scrollBar->setPosition(0);
 
-	setNotClipped(!clip);
+  setNotClipped(!clip);
 
 	// this element can be tabbed to
   setTabStop(true);
@@ -86,7 +88,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
   updateAbsolutePosition();
 
-	setTextAlignment( alignUpperLeft, alignCenter );
+  setTextAlignment( align::upperLeft, align::center );
 }
 
 //! destructor
@@ -153,7 +155,6 @@ void ListBox::removeItem(unsigned int id)
   _d->recalculateItemHeight( _d->font, height() );
 }
 
-
 int ListBox::itemAt(Point pos ) const
 {
   if ( 	pos.x() < screenLeft() || pos.x() >= screenRight()
@@ -219,32 +220,36 @@ void ListBox::setSelected( const std::string& item )
 
 void ListBox::_indexChanged( unsigned int eventType )
 {
-    parent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
+  parent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
 
-    //_CallLuaFunction( eventType );
+  //_CallLuaFunction( eventType );
 
-    switch( eventType )
+  switch( eventType )
+  {
+  case guiListboxChanged:
+  {
+    _d->indexSelected.emit( _d->selectedItemIndex );
+    if( _d->selectedItemIndex >= 0 )
     {
-    case guiListboxChanged:
-      _d->indexSelected.emit( _d->selectedItemIndex );
-      if( _d->selectedItemIndex >= 0 )
-      {
-        _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].text() );
-        _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
-      }
-    break;
-
-    case guiListboxSelectedAgain:
-      _d->indexSelectedAgain.emit( _d->selectedItemIndex );
-      if( _d->selectedItemIndex >= 0 )
-      {
-          _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].text() );
-      }
-    break;
-
-    default:
-    break;
+      _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].text() );
+      _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
     }
+  }
+  break;
+
+  case guiListboxSelectedAgain:
+  {
+    _d->indexSelectedAgain.emit( _d->selectedItemIndex );
+    if( _d->selectedItemIndex >= 0 )
+    {
+        _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].text() );
+    }
+  }
+  break;
+
+  default:
+  break;
+  }
 }
 
 //! called if an event happened.
@@ -593,7 +598,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
       if( refItem.icon().isValid() )
       {
         Point offset;
-        if( refItem.horizontalAlign() == alignCenter )
+        if( refItem.horizontalAlign() == align::center )
         {
           offset.setX( (width() - refItem.icon().width()) / 2 );
         }
@@ -620,7 +625,12 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 
         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-        _drawItemText( *_d->picture, currentFont, refItem,textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+        _drawItemText( *_d->picture, currentFont, refItem, textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+        if( !refItem.url().empty() )
+        {
+          textRect.UpperLeftCorner.setY( textRect.LowerRightCorner.y() - 1 );
+          _d->picture->fill( currentFont.color(), textRect  + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+        }
       }
 
       frameRect += Point( 0, _d->itemHeight );
@@ -666,16 +676,6 @@ void ListBox::_recalculateScrollPos()
 void ListBox::setAutoScrollEnabled(bool scroll) {	setFlag( autoscroll, scroll );}
 bool ListBox::isAutoScrollEnabled() const{	return isFlag( autoscroll );}
 
-void ListBox::save(VariantMap& out) const
-{
-
-}
-
-void ListBox::load(const VariantMap& in)
-{
-
-}
-
 void ListBox::setItem(unsigned int index, std::string text)
 {
   if ( index >= _d->items.size() )
@@ -685,7 +685,6 @@ void ListBox::setItem(unsigned int index, std::string text)
   _d->needItemsRepackTextures = true;
   _d->recalculateItemHeight( _d->font, height() );
 }
-
 
 //! Insert the item at the given index
 //! Return the index on success or -1 on failure.
@@ -882,6 +881,7 @@ void ListBox::setupUI(const VariantMap& ui)
       Font font = fontName.empty() ? getFont() : Font::create( fontName );
       ListBoxItem& item = addItem( _(text), font );
       item.setTag( tag );
+      item.setUrl( vm.get( "url").toString() );
     }
   }
 }

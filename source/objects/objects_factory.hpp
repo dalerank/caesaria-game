@@ -12,9 +12,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
-#define __CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
+#ifndef __CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_
+#define __CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_
 
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
@@ -29,18 +31,17 @@ public:
 class TileOverlayFactory
 {
 public:
-    static TileOverlayFactory& getInstance();
-    gfx::TileOverlayPtr create( const gfx::TileOverlay::Type type ) const;
-    gfx::TileOverlayPtr create( const std::string& typeName ) const;
+  static TileOverlayFactory& instance();
+  gfx::TileOverlayPtr create( const gfx::TileOverlay::Type type ) const;
+  gfx::TileOverlayPtr create( const std::string& typeName ) const;
 
-    bool canCreate( const gfx::TileOverlay::Type type ) const;
-
-    void addCreator( const gfx::TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
+  bool canCreate( const gfx::TileOverlay::Type type ) const;
+  void addCreator( const gfx::TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor );
 private:
-    TileOverlayFactory();
+  TileOverlayFactory();
 
-    class Impl;
-    ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif  //__CAESARIA_LANDOVERLAYFACTORY_H_INCLUDE_
+#endif  //__CAESARIA_TILEOVERLAYFACTORY_H_INCLUDE_

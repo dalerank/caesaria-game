@@ -71,7 +71,7 @@ MerchantPtr Merchant::create( TraderoutePtr route, const std::string& start,
   ret->_d->baseCity = baseCity->getName();
   ret->_d->destCity = destCity->getName();
 
-  ret->_d->steps = route->getPoints( !startCity );
+  ret->_d->steps = route->points( !startCity );
   ret->_d->step = 0;  
 
   if( ret->_d->steps.empty() )

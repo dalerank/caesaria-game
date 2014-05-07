@@ -25,9 +25,10 @@
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
-#include "gui/gameautopause.hpp"
+#include "gameautopause.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "game/gamedate.hpp"
+#include "smkviewer.hpp"
 
 using namespace constants;
 
@@ -39,15 +40,18 @@ class EmperrorRequestWindow::Impl
 public:
   void openEmperrorAdvisor();
   GameAutoPause locker;
+  std::string video;
 };
 
-EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::request::RequestPtr request, bool mayExec )
+EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::request::RequestPtr request,
+                                                      bool mayExec, const std::string& video )
 {
   EmperrorRequestWindow* ret = new EmperrorRequestWindow( parent, request );
   if( mayExec )
   {
     ret->setText( _( "##city_have_goods_for_request##") );    
   }
+  ret->_d->video = video;
 
   return ret;
 }
@@ -59,9 +63,11 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
 {
   _d->locker.activate();
 
-  setupUI( GameSettings::rcpath( "/gui/request.gui" ) );
+  std::string uiFile = _d->video.empty() ? "/gui/request.gui" : "/gui/request_video.gui";
 
-  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
+  setupUI( GameSettings::rcpath( uiFile ) );
+
+  setCenter( parent->center() );
 
   city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(request);
   if( gr.isValid() )
@@ -73,8 +79,11 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     if( img ) { img->setPicture( GoodHelper::getPicture( gr->getGoodType() )); }
 
     lb = findChildA<Label*>( "lbInterval", true, this );
-    int month2Comply = GameDate::current().getMonthToDate( gr->getFinishedDate() );
+    int month2Comply = GameDate::current().monthsTo( gr->finishedDate() );
     if( lb ) { lb->setText( StringHelper::format( 0xff, "%d %s", month2Comply, _( "##months_to_comply##") )); }
+
+    SmkViewer* smkViewer = findChildA<SmkViewer*>( "smkViewer", true, this );
+    if( smkViewer ) { smkViewer->setFilename( GameSettings::rcpath( _d->video ) ); }
   }
 
   TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );

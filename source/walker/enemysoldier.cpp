@@ -29,6 +29,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
+#include "city/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "helper.hpp"
@@ -39,47 +40,52 @@
 using namespace constants;
 using namespace gfx;
 
-class EnemySoldier::Impl
-{
-public:  
-  EnemySoldier::EsAction action;
-  unsigned int waitInterval;
-};
-
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
-: Soldier( city, type ), _d( new Impl )
+: Soldier( city, type )
 {
-  _d->action = check4attack;
-  _d->waitInterval = 0;
+  _setSubAction( check4attack );
+  setAttackDistance( 1 );
 }
 
 bool EnemySoldier::_tryAttack()
 {
-  BuildingList buildings = _findBuildingsInRange( 1 );
+  BuildingList buildings = _findBuildingsInRange( attackDistance() );
+  TilePos targetPos;
   if( !buildings.empty() )
   {
-    _d->action = destroyBuilding;
-    setSpeed( 0.f );
-    _setAction( acFight );
-    return true;
+    _setSubAction( Soldier::destroyBuilding );
+    targetPos = buildings.front()->pos();
+    fight();
   }
   else
   {
-    WalkerList enemies = _findEnemiesInRange( 1 );
+    WalkerList enemies = _findEnemiesInRange( attackDistance() );
     if( !enemies.empty() )
     {
-      _d->action = fightEnemy;
-      setSpeed( 0.f );
-      _setAction( acFight );
-      return true;
+      _setSubAction( Soldier::fightEnemy );
+      targetPos = enemies.front()->pos();
+      fight();
     }
   }
 
-  return false;
+  if( action() == acFight )
+  {
+    city::Helper helper( _city() );
+    bool needMeMove = false;
+    helper.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
+    if( needMeMove )
+    {
+      _move2freePos( targetPos );
+    }
+  }
+
+  return action() == acFight;
 }
 
-void EnemySoldier::_setSubAction(EnemySoldier::EsAction action) {  _d->action = action; }
-EnemySoldier::EsAction EnemySoldier::_getSubAction() const{  return _d->action; }
+void EnemySoldier::_waitFinished()
+{
+  _setSubAction( check4attack );
+}
 
 void EnemySoldier::_brokePathway(TilePos pos)
 {
@@ -92,7 +98,7 @@ void EnemySoldier::_brokePathway(TilePos pos)
 void EnemySoldier::_reachedPathway()
 {
   Soldier::_reachedPathway();
-  switch( _d->action )
+  switch( _subAction() )
   {
   case check4attack:
   case go2position:
@@ -163,7 +169,7 @@ Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
 void EnemySoldier::_check4attack()
 {
   //try find any walkers in range
-  Pathway pathway = _findPathway2NearestEnemy( 20 );
+  Pathway pathway = _findPathway2NearestEnemy( 10 );
 
   if( !pathway.isValid() )
   {
@@ -179,13 +185,12 @@ void EnemySoldier::_check4attack()
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _city(), pos(), 20 );
+    pathway = PathwayHelper::randomWay( _city(), pos(), 10 );
   }
 
   if( pathway.isValid() )
   {
-    _d->action = go2position;
-    setSpeed( 1.0 );
+    _setSubAction( go2position );
     setPathway( pathway );
     go();
   }
@@ -244,22 +249,18 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
 
 void EnemySoldier::_centerTile()
 {
-  switch( _d->action )
+  switch( _subAction() )
   {
   case doNothing:
-  break; 
-
-  case check4attack:
-  {
-    _check4attack();
-  }
   break;
 
+  case check4attack: _check4attack(); break;
+
   case go2position:
-  {
-    if( _tryAttack() )
-      return;
-  }
+    {
+      if( _tryAttack() )
+        return;
+    }
   break;
 
   default:
@@ -270,19 +271,13 @@ void EnemySoldier::_centerTile()
 
 void EnemySoldier::timeStep(const unsigned long time)
 {
-  if( _d->waitInterval > 0 )
-  {
-    _d->waitInterval--;
-    return;
-  }
-
   Soldier::timeStep( time );
 
-  switch( _d->action )
+  switch( _subAction() )
   {
   case fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( 1 );
+    WalkerList enemies = _findEnemiesInRange( attackDistance() );
 
     if( !enemies.empty() )
     {
@@ -300,7 +295,7 @@ void EnemySoldier::timeStep(const unsigned long time)
 
   case destroyBuilding:
   {
-    BuildingList buildings = _findBuildingsInRange( 1 );
+    BuildingList buildings = _findBuildingsInRange( attackDistance() );
 
     if( !buildings.empty() )
     {
@@ -353,9 +348,6 @@ void EnemySoldier::die()
 void EnemySoldier::load( const VariantMap& stream )
 {
   Soldier::load( stream );
- 
-  _d->action = (EsAction)stream.get( "EsAction" ).toInt();
-  _d->waitInterval = (int)stream.get( "wait" );
 }
 
 void EnemySoldier::save( VariantMap& stream ) const
@@ -363,13 +355,5 @@ void EnemySoldier::save( VariantMap& stream ) const
   Soldier::save( stream );
 
   stream[ "type" ] = (int)type();
-  stream[ "animation" ] =
-  stream[ "EsAction" ] = (int)_d->action;
-  stream[ "wait" ] = _d->waitInterval;
   stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
-}
-
-void EnemySoldier::wait(unsigned int time)
-{
-  _d->waitInterval = time;
 }

@@ -28,31 +28,28 @@ MainMenu::MainMenu( Widget* parent, const Rect& rectangle, const int id )
 {
   setCloseHandling( cmIgnore );
 #ifdef _DEBUG
-	setDebugName( "MainMenu" );
+  setDebugName( "MainMenu" );
 #endif
 
-	//const ElementStyle& style = getStyle().getSubStyle( NES_ITEM );
-	setTextAlignment( alignCenter, alignCenter );
-
-	setNotClipped(false);
-
-	recalculateSize_();
+  setTextAlignment( align::center, align::center );
+  setNotClipped(false);
+  _recalculateSize();
 }
 
 ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool enabled, bool hasSubMenu, bool checked, bool autoChecking)
 {
-    ContextMenuItem* ret = ContextMenu::addItem( text, commandId, enabled, hasSubMenu, checked, autoChecking );
-    if( ret && ret->getSubMenu() )
-    {
-      //ret->getSubMenu()->setStyle( getStyle().getSubStyle( NES_SUBMENU ).getName() );
-		  ret->setFlag( ContextMenuItem::drawSubmenuSprite, false );
-      ret->setBackgroundMode( Label::bgNone ); 
-    }
-    //refItem.alignEnabled = true;
-    //refItem.horizontal = EGUIA_CENTER;
-    //refItem.vertical = EGUIA_CENTER;
+  ContextMenuItem* ret = ContextMenu::addItem( text, commandId, enabled, hasSubMenu, checked, autoChecking );
+  if( ret && ret->getSubMenu() )
+  {
+    //ret->getSubMenu()->setStyle( getStyle().getSubStyle( NES_SUBMENU ).getName() );
+    ret->setFlag( ContextMenuItem::drawSubmenuSprite, false );
+    ret->setBackgroundMode( Label::bgNone );
+  }
+  //refItem.alignEnabled = true;
+  //refItem.horizontal = EGUIA_CENTER;
+  //refItem.vertical = EGUIA_CENTER;
 
-    return ret;
+  return ret;
 }
 
 //! called if an event happened.
@@ -68,8 +65,8 @@ bool MainMenu::onEvent(const NEvent& event)
 			case guiElementFocusLost:
 				if (event.gui.caller == this && !isMyChild(event.gui.element))
 				{
-					closeAllSubMenus_();
-					setHoverIndex_( -1 );
+					_closeAllSubMenus();
+					_setHovered( -1 );
 				}
 				break;
 			case guiElementFocused:
@@ -95,12 +92,12 @@ bool MainMenu::onEvent(const NEvent& event)
     	  bringToFront();
 
 				Point p(event.mouse.pos() );
-				bool shouldCloseSubMenu = hasOpenSubMenu_();
+				bool shouldCloseSubMenu = _hasOpenSubMenu();
 				if (!absoluteClippingRect().isPointInside(p))
 				{
 					shouldCloseSubMenu = false;
 				}
-				isHighlighted_( event.mouse.pos(), true);
+				_isHighlighted( event.mouse.pos(), true);
 				if ( shouldCloseSubMenu )
 				{
           getEnvironment()->removeFocus(this);
@@ -114,7 +111,7 @@ bool MainMenu::onEvent(const NEvent& event)
 				Point p(event.mouse.pos() );
 				if (!absoluteClippingRect().isPointInside(p))
 				{
-					int t = sendClick_(p);
+					int t = _sendClick(p);
 					if ((t==0 || t==1) && isFocused())
 						removeFocus();
 				}
@@ -124,13 +121,13 @@ bool MainMenu::onEvent(const NEvent& event)
 
       case mouseMoved:
       {
-				if (getEnvironment()->hasFocus(this) && getHoveredIndex() >= 0)
+        if (getEnvironment()->hasFocus(this) && hovered() >= 0)
 				{
-				  int oldHighLighted = getHoveredIndex();
-					isHighlighted_( event.mouse.pos(), true);
-					if ( getHoveredIndex() < 0 )
+					int oldHighLighted = hovered();
+					_isHighlighted( event.mouse.pos(), true);
+					if ( hovered() < 0 )
           {
-            setHoverIndex_( oldHighLighted );   // keep last hightlight active when moving outside the area
+            _setHovered( oldHighLighted );   // keep last hightlight active when moving outside the area
           }
 				}
 				return true;
@@ -149,7 +146,7 @@ bool MainMenu::onEvent(const NEvent& event)
 	return Widget::onEvent(event);
 }
 
-void MainMenu::recalculateSize_()
+void MainMenu::_recalculateSize()
 {
 	Rect parentRect = parent()->getClientRect(); // client rect of parent  
 
@@ -168,9 +165,9 @@ void MainMenu::recalculateSize_()
 	int width = rect.UpperLeftCorner.x();
 	int i;
 
-	for( i=0; i<(int)getItemCount(); ++i)
+	for( i=0; i<(int)itemCount(); ++i)
 	{
-    ContextMenuItem* refItem = getItem( i );
+		ContextMenuItem* refItem = item( i );
 		if ( refItem->isSeparator() )
 		{
 			refItem->setDim( Size( 16, height() ) );
@@ -187,9 +184,9 @@ void MainMenu::recalculateSize_()
 	}
 
 	// recalculate submenus
-	for( i=0; i<(int)getItemCount(); ++i )
+	for( i=0; i<(int)itemCount(); ++i )
   {
-    ContextMenuItem* refItem = getItem( i );
+    ContextMenuItem* refItem = item( i );
 
     Rect rectangle( refItem->getOffset(), 0, refItem->getOffset() + refItem->getDim().width(), hg );
     refItem->setGeometry( rectangle );

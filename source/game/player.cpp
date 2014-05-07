@@ -25,6 +25,7 @@ public:
   int funds;  // amount of money
   std::string name;
   int salary;
+  unsigned int color;
 };
 
 Player::Player() : _d( new Impl )
@@ -46,6 +47,7 @@ void Player::save( VariantMap& stream ) const
   stream[ "money"  ] = _d->funds;
   stream[ "name"   ] = Variant( _d->name );
   stream[ "salary" ] = _d->salary;
+  stream[ "color"  ] = _d->color;
 }
 
 void Player::load( const VariantMap& stream )
@@ -53,12 +55,15 @@ void Player::load( const VariantMap& stream )
   _d->funds = (int)stream.get( "money" );
   _d->name = stream.get( "name" ).toString();
   _d->salary = (int)stream.get( "salary" );
+  _d->color = (int)stream.get( "color" );
 }
 
 void Player::appendMoney( int money ){  _d->funds += money;}
 int Player::money() const{  return _d->funds;}
+
+unsigned int Player::color() const{ return _d->color; }
 Player::~Player(){}
 void Player::setName( const std::string& name ){  _d->name = name;}
-std::string Player::getName() const{  return _d->name;}
+std::string Player::name() const{  return _d->name;}
 int Player::salary() const{  return _d->salary;}
 void Player::setSalary(  int value ){  _d->salary = value;}

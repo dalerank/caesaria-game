@@ -124,7 +124,7 @@ Point Fortification::offset( const Tile& tile, const Point& subpos) const
   return _d->offset;
 }
 
-const Picture& Fortification::getPicture(PlayerCityPtr city, TilePos p,
+const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
                                              const TilesArray& tmp) const
 {
   // find correct picture as for roads
@@ -441,7 +441,7 @@ int Fortification::getDirection() const
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
-  setPicture( getPicture( city, pos(), TilesArray() ) );
+  setPicture( picture( city, pos(), TilesArray() ) );
 }
 
 bool Fortification::isTowerEnter() const

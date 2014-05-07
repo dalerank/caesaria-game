@@ -25,7 +25,7 @@ namespace gfx
 {
 
 namespace {
-  int waterDecreaseInterval = GameDate::ticksInMonth() / 2;
+  int waterDecreaseInterval = GameDate::days2ticks( 15 );
   Animation invalidAnimation;
 }
 
@@ -283,6 +283,7 @@ int TileHelper::encode(const Tile& tt)
   res += tt.getFlag( Tile::tlWall ) ? 0x4000 : 0;
   res += tt.getFlag( Tile::tlElevation ) ? 0x200 : 0;
   res += tt.getFlag( Tile::tlDeepWater ) ? 0x8000 : 0;
+  res += tt.getFlag( Tile::tlRift ) ? 0x10000 : 0;
   return res;
 }
 
@@ -290,19 +291,20 @@ void TileHelper::decode(Tile& tile, const int bitset)
 {
   tile.setFlag( Tile::clearAll, true );
 
-  if(bitset & 0x1)    { tile.setFlag( Tile::tlTree, true);      }
-  if(bitset & 0x2)    { tile.setFlag( Tile::tlRock, true);      }
-  if(bitset & 0x4)    { tile.setFlag( Tile::tlWater, true);     }
-  //if(bitset & 0x8)    { tile.setFlag( Tile::tlBuilding, true);  }
-  if(bitset & 0x10)   { tile.setFlag( Tile::tlTree, true);      }
-  if(bitset & 0x20)   { tile.setFlag( Tile::tlGarden, true);    }
-  if(bitset & 0x40)   { tile.setFlag( Tile::tlRoad, true);      }
-  if(bitset & 0x100)  { tile.setFlag( Tile::tlAqueduct, true);  }
-  if(bitset & 0x200)  { tile.setFlag( Tile::tlElevation, true); }
-  if(bitset & 0x400)  { tile.setFlag( Tile::tlRock, true );     }
-  if(bitset & 0x800)  { tile.setFlag( Tile::tlMeadow, true);    }
-  if(bitset & 0x4000) { tile.setFlag( Tile::tlWall, true);      }
-  if(bitset & 0x8000) { tile.setFlag( Tile::tlDeepWater, true); }
+  if(bitset & 0x00001) { tile.setFlag( Tile::tlTree, true);      }
+  if(bitset & 0x00002) { tile.setFlag( Tile::tlRock, true);      }
+  if(bitset & 0x00004) { tile.setFlag( Tile::tlWater, true);     }
+  //if(bitset & 0x8)   { tile.setFlag( Tile::tlBuilding, true);  }
+  if(bitset & 0x00010) { tile.setFlag( Tile::tlTree, true);      }
+  if(bitset & 0x00020) { tile.setFlag( Tile::tlGarden, true);    }
+  if(bitset & 0x00040) { tile.setFlag( Tile::tlRoad, true);      }
+  if(bitset & 0x00100) { tile.setFlag( Tile::tlAqueduct, true);  }
+  if(bitset & 0x00200) { tile.setFlag( Tile::tlElevation, true); }
+  if(bitset & 0x00400) { tile.setFlag( Tile::tlRock, true );     }
+  if(bitset & 0x00800) { tile.setFlag( Tile::tlMeadow, true);    }
+  if(bitset & 0x04000) { tile.setFlag( Tile::tlWall, true);      }
+  if(bitset & 0x08000) { tile.setFlag( Tile::tlDeepWater, true); }
+  if(bitset & 0x10000) { tile.setFlag( Tile::tlRift, true);      }
 }
 
 Tile& TileHelper::getInvalid()

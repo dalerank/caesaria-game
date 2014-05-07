@@ -32,10 +32,12 @@
 "##advchief_food_stocks##":"Matförråd"
 "##adve_administration_religion##":"Styrelse/Religion"
 "##adve_engineers##":"Konstruktion"
+"##entertainment_advisor_title##":"Underhållning"
 "##adve_entertainment##":"Underhållning"
 "##adve_food##":"Livsmedelsproduktion"
 "##adve_health_education##":"Hälsa och utbildning"
 "##adve_industry_and_trade##":"Industri och handel"
+"##advchief_military##":"Militär"
 "##adve_military##":"Militär"
 "##adve_prefectures##":"Prefekturer"
 "##adve_water##":"Vattenförsörjning"
@@ -43,10 +45,12 @@
 "##advemployer_panel_haveworkers##":""
 "##advemployer_panel_needworkers##":""
 "##advemployer_panel_priority##":""
-"##advemployer_panel_romepay##":"(Rom betalar"
+"##advemployer_panel_romepay##":"Rom betalar"
+"##advemployer_panel_salary##":"Löner"
+"##advemployer_panel_sector##":""
 "##advemployer_panel_title##":"Arbetstilldelning"
 "##advemployer_panel_workers##":""
-"##advemployer_panel_workless##":"Arbetslös arbetsstyrka ("
+"##advemployer_panel_workless##":"Arbetslös arbetsstyrka "
 "##advice_at_culture##":"Klicka här för information om din kulturställning"
 "##advisors##":"Senat"
 "##advlegion_noalarm##":"Vi har inga rapporter om hot mot staden"
@@ -127,7 +131,7 @@
 "##become_trade_center##":"Utse till handelscentral"
 "##below_average##":"Under medel"
 "##better_class_road##":"En finare typ av väg"
-"##big_domus##":"Stor Insulae"
+"##big_domus##":"Stor Insula"
 "##big_hut##":"Stort hus"
 "##big_palace##":"Stort palats"
 "##big_tent##":"Stor tält"
@@ -150,6 +154,7 @@
 "##buildings##":"Byggnation"
 "##caesar_assign_new_title##":"Caesar har befordrat dig till graden"
 "##caesar_salary##":"Caesars lön på"
+"##can_build_only_one_of_building##":"Du kan endast ha en byggnad av denna typ"
 "##cancel##":"Avbryt"
 "##cancelBtnTooltip##":"Avbryt denna operation"
 "##cant_demolish_bridge_with_people##":"Kan inte förstöra bro med människor på"
@@ -170,7 +175,6 @@
 "##chatioteer_school_bad_work##":"Vi lider av svår personalbrist, och kommer att få kämpa för att bygga en enda ny vagn under de kommande två månaderna."
 "##chatioteer_school_no_workers##":"Utan hantverkare kan inga nya vagnar produceras. Som resultat kan hippodromen, om den är i drift, bli lidande."
 "##chatioteer_school##":"Skola för körsvenner"
-"##chest_of_sapphire##":"En kista med safirer"
 "##chief_advisor##":"Huvudrådgivare"
 "##children##":"Barn"
 "##citizen_are_rioting##":"Medborgarna gör uppror!"
@@ -188,7 +192,6 @@
 "##citizen_good_education##":"Den här staden är mer kultiverad än någon annan i riket!"
 "##citizen_good_life##":"Livet är mycket behagligt i denna stad."
 "##citizen_high_workless##":"Jag har tur som har ett arbete i denna tid av arbetslöshet."
-"##citizen_high_workless10##":"Det är hemskt. Jag har aldrig sett så många lediga jobb."
 "##citizen_high_workless10##":"Arbetslösheten är så hög att hela staden mår dåligt."
 "##citizen_high_workless11##":"...min fru har slutat tjata om att jag ska skaffa mig ett nytt arbete."
 "##citizen_high_workless12##":"Arbetslösheten är mycket hög. Jag funderar på att ge mig av."
@@ -198,7 +201,6 @@
 "##citizen_high_workless3##":"Jag har aldrig sett så många arbetslösa!"
 "##citizen_high_workless4##":"Jag har aldrig sett så många arbetslösa medborgare förut."
 "##citizen_high_workless5##":"Det är jättemånga som söker arbete här."
-"##citizen_high_workless6##":"Var hälsad! Det saknas många arbetare här."
 "##citizen_high_workless7##":"Arbetslösheten är så hög att den får håret att stå på ända!"
 "##citizen_high_workless8##":"Detta är skandalöst. Jag har aldrig sett så många arbetslösa plebejer."
 "##citizen_high_workless9##":"Bara jag inte förlorar jobbet. Arbetslösheten är så hög att jag inte skulle få ett nytt."
@@ -209,6 +211,8 @@
 "##citizen_low_entertainment5##":"Medborgare! Är icke detta den tråkigaste staden i riket?"
 "##citizen_low_salary##":"Min hund skulle inte arbeta för de löner de betalar här. Jag ger mig av."
 "##citizen_need_workers##":"Otroligt att det finns så många arbetstillfällen här."
+"##citizen_need_workers10##":"Det är hemskt. Jag har aldrig sett så många lediga jobb."
+"##citizen_need_workers11##":"Var hälsad! Det saknas många arbetare här."
 "##citizen_need_workers2##":"Jag har hört att det finns arbete här. Jag vill bli lejontämjare."
 "##citizen_need_workers3##":"Staden lider stor brist på arbetare."
 "##citizen_need_workers4##":"Den här staden behöver många fler arbetare."
@@ -227,6 +231,7 @@
 "##city_has_runout_debt##":""
 "##city_have_goods_for_request##":""
 "##city_have##":"Stadens skattkammare har tillgångar på"
+"##health_advisor##":"Hälsosituation"
 "##city_health##":"Hälsosituation"
 "##city_need_more_workers##":"Din stad kräver fler arbetare"
 "##city_sounds_off##":"Stadsljud är AV"
@@ -273,6 +278,7 @@
 "##consul_salary##":"Konsulslön på"
 "##consul##":"Konsul"
 "##contaminted_water##":"Förorenat vatten"
+"##continue##":""
 "##corinthus##":"Corinthus"
 "##cost_2_open##":"Kostnad att öppna"
 "##cost##":"Kostnad"
@@ -312,6 +318,8 @@
 "##difficulty##":""
 "##disasterBtnTooltip##":""
 "##dispatch_force##":"Sänd iväg undsättningsstyrka?"
+"##dispatch_gift##":"Sänd en gåva"
+"##dispatch_git_title##":"Sänd gåva till kejsaren"
 "##dispatch_goods?##":"Sända iväg varor?"
 "##distant_city##":"En avlägsen stad"
 "##distribution_center##":"Distributionscentral"
@@ -338,15 +346,37 @@
 "##education_have_school_library_access##":"Detta hus har tillgång till skola och bibliotek"
 "##education_have_school_or_library_access##":"Detta hus har tillgång till skola eller bibliotek"
 "##education_objects##":"Utbildningsbyggnader"
+"##education_advisor_title##":"Utbildning"
 "##education##":"Utbildning"
 "##educationBtnTooltip##":""
+"##egift_chest_of_sapphire##":"En kista med safirer"
+"##egift_educated_slave##":"En utbildad slav"
+"##egift_egyptian_glassware##":"Egyptiska glasvaror"
+"##egift_gaulish_bodyguards##":"Galliska livvakter"
+"##egift_generous##":"Generös:"
+"##egift_gepards_and_giraffes##":"Geparder och giraffer"
+"##egift_golden_chariot##":"En gyllene vagn"
+"##egift_gree_manuscript##":"Ett grekiskt manuskript"
+"##egift_lavish##":"Frikostig:"
+"##egift_modest##":"Blygsam:"
+"##egift_persian_carpets##":"Persiska mattor"
+"##egift_soldier_from_pergamaum##":"En soldat från Pergamon"
+"##egift_troupe_preforming_slaves##":"En grupp uppträdande slavar"
 "##emigrant_high_workless##":"Vet ni var det kan finnas arbete? Jag måste få ett arbete."
 "##emigrant_low_entertainment##":"Ståthållaren bryr sig uppenbarligen inte om mig, så jag tänker visa vad jag tycker om hans stad."
 "##emigrant##":"Emigrant"
 "##emmigrant_average_life##":"Stad som stad... Den här verkar rätt bra."
 "##emmigrant_where_my_home##":"Jag är ny i staden. Vet du var man kan få tag i en bostad?"
-"##emperor_favour_0##":"Kejsaren är rasande på dig."
-"##emperor_favour_1##":"Kejsaren är så otroligt arg att han talar om att landsförvisa dig."
+"##emperor_favour_00##":"Kejsaren är rasande på dig."
+"##emperor_favour_01##":"Kejsaren är så otroligt arg att han talar om att landsförvisa dig."
+"##emperor_favour_02##":"Kejsaren är vansinnigt arg på dig."
+"##emperor_favour_03##":"Kejsaren är mycket arg på dig."
+"##emperor_favour_04##":"Kejsaren är arg på dig."
+"##emperor_favour_05##":"Kejsaren är extremt missnöjd med dig."
+"##emperor_favour_06##":"Kejsaren är mycket missnöjd med dig."
+"##emperor_favour_07##":"Kejsaren är missnöjd med dig."
+"##emperor_favour_08##":"Kejsaren är något missnöjd med dig."
+"##emperor_favour_09##":"Kejsaren är tveksam vad gäller dig."
 "##emperor_favour_10##":"Kejsaren är fundersam vad gäller dig."
 "##emperor_favour_11##":"Kejsaren tror du kan bevisa dig värdefull ."
 "##emperor_favour_12##":"Kejsaren är tillfreds med dig."
@@ -357,15 +387,7 @@
 "##emperor_favour_17##":"Kejsaren är extremt entusiastisk över vad du gjort."
 "##emperor_favour_18##":"Kejsaren är utom sig av glädje över vad du gjort."
 "##emperor_favour_19##":"Kejsaren är mer än tillfreds med vad du gjort."
-"##emperor_favour_2##":"Kejsaren är vansinnigt arg på dig."
 "##emperor_favour_20##":"Kejsaren är så otroligt nöjd att han talar om att utnämna dig till sin arvinge."
-"##emperor_favour_3##":"Kejsaren är mycket arg på dig."
-"##emperor_favour_4##":"Kejsaren är arg på dig."
-"##emperor_favour_5##":"Kejsaren är extremt missnöjd med dig."
-"##emperor_favour_6##":"Kejsaren är mycket missnöjd med dig."
-"##emperor_favour_7##":"Kejsaren är missnöjd med dig."
-"##emperor_favour_8##":"Kejsaren är något missnöjd med dig."
-"##emperor_favour_9##":"Kejsaren är tveksam vad gäller dig."
 "##emperor_request##":"Kejserlig begäran"
 "##emperor##":"Imperiet"
 "##emperror_legion_at_out_gates##":"En legion av kejsarens trupper står vid portarna"
@@ -416,6 +438,7 @@
 "##farming_desc##":"(Jordbruk)"
 "##favor_rating##":"Popularitetsställning"
 "##favor##":"Popularitet"
+"##wndrt_favour##":"Popularitet"
 "##festivals##":"Festivaler"
 "##fig_farm_bad_work##":"Mycket få människor arbetar i denna fruktträdgård. Fruktskörden kommer att bli liten och sen."
 "##fig_farm_full_work##":"Denna fruktträdgård har alla anställda den behöver. Träden dignar av mogen frukt."
@@ -426,6 +449,8 @@
 "##fig_farm##":"Fruktodling"
 "##file##":"Arkiv"
 "##finance_advisor##":"Finanser"
+"##finance_advisor##":"Stadens kapital"
+"##advchief_finance##":"Finanser"
 "##finances##":"Finanser"
 "##fire##":"Brand"
 "##fired##":"Avskedad!"
@@ -438,6 +463,7 @@
 "##fort_legionaries_no_workers##":"Utan personal kan vi inte utbilda en enda ny rekryt. Mars hjälpe oss i krigstid!"
 "##fort##":"Fort"
 "##fortification_info##":"Murar saktar ner fiendens framstöt mot en stad. Murar kan raseras. Tjockare murar är starkare och dessutom ges vaktposterna i anslutna torn möjlighet att patrullera dem."
+"##fortification##":""
 "##forum_1_on_patrol##":"Vår indrivare är ute på inspektion."
 "##forum_1_ready_for_work##":"Vår indrivare förbereder sig för att ge sig av."
 "##forum_1_slow_work##":"Vi är kraftigt underbemannade och har en lucka på två veckor innan indrivarna ger sig ut."
@@ -469,11 +495,13 @@
 "##furniture_workshop##":"Möbelsnickeri"
 "##furniture##":"Möbler"
 "##game_is_paused##":"Spelet stoppat (Tryck P för att fortsätta)"
-"##game_speed##":""
+"##game_sound_options##":""
+"##game_speed_options##":""
 "##garden_info##":"Denna trevliga plats skänker medborgarna avkoppling från stadens buller, värme och smuts genom en sval oas av grönska. Alla vill ha en trädgård intill sitt hus."
 "##garden##":"Trädgårdar"
 "##gardens_info##":"Trädgårdar förbättrar den lokala miljön."
 "##gatehouse##":"Grindstuga"
+"##give_money##":"Ge pengar"
 "##gladiator_pit_bad_work##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag utbilda en gladiator var tredje månad."
 "##gladiator_pit_full_work##":"Det är med nöje vi tillkännager att vi, med full sysselsättning, utbildar upp till fyra nya gladiatorer varje månad."
 "##gladiator_pit_need_some_workers##":"Vi är något underbemannade, och kan därför endast utbilda två nya gladiatorer i månaden."
@@ -491,14 +519,33 @@
 "##gmenu_file##":""
 "##gmenu_help##":""
 "##gmenu_options##":""
+"##gmsndwnd_ambient_sound##":"Ljudeffekter"
+"##gmsndwnd_game_volume##":"Volym"
+"##gmsndwnd_theme_sound##":"Musiken"
+"##gmspdwnd_game_speed##":""
+"##gmspdwnd_scroll_speed##":""
 "##go_to_problem##":"Klicka här för att gå till detta problemområde"
 "##go2_problem_area##":"Gå till problemområde."
 "##god_ceres_short##":""
+"##god_charmed##":"Charmerade"
+"##god_displeased##":"Missnöjda"
+"##god_exalted##":"Begeistrade"
+"##god_excellent##":"Utmärkt"
+"##god_good##":"Bra"
+"##god_happy##":"Glada"
+"##god_indifferent##":"Likgiltiga"
+"##god_irriated##":"Sårade"
 "##god_mars_short##":""
 "##god_mercury_short##":""
 "##god_neptune_short##":""
+"##god_pleased##":"Nöjda"
+"##god_poor##":"Dålig"
+"##god_quitepoor##":"Mycket dålig"
 "##god_venus_short##":""
-"##golden_chariot##":"En gyllene vagn"
+"##god_veryangry##":"Vredgade"
+"##god_verygood##":"Mycket bra"
+"##god_verypoor##":"Mycket dålig"
+"##god_wrathful##":"Rasande"
 "##goth_warrior##":"En gotisk soldat"
 "##goto_empire_map##":"Gå till kartan över imperiet"
 "##goto##":"Gå till"
@@ -514,13 +561,18 @@
 "##grape_factory_stock##":"Lagrade druvor,"
 "##grape##":"Vindruvor"
 "##grass##":"Gräs"
-"##gree_manuscript##":"Ett grekiskt manuskript"
 "##greek_soldier##":"En grekisk soldat"
 "##have_food_for##":"- livsmedel för"
+"##have_less_academy_in_city_0##":"Du har för få högskolor i din stad. Om du bygger fler förbättras din ställning."
+"##have_less_library_in_city_0##":"Du har för få bibliotek i din stad. Om du bygger fler förbättras din ställning."
+"##have_less_school_in_city_0##":"Du har för få skolor i din stad. Om du bygger fler förbättras din ställning."
+"##have_less_temple_in_city_0##":"Du har för få religiösa byggnader i din stad. Om du bygger fler förbättras din ställning."
+"##have_less_theater_in_city_0##":"Du har för få teatrar i din stad. Om du bygger fler förbättras din ställning."
 "##have_no_food_on_next_month##":"- inga livsmedel kommande månad"
 "##have_no_legions##":"Du har inga legioner att sända"
 "##have_no_requests##":"För närvarande har du inga meddelanden att läsa. I takt med att din stad växer, eller om kejsaren begär varor av dig, kommer meddelanden att visas här"
 "##health_advisor##":"Byggnader förknippade med hälsa"
+"##advchief_health##":"Hälsa"
 "##health##":"Hälsa"
 "##healthBtnTooltip##":""
 "##help##":"Hjälp"
@@ -557,7 +609,8 @@
 "##immigrant_no_home##":"Jag har ingenstans att bo."
 "##immigrant_no_work_for_me##":"Jag har fått nog av detta ställe. Det finns inget arbete här."
 "##immigrant_thrown_from_house##":"Jag har blivit utkastad från mitt hem!"
-"##import##":"Importer"
+"##import_fn##":"Importer"
+"##import##":"Importerar"
 "##infobox_tooltip_exit##":""
 "##infobox_tooltip_help##":""
 "##iron_factory_stock##":"Lagrat järn,"
@@ -582,6 +635,7 @@
 "##large##":"Stort"
 "##last_year##":"Förra året"
 "##lawless_area##":"Ett laglöst område. Människorna är vettskrämda."
+"##advchief_crime##":"Brott"
 "##layer_crime##":"Brott"
 "##leave_empire?##":"Lämna det Romerska Riket?"
 "##legion_formation_tooltip##":"Klicka här för att ändra legionens formation"
@@ -616,6 +670,7 @@
 "##lion_tamer_need_workers##":"Den här staden behöver mer arbetskraft. Jag undrar om jag kan träna Leo att arbeta mer?"
 "##lion_tamer_so_hungry##":"Jag är så hungrig att jag kan äta ett lejon!"
 "##Load_save##":"Öppna sparat spel"
+"##loading_resources##":" "
 "##love_desc##":"(Kärlek)"
 "##low_bridge##":"Låg bro"
 "##low_damage_risk##":"Liten risk att kollapsa"
@@ -673,6 +728,7 @@
 "##migration_lack_jobs##":"Brist på arbete förhindrar immigration"
 "##migration_lessfood_granary##":"Brist på livsmedel i sädesmagasinen minskar immigrationen"
 "##migration_people_away##":"Brist på arbete driver bort människor"
+"##military_academy_no_workers##":"När nya soldater har avslutat sin utbildning i förläggningen kommer de hit för att förbättra och finslipa sina färdigheter. Det går dock först när vi har fått tillräckligt med personal."
 "##military_academy##":"Militärhögskola"
 "##minimap_tooltip##":"Klicka på denna översiktskarta för att flytta till avlägsna delar av din stad"
 "##minimizeBtnTooltip##":""
@@ -770,12 +826,14 @@
 "##need_population##":"krävs)"
 "##need_reservoir_for_work##":"Denna fontän fungerar inte eftersom den inte ligger i ett område som täcks av rörledningar från en fungerande reservoar."
 "##need_timber_mill##":"Bygg en brädgård"
+"##need_trainee_charioteer##":"Det finns inga kapplöpningsvagnar i din hippodrom. Anskaffning av sådana skulle avsevärt förbättra villkoren för befolkningen, som ivrigt söker mer underhållning."
 "##need_vines_farm##":"Bygg en vingård"
 "##new_festival##":"Anordna ny festival"
 "##new_governor##":""
 "##new_map##":"Fil"
 "##new_trade_route_to##":"Ny handelsväg etablerad."
 "##no_academy_access##":"Detta hus har inte tillgång till en högskola"
+"##no_culture_building_in_city##":"Du har ingen kultur i din stad, ergo (latin för därför) har du ingen kulturställning."
 "##no_dock_for_sea_trade_routes##":""
 "##no_goods_for_request##":"Du har inte tillräckligt med varor i dina handelsmagasin"
 "##no_target_population##":"( Ingen målbefolkning )"
@@ -813,6 +871,7 @@
 "##oracles_in_city##":"Orakel i staden"
 "##oracles##":"Orakel"
 "##other##":"Diverse"
+"##out_of_credit##":"Kredit saknas!"
 "##overlays##":"Översikt"
 "##ovrm_aborigen##":""
 "##ovrm_academy##":""
@@ -825,6 +884,7 @@
 "##ovrm_crime##":""
 "##ovrm_damage##":""
 "##ovrm_edct_all##":""
+"##advchief_education##":"Utbildning"
 "##ovrm_education##":"Utbildning"
 "##ovrm_entertainment##":""
 "##ovrm_entr_all##":""
@@ -851,11 +911,12 @@
 "##people##":"denarer"
 "##percents##":"Ränta på"
 "##person##":"denarer"
-"##pig_farm_info##":"Välmående medborgare njuter av olika sorters fläsk. Kött kan förvaras i sädesmagasin för lokal konsumtion eller i handelsmagasin för export."
-"##pig_farm##":"Svinuppfödning"
+"##meat_farm_info##":"Välmående medborgare njuter av olika sorters fläsk. Kött kan förvaras i sädesmagasin för lokal konsumtion eller i handelsmagasin för export."
+"##meat_farm##":"Svinuppfödning"
 "##plaza_caption##":"Torg"
 "##plaza##":"Torg"
 "##plname_continue##":"Fortsätt"
+"##pn_salary##":"Personlig inkomst"
 "##pop##":"Inv"
 "##population_registered_as_taxpayers##":"av befolkningen är skatteskrivna"
 "##population##":"Befolkning"
@@ -884,11 +945,6 @@
 "##prefecture_ready_for_work##":"Vår prefekt förbereder sig för sin tjänst."
 "##prefecture_slow_work##":"Vi har alldeles för få prefekter. Det händer att inga prefekter lämnar stationen på upp till två veckor åt gången."
 "##prefecture##":"Prefektur"
-"##present_educated_slave##":"En utbildad slav"
-"##present_egyptian_glassware##":"Egyptiska glasvaror"
-"##present_gaulish_bodyguards##":"Galliska livvakter"
-"##present_gepards_and_giraffes##":"Geparder och giraffer"
-"##present_troupe_preforming_slaves##":"En grupp uppträdande slavar"
 "##priest_gods_angry##":"Aaagh!! Gudarna är vreda. Vi går under!"
 "##priest_high_workless##":"I dessa tider av arbetslöshet tackar jag gudarna att jag har jobb."
 "##priest_low_entertainment##":"Denna stad är så tråkig. Även en präst tycker om gladiatorspel då och då."
@@ -928,6 +984,7 @@
 "##reservoir_info##":"Denna gigantiska cistern innehåller rent dricksvatten, som distribueras via rör av lera över en stor radie i staden. Akvedukter kan länka samman reservoarerna över stora avstånd."
 "##reservoir_no_water##":"Denna reservoar fungerar inte eftersom den inte ligger intill vatten eller inte är ansluten till en annan reservoar via akvedukter."
 "##reservoir##":""
+"##rladv_mood##":"Gudarna är"
 "##road_caption##":"Väg"
 "##road_text##":""
 "##roadBtnTooltip##":""
@@ -936,9 +993,8 @@
 "##roman_city##":"En romersk stad"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
-"##salary##":"Personlig inkomst"
 "##samnite_soldier##":"En samnitisk soldat"
-"##save_game##":"Spara spel"
+"##save_city##":"Spara spel"
 "##scholar##":"Skolbarn"
 "##scholars##":"i skolålder,"
 "##school_full_access##":"Detta hus har tillgång till skola"
@@ -1032,6 +1088,21 @@
 "##tooltip_full##":"Mushjälp FULL"
 "##tooltip_some##":"Mushjälp HALV"
 "##tower_may_build_on_thick_walls##":"Du kan endast bygga torn på tjocka murar"
+"##trade_advisor_blocked_clay_production##":"Din handelsrådgivare har stoppat alla lertag."
+"##trade_advisor_blocked_fruit_production##":"Din handelsrådgivare har stoppat all fruktodling."
+"##trade_advisor_blocked_furniture_production##":"Din handelsrådgivare har stoppat all möbeltillverkning."
+"##trade_advisor_blocked_grape_production##":"Din handelsrådgivare har stoppat all druvodling."
+"##trade_advisor_blocked_iron_production##":"Din handelsrådgivare har stoppat all malmbrytning."
+"##trade_advisor_blocked_marble_production##":"Din handelsrådgivare har stoppat all marmorbrytning."
+"##trade_advisor_blocked_meat_production##":"Din handelsrådgivare har stoppat all köttproduktion."
+"##trade_advisor_blocked_oil_production##":"Din handelsrådgivare har stoppat all oljeproduktion."
+"##trade_advisor_blocked_olive_production##":"Din handelsrådgivare har stoppat all olivodling."
+"##trade_advisor_blocked_pottery_production##":"Din handelsrådgivare har stoppat all kruktillverkning."
+"##trade_advisor_blocked_timber_production##":"Din handelsrådgivare har stoppat all avverkning."
+"##trade_advisor_blocked_vegetable_production##":"Din handelsrådgivare har stoppat all grönsaksodling."
+"##trade_advisor_blocked_weapon_production##":"Din handelsrådgivare har stoppat all vapenproduktion."
+"##trade_advisor_blocked_wheat_production##":"Din handelsrådgivare har stoppat all veteodling."
+"##trade_advisor_blocked_wine_production##":"Din handelsrådgivare har stoppat all vinproduktion."
 "##trade_advisor##":"Handelsrådgivare"
 "##trade_btn_notrade_text##":"Gör ej affärer"
 "##trade_caravan_from##":"Köpmannakaravan från"
@@ -1183,13 +1254,14 @@
 "##wt_marketlady##":"Marknadshandlare"
 "##wt_merchat_so_hungry##":"Var hälsad. Denna stad behöver omedelbart mer livsmedel."
 "##wt_prefect#":"Prefekt"
+"##wt_sheep##":"Får"
 "##wt_surgeon##":"Kirurg"
 "##wt_tax_collector##":"Skatteindrivare"
 "##wt_teacher##":"Lärare"
 "##year##":"Sädesmagasin lagrar"
 "##years##":"Sädesmagasin lagrar"
 "##yes##":"Ja"
-"#save_map##":"Öppna karta"
+"##save_map##":"Öppna karta"
 "Variable":"SVENSKA (v1.0)"
 
 
@@ -1283,6 +1355,7 @@
 
 
 
+"##advchief_sentiment##":"Stämning"
 
 
 
@@ -1303,6 +1376,7 @@
 
 
 
+"##wndrt_culture##":"Kultur som behövs"
 
 
 
@@ -1328,6 +1402,7 @@
 
 
 
+"##advchief_employment##":"Arbete"
 
 
 
@@ -1360,6 +1435,7 @@
 
 
 
+"##advchief_food_consumption##":"Matförbrukning"
 
 
 
@@ -1371,6 +1447,7 @@
 
 
 
+"##send_to_city##":"Ge till staden"
 
 
 
@@ -1415,6 +1492,7 @@
 
 
 
+"##advemp_emperor_favour##":"Popularitet"
 
 
 
@@ -1430,6 +1508,7 @@
 
 
 
+"##fort_javelin##":"Kastspjut"
 
 
 
@@ -1444,6 +1523,7 @@
 
 
 
+"##fort_legionaries##":"Legionärfort"
 
 
 
@@ -1584,8 +1664,11 @@
 
 
 
+"##patients#":"patienter"
 
 
+" ":"Fred behövs"
+"##wndrt_peace##":"Fredsställning"
 
 
 
@@ -1643,6 +1726,7 @@
 
 
 
+"##wndrt_prosperity##":"Välstånd som behövs"
 
 
 
@@ -1652,6 +1736,7 @@
 
 
 
+"##wnd_ratings##":"Ställning"
 
 
 
@@ -1723,6 +1808,7 @@
 
 
 
+"##emw_sell##":"Försäljningar"
 
 
 
@@ -1796,6 +1882,7 @@
 
 
 
+"##spear##":"Spjut"
 
 
 
@@ -1972,6 +2059,7 @@
 
 
 
+"##dn_for_open_trade##":"för att öppna handelsväg"
 
 
 
@@ -1981,6 +2069,7 @@
 
 
 
+"##tower##":"Torn"
 
 
 
@@ -2069,6 +2158,7 @@
 
 
 
+"##work##":"I bruk"
 
 
 
@@ -2106,244 +2196,4 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
 }

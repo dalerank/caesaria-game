@@ -63,7 +63,7 @@ bool Senate::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& around
   {
     city::Helper helper( city );
     bool isSenatePresent = !helper.find<Building>(building::senate).empty();
-    _d->errorStr = isSenatePresent ? _("##can_build_only_once##") : "";
+    _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }
 
@@ -97,20 +97,25 @@ void Senate::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
   _updateUnemployers();
+  _updateRatings();
 }
 
 unsigned int Senate::walkerDistance() const {  return 26; }
 
+void Senate::_updateRatings()
+{
+  _fgPicturesRef()[ 0 ].setOffset( 140, -30 + getStatus( Senate::culture ) / 2 );
+  _fgPicturesRef()[ 1 ].setOffset( 170, -25 + getStatus( Senate::prosperity ) / 2 );
+  _fgPicturesRef()[ 2 ].setOffset( 200, -15 + getStatus( Senate::peace ) / 2 );
+  _fgPicturesRef()[ 3 ].setOffset( 230, -10 + getStatus( Senate::favour ) / 2 );
+}
+
 void Senate::timeStep(const unsigned long time)
 {
-  if( time % GameDate::ticksInMonth() == 0 )
+  if( GameDate::isMonthChanged() )
   {
     _updateUnemployers();
-
-    _fgPicturesRef()[ 0 ].setOffset( 140, -30 + getStatus( Senate::culture ) / 2 );
-    _fgPicturesRef()[ 1 ].setOffset( 170, -25 + getStatus( Senate::prosperity ) / 2 );
-    _fgPicturesRef()[ 2 ].setOffset( 200, -15 + getStatus( Senate::peace ) / 2 );
-    _fgPicturesRef()[ 3 ].setOffset( 230, -10 + getStatus( Senate::favour ) / 2 );
+    _updateRatings();
   }
 
   ServiceBuilding::timeStep( time );
@@ -140,17 +145,17 @@ int Senate::collectTaxes()
 }
 
 unsigned int Senate::getFunds() const {  return _city()->funds().treasury(); }
-std::string Senate::getError() const {  return _d->errorStr; }
+std::string Senate::errorDesc() const {  return _d->errorStr; }
 
 int Senate::getStatus(Senate::Status status) const
 {
   switch(status)
   {
   case workless: return city::Statistic::getWorklessPercent( _city() );
-  case culture: return _city()->getCulture();
-  case prosperity: return _city()->getProsperity();
-  case peace: return _city()->getPeace();
-  case favour: return _city()->getFavour();
+  case culture: return _city()->culture();
+  case prosperity: return _city()->prosperity();
+  case peace: return _city()->peace();
+  case favour: return _city()->favour();
   }
 
   return 0;

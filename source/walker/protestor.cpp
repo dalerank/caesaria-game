@@ -41,7 +41,6 @@ public:
                  destroyConstruction, go2anyplace, gooutFromCity, wait } State;
   int houseLevel;
   State state;
-  int destroyInterval;
 
   Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
 };
@@ -49,8 +48,6 @@ public:
 Protestor::Protestor(PlayerCityPtr city) : Walker( city ), _d( new Impl )
 {    
   _setType( walker::protestor );
-
-  _d->destroyInterval = GameDate::ticksInMonth() / 20;
 
   addAbility( Illness::create( 0.3, 4) );
 }
@@ -159,9 +156,8 @@ void Protestor::timeStep(const unsigned long time)
 
   case Impl::destroyConstruction:
   {
-    if( time % _d->destroyInterval == 1 )
+    if( GameDate::isDayChanged() )
     {
-
       city::Helper helper( _city() );
       ConstructionList constructions = helper.find<Construction>( building::any, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
@@ -206,10 +202,7 @@ ProtestorPtr Protestor::create(PlayerCityPtr city )
   return ret;
 }
 
-Protestor::~Protestor()
-{
-
-}
+Protestor::~Protestor() {}
 
 void Protestor::send2City( HousePtr house )
 {

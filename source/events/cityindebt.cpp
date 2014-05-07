@@ -43,13 +43,14 @@ bool CityIndebt::isDeleted() const { return _isDeleted; }
 
 void CityIndebt::load(const VariantMap& stream)
 {
+  GameEvent::load( stream );
   _emperorMoney = stream.get( "emperorMoney" );
   _text = stream.get( "text" ).toString();
 }
 
 VariantMap CityIndebt::save() const
 {
-  VariantMap ret;
+  VariantMap ret = GameEvent::save();
 
   ret[ "emperorMoney" ] = _emperorMoney;
   ret[ "text" ] = Variant( _text );
@@ -58,7 +59,7 @@ VariantMap CityIndebt::save() const
 
 bool CityIndebt::_mayExec(Game& game, unsigned int time) const
 {
-  if( time % GameDate::ticksInMonth() == 1 )
+  if( GameDate::isWeekChanged() )
   {
     if( game.city()->funds().treasury() < 0 )
     {

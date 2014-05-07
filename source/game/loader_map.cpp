@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "loader_map.hpp"
 #include "gfx/tile.hpp"
@@ -105,7 +107,7 @@ GameLoaderC3Map::GameLoaderC3Map() : _d( new Impl ) {}
 
 bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
 {
-  return vfs::Path( filename ).isExtension( ".map" );
+  return vfs::Path( filename ).isMyExtension( ".map" );
 }
 
 void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)

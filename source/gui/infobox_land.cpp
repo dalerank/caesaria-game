@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "infobox_land.hpp"
 #include "label.hpp"
@@ -29,55 +31,59 @@ InfoboxLand::InfoboxLand( Widget* parent, const Tile& tile )
 { 
   Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
   lbText->setFont( Font::create( FONT_2 ) );
-  lbText->setTextAlignment( alignUpperLeft, alignCenter );
+  lbText->setTextAlignment( align::upperLeft, align::center );
   lbText->setWordwrap( true );
+
+  std::string text;
+  std::string title;
 
   if( tile.getFlag( Tile::tlTree ) )
   {
-    setTitle( _("##trees_and_forest_caption##") );
-    lbText->setText( _("##trees_and_forest_text##"));
+    title = "##trees_and_forest_caption##";
+    text = "##trees_and_forest_text##";
   } 
   else if( tile.getFlag( Tile::tlWater ) )
   {
-    setTitle( _("##water_caption##") );
-    lbText->setText( _("##water_text##"));
+    title = "##water_caption##";
+    text = "##water_text##";
   }
   else if( tile.getFlag( Tile::tlRock ) )
   {
-    setTitle( _("##rock_caption##") );
-    lbText->setText( _("##rock_text##"));
+    title = "##rock_caption##";
+    text = "##rock_text##";
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
     if( tile.overlay()->type() == construction::plaza )
     {
-      setTitle( _("##plaza_caption##") );
-      lbText->setText( _("##plaza_text##"));
+      title = "##plaza_caption##";
+      text = "##plaza_text##";
     }
     else 
     {
-      setTitle( _("##road_caption##") );
-      lbText->setText( _("##road_text##"));
+      title = "##road_caption##";
+      text = "##road_text##";
     }
   }
   else if( tile.getFlag( Tile::tlMeadow ) )
   {
-    setTitle( _("##meadow_caption##") );
-    lbText->setText( _("##meadow_text##"));
+    title = "##meadow_caption##";
+    text = "##meadow_text##";
   }
   else 
   {
-    setTitle( _("##clear_land_caption##") );
-    lbText->setText( _("##clear_land_text##"));
+    title = "##clear_land_caption##";
+    text = "##clear_land_text##";
   }
   
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
 
-  std::string text = StringHelper::format( 0xff, "Tile at: (%d,%d) ID:%04X",
+  text += StringHelper::format( 0xff, "Tile at: (%d,%d) ID:%04X",
                                            tile.i(), tile.j(),  
                                           ((short int) tile.originalImgId() ) );
   
-  lbText->setText( text );
+  setTitle( _( title ));
+  setText( _( text ) );
 }
 
 void InfoboxLand::setText( const std::string& text )

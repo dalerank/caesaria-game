@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "environment.hpp"
 
@@ -240,7 +242,7 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
 
   rect -= Point( size.width() + 20, -20 );
   elm->setGeometry( rect );
-  elm->setTextAlignment( alignCenter, alignCenter );
+  elm->setTextAlignment( align::center, align::center );
 
   return elm;
 }

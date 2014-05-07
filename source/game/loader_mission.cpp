@@ -22,7 +22,7 @@
 #include "game.hpp"
 #include "core/saveadapter.hpp"
 #include "loader.hpp"
-#include "city/win_targets.hpp"
+#include "city/victoryconditions.hpp"
 #include "city/build_options.hpp"
 #include "objects/metadata.hpp"
 #include "city/funds.hpp"
@@ -62,7 +62,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     PlayerCityPtr city = game.city();
     city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
 
-    GameDate::init( vm[ "date" ].toDateTime() );
+    GameDate::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm[ "events" ].toMap();
     foreach( it, vm_events )
@@ -75,12 +75,12 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     game.empire()->load( vm[ "empire" ].toMap() );
 
-    city::WinTargets targets;
+    city::VictoryConditions targets;
     Variant winOptions = vm[ "win" ];
     Logger::warningIf( winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename );
 
     targets.load( winOptions.toMap() );
-    city->setWinTargets( targets );
+    city->setVictoryConditions( targets );
 
     city::BuildOptions options;
     options.load( vm[ "buildoptions" ].toMap() );
@@ -88,7 +88,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     game.empire()->emperor().updateRelation( city->getName(), 50 );
 
-    std::string missionName = vfs::Path( filename ).getBasename( false ).toString();
+    std::string missionName = vfs::Path( filename ).baseName( false ).toString();
     Locale::addTranslation( missionName );
     GameSettings::set( GameSettings::lastTranslation, Variant( missionName ) );
 
@@ -107,5 +107,5 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
 bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
 {
-  return vfs::Path( filename ).isExtension( ".mission" );
+  return vfs::Path( filename ).isMyExtension( ".mission" );
 }

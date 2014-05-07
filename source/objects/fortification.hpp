@@ -25,7 +25,7 @@ public:
   ~Fortification();
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
-  const gfx::Picture& getPicture(PlayerCityPtr city,
+  const gfx::Picture& picture(PlayerCityPtr city,
                             TilePos pos,
                             const gfx::TilesArray& tmp ) const;
 

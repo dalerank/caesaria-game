@@ -24,7 +24,8 @@
 class LogWriter : public ReferenceCounted
 {
 public:
-  virtual void write( std::string, bool ) {}
+  virtual void write( std::string, bool newLine ) = 0;
+  virtual bool isActive() const = 0;
 };
 
 typedef SmartPtr<LogWriter> LogWriterPtr;
@@ -41,7 +42,7 @@ public:
   static void registerWriter( Type type );
   static void registerWriter( std::string name, LogWriterPtr writer );
 
-  static Logger& getInstance();
+  static Logger& instance();
   ~Logger();
 private:
   Logger();

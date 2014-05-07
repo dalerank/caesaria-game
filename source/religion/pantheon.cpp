@@ -22,6 +22,10 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "divinities.hpp"
+#include "ceres.hpp"
+#include "neptune.hpp"
+#include "venus.hpp"
+#include "mercury.hpp"
 
 using namespace constants;
 
@@ -48,6 +52,7 @@ Pantheon::Pantheon() : _d( new Impl )
   _d->divinties.push_back( rome::Ceres::create() );
   _d->divinties.push_back( rome::Neptune::create() );
   _d->divinties.push_back( rome::Mercury::create() );
+  _d->divinties.push_back( rome::Venus::create() );
 }
 
 DivinityPtr Pantheon::get( RomeDivinityType name )
@@ -72,7 +77,7 @@ DivinityPtr Pantheon::mars(){  return get( romeDivMars ); }
 DivinityPtr Pantheon::neptune() { return get( romeDivNeptune ); }
 DivinityPtr Pantheon::venus(){ return get( romeDivVenus ); }
 DivinityPtr Pantheon::mercury(){  return get( romeDivMercury ); }
-DivinityPtr Pantheon::ceres() {  return instance().get( romeDivCeres );}
+DivinityPtr Pantheon::ceres() {  return get( romeDivCeres );}
 
 void Pantheon::load( const VariantMap& stream )
 {  

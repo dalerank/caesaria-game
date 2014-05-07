@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "dialogbox.hpp"
 #include "gfx/picture.hpp"
@@ -40,6 +42,7 @@ oc3_signals public:
   Signal1<int> onResultSignal;
   Signal0<> onOkSignal;
   Signal0<> onCancelSignal;
+  Signal0<> onNeverSignal;
 };
 
 DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
@@ -48,10 +51,8 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
 {
   if( rectangle.getSize() == Size( 0, 0 ) )
   {
-    Size defaultSize( 480, 160 );
-    Rect defaultRect( Point( (parent->width() - defaultSize.width())/2,(parent->height() - defaultSize.height())/2),
-                      defaultSize );
-    setGeometry( defaultRect );
+    setGeometry( Rect( 0, 0, 480, 160 ) );
+    setCenter( parent->center() );
   }
 
   _d->background.reset( Picture::create( size() ) );
@@ -59,23 +60,30 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
-  lbTitle->setTextAlignment( alignCenter, alignCenter );
+  lbTitle->setTextAlignment( align::center, align::center );
 
   Label* lbText = new Label( this, Rect( 10, 55, width() - 10, 55 + 55 ), text );
-  lbText->setTextAlignment( alignCenter, alignCenter );
+  lbText->setTextAlignment( align::center, align::center );
 
-  if( buttons == btnOk || buttons == btnCancel )
+  if( (buttons == btnOk) || (buttons == btnCancel) )
   {
     new TexturedButton( this, Point( width() / 2 - 20, height() - 50),
                         Size( 39, 26 ), buttons,
                         buttons == btnOk ? okBtnPicId : cancelBtnPicId );
   }
-  else if( buttons == (btnOk | btnCancel) )
+  else if( buttons & (btnOk | btnCancel) )
   {
     new TexturedButton( this, Point( width() / 2 - 24 - 16, height() - 50),
                         Size( 39, 26 ), btnOk, okBtnPicId );
     new TexturedButton( this, Point( width() / 2 + 16, height() - 50 ),
                         Size( 39, 26 ), btnCancel, cancelBtnPicId );
+  }
+
+  if( buttons & btnNever )
+  {
+    new TexturedButton( this, Point( width() - 24 - 16, height() - 50),
+                        Size( 39, 26 ), btnNever, cancelBtnPicId );
+
   }
 }
 
@@ -95,6 +103,7 @@ bool DialogBox::onEvent( const NEvent& event )
     {
     case btnOk: _d->onOkSignal.emit(); break;
     case btnCancel: _d->onCancelSignal.emit(); break;
+    case btnNever: _d->onNeverSignal.emit(); break;
     }
 
     return true;
@@ -103,15 +112,9 @@ bool DialogBox::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-Signal0<>& DialogBox::onOk()
-{
-  return _d->onOkSignal;
-}
-
-Signal0<>& DialogBox::onCancel()
-{
-  return _d->onCancelSignal;
-}
+Signal0<>& DialogBox::onOk() {  return _d->onOkSignal;}
+Signal0<>& DialogBox::onCancel(){  return _d->onCancelSignal;}
+Signal0<>& DialogBox::onNever() { return _d->onNeverSignal; }
 
 void DialogBox::draw(gfx::Engine& painter )
 {

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "prefect.hpp"
 #include "core/position.hpp"
@@ -29,6 +31,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
+#include "events/showinfobox.hpp"
 #include "game/resourcegroup.hpp"
 #include "events/disaster.hpp"
 #include "pathway/pathway_helper.hpp"
@@ -53,6 +56,7 @@ public:
   int water;
   TilePos endPatrolPoint;
   PrefectAction action;
+  int fumigateHouseNumber;
 };
 
 Prefect::Prefect(PlayerCityPtr city )
@@ -60,6 +64,7 @@ Prefect::Prefect(PlayerCityPtr city )
 {
   _setType( walker::prefect );
   _d->water = 0;
+  _d->fumigateHouseNumber = 0;
   _d->action = Impl::patrol;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -126,7 +131,6 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
       _d->action = Impl::go2fire;
       _updatePathway( tmp );
       _setAction( acDragWater );
-      setSpeed( 1 );
       go();
       return true;
     }
@@ -145,7 +149,6 @@ void Prefect::_back2Prefecture()
     _d->action = Impl::patrol;
     _updatePathway( pathway );
     _d->endPatrolPoint = pathway.destination().pos();
-    setSpeed( 1 );
     go();
   }
   else
@@ -168,8 +171,17 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
       if( healthLevel < 1 )
       {
         house->deleteLater();
+        _d->fumigateHouseNumber++;
         events::GameEventPtr e = events::DisasterEvent::create( house->tile(), events::DisasterEvent::plague );
         e->dispatch();
+
+        if( _d->fumigateHouseNumber > 5 )
+        {
+          e = events::ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
+                                           events::ShowInfobox::send2scribe, "/smk/SICK.SMK" );
+          e->dispatch();
+          _d->fumigateHouseNumber = -999;
+        }
       }
     }
   }
@@ -185,7 +197,6 @@ void Prefect::_back2Patrol()
     _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
     _setAction( _d->water > 0 ? acDragWater : acMove );
     _updatePathway( pathway );
-    setSpeed( 1 );
     go();
   }
   else
@@ -212,7 +223,7 @@ void Prefect::_brokePathway(TilePos p)
   TileOverlayPtr overlay = _city()->getOverlay( p );
   if( overlay.isValid() && overlay->type() == building::burningRuins )
   {
-    setSpeed( 0 );
+    setSpeed( 0.f );
     _setAction( acFightFire );
     _d->action = Impl::fightFire;
     return;
@@ -224,7 +235,6 @@ void Prefect::_brokePathway(TilePos p)
     Pathway pathway = PathwayHelper::create( pos(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
     {
-      setSpeed( 1.f );
       _d->action = Impl::findFire;
       _setAction( acDragWater );
       setPathway( pathway );
@@ -290,9 +300,8 @@ void Prefect::_centerTile()
 
       if( pathway.isValid() )
       {
-        setSpeed( 1.5f );
         _updatePathway( pathway );
-        go();
+        go( 1.5f );
 
         _d->action = Impl::go2enemy;
       }
@@ -372,7 +381,7 @@ void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
 
-  switch( (int)getAction() )
+  switch( (int)action() )
   {
   case acDragWater:
     _walk();

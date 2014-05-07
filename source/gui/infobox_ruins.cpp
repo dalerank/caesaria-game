@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "infobox_ruins.hpp"
 #include "good/goodhelper.hpp"
@@ -36,13 +38,13 @@ InfoboxRuins::InfoboxRuins( Widget* parent, const Tile& tile )
   std::string text = _("##ruins_0000_text##");
   if( ruin.isValid() )
   {
-    if( !ruin->getInfo().empty() )
+    if( !ruin->info().empty() )
     {
-      text = _( ruin->getInfo().c_str() );
+      text = _( ruin->info().c_str() );
     }
   }
   Label* lb = new Label( this, Rect( 20, 20, width() - 20, height() - 50), text );
-  lb->setTextAlignment( alignCenter, alignCenter );
+  lb->setTextAlignment( align::center, align::center );
   lb->setWordwrap( true );
 }
 

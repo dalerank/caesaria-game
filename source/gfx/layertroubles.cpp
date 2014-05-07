@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "layertroubles.hpp"
 #include "layerconstants.hpp"
@@ -57,28 +59,33 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
       //fire buildings and roads
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+    case building::elevation:
       needDrawAnimations = true;
-      engine.drawPicture( tile.picture(), screenPos );
+      drawTilePass( engine, tile, offset, Renderer::ground );
+      drawTilePass( engine, tile, offset, Renderer::foreground );
     break;
 
-      //houses
-    case building::house:
-      {
-        HousePtr house = ptr_cast<House>( overlay );
-
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
-
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );              
-      }
-    break;
-
-      //other buildings
+    //other buildings
     default:
+    {
+      ConstructionPtr c = ptr_cast<Construction>( overlay );
+      if( c.isValid() )
       {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+        std::string trouble = c->troubleDesc();
+        if( trouble.empty() )
+        {
+          city::Helper helper( _city() );
+          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+        }
+        else
+        {
+          needDrawAnimations = true;
+          drawTilePass( engine, tile, offset, Renderer::ground );
+          drawTilePass( engine, tile, offset, Renderer::foreground );
+        }
       }
+    }
     break;
     }
 

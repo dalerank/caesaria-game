@@ -33,17 +33,15 @@ public:
   EmpirePtr empire;
   typedef std::map< unsigned int, TraderoutePtr > TradeRoutes;
   TradeRoutes routes;
-  int updateInterval;
 };
 
 Trading::Trading() : _d( new Impl )
 {
-  _d->updateInterval = GameDate::ticksInMonth() / 20;
 }
 
 void Trading::update( unsigned int time )
 {
-  if( time % _d->updateInterval == 1 )
+  if( GameDate::isDayChanged() )
   {
     foreach( it,_d->routes )
     {
@@ -95,7 +93,7 @@ Trading::~Trading()
 void Trading::sendMerchant( const std::string& begin, const std::string& end,
                                   GoodStore& sell, GoodStore& buy )
 {
-  TraderoutePtr route = getRoute( begin, end );
+  TraderoutePtr route = findRoute( begin, end );
   if( route != 0 )
   {
     Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
@@ -105,7 +103,7 @@ void Trading::sendMerchant( const std::string& begin, const std::string& end,
   route->addMerchant( begin, sell, buy );
 }
 
-TraderoutePtr Trading::getRoute( const std::string& begin, const std::string& end )
+TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& end )
 {
   unsigned int routeId = StringHelper::hash( begin ) + StringHelper::hash( end );
   Impl::TradeRoutes::iterator it = _d->routes.find( routeId );
@@ -118,7 +116,7 @@ TraderoutePtr Trading::getRoute( const std::string& begin, const std::string& en
   return it->second;
 }
 
-TraderoutePtr Trading::getRoute( unsigned int index )
+TraderoutePtr Trading::findRoute( unsigned int index )
 {
   if( index >= _d->routes.size() )
     return 0;
@@ -130,7 +128,7 @@ TraderoutePtr Trading::getRoute( unsigned int index )
 
 TraderoutePtr Trading::createRoute( const std::string& begin, const std::string& end )
 {
-  TraderoutePtr route = getRoute( begin, end );
+  TraderoutePtr route = findRoute( begin, end );
   if( route != 0 )
   {
     Logger::warning( "Trade route exist [%s to %s]", begin.c_str(), end.c_str() );
@@ -146,7 +144,7 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
   return route;
 }
 
-TraderouteList Trading::getRoutes( const std::string& begin )
+TraderouteList Trading::routes( const std::string& begin )
 {
   TraderouteList ret;
 
@@ -163,7 +161,7 @@ TraderouteList Trading::getRoutes( const std::string& begin )
   return ret;
 }
 
-TraderouteList Trading::getRoutes()
+TraderouteList Trading::routes()
 {
   TraderouteList ret;
   foreach( item, _d->routes ) { ret.push_back( item->second ); }

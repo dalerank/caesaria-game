@@ -1,4 +1,4 @@
 {  
   items : [ "##tutorial_text##", 
-            "@img=picture2_00001.png" ]
+            "@img=picture2_00001" ]
 }

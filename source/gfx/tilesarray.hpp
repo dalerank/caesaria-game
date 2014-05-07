@@ -56,6 +56,23 @@ public:
 
     return *this;
   }
+
+  TilesArray walkableTiles( bool alllands=false ) const
+  {
+    TilesArray ret;
+    for( const_iterator i=begin(); i != end(); ++i )
+    {
+      if( (*i)->isWalkable( alllands ) )
+          ret.push_back( *i );
+    }
+
+    return ret;
+  }
+
+  Tile* random() const
+  {
+    return size() > 0 ? at( math::random( size() ) ) : 0;
+  }
 };
 
 }//end namespace

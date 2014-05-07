@@ -75,6 +75,11 @@ if( BUILD_LZMA )
   target_link_libraries(${PROJECT_NAME} ${LZMALIB_NAME})
 endif()
 
+if( BUILD_SMK )
+  link_directories(${SMKLIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${SMKLIB_NAME})
+endif()
+
 if( BUILD_PNG )
   link_directories(${PNGLIB_HOME})
   include_directories(${PNGLIB_HOME})

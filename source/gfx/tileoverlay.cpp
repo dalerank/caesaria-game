@@ -12,6 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 
 #include "tileoverlay.hpp"
 #include "objects/metadata.hpp"
@@ -53,17 +56,21 @@ TileOverlay::TileOverlay(const Type type, const Size& size)
   setType( type );
 }
 
+Desirability TileOverlay::desirability() const
+{
+  return MetaDataHolder::getData( type() ).getDesirbility();
+}
 
 void TileOverlay::setType(const Type type)
 {
-  const MetaData& bd = MetaDataHolder::instance().getData( type );
+  const MetaData& bd = MetaDataHolder::getData( type );
 
    _d->overlayType = type;
    _d->overlayClass = bd.getGroup();
    _d->name = bd.getName();
 }
 
-void TileOverlay::timeStep(const unsigned long time) {}
+void TileOverlay::timeStep(const unsigned long) {}
 
 void TileOverlay::setPicture(Picture picture)
 {
@@ -148,7 +155,7 @@ void TileOverlay::save( VariantMap& stream ) const
 
   stream[ "config" ] = config;
   stream[ "picture" ] = Variant( _d->picture.name() );
-  stream[ "pictureOffset" ] = _d->picture.getOffset();
+  stream[ "pictureOffset" ] = _d->picture.offset();
   stream[ "size" ] = _d->size;
   stream[ "isDeleted" ] = _d->isDeleted;
   stream[ "name" ] = Variant( _d->name );
@@ -195,7 +202,7 @@ Picture& TileOverlay::_fgPicture( unsigned int index ){  return _d->fgPictures[i
 Picture& TileOverlay::_pictureRef(){  return _d->picture;}
 TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
-const Picture& TileOverlay::getPicture() const{  return _d->picture;}
+const Picture& TileOverlay::picture() const{  return _d->picture;}
 void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}
 const Animation&TileOverlay::animation() const { return _d->animation;}
 void TileOverlay::deleteLater(){  _d->isDeleted  = true;}

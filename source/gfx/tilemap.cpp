@@ -153,35 +153,37 @@ TilesArray Tilemap::getRectangle( const TilePos& start, const TilePos& stop, con
   TilesArray res;
 
   int delta_corners = 0;
-  if (! corners)
+  if(!corners)
   {
     delta_corners = 1;
   }
 
-  for(int i = start.i() + delta_corners; i <= stop.i() - delta_corners; ++i)
+  int tmpij = start.i();
+  for(int j = start.j() + delta_corners; j <= stop.j() - delta_corners; ++j)
   {
-    if (isInside( TilePos( i, start.j() ) ))
-    {
-      res.push_back( &at(i, start.j() ));
-    }
-
-    if (isInside( TilePos( i, stop.j() ) ))
-    {
-      res.push_back( &at( i, stop.j() ));
-    }
+    if( isInside( TilePos( tmpij, j  ) ) )
+      res.push_back( &at( tmpij, j ));
   }
 
-  for (int j = start.j() + 1; j <= stop.j() - 1; ++j)  // corners have been handled already
+  tmpij = stop.j();
+  for(int i = start.i() + 1; i <= stop.i() - delta_corners; ++i)
   {
-    if (isInside( TilePos( start.i(), j ) ))
-    {
-      res.push_back(&at(start.i(), j));
-    }
+    if( isInside( TilePos( i, tmpij  ) ) )
+      res.push_back( &at(i, tmpij ));
+  }
 
-    if (isInside( TilePos( stop.i(), j ) ))
-    {
-      res.push_back(&at(stop.i(), j));
-    }
+  tmpij = stop.i();
+  for (int j = stop.j() - 1; j >= start.j() + delta_corners; --j)  // corners have been handled already
+  {
+    if( isInside( TilePos( tmpij, j ) ))
+      res.push_back(&at( tmpij, j));
+  }
+
+  tmpij = start.j();
+  for( int i = stop.i() - 1; i >= start.i() + 1; --i)  // corners have been handled already
+  {
+    if( isInside( TilePos( i, tmpij )) )
+      res.push_back(&at( i, tmpij));
   }
 
   return res;

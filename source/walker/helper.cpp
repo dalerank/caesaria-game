@@ -83,7 +83,11 @@ public:
     __REG_WTYPE( spear )
     __REG_WTYPE( romeGuard )
     __REG_WTYPE( bow_arrow )
+    __REG_WTYPE( romeHorseman )
+    __REG_WTYPE( romeSpearman )
+    __REG_WTYPE( balista )
   }
+#undef __REG_WTYPE
 };
 
 VariantMap WalkerHelper::getOptions(const walker::Type type )

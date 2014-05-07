@@ -44,7 +44,6 @@ public:
   bool lastWaterState;
   bool isRoad;
   bool alsoResolved;
-  int serviceTimer;
   int produceTimer;
   int decreaseWaterInterval;
   std::string errorStr;
@@ -70,8 +69,7 @@ std::string Reservoir::troubleDesc() const
 Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
-  _d->serviceTimer = GameDate::ticksInMonth() / 4;
-  _d->produceTimer = GameDate::ticksInMonth() / 15;
+  _d->produceTimer = GameDate::days2ticks( 2 );
   setPicture( ResourceGroup::waterbuildings, 1 );
   
   // utilitya 34      - empty reservoir
@@ -133,7 +131,7 @@ void Reservoir::timeStep(const unsigned long time)
   }
 
   //filled area, that reservoir present
-  if( time % _d->serviceTimer == 1 )
+  if( GameDate::isWeekChanged() )
   {
     Tilemap& tmap = _city()->tilemap();
     TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
@@ -172,7 +170,7 @@ WaterSource::WaterSource(const Type type, const Size& size )
 {
   _d->water = 0;
   _d->lastWaterState = false;
-  _d->decreaseWaterInterval = GameDate::ticksInMonth() / 10;
+  _d->decreaseWaterInterval = GameDate::days2ticks( 3 );
 }
 
 WaterSource::~WaterSource(){}
@@ -233,5 +231,5 @@ bool WaterSource::_isResolved() const { return _d->alsoResolved; }
 int WaterSource::_getWater() const{  return _d->water;}
 bool WaterSource::_isRoad() const { return _d->isRoad; }
 int WaterSource::getId() const{  return pos().j() * 10000 + pos().i();}
-std::string WaterSource::getError() const{  return _d->errorStr;}
+std::string WaterSource::errorDesc() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}

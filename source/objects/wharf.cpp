@@ -32,14 +32,12 @@ class Wharf::Impl
 public:
   enum { southPic=54, northPic=52, westPic=55, eastPic=53 };
   FishingBoatPtr boat;
-  int checkInterval;
 };
 
 Wharf::Wharf() : CoastalFactory(Good::none, Good::fish, building::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
   setPicture( ResourceGroup::wharf, Impl::northPic );
-  _d->checkInterval = GameDate::ticksInMonth() / 4;
 }
 
 void Wharf::destroy()
@@ -59,38 +57,25 @@ void Wharf::timeStep(const unsigned long time)
   CoastalFactory::timeStep(time);
 
   //try get good from storage building for us
-  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && walkers().size() == 0 )
+  if( GameDate::isWeekChanged() && numberWorkers() > 0 && walkers().size() == 0 )
   {
     receiveGood();
     deliverGood();
   }
 
-  //start/stop animation when workers found
-  bool mayAnimate = mayWork();
-
-  if( mayAnimate && _animationRef().isStopped() )
-  {
-    _animationRef().start();
-  }
-
-  if( !mayAnimate && _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
-
   //no workers or no good in stock... stop animate
-  if( !mayAnimate )
+  if( !mayWork() )
   {
     return;
   }
 
   if( getProgress() >= 100.0 )
   {
-    if( store().qty( getOutGoodType() ) < store().capacity( getOutGoodType() )  )
+    if( store().qty( produceGoodType() ) < store().capacity( produceGoodType() )  )
     {
       updateProgress( -100.f );
       //gcc fix for temporaly ref object
-      GoodStock tmpStock( getOutGoodType(), 100, 100 );
+      GoodStock tmpStock( produceGoodType(), 100, 100 );
       store().store( tmpStock, 100 );
     }
   }
@@ -123,9 +108,9 @@ bool Wharf::mayWork() const
   return (mayWork && _d->boat.isValid());
 }
 
-std::string Wharf::getWorkersProblem() const
+std::string Wharf::workersProblemDesc() const
 {
-  std::string ret = CoastalFactory::getWorkersProblem();
+  std::string ret = CoastalFactory::workersProblemDesc();
 
   if( ret.empty() )
   {

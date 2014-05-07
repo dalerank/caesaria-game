@@ -29,17 +29,19 @@ class Player : public Serializable, public ReferenceCounted
 public:
    static PlayerPtr create();
 
-   void save( VariantMap& stream) const;
-   void load( const VariantMap& stream);
+   virtual void save( VariantMap& stream) const;
+   virtual void load( const VariantMap& stream);
 
    void setName( const std::string& name );
-   std::string getName() const;
+   std::string name() const;
 
    int salary() const;
    void setSalary( const int value );
 
    void appendMoney( int money );
    int money() const;
+
+   unsigned int color() const;
 
    virtual ~Player();
 private:

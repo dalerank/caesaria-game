@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_EVENT_SHOWREQUESTINFO_H_INCLUDE_
 #define _CAESARIA_EVENT_SHOWREQUESTINFO_H_INCLUDE_
@@ -25,7 +27,10 @@ namespace events
 class ShowRequestInfo : public GameEvent
 {
 public:
-  static GameEventPtr create( city::request::RequestPtr request, bool available4exec=false );
+  static GameEventPtr create( city::request::RequestPtr request,
+                              bool available4exec=false,
+                              const std::string& message="",
+                              const std::string& video="");
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -36,6 +41,7 @@ private:
 
   city::request::RequestPtr _request;
   bool _reqAvailable;
+  std::string _message, _video;
 };
 
 }

@@ -22,6 +22,7 @@ class Spear : public ThrowingWeapon
 {
 public:
   static SpearPtr create( PlayerCityPtr city );
+  void setPicInfo( const std::string& rc, unsigned int index );
 
 protected:
   virtual void _onTarget();
@@ -30,6 +31,9 @@ protected:
 
 private:
   Spear( PlayerCityPtr city );
+
+  std::string _picRc;
+  unsigned int _picIndex;
 };
 
 #endif //__CAESARIA_SPEAR_H_INCLUDED__

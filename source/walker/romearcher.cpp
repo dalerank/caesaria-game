@@ -1,0 +1,100 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+
+#include "romearcher.hpp"
+#include "city/helper.hpp"
+#include "spear.hpp"
+#include "game/gamedate.hpp"
+
+using namespace constants;
+
+RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )
+  : RomeSoldier( city, type )
+{
+  _setSubAction( Soldier::check4attack );
+  setAttackDistance( 6 );
+}
+
+void RomeArcher::_fire( TilePos p )
+{
+  SpearPtr spear = Spear::create( _city() );
+  spear->toThrow( pos(), p );
+  wait( GameDate::days2ticks( 1 ) / 2 );
+}
+
+RomeArcherPtr RomeArcher::create(PlayerCityPtr city, walker::Type type)
+{
+  RomeArcherPtr ret( new RomeArcher( city, type ) );
+  ret->drop();
+
+  return ret;
+}
+
+void RomeArcher::timeStep(const unsigned long time)
+{
+  Soldier::timeStep( time );
+
+  switch( _subAction() )
+  {
+  case Soldier::fightEnemy:
+  {
+    WalkerList enemies = _findEnemiesInRange( attackDistance() );
+
+    if( !enemies.empty() )
+    {
+      WalkerPtr p = enemies.front();
+      turn( p->pos() );
+
+      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      {
+        _fire( p->pos() );
+        _updateAnimation( time+1 );
+      }
+    }
+    else
+    {
+      //_check4attack();
+      _setSubAction( patrol );
+    }
+  }
+  break;
+
+  case Soldier::destroyBuilding:
+  {
+    BuildingList buildings = _findBuildingsInRange( attackDistance() );
+
+    if( !buildings.empty() )
+    {
+      BuildingPtr b = buildings.front();
+      turn( b->pos() );
+
+      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      {
+        _fire( b->pos() );
+        _updateAnimation( time+1 );
+      }
+    }
+    else
+    {
+      //_check4attack();
+      _setSubAction( patrol );
+    }
+  }
+
+  default: break;
+  } // end switch( _d->action )
+}

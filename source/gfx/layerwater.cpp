@@ -30,10 +30,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerWater::getType() const
-{
-  return citylayer::water;
-}
+int LayerWater::getType() const{  return citylayer::water;}
 
 std::set<int> LayerWater::getVisibleWalkers() const
 {
@@ -82,7 +79,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
       {
         HousePtr h = ptr_cast<House>( overlay );
         tileNumber = OverlayPic::inHouse;
-        haveWater = haveWater || h->hasServiceAccess(Service::fontain) || h->hasServiceAccess(Service::well);
+        haveWater = haveWater || h->hasServiceAccess(Service::fountain) || h->hasServiceAccess(Service::well);
       }
       tileNumber += (haveWater ? OverlayPic::haveWater : 0);
       tileNumber += tile.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;

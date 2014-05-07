@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "contextmenuitem.hpp"
 #include "contextmenuitemprivate.hpp"
@@ -38,10 +40,7 @@ ContextMenuItem::ContextMenuItem( ContextMenu* parent, const std::string& text )
   _d->luaFunction = -1;
 }
 
-Signal1<bool>& ContextMenuItem::onChecked()
-{
-  return _d->onCheckedSignal;
-}
+Signal1<bool>& ContextMenuItem::onChecked() {  return _d->onCheckedSignal; }
 
 ContextMenu* ContextMenuItem::addSubMenu( int id )
 {
@@ -74,88 +73,13 @@ void ContextMenuItem::setSubMenu( ContextMenu* menu )
     parentCntx->updateItems();
 }
 
-bool ContextMenuItem::isSeparator() const
-{
-  return _d->isSeparator;
-}
-
-void ContextMenuItem::setCommandId( int cmdId )
-{
-	_d->commandId = cmdId;
-}
-
-int ContextMenuItem::getCommandId() const
-{
-  return _d->commandId;
-}
-
 void ContextMenuItem::toggleCheck()
 {
   if( _d->isAutoChecking )
   {
     _d->checked = !_d->checked;
-  _d->onCheckedSignal.emit( _d->checked );
+    _d->onCheckedSignal.emit( _d->checked );
   }
-}
-
-bool ContextMenuItem::isHovered() const
-{
-  return _d->isHovered;
-}
-
-void ContextMenuItem::setAutoChecking( bool autoChecking )
-{
-  _d->isAutoChecking = autoChecking;
-}
-
-bool ContextMenuItem::isPointInside( const Point& point ) const
-{
-  return false;
-}
-
-int ContextMenuItem::getOffset() const
-{
-  return _d->offset;
-}
-
-void ContextMenuItem::setChecked( bool check )
-{
-  _d->checked = check;
-}
-
-bool ContextMenuItem::isChecked() const
-{
-  return _d->checked;
-}
-
-void ContextMenuItem::setIsSeparator( bool isSepar )
-{
-  _d->isSeparator = isSepar;
-}
-
-void ContextMenuItem::setHovered( bool hover )
-{
-  _d->isHovered = hover;
-}
-
-ContextMenu* ContextMenuItem::getSubMenu() const
-{
-  return _d->subMenu;
-}
-
-void ContextMenuItem::setSubMenuAlignment( SubMenuAlign align )
-{
-  _d->subMenuAlignment = align;
-}
-
-ContextMenuItem::SubMenuAlign ContextMenuItem::getSubMenuAlignment() const
-{
-  return _d->subMenuAlignment;
-}
-
-void ContextMenuItem::setIcon( const Picture& icon )
-{
-
 }
 
 void ContextMenuItem::setFlag( DrawFlag flagName, bool set/*=true */ )
@@ -169,19 +93,28 @@ ContextMenuItem::~ContextMenuItem()
     _d->subMenu->drop();
 }
 
-void ContextMenuItem::setDim( const Size& size )
+void ContextMenuItem::setHovered( bool hover )
 {
-  _d->dim = size;
+  _d->isHovered = hover;
+  setFont( Font::create( hover ? FONT_2_RED : FONT_2 ));
 }
 
-const Size& ContextMenuItem::getDim() const
-{
-  return _d->dim;
-}
-
-void ContextMenuItem::setOffset( int offset )
-{
-  _d->offset = offset;
-}
+bool ContextMenuItem::isSeparator() const {  return _d->isSeparator; }
+void ContextMenuItem::setCommandId( int cmdId ){	_d->commandId = cmdId;}
+int ContextMenuItem::getCommandId() const{  return _d->commandId;}
+bool ContextMenuItem::isHovered() const {  return _d->isHovered;}
+void ContextMenuItem::setAutoChecking( bool autoChecking ){  _d->isAutoChecking = autoChecking;}
+bool ContextMenuItem::isPointInside( const Point& point ) const{  return false;}
+int ContextMenuItem::getOffset() const{  return _d->offset;}
+void ContextMenuItem::setChecked( bool check ){  _d->checked = check;}
+bool ContextMenuItem::isChecked() const{  return _d->checked;}
+void ContextMenuItem::setIsSeparator( bool isSepar ){  _d->isSeparator = isSepar;}
+ContextMenu* ContextMenuItem::getSubMenu() const{  return _d->subMenu;}
+void ContextMenuItem::setSubMenuAlignment( SubMenuAlign align ){  _d->subMenuAlignment = align;}
+ContextMenuItem::SubMenuAlign ContextMenuItem::getSubMenuAlignment() const{  return _d->subMenuAlignment;}
+void ContextMenuItem::setIcon( const Picture& icon ){}
+void ContextMenuItem::setDim( const Size& size ) {  _d->dim = size;}
+const Size& ContextMenuItem::getDim() const{  return _d->dim;}
+void ContextMenuItem::setOffset( int offset ){  _d->offset = offset;}
 
 }//end namespace gui

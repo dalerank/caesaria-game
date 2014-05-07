@@ -166,7 +166,11 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f);
     SkipCompressed(f);
     
+#ifdef CAESARIA_PLATFORM_HAIKU
+    f.read((char*)&randomGrid[0], 26244); 
+#else    
     f.read((char*)randomGrid.data(), 26244);
+#endif
     
     SkipCompressed(f);
     SkipCompressed(f);
@@ -319,5 +323,5 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
 bool GameLoaderC3Sav::isLoadableFileExtension( const std::string& filename )
 {
-  return vfs::Path( filename ).isExtension( ".sav" );
+  return vfs::Path( filename ).isMyExtension( ".sav" );
 }

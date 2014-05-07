@@ -12,12 +12,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "winmission.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "gui/win_mission_window.hpp"
-#include "city/win_targets.hpp"
+#include "city/victoryconditions.hpp"
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 
@@ -39,7 +41,7 @@ void WinMission::_exec(Game& game, unsigned int)
   Logger::warning( "WinMission: exec ");
   PlayerCityPtr city = game.city();
 
-  const city::WinTargets& wt = city->getWinTargets();
+  const city::VictoryConditions& wt = city->victoryConditions();
   std::string nextMission = wt.getNextMission();
   std::string newTitle = wt.getNewTitle();
 

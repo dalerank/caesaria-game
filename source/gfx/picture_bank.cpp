@@ -62,7 +62,7 @@ void PictureBank::setPicture(const std::string &name, SDL_Surface &surface)
   Impl::ItPicture it = _d->resources.find( picId );
   if( it != _d->resources.end() )
   {
-     SDL_FreeSurface( it->second.getSurface());
+     SDL_FreeSurface( it->second.surface());
   }
 
   _d->resources[ picId ] = makePicture(&surface, name);
@@ -70,7 +70,7 @@ void PictureBank::setPicture(const std::string &name, SDL_Surface &surface)
 
 void PictureBank::setPicture( const std::string &name, const Picture& pic )
 {
-  setPicture( name, *pic.getSurface() );
+  setPicture( name, *pic.surface() );
 }
 
 Picture& PictureBank::getPicture(const std::string &name)
@@ -98,7 +98,7 @@ Picture& PictureBank::getPicture(const std::string &name)
 
 Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
 {
-   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(),idx );
+   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(), idx );
 
    return getPicture(resource_name);
 }
@@ -141,18 +141,18 @@ Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resour
 void PictureBank::createResources()
 {
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001", *originalPic.getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001", *originalPic.surface() );
 
   Picture* fullReservoir = originalPic.clone(); //mem leak on destroy picloader
   fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002", *fullReservoir->getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002", *fullReservoir->surface() );
 
   Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003", *emptyFontainOrig.getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003", *emptyFontainOrig.surface() );
 
   Picture* fullFontain = emptyFontainOrig.clone();  //mem leak on destroy picloader
   fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004", *fullFontain->getSurface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004", *fullFontain->surface() );
 }
 
 PictureBank::PictureBank() : _d( new Impl )
@@ -166,17 +166,26 @@ PictureBank::~PictureBank(){}
 
 Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
 {
-  foreach( itExt, availableExentions )
+  vfs::Path realPath( name );
+  if( realPath.extension().empty() )
   {
-    vfs::Path realFilename( name + *itExt );
-
-    if( realFilename.exist() )
+    foreach( itExt, availableExentions )
     {
-      vfs::NFile file = vfs::NFile::open( realFilename );
-      if(  file.isOpen() )
+     realPath = name + *itExt;
+
+      if( realPath.exist() )
       {
-        return PictureLoader::instance().load( file );
+        break;
       }
+    }
+  }
+
+  if( realPath.exist() )
+  {
+    vfs::NFile file = vfs::NFile::open( realPath );
+    if(  file.isOpen() )
+    {
+      return PictureLoader::instance().load( file );
     }
   }
 

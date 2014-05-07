@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
 #define _CAESARIA_ANDROIDACTIONSBAR_H_INCLUDE_
@@ -31,6 +33,7 @@ public:
 public oc3_signals:
   Signal0<>& onRequestTileHelp();
   Signal0<>& onEscapeClicked();
+  Signal0<>& onEnterClicked();
   Signal0<>& onRequestMenu();
 
 private:

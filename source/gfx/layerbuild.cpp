@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "layerbuild.hpp"
 #include "objects/aqueduct.hpp"
@@ -20,7 +22,6 @@
 #include "game/roadbuild_helper.hpp"
 #include "core/logger.hpp"
 #include "events/build.hpp"
-#include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "city/city.hpp"
 #include "core/event.hpp"
@@ -29,10 +30,13 @@
 #include "objects/fortification.hpp"
 #include "core/stringhelper.hpp"
 #include "camera.hpp"
+#include "gui/dialogbox.hpp"
 #include "renderermode.hpp"
 #include "events/warningmessage.hpp"
+#include "city/funds.hpp"
 
 using namespace constants;
+using namespace gui;
 
 namespace gfx
 {
@@ -75,7 +79,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
   ConstructionPtr overlay = bldCommand->getContruction();
 
-  if (!overlay.isValid())
+  if( !overlay.isValid() )
   {
     return;
   }
@@ -98,7 +102,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
-        tile->setPicture( &overlay->getPicture() );
+        tile->setPicture( &overlay->picture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -188,11 +192,17 @@ void LayerBuild::_buildAll()
 
   if( !cnstr.isValid() )
   {
-    Logger::warning( "No construction for build" );
+    Logger::warning( "LayerBuild: No construction for build" );
     return;
   }
 
-  bool buildOk = false;
+  if( _city()->funds().treasury() < -5000 )
+  {
+    events::GameEventPtr event = events::WarningMessageEvent::create( "##out_of_credit##" );
+    return;
+  }
+
+  bool buildOk = false;  
   foreach( it, d->buildTiles )
   {
     Tile* tile = *it;
@@ -206,10 +216,10 @@ void LayerBuild::_buildAll()
 
   if( !buildOk )
   {
-    std::string errorStr = cnstr->getError();
+    std::string errorStr = cnstr->errorDesc();
 
     events::GameEventPtr event = events::WarningMessageEvent::create( errorStr.empty()
-                                                                      ? _("##need_build_on_cleared_area##")
+                                                                      ? "##need_build_on_cleared_area##"
                                                                       : errorStr );
     event->dispatch();
   }
@@ -248,9 +258,10 @@ void LayerBuild::handleEvent(NEvent& event)
         break;
       }
 
-      _buildAll();
-      _setStartCursorPos( _lastCursorPos() );
-      _updatePreviewTiles( true );
+#ifndef CAESARIA_PLATFORM_ANDROID
+      _finishBuild();
+#endif
+
     }
     break;
 
@@ -278,9 +289,24 @@ void LayerBuild::handleEvent(NEvent& event)
     case KEY_RIGHT: _camera()->moveRight( moveValue ); break;
     case KEY_LEFT:  _camera()->moveLeft ( moveValue ); break;
     case KEY_ESCAPE: _setNextLayer( citylayer::simple ); _discardPreview(); break;
+    case KEY_RETURN:
+    {
+      if( !event.keyboard.pressed )  //button was left up
+      {
+        _finishBuild();
+      }
+    }
+    break;
     default: break;
     }
   }
+}
+
+void LayerBuild::_finishBuild()
+{
+  _buildAll();
+  _setStartCursorPos( _lastCursorPos() );
+  _updatePreviewTiles( true );
 }
 
 int LayerBuild::getType() const {  return citylayer::build;}
@@ -331,7 +357,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     if( cntr.isValid() && postTiles.size() > 0 )
     {
       tile.setWasDrawn();
-      const Picture& pic = cntr->getPicture( _city(), tile.pos(), postTiles );
+      const Picture& pic = cntr->picture( _city(), tile.pos(), postTiles );
       engine.drawPicture( pic, screenPos );
 
       drawTilePass( engine, tile, offset, Renderer::foreground );
@@ -387,12 +413,11 @@ LayerPtr LayerBuild::create(Renderer* renderer, PlayerCityPtr city)
 
 LayerBuild::~LayerBuild() {}
 
-LayerBuild::LayerBuild( Renderer* renderer, PlayerCityPtr city)
+LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
   : Layer( renderer->camera(), city ),
     __INIT_IMPL(LayerBuild)
 {
-  __D_IMPL(_d, LayerBuild)
-  _d->renderer = renderer;  
+  _dfunc()->renderer = renderer;
 }
 
 }//end namespace gfx

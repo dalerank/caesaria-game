@@ -114,7 +114,7 @@ PushButton::PushButton(Widget* parent )
   _d->lastButtonState = StateCount;
   _d->pressed = false;
   _d->bgStyle = greyBorderLine;
-  setTextAlignment( alignCenter, alignCenter );
+  setTextAlignment( align::center, align::center );
 }
 
 PushButton::PushButton( Widget* parent,
@@ -132,7 +132,7 @@ PushButton::PushButton( Widget* parent,
   _d->currentButtonState = stNormal;
   _d->lastButtonState = StateCount;
   _d->bgStyle = bgStyle;
-  setTextAlignment( alignCenter, alignCenter );
+  setTextAlignment( align::center, align::center );
 
   setText( caption );
   setNotClipped(noclip);

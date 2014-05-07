@@ -37,6 +37,10 @@
 #include "gui/listbox.hpp"
 #include "core/locale.hpp"
 #include "core/saveadapter.hpp"
+#include "gui/smkviewer.hpp"
+#include "gui/dialogbox.hpp"
+#include "core/osystem.hpp"
+#include "gui/texturedbutton.hpp"
 
 using namespace gfx;
 
@@ -72,11 +76,14 @@ public:
     playerName = name;
   }
 
+  void openGreenlightPage() { OSystem::openUrl( "http://steamcommunity.com/sharedfiles/filedetails/?id=249746982" ); }
+  void openHomePage() { OSystem::openUrl( "https://bitbucket.org/dalerank/caesaria/wiki/Home" ); }
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
   void resolveChangePlayerName();
   void resolveShowChangeLanguageWindow();
   void resolveChangeLanguage(const gui::ListBoxItem&);
+  void fitScreenResolution();
   void reload()
   {
     result = StartMenu::reloadScreen;
@@ -96,6 +103,14 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
+}
+
+void StartMenu::Impl::fitScreenResolution()
+{
+  gfx::Engine::Modes modes = game->engine()->modes();
+  GameSettings::set( GameSettings::resolution, Variant( modes.front() ) );
+  GameSettings::set( GameSettings::screenFitted, true );
+  GameSettings::save();
 }
 
 void StartMenu::Impl::resolveShowChangeLanguageWindow()
@@ -158,36 +173,42 @@ void StartMenu::Impl::resolveNewGame()
 void StartMenu::Impl::resolveCredits()
 {
   gui::Widget* parent = game->gui()->rootWidget();
-  Size rootSize = parent->size();
-  Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
-             windowSize );
 
-  gui::Label* frame = new gui::Label( parent, rect, "", false, gui::Label::bgWhiteFrame );
+  gui::Label* frame = new gui::Label( parent, Rect( 0, 0, 512, 384 ), "", false, gui::Label::bgWhiteFrame );
+  frame->setCenter( parent->center() );
+
   gui::ListBox* lbx = new gui::ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  gui::PushButton* btn = new gui::PushButton( frame, Rect( 0, 0, 1, 1), "Close" );
+  gui::PushButton* btn = new gui::PushButton( frame, Rect( 0, 0, 1, 1), _("##close##") );
 
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
   gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
-  item.setTextAlignment( alignCenter, alignCenter );
+  item.setTextAlignment( align::center, align::center );
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
   lbx->addItem( "gathanase" );
   lbx->addItem( "gecube (gb12335@gmail.com)" );
+  lbx->addItem( "pecunia (pecunia@heavengames.com) game mechanics" );
   lbx->addItem( "tracertong" );
   lbx->addItem( "hellium" );
   lbx->addItem( "pufik6666" );
   lbx->addItem( "andreibranescu" );
   lbx->addItem( "AMDmi3 (amdmi3@amdmi3.ru)" );
-  lbx->addItem( "akuskis" );
+  lbx->addItem( "akuskis (???) aqueduct system" );
   lbx->addItem( "Rovanion" );
   lbx->addItem( "nickers (2nickers@gmail.com)" );
   lbx->addItem( "ImperatorPrime" );
   lbx->addItem( "veprbl" );
+  lbx->addItem( "ramMASTER" );
+  lbx->addItem( "Greg Kennedy(kennedy.greg@gmail.com) smk decoder" );
   gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
-  testers.setTextAlignment( alignCenter, alignCenter );
+  testers.setTextAlignment( align::center, align::center );
   lbx->addItem( "Radek Liška" );
+  lbx->addItem( "Dimitrius" );
+
+  gui::ListBoxItem& thanks_to = lbx->addItem( _("##thanks_to##") );
+  thanks_to.setTextAlignment( align::center, align::center );
+  lbx->addItem( "doc (doc@nnm.me)");
 
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
 }
@@ -256,6 +277,22 @@ void StartMenu::initialize()
 
   _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
+  gui::TexturedButton* btnGreenlight = new gui::TexturedButton( _d->game->gui()->rootWidget(), Point(), Size( 250, 155), -1, 0 );
+  btnGreenlight->setPicture( Picture::load( "greenlight.png" ), gui::stNormal );
+  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stPressed );
+  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stHovered );
+  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stDisabled );
+  CONNECT( btnGreenlight, onClicked(), _d.data(), Impl::openGreenlightPage );
+
+  Size scrSize = _d->engine->screenSize();
+  gui::TexturedButton* btnHomePage = new gui::TexturedButton( _d->game->gui()->rootWidget(),
+                                                              Point( scrSize.width() - 97, scrSize.height() - 75 ), Size( 97, 75 ), -1, 0 );
+  btnHomePage->setPicture( Picture::load( "logo_rdt.png" ), gui::stNormal );
+  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stPressed );
+  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stHovered );
+  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stDisabled );
+  CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
+
   gui::PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveChangePlayerName );
 
@@ -276,6 +313,20 @@ void StartMenu::initialize()
 
   btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  bool screenFitted = GameSettings::get( GameSettings::screenFitted );
+  if( !screenFitted )
+  {
+    gui::DialogBox* dialog = new gui::DialogBox( _d->game->gui()->rootWidget(),  Rect( 0, 0, 400, 150 ),
+                                                 "Information", "Is need autofit screen resolution?",
+                                                 gui::DialogBox::btnOk | gui::DialogBox::btnCancel );
+    CONNECT(dialog, onOk(), dialog, gui::DialogBox::deleteLater );
+    CONNECT(dialog, onCancel(), dialog, gui::DialogBox::deleteLater );
+    CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
+    dialog->show();
+  }
+#endif
 }
 
 int StartMenu::result() const{  return _d->result;}

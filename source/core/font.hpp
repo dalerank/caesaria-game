@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_FONT_H_INCLUDED__
 #define __CAESARIA_FONT_H_INCLUDED__
@@ -52,7 +54,7 @@ public:
 
   Font& operator=(const Font& other);
 
-  int getColor() const;
+  int color() const;
   void setColor( const NColor& color );
 
   bool isValid() const;
@@ -62,7 +64,7 @@ public:
   bool operator!=(const Font& other) const;
 
   Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
-                          Alignment horizontalAlign, Alignment verticalAlign );
+                          align::Type horizontalAlign, align::Type verticalAlign );
 
   void draw(gfx::Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
   void draw(gfx::Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );

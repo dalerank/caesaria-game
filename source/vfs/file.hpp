@@ -65,7 +65,7 @@ public:
   NFile& operator=(const NFile& other );
 
   static unsigned long size( vfs::Path filename );
-  static NFile open( Path fileName, Entity::Mode mode=Entity::fmRead );
+  static NFile open( const Path& fileName, Entity::Mode mode=Entity::fmRead );
   static bool remove( Path filename );
   static bool rename( Path oldpath, Path newpath );
 

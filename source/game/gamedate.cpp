@@ -12,17 +12,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "gamedate.hpp"
 
-class GameDate::Impl
-{
-public:
-  DateTime lastDateUpdate;
-  DateTime current;
-};
-
-DateTime GameDate::current() {  return instance()._d->current; }
+namespace {
+  unsigned int tickInDay = 25;
+}
 
 GameDate& GameDate::instance()
 {
@@ -30,29 +27,36 @@ GameDate& GameDate::instance()
   return inst;
 }
 
-unsigned int GameDate::ticksInMonth() {  return 500; }
+unsigned int GameDate::days2ticks(unsigned int days)
+{
+  return days * tickInDay;
+}
 
 void GameDate::timeStep( unsigned int time )
 {
-  unsigned int dftime = time % ticksInMonth();
-  DateTime& date = instance()._d->current;
-  if( dftime == 1 )
+  _dayChange = false;
+  _weekChange = false;
+  _monthChange = false;
+  _yearChange = false;
+
+  if( time % tickInDay == 0 )
   {
-    // every X seconds    
-    date.appendMonth( 1 );
+    DateTime save = _current;
+    _current.appendDay();
+    _dayChange = true;
+
+    _weekChange = (_current.day() % 7) == 0;
+    _monthChange = save.month() != _current.month();
+    _yearChange = save.year() != _current.year();
   }  
-  date.setDay( (dftime * date.getDaysInMonth() ) / ticksInMonth() );
 }
 
 void GameDate::init( const DateTime& date )
 {
-  instance()._d->current = date;
-  instance()._d->lastDateUpdate = date;
+  _current = date;
 }
 
-GameDate::GameDate() : _d( new Impl )
+GameDate::GameDate()
 {
-  _d->current = DateTime( -350, 0, 0 );
+  _current = DateTime( -350, 0, 0 );
 }
-
-GameDate::~GameDate(){}

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_DIVINITIES_H_INCLUDED__
 #define __CAESARIA_DIVINITIES_H_INCLUDED__
@@ -29,23 +31,26 @@ namespace rome
 class RomeDivinity : public Divinity
 {
 public:
-  void load( const VariantMap& vm );
 
   void assignFestival( int type );
 
   virtual VariantMap save() const;
+  virtual void load( const VariantMap& vm );
 
   virtual std::string name() const { return _name; }
   virtual std::string shortDescription() const { return _shortDesc; }
   virtual Service::Type serviceType() const { return _service; }
   virtual const gfx::Picture& picture() const { return _pic; }
-  virtual float relation() const { return _relation; }
-  virtual float getDefaultDecrease() const { return 2.f; }
+  virtual float relation() const;
+  virtual float monthDecrease() const { return 0.5f; }
+  virtual void setEffectPoint( int value ) { _effectPoints = value; }
+  virtual int wrathPoints() const { return _wrathPoints; }
   virtual DateTime lastFestivalDate() const { return _lastFestival; }
 
   virtual void updateRelation( float income, PlayerCityPtr city );
 
   virtual std::string moodDescription() const;
+  virtual void checkAction(PlayerCityPtr city);
 
   RomeDivinity();
 
@@ -53,36 +58,22 @@ public:
   virtual std::string internalName() const;
 
 protected:
+  virtual void _doBlessing( PlayerCityPtr city ) {}
+  virtual void _doWrath( PlayerCityPtr city ) {}
+  virtual void _doSmallCurse( PlayerCityPtr city ) {}
+
   std::string _name;
   Service::Type _service;
   std::string _shortDesc;
   DateTime _lastFestival;
-  DateTime _lastActionDate;
+  bool _blessingDone;
+  bool _smallCurseDone;
+  int _wrathPoints;
   float _relation;
+  float _needRelation;
+  int _effectPoints;
   gfx::Picture _pic;
   StringArray _moodDescr;
-};
-
-
-class Ceres : public RomeDivinity
-{
-public:
-  static DivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
-};
-
-class Neptune : public RomeDivinity
-{
-public:
-  static DivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
-};
-
-class Mercury : public RomeDivinity
-{
-public:
-  static DivinityPtr create();
-  virtual void updateRelation(float income, PlayerCityPtr city);
 };
 
 }//end namespace rome

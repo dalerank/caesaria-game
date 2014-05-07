@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "divinities.hpp"
 #include "gfx/picture.hpp"
@@ -45,6 +47,11 @@ void RomeDivinity::load(const VariantMap& vm)
   _relation = (float)vm.get( "relation", 100.f );
   _lastFestival = vm.get( "lastFestivalDate", GameDate::current() ).toDateTime() ;
   _shortDesc = vm.get( "shortDesc" ).toString();
+  _wrathPoints = vm.get( "wrath" );
+  _blessingDone = vm.get( "blessingDone" );
+  _smallCurseDone = vm.get( "smallCurseDone");
+  _needRelation = vm.get( "needRelation" );
+  _effectPoints = vm.get( "effectPoints" );
 
   Variant value = vm.get( "moodDescription" );
   if( value.isValid() )
@@ -73,7 +80,8 @@ void RomeDivinity::load(const VariantMap& vm)
 
 void RomeDivinity::assignFestival(int type)
 {
-  _relation = math::clamp<float>( _relation + type * 10, 0, 100 );
+  //_relation = math::clamp<float>( _relation + type * 10, 0, 100 );
+  _lastFestival = GameDate::current();
 }
 
 VariantMap RomeDivinity::save() const
@@ -84,18 +92,44 @@ VariantMap RomeDivinity::save() const
   ret[ "image" ] = Variant( _pic.name() );
   ret[ "relation" ] = _relation;
   ret[ "lastFestivalDate" ] = _lastFestival;
-  ret[ "lastActionDate"] = _lastActionDate;
   ret[ "shortDesc" ] = Variant( _shortDesc );
+  ret[ "wrath" ] = _wrathPoints;
+  ret[ "blessingDone" ] = _blessingDone;
+  ret[ "smallCurseDone" ] = _smallCurseDone;
+  ret[ "needRelation" ] = _needRelation;
+  ret[ "effectPoints" ] = _effectPoints;
 
   return ret;
 }
 
+float RomeDivinity::relation() const
+{
+  int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );
+  return _relation + festivalFactor;
+}
+
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
-  city::Helper helper( city );
-  float cityBalanceKoeff = helper.getBalanceKoeff();
+  int minMoodbyPop = 50 - math::clamp( city->population() / 10, 0, 50 );
+  _needRelation = math::clamp<int>( income+_effectPoints, minMoodbyPop, 100 );
 
-  _relation = math::clamp<float>( _relation + (income - getDefaultDecrease()) * cityBalanceKoeff, 0, 100 );
+  _relation += math::signnum( _needRelation - _relation );
+
+  if( _relation <= 50 )
+  {
+    _blessingDone = false;
+    int wrathDelta = 0;
+    if( _relation > 0 && _relation < 10 ) { wrathDelta = 5; }
+    else if( _relation >= 10 && _relation < 20 ) { wrathDelta = 2; }
+    else if( _relation >= 20 && _relation < 40 ) { wrathDelta = 1; }
+    _wrathPoints = math::clamp<int>( _wrathPoints + wrathDelta, 0, 50 );
+  }
+
+  if( _relation >= 50 )
+  {
+    _smallCurseDone = false;
+    _wrathPoints = 0;
+  }
 }
 
 std::string RomeDivinity::moodDescription() const
@@ -107,119 +141,39 @@ std::string RomeDivinity::moodDescription() const
   return _moodDescr[ math::clamp<int>( _relation / delim, 0, _moodDescr.size()-1 ) ];
 }
 
+void RomeDivinity::checkAction( PlayerCityPtr city )
+{
+  if( _relation >= 100 && !_blessingDone )
+  {
+    _doBlessing( city );
+    _blessingDone = true;
+    _relation -= 50;
+  }
+  else if( _wrathPoints >= 20 && !_smallCurseDone && _lastFestival.monthsTo( GameDate::current() ) > 3 )
+  {
+    _doSmallCurse( city );
+    _smallCurseDone = true;
+    _wrathPoints = 0;
+    _relation += 12;
+  }
+  else if( _wrathPoints >= 50 && _lastFestival.monthsTo( GameDate::current() ) > 3 )
+  {
+    _doWrath( city );
+    _wrathPoints = 0;
+    _relation += 30;
+  }
+}
+
 RomeDivinity::RomeDivinity()
 {
-  _relation = 0;
+  _relation = 50;
+  _needRelation = 50;
+  _blessingDone = 0;
+  _smallCurseDone = 0;
 }
 
 void RomeDivinity::setInternalName(const std::string& newName){  setDebugName( newName );}
 std::string RomeDivinity::internalName() const{  return getDebugName();}
-
-DivinityPtr Ceres::create()
-{
-  DivinityPtr ret( new Ceres() );
-  ret->setInternalName( baseDivinityNames[ romeDivCeres ] );
-  ret->drop();
-
-  return ret;
-}
-
-void Ceres::updateRelation(float income, PlayerCityPtr city)
-{
-  RomeDivinity::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_ceres_title##"),
-                                                                   _("##wrath_of_ceres_description##"),
-                                                                   events::ShowInfobox::send2scribe );
-    event->dispatch();
-
-    city::Helper helper( city );
-    FarmList farms = helper.find<Farm>( building::any );
-
-    foreach( farm, farms )
-    {
-      (*farm)->updateProgress( -(*farm)->getProgress() );
-    }
-  }
-}
-
-DivinityPtr Neptune::create()
-{
-  DivinityPtr ret( new Neptune() );
-  ret->setInternalName( baseDivinityNames[ romeDivNeptune ] );
-  ret->drop();
-
-  return ret;
-}
-
-void Neptune::updateRelation(float income, PlayerCityPtr city)
-{
-  RomeDivinity::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
-                                                                   _("##wrath_of_neptune_description##"),
-                                                                   events::ShowInfobox::send2scribe );
-    event->dispatch();
-
-    city::Helper helper( city );
-    FishingBoatList boats = helper.find<FishingBoat>( walker::fishingBoat, city::Helper::invalidPos );
-
-    int destroyBoats = math::random( boats.size() );
-    for( int i=0; i < destroyBoats; i++ )
-    {
-      FishingBoatList::iterator it = boats.begin();
-      std::advance( it, math::random( boats.size() ) );
-      (*it)->deleteLater();
-      boats.erase( it );
-    }
-  }
-}
-
-DivinityPtr Mercury::create()
-{
-  DivinityPtr ret( new Mercury() );
-  ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
-  ret->drop();
-
-  return ret;
-}
-
-void Mercury::updateRelation(float income, PlayerCityPtr city)
-{
-  RomeDivinity::updateRelation( income, city );
-
-  if( relation() < 1 && _lastActionDate.getMonthToDate( GameDate::current() ) > 10 )
-  {
-    _lastActionDate = GameDate::current();
-    events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_mercury_title##"),
-                                                                   _("##wrath_of_mercury_description##"),
-                                                                   events::ShowInfobox::send2scribe );
-    event->dispatch();
-
-    city::Helper helper( city );
-    WarehouseList whs = helper.find<Warehouse>( building::warehouse );
-    foreach( it, whs )
-    {
-      GoodStore& store = (*it)->store();
-      for( int i=Good::none; i < Good::goodCount; i++ )
-      {
-        Good::Type gtype = (Good::Type)i;
-        int goodQty = math::random( store.qty( gtype ) );
-        if( goodQty > 0 )
-        {
-          GoodStock rmStock( gtype, goodQty );
-          store.retrieve( rmStock, goodQty );
-        }
-      }
-    }
-  }
-}
 
 }//end namespace rome
 

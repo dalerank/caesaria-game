@@ -36,7 +36,7 @@ class FishingBoat::Impl
 {
 public:  
   CoastalFactoryPtr base;
-  int updateInterval;
+  DateTime dateUpdate;
   TilePos destination;
   GoodStock stock;
   FishingBoat::State mode;
@@ -72,8 +72,10 @@ void FishingBoat::timeStep(const unsigned long time)
 {
   Ship::timeStep( time );
 
-  if( time % _d->updateInterval == 1 )
+  if( _d->dateUpdate.daysTo( GameDate::current() ) > 0 )
   {
+    _d->dateUpdate = GameDate::current();
+
     switch( _d->mode )
     {
     case ready2Catch:
@@ -170,7 +172,6 @@ void FishingBoat::die()
 {
   _d->mode = wait;
   _d->base = 0;
-  _d->updateInterval = GameDate::ticksInMonth() / 20;
   _animationRef().load( ResourceGroup::carts, 265, 8 );
   _animationRef().setDelay( 4 );
 

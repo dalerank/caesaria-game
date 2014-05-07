@@ -39,6 +39,7 @@ public:
   static unsigned int getFoodStock( PlayerCityPtr city );
   static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
   static unsigned int getFoodProducing( PlayerCityPtr city );
+  static unsigned int getTaxValue( PlayerCityPtr city );
   static GoodsMap getGoodsMap( PlayerCityPtr city );
 };
 

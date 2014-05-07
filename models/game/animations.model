@@ -87,7 +87,7 @@
     notes : { dragWater : 6, fightFire : 7 }
     move : { rc : "citizen02", start : 615, frames : 12, action : 1, step : 8 }
     dragWater : { rc : "citizen02", start : 767, frames : 12, action : 6, step : 8 }
-    fightFire : { rc : "citizen02", start : 863, frames : 6, action : 7, step : 8 }
+    fightFire : { rc : "citizen02", start : 863, frames : 6, action : 7, step : 8, delay : 3 }
     fight : { rc : "citizen02", start : 719, frames : 6, action : 2, step : 8 }
   }
 
@@ -124,8 +124,10 @@
   }
   */
 
-  horseman : {
+  romeHorseman : {
     move : { rc : "citizen04", start : 1, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen04", start : 97, frames : 6, action : 2, step : 8 }
+    die : { rc : "citizen04", start : 144, frames : 1, action : 3, step : 0 }
   }
 
   merchant : {
@@ -144,6 +146,8 @@
 
   sheep : {
     move : { rc : "citizen04", start : 153, frames : 5, action : 1, step : 8 }
+    sit : { rc : "citizen04", start : 249, frames : 1, action : 0, step : 8 }
+    die : { rc : "citizen04", start : 257, frames : 1, action : 3, step : 0 }
   }
 
   fishingBoat : {
@@ -172,10 +176,23 @@
   romeGuard : {
     move : { rc : "citizen03", start : 97, frames : 12, action : 1, step : 8 }
     fight : { rc : "citizen03", start : 192, frames : 6, action : 3, step : 8 }
+    die : { rc : "citizen03", start : 232, frames : 1, action : 3, step : 0 }
+  }
+
+  romeSpearman : {
+    move : { rc : "citizen03", start : 241, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen03", start : 337, frames : 6, action : 2, step : 8 }
+    die : { rc : "citizen03", start : 385, frames : 1, action : 3, step : 0 }
   }
 
   seaMerchant : {
     move : { rc : "carts", start : 241, frames : 1, action : 1, step : 8 }
+  }
+
+  balista : {
+    none : { rc : "sprites", start : 210, frames : 1, action : 0, step : 8 }
+    fight : { rc : "sprites", start : 162, frames : 6, action : 2, step : 8 }
+    work : { rc : "sprites", start : 162, frames : 6, action : 4, step : 8 }
   }
 }
 

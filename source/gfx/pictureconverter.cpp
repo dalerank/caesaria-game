@@ -12,6 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 
 #include "pictureconverter.hpp"
 
@@ -25,9 +28,12 @@
 namespace gfx
 {
 
+static const char* pngType = "PNG";
+static const char* bmpType = "BMP";
+
 void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffset, int lGOffset, int lBOffset )
 {
-    SDL_Surface* source = const_cast< Picture& >( src ).getSurface();
+    SDL_Surface* source = const_cast< Picture& >( src ).surface();
 
     SDL_Surface *target = SDL_CreateRGBSurface( SDL_SWSURFACE, source->w, source->h, 32, 
         0x00ff0000, 0x0000ff00, 
@@ -65,19 +71,19 @@ void PictureConverter::rgbBalance( Picture& dst, const Picture& src, int lROffse
     SDL_UnlockSurface(target);
     SDL_UnlockSurface(source);
 
-    if( dst.getSurface() )
+    if( dst.surface() )
     {
-        SDL_FreeSurface( dst.getSurface() );
+        SDL_FreeSurface( dst.surface() );
     }
 
-    dst.init( target, src.getOffset() );   
+    dst.init( target, src.offset() );   
 }
 
 void PictureConverter::maskColor( Picture& dst, const Picture& src, int rmask, int gmask, int bmask, int amask )
 {
-  SDL_Surface* source = const_cast< Picture& >( src ).getSurface();
+  SDL_Surface* source = const_cast< Picture& >( src ).surface();
 
-  SDL_Surface *target = SDL_CreateRGBSurfaceFrom( src.getSurface()->pixels, source->w, source->h, 32, src.getSurface()->pitch,
+  SDL_Surface *target = SDL_CreateRGBSurfaceFrom( src.surface()->pixels, source->w, source->h, 32, src.surface()->pitch,
                                                   rmask, gmask, bmask, amask );
 
   if (target == NULL) 
@@ -86,52 +92,76 @@ void PictureConverter::maskColor( Picture& dst, const Picture& src, int rmask, i
     return;
   }
 
-  if( dst.getSurface() )
+  if( dst.surface() )
   {
-    SDL_FreeSurface( dst.getSurface() );
+    SDL_FreeSurface( dst.surface() );
   }
 
-  dst.init( target, src.getOffset() );
+  dst.init( target, src.offset() );
 }
 
 void PictureConverter::save(Picture& pic, const std::string& filename, const std::string& type)
 {
-  if( type == "PNG" )
+  if( type == pngType )
   {
-    IMG_SavePNG( filename.c_str(), pic.getSurface(), -1 );
+    IMG_SavePNG( filename.c_str(), pic.surface(), -1 );
   }
-  else if( type == "BMP" )
+  else if( type == bmpType )
   {
-    SDL_SaveBMP( pic.getSurface(), filename.c_str() );
+    SDL_SaveBMP( pic.surface(), filename.c_str() );
   }
 }
 
-ByteArray PictureConverter::save(Picture& pic)
+ByteArray PictureConverter::save(Picture& pic, const std::string &type)
 {
   SDL_RWops *rout;
-
   ByteArray rdata;
-  rdata.resize( pic.size().area() * 4 * 2 );
 
-  if(!(rout = SDL_RWFromMem( rdata.data(), rdata.size() ) ) )
+  if( type == bmpType )
   {
-    return ByteArray();
+    rdata.resize( pic.size().area() * 4 * 2 );
+
+    if(!(rout = SDL_RWFromMem( rdata.data(), rdata.size() ) ) )
+    {
+      return ByteArray();
+    }
+
+    SDL_SaveBMP_RW( pic.surface(), rout, 0 );
+
+    // Write the bmp out...
+    unsigned int size = *(unsigned int*)(&rdata[2]);
+    rdata.resize( size );
+
+    // and we're done
+    SDL_RWclose(rout);
+    return rdata;
+  }
+  else if( type == pngType )
+  {
+    rdata.resize( pic.size().area() * 4 * 2 );
+
+    if(!(rout = SDL_RWFromMem( rdata.data(), rdata.size() ) ) )
+    {
+      return ByteArray();
+    }
+
+    IMG_SavePNG_RW( rout, pic.surface(), 0 );
+
+    // Write the bmp out...
+    unsigned int size = SDL_RWtell( rout );
+    rdata.resize( size );
+
+    // and we're done
+    SDL_RWclose(rout);
+    return rdata;
   }
 
-  SDL_SaveBMP_RW( pic.getSurface(), rout, 0 );
-
-  // Write the bmp out...
-  unsigned int size = *(unsigned int*)(&rdata[2]);
-  rdata.resize( size );
-
-  // and we're done
-  SDL_RWclose(rout);
-  return rdata;
+  return ByteArray();
 }
 
 void PictureConverter::convToGrayscale( Picture& dst, const Picture& src )
 {
-    SDL_Surface* source = const_cast< Picture& >( src ).getSurface();
+    SDL_Surface* source = const_cast< Picture& >( src ).surface();
 
     SDL_Surface *target = SDL_CreateRGBSurface(SDL_SWSURFACE, source->w, source->h, 32,
         0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -166,12 +196,12 @@ void PictureConverter::convToGrayscale( Picture& dst, const Picture& src )
     SDL_UnlockSurface(target);
     SDL_UnlockSurface(source);
 
-    if( dst.getSurface() )
+    if( dst.surface() )
     {
-        SDL_FreeSurface( dst.getSurface() );
+        SDL_FreeSurface( dst.surface() );
     }
 
-    dst.init( target, src.getOffset() );
+    dst.init( target, src.offset() );
 }
 
 PictureConverter::~PictureConverter()

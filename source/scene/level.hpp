@@ -56,6 +56,7 @@ private:
   void _resolveSwitchMap();
   void _resolveFastLoad();
   void _resolveEscapeButton();
+  void _resolveEnterButton();
   void _showIngameMenu();
 
   class Impl;

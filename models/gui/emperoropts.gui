@@ -1,0 +1,70 @@
+{  
+  geometry : [ 0, 0, 640, 432 ]
+  
+  lbBackgroun#Label : {
+    geometryf : [ 0.0, 0.0, 1.0, 1.0 ]
+    bgtype : "whiteFrame"
+
+    lbIcon#Label : {
+      geometry : [ 10, 10, 50, 50 ]
+      image : "paneling_00257"
+    }
+      
+    lbTitle#Label : {
+      geometry : [ 10, 10, "pw-10", 50 ]
+      font : "FONT_3"
+      textAlign : [ "center", "center" ]
+    }
+    
+    bgRequests#Label : {
+      geometry : [ 32, 91, 602, 310 ]
+      bgtype : "blackFrame"
+    }
+    
+    bgActions#Label : {
+      geometry : [ 66, 325, 576, 420 ]
+      bgtype : "blackFrame"
+    }
+    
+    lbEmperorFavour#Label : {
+      geometry : [ 58, 44, 608, 64 ]
+      text : "##advemp_emperor_favour##"
+      font : "FONT_2"
+    }
+    
+    lbEmperorFavourDesc#Label : {
+      geometry : [ 58, 64, 608, 84 ]
+      font : "FONT_2"
+    }
+    
+    lbPost#Label : {
+      geometry : [ 70, 336, 310, 362 ]
+      text : "Post"
+      font : "FONT_2"
+    }
+    
+    lbPrimaryFunds#Label : {
+      geometry : [ 70, 370, 310, 390 ]
+      text : "Primary funds 0"
+      font : "FONT_2"
+    }
+    
+    btnSendGift#PushButton : {
+      geometry : [ 322, 343, 572, 363 ]
+      text : "##dispatch_gift##"
+      bgtype : "blackBorderUp"
+    }
+    
+    btnSend2City#PushButton : {
+      geometry : [ 322, 370, 572, 390 ]
+      text : "##send_to_city##"
+      bgtype : "blackBorderUp"
+    }
+    
+    btnChangeSalary#PushButton : {
+      geometry : [ 70, 395, 570, 415 ]
+      text : "##set_mayor_salary##"
+      bgtype : "blackBorderUp"
+    }
+  }
+}

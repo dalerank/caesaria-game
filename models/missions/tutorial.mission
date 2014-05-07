@@ -35,11 +35,17 @@
     "tutorial#random_fire" : {
       population : 30
       exec : {
-        "first_fire#tutorial_window" : {
+        "step_1.video#messagebox" : {
+          title : "##city_fire_title##"
+          text : "##city_fire_text##"
+          video : "/smk/city_fire.smk"
+        }
+
+        "step_2.fire#tutorial_window" : {
           tutorial : "/tutorial/first_fire.tutorial"
         }
 
-        "enable_prefecture#building_options" :  {
+        "step_3.prefecture#building_options" :  {
           buildings : { prefecture : true }
         }
       }

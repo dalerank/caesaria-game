@@ -114,7 +114,7 @@ bool PostponeEvent::_mayExec(Game& game, unsigned int time ) const
     bool popCondition = true;
     if( _d->population > 0 )
     {
-      popCondition = game.city()->getPopulation() > _d->population;
+      popCondition = game.city()->population() > _d->population;
     }
 
     _d->mayDelete = dateCondition && popCondition;
@@ -130,6 +130,8 @@ VariantMap PostponeEvent::save() const
   VariantMap ret = _d->options;
   ret[ "type" ] = Variant( _type );
   ret[ "name" ] = Variant( _name );
+  ret[ "date" ] = _d->date;
+  ret[ "population" ] = _d->population;
   return ret;
 }
 

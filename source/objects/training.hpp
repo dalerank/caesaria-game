@@ -37,7 +37,7 @@ public:
 protected:
 
 private:
-   int _trainingTimer;
+   DateTime _lastSendDate;
    int _trainingDelay;
 };
 

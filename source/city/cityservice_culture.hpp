@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__
@@ -26,11 +28,11 @@ namespace city
 class CultureRating : public Srvc
 {
 public:
-  typedef enum { ccSchool, ccLibrary, ccAcademy, ccReligion, ccTheatres } Coverage;
+  typedef enum { covSchool=0, covLibrary, covAcademy, covReligion, covTheatres, covCount } Coverage;
   static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
-  int getValue() const;
+  int value() const;
 
   int coverage( Coverage type ) const;
 

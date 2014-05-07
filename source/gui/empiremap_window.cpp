@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "empiremap_window.hpp"
 #include "gfx/picturesarray.hpp"
@@ -39,6 +41,7 @@
 #include "world/object.hpp"
 #include "events/fundissue.hpp"
 #include "events/showadvisorwindow.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -171,7 +174,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
 void EmpireMapWindow::Impl::drawCityInfo()
 {
   Label* lb = new Label( tradeInfo, Rect( Point( 0, tradeInfo->height() - 70), Size( tradeInfo->width(), 30) ) );
-  lb->setTextAlignment( alignCenter, alignUpperLeft );
+  lb->setTextAlignment( align::center, align::upperLeft );
   if( is_kind_of<PlayerCity>( currentCity ) )
   {
     lb->setText( _("##empiremap_our_city##") );
@@ -307,6 +310,8 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
   _d->offset = GameSettings::get( empMapOffset ).toPoint();
 
+  WidgetEscapeCloser::insertTo( this );
+
   _d->tradeInfo = new Widget( this, -1, Rect( 0, height() - 120, width(), height() ) );
 
   const Picture& backgr = Picture::load( ResourceGroup::empirepnls, 4 );
@@ -406,9 +411,9 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
     const Picture& picture = Picture::load( ResourceGroup::empirebits,
                                             route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute );
 
-    world::MerchantPtr merchant = route->getMerchant( 0 );
-    const PointsArray& points = route->getPoints();
-    const Pictures& pictures = route->getPictures();
+    world::MerchantPtr merchant = route->merchant( 0 );
+    const PointsArray& points = route->points();
+    const Pictures& pictures = route->pictures();
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
       engine.drawPicture( pictures[ index ], _d->offset + points[ index ] );

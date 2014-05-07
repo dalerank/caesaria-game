@@ -30,21 +30,21 @@ ModalScreen::ModalScreen( Widget* parent, int id)
 : Widget( parent, id, Rect(0, 0, parent->width(), parent->height() ) ),
 	_mouseDownTime(0)
 {
-	#ifdef _DEBUG
-		setDebugName( "ModalWidget");
-	#endif
-	setAlignment(alignUpperLeft, alignLowerRight, alignUpperLeft, alignLowerRight);
+  #ifdef _DEBUG
+    setDebugName( "ModalWidget");
+  #endif
+  setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
 
-	// this element is a tab group
-	setTabgroup(true);
+  // this element is a tab group
+  setTabgroup(true);
 }
 
 bool ModalScreen::_canTakeFocus(Widget* target) const
 {
-    return (target && ((const Widget*)target == this // this element can take it
-                        || isMyChild(target)    // own children also
-                        || ( safety_cast< ModalScreen* >( target ) != 0 )// other modals also fine
-                        || ( target->parent() && ( safety_cast< ModalScreen* >( target->parent() ) != 0) )))   // children of other modals will do
+   return (target && ((const Widget*)target == this // this element can take it
+           || isMyChild(target)    // own children also
+           || ( safety_cast< ModalScreen* >( target ) != 0 )// other modals also fine
+           || ( target->parent() && ( safety_cast< ModalScreen* >( target->parent() ) != 0) )))   // children of other modals will do
             ;
 }
 

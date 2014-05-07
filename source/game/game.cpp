@@ -38,6 +38,7 @@
 #include "loader.hpp"
 #include "gamedate.hpp"
 #include "saver.hpp"
+#include "resourceloader.hpp"
 #include "core/saveadapter.hpp"
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
@@ -52,6 +53,7 @@
 #include "scene/briefing.hpp"
 #include "gfx/logo.hpp"
 #include "walker/helper.hpp"
+#include "core/osystem.hpp"
 
 #include <list>
 
@@ -78,9 +80,12 @@ public:
   
   void initLocale(std::string localePath);
   void initVideo();
+  void initSound();
   void initPictures( vfs::Path resourcePath);
   void initGuiEnvironment();
   void initPantheon(vfs::Path filename );
+  void initFontCollection(vfs::Path resourcePath);
+  void mountArchives( ResourceLoader& loader );
 };
 
 void Game::Impl::initLocale( std::string localePath)
@@ -103,7 +108,7 @@ void Game::Impl::initVideo()
   engine->init();
 }
 
-void Game::initSound()
+void Game::Impl::initSound()
 {
   Logger::warning( "init sound engine" );
   audio::Engine& ae = audio::Engine::instance();
@@ -114,32 +119,50 @@ void Game::initSound()
   ae.setVolume( audio::gameSound, GameSettings::get( GameSettings::soundVolume ) );
 }
 
-void Game::mountArchives()
+void Game::Impl::mountArchives(ResourceLoader &loader)
 {
   vfs::FileSystem& fs = vfs::FileSystem::instance();
   Logger::warning( "Game: initialize sg2 archive loader" );
   fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
 
   Logger::warning( "Game: mount archives begin" );
-  splash::initialize( "logo_00001" );
 
+  std::string errorStr;
   Variant c3res = GameSettings::get( GameSettings::c3gfx );
   if( c3res.isValid() )
   {
-    std::string gfxDir = vfs::Path( c3res.toString() ).addEndSlash().toString();
-    fs.mountArchive( gfxDir + "CELTS.SG2" );
-    fs.mountArchive( gfxDir + "C3.SG2" );
+    vfs::Directory gfxDir = vfs::Path( c3res.toString() );
+    vfs::Path c3sg2( "C3.SG2" );
+    vfs::Path c3path = gfxDir/c3sg2;
+
+    if( !c3path.exist() )
+    {
+      errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
+                 "original game archive C3.SG2 not found in folder " + c3res.toString() +
+                 "!!!.\nBe sure that you copy all .sg2 and .map files to it folder";
+    }
+
+    loader.loadFromModel( GameSettings::rcpath( GameSettings::sg2model ) );
+  }
+  else
+  {
+    vfs::Path testPics = GameSettings::rcpath( GameSettings::testArchive );
+    if( !testPics.exist() )
+    {
+      errorStr = "Critical: Not found graphics set. Use precompiled CaesarIA archive or set\n"
+                 "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
+                 "forexample, \"-c3gfx c:/games/caesar3/\"";
+    }
   }
 
-  vfs::Path archivesFile = GameSettings::rcpath( GameSettings::archivesModel );
-  VariantMap archives = SaveAdapter::load( archivesFile );
-  foreach( a, archives )
+  if( !errorStr.empty() )
   {
-    vfs::Path absArchivePath = GameSettings::rcpath( a->second.toString() );
-    Logger::warning( "Game: try mount archive " + absArchivePath.toString() );
-    Logger::warningIf( !absArchivePath.exist(), "Game: cannot load archive " + absArchivePath.toString() );
-    fs.mountArchive( absArchivePath );
+    OSystem::error( "Resources error", errorStr );
+    Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
+    exit( -1 ); //kill application    
   }
+
+  loader.loadFromModel( GameSettings::rcpath( GameSettings::archivesModel ) );
 }
 
 void Game::Impl::initGuiEnvironment()
@@ -153,14 +176,17 @@ void Game::Impl::initPantheon( vfs::Path filename)
   religion::rome::Pantheon::instance().load( pantheon );
 }
 
+void Game::Impl::initFontCollection( vfs::Path resourcePath )
+{
+  Logger::warning( "Load fonts" );
+  FontCollection::instance().initialize( resourcePath.toString() );
+}
+
 void Game::Impl::initPictures(vfs::Path resourcePath)
 {
   AnimationBank::instance().loadCarts();
   AnimationBank::instance().loadAnimation( GameSettings::rcpath( GameSettings::animationsModel ) );
   
-  Logger::warning( "Load fonts" );
-  FontCollection::instance().initialize( resourcePath.toString() );
-
   Logger::warning( "Create runtime pictures" );
   PictureBank::instance().createResources();
 }
@@ -242,7 +268,7 @@ void Game::setScreenMenu()
       Logger::warning( "screen menu: end loading map" );
 
       city::BuildOptions bopts;
-      bopts = _d->city->getBuildOptions();
+      bopts = _d->city->buildOptions();
       bopts.setGroupAvailable( BM_MAX, true );
       _d->city->setBuildOptions( bopts );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
@@ -268,6 +294,8 @@ void Game::setScreenGame()
   Logger::warning( "game: start initialize" );
   screen.initialize();
   _d->currentScreen = &screen;
+  GameDate& cdate = GameDate::instance();
+  _d->time = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth();
 
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
@@ -280,11 +308,10 @@ void Game::setScreenGame()
 
       while( (_d->time - _d->saveTime) > 1 )
       {
-        _d->empire->timeStep( _d->time );
+        _d->saveTime++;
 
-        GameDate::timeStep( _d->time );
-
-        _d->saveTime += 1;
+        cdate.timeStep( _d->saveTime );
+        _d->empire->timeStep( _d->saveTime );
 
         screen.animate( _d->saveTime );
       }
@@ -355,7 +382,7 @@ void Game::load(std::string filename)
       Logger::warning( "Cannot find file " + fPath.toString() );
       Logger::warning( "Try find file in resource's folder " );
 
-      fPath = GameSettings::rcpath( filename ).getAbsolutePath();
+      fPath = GameSettings::rcpath( filename ).absolutePath();
       if( !fPath.exist() )
       {
         Logger::warning( "Cannot find file " + fPath.toString() );
@@ -385,7 +412,7 @@ void Game::load(std::string filename)
   _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
 
   Logger::warning( "Game: calculate road access for buildings" );
-  TileOverlayList& llo = _d->city->getOverlays();
+  TileOverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
     ConstructionPtr construction = ptr_cast<Construction>( *overlay );
@@ -407,13 +434,20 @@ void Game::initialize()
   GameSettings::load();
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
-  _d->initGuiEnvironment();
-  initSound();
-  mountArchives();  // init some quick pictures for screenWait
+  _d->initFontCollection( GameSettings::rcpath() );
+  _d->initGuiEnvironment();  
+  _d->initSound();
+
+  splash::initialize( "logo_00001" );
 
   scene::SplashScreen screen;
   screen.initialize();
   screen.update( *_d->engine );
+
+  ResourceLoader rcLoader;
+  rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
+
+  _d->mountArchives( rcLoader );  // init some quick pictures for screenWait
 
   _d->initPictures( GameSettings::rcpath() );
   NameGenerator::instance().initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );

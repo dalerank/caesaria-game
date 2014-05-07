@@ -30,7 +30,7 @@ namespace events
 
 GameEventPtr BuildEvent::create( const TilePos& pos, const TileOverlay::Type type )
 {
-  return create( pos, TileOverlayFactory::getInstance().create( type ) );
+  return create( pos, TileOverlayFactory::instance().create( type ) );
 }
 
 GameEventPtr BuildEvent::create(const TilePos& pos, TileOverlayPtr overlay)
@@ -45,29 +45,34 @@ GameEventPtr BuildEvent::create(const TilePos& pos, TileOverlayPtr overlay)
   return ret;
 }
 
-bool BuildEvent::_mayExec(Game& game, unsigned int time) const
-{
-  return true;
-}
+bool BuildEvent::_mayExec(Game&, unsigned int) const {  return true;}
 
 void BuildEvent::_exec( Game& game, unsigned int )
-{
-  const MetaData& buildingData = MetaDataHolder::instance().getData( _overlay->type() );
-  if( _overlay.isValid() )
-  {
-    _overlay->build( game.city(), _pos );
+{  
+  if( _overlay.isNull() )
+    return;
 
-    if( !_overlay->isDeleted() )
-    {
+  TileOverlayPtr ctOv = game.city()->getOverlay( _pos );
+
+  bool mayBuild = true;
+  if( ctOv.isValid() )
+  {
+    mayBuild = ctOv->isDestructible();
+  }
+
+  if( !_overlay->isDeleted() && mayBuild )
+  {
+      _overlay->build( game.city(), _pos );
+      city::Helper helper( game.city() );
+      helper.updateDesirability( _overlay, true );
+      game.city()->addOverlay( _overlay );
+
       ConstructionPtr construction = ptr_cast<Construction>( _overlay );
       if( construction.isValid() )
       {
-        city::Helper helper( game.city() );
-        helper.updateDesirability( construction, true );
-
-        game.city()->addOverlay( _overlay );
+        const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
         game.city()->funds().resolveIssue( FundIssue( city::Funds::buildConstruction,
-                                                            -(int)buildingData.getOption( "cost" ) ) );
+                                                      -(int)buildingData.getOption( "cost" ) ) );
 
         GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
         e->dispatch();
@@ -78,7 +83,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
           e->dispatch();
         }
 
-        std::string error = construction->getError();
+        std::string error = construction->errorDesc();
         if( !error.empty() )
         {
           GameEventPtr e = WarningMessageEvent::create( error );
@@ -95,18 +100,17 @@ void BuildEvent::_exec( Game& game, unsigned int )
             e->dispatch();
           }
         }
-      }
+      }      
     }
     else
     {
       ConstructionPtr construction = ptr_cast<Construction>( _overlay );
       if( construction.isValid() )
       {
-        GameEventPtr e = WarningMessageEvent::create( construction->getError() );
+        GameEventPtr e = WarningMessageEvent::create( construction->errorDesc() );
         e->dispatch();
       }
     }
-  }
 }
 
 } //end namespace events

@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "metadata.hpp"
 
@@ -36,15 +37,16 @@ class BuildingTypeHelper : public EnumsHelper<TileOverlay::Type>
 public:
   BuildingTypeHelper() : EnumsHelper<TileOverlay::Type>( building::unknown )
   {
-    append( building::amphitheater,   "amphitheater");
-    append( building::theater,        "theater" );
-    append( building::hippodrome,     "hippodrome" );
-    append( building::colloseum,      "colloseum" );
-    append( building::actorColony,    "artist_colony" );
+#define __REG_TOTYPE(a) append(building::a, CAESARIA_STR_EXT(a) );
+    __REG_TOTYPE( amphitheater )
+    __REG_TOTYPE( theater )
+    __REG_TOTYPE( hippodrome )
+    __REG_TOTYPE( colloseum )
+    __REG_TOTYPE( actorColony )
     append( building::gladiatorSchool,"gladiator_pit" );
     append( building::lionsNursery,   "lion_pit" );
     append( building::chariotSchool,  "chatioteer_school" );
-    append( building::house,          "house" );
+    __REG_TOTYPE( house )
     append( construction::road,       "road" );
     append( construction::plaza,      "plaza" );
     append( construction::garden,     "garden" );
@@ -56,16 +58,16 @@ public:
     append( building::fortLegionaire, "fort_legionaries" );
     append( building::fortJavelin,    "fort_javelin" );
     append( building::fortMounted,    "fort_horse" );
-    append( building::prefecture,     "prefecture" );
-    append( building::barracks,       "barracks" );
+    __REG_TOTYPE( prefecture )
+    __REG_TOTYPE( barracks )
     append( building::militaryAcademy,"military_academy" );
     append( building::doctor,         "clinic" );
-    append( building::hospital,       "hospital" );
-    append( building::baths,          "baths" );
-    append( building::barber,         "barber" );
-    append( building::school,         "school" );
-    append( building::academy,        "academy" );
-    append( building::library,        "library" );
+    __REG_TOTYPE( hospital )
+    __REG_TOTYPE( baths )
+    __REG_TOTYPE( barber )
+    __REG_TOTYPE( school )
+    __REG_TOTYPE( academy );
+    __REG_TOTYPE( library )
     append( building::missionaryPost, "mission post" );
     append( building::templeCeres,    "small_ceres_temple" );
     append( building::templeNeptune,  "small_neptune_temple" );
@@ -77,10 +79,10 @@ public:
     append( building::cathedralMars,   "big_mars_temple");
     append( building::cathedralMercury,"big_mercury_temple");
     append( building::cathedralVenus,  "big_venus_temple");
-    append( building::oracle,         "oracle");
-    append( building::market,         "market");
+    __REG_TOTYPE( oracle )
+    __REG_TOTYPE( market )
     append( building::granary,        "granery");
-    append( building::warehouse,      "warehouse");
+    __REG_TOTYPE( warehouse )
     append( building::wheatFarm,      "wheat_farm");
     append( building::fruitFarm,      "fig_farm");
     append( building::vegetableFarm,  "vegetable_farm");
@@ -102,14 +104,14 @@ public:
     append( building::bigStatue,      "statue_big");
     append( building::lowBridge,      "low_bridge");
     append( building::highBridge,     "high_bridge");
-    append( building::dock,           "dock");
-    append( building::shipyard,       "shipyard");
-    append( building::wharf,          "wharf");
+    __REG_TOTYPE( dock )
+    __REG_TOTYPE( shipyard )
+    __REG_TOTYPE( wharf )
     append( building::triumphalArch,  "triumphal_arch");
-    append( building::well,           "well");
-    append( building::fountain,       "fountain");
-    append( building::aqueduct,       "aqueduct");
-    append( building::reservoir,      "reservoir");
+    __REG_TOTYPE( well )
+    __REG_TOTYPE( fountain )
+    __REG_TOTYPE( aqueduct )
+    __REG_TOTYPE( reservoir )
     append( building::nativeHut,      "native_hut");
     append( building::nativeCenter,   "native_center");
     append( building::nativeField,    "native_field");
@@ -118,13 +120,15 @@ public:
     append( building::plagueRuins,    "plague_ruins");
     append( building::collapsedRuins, "collapsed_ruins");
     append( building::forum2,         "forum_2" );
-    append( building::gatehouse,      "gatehouse" );
+    __REG_TOTYPE( gatehouse )
     append( building::senate2,        "senate_2" );
-    append( building::tower,          "tower" );
-    append( building::wall,           "wall"  );
-    append( building::fortification,  "fortification" );
-    append( building::elevation, "elevation" );
+    __REG_TOTYPE( tower )
+    __REG_TOTYPE( wall )
+    __REG_TOTYPE( fortification )
+    __REG_TOTYPE( elevation )
+    __REG_TOTYPE( rift )
     append( building::unknown,        "" );
+#undef __REG_TOTYPE
  }
 };
 
@@ -261,11 +265,11 @@ TileOverlay::Type MetaDataHolder::getConsumerType(const Good::Type inGoodType) c
   return res;
 }
 
-const MetaData& MetaDataHolder::getData(const TileOverlay::Type buildingType) const
+const MetaData& MetaDataHolder::getData(const TileOverlay::Type buildingType)
 {
   Impl::BuildingsMap::iterator mapIt;
-  mapIt = _d->buildings.find(buildingType);
-  if (mapIt == _d->buildings.end())
+  mapIt = instance()._d->buildings.find(buildingType);
+  if (mapIt == instance()._d->buildings.end())
   {
     Logger::warning("Unknown building %d", buildingType );
     return MetaData::invalid;
@@ -364,8 +368,10 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     }
 
     addData( bData );
-  }
+    }
 }
+
+MetaDataHolder::~MetaDataHolder() {}
 
 TileOverlay::Type MetaDataHolder::getType( const std::string& name )
 {

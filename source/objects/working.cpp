@@ -21,6 +21,8 @@
 #include "events/returnworkers.hpp"
 #include "core/stringhelper.hpp"
 
+using namespace gfx;
+
 class WorkingBuilding::Impl
 {
 public:
@@ -29,6 +31,7 @@ public:
   bool isActive;
   WalkerList walkerList;
   std::string errorStr;
+  bool clearAnimationOnStop;
 };
 
 WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
@@ -37,6 +40,8 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
   _d->currentWorkers = 0;
   _d->maxWorkers = 0;
   _d->isActive = true;
+  _d->clearAnimationOnStop = true;
+  _animationRef().stop();
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
@@ -58,7 +63,7 @@ void WorkingBuilding::load( const VariantMap& stream)
     _d->maxWorkers = value;
 }
 
-std::string WorkingBuilding::getWorkersProblem() const
+std::string WorkingBuilding::workersProblemDesc() const
 {
   std::string factoryType = MetaDataHolder::getTypename( type() );
   float workKoeff = (numberWorkers() / (float)maxWorkers()) * 6.f;
@@ -76,7 +81,7 @@ std::string WorkingBuilding::troubleDesc() const
 
   if( trouble.empty() && numberWorkers() < maxWorkers() / 2 )
   {
-    trouble = getWorkersProblem();
+    trouble = workersProblemDesc();
   }
 
   return trouble;
@@ -87,13 +92,14 @@ void WorkingBuilding::setMaxWorkers(const int maxWorkers) { _d->maxWorkers = max
 int WorkingBuilding::maxWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
 int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
+bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
 void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( numberWorkers() + workers ); }
 void WorkingBuilding::removeWorkers(const unsigned int workers) { setWorkers( numberWorkers() - workers ); }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
-std::string WorkingBuilding::getError() const { return _d->errorStr;}
+std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
 
 void WorkingBuilding::timeStep( const unsigned long time )
@@ -106,6 +112,46 @@ void WorkingBuilding::timeStep( const unsigned long time )
     if( (*it)->isDeleted() ) { it = _d->walkerList.erase( it ); }
     else { ++it; }
   }
+
+  _updateAnimation( time );
+}
+
+void WorkingBuilding::_updateAnimation( const unsigned int time )
+{
+  if( time % 25 == 1 )
+  {
+    if( mayWork()  )
+    {
+      if( _animationRef().isStopped() )
+      {
+        _animationRef().start();
+      }      
+    }
+    else
+    {
+      if( _animationRef().isRunning() )
+      {
+        if( _d->clearAnimationOnStop && !_fgPicturesRef().empty() )
+        {
+          _fgPicturesRef().back() = Picture::getInvalid();
+        }
+
+       _animationRef().stop();
+      }
+    }
+  }
+
+  _animationRef().update( time );
+  const Picture& pic = _animationRef().currentFrame();
+  if( pic.isValid() )
+  {
+     _fgPicturesRef().back() = _animationRef().currentFrame();
+  }
+}
+
+void WorkingBuilding::_setClearAnimationOnStop(bool value)
+{
+  _d->clearAnimationOnStop = value;
 }
 
 void WorkingBuilding::addWalker( WalkerPtr walker )

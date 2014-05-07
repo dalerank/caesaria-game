@@ -31,7 +31,6 @@ class Market::Impl
 {
 public:
   SimpleGoodStore goodStore;
-  int updateInterval;
 
   bool isAnyGoodStored()
   {
@@ -63,7 +62,6 @@ Market::Market() : ServiceBuilding(Service::market, constants::building::market,
   _d( new Impl )
 {
   _fgPicturesRef().resize(1);  // animation
-  _d->updateInterval = GameDate::ticksInMonth() / 10;
   _d->initStore();
 
   _animationRef().load( ResourceGroup::commerce, 2, 10 );
@@ -146,23 +144,8 @@ void Market::load( const VariantMap& stream)
 
 void Market::timeStep(const unsigned long time)
 {
-  if( time % _d->updateInterval == 0 )
+  if( GameDate::isWeekChanged() )
   {
-    if( numberWorkers() > 0 )
-    {
-      if( _animationRef().isStopped() )
-      {
-        _animationRef().start();
-      }
-    }
-    else
-    {
-      if( _animationRef().isRunning() )
-      {
-        _animationRef().stop();
-      }
-    }
-
     ServiceWalkerList servicemen;
     servicemen << walkers();
     if( servicemen.size() > 0 && _d->goodStore.qty() == 0 )

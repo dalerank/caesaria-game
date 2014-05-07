@@ -138,7 +138,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
   case stWaitFreeDock:
   {
-    waitInterval = GameDate::ticksInMonth() / 2;
+    waitInterval = GameDate::days2ticks( 7 );
     nextState = stFindDock;
   }
   break;
@@ -158,7 +158,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     DockPtr myDock = findLandingDock( city, wlk );
     if( myDock.isValid() && emptyDock )
     {
-      city::TradeOptions& options = city->getTradeOptions();
+      city::TradeOptions& options = city->tradeOptions();
       city::Statistic::GoodsMap cityGoodsAvailable = city::Statistic::getGoodsMap( city );
       //request goods
       for( int n = Good::wheat; n<Good::goodCount; n++ )
@@ -207,7 +207,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       }
 
       nextState = stWaitGoods;
-      waitInterval = anyBuy ? GameDate::ticksInMonth() / 4 : 0;
+      waitInterval = anyBuy ? GameDate::days2ticks( 7 ) : 0;
 
       if( 0 == buy.freeQty() ) //all done
       {
@@ -231,7 +231,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     }
     else
     {
-      if( landingDate.getMonthToDate( GameDate::current() ) > 2 )
+      if( landingDate.monthsTo( GameDate::current() ) > 2 )
       {
         nextState = stGoOutFromCity;
         resolveState( city, wlk );
@@ -248,7 +248,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   case stGoOutFromCity:
   {
     // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-    waitInterval = GameDate::ticksInMonth() / 4;
+    waitInterval = GameDate::days2ticks( 7 );
     goAwayFromCity( city, wlk );
     nextState = stBackToBaseCity;
   }
@@ -275,7 +275,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     nextState = stBuyGoods;
     resolveState( city, wlk );
-    waitInterval = anySell ? GameDate::ticksInMonth() / 4 : 0;
+    waitInterval = anySell ? GameDate::days2ticks( 7 ) : 0;
   }
   break;
 
@@ -333,12 +333,12 @@ Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos positio
 Pathway SeaMerchant::Impl::findNearbyDock(const DockList& docks, TilePos position)
 {
   DockList::const_iterator i = docks.begin();
-  Pathway ret = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::deepWater );
+  Pathway ret = PathwayHelper::create( position, (*i)->landingTile().pos(), PathwayHelper::deepWater );
 
   ++i;
   for( ; i != docks.end(); ++i )
   {
-    Pathway tmp = PathwayHelper::create( position, (*i)->getLandingTile().pos(), PathwayHelper::deepWater );
+    Pathway tmp = PathwayHelper::create( position, (*i)->landingTile().pos(), PathwayHelper::deepWater );
     if( tmp.length() < ret.length() )
     {
       ret = tmp;
@@ -373,7 +373,7 @@ DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
   DockList docks = helper.find<Dock>( building::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
-    if( (*dock)->getLandingTile().pos() == walker->pos() )
+    if( (*dock)->landingTile().pos() == walker->pos() )
     {
       return *dock;
     }

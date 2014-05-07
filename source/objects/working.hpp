@@ -23,7 +23,7 @@ class WorkingBuilding : public Building
 {
 public:
   WorkingBuilding(const TileOverlay::Type type, const Size& size);
-  ~WorkingBuilding();
+  virtual ~WorkingBuilding();
 
   void setMaxWorkers(const int maxWorkers);
   int maxWorkers() const;
@@ -33,6 +33,8 @@ public:
   void removeWorkers( const unsigned int workers );
 
   int numberWorkers() const;
+
+  virtual bool mayWork() const;
 
   virtual void setActive(const bool value);  // if false then this building is stopped
   virtual bool isActive() const;
@@ -47,15 +49,16 @@ public:
   virtual void addWalker( WalkerPtr walker );
   virtual const WalkerList& walkers() const;
 
-  virtual std::string getError() const;
-  virtual std::string getWorkersProblem() const;
+  virtual std::string errorDesc() const;
+  virtual std::string workersProblemDesc() const;
   virtual std::string workersStateDesc() const;
-
   virtual std::string troubleDesc() const;
 
 protected:
   void _setError(const std::string& err);
   void _fireWorkers();
+  void _updateAnimation( const unsigned int time );
+  void _setClearAnimationOnStop( bool value );
 
 private:
 

@@ -39,7 +39,7 @@ InfoboxMarket::InfoboxMarket( Widget* parent, const Tile& tile )
    Label* lbAbout = new Label( this, Rect( 15, 25, width() - 15, 36) );
    lbAbout->setWordwrap( true );
    lbAbout->setFont( Font::create( FONT_1 ) );
-   lbAbout->setTextAlignment( alignUpperLeft, alignCenter );
+   lbAbout->setTextAlignment( align::upperLeft, align::center );
 
    std::string title = MetaDataHolder::getPrettyName( market->type() );
    setTitle( _( title ) );

@@ -36,7 +36,6 @@ public:
 
   bool isNeedCreateBoat(PlayerCityPtr city);
   bool creatingBoat;
-  int checkInterval;
 
   FishingBoatPtr boat;
 
@@ -52,7 +51,6 @@ Shipyard::Shipyard() : CoastalFactory(Good::timber, Good::none, building::shipya
   inStockRef().setCapacity( 1200 );
   store().setCapacity( 1200 );
   _d->creatingBoat = false;
-  _d->checkInterval = GameDate::ticksInMonth() / 4;
 }
 
 void Shipyard::destroy()
@@ -68,13 +66,14 @@ void Shipyard::destroy()
 void Shipyard::timeStep(const unsigned long time)
 {
   //try get good from storage building for us
-  if( (time % _d->checkInterval == 1) && numberWorkers() > 0 && walkers().size() == 0 )
+  if( GameDate::isWeekChanged() )
   {
-    receiveGood();
-  }
+    if( numberWorkers() > 0 && walkers().size() == 0 )
+    {
+      receiveGood();
+    }
 
-  if( time % GameDate::ticksInMonth() == 1 )
-  {    
+    //try send boat to catch fish
     if( _d->boat.isValid() )
     {
       WharfPtr wharf = _d->findFreeWharf( _city() );
@@ -95,7 +94,7 @@ void Shipyard::timeStep(const unsigned long time)
 
   if( getProgress() >= 100.0 )
   {
-    if( store().qty( getOutGoodType() ) < store().capacity( getOutGoodType() )
+    if( store().qty( produceGoodType() ) < store().capacity( produceGoodType() )
         && _d->boat.isNull() )
     {
       updateProgress( -100.f );
@@ -114,9 +113,9 @@ bool Shipyard::mayWork() const
 
 unsigned int Shipyard::getConsumeQty() const {  return 1000; }
 
-std::string Shipyard::getWorkersProblem() const
+std::string Shipyard::workersProblemDesc() const
 {
-  std::string ret = CoastalFactory::getWorkersProblem();
+  std::string ret = CoastalFactory::workersProblemDesc();
 
   if( ret.empty() && !_d->creatingBoat )
   {

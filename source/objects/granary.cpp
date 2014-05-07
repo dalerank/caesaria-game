@@ -112,24 +112,20 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
 void Granary::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep( time );
-  if( numberWorkers() > 0 )
+  if( !mayWork() )
+    return;
+
+  if( GameDate::isWeekChanged() )
   {
-    _animationRef().update( time );
-
-    _fgPicturesRef()[5] = _animationRef().currentFrame();
-
-    if( time % (GameDate::ticksInMonth() / 2) == 1 )
+    if(  walkers().empty() )
     {
-      if(  walkers().empty() )
+      if( _d->goodStore.isDevastation() )
       {
-        if( _d->goodStore.isDevastation() )
-        {
-          _tryDevastateGranary();
-        }
-        else
-        {
-          _resolveDeliverMode();
-        }
+        _tryDevastateGranary();
+      }
+      else
+      {
+        _resolveDeliverMode();
       }
     }
   }

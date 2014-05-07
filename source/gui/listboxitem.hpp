@@ -79,6 +79,9 @@ public:
   Point offset() const;
   void setOffset( Point p );
 
+  void setUrl( const std::string& url );
+  const std::string& url() const;
+
   Variant data() const;
   void setData( const Variant& value );
 

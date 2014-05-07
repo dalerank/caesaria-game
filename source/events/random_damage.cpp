@@ -12,10 +12,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "random_damage.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/city.hpp"
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
@@ -35,23 +37,21 @@ GameEventPtr RandomDamage::create()
 
 void RandomDamage::_exec( Game& game, unsigned int time )
 {
-  if( time % GameDate::ticksInMonth() == 0 && !_isDeleted )
+  int population = game.city()->population();
+  if( population > _minPopulation && population < _maxPopulation )
   {
-    int population = game.city()->getPopulation();
-    if( population > _minPopulation && population < _maxPopulation )
-    {
-      _isDeleted = true;
-      city::Helper helper( game.city() );
-      HouseList houses = helper.find<House>( building::house );
-      for( unsigned int k=0; k < houses.size() / 4; k++ )
-      {
-        HouseList::iterator it = houses.begin();
-        std::advance( it, math::random( houses.size() ) );
-        (*it)->collapse();
-      }     
+    _isDeleted = true;
+    HouseList houses;
+    houses << game.city()->overlays();
 
-      events::Dispatcher::instance().load( _events );
+    for( unsigned int k=0; k < houses.size() / 4; k++ )
+    {
+      HouseList::iterator it = houses.begin();
+      std::advance( it, math::random( houses.size() ) );
+      (*it)->collapse();
     }
+
+    events::Dispatcher::instance().load( _events );
   }
 }
 

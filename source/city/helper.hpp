@@ -22,6 +22,9 @@
 #include "gfx/tileoverlay.hpp"
 #include "gfx/tilesarray.hpp"
 #include "good/good.hpp"
+#include "gfx/tilesarray.hpp"
+#include "gfx/tilemap.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "core/foreach.hpp"
 #include "objects/service.hpp"
 
@@ -43,7 +46,7 @@ public:
   SmartList< T > find( constants::building::Group group )
   {
     SmartList< T > ret;
-    gfx::TileOverlayList& buildings = _city->getOverlays();
+    gfx::TileOverlayList& buildings = _city->overlays();
     foreach( item, buildings )
     {
       SmartPtr< T > b = ptr_cast< T >(*item);
@@ -55,6 +58,58 @@ public:
 
     return ret;
   }
+
+  template<class T>
+  bool isTileBusy( TilePos p, WalkerPtr caller, bool& needMeMove )
+  {
+    needMeMove = false;
+    SmartList<T> walkers;
+    walkers << _city->getWalkers( constants::walker::all, p );
+    foreach( it, walkers )
+    {
+      if( *it == caller.object() )
+      {
+        needMeMove = (it != walkers.begin());
+        walkers.erase( it );
+        break;
+      }
+    }
+
+    return !walkers.empty();
+  }
+
+  template<class T>
+  Pathway findFreeTile( TilePos target, TilePos currentPos, const int range )
+  {
+    for( int currentRange=1; currentRange <= range; currentRange++ )
+    {
+      TilePos offset( currentRange, currentRange );
+      gfx::TilesArray tiles = _city->tilemap().getRectangle( currentPos - offset, currentPos + offset );
+      tiles = tiles.walkableTiles( true );
+
+      float crntDistance = target.distanceFrom( currentPos );
+      foreach( itile, tiles )
+      {
+        SmartList<T> eslist;
+        eslist << _city->getWalkers( constants::walker::any, (*itile)->pos() );
+
+        if( !eslist.empty() )
+          continue;
+
+        if( target.distanceFrom( (*itile)->pos() ) > crntDistance )
+          continue;
+
+        Pathway pathway = PathwayHelper::create( currentPos, (*itile)->pos(), PathwayHelper::allTerrain );
+        if( pathway.isValid() )
+        {
+          return pathway;
+        }
+      }
+    }
+
+    return Pathway();
+  }
+
 
   template< class T >
   SmartPtr< T > find( const gfx::TileOverlay::Type type, const TilePos& pos )
@@ -138,7 +193,7 @@ public:
   gfx::TilesArray getArea( TilePos start, TilePos stop );
   float getBalanceKoeff();
 
-  void updateDesirability( ConstructionPtr construction, bool onBuild );
+  void updateDesirability(gfx::TileOverlayPtr overlay, bool onBuild );
 
 protected:
   PlayerCityPtr _city;
@@ -168,7 +223,7 @@ template< class T >
 SmartList< T > Helper::find( const gfx::TileOverlay::Type type )
 {
   SmartList< T > ret;
-  gfx::TileOverlayList& buildings = _city->getOverlays();
+  gfx::TileOverlayList& buildings = _city->overlays();
   foreach( item, buildings )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );
@@ -185,11 +240,11 @@ template< class T >
 SmartList<T> Helper::getProducers( const Good::Type goodtype )
 {
   SmartList< T > ret;
-  gfx::TileOverlayList& overlays = _city->getOverlays();
+  gfx::TileOverlayList& overlays = _city->overlays();
   foreach( item, overlays )
   {
     SmartPtr< T > b = ptr_cast<T>( *item );
-    if( b.isValid() && b->getOutGoodType() == goodtype )
+    if( b.isValid() && b->produceGoodType() == goodtype )
     {
       ret.push_back( b );
     }

@@ -59,7 +59,7 @@ std::string Amphitheater::sound() const
 
 Service::Type Amphitheater::serviceType() const
 {
-  int gldValue = getTraineeValue( walker::gladiator );
+  int gldValue = traineeValue( walker::gladiator );
   return gldValue > 0 ? Service::amphitheater : Service::theater;
 }
 
@@ -68,8 +68,8 @@ std::string Amphitheater::workersStateDesc() const
   if( numberWorkers() > 0 )
   {
     if( showsCount() == 0 ) { return "##amphitheater_have_never_show##"; }
-    if( getTraineeValue( walker::gladiator ) == 0 ) { return "##amphitheater_have_only_shows##"; }
-    if( getTraineeValue( walker::actor ) == 0 ) { return "##amphitheater_have_only_battles##"; }
+    if( traineeValue( walker::gladiator ) == 0 ) { return "##amphitheater_have_only_shows##"; }
+    if( traineeValue( walker::actor ) == 0 ) { return "##amphitheater_have_only_battles##"; }
   }
 
   return EntertainmentBuilding::workersStateDesc();
@@ -150,7 +150,7 @@ bool Amphitheater::isNeed(walker::Type type)
   {
   case walker::gladiator:
   case walker::actor:
-    return getTraineeValue( type ) == 0;
+    return traineeValue( type ) == 0;
 
   default: break;
   }

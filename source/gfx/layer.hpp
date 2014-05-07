@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_LAYER_H_INCLUDED__
 #define __CAESARIA_LAYER_H_INCLUDED__
@@ -20,7 +22,6 @@
 #include "core/smartptr.hpp"
 #include "engine.hpp"
 #include "tile.hpp"
-//#include "renderer.hpp"
 #include "game/predefinitions.hpp"
 #include "core/signals.hpp"
 

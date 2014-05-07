@@ -21,38 +21,44 @@
 #include "vfs/directory.hpp"
 #include "core/foreach.hpp"
 
-const char* GameSettings::localePath = "localePath";
-const char* GameSettings::resourcePath = "resourcePath";
-const char* GameSettings::pantheonModel = "pantheonConfig";
-const char* GameSettings::houseModel = "houseModel";
-const char* GameSettings::citiesModel = "citiesModel";
-const char* GameSettings::constructionModel = "constructionModel";
-const char* GameSettings::ctNamesModel = "ctNamesModel";
-const char* GameSettings::settingsPath = "settingsPath";
-const char* GameSettings::resolution = "resolution";
-const char* GameSettings::fullscreen = "fullscreen";
-const char* GameSettings::language = "language";
-const char* GameSettings::emigrantSalaryKoeff = "emigrantSalaryKoeff";
-const char* GameSettings::savedir = "savedir";
-const char* GameSettings::worldModel = "worldModel";
-const char* GameSettings::minMonthWithFood = "minMonthWithFood";
-const char* GameSettings::langModel = "langModel";
-const char* GameSettings::worklessCitizenAway = "worklessCitizenAway";
-const char* GameSettings::fastsavePostfix = "fastsavePostfix";
-const char* GameSettings::saveExt = "saveExt";
-const char* GameSettings::workDir = "workDir";
-const char* GameSettings::adviserEnabled = "adviserEnabled";
-const char* GameSettings::c3gfx = "c3gfx";
-const char* GameSettings::lastTranslation = "lastTranslation";
-const char* GameSettings::archivesModel = "archivesModel";
-const char* GameSettings::soundThemesModel = "soundThemesModel";
-const char* GameSettings::soundVolume = "soundVolume";
-const char* GameSettings::ambientVolume = "ambientVolume";
-const char* GameSettings::musicVolume = "musicVolume";
-const char* GameSettings::animationsModel = "animationsModel";
-const char* GameSettings::walkerModel = "walkerModel";
-const char* GameSettings::giftsModel = "giftsModel";
-const char* GameSettings::emblemsModel = "emblemModel";
+#define __REG_PROPERTY(a) const char* GameSettings::a = CAESARIA_STR_EXT(a);
+__REG_PROPERTY(localePath)
+__REG_PROPERTY(resourcePath )
+__REG_PROPERTY(pantheonModel )
+__REG_PROPERTY(houseModel )
+__REG_PROPERTY(citiesModel)
+__REG_PROPERTY(constructionModel)
+__REG_PROPERTY(ctNamesModel)
+__REG_PROPERTY(settingsPath)
+__REG_PROPERTY(resolution)
+__REG_PROPERTY(fullscreen)
+__REG_PROPERTY(language)
+__REG_PROPERTY(emigrantSalaryKoeff)
+__REG_PROPERTY(savedir)
+__REG_PROPERTY(worldModel)
+__REG_PROPERTY(minMonthWithFood)
+__REG_PROPERTY(langModel)
+__REG_PROPERTY(worklessCitizenAway)
+__REG_PROPERTY(fastsavePostfix)
+__REG_PROPERTY(saveExt)
+__REG_PROPERTY(workDir)
+__REG_PROPERTY(adviserEnabled)
+__REG_PROPERTY(c3gfx)
+__REG_PROPERTY(lastTranslation)
+__REG_PROPERTY(archivesModel)
+__REG_PROPERTY(soundThemesModel)
+__REG_PROPERTY(soundVolume )
+__REG_PROPERTY(ambientVolume)
+__REG_PROPERTY(musicVolume )
+__REG_PROPERTY(animationsModel )
+__REG_PROPERTY(walkerModel)
+__REG_PROPERTY(giftsModel)
+__REG_PROPERTY(emblemsModel )
+__REG_PROPERTY(testArchive )
+__REG_PROPERTY(screenFitted)
+__REG_PROPERTY(needAcceptBuild)
+__REG_PROPERTY(sg2model)
+#undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
 const vfs::Path defaultResDir = "resources";
@@ -64,7 +70,7 @@ public:
   VariantMap options;
 };
 
-GameSettings& GameSettings::getInstance()
+GameSettings& GameSettings::instance()
 {
   static GameSettings inst;
   return inst;
@@ -76,6 +82,7 @@ GameSettings::GameSettings() : _d( new Impl )
   setwdir( application_path );
 
   _d->options[ pantheonModel       ] = Variant( std::string( "/pantheon.model" ) );
+  _d->options[ sg2model            ] = Variant( std::string( "/sg2.model" ) );
   _d->options[ houseModel          ] = Variant( std::string( "/house.model" ) );
   _d->options[ constructionModel   ] = Variant( std::string( "/construction.model" ) );
   _d->options[ citiesModel         ] = Variant( std::string( "/cities.model" ) );
@@ -91,6 +98,8 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ animationsModel     ] = Variant( std::string( "/animations.model" ) );
   _d->options[ giftsModel          ] = Variant( std::string( "/gifts.model" ) );
   _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
+  _d->options[ testArchive         ] = Variant( std::string( "/pics/pics.zip" ) );
+  _d->options[ needAcceptBuild     ] = false;
   _d->options[ soundVolume         ] = 100;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ musicVolume         ] = 25;
@@ -100,16 +109,22 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
+#ifdef CAESARIA_PLATFORM_ANDROID
+  _d->options[ needAcceptBuild     ] = true;
+#endif
 }
 
 void GameSettings::set( const std::string& option, const Variant& value )
 {
-  getInstance()._d->options[ option ] = value;
+  instance()._d->options[ option ] = value;
 }
 
 Variant GameSettings::get( const std::string& option )
 {
-  return getInstance()._d->options[ option ];
+  VariantMap::iterator it = instance()._d->options.find( option );
+  return  instance()._d->options.end() == it
+              ? Variant()
+              : it->second;
 }
 
 void GameSettings::setwdir( const std::string& wdirstr )
@@ -164,16 +179,5 @@ void GameSettings::load()
 
 void GameSettings::save()
 {
-  StringArray items;
-  items << GameSettings::fullscreen
-        << GameSettings::resolution
-        << GameSettings::soundVolume
-        << GameSettings::ambientVolume
-        << GameSettings::musicVolume
-        << GameSettings::language;
-
-  VariantMap saveSettings;
-  foreach( it, items) { saveSettings[ *it ] = get( *it );  }
-
-  SaveAdapter::save( saveSettings, rcpath( GameSettings::settingsPath ) );
+  SaveAdapter::save( instance()._d->options, rcpath( GameSettings::settingsPath ) );
 }

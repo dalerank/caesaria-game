@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "font.hpp"
 #include "gfx/picture.hpp"
@@ -19,6 +21,8 @@
 #include "exception.hpp"
 #include <SDL_ttf.h>
 #include "color.hpp"
+#include "vfs/directory.hpp"
+#include "core/osystem.hpp"
 #include <map>
 
 using namespace gfx;
@@ -101,10 +105,7 @@ unsigned int Font::getWidthFromCharacter( unsigned int c ) const
   return advance;
 }
 
-unsigned int Font::getKerningHeight() const
-{
-  return 3;
-}
+unsigned int Font::getKerningHeight() const {  return 3; }
 
 int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
 {
@@ -124,17 +125,14 @@ int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
   return -1;
 }
 
-int Font::getColor() const
+int Font::color() const
 {
   int ret = 0;
   ret = (_d->color.unused << 24 ) + (_d->color.r << 16) + (_d->color.g << 8) + _d->color.b;
   return ret;
 }
 
-bool Font::isValid() const
-{
-  return _d->ttfFont != 0;
-}
+bool Font::isValid() const {  return _d->ttfFont != 0; }
 
 Size Font::getSize( const std::string& text ) const
 {
@@ -149,8 +147,8 @@ bool Font::operator!=( const Font& other ) const
   return !( _d->ttfFont == other._d->ttfFont );
 }
 
-Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect, 
-                             Alignment horizontalAlign, Alignment verticalAlign )
+Rect Font::calculateTextRect(const std::string& text, const Rect& baseRect,
+                             align::Type horizontalAlign, align::Type verticalAlign )
 {
   Rect resultRect;
   Size d = getSize( text );
@@ -158,12 +156,12 @@ Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect,
   // justification
   switch (horizontalAlign)
   {
-  case alignCenter:
+  case align::center:
     // align to h centre
     resultRect.UpperLeftCorner.setX( (baseRect.getWidth()/2) - (d.width()/2) );
     resultRect.LowerRightCorner.setX( (baseRect.getWidth()/2) + (d.width()/2) );
     break;
-  case alignLowerRight:
+  case align::lowerRight:
     // align to right edge
     resultRect.UpperLeftCorner.setX( baseRect.getWidth() - d.width() );
     resultRect.LowerRightCorner.setX( baseRect.getWidth() );
@@ -176,12 +174,12 @@ Rect Font::calculateTextRect( const std::string& text, const Rect& baseRect,
 
   switch (verticalAlign)
   {
-  case alignCenter:
+  case align::center:
     // align to v centre
     resultRect.UpperLeftCorner.setY( (baseRect.getHeight()/2) - (d.height()/2) );
     resultRect.LowerRightCorner.setY( (baseRect.getHeight()/2) + (d.height()/2) );
     break;
-  case alignLowerRight:
+  case align::lowerRight:
     // align to bottom edge
     resultRect.UpperLeftCorner.setY( baseRect.getHeight() - d.height() );
     resultRect.LowerRightCorner.setY( baseRect.getHeight() );
@@ -232,10 +230,7 @@ void Font::draw( Picture &dstpic, const std::string &text, const Point& pos, boo
   draw( dstpic, text, pos.x(), pos.y(), useAlpha );
 }
 
-Font::~Font()
-{
-
-}
+Font::~Font() {}
 
 Font& Font::operator=( const Font& other )
 {
@@ -314,7 +309,9 @@ void FontCollection::addFont(const int key, const std::string& name, const std::
   TTF_Font* ttf = TTF_OpenFont(pathFont.c_str(), size);
   if( ttf == NULL )
   {
-    THROW("Cannot load font file:" << pathFont << ", error:" << TTF_GetError());
+    std::string errorStr = "Cannot load font file:" + pathFont + "\n, error:" + TTF_GetError();
+    OSystem::error( "Critical error", errorStr );
+    THROW( errorStr );
   }
 
   Font font0;
@@ -327,22 +324,24 @@ void FontCollection::addFont(const int key, const std::string& name, const std::
 
 void FontCollection::initialize(const std::string &resourcePath)
 {
-  std::string full_font_path = resourcePath + "/FreeSerif.ttf";
+  vfs::Directory resDir( resourcePath );
+  vfs::Path fontDir( "FreeSerif.ttf" );
+  vfs::Path full_font_path = resDir/fontDir;
 
   NColor black( 255, 0, 0, 0 );
   NColor red( 255, 160, 0, 0 );  // dim red
   NColor white( 255, 215, 215, 215 );  // dim white
   NColor yellow( 255, 160, 160, 0 );
 
-  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      full_font_path, 12, black );
-  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      full_font_path, 16, black );
-  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),full_font_path, 16, white );
-  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  full_font_path, 16, red );
-  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      full_font_path, 18, black );
-  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  full_font_path, 18, red );
-  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),full_font_path, 18, white );
-  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), full_font_path, 18, yellow );
-  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path, 28, black);
+  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      full_font_path.toString(), 12, black );
+  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      full_font_path.toString(), 16, black );
+  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),full_font_path.toString(), 16, white );
+  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  full_font_path.toString(), 16, red );
+  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      full_font_path.toString(), 18, black );
+  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  full_font_path.toString(), 18, red );
+  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),full_font_path.toString(), 18, white );
+  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), full_font_path.toString(), 18, yellow );
+  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path.toString(), 28, black);
 }
 
 static StringArray _font_breakText(const std::string& text, const Font& f, int elWidth, bool RightToLeft )

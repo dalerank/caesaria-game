@@ -33,6 +33,7 @@
 #include "texturedbutton.hpp"
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
+#include "listbox.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -113,10 +114,9 @@ void TopMenu::Impl::updateDate()
 void TopMenu::Impl::showAboutInfo()
 {
   Widget* parent = lbDate->getEnvironment()->rootWidget();
-  Label* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  bg->setupUI( GameSettings::rcpath( "/gui/about.gui" ) );
   bg->setCenter( parent->center() );
-  bg->setText( _("##about_caesaria_game##") );
-  bg->setTextAlignment( alignCenter, alignCenter );
 
   TexturedButton* btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   WidgetEscapeCloser::insertTo( bg );
@@ -191,18 +191,18 @@ TopMenu::TopMenu( Widget* parent, const int height )
 
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();
-  advisersMenu->addItem( _("##adv_employments_m##"), advisor::employers );
-  advisersMenu->addItem( _("##adv_military_m##"   ), advisor::military );
-  advisersMenu->addItem( _("##adv_empire_m##"     ), advisor::empire );
-  advisersMenu->addItem( _("##adv_ratings_m##"    ), advisor::ratings );
-  advisersMenu->addItem( _("##trade_advisor##"    ), advisor::trading);
-  advisersMenu->addItem( _("##adv_population_m##" ), advisor::population );
-  advisersMenu->addItem( _("##adv_health_m##"     ), advisor::health );
-  advisersMenu->addItem( _("##adv_education_m##"  ), advisor::education );
-  advisersMenu->addItem( _("##adv_religion_m##"   ), advisor::religion );
-  advisersMenu->addItem( _("##adv_entertainment_m##"), advisor::entertainment );
-  advisersMenu->addItem( _("##adv_finance_m##"    ), advisor::finance );
-  advisersMenu->addItem( _("##chief_advisor##"       ), advisor::main );
+  advisersMenu->addItem( _("##visit_labor_advisor##"), advisor::employers );
+  advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military );
+  advisersMenu->addItem( _("##visit_imperial_advisor##"     ), advisor::empire );
+  advisersMenu->addItem( _("##visit_rating_advisor##"    ), advisor::ratings );
+  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading);
+  advisersMenu->addItem( _("##visit_population_advisor##" ), advisor::population );
+  advisersMenu->addItem( _("##visit_health_advisor##"     ), advisor::health );
+  advisersMenu->addItem( _("##visit_education_advisor##"  ), advisor::education );
+  advisersMenu->addItem( _("##visit_religion_advisor##"   ), advisor::religion );
+  advisersMenu->addItem( _("##visit_entertainment_advisor##"), advisor::entertainment );
+  advisersMenu->addItem( _("##visit_financial_advisor##"    ), advisor::finance );
+  advisersMenu->addItem( _("##visit_chief_advisor##"       ), advisor::main );
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 }
 

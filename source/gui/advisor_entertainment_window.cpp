@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_entertainment_window.hpp"
 #include "gfx/decorator.hpp"
@@ -313,12 +315,12 @@ void AdvisorEntertainmentWindow::Impl::updateFestivalInfo()
 {
   if( srvc.isValid() )
   {
-    int monthFromLastFestival = srvc->getLastFestivalDate().getMonthToDate( GameDate::current() );
+    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( GameDate::current() );
     std::string text = StringHelper::format( 0xff, "%d %s", monthFromLastFestival, _("##month_from_last_festival##") );
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }
 
-    bool prepare2Festival = srvc->getNextFestivalDate() >= GameDate::current();
+    bool prepare2Festival = srvc->nextFestivalDate() >= GameDate::current();
     btnNewFestival->setText( prepare2Festival ? _("##prepare_to_festival##") : _("##new_festival##") );
     btnNewFestival->setEnabled( !prepare2Festival );
 

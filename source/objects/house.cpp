@@ -36,7 +36,6 @@
 #include "constants.hpp"
 #include "events/build.hpp"
 #include "events/fireworkers.hpp"
-#include "objects/desirability.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "city/funds.hpp"
@@ -195,8 +194,8 @@ void House::_checkEvolve()
 void House::_updateTax()
 {
   _d->taxCheckInterval = GameDate::current();
-  float cityTax = _city()->funds().getTaxRate() / 100.f;
-  appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthInYear) );
+  float cityTax = _city()->funds().taxRate() / 100.f;
+  appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear) );
 }
 
 void House::_updateMorale()
@@ -264,7 +263,7 @@ void House::timeStep(const unsigned long time)
     cancelService( Service::recruter );
   }
 
-  if( time % getSpec().getFoodConsumptionInterval() == 0 )
+  if( time % getSpec().foodConsumptionInterval() == 0 )
   {
     _d->consumeFoods( this );
   }
@@ -276,10 +275,14 @@ void House::timeStep(const unsigned long time)
 
   if( _d->taxCheckInterval.month() != GameDate::current().month() )
   {
-    _updateTax();
-    _checkEvolve();    
+    _updateTax(); 
     _updateMorale();
     _checkHomeless();
+  }
+
+  if( GameDate::isWeekChanged() )
+  {
+    _checkEvolve();
   }
 
   Building::timeStep( time );
@@ -304,7 +307,8 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       }
 
       HousePtr house = ptr_cast<House>( (*it)->overlay() );
-      if( house != NULL && house->getSpec().level() == level4grow )
+      if( house != NULL &&
+          (house->getSpec().level() == level4grow || house->getHabitants().count() == 0) )
       {
         if( house->size().width() > 1 )  //bigger house near, can't grow
         {
@@ -463,7 +467,7 @@ void House::_levelDown()
       int peoplesPerHouse = getHabitants().count() / 4;
       foreach( tile, perimetr )
       {
-        HousePtr house = ptr_cast<House>( TileOverlayFactory::getInstance().create( building::house ) );
+        HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( building::house ) );
         house->_d->habitants = _d->habitants.retrieve( peoplesPerHouse );
         house->_d->houseId = HouseLevel::smallHovel;
         house->_update();
@@ -558,7 +562,7 @@ void House::applyService( ServiceWalkerPtr walker )
   switch (service)
   {
   case Service::well:
-  case Service::fontain:
+  case Service::fountain:
   case Service::religionNeptune:
   case Service::religionCeres:
   case Service::religionVenus:
@@ -776,7 +780,7 @@ std::string House::troubleDesc() const
   return ret;
 }
 
-bool House::isCheckedDesirability() const {  return _city()->getBuildOptions().isCheckDesirability(); }
+bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCheckDesirability(); }
 
 void House::save( VariantMap& stream ) const
 {
@@ -929,7 +933,7 @@ void House::appendServiceValue( Service::Type srvc, float value){  setServiceVal
 
 void House::Impl::updateHealthLevel( HousePtr house )
 {
-  float delim = 1 + (((services[Service::well] > 0 || services[Service::fontain] > 0) ? 1 : 0))
+  float delim = 1 + (((services[Service::well] > 0 || services[Service::fountain] > 0) ? 1 : 0))
       + ((services[Service::doctor] > 0 || services[Service::hospital] > 0) ? 1 : 0)
       + (services[Service::baths] > 0 ? 0.7 : 0)
       + (services[Service::barber] > 0 ? 0.3 : 0);
@@ -981,7 +985,8 @@ void House::Impl::consumeFoods(HousePtr house)
   if( foodLevel == 0 )
     return;
 
-  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.getGoodConsumptionInterval() / GameDate::ticksInMonth();
+
+  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / GameDate::days2ticks( 30 );
 
   int availableFoodLevel = 0;
   for( int afl=Good::wheat; afl <= Good::vegetable; afl++ )

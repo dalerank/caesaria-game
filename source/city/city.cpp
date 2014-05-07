@@ -59,7 +59,7 @@
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"
-#include "win_targets.hpp"
+#include "victoryconditions.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "world/merchant.hpp"
@@ -146,7 +146,6 @@ private:
 class PlayerCity::Impl
 {
 public:
-  int lastMonthCount;
   int population;
   city::Funds funds;  // amount of money
   std::string name;
@@ -168,7 +167,7 @@ public:
   Point location;
   city::BuildOptions buildOptions;
   city::TradeOptions tradeOptions;
-  city::WinTargets targets;
+  city::VictoryConditions targets;
 
   ClimateType climate;   
   UniqueId walkerIdCount;
@@ -199,7 +198,6 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
-  _d->lastMonthCount = GameDate::current().month();
 
   addService( city::Migration::create( this ) );
   addService( city::WorkersHire::create( this ) );
@@ -217,12 +215,34 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( audio::Player::create( this ) );
 }
 
-void PlayerCity::timeStep( unsigned int time )
+void PlayerCity::timeStep(unsigned int time)
 {
-  if( _d->lastMonthCount != GameDate::current().month() )
+  if( GameDate::isMonthChanged() )
   {
-    _d->lastMonthCount = GameDate::current().month();
     _d->monthStep( this, GameDate::current() );
+
+    if( GameDate::isYearChanged() )
+    {
+      int profit = _d->funds.getIssueValue( city::Funds::cityProfit, city::Funds::lastYear );
+      int empireTax = 0;
+      if( profit <= 0 )
+      {
+        empireTax = (population() / 1000) * 100;
+      }
+      else
+      {
+        int minimumExpireTax = (population() / 1000) * 100 + 50;
+        empireTax = math::clamp( profit / 4, minimumExpireTax, 9999 );
+      }
+
+      FundIssue issue( city::Funds::empireTax, -empireTax );
+      _d->funds.resolveIssue( issue );
+    }
+  }
+
+  if( GameDate::isWeekChanged() )
+  {
+    _d->calculatePopulation( this );
   }
 
   //update walkers access map
@@ -233,7 +253,7 @@ void PlayerCity::timeStep( unsigned int time )
   }
 
   WalkerList::iterator walkerIt = _d->walkerList.begin();
-  while (walkerIt != _d->walkerList.end())
+  while( walkerIt != _d->walkerList.end() )
   {
     try
     {
@@ -322,7 +342,6 @@ void PlayerCity::timeStep( unsigned int time )
 void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 {
   collectTaxes( city );
-  calculatePopulation( city );
   payWages( city );
 
   int playerSalary = player->salary();
@@ -392,13 +411,13 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-TileOverlayList&  PlayerCity::getOverlays()         { return _d->overlayList; }
+TileOverlayList&  PlayerCity::overlays()         { return _d->overlayList; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
 city::Funds&        PlayerCity::funds() const      {  return _d->funds;   }
-int               PlayerCity::getPopulation() const {   return _d->population; }
+int               PlayerCity::population() const {   return _d->population; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
@@ -436,12 +455,8 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
 void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay)
 {
-  ConstructionPtr constr = ptr_cast<Construction>( overlay );
-  if( constr.isValid() )
-  {
-    city::Helper helper( city );
-    helper.updateDesirability( constr, false );
-  }
+  city::Helper helper( city );
+  helper.updateDesirability( overlay, false );
 }
 
 void PlayerCity::save( VariantMap& stream) const
@@ -521,7 +536,6 @@ void PlayerCity::load( const VariantMap& stream )
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
-  _d->lastMonthCount = GameDate::current().month();
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -541,7 +555,7 @@ void PlayerCity::load( const VariantMap& stream )
     TileOverlay::Type overlayType = (TileOverlay::Type)config.get( 0 ).toInt();
     TilePos pos = config.get( 2, TilePos( -1, -1 ) ).toTilePos();
 
-    TileOverlayPtr overlay = TileOverlayFactory::getInstance().create( overlayType );
+    TileOverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && pos.i() >= 0 )
     {
       overlay->build( this, pos );
@@ -633,19 +647,19 @@ void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
 Signal0<>&PlayerCity::onChangeBuildingOptions(){ return _d->onChangeBuildingOptionsSignal; }
-const city::BuildOptions& PlayerCity::getBuildOptions() const { return _d->buildOptions; }
-const city::WinTargets& PlayerCity::getWinTargets() const {   return _d->targets; }
-void PlayerCity::setWinTargets(const city::WinTargets& targets) { _d->targets = targets; }
+const city::BuildOptions& PlayerCity::buildOptions() const { return _d->buildOptions; }
+const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->targets; }
+void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::player() const { return _d->player; }
 std::string PlayerCity::getName() const {  return _d->name; }
 void PlayerCity::setName( const std::string& name ) {   _d->name = name;}
-city::TradeOptions& PlayerCity::getTradeOptions() { return _d->tradeOptions; }
+city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::setLocation( const Point& location ) {   _d->location = location; }
 Point PlayerCity::location() const {   return _d->location; }
 const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSells(); }
 const GoodStore& PlayerCity::getBuys() const {   return _d->tradeOptions.getBuys(); }
-unsigned int PlayerCity::getTradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
+unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
@@ -654,7 +668,7 @@ void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const {return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( service ); }
 
-int PlayerCity::getProsperity() const
+int PlayerCity::prosperity() const
 {
   SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::getDefaultName() ) );
   return csPrsp.isValid() ? csPrsp->getValue() : 0;
@@ -675,19 +689,19 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
   return ret;
 }
 
-int PlayerCity::getCulture() const
+int PlayerCity::culture() const
 {
   SmartPtr<city::CultureRating> csClt = ptr_cast<city::CultureRating>( findService( city::CultureRating::getDefaultName() ) );
-  return csClt.isValid() ? csClt->getValue() : 0;
+  return csClt.isValid() ? csClt->value() : 0;
 }
 
-int PlayerCity::getPeace() const
+int PlayerCity::peace() const
 {
   //CityServicePtr csPrsp = findService( CityServicePeace::getDefaultName() );
   return 0;//csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
 }
 
-int PlayerCity::getFavour() const { return empire()->emperor().relation( getName() ); }
+int PlayerCity::favour() const { return empire()->emperor().relation( getName() ); }
 
 void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
 {

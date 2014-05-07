@@ -38,20 +38,9 @@ void Garden::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlMeadow, isMeadow);
 }
 
-bool Garden::isWalkable() const
-{
-  return true;
-}
-
-bool Garden::isFlat() const
-{
-  return true;
-}
-
-bool Garden::isNeedRoadAccess() const
-{
-  return false;
-}
+bool Garden::isWalkable() const {  return _flat; }
+bool Garden::isFlat() const{ return _flat;}
+bool Garden::isNeedRoadAccess() const{  return false;}
 
 void Garden::build(PlayerCityPtr city, const TilePos& p )
 {
@@ -59,7 +48,7 @@ void Garden::build(PlayerCityPtr city, const TilePos& p )
   int theGrid[2][2] = {{113, 110}, {112, 111}};
 
   Construction::build( city, p );
-  setPicture( ResourceGroup::entertaiment, theGrid[p.i() % 2][p.j() % 2] );
+  setPicture( Picture::load( ResourceGroup::entertaiment, theGrid[p.i() % 2][p.j() % 2]) );
 
   if( size().area() == 1 )
   {
@@ -88,9 +77,9 @@ void Garden::load(const VariantMap& stream)
   }
 }
 
-Desirability Garden::getDesirability() const
+Desirability Garden::desirability() const
 {
-  Desirability ret = Construction::getDesirability();
+  Desirability ret = Construction::desirability();
   ret.base *= size().area();
   ret.range *= size().width();
   ret.step *= size().width();
@@ -101,6 +90,12 @@ Desirability Garden::getDesirability() const
 std::string Garden::sound() const
 {
   return StringHelper::format( 0xff, "garden_%05d.wav", size().area() );
+}
+
+void Garden::setPicture(Picture picture)
+{
+  Construction::setPicture( picture );
+  _flat = picture.height()/ (float)picture.width() >= 2.f;
 }
 
 void Garden::update()
@@ -131,7 +126,7 @@ void Garden::update()
     helper.updateDesirability( this, false );
     setSize( 2 );
     Construction::build( _city(), pos() );
-    setPicture( ResourceGroup::entertaiment, 114 + rand() % 3 );
+    setPicture( Picture::load( ResourceGroup::entertaiment, 114 + rand() % 3 ) );
     helper.updateDesirability( this, true );
   }
 }

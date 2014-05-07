@@ -25,9 +25,9 @@
 class ActorColony : public TrainingBuilding
 {
 public:
-   ActorColony();
-   virtual void deliverTrainee();
-   virtual void timeStep(const unsigned long time);
+  ActorColony();
+  virtual void deliverTrainee();
+  virtual void timeStep(const unsigned long time);
 };
 
 #endif //_CAESARIA_ACTOR_COLONY_H_INCLUDE_

@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-
 #ifndef __CAESARIA_CART_SUPPLIER_H_INCLUDED__
 #define __CAESARIA_CART_SUPPLIER_H_INCLUDED__
 

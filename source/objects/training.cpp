@@ -35,60 +35,32 @@ using namespace gfx;
 TrainingBuilding::TrainingBuilding(const Type type, const Size& size )
   : WorkingBuilding( type, size )
 {
-   _trainingTimer = 0;
-   _trainingDelay = GameDate::ticksInMonth() / 4;
+   _trainingDelay = DateTime::daysInWeek;
 }
 
 void TrainingBuilding::timeStep(const unsigned long time)
 {
-   WorkingBuilding::timeStep(time);
+   WorkingBuilding::timeStep( time );
 
-   if( numberWorkers() <= 0  )
+   if( _lastSendDate.daysTo( GameDate::current() ) > _trainingDelay )
    {
-     if( _animationRef().isRunning() )
-     {
-      _fgPicturesRef().back() = Picture::getInvalid();
-      _animationRef().stop();
-     }
-   }
-   else
-   {
-     if( _animationRef().isStopped() )
-     {
-       _animationRef().start();
-     }
-
-     _animationRef().update( time );
-     const Picture& pic = _animationRef().currentFrame();
-     if( pic.isValid() )
-     {
-        _fgPicturesRef().back() = _animationRef().currentFrame();
-     }
-
-     if( _trainingTimer == 0 )
-     {
-        deliverTrainee();
-        _trainingTimer = _trainingDelay;
-     }
-     else if (_trainingTimer > 0)
-     {
-        _trainingTimer -= 1;
-     }
+     _lastSendDate = GameDate::current();
+      deliverTrainee();
    }
 }
 
 void TrainingBuilding::save( VariantMap& stream) const
 {
   WorkingBuilding::save( stream );
-  stream[ "trainingTimer" ] = _trainingTimer;
+  stream[ "lastSendDate" ] = _lastSendDate;
   stream[ "trainingDelay" ] = _trainingDelay;
 }
 
 void TrainingBuilding::load( const VariantMap& stream )
 {
   WorkingBuilding::load( stream );
-  _trainingTimer = (int)stream.get( "trainingTimer", 0 );
-  _trainingDelay = (int)stream.get( "trainingDelay", 80 );
+  _lastSendDate = stream.get( "lastSendDate" ).toDateTime();
+  _trainingDelay = (int)stream.get( "trainingDelay", DateTime::daysInWeek );
 }
 
 
@@ -107,18 +79,6 @@ void GladiatorSchool::deliverTrainee()
 void GladiatorSchool::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
-
-  if( numberWorkers() > 0 )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
 }
 
 LionsNursery::LionsNursery() : TrainingBuilding( building::lionsNursery, Size(3) )

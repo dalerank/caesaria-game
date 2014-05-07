@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #ifndef _CAESARIA_PICTURE_HPP_INCLUDE_
 #define _CAESARIA_PICTURE_HPP_INCLUDE_
 
@@ -57,8 +56,8 @@ public:
   Picture* clone() const;
   void setAlpha( unsigned char value );
   void scale( Size size );
-  SDL_Surface* getSurface() const;
-  Point getOffset() const;
+  SDL_Surface* surface() const;
+  Point offset() const;
   int width() const;
   int height() const;
 
@@ -74,7 +73,7 @@ public:
   void unlock();
 
   // Uint32 is the pixel color in the surface format. The surface must be locked!!!
-  int getPixel( Point pos );
+  int pixel( Point pos );
   void setPixel( Point pos, const int color);
 
   Size size() const;

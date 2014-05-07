@@ -43,18 +43,6 @@ void WorkshopChariot::deliverTrainee()
 void WorkshopChariot::timeStep(const unsigned long time)
 {
   TrainingBuilding::timeStep( time );
-
-  if( numberWorkers() > 0 )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
 }
 
 

@@ -59,7 +59,7 @@ void ServiceWalker::_init(const Service::Type service)
   switch (_d->service)
   {
   case Service::well:
-  case Service::fontain:
+  case Service::fountain:
   case Service::oracle:
     //_setAnimation( gfx::unknown );
   break;

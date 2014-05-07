@@ -45,15 +45,15 @@ WinMissionWindow::WinMissionWindow(Widget* p, std::string newTitle, bool mayCont
 
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 30), _("##mission_win##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignCenter, alignCenter );
+  title->setTextAlignment( align::center, align::center );
 
   Label* lb = new Label( this, Rect( 10, 40, width() - 10, 40 + 20), _("##caesar_assign_new_title##") );
   lb->setFont( Font::create( FONT_2 ) );
-  lb->setTextAlignment( alignCenter, alignCenter );
+  lb->setTextAlignment( align::center, align::center );
 
   lb = new Label( this, Rect( 10, 60, width() - 10, 60 + 30), _( newTitle ) );
   lb->setFont( Font::create( FONT_3) );
-  lb->setTextAlignment( alignCenter, alignCenter );
+  lb->setTextAlignment( align::center, align::center );
 
   PushButton* btn = new PushButton( this, Rect( 35, 115, width() - 35, 115 + 20 ), _("##accept_promotion##"),
                                     -1, false, PushButton::greyBorderLineSmall );

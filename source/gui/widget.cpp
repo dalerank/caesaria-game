@@ -39,10 +39,10 @@ void Widget::beforeDraw(gfx::Engine& painter )
 
 GuiEnv* Widget::getEnvironment() {  return _environment; }
 
-void Widget::setTextAlignment( Alignment horizontal, Alignment vertical )
+void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 {
-  if( !(horizontal >= alignUpperLeft && horizontal <= alignAuto)
-     || !(vertical >= alignUpperLeft && vertical <= alignAuto) )
+  if( !(horizontal >= align::upperLeft && horizontal <= align::automatic)
+     || !(vertical >= align::upperLeft && vertical <= align::automatic) )
   {
     Logger::warning( "Unknown align in SetTextAlignment" );
     return;
@@ -61,10 +61,10 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
   _environment( parent ? parent->getEnvironment() : 0 )
 {
   __D_IMPL(_d,Widget)
-  _d->alignLeft = alignUpperLeft;
-  _d->alignRight = alignUpperLeft;
-  _d->alignTop = alignUpperLeft;
-  _d->alignBottom = alignUpperLeft;
+  _d->alignLeft = align::upperLeft;
+  _d->alignRight = align::upperLeft;
+  _d->alignTop = align::upperLeft;
+  _d->alignBottom = align::upperLeft;
   _d->isVisible = true;
   _d->maxSize = Size(0,0);
   _d->minSize = Size(1,1);
@@ -93,14 +93,13 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
     drop();
   }
 
-  setTextAlignment( alignUpperLeft, alignCenter );
+  setTextAlignment( align::upperLeft, align::center );
 }
 
 Widget::~Widget()
 {
   // delete all children
-  __D_IMPL(_d,Widget)
-  foreach( widget, _d->children )
+  foreach( widget, _dfunc()->children )
   {
     (*widget)->setParent( 0 );
     (*widget)->drop();
@@ -115,18 +114,18 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
     const Rect& r2 = parent()->absoluteRect();
     SizeF d = r2.getSize().toSizeF();
 
-    if( _d->alignLeft == alignScale)
+    if( _d->alignLeft == align::scale)
       _d->scaleRect.UpperLeftCorner.setX( (float)r.UpperLeftCorner.x() / d.width() );
-    if (_d->alignRight == alignScale)
+    if (_d->alignRight == align::scale)
       _d->scaleRect.LowerRightCorner.setX( (float)r.LowerRightCorner.x() / d.width() );
-    if (_d->alignTop == alignScale)
+    if (_d->alignTop == align::scale)
       _d->scaleRect.UpperLeftCorner.setY( (float)r.UpperLeftCorner.y() / d.height() );
-    if (_d->alignBottom == alignScale)
+    if (_d->alignBottom == align::scale)
       _d->scaleRect.LowerRightCorner.setY( (float)r.LowerRightCorner.y() / d.height() );
   }
 
-	_d->desiredRect = r;
-	updateAbsolutePosition();
+  _d->desiredRect = r;
+  updateAbsolutePosition();
 }
 
 void Widget::_resizeEvent(){}
@@ -211,13 +210,13 @@ void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Align
     SizeF d = r.getSize().toSizeF();
 
     RectF dRect = _d->desiredRect.toRectF();
-    if( _d->alignLeft == alignScale)
+    if( _d->alignLeft == align::scale)
       _d->scaleRect.UpperLeftCorner.setX( dRect.UpperLeftCorner.x() / d.width() );
-    if(_d->alignRight == alignScale)
+    if(_d->alignRight == align::scale)
       _d->scaleRect.LowerRightCorner.setX( dRect.LowerRightCorner.x() / d.width() );
-    if( _d->alignTop  == alignScale)
+    if( _d->alignTop  == align::scale)
       _d->scaleRect.UpperLeftCorner.setY( dRect.UpperLeftCorner.y() / d.height() );
-    if (_d->alignBottom == alignScale)
+    if (_d->alignBottom == align::scale)
       _d->scaleRect.LowerRightCorner.setY( dRect.LowerRightCorner.y() / d.height() );
   }
 }
@@ -535,7 +534,7 @@ void Widget::setupUI( const VariantMap& ui )
   __D_IMPL(_d,Widget)
   //setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
   _d->internalName = ui.get( "name" ).toString();
-  AlignHelper ahelper;
+  align::Helper ahelper;
   VariantList textAlign = ui.get( "textAlign" ).toList();
 
   if( textAlign.size() > 1 )
@@ -668,46 +667,46 @@ void Widget::recalculateAbsolutePosition( bool recursive )
     const int diffy = parentAbsolute.getHeight() - _d->lastParentRect.getHeight();
 
 
-    if( _d->alignLeft == alignScale || _d->alignRight == alignScale)
+    if( _d->alignLeft == align::scale || _d->alignRight == align::scale)
         fw = (float)parentAbsolute.getWidth();
 
-    if( _d->alignTop == alignScale || _d->alignBottom == alignScale)
+    if( _d->alignTop == align::scale || _d->alignBottom == align::scale)
         fh = (float)parentAbsolute.getHeight();
     
     switch( _d->alignLeft)
     {
-    case alignAuto:
-    case alignUpperLeft: break;
-    case alignLowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
-    case alignCenter: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
-    case alignScale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.x() * fw ); break;
+    case align::automatic:
+    case align::upperLeft: break;
+    case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
+    case align::center: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
+    case align::scale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.x() * fw ); break;
     }
 
     switch( _d->alignRight)
     {
-    case alignAuto:
-    case alignUpperLeft:   break;
-    case alignLowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
-    case alignCenter: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
-    case alignScale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.x() * fw ) ); break;
+    case align::automatic:
+    case align::upperLeft:   break;
+    case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
+    case align::center: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
+    case align::scale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.x() * fw ) ); break;
     }
 
     switch( _d->alignTop)
     {
-    case alignAuto:
-    case alignUpperLeft: break;
-    case alignLowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
-    case alignCenter: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
-    case alignScale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.y() * fh) ); break;
+    case align::automatic:
+    case align::upperLeft: break;
+    case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
+    case align::center: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
+    case align::scale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.y() * fh) ); break;
     }
 
     switch( _d->alignBottom)
     {
-    case alignAuto:
-    case alignUpperLeft:  break;
-    case alignLowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
-    case alignCenter:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
-    case alignScale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.y() * fh) );  break;
+    case align::automatic:
+    case align::upperLeft:  break;
+    case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
+    case align::center:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
+    case align::scale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.y() * fh) );  break;
     }
 
     _d->relativeRect = _d->desiredRect;

@@ -24,7 +24,7 @@
 class Ability : public ReferenceCounted
 {
 public:
-  virtual void run( WalkerPtr parent, unsigned int time=4 ) = 0;
+  virtual void run( WalkerPtr parent, unsigned int time ) = 0;
 };
 
 class Illness : public Ability

@@ -30,15 +30,16 @@ class SplashScreen: public Base
 {
 public:
   SplashScreen();
-  ~SplashScreen();
+  virtual ~SplashScreen();
 
   void initialize();
 
   virtual void draw();
   void fadeOut();
+  void setText( std::string text );
 
 protected:
-	int result() const;
+  virtual int result() const;
 
 private:
   class Impl;

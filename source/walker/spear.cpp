@@ -49,12 +49,20 @@ void Spear::_onTarget()
   }
 }
 
-const char* Spear::rcGroup() const {  return ResourceGroup::sprites; }
-int Spear::_rcStartIndex() const { return 114; }
+const char* Spear::rcGroup() const {  return _picRc.c_str(); }
+int Spear::_rcStartIndex() const { return _picIndex; }
+
+void Spear::setPicInfo(const std::string& rc, unsigned int index)
+{
+  _picRc = rc;
+  _picIndex = index;
+}
 
 Spear::Spear(PlayerCityPtr city) : ThrowingWeapon( city )
 {
   _setType( walker::spear );
+  _picIndex = 114;
+  _picRc = ResourceGroup::sprites;
 
   setName( _("##spear##") );
 }

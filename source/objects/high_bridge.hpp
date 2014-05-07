@@ -30,7 +30,7 @@ public:
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual bool canDestroy() const;
   virtual void destroy();
-  virtual std::string getError() const;
+  virtual std::string errorDesc() const;
   virtual bool isNeedRoadAccess() const;
 
   virtual void save(VariantMap &stream) const;

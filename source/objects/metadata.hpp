@@ -14,10 +14,10 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-
-#ifndef _CAESARIA_BUILDING_METADATA_H_INCLUDE_
-#define _CAESARIA_BUILDING_METADATA_H_INCLUDE_
+#ifndef _CAESARIA_OBJECTS_METADATA_H_INCLUDE_
+#define _CAESARIA_OBJECTS_METADATA_H_INCLUDE_
 
 #include "good/good.hpp"
 #include "core/scopedptr.hpp"
@@ -25,7 +25,6 @@
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
 #include "gfx/tileoverlay.hpp"
-#include "desirability.hpp"
 
 // contains some metaData for a building type
 class MetaData
@@ -66,7 +65,7 @@ public:
    static MetaDataHolder& instance();
 
    void addData(const MetaData& data);
-   const MetaData& getData(const gfx::TileOverlay::Type buildingType) const;
+   static const MetaData& getData(const gfx::TileOverlay::Type buildingType);
    bool hasData(const gfx::TileOverlay::Type buildingType) const;
 
    // return factory that consume goodType
@@ -80,6 +79,8 @@ public:
    static std::string getDescription( gfx::TileOverlay::Type type );
 
    void initialize( const vfs::Path& filename );
+
+   ~MetaDataHolder();
 private:
    MetaDataHolder();
 
@@ -87,4 +88,4 @@ private:
    ScopedPtr< Impl > _d;
 };
 
-#endif //_CAESARIA_BUILDING_METADATA_H_INCLUDE_
+#endif //_CAESARIA_OBJECTS_METADATA_H_INCLUDE_

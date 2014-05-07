@@ -345,10 +345,7 @@ VariantMap Pathway::save() const
   return stream;
 }
 
-bool Pathway::isValid() const
-{
-  return length() != 0;
-}
+bool Pathway:: isValid() const { return length() != 0; }
 
 void Pathway::load( const VariantMap& stream )
 {

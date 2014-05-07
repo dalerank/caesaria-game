@@ -12,14 +12,22 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+
 
 #include "alignment.hpp"
 
-AlignHelper::AlignHelper() : EnumsHelper<Alignment>( alignAuto )
+namespace align
 {
-  append( alignUpperLeft, "upperLeft" );
-  append( alignLowerRight, "lowerRight" );
-  append( alignCenter, "center" );
-  append( alignScale, "scale" );
-  append( alignAuto, "auto" );
+
+Helper::Helper() : EnumsHelper<Type>( automatic )
+{
+  append( upperLeft, "upperLeft" );
+  append( lowerRight, "lowerRight" );
+  append( center, "center" );
+  append( scale, "scale" );
+  append( automatic, "auto" );
 }
+
+}//end namespace alig

@@ -14,6 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012 Dalerank, dalerankn7@gmail.com
+
 
 #include "construction.hpp"
 
@@ -24,6 +26,7 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
+#include "extension.hpp"
 
 using namespace gfx;
 
@@ -33,6 +36,7 @@ public:
   typedef std::map<int, double> Params;
   TilesArray accessRoads;
   Params params;
+  ConstructionExtensionList extensions;
 };
 
 Construction::Construction(const Type type, const Size& size)
@@ -82,12 +86,12 @@ std::string Construction::troubleDesc() const
   return "";
 }
 
-std::string Construction::getError() const { return ""; }
+std::string Construction::errorDesc() const { return ""; }
 TilesArray Construction::getAccessRoads() const {   return _d->accessRoads; }
 bool Construction::canDestroy() const {  return true; }
 void Construction::destroy() {  TileOverlay::destroy(); }
 bool Construction::isNeedRoadAccess() const{  return true; }
-const Picture& Construction::getPicture() const {  return TileOverlay::getPicture(); }
+const Picture& Construction::picture() const {  return TileOverlay::picture(); }
 Construction::~Construction() {}
 
 void Construction::build(PlayerCityPtr city, const TilePos& pos )
@@ -124,12 +128,7 @@ void Construction::computeAccessRoads()
   }
 }
 
-int Construction::getRoadAccessDistance() const
-{
-  return 1;
-  // it is default value
-  // for houses - 2
-}
+int Construction::getRoadAccessDistance() const{  return 1; }
 
 void Construction::burn()
 {
@@ -137,18 +136,18 @@ void Construction::burn()
 
   events::GameEventPtr event = events::DisasterEvent::create( tile(), events::DisasterEvent::fire );
   event->dispatch();
+
+  Logger::warning( "Building catch fire at %d,%d!", pos().i(), pos().j() );
 }
 
 void Construction::collapse()
 {
   deleteLater();
+
   events::GameEventPtr event = events::DisasterEvent::create( tile(), events::DisasterEvent::collapse );
   event->dispatch();
-}
 
-Desirability Construction::getDesirability() const
-{
-  return MetaDataHolder::instance().getData( type() ).getDesirbility();
+  Logger::warning( "Building collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
 void Construction::setState( ParameterType param, double value)
@@ -184,6 +183,11 @@ void Construction::load( const VariantMap& stream )
   }
 }
 
+void Construction::addExtension(ConstructionExtensionPtr ext)
+{
+  _d->extensions.push_back( ext );
+}
+
 double Construction::getState( ParameterType param) const { return _d->params[ param ]; }
 
 TilesArray Construction::getEnterArea() const
@@ -209,21 +213,28 @@ TilesArray Construction::getEnterArea() const
 void Construction::timeStep(const unsigned long time)
 {
   if( getState( Construction::damage ) >= 100 )
-  {
-    Logger::warning( "Building destroyed!" );
+  {    
     collapse();
   }
   else if( getState( Construction::fire ) >= 100 )
   {
-    Logger::warning( "Building catch fire!" );
     burn();
+  }
+
+  for( ConstructionExtensionList::iterator it=_d->extensions.begin();
+       it != _d->extensions.end(); )
+  {
+    (*it)->run( this, time );
+
+    if( (*it)->isDeleted() ) { it = _d->extensions.erase( it ); }
+    else { ++it; }
   }
 
   TileOverlay::timeStep( time );
 }
 
-const Picture& Construction::getPicture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
+const Picture& Construction::picture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
-  return getPicture();
+  return picture();
 }
 

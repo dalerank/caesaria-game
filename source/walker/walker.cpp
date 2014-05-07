@@ -46,6 +46,7 @@ public:
   float speed;
   TilePos pos;
   UniqueId uid;
+  int waitInterval;
   float speedMultiplier;
   Animation animation;  // current animation
   PointF wpos;      // current world position
@@ -83,6 +84,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->speedMultiplier = 1.f;
   _d->isDeleted = false;
   _d->centerReached = false;
+  _d->waitInterval = 0;
 }
 
 Walker::~Walker() {}
@@ -90,25 +92,42 @@ walker::Type Walker::type() const{ return _d->type; }
 
 void Walker::timeStep(const unsigned long time)
 {
-  switch(_d->action.action)
+  if( _d->waitInterval > 0 )
   {
-  case Walker::acMove:
-    _walk();
-
-    if( _d->finalSpeed() > 0.f )
+    _d->waitInterval--;
+    if( _d->waitInterval == 0 )
     {
-      _updateAnimation( time );
+      _waitFinished();
     }
-  break;
+  }
+  else
+  {
+    switch(_d->action.action)
+    {
+    case Walker::acMove:
+      _walk();
 
-  default:
-    _updateAnimation( time );
-  break;
+      if( _d->finalSpeed() > 0.f )
+      {
+        _updateAnimation( time );
+      }
+    break;
+
+    case Walker::acFight:
+      _updateAnimation( time );
+    break;
+
+    case Walker::acNone:
+    break;
+
+    default:
+    break;
+    }
   }
 
   foreach( it, _d->abilities) { (*it)->run( this, time ); }
 
-  if( getHealth() <= 0 )
+  if( health() <= 0 )
   {
     die();
   }
@@ -136,7 +155,8 @@ void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 
 void Walker::_walk()
 {
-  if( constants::noneDirection == _d->action.direction )
+  if( constants::noneDirection == _d->action.direction
+      || !_pathwayRef().isValid() )
   {
     // nothing to do
     _noWay();
@@ -237,7 +257,7 @@ void Walker::_reachedPathway()
 
 void Walker::_computeDirection()
 {
-  Direction lastDirection = _d->action.direction;
+  const Direction lastDirection = _d->action.direction;
   _d->action.direction = _d->pathway.direction();
   _d->nextwpos = _nextTile().center().toPointF();
   _d->lastCenterDst = _d->wpos.getDistanceFrom( _d->nextwpos );
@@ -283,9 +303,11 @@ bool Walker::isDeleted() const{   return _d->isDeleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 void Walker::_brokePathway( TilePos pos ){}
 void Walker::_noWay(){}
+
+void Walker::_waitFinished() { }
 Direction Walker::getDirection() const {  return _d->action.direction;}
-Walker::Action Walker::getAction() const {  return (Walker::Action)_d->action.action;}
-double Walker::getHealth() const{  return _d->health;}
+Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
+double Walker::health() const{  return _d->health;}
 void Walker::updateHealth(double value) {  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );}
 void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
@@ -467,7 +489,24 @@ void Walker::_updateThinks()
 }
 
 Point Walker::_wpos() const{  return _d->wpos.toPoint();}
-void Walker::go(){ _d->action.action = acMove; }      // default action
+
+void Walker::go( float speed )
+{
+  setSpeed( speed );
+  _setAction( acMove );
+}
+
+void Walker::wait(int ticks)
+{
+  _d->waitInterval = ticks;
+  if( ticks < 0 )
+  {
+    _setAction( acNone );
+    setSpeed( 0.f );
+  }
+}
+
+int Walker::waitInterval() const { return _d->waitInterval; }
 
 void Walker::die()
 {

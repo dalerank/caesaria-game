@@ -225,7 +225,7 @@ void CartPusher::computeWalkerDestination()
      setConsumerBuilding( destBuilding );
      setPos( pathWay.getStartPos() );
      setPathway( pathWay );
-     setSpeed( 1 );
+     go();
    }
    else
    {
@@ -236,7 +236,7 @@ void CartPusher::computeWalkerDestination()
      else
      {
        _setDirection( constants::north );
-       setSpeed( 0 );
+       Walker::wait( -1 );
        setPos( _d->producerBuilding->getAccessRoads().front()->pos() );
        _walk();
      }
@@ -357,7 +357,7 @@ void CartPusher::send2city( BuildingPtr building, GoodStock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  if( (time % (GameDate::ticksInMonth() / 4) == 1) && !_pathwayRef().isValid() )
+  if( GameDate::isWeekChanged() && !_pathwayRef().isValid() )
   {
     computeWalkerDestination();
   }

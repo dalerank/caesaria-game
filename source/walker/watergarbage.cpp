@@ -37,7 +37,12 @@ WaterGarbage::WaterGarbage(PlayerCityPtr city )
 
 void WaterGarbage::send2City(const TilePos &start )
 {
-  Pathway path = PathwayHelper::create( start, _city()->borderInfo().boatExit, PathwayHelper::water );
+  Pathway path = PathwayHelper::create( start, _city()->borderInfo().boatExit, PathwayHelper::deepWater );
+  if( !path.isValid() )
+  {
+    path = PathwayHelper::create( start, _city()->borderInfo().boatExit, PathwayHelper::water );
+  }
+
   if( path.isValid() )
   {
     setPos( start );
@@ -58,6 +63,7 @@ const Picture& WaterGarbage::getMainPicture()
   return _animation.currentFrame();
 }
 
+void WaterGarbage::_reachedPathway() { deleteLater(); }
 WaterGarbage::~WaterGarbage() {}
 
 void WaterGarbage::save( VariantMap& stream ) const

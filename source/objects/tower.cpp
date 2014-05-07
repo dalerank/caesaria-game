@@ -24,6 +24,8 @@
 #include "core/direction.hpp"
 #include "walker/wallguard.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "walker/trainee.hpp"
+#include "walker/balista.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -36,6 +38,7 @@ public:
   PatrolWays patrolWays;
   unsigned int areaHash;
   Point offset;
+  BalistaPtr catapult;
   bool needResetWays;
 
   void mayPatroling( const Tile* tile, bool& ret )
@@ -45,7 +48,8 @@ public:
   }
 };
 
-Tower::Tower() : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), _d( new Impl )
+Tower::Tower()
+  : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), _d( new Impl )
 {
   setMaxWorkers( 6 );
   setPicture( ResourceGroup::land2a, 149 );
@@ -145,7 +149,12 @@ void Tower::deliverService()
     _rebuildWays();
   }
 
-  if( numberWorkers() > 0 && !_d->patrolWays.empty() && walkers().empty() )
+  int trValue = traineeValue( walker::soldier );
+
+  if( numberWorkers() > 0
+      && !_d->patrolWays.empty()
+      && walkers().empty()
+      && trValue > 0 )
   {
     Impl::PatrolWays::iterator it = _d->patrolWays.begin();
     std::advance( it, rand() % _d->patrolWays.size() );
@@ -157,6 +166,21 @@ void Tower::deliverService()
     {
       addWalker( guard.object() );
     }
+  }
+
+  if( trValue > 1 )
+  {
+    if( _d->catapult.isNull() )
+    {
+      _d->catapult = Balista::create( _city() );
+      _d->catapult->setPos( pos()+TilePos( 1, 0 ) );
+      _d->catapult->setBase( this );
+    }
+  }
+
+  if( _d->catapult.isValid() )
+  {
+    _d->catapult->setActive( trValue > 1 );
   }
 }
 
@@ -175,9 +199,11 @@ TilesArray Tower::getEnterArea() const
   return tiles;
 }
 
-void Tower::resetPatroling()
+void Tower::resetPatroling() {  _d->needResetWays = true; }
+
+Point Tower::offset(const Tile& tile, const Point& subpos) const
 {
-  _d->needResetWays = true;
+  return Point( 0, -65 );
 }
 
 PathwayList Tower::getWays(TilePos start, FortificationList dest)
@@ -199,4 +225,12 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
 Pathway Tower::getWay(TilePos start, TilePos stop)
 {
   return PathwayHelper::create( start, stop, makeDelegate( _d.data(), &Impl::mayPatroling ) );
+}
+
+float Tower::evaluateTrainee(walker::Type traineeType)
+{
+  int limiter = ( traineeType == walker::soldier ) ? 4 : 1;
+  float value = ServiceBuilding::evaluateTrainee( traineeType );
+
+  return (value / limiter);
 }

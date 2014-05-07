@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_CONTEXMENUITEM_INCLUDE_H_
 #define _CAESARIA_CONTEXMENUITEM_INCLUDE_H_
@@ -41,7 +43,7 @@ public:
 
   ContextMenuItem( ContextMenu* parent, const std::string& text );
 
-  ~ContextMenuItem();
+  virtual ~ContextMenuItem();
 
   virtual bool isSeparator() const;
 

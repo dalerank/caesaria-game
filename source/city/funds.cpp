@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "city/funds.hpp"
 #include "city/helper.hpp"
@@ -72,9 +74,9 @@ void Funds::resolveIssue( FundIssue issue )
   _d->onChangeSignal.emit( _d->money );
 }
 
-int Funds::treasury() const {  return _d->money; }
+int Funds::treasury() const { return _d->money; }
 
-int Funds::getProfit() const
+int Funds::profit() const
 {
   int balanceLastYear = getIssueValue( city::Funds::balance, lastYear );
   return _d->money - balanceLastYear;
@@ -89,7 +91,7 @@ void Funds::updateHistory( const DateTime& date )
 
   Impl::IssuesValue& step = _d->history.front();
   step[ Funds::balance ] = _d->money;
-  step[ Funds::profit ] = getProfit();
+  step[ Funds::cityProfit ] = profit();
 
   _d->lastYearUpdate = date.year();
   _d->history.insert( _d->history.begin(), Impl::IssuesValue() );
@@ -111,9 +113,9 @@ int Funds::getIssueValue( IssueType type, int age ) const
   return ( it == step.end() ) ? 0 : it->second;
 }
 
-int Funds::getTaxRate() const{  return _d->taxRate;}
+int Funds::taxRate() const{  return _d->taxRate;}
 void Funds::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
-int Funds::getWorkerSalary() const{  return _d->workerSalary;}
+int Funds::workerSalary() const{  return _d->workerSalary;}
 void Funds::setWorkerSalary(const unsigned int value){  _d->workerSalary = value;}
 
 VariantMap Funds::save() const

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "editbox.hpp"
 #include "core/stringarray.hpp"
@@ -122,7 +124,7 @@ void EditBox::_init()
 
   calculateScrollPos();
 
-  setTextAlignment( alignUpperLeft, alignCenter );
+  setTextAlignment( align::upperLeft, align::center );
 }
 
 void EditBox::_setText(const std::wstring& r)

@@ -52,10 +52,18 @@ namespace {
 class SdlEngine::Impl
 {
 public:
+  typedef struct
+  {
+    int red;
+    int green;
+    int blue;
+    int alpha;
+  }MaskInfo;
+
   Picture screen;
   Picture maskedPic;
   
-  int rmask, gmask, bmask, amask;
+  MaskInfo mask;
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
   Font debugFont;
@@ -142,31 +150,31 @@ void SdlEngine::exit()
 void SdlEngine::loadPicture( Picture& ioPicture )
 {
   // convert pixel format
-  if( !ioPicture.getSurface() )
+  if( !ioPicture.surface() )
   {
     Logger::warning( "GfxSdlEngine: cannot load NULL surface " + ioPicture.name() );
     return;
   }
-  SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.getSurface() );
+  SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.surface() );
   
   if( newImage == NULL ) 
   {
     THROW("Cannot convert surface, maybe out of memory");
   }
-  SDL_FreeSurface(ioPicture.getSurface());
+  SDL_FreeSurface(ioPicture.surface());
 
-  ioPicture.init( newImage, ioPicture.getOffset() );
+  ioPicture.init( newImage, ioPicture.offset() );
 }
 
 void SdlEngine::unloadPicture( Picture& ioPicture )
 {
-  SDL_FreeSurface( ioPicture.getSurface() );
+  SDL_FreeSurface( ioPicture.surface() );
   ioPicture = Picture();
 }
 
 void SdlEngine::startRenderFrame()
 {
-  SDL_FillRect( _d->screen.getSurface(), NULL, 0 );  // black background for a complete redraw
+  SDL_FillRect( _d->screen.surface(), NULL, 0 );  // black background for a complete redraw
 }
 
 void SdlEngine::endRenderFrame()
@@ -177,7 +185,7 @@ void SdlEngine::endRenderFrame()
     _d->debugFont.draw( _d->screen, debugText, 4, 22, false );
   }
 
-  SDL_Flip( _d->screen.getSurface() ); //Refresh the screen
+  SDL_Flip( _d->screen.surface() ); //Refresh the screen
   _d->fps++;
 
   if( DateTime::elapsedTime() - _d->lastUpdateFps > 1000 )
@@ -193,26 +201,28 @@ void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, 
   if( !picture.isValid() )
       return;
 
+  Picture& screen = _d->screen;
   if( clipRect != 0 )
   {
     SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
-    SDL_SetClipRect( _d->screen.getSurface(), &r );
+    SDL_SetClipRect( screen.surface(), &r );
   }
 
-  if( _d->rmask || _d->gmask || _d->bmask || _d->amask  )
+  const Impl::MaskInfo& mask = _d->mask;
+  if( mask.red || mask.green|| mask.blue || mask.alpha )
   {
-    PictureConverter::maskColor( _d->maskedPic, picture, _d->rmask, _d->gmask, _d->bmask, _d->amask );
+    PictureConverter::maskColor( _d->maskedPic, picture, mask.red, mask.green, mask.blue, mask.alpha );
 
-    _d->screen.draw( _d->maskedPic, dx, dy );
+    screen.draw( _d->maskedPic, dx, dy );
   }
   else
   {
-    _d->screen.draw( picture, dx, dy );
+    screen.draw( picture, dx, dy );
   }
 
   if( clipRect != 0 )
   {
-    SDL_SetClipRect( _d->screen.getSurface(), 0 );
+    SDL_SetClipRect( screen.surface(), 0 );
   }
 }
 
@@ -223,16 +233,14 @@ void SdlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* cli
 
 void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
 {
-  _d->rmask = rmask;
-  _d->gmask = gmask;
-  _d->bmask = bmask;
-  _d->amask = amask;
+  Impl::MaskInfo& mask = _d->mask;
+  mask.red = rmask;
+  mask.green = gmask;
+  mask.blue = bmask;
+  mask.alpha = amask;
 }
 
-void SdlEngine::resetTileDrawMask()
-{
-  _d->rmask = _d->gmask = _d->bmask = _d->amask = 0;
-}
+void SdlEngine::resetTileDrawMask() {  memset( &_d->mask, 0, sizeof( Impl::MaskInfo ) ); }
 
 Picture* SdlEngine::createPicture(const Size& size )
 {
@@ -249,10 +257,10 @@ Picture* SdlEngine::createPicture(const Size& size )
 
 void SdlEngine::createScreenshot( const std::string& filename )
 {
-  IMG_SavePNG( filename.c_str(), _d->screen.getSurface(), -1 );
+  IMG_SavePNG( filename.c_str(), _d->screen.surface(), -1 );
 }
 
-Engine::Modes SdlEngine::getAvailableModes() const
+Engine::Modes SdlEngine::modes() const
 {
   Modes ret;
 
@@ -288,7 +296,7 @@ void SdlEngine::setFlag( int flag, int value )
   }
 }
 
-void SdlEngine::delay( const unsigned int msec ) {  SDL_Delay( msec ); }
+void SdlEngine::delay( const unsigned int msec ) { SDL_Delay( std::max<unsigned int>( msec, 0 ) ); }
 
 bool SdlEngine::haveEvent( NEvent& event )
 {

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "festival_planing_window.hpp"
 #include "label.hpp"
@@ -118,7 +120,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
   _d->title = new Label( this, Rect( 16, 16, width() - 16, 16 + 30), _("##title##") );
   _d->title->setFont( Font::create( FONT_3 ) );
-  _d->title->setTextAlignment( alignCenter, alignCenter );
+  _d->title->setTextAlignment( align::center, align::center );
 
   _d->updateTitle();
 
@@ -130,24 +132,26 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
-  int greatFestivalCost = math::clamp( _d->city->getPopulation() / 10, 100, 9999 );
+  int festivalCost = floor( _d->city->population() / 20 ) + 10;
 
   _d->btnSmallFestival = new PushButton( this, Rect( 95, 170, width() - 95, 170 + 25),
-                                         StringHelper::format( 0xff, "%s %d", _("##small_festival##"), greatFestivalCost / 4 ),
+                                         StringHelper::format( 0xff, "%s %d", _("##small_festival##"), festivalCost ),
                                          Impl::festId+Impl::smallFest, false, PushButton::whiteBorderUp );
-  _d->btnSmallFestival->setTextAlignment( alignUpperLeft, alignCenter );
+  _d->btnSmallFestival->setTextAlignment( align::upperLeft, align::center );
   //_d->btnSmallFestival->setIsPushButton( true );
 
+  festivalCost = floor( _d->city->population() / 10 ) + 20;
   _d->btnMiddleFestival = new PushButton( this, _d->btnSmallFestival->getRelativeRect() + Point( 0, 30 ),
-                                          StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), greatFestivalCost / 2 ),
+                                          StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), festivalCost ),
                                           Impl::festId+Impl::middleFest, false, PushButton::whiteBorderUp );
-  _d->btnMiddleFestival->setTextAlignment( alignUpperLeft, alignCenter );
+  _d->btnMiddleFestival->setTextAlignment( align::upperLeft, align::center );
   //_d->btnMiddleFestival->setIsPushButton( true );
 
+  festivalCost = floor( _d->city->population() / 5 ) + 40;
   _d->btnGreatFestival = new PushButton( this, _d->btnMiddleFestival->getRelativeRect() + Point( 0, 30 ),
-                                         StringHelper::format( 0xff, "%s %d", _("##great_festival##"), greatFestivalCost  ),
+                                         StringHelper::format( 0xff, "%s %d", _("##great_festival##"), festivalCost  ),
                                          Impl::festId+Impl::greatFest, false, PushButton::whiteBorderUp );
-  _d->btnGreatFestival->setTextAlignment( alignUpperLeft, alignCenter );
+  _d->btnGreatFestival->setTextAlignment( align::upperLeft, align::center );
   //_d->btnGreatFestival->setIsPushButton( true );
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "layerdamage.hpp"
 #include "objects/constants.hpp"
@@ -67,8 +69,9 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::plaza:
     case building::collapsedRuins:
     case building::engineerPost:
+    case building::burningRuins:
       needDrawAnimations = true;
-      engine.drawPicture( tile.picture(), screenPos );
+      drawTilePass( engine, tile, offset, Renderer::ground );
       drawTilePass( engine, tile, offset, Renderer::foreground );
       break;
 

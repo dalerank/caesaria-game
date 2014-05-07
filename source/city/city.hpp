@@ -32,7 +32,7 @@
 namespace city
 {
   class Funds;
-  class WinTargets;
+  class VictoryConditions;
   class TradeOptions;
   class BuildOptions;
 }
@@ -51,7 +51,7 @@ public:
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
 
-  virtual void timeStep( unsigned int time );  // performs one simulation step
+  virtual void timeStep(unsigned int time);  // performs one simulation step
 
   void setLocation( const Point& location );
   Point location() const;
@@ -64,7 +64,7 @@ public:
   void addService( city::SrvcPtr service );
   city::SrvcPtr findService( const std::string& name ) const;
 
-  gfx::TileOverlayList& getOverlays();
+  gfx::TileOverlayList& overlays();
 
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
@@ -79,16 +79,16 @@ public:
 
   city::Funds& funds() const;
 
-  int getPopulation() const;
-  int getProsperity() const;
-  int getCulture() const;
-  int getPeace() const;
-
-  int getFavour() const;
+  int population() const;
+  int prosperity() const;
+  int culture() const;
+  int peace() const;
+  int sentiment() const;
+  int favour() const;
 
   gfx::Tilemap& tilemap();
 
-  std::string getName() const; 
+  virtual std::string getName() const;
   void setName( const std::string& name );
 
   virtual void save( VariantMap& stream) const;
@@ -98,19 +98,19 @@ public:
   void addOverlay( gfx::TileOverlayPtr overlay);
   gfx::TileOverlayPtr getOverlay( const TilePos& pos ) const;
 
-  const city::BuildOptions& getBuildOptions() const;
+  const city::BuildOptions& buildOptions() const;
   void setBuildOptions( const city::BuildOptions& options );
 
-  const city::WinTargets& getWinTargets() const;
-  void setWinTargets( const city::WinTargets& targets );
+  const city::VictoryConditions& victoryConditions() const;
+  void setVictoryConditions( const city::VictoryConditions& targets );
 
-  city::TradeOptions& getTradeOptions();
+  city::TradeOptions& tradeOptions();
 
   virtual void arrivedMerchant( world::MerchantPtr merchant );
 
   virtual const GoodStore& getSells() const;
   virtual const GoodStore& getBuys() const;
-  virtual unsigned int getTradeType() const;
+  virtual unsigned int tradeType() const;
   virtual world::EmpirePtr empire() const;
 
   void updateRoads();

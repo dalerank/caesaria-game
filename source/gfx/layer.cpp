@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "layer.hpp"
 #include "tileoverlay.hpp"
@@ -26,6 +28,7 @@
 #include "tilemap_camera.hpp"
 #include "city/city.hpp"
 #include "core/font.hpp"
+#include "layerconstants.hpp"
 
 using namespace constants;
 
@@ -150,10 +153,11 @@ void Layer::handleEvent(NEvent& event)
 
     switch( event.keyboard.key )
     {
-    case KEY_UP:    _d->camera->moveUp   ( moveValue ); break;
-    case KEY_DOWN:  _d->camera->moveDown ( moveValue ); break;
-    case KEY_RIGHT: _d->camera->moveRight( moveValue ); break;
-    case KEY_LEFT:  _d->camera->moveLeft ( moveValue ); break;
+    case KEY_UP: case KEY_KEY_W: _d->camera->moveUp   ( moveValue ); break;
+    case KEY_DOWN: case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
+    case KEY_RIGHT: case KEY_KEY_D: _d->camera->moveRight( moveValue ); break;
+    case KEY_LEFT:  case KEY_KEY_A: _d->camera->moveLeft ( moveValue ); break;
+    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;
     default: break;
     }
   }

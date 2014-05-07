@@ -15,8 +15,6 @@
 
 // Make getline declaration available on e.g. FreeBSD (see getline(3))
 // Should precede other includes
-#define _WITH_GETLINE
-
 #include "filenative_impl.hpp"
 #include "core/logger.hpp"
 
@@ -220,10 +218,10 @@ const Path& FileNative::path() const {	return _name;}
 //! returns how much was read
 int FileNative::write(const void* buffer, unsigned int sizeToWrite)
 {
-	if( !isOpen() )
-		return 0;
+  if( !isOpen() )
+   return 0;
 
-	return (int)fwrite(buffer, 1, sizeToWrite, _file);
+  return (int)fwrite(buffer, 1, sizeToWrite, _file);
 }
 
 int FileNative::write( const ByteArray& bArray )

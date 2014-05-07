@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_GUI_DIALOGBOX_INCLUDE_H_
 #define _CAESARIA_GUI_DIALOGBOX_INCLUDE_H_
@@ -26,7 +28,9 @@ namespace  gui
 class DialogBox : public Widget 
 {
 public:
-  enum { btnYes=0x1, btnNo=0x2, btnOk=0x4, btnCancel=0x8 };
+  enum { btnYes=0x1, btnNo=0x2, btnOk=0x4, btnCancel=0x8,
+         btnOkCancel=btnOk|btnCancel,
+         btnNever=0x10 };
   DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
              const std::string& text, int buttons );
 
@@ -38,6 +42,7 @@ oc3_signals public:
   Signal1<int>& onResult();
   Signal0<>& onOk();
   Signal0<>& onCancel();
+  Signal0<> &onNever();
 
 private:
   class Impl;

@@ -64,9 +64,9 @@ public:
   void setUniqueId( const UniqueId uid );
 
   constants::Direction getDirection() const;
-  Walker::Action getAction() const;
+  Walker::Action action() const;
 
-  virtual double getHealth() const;
+  virtual double health() const;
   virtual void updateHealth(double value);
   virtual void acceptAction( Action action, TilePos pos );
 
@@ -81,7 +81,9 @@ public:
 
   virtual void addAbility( AbilityPtr ability );
 
-  virtual void go();
+  virtual void go( float speed = 1.0 );
+  virtual void wait( int ticks = 0 );
+  virtual int  waitInterval() const;
   virtual void die();
 
   virtual void getPictureList( gfx::Pictures& oPics);
@@ -103,6 +105,7 @@ protected:
   virtual void _changeDirection(); // called when the walker changes direction
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
+  virtual void _waitFinished();
   virtual const gfx::Picture& getMainPicture();
 
 protected:

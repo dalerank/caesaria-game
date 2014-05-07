@@ -42,6 +42,8 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
+  virtual std::string troubleDesc() const;
+
   virtual NecessaryWalkers necessaryWalkers() const;
 
 protected:

@@ -72,6 +72,9 @@ enum Type{
   etruscanArcher,
   citizen,
   waterGarbage,
+  romeHorseman,
+  romeSpearman,
+  balista,//49
   all = 0xff,
   any = all
 };

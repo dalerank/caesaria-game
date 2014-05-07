@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_culture.hpp"
 #include "city/helper.hpp"
@@ -98,10 +100,10 @@ CultureRating::CultureRating(PlayerCityPtr city )
 
 void CultureRating::update( const unsigned int time )
 {
-  if( time % (GameDate::ticksInMonth() / 2) != 1 )
+  if( !GameDate::isMonthChanged() )
     return;
 
-  if( _d->lastDate.getMonthToDate( GameDate::current() ) > 0 )
+  if( _d->lastDate.monthsTo( GameDate::current() ) > 0 )
   {
     _d->lastDate = GameDate::current();
     _d->parishionersCount = 0;
@@ -109,7 +111,7 @@ void CultureRating::update( const unsigned int time )
     _d->libraryVisitors = 0;
     _d->schoolVisitors = 0;
     _d->collegeVisitors = 0;
-    int cityPopulation = _city.getPopulation();
+    int cityPopulation = _city.population();
 
     Helper helper( &_city );
 
@@ -160,22 +162,21 @@ void CultureRating::update( const unsigned int time )
   }
 }
 
-int CultureRating::getValue() const {  return _d->culture; }
+int CultureRating::value() const {  return _d->culture; }
 
 int CultureRating::coverage( Coverage type) const
 {
   switch( type )
   {
-  case ccSchool: return _d->schoolCoverage * 100;
-  case ccLibrary: return _d->libraryCoverage * 100;
-  case ccAcademy: return _d->collegeCoverage * 100;
-  case ccReligion: return _d->religionCoverage * 100;
-  case ccTheatres: return _d->theatersCoverage * 100;
+  case covSchool: return _d->schoolCoverage * 100;
+  case covLibrary: return _d->libraryCoverage * 100;
+  case covAcademy: return _d->collegeCoverage * 100;
+  case covReligion: return _d->religionCoverage * 100;
+  case covTheatres: return _d->theatersCoverage * 100;
+  default: return 0;
   }
-
-  return 0;
 }
 
-std::string CultureRating::getDefaultName() {  return CAESARIA_STR_EXT(CityServiceCulture); }
+std::string CultureRating::getDefaultName() { return CAESARIA_STR_EXT(CultureRating); }
 
 }//end namespace city

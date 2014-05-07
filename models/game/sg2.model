@@ -1,0 +1,13 @@
+{
+  caesar : "/c3/C3.SG2"
+  etruscan : "/c3/Etruscan.sg2"
+  celts : "/c3/CELTS.sg2"
+  carthage : "/c3/CARTHAGE.SG2"
+  goths : "/c3/GOTHS.sg2"
+  gaul : "/c3/Gaul.sg2"
+  greek : "/c3/Greek.sg2"
+  nafrican : "/c3/North African.sg2"
+  persians : "/c3/Persians.sg2"
+  phoenician : "/c3/phoenician.sg2"
+  egyptian : "/c3/egyptians.sg2"
+}

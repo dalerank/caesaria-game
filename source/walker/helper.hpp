@@ -37,7 +37,7 @@ public:
 
   void initialize( const vfs::Path& filename );
 
-  virtual ~WalkerHelper();
+  virtual ~WalkerHelper();  
 private:
   WalkerHelper();
 

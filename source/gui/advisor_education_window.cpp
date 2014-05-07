@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_education_window.hpp"
 #include "gfx/decorator.hpp"
@@ -153,7 +155,7 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
     sumStudents += (*house)->getHabitants().count( CitizenGroup::student );
   }
 
-  std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->getPopulation(), _("##peoples##"),
+  std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##peoples##"),
                                                   sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 

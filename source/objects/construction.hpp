@@ -35,7 +35,7 @@ public:
   virtual ~Construction();
 
   virtual bool canBuild( PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;  // returns true if it can be built there
-  virtual std::string getError() const;
+  virtual std::string errorDesc() const;
   virtual std::string troubleDesc() const;
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void burn();
@@ -47,7 +47,6 @@ public:
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
   virtual gfx::TilesArray getEnterArea() const;
 
-  virtual Desirability getDesirability() const;
   virtual bool canDestroy() const;
   virtual void destroy();
 
@@ -56,12 +55,13 @@ public:
   virtual double getState( ParameterType name ) const;
 
   virtual void timeStep(const unsigned long time);
-  virtual const gfx::Picture& getPicture() const;
-  virtual const gfx::Picture& getPicture( PlayerCityPtr city, TilePos pos,
+  virtual const gfx::Picture& picture() const;
+  virtual const gfx::Picture& picture( PlayerCityPtr city, TilePos pos,
                                           const gfx::TilesArray& aroundTiles ) const;
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual void addExtension( ConstructionExtensionPtr ext );
 protected:
   class Impl;
   ScopedPtr< Impl > _d;

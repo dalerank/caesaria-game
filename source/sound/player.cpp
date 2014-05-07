@@ -33,7 +33,6 @@ class Player::Impl
 {
 public:
   Playlist playlist;
-  int updateInterval;
   int lastIndex;
 };
 
@@ -46,7 +45,6 @@ Player::Player( PlayerCityPtr city ) : Srvc( *city.object(), "audio_player" ), _
     _d->playlist = SaveAdapter::load( path ).get( "items" ).toStringArray();
   }
 
-  _d->updateInterval = GameDate::ticksInMonth() / 2;
   _d->lastIndex = 0;
 }
 
@@ -61,7 +59,7 @@ city::SrvcPtr Player::create(PlayerCityPtr city)
 
 void Player::update( const unsigned int time )
 {
-  if( time % _d->updateInterval == 1 )
+  if( GameDate::isWeekChanged() )
   {
     if( _d->playlist.empty() )
       return;

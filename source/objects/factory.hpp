@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #ifndef _CAESARIA_FACTORY_BUILDING_H_INCLUDE_
 #define _CAESARIA_FACTORY_BUILDING_H_INCLUDE_
 
@@ -38,8 +37,8 @@ public:
 
   GoodStock& outStockRef();
 
-  Good::Type getInGoodType() const;
-  Good::Type getOutGoodType() const;
+  Good::Type consumeGoodType() const;
+  Good::Type produceGoodType() const;
 
   GoodStore& store();
 
@@ -73,6 +72,7 @@ public:
 protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();
+  virtual void _removeSpoiledGoods();
 
 protected:
   class Impl;
@@ -91,17 +91,6 @@ class IronMine : public Factory
 public:
    IronMine();
    bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
-};
-
-class WeaponsWorkshop : public Factory
-{
-public:
-  WeaponsWorkshop();
-
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-protected:
-  virtual void _storeChanged();
 };
 
 class Winery : public Factory

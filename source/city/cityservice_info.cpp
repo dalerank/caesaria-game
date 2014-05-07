@@ -59,7 +59,7 @@ Info::Info( PlayerCityPtr city )
 
 void Info::update( const unsigned int time )
 {
-  if( time % GameDate::ticksInMonth() / 2 != 1 )
+  if( !GameDate::isMonthChanged() )
     return;
 
   if( GameDate::current().month() != _d->lastDate.month() )
@@ -71,7 +71,7 @@ void Info::update( const unsigned int time )
 
     Parameters& last = _d->params.back();
     last.date = _d->lastDate;
-    last.population = _city.getPopulation();
+    last.population = _city.population();
     last.funds = _city.funds().treasury();
     last.taxpayes =  0;//_d->city->getLastMonthTaxpayer();
 
@@ -80,16 +80,16 @@ void Info::update( const unsigned int time )
     last.monthWithFood = foodMontlyConsumption > 0 ? (foodStock / foodMontlyConsumption) : 0;
 
     int foodProducing = city::Statistic::getFoodProducing( &_city );
-    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthInYear;
+    int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthsInYear;
     last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -1;
 
     last.needWorkers = city::Statistic::getVacantionsNumber( &_city );
     last.workless = city::Statistic::getWorklessPercent( &_city );
-    last.payDiff = _city.empire()->getWorkerSalary() - _city.funds().getWorkerSalary();
-    last.tax = _city.funds().getTaxRate();
-    last.cityWages = _city.funds().getWorkerSalary();
+    last.payDiff = _city.empire()->getWorkerSalary() - _city.funds().workerSalary();
+    last.tax = _city.funds().taxRate();
+    last.cityWages = _city.funds().workerSalary();
     last.romeWages = _city.empire()->getWorkerSalary();
   }
 }
@@ -155,7 +155,7 @@ void Info::load(const VariantMap& stream)
     _d->params.push_back( p );
   }
 
-  _d->params.resize( DateTime::monthInYear );
+  _d->params.resize( DateTime::monthsInYear );
 }
 
 const Info::Messages& Info::messages() const { return _d->messages; }

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "mission_target_window.hpp"
 #include "game/resourcegroup.hpp"
@@ -27,9 +29,10 @@
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
-#include "city/win_targets.hpp"
+#include "city/victoryconditions.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace gfx;
 
@@ -56,18 +59,13 @@ public:
 
 MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr city, int id )
 {
-  Size size( 610, 430 );
-
-  Rect rectangle( Point( (parent->width() - size.width())/2, (parent->height() - size.height())/2 ), size );
-  MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, rectangle );
+  MissionTargetsWindow* ret = new MissionTargetsWindow( parent, id, Rect( 0, 0, 610, 430 ) );
+  ret->setCenter( parent->center() );
   ret->setCity( city );
   return ret;
 }
 
-MissionTargetsWindow::~MissionTargetsWindow()
-{
-
-}
+MissionTargetsWindow::~MissionTargetsWindow() {}
 
 MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle ) 
   : Widget( parent, id, rectangle ), _d( new Impl )
@@ -75,10 +73,12 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->locker.activate();
   _d->background.reset( Picture::create( size() ) );
 
+  WidgetEscapeCloser::insertTo( this );
+
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   Label* lbToCity = new Label( this, Rect( width() / 2, height() - 40, width() - 110, height() - 10 ), _("##mission_wnd_tocity##" ) );
-  lbToCity->setTextAlignment( alignCenter, alignCenter );
+  lbToCity->setTextAlignment( align::center, align::center );
 
   TexturedButton* btnExit = new TexturedButton( this, Point( width() - 110, height() - 40), Size( 27 ), -1, 179 );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
@@ -89,7 +89,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   GroupBox* gbTargets = new GroupBox( this, Rect( 16, 64, width() - 64, 64 + 80), Widget::noId, GroupBox::blackFrame );
   Label* lbTtargets = new Label( gbTargets, Rect( 15, 0, 490, 28), _("##mission_wnd_targets_title##") );
   lbTtargets->setFont( Font::create( FONT_1_WHITE ) );
-  lbTtargets->setTextAlignment( alignUpperLeft, alignUpperLeft );
+  lbTtargets->setTextAlignment( align::upperLeft, align::upperLeft );
 
   _d->lbPopulation = new Label( gbTargets, Rect( 16, 32, 16 + 240, 32 + 20), _("##mission_wnd_population##"), false, Label::bgSmBrown );
   _d->lbProsperity = new Label( gbTargets, Rect( 16, 54, 16 + 240, 54 + 20), _("##mission_wnd_prosperity##"), false, Label::bgSmBrown );
@@ -102,6 +102,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->lbxHelp = new ListBox( this, Rect( 16, 152, width() - 20, height() - 40 ) );
   _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
   _d->lbxHelp->setItemTextOffset( Point( 10, 0 ) );
+  _d->lbxHelp->setItemHeight( 16 );
 }
 
 void MissionTargetsWindow::draw( gfx::Engine& painter )
@@ -120,12 +121,12 @@ void MissionTargetsWindow::draw( gfx::Engine& painter )
 void MissionTargetsWindow::setCity(PlayerCityPtr city)
 {
   _d->city = city;
-  const city::WinTargets& wint = _d->city->getWinTargets();
+  const city::VictoryConditions& wint = _d->city->victoryConditions();
   _d->lbCulture->setVisible( wint.needCulture() > 0 );
   _d->lbPeace->setVisible( wint.needPeace() > 0 );
   _d->lbFavour->setVisible( wint.needFavour() > 0 );
   _d->lbProsperity->setVisible( wint.needProsperity() > 0 );
-  _d->title->setText( _d->city->player()->getName()  );
+  _d->title->setText( _d->city->player()->name()  );
   _d->lbShortDesc->setVisible( !wint.getShortDesc().empty() );
 
   std::string text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
@@ -154,7 +155,7 @@ void MissionTargetsWindow::setCity(PlayerCityPtr city)
     {
       Picture pic = Picture::load( text.substr( 5 ) );
       ListBoxItem& item = _d->lbxHelp->addItem( pic );
-      item.setTextAlignment( alignCenter, alignUpperLeft );
+      item.setTextAlignment( align::center, align::upperLeft );
       int lineCount = pic.height() / _d->lbxHelp->itemHeight();
       StringArray lines;
       lines.resize( lineCount );

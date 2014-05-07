@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "androidactions.hpp"
 #include "core/event.hpp"
@@ -29,6 +31,7 @@ public:
   TexturedButton* btnShowHelp;
   TexturedButton* btnExit;
   TexturedButton* btnMenu;
+  TexturedButton* btnEnter;
 };
 
 AndroidActionsBar::AndroidActionsBar( Widget* parent)
@@ -43,11 +46,15 @@ AndroidActionsBar::AndroidActionsBar( Widget* parent)
                                     pic.size(), -1, 654 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 657 );
-  _d->btnMenu = new TexturedButton( this, Point( 0, 0 ), pic.size(), -1, 657 );
+  _d->btnEnter = new TexturedButton( this, _d->btnExit->leftupCorner() - Point( pic.width(), 0 ), pic.size(), -1, 657 );
+
+  pic = Picture::load( ResourceGroup::panelBackground, 657 );
+  _d->btnMenu = new TexturedButton( this, Point( 0, 0 ), pic.size(), -1, 657 );  
 }
 
 Signal0<> &AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }
 Signal0<> &AndroidActionsBar::onEscapeClicked() { return _d->btnExit->onClicked(); }
+Signal0<> &AndroidActionsBar::onEnterClicked() { return _d->btnEnter->onClicked(); }
 Signal0<> &AndroidActionsBar::onRequestMenu() { return _d->btnMenu->onClicked(); }
 
 void AndroidActionsBar::beforeDraw(gfx::Engine& painter)

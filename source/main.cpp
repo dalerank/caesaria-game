@@ -1,3 +1,20 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 #include "game/game.hpp"
 #include "game/settings.hpp"
 #include "core/exception.hpp"
@@ -5,6 +22,7 @@
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "core/stacktrace.hpp"
+#include "core/osystem.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
@@ -27,41 +45,30 @@ int main(int argc, char* argv[])
 #endif
   Logger::warning( "Options: working directory is " + workdir.toString() );
 
-  GameSettings::getInstance().setwdir( workdir.toString() );
-  bool native_resources = false;
+  GameSettings::instance().setwdir( workdir.toString() );
   for (int i = 0; i < (argc - 1); i++)
   {
     if( !strcmp( argv[i], "-R" ) )
     {
       const char* opts = argv[i+1];
       Logger::warning( "Options: setting workdir to %s", opts  );
-      GameSettings::getInstance().setwdir( std::string( opts, strlen( opts ) ) );
+      GameSettings::instance().setwdir( std::string( opts, strlen( opts ) ) );
       i++;
     }
-
-    if( !strcmp( argv[i], "-Lc" ) )
+    else if( !strcmp( argv[i], "-Lc" ) )
     {
-      Logger::warning( "Options: setting language to " + std::string( argv[i+1] ) );
-      GameSettings::set( GameSettings::language, Variant( std::string( argv[i+1] ) ) );
+      const char* opts = argv[i+1];
+      Logger::warning( "Options: setting language to %s", opts );
+      GameSettings::set( GameSettings::language, Variant( opts ) );
       i++;
     }
-
-    if( !strcmp( argv[i], "-c3gfx" ) )
+    else if( !strcmp( argv[i], "-c3gfx" ) )
     {
-      Logger::warning( "Options: using native C3 resources from" + std::string( argv[i+1] ) );
-      GameSettings::set( GameSettings::c3gfx, Variant( std::string( argv[i+1] ) ) );
-      native_resources = true;
+      const char* opts = argv[i+1];
+      Logger::warning( "Options: using native C3 resources from %s", opts );
+      GameSettings::set( GameSettings::c3gfx, Variant( opts ) );
       i++;
     }
-  }
-
-  vfs::Path testPics = GameSettings::rcpath( "/pics/pics.zip" );
-  if( !testPics.exist() && native_resources == false )
-  {
-    Logger::warning( "Critical: Not found graphics data. Use precompiled CaesarIA archive or set\n"
-                     "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
-                     "forexample, \"-c3gfx c:/games/caesar3/\"" );
-    return 0;
   }
 
   try
@@ -72,7 +79,7 @@ int main(int argc, char* argv[])
   }
   catch( Exception& e )
   {
-    Logger::warning( "Critical error: %s", e.getDescription().c_str() );
+    Logger::warning( "Critical error: " + e.getDescription() );
     Stacktrace::print();
   }
 

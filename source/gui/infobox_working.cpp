@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "infobox_working.hpp"
 #include "core/gettext.hpp"
@@ -64,7 +66,7 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
 
     if( _working->maxWorkers() > 0 )
     {
-      messages.push_back( _working->getWorkersProblem() );
+      messages.push_back( _working->workersProblemDesc() );
     }
 
     lb->setText( _( messages.rand() ) );

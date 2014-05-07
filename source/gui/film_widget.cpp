@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "film_widget.hpp"
 #include "game/settings.hpp"
@@ -23,6 +25,7 @@
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
+#include "smkviewer.hpp"
 
 namespace gui
 {
@@ -36,26 +39,31 @@ public:
   Label* lbTime;
   Label* lbReceiver;
   Label* lbMessage;
+  SmkViewer* smkViewer;
+  vfs::Path videoFile;
 
 public oc3_signals:
   Signal0<> onCloseSignal;
 };
 
-FilmWidget::FilmWidget(Widget* parent, vfs::Path film )
+FilmWidget::FilmWidget(Widget* parent, const vfs::Path& film )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->locker.activate();
   _d->lbMessage = 0;
 
   setupUI( GameSettings::rcpath( "/gui/filmwidget.gui" ) );
+  setCenter( parent->center() );
 
-  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
-
+  _d->smkViewer = new SmkViewer( this, Rect( 10, 10, width() - 10, 10 + 292 ) );
   _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
   _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
   _d->lbTime = findChildA<Label*>( "lbTime", true, this );
   _d->lbReceiver = findChildA<Label*>( "lbReceiver", true, this );
   _d->lbMessage = findChildA<Label*>( "lbMessage", true, this );
+  _d->videoFile = GameSettings::rcpath( film.toString() ); //"/smk/Emmigrate.smk"
+
+  _d->smkViewer->setFilename( _d->videoFile );
 
   CONNECT( _d->btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
   CONNECT( _d->btnExit, onClicked(), this, FilmWidget::deleteLater );

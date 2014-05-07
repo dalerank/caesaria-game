@@ -21,7 +21,7 @@
 #include <algorithm>
 
 #include "gfx/engine.hpp"
-#include "city/win_targets.hpp"
+#include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
 #include "game/resourcegroup.hpp"
@@ -136,7 +136,7 @@ Level::~Level() {}
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
-  _d->renderer.initialize( city, _d->engine );
+  _d->renderer.initialize( city, _d->engine, _d->game->gui() );
   _d->game->gui()->clear();
 
   const int topMenuHeight = 23;
@@ -153,7 +153,7 @@ void Level::initialize()
   _d->rightPanel = MenuRigthPanel::create( gui.rootWidget(), rPanelRect, rPanelPic);
 
   _d->topMenu = new TopMenu( gui.rootWidget(), topMenuHeight );
-  _d->topMenu->setPopulation( _d->game->city()->getPopulation() );
+  _d->topMenu->setPopulation( _d->game->city()->population() );
   _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
 
   _d->menu = Menu::create( gui.rootWidget(), -1, city );
@@ -177,12 +177,13 @@ void Level::initialize()
 
   _d->game->city()->addService( city::AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
-  //specific andtroid actions bar
+  //specific android actions bar
 #ifdef CAESARIA_PLATFORM_ANDROID
   AndroidActionsBar* androidBar = new AndroidActionsBar( _d->game->gui()->rootWidget() );
 
   CONNECT( androidBar, onRequestTileHelp(), _d.data(), Impl::showTileHelp );
   CONNECT( androidBar, onEscapeClicked(), this, Level::_resolveEscapeButton );
+  CONNECT( androidBar, onEnterClicked(), this, Level::_resolveEnterButton );
   CONNECT( androidBar, onRequestMenu(), this, Level::_showIngameMenu );
 #endif
 
@@ -316,19 +317,28 @@ void Level::_resolveEscapeButton()
 
   e.EventType = sEventKeyboard;
   e.keyboard.key = KEY_ESCAPE;
-  e.keyboard.pressed = true;
+  e.keyboard.pressed = false;
   e.keyboard.shift = false;
   e.keyboard.control = false;
   e.keyboard.symbol = 0;
 
-  Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
-  foreach( it, children )
-  {
-    bool handled = (*it)->onEvent( e );
-    if( handled )
-      return;
-  }
+  handleEvent( e );
 }
+
+void Level::_resolveEnterButton()
+{
+  NEvent e;
+
+  e.EventType = sEventKeyboard;
+  e.keyboard.key = KEY_RETURN;
+  e.keyboard.pressed = false;
+  e.keyboard.shift = false;
+  e.keyboard.control = false;
+  e.keyboard.symbol = 0;
+
+  handleEvent( e );
+}
+
 
 void Level::_showIngameMenu()
 {
@@ -368,7 +378,7 @@ vfs::Path Level::Impl::getFastSaveName()
 
 void Level::_resolveSwitchMap()
 {
-  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isExtension( ".briefing" );
+  bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
   _d->result = isNextBriefing ? Level::loadBriefing : Level::loadGame;
   stop();
 }
@@ -398,13 +408,13 @@ void Level::afterFrame()
   {
     _d->lastDate = GameDate::current();
     PlayerCityPtr city = _d->game->city();
-    const city::WinTargets& wt = city->getWinTargets();
+    const city::VictoryConditions& wt = city->victoryConditions();
 
-    int culture = city->getCulture();
-    int prosperity = city->getProsperity();
-    int favour = city->getFavour();
-    int peace = city->getFavour();
-    int population = city->getPopulation();
+    int culture = city->culture();
+    int prosperity = city->prosperity();
+    int favour = city->favour();
+    int peace = city->favour();
+    int population = city->population();
     bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
 
     if( success )
@@ -466,6 +476,17 @@ void Level::handleEvent( NEvent& event )
     case KEY_F11:
         if( event.keyboard.pressed )
             _d->makeEnemy();
+    break;
+    case KEY_ESCAPE:
+    {
+        Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
+        foreach( it, children )
+        {
+          bool handled = (*it)->onEvent( event );
+          if( handled )
+              break;
+        }
+    }
     break;
 
     default:

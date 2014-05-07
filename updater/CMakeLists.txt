@@ -25,6 +25,7 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/archive_zip.cpp"
       "${BASE_SOURCE_DIR}/vfs/memfile.cpp"
       "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
+      "${BASE_SOURCE_DIR}/core/stacktrace.cpp"
 )
 
 file(GLOB HTTP_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/http/*.*")

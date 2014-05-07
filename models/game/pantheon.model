@@ -1,30 +1,30 @@
 {
-	ceres : 
+  ceres :
   {
-		name : "Ceres",
-		shortDesc : "Fertility",
-		type : "goddess",
-		service : "srvc_temple_ceres",
+    name : "Ceres",
+    shortDesc : "Fertility",
+    type : "goddess",
+    service : "srvc_religionCeres",
     image : "picture1_00013"
     relation : 50
   },
 	
   mars :
-	{
-		name : "Mars",
-		shortDesc : "War",
-		type : "god",
-		service : "srvc_temple_mars",
+  {
+    name : "Mars",
+    shortDesc : "War",
+    type : "god",
+    service : "srvc_religionMars",
     image : "picture1_00012"
     relation : 50
-	},
+  },
 	
   neptune :
 	{
 		name : "Neptune"
 		shortDesc : ""
 		type : "god",
-    service : "srvc_temple_neptune"
+    service : "srvc_religionNeptune"
     image : "picture1_00015"
     relation : 50
 	},
@@ -34,7 +34,7 @@
     name : "Venus"
 		shortDesc : ""
 		type : "goddes"
-    service : "srvc_temple_venus"
+    service : "srvc_religionVenus"
     image : "picture1_00011"
     relation : 50
 	},		
@@ -44,7 +44,7 @@
 		name : "Mercury"
 		shortDesc : ""
 		type : "god",
-		service : "srvc_temple_mercury"
+    service : "srvc_religionMercury"
     image : "picture1_00014"
     relation : 50
 	}

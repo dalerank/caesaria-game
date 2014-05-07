@@ -43,10 +43,10 @@ public:
   VariantMap save() const;
   void load(const VariantMap& stream);
 
-  TraderoutePtr getRoute( const std::string& begin, const std::string& end );
-  TraderoutePtr getRoute( unsigned int index );
-  TraderouteList getRoutes( const std::string& begin );
-  TraderouteList getRoutes();
+  TraderoutePtr findRoute( const std::string& begin, const std::string& end );
+  TraderoutePtr findRoute( unsigned int index );
+  TraderouteList routes( const std::string& begin );
+  TraderouteList routes();
   TraderoutePtr createRoute( const std::string& begin, const std::string& end );
 
   void sendMerchant( const std::string& begin, const std::string& end, 

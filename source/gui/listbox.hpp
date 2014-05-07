@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_GUI_LISTBOX_H_INCLUDED__
 #define __CAESARIA_GUI_LISTBOX_H_INCLUDED__
@@ -84,12 +86,6 @@ public:
 
   //! returns true if automatic scrolling is enabled, false if not.
   virtual bool isAutoScrollEnabled() const;
-
-  //! Writes attributes of the element.
-  virtual void save( VariantMap& out ) const;
-
-  //! Reads attributes of the element
-  virtual void load( const VariantMap& in );
 
   //! clear all item colors at index
   virtual void resetItemOverrideColor(unsigned int index);

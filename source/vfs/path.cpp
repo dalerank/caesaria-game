@@ -143,6 +143,11 @@ Path Path::removeEndSlash() const
   return pathTo;
 }
 
+char Path::lastChar() const
+{
+  return _d->path.empty() ? 0 : *_d->path.rbegin();
+}
+
 bool Path::exist() const
 {
   return FileSystem::instance().existFile( *this );
@@ -167,11 +172,11 @@ bool Path::isFolder() const
 
 bool Path::isDirectoryEntry() const
 {
-  std::string baseName = getBasename().toString();
-  return (baseName == firstEntry || baseName == secondEntry);
+  std::string bn = baseName().toString();
+  return (bn == firstEntry || bn == secondEntry);
 }
 
-std::string Path::getExtension() const 
+std::string Path::extension() const
 {
   if( isFolder() )
   {
@@ -185,6 +190,12 @@ std::string Path::getExtension() const
   }
 
   return "";
+}
+
+std::string Path::suffix() const
+{
+  std::string ret = extension();
+  return ret.empty() ? "" : ret.substr(1);
 }
 
 Path::Path( const std::string& nPath ) : _d( new Impl )
@@ -227,7 +238,7 @@ Path Path::changeExtension( const std::string& newExtension ) const
 
 Path::~Path(){}
 
-Path Path::getAbsolutePath() const
+Path Path::absolutePath() const
 {
 #if defined(CAESARIA_PLATFORM_WIN)
   char *p=0;
@@ -314,8 +325,8 @@ Path Path::getRelativePathTo( const Directory& directory ) const
     return *this;
 
   Path path1, file, ext;
-  getAbsolutePath().splitToDirPathExt( &path1, &file, &ext );
-  Path path2(directory.getAbsolutePath());
+  absolutePath().splitToDirPathExt( &path1, &file, &ext );
+  Path path2(directory.absolutePath());
   StringArray list1, list2;
 
   list1 = StringHelper::split( path1.toString(), "/\\");
@@ -385,7 +396,7 @@ Path Path::getRelativePathTo( const Directory& directory ) const
 
 //! returns the base part of a filename, i.e. all except for the directory
 //! part. If no directory path is prefixed, the full name is returned.
-Path Path::getBasename(bool keepExtension) const
+Path Path::baseName(bool keepExtension) const
 {
   // find last forward or backslash
   std::string::size_type lastSlash = toString().find_last_of('/');
@@ -448,9 +459,9 @@ char &Path::operator [](const unsigned int index)
   return _d->path[index];
 }
 
-bool Path::isExtension(const std::string &ext, bool checkCase) const
+bool Path::isMyExtension(const std::string &ext, bool checkCase) const
 {
-  return StringHelper::isEquale( getExtension(), ext, checkCase ? StringHelper::equaleCase : StringHelper::equaleIgnoreCase );
+  return StringHelper::isEquale( extension(), ext, checkCase ? StringHelper::equaleCase : StringHelper::equaleIgnoreCase );
 }
 
 Path& Path::operator=( const Path& other )

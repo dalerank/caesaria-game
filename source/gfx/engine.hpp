@@ -70,7 +70,7 @@ public:
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int fps() const = 0;
-  virtual Modes getAvailableModes() const = 0;
+  virtual Modes modes() const = 0;
   virtual Point cursorPos() const = 0;
 
 protected:

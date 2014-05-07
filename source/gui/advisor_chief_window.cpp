@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_chief_window.hpp"
 #include "gfx/decorator.hpp"
@@ -33,6 +35,7 @@
 #include "city/migration.hpp"
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
+#include "widgetescapecloser.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -54,6 +57,13 @@ public:
   void drawMigrationState( Point pos );
   void drawFoodStockState( Point pos );
   void drawFoodConsumption( Point pos );
+  void drawMilitary( Point pos );
+  void drawCrime( Point pos );
+  void drawHealth( Point pos );
+  void drawEducation( Point pos );
+  void drawReligion( Point pos );
+  void drawEntertainment( Point pos );
+  void drawSentiment( Point pos );
 };
 
 AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int id )
@@ -64,10 +74,12 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
                Size( 640, 420 ) ) );
 
-  gui::Label* title = new gui::Label( this, Rect( 60, 10, 60 + 210, 10 + 40) );
-  title->setText( _("##advisor_chief##") );
+  gui::Label* title = new gui::Label( this, Rect( 60, 10, 60 + 320, 10 + 40) );
+  title->setText( _("##chief_advisor##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignUpperLeft, alignCenter );
+  title->setTextAlignment( align::upperLeft, align::center );
+
+  WidgetEscapeCloser::insertTo( this );
 
   _d->background.reset( Picture::create( size() ) );
 
@@ -80,13 +92,20 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   _d->background->draw( icon, Point( 11, 11 ) );
 
   Point startPoint( 20, 60 );
-  Point offset( 0, 20 );
+  Point offset( 0, 27 );
 
   _d->drawEmploymentState( startPoint );
   _d->drawProfitState( startPoint + offset );
   _d->drawMigrationState( startPoint + offset * 2 );
   _d->drawFoodStockState( startPoint + offset * 3 );
   _d->drawFoodConsumption( startPoint + offset * 4 );
+  _d->drawMilitary( startPoint + offset * 5 );
+  _d->drawCrime( startPoint + offset * 6 );
+  _d->drawHealth( startPoint + offset * 7 );
+  _d->drawEducation( startPoint + offset * 8 );
+  _d->drawReligion( startPoint + offset * 9 );
+  _d->drawEntertainment( startPoint + offset * 10 );
+  _d->drawSentiment( startPoint + offset * 11 );
 }
 
 void AdvisorChiefWindow::draw( gfx::Engine& painter )
@@ -107,7 +126,7 @@ void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::
 
   Picture pointPic = Picture::load( ResourceGroup::panelBackground, 48 );
 
-  background->draw( pointPic, pos + Point( 5, 10 ) );
+  background->draw( pointPic, pos + Point( 5, 5 ) );
   font.draw( *background, title, pos + Point( 20, 0), false );
   font2.draw( *background, text, pos + Point( 255, 0), false );
 }
@@ -127,7 +146,7 @@ void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
 void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
 {
   std::string text;
-  int profit = city->funds().getProfit();
+  int profit = city->funds().profit();
   if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
   else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
 
@@ -149,7 +168,8 @@ void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
 
 void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
 {
-  SmartPtr< city::Info > info = ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ) );
+  city::InfoPtr info;
+  info << city->findService( city::Info::getDefaultName() );
 
   std::string text = _("##food_stock_unknown_reason##");
   if( info.isValid() )
@@ -157,34 +177,77 @@ void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
     int monthWithFood = info->getLast().monthWithFood;
     switch( monthWithFood )
     {
-      case 0: text = _("##have_no_food_on_next_month##"); break;
-      case 1: text = _("##small_food_on_next_month##"); break;
-      case 2: text = _("##some_food_on_next_month##"); break;
+      case 0: text = "##have_no_food_on_next_month##"; break;
+      case 1: text = "##small_food_on_next_month##"; break;
+      case 2: text = "##some_food_on_next_month##"; break;
 
       default:
         text = StringHelper::format( 0xff, "%s %d", _("##have_food_for##"), monthWithFood );
     }
   }
 
-  drawReportRow( pos, _("##advchief_food_stocks##"), text );
+  drawReportRow( pos, _("##advchief_food_stocks##"), _(text) );
 }
 
 void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
 {
   std::string text;
-  SmartPtr< city::Info > info = ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ));
+  city::InfoPtr info;
+  info << ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ));
 
   switch( info->getLast().foodKoeff )
   {
-  case -1: text= _("##we_produce_less_than_eat##"); break;
-  case 0: text = _("##we_noproduce_food##"); break;
-  case 1: text = _("##we_produce_some_than_eat##"); break;
-  case 2: text = _("##we_produce_more_than_eat##"); break;
+  case -1: text= "##we_produce_less_than_eat##"; break;
+  case 0: text = "##we_noproduce_food##"; break;
+  case 1: text = "##we_produce_some_than_eat##"; break;
+  case 2: text = "##we_produce_more_than_eat##"; break;
 
-  default: text = _("##we_produce_much_than_eat##");
+  default: text = "##we_produce_much_than_eat##";
   }
 
-  drawReportRow( pos, _("##advchief_food_consumption##"), text );
+  drawReportRow( pos, _("##advchief_food_consumption##"), _(text) );
+}
+
+void AdvisorChiefWindow::Impl::drawMilitary(Point pos)
+{
+  std::string text;
+  drawReportRow( pos, _("##advchief_military##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawCrime(Point pos)
+{
+  std::string text;
+  drawReportRow( pos, _("##advchief_crime##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawHealth(Point pos)
+{
+  std::string text;
+  drawReportRow( pos, _("##advchief_health##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawEducation(Point pos)
+{
+  std::string text;
+  drawReportRow( pos, _("##advchief_education##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawReligion(Point pos)
+{
+  std::string text;
+  drawReportRow( pos, _("##advchief_religion##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawEntertainment(Point pos)
+{
+  std::string text;
+  drawReportRow( pos, _("##advchief_entertainment##"), text );
+}
+
+void AdvisorChiefWindow::Impl::drawSentiment(Point pos)
+{
+  std::string text;
+  drawReportRow( pos, _("##advchief_sentiment##"), text );
 }
 
 }//end namespace gui

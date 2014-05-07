@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "label.hpp"
 #include "gfx/engine.hpp"
@@ -83,15 +85,15 @@ public:
   void breakText( const std::string& text, const Size& size );
 
 public oc3_signals:
-	Signal0<> onClickedSignal;
+  Signal0<> onClickedSignal;
 };
 
 //! constructor
 Label::Label( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
-	_d->isBorderVisible = false;
-	_d->backgroundMode = bgNone;
-	setTextAlignment( alignAuto, alignAuto );
+  _d->isBorderVisible = false;
+  _d->backgroundMode = bgNone;
+  setTextAlignment( align::automatic, align::automatic );
 }
 
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
@@ -106,7 +108,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
     setDebugName( "label");
   #endif
 
-  setTextAlignment( alignAuto, alignAuto );
+  setTextAlignment( align::automatic, align::automatic );
   setText( text );
 }
 

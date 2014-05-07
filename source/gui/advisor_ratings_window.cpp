@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_ratings_window.hpp"
 #include "gfx/picture.hpp"
@@ -24,13 +26,14 @@
 #include "gfx/engine.hpp"
 #include "core/font.hpp"
 #include "city/city.hpp"
-#include "city/win_targets.hpp"
+#include "city/victoryconditions.hpp"
 #include "texturedbutton.hpp"
 #include "city/cityservice_culture.hpp"
 #include "city/cityservice_prosperity.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -41,7 +44,7 @@ public:
   RatingButton( Widget* parent, Point pos, std::string title, std::string tooltip )
     : PushButton( parent, Rect( pos, Size( 108, 65 )), _(title), -1, false, PushButton::whiteBorderUp )
   {
-    setTextAlignment( alignCenter, alignUpperLeft );
+    setTextAlignment( align::center, align::upperLeft );
     setTooltipText( _(tooltip) );
     _value = 0;
     _target = 0;
@@ -120,22 +123,28 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
 
   if( culture != 0 )
   {
-    if( culture->getValue() == 0 )
+    if( culture->value() == 0 )
     {
       lbRatingInfo->setText( _("##no_culture_building_in_city##") );
       return;
     }
 
     StringArray troubles;
-    if( culture->coverage( city::CultureRating::ccSchool ) < 100 ) { troubles.push_back( _("##have_less_school_in_city##") ); }
-    if( culture->coverage( city::CultureRating::ccLibrary ) < 100 ) { troubles.push_back( _("##have_less_library_in_city##" ) ); }
-    if( culture->coverage( city::CultureRating::ccAcademy ) < 100 ) { troubles.push_back( _("##have_less_academy_in_city##" ) ); }
-    if( culture->coverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_temples_in_city##" ) ); }
-    if( culture->coverage( city::CultureRating::ccReligion ) < 100 ) { troubles.push_back( _("##have_less_theatres_in_city##" ) ); }
+
+    const char* covTypename[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
+    for( int k=CultureRating::covSchool; k < CultureRating::covCount; k++)
+    {
+      int coverage = culture->coverage( CultureRating::Coverage(k) );
+      if( coverage < 100 )
+      {
+        std::string troubleDesc = StringHelper::format( 0xff, "##have_less_%s_in_city_%d##", covTypename[ k ], coverage / 50 );
+        troubles.push_back( troubleDesc );
+      }
+    }
 
     if( !troubles.empty() )
     {
-      lbRatingInfo->setText( troubles[ (int)(rand() % troubles.size())] );
+      lbRatingInfo->setText( _( troubles.rand() ) );
     }
   }
 }
@@ -187,7 +196,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   Label* title = new Label( this, Rect( 60, 10, 225, 10 + 40) );
   title->setText( _("##wnd_ratings_title##") );
   title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( alignUpperLeft, alignCenter );
+  title->setTextAlignment( align::upperLeft, align::center );
 
   _d->background.reset( Picture::create( size() ) );
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
@@ -199,31 +208,31 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 27), 60, 50 );
 
-  const city::WinTargets& targets = city->getWinTargets();
+  const city::VictoryConditions& targets = city->victoryConditions();
 
   Font font = Font::create( FONT_2 );
   font.draw( *_d->background, StringHelper::format( 0xff, "(%s %d)", _("##need_population##"), targets.needPopulation() ), 225, 15, false );
 
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wdnrt_culture##", "##wndrt_culture_tooltip##" );
   _d->btnCulture->setTarget( targets.needCulture() );
-  _d->btnCulture->setValue( _d->city->getCulture() );
+  _d->btnCulture->setValue( _d->city->culture() );
   _d->drawColumn( _d->btnCulture->getRelativeRect().getCenter(), 0 );
   CONNECT( _d->btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
 
   _d->btnProsperity = new RatingButton( this, Point( 200, 290), "##wndrt_prosperity##", "##wndrt_prosperity_tooltip##" );
-  _d->btnProsperity->setValue( _d->city->getProsperity() );
+  _d->btnProsperity->setValue( _d->city->prosperity() );
   _d->btnProsperity->setTarget( targets.needProsperity() );
-  _d->drawColumn( _d->btnProsperity->getRelativeRect().getCenter(), _d->city->getProsperity() );
+  _d->drawColumn( _d->btnProsperity->getRelativeRect().getCenter(), _d->city->prosperity() );
   CONNECT( _d->btnProsperity, onClicked(), _d.data(), Impl::checkProsperityRating );
 
   _d->btnPeace      = new RatingButton( this, Point( 320, 290), "##wndrt_peace##", "##wndrt_peace_tooltip##" );
-  _d->btnPeace->setValue( _d->city->getPeace() );
+  _d->btnPeace->setValue( _d->city->peace() );
   _d->btnPeace->setTarget( targets.needPeace() );
   _d->drawColumn( _d->btnPeace->getRelativeRect().getCenter(), 0 );
   CONNECT( _d->btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
 
   _d->btnFavour     = new RatingButton( this, Point( 440, 290), "##wndrt_favour##", "##wndrt_favour_tooltip##" );
-  _d->btnFavour->setValue( _d->city->getFavour() );
+  _d->btnFavour->setValue( _d->city->favour() );
   _d->btnFavour->setTarget( targets.needFavour() );
   _d->drawColumn( _d->btnFavour->getRelativeRect().getCenter(), 0 );
 

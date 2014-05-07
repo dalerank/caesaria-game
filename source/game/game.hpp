@@ -43,9 +43,6 @@ public:
 
   void reset();
 
-  void initSound();
-  void mountArchives();
-
   void setScreenMenu();
   void setScreenGame();
   void setScreenBriefing();

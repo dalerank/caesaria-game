@@ -46,7 +46,7 @@ ShowAdvisorWindow::ShowAdvisorWindow() : _show( false ), _advisor( advisor::coun
 void ShowAdvisorWindow::_exec(Game& game, unsigned int)
 {
   Variant advEnabled = GameSettings::get( GameSettings::adviserEnabled );
-  if( advEnabled.isValid() && !(bool)advEnabled )
+  if( advEnabled.isValid() && !advEnabled.toBool() )
   {
     events::GameEventPtr e = events::WarningMessageEvent::create( "##not_available##" );
     e->dispatch();

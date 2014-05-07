@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__
 #define __CAESARIA_MISSION_TARGETS_WINDOW_H_INCLUDED__
@@ -27,9 +29,9 @@ class MissionTargetsWindow : public Widget
 {
 public:
   static MissionTargetsWindow* create( Widget* parent, PlayerCityPtr city , int id=-1 );
-  ~MissionTargetsWindow();
+  virtual ~MissionTargetsWindow();
 
-  void draw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
   void setCity( PlayerCityPtr city );
 
 private:

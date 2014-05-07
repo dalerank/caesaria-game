@@ -92,7 +92,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
     ConstructionPtr constr = ptr_cast<Construction>(overlay);
     if( constr.isValid() && !constr->canDestroy() )
     {
-      GameEventPtr e = WarningMessageEvent::create( _( constr->getError().c_str() ) );
+      GameEventPtr e = WarningMessageEvent::create( _( constr->errorDesc().c_str() ) );
       e->dispatch();
       return;
     }
@@ -184,7 +184,7 @@ void Pause::_exec(Game& game, unsigned int)
         Size scrSize = rootWidget->size();
         wdg = new gui::Label( rootWidget, Rect( Point( (scrSize.width() - 450)/2, 40 ), Size( 450, 50 ) ),
                               _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
-        wdg->setTextAlignment( alignCenter, alignCenter );
+        wdg->setTextAlignment( align::center, align::center );
       }
     }
     else

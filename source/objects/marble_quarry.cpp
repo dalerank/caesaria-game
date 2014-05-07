@@ -23,28 +23,20 @@
 #include "core/foreach.hpp"
 
 using namespace gfx;
+using namespace constants;
 
-MarbleQuarry::MarbleQuarry() : Factory(Good::none, Good::marble, constants::building::marbleQuarry, Size(2) )
+MarbleQuarry::MarbleQuarry()
+  : Factory(Good::none, Good::marble, building::marbleQuarry, Size(2) )
 {
   _animationRef().load( ResourceGroup::commerce, 44, 10);
   _animationRef().setDelay( 4 );
   _fgPicturesRef().resize(2);
+
+  _setClearAnimationOnStop( false );
 }
 
 void MarbleQuarry::timeStep( const unsigned long time )
 {
-  bool mayAnimate = numberWorkers() > 0;
-
-  if( mayAnimate && _animationRef().isStopped() )
-  {
-    _animationRef().start();
-  }
-
-  if( !mayAnimate && _animationRef().isRunning() )
-  {
-    _animationRef().stop();
-  }
-
   Factory::timeStep( time );
 }
 

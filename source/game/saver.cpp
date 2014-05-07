@@ -38,6 +38,7 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   vm_scenario[ "date" ] = GameDate::current();
   vm_scenario[ "events" ] = events::Dispatcher::instance().save();
   vm_scenario[ "translation" ] = GameSettings::get( GameSettings::lastTranslation );
+  vm_scenario[ "adviserEnabled" ] = GameSettings::get( GameSettings::adviserEnabled );
   vm[ "scenario" ] = vm_scenario;
 
   VariantMap vm_empire;

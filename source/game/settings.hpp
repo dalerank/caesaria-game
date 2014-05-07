@@ -25,40 +25,46 @@
 class GameSettings
 {
 public:
-  static const char* ctNamesModel;
-  static const char* localePath;
-  static const char* resourcePath;
-  static const char* pantheonModel;
-  static const char* houseModel;
-  static const char* citiesModel;
-  static const char* constructionModel;
-  static const char* settingsPath;
-  static const char* language;
-  static const char* resolution;
-  static const char* fullscreen;
-  static const char* savedir;
-  static const char* emigrantSalaryKoeff;
-  static const char* minMonthWithFood;
-  static const char* worldModel;
-  static const char* worklessCitizenAway;
-  static const char* langModel;
-  static const char* fastsavePostfix;
-  static const char* saveExt;
-  static const char* workDir;
-  static const char* adviserEnabled;
-  static const char* lastTranslation;
-  static const char* c3gfx;
-  static const char* archivesModel;
-  static const char* soundThemesModel;
-  static const char* soundVolume;
-  static const char* ambientVolume;
-  static const char* musicVolume;
-  static const char* animationsModel;
-  static const char* walkerModel;
-  static const char* giftsModel;
-  static const char* emblemsModel;
+#define __GS_PROPERTY(a) static const char* a;
+  __GS_PROPERTY(ctNamesModel)
+  __GS_PROPERTY(localePath)
+  __GS_PROPERTY(resourcePath)
+  __GS_PROPERTY(pantheonModel)
+  __GS_PROPERTY(houseModel)
+  __GS_PROPERTY(citiesModel)
+  __GS_PROPERTY(constructionModel)
+  __GS_PROPERTY(settingsPath)
+  __GS_PROPERTY(language)
+  __GS_PROPERTY(resolution)
+  __GS_PROPERTY(fullscreen)
+  __GS_PROPERTY(savedir)
+  __GS_PROPERTY(emigrantSalaryKoeff)
+  __GS_PROPERTY(minMonthWithFood)
+  __GS_PROPERTY(worldModel)
+  __GS_PROPERTY(worklessCitizenAway)
+  __GS_PROPERTY(langModel)
+  __GS_PROPERTY(fastsavePostfix)
+  __GS_PROPERTY(saveExt)
+  __GS_PROPERTY(workDir)
+  __GS_PROPERTY(adviserEnabled)
+  __GS_PROPERTY(lastTranslation)
+  __GS_PROPERTY(c3gfx)
+  __GS_PROPERTY(archivesModel)
+  __GS_PROPERTY(soundThemesModel)
+  __GS_PROPERTY(soundVolume)
+  __GS_PROPERTY(ambientVolume)
+  __GS_PROPERTY(musicVolume)
+  __GS_PROPERTY(animationsModel)
+  __GS_PROPERTY(walkerModel)
+  __GS_PROPERTY(giftsModel)
+  __GS_PROPERTY(emblemsModel)
+  __GS_PROPERTY(testArchive)
+  __GS_PROPERTY(screenFitted)
+  __GS_PROPERTY(needAcceptBuild)
+  __GS_PROPERTY(sg2model)
+#undef __GS_PROPERTY
 
-  static GameSettings& getInstance();
+  static GameSettings& instance();
 
   static void set( const std::string& option, const Variant& value );
   static Variant get( const std::string& option );

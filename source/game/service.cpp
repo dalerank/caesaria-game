@@ -25,31 +25,33 @@ ServiceHelper& ServiceHelper::instance()
 
 ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
 {
-  append( Service::well, "srvc_well" );
-  append( Service::fontain, "srvc_fonutain" );
-  append( Service::market, "srvc_market" );
-  append( Service::engineer, "srvc_engineer" );
-  append( Service::senate, "srvc_senate" );
-  append( Service::forum, "srvc_forum" );
-  append( Service::prefect, "srvc_prefect" );
-  append( Service::religionNeptune, "srvc_temple_neptune" );
-  append( Service::religionCeres, "srvc_temple_ceres" );
-  append( Service::religionVenus, "srvc_temple_venus" );
-  append( Service::religionMars, "srvc_temple_mars" );
-  append( Service::religionMercury, "srvc_temple_mercury" );
-  append( Service::oracle, "srvc_temple_oracle" );
-  append( Service::doctor, "srvc_doctor" );
-  append( Service::barber, "srvc_barber" );
-  append( Service::baths, "srvc_baths" );
-  append( Service::hospital, "srvc_hospital" );
-  append( Service::school, "srvc_school" );
-  append( Service::library, "srvc_library" );
-  append( Service::academy, "srvc_college" );
-  append( Service::theater, "srvc_theater" );
-  append( Service::amphitheater, "srvc_amphitheater" );
-  append( Service::colloseum, "srvc_collosseum" );
-  append( Service::hippodrome, "srvc_hippodrome" );
-  append( Service::recruter, "srvc_workers_hunter" );
+#define __REG_SERVICE(a) append( Service::a, "srvc_"CAESARIA_STR_EXT(a) );
+  __REG_SERVICE( well )
+  __REG_SERVICE( fountain )
+  __REG_SERVICE( market )
+  __REG_SERVICE( engineer )
+  __REG_SERVICE( senate )
+  __REG_SERVICE( forum )
+  __REG_SERVICE( prefect )
+  __REG_SERVICE( religionNeptune )
+  __REG_SERVICE( religionCeres )
+  __REG_SERVICE( religionVenus )
+  __REG_SERVICE( religionMars )
+  __REG_SERVICE( religionMercury )
+  __REG_SERVICE( oracle )
+  __REG_SERVICE( doctor )
+  __REG_SERVICE( barber )
+  __REG_SERVICE( baths )
+  __REG_SERVICE( hospital )
+  __REG_SERVICE( school )
+  __REG_SERVICE( library )
+  __REG_SERVICE( academy )
+  __REG_SERVICE( theater )
+  __REG_SERVICE( amphitheater )
+  __REG_SERVICE( colloseum )
+  __REG_SERVICE( hippodrome )
+  __REG_SERVICE( recruter )
+#undef __REG_SERVICE
   append( Service::srvCount, "srvc_none" );
 }
 

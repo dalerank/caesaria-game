@@ -79,7 +79,7 @@ unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
 
   //wages all worker in year
   //workers take salary in sestertius 1/100 part of dinarius
-  int wages = workersNumber * city->funds().getWorkerSalary() / 100;
+  int wages = workersNumber * city->funds().workerSalary() / 100;
 
   wages = std::max<int>( wages, 1 );
 
@@ -137,6 +137,27 @@ unsigned int Statistic::getFoodProducing(PlayerCityPtr city)
   foreach( f, farms ) { foodProducing += (*f)->getProduceQty(); }
 
   return foodProducing;
+}
+
+unsigned int Statistic::getTaxValue(PlayerCityPtr city)
+{
+  HouseList houses;
+  houses << city->overlays();
+
+  float taxValue = 0.f;
+  float taxRate = city->funds().taxRate();
+  foreach( house, houses )
+  {
+    int maxhb = (*house)->getMaxHabitants();
+    if( maxhb == 0 )
+      continue;
+
+    int maturehb = (*house)->getHabitants().count( CitizenGroup::mature );
+    int housetax = (*house)->getSpec().taxRate();
+    taxValue += housetax * maturehb * taxRate / maxhb;
+  }
+
+  return taxValue;
 }
 
 Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)

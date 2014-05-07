@@ -18,19 +18,21 @@
 #ifndef _CAESARIA_WALLGUARD_INCLUDE_H_
 #define _CAESARIA_WALLGUARD_INCLUDE_H_
 
-#include "soldier.hpp"
+#include "romesoldier.hpp"
 #include "objects/predefinitions.hpp"
 
 /** Soldier, friend or enemy */
-class WallGuard : public Soldier
+class WallGuard : public RomeSoldier
 {
 public:
   static WallGuardPtr create( PlayerCityPtr city, constants::walker::Type type );
 
-  void send2city(TowerPtr base , Pathway pathway);
+  void send2city(TowerPtr tower, Pathway pathway);
+  void setBase( TowerPtr tower );
 
   virtual void die();
   virtual void timeStep(const unsigned long time);
+  virtual void fight();
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -39,18 +41,22 @@ protected:
   virtual void _centerTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
+  virtual void _waitFinished();
+  virtual void _fire( TilePos target );
+  virtual void _back2base();
+  virtual bool _tryAttack();
 
-  void _back2tower();
   void _back2patrol();
-  bool _tryAttack();
   FortificationList _findNearestWalls( EnemySoldierPtr enemy );
-
-  EnemySoldierList _findEnemiesInRange(unsigned int range);
+  EnemySoldierPtr _findNearbyEnemy(EnemySoldierList enemies);
 
   Pathway _attackEnemyInRange(unsigned int range);
-private:
+
   WallGuard(PlayerCityPtr city, constants::walker::Type type);
 
+  virtual ~WallGuard();
+
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

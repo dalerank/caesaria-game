@@ -46,30 +46,10 @@ Prefecture::Prefecture()
   _fgPicturesRef().resize(1);
 }
 
-Prefecture::~Prefecture()
-{
-
-}
+Prefecture::~Prefecture() {}
 
 void Prefecture::timeStep(const unsigned long time)
 {
-  bool mayAnimate = numberWorkers() > 0;
-
-  if( mayAnimate  )
-  {
-    if( _animationRef().isStopped() )
-    {
-      _animationRef().setIndex( 0 );
-      _animationRef().start();
-    }
-  }
-  else if( _animationRef().isRunning() )
-  {
-    _animationRef().setIndex( -1 );
-    _animationRef().stop();
-    _fgPicturesRef().back() = Picture::getInvalid();
-  }
-
   ServiceBuilding::timeStep( time );
 }
 

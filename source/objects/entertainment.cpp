@@ -25,6 +25,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "walker/helper.hpp"
 
 using namespace constants;
 
@@ -80,7 +81,7 @@ void EntertainmentBuilding::deliverService()
 
   foreach( item, _d->necWalkers )
   {
-    int level = getTraineeValue( *item );
+    int level = traineeValue( *item );
     setTraineeValue( *item, math::clamp( level - decreaseLevel, 0, 100) );
   }
 }
@@ -111,6 +112,26 @@ void EntertainmentBuilding::load(const VariantMap& stream)
   _d->showCounter = (int)stream.get( "showCounter" );
 }
 
+std::string EntertainmentBuilding::troubleDesc() const
+{
+  std::string ret = ServiceBuilding::troubleDesc();
+
+  if( ret.empty() )
+  {
+    foreach( item, _d->necWalkers )
+    {
+      int level = traineeValue( *item );
+      if( level == 0 )
+      {
+        ret = StringHelper::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( *item ).c_str() );
+        break;
+      }
+    }
+  }
+
+  return ret;
+}
+
 EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::necessaryWalkers() const { return _d->necWalkers; }
 void EntertainmentBuilding::_addNecessaryWalker(walker::Type type){  _d->necWalkers.push_back( type );}
 
@@ -118,7 +139,7 @@ bool EntertainmentBuilding::_isWalkerReady()
 {
   int maxLevel = 0;
   foreach( item, _d->necWalkers )
-  {  maxLevel = std::max( maxLevel, getTraineeValue( *item ) ); }
+  {  maxLevel = std::max( maxLevel, traineeValue( *item ) ); }
 
   return maxLevel;
 }
