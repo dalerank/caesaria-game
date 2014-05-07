@@ -189,7 +189,7 @@
     move : { rc : "carts", start : 241, frames : 1, action : 1, step : 8 }
   }
 
-  catapult : {
+  balista : {
     none : { rc : "sprites", start : 210, frames : 1, action : 0, step : 8 }
     fight : { rc : "sprites", start : 162, frames : 6, action : 2, step : 8 }
     work : { rc : "sprites", start : 162, frames : 6, action : 4, step : 8 }

@@ -1,6 +1,41 @@
 Releases:
+##### 2014-05-07 (b1465)
+  * Romanian and french localization start
+  * Earthquake events add
+  * Chief advisor show more city parameters
+  * House may grow with vacant place too
+  * Factory stop when outstock full
+  * Add balista on tower and arrows for it
+  * Localization improved, less textholders now
+  * Now tower need soldier for produce wall guards
+  * Rating advisor now correctly say what you need for raise culture rating
+  * Entertainment buildings now have self troubles that show in information window
+  * Improved city troubles information layer, now buildings without troubles not showing on map
+  * Non-flat gardens now draw correctly
+  * Add video event when start epidemy in city
+  * Add empire tax
+  * Add rome spearman and mounted and fort for those.
+  * Imperial request now deisplay with movie
+  * Improved attack alg from enemy soldiers, now more lot of walkers at one tile
+  * Android add "Enter" button on action bar
+  * Windows and layers now close by Escape press
+  * Fixed calculating gods relation such original game
+  * Add links to steam page and home page from start menu
+  * Second tutorial mission fixed adviser enable event
+  * Farm/Warehouse tiles drawing fixed, now show all tiles.
+  * Calculating relation interval for gods less to one week
+  * Add different color for selected menu item
+  * Workers wage now may change from employers advisor window
+  * Add play sound when tutorial window show
+  * Add relation/absolute path for game resources, forexample "./resources/audio/1.wav" 
+    equale "/audio/1.wav", that using in configs and scripts 
+  * Add system warning about lost original resources
+  * City information layer for damage now display animations
+  * fix crash, when debug output cannot be created
+  * Imperial request reminder window add
+  * Show warning message when inland lake dock built
 
-##### 2014-04-09
+##### 2014-04-09 (b1362)
   * prefects attack enemy soldiers
   * atlas of animations redesign, fast search in the atlas, settings of animations in the configuration file
   * fish places cease to appear if in the city there is no river, or not access to the river
