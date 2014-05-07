@@ -65,7 +65,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   Label* lbText = new Label( this, Rect( 10, 55, width() - 10, 55 + 55 ), text );
   lbText->setTextAlignment( align::center, align::center );
 
-  if( (buttons & btnOk) || (buttons & btnCancel) )
+  if( (buttons == btnOk) || (buttons == btnCancel) )
   {
     new TexturedButton( this, Point( width() / 2 - 20, height() - 50),
                         Size( 39, 26 ), buttons,
@@ -114,7 +114,7 @@ bool DialogBox::onEvent( const NEvent& event )
 
 Signal0<>& DialogBox::onOk() {  return _d->onOkSignal;}
 Signal0<>& DialogBox::onCancel(){  return _d->onCancelSignal;}
-Signal0<> &DialogBox::onNever() { return _d->onNeverSignal; }
+Signal0<>& DialogBox::onNever() { return _d->onNeverSignal; }
 
 void DialogBox::draw(gfx::Engine& painter )
 {

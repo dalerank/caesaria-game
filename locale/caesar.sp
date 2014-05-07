@@ -1,5 +1,4 @@
-{
-"##0_entertainment_access##":"Esta vivienda no tiene acceso a ningún tipo de entretenimiento."
+{"##0_entertainment_access##":"Esta vivienda no tiene acceso a ningún tipo de entretenimiento."
 "##1_entertainment_access##":"Esta vivienda apenas tiene acceso a entretenimientos."
 "##2_entertainment_access##":"Esta vivienda tiene algo de acceso a actividades de entretenimiento."
 "##3_entertainment_access##":"Esta vivienda tiene acceso muy limitado a actividades de entretenimiento."
@@ -33,10 +32,12 @@
 "##advchief_food_stocks##":"Reservas de comida"
 "##adve_administration_religion##":"Gobernación/religión"
 "##adve_engineers##":"Ingeniería"
+"##entertainment_advisor_title##":"Entretenimiento"
 "##adve_entertainment##":"Entretenimiento"
 "##adve_food##":"Producción de alimentos"
 "##adve_health_education##":"Sanidad y educación"
 "##adve_industry_and_trade##":"Industria y comercio"
+"##advchief_military##":"Ejército"
 "##adve_military##":"Ejército"
 "##adve_prefectures##":"Prefecturas"
 "##adve_water##":"Servicios hidráulicos"
@@ -44,10 +45,12 @@
 "##advemployer_panel_haveworkers##":""
 "##advemployer_panel_needworkers##":""
 "##advemployer_panel_priority##":""
-"##advemployer_panel_romepay##":"(Roma paga"
+"##advemployer_panel_romepay##":"Roma paga"
+"##advemployer_panel_salary##":"Salarios"
+"##advemployer_panel_sector##":""
 "##advemployer_panel_title##":"Distribución laboral"
 "##advemployer_panel_workers##":""
-"##advemployer_panel_workless##":"Mano de obra desempleada ("
+"##advemployer_panel_workless##":"Mano de obra desempleada "
 "##advice_at_culture##":"Haz clic aquí para asesorarte sobre la puntuación de cultura"
 "##advisors##":"Asesores"
 "##advlegion_noalarm##":"No tenemos informes de que existan amenazas para la ciudad."
@@ -151,6 +154,7 @@
 "##buildings##":"Construcción"
 "##caesar_assign_new_title##":"El César te ha ascendido al rango de"
 "##caesar_salary##":"Salario de César de"
+"##can_build_only_one_of_building##":"Solamente puedes tener un edificio de este tipo"
 "##cancel##":"Cancelar"
 "##cancelBtnTooltip##":"Cancelar esta operación"
 "##cant_demolish_bridge_with_people##":"Hay gente en el puente. No puedes derribarlo."
@@ -171,7 +175,6 @@
 "##chatioteer_school_bad_work##":"Necesitamos personal urgentemente. Intentaremos terminar una cuadriga en los próximos dos meses."
 "##chatioteer_school_no_workers##":"Sin artesanos no se harán nuevas cuadrigas. El hipódromo, de estar operativo, podría sufrir las consecuencias."
 "##chatioteer_school##":"Taller de cuadrigas"
-"##egift_chest_of_sapphire##":"Un cofre de zafiros"
 "##chief_advisor##":"Asesor jefe"
 "##children##":"Niños"
 "##citizen_are_rioting##":"¡Los ciudadanos están amotinándose!"
@@ -189,7 +192,6 @@
 "##citizen_good_education##":"¡Hay más cultura en esta ciudad que en ninguna otra del Imperio!"
 "##citizen_good_life##":"La vida es buena en la ciudad."
 "##citizen_high_workless##":"Con tanto desempleo, es una suerte tener trabajo."
-"##citizen_high_workless10##":"Es espantoso. Nunca había visto tantos puestos de trabajo vacantes."
 "##citizen_high_workless10##":"Hay tanto desempleo que los ciudadanos no son felices."
 "##citizen_high_workless11##":"¡El paro es tan elevado que hasta mi mujer ha dejado de repetirme que me busque un empleo mejor!"
 "##citizen_high_workless12##":"Hay demasiado desempleo. Estoy pensando en marcharme de aquí."
@@ -199,7 +201,6 @@
 "##citizen_high_workless3##":"¡Nunca había visto a tanta gente sin trabajo!"
 "##citizen_high_workless4##":"Nunca me había encontrado con tantos parados."
 "##citizen_high_workless5##":"¡Aquí siempre hay tanta gente buscando trabajo!"
-"##citizen_high_workless6##":"!Saludos! Aqui hay verdadera escasez de trabajadores."
 "##citizen_high_workless7##":"¡Hay tanto paro que se me ponen los pelos de punta de sólo pensarlo!"
 "##citizen_high_workless8##":"¡Qué desgracia! ¡Nunca había visto a tantos plebeyos desempleados!"
 "##citizen_high_workless9##":"Espero no perder mi empleo. ¡Hay tanto paro que no sé si podría encontrar otro!"
@@ -210,6 +211,8 @@
 "##citizen_low_entertainment5##":"¡Ciudadano! ¿No es esta la ciudad más aburrida del Imperio?"
 "##citizen_low_salary##":"Ni mi perro trabajaría por ese sueldo. ¡Me voy!"
 "##citizen_need_workers##":"Es impresionante la cantidad de ofertas de trabajo existentes."
+"##citizen_need_workers10##":"Es espantoso. Nunca había visto tantos puestos de trabajo vacantes."
+"##citizen_need_workers11##":"!Saludos! Aqui hay verdadera escasez de trabajadores."
 "##citizen_need_workers2##":"He oido que hay trabajo ¡Yo quiero ser domador de leones!"
 "##citizen_need_workers3##":"La ciudad anda escasa de trabajadores."
 "##citizen_need_workers4##":"¡La ciudad necesita muchos más trabajadores!"
@@ -228,6 +231,7 @@
 "##city_has_runout_debt##":""
 "##city_have_goods_for_request##":""
 "##city_have##":"El tesoro de la ciudad tiene un activo de"
+"##health_advisor##":"Sanidad de la ciudad"
 "##city_health##":"Sanidad de la ciudad"
 "##city_need_more_workers##":"La ciudad necesita más trabajadores."
 "##city_sounds_off##":"Sonidos ciudad desactivados"
@@ -274,6 +278,7 @@
 "##consul_salary##":"Salario de cónsul de"
 "##consul##":"Cónsul"
 "##contaminted_water##":"Agua contaminada"
+"##continue##":""
 "##corinthus##":"Corinto"
 "##cost_2_open##":"Coste de apertura"
 "##cost##":"Coste"
@@ -313,6 +318,8 @@
 "##difficulty##":""
 "##disasterBtnTooltip##":""
 "##dispatch_force##":"¿Enviar fuerzas de refresco?"
+"##dispatch_gift##":"Mandar un regalo."
+"##dispatch_git_title##":"Enviar regalo al emperador"
 "##dispatch_goods?##":"¿Despachar bienes?"
 "##distant_city##":"Una ciudad lejana."
 "##distribution_center##":"Centro de distribución"
@@ -339,8 +346,22 @@
 "##education_have_school_library_access##":"Esta casa tiene acceso a un colegio y a una biblioteca."
 "##education_have_school_or_library_access##":"Esta casa tiene acceso a un colegio o a una biblioteca."
 "##education_objects##":"Estructuras educativas"
+"##education_advisor_title##":"Educación"
 "##education##":"Educación"
 "##educationBtnTooltip##":""
+"##egift_chest_of_sapphire##":"Un cofre de zafiros"
+"##egift_educated_slave##":"Un esclavo educado"
+"##egift_egyptian_glassware##":"Vajilla egipcia"
+"##egift_gaulish_bodyguards##":"Guardias personales galos"
+"##egift_generous##":"Generoso:"
+"##egift_gepards_and_giraffes##":"Guepardos y una jirafa"
+"##egift_golden_chariot##":"Un carro de oro"
+"##egift_gree_manuscript##":"Un manuscrito griego"
+"##egift_lavish##":"Lujoso:"
+"##egift_modest##":"Modesto:"
+"##egift_persian_carpets##":"Alfombras persas"
+"##egift_soldier_from_pergamaum##":"Soldado de Pérgamo"
+"##egift_troupe_preforming_slaves##":"Una tropa de esclavos"
 "##emigrant_high_workless##":"¿Sabes si hay trabajo? ¡Lo necesito!"
 "##emigrant_low_entertainment##":"¡Ya que el gobernador no se preocupa por mi, voy a enseñarle lo que yo me preocupo por su ciudad!"
 "##emigrant##":"Emigrante"
@@ -348,6 +369,14 @@
 "##emmigrant_where_my_home##":"Soy nuevo aquí ¿conoces algún lugar donde pueda vivir?"
 "##emperor_favour_00##":"El emperador está furioso contigo."
 "##emperor_favour_01##":"El emperador está tan terriblemente enfadado que incluso ha pensado mandarte al exilio."
+"##emperor_favour_02##":"El emperador está extremadamente enfadado contigo."
+"##emperor_favour_03##":"El emperador está muy enfadado contigo."
+"##emperor_favour_04##":"El emperador está enfadado contigo."
+"##emperor_favour_05##":"El emperador está extremadamente decepcionado contigo."
+"##emperor_favour_06##":"El emperador está totalmente decepcionado contigo."
+"##emperor_favour_07##":"El emperador está decepcionado contigo."
+"##emperor_favour_08##":"El emperador está algo decepcionado contigo."
+"##emperor_favour_09##":"El emperador está un poco preocupado contigo."
 "##emperor_favour_10##":"El emperador se muestra contradictorio contigo."
 "##emperor_favour_11##":"El emperador piensa que puedes hacerlo bien."
 "##emperor_favour_12##":"El emperador está satisfecho contigo."
@@ -358,15 +387,7 @@
 "##emperor_favour_17##":"El emperador está extremadamente entusiasmado con tu actuación."
 "##emperor_favour_18##":"El emperador está encantado con tu actuación."
 "##emperor_favour_19##":"El emperador está más que satisfecho con tu actuación."
-"##emperor_favour_02##":"El emperador está extremadamente enfadado contigo."
 "##emperor_favour_20##":"El emperador está increíblemente encantado; hasta piensa nombrarte su heredero."
-"##emperor_favour_03##":"El emperador está muy enfadado contigo."
-"##emperor_favour_04##":"El emperador está enfadado contigo."
-"##emperor_favour_05##":"El emperador está extremadamente decepcionado contigo."
-"##emperor_favour_06##":"El emperador está totalmente decepcionado contigo."
-"##emperor_favour_07##":"El emperador está decepcionado contigo."
-"##emperor_favour_08##":"El emperador está algo decepcionado contigo."
-"##emperor_favour_09##":"El emperador está un poco preocupado contigo."
 "##emperor_request##":"Solicitud imperial"
 "##emperor##":"Emperador"
 "##emperror_legion_at_out_gates##":"Una legión de tropas del emperador se encuentra a nuestras puertas."
@@ -417,6 +438,7 @@
 "##farming_desc##":"(Agricultura)"
 "##favor_rating##":"Puntos de favor"
 "##favor##":"Favor"
+"##wndrt_favour##":"Favor"
 "##festivals##":"Festivales"
 "##fig_farm_bad_work##":"Aquí trabajan muy pocos granjeros. La cosecha de fruta se retrasará mucho."
 "##fig_farm_full_work##":"Este huerto tiene todo el personal que necesita. Los árboles rebosan de jugosa fruta."
@@ -427,6 +449,8 @@
 "##fig_farm##":"Granja de frutas"
 "##file##":"Archivo"
 "##finance_advisor##":"Economía"
+"##finance_advisor##":"Fondos actuales de la ciudad"
+"##advchief_finance##":"Economía"
 "##finances##":"Economía"
 "##fire##":"Fuego"
 "##fired##":"¡Despedido!"
@@ -439,6 +463,7 @@
 "##fort_legionaries_no_workers##":"Sin personal somos incapaces de entrenar a un solo nuevo recluta. ¡Que Marte nos ayude en caso de guerra!."
 "##fort##":"Fuerte"
 "##fortification_info##":"Las murallas evitan el avance de los invasores hacia la ciudad. Éstos pueden destruir las murallas. Las murallas gruesas son más fuertes y permiten patrullar a los guardias entre las torres conectadas."
+"##fortification##":""
 "##forum_1_on_patrol##":"Nuestro recaudador está inspeccionando."
 "##forum_1_ready_for_work##":"Nuestro recaudador se prepara para irse."
 "##forum_1_slow_work##":"Estamos tan escasos de personal, que entre una ronda de recaudación y la siguiente, pasan dos semanas."
@@ -470,11 +495,13 @@
 "##furniture_workshop##":"Taller de carpintería"
 "##furniture##":"Muebles"
 "##game_is_paused##":"Juego en pausa (Pulsar 'P' para continuar)"
-"##game_speed##":""
+"##game_sound_options##":""
+"##game_speed_options##":""
 "##garden_info##":"Este lugar permite escapar del ruido, el calor y la suciedad de la ciudad ofreciendo a los ciudadanos la frescura de un verde oasis. Todo el mundo quiere un jardín junto a su casa."
 "##garden##":"Jardines"
 "##gardens_info##":"Los jardines mejoran el entorno de la zona."
 "##gatehouse##":"Portón"
+"##give_money##":"Dar dinero"
 "##gladiator_pit_bad_work##":"Soy el único personal laboral aquí. No puedo trabajar en estas condiciones. En el mejor de los casos, puedo entrenar a un gladiador en tres meses."
 "##gladiator_pit_full_work##":"Nos satisface comunicar que con tanto personal estamos entrenando hasta a cuatro gladiadores nuevos cada mes."
 "##gladiator_pit_need_some_workers##":"Estamos algo escasos de personal, por lo que no podemos entrenar a más de dos gladiadores al mes."
@@ -492,14 +519,33 @@
 "##gmenu_file##":""
 "##gmenu_help##":""
 "##gmenu_options##":""
+"##gmsndwnd_ambient_sound##":"Efectos sonido "
+"##gmsndwnd_game_volume##":"Volumen"
+"##gmsndwnd_theme_sound##":"Música"
+"##gmspdwnd_game_speed##":""
+"##gmspdwnd_scroll_speed##":""
 "##go_to_problem##":"Haz clic aquí para ir a este punto conflictivo"
 "##go2_problem_area##":"Ir a zona conflictiva."
 "##god_ceres_short##":""
+"##god_charmed##":"muy contento"
+"##god_displeased##":"desencantado"
+"##god_exalted##":"exaltado"
+"##god_excellent##":"Excelente"
+"##god_good##":"Buena"
+"##god_happy##":"feliz"
+"##god_indifferent##":"indiferente"
+"##god_irriated##":"irritado"
 "##god_mars_short##":""
 "##god_mercury_short##":""
 "##god_neptune_short##":""
+"##god_pleased##":"contento"
+"##god_poor##":"Pobre"
+"##god_quitepoor##":"Bastante pobres"
 "##god_venus_short##":""
-"##egift_golden_chariot##":"Un carro de oro"
+"##god_veryangry##":"muy enfadado"
+"##god_verygood##":"Muy buena"
+"##god_verypoor##":"Muy pobre"
+"##god_wrathful##":"colérico"
 "##goth_warrior##":"Guerrero godo"
 "##goto_empire_map##":"Ir al mapa del Imperio"
 "##goto##":"Ir a la"
@@ -515,13 +561,18 @@
 "##grape_factory_stock##":"Uvas almacenadas,"
 "##grape##":"Viñas"
 "##grass##":"Césped"
-"##egift_gree_manuscript##":"Un manuscrito griego"
 "##greek_soldier##":"Soldado griego"
 "##have_food_for##":"comida para"
+"##have_less_academy_in_city_0##":"Tienes muy pocas academias en la ciudad. Construir más mejoraría esta puntuación."
+"##have_less_library_in_city_0##":"Tienes muy pocas bibliotecas en la ciudad. Construir más mejoraría esta puntuación."
+"##have_less_school_in_city_0##":"Tienes muy pocos colegios en la ciudad. Construir más mejoraría esta puntuación."
+"##have_less_temple_in_city_0##":"Tienes muy pocos lugares de culto en la ciudad. Construir más mejoraría esta puntuación."
+"##have_less_theater_in_city_0##":"Tienes muy pocos teatros en la ciudad. Construir más mejoraría esta puntuación."
 "##have_no_food_on_next_month##":"nada de comida para el próximo mes."
 "##have_no_legions##":"No tienes ninguna legión que enviar."
 "##have_no_requests##":"Actualmente no tienes mensajes que leer. Cuando la ciudad crezca o el emperador te solicite bienes, los mensajes aparecerán aquí."
 "##health_advisor##":"Estructuras sanitarias"
+"##advchief_health##":"Sanidad"
 "##health##":"Sanidad"
 "##healthBtnTooltip##":""
 "##help##":"Ayuda"
@@ -558,7 +609,8 @@
 "##immigrant_no_home##":"¡No tengo dónde vivir!"
 "##immigrant_no_work_for_me##":"¡Ya me he cansado de la ciudad! ¡No hay trabajo!"
 "##immigrant_thrown_from_house##":"¡Me han echado de mi propia casa!"
-"##import##":"Importaciones"
+"##import_fn##":"Importaciones"
+"##import##":"Importación"
 "##infobox_tooltip_exit##":""
 "##infobox_tooltip_help##":""
 "##iron_factory_stock##":"Hierro almacenado,"
@@ -583,6 +635,7 @@
 "##large##":"grande"
 "##last_year##":"El año pasado"
 "##lawless_area##":"Una zona sin ley. Los ciudadanos están aterrorizados."
+"##advchief_crime##":"Criminalidad"
 "##layer_crime##":"Criminalidad"
 "##leave_empire?##":"¿Abandonar el Imperio Romano?"
 "##legion_formation_tooltip##":"Haz clic aquí para cambiar la formación de la legión"
@@ -617,6 +670,7 @@
 "##lion_tamer_need_workers##":"La ciudad necesita trabajadores. ¿Podré enseñar a Leo a trabajar?"
 "##lion_tamer_so_hungry##":"¡Tengo tanta hambre que me comería un león!"
 "##Load_save##":"Cargar partida guardada"
+"##loading_resources##":"Carga de recursos"
 "##love_desc##":"(Amor)"
 "##low_bridge##":"Puente bajo"
 "##low_damage_risk##":"Riesgo de derrumbamiento bajo"
@@ -674,6 +728,7 @@
 "##migration_lack_jobs##":"La falta de empleo impide la inmigración"
 "##migration_lessfood_granary##":"La falta de alimentos en los graneros está reduciendo la inmigración."
 "##migration_people_away##":"La falta de trabajo está alejando a la gente."
+"##military_academy_no_workers##":"Cuando los nuevos soldados finalizan el entrenamiento básico en los barracones, tratan de mejorar en capacidad y calidad en esta academia, pero no lo consiguen hasta que ésta ve satisfechas sus necesidades."
 "##military_academy##":"Academia militar"
 "##minimap_tooltip##":"Haz clic sobre este mapa para desplazarte a las zonas más lejanas de la ciudad"
 "##minimizeBtnTooltip##":""
@@ -771,12 +826,14 @@
 "##need_population##":"necesarios)"
 "##need_reservoir_for_work##":"Esta fuente no funcionará a menos que consiga tener acceso a un depósito cercano."
 "##need_timber_mill##":"Construye una serrería."
+"##need_trainee_charioteer##":"El hipódromo no cuenta con cuadrigas. Tener algunas supondría un incremento de la población de la ciudad, que está ávida de más entretenimiento."
 "##need_vines_farm##":"Construye una granja de vino."
 "##new_festival##":"Celebrar nuevo festival."
 "##new_governor##":""
 "##new_map##":"Archivo"
 "##new_trade_route_to##":"Establecida nueva ruta comercial."
 "##no_academy_access##":"Esta casa no tiene acceso a una academia."
+"##no_culture_building_in_city##":"No tienes cultura en la ciudad, ergo (palabra latina para "por lo tanto") no tienes puntuación de cultura."
 "##no_dock_for_sea_trade_routes##":""
 "##no_goods_for_request##":"No tienes bienes suficientes en los almacenes."
 "##no_target_population##":"( Sin población objetivo )"
@@ -814,6 +871,7 @@
 "##oracles_in_city##":"Oráculos en la ciudad"
 "##oracles##":"Oráculos"
 "##other##":"Varios"
+"##out_of_credit##":"¡Sin fondos!"
 "##overlays##":"Capas"
 "##ovrm_aborigen##":""
 "##ovrm_academy##":""
@@ -826,6 +884,7 @@
 "##ovrm_crime##":""
 "##ovrm_damage##":""
 "##ovrm_edct_all##":""
+"##advchief_education##":"Educación"
 "##ovrm_education##":"Educación"
 "##ovrm_entertainment##":""
 "##ovrm_entr_all##":""
@@ -852,11 +911,12 @@
 "##people##":"Denarios"
 "##percents##":"Interés en"
 "##person##":"Denario"
-"##pig_farm_info##":"Los ciudadanos bien alimentados quieren comer carne. Ésta puede almacenarse en graneros para el consumo local o transportarse a almacenes para ser exportada posteriormente."
-"##pig_farm##":"Granja de animales"
+"##meat_farm_info##":"Los ciudadanos bien alimentados quieren comer carne. Ésta puede almacenarse en graneros para el consumo local o transportarse a almacenes para ser exportada posteriormente."
+"##meat_farm##":"Granja de animales"
 "##plaza_caption##":"Plaza"
 "##plaza##":"Plaza"
 "##plname_continue##":"Continuar"
+"##pn_salary##":"Salario personal"
 "##pop##":"Pobl"
 "##population_registered_as_taxpayers##":"de la población son contribuyentes"
 "##population##":"Población"
@@ -885,11 +945,6 @@
 "##prefecture_ready_for_work##":"Nuestro prefecto se prepara para el trabajo."
 "##prefecture_slow_work##":"Tenemos muy poco personal. A veces no hay prefecto en dos semanas."
 "##prefecture##":"Prefectura"
-"##egift_educated_slave##":"Un esclavo educado"
-"##egift_egyptian_glassware##":"Vajilla egipcia"
-"##egift_gaulish_bodyguards##":"Guardias personales galos"
-"##egift_gepards_and_giraffes##":"Guepardos y una jirafa"
-"##egift_troupe_preforming_slaves##":"Una tropa de esclavos"
 "##priest_gods_angry##":"¡Aaagh! ¡Los dioses se han enfadado! ¡Estamos condenados!"
 "##priest_high_workless##":"Con tanto paro doy gracias a los dioses por mi empleo."
 "##priest_low_entertainment##":"La ciudad es aburrida. ¡Incluso a los sacerdotes nos gusta ver pelear a los gladiadores de vez en cuando!"
@@ -929,6 +984,7 @@
 "##reservoir_info##":"Esta cisterna gigante almacena agua potable que se distribuye a través de tuberías de arcilla a todo el radio urbano. Los acueductos pueden conectar depósitos que se encuentran a gran distancia."
 "##reservoir_no_water##":"Para ser operativo, este depósito tiene que estar cerca del agua o conectado mediante un acueducto a un depósito en funcionamiento."
 "##reservoir##":""
+"##rladv_mood##":"El dios está"
 "##road_caption##":"Carretera"
 "##road_text##":""
 "##roadBtnTooltip##":""
@@ -937,9 +993,8 @@
 "##roman_city##":"Ciudad romana"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
-"##salary##":"Salario personal"
 "##samnite_soldier##":"Soldado samnita"
-"##save_game##":"Guardar partida"
+"##save_city##":"Guardar partida"
 "##scholar##":"Alumno"
 "##scholars##":"en edad escolar,"
 "##school_full_access##":"Esta casa tiene acceso a un colegio."
@@ -1033,6 +1088,21 @@
 "##tooltip_full##":"Ayuda del ratón - Completa"
 "##tooltip_some##":"Ayuda del ratón - Parcial"
 "##tower_may_build_on_thick_walls##":"Solamente puedes construir torres en murallas gruesas."
+"##trade_advisor_blocked_clay_production##":"Tu asesor comercial ha detenido la extracción de arcilla."
+"##trade_advisor_blocked_fruit_production##":"Tu asesor comercial ha ordenado suspender el cultivo de frutas."
+"##trade_advisor_blocked_furniture_production##":"Tu asesor comercial ha ordenado suspender la producción de muebles."
+"##trade_advisor_blocked_grape_production##":"Tu asesor comercial ha ordenado suspender el cultivo de viñas."
+"##trade_advisor_blocked_iron_production##":"Tu asesor comercial ha ordenado suspender la minería del hierro."
+"##trade_advisor_blocked_marble_production##":"Tu asesor comercial ha ordenado suspender la producción de mármol."
+"##trade_advisor_blocked_meat_production##":"Tu asesor comercial ha ordenado suspender la producción de carne de cerdo."
+"##trade_advisor_blocked_oil_production##":"Tu asesor comercial ha ordenado que cese la producción de aceite."
+"##trade_advisor_blocked_olive_production##":"Tu asesor comercial ha ordenado suspender el cultivo de olivos."
+"##trade_advisor_blocked_pottery_production##":"Tu asesor comercial ha ordenado suspender la producción de cerámica."
+"##trade_advisor_blocked_timber_production##":"Tu asesor comercial ha ordenado suspender la tala de árboles."
+"##trade_advisor_blocked_vegetable_production##":"Tu asesor comercial ha ordenado suspender la producción de vegetales."
+"##trade_advisor_blocked_weapon_production##":"Tu asesor comercial ha ordenado suspender la producción de armas."
+"##trade_advisor_blocked_wheat_production##":"Tu asesor comercial ha ordenado suspender el cultivo de trigo."
+"##trade_advisor_blocked_wine_production##":"Tu asesor comercial ha ordenado suspender la producción de vino."
 "##trade_advisor##":"Asesor comercial."
 "##trade_btn_notrade_text##":"Sin comerciar"
 "##trade_caravan_from##":"Caravana de mercaderes de"
@@ -1184,17 +1254,17 @@
 "##wt_marketlady##":"Mercader"
 "##wt_merchat_so_hungry##":"¡Saludos! La ciudad necesita comida urgentemente."
 "##wt_prefect#":"Prefecto"
+"##wt_sheep##":"Ovejas"
 "##wt_surgeon##":"Cirujano"
 "##wt_tax_collector##":"Recaudador de impuestos"
 "##wt_teacher##":"Profesor"
 "##year##":"granero contiene"
 "##years##":"graneros contienen"
 "##yes##":"Sí"
-"#save_map##":"Cargar mapa"
+"##save_map##":"Cargar mapa"
 "Variable":"ESPAÑOL (v1.0)"
 
 
-"##egift_soldier_from_pergamaum##":"Soldado de Pérgamo"
 
 
 
@@ -1255,7 +1325,6 @@
 
 
 
-"##god_charmed##":"muy contento"
 
 
 
@@ -1286,6 +1355,7 @@
 
 
 
+"##advchief_sentiment##":"Percepción ciudadana"
 
 
 
@@ -1306,6 +1376,7 @@
 
 
 
+"##wndrt_culture##":"Cultura necesaria"
 
 
 
@@ -1324,7 +1395,6 @@
 
 
 
-"##god_displeased##":"desencantado"
 
 
 
@@ -1332,6 +1402,7 @@
 
 
 
+"##advchief_employment##":"Trabajo"
 
 
 
@@ -1350,8 +1421,6 @@
 
 
 
-"##god_exalted##":"exaltado"
-"##god_excellent##":"Excelente"
 
 
 
@@ -1366,6 +1435,7 @@
 
 
 
+"##advchief_food_consumption##":"Consumo de alimentos"
 
 
 
@@ -1377,9 +1447,9 @@
 
 
 
+"##send_to_city##":"Dar a la cuidad"
 
 
-"##egift_generous##":"Generoso:"
 
 
 
@@ -1389,7 +1459,6 @@
 
 
 
-"##god_good##":"Buena"
 
 
 
@@ -1403,7 +1472,6 @@
 
 
 
-"##god_happy##":"feliz"
 
 
 
@@ -1424,6 +1492,7 @@
 
 
 
+"##advemp_emperor_favour##":"Favor imperial"
 
 
 
@@ -1438,15 +1507,14 @@
 
 
 
-"##god_indifferent##":"indiferente"
 
+"##fort_javelin##":"Jabalina"
 
 
 
 
 
 
-"##god_irriated##":"irritado"
 
 
 
@@ -1455,13 +1523,13 @@
 
 
 
+"##fort_legionaries##":"Fuerte de legionarios"
 
 
 
 
 
 
-"##egift_lavish##":"Lujoso:"
 
 
 
@@ -1499,7 +1567,6 @@
 
 
 
-"##egift_modest##":"Modesto:"
 
 
 
@@ -1597,8 +1664,11 @@
 
 
 
+"##patients#":"pacientes"
 
 
+" ":"Paz necesaria"
+"##wndrt_peace##":"Puntuación de paz"
 
 
 
@@ -1642,15 +1712,12 @@
 
 
 
-"##egift_persian_carpets##":"Alfombras persas"
 
 
 
 
 
 
-"##god_pleased##":"contento"
-"##god_poor##":"Pobre"
 
 
 
@@ -1659,6 +1726,7 @@
 
 
 
+"##wndrt_prosperity##":"Prosperidad necesaria"
 
 
 
@@ -1668,6 +1736,7 @@
 
 
 
+"##wnd_ratings##":"Puntuaciones"
 
 
 
@@ -1685,7 +1754,6 @@
 
 
 
-"##god_quitepoor##":"Bastante pobres"
 
 
 
@@ -1740,6 +1808,7 @@
 
 
 
+"##emw_sell##":"Ventas"
 
 
 
@@ -1765,8 +1834,6 @@
 
 
 
-"##dispatch_gift##":"Mandar un regalo."
-"##dispatch_git_title##":"Enviar regalo al emperador"
 
 
 
@@ -1777,7 +1844,6 @@
 
 
 
-"##wt_sheep##":"Ovejas"
 
 
 
@@ -1816,6 +1882,7 @@
 
 
 
+"##spear##":"Lanza"
 
 
 
@@ -1895,7 +1962,6 @@
 
 
 
-"##rladv_mood##":"El dios está"
 
 
 
@@ -1993,6 +2059,7 @@
 
 
 
+"##dn_for_open_trade##":"para abrir la ruta comercial."
 
 
 
@@ -2002,6 +2069,7 @@
 
 
 
+"##tower##":"Torre"
 
 
 
@@ -2063,16 +2131,13 @@
 
 
 
-"##god_veryangry##":"muy enfadado"
 
 
-"##god_verygood##":"Muy buena"
 
 
 
 
 
-"##god_verypoor##":"Muy pobre"
 
 
 
@@ -2093,6 +2158,7 @@
 
 
 
+"##work##":"Funcionando"
 
 
 
@@ -2130,221 +2196,4 @@
 
 
 
-
-
-
-
-"##god_wrathful##":"colérico"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
 }

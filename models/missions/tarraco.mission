@@ -185,7 +185,7 @@
     }
 
     earthquake_disaster#messagebox : {
-      date : "-270.03.01"
+      date : "-268.06.01"
       title : "##earthquake_title##"
       text : "##earthquake_text##"
       video : "/smk/QUAKE.SMK"

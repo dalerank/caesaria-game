@@ -1,5 +1,4 @@
-{
-"##0_entertainment_access##":"У этого жилища нет доступа ни к каким развлечениям"
+{"##0_entertainment_access##":"У этого жилища нет доступа ни к каким развлечениям"
 "##1_entertainment_access##":"У этого жилища крайне ограниченный доступ к каким бы то ни было развлечениям"
 "##2_entertainment_access##":"У этого жилища есть некоторый доступ к развлечениям"
 "##3_entertainment_access##":"У этого жилища очень ограниченный доступ к развлечениям"
@@ -13,7 +12,7 @@
 "##academy_full_work##":"Эта академия работает. Местная молодежь постигает социальные детали."
 "##academy_no_workers##":"Эта академия не работает и совершенно бесполезна для местных жителей."
 "##academy_trained##":"Обучен в академии"
-"##academy##":"академия"
+"##academy##":"Академия"
 "##accept_deity_status##":"Принять статус божества!"
 "##accept_goods##":"Принимать товары"
 "##accept_promotion##":"Принять повышение"
@@ -33,10 +32,12 @@
 "##advchief_food_stocks##":"Запасы пищи"
 "##adve_administration_religion##":"Управление/Религия"
 "##adve_engineers##":"Инженерия"
+"##entertainment_advisor_title##":"Развлечения"
 "##adve_entertainment##":"Развлечения"
 "##adve_food##":"Производство еды"
 "##adve_health_education##":"Здоровье и образование"
 "##adve_industry_and_trade##":"Индустрия и торговля"
+"##advchief_military##":"Военные"
 "##adve_military##":"Военные"
 "##adve_prefectures##":"Префектуры"
 "##adve_water##":"Услуги водоснабжения"
@@ -44,10 +45,12 @@
 "##advemployer_panel_haveworkers##":"работает"
 "##advemployer_panel_needworkers##":"нужно"
 "##advemployer_panel_priority##":"приоритет"
-"##advemployer_panel_romepay##":"(Рим платит"
+"##advemployer_panel_romepay##":"Рим платит"
+"##advemployer_panel_salary##":"Зарплаты"
+"##advemployer_panel_sector##":"Сектор"
 "##advemployer_panel_title##":"Распределение трудовых ресурсов"
 "##advemployer_panel_workers##":"Работает"
-"##advemployer_panel_workless##":"безработных ("
+"##advemployer_panel_workless##":"безработных "
 "##advice_at_culture##":"Нажмите сюда, чтобы получить совет касательно вашего рейтинга Культуры"
 "##advisors##":"Советники"
 "##advlegion_noalarm##":"Сообщений об угрозе городу не поступало"
@@ -151,6 +154,7 @@
 "##buildings##":"Строительство"
 "##caesar_assign_new_title##":"Цезарь присвоил вам звание"
 "##caesar_salary##":"Жалование цезаря"
+"##can_build_only_one_of_building##":"Вы можете построить только одно здание этого типа"
 "##cancel##":"Отмена"
 "##cancelBtnTooltip##":"Отменить операцию"
 "##cant_demolish_bridge_with_people##":"Пока на мосту находятся люди, его нельзя снести"
@@ -171,7 +175,6 @@
 "##chatioteer_school_bad_work##":"Нам крайне нужны работники, а пока мы постараемся сделать хотя бы одну новую колесницу в ближайшие два месяца."
 "##chatioteer_school_no_workers##":"Без мастеров новые колесницы не могут быть построены. В результате может пострадать действующий ипподром."
 "##chatioteer_school##":"Школа возничих"
-"##egift_chest_of_sapphire##":"Сундук сапфиров"
 "##chief_advisor##":"Главный советник"
 "##children##":"детей"
 "##citizen_are_rioting##":"Граждане бунтуют!"
@@ -189,7 +192,6 @@
 "##citizen_good_education##":"Этот город образованнее любого города в Империи!"
 "##citizen_good_life##":"Жизнь в этом городе очень хороша."
 "##citizen_high_workless##":"При таком высоком уровне безработицы, мне повезло, что у меня есть работа."
-"##citizen_high_workless10##":"Это ужасно. Я никогда не видел так много свободных рабочих мест."
 "##citizen_high_workless10##":"Уровень безработицы так высок, что это делает весь город несчастным."
 "##citizen_high_workless11##":"Уровень безработицы столь высок, что даже моя жена перестала пилить меня, прося найти работу получше."
 "##citizen_high_workless12##":"Уровень безработицы здесь очень высок - я подумываю об отъезде из этого города."
@@ -199,7 +201,6 @@
 "##citizen_high_workless3##":"Никогда не видел столько безработных!"
 "##citizen_high_workless4##":"Я никогда раньше не видел так много безработных!"
 "##citizen_high_workless5##":"Здесь так много людей ищут работу!"
-"##citizen_high_workless6##":"Приветствую вас! Здесь крайне не хватает рабочих."
 "##citizen_high_workless7##":"Здесь такая высокая безработица, что волосы встают дыбом!"
 "##citizen_high_workless8##":"Какой позор! Я никогда не видел так много людей без работы!"
 "##citizen_high_workless9##":"Надеюсь, я не потеряю свою работу - уровень безработицы здесь так высок, что мне не удастся найти новую!"
@@ -210,6 +211,8 @@
 "##citizen_low_entertainment5##":"Граждане! Разве это не самый унылый город в Империи!"
 "##citizen_low_salary##":"Даже мой пес не стал бы работать за те суммы, что они нам предлагают! Я ухожу!"
 "##citizen_need_workers##":"Я удивлен, как много здесь свободных рабочих мест."
+"##citizen_need_workers10##":"Это ужасно. Я никогда не видел так много свободных рабочих мест."
+"##citizen_need_workers11##":"Приветствую вас! Здесь крайне не хватает рабочих."
 "##citizen_need_workers2##":"Я слышал, здесь полно работы. Я хочу быть укротителем львов!"
 "##citizen_need_workers3##":"Этому городу крайне нужны рабочие."
 "##citizen_need_workers4##":"Этому городу нужно много рабочих!"
@@ -228,6 +231,7 @@
 "##city_has_runout_debt##":""
 "##city_have_goods_for_request##":""
 "##city_have##":"В городской казне находится"
+"##health_advisor##":"Городское здоровье"
 "##city_health##":"Городское здоровье"
 "##city_need_more_workers##":"Вашему городу нужно больше рабочих"
 "##city_sounds_off##":"Городской шум выключен"
@@ -274,6 +278,7 @@
 "##consul_salary##":"Жалование консула"
 "##consul##":"Консул"
 "##contaminted_water##":"Зараженная вода"
+"##continue##":""
 "##corinthus##":"Коринф"
 "##cost_2_open##":"Стоимость открытия"
 "##cost##":"Стоимость"
@@ -313,6 +318,8 @@
 "##difficulty##":"Сложность"
 "##disasterBtnTooltip##":""
 "##dispatch_force##":"Отправить подкрепление?"
+"##dispatch_gift##":"Послать подарок"
+"##dispatch_git_title##":"Послать подарок Императору"
 "##dispatch_goods?##":"Отправить товары?"
 "##distant_city##":"Удаленный город"
 "##distribution_center##":"Оптовый рынок"
@@ -339,8 +346,22 @@
 "##education_have_school_library_access##":"У этого дома есть доступ к школе, а также к библиотеке"
 "##education_have_school_or_library_access##":"У этого дома есть доступ к школе или библиотеке"
 "##education_objects##":"Образовательные объекты"
+"##education_advisor_title##":"Образование"
 "##education##":"Образование"
 "##educationBtnTooltip##":"Образование"
+"##egift_chest_of_sapphire##":"Сундук сапфиров"
+"##egift_educated_slave##":"Образованный раб"
+"##egift_egyptian_glassware##":"Египетское стекло"
+"##egift_gaulish_bodyguards##":"Галльские телохранители"
+"##egift_generous##":"Щедрый:"
+"##egift_gepards_and_giraffes##":"Гепарды и жирафы"
+"##egift_golden_chariot##":"Золотая колесница"
+"##egift_gree_manuscript##":"Греческий манускрипт"
+"##egift_lavish##":"Роскошный:"
+"##egift_modest##":"Скромный:"
+"##egift_persian_carpets##":"Персидские ковры"
+"##egift_soldier_from_pergamaum##":"Солдат из Пергама"
+"##egift_troupe_preforming_slaves##":"Труппа рабов-актеров"
 "##emigrant_high_workless##":"Вы не знаете, где нужны работники? Мне нужна работа!"
 "##emigrant_low_entertainment##":"Правителю нет дела до меня, и я покажу ему, что мне нет дела до его города!"
 "##emigrant##":"Эмигрант"
@@ -348,6 +369,14 @@
 "##emmigrant_where_my_home##":"Я здесь новенький. Не знаете, где лучше поселиться?"
 "##emperor_favour_00##":"Император в ярости."
 "##emperor_favour_01##":"Император так зол, что поговаривает об отправке вас в ссылку."
+"##emperor_favour_02##":"Император крайне сердит на вас."
+"##emperor_favour_03##":"Император очень сердит на вас."
+"##emperor_favour_04##":"Император сердит на вас."
+"##emperor_favour_05##":"Император крайне недоволен вами."
+"##emperor_favour_06##":"Император очень недоволен вами."
+"##emperor_favour_07##":"Император недоволен вами."
+"##emperor_favour_08##":"Император несколько недоволен вами."
+"##emperor_favour_09##":"Император немного обеспокоен вами."
 "##emperor_favour_10##":"У императора смешанные чувства по отношению к вам."
 "##emperor_favour_11##":"Император полагает, что вы действуете вполне удовлетворительно."
 "##emperor_favour_12##":"Император доволен вами."
@@ -358,15 +387,7 @@
 "##emperor_favour_17##":"Император в высшей степени доволен вами."
 "##emperor_favour_18##":"Император в восторге от вас."
 "##emperor_favour_19##":"Императора более, чем устраивает ваша деятельность."
-"##emperor_favour_02##":"Император крайне сердит на вас."
 "##emperor_favour_20##":"Император без ума от вас настолько, что поговаривает об объявлении вас своим наследником."
-"##emperor_favour_03##":"Император очень сердит на вас."
-"##emperor_favour_04##":"Император сердит на вас."
-"##emperor_favour_05##":"Император крайне недоволен вами."
-"##emperor_favour_06##":"Император очень недоволен вами."
-"##emperor_favour_07##":"Император недоволен вами."
-"##emperor_favour_08##":"Император несколько недоволен вами."
-"##emperor_favour_09##":"Император немного обеспокоен вами."
 "##emperor_request##":"Требование императора"
 "##emperor##":"Империя"
 "##emperror_legion_at_out_gates##":"Легион войска Императора стоит у наших ворот"
@@ -417,6 +438,7 @@
 "##farming_desc##":"(Земледелие)"
 "##favor_rating##":"Рейтинг Благоволения"
 "##favor##":"Благоволение"
+"##wndrt_favour##":"Благоволение"
 "##festivals##":"Празднества"
 "##fig_farm_bad_work##":"Здесь слишком мало работников. Урожай фруктов поспеет еще нескоро."
 "##fig_farm_full_work##":"На этой ферме достаточно работников. Ветви деревьев прогибаются под тяжестью сочных фруктов."
@@ -427,6 +449,8 @@
 "##fig_farm##":"Фруктовая ферма"
 "##file##":"Файл"
 "##finance_advisor##":"Финансы"
+"##finance_advisor##":"Текущие финансы"
+"##advchief_finance##":"Финансы"
 "##finances##":"Финансы"
 "##fire##":"Пожары"
 "##fired##":"Увольнение!"
@@ -439,6 +463,7 @@
 "##fort_legionaries_no_workers##":"Без персонала мы не можем обучить ни одного рекрута. Помоги нам Марс, если начнется война!"
 "##fort##":"Форт"
 "##fortification_info##":"Стены не дают захватчикам проникнуть в город. Враги могут разрушить стены. Чем толще стены, тем они прочнее, кроме того, толстые стены могут патрулироваться стражниками из башен."
+"##fortification##":"Крепост. стены"
 "##forum_1_on_patrol##":"Наш сборщик налогов на работе."
 "##forum_1_ready_for_work##":"Наш сборщик налогов готовится отправиться на работу."
 "##forum_1_slow_work##":"Нам крайне необходимы работники, чтобы ликвидировать перерыв в две недели между возвращением наших сборщиков налогов на улицы."
@@ -470,11 +495,13 @@
 "##furniture_workshop##":"Мебельная мастерская"
 "##furniture##":"мебель"
 "##game_is_paused##":"Пауза (нажмите 'P', чтобы продолжить игру)"
-"##game_speed##":"Скорость игры"
+"##game_sound_options##":"Настройки звука"
+"##game_speed_options##":"Настройки скорости"
 "##garden_info##":"Это приятное место дает гражданам возможность отдохнуть от шума, жары и грязи города в прохладном зеленом оазисе. Каждому хочется жить рядом с садом."
 "##garden##":"Сады"
 "##gardens_info##":"Сады улучшают условия жизни."
 "##gatehouse##":"Ворота"
+"##give_money##":"Передать деньги"
 "##gladiator_pit_bad_work##":"Кроме меня здесь работать некому. Нельзя ждать от меня многого при таких условиях! В лучшем случае мне удастся обучить одного гладиатора за три месяца."
 "##gladiator_pit_full_work##":"Мы рады сообщить, что имея полный штат работников, обучаем до четырех новых гладиаторов каждый месяц."
 "##gladiator_pit_need_some_workers##":"Нам немного не хватает персонала, поэтому мы можем обучать не больше двух гладиаторов в месяц."
@@ -492,14 +519,33 @@
 "##gmenu_file##":"Меню"
 "##gmenu_help##":"Помощь"
 "##gmenu_options##":"Настройки"
+"##gmsndwnd_ambient_sound##":"Звуковые эффекты выключены"
+"##gmsndwnd_game_volume##":"Громкость"
+"##gmsndwnd_theme_sound##":"Музыка"
+"##gmspdwnd_game_speed##":"Скорость игры"
+"##gmspdwnd_scroll_speed##":"Скорость прокрутки"
 "##go_to_problem##":"Нажмите сюда, чтобы перейти к проблемной точке"
 "##go2_problem_area##":"Перейти к проблемной зоне"
 "##god_ceres_short##":""
+"##god_charmed##":"очень радо"
+"##god_displeased##":"недовольно"
+"##god_exalted##":"в восторге"
+"##god_excellent##":"Отличное"
+"##god_good##":"Хорошее"
+"##god_happy##":"счастливо"
+"##god_indifferent##":"нейтрально"
+"##god_irriated##":"раздражено"
 "##god_mars_short##":""
 "##god_mercury_short##":""
 "##god_neptune_short##":""
+"##god_pleased##":"довольно"
+"##god_poor##":"Несчастны"
+"##god_quitepoor##":"Очень несчастны"
 "##god_venus_short##":""
-"##egift_golden_chariot##":"Золотая колесница"
+"##god_veryangry##":"очень зло"
+"##god_verygood##":"Очень хорошее"
+"##god_verypoor##":"Очень плохое"
+"##god_wrathful##":"разгневано"
 "##goth_warrior##":"Воин-гот"
 "##goto_empire_map##":"Перейти к карте Империи"
 "##goto##":"Перейти"
@@ -507,7 +553,7 @@
 "##governor_palace_1##":"Дом правителя"
 "##governor_palace_2##":"Вилла правителя"
 "##governor_palace_3##":"Дворец правителя"
-"##granaries_holds##":"амбара содержат"
+"##granaries_holds##":"амбары содержат"
 "##granary_holds##":"амбар содержит"
 "##granary_info##":"Полные амбары жизненно важны для удовлетворения потребностей горожан в пище и привлечения новых жителей. В амбаре может храниться зерно, мясо, рыба, овощи и фрукты."
 "##granary_orders##":"Указания амбару"
@@ -515,13 +561,18 @@
 "##grape_factory_stock##":"Запасы винограда,"
 "##grape##":"виноград"
 "##grass##":"Трава"
-"##egift_gree_manuscript##":"Греческий манускрипт"
 "##greek_soldier##":"Греческий солдат"
 "##have_food_for##":"- еды на"
+"##have_less_academy_in_city_0##":"В вашем городе слишком мало работающих академий. Постройте еще, и ваш рейтинг поднимется."
+"##have_less_library_in_city_0##":"В вашем городе слишком мало работающих библиотек. Постройте еще, и ваш рейтинг поднимется."
+"##have_less_school_in_city_0##":"В вашем городе слишком мало работающих школ. Постройте еще, и ваш рейтинг поднимется."
+"##have_less_temple_in_city_0##":"В вашем городе слишком мало храмов. Постройте еще, и ваш рейтинг поднимется."
+"##have_less_theater_in_city_0##":"В вашем городе слишком мало работающих театров. Постройте еще, и ваш рейтинг поднимется."
 "##have_no_food_on_next_month##":"- нет еды на будущий месяц"
 "##have_no_legions##":"У вас нет ни одного легиона"
 "##have_no_requests##":"Пока посланий нет. По мере развития вашего города или если Император попросит у вас какие-либо товары, здесь появятся сообщения"
 "##health_advisor##":"Объекты здравоохранения"
+"##advchief_health##":"Здоровье"
 "##health##":"Здоровье"
 "##healthBtnTooltip##":"Здравоохранение"
 "##help##":"Помощь"
@@ -558,6 +609,7 @@
 "##immigrant_no_home##":"Мне негде жить!"
 "##immigrant_no_work_for_me##":"Мне надоел этот город! Здесь нет работы!"
 "##immigrant_thrown_from_house##":"Меня выкинули из дома!"
+"##import_fn##":"Импорт"
 "##import##":"Импорт"
 "##infobox_tooltip_exit##":"Закрыть это окно"
 "##infobox_tooltip_help##":"Показать справку"
@@ -583,6 +635,7 @@
 "##large##":"больших"
 "##last_year##":"Прошлый год"
 "##lawless_area##":"Район беззакония. Жители в ужасе."
+"##advchief_crime##":"Преступность"
 "##layer_crime##":"Преступность"
 "##leave_empire?##":"Покинуть Римскую Империю?"
 "##legion_formation_tooltip##":"Нажмите сюда, чтобы изменить строй легиона"
@@ -617,6 +670,7 @@
 "##lion_tamer_need_workers##":"Этому городу нужны рабочие. Интересно, можно ли научить моего льва выполнять какую-нибудь работу?"
 "##lion_tamer_so_hungry##":"Я так голоден, что мог бы проглотить льва!"
 "##Load_save##":"Загрузить сохраненную игру"
+"##loading_resources##":"Распакова данных"
 "##love_desc##":"(Любовь)"
 "##low_bridge##":"Низкий мост"
 "##low_damage_risk##":"Низкий риск обрушения"
@@ -674,6 +728,7 @@
 "##migration_lack_jobs##":"Нехватка рабочих мест сдерживает иммиграцию"
 "##migration_lessfood_granary##":"Нехватка продовольствия в ваших амбарах снижает иммиграцию"
 "##migration_people_away##":"Нехватка рабочих мест заставляет людей покидать ваш город"
+"##military_academy_no_workers##":"Когда новые солдаты заканчивают обучение в казармах, у них появляется желание улучшить свои навыки в этой академии, однако без полного укомплектования штата это невозможно."
 "##military_academy##":"Военная академия"
 "##minimap_tooltip##":"Щелкните на общий план города, чтобы перейти к его отдаленным районам"
 "##minimizeBtnTooltip##":"Скрыть панель"
@@ -771,12 +826,14 @@
 "##need_population##":"требуется)"
 "##need_reservoir_for_work##":"Этот фонтан не будет работать, пока не получит доступ к резервуару."
 "##need_timber_mill##":"Постройте лесопилку"
+"##need_trainee_charioteer##":"На вашем ипподроме нет колесниц. Их появление дало бы ощутимый толчок росту населения, жаждущего развлечений."
 "##need_vines_farm##":"Постройте виноградную ферму"
 "##new_festival##":"Провести новое празднество"
 "##new_governor##":"Новый правитель"
 "##new_map##":"Новая карта"
 "##new_trade_route_to##":"Открыт новый торговый путь."
 "##no_academy_access##":"У этого дома нет доступа к академии"
+"##no_culture_building_in_city##":"В вашем городе нет культуры, а потому у вас нет рейтинга Культуры."
 "##no_dock_for_sea_trade_routes##":""
 "##no_goods_for_request##":"На ваших складах недостаточно товаров"
 "##no_target_population##":"(Необходимая численность не достигнута)"
@@ -814,6 +871,7 @@
 "##oracles_in_city##":"Оракулов в городе"
 "##oracles##":"оракулы"
 "##other##":"Разное"
+"##out_of_credit##":"Недостаточно денег!"
 "##overlays##":"Слои"
 "##ovrm_aborigen##":"Аборигены"
 "##ovrm_academy##":"Академии"
@@ -826,6 +884,7 @@
 "##ovrm_crime##":"Преступления"
 "##ovrm_damage##":"Повреждения"
 "##ovrm_edct_all##":"Все"
+"##advchief_education##":"Образование"
 "##ovrm_education##":"Образование"
 "##ovrm_entertainment##":"Развлечения"
 "##ovrm_entr_all##":"Все"
@@ -852,11 +911,12 @@
 "##people##":"народ"
 "##percents##":"Проценты"
 "##person##":"человек"
-"##pig_farm_info##":"Зажиточные граждане любят кушать мясо. Мясо для внутреннего потребления можно хранить в амбарах или отвозить на склад, если оно предназначается на экспорт."
-"##pig_farm##":"Животноводческая ферма"
+"##meat_farm_info##":"Зажиточные граждане любят кушать мясо. Мясо для внутреннего потребления можно хранить в амбарах или отвозить на склад, если оно предназначается на экспорт."
+"##meat_farm##":"Животноводческая ферма"
 "##plaza_caption##":"Мощеная улица"
 "##plaza##":"Мощеная улица"
 "##plname_continue##":"Продолжить"
+"##pn_salary##":"Личное жалование"
 "##pop##":"Нас"
 "##population_registered_as_taxpayers##":"населения зарегистрировано как налогоплательщики"
 "##population##":"Население"
@@ -885,11 +945,6 @@
 "##prefecture_ready_for_work##":"Наш префект готовится отправиться на дежурство."
 "##prefecture_slow_work##":"У нас слишком мало работников. Зачастую ни один префект не выходит из нашего участка за две недели."
 "##prefecture##":"Префектура"
-"##egift_educated_slave##":"Образованный раб"
-"##egift_egyptian_glassware##":"Египетское стекло"
-"##egift_gaulish_bodyguards##":"Галльские телохранители"
-"##egift_gepards_and_giraffes##":"Гепарды и жирафы"
-"##egift_troupe_preforming_slaves##":"Труппа рабов-актеров"
 "##priest_gods_angry##":"Аааа! Боги гневаются! Мы все обречены!"
 "##priest_high_workless##":"При таком высоком уровне безработицы, слава богам, что у меня есть работа!"
 "##priest_low_entertainment##":"Этот город так скучен. Даже жрецы не прочь иногда посмотреть на хороший гладиаторский бой!"
@@ -929,6 +984,7 @@
 "##reservoir_info##":"В этой огромной цистерне содержится чистая питьевая вода, которая по глиняным трубам подводится к различным зданиям в городе. Акведуки могут соединять резервуары между собой через большие расстояния."
 "##reservoir_no_water##":"Этот резервуар должен стоять рядом с водой или соединяться с другим работающим резервуаром с помощью акведука, чтобы нормально работать."
 "##reservoir##":"Резервуар"
+"##rladv_mood##":"Божество"
 "##road_caption##":"Дорога"
 "##road_text##":""
 "##roadBtnTooltip##":""
@@ -937,9 +993,8 @@
 "##roman_city##":"Римский город"
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
-"##salary##":"Личное жалование"
 "##samnite_soldier##":"Самнитский солдат"
-"##save_game##":"Сохранить игру"
+"##save_city##":"Сохранить игру"
 "##scholar##":"Школьник"
 "##scholars##":"школьного возраста,"
 "##school_full_access##":"У этого дома есть доступ к школе"
@@ -1033,6 +1088,21 @@
 "##tooltip_full##":"Подсказки - ВСЕГДА"
 "##tooltip_some##":"Подсказки - ИНОГДА"
 "##tower_may_build_on_thick_walls##":"Башни можно строить только на толстых стенах"
+"##trade_advisor_blocked_clay_production##":"Ваш советник по торговле приказал прекратить добычу глины."
+"##trade_advisor_blocked_fruit_production##":"Ваш советник по торговле приказал прекратить выращивание фруктов."
+"##trade_advisor_blocked_furniture_production##":"Ваш советник по торговле приказал остановить производство мебели."
+"##trade_advisor_blocked_grape_production##":"Ваш советник по торговле приказал прекратить выращивание винограда."
+"##trade_advisor_blocked_iron_production##":"Ваш советник по торговле приказал прекратить добычу руды."
+"##trade_advisor_blocked_marble_production##":"Ваш советник по торговле приказал прекратить добычу мрамора."
+"##trade_advisor_blocked_meat_production##":"Ваш советник по торговле приказал прекратить выращивание свиней."
+"##trade_advisor_blocked_oil_production##":"Ваш советник по торговле приказал остановить производство масла."
+"##trade_advisor_blocked_olive_production##":"Ваш советник по торговле приказал прекратить выращивание оливок."
+"##trade_advisor_blocked_pottery_production##":"Ваш советник по торговле приказал прекратить производство посуды."
+"##trade_advisor_blocked_timber_production##":"Ваш советник по торговле приказал прекратить вырубку деревьев."
+"##trade_advisor_blocked_vegetable_production##":"Ваш советник по торговле приказал прекратить выращивание овощей."
+"##trade_advisor_blocked_weapon_production##":"Ваш советник по торговле приказал остановить производство оружия."
+"##trade_advisor_blocked_wheat_production##":"Ваш советник по торговле приказал прекратить выращивание пшеницы."
+"##trade_advisor_blocked_wine_production##":"Ваш советник по торговле приказал остановить производство вина."
 "##trade_advisor##":"Советник по торговле"
 "##trade_btn_notrade_text##":"Нет торговли"
 "##trade_caravan_from##":"Торговый караван из"
@@ -1184,17 +1254,17 @@
 "##wt_marketlady##":"Рыночная торговка"
 "##wt_merchat_so_hungry##":"Приветствую вас! Этому городу крайне нужна еда."
 "##wt_prefect#":"Префект"
+"##wt_sheep##":"Овца"
 "##wt_surgeon##":"Фельдшер"
 "##wt_tax_collector##":"Сборщик налогов"
 "##wt_teacher##":"Учитель"
 "##year##":"год"
 "##years##":"лет"
 "##yes##":"Да"
-"#save_map##":"Сохранить карту"
+"##save_map##":"Сохранить карту"
 "Variable":"RUS (1C, v1.0)"
 
 
-"##egift_soldier_from_pergamaum##":"Солдат из Пергама"
 
 
 
@@ -1255,7 +1325,6 @@
 
 
 
-"##god_charmed##":"очень радо"
 
 
 
@@ -1286,6 +1355,7 @@
 
 
 
+"##advchief_sentiment##":"Настроения в городе"
 
 
 
@@ -1306,6 +1376,7 @@
 
 
 
+"##wndrt_culture##":"Культура"
 
 
 
@@ -1324,7 +1395,6 @@
 
 
 
-"##god_displeased##":"недовольно"
 
 
 
@@ -1332,6 +1402,7 @@
 
 
 
+"##advchief_employment##":"Занятость"
 
 
 
@@ -1350,8 +1421,6 @@
 
 
 
-"##god_exalted##":"в восторге"
-"##god_excellent##":"Отличное"
 
 
 
@@ -1366,6 +1435,7 @@
 
 
 
+"##advchief_food_consumption##":"Потребление"
 
 
 
@@ -1377,9 +1447,9 @@
 
 
 
+"##send_to_city##":"Передать городу"
 
 
-"##egift_generous##":"Щедрый:"
 
 
 
@@ -1389,7 +1459,6 @@
 
 
 
-"##god_good##":"Хорошее"
 
 
 
@@ -1403,7 +1472,6 @@
 
 
 
-"##god_happy##":"счастливо"
 
 
 
@@ -1424,6 +1492,7 @@
 
 
 
+"##advemp_emperor_favour##":"Благосклонность императора"
 
 
 
@@ -1438,15 +1507,14 @@
 
 
 
-"##god_indifferent##":"нейтрально"
 
+"##fort_javelin##":"копьеносец"
 
 
 
 
 
 
-"##god_irriated##":"раздражено"
 
 
 
@@ -1455,13 +1523,13 @@
 
 
 
+"##fort_legionaries##":"Форт легионеров"
 
 
 
 
 
 
-"##egift_lavish##":"Роскошный:"
 
 
 
@@ -1499,7 +1567,6 @@
 
 
 
-"##egift_modest##":"Скромный:"
 
 
 
@@ -1597,8 +1664,11 @@
 
 
 
+"##patients#":"пациентах"
 
 
+" ":"Мир"
+"##wndrt_peace##":"Рейтинг Мира"
 
 
 
@@ -1642,15 +1712,12 @@
 
 
 
-"##egift_persian_carpets##":"Персидские ковры"
 
 
 
 
 
 
-"##god_pleased##":"довольно"
-"##god_poor##":"Несчастны"
 
 
 
@@ -1659,6 +1726,7 @@
 
 
 
+"##wndrt_prosperity##":"Процветание"
 
 
 
@@ -1668,6 +1736,7 @@
 
 
 
+"##wnd_ratings##":"Рейтинги"
 
 
 
@@ -1685,7 +1754,6 @@
 
 
 
-"##god_quitepoor##":"Очень несчастны"
 
 
 
@@ -1740,6 +1808,7 @@
 
 
 
+"##emw_sell##":"Продает"
 
 
 
@@ -1765,8 +1834,6 @@
 
 
 
-"##dispatch_gift##":"Послать подарок"
-"##dispatch_git_title##":"Послать подарок Императору"
 
 
 
@@ -1777,7 +1844,6 @@
 
 
 
-"##wt_sheep##":"Овца"
 
 
 
@@ -1816,6 +1882,7 @@
 
 
 
+"##spear##":"Копье"
 
 
 
@@ -1895,7 +1962,6 @@
 
 
 
-"##rladv_mood##":"Божество"
 
 
 
@@ -1993,6 +2059,7 @@
 
 
 
+"##dn_for_open_trade##":", чтобы открыть торговый путь"
 
 
 
@@ -2002,6 +2069,7 @@
 
 
 
+"##tower##":"Башня"
 
 
 
@@ -2063,16 +2131,13 @@
 
 
 
-"##god_veryangry##":"очень зло"
 
 
-"##god_verygood##":"Очень хорошее"
 
 
 
 
 
-"##god_verypoor##":"Очень плохое"
 
 
 
@@ -2093,6 +2158,7 @@
 
 
 
+"##work##":"Работает"
 
 
 
@@ -2130,221 +2196,4 @@
 
 
 
-
-
-
-
-"##god_wrathful##":"разгневано"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
-"undefined":"undefined"
 }
