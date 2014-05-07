@@ -411,9 +411,9 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
     const Picture& picture = Picture::load( ResourceGroup::empirebits,
                                             route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute );
 
-    world::MerchantPtr merchant = route->getMerchant( 0 );
-    const PointsArray& points = route->getPoints();
-    const Pictures& pictures = route->getPictures();
+    world::MerchantPtr merchant = route->merchant( 0 );
+    const PointsArray& points = route->points();
+    const Pictures& pictures = route->pictures();
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
       engine.drawPicture( pictures[ index ], _d->offset + points[ index ] );

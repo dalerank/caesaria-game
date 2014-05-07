@@ -80,7 +80,7 @@ void Traderoute::update( unsigned int time )
   }
 }
 
-PointsArray Traderoute::getPoints( bool reverse ) const
+PointsArray Traderoute::points( bool reverse ) const
 {
   if( reverse )
   {
@@ -107,11 +107,11 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
     {
     case 0: angle = 90; offset = Point( -10, -10 ); break;
     case 1: angle = 89; offset = Point( -20, 0 ); break;
-    case 2: angle = 88; offset = Point( 0, 5 );break;
-    case 3: angle = 93; break;
+    case 2: angle = 88; offset = Point( 0, -5 );break;
+    case 3: angle = 93; offset = Point( 0, -10 ); break;
     case 4: angle = 91; offset = Point( 0, -10 ); break;
     case 5: angle = 89; break;
-    case 6: angle = 88; offset = Point( 0, 5 );break;
+    case 6: angle = 94; offset = Point( 0, 5 );break;
     case 7: angle = 93; offset = Point( -10, 5 ); break;
     }
 
@@ -121,7 +121,7 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
   }
 }
 
-const gfx::Pictures& Traderoute::getPictures() const {  return _d->pictures;}
+const gfx::Pictures& Traderoute::pictures() const {  return _d->pictures;}
 bool Traderoute::isSeaRoute() const{  return _d->seaRoute;}
 
 void Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy )
@@ -148,7 +148,7 @@ Traderoute::Traderoute( EmpirePtr empire, std::string begin, std::string end )
 
 Traderoute::~Traderoute() {}
 
-MerchantPtr Traderoute::getMerchant( unsigned int index )
+MerchantPtr Traderoute::merchant( unsigned int index )
 {
   if( index >= _d->merchants.size() )
     return 0;

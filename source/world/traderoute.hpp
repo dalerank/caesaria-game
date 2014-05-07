@@ -41,14 +41,14 @@ public:
   std::string getName() const;
 
   void update( unsigned int time );
-  PointsArray getPoints( bool reverse=false ) const;
+  PointsArray points( bool reverse=false ) const;
   void setPoints(const PointsArray& points , bool seaRoute);
-  const gfx::Pictures& getPictures() const;
+  const gfx::Pictures& pictures() const;
 
   bool isSeaRoute() const;
 
   void addMerchant( const std::string& begin, GoodStore& sell, GoodStore& buy );
-  MerchantPtr getMerchant( unsigned int index );
+  MerchantPtr merchant( unsigned int index );
 
   VariantMap save() const;
   void load( const VariantMap& stream );
