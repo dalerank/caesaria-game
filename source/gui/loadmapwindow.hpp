@@ -35,11 +35,11 @@ public:
   
   virtual ~LoadMapWindow();
 
-  void draw( gfx::Engine& engine );  // draw on screen
+  virtual void draw( gfx::Engine& engine );  // draw on screen
 
-  bool onEvent( const NEvent& event);
+  virtual bool onEvent( const NEvent& event);
 
-  bool isPointInside(const Point& point) const;
+  virtual bool isPointInside(const Point& point) const;
 
   void setTitle( const std::string& title );
 
