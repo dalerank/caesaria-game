@@ -37,6 +37,7 @@ public:
   virtual void draw();
   void fadeOut();
   void setText( std::string text );
+  void setPrefix( std::string prefix );
 
 protected:
   virtual int result() const;

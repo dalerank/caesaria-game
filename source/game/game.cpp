@@ -131,15 +131,15 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   Variant c3res = GameSettings::get( GameSettings::c3gfx );
   if( c3res.isValid() )
   {
-    vfs::Directory gfxDir = vfs::Path( c3res.toString() );
-    vfs::Path c3sg2( "C3.SG2" );
+    vfs::Directory gfxDir( c3res.toString() );
+    vfs::Path c3sg2( "c3.sg2" );
     vfs::Path c3path = gfxDir/c3sg2;
 
-    if( !c3path.exist() )
+    if( !c3path.exist( vfs::Path::ignoreCase ) )
     {
       errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
-                 "original game archive C3.SG2 not found in folder " + c3res.toString() +
-                 "!!!.\nBe sure that you copy all .sg2 and .map files to it folder";
+                 "original game archive c3.sg2 not found in folder " + c3res.toString() +
+                 "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
     }
 
     loader.loadFromModel( GameSettings::rcpath( GameSettings::sg2model ) );
@@ -149,7 +149,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     vfs::Path testPics = GameSettings::rcpath( GameSettings::testArchive );
     if( !testPics.exist() )
     {
-      errorStr = "Critical: Not found graphics set. Use precompiled CaesarIA archive or set\n"
+      errorStr = "Not found graphics set. Use precompiled CaesarIA archive or use\n"
                  "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
                  "forexample, \"-c3gfx c:/games/caesar3/\"";
     }
@@ -178,7 +178,7 @@ void Game::Impl::initPantheon( vfs::Path filename)
 
 void Game::Impl::initFontCollection( vfs::Path resourcePath )
 {
-  Logger::warning( "Load fonts" );
+  Logger::warning( "Game: load fonts" );
   FontCollection::instance().initialize( resourcePath.toString() );
 }
 
@@ -187,7 +187,7 @@ void Game::Impl::initPictures(vfs::Path resourcePath)
   AnimationBank::instance().loadCarts();
   AnimationBank::instance().loadAnimation( GameSettings::rcpath( GameSettings::animationsModel ) );
   
-  Logger::warning( "Create runtime pictures" );
+  Logger::warning( "Game: create runtime pictures" );
   PictureBank::instance().createResources();
 }
 
@@ -374,18 +374,18 @@ void Game::load(std::string filename)
   vfs::Path fPath( filename );
   if( !fPath.exist() )
   {
-    Logger::warning( "Cannot find file " + fPath.toString() );
+    Logger::warning( "Game: Cannot find file " + fPath.toString() );
     fPath = GameSettings::rpath( filename );
 
     if( !fPath.exist() )
     {
-      Logger::warning( "Cannot find file " + fPath.toString() );
-      Logger::warning( "Try find file in resource's folder " );
+      Logger::warning( "Game: Cannot find file " + fPath.toString() );
+      Logger::warning( "Game: Try find file in resource's folder " );
 
       fPath = GameSettings::rcpath( filename ).absolutePath();
       if( !fPath.exist() )
       {
-        Logger::warning( "Cannot find file " + fPath.toString() );
+        Logger::warning( "Game: Cannot find file " + fPath.toString() );
         return;
       }
     }
@@ -425,7 +425,7 @@ void Game::load(std::string filename)
   Logger::warning( "Game: initialize pathfinder" );
   Pathfinder::instance().update( _d->city->tilemap() );
 
-  Logger::warning( "Load game end" );
+  Logger::warning( "Game: load finished" );
   return;
 }
 
@@ -447,15 +447,29 @@ void Game::initialize()
   ResourceLoader rcLoader;
   rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
 
+  screen.setPrefix( "##loading_resources##" );
   _d->mountArchives( rcLoader );  // init some quick pictures for screenWait
 
+  screen.setPrefix( "" );
+  screen.setText( "##initialize_animations##" );
   _d->initPictures( GameSettings::rcpath() );
+
+  screen.setText( "##initialize_names##" );
   NameGenerator::instance().initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
+
+  screen.setText( "##initialize_house_specification##" );
   HouseSpecHelper::instance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
+
+  screen.setText( "##initialize_constructions##" );
   MetaDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
+
+  screen.setText( "##initialize_walkers##" );
   WalkerHelper::instance().initialize( GameSettings::rcpath( GameSettings::walkerModel ) );
+
+  screen.setText( "##initialize_religion##" );
   _d->initPantheon( GameSettings::rcpath( GameSettings::pantheonModel ) );
 
+  screen.setText( "##ready_to_game" );
   if( GameSettings::get( "no-fade" ).isNull() )
     screen.fadeOut();
 }
@@ -467,17 +481,17 @@ void Game::exec()
 
   while(_d->nextScreen != SCREEN_QUIT)
   {
-  	 Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
-     switch(_d->nextScreen)
-     {
-     case SCREEN_MENU:        setScreenMenu();     break;
-     case SCREEN_GAME:        setScreenGame();     break;
-     case SCREEN_BRIEFING:    setScreenBriefing(); break;
+    Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+    switch(_d->nextScreen)
+    {
+      case SCREEN_MENU:        setScreenMenu();     break;
+      case SCREEN_GAME:        setScreenGame();     break;
+      case SCREEN_BRIEFING:    setScreenBriefing(); break;
 
-     default:
+      default:
         Logger::warning( "Unexpected next screen type %d", _d->nextScreen );
-        _CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
-     }
+        //_CAESARIA_DEBUG_BREAK_IF( "Unexpected next screen type" );
+    }
   }
 }
 

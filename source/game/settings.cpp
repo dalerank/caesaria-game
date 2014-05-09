@@ -98,7 +98,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ animationsModel     ] = Variant( std::string( "/animations.model" ) );
   _d->options[ giftsModel          ] = Variant( std::string( "/gifts.model" ) );
   _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
-  _d->options[ testArchive         ] = Variant( std::string( "/pics/pics.zip" ) );
+  _d->options[ testArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ soundVolume         ] = 100;
   _d->options[ ambientVolume       ] = 50;

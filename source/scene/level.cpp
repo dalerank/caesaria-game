@@ -235,7 +235,7 @@ void Level::Impl::showSaveDialog()
 
   if( !saveDir.exist() )
   {
-    vfs::Directory::createByPath( saveDir );
+    /*bool dirCreated = */vfs::Directory::createByPath( saveDir );
   }
 
   SaveDialog* dialog = new SaveDialog( game->gui()->rootWidget(), saveDir, defaultExt, -1 );

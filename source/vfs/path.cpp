@@ -148,9 +148,9 @@ char Path::lastChar() const
   return _d->path.empty() ? 0 : *_d->path.rbegin();
 }
 
-bool Path::exist() const
+bool Path::exist(SensType sens) const
 {
-  return FileSystem::instance().existFile( *this );
+  return FileSystem::instance().existFile( *this, sens );
 }
 
 bool Path::isFolder() const
@@ -172,7 +172,7 @@ bool Path::isFolder() const
 
 bool Path::isDirectoryEntry() const
 {
-  std::string bn = baseName().toString();
+  const std::string& bn = baseName().toString();
   return (bn == firstEntry || bn == secondEntry);
 }
 
@@ -218,7 +218,7 @@ Path::Path() : _d( new Impl )
   _d->path = "";
 }
 
-const std::string& Path::toString() const {  return _d->path; }
+const std::string& Path::toString() const { return _d->path; }
 
 std::string Path::removeExtension() const
 {
