@@ -27,6 +27,7 @@ struct Relation
 {
   int value;
   DateTime lastGiftDate;
+  DateTime lastTaxDate;
   int lastGiftValue;
 
   Relation() : value( 0 ), lastGiftDate( DateTime( -351, 1, 1 ) ), lastGiftValue( 0 )
@@ -40,6 +41,7 @@ struct Relation
     ret[ "value" ] = value;
     ret[ "lastGiftDate" ] = lastGiftDate;
     ret[ "lastGiftValue" ] = lastGiftValue;
+    ret[ "lastTaxDate" ] = lastTaxDate;
 
     return ret;
   }
@@ -49,6 +51,7 @@ struct Relation
     value = stream.get( "value" );
     lastGiftDate = stream.get( "lastGiftDate" ).toDateTime();
     lastGiftValue = stream.get( "lastGiftValue" );
+    lastTaxDate = stream.get( "lastTaxDate" ).toDateTime();
   }
 };
 
@@ -80,7 +83,7 @@ void Emperor::updateRelation(const std::string& cityname, int value)
   d->relations[ cityname ].value = math::clamp<int>( current + value, 0, 100 );
 }
 
-void Emperor::sendGift(const std::string& cityname, int money)
+void Emperor::sendGift(const std::string& cityname, unsigned int money)
 {
   Relation relation;
   Impl::Relations::iterator it = _dfunc()->relations.find( cityname );
@@ -99,6 +102,32 @@ void Emperor::sendGift(const std::string& cityname, int money)
   int favourUpdate = maxFavourUpdate * timeKoeff * moneyKoeff;
 
   updateRelation( cityname, favourUpdate );
+}
+
+void Emperor::timeStep(unsigned int time)
+{
+  if( GameDate::isYearChanged() )
+  {
+    __D_IMPL(d,Emperor)
+
+    foreach( it, d->relations )
+    {
+      Relation& ref = it->second;
+      ref.value -= 2;
+      int monthWithoutTax = ref.lastTaxDate.monthsTo( GameDate::current() );
+      if( monthWithoutTax > 12 )
+      {
+        int decrease = math::clamp( 3 + monthWithoutTax / DateTime::monthsInYear * 2, 0, 8 );
+        ref.value -= decrease;
+      }
+    }
+  }
+}
+
+void Emperor::cityTax(const std::string &cityname, unsigned int money)
+{
+  __D_IMPL(d,Emperor)
+  d->relations[ cityname ].lastTaxDate = GameDate::current();
 }
 
 VariantMap Emperor::save() const

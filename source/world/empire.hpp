@@ -37,6 +37,7 @@ public:
   CityPtr findCity( const std::string& name ) const;
   CityPtr addCity( CityPtr city );
   CityPtr initPlayerCity( CityPtr city );
+  void payTax( const std::string& cityname, unsigned int money );
 
   ObjectList objects() const;
 
@@ -67,10 +68,20 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+struct GovernorRank
+{
+  std::string rankName;
+  std::string prettyName;
+  unsigned int salary;
+};
+
+typedef std::vector<GovernorRank> GovernorRanks;
+
 class EmpireHelper 
 {
 public:
   static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
+  static GovernorRanks getRanks();
 };
 
 }//end namespace world

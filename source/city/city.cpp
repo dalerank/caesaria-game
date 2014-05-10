@@ -73,6 +73,7 @@
 #include "cityservice_factory.hpp"
 #include "sound/player.hpp"
 #include "world/emperor.hpp"
+#include "events/empiretax.hpp"
 #include <set>
 
 using namespace constants;
@@ -223,20 +224,8 @@ void PlayerCity::timeStep(unsigned int time)
 
     if( GameDate::isYearChanged() )
     {
-      int profit = _d->funds.getIssueValue( city::Funds::cityProfit, city::Funds::lastYear );
-      int empireTax = 0;
-      if( profit <= 0 )
-      {
-        empireTax = (population() / 1000) * 100;
-      }
-      else
-      {
-        int minimumExpireTax = (population() / 1000) * 100 + 50;
-        empireTax = math::clamp( profit / 4, minimumExpireTax, 9999 );
-      }
-
-      FundIssue issue( city::Funds::empireTax, -empireTax );
-      _d->funds.resolveIssue( issue );
+      events::GameEventPtr e = events::EmpireTax::create( getName() );
+      e->dispatch();
     }
   }
 
@@ -416,7 +405,7 @@ const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
-city::Funds&        PlayerCity::funds() const      {  return _d->funds;   }
+city::Funds&      PlayerCity::funds() const      {  return _d->funds;   }
 int               PlayerCity::population() const {   return _d->population; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )

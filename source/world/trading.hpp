@@ -37,7 +37,7 @@ public:
   Trading();
   ~Trading();
 
-  void update( unsigned int time );
+  void timeStep( unsigned int time );
   void init( EmpirePtr empire );
 
   VariantMap save() const;

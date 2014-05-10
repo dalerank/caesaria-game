@@ -58,6 +58,7 @@ __REG_PROPERTY(testArchive )
 __REG_PROPERTY(screenFitted)
 __REG_PROPERTY(needAcceptBuild)
 __REG_PROPERTY(sg2model)
+__REG_PROPERTY(ranksModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -99,6 +100,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ giftsModel          ] = Variant( std::string( "/gifts.model" ) );
   _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
   _d->options[ testArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
+  _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ soundVolume         ] = 100;
   _d->options[ ambientVolume       ] = 50;

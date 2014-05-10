@@ -15,37 +15,27 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_EMPEROR_H_INCLUDED__
-#define __CAESARIA_EMPEROR_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_EMPIRETAX_H_INCLUDE_
+#define _CAESARIA_EVENT_EMPIRETAX_H_INCLUDE_
 
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
-#include "core/variant.hpp"
+#include "event.hpp"
 
-namespace world
+namespace events
 {
 
-class Emperor
+class EmpireTax : public GameEvent
 {
 public:
-  Emperor();
-  ~Emperor();
+  static GameEventPtr create( const std::string& citname );
 
-  int relation( const std::string& cityname );
-  void updateRelation( const std::string& cityname, int value );
-
-  void sendGift( const std::string& cityname, unsigned int money );
-  void timeStep( unsigned int time );
-
-  void cityTax( const std::string& cityname, unsigned int money );
-
-  VariantMap save() const;
-  void load( const VariantMap& stream );
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec( Game &game, unsigned int time) const;
 
 private:
-  __DECLARE_IMPL(Emperor)
+  std::string _cityname;
 };
 
 }
 
-#endif //__CAESARIA_EMPEROR_H_INCLUDED__
+#endif //_CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_
