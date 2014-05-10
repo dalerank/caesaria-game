@@ -85,6 +85,7 @@ void EmperorGiftWindow::Impl::fillGifts(ListBox* lbx)
     std::string priceStr = StringHelper::format( 0xff, " :%d", tag );
     ListBoxItem& item = lbx->addItem( _( gifts.rand() ) + priceStr );
     item.setTag( tag );
+    item.setTextAlignment( align::center, align::center );
   }
 }
 

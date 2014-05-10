@@ -2,5 +2,5 @@
  fullscreen : false
  resolution : [ 1280, 800 ]
  language : "en"
- c3gfx : "./resources/c3"
+ /*c3gfx : "./resources/gfx"*/
 }

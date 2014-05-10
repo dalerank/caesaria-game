@@ -94,8 +94,9 @@ void Emperor::sendGift(const std::string& cityname, int money)
   const int maxFavourUpdate = 5;
 
   float timeKoeff = monthFromLastGift / (float)DateTime::monthsInYear;
-  float priceKoeff = math::max<float>( money - relation.lastGiftValue, 0.f ) / money;
-  int favourUpdate = maxFavourUpdate * timeKoeff * priceKoeff;
+  int affectMoney = relation.lastGiftValue / ( monthFromLastGift + 1 );
+  float moneyKoeff = math::max<float>( money - affectMoney, 0.f ) / money;
+  int favourUpdate = maxFavourUpdate * timeKoeff * moneyKoeff;
 
   updateRelation( cityname, favourUpdate );
 }
