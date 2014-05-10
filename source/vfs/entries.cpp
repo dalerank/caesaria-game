@@ -31,7 +31,7 @@ public:
   Path::SensType sensType;
   //! Path to the file list
   Path path;
-  Items files;
+  Entries::Items files;
 
   Path checkCase( Path p )
   {
@@ -120,7 +120,7 @@ const Path& Entries::getFileName(unsigned int index) const
   if (index >= _d->files.size())
     return emptyFileListEntry;
 
-  return _d->files[index].name;
+  return _d->files[index].name();
 }
 
 
@@ -130,7 +130,7 @@ const Path& Entries::getFullFileName(unsigned int index) const
   if (index >= _d->files.size())
     return emptyFileListEntry;
 
-  return _d->files[index].abspath();
+  return _d->files[index].absolutePath();
 }
 
 //! adds a file or folder
@@ -140,26 +140,24 @@ unsigned int Entries::addItem( const Path& fullPath, unsigned int offset, unsign
   entry.iD   = id ? id : _d->files.size();
   entry.Offset = offset;
   entry.size = size;
-  entry.name = StringHelper::replace( fullPath.toString(), "\\", "/" );
   entry.isDirectory = isDirectory;
 
+  Path tmpPath = StringHelper::replace( fullPath.toString(), "\\", "/" );
+
   // remove trailing slash
-  if( *(entry.name.toString().rbegin()) == '/')
+  if( tmpPath.lastChar() == '/')
   {
     entry.isDirectory = true;
-    entry.name = entry.name.removeEndSlash();
+    entry.setName( tmpPath.removeEndSlash() );
     //entry.name.validate();
   }
 
-  entry.name = _d->checkCase( entry.name );
+  entry.setAbsolutePath( _d->checkCase( tmpPath ) );
+  entry.setName( tmpPath.baseName() );
 
-  entry.setAbspath( entry.name );
-
-  entry.name = entry.name.baseName();
-
-  if(_d->ignorePaths )
+  if(_d->ignorePaths)
   {
-    entry.setAbspath( entry.name );
+    entry.setAbsolutePath( entry.name() );
   }
 
   _d->files.push_back(entry);
@@ -199,25 +197,47 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
 {
   EntryInfo entry;
   // we only need fullName to be set for the search
-  entry.setAbspath( StringHelper::replace( filename.toString(), "\\", "/" ) );
+  entry.setAbsolutePath( StringHelper::replace( filename.toString(), "\\", "/" ) );
   entry.isDirectory = isDirectory;
 
   // remove trailing slash
-  if( entry.abspath().lastChar() == '/' )
+  if( entry.absolutePath().lastChar() == '/' )
   {
     entry.isDirectory = true;
   }
-  entry.setAbspath( entry.abspath().removeEndSlash() );
-  entry.setAbspath( _d->checkCase( entry.abspath() ) );
+  entry.setAbsolutePath( entry.absolutePath().removeEndSlash() );
+  entry.setAbsolutePath( _d->checkCase( entry.absolutePath() ) );
 
   if( _d->ignorePaths )
   {
-    entry.setAbspath( entry.abspath().baseName() );
+    entry.setAbsolutePath( entry.absolutePath().baseName() );
   }
 
+  Path::SensType sType = _d->sensType;
+  if( _d->sensType == Path::nativeCase )
+  {
+#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+    sType = Path::equaleCase;
+#elif defined(CAESARIA_PLATFORM_WIN)
+    sType = Path::ignoreCase;
+#endif
+  }
+
+  std::string fname = filename.baseName().toString();
+  unsigned int fnHash = (sType == Path::ignoreCase
+                            ? StringHelper::hash( StringHelper::localeLower( fname ) )
+                            : StringHelper::hash( fname )
+                        );
   foreach( it, _d->files )
   {
-    if( (*it).isAbspathEquale( entry ) )
+    bool equale = false;
+    switch( sType )
+    {
+    case Path::equaleCase: equale = (*it).namehash() == fnHash; break;
+    case Path::ignoreCase: equale = (*it).nameihash() == fnHash; break;
+    }
+
+    if( equale )
     {
       return std::distance( _d->files.begin(), it );
     }
@@ -253,7 +273,7 @@ Entries Entries::filter(int flags, const std::string &options)
 
     if( mayAdd && !(*it).isDirectory && checkFileExt )
     {
-      mayAdd = (*it).abspath().isMyExtension( options );
+      mayAdd = (*it).absolutePath().isMyExtension( options );
     }
 
     if( mayAdd )

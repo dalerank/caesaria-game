@@ -16,18 +16,17 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "resourceloader.hpp"
-#include "vfs/filesystem.hpp"
 #include "core/logger.hpp"
+#include "vfs/filesystem.hpp"
+#include "vfs/directory.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
-#include "core/gettext.hpp"
 
 using namespace vfs;
 
 class ResourceLoader::Impl
 {
 public:
-
 
 public oc3_signals:
   Signal1<std::string> onStartLoadingSignal;
@@ -36,24 +35,29 @@ public oc3_signals:
 
 ResourceLoader::ResourceLoader() : _d( new Impl )
 {
-
 }
 
 ResourceLoader::~ResourceLoader(){  }
 
-void ResourceLoader::loadFromModel( Path path2model)
+void ResourceLoader::loadFromModel( Path path2model )
 {
   VariantMap archives = SaveAdapter::load( path2model );
   foreach( a, archives )
   {
-    vfs::Path absArchivePath = GameSettings::rcpath( a->second.toString() );
+    Path absArchivePath = GameSettings::rcpath( a->second.toString() );
     Logger::warning( "Game: try mount archive " + absArchivePath.toString() );
-    Logger::warningIf( !absArchivePath.exist(), "Game: cannot load archive " + absArchivePath.toString() );
+
+    Directory dir( absArchivePath.directory() );
+    absArchivePath = dir.find( absArchivePath.baseName(), Path::ignoreCase );
+
     ArchivePtr archive = FileSystem::instance().mountArchive( absArchivePath );
     if( archive.isValid() )
     {
-      std::string outText = _("##loading_resources##") + std::string( " " ) + a->first;
-      _d->onStartLoadingSignal.emit( outText );
+      _d->onStartLoadingSignal.emit( a->first );
+    }
+    else
+    {
+      Logger::warning( "Game: cannot load archive " + absArchivePath.toString() );
     }
   }
 }

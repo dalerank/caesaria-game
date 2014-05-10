@@ -1,11 +1,11 @@
 {
-  main : "/pics/pics.zip"
-  oc3  : "/pics/pics_oc3.zip"
-  wait : "/pics/pics_wait.zip"
-  celts : "/pics/pics_celts.zip"
-  carthago : "/pics/pics_carthage.zip"
+  main : "/gfx/pics.zip"
+  oc3  : "/gfx/pics_oc3.zip"
+  wait : "/gfx/pics_wait.zip"
+  celts : "/gfx/pics_celts.zip"
+  carthago : "/gfx/pics_carthage.zip"
   sounds : "/audio/wavs_buildings.zip"
-  tutorial : "/pics/pics_tutorial.zip"
-  etruscans : "/pics/pics_etruscan.zip"
+  tutorial : "/gfx/pics_tutorial.zip"
+  etruscans : "/gfx/pics_etruscan.zip"
   sound_themes : "/audio/themes.zip"
 }

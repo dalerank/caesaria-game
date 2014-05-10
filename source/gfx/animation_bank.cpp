@@ -198,6 +198,7 @@ void AnimationBank::loadAnimation(vfs::Path model)
       walker::Type wtype = WalkerHelper::getType( i->first );
       if( wtype != walker::unknown )
       {
+        Logger::warning( "Load animation for " + i->first + ":" + ac->first );
         _d->loadAnimation( wtype, ac->second.toMap() );
       }
       else

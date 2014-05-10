@@ -26,58 +26,69 @@ namespace vfs
 class EntryInfo
 {
 public:
-	//! The name of the file
-	/** If this is a file or folder in the virtual filesystem and the archive
-	was created with the ignoreCase flag then the file name will be lower case. */
-	Path name;
+  //! The size of the file in bytes
+  unsigned int size;
 
-	//! The size of the file in bytes
-	unsigned int size;
+  //! The iD of the file in an archive
+  /** This is used to link the FileList entry to extra info held about this
+  file in an archive, which can hold things like data offset and CRC. */
+  unsigned int iD;
 
-	//! The iD of the file in an archive
-	/** This is used to link the FileList entry to extra info held about this
-	file in an archive, which can hold things like data offset and CRC. */
-	unsigned int iD;
+  //! FileOffset inside an archive
+  unsigned int Offset;
 
-	//! FileOffset inside an archive
-	unsigned int Offset;
+  //! True if this is a folder, false if not.
+  bool isDirectory;
 
-	//! True if this is a folder, false if not.
-	bool isDirectory;
+  //! The == operator is provided so that list can slowly search the list!
+  bool operator == (const EntryInfo& other) const
+  {
+    if (isDirectory != other.isDirectory)
+      return false;
 
-	//! The == operator is provided so that CFileList can slowly search the list!
-	bool operator == (const EntryInfo& other) const
-	{
-		if (isDirectory != other.isDirectory)
-			return false;
+    return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
+  }
 
-		return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
-	}
+  //! The < operator is provided so that list can sort and quickly search the list.
+  bool operator <(const EntryInfo& other) const
+  {
+    if (isDirectory != other.isDirectory)
+      return isDirectory;
 
-	//! The < operator is provided so that CFileList can sort and quickly search the list.
-	bool operator <(const EntryInfo& other) const
-	{
-		if (isDirectory != other.isDirectory)
-			return isDirectory;
+    return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
+  }
 
-		return StringHelper::isEquale( _fullpath.toString(), other._fullpath.toString(), StringHelper::equaleIgnoreCase );
-	}
+  inline bool isFolder() const { return _fullpath.isFolder(); }
+  void setAbsolutePath( const Path& p )
+  {
+    _fullpath = p;
+    _fphash = StringHelper::hash( p.toString() );
+  }
 
-	void setAbspath( const Path& p )
-	{
-		_fullpath = p;
-		_fpHash = StringHelper::hash( _fullpath.toString() );
-	}
+  void setName( const Path& name )
+  {
+    _name = name;
+    _nhash = StringHelper::hash( name.toString() );
+    _nihash = StringHelper::hash( StringHelper::localeLower( name.toString() ) );
+  }
 
-	inline const Path& abspath() const { return _fullpath; }
-	inline bool isAbspathEquale( const EntryInfo& a ) const { return _fpHash == a._fpHash; }
+  inline const Path& absolutePath() const { return _fullpath; }
+  inline const Path& name() const { return _name; }
 
+  inline unsigned int abspathhash() const { return _fphash; }
+  inline unsigned int nameihash() const { return _nihash; }
+  inline unsigned int namehash() const { return _nhash; }
 private:
-	//! The name of the file including the path
-	/** If this is a file or folder in the virtual filesystem and the archive was
-	created with the ignoreDirs flag then it will be the same as name. */
-	Path _fullpath;
-	unsigned _fpHash;
+  //! The name of the file
+  /** If this is a file or folder in the virtual filesystem and the archive
+  was created with the ignoreCase flag then the file name will be lower case. */
+  Path _name;
+
+  //! The name of the file including the path
+  /** If this is a file or folder in the virtual filesystem and the archive was
+  created with the ignoreDirs flag then it will be the same as name. */
+  Path _fullpath;
+  unsigned int _fphash, _nhash, _nihash;
 };
 
 } // end namspace vfs

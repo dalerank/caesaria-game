@@ -111,36 +111,33 @@ bool Directory::createByPath( Directory dir )
   return result;
 }
 
-Path Directory::find( const Path& fileName ) const
+Path Directory::find(const Path& fileName, SensType sens) const
 {
-  _CAESARIA_DEBUG_BREAK_IF( !exist() );
-  if( !fileName.toString().size() )
+  if( fileName.toString().empty() )
   {
+    Logger::warning( "Directory: cannot try find zero lenght name" );
     return "";
   }
 
-  if( fileName.exist() )
+  Entries files = getEntries();
+  files.setSensType( sens );
+  int index = files.findFile( fileName.baseName() );
+  if( index >= 0 )
   {
-    return fileName;
+    return files.item( index ).absolutePath();
   }
 
-  Path finalPath( addEndSlash().toString() + fileName.toString() );
-  if( finalPath.exist() )
-  {
-    return finalPath;
-  }
-
-  return fileName;
+  return "";
 }
 
-Entries Directory::getEntries(SensType sens) const
+Entries Directory::getEntries() const
 {
   FileSystem& fs = FileSystem::instance();
-  Directory saveDir( fs.getWorkingDirectory() );
+  Directory saveDir( fs.workingDirectory() );
   Directory changeDd = *this;
   fs.changeWorkingDirectoryTo( changeDd );
     
-  Entries fList( changeDd.toString(), sens, false );
+  Entries fList( changeDd.toString(), Path::nativeCase, false );
   fList = fs.getFileList();
 
   fs.changeWorkingDirectoryTo( saveDir );
@@ -153,7 +150,6 @@ Directory::Directory( const Path& pathTo ) : Path( pathTo )
 
 Directory::Directory( const std::string& nPath ) : Path( nPath )
 {
-
 }
 
 Directory::Directory( const Directory& nPath ) : Path( nPath.toString()  )
@@ -182,7 +178,7 @@ Path Directory::operator/(const Path& filename)
 }
 
 bool Directory::changeCurrentDir( const Path& dirName ){  return FileSystem::instance().changeWorkingDirectoryTo( dirName );}
-Directory Directory::getCurrent(){  return FileSystem::instance().getWorkingDirectory();}
+Directory Directory::getCurrent(){  return FileSystem::instance().workingDirectory();}
 
 Directory Directory::getApplicationDir()
 {
@@ -274,8 +270,8 @@ Directory Directory::getUserDir()
      TCHAR oemPath[MAX_PATH];
      CharToOem(path, oemPath);
      mHomePath = oemPath;
-     // create Ogre subdir
-     mHomePath += "\\Ogre\\";
+     // create Home subdir
+     mHomePath += "\\Home\\";
   }
 
   if (mHomePath.empty())

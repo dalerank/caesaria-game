@@ -138,7 +138,7 @@ public:
 
   virtual NFile createAndOpenFile(const Path& filename);
   virtual NFile createAndOpenFile( unsigned int index);
-  virtual const Entries* getFileList() const;
+  virtual const Entries* entries() const;
   virtual std::string getTypeName() const;
 
   Archive::Type getType() const;
@@ -157,7 +157,7 @@ private:
   void _loadIsometricImage( gfx::Picture& pic, const SgFileEntry& rec);
   void _loadPlainImage( gfx::Picture& pic, const SgFileEntry& rec);
   void _set555Pixel( gfx::Picture& img, int x, int y, unsigned short color);
-  std::string _findFilenameCaseInsensitive(std::string directory, std::string filename);
+  std::string _findFilenameCaseInsensitive(const std::string& directory, std::string filename);
   std::string _find555File(const SgFileEntry& rec);
 }; // class Sg2ArchiveReader
 

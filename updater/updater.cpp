@@ -929,20 +929,20 @@ void Updater::RestartUpdater()
 
 void Updater::PostUpdateCleanup()
 {
-	vfs::Directory pdir =  getTargetDir();
-	vfs::Entries dir = pdir.getEntries();
-	for( vfs::Entries::ConstItemIt i = dir.begin(); i != dir.end(); i++)
-	{
-		if( StringHelper::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
-		{
-			vfs::NFile::remove( i->abspath() );
-		}		
-	}
+  vfs::Directory pdir =  getTargetDir();
+  vfs::Entries dir = pdir.getEntries();
+  foreach( i, dir )
+  {
+    if( StringHelper::startsWith( i->name().toString(), TEMP_FILE_PREFIX) )
+    {
+      vfs::NFile::remove( i->absolutePath() );
+    }
+  }
 }
 
 void Updater::CancelDownloads()
 {
-	_downloadManager->ClearDownloads();
+  _downloadManager->ClearDownloads();
 }
 
 } // namespace

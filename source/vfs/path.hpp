@@ -41,7 +41,7 @@ public:
   Path( const Path& );
   virtual ~Path();
 
-  bool exist() const;
+  bool exist( SensType sens=nativeCase ) const;
   bool isFolder() const;
   bool isDirectoryEntry() const;
 

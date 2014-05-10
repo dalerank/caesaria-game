@@ -54,7 +54,7 @@ public:
   //! Returns the complete file tree
   /** \return Returns the complete directory tree for the archive,
   including all files and folders */
-  virtual const Entries* getFileList() const =0;
+  virtual const Entries* entries() const =0;
 
   //! get the archive type
   virtual std::string getTypeName() const { return ""; }
