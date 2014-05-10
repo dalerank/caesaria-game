@@ -86,7 +86,7 @@ int Funds::profit() const
 
 bool Funds::haveMoneyForAction(unsigned int money)
 {
-  return _d->money - money > _d->maxDebt;
+  return (_d->money - (int)money > _d->maxDebt);
 }
 
 void Funds::updateHistory( const DateTime& date )

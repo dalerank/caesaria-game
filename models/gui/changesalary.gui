@@ -7,8 +7,9 @@
 
     lbTitle#Label : {
       geometry : [ 15, 15, "pw-15", 35 ]
-      text : "##set_mayor_salary##"
+      text : "##governor_salary_title##"
       font : "FONT_2"
+      textAlign : [ "center", "center" ]
     }
 
     lbxTitles#ListBox : {
