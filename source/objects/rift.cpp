@@ -128,6 +128,13 @@ void Rift::destroy() {}
 bool Rift::isDestructible() const {  return false;}
 Renderer::PassQueue Rift::getPassQueue() const {  return riftPassQueue; }
 
+void Rift::timeStep(const unsigned long time)
+{
+  gfx::TileOverlay::timeStep( time );
+  _animationRef().update( time );
+  _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
+}
+
 void Rift::updatePicture()
 {
   setPicture( computePicture() );
