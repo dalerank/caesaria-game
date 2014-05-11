@@ -54,6 +54,7 @@ protected:
   virtual void _setPatrolPoint( PatrolPointPtr patrolPoint );
   virtual void _setEmblem( gfx::Picture pic );
   virtual void _setName( const std::string& name );
+  virtual int  _setFlagIndex( int index );
 
 private:  
   class Impl;

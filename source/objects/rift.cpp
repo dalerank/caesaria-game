@@ -33,6 +33,11 @@ namespace {
 
 Rift::Rift() : TileOverlay( building::rift, Size(1) )
 {
+  _animationRef().load( ResourceGroup::sprites, 1, 8 );
+  _animationRef().setOffset( Point( 14, 26 ) );
+  _animationRef().setDelay( 4 );
+  _animationRef().setLoop( false );
+  _fgPicturesRef().resize(1);
 }
 
 void Rift::build( PlayerCityPtr city, const TilePos& pos )

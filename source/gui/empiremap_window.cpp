@@ -42,6 +42,7 @@
 #include "events/fundissue.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "widgetescapecloser.hpp"
+#include "gameautopause.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -54,6 +55,7 @@ static const char* empMapOffset = "EmpireMapWindowOffset";
 class EmpireMapWindow::Impl
 {
 public:
+  GameAutoPause autopause;
   PictureRef border;
   Picture empireMap;
   world::CityPtr currentCity;
@@ -303,6 +305,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
  : Widget( parent, id, Rect( Point(0, 0), parent->size() ) ), _d( new Impl )
 {
   // use some clipping to remove the right and bottom areas
+  _d->autopause.activate();
   _d->border.reset( Picture::create( size() ) );
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;

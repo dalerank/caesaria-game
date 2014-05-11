@@ -39,6 +39,7 @@ FortLegionary::FortLegionary()
   : Fort( building::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
+  _setFlagIndex( 21 );
 }
 
 void FortLegionary::_readyNewSoldier()
@@ -63,6 +64,7 @@ FortMounted::FortMounted()
   : Fort( constants::building::fortMounted, 15 )
 {
   setPicture( ResourceGroup::security, 12 );
+  _setFlagIndex( 39 );
 }
 
 void FortMounted::build(PlayerCityPtr city, const TilePos& pos)
@@ -104,6 +106,7 @@ FortJaveline::FortJaveline()
   : Fort( building::fortJavelin, 14 )
 {
   setPicture( ResourceGroup::security, 12 );
+  _setFlagIndex( 30 );
 }
 
 void FortJaveline::_readyNewSoldier()

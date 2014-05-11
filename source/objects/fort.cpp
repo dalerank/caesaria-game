@@ -91,6 +91,7 @@ public:
   unsigned int maxSoldier;
   PatrolPointPtr patrolPoint;
   LegionEmblem emblem;
+  int flagIndex;
 };
 
 class FortArea::Impl
@@ -148,7 +149,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
 
   _d->area = new FortArea();
   _d->area->drop();
-
+  _d->flagIndex = 21;
   _d->maxSoldier = 16;
 
   setState( Construction::inflammability, 0 );
@@ -307,6 +308,7 @@ SoldierList Fort::soldiers() const
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }
 void Fort::_setEmblem(Picture pic) { _d->emblem.pic = pic; }
 void Fort::_setName(const std::string& name) { _d->emblem.name = name; }
+int  Fort::_setFlagIndex( int index ) { return _d->flagIndex = index; }
 
 bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
@@ -338,7 +340,7 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
   }
 
   _setPatrolPoint( PatrolPoint::create( city, this,
-                                        ResourceGroup::sprites, 21, 8,
+                                        ResourceGroup::sprites, _d->flagIndex, 8,
                                         pos + TilePos( 3, 3 ) ) );
 }
 
