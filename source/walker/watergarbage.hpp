@@ -24,6 +24,7 @@
 class WaterGarbage : public Walker
 {
 public:
+  static WalkerPtr create( PlayerCityPtr city );
   WaterGarbage( PlayerCityPtr city );
   virtual ~WaterGarbage();
 
