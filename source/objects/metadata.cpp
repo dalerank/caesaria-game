@@ -271,7 +271,7 @@ const MetaData& MetaDataHolder::getData(const TileOverlay::Type buildingType)
   mapIt = instance()._d->buildings.find(buildingType);
   if (mapIt == instance()._d->buildings.end())
   {
-    Logger::warning("Unknown building %d", buildingType );
+    Logger::warning("MetaDataHolder::Unknown building %d", buildingType );
     return MetaData::invalid;
   }
   return mapIt->second;

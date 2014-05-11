@@ -5,6 +5,11 @@
     class : "road"
     image : [ "land2a", 44 ]
   },
+
+  elevation : {
+    cost : 0
+    class : "road"
+  }
   
   wall : {
     desirability : 12,

@@ -70,34 +70,35 @@ void EarthQuake::_exec( Game& game, unsigned int time)
       {
         events::GameEventPtr e = events::DisasterEvent::create( *currentTile, DisasterEvent::rift );
         e->dispatch();
-
-        //calculate next point
-        TilePos offset( 1, 1 );
-        TilesArray nextPoints = tmap.getRectangle( _d->currentPoint - offset, _d->currentPoint + offset, false );
-
-        int lastDst = _d->currentPoint.distanceFrom( _d->endPoint);
-        for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
-        {
-          mayDestruct = (*it)->getFlag( Tile::isConstructible );
-          mayDestruct |= is_kind_of<Construction>( (*it)->overlay() );
-          int curDst = (*it)->pos().distanceFrom( _d->endPoint );
-          if( !mayDestruct || (curDst > lastDst) ) { it = nextPoints.erase( it ); }
-          else { ++it; }
-        }
-
-        if( nextPoints.empty() )
-        {
-          TilePos offset = _d->endPoint - _d->currentPoint;
-          offset.setI( math::signnum( offset.i() ) );
-          offset.setJ( math::signnum( offset.j() ) );
-          _d->currentPoint += offset;
-        }
-        else
-        {
-          _d->currentPoint = nextPoints.random()->pos();
-        }
       }
     }
+
+    //calculate next point
+    TilePos offset( 1, 1 );
+    TilesArray nextPoints = tmap.getRectangle( _d->currentPoint - offset, _d->currentPoint + offset, false );
+
+    int lastDst = _d->currentPoint.distanceFrom( _d->endPoint);
+    for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
+    {
+      bool mayDestruct = (*it)->getFlag( Tile::isConstructible );
+      mayDestruct |= is_kind_of<Construction>( (*it)->overlay() );
+      int curDst = (*it)->pos().distanceFrom( _d->endPoint );
+      if( !mayDestruct || (curDst > lastDst) ) { it = nextPoints.erase( it ); }
+      else { ++it; }
+    }
+
+    if( nextPoints.empty() )
+    {
+      TilePos offset = _d->endPoint - _d->currentPoint;
+      offset.setI( math::signnum( offset.i() ) );
+      offset.setJ( math::signnum( offset.j() ) );
+      _d->currentPoint += offset;
+    }
+    else
+    {
+      _d->currentPoint = nextPoints.random()->pos();
+    }
+
 
     if( _d->currentPoint == _d->endPoint )
     {

@@ -44,9 +44,9 @@ Fountain::Fountain() : ServiceBuilding(Service::fountain, building::fountain, Si
 
   _haveReservoirWater = false;
   _waterIncreaseInterval = GameDate::days2ticks( 7 );
+  _lastPicId = simpleFountain;
   _fgPicturesRef().resize(1);
   _initAnimation();
-  _lastPicId = simpleFountain;
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );

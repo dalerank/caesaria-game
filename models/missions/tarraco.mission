@@ -179,9 +179,10 @@
     }
 
     earthquake#earthquake : {
-      date : "-270.03.01"
+      date : "-270.01.01"
       start : [ 14, 77 ]
       end : [ 44, 57 ]
+      type : "earthquake"
     }
 
     earthquake_disaster#messagebox : {

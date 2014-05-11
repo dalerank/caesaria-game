@@ -277,20 +277,14 @@ void StartMenu::initialize()
 
   _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
-  gui::TexturedButton* btnGreenlight = new gui::TexturedButton( _d->game->gui()->rootWidget(), Point(), Size( 250, 155), -1, 0 );
-  btnGreenlight->setPicture( Picture::load( "greenlight.png" ), gui::stNormal );
-  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stPressed );
-  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stHovered );
-  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stDisabled );
+  gui::TexturedButton* btnGreenlight = new gui::TexturedButton( _d->game->gui()->rootWidget(), Point(), Size( 250, 155), -1,
+                                                                "greenlight", 1, 2, 2, 2 );
   CONNECT( btnGreenlight, onClicked(), _d.data(), Impl::openGreenlightPage );
 
   Size scrSize = _d->engine->screenSize();
   gui::TexturedButton* btnHomePage = new gui::TexturedButton( _d->game->gui()->rootWidget(),
-                                                              Point( scrSize.width() - 97, scrSize.height() - 75 ), Size( 97, 75 ), -1, 0 );
-  btnHomePage->setPicture( Picture::load( "logo_rdt.png" ), gui::stNormal );
-  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stPressed );
-  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stHovered );
-  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stDisabled );
+                                                              Point( scrSize.width() - 97, scrSize.height() - 75 ), Size( 97, 75 ), -1,
+                                                              "logo_rdt", 1, 2, 2, 2 );
   CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
 
   gui::PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );

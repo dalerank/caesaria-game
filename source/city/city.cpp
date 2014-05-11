@@ -553,7 +553,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "Can't load overlay " + item->first );
+      Logger::warning( "City: can't load overlay " + item->first );
     }
   }
 
@@ -572,7 +572,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "Can't load walker " + item->first );
+      Logger::warning( "City: can't load walker " + item->first );
     }
   }
 
