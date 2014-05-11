@@ -196,9 +196,10 @@ void LayerBuild::_buildAll()
     return;
   }
 
-  if( _city()->funds().treasury() < -5000 )
+  if( !_city()->funds().haveMoneyForAction( 1 ) )
   {
-    events::GameEventPtr event = events::WarningMessageEvent::create( "##out_of_credit##" );
+    events::GameEventPtr e = events::WarningMessageEvent::create( "##out_of_credit##" );
+    e->dispatch();
     return;
   }
 

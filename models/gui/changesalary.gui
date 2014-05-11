@@ -7,8 +7,9 @@
 
     lbTitle#Label : {
       geometry : [ 15, 15, "pw-15", 35 ]
-      text : "##set_mayor_salary##"
+      text : "##governor_salary_title##"
       font : "FONT_2"
+      textAlign : [ "center", "center" ]
     }
 
     lbxTitles#ListBox : {
@@ -16,19 +17,6 @@
       textAlign : [ "center", "center" ]
       itemfont : "FONT_2_WHITE"
       itemheight : 22
-
-      items : [
-	{ text : "##clerk_salary##", tag : 2 }
-	{ text : "##engineer_salary##", tag : 5 }
-	{ text : "##architect_salary##", tag : 8 }
-	{ text : "##questor_salary##", tag : 12 }
-	{ text : "##procurate_salary##", tag : 20 }
-	{ text : "##edil_salary##", tag : 30 }
-	{ text : "##pretor_salary##", tag : 40 }
-	{ text : "##consoul_salary##", tag : 60 }
-	{ text : "##proconsoul_salary##", tag : 80 }
-	{ text : "##caesar_salary##", tag : 100 }
-      ]
     }
     
     btnOk#PushButton : {

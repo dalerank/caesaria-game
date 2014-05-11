@@ -39,7 +39,7 @@ Trading::Trading() : _d( new Impl )
 {
 }
 
-void Trading::update( unsigned int time )
+void Trading::timeStep( unsigned int time )
 {
   if( GameDate::isDayChanged() )
   {

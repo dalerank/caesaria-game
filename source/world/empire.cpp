@@ -28,6 +28,7 @@
 #include "object.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
+#include "game/settings.hpp"
 
 namespace world
 {
@@ -40,6 +41,7 @@ public:
   EmpireMap emap;
   ObjectList objects;
   Emperor emperor;
+  unsigned int treasury;
   bool available;
 
   std::string playerCityName;
@@ -51,6 +53,7 @@ Empire::Empire() : _d( new Impl )
   _d->trading.init( this );
   _d->workerSalary = 30;
   _d->available = true;
+  _d->treasury = 0;
 }
 
 CityList Empire::cities() const
@@ -249,7 +252,8 @@ TraderoutePtr Empire::getTradeRoute( const std::string& start, const std::string
 
 void Empire::timeStep( unsigned int time )
 {
-  _d->trading.update( time );
+  _d->trading.timeStep( time );
+  _d->emperor.timeStep( time );
 
   foreach( city, _d->cities )
   {
@@ -278,6 +282,12 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   return ret;
 }
 
+void Empire::payTax(const std::string &cityname, unsigned int money)
+{
+  _d->treasury += money;
+  _d->emperor.cityTax( cityname, money );
+}
+
 ObjectList Empire::objects() const{  return _d->objects; }
 TraderouteList Empire::getTradeRoutes( const std::string& startCity ){  return _d->trading.routes( startCity );}
 
@@ -295,6 +305,30 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
   }
 
   return 0;
+}
+
+GovernorRanks EmpireHelper::getRanks()
+{
+  std::map<unsigned int, GovernorRank > sortRanks;
+
+  VariantMap vm = SaveAdapter::load( GameSettings::rcpath( GameSettings::ranksModel ) );
+  foreach( i, vm )
+  {
+    VariantMap rankInfo = i->second.toMap();
+
+    GovernorRank rank;
+    rank.rankName = i->first;
+    rank.prettyName = rankInfo.get( "name" ).toString();
+    rank.salary = (int)rankInfo.get( "salary" );
+
+    sortRanks[ rank.salary ] = rank;
+  }
+
+  GovernorRanks ranks;
+  foreach( i, sortRanks )
+    ranks.push_back( i->second );
+
+  return ranks;
 }
 
 

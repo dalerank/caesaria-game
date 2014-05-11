@@ -328,6 +328,18 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
   city->addOverlay( _d->area.object() );
 
   _fgPicturesRef().resize(1);
+
+  BarracksList barracks;
+  barracks << city->overlays();
+
+  if( barracks.empty() )
+  {
+    _setError( "##need_barracks_for_work##" );
+  }
+
+  _setPatrolPoint( PatrolPoint::create( city, this,
+                                        ResourceGroup::sprites, 21, 8,
+                                        pos + TilePos( 3, 3 ) ) );
 }
 
 bool Fort::isNeedRoadAccess() const {  return false; }

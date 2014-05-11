@@ -34,7 +34,10 @@ public:
   int relation( const std::string& cityname );
   void updateRelation( const std::string& cityname, int value );
 
-  void sendGift( const std::string& cityname, int money );
+  void sendGift( const std::string& cityname, unsigned int money );
+  void timeStep( unsigned int time );
+
+  void cityTax( const std::string& cityname, unsigned int money );
 
   VariantMap save() const;
   void load( const VariantMap& stream );

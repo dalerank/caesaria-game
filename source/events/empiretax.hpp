@@ -15,39 +15,27 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MILITARY_BUILDING_H_INCLUDED__
-#define __CAESARIA_MILITARY_BUILDING_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_EMPIRETAX_H_INCLUDE_
+#define _CAESARIA_EVENT_EMPIRETAX_H_INCLUDE_
 
-#include "fort.hpp"
-#include "constants.hpp"
-#include "walker/walker.hpp"
+#include "event.hpp"
 
-class FortLegionary : public Fort
+namespace events
 {
-public:  
-  FortLegionary();
+
+class EmpireTax : public GameEvent
+{
+public:
+  static GameEventPtr create( const std::string& citname );
 
 protected:
-  virtual void _readyNewSoldier();
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec( Game &game, unsigned int time) const;
+
+private:
+  std::string _cityname;
 };
 
-class FortJaveline : public Fort
-{
-public:  
-  FortJaveline();
+}
 
-protected:
-  virtual void _readyNewSoldier();
-};
-
-class FortMounted : public Fort
-{
-public:  
-  FortMounted();
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-
-protected:
-  virtual void _readyNewSoldier();
-};
-
-#endif //__CAESARIA_MILITARY_BUILDING_H_INCLUDED__
+#endif //_CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_

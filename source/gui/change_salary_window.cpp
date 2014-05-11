@@ -20,6 +20,8 @@
 #include "listbox.hpp"
 #include "game/settings.hpp"
 #include "core/logger.hpp"
+#include "world/empire.hpp"
+#include "core/gettext.hpp"
 
 namespace gui
 {
@@ -48,13 +50,14 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, int salary)
   ListBox* lbx = findChildA<ListBox*>( "lbxTitles", true, this );
   if( lbx )
   {
-    for( int i=0; i < lbx->itemCount(); i++ )
+    world::GovernorRanks ranks = world::EmpireHelper::getRanks();
+    foreach( i, ranks )
     {
-      ListBoxItem& item = lbx->item( i );
-      if( item.tag() > salary )
+      ListBoxItem& item = lbx->addItem( _( (*i).prettyName ) );
+      item.setTag( (*i).salary );
+      if( (*i).salary == salary )
       {
-        lbx->setSelected( i - 1 );
-        break;
+        lbx->setSelected( std::distance( ranks.begin(), i ) );
       }
     }
   }

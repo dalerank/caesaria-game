@@ -67,6 +67,8 @@ public:
   int treasury() const;
   int profit() const;
 
+  bool haveMoneyForAction( unsigned int money );
+
   VariantMap save() const;
   void load( const VariantMap& stream );
 

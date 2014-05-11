@@ -41,23 +41,6 @@ FortLegionary::FortLegionary()
   setPicture( ResourceGroup::security, 12 );
 }
 
-void FortLegionary::build(PlayerCityPtr city, const TilePos& pos)
-{
-  Fort::build( city, pos );
-
-  _setPatrolPoint( PatrolPoint::create( city, this,
-                                        ResourceGroup::sprites, 21, 8,
-                                        pos + TilePos( 3, 3 ) ) );
-
-  BarracksList barracks;
-  barracks << city->overlays();
-
-  if( barracks.empty() )
-  {
-    _setError( "##need_barracks_for_work##" );
-  }
-}
-
 void FortLegionary::_readyNewSoldier()
 {
   RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
