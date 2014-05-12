@@ -33,6 +33,8 @@ public:
   virtual void send2City( TilePos pos );
   virtual void die();
 
+  virtual void acceptAction(Action action, TilePos pos);
+
   virtual ~EnemySoldier();
 
   virtual int agressive() const;

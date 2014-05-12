@@ -49,21 +49,22 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
 
 bool EnemySoldier::_tryAttack()
 {
-  BuildingList buildings = _findBuildingsInRange( attackDistance() );
+  WalkerList enemies = _findEnemiesInRange( attackDistance() );
+
   TilePos targetPos;
-  if( !buildings.empty() )
+  if( !enemies.empty() )
   {
-    _setSubAction( Soldier::destroyBuilding );
-    targetPos = buildings.front()->pos();
+    _setSubAction( Soldier::fightEnemy );
+    targetPos = enemies.front()->pos();
     fight();
   }
   else
   {
-    WalkerList enemies = _findEnemiesInRange( attackDistance() );
-    if( !enemies.empty() )
+    BuildingList buildings = _findBuildingsInRange( attackDistance() );
+    if( !buildings.empty() )
     {
-      _setSubAction( Soldier::fightEnemy );
-      targetPos = enemies.front()->pos();
+      _setSubAction( Soldier::destroyBuilding );
+      targetPos = buildings.front()->pos();
       fight();
     }
   }
@@ -341,7 +342,18 @@ void EnemySoldier::die()
   WalkerPtr wlk = Corpse::create( _city(), this );
   if( wlk->isDeleted() )
   {
-     Corpse::create( _city(), pos(), ResourceGroup::celts, 393, 400 );
+    wlk = Corpse::create( _city(), pos(), ResourceGroup::celts, 393, 400 );
+  }
+
+  _city()->addWalker( wlk );
+}
+
+void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)
+{
+  Soldier::acceptAction( action, pos );
+  if( action == Walker::acFight )
+  {
+    _tryAttack();
   }
 }
 

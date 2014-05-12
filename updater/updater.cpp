@@ -52,7 +52,7 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 	MirrorDownload::InitRandomizer();
 
 #ifdef CAESARIA_PLATFORM_WIN
-	if( _executable.getExtension().empty() )
+	if( _executable.extension().empty() )
 	{
 		Logger::warning( "Adding EXE extension to executable: " + _executable.toString() );
 		_executable = _executable.toString() + ".exe";

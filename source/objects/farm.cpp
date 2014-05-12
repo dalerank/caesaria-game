@@ -98,7 +98,7 @@ Farm::Farm(const Good::Type outGood, const Type type )
   _d->pictureBuilding.addOffset( 30, 15);
 
   setPicture( _d->pictureBuilding );
-  outStockRef().setCapacity( 500 );
+  outStockRef().setCapacity( 100 );
 
   init();
 }

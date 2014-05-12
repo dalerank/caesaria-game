@@ -118,7 +118,7 @@ void ThrowingWeapon::turn(TilePos p)
   case 7: index = _rcStartIndex() + 5; break;
   case 8: index = _rcStartIndex() + 6; break;
   case 9: index = _rcStartIndex() + 6; break;
-  case 10: index = _rcStartIndex() + 8; break;
+  case 10: index = _rcStartIndex() + 7; break;
   case 11: index = _rcStartIndex() + 9; break;
   case 12: index = _rcStartIndex() + 10; break;
   case 13: index = _rcStartIndex() + 10; break;
