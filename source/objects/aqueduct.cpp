@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "aqueduct.hpp"
 
@@ -249,14 +251,31 @@ const Picture& Aqueduct::picture(PlayerCityPtr city, TilePos p, const TilesArray
   // calculate directions
   for (int i = 0; i < countDirection; ++i)
   {
-    if( !is_border[i] && (is_kind_of<Aqueduct>( overlay_d[i] ) || is_kind_of<Reservoir>( overlay_d[i] ) || is_busy[i]))
+    bool isReservoirNear = is_kind_of<Reservoir>( overlay_d[i] );
+    if( !is_border[i] && (is_kind_of<Aqueduct>( overlay_d[i] ) || isReservoirNear || is_busy[i] ) )
     {
-      switch (i) {
-      case north: directionFlags += 1; break;
-      case east:  directionFlags += 2; break;
-      case south: directionFlags += 4; break;
-      case west:  directionFlags += 8; break;
-      default: break;
+      if( isReservoirNear )
+      {
+        ReservoirPtr reservoir = ptr_cast<Reservoir>( overlay_d[ i ] );
+        switch( i )
+        {
+        case north: directionFlags += ( reservoir->entry( south ) == p + TilePos( 0, 1 ) ? 1 : 0 ); break;
+        case east:  directionFlags += ( reservoir->entry( west ) == p + TilePos( 1, 0 ) ? 2 : 0 ); break;
+        case south: directionFlags += ( reservoir->entry( north ) == p + TilePos( 0, -1 ) ? 4 : 0 ); break;
+        case west:  directionFlags += ( reservoir->entry( east ) == p + TilePos( -1, 0 ) ? 8 : 0 ); break;
+        default: break;
+        }
+      }
+      else
+      {
+        switch (i)
+        {
+        case north: directionFlags += 1; break;
+        case east:  directionFlags += 2; break;
+        case south: directionFlags += 4; break;
+        case west:  directionFlags += 8; break;
+        default: break;
+        }
       }
     }
   }
@@ -337,13 +356,10 @@ const Picture& Aqueduct::picture(PlayerCityPtr city, TilePos p, const TilesArray
 
 void Aqueduct::updatePicture(PlayerCityPtr city)
 {
-  setPicture( picture( city, TilePos(), TilesArray() ) );
+  setPicture( picture( city, _masterTile() ? _masterTile()->pos() : TilePos(), TilesArray() ) );
 }
 
-bool Aqueduct::isNeedRoadAccess() const
-{
-  return false;
-}
+bool Aqueduct::isNeedRoadAccess() const {  return false; }
 
 void Aqueduct::_waterStateChanged()
 {
@@ -363,15 +379,8 @@ void Aqueduct::addWater( const WaterSource& source )
   }
 }
 
-bool Aqueduct::isWalkable() const
-{
-  return _isRoad();
-}
-
-bool Aqueduct::isRoad() const
-{
-  return _isRoad();
-}
+bool Aqueduct::isWalkable() const {  return _isRoad();}
+bool Aqueduct::isRoad() const{  return _isRoad();}
 
 std::string Aqueduct::sound() const
 {

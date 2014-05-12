@@ -247,3 +247,16 @@ void WaterSource::load(const VariantMap &stream)
   _d->water = stream.get( "water" );
   _d->isRoad = stream.get( "isRoad" );
 }
+
+
+TilePos Reservoir::entry(constants::Direction direction)
+{
+  switch( direction )
+  {
+  case north: return pos() + TilePos( 1, 2 );
+  case east: return pos() + TilePos( 2, 1 );
+  case south: return pos() + TilePos( 1, 0 );
+  case west: return pos() + TilePos( 0, 1 );
+  default: return TilePos( -1, -1 );
+  }
+}
