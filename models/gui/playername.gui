@@ -17,9 +17,10 @@
     
     lbNext#Label : 
     {
-      geometry : [ 180, 90, 336, 110 ] 
+      geometry : [ 180, 90, 325, 110 ]
       text : "##plname_continue##"
       font : "FONT_2"
+      textAlign : [ "lowerRight", "center" ]
     }
     
     lbTitle#Label : 
@@ -37,6 +38,13 @@
       hovered : [ "paneling", 180 ]
       pressed : [ "paneling", 181 ]
       disabled : [ "paneling", 179 ]
+    }
+
+    lbExitHelp#Label :
+    {
+      geometry : [ 18, 100, 300, 117 ]
+      text : "##press_escape_for_exit##"
+      font : "FONT_1"
     }
   }
 }
