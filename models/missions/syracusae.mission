@@ -1,0 +1,215 @@
+{
+  version : 1
+  map : "/maps/Syracusae.sav"
+  funds : 8000
+  date : "-270.01.01"
+  finish : "-100.01.01"
+	
+  win :
+  {
+    population : 4000
+    culture : 40
+    prosperity : 20
+    peace : 25
+    favour : 20
+    next : "/missions/tutorial5.briefing"
+    title : "##win_engineer_title##"
+    may_continue : false
+    maxHouseLevel : "big_villa"
+    caption : "##syracusae_4_title##"
+    overview :  [ "##syracusae_4_overview##" ]
+  }
+	
+  empire : {
+    enabled : true
+
+    objects : {
+      ship : {
+        location : [ 709, 604 ]
+        name : "ship"
+        picture : "empire_bits_00112"
+      }
+
+      aqueduct : {
+        location : [ 170, 630 ]
+        name : "aqueduct"
+        picture : "empire_bits_00107"
+      }
+
+      palms : {
+        location : [ 490, 790 ]
+        name : "palms"
+        picture : "empire_bits_00111"
+      }
+
+      colosseum : {
+        location : [ 735, 495 ]
+        name : "colosseum"
+        picture : "empire_bits_00114"
+      }
+
+      rocks : {
+        location : [ 240, 460 ]
+        name : "rocks"
+        picture : "empire_bits_00106"
+      }
+
+      rocks2 : {
+        location : [ 530, 380 ]
+        name : "rocks2"
+        picture : "empire_bits_00115"
+      }
+    }
+
+    cities :
+    {
+      Tarentum : {
+	location : [ 900, 600 ]
+    
+	land : true
+	sea : true
+    
+	sells : { meat : 15, timber : 25 }	
+	buys : { olive: 15, oil: 15 }
+      }
+      
+      Capua : {
+	location : [ 820, 560 ]
+    
+	sea : true
+	land : true
+    
+	sells : { furniture : 25 }
+	buys : { weapon : 25 }
+      }
+    }
+  }
+  		
+  events :
+  {
+     enemy_warning#messagebox : {
+      date : "-268.08.01"
+      title : "##enemies_at_the_door_title##"
+      text : "##enemies_at_the_door_text##"
+    }
+    
+    storm_seas#messagebox : {
+      date : "-268.11.01"
+      title : "##stormy_seas_title##"
+      text : "##stormy_seas_text##"
+    }
+    
+    stop_sea_trading#trading_options : {
+      date : "-268.11.01"
+      cities : {
+        Tarentum : { delay : 12 }
+        Capua : { delay : 12 }
+      }
+    }
+    
+    emperor_request_pottery1#city_request : {
+      date : "-267.02.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { oil : 5 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+    
+    oil_price_rising#messagebox : {
+      date : "-267.03.01"
+      title : "##a_price_rise_title##"
+      text : "##a_price_rise_text##"
+    }
+    
+    oil_price_rising#trading_options : {
+      date : "-267.3.01"
+      goods : {
+        oil : { price : 40 }
+      }
+    }
+
+    greeck_attack#messagebox : {
+      date : "-267.09.01"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+
+    greek_invasion#enemy_attack : {
+      date : "-267.09.01"
+      type : "enemy_attack"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 8
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 1
+          location : "random"
+        }
+      }
+
+      text : "##enemy_attack_city##"
+    }
+  }
+	
+  buildoptions :
+  {
+    farm : "disable_all"
+    raw_material : "disable_all"
+    factory : "disable_all"
+    water : "enabled"
+    health : "enabled"
+    religion : "disable_all"
+    education : "enabled"
+    entertainment : "enabled"
+    govt : "enabled"
+    engineering : "disable_all"
+    security : "disable_all"
+    check_desirability : true
+                   
+    buildings : 
+    { 
+      engineering_post : true
+      plaza : true
+      clay_pit : true
+      iron_mine : true
+      pottery : true
+      weapons_workshop : true
+      oil_workshop : true
+      furniture_workshop : true
+      forum_1 : false
+      garden : true
+      low_bridge : true
+      high_bridge : true
+      dock : true
+      prefecture : true
+      small_ceres_temple : true
+      small_venus_temple : true
+      small_mars_temple : true
+      small_neptune_temple : true
+      small_mercury_temple : true
+      market : true
+      granery : true
+      warehouse : true
+      wheat_farm : true
+      senate_1 : true
+      gatehouse : true
+      wall : true 
+      tower : true 
+      fort_legionaries : true
+      fort_javelin : true
+      fort_horse : true
+      military_academy : true
+      barracks : true
+      wheat_farm : true
+      vegetable_farm : true
+      olive_farm : true
+    }
+  }
+}

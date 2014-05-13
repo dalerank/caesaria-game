@@ -81,12 +81,11 @@ void CityIndebt::_exec(Game& game, unsigned int)
   gui::GuiEnv* env = game.gui();
 
   _isDeleted = true;
-  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "" );
+  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "/smk/Emp_2nd_chance.smk" );
   dlg->setText( _( _text ) );
   dlg->setTitle( _("##city_indebt_title##") );
   //dlg->setReceiver( _receiver );
   dlg->setTime( GameDate::current() );
-
   dlg->show();
 
   GameEventPtr e = FundIssueEvent::create( city::Funds::donation, _emperorMoney );

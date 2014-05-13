@@ -26,6 +26,7 @@
 #include "neptune.hpp"
 #include "venus.hpp"
 #include "mercury.hpp"
+#include "mars.hpp"
 
 using namespace constants;
 
@@ -53,6 +54,7 @@ Pantheon::Pantheon() : _d( new Impl )
   _d->divinties.push_back( rome::Neptune::create() );
   _d->divinties.push_back( rome::Mercury::create() );
   _d->divinties.push_back( rome::Venus::create() );
+  _d->divinties.push_back( rome::Mars::create() );
 }
 
 DivinityPtr Pantheon::get( RomeDivinityType name )

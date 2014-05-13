@@ -176,21 +176,7 @@
       video : "/smk/Population1.smk"
       title : "##population_mileston##"
       text : "##500_citzens_in_city##"
-    }
-
-    earthquake#earthquake : {
-      date : "-270.01.01"
-      start : [ 14, 77 ]
-      end : [ 44, 57 ]
-      type : "earthquake"
-    }
-
-    earthquake_disaster#messagebox : {
-      date : "-268.06.01"
-      title : "##earthquake_title##"
-      text : "##earthquake_text##"
-      video : "/smk/QUAKE.SMK"
-    }
+    }    
   }
 	
   buildoptions :
