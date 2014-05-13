@@ -175,10 +175,7 @@ CollapsedRuins::CollapsedRuins() : Ruins(building::collapsedRuins)
   _fgPicturesRef().resize(1);
 }
 
-void CollapsedRuins::burn()
-{
-
-}
+void CollapsedRuins::burn() {}
 
 void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {

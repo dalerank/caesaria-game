@@ -16,6 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "city/funds.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "trade_options.hpp"
 #include "objects/house.hpp"

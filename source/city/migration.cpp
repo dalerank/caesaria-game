@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "migration.hpp"
+#include "objects/construction.hpp"
 #include "helper.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"

@@ -24,6 +24,14 @@
 using namespace constants;
 using namespace gfx;
 
+WalkerPtr WaterGarbage::create(PlayerCityPtr city)
+{
+  WalkerPtr ret( new WaterGarbage( city ) );
+  ret->drop();
+
+  return ret;
+}
+
 WaterGarbage::WaterGarbage(PlayerCityPtr city )
   : Walker( city )
 {

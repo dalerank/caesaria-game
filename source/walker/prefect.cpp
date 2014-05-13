@@ -125,13 +125,13 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->type() != building::burningRuins )
       continue;
 
-    Pathway tmp = PathwayHelper::create( pos(), building->pos(), PathwayHelper::allTerrain );
+    Pathway tmp = PathwayHelper::create( pos(), ptr_cast<Construction>( building ), PathwayHelper::allTerrain );
     if( tmp.isValid() )
     {
       _d->action = Impl::go2fire;
-      _updatePathway( tmp );
-      _setAction( acDragWater );
+      _updatePathway( tmp );      
       go();
+      _setAction( acDragWater );
       return true;
     }
   }
@@ -195,14 +195,36 @@ void Prefect::_back2Patrol()
   if( pathway.isValid() )
   {
     _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
-    _setAction( _d->water > 0 ? acDragWater : acMove );
     _updatePathway( pathway );
     go();
+    _setAction( _d->water > 0 ? acDragWater : acMove );
   }
   else
   {
     _back2Prefecture();
   }
+}
+
+bool Prefect::_figthFire()
+{
+  TilePos offset( 1, 1 );
+  TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset );
+
+  foreach( it, tiles )
+  {
+    BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
+    if( building.isValid() && building->type() == building::burningRuins )
+    {
+      turn( building->pos() );
+      _d->action = Impl::fightFire;
+      _d->endPatrolPoint = building->pos();
+      _setAction( acFightFire );
+      setSpeed( 0.f );
+      return true;
+    }
+  }
+
+  return false;
 }
 
 bool Prefect::_findFire()
@@ -236,9 +258,9 @@ void Prefect::_brokePathway(TilePos p)
     if( pathway.isValid() )
     {
       _d->action = Impl::findFire;
-      _setAction( acDragWater );
       setPathway( pathway );
       go();
+      _setAction( acDragWater );
       return;
     }
   }
@@ -263,7 +285,7 @@ void Prefect::_reachedPathway()
   break;
 
   case Impl::go2fire:
-    if( !_findFire() )
+    if( !_figthFire() )
     {
       _back2Patrol();
     }
@@ -357,16 +379,8 @@ void Prefect::_centerTile()
 
   case Impl::go2fire:
   {
-    BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
-    if( building.isValid() && building->type() == building::burningRuins )
-    {
-      turn( building->pos() );
-      _d->action = Impl::fightFire;
-      _d->endPatrolPoint = building->pos();
-      _setAction( acFightFire );
-      setSpeed( 0.f );
+    if( _figthFire() )
       return;
-    }
   }
   break;
 

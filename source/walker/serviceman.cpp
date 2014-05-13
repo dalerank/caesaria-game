@@ -170,10 +170,8 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
 {
   ReachedBuildings res;
 
-  int reachDistance = getReachDistance();
-  TilePos start = pos - TilePos( reachDistance, reachDistance );
-  TilePos stop = pos + TilePos( reachDistance, reachDistance );
-  TilesArray reachedTiles = _city()->tilemap().getArea( start, stop );
+  TilePos offset( getReachDistance(), getReachDistance() );
+  TilesArray reachedTiles = _city()->tilemap().getArea( pos - offset, pos + offset );
   foreach( it, reachedTiles )
   {
     BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );

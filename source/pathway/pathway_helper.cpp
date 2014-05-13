@@ -53,30 +53,32 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos, WayType type/*
 
 Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, PathwayHelper::WayType type)
 {
-  switch( type )
+  if( construction.isValid() )
   {
-  case allTerrain: return Pathfinder::instance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
-  case roadOnly: return Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
-
-  case roadFirst:
-  {
-    Pathway ret = Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
-
-    if( !ret.isValid() )
+    switch( type )
     {
-      ret = Pathfinder::instance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
+    case allTerrain: return Pathfinder::instance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
+    case roadOnly: return Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+
+    case roadFirst:
+    {
+      Pathway ret = Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+
+      if( !ret.isValid() )
+      {
+        ret = Pathfinder::instance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
+      }
+
+      return ret;
     }
+    break;
 
-    return ret;
-  }
-  break;
-
-  default:
-  break;
+    default:
+    break;
+    }
   }
 
   return Pathway();
-
 }
 
 Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition)

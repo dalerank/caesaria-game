@@ -42,7 +42,7 @@ void _removeGoodFrom( PlayerCityPtr city, building::Type btype, Good::Type what,
 {
   SmartList<T> bList;	
 #ifdef CAESARIA_PLATFORM_HAIKU
-  bList << city->getOverlays();
+  bList << city->overlays();
 #else
   city::Helper helper( city );
   bList = helper.find<T>( btype );

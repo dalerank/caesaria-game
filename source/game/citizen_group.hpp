@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_HOUSE_HABITANT_INCLUDE_H_
-#define _CAESARIA_HOUSE_HABITANT_INCLUDE_H_
+#ifndef _CAESARIA_CITIZEN_GROUP_INCLUDE_H_
+#define _CAESARIA_CITIZEN_GROUP_INCLUDE_H_
 
 #include "core/variant.hpp"
 
@@ -44,7 +44,7 @@ public:
   CitizenGroup();
 private:
   typedef std::vector< int > Peoples;
-  Peoples _hb;
+  Peoples _peoples;
 };
 
-#endif //_CAESARIA_HOUSE_HABITANT_INCLUDE_H_
+#endif //_CAESARIA_CITIZEN_GROUP_INCLUDE_H_

@@ -81,13 +81,13 @@
 "##architect##":"Arkitekt"
 "##army_marker##":"Armémarkör"
 "##arrow##":"Pil"
-"##artist_colony_bad_work##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag utbilda en skådespelare på tre månader."
-"##artist_colony_full_work##":"Det är med nöje vi tillkännager att vi, med full sysselsättning, kan hjälpa upp till fyra nya skådespelare varje månad."
-"##artist_colony_need_some_workers##":"Vi är något underbemannade, och kan därför endast utbilda två nya skådespelare per månad."
-"##artist_colony_no_workers##":"Denna koloni är övergiven. Utan tillgång till mentorer kan inga nya skådespelare utbildas."
-"##artist_colony_patrly_workers##":"Vi har bara halva personalstyrkan, och kan därför endast utbilda en skådespelare under nästa månad."
-"##artist_colony_slow_work##":"Vi lider av svår personalbrist, och kommer att få kämpa för att utbilda en ny skådespelare under de kommande två månaderna."
-"##artist_colony##":"Skådespelarkoloni"
+"##actorColony_bad_work##":"Jag har ingen personal utöver mig själv. Jag kan inte arbeta under dessa förhållanden! Som bäst kan jag utbilda en skådespelare på tre månader."
+"##actorColony_full_work##":"Det är med nöje vi tillkännager att vi, med full sysselsättning, kan hjälpa upp till fyra nya skådespelare varje månad."
+"##actorColony_need_some_workers##":"Vi är något underbemannade, och kan därför endast utbilda två nya skådespelare per månad."
+"##actorColony_no_workers##":"Denna koloni är övergiven. Utan tillgång till mentorer kan inga nya skådespelare utbildas."
+"##actorColony_patrly_workers##":"Vi har bara halva personalstyrkan, och kan därför endast utbilda en skådespelare under nästa månad."
+"##actorColony_slow_work##":"Vi lider av svår personalbrist, och kommer att få kämpa för att utbilda en ny skådespelare under de kommande två månaderna."
+"##actorColony##":"Skådespelarkoloni"
 "##avesome_amphitheater_access##":"Detta hus passerades nyligen av en gladiator. Det kommer att ha tillgång till amfiteater under lång tid framåt"
 "##avesome_clinic_access##":"Detta hus passerades nyligen av en läkare. Det kommer att ha tillgång till en klinik under lång tid framåt"
 "##avesome_college_access##":"Detta hus passerades nyligen av en lärare. Det kommer att ha tillgång till högskola under lång tid framåt"
@@ -431,7 +431,7 @@
 "##exports_over##":"Exportera vara över"
 "##extreme_fire_risk##":"Extrem brandrisk"
 "##factory_need_more_workers##":"Fungerar knappt. Tilldela fler människor till vår sektor"
-"##farm_need_farmland##":"Bygg jordbruk på jordbruksmark (leta efter gult gräs)"
+"s":"Bygg jordbruk på jordbruksmark (leta efter gult gräs)"
 "##farm_working_bad##":""
 "##farm_working_normally##":""
 "##farm##":"Lantbruk"
@@ -1025,6 +1025,7 @@
 "##send_modest_gift##":"Sänd en blygsam gåva"
 "##send_money##":"Donera dessa pengar till staden från dina personliga besparingar"
 "##set_mayor_salary##":"Klicka här för att fastställa din personliga lön"
+"##governor_salary_title##":"Personlig inkomst"
 "##shipyard_info##":"Med några vagnslaster timmer och tillräckligt med arbetare bygger fartygsvarvet fiskebåtar till stadens fiskehamnar."
 "##shipyard_notneed_ours_boat##":"Det finns för närvarande inga fiskehamnar som behöver våra båtar."
 "##shipyard##":"Fartygsvarv"
@@ -1247,7 +1248,7 @@
 "##wt_endeavor##":"Endeavor"
 "##wt_gladiator##":"Gladiator"
 "##wt_immigrant##":"Immigrant"
-"##wt_immigrant##":"Hemlös"
+"##wt_homeless##":"Hemlös"
 "##wt_librarian##":"Bibliotekarie"
 "##wt_lion_tamer##":"Lejontämjare"
 "##wt_market_buyer##":"Marknadsbesökare"
@@ -1736,7 +1737,7 @@
 
 
 
-"##wnd_ratings##":"Ställning"
+"##wnd_ratings_title##":"Ställning"
 
 
 

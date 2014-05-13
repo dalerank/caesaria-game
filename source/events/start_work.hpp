@@ -13,32 +13,38 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012- Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WATERGARBAGE_H_INCLUDED__
-#define __CAESARIA_WATERGARBAGE_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_START_WORK_H_INCLUDE_
+#define _CAESARIA_EVENT_START_WORK_H_INCLUDE_
 
-#include "walker.hpp"
-#include "core/predefinitions.hpp"
+#include "event.hpp"
 
-class WaterGarbage : public Walker
+namespace events
+{
+
+class StartWork : public GameEvent
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-  WaterGarbage( PlayerCityPtr city );
-  virtual ~WaterGarbage();
+  static GameEventPtr create();
 
-  virtual void send2City(const TilePos& start );
-  virtual void timeStep(const unsigned long time);
-  virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual VariantMap save() const;
 
+  virtual bool isDeleted() const;
 protected:
-  const gfx::Picture& getMainPicture();
-  virtual void _reachedPathway();
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  gfx::Animation _animation;
+  StartWork();
+
+  std::vector< int > _bldTypes;
+  bool _noTroubles;
+  bool _isDeleted;
+  VariantMap _options;
 };
 
-#endif //__CAESARIA_WATERGARBAGE_H_INCLUDED__
+}
+
+#endif //_CAESARIA_EVENT_START_WORK_H_INCLUDE_

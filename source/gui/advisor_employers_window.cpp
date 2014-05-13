@@ -22,6 +22,7 @@
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
+#include "objects/construction.hpp"
 #include "gfx/engine.hpp"
 #include "game/enums.hpp"
 #include "core/foreach.hpp"

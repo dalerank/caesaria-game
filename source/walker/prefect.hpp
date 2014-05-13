@@ -52,6 +52,7 @@ protected:
   void _serveBuildings( ReachedBuildings& reachedBuildings );
   void _back2Prefecture();
   void _back2Patrol();
+  bool _figthFire();
   bool _findFire();
   virtual void _brokePathway(TilePos pos);
 

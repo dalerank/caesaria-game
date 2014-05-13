@@ -81,13 +81,13 @@
 "##architect##":"Architekt"
 "##army_marker##":"Armee-Marker"
 "##arrow##":"Pfeil"
-"##artist_colony_bad_work##":"Außer mir sind keine Angestellten da. Unter solchen Umständen kann ich nicht arbeiten! Bestenfalls kann ich in drei Monaten einen Schauspieler ausbilden."
-"##artist_colony_full_work##":"Wir können mit Stolz berichten, dass wir bei voller Besetzung bis zu vier neue Schauspieler pro Monat bieten können."
-"##artist_colony_need_some_workers##":"Wir sind leicht unterbesetzt und können daher pro Monat höchstens zwei neue Schauspieler bieten."
-"##artist_colony_no_workers##":"Diese Künstlersiedlung ist verlassen. Ohne Mentoren in ihrer Mitte können keine neuen Schauspieler ausgebildet werden."
-"##artist_colony_patrly_workers##":"Wir sind nur halb besetzt und daher nicht in der Lage, mehr als einen Schauspieler im kommenden Monat auszubilden."
-"##artist_colony_slow_work##":"Wir benötigen dringend Angestellte. Es wird uns nur mit Mühe gelingen, in den nächsten zwei Monaten einen neuen Schauspieler auszubilden."
-"##artist_colony##":"Künstlerkolonie"
+"##actorColony_bad_work##":"Außer mir sind keine Angestellten da. Unter solchen Umständen kann ich nicht arbeiten! Bestenfalls kann ich in drei Monaten einen Schauspieler ausbilden."
+"##actorColony_full_work##":"Wir können mit Stolz berichten, dass wir bei voller Besetzung bis zu vier neue Schauspieler pro Monat bieten können."
+"##actorColony_need_some_workers##":"Wir sind leicht unterbesetzt und können daher pro Monat höchstens zwei neue Schauspieler bieten."
+"##actorColony_no_workers##":"Diese Künstlersiedlung ist verlassen. Ohne Mentoren in ihrer Mitte können keine neuen Schauspieler ausgebildet werden."
+"##actorColony_patrly_workers##":"Wir sind nur halb besetzt und daher nicht in der Lage, mehr als einen Schauspieler im kommenden Monat auszubilden."
+"##actorColony_slow_work##":"Wir benötigen dringend Angestellte. Es wird uns nur mit Mühe gelingen, in den nächsten zwei Monaten einen neuen Schauspieler auszubilden."
+"##actorColony##":"Künstlerkolonie"
 "##avesome_amphitheater_access##":"Dieses Haus wurde kürzlich von einem Schauspieler oder einem Gladiator besucht. Es wird über längere Zeit Zugang zum Amphitheater haben."
 "##avesome_clinic_access##":"Dieses Haus wurde kürzlich von einem Arzt besucht. Es wird über längere Zeit Zugang zur Klinik haben."
 "##avesome_college_access##":"Dieses Haus wurde kürzlich von einem Lehrer besucht. Es wird über längere Zeit Zugang zur Akademie haben."
@@ -431,7 +431,7 @@
 "##exports_over##":"Exportiert Güter über"
 "##extreme_fire_risk##":"Extreme Brandgefahr"
 "##factory_need_more_workers##":"Arbeitet kaum. Ordnen Sie dem Sektor mehr Arbeiter zu."
-"##farm_need_farmland##":"Errichten Sie Farmen auf Ackerland (nach gelbem Gras suchen)"
+"s":"Errichten Sie Farmen auf Ackerland (nach gelbem Gras suchen)"
 "##farm_working_bad##":""
 "##farm_working_normally##":""
 "##farm##":"Farm"
@@ -1025,6 +1025,7 @@
 "##send_modest_gift##":"Bescheidenes Geschenk abschicken"
 "##send_money##":"Spenden Sie der Stadt diese Summe aus Ihren persönlichen Ersparnissen"
 "##set_mayor_salary##":"Klicken Sie hier, um Ihr persönliches Gehalt festzulegen"
+"##governor_salary_title##":"Persönliches Gehalt"
 "##shipyard_info##":"Mit ein paar Wagenladungen Holz und genügend Arbeitskräften baut die Werft Fischerboote für die Kais der Stadt."
 "##shipyard_notneed_ours_boat##":"Momentan gibt es keine Fischereihäfen, die nach unseren Booten verlangen."
 "##shipyard##":"Werft"
@@ -1247,7 +1248,7 @@
 "##wt_endeavor##":"Endeavor"
 "##wt_gladiator##":"Gladiator"
 "##wt_immigrant##":"Immigrant"
-"##wt_immigrant##":"Obdachloser"
+"##wt_homeless##":"Obdachloser"
 "##wt_librarian##":"Bibliothekar"
 "##wt_lion_tamer##":"Löwenbändiger"
 "##wt_market_buyer##":"Markteinkäuferin"
@@ -1736,7 +1737,7 @@
 
 
 
-"##wnd_ratings##":"Wertungen"
+"##wnd_ratings_title##":"Wertungen"
 
 
 

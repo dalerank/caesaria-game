@@ -42,6 +42,8 @@
 #include "events/fundissue.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "widgetescapecloser.hpp"
+#include "gameautopause.hpp"
+#include "gui/environment.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -54,6 +56,7 @@ static const char* empMapOffset = "EmpireMapWindowOffset";
 class EmpireMapWindow::Impl
 {
 public:
+  GameAutoPause autopause;
   PictureRef border;
   Picture empireMap;
   world::CityPtr currentCity;
@@ -290,7 +293,7 @@ void EmpireMapWindow::Impl::resetInfoPanel()
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
-  DialogBox* dialog = new DialogBox( tradeInfo->parent(), Rect( 0, 0, 0, 0 ), 
+  DialogBox* dialog = new DialogBox( tradeInfo->getEnvironment()->rootWidget(), Rect( 0, 0, 0, 0 ),
                                      _("##emp_open_trade_route##"), _("##emp_pay_open_this_route_question##"), 
                                      DialogBox::btnOk | DialogBox::btnCancel  );
 
@@ -303,6 +306,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
  : Widget( parent, id, Rect( Point(0, 0), parent->size() ) ), _d( new Impl )
 {
   // use some clipping to remove the right and bottom areas
+  _d->autopause.activate();
   _d->border.reset( Picture::create( size() ) );
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;

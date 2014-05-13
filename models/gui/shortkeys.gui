@@ -1,0 +1,16 @@
+{  
+  lbx#ListBox : {
+    geometry : [ 11, 11, "pw-11", "ph-36" ]
+    itemheight : 16
+
+    items : [
+      "Num +/-  : increase/decrease game speed",
+      "key p    : toggle game pause",
+      "F5/F9    : fast save/load game",
+      "F10      : make screenshot",
+      "F11(test): add new enemy soldier in city",
+      "Esc      : close active window,layer or break current action"
+    ]
+  }
+
+}

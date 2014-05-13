@@ -1,6 +1,7 @@
 {  
   lbx#ListBox : {
-    geometry : [ 11, 11, "pw-11", "ph-30" ]
+    geometry : [ 11, 11, "pw-11", "ph-36" ]
+    itemheight : 16
 
     items : [
       { text : "About", font : "FONT_3" }

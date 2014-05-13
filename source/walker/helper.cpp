@@ -81,6 +81,7 @@ public:
     __REG_WTYPE( charioteer )
     __REG_WTYPE( etruscanArcher )
     __REG_WTYPE( spear )
+    __REG_WTYPE( waterGarbage )
     __REG_WTYPE( romeGuard )
     __REG_WTYPE( bow_arrow )
     __REG_WTYPE( romeHorseman )

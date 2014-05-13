@@ -81,13 +81,13 @@
 "##architect##":"Arquitecto"
 "##army_marker##":"Marcador de ejército"
 "##arrow##":"Flecha"
-"##artist_colony_bad_work##":"Soy el único personal laboral aquí. No puedo trabajar en estas condiciones. En el mejor de los caos, puedo formar a un actor en tres meses."
-"##artist_colony_full_work##":"Nos satisface comunicar que con tanto personal estamos formando hasta a cuatro actores nuevos al mes."
-"##artist_colony_need_some_workers##":"Estamos algo escasos de personal, por lo que no podemos formar a más de dos actores al mes."
-"##artist_colony_no_workers##":"Esta colonia está desierta. Sin mentores no pueden formarse nuevos actores."
-"##artist_colony_patrly_workers##":"Sólo tenemos a la mitad de personal, con lo que sólo podremos formar a un actor este mes."
-"##artist_colony_slow_work##":"Necesitamos personal urgentemente. No será fácil formar a un actor en los próximos dos meses."
-"##artist_colony##":"Colonia de actores"
+"##actorColony_bad_work##":"Soy el único personal laboral aquí. No puedo trabajar en estas condiciones. En el mejor de los caos, puedo formar a un actor en tres meses."
+"##actorColony_full_work##":"Nos satisface comunicar que con tanto personal estamos formando hasta a cuatro actores nuevos al mes."
+"##actorColony_need_some_workers##":"Estamos algo escasos de personal, por lo que no podemos formar a más de dos actores al mes."
+"##actorColony_no_workers##":"Esta colonia está desierta. Sin mentores no pueden formarse nuevos actores."
+"##actorColony_patrly_workers##":"Sólo tenemos a la mitad de personal, con lo que sólo podremos formar a un actor este mes."
+"##actorColony_slow_work##":"Necesitamos personal urgentemente. No será fácil formar a un actor en los próximos dos meses."
+"##actorColony##":"Colonia de actores"
 "##avesome_amphitheater_access##":"Esta casa ha sido visitada recientemente por un actor o un gladiador. Tendrá acceso a un anfiteatro durante mucho tiempo."
 "##avesome_clinic_access##":"Esta casa ha sido visitada recientemente por un médico. Tendrá acceso a una consulta durante mucho tiempo."
 "##avesome_college_access##":"Esta casa ha sido visitada recientemente por un profesor. Tendrá acceso a la academia durante mucho tiempo."
@@ -431,7 +431,7 @@
 "##exports_over##":"Exportar por encima de"
 "##extreme_fire_risk##":"Riesgo de incendio extremo"
 "##factory_need_more_workers##":"Apenas funciona. Destina más trabajadores a nuestro sector."
-"##farm_need_farmland##":"Construye granjas en tierra de cultivo (busca hierba amarilla)."
+"s":"Construye granjas en tierra de cultivo (busca hierba amarilla)."
 "##farm_working_bad##":""
 "##farm_working_normally##":""
 "##farm##":"Granjas"
@@ -1025,6 +1025,7 @@
 "##send_modest_gift##":"Mandar regalo modesto"
 "##send_money##":"Donar este dinero a la ciudad desde tus ahorros personales"
 "##set_mayor_salary##":"Haz clic aquí para establecer tu salario personal"
+"##governor_salary_title##":"Salario personal"
 "##shipyard_info##":"Con algunos carros llenos de madera y los suficientes trabajadores, el astillero construye barcos de pesca para las dársenas de la ciudad."
 "##shipyard_notneed_ours_boat##":"Actualmente no hay dársenas pesqueras que nos soliciten barcos."
 "##shipyard##":"Astillero"
@@ -1247,7 +1248,7 @@
 "##wt_endeavor##":"Endeavor"
 "##wt_gladiator##":"Gladiador"
 "##wt_immigrant##":"Inmigrante"
-"##wt_immigrant##":"Indigente"
+"##wt_homeless##":"Indigente"
 "##wt_librarian##":"Bibliotecario"
 "##wt_lion_tamer##":"Domador de leones"
 "##wt_market_buyer##":"Cliente de mercado"
@@ -1736,7 +1737,7 @@
 
 
 
-"##wnd_ratings##":"Puntuaciones"
+"##wnd_ratings_title##":"Puntuaciones"
 
 
 

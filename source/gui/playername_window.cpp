@@ -21,6 +21,7 @@
 #include "pushbutton.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "widgetescapecloser.hpp"
 
 namespace gui
 {
@@ -36,6 +37,8 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setupUI( GameSettings::rcpath( "/gui/playername.gui" ) );
+
+  WidgetEscapeCloser::insertTo( this );
 
   Point offset( width(), height() );
   setPosition( parent->getRelativeRect().getCenter() - offset / 2 );

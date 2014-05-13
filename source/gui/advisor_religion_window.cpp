@@ -25,6 +25,7 @@
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
+#include "objects/construction.hpp"
 #include "game/enums.hpp"
 #include "city/helper.hpp"
 #include "objects/house.hpp"

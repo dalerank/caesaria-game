@@ -157,15 +157,8 @@ EditBox::EditBox( Widget* parent, const Rect& rectangle, const std::string& text
 	setText( text );
 }
 
-Signal1<std::string>& EditBox::onTextChanged()
-{
-	return _d->onTextChangedSignal;
-}
-
-//! destructor
-EditBox::~EditBox()
-{
-}
+Signal1<std::string>& EditBox::onTextChanged() {	return _d->onTextChangedSignal;}
+EditBox::~EditBox() {}
 
 //! Sets another skin independent font.
 void EditBox::setFont( const Font& font )
@@ -176,10 +169,7 @@ void EditBox::setFont( const Font& font )
 }
 
 //! Gets the override font (if any)
-Font EditBox::getFont() const
-{
-	return _d->overrideFont;
-}
+Font EditBox::getFont() const {	return _d->overrideFont; }
 
 //! Get the font which is used right now for drawing
 Font EditBox::getActiveFont()
@@ -198,21 +188,11 @@ void EditBox::setOverrideColor( NColor color )
 }
 
 //! Turns the border on or off
-void EditBox::setDrawBorder(bool border)
-{
-	_d->border = border;
-}
+void EditBox::setDrawBorder(bool border) {	_d->border = border; }
 
 //! Sets if the text should use the overide color or the color in the gui skin.
-void EditBox::setEnabledColor(bool enable)
-{
-	_d->overrideColorEnabled = enable;
-}
-
-bool EditBox::isOverrideColorEnabled() const
-{
-	return _d->overrideColorEnabled;
-}
+void EditBox::setEnabledColor(bool enable) {	_d->overrideColorEnabled = enable; }
+bool EditBox::isOverrideColorEnabled() const{	return _d->overrideColorEnabled; }
 
 //! Enables or disables word wrap
 void EditBox::setWordWrap(bool enable)
@@ -228,29 +208,9 @@ void EditBox::_resizeEvent()
   _d->needUpdateTexture = true;
 }
 
-
-//! Checks if word wrap is enabled
-bool EditBox::isWordWrapEnabled() const
-{
-
-	return _d->wordWrapEnabled;
-}
-
-
-//! Enables or disables newlines.
-void EditBox::setMultiline(bool enable)
-{
-	_d->multiLine = enable;
-}
-
-
-//! Checks if multi line editing is enabled
-bool EditBox::isMultilineEnabled() const
-{
-
-	return _d->multiLine;
-}
-
+bool EditBox::isWordWrapEnabled() const {	return _d->wordWrapEnabled; }   //! Checks if word wrap is enabled
+void EditBox::setMultiline(bool enable) {	_d->multiLine = enable; }       //! Enables or disables newlines.
+bool EditBox::isMultilineEnabled() const {	return _d->multiLine; }       //! Checks if multi line editing is enabled
 
 void EditBox::setPasswordBox(bool passwordBox, char passwordChar)
 {
@@ -264,11 +224,7 @@ void EditBox::setPasswordBox(bool passwordBox, char passwordChar)
 	}
 }
 
-bool EditBox::isPasswordBox() const
-{
-	return _d->isPasswordBox;
-}
-
+bool EditBox::isPasswordBox() const {	return _d->isPasswordBox;}
 void EditBox::setupUI(const VariantMap& ui)
 {
 	Widget::setupUI( ui );
@@ -647,7 +603,7 @@ bool EditBox::_processKey(const NEvent& event)
 		if ( !isEnabled() )
 			break;
 
-		if( _d->text.size())
+		if( _d->text.size() )
 		{
 			std::wstring s;
 
@@ -670,7 +626,7 @@ bool EditBox::_processKey(const NEvent& event)
 
 				s.append( _d->text.substr(_d->cursorPos, _d->text.size()-_d->cursorPos) );
 				_setText( s );
-				_d->cursorPos -= 1;
+				//_d->cursorPos -= 1;
 			}
 
 			if (_d->cursorPos < 0)

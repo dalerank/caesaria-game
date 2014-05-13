@@ -16,6 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_religion.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"

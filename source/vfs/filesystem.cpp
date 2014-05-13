@@ -600,11 +600,11 @@ Entries FileSystem::getFileList()
 			//Logger::warning( "FileSystem: start listing directory on unix" );
 			// --------------------------------------------
 			//! Linux version
-			ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
+			//ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
 
 			//! We use the POSIX compliant methods instead of scandir
-			DIR* dirHandle=opendir( rpath.toString().c_str());
-			if (dirHandle)
+			DIR* dirHandle=opendir( rpath.toString().c_str() );
+			if( dirHandle )
 			{
 				struct dirent *dirEntry;
 				while ((dirEntry=readdir(dirHandle)))

@@ -44,6 +44,7 @@
 #include "bow_arrow.hpp"
 #include "enemyarcher.hpp"
 #include "helper.hpp"
+#include "watergarbage.hpp"
 #include <map>
 
 using namespace constants;
@@ -127,6 +128,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::teacher, new ServicemanCreator( Service::academy ) );
   addCreator( walker::recruter, new BaseCreator<Recruter>() );
   addCreator( walker::spear, new BaseCreator<Spear>() );
+  addCreator( walker::waterGarbage, new BaseCreator<WaterGarbage>() );
   addCreator( walker::bow_arrow, new BaseCreator<BowArrow>() );
   addCreator( walker::etruscanSoldier, new SoldierCreator<EnemySoldier>( walker::etruscanSoldier ) );
   addCreator( walker::etruscanArcher, new SoldierCreator<EnemyArcher>( walker::etruscanArcher ) );

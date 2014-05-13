@@ -15,9 +15,11 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
+#include "city/city.hpp"
 #include "divinities.hpp"
 #include "gfx/picture.hpp"
 #include "game/gamedate.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "objects/farm.hpp"
 #include "events/showinfobox.hpp"
