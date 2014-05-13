@@ -87,16 +87,59 @@
   		
   events :
   {
-     enemy_warning#messagebox : {
+    population_milestone_500#messagebox : {
+      date : "-350.01.01"
+      population : 500
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }    
+    
+    population_milestone_500#messagebox : {
+      date : "-350.01.01"
+      population : 1000
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }   
+        
+    population_milestone_500#messagebox : {
+      date : "-350.01.01"
+      population : 2000
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }   
+    
+    first_colosseum_work#start_work : {
+      building : [ "colloseum" ]
+      no_troubles : true
+      type : "start_work"
+      exec : { 
+        message#messagebox : {
+	  send2scribe : true
+	  video : "/smk/1st_Glad.smk"
+	  title : "##working_colloseum_title##"
+	  text : "##working_colloseum_text##"
+	}         
+      }
+    }
+    
+    enemy_warning#messagebox : {
       date : "-268.08.01"
       title : "##enemies_at_the_door_title##"
       text : "##enemies_at_the_door_text##"
+      send2scribe : true
     }
     
     storm_seas#messagebox : {
       date : "-268.11.01"
       title : "##stormy_seas_title##"
       text : "##stormy_seas_text##"
+      send2scribe : true
     }
     
     stop_sea_trading#trading_options : {
@@ -121,6 +164,7 @@
       date : "-267.03.01"
       title : "##a_price_rise_title##"
       text : "##a_price_rise_text##"
+      send2scribe : true
     }
     
     oil_price_rising#trading_options : {
@@ -135,6 +179,7 @@
       title : "##greeck_attack_title##"
       text : "##greeck_attack_text##"
       video : "/smk/spy_army.smk"
+      send2scribe : true
     }
 
     greek_invasion#enemy_attack : {

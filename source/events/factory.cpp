@@ -25,6 +25,7 @@
 #include "enemy_attack.hpp"
 #include "showinfobox.hpp"
 #include "earthquake.hpp"
+#include "start_work.hpp"
 
 namespace events
 {
@@ -84,6 +85,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<EnemyAttack>( "enemy_attack" );
   addCreator<ShowInfobox>( "messagebox" );
   addCreator<EarthQuake>( "earthquake" );
+  addCreator<StartWork>( "start_work" );
 }
 
 }//end namespace events
