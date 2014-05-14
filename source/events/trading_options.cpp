@@ -20,7 +20,7 @@
 #include "game/game.hpp"
 #include "world/empire.hpp"
 #include "good/goodhelper.hpp"
-#include "world/city.hpp"
+#include "world/computer_city.hpp"
 
 namespace events
 {
@@ -43,14 +43,19 @@ void TradingOptions::_exec(Game& game, unsigned int)
   VariantMap citiesVm = _options.get( "cities" ).toMap();
   foreach( it, citiesVm )
   {
-    std::string cityName = it->first;
-    int trade_delay = it->second.toMap().get( "delay_trade" );
-    if( trade_delay > 0 )
+    world::CityPtr cityp = game.empire()->findCity( it->first );
+    if( cityp.isNull() )
     {
-      world::CityPtr cityp = game.empire()->findCity( cityName );
-      if( cityp.isValid() )
+      int trade_delay = it->second.toMap().get( "delay_trade" );
+      if( trade_delay > 0 )
       {
         cityp->delayTrade( trade_delay );
+      }
+
+      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( cityp );
+      if( ccity.isValid() )
+      {
+        ccity->changeTradeOptions( it->second.toMap() );
       }
     }
   }

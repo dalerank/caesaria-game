@@ -257,7 +257,9 @@
     capua_increase_weapons_trading#trading_options : {
       date: "-265.07.01"
       cities : {
-        Capua : { weapon : 15 }
+        Capua : {
+          buys : { weapon : 40 }
+        }
       }
 
       exec : {
@@ -317,7 +319,9 @@
     tarentum_increase_oil_trading#trading_options : {
       date: "-265.06.01"
       cities : {
-        Tarentum : { oil : 15 }
+        Tarentum : {
+          buys : { oil : 25 }
+        }
       }
 
       exec : {

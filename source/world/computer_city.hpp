@@ -52,6 +52,8 @@ public:
 
   virtual void arrivedMerchant( MerchantPtr );
 
+  void changeTradeOptions( const VariantMap& stream );
+
 protected:
   ComputerCity( EmpirePtr empire, const std::string& name );
   bool _mayTrade() const;

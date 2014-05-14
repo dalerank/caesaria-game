@@ -50,6 +50,8 @@
   #define CAESARIA_COMPILER_NAME "unknown"
 #endif
 
+#define CAESARIA_LITERALCONST(name) const char* lc_##name = CAESARIA_STR_EXT(name);
+
 #define _USE_ASSERT_4_DEBUG
 
 #if defined(_USE_ASSERT_4_DEBUG)
