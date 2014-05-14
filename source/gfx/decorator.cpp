@@ -108,6 +108,11 @@ void PictureDecorator::drawLine(Picture& dstpic, const Point& p1, const Point& p
   lineColor( dstpic.surface(), p1.x(), p1.y(), p2.x(), p2.y(), color.color );
 }
 
+void PictureDecorator::basicText(Picture& dstpic, const Point& pos, const std::string& text, NColor color)
+{
+  stringColor( dstpic.surface(), pos.x(), pos.y(), text.c_str(), color.color );
+}
+
 void PictureDecorator::drawPanel( Picture &dstpic, const Rect& rectangle, int picId, bool useAlpha )
 {
   // left side
