@@ -188,12 +188,12 @@ void Layer::drawTilePass( Engine& engine, Tile& tile, Point offset, Renderer::Pa
   Point screenPos = tile.mapPos() + offset;
   switch( pass )
   {
-  case Renderer::ground: engine.drawPicture( tile.picture(), screenPos ); break;
+  case Renderer::ground: engine.draw( tile.picture(), screenPos ); break;
 
   case Renderer::groundAnimation:
     if( tile.animation().isValid() )
     {
-      engine.drawPicture( tile.animation().currentFrame(), screenPos );
+      engine.draw( tile.animation().currentFrame(), screenPos );
     }
   break;
 
@@ -205,7 +205,7 @@ void Layer::drawTilePass( Engine& engine, Tile& tile, Point offset, Renderer::Pa
 
     for( Pictures::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
     {
-      engine.drawPicture( *it, screenPos );
+      engine.draw( *it, screenPos );
     }
   break;
   }
@@ -238,7 +238,7 @@ void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffs
     {
       if( (*picRef).isValid() )
       {
-        engine.drawPicture( *picRef, (*w)->screenpos() + camOffset );
+        engine.draw( *picRef, (*w)->screenpos() + camOffset );
       }
     }
   }
@@ -366,25 +366,25 @@ void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std:
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
-    engine.drawPicture( *pic, tile->mapPos() + offset );
+    engine.draw( *pic, tile->mapPos() + offset );
   }
 }
 
 void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
 {
   __D_IMPL(_d,Layer)
-  engine.drawPicture( _d->footColumn, pos + Point( 10, -21 ) );
+  engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
 
   int roundPercent = ( percent / 10 ) * 10;
 
   for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
   {
-    engine.drawPicture( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
+    engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
   }
 
   if( percent >= 10 )
   {
-    engine.drawPicture( _d->headerColumn, pos - Point( -6, 25 + roundPercent ) );
+    engine.draw( _d->headerColumn, pos - Point( -6, 25 + roundPercent ) );
   }
 }
 
@@ -401,7 +401,7 @@ void Layer::afterRender( Engine& engine)
   __D_IMPL(_d,Layer)
   if( !_d->tooltipText.empty() )
   {
-    engine.drawPicture( *_d->tooltipPic, _d->lastCursorPos );
+    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
   }
 }
 

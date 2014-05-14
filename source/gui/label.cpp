@@ -224,17 +224,17 @@ void Label::draw(gfx::Engine& painter )
   // draw background
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( *_d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   if( _d->icon.isValid() )
   {
-    painter.drawPicture( _d->icon, absoluteRect().UpperLeftCorner + _d->iconOffset, &absoluteClippingRectRef() );
+    painter.draw( _d->icon, absoluteRect().UpperLeftCorner + _d->iconOffset, &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture )
   {
-    painter.drawPicture( *_d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( *_d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

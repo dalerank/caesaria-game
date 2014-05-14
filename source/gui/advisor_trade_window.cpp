@@ -173,7 +173,7 @@ public:
     if( !isVisible() )
       return;
 
-    painter.drawPicture( *background, absoluteRect().UpperLeftCorner );
+    painter.draw( *background, absoluteRect().UpperLeftCorner );
 
     Widget::draw( painter );
   }
@@ -321,7 +321,7 @@ public:
     if( !isVisible() )
       return;
 
-    painter.drawPicture( *_background, screenLeft(), screenTop() );
+    painter.draw( *_background, screenLeft(), screenTop() );
 
     Widget::draw( painter );
   }
@@ -554,7 +554,7 @@ void AdvisorTradeWindow::draw(gfx::Engine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+  painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

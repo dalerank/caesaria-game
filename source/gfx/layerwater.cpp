@@ -49,7 +49,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
@@ -96,7 +96,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if ( pic.isValid() )
     {
-      engine.drawPicture( pic, screenPos );
+      engine.draw( pic, screenPos );
       drawTilePass( engine, tile, offset, Renderer::foreground );
     }
 
@@ -122,7 +122,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
         picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine.drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mapPos() + offset );
+        engine.draw( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mapPos() + offset );
       }
     }
   }

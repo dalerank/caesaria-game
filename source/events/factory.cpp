@@ -26,6 +26,7 @@
 #include "showinfobox.hpp"
 #include "earthquake.hpp"
 #include "start_work.hpp"
+#include "distant_battle.hpp"
 
 namespace events
 {
@@ -86,6 +87,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<ShowInfobox>( "messagebox" );
   addCreator<EarthQuake>( "earthquake" );
   addCreator<StartWork>( "start_work" );
+  addCreator<DistantBattle>( "distant_battle" );
 }
 
 }//end namespace events

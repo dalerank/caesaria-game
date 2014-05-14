@@ -69,7 +69,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
@@ -83,7 +83,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
     case construction::road:
     case construction::plaza:
       needDrawAnimations = true;
-      engine.drawPicture( tile.picture(), screenPos );
+      engine.draw( tile.picture(), screenPos );
     break;
 
     case building::theater:
@@ -96,7 +96,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
       needDrawAnimations = _flags.count( overlay->type() );
       if( needDrawAnimations )
       {
-        engine.drawPicture( tile.picture(), screenPos );
+        engine.draw( tile.picture(), screenPos );
         drawTilePass( engine, tile, offset, Renderer::foreground );
       }
       else

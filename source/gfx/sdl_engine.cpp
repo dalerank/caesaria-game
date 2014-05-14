@@ -196,7 +196,7 @@ void SdlEngine::endRenderFrame()
   }
 }
 
-void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, Rect* clipRect )
+void SdlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;
@@ -226,9 +226,17 @@ void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, 
   }
 }
 
-void SdlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* clipRect )
+void SdlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
 {
-  drawPicture( picture, pos.x(), pos.y(), clipRect );
+  draw( picture, pos.x(), pos.y(), clipRect );
+}
+
+void SdlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
+{
+  for( Pictures::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
+  {
+    draw( *it, pos, clipRect );
+  }
 }
 
 void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )

@@ -15,40 +15,29 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_EMPIRE_OBJECT_H_INCLUDED__
-#define __CAESARIA_EMPIRE_OBJECT_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_DISTANT_BATTLE_H_INCLUDE_
+#define _CAESARIA_EVENT_DISTANT_BATTLE_H_INCLUDE_
 
-#include "core/position.hpp"
-#include "gfx/picturesarray.hpp"
-#include "predefinitions.hpp"
+#include "event.hpp"
 
-namespace world
+namespace events
 {
 
-class Object : public ReferenceCounted
+class DistantBattle : public GameEvent
 {
 public:
-  static ObjectPtr create( Empire& empire );
+  static GameEventPtr create();
 
-  virtual EmpirePtr empire() const;
-  virtual std::string name() const;
-  virtual Point location() const;
-  virtual void setLocation( const Point& location );
-  virtual gfx::Picture picture() const;
-  virtual const gfx::Pictures& pictures() const;
-  virtual void setPicture( gfx::Picture pic );
+  virtual void load(const VariantMap& stream);
   virtual VariantMap save() const;
-  virtual void load( const VariantMap& stream );
-
-  virtual ~Object();
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  Object();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  VariantMap _options;
 };
 
-}//end namespace world
+}
 
-#endif //__CAESARIA_EMPIRE_OBJECT_H_INCLUDED__
+#endif //_CAESARIA_EVENT_DISTANT_BATTLE_H_INCLUDE_

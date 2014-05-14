@@ -142,7 +142,7 @@ BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}
 
 void BaseSpecialOrdersWindow::draw(gfx::Engine& engine )
 {
-  engine.drawPicture( *_d->bgPicture, screenLeft(), screenTop() );
+  engine.draw( *_d->bgPicture, screenLeft(), screenTop() );
   Widget::draw( engine );
 }
 

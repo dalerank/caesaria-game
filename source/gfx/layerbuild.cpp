@@ -359,7 +359,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     {
       tile.setWasDrawn();
       const Picture& pic = cntr->picture( _city(), tile.pos(), postTiles );
-      engine.drawPicture( pic, screenPos );
+      engine.draw( pic, screenPos );
 
       drawTilePass( engine, tile, offset, Renderer::foreground );
     }
@@ -379,7 +379,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
   if( !tile.getFlag( Tile::wasDrawn ) )
   {
     tile.setWasDrawn();
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
 
     drawTilePass( engine, tile, offset, Renderer::groundAnimation );
     drawTilePass( engine, tile, offset, Renderer::foreground );

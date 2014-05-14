@@ -40,6 +40,7 @@ public:
   void payTax( const std::string& cityname, unsigned int money );
 
   ObjectList objects() const;
+  void addObject( ObjectPtr obj );
 
   void initialize( vfs::Path filename, vfs::Path filemap );
   void timeStep( unsigned int time );

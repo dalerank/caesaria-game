@@ -650,7 +650,7 @@ void ListBox::draw(gfx::Engine& painter )
 
 	if( !_d->picture.isNull() )
 	{
-		painter.drawPicture( *_d->picture, absoluteRect().UpperLeftCorner );
+		painter.draw( *_d->picture, absoluteRect().UpperLeftCorner );
 	}
 
 	Widget::draw( painter );

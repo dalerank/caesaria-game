@@ -88,7 +88,7 @@ void TopMenu::draw(gfx::Engine& engine )
 
   _d->updateDate();
 
-  engine.drawPicture( *_d->bgPicture, screenLeft(), screenTop() );
+  engine.draw( *_d->bgPicture, screenLeft(), screenTop() );
 
   MainMenu::draw( engine );
 }

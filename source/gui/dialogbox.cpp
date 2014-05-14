@@ -125,7 +125,7 @@ void DialogBox::draw(gfx::Engine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+    painter.draw( *_d->background, screenLeft(), screenTop() );
   }
 
   Widget::draw( painter );

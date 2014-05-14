@@ -52,7 +52,7 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
@@ -94,7 +94,7 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if ( pic.isValid())
     {
-      engine.drawPicture( pic, screenPos );
+      engine.draw( pic, screenPos );
     }
 
     if( needDrawAnimations )

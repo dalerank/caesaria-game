@@ -237,7 +237,7 @@ void SmkViewer::draw(gfx::Engine& painter )
   // draw background
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( *_d->background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

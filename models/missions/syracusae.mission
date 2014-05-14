@@ -49,13 +49,13 @@
       }
 
       rocks : {
-        location : [ 240, 460 ]
+        location : [ 240, 440 ]
         name : "rocks"
         picture : "empire_bits_00106"
       }
 
       rocks2 : {
-        location : [ 530, 380 ]
+        location : [ 530, 290 ]
         name : "rocks2"
         picture : "empire_bits_00115"
       }
@@ -64,23 +64,25 @@
     cities :
     {
       Tarentum : {
-	location : [ 900, 600 ]
-    
-	land : true
-	sea : true
-    
-	sells : { meat : 15, timber : 25 }	
-	buys : { olive: 15, oil: 15 }
+        location : [ 900, 600 ]
+
+        land : true
+        sea : true
+        available : true
+
+        sells : { meat : 15, timber : 25 }
+        buys : { olive: 15, oil: 15 }
       }
       
       Capua : {
-	location : [ 820, 560 ]
-    
-	sea : true
-	land : true
-    
-	sells : { furniture : 25 }
-	buys : { weapon : 25 }
+        location : [ 820, 560 ]
+
+        sea : true
+        available : true
+        land : true
+
+        sells : { furniture : 25 }
+        buys : { weapon : 25 }
       }
     }
   }
@@ -89,14 +91,14 @@
   {
     population_milestone_500#messagebox : {
       date : "-350.01.01"
-      population : 500
+      population : 100
       send2scribe : true
       video : "/smk/Population1.smk"
       title : "##population_milestone##"
       text : "##500_citzens_in_city##"
     }    
     
-    population_milestone_500#messagebox : {
+    population_milestone_1000#messagebox : {
       date : "-350.01.01"
       population : 1000
       send2scribe : true
@@ -105,7 +107,7 @@
       text : "##500_citzens_in_city##"
     }   
         
-    population_milestone_500#messagebox : {
+    population_milestone_2000#messagebox : {
       date : "-350.01.01"
       population : 2000
       send2scribe : true
@@ -114,17 +116,26 @@
       text : "##500_citzens_in_city##"
     }   
     
+    population_milestone_3000#messagebox : {
+      date : "-350.01.01"
+      population : 3000
+      send2scribe : true
+      video : "/smk/Population2.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }
+    
     first_colosseum_work#start_work : {
       building : [ "colloseum" ]
       no_troubles : true
       type : "start_work"
       exec : { 
         message#messagebox : {
-	  send2scribe : true
-	  video : "/smk/1st_Glad.smk"
-	  title : "##working_colloseum_title##"
-	  text : "##working_colloseum_text##"
-	}         
+          send2scribe : true
+          video : "/smk/1st_Glad.smk"
+          title : "##working_colloseum_title##"
+          text : "##working_colloseum_text##"
+        }
       }
     }
     
@@ -133,6 +144,28 @@
       title : "##enemies_at_the_door_title##"
       text : "##enemies_at_the_door_text##"
       send2scribe : true
+    }
+    
+    distant_battle_1#distant_battle : {
+      date : "-270.01.01"
+      location : [ 1090, 650 ]
+      type : "distant_battle"
+      animation : { index : 0, delay : 1, loop : true, range : { rc : "empire_bits", start : 29, number : 8 } }
+      title : "##distant_battle##"
+    }
+    
+    distant_battle_2#distant_battle : {
+      date : "-269.08.01"
+      location : [ 990, 740 ]
+      type : "distant_battle"
+      title : "##distant_battle##"
+    }
+    
+    distant_battle_3#distant_battle : {
+      date : "-268.07.01"
+      location : [ 880, 765 ]
+      type : "distant_battle"
+      title : "##distant_battle##"
     }
     
     storm_seas#messagebox : {
@@ -145,8 +178,8 @@
     stop_sea_trading#trading_options : {
       date : "-268.11.01"
       cities : {
-        Tarentum : { delay : 12 }
-        Capua : { delay : 12 }
+        Tarentum : { delay_trade : 12 }
+        Capua : { delay_trade : 12 }
       }
     }
     
@@ -162,6 +195,7 @@
     
     oil_price_rising#messagebox : {
       date : "-267.03.01"
+      good : "oil"
       title : "##a_price_rise_title##"
       text : "##a_price_rise_text##"
       send2scribe : true
@@ -200,6 +234,79 @@
       }
 
       text : "##enemy_attack_city##"
+    }
+    
+    capua_increase_weapons_trading#messagebox : {
+      date : "-265.07.01"
+      good : "weapon"
+      title : "##increase_trading_title##"
+      text : "##increase_trading_text##"
+      send2scribe : true
+    }
+    
+    capua_increase_weapons_trading#trading_options : {
+      date: "-265.07.01"
+      cities : {
+	Capua : { weapon : 15 }
+      }
+    }
+    
+    storm_seas_2#messagebox : {
+      date : "-264.01.01"
+      title : "##stormy_seas_title##"
+      text : "##stormy_seas_text##"
+      send2scribe : true
+    }
+    
+    stop_sea_trading_2#trading_options : {
+      date : "-264.01.01"
+      cities : {
+        Tarentum : { delay_trade : 12 }
+        Capua : { delay_trade : 12 }
+      }
+    }
+    
+    greeck_attack_2#messagebox : {
+      date : "-264.02.01"
+      title : "##greeck_attack_title##"
+      text : "##greeck_attack_text##"
+      video : "/smk/spy_army.smk"
+      send2scribe : true
+    }
+
+    greek_invasion_2#enemy_attack : {
+      date : "-264.02.01"
+      type : "enemy_attack"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 12
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 3
+          location : "random"
+        }
+      }
+
+      text : "##enemy_attack_city##"
+    }
+    
+    tarentum_increase_oil_trading#messagebox : {
+      date : "-263.06.01"
+      good : "oil"
+      title : "##increase_trading_title##"
+      text : "##increase_trading_text##"
+      send2scribe : true
+    }
+    
+    tarentum_increase_oil_trading#trading_options : {
+      date: "-265.06.01"
+      cities : {
+	Tarentum : { oil : 15 }
+      }
     }
   }
 	
@@ -242,6 +349,9 @@
       market : true
       granery : true
       warehouse : true
+      school : true
+      academy : true
+      library : true
       wheat_farm : true
       senate_1 : true
       gatehouse : true

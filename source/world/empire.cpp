@@ -93,6 +93,8 @@ void Empire::initialize(vfs::Path filename , vfs::Path filemap)
   }
 }
 
+void Empire::addObject(ObjectPtr obj) {  _d->objects.push_back( obj ); }
+
 CityPtr Empire::addCity( CityPtr city )
 {
   CityPtr ret = findCity( city->getName() );
@@ -147,7 +149,7 @@ void Empire::save( VariantMap& stream ) const
   VariantMap vm_objects;
   foreach( obj, _d->objects)
   {
-    vm_objects[ (*obj)->getName() ] = (*obj)->save();
+    vm_objects[ (*obj)->name() ] = (*obj)->save();
   }
 
   stream[ "cities"  ] = vm_cities;

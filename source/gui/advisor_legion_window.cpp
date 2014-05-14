@@ -144,7 +144,7 @@ void AdvisorLegionWindow::draw( Engine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+  painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

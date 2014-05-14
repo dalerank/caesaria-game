@@ -52,8 +52,9 @@ public:
   virtual void deletePicture( Picture* pic );
   virtual void loadPicture(Picture &ioPicture);
   virtual void unloadPicture(Picture& ioPicture);
-  virtual void drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
-  virtual void drawPicture(const Picture &picture, const Point& pos, Rect* clipRect=0 );
+  virtual void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
+  virtual void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
+  virtual void draw(const Pictures& pictures, const Point& pos, Rect* clipRect=0 );
   // creates a picture with the given size, it will need to be loaded by the graphic engine
   virtual Picture* createPicture(const Size& size);
 

@@ -114,7 +114,7 @@ void AdvisorChiefWindow::draw( gfx::Engine& painter )
     return;
 
   __D_IMPL(_d, AdvisorChiefWindow)
-  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+  painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }
