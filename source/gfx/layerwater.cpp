@@ -66,6 +66,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::aqueduct:
     case building::lowBridge:
     case building::highBridge:
+    case building::elevation:
       pic = tile.picture();
       needDrawAnimations = true;
       areaSize = overlay->size();

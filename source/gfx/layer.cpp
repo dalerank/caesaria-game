@@ -29,6 +29,8 @@
 #include "city/city.hpp"
 #include "core/font.hpp"
 #include "layerconstants.hpp"
+#include "decorator.hpp"
+#include "sdl_engine.hpp"
 
 using namespace constants;
 
@@ -49,6 +51,8 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
+
+  bool drawGrid;
 
   Picture footColumn;
   Picture bodyColumn;
@@ -157,8 +161,17 @@ void Layer::handleEvent(NEvent& event)
     case KEY_DOWN: case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
     case KEY_RIGHT: case KEY_KEY_D: _d->camera->moveRight( moveValue ); break;
     case KEY_LEFT:  case KEY_KEY_A: _d->camera->moveLeft ( moveValue ); break;
-    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;
+    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
     default: break;
+    }
+
+    if( event.keyboard.control && event.keyboard.shift && event.keyboard.pressed )
+    {
+      switch( event.keyboard.key )
+      {
+      case KEY_KEY_1: _d->drawGrid = !_d->drawGrid; break;
+      default: break;
+      }
     }
   }
 }
@@ -403,6 +416,25 @@ void Layer::afterRender( Engine& engine)
   {
     engine.draw( *_d->tooltipPic, _d->lastCursorPos );
   }
+
+  if( _d->drawGrid )
+  {
+    Tilemap& tmap = _d->city->tilemap();
+    Point offset = _d->camera->getOffset();
+    int size = tmap.size();
+    SdlEngine* painter = static_cast< SdlEngine* >( &engine );
+    Picture& screen = painter->getScreen();
+    for( int k=0; k < size; k++ )
+    {
+      const Tile& tile = tmap.at( 0, k );
+      const Tile& etile = tmap.at( size - 1, k );
+      PictureDecorator::drawLine( screen, tile.mapPos() + offset, etile.mapPos() + offset, 0xffffffff );
+
+      const Tile& rtile = tmap.at( k, 0 );
+      const Tile& ertile = tmap.at( k, size - 1 );
+      PictureDecorator::drawLine( screen, rtile.mapPos() + offset, ertile.mapPos() + offset, 0xffffffff );
+    }
+  }
 }
 
 Layer::Layer( Camera* camera, PlayerCityPtr city )
@@ -411,6 +443,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   __D_IMPL(_d,Layer)
   _d->camera = camera;
   _d->city = city;
+  _d->drawGrid = false;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
 }
 
