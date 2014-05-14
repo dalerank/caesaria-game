@@ -129,7 +129,7 @@
       building : [ "colloseum" ]
       no_troubles : true
       type : "start_work"
-      exec : { 
+      action : {
         message#messagebox : {
           send2scribe : true
           video : "/smk/1st_Glad.smk"
@@ -138,20 +138,21 @@
         }
       }
     }
-    
-    enemy_warning#messagebox : {
-      date : "-268.08.01"
-      title : "##enemies_at_the_door_title##"
-      text : "##enemies_at_the_door_text##"
-      send2scribe : true
-    }
-    
+       
     distant_battle_1#distant_battle : {
-      date : "-270.01.01"
+      date : "-270.08.01"
       location : [ 1090, 650 ]
       type : "distant_battle"
       animation : { index : 0, delay : 1, loop : true, range : { rc : "empire_bits", start : 29, number : 8 } }
       title : "##distant_battle##"
+
+      exec : {
+          enemy_warning#messagebox : {
+          title : "##distant_battle_title##"
+          text : "##ditatant_battle_text##"
+          send2scribe : true
+        }
+      }
     }
     
     distant_battle_2#distant_battle : {
@@ -159,6 +160,14 @@
       location : [ 990, 740 ]
       type : "distant_battle"
       title : "##distant_battle##"
+
+      exec : {
+          enemy_warning#messagebox : {
+          title : "##distant_battle_title##"
+          text : "##ditatant_battle_text##"
+          send2scribe : true
+        }
+      }
     }
     
     distant_battle_3#distant_battle : {
@@ -166,6 +175,14 @@
       location : [ 880, 765 ]
       type : "distant_battle"
       title : "##distant_battle##"
+
+      exec : {
+          enemy_warning#messagebox : {
+          title : "##enemies_at_the_door_title##"
+          text : "##enemies_at_the_door_text##"
+          send2scribe : true
+        }
+      }
     }
     
     storm_seas#messagebox : {
@@ -247,7 +264,7 @@
     capua_increase_weapons_trading#trading_options : {
       date: "-265.07.01"
       cities : {
-	Capua : { weapon : 15 }
+        Capua : { weapon : 15 }
       }
     }
     
@@ -305,7 +322,7 @@
     tarentum_increase_oil_trading#trading_options : {
       date: "-265.06.01"
       cities : {
-	Tarentum : { oil : 15 }
+        Tarentum : { oil : 15 }
       }
     }
   }

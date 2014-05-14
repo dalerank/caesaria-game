@@ -32,7 +32,6 @@ class RandomFire::Impl
 {
 public:
   int minPopulation, maxPopulation;
-  VariantMap events;
   bool isDeleted;
 };
 
@@ -61,8 +60,6 @@ void RandomFire::_exec( Game& game, unsigned int time)
       std::advance( it, math::random( houses.size() ) );
       (*it)->burn();
     }
-
-    events::Dispatcher::instance().load( _d->events );
   }
 }
 
@@ -74,7 +71,6 @@ void RandomFire::load(const VariantMap& stream)
   VariantList vl = stream.get( "population" ).toList();
   _d->minPopulation = vl.get( 0, 0 ).toInt();
   _d->maxPopulation = vl.get( 1, 999999 ).toInt();
-  _d->events = stream.get( "exec" ).toMap();
 }
 
 VariantMap RandomFire::save() const
@@ -84,7 +80,6 @@ VariantMap RandomFire::save() const
   vl_pop << _d->minPopulation << _d->maxPopulation;
 
   ret[ "population" ] = vl_pop;
-  ret[ "exec" ] = _d->events;
 
   return ret;
 }

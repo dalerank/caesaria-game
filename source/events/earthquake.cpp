@@ -112,7 +112,7 @@ bool EarthQuake::_mayExec(Game&, unsigned int) const { return true; }
 void EarthQuake::load(const VariantMap& stream)
 {
   GameEvent::load( stream );
-  _d->events = stream.get( "exec" ).toMap();
+  _d->events = stream.get( "onFinished" ).toMap();
   _d->startPoint = stream.get( "start" ).toTilePos();
   _d->endPoint = stream.get( "end" ).toTilePos();
   _d->currentPoint = stream.get( "current", TilePos( -1, -1 ) ).toTilePos();
@@ -127,7 +127,7 @@ VariantMap EarthQuake::save() const
 {
   VariantMap ret = GameEvent::save();
 
-  ret[ "exec" ] = _d->events;
+  ret[ "onFinished" ] = _d->events;
   ret[ "start" ] = _d->startPoint;
   ret[ "end" ] = _d->endPoint;
   ret[ "current" ] = _d->currentPoint;

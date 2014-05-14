@@ -40,7 +40,6 @@ private:
   RandomDamage();
 
   int _minPopulation, _maxPopulation;
-  VariantMap _events;
   bool _isDeleted;
 };
 
