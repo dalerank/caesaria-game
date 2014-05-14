@@ -208,20 +208,21 @@
       good : { oil : 5 }
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 12 }
-    }
-    
-    oil_price_rising#messagebox : {
-      date : "-267.03.01"
-      good : "oil"
-      title : "##a_price_rise_title##"
-      text : "##a_price_rise_text##"
-      send2scribe : true
-    }
+    }    
     
     oil_price_rising#trading_options : {
       date : "-267.3.01"
       goods : {
-        oil : { price : 40 }
+        oil : { buy : 40, sell : 30 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "oil"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
       }
     }
 
@@ -251,35 +252,37 @@
       }
 
       text : "##enemy_attack_city##"
-    }
-    
-    capua_increase_weapons_trading#messagebox : {
-      date : "-265.07.01"
-      good : "weapon"
-      title : "##increase_trading_title##"
-      text : "##increase_trading_text##"
-      send2scribe : true
-    }
+    }    
     
     capua_increase_weapons_trading#trading_options : {
       date: "-265.07.01"
       cities : {
         Capua : { weapon : 15 }
       }
-    }
-    
-    storm_seas_2#messagebox : {
-      date : "-264.01.01"
-      title : "##stormy_seas_title##"
-      text : "##stormy_seas_text##"
-      send2scribe : true
-    }
+
+      exec : {
+        message#messagebox : {
+          good : "weapon"
+          title : "##increase_trading_title##"
+          text : "##increase_trading_text##"
+          send2scribe : true
+        }
+      }
+    }    
     
     stop_sea_trading_2#trading_options : {
       date : "-264.01.01"
       cities : {
         Tarentum : { delay_trade : 12 }
         Capua : { delay_trade : 12 }
+      }
+
+      exec : {
+        message#messagebox : {
+          title : "##stormy_seas_title##"
+          text : "##stormy_seas_text##"
+          send2scribe : true
+        }
       }
     }
     
@@ -309,20 +312,21 @@
       }
 
       text : "##enemy_attack_city##"
-    }
-    
-    tarentum_increase_oil_trading#messagebox : {
-      date : "-263.06.01"
-      good : "oil"
-      title : "##increase_trading_title##"
-      text : "##increase_trading_text##"
-      send2scribe : true
-    }
+    }       
     
     tarentum_increase_oil_trading#trading_options : {
       date: "-265.06.01"
       cities : {
         Tarentum : { oil : 15 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "oil"
+          title : "##increase_trading_title##"
+          text : "##increase_trading_text##"
+          send2scribe : true
+        }
       }
     }
   }

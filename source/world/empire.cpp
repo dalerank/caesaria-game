@@ -196,6 +196,20 @@ unsigned int Empire::getWorkerSalary() const {  return _d->workerSalary; }
 bool Empire::isAvailable() const{  return _d->available; }
 void Empire::setAvailable(bool value) { _d->available = value; }
 
+void Empire::setPrice(Good::Type gtype, int buy, int sell)
+{
+  _d->trading.setPrice( gtype, buy, sell );
+  foreach( it, _d->cities)
+  {
+    (*it)->empirePricesChanged( gtype, buy, sell );
+  }
+}
+
+void Empire::getPrice(Good::Type gtype, int& buy, int& sell) const
+{
+  _d->trading.getPrice( gtype, buy, sell );
+}
+
 void Empire::createTradeRoute(std::string start, std::string stop )
 {
   CityPtr startCity = findCity( start );
@@ -246,8 +260,8 @@ void Empire::createTradeRoute(std::string start, std::string stop )
   }
 }
 
-TraderoutePtr Empire::getTradeRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
-TraderoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
+TraderoutePtr Empire::findTradeRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
+TraderoutePtr Empire::findTradeRoute( const std::string& start, const std::string& stop )
 {
   return _d->trading.findRoute( start, stop ); 
 }
@@ -271,8 +285,8 @@ CityPtr Empire::initPlayerCity( CityPtr city )
 
   if( ret.isNull() )
   {
-    Logger::warning("Can't init player city, that empire city with name %s no exist", city->getName().c_str() );
-    _CAESARIA_DEBUG_BREAK_IF( "Can't init player city" );
+    Logger::warning("Empire: can't init player city, city with name %s no exist", city->getName().c_str() );
+    _CAESARIA_DEBUG_BREAK_IF( "Empire: can't init player city" );
     return ret;
   }
 
@@ -280,6 +294,13 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.remove( ret );
   _d->cities.push_back( city );
   _d->playerCityName = city->getName();
+
+  for( int k=Good::none; k < Good::goodCount; k++ )
+  {
+    int buy, sell;
+    getPrice( Good::Type(k), buy, sell );
+    city->empirePricesChanged( Good::Type(k), buy, sell );
+  }
 
   return ret;
 }
@@ -291,7 +312,7 @@ void Empire::payTax(const std::string &cityname, unsigned int money)
 }
 
 ObjectList Empire::objects() const{  return _d->objects; }
-TraderouteList Empire::getTradeRoutes( const std::string& startCity ){  return _d->trading.routes( startCity );}
+TraderouteList Empire::tradeRoutes( const std::string& startCity ){  return _d->trading.routes( startCity );}
 
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
@@ -334,6 +355,6 @@ GovernorRanks EmpireHelper::getRanks()
 }
 
 
-TraderouteList Empire::getTradeRoutes(){  return _d->trading.routes();}
+TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
 
 }//end namespace world

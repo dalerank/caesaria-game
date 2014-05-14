@@ -27,6 +27,7 @@
 #include "earthquake.hpp"
 #include "start_work.hpp"
 #include "distant_battle.hpp"
+#include "trading_options.hpp"
 
 namespace events
 {
@@ -88,6 +89,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<EarthQuake>( "earthquake" );
   addCreator<StartWork>( "start_work" );
   addCreator<DistantBattle>( "distant_battle" );
+  addCreator<TradingOptions>( "trading_options" );
 }
 
 }//end namespace events

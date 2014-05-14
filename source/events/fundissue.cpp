@@ -70,12 +70,12 @@ void FundIssueEvent::_exec(Game& game, unsigned int )
 {
   if( _type == city::Funds::importGoods )
   {
-    int price = game.city()->tradeOptions().getSellPrice( _gtype );
+    int price = game.city()->tradeOptions().sellPrice( _gtype );
     _value = -price * _qty / 100;
   }
   else if( _type == city::Funds::exportGoods )
   {
-    int price = game.city()->tradeOptions().getBuyPrice( _gtype );
+    int price = game.city()->tradeOptions().buyPrice( _gtype );
     _value = price * _qty / 100;
   }
 

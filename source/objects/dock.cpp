@@ -238,7 +238,7 @@ void Dock::requestGoods(GoodStock& stock)
 
 void Dock::importingGoods(GoodStock& stock)
 {
-  const GoodStore& cityOrders = _city()->getBuys();
+  const GoodStore& cityOrders = _city()->exportingGoods();
 
   //try sell goods
   int traderMaySell = std::min( stock.qty(), cityOrders.capacity( stock.type() ) );

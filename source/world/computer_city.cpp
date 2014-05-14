@@ -35,6 +35,7 @@ public:
   unsigned int tradeType;
   bool distantCity, romeCity;
   bool isAvailable;
+  unsigned int tradeDelay;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
   SimpleGoodStore realSells;
@@ -46,6 +47,7 @@ public:
 ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( new Impl )
 {
   _d->name = name;
+  _d->tradeDelay = 0;
   _d->distantCity = false;
   _d->empire = empire;
   _d->merchantsNumber = 0;
@@ -56,6 +58,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->romeCity = false;
 }
 
+bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
 std::string ComputerCity::getName() const {  return _d->name;}
 Point ComputerCity::location() const{  return _d->location;}
 void ComputerCity::setLocation( const Point& location ){  _d->location = location;}
@@ -115,6 +118,7 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "distant" ] = _d->distantCity;
   options[ "romecity" ] = _d->romeCity;
   options[ "realSells" ] = _d->realSells.save();
+  options[ "tradeDelay" ] = _d->tradeDelay;
 }
 
 void ComputerCity::load( const VariantMap& options )
@@ -129,6 +133,7 @@ void ComputerCity::load( const VariantMap& options )
   _d->merchantsNumber = (int)options.get( "merchantsNumber" );
   _d->distantCity = (bool)options.get( "distant" );
   _d->romeCity = (bool)options.get( "romecity" );
+  _d->tradeDelay = (int)options.get( "tradeDelay" );
 
   for( int i=Good::none; i < Good::goodCount; i ++ )
   {
@@ -178,8 +183,18 @@ void ComputerCity::load( const VariantMap& options )
   }
 }
 
-const GoodStore& ComputerCity::getSells() const {  return _d->realSells;}
-const GoodStore& ComputerCity::getBuys() const{  return _d->buyStore;}
+const GoodStore& ComputerCity::importingGoods() const {  return _d->realSells;}
+const GoodStore& ComputerCity::exportingGoods() const{  return _d->buyStore;}
+
+void ComputerCity::delayTrade(unsigned int month)
+{
+  _d->tradeDelay = month;
+}
+
+void ComputerCity::empirePricesChanged(Good::Type gtype, int bCost, int sCost)
+{
+
+}
 
 CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 {
@@ -213,6 +228,11 @@ ComputerCity::~ComputerCity() {}
 
 void ComputerCity::timeStep( unsigned int time )
 {
+  if( GameDate::isMonthChanged() )
+  {
+    _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
+  }
+
   //one year before step need
   if( _d->lastTimeUpdate.monthsTo( GameDate::current() ) > 11 )
   {
@@ -230,10 +250,10 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( _d->lastTimeMerchantSend.monthsTo( GameDate::current() ) > 2 ) 
   {
-    TraderouteList routes = _d->empire->getTradeRoutes( getName() );
+    TraderouteList routes = _d->empire->tradeRoutes( getName() );
     _d->lastTimeMerchantSend = GameDate::current();
 
-    if( _d->merchantsNumber >= routes.size() )
+    if( _d->merchantsNumber >= routes.size() || !_mayTrade() )
     {
       return;
     }

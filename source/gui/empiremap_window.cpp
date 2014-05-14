@@ -125,7 +125,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
       }
       else
       {
-        world::TraderoutePtr route = empire->getTradeRoute( currentCity->getName(), ourCity );
+        world::TraderoutePtr route = empire->findTradeRoute( currentCity->getName(), ourCity );
         if( route != 0 )
         {
           drawTradeRouteInfo();
@@ -202,7 +202,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point startDraw( (tradeInfo->width() - 400) / 2, tradeInfo->height() - 90 );
   new Label( tradeInfo, Rect( startDraw, Size( 70, 30 )), _("##emw_sell##") );
 
-  const GoodStore& sellgoods = currentCity->getSells();
+  const GoodStore& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( sellgoods.capacity( (Good::Type)i ) > 0  )
@@ -217,7 +217,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point buyPoint = startDraw + Point( 200, 0 );
   new Label( tradeInfo, Rect( buyPoint, Size( 70, 30 )), _("##emw_buy##") );
 
-  const GoodStore& buygoods = currentCity->getBuys();
+  const GoodStore& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( buygoods.capacity( (Good::Type)i ) > 0  )
@@ -244,7 +244,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point startDraw( (tradeInfo->width() - 400) / 2, tradeInfo->height() - 80 );
   new Label( tradeInfo, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
 
-  const GoodStore& sellgoods = currentCity->getSells();
+  const GoodStore& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     int maxsell = sellgoods.capacity( (Good::Type)i ) / 100;
@@ -263,7 +263,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point buyPoint = startDraw + Point( 0, 30 );
   new Label( tradeInfo, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
 
-  const GoodStore& buygoods = currentCity->getBuys();
+  const GoodStore& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     int maxbuy = buygoods.capacity( (Good::Type)i ) / 100;
@@ -407,7 +407,7 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
     engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
   }
 
-  world::TraderouteList routes = _d->empire->getTradeRoutes();
+  world::TraderouteList routes = _d->empire->tradeRoutes();
   foreach( it, routes )
   {
     world::TraderoutePtr route = *it;

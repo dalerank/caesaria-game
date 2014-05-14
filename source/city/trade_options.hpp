@@ -32,19 +32,19 @@ public:
   TradeOptions();
   ~TradeOptions();
 
-  int getExportLimit( Good::Type type ) const;
+  int exportLimit( Good::Type type ) const;
   void setExportLimit( Good::Type type, int qty );
   
   void setStackMode( Good::Type type, bool stackGoods );
   bool isGoodsStacking( Good::Type type );
 
-  unsigned int getSellPrice( Good::Type type ) const;
+  unsigned int sellPrice( Good::Type type ) const;
   void setSellPrice( Good::Type type, unsigned int price );
 
   bool isVendor( Good::Type type ) const;
   void setVendor( Good::Type type, bool available );
 
-  unsigned int getBuyPrice( Good::Type type ) const;
+  unsigned int buyPrice( Good::Type type ) const;
   void setBuyPrice( Good::Type type, unsigned int price );
 
   Order getOrder( Good::Type type ) const;
@@ -54,8 +54,8 @@ public:
   VariantMap save() const;
   void load( const VariantMap& stream );
 
-  const GoodStore& getBuys();
-  const GoodStore& getSells();
+  const GoodStore& importingGoods();
+  const GoodStore& exportingGoods();
 
 public:
   class Impl;

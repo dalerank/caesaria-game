@@ -255,7 +255,7 @@ Picture* SdlEngine::createPicture(const Size& size )
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0, 0, 0, 0 );
 
-  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "Cannot make surface, size=%dx%d", size.width(), size.height() ) );
+  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
 
   Picture *pic = new Picture();
   pic->init(img, Point( 0, 0 ));  // no offset

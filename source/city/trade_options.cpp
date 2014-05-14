@@ -40,15 +40,15 @@ public:
     VariantList save() 
     {
       VariantList ret;
-      ret.push_back( sellPrice );
-      ret.push_back( buyPrice );
-      ret.push_back( exportLimit );
-      ret.push_back( importLimit );
-      ret.push_back( soldGoods );
-      ret.push_back( bougthGoods );
-      ret.push_back( stacking );
-      ret.push_back( order );
-      ret.push_back( vendor );
+      ret << sellPrice
+          << buyPrice
+          << exportLimit
+          << importLimit
+          << soldGoods
+          << bougthGoods
+          << stacking
+          << order
+          << vendor;
 
       return ret;
     }
@@ -118,43 +118,20 @@ public:
       goods[ gtype ].order = TradeOptions::noTrade;
       goods[ gtype ].vendor = true;
       goods[ gtype ].exportLimit = 0;
+      goods[ gtype ].sellPrice = 0;
+      goods[ gtype ].buyPrice = 0;
     }
 
     goods[ Good::fish ].order = TradeOptions::disabled;
     goods[ Good::denaries ].order = TradeOptions::disabled;
   }
-
-  void initStandartPrice( Good::Type type, int buy, int sell )
-  {
-    goods[ type ].buyPrice = buy; goods[ type ].sellPrice = sell;
-  }
-
-  void initStandartPrice()
-  {
-    initStandartPrice( Good::wheat, 28, 22 );
-    initStandartPrice( Good::vegetable, 38, 30 );
-    initStandartPrice( Good::fruit, 38, 30 );
-    initStandartPrice( Good::olive, 42, 34 );
-    initStandartPrice( Good::grape, 44, 36 );
-    initStandartPrice( Good::meat, 44, 36 );
-    initStandartPrice( Good::wine, 215, 160 );
-    initStandartPrice( Good::oil, 180, 140 );
-    initStandartPrice( Good::iron, 60, 40 );
-    initStandartPrice( Good::timber, 50, 35 );
-    initStandartPrice( Good::clay, 40, 30 );
-    initStandartPrice( Good::marble, 200, 140 );
-    initStandartPrice( Good::weapon, 250, 180 );
-    initStandartPrice( Good::furniture, 200, 150 );
-    initStandartPrice( Good::pottery, 180, 140 );
-  }
 };
 
 TradeOptions::TradeOptions() : _d( new Impl )
-{
-  _d->initStandartPrice();
+{  
 }
 
-int TradeOptions::getExportLimit(Good::Type type ) const
+int TradeOptions::exportLimit(Good::Type type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.exportLimit );
@@ -217,7 +194,7 @@ void TradeOptions::setStackMode( Good::Type type, bool stackGoods )
   _d->updateLists();
 }
 
-unsigned int TradeOptions::getSellPrice( Good::Type type ) const
+unsigned int TradeOptions::sellPrice( Good::Type type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.sellPrice );
@@ -228,7 +205,7 @@ void TradeOptions::setSellPrice( Good::Type type, unsigned int price )
    _d->goods[ type ].sellPrice = price;
 }
 
-unsigned int TradeOptions::getBuyPrice( Good::Type type ) const
+unsigned int TradeOptions::buyPrice( Good::Type type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.buyPrice );
@@ -290,12 +267,12 @@ VariantMap TradeOptions::save() const
   return ret;
 }
 
-const GoodStore& TradeOptions::getBuys()
+const GoodStore& TradeOptions::importingGoods()
 {
   return _d->buys;
 }
 
-const GoodStore& TradeOptions::getSells()
+const GoodStore& TradeOptions::exportingGoods()
 {
   return _d->sells;
 }
