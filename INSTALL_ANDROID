@@ -64,7 +64,7 @@ $ cp ~/caesaria/resources/cache.zip ~/commandergenius/project/jni/application/ca
 7. Building apk
 ===================
 $ rm project/jni/application/src
-$ ln -s caesaria project/jni/application/caesaria/
+$ ln -s caesaria project/jni/application/src/
 $ ./changeAppSettings.sh
 $ android update project -p project
 $ ./build.sh
