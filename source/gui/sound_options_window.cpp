@@ -105,6 +105,10 @@ void SoundOptionsWindow::_update()
   Label* lbAmbientSound = findChildA<Label*>( "lbAmbientSoundPercent", true, this );
   Label* lbThemeSound = findChildA<Label*>( "lbThemeSoundPercent", true, this );
 
+  _d->current.game = math::clamp( _d->current.game, 0, 100 );
+  _d->current.ambient = math::clamp( _d->current.ambient, 0, 100 );
+  _d->current.theme = math::clamp( _d->current.theme, 0, 100 );
+
   if( lbGameSound ) { lbGameSound->setText( StringHelper::format( 0xff, "%d%%", _d->current.game ) ); }
   if( lbAmbientSound ) { lbAmbientSound->setText( StringHelper::format( 0xff, "%d%%", _d->current.ambient ) ); }
   if( lbThemeSound ) { lbThemeSound->setText( StringHelper::format( 0xff, "%d%%", _d->current.theme ) ); }

@@ -24,6 +24,13 @@
 
 using namespace constants;
 
+namespace {
+CAESARIA_LITERALCONST(send2scribe)
+CAESARIA_LITERALCONST(title)
+CAESARIA_LITERALCONST(text)
+CAESARIA_LITERALCONST(video)
+}
+
 namespace events
 {
 
@@ -50,10 +57,10 @@ GameEventPtr ShowInfobox::create(const std::string& title, const std::string& te
 
 void ShowInfobox::load(const VariantMap& stream)
 {
-  _title = stream.get( "title" ).toString();
-  _text = stream.get( "text" ).toString();
-  _send2scribe = stream.get( "send2scribe" );
-  _video = stream.get( "video" ).toString();
+  _title = stream.get( lc_title ).toString();
+  _text = stream.get( lc_text ).toString();
+  _send2scribe = stream.get( lc_send2scribe );
+  _video = stream.get( lc_video ).toString();
 }
 
 bool ShowInfobox::_mayExec(Game& game, unsigned int time) const{  return true;}
