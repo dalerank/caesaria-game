@@ -196,7 +196,7 @@ void SdlEngine::endRenderFrame()
   }
 }
 
-void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, Rect* clipRect )
+void SdlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;
@@ -226,9 +226,17 @@ void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, 
   }
 }
 
-void SdlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* clipRect )
+void SdlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
 {
-  drawPicture( picture, pos.x(), pos.y(), clipRect );
+  draw( picture, pos.x(), pos.y(), clipRect );
+}
+
+void SdlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
+{
+  for( Pictures::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
+  {
+    draw( *it, pos, clipRect );
+  }
 }
 
 void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
@@ -247,7 +255,7 @@ Picture* SdlEngine::createPicture(const Size& size )
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0, 0, 0, 0 );
 
-  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "Cannot make surface, size=%dx%d", size.width(), size.height() ) );
+  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
 
   Picture *pic = new Picture();
   pic->init(img, Point( 0, 0 ));  // no offset

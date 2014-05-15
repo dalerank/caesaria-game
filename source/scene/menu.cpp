@@ -257,7 +257,7 @@ void StartMenu::draw()
 {
   _d->game->gui()->beforeDraw();
 
-  _d->engine->drawPicture(_d->bgPicture, 0, 0);
+  _d->engine->draw(_d->bgPicture, 0, 0);
 
   _d->game->gui()->draw();
 }

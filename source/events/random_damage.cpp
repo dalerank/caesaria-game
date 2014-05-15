@@ -50,8 +50,6 @@ void RandomDamage::_exec( Game& game, unsigned int time )
       std::advance( it, math::random( houses.size() ) );
       (*it)->collapse();
     }
-
-    events::Dispatcher::instance().load( _events );
   }
 }
 
@@ -63,7 +61,6 @@ void RandomDamage::load(const VariantMap& stream)
   VariantList vl = stream.get( "population" ).toList();
   _minPopulation = vl.get( 0, 0 ).toInt();
   _maxPopulation = vl.get( 1, 999999 ).toInt();
-  _events = stream.get( "exec" ).toMap();
 }
 
 VariantMap RandomDamage::save() const
@@ -73,7 +70,6 @@ VariantMap RandomDamage::save() const
   vl_pop << _minPopulation << _maxPopulation;
 
   ret[ "population" ] = vl_pop;
-  ret[ "exec" ] = _events;
 
   return ret;
 }

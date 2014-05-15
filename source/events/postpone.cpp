@@ -20,6 +20,7 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
+#include "dispatcher.hpp"
 #include "city/requestdispatcher.hpp"
 #include "core/logger.hpp"
 #include "city/cityservice_factory.hpp"
@@ -96,6 +97,12 @@ void PostponeEvent::_exec(Game& game, unsigned int)
   {
     srvc->load( _d->options );
     city->addService( srvc );
+  }
+
+  Variant execVm = _d->options.get( "exec" );
+  if( execVm.isValid() )
+  {
+    Dispatcher::instance().load( execVm.toMap() );
   }
 
   _d->mayDelete = true;

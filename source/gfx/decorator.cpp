@@ -20,6 +20,8 @@
 #include "core/gettext.hpp"
 #include "core/rectangle.hpp"
 #include "game/resourcegroup.hpp"
+#include "primitives.hpp"
+#include "core/color.hpp"
 
 namespace gfx
 {
@@ -99,6 +101,16 @@ void PictureDecorator::drawBorder(Picture &dstpic, const Rect& rectangle, const 
   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+6), rectangle.left(), rectangle.bottom()-sh, useAlpha);
   // bottomRight corner
   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), rectangle.right()-16, rectangle.bottom()-sh, useAlpha);
+}
+
+void PictureDecorator::drawLine(Picture& dstpic, const Point& p1, const Point& p2, NColor color)
+{
+  lineColor( dstpic.surface(), p1.x(), p1.y(), p2.x(), p2.y(), color.color );
+}
+
+void PictureDecorator::basicText(Picture& dstpic, const Point& pos, const std::string& text, NColor color)
+{
+  stringColor( dstpic.surface(), pos.x(), pos.y(), text.c_str(), color.color );
 }
 
 void PictureDecorator::drawPanel( Picture &dstpic, const Rect& rectangle, int picId, bool useAlpha )

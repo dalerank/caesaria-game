@@ -23,6 +23,7 @@
 #include "vfs/path.hpp"
 #include "core/referencecounted.hpp"
 #include "core/serializer.hpp"
+#include "good/good.hpp"
 
 namespace world
 {
@@ -40,6 +41,7 @@ public:
   void payTax( const std::string& cityname, unsigned int money );
 
   ObjectList objects() const;
+  void addObject( ObjectPtr obj );
 
   void initialize( vfs::Path filename, vfs::Path filemap );
   void timeStep( unsigned int time );
@@ -48,10 +50,10 @@ public:
   Emperor& emperor();
 
   void createTradeRoute( std::string start, std::string stop );
-  TraderoutePtr getTradeRoute( unsigned int index );
-  TraderoutePtr getTradeRoute( const std::string& start, const std::string& stop );
-  TraderouteList getTradeRoutes( const std::string& startCity );
-  TraderouteList getTradeRoutes();
+  TraderoutePtr findTradeRoute( unsigned int index );
+  TraderoutePtr findTradeRoute( const std::string& start, const std::string& stop );
+  TraderouteList tradeRoutes( const std::string& startCity );
+  TraderouteList tradeRoutes();
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
@@ -60,6 +62,8 @@ public:
   unsigned int getWorkerSalary() const;
   bool isAvailable() const;
   void setAvailable( bool value );
+  void setPrice( Good::Type gtype, int buy, int sell );
+  void getPrice( Good::Type gtype, int& buy, int& sell ) const;
 
 private:
   Empire();

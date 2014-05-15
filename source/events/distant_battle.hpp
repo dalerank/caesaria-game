@@ -13,36 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
-#define _CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_DISTANT_BATTLE_H_INCLUDE_
+#define _CAESARIA_EVENT_DISTANT_BATTLE_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class RandomDamage : public GameEvent
+class DistantBattle : public GameEvent
 {
 public:
   static GameEventPtr create();
-  virtual bool isDeleted() const;
 
   virtual void load(const VariantMap& stream);
   virtual VariantMap save() const;
-
 protected:
-  virtual void _exec(Game &game, unsigned int time);
+  virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  RandomDamage();
-
-  int _minPopulation, _maxPopulation;
-  bool _isDeleted;
+  VariantMap _options;
 };
 
-}//end namespace events
+}
 
-#endif //_CAESARIA_RANDOMDAMAGE_EVENT_H_INCLUDE_
+#endif //_CAESARIA_EVENT_DISTANT_BATTLE_H_INCLUDE_

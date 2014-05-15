@@ -341,13 +341,13 @@ void ScrollBar::draw(gfx::Engine& painter )
   //draw background
   if( _d->texture.isValid() )
   {
-    painter.drawPicture( _d->texture, absoluteRect().UpperLeftCorner );
+    painter.draw( _d->texture, absoluteRect().UpperLeftCorner );
   }
 
   //draw slider
   if( _d->sliderTexture.isValid() )
   {
-    painter.drawPicture( _d->sliderTexture, _d->sliderRect.UpperLeftCorner );
+    painter.draw( _d->sliderTexture, _d->sliderRect.UpperLeftCorner );
   }
 
 	// draw buttons

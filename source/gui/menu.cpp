@@ -176,7 +176,7 @@ void Menu::draw(gfx::Engine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->bgPicture, screenLeft(), screenTop() );
+  painter.draw( *_d->bgPicture, screenLeft(), screenTop() );
     
   Widget::draw( painter );
 }

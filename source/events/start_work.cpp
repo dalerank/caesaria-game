@@ -38,15 +38,16 @@ GameEventPtr StartWork::create()
 
 void StartWork::load(const VariantMap& stream)
 {
-  _options = stream.get( "exec" ).toMap();
+  GameEvent::load( stream );
+  _options = stream.get( "action" ).toMap();
   _noTroubles = stream.get( "no_troubles", false );
 }
 
 VariantMap StartWork::save() const
 {
-  VariantMap ret;
+  VariantMap ret = GameEvent::save();
 
-  ret[ "exec" ] = _options;
+  ret[ "action" ] = _options;
   ret[ "no_troubles" ] = _noTroubles;
 
   return ret;

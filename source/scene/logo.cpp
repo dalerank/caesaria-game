@@ -61,7 +61,7 @@ void SplashScreen::draw()
 {
   Engine& engine = Engine::instance();
 
-  engine.drawPicture( _d->bgPicture, 0, 0);
+  engine.draw( _d->bgPicture, 0, 0);
 
   if( !_d->text.empty() )
   {
@@ -74,7 +74,7 @@ void SplashScreen::draw()
 
     textFont.draw( *_d->textPicture, _d->text, textRect.left(), textRect.top(), false );
 
-    engine.drawPicture( *_d->textPicture, 0, 0 );
+    engine.draw( *_d->textPicture, 0, 0 );
   }
 }
 
@@ -95,8 +95,8 @@ void SplashScreen::fadeOut()
   {
     engine.startRenderFrame();
     pf->fill( NColor(k, 0, 0, 0), Rect() );
-    engine.drawPicture( _d->bgPicture, 0, 0);
-    engine.drawPicture( *pf, 0, 0);
+    engine.draw( _d->bgPicture, 0, 0);
+    engine.draw( *pf, 0, 0);
     //engine.delay( 1 );
     engine.endRenderFrame();
   }

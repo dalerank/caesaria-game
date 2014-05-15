@@ -496,7 +496,7 @@ void PushButton::draw( gfx::Engine& painter )
   {
     if( state.background )
     {
-      painter.drawPicture( *state.background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+      painter.draw( *state.background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
 
 //             if( isEnabled() &&
 //                 ( hoverImageOpacity <= 0xff ) &&
@@ -516,7 +516,7 @@ void PushButton::draw( gfx::Engine& painter )
 
   if( state.textPicture )
   {
-    painter.drawPicture( *state.textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( *state.textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   drawIcon( painter );
@@ -535,7 +535,7 @@ void PushButton::drawIcon( gfx::Engine& painter )
       return;
 
   Point pos = convertLocalToScreen( _d->iconRect ).UpperLeftCorner;
-  painter.drawPicture( iconTexture, pos + bstate.iconOffset );
+  painter.draw( iconTexture, pos + bstate.iconOffset );
 }
 
 void PushButton::setText( const std::string& text )

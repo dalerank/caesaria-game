@@ -57,6 +57,10 @@ public:
 
   // draws a rectangular perimeter
   static void drawBorder(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha);
+
+  static void drawLine( Picture &dstpic, const Point& p1, const Point& p2, NColor color );
+
+  static void basicText( Picture &dstpic, const Point& po, const std::string& text, NColor color );
 };
 
 }//end namespace gfx

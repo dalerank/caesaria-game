@@ -96,7 +96,7 @@ void SenatePopupInfo::draw(gfx::Engine& painter )
         _d->updateRatings( senate );
       }
 
-      painter.drawPicture( *_d->background, cursorPos );     
+      painter.draw( *_d->background, cursorPos );     
     }
   }
 }

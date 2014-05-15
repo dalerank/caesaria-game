@@ -644,10 +644,11 @@ PlayerPtr PlayerCity::player() const { return _d->player; }
 std::string PlayerCity::getName() const {  return _d->name; }
 void PlayerCity::setName( const std::string& name ) {   _d->name = name;}
 city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
+void PlayerCity::delayTrade(unsigned int month){  }
 void PlayerCity::setLocation( const Point& location ) {   _d->location = location; }
 Point PlayerCity::location() const {   return _d->location; }
-const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSells(); }
-const GoodStore& PlayerCity::getBuys() const {   return _d->tradeOptions.getBuys(); }
+const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.importingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
@@ -704,4 +705,10 @@ void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
     MerchantPtr cityMerchant = ptr_cast<Merchant>( Merchant::create( this, merchant ) );
     cityMerchant->send2city();
   }
+}
+
+void PlayerCity::empirePricesChanged(Good::Type gtype, int bCost, int sCost)
+{
+  _d->tradeOptions.setBuyPrice( gtype, bCost );
+  _d->tradeOptions.setSellPrice( gtype, sCost );
 }

@@ -106,10 +106,12 @@ public:
 
   city::TradeOptions& tradeOptions();
 
+  virtual void delayTrade(unsigned int month);
   virtual void arrivedMerchant( world::MerchantPtr merchant );
+  virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
 
-  virtual const GoodStore& getSells() const;
-  virtual const GoodStore& getBuys() const;
+  virtual const GoodStore& importingGoods() const;
+  virtual const GoodStore& exportingGoods() const;
   virtual unsigned int tradeType() const;
   virtual world::EmpirePtr empire() const;
 

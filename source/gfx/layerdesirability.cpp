@@ -55,11 +55,11 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
                           : math::clamp( tile.getDesirability() / 15, 0, 6 );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
-      engine.drawPicture( pic, screenPos );
+      engine.draw( pic, screenPos );
     }
     else
     {
-      engine.drawPicture( tile.picture(), screenPos );
+      engine.draw( tile.picture(), screenPos );
     }
   }
   else
@@ -70,7 +70,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     //roads
     case construction::road:
     case construction::plaza:
-      engine.drawPicture( tile.picture(), screenPos );
+      engine.draw( tile.picture(), screenPos );
       registerTileForRendering( tile );
     break;
 
@@ -87,7 +87,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
         foreach( tile, tiles4clear )
         {
-          engine.drawPicture( pic, (*tile)->mapPos() + offset );
+          engine.draw( pic, (*tile)->mapPos() + offset );
         }
       }
     break;

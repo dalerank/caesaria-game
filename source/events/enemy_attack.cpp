@@ -36,7 +36,6 @@ class EnemyAttack::Impl
 {
 public:
   VariantMap items;
-  VariantMap events;
   bool isDeleted;
 };
 
@@ -101,8 +100,6 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
       }
     }
   }
-
-  events::Dispatcher::instance().load( _d->events );
 }
 
 bool EnemyAttack::_mayExec(Game&, unsigned int) const { return true; }
@@ -111,7 +108,6 @@ bool EnemyAttack::isDeleted() const { return _dfunc()->isDeleted; }
 void EnemyAttack::load(const VariantMap& stream)
 {
   __D_IMPL(_d,EnemyAttack)
-  _d->events = stream.get( "exec" ).toMap();
   _d->items = stream.get( "items" ).toMap();
 }
 
@@ -121,7 +117,6 @@ VariantMap EnemyAttack::save() const
 
   __D_IMPL_CONST(_d,EnemyAttack);
 
-  ret[ "exec" ] = _d->events;
   ret[ "items" ] = _d->items;
 
   return ret;

@@ -125,7 +125,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
       }
       else
       {
-        world::TraderoutePtr route = empire->getTradeRoute( currentCity->getName(), ourCity );
+        world::TraderoutePtr route = empire->findTradeRoute( currentCity->getName(), ourCity );
         if( route != 0 )
         {
           drawTradeRouteInfo();
@@ -202,7 +202,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point startDraw( (tradeInfo->width() - 400) / 2, tradeInfo->height() - 90 );
   new Label( tradeInfo, Rect( startDraw, Size( 70, 30 )), _("##emw_sell##") );
 
-  const GoodStore& sellgoods = currentCity->getSells();
+  const GoodStore& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( sellgoods.capacity( (Good::Type)i ) > 0  )
@@ -217,7 +217,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point buyPoint = startDraw + Point( 200, 0 );
   new Label( tradeInfo, Rect( buyPoint, Size( 70, 30 )), _("##emw_buy##") );
 
-  const GoodStore& buygoods = currentCity->getBuys();
+  const GoodStore& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( buygoods.capacity( (Good::Type)i ) > 0  )
@@ -244,7 +244,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point startDraw( (tradeInfo->width() - 400) / 2, tradeInfo->height() - 80 );
   new Label( tradeInfo, Rect( startDraw, Size( 80, 30 )), _("##emw_sold##") );
 
-  const GoodStore& sellgoods = currentCity->getSells();
+  const GoodStore& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     int maxsell = sellgoods.capacity( (Good::Type)i ) / 100;
@@ -263,7 +263,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
   Point buyPoint = startDraw + Point( 0, 30 );
   new Label( tradeInfo, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
 
-  const GoodStore& buygoods = currentCity->getBuys();
+  const GoodStore& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     int maxbuy = buygoods.capacity( (Good::Type)i ) / 100;
@@ -379,7 +379,7 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
   if( !isVisible() )
     return;
 
-  engine.drawPicture( _d->empireMap, _d->offset );  
+  engine.draw( _d->empireMap, _d->offset );
 
   world::CityList cities = _d->empire->cities();
   foreach( it, cities )
@@ -398,17 +398,16 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
       else if( ccity->isRomeCity() )       {        index = 1;      }
     }
 
-    engine.drawPicture( _d->citypics[ index ], _d->offset + location );
+    engine.draw( _d->citypics[ index ], _d->offset + location );
   }  
 
   world::ObjectList objects = _d->empire->objects();
   foreach( obj, objects )
   {
-    Point location = (*obj)->getLocation();
-    engine.drawPicture( (*obj)->getPicture(), _d->offset +  location );
+    engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
   }
 
-  world::TraderouteList routes = _d->empire->getTradeRoutes();
+  world::TraderouteList routes = _d->empire->tradeRoutes();
   foreach( it, routes )
   {
     world::TraderoutePtr route = *it;
@@ -420,22 +419,22 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
     const Pictures& pictures = route->pictures();
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
-      engine.drawPicture( pictures[ index ], _d->offset + points[ index ] );
+      engine.draw( pictures[ index ], _d->offset + points[ index ] );
     }
 
     if( merchant != 0 )
     {
-      engine.drawPicture( picture, _d->offset + merchant->getLocation() );
+      engine.draw( picture, _d->offset + merchant->getLocation() );
     }      
   }
 
-  engine.drawPicture( *_d->border, Point( 0, 0 ) );
+  engine.draw( *_d->border, Point( 0, 0 ) );
 
-  engine.drawPicture( _d->leftEagle, _d->eagleOffset.width(), height() - 120 + _d->eagleOffset.height() - _d->leftEagle.height() - 10 );
-  engine.drawPicture( _d->rightEagle, width() - _d->eagleOffset.width() - _d->rightEagle.width(),
+  engine.draw( _d->leftEagle, _d->eagleOffset.width(), height() - 120 + _d->eagleOffset.height() - _d->leftEagle.height() - 10 );
+  engine.draw( _d->rightEagle, width() - _d->eagleOffset.width() - _d->rightEagle.width(),
                       height() - 120 + _d->eagleOffset.height() - _d->rightEagle.height() - 10 );
 
-  engine.drawPicture( _d->centerPicture, (width() - _d->centerPicture.width()) / 2,
+  engine.draw( _d->centerPicture, (width() - _d->centerPicture.width()) / 2,
                       height() - 120 - _d->centerPicture.height() + 20 );
 
   Widget::draw( engine );

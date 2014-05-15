@@ -165,7 +165,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       {
         Good::Type goodType = (Good::Type)n;
         int needQty = buy.freeQty( goodType );
-        int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.getExportLimit( goodType ) * 100, 0, needQty );
+        int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.exportLimit( goodType ) * 100, 0, needQty );
 
         if( maySell > 0)
         {
@@ -257,7 +257,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   case stSellGoods:
   {    
     DockPtr myDock = findLandingDock( city, wlk );
-    const GoodStore& cityOrders = city->getBuys();
+    const GoodStore& cityOrders = city->exportingGoods();
 
     if( myDock.isValid() )
     {
@@ -290,7 +290,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     wlk->deleteLater();
     world::EmpirePtr empire = city->empire();
     const std::string& ourCityName = city->getName();
-    world::TraderoutePtr route = empire->getTradeRoute( ourCityName, baseCityName );
+    world::TraderoutePtr route = empire->findTradeRoute( ourCityName, baseCityName );
     if( route.isValid() )
     {
       route->addMerchant( ourCityName, sell, buy );

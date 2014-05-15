@@ -32,7 +32,6 @@ class HealthUpdater::Impl
 {
 public:
   DateTime endTime;
-  VariantMap events;
   bool isDeleted;
   int value;
 };
@@ -60,8 +59,6 @@ void HealthUpdater::update( const unsigned int time)
     {
       (*it)->updateState( House::health, _d->value );
     }
-
-    events::Dispatcher::instance().load( _d->events );
   }
 }
 
@@ -71,7 +68,6 @@ bool HealthUpdater::isDeleted() const {  return _d->isDeleted; }
 void HealthUpdater::load(const VariantMap& stream)
 {
   _d->endTime = stream.get( "endTime" ).toDateTime();
-  _d->events = stream.get( "exec" ).toMap();
   _d->value = stream.get( "value" );
 }
 
@@ -79,7 +75,6 @@ VariantMap HealthUpdater::save() const
 {
   VariantMap ret;
   ret[ "endTime" ] = _d->endTime;
-  ret[ "exec"  ] = _d->events;
   ret[ "value" ] = _d->value;
 
   return ret;

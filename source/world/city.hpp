@@ -22,6 +22,7 @@
 #include "core/referencecounted.hpp"
 #include "core/position.hpp"
 #include "predefinitions.hpp"
+#include "good/good.hpp"
 #include "core/serializer.hpp"
 
 class GoodStore;
@@ -44,8 +45,10 @@ public:
   virtual unsigned int tradeType() const = 0;
   virtual EmpirePtr empire() const = 0;
 
-  virtual const GoodStore& getSells() const = 0;
-  virtual const GoodStore& getBuys() const = 0;
+  virtual void delayTrade( unsigned int month ) = 0;
+  virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost ) = 0;
+  virtual const GoodStore& importingGoods() const = 0;
+  virtual const GoodStore& exportingGoods() const = 0;
 };
 
 }//end namespace world

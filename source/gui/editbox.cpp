@@ -963,12 +963,12 @@ void EditBox::draw( Engine& painter )
 	// draw the text
   if( _d->picture )
   {
-    painter.drawPicture( *_d->picture, screenLeft(), screenTop() );
+    painter.draw( *_d->picture, screenLeft(), screenTop() );
   }
 
   if( _d->textPicture )
   {
-    painter.drawPicture( *_d->textPicture, _d->textOffset.x() + screenLeft(), _d->textOffset.y() + screenTop() );
+    painter.draw( *_d->textPicture, _d->textOffset.x() + screenLeft(), _d->textOffset.y() + screenTop() );
   }
 
   if( focus )
@@ -976,7 +976,7 @@ void EditBox::draw( Engine& painter )
 		unsigned int t = DateTime::elapsedTime() % 1000;
     if( t < 500 )
     {
-      painter.drawPicture( *_d->cursorPic, _d->textOffset + _d->cursorRect.UpperLeftCorner );
+      painter.draw( *_d->cursorPic, _d->textOffset + _d->cursorRect.UpperLeftCorner );
     }
 	}
 
