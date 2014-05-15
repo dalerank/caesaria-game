@@ -29,8 +29,8 @@ std::string LoaderHelper::getDefaultCityName(unsigned int location)
   case 0: case 1: return "Brundisium";
   case 2: return "Capua"; break;
   case 3: return "Tarentum"; break;
-  case 4: return "Syracusae"; break;
-  case 5: return "Tarraco"; break;
+  case 4: return "Tarraco"; break;
+  case 5: return "Syracusae"; break;
   case 6: return "Toletum"; break;
   case 7: case 33: return "Valentia"; break;
   case 8: case 35: return "Caesarea"; break;

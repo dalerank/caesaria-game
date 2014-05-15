@@ -42,7 +42,7 @@ public:
   static const int kTerrainGrid = 0x1338c;
   static const int kRndmTerGrid = 0x20094;
   static const int kRandomGrid  = 0x26718;
-  static const int kZeroGrid    = 0x2cd9c;
+  static const int kElevationGrid    = 0x2cd9c;
   static const int kCamera      = 0x33428;
   static const int kStartDate   = 0x33430;
   static const int kLocation    = 0x33434;
@@ -119,7 +119,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.seekg(kLocation, std::ios::beg);
   unsigned int location=0;
   f.read((char*)&location, 1);
-  Logger::warning( "Location of city is %d", (int)(location) );
+  Logger::warning( "C3MapLoader: location of city is %d", (int)(location) );
 
   std::string cityName = LoaderHelper::getDefaultCityName( location );
   oCity->setName( cityName );
@@ -130,7 +130,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   int size_2;
   f.read((char*)&map_size,   4);
   f.read((char*)&size_2, 4);
-  Logger::warning( "Map size is %d", map_size );
+  Logger::warning( "C3MapLoader: map size is %d", map_size );
 
   if (map_size != size_2)
   {
@@ -165,7 +165,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.read((char*)pRndmTerGrid.data(), 26244);
   f.seekg(kRandomGrid, std::ios::beg);
   f.read((char*)pRandomGrid.data(), 26244);
-  f.seekg(kZeroGrid, std::ios::beg);
+  f.seekg(kElevationGrid, std::ios::beg);
   f.read((char*)pZeroGrid.data(), 26244);
 
   std::map< int, std::map< int, unsigned char > > edgeData;

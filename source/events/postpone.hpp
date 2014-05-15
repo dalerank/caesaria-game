@@ -35,6 +35,7 @@ public:
   virtual void load(const VariantMap& stream );
 
 protected:
+  void _executeIncludeEvents();
   virtual bool _mayExec( Game& game, unsigned int ) const;
   virtual void _exec( Game& game, unsigned int );
 

@@ -42,12 +42,10 @@ public:
 GameEventPtr GameEventFactory::create( const std::string& name )
 {
   GameEventFactory& inst = instance();
-  foreach( it, inst._d->creators )
+  Impl::Creators::iterator it = inst._d->creators.find( name );
+  if( it != inst._d->creators.end() )
   {
-    if( name == it->first )
-    {
-      return it->second->create();
-    }
+    return it->second->create();
   }
 
   Logger::warning( "GameEventFactory: not found creator for event " + name );

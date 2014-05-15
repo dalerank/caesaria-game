@@ -68,6 +68,11 @@ std::string StringHelper::trim(const std::string& str)
   return ret;
 }
 
+std::string StringHelper::i2str(int value)
+{
+  return format( 0xff, "%d", value );
+}
+
 std::string StringHelper::format( unsigned int max_size, const char* fmt, ...)
 {
   va_list argument_list;
