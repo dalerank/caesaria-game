@@ -75,6 +75,8 @@ public:
   static void useStackTrace( bool enabled );
 
   static std::string trim( const std::string& str );
+
+  static std::string i2str( int valie );
 };
 
 #endif //__CAESARIA_STRINGHELPER_H_INCLUDED__

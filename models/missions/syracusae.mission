@@ -91,7 +91,7 @@
   {
     population_milestone_500#messagebox : {
       date : "-350.01.01"
-      population : 100
+      population : 500
       send2scribe : true
       video : "/smk/Population1.smk"
       title : "##population_milestone##"

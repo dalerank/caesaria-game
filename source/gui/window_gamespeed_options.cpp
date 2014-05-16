@@ -25,6 +25,9 @@
 #include "core/stringhelper.hpp"
 #include "gameautopause.hpp"
 
+CAESARIA_LITERALCONST(lbGameSpeedPercent)
+CAESARIA_LITERALCONST(lbScrollSpeedPercent)
+
 namespace gui
 {
 
@@ -61,7 +64,7 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
     switch( id )
     {
     case 1: case 2: _d->speedValue += (id == 1 ? -10 : +10 ); _update(); break;
-    case 11: case 12: _d->scrollValue+= (id == 11 ? -10 : +10 ); _update(); break;
+    case 11: case 12: _d->scrollValue += (id == 11 ? -10 : +10 ); _update(); break;
 
     case 1001:
     {
@@ -85,11 +88,14 @@ Signal1<int>& GameSpeedOptionsWindow::onScrollSpeedChange(){  return _d->onScrol
 
 void GameSpeedOptionsWindow::_update()
 {
-  Label* lbSpeed = findChildA<Label*>( "lbGameSpeedPercent", true, this );
-  Label* lbScroll = findChildA<Label*>( "lbScrollSpeedPercent", true, this );
+  Label* lbSpeed = findChildA<Label*>( lc_lbGameSpeedPercent, true, this );
+  Label* lbScroll = findChildA<Label*>( lc_lbScrollSpeedPercent, true, this );
 
-  if( lbSpeed ) { lbSpeed->setText( StringHelper::format( 0xff, "%d%%", _d->speedValue ) ); }
-  if( lbScroll ) { lbScroll->setText( StringHelper::format( 0xff, "%d%%", _d->scrollValue ) ); }
+  _d->speedValue = math::clamp( _d->speedValue, 10, 1000 );
+  _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );
+
+  if( lbSpeed ) { lbSpeed->setText( StringHelper::i2str( _d->speedValue ) + "%" ); }
+  if( lbScroll ) { lbScroll->setText( StringHelper::i2str( _d->scrollValue ) + "%" ); }
 }
 
 }//end namespace gui
