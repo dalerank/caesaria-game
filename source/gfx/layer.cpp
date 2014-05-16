@@ -190,9 +190,6 @@ TilesArray Layer::_getSelectedArea()
   TilePos startPosTmp = startTile->pos();
   TilePos stopPosTmp  = stopTile->pos();
 
-//  std::cout << "TilemapRenderer::_getSelectedArea" << " ";
-//  std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
-
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
 

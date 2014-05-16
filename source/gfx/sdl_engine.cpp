@@ -64,8 +64,9 @@ public:
   Picture maskedPic;
   
   MaskInfo mask;
-  unsigned int fps, lastFps;
+  unsigned int fps, lastFps;  
   unsigned int lastUpdateFps;
+  unsigned int drawCall;
   Font debugFont;
   bool showDebugInfo;
 };
@@ -181,7 +182,7 @@ void SdlEngine::endRenderFrame()
 {
   if( _d->showDebugInfo )
   {
-    std::string debugText = StringHelper::format( 0xff, "fps: %d", _d->lastFps );
+    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
     _d->debugFont.draw( _d->screen, debugText, _d->screen.width() / 2, 2, false );
   }
 
@@ -194,12 +195,16 @@ void SdlEngine::endRenderFrame()
     _d->lastFps = _d->fps;
     _d->fps = 0;
   }
+
+  _d->drawCall = 0;
 }
 
 void SdlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;
+
+  _d->drawCall++;
 
   Picture& screen = _d->screen;
   if( clipRect != 0 )

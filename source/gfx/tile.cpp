@@ -49,6 +49,7 @@ void Tile::Terrain::clearFlags()
   garden     = false;
   meadow     = false;
   wall       = false;
+  rubble     = false;
   deepWater  = false;
 }
 
@@ -81,7 +82,7 @@ bool Tile::isFlat() const
 
   return (_overlay.isValid()
            ? _overlay->isFlat()
-           : !(_terrain.rock || _terrain.tree || _terrain.aqueduct) );
+           : !(_terrain.rock || _terrain.elevation || _terrain.tree || _terrain.aqueduct) );
 }
 
 TilePos Tile::pos() const{  return _pos; }
@@ -133,6 +134,7 @@ bool Tile::getFlag(Tile::Type type) const
   case tlRock: return _terrain.rock;
   case tlBuilding: return _overlay.isValid();
   case tlAqueduct: return _terrain.aqueduct;
+  case tlRubble: return _terrain.rubble;
   case isDestructible:
   {
     return _overlay.isValid()
@@ -162,6 +164,7 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlAqueduct: _terrain.aqueduct = value; break;
   case tlGarden: _terrain.garden = value; break;
   case tlElevation: _terrain.elevation = value; break;
+  case tlRubble: _terrain.rubble = value; break;
   case clearAll: _terrain.clearFlags(); break;
   case tlWall: _terrain.wall = value; break;
   case wasDrawn: _wasDrawn = value; break;
@@ -267,16 +270,17 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
 
 int TileHelper::encode(const Tile& tt)
 {
-  int res = tt.getFlag( Tile::tlTree ) ? 0x11 : 0;
-  res += tt.getFlag( Tile::tlRock ) ? 0x2 : 0;
-  res += tt.getFlag( Tile::tlWater ) ? 0x4 : 0;
-  res += tt.getFlag( Tile::tlBuilding ) ? 0x8 : 0;
-  res += tt.getFlag( Tile::tlRoad ) ? 0x40 : 0;
-  res += tt.getFlag( Tile::tlMeadow ) ? 0x800 : 0;
-  res += tt.getFlag( Tile::tlWall ) ? 0x4000 : 0;
-  res += tt.getFlag( Tile::tlElevation ) ? 0x200 : 0;
+  int res = tt.getFlag( Tile::tlTree )   ? 0x11   : 0;
+  res += tt.getFlag( Tile::tlRock )      ? 0x2    : 0;
+  res += tt.getFlag( Tile::tlWater )     ? 0x4    : 0;
+  res += tt.getFlag( Tile::tlBuilding )  ? 0x8    : 0;
+  res += tt.getFlag( Tile::tlRoad )      ? 0x40   : 0;
+  res += tt.getFlag( Tile::tlMeadow )    ? 0x800  : 0;
+  res += tt.getFlag( Tile::tlRubble )    ? 0x1000 : 0;
+  res += tt.getFlag( Tile::tlWall )      ? 0x4000 : 0;
+  res += tt.getFlag( Tile::tlElevation ) ? 0x200  : 0;
   res += tt.getFlag( Tile::tlDeepWater ) ? 0x8000 : 0;
-  res += tt.getFlag( Tile::tlRift ) ? 0x10000 : 0;
+  res += tt.getFlag( Tile::tlRift )      ? 0x10000: 0;
   return res;
 }
 
@@ -295,6 +299,7 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x00200) { tile.setFlag( Tile::tlElevation, true); }
   if(bitset & 0x00400) { tile.setFlag( Tile::tlRock, true );     }
   if(bitset & 0x00800) { tile.setFlag( Tile::tlMeadow, true);    }
+  if(bitset & 0x01000) { tile.setFlag( Tile::tlRubble, true);    }
   if(bitset & 0x04000) { tile.setFlag( Tile::tlWall, true);      }
   if(bitset & 0x08000) { tile.setFlag( Tile::tlDeepWater, true); }
   if(bitset & 0x10000) { tile.setFlag( Tile::tlRift, true);      }

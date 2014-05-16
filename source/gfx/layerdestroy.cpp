@@ -233,15 +233,7 @@ void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
     registerTileForRendering( tile );
   }
 
-  if( !tile.getFlag( Tile::wasDrawn ) )
-  {
-    tile.setWasDrawn();
-    drawPass( engine, tile, offset, Renderer::ground );
-
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
-
-    drawPass( engine, tile, offset, Renderer::overlayAnimation );
-  }
+  Layer::drawTile( engine, tile, offset );
 }
 
 LayerPtr LayerDestroy::create( Camera& camera, PlayerCityPtr city)
