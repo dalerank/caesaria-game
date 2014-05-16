@@ -248,20 +248,14 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
 
 void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
-  Pictures pictureList;
+  Pictures pics;
   WalkerList walkers = _getVisibleWalkerList( getVisibleWalkers(), tile.pos() );
 
   foreach( w, walkers )
   {
-    pictureList.clear();
-    (*w)->getPictureList( pictureList );
-    foreach( picRef, pictureList )
-    {
-      if( (*picRef).isValid() )
-      {
-        engine.draw( *picRef, (*w)->screenpos() + camOffset );
-      }
-    }
+    pics.clear();
+    (*w)->getPictures( pics );
+    engine.draw( pics, (*w)->screenpos() + camOffset );
   }
 }
 

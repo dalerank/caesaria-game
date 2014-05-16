@@ -71,7 +71,6 @@ if(WIN32)
   set(WIN32_SDL_DEPENDENCIES_DIR "${DEP_SOURCE_DIR}/SDL") #windows
 endif(WIN32)
 
-
 find_path(SDL_INCLUDE_DIR SDL.h
   HINTS
   ENV SDLDIR
@@ -89,11 +88,11 @@ MESSAGE("SDL_INCLUDE_DIR is ${SDL_INCLUDE_DIR}")
 # don't confuse it for the version number.
 find_library(SDL_LIBRARY_TEMP
   NAMES SDL SDL-1.1
-  HINTS
-        ${WIN32_SDL_DEPENDENCIES_DIR}
-    ENV SDLDIR
-  PATH_SUFFIXES lib
+  HINTS   
+  ENV SDLDIR
+  PATH_SUFFIXES lib lib/x86
   PATHS
+  ${WIN32_SDL_DEPENDENCIES_DIR}
   /boot/system/develop/lib   #haiku
 )
 
@@ -105,8 +104,7 @@ if(NOT SDL_BUILDING_LIBRARY)
     # necessarily need it.
     find_library(SDLMAIN_LIBRARY
       NAMES SDLmain SDLmain-1.1 SDLmain-1.2
-      HINTS
-        ${WIN32_SDL_DEPENDENCIES_DIR}
+      HINTS        
       ENV SDLDIR
       PATH_SUFFIXES lib lib/x86
       PATHS
@@ -115,6 +113,7 @@ if(NOT SDL_BUILDING_LIBRARY)
       /opt/csw
       /opt
       /boot/system/develop/lib		#haiku
+      ${WIN32_SDL_DEPENDENCIES_DIR}
     )
   endif()
 endif()
