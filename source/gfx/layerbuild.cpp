@@ -102,7 +102,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
-        tile->setPicture( &overlay->picture() );
+        tile->setPicture( overlay->picture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -130,7 +130,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         Tile* tile = new Tile( tmap.at( rPos ) );  // make a copy of tile
 
         bool isConstructible = tile->getFlag( Tile::isConstructible );
-        tile->setPicture( isConstructible ? &grnPicture : &redPicture );
+        tile->setPicture( isConstructible ? grnPicture : redPicture );
         tile->setMasterTile( 0 );
         tile->setFlag( Tile::clearAll, true );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -361,7 +361,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
       const Picture& pic = cntr->picture( _city(), tile.pos(), postTiles );
       engine.draw( pic, screenPos );
 
-      drawTilePass( engine, tile, offset, Renderer::foreground );
+      drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }
 
     registerTileForRendering( tile );
@@ -379,10 +379,11 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
   if( !tile.getFlag( Tile::wasDrawn ) )
   {
     tile.setWasDrawn();
-    engine.draw( tile.picture(), screenPos );
 
-    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
-    drawTilePass( engine, tile, offset, Renderer::foreground );
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( engine, tile, offset, Renderer::overlay );
+    drawPass( engine, tile, offset, Renderer::overlayAnimation );
   }
 }
 

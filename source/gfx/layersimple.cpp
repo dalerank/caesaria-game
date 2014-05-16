@@ -37,26 +37,6 @@ std::set<int> LayerSimple::getVisibleWalkers() const
   return ret;
 }
 
-void LayerSimple::drawTile( Engine& engine, Tile& tile, Point offset )
-{
-  TileOverlayPtr overlay = tile.overlay();
-
-  if( overlay.isValid() )
-  {
-    registerTileForRendering( tile );
-  }
-
-  if( !tile.getFlag( Tile::wasDrawn ) )
-  {
-    tile.setWasDrawn();
-    drawTilePass( engine, tile, offset, Renderer::ground );
-
-    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
-
-    drawTilePass( engine, tile, offset, Renderer::foreground );
-  }
-}
-
 LayerPtr LayerSimple::create( Camera& camera, PlayerCityPtr city)
 {
   LayerPtr ret( new LayerSimple( camera, city ) );

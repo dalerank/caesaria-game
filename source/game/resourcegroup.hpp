@@ -42,6 +42,7 @@ public:
   __RCG_NAME housing;
   __RCG_NAME govt;
   __RCG_NAME carts;
+  __RCG_NAME plateau;
   __RCG_NAME wharf;
   __RCG_NAME shipyard;
   __RCG_NAME waterOverlay;

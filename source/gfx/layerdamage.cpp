@@ -50,8 +50,6 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -70,10 +68,8 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::collapsedRuins:
     case building::engineerPost:
     case building::burningRuins:
-      needDrawAnimations = true;
-      drawTilePass( engine, tile, offset, Renderer::ground );
-      drawTilePass( engine, tile, offset, Renderer::foreground );
-      break;
+      needDrawAnimations = true;      
+    break;
 
       //houses
     case building::house:
@@ -104,6 +100,7 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( damageLevel >= 0 )
@@ -111,6 +108,8 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, damageLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerDamage::create( Camera& camera, PlayerCityPtr city)

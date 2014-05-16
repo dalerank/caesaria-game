@@ -66,7 +66,7 @@ void Layer::registerTileForRendering(Tile& tile)
   __D_IMPL(_d,Layer)
   if( tile.overlay() != 0 )
   {
-    Renderer::PassQueue passQueue = tile.overlay()->getPassQueue();
+    Renderer::PassQueue passQueue = tile.overlay()->passQueue();
     foreach( pass, passQueue )
     {
       _d->renderQueue[ *pass ].push_back( &tile );
@@ -82,7 +82,7 @@ void Layer::renderPass( Engine& engine, Renderer::Pass pass )
   Point offset = _d->camera->getOffset();
   foreach( tile, tiles )
   {
-    drawTilePass( engine, *(*tile), offset, pass );
+    drawPass( engine, *(*tile), offset, pass );
   }
 
   tiles.clear();
@@ -199,7 +199,7 @@ TilesArray Layer::_getSelectedArea()
   return _city()->tilemap().getArea( outStartPos, outStopPos );
 }
 
-void Layer::drawTilePass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass)
+void Layer::drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass)
 {
   Point screenPos = tile.mapPos() + offset;
   switch( pass )
@@ -207,22 +207,30 @@ void Layer::drawTilePass( Engine& engine, Tile& tile, Point offset, Renderer::Pa
   case Renderer::ground: engine.draw( tile.picture(), screenPos ); break;
 
   case Renderer::groundAnimation:
+  {
     if( tile.animation().isValid() )
     {
       engine.draw( tile.animation().currentFrame(), screenPos );
     }
+  }
   break;
 
-  default:
+  case Renderer::overlay:
+  {
     if( tile.overlay().isNull() )
       return;
 
-    const Pictures& pictures = tile.overlay()->getPictures( pass );
+    engine.draw( tile.overlay()->picture(), screenPos );
+  }
+  break;
 
-    for( Pictures::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
-    {
-      engine.draw( *it, screenPos );
-    }
+  default:
+  {
+    if( tile.overlay().isNull() )
+      return;
+
+    engine.draw( tile.overlay()->pictures( pass ), screenPos );
+  }
   break;
   }
 }
@@ -293,22 +301,13 @@ void Layer::render( Engine& engine)
   // FIRST PART: draw all flat land (walkable/boatable)
   foreach( it, visibleTiles )
   {
-    Tile* tile = *it;
-    Tile* master = tile->masterTile();
+    Tile* tile = (*it)->masterTile();
+    if( !tile )
+      tile = *it;
 
-    if( !tile->isFlat() )
-      continue;
-
-    if( master==NULL )
+    if( tile->isFlat() )
     {
-      // single-tile
       drawTile( engine, *tile, camOffset );
-    }
-    else
-    {
-      // multi-tile: draw the master tile.
-      if( !master->getFlag( Tile::wasDrawn ) )
-        drawTile( engine, *master, camOffset );
     }
   }
 
@@ -330,18 +329,10 @@ void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const in
 {
   Tile* master = tile.masterTile();
 
-  if( 0 == master )    // single-tile
-  {
-    drawTilePass( engine, tile, offset, Renderer::overWalker  );
-    return;
-  }
-
   // multi-tile: draw the master tile.
+  // single-tile: draw current tile
   // and it is time to draw the master tile
-  //if( master->pos().z() == depth )
-  {
-    drawTilePass( engine, *master, offset, Renderer::overWalker );
-  }
+  drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
 }
 
 void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
@@ -364,6 +355,24 @@ void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const in
   if( master->pos().z() == depth && !master->getFlag( Tile::wasDrawn ) )
   {
     drawTile( engine, *master, offset );
+  }
+}
+
+void Layer::drawTile(Engine& engine, Tile& tile, Point offset)
+{
+  if( !tile.getFlag( Tile::wasDrawn ) )
+  {
+    tile.setWasDrawn();
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
+
+    if( tile.overlay().isValid() )
+    {
+      registerTileForRendering( tile );
+
+      drawPass( engine, tile, offset, Renderer::overlay );
+      drawPass( engine, tile, offset, Renderer::overlayAnimation );
+    }
   }
 }
 

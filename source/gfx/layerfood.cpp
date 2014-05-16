@@ -47,8 +47,6 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -58,7 +56,6 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
   {
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
-    Picture pic;
     int foodLevel = -1;
     switch( overlay->type() )
     {
@@ -67,19 +64,20 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::plaza:
     case building::market:
     case building::granary:
-      pic = tile.picture();
-      needDrawAnimations = true;
-      drawTilePass( engine, tile, offset, Renderer::foreground );
+      needDrawAnimations = true;     
     break;
 
       //houses
     case building::house:
       {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        city::Helper helper( _city() );        
         HousePtr house = ptr_cast<House>( overlay );
         foodLevel = house->getState( (Construction::Param)House::food );
         needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        if( !needDrawAnimations )
+        {
+          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        }
       }
     break;
 
@@ -92,13 +90,9 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
       break;
     }
 
-    if ( pic.isValid())
-    {
-      engine.draw( pic, screenPos );
-    }
-
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( foodLevel >= 0 )
@@ -106,6 +100,8 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 void LayerFood::handleEvent(NEvent& event)

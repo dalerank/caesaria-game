@@ -26,7 +26,7 @@ namespace gfx
 {
 
 namespace {
-static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::foreground);
+static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
 }
 
@@ -87,7 +87,7 @@ void TileOverlay::setPicture(Picture picture)
       for (int di = 0; di<_d->size.height(); ++di)
       {
         Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
-        tile.setPicture( &_d->picture );
+        //tile.setPicture( &_d->picture );
       }
     }
   }
@@ -106,7 +106,7 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
       tile.setMasterTile( _d->masterTile );
-      tile.setPicture( &_d->picture );
+      //tile.setPicture( &_d->picture );
 
       if( tile.overlay().isValid() && tile.overlay() != this )
       {
@@ -130,11 +130,11 @@ Tile& TileOverlay::tile() const
   return *_d->masterTile;
 }
 
-const Pictures& TileOverlay::getPictures( Renderer::Pass pass ) const
+const Pictures& TileOverlay::pictures( Renderer::Pass pass ) const
 {
   switch( pass )
   {
-  case Renderer::foreground: return _d->fgPictures;
+  case Renderer::overlayAnimation: return _d->fgPictures;
   default: break;
   }
 
@@ -209,7 +209,7 @@ void TileOverlay::deleteLater(){  _d->isDeleted  = true;}
 void TileOverlay::destroy(){}
 Size TileOverlay::size() const{  return _d->size;}
 bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
-Renderer::PassQueue TileOverlay::getPassQueue() const{ return defaultPassQueue;}
+Renderer::PassQueue TileOverlay::passQueue() const{ return defaultPassQueue;}
 std::string TileOverlay::name(){  return _d->name;}
 TileOverlay::~TileOverlay(){}  // what we shall to do here?
 TileOverlay::Type TileOverlay::type() const{   return _d->overlayType;}

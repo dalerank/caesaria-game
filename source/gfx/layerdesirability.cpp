@@ -43,8 +43,6 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
   //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -70,7 +68,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     //roads
     case construction::road:
     case construction::plaza:
-      engine.draw( tile.picture(), screenPos );
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     break;
 
@@ -99,6 +97,8 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     SdlEngine* painter = static_cast< SdlEngine* >( &engine );
     _debugFont.draw( painter->getScreen(), StringHelper::format( 0xff, "%d", tile.getDesirability() ), screenPos + Point( 20, -15 ), false );
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)

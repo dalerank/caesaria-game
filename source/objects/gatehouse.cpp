@@ -27,7 +27,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-static const Renderer::Pass rpass[2] = { Renderer::building, Renderer::overWalker };
+static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::overWalker };
 static const Renderer::PassQueue gatehousePass = Renderer::PassQueue( rpass, rpass + 1 );
 }
 
@@ -126,9 +126,9 @@ void Gatehouse::load(const VariantMap& stream)
 
 bool Gatehouse::isWalkable() const {  return true; }
 bool Gatehouse::isRoad() const {  return true; }
-Renderer::PassQueue Gatehouse::getPassQueue() const{  return gatehousePass;}
+Renderer::PassQueue Gatehouse::passQueue() const{  return gatehousePass;}
 
-const Pictures& Gatehouse::getPictures(Renderer::Pass pass) const
+const Pictures& Gatehouse::pictures(Renderer::Pass pass) const
 {
   switch( pass )
   {
@@ -136,7 +136,7 @@ const Pictures& Gatehouse::getPictures(Renderer::Pass pass) const
   default: break;
   }
 
-  return Building::getPictures( pass );
+  return Building::pictures( pass );
 }
 
 void Gatehouse::initTerrain(Tile& terrain)

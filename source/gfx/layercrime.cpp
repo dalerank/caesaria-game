@@ -45,9 +45,6 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -64,8 +61,6 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::road:
     case construction::plaza:
     case building::prefecture:
-      engine.draw( tile.picture(), screenPos );
-      drawTilePass( engine, tile, offset, Renderer::foreground );
       needDrawAnimations = true;
     break;
 
@@ -92,6 +87,7 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( fireLevel >= 0)
@@ -99,6 +95,8 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, fireLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerCrime::create(Camera& camera, PlayerCityPtr city)

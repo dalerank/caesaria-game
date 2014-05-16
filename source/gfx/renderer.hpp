@@ -21,8 +21,8 @@ public:
                   none = 0, //non pass active
                   ground=12,
                   groundAnimation,
-                  foreground = 24, //solid overlays
-                  building=32,
+                  overlay=32,//solid overlays
+                  overlayAnimation,
                   overWalker,
                   animations=48,
                   transparent = 56, //transparent overlays

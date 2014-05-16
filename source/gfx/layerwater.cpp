@@ -41,8 +41,6 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   bool needDrawAnimations = false;
   Size areaSize(1);
 
@@ -54,7 +52,6 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
   else
   {
     TileOverlayPtr overlay = tile.overlay();
-    Picture pic;
     switch( overlay->type() )
     {
       //water buildings
@@ -67,7 +64,6 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::lowBridge:
     case building::highBridge:
     case building::elevation:
-      pic = tile.picture();
       needDrawAnimations = true;
       areaSize = overlay->size();
     break;
@@ -88,21 +84,15 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
       city::Helper helper( _city() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
-      pic = Picture::getInvalid();
       areaSize = 0;
       needDrawAnimations = false;
     }
     break;
     }
 
-    if ( pic.isValid() )
+    if ( needDrawAnimations )
     {
-      engine.draw( pic, screenPos );
-      drawTilePass( engine, tile, offset, Renderer::foreground );
-    }
-
-    if( needDrawAnimations )
-    {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
   }
@@ -127,6 +117,8 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
       }
     }
   }
+
+  tile.setWasDrawn();
 }
 
 void LayerWater::handleEvent(NEvent& event)

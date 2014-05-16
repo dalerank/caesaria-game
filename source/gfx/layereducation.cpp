@@ -73,8 +73,6 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -92,18 +90,13 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::road:
     case construction::plaza:
       needDrawAnimations = true;
-      engine.draw( tile.picture(), screenPos );
     break;
 
     case building::school:
     case building::library:
     case building::academy:
       needDrawAnimations = _flags.count( overlay->type() );
-      if( needDrawAnimations )
-      {
-        engine.draw( tile.picture(), screenPos );
-      }
-      else
+      if( !needDrawAnimations )
       {
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
@@ -135,6 +128,7 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( educationLevel > 0 )
@@ -142,6 +136,8 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, educationLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerEducation::create( Camera& camera, PlayerCityPtr city, int type )

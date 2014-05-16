@@ -126,7 +126,7 @@ bool Rift::isFlat() const {  return true;}
 bool Rift::isNeedRoadAccess() const {  return false;}
 void Rift::destroy() {}
 bool Rift::isDestructible() const {  return false;}
-Renderer::PassQueue Rift::getPassQueue() const {  return riftPassQueue; }
+Renderer::PassQueue Rift::passQueue() const {  return riftPassQueue; }
 
 void Rift::timeStep(const unsigned long time)
 {

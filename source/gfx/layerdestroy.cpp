@@ -236,11 +236,11 @@ void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
   if( !tile.getFlag( Tile::wasDrawn ) )
   {
     tile.setWasDrawn();
-    drawTilePass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::ground );
 
-    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
 
-    drawTilePass( engine, tile, offset, Renderer::foreground );
+    drawPass( engine, tile, offset, Renderer::overlayAnimation );
   }
 }
 

@@ -39,7 +39,7 @@ public:
   virtual bool isDestructible() const;
 
   virtual void load(const VariantMap &stream);
-  virtual gfx::Renderer::PassQueue getPassQueue() const;
+  virtual gfx::Renderer::PassQueue passQueue() const;
 };
 
 #endif //__CAESARIA_RIFT_H_INCLUDE__

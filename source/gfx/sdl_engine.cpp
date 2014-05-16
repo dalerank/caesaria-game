@@ -182,7 +182,7 @@ void SdlEngine::endRenderFrame()
   if( _d->showDebugInfo )
   {
     std::string debugText = StringHelper::format( 0xff, "fps: %d", _d->lastFps );
-    _d->debugFont.draw( _d->screen, debugText, 4, 22, false );
+    _d->debugFont.draw( _d->screen, debugText, _d->screen.width() / 2, 2, false );
   }
 
   SDL_Flip( _d->screen.surface() ); //Refresh the screen

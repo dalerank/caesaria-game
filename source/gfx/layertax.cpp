@@ -43,8 +43,6 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -64,17 +62,20 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
     case building::senate:
     case building::forum:
       needDrawAnimations = true;
-      engine.draw( tile.picture(), screenPos );
     break;
 
       //houses
     case building::house:
       {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
         HousePtr house = ptr_cast<House>( overlay );
         taxLevel = house->getServiceValue( Service::forum );
         needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+
+        if( !needDrawAnimations )
+        {
+          city::Helper helper( _city() );
+          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        }
       }
     break;
 
@@ -89,6 +90,7 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( taxLevel > 0 )
@@ -96,6 +98,8 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, taxLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerTax::create( Camera& camera, PlayerCityPtr city )

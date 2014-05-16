@@ -47,6 +47,8 @@ public:
   
   unsigned int getMaxLoopCount() const;
 
+  void setVerboseMode( int level );
+
   ~Pathfinder();
 private:
   Pathfinder();
