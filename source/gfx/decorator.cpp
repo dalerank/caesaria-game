@@ -105,7 +105,7 @@ void PictureDecorator::drawBorder(Picture &dstpic, const Rect& rectangle, const 
 
 void PictureDecorator::drawLine(Picture& dstpic, const Point& p1, const Point& p2, NColor color)
 {
-  lineColor( dstpic.surface(), p1.x(), p1.y(), p2.x(), p2.y(), color.color );
+  lineColor( dstpic.surface(), p1.x(), p1.y(), p2.x(), p2.y(), color.rgba() );
 }
 
 void PictureDecorator::basicText(Picture& dstpic, const Point& pos, const std::string& text, NColor color)

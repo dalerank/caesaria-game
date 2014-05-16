@@ -346,6 +346,12 @@ public:
                         (unsigned int)floor(other.getBlue()*inv + getBlue()*d));
 	}
 
+	int rgba() const
+	{
+		int a = getAlpha();
+		return ( ((color << 8) & 0xffffff00 ) + a);
+	}
+
 	//! color in A8R8G8B8 Format
 	unsigned int color;
 };

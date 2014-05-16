@@ -86,7 +86,7 @@ void PostponeEvent::_exec(Game& game, unsigned int)
 {
   Logger::warning( "Start event name=" + _name + " type=" + _type );
 
-  Impl::Worker workers[] = { &Impl::executeRequest, 0 };
+  Impl::Worker workers[] = { &Impl::executeRequest, &Impl::executeEvent, &Impl::executeCityService, 0 };
 
   for( int i=0; workers[i]; i++ )
   {
