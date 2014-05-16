@@ -143,6 +143,7 @@
       date : "-270.08.01"
       location : [ 1090, 650 ]
       type : "distant_battle"
+      name : "distant_battle_1"
       animation : { index : 0, delay : 1, loop : true, range : { rc : "empire_bits", start : 29, number : 8 } }
       title : "##distant_battle##"
 
@@ -159,6 +160,8 @@
       date : "-269.08.01"
       location : [ 990, 740 ]
       type : "distant_battle"
+      name : "distant_battle_2"
+      animation : { index : 0, delay : 1, loop : true, range : { rc : "empire_bits", start : 29, number : 8 } }
       title : "##distant_battle##"
 
       exec : {
@@ -173,7 +176,9 @@
     distant_battle_3#distant_battle : {
       date : "-268.07.01"
       location : [ 880, 765 ]
+      name : "distant_battle_3"
       type : "distant_battle"
+      animation : { index : 0, delay : 1, loop : true, range : { rc : "empire_bits", start : 29, number : 8 } }
       title : "##distant_battle##"
 
       exec : {

@@ -56,7 +56,7 @@ void Tile::Terrain::clearFlags()
 Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 {
   _pos = pos;
-  //_picture = NULL;
+  _master = NULL;
   _wasDrawn = false;
   _overlay = NULL;
   _terrain.reset();
