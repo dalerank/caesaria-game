@@ -51,7 +51,7 @@ public:
 
   TexturedButton* btnHelp;
 
-  void drawReportRow( Point pos, std::string title, std::string text );
+  void drawReportRow( Point pos, std::string title, std::string text, NColor color );
   void drawEmploymentState( Point pos );
   void drawProfitState( Point pos );
   void drawMigrationState( Point pos );
@@ -119,10 +119,11 @@ void AdvisorChiefWindow::draw( gfx::Engine& painter )
   Widget::draw( painter );
 }
 
-void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::string text)
+void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::string text, NColor color=DefaultColors::black )
 {
   Font font = Font::create( FONT_2_WHITE );
   Font font2 = Font::create( FONT_2 );
+  font2.setColor( color );
 
   Picture pointPic = Picture::load( ResourceGroup::panelBackground, 48 );
 
@@ -136,11 +137,20 @@ void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
   int needWorkersNumber = city::Statistic::getVacantionsNumber( city );
   int workless = city::Statistic::getWorklessPercent( city );
   std::string text;
-  if( needWorkersNumber > 0 ) { text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );  }
-  else if( workless > 10 )  {   text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );  }
-  else  {                       text = _("##advchief_employers_ok##");  }
+  NColor color = DefaultColors::black;
+  if( needWorkersNumber > 0 )
+  {
+    text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
+    color = DefaultColors::brown;
+  }
+  else if( workless > 10 )
+  {
+    text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
+    color = DefaultColors::brown;
+  }
+  else  {  text = _("##advchief_employers_ok##");  }
 
-  drawReportRow( pos, _("##advchief_employment##"), text );
+  drawReportRow( pos, _("##advchief_employment##"), text, color );
 }
 
 void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
@@ -150,7 +160,8 @@ void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
   if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
   else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
 
-  drawReportRow( pos, _("##advchief_finance##"), text );
+  drawReportRow( pos, _("##advchief_finance##"), text,
+                 profit > 0 ? DefaultColors::black : DefaultColors::brown );
 }
 
 void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
