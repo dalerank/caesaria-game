@@ -383,12 +383,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     }*/
   }
 
-  if( !tile.getFlag( Tile::wasDrawn ) )
-  {
-    Layer::drawTile( engine, tile, offset );
-
-    tile.setWasDrawn();
-  }
+  Layer::drawTile( engine, tile, offset );
 }
 
 void LayerBuild::render( Engine& engine)
