@@ -226,8 +226,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(construction::plaza,  CAESARIA_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
 
   // water
-  addCreator(building::well,       CAESARIA_STR_EXT(Well)     , new WorkingBuildingCreator<Well>() );
-  addCreator(building::fountain,   CAESARIA_STR_EXT(Fountain) , new WorkingBuildingCreator<Fountain>() );
+  ADD_CREATOR(building::well,       Well, WorkingBuildingCreator );
+  ADD_CREATOR(building::fountain,   Fountain, WorkingBuildingCreator );
   addCreator(building::aqueduct,   CAESARIA_STR_EXT(Aqueduct), new ConstructionCreator<Aqueduct>() );
   addCreator(building::reservoir,  CAESARIA_STR_EXT(Reservoir), new ConstructionCreator<Reservoir>() );
 

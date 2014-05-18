@@ -385,12 +385,9 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 
   if( !tile.getFlag( Tile::wasDrawn ) )
   {
-    tile.setWasDrawn();
+    Layer::drawTile( engine, tile, offset );
 
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
-    drawPass( engine, tile, offset, Renderer::overlay );
-    drawPass( engine, tile, offset, Renderer::overlayAnimation );
+    tile.setWasDrawn();
   }
 }
 

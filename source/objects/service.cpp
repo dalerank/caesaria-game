@@ -106,7 +106,6 @@ void ServiceBuilding::save( VariantMap& stream ) const
   stream[ "dateLastSend" ] = _d->dateLastSend;
   stream[ "delay" ] = _d->serviceDelay;
   stream[ "range" ] = _d->serviceRange;
-
 }
 
 void ServiceBuilding::load( const VariantMap& stream )
