@@ -123,34 +123,33 @@ Tile* Tilemap::at(Point pos, bool overborder)
   }
 }
 
-Tile& Tilemap::at(const int i, const int j)
-{
-  return _d->at( i, j );
-}
+Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
 
 const Tile& Tilemap::at(const int i, const int j) const
 {
   return const_cast< Tilemap* >( this )->at( i, j );
 }
 
-Tile& Tilemap::at( const TilePos& ij )
-{
-  return _d->at( ij.i(), ij.j() );
-}
+Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() );}
+
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
   return const_cast<Tilemap*>( this )->at( ij.i(), ij.j() );
 }
 
-int Tilemap::size() const
-{
-  return _d->size;
-}
+int Tilemap::size() const {  return _d->size; }
 
-TilesArray Tilemap::getRectangle( const TilePos& start, const TilePos& stop, const bool corners /*= true*/ )
+TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corners /*= true*/ )
 {
   TilesArray res;
+
+  int mini = math::min( start.i(), stop.i() );
+  int minj = math::min( start.j(), stop.j() );
+  int maxi = math::max( start.i(), stop.i() );
+  int maxj = math::max( start.j(), stop.j() );
+  start = TilePos( mini, minj );
+  stop = TilePos( maxi, maxj );
 
   int delta_corners = 0;
   if(!corners)
@@ -159,6 +158,7 @@ TilesArray Tilemap::getRectangle( const TilePos& start, const TilePos& stop, con
   }
 
   int tmpij = start.i();
+  //west side
   for(int j = start.j() + delta_corners; j <= stop.j() - delta_corners; ++j)
   {
     if( isInside( TilePos( tmpij, j  ) ) )
