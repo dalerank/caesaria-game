@@ -153,7 +153,7 @@ void Animation::load(const VariantMap &stream)
       _pictures.push_back( Picture::load( rc, start + k ) );
   }
 
-  VariantList vl_pics;
+  VariantList vl_pics = stream.get( "pictures" ).toList();
   foreach( i, vl_pics )
     _pictures.push_back( Picture::load( (*i).toString() ) );
 }

@@ -99,6 +99,7 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
 
   case building::house:
   case construction::garden:
+  case construction::plaza:
     newCommand->_d->isMultiBuilding = true;
   break;
 

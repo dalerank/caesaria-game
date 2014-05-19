@@ -32,7 +32,7 @@ public:
 
   static EmigrantPtr create( PlayerCityPtr city);
 
-  virtual void getPictureList( gfx::Pictures &oPics);
+  virtual void getPictures( gfx::Pictures &oPics);
   virtual void timeStep(const unsigned long time);
 
   virtual void die();

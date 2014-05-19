@@ -278,7 +278,6 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   return is_constructible;
 }
 
-
 void Plaza::appendPaved(int value)
 {
 

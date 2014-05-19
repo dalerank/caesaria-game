@@ -186,25 +186,27 @@ void StartMenu::Impl::resolveCredits()
   gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
   item.setTextAlignment( align::center, align::center );
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
-  lbx->addItem( "gathanase" );
+  lbx->addItem( "gathanase (gathanase@gmail.com) render, game mechanics " );
   lbx->addItem( "gecube (gb12335@gmail.com)" );
   lbx->addItem( "pecunia (pecunia@heavengames.com) game mechanics" );
   lbx->addItem( "tracertong" );
   lbx->addItem( "hellium" );
   lbx->addItem( "pufik6666" );
   lbx->addItem( "andreibranescu" );
-  lbx->addItem( "AMDmi3 (amdmi3@amdmi3.ru)" );
-  lbx->addItem( "akuskis (???) aqueduct system" );
-  lbx->addItem( "Rovanion" );
+  lbx->addItem( "amdmi3 (amdmi3@amdmi3.ru) bsd fixes" );
+  lbx->addItem( "akuskis (?) aqueduct system" );
+  lbx->addItem( "rovanion" );
   lbx->addItem( "nickers (2nickers@gmail.com)" );
   lbx->addItem( "ImperatorPrime" );
   lbx->addItem( "veprbl" );
   lbx->addItem( "ramMASTER" );
-  lbx->addItem( "Greg Kennedy(kennedy.greg@gmail.com) smk decoder" );
+  lbx->addItem( "greg kennedy(kennedy.greg@gmail.com) smk decoder" );
+
   gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
   testers.setTextAlignment( align::center, align::center );
-  lbx->addItem( "Radek Liška" );
-  lbx->addItem( "Dimitrius" );
+  lbx->addItem( "radek liška" );
+  lbx->addItem( "dimitrius" );
+  lbx->addItem( "shibanirm" );
 
   gui::ListBoxItem& thanks_to = lbx->addItem( _("##thanks_to##") );
   thanks_to.setTextAlignment( align::center, align::center );

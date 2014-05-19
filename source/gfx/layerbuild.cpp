@@ -46,6 +46,7 @@ class LayerBuild::Impl
 public:
   bool multiBuilding;
   TilePos lastTilePos;
+  bool kbShift, kbCtrl;
   bool borderBuilding;
   bool roadAssignment;
   Renderer* renderer;
@@ -166,7 +167,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
     TilesArray pathWay = RoadPropagator::createPath( _city()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
-                                                     d->roadAssignment );
+                                                     d->roadAssignment, d->kbShift );
 
     foreach( it, pathWay )
     {
@@ -228,8 +229,14 @@ void LayerBuild::_buildAll()
 
 void LayerBuild::handleEvent(NEvent& event)
 {
+  __D_IMPL(_d,LayerBuild);
+  _d->kbShift = false;
+  _d->kbCtrl = false;
   if( event.EventType == sEventMouse )
   {
+    _d->kbShift = event.mouse.shift;
+    _d->kbCtrl = event.mouse.control;
+
     switch( event.mouse.type  )
     {
     case mouseMoved:
@@ -240,7 +247,7 @@ void LayerBuild::handleEvent(NEvent& event)
         _setStartCursorPos( _lastCursorPos() );
       }
 
-      _updatePreviewTiles(false);
+      _updatePreviewTiles( false );
     }
     break;
 
@@ -376,15 +383,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     }*/
   }
 
-  if( !tile.getFlag( Tile::wasDrawn ) )
-  {
-    tile.setWasDrawn();
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
-    drawPass( engine, tile, offset, Renderer::overlay );
-    drawPass( engine, tile, offset, Renderer::overlayAnimation );
-  }
+  Layer::drawTile( engine, tile, offset );
 }
 
 void LayerBuild::render( Engine& engine)

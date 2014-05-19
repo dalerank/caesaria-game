@@ -54,6 +54,7 @@ void RomeDivinity::load(const VariantMap& vm)
   _smallCurseDone = vm.get( "smallCurseDone");
   _needRelation = vm.get( "needRelation" );
   _effectPoints = vm.get( "effectPoints" );
+  _moodDescr.clear();
 
   Variant value = vm.get( "moodDescription" );
   if( value.isValid() )
@@ -104,16 +105,13 @@ VariantMap RomeDivinity::save() const
   return ret;
 }
 
-float RomeDivinity::relation() const
-{
-  int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );
-  return _relation + festivalFactor;
-}
+float RomeDivinity::relation() const { return _relation; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
-  int minMoodbyPop = 50 - math::clamp( city->population() / 10, 0, 50 );
-  _needRelation = math::clamp<int>( income+_effectPoints, minMoodbyPop, 100 );
+  int minMood = 50 - math::clamp( city->population() / 10, 0, 50 );
+  int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );
+  _needRelation = math::clamp<int>( income + festivalFactor + _effectPoints, minMood, 100 );
 
   _relation += math::signnum( _needRelation - _relation );
 

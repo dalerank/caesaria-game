@@ -53,12 +53,12 @@ endif()
 find_library(SDL_TTF_LIBRARY
   NAMES SDL_ttf
   HINTS
-  ${DEP_SOURCE_DIR}/SDL_ttf
-    ENV SDLTTFDIR
-    ENV SDLDIR
-  PATH_SUFFIXES lib
+  ENV SDLTTFDIR
+  ENV SDLDIR
+  PATH_SUFFIXES lib lib/x86
   PATHS
   /boot/system/develop		#haiku
+  ${DEP_SOURCE_DIR}/SDL_ttf #windows
 )
 
 if(SDL_TTF_INCLUDE_DIR AND EXISTS "${SDL_TTF_INCLUDE_DIR}/SDL_ttf.h")

@@ -47,7 +47,7 @@ const Picture& Emigrant::_cartPicture()
   return Immigrant::_cartPicture();
 }
 
-void Emigrant::getPictureList( Pictures& oPics)
+void Emigrant::getPictures( Pictures& oPics)
 {
   oPics.clear();
 

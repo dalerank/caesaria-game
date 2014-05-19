@@ -53,12 +53,12 @@ endif()
 find_library(SDL_MIXER_LIBRARY
   NAMES SDL_mixer
   HINTS
-  ${DEP_SOURCE_DIR}/SDL_mixer
-    ENV SDLMIXERDIR
-    ENV SDLDIR
-  PATH_SUFFIXES lib 
+  ENV SDLMIXERDIR
+  ENV SDLDIR
+  PATH_SUFFIXES lib lib/x86
   PATHS
   /boot/system/develop #haiku
+  ${DEP_SOURCE_DIR}/SDL_mixer #windows
 )
 
 if(SDL_MIXER_INCLUDE_DIR AND EXISTS "${SDL_MIXER_INCLUDE_DIR}/SDL_mixer.h")

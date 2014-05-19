@@ -90,14 +90,14 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( TileHelper::encode( *(*tile) ) ); }
 
+  WorkingBuilding::build( city, pos );
+
   TilePos landingPos = landingTile().pos();
   Pathway way = PathwayHelper::create( landingPos, city->borderInfo().boatEntry, PathwayHelper::deepWater );
   if( !way.isValid() )
   {
     _setError( "##inland_lake_has_no_access_to_sea##" );
   }
-
-  WorkingBuilding::build( city, pos );
 }
 
 void Dock::destroy()
