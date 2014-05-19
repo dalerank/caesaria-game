@@ -27,7 +27,10 @@ namespace gui
 class GameSpeedOptionsWindow : public Widget
 {
 public:
-  GameSpeedOptionsWindow( Widget* parent, int gameSpeed, int scrollSpeed );
+  GameSpeedOptionsWindow(Widget* parent,
+                         int gameSpeed,
+                         int scrollSpeed,
+                         int autosaveInterval);
 
   //! Деструктор
   virtual ~GameSpeedOptionsWindow(void);
@@ -37,6 +40,7 @@ public:
 public oc3_signals:
   Signal1<int>& onGameSpeedChange();
   Signal1<int>& onScrollSpeedChange();
+  Signal1<int>& onAutosaveIntervalChange();
 
 private:
   void _update();

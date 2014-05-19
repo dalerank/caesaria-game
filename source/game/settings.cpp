@@ -59,6 +59,7 @@ __REG_PROPERTY(screenFitted)
 __REG_PROPERTY(needAcceptBuild)
 __REG_PROPERTY(sg2model)
 __REG_PROPERTY(ranksModel)
+__REG_PROPERTY(autosaveInterval)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -102,6 +103,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ testArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );
   _d->options[ needAcceptBuild     ] = false;
+  _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ musicVolume         ] = 25;
