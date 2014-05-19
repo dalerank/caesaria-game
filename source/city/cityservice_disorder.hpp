@@ -31,12 +31,16 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   void update( const unsigned int time );
+  std::string getReason() const;
+  unsigned int value() const;
 private:
   Disorder( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+typedef SmartPtr<Disorder> DisorderPtr;
 
 }//end namespace city
 

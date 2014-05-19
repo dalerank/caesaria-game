@@ -100,6 +100,8 @@ void Migration::update( const unsigned int time )
                               ? -10
                               : (params.workless * (params.workless < worklessCitizenAway ? 1 : 2));
 
+  emigrantsIndesirability += params.crimeLevel;
+
   emigrantsIndesirability *= migrationKoeff;
   Logger::warning( "MigrationSrvc: current indesrbl=%d", emigrantsIndesirability );
 
@@ -107,7 +109,7 @@ void Migration::update( const unsigned int time )
   if( goddesRandom > emigrantsIndesirability )
   {
     _d->createMigrationToCity( _city );
-    _d->updateTickInerval = math::random( GameDate::days2ticks( 15 ) ) + 10;
+    _d->updateTickInerval = math::random( GameDate::days2ticks( DateTime::daysInWeek ) ) + 10;
   }
 
   if( _d->lastUpdate.monthsTo( GameDate::current() ) > 0 )
@@ -149,6 +151,8 @@ std::string Migration::getReason() const
       return "##low_wage_broke_migration##";
     if( params.romeWages - params.cityWages > 1 )
       return "##low_wage_lack_migration##";
+    if( params.crimeLevel > 25 )
+      return "##migration_lack_crime##";
   }
   return "##migration_peoples_arrived_in_city##";
 }

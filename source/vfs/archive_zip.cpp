@@ -19,7 +19,7 @@
 #include "memfile.hpp"
 #include "core/logger.hpp"
 
-#include <zlib.h>
+#include "zlib/zlib.h"
 #include "lzma/LzmaDec.h"
 #include "bzip2/bzlib.h"
 #include "aes/fileenc.h"

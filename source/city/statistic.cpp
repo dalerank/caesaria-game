@@ -25,6 +25,7 @@
 #include "city/funds.hpp"
 #include "objects/farm.hpp"
 #include "objects/warehouse.hpp"
+#include "city/cityservice_disorder.hpp"
 #include <map>
 
 using namespace constants;
@@ -102,6 +103,12 @@ unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
 unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 {
   return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
+}
+
+unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
+{
+  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::getDefaultName() ) );
+  return ds.isValid() ? ds->value() : 0;
 }
 
 unsigned int Statistic::getFoodStock(PlayerCityPtr city)

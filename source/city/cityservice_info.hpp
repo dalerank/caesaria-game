@@ -46,6 +46,7 @@ public:
     int entertainment;
     int lifeValue;
     int education;
+    int crimeLevel;
     int payDiff;
     int cityWages;
     int romeWages;
@@ -62,6 +63,7 @@ public:
       needWorkers = 0;
       workless = 0;
       tax = 0;
+      crimeLevel = 0;
       colloseumCoverage = 0;
       theaterCoverage = 0;
       entertainment = 0;

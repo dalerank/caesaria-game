@@ -223,7 +223,7 @@ void House::_updateMorale()
     updateState( House::morale, math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. ) );
   }
 
-  appendServiceValue( Service::crime, _d->spec.crime() * ((100 - getState( House::morale )) / 100.f * math::random(4)) );
+  appendServiceValue( Service::crime, _d->spec.crime() * ((100 - getState( House::morale )) / 100.f ) );
 }
 
 void House::_checkHomeless()

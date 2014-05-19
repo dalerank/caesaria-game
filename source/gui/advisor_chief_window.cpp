@@ -36,6 +36,7 @@
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
+#include "city/cityservice_disorder.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -228,7 +229,19 @@ void AdvisorChiefWindow::Impl::drawMilitary(Point pos)
 void AdvisorChiefWindow::Impl::drawCrime(Point pos)
 {
   std::string text;
-  drawReportRow( pos, _("##advchief_crime##"), text );
+
+  city::DisorderPtr ds = ptr_cast<city::Disorder>( city->findService( city::Disorder::getDefaultName() ) );
+  if( ds.isValid() )
+  {
+    text = ds->getReason();
+  }
+
+  if( text.empty() )
+  {
+    text = "##advchief_no_crime##";
+  }
+
+  drawReportRow( pos, _("##advchief_crime##"), _(text) );
 }
 
 void AdvisorChiefWindow::Impl::drawHealth(Point pos)
