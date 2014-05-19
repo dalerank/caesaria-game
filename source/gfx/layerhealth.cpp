@@ -94,7 +94,7 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
 
         healthLevel = _getLevelValue( house );
 
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
         if( !needDrawAnimations )
         {

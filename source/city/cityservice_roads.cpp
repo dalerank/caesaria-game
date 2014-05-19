@@ -91,7 +91,7 @@ void Roads::update( const unsigned int time )
   HouseList houses = helper.find<House>( building::house );
   foreach( house, houses )
   {
-    if( (*house)->getSpec().level() >= HouseLevel::bigMansion )
+    if( (*house)->spec().level() >= HouseLevel::bigMansion )
     {
       positions.push_back( Impl::UpdateInfo( house->object(), 5 ) );
     }

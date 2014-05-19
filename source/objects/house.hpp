@@ -48,10 +48,10 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual GoodStore& getGoodStore();
+  virtual GoodStore& goodStore();
 
   // return the current house level
-  const HouseSpecification& getSpec() const;
+  const HouseSpecification& spec() const;
 
   virtual void applyService(ServiceWalkerPtr walker);
   virtual float evaluateService(ServiceWalkerPtr walker);
@@ -65,7 +65,7 @@ public:
 
   virtual double getState( ParameterType param) const;
 
-  int getWorkersCount() const;
+  int workersCount() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
@@ -77,10 +77,10 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  int getMaxHabitants();
+  int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int count );
-  const CitizenGroup& getHabitants() const;
+  const CitizenGroup& habitants() const;
 
   float collectTaxes();
   DateTime getLastTaxation() const;

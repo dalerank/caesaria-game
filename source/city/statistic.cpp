@@ -66,7 +66,7 @@ unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
   int workersNumber = 0;
   foreach( h, houses )
   {
-    workersNumber += (*h)->getHabitants().count( CitizenGroup::mature );
+    workersNumber += (*h)->habitants().count( CitizenGroup::mature );
   }
 
   return workersNumber;
@@ -130,7 +130,7 @@ unsigned int Statistic::getFoodMonthlyConsumption(PlayerCityPtr city)
   int foodComsumption = 0;
   HouseList houses = helper.find<House>( building::house );
 
-  foreach( h, houses ) { foodComsumption += (*h)->getSpec().computeMonthlyFoodConsumption( *h ); }
+  foreach( h, houses ) { foodComsumption += (*h)->spec().computeMonthlyFoodConsumption( *h ); }
 
   return foodComsumption;
 }
@@ -156,12 +156,12 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   float taxRate = city->funds().taxRate();
   foreach( house, houses )
   {
-    int maxhb = (*house)->getMaxHabitants();
+    int maxhb = (*house)->maxHabitants();
     if( maxhb == 0 )
       continue;
 
-    int maturehb = (*house)->getHabitants().count( CitizenGroup::mature );
-    int housetax = (*house)->getSpec().taxRate();
+    int maturehb = (*house)->habitants().count( CitizenGroup::mature );
+    int housetax = (*house)->spec().taxRate();
     taxValue += housetax * maturehb * taxRate / maxhb;
   }
 

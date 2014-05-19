@@ -200,7 +200,7 @@ void House::_updateTax()
 
 void House::_updateMorale()
 {
-  const int currentHabtn = getHabitants().count();
+  const int currentHabtn = habitants().count();
 
   if( currentHabtn == 0 )
     return;
@@ -256,19 +256,19 @@ void House::timeStep(const unsigned long time)
     _makeOldHabitants();    
   }
 
-  if( time % getSpec().getServiceConsumptionInterval() == 0 )
+  if( time % spec().getServiceConsumptionInterval() == 0 )
   {
     _d->consumeServices();
     _d->updateHealthLevel( this );
     cancelService( Service::recruter );
   }
 
-  if( time % getSpec().foodConsumptionInterval() == 0 )
+  if( time % spec().foodConsumptionInterval() == 0 )
   {
     _d->consumeFoods( this );
   }
 
-  if( time % getSpec().getGoodConsumptionInterval() == 0 )
+  if( time % spec().getGoodConsumptionInterval() == 0 )
   {
     _d->consumeGoods( this );
   }
@@ -308,7 +308,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
 
       HousePtr house = ptr_cast<House>( (*it)->overlay() );
       if( house != NULL &&
-          (house->getSpec().level() == level4grow || house->getHabitants().count() == 0) )
+          (house->spec().level() == level4grow || house->habitants().count() == 0) )
       {
         if( house->size().width() > 1 )  //bigger house near, can't grow
         {
@@ -325,7 +325,7 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
 
     if( mayGrow )
     {
-      CitizenGroup sumHabitants = getHabitants();
+      CitizenGroup sumHabitants = habitants();
       int sumFreeWorkers = getServiceValue( Service::recruter );
       TilesArray::iterator delIt=area.begin();
       HousePtr selfHouse = ptr_cast<House>( (*delIt)->overlay() );
@@ -341,12 +341,12 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
           house->deleteLater();
           house->_d->habitants.clear();
 
-          sumHabitants += house->getHabitants();
+          sumHabitants += house->habitants();
           sumFreeWorkers += house->getServiceValue( Service::recruter );
 
           house->_d->services[ Service::recruter ].setMax( 0 );
 
-          selfHouse->getGoodStore().storeAll( house->getGoodStore() );
+          selfHouse->goodStore().storeAll( house->goodStore() );
         }
       }
 
@@ -464,7 +464,7 @@ void House::_levelDown()
     if( size().area() > 1 )
     {
       TilesArray perimetr = tmap.getArea( pos(), Size(2) );
-      int peoplesPerHouse = getHabitants().count() / 4;
+      int peoplesPerHouse = habitants().count() / 4;
       foreach( tile, perimetr )
       {
         HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( building::house ) );
@@ -525,7 +525,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
 
   GoodStore& marketStore = market->getGoodStore();
 
-  GoodStore &houseStore = getGoodStore();
+  GoodStore &houseStore = goodStore();
   for (int i = 0; i < Good::goodCount; ++i)
   {
     Good::Type goodType = (Good::Type) i;
@@ -646,7 +646,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   {
     MarketPtr market = ptr_cast<Market>( walker->base() );
     GoodStore &marketStore = market->getGoodStore();
-    GoodStore &houseStore = getGoodStore();
+    GoodStore &houseStore = goodStore();
     for (int i = 0; i < Good::goodCount; ++i)
     {
       Good::Type goodType = (Good::Type) i;
@@ -749,9 +749,9 @@ void House::destroy()
   }
   while( _d->habitants.count() >= maxCitizenInGroup );
 
-  if( getWorkersCount() > 0 )
+  if( workersCount() > 0 )
   {
-    events::GameEventPtr e = events::FireWorkers::create( pos(), getWorkersCount() );
+    events::GameEventPtr e = events::FireWorkers::create( pos(), workersCount() );
     e->dispatch();
   }
 
@@ -873,7 +873,7 @@ int House::Impl::getFoodLevel() const
   return ret;
 }
 
-int House::getWorkersCount() const
+int House::workersCount() const
 {
   const Service& srvc = _d->services[ Service::recruter ];
   return srvc.max() - srvc.value();
@@ -921,13 +921,13 @@ std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::getDesirability() const {  return _d->desirability; }
 bool House::isWalkable() const{  return (_d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0); }
 bool House::isFlat() const { return false; }//isWalkable(); }
-const CitizenGroup& House::getHabitants() const  {  return _d->habitants; }
-GoodStore& House::getGoodStore(){   return _d->goodStore;}
-const HouseSpecification& House::getSpec() const{   return _d->spec; }
+const CitizenGroup& House::habitants() const  {  return _d->habitants; }
+GoodStore& House::goodStore(){   return _d->goodStore;}
+const HouseSpecification& House::spec() const{   return _d->spec; }
 bool House::hasServiceAccess( Service::Type service) {  return (_d->services[service] > 0); }
 float House::getServiceValue( Service::Type service){  return _d->services[service]; }
 void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }
-int House::getMaxHabitants() {  return _d->maxHabitants; }
+int House::maxHabitants() {  return _d->maxHabitants; }
 void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
 
 

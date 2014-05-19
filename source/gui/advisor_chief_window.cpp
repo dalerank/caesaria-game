@@ -37,6 +37,7 @@
 #include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
 #include "city/cityservice_disorder.hpp"
+#include "city/cityservice_health.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -247,6 +248,18 @@ void AdvisorChiefWindow::Impl::drawCrime(Point pos)
 void AdvisorChiefWindow::Impl::drawHealth(Point pos)
 {
   std::string text;
+
+  city::HealthCarePtr ds = ptr_cast<city::HealthCare>( city->findService( city::HealthCare::getDefaultName() ) );
+  if( ds.isValid() )
+  {
+    text = ds->getReason();
+  }
+
+  if( text.empty() )
+  {
+    text = "##advchief_health_good##";
+  }
+
   drawReportRow( pos, _("##advchief_health##"), text );
 }
 

@@ -73,7 +73,7 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
         city::Helper helper( _city() );        
         HousePtr house = ptr_cast<House>( overlay );
         foodLevel = house->getState( (Construction::Param)House::food );
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
         if( !needDrawAnimations )
         {
           drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
@@ -119,13 +119,13 @@ void LayerFood::handleEvent(NEvent& event)
         HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house.isValid() )
         {
-          GoodStore& st = house->getGoodStore();
+          GoodStore& st = house->goodStore();
           int foodQty = 0;
           for( int k=Good::wheat; k <= Good::vegetable; k++ )
           {
             foodQty += st.qty( (Good::Type)k );
           }
-          int monthWithFood = 2 * foodQty / house->getHabitants().count();
+          int monthWithFood = 2 * foodQty / house->habitants().count();
 
           switch( monthWithFood )
           {

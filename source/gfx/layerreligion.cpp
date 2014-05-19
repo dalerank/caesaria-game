@@ -80,8 +80,8 @@ void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
         religionLevel += house->getServiceValue(Service::religionMars);
         religionLevel += house->getServiceValue(Service::religionNeptune);
         religionLevel += house->getServiceValue(Service::religionCeres);
-        religionLevel = math::clamp( religionLevel / (house->getSpec().getMinReligionLevel()+1), 0, 100 );
-        needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
+        religionLevel = math::clamp( religionLevel / (house->spec().getMinReligionLevel()+1), 0, 100 );
+        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
         if( !needDrawAnimations )
         {
@@ -129,7 +129,7 @@ void LayerReligion::handleEvent(NEvent& event)
         HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house.isValid() )
         {
-          int templeAccess = house->getSpec().computeReligionLevel( house );
+          int templeAccess = house->spec().computeReligionLevel( house );
           bool oracleAccess = house->hasServiceAccess( Service::oracle );
 
           text = (templeAccess == 5 && oracleAccess )

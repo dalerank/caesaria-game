@@ -47,8 +47,8 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
   {
   case citylayer::entertainment:
   {
-    int entLevel = house->getSpec().computeEntertainmentLevel( house );
-    int minLevel = house->getSpec().getMinEntertainmentLevel();
+    int entLevel = house->spec().computeEntertainmentLevel( house );
+    int minLevel = house->spec().getMinEntertainmentLevel();
     return ( minLevel == 0 ? 0 : entLevel * 100 / minLevel );
   }
   case citylayer::theater: return house->getServiceValue( Service::theater );
@@ -104,7 +104,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
         HousePtr house = ptr_cast<House>( overlay );
         entertainmentLevel = _getLevelValue( house );
 
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }

@@ -60,7 +60,7 @@ HousePtr Immigrant::_findBlankHouse()
   while( itHouse != houses.end() )
   {
     if( (*itHouse)->getAccessRoads().size() > 0 && 
-        ( (*itHouse)->getHabitants().count() < (*itHouse)->getMaxHabitants() ) )
+        ( (*itHouse)->habitants().count() < (*itHouse)->maxHabitants() ) )
     {
       ++itHouse;
     }
@@ -115,7 +115,7 @@ void Immigrant::_reachedPathway()
   HousePtr house = ptr_cast<House>( _city()->getOverlay( pos() ) );
   if( house.isValid() )
   {
-    int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
+    int freeRoom = house->maxHabitants() - house->habitants().count();
     if( freeRoom > 0 )
     {
       house->addHabitants( _d->peoples );
@@ -131,7 +131,7 @@ void Immigrant::_reachedPathway()
     {
       HousePtr house = *it;
 
-      int freeRoom = house->getMaxHabitants() - house->getHabitants().count();
+      int freeRoom = house->maxHabitants() - house->habitants().count();
       if( freeRoom > 0 )
       {
         Tilemap& tmap = _city()->tilemap();

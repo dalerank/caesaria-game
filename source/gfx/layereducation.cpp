@@ -47,7 +47,7 @@ int LayerEducation::_getLevelValue( HousePtr house ) const
   {
   case citylayer::education:
   {
-    switch( house->getSpec().getMinEducationLevel() )
+    switch( house->spec().getMinEducationLevel() )
     {
     case 1: return house->getServiceValue( Service::school );
     case 2: return ( house->getServiceValue( Service::school ) +
@@ -110,7 +110,7 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
 
         educationLevel = _getLevelValue( house );
 
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );

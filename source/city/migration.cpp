@@ -186,7 +186,7 @@ unsigned int Migration::Impl::calcVacantHouse( PlayerCity& city )
   {
     if( (*house)->getAccessRoads().size() > 0 )
     {
-      vh += math::clamp<int>( (*house)->getMaxHabitants() - (*house)->getHabitants().count(), 0, 0xff );
+      vh += math::clamp<int>( (*house)->maxHabitants() - (*house)->habitants().count(), 0, 0xff );
     }
   }
 
