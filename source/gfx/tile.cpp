@@ -262,7 +262,7 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
   else if (res_pfx == ResourceGroup::land3a) { res_id += 778; }
   else
   {
-    Logger::warning( "Unknown image " + pic_name );
+    Logger::warning( "TileHelper: unknown image " + pic_name );
   }
 
   return res_id;

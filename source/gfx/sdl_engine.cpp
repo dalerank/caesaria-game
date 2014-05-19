@@ -77,6 +77,10 @@ Picture& SdlEngine::getScreen(){  return _d->screen; }
 SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 {
   resetTileDrawMask();
+
+  _d->lastUpdateFps = DateTime::elapsedTime();
+  _d->fps = 0;
+  _d->showDebugInfo = false;
 }
 
 SdlEngine::~SdlEngine(){}
@@ -89,10 +93,6 @@ void SdlEngine::deletePicture( Picture* pic )
 
 void SdlEngine::init()
 {
-  _d->lastUpdateFps = DateTime::elapsedTime();
-  _d->fps = 0;
-  _d->showDebugInfo = false;
-
   Logger::warning( "GrafixEngine: init");
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)

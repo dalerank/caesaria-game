@@ -153,8 +153,9 @@ bool ScrollBar::onEvent(const NEvent& event)
 							_environment->setFocus ( this );
 							return true;
 						}
-						break;
 					}
+				break;
+
 				case mouseLbtnRelease:
 				case mouseMoved:
 					{
@@ -162,16 +163,12 @@ bool ScrollBar::onEvent(const NEvent& event)
 						{
 							_draggedBySlider = false;
 							_dragging = false;
+							_d->needRecalculateParams = true;
 						}
 
 						if ( !_dragging )
 							return isInside;
 
-            if ( event.mouse.type == mouseLbtnRelease )
-            {
-              _dragging = false;
-            }
-            
             const int newPos = _getPosFromMousePos( _d->cursorPos );
             const int oldPos = _value;
 

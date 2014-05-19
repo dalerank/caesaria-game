@@ -399,7 +399,6 @@ void Level::Impl::showEmpireMapWindow()
 void Level::draw()
 { 
   _d->renderer.render();
-
   _d->game->gui()->beforeDraw();
   _d->game->gui()->draw();
 }

@@ -98,6 +98,7 @@ void Game::Impl::initLocale( std::string localePath)
 void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
+
   engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
