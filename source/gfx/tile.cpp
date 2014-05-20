@@ -46,6 +46,7 @@ void Tile::Terrain::clearFlags()
   tree       = false;
   road       = false;
   aqueduct   = false;
+  elevation  = false;
   garden     = false;
   meadow     = false;
   wall       = false;
@@ -270,17 +271,17 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
 
 int TileHelper::encode(const Tile& tt)
 {
-  int res = tt.getFlag( Tile::tlTree )   ? 0x11   : 0;
-  res += tt.getFlag( Tile::tlRock )      ? 0x2    : 0;
-  res += tt.getFlag( Tile::tlWater )     ? 0x4    : 0;
-  res += tt.getFlag( Tile::tlBuilding )  ? 0x8    : 0;
-  res += tt.getFlag( Tile::tlRoad )      ? 0x40   : 0;
-  res += tt.getFlag( Tile::tlMeadow )    ? 0x800  : 0;
-  res += tt.getFlag( Tile::tlRubble )    ? 0x1000 : 0;
-  res += tt.getFlag( Tile::tlWall )      ? 0x4000 : 0;
-  res += tt.getFlag( Tile::tlElevation ) ? 0x200  : 0;
-  res += tt.getFlag( Tile::tlDeepWater ) ? 0x8000 : 0;
-  res += tt.getFlag( Tile::tlRift )      ? 0x10000: 0;
+  int res = tt.getFlag( Tile::tlTree )   ? 0x00011 : 0;
+  res += tt.getFlag( Tile::tlRock )      ? 0x00002 : 0;
+  res += tt.getFlag( Tile::tlWater )     ? 0x00004 : 0;
+  res += tt.getFlag( Tile::tlBuilding )  ? 0x00008 : 0;
+  res += tt.getFlag( Tile::tlRoad )      ? 0x00040 : 0;
+  res += tt.getFlag( Tile::tlElevation ) ? 0x00200 : 0;
+  res += tt.getFlag( Tile::tlMeadow )    ? 0x00800 : 0;
+  res += tt.getFlag( Tile::tlRubble )    ? 0x01000 : 0;
+  res += tt.getFlag( Tile::tlWall )      ? 0x04000 : 0;
+  res += tt.getFlag( Tile::tlDeepWater ) ? 0x08000 : 0;
+  res += tt.getFlag( Tile::tlRift )      ? 0x10000 : 0;
   return res;
 }
 
