@@ -251,7 +251,13 @@ void AdvisorChiefWindow::Impl::drawHealth(Point pos)
 void AdvisorChiefWindow::Impl::drawEducation(Point pos)
 {
   std::string text;
-  drawReportRow( pos, _("##advchief_education##"), text );
+  HouseList houses = city::Statistic::getEvolveEducationReadyHouse( city );
+
+  text = houses.empty()
+            ? "##advchief_education_ok##"
+            : "##advchief_some_need_education##";
+
+  drawReportRow( pos, _("##advchief_education##"), _( text ) );
 }
 
 void AdvisorChiefWindow::Impl::drawReligion(Point pos)

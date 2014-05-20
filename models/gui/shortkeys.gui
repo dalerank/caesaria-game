@@ -12,6 +12,7 @@
       "Esc      : close active window,layer or break current action",
       "Ctrl+Shift+1 : toggle show tile grid",
       "Ctrl+Shift+2 : toggle show tile position",
+      "Ctrl+Shift+3 : toggle mode elevation tile draw",
       "W,A,S,D and arrows : move map",
       "Shift on building mode : build road by rectangle"
     ]

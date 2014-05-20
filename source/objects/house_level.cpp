@@ -37,6 +37,7 @@
 #include <list>
 
 using namespace gfx;
+using namespace constants;
 
 class HouseSpecification::Impl
 {
@@ -89,14 +90,17 @@ int HouseSpecification::getMinReligionLevel() const{  return _d->minReligionLeve
 //
 int HouseSpecification::getMinFoodLevel() const{  return _d->minFoodLevel;}
 
-
-bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
+bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, TileOverlay::Type* retBtype )
 {
   bool res = true;
   int value;
   std::string reason;
   std::string defaultStr;
+  TileOverlay::Type defaultNeedType;
   std::string& ref = retMissing ? *retMissing : defaultStr;
+  TileOverlay::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
+
+  needBuilding = building::unknown;
 
   if( house->getHabitants().count() == 0 )
   {
@@ -108,6 +112,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
   if( house->isCheckedDesirability() && value < _d->minDesirability )
   {
     ref = "##low_desirability##";
+    needBuilding = construction::garden;
     return false;
   }
 
@@ -115,6 +120,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
   if( value > 0 )
   {
     ref = "##nearby_building_negative_effect##";
+    needBuilding = building::house;
     return false;
   }
 
@@ -124,16 +130,17 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
     if( value == 0 )
     {
       ref = "##missing_entertainment##";
+      needBuilding = building::theater;
     }
     else
     {
       switch( _d->minEntertainmentLevel / 20 )
       {
-      case 0: ref = "##missing_entertainment_theater##"; break;
-      case 1: ref = "##missing_entertainment_amph##"; break;
-      case 2: ref = "##missing_entertainment_also##"; break;
-      case 3: ref = "##missing_entertainment_colloseum##"; break;
-      case 4: ref = "##missing_entertainment_hippodrome##"; break;
+      case 0: ref = "##missing_entertainment_theater##"; needBuilding = building::theater; break;
+      case 1: ref = "##missing_entertainment_amph##"; needBuilding = building::amphitheater; break;
+      case 2: ref = "##missing_entertainment_also##"; needBuilding = building::amphitheater; break;
+      case 3: ref = "##missing_entertainment_colloseum##"; needBuilding = building::colloseum; break;
+      case 4: ref = "##missing_entertainment_hippodrome##"; needBuilding = building::hippodrome; break;
         //##missing_entertainment_patrician##
       }
     }
@@ -144,6 +151,13 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minEducationLevel )
   {
     ref = /*_("##missing_education##") + */reason;
+    switch( value )
+    {
+    case 0: case 1: needBuilding = building::school; break;
+    case 2: needBuilding = building::academy; break;
+    case 3: needBuilding = building::library; break;
+    }
+
     return false;
   }
 
@@ -151,6 +165,14 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minHealthLevel )
   {
     ref = /*_( "##missing_health##" ) + */reason;
+
+    switch( value )
+    {
+    case 0: case 1: needBuilding = building::baths; break;
+    case 2: needBuilding = building::doctor; break;
+    case 3: needBuilding = building::hospital; break;
+    }
+
     return false;
   }
 
@@ -163,6 +185,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
     case 1: ref = "##missing_second_religion##"; break;
     case 2: ref = "##missing_third_religion##"; break;
     }
+    needBuilding = building::oracle;
     return false;
   }
 
@@ -170,6 +193,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
   if( value < _d->minWaterLevel )
   {
     ref = reason;
+    needBuilding = building::fountain;
     return false;
   }
 
@@ -186,39 +210,44 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
       case 3: ref = "##missing_third_food##"; break;
       }
     }
+    needBuilding = building::market;
     return false;
   }
 
   if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().qty(Good::pottery) == 0)
   {
     ref = "##missing_pottery##";
+    needBuilding = building::pottery;
     return false;
   }
 
   if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().qty(Good::furniture) == 0)
   {
     ref = "##missing_furniture##";
+    needBuilding = building::furnitureWorkshop;
     return false;
   }
 
   if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().qty(Good::oil) == 0)
   {
     ref = "##missing_oil##";
+    needBuilding = building::creamery;
     return false;
   }
 
   if( _d->requiredGoods[Good::wine] != 0 && house->getGoodStore().qty(Good::wine) == 0)
   {
     ref = "##missing_wine##";
+    needBuilding = building::winery;
     return false;
   }
 
   if( _d->requiredGoods[Good::prettyWine] != 0 && house->getGoodStore().qty(Good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
+    needBuilding = building::winery;
     return false;
   }
-
 
   return res;
 }
@@ -354,10 +383,10 @@ int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMiss
   int res = 0;
   if( house->hasServiceAccess(Service::school) )
   {
-    res = 1;
+    res = 1;   
     if( house->hasServiceAccess(Service::academy) )
     {
-      res = 2;
+      res = 2;      
       if( house->hasServiceAccess(Service::library) )
       {
         res = 3;

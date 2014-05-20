@@ -142,8 +142,8 @@ unsigned int Statistic::getFoodProducing(PlayerCityPtr city)
 
 unsigned int Statistic::getTaxValue(PlayerCityPtr city)
 {
-  HouseList houses;
-  houses << city->overlays();
+  Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
 
   float taxValue = 0.f;
   float taxRate = city->funds().taxRate();
@@ -159,6 +159,32 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   }
 
   return taxValue;
+}
+
+HouseList Statistic::getEvolveEducationReadyHouse(PlayerCityPtr city)
+{
+  HouseList ret;
+
+  Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+
+  foreach( it, houses )
+  {
+    gfx::TileOverlay::Type btype;
+    (*it)->getSpec().next().checkHouse( *it, NULL, &btype );
+    switch( btype )
+    {
+    case building::school:
+    case building::library:
+    case building::academy:
+      ret.push_back( *it );
+    break;
+
+    default: break;
+    }
+  }
+
+  return ret;
 }
 
 Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)
