@@ -20,7 +20,7 @@
 int CitizenGroup::count() const
 {
   int ret = 0;
-  for( Peoples::const_iterator t=_peoples.begin(); t != _peoples.end(); ++t ){ ret += *t; }
+  foreach( t,_peoples) { ret += *t; }
   return ret;
 }
 
@@ -50,6 +50,13 @@ int CitizenGroup::count( Age group ) const
 CitizenGroup CitizenGroup::retrieve(int rcount)
 {
   CitizenGroup ret;
+
+  if( rcount >= count() )
+  {
+    CitizenGroup ret = *this;
+    clear();
+    return ret;
+  }
 
   while( rcount > 0 )
   {
@@ -88,7 +95,10 @@ CitizenGroup& CitizenGroup::operator += (const CitizenGroup& b)
 }
 
 bool CitizenGroup::empty() const {  return _peoples.empty(); }
-void CitizenGroup::clear(){  _peoples.clear(); }
+void CitizenGroup::clear()
+{
+  foreach( t,_peoples ) { (*t) = 0; }
+}
 
 void CitizenGroup::makeOld()
 {

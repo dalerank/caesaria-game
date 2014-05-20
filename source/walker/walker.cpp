@@ -160,6 +160,7 @@ void Walker::_walk()
   {
     // nothing to do
     _noWay();
+    _changeDirection();
     return;
   }
 

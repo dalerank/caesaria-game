@@ -38,6 +38,7 @@ class Immigrant::Impl
 public:
   Picture cartPicture;
   CitizenGroup peoples;
+  int failedWayCount;
   float stamina;
 };
 
@@ -48,6 +49,7 @@ Immigrant::Immigrant(PlayerCityPtr city )
 
   setName( NameGenerator::rand( NameGenerator::male ) );
   _d->stamina = math::random( 80 ) + 20;
+  _d->failedWayCount = 0;
 }
 
 HousePtr Immigrant::_findBlankHouse()
@@ -177,6 +179,25 @@ void Immigrant::_brokePathway(TilePos p)
   else
   {
     die();
+  }
+}
+
+void Immigrant::_noWay()
+{
+  Pathway someway = _findSomeWay( pos() );
+  if( !someway.isValid() )
+  {
+    _d->failedWayCount++;
+    if( _d->failedWayCount > 10 )
+    {
+      die();
+    }
+  }
+  else
+  {
+    _d->failedWayCount = 0;
+    setPathway( someway );
+    go();
   }
 }
 

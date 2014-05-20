@@ -45,6 +45,7 @@ public:
 protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
+  virtual void _noWay();
 
   void _setCartPicture( const gfx::Picture& pic );
   virtual const gfx::Picture& _cartPicture();
