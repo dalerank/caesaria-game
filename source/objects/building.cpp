@@ -37,7 +37,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::building);
+static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 }
 
 class Building::Impl
@@ -175,4 +175,4 @@ int Building::traineeValue(walker::Type traineeType) const
   return i != _d->traineeMap.end() ? i->second : -1;
 }
 
-Renderer::PassQueue Building::getPassQueue() const {  return buildingPassQueue;}
+Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}

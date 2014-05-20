@@ -47,8 +47,6 @@ void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -70,8 +68,7 @@ void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::oracle:
     case building::cathedralCeres: case building::cathedralMars:
     case building::cathedralMercury: case building::cathedralNeptune: case building::cathedralVenus:
-      needDrawAnimations = true;
-      engine.draw( tile.picture(), screenPos );
+      needDrawAnimations = true;      
     break;
 
       //houses
@@ -83,11 +80,14 @@ void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
         religionLevel += house->getServiceValue(Service::religionMars);
         religionLevel += house->getServiceValue(Service::religionNeptune);
         religionLevel += house->getServiceValue(Service::religionCeres);
-        religionLevel = math::clamp( religionLevel / (house->getSpec().getMinReligionLevel()+1), 0, 100 );
-        needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
+        religionLevel = math::clamp( religionLevel / (house->spec().getMinReligionLevel()+1), 0, 100 );
+        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        if( !needDrawAnimations )
+        {
+          city::Helper helper( _city() );
+          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        }
       }
     break;
 
@@ -102,6 +102,7 @@ void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( religionLevel > 0 )
@@ -109,6 +110,8 @@ void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, religionLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 void LayerReligion::handleEvent(NEvent& event)
@@ -126,7 +129,7 @@ void LayerReligion::handleEvent(NEvent& event)
         HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house.isValid() )
         {
-          int templeAccess = house->getSpec().computeReligionLevel( house );
+          int templeAccess = house->spec().computeReligionLevel( house );
           bool oracleAccess = house->hasServiceAccess( Service::oracle );
 
           text = (templeAccess == 5 && oracleAccess )

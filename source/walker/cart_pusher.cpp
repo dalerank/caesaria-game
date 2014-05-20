@@ -142,7 +142,7 @@ void CartPusher::_changeDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartPusher::getPictureList( gfx::Pictures& oPics)
+void CartPusher::getPictures( gfx::Pictures& oPics)
 {
    oPics.clear();
    Point offset;

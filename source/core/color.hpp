@@ -346,6 +346,12 @@ public:
                         (unsigned int)floor(other.getBlue()*inv + getBlue()*d));
 	}
 
+	int rgba() const
+	{
+		int a = getAlpha();
+		return ( ((color << 8) & 0xffffff00 ) + a);
+	}
+
 	//! color in A8R8G8B8 Format
 	unsigned int color;
 };
@@ -467,5 +473,100 @@ public:
 	//! alpha color component
 	float a;
 };
+
+namespace DefaultColors
+{
+#define __REG_COLOR(a,b) const NColor a(b);
+__REG_COLOR( red, 0xffff0000 )
+__REG_COLOR( blue, 0xff0000ff )
+__REG_COLOR( green, 0xff00ff00 )
+__REG_COLOR( show, 0xfffffafa )
+__REG_COLOR( ghost, 0xffF8F8FF )
+__REG_COLOR( whitesmoke, 0xffF5F5F5 )
+__REG_COLOR( floralwhite, 0xffFFFAF0 )
+__REG_COLOR( oldlace, 0xffFDF5E6 )
+__REG_COLOR( linen, 0xffFAF0E6 )
+__REG_COLOR( antiqueWhite, 0xffFAEBD7 )
+__REG_COLOR( PapayaWhip, 0xffFFEFD5 )
+__REG_COLOR( blanchedAlmond, 0xffFFEBCD )
+__REG_COLOR( bisque, 0xffFFE4C4 )
+__REG_COLOR( peachPuff, 0xffFFDAB9 )
+__REG_COLOR( navajoWhite, 0xffFFDEAD )
+__REG_COLOR( moccasin, 0xffFFE4B5 )
+__REG_COLOR( cornsilk, 0xffFFF8DC )
+__REG_COLOR( ivory, 0xffFFFFF0 )
+__REG_COLOR( lemonChiffon, 0xffFFFACD )
+__REG_COLOR( seashell, 0xffFFF5EE )
+__REG_COLOR( honeydew, 0xffF0FFF0 )
+__REG_COLOR( mintCream, 0xffF5FFFA )
+__REG_COLOR( azure, 0xffF0FFFF )
+__REG_COLOR( aliceBlue, 0xffF0F8FF )
+__REG_COLOR( lavender, 0xffE6E6FA )
+__REG_COLOR( lavenderBlush, 0xffFFF0F5 )
+__REG_COLOR( mistyRose, 0xffFFE4E1 )
+__REG_COLOR( white, 0xffFFFFFF )
+__REG_COLOR( black, 0xff000000 )
+__REG_COLOR( darkSlateGray, 0xff2F4F4F)
+__REG_COLOR( dimGrey, 0xff696969)
+__REG_COLOR( slateGrey,	0xff708090)
+__REG_COLOR( lightSlateGray,	0xff778899)
+__REG_COLOR( grey,	0xffBEBEBE)
+__REG_COLOR( lightGray,	0xffD3D3D3)
+__REG_COLOR( midnightBlue,	0xff191970)
+__REG_COLOR( navyBlue,	0xff000080)
+__REG_COLOR( cornflowerBlue,	0xff6495ED)
+__REG_COLOR( darkSlateBlue,	0xff483D8B)
+__REG_COLOR( slateBlue,	0xff6A5ACD)
+__REG_COLOR( mediumSlateBlue,	0xff7B68EE)
+__REG_COLOR( lightSlateBlue,	0xff8470FF)
+__REG_COLOR( mediumBlue,	0xff0000CD)
+__REG_COLOR( royalBlue,	0xff4169E1)
+__REG_COLOR( skyBlue,	0xff87CEEB)
+__REG_COLOR( paleTurquoise,	0xffAFEEEE)
+__REG_COLOR( cyan,	0xff00FFFF)
+__REG_COLOR( mediumAquamarine,	0xff66CDAA)
+__REG_COLOR( darkGreen,	0xff006400)
+__REG_COLOR( darkSeaGreen,	0xff8FBC8F)
+__REG_COLOR( paleGreen,	0xff98FB98)
+__REG_COLOR( limeGreen,	0xff32CD32)
+__REG_COLOR( darkKhaki,	0xffBDB76B)
+__REG_COLOR( paleGoldenrod,	0xffEEE8AA)
+__REG_COLOR( yellow,	0xffFFFF00)
+__REG_COLOR( gold,	0xffFFD700)
+__REG_COLOR( rosyBrown,	0xffBC8F8F)
+__REG_COLOR( indianRed,	0xffCD5C5C)
+__REG_COLOR( sienna,	0xffA0522D)
+__REG_COLOR( peru,	0xffCD853F)
+__REG_COLOR( wheat,	0xffF5DEB3)
+__REG_COLOR( sandyBrown,	0xffF4A460)
+__REG_COLOR( tan,	0xffD2B48C)
+__REG_COLOR( chocolate,	0xffD2691E)
+__REG_COLOR( firebrick,	0xffB22222)
+__REG_COLOR( brown,	0xffA52A2A)
+__REG_COLOR( salmon,	0xffFA8072)
+__REG_COLOR( orange,	0xffFFA500)
+__REG_COLOR( darkOrange,	0xffFF8C00)
+__REG_COLOR( coral,	0xffFF7F50)
+__REG_COLOR( tomato,	0xffFF6347)
+__REG_COLOR( orangeRed,	0xffFF4500)
+__REG_COLOR( hotPink,	0xffFF69B4)
+__REG_COLOR( deepPink,	0xffFF1493)
+__REG_COLOR( pink,	0xffFFC0CB)
+__REG_COLOR( maroon,	0xffB03060 )
+__REG_COLOR( magenta,	0xffFF00FF )
+__REG_COLOR( violet,	0xffEE82EE )
+__REG_COLOR( orchid,	0xffDA70D6 )
+__REG_COLOR( purple,	0xffA020F0 )
+__REG_COLOR( snow, 0xffFFFAFA )
+__REG_COLOR( dodgerBlue, 0xff1E90FF )
+__REG_COLOR( steelBlue, 0xff63B8FF )
+__REG_COLOR( slateGray, 0xffC6E2FF )
+__REG_COLOR( aquamarine, 0xff7FFFD4 )
+__REG_COLOR( seaGreen, 0xff54FF9F )
+__REG_COLOR( springGreen, 0xff00FF7F )
+__REG_COLOR( chartreuse, 0xff7FFF00 )
+__REG_COLOR( plum, 0xffFFBBFF )
+__REG_COLOR( thistle, 0xffFFE1FF )
+}
 
 #endif //__CAESARIA_COLOR_H_INCLUDED__

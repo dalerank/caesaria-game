@@ -86,6 +86,10 @@ if( BUILD_PNG )
   target_link_libraries(${PROJECT_NAME} ${PNGLIB_NAME})
 endif()
 
+if(OPENGL_RENDER)
+  target_link_libraries(${PROJECT_NAME} "GL")
+endif(OPENGL_RENDER)
+
 if(WIN32)
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)

@@ -64,6 +64,7 @@ public:
   Grid grid;
   Tilemap* tilemap;
   unsigned int maxLoopCount;
+  int verbose;
 
   bool getTraversingPoints(TilePos start, TilePos stop, Pathway& oPathWay );
 
@@ -107,6 +108,7 @@ public:
 Pathfinder::Pathfinder() : _d( new Impl )
 {
   _d->maxLoopCount = 4800;
+  _d->verbose = 0;
 }
 
 void Pathfinder::update( const Tilemap& tilemap )
@@ -184,6 +186,11 @@ bool Pathfinder::Impl::getTraversingPoints( TilePos start, TilePos stop, Pathway
 unsigned int Pathfinder::getMaxLoopCount() const
 {
   return _d->maxLoopCount;
+}
+
+void Pathfinder::setVerboseMode(int level)
+{
+  _d->verbose = level;
 }
 
 bool _inArea( APoints& area, AStarPoint* end )
@@ -352,9 +359,12 @@ bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& 
 
   if( n == maxLoopCount )
   {
-    Logger::warning( "AStarPathfinder: maxLoopCount reached from [%d,%d] to [%d,%d]",
+    if( verbose > 0 )
+    {
+      Logger::warning( "AStarPathfinder: maxLoopCount reached from [%d,%d] to [%d,%d]",
                      startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
-    Stacktrace::print();
+      Stacktrace::print();
+    }
     return false;
   }
   // Resolve the path starting from the end point

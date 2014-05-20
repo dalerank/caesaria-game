@@ -44,63 +44,64 @@ compare_tiles_(const Tile * first, const Tile * second)
   return false;
 }
 
-TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos , bool roadAssignment)
+TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos,
+                                      bool roadAssignment, bool returnRect )
 {  
-  int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly;
-  flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
-  Pathway way = Pathfinder::instance().getPath( startPos, stopPos, flags );
-
-  if( way.isValid() )
-  {
-    return way.allTiles();
-  }
+  Logger::warning( "RoadPropagator::getPath from (%d, %d) to (%d, %d)",
+                    startPos.i(), startPos.j(), stopPos.i(), stopPos.j() );
 
   TilesArray ret;
-
-  //int mapSize = tileMap.getSize();;
-  int iStep = (startPos.i() < stopPos.i()) ? 1 : -1;
-  int jStep = (startPos.j() < stopPos.j()) ? 1 : -1;
-
-  std::cout << "RoadPropagator::getPath" << std::endl;
-
-  Logger::warning( "(%d, %d) to (%d, %d)", startPos.i(), startPos.j(), stopPos.i(), stopPos.j() );
-
   if( startPos == stopPos )
   {
     ret.push_back( &tileMap.at( startPos ) );
     return ret;
   }
 
-  std::cout << "propagate by I axis" << std::endl;
-
-  // propagate on I axis
-  for( TilePos tmp( startPos.i(), stopPos.j() ); ; tmp+=TilePos( iStep, 0 ) )
+  if( returnRect )
   {
-    Tile& curTile = tileMap.at( tmp );
+    ret = tileMap.getRectangle( startPos, stopPos );
+  }
+  else
+  {
+    bool yMoveFirst = stopPos.i() > startPos.i();
 
-    Logger::warning( "+ (%d, %d)", curTile.i(), curTile.j() );
-    ret.push_back( &curTile );
+    //int mapSize = tileMap.getSize();;
+    TilePos midlPos;
+    midlPos = yMoveFirst
+                ? TilePos( startPos.i(), stopPos.j() )
+                : TilePos( startPos.i(), stopPos.j() );
 
-    if (tmp.i() == stopPos.i())
-      break;
+    if( yMoveFirst )
+    {
+      ret.append( tileMap.getRectangle( startPos, midlPos ) );
+      ret.append( tileMap.getRectangle( midlPos, stopPos ) );
+    }
+    else
+    {
+      ret.append( tileMap.getRectangle( stopPos, midlPos ) );
+      ret.append( tileMap.getRectangle( midlPos, startPos ) );
+    }
+
+    // sort tiles to be drawn in the rigth order on screen
+    //std::sort( ret.begin(), ret.end(), compare_tiles_ );
+    foreach( it, ret )
+    {
+      if( !(*it)->isWalkable( true ) )
+      {
+        ret.clear();
+        break;
+      }
+    }
   }
 
-  std::cout << "propagate by J axis" << std::endl;
-
-  // propagate on J axis
-  for( int j = startPos.j();; j+=jStep )
+  if( ret.empty() )
   {
-    Tile& curTile = tileMap.at( startPos.i(), j );
+    int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly;
+    flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
+    Pathway way = Pathfinder::instance().getPath( startPos, stopPos, flags );
 
-    std::cout << "+ (" << curTile.i() << " " << curTile.j() << ") ";
-    ret.push_back( &curTile );
-
-    if( j == stopPos.j() )
-      break;
+    ret = way.allTiles();
   }
-
-  // sort tiles to be drawn in the rigth order on screen
-  std::sort( ret.begin(), ret.end(), compare_tiles_ );
 
   return ret;
 }

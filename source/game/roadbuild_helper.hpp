@@ -27,9 +27,9 @@ public:
   * returns True if a path exists
   * the path is returned in oPathWay
   */
-  static gfx::TilesArray createPath( gfx::Tilemap& tileMap,
+  static gfx::TilesArray createPath(gfx::Tilemap& tileMap,
                                 TilePos startTile, TilePos destination,
-                                bool roadAssignment=false );
+                                bool roadAssignment=false, bool returnRect=false);
 };
 
 #endif //__CAESARIA_ROADPROPAGATOR_H_INCLUDE_

@@ -120,8 +120,9 @@ public:
   void makeFastSave();
   void showTileHelp();
   void showMessagesWindow();
+  void setAutosaveInterval( int value );
 
-  vfs::Path getFastSaveName();
+  vfs::Path getFastSaveName(const std::string& postfix="");
 };
 
 Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
@@ -253,11 +254,13 @@ void Level::Impl::setVideoOptions()
 void Level::Impl::showGameSpeedOptionsDialog()
 {
   GameSpeedOptionsWindow* dialog = new GameSpeedOptionsWindow( game->gui()->rootWidget(),
-                                                               game->timeMultiplier(),
-                                                               0 );
+                                                               game->timeMultiplier(),                                                               
+                                                               0,
+                                                               GameSettings::get( GameSettings::autosaveInterval ) );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
   CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
+  CONNECT( dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
 }
 
 void Level::Impl::resolveWarningMessage(std::string text )
@@ -305,6 +308,12 @@ void Level::Impl::showTileHelp()
 void Level::Impl::showMessagesWindow()
 {
   new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
+}
+
+void Level::Impl::setAutosaveInterval(int value)
+{
+  GameSettings::set( GameSettings::autosaveInterval, value );
+  GameSettings::save();
 }
 
 void Level::_resolveLoadGame( std::string filename )
@@ -369,10 +378,11 @@ void Level::_showIngameMenu()
 #endif
 }
 
-vfs::Path Level::Impl::getFastSaveName()
+vfs::Path Level::Impl::getFastSaveName( const std::string& postfix )
 {
   vfs::Path filename = game->city()->getName()
                        + GameSettings::get( GameSettings::fastsavePostfix ).toString()
+                       + postfix
                        + GameSettings::get( GameSettings::saveExt ).toString();
 
   vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
@@ -399,15 +409,14 @@ void Level::Impl::showEmpireMapWindow()
 void Level::draw()
 { 
   _d->renderer.render();
-
   _d->game->gui()->beforeDraw();
   _d->game->gui()->draw();
 }
 
-void Level::animate( unsigned int time ) {  _d->renderer.animate( time ); }
-
-void Level::afterFrame()
+void Level::animate( unsigned int time )
 {
+  _d->renderer.animate( time );
+
   if( GameDate::isMonthChanged() )
   {
     PlayerCityPtr city = _d->game->city();
@@ -429,7 +438,19 @@ void Level::afterFrame()
 
       CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
     }
+
+    int autosaveInterval = GameSettings::get( GameSettings::autosaveInterval );
+    if( GameDate::current().month() % autosaveInterval == 0 )
+    {
+      static int rotate = 0;
+      rotate = (rotate + 1) % 3;
+      _d->game->save( _d->getFastSaveName( StringHelper::i2str( rotate ) ).toString() );
+    }
   }
+}
+
+void Level::afterFrame()
+{
 }
 
 void Level::handleEvent( NEvent& event )

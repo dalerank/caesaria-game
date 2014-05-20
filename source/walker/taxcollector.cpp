@@ -68,7 +68,7 @@ std::string TaxCollector::getThinks() const
 
   foreach( h, houses )
   {
-    HouseLevel::ID level = (HouseLevel::ID)(*h)->getSpec().level();
+    HouseLevel::ID level = (HouseLevel::ID)(*h)->spec().level();
     if( level < HouseLevel::bigDomus ) poorHouseCounter++;
     else if( level >= HouseLevel::smallVilla ) richHouseCounter++;
   }

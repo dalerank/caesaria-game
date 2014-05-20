@@ -41,8 +41,6 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -62,8 +60,6 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::garden:
     case building::elevation:
       needDrawAnimations = true;
-      drawTilePass( engine, tile, offset, Renderer::ground );
-      drawTilePass( engine, tile, offset, Renderer::foreground );
     break;
 
     //other buildings
@@ -73,16 +69,11 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
       if( c.isValid() )
       {
         std::string trouble = c->troubleDesc();
-        if( trouble.empty() )
+        needDrawAnimations = trouble.empty();
+        if( !needDrawAnimations )
         {
           city::Helper helper( _city() );
           drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
-        }
-        else
-        {
-          needDrawAnimations = true;
-          drawTilePass( engine, tile, offset, Renderer::ground );
-          drawTilePass( engine, tile, offset, Renderer::foreground );
         }
       }
     }
@@ -91,6 +82,7 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( educationLevel > 0 )
@@ -98,6 +90,8 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
       //drawColumn( engine, screenPos, educationLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerTroubles::create( Camera& camera, PlayerCityPtr city )

@@ -98,6 +98,7 @@ void Game::Impl::initLocale( std::string localePath)
 void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
+
   engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
@@ -404,12 +405,17 @@ void Game::load(std::string filename)
   
   if( !_d->loadOk )
   {
-    Logger::warning( "LOADING ERROR: can't load game from %s", filename.c_str() );
+    Logger::warning( "LOADING ERROR: can't load game from " + filename );
     return;
   }
 
   Logger::warning( "Game: init player city" );
-  _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
+  world::CityPtr city = _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
+  if( city.isNull() )
+  {
+    Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->getName() );
+    return;
+  }
 
   Logger::warning( "Game: calculate road access for buildings" );
   TileOverlayList& llo = _d->city->overlays();

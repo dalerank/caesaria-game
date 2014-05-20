@@ -64,8 +64,9 @@ public:
   Picture maskedPic;
   
   MaskInfo mask;
-  unsigned int fps, lastFps;
+  unsigned int fps, lastFps;  
   unsigned int lastUpdateFps;
+  unsigned int drawCall;
   Font debugFont;
   bool showDebugInfo;
 };
@@ -76,6 +77,10 @@ Picture& SdlEngine::getScreen(){  return _d->screen; }
 SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 {
   resetTileDrawMask();
+
+  _d->lastUpdateFps = DateTime::elapsedTime();
+  _d->fps = 0;
+  _d->showDebugInfo = false;
 }
 
 SdlEngine::~SdlEngine(){}
@@ -88,10 +93,6 @@ void SdlEngine::deletePicture( Picture* pic )
 
 void SdlEngine::init()
 {
-  _d->lastUpdateFps = DateTime::elapsedTime();
-  _d->fps = 0;
-  _d->showDebugInfo = false;
-
   Logger::warning( "GrafixEngine: init");
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
@@ -181,8 +182,8 @@ void SdlEngine::endRenderFrame()
 {
   if( _d->showDebugInfo )
   {
-    std::string debugText = StringHelper::format( 0xff, "fps: %d", _d->lastFps );
-    _d->debugFont.draw( _d->screen, debugText, 4, 22, false );
+    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
+    _d->debugFont.draw( _d->screen, debugText, _d->screen.width() / 2, 2, false );
   }
 
   SDL_Flip( _d->screen.surface() ); //Refresh the screen
@@ -194,12 +195,16 @@ void SdlEngine::endRenderFrame()
     _d->lastFps = _d->fps;
     _d->fps = 0;
   }
+
+  _d->drawCall = 0;
 }
 
 void SdlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;
+
+  _d->drawCall++;
 
   Picture& screen = _d->screen;
   if( clipRect != 0 )

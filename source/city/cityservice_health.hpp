@@ -13,26 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_LAYERSIMPLE_H_INCLUDED__
-#define __CAESARIA_LAYERSIMPLE_H_INCLUDED__
+#ifndef __CAESARIA_CITYSERVICE_HEALH_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_HEALH_H_INCLUDED__
 
-#include "core/referencecounted.hpp"
-#include "gfx/layer.hpp"
+#include "cityservice.hpp"
+#include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
 
-namespace gfx
+namespace city
 {
 
-class LayerSimple : public Layer
+class HealthCare : public city::Srvc
 {
 public:
-  virtual int getType() const;
-  virtual std::set<int> getVisibleWalkers() const;
+  static city::SrvcPtr create( PlayerCityPtr city );
+  static std::string getDefaultName();
 
-  static LayerPtr create(Camera& camera, PlayerCityPtr city );
+  virtual void update( const unsigned int time );
+  std::string getReason() const;
+private:
+  HealthCare( PlayerCityPtr city );
 
-protected:
-  LayerSimple(Camera& camera, PlayerCityPtr city );
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-}//end namespace gfx
-#endif //__CAESARIA_LAYERSIMPLE_H_INCLUDED__
+typedef SmartPtr<HealthCare> HealthCarePtr;
+
+}//end namespace city
+
+#endif //__CAESARIA_CITYSERVICE_HEALH_H_INCLUDED__

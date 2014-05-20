@@ -50,6 +50,7 @@
 #include "events/fundissue.hpp"
 #include "core/smartlist.hpp"
 #include "objects/military.hpp"
+#include "widgetescapecloser.hpp"
 #include "events/showempiremapwindow.hpp"
 
 using namespace constants;
@@ -90,6 +91,8 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
   // use some clipping to remove the right and bottom areas
   setupUI( GameSettings::rcpath( "/gui/advisors.gui" ) );
   _d->advisorPanel = 0;
+
+  WidgetEscapeCloser::insertTo( this );
 
   Point tabButtonPos( (width() - 636) / 2, height() / 2 + 192);
 

@@ -91,6 +91,7 @@ void Info::update( const unsigned int time )
     last.tax = _city.funds().taxRate();
     last.cityWages = _city.funds().workerSalary();
     last.romeWages = _city.empire()->getWorkerSalary();
+    last.crimeLevel = city::Statistic::getCrimeLevel( &_city );
   }
 }
 

@@ -47,8 +47,8 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
   {
   case citylayer::entertainment:
   {
-    int entLevel = house->getSpec().computeEntertainmentLevel( house );
-    int minLevel = house->getSpec().getMinEntertainmentLevel();
+    int entLevel = house->spec().computeEntertainmentLevel( house );
+    int minLevel = house->spec().getMinEntertainmentLevel();
     return ( minLevel == 0 ? 0 : entLevel * 100 / minLevel );
   }
   case citylayer::theater: return house->getServiceValue( Service::theater );
@@ -63,8 +63,6 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
 void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
-
-  tile.setWasDrawn();
 
   if( tile.overlay().isNull() )
   {
@@ -83,7 +81,6 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
     case construction::road:
     case construction::plaza:
       needDrawAnimations = true;
-      engine.draw( tile.picture(), screenPos );
     break;
 
     case building::theater:
@@ -94,12 +91,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
     case building::actorColony:
     case building::gladiatorSchool:
       needDrawAnimations = _flags.count( overlay->type() );
-      if( needDrawAnimations )
-      {
-        engine.draw( tile.picture(), screenPos );
-        drawTilePass( engine, tile, offset, Renderer::foreground );
-      }
-      else
+      if( !needDrawAnimations )
       {
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
@@ -112,7 +104,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
         HousePtr house = ptr_cast<House>( overlay );
         entertainmentLevel = _getLevelValue( house );
 
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
@@ -129,6 +121,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( entertainmentLevel > 0 )
@@ -136,6 +129,8 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, entertainmentLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerEntertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )

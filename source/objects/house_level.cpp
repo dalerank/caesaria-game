@@ -98,7 +98,7 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
   std::string defaultStr;
   std::string& ref = retMissing ? *retMissing : defaultStr;
 
-  if( house->getHabitants().count() == 0 )
+  if( house->habitants().count() == 0 )
   {
     ref = "##house_no_citizen##";
     return false;
@@ -189,31 +189,31 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing )
     return false;
   }
 
-  if( _d->requiredGoods[Good::pottery] != 0 && house->getGoodStore().qty(Good::pottery) == 0)
+  if( _d->requiredGoods[Good::pottery] != 0 && house->goodStore().qty(Good::pottery) == 0)
   {
     ref = "##missing_pottery##";
     return false;
   }
 
-  if( _d->requiredGoods[Good::furniture] != 0 && house->getGoodStore().qty(Good::furniture) == 0)
+  if( _d->requiredGoods[Good::furniture] != 0 && house->goodStore().qty(Good::furniture) == 0)
   {
     ref = "##missing_furniture##";
     return false;
   }
 
-  if( _d->requiredGoods[Good::oil] != 0 && house->getGoodStore().qty(Good::oil) == 0)
+  if( _d->requiredGoods[Good::oil] != 0 && house->goodStore().qty(Good::oil) == 0)
   {
     ref = "##missing_oil##";
     return false;
   }
 
-  if( _d->requiredGoods[Good::wine] != 0 && house->getGoodStore().qty(Good::wine) == 0)
+  if( _d->requiredGoods[Good::wine] != 0 && house->goodStore().qty(Good::wine) == 0)
   {
     ref = "##missing_wine##";
     return false;
   }
 
-  if( _d->requiredGoods[Good::prettyWine] != 0 && house->getGoodStore().qty(Good::prettyWine) == 0)
+  if( _d->requiredGoods[Good::prettyWine] != 0 && house->goodStore().qty(Good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
     return false;
@@ -239,8 +239,8 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
   int ret = 0;
   foreach( it, houses )
   {
-    int pop = (*it)->getHabitants().count();
-    int bLevel = (*it)->getSpec().level();
+    int pop = (*it)->habitants().count();
+    int bLevel = (*it)->spec().level();
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
@@ -277,7 +277,7 @@ int HouseSpecification::computeFoodLevel(HousePtr house)
 {
   int res = 0;
 
-  const GoodStore& goodStore = house->getGoodStore();
+  const GoodStore& goodStore = house->goodStore();
   res += goodStore.qty(Good::wheat) > 0 ? 1 : 0;
   res += goodStore.qty(Good::fish) > 0 ? 1 : 0;
   res += goodStore.qty(Good::meat) > 0 ? 1 : 0;
@@ -529,7 +529,7 @@ int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const Goo
   case Good::fish:
   case Good::fruit:
   case Good::vegetable:
-    res = house->getHabitants().count() / 2;
+    res = house->habitants().count() / 2;
   break;
 
   default: res = 0;
@@ -548,7 +548,7 @@ int HouseSpecification::computeMonthlyFoodConsumption(HousePtr house) const
     return 0;
   }
 
-  return house->getHabitants().count() / 2;
+  return house->habitants().count() / 2;
 }
 
 const std::string& HouseSpecification::internalName() const{  return _d->internalName; }

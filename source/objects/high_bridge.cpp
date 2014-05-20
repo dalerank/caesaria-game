@@ -482,7 +482,7 @@ void HighBridge::destroy()
     std::string picName = TileHelper::convId2PicName( subtile->_imgId );
 
     Tile& mapTile = city->tilemap().at( subtile->_pos );
-    mapTile.setPicture( &Picture::load( picName ) );
+    //mapTile.setPicture( &Picture::load( picName ) );
 
     TileHelper::decode( mapTile, subtile->_info );
   }

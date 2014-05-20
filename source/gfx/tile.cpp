@@ -19,13 +19,16 @@
 #include "tileoverlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
+#include "core/logger.hpp"
 #include "game/gamedate.hpp"
 
 namespace gfx
 {
 
 namespace {
-  int waterDecreaseInterval = GameDate::days2ticks( 15 );
+  const int waterDecreaseInterval = GameDate::days2ticks( 15 );
+  const int x_tileBase = 30;
+  const int y_tileBase = x_tileBase / 2;
   Animation invalidAnimation;
 }
 
@@ -46,15 +49,15 @@ void Tile::Terrain::clearFlags()
   garden     = false;
   meadow     = false;
   wall       = false;
+  rubble     = false;
   deepWater  = false;
 }
 
 Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 {
   _pos = pos;
-  _picture = NULL;
-  _wasDrawn = false;
   _master = NULL;
+  _wasDrawn = false;
   _overlay = NULL;
   _terrain.reset();
   _terrain.imgid = 0;
@@ -62,20 +65,11 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 
 int Tile::i() const    {   return _pos.i();   }
 int Tile::j() const    {   return _pos.j();   }
-void Tile::setPicture(const Picture *picture) {  _picture = picture; }
-void Tile::setPicture(const char* rc, const int index){  setPicture( &Picture::load( rc, index ) );}
-void Tile::setPicture(const std::string& name){ setPicture( &Picture::load( name ) );}
+void Tile::setPicture(const Picture& picture) {  _picture = picture; }
+void Tile::setPicture(const char* rc, const int index){ setPicture( Picture::load( rc, index ) );}
+void Tile::setPicture(const std::string& name){ setPicture( Picture::load( name ) );}
 
-const Picture& Tile::picture() const
-{
-  if( !_picture )
-  {
-    return Picture::getInvalid();
-  }
-
-  return *_picture;
-}
-
+const Picture& Tile::picture() const {  return _picture; }
 Tile* Tile::masterTile() const{  return _master;}
 void Tile::setMasterTile(Tile* master){  _master = master;}
 
@@ -88,13 +82,13 @@ bool Tile::isFlat() const
 
   return (_overlay.isValid()
            ? _overlay->isFlat()
-           : !(_terrain.rock || _terrain.tree || _terrain.aqueduct) );
+           : !(_terrain.rock || _terrain.elevation || _terrain.tree || _terrain.aqueduct) );
 }
 
 TilePos Tile::pos() const{  return _pos; }
-Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * 15 + Point( 7, 7); }
+Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
-Point Tile::mapPos() const{  return Point( 30 * ( _pos.i() + _pos.j() ), 15 * ( _pos.i() - _pos.j() ) );}
+Point Tile::mapPos() const{  return Point( x_tileBase * ( _pos.i() + _pos.j() ), y_tileBase * ( _pos.i() - _pos.j() ) );}
 
 void Tile::animate(unsigned int time)
 {
@@ -140,6 +134,7 @@ bool Tile::getFlag(Tile::Type type) const
   case tlRock: return _terrain.rock;
   case tlBuilding: return _overlay.isValid();
   case tlAqueduct: return _terrain.aqueduct;
+  case tlRubble: return _terrain.rubble;
   case isDestructible:
   {
     return _overlay.isValid()
@@ -169,6 +164,7 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlAqueduct: _terrain.aqueduct = value; break;
   case tlGarden: _terrain.garden = value; break;
   case tlElevation: _terrain.elevation = value; break;
+  case tlRubble: _terrain.rubble = value; break;
   case clearAll: _terrain.clearFlags(); break;
   case tlWall: _terrain.wall = value; break;
   case wasDrawn: _wasDrawn = value; break;
@@ -208,12 +204,12 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
 
   if( imgId < 245 )
   {
-    res_pfx = "plateau";
+    res_pfx = ResourceGroup::plateau;
     res_id = imgId - 200;
   }
   else if( imgId < 548 )
   {
-    res_pfx = "land1a";
+    res_pfx = ResourceGroup::land1a;
     res_id = imgId - 244;
   }
   else if( imgId < 779 )
@@ -228,7 +224,7 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
   }
   else
   {
-    res_pfx = "land1a";
+    res_pfx = ResourceGroup::land1a;
     res_id = 1;
 
     // std::cout.setf(std::ios::hex, std::ios::basefield);
@@ -252,7 +248,7 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
 {
   // example: for land1a_00004, return 244+4=248
   std::string res_pfx;  // resource name prefix = land1a
-  int res_id;   // idx of resource = 4
+  int res_id = 0;   // idx of resource = 4
 
   // extract the name and idx from name (ex: [land1a, 4])
   int pos = pic_name.find("_");
@@ -260,13 +256,13 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
   std::stringstream ss(pic_name.substr(pos+1));
   ss >> res_id;
 
-  if (res_pfx == "plateau"){  res_id += 200; }
+  if (res_pfx == ResourceGroup::plateau ){  res_id += 200; }
   else if (res_pfx == ResourceGroup::land1a) { res_id += 244; }
   else if (res_pfx == ResourceGroup::land2a) { res_id += 547; }
   else if (res_pfx == ResourceGroup::land3a) { res_id += 778; }
   else
   {
-    THROW("Unknown image " << pic_name);
+    Logger::warning( "TileHelper: unknown image " + pic_name );
   }
 
   return res_id;
@@ -274,16 +270,17 @@ int TileHelper::convPicName2Id( const std::string &pic_name )
 
 int TileHelper::encode(const Tile& tt)
 {
-  int res = tt.getFlag( Tile::tlTree ) ? 0x11 : 0;
-  res += tt.getFlag( Tile::tlRock ) ? 0x2 : 0;
-  res += tt.getFlag( Tile::tlWater ) ? 0x4 : 0;
-  res += tt.getFlag( Tile::tlBuilding ) ? 0x8 : 0;
-  res += tt.getFlag( Tile::tlRoad ) ? 0x40 : 0;
-  res += tt.getFlag( Tile::tlMeadow ) ? 0x800 : 0;
-  res += tt.getFlag( Tile::tlWall ) ? 0x4000 : 0;
-  res += tt.getFlag( Tile::tlElevation ) ? 0x200 : 0;
+  int res = tt.getFlag( Tile::tlTree )   ? 0x11   : 0;
+  res += tt.getFlag( Tile::tlRock )      ? 0x2    : 0;
+  res += tt.getFlag( Tile::tlWater )     ? 0x4    : 0;
+  res += tt.getFlag( Tile::tlBuilding )  ? 0x8    : 0;
+  res += tt.getFlag( Tile::tlRoad )      ? 0x40   : 0;
+  res += tt.getFlag( Tile::tlMeadow )    ? 0x800  : 0;
+  res += tt.getFlag( Tile::tlRubble )    ? 0x1000 : 0;
+  res += tt.getFlag( Tile::tlWall )      ? 0x4000 : 0;
+  res += tt.getFlag( Tile::tlElevation ) ? 0x200  : 0;
   res += tt.getFlag( Tile::tlDeepWater ) ? 0x8000 : 0;
-  res += tt.getFlag( Tile::tlRift ) ? 0x10000 : 0;
+  res += tt.getFlag( Tile::tlRift )      ? 0x10000: 0;
   return res;
 }
 
@@ -302,6 +299,7 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x00200) { tile.setFlag( Tile::tlElevation, true); }
   if(bitset & 0x00400) { tile.setFlag( Tile::tlRock, true );     }
   if(bitset & 0x00800) { tile.setFlag( Tile::tlMeadow, true);    }
+  if(bitset & 0x01000) { tile.setFlag( Tile::tlRubble, true);    }
   if(bitset & 0x04000) { tile.setFlag( Tile::tlWall, true);      }
   if(bitset & 0x08000) { tile.setFlag( Tile::tlDeepWater, true); }
   if(bitset & 0x10000) { tile.setFlag( Tile::tlRift, true);      }

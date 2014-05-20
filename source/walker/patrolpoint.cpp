@@ -53,7 +53,7 @@ PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
   return ptr;
 }
 
-void PatrolPoint::getPictureList( gfx::Pictures& oPics)
+void PatrolPoint::getPictures( gfx::Pictures& oPics)
 {
   oPics.push_back( _d->standart );
   oPics.push_back( _d->animation.currentFrame() );

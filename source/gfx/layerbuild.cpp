@@ -46,6 +46,7 @@ class LayerBuild::Impl
 public:
   bool multiBuilding;
   TilePos lastTilePos;
+  bool kbShift, kbCtrl;
   bool borderBuilding;
   bool roadAssignment;
   Renderer* renderer;
@@ -102,7 +103,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
-        tile->setPicture( &overlay->picture() );
+        tile->setPicture( overlay->picture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -130,7 +131,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         Tile* tile = new Tile( tmap.at( rPos ) );  // make a copy of tile
 
         bool isConstructible = tile->getFlag( Tile::isConstructible );
-        tile->setPicture( isConstructible ? &grnPicture : &redPicture );
+        tile->setPicture( isConstructible ? grnPicture : redPicture );
         tile->setMasterTile( 0 );
         tile->setFlag( Tile::clearAll, true );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -166,7 +167,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
     TilesArray pathWay = RoadPropagator::createPath( _city()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
-                                                     d->roadAssignment );
+                                                     d->roadAssignment, d->kbShift );
 
     foreach( it, pathWay )
     {
@@ -228,8 +229,14 @@ void LayerBuild::_buildAll()
 
 void LayerBuild::handleEvent(NEvent& event)
 {
+  __D_IMPL(_d,LayerBuild);
+  _d->kbShift = false;
+  _d->kbCtrl = false;
   if( event.EventType == sEventMouse )
   {
+    _d->kbShift = event.mouse.shift;
+    _d->kbCtrl = event.mouse.control;
+
     switch( event.mouse.type  )
     {
     case mouseMoved:
@@ -240,7 +247,7 @@ void LayerBuild::handleEvent(NEvent& event)
         _setStartCursorPos( _lastCursorPos() );
       }
 
-      _updatePreviewTiles(false);
+      _updatePreviewTiles( false );
     }
     break;
 
@@ -361,7 +368,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
       const Picture& pic = cntr->picture( _city(), tile.pos(), postTiles );
       engine.draw( pic, screenPos );
 
-      drawTilePass( engine, tile, offset, Renderer::foreground );
+      drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }
 
     registerTileForRendering( tile );
@@ -376,14 +383,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     }*/
   }
 
-  if( !tile.getFlag( Tile::wasDrawn ) )
-  {
-    tile.setWasDrawn();
-    engine.draw( tile.picture(), screenPos );
-
-    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
-    drawTilePass( engine, tile, offset, Renderer::foreground );
-  }
+  Layer::drawTile( engine, tile, offset );
 }
 
 void LayerBuild::render( Engine& engine)

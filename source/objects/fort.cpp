@@ -36,7 +36,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-Renderer::Pass _fpq[] = { Renderer::building, Renderer::animations };
+Renderer::Pass _fpq[] = { Renderer::overlayAnimation, Renderer::animations };
 static Renderer::PassQueue fortPassQueue( _fpq, _fpq + 2 );
 
 struct LegionEmblem

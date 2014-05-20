@@ -27,6 +27,7 @@
 
 CAESARIA_LITERALCONST(lbGameSpeedPercent)
 CAESARIA_LITERALCONST(lbScrollSpeedPercent)
+CAESARIA_LITERALCONST(lbAutosaveInterval)
 
 namespace gui
 {
@@ -37,14 +38,17 @@ public:
   GameAutoPause locker;
   Signal1<int> onGameSpeedChangeSignal;
   Signal1<int> onScrollSpeedChangeSignal;
-  int speedValue, scrollValue;
+  Signal1<int> onAutosaveIntervalShangeSignal;
+  int speedValue, scrollValue, autosaveInterval;
 };
 
-GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, int scrollSpeed  )
+GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, int scrollSpeed,
+                                               int autosaveInterval)
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->speedValue = gameSpeed;
   _d->scrollValue = scrollSpeed;
+  _d->autosaveInterval = autosaveInterval;
   _d->locker.activate();
 
   setupUI( GameSettings::rcpath( "/gui/speedoptions.gui" ) );
@@ -65,11 +69,13 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
     {
     case 1: case 2: _d->speedValue += (id == 1 ? -10 : +10 ); _update(); break;
     case 11: case 12: _d->scrollValue += (id == 11 ? -10 : +10 ); _update(); break;
+    case 21: case 22: _d->autosaveInterval += (id == 21 ? -1 : +1 ); _update(); break;
 
     case 1001:
     {
       _d->onGameSpeedChangeSignal.emit( _d->speedValue );
       _d->onScrollSpeedChangeSignal.emit( _d->scrollValue );
+      _d->onAutosaveIntervalShangeSignal.emit( _d->autosaveInterval );
       deleteLater();
     }
     break;
@@ -85,17 +91,21 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
 
 Signal1<int>& GameSpeedOptionsWindow::onGameSpeedChange() {  return _d->onGameSpeedChangeSignal;}
 Signal1<int>& GameSpeedOptionsWindow::onScrollSpeedChange(){  return _d->onScrollSpeedChangeSignal;}
+Signal1<int>&GameSpeedOptionsWindow::onAutosaveIntervalChange(){ return _d->onAutosaveIntervalShangeSignal; }
 
 void GameSpeedOptionsWindow::_update()
 {
   Label* lbSpeed = findChildA<Label*>( lc_lbGameSpeedPercent, true, this );
   Label* lbScroll = findChildA<Label*>( lc_lbScrollSpeedPercent, true, this );
+  Label* lbAutosaveInterval = findChildA<Label*>( lc_lbAutosaveInterval, true, this );
 
   _d->speedValue = math::clamp( _d->speedValue, 10, 1000 );
   _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );
+  _d->autosaveInterval = math::clamp( _d->autosaveInterval, 1, 12 );
 
   if( lbSpeed ) { lbSpeed->setText( StringHelper::i2str( _d->speedValue ) + "%" ); }
   if( lbScroll ) { lbScroll->setText( StringHelper::i2str( _d->scrollValue ) + "%" ); }
+  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( StringHelper::i2str( _d->autosaveInterval ) + " month" ); }
 }
 
 }//end namespace gui

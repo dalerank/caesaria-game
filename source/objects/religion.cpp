@@ -31,7 +31,9 @@ public:
 };
 
 Temple::Temple( DivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size )
-: ServiceBuilding( divinity->serviceType(), type, size ), _td( new Impl )
+: ServiceBuilding( divinity.isValid()
+                    ? divinity->serviceType()
+                    : Service::srvCount, type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
   setPicture( ResourceGroup::security, imgId );
@@ -98,6 +100,7 @@ unsigned int BigTempleMercure::parishionerNumber() const
 
 TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), building::oracle, 55 )
 {
+  setSize( Size( 2 ) );
   _animationRef().load( ResourceGroup::security, 56, 6);
   _animationRef().setOffset( Point( 9, 30 ) );
   _fgPicturesRef().resize(1);

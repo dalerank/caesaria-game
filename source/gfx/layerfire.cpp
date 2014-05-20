@@ -45,8 +45,6 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -69,9 +67,7 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::well:
     case building::fountain:
     case building::lowBridge:
-    case building::highBridge:
-      engine.draw( tile.picture(), screenPos );
-      drawTilePass( engine, tile, offset, Renderer::foreground );
+    case building::highBridge:    
       needDrawAnimations = true;
     break;
 
@@ -80,7 +76,7 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
       {
         HousePtr house = ptr_cast<House>( overlay );
         fireLevel = (int)house->getState( Construction::fire );
-        needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
+        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
@@ -104,6 +100,7 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( fireLevel >= 0)
@@ -111,6 +108,8 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, fireLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 void LayerFire::handleEvent(NEvent& event)

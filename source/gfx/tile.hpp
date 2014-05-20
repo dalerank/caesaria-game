@@ -40,6 +40,7 @@ class Tile
     bool aqueduct;
     bool meadow;
     bool elevation;
+    bool rubble;
     bool wall;
     bool deepWater;
     int  desirability;
@@ -57,7 +58,7 @@ class Tile
 
 public:
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding, tlAqueduct,
-                 tlGarden, tlElevation, tlWall, tlDeepWater,
+                 tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, clearAll,
                  wasDrawn } Type;
 
@@ -71,7 +72,7 @@ public:
   Point mapPos() const;
 
   // displayed picture
-  void setPicture( const Picture* picture );
+  void setPicture( const Picture& picture );
   void setPicture( const char* rc, const int index );
   void setPicture( const std::string& name );
   const Picture& picture() const;
@@ -111,8 +112,8 @@ public:
 private:
   TilePos _pos; // coordinates of the tile
   Tile* _master;  // left-most tile if multi-tile, or "this" if single-tile
-  Terrain _terrain;    // infos about the tile (building, tree, road, water, rock...)
-  Picture const* _picture; // displayed picture
+  Terrain _terrain; // infos about the tile (building, tree, road, water, rock...)
+  Picture _picture; // main picture
   bool _wasDrawn;
   gfx::Animation _animation;
   TileOverlayPtr _overlay;

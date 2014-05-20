@@ -135,7 +135,7 @@ void CartSupplier::_changeDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartSupplier::getPictureList( Pictures& oPics)
+void CartSupplier::getPictures( Pictures& oPics)
 {
    oPics.clear();
 

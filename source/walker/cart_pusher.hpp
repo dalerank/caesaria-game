@@ -36,7 +36,7 @@ public:
   GoodStock& getStock();
 
   gfx::Picture& getCartPicture();
-  virtual void getPictureList( gfx::Pictures& oPics);
+  virtual void getPictures( gfx::Pictures& oPics);
 
   void send2city( BuildingPtr building, GoodStock& carry );
 

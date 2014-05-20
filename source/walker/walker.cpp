@@ -359,7 +359,7 @@ std::string Walker::getThinks() const
   return _d->thinks;
 }
 
-void Walker::getPictureList(gfx::Pictures& oPics)
+void Walker::getPictures(gfx::Pictures& oPics)
 {
    oPics.clear();
    oPics.push_back( getMainPicture() );
