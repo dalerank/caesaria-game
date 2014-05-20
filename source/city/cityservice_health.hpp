@@ -13,24 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
+#ifndef __CAESARIA_CITYSERVICE_HEALH_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_HEALH_H_INCLUDED__
 
-#include "core/predefinitions.hpp"
+#include "cityservice.hpp"
+#include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
 
-namespace gfx
+namespace city
 {
 
-class Tile;
-class Picture;
-class Tilemap;
-class TilemapCamera;
-class TilesArray;
-class CityRenderer;
+class HealthCare : public city::Srvc
+{
+public:
+  static city::SrvcPtr create( PlayerCityPtr city );
+  static std::string getDefaultName();
 
-PREDEFINE_CLASS_SMARTLIST(TileOverlay,List)
-PREDEFINE_CLASS_SMARTLIST(Layer,List)
+  virtual void update( const unsigned int time );
+  std::string getReason() const;
+private:
+  HealthCare( PlayerCityPtr city );
 
-}
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
 
-#endif //__CAESARIA_GFX_PREDEFINITIONS_H_INCLUDED__
+typedef SmartPtr<HealthCare> HealthCarePtr;
+
+}//end namespace city
+
+#endif //__CAESARIA_CITYSERVICE_HEALH_H_INCLUDED__

@@ -25,6 +25,7 @@
 #include "city/funds.hpp"
 #include "objects/farm.hpp"
 #include "objects/warehouse.hpp"
+#include "city/cityservice_disorder.hpp"
 #include <map>
 
 using namespace constants;
@@ -32,28 +33,18 @@ using namespace constants;
 namespace city
 {
 
-unsigned int Statistic::getCurrentWorkersNumber(PlayerCityPtr city)
+void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& maxWorkers )
 {
-  Helper helper( city );
+  WorkingBuildingList buildings;
+  buildings << city->overlays();
 
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
-
-  int workersNumber = 0;
-  foreach( bld, buildings ) { workersNumber += (*bld)->numberWorkers(); }
-
-  return workersNumber;
-}
-
-unsigned int Statistic::getVacantionsNumber(PlayerCityPtr city)
-{
-  Helper helper( city );
-
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
-
-  int workersNumber = 0;
-  foreach( bld, buildings ) { workersNumber += (*bld)->maxWorkers(); }
-
-  return workersNumber;
+  workersNumber = 0;
+  maxWorkers = 0;
+  foreach( bld, buildings )
+  {
+    workersNumber += (*bld)->numberWorkers();
+    maxWorkers += (*bld)->maxWorkers();
+  }
 }
 
 unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
@@ -65,7 +56,7 @@ unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
   int workersNumber = 0;
   foreach( h, houses )
   {
-    workersNumber += (*h)->getHabitants().count( CitizenGroup::mature );
+    workersNumber += (*h)->habitants().count( CitizenGroup::mature );
   }
 
   return workersNumber;
@@ -73,7 +64,8 @@ unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
 
 unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
 {
-  int workersNumber = getCurrentWorkersNumber( city );
+  int workersNumber, maxWorkers;
+  getWorkersNumber( city, workersNumber, maxWorkers );
 
   if( workersNumber == 0 )
     return 0;
@@ -104,6 +96,12 @@ unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
   return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
 }
 
+unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
+{
+  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::getDefaultName() ) );
+  return ds.isValid() ? ds->value() : 0;
+}
+
 unsigned int Statistic::getFoodStock(PlayerCityPtr city)
 {
   Helper helper( city );
@@ -123,7 +121,7 @@ unsigned int Statistic::getFoodMonthlyConsumption(PlayerCityPtr city)
   int foodComsumption = 0;
   HouseList houses = helper.find<House>( building::house );
 
-  foreach( h, houses ) { foodComsumption += (*h)->getSpec().computeMonthlyFoodConsumption( *h ); }
+  foreach( h, houses ) { foodComsumption += (*h)->spec().computeMonthlyFoodConsumption( *h ); }
 
   return foodComsumption;
 }
@@ -149,12 +147,12 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   float taxRate = city->funds().taxRate();
   foreach( house, houses )
   {
-    int maxhb = (*house)->getMaxHabitants();
+    int maxhb = (*house)->maxHabitants();
     if( maxhb == 0 )
       continue;
 
-    int maturehb = (*house)->getHabitants().count( CitizenGroup::mature );
-    int housetax = (*house)->getSpec().taxRate();
+    int maturehb = (*house)->habitants().count( CitizenGroup::mature );
+    int housetax = (*house)->spec().taxRate();
     taxValue += housetax * maturehb * taxRate / maxhb;
   }
 
@@ -171,7 +169,7 @@ HouseList Statistic::getEvolveEducationReadyHouse(PlayerCityPtr city)
   foreach( it, houses )
   {
     gfx::TileOverlay::Type btype;
-    (*it)->getSpec().next().checkHouse( *it, NULL, &btype );
+    (*it)->spec().next().checkHouse( *it, NULL, &btype );
     switch( btype )
     {
     case building::school:

@@ -37,6 +37,8 @@
 #include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
 #include "city/cityservice_military.hpp"
+#include "city/cityservice_disorder.hpp"
+#include "city/cityservice_health.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -135,11 +137,13 @@ void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::
 
 void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
 {
-  int needWorkersNumber = city::Statistic::getVacantionsNumber( city );
+  int currentWorkers, maxWorkers;
+  city::Statistic::getWorkersNumber( city, currentWorkers, maxWorkers );
   int workless = city::Statistic::getWorklessPercent( city );
   std::string text;
   NColor color = DefaultColors::black;
-  if( needWorkersNumber > 0 )
+  int needWorkersNumber = maxWorkers - currentWorkers;
+  if( needWorkersNumber > 10 )
   {
     text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
     color = DefaultColors::brown;
@@ -239,12 +243,36 @@ void AdvisorChiefWindow::Impl::drawMilitary(Point pos)
 void AdvisorChiefWindow::Impl::drawCrime(Point pos)
 {
   std::string text;
-  drawReportRow( pos, _("##advchief_crime##"), text );
+
+  city::DisorderPtr ds = ptr_cast<city::Disorder>( city->findService( city::Disorder::getDefaultName() ) );
+  if( ds.isValid() )
+  {
+    text = ds->getReason();
+  }
+
+  if( text.empty() )
+  {
+    text = "##advchief_no_crime##";
+  }
+
+  drawReportRow( pos, _("##advchief_crime##"), _(text) );
 }
 
 void AdvisorChiefWindow::Impl::drawHealth(Point pos)
 {
   std::string text;
+
+  city::HealthCarePtr ds = ptr_cast<city::HealthCare>( city->findService( city::HealthCare::getDefaultName() ) );
+  if( ds.isValid() )
+  {
+    text = ds->getReason();
+  }
+
+  if( text.empty() )
+  {
+    text = "##advchief_health_good##";
+  }
+
   drawReportRow( pos, _("##advchief_health##"), text );
 }
 

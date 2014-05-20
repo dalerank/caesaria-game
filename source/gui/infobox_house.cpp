@@ -62,7 +62,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   HousePtr house = ptr_cast<House>( tile.overlay() );
-  setTitle( _(house->getSpec().levelName()) );
+  setTitle( _(house->spec().levelName()) );
 
   _getBtnExit()->setTooltipText( _("##advanced_houseinfo##") );
 
@@ -70,19 +70,19 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   houseInfo->setWordwrap( true );
 
   std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
-                                                  house->getHabitants().count(),
+                                                  house->habitants().count(),
                                                   (int)house->getServiceValue( Service::recruter ),
-                                                  house->getHabitants().count( CitizenGroup::newborn ),
-                                                  house->getHabitants().count( CitizenGroup::child ),
-                                                  house->getHabitants().count( CitizenGroup::scholar ),
-                                                  house->getHabitants().count( CitizenGroup::student ),
-                                                  house->getHabitants().count( CitizenGroup::mature ),
-                                                  house->getHabitants().count( CitizenGroup::aged ) );
+                                                  house->habitants().count( CitizenGroup::newborn ),
+                                                  house->habitants().count( CitizenGroup::child ),
+                                                  house->habitants().count( CitizenGroup::scholar ),
+                                                  house->habitants().count( CitizenGroup::student ),
+                                                  house->habitants().count( CitizenGroup::mature ),
+                                                  house->habitants().count( CitizenGroup::aged ) );
   new Label( this, Rect( 16, 125, width() - 16, 150 ), workerState );
 
   drawHabitants( house );
 
-  int taxes = house->getSpec().taxRate();
+  int taxes = house->spec().taxRate();
   std::string taxesStr;
   if( taxes > 0 )
   {
@@ -114,7 +114,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->bottom() + 10;
-  if( house->getSpec().level() > 2 )
+  if( house->spec().level() > 2 )
   {
     drawGood( house, Good::wheat, 0, 0, startY );
     drawGood( house, Good::fish, 1, 0, startY );
@@ -143,7 +143,7 @@ InfoboxHouse::~InfoboxHouse() {}
 void InfoboxHouse::drawHabitants( HousePtr house )
 {
   // citizen or patrician picture
-  int picId = house->getSpec().isPatrician() ? 541 : 542;
+  int picId = house->spec().isPatrician() ? 541 : 542;
    
   Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
   _getBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
@@ -152,8 +152,8 @@ void InfoboxHouse::drawHabitants( HousePtr house )
   Label* lbHabitants = new Label( this, Rect( 60, 157, width() - 16, 157 + citPic.height() ) );
 
   std::string freeRoomText;
-  int current = house->getHabitants().count();
-  int freeRoom = house->getMaxHabitants() - current;
+  int current = house->habitants().count();
+  int freeRoom = house->maxHabitants() - current;
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!
@@ -176,7 +176,7 @@ void InfoboxHouse::drawHabitants( HousePtr house )
 
 void InfoboxHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
 {
-  int qty = house->getGoodStore().qty( goodType );
+  int qty = house->goodStore().qty( goodType );
   std::string text = StringHelper::format( 0xff, "%d", qty);
 
   // pictures of goods

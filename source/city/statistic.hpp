@@ -31,8 +31,7 @@ class Statistic
 public:
   typedef std::map< Good::Type, int > GoodsMap;
 
-  static unsigned int getCurrentWorkersNumber( PlayerCityPtr city );
-  static unsigned int getVacantionsNumber( PlayerCityPtr city );
+  static void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
   static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
   static unsigned int getMontlyWorkersWages( PlayerCityPtr city );
   static unsigned int getWorklessNumber( PlayerCityPtr city );
@@ -42,6 +41,7 @@ public:
   static unsigned int getFoodProducing( PlayerCityPtr city );
   static unsigned int getTaxValue( PlayerCityPtr city );
   static HouseList getEvolveEducationReadyHouse( PlayerCityPtr );
+  static unsigned int getCrimeLevel( PlayerCityPtr city );
   static GoodsMap getGoodsMap( PlayerCityPtr city );
 };
 

@@ -76,7 +76,7 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
       {
         HousePtr house = ptr_cast<House>( overlay );
         damageLevel = (int)house->getState( Construction::damage );
-        needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
+        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );

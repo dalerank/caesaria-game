@@ -49,6 +49,8 @@ public:
     int payDiff;
     int cityWages;
     int romeWages;
+    int maxWorkers;
+    int crimeLevel;
 
     Parameters()
     {
@@ -60,8 +62,10 @@ public:
       foodKoeff = 0;
       godsMood = 0;
       needWorkers = 0;
+      maxWorkers = 0;
       workless = 0;
       tax = 0;
+      crimeLevel = 0;
       colloseumCoverage = 0;
       theaterCoverage = 0;
       entertainment = 0;

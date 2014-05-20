@@ -74,6 +74,7 @@
 #include "sound/player.hpp"
 #include "world/emperor.hpp"
 #include "events/empiretax.hpp"
+#include "cityservice_health.hpp"
 #include <set>
 #include "cityservice_military.hpp"
 
@@ -216,6 +217,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( city::request::Dispatcher::create( this ) );
   addService( city::Military::create( this ) );
   addService( audio::Player::create( this ) );
+  addService( city::HealthCare::create( this ));
 }
 
 void PlayerCity::timeStep(unsigned int time)
@@ -438,7 +440,7 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
   HouseList houseList = helper.find<House>( building::house );
 
-  foreach( house, houseList) { pop += (*house)->getHabitants().count(); }
+  foreach( house, houseList) { pop += (*house)->habitants().count(); }
   
   population = pop;
   onPopulationChangedSignal.emit( pop );

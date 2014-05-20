@@ -34,6 +34,7 @@
 #include "health_updater.hpp"
 #include "desirability_updater.hpp"
 #include "cityservice_military.hpp"
+#include "cityservice_health.hpp"
 
 namespace city
 {
@@ -108,6 +109,7 @@ ServiceFactory::ServiceFactory() : _d( new Impl )
   addCreator<HealthUpdater>();
   addCreator<DesirabilityUpdater>();
   addCreator<Military>();
+  addCreator<HealthCare>();
 }
 
 }//end namespace city

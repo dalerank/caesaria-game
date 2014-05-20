@@ -244,9 +244,9 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   foreach( it, houses )
   {
     HousePtr house = *it;
-    int habitants = house->getHabitants().count( CitizenGroup::mature );
+    int habitants = house->habitants().count( CitizenGroup::mature );
 
-    const HouseSpecification& lspec = house->getSpec();
+    const HouseSpecification& lspec = house->spec();
 
     if( house->isEntertainmentNeed( Service::theater ) )
     {
