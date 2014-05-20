@@ -180,11 +180,11 @@ bool PostponeEvent::Impl::executeEvent( Game& game, const std::string& type  )
   return false;
 }
 
-bool PostponeEvent::Impl::executeCityService( Game& game, const std::string& )
+bool PostponeEvent::Impl::executeCityService( Game& game, const std::string& type )
 {
   PlayerCityPtr city = game.city();
-  std::string name = options.get( "name" ).toString();
-  city::SrvcPtr srvc = city::ServiceFactory::create( name, city );
+  std::string dtype = options.get( "type", Variant( type ) ).toString();
+  city::SrvcPtr srvc = city::ServiceFactory::create( dtype, city );
   if( srvc.isValid() )
   {
     srvc->load( options );
