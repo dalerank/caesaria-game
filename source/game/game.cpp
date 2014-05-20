@@ -430,6 +430,7 @@ void Game::load(std::string filename)
 
   Logger::warning( "Game: initialize local pathfinder" );
   Pathfinder::instance().update( _d->city->tilemap() );
+  _d->saveTime = _d->time;
 
   Logger::warning( "Game: load finished" );
   return;

@@ -150,6 +150,7 @@ std::string Migration::getReason() const
     if( params.romeWages - params.cityWages > 1 )
       return "##low_wage_lack_migration##";
   }
+
   return "##migration_peoples_arrived_in_city##";
 }
 

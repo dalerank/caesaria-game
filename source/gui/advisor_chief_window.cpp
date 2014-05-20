@@ -36,6 +36,7 @@
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
+#include "city/cityservice_military.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -174,7 +175,7 @@ void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
     text = migration->getReason();
   }
 
-  drawReportRow( pos, _("##advchief_migration##"), text );
+  drawReportRow( pos, _("##advchief_migration##"), _( text ) );
 }
 
 void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
@@ -197,7 +198,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
     }
   }
 
-  drawReportRow( pos, _("##advchief_food_stocks##"), _(text) );
+  drawReportRow( pos, _("##advchief_food_stocks##"), text );
 }
 
 void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
@@ -222,6 +223,16 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
 void AdvisorChiefWindow::Impl::drawMilitary(Point pos)
 {
   std::string text;
+  city::MilitaryPtr mil = ptr_cast<city::Military>( city->findService( city::Military::getDefaultName() ) );
+  if( mil.isValid() )
+  {
+    city::Military::Notification n = mil->getPriorityNotification();
+    text = n.message;
+  }
+  if( text.empty() )
+  {
+    text = "##no_warning_for_us##";
+  }
   drawReportRow( pos, _("##advchief_military##"), text );
 }
 
