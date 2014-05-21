@@ -30,6 +30,7 @@
 #include "game.hpp"
 #include "city/city.hpp"
 #include "core/logger.hpp"
+#include "climatemanager.hpp"
 
 #include <vector>
 
@@ -134,7 +135,13 @@ bool GameLoader::load( vfs::Path filename, Game& game )
     if( (*it)->isLoadableFileExtension( filename.toString() ) /*||
         (*it)->isLoadableFileFormat(file) */ )
     {
-      bool loadok = (*it)->load( filename.toString(), game );
+      ClimateType currentClimate = (ClimateType)(*it)->getClimateType( filename.toString() );
+      if( currentClimate >= 0  )
+      {
+        ClimateManager::initialize( currentClimate );
+      }
+
+      bool loadok = (*it)->load( filename.toString(), game );      
       
       if( loadok )
       {

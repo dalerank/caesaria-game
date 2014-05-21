@@ -103,6 +103,19 @@ bool GameLoaderC3Map::load(const std::string& filename, Game& game)
   return true;
 }
 
+int GameLoaderC3Map::getClimateType(const std::string& filename)
+{
+  std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
+
+  unsigned int i = 0;
+  f.seekg(Impl::kClimate, std::ios::beg);
+  f.read((char*)&i, 1);
+
+  f.close();
+
+  return i;
+}
+
 GameLoaderC3Map::GameLoaderC3Map() : _d( new Impl ) {}
 
 bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
@@ -246,9 +259,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   }
 }
 
-
-
-void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity)
+void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
 {
   // read climate
   unsigned int i = 0;
@@ -258,22 +269,7 @@ void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity)
   ClimateType climate = (ClimateType) i;
   ioCity->setClimate(climate);
 
-  Logger::warning( "Climate type is %d", climate );
-
-  // reload all pics for the given climate
-  //   PicLoader &pic_loader = PicLoader::instance();
-  //   if (climate == C_CENTRAL)
-  //   {
-  //      pic_loader.load_archive("resources/pics/pics.zip");
-  //   }
-  //   else if (climate == C_NORTHERN)
-  //   {
-  //      pic_loader.load_archive("resources/pics/pics_north.zip");
-  //   }
-  //   else if (climate == C_DESERT)
-  //   {
-  //      pic_loader.load_archive("resources/pics/pics_south.zip");
-  //   }
+  Logger::warning( "C3MapLoader: climate type is %d", climate );
 }
 
 void GameLoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)

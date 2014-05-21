@@ -76,4 +76,13 @@ float Helper::getBalanceKoeff()
   return atan( _city->population() / 5000.f );
 }
 
+void Helper::updateTilePics()
+{
+  TilesArray tiles = _city->tilemap().getArea( TilePos( 0, 0 ), Size( _city->tilemap().size() ) );
+  foreach( it, tiles)
+  {
+    (*it)->setPicture( Picture::load( (*it)->picture().name() ) );
+  }
+}
+
 }//end namespace city

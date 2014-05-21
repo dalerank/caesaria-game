@@ -24,8 +24,9 @@ class Game;
 class GameLoaderOc3 : public GameAbstractLoader
 {
 public:
-  bool load(const std::string& filename, Game &game);
-  bool isLoadableFileExtension( const std::string& filename );
+  virtual bool load(const std::string& filename, Game &game);
+  virtual int  getClimateType(const std::string &filename);
+  virtual bool isLoadableFileExtension( const std::string& filename );
 };
 
 #endif

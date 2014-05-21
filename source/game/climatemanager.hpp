@@ -12,25 +12,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_C3SAV_LOADER_H_INCLUDED__
-#define __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+#ifndef _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
+#define _CAESARIA_CLIMATEMANAGER_INCLUDE_H_
 
-#include "abstractloader.hpp"
-#include "core/scopedptr.hpp"
+#include "enums.hpp"
 
-class GameLoaderC3Sav : public GameAbstractLoader
+class ClimateManager
 {
 public:
-  GameLoaderC3Sav();
-
-  virtual bool load(const std::string& filename, Game& game);
-  virtual bool isLoadableFileExtension( const std::string& filename );
-  virtual int  getClimateType(const std::string& filename);
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  static void initialize( ClimateType climate );
 };
 
-#endif // __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+#endif //_CAESARIA_CLIMATEMANAGER_INCLUDE_H_

@@ -109,3 +109,8 @@ bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".mission" );
 }
+
+int GameLoaderMission::getClimateType(const std::string& filename)
+{
+  return -1;
+}

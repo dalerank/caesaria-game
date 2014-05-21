@@ -70,6 +70,15 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
   return false;
 }
 
+int GameLoaderOc3::getClimateType(const std::string& filename)
+{
+  Logger::warning( "GameLoaderOc3: check climate type" + filename );
+  VariantMap vm = SaveAdapter::load( filename );
+  VariantMap scenario_vm = vm[ "scenario" ].toMap();
+
+  return scenario_vm.get( "climate", -1 );
+}
+
 bool GameLoaderOc3::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 8 ) == ".oc3save";

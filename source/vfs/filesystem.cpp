@@ -18,6 +18,7 @@
 #include "filenative_impl.hpp"
 #include "archive.hpp"
 #include "directory.hpp"
+#include "core/foreach.hpp"
 #include "entries.hpp"
 #include "archive_zip.hpp"
 #include "core/logger.hpp"
@@ -191,6 +192,12 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   {
     Logger::warning( "Open archive " + filename.absolutePath().toString() );
     return archive;
+  }
+
+  foreach( it, _d->openArchives )
+  {
+    if( filename == (*it)->entries()->getPath())
+      return *it;
   }
 
   int i;

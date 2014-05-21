@@ -46,7 +46,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::land2a, 187, 195, offset); //burning ruins start animation
   _d->setRange( ResourceGroup::land2a, 214, 231, offset); //burning ruins middle animation
   _d->setRange( ResourceGroup::land3a, 47, 92, offset);
-  _d->setRange( "plateau", 1, 44, offset);
+  _d->setRange( ResourceGroup::plateau, 1, 44, offset);
   _d->setRange( ResourceGroup::commerce, 1, 167, offset);
   _d->setRange( ResourceGroup::transport, 1, 93, offset);
   _d->setOne( ResourceGroup::transport, 72, 0, 44 ); //lifting low bridge sw
@@ -121,11 +121,11 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
 
   // walkers
   offset = getDefaultOffset( walkerOffset );
-  _d->setRange("citizen01", 1, 1240, offset);
-  _d->setRange("citizen02", 1, 1030, offset);
-  _d->setRange("citizen03", 1, 1128, offset);
-  _d->setRange("citizen04", 1, 577, offset);
-  _d->setRange("citizen05", 1, 184, offset);
+  _d->setRange(ResourceGroup::citizen1, 1, 1240, offset);
+  _d->setRange(ResourceGroup::citizen2, 1, 1030, offset);
+  _d->setRange(ResourceGroup::citizen3, 1, 1128, offset);
+  _d->setRange(ResourceGroup::citizen4, 1, 577, offset);
+  _d->setRange(ResourceGroup::citizen5, 1, 184, offset);
   _d->setRange("celts", 1, 552, offset );
 
   _d->setRange(ResourceGroup::carts, 369, 464, Point( -15, 32) ); //market lady helper

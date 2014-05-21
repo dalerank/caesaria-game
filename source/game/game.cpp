@@ -20,7 +20,7 @@
 #include "scene/logo.hpp"
 #include "city/build_options.hpp"
 #include "core/stringhelper.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "sound/engine.hpp"
