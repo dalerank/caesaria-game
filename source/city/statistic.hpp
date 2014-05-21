@@ -22,6 +22,7 @@
 #include "good/good.hpp"
 #include "predefinitions.hpp"
 #include "objects/predefinitions.hpp"
+#include <set>
 
 namespace city
 {
@@ -40,7 +41,7 @@ public:
   static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
   static unsigned int getFoodProducing( PlayerCityPtr city );
   static unsigned int getTaxValue( PlayerCityPtr city );
-  static HouseList getEvolveEducationReadyHouse( PlayerCityPtr );
+  static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
   static unsigned int getCrimeLevel( PlayerCityPtr city );
   static GoodsMap getGoodsMap( PlayerCityPtr city );
 };

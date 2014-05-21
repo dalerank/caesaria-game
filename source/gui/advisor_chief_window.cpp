@@ -142,18 +142,27 @@ void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
   int workless = city::Statistic::getWorklessPercent( city );
   std::string text;
   NColor color = DefaultColors::black;
-  int needWorkersNumber = maxWorkers - currentWorkers;
-  if( needWorkersNumber > 10 )
+
+  if( city->population() == 0 )
   {
-    text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
-    color = DefaultColors::brown;
+    text = _("##no_people_in_city##");
+    color =  DefaultColors::rosyBrown;
   }
-  else if( workless > 10 )
+  else
   {
-    text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
-    color = DefaultColors::brown;
+    int needWorkersNumber = maxWorkers - currentWorkers;
+    if( needWorkersNumber > 10 )
+    {
+      text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
+      color = DefaultColors::brown;
+    }
+    else if( workless > 10 )
+    {
+      text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
+      color = DefaultColors::brown;
+    }
+    else { text = _("##advchief_employers_ok##");  }
   }
-  else  {  text = _("##advchief_employers_ok##");  }
 
   drawReportRow( pos, _("##advchief_employment##"), text, color );
 }
@@ -196,6 +205,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
       case 0: text = "##have_no_food_on_next_month##"; break;
       case 1: text = "##small_food_on_next_month##"; break;
       case 2: text = "##some_food_on_next_month##"; break;
+      case 3: text = "##our_foods_level_are_low##"; break;
 
       default:
         text = StringHelper::format( 0xff, "%s %d", _("##have_food_for##"), monthWithFood );
@@ -233,10 +243,8 @@ void AdvisorChiefWindow::Impl::drawMilitary(Point pos)
     city::Military::Notification n = mil->getPriorityNotification();
     text = n.message;
   }
-  if( text.empty() )
-  {
-    text = "##no_warning_for_us##";
-  }
+
+  text = text.empty() ? "##no_warning_for_us##" : text;
   drawReportRow( pos, _("##advchief_military##"), text );
 }
 
@@ -250,10 +258,7 @@ void AdvisorChiefWindow::Impl::drawCrime(Point pos)
     text = ds->getReason();
   }
 
-  if( text.empty() )
-  {
-    text = "##advchief_no_crime##";
-  }
+  text = text.empty() ? "##advchief_no_crime##" : text;
 
   drawReportRow( pos, _("##advchief_crime##"), _(text) );
 }
@@ -268,10 +273,7 @@ void AdvisorChiefWindow::Impl::drawHealth(Point pos)
     text = ds->getReason();
   }
 
-  if( text.empty() )
-  {
-    text = "##advchief_health_good##";
-  }
+  text = text.empty() ? "##advchief_health_good##" : text;
 
   drawReportRow( pos, _("##advchief_health##"), text );
 }
@@ -279,11 +281,30 @@ void AdvisorChiefWindow::Impl::drawHealth(Point pos)
 void AdvisorChiefWindow::Impl::drawEducation(Point pos)
 {
   std::string text;
-  HouseList houses = city::Statistic::getEvolveEducationReadyHouse( city );
 
-  text = houses.empty()
+  StringArray reasons;
+  int avTypes[] = { building::school, building::library, building::academy, building::unknown };
+  std::string avReasons[] = { "##advchief_some_need_education##", "##advchief_some_need_library##",
+                              "##advchief_some_need_academy##", "" };
+
+  for( int i=0; avTypes[ i ] != building::unknown; i++ )
+  {
+    std::set<int> availableTypes;
+    availableTypes.insert( avTypes[ i ] );
+
+    HouseList houses = city::Statistic::getEvolveHouseReadyBy( city, availableTypes );
+    if( houses.size() > 0 )
+    {
+      reasons << avReasons[i];
+    }
+  }
+
+  text = reasons.rand();
+
+  text = text.empty()
             ? "##advchief_education_ok##"
-            : "##advchief_some_need_education##";
+            : text;
+
 
   drawReportRow( pos, _("##advchief_education##"), _( text ) );
 }

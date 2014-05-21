@@ -46,7 +46,7 @@ public:
     __REG_WTYPE( citizen )
     __REG_WTYPE( emmigrant )
     __REG_WTYPE( soldier )
-    __REG_WTYPE(  cartPusher )
+    __REG_WTYPE( cartPusher )
     __REG_WTYPE( marketLady )
     __REG_WTYPE( marketKid )
     __REG_WTYPE( serviceman )
