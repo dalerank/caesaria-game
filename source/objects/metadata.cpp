@@ -30,6 +30,8 @@
 using namespace constants;
 using namespace gfx;
 
+const char* MetaDataOptions::cost = "cost";
+
 MetaData MetaData::invalid = MetaData( building::unknown, "unknown" );
 
 class BuildingTypeHelper : public EnumsHelper<TileOverlay::Type>

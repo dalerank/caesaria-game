@@ -117,7 +117,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::GuiEnv* g
   addLayer( LayerEducation::create( _d->camera, city, citylayer::school ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::library ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::academy ) );
-  addLayer( LayerTroubles::create( _d->camera, city ) );
+  addLayer( LayerTroubles::create( _d->camera, city, citylayer::risks ) );
+  addLayer( LayerTroubles::create( _d->camera, city, citylayer::troubles ) );
 
   _d->setLayer( citylayer::simple );
 }

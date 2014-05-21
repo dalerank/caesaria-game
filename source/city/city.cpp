@@ -76,6 +76,7 @@
 #include "events/empiretax.hpp"
 #include "cityservice_health.hpp"
 #include <set>
+#include "cityservice_military.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -214,6 +215,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( city::Fishery::create( this ) );
   addService( city::Disorder::create( this ) );
   addService( city::request::Dispatcher::create( this ) );
+  addService( city::Military::create( this ) );
   addService( audio::Player::create( this ) );
   addService( city::HealthCare::create( this ));
 }

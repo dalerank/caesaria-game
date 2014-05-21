@@ -85,7 +85,11 @@ void Info::update( const unsigned int time )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -1;
 
-    last.needWorkers = city::Statistic::getVacantionsNumber( &_city );
+    int currentWorkers, maxWorkers;
+    city::Statistic::getWorkersNumber( &_city, currentWorkers, maxWorkers );
+
+    last.needWorkers = maxWorkers - currentWorkers;
+    last.maxWorkers = maxWorkers;
     last.workless = city::Statistic::getWorklessPercent( &_city );
     last.payDiff = _city.empire()->getWorkerSalary() - _city.funds().workerSalary();
     last.tax = _city.funds().taxRate();

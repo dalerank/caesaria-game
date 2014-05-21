@@ -21,7 +21,7 @@
 namespace gfx
 {
 
-  class Tile;
+class Tile;
 class Picture;
 class Tilemap;
 class TilemapCamera;

@@ -30,11 +30,12 @@ public:
   virtual VisibleWalkers getVisibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
-  static LayerPtr create( Camera& camera, PlayerCityPtr city);
+  static LayerPtr create( Camera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);
 
 private:
-  LayerTroubles( Camera& camera, PlayerCityPtr city );
+  LayerTroubles( Camera& camera, PlayerCityPtr city, int type );
+  int _type;
 };
 
 }//end namespace gfx

@@ -33,28 +33,18 @@ using namespace constants;
 namespace city
 {
 
-unsigned int Statistic::getCurrentWorkersNumber(PlayerCityPtr city)
+void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& maxWorkers )
 {
-  Helper helper( city );
+  WorkingBuildingList buildings;
+  buildings << city->overlays();
 
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
-
-  int workersNumber = 0;
-  foreach( bld, buildings ) { workersNumber += (*bld)->numberWorkers(); }
-
-  return workersNumber;
-}
-
-unsigned int Statistic::getVacantionsNumber(PlayerCityPtr city)
-{
-  Helper helper( city );
-
-  WorkingBuildingList buildings = helper.find<WorkingBuilding>( building::any );
-
-  int workersNumber = 0;
-  foreach( bld, buildings ) { workersNumber += (*bld)->maxWorkers(); }
-
-  return workersNumber;
+  workersNumber = 0;
+  maxWorkers = 0;
+  foreach( bld, buildings )
+  {
+    workersNumber += (*bld)->numberWorkers();
+    maxWorkers += (*bld)->maxWorkers();
+  }
 }
 
 unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
@@ -74,7 +64,8 @@ unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
 
 unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
 {
-  int workersNumber = getCurrentWorkersNumber( city );
+  int workersNumber, maxWorkers;
+  getWorkersNumber( city, workersNumber, maxWorkers );
 
   if( workersNumber == 0 )
     return 0;
@@ -149,8 +140,8 @@ unsigned int Statistic::getFoodProducing(PlayerCityPtr city)
 
 unsigned int Statistic::getTaxValue(PlayerCityPtr city)
 {
-  HouseList houses;
-  houses << city->overlays();
+  Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
 
   float taxValue = 0.f;
   float taxRate = city->funds().taxRate();
@@ -166,6 +157,32 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   }
 
   return taxValue;
+}
+
+HouseList Statistic::getEvolveEducationReadyHouse(PlayerCityPtr city)
+{
+  HouseList ret;
+
+  Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+
+  foreach( it, houses )
+  {
+    gfx::TileOverlay::Type btype;
+    (*it)->spec().next().checkHouse( *it, NULL, &btype );
+    switch( btype )
+    {
+    case building::school:
+    case building::library:
+    case building::academy:
+      ret.push_back( *it );
+    break;
+
+    default: break;
+    }
+  }
+
+  return ret;
 }
 
 Statistic::GoodsMap Statistic::getGoodsMap(PlayerCityPtr city)

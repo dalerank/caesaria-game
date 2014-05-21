@@ -27,6 +27,12 @@
 #include "gfx/tileoverlay.hpp"
 
 // contains some metaData for a building type
+class MetaDataOptions
+{
+public:
+  static const char* cost;
+};
+
 class MetaData
 {
   friend class MetaDataHolder;

@@ -36,6 +36,7 @@
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
+#include "city/cityservice_military.hpp"
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
 
@@ -136,11 +137,13 @@ void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::
 
 void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
 {
-  int needWorkersNumber = city::Statistic::getVacantionsNumber( city );
+  int currentWorkers, maxWorkers;
+  city::Statistic::getWorkersNumber( city, currentWorkers, maxWorkers );
   int workless = city::Statistic::getWorklessPercent( city );
   std::string text;
   NColor color = DefaultColors::black;
-  if( needWorkersNumber > 0 )
+  int needWorkersNumber = maxWorkers - currentWorkers;
+  if( needWorkersNumber > 10 )
   {
     text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
     color = DefaultColors::brown;
@@ -176,7 +179,7 @@ void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
     text = migration->getReason();
   }
 
-  drawReportRow( pos, _("##advchief_migration##"), text );
+  drawReportRow( pos, _("##advchief_migration##"), _( text ) );
 }
 
 void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
@@ -199,7 +202,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
     }
   }
 
-  drawReportRow( pos, _("##advchief_food_stocks##"), _(text) );
+  drawReportRow( pos, _("##advchief_food_stocks##"), text );
 }
 
 void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
@@ -224,6 +227,16 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
 void AdvisorChiefWindow::Impl::drawMilitary(Point pos)
 {
   std::string text;
+  city::MilitaryPtr mil = ptr_cast<city::Military>( city->findService( city::Military::getDefaultName() ) );
+  if( mil.isValid() )
+  {
+    city::Military::Notification n = mil->getPriorityNotification();
+    text = n.message;
+  }
+  if( text.empty() )
+  {
+    text = "##no_warning_for_us##";
+  }
   drawReportRow( pos, _("##advchief_military##"), text );
 }
 
@@ -266,7 +279,13 @@ void AdvisorChiefWindow::Impl::drawHealth(Point pos)
 void AdvisorChiefWindow::Impl::drawEducation(Point pos)
 {
   std::string text;
-  drawReportRow( pos, _("##advchief_education##"), text );
+  HouseList houses = city::Statistic::getEvolveEducationReadyHouse( city );
+
+  text = houses.empty()
+            ? "##advchief_education_ok##"
+            : "##advchief_some_need_education##";
+
+  drawReportRow( pos, _("##advchief_education##"), _( text ) );
 }
 
 void AdvisorChiefWindow::Impl::drawReligion(Point pos)

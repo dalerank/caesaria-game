@@ -154,6 +154,7 @@ std::string Migration::getReason() const
     if( params.crimeLevel > 25 )
       return "##migration_lack_crime##";
   }
+
   return "##migration_peoples_arrived_in_city##";
 }
 
