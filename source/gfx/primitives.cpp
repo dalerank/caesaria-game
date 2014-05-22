@@ -5919,7 +5919,7 @@ int characterColor(SDL_Surface * dst, Sint16 x, Sint16 y, char c, Uint32 color)
 	Uint8 patt, mask;
 	Uint8 *linepos;
 	Uint32 pitch;
-	SDL_Surface *rotatedCharacter;
+	//SDL_Surface *rotatedCharacter;
 	Uint32 ci;
 
 	/*
@@ -6624,7 +6624,7 @@ void _murphyWideline(SDL_gfxMurphyIterator *m, Sint16 x1, Sint16 y1, Sint16 x2, 
 	float offset = (float)width / 2.f;
 
 	Sint16 temp;
-	Sint16 ptx, pty, ptxx, ptxy, ml1x, ml1y, ml2x, ml2y, ml1bx, ml1by, ml2bx, ml2by;
+	Sint16 ptx, pty, /*ptxx, ptxy,*/ ml1x, ml1y, ml2x, ml2y, ml1bx, ml1by, ml2bx, ml2by;
 
 	int d0, d1;		/* difference terms d0=perpendicular to line, d1=along line */
 
@@ -6709,8 +6709,8 @@ void _murphyWideline(SDL_gfxMurphyIterator *m, Sint16 x1, Sint16 y1, Sint16 x2, 
 		m->last2x = -32768;
 		m->last2y = -32768;
 	}
-	ptxx = ptx;
-	ptxy = pty;
+//	ptxx = ptx;
+//	ptxy = pty;
 
 	for (q = 0; dd <= tk; q++) {	/* outer loop, stepping perpendicular to line */
 

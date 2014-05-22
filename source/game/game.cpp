@@ -297,6 +297,7 @@ void Game::setScreenGame()
   _d->currentScreen = &screen;
   GameDate& cdate = GameDate::instance();
   _d->time = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth();
+  _d->saveTime = _d->time;
 
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
@@ -430,7 +431,6 @@ void Game::load(std::string filename)
 
   Logger::warning( "Game: initialize local pathfinder" );
   Pathfinder::instance().update( _d->city->tilemap() );
-  _d->saveTime = _d->time;
 
   Logger::warning( "Game: load finished" );
   return;

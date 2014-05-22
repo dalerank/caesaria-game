@@ -47,10 +47,23 @@ void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& ma
   }
 }
 
+CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
+{
+  Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+
+  CitizenGroup ret;
+  foreach( it, houses )
+  {
+    ret += (*it)->habitants();
+  }
+
+  return ret;
+}
+
 unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
 {
   Helper helper( city );
-
   HouseList houses = helper.find<House>( building::house );
 
   int workersNumber = 0;

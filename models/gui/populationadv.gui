@@ -1,0 +1,34 @@
+{
+  geometry : [ 0, 0, 640, 432 ]
+  
+  lbBackground#Label :
+  {
+    geometryf : [ 0.0, 0.0, 1, 1 ]
+    bgtype : "whiteFrame"
+    
+    lbIcon#Label : {
+      geometry : [ 10, 10, 50, 50 ]
+      image : "paneling_00260"
+    }
+
+    lbBlackframe#Label : {
+      geometry : [ 46, 335, "pw-50", "ph-20" ]
+      bgtype : "blackFrame"
+    }
+
+    lbChart#Label : {
+      geometry : [ 55, 60, 612, 271 ]
+      image : "panelwindows_00015"
+    }
+          
+    lbTitle#Label : {
+      geometryf : [ 0.05, 0.05, 0.95, 0.1 ]
+      minimumSize : [ 0, 30 ]
+      maximumSize : [ 0, 60 ]
+      font : "FONT_3"
+      text : "##advpopulation_title_census##"
+      textAlign : [ "center", "center" ]
+    }  
+  }  
+}
+
