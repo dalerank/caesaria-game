@@ -75,6 +75,9 @@ public:
       cityWages = 0;
       romeWages = 0;
     }
+
+    VariantMap save() const;
+    void load( const VariantMap& stream );
   };
 
   struct ScribeMessage
@@ -88,11 +91,13 @@ public:
   };
 
   typedef std::list<ScribeMessage> Messages;
+  typedef std::vector< Info::Parameters > History;
 
   static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
   Parameters getLast() const;
+  const History& getHistory() const;
 
   static std::string getDefaultName();
 

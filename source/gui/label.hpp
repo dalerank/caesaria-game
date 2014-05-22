@@ -56,6 +56,8 @@ public:
   //! Return background draw
   virtual BackgroundMode getBackgroundMode() const;
 
+  virtual bool onEvent(const NEvent &event);
+
   virtual bool isBorderVisible() const;
 
   //! Sets whether to draw the border

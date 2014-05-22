@@ -20,9 +20,12 @@
 #include "core/gettext.hpp"
 #include "city/helper.hpp"
 #include "core/logger.hpp"
+#include "objects/house.hpp"
 #include "game/settings.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
+#include "city/cityservice_info.hpp"
+#include "objects/house_level.hpp"
 #include "label.hpp"
 
 using namespace constants;
@@ -82,16 +85,25 @@ private:
 class CityChart : public Label
 {
 public:
-  typedef enum { dm_census } DrawMode;
+  typedef enum { dm_census, dm_population, dm_society, dm_count } DrawMode;
   CityChart( Widget* parent, const Rect& rectangle ) : Label( parent, rectangle )
   {
 
   }
 
+  DrawMode fit( DrawMode mode )
+  {
+    if( mode < 0 ) { mode = (DrawMode)(CityChart::dm_count-1); }
+    else if( mode >= CityChart::dm_count ) { mode = CityChart::dm_census; }
+
+    return (DrawMode)mode;
+  }
+
   void update( PlayerCityPtr city, DrawMode mode )
   {
     _values.clear();
-    switch( mode )
+    _mode = fit( mode );
+    switch( _mode )
     {
     case dm_census:
     {
@@ -112,7 +124,57 @@ public:
       onMaxXChange.emit( _maxXValue );
     }
     break;
+
+    case dm_population:
+    {
+      city::InfoPtr info = ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ) );
+      city::Info::History history = info->getHistory();
+      history.push_back( info->getLast() );
+
+      _values.clear();
+      foreach( it, history )
+      {
+        _values.push_back( (*it).population );
+      }
     }
+    break;
+
+    case dm_society:
+    {
+      city::Helper helper( city );
+      HouseList houses = helper.find<House>( building::house );
+
+      _values.clear();
+      _maxValue = 5;
+      std::map< int, int > taxMap;
+
+      foreach( it, houses )
+      {
+        const HouseSpecification& spec = (*it)->spec();
+        taxMap[ spec.taxRate() ]++;
+        _maxValue = std::max( spec.taxRate(), _maxValue );
+      }
+
+      if( !taxMap.empty() )
+      {
+        _minXValue = taxMap.begin()->second;
+        _maxXValue = taxMap.rbegin()->second;
+        foreach( it, taxMap )
+        {
+          _values.push_back( it->second );
+        }
+      }
+    }
+
+    default: break;
+    }
+
+    if( _values.size() <= 20 ) { _picIndex = 75; }
+    else if( _values.size() <= 40 ) { _picIndex = 76; }
+    else if( _values.size() <= 100 ) { _picIndex = 77; }
+    else { _picIndex = 78; }
+
+    _resizeEvent();
   }
 
   void _updateTexture( gfx::Engine& painter )
@@ -123,7 +185,7 @@ public:
       return;
 
     Picture pic = *getTextPicture();
-    Picture rpic = Picture::load( ResourceGroup::panelBackground, 77 );
+    Picture rpic = Picture::load( ResourceGroup::panelBackground, _picIndex );
 
     pic.fill( 0, Rect() );
     int index=0;
@@ -135,14 +197,29 @@ public:
     }
   }
 
+  DrawMode mode() const { return _mode; }
+
 public oc3_signals:
   Signal1<int> onMaxYChange;
   Signal1<int> onMaxXChange;
 
 private:
   std::vector<int> _values;
+  DrawMode _mode;
+  int _picIndex;
   int _maxValue;
   int _minXValue, _maxXValue;
+};
+
+class ChartModeHelper : public EnumsHelper<CityChart::DrawMode>
+{
+public:
+  ChartModeHelper() : EnumsHelper( CityChart::dm_count )
+  {
+    append( CityChart::dm_census, "census" );
+    append( CityChart::dm_population, "population" );
+    append( CityChart::dm_society, "society" );
+  }
 };
 
 class Population::Impl
@@ -150,6 +227,13 @@ class Population::Impl
 public:
   PlayerCityPtr city;
   CityChart* lbCityChart;
+  Label* lbNextChart;
+  Label* lbPrevChart;
+  Label* lbTitle;
+
+  void showNextChart();
+  void showPrevChart();
+  void switch2nextChart( int change );
 };
 
 Population::Population(PlayerCityPtr city, Widget* parent, int id )
@@ -166,6 +250,10 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   CityChartLegend* legendY = new CityChartLegend( this, Rect( 8, 60, 56, 280 ), false, 2 );
   CityChartLegend* legendX = new CityChartLegend( this, Rect( 54, 270, 480, 290 ), true, 10 );
 
+  _d->lbNextChart = findChildA<Label*>( "lbNextChart", true, this );
+  _d->lbPrevChart = findChildA<Label*>( "lbPrevChart", true, this );
+  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
+
   Label* lbChart = findChildA<Label*>( "lbChart", true, this );
   if( lbChart )
   {
@@ -174,8 +262,11 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
     CONNECT( _d->lbCityChart, onMaxYChange, legendY, CityChartLegend::setMaxValue );
     CONNECT( _d->lbCityChart, onMaxXChange, legendX, CityChartLegend::setMaxValue );
 
-    _d->lbCityChart->update( city, CityChart::dm_census );
+    _d->switch2nextChart( 0 );
   }
+
+  CONNECT( _d->lbNextChart, onClicked(), _d.data(), Impl::showNextChart );
+  CONNECT( _d->lbPrevChart, onClicked(), _d.data(), Impl::showPrevChart );
 }
 
 void Population::draw( gfx::Engine& painter )
@@ -184,6 +275,40 @@ void Population::draw( gfx::Engine& painter )
     return;
 
   Widget::draw( painter );
+}
+
+void Population::Impl::showNextChart()
+{
+  switch2nextChart( 1 );
+}
+
+void Population::Impl::switch2nextChart( int change )
+{
+  if( lbCityChart )
+  {
+    int mode = lbCityChart->mode();
+    lbCityChart->update( city, (CityChart::DrawMode)(mode+change) );
+
+    mode = lbCityChart->mode();
+    ChartModeHelper cmHelper;
+    std::string modeName = cmHelper.findName( lbCityChart->fit( (CityChart::DrawMode)(mode + 1) ) );
+    std::string text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    lbNextChart->setText(  _( text ) );
+
+    modeName = cmHelper.findName( lbCityChart->fit( (CityChart::DrawMode)(mode - 1) ) );
+    text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    lbPrevChart->setText( _( text ) );
+
+    modeName = cmHelper.findName( lbCityChart->fit( (CityChart::DrawMode)mode ) );
+    text = StringHelper::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    //std::string tooltipText =
+    lbTitle->setText( _( text ) );
+  }
+}
+
+void Population::Impl::showPrevChart()
+{
+  switch2nextChart( -1 );
 }
 
 }//end namespace advisorwnd

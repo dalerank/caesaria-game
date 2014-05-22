@@ -18,6 +18,7 @@
 #include "label.hpp"
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
+#include "core/event.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 
@@ -57,6 +58,7 @@ public:
   Label::BackgroundMode backgroundMode;
   bool RestrainTextInside;
   bool RightToLeft;
+  bool lmbPressed;
   string prefix;
   bool needUpdatePicture;
   int lineIntervalOffset;
@@ -74,6 +76,7 @@ public:
            needUpdatePicture(false), lineIntervalOffset( 0 )
   {
     font = Font::create( FONT_2 );
+    lmbPressed = false;
   }
 
   ~Impl()
@@ -576,6 +579,29 @@ void Label::beforeDraw(gfx::Engine& painter )
 }
 
 Label::BackgroundMode Label::getBackgroundMode() const {  return _d->backgroundMode; }
+
+bool Label::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type )
+    {
+    case mouseLbtnPressed: _d->lmbPressed = true;
+    break;
+
+    case mouseLbtnRelease:
+    {
+      _d->lmbPressed = false;
+      _d->onClickedSignal.emit();
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  return Widget::onEvent( event );
+}
 
 bool Label::isBorderVisible() const {  return _d->isBorderVisible; }
 
