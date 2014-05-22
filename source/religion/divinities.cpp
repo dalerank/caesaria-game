@@ -48,7 +48,12 @@ void RomeDivinity::load(const VariantMap& vm)
   _pic = Picture::load( vm.get( "image" ).toString() );
   _relation = (float)vm.get( "relation", 100.f );
   _lastFestival = vm.get( "lastFestivalDate", GameDate::current() ).toDateTime() ;
+
   _shortDesc = vm.get( "shortDesc" ).toString();
+  if( _shortDesc.empty() )
+  {
+    _shortDesc  = StringHelper::format( 0xff, "##%s_desc##", internalName().c_str() );
+  }
   _wrathPoints = vm.get( "wrath" );
   _blessingDone = vm.get( "blessingDone" );
   _smallCurseDone = vm.get( "smallCurseDone");
@@ -135,7 +140,7 @@ void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 std::string RomeDivinity::moodDescription() const
 {
   if( _moodDescr.empty() )
-    return "no_descriptions_divinity_mood";
+    return "##no_descriptions_divinity_mood##";
 
   int delim = 100 / _moodDescr.size();
   return _moodDescr[ math::clamp<int>( _relation / delim, 0, _moodDescr.size()-1 ) ];
