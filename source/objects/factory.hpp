@@ -69,6 +69,8 @@ public:
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
 
+  std::string cartStateDesc() const;
+
 protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();

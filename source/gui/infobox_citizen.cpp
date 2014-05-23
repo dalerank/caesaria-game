@@ -23,6 +23,7 @@
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "core/gettext.hpp"
+#include "events/playsound.hpp"
 
 using namespace constants;
 
@@ -59,7 +60,16 @@ InfoboxCitizen::InfoboxCitizen(Widget* parent, const WalkerList& walkers )
     lbType->setText( _(walkerType) );
     lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->type() ) );
 
-    lbThinks->setText( wlk->getThinks() );
+    std::string thinks = wlk->getThinks();
+    lbThinks->setText( _( thinks ) );
+
+    if( !thinks.empty() )
+    {
+      std::string sound = thinks.substr( 2, thinks.size() - 4 );
+      sound += ".wav";
+      events::GameEventPtr e = events::PlaySound::create( sound, 100 );
+      e->dispatch();
+    }
   }
 
   if( wlk.isValid() )

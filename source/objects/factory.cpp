@@ -282,6 +282,29 @@ void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
 float Factory::getProductRate() const{  return _d->productionRate;}
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}
+
+std::string Factory::cartStateDesc() const
+{
+  if( walkers().size() > 0 )
+  {
+    CartPusherPtr cart = ptr_cast<CartPusher>( walkers().front() );
+    if( cart.isValid() )
+    {
+      if( cart->getPathway().isValid() )
+      {
+        return cart->getPathway().isReverse()
+                 ? "##factory_cart_returning_from_delivery##"
+                 : "##factory_cart_taking_goods##";
+      }
+      else
+      {
+        return "##factory_cart_wait##";
+      }
+    }
+  }
+
+  return "";
+}
 Good::Type Factory::produceGoodType() const{  return _d->outGoodType;}
 
 void Factory::receiveGood()

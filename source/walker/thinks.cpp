@@ -161,10 +161,15 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     positiveIdeas << "##citizen_good_education##";
   }
 
+  std::string ret;
   if( !positiveIdeas.empty() )
   {
-    return positiveIdeas.rand();
+    ret = positiveIdeas.rand();
+  }
+  else
+  {
+    ret = positiveIdeas.rand();
   }
 
-  return "##unknown_reason##";
+  return ret.empty() ? "##unknown_reason##" : ret;
 }
