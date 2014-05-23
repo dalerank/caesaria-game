@@ -37,9 +37,11 @@ public:
 
   virtual void die();
 
+
   virtual ~Emigrant();
 protected:
   virtual void _changeDirection();
+  virtual void _updateThinks();
 
 protected:
   const gfx::Picture& _cartPicture();
