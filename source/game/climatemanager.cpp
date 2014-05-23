@@ -23,6 +23,7 @@
 #include "resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/picture_bank.hpp"
+#include "core/logger.hpp"
 
 using namespace vfs;
 
@@ -46,6 +47,12 @@ void ClimateManager::initialize(ClimateType climate)
   Path archivePath = GameSettings::rcpath( climateArchives.get( optName ).toString() );
   ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
 
+  if( archive.isNull() )
+  {
+    Logger::warning( "ClimateManager: can't load file " + archivePath.toString() );
+    return;
+  }
+
   StringArray fileNames;
   __appendRange( ResourceGroup::housing, 49, 51, fileNames );
   __appendRange( ResourceGroup::land1a, 1, 303, fileNames );
@@ -66,7 +73,6 @@ void ClimateManager::initialize(ClimateType climate)
   foreach( it, fileNames )
   {
     NFile file = archive->createAndOpenFile( *it + ".png" );
-
     if( file.isOpen() )
     {
       Picture pic = PictureLoader::instance().load( file );

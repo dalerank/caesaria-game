@@ -33,17 +33,55 @@
 namespace gui
 {
 
+class FileListBox : public ListBox
+{
+public:
+  FileListBox( Widget* parent, const Rect& rectangle, int id )
+    : ListBox( parent, rectangle, id )
+  {
+
+  }
+
+  virtual ListBoxItem& addItem(const std::string &text, Font font, const int color)
+  {
+    DateTime time = vfs::FileSystem::instance().getFileUpdateTime( text );
+    std::string timeStr = StringHelper::format( 0xff, "(%02d %s %02d:%02d:%02d)",
+                                                time.day(), DateTime::getShortMonthName( time.month()-1 ),
+                                                time.hour(), time.minutes(), time.seconds() );
+    ListBoxItem& item = ListBox::addItem( vfs::Path( text ).baseName().toString(), font, color );
+
+    item.setData( Variant( timeStr ) );
+    return item;
+  }
+
+protected:
+  virtual void _drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos)
+  {
+    font.draw( texture, item.text(), pos, false );
+    Font font2 = Font::create( FONT_1 );
+
+    std::string timeStr = item.data().toString();
+    Rect textRect = _getItemsRect();
+    textRect = font2.calculateTextRect( timeStr, Rect( 0, pos.y(), textRect.width(), pos.y() + itemHeight() ),
+                                        align::lowerRight, align::center );
+
+    font2.setColor( font.color() );
+    font2.draw( texture, timeStr, textRect.UpperLeftCorner - Point( 10, 0), false );
+  }
+};
+
 class LoadMapWindow::Impl
 {
 public:
   Label* lbTitle;
-  ListBox* files;
+  FileListBox* lbxFiles;
   PushButton* btnExit;
   PushButton* btnHelp;
   PushButton* btnLoad;
   vfs::Directory directory;
   std::string fileExtension;
   std::string saveItemText;
+  bool mayDelete;
 
   void fillFiles();
 
@@ -85,6 +123,7 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
   _d->directory = dir;
   _d->fileExtension = ext;
+  _d->mayDelete = false;
 
   _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
   _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
@@ -96,16 +135,16 @@ LoadMapWindow::LoadMapWindow( Widget* parent, const Rect& rect,
   CONNECT( _d->btnExit, onClicked(), this, LoadMapWindow::deleteLater );
   CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );
 
-  _d->files = findChildA<ListBox*>( "lbxFiles", true, this );
-  if( _d->files )
+  _d->lbxFiles = new FileListBox( this, Rect( 10, 50, width() - 10, height() - 45 ), -1 );
+  if( _d->lbxFiles )
   {
-    _d->files->setItemFont( Font::create( FONT_2_WHITE ) );
-    _d->files->setItemDefaultColor( ListBoxItem::simple, 0xffffffff );
-    _d->files->setItemDefaultColor( ListBoxItem::hovered, 0xff000000 );
+    _d->lbxFiles->setItemFont( Font::create( FONT_2_WHITE ) );
+    _d->lbxFiles->setItemDefaultColor( ListBoxItem::simple, 0xffffffff );
+    _d->lbxFiles->setItemDefaultColor( ListBoxItem::hovered, 0xff000000 );
   }
 
-  CONNECT( _d->files, onItemSelected(), _d.data(), Impl::resolveItemSelected )
-  CONNECT( _d->files, onItemSelectedAgain(), _d.data(), Impl::resolveItemDblClick );
+  CONNECT( _d->lbxFiles, onItemSelected(), _d.data(), Impl::resolveItemSelected )
+  CONNECT( _d->lbxFiles, onItemSelectedAgain(), _d.data(), Impl::resolveItemDblClick );
   _d->fillFiles();
 }
 
@@ -113,13 +152,19 @@ LoadMapWindow::~LoadMapWindow(){}
 
 void LoadMapWindow::Impl::fillFiles()
 {
+  if( !lbxFiles )
+    return;
+
   vfs::Entries flist = vfs::Directory( directory ).getEntries();
+  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtension );
+
   StringArray names;
-  names << flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtension );
-  if( files )
+  for( vfs::Entries::ConstItemIt it=flist.begin(); it != flist.end(); ++it )
   {
-    files->addItems( names );
+    names << (*it).absolutePath().toString();
   }
+
+  lbxFiles->addItems( names );
 }
 
 void LoadMapWindow::draw(gfx::Engine& engine )
@@ -142,6 +187,9 @@ void LoadMapWindow::setTitle( const std::string& title )
 {
   _d->lbTitle->setText( title );
 }
+
+void LoadMapWindow::setMayDelete(bool mayDelete) {  _d->mayDelete = mayDelete;}
+bool LoadMapWindow::isMayDelete() const { return _d->mayDelete; }
 
 Signal1<std::string>& LoadMapWindow::onSelectFile() {  return _d->onSelecteFileSignal; }
 

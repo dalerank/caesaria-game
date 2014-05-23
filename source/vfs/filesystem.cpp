@@ -27,7 +27,8 @@
 	#include <direct.h> // for _chdir
 	#include <io.h> // for _access
 	#include <tchar.h>
-    #include <stdio.h>
+	#include <windows.h>
+	#include <stdio.h>
 #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 	#include <stdio.h>
 	#include <stdlib.h>
@@ -697,6 +698,31 @@ bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
 
 
   return false;
+}
+
+DateTime FileSystem::getFileUpdateTime(const Path& filename) const
+{ 
+#ifndef CAESARIA_PLATFORM_WIN
+  struct tm *foo;
+  struct stat attrib;
+  stat( filename.toString().c_str(), &attrib);
+  foo = gmtime(&(attrib.st_mtime));
+
+  return DateTime( foo->tm_year, foo->tm_mon, foo->tm_mday,
+                   foo->tm_hour, foo->tm_min, foo->tm_sec );
+#else
+  FILETIME creationTime,
+           lpLastAccessTime,
+           lastWriteTime;
+  HANDLE h = CreateFile( filename.toString().c_str(),
+                         GENERIC_READ, FILE_SHARE_READ, NULL,
+                         OPEN_EXISTING, 0, NULL);
+  GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
+  SYSTEMTIME systemTime;
+  FileTimeToSystemTime( &creationTime, &systemTime );
+  return DateTime( systemTime.wYear, systemTime.wMonth, systemTime.wDay,
+                   systemTime.wHour, systemTime.wMinute, systemTime.wSecond );
+#endif
 }
 
 FileSystem& FileSystem::instance()

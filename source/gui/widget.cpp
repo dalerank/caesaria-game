@@ -54,7 +54,7 @@ void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 }
 
 void Widget::setMaxWidth( unsigned int width ) { __D_IMPL(d,Widget) d->maxSize.setWidth( width );}
-unsigned int Widget::height() const{    return getRelativeRect().getHeight(); }
+unsigned int Widget::height() const{    return getRelativeRect().height(); }
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : __INIT_IMPL(Widget),
@@ -576,7 +576,7 @@ void Widget::setupUI( const VariantMap& ui )
   if( tmp.isValid() )
   {
     RectF r = tmp.toRectf();
-    if( r.getWidth() > 1 && r.getHeight() > 1)
+    if( r.width() > 1 && r.height() > 1)
     {
       r = RectF( 0, 0, 1, 1 );
       Logger::warning( "Incorrect geometryf values [%f, %f, %f, %f]",
@@ -663,15 +663,15 @@ void Widget::recalculateAbsolutePosition( bool recursive )
             parentAbsoluteClip = parent()->absoluteClippingRect();
     }
 
-    const int diffx = parentAbsolute.getWidth() - _d->lastParentRect.getWidth();
-    const int diffy = parentAbsolute.getHeight() - _d->lastParentRect.getHeight();
+    const int diffx = parentAbsolute.width() - _d->lastParentRect.width();
+    const int diffy = parentAbsolute.height() - _d->lastParentRect.height();
 
 
     if( _d->alignLeft == align::scale || _d->alignRight == align::scale)
-        fw = (float)parentAbsolute.getWidth();
+        fw = (float)parentAbsolute.width();
 
     if( _d->alignTop == align::scale || _d->alignBottom == align::scale)
-        fh = (float)parentAbsolute.getHeight();
+        fh = (float)parentAbsolute.height();
     
     switch( _d->alignLeft)
     {
@@ -711,8 +711,8 @@ void Widget::recalculateAbsolutePosition( bool recursive )
 
     _d->relativeRect = _d->desiredRect;
 
-    const int w = _d->relativeRect.getWidth();
-    const int h = _d->relativeRect.getHeight();
+    const int w = _d->relativeRect.width();
+    const int h = _d->relativeRect.height();
 
     // make sure the desired rectangle is allowed
     if (w < (int)_d->minSize.width() )
@@ -829,8 +829,8 @@ Rect Widget::getClientRect() const{  return Rect( 0, 0, width(), height() );}
 void Widget::setFocus(){  getEnvironment()->setFocus( this );}
 void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const{  return _dfunc()->absoluteClippingRect;}
-unsigned int Widget::width() const{  return getRelativeRect().getWidth();}
-Size Widget::size() const{  return Size( _dfunc()->relativeRect.getWidth(), _dfunc()->relativeRect.getHeight() );}
+unsigned int Widget::width() const{  return getRelativeRect().width();}
+Size Widget::size() const{  return Size( _dfunc()->relativeRect.width(), _dfunc()->relativeRect.height() );}
 int Widget::screenTop() const { return absoluteRect().top(); }
 int Widget::screenLeft() const { return absoluteRect().left(); }
 int Widget::screenBottom() const { return absoluteRect().bottom(); }
