@@ -30,6 +30,7 @@
 #include "gui/topmenu.hpp"
 #include "gui/menu.hpp"
 #include "core/event.hpp"
+#include "gui/dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "gfx/renderermode.hpp"
@@ -238,7 +239,10 @@ void Level::Impl::showSaveDialog()
 
   if( !saveDir.exist() )
   {
-    /*bool dirCreated = */vfs::Directory::createByPath( saveDir );
+    gui::DialogBox* dialog = new gui::DialogBox( game->gui()->rootWidget(), Rect(), "##warning##",
+                                                 "##save_directory_not_exist##", gui::DialogBox::btnOk );
+    dialog->show();
+    return;
   }
 
   SaveDialog* dialog = new SaveDialog( game->gui()->rootWidget(), saveDir, defaultExt, -1 );

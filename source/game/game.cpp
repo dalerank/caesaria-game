@@ -86,6 +86,7 @@ public:
   void initPantheon(vfs::Path filename );
   void initFontCollection(vfs::Path resourcePath);
   void mountArchives( ResourceLoader& loader );
+  void createSaveDir();
 };
 
 void Game::Impl::initLocale( std::string localePath)
@@ -164,6 +165,19 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   }
 
   loader.loadFromModel( GameSettings::rcpath( GameSettings::archivesModel ) );
+}
+
+void Game::Impl::createSaveDir()
+{
+  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+
+  bool dirCreated = true;
+  if( !saveDir.exist() )
+  {
+    dirCreated = vfs::Directory::createByPath( saveDir );
+  }
+
+  Logger::warningIf( !dirCreated, "Game: can't create save dir" );
 }
 
 void Game::Impl::initGuiEnvironment()
@@ -444,6 +458,7 @@ void Game::initialize()
   _d->initFontCollection( GameSettings::rcpath() );
   _d->initGuiEnvironment();  
   _d->initSound();
+  _d->createSaveDir();
 
   splash::initialize( "logo_00001" );
 
