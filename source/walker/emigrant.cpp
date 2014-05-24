@@ -85,6 +85,14 @@ void Emigrant::_changeDirection()
   _setCartPicture( Picture() );  // need to get the new graphic
 }
 
+void Emigrant::_updateThinks()
+{
+  StringArray thinks;
+  thinks << "##emigrant_where_my_home##";
+
+  setThinks( thinks.rand() );
+}
+
 void Emigrant::timeStep(const unsigned long time)
 {
   Walker::timeStep(time);

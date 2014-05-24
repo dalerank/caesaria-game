@@ -22,6 +22,8 @@
 #include "good/good.hpp"
 #include "predefinitions.hpp"
 #include "objects/predefinitions.hpp"
+#include "game/citizen_group.hpp"
+#include <set>
 
 namespace city
 {
@@ -32,6 +34,7 @@ public:
   typedef std::map< Good::Type, int > GoodsMap;
 
   static void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
+  static CitizenGroup getPopulation( PlayerCityPtr city );
   static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
   static unsigned int getMontlyWorkersWages( PlayerCityPtr city );
   static unsigned int getWorklessNumber( PlayerCityPtr city );
@@ -40,7 +43,7 @@ public:
   static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
   static unsigned int getFoodProducing( PlayerCityPtr city );
   static unsigned int getTaxValue( PlayerCityPtr city );
-  static HouseList getEvolveEducationReadyHouse( PlayerCityPtr );
+  static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
   static unsigned int getCrimeLevel( PlayerCityPtr city );
   static GoodsMap getGoodsMap( PlayerCityPtr city );
 };

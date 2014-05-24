@@ -108,7 +108,7 @@ void ListBoxItem::setOffset(Point p){  _d->offset = p;}
 void ListBoxItem::setUrl(const std::string& url) { _d->url = url; }
 const std::string&ListBoxItem::url() const { return _d->url; }
 Variant ListBoxItem::data() const{ return _d->data; }
-void ListBoxItem::setData(const Variant& value){ _d->data = value; }
+void ListBoxItem::setData( const Variant& value ){ _d->data = value; }
 float ListBoxItem::currentHovered() const {   return _d->currentHovered;}
 void ListBoxItem::updateHovered( float delta ){    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );}
 Picture ListBoxItem::icon() const { return _d->icon; }

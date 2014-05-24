@@ -176,11 +176,11 @@ std::string MarketLady::getThinks() const
 {
   if( !getPathway().isReverse() )
   {
-    return "##market_lady_find_goods##";
+    return "##marketLady_find_goods##";
   }
   else
   {
-    return "##market_lady_return##";
+    return "##marketLady_return##";
   }
 }
 

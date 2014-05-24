@@ -70,6 +70,14 @@ void Protestor::_reachedPathway()
   }
 }
 
+void Protestor::_updateThinks()
+{
+  StringArray ret;
+  ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
+
+  setThinks( ret.rand() );
+}
+
 void Protestor::timeStep(const unsigned long time)
 {
   Walker::timeStep( time );

@@ -209,7 +209,7 @@ void SdlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* c
   Picture& screen = _d->screen;
   if( clipRect != 0 )
   {
-    SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
+    SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->width(), (Uint16)clipRect->height() };
     SDL_SetClipRect( screen.surface(), &r );
   }
 

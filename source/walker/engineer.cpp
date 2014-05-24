@@ -18,35 +18,55 @@
 
 using namespace constants;
 
+class Engineer::Impl
+{
+public:
+  int averageLevel;
+  std::set<ConstructionPtr> _reachedBuildings;
+};
+
 WalkerPtr Engineer::create(PlayerCityPtr city)
 {
   return ServiceWalker::create( city, Service::engineer ).object();
 }
 
-Engineer::~Engineer()
-{
-
-}
+Engineer::~Engineer() {}
 
 std::string Engineer::getThinks() const
 {
-  city::Helper helper( _city() );
-
-  TilePos offset( 2, 2 );
-
-  ConstructionList buildings = helper.find<Construction>( building::any, pos() - offset, pos() + offset );
-  foreach( b, buildings )
+  if( _d->averageLevel > 70 )
   {
-    int damage = (*b)->getState( Construction::damage );
-    if( damage > 90 )
-    {
-      return "##engineer_have_trouble_buildings##";
-    }
+    return "##engineer_have_trouble_buildings##";
+  }
+
+  if( _d->averageLevel < 30 )
+  {
+    return "##engineer_no_trouble_buildings##";
   }
 
   return ServiceWalker::getThinks();
 }
 
-Engineer::Engineer( PlayerCityPtr city ) : ServiceWalker( city, Service::engineer )
+void Engineer::_centerTile()
 {
+  city::Helper helper( _city() );
+  TilePos offset( getReachDistance(), getReachDistance() );
+  ConstructionList buildings = helper.find<Construction>( building::any, pos() - offset, pos() + offset );
+  foreach( b, buildings )
+  {
+    if( !_d->_reachedBuildings.count( *b ) )
+    {
+      int damageLvl = (*b)->getState( Construction::damage );
+      _d->averageLevel = ( _d->averageLevel + damageLvl ) / 2;
+      _d->_reachedBuildings.insert( *b );
+    }
+  }
+
+  ServiceWalker::_centerTile();
+}
+
+Engineer::Engineer( PlayerCityPtr city )
+  : ServiceWalker( city, Service::engineer ), _d( new Impl )
+{
+  _d->averageLevel = 0;
 }

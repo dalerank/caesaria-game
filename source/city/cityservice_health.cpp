@@ -17,6 +17,7 @@
 #include "helper.hpp"
 #include "objects/house.hpp"
 #include "game/gamedate.hpp"
+#include "statistic.hpp"
 
 using namespace constants;
 
@@ -74,6 +75,8 @@ void HealthCare::update( const unsigned int time )
 
 std::string HealthCare::getReason() const
 {
+  StringArray reasons;
+
   std::string healthDescription[maxDescriptionLevel]
       = { "##advchief_health_terrible", "##advchief_health_lower", "##advchief_health_low", "##advchief_health_bad",
           "##advchief_health_less", "##advchief_health_middle", "##advchief_health_simple",
@@ -81,14 +84,35 @@ std::string HealthCare::getReason() const
           "##advchief_health_perfect" };
 
   int lvl = math::clamp<int>( _d->value / (100/maxDescriptionLevel), 0, maxDescriptionLevel-1 );
-  std::string reason = healthDescription[ lvl ];
+  std::string mainReason = healthDescription[ lvl ];
 
   Helper helper( &_city );
   BuildingList clinics = helper.find<Building>( building::doctor );
 
-  reason += clinics.size() > 0 ? "_clinic##" : "##";
+  mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 
-  return reason;
+  reasons << mainReason;
+  if( lvl > maxDescriptionLevel / 3 )
+  {
+    int avTypes[] = { building::barber, building::baths, building::doctor, building::hospital, building::unknown };
+    std::string avReasons[] = { "##advchief_some_need_barber##", "##advchief_some_need_baths##",
+                                "##advchief_some_need_doctors##", "##advchief_some_need_hospital##",
+                                "" };
+
+    for( int i=0; avTypes[ i ] != building::unknown; i++ )
+    {
+      std::set<int> availableTypes;
+      availableTypes.insert( avTypes[ i ] );
+
+      HouseList houses = Statistic::getEvolveHouseReadyBy( &_city, availableTypes );
+      if( houses.size() > 0 )
+      {
+        reasons << avReasons[i];
+      }
+    }
+  }
+
+  return reasons.rand();
 }
 
 }//end namespace city

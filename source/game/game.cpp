@@ -20,7 +20,7 @@
 #include "scene/logo.hpp"
 #include "city/build_options.hpp"
 #include "core/stringhelper.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "sound/engine.hpp"
@@ -86,6 +86,7 @@ public:
   void initPantheon(vfs::Path filename );
   void initFontCollection(vfs::Path resourcePath);
   void mountArchives( ResourceLoader& loader );
+  void createSaveDir();
 };
 
 void Game::Impl::initLocale( std::string localePath)
@@ -164,6 +165,19 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   }
 
   loader.loadFromModel( GameSettings::rcpath( GameSettings::archivesModel ) );
+}
+
+void Game::Impl::createSaveDir()
+{
+  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+
+  bool dirCreated = true;
+  if( !saveDir.exist() )
+  {
+    dirCreated = vfs::Directory::createByPath( saveDir );
+  }
+
+  Logger::warningIf( !dirCreated, "Game: can't create save dir" );
 }
 
 void Game::Impl::initGuiEnvironment()
@@ -297,6 +311,7 @@ void Game::setScreenGame()
   _d->currentScreen = &screen;
   GameDate& cdate = GameDate::instance();
   _d->time = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth();
+  _d->saveTime = _d->time;
 
   Logger::warning( "game: prepare for game loop" );
   while( !screen.isStopped() )
@@ -430,7 +445,6 @@ void Game::load(std::string filename)
 
   Logger::warning( "Game: initialize local pathfinder" );
   Pathfinder::instance().update( _d->city->tilemap() );
-  _d->saveTime = _d->time;
 
   Logger::warning( "Game: load finished" );
   return;
@@ -444,6 +458,7 @@ void Game::initialize()
   _d->initFontCollection( GameSettings::rcpath() );
   _d->initGuiEnvironment();  
   _d->initSound();
+  _d->createSaveDir();
 
   splash::initialize( "logo_00001" );
 

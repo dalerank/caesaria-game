@@ -43,6 +43,9 @@ public:
 
   void setTitle( const std::string& title );
 
+  void setMayDelete( bool mayDelete );
+  bool isMayDelete() const;
+
 oc3_signals public:
   Signal1<std::string>& onSelectFile();
 

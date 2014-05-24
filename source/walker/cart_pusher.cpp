@@ -44,6 +44,10 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+const int defaultDeliverDistance = 40;
+}
+
 class CartPusher::Impl
 {
 public:
@@ -65,7 +69,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _setType( walker::cartPusher );
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
-  _d->maxDistance = 25;
+  _d->maxDistance = defaultDeliverDistance;
   _d->stock.setCapacity( defaultCartCapacity );
 
   setName( NameGenerator::rand( NameGenerator::male ) );

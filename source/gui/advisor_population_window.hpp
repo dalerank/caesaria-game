@@ -12,25 +12,36 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_C3SAV_LOADER_H_INCLUDED__
-#define __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+#ifndef __CAESARIA_ADVISOR_POPULATION_WINDOW_H_INCLUDED__
+#define __CAESARIA_ADVISOR_POPULATION_WINDOW_H_INCLUDED__
 
-#include "abstractloader.hpp"
+#include "widget.hpp"
 #include "core/scopedptr.hpp"
+#include "core/signals.hpp"
+#include "game/predefinitions.hpp"
 
-class GameLoaderC3Sav : public GameAbstractLoader
+namespace gui
+{
+
+namespace advisorwnd
+{
+
+class Population : public Widget
 {
 public:
-  GameLoaderC3Sav();
+  Population( PlayerCityPtr city, Widget* parent, int id );
 
-  virtual bool load(const std::string& filename, Game& game);
-  virtual bool isLoadableFileExtension( const std::string& filename );
-  virtual int  getClimateType(const std::string& filename);
+  virtual void draw( gfx::Engine& painter );
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Population)
 };
 
-#endif // __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+}//end advisorwnd advisor
+
+} //end namespace gui
+
+#endif //__CAESARIA_ADVISOR_EDUCATION_WINDOW_H_INCLUDED__

@@ -24,8 +24,9 @@ class GameLoaderMission : public GameAbstractLoader
 public:
   GameLoaderMission();
 
-  bool load(const std::string& filename, Game& oScenario);
-  bool isLoadableFileExtension( const std::string& filename );
+  virtual bool load(const std::string& filename, Game& oScenario);
+  virtual bool isLoadableFileExtension( const std::string& filename );
+  virtual int  getClimateType(const std::string &filename);
 
 private:
   class Impl;

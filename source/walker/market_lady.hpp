@@ -34,13 +34,14 @@ public:
   // compute the destination to fetch the given good
   void computeWalkerDestination( MarketPtr market );
 
-  virtual std::string getThinks() const;
-
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
+  virtual std::string getThinks() const;
+
 protected:
   virtual void _reachedPathway();
+
 
 private:
   MarketLady( PlayerCityPtr city );

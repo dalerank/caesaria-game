@@ -37,6 +37,11 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+CAESARIA_LITERALCONST(speed)
+CAESARIA_LITERALCONST(speedMultiplier)
+}
+
 class Walker::Impl
 {
 public:
@@ -344,8 +349,8 @@ void Walker::_setAction( Walker::Action action )
 
 void Walker::initialize(const VariantMap &options)
 {
-  _d->speed = options.get( "speed", 1.f ); // default speed
-  _d->speedMultiplier = options.get( "speedMultiplier", 0.8f + math::random( 40 ) / 100.f );
+  _d->speed = options.get( lc_speed, 1.f ); // default speed
+  _d->speedMultiplier = options.get( lc_speedMultiplier, 0.8f + math::random( 40 ) / 100.f );
 }
 
 int Walker::agressive() const { return 0; }
@@ -354,7 +359,7 @@ std::string Walker::getThinks() const
 {
   if( _d->thinks.empty() )
   {
-    const_cast< Walker* >( this )->_updateThinks();
+    const_cast< Walker* >( this )->_updateThinks( );
   }
 
   return _d->thinks;
@@ -408,8 +413,8 @@ void Walker::save( VariantMap& stream ) const
   stream[ "tileSpdKoeff" ] = _d->tileSpeedKoeff;
   stream[ "wpos" ] = _d->wpos;
   stream[ "nextwpos" ] = _d->nextwpos;
-  stream[ "speed" ] = _d->speed;
-  stream[ "speedMul" ] = (float)_d->speedMultiplier;
+  stream[ lc_speed ] = _d->speed;
+  stream[ lc_speedMultiplier ] = (float)_d->speedMultiplier;
   stream[ "uid" ] = (unsigned int)_d->uid;
   stream[ "thinks" ] = Variant( _d->thinks );
   stream[ "subspeed" ] = _d->subSpeed;
@@ -433,7 +438,7 @@ void Walker::load( const VariantMap& stream)
   _d->action.direction = (Direction) stream.get( "direction" ).toInt();
   _d->uid = (UniqueId)stream.get( "uid" ).toInt();
   _d->subSpeed = stream.get( "subspeed" ).toPointF();
-  _d->speedMultiplier = (float)stream.get( "speedMul", 1.f );
+  _d->speedMultiplier = (float)stream.get( lc_speedMultiplier, 1.f );
 
   if( !_d->pathway.isValid() )
   {
@@ -448,7 +453,7 @@ void Walker::load( const VariantMap& stream)
     _d->speedMultiplier = 1;
   }
 
-  _d->speed = (float)stream.get( "speed" );
+  _d->speed = (float)stream.get( lc_speed );
   _d->health = (double)stream.get( "health" );
 }
 
@@ -486,7 +491,7 @@ void Walker::_setWpos( Point pos) { _d->wpos = pos.toPointF(); }
 
 void Walker::_updateThinks()
 {
-  _d->thinks = WalkerThinks::check( const_cast< Walker* >( this ), _city() );
+  _d->thinks = WalkerThinks::check( this, _city() );
 }
 
 Point Walker::_wpos() const{  return _d->wpos.toPoint();}

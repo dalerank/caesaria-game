@@ -147,12 +147,12 @@ void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstr
 
   srcRect.x = srcrect.left();
   srcRect.y = srcrect.top();
-  srcRect.w = srcrect.getWidth();
-  srcRect.h = srcrect.getHeight();
+  srcRect.w = srcrect.width();
+  srcRect.h = srcrect.height();
   dstRect.x = dstrect.left();
   dstRect.y = dstrect.top();
-  dstRect.w = dstrect.getWidth();
-  dstRect.h = dstrect.getHeight();
+  dstRect.w = dstrect.width();
+  dstRect.h = dstrect.height();
 
   SDL_Surface* surface = _d->surface;
   if( useAlpha )
@@ -311,9 +311,9 @@ void Picture::fill( const NColor& color, const Rect& rect )
   if( _d->surface )
   {
     SDL_LockSurface( source );
-    SDL_Rect sdlRect = { (short)rect.left(), (short)rect.top(), (Uint16)rect.getWidth(), (Uint16)rect.getHeight() };
+    SDL_Rect sdlRect = { (short)rect.left(), (short)rect.top(), (Uint16)rect.width(), (Uint16)rect.height() };
 
-    SDL_FillRect(source, rect.getWidth() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(),
+    SDL_FillRect(source, rect.width() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(),
                                                                                              color.getBlue(), color.getAlpha() ));
     SDL_UnlockSurface(source);
   }

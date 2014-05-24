@@ -174,7 +174,7 @@ public:
   TileOverlay::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
-  Picture picture;
+  std::string picture;
   StringArray desc;
   VariantMap options;
 };
@@ -206,7 +206,7 @@ std::string MetaData::getDescription() const
 }
 
 TileOverlay::Type MetaData::getType() const {  return _d->tileovType;}
-Picture MetaData::getBasePicture() const{  return _d->picture;}
+Picture MetaData::getBasePicture() const{  return Picture::load( _d->picture ); }
 Desirability MetaData::getDesirbility() const{  return _d->desirability;}
 
 Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
@@ -359,7 +359,8 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     VariantList basePic = options[ "image" ].toList();
     if( !basePic.empty() )
     {
-      bData._d->picture = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
+      Picture pic = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
+      bData._d->picture = pic.name();
     }
 
     VariantList soundVl = options[ "sound" ].toList();

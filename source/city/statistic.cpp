@@ -47,10 +47,23 @@ void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& ma
   }
 }
 
+CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
+{
+  Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+
+  CitizenGroup ret;
+  foreach( it, houses )
+  {
+    ret += (*it)->habitants();
+  }
+
+  return ret;
+}
+
 unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
 {
   Helper helper( city );
-
   HouseList houses = helper.find<House>( building::house );
 
   int workersNumber = 0;
@@ -159,7 +172,7 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   return taxValue;
 }
 
-HouseList Statistic::getEvolveEducationReadyHouse(PlayerCityPtr city)
+HouseList Statistic::getEvolveHouseReadyBy(PlayerCityPtr city, const std::set<int>& checkTypes )
 {
   HouseList ret;
 
@@ -170,15 +183,9 @@ HouseList Statistic::getEvolveEducationReadyHouse(PlayerCityPtr city)
   {
     gfx::TileOverlay::Type btype;
     (*it)->spec().next().checkHouse( *it, NULL, &btype );
-    switch( btype )
-    {
-    case building::school:
-    case building::library:
-    case building::academy:
-      ret.push_back( *it );
-    break;
-
-    default: break;
+    if( checkTypes.count( btype ) )
+    {    
+      ret.push_back( *it );      
     }
   }
 

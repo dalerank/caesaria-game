@@ -36,6 +36,7 @@ public:
 
 protected:
   virtual void _reachedPathway();
+  virtual void _updateThinks();
 
 private:
   Protestor( PlayerCityPtr city );

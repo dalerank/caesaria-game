@@ -77,6 +77,7 @@ public:
 
     static const char* getDayName( unsigned char d );
     static const char* getMonthName( unsigned char d );
+    static const char* getShortMonthName( unsigned char d );
     int daysInMonth() const;
 
     //unsigned char getMonthLength() const;

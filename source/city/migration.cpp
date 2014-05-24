@@ -38,12 +38,19 @@ using namespace gfx;
 namespace city
 {
 
+namespace {
+const int possibleTaxLevel = 7;
+const int maxIndesirability = 100;
+const int defaultEmIndesirability = 50;
+}
+
 class Migration::Impl
 {
 public:
   int lastMonthPopulation;
   int lastMonthMigration;
   int updateTickInerval;
+  int emigrantsIndesirability;
   DateTime lastUpdate;
 
   float getMigrationKoeff(PlayerCity& city);
@@ -68,6 +75,7 @@ Migration::Migration( PlayerCityPtr city )
   _d->lastMonthPopulation = 0;
   _d->lastUpdate = GameDate::current();
   _d->updateTickInerval = GameDate::days2ticks( 7 );
+  _d->emigrantsIndesirability = 0;
 }
 
 void Migration::update( const unsigned int time )
@@ -77,36 +85,38 @@ void Migration::update( const unsigned int time )
 
   Logger::warning( "MigrationSrvc: start calculate" );
   const int worklessCitizenAway = GameSettings::get( GameSettings::worklessCitizenAway );
-  const int maxIndesirability = 100;
 
   float migrationKoeff = _d->getMigrationKoeff( _city );
   Info::Parameters params = _d->getLastParams( _city );
   Logger::warning( "MigrationSrvc: current migration koeff=%f", migrationKoeff );
 
-  int emigrantsIndesirability = 50; //base indesirability value
+  _d->emigrantsIndesirability = defaultEmIndesirability; //base indesirability value
   float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
 
   //if salary in city more then empire people more effectivelly go to our city
   int diffSalary = _city.empire()->getWorkerSalary() - _city.funds().workerSalary();
-  emigrantsIndesirability += diffSalary * emDesKoeff;
+  _d->emigrantsIndesirability += diffSalary * emDesKoeff;
 
   //emigrant like when lot of food stock int city
   int minMonthWithFood = GameSettings::get( GameSettings::minMonthWithFood );
-  emigrantsIndesirability += ( params.monthWithFood < minMonthWithFood
+  _d->emigrantsIndesirability += ( params.monthWithFood < minMonthWithFood
                                ? ((minMonthWithFood - params.monthWithFood) * 3)
                                : -params.monthWithFood );
   //emigrant need workplaces
-  emigrantsIndesirability += params.workless == 0
+  _d->emigrantsIndesirability += params.workless == 0
                               ? -10
                               : (params.workless * (params.workless < worklessCitizenAway ? 1 : 2));
 
-  emigrantsIndesirability += params.crimeLevel;
+  _d->emigrantsIndesirability += params.crimeLevel;
+  _d->emigrantsIndesirability += ( params.tax > possibleTaxLevel
+                                  ? params.tax * 2
+                                  : -params.tax );
 
-  emigrantsIndesirability *= migrationKoeff;
-  Logger::warning( "MigrationSrvc: current indesrbl=%d", emigrantsIndesirability );
+  _d->emigrantsIndesirability *= migrationKoeff;
+  Logger::warning( "MigrationSrvc: current indesrbl=%d", _d->emigrantsIndesirability );
 
   int goddesRandom = math::random( maxIndesirability );
-  if( goddesRandom > emigrantsIndesirability )
+  if( goddesRandom > _d->emigrantsIndesirability )
   {
     _d->createMigrationToCity( _city );
     _d->updateTickInerval = math::random( GameDate::days2ticks( DateTime::daysInWeek ) ) + 10;
@@ -120,10 +130,10 @@ void Migration::update( const unsigned int time )
 
     Logger::warning( "MigrationSrvc: current workless=%f indesrbl=%f",
                         params.workless * migrationKoeff,
-                        emigrantsIndesirability * migrationKoeff );
+                        _d->emigrantsIndesirability * migrationKoeff );
 
     if( params.workless * migrationKoeff > worklessCitizenAway
-        || emigrantsIndesirability * migrationKoeff > maxIndesirability )
+        || _d->emigrantsIndesirability * migrationKoeff > maxIndesirability )
     {
       _d->createMigrationFromCity( _city );
     }
@@ -136,23 +146,62 @@ std::string Migration::getReason() const
   if( vacantHouse == 0 )
     return "##migration_lack_empty_house##";
 
-  if( _d->getMigrationKoeff( _city ) > 0.99f )
+  if( _d->emigrantsIndesirability > defaultEmIndesirability )
   {
     Info::Parameters params = _d->getLastParams( _city );
     if( params.monthWithFood < (int)GameSettings::get( GameSettings::minMonthWithFood ) )
+    {
+      if( params.monthWithFood == 0 )
+      {
+        return "##migration_empty_granary##";
+      }
+
       return "##migration_lessfood_granary##";
-    if( params.monthWithFood == 0 )
-      return "##migration_empty_granary##";
+    }
+
     if( params.workless > 5 )
+    {
+      if( params.workless > (int)GameSettings::get( GameSettings::worklessCitizenAway ) )
+        return "##migration_people_away##";
+
+      if( params.workless > 10 )
+      {
+        if( params.workless > 20 )
+        {
+          return "##migration_broke_workless##";
+        }
+
+        return "##migration_middle_lack_workless##";
+      }
+
       return "##migration_lack_jobs##";
-    if( params.workless > (int)GameSettings::get( GameSettings::worklessCitizenAway ) )
-      return "##migration_people_away##";
-    if( params.romeWages - params.cityWages > 5 )
-      return "##low_wage_broke_migration##";
-    if( params.romeWages - params.cityWages > 1 )
+    }
+
+    int diffWages = params.romeWages - params.cityWages;
+    if( diffWages > 1 )
+    {
+      if( diffWages > 5 )
+        return "##low_wage_broke_migration##";
+
       return "##low_wage_lack_migration##";
+    }
+
     if( params.crimeLevel > 25 )
       return "##migration_lack_crime##";
+
+    if( params.tax > 7 )
+    {
+      if( params.tax > 10 )
+      {
+        if( params.tax > 15 )
+        {
+          return "##migration_broke_tax##";
+        }
+
+        return "##migration_middle_lack_tax##";
+      }
+      return "##migration_lack_tax##";
+    }
   }
 
   return "##migration_peoples_arrived_in_city##";

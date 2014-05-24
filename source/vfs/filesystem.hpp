@@ -20,6 +20,7 @@
 #include "vfs/file.hpp"
 #include "vfs/archive.hpp"
 #include "vfs/path.hpp"
+#include "core/time.hpp"
 
 namespace vfs
 {
@@ -105,6 +106,8 @@ public:
 
   //! determines if a file exists and would be able to be opened.
   virtual bool existFile(const Path& filename, Path::SensType sens=Path::nativeCase) const;
+
+  virtual DateTime getFileUpdateTime( const Path& filename ) const;
 
   Mode setMode( Mode listType);
 

@@ -52,6 +52,7 @@
 #include "objects/military.hpp"
 #include "widgetescapecloser.hpp"
 #include "events/showempiremapwindow.hpp"
+#include "advisor_population_window.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -147,6 +148,8 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
     _d->advisorPanel = new AdvisorLegionWindow( this, advisor::military, forts );
   }
   break;
+
+  case advisor::population: _d->advisorPanel = new advisorwnd::Population( _d->city, this, advisor::population ); break;
 
   case advisor::empire: _d->advisorPanel = new AdvisorEmperorWindow( _d->city, this, advisor::empire ); break;
   case advisor::ratings: _d->advisorPanel = new AdvisorRatingsWindow( this, advisor::ratings, _d->city ); break;

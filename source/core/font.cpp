@@ -158,13 +158,13 @@ Rect Font::calculateTextRect(const std::string& text, const Rect& baseRect,
   {
   case align::center:
     // align to h centre
-    resultRect.UpperLeftCorner.setX( (baseRect.getWidth()/2) - (d.width()/2) );
-    resultRect.LowerRightCorner.setX( (baseRect.getWidth()/2) + (d.width()/2) );
+    resultRect.UpperLeftCorner.setX( (baseRect.width()/2) - (d.width()/2) );
+    resultRect.LowerRightCorner.setX( (baseRect.width()/2) + (d.width()/2) );
     break;
   case align::lowerRight:
     // align to right edge
-    resultRect.UpperLeftCorner.setX( baseRect.getWidth() - d.width() );
-    resultRect.LowerRightCorner.setX( baseRect.getWidth() );
+    resultRect.UpperLeftCorner.setX( baseRect.width() - d.width() );
+    resultRect.LowerRightCorner.setX( baseRect.width() );
     break;
   default:
     // align to left edge
@@ -176,13 +176,13 @@ Rect Font::calculateTextRect(const std::string& text, const Rect& baseRect,
   {
   case align::center:
     // align to v centre
-    resultRect.UpperLeftCorner.setY( (baseRect.getHeight()/2) - (d.height()/2) );
-    resultRect.LowerRightCorner.setY( (baseRect.getHeight()/2) + (d.height()/2) );
+    resultRect.UpperLeftCorner.setY( (baseRect.height()/2) - (d.height()/2) );
+    resultRect.LowerRightCorner.setY( (baseRect.height()/2) + (d.height()/2) );
     break;
   case align::lowerRight:
     // align to bottom edge
-    resultRect.UpperLeftCorner.setY( baseRect.getHeight() - d.height() );
-    resultRect.LowerRightCorner.setY( baseRect.getHeight() );
+    resultRect.UpperLeftCorner.setY( baseRect.height() - d.height() );
+    resultRect.LowerRightCorner.setY( baseRect.height() );
     break;
   default:
     // align to top edge

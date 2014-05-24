@@ -143,6 +143,8 @@ void MarketKid::_updateThinks()
 {
   StringArray ownThinks;
   ownThinks << "##market_kid_say_1##";
+  ownThinks << "##market_kid_say_2##";
+  ownThinks << "##market_kid_say_3##";
 
   setThinks( WalkerThinks::check( this, _city(), ownThinks ) );
 }

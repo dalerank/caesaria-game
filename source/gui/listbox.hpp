@@ -158,6 +158,7 @@ protected:
   virtual void _resizeEvent();
   virtual void _drawItemIcon(gfx::Picture& texture, ListBoxItem& item, const Point& pos );
   virtual void _drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos );
+  Rect _getItemsRect();
 
 private:
   void _selectNew(int ypos);
@@ -165,7 +166,6 @@ private:
 
   void _indexChanged( unsigned int eventType );
   ElementState _getCurrentItemState( unsigned int index, bool hl );
-  Rect getItemTextRect_();
   Font _getCurrentItemFont( const ListBoxItem& item, bool selected );
   NColor _getCurrentItemColor( const ListBoxItem& item, bool selected );
   void _updateTexture();

@@ -496,7 +496,7 @@ void ContextMenu::_recalculateSize()
 				break;
 
 				case ContextMenuItem::alignHorizCenter:
-					subRect.UpperLeftCorner.setX( ( absoluteRect().getWidth() - subMenuSize.width() ) / 2 );
+					subRect.UpperLeftCorner.setX( ( absoluteRect().width() - subMenuSize.width() ) / 2 );
 					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.x() + subMenuSize.width() );
 				break;
 				}

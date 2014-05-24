@@ -113,7 +113,7 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
     lastPos.setY( _d->lbBlackFrame->top() - 10 );
   }
 
-  if( _d->lbText && blackArea.getWidth() == 0 )
+  if( _d->lbText && blackArea.width() == 0 )
   {
     Rect r = _d->lbText->getRelativeRect();
     r.LowerRightCorner = _d->btnExit->rightupCorner();
