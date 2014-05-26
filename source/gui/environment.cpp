@@ -265,7 +265,7 @@ void GuiEnv::_drawTooltip( unsigned int time )
       }
 
       _d->toolTip.element = _d->createStandartTooltip( this );
-      _d->toolTip.element->setGeometry( _d->toolTip.element->getRelativeRect() + Point( 1, 1 ) );
+      _d->toolTip.element->setGeometry( _d->toolTip.element->relativeRect() + Point( 1, 1 ) );
     }
 
     if( _d->toolTip.element.isValid() && _d->toolTip.element->isVisible() )	// (isVisible() check only because we might use visibility for ToolTip one day)

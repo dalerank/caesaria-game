@@ -387,7 +387,7 @@ void ExtentMenu::minimize()
   _d->minimizeButton->setTooltipText( _("##hide_bigpanel##") );
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
-  Point stopPos = getRelativeRect().UpperLeftCorner + Point( width(), 0 );
+  Point stopPos = relativeRect().UpperLeftCorner + Point( width(), 0 );
   new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
 
   events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
@@ -396,7 +396,7 @@ void ExtentMenu::minimize()
 
 void ExtentMenu::maximize()
 {
-  Point stopPos = getRelativeRect().UpperLeftCorner - Point( width(), 0 );
+  Point stopPos = relativeRect().UpperLeftCorner - Point( width(), 0 );
   show();
   new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 

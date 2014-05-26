@@ -31,12 +31,20 @@
 #include "popup_messagebox.hpp"
 #include "texturedbutton.hpp"
 #include "core/color.hpp"
+#include "event_messagebox.hpp"
 
 using namespace constants;
 using namespace gfx;
 
 namespace gui
 {
+
+namespace {
+CAESARIA_LITERALCONST(opened)
+CAESARIA_LITERALCONST(critical)
+CAESARIA_LITERALCONST(ext)
+CAESARIA_LITERALCONST(date)
+}
 
 class ScribesListBox : public ListBox
 {
@@ -68,8 +76,8 @@ protected:
   virtual void _drawItemIcon(gfx::Picture &texture, ListBoxItem &item, const Point &pos)
   {
     VariantMap options = item.data().toMap();
-    bool opened = options.get( "opened", false );
-    bool critical = options.get( "critical", false );
+    bool opened = options.get( lc_opened, false );
+    bool critical = options.get( lc_critical, false );
     int imgIndex = (critical ? 113 : 111) + (opened ? 1 : 0);
     texture.draw( Picture::load( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
   }
@@ -77,7 +85,7 @@ protected:
   virtual void _drawItemText(gfx::Picture &texture, Font font, ListBoxItem &item, const Point &pos)
   {
     VariantMap options = item.data().toMap();
-    DateTime time = options[ "date" ].toDateTime();
+    DateTime time = options[ lc_date ].toDateTime();
 
     font.draw( texture, DateTimeHelper::toStr( time ), pos + Point( 30, 0 ), false );
     font.draw( texture, item.text(), Point( width() / 2, pos.y() ), false );
@@ -91,8 +99,8 @@ protected:
     {
       switch(event.mouse.type)
       {
-      case mouseLbtnRelease: onShowMessage.emit( selected() ); break;
-      case mouseRbtnRelease: onRemoveMessage.emit( selected() ); break;
+      case mouseLbtnRelease: oc3_emit onShowMessage( selected() ); break;
+      case mouseRbtnRelease: oc3_emit onRemoveMessage( selected() ); break;
       default: break;
       }
     }
@@ -156,9 +164,9 @@ void ScribesMessagestWindow::_fillMessages()
       const city::Info::ScribeMessage& mt = *it;
       ListBoxItem& item = _d->lbxMessages->addItem( mt.title );
       VariantMap options;
-      options[ "opened" ] = mt.opened;
-      options[ "date"   ] = mt.date;
-      options[ "ext"    ] = mt.ext;
+      options[ lc_opened ] = mt.opened;
+      options[ lc_date   ] = mt.date;
+      options[ lc_ext    ] = mt.ext;
 
       item.setData( options );
     }
@@ -173,7 +181,8 @@ void ScribesMessagestWindow::_showMessage(int index)
     city::Info::ScribeMessage mt = srvc->getMessage( index );
     mt.opened = true;
     srvc->changeMessage( index, mt );
-    PopupMessageBox::information( parent(), mt.title, mt.text, DateTimeHelper::toStr( mt.date ) );
+    EventMessageBox* mbox = new EventMessageBox( parent(), mt.title, mt.text, mt.date, mt.gtype );
+    mbox->show();
   }
 
   _fillMessages();

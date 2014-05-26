@@ -69,7 +69,7 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
   }
 
   std::string title = MetaDataHolder::getPrettyName( rawmb->type() );
-  _title()->setText( _(title) );
+  _lbTitleRef()->setText( _(title) );
 
   std::string text = rawmb->workersProblemDesc();
   std::string cartInfo = rawmb->cartStateDesc();

@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
 #include "gfx/tile.hpp"
+#include "good/goodhelper.hpp"
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
@@ -31,6 +32,10 @@
 
 namespace city
 {
+
+CAESARIA_LITERALCONST(lastHistory)
+CAESARIA_LITERALCONST(allHistory)
+CAESARIA_LITERALCONST(messages)
 
 class Info::Impl
 {
@@ -122,7 +127,7 @@ VariantMap Info::save() const
     stepName = StringHelper::format( 0xff, "%02d", step++ );
     currentVm[ stepName ] = (*i).save();
   }
-  ret[ "lastHistory" ] = currentVm;
+  ret[ lc_lastHistory ] = currentVm;
 
   step=0;
   VariantMap allVm;
@@ -131,28 +136,43 @@ VariantMap Info::save() const
     stepName = StringHelper::format( 0xff, "%04d", step++ );
     allVm[ stepName ] = (*i).save();
   }
-  ret[ "allHistory" ] = allVm;
+  ret[ lc_allHistory ] = allVm;
+
+  step=0;
+  VariantMap messagesVm;
+  foreach( i, _d->messages )
+  {
+    stepName = StringHelper::format( 0xff, "%04d", step++ );
+    messagesVm[ stepName ] = (*i).save();
+  }
+  ret[ lc_messages ] = messagesVm;
 
   return ret;
 }
 
 void Info::load(const VariantMap& stream)
 {
-  VariantMap currentHistory = stream.get( "lastHistory" ).toMap();
+  VariantMap currentHistory = stream.get( lc_lastHistory ).toMap();
   foreach( i, currentHistory )
   {
-    Parameters p;
-    p.load( i->second.toMap() );
-    _d->lastYearHistory.push_back( p );
+    _d->lastYearHistory.push_back( Parameters() );
+    _d->lastYearHistory.back().load( i->second.toMap() );
   }
 
-  VariantMap allHistory = stream.get( "allHistory" ).toMap();
+  VariantMap allHistory = stream.get( lc_allHistory ).toMap();
   foreach( i, allHistory )
   {
-    Parameters p;
-    p.load( i->second.toMap() );
-    _d->allHistory.push_back( p );
+    _d->allHistory.push_back( Parameters() );
+    _d->allHistory.back().load( i->second.toMap() );
   }
+
+  VariantMap messages= stream.get( lc_messages ).toMap();
+  foreach( i, messages )
+  {
+    _d->messages.push_back( ScribeMessage() );
+    _d->messages.back().load( i->second.toMap() );
+  }
+
 
   _d->lastYearHistory.resize( DateTime::monthsInYear );
 }
@@ -192,7 +212,6 @@ void Info::addMessage(const Info::ScribeMessage& message)
 }
 
 namespace {
-CAESARIA_LITERALCONST(date)
 CAESARIA_LITERALCONST(population)
 CAESARIA_LITERALCONST(funds)
 CAESARIA_LITERALCONST(tax)
@@ -207,6 +226,15 @@ CAESARIA_LITERALCONST(theaterCoverage)
 CAESARIA_LITERALCONST(workless)
 CAESARIA_LITERALCONST(entertainment)
 CAESARIA_LITERALCONST(lifeValue)
+
+CAESARIA_LITERALCONST(text)
+CAESARIA_LITERALCONST(title)
+CAESARIA_LITERALCONST(gtype)
+CAESARIA_LITERALCONST(position)
+CAESARIA_LITERALCONST(type)
+CAESARIA_LITERALCONST(date)
+CAESARIA_LITERALCONST(opened)
+CAESARIA_LITERALCONST(ext)
 }
 
 VariantMap Info::Parameters::save() const
@@ -246,6 +274,33 @@ void Info::Parameters::load(const VariantMap& stream)
   theaterCoverage = stream.get( lc_theaterCoverage );
   entertainment = stream.get( lc_entertainment );
   lifeValue = stream.get( lc_lifeValue );
+}
+
+VariantMap Info::ScribeMessage::save() const
+{
+  VariantMap ret;
+  ret[ lc_text ] = Variant( text );
+  ret[ lc_title ] = Variant( title );
+  ret[ lc_gtype ] = Variant( GoodHelper::getTypeName( gtype ) );
+  ret[ lc_position ] = position;
+  ret[ lc_type ] = type;
+  ret[ lc_date ] = date;
+  ret[ lc_opened ] = opened;
+  ret[ lc_ext ] = ext;
+
+  return ret;
+}
+
+void Info::ScribeMessage::load(const VariantMap& stream)
+{
+  text = stream.get( lc_text ).toString();
+  title = stream.get( lc_title ).toString();
+  gtype = GoodHelper::getType( stream.get( lc_gtype ).toString() );
+  position = stream.get( lc_position ).toPoint();
+  type = stream.get( lc_type );
+  date = stream.get( lc_date ).toDateTime();
+  opened = stream.get( lc_opened );
+  ext = stream.get( lc_ext );
 }
 
 }//end namespace city

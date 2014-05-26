@@ -43,7 +43,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
   // paint progress
   std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->getProgress() );
-  Label* lbPr = new Label( this, Rect( _title()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
+  Label* lbPr = new Label( this, Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
   lbPr->setFont( Font::create( FONT_2 ) );
 
   if( factory->produceGoodType() != Good::none )
@@ -54,7 +54,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   // paint picture of in good
   if( factory->inStockRef().type() != Good::none )
   {
-    Label* lbStockInfo = new Label( this, Rect( _title()->leftdownCorner() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
+    Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftdownCorner() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
 
     std::string whatStock = StringHelper::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
@@ -68,7 +68,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
   }
 
-  _getInfo()->move( Point( 0, 15 ));
+  _lbTextRef()->move( Point( 0, 15 ));
 
   std::string workInfo = factory->workersProblemDesc();
   std::string cartInfo = factory->cartStateDesc();
@@ -91,7 +91,7 @@ InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
   if( progressCount > 1 && progressCount < 100 )
   {
     new Label( this,
-               Rect( _title()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
+               Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
                _("##build_fishing_boat##") );
   }
 }
@@ -105,7 +105,7 @@ InfoboxWharf::InfoboxWharf(Widget* parent, const Tile& tile)
   if( wharf->getBoat().isNull() )
   {
     new Label( this,
-               Rect( _title()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
+               Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
                _("##wait_for_fishing_boat##") );
   }
 }

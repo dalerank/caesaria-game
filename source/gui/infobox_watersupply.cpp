@@ -37,8 +37,8 @@ InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
 {
   setTitle( _("##fountain##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _getInfo()->setWordwrap( true );
+  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbTextRef()->setWordwrap( true );
 
   FountainPtr fountain = ptr_cast<Fountain>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( fountain ) );
@@ -58,7 +58,7 @@ InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
     }
   }
 
-  _getInfo()->setText( _(text) );
+  _lbTextRef()->setText( _(text) );
 }
 
 InfoboxFontain::~InfoboxFontain(){}
@@ -73,8 +73,8 @@ InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
 {
   setTitle( _("##reservoir##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _getInfo()->setWordwrap( true );
+  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbTextRef()->setWordwrap( true );
 
   ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( reservoir ) );
@@ -87,7 +87,7 @@ InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
               : "##reservoir_no_water##";
   }
 
-  _getInfo()->setText( _(text) );
+  _lbTextRef()->setText( _(text) );
 }
 
 InfoboxReservoir::~InfoboxReservoir() {}
@@ -102,8 +102,8 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
 {
   setTitle( _("##well##") );
 
-  _getInfo()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _getInfo()->setWordwrap( true );
+  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbTextRef()->setWordwrap( true );
 
   WellPtr well = ptr_cast<Well>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( well ) );
@@ -146,7 +146,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
     }
   }
 
-  _getInfo()->setText( _(text) );
+  _lbTextRef()->setText( _(text) );
 }
 
 InfoboxWell::~InfoboxWell() {}

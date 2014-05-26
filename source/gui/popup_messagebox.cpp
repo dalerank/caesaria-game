@@ -27,6 +27,7 @@
 #include "texturedbutton.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "game/datetimehelper.hpp"
 
 using namespace gfx;
 
@@ -43,9 +44,9 @@ public:
 };
 
 PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title, 
-                                 const std::string& text, 
-                                 const std::string& time,
-                                 const std::string& receiver, int id ) 
+                                  const std::string& text,
+                                  const DateTime& time,
+                                  const std::string& receiver, int id )
   : Widget( parent, id, Rect( 0, 0, 590, 320 ) ), _d( new Impl )
 {
   setPosition( Point( (parent->width() - width())/2, (parent->height() - height()) / 2 ) );
@@ -67,7 +68,7 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
 
   Font font2 = Font::create( FONT_2_WHITE );
-  font2.draw( *_d->background, time, 20, 50, false );
+  font2.draw( *_d->background, DateTimeHelper::toStr( time ), 20, 50, false );
   font2.draw( *_d->background, receiver, 180, 50 );
 
   _d->lbText = new Label( this, Rect( Point( 20, 100 ), Size( 550, 165 )), text );
@@ -83,7 +84,7 @@ void PopupMessageBox::draw(gfx::Engine& painter )
   Widget::draw( painter );
 }
 
-PopupMessageBox* PopupMessageBox::information(Widget* parent, const std::string& title, const std::string& text, const std::string& time)
+PopupMessageBox* PopupMessageBox::information(Widget* parent, const std::string& title, const std::string& text, const DateTime& time)
 {
   return new PopupMessageBox( parent, title, text, time );
 }

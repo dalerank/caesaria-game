@@ -309,7 +309,7 @@ public:
   void deleteLater();
 
   //! Returns the relative rectangle of this element.
-  Rect getRelativeRect() const;
+  Rect relativeRect() const;
 
   //! Sets the relative/absolute rectangle of this element.
   /** \param r The absolute position to set */

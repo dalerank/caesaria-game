@@ -20,6 +20,7 @@
 #include <cstdio>
 #include <stdint.h>
 #include "requirements.hpp"
+#include "core/math.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
     #include "windows.h"
@@ -185,9 +186,9 @@ DateTime DateTime::getCurrenTime()
 }
 
 unsigned char DateTime::dayOfWeek() const {  return ( (int) ( _toJd() % 7L ) ); }
-const char* DateTime::getDayName( unsigned char d ){   return dayNames[ d ];}
-const char* DateTime::getMonthName( unsigned char d ){  return monthNames[ d ];}
-const char*DateTime::getShortMonthName(unsigned char d) { return shortMonthNames[ d ]; }
+const char* DateTime::getDayName( unsigned char d ){   return dayNames[ math::clamp<int>( d, 0, 6 ) ];}
+const char* DateTime::getMonthName( unsigned char d ){  return monthNames[ math::clamp<int>( d, 0, 11 ) ];}
+const char*DateTime::getShortMonthName(unsigned char d) { return shortMonthNames[ math::clamp<int>( d, 0, 11 ) ]; }
 
 int DateTime::daysInMonth() const
 {

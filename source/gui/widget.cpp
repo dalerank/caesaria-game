@@ -54,7 +54,7 @@ void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 }
 
 void Widget::setMaxWidth( unsigned int width ) { __D_IMPL(d,Widget) d->maxSize.setWidth( width );}
-unsigned int Widget::height() const{    return getRelativeRect().height(); }
+unsigned int Widget::height() const{    return relativeRect().height(); }
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : __INIT_IMPL(Widget),
@@ -795,13 +795,13 @@ bool Widget::isMyChild( Widget* child ) const
 
 void Widget::setWidth( unsigned int width )
 {
-  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width, height() ) );
+  const Rect rectangle( relativeRect().UpperLeftCorner, Size( width, height() ) );
   setGeometry( rectangle );
 }
 
 void Widget::setHeight( unsigned int height )
 {
-  const Rect rectangle( getRelativeRect().UpperLeftCorner, Size( width(), height ) );
+  const Rect rectangle( relativeRect().UpperLeftCorner, Size( width(), height ) );
   setGeometry( rectangle );
 }
 
@@ -809,7 +809,7 @@ void Widget::setEnabled(bool enabled){  _dfunc()->isEnabled = enabled;}
 std::string Widget::getInternalName() const{    return _dfunc()->internalName;}
 void Widget::setInternalName( const std::string& name ){    _dfunc()->internalName = name;}
 Widget* Widget::parent() const {    return _dfunc()->parent;}
-Rect Widget::getRelativeRect() const{  return _dfunc()->relativeRect;}
+Rect Widget::relativeRect() const{  return _dfunc()->relativeRect;}
 bool Widget::isNotClipped() const{  return _dfunc()->noClip;}
 void Widget::setVisible( bool visible ){  _dfunc()->isVisible = visible;}
 bool Widget::isTabStop() const{  return _dfunc()->isTabStop;}
@@ -829,7 +829,7 @@ Rect Widget::getClientRect() const{  return Rect( 0, 0, width(), height() );}
 void Widget::setFocus(){  getEnvironment()->setFocus( this );}
 void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const{  return _dfunc()->absoluteClippingRect;}
-unsigned int Widget::width() const{  return getRelativeRect().width();}
+unsigned int Widget::width() const{  return relativeRect().width();}
 Size Widget::size() const{  return Size( _dfunc()->relativeRect.width(), _dfunc()->relativeRect.height() );}
 int Widget::screenTop() const { return absoluteRect().top(); }
 int Widget::screenLeft() const { return absoluteRect().left(); }
@@ -841,7 +841,7 @@ Point Widget::rightupCorner() const { return Point( right(), top() ); }
 Point Widget::rightdownCorner() const { return Point( right(), bottom() ); }
 Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.UpperLeftCorner;}
 Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.UpperLeftCorner;}
-void Widget::move( const Point& relativeMovement ){  setGeometry( _dfunc()->desiredRect + relativeMovement );}
+void Widget::move( const Point& relativeMovement ){  setGeometry( _dfunc()->relativeRect + relativeMovement );}
 int Widget::bottom() const{  return _dfunc()->relativeRect.LowerRightCorner.y(); }
 Point Widget::center() const { return (_dfunc()->relativeRect.LowerRightCorner + _dfunc()->relativeRect.UpperLeftCorner) / 2; }
 void Widget::setTabgroup( bool isGroup ) { _dfunc()->isTabGroup = isGroup; }
@@ -851,9 +851,9 @@ void Widget::setSubElement( bool subElement ){  _dfunc()->isSubElement = subElem
 void Widget::setTabStop( bool enable ){  _dfunc()->isTabStop = enable;}
 void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, top() ) ); }
 void Widget::setTop( int newTop ) { setPosition( Point( left(), newTop ) );  }
-int Widget::top() const { return getRelativeRect().UpperLeftCorner.y(); }
-int Widget::left() const { return getRelativeRect().UpperLeftCorner.x(); }
-int Widget::right() const { return getRelativeRect().LowerRightCorner.x(); }
+int Widget::top() const { return relativeRect().UpperLeftCorner.y(); }
+int Widget::left() const { return relativeRect().UpperLeftCorner.x(); }
+int Widget::right() const { return relativeRect().LowerRightCorner.x(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
 Alignment Widget::getHorizontalTextAlign() const{  return _dfunc()->textHorzAlign; }

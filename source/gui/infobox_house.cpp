@@ -64,7 +64,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   HousePtr house = ptr_cast<House>( tile.overlay() );
   setTitle( _(house->spec().levelName()) );
 
-  _getBtnExit()->setTooltipText( _("##advanced_houseinfo##") );
+  _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
 
   Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), _( house->getEvolveInfo() ) );
   houseInfo->setWordwrap( true );
@@ -111,7 +111,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   Label* taxesLb = new Label( this, Rect( 16 + 35, 177, width() - 16, 177 + 20 ), _( taxesStr ) );
 
   std::string aboutCrimes = _("##house_not_report_about_crimes##");
-  Label* lbCrime = new Label( this, taxesLb->getRelativeRect() + Point( 0, 22 ), aboutCrimes );
+  Label* lbCrime = new Label( this, taxesLb->relativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->bottom() + 10;
   if( house->spec().level() > 2 )
@@ -124,7 +124,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   }
   else
   {
-    Label* lb = new Label( this, lbCrime->getRelativeRect() + Point( 0, 30 ) );
+    Label* lb = new Label( this, lbCrime->relativeRect() + Point( 0, 30 ) );
     lb->setHeight( 40 );
     lb->setLineIntervalOffset( -6 );
     lb->setText( _("##house_provide_food_themselves##") );
@@ -146,7 +146,7 @@ void InfoboxHouse::drawHabitants( HousePtr house )
   int picId = house->spec().isPatrician() ? 541 : 542;
    
   Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
-  _getBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
+  _lbBlackFrameRef()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants
   Label* lbHabitants = new Label( this, Rect( 60, 157, width() - 16, 157 + citPic.height() ) );

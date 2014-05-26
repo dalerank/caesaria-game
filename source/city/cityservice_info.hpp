@@ -21,6 +21,7 @@
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
+#include "good/good.hpp"
 
 namespace city
 {
@@ -84,10 +85,15 @@ public:
   {
     std::string text;
     std::string title;
+    Good::Type gtype;
+    Point position;
     int type;
     DateTime date;
     bool opened;
     Variant ext;
+
+    VariantMap save() const;
+    void load( const VariantMap& stream );
   };
 
   typedef std::list<ScribeMessage> Messages;

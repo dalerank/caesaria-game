@@ -49,7 +49,7 @@ PositionAnimator::PositionAnimator( Widget* node,
 
 void PositionAnimator::restart()
 {
-	_d->startPos = parent() ? parent()->getRelativeRect().UpperLeftCorner : Point( 0, 0 );
+	_d->startPos = parent() ? parent()->relativeRect().UpperLeftCorner : Point( 0, 0 );
 	_d->currentPos = _d->startPos.toPointF();
 }
 

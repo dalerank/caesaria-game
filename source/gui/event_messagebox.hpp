@@ -12,34 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-//
 
-#ifndef _CAESARIA_EVENT_SCRIBEMESSAGE_H_INCLUDE_
-#define _CAESARIA_EVENT_SCRIBEMESSAGE_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_MESSAGEBOX_H_INCLUDE_
+#define _CAESARIA_EVENT_MESSAGEBOX_H_INCLUDE_
 
-#include "event.hpp"
+#include "info_box.hpp"
 
-namespace events
+namespace gui
 {
 
-class ScribeMessage : public GameEvent
+class EventMessageBox : public InfoboxSimple
 {
 public:
-  static GameEventPtr create(const std::string& title, const std::string& text,
-                             Good::Type gtype=Good::none, Point position=Point(-1, -1) );
-
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game&, unsigned int ) const;
-
-private:
-  std::string _title;
-  Good::Type _gtype;
-  Point _position;
-  std::string _text;
+  EventMessageBox( Widget* parent, const std::string& title, const std::string& message, DateTime time, Good::Type gtype );
+  virtual ~EventMessageBox();
 };
 
-}
-
-#endif //_CAESARIA_EVENT_SCRIBEMESSAGE_H_INCLUDE_
+}//end namespace gui
+#endif //_CAESARIA_EVENT_MESSAGEBOX_H_INCLUDE_

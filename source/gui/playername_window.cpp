@@ -41,7 +41,7 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
   WidgetEscapeCloser::insertTo( this );
 
   Point offset( width(), height() );
-  setPosition( parent->getRelativeRect().getCenter() - offset / 2 );
+  setPosition( parent->relativeRect().getCenter() - offset / 2 );
 
   const bool searchRecursive = true;
   EditBox* ed = findChildA<EditBox*>( "edPlayerName", searchRecursive, this );
