@@ -54,7 +54,7 @@ void ClimateManager::initialize(ClimateType climate)
   }
 
   StringArray fileNames;
-  __appendRange( ResourceGroup::housing, 49, 51, fileNames );
+  __appendRange( ResourceGroup::housing, 1, 51, fileNames );
   __appendRange( ResourceGroup::land1a, 1, 303, fileNames );
   __appendRange( ResourceGroup::land2a, 93, 110, fileNames );
   __appendRange( ResourceGroup::land2a, 119, 148, fileNames );

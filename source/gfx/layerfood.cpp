@@ -119,20 +119,25 @@ void LayerFood::handleEvent(NEvent& event)
         HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house.isValid() )
         {
-          GoodStore& st = house->goodStore();
-          int foodQty = 0;
-          for( int k=Good::wheat; k <= Good::vegetable; k++ )
-          {
-            foodQty += st.qty( (Good::Type)k );
-          }
-          int monthWithFood = 2 * foodQty / house->habitants().count();
+          int houseHabitantsCount = house->habitants().count();
 
-          switch( monthWithFood )
+          if( houseHabitantsCount > 0 )
           {
-          case 0: text = "##house_have_not_food##"; break;
-          case 1: text = "##house_food_only_for_month##"; break;
-          case 2: case 3: text = "##house_have_some_food##"; break;
-          default: text = "##house_have_much_food##"; break;
+            GoodStore& st = house->goodStore();
+            int foodQty = 0;
+            for( int k=Good::wheat; k <= Good::vegetable; k++ )
+            {
+              foodQty += st.qty( (Good::Type)k );
+            }
+            int monthWithFood = 2 * foodQty / houseHabitantsCount;
+
+            switch( monthWithFood )
+            {
+            case 0: text = "##house_have_not_food##"; break;
+            case 1: text = "##house_food_only_for_month##"; break;
+            case 2: case 3: text = "##house_have_some_food##"; break;
+            default: text = "##house_have_much_food##"; break;
+            }
           }
         }
       }

@@ -94,7 +94,7 @@ CitizenGroup& CitizenGroup::operator += (const CitizenGroup& b)
   return *this;
 }
 
-bool CitizenGroup::empty() const {  return _peoples.empty(); }
+bool CitizenGroup::empty() const {  return (_peoples.empty() || (0 == count())); }
 void CitizenGroup::clear()
 {
   foreach( t,_peoples ) { (*t) = 0; }
