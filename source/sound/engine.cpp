@@ -29,6 +29,7 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/stringhelper.hpp"
+#include "vfs/filesystem.hpp"
 #include "vfs/file.hpp"
 
 static void _resolveChannelFinished(int channel)
@@ -287,6 +288,16 @@ void Engine::_updateSamplesVolume()
       Mix_Volume( sample.channel, (int)result );
     }
   }
+}
+
+void Helper::initTalksArchive(const vfs::Path& filename)
+{
+  static vfs::Path saveFilename;
+
+  vfs::FileSystem::instance().unmountArchive( saveFilename );
+
+  saveFilename = filename;
+  vfs::FileSystem::instance().mountArchive( saveFilename );
 }
 
 }//end namespace audio

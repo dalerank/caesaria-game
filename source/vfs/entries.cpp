@@ -234,7 +234,8 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
     switch( sType )
     {
     case Path::equaleCase: equale = (*it).namehash() == fnHash; break;
-    case Path::ignoreCase: equale = (*it).nameihash() == fnHash; break;
+    case Path::ignoreCase: equale = (*it).nameihash() == fnHash; break;      
+    default: break;
     }
 
     if( equale )

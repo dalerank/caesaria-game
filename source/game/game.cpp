@@ -119,6 +119,8 @@ void Game::Impl::initSound()
   ae.setVolume( audio::ambientSound, GameSettings::get( GameSettings::ambientVolume ) );
   ae.setVolume( audio::themeSound, GameSettings::get( GameSettings::musicVolume ) );
   ae.setVolume( audio::gameSound, GameSettings::get( GameSettings::soundVolume ) );
+
+  audio::Helper::initTalksArchive( GameSettings::rcpath( GameSettings::talksArchive ) );
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)

@@ -41,11 +41,15 @@
 #include "gui/dialogbox.hpp"
 #include "core/osystem.hpp"
 #include "gui/texturedbutton.hpp"
+#include "sound/engine.hpp"
 
 using namespace gfx;
 
 namespace scene
 {
+
+CAESARIA_LITERALCONST(ext)
+CAESARIA_LITERALCONST(talks)
 
 class StartMenu::Impl
 {
@@ -141,19 +145,24 @@ void StartMenu::Impl::resolveShowChangeLanguageWindow()
 void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
+  std::string talksArchive;
   VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
   foreach( it, languages )
   {
     if( item.text() == it->first )
     {
-      lang = it->second.toString();
+      VariantMap vm = it->second.toMap();
+      lang = vm[ lc_ext ].toString();
+      talksArchive = vm[ lc_talks ].toString();
       break;
     }
   }
 
-  GameSettings::set( GameSettings::language, Variant( std::string( lang ) ) );
+  GameSettings::set( GameSettings::language, Variant( lang ) );
+  GameSettings::set( GameSettings::talksArchive, Variant( talksArchive ) );
 
   Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
+  audio::Helper::initTalksArchive( GameSettings::rcpath( talksArchive ) );
 }
 
 void StartMenu::Impl::resolveChangePlayerName()
