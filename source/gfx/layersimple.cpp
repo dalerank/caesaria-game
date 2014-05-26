@@ -24,7 +24,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerSimple::getType() const
+int LayerSimple::type() const
 {
   return citylayer::simple;
 }

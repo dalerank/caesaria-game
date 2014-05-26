@@ -29,7 +29,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerHealth::getType() const
+int LayerHealth::type() const
 {
   return _type;
 }

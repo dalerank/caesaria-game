@@ -31,7 +31,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerFood::getType() const {  return citylayer::food; }
+int LayerFood::type() const {  return citylayer::food; }
 
 Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
 {

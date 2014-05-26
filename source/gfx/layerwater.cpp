@@ -30,7 +30,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerWater::getType() const{  return citylayer::water;}
+int LayerWater::type() const{  return citylayer::water;}
 
 std::set<int> LayerWater::getVisibleWalkers() const
 {

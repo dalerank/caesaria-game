@@ -46,7 +46,7 @@ InfoboxCitizen::InfoboxCitizen(Widget* parent, const WalkerList& walkers )
   lbType->setFont( Font::create( FONT_1 ));
 
   Label* lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
-                               "Citizen's thoughts will be placed here" );
+                               "##citizen_thoughts_will_be_placed_here##" );
   lbThinks->setWordwrap( true );
   Label* lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
 
@@ -82,8 +82,6 @@ InfoboxCitizen::InfoboxCitizen(Widget* parent, const WalkerList& walkers )
       setTitle( _("##trade_caravan_from##") + m->getParentCity() );
     }
     break;
-
-
 
     default: setTitle( _("##citizen##") );
     }

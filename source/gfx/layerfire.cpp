@@ -37,7 +37,7 @@ namespace {
   std::set<int> layerFireWalkers;
 }
 
-int LayerFire::getType() const {  return citylayer::fire; }
+int LayerFire::type() const {  return citylayer::fire; }
 
 std::set<int> LayerFire::getVisibleWalkers() const {  return layerFireWalkers; }
 

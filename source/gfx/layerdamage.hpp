@@ -26,7 +26,7 @@ namespace gfx
 class LayerDamage : public Layer
 {
 public:
-  virtual int getType() const;
+  virtual int type() const;
   virtual std::set<int> getVisibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
   virtual void handleEvent(NEvent& event);

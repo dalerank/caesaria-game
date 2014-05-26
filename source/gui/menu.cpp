@@ -36,6 +36,7 @@
 #include "objects/constants.hpp"
 #include "city/city.hpp"
 #include "events/playsound.hpp"
+#include "gfx/layerconstants.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -335,6 +336,32 @@ Signal0<>& Menu::onMaximize()
   return _d->onMaximizeSignal;
 }
 
+void Menu::Impl::initActionButton(PushButton* btn, Point pos)
+{
+  btn->setPosition( pos );
+  CONNECT( btn, onClicked(), this, Impl::playSound );
+}
+
+void Menu::Impl::playSound()
+{
+  events::GameEventPtr e = events::PlaySound::create( "panel", rand() % 2 + 1, 100 );
+  e->dispatch();
+}
+
+void Menu::Impl::updateBuildingOptions()
+{
+  const city::BuildOptions& options = city->buildOptions();
+  waterButton->setEnabled( options.isGroupAvailable( BM_WATER ) );
+  administrationButton->setEnabled( options.isGroupAvailable( BM_ADMINISTRATION ) );
+  entertainmentButton->setEnabled( options.isGroupAvailable( BM_ENTERTAINMENT ) );
+  educationButton->setEnabled( options.isGroupAvailable( BM_EDUCATION ));
+  templeButton->setEnabled( options.isGroupAvailable( BM_RELIGION ));
+  commerceButton->setEnabled( options.isGroupAvailable( BM_COMMERCE ));
+  securityButton->setEnabled( options.isGroupAvailable( BM_SECURITY ));
+  healthButton->setEnabled( options.isGroupAvailable( BM_HEALTH ) );
+  engineerButton->setEnabled( options.isGroupAvailable( BM_ENGINEERING ));
+}
+
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 {
   ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, 1, 1 ) );
@@ -383,7 +410,7 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->minimizeButton->deleteLater();
   _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##show_bigpanel##") );
   _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
-  CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
+  CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );  
 
   _d->initActionButton( _d->houseButton, Point( 13, 277 ) );
   _d->houseButton->setIsPushButton( false );
@@ -434,7 +461,8 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), _("##ovrm_text##") );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
   
-  CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlays );
+  CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlayMenuVisible );
+  CONNECT( _d->overlaysMenu, onSelectOverlayType(), this, ExtentMenu::changeOverlay );
 }
 
 bool ExtentMenu::onEvent(const NEvent& event)
@@ -459,10 +487,16 @@ void ExtentMenu::draw(Engine& painter )
   Menu::draw( painter );
 }
 
-void ExtentMenu::toggleOverlays()
+void ExtentMenu::toggleOverlayMenuVisible()
 {
   _d->overlaysMenu->setPosition( Point( screenLeft() - 170, 74 ) );
   _d->overlaysMenu->setVisible( !_d->overlaysMenu->isVisible() );
+}
+
+void ExtentMenu::changeOverlay(int ovType)
+{
+  std::string layerName = citylayer::Helper::instance().findName( (citylayer::Type)ovType );
+  _d->overlaysButton->setText( _( layerName ) );
 }
 
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }
@@ -472,31 +506,5 @@ Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked();
 Signal0<>&ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
 void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
-
-void Menu::Impl::initActionButton(PushButton* btn, Point pos)
-{
-  btn->setPosition( pos );
-  CONNECT( btn, onClicked(), this, Impl::playSound );
-}
-
-void Menu::Impl::playSound()
-{
-  events::GameEventPtr e = events::PlaySound::create( "panel", rand() % 2 + 1, 100 );
-  e->dispatch();
-}
-
-void Menu::Impl::updateBuildingOptions()
-{
-  const city::BuildOptions& options = city->buildOptions();
-  waterButton->setEnabled( options.isGroupAvailable( BM_WATER ) );
-  administrationButton->setEnabled( options.isGroupAvailable( BM_ADMINISTRATION ) );
-  entertainmentButton->setEnabled( options.isGroupAvailable( BM_ENTERTAINMENT ) );
-  educationButton->setEnabled( options.isGroupAvailable( BM_EDUCATION ));
-  templeButton->setEnabled( options.isGroupAvailable( BM_RELIGION ));
-  commerceButton->setEnabled( options.isGroupAvailable( BM_COMMERCE ));
-  securityButton->setEnabled( options.isGroupAvailable( BM_SECURITY ));
-  healthButton->setEnabled( options.isGroupAvailable( BM_HEALTH ) );
-  engineerButton->setEnabled( options.isGroupAvailable( BM_ENGINEERING ));
-}
 
 }

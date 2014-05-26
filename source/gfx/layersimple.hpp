@@ -25,7 +25,7 @@ namespace gfx
 class LayerSimple : public Layer
 {
 public:
-  virtual int getType() const;
+  virtual int type() const;
   virtual std::set<int> getVisibleWalkers() const;
 
   static LayerPtr create(Camera& camera, PlayerCityPtr city );

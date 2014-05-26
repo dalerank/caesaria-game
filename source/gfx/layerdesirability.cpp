@@ -28,7 +28,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerDesirability::getType() const
+int LayerDesirability::type() const
 {
   return citylayer::desirability;
 }

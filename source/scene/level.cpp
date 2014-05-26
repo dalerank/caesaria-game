@@ -225,6 +225,7 @@ void Level::initialize()
   CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter );
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
   CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter );
+  CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay );
 
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );

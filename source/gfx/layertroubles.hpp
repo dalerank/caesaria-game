@@ -26,7 +26,7 @@ namespace gfx
 class LayerTroubles : public Layer
 {
 public:
-  virtual int getType() const;
+  virtual int type() const;
   virtual VisibleWalkers getVisibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 

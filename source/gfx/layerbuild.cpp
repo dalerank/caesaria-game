@@ -317,7 +317,7 @@ void LayerBuild::_finishBuild()
   _updatePreviewTiles( true );
 }
 
-int LayerBuild::getType() const {  return citylayer::build;}
+int LayerBuild::type() const {  return citylayer::build;}
 
 std::set<int> LayerBuild::getVisibleWalkers() const
 {

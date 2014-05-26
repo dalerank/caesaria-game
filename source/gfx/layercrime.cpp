@@ -29,7 +29,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerCrime::getType() const
+int LayerCrime::type() const
 {
   return citylayer::crime;
 }

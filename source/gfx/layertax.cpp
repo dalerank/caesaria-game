@@ -26,7 +26,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerTax::getType() const
+int LayerTax::type() const
 {
   return citylayer::tax;
 }

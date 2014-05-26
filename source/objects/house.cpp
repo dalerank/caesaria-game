@@ -745,7 +745,7 @@ void House::destroy()
   do
   {
     CitizenGroup homeless = _d->habitants.retrieve( std::min<int>( _d->habitants.count(), maxCitizenInGroup ) );
-    Immigrant::send2city( _city(), homeless, tile(), "##immigrant_thrown_from_house##" );
+    Immigrant::send2city( _city(), homeless, tile(), math::random( 10 ) > 5 ? "##immigrant_thrown_from_house##" : "##immigrant_no_home##" );
   }
   while( _d->habitants.count() >= maxCitizenInGroup );
 

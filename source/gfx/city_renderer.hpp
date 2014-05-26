@@ -61,6 +61,9 @@ public:
 
   void setViewport( const Size& size );
 
+public oc3_signals:
+  Signal1<int>& onLayerSwitch();
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

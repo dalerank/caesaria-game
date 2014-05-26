@@ -31,7 +31,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerEducation::getType() const
+int LayerEducation::type() const
 {
   return _type;
 }

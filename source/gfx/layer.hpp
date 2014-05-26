@@ -35,7 +35,7 @@ class Layer : public ReferenceCounted
 public:
   typedef std::set<int> VisibleWalkers;
 
-  virtual int getType() const = 0;
+  virtual int type() const = 0;
   virtual VisibleWalkers getVisibleWalkers() const = 0;
 
   //draw gfx before walkers

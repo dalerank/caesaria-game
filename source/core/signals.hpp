@@ -21,6 +21,7 @@
 
 #define oc3_signals
 #define oc3_slots
+#define oc3_emit
 
 #define CONNECT( a, signal, b, slot ) \
 { \

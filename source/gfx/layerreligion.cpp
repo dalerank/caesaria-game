@@ -30,7 +30,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerReligion::getType() const
+int LayerReligion::type() const
 {
   return citylayer::religion;
 }

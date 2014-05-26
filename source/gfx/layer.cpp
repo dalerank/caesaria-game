@@ -416,7 +416,7 @@ void Layer::init( Point cursor )
   __D_IMPL(_d,Layer)
   _d->lastCursorPos = cursor;
   _d->startCursorPos = cursor;
-  _d->nextLayer = getType();
+  _d->nextLayer = type();
 }
 
 void Layer::afterRender( Engine& engine)

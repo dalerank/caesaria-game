@@ -34,7 +34,7 @@ static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_dama
                                          "##some_damage_risk##", "##very_high_damage_risk##",
                                          "##extreme_damage_risk##" };
 
-int LayerDamage::getType() const
+int LayerDamage::type() const
 {
   return citylayer::damage;
 }

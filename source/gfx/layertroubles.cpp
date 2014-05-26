@@ -34,7 +34,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerTroubles::getType() const{  return _type;}
+int LayerTroubles::type() const{  return _type;}
 Layer::VisibleWalkers LayerTroubles::getVisibleWalkers() const{  return std::set<int>();}
 
 void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
