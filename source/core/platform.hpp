@@ -26,7 +26,7 @@
   #define CAESARIA_PLATFORM_WIN
   #define CAESARIA_PLATFORM_WIN64
   #define CAESARIA_PLATFORM_NAME "win64"
-#elif defined(__APPLE_CC__)
+#elif defined(__APPLE_CC__) || defined(__APPLE__) || defined(__APPLE_CPP__) || defined(__MACOS_CLASSIC__)
   #define CAESARIA_PLATFORM_UNIX
   #define CAESARIA_PLATFORM_MACOSX
   #define CAESARIA_PLATFORM_NAME "macosx"
@@ -37,7 +37,7 @@
 #elif defined(__HAIKU__) || defined(HAIKU)
   #define CAESARIA_PLATFORM_BEOS
   #define CAESARIA_PLATFORM_HAIKU
-  #define CAESARIA_PLATFORM_NAME "haiku"  
+  #define CAESARIA_PLATFORM_NAME "haiku"
 #elif defined(ANDROID)
   #define CAESARIA_PLATFORM_UNIX
   #define CAESARIA_PLATFORM_ANDROID
