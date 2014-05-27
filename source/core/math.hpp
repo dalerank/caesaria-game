@@ -20,7 +20,10 @@
 #include <algorithm>
 #include <climits>
 #include <cfloat>
-
+#include "platform.hpp"
+#ifdef CAESARIA_PLATFORM_MACOSX
+  #include <stdlib.h>
+#endif
 namespace math
 {
 
