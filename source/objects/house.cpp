@@ -354,28 +354,121 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       setServiceValue( Service::recruter, sumFreeWorkers );
 
       //reset desirability level with old house size
-      helper.updateDesirability( this, false );
+      helper.updateDesirability( this, city::Helper::offDesirability );
       _d->houseId = startBigPic;
       _d->picIdOffset = 0;
       _update();
 
       build( _city(), pos() );
       //set new desirability level
-      helper.updateDesirability( this, true );
+      helper.updateDesirability( this, city::Helper::onDesirability );
     }
   }
 
   //that this house will be upgrade, we need decrease current desirability level
-  helper.updateDesirability( this, false );
+  helper.updateDesirability( this, city::Helper::offDesirability );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
   //now upgrade groud area to new desirability
-  helper.updateDesirability( this, true );
+  helper.updateDesirability( this, city::Helper::onDesirability );
 
   bool bigSize = size().width() > 1;
   _d->houseId = bigSize ? startBigPic : startSmallPic; 
-  _d->picIdOffset = bigSize ? 0 : ( (rand() % 10 > 6) ? 1 : 0 );
+  _d->picIdOffset = bigSize ? 0 : ( ( math::random( 10 ) > 6) ? 1 : 0 );
+}
+
+void House::_tryEvolve_12_to_20_lvl( int level4grow, int startPic, int minSize, const char desirability )
+{
+  city::Helper helper( _city() );
+  //startPic += math::random( 10 ) > 5 ? 1 : 0;
+  bool mayGrow = true;
+  TilePos buildPos = tile().pos();
+
+  if( size() == minSize-1 )
+  {
+    Tilemap& tmap = _city()->tilemap();
+    int offset = minSize-1;
+
+    std::map<TilePos, TilesArray> possibleAreas;
+
+    TilePos sPos = tile().pos();
+    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    sPos = tile().pos() - TilePos( offset, 0 );
+    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    sPos = tile().pos() - TilePos( offset, offset );
+    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    sPos = tile().pos() - TilePos( 0, offset );
+    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+
+    foreach( itArea, possibleAreas )
+    {
+      TilesArray& area = itArea->second;
+
+      for( TilesArray::iterator it=area.begin(); it != area.end(); )
+      {
+        TileOverlayPtr overlay = (*it)->overlay();
+        if( overlay == this ) { it = area.erase( it ); }
+        else { ++it; }
+      }
+
+      foreach( it, area )
+      {
+        if( *it == NULL )
+        {
+          mayGrow = false;   //some broken, can't grow
+          break;
+        }
+
+        TileOverlayPtr overlay = (*it)->overlay();
+        if( overlay.isNull() )
+        {
+          if( !(*it)->getFlag( Tile::isConstructible ) )
+          {
+            mayGrow = false; //not constuctible, can't grow
+            break;
+          }
+        }
+        else
+        {
+          if( overlay->type() != construction::garden )
+          {
+            mayGrow = false; //not garden, can't grow
+            break;
+          }
+        }
+      }
+
+      if( mayGrow )
+      {
+        buildPos = itArea->first;
+        _d->houseId = startPic;
+        _d->picIdOffset = 0;
+        _update();
+        setSize( minSize );
+        build( _city(), buildPos );
+        break;
+      }
+    }
+  }
+
+  if( mayGrow )
+  {
+    //that this house will be upgrade, we need decrease current desirability level
+    helper.updateDesirability( this, city::Helper::offDesirability );
+
+    _d->desirability.base = desirability;
+    _d->desirability.step = desirability < 0 ? 1 : -1;
+    //now upgrade groud area to new desirability
+    helper.updateDesirability( this, city::Helper::onDesirability );
+
+    _d->houseId = startPic ;
+    _d->picIdOffset = 0;
+  }
+  else
+  {
+    _d->evolveInfo = "##no_space_for_evolve##";
+  }
 }
 
 
@@ -384,42 +477,98 @@ void House::_levelUp()
   _d->houseLevel++;   
   _d->picIdOffset = 0;
      
-  switch (_d->houseLevel)
+  switch( _d->houseLevel )
   {
-  case 1:
-    _d->houseId = 1;
+  case HouseLevel::smallHovel:
+    _d->houseId = HouseLevel::smallHovel;
     _d->desirability.base = -3;
     _d->desirability.step = 1;
   break;
 
-  case 2: _tryEvolve_1_to_11_lvl( 1, 1, 5, -3);
+  case HouseLevel::bigTent:
+      _tryEvolve_1_to_11_lvl( HouseLevel::smallHovel, HouseLevel::smallHovelSmlPic,
+                              HouseLevel::smallHovelBigPic, -3);
   break;
   
-  case 3: _tryEvolve_1_to_11_lvl( 2, 3, 6, -3 );
+  case HouseLevel::smallHut:
+      _tryEvolve_1_to_11_lvl( HouseLevel::bigTent, HouseLevel::bigTentSmlPic,
+                              HouseLevel::bigTentBigPic, -3 );
   break;
   
-  case 4: _tryEvolve_1_to_11_lvl( 3, 7, 11, -2 );
+  case HouseLevel::bigHut:
+      _tryEvolve_1_to_11_lvl( HouseLevel::smallHut, HouseLevel::smallHutSmlPic,
+                              HouseLevel::smallHutBigPic, -2 );
   break;
   
-  case 5: _tryEvolve_1_to_11_lvl( 4, 9, 12, -2 );
+  case HouseLevel::smallDomus:
+      _tryEvolve_1_to_11_lvl( HouseLevel::bigHut, HouseLevel::bigHutSmlPic,
+                              HouseLevel::bigHutBigPic, -2 );
   break;
 
-  case 6: _tryEvolve_1_to_11_lvl( 5, 13, 17, -2 );
+  case HouseLevel::bigDomus:
+      _tryEvolve_1_to_11_lvl( HouseLevel::smallDomus, HouseLevel::smallDomusSmlPic,
+                              HouseLevel::smallDomusBigPic, -2 );
   break;
 
-  case 7: _tryEvolve_1_to_11_lvl( 6, 15, 18, -2 );
+  case HouseLevel::smallMansion:
+      _tryEvolve_1_to_11_lvl( HouseLevel::bigDomus, HouseLevel::bigDomusSmlPic,
+                              HouseLevel::bigDomusBigPic, -2 );
   break;
 
-  case 8: _tryEvolve_1_to_11_lvl( 7, 19, 23, -1 );
+  case HouseLevel::bigMansion:
+      _tryEvolve_1_to_11_lvl( HouseLevel::smallMansion, HouseLevel::smallMansionSmlPic,
+                              HouseLevel::smallMansionBigPic, -1 );
   break;
 
-  case 9: _tryEvolve_1_to_11_lvl( 8, 21, 24, -1 );
+  case HouseLevel::smallInsula:
+      _tryEvolve_1_to_11_lvl( HouseLevel::bigMansion, HouseLevel::bigMansionSmlPic,
+                              HouseLevel::bigMansionBigPic, -1 );
   break;
 
-  case 10: _tryEvolve_1_to_11_lvl( 9, 25, 29, 0 );
+  case HouseLevel::middleInsula:
+      _tryEvolve_1_to_11_lvl( HouseLevel::smallInsula, HouseLevel::smallInsulaSmlPic,
+                              HouseLevel::smallInsulaBigPic, 0 );
   break;
 
-  case 11: _tryEvolve_1_to_11_lvl( 10, 27, 30, 0 );
+  case HouseLevel::bigInsula:
+      _tryEvolve_1_to_11_lvl( HouseLevel::middleInsula, HouseLevel::middleInsulaSmlPic,
+                              HouseLevel::middleInsulaBigPic, 0 );
+  break;
+
+  case HouseLevel::beatyfullInsula:
+      _tryEvolve_12_to_20_lvl( HouseLevel::bigInsula, HouseLevel::bigInsulaPic, 2, 1 );
+  break;
+
+  case HouseLevel::smallVilla:
+      _tryEvolve_12_to_20_lvl( HouseLevel::beatyfullInsula, HouseLevel::smallVillaPic, 2, 2 );
+  break;
+
+  case HouseLevel::middleVilla:
+      _tryEvolve_12_to_20_lvl( HouseLevel::smallVilla, HouseLevel::middleVillaPic, 2, 2 );
+  break;
+
+  case HouseLevel::bigVilla:
+      _tryEvolve_12_to_20_lvl( HouseLevel::middleVilla, HouseLevel::bigVillaPic, 2, 3 );
+  break;
+
+  case HouseLevel::greatVilla:
+      _tryEvolve_12_to_20_lvl( HouseLevel::bigVilla, HouseLevel::greatVillaPic, 2, 3 );
+  break;
+
+  case HouseLevel::smallPalace:
+      _tryEvolve_12_to_20_lvl( HouseLevel::greatVilla, HouseLevel::smallPalacePic, 3, 4 );
+  break;
+
+  case HouseLevel::middlePalace:
+      _tryEvolve_12_to_20_lvl( HouseLevel::smallPalace, HouseLevel::middlePalacePic, 3, 4 );
+  break;
+
+  case HouseLevel::bigPalace:
+      _tryEvolve_12_to_20_lvl( HouseLevel::middlePalace, HouseLevel::bigPalacePic, 4, 5 );
+  break;
+
+  case HouseLevel::greatPalace:
+      _tryEvolve_12_to_20_lvl( HouseLevel::bigPalace, HouseLevel::bigPalacePic, 4, 6 );
   break;
   }
 
@@ -432,7 +581,7 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
 {
   bool bigSize = size().width() > 1;
   _d->houseId = bigSize ? bigPic : smallPic;
-  _d->picIdOffset = bigSize ? 0 : ( rand() % 10 > 6 ? 1 : 0 );
+  _d->picIdOffset = bigSize ? 0 : ( math::random( 10 ) > 6 ? 1 : 0 );
 
   city::Helper helper( _city() );
   //clear current desirability influence
@@ -454,7 +603,7 @@ void House::_levelDown()
 
   switch (_d->houseLevel)
   {
-  case 1:
+  case HouseLevel::smallHovel:
   {
     _d->houseId = 1;
     _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
@@ -482,35 +631,16 @@ void House::_levelDown()
   }
   break;
 
-  case 2: _tryDegrage_11_to_2_lvl( 1, 5, -3 );
-  break;
-
-  case 3: _tryDegrage_11_to_2_lvl( 3, 6, -3 );
-  break;
-
-  case 4: _tryDegrage_11_to_2_lvl( 7, 11, -2 );
-  break;
-
-  case 5: _tryDegrage_11_to_2_lvl( 9, 12, -2 );
-  break;
-
-  case 6: _tryDegrage_11_to_2_lvl( 13, 17, -2 );
-  break;
-
-  case 7: _tryDegrage_11_to_2_lvl( 15, 18, -2 );
-  break;
-
-  case 8: _tryDegrage_11_to_2_lvl( 19, 23, -1 );
-  break;
-
-  case 9: _tryDegrage_11_to_2_lvl( 21, 23, -1 );
-  break;
-
-  case 10: _tryDegrage_11_to_2_lvl( 25, 29, 0 );
-  break;
-
-  case 11: _tryDegrage_11_to_2_lvl( 27, 30, 0 );
-  break;
+  case HouseLevel::bigTent: _tryDegrage_11_to_2_lvl( HouseLevel::smallHovelSmlPic, HouseLevel::smallHovelBigPic, -3 ); break;
+  case HouseLevel::smallHut: _tryDegrage_11_to_2_lvl( HouseLevel::bigTentSmlPic, HouseLevel::bigTentBigPic, -3 ); break;
+  case HouseLevel::bigHut: _tryDegrage_11_to_2_lvl( HouseLevel::smallHutSmlPic, HouseLevel::smallHutBigPic, -2 ); break;
+  case HouseLevel::smallDomus: _tryDegrage_11_to_2_lvl( HouseLevel::bigHutSmlPic, HouseLevel::bigHutBigPic, -2 ); break;
+  case HouseLevel::bigDomus: _tryDegrage_11_to_2_lvl( HouseLevel::smallDomusSmlPic, HouseLevel::smallDomusBigPic, -2 ); break;
+  case HouseLevel::smallMansion: _tryDegrage_11_to_2_lvl( HouseLevel::bigDomusSmlPic, HouseLevel::bigDomusBigPic, -2 );  break;
+  case HouseLevel::bigMansion: _tryDegrage_11_to_2_lvl( HouseLevel::smallMansionSmlPic, HouseLevel::smallMansionBigPic, -1 );  break;
+  case HouseLevel::smallInsula: _tryDegrage_11_to_2_lvl( HouseLevel::bigMansionSmlPic, HouseLevel::bigMansionBigPic, -1 );  break;
+  case HouseLevel::middleInsula: _tryDegrage_11_to_2_lvl( HouseLevel::smallInsulaSmlPic, HouseLevel::smallInsulaBigPic, 0 );  break;
+  case HouseLevel::bigInsula: _tryDegrage_11_to_2_lvl( HouseLevel::middleInsulaSmlPic, HouseLevel::middleInsulaBigPic, 0 );  break;
   }
 
   _update();

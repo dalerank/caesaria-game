@@ -104,7 +104,10 @@ void ProsperityRating::update( const unsigned int time )
       plebsCount += house->spec().level() < 5 ? house->habitants().count() : 0;
     }
 
-    prosperityCap /= houses.size();
+    if( houses.size() > 0 )
+    {
+      prosperityCap /= houses.size();
+    }
 
     _d->lastYearProsperity = getValue();
 

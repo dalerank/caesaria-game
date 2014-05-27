@@ -443,13 +443,13 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   foreach( house, houseList) { pop += (*house)->habitants().count(); }
   
   population = pop;
-  onPopulationChangedSignal.emit( pop );
+  oc3_emit onPopulationChangedSignal( pop );
 }
 
 void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay)
 {
   city::Helper helper( city );
-  helper.updateDesirability( overlay, false );
+  helper.updateDesirability( overlay, city::Helper::offDesirability );
 }
 
 void PlayerCity::save( VariantMap& stream) const
@@ -634,7 +634,7 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 {
   _d->buildOptions = options;
-  _d->onChangeBuildingOptionsSignal.emit();
+  oc3_emit _d->onChangeBuildingOptionsSignal();
 }
 
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
