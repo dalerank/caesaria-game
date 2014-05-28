@@ -92,7 +92,7 @@ void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
 
 int GameLoaderC3Sav::getClimateType(const std::string& filename)
 {
-  std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
+  /*std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
   unsigned int i = 0;
   f.seekg(kClimate, std::ios::beg);
@@ -100,7 +100,8 @@ int GameLoaderC3Sav::getClimateType(const std::string& filename)
 
   f.close();
 
-  return i;
+  return i; */
+  return -1;
 }
 
 
@@ -108,8 +109,8 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
-  int climateType = getClimateType( filename );
-  game.city()->setClimate( (ClimateType)climateType );
+  //int climateType = getClimateType( filename );
+  //game.city()->setClimate( (ClimateType)climateType );
 
   _d->loadCity(f, game );
 
@@ -182,11 +183,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f);
     SkipCompressed(f);
     
-#ifdef CAESARIA_PLATFORM_HAIKU
     f.read((char*)&randomGrid[0], 26244); 
-#else    
-    f.read((char*)randomGrid.data(), 26244);
-#endif
     
     SkipCompressed(f);
     SkipCompressed(f);

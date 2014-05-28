@@ -54,6 +54,7 @@
 #include "gfx/logo.hpp"
 #include "walker/helper.hpp"
 #include "core/osystem.hpp"
+#include "freeplay_finalizer.hpp"
 
 #include <list>
 
@@ -284,10 +285,10 @@ void Game::setScreenMenu()
       load( screen.getMapName() );
       Logger::warning( "screen menu: end loading map" );
 
-      city::BuildOptions bopts;
-      bopts = _d->city->buildOptions();
-      bopts.setGroupAvailable( BM_MAX, true );
-      _d->city->setBuildOptions( bopts );
+      FreeplayFinalizer::addPopulationMilestones( _d->city );
+      FreeplayFinalizer::initBuildOptions( _d->city );
+
+
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;

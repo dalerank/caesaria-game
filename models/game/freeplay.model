@@ -1,0 +1,36 @@
+{
+  population_milestones :
+  {
+    pm_500#messagebox : {
+      population : 500
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }
+
+    pm_1000#messagebox : {
+      population : 1000
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##1000_citzens_in_city##"
+    }
+
+    pm_2000#messagebox : {
+      population : 2000
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##2000_citzens_in_city##"
+    }
+
+    pm_3000#messagebox : {
+      population : 3000
+      send2scribe : true
+      video : "/smk/Population2.smk"
+      title : "##population_milestone##"
+      text : "##3000_citzens_in_city##"
+    }
+  }
+}
