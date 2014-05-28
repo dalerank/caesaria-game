@@ -94,7 +94,7 @@ inline unsigned int __tpHash( const TilePos& pos )
 void LayerDestroy::render( Engine& engine )
 {
   // center the map on the screen
-  Point cameraOffset = _camera()->getOffset();
+  Point cameraOffset = _camera()->offset();
 
   _camera()->startFrame();
 

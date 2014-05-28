@@ -26,7 +26,6 @@ class Picture;
 class Tilemap;
 class TilemapCamera;
 class TilesArray;
-class CityRenderer;
 
 PREDEFINE_CLASS_SMARTLIST(TileOverlay,List)
 PREDEFINE_CLASS_SMARTLIST(Layer,List)

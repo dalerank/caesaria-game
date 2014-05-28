@@ -42,7 +42,6 @@ class CitizenInfoboxParser : public InfoboxCreator
 public:
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    city::Helper helper( city );
     WalkerList walkers = city->getWalkers( walker::any, pos );
     
     if( walkers.empty() )
@@ -51,7 +50,7 @@ public:
     }
     else
     {
-      return InfoboxCitizenManager::instance().show( parent, walkers );
+      return InfoboxCitizenManager::instance().show( parent, city, pos );
     }
   }
 };
@@ -60,9 +59,9 @@ template< class T >
 class SpecificCitizenInfoboxCreator : public InfoboxCitizenCreator
 {
 public:
-  gui::InfoboxSimple* create(  gui::Widget* parent, WalkerList walkers )
+  gui::InfoboxSimple* create(  gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
   {
-    return new T( parent, walkers );
+    return new T( parent, city, pos );
   }
 };
 
@@ -95,20 +94,20 @@ void InfoboxCitizenManager::addCreator( constants::walker::Type type, InfoboxCit
   _d->creators[ type ] = c;
 }
 
-gui::InfoboxSimple* InfoboxCitizenManager::show( gui::Widget* parent, WalkerList walkers )
+gui::InfoboxSimple* InfoboxCitizenManager::show( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
 {
+  WalkerList walkers = city->getWalkers( walker::any, pos );
   Impl::Creators::iterator it = _d->creators.find( walkers.empty() ? walker::unknown : walkers.front()->type() );
   if( it == _d->creators.end() )
   {
-    return new gui::InfoboxCitizen( parent, walkers );
+    return new gui::InfoboxCitizen( parent, city, pos );
   }
   else
   {
-    return it->second->create( parent, walkers );
+    return it->second->create( parent, city, pos );
   }
 }
 
 InfoboxCitizenManager::InfoboxCitizenManager() : _d( new Impl )
 {
-
 }

@@ -330,7 +330,7 @@ std::set<int> LayerBuild::getVisibleWalkers() const
 void LayerBuild::_drawBuildTiles( Engine& engine)
 {
   __D_IMPL(_d,LayerBuild);
-  Point offset = _camera()->getOffset();
+  Point offset = _camera()->offset();
   foreach( it, _d->buildTiles )
   {
     Tile* postTile = *it;

@@ -79,7 +79,7 @@ void Layer::renderPass( Engine& engine, Renderer::Pass pass )
   // building foregrounds and animations
   __D_IMPL(_d,Layer)
   Impl::TileQueue& tiles = _d->renderQueue[ pass ];
-  Point offset = _d->camera->getOffset();
+  Point offset = _d->camera->offset();
   foreach( tile, tiles )
   {
     drawPass( engine, *(*tile), offset, pass );
@@ -286,7 +286,7 @@ void Layer::render( Engine& engine)
   __D_IMPL(_d,Layer)
   // center the map on the screen
   const TilesArray& visibleTiles = _d->camera->getTiles();
-  Point camOffset = _d->camera->getOffset();
+  Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
 
@@ -430,7 +430,7 @@ void Layer::afterRender( Engine& engine)
   if( _d->drawGrid )
   {
     Tilemap& tmap = _d->city->tilemap();
-    Point offset = _d->camera->getOffset();
+    Point offset = _d->camera->offset();
     int size = tmap.size();
     SdlEngine* painter = static_cast< SdlEngine* >( &engine );
     Picture& screen = painter->getScreen();

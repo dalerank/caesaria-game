@@ -251,6 +251,6 @@ void TilemapCamera::Impl::resetDrawn()
   foreach( tile, tiles ) { (*tile)->resetWasDrawn(); }
 }
 
-Point TilemapCamera::getOffset() const{  return _d->offset;}
+Point TilemapCamera::offset() const{  return _d->offset;}
 
 }//end namespace gfx

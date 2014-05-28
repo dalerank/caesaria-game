@@ -89,6 +89,7 @@ void Emigrant::_updateThinks()
 {
   StringArray thinks;
   thinks << "##emigrant_where_my_home##";
+  thinks << "##emigrant_city_have_vacation##";
 
   setThinks( thinks.rand() );
 }
