@@ -28,6 +28,7 @@
 #include "events/playsound.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
+#include "core/logger.hpp"
 
 using namespace constants;
 
@@ -43,10 +44,11 @@ class CitizenScreenshot : public Label
 {
 public:
   CitizenScreenshot( Widget* parent, Rect rectangle, WalkerPtr wlk )
-    : Label( parent, rectangle, "", Label::bgWhiteBorderA )
+    : Label( parent, rectangle, "", false, Label::bgBlackFrame )
   {
-    _wlkPicture.init( rectangle.size() - Size( 8 ) );
+    _wlkPicture.init( rectangle.size() - Size( 6 ) );
     _wlkPicture->fill( DefaultColors::green, Rect() );
+    _walker = wlk;
 
     gfx::Pictures pics;
     wlk->getPictures( pics );
@@ -54,6 +56,11 @@ public:
     {
       _wlkPicture->draw( *it, Point( rectangle.width(), rectangle.height() ) / 2 );
     }
+  }
+
+  virtual void _handleClick()
+  {
+    oc3_emit _onClickedSignal( _walker );
   }
 
   virtual void draw(gfx::Engine &painter)
@@ -65,11 +72,13 @@ public:
 
     if( !_wlkPicture.isNull() )
     {
-      painter.draw( *_wlkPicture, absoluteRect().UpperLeftCorner + Point( 4, 4 ), &absoluteClippingRectRef() );
+      painter.draw( *_wlkPicture, absoluteRect().UpperLeftCorner + Point( 3, 3 ), &absoluteClippingRectRef() );
     }
   }
 
+  WalkerPtr _walker;
   gfx::PictureRef _wlkPicture;
+  Signal1<WalkerPtr> _onClickedSignal;
 };
 
 class InfoboxCitizen::Impl
@@ -104,7 +113,7 @@ InfoboxCitizen::InfoboxCitizen( Widget* parent, PlayerCityPtr city, const TilePo
   _d->lbType->setFont( Font::create( FONT_1 ));
 
   _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
-                               "##citizen_thoughts_will_be_placed_here##" );
+                            "##citizen_thoughts_will_be_placed_here##" );
   _d->lbThinks->setWordwrap( true );
   _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
 
@@ -164,6 +173,8 @@ void InfoboxCitizen::_setWalker( WalkerPtr wlk )
       CitizenScreenshot* lb = new CitizenScreenshot( this, lbRect, tileWalkers.front() );
       _d->screenshots.push_back( lb );
       lbRect += lbOffset;
+
+      CONNECT( lb, _onClickedSignal, this, InfoboxCitizen::_setWalker );
     }
   }
 }

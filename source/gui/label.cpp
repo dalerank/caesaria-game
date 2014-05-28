@@ -215,6 +215,11 @@ void Label::_updateTexture(gfx::Engine& painter )
   }
 }
 
+void Label::_handleClick()
+{
+  oc3_emit _d->onClickedSignal();
+}
+
 //! destructor
 Label::~Label() {}
 
@@ -592,7 +597,7 @@ bool Label::onEvent(const NEvent& event)
     case mouseLbtnRelease:
     {
       _d->lmbPressed = false;
-      _d->onClickedSignal.emit();
+      _handleClick();
     }
     break;
 
