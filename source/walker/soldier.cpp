@@ -79,7 +79,7 @@ void Soldier::initialize(const VariantMap &options)
   Variant ad = options.get( "attackDistance" );
   if( ad.isValid() )
   {
-    setAttackDistance( math::clamp( ad.toInt(), 1, 99 ) );
+    setAttackDistance( math::clamp( ad.toUInt(), 1, 99 ) );
   }
 }
 
@@ -120,7 +120,7 @@ void Soldier::load(const VariantMap& stream)
   d->action = (Soldier::SldrAction)stream.get( lc_sldAction ).toInt();
   d->strikeForce = stream.get( lc_strikeForce );
   d->resistance = stream.get( lc_resistance );
-  d->attackDistance = stream.get( lc_attackDistance ).toInt();
+  d->attackDistance = stream.get( lc_attackDistance ).toUInt();
   d->morale = stream.get( lc_morale );
 }
 
