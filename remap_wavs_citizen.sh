@@ -107,7 +107,7 @@ mv $TMP_DIR/gladiator_say_1.wav $TMP_DIR/gladiator_find_ennemy.wav
 # immigrant comes to the city
 mv $TMP_DIR/immigrant_say_1.wav $TMP_DIR/immigrant_where_my_home.wav
 mv $TMP_DIR/immigrant_say_2.wav $TMP_DIR/immigrant_want_to_be_liontamer.wav
-mv $TMP_DIR/immigrant_say_3.wav $TMP_DIR/immigrant_no_food_here.wav
+mv $TMP_DIR/immigrant_say_3.wav $TMP_DIR/immigrant_much_food_here.wav
 
 # TODO: check homeless -> immigrant
 mv $TMP_DIR/homeless_say_1.wav $TMP_DIR/immigrant_thrown_from_house.wav
