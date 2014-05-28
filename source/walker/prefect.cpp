@@ -172,6 +172,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
       {
         house->deleteLater();
         _d->fumigateHouseNumber++;
+        house->remHabitants( 1000 ); //all habitants will killed
         events::GameEventPtr e = events::DisasterEvent::create( house->tile(), events::DisasterEvent::plague );
         e->dispatch();
 
