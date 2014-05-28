@@ -1,4 +1,5 @@
-{"##0_entertainment_access##":"Această locuință nu are acces la nici un fel de sursă de amuzament"
+{"##advchief_some_need_hospital##":""
+"##0_entertainment_access##":"Această locuință nu are acces la nici un fel de sursă de amuzament"
 "##1_entertainment_access##":""
 "##2_entertainment_access##":""
 "##3_entertainment_access##":""
@@ -19,28 +20,81 @@
 "##accept##":"Acceptă"
 "##accepting##":"Acceptare"
 "##access_ramp##":"Rampă de acces"
+"##actor_average_life##":"Viața aici e pur și simplu adorabilă"
+"##actor_gods_angry##":""
+"##actor_good_life##":""
 "##actor_high_workless##":"Șomajul este atât de mară, nu mă pot concentra să îmi învăț replicile"
-"##actor_low_entertainment##":"Plictisitor! Asta se zice despre acest loc!"
-"##actor_need_entertainment##":"Muncest cât de mult pot, dar tot nu sunt suficiente surse de amuzament aici"
+"##actor_low_entertainment##":"Muncest cât de mult pot, dar tot nu sunt suficiente surse de amuzament aici"
+"##actor_need_workers##":""
 "##actor_so_hungry##":"Pur și simplu nu pot performa fără mai multă mâncare"
 "##actor##":"Actor"
+"##actorColony_bad_work##":"Nu am nici un angajat in afară de mine. Nu se poate să muncesc în aceste condiții. În cel mai bun caz, pot pregăti un actor în trei luni"
+"##actorColony_full_work##":"Suntem încântați să anunțăm că, având număr maxim de angajați, pregătim până la patru actori pe lună"
+"##actorColony_need_some_workers##":"Ne lipsesc o parte din angajați, așa că în acest moment putem pregăti cel mult doi actori pe lună."
+"##actorColony_no_workers##":"Această colonie este părăsită. Fără mentory angajați, nici un actor nu poate fi pregătit."
+"##actorColony_patrly_workers##":"Avem doar jumătate dintre angajații necesari, așa că putem pregăti doar un actor în luna ce urmează."
+"##actorColony_slow_work##":"Avem nevoie foarte mare de muncitori. Va fi un efort să pregătim un actor in următoarele două luni."
+"##actorColony##":"Colonie de actori"
 "##ad##":"d.Hr."
 "##adjust_exact##":"Stabilește suma exactă pe care vrei să o donezi"
 "##adjust_tax_rate##":"Stabilește rata de taxare a orașului"
 "##administration_building##":"Administrație și Guvern"
 "##advanced_houseinfo##":"Informații avansate despre această casă"
+"##advchief_crime##":""
+"##advchief_education##":""
+"##advchief_employers_ok##":""
+"##advchief_employment##":""
+"##advchief_finance##":""
+"##advchief_food_consumption##":""
 "##advchief_food_stocks##":"Stoc de mâncare"
+"##advchief_health_awesome_clinic##":""
+"##advchief_health_awesome##":""
+"##advchief_health_bad_clinic##":""
+"##advchief_health_bad##":""
+"##advchief_health_good_clinic##":""
+"##advchief_health_good##":""
+"##advchief_health_high_clinic##":""
+"##advchief_health_high##":""
+"##advchief_health_less_clinic##":""
+"##advchief_health_less##":""
+"##advchief_health_low##":""
+"##advchief_health_lower##":""
+"##advchief_health_middle_clinic##":""
+"##advchief_health_middle##":""
+"##advchief_health_perfect_clinic##":""
+"##advchief_health_perfect##":""
+"##advchief_health_simple_clinic##":""
+"##advchief_health_simple##":""
+"##advchief_health_terrible_clinic##":""
+"##advchief_health_terrible##":""
+"##advchief_health_verygood_clinic##":""
+"##advchief_health_verygood##":""
+"##advchief_health##":""
+"##advchief_high_crime_in_district##":""
+"##advchief_high_crime##":""
+"##advchief_low_crime##":""
+"##advchief_military##":"Armată"
+"##advchief_needworkers##":""
+"##advchief_sentiment##":""
+"##advchief_some_need_academy##":""
+"##advchief_some_need_barber##":""
+"##advchief_some_need_baths##":""
+"##advchief_some_need_doctors##":""
+"##advchief_some_need_education##":""
+"##advchief_some_need_library##":""
+"##advchief_which_crime_in_district##":""
+"##advchief_which_crime##":""
+"##advchief_workless##":""
 "##adve_administration_religion##":"Guvernare/Religie"
 "##adve_engineers##":"Inginerie"
-"##entertainment_advisor_title##":"Amuzament"
 "##adve_entertainment##":"Amuzament"
 "##adve_food##":"Prodicție Alimentară"
 "##adve_health_education##":"Sănătate și Educație"
 "##adve_industry_and_trade##":"Industire și Comerț"
-"##advchief_military##":"Armată"
 "##adve_military##":"Armată"
 "##adve_prefectures##":"Preferințe"
 "##adve_water##":"Servicii de apă"
+"##advemp_emperor_favour##":""
 "##advemployer_panel_denaries##":"dn"
 "##advemployer_panel_haveworkers##":"muncă"
 "##advemployer_panel_needworkers##":"nevoie"
@@ -56,6 +110,11 @@
 "##advlegion_noalarm##":"Nu avem raportată nici o amenințare impotriva orașului"
 "##advlegion_norequest##":"Nu avem înregistrată nici o cerere de ajutor din Imperiu"
 "##advlegion_window_title##":"Statusul Legiunii"
+"##advpopulation_text_census##":""
+"##advpopulation_text_society##":""
+"##advpopulation_title_census##":""
+"##advpopulation_title_population##":""
+"##advpopulation_title_society##":""
 "##aedile##":"Edil"
 "##age_ad##":"d.Hr."
 "##age_bc##":"î.Hr."
@@ -81,13 +140,6 @@
 "##architect##":"Arhitect"
 "##army_marker##":"Marcaj militar"
 "##arrow##":"Săgeată"
-"##artist_colony_bad_work##":"Nu am nici un angajat in afară de mine. Nu se poate să muncesc în aceste condiții. În cel mai bun caz, pot pregăti un actor în trei luni"
-"##artist_colony_full_work##":"Suntem încântați să anunțăm că, având număr maxim de angajați, pregătim până la patru actori pe lună"
-"##artist_colony_need_some_workers##":"Ne lipsesc o parte din angajați, așa că în acest moment putem pregăti cel mult doi actori pe lună."
-"##artist_colony_no_workers##":"Această colonie este părăsită. Fără mentory angajați, nici un actor nu poate fi pregătit."
-"##artist_colony_patrly_workers##":"Avem doar jumătate dintre angajații necesari, așa că putem pregăti doar un actor în luna ce urmează."
-"##artist_colony_slow_work##":"Avem nevoie foarte mare de muncitori. Va fi un efort să pregătim un actor in următoarele două luni."
-"##artist_colony##":"Colonie de actori"
 "##avesome_amphitheater_access##":"Această casă a fost vizitată recent de un actor sau de un gladiator. Va avea acces la amfiteatru o perioadă lungă de timp."
 "##avesome_clinic_access##":"Această casă a fost vizitată recent de un medic. Va avea acces la clinică o perioadă lungă de timp."
 "##avesome_college_access##":"Această casă a fost vizitată recent de un profesor. Va avea acces la academie o perioadă lungă de timp."
@@ -103,10 +155,14 @@
 "##ballista##":"Balistă"
 "##barbarian_warrior##":"Un războinic barbar"
 "##barber_access##":"Acces la frizerie"
+"##barber_average_life##":""
 "##barber_full_work##":"Frizeria este deschisa, iar comunitatea locală este bine aranjată"
+"##barber_gods_angry##":"Zeii sunt mâniați. Mi-aș dori ca guvernatorul să construiască mai multe temple!"
 "##barber_good_life##":"Un ras sau un tuns? Cetățene? Viața aici e bună, nu?"
+"##barber_high_workless##":"Șomajul e atât de mare îți stă părul măciucă!"
 "##barber_info##":"Nici un om civilizat nu poate apărea neras in public! Toți cetățenii au nevoie să fie tunși de frizeri profesioniști în mod regulat, pentru a putea avansa în societate."
 "##barber_need_colloseum##":"După o zi lungă de lucrat în frizerie, tot ce vreau e să văd o luptă de lei. Nici o șansă în orașul acesta!"
+"##barber_need_workers##":""
 "##barber_no_access##":"Acestă casă nu are acces la frizerie."
 "##barber_no_workers##":"Frizeria nu este deschisă și nu aduce nici un serviciu comunității locale."
 "##barber_shop##":"Frizerie"
@@ -121,6 +177,7 @@
 "##bath_access##":"Acces la baie publică"
 "##bath_no_access##":"Această casă nu are acces la o baie publică funcțională"
 "##bath##":"Baie publică"
+"##bathlady_so_hungry##":""
 "##bathlady##":"Angajat al unei băi publice"
 "##baths_full_work##":"Această baie publică este operatțională, iar comunitatea locală este curată și relaxată."
 "##baths_info##":"Oamenii civilizați fac baie măcar o dată pe zi. Pe lângă avantajele pentru sănătate, băile publice sunt un centru pentru comunitate, oferind o serie de metode de relaxare."
@@ -152,6 +209,7 @@
 "##build_road_tlp##":"Construiește drumuri"
 "##building_need_road_access##":"Această clădire are nevoie de acces la drum"
 "##buildings##":"Construcție"
+"##buy_price##":""
 "##caesar_assign_new_title##":"Caesar te-a promovat la rangul de"
 "##caesar_salary##":"Salariu de Caesar, in valoare de"
 "##can_build_only_one_of_building##":""
@@ -159,12 +217,17 @@
 "##cancelBtnTooltip##":"Anulează această operație"
 "##cant_demolish_bridge_with_people##":"Nu poți demola un pod cu oameni pe el"
 "##captured_city##":"Un oraș capturat"
-"##cart_pusher_need_theater##":"După o zi lungă de lucru, tot ce vreau să văd e o piesă de teatru. Nici o șansă în orașul acesta!"
-"##cart_pusher_no_entertainment##":"Nu mă deranjază să împing un cărucior; e mai distractiv decât restul orașului!"
-"##cart_pusher_so_hungry##":"Împinsul carucioarelor toată ziua necesită energie; nu se găsește sificientă mâncare aici pentru energie"
 "##carthaginian_soldier##":"Un soldat din Cartagina"
+"##cartPusher_average_life##":""
 "##cartpusher_cantfind_destination##":"Ar fi mai rapid să împing aceste bunuri până la Roma decât până unde trebuie să le duc!"
+"##cartPusher_gods_angry##":"Nu sunt un om religios, dar nici măcar eu nu aș trata zeii atât de rău!"
+"##cartPusher_good_life##":""
+"##cartPusher_high_workless##":"Șomajul e așa de mare, nici soția nu mă mai bate la cap să gasesc o slujbă!"
+"##cartPusher_low_entertainment##":"Nu mă deranjază să împing un cărucior; e mai distractiv decât restul orașului!"
+"##cartPusher_need_workers##":""
+"##cartPusher_so_hungry##":"Împinsul carucioarelor toată ziua necesită energie; nu se găsește sificientă mâncare aici pentru energie"
 "##ceres_badmood_info##":"Nemulțumirea lui Ceres este periculoasă, întrucât ea protejază oamenii de recolte proaste și foamete."
+"##ceres_desc##":""
 "##ceres_goodmood_info##":"Ceres aduce fertilitate pământului și face recoltele să crească. Mulțumește-o, sau pregătește-te să fii înfometat."
 "##charioteer_school_full_work##":"Suntem încântați să anunțăm că, având număr maxim de angajați, putem produce până la patru care de curse în fiecare lună."
 "##charioteer_school_need_some_workers##":"Ne lipsesc o parte din angajați, așa că în acest moment putem produce cel mult două care de curse pe lună."
@@ -178,65 +241,35 @@
 "##chief_advisor##":"Consilier Principal"
 "##children##":"Copii"
 "##citizen_are_rioting##":"Cetățenii se revoltă!"
-"##citizen_average_life_1##":"Viața aici e pur și simplu adorabilă"
-"##citizen_gods_angry##":"Nu sunt un om religios, dar nici măcar eu nu aș trata zeii atât de rău!"
 "##citizen_gods_angry##":"Acesta este un oraș păgân! E nevoie de mai multe temple!"
-"##citizen_gods_angry2##":"Dacă nu respectăm mai mult zeii, vom simți mânia lor!"
 "##citizen_gods_angry3##":"Acest guvernator nu are respect pentru zei"
-"##citizen_gods_angry3##":"Zeii să aibe milă de mine! Nu e vina mea că guvernatorul își bate joc de ei!"
-"##citizen_gods_angry4##":"Zeii sunt mâniați de acest oraș!"
-"##citizen_gods_angry5##":"Zeii sunt mâniați. Mi-aș dori ca guvernatorul să construiască mai multe temple!"
-"##citizen_gods_angry6##":"Suntem în pericol! Acest oraș nu are respect pentru zei!"
-"##citizen_gods_angry7##":"Suntem în încurcătură! Am enervat zeii!"
-"##citizen_gods_angry9##":"Vom simți mânia zeilor dacă nu construim mai multe temple rapid!"
 "##citizen_good_education##":"Nivelul de cultură a acestui oraș este cel mai ridicat din Imperiu!"
-"##citizen_good_life##":"Viața e bună în acest oraș."
-"##citizen_high_workless##":"Sunt norocos să am o slujbă, cu un nivel de șomaj atât de mare"
 "##citizen_high_workless10##":"Șomajul e așa de mare, întregul oraș devine nefericit"
-"##citizen_high_workless11##":"Șomajul e așa de mare, nici soția nu mă mai bate la cap să gasesc o slujbă!"
-"##citizen_high_workless12##":"Somajul e foarte mare aici; mă gândesc sa plec"
-"##citizen_high_workless13##":"Șomajul este îngrijor de mare aici"
-"##citizen_high_workless14##":"Cu șomajul așa de mare, muncesc din greu să îmi păstrez slujba!"
 "##citizen_high_workless2##":"Dacă nu găsesc de muncă în scurt timp, va trebui să mă mut în alt oraș."
-"##citizen_high_workless3##":"Nu am văzut niciodată atâția oameni fără slujbă!"
 "##citizen_high_workless4##":"Nu am mai trecut niciodată pe lângă atâția cetățeni fără slujbă!"
-"##citizen_high_workless5##":"Foarte mulți oameni caută o slujbă aici"
-"##citizen_high_workless7##":"Șomajul e atât de mare îți stă părul măciucă!"
-"##citizen_high_workless8##":"Ce dizgrațios! N-am văzut niciodată atâta plebe fără locuri de muncă!"
-"##citizen_high_workless9##":"Sper să nu fiu dat afară; șomajul e așa de mare, nu cred că aș mai găsi de muncă!"
-"##citizen_low_entertainment##":"Lecțiile mele sunt mai distractive decât acest oraș!"
-"##citizen_low_entertainment2##":"Acest oraș e plictisitor! Vreau să văd mai multe spectacole!"
-"##citizen_low_entertainment3##":"Acesta trebuie să fie cel mai plictisitor oraș din Imperiu!"
 "##citizen_low_entertainment4##":"Nu ai nimic de făcut dacă ieși seara în orașul acesta!"
-"##citizen_low_entertainment5##":"Cetățene! Nu este acesta cel mai plictisitor oraș din Imperiu?"
 "##citizen_low_salary##":"Nici câinele meu nu ar munci pentru salariile de aici! Plec!"
-"##citizen_need_workers##":"Este uimitor câte posturi nu sunt umplute aici"
-"##citizen_need_workers10##":"Este groaznic. Nu am văzut niciodată atâtea posturi neumplute."
-"##citizen_need_workers11##":"Este nevoie de mai mulți muncitori"
-"##citizen_need_workers2##":"Am auzit că se găsesc slujbe aici. Vreau să fiu un îmblanzitor de lei!"
 "##citizen_need_workers3##":"Acest oraș are nevoie mare de muncitori"
-"##citizen_need_workers4##":"Acest oraș are nevoie de mult mai mulți muncitori"
 "##citizen_need_workers5##":"Acest oraș are nevoie de mai mulți muncitori"
-"##citizen_need_workers6##":"Acest oraș ar merge mult mai bine dacă ar avea mai mulți muncitori"
-"##citizen_need_workers8##":"Acest oraș are nevoie disperată de muncitori"
-"##citizen_need_workers9##":"Acest oraș chiar are nevoie de mai mulți muncitori"
 "##citizen_salary##":"Salariu de cetățean în valoare de"
-"##citizen_so_hungry##":"Sunt lihnit de foame!"
-"##citizen_so_hungry2##":"Dacă mai stau aici cred că o să mor. Nu se găsește mâncare nicăieri."
-"##citizen_so_hungry4##":"Toată lumea suferă de malnutriție, iar mâncare ca să tratez asta nu se găsește!"
+"##citizen##":""
 "##citizens_additional_rooms_for##":"Spațiu pentru încă"
 "##city_cyrene##":"Cirene"
 "##city_damascus##":"Damasc"
+"##city_fire_text##":""
+"##city_fire_title##":""
 "##city_has_debt##":"Orașul are o datorie către Roma de"
 "##city_has_runout_debt##":"Orașul tău a rămas fără bani. Caesar a decis să îți mai acorde fonduri, dar nu va mai fi la fel de generos a doua oară. Exportă bunuri pentru a genera bani pentru oraș."
 "##city_have_goods_for_request##":"Depozitele au raportat că ai suficiente bunuri pentru a îndeplini cerea împăratului."
 "##city_have##":"Trezoreria orașului conține"
-"##health_advisor##":"Starea sănătății în oraș"
 "##city_health##":"Starea sănătății în oraș"
 "##city_need_more_workers##":"Orașul are nevoie de mai mulți muncitori"
 "##city_sounds_off##":"Sunetele orașului sunt dezactivate"
 "##city_sounds_on##":"Sunetele orașului sunt activate"
 "##city##":"Oraș"
+"##citychart_census##":""
+"##citychart_population##":""
+"##citychart_society##":""
 "##clay_factory_stock##":"Argilă stocată,"
 "##clay_pit_bad_work##":"Având aproape nici un angajat, producția este foarte lentă. Foarte puțină argilă va fi produsă aici anul acesta."
 "##clay_pit_full_work##":"Această mină are toți angajații de care are nevoie, și se lucrează din greu pentru a produce argilă"
@@ -248,6 +281,7 @@
 "##clay_pit##":"Mină de argilă"
 "##clay##":"Argilă"
 "##clear_land_caption##":"Teren liber"
+"##clear_land_text##":""
 "##clear_land##":"Eliberează terenul"
 "##clearBtnTooltip##":""
 "##clerk_salary##":"Salariu de funcționar, în valoare de"
@@ -272,7 +306,6 @@
 "##colosseum_no_access##":""
 "##column_info##":""
 "##comerceBtnTooltip##":""
-"##commerce_desc##":""
 "##commerce##":""
 "##congratulations##":""
 "##consul_salary##":""
@@ -284,7 +317,6 @@
 "##cost##":""
 "##costs##":""
 "##coverage##":""
-"##crack_in_land##":""
 "##crack##":""
 "##credit##":""
 "##cursed_by_mars##":""
@@ -324,9 +356,13 @@
 "##distant_city##":""
 "##distribution_center##":""
 "##dn_collected_this_year##":""
+"##dn_for_open_trade##":""
 "##dn_per_month##":""
 "##dn's##":""
 "##dn##":""
+"##dock_cart_returning_from":""
+"##dock_cart_taking_goods##":""
+"##dock_cart_wait##":""
 "##dock_full_work##":""
 "##dock_info##":""
 "##dock_info##":""
@@ -335,18 +371,23 @@
 "##dock_no_workers##":""
 "##dock##":""
 "##docked_buying_selling_goods##":""
-"##doctor_gods_angry##":""
+"##doctor_average_life##":""
+"##doctor_gods_angry##":"Dacă nu respectăm mai mult zeii, vom simți mânia lor!"
+"##doctor_good_life##":""
+"##doctor_high_workless##":"Somajul e foarte mare aici; mă gândesc sa plec"
 "##doctor_low_entertainment##":""
+"##doctor_need_workers##":"Este nevoie de mai mulți muncitori"
 "##doctor_no_access##":""
+"##doctor_so_hungry##":"Toată lumea suferă de malnutriție, iar mâncare ca să tratez asta nu se găsește!"
 "##donations##":""
 "##east##":""
 "##edil_salary##":""
+"##education_advisor_title##":""
 "##education_have_academy_access##":""
 "##education_have_no_access##":""
 "##education_have_school_library_access##":""
 "##education_have_school_or_library_access##":""
 "##education_objects##":""
-"##education_advisor_title##":""
 "##education##":""
 "##educationBtnTooltip##":""
 "##egift_chest_of_sapphire##":"Un cufăr de safire"
@@ -363,10 +404,10 @@
 "##egift_soldier_from_pergamaum##":""
 "##egift_troupe_preforming_slaves##":""
 "##emigrant_high_workless##":""
-"##emigrant_low_entertainment##":""
+"##emigrant_no_home##":""
+"##emigrant_no_work_for_me##":""
+"##emigrant_thrown_from_house##":""
 "##emigrant##":""
-"##emmigrant_average_life##":""
-"##emmigrant_where_my_home##":""
 "##emperor_favour_00##":""
 "##emperor_favour_01##":""
 "##emperor_favour_02##":""
@@ -399,14 +440,20 @@
 "##employers##":""
 "##emw_bought##":""
 "##emw_buy##":""
+"##emw_sell##":""
 "##enemy_attack_city##":""
+"##engineer_average_life##":""
 "##engineer_building_allok##":""
-"##engineer_gods_angry##":""
+"##engineer_gods_angry##":"Zeii să aibe milă de mine! Nu e vina mea că guvernatorul își bate joc de ei!"
+"##engineer_good_life##":""
 "##engineer_have_trouble_buildings##":""
+"##engineer_high_workless##":"Sunt norocos să am o slujbă, cu un nivel de șomaj atât de mare"
+"##engineer_low_entertainment##":"După o zi lungă de lucru, tot ce vreau să văd e o piesă de teatru. Nici o șansă în orașul acesta!"
+"##engineer_need_workers##":"Acest oraș ar merge mult mai bine dacă ar avea mai mulți muncitori"
 "##engineer_salary##":""
+"##engineer_so_hungry##":""
 "##engineer##":""
 "##engineerBtnTooltip##":""
-"##engineering_high_workless##":""
 "##engineering_post_bad_work##":""
 "##engineering_post_full_work##":""
 "##engineering_post_info##":""
@@ -419,6 +466,7 @@
 "##engineering_post##":""
 "##engineering_structures##":""
 "##enter_your_name##":""
+"##entertainment_advisor_title##":"Amuzament"
 "##entertainment_short##":""
 "##entertainment##":""
 "##entertainmentBtnTooltip##":""
@@ -435,10 +483,8 @@
 "##farm_working_bad##":""
 "##farm_working_normally##":""
 "##farm##":""
-"##farming_desc##":""
 "##favor_rating##":""
 "##favor##":""
-"##wndrt_favour##":""
 "##festivals##":""
 "##fig_farm_bad_work##":""
 "##fig_farm_full_work##":""
@@ -450,7 +496,6 @@
 "##file##":""
 "##finance_advisor##":""
 "##finance_advisor##":""
-"##advchief_finance##":""
 "##finances##":""
 "##fire##":""
 "##fired##":""
@@ -460,7 +505,9 @@
 "##floatsam_enabled##":""
 "##floatsam##":""
 "##fort_info##":""
+"##fort_javelin##":""
 "##fort_legionaries_no_workers##":""
+"##fort_legionaries##":""
 "##fort##":""
 "##fortification_info##":""
 "##fortification##":""
@@ -502,6 +549,12 @@
 "##gardens_info##":""
 "##gatehouse##":""
 "##give_money##":""
+"##gladiator_gods_angry##":""
+"##gladiator_good_life##":""
+"##gladiator_high_workless##":""
+"##gladiator_low_entertainment##":"Plictisitor! Asta se zice despre acest loc!"
+"##gladiator_need_workers##":"Este groaznic. Nu am văzut niciodată atâtea posturi neumplute."
+"##gladiator_perfect_life##":""
 "##gladiator_pit_bad_work##":""
 "##gladiator_pit_full_work##":""
 "##gladiator_pit_need_some_workers##":""
@@ -509,6 +562,7 @@
 "##gladiator_pit_patrly_workers##":""
 "##gladiator_pit_slow_work##":""
 "##gladiator_pit##":""
+"##gladiator_so_hungry##":""
 "##gmenu_about##":""
 "##gmenu_advisors##":""
 "##gmenu_exit_game##":""
@@ -541,7 +595,6 @@
 "##god_pleased##":""
 "##god_poor##":""
 "##god_quitepoor##":""
-"##god_venus_short##":""
 "##god_veryangry##":""
 "##god_verygood##":""
 "##god_verypoor##":""
@@ -553,6 +606,7 @@
 "##governor_palace_1##":""
 "##governor_palace_2##":""
 "##governor_palace_3##":""
+"##governor_salary_title##":""
 "##granaries_holds##":""
 "##granary_holds##":""
 "##granary_info##":""
@@ -571,8 +625,8 @@
 "##have_no_food_on_next_month##":""
 "##have_no_legions##":""
 "##have_no_requests##":""
+"##health_advisor##":"Starea sănătății în oraș"
 "##health_advisor##":""
-"##advchief_health##":""
 "##health##":""
 "##healthBtnTooltip##":""
 "##help##":""
@@ -605,10 +659,10 @@
 "##house_provide_food_themselves##":""
 "##houseBtnTooltip##":""
 "##hun_warrior##":""
-"##immigrant_high_workless##":""
-"##immigrant_no_home##":""
-"##immigrant_no_work_for_me##":""
-"##immigrant_thrown_from_house##":""
+"##immigrant_much_food_here##":""
+"##immigrant_so_hungry##":"Dacă mai stau aici cred că o să mor. Nu se găsește mâncare nicăieri."
+"##immigrant_want_to_be_liontamer##":"Am auzit că se găsesc slujbe aici. Vreau să fiu un îmblanzitor de lei!"
+"##immigrant_where_my_home##":""
 "##import_fn##":""
 "##import##":""
 "##infobox_tooltip_exit##":""
@@ -635,18 +689,12 @@
 "##large##":""
 "##last_year##":""
 "##lawless_area##":""
-"##advchief_crime##":""
 "##layer_crime##":""
 "##leave_empire?##":""
 "##legion_formation_tooltip##":""
 "##legion##":""
 "##legionary_average_life##":""
-"##legionary_gof_angry##":""
-"##legionary_low_entertainment##":""
 "##legionary_low_salary##":""
-"##legionary_perfect_life##":""
-"##legionary_so_hungry##":""
-"##legioner_high_workless##":""
 "##legions##":""
 "##libraries##":""
 "##library_full_access##":""
@@ -662,22 +710,24 @@
 "##lion_pit_slow_work##":""
 "##lion_pit_work##":""
 "##lion_pit##":""
-"##lion_so_hungry##":""
-"##lion_tamer_average_life##":""
-"##lion_tamer_gods_angry##":""
-"##lion_tamer_good_life##":""
-"##lion_tamer_low_entertainment##":""
-"##lion_tamer_need_workers##":""
-"##lion_tamer_so_hungry##":""
+"##lionTamer_average_life##":""
+"##lionTamer_gods_angry##":""
+"##lionTamer_good_education##":""
+"##lionTamer_good_life##":""
+"##lionTamer_high_workless##":""
+"##lionTamer_low_entertainment##":""
+"##lionTamer_need_workers##":""
+"##lionTamer_so_hungry##":""
 "##Load_save##":""
 "##loading_resources##":""
-"##love_desc##":""
 "##low_bridge##":""
 "##low_damage_risk##":""
 "##low_desirability_degrade##":""
 "##low_desirability##":""
 "##low_fire_risk##":""
 "##low_wage_broke_migration##":""
+"##low_wage_broke_migration##":""
+"##low_wage_lack_migration##":""
 "##lumber_mill_bad_work##":""
 "##lumber_mill_bad_work##":""
 "##lumber_mill_full_work##":""
@@ -695,18 +745,22 @@
 "##marble##":""
 "##market_about##":""
 "##market_full_work##":""
-"##market_kid_average_life##":""
-"##market_kid_good_life##":""
 "##market_kid_say_1##":""
-"##market_kid_so_hungry##":""
-"##market_lady_find_goods##":""
-"##market_lady_gods_angry##":""
-"##market_lady_need_workers##":""
-"##market_lady_return##":""
-"##market_lady_so_hungry##":""
 "##market_no_workers##":""
 "##market_search_food_source##":""
 "##market##":""
+"##marketBuyer_gods_angry##":""
+"##marketBuyer_good_life##":""
+"##marketBuyer_good_life##":""
+"##marketBuyer_high_workless##":"Cu șomajul așa de mare, muncesc din greu să îmi păstrez slujba!"
+"##marketBuyer_low_entertainment##":"Acesta trebuie să fie cel mai plictisitor oraș din Imperiu!"
+"##marketBuyer_need_workers##":""
+"##marketBuyer_so_hungry##":""
+"##marketKid_say_2##":""
+"##marketKid_say_3##":""
+"##marketLady_find_goods##":""
+"##marketLady_return##":""
+"##mars_desc##":""
 "##max_available##":""
 "##maximizeBtnTooltip##":""
 "##may_collect_about##":""
@@ -714,19 +768,28 @@
 "##meat_farm_bad_work##":""
 "##meat_farm_bad_work##":""
 "##meat_farm_full_work##":""
+"##meat_farm_info##":""
 "##meat_farm_need_some_workers##":""
 "##meat_farm_no_workers##":""
 "##meat_farm_patrly_workers##":""
+"##meat_farm##":""
 "##meat##":""
+"##mercury_desc##":""
 "##mercury##":""
 "##message##":""
 "##messageBtnTooltip##":""
 "##messageBtnTooltip##":""
 "##messages##":""
+"##migration_broke_tax##":""
+"##migration_broke_workless##":""
 "##migration_empty_granary##":""
+"##migration_lack_crime##":""
 "##migration_lack_empty_house##":""
 "##migration_lack_jobs##":""
+"##migration_lack_tax##":""
 "##migration_lessfood_granary##":""
+"##migration_middle_lack_tax##":""
+"##migration_middle_lack_workless##":""
 "##migration_people_away##":""
 "##military_academy_no_workers##":""
 "##military_academy##":""
@@ -828,6 +891,7 @@
 "##need_timber_mill##":""
 "##need_trainee_charioteer##":""
 "##need_vines_farm##":""
+"##neptune_desc##":""
 "##new_festival##":""
 "##new_governor##":""
 "##new_map##":""
@@ -836,6 +900,7 @@
 "##no_culture_building_in_city##":""
 "##no_dock_for_sea_trade_routes##":""
 "##no_goods_for_request##":""
+"##no_people_in_city##":""
 "##no_target_population##":""
 "##no_tax_in_this_year##":""
 "##no_visited_by_taxman##":""
@@ -871,54 +936,59 @@
 "##oracles_in_city##":""
 "##oracles##":""
 "##other##":""
+"##our_foods_level_are_low##":""
 "##out_of_credit##":""
 "##overlays##":""
 "##ovrm_aborigen##":""
 "##ovrm_academy##":""
-"##ovrm_amtheatres##":""
+"##ovrm_amphitheater##":""
 "##ovrm_barber##":""
-"##ovrm_bath##":""
+"##ovrm_baths##":""
 "##ovrm_clinic##":""
-"##ovrm_colliseum##":""
+"##ovrm_colloseum##":""
 "##ovrm_commerce##":""
 "##ovrm_crime##":""
 "##ovrm_damage##":""
-"##ovrm_edct_all##":""
-"##advchief_education##":""
+"##ovrm_desirability##":""
 "##ovrm_education##":""
-"##ovrm_entertainment##":""
-"##ovrm_entr_all##":""
+"##ovrm_educations##":""
+"##ovrm_entertainments##":""
+"##ovrm_entrertainment##":""
 "##ovrm_fire##":""
 "##ovrm_food##":""
 "##ovrm_health##":""
+"##ovrm_hippodrome##":""
 "##ovrm_hospital##":""
-"##ovrm_hpdrome##":""
 "##ovrm_library##":""
-"##ovrm_nothing##":""
-"##ovrm_prestige##":""
 "##ovrm_religion##":""
-"##ovrm_risk##":""
+"##ovrm_risks##":""
 "##ovrm_school##":""
+"##ovrm_simple##":""
 "##ovrm_tax##":""
 "##ovrm_text##":""
-"##ovrm_theatres##":""
+"##ovrm_theater##":""
 "##ovrm_tooltip##":""
 "##ovrm_troubles##":""
 "##ovrm_water##":""
+"##partician_good_life##":""
+"##partician_need_workers##":""
+"##patients#":""
 "##patrician_average_life##":""
+"##patrician_gods_angry##":""
+"##patrician_high_workless##":"Ce dizgrațios! N-am văzut niciodată atâta plebe fără locuri de muncă!"
+"##patrician_low_entertainment##":"Cetățene! Nu este acesta cel mai plictisitor oraș din Imperiu?"
 "##patrician_so_hungry##":""
 "##pay_to_open_trade_route?##":""
 "##people##":""
 "##percents##":""
 "##person##":""
-"##meat_farm_info##":""
-"##meat_farm##":""
 "##plaza_caption##":""
 "##plaza##":""
 "##plname_continue##":""
 "##pn_salary##":""
 "##pop##":""
 "##population_registered_as_taxpayers##":""
+"##population_tooltip##":""
 "##population##":""
 "##pottery_bad_work##":""
 "##pottery_workshop_bad_work##":""
@@ -932,7 +1002,9 @@
 "##praetor_salary##":""
 "##prefect_fight_fire##":""
 "##prefect_gods_angry##":""
-"##prefect_goto_fire##":""
+"##prefect_good_life##":""
+"##prefect_high_workless##":"Nu am văzut niciodată atâția oameni fără slujbă!"
+"##prefect_high_workless##":""
 "##prefect_low_entertainment##":""
 "##prefect_need_workers##":""
 "##prefect_so_hungry##":""
@@ -940,33 +1012,43 @@
 "##prefecture_full_work##":""
 "##prefecture_info##":""
 "##prefecture_need_some_workers##":""
+"##prefecture_no_workers##":""
 "##prefecture_on_patrol##":""
 "##prefecture_patrly_workers##":""
 "##prefecture_ready_for_work##":""
 "##prefecture_slow_work##":""
 "##prefecture##":""
-"##priest_gods_angry##":""
-"##priest_high_workless##":""
+"##priest_gods_angry##":"Suntem în pericol! Acest oraș nu are respect pentru zei!"
+"##priest_good_life##":"Viața e bună în acest oraș."
+"##priest_good_life##":""
+"##priest_high_workless##":"Șomajul este îngrijor de mare aici"
 "##priest_low_entertainment##":""
-"##priest_need_workers##":""
+"##priest_need_workers##":"Acest oraș chiar are nevoie de mai mulți muncitori"
+"##priest_so_hungry##":""
 "##proconsoul_salary##":""
 "##procurator_salary##":""
 "##profit##":""
 "##qty_stacked_in_city_warehouse##":""
 "##quaestor_salary##":""
 "##quarry_bad_work##":""
-"##quarry_bad_work##":""
-"##quarry_bad_work##":""
 "##quarry_full_work##":""
 "##quarry_info##":""
 "##quarry_need_some_workers##":""
 "##quarry_no_workers##":""
 "##quarry_patrly_workers##":""
+"##quarry_patrly_workers##":""
+"##quarry_slow_work##":""
 "##quarry##":""
 "##quit##":""
 "##rating##":""
 "##rawm_production_complete_m##":""
 "##really_destroy_fort##":""
+"##recruter_gods_angry7##":"Suntem în încurcătură! Am enervat zeii!"
+"##recruter_good_life##":""
+"##recruter_high_workless##":""
+"##recruter_low_entertainment##":""
+"##recruter_need_workers##":""
+"##recruter_normal_life##":""
 "##recruter_so_hungry##":""
 "##reject##":""
 "##religion_access_1_temple##":""
@@ -984,6 +1066,9 @@
 "##reservoir_info##":""
 "##reservoir_no_water##":""
 "##reservoir##":""
+"##rift_info##":""
+"##rioter_say_1##":""
+"##rioter_say_3##":""
 "##rladv_mood##":""
 "##road_caption##":""
 "##road_text##":""
@@ -991,10 +1076,27 @@
 "##rock_caption##":""
 "##rock_text##":""
 "##roman_city##":""
+"##rome_prices##":""
+"##romeGuard_average_life##":""
+"##romeGuard_gods_angry##":"Zeii sunt mâniați de acest oraș!"
+"##romeGuard_good_live##":""
+"##romeGuard_high_workless##":""
+"##romeGuard_low_entertainment##":""
+"##romeGuard_need_workers##":"Acest oraș are nevoie de mult mai mulți muncitori"
+"##romeGuard_so_hungry##":""
 "##rotateLeftBtnTooltip##":""
 "##rotateRightBtnTooltip##":""
 "##samnite_soldier##":""
 "##save_city##":""
+"##save_game_here##":""
+"##save_map##":""
+"##scholar_average_life##":""
+"##scholar_gods_angry##":""
+"##scholar_good_life##":""
+"##scholar_high_workless##":"Foarte mulți oameni caută o slujbă aici"
+"##scholar_low_entertainment##":"Acest oraș e plictisitor! Vreau să văd mai multe spectacole!"
+"##scholar_need_workers##":""
+"##scholar_so_hungry##":"Sunt lihnit de foame!"
 "##scholar##":""
 "##scholars##":""
 "##school_full_access##":""
@@ -1005,11 +1107,11 @@
 "##school##":""
 "##schools##":""
 "##screen_settings##":""
-"##sea_desc##":""
 "##seamerchant_noany_trade##":""
 "##select_city_layer##":""
 "##select_location##":""
 "##seleucid_soldier##":""
+"##sell_price##":""
 "##senate_1_info##":""
 "##senate_1##":""
 "##senate_save##":""
@@ -1024,6 +1126,7 @@
 "##send_legion_to_emperor##":""
 "##send_modest_gift##":""
 "##send_money##":""
+"##send_to_city##":""
 "##set_mayor_salary##":""
 "##shipyard_info##":""
 "##shipyard_notneed_ours_boat##":""
@@ -1035,7 +1138,7 @@
 "##small_ceres_temple##":""
 "##small_domus##":""
 "##small_food_on_next_month##":""
-"##small_hut##":""
+"##small_hovel##":""
 "##small_hut##":""
 "##small_mars_temple##":""
 "##small_mercury_temple_info##":""
@@ -1048,28 +1151,42 @@
 "##small_venus_temple##":""
 "##small_villa##":""
 "##small##":""
-"##soldier_awesome_live##":""
 "##soldier##":""
 "##soldiers##":""
 "##some_fire_risk##":""
 "##some_food_on_next_month##":""
 "##sound_settings##":""
+"##spear##":""
 "##special_orders##":""
 "##speed_settings##":""
+"##spirit_of_mars_text##":""
+"##spirit_of_mars_title##":""
 "##stacking_resource##":""
 "##start_condition##":""
 "##statue_desc##":""
 "##students##":""
-"##tac_collector_low_entertainment##":""
-"##tamer_ifyou_touch_lion_tip_my_whip##":""
+"##tamer_normal_life##":""
 "##target_population_is##":""
-"##tax_collector_high_tax##":""
-"##tax_collector_high_tax##":""
-"##tax_collector_low_entertainment##":""
-"##tax_collector_so_hungry##":""
-"##tax_collector_very_little_tax##":""
 "##tax_rate##":""
+"##taxCollector_average_life##":""
+"##taxCollector_gods_angry##":""
+"##taxCollector_good_life##":""
+"##taxCollector_high_tax##":""
+"##taxCollector_high_workless##":""
+"##taxCollector_low_entertainment##":""
+"##taxCollector_need_workers##":"Acest oraș are nevoie disperată de muncitori"
+"##taxCollector_so_hungry##":""
+"##taxCollector_very_little_tax##":""
 "##taxes##":""
+"##taxСollector_low_tax_collected##":""
+"##taxСollector_much_tax##":""
+"##teacher_average_life##":""
+"##teacher_gods_angry##":"Vom simți mânia zeilor dacă nu construim mai multe temple rapid!"
+"##teacher_good_life##":""
+"##teacher_high_workless##":"Sper să nu fiu dat afară; șomajul e așa de mare, nu cred că aș mai găsi de muncă!"
+"##teacher_low_entertainment##":"Lecțiile mele sunt mai distractive decât acest oraș!"
+"##teacher_need_workers##":"Este uimitor câte posturi nu sunt umplute aici"
+"##teacher_so_hungry##":""
 "##templeBtnTooltip##":""
 "##temples##":""
 "##theater_full_access##":""
@@ -1088,6 +1205,7 @@
 "##tooltip_full##":""
 "##tooltip_some##":""
 "##tower_may_build_on_thick_walls##":""
+"##tower##":""
 "##trade_advisor_blocked_clay_production##":""
 "##trade_advisor_blocked_fruit_production##":""
 "##trade_advisor_blocked_furniture_production##":""
@@ -1139,6 +1257,7 @@
 "##vegetable_farm_no_workers##":""
 "##vegetable_farm_patrly_workers##":""
 "##vegetable##":""
+"##venus_desc##":""
 "##very_high_fire_risk##":""
 "##very_low_fire_risk##":""
 "##vinard_bad_work##":""
@@ -1167,7 +1286,6 @@
 "##waiting_for_free_dock##":""
 "##wall_info##":""
 "##wall##":""
-"##war_desc##":""
 "##warehouse_full_warning##":""
 "##warehouse_gettinfull_warning##":""
 "##warehouse_info##":""
@@ -1197,6 +1315,7 @@
 "##water_srvc_reservoir##":""
 "##water_srvc_well##":""
 "##water_supply##":""
+"##we_produce_less_than_eat##":""
 "##we_produce_more_than_eat##":""
 "##we_produce_much_than_eat##":""
 "##we_produce_some_than_eat##":""
@@ -1212,6 +1331,7 @@
 "##well_haveno_houses_inarea##":""
 "##well_info##":""
 "##well##":""
+"##wharf_full_work##":""
 "##wharf_info##":""
 "##wharf_our_boat_fishing##":""
 "##wharf_our_boat_return##":""
@@ -1238,30 +1358,39 @@
 "##wine_workshops_need_some_workers##":""
 "##wine_workshops_patrly_workers##":""
 "##wine##":""
+"##wnd_ratings_title##":""
+"##wndrt_culture##":""
 "##wndrt_favor_tooltip##":""
+"##wndrt_favour##":""
 "##wndrt_peace_tooltip##":""
+"##wndrt_peace##":""
 "##wndrt_prosperity_tooltip##":""
+"##wndrt_prosperity##":""
+"##work##":""
 "##workers_yearly_wages_is##":""
 "##wrath_of_neptune_title##":""
-"##wt_emmigrant##":""
+"##wt_cartPusher##":""
+"##wt_criminal##":""
+"##wt_emigrant##":""
 "##wt_endeavor##":""
+"##wt_engineer##":""
 "##wt_gladiator##":""
-"##wt_immigrant##":""
+"##wt_homeless##":""
 "##wt_immigrant##":""
 "##wt_librarian##":""
 "##wt_lion_tamer##":""
-"##wt_market_buyer##":""
-"##wt_marketlady##":""
-"##wt_merchat_so_hungry##":""
-"##wt_prefect#":""
+"##wt_marketBuyer##":""
+"##wt_marketLady##":""
+"##wt_prefect##":""
+"##wt_priest##":""
+"##wt_rioter##":""
 "##wt_sheep##":""
 "##wt_surgeon##":""
-"##wt_tax_collector##":""
+"##wt_taxCollector##":""
 "##wt_teacher##":""
 "##year##":""
 "##years##":""
 "##yes##":""
-"##save_map##":""
 "Variable":"Romanian(v1.0)"
 
 
@@ -1355,7 +1484,6 @@
 
 
 
-"##advchief_sentiment##":""
 
 
 
@@ -1376,7 +1504,6 @@
 
 
 
-"##wndrt_culture##":""
 
 
 
@@ -1402,7 +1529,6 @@
 
 
 
-"##advchief_employment##":""
 
 
 
@@ -1435,7 +1561,6 @@
 
 
 
-"##advchief_food_consumption##":""
 
 
 
@@ -1447,7 +1572,6 @@
 
 
 
-"##send_to_city##":""
 
 
 
@@ -1492,7 +1616,6 @@
 
 
 
-"##advemp_emperor_favour##":""
 
 
 
@@ -1508,7 +1631,6 @@
 
 
 
-"##fort_javelin##":""
 
 
 
@@ -1523,7 +1645,6 @@
 
 
 
-"##fort_legionaries##":""
 
 
 
@@ -1664,11 +1785,8 @@
 
 
 
-"##patients#":""
 
 
-" ":""
-"##wndrt_peace##":""
 
 
 
@@ -1726,7 +1844,6 @@
 
 
 
-"##wndrt_prosperity##":""
 
 
 
@@ -1736,7 +1853,6 @@
 
 
 
-"##wnd_ratings##":""
 
 
 
@@ -1808,7 +1924,6 @@
 
 
 
-"##emw_sell##":""
 
 
 
@@ -1882,7 +1997,6 @@
 
 
 
-"##spear##":""
 
 
 
@@ -2048,117 +2162,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-"##dn_for_open_trade##":""
-
-
-
-
-
-
-
-
-
-"##tower##":""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"##work##":""
 
 
 
