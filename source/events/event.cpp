@@ -133,8 +133,8 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
         // choose a random background image, green_something 62-119 or green_flat 232-240
          // 30% => choose green_sth 62-119
         // 70% => choose green_flat 232-289
-        int startOffset  = ( (rand() % 10 > 6) ? 62 : 232 );
-        int imgId = rand() % 58;
+        int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
+        int imgId = math::random( 58 );
 
         Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
         tile->setPicture( ResourceGroup::land1a, startOffset + imgId );

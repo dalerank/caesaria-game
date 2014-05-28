@@ -142,16 +142,7 @@ void LayerDestroy::render( Engine& engine )
     }
     else
     {
-      if( master==NULL )
-      {
-        // single-tile
-        drawTile( engine, *tile, cameraOffset );
-      }
-      else if( !master->getFlag( Tile::wasDrawn ) )
-      {
-        // multi-tile: draw the master tile.
-        drawTile( engine, *master, cameraOffset );
-      }
+      drawTile( engine, master == NULL ? *tile :*master, cameraOffset );
     }
   }
 
@@ -210,12 +201,6 @@ void LayerDestroy::handleEvent(NEvent& event)
 
     case mouseLbtnRelease:            // left button
     {
-      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
-      if( tile == 0 )
-      {
-        break;
-      }
-
       _clearAll();
       _setStartCursorPos( _lastCursorPos() );
       events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::buildConstruction, -_money4destroy );

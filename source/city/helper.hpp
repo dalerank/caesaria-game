@@ -36,6 +36,9 @@ namespace city
 class Helper
 {
 public:
+  static const bool offDesirability=false;
+  static const bool onDesirability=true;
+
   static const TilePos invalidPos;
   Helper( PlayerCityPtr city ) : _city( city ) {}
 
