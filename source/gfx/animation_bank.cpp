@@ -22,7 +22,7 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/picture.hpp"
 #include "core/logger.hpp"
-#include "walker/emigrant.hpp"
+#include "walker/immigrant.hpp"
 #include "core/saveadapter.hpp"
 #include "walker/helper.hpp"
 #include "picture_info_bank.hpp"
@@ -105,8 +105,8 @@ void AnimationBank::Impl::loadCarts()
   carts[Good::weapon] = fillCart( ResourceGroup::carts, 105, frontCart);
   carts[Good::furniture] = fillCart( ResourceGroup::carts, 113, frontCart);
   carts[Good::pottery] = fillCart( ResourceGroup::carts, 121, frontCart);
-  carts[Emigrant::G_EMIGRANT_CART1] = fillCart( ResourceGroup::carts, 129, !frontCart);
-  carts[Emigrant::G_EMIGRANT_CART2] = fillCart( ResourceGroup::carts, 137, !frontCart);
+  carts[Immigrant::G_EMIGRANT_CART1] = fillCart( ResourceGroup::carts, 129, !frontCart);
+  carts[Immigrant::G_EMIGRANT_CART2] = fillCart( ResourceGroup::carts, 137, !frontCart);
   carts[Good::fish] = fillCart( ResourceGroup::carts, 697, frontCart);
 }
 

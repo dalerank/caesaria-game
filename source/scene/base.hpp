@@ -27,6 +27,7 @@ struct NEvent;
 namespace gfx
 {
   class Engine;
+  class Camera;
 }
 
 namespace scene
@@ -39,7 +40,6 @@ public:
   virtual bool finished() const = 0;
 };
 typedef SmartPtr< EventHandler >  EventHandlerPtr;
-
 
 class Base
 {

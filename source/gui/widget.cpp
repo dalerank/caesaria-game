@@ -112,7 +112,7 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
   if( parent() )
   {
     const Rect& r2 = parent()->absoluteRect();
-    SizeF d = r2.getSize().toSizeF();
+    SizeF d = r2.size().toSizeF();
 
     if( _d->alignLeft == align::scale)
       _d->scaleRect.UpperLeftCorner.setX( (float)r.UpperLeftCorner.x() / d.width() );
@@ -207,7 +207,7 @@ void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Align
   {
     Rect r( parent()->absoluteRect() );
 
-    SizeF d = r.getSize().toSizeF();
+    SizeF d = r.size().toSizeF();
 
     RectF dRect = _d->desiredRect.toRectF();
     if( _d->alignLeft == align::scale)

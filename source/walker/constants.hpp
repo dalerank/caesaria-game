@@ -27,7 +27,7 @@ namespace walker
 enum Type{
   unknown=0,
   immigrant,
-  emmigrant,
+  emigrant,
   soldier,
   cartPusher,
   marketLady,

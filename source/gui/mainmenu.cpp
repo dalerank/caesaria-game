@@ -194,7 +194,7 @@ void MainMenu::_recalculateSize()
 		if( refItem->getSubMenu() )
 		{
 			// move submenu
-      Size itemSize = refItem->getSubMenu()->absoluteRect().getSize();
+      Size itemSize = refItem->getSubMenu()->absoluteRect().size();
 
 			refItem->getSubMenu()->setGeometry( Rect( refItem->getOffset(), hg,
 																								refItem->getOffset() + itemSize.width()-5, hg+itemSize.height() ));

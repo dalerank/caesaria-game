@@ -57,7 +57,7 @@
     move : { rc : "citizen01", start : 929, frames : 12, action : 1, step : 8 }
   }
 
-  emmigrant :
+  immigrant :
     move : { rc : "citizen01", start : 1033, frames : 12, action : 1, step : 8 }
   }
 
@@ -91,7 +91,7 @@
     fight : { rc : "citizen02", start : 719, frames : 6, action : 2, step : 8 }
   }
 
-  immigrant : {
+  emigrant : {
     move : { rc : "citizen02", start : 911, frames : 12, action : 1, step : 8 }
     sit : { rc : "citizen02", start : 1015, frames : 1, action : 0, step : 8 }
   }

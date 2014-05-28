@@ -45,6 +45,7 @@
 #include "enemyarcher.hpp"
 #include "helper.hpp"
 #include "watergarbage.hpp"
+#include "immigrant.hpp"
 #include <map>
 
 using namespace constants;
@@ -94,7 +95,7 @@ public:
 
 WalkerManager::WalkerManager() : _d( new Impl )
 {
-  addCreator( walker::emmigrant, new BaseCreator<Emigrant>() );
+  addCreator( walker::emigrant, new BaseCreator<Emigrant>() );
   addCreator( walker::immigrant, new BaseCreator<Immigrant>() );
   addCreator( walker::cartPusher, new BaseCreator<CartPusher>() );
   addCreator( walker::prefect, new BaseCreator<Prefect>() );

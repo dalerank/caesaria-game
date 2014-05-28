@@ -48,6 +48,7 @@ public:
 
   virtual bool installEventHandler(EventHandlerPtr);
 
+
   void setCameraPos( TilePos pos );
 
 private:

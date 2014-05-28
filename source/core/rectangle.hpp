@@ -310,7 +310,7 @@ public:
   }
   
   //! Get the dimensions of the rectangle
-  Size getSize() const
+  Size size() const
   {
     return Size(width(), height());
   }

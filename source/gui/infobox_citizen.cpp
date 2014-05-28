@@ -22,10 +22,12 @@
 #include "game/settings.hpp"
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
+#include "gfx/picture.hpp"
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "events/playsound.hpp"
 #include "gfx/decorator.hpp"
+#include "gfx/engine.hpp"
 
 using namespace constants;
 
@@ -37,6 +39,39 @@ static const char* ui_model = "/gui/infoboxcitizen.gui";
 static const char* sound_ext = ".wav";
 }
 
+class CitizenScreenshot : public Label
+{
+public:
+  CitizenScreenshot( Widget* parent, Rect rectangle, WalkerPtr wlk )
+    : Label( parent, rectangle, "", Label::bgWhiteBorderA )
+  {
+    _wlkPicture.init( rectangle.size() - Size( 8 ) );
+    _wlkPicture->fill( DefaultColors::green, Rect() );
+
+    gfx::Pictures pics;
+    wlk->getPictures( pics );
+    foreach( it, pics )
+    {
+      _wlkPicture->draw( *it, Point( rectangle.width(), rectangle.height() ) / 2 );
+    }
+  }
+
+  virtual void draw(gfx::Engine &painter)
+  {
+    if ( !isVisible() )
+      return;
+
+    Label::draw( painter );
+
+    if( !_wlkPicture.isNull() )
+    {
+      painter.draw( *_wlkPicture, absoluteRect().UpperLeftCorner + Point( 4, 4 ), &absoluteClippingRectRef() );
+    }
+  }
+
+  gfx::PictureRef _wlkPicture;
+};
+
 class InfoboxCitizen::Impl
 {
 public:
@@ -47,7 +82,7 @@ public:
   Label* lbCitizenPic;
   PlayerCityPtr city;
 
-  std::vector<Label*> lbMiniScreenshots;
+  std::vector<CitizenScreenshot*> screenshots;
 };
 
 InfoboxCitizen::InfoboxCitizen( Widget* parent, PlayerCityPtr city, const TilePos& pos )
@@ -110,11 +145,11 @@ void InfoboxCitizen::_setWalker( WalkerPtr wlk )
   default: setTitle( _("##citizen##") );
   }
 
-  foreach( it, _d->lbMiniScreenshots )
+  foreach( it, _d->screenshots )
   {
     (*it)->deleteLater();
   }
-  _d->lbMiniScreenshots.clear();
+  _d->screenshots.clear();
 
   TilePos offset( 1, 1 );
   gfx::TilesArray tiles = _d->city->tilemap().getRectangle( wlk->pos() - offset, wlk->pos() + offset );
@@ -126,10 +161,9 @@ void InfoboxCitizen::_setWalker( WalkerPtr wlk )
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
-      Label* lb = new Label( this, lbRect, "", false, Label::bgBlackFrame );
-
+      CitizenScreenshot* lb = new CitizenScreenshot( this, lbRect, tileWalkers.front() );
+      _d->screenshots.push_back( lb );
       lbRect += lbOffset;
-      _d->lbMiniScreenshots.push_back( lb );
     }
   }
 }

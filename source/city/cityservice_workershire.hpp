@@ -32,6 +32,7 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   virtual void update( const unsigned int time );
+  void setRecturerDistance( const unsigned int distance );
 private:
   WorkersHire( PlayerCityPtr city );
 

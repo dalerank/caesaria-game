@@ -45,7 +45,7 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
 
   ret->setGeometry( rectangle );
 
-  ret->_d->picture.reset( Picture::create( rectangle.getSize() ) );
+  ret->_d->picture.reset( Picture::create( rectangle.size() ) );
   //SDL_SetAlpha( ret->_d->picture->getSurface(), 0, 0 );  // remove surface alpha
 
   int y = 0;

@@ -467,7 +467,7 @@ void ContextMenu::_recalculateSize()
 		{
 			// move submenu
 			ContextMenu* subMenu = refItem->getSubMenu();
-			const Size subMenuSize = subMenu->absoluteRect().getSize();
+			const Size subMenuSize = subMenu->absoluteRect().size();
 
       Rect subRect( maxSize.width()-5, refItem->getOffset(), 
 			              maxSize.width()+subMenuSize.width()-5, refItem->getOffset() +subMenuSize.height() );

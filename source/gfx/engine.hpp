@@ -73,6 +73,7 @@ public:
   virtual unsigned int fps() const = 0;
   virtual Modes modes() const = 0;
   virtual Point cursorPos() const = 0;
+  virtual Picture& getScreen() = 0;
 
 protected:
   static Engine* _instance;

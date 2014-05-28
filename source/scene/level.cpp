@@ -414,6 +414,7 @@ void Level::Impl::showEmpireMapWindow()
 void Level::draw()
 { 
   _d->renderer.render();
+
   _d->game->gui()->beforeDraw();
   _d->game->gui()->draw();
 }
@@ -594,7 +595,7 @@ void Level::Impl::makeScreenShot()
 }
 
 int Level::result() const {  return _d->result; }
-bool Level::installEventHandler(EventHandlerPtr handler) {  _d->eventHandlers.push_back( handler ); return true; }
+bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
 void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
 void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}

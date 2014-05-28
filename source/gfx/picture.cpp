@@ -131,7 +131,7 @@ void Picture::scale(Size size)
 
 void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
 {
-  draw( srcpic, srcrect, Rect( pos, srcrect.getSize() ), useAlpha );
+  draw( srcpic, srcrect, Rect( pos, srcrect.size() ), useAlpha );
 }
 
 void Picture::draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )

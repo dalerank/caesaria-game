@@ -19,7 +19,6 @@
 #include "game/resourcegroup.hpp"
 #include "objects/constants.hpp"
 #include "city/helper.hpp"
-#include "gfx/sdl_engine.hpp"
 #include "core/stringhelper.hpp"
 #include "layerconstants.hpp"
 
@@ -94,8 +93,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
   if( tile.getDesirability() != 0 )
   {
-    SdlEngine* painter = static_cast< SdlEngine* >( &engine );
-    _debugFont.draw( painter->getScreen(), StringHelper::format( 0xff, "%d", tile.getDesirability() ), screenPos + Point( 20, -15 ), false );
+    _debugFont.draw( engine.getScreen(), StringHelper::format( 0xff, "%d", tile.getDesirability() ), screenPos + Point( 20, -15 ), false );
   }
 
   tile.setWasDrawn();

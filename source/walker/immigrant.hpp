@@ -13,54 +13,39 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_IMMIGRANT_H_INCLUDED__
-#define __CAESARIA_IMMIGRANT_H_INCLUDED__
+#ifndef __CAESARIA_EMIGRANT_H_INCLUDE_
+#define __CAESARIA_EMIGRANT_H_INCLUDE_
 
-#include "walker.hpp"
+#include "emigrant.hpp"
 #include "core/predefinitions.hpp"
-#include "game/citizen_group.hpp"
+
+class Immigrant;
+typedef SmartPtr< Immigrant > ImmigrantPtr;
 
 /** This is an immigrant coming with his stuff */
-class Immigrant : public Walker
+class Immigrant : public Emigrant
 {
 public:
-  static ImmigrantPtr create( PlayerCityPtr city );
-  static ImmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
-                                 const gfx::Tile& startTile, std::string thinks );
+  typedef enum { G_EMIGRANT_CART1 = Good::goodCount, G_EMIGRANT_CART2, CT_MAX } CartType;
 
-  void send2city( const gfx::Tile& startTile );
-  void leaveCity( const gfx::Tile& tile );
+  static ImmigrantPtr create( PlayerCityPtr city);
 
-  void setPeoples( const CitizenGroup& peoples );
+  virtual void getPictures( gfx::Pictures &oPics);
   virtual void timeStep(const unsigned long time);
 
-  virtual ~Immigrant();
-
-  virtual void save(VariantMap& stream) const;
-  virtual void load(const VariantMap& stream);
   virtual void die();
 
+  virtual ~Immigrant();
 protected:
-  virtual void _reachedPathway();
-  virtual void _brokePathway(TilePos pos);
-  virtual void _noWay();
+  virtual void _changeDirection();
+  virtual void _updateThinks();
 
-  void _setCartPicture( const gfx::Picture& pic );
-  virtual const gfx::Picture& _cartPicture();
-  
+protected:
+  const gfx::Picture& _cartPicture();
+
   Immigrant( PlayerCityPtr city );
-
-  HousePtr _findBlankHouse();
-  Pathway _findSomeWay(TilePos startPoint );
-
-protected:
-  const CitizenGroup& _getPeoples() const;
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_IMMIGRANT_H_INCLUDED__
+#endif //__CAESARIA_EMIGRANT_H_INCLUDE_

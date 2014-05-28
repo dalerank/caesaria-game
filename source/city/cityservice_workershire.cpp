@@ -26,6 +26,7 @@
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
 #include "game/gamedate.hpp"
+#include "game/settings.hpp"
 #include <map>
 
 using namespace constants;
@@ -42,6 +43,7 @@ class WorkersHire::Impl
 public:
   HirePriorities priorities;
   WalkerList hrInCity;
+  unsigned int distance;
 };
 
 SrvcPtr WorkersHire::create(PlayerCityPtr city )
@@ -104,6 +106,8 @@ WorkersHire::WorkersHire(PlayerCityPtr city )
                   << building::hippodrome
                   << building::chariotSchool
                   << building::winery;
+
+  _d->distance = (int)GameSettings::get( GameSettings::rectuterDistance );
 }
 
 bool WorkersHire::_haveHr( WorkingBuildingPtr building )
@@ -134,7 +138,7 @@ void WorkersHire::_hireByType(const TileOverlay::Type type )
     if( wrkbld->getAccessRoads().size() > 0 && wrkbld->numberWorkers() < wrkbld->maxWorkers() )
     {
       RecruterPtr hr = Recruter::create( &_city );
-      hr->setMaxDistance( 20 );
+      hr->setMaxDistance( _d->distance );
       hr->send2City( wrkbld, wrkbld->maxWorkers() - wrkbld->numberWorkers());
     }
   }
@@ -153,6 +157,11 @@ void WorkersHire::update( const unsigned int time )
   {
     _hireByType( *pr );
   }
+}
+
+void WorkersHire::setRecturerDistance(const unsigned int distance)
+{
+  _d->distance = distance;
 }
 
 }//end namespace city

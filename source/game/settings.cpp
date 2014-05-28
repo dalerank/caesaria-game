@@ -61,6 +61,7 @@ __REG_PROPERTY(sg2model)
 __REG_PROPERTY(ranksModel)
 __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
+__REG_PROPERTY(rectuterDistance)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -115,6 +116,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
+  _d->options[ rectuterDistance    ] = 30;
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;

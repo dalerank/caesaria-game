@@ -18,7 +18,7 @@
 #include "helper.hpp"
 #include "core/safetycast.hpp"
 #include "gfx/tilemap.hpp"
-#include "walker/emigrant.hpp"
+#include "walker/immigrant.hpp"
 #include "core/position.hpp"
 #include "objects/road.hpp"
 #include "objects/house.hpp"
@@ -269,7 +269,7 @@ void Migration::Impl::createMigrationToCity( PlayerCity& city )
     return;
   }
 
-  WalkerList walkers = city.getWalkers( walker::emmigrant );
+  WalkerList walkers = city.getWalkers( walker::emigrant );
 
   if( vh <= walkers.size() * 5 )
   {
@@ -278,7 +278,7 @@ void Migration::Impl::createMigrationToCity( PlayerCity& city )
 
   Tile& roadTile = city.tilemap().at( city.borderInfo().roadEntry );
 
-  EmigrantPtr emigrant = Emigrant::create( &city );
+  ImmigrantPtr emigrant = Immigrant::create( &city );
 
   if( emigrant.isValid() )
   {
@@ -307,7 +307,7 @@ void Migration::Impl::createMigrationFromCity( PlayerCity& city )
       HouseList::iterator house = houses.begin();
       std::advance( house, math::random( houses.size() ) );
 
-      EmigrantPtr emigrant = Emigrant::create( &city );
+      ImmigrantPtr emigrant = Immigrant::create( &city );
 
       if( emigrant.isValid() )
       {

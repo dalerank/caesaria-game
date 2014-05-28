@@ -848,7 +848,7 @@ void EditBox::beforeDraw(Engine& painter )
 
              std::string rText = __ucs2utf8( *txtLine );
              //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
-             Rect curTextureRect( Point( 0, 0), _d->currentTextRect.getSize() );
+             Rect curTextureRect( Point( 0, 0), _d->currentTextRect.size() );
              curTextureRect = _d->lastBreakFont.calculateTextRect( rText, curTextureRect, getHorizontalTextAlign(), getVerticalTextAlign() );
              curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
 
@@ -1038,7 +1038,7 @@ Size EditBox::getTextDimension()
     ret.addInternalPoint(_d->currentTextRect.LowerRightCorner);
 	}
 
-	return ret.getSize();
+	return ret.size();
 }
 
 

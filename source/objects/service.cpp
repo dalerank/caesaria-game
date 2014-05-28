@@ -32,6 +32,11 @@
 
 using namespace gfx;
 
+namespace {
+static const unsigned int defaultMaxWorkersNumber = 5;
+static const unsigned int defaultMaxServiceRange = 30;
+}
+
 class ServiceBuilding::Impl
 {
 public:
@@ -46,10 +51,10 @@ ServiceBuilding::ServiceBuilding(const Service::Type service,
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
    _d->service = service;
-   setMaxWorkers(5);
+   setMaxWorkers(defaultMaxWorkersNumber);
    setWorkers(0);
    setServiceDelay( DateTime::daysInWeek );
-   _d->serviceRange = 30;
+   _d->serviceRange = defaultMaxServiceRange;
 }
 
 void ServiceBuilding::setServiceDelay( const int delay ){  _d->serviceDelay = delay;}
@@ -68,7 +73,7 @@ void ServiceBuilding::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep(time);
 
-  if( time % 25 == 1 )
+  if( GameDate::isDayChanged() )
   {
     int serviceDelay = time2NextService();
     if( _d->dateLastSend.daysTo( GameDate::current() ) > serviceDelay )
@@ -113,7 +118,7 @@ void ServiceBuilding::load( const VariantMap& stream )
   WorkingBuilding::load( stream );
   _d->dateLastSend = (int)stream.get( "dateLastSend", 0 );
   _d->serviceDelay = (int)stream.get( "delay", 80 );
-  _d->serviceRange = (int)stream.get( "range", 30 );
+  _d->serviceRange = (int)stream.get( "range", defaultMaxServiceRange );
 }
 
 int ServiceBuilding::serviceDelay() const{  return _d->serviceDelay;}
@@ -129,9 +134,11 @@ std::string ServiceBuilding::workersStateDesc() const
   {
     state = "on_patrol";
   }
-  else if( numberWorkers() > 0 && _d->dateLastSend.daysTo( GameDate::current() ) < 2 )
+  else if( numberWorkers() > 0  )
   {
-    state = "ready_for_work";
+    state = _d->dateLastSend.daysTo( GameDate::current() ) < 2
+              ? "ready_for_work"
+              : "prepare_for_work";
   }
   std::string currentState = StringHelper::format( 0xff, "##%s_%s##", srvcType.c_str(), state.c_str() );
   return currentState;

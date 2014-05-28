@@ -30,7 +30,6 @@
 #include "core/font.hpp"
 #include "layerconstants.hpp"
 #include "decorator.hpp"
-#include "sdl_engine.hpp"
 #include "core/stringhelper.hpp"
 
 using namespace constants;
@@ -432,8 +431,7 @@ void Layer::afterRender( Engine& engine)
     Tilemap& tmap = _d->city->tilemap();
     Point offset = _d->camera->offset();
     int size = tmap.size();
-    SdlEngine* painter = static_cast< SdlEngine* >( &engine );
-    Picture& screen = painter->getScreen();
+    Picture& screen = engine.getScreen();
     for( int k=0; k < size; k++ )
     {
       const Tile& tile = tmap.at( 0, k );

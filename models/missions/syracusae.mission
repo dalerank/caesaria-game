@@ -216,7 +216,7 @@
     }    
     
     oil_price_rising#trading_options : {
-      date : "-267.3.01"
+      date : "-267.04.01"
       goods : {
         oil : { buy : 40, sell : 30 }
       }
