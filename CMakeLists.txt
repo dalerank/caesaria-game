@@ -2,7 +2,7 @@ project(CaesarIA)
 
 cmake_minimum_required(VERSION 2.6)
 
-message("System is=${CMAKE_SYSTEM_NAME}")
+message("System is ${CMAKE_SYSTEM_NAME}")
 option( BUILD_ZLIB  "Static zlib"    ON )
 option( BUILD_AES   "Static aes"     ON )
 option( BUILD_BZIP  "Static bzip"    ON )
@@ -27,6 +27,26 @@ else()
   message("Note: SDL audio is disabled")
   message(" ")
 endif(BUILD_AUDIO)
+
+find_package( ZLIB )
+if ( ZLIB_FOUND )
+  option(BUILD_ZLIB OFF)
+endif()
+
+find_package( BZIP2 )
+if (BZIP2_FOUND)
+  option(BUILD_BZIP OFF)
+endif()
+
+find_package( CURL )
+if (CURL_FOUND)
+  option(BUILD_CURL OFF)
+endif()
+
+find_package( PNG )
+if (PNG_FOUND)
+  option(BUILD_PNG OFF)
+endif()
 
 if( BUILD_ZLIB )
   set(ZLIB_NAME "zlib")
