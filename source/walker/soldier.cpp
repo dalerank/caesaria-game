@@ -38,7 +38,7 @@ public:
   int morale;
 
   Impl() : strikeForce ( 3.f ), resistance( 1.f ),
-           attackDistance( 1 ), morale( 0 ) {}
+           attackDistance( 1u ), morale( 0 ) {}
 };
 
 Soldier::Soldier(PlayerCityPtr city, walker::Type type)
@@ -79,7 +79,7 @@ void Soldier::initialize(const VariantMap &options)
   Variant ad = options.get( "attackDistance" );
   if( ad.isValid() )
   {
-    setAttackDistance( math::clamp( ad.toInt(), 1, 99 ) );
+    setAttackDistance( math::clamp( ad.toUInt(), 1u, 99u ) );
   }
 }
 
@@ -120,7 +120,7 @@ void Soldier::load(const VariantMap& stream)
   d->action = (Soldier::SldrAction)stream.get( lc_sldAction ).toInt();
   d->strikeForce = stream.get( lc_strikeForce );
   d->resistance = stream.get( lc_resistance );
-  d->attackDistance = stream.get( lc_attackDistance ).toInt();
+  d->attackDistance = stream.get( lc_attackDistance ).toUInt();
   d->morale = stream.get( lc_morale );
 }
 

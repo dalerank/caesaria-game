@@ -35,7 +35,7 @@ public:
   void append( int value );
 
   virtual VariantMap save() const;
-  virtual void load( VariantMap stream );
+  virtual void load(const VariantMap& stream);
 private:
   Sentiment( PlayerCityPtr city );
 

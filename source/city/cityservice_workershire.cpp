@@ -107,7 +107,7 @@ WorkersHire::WorkersHire(PlayerCityPtr city )
                   << building::chariotSchool
                   << building::winery;
 
-  _d->distance = (int)GameSettings::get( GameSettings::rectuterDistance );
+  _d->distance = GameSettings::get( GameSettings::rectuterDistance ).toUInt();
 }
 
 bool WorkersHire::_haveHr( WorkingBuildingPtr building )

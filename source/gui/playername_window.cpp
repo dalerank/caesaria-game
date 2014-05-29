@@ -53,7 +53,7 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 
 WindowPlayerName::~WindowPlayerName(){}
 
-std::string WindowPlayerName::text()
+std::string WindowPlayerName::text() const
 {
   const EditBox* ed = findChildA<EditBox*>( "edPlayerName", true, this );
   return ed ? ed->text() : "";
