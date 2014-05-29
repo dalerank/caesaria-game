@@ -51,7 +51,7 @@ ServiceBuilding::ServiceBuilding(const Service::Type service,
                                  : WorkingBuilding( type, size ), _d( new Impl )
 {
    _d->service = service;
-   setMaxWorkers(defaultMaxWorkersNumber);
+   setMaximumWorkers(defaultMaxWorkersNumber);
    setWorkers(0);
    setServiceDelay( DateTime::daysInWeek );
    _d->serviceRange = defaultMaxServiceRange;
@@ -63,7 +63,7 @@ void ServiceBuilding::_setLastSendService(DateTime time) { _d->dateLastSend = ti
 
 int ServiceBuilding::time2NextService() const
 {
-  float koeff = ( numberWorkers() > 0 ) ? (float)maxWorkers() / (float)numberWorkers() : 1.f;
+  float koeff = ( numberWorkers() > 0 ) ? (float)maximumWorkers() / (float)numberWorkers() : 1.f;
   return (int)(serviceDelay() * koeff);
 }
 
@@ -127,7 +127,7 @@ unsigned int ServiceBuilding::walkerDistance() const{  return 5; }
 
 std::string ServiceBuilding::workersStateDesc() const
 {
-  std::string srvcType = MetaDataHolder::getTypename( type() );
+  std::string srvcType = MetaDataHolder::findTypename( type() );
   std::string state = "unknown";
 
   if( walkers().size() > 0 )

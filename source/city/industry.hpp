@@ -15,29 +15,35 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
-#define __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
+#ifndef __CAESARIA_INDUSTRY_H_INCLUDE__
+#define __CAESARIA_INDUSTRY_H_INCLUDE__
 
-#include "widget.hpp"
-#include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
+#include <vector>
+#include "objects/constants.hpp"
 
-namespace gui
+namespace city
 {
 
-class AdvisorEmployerWindow : public Widget
+class Industry
 {
 public:
-  AdvisorEmployerWindow( PlayerCityPtr city, Widget* parent, int id );
+  typedef enum
+  {
+    factoryAndTrade=0,
+    food,
+    engineering,
+    water,
+    prefectures,
+    military,
+    entertainment,
+    healthAndEducation,
+    administrationAndReligion,
+    count
+  } Type;
 
-  virtual void draw( gfx::Engine& painter );
-  virtual bool onEvent(const NEvent &event);
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  static std::vector<constants::building::Group> toGroups(Type type);
 };
 
-}//end namespace gui
+}
 
-#endif //__CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_INDUSTRY_H_INCLUDE__

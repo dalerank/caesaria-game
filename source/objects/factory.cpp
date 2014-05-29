@@ -185,7 +185,7 @@ void Factory::timeStep(const unsigned long time)
     {
       //ok... factory is work, produce goods
 
-      float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
+      float workersRatio = (float)numberWorkers() / (float)maximumWorkers();  // work drops if not enough workers
       float timeKoeff = _d->productionRate / (float)GameDate::days2ticks( 365 );
       float work = 100.f * timeKoeff * workersRatio;  // work is proportional to time and factory speed
 

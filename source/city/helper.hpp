@@ -53,7 +53,7 @@ public:
     foreach( item, buildings )
     {
       SmartPtr< T > b = ptr_cast< T >(*item);
-      if( b.isValid() && (b->getClass() == group || group == constants::building::anyGroup ) )
+      if( b.isValid() && (b->group() == group || group == constants::building::anyGroup ) )
       {
         ret.push_back( b );
       }

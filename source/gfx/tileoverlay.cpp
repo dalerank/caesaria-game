@@ -58,7 +58,7 @@ TileOverlay::TileOverlay(const Type type, const Size& size)
 
 Desirability TileOverlay::desirability() const
 {
-  return MetaDataHolder::getData( type() ).getDesirbility();
+  return MetaDataHolder::getData( type() ).desirability();
 }
 
 void TileOverlay::setType(const Type type)
@@ -66,7 +66,7 @@ void TileOverlay::setType(const Type type)
   const MetaData& bd = MetaDataHolder::getData( type );
 
    _d->overlayType = type;
-   _d->overlayClass = bd.getGroup();
+   _d->overlayClass = bd.group();
    _d->name = bd.getName();
 }
 
@@ -76,7 +76,7 @@ void TileOverlay::setPicture(Picture picture)
 {
   _d->picture = picture;
 
-  if (_d->masterTile != NULL)
+  /*if (_d->masterTile != NULL)
   {
     Tilemap &tilemap = _city()->tilemap();
     // _master_tile == NULL is cloneable buildings
@@ -90,7 +90,7 @@ void TileOverlay::setPicture(Picture picture)
         //tile.setPicture( &_d->picture );
       }
     }
-  }
+  }*/
 }
 
 void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
@@ -200,7 +200,7 @@ PlayerCityPtr TileOverlay::_city() const{ return _d->city;}
 gfx::Pictures& TileOverlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture& TileOverlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
 Picture& TileOverlay::_pictureRef(){  return _d->picture;}
-TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
+TileOverlay::Group TileOverlay::group() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
 const Picture& TileOverlay::picture() const{  return _d->picture;}
 void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}

@@ -12,32 +12,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
-#define __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
+#ifndef _CAESARIA_HIRE_PRIORITY_WINDOW_H_INCLUDE_
+#define _CAESARIA_HIRE_PRIORITY_WINDOW_H_INCLUDE_
 
 #include "widget.hpp"
-#include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
+#include "core/signals.hpp"
+#include "game/enums.hpp"
+#include "city/industry.hpp"
 
 namespace gui
 {
 
-class AdvisorEmployerWindow : public Widget
+class HirePriorityWnd : public Widget
 {
 public:
-  AdvisorEmployerWindow( PlayerCityPtr city, Widget* parent, int id );
+  HirePriorityWnd( Widget* parent, city::Industry::Type type, int priority );
+  virtual ~HirePriorityWnd();
 
-  virtual void draw( gfx::Engine& painter );
   virtual bool onEvent(const NEvent &event);
+
+public oc3_signals:
+  Signal2<city::Industry::Type, int>& onAcceptPriority();
 
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace gui
-
-#endif //__CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
+#endif //_CAESARIA_HIRE_PRIORITY_WINDOW_H_INCLUDE_

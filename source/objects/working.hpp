@@ -25,14 +25,15 @@ public:
   WorkingBuilding(const TileOverlay::Type type, const Size& size);
   virtual ~WorkingBuilding();
 
-  void setMaxWorkers(const int maxWorkers);
-  int maxWorkers() const;
+  void setMaximumWorkers(const int maximumWorkers);
+  int maximumWorkers() const;
+  int numberWorkers() const;
+  int needWorkers() const;
 
   void setWorkers( const unsigned int currentWorkers );
   void addWorkers( const unsigned int workers );
   void removeWorkers( const unsigned int workers );
 
-  int numberWorkers() const;
 
   virtual bool mayWork() const;
 

@@ -33,10 +33,10 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
 
   setConstruction( ptr_cast<Construction>( _working ) );
 
-  std::string title = MetaDataHolder::getPrettyName( _working->type() );
+  std::string title = MetaDataHolder::findPrettyName( _working->type() );
   setTitle( _(title) );
 
-  _updateWorkersLabel( Point( 32, 150 ), 542, _working->maxWorkers(), _working->numberWorkers() );
+  _updateWorkersLabel( Point( 32, 150 ), 542, _working->maximumWorkers(), _working->numberWorkers() );
 
   Label* lb = new Label( this, Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
   lb->setFont( Font::create( FONT_2 ) );
@@ -64,7 +64,7 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
     if( !text.empty() )
       messages.push_back( text );
 
-    if( _working->maxWorkers() > 0 )
+    if( _working->maximumWorkers() > 0 )
     {
       messages.push_back( _working->workersProblemDesc() );
     }

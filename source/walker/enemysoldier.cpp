@@ -216,7 +216,7 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
     foreach( it, tiles )
     {
       BuildingPtr b = ptr_cast<Building>( (*it)->overlay() );
-      if( b.isValid() && b->getClass() != building::disasterGroup )
+      if( b.isValid() && b->group() != building::disasterGroup )
       {
         ret.push_back( b );
       }

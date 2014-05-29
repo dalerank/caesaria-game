@@ -131,7 +131,7 @@ public:
     TileOverlayPtr overlay = city->getOverlay( pos );
 
     std::string caption = overlay.isValid()
-                            ? MetaDataHolder::getPrettyName( overlay->type() )
+                            ? MetaDataHolder::findPrettyName( overlay->type() )
                             : title;
 
     infoBox->setTitle( _( caption ) );

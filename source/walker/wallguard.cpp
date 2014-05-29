@@ -264,7 +264,7 @@ void WallGuard::_back2base()
   if( _d->base.isValid() )
   {
     _setSubAction( back2base );
-    TilesArray enter = _d->base->getEnterArea();
+    TilesArray enter = _d->base->enterArea();
 
     if( !enter.empty() )
     {

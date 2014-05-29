@@ -190,7 +190,7 @@ void Construction::addExtension(ConstructionExtensionPtr ext)
 
 double Construction::getState( ParameterType param) const { return _d->params[ param ]; }
 
-TilesArray Construction::getEnterArea() const
+TilesArray Construction::enterArea() const
 {
   TilesArray tiles;
 

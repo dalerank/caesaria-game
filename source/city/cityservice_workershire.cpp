@@ -24,9 +24,9 @@
 #include "walker/workerhunter.hpp"
 #include "core/foreach.hpp"
 #include "objects/constants.hpp"
-#include "core/priorities.hpp"
 #include "game/gamedate.hpp"
 #include "game/settings.hpp"
+#include "objects/metadata.hpp"
 #include <map>
 
 using namespace constants;
@@ -36,14 +36,28 @@ using namespace gfx;
 namespace city
 {
 
-typedef Priorities<TileOverlay::Type> HirePriorities;
+namespace {
+CAESARIA_LITERALCONST(priorities)
+CAESARIA_LITERALCONST(employers)
+}
 
 class WorkersHire::Impl
 {
 public:
-  HirePriorities priorities;
+  typedef std::vector<TileOverlay::Type> BuildingsType;
+  typedef std::map<TileOverlay::Group, BuildingsType> GroupBuildings;
+
+  //HirePriorities priorities;
   WalkerList hrInCity;
   unsigned int distance;
+  DateTime lastMessageDate;
+  WorkersHire::HirePriorities hirePriority;
+  GroupBuildings industryBuildings;
+
+public:
+  void fillIndustryMap();
+  bool haveRecruter( WorkingBuildingPtr building );
+  void hireWorkers( PlayerCityPtr city, WorkingBuildingPtr bld );
 };
 
 SrvcPtr WorkersHire::create(PlayerCityPtr city )
@@ -54,12 +68,14 @@ SrvcPtr WorkersHire::create(PlayerCityPtr city )
   return ret;
 }
 
-string WorkersHire::getDefaultName(){ return "workershire"; }
+string WorkersHire::getDefaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
 
 WorkersHire::WorkersHire(PlayerCityPtr city )
   : Srvc( *city.object(), WorkersHire::getDefaultName() ), _d( new Impl )
 {
-  _d->priorities  << building::prefecture
+  _d->lastMessageDate = GameDate::current();
+  _d->fillIndustryMap();
+ /* _d->priorities  << building::prefecture
                   << building::engineerPost
                   << building::clayPit
                   << building::wheatFarm
@@ -105,14 +121,30 @@ WorkersHire::WorkersHire(PlayerCityPtr city )
                   << building::library
                   << building::hippodrome
                   << building::chariotSchool
-                  << building::winery;
+                  << building::winery;*/
 
   _d->distance = (int)GameSettings::get( GameSettings::rectuterDistance );
 }
 
-bool WorkersHire::_haveHr( WorkingBuildingPtr building )
+void WorkersHire::Impl::fillIndustryMap()
 {
-  foreach( w, _d->hrInCity )
+  MetaDataHolder::OverlayTypes types = MetaDataHolder::instance().availableTypes();
+
+  foreach(it, types)
+  {
+    const MetaData& info = MetaDataHolder::getData( *it );
+    int workersNeed = info.getOption( lc_employers );
+    if( workersNeed > 0 )
+    {
+      industryBuildings[ info.group() ].push_back( info.type() );
+    }
+  }
+
+}
+
+bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
+{
+  foreach( w, hrInCity )
   {
     RecruterPtr hr = ptr_cast<Recruter>( *w );
     if( hr.isValid() )
@@ -125,22 +157,19 @@ bool WorkersHire::_haveHr( WorkingBuildingPtr building )
   return false;
 }
 
-void WorkersHire::_hireByType(const TileOverlay::Type type )
+void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
 {
-  Helper hlp( &_city );
-  WorkingBuildingList buildings = hlp.find< WorkingBuilding >( type );
-  foreach( it, buildings )
-  {
-    WorkingBuildingPtr wrkbld = *it;
-    if( _haveHr( wrkbld ) )
-      continue;
+  if( bld->numberWorkers() == bld->maximumWorkers() )
+    return;
 
-    if( wrkbld->getAccessRoads().size() > 0 && wrkbld->numberWorkers() < wrkbld->maxWorkers() )
-    {
-      RecruterPtr hr = Recruter::create( &_city );
-      hr->setMaxDistance( _d->distance );
-      hr->send2City( wrkbld, wrkbld->maxWorkers() - wrkbld->numberWorkers());
-    }
+  if( haveRecruter( bld ) )
+    return;
+
+  if( bld->getAccessRoads().size() > 0 )
+  {
+    RecruterPtr hr = Recruter::create( city );
+    hr->setMaxDistance( distance );
+    hr->send2City( bld, bld->needWorkers() );
   }
 }
 
@@ -153,15 +182,86 @@ void WorkersHire::update( const unsigned int time )
 
   _d->hrInCity = _city.getWalkers( walker::recruter );
 
-  foreach( pr, _d->priorities )
+  city::Helper helper( &_city );
+  WorkingBuildingList buildings = helper.find< WorkingBuilding >( building::any );
+
+  if( !_d->hirePriority.empty() )
   {
-    _hireByType( *pr );
+    foreach( hireIt, _d->hirePriority )
+    {
+      std::vector<building::Group> groups = city::Industry::toGroups( *hireIt );
+
+      foreach( grIt, groups )
+      {
+        for( WorkingBuildingList::iterator it=buildings.begin(); it != buildings.end(); )
+        {
+          if( (*it)->group() == *grIt )
+          {
+            _d->hireWorkers( &_city, *it );
+            it = buildings.erase( it );
+          }
+          else { ++it; }
+        }
+      }
+    }
+  }
+
+  foreach( it, buildings )
+  {
+    _d->hireWorkers( &_city, *it );
   }
 }
 
-void WorkersHire::setRecturerDistance(const unsigned int distance)
+void WorkersHire::setRecruterDistance(const unsigned int distance) {  _d->distance = distance; }
+
+void WorkersHire::setIndustryPriority(Industry::Type industry, int priority)
 {
-  _d->distance = distance;
+  foreach( i, _d->hirePriority )
+  {
+    if( *i == industry )
+    {
+      _d->hirePriority.erase( i );
+      break;
+    }
+  }
+
+  if( priority > 0 )
+  {
+    HirePriorities::iterator it = _d->hirePriority.begin();
+    std::advance( it, math::clamp<int>( priority-1, 0, _d->hirePriority.size() ) );
+    _d->hirePriority.insert( it, industry );
+  }
+}
+
+int WorkersHire::getPriority(Industry::Type industry)
+{
+  foreach( i, _d->hirePriority )
+  {
+    if( *i == industry )
+      return (std::distance( _d->hirePriority.begin(), i )+1);
+  }
+
+  return 0;
+}
+
+VariantMap WorkersHire::save() const
+{
+  VariantMap ret;
+  ret[ lc_priorities ] = _d->hirePriority.toVariantList();
+
+  return ret;
+}
+
+void WorkersHire::load(const VariantMap& stream)
+{
+  VariantList priorVl = stream.get( lc_priorities ).toList();
+
+  if( !priorVl.empty() )
+  {
+    _d->hirePriority.clear();
+    foreach( i, priorVl )
+      _d->hirePriority << (Industry::Type)(*i).toInt();
+  }
 }
 
 }//end namespace city

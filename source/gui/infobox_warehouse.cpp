@@ -54,7 +54,7 @@ InfoboxWarehouse::InfoboxWarehouse( Widget* parent, const Tile& tile )
 
   CONNECT( btnOrders, onClicked(), this, InfoboxWarehouse::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::getPrettyName( _warehouse->type() );
+  std::string title = MetaDataHolder::findPrettyName( _warehouse->type() );
   setTitle( _(title) );
 
   // summary: total stock, free capacity
@@ -79,7 +79,7 @@ InfoboxWarehouse::InfoboxWarehouse( Widget* parent, const Tile& tile )
   drawGood(Good::furniture, 2, _paintY+75);
   drawGood(Good::pottery,   2, _paintY+100);
 
-  _updateWorkersLabel( Point( 20, 10 ), 542, _warehouse->maxWorkers(), _warehouse->numberWorkers() );
+  _updateWorkersLabel( Point( 20, 10 ), 542, _warehouse->maximumWorkers(), _warehouse->numberWorkers() );
 }
 
 InfoboxWarehouse::~InfoboxWarehouse() {}

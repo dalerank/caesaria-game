@@ -44,11 +44,11 @@ InfoboxSenate::InfoboxSenate( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
   SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
-  std::string title = MetaDataHolder::instance().getData( building::senate ).getPrettyName();
+  std::string title = MetaDataHolder::instance().getData( building::senate ).prettyName();
   setTitle( _(title) );
 
   // number of workers
-  _updateWorkersLabel( Point( 32, 136), 542, senate->maxWorkers(), senate->numberWorkers() );
+  _updateWorkersLabel( Point( 32, 136), 542, senate->maximumWorkers(), senate->numberWorkers() );
 
   std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->getFunds() );
 

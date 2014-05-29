@@ -77,7 +77,7 @@ public:
   virtual bool hasServiceAccess( Service::Type service );
   virtual float getServiceValue( Service::Type service );
   virtual void setServiceValue(Service::Type service, float value );
-  virtual gfx::TilesArray getEnterArea() const;
+  virtual gfx::TilesArray enterArea() const;
 
   virtual double getState( ParameterType param) const;
 

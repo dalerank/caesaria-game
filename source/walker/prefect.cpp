@@ -274,7 +274,7 @@ void Prefect::_reachedPathway()
   switch( _d->action )
   {
   case Impl::patrol:
-    if( base()->getEnterArea().contain( pos() )  )
+    if( base()->enterArea().contain( pos() )  )
     {
       deleteLater();
       _d->action = Impl::doNothing;

@@ -810,7 +810,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   return res;
 }
 
-TilesArray House::getEnterArea() const
+TilesArray House::enterArea() const
 {
   if( isWalkable() )
   {
@@ -820,7 +820,7 @@ TilesArray House::getEnterArea() const
   }
   else
   {
-    return Building::getEnterArea();
+    return Building::enterArea();
   }
 }
 

@@ -46,12 +46,12 @@ public:
 
   std::string getName() const;
   std::string getSound() const;
-  std::string getPrettyName() const;
+  std::string prettyName() const;
   std::string getDescription() const;
-  gfx::TileOverlay::Type getType() const;
-  gfx::TileOverlay::Group getGroup() const;
-  gfx::Picture getBasePicture() const;
-  Desirability getDesirbility() const;
+  gfx::TileOverlay::Type type() const;
+  gfx::TileOverlay::Group group() const;
+  gfx::Picture basePicture() const;
+  Desirability desirability() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
 
@@ -68,30 +68,31 @@ private:
 class MetaDataHolder
 {
 public:
-   static MetaDataHolder& instance();
+  typedef std::vector<gfx::TileOverlay::Type> OverlayTypes;
+  static MetaDataHolder& instance();
 
-   void addData(const MetaData& data);
-   static const MetaData& getData(const gfx::TileOverlay::Type buildingType);
-   bool hasData(const gfx::TileOverlay::Type buildingType) const;
+  void addData(const MetaData& data);
+  static const MetaData& getData(const gfx::TileOverlay::Type buildingType);
+  bool hasData(const gfx::TileOverlay::Type buildingType) const;
+  OverlayTypes availableTypes() const;
 
-   // return factory that consume goodType
-   gfx::TileOverlay::Type getConsumerType(const Good::Type inGoodType) const;
+  // return factory that consume goodType
+  gfx::TileOverlay::Type getConsumerType(const Good::Type inGoodType) const;
 
-   static gfx::TileOverlay::Type getType( const std::string& name );
-   static std::string getTypename( gfx::TileOverlay::Type type );
-   static gfx::TileOverlay::Group getClass( const std::string& name );
+  static gfx::TileOverlay::Type findType( const std::string& name );
+  static std::string findTypename( gfx::TileOverlay::Type type );
+  static gfx::TileOverlay::Group findGroup( const std::string& name );
 
-   static std::string getPrettyName( gfx::TileOverlay::Type type );
-   static std::string getDescription( gfx::TileOverlay::Type type );
+  static std::string findPrettyName( gfx::TileOverlay::Type type );
+  static std::string findDescription( gfx::TileOverlay::Type type );
 
-   void initialize( const vfs::Path& filename );
-
-   ~MetaDataHolder();
+  void initialize( const vfs::Path& filename );
+  ~MetaDataHolder();
 private:
-   MetaDataHolder();
+  MetaDataHolder();
 
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //_CAESARIA_OBJECTS_METADATA_H_INCLUDE_

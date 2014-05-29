@@ -131,7 +131,7 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
   WidgetEscapeCloser::insertTo( this );
 
   WidgetEscapeCloser::insertTo( this );
-  _d->lbxMessages= new ScribesListBox( this, Rect( 16, 60, width() - 16, height() - 50 ) );
+  _d->lbxMessages = new ScribesListBox( this, Rect( 16, 60, width() - 16, height() - 50 ) );
 
   TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
   TexturedButton* btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );

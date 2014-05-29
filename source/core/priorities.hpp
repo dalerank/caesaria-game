@@ -17,6 +17,7 @@
 #define _CAESARIA_PRIORITIES_INCLUDE_H_
 
 #include <vector>
+#include "variant.hpp"
 
 template<class T>
 class Priorities : public std::vector< T >
@@ -26,6 +27,17 @@ public:
   {
     this->push_back( v );
     return *this;
+  }
+
+  VariantList toVariantList() const
+  {
+    VariantList vl;
+    foreach( i, *this )
+    {
+      vl.push_back( Variant( *i ) );
+    }
+
+    return vl;
   }
 };
 

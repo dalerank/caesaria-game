@@ -273,7 +273,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      oMissingRequirement = MetaDataHolder::getTypename( (*it)->type() );
+      oMissingRequirement = MetaDataHolder::findTypename( (*it)->type() );
       break;
     }
   }

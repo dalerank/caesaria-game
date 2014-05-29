@@ -119,7 +119,7 @@ void Protestor::timeStep(const unsigned long time)
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
       TileOverlay::Type type = (*it)->type();
-      TileOverlay::Group group = (*it)->getClass();
+      TileOverlay::Group group = (*it)->group();
       if( type == building::house || type == construction::road
           || group == building::disasterGroup ) { it=constructions.erase( it ); }
       else { it++; }
@@ -171,7 +171,7 @@ void Protestor::timeStep(const unsigned long time)
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {
-        if( (*it)->type() == construction::road || (*it)->getClass() == building::disasterGroup )
+        if( (*it)->type() == construction::road || (*it)->group() == building::disasterGroup )
         { it=constructions.erase( it ); }
         else { ++it; }
       }
@@ -187,7 +187,7 @@ void Protestor::timeStep(const unsigned long time)
         foreach( it, constructions )
         {
           ConstructionPtr c = *it;
-          if( c->getClass() != building::disasterGroup && c->type() != construction::road )
+          if( c->group() != building::disasterGroup && c->type() != construction::road )
           {
             c->updateState( Construction::fire, 1 );
             c->updateState( Construction::damage, 1 );

@@ -62,11 +62,42 @@
         name : "rocks2"
         picture : "empire_bits_00115"
       }
+
+      rocks3 : {
+        location : [ 1010, 440 ]
+        name : "rocks3"
+        picture : "empire_bits_00117"
+      }
+
+      palms2 : {
+        location : [ 1350, 630 ]
+        name : "palms2"
+        picture : "empire_bits_00121"
+      }
     }
 
     cities :
     {
+      Athenae : {
+        location : [ 1200, 700 ]
 
+        land : true
+        sea : true
+        available : true
+
+        sells : { wheat : 15, wine : 25, marble : 15 }
+        buys : { meat: 15, oil: 15 }
+      }
+
+      Corinthus : {
+        location : [ 1160, 760 ]
+
+        sea : true
+        land : true
+
+        sells : { clay : 15, pottery : 25 }
+        buys : { weapon : 15 }
+      }
     }
   }
   		
@@ -155,12 +186,14 @@
       low_bridge : true
       high_bridge : true
       dock : true
+      wharf : true
       prefecture : true
       small_ceres_temple : true
       small_venus_temple : true
       small_mars_temple : true
       small_neptune_temple : true
       small_mercury_temple : true
+      shipyard : true
       market : true
       granery : true
       warehouse : true

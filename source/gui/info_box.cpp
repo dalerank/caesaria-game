@@ -205,7 +205,7 @@ InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
   BuildingPtr building = ptr_cast<Building>( tile.overlay() );
-  setTitle( MetaDataHolder::getPrettyName( building->type() ) );
+  setTitle( MetaDataHolder::findPrettyName( building->type() ) );
 }
 
 }//end namespace gui
