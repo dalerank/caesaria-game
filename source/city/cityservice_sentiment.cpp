@@ -62,7 +62,7 @@ VariantMap Sentiment::save() const
   return ret;
 }
 
-void Sentiment::load(VariantMap stream)
+void Sentiment::load(const VariantMap& stream)
 {
   Srvc::load( stream );
   _d->value = stream.get( "value" );

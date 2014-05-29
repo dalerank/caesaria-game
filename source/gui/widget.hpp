@@ -460,7 +460,7 @@ enum ElementState
 };
 
 template< class T >
-inline T findChildA( const std::string& internalName, bool recursiveFind, Widget* p )
+inline T findChildA( const std::string& internalName, bool recursiveFind, const Widget* p )
 {
   Widget::Widgets::const_iterator it = p->getChildren().begin();
   for( ; it != p->getChildren().end(); ++it )
