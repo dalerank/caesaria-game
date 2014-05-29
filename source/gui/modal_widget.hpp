@@ -26,6 +26,8 @@ namespace gui
 class ModalScreen : public Widget
 {
 public:
+	static void assignTo(Widget* widget);
+
 	//! constructor
 	ModalScreen( Widget* parent, int id=-1 );
 
