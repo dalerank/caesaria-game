@@ -33,6 +33,7 @@
 #include "ability.hpp"
 #include "helper.hpp"
 #include "core/foreach.hpp"
+#include "corpse.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -514,8 +515,11 @@ void Walker::wait(int ticks)
 
 int Walker::waitInterval() const { return _d->waitInterval; }
 
-void Walker::die()
+bool Walker::die()
 {
   _d->health = 0;
   deleteLater();
+
+  WalkerPtr corpse = Corpse::create( _city(), this );
+  return corpse.isValid();
 }

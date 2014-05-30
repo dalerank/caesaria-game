@@ -739,7 +739,7 @@ void House::applyService( ServiceWalkerPtr walker )
     RecruterPtr hunter = ptr_cast<Recruter>( walker );
     if( hunter.isValid() )
     {
-      int hiredWorkers = math::clamp( svalue, 0, hunter->getWorkersNeeded() );
+      int hiredWorkers = math::clamp( svalue, 0, hunter->needWorkers() );
       appendServiceValue( service, -hiredWorkers );
       hunter->hireWorkers( hiredWorkers );
     }

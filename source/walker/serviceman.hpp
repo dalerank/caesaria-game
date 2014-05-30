@@ -49,7 +49,7 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void setPathway(const Pathway& pathway);
-  virtual void die();
+  virtual bool die();
 
   virtual ~ServiceWalker();
 

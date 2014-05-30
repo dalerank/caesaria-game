@@ -26,7 +26,7 @@ class Lion : public Animal
 public:
   static LionPtr create( PlayerCityPtr city );
 
-  virtual void die();
+  virtual bool die();
 
 protected:
   virtual void _reachedPathway();

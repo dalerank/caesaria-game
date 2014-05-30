@@ -224,11 +224,17 @@ void Protestor::send2City( HousePtr house )
   }
 }
 
-void Protestor::die()
+bool Protestor::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen2, 447, 454 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen2, 447, 454 );
+    return true;
+  }
+
+  return created;
 }
 
 void Protestor::save(VariantMap& stream) const

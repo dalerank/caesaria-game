@@ -336,16 +336,17 @@ void EnemySoldier::send2City( TilePos pos )
   _city()->addWalker( this );
 }
 
-void EnemySoldier::die()
+bool EnemySoldier::die()
 {
-  Soldier::die();
-  WalkerPtr wlk = Corpse::create( _city(), this );
-  if( wlk->isDeleted() )
+  bool created = Soldier::die();
+
+  if( !created )
   {
-    wlk = Corpse::create( _city(), pos(), ResourceGroup::celts, 393, 400 );
+    Corpse::create( _city(), pos(), ResourceGroup::celts, 393, 400 );
+    return true;
   }
 
-  _city()->addWalker( wlk );
+  return created;
 }
 
 void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)

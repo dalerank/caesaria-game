@@ -50,9 +50,14 @@ HirePriorityWnd::HirePriorityWnd(Widget* p, city::Industry::Type type, int prior
 
   WidgetEscapeCloser::insertTo( this );
 
-  Label* title = new Label( this, Rect( 0, 0, width(), height()), _("##priority_level##"), false, Label::bgWhiteFrame );
-  title->setTextAlignment( align::center, align::upperLeft );
-  title->setTextOffset( Point( 0, 10 ) );
+  Label* lbTitle = new Label( this, Rect( 0, 0, width(), height()), _("##priority_level##"), false, Label::bgWhiteFrame );
+  lbTitle->setTextAlignment( align::center, align::upperLeft );
+  lbTitle->setFont( Font::create( FONT_3 ) );
+  lbTitle->setTextOffset( Point( 0, 10 ) );
+
+  Label* lbExit = new Label( this, Rect( 0, height() - 30, width(), height() - 10), _("##right_click_to_exit##") );
+  lbExit->setFont( Font::create( FONT_1 ) );
+  lbExit->setTextAlignment( align::center, align::center );
 
   Point start( 65, 44 );
   Size btnSize( 28, 28 );

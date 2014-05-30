@@ -24,7 +24,7 @@ class Ship : public Walker
 public:
   Ship( PlayerCityPtr city );
 
-  virtual void die();
+  virtual bool die();
   virtual ~Ship();
 };
 

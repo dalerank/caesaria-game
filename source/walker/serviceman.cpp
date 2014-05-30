@@ -351,7 +351,7 @@ void ServiceWalker::setPathway( const Pathway& pathway)
   _reservePath( pathway );
 }
 
-void ServiceWalker::die()
+bool ServiceWalker::die()
 {
   int start=-1, stop=-1;
   std::string rcGroup;
@@ -403,7 +403,10 @@ void ServiceWalker::die()
   if( start >= 0 )
   {
     Corpse::create( _city(), pos(), rcGroup, start, stop );
+    return true;
   }
+
+  return false;
 }
 
 void ServiceWalker::setMaxDistance( const int distance ) { _d->maxDistance = distance; }

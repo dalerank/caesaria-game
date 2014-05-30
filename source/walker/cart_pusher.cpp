@@ -414,11 +414,17 @@ void CartPusher::load( const VariantMap& stream )
   _d->reservationID = stream.get( "reservationID" ).toInt();
 }
 
-void CartPusher::die()
+bool CartPusher::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1025, 1032 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1025, 1032 );
+    return true;
+  }
+
+  return created;
 }
 
 std::string CartPusher::getThinks() const

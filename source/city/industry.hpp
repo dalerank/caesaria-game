@@ -20,6 +20,7 @@
 
 #include <vector>
 #include "objects/constants.hpp"
+#include "core/priorities.hpp"
 
 namespace city
 {
@@ -43,6 +44,8 @@ public:
 
   static std::vector<constants::building::Group> toGroups(Type type);
 };
+
+typedef Priorities<Industry::Type> HirePriorities;
 
 }
 

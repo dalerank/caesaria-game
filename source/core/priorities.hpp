@@ -18,6 +18,7 @@
 
 #include <vector>
 #include "variant.hpp"
+#include "core/foreach.hpp"
 
 template<class T>
 class Priorities : public std::vector< T >
@@ -32,12 +33,16 @@ public:
   VariantList toVariantList() const
   {
     VariantList vl;
-    foreach( i, *this )
-    {
-      vl.push_back( Variant( *i ) );
-    }
+    foreach( i, *this ) { vl.push_back( Variant( *i ) ); }
 
     return vl;
+  }
+
+  Priorities& operator << ( const VariantList& vl )
+  {
+    foreach( i, vl ) { this->push_back( (T)(*i).toInt() ); }
+
+    return *this;
   }
 };
 

@@ -230,7 +230,7 @@ void AdvisorEmployerWindow::Impl::updateSalaryLabel()
 
 AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo(Industry::Type type )
 {
-  std::vector<building::Group> bldGroups;
+  std::vector<building::Group> bldGroups = city::Industry::toGroups( type );
 
   WorkingBuildingList buildings;
   city::Helper helper( city );

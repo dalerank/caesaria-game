@@ -30,11 +30,17 @@ Ship::Ship(PlayerCityPtr city )
   setName( _("##ship##") );
 }
 
-void Ship::die()
+bool Ship::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::carts, 265, 272, true );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::carts, 265, 272, true );
+    return true;
+  }
+
+  return false;
 }
 
 Ship::~Ship(){}

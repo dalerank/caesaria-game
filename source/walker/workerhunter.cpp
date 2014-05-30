@@ -30,10 +30,22 @@
 
 using namespace constants;
 
+namespace {
+CAESARIA_LITERALCONST(needworkers)
+CAESARIA_LITERALCONST(priority)
+}
+
+class Recruter::Impl
+{
+public:
+  int needWorkers;
+  city::HirePriorities priority;
+};
+
 Recruter::Recruter(PlayerCityPtr city )
- : ServiceWalker( city, Service::recruter )
+ : ServiceWalker( city, Service::recruter ), _d( new Impl )
 {    
-  _workersNeeded = 0;
+  _d->needWorkers = 0;
   _setType( walker::recruter );
 }
 
@@ -42,18 +54,23 @@ void Recruter::hireWorkers( const int workers )
   WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
   if( wbase.isValid() ) 
   {
-    _workersNeeded = math::clamp( _workersNeeded - workers, 0, 0xff );
+    _d->needWorkers = math::clamp( _d->needWorkers - workers, 0, 0xff );
     wbase->addWorkers( workers );
   }
 }
 
-int Recruter::getWorkersNeeded() const { return _workersNeeded; }
+void Recruter::setPriority(const city::HirePriorities& priority)
+{
+  _d->priority = priority;
+}
+
+int Recruter::needWorkers() const { return _d->needWorkers; }
 
 void Recruter::_centerTile()
 {
   Walker::_centerTile();
 
-  if( _workersNeeded )
+  if( _d->needWorkers )
   {
     ServiceWalkerHelper hlp( *this );
     std::set<HousePtr> houses = hlp.getReachedBuildings<House>( pos() );
@@ -80,13 +97,33 @@ RecruterPtr Recruter::create(PlayerCityPtr city )
 
 void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 {
-  _workersNeeded = workersNeeded;
+  _d->needWorkers = workersNeeded;
   ServiceWalker::send2City( building.object() );
 }
 
-void Recruter::die()
+void Recruter::save(VariantMap& stream) const
 {
-  ServiceWalker::die();
+  ServiceWalker::save( stream );
+  stream[ lc_priority ] = _d->priority.toVariantList();
+  stream[ lc_needworkers ] = _d->needWorkers;
+}
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 97, 104 );
+void Recruter::load(const VariantMap& stream)
+{
+  ServiceWalker::load( stream );
+  _d->needWorkers = stream.get( lc_needworkers );
+  _d->priority << stream.get( lc_priority ).toList();
+}
+
+bool Recruter::die()
+{
+  bool created = ServiceWalker::die();
+
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen1, 97, 104 );
+    return true;
+  }
+
+  return created;
 }

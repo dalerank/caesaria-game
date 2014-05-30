@@ -40,7 +40,7 @@ public:
   bool isBusy() const;
   int getFishQty() const;
 
-  virtual void die();
+  virtual bool die();
 protected:
   virtual void _reachedPathway();
 

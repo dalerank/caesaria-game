@@ -107,11 +107,17 @@ void Immigrant::timeStep(const unsigned long time)
   Walker::timeStep(time);
 }
 
-void Immigrant::die()
+bool Immigrant::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1129, 1136 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1129, 1136 );
+    return true;
+  }
+
+  return false;
 }
 
 ImmigrantPtr Immigrant::create(PlayerCityPtr city )

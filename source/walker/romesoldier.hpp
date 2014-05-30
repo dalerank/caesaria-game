@@ -28,7 +28,7 @@ public:
 
   void send2city(FortPtr base , TilePos pos);
 
-  virtual void die();
+  virtual bool die();
   virtual void timeStep(const unsigned long time);
   virtual void send2patrol();
 

@@ -35,7 +35,7 @@ public:
   virtual void getPictures( gfx::Pictures &oPics);
   virtual void timeStep(const unsigned long time);
 
-  virtual void die();
+  virtual bool die();
 
   virtual ~Immigrant();
 protected:

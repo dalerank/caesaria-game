@@ -509,11 +509,17 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   }
 }
 
-void Prefect::die()
+bool Prefect::die()
 {
-  ServiceWalker::die();
+  bool created = ServiceWalker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen2, 711, 718 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen2, 711, 718 );
+    return true;
+  }
+
+  return created;
 }
 
 std::string Prefect::getThinks() const

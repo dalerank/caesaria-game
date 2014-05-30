@@ -74,9 +74,9 @@ void Patrician::_findNewWay( const TilePos& start )
   }
 }
 
-void Patrician::die()
+bool Patrician::die()
 {
-  Walker::die();
+  return Walker::die();
 
   /*if( _getAnimationType() == gfx::patricianMove )
   {

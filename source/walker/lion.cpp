@@ -30,10 +30,11 @@ LionPtr Lion::create(PlayerCityPtr city)
   return ret;
 }
 
-void Lion::die()
+bool Lion::die()
 {
-  Animal::die();
+  bool created = Animal::die();
 
+  return created;
   //Corpse::create( _getCity(), getIJ(), "citizen04", 257, 264 );
 }
 

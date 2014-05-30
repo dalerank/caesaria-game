@@ -31,8 +31,6 @@ namespace city
 class WorkersHire : public Srvc
 {
 public:
-  typedef Priorities<Industry::Type> HirePriorities;
-
   static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   virtual void update( const unsigned int time );

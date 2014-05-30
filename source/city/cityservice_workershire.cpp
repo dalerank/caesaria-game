@@ -51,7 +51,7 @@ public:
   WalkerList hrInCity;
   unsigned int distance;
   DateTime lastMessageDate;
-  WorkersHire::HirePriorities hirePriority;
+  HirePriorities hirePriority;
   GroupBuildings industryBuildings;
 
 public:
@@ -139,7 +139,6 @@ void WorkersHire::Impl::fillIndustryMap()
       industryBuildings[ info.group() ].push_back( info.type() );
     }
   }
-
 }
 
 bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
@@ -168,6 +167,7 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
   if( bld->getAccessRoads().size() > 0 )
   {
     RecruterPtr hr = Recruter::create( city );
+    hr->setPriority( hirePriority );
     hr->setMaxDistance( distance );
     hr->send2City( bld, bld->needWorkers() );
   }
@@ -177,8 +177,6 @@ void WorkersHire::update( const unsigned int time )
 {
   if( !GameDate::isWeekChanged() )
     return;
-
-  //unsigned int vacantPop=0;
 
   _d->hrInCity = _city.getWalkers( walker::recruter );
 
@@ -259,8 +257,7 @@ void WorkersHire::load(const VariantMap& stream)
   if( !priorVl.empty() )
   {
     _d->hirePriority.clear();
-    foreach( i, priorVl )
-      _d->hirePriority << (Industry::Type)(*i).toInt();
+    _d->hirePriority << priorVl;
   }
 }
 
