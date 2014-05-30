@@ -50,6 +50,7 @@
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
+#include "vfs/archive_zip.hpp"
 #include "scene/briefing.hpp"
 #include "gfx/logo.hpp"
 #include "walker/helper.hpp"
@@ -128,6 +129,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   vfs::FileSystem& fs = vfs::FileSystem::instance();
   Logger::warning( "Game: initialize sg2 archive loader" );
   fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
+  fs.addArchiveLoader( new vfs::ZipArchiveLoader( &fs ) );
 
   Logger::warning( "Game: mount archives begin" );
 

@@ -20,7 +20,6 @@
 #include "directory.hpp"
 #include "core/foreach.hpp"
 #include "entries.hpp"
-#include "archive_zip.hpp"
 #include "core/logger.hpp"
 
 #if defined (CAESARIA_PLATFORM_WIN)
@@ -88,8 +87,6 @@ FileSystem::FileSystem() : _d( new Impl )
   //! reset current working directory
 
   workingDirectory();
-
-  _d->archiveLoaders.push_back(new ZipArchiveLoader(this));
 }
 
 

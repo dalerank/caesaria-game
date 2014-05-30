@@ -22,7 +22,6 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/path.cpp"
       "${BASE_SOURCE_DIR}/vfs/entries.cpp"
       "${BASE_SOURCE_DIR}/vfs/filesystem.cpp"
-      "${BASE_SOURCE_DIR}/vfs/archive_zip.cpp"
       "${BASE_SOURCE_DIR}/vfs/memfile.cpp"
       "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
       "${BASE_SOURCE_DIR}/core/stacktrace.cpp"
@@ -37,21 +36,6 @@ add_executable(${PROJECT_NAME}
                ${UPD_SRC_LIST} ${UPD_INC_LIST}
                ${UPD_DEP_SOURCES_LIST}
                ${HTTP_SOURCES_LIST} )
-
-if( BUILD_ZLIB )
-  link_directories(${ZLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${ZLIB_NAME})
-endif()
-
-if( BUILD_AES )
-  link_directories(${AESLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${AESLIB_NAME})
-endif()
-
-if( BUILD_BZIP )
-  link_directories(${BZIPLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${BZIPLIB_NAME})
-endif()
 
 if( BUILD_LZMA )
   link_directories(${LZMALIB_HOME})
