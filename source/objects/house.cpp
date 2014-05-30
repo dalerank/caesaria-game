@@ -688,7 +688,7 @@ void House::applyService( ServiceWalkerPtr walker )
 {
   Building::applyService(walker);  // handles basic services, and remove service reservation
 
-  Service::Type service = walker->getService();
+  Service::Type service = walker->serviceType();
   switch (service)
   {
   case Service::well:
@@ -754,7 +754,7 @@ void House::applyService( ServiceWalkerPtr walker )
 float House::evaluateService(ServiceWalkerPtr walker)
 {
   float res = 0.0;
-  Service::Type service = walker->getService();
+  Service::Type service = walker->serviceType();
   if( _reservedServices.count(service) == 1 )
   {
      // service is already reserved

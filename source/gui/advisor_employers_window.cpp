@@ -126,6 +126,12 @@ public:
   PlayerCityPtr city;
   EmployerButtons empButtons;
 
+  struct EmployersInfo {
+    unsigned int needWorkers;
+    unsigned int currentWorkers;
+  };
+
+public:
   void increaseSalary();
   void decreaseSalary();
   void updateSalaryLabel();
@@ -133,13 +139,6 @@ public:
   void updateYearlyWages();
   void changeSalary( int relative );
   void showPriorityWindow(Industry::Type industry);
-
-  struct EmployersInfo { 
-    unsigned int needWorkers;
-    unsigned int currentWorkers;
-  };
-
-public:
   void setIndustryPriority( Industry::Type industry, int priority );
   void update();
   EmployersInfo getEmployersInfo( Industry::Type type );
@@ -297,6 +296,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
   _d->updateSalaryLabel();
   _d->updateWorkersState();
   _d->updateYearlyWages();
+  _d->update();
 }
 
 void AdvisorEmployerWindow::draw(Engine& painter )

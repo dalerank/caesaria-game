@@ -476,7 +476,7 @@ void Prefect::timeStep(const unsigned long time)
 
 Prefect::~Prefect() {}
 
-float Prefect::getServiceValue() const {  return 5; }
+float Prefect::serviceValue() const {  return 5; }
 
 PrefectPtr Prefect::create(PlayerCityPtr city )
 {

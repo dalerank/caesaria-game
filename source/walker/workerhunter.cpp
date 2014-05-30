@@ -33,13 +33,20 @@ using namespace constants;
 namespace {
 CAESARIA_LITERALCONST(needworkers)
 CAESARIA_LITERALCONST(priority)
+static const int noPriority = 999;
 }
 
 class Recruter::Impl
 {
 public:
+  typedef std::map< building::Group, int > PriorityMap;
+
   int needWorkers;
   city::HirePriorities priority;
+  PriorityMap priorityMap;
+
+public:
+  bool isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding );
 };
 
 Recruter::Recruter(PlayerCityPtr city )
@@ -62,6 +69,18 @@ void Recruter::hireWorkers( const int workers )
 void Recruter::setPriority(const city::HirePriorities& priority)
 {
   _d->priority = priority;
+
+  int priorityLevel = 1;
+  foreach( i, _d->priority )
+  {
+    city::Industry::BuildingGroups groups = city::Industry::toGroups( *i );
+    foreach( grIt, groups )
+    {
+      _d->priorityMap[ *grIt ] = priorityLevel;
+    }
+
+    priorityLevel++;
+  }
 }
 
 int Recruter::needWorkers() const { return _d->needWorkers; }
@@ -75,7 +94,24 @@ void Recruter::_centerTile()
     ServiceWalkerHelper hlp( *this );
     std::set<HousePtr> houses = hlp.getReachedBuildings<House>( pos() );
 
-    foreach( it, houses ) { (*it)->applyService( ServiceWalkerPtr( this ) ); }
+    foreach( it, houses ) { (*it)->applyService( this ); }
+
+    if( !_d->priority.empty() )
+    {
+      std::set<WorkingBuildingPtr> blds = hlp.getReachedBuildings<WorkingBuilding>( pos() );
+
+      foreach( it, blds )
+      {
+        bool priorityOver = _d->isMyPriorityOver( base(), *it );
+        if( priorityOver )
+        {
+          WorkingBuildingPtr wbld = *it;
+          int numWorkers = std::min<int>( wbld->numberWorkers(), _d->needWorkers );
+          wbld->removeWorkers( numWorkers );
+          hireWorkers( numWorkers );
+        }
+      }
+    }
   }
   else
   {    
@@ -98,7 +134,7 @@ RecruterPtr Recruter::create(PlayerCityPtr city )
 void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 {
   _d->needWorkers = workersNeeded;
-  ServiceWalker::send2City( building.object() );
+  ServiceWalker::send2City( building.object(), ServiceWalker::goLowerService | ServiceWalker::anywayWhenFailed );
 }
 
 void Recruter::save(VariantMap& stream) const
@@ -126,4 +162,14 @@ bool Recruter::die()
   }
 
   return created;
+}
+
+bool Recruter::Impl::isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding)
+{
+  PriorityMap::iterator myPrIt = priorityMap.find( (building::Group)base->group() );
+  PriorityMap::iterator bldPrIt = priorityMap.find( (building::Group)wbuilding->group() );
+  int mypriority = (myPrIt != priorityMap.end() ? myPrIt->second : noPriority);
+  int wpriority = (bldPrIt != priorityMap.end() ? bldPrIt->second : noPriority);
+
+  return mypriority < wpriority;
 }

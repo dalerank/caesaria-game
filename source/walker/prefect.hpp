@@ -27,7 +27,7 @@ public:
   static PrefectPtr create( PlayerCityPtr city );
 
   virtual void timeStep(const unsigned long time);
-  virtual float getServiceValue() const;
+  virtual float serviceValue() const;
 
   virtual void load( const VariantMap& stream );
   virtual void save( VariantMap& stream ) const;

@@ -28,6 +28,7 @@ namespace city
 class Industry
 {
 public:
+  typedef std::vector<constants::building::Group> BuildingGroups;
   typedef enum
   {
     factoryAndTrade=0,
@@ -42,7 +43,7 @@ public:
     count
   } Type;
 
-  static std::vector<constants::building::Group> toGroups(Type type);
+  static BuildingGroups toGroups(Type type);
 };
 
 typedef Priorities<Industry::Type> HirePriorities;
