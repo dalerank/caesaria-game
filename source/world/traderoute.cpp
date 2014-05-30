@@ -105,7 +105,7 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
     int angle = (int)((p2-p1).getAngle() / 45.f);
     switch( angle )
     {
-    case 0: angle = 90; offset = Point( -10, -10 ); break;
+    case 0: angle = 91; offset = Point( -10, 0 ); break;
     case 1: angle = 89; offset = Point( -20, 0 ); break;
     case 2: angle = 88; offset = Point( 0, -5 );break;
     case 3: angle = 93; offset = Point( 0, -10 ); break;

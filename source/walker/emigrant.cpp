@@ -13,65 +13,279 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "emigrant.hpp"
+#include "immigrant.hpp"
 #include "core/position.hpp"
-#include "objects/road.hpp"
-#include "gfx/animation_bank.hpp"
-#include "city/city.hpp"
-#include "constants.hpp"
-#include "corpse.hpp"
+#include "core/safetycast.hpp"
+#include "pathway/pathway_helper.hpp"
+#include "objects/house.hpp"
+#include "gfx/tile.hpp"
+#include "core/variant.hpp"
+#include "city/helper.hpp"
+#include "pathway/path_finding.hpp"
+#include "gfx/tilemap.hpp"
+#include "name_generator.hpp"
+#include "objects/constants.hpp"
 #include "game/resourcegroup.hpp"
+#include "corpse.hpp"
 
 using namespace constants;
 using namespace gfx;
 
-Emigrant::Emigrant( PlayerCityPtr city ) : Immigrant( city )
+class Emigrant::Impl
 {
+public:
+  Picture cartPicture;
   CitizenGroup peoples;
-  peoples[ CitizenGroup::matureMin ] = 2;
-  peoples[ CitizenGroup::childMin ] = 2;
-  setPeoples( peoples );
+  int failedWayCount;
+  float stamina;
+};
 
-  _setType( walker::emmigrant );
+Emigrant::Emigrant(PlayerCityPtr city )
+  : Walker( city ), _d( new Impl )
+{
+  _setType( walker::emigrant );
+
+  setName( NameGenerator::rand( NameGenerator::male ) );
+  _d->stamina = math::random( 80 ) + 20;
+  _d->failedWayCount = 0;
 }
 
-const Picture& Emigrant::_cartPicture()
+HousePtr Emigrant::_findBlankHouse()
 {
-  if( !Immigrant::_cartPicture().isValid() )
+  city::Helper hlp( _city() );
+  HouseList houses = hlp.find< House >( building::house );
+  HousePtr blankHouse;
+
+  HouseList::iterator itHouse = houses.begin();
+  while( itHouse != houses.end() )
   {
-    _setCartPicture( AnimationBank::getCart( G_EMIGRANT_CART1, getDirection()) );
+    if( (*itHouse)->getAccessRoads().size() > 0 && 
+        ( (*itHouse)->habitants().count() < (*itHouse)->maxHabitants() ) )
+    {
+      ++itHouse;
+    }
+    else
+    {
+      itHouse = houses.erase( itHouse );
+    }
   }
 
-  return Immigrant::_cartPicture();
+  if( houses.size() > 0 )
+  {
+    itHouse = houses.begin();
+    std::advance(itHouse, rand() % houses.size() );
+    blankHouse = *itHouse;
+  }
+
+  return blankHouse;
 }
 
-void Emigrant::getPictureList( Pictures& oPics)
+Pathway Emigrant::_findSomeWay( TilePos startPoint )
 {
-  oPics.clear();
+  HousePtr house = _findBlankHouse();  
 
-  // depending on the walker direction, the cart is ahead or behind
-  switch (getDirection())
+  Pathway pathway;
+  if( house.isValid() )
   {
-  case constants::west:
-  case constants::northWest:
-  case constants::north:
-  case constants::northEast:
-    oPics.push_back( _cartPicture() );
-    oPics.push_back( getMainPicture() );
+    pathway = PathwayHelper::create( startPoint, ptr_cast<Construction>(house),
+                                     PathwayHelper::roadFirst  );
+  }
+
+  if( !pathway.isValid() )
+  {
+    pathway = PathwayHelper::create( startPoint,
+                                     _city()->borderInfo().roadExit,
+                                     PathwayHelper::allTerrain );
+  }
+
+  return pathway;
+}
+
+void Emigrant::_reachedPathway()
+{
+  bool gooutCity = true;
+  Walker::_reachedPathway();
+
+  if( pos() == _city()->borderInfo().roadExit )
+  {
+    deleteLater();
+    return;
+  }
+
+  HousePtr house = ptr_cast<House>( _city()->getOverlay( pos() ) );
+  if( house.isValid() )
+  {
+    int freeRoom = house->maxHabitants() - house->habitants().count();
+    if( freeRoom > 0 )
+    {
+      house->addHabitants( _d->peoples );
+      gooutCity = (_d->peoples.count() > 0);
+    }
+  }
+  else
+  {
+    city::Helper helper( _city() );
+    TilePos offset( 1, 1 );
+    HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
+    foreach( it, houses )  //have destination
+    {
+      HousePtr house = *it;
+
+      int freeRoom = house->maxHabitants() - house->habitants().count();
+      if( freeRoom > 0 )
+      {
+        Tilemap& tmap = _city()->tilemap();
+        Pathway pathway;
+        pathway.init( tmap, tmap.at( pos() ) );
+        pathway.setNextTile( house->tile() );
+
+        gooutCity = false;
+        _updatePathway( pathway );
+        go();
+        return;
+      }
+    }
+  }
+
+  if( gooutCity )
+  {
+    Pathway way = _findSomeWay( pos() );
+    if( way.isValid() )
+    {
+      _updatePathway( way );
+      go();
+    }
+    else
+    {
+      die();
+    }
+  }
+  else
+  {
+    deleteLater();
+  }
+}
+
+void Emigrant::_brokePathway(TilePos p)
+{
+  Pathway way = _findSomeWay( pos() );
+  if( way.isValid() )
+  {
+    setPathway( way );
+    go();
+  }
+  else
+  {
+    die();
+  }
+}
+
+void Emigrant::_noWay()
+{
+  Pathway someway = _findSomeWay( pos() );
+  if( !someway.isValid() )
+  {
+    _d->failedWayCount++;
+    if( _d->failedWayCount > 10 )
+    {
+      die();
+    }
+  }
+  else
+  {
+    _d->failedWayCount = 0;
+    setPathway( someway );
+    go();
+  }
+}
+
+EmigrantPtr Emigrant::create(PlayerCityPtr city )
+{
+  EmigrantPtr newImmigrant( new Emigrant( city ) );
+  newImmigrant->drop(); //delete automatically
+  return newImmigrant;
+}
+
+EmigrantPtr Emigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples,
+                                   const Tile& startTile, std::string thinks )
+{
+  if( peoples.count() > 0 )
+  {
+    EmigrantPtr im = Emigrant::create( city );
+    im->setPeoples( peoples );
+    im->send2city( startTile );
+    im->setThinks( thinks );
+    return im;
+  }
+
+  return EmigrantPtr();
+}
+
+void Emigrant::send2city( const Tile& startTile )
+{    
+  Pathway way = _findSomeWay( startTile.pos() );
+  setPos( startTile.pos() );
+
+  if( way.isValid() )
+  {
+    setPathway( way );
+    _city()->addWalker( this );
+  }
+}
+
+void Emigrant::leaveCity( const Tile& tile)
+{
+  setPos( tile.pos() );
+  Pathway pathway = PathwayHelper::create( tile.pos(),
+                                           _city()->borderInfo().roadExit,
+                                           PathwayHelper::allTerrain );
+
+  if( !pathway.isValid() )
+  {
+    die();
+    return;
+  }
+
+  _city()->addWalker( this );
+  setPathway( pathway );
+  go();
+}
+
+
+Emigrant::~Emigrant(){}
+
+void Emigrant::_setCartPicture( const Picture& pic ){  _d->cartPicture = pic;}
+const Picture& Emigrant::_cartPicture(){  return _d->cartPicture;}
+const CitizenGroup& Emigrant::_getPeoples() const{  return _d->peoples;}
+void Emigrant::setPeoples( const CitizenGroup& peoples ){  _d->peoples = peoples;}
+
+void Emigrant::timeStep(const unsigned long time)
+{
+  Walker::timeStep( time );
+
+  switch( action() )
+  {
+  case Walker::acMove:
+    _d->stamina = math::clamp( _d->stamina-1, 0.f, 100.f );
+    if( _d->stamina == 0 )
+    {
+      _setAction( Walker::acNone );
+    }
   break;
 
-  case constants::east:
-  case constants::southEast:
-    oPics.push_back( _cartPicture() );
-    oPics.push_back( getMainPicture() );
-  break;
-
-  case constants::south:
-  case constants::southWest:
-    oPics.push_back( getMainPicture() );
-    oPics.push_back( _cartPicture() );
+  case Walker::acNone:
+    _d->stamina = math::clamp( _d->stamina+1, 0.f, 100.f );
+    if( _d->stamina >= 100 )
+    {
+      Pathway way = _findSomeWay( pos() );
+      if( way.isValid() )
+      {
+        _updatePathway( way );
+      }
+      go();
+    }
   break;
 
   default:
@@ -79,29 +293,29 @@ void Emigrant::getPictureList( Pictures& oPics)
   }
 }
 
-void Emigrant::_changeDirection()
+void Emigrant::save( VariantMap& stream ) const
 {
-  Immigrant::_changeDirection();
-  _setCartPicture( Picture() );  // need to get the new graphic
+  Walker::save( stream );
+  stream[ "peoples" ] = _d->peoples.save();
+  stream[ "stamina" ] = _d->stamina;
 }
 
-void Emigrant::timeStep(const unsigned long time)
+void Emigrant::load( const VariantMap& stream )
 {
-  Walker::timeStep(time);
+  Walker::load( stream );
+  _d->peoples.load( stream.get( "peoples" ).toList() );
+  _d->stamina = stream.get( "stamina" );
 }
 
-void Emigrant::die()
+bool Emigrant::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1129, 1136 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen2, 1007, 1014 );
+    return true;
+  }
+
+  return created;
 }
-
-EmigrantPtr Emigrant::create(PlayerCityPtr city )
-{
-  EmigrantPtr newEmigrant( new Emigrant( city ) );
-  newEmigrant->drop();
-  return newEmigrant;
-}
-
-Emigrant::~Emigrant(){}

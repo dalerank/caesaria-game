@@ -68,7 +68,7 @@ public:
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
-    if( house->getHabitants().count() > 0 )
+    if( house->habitants().count() > 0 )
     {
       return new InfoboxHouse( parent, city->tilemap().at( pos ) );
     }
@@ -131,7 +131,7 @@ public:
     TileOverlayPtr overlay = city->getOverlay( pos );
 
     std::string caption = overlay.isValid()
-                            ? MetaDataHolder::getPrettyName( overlay->type() )
+                            ? MetaDataHolder::findPrettyName( overlay->type() )
                             : title;
 
     infoBox->setTitle( _( caption ) );

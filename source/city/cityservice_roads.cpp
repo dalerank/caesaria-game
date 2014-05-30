@@ -16,6 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_roads.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "game/gamedate.hpp"
 #include "pathway/path_finding.hpp"
@@ -90,7 +91,7 @@ void Roads::update( const unsigned int time )
   HouseList houses = helper.find<House>( building::house );
   foreach( house, houses )
   {
-    if( (*house)->getSpec().level() >= HouseLevel::bigMansion )
+    if( (*house)->spec().level() >= HouseLevel::bigMansion )
     {
       positions.push_back( Impl::UpdateInfo( house->object(), 5 ) );
     }

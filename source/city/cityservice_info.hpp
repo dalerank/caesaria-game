@@ -21,6 +21,7 @@
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
+#include "good/good.hpp"
 
 namespace city
 {
@@ -49,6 +50,8 @@ public:
     int payDiff;
     int cityWages;
     int romeWages;
+    int maxWorkers;
+    int crimeLevel;
 
     Parameters()
     {
@@ -60,8 +63,10 @@ public:
       foodKoeff = 0;
       godsMood = 0;
       needWorkers = 0;
+      maxWorkers = 0;
       workless = 0;
       tax = 0;
+      crimeLevel = 0;
       colloseumCoverage = 0;
       theaterCoverage = 0;
       entertainment = 0;
@@ -71,24 +76,34 @@ public:
       cityWages = 0;
       romeWages = 0;
     }
+
+    VariantMap save() const;
+    void load( const VariantMap& stream );
   };
 
   struct ScribeMessage
   {
     std::string text;
     std::string title;
+    Good::Type gtype;
+    Point position;
     int type;
     DateTime date;
     bool opened;
     Variant ext;
+
+    VariantMap save() const;
+    void load( const VariantMap& stream );
   };
 
   typedef std::list<ScribeMessage> Messages;
+  typedef std::vector< Info::Parameters > History;
 
   static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
   Parameters getLast() const;
+  const History& getHistory() const;
 
   static std::string getDefaultName();
 

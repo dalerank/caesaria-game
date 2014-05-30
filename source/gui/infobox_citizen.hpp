@@ -28,8 +28,13 @@ namespace gui
 class InfoboxCitizen : public InfoboxSimple
 {
 public:
-  InfoboxCitizen(Widget* parent, const WalkerList& walkers);
+  InfoboxCitizen(Widget* parent, PlayerCityPtr city, const TilePos& pos);
   virtual ~InfoboxCitizen();
+
+protected:
+  void _setWalker(WalkerPtr walker);
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace gui

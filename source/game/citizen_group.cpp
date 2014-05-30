@@ -20,7 +20,7 @@
 int CitizenGroup::count() const
 {
   int ret = 0;
-  for( Peoples::const_iterator t=_hb.begin(); t != _hb.end(); ++t ){ ret += *t; }
+  foreach( t,_peoples) { ret += *t; }
   return ret;
 }
 
@@ -41,7 +41,7 @@ int CitizenGroup::count( Age group ) const
   int ret=0;
   for( int i=tmin; i<=tmax; i++)
   {
-    ret += _hb[ i ];
+    ret += _peoples[ i ];
   }
 
   return ret;
@@ -51,14 +51,21 @@ CitizenGroup CitizenGroup::retrieve(int rcount)
 {
   CitizenGroup ret;
 
+  if( rcount >= count() )
+  {
+    CitizenGroup ret = *this;
+    clear();
+    return ret;
+  }
+
   while( rcount > 0 )
   {
     for( int age=0; age <= longliver; age++ )
     {
-      int n = std::min( _hb[ age ], 1 );
+      int n = std::min( _peoples[ age ], 1 );
 
       ret[ age ] += n;
-      _hb[ age ] -= n;
+      _peoples[ age ] -= n;
       rcount -= n;
 
       if( rcount == 0 )
@@ -74,26 +81,29 @@ CitizenGroup CitizenGroup::retrieve(int rcount)
 
 int& CitizenGroup::operator [](int age)
 {
-  return _hb[ age ];
+  return _peoples[ age ];
 }
 
 CitizenGroup& CitizenGroup::operator += (const CitizenGroup& b)
 {
   for( int index=newborn; index <= longliver; index++ )
   {
-    _hb[ index ] += b._hb[ index ];
+    _peoples[ index ] += b._peoples[ index ];
   }
 
   return *this;
 }
 
-bool CitizenGroup::empty() const {  return _hb.empty(); }
-void CitizenGroup::clear(){  _hb.clear(); }
+bool CitizenGroup::empty() const {  return (_peoples.empty() || (0 == count())); }
+void CitizenGroup::clear()
+{
+  foreach( t,_peoples ) { (*t) = 0; }
+}
 
 void CitizenGroup::makeOld()
 {
-  _hb.pop_back();
-  _hb.insert( _hb.begin(), 1, 0 );
+  _peoples.pop_back();
+  _peoples.insert( _peoples.begin(), 1, 0 );
 }
 
 VariantList CitizenGroup::save() const
@@ -101,7 +111,7 @@ VariantList CitizenGroup::save() const
   VariantList ret;
 
   int index=0;
-  for( Peoples::const_iterator g = _hb.begin(); g != _hb.end(); ++g, index++ )
+  for( Peoples::const_iterator g = _peoples.begin(); g != _peoples.end(); ++g, index++ )
   {
     if( *g > 0 )
     {
@@ -122,12 +132,12 @@ void CitizenGroup::load(const VariantList& stream)
     VariantList gv = (*g).toList();
     int age = gv.get( 0, 0 );
     int count = gv.get( 1, 0 );
-    _hb[ age ] = count;
+    _peoples[ age ] = count;
   }
 }
 
 CitizenGroup::CitizenGroup()
 {
-  _hb.resize( longliver+1 );
-  _hb.reserve( longliver+2 );
+  _peoples.resize( longliver+1 );
+  _peoples.reserve( longliver+2 );
 }

@@ -168,14 +168,15 @@ FishingBoat::State FishingBoat::state() const{  return _d->mode;}
 bool FishingBoat::isBusy() const{  return _d->mode != wait; }
 int FishingBoat::getFishQty() const{  return _d->stock.qty(); }
 
-void FishingBoat::die()
+bool FishingBoat::die()
 {
   _d->mode = wait;
   _d->base = 0;
   _animationRef().load( ResourceGroup::carts, 265, 8 );
   _animationRef().setDelay( 4 );
 
-  Ship::die();
+  bool created = Ship::die();
+  return created;
 }
 
 FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )

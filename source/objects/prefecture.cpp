@@ -75,6 +75,7 @@ void Prefecture::deliverService()
       {
         pathway.setNextTile( tmap.at( _d->fireDetect ) );
         walker->setPos( pathway.getStartPos() );
+        walker->setBase( this );
         walker->setPathway( pathway );
       }
       else

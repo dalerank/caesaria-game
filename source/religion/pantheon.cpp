@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "objects/farm.hpp"
 #include "pantheon.hpp"
 #include "gfx/picture.hpp"
 #include "game/gamedate.hpp"
 #include "city/helper.hpp"
-#include "objects/farm.hpp"
 #include "events/event.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
@@ -26,6 +26,7 @@
 #include "neptune.hpp"
 #include "venus.hpp"
 #include "mercury.hpp"
+#include "mars.hpp"
 
 using namespace constants;
 
@@ -53,6 +54,7 @@ Pantheon::Pantheon() : _d( new Impl )
   _d->divinties.push_back( rome::Neptune::create() );
   _d->divinties.push_back( rome::Mercury::create() );
   _d->divinties.push_back( rome::Venus::create() );
+  _d->divinties.push_back( rome::Mars::create() );
 }
 
 DivinityPtr Pantheon::get( RomeDivinityType name )

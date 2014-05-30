@@ -44,10 +44,11 @@ public:
     __REG_WTYPE( unknown )
     __REG_WTYPE( immigrant )
     __REG_WTYPE( citizen )
-    __REG_WTYPE( emmigrant )
+    __REG_WTYPE( emigrant )
     __REG_WTYPE( soldier )
-    __REG_WTYPE(  cartPusher )
+    __REG_WTYPE( cartPusher )
     __REG_WTYPE( marketLady )
+    __REG_WTYPE( marketBuyer )
     __REG_WTYPE( marketKid )
     __REG_WTYPE( serviceman )
     __REG_WTYPE( trainee )
@@ -70,7 +71,6 @@ public:
     __REG_WTYPE( legionary )
     __REG_WTYPE( corpse )
     __REG_WTYPE( lion )
-    __REG_WTYPE( marketBuyer )
     __REG_WTYPE( britonSoldier )
     __REG_WTYPE( fishPlace )
     __REG_WTYPE( seaMerchant )
@@ -81,6 +81,7 @@ public:
     __REG_WTYPE( charioteer )
     __REG_WTYPE( etruscanArcher )
     __REG_WTYPE( spear )
+    __REG_WTYPE( waterGarbage )
     __REG_WTYPE( romeGuard )
     __REG_WTYPE( bow_arrow )
     __REG_WTYPE( romeHorseman )
@@ -152,7 +153,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   switch( type )
   {
   case walker::immigrant: index=9; break;
-  case walker::emmigrant: index=4; break;
+  case walker::emigrant: index=4; break;
   case walker::doctor: index = 2; break;
   case walker::cartPusher: index=51; break;
   case walker::marketLady: index=12; break;

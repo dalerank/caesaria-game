@@ -44,6 +44,10 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+const int defaultDeliverDistance = 40;
+}
+
 class CartPusher::Impl
 {
 public:
@@ -65,7 +69,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _setType( walker::cartPusher );
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
-  _d->maxDistance = 25;
+  _d->maxDistance = defaultDeliverDistance;
   _d->stock.setCapacity( defaultCartCapacity );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -142,7 +146,7 @@ void CartPusher::_changeDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartPusher::getPictureList( gfx::Pictures& oPics)
+void CartPusher::getPictures( gfx::Pictures& oPics)
 {
    oPics.clear();
    Point offset;
@@ -410,11 +414,17 @@ void CartPusher::load( const VariantMap& stream )
   _d->reservationID = stream.get( "reservationID" ).toInt();
 }
 
-void CartPusher::die()
+bool CartPusher::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1025, 1032 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen1, 1025, 1032 );
+    return true;
+  }
+
+  return created;
 }
 
 std::string CartPusher::getThinks() const

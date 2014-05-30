@@ -50,6 +50,9 @@ public:
   virtual void initialize(const VariantMap &options);
   virtual ~Soldier();
 
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
   virtual unsigned int attackDistance() const;
   virtual void setAttackDistance( unsigned int distance );
 

@@ -554,11 +554,11 @@ NColor ListBox::_getCurrentItemColor( const ListBoxItem& item, bool selected )
   return ret;
 }
 
-Rect ListBox::getItemTextRect_()
+Rect ListBox::_getItemsRect()
 {
   Rect frameRect( Point( 0, 0 ), size() );
-  if( _d->scrollBar->isVisible() )
-      frameRect.LowerRightCorner.setX( frameRect.LowerRightCorner.x() - DEFAULT_SCROLLBAR_SIZE );
+  //if( _d->scrollBar->isVisible() )
+  frameRect.LowerRightCorner.setX( frameRect.LowerRightCorner.x() - DEFAULT_SCROLLBAR_SIZE );
 
   return frameRect;
 }
@@ -585,7 +585,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
     _d->picture->draw( *_d->background, 0, 0 );
 
     bool hl = ( isFlag( hightlightNotinfocused ) || isFocused() || _d->scrollBar->isFocused() );
-    Rect frameRect = getItemTextRect_();
+    Rect frameRect = _getItemsRect();
     frameRect.LowerRightCorner.setY( frameRect.top() + _d->itemHeight );
 
     Alignment itemTextHorizontalAlign, itemTextVerticalAlign;
@@ -625,7 +625,8 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 
         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-        _drawItemText( *_d->picture, currentFont, refItem, textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+        _drawItemText( *_d->picture, currentFont, refItem,
+                       textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
         if( !refItem.url().empty() )
         {
           textRect.UpperLeftCorner.setY( textRect.LowerRightCorner.y() - 1 );
@@ -650,7 +651,7 @@ void ListBox::draw(gfx::Engine& painter )
 
 	if( !_d->picture.isNull() )
 	{
-		painter.drawPicture( *_d->picture, absoluteRect().UpperLeftCorner );
+		painter.draw( *_d->picture, absoluteRect().UpperLeftCorner );
 	}
 
 	Widget::draw( painter );

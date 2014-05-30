@@ -19,7 +19,7 @@
 #include "memfile.hpp"
 #include "core/logger.hpp"
 
-#include <zlib.h>
+#include "zlib/zlib.h"
 #include "lzma/LzmaDec.h"
 #include "bzip2/bzlib.h"
 #include "aes/fileenc.h"
@@ -147,7 +147,7 @@ Archive::Type ZipArchiveReader::getType() const
             : Archive::zip;
 }
 
-const Entries* ZipArchiveReader::getFileList() const {	return this; }
+const Entries* ZipArchiveReader::entries() const {	return this; }
 
 
 //! scans for a local header, returns false if there is no more local file header.
@@ -502,7 +502,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       return NFile();
     }
 
-    decrypted = MemoryFile::create( decryptedBuf, _items()[ index ].abspath() );
+    decrypted = MemoryFile::create( decryptedBuf, _items()[ index ].absolutePath() );
     actualCompressionMethod = (e.header.Sig & 0xffff);
 #if 0
     if ((e.header.Sig & 0xff000000)==0x01000000)
@@ -529,7 +529,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       {
           File.seek( e.Offset );
           ByteArray data = File.read( decryptedSize );
-          return MemoryFile::create( data, _items()[ index ].abspath() );
+          return MemoryFile::create( data, _items()[ index ].absolutePath() );
       }
     }
     break;
@@ -545,7 +545,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + _items()[ index ].abspath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + _items()[ index ].absolutePath().toString() );
         return NFile();
       }
 
@@ -578,12 +578,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != Z_OK)
       {
-        Logger::warning( "Error decompressing " + _items()[index].abspath().toString() );
+        Logger::warning( "Error decompressing " + _items()[index].absolutePath().toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, _items()[index].abspath() );
+        return MemoryFile::create( pBuf, _items()[index].absolutePath() );
       }
     }
     break;
@@ -599,7 +599,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + _items()[index].abspath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + _items()[index].absolutePath().toString() );
         return NFile();
       }
 
@@ -631,12 +631,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != BZ_OK)
       {
-        Logger::warning( "Error decompressing +" + item( index ).abspath().toString() );
+        Logger::warning( "Error decompressing +" + item( index ).absolutePath().toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, item( index ).abspath() );
+        return MemoryFile::create( pBuf, item( index ).absolutePath() );
       }
     }
     break;
@@ -650,7 +650,7 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
       pcData.resize( decryptedSize );
       if( pBuf.empty() || pcData.empty() )
       {
-        Logger::warning( "Not enough memory for decompressing " + item( index ).abspath().toString() );
+        Logger::warning( "Not enough memory for decompressing " + item( index ).absolutePath().toString() );
         return NFile();
       }
 
@@ -671,12 +671,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
       if (err != SZ_OK)
       {
-        Logger::warning( "Error decompressing " + item( index ).abspath().toString() );
+        Logger::warning( "Error decompressing " + item( index ).absolutePath().toString() );
         return NFile();
       }
       else
       {
-        return MemoryFile::create( pBuf, item( index ).abspath() );
+        return MemoryFile::create( pBuf, item( index ).absolutePath() );
       }
     }
     break;
@@ -690,12 +690,12 @@ NFile ZipArchiveReader::createAndOpenFile(unsigned int index)
 
     default:
     {
-      Logger::warning( "file %s has unsupported compression method", item( index ).abspath().toString().c_str() );
+      Logger::warning( "file %s has unsupported compression method", item( index ).absolutePath().toString().c_str() );
       return NFile();
     }
   }
 
-  Logger::warning( "Can't read file " + item( index ).abspath().toString() );
+  Logger::warning( "Can't read file " + item( index ).absolutePath().toString() );
   return NFile();
 }
 

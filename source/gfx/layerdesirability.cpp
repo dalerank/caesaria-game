@@ -19,7 +19,6 @@
 #include "game/resourcegroup.hpp"
 #include "objects/constants.hpp"
 #include "city/helper.hpp"
-#include "gfx/sdl_engine.hpp"
 #include "core/stringhelper.hpp"
 #include "layerconstants.hpp"
 
@@ -28,7 +27,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerDesirability::getType() const
+int LayerDesirability::type() const
 {
   return citylayer::desirability;
 }
@@ -43,8 +42,6 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
   //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
@@ -55,11 +52,11 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
                           : math::clamp( tile.getDesirability() / 15, 0, 6 );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
-      engine.drawPicture( pic, screenPos );
+      engine.draw( pic, screenPos );
     }
     else
     {
-      engine.drawPicture( tile.picture(), screenPos );
+      engine.draw( tile.picture(), screenPos );
     }
   }
   else
@@ -70,7 +67,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     //roads
     case construction::road:
     case construction::plaza:
-      engine.drawPicture( tile.picture(), screenPos );
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     break;
 
@@ -87,7 +84,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
         foreach( tile, tiles4clear )
         {
-          engine.drawPicture( pic, (*tile)->mapPos() + offset );
+          engine.draw( pic, (*tile)->mapPos() + offset );
         }
       }
     break;
@@ -96,9 +93,10 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
   if( tile.getDesirability() != 0 )
   {
-    SdlEngine* painter = static_cast< SdlEngine* >( &engine );
-    _debugFont.draw( painter->getScreen(), StringHelper::format( 0xff, "%d", tile.getDesirability() ), screenPos + Point( 20, -15 ), false );
+    _debugFont.draw( engine.getScreen(), StringHelper::format( 0xff, "%d", tile.getDesirability() ), screenPos + Point( 20, -15 ), false );
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerDesirability::create( Camera& camera, PlayerCityPtr city)

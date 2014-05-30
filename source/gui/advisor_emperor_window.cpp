@@ -45,6 +45,7 @@
 #include "world/emperor.hpp"
 #include "city_donation_window.hpp"
 #include "emperorgiftwindow.hpp"
+#include "gui/environment.hpp"
 
 using namespace gfx;
 
@@ -100,7 +101,7 @@ private:
 
   void _executeRequest()
   {
-    DialogBox* dialog = new DialogBox( parent(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOk | DialogBox::btnCancel );
+    DialogBox* dialog = new DialogBox( getEnvironment()->rootWidget(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOkCancel );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
     CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
     CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );

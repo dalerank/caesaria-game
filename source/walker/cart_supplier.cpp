@@ -38,6 +38,10 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+const int defaultDeliverDistance = 40;
+}
+
 class CartSupplier::Impl
 {
 public:
@@ -58,7 +62,7 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
 
   _d->storageBuildingPos = TilePos( -1, -1 );
   _d->baseBuildingPos = TilePos( -1, -1 );
-  _d->maxDistance = 25;
+  _d->maxDistance = defaultDeliverDistance;
   _d->city = city;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -135,7 +139,7 @@ void CartSupplier::_changeDirection()
    _d->cartPicture = Picture();  // need to get the new graphic
 }
 
-void CartSupplier::getPictureList( Pictures& oPics)
+void CartSupplier::getPictures( Pictures& oPics)
 {
    oPics.clear();
 

@@ -35,8 +35,13 @@
 #include "world/emperor.hpp"
 #include "religion/pantheon.hpp"
 #include "core/locale.hpp"
+#include "climatemanager.hpp"
 
 using namespace religion;
+
+namespace {
+CAESARIA_LITERALCONST(climate)
+}
 
 class GameLoaderMission::Impl
 {
@@ -55,6 +60,12 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {
     std::string mapToLoad = vm[ "map" ].toString();
+    int climateType = vm.get( lc_climate, -1 );
+
+    if( climateType >= 0 )
+    {
+      ClimateManager::initialize( (ClimateType)climateType );
+    }
 
     GameLoader mapLoader;
     mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
@@ -108,4 +119,9 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".mission" );
+}
+
+int GameLoaderMission::getClimateType(const std::string& filename)
+{
+  return -1;
 }

@@ -141,7 +141,7 @@ public:
     city::TradeOptions& ctrade = city->tradeOptions();
     font = Font::create( FONT_1 );
     Point startPos( 140, 50 );
-    for( int i=Good::wheat; i < Good::goodCount; i++ )
+    for( int i=Good::wheat; i < Good::prettyWine; i++ )
     {
       if( i == Good::fish || i == Good::denaries)
       {
@@ -152,10 +152,10 @@ public:
       const Picture& goodIcon = GoodHelper::getPicture( gtype );
       background->draw( goodIcon, startPos );
       
-      std::string priceStr = StringHelper::format( 0xff, "%d", ctrade.getBuyPrice( gtype ) );      
+      std::string priceStr = StringHelper::format( 0xff, "%d", ctrade.buyPrice( gtype ) );
       font.draw( *background, priceStr, startPos + Point( 0, 34 ), false );
 
-      priceStr = StringHelper::format( 0xff, "%d", ctrade.getSellPrice( gtype ) );
+      priceStr = StringHelper::format( 0xff, "%d", ctrade.sellPrice( gtype ) );
       font.draw( *background, priceStr, startPos + Point( 0, 58 ), false );
 
       startPos += Point( 30, 0 );
@@ -173,7 +173,7 @@ public:
     if( !isVisible() )
       return;
 
-    painter.drawPicture( *background, absoluteRect().UpperLeftCorner );
+    painter.draw( *background, absoluteRect().UpperLeftCorner );
 
     Widget::draw( painter );
   }
@@ -321,7 +321,7 @@ public:
     if( !isVisible() )
       return;
 
-    painter.drawPicture( *_background, screenLeft(), screenTop() );
+    painter.draw( *_background, screenLeft(), screenTop() );
 
     Widget::draw( painter );
   }
@@ -329,14 +329,14 @@ public:
   void increaseQty()
   {
     city::TradeOptions& ctrade = _city->tradeOptions();
-    ctrade.setExportLimit( _type, math::clamp( ctrade.getExportLimit( _type )+1, 0, 999 ) );
+    ctrade.setExportLimit( _type, math::clamp( ctrade.exportLimit( _type )+1, 0, 999 ) );
     updateTradeState();
   }
 
   void decreaseQty()
   {
     city::TradeOptions& ctrade = _city->tradeOptions();
-    ctrade.setExportLimit( _type, math::clamp( ctrade.getExportLimit( _type )-1, 0, 999 ) );
+    ctrade.setExportLimit( _type, math::clamp( ctrade.exportLimit( _type )-1, 0, 999 ) );
     updateTradeState();
   }
 
@@ -344,7 +344,7 @@ public:
   {
     city::TradeOptions& ctrade = _city->tradeOptions();
     city::TradeOptions::Order order = ctrade.getOrder( _type );
-    int qty = ctrade.getExportLimit( _type );
+    int qty = ctrade.exportLimit( _type );
     _btnTradeState->setTradeState( order, qty );
   }
 
@@ -471,7 +471,7 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
 
     int stackedQty = getStackedGoodsQty( gtype );
     bool workState = getWorkState( gtype );
-    int tradeQty = copt.getExportLimit( gtype );
+    int tradeQty = copt.exportLimit( gtype );
     
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
                                             gtype, stackedQty, workState, tradeState, tradeQty );
@@ -554,7 +554,7 @@ void AdvisorTradeWindow::draw(gfx::Engine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+  painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

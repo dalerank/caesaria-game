@@ -13,38 +13,54 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_EMIGRANT_H_INCLUDE_
-#define __CAESARIA_EMIGRANT_H_INCLUDE_
+#ifndef __CAESARIA_IMMIGRANT_H_INCLUDED__
+#define __CAESARIA_IMMIGRANT_H_INCLUDED__
 
-#include "immigrant.hpp"
+#include "walker.hpp"
 #include "core/predefinitions.hpp"
-
-class Emigrant;
-typedef SmartPtr< Emigrant > EmigrantPtr;
+#include "game/citizen_group.hpp"
 
 /** This is an immigrant coming with his stuff */
-class Emigrant : public Immigrant
+class Emigrant : public Walker
 {
 public:
-  typedef enum { G_EMIGRANT_CART1 = Good::goodCount, G_EMIGRANT_CART2, CT_MAX } CartType;
+  static EmigrantPtr create( PlayerCityPtr city );
+  static EmigrantPtr send2city( PlayerCityPtr city, const CitizenGroup& peoples,
+                                 const gfx::Tile& startTile, std::string thinks );
 
-  static EmigrantPtr create( PlayerCityPtr city);
+  void send2city( const gfx::Tile& startTile );
+  void leaveCity( const gfx::Tile& tile );
 
-  virtual void getPictureList( gfx::Pictures &oPics);
+  void setPeoples( const CitizenGroup& peoples );
   virtual void timeStep(const unsigned long time);
 
-  virtual void die();
-
   virtual ~Emigrant();
-protected:
-  virtual void _changeDirection();
+
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
+  virtual bool die();
 
 protected:
-  const gfx::Picture& _cartPicture();
+  virtual void _reachedPathway();
+  virtual void _brokePathway(TilePos pos);
+  virtual void _noWay();
 
+  void _setCartPicture( const gfx::Picture& pic );
+  virtual const gfx::Picture& _cartPicture();
+  
   Emigrant( PlayerCityPtr city );
+
+  HousePtr _findBlankHouse();
+  Pathway _findSomeWay(TilePos startPoint );
+
+protected:
+  const CitizenGroup& _getPeoples() const;
+
+private:
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_EMIGRANT_H_INCLUDE_
+#endif //__CAESARIA_IMMIGRANT_H_INCLUDED__

@@ -25,6 +25,7 @@
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
 #include "core/font.hpp"
+#include "objects/construction.hpp"
 #include "city/city.hpp"
 #include "city/victoryconditions.hpp"
 #include "texturedbutton.hpp"
@@ -216,25 +217,25 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   _d->btnCulture    = new RatingButton( this, Point( 80,  290), "##wdnrt_culture##", "##wndrt_culture_tooltip##" );
   _d->btnCulture->setTarget( targets.needCulture() );
   _d->btnCulture->setValue( _d->city->culture() );
-  _d->drawColumn( _d->btnCulture->getRelativeRect().getCenter(), 0 );
+  _d->drawColumn( _d->btnCulture->relativeRect().getCenter(), 0 );
   CONNECT( _d->btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
 
   _d->btnProsperity = new RatingButton( this, Point( 200, 290), "##wndrt_prosperity##", "##wndrt_prosperity_tooltip##" );
   _d->btnProsperity->setValue( _d->city->prosperity() );
   _d->btnProsperity->setTarget( targets.needProsperity() );
-  _d->drawColumn( _d->btnProsperity->getRelativeRect().getCenter(), _d->city->prosperity() );
+  _d->drawColumn( _d->btnProsperity->relativeRect().getCenter(), _d->city->prosperity() );
   CONNECT( _d->btnProsperity, onClicked(), _d.data(), Impl::checkProsperityRating );
 
   _d->btnPeace      = new RatingButton( this, Point( 320, 290), "##wndrt_peace##", "##wndrt_peace_tooltip##" );
   _d->btnPeace->setValue( _d->city->peace() );
   _d->btnPeace->setTarget( targets.needPeace() );
-  _d->drawColumn( _d->btnPeace->getRelativeRect().getCenter(), 0 );
+  _d->drawColumn( _d->btnPeace->relativeRect().getCenter(), 0 );
   CONNECT( _d->btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
 
   _d->btnFavour     = new RatingButton( this, Point( 440, 290), "##wndrt_favour##", "##wndrt_favour_tooltip##" );
   _d->btnFavour->setValue( _d->city->favour() );
   _d->btnFavour->setTarget( targets.needFavour() );
-  _d->drawColumn( _d->btnFavour->getRelativeRect().getCenter(), 0 );
+  _d->drawColumn( _d->btnFavour->relativeRect().getCenter(), 0 );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
@@ -244,7 +245,7 @@ void AdvisorRatingsWindow::draw( gfx::Engine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+  painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

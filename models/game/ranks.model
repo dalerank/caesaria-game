@@ -1,0 +1,56 @@
+{
+  citizen : {
+    name : "##citizen##"
+    salary : 1
+  }
+
+  clerk : {
+    name : "##clerk##"
+    salary : 2
+  }
+
+  engineer : {
+    name : "##engineer##"
+    salary :  5
+  }
+
+  architect : {
+    name : "##architect##"
+    salary : 8
+  }
+
+  questor : {
+    name : "##questor##"
+    salary : 12
+  }
+
+  procurate : {
+    name : "##procurate##"
+    salary : 20
+  }
+
+  edil : {
+    name : "##edil##"
+    salaary  : 30
+  }
+
+  pretor : {
+    name : "##pretor##"
+    salary : 40
+  }
+
+  consoul : {
+    name : "##consoul##"
+    salary : 60
+  }
+
+  proconsoul : {
+    name : "##proconsoul##"
+    salary : 80
+  }
+
+  caesar : {
+    name : "##caesar##"
+    salary : 100
+  }
+}

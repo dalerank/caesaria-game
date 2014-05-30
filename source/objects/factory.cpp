@@ -58,13 +58,13 @@ public:
   virtual void applyStorageReservation( GoodStock &stock, const long reservationID )
   {
     SimpleGoodStore::applyStorageReservation( stock, reservationID );
-    onChangeState.emit();
+    oc3_emit onChangeState();
   }
 
   virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID)
   {
     SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
-    onChangeState.emit();
+    oc3_emit onChangeState();
   }
 
   Factory* factory;
@@ -185,7 +185,7 @@ void Factory::timeStep(const unsigned long time)
     {
       //ok... factory is work, produce goods
 
-      float workersRatio = (float)numberWorkers() / (float)maxWorkers();  // work drops if not enough workers
+      float workersRatio = (float)numberWorkers() / (float)maximumWorkers();  // work drops if not enough workers
       float timeKoeff = _d->productionRate / (float)GameDate::days2ticks( 365 );
       float work = 100.f * timeKoeff * workersRatio;  // work is proportional to time and factory speed
 
@@ -282,6 +282,29 @@ void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
 float Factory::getProductRate() const{  return _d->productionRate;}
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}
+
+std::string Factory::cartStateDesc() const
+{
+  if( walkers().size() > 0 )
+  {
+    CartPusherPtr cart = ptr_cast<CartPusher>( walkers().front() );
+    if( cart.isValid() )
+    {
+      if( cart->getPathway().isValid() )
+      {
+        return cart->getPathway().isReverse()
+                 ? "##factory_cart_returning_from_delivery##"
+                 : "##factory_cart_taking_goods##";
+      }
+      else
+      {
+        return "##factory_cart_wait##";
+      }
+    }
+  }
+
+  return "";
+}
 Good::Type Factory::produceGoodType() const{  return _d->outGoodType;}
 
 void Factory::receiveGood()

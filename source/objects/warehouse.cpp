@@ -443,7 +443,7 @@ void Warehouse::load( const VariantMap& stream )
   computePictures();
 }
 
-bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maxWorkers() / 3; }
+bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maximumWorkers() / 3; }
 
 bool Warehouse::isGettingFull() const
 {

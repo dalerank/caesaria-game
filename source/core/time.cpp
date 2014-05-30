@@ -20,6 +20,7 @@
 #include <cstdio>
 #include <stdint.h>
 #include "requirements.hpp"
+#include "core/math.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
     #include "windows.h"
@@ -33,6 +34,10 @@ const char* const dayNames[ DateTime::daysInWeek ] = { "Monday", "Tuesday", "Wed
 const char* const monthNames[ DateTime::monthsInYear ] = { "January", "February", "March", "April",
                                                     "May", "June", "July", "August", "September",
                                                     "October", "November", "December" };
+const char* const shortMonthNames[ DateTime::monthsInYear ] = { "Jan", "Feb", "Mar", "Apr",
+                                                    "May", "Jun", "Jul", "Aug", "Sep",
+                                                    "Oct", "Nov", "Dec" };
+
 
 const DateTime DateTime::invalid = DateTime();
 
@@ -181,8 +186,10 @@ DateTime DateTime::getCurrenTime()
 }
 
 unsigned char DateTime::dayOfWeek() const {  return ( (int) ( _toJd() % 7L ) ); }
-const char* DateTime::getDayName( unsigned char d ){   return dayNames[ d ];}
-const char* DateTime::getMonthName( unsigned char d ){  return monthNames[ d ];}
+const char* DateTime::getDayName( unsigned char d ){   return dayNames[ math::clamp<int>( d, 0, 6 ) ];}
+const char* DateTime::getMonthName( unsigned char d ){  return monthNames[ math::clamp<int>( d, 0, 11 ) ];}
+const char*DateTime::getShortMonthName(unsigned char d) { return shortMonthNames[ math::clamp<int>( d, 0, 11 ) ]; }
+
 int DateTime::daysInMonth() const
 {
     return ( _month!=2
@@ -213,8 +220,8 @@ unsigned int DateTime::elapsedTime()
 
 DateTime& DateTime::operator= ( time_t t)
 {
-    _convertToDateTime( *this, _getOsLocalTime( t ) );
-    return *this;
+  _convertToDateTime( *this, _getOsLocalTime( t ) );
+  return *this;
 }
 
 DateTime& DateTime::operator=( const DateTime& val )

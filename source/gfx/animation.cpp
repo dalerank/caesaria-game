@@ -27,6 +27,7 @@ public:
   unsigned int frameDelay;
   bool loop;
   unsigned int lastTimeUpdate;
+  Point offset;
 };
 
 void Animation::start(bool loop)
@@ -142,7 +143,17 @@ void Animation::load(const VariantMap &stream)
   d->frameDelay = (int)stream.get( "delay" );
   d->loop = stream.get( "loop" );
 
-  VariantList vl_pics;
+  VariantMap range = stream.get( "range" ).toMap();
+  if( !range.empty() )
+  {
+    std::string rc = range.get( "rc" ).toString();
+    int start = range.get( "start" );
+    int number = range.get( "number" );
+    for( int k=0; k < number; k++ )
+      _pictures.push_back( Picture::load( rc, start + k ) );
+  }
+
+  VariantList vl_pics = stream.get( "pictures" ).toList();
   foreach( i, vl_pics )
     _pictures.push_back( Picture::load( (*i).toString() ) );
 }

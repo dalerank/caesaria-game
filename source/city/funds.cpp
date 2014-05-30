@@ -16,6 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "city/funds.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "trade_options.hpp"
 #include "objects/house.hpp"
@@ -35,6 +36,7 @@ public:
   int workerSalary;
   int money;
   int lastYearUpdate;
+  int maxDebt;
 
   typedef std::map< city::Funds::IssueType, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;
@@ -49,6 +51,7 @@ Funds::Funds() : _d( new Impl )
   _d->money = 0;
   _d->workerSalary = 30;
   _d->lastYearUpdate = 0;
+  _d->maxDebt = -5000;
   _d->history.push_back( Impl::IssuesValue() );
 }
 
@@ -80,6 +83,11 @@ int Funds::profit() const
 {
   int balanceLastYear = getIssueValue( city::Funds::balance, lastYear );
   return _d->money - balanceLastYear;
+}
+
+bool Funds::haveMoneyForAction(unsigned int money)
+{
+  return (_d->money - (int)money > _d->maxDebt);
 }
 
 void Funds::updateHistory( const DateTime& date )

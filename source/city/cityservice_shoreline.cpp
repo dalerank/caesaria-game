@@ -35,7 +35,7 @@ class Shoreline::Impl
 public:
   TilesArray slTiles;
   int lastTimeUpdate;
-  int nextWaterGarbage;
+  unsigned int nextWaterGarbage;
 
   void checkMap(PlayerCityPtr city );
 };

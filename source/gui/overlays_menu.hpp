@@ -41,7 +41,7 @@ oc3_signals public:
 private:
   void _addButtons( const int type );
   // add the button in the menu.
-  void _addButton( const int buildingType, const std::string& name, const Point& offset );
+  void _addButton(const int buildingType, const Point& offset );
 
   class Impl;
   ScopedPtr< Impl > _d;

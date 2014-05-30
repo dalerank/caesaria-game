@@ -25,6 +25,7 @@ class GameAbstractLoader : public ReferenceCounted
 public:
   virtual ~GameAbstractLoader() {}
   virtual bool load( const std::string& filename, Game& oScenario ) = 0;
+  virtual int  getClimateType( const std::string& filename ) = 0;
   virtual bool isLoadableFileExtension( const std::string& filename ) = 0;
   //virtual bool isLoadableFileFormat( file ) = 0;
 };

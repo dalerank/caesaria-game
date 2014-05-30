@@ -15,6 +15,7 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 
@@ -73,6 +74,15 @@ TilesArray Helper::getArea(TilePos start, TilePos stop)
 float Helper::getBalanceKoeff()
 {
   return atan( _city->population() / 5000.f );
+}
+
+void Helper::updateTilePics()
+{
+  TilesArray tiles = _city->tilemap().getArea( TilePos( 0, 0 ), Size( _city->tilemap().size() ) );
+  foreach( it, tiles)
+  {
+    (*it)->setPicture( Picture::load( (*it)->picture().name() ) );
+  }
 }
 
 }//end namespace city

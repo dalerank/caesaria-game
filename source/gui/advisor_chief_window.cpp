@@ -36,6 +36,9 @@
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
 #include "widgetescapecloser.hpp"
+#include "city/cityservice_military.hpp"
+#include "city/cityservice_disorder.hpp"
+#include "city/cityservice_health.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -51,7 +54,7 @@ public:
 
   TexturedButton* btnHelp;
 
-  void drawReportRow( Point pos, std::string title, std::string text );
+  void drawReportRow( Point pos, std::string title, std::string text, NColor color );
   void drawEmploymentState( Point pos );
   void drawProfitState( Point pos );
   void drawMigrationState( Point pos );
@@ -114,15 +117,16 @@ void AdvisorChiefWindow::draw( gfx::Engine& painter )
     return;
 
   __D_IMPL(_d, AdvisorChiefWindow)
-  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+  painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }
 
-void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::string text)
+void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::string text, NColor color=DefaultColors::black )
 {
   Font font = Font::create( FONT_2_WHITE );
   Font font2 = Font::create( FONT_2 );
+  font2.setColor( color );
 
   Picture pointPic = Picture::load( ResourceGroup::panelBackground, 48 );
 
@@ -133,14 +137,34 @@ void AdvisorChiefWindow::Impl::drawReportRow(Point pos, std::string title, std::
 
 void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
 {
-  int needWorkersNumber = city::Statistic::getVacantionsNumber( city );
+  int currentWorkers, maxWorkers;
+  city::Statistic::getWorkersNumber( city, currentWorkers, maxWorkers );
   int workless = city::Statistic::getWorklessPercent( city );
   std::string text;
-  if( needWorkersNumber > 0 ) { text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );  }
-  else if( workless > 10 )  {   text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );  }
-  else  {                       text = _("##advchief_employers_ok##");  }
+  NColor color = DefaultColors::black;
 
-  drawReportRow( pos, _("##advchief_employment##"), text );
+  if( city->population() == 0 )
+  {
+    text = _("##no_people_in_city##");
+    color =  DefaultColors::rosyBrown;
+  }
+  else
+  {
+    int needWorkersNumber = maxWorkers - currentWorkers;
+    if( needWorkersNumber > 10 )
+    {
+      text = StringHelper::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
+      color = DefaultColors::brown;
+    }
+    else if( workless > 10 )
+    {
+      text = StringHelper::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
+      color = DefaultColors::brown;
+    }
+    else { text = _("##advchief_employers_ok##");  }
+  }
+
+  drawReportRow( pos, _("##advchief_employment##"), text, color );
 }
 
 void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
@@ -150,7 +174,8 @@ void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
   if( profit >= 0 )  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
   else  {    text = StringHelper::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
 
-  drawReportRow( pos, _("##advchief_finance##"), text );
+  drawReportRow( pos, _("##advchief_finance##"), text,
+                 profit > 0 ? DefaultColors::black : DefaultColors::brown );
 }
 
 void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
@@ -163,7 +188,7 @@ void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
     text = migration->getReason();
   }
 
-  drawReportRow( pos, _("##advchief_migration##"), text );
+  drawReportRow( pos, _("##advchief_migration##"), _( text ) );
 }
 
 void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
@@ -180,13 +205,14 @@ void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
       case 0: text = "##have_no_food_on_next_month##"; break;
       case 1: text = "##small_food_on_next_month##"; break;
       case 2: text = "##some_food_on_next_month##"; break;
+      case 3: text = "##our_foods_level_are_low##"; break;
 
       default:
         text = StringHelper::format( 0xff, "%s %d", _("##have_food_for##"), monthWithFood );
     }
   }
 
-  drawReportRow( pos, _("##advchief_food_stocks##"), _(text) );
+  drawReportRow( pos, _("##advchief_food_stocks##"), text );
 }
 
 void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
@@ -211,25 +237,76 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
 void AdvisorChiefWindow::Impl::drawMilitary(Point pos)
 {
   std::string text;
+  city::MilitaryPtr mil = ptr_cast<city::Military>( city->findService( city::Military::getDefaultName() ) );
+  if( mil.isValid() )
+  {
+    city::Military::Notification n = mil->getPriorityNotification();
+    text = n.message;
+  }
+
+  text = text.empty() ? "##no_warning_for_us##" : text;
   drawReportRow( pos, _("##advchief_military##"), text );
 }
 
 void AdvisorChiefWindow::Impl::drawCrime(Point pos)
 {
   std::string text;
-  drawReportRow( pos, _("##advchief_crime##"), text );
+
+  city::DisorderPtr ds = ptr_cast<city::Disorder>( city->findService( city::Disorder::getDefaultName() ) );
+  if( ds.isValid() )
+  {
+    text = ds->getReason();
+  }
+
+  text = text.empty() ? "##advchief_no_crime##" : text;
+
+  drawReportRow( pos, _("##advchief_crime##"), _(text) );
 }
 
 void AdvisorChiefWindow::Impl::drawHealth(Point pos)
 {
   std::string text;
+
+  city::HealthCarePtr ds = ptr_cast<city::HealthCare>( city->findService( city::HealthCare::getDefaultName() ) );
+  if( ds.isValid() )
+  {
+    text = ds->getReason();
+  }
+
+  text = text.empty() ? "##advchief_health_good##" : text;
+
   drawReportRow( pos, _("##advchief_health##"), text );
 }
 
 void AdvisorChiefWindow::Impl::drawEducation(Point pos)
 {
   std::string text;
-  drawReportRow( pos, _("##advchief_education##"), text );
+
+  StringArray reasons;
+  int avTypes[] = { building::school, building::library, building::academy, building::unknown };
+  std::string avReasons[] = { "##advchief_some_need_education##", "##advchief_some_need_library##",
+                              "##advchief_some_need_academy##", "" };
+
+  for( int i=0; avTypes[ i ] != building::unknown; i++ )
+  {
+    std::set<int> availableTypes;
+    availableTypes.insert( avTypes[ i ] );
+
+    HouseList houses = city::Statistic::getEvolveHouseReadyBy( city, availableTypes );
+    if( houses.size() > 0 )
+    {
+      reasons << avReasons[i];
+    }
+  }
+
+  text = reasons.rand();
+
+  text = text.empty()
+            ? "##advchief_education_ok##"
+            : text;
+
+
+  drawReportRow( pos, _("##advchief_education##"), _( text ) );
 }
 
 void AdvisorChiefWindow::Impl::drawReligion(Point pos)

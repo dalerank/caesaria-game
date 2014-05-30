@@ -107,10 +107,15 @@ BuildingPtr ServiceWalker::base() const
   return _d->base;
 }
 
-Service::Type ServiceWalker::getService() const {  return _d->service; }
+Service::Type ServiceWalker::serviceType() const {  return _d->service; }
 
-void ServiceWalker::_computeWalkerPath()
+void ServiceWalker::_computeWalkerPath( int orders )
 {  
+  if( orders == 0 )
+  {
+    orders = goLowerService;
+  }
+
   Propagator pathPropagator( _city() );
   pathPropagator.init( ptr_cast<Construction>( _d->base ) );
   pathPropagator.setAllDirections( false );
@@ -119,14 +124,27 @@ void ServiceWalker::_computeWalkerPath()
 
   float maxPathValue = 0.0;
   PathwayPtr bestPath;
-  foreach( current, pathWayList )
+
+  if( orders & goLowerService == goLowerService )
   {
-    float pathValue = evaluatePath( *current );
-    if (pathValue > maxPathValue)
+    foreach( current, pathWayList )
     {
-      bestPath = *current;
-      maxPathValue = pathValue;
+      float pathValue = evaluatePath( *current );
+      if (pathValue > maxPathValue)
+      {
+        bestPath = *current;
+        maxPathValue = pathValue;
+      }
     }
+  }
+
+  if( !bestPath.isValid()
+      && pathWayList.size() > 0
+      && ( orders & anywayWhenFailed == anywayWhenFailed ) )
+  {
+    PathwayList::iterator it = pathWayList.begin();
+    std::advance( it, math::random( pathWayList.size() ) );
+    bestPath = *it;
   }
 
   if( !bestPath.isValid() )
@@ -155,7 +173,7 @@ void ServiceWalker::_cancelPath()
   }
 }
 
-unsigned int ServiceWalker::getReachDistance() const {  return _d->reachDistance;}
+unsigned int ServiceWalker::reachDistance() const {  return _d->reachDistance;}
 void ServiceWalker::setReachDistance(unsigned int value){  _d->reachDistance = value;}
 
 void ServiceWalker::return2Base()
@@ -170,10 +188,8 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
 {
   ReachedBuildings res;
 
-  int reachDistance = getReachDistance();
-  TilePos start = pos - TilePos( reachDistance, reachDistance );
-  TilePos stop = pos + TilePos( reachDistance, reachDistance );
-  TilesArray reachedTiles = _city()->tilemap().getArea( start, stop );
+  TilePos offset( reachDistance(), reachDistance() );
+  TilesArray reachedTiles = _city()->tilemap().getArea( pos - offset, pos + offset );
   foreach( it, reachedTiles )
   {
     BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
@@ -250,10 +266,10 @@ void ServiceWalker::_updatePathway( const Pathway& pathway)
   _reservePath( pathway );
 }
 
-void ServiceWalker::send2City( BuildingPtr base )
+void ServiceWalker::send2City(BuildingPtr base , int orders)
 {
   setBase( base );
-  _computeWalkerPath();
+  _computeWalkerPath( orders );
 
   if( !isDeleted() )
   {
@@ -353,7 +369,7 @@ void ServiceWalker::setPathway( const Pathway& pathway)
   _reservePath( pathway );
 }
 
-void ServiceWalker::die()
+bool ServiceWalker::die()
 {
   int start=-1, stop=-1;
   std::string rcGroup;
@@ -405,11 +421,14 @@ void ServiceWalker::die()
   if( start >= 0 )
   {
     Corpse::create( _city(), pos(), rcGroup, start, stop );
+    return true;
   }
+
+  return false;
 }
 
 void ServiceWalker::setMaxDistance( const int distance ) { _d->maxDistance = distance; }
-float ServiceWalker::getServiceValue() const { return 100; }
+float ServiceWalker::serviceValue() const { return 100; }
 
 ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )
 {

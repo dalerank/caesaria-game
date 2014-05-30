@@ -98,7 +98,7 @@ public:
 	{
 #ifdef CAESARIA_PLATFORM_ANDROID
       str.append( newline ? "\n" : "" );
-      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, str.c_str() );
+      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;

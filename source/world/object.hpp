@@ -19,7 +19,7 @@
 #define __CAESARIA_EMPIRE_OBJECT_H_INCLUDED__
 
 #include "core/position.hpp"
-#include "gfx/picture.hpp"
+#include "gfx/picturesarray.hpp"
 #include "predefinitions.hpp"
 
 namespace world
@@ -30,11 +30,12 @@ class Object : public ReferenceCounted
 public:
   static ObjectPtr create( Empire& empire );
 
-  virtual EmpirePtr getEmpire() const;
-  virtual std::string getName() const;
-  virtual Point getLocation() const;
+  virtual EmpirePtr empire() const;
+  virtual std::string name() const;
+  virtual Point location() const;
   virtual void setLocation( const Point& location );
-  virtual gfx::Picture getPicture() const;
+  virtual gfx::Picture picture() const;
+  virtual const gfx::Pictures& pictures() const;
   virtual void setPicture( gfx::Picture pic );
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );

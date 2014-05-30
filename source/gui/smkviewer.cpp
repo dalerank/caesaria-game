@@ -20,6 +20,7 @@
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
 #include "core/logger.hpp"
+#include "vfs/directory.hpp"
 
 #include <stdio.h>
 
@@ -95,10 +96,13 @@ void SmkViewer::beforeDraw( gfx::Engine& painter )
 
 void SmkViewer::setFilename(const vfs::Path& path)
 {
-  if( !path.exist() )
+  vfs::Directory dir( path.directory() );
+  vfs::Path rpath = dir.find( path.baseName(), vfs::Path::ignoreCase );
+
+  if( !rpath.exist() )
     return;
 
-  _d->s = smk_open_file( path.toString().c_str(), SMK_MODE_MEMORY );
+  _d->s = smk_open_file( rpath.toString().c_str(), SMK_MODE_MEMORY );
   if( _d->s != NULL )
   {
     smk_info_all( _d->s, &_d->currentFrame, &_d->frameCount, &_d->usecsInFrame );
@@ -233,7 +237,7 @@ void SmkViewer::draw(gfx::Engine& painter )
   // draw background
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( *_d->background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

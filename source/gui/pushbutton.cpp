@@ -40,6 +40,7 @@ public:
     append( PushButton::greyBorderLineSmall, "smallGrayBorderLine" );
     append( PushButton::whiteBorderUp, "whiteBorderUp" );
     append( PushButton::blackBorderUp, "blackBorderUp" );
+    append( PushButton::flatBorderLine, "flatBorderLine" );
     append( PushButton::noBackground, "noBackground" );
   }
 };
@@ -202,6 +203,17 @@ void PushButton::_updateTexture( ElementState state )
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteArea );
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ),
                               state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
+    }
+    break;
+
+    case flatBorderLine:
+    {
+      PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), (state == stHovered || state == stPressed)
+                                                                       ? PictureDecorator::blackArea : PictureDecorator::whiteArea );
+      PictureDecorator::drawLine( *curTxs, Point( 0, 0), Point( width(), 0), DefaultColors::black );
+      PictureDecorator::drawLine( *curTxs, Point( width()-1, 0), Point( width()-1, height() ), DefaultColors::black );
+      PictureDecorator::drawLine( *curTxs, Point( width(), height()-1), Point( 0, height()-1), DefaultColors::black );
+      PictureDecorator::drawLine( *curTxs, Point( 0, height() ), Point( 0, 0), DefaultColors::black );
     }
     break;
 
@@ -496,7 +508,7 @@ void PushButton::draw( gfx::Engine& painter )
   {
     if( state.background )
     {
-      painter.drawPicture( *state.background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+      painter.draw( *state.background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
 
 //             if( isEnabled() &&
 //                 ( hoverImageOpacity <= 0xff ) &&
@@ -516,7 +528,7 @@ void PushButton::draw( gfx::Engine& painter )
 
   if( state.textPicture )
   {
-    painter.drawPicture( *state.textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( *state.textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   drawIcon( painter );
@@ -535,7 +547,7 @@ void PushButton::drawIcon( gfx::Engine& painter )
       return;
 
   Point pos = convertLocalToScreen( _d->iconRect ).UpperLeftCorner;
-  painter.drawPicture( iconTexture, pos + bstate.iconOffset );
+  painter.draw( iconTexture, pos + bstate.iconOffset );
 }
 
 void PushButton::setText( const std::string& text )

@@ -63,7 +63,7 @@ FarmTile::FarmTile(const Good::Type outGood, const TilePos& pos )
   case Good::grape: picIdx = 33; break;
   case Good::meat: picIdx = 38; break;
   default:
-    Logger::warning( "Unexpected farmType in farm %s", GoodHelper::getName( outGood ).c_str() );
+    Logger::warning( "Unexpected farmType in farm" + GoodHelper::getName( outGood ) );
     _CAESARIA_DEBUG_BREAK_IF( "Unexpected farmType in farm ");
   }
 
@@ -98,7 +98,7 @@ Farm::Farm(const Good::Type outGood, const Type type )
   _d->pictureBuilding.addOffset( 30, 15);
 
   setPicture( _d->pictureBuilding );
-  outStockRef().setCapacity( 500 );
+  outStockRef().setCapacity( 100 );
 
   init();
 }
@@ -114,7 +114,7 @@ bool Farm::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
     on_meadow |= (*tile)->getFlag( Tile::tlMeadow );
   }
 
-  const_cast< Farm* >( this )->_setError( on_meadow ? _("##need_meadow_ground##") : "" );
+  const_cast< Farm* >( this )->_setError( on_meadow ? _("##farm_need_farmland##") : "" );
 
   return (is_constructible && on_meadow);  
 }
@@ -190,7 +190,7 @@ void Farm::load( const VariantMap& stream )
 
 unsigned int Farm::getProduceQty() const
 {
-  return getProductRate() * getFinishedQty() * numberWorkers() / maxWorkers();
+  return getProductRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
 }
 
 Farm::~Farm() {}

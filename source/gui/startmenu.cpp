@@ -33,7 +33,7 @@ namespace gui
 {
 
 StartMenu::StartMenu( Widget* parent ) 
-	: Widget( parent, -1, parent->getRelativeRect() )
+	: Widget( parent, -1, parent->relativeRect() )
 {}
 
 StartMenu::~StartMenu() {}

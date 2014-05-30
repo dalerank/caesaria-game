@@ -210,7 +210,7 @@ int Road::getPavedValue() const
   return _paved;
 }
 
-Renderer::PassQueue Road::getPassQueue() const
+Renderer::PassQueue Road::passQueue() const
 {
   return roadPassQueue;
 }
@@ -277,7 +277,6 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
 
   return is_constructible;
 }
-
 
 void Plaza::appendPaved(int value)
 {

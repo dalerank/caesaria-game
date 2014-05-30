@@ -34,26 +34,23 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerTroubles::getType() const{  return citylayer::troubles;}
+int LayerTroubles::type() const{  return _type;}
 Layer::VisibleWalkers LayerTroubles::getVisibleWalkers() const{  return std::set<int>();}
 
 void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
 
-    int educationLevel = -1;
     switch( overlay->type() )
     {
       //fire buildings and roads
@@ -62,8 +59,6 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::garden:
     case building::elevation:
       needDrawAnimations = true;
-      drawTilePass( engine, tile, offset, Renderer::ground );
-      drawTilePass( engine, tile, offset, Renderer::foreground );
     break;
 
     //other buildings
@@ -73,17 +68,7 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
       if( c.isValid() )
       {
         std::string trouble = c->troubleDesc();
-        if( trouble.empty() )
-        {
-          city::Helper helper( _city() );
-          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
-        }
-        else
-        {
-          needDrawAnimations = true;
-          drawTilePass( engine, tile, offset, Renderer::ground );
-          drawTilePass( engine, tile, offset, Renderer::foreground );
-        }
+        needDrawAnimations = !trouble.empty();
       }
     }
     break;
@@ -91,18 +76,22 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
-    else if( educationLevel > 0 )
+    else
     {
-      //drawColumn( engine, screenPos, educationLevel );
+      city::Helper helper( _city() );
+      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
   }
+
+  tile.setWasDrawn();
 }
 
-LayerPtr LayerTroubles::create( Camera& camera, PlayerCityPtr city )
+LayerPtr LayerTroubles::create(Camera& camera, PlayerCityPtr city , int type)
 {
-  LayerPtr ret( new LayerTroubles( camera, city ) );
+  LayerPtr ret( new LayerTroubles( camera, city, type ) );
   ret->drop();
 
   return ret;
@@ -139,8 +128,8 @@ void LayerTroubles::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerTroubles::LayerTroubles( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+LayerTroubles::LayerTroubles( Camera& camera, PlayerCityPtr city, int type )
+  : Layer( &camera, city ), _type( type )
 {
   _loadColumnPicture( 9 );
 }

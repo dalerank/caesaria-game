@@ -16,6 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_disorder.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
@@ -25,9 +26,10 @@
 
 using namespace constants;
 
-namespace constants
+namespace
 {
 const int defaultCrimeLevel = 75;
+const int crimeDescLimiter = 10;
 }
 
 namespace city
@@ -37,6 +39,8 @@ class Disorder::Impl
 {
 public:
   int minCrimeLevel;
+  int currentCrimeLevel;
+  int maxCrimeLevel;
 };
 
 SrvcPtr Disorder::create( PlayerCityPtr city )
@@ -52,6 +56,8 @@ Disorder::Disorder(PlayerCityPtr city )
   : Srvc( *city.object(), Disorder::getDefaultName() ), _d( new Impl )
 {
   _d->minCrimeLevel = defaultCrimeLevel;
+  _d->currentCrimeLevel = 0;
+  _d->maxCrimeLevel = 0;
 }
 
 void Disorder::update( const unsigned int time )
@@ -66,6 +72,8 @@ void Disorder::update( const unsigned int time )
   float cityCrimeKoeff = helper.getBalanceKoeff();
 
   HouseList criminalizedHouse;
+  _d->currentCrimeLevel = 0;
+  _d->maxCrimeLevel = 0;
   foreach( house, houses )
   {
     int crimeLvl = cityCrimeKoeff * (rand() % (int)( (*house)->getServiceValue( Service::crime )+1));
@@ -73,6 +81,9 @@ void Disorder::update( const unsigned int time )
     {
       criminalizedHouse.push_back( *house );
     }
+
+    _d->currentCrimeLevel = ( _d->currentCrimeLevel + crimeLvl ) / 2;
+    _d->maxCrimeLevel = std::max<int>( _d->maxCrimeLevel, crimeLvl );
   }
 
   if( criminalizedHouse.size() > walkers.size() )
@@ -84,6 +95,38 @@ void Disorder::update( const unsigned int time )
     ProtestorPtr protestor = Protestor::create( &_city );
     protestor->send2City( *it );
   }
+}
+
+std::string Disorder::getReason() const
+{
+  int crimeLevel = math::clamp<int>( _d->currentCrimeLevel / crimeDescLimiter, 0, crimeDescLimiter-1 );
+  std::string crimeDesc[ crimeDescLimiter ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
+                                                "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
+                                                "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
+                                                "##advchief_veryhigh_crime##"};
+
+  StringArray troubles;
+  troubles << crimeDesc[ crimeLevel ];
+
+  if( _d->maxCrimeLevel > defaultCrimeLevel )
+  {
+    troubles << "##advchief_high_crime_in_district##";
+  }
+  else if( _d->maxCrimeLevel > defaultCrimeLevel / 2 )
+  {
+    troubles << "##advchief_which_crime_in_district##";
+  }
+  else if( _d->maxCrimeLevel > defaultCrimeLevel / 5 )
+  {
+    troubles << "##advchief_low_crime##";
+  }
+
+  return troubles.rand();
+}
+
+unsigned int Disorder::value() const
+{
+  return _d->currentCrimeLevel;
 }
 
 }//end namespace city

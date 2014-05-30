@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
 #include "gfx/tile.hpp"
+#include "good/goodhelper.hpp"
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
@@ -32,13 +33,16 @@
 namespace city
 {
 
+CAESARIA_LITERALCONST(lastHistory)
+CAESARIA_LITERALCONST(allHistory)
+CAESARIA_LITERALCONST(messages)
+
 class Info::Impl
 {
 public:
-  typedef std::vector< Info::Parameters > History;
-
   DateTime lastDate;
-  History params;
+  Info::History lastYearHistory;
+  Info::History allHistory;
   Info::Messages messages;
 };
 
@@ -54,7 +58,7 @@ Info::Info( PlayerCityPtr city )
   : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
-  _d->params.resize( 12 );
+  _d->lastYearHistory.resize( 12 );
 }
 
 void Info::update( const unsigned int time )
@@ -64,12 +68,13 @@ void Info::update( const unsigned int time )
 
   if( GameDate::current().month() != _d->lastDate.month() )
   {
+    bool yearChanged = GameDate::current().year() != _d->lastDate.year();
     _d->lastDate = GameDate::current();
 
-    _d->params.erase( _d->params.begin() );
-    _d->params.push_back( Parameters() );
+    _d->lastYearHistory.erase( _d->lastYearHistory.begin() );
+    _d->lastYearHistory.push_back( Parameters() );
 
-    Parameters& last = _d->params.back();
+    Parameters& last = _d->lastYearHistory.back();
     last.date = _d->lastDate;
     last.population = _city.population();
     last.funds = _city.funds().treasury();
@@ -85,77 +90,91 @@ void Info::update( const unsigned int time )
                       ? foodProducing / (yearlyFoodConsumption+1)
                       : -1;
 
-    last.needWorkers = city::Statistic::getVacantionsNumber( &_city );
+    int currentWorkers, maxWorkers;
+    city::Statistic::getWorkersNumber( &_city, currentWorkers, maxWorkers );
+
+    last.needWorkers = maxWorkers - currentWorkers;
+    last.maxWorkers = maxWorkers;
     last.workless = city::Statistic::getWorklessPercent( &_city );
     last.payDiff = _city.empire()->getWorkerSalary() - _city.funds().workerSalary();
     last.tax = _city.funds().taxRate();
     last.cityWages = _city.funds().workerSalary();
     last.romeWages = _city.empire()->getWorkerSalary();
+    last.crimeLevel = city::Statistic::getCrimeLevel( &_city );
+
+    if( yearChanged )
+    {
+      _d->allHistory.push_back( last );
+    }
   }
 }
 
-Info::Parameters Info::getLast() const {  return _d->params.empty() ? Parameters() : _d->params.back(); }
-std::string Info::getDefaultName(){  return "info"; }
+Info::Parameters Info::getLast() const {  return _d->lastYearHistory.empty() ? Parameters() : _d->lastYearHistory.back(); }
+
+const Info::History& Info ::getHistory() const { return _d->allHistory; }
+
+std::string Info::getDefaultName(){  return CAESARIA_STR_EXT(Info); }
 
 VariantMap Info::save() const
 {
   VariantMap ret;
 
   int step=0;
-  foreach( i, _d->params )
+  std::string stepName;
+  VariantMap currentVm;
+  foreach( i, _d->lastYearHistory )
   {
-    VariantList step_values;
-
-    const Parameters& p = *i;
-
-    step_values.push_back( p.date );
-    step_values.push_back( p.population );
-    step_values.push_back( p.funds );
-    step_values.push_back( p.tax );
-    step_values.push_back( p.taxpayes );
-    step_values.push_back( p.monthWithFood );
-    step_values.push_back( p.foodKoeff );
-    step_values.push_back( p.godsMood );
-    step_values.push_back( p.needWorkers );
-    step_values.push_back( p.workless );
-    step_values.push_back( p.colloseumCoverage );
-    step_values.push_back( p.theaterCoverage );
-    step_values.push_back( p.entertainment );
-    step_values.push_back( p.lifeValue );
-
-    ret[ StringHelper::format( 0xff, "%02d", step ) ] = step_values;
-    step++;
+    stepName = StringHelper::format( 0xff, "%02d", step++ );
+    currentVm[ stepName ] = (*i).save();
   }
+  ret[ lc_lastHistory ] = currentVm;
+
+  step=0;
+  VariantMap allVm;
+  foreach( i, _d->allHistory )
+  {
+    stepName = StringHelper::format( 0xff, "%04d", step++ );
+    allVm[ stepName ] = (*i).save();
+  }
+  ret[ lc_allHistory ] = allVm;
+
+  step=0;
+  VariantMap messagesVm;
+  foreach( i, _d->messages )
+  {
+    stepName = StringHelper::format( 0xff, "%04d", step++ );
+    messagesVm[ stepName ] = (*i).save();
+  }
+  ret[ lc_messages ] = messagesVm;
 
   return ret;
 }
 
 void Info::load(const VariantMap& stream)
 {
-  for( VariantMap::const_iterator i=stream.begin(); i != stream.end(); ++i )
+  VariantMap currentHistory = stream.get( lc_lastHistory ).toMap();
+  foreach( i, currentHistory )
   {
-    Parameters p;
-
-    VariantList l = i->second.toList();
-    p.date = l.get( 0 ).toDateTime();
-    p.population = l.get( 1 );
-    p.funds = l.get( 2 ) ;
-    p.tax = l.get( 3 );
-    p.taxpayes = l.get( 4 );
-    p.monthWithFood = l.get( 5 );
-    p.foodKoeff = l.get( 6 );
-    p.godsMood = l.get( 7 );
-    p.needWorkers = l.get( 8 );
-    p.workless = l.get( 9 );
-    p.colloseumCoverage = l.get( 10 );
-    p.theaterCoverage = l.get( 11 );
-    p.entertainment = l.get( 12 );
-    p.lifeValue = l.get( 13 );
-
-    _d->params.push_back( p );
+    _d->lastYearHistory.push_back( Parameters() );
+    _d->lastYearHistory.back().load( i->second.toMap() );
   }
 
-  _d->params.resize( DateTime::monthsInYear );
+  VariantMap allHistory = stream.get( lc_allHistory ).toMap();
+  foreach( i, allHistory )
+  {
+    _d->allHistory.push_back( Parameters() );
+    _d->allHistory.back().load( i->second.toMap() );
+  }
+
+  VariantMap messages= stream.get( lc_messages ).toMap();
+  foreach( i, messages )
+  {
+    _d->messages.push_back( ScribeMessage() );
+    _d->messages.back().load( i->second.toMap() );
+  }
+
+
+  _d->lastYearHistory.resize( DateTime::monthsInYear );
 }
 
 const Info::Messages& Info::messages() const { return _d->messages; }
@@ -190,6 +209,98 @@ void Info::removeMessage(int index)
 void Info::addMessage(const Info::ScribeMessage& message)
 {
   _d->messages.push_front( message );
+}
+
+namespace {
+CAESARIA_LITERALCONST(population)
+CAESARIA_LITERALCONST(funds)
+CAESARIA_LITERALCONST(tax)
+CAESARIA_LITERALCONST(taxpayes)
+CAESARIA_LITERALCONST(monthWithFood)
+
+CAESARIA_LITERALCONST(foodKoeff)
+CAESARIA_LITERALCONST(godsMood)
+CAESARIA_LITERALCONST(needWorkers)
+CAESARIA_LITERALCONST(colloseumCoverage)
+CAESARIA_LITERALCONST(theaterCoverage)
+CAESARIA_LITERALCONST(workless)
+CAESARIA_LITERALCONST(entertainment)
+CAESARIA_LITERALCONST(lifeValue)
+
+CAESARIA_LITERALCONST(text)
+CAESARIA_LITERALCONST(title)
+CAESARIA_LITERALCONST(gtype)
+CAESARIA_LITERALCONST(position)
+CAESARIA_LITERALCONST(type)
+CAESARIA_LITERALCONST(date)
+CAESARIA_LITERALCONST(opened)
+CAESARIA_LITERALCONST(ext)
+}
+
+VariantMap Info::Parameters::save() const
+{
+  VariantMap ret;
+  ret[ lc_date ] = date;
+  ret[ lc_population ] = population;
+  ret[ lc_funds ] = funds;
+  ret[ lc_tax ] = tax;
+  ret[ lc_taxpayes ] = taxpayes;
+  ret[ lc_monthWithFood ] = monthWithFood;
+  ret[ lc_foodKoeff ] = foodKoeff;
+  ret[ lc_godsMood ] = godsMood;
+  ret[ lc_needWorkers ] = needWorkers;
+  ret[ lc_workless ] = workless;
+  ret[ lc_colloseumCoverage ] = colloseumCoverage;
+  ret[ lc_theaterCoverage ] = theaterCoverage;
+  ret[ lc_entertainment ] = entertainment;
+  ret[ lc_lifeValue ] = lifeValue;
+
+  return ret;
+}
+
+void Info::Parameters::load(const VariantMap& stream)
+{
+  date = stream.get( lc_date ).toDateTime();
+  population = stream.get( lc_population );
+  funds = stream.get( lc_funds ) ;
+  tax = stream.get( lc_tax );
+  taxpayes = stream.get( lc_taxpayes );
+  monthWithFood = stream.get( lc_monthWithFood );
+  foodKoeff = stream.get( lc_foodKoeff );
+  godsMood = stream.get( lc_godsMood );
+  needWorkers = stream.get( lc_needWorkers );
+  workless = stream.get( lc_workless );
+  colloseumCoverage = stream.get( lc_colloseumCoverage );
+  theaterCoverage = stream.get( lc_theaterCoverage );
+  entertainment = stream.get( lc_entertainment );
+  lifeValue = stream.get( lc_lifeValue );
+}
+
+VariantMap Info::ScribeMessage::save() const
+{
+  VariantMap ret;
+  ret[ lc_text ] = Variant( text );
+  ret[ lc_title ] = Variant( title );
+  ret[ lc_gtype ] = Variant( GoodHelper::getTypeName( gtype ) );
+  ret[ lc_position ] = position;
+  ret[ lc_type ] = type;
+  ret[ lc_date ] = date;
+  ret[ lc_opened ] = opened;
+  ret[ lc_ext ] = ext;
+
+  return ret;
+}
+
+void Info::ScribeMessage::load(const VariantMap& stream)
+{
+  text = stream.get( lc_text ).toString();
+  title = stream.get( lc_title ).toString();
+  gtype = GoodHelper::getType( stream.get( lc_gtype ).toString() );
+  position = stream.get( lc_position ).toPoint();
+  type = stream.get( lc_type );
+  date = stream.get( lc_date ).toDateTime();
+  opened = stream.get( lc_opened );
+  ext = stream.get( lc_ext );
 }
 
 }//end namespace city

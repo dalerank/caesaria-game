@@ -16,6 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_religion.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
@@ -50,7 +51,6 @@ public:
 
   typedef std::map< DivinityPtr, CoverageInfo > TemplesMap;
   TemplesMap templesCoverity;
-  int oraclesNumber;
   DateTime lastMessageDate;
 
   void updateRelation( PlayerCity& city, DivinityPtr divn );
@@ -228,7 +228,7 @@ void Religion::Impl::updateRelation( PlayerCity& city, DivinityPtr divn )
   int faithValue = 0;
   if( city.population() > 0 )
   {
-    faithValue = 100 * myTemples.parishionerNumber / city.population();
+    faithValue = math::clamp( 100 * myTemples.parishionerNumber / city.population(), 0, 100 );
   }
 
   Logger::warning( "Religion: set faith income for %s is %f[r=%f]", divn->name().c_str(), faithValue, divn->relation() );

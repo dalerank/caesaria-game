@@ -18,6 +18,7 @@
 
 #include "core/position.hpp"
 #include "service.hpp"
+#include "core/direction.hpp"
 
 class WaterSource : public Construction
 {
@@ -29,6 +30,9 @@ public:
   virtual bool haveWater() const;
   virtual void timeStep(const unsigned long time);
   int getId() const;
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
   virtual std::string errorDesc() const;
 
@@ -59,6 +63,8 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void destroy();
   virtual std::string troubleDesc() const;
+
+  TilePos entry( constants::Direction direction );
 
 private:
   bool _isWaterSource;

@@ -27,7 +27,7 @@ public:
   virtual void timeStep(const unsigned long time);
   void send2City( HousePtr house );
 
-  virtual void die();
+  virtual bool die();
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -36,6 +36,7 @@ public:
 
 protected:
   virtual void _reachedPathway();
+  virtual void _updateThinks();
 
 private:
   Protestor( PlayerCityPtr city );

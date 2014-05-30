@@ -425,7 +425,7 @@ void ContextMenu::draw(gfx::Engine& painter )
 void ContextMenu::_recalculateSize()
 {
 	Rect rect;
-	rect.UpperLeftCorner = getRelativeRect().UpperLeftCorner;
+	rect.UpperLeftCorner = relativeRect().UpperLeftCorner;
   Size maxSize( 100, 3 );
 
 	unsigned int i;
@@ -452,7 +452,7 @@ void ContextMenu::_recalculateSize()
 
 	maxSize.setHeight( std::max<unsigned int>( maxSize.height()+5, 10 ) );
 
-	rect.LowerRightCorner = getRelativeRect().UpperLeftCorner + Point( maxSize.width(), maxSize.height() );
+	rect.LowerRightCorner = relativeRect().UpperLeftCorner + Point( maxSize.width(), maxSize.height() );
 
 	setGeometry(rect);
 
@@ -467,7 +467,7 @@ void ContextMenu::_recalculateSize()
 		{
 			// move submenu
 			ContextMenu* subMenu = refItem->getSubMenu();
-			const Size subMenuSize = subMenu->absoluteRect().getSize();
+			const Size subMenuSize = subMenu->absoluteRect().size();
 
       Rect subRect( maxSize.width()-5, refItem->getOffset(), 
 			              maxSize.width()+subMenuSize.width()-5, refItem->getOffset() +subMenuSize.height() );
@@ -496,7 +496,7 @@ void ContextMenu::_recalculateSize()
 				break;
 
 				case ContextMenuItem::alignHorizCenter:
-					subRect.UpperLeftCorner.setX( ( absoluteRect().getWidth() - subMenuSize.width() ) / 2 );
+					subRect.UpperLeftCorner.setX( ( absoluteRect().width() - subMenuSize.width() ) / 2 );
 					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.x() + subMenuSize.width() );
 				break;
 				}

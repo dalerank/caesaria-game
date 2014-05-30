@@ -31,7 +31,9 @@ public:
   virtual void save( VariantMap& stream ) const;
 
   virtual void send2City( TilePos pos );
-  virtual void die();
+  virtual bool die();
+
+  virtual void acceptAction(Action action, TilePos pos);
 
   virtual ~EnemySoldier();
 

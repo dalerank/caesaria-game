@@ -233,3 +233,30 @@ bool WaterSource::_isRoad() const { return _d->isRoad; }
 int WaterSource::getId() const{  return pos().j() * 10000 + pos().i();}
 std::string WaterSource::errorDesc() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
+
+void WaterSource::save(VariantMap &stream) const
+{
+  Construction::save( stream );
+  stream[ "water" ] = _d->water;
+  stream[ "isRoad" ] = _d->isRoad;
+}
+
+void WaterSource::load(const VariantMap &stream)
+{
+  Construction::load( stream );
+  _d->water = stream.get( "water" );
+  _d->isRoad = stream.get( "isRoad" );
+}
+
+
+TilePos Reservoir::entry(constants::Direction direction)
+{
+  switch( direction )
+  {
+  case north: return pos() + TilePos( 1, 2 );
+  case east: return pos() + TilePos( 2, 1 );
+  case south: return pos() + TilePos( 1, 0 );
+  case west: return pos() + TilePos( 0, 1 );
+  default: return TilePos( -1, -1 );
+  }
+}

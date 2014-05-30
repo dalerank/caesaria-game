@@ -62,6 +62,8 @@ void Animal::load( const VariantMap& stream )
   _d->destination = stream.get( "destination" ).toTilePos();
 }
 
+std::string Animal::getThinks() const{  return "##sheep_baa##";}
+
 void Animal::_findNewWay( const TilePos& start )
 {
   Pathway pathway = PathwayHelper::randomWay( _city(), start, 10 );
@@ -109,11 +111,17 @@ void Sheep::_reachedPathway()
 
 void Sheep::_brokePathway(TilePos p){  _findNewWay( pos() );}
 
-void Sheep::die()
+bool Sheep::die()
 {
-  Animal::die();
+  bool created = Animal::die();
 
-  Corpse::create( _city(), pos(), "citizen04", 257, 264 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), "citizen04", 257, 264 );
+    return true;
+  }
+
+  return created;
 }
 
 void Sheep::send2City(const TilePos &start )

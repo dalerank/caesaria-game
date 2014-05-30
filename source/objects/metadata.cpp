@@ -30,6 +30,8 @@
 using namespace constants;
 using namespace gfx;
 
+const char* MetaDataOptions::cost = "cost";
+
 MetaData MetaData::invalid = MetaData( building::unknown, "unknown" );
 
 class BuildingTypeHelper : public EnumsHelper<TileOverlay::Type>
@@ -172,7 +174,7 @@ public:
   TileOverlay::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
-  Picture picture;
+  std::string picture;
   StringArray desc;
   VariantMap options;
 };
@@ -193,7 +195,7 @@ MetaData::MetaData(const MetaData &a) : _d( new Impl )
 MetaData::~MetaData(){}
 std::string MetaData::getName() const{  return _d->name;}
 std::string MetaData::getSound() const{  return _d->sound;}
-std::string MetaData::getPrettyName() const {  return _prettyName;}
+std::string MetaData::prettyName() const {  return _prettyName;}
 
 std::string MetaData::getDescription() const
 {
@@ -203,9 +205,9 @@ std::string MetaData::getDescription() const
   return _d->desc[ rand() % _d->desc.size() ];
 }
 
-TileOverlay::Type MetaData::getType() const {  return _d->tileovType;}
-Picture MetaData::getBasePicture() const{  return _d->picture;}
-Desirability MetaData::getDesirbility() const{  return _d->desirability;}
+TileOverlay::Type MetaData::type() const {  return _d->tileovType;}
+Picture MetaData::basePicture() const{  return Picture::load( _d->picture ); }
+Desirability MetaData::desirability() const{  return _d->desirability;}
 
 Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
 {
@@ -228,10 +230,7 @@ MetaData& MetaData::operator=(const MetaData &a)
   return *this;
 }
 
-TileOverlay::Group MetaData::getGroup() const
-{
-  return _d->group;
-}
+TileOverlay::Group MetaData::group() const {  return _d->group; }
 
 class MetaDataHolder::Impl
 {
@@ -271,7 +270,7 @@ const MetaData& MetaDataHolder::getData(const TileOverlay::Type buildingType)
   mapIt = instance()._d->buildings.find(buildingType);
   if (mapIt == instance()._d->buildings.end())
   {
-    Logger::warning("Unknown building %d", buildingType );
+    Logger::warning("MetaDataHolder::Unknown building %d", buildingType );
     return MetaData::invalid;
   }
   return mapIt->second;
@@ -289,13 +288,20 @@ bool MetaDataHolder::hasData(const TileOverlay::Type buildingType) const
   return res;
 }
 
+MetaDataHolder::OverlayTypes MetaDataHolder::availableTypes() const
+{
+  OverlayTypes ret;
+  foreach( it, _d->buildings )  { ret.push_back( it->first );  }
+  return ret;
+}
+
 void MetaDataHolder::addData(const MetaData &data)
 {
-  TileOverlay::Type buildingType = data.getType();
+  TileOverlay::Type buildingType = data.type();
 
   if (hasData(buildingType))
   {
-    Logger::warning( "Building is already set %s", data.getName().c_str() );
+    Logger::warning( "MetaDataHolder: Info is already set for " + data.getName() );
     return;
   }
 
@@ -322,7 +328,7 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
   {
     VariantMap options = mapItem->second.toMap();
 
-    const TileOverlay::Type btype = getType( mapItem->first );
+    const TileOverlay::Type btype = findType( mapItem->first );
     if( btype == building::unknown )
     {
       Logger::warning( "!!!Warning: can't associate type with %s", mapItem->first.c_str() );
@@ -352,12 +358,13 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
       bData._prettyName = prettyName.toString();
     }
 
-    bData._d->group = getClass( options[ "class" ].toString() );
+    bData._d->group = findGroup( options[ "class" ].toString() );
 
     VariantList basePic = options[ "image" ].toList();
     if( !basePic.empty() )
     {
-      bData._d->picture = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
+      Picture pic = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
+      bData._d->picture = pic.name();
     }
 
     VariantList soundVl = options[ "sound" ].toList();
@@ -368,12 +375,12 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     }
 
     addData( bData );
-    }
+  }
 }
 
 MetaDataHolder::~MetaDataHolder() {}
 
-TileOverlay::Type MetaDataHolder::getType( const std::string& name )
+TileOverlay::Type MetaDataHolder::findType( const std::string& name )
 {
   TileOverlay::Type type = instance()._d->typeHelper.findType( name );
 
@@ -386,12 +393,12 @@ TileOverlay::Type MetaDataHolder::getType( const std::string& name )
   return type;
 }
 
-std::string MetaDataHolder::getTypename(TileOverlay::Type type)
+std::string MetaDataHolder::findTypename(TileOverlay::Type type)
 {
   return instance()._d->typeHelper.findName( type );
 }
 
-TileOverlay::Group MetaDataHolder::getClass( const std::string& name )
+TileOverlay::Group MetaDataHolder::findGroup( const std::string& name )
 {
   TileOverlay::Group type = instance()._d->classHelper.findType( name );
 
@@ -404,12 +411,12 @@ TileOverlay::Group MetaDataHolder::getClass( const std::string& name )
   return type;
 }
 
-std::string MetaDataHolder::getPrettyName(TileOverlay::Type type)
+std::string MetaDataHolder::findPrettyName(TileOverlay::Type type)
 {
-  return instance().getData( type ).getPrettyName();
+  return instance().getData( type ).prettyName();
 }
 
-std::string MetaDataHolder::getDescription(TileOverlay::Type type)
+std::string MetaDataHolder::findDescription(TileOverlay::Type type)
 {
   return instance().getData( type ).getDescription();
 }

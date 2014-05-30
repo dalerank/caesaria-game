@@ -58,10 +58,12 @@ public:
   ContextMenu* langSelect;
   PictureRef bgPicture;
 
+oc3_slots public:
   void resolveSave();
   void updateDate();
   void showAboutInfo();
   void resolveAdvisorShow(int);
+  void showShortKeyInfo();
 
 oc3_signals public:
   Signal0<> onExitSignal;
@@ -86,7 +88,7 @@ void TopMenu::draw(gfx::Engine& engine )
 
   _d->updateDate();
 
-  engine.drawPicture( *_d->bgPicture, screenLeft(), screenTop() );
+  engine.draw( *_d->bgPicture, screenLeft(), screenTop() );
 
   MainMenu::draw( engine );
 }
@@ -109,6 +111,19 @@ void TopMenu::Impl::updateDate()
     return;
 
   lbDate->setText( DateTimeHelper::toStr( GameDate::current() ) );
+}
+
+void TopMenu::Impl::showShortKeyInfo()
+{
+  Widget* parent = lbDate->getEnvironment()->rootWidget();
+  Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  bg->setupUI( GameSettings::rcpath( "/gui/shortkeys.gui" ) );
+  bg->setCenter( parent->center() );
+
+  TexturedButton* btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  WidgetEscapeCloser::insertTo( bg );
+
+  CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 
 void TopMenu::Impl::showAboutInfo()
@@ -187,7 +202,9 @@ TopMenu::TopMenu( Widget* parent, const int height )
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   ContextMenu* helpMenu = tmp->addSubMenu();
   ContextMenuItem* aboutItem = helpMenu->addItem( _("##gmenu_about##"), -1 );
+  ContextMenuItem* shortkeysItem = helpMenu->addItem( _("##gmenu_shortkeys##"), -1 );
   CONNECT( aboutItem, onClicked(), _d.data(), Impl::showAboutInfo );
+  CONNECT( shortkeysItem, onClicked(), _d.data(), Impl::showShortKeyInfo );
 
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();

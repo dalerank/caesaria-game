@@ -145,7 +145,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       DirectRoute route;
 
       //try found any available warehouse for selling our goods
-      const GoodStore& buyOrders = city->getBuys();
+      const GoodStore& buyOrders = city->exportingGoods();
 
       if( buyOrders.capacity() > 0 )
       {
@@ -227,7 +227,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         {
           Good::Type goodType = (Good::Type) n;
           int needQty = buy.freeQty( goodType );
-          int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.getExportLimit( goodType ) * 100, 0, 9999 );
+          int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.exportLimit( goodType ) * 100, 0, 9999 );
           
           if( needQty > 0 && maySell > 0)
           {
@@ -293,7 +293,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       city::Helper helper( city );
       WarehousePtr warehouse = helper.find<Warehouse>( building::warehouse, destBuildingPos );
 
-      const GoodStore& cityOrders = city->getBuys();
+      const GoodStore& cityOrders = city->exportingGoods();
 
       if( warehouse.isValid() )
       {
@@ -330,7 +330,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
     wlk->deleteLater();
     world::EmpirePtr empire = city->empire();
     const std::string& ourCityName = city->getName();
-    world::TraderoutePtr route = empire->getTradeRoute( ourCityName, baseCityName );
+    world::TraderoutePtr route = empire->findTradeRoute( ourCityName, baseCityName );
     if( route.isValid() )
     {
       route->addMerchant( ourCityName, sell, buy );

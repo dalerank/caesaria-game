@@ -15,6 +15,7 @@
 
 #include "desirability_updater.hpp"
 #include "game/game.hpp"
+#include "objects/construction.hpp"
 #include "helper.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
@@ -33,7 +34,6 @@ class DesirabilityUpdater::Impl
 {
 public:
   DateTime endTime;
-  VariantMap events;
   bool isDeleted;
   int value;
   bool alsoInfluence;
@@ -62,8 +62,6 @@ void DesirabilityUpdater::update( const unsigned int time)
       _d->alsoInfluence = true;
       _d->update( _city, true );
     }
-
-    events::Dispatcher::instance().load( _d->events );
   }
 }
 
@@ -74,7 +72,6 @@ void DesirabilityUpdater::destroy(){ _d->update( _city, false );}
 void DesirabilityUpdater::load(const VariantMap& stream)
 {
   _d->endTime = stream.get( "endTime" ).toDateTime();
-  _d->events = stream.get( "exec" ).toMap();
   _d->value = stream.get( "value" );
   _d->alsoInfluence = stream.get( "alsoInfluence", false );
 }
@@ -83,7 +80,6 @@ VariantMap DesirabilityUpdater::save() const
 {
   VariantMap ret;
   ret[ "endTime" ] = _d->endTime;
-  ret[ "exec" ] = _d->events;
   ret[ "value" ] = _d->value;
   ret[ "alsoInfluence" ] = _d->alsoInfluence;
 

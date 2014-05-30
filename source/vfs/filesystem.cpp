@@ -17,6 +17,8 @@
 #include "filesystem.hpp"
 #include "filenative_impl.hpp"
 #include "archive.hpp"
+#include "directory.hpp"
+#include "core/foreach.hpp"
 #include "entries.hpp"
 #include "archive_zip.hpp"
 #include "core/logger.hpp"
@@ -25,7 +27,8 @@
 	#include <direct.h> // for _chdir
 	#include <io.h> // for _access
 	#include <tchar.h>
-    #include <stdio.h>
+	#include <windows.h>
+	#include <stdio.h>
 #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
 	#include <stdio.h>
 	#include <stdlib.h>
@@ -63,7 +66,7 @@ ArchivePtr FileSystem::Impl::changeArchivePassword(const Path& filename, const s
     // TODO: This should go into a path normalization method
     // We need to check for directory names with trailing slash and without
     const Path absPath = filename.absolutePath();
-    const Path arcPath = openArchives[idx]->getFileList()->getPath();
+    const Path arcPath = openArchives[idx]->entries()->getPath();
     if( (absPath == arcPath) || (arcPath == (absPath.toString() + "/")) )
     {
       if( password.size() )
@@ -81,10 +84,10 @@ ArchivePtr FileSystem::Impl::changeArchivePassword(const Path& filename, const s
 //! constructor
 FileSystem::FileSystem() : _d( new Impl )
 {
-  setFileListSystem( fsNative );
+  setMode( fsNative );
   //! reset current working directory
 
-  getWorkingDirectory();
+  workingDirectory();
 
   _d->archiveLoaders.push_back(new ZipArchiveLoader(this));
 }
@@ -135,7 +138,7 @@ void FileSystem::addArchiveLoader( ArchiveLoaderPtr loader)
 }
 
 //! Returns the total number of archive loaders added.
-unsigned int FileSystem::getArchiveLoaderCount() const
+unsigned int FileSystem::archiveLoaderCount() const
 {
 	return _d->archiveLoaders.size();
 }
@@ -152,7 +155,7 @@ ArchiveLoaderPtr FileSystem::getArchiveLoader(unsigned int index) const
 }
 
 //! move the hirarchy of the filesystem. moves sourceIndex relative up or down
-bool FileSystem::moveFileArchive(unsigned int sourceIndex, int relative)
+bool FileSystem::moveArchive(unsigned int sourceIndex, int relative)
 {
 	bool r = false;
 	const int dest = (int) sourceIndex + relative;
@@ -190,6 +193,12 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   {
     Logger::warning( "Open archive " + filename.absolutePath().toString() );
     return archive;
+  }
+
+  foreach( it, _d->openArchives )
+  {
+    if( filename == (*it)->entries()->getPath())
+      return *it;
   }
 
   int i;
@@ -289,9 +298,9 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
 }
 
 ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
-                                 bool ignoreCase,
-                                 bool ignorePaths,
-                                 const std::string& password)
+                                    bool ignoreCase,
+                                    bool ignorePaths,
+                                    const std::string& password)
 {
   if( !file.isOpen() || archiveType == Archive::folder)
   {
@@ -423,13 +432,13 @@ bool FileSystem::unmountArchive(unsigned int index)
 //! removes an archive from the file system.
 bool FileSystem::unmountArchive(const Path& filename)
 {
-	for (unsigned int i=0; i < _d->openArchives.size(); ++i)
-	{
-		if (filename == _d->openArchives[i]->getFileList()->getPath())
-			return unmountArchive(i);
-	}
+  for (unsigned int i=0; i < _d->openArchives.size(); ++i)
+  {
+    if (filename == _d->openArchives[i]->entries()->getPath())
+      return unmountArchive(i);
+  }
 
-	return false;
+  return false;
 }
 
 
@@ -449,7 +458,7 @@ bool FileSystem::unmountArchive( ArchivePtr archive)
 
 
 //! gets an archive
-unsigned int FileSystem::getFileArchiveCount() const
+unsigned int FileSystem::archiveCount() const
 {
 	return _d->openArchives.size();
 }
@@ -457,12 +466,12 @@ unsigned int FileSystem::getFileArchiveCount() const
 
 ArchivePtr FileSystem::getFileArchive(unsigned int index)
 {
-	return index < getFileArchiveCount() ? _d->openArchives[index] : 0;
+	return index < archiveCount() ? _d->openArchives[index] : 0;
 }
 
 
 //! Returns the string of the current working directory
-const Path& FileSystem::getWorkingDirectory()
+const Path& FileSystem::workingDirectory()
 {
 	int type = 0;
 
@@ -527,7 +536,7 @@ bool FileSystem::changeWorkingDirectoryTo(Path newDirectory)
 }
 
 //! Sets the current file systen type
-FileSystem::Mode FileSystem::setFileListSystem( Mode listType)
+FileSystem::Mode FileSystem::setMode( Mode listType)
 {
 	Mode current = _d->fileSystemType;
 	_d->fileSystemType = listType;
@@ -566,7 +575,7 @@ inline int isInSameDirectory ( const Path& path, const Path& file )
 Entries FileSystem::getFileList()
 {
   Entries ret;
-  Path rpath = StringHelper::replace( getWorkingDirectory().toString(), "\\", "/" );
+  Path rpath = StringHelper::replace( workingDirectory().toString(), "\\", "/" );
   rpath = rpath.addEndSlash();
   
   //Logger::warning( "FileSystem: start listing directory" );
@@ -599,11 +608,11 @@ Entries FileSystem::getFileList()
 			//Logger::warning( "FileSystem: start listing directory on unix" );
 			// --------------------------------------------
 			//! Linux version
-			ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
+			//ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
 
 			//! We use the POSIX compliant methods instead of scandir
-			DIR* dirHandle=opendir( rpath.toString().c_str());
-			if (dirHandle)
+			DIR* dirHandle=opendir( rpath.toString().c_str() );
+			if( dirHandle )
 			{
 				struct dirent *dirEntry;
 				while ((dirEntry=readdir(dirHandle)))
@@ -621,16 +630,7 @@ Entries FileSystem::getFileList()
 						size = buf.st_size;
 						isDirectory = S_ISDIR(buf.st_mode);
 					}
-					/*
-					#if !defined(__CYGWIN__)
-					// only available on some systems
-					else
-					{
-						isDirectory = dirEntry->d_type == DT_DIR;
-					}
-					#endif*/
 					
-					//Logger::warning( "FileSystem: find file " + std::string( dirEntry->d_name ) );
 					ret.addItem( Path( rpath.toString() + dirEntry->d_name ), 0, size, isDirectory, 0);
 				}
 				closedir(dirHandle);
@@ -655,15 +655,15 @@ Entries FileSystem::getFileList()
 		//! merge archives
 		for (unsigned int i=0; i < _d->openArchives.size(); ++i)
 		{
-			const Entries *merge = _d->openArchives[i]->getFileList();
+		  const Entries *merge = _d->openArchives[i]->entries();
 
-			for (unsigned int j=0; j < merge->getFileCount(); ++j)
-			{
-				if ( isInSameDirectory(rpath, merge->getFullFileName(j)) == 0)
-				{
-					ret.addItem(merge->getFullFileName(j), merge->getFileOffset(j), merge->getFileSize(j), merge->isDirectory(j), 0);
-				}
-			}
+		  for (unsigned int j=0; j < merge->getFileCount(); ++j)
+		  {
+		    if ( isInSameDirectory(rpath, merge->getFullFileName(j)) == 0)
+		    {
+		      ret.addItem(merge->getFullFileName(j), merge->getFileOffset(j), merge->getFileSize(j), merge->isDirectory(j), 0);
+		    }
+		  }
 		}
 	}
 
@@ -673,23 +673,62 @@ Entries FileSystem::getFileList()
 }
 
 //! determines if a file exists and would be able to be opened.
-bool FileSystem::existFile(const Path& filename) const
+bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
 {
   for (unsigned int i=0; i < _d->openArchives.size(); ++i)
-      if (_d->openArchives[i]->getFileList()->findFile(filename)!=-1)
-              return true;
+    if (_d->openArchives[i]->entries()->findFile(filename)!=-1)
+      return true;
 
 #if defined(CAESARIA_PLATFORM_WIN)
-  return ( _access( filename.toString().c_str(), 0) != -1);
+  if( sens == Path::nativeCase || sens == Path::ignoreCase )
+  {
+    return ( _access( filename.toString().c_str(), 0) != -1);
+  }
 #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  return ( access( filename.toString().c_str(), 0 ) != -1);
+  if( sens == Path::nativeCase || sens == Path::equaleCase )
+  {
+    return ( access( filename.toString().c_str(), 0 ) != -1);
+  }
 #endif //CAESARIA_PLATFORM_UNIX
+
+  Entries files = Directory( filename.directory() ).getEntries();
+  files.setSensType( sens );
+  int index = files.findFile( filename );
+  return index != -1;
+
+
+  return false;
+}
+
+DateTime FileSystem::getFileUpdateTime(const Path& filename) const
+{ 
+#ifndef CAESARIA_PLATFORM_WIN
+  struct tm *foo;
+  struct stat attrib;
+  stat( filename.toString().c_str(), &attrib);
+  foo = gmtime(&(attrib.st_mtime));
+
+  return DateTime( foo->tm_year, foo->tm_mon+1, foo->tm_mday+1,
+                   foo->tm_hour, foo->tm_min, foo->tm_sec );
+#else
+  FILETIME creationTime,
+           lpLastAccessTime,
+           lastWriteTime;
+  HANDLE h = CreateFile( filename.toString().c_str(),
+                         GENERIC_READ, FILE_SHARE_READ, NULL,
+                         OPEN_EXISTING, 0, NULL);
+  GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
+  SYSTEMTIME systemTime;
+  FileTimeToSystemTime( &creationTime, &systemTime );
+  return DateTime( systemTime.wYear, systemTime.wMonth, systemTime.wDay,
+                   systemTime.wHour, systemTime.wMinute, systemTime.wSecond );
+#endif
 }
 
 FileSystem& FileSystem::instance()
 {
-	static FileSystem _instanceFileSystem;
-	return _instanceFileSystem;
+  static FileSystem _instanceFileSystem;
+  return _instanceFileSystem;
 }
 
 } //end namespace io

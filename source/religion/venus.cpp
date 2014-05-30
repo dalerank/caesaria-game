@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "city/city.hpp"
 #include "venus.hpp"
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"
 #include "objects/extension.hpp"
 #include "core/gettext.hpp"
-#include "city/city.hpp"
 
 using namespace constants;
 using namespace gfx;

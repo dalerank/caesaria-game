@@ -15,9 +15,11 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
+#include "city/city.hpp"
 #include "divinities.hpp"
 #include "gfx/picture.hpp"
 #include "game/gamedate.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "objects/farm.hpp"
 #include "events/showinfobox.hpp"
@@ -46,12 +48,18 @@ void RomeDivinity::load(const VariantMap& vm)
   _pic = Picture::load( vm.get( "image" ).toString() );
   _relation = (float)vm.get( "relation", 100.f );
   _lastFestival = vm.get( "lastFestivalDate", GameDate::current() ).toDateTime() ;
+
   _shortDesc = vm.get( "shortDesc" ).toString();
+  if( _shortDesc.empty() )
+  {
+    _shortDesc  = StringHelper::format( 0xff, "##%s_desc##", internalName().c_str() );
+  }
   _wrathPoints = vm.get( "wrath" );
   _blessingDone = vm.get( "blessingDone" );
   _smallCurseDone = vm.get( "smallCurseDone");
   _needRelation = vm.get( "needRelation" );
   _effectPoints = vm.get( "effectPoints" );
+  _moodDescr.clear();
 
   Variant value = vm.get( "moodDescription" );
   if( value.isValid() )
@@ -102,16 +110,13 @@ VariantMap RomeDivinity::save() const
   return ret;
 }
 
-float RomeDivinity::relation() const
-{
-  int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );
-  return _relation + festivalFactor;
-}
+float RomeDivinity::relation() const { return _relation; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
-  int minMoodbyPop = 50 - math::clamp( city->population() / 10, 0, 50 );
-  _needRelation = math::clamp<int>( income+_effectPoints, minMoodbyPop, 100 );
+  int minMood = 50 - math::clamp( city->population() / 10, 0, 50 );
+  int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );
+  _needRelation = math::clamp<int>( income + festivalFactor + _effectPoints, minMood, 100 );
 
   _relation += math::signnum( _needRelation - _relation );
 
@@ -135,7 +140,7 @@ void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 std::string RomeDivinity::moodDescription() const
 {
   if( _moodDescr.empty() )
-    return "no_descriptions_divinity_mood";
+    return "##no_descriptions_divinity_mood##";
 
   int delim = 100 / _moodDescr.size();
   return _moodDescr[ math::clamp<int>( _relation / delim, 0, _moodDescr.size()-1 ) ];

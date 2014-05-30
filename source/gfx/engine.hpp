@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_GFX_ENGINE_H_INCLUDE__
 #define __CAESARIA_GFX_ENGINE_H_INCLUDE__
 
-#include "picture.hpp"
+#include "picturesarray.hpp"
 #include "core/size.hpp"
 #include <map>
 
@@ -58,8 +58,9 @@ public:
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame
 
-  virtual void drawPicture(const Picture &pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
-  virtual void drawPicture(const Picture &pic, const Point& pos, Rect* clipRect=0 ) = 0;
+  virtual void draw(const Picture& pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
+  virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;
+  virtual void draw(const Pictures& pic, const Point& pos, Rect* clipRect=0 ) = 0;
 
   virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetTileDrawMask() = 0;
@@ -72,6 +73,7 @@ public:
   virtual unsigned int fps() const = 0;
   virtual Modes modes() const = 0;
   virtual Point cursorPos() const = 0;
+  virtual Picture& getScreen() = 0;
 
 protected:
   static Engine* _instance;

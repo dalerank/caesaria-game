@@ -28,6 +28,7 @@
 #include "object.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
+#include "game/settings.hpp"
 
 namespace world
 {
@@ -40,6 +41,7 @@ public:
   EmpireMap emap;
   ObjectList objects;
   Emperor emperor;
+  unsigned int treasury;
   bool available;
 
   std::string playerCityName;
@@ -51,6 +53,7 @@ Empire::Empire() : _d( new Impl )
   _d->trading.init( this );
   _d->workerSalary = 30;
   _d->available = true;
+  _d->treasury = 0;
 }
 
 CityList Empire::cities() const
@@ -89,6 +92,8 @@ void Empire::initialize(vfs::Path filename , vfs::Path filemap)
     _d->emap.setCity( city->location() );
   }
 }
+
+void Empire::addObject(ObjectPtr obj) {  _d->objects.push_back( obj ); }
 
 CityPtr Empire::addCity( CityPtr city )
 {
@@ -144,7 +149,7 @@ void Empire::save( VariantMap& stream ) const
   VariantMap vm_objects;
   foreach( obj, _d->objects)
   {
-    vm_objects[ (*obj)->getName() ] = (*obj)->save();
+    vm_objects[ (*obj)->name() ] = (*obj)->save();
   }
 
   stream[ "cities"  ] = vm_cities;
@@ -190,6 +195,20 @@ void Empire::setCitiesAvailable(bool value)
 unsigned int Empire::getWorkerSalary() const {  return _d->workerSalary; }
 bool Empire::isAvailable() const{  return _d->available; }
 void Empire::setAvailable(bool value) { _d->available = value; }
+
+void Empire::setPrice(Good::Type gtype, int buy, int sell)
+{
+  _d->trading.setPrice( gtype, buy, sell );
+  foreach( it, _d->cities)
+  {
+    (*it)->empirePricesChanged( gtype, buy, sell );
+  }
+}
+
+void Empire::getPrice(Good::Type gtype, int& buy, int& sell) const
+{
+  _d->trading.getPrice( gtype, buy, sell );
+}
 
 void Empire::createTradeRoute(std::string start, std::string stop )
 {
@@ -241,15 +260,16 @@ void Empire::createTradeRoute(std::string start, std::string stop )
   }
 }
 
-TraderoutePtr Empire::getTradeRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
-TraderoutePtr Empire::getTradeRoute( const std::string& start, const std::string& stop )
+TraderoutePtr Empire::findTradeRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
+TraderoutePtr Empire::findTradeRoute( const std::string& start, const std::string& stop )
 {
   return _d->trading.findRoute( start, stop ); 
 }
 
 void Empire::timeStep( unsigned int time )
 {
-  _d->trading.update( time );
+  _d->trading.timeStep( time );
+  _d->emperor.timeStep( time );
 
   foreach( city, _d->cities )
   {
@@ -265,9 +285,9 @@ CityPtr Empire::initPlayerCity( CityPtr city )
 
   if( ret.isNull() )
   {
-    Logger::warning("Can't init player city, that empire city with name %s no exist", city->getName().c_str() );
-    _CAESARIA_DEBUG_BREAK_IF( "Can't init player city" );
-    return ret;
+    Logger::warning("Empire: can't init player city, city with name %s no exist", city->getName().c_str() );
+    //_CAESARIA_DEBUG_BREAK_IF( "Empire: can't init player city" );
+    return CityPtr();
   }
 
   city->setLocation( ret->location() );
@@ -275,11 +295,24 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.push_back( city );
   _d->playerCityName = city->getName();
 
+  for( int k=Good::none; k < Good::goodCount; k++ )
+  {
+    int buy, sell;
+    getPrice( Good::Type(k), buy, sell );
+    city->empirePricesChanged( Good::Type(k), buy, sell );
+  }
+
   return ret;
 }
 
+void Empire::payTax(const std::string &cityname, unsigned int money)
+{
+  _d->treasury += money;
+  _d->emperor.cityTax( cityname, money );
+}
+
 ObjectList Empire::objects() const{  return _d->objects; }
-TraderouteList Empire::getTradeRoutes( const std::string& startCity ){  return _d->trading.routes( startCity );}
+TraderouteList Empire::tradeRoutes( const std::string& startCity ){  return _d->trading.routes( startCity );}
 
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
@@ -297,7 +330,31 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
   return 0;
 }
 
+GovernorRanks EmpireHelper::getRanks()
+{
+  std::map<unsigned int, GovernorRank > sortRanks;
 
-TraderouteList Empire::getTradeRoutes(){  return _d->trading.routes();}
+  VariantMap vm = SaveAdapter::load( GameSettings::rcpath( GameSettings::ranksModel ) );
+  foreach( i, vm )
+  {
+    VariantMap rankInfo = i->second.toMap();
+
+    GovernorRank rank;
+    rank.rankName = i->first;
+    rank.prettyName = rankInfo.get( "name" ).toString();
+    rank.salary = (int)rankInfo.get( "salary" );
+
+    sortRanks[ rank.salary ] = rank;
+  }
+
+  GovernorRanks ranks;
+  foreach( i, sortRanks )
+    ranks.push_back( i->second );
+
+  return ranks;
+}
+
+
+TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
 
 }//end namespace world

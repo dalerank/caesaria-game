@@ -153,8 +153,9 @@ bool ScrollBar::onEvent(const NEvent& event)
 							_environment->setFocus ( this );
 							return true;
 						}
-						break;
 					}
+				break;
+
 				case mouseLbtnRelease:
 				case mouseMoved:
 					{
@@ -162,16 +163,12 @@ bool ScrollBar::onEvent(const NEvent& event)
 						{
 							_draggedBySlider = false;
 							_dragging = false;
+							_d->needRecalculateParams = true;
 						}
 
 						if ( !_dragging )
 							return isInside;
 
-            if ( event.mouse.type == mouseLbtnRelease )
-            {
-              _dragging = false;
-            }
-            
             const int newPos = _getPosFromMousePos( _d->cursorPos );
             const int oldPos = _value;
 
@@ -341,13 +338,13 @@ void ScrollBar::draw(gfx::Engine& painter )
   //draw background
   if( _d->texture.isValid() )
   {
-    painter.drawPicture( _d->texture, absoluteRect().UpperLeftCorner );
+    painter.draw( _d->texture, absoluteRect().UpperLeftCorner );
   }
 
   //draw slider
   if( _d->sliderTexture.isValid() )
   {
-    painter.drawPicture( _d->sliderTexture, _d->sliderRect.UpperLeftCorner );
+    painter.draw( _d->sliderTexture, _d->sliderRect.UpperLeftCorner );
   }
 
 	// draw buttons

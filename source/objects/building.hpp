@@ -59,7 +59,7 @@ public:
   virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
   virtual void setTraineeValue( constants::walker::Type type, int value ); // trainee arrives
 
-  virtual gfx::Renderer::PassQueue getPassQueue() const;
+  virtual gfx::Renderer::PassQueue passQueue() const;
 
 protected:
   std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way

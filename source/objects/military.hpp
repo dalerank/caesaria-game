@@ -27,8 +27,6 @@ class FortLegionary : public Fort
 public:  
   FortLegionary();
 
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
-
 protected:
   virtual void _readyNewSoldier();
 };

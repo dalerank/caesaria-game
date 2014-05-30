@@ -96,7 +96,7 @@ public:
 	//! Returns size of rectangle
 	int getArea() const
 	{
-		return getWidth() * getHeight();
+		return width() * height();
 	}
 
   //! Adds a point to the rectangle
@@ -176,7 +176,7 @@ public:
 	/** \return True on success, false if not possible */
 	bool constrainTo(const RectT<T>& other)
 	{
-		if (other.getWidth() < getWidth() || other.getHeight() < getHeight())
+		if (other.width() < width() || other.height() < height())
 			return false;
 
 		int diff = other.LowerRightCorner.x() - LowerRightCorner.x();
@@ -211,13 +211,13 @@ public:
 	}
 
 	//! Get width of rectangle.
-	T getWidth() const
+	T width() const
 	{
 		return LowerRightCorner.x() - UpperLeftCorner.x();
 	}
 
 	//! Get height of rectangle.
-	T getHeight() const
+	T height() const
 	{
 		return LowerRightCorner.y() - UpperLeftCorner.y();
 	}
@@ -310,9 +310,9 @@ public:
   }
   
   //! Get the dimensions of the rectangle
-  Size getSize() const
+  Size size() const
   {
-    return Size(getWidth(), getHeight());
+    return Size(width(), height());
   }
 
   Rect( const Point& p1, const Point& p2 ) 
@@ -346,7 +346,7 @@ public:
   //! Get the dimensions of the rectangle
   SizeF getSize() const
   {
-    return SizeF(getWidth(), getHeight());
+    return SizeF(width(), height());
   }
 
   RectF& operator=( const RectF& other )

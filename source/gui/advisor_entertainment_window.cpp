@@ -22,6 +22,7 @@
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
+#include "objects/construction.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "game/enums.hpp"
@@ -205,10 +206,10 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city,
       break;
       }
 
-      ret.peoplesServed += maxServing * building->numberWorkers() / building->maxWorkers();
+      ret.peoplesServed += maxServing * building->numberWorkers() / building->maximumWorkers();
     }
     ret.buildingCount++;
-    ret.partlyWork += (building->numberWorkers() != building->maxWorkers() ? 1 : 0);
+    ret.partlyWork += (building->numberWorkers() != building->maximumWorkers() ? 1 : 0);
   }
 
   return ret;
@@ -243,9 +244,9 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
   foreach( it, houses )
   {
     HousePtr house = *it;
-    int habitants = house->getHabitants().count( CitizenGroup::mature );
+    int habitants = house->habitants().count( CitizenGroup::mature );
 
-    const HouseSpecification& lspec = house->getSpec();
+    const HouseSpecification& lspec = house->spec();
 
     if( house->isEntertainmentNeed( Service::theater ) )
     {

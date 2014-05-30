@@ -36,7 +36,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-Renderer::Pass _fpq[] = { Renderer::building, Renderer::animations };
+Renderer::Pass _fpq[] = { Renderer::overlayAnimation, Renderer::animations };
 static Renderer::PassQueue fortPassQueue( _fpq, _fpq + 2 );
 
 struct LegionEmblem
@@ -91,6 +91,7 @@ public:
   unsigned int maxSoldier;
   PatrolPointPtr patrolPoint;
   LegionEmblem emblem;
+  int flagIndex;
 };
 
 class FortArea::Impl
@@ -148,7 +149,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
 
   _d->area = new FortArea();
   _d->area->drop();
-
+  _d->flagIndex = 21;
   _d->maxSoldier = 16;
 
   setState( Construction::inflammability, 0 );
@@ -307,6 +308,7 @@ SoldierList Fort::soldiers() const
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }
 void Fort::_setEmblem(Picture pic) { _d->emblem.pic = pic; }
 void Fort::_setName(const std::string& name) { _d->emblem.name = name; }
+int  Fort::_setFlagIndex( int index ) { return _d->flagIndex = index; }
 
 bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
@@ -328,6 +330,18 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
   city->addOverlay( _d->area.object() );
 
   _fgPicturesRef().resize(1);
+
+  BarracksList barracks;
+  barracks << city->overlays();
+
+  if( barracks.empty() )
+  {
+    _setError( "##need_barracks_for_work##" );
+  }
+
+  _setPatrolPoint( PatrolPoint::create( city, this,
+                                        ResourceGroup::sprites, _d->flagIndex, 8,
+                                        pos + TilePos( 3, 3 ) ) );
 }
 
 bool Fort::isNeedRoadAccess() const {  return false; }

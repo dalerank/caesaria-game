@@ -21,6 +21,7 @@
 #include "core/referencecounted.hpp"
 #include "gfx/layer.hpp"
 #include "city_renderer.hpp"
+#include "core/font.hpp"
 
 namespace gfx
 {
@@ -29,7 +30,7 @@ class LayerDestroy : public Layer
 {
 public:
   virtual void handleEvent( NEvent& event );
-  virtual int getType() const;
+  virtual int type() const;
   virtual std::set<int> getVisibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
   virtual void render( Engine& engine);
@@ -41,8 +42,12 @@ private:
 
   void _drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset);
   void _clearAll();
+  unsigned int _checkMoney4destroy( const Tile& tile );
 
   Picture _clearPic;
+  PictureRef _textPic;
+  unsigned int _money4destroy;
+  Font _textFont;
 };
 
 }//end namespace gfx

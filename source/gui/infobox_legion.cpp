@@ -40,7 +40,7 @@ public:
   Label* lbFormationText;
 };
 
-InfoboxLegion::InfoboxLegion(Widget* parent, WalkerList walkers )
+InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
   : InfoboxSimple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
 {  
   Widget::setupUI( GameSettings::rcpath( "/gui/legionopts.gui") );

@@ -32,10 +32,26 @@ public:
   typedef enum { smallHovel=1, bigTent,
                  smallHut, bigHut,
                  smallDomus, bigDomus,
-                 smallMansion, bigMansion,
-                 smallInsula, middleInsula, bigInsula, greatInsula,
+                 smallMansion, bigMansion, //8
+                 smallInsula, middleInsula, //10
+                 bigInsula, beatyfullInsula, //12
                  smallVilla,  middleVilla,  bigVilla,  greatVilla,
                  smallPalace, middlePalace, bigPalace, greatPalace } ID;
+  typedef enum { smallHovelSmlPic=1, smallHovelBigPic=5,
+                 bigTentSmlPic=3, bigTentBigPic=6,
+                 smallHutSmlPic=7, smallHutBigPic=11,
+                 bigHutSmlPic=9, bigHutBigPic=12,
+                 smallDomusSmlPic=13, smallDomusBigPic=17,
+                 bigDomusSmlPic=15, bigDomusBigPic=18,
+                 smallMansionSmlPic=19, smallMansionBigPic=23,
+                 bigMansionSmlPic=21, bigMansionBigPic=24,
+                 smallInsulaSmlPic=25, smallInsulaBigPic=29,
+                 middleInsulaSmlPic=27, middleInsulaBigPic=30,
+                 bigInsulaPic=31, beatyfullInsulaPic=33,
+                 smallVillaPic=35, middleVillaPic=36,
+                 bigVillaPic=37, greatVillaPic=38,
+                 smallPalacePic=39, middlePalacePic=41,
+                 bigPalacePic=43, greatPalacePic=44 } PicIndex;
 };
 
 class House : public Building
@@ -48,10 +64,10 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual GoodStore& getGoodStore();
+  virtual GoodStore& goodStore();
 
   // return the current house level
-  const HouseSpecification& getSpec() const;
+  const HouseSpecification& spec() const;
 
   virtual void applyService(ServiceWalkerPtr walker);
   virtual float evaluateService(ServiceWalkerPtr walker);
@@ -61,11 +77,11 @@ public:
   virtual bool hasServiceAccess( Service::Type service );
   virtual float getServiceValue( Service::Type service );
   virtual void setServiceValue(Service::Type service, float value );
-  virtual gfx::TilesArray getEnterArea() const;
+  virtual gfx::TilesArray enterArea() const;
 
   virtual double getState( ParameterType param) const;
 
-  int getWorkersCount() const;
+  int workersCount() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
@@ -77,10 +93,10 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  int getMaxHabitants();
+  int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int count );
-  const CitizenGroup& getHabitants() const;
+  const CitizenGroup& habitants() const;
 
   float collectTaxes();
   DateTime getLastTaxation() const;
@@ -104,6 +120,7 @@ private:
 
   void _update();
   void _tryEvolve_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );
+  void _tryEvolve_12_to_20_lvl(int level4grow, int startPic, int minSize, const char desirability);
   void _tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability );
   void _makeOldHabitants();
   void _updateHabitants(const CitizenGroup& group);

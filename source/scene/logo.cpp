@@ -24,6 +24,7 @@
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 #include "core/font.hpp"
+#include "core/gettext.hpp"
 
 using namespace gfx;
 
@@ -35,7 +36,7 @@ class SplashScreen::Impl
 public:
   Picture bgPicture;
   PictureRef textPicture;
-  std::string text;
+  std::string text, prefix;
 };
 
 SplashScreen::SplashScreen() : _d( new Impl ) {}
@@ -60,7 +61,7 @@ void SplashScreen::draw()
 {
   Engine& engine = Engine::instance();
 
-  engine.drawPicture( _d->bgPicture, 0, 0);
+  engine.draw( _d->bgPicture, 0, 0);
 
   if( !_d->text.empty() )
   {
@@ -73,7 +74,7 @@ void SplashScreen::draw()
 
     textFont.draw( *_d->textPicture, _d->text, textRect.left(), textRect.top(), false );
 
-    engine.drawPicture( *_d->textPicture, 0, 0 );
+    engine.draw( *_d->textPicture, 0, 0 );
   }
 }
 
@@ -94,8 +95,8 @@ void SplashScreen::fadeOut()
   {
     engine.startRenderFrame();
     pf->fill( NColor(k, 0, 0, 0), Rect() );
-    engine.drawPicture( _d->bgPicture, 0, 0);
-    engine.drawPicture( *pf, 0, 0);
+    engine.draw( _d->bgPicture, 0, 0);
+    engine.draw( *pf, 0, 0);
     //engine.delay( 1 );
     engine.endRenderFrame();
   }
@@ -103,10 +104,15 @@ void SplashScreen::fadeOut()
 
 void SplashScreen::setText(std::string text)
 {
-  _d->text = text;
+  _d->text = _d->prefix + " " + _( text );
 
   Engine& engine = Engine::instance();
   update( engine );
+}
+
+void SplashScreen::setPrefix(std::string prefix)
+{
+  _d->prefix = _( prefix );
 }
 
 int SplashScreen::result() const { return 0; }

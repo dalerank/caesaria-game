@@ -26,7 +26,8 @@ namespace events
 class ScribeMessage : public GameEvent
 {
 public:
-  static GameEventPtr create( const std::string& title, const std::string& text );
+  static GameEventPtr create(const std::string& title, const std::string& text,
+                             Good::Type gtype=Good::none, Point position=Point(-1, -1) );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -34,6 +35,8 @@ protected:
 
 private:
   std::string _title;
+  Good::Type _gtype;
+  Point _position;
   std::string _text;
 };
 

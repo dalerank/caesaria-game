@@ -25,27 +25,27 @@ using namespace constants;
 
 GovernorsHouse::GovernorsHouse() : WorkingBuilding( building::governorHouse, Size(3) )
 {
-  setMaxWorkers(5);
+  setMaximumWorkers(5);
   setPicture( ResourceGroup::housing, 46 );
 }
 
 GovernorsVilla::GovernorsVilla() : WorkingBuilding( building::governorVilla, Size(4) )
 {
-  setMaxWorkers(10);
+  setMaximumWorkers(10);
   setWorkers(0);    
   setPicture( ResourceGroup::housing, 47 );
 }
 
 GovernorsPalace::GovernorsPalace() : WorkingBuilding( building::governorPalace, Size( 5 ) )
 {
-  setMaxWorkers(15);
+  setMaximumWorkers(15);
   setWorkers(0);  
   setPicture( ResourceGroup::housing, 48 );
 }
 
 MissionaryPost::MissionaryPost() : WorkingBuilding(building::missionaryPost, Size(2) )
 {
-  setMaxWorkers(20);
+  setMaximumWorkers(20);
   setWorkers(0);  
   setPicture( ResourceGroup::transport, 93 );
 }

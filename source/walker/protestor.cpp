@@ -70,6 +70,14 @@ void Protestor::_reachedPathway()
   }
 }
 
+void Protestor::_updateThinks()
+{
+  StringArray ret;
+  ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
+
+  setThinks( ret.rand() );
+}
+
 void Protestor::timeStep(const unsigned long time)
 {
   Walker::timeStep( time );
@@ -83,7 +91,7 @@ void Protestor::timeStep(const unsigned long time)
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
       HousePtr h = ptr_cast<House>( *it );
-      if( h->getSpec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
+      if( h->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
       else { ++it; }
     }
 
@@ -111,7 +119,7 @@ void Protestor::timeStep(const unsigned long time)
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
       TileOverlay::Type type = (*it)->type();
-      TileOverlay::Group group = (*it)->getClass();
+      TileOverlay::Group group = (*it)->group();
       if( type == building::house || type == construction::road
           || group == building::disasterGroup ) { it=constructions.erase( it ); }
       else { it++; }
@@ -163,7 +171,7 @@ void Protestor::timeStep(const unsigned long time)
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {
-        if( (*it)->type() == construction::road || (*it)->getClass() == building::disasterGroup )
+        if( (*it)->type() == construction::road || (*it)->group() == building::disasterGroup )
         { it=constructions.erase( it ); }
         else { ++it; }
       }
@@ -179,7 +187,7 @@ void Protestor::timeStep(const unsigned long time)
         foreach( it, constructions )
         {
           ConstructionPtr c = *it;
-          if( c->getClass() != building::disasterGroup && c->type() != construction::road )
+          if( c->group() != building::disasterGroup && c->type() != construction::road )
           {
             c->updateState( Construction::fire, 1 );
             c->updateState( Construction::damage, 1 );
@@ -207,7 +215,7 @@ Protestor::~Protestor() {}
 void Protestor::send2City( HousePtr house )
 {
   setPos( house->pos() );
-  _d->houseLevel = house->getSpec().level();
+  _d->houseLevel = house->spec().level();
   _d->state = Impl::searchHouse;
 
   if( !isDeleted() )
@@ -216,11 +224,17 @@ void Protestor::send2City( HousePtr house )
   }
 }
 
-void Protestor::die()
+bool Protestor::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen2, 447, 454 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen2, 447, 454 );
+    return true;
+  }
+
+  return created;
 }
 
 void Protestor::save(VariantMap& stream) const

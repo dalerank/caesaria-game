@@ -309,7 +309,7 @@ public:
   void deleteLater();
 
   //! Returns the relative rectangle of this element.
-  Rect getRelativeRect() const;
+  Rect relativeRect() const;
 
   //! Sets the relative/absolute rectangle of this element.
   /** \param r The absolute position to set */
@@ -460,7 +460,7 @@ enum ElementState
 };
 
 template< class T >
-inline T findChildA( const std::string& internalName, bool recursiveFind, Widget* p )
+inline T findChildA( const std::string& internalName, bool recursiveFind, const Widget* p )
 {
   Widget::Widgets::const_iterator it = p->getChildren().begin();
   for( ; it != p->getChildren().end(); ++it )

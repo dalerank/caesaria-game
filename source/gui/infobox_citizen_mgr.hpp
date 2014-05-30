@@ -28,7 +28,7 @@ class InfoboxManager;
 class InfoboxCitizenCreator : public ReferenceCounted
 {
 public:
-  virtual gui::InfoboxSimple* create( gui::Widget* parent, WalkerList walkers ) = 0;
+  virtual gui::InfoboxSimple* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos ) = 0;
 };
 
 typedef SmartPtr<InfoboxCitizenCreator> InfoboxCitizenCreatorPtr;
@@ -43,7 +43,7 @@ public:
 
   void addCreator( constants::walker::Type type, InfoboxCitizenCreatorPtr c );
 
-  gui::InfoboxSimple* show( gui::Widget* parent, WalkerList walkers );
+  gui::InfoboxSimple* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
 private:
   InfoboxCitizenManager();
 

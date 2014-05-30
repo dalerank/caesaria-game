@@ -141,14 +141,14 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   //_d->btnSmallFestival->setIsPushButton( true );
 
   festivalCost = floor( _d->city->population() / 10 ) + 20;
-  _d->btnMiddleFestival = new PushButton( this, _d->btnSmallFestival->getRelativeRect() + Point( 0, 30 ),
+  _d->btnMiddleFestival = new PushButton( this, _d->btnSmallFestival->relativeRect() + Point( 0, 30 ),
                                           StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), festivalCost ),
                                           Impl::festId+Impl::middleFest, false, PushButton::whiteBorderUp );
   _d->btnMiddleFestival->setTextAlignment( align::upperLeft, align::center );
   //_d->btnMiddleFestival->setIsPushButton( true );
 
   festivalCost = floor( _d->city->population() / 5 ) + 40;
-  _d->btnGreatFestival = new PushButton( this, _d->btnMiddleFestival->getRelativeRect() + Point( 0, 30 ),
+  _d->btnGreatFestival = new PushButton( this, _d->btnMiddleFestival->relativeRect() + Point( 0, 30 ),
                                          StringHelper::format( 0xff, "%s %d", _("##great_festival##"), festivalCost  ),
                                          Impl::festId+Impl::greatFest, false, PushButton::whiteBorderUp );
   _d->btnGreatFestival->setTextAlignment( align::upperLeft, align::center );
@@ -170,7 +170,7 @@ void FestivalPlaningWindow::draw( gfx::Engine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+    painter.draw( *_d->background, screenLeft(), screenTop() );
   }
 
   Widget::draw( painter );

@@ -27,7 +27,7 @@ namespace walker
 enum Type{
   unknown=0,
   immigrant,
-  emmigrant,
+  emigrant,
   soldier,
   cartPusher,
   marketLady,
@@ -74,7 +74,8 @@ enum Type{
   waterGarbage,
   romeHorseman,
   romeSpearman,
-  balista,//49
+  balista,
+  criminal,//50
   all = 0xff,
   any = all
 };

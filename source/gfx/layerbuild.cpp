@@ -46,6 +46,7 @@ class LayerBuild::Impl
 public:
   bool multiBuilding;
   TilePos lastTilePos;
+  bool kbShift, kbCtrl;
   bool borderBuilding;
   bool roadAssignment;
   Renderer* renderer;
@@ -102,7 +103,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
-        tile->setPicture( &overlay->picture() );
+        tile->setPicture( overlay->picture() );
         tile->setMasterTile( masterTile );
         tile->setOverlay( ptr_cast<TileOverlay>( overlay ) );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -130,7 +131,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         Tile* tile = new Tile( tmap.at( rPos ) );  // make a copy of tile
 
         bool isConstructible = tile->getFlag( Tile::isConstructible );
-        tile->setPicture( isConstructible ? &grnPicture : &redPicture );
+        tile->setPicture( isConstructible ? grnPicture : redPicture );
         tile->setMasterTile( 0 );
         tile->setFlag( Tile::clearAll, true );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
@@ -166,7 +167,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
     TilesArray pathWay = RoadPropagator::createPath( _city()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
-                                                     d->roadAssignment );
+                                                     d->roadAssignment, d->kbShift );
 
     foreach( it, pathWay )
     {
@@ -196,9 +197,10 @@ void LayerBuild::_buildAll()
     return;
   }
 
-  if( _city()->funds().treasury() < -5000 )
+  if( !_city()->funds().haveMoneyForAction( 1 ) )
   {
-    events::GameEventPtr event = events::WarningMessageEvent::create( "##out_of_credit##" );
+    events::GameEventPtr e = events::WarningMessageEvent::create( "##out_of_credit##" );
+    e->dispatch();
     return;
   }
 
@@ -227,8 +229,14 @@ void LayerBuild::_buildAll()
 
 void LayerBuild::handleEvent(NEvent& event)
 {
+  __D_IMPL(_d,LayerBuild);
+  _d->kbShift = false;
+  _d->kbCtrl = false;
   if( event.EventType == sEventMouse )
   {
+    _d->kbShift = event.mouse.shift;
+    _d->kbCtrl = event.mouse.control;
+
     switch( event.mouse.type  )
     {
     case mouseMoved:
@@ -239,7 +247,7 @@ void LayerBuild::handleEvent(NEvent& event)
         _setStartCursorPos( _lastCursorPos() );
       }
 
-      _updatePreviewTiles(false);
+      _updatePreviewTiles( false );
     }
     break;
 
@@ -309,7 +317,7 @@ void LayerBuild::_finishBuild()
   _updatePreviewTiles( true );
 }
 
-int LayerBuild::getType() const {  return citylayer::build;}
+int LayerBuild::type() const {  return citylayer::build;}
 
 std::set<int> LayerBuild::getVisibleWalkers() const
 {
@@ -322,7 +330,7 @@ std::set<int> LayerBuild::getVisibleWalkers() const
 void LayerBuild::_drawBuildTiles( Engine& engine)
 {
   __D_IMPL(_d,LayerBuild);
-  Point offset = _camera()->getOffset();
+  Point offset = _camera()->offset();
   foreach( it, _d->buildTiles )
   {
     Tile* postTile = *it;
@@ -358,9 +366,9 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     {
       tile.setWasDrawn();
       const Picture& pic = cntr->picture( _city(), tile.pos(), postTiles );
-      engine.drawPicture( pic, screenPos );
+      engine.draw( pic, screenPos );
 
-      drawTilePass( engine, tile, offset, Renderer::foreground );
+      drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }
 
     registerTileForRendering( tile );
@@ -375,14 +383,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
     }*/
   }
 
-  if( !tile.getFlag( Tile::wasDrawn ) )
-  {
-    tile.setWasDrawn();
-    engine.drawPicture( tile.picture(), screenPos );
-
-    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
-    drawTilePass( engine, tile, offset, Renderer::foreground );
-  }
+  Layer::drawTile( engine, tile, offset );
 }
 
 void LayerBuild::render( Engine& engine)

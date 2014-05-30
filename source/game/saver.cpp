@@ -39,6 +39,7 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   vm_scenario[ "events" ] = events::Dispatcher::instance().save();
   vm_scenario[ "translation" ] = GameSettings::get( GameSettings::lastTranslation );
   vm_scenario[ "adviserEnabled" ] = GameSettings::get( GameSettings::adviserEnabled );
+  vm_scenario[ "climate" ] = (int)game.city()->climate();
   vm[ "scenario" ] = vm_scenario;
 
   VariantMap vm_empire;

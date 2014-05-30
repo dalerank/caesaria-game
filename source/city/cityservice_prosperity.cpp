@@ -16,6 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_prosperity.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
@@ -98,12 +99,15 @@ void ProsperityRating::update( const unsigned int time )
     foreach( it, houses)
     {
       HousePtr house = *it;
-      prosperityCap += house->getSpec().prosperity();
-      patricianCount += house->getSpec().isPatrician() ? house->getHabitants().count() : 0;
-      plebsCount += house->getSpec().level() < 5 ? house->getHabitants().count() : 0;
+      prosperityCap += house->spec().prosperity();
+      patricianCount += house->spec().isPatrician() ? house->habitants().count() : 0;
+      plebsCount += house->spec().level() < 5 ? house->habitants().count() : 0;
     }
 
-    prosperityCap /= houses.size();
+    if( houses.size() > 0 )
+    {
+      prosperityCap /= houses.size();
+    }
 
     _d->lastYearProsperity = getValue();
 

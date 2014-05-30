@@ -52,7 +52,7 @@ public:
   virtual void draw();
   virtual void beforeDraw();
 
-  void animate( unsigned int time );
+  void animate(unsigned int time);
 
   bool handleEvent(const NEvent& event);
 

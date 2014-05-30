@@ -19,6 +19,7 @@
 #include "core/logger.hpp"
 #include "vfs/entries.hpp"
 #include "vfs/directory.hpp"
+#include "core/foreach.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
 
@@ -167,18 +168,18 @@ namespace
 
 bool Util::caesariaIsRunning()
 {
-	// Traverse the /proc folder, this sets the flag to TRUE if the process was found
-	vfs::Entries procs = vfs::Directory(systemProcFolder).getEntries();
+  // Traverse the /proc folder, this sets the flag to TRUE if the process was found
+  vfs::Entries procs = vfs::Directory(systemProcFolder).getEntries();
 
-	for( vfs::Entries::ConstItemIt i= procs.begin(); i != procs.end(); ++i)
-	{
-		if(CheckProcessFile(i->name.toString(), caesariaProcessName)) // grayman - looking for caesaria
-		{
-			return true;
-		}
-	}
+  foreach( i, procs )
+  {
+    if( CheckProcessFile( i->name().toString(), caesariaProcessName) ) // grayman - looking for caesaria
+    {
+      return true;
+    }
+  }
 	
-	return false;
+  return false;
 }
 
 } // namespace

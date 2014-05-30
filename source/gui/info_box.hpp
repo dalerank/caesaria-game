@@ -56,10 +56,10 @@ public:
 protected:
   gfx::Picture& _background();
   virtual void _afterCreate() {}
-  Label* _title();
-  Label* _getInfo();
-  Label* _getBlackFrame();
-  PushButton* _getBtnExit();
+  Label* _lbTitleRef();
+  Label* _lbTextRef();
+  Label* _lbBlackFrameRef();
+  PushButton* _btnExitRef();
   virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );
 
   class Impl;
@@ -70,13 +70,6 @@ class InfoboxBuilding : public InfoboxSimple
 {
 public:
    InfoboxBuilding( Widget* parent, const gfx::Tile& tile );
-};
-
-class InfoboxText : public InfoboxSimple
-{
-public:
-  InfoboxText(Widget* parent, const std::string& title, const std::string& message );
-  virtual ~InfoboxText();
 };
 
 }//end namespace gui

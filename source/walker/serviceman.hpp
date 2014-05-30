@@ -23,23 +23,24 @@
 class ServiceWalker : public Walker
 {
 public:
+  typedef enum { goLowerService=0x1, anywayWhenFailed=0x2 } Order;
   typedef std::set<BuildingPtr> ReachedBuildings;
 
   static ServiceWalkerPtr create( PlayerCityPtr city, const Service::Type service );
 
-  Service::Type getService() const;
+  Service::Type serviceType() const;
   BuildingPtr base() const;
 
   void setBase( BuildingPtr base );
 
-  virtual void send2City( BuildingPtr base );
-  virtual float getServiceValue() const;
+  virtual void send2City( BuildingPtr base, int orders=goLowerService );
+  virtual float serviceValue() const;
 
   // evaluates the service demand on the given pathWay
   float evaluatePath( PathwayPtr pathWay);
   ReachedBuildings getReachedBuildings(const TilePos& pos );
 
-  virtual unsigned int getReachDistance() const;
+  virtual unsigned int reachDistance() const;
   void setReachDistance( unsigned int value );
 
   virtual void return2Base();
@@ -49,7 +50,7 @@ public:
   virtual void load( const VariantMap& stream);
 
   virtual void setPathway(const Pathway& pathway);
-  virtual void die();
+  virtual bool die();
 
   virtual ~ServiceWalker();
 
@@ -62,7 +63,7 @@ protected:
   ServiceWalker( PlayerCityPtr city, const Service::Type service );
 
   void _init(const Service::Type service);
-  void _computeWalkerPath();
+  void _computeWalkerPath(int orders);
   void _reservePath(const Pathway& pathWay);
   void _updatePathway(const Pathway& pathway);
   void _updatePathway(PathwayPtr pathway);

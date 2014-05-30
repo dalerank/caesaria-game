@@ -29,6 +29,8 @@
 #include "city/city.hpp"
 #include "core/font.hpp"
 #include "layerconstants.hpp"
+#include "decorator.hpp"
+#include "core/stringhelper.hpp"
 
 using namespace constants;
 
@@ -50,6 +52,9 @@ public:
   std::string tooltipText;
   RenderQueue renderQueue;
 
+  bool drawGrid, renderOverlay;
+  int posMode;
+
   Picture footColumn;
   Picture bodyColumn;
   Picture headerColumn;
@@ -60,7 +65,7 @@ void Layer::registerTileForRendering(Tile& tile)
   __D_IMPL(_d,Layer)
   if( tile.overlay() != 0 )
   {
-    Renderer::PassQueue passQueue = tile.overlay()->getPassQueue();
+    Renderer::PassQueue passQueue = tile.overlay()->passQueue();
     foreach( pass, passQueue )
     {
       _d->renderQueue[ *pass ].push_back( &tile );
@@ -73,10 +78,10 @@ void Layer::renderPass( Engine& engine, Renderer::Pass pass )
   // building foregrounds and animations
   __D_IMPL(_d,Layer)
   Impl::TileQueue& tiles = _d->renderQueue[ pass ];
-  Point offset = _d->camera->getOffset();
+  Point offset = _d->camera->offset();
   foreach( tile, tiles )
   {
-    drawTilePass( engine, *(*tile), offset, pass );
+    drawPass( engine, *(*tile), offset, pass );
   }
 
   tiles.clear();
@@ -157,8 +162,19 @@ void Layer::handleEvent(NEvent& event)
     case KEY_DOWN: case KEY_KEY_S: _d->camera->moveDown ( moveValue ); break;
     case KEY_RIGHT: case KEY_KEY_D: _d->camera->moveRight( moveValue ); break;
     case KEY_LEFT:  case KEY_KEY_A: _d->camera->moveLeft ( moveValue ); break;
-    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;
+    case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;    
     default: break;
+    }
+
+    if( event.keyboard.control && event.keyboard.shift && event.keyboard.pressed )
+    {
+      switch( event.keyboard.key )
+      {
+      case KEY_KEY_1: _d->drawGrid = !_d->drawGrid; break;
+      case KEY_KEY_2: _d->posMode = (++_d->posMode) % 3; break;
+      case KEY_KEY_3: _d->renderOverlay = !_d->renderOverlay; break;
+      default: break;
+      }
     }
   }
 }
@@ -174,39 +190,44 @@ TilesArray Layer::_getSelectedArea()
   TilePos startPosTmp = startTile->pos();
   TilePos stopPosTmp  = stopTile->pos();
 
-//  std::cout << "TilemapRenderer::_getSelectedArea" << " ";
-//  std::cout << "(" << startPosTmp.getI() << " " << startPosTmp.getJ() << ") (" << stopPosTmp.getI() << " " << stopPosTmp.getJ() << ")" << std::endl;
-
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
 
   return _city()->tilemap().getArea( outStartPos, outStopPos );
 }
 
-void Layer::drawTilePass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass)
+void Layer::drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass)
 {
   Point screenPos = tile.mapPos() + offset;
   switch( pass )
   {
-  case Renderer::ground: engine.drawPicture( tile.picture(), screenPos ); break;
+  case Renderer::ground: engine.draw( tile.picture(), screenPos ); break;
 
   case Renderer::groundAnimation:
+  {
     if( tile.animation().isValid() )
     {
-      engine.drawPicture( tile.animation().currentFrame(), screenPos );
+      engine.draw( tile.animation().currentFrame(), screenPos );
     }
+  }
   break;
 
-  default:
+  case Renderer::overlay:
+  {
     if( tile.overlay().isNull() )
       return;
 
-    const Pictures& pictures = tile.overlay()->getPictures( pass );
+    engine.draw( tile.overlay()->picture(), screenPos );
+  }
+  break;
 
-    for( Pictures::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
-    {
-      engine.drawPicture( *it, screenPos );
-    }
+  default:
+  {
+    if( tile.overlay().isNull() )
+      return;
+
+    engine.draw( tile.overlay()->pictures( pass ), screenPos );
+  }
   break;
   }
 }
@@ -227,20 +248,14 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
 
 void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
-  Pictures pictureList;
+  Pictures pics;
   WalkerList walkers = _getVisibleWalkerList( getVisibleWalkers(), tile.pos() );
 
   foreach( w, walkers )
   {
-    pictureList.clear();
-    (*w)->getPictureList( pictureList );
-    foreach( picRef, pictureList )
-    {
-      if( (*picRef).isValid() )
-      {
-        engine.drawPicture( *picRef, (*w)->screenpos() + camOffset );
-      }
-    }
+    pics.clear();
+    (*w)->getPictures( pics );
+    engine.draw( pics, (*w)->screenpos() + camOffset );
   }
 }
 
@@ -270,32 +285,27 @@ void Layer::render( Engine& engine)
   __D_IMPL(_d,Layer)
   // center the map on the screen
   const TilesArray& visibleTiles = _d->camera->getTiles();
-  Point camOffset = _d->camera->getOffset();
+  Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
 
   // FIRST PART: draw all flat land (walkable/boatable)
   foreach( it, visibleTiles )
   {
-    Tile* tile = *it;
-    Tile* master = tile->masterTile();
+    Tile* tile = (*it)->masterTile();
+    if( !tile )
+      tile = *it;
 
-    if( !tile->isFlat() )
-      continue;
-
-    if( master==NULL )
+    if( tile->isFlat() )
     {
-      // single-tile
       drawTile( engine, *tile, camOffset );
-    }
-    else
-    {
-      // multi-tile: draw the master tile.
-      if( !master->getFlag( Tile::wasDrawn ) )
-        drawTile( engine, *master, camOffset );
     }
   }
 
+  if( !_d->renderOverlay )
+  {
+    engine.setTileDrawMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
+  }
   // SECOND PART: draw all sprites, impassable land and buildings
   foreach( it, visibleTiles )
   {
@@ -308,24 +318,18 @@ void Layer::render( Engine& engine)
 
     drawTileW( engine, *tile, camOffset, z );
   }
+
+  engine.resetTileDrawMask();
 }
 
 void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth)
 {
   Tile* master = tile.masterTile();
 
-  if( 0 == master )    // single-tile
-  {
-    drawTilePass( engine, tile, offset, Renderer::overWalker  );
-    return;
-  }
-
   // multi-tile: draw the master tile.
+  // single-tile: draw current tile
   // and it is time to draw the master tile
-  //if( master->pos().z() == depth )
-  {
-    drawTilePass( engine, *master, offset, Renderer::overWalker );
-  }
+  drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
 }
 
 void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
@@ -351,6 +355,24 @@ void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const in
   }
 }
 
+void Layer::drawTile(Engine& engine, Tile& tile, Point offset)
+{
+  if( !tile.getFlag( Tile::wasDrawn ) )
+  {
+    tile.setWasDrawn();
+    drawPass( engine, tile, offset, Renderer::ground );
+    drawPass( engine, tile, offset, Renderer::groundAnimation );
+
+    if( tile.overlay().isValid() )
+    {
+      registerTileForRendering( tile );
+
+      drawPass( engine, tile, offset, Renderer::overlay );
+      drawPass( engine, tile, offset, Renderer::overlayAnimation );
+    }
+  }
+}
+
 void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std::string resourceGroup, int tileId)
 {
   if( area.empty() )
@@ -366,25 +388,25 @@ void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std:
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
-    engine.drawPicture( *pic, tile->mapPos() + offset );
+    engine.draw( *pic, tile->mapPos() + offset );
   }
 }
 
 void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
 {
   __D_IMPL(_d,Layer)
-  engine.drawPicture( _d->footColumn, pos + Point( 10, -21 ) );
+  engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
 
   int roundPercent = ( percent / 10 ) * 10;
 
   for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
   {
-    engine.drawPicture( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
+    engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
   }
 
   if( percent >= 10 )
   {
-    engine.drawPicture( _d->headerColumn, pos - Point( -6, 25 + roundPercent ) );
+    engine.draw( _d->headerColumn, pos - Point( -6, 25 + roundPercent ) );
   }
 }
 
@@ -393,7 +415,7 @@ void Layer::init( Point cursor )
   __D_IMPL(_d,Layer)
   _d->lastCursorPos = cursor;
   _d->startCursorPos = cursor;
-  _d->nextLayer = getType();
+  _d->nextLayer = type();
 }
 
 void Layer::afterRender( Engine& engine)
@@ -401,7 +423,44 @@ void Layer::afterRender( Engine& engine)
   __D_IMPL(_d,Layer)
   if( !_d->tooltipText.empty() )
   {
-    engine.drawPicture( *_d->tooltipPic, _d->lastCursorPos );
+    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
+  }
+
+  if( _d->drawGrid )
+  {
+    Tilemap& tmap = _d->city->tilemap();
+    Point offset = _d->camera->offset();
+    int size = tmap.size();
+    Picture& screen = engine.getScreen();
+    for( int k=0; k < size; k++ )
+    {
+      const Tile& tile = tmap.at( 0, k );
+      const Tile& etile = tmap.at( size - 1, k );
+      PictureDecorator::drawLine( screen, tile.mapPos() + offset, etile.mapPos() + offset, 0x80ff0000);
+
+      const Tile& rtile = tmap.at( k, 0 );
+      const Tile& ertile = tmap.at( k, size - 1 );
+      PictureDecorator::drawLine( screen, rtile.mapPos() + offset, ertile.mapPos() + offset, 0x80ff0000 );
+    }
+
+    std::string text;
+    Font font = Font::create( FONT_0 );
+    font.setColor( 0x80ffffff );
+    switch( _d->posMode )
+    {
+    case 1:
+      for( int i=0; i < size; i+=2 )
+      {
+        for( int j=0; j < size; j+=2 )
+        {
+          const Tile& rtile = tmap.at( i, j );
+          text = StringHelper::format( 0xff, "(%d,%d)", i, j );
+          //PictureDecorator::basicText( screen, rtile.mapPos() + offset + Point( 0, 0),text.c_str(), 0xffffffff );
+          font.draw( screen, text, rtile.mapPos() + offset + Point( 7, -7 ), false );
+        }
+      }
+    break;
+    }
   }
 }
 
@@ -411,6 +470,9 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   __D_IMPL(_d,Layer)
   _d->camera = camera;
   _d->city = city;
+  _d->drawGrid = false;
+  _d->posMode = 0;
+  _d->renderOverlay = true;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );
 }
 

@@ -48,11 +48,14 @@ public:
   TilesArray& operator=(const TilesArray& a)
   {
     resize( a.size() );
-    memcpy( &front(), &a.front(), (unsigned int)(sizeof(Tile*) * a.size()) );
-    /*for( const_iterator i=a.begin(); i != a.end(); i++ )
-    {
-      push_back( *i );
-    }*/
+    memcpy( &front(), &a.front(), (unsigned int)(sizeof(Tile*) * a.size()) );   
+
+    return *this;
+  }
+
+  TilesArray& append( const TilesArray& a )
+  {
+    insert( end(), a.begin(), a.end() );
 
     return *this;
   }
@@ -71,7 +74,7 @@ public:
 
   Tile* random() const
   {
-    return size() > 0 ? at( math::random( size() ) ) : 0;
+    return size() > 0 ? (*this)[ math::random( size() ) ] : 0;
   }
 };
 

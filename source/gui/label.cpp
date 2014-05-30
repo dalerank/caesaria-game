@@ -18,6 +18,7 @@
 #include "label.hpp"
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
+#include "core/event.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 
@@ -57,6 +58,7 @@ public:
   Label::BackgroundMode backgroundMode;
   bool RestrainTextInside;
   bool RightToLeft;
+  bool lmbPressed;
   string prefix;
   bool needUpdatePicture;
   int lineIntervalOffset;
@@ -74,6 +76,7 @@ public:
            needUpdatePicture(false), lineIntervalOffset( 0 )
   {
     font = Font::create( FONT_2 );
+    lmbPressed = false;
   }
 
   ~Impl()
@@ -212,6 +215,11 @@ void Label::_updateTexture(gfx::Engine& painter )
   }
 }
 
+void Label::_handleClick()
+{
+  oc3_emit _d->onClickedSignal();
+}
+
 //! destructor
 Label::~Label() {}
 
@@ -224,17 +232,17 @@ void Label::draw(gfx::Engine& painter )
   // draw background
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( *_d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   if( _d->icon.isValid() )
   {
-    painter.drawPicture( _d->icon, absoluteRect().UpperLeftCorner + _d->iconOffset, &absoluteClippingRectRef() );
+    painter.draw( _d->icon, absoluteRect().UpperLeftCorner + _d->iconOffset, &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture )
   {
-    painter.drawPicture( *_d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( *_d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -576,6 +584,29 @@ void Label::beforeDraw(gfx::Engine& painter )
 }
 
 Label::BackgroundMode Label::getBackgroundMode() const {  return _d->backgroundMode; }
+
+bool Label::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type )
+    {
+    case mouseLbtnPressed: _d->lmbPressed = true;
+    break;
+
+    case mouseLbtnRelease:
+    {
+      _d->lmbPressed = false;
+      _handleClick();
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  return Widget::onEvent( event );
+}
 
 bool Label::isBorderVisible() const {  return _d->isBorderVisible; }
 

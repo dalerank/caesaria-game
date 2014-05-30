@@ -24,11 +24,19 @@
 #include "tilemap_camera.hpp"
 #include "city/city.hpp"
 #include "core/event.hpp"
+#include "core/stringhelper.hpp"
+#include "objects/metadata.hpp"
+#include "events/fundissue.hpp"
+#include "city/funds.hpp"
 
 using namespace constants;
 
 namespace gfx
 {
+
+namespace {
+const unsigned int tilePosHashValue = 10000;
+}
 
 void LayerDestroy::_clearAll()
 {
@@ -40,13 +48,28 @@ void LayerDestroy::_clearAll()
   }
 }
 
+unsigned int LayerDestroy::_checkMoney4destroy(const Tile& tile)
+{
+  TileOverlayPtr overlay = tile.overlay();
+  if( overlay.isValid() )
+  {
+    const MetaData& mdata = MetaDataHolder::getData( overlay->type() );
+    return mdata.getOption( MetaDataOptions::cost ).toInt() / 2;
+  }
+
+  if( tile.getFlag( Tile::tlTree ) ) return 6;
+  if( tile.getFlag( Tile::tlRoad) ) return 4;
+
+  return 0;
+}
+
 void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master, const Point& offset )
 {
   if( master==NULL )
   {
     // single-tile
     drawTile( engine, tile, offset );
-    engine.drawPicture( _clearPic, tile.mapPos() + offset );
+    engine.draw( _clearPic, tile.mapPos() + offset );
   }
   else
   {
@@ -63,11 +86,15 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
   }
 }
 
+inline unsigned int __tpHash( const TilePos& pos )
+{
+  return (pos.j() * tilePosHashValue + pos.i());
+}
 
 void LayerDestroy::render( Engine& engine )
 {
   // center the map on the screen
-  Point cameraOffset = _camera()->getOffset();
+  Point cameraOffset = _camera()->offset();
 
   _camera()->startFrame();
 
@@ -79,10 +106,12 @@ void LayerDestroy::render( Engine& engine )
   TilesArray destroyArea = _getSelectedArea();
 
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
+  unsigned int saveSum = _money4destroy;
+  _money4destroy = 0;
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
-    hashDestroyArea.insert( tile->j() * 1000 + tile->i() );
+    hashDestroyArea.insert( __tpHash( tile->pos() ) );
 
     TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
@@ -90,11 +119,12 @@ void LayerDestroy::render( Engine& engine )
       TilesArray overlayArea = tmap.getArea( overlay->pos(), overlay->size() );
       foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert( (*ovelayTile)->j() * 1000 + (*ovelayTile)->i() );
+        hashDestroyArea.insert( __tpHash( (*ovelayTile)->pos() ) );
       }
     }
+
+    _money4destroy += _checkMoney4destroy( *tile );
   }
-  //Rect destroyArea = Rect( startPos.getI(), startPos.getJ(), stopPos.getI(), stopPos.getJ() );
 
   // FIRST PART: draw all flat land (walkable/boatable)
   foreach( it, visibleTiles )
@@ -105,34 +135,24 @@ void LayerDestroy::render( Engine& engine )
     if( !tile->isFlat() )
       continue;
 
-    int tilePosHash = tile->j() * 1000 + tile->i();
+    int tilePosHash = __tpHash( tile->pos() );
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       _drawTileInSelArea( engine, *tile, master, cameraOffset );
     }
     else
     {
-      if( master==NULL )
-      {
-        // single-tile
-        drawTile( engine, *tile, cameraOffset );
-      }
-      else if( !master->getFlag( Tile::wasDrawn ) )
-      {
-        // multi-tile: draw the master tile.
-        drawTile( engine, *master, cameraOffset );
-      }
+      drawTile( engine, master == NULL ? *tile :*master, cameraOffset );
     }
   }
 
   // SECOND PART: draw all sprites, impassable land and buildings
-  //WalkerList walkerList = _getVisibleWalkerList();
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
     int z = tile->pos().z();
 
-    int tilePosHash = tile->j() * 1000 + tile->i();
+    int tilePosHash = __tpHash( tile->pos() );
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       if( tile->getFlag( Tile::isDestructible ) )
@@ -146,6 +166,15 @@ void LayerDestroy::render( Engine& engine )
     _drawWalkers( engine, *tile, cameraOffset );
     engine.resetTileDrawMask();
   }
+
+  if( saveSum != _money4destroy )
+  {
+    _textPic->fill( 0x0, Rect() );
+    _textFont.setColor( 0xffff0000 );
+    _textFont.draw( *_textPic, StringHelper::i2str( _money4destroy ) + " Dn", Point() );
+  }
+
+  engine.draw( *_textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void LayerDestroy::handleEvent(NEvent& event)
@@ -172,14 +201,10 @@ void LayerDestroy::handleEvent(NEvent& event)
 
     case mouseLbtnRelease:            // left button
     {
-      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
-      if( tile == 0 )
-      {
-        break;
-      }
-
       _clearAll();
       _setStartCursorPos( _lastCursorPos() );
+      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::buildConstruction, -_money4destroy );
+      e->dispatch();
     }
     break;
 
@@ -211,10 +236,7 @@ void LayerDestroy::handleEvent(NEvent& event)
   }
 }
 
-int LayerDestroy::getType() const
-{
-  return citylayer::destroy;
-}
+int LayerDestroy::type() const {  return citylayer::destroy; }
 
 std::set<int> LayerDestroy::getVisibleWalkers() const
 {
@@ -233,15 +255,7 @@ void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
     registerTileForRendering( tile );
   }
 
-  if( !tile.getFlag( Tile::wasDrawn ) )
-  {
-    tile.setWasDrawn();
-    drawTilePass( engine, tile, offset, Renderer::ground );
-
-    drawTilePass( engine, tile, offset, Renderer::groundAnimation );
-
-    drawTilePass( engine, tile, offset, Renderer::foreground );
-  }
+  Layer::drawTile( engine, tile, offset );
 }
 
 LayerPtr LayerDestroy::create( Camera& camera, PlayerCityPtr city)
@@ -256,6 +270,8 @@ LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _clearPic = Picture::load( "oc3_land", 2 );
+  _textFont = Font::create( FONT_3 );
+  _textPic.init( Size( 100, 30 ) );
 }
 
 }//end namespace gfx

@@ -32,8 +32,8 @@ InfoboxTheater::InfoboxTheater(Widget *parent, const Tile &tile)
   TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );
   setTitle( _( theater->name() ) );
 
-  _getInfo()->setTextAlignment( align::upperLeft, align::center);
-  _updateWorkersLabel( Point( 40, 150), 542, theater->maxWorkers(), theater->numberWorkers() );
+  _lbTextRef()->setTextAlignment( align::upperLeft, align::center);
+  _updateWorkersLabel( Point( 40, 150), 542, theater->maximumWorkers(), theater->numberWorkers() );
   
   if( theater->showsCount() == 0 )
   {

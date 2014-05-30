@@ -22,6 +22,7 @@
 #include "core/stringhelper.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "good/goodhelper.hpp"
 #include "game/gamedate.hpp"
 
 namespace world
@@ -30,16 +31,29 @@ namespace world
 class Trading::Impl
 {
 public:
-  EmpirePtr empire;
+  struct PriceInfo
+  {
+    unsigned int sellPrice;
+    unsigned int buyPrice;
+  };
+
+  typedef std::map< Good::Type, PriceInfo > Prices;
   typedef std::map< unsigned int, TraderoutePtr > TradeRoutes;
+
+  EmpirePtr empire;
   TradeRoutes routes;
+  Prices empirePrices;
+
+  void setPrice( Good::Type type, int buy, int sell );
+  void initStandartPrices();
 };
 
 Trading::Trading() : _d( new Impl )
 {
+  _d->initStandartPrices();
 }
 
-void Trading::update( unsigned int time )
+void Trading::timeStep( unsigned int time )
 {
   if( GameDate::isDayChanged() )
   {
@@ -58,13 +72,24 @@ void Trading::init( EmpirePtr empire )
 VariantMap Trading::save() const
 {
   VariantMap ret;
-  VariantMap routes;
-  foreach( it,_d->routes )
+  VariantMap routesVm;
+  foreach( it, _d->routes )
   {
-    routes[ it->second->getName() ] = it->second->save();
+    routesVm[ it->second->getName() ] = it->second->save();
   }
 
-  ret[ "routes" ] = routes;
+  ret[ "routes" ] = routesVm;
+
+  VariantMap pricesVm;
+  foreach( it, _d->empirePrices )
+  {
+    VariantList tmp;
+    tmp << it->second.buyPrice << it->second.sellPrice;
+    pricesVm[ GoodHelper::getTypeName( it->first ) ] = tmp;
+  }
+
+  ret[ "prices" ] = pricesVm;
+
   return ret;
 }
 
@@ -81,6 +106,17 @@ void Trading::load(const VariantMap& stream)
       std::string endCity = routeName.substr( delimPos+3 );
       TraderoutePtr route = createRoute( beginCity, endCity );
       route->load( it->second.toMap() );
+    }
+  }
+
+  VariantMap prices = stream.get( "prices" ).toMap();
+  foreach( it, prices )
+  {
+    Good::Type gtype = GoodHelper::getType( it->first );
+    if( gtype != Good::none )
+    {
+      VariantList vl = it->second.toList();
+      _d->setPrice( gtype, vl.get( 0, 0 ).toInt(), vl.get( 1, 0 ).toInt() );
     }
   }
 }
@@ -144,6 +180,26 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
   return route;
 }
 
+void Trading::setPrice(Good::Type gtype, int bCost, int sCost)
+{
+  _d->setPrice( gtype, bCost, sCost );
+}
+
+void Trading::getPrice(Good::Type gtype, int& bCost, int& sCost)
+{
+  Impl::Prices::const_iterator it = _d->empirePrices.find( gtype );
+
+  if( it != _d->empirePrices.end() )
+  {
+    bCost = it->second.buyPrice;
+    sCost = it->second.sellPrice;
+  }
+  else
+  {
+    bCost = sCost = 0;
+  }
+}
+
 TraderouteList Trading::routes( const std::string& begin )
 {
   TraderouteList ret;
@@ -168,4 +224,30 @@ TraderouteList Trading::routes()
 
   return ret;
 }
+
+void Trading::Impl::setPrice(Good::Type type, int bCost, int sCost)
+{
+  empirePrices[ type ].buyPrice = bCost;
+  empirePrices[ type ].sellPrice = sCost;
+}
+
+void Trading::Impl::initStandartPrices()
+{
+  setPrice( Good::wheat, 28, 22 );
+  setPrice( Good::vegetable, 38, 30 );
+  setPrice( Good::fruit, 38, 30 );
+  setPrice( Good::olive, 42, 34 );
+  setPrice( Good::grape, 44, 36 );
+  setPrice( Good::meat, 44, 36 );
+  setPrice( Good::wine, 215, 160 );
+  setPrice( Good::oil, 180, 140 );
+  setPrice( Good::iron, 60, 40 );
+  setPrice( Good::timber, 50, 35 );
+  setPrice( Good::clay, 40, 30 );
+  setPrice( Good::marble, 200, 140 );
+  setPrice( Good::weapon, 250, 180 );
+  setPrice( Good::furniture, 200, 150 );
+  setPrice( Good::pottery, 180, 140 );
+}
+
 }//end namespace world

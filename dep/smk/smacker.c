@@ -342,7 +342,7 @@ smk smk_open_generic(const unsigned char m, union smk_read_t fp, unsigned long s
 
 	/* FrameSizes and Keyframe marker are stored together. */
 	smk_malloc(s->keyframe,(s->f + s->ring_frame));
-	smk_malloc(s->chunk_size,(s->f + s->ring_frame) * 4);
+	smk_malloc(s->chunk_size,(s->f + s->ring_frame) * sizeof(unsigned long));
 
 	for (temp_u = 0; temp_u < (s->f + s->ring_frame); temp_u ++)
 	{
@@ -737,7 +737,7 @@ error:
 }
 
 /* Decompresses a palette-frame. */
-static char smk_render_palette(struct smk_video_t *s, unsigned char *p, unsigned short size)
+static char smk_render_palette(struct smk_video_t *s, unsigned char *p, unsigned long size)
 {
 	unsigned short i,j,k;
 	unsigned char *t= NULL;
@@ -830,7 +830,7 @@ static char smk_render_palette(struct smk_video_t *s, unsigned char *p, unsigned
 		{
 			if (size < 3)
 			{
-				fprintf(stderr,"libsmacker::palette_render - ERROR: 0x3F ran out of bytes for copy, size=%d\n",size);
+				fprintf(stderr,"libsmacker::palette_render - ERROR: 0x3F ran out of bytes for copy, size=%lu\n",size);
 				goto error;
 			}
 			t[i++] = palmap[(*p) & 0x3f] ;
@@ -1147,7 +1147,7 @@ static char smk_render_audio(struct smk_audio_t *s, unsigned char *p, unsigned l
 			}
 			else
 			{
-				((unsigned char *)t)[1] = unpack;
+				((unsigned char *)t)[1] = (unsigned char)unpack;
 			}
 		}
 		smk_bs_safe_read_8(bs,unpack);
@@ -1158,7 +1158,7 @@ static char smk_render_audio(struct smk_audio_t *s, unsigned char *p, unsigned l
 		}
 		else
 		{
-			((unsigned char *)t)[0] = unpack;
+			((unsigned char *)t)[0] = (unsigned char)unpack;
 		}
 
 		/* All set: let's read some DATA! */
@@ -1168,7 +1168,7 @@ static char smk_render_audio(struct smk_audio_t *s, unsigned char *p, unsigned l
 			{
 				smk_huff_safe_lookup(bs,aud_tree[0],unpack);
 				((unsigned char *)t)[j] = (char)unpack + ((unsigned char *)t)[j - s->channels];
-				j ++;
+				j++;
 				k++;
 			}
 			else

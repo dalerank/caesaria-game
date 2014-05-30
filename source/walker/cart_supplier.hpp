@@ -32,7 +32,7 @@ public:
   
   virtual const gfx::Picture& getCartPicture();
   
-  virtual void getPictureList( gfx::Pictures& oPics);
+  virtual void getPictures( gfx::Pictures& oPics);
 
   void send2city(BuildingPtr building, Good::Type what, const int qty );
 

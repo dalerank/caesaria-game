@@ -26,7 +26,7 @@ namespace gfx
 {
 
 namespace {
-static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::foreground);
+static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
 }
 
@@ -58,7 +58,7 @@ TileOverlay::TileOverlay(const Type type, const Size& size)
 
 Desirability TileOverlay::desirability() const
 {
-  return MetaDataHolder::getData( type() ).getDesirbility();
+  return MetaDataHolder::getData( type() ).desirability();
 }
 
 void TileOverlay::setType(const Type type)
@@ -66,7 +66,7 @@ void TileOverlay::setType(const Type type)
   const MetaData& bd = MetaDataHolder::getData( type );
 
    _d->overlayType = type;
-   _d->overlayClass = bd.getGroup();
+   _d->overlayClass = bd.group();
    _d->name = bd.getName();
 }
 
@@ -76,7 +76,7 @@ void TileOverlay::setPicture(Picture picture)
 {
   _d->picture = picture;
 
-  if (_d->masterTile != NULL)
+  /*if (_d->masterTile != NULL)
   {
     Tilemap &tilemap = _city()->tilemap();
     // _master_tile == NULL is cloneable buildings
@@ -87,10 +87,10 @@ void TileOverlay::setPicture(Picture picture)
       for (int di = 0; di<_d->size.height(); ++di)
       {
         Tile &tile = tilemap.at( pos + TilePos( di, dj ) );
-        tile.setPicture( &_d->picture );
+        //tile.setPicture( &_d->picture );
       }
     }
-  }
+  }*/
 }
 
 void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
@@ -106,7 +106,7 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
     {
       Tile& tile = tilemap.at( pos + TilePos( di, dj ) );
       tile.setMasterTile( _d->masterTile );
-      tile.setPicture( &_d->picture );
+      //tile.setPicture( &_d->picture );
 
       if( tile.overlay().isValid() && tile.overlay() != this )
       {
@@ -130,11 +130,11 @@ Tile& TileOverlay::tile() const
   return *_d->masterTile;
 }
 
-const Pictures& TileOverlay::getPictures( Renderer::Pass pass ) const
+const Pictures& TileOverlay::pictures( Renderer::Pass pass ) const
 {
   switch( pass )
   {
-  case Renderer::foreground: return _d->fgPictures;
+  case Renderer::overlayAnimation: return _d->fgPictures;
   default: break;
   }
 
@@ -200,7 +200,7 @@ PlayerCityPtr TileOverlay::_city() const{ return _d->city;}
 gfx::Pictures& TileOverlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture& TileOverlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
 Picture& TileOverlay::_pictureRef(){  return _d->picture;}
-TileOverlay::Group TileOverlay::getClass() const{  return _d->overlayClass;}
+TileOverlay::Group TileOverlay::group() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
 const Picture& TileOverlay::picture() const{  return _d->picture;}
 void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}
@@ -209,7 +209,7 @@ void TileOverlay::deleteLater(){  _d->isDeleted  = true;}
 void TileOverlay::destroy(){}
 Size TileOverlay::size() const{  return _d->size;}
 bool TileOverlay::isDeleted() const{  return _d->isDeleted;}
-Renderer::PassQueue TileOverlay::getPassQueue() const{ return defaultPassQueue;}
+Renderer::PassQueue TileOverlay::passQueue() const{ return defaultPassQueue;}
 std::string TileOverlay::name(){  return _d->name;}
 TileOverlay::~TileOverlay(){}  // what we shall to do here?
 TileOverlay::Type TileOverlay::type() const{   return _d->overlayType;}

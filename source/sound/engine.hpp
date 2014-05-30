@@ -59,6 +59,12 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+class Helper
+{
+public:
+  static void initTalksArchive(const vfs::Path& filename );
+};
+
 } //end namespace audio
 
 #endif //_CAESARIA_SOUND_ENGINE_H_INCLUDE_

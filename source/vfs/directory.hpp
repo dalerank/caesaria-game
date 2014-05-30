@@ -40,8 +40,8 @@ public:
   Directory operator/(const Directory& dir );
   Path operator/(const Path& filename );
 
-  Entries getEntries(SensType sens = Path::nativeCase) const;
-  Path find( const Path& fileName ) const;
+  Entries getEntries() const;
+  Path find( const Path& fileName, SensType sens = Path::nativeCase ) const;
   Directory up() const;
   Path getRelativePathTo( Path path ) const;
   //void Remove();

@@ -42,16 +42,21 @@ public:
   virtual void save( VariantMap& options ) const;
   virtual void load( const VariantMap& options );
 
-  virtual const GoodStore& getSells() const;
-  virtual const GoodStore& getBuys() const;
+  virtual const GoodStore& importingGoods() const;
+  virtual const GoodStore& exportingGoods() const;
+  virtual void delayTrade(unsigned int month);
+  virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
 
   virtual EmpirePtr empire() const;
   virtual unsigned int tradeType() const;
 
   virtual void arrivedMerchant( MerchantPtr );
 
+  void changeTradeOptions( const VariantMap& stream );
+
 protected:
   ComputerCity( EmpirePtr empire, const std::string& name );
+  bool _mayTrade() const;
 
 private:
   class Impl;

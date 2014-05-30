@@ -26,6 +26,11 @@
 namespace world
 {
 
+namespace {
+CAESARIA_LITERALCONST(location)
+CAESARIA_LITERALCONST(distant)
+}
+
 class ComputerCity::Impl
 {
 public:
@@ -35,6 +40,7 @@ public:
   unsigned int tradeType;
   bool distantCity, romeCity;
   bool isAvailable;
+  unsigned int tradeDelay;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
   SimpleGoodStore realSells;
@@ -46,6 +52,7 @@ public:
 ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( new Impl )
 {
   _d->name = name;
+  _d->tradeDelay = 0;
   _d->distantCity = false;
   _d->empire = empire;
   _d->merchantsNumber = 0;
@@ -56,6 +63,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( ne
   _d->romeCity = false;
 }
 
+bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
 std::string ComputerCity::getName() const {  return _d->name;}
 Point ComputerCity::location() const{  return _d->location;}
 void ComputerCity::setLocation( const Point& location ){  _d->location = location;}
@@ -66,7 +74,7 @@ void ComputerCity::setAvailable(bool value){  _d->isAvailable = value;}
 
 void ComputerCity::save( VariantMap& options ) const
 {
-  options[ "location" ] = _d->location;
+  options[ lc_location ] = _d->location;
 
   VariantMap vm_sells;
   VariantMap vm_sold;
@@ -112,23 +120,25 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "merchantsNumber" ] = _d->merchantsNumber;
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
-  options[ "distant" ] = _d->distantCity;
+  options[ lc_distant ] = _d->distantCity;
   options[ "romecity" ] = _d->romeCity;
   options[ "realSells" ] = _d->realSells.save();
+  options[ "tradeDelay" ] = _d->tradeDelay;
 }
 
 void ComputerCity::load( const VariantMap& options )
 {
-  Variant location = options.get( "location" );
-  if( location.isValid() )
-    setLocation( location.toPoint() );
+  Variant v_location = options.get( lc_location );
+  if( v_location.isValid() )
+    setLocation( v_location.toPoint() );
 
   _d->isAvailable = (bool)options.get( "available", false );
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
   _d->merchantsNumber = (int)options.get( "merchantsNumber" );
-  _d->distantCity = (bool)options.get( "distant" );
+  _d->distantCity = (bool)options.get( lc_distant );
   _d->romeCity = (bool)options.get( "romecity" );
+  _d->tradeDelay = (int)options.get( "tradeDelay" );
 
   for( int i=Good::none; i < Good::goodCount; i ++ )
   {
@@ -138,26 +148,13 @@ void ComputerCity::load( const VariantMap& options )
     _d->realSells.setCapacity( gtype, 0 );
   }
 
-  const VariantMap& sells_vm = options.get( "sells" ).toMap();
-  for( VariantMap::const_iterator it=sells_vm.begin(); it != sells_vm.end(); ++it )
-  {
-    Good::Type gtype = GoodHelper::getType( it->first );
-    _d->sellStore.setCapacity( gtype, it->second.toInt() * 100 );
-    _d->realSells.setCapacity( gtype, it->second.toInt() * 100 );
-  }
+  changeTradeOptions( options );
 
   const VariantMap& sold_vm = options.get( "sold" ).toMap();
   for( VariantMap::const_iterator it=sold_vm.begin(); it != sold_vm.end(); ++it )
   {
     Good::Type gtype = GoodHelper::getType( it->first );
     _d->sellStore.setQty( gtype, it->second.toInt() * 100 );
-  }
-
-  const VariantMap& buys_vm = options.get( "buys" ).toMap();
-  for( VariantMap::const_iterator it=buys_vm.begin(); it != buys_vm.end(); ++it )
-  {
-    Good::Type gtype = GoodHelper::getType( it->first );
-    _d->buyStore.setCapacity( gtype, it->second.toInt() * 100 );
   }
 
   const VariantMap& bought_vm = options.get( "bought" ).toMap();
@@ -178,8 +175,13 @@ void ComputerCity::load( const VariantMap& options )
   }
 }
 
-const GoodStore& ComputerCity::getSells() const {  return _d->realSells;}
-const GoodStore& ComputerCity::getBuys() const{  return _d->buyStore;}
+const GoodStore& ComputerCity::importingGoods() const {  return _d->realSells;}
+const GoodStore& ComputerCity::exportingGoods() const{  return _d->buyStore;}
+void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
+
+void ComputerCity::empirePricesChanged(Good::Type gtype, int bCost, int sCost)
+{
+}
 
 CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 {
@@ -209,10 +211,33 @@ void ComputerCity::arrivedMerchant( MerchantPtr merchant )
   _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
 }
 
+void ComputerCity::changeTradeOptions(const VariantMap& stream)
+{
+  VariantMap sells_vm = stream.get( "sells" ).toMap();
+  foreach( it, sells_vm )
+  {
+    Good::Type gtype = GoodHelper::getType( it->first );
+    _d->sellStore.setCapacity( gtype, it->second.toInt() * 100 );
+    _d->realSells.setCapacity( gtype, it->second.toInt() * 100 );
+  }
+
+  VariantMap buys_vm = stream.get( "buys" ).toMap();
+  foreach( it, buys_vm )
+  {
+    Good::Type gtype = GoodHelper::getType( it->first );
+    _d->buyStore.setCapacity( gtype, it->second.toInt() * 100 );
+  }
+}
+
 ComputerCity::~ComputerCity() {}
 
 void ComputerCity::timeStep( unsigned int time )
 {
+  if( GameDate::isMonthChanged() )
+  {
+    _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
+  }
+
   //one year before step need
   if( _d->lastTimeUpdate.monthsTo( GameDate::current() ) > 11 )
   {
@@ -230,10 +255,10 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( _d->lastTimeMerchantSend.monthsTo( GameDate::current() ) > 2 ) 
   {
-    TraderouteList routes = _d->empire->getTradeRoutes( getName() );
+    TraderouteList routes = _d->empire->tradeRoutes( getName() );
     _d->lastTimeMerchantSend = GameDate::current();
 
-    if( _d->merchantsNumber >= routes.size() )
+    if( _d->merchantsNumber >= routes.size() || !_mayTrade() )
     {
       return;
     }

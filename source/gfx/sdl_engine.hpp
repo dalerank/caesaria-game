@@ -25,7 +25,6 @@
 #include "core/scopedptr.hpp"
 
 // This is the SDL engine
-// It does a dumb drawing from back to front
 namespace gfx
 {
 
@@ -49,11 +48,13 @@ public:
   virtual void resetTileDrawMask();
 
   // deletes a picture (deallocate memory)
-  virtual void deletePicture( Picture* pic );
+  virtual void deletePicture(Picture* pic);
   virtual void loadPicture(Picture &ioPicture);
   virtual void unloadPicture(Picture& ioPicture);
-  virtual void drawPicture(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
-  virtual void drawPicture(const Picture &picture, const Point& pos, Rect* clipRect=0 );
+
+  virtual void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
+  virtual void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
+  virtual void draw(const Pictures& pictures, const Point& pos, Rect* clipRect=0 );
   // creates a picture with the given size, it will need to be loaded by the graphic engine
   virtual Picture* createPicture(const Size& size);
 
@@ -63,8 +64,7 @@ public:
   virtual Modes modes() const;
   virtual Point cursorPos() const;
 
-//non virtual functions: need to debug functional
-  Picture& getScreen();
+  virtual Picture& getScreen();
 
 private:
   class Impl;

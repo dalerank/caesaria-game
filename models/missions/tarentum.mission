@@ -32,6 +32,35 @@
         picture : "empire_bits_00112"
       }
 
+      aqueduct : {
+        location : [ 170, 630 ]
+        name : "aqueduct"
+        picture : "empire_bits_00107"
+      }
+
+      palms : {
+        location : [ 490, 790 ]
+        name : "palms"
+        picture : "empire_bits_00111"
+      }
+
+      colosseum : {
+        location : [ 735, 495 ]
+        name : "colosseum"
+        picture : "empire_bits_00114"
+      }
+
+      rocks : {
+        location : [ 240, 460 ]
+        name : "rocks"
+        picture : "empire_bits_00106"
+      }
+
+      rocks2 : {
+        location : [ 530, 380 ]
+        name : "rocks2"
+        picture : "empire_bits_00115"
+      }
     }
 
     cities :
@@ -120,10 +149,16 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
+    barbarian_attack#messagebox : {
+      date : "-349.07.01"
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+
     "barbarian_invasion#enemy_attack" : {
       date : "-349.07.01"
       type : "enemy_attack"
-      video : "enemy_attack.bik"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -169,6 +204,7 @@
       pottery_workshop : true
       dock : true
       iron_mine : true
+      weapons_workshop : true
       hippodrome : false
       charioter_school : false
       prefecture : true

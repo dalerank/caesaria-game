@@ -25,6 +25,7 @@
 #include "core/signals.hpp"
 #include "core/position.hpp"
 #include "traderoute.hpp"
+#include "good/good.hpp"
 
 class GoodStore;
 
@@ -37,7 +38,7 @@ public:
   Trading();
   ~Trading();
 
-  void update( unsigned int time );
+  void timeStep( unsigned int time );
   void init( EmpirePtr empire );
 
   VariantMap save() const;
@@ -48,6 +49,9 @@ public:
   TraderouteList routes( const std::string& begin );
   TraderouteList routes();
   TraderoutePtr createRoute( const std::string& begin, const std::string& end );
+
+  void setPrice( Good::Type gtype, int bCost, int sCost );
+  void getPrice( Good::Type gtype, int& bCost, int& sCost );
 
   void sendMerchant( const std::string& begin, const std::string& end, 
                      GoodStore& sell, GoodStore& buy );

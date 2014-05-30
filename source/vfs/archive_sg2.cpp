@@ -183,7 +183,7 @@ Sg2ArchiveReader::~Sg2ArchiveReader() {}
 
 std::string Sg2ArchiveReader::getTypeName() const {  return "Sg2Reader";}
 Archive::Type Sg2ArchiveReader::getType() const{  return Archive::sg2;}
-const Entries* Sg2ArchiveReader::getFileList() const{  return this;}
+const Entries* Sg2ArchiveReader::entries() const{  return this;}
 
 NFile Sg2ArchiveReader::createAndOpenFile(unsigned int index)
 {
@@ -224,22 +224,22 @@ std::string Sg2ArchiveReader::_find555File( const SgFileEntry& rec )
 	return rec.fn;
 }
 
-std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( std::string dir, std::string filename )
+std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( const std::string& dir, std::string filename )
 {
-	Directory directory( dir );
-	filename = StringHelper::localeLower( filename );
+  Directory directory( dir );
+  filename = StringHelper::localeLower( filename );
 
-	Entries::Items files = directory.getEntries( Path::ignoreCase ).items();
-	for(int i = 0; i < files.size(); i++)
-	{
-		if( filename == StringHelper::localeLower( files[i].name.toString() ) )
-		{
-			return files[i].abspath().toString();
-		}
-		//qDebug() << "No match: " << files[i];
-	}
+  Entries::Items files = directory.getEntries().items();
+  for( unsigned int i = 0; i < files.size(); i++)
+  {
+    if( filename == StringHelper::localeLower( files[i].name().toString() ) )
+    {
+      return files[i].absolutePath().toString();
+    }
+    //qDebug() << "No match: " << files[i];
+  }
 
-	return std::string();
+  return std::string();
 }
 
 ByteArray Sg2ArchiveReader::_readData(const SgFileEntry& rec )

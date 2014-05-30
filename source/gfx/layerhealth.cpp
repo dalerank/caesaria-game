@@ -29,7 +29,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerHealth::getType() const
+int LayerHealth::type() const
 {
   return _type;
 }
@@ -56,12 +56,10 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
@@ -75,7 +73,6 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::road:
     case construction::plaza:
       needDrawAnimations = true;
-      engine.drawPicture( tile.picture(), screenPos );
     break;
 
     case building::doctor:
@@ -83,11 +80,7 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::barber:
     case building::baths:
       needDrawAnimations = _flags.count( overlay->type() );
-      if( needDrawAnimations )
-      {
-        engine.drawPicture( tile.picture(), screenPos );
-      }
-      else
+      if( !needDrawAnimations )
       {
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
@@ -101,10 +94,13 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
 
         healthLevel = _getLevelValue( house );
 
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        if( !needDrawAnimations )
+        {
+          city::Helper helper( _city() );
+          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        }
       }
     break;
 
@@ -119,6 +115,7 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( healthLevel > 0 )
@@ -126,6 +123,8 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, healthLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerHealth::create(TilemapCamera& camera, PlayerCityPtr city, int type )

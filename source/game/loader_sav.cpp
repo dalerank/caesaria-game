@@ -33,6 +33,8 @@
 
 using namespace gfx;
 
+static const int kClimate     = 0x33ad8;
+
 class GameLoaderC3Sav::Impl
 {
 public:
@@ -88,12 +90,27 @@ void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   f.seekg(savePos, std::ios::beg);
 }
 
+int GameLoaderC3Sav::getClimateType(const std::string& filename)
+{
+  /*std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
+
+  unsigned int i = 0;
+  f.seekg(kClimate, std::ios::beg);
+  f.read((char*)&i, 1);
+
+  f.close();
+
+  return i; */
+  return -1;
+}
+
 
 bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
-  //_d->initClimate(f, game.getCity() );
+  //int climateType = getClimateType( filename );
+  //game.city()->setClimate( (ClimateType)climateType );
 
   _d->loadCity(f, game );
 
@@ -107,9 +124,9 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
   uint32_t tmp;
 
   // need to rewrite better
-  std::vector<short int> graphicGrid; graphicGrid.resize( 52488, 0 );
+  std::vector<short int> graphicGrid; graphicGrid.resize( 26244, 0 );
   std::vector<unsigned char> edgeGrid; edgeGrid.resize( 26244, 0 );
-  std::vector<short int> terrainGrid; terrainGrid.resize( 52488, 0 );
+  std::vector<short int> terrainGrid; terrainGrid.resize( 26244, 0 );
   std::vector<unsigned char> rndmTerGrid; rndmTerGrid.resize(26244, 0);
   std::vector<unsigned char> randomGrid; randomGrid.resize( 26244, 0 );
   std::vector<unsigned char> zeroGrid; zeroGrid.resize( 26244, 0 );
@@ -166,11 +183,7 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f);
     SkipCompressed(f);
     
-#ifdef CAESARIA_PLATFORM_HAIKU
     f.read((char*)&randomGrid[0], 26244); 
-#else    
-    f.read((char*)randomGrid.data(), 26244);
-#endif
     
     SkipCompressed(f);
     SkipCompressed(f);

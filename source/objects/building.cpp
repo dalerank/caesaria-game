@@ -37,7 +37,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::building);
+static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 }
 
 class Building::Impl
@@ -102,7 +102,7 @@ void Building::storeGoods(GoodStock &stock, const int amount)
 float Building::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
-   Service::Type service = walker->getService();
+   Service::Type service = walker->serviceType();
    if(_reservedServices.count(service) == 1)
    {
       // service is already reserved
@@ -125,7 +125,7 @@ void Building::applyService( ServiceWalkerPtr walker)
 {
    // std::cout << "apply service" << std::endl;
    // remove service reservation
-   Service::Type service = walker->getService();
+   Service::Type service = walker->serviceType();
    _reservedServices.erase(service);
 
    switch( service )
@@ -175,4 +175,4 @@ int Building::traineeValue(walker::Type traineeType) const
   return i != _d->traineeMap.end() ? i->second : -1;
 }
 
-Renderer::PassQueue Building::getPassQueue() const {  return buildingPassQueue;}
+Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}

@@ -31,8 +31,8 @@ public:
   virtual bool isWalkable() const;
   virtual bool isRoad() const;
 
-  virtual gfx::Renderer::PassQueue getPassQueue() const;
-  virtual const gfx::Pictures& getPictures(gfx::Renderer::Pass pass) const;
+  virtual gfx::Renderer::PassQueue passQueue() const;
+  virtual const gfx::Pictures& pictures(gfx::Renderer::Pass pass) const;
 
   virtual void initTerrain(gfx::Tile &terrain);
 

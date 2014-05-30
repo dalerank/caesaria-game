@@ -10,11 +10,7 @@
       geometry : [ 16, 10, "pw-16", 40 ]
       text : "##title##"
       textAlign : [ "center", "center" ]
-    }
-
-    lbxFiles#ListBox : {
-      geometry : [ 10, 40, "pw-10", "ph-45" ]
-    }
+    }    
 
     btnExit#TexturedButton : {
       geometry : [ 472, "ph-39", 496, "ph-15" ]

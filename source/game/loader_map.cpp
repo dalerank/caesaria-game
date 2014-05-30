@@ -42,7 +42,7 @@ public:
   static const int kTerrainGrid = 0x1338c;
   static const int kRndmTerGrid = 0x20094;
   static const int kRandomGrid  = 0x26718;
-  static const int kZeroGrid    = 0x2cd9c;
+  static const int kElevationGrid    = 0x2cd9c;
   static const int kCamera      = 0x33428;
   static const int kStartDate   = 0x33430;
   static const int kLocation    = 0x33434;
@@ -103,6 +103,19 @@ bool GameLoaderC3Map::load(const std::string& filename, Game& game)
   return true;
 }
 
+int GameLoaderC3Map::getClimateType(const std::string& filename)
+{
+  std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
+
+  unsigned int i = 0;
+  f.seekg(Impl::kClimate, std::ios::beg);
+  f.read((char*)&i, 1);
+
+  f.close();
+
+  return i;
+}
+
 GameLoaderC3Map::GameLoaderC3Map() : _d( new Impl ) {}
 
 bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
@@ -119,7 +132,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.seekg(kLocation, std::ios::beg);
   unsigned int location=0;
   f.read((char*)&location, 1);
-  Logger::warning( "Location of city is %d", (int)(location) );
+  Logger::warning( "C3MapLoader: location of city is %d", (int)(location) );
 
   std::string cityName = LoaderHelper::getDefaultCityName( location );
   oCity->setName( cityName );
@@ -130,7 +143,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   int size_2;
   f.read((char*)&map_size,   4);
   f.read((char*)&size_2, 4);
-  Logger::warning( "Map size is %d", map_size );
+  Logger::warning( "C3MapLoader: map size is %d", map_size );
 
   if (map_size != size_2)
   {
@@ -165,7 +178,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.read((char*)pRndmTerGrid.data(), 26244);
   f.seekg(kRandomGrid, std::ios::beg);
   f.read((char*)pRandomGrid.data(), 26244);
-  f.seekg(kZeroGrid, std::ios::beg);
+  f.seekg(kElevationGrid, std::ios::beg);
   f.read((char*)pZeroGrid.data(), 26244);
 
   std::map< int, std::map< int, unsigned char > > edgeData;
@@ -246,9 +259,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   }
 }
 
-
-
-void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity)
+void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
 {
   // read climate
   unsigned int i = 0;
@@ -258,22 +269,7 @@ void GameLoaderC3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity)
   ClimateType climate = (ClimateType) i;
   ioCity->setClimate(climate);
 
-  Logger::warning( "Climate type is %d", climate );
-
-  // reload all pics for the given climate
-  //   PicLoader &pic_loader = PicLoader::instance();
-  //   if (climate == C_CENTRAL)
-  //   {
-  //      pic_loader.load_archive("resources/pics/pics.zip");
-  //   }
-  //   else if (climate == C_NORTHERN)
-  //   {
-  //      pic_loader.load_archive("resources/pics/pics_north.zip");
-  //   }
-  //   else if (climate == C_DESERT)
-  //   {
-  //      pic_loader.load_archive("resources/pics/pics_south.zip");
-  //   }
+  Logger::warning( "C3MapLoader: climate type is %d", climate );
 }
 
 void GameLoaderC3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)

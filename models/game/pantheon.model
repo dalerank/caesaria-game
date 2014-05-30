@@ -2,7 +2,6 @@
   ceres :
   {
     name : "Ceres",
-    shortDesc : "Fertility",
     type : "goddess",
     service : "srvc_religionCeres",
     image : "picture1_00013"
@@ -12,7 +11,6 @@
   mars :
   {
     name : "Mars",
-    shortDesc : "War",
     type : "god",
     service : "srvc_religionMars",
     image : "picture1_00012"
@@ -22,7 +20,6 @@
   neptune :
 	{
 		name : "Neptune"
-		shortDesc : ""
 		type : "god",
     service : "srvc_religionNeptune"
     image : "picture1_00015"
@@ -32,7 +29,6 @@
   venus :
 	{
     name : "Venus"
-		shortDesc : ""
 		type : "goddes"
     service : "srvc_religionVenus"
     image : "picture1_00011"
@@ -42,7 +38,6 @@
   mercury :
 	{
 		name : "Mercury"
-		shortDesc : ""
 		type : "god",
     service : "srvc_religionMercury"
     image : "picture1_00014"

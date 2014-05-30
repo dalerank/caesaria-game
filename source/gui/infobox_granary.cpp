@@ -44,7 +44,7 @@ InfoboxGranary::InfoboxGranary( Widget* parent, const Tile& tile )
                                          _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );
   CONNECT( btnOrders, onClicked(), this, InfoboxGranary::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::getPrettyName( _granary->type() );
+  std::string title = MetaDataHolder::findPrettyName( _granary->type() );
   setTitle( _(title) );
 
   // summary: total stock, free capacity
@@ -53,14 +53,14 @@ InfoboxGranary::InfoboxGranary( Widget* parent, const Tile& tile )
                                            _("##units_in_stock##"), _("##freespace_for##"),
                                            _granary->store().freeQty() );
 
-  Label* lbUnits = new Label( this, Rect( _title()->leftdownCorner(), Size( width() - 16, 40 )), desc );
+  Label* lbUnits = new Label( this, Rect( _lbTitleRef()->leftdownCorner(), Size( width() - 16, 40 )), desc );
 
   drawGood(Good::wheat, 0, lbUnits->bottom() );
   drawGood(Good::meat, 0, lbUnits->bottom() + 25);
   drawGood(Good::fruit, 1, lbUnits->bottom() );
   drawGood(Good::vegetable, 1, lbUnits->bottom() + 25);
 
-  _updateWorkersLabel( Point( 32, lbUnits->bottom() + 60 ), 542, _granary->maxWorkers(), _granary->numberWorkers() );
+  _updateWorkersLabel( Point( 32, lbUnits->bottom() + 60 ), 542, _granary->maximumWorkers(), _granary->numberWorkers() );
 }
 
 InfoboxGranary::~InfoboxGranary()

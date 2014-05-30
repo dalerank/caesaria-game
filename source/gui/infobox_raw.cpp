@@ -33,7 +33,7 @@ namespace gui
 {
 
 InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 146, 510 - 16, 146 + 74 ) )
+  : InfoboxConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
 {
   Widget::setupUI( GameSettings::rcpath( "/gui/infoboxraw.gui" ) );
   FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
@@ -52,7 +52,7 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
     new Image( this, Point( 10, 10 ), pic );
   }
 
-  _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maxWorkers(), rawmb->numberWorkers() );
+  _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );
 
   if( lbDamage != NULL )
   {
@@ -68,12 +68,15 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
     lbProgress->setText( text );
   }
 
-  std::string title = MetaDataHolder::getPrettyName( rawmb->type() );
-  _title()->setText( _(title) );
+  std::string title = MetaDataHolder::findPrettyName( rawmb->type() );
+  _lbTitleRef()->setText( _(title) );
+
+  std::string text = rawmb->workersProblemDesc();
+  std::string cartInfo = rawmb->cartStateDesc();
+  text = ( StringHelper::format( 0xff, "%s\n%s", _(text), _( cartInfo ) ) );
 
   if( lbProductivity != NULL )
   {
-    std::string text = rawmb->workersProblemDesc();
     lbProductivity->setText( _(text) );
   }
 }

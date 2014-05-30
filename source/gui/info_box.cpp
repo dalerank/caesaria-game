@@ -108,14 +108,14 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
   Point lastPos( width() - 32, height() - 48 );
   if( _d->lbBlackFrame )
   {
-    _d->lbBlackFrame->setVisible( blackArea.getSize().area() > 0 );
+    _d->lbBlackFrame->setVisible( blackArea.size().area() > 0 );
     _d->lbBlackFrame->setGeometry( blackArea );
     lastPos.setY( _d->lbBlackFrame->top() - 10 );
   }
 
-  if( _d->lbText && blackArea.getWidth() == 0 )
+  if( _d->lbText && blackArea.width() == 0 )
   {
-    Rect r = _d->lbText->getRelativeRect();
+    Rect r = _d->lbText->relativeRect();
     r.LowerRightCorner = _d->btnExit->rightupCorner();
     _d->lbText->setGeometry( r );
   }
@@ -179,11 +179,11 @@ void InfoboxSimple::setupUI(const VariantMap& ui)
   _d->isAutoPosition = ui.get( "autoPosition", true );
 }
 
-Label* InfoboxSimple::_title(){  return _d->lbTitle;}
+Label* InfoboxSimple::_lbTitleRef(){  return _d->lbTitle;}
 
-Label*InfoboxSimple::_getInfo(){ return _d->lbText; }
-Label* InfoboxSimple::_getBlackFrame(){  return _d->lbBlackFrame; }
-PushButton*InfoboxSimple::_getBtnExit() { return _d->btnExit; }
+Label* InfoboxSimple::_lbTextRef(){ return _d->lbText; }
+Label* InfoboxSimple::_lbBlackFrameRef(){  return _d->lbBlackFrame; }
+PushButton*InfoboxSimple::_btnExitRef() { return _d->btnExit; }
 
 void InfoboxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
@@ -205,22 +205,7 @@ InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
   BuildingPtr building = ptr_cast<Building>( tile.overlay() );
-  setTitle( MetaDataHolder::getPrettyName( building->type() ) );
+  setTitle( MetaDataHolder::findPrettyName( building->type() ) );
 }
-
-InfoboxText::InfoboxText(Widget* parent, const std::string& title, const std::string& message)
-  : InfoboxSimple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
-{
-  setTitle( title );
-  _d->isAutoPosition = false;
-
-  setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
-
-  _d->lbText->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _d->lbText->setWordwrap( true );
-  _d->lbText->setText( message );
-}
-
-InfoboxText::~InfoboxText() {}
 
 }//end namespace gui

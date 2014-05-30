@@ -31,7 +31,9 @@ public:
 };
 
 Temple::Temple( DivinityPtr divinity, TileOverlay::Type type, int imgId, const Size& size )
-: ServiceBuilding( divinity->serviceType(), type, size ), _td( new Impl )
+: ServiceBuilding( divinity.isValid()
+                    ? divinity->serviceType()
+                    : Service::srvCount, type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
   setPicture( ResourceGroup::security, imgId );
@@ -98,6 +100,7 @@ unsigned int BigTempleMercure::parishionerNumber() const
 
 TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), building::oracle, 55 )
 {
+  setSize( Size( 2 ) );
   _animationRef().load( ResourceGroup::security, 56, 6);
   _animationRef().setOffset( Point( 9, 30 ) );
   _fgPicturesRef().resize(1);
@@ -118,7 +121,7 @@ void TempleOracle::build(PlayerCityPtr city, const TilePos& pos)
 SmallTemple::SmallTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(2) )
 {
-  setMaxWorkers( 2 );
+  setMaximumWorkers( 2 );
 }
 
 unsigned int SmallTemple::parishionerNumber() const {  return 150;}
@@ -126,7 +129,7 @@ unsigned int SmallTemple::parishionerNumber() const {  return 150;}
 BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
 {
-  setMaxWorkers( 8 );
+  setMaximumWorkers( 8 );
 }
 
 unsigned int BigTemple::parishionerNumber() const {  return 300;}

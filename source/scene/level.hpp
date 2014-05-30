@@ -48,13 +48,16 @@ public:
 
   virtual bool installEventHandler(EventHandlerPtr);
 
+
   void setCameraPos( TilePos pos );
 
 private:
   void _resolveEndGame();
   void _resolveExitGame();
   void _resolveSwitchMap();
-  void _resolveFastLoad();
+  void _resolveShowLoadGameWnd();
+  void _resolveLoadGame(std::string filename);
+  void _resolveLoad();
   void _resolveEscapeButton();
   void _resolveEnterButton();
   void _showIngameMenu();

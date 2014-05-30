@@ -100,6 +100,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
  
   new Label( this, Rect( 18, 296, width() / 2, 297 + 30 ), "Continue?" );
   _d->btnOk = new TexturedButton( this, Point( 217, 297 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
+  _d->btnOk->setTooltipText( _("##save_game_here##") );
 
   _d->btnCancel = new TexturedButton( this, Point( 265, 297), Size( 39, 26 ), -1, ResourceMenu::cancelBtnPicId );
 
@@ -116,7 +117,7 @@ void SaveDialog::draw(gfx::Engine& painter )
   if( !isVisible() )
     return;
 
-  painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+  painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
 }

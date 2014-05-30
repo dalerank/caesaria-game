@@ -33,7 +33,7 @@ public:
 
   virtual void deliverService();
 
-  virtual gfx::TilesArray getEnterArea() const;
+  virtual gfx::TilesArray enterArea() const;
 
   void resetPatroling();
 

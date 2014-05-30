@@ -33,7 +33,11 @@ public:
   virtual std::string getThinks() const;
 
 protected:
+  virtual void _centerTile();
+
   Engineer( PlayerCityPtr city );
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //__OPENCAESAR3_CORPSE_H_INCLUDED__

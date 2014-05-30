@@ -31,7 +31,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerEducation::getType() const
+int LayerEducation::type() const
 {
   return _type;
 }
@@ -47,7 +47,7 @@ int LayerEducation::_getLevelValue( HousePtr house ) const
   {
   case citylayer::education:
   {
-    switch( house->getSpec().getMinEducationLevel() )
+    switch( house->spec().getMinEducationLevel() )
     {
     case 1: return house->getServiceValue( Service::school );
     case 2: return ( house->getServiceValue( Service::school ) +
@@ -73,12 +73,10 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
@@ -92,18 +90,13 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::road:
     case construction::plaza:
       needDrawAnimations = true;
-      engine.drawPicture( tile.picture(), screenPos );
     break;
 
     case building::school:
     case building::library:
     case building::academy:
       needDrawAnimations = _flags.count( overlay->type() );
-      if( needDrawAnimations )
-      {
-        engine.drawPicture( tile.picture(), screenPos );
-      }
-      else
+      if( !needDrawAnimations )
       {
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
@@ -117,7 +110,7 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
 
         educationLevel = _getLevelValue( house );
 
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
@@ -135,6 +128,7 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( educationLevel > 0 )
@@ -142,6 +136,8 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, educationLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerEducation::create( Camera& camera, PlayerCityPtr city, int type )

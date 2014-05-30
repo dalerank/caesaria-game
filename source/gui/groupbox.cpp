@@ -58,7 +58,7 @@ void GroupBox::draw(gfx::Engine& painter )
 
   if( !_d->texture.isNull() )
   {
-    painter.drawPicture( *_d->texture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( *_d->texture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

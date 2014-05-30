@@ -49,7 +49,7 @@ GameEventPtr DisasterEvent::create( const Tile& tile, Type type )
     HousePtr house = ptr_cast< House >( overlay );
     if( house.isValid() )
     {
-      event->_infoType = 1000 + house->getSpec().level();
+      event->_infoType = 1000 + house->spec().level();
     }
     else
     {
@@ -122,7 +122,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
           {
             std::string typev = _infoType > 1000
                                   ? StringHelper::format( 0xff, "house%02d", _infoType - 1000 )
-                                  : MetaDataHolder::getTypename( _infoType );
+                                  : MetaDataHolder::findTypename( _infoType );
             ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", typev.c_str() ) );
           }
         }

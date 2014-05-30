@@ -39,23 +39,7 @@ FortLegionary::FortLegionary()
   : Fort( building::fortLegionaire, 16 )
 {
   setPicture( ResourceGroup::security, 12 );
-}
-
-void FortLegionary::build(PlayerCityPtr city, const TilePos& pos)
-{
-  Fort::build( city, pos );
-
-  _setPatrolPoint( PatrolPoint::create( city, this,
-                                        ResourceGroup::sprites, 21, 8,
-                                        pos + TilePos( 3, 3 ) ) );
-
-  BarracksList barracks;
-  barracks << city->overlays();
-
-  if( barracks.empty() )
-  {
-    _setError( "##need_barracks_for_work##" );
-  }
+  _setFlagIndex( 21 );
 }
 
 void FortLegionary::_readyNewSoldier()
@@ -80,6 +64,7 @@ FortMounted::FortMounted()
   : Fort( constants::building::fortMounted, 15 )
 {
   setPicture( ResourceGroup::security, 12 );
+  _setFlagIndex( 39 );
 }
 
 void FortMounted::build(PlayerCityPtr city, const TilePos& pos)
@@ -121,6 +106,7 @@ FortJaveline::FortJaveline()
   : Fort( building::fortJavelin, 14 )
 {
   setPicture( ResourceGroup::security, 12 );
+  _setFlagIndex( 30 );
 }
 
 void FortJaveline::_readyNewSoldier()

@@ -29,7 +29,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerCrime::getType() const
+int LayerCrime::type() const
 {
   return citylayer::crime;
 }
@@ -45,13 +45,10 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
-
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
@@ -64,8 +61,6 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::road:
     case construction::plaza:
     case building::prefecture:
-      engine.drawPicture( tile.picture(), screenPos );
-      drawTilePass( engine, tile, offset, Renderer::foreground );
       needDrawAnimations = true;
     break;
 
@@ -74,7 +69,7 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
       {
         HousePtr house = ptr_cast<House>( overlay );
         fireLevel = (int)house->getServiceValue( Service::crime );
-        needDrawAnimations = (house->getSpec().level() == 1) && house->getHabitants().empty();
+        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
@@ -92,6 +87,7 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
 
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( fireLevel >= 0)
@@ -99,6 +95,8 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, fireLevel );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 LayerPtr LayerCrime::create(Camera& camera, PlayerCityPtr city)

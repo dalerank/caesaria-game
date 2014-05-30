@@ -30,7 +30,7 @@ public:
   void send2city(TowerPtr tower, Pathway pathway);
   void setBase( TowerPtr tower );
 
-  virtual void die();
+  virtual bool die();
   virtual void timeStep(const unsigned long time);
   virtual void fight();
 

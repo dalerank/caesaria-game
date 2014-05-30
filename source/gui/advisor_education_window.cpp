@@ -20,6 +20,7 @@
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
 #include "label.hpp"
+#include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/engine.hpp"
@@ -151,8 +152,8 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   HouseList houses = helper.find<House>( building::house );
   foreach( house, houses )
   {
-    sumScholars += (*house)->getHabitants().count( CitizenGroup::scholar );
-    sumStudents += (*house)->getHabitants().count( CitizenGroup::student );
+    sumScholars += (*house)->habitants().count( CitizenGroup::scholar );
+    sumStudents += (*house)->habitants().count( CitizenGroup::student );
   }
 
   std::string cityInfoStr = StringHelper::format( 0xff, "%d %s, %d %s, %d %s", city->population(), _("##peoples##"),
@@ -209,7 +210,7 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
     if( serv->numberWorkers() > 0 )
     {
       ret.buildingWork++;
-      ret.peoplesStuding += maxStuding * serv->numberWorkers() / serv->maxWorkers();
+      ret.peoplesStuding += maxStuding * serv->numberWorkers() / serv->maximumWorkers();
     }
   }
 
@@ -217,8 +218,8 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
   foreach( it, houses )
   {
     HousePtr house = *it;
-    ret.need += ( house->getHabitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );
-    ret.nextLevel += (house->getSpec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
+    ret.need += ( house->habitants().count( age ) * ( house->isEducationNeed( service ) ? 1 : 0 ) );
+    ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
   }
 
   ret.coverage = ret.need > 0

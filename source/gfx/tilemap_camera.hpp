@@ -49,7 +49,7 @@ public:
   void moveUp(const int amount);
   void moveDown(const int amount);
 
-  Point getOffset() const;
+  Point offset() const;
 
   // return tile coordinates (i, j), in order of depth
   const TilesArray& getTiles() const;

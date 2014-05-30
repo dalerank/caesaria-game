@@ -28,10 +28,10 @@ namespace gui
 class PopupMessageBox : public Widget
 {
 public:
-  PopupMessageBox( Widget* parent, 
-                   const std::string& title, 
-                   const std::string& text, 
-                   const std::string& time="",
+  PopupMessageBox(Widget* parent,
+                   const std::string& title,
+                   const std::string& text,
+                   const DateTime& time,
                    const std::string& receiver="",
                    int id=-1 );
 
@@ -40,7 +40,7 @@ public:
   static PopupMessageBox* information( Widget* parent,
                                        const std::string& title,
                                        const std::string& text,
-                                       const std::string& time );
+                                       const DateTime& time );
 
 private:
   class Impl;

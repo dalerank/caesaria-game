@@ -36,7 +36,7 @@ MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 
 
 void MenuRigthPanel::draw( gfx::Engine& engine )
 {
-  engine.drawPicture( *_d->picture, screenLeft(), screenTop() );
+  engine.draw( *_d->picture, screenLeft(), screenTop() );
 }
 
 MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
@@ -45,7 +45,7 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
 
   ret->setGeometry( rectangle );
 
-  ret->_d->picture.reset( Picture::create( rectangle.getSize() ) );
+  ret->_d->picture.reset( Picture::create( rectangle.size() ) );
   //SDL_SetAlpha( ret->_d->picture->getSurface(), 0, 0 );  // remove surface alpha
 
   int y = 0;

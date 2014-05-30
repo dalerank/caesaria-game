@@ -35,7 +35,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual void timeStep(const unsigned long time);
-  virtual void die();
+  virtual bool die();
 
 protected: 
   virtual void _updateThinks();

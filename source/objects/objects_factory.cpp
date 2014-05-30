@@ -108,9 +108,9 @@ public:
     if( construction == 0 )
       return;
 
-    if( info.getBasePicture().isValid() )
+    if( info.basePicture().isValid() )
     {
-      construction->setPicture( info.getBasePicture() );  // default picture for build tool
+      construction->setPicture( info.basePicture() );  // default picture for build tool
     }
 
     VariantMap anMap = info.getOption( "animation" ).toMap();
@@ -145,7 +145,7 @@ public:
     WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( a );
     if( wb != 0 )
     {
-      wb->setMaxWorkers( (int)info.getOption( "employers" ) );
+      wb->setMaximumWorkers( (int)info.getOption( "employers" ) );
     }
   }
 };
@@ -226,8 +226,8 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   addCreator(construction::plaza,  CAESARIA_STR_EXT(Plaza)  , new ConstructionCreator<Plaza>() );
 
   // water
-  addCreator(building::well,       CAESARIA_STR_EXT(Well)     , new WorkingBuildingCreator<Well>() );
-  addCreator(building::fountain,   CAESARIA_STR_EXT(Fountain) , new WorkingBuildingCreator<Fountain>() );
+  ADD_CREATOR(building::well,       Well, WorkingBuildingCreator );
+  ADD_CREATOR(building::fountain,   Fountain, WorkingBuildingCreator );
   addCreator(building::aqueduct,   CAESARIA_STR_EXT(Aqueduct), new ConstructionCreator<Aqueduct>() );
   addCreator(building::reservoir,  CAESARIA_STR_EXT(Reservoir), new ConstructionCreator<Reservoir>() );
 

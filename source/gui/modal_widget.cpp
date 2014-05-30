@@ -26,6 +26,12 @@ namespace gui
 {
 
 //! constructor
+void ModalScreen::assignTo(Widget* widget)
+{
+	ModalScreen* mdScr = new ModalScreen( widget->parent() );
+	mdScr->addChild( widget );
+}
+
 ModalScreen::ModalScreen( Widget* parent, int id)
 : Widget( parent, id, Rect(0, 0, parent->width(), parent->height() ) ),
 	_mouseDownTime(0)

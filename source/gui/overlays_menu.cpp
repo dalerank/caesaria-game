@@ -24,8 +24,6 @@
 #include <vector>
 #include "gfx/layerconstants.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -57,60 +55,61 @@ void OverlaysMenu::_addButtons(const int type )
   switch( type )
   {
   case citylayer::all:
-    _addButton( citylayer::simple, _("##ovrm_nothing##"), startPos );
-    _addButton( citylayer::water, _("##ovrm_water##"), startPos+=offset );
-    _addButton( citylayer::risks, _("##ovrm_risk##"), startPos+=offset );
-    _addButton( citylayer::entertainments, _("##ovrm_entertainment##"), startPos+=offset );
-    _addButton( citylayer::educations, _("##ovrm_education##"), startPos+=offset );
-    _addButton( citylayer::health, _("##ovrm_health##"), startPos+=offset );
-    _addButton( citylayer::commerce, _("##ovrm_commerce##"), startPos+=offset );
-    _addButton( citylayer::religion, _("##ovrm_religion##"), startPos+=offset );
+    _addButton( citylayer::simple, startPos );
+    _addButton( citylayer::water, startPos+=offset );
+    _addButton( citylayer::risks, startPos+=offset );
+    _addButton( citylayer::entertainments, startPos+=offset );
+    _addButton( citylayer::educations, startPos+=offset );
+    _addButton( citylayer::health, startPos+=offset );
+    _addButton( citylayer::commerce, startPos+=offset );
+    _addButton( citylayer::religion, startPos+=offset );
     setHeight( 8 * offset.y() );
     break;
 
   case citylayer::risks:
-    _addButton( citylayer::fire, _("##ovrm_fire##"), startPos );
-    _addButton( citylayer::damage, _("##ovrm_damage##"), startPos+=offset );
-    _addButton( citylayer::crime, _("##ovrm_crime##"), startPos+=offset );
-    _addButton( citylayer::aborigen, _("##ovrm_aborigen##"), startPos+=offset );
-    _addButton( citylayer::troubles, _("##ovrm_troubles##"), startPos+=offset );
+    _addButton( citylayer::fire, startPos );
+    _addButton( citylayer::damage, startPos+=offset );
+    _addButton( citylayer::crime, startPos+=offset );
+    _addButton( citylayer::aborigen, startPos+=offset );
+    _addButton( citylayer::troubles, startPos+=offset );
     break;
 
   case citylayer::entertainments:
-    _addButton( citylayer::entertainment, _("##ovrm_entr_all##"), startPos );
-    _addButton( citylayer::theater, _("##ovrm_theatres##"), startPos+=offset );
-    _addButton( citylayer::amphitheater, _("##ovrm_amtheatres##"), startPos+=offset );
-    _addButton( citylayer::colloseum, _("##ovrm_colliseum##"), startPos+=offset );
-    _addButton( citylayer::hippodrome, _("##ovrm_hpdrome##"), startPos+=offset );
+    _addButton( citylayer::entertainment, startPos );
+    _addButton( citylayer::theater, startPos+=offset );
+    _addButton( citylayer::amphitheater, startPos+=offset );
+    _addButton( citylayer::colloseum, startPos+=offset );
+    _addButton( citylayer::hippodrome, startPos+=offset );
     break;
 
   case citylayer::educations:
-    _addButton( citylayer::education, _("##ovrm_edct_all##"), startPos );
-    _addButton( citylayer::school, _("##ovrm_school##"), startPos+=offset );
-    _addButton( citylayer::library, _("##ovrm_library##"), startPos+=offset );
-    _addButton( citylayer::academy, _("##ovrm_academy##"), startPos+=offset );
+    _addButton( citylayer::education, startPos );
+    _addButton( citylayer::school, startPos+=offset );
+    _addButton( citylayer::library, startPos+=offset );
+    _addButton( citylayer::academy, startPos+=offset );
     break;
 
   case citylayer::health:
-    _addButton( citylayer::barber, _("##ovrm_barber##"), startPos );
-    _addButton( citylayer::baths, _("##ovrm_bath##"), startPos+=offset );
-    _addButton( citylayer::doctor, _("##ovrm_clinic##"), startPos+=offset );
-    _addButton( citylayer::hospital, _("##ovrm_hospital##"), startPos+=offset );
+    _addButton( citylayer::barber, startPos );
+    _addButton( citylayer::baths, startPos+=offset );
+    _addButton( citylayer::doctor, startPos+=offset );
+    _addButton( citylayer::hospital, startPos+=offset );
     break;
 
   case citylayer::commerce:
-    _addButton( citylayer::tax, _("##ovrm_tax##"), startPos );
-    _addButton( citylayer::food, _("##ovrm_food##"), startPos+=offset );
-    _addButton( citylayer::desirability, _("##ovrm_prestige##"), startPos+=offset );
+    _addButton( citylayer::tax, startPos );
+    _addButton( citylayer::food, startPos+=offset );
+    _addButton( citylayer::desirability, startPos+=offset );
     break;
 
   default: break;
   }  
 }
 
-void OverlaysMenu::_addButton(const int ovType, const std::string& name, const Point& offset )
+void OverlaysMenu::_addButton(const int ovType, const Point& offset )
 {
-  PushButton* btn = new PushButton( this, Rect( 0, 0, width(), 20 ) + offset, name, ovType, false, PushButton::greyBorderLineSmall );
+  std::string layerName = citylayer::Helper::instance().findName( (citylayer::Type)ovType );
+  PushButton* btn = new PushButton( this, Rect( 0, 0, width(), 20 ) + offset, _( layerName ), ovType, false, PushButton::greyBorderLineSmall );
   btn->setFont( Font::create( FONT_1 ) );
   btn->setNotClipped( true );
   
@@ -166,12 +165,11 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 
     case guiButtonClicked:
       {
-        foreach( it, _d->buttons)
-          (*it)->deleteLater();
+        foreach( it, _d->buttons) { (*it)->deleteLater(); }
 
         _d->buttons.clear();
                 
-        _d->onSelectOverlayTypeSignal.emit( event.gui.caller->getID() );
+        oc3_emit _d->onSelectOverlayTypeSignal( event.gui.caller->getID() );
         hide();
       }
     break;
@@ -190,9 +188,6 @@ bool OverlaysMenu::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-Signal1<int>& OverlaysMenu::onSelectOverlayType()
-{
-  return _d->onSelectOverlayTypeSignal;
-}
+Signal1<int>& OverlaysMenu::onSelectOverlayType() {  return _d->onSelectOverlayTypeSignal; }
 
 }//end namespace gui

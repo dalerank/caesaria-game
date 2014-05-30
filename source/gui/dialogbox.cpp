@@ -49,7 +49,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
                       const std::string& text, int buttons )
                       : Widget( parent, -1, rectangle ), _d( new Impl )
 {
-  if( rectangle.getSize() == Size( 0, 0 ) )
+  if( rectangle.size() == Size( 0, 0 ) )
   {
     setGeometry( Rect( 0, 0, 480, 160 ) );
     setCenter( parent->center() );
@@ -125,7 +125,7 @@ void DialogBox::draw(gfx::Engine& painter )
 
   if( _d->background )
   {
-    painter.drawPicture( *_d->background, screenLeft(), screenTop() );
+    painter.draw( *_d->background, screenLeft(), screenTop() );
   }
 
   Widget::draw( painter );

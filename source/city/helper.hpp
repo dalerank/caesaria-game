@@ -36,6 +36,9 @@ namespace city
 class Helper
 {
 public:
+  static const bool offDesirability=false;
+  static const bool onDesirability=true;
+
   static const TilePos invalidPos;
   Helper( PlayerCityPtr city ) : _city( city ) {}
 
@@ -50,7 +53,7 @@ public:
     foreach( item, buildings )
     {
       SmartPtr< T > b = ptr_cast< T >(*item);
-      if( b.isValid() && (b->getClass() == group || group == constants::building::anyGroup ) )
+      if( b.isValid() && (b->group() == group || group == constants::building::anyGroup ) )
       {
         ret.push_back( b );
       }
@@ -192,6 +195,7 @@ public:
   gfx::TilesArray getAroundTiles( gfx::TileOverlayPtr building );
   gfx::TilesArray getArea( TilePos start, TilePos stop );
   float getBalanceKoeff();
+  void updateTilePics();
 
   void updateDesirability(gfx::TileOverlayPtr overlay, bool onBuild );
 

@@ -73,24 +73,29 @@ void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
 void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 {
-  int rndData = tile.i() * tile.j();
-  int num3 = rndData & 3;
-  int num7 = rndData & 7;
+  int rndData = tile.originalImgId();
+  int num3 = rndData & 0x3;
+  int num7 = rndData & 0x7;
 
   if (tile.getFlag( Tile::tlTree ))
   {
     c1 = colors->colour(MinimapColors::MAP_TREE1, num3);
-    c2 = colors->colour(MinimapColors::MAP_TREE2, num3);
+    c2 = colors->colour(MinimapColors::MAP_TREE2, num7);
   }
   else if (tile.getFlag( Tile::tlRock ))
   {
     c1 = colors->colour(MinimapColors::MAP_ROCK1, num3);
     c2 = colors->colour(MinimapColors::MAP_ROCK2, num3);
   }
-  else if (tile.getFlag( Tile::tlWater ))
+  else if(tile.getFlag( Tile::tlDeepWater) )
   {
     c1 = colors->colour(MinimapColors::MAP_WATER1, num3);
     c2 = colors->colour(MinimapColors::MAP_WATER2, num3);
+  }
+  else if(tile.getFlag( Tile::tlWater ))
+  {
+    c1 = colors->colour(MinimapColors::MAP_WATER1, num3);
+    c2 = colors->colour(MinimapColors::MAP_WATER2, num7);
   }
   else if (tile.getFlag( Tile::tlRoad ))
   {
@@ -100,7 +105,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   else if (tile.getFlag( Tile::tlMeadow ))
   {
     c1 = colors->colour(MinimapColors::MAP_FERTILE1, num3);
-    c2 = colors->colour(MinimapColors::MAP_FERTILE2, num3);
+    c2 = colors->colour(MinimapColors::MAP_FERTILE2, num7);
   }
   else if (tile.getFlag( Tile::tlWall ))
   {
@@ -118,7 +123,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   }
   else // plain terrain
   {
-    c1 = colors->colour(MinimapColors::MAP_EMPTY1, num7);
+    c1 = colors->colour(MinimapColors::MAP_EMPTY1, num3);
     c2 = colors->colour(MinimapColors::MAP_EMPTY2, num7);
   }
 
@@ -258,7 +263,7 @@ void Minimap::draw(Engine& painter)
     _d->lastTimeUpdate = DateTime::elapsedTime();
   }
 
-  painter.drawPicture( *_d->minimap, screenLeft(), screenTop() ); // 152, 145
+  painter.draw( *_d->minimap, screenLeft(), screenTop() ); // 152, 145
 
   Widget::draw( painter );
 }

@@ -62,6 +62,10 @@ public:
   __GS_PROPERTY(screenFitted)
   __GS_PROPERTY(needAcceptBuild)
   __GS_PROPERTY(sg2model)
+  __GS_PROPERTY(ranksModel)
+  __GS_PROPERTY(autosaveInterval)
+  __GS_PROPERTY(talksArchive)
+  __GS_PROPERTY(rectuterDistance)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();

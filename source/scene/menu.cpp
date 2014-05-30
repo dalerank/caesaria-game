@@ -41,11 +41,15 @@
 #include "gui/dialogbox.hpp"
 #include "core/osystem.hpp"
 #include "gui/texturedbutton.hpp"
+#include "sound/engine.hpp"
 
 using namespace gfx;
 
 namespace scene
 {
+
+CAESARIA_LITERALCONST(ext)
+CAESARIA_LITERALCONST(talks)
 
 class StartMenu::Impl
 {
@@ -141,19 +145,24 @@ void StartMenu::Impl::resolveShowChangeLanguageWindow()
 void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
+  std::string talksArchive;
   VariantMap languages = SaveAdapter::load( GameSettings::rcpath( GameSettings::langModel ) );
   foreach( it, languages )
   {
     if( item.text() == it->first )
     {
-      lang = it->second.toString();
+      VariantMap vm = it->second.toMap();
+      lang = vm[ lc_ext ].toString();
+      talksArchive = vm[ lc_talks ].toString();
       break;
     }
   }
 
-  GameSettings::set( GameSettings::language, Variant( std::string( lang ) ) );
+  GameSettings::set( GameSettings::language, Variant( lang ) );
+  GameSettings::set( GameSettings::talksArchive, Variant( talksArchive ) );
 
   Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
+  audio::Helper::initTalksArchive( GameSettings::rcpath( talksArchive ) );
 }
 
 void StartMenu::Impl::resolveChangePlayerName()
@@ -186,25 +195,27 @@ void StartMenu::Impl::resolveCredits()
   gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
   item.setTextAlignment( align::center, align::center );
   lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
-  lbx->addItem( "gathanase" );
+  lbx->addItem( "gathanase (gathanase@gmail.com) render, game mechanics " );
   lbx->addItem( "gecube (gb12335@gmail.com)" );
   lbx->addItem( "pecunia (pecunia@heavengames.com) game mechanics" );
   lbx->addItem( "tracertong" );
   lbx->addItem( "hellium" );
   lbx->addItem( "pufik6666" );
   lbx->addItem( "andreibranescu" );
-  lbx->addItem( "AMDmi3 (amdmi3@amdmi3.ru)" );
-  lbx->addItem( "akuskis (???) aqueduct system" );
-  lbx->addItem( "Rovanion" );
+  lbx->addItem( "amdmi3 (amdmi3@amdmi3.ru) bsd fixes" );
+  lbx->addItem( "akuskis (?) aqueduct system" );
+  lbx->addItem( "rovanion" );
   lbx->addItem( "nickers (2nickers@gmail.com)" );
   lbx->addItem( "ImperatorPrime" );
   lbx->addItem( "veprbl" );
   lbx->addItem( "ramMASTER" );
-  lbx->addItem( "Greg Kennedy(kennedy.greg@gmail.com) smk decoder" );
+  lbx->addItem( "greg kennedy(kennedy.greg@gmail.com) smk decoder" );
+
   gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
   testers.setTextAlignment( align::center, align::center );
-  lbx->addItem( "Radek Liška" );
-  lbx->addItem( "Dimitrius" );
+  lbx->addItem( "radek liška" );
+  lbx->addItem( "dimitrius" );
+  lbx->addItem( "shibanirm" );
 
   gui::ListBoxItem& thanks_to = lbx->addItem( _("##thanks_to##") );
   thanks_to.setTextAlignment( align::center, align::center );
@@ -257,7 +268,7 @@ void StartMenu::draw()
 {
   _d->game->gui()->beforeDraw();
 
-  _d->engine->drawPicture(_d->bgPicture, 0, 0);
+  _d->engine->draw(_d->bgPicture, 0, 0);
 
   _d->game->gui()->draw();
 }
@@ -277,20 +288,14 @@ void StartMenu::initialize()
 
   _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
-  gui::TexturedButton* btnGreenlight = new gui::TexturedButton( _d->game->gui()->rootWidget(), Point(), Size( 250, 155), -1, 0 );
-  btnGreenlight->setPicture( Picture::load( "greenlight.png" ), gui::stNormal );
-  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stPressed );
-  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stHovered );
-  btnGreenlight->setPicture( Picture::load( "greenlight_pr.png" ), gui::stDisabled );
+  gui::TexturedButton* btnGreenlight = new gui::TexturedButton( _d->game->gui()->rootWidget(), Point(), Size( 250, 155), -1,
+                                                                "greenlight", 1, 2, 2, 2 );
   CONNECT( btnGreenlight, onClicked(), _d.data(), Impl::openGreenlightPage );
 
   Size scrSize = _d->engine->screenSize();
   gui::TexturedButton* btnHomePage = new gui::TexturedButton( _d->game->gui()->rootWidget(),
-                                                              Point( scrSize.width() - 97, scrSize.height() - 75 ), Size( 97, 75 ), -1, 0 );
-  btnHomePage->setPicture( Picture::load( "logo_rdt.png" ), gui::stNormal );
-  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stPressed );
-  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stHovered );
-  btnHomePage->setPicture( Picture::load( "logo_rdt_pr.png" ), gui::stDisabled );
+                                                              Point( scrSize.width() - 97, scrSize.height() - 75 ), Size( 97, 75 ), -1,
+                                                              "logo_rdt", 1, 2, 2, 2 );
   CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
 
   gui::PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );

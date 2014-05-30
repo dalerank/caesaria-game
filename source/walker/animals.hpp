@@ -33,6 +33,8 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
+  virtual std::string getThinks() const;
+
 protected:
   void _findNewWay(const TilePos &start);
 
@@ -46,7 +48,7 @@ public:
   static WalkerPtr create( PlayerCityPtr city );
 
   virtual void send2City(const TilePos& start);
-  virtual void die();
+  virtual bool die();
 
 protected:
   virtual void _reachedPathway();

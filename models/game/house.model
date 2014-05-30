@@ -287,7 +287,7 @@
 			title : "##big_insula##",
 			habitants : 21,
 			minDesirability : 29,
-		  maxDesirability : 40,
+                        maxDesirability : 40,
 			entertainment : 25,
 			desirability : 1,
 			desstep : -1
@@ -307,13 +307,13 @@
  		},
 		
 	/* 12;Insula imposante;21;37;48;35;2;1;2;3;2;1;1;1;0;2;80;4 */
-  beatyfull_insula : 
+        beatyfull_insula :
 		{
 			level : 12,
 			title : "##beatyfull_insula##",
 			habitants : 21,
 			minDesirability : 37,
-		  maxDesirability : 48,
+                        maxDesirability : 48,
 			entertainment : 35,
 			desirability : 1,
 			desstep : -1

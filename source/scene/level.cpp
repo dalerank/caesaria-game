@@ -24,11 +24,13 @@
 #include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
+#include "gui/loadmapwindow.hpp"
 #include "game/resourcegroup.hpp"
 #include "gui/environment.hpp"
 #include "gui/topmenu.hpp"
 #include "gui/menu.hpp"
 #include "core/event.hpp"
+#include "gui/dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
 #include "objects/objects_factory.hpp"
 #include "gfx/renderermode.hpp"
@@ -93,7 +95,6 @@ public:
   CityRenderer renderer;
   Game* game; // current game
   AlarmEventHolder alarmsHolder;
-  DateTime lastDate;
   std::string mapToLoad;
   TilePos selectedTilePos;
   bool isPaused;
@@ -109,6 +110,7 @@ public:
   void resolveCreateConstruction( int type );
   void resolveSelectLayer( int type );
   void resolveRemoveTool();
+  void resolveShowLoadGameWnd();
   void makeScreenShot();
   void setVideoOptions();
   void showGameSpeedOptionsDialog();
@@ -119,8 +121,9 @@ public:
   void makeFastSave();
   void showTileHelp();
   void showMessagesWindow();
+  void setAutosaveInterval( int value );
 
-  vfs::Path getFastSaveName();
+  vfs::Path getFastSaveName(const std::string& postfix="");
 };
 
 Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
@@ -190,6 +193,7 @@ void Level::initialize()
   //connect elements
   CONNECT( _d->topMenu, onSave(), _d.data(), Impl::showSaveDialog );
   CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
+  CONNECT( _d->topMenu, onLoad(), this, Level::_resolveShowLoadGameWnd );
   CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
@@ -221,6 +225,7 @@ void Level::initialize()
   CONNECT( _d->renderer.camera(), onPositionChanged(), mmap, Minimap::setCenter );
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
   CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter );
+  CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay );
 
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
@@ -235,7 +240,10 @@ void Level::Impl::showSaveDialog()
 
   if( !saveDir.exist() )
   {
-    vfs::Directory::createByPath( saveDir );
+    gui::DialogBox* dialog = new gui::DialogBox( game->gui()->rootWidget(), Rect(), "##warning##",
+                                                 "##save_directory_not_exist##", gui::DialogBox::btnOk );
+    dialog->show();
+    return;
   }
 
   SaveDialog* dialog = new SaveDialog( game->gui()->rootWidget(), saveDir, defaultExt, -1 );
@@ -251,11 +259,13 @@ void Level::Impl::setVideoOptions()
 void Level::Impl::showGameSpeedOptionsDialog()
 {
   GameSpeedOptionsWindow* dialog = new GameSpeedOptionsWindow( game->gui()->rootWidget(),
-                                                               game->timeMultiplier(),
-                                                               0 );
+                                                               game->timeMultiplier(),                                                               
+                                                               0,
+                                                               GameSettings::get( GameSettings::autosaveInterval ) );
 
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
   CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
+  CONNECT( dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
 }
 
 void Level::Impl::resolveWarningMessage(std::string text )
@@ -305,9 +315,17 @@ void Level::Impl::showMessagesWindow()
   new ScribesMessagestWindow( game->gui()->rootWidget(), game->city() );
 }
 
-void Level::_resolveFastLoad()
+void Level::Impl::setAutosaveInterval(int value)
 {
-  _d->mapToLoad = _d->getFastSaveName().toString();
+  GameSettings::set( GameSettings::autosaveInterval, value );
+  GameSettings::save();
+}
+
+void Level::_resolveLoadGame( std::string filename )
+{
+  _d->mapToLoad = filename.empty()
+                      ? _d->getFastSaveName().toString()
+                      : filename;
   _resolveSwitchMap();
 }
 
@@ -365,10 +383,11 @@ void Level::_showIngameMenu()
 #endif
 }
 
-vfs::Path Level::Impl::getFastSaveName()
+vfs::Path Level::Impl::getFastSaveName( const std::string& postfix )
 {
   vfs::Path filename = game->city()->getName()
                        + GameSettings::get( GameSettings::fastsavePostfix ).toString()
+                       + postfix
                        + GameSettings::get( GameSettings::saveExt ).toString();
 
   vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
@@ -400,13 +419,12 @@ void Level::draw()
   _d->game->gui()->draw();
 }
 
-void Level::animate( unsigned int time ) {  _d->renderer.animate( time ); }
-
-void Level::afterFrame()
+void Level::animate( unsigned int time )
 {
-  if( _d->lastDate.month() != GameDate::current().month() )
+  _d->renderer.animate( time );
+
+  if( GameDate::isMonthChanged() )
   {
-    _d->lastDate = GameDate::current();
     PlayerCityPtr city = _d->game->city();
     const city::VictoryConditions& wt = city->victoryConditions();
 
@@ -426,7 +444,19 @@ void Level::afterFrame()
 
       CONNECT( wnd, onAcceptAssign(), this, Level::_resolveSwitchMap );
     }
+
+    int autosaveInterval = GameSettings::get( GameSettings::autosaveInterval );
+    if( GameDate::current().month() % autosaveInterval == 0 )
+    {
+      static int rotate = 0;
+      rotate = (rotate + 1) % 3;
+      _d->game->save( _d->getFastSaveName( StringHelper::i2str( rotate ) ).toString() );
+    }
   }
+}
+
+void Level::afterFrame()
+{
 }
 
 void Level::handleEvent( NEvent& event )
@@ -471,7 +501,7 @@ void Level::handleEvent( NEvent& event )
     break;
 
     case KEY_F5: _d->makeFastSave(); break;
-    case KEY_F9: _resolveFastLoad(); break;
+    case KEY_F9: _resolveLoadGame( "" ); break;
     case KEY_F10:_d->makeScreenShot(); break;
     case KEY_F11:
         if( event.keyboard.pressed )
@@ -565,7 +595,7 @@ void Level::Impl::makeScreenShot()
 }
 
 int Level::result() const {  return _d->result; }
-bool Level::installEventHandler(EventHandlerPtr handler) {  _d->eventHandlers.push_back( handler ); return true; }
+bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
 void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( TileOverlay::Type( type ) ) );}
 void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
@@ -586,5 +616,16 @@ void Level::setCameraPos(TilePos pos)
   _d->renderer.camera()->setCenter( pos );
 }
 
+void Level::_resolveShowLoadGameWnd()
+{
+  gui::Widget* parent = _d->game->gui()->rootWidget();
+
+  vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
+  std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
+  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, Rect(), savesPath, defaultExt,-1 );
+
+  CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
+  wnd->setTitle( _("##mainmenu_loadgame##") );
+}
 
 }//end namespace scene

@@ -21,7 +21,7 @@
 
 std::string DateTimeHelper::toStr(const DateTime& time)
 {
-  std::string month = StringHelper::format( 0xff, "##month_%d_short##", time.month() + 1);
+  std::string month = StringHelper::format( 0xff, "##month_%d_short##", time.month() );
   std::string age = StringHelper::format( 0xff, "##age_%s##", time.year() > 0 ? "ad" : "bc" );
   std::string text = StringHelper::format( 0xff, "%s %d %s", _( month ), abs( time.year() ), _( age ) );
 

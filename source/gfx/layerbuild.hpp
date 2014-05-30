@@ -29,7 +29,7 @@ class LayerBuild : public Layer
 {
 public:
   virtual void handleEvent(NEvent &event);
-  virtual int getType() const;
+  virtual int type() const;
   virtual std::set<int> getVisibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
   virtual void render( Engine &engine);

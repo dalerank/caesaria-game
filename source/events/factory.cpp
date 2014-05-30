@@ -25,6 +25,9 @@
 #include "enemy_attack.hpp"
 #include "showinfobox.hpp"
 #include "earthquake.hpp"
+#include "start_work.hpp"
+#include "distant_battle.hpp"
+#include "trading_options.hpp"
 
 namespace events
 {
@@ -39,12 +42,10 @@ public:
 GameEventPtr GameEventFactory::create( const std::string& name )
 {
   GameEventFactory& inst = instance();
-  foreach( it, inst._d->creators )
+  Impl::Creators::iterator it = inst._d->creators.find( name );
+  if( it != inst._d->creators.end() )
   {
-    if( name == it->first )
-    {
-      return it->second->create();
-    }
+    return it->second->create();
   }
 
   Logger::warning( "GameEventFactory: not found creator for event " + name );
@@ -84,6 +85,9 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<EnemyAttack>( "enemy_attack" );
   addCreator<ShowInfobox>( "messagebox" );
   addCreator<EarthQuake>( "earthquake" );
+  addCreator<StartWork>( "start_work" );
+  addCreator<DistantBattle>( "distant_battle" );
+  addCreator<TradingOptions>( "trading_options" );
 }
 
 }//end namespace events

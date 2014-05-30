@@ -15,11 +15,12 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
+#include "objects/construction.hpp"
+#include "city/helper.hpp"
 #include "neptune.hpp"
 #include "game/gamedate.hpp"
 #include "events/showinfobox.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
 #include "walker/ship.hpp"
 
 using namespace constants;

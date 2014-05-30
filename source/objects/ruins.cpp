@@ -60,7 +60,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
     foreach( it, buildings)
     {
-      if( (*it)->getClass() != building::disasterGroup )
+      if( (*it)->group() != building::disasterGroup )
       {
         (*it)->updateState( Construction::fire, 0.2 );
       }
@@ -127,7 +127,7 @@ bool BurningRuins::isDestructible() const{  return isWalkable();}
 
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
-  if ( Service::prefect == walker->getService() )
+  if ( Service::prefect == walker->serviceType() )
   {
     return getState( Construction::fire );
   }
@@ -137,9 +137,9 @@ float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 
 void BurningRuins::applyService(ServiceWalkerPtr walker)
 {
-  if ( Service::prefect == walker->getService() )
+  if ( Service::prefect == walker->serviceType() )
   {
-    double delta =  walker->getServiceValue() / 2;
+    double delta =  walker->serviceValue() / 2;
     updateState( Construction::fire, -delta );
   }
 }
@@ -175,10 +175,7 @@ CollapsedRuins::CollapsedRuins() : Ruins(building::collapsedRuins)
   _fgPicturesRef().resize(1);
 }
 
-void CollapsedRuins::burn()
-{
-
-}
+void CollapsedRuins::burn() {}
 
 void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {

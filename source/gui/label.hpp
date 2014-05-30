@@ -56,6 +56,8 @@ public:
   //! Return background draw
   virtual BackgroundMode getBackgroundMode() const;
 
+  virtual bool onEvent(const NEvent &event);
+
   virtual bool isBorderVisible() const;
 
   //! Sets whether to draw the border
@@ -116,6 +118,7 @@ oc3_signals public:
 protected:
   virtual void _resizeEvent();
   virtual void _updateTexture( gfx::Engine& painter );
+  virtual void _handleClick();
   gfx::PictureRef& getPicture();
   gfx::PictureRef& getTextPicture();
 

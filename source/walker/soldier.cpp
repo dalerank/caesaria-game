@@ -22,6 +22,12 @@
 using namespace constants;
 using namespace gfx;
 
+CAESARIA_LITERALCONST(sldAction)
+CAESARIA_LITERALCONST(strikeForce)
+CAESARIA_LITERALCONST(resistance)
+CAESARIA_LITERALCONST(morale)
+CAESARIA_LITERALCONST(attackDistance)
+
 class Soldier::Impl
 {
 public:
@@ -32,7 +38,7 @@ public:
   int morale;
 
   Impl() : strikeForce ( 3.f ), resistance( 1.f ),
-           attackDistance( 1 ), morale( 0 ) {}
+           attackDistance( 1u ), morale( 0 ) {}
 };
 
 Soldier::Soldier(PlayerCityPtr city, walker::Type type)
@@ -73,7 +79,7 @@ void Soldier::initialize(const VariantMap &options)
   Variant ad = options.get( "attackDistance" );
   if( ad.isValid() )
   {
-    setAttackDistance( math::clamp( ad.toInt(), 1, 99 ) );
+    setAttackDistance( math::clamp( ad.toUInt(), 1u, 99u ) );
   }
 }
 
@@ -95,6 +101,28 @@ bool Soldier::_move2freePos( TilePos target )
 
 
 Soldier::~Soldier() {}
+
+void Soldier::save(VariantMap& stream) const
+{
+  Walker::save( stream );
+  __D_IMPL_CONST(d,Soldier);
+  stream[ lc_sldAction ] = (int)d->action;
+  stream[ lc_strikeForce  ] = d->strikeForce;
+  stream[ lc_resistance ] = d->resistance;
+  stream[ lc_attackDistance ] = (int)d->attackDistance;
+  stream[ lc_morale ] = d->morale;
+}
+
+void Soldier::load(const VariantMap& stream)
+{
+  Walker::load( stream );
+  __D_IMPL(d,Soldier)
+  d->action = (Soldier::SldrAction)stream.get( lc_sldAction ).toInt();
+  d->strikeForce = stream.get( lc_strikeForce );
+  d->resistance = stream.get( lc_resistance );
+  d->attackDistance = stream.get( lc_attackDistance ).toUInt();
+  d->morale = stream.get( lc_morale );
+}
 
 unsigned int Soldier::attackDistance() const{ return _dfunc()->attackDistance; }
 

@@ -70,6 +70,7 @@ public:
   // graphic
   virtual void setPicture(Picture picture);
   virtual void setPicture(const char* resource, const int index);
+  virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
   virtual const Picture& picture() const;
   virtual std::string sound() const;
@@ -77,15 +78,14 @@ public:
   void setAnimation( const gfx::Animation& animation );
   const gfx::Animation& animation() const;
 
-  virtual const gfx::Pictures& getPictures( gfx::Renderer::Pass pass ) const;
-  virtual gfx::Renderer::PassQueue getPassQueue() const;
+  virtual gfx::Renderer::PassQueue passQueue() const;
   Desirability desirability() const;
 
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );
 
   Type type() const;
-  Group getClass() const;
+  Group group() const;
   void setType(const Type type);
 
   virtual void save( VariantMap& stream) const;

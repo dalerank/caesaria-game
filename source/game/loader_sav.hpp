@@ -24,8 +24,9 @@ class GameLoaderC3Sav : public GameAbstractLoader
 public:
   GameLoaderC3Sav();
 
-  bool load(const std::string& filename, Game& game);
-  bool isLoadableFileExtension( const std::string& filename );
+  virtual bool load(const std::string& filename, Game& game);
+  virtual bool isLoadableFileExtension( const std::string& filename );
+  virtual int  getClimateType(const std::string& filename);
 
 private:
   class Impl;

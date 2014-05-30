@@ -20,8 +20,16 @@
 #include "core/foreach.hpp"
 #include "events/returnworkers.hpp"
 #include "core/stringhelper.hpp"
+#include "game/gamedate.hpp"
 
 using namespace gfx;
+
+namespace {
+CAESARIA_LITERALCONST(currentWorkers)
+CAESARIA_LITERALCONST(active)
+CAESARIA_LITERALCONST(maxWorkers)
+const int workersDescNum = 6;
+}
 
 class WorkingBuilding::Impl
 {
@@ -47,17 +55,17 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
 void WorkingBuilding::save( VariantMap& stream ) const
 {
   Building::save( stream );
-  stream[ "currentWorkers" ] = _d->currentWorkers;
-  stream[ "active" ] = _d->isActive;
-  stream[ "maxWorkers" ] = _d->maxWorkers;
+  stream[ lc_currentWorkers ] = _d->currentWorkers;
+  stream[ lc_active ] = _d->isActive;
+  stream[ lc_maxWorkers ] = _d->maxWorkers;
 }
 
 void WorkingBuilding::load( const VariantMap& stream)
 {
   Building::load( stream );
-  _d->currentWorkers = (int)stream.get( "currentWorkers", 0 );
-  _d->isActive = (bool)stream.get( "active", true );
-  Variant value = stream.get( "maxWorkers" );
+  _d->currentWorkers = (int)stream.get( lc_currentWorkers, 0 );
+  _d->isActive = (bool)stream.get( lc_active, true );
+  Variant value = stream.get( lc_maxWorkers );
 
   if( !value.isNull() )
     _d->maxWorkers = value;
@@ -65,12 +73,12 @@ void WorkingBuilding::load( const VariantMap& stream)
 
 std::string WorkingBuilding::workersProblemDesc() const
 {
-  std::string factoryType = MetaDataHolder::getTypename( type() );
-  float workKoeff = (numberWorkers() / (float)maxWorkers()) * 6.f;
+  std::string factoryType = MetaDataHolder::findTypename( type() );
+  float workKoeff = (numberWorkers() / (float)maximumWorkers()) * workersDescNum;
 
   const char* workKoeffStr[] = { "no_workers", "bad_work", "slow_work", "patrly_workers",
                                  "need_some_workers", "full_work" };
-  workKoeff = math::clamp( (int)ceil(workKoeff), 0, 5 );
+  workKoeff = math::clamp( (int)ceil(workKoeff), 0, workersDescNum-1 );
 
   return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), workKoeffStr[ (int)workKoeff ] );
 }
@@ -79,7 +87,7 @@ std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
 
-  if( trouble.empty() && numberWorkers() < maxWorkers() / 2 )
+  if( trouble.empty() && numberWorkers() < maximumWorkers() / 2 )
   {
     trouble = workersProblemDesc();
   }
@@ -88,10 +96,11 @@ std::string WorkingBuilding::troubleDesc() const
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
-void WorkingBuilding::setMaxWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
-int WorkingBuilding::maxWorkers() const { return _d->maxWorkers; }
+void WorkingBuilding::setMaximumWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
+int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
 int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
+int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
 bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
@@ -118,7 +127,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
 void WorkingBuilding::_updateAnimation( const unsigned int time )
 {
-  if( time % 25 == 1 )
+  if( GameDate::isDayChanged() )
   {
     if( mayWork()  )
     {

@@ -46,24 +46,11 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   if( params.monthWithFood < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_so_hungry##" );
-    troubles << "##citizen_so_hungry##";
-    troubles << "##citizen_so_hungry2##";
-    troubles << "##citizen_so_hungry3##";
-    troubles << "##citizen_so_hungry4##";
   }
 
   if( params.godsMood < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_gods_angry##" );
-    troubles << "##citizen_gods_angry##";
-    troubles << "##citizen_gods_angry2##";
-    troubles << "##citizen_gods_angry3##";
-    troubles << "##citizen_gods_angry4##";
-    troubles << "##citizen_gods_angry5##";
-    troubles << "##citizen_gods_angry6##";
-    troubles << "##citizen_gods_angry7##";
-    troubles << "##citizen_gods_angry8##";
-    troubles << "##citizen_gods_angry9##";
   }
 
   if( params.colloseumCoverage < 3 )
@@ -76,51 +63,19 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     troubles.push_back( "##" + walkerTypename + "_need_theater##" );
   }
 
-  if( params.entertainment < 3 )
+  if( params.entertainment < 20 )
   {
     troubles.push_back( "##" + walkerTypename + "_low_entertainment##" );
-    troubles << "##citizen_low_entertainment##";
-    troubles << "##citizen_low_entertainment2##";
-    troubles << "##citizen_low_entertainment3##";
-    troubles << "##citizen_low_entertainment4##";
-    troubles << "##citizen_low_entertainment5#";
-  }
-  else if( params.entertainment < 20 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_need_entertainment##" );
   }
 
   if( params.needWorkers > 0 )
   {
     troubles.push_back( "##" + walkerTypename + "_need_workers##" );
-    troubles << "##citizen_need_workers##";
-    troubles << "##citizen_need_workers2##";
-    troubles << "##citizen_need_workers3##";
-    troubles << "##citizen_need_workers4##";
-    troubles << "##citizen_need_workers5##";
-    troubles << "##citizen_need_workers6##";
-    troubles << "##citizen_need_workers7##";
-    troubles << "##citizen_need_workers8##";
-    troubles << "##citizen_need_workers9##";
   }
 
   if( params.workless > 15 )
   {
     troubles.push_back( "##" + walkerTypename + "_high_workless##" );
-    troubles << "##citizen_high_workless##" ;
-    troubles << "##citizen_high_workless2##";
-    troubles << "##citizen_high_workless3##";
-    troubles << "##citizen_high_workless4##";
-    troubles << "##citizen_high_workless5##";
-    troubles << "##citizen_high_workless6##";
-    troubles << "##citizen_high_workless7##";
-    troubles << "##citizen_high_workless8##";
-    troubles << "##citizen_high_workless9##";
-    troubles << "##citizen_high_workless10##";
-    troubles << "##citizen_high_workless11##";
-    troubles << "##citizen_high_workless12##";
-    troubles << "##citizen_high_workless13##";
-    troubles << "##citizen_high_workless14##";
   }
 
   if( params.tax > 10 )
@@ -131,7 +86,6 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   if( params.payDiff < 0 )
   {
     troubles.push_back( "##" + walkerTypename + "_low_salary##" );
-    troubles.push_back( "##citizen_low_salary##" );
   }
 
   if( !troubles.empty() )
@@ -142,29 +96,31 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   StringArray positiveIdeas = own;
   if( params.lifeValue > 90 )
   {
-    positiveIdeas.push_back( "##" + walkerTypename + "_perfect_life##" );
+    positiveIdeas.push_back( "##" + walkerTypename + "_good_life##" );
   }
   else if( params.lifeValue > 75 )
   {
-    positiveIdeas.push_back( "##" + walkerTypename + "_good_life##" );
-    troubles << "##citizen_good_life##";
+    positiveIdeas.push_back( "##" + walkerTypename + "_average_life##" );
   }
   else if( params.lifeValue > 50 )
   {
-    positiveIdeas.push_back( "##" + walkerTypename + "_average_life##" );
-    troubles << "##citizen_average_life_1##";
+    positiveIdeas.push_back( "##" + walkerTypename + "_normal_life##" );
   }
 
   if( params.education > 90 )
   {
     positiveIdeas.push_back( "##" + walkerTypename + "_good_education##" );
-    positiveIdeas << "##citizen_good_education##";
   }
 
+  std::string ret;
   if( !positiveIdeas.empty() )
   {
-    return positiveIdeas.rand();
+    ret = positiveIdeas.rand();
+  }
+  else
+  {
+    ret = positiveIdeas.rand();
   }
 
-  return "##unknown_reason##";
+  return ret.empty() ? "##unknown_reason##" : ret;
 }

@@ -26,7 +26,7 @@ namespace gui
 class InfoboxLegion : public InfoboxSimple
 {
 public:
-  InfoboxLegion(Widget* parent, WalkerList walkers );
+  InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos );
   virtual ~InfoboxLegion();
 
   virtual bool onEvent(const NEvent &event);

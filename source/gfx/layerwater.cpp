@@ -30,7 +30,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerWater::getType() const{  return citylayer::water;}
+int LayerWater::type() const{  return citylayer::water;}
 
 std::set<int> LayerWater::getVisibleWalkers() const
 {
@@ -41,20 +41,17 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   bool needDrawAnimations = false;
   Size areaSize(1);
 
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
     TileOverlayPtr overlay = tile.overlay();
-    Picture pic;
     switch( overlay->type() )
     {
       //water buildings
@@ -66,7 +63,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::aqueduct:
     case building::lowBridge:
     case building::highBridge:
-      pic = tile.picture();
+    case building::elevation:
       needDrawAnimations = true;
       areaSize = overlay->size();
     break;
@@ -87,21 +84,15 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
       city::Helper helper( _city() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
-      pic = Picture::getInvalid();
       areaSize = 0;
       needDrawAnimations = false;
     }
     break;
     }
 
-    if ( pic.isValid() )
+    if ( needDrawAnimations )
     {
-      engine.drawPicture( pic, screenPos );
-      drawTilePass( engine, tile, offset, Renderer::foreground );
-    }
-
-    if( needDrawAnimations )
-    {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
   }
@@ -122,10 +113,12 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
         picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine.drawPicture( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mapPos() + offset );
+        engine.draw( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mapPos() + offset );
       }
     }
   }
+
+  tile.setWasDrawn();
 }
 
 void LayerWater::handleEvent(NEvent& event)

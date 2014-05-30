@@ -73,7 +73,10 @@
 #include "cityservice_factory.hpp"
 #include "sound/player.hpp"
 #include "world/emperor.hpp"
+#include "events/empiretax.hpp"
+#include "cityservice_health.hpp"
 #include <set>
+#include "cityservice_military.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -212,7 +215,9 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( city::Fishery::create( this ) );
   addService( city::Disorder::create( this ) );
   addService( city::request::Dispatcher::create( this ) );
+  addService( city::Military::create( this ) );
   addService( audio::Player::create( this ) );
+  addService( city::HealthCare::create( this ));
 }
 
 void PlayerCity::timeStep(unsigned int time)
@@ -223,20 +228,8 @@ void PlayerCity::timeStep(unsigned int time)
 
     if( GameDate::isYearChanged() )
     {
-      int profit = _d->funds.getIssueValue( city::Funds::cityProfit, city::Funds::lastYear );
-      int empireTax = 0;
-      if( profit <= 0 )
-      {
-        empireTax = (population() / 1000) * 100;
-      }
-      else
-      {
-        int minimumExpireTax = (population() / 1000) * 100 + 50;
-        empireTax = math::clamp( profit / 4, minimumExpireTax, 9999 );
-      }
-
-      FundIssue issue( city::Funds::empireTax, -empireTax );
-      _d->funds.resolveIssue( issue );
+      events::GameEventPtr e = events::EmpireTax::create( getName() );
+      e->dispatch();
     }
   }
 
@@ -416,7 +409,7 @@ const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
-city::Funds&        PlayerCity::funds() const      {  return _d->funds;   }
+city::Funds&      PlayerCity::funds() const      {  return _d->funds;   }
 int               PlayerCity::population() const {   return _d->population; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
@@ -447,16 +440,16 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 
   HouseList houseList = helper.find<House>( building::house );
 
-  foreach( house, houseList) { pop += (*house)->getHabitants().count(); }
+  foreach( house, houseList) { pop += (*house)->habitants().count(); }
   
   population = pop;
-  onPopulationChangedSignal.emit( pop );
+  oc3_emit onPopulationChangedSignal( pop );
 }
 
 void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay)
 {
   city::Helper helper( city );
-  helper.updateDesirability( overlay, false );
+  helper.updateDesirability( overlay, city::Helper::offDesirability );
 }
 
 void PlayerCity::save( VariantMap& stream) const
@@ -564,7 +557,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "Can't load overlay " + item->first );
+      Logger::warning( "City: can't load overlay " + item->first );
     }
   }
 
@@ -583,7 +576,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "Can't load walker " + item->first );
+      Logger::warning( "City: can't load walker " + item->first );
     }
   }
 
@@ -641,7 +634,7 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 {
   _d->buildOptions = options;
-  _d->onChangeBuildingOptionsSignal.emit();
+  oc3_emit _d->onChangeBuildingOptionsSignal();
 }
 
 Signal1<std::string>& PlayerCity::onWarningMessage() { return _d->onWarningMessageSignal; }
@@ -655,10 +648,11 @@ PlayerPtr PlayerCity::player() const { return _d->player; }
 std::string PlayerCity::getName() const {  return _d->name; }
 void PlayerCity::setName( const std::string& name ) {   _d->name = name;}
 city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
+void PlayerCity::delayTrade(unsigned int month){  }
 void PlayerCity::setLocation( const Point& location ) {   _d->location = location; }
 Point PlayerCity::location() const {   return _d->location; }
-const GoodStore& PlayerCity::getSells() const {   return _d->tradeOptions.getSells(); }
-const GoodStore& PlayerCity::getBuys() const {   return _d->tradeOptions.getBuys(); }
+const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.exportingGoods(); }
+const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.importingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
@@ -715,4 +709,10 @@ void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
     MerchantPtr cityMerchant = ptr_cast<Merchant>( Merchant::create( this, merchant ) );
     cityMerchant->send2city();
   }
+}
+
+void PlayerCity::empirePricesChanged(Good::Type gtype, int bCost, int sCost)
+{
+  _d->tradeOptions.setBuyPrice( gtype, bCost );
+  _d->tradeOptions.setSellPrice( gtype, sCost );
 }

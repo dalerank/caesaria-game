@@ -44,7 +44,7 @@ InfoboxTemple::InfoboxTemple( Widget* parent, const Tile& tile )
                                                  divn->getDebugName().c_str() ) );
   setTitle( text + " ( " + desc + " )" );
 
-  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maxWorkers(), temple->numberWorkers() );
+  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maximumWorkers(), temple->numberWorkers() );
 
   Image* img = new Image( this, Point( 192, 140 ), divn->picture() );
   bool goodRelation = divn->relation() >= 50;

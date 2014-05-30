@@ -1,0 +1,218 @@
+{
+  version : 1
+  map : "/maps/Miletus.sav"
+  funds : 8000
+  date : "-270.01.01"
+  finish : "-100.01.01"
+  climate : 2
+	
+  win :
+  {
+    population : 5000
+    culture : 60
+    prosperity : 35
+    peace : 40
+    favour : 40
+    next : "/missions/tutorial6.briefing"
+    title : "##win_questor_title##"
+    may_continue : false
+    maxHouseLevel : "big_villa"
+    caption : "##miletus_4_title##"
+    overview :  [ "##miletus_4_overview##",
+                  "@img=pictures_00017",
+                  "##miletus_4_overview_2##" ]
+  }
+	
+  empire : {
+    enabled : true
+
+    objects : {
+      ship : {
+        location : [ 709, 604 ]
+        name : "ship"
+        picture : "empire_bits_00112"
+      }
+
+      aqueduct : {
+        location : [ 170, 630 ]
+        name : "aqueduct"
+        picture : "empire_bits_00107"
+      }
+
+      palms : {
+        location : [ 490, 790 ]
+        name : "palms"
+        picture : "empire_bits_00111"
+      }
+
+      colosseum : {
+        location : [ 735, 495 ]
+        name : "colosseum"
+        picture : "empire_bits_00114"
+      }
+
+      rocks : {
+        location : [ 240, 440 ]
+        name : "rocks"
+        picture : "empire_bits_00106"
+      }
+
+      rocks2 : {
+        location : [ 530, 290 ]
+        name : "rocks2"
+        picture : "empire_bits_00115"
+      }
+
+      rocks3 : {
+        location : [ 1010, 440 ]
+        name : "rocks3"
+        picture : "empire_bits_00117"
+      }
+
+      palms2 : {
+        location : [ 1350, 630 ]
+        name : "palms2"
+        picture : "empire_bits_00121"
+      }
+    }
+
+    cities :
+    {
+      Athenae : {
+        location : [ 1200, 700 ]
+
+        land : true
+        sea : true
+        available : true
+
+        sells : { wheat : 15, wine : 25, marble : 15 }
+        buys : { meat: 15, oil: 15 }
+      }
+
+      Corinthus : {
+        location : [ 1160, 760 ]
+
+        sea : true
+        land : true
+
+        sells : { clay : 15, pottery : 25 }
+        buys : { weapon : 15 }
+      }
+    }
+  }
+  		
+  events :
+  {
+    population_milestone_500#messagebox : {
+      date : "-350.01.01"
+      population : 500
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }    
+    
+    population_milestone_1000#messagebox : {
+      date : "-350.01.01"
+      population : 1000
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }   
+        
+    population_milestone_2000#messagebox : {
+      date : "-350.01.01"
+      population : 2000
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }   
+    
+    population_milestone_3000#messagebox : {
+      date : "-350.01.01"
+      population : 3000
+      send2scribe : true
+      video : "/smk/Population2.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }
+    
+    first_colosseum_work#start_work : {
+      building : [ "colloseum" ]
+      no_troubles : true
+      type : "start_work"
+      action : {
+        message#messagebox : {
+          send2scribe : true
+          video : "/smk/1st_Glad.smk"
+          title : "##working_colloseum_title##"
+          text : "##working_colloseum_text##"
+        }
+      }
+    }
+       
+
+  }
+	
+  buildoptions :
+  {
+    farm : "disable_all"
+    raw_material : "disable_all"
+    factory : "disable_all"
+    water : "enabled"
+    health : "enabled"
+    religion : "disable_all"
+    education : "enabled"
+    entertainment : "enabled"
+    govt : "enabled"
+    engineering : "disable_all"
+    security : "disable_all"
+    check_desirability : true
+                   
+    buildings : 
+    { 
+      engineering_post : true
+      plaza : true
+      clay_pit : true
+      iron_mine : true
+      pottery : true
+      weapons_workshop : true
+      oil_workshop : true
+      furniture_workshop : true
+      forum_1 : false
+      garden : true
+      low_bridge : true
+      high_bridge : true
+      dock : true
+      wharf : true
+      prefecture : true
+      small_ceres_temple : true
+      small_venus_temple : true
+      small_mars_temple : true
+      small_neptune_temple : true
+      small_mercury_temple : true
+      shipyard : true
+      market : true
+      granery : true
+      warehouse : true
+      school : true
+      academy : true
+      library : true
+      wheat_farm : true
+      senate_1 : true
+      gatehouse : true
+      wall : true 
+      tower : true 
+      fort_legionaries : true
+      fort_javelin : true
+      fort_horse : true
+      military_academy : true
+      barracks : true
+      wheat_farm : true
+      vegetable_farm : true
+      olive_farm : true
+    }
+  }
+}

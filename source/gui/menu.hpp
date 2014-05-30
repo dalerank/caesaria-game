@@ -66,9 +66,12 @@ public:
 
   virtual void draw( gfx::Engine& engine );
 
-  void toggleOverlays();
+  void toggleOverlayMenuVisible();
 
   void setAlarmEnabled( bool enabled );
+
+oc3_slots public:
+  void changeOverlay( int ovType );
 
 oc3_signals public:
   Signal1<int>& onSelectOverlayType();

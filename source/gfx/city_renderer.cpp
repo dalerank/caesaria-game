@@ -76,6 +76,9 @@ public:
 
   LayerPtr currentLayer;
   void setLayer( int type );
+
+public oc3_signals:
+  Signal1<int> onLayerSwitchSignal;
 };
 
 CityRenderer::CityRenderer() : _d( new Impl )
@@ -117,7 +120,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::GuiEnv* g
   addLayer( LayerEducation::create( _d->camera, city, citylayer::school ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::library ) );
   addLayer( LayerEducation::create( _d->camera, city, citylayer::academy ) );
-  addLayer( LayerTroubles::create( _d->camera, city ) );
+  addLayer( LayerTroubles::create( _d->camera, city, citylayer::risks ) );
+  addLayer( LayerTroubles::create( _d->camera, city, citylayer::troubles ) );
 
   _d->setLayer( citylayer::simple );
 }
@@ -127,7 +131,7 @@ void CityRenderer::Impl::setLayer(int type)
   currentLayer = 0;
   foreach( layer, layers )
   {
-    if( (*layer)->getType() == type )
+    if( (*layer)->type() == type )
     {
       currentLayer = *layer;
       break;
@@ -140,6 +144,7 @@ void CityRenderer::Impl::setLayer(int type)
   }
 
   currentLayer->init( currentCursorPos );
+  oc3_emit onLayerSwitchSignal( type );
 }
 
 void CityRenderer::render()
@@ -157,7 +162,7 @@ void CityRenderer::render()
 
   _d->currentLayer->afterRender( *_d->engine );
 
-  if( _d->currentLayer->getType() != _d->currentLayer->getNextLayer() )
+  if( _d->currentLayer->type() != _d->currentLayer->getNextLayer() )
   {
     _d->setLayer( _d->currentLayer->getNextLayer() );
   }
@@ -199,6 +204,7 @@ Renderer::ModePtr CityRenderer::getMode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
 TilePos CityRenderer::getTilePos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
+Signal1<int>&CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
 Tilemap& CityRenderer::getTilemap(){   return *_d->tilemap; }
 
 }//end namespace gfx

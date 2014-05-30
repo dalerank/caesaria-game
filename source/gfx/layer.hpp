@@ -35,20 +35,20 @@ class Layer : public ReferenceCounted
 public:
   typedef std::set<int> VisibleWalkers;
 
-  virtual int getType() const = 0;
+  virtual int type() const = 0;
   virtual VisibleWalkers getVisibleWalkers() const = 0;
 
   //draw gfx before walkers
   virtual void drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
 
   //draw gfx active tile
-  virtual void drawTile( Engine& engine, Tile& tile, Point offset ) = 0;
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
   //draw gfx after walkers
   virtual void drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth );
 
   virtual void handleEvent( NEvent& event );
-  virtual void drawTilePass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass );
+  virtual void drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass );
   virtual void drawArea( Engine& engine, const TilesArray& area, Point offset,
                          std::string resourceGroup, int tileId );
 

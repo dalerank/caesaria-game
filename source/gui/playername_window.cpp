@@ -21,6 +21,7 @@
 #include "pushbutton.hpp"
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
+#include "widgetescapecloser.hpp"
 
 namespace gui
 {
@@ -37,8 +38,10 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 {
   setupUI( GameSettings::rcpath( "/gui/playername.gui" ) );
 
+  WidgetEscapeCloser::insertTo( this );
+
   Point offset( width(), height() );
-  setPosition( parent->getRelativeRect().getCenter() - offset / 2 );
+  setPosition( parent->relativeRect().getCenter() - offset / 2 );
 
   const bool searchRecursive = true;
   EditBox* ed = findChildA<EditBox*>( "edPlayerName", searchRecursive, this );
@@ -50,7 +53,7 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 
 WindowPlayerName::~WindowPlayerName(){}
 
-std::string WindowPlayerName::text()
+std::string WindowPlayerName::text() const
 {
   const EditBox* ed = findChildA<EditBox*>( "edPlayerName", true, this );
   return ed ? ed->text() : "";

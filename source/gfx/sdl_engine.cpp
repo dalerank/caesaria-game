@@ -64,8 +64,9 @@ public:
   Picture maskedPic;
   
   MaskInfo mask;
-  unsigned int fps, lastFps;
+  unsigned int fps, lastFps;  
   unsigned int lastUpdateFps;
+  unsigned int drawCall;
   Font debugFont;
   bool showDebugInfo;
 };
@@ -76,6 +77,10 @@ Picture& SdlEngine::getScreen(){  return _d->screen; }
 SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 {
   resetTileDrawMask();
+
+  _d->lastUpdateFps = DateTime::elapsedTime();
+  _d->fps = 0;
+  _d->showDebugInfo = false;
 }
 
 SdlEngine::~SdlEngine(){}
@@ -88,10 +93,6 @@ void SdlEngine::deletePicture( Picture* pic )
 
 void SdlEngine::init()
 {
-  _d->lastUpdateFps = DateTime::elapsedTime();
-  _d->fps = 0;
-  _d->showDebugInfo = false;
-
   Logger::warning( "GrafixEngine: init");
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
@@ -181,8 +182,8 @@ void SdlEngine::endRenderFrame()
 {
   if( _d->showDebugInfo )
   {
-    std::string debugText = StringHelper::format( 0xff, "fps: %d", _d->lastFps );
-    _d->debugFont.draw( _d->screen, debugText, 4, 22, false );
+    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
+    _d->debugFont.draw( _d->screen, debugText, _d->screen.width() / 2, 2, false );
   }
 
   SDL_Flip( _d->screen.surface() ); //Refresh the screen
@@ -194,17 +195,21 @@ void SdlEngine::endRenderFrame()
     _d->lastFps = _d->fps;
     _d->fps = 0;
   }
+
+  _d->drawCall = 0;
 }
 
-void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, Rect* clipRect )
+void SdlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;
 
+  _d->drawCall++;
+
   Picture& screen = _d->screen;
   if( clipRect != 0 )
   {
-    SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->getWidth(), (Uint16)clipRect->getHeight() };
+    SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->width(), (Uint16)clipRect->height() };
     SDL_SetClipRect( screen.surface(), &r );
   }
 
@@ -226,9 +231,17 @@ void SdlEngine::drawPicture(const Picture& picture, const int dx, const int dy, 
   }
 }
 
-void SdlEngine::drawPicture( const Picture &picture, const Point& pos, Rect* clipRect )
+void SdlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
 {
-  drawPicture( picture, pos.x(), pos.y(), clipRect );
+  draw( picture, pos.x(), pos.y(), clipRect );
+}
+
+void SdlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
+{
+  for( Pictures::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
+  {
+    draw( *it, pos, clipRect );
+  }
 }
 
 void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
@@ -247,7 +260,7 @@ Picture* SdlEngine::createPicture(const Size& size )
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0, 0, 0, 0 );
 
-  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "Cannot make surface, size=%dx%d", size.width(), size.height() ) );
+  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
 
   Picture *pic = new Picture();
   pic->init(img, Point( 0, 0 ));  // no offset

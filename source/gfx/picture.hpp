@@ -25,9 +25,9 @@
 #include "core/scopedptr.hpp"
 #include "core/referencecounted.hpp"
 #include "core/position.hpp"
+#include "core/rectangle.hpp"
+#include "core/color.hpp"
 
-class Rect;
-class NColor;
 struct SDL_Surface;
 
 namespace gfx

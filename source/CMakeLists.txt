@@ -20,12 +20,6 @@ include_directories(
   ${DEP_SOURCE_DIR}
 )
 
-link_libraries(
-  ${SDL_LIBRARY}
-  ${SDL_MIXER_LIBRARY}
-  ${SDL_TTF_LIBRARY}
-)
-
 file(GLOB EVENTS_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/events/*.*")
 file(GLOB CORE_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/core/*.*")
 file(GLOB PATHWAY_SOURCES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/pathway/*.*")
@@ -55,7 +49,17 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST})
 
-if( BUILD_ZLIB )
+target_link_libraries(${PROJECT_NAME}
+  ${SDL_LIBRARY}
+  ${SDL_MIXER_LIBRARY}
+  ${SDL_TTF_LIBRARY}
+)
+
+find_package( ZLIB )
+if ( ZLIB_FOUND )
+  include_directories(${ZLIB_INCLUDE_DIRS})
+  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
+elseif( BUILD_ZLIB )
   link_directories(${ZLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${ZLIB_NAME})
 endif()
@@ -65,7 +69,11 @@ if( BUILD_AES )
   target_link_libraries(${PROJECT_NAME} ${AESLIB_NAME})
 endif()
 
-if( BUILD_BZIP )
+find_package( BZIP2 )
+if ( BZIP2_FOUND )
+  include_directories(${BZIP2_INCLUDE_DIRS})
+  target_link_libraries(${PROJECT_NAME} ${BZIP2_LIBRARIES})
+elseif( BUILD_BZIP )
   link_directories(${BZIPLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${BZIPLIB_NAME})
 endif()
@@ -80,11 +88,19 @@ if( BUILD_SMK )
   target_link_libraries(${PROJECT_NAME} ${SMKLIB_NAME})
 endif()
 
-if( BUILD_PNG )
+find_package( PNG )
+if (PNG_FOUND)
+  include_directories(${PNG_INCLUDE_DIRS})
+  target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARIES})
+elseif( BUILD_PNG )
   link_directories(${PNGLIB_HOME})
   include_directories(${PNGLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${PNGLIB_NAME})
 endif()
+
+if(OPENGL_RENDER)
+  target_link_libraries(${PROJECT_NAME} "GL")
+endif(OPENGL_RENDER)
 
 if(WIN32)
   set(EXECUTABLE_FILENAME "caesaria")

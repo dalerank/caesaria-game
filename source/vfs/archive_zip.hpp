@@ -204,7 +204,7 @@ public:
   virtual NFile createAndOpenFile(unsigned int index);
 
   //! returns the list of files
-  virtual const Entries* getFileList() const;
+  virtual const Entries* entries() const;
 
   //! get the archive type
   virtual std::string getTypeName() const;

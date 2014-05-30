@@ -20,6 +20,7 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
+#include "dispatcher.hpp"
 #include "city/requestdispatcher.hpp"
 #include "core/logger.hpp"
 #include "city/cityservice_factory.hpp"
@@ -39,6 +40,12 @@ public:
   int population;
   bool mayDelete;
   VariantMap options;
+
+  bool executeRequest( Game& game, const std::string& type );
+  bool executeEvent( Game& game, const std::string& type );
+  bool executeCityService( Game& game, const std::string& type );
+
+  typedef bool (Impl::*Worker)( Game& game, const std::string& );
 };
 
 GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& stream )
@@ -66,42 +73,35 @@ GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& s
 
 PostponeEvent::~PostponeEvent(){}
 
+void PostponeEvent::_executeIncludeEvents()
+{
+  Variant execVm = _d->options.get( "exec" );
+  if( execVm.isValid() )
+  {
+    Dispatcher::instance().load( execVm.toMap() );
+  }
+}
+
 void PostponeEvent::_exec(Game& game, unsigned int)
 {
   Logger::warning( "Start event name=" + _name + " type=" + _type );
-  PlayerCityPtr city = game.city();
-  if( "city_request" == _type )
-  {    
-    city::SrvcPtr service = city->findService( city::request::Dispatcher::getDefaultName() );
-    city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( service );
 
-    if( dispatcher.isValid() )
+  Impl::Worker workers[] = { &Impl::executeRequest, &Impl::executeEvent, &Impl::executeCityService, 0 };
+
+  for( int i=0; workers[i]; i++ )
+  {
+    bool execOk = (_d.data()->*workers[i])( game, _type );
+    if( execOk )
     {
-      dispatcher->add( _d->options );
+      _executeIncludeEvents();
+      return;
     }
-
-    return;
-  }
-
-  GameEventPtr e = GameEventFactory::create( _type );
-  if( e.isValid() )
-  {
-    e->load( _d->options );
-    e->dispatch();
-    return;
-  }
-
-  city::SrvcPtr srvc = city::ServiceFactory::create( _name, city );
-  if( srvc.isValid() )
-  {
-    srvc->load( _d->options );
-    city->addService( srvc );
   }
 
   _d->mayDelete = true;
 }
 
-bool PostponeEvent::_mayExec(Game& game, unsigned int time ) const
+bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
 {
   if( time % checkInterval == 1 )
   {
@@ -146,6 +146,54 @@ void PostponeEvent::load(const VariantMap& stream)
 PostponeEvent::PostponeEvent() : _d( new Impl )
 {
   _d->mayDelete = false;
+}
+
+bool PostponeEvent::Impl::executeRequest( Game& game, const std::string& type )
+{
+  if( "city_request" == type )
+  {
+    PlayerCityPtr city = game.city();
+
+    city::SrvcPtr service = city->findService( city::request::Dispatcher::getDefaultName() );
+    city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( service );
+
+    if( dispatcher.isValid() )
+    {
+      dispatcher->add( options );
+    }
+    return true;
+  }
+
+  return false;
+}
+
+bool PostponeEvent::Impl::executeEvent( Game& game, const std::string& type  )
+{
+  GameEventPtr e = GameEventFactory::create( type );
+  if( e.isValid() )
+  {
+    e->load( options );
+    e->dispatch();
+    return true;
+  }
+
+  return false;
+}
+
+bool PostponeEvent::Impl::executeCityService( Game& game, const std::string& type )
+{
+  PlayerCityPtr city = game.city();
+  std::string dtype = options.get( "type", Variant( type ) ).toString();
+  city::SrvcPtr srvc = city::ServiceFactory::create( dtype, city );
+  if( srvc.isValid() )
+  {
+    srvc->load( options );
+    city->addService( srvc );
+
+    return true;
+  }
+
+  return false;
 }
 
 }

@@ -31,7 +31,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerFood::getType() const {  return citylayer::food; }
+int LayerFood::type() const {  return citylayer::food; }
 
 Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
 {
@@ -47,18 +47,15 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
-  tile.setWasDrawn();
-
   if( tile.overlay().isNull() )
   {
     //draw background
-    engine.drawPicture( tile.picture(), screenPos );
+    engine.draw( tile.picture(), screenPos );
   }
   else
   {
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
-    Picture pic;
     int foodLevel = -1;
     switch( overlay->type() )
     {
@@ -67,19 +64,20 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
     case construction::plaza:
     case building::market:
     case building::granary:
-      pic = tile.picture();
-      needDrawAnimations = true;
-      drawTilePass( engine, tile, offset, Renderer::foreground );
+      needDrawAnimations = true;     
     break;
 
       //houses
     case building::house:
       {
-        city::Helper helper( _city() );
-        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        city::Helper helper( _city() );        
         HousePtr house = ptr_cast<House>( overlay );
         foodLevel = house->getState( (Construction::Param)House::food );
-        needDrawAnimations = (house->getSpec().level() == 1) && (house->getHabitants().empty());
+        needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+        if( !needDrawAnimations )
+        {
+          drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        }
       }
     break;
 
@@ -92,13 +90,9 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
       break;
     }
 
-    if ( pic.isValid())
-    {
-      engine.drawPicture( pic, screenPos );
-    }
-
     if( needDrawAnimations )
     {
+      Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
     else if( foodLevel >= 0 )
@@ -106,6 +100,8 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
       drawColumn( engine, screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
+
+  tile.setWasDrawn();
 }
 
 void LayerFood::handleEvent(NEvent& event)
@@ -123,20 +119,25 @@ void LayerFood::handleEvent(NEvent& event)
         HousePtr house = ptr_cast<House>( tile->overlay() );
         if( house.isValid() )
         {
-          GoodStore& st = house->getGoodStore();
-          int foodQty = 0;
-          for( int k=Good::wheat; k <= Good::vegetable; k++ )
-          {
-            foodQty += st.qty( (Good::Type)k );
-          }
-          int monthWithFood = 2 * foodQty / house->getHabitants().count();
+          int houseHabitantsCount = house->habitants().count();
 
-          switch( monthWithFood )
+          if( houseHabitantsCount > 0 )
           {
-          case 0: text = "##house_have_not_food##"; break;
-          case 1: text = "##house_food_only_for_month##"; break;
-          case 2: case 3: text = "##house_have_some_food##"; break;
-          default: text = "##house_have_much_food##"; break;
+            GoodStore& st = house->goodStore();
+            int foodQty = 0;
+            for( int k=Good::wheat; k <= Good::vegetable; k++ )
+            {
+              foodQty += st.qty( (Good::Type)k );
+            }
+            int monthWithFood = 2 * foodQty / houseHabitantsCount;
+
+            switch( monthWithFood )
+            {
+            case 0: text = "##house_have_not_food##"; break;
+            case 1: text = "##house_food_only_for_month##"; break;
+            case 2: case 3: text = "##house_have_some_food##"; break;
+            default: text = "##house_have_much_food##"; break;
+            }
           }
         }
       }
