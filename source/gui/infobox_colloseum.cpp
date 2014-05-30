@@ -34,9 +34,9 @@ InfoboxColosseum::InfoboxColosseum(Widget *parent, const Tile &tile)
 {
   ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());
   setConstruction( ptr_cast<Construction>( coloseum ) );
-  setTitle( _( MetaDataHolder::getPrettyName( building::colloseum ) ) );
+  setTitle( _( MetaDataHolder::findPrettyName( building::colloseum ) ) );
 
-  _updateWorkersLabel( Point( 40, 150), 542, coloseum->maxWorkers(), coloseum->numberWorkers() );
+  _updateWorkersLabel( Point( 40, 150), 542, coloseum->maximumWorkers(), coloseum->numberWorkers() );
   
   if( coloseum->isNeedGladiators() )
   {

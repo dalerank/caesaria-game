@@ -133,7 +133,7 @@ Service::Type Colosseum::_getServiceManType() const
 {
   ServiceWalkerList servicemen;
   servicemen << walkers();
-  return (!servicemen.empty() ? servicemen.front()->getService() : Service::srvCount);
+  return (!servicemen.empty() ? servicemen.front()->serviceType() : Service::srvCount);
 }
 
 bool Colosseum::isShowGladiatorBattles() const {  return _getServiceManType() == Service::amphitheater; }

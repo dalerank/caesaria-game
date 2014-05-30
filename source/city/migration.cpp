@@ -295,7 +295,7 @@ void Migration::Impl::createMigrationFromCity( PlayerCity& city )
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {
     int houseWorkless = (*i)->getServiceValue( Service::recruter );
-    if( !(*i)->getEnterArea().empty() && houseWorkless > minWorkersNumber ) { ++i; }
+    if( !(*i)->enterArea().empty() && houseWorkless > minWorkersNumber ) { ++i; }
     else { i = houses.erase( i ); }
   }
 
@@ -312,7 +312,7 @@ void Migration::Impl::createMigrationFromCity( PlayerCity& city )
       if( emigrant.isValid() )
       {
         (*house)->remHabitants( minWorkersNumber );
-        emigrant->leaveCity( *(*house)->getEnterArea().front() );
+        emigrant->leaveCity( *(*house)->enterArea().front() );
         emigrant->setThinks( "##immigrant_no_work_for_me##" );
       }
     }

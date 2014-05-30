@@ -85,7 +85,7 @@ public:
   void setName( const std::string& name );
 
   Type type() const;
-  Group getClass() const;
+  Group group() const;
   void setType(const Type type);
 
   virtual void save( VariantMap& stream) const;

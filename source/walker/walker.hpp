@@ -84,7 +84,7 @@ public:
   virtual void go( float speed = 1.0 );
   virtual void wait( int ticks = 0 );
   virtual int  waitInterval() const;
-  virtual void die();
+  virtual bool die();
 
   virtual void getPictures( gfx::Pictures& oPics);
 

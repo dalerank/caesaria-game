@@ -274,7 +274,7 @@ void Prefect::_reachedPathway()
   switch( _d->action )
   {
   case Impl::patrol:
-    if( base()->getEnterArea().contain( pos() )  )
+    if( base()->enterArea().contain( pos() )  )
     {
       deleteLater();
       _d->action = Impl::doNothing;
@@ -476,7 +476,7 @@ void Prefect::timeStep(const unsigned long time)
 
 Prefect::~Prefect() {}
 
-float Prefect::getServiceValue() const {  return 5; }
+float Prefect::serviceValue() const {  return 5; }
 
 PrefectPtr Prefect::create(PlayerCityPtr city )
 {
@@ -509,11 +509,17 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   }
 }
 
-void Prefect::die()
+bool Prefect::die()
 {
-  ServiceWalker::die();
+  bool created = ServiceWalker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen2, 711, 718 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen2, 711, 718 );
+    return true;
+  }
+
+  return created;
 }
 
 std::string Prefect::getThinks() const

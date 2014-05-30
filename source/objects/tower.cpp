@@ -51,7 +51,7 @@ public:
 Tower::Tower()
   : ServiceBuilding( Service::guard, building::tower, Size( 2 ) ), _d( new Impl )
 {
-  setMaxWorkers( 6 );
+  setMaximumWorkers( 6 );
   setPicture( ResourceGroup::land2a, 149 );
 
   setState( Construction::inflammability, 0 );
@@ -100,7 +100,7 @@ bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
 void Tower::_rebuildWays()
 {
   _d->patrolWays.clear();
-  TilesArray enter = getEnterArea();
+  TilesArray enter = enterArea();
 
   if( enter.empty() )
     return;
@@ -184,7 +184,7 @@ void Tower::deliverService()
   }
 }
 
-TilesArray Tower::getEnterArea() const
+TilesArray Tower::enterArea() const
 {
   city::Helper helper( _city() );
   TilesArray tiles = helper.getAroundTiles( const_cast< Tower* >( this )  );

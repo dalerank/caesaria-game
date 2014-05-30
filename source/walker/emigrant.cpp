@@ -307,9 +307,15 @@ void Emigrant::load( const VariantMap& stream )
   _d->stamina = stream.get( "stamina" );
 }
 
-void Emigrant::die()
+bool Emigrant::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::citizen2, 1007, 1014 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::citizen2, 1007, 1014 );
+    return true;
+  }
+
+  return created;
 }

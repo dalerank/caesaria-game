@@ -73,8 +73,8 @@ void WorkingBuilding::load( const VariantMap& stream)
 
 std::string WorkingBuilding::workersProblemDesc() const
 {
-  std::string factoryType = MetaDataHolder::getTypename( type() );
-  float workKoeff = (numberWorkers() / (float)maxWorkers()) * workersDescNum;
+  std::string factoryType = MetaDataHolder::findTypename( type() );
+  float workKoeff = (numberWorkers() / (float)maximumWorkers()) * workersDescNum;
 
   const char* workKoeffStr[] = { "no_workers", "bad_work", "slow_work", "patrly_workers",
                                  "need_some_workers", "full_work" };
@@ -87,7 +87,7 @@ std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
 
-  if( trouble.empty() && numberWorkers() < maxWorkers() / 2 )
+  if( trouble.empty() && numberWorkers() < maximumWorkers() / 2 )
   {
     trouble = workersProblemDesc();
   }
@@ -96,10 +96,11 @@ std::string WorkingBuilding::troubleDesc() const
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
-void WorkingBuilding::setMaxWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
-int WorkingBuilding::maxWorkers() const { return _d->maxWorkers; }
+void WorkingBuilding::setMaximumWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
+int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
 int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
+int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
 bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }

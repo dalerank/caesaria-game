@@ -37,19 +37,16 @@ add_executable(${PROJECT_NAME}
                ${UPD_DEP_SOURCES_LIST}
                ${HTTP_SOURCES_LIST} )
 
-if( BUILD_LZMA )
-  link_directories(${LZMALIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${LZMALIB_NAME})
-endif()
 
 if( BUILD_CURL )
   add_definitions( -DCURL_STATICLIB )
   add_definitions( -DCURL_DISABLE_POP3 )
   add_definitions( -DCURL_DISABLE_SMTP )
   link_directories(${CURLLIB_HOME})
-
-  target_link_libraries(${PROJECT_NAME} ${CURLLIB_NAME})
 endif()
+
+target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES})
+
 
 if(WIN32)
   target_link_libraries( ${PROJECT_NAME} psapi ws2_32 ${CURLLIB_NAME} )

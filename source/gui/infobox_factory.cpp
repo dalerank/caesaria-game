@@ -38,7 +38,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( factory ) );
   _type = factory->type();
-  std::string  title = MetaDataHolder::getPrettyName( factory->type() );
+  std::string  title = MetaDataHolder::findPrettyName( factory->type() );
   setTitle( _(title) );
 
   // paint progress
@@ -74,7 +74,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   std::string cartInfo = factory->cartStateDesc();
   setText( StringHelper::format( 0xff, "%s\n%s", _(workInfo), _( cartInfo ) ) );
 
-  _updateWorkersLabel( Point( 32, 157 ), 542, factory->maxWorkers(), factory->numberWorkers() );
+  _updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
 }
 
 void InfoboxFactory::showDescription()

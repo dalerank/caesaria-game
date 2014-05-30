@@ -216,7 +216,7 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
     foreach( it, tiles )
     {
       BuildingPtr b = ptr_cast<Building>( (*it)->overlay() );
-      if( b.isValid() && b->getClass() != building::disasterGroup )
+      if( b.isValid() && b->group() != building::disasterGroup )
       {
         ret.push_back( b );
       }
@@ -336,16 +336,17 @@ void EnemySoldier::send2City( TilePos pos )
   _city()->addWalker( this );
 }
 
-void EnemySoldier::die()
+bool EnemySoldier::die()
 {
-  Soldier::die();
-  WalkerPtr wlk = Corpse::create( _city(), this );
-  if( wlk->isDeleted() )
+  bool created = Soldier::die();
+
+  if( !created )
   {
-    wlk = Corpse::create( _city(), pos(), ResourceGroup::celts, 393, 400 );
+    Corpse::create( _city(), pos(), ResourceGroup::celts, 393, 400 );
+    return true;
   }
 
-  _city()->addWalker( wlk );
+  return created;
 }
 
 void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)

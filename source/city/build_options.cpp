@@ -143,7 +143,7 @@ void BuildOptions::load(const VariantMap& options)
   VariantMap buildings = options.get( "buildings" ).toMap();
   foreach( item, buildings )
   {
-    TileOverlay::Type btype = MetaDataHolder::getType( item->first );
+    TileOverlay::Type btype = MetaDataHolder::findType( item->first );
     setBuildingAvailble( btype, item->second.toBool() );
   }
 
@@ -157,7 +157,7 @@ VariantMap BuildOptions::save() const
   VariantMap blds;
   foreach( it, _d->rules )
   {
-    blds[ MetaDataHolder::getTypename( it->first ) ] = it->second;
+    blds[ MetaDataHolder::findTypename( it->first ) ] = it->second;
   }
 
   VariantMap ret;

@@ -206,10 +206,10 @@ InfrastructureInfo AdvisorEntertainmentWindow::Impl::getInfo(PlayerCityPtr city,
       break;
       }
 
-      ret.peoplesServed += maxServing * building->numberWorkers() / building->maxWorkers();
+      ret.peoplesServed += maxServing * building->numberWorkers() / building->maximumWorkers();
     }
     ret.buildingCount++;
-    ret.partlyWork += (building->numberWorkers() != building->maxWorkers() ? 1 : 0);
+    ret.partlyWork += (building->numberWorkers() != building->maximumWorkers() ? 1 : 0);
   }
 
   return ret;

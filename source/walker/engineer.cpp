@@ -50,7 +50,7 @@ std::string Engineer::getThinks() const
 void Engineer::_centerTile()
 {
   city::Helper helper( _city() );
-  TilePos offset( getReachDistance(), getReachDistance() );
+  TilePos offset( reachDistance(), reachDistance() );
   ConstructionList buildings = helper.find<Construction>( building::any, pos() - offset, pos() + offset );
   foreach( b, buildings )
   {

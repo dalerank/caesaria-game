@@ -63,19 +63,25 @@ WallGuardPtr WallGuard::create(PlayerCityPtr city, walker::Type type)
   return ret;
 }
 
-void WallGuard::die()
+bool WallGuard::die()
 {
-  Soldier::die();
+  bool created = Soldier::die();
 
-  switch( type() )
+  if( !created )
   {
-  case walker::romeGuard:
-    Corpse::create( _city(), pos(), ResourceGroup::citizen3, 233, 240 );
-  break;
+    switch( type() )
+    {
+    case walker::romeGuard:
+      Corpse::create( _city(), pos(), ResourceGroup::citizen3, 233, 240 );
+      created = true;
+    break;
 
-  default:
-    Logger::warning( "Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
+    default:
+      Logger::warning( "Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
+    }
   }
+
+  return created;
 }
 
 void WallGuard::timeStep(const unsigned long time)
@@ -264,7 +270,7 @@ void WallGuard::_back2base()
   if( _d->base.isValid() )
   {
     _setSubAction( back2base );
-    TilesArray enter = _d->base->getEnterArea();
+    TilesArray enter = _d->base->enterArea();
 
     if( !enter.empty() )
     {

@@ -22,6 +22,8 @@
 #include "core/scopedptr.hpp"
 #include "gfx/tileoverlay.hpp"
 #include "core/predefinitions.hpp"
+#include "core/priorities.hpp"
+#include "industry.hpp"
 
 namespace city
 {
@@ -32,16 +34,20 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   virtual void update( const unsigned int time );
-  void setRecturerDistance( const unsigned int distance );
+  void setRecruterDistance( const unsigned int distance );
+  void setIndustryPriority( Industry::Type industry, int priority );
+  int getPriority( Industry::Type industry );
+
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap& stream);
 private:
   WorkersHire( PlayerCityPtr city );
-
-  void _hireByType( const gfx::TileOverlay::Type type );
-  bool _haveHr( WorkingBuildingPtr building );
  
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+typedef SmartPtr<WorkersHire> WorkersHirePtr;
 
 }//end namespace city
 #endif //__CAESARIA_CITYSERVICE_WORKERSHIRE_H_INCLUDED__

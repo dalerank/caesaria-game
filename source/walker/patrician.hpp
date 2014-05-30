@@ -33,7 +33,7 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  virtual void die();
+  virtual bool die();
 
 protected:
   void _findNewWay(const TilePos& start);

@@ -132,11 +132,17 @@ void MarketKid::_reachedPathway()
   }
 }
 
-void MarketKid::die()
+bool MarketKid::die()
 {
-  Walker::die();
+  bool created = Walker::die();
 
-  Corpse::create( _city(), pos(), ResourceGroup::carts, 465, 472 );
+  if( !created )
+  {
+    Corpse::create( _city(), pos(), ResourceGroup::carts, 465, 472 );
+    return true;
+  }
+
+  return created;
 }
 
 void MarketKid::_updateThinks()

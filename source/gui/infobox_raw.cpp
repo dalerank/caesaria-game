@@ -52,7 +52,7 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
     new Image( this, Point( 10, 10 ), pic );
   }
 
-  _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maxWorkers(), rawmb->numberWorkers() );
+  _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );
 
   if( lbDamage != NULL )
   {
@@ -68,7 +68,7 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
     lbProgress->setText( text );
   }
 
-  std::string title = MetaDataHolder::getPrettyName( rawmb->type() );
+  std::string title = MetaDataHolder::findPrettyName( rawmb->type() );
   _lbTitleRef()->setText( _(title) );
 
   std::string text = rawmb->workersProblemDesc();

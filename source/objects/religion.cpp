@@ -121,7 +121,7 @@ void TempleOracle::build(PlayerCityPtr city, const TilePos& pos)
 SmallTemple::SmallTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(2) )
 {
-  setMaxWorkers( 2 );
+  setMaximumWorkers( 2 );
 }
 
 unsigned int SmallTemple::parishionerNumber() const {  return 150;}
@@ -129,7 +129,7 @@ unsigned int SmallTemple::parishionerNumber() const {  return 150;}
 BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
 {
-  setMaxWorkers( 8 );
+  setMaximumWorkers( 8 );
 }
 
 unsigned int BigTemple::parishionerNumber() const {  return 300;}

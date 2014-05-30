@@ -34,9 +34,9 @@ InfoboxAmphitheater::InfoboxAmphitheater(Widget *parent, const Tile &tile)
 {
   AmphitheaterPtr amph = ptr_cast<Amphitheater>(tile.overlay());
   setConstruction( ptr_cast<Construction>( amph ) );
-  setTitle( _( MetaDataHolder::getPrettyName( building::amphitheater ) ) );
+  setTitle( _( MetaDataHolder::findPrettyName( building::amphitheater ) ) );
 
-  _updateWorkersLabel( Point( 40, 150), 542, amph->maxWorkers(), amph->numberWorkers() );
+  _updateWorkersLabel( Point( 40, 150), 542, amph->maximumWorkers(), amph->numberWorkers() );
   
   if( amph->isNeed( walker::gladiator ) )
   {

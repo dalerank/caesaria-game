@@ -43,7 +43,7 @@ void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& ma
   foreach( bld, buildings )
   {
     workersNumber += (*bld)->numberWorkers();
-    maxWorkers += (*bld)->maxWorkers();
+    maxWorkers += (*bld)->maximumWorkers();
   }
 }
 

@@ -34,15 +34,23 @@
 #include "objects/working.hpp"
 #include "city/statistic.hpp"
 #include "core/logger.hpp"
+#include "core/event.hpp"
+#include "environment.hpp"
+#include "hire_priority_window.hpp"
+#include "city/cityservice_workershire.hpp"
 
 using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
 
+namespace {
 static const Point employerButtonOffset = Point( 0, 25 );
 static const Size  employerButtonSize = Size( 560, 22 );
+static const int idBase = 0x100;
+}
 
 class EmployerButton : public PushButton
 {
@@ -53,8 +61,19 @@ public:
   {
     _needWorkers = need;
     _haveWorkers = have;
+    _priority = 0;
   }
 
+  void setPriority( int priority )
+  {
+    _priority = priority;
+    _resizeEvent();
+  }
+
+oc3_signals public:
+  Signal1<Industry::Type> onClickedSignal;
+
+protected:
   virtual void _updateTexture( ElementState state )
   {
     PushButton::_updateTexture( state );
@@ -71,10 +90,25 @@ public:
     }
 
     font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2 );
+
+    if( _priority > 0 )
+    {
+      Picture lock = Picture::load( ResourceGroup::panelBackground, 238 );
+      pic->draw( lock, Point( 45, 4), false );
+      font.setColor( DefaultColors::black );
+      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 4 ) );
+    }
+  }
+
+  virtual void _btnClicked()
+  {
+    PushButton::_btnClicked();
+    oc3_emit onClickedSignal( (Industry::Type)getID() );
   }
 
 private:
   std::string _title;
+  int _priority;
   int _needWorkers;
   int _haveWorkers;
 };
@@ -83,58 +117,37 @@ class AdvisorEmployerWindow::Impl
 {
 public:
   typedef std::vector< TileOverlay::Type > BldTypes;
-  enum PriorityIndex
-  {
-    prIndustryAndTrade=0,
-    prFood,
-    prEngineers,
-    prWater,
-    prPrefectures,
-    prMilitary,
-    prEntertainment,
-    prHealthAndEducation,
-    prAdministrationAndReligion,
-    prCount
-  };
+  typedef std::vector< EmployerButton* > EmployerButtons;
 
   gui::Label* lbSalary;
   gui::Label* lbYearlyWages;
   gui::Label* lbWorkersState;
 
   PlayerCityPtr city;
+  EmployerButtons empButtons;
 
-  void showPriorityWindow( int id );
+  struct EmployersInfo {
+    unsigned int needWorkers;
+    unsigned int currentWorkers;
+  };
+
+public:
   void increaseSalary();
   void decreaseSalary();
   void updateSalaryLabel();
   void updateWorkersState();
   void updateYearlyWages();
   void changeSalary( int relative );
+  void showPriorityWindow(Industry::Type industry);
+  void setIndustryPriority( Industry::Type industry, int priority );
+  void update();
+  EmployersInfo getEmployersInfo( Industry::Type type );
 
-  struct EmployersInfo { 
-    unsigned int needWorkers;
-    unsigned int currentWorkers;
-  };
-
-  EmployersInfo getEmployersInfo( PriorityIndex type );
-
-  EmployerButton* addButton( Widget* parent, const Point& startPos, PriorityIndex priority, const std::string& title );
+  EmployerButton* addButton( AdvisorEmployerWindow* parent, const Point& startPos, Industry::Type priority, const std::string& title );
 };
 
-void AdvisorEmployerWindow::Impl::showPriorityWindow( int id )
-{
-
-}
-
-void AdvisorEmployerWindow::Impl::increaseSalary()
-{
-  changeSalary( +1 );
-}
-
-void AdvisorEmployerWindow::Impl::decreaseSalary()
-{
-  changeSalary( -1 );
-}
+void AdvisorEmployerWindow::Impl::increaseSalary() { changeSalary( +1 );}
+void AdvisorEmployerWindow::Impl::decreaseSalary() { changeSalary( -1 );}
 
 void AdvisorEmployerWindow::Impl::updateWorkersState()
 {
@@ -171,6 +184,35 @@ void AdvisorEmployerWindow::Impl::changeSalary(int relative)
   updateYearlyWages();
 }
 
+void AdvisorEmployerWindow::Impl::showPriorityWindow( Industry::Type industry )
+{
+  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::getDefaultName() ) );
+  int priority = wh->getPriority( industry );
+  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->getEnvironment()->rootWidget(), industry, priority );
+  CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
+}
+
+void AdvisorEmployerWindow::Impl::setIndustryPriority(Industry::Type industry, int priority)
+{
+  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::getDefaultName() ) );
+  wh->setIndustryPriority( industry, priority );
+
+  empButtons[ industry ]->setPriority( priority );
+
+  update();
+}
+
+void AdvisorEmployerWindow::Impl::update()
+{
+  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::getDefaultName() ) );
+
+  foreach( i, empButtons )
+  {
+    int priority = wh->getPriority( (Industry::Type)(*i)->getID() );
+    (*i)->setPriority( priority );
+  }
+}
+
 void AdvisorEmployerWindow::Impl::updateSalaryLabel()
 {
   int pay = city->funds().workerSalary();
@@ -185,26 +227,13 @@ void AdvisorEmployerWindow::Impl::updateSalaryLabel()
   }
 }
 
-AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo( PriorityIndex type )
+AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo(Industry::Type type )
 {
-  std::vector< building::Group > bldClasses;
-  switch( type )
-  {
-  case prIndustryAndTrade: bldClasses.push_back( building::industryGroup ); bldClasses.push_back( building::tradeGroup ); break;
-  case prFood: bldClasses.push_back( building::foodGroup ); break;
-  case prEngineers: bldClasses.push_back( building::engineeringGroup ); break;
-  case prWater: bldClasses.push_back( building::waterGroup ); break;
-  case prPrefectures: bldClasses.push_back( building::securityGroup ); break;
-  case prMilitary: bldClasses.push_back( building::militaryGroup ); break;
-  case prEntertainment: bldClasses.push_back( building::entertainmentGroup ); break;
-  case prHealthAndEducation: bldClasses.push_back( building::healthGroup ); bldClasses.push_back( building::educationGroup ); break;
-  case prAdministrationAndReligion: bldClasses.push_back( building::administrationGroup ); bldClasses.push_back( building::religionGroup ); break;
-  default: break;
-  }
+  std::vector<building::Group> bldGroups = city::Industry::toGroups( type );
 
   WorkingBuildingList buildings;
   city::Helper helper( city );
-  foreach( buildingsGroup, bldClasses )
+  foreach( buildingsGroup, bldGroups )
   {
     WorkingBuildingList sectorBuildings = helper.find<WorkingBuilding>( *buildingsGroup );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
@@ -214,19 +243,22 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   foreach( b, buildings )
   {
     ret.currentWorkers += (*b)->numberWorkers();
-    ret.needWorkers += (*b)->maxWorkers();
+    ret.needWorkers += (*b)->maximumWorkers();
   }
 
   return ret;
 }
 
-EmployerButton* AdvisorEmployerWindow::Impl::addButton( Widget* parent, const Point& startPos, 
-                                                        PriorityIndex priority, const std::string& title )
+EmployerButton* AdvisorEmployerWindow::Impl::addButton( AdvisorEmployerWindow* parent, const Point& startPos,
+                                                        Industry::Type priority, const std::string& title )
 {
   EmployersInfo info = getEmployersInfo( priority );
 
   EmployerButton* btn = new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
   btn->setText( "" );
+  empButtons[ priority ] = btn;
+
+  CONNECT( btn, onClickedSignal, this, Impl::showPriorityWindow );
 
   return btn;
 }
@@ -238,6 +270,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
   setPosition( Point( (parent->width() - width()) / 2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
+  _d->empButtons.resize( Industry::count );
 
   TexturedButton* btnIncrease = findChildA<TexturedButton*>( "btnIncreaseSalary", true, this );
   TexturedButton* btnDecrease = findChildA<TexturedButton*>( "btnDecreaseSalary", true, this );
@@ -246,15 +279,15 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
 
   //buttons _d->_d->background
   Point startPos = Point( 32, 70 ) + Point( 8, 8 );
-  _d->addButton( this, startPos, Impl::prIndustryAndTrade, _("##adve_industry_and_trade##") );
-  _d->addButton( this, startPos, Impl::prFood, _("##adve_food##") );
-  _d->addButton( this, startPos, Impl::prEngineers, _("##adve_engineers##" ) );
-  _d->addButton( this, startPos, Impl::prWater, _("##adve_water##") );
-  _d->addButton( this, startPos, Impl::prPrefectures, _("##adve_prefectures##") );
-  _d->addButton( this, startPos, Impl::prMilitary, _("##adve_military##") );
-  _d->addButton( this, startPos, Impl::prEntertainment, _("##adve_entertainment##") );
-  _d->addButton( this, startPos, Impl::prHealthAndEducation, _("##adve_health_education##") );
-  _d->addButton( this, startPos, Impl::prAdministrationAndReligion, _("##adve_administration_religion##") );
+  _d->addButton( this, startPos, Industry::factoryAndTrade, _("##adve_industry_and_trade##") );
+  _d->addButton( this, startPos, Industry::food, _("##adve_food##") );
+  _d->addButton( this, startPos, Industry::engineering, _("##adve_engineers##" ) );
+  _d->addButton( this, startPos, Industry::water, _("##adve_water##") );
+  _d->addButton( this, startPos, Industry::prefectures, _("##adve_prefectures##") );
+  _d->addButton( this, startPos, Industry::military, _("##adve_military##") );
+  _d->addButton( this, startPos, Industry::entertainment, _("##adve_entertainment##") );
+  _d->addButton( this, startPos, Industry::healthAndEducation, _("##adve_health_education##") );
+  _d->addButton( this, startPos, Industry::administrationAndReligion, _("##adve_administration_religion##") );
 
   _d->lbSalary = findChildA<Label*>( "lbSalaries", true, this );
   _d->lbWorkersState = findChildA<Label*>( "lbWorkersState", true, this );
@@ -263,6 +296,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
   _d->updateSalaryLabel();
   _d->updateWorkersState();
   _d->updateYearlyWages();
+  _d->update();
 }
 
 void AdvisorEmployerWindow::draw(Engine& painter )
@@ -271,6 +305,16 @@ void AdvisorEmployerWindow::draw(Engine& painter )
     return;
 
   Widget::draw( painter );
+}
+
+bool AdvisorEmployerWindow::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  {
+    return true;
+  }
+
+  return Widget::onEvent( event );
 }
 
 }//end namespace gui

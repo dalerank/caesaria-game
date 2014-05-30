@@ -57,12 +57,18 @@ RomeSoldierPtr RomeSoldier::create(PlayerCityPtr city, walker::Type type)
   return ret;
 }
 
-void RomeSoldier::die()
+bool RomeSoldier::die()
 {
-  Soldier::die();
+  bool created = Soldier::die();
 
-  WalkerPtr w = Corpse::create(_city(), this );
-  Logger::warningIf( w.isNull(), "RomeSoldier: cannot create corpse for type " + WalkerHelper::getTypename( type() ) );
+  if( !created )
+  {
+    WalkerPtr w = Corpse::create(_city(), this );
+    Logger::warningIf( w.isNull(), "RomeSoldier: cannot create corpse for type " + WalkerHelper::getTypename( type() ) );
+    return w.isValid();
+  }
+
+  return created;
 }
 
 void RomeSoldier::timeStep(const unsigned long time)

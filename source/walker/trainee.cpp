@@ -99,7 +99,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
   }
 
-  TilesArray startArea = roadOnly ? _d->base->getAccessRoads() : _d->base->getEnterArea();
+  TilesArray startArea = roadOnly ? _d->base->getAccessRoads() : _d->base->enterArea();
 
   DirectRoute droute;
   _d->maxNeed = 0;

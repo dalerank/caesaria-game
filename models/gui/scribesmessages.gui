@@ -6,7 +6,7 @@
     
     lbTitle#Label :
     {
-      font : "FONT_2"
+      font : "FONT_3"
       geometry : [ 16, 10, "pw-16", 50 ]
       text : "##scribes_messages_title##"
       textAlign : [ "center", "center" ]
@@ -19,6 +19,18 @@
       hovered : [ "paneling", 529 ]
       pressed : [ "paneling", 530 ]
       disabled : [ "paneling", 531 ]
+    }
+
+    lbDate#Label : {
+      geometry : [ 36, 45, 76, 60 ]
+      text : "##scrw_date##
+      font : "FONT_1"
+    }
+
+    lbDate#Label : {
+      geometry : [ 120, 45, 180, 60 ]
+      text : "##scrw_subject##
+      font : "FONT_1"
     }
     
     btnExit#TexturedButton :

@@ -210,7 +210,7 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
     if( serv->numberWorkers() > 0 )
     {
       ret.buildingWork++;
-      ret.peoplesStuding += maxStuding * serv->numberWorkers() / serv->maxWorkers();
+      ret.peoplesStuding += maxStuding * serv->numberWorkers() / serv->maximumWorkers();
     }
   }
 

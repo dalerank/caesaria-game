@@ -57,7 +57,7 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
   {
     switch( type )
     {
-    case allTerrain: return Pathfinder::instance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
+    case allTerrain: return Pathfinder::instance().getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
     case roadOnly: return Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
 
     case roadFirst:
@@ -66,7 +66,7 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
 
       if( !ret.isValid() )
       {
-        ret = Pathfinder::instance().getPath( startPos, construction->getEnterArea(), Pathfinder::terrainOnly );
+        ret = Pathfinder::instance().getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
       }
 
       return ret;

@@ -45,7 +45,7 @@ public:
   virtual gfx::TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  
   virtual int  getRoadAccessDistance() const; // virtual because HOUSE has different behavior
-  virtual gfx::TilesArray getEnterArea() const;
+  virtual gfx::TilesArray enterArea() const;
 
   virtual bool canDestroy() const;
   virtual void destroy();

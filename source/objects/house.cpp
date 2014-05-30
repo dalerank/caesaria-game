@@ -688,7 +688,7 @@ void House::applyService( ServiceWalkerPtr walker )
 {
   Building::applyService(walker);  // handles basic services, and remove service reservation
 
-  Service::Type service = walker->getService();
+  Service::Type service = walker->serviceType();
   switch (service)
   {
   case Service::well:
@@ -739,7 +739,7 @@ void House::applyService( ServiceWalkerPtr walker )
     RecruterPtr hunter = ptr_cast<Recruter>( walker );
     if( hunter.isValid() )
     {
-      int hiredWorkers = math::clamp( svalue, 0, hunter->getWorkersNeeded() );
+      int hiredWorkers = math::clamp( svalue, 0, hunter->needWorkers() );
       appendServiceValue( service, -hiredWorkers );
       hunter->hireWorkers( hiredWorkers );
     }
@@ -754,7 +754,7 @@ void House::applyService( ServiceWalkerPtr walker )
 float House::evaluateService(ServiceWalkerPtr walker)
 {
   float res = 0.0;
-  Service::Type service = walker->getService();
+  Service::Type service = walker->serviceType();
   if( _reservedServices.count(service) == 1 )
   {
      // service is already reserved
@@ -810,7 +810,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   return res;
 }
 
-TilesArray House::getEnterArea() const
+TilesArray House::enterArea() const
 {
   if( isWalkable() )
   {
@@ -820,7 +820,7 @@ TilesArray House::getEnterArea() const
   }
   else
   {
-    return Building::getEnterArea();
+    return Building::enterArea();
   }
 }
 

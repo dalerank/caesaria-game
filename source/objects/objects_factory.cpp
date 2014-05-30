@@ -108,9 +108,9 @@ public:
     if( construction == 0 )
       return;
 
-    if( info.getBasePicture().isValid() )
+    if( info.basePicture().isValid() )
     {
-      construction->setPicture( info.getBasePicture() );  // default picture for build tool
+      construction->setPicture( info.basePicture() );  // default picture for build tool
     }
 
     VariantMap anMap = info.getOption( "animation" ).toMap();
@@ -145,7 +145,7 @@ public:
     WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( a );
     if( wb != 0 )
     {
-      wb->setMaxWorkers( (int)info.getOption( "employers" ) );
+      wb->setMaximumWorkers( (int)info.getOption( "employers" ) );
     }
   }
 };

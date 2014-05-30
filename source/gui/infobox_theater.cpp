@@ -33,7 +33,7 @@ InfoboxTheater::InfoboxTheater(Widget *parent, const Tile &tile)
   setTitle( _( theater->name() ) );
 
   _lbTextRef()->setTextAlignment( align::upperLeft, align::center);
-  _updateWorkersLabel( Point( 40, 150), 542, theater->maxWorkers(), theater->numberWorkers() );
+  _updateWorkersLabel( Point( 40, 150), 542, theater->maximumWorkers(), theater->numberWorkers() );
   
   if( theater->showsCount() == 0 )
   {

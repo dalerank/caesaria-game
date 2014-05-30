@@ -34,7 +34,7 @@ public:
 Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
   _d( new Impl )
 {
-  setMaxWorkers(5);
+  setMaximumWorkers(5);
   setPicture( ResourceGroup::security, 17 );
 
   _d->store.setCapacity( 1000 );

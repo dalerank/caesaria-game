@@ -17,6 +17,7 @@
 #define __CAESARIA_WORKERSHUNTER_H_INCLUDE_
 
 #include "serviceman.hpp"
+#include "city/industry.hpp"
 
 class Recruter;
 typedef SmartPtr<Recruter> RecruterPtr;
@@ -26,12 +27,16 @@ class Recruter : public ServiceWalker
 public:
   static RecruterPtr create( PlayerCityPtr city );
 
-  int getWorkersNeeded() const;
-  void hireWorkers( const int workers );
+  int needWorkers() const;
 
+  void hireWorkers( const int workers );
+  void setPriority( const city::HirePriorities& priority );
   void send2City( WorkingBuildingPtr building, const int workersNeeded );
 
-  virtual void die();
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
+  virtual bool die();
 
 protected:
   virtual void _centerTile();
@@ -39,7 +44,9 @@ protected:
 private:
   Recruter( PlayerCityPtr city );
 
-  int _workersNeeded;
+  class Impl;
+  ScopedPtr<Impl> _d;
+
 };
 
 #endif//__CAESARIA_WORKERSHUNTER_H_INCLUDE_
