@@ -104,7 +104,7 @@ public:
 		return _vm.count(key) > 0;
 	}
 
-	std::string Get(const std::string& key) const
+	std::string get(const std::string& key) const
 	{
 		return _vm.count(key) > 0 ? _vm.get( key ).toString() : "";
 	}

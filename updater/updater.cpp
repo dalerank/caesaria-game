@@ -448,9 +448,9 @@ void Updater::PerformSingleMirroredDownload(const DownloadPtr& download)
 vfs::Directory Updater::getTargetDir()
 {
 	// Use the target directory 
-	if (_options.isSet("targetdir") && !_options.Get("targetdir").empty())
+	if (_options.isSet("targetdir") && !_options.get("targetdir").empty())
 	{
-		return vfs::Path( _options.Get("targetdir") );
+		return vfs::Path( _options.get("targetdir") );
 	}
 
 	// Get the current path
@@ -500,7 +500,7 @@ void Updater::CheckLocalFiles()
 	{
 		// Remove all download packages from the queue, except the one containing the updater
 		RemoveAllPackagesExceptUpdater();
-	}
+    }
 }
 
 bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile)
@@ -801,7 +801,7 @@ void Updater::ClearFileOperationProgressCallback()
 
 bool Updater::NewUpdaterAvailable()
 {
-	if(_options.isSet("noselfupdate"))
+    if(_options.isSet("noselfupdate") || _options.isSet("no-exec") )
 	{
 		return false; // no self-update overrides everything
 	}
@@ -843,7 +843,7 @@ void Updater::RemoveAllPackagesExceptUpdater()
 		if (i->second.isUpdater(_executable.toString()))
 		{
 			// This package contains the updater, keep it
-			++i;
+            ++i;
 		}
 		else
 		{

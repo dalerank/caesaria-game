@@ -47,7 +47,6 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES})
 
-
 if(WIN32)
   target_link_libraries( ${PROJECT_NAME} psapi ws2_32 ${CURLLIB_NAME} )
   set(EXECUTABLE_FILENAME "updater")
