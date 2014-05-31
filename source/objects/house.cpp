@@ -593,6 +593,35 @@ void House::_tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desira
   helper.updateDesirability( this, true );
 }
 
+void House::_tryDegrade_20_to_12_lvl( int startPicId, int rsize, const char desirability )
+{
+  bool bigSize = size().width() > rsize;
+  _d->houseId = startPicId;
+  _d->picIdOffset = startPicId + ( math::random( 10 ) > 6 ? 1 : 0 );
+
+  city::Helper helper( _city() );
+  //clear current desirability influence
+  helper.updateDesirability( this, false );
+
+  _d->desirability.base = desirability;
+  _d->desirability.step = desirability < 0 ? 1 : -1;
+
+  TilePos bpos = pos();
+  if( bigSize )
+  {
+    TilesArray area = helper.getArea( this );
+
+    foreach( tile, area )
+    {
+      (*tile)->setMasterTile( 0 );
+    }
+
+    build( _city(), bpos + TilePos( 1, 0 ) );
+  }
+  //set new desirability level
+  helper.updateDesirability( this, true );
+}
+
 void House::_levelDown()
 {
   if( _d->houseLevel == HouseLevel::smallHovel )
@@ -641,6 +670,15 @@ void House::_levelDown()
   case HouseLevel::smallInsula: _tryDegrage_11_to_2_lvl( HouseLevel::bigMansionSmlPic, HouseLevel::bigMansionBigPic, -1 );  break;
   case HouseLevel::middleInsula: _tryDegrage_11_to_2_lvl( HouseLevel::smallInsulaSmlPic, HouseLevel::smallInsulaBigPic, 0 );  break;
   case HouseLevel::bigInsula: _tryDegrage_11_to_2_lvl( HouseLevel::middleInsulaSmlPic, HouseLevel::middleInsulaBigPic, 0 );  break;
+  case HouseLevel::beatyfullInsula: _tryDegrade_20_to_12_lvl( HouseLevel::bigInsulaPic, 2, 1 ); break;
+  case HouseLevel::smallVilla: _tryDegrade_20_to_12_lvl( HouseLevel::beatyfullInsulaPic, 2, 2 ); break;
+  case HouseLevel::middleVilla: _tryDegrade_20_to_12_lvl( HouseLevel::smallVillaPic, 2, 2 ); break;
+  case HouseLevel::bigVilla: _tryDegrade_20_to_12_lvl( HouseLevel::middleVillaPic, 2, 3 ); break;
+  case HouseLevel::greatVilla: _tryDegrade_20_to_12_lvl( HouseLevel::bigVillaPic, 2, 3 ); break;
+  case HouseLevel::smallPalace: _tryDegrade_20_to_12_lvl( HouseLevel::greatVillaPic, 3, 4 ); break;
+  case HouseLevel::middlePalace: _tryDegrade_20_to_12_lvl( HouseLevel::smallPalacePic, 3, 4 ); break;
+  case HouseLevel::bigPalace: _tryDegrade_20_to_12_lvl( HouseLevel::middlePalacePic, 4, 5 ); break;
+  case HouseLevel::greatPalace: _tryDegrade_20_to_12_lvl( HouseLevel::bigPalacePic,  4, 6 ); break;
   }
 
   _update();
