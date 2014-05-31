@@ -43,12 +43,11 @@ if( BUILD_CURL )
   add_definitions( -DCURL_DISABLE_POP3 )
   add_definitions( -DCURL_DISABLE_SMTP )
   link_directories(${CURLLIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES})
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES})
-
 if(WIN32)
-  target_link_libraries( ${PROJECT_NAME} psapi ws2_32 ${CURLLIB_NAME} )
+  target_link_libraries( ${PROJECT_NAME} psapi ${CURLLIB_NAME} ws2_32 )
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 

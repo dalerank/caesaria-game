@@ -5,11 +5,7 @@
 
 #include <SDL.h>
 
-#if defined(NO_USE_SYSTEM_LIBPNG)
-    #include "utils/libpng/png.h"
-#else
-    #include <png.h>
-#endif
+#include "png.h"
 
 // PNG function for error handling
 static void png_cpexcept_error(png_structp png_ptr, png_const_charp msg)
