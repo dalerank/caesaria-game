@@ -65,7 +65,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _setType( walker::prefect );
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
-  _d->action = Impl::patrol;
+  _d->action = Impl::doNothing;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -496,7 +496,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   {
     setBase( prefecture.object() );
 
-    _city()->addWalker( WalkerPtr( this ));
+    _city()->addWalker( this );
   }
   else
   {

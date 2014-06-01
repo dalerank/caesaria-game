@@ -86,10 +86,11 @@
       value : 30
     }
 
-    "wheat_upper#wheat_updater" : {
+    "wheat_upper#goods_updater" : {
+      good : "wheat"
       date : "-350.01.01"
       endTime : "01.01.01"
-      value : 200
+      value : 80
     }
   }
 	

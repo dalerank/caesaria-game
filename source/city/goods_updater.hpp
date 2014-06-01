@@ -15,48 +15,34 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITYSERVICE_MILITARY_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_MILITARY_H_INCLUDED__
+#ifndef _CAESARIA_GOODS_UPDATER_H_INCLUDE_
+#define _CAESARIA_GOODS_UPDATER_H_INCLUDE_
 
 #include "cityservice.hpp"
+#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
 
 namespace city
 {
 
-class Military : public city::Srvc
+class GoodsUpdater : public Srvc
 {
 public:
-  struct Notification
-  {
-    DateTime date;
-    std::string message;
-    Point location;
-  };
-
-  typedef std::vector< Notification > NotificationArray;
-
-  static city::SrvcPtr create( PlayerCityPtr city );
-
-  void update( const unsigned int time );
-  void addNotification( const std::string& text, const Point& location );
-  Notification getPriorityNotification() const;
-  const NotificationArray& notifications() const;
-
-  virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream);
-
+  static SrvcPtr create(PlayerCityPtr city);
+  virtual void update( const unsigned int time);
   static std::string getDefaultName();
+  virtual bool isDeleted() const;
+
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
+
 private:
-  Military( PlayerCityPtr city );
+  GoodsUpdater(PlayerCityPtr city);
 
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
-
-typedef SmartPtr<Military> MilitaryPtr;
 
 }//end namespace city
 
-#endif //__CAESARIA_CITYSERVICE_MILITARY_H_INCLUDED__
+#endif //_CAESARIA_GOODS_UPDATER_H_INCLUDE_

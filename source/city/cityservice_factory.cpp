@@ -35,6 +35,8 @@
 #include "desirability_updater.hpp"
 #include "cityservice_military.hpp"
 #include "cityservice_health.hpp"
+#include "goods_updater.hpp"
+#include "service_updater.hpp"
 
 namespace city
 {
@@ -56,7 +58,7 @@ SrvcPtr ServiceFactory::create( const std::string& name, PlayerCityPtr city )
   ServiceFactory& inst = instance();
   foreach( it, inst._d->creators )
   {
-    if( srvcType == (*it)->getServiceName() )
+    if( srvcType == (*it)->serviceName() )
     {
       city::SrvcPtr srvc = (*it)->create( city );
       srvc->setName( name );
@@ -81,9 +83,9 @@ void ServiceFactory::addCreator( ServiceCreatorPtr creator )
 
   foreach( it, _d->creators )
   {
-    if( creator->getServiceName() == (*it)->getServiceName() )
+    if( creator->serviceName() == (*it)->serviceName() )
     {
-      Logger::warning( "CityServiceFactory: Also have creator for service " + creator->getServiceName() );
+      Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
       return;
     }
   }
@@ -110,6 +112,8 @@ ServiceFactory::ServiceFactory() : _d( new Impl )
   addCreator<DesirabilityUpdater>();
   addCreator<Military>();
   addCreator<HealthCare>();
+  addCreator<GoodsUpdater>();
+  addCreator<ServiceUpdater>();
 }
 
 }//end namespace city
