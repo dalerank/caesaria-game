@@ -366,7 +366,7 @@ void Level::_showIngameMenu()
 
   menu->setCenter( p->center() );
   menu->setupUI( GameSettings::rcpath( "/gui/ingamemenu_android.gui") );
-  new WidgetEscapeCloser( menu );
+  WidgetEscapeCloser::insertTo( menu );
 
   PushButton* btnContinue = findChildA<PushButton*>( "btnContinue", true, menu );
   PushButton* btnSave = findChildA<PushButton*>( "btnSave", true, menu );
