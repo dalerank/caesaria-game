@@ -85,6 +85,7 @@ public:
   void initSound();
   void initPictures( vfs::Path resourcePath);
   void initGuiEnvironment();
+  void initArchiveLoaders();
   void initPantheon(vfs::Path filename );
   void initFontCollection(vfs::Path resourcePath);
   void mountArchives( ResourceLoader& loader );
@@ -127,11 +128,6 @@ void Game::Impl::initSound()
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
 {
-  vfs::FileSystem& fs = vfs::FileSystem::instance();
-  Logger::warning( "Game: initialize sg2 archive loader" );
-  fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
-  fs.addArchiveLoader( new vfs::ZipArchiveLoader( &fs ) );
-
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
@@ -455,9 +451,18 @@ void Game::load(std::string filename)
   return;
 }
 
+void Game::Impl::initArchiveLoaders()
+{
+  vfs::FileSystem& fs = vfs::FileSystem::instance();
+  Logger::warning( "Game: initialize sg2 archive loader" );
+  fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
+  fs.addArchiveLoader( new vfs::ZipArchiveLoader( &fs ) );
+}
+
 void Game::initialize()
 {
   GameSettings::load();
+  _d->initArchiveLoaders();
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
   _d->initFontCollection( GameSettings::rcpath() );

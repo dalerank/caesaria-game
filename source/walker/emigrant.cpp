@@ -34,7 +34,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace  {
-CAESARIA_LITERALCONST(peolples)
+CAESARIA_LITERALCONST(peoples)
 CAESARIA_LITERALCONST(stamina)
 }
 
