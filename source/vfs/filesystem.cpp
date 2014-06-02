@@ -703,7 +703,7 @@ DateTime FileSystem::getFileUpdateTime(const Path& filename) const
   struct tm *foo;
   struct stat attrib;
   stat( filename.toString().c_str(), &attrib);
-  foo = gmtime(&(attrib.st_mtime));
+  foo = gmtime((const time_t*)&(attrib.st_mtime));
 
   return DateTime( foo->tm_year, foo->tm_mon+1, foo->tm_mday+1,
                    foo->tm_hour, foo->tm_min, foo->tm_sec );
