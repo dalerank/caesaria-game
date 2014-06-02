@@ -241,7 +241,7 @@ void House::_checkHomeless()
       e->dispatch();
     }
 
-    Emigrant::send2city( _city(), homeless, tile(), "##immigrant_no_home##" );
+    Emigrant::send2city( _city(), homeless, tile(), "##emigrant_no_home##" );
   }
 }
 
@@ -913,7 +913,7 @@ void House::destroy()
   do
   {
     CitizenGroup homeless = _d->habitants.retrieve( std::min<int>( _d->habitants.count(), maxCitizenInGroup ) );
-    Emigrant::send2city( _city(), homeless, tile(), math::random( 10 ) > 5 ? "##immigrant_thrown_from_house##" : "##immigrant_no_home##" );
+    Emigrant::send2city( _city(), homeless, tile(), math::random( 10 ) > 5 ? "##emigrant_thrown_from_house##" : "##emigrant_no_home##" );
   }
   while( _d->habitants.count() >= maxCitizenInGroup );
 

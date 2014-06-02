@@ -33,6 +33,11 @@
 using namespace constants;
 using namespace gfx;
 
+namespace  {
+CAESARIA_LITERALCONST(peolples)
+CAESARIA_LITERALCONST(stamina)
+}
+
 class Emigrant::Impl
 {
 public:
@@ -296,15 +301,15 @@ void Emigrant::timeStep(const unsigned long time)
 void Emigrant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "peoples" ] = _d->peoples.save();
-  stream[ "stamina" ] = _d->stamina;
+  stream[ lc_peoples ] = _d->peoples.save();
+  stream[ lc_stamina ] = _d->stamina;
 }
 
 void Emigrant::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->peoples.load( stream.get( "peoples" ).toList() );
-  _d->stamina = stream.get( "stamina" );
+  _d->peoples.load( stream.get( lc_peoples ).toList() );
+  _d->stamina = stream.get( lc_stamina );
 }
 
 bool Emigrant::die()

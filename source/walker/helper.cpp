@@ -152,8 +152,8 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   int index = -1;
   switch( type )
   {
-  case walker::immigrant: index=9; break;
-  case walker::emigrant: index=4; break;
+  case walker::immigrant: index=4; break;
+  case walker::emigrant: index=9; break;
   case walker::doctor: index = 2; break;
   case walker::cartPusher: index=51; break;
   case walker::marketLady: index=12; break;

@@ -208,7 +208,6 @@ if(WIN32)
     ${SDL_LIBRARY}
     ${SDL_MIXER_LIBRARY}
     ${SDL_TTF_LIBRARY}    
-    ${PNG_LIBRARY}
   )
 
   foreach(_lib ${_LIBS_FOR_DLL_SOURCE})
