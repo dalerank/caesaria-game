@@ -140,7 +140,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
 
   if( !bestPath.isValid()
       && pathWayList.size() > 0
-      && ( orders & anywayWhenFailed == anywayWhenFailed ) )
+      && ( (orders & anywayWhenFailed ) == anywayWhenFailed ) )
   {
     PathwayList::iterator it = pathWayList.begin();
     std::advance( it, math::random( pathWayList.size() ) );
