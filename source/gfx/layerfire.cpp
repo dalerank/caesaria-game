@@ -65,13 +65,13 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::collapsedRuins:
     case building::prefecture:
     case building::well:
+    case construction::garden:
     case building::fountain:
     case building::lowBridge:
     case building::highBridge:    
       needDrawAnimations = true;
     break;
 
-      //houses
     case building::house:
       {
         HousePtr house = ptr_cast<House>( overlay );

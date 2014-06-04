@@ -153,7 +153,19 @@
       }
     }
        
-
+    cursed_water#contaminated_water : {
+      date : "-219.01.01"
+      type : "contaminated_water"
+      population : 500
+      value : 20
+      action : {
+        message#messagebox : {
+          send2scribe : true
+          title : "##contaminated_water_title##"
+          text : "##contaminated_water_text##"
+        }
+      }
+    }
   }
 	
   buildoptions :
