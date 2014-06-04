@@ -27,6 +27,8 @@
 #include "game/gamedate.hpp"
 #include "game/settings.hpp"
 #include "objects/metadata.hpp"
+#include "statistic.hpp"
+#include "events/showinfobox.hpp"
 #include <map>
 
 using namespace constants;
@@ -47,7 +49,6 @@ public:
   typedef std::vector<TileOverlay::Type> BuildingsType;
   typedef std::map<TileOverlay::Group, BuildingsType> GroupBuildings;
 
-  //HirePriorities priorities;
   WalkerList hrInCity;
   unsigned int distance;
   DateTime lastMessageDate;
@@ -75,53 +76,6 @@ WorkersHire::WorkersHire(PlayerCityPtr city )
 {
   _d->lastMessageDate = GameDate::current();
   _d->fillIndustryMap();
- /* _d->priorities  << building::prefecture
-                  << building::engineerPost
-                  << building::clayPit
-                  << building::wheatFarm
-                  << building::grapeFarm
-                  << building::granary
-                  << building::ironMine
-                  << building::templeCeres
-                  << building::templeMars
-                  << building::templeMercury
-                  << building::templeNeptune
-                  << building::templeVenus
-                  << building::pottery
-                  << building::warehouse
-                  << building::forum
-                  << building::doctor
-                  << building::hospital
-                  << building::barber
-                  << building::baths
-                  << building::fruitFarm
-                  << building::oliveFarm
-                  << building::vegetableFarm
-                  << building::pigFarm
-                  << building::senate
-                  << building::market
-                  << building::timberLogger
-                  << building::marbleQuarry
-                  << building::furnitureWorkshop
-                  << building::weaponsWorkshop
-                  << building::theater
-                  << building::actorColony
-                  << building::school
-                  << building::amphitheater
-                  << building::gladiatorSchool
-                  << building::wharf
-                  << building::barracks
-                  << building::tower
-                  << building::creamery
-                  << building::academy
-                  << building::colloseum
-                  << building::lionsNursery
-                  << building::shipyard
-                  << building::dock
-                  << building::library
-                  << building::hippodrome
-                  << building::chariotSchool
-                  << building::winery;*/
 
   _d->distance = GameSettings::get( GameSettings::rectuterDistance ).toUInt();
 }
@@ -207,6 +161,19 @@ void WorkersHire::update( const unsigned int time )
   foreach( it, buildings )
   {
     _d->hireWorkers( &_city, *it );
+  }
+
+  if( _d->lastMessageDate.monthsTo( GameDate::current() ) > DateTime::monthsInYear / 2 )
+  {
+    _d->lastMessageDate = GameDate::current();
+
+    int worklessPrc = Statistic::getWorklessPercent( &_city );
+    if( worklessPrc > 10 )
+    {
+      events::GameEventPtr e = events::ShowInfobox::create( "##city_need_workers_title##", "##city_need_workers_text##",
+                                                            events::ShowInfobox::send2scribe );
+      e->dispatch();
+    }
   }
 }
 

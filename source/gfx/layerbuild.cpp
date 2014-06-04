@@ -34,6 +34,7 @@
 #include "renderermode.hpp"
 #include "events/warningmessage.hpp"
 #include "city/funds.hpp"
+#include "walker/walker.hpp"
 
 using namespace constants;
 using namespace gui;
@@ -87,7 +88,9 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
   Size size = overlay->size();
 
-  if( overlay->canBuild( _city(), pos, d->buildTiles ) )
+  bool walkersOnTile = !_city()->getWalkers( walker::any, pos, pos + TilePos( size.width(), size.height() ) ).empty();
+
+  if( !walkersOnTile && overlay->canBuild( _city(), pos, d->buildTiles ) )
   {
     //bldCommand->setCanBuild(true);
     Tilemap& tmap = _city()->tilemap();
@@ -131,7 +134,8 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         Tile* tile = new Tile( tmap.at( rPos ) );  // make a copy of tile
 
         bool isConstructible = tile->getFlag( Tile::isConstructible );
-        tile->setPicture( isConstructible ? grnPicture : redPicture );
+        walkersOnTile = !_city()->getWalkers( walker::any, rPos ).empty();
+        tile->setPicture( (!walkersOnTile && isConstructible) ? grnPicture : redPicture );
         tile->setMasterTile( 0 );
         tile->setFlag( Tile::clearAll, true );
         //tile->setFlag( Tile::tlRock, true );  //dirty hack that drawing this tile
