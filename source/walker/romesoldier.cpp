@@ -33,10 +33,14 @@
 using namespace constants;
 using namespace gfx;
 
+namespace  {
+CAESARIA_LITERALCONST(base)
+}
+
 class RomeSoldier::Impl
 {
 public:
-  FortPtr base;
+  TilePos basePos;
   TilePos patrolPosition;
   double strikeForce, resistance;
 };
@@ -106,21 +110,21 @@ void RomeSoldier::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
-void RomeSoldier::send2patrol()
-{
-  _back2base();
-}
+void RomeSoldier::return2fort() { _back2base(); }
+void RomeSoldier::send2patrol() {  _back2base(); }
 
 void RomeSoldier::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base->pos();
+  stream[ lc_base ] = _d->basePos;
   stream[ "strikeForce" ] = _d->strikeForce;
   stream[ "resistance" ] = _d->resistance;
   stream[ "patrolPosition" ] = _d->patrolPosition;
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
 }
+
+FortPtr RomeSoldier::base() const { return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) ); }
 
 void RomeSoldier::load(const VariantMap& stream)
 {
@@ -129,19 +133,18 @@ void RomeSoldier::load(const VariantMap& stream)
   _d->strikeForce = stream.get( "strikeForce" );
   _d->resistance = stream.get( "resistance" );
   _d->patrolPosition = stream.get( "patrolPosition" );
+  _d->basePos = stream.get( lc_base );
 
-  TilePos basePosition = stream.get( "base" );
-  FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( basePosition ) );
+  FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 
   if( fort.isValid() )
   {
-    _d->base = fort;
     fort->addWalker( this );
   }
   else
   {
     die();
-    }
+  }
 }
 
 RomeSoldier::~RomeSoldier(){}
@@ -231,9 +234,10 @@ Pathway RomeSoldier::_findPathway2NearestEnemy( unsigned int range )
 
 void RomeSoldier::_back2base()
 {
-  if( _d->base.isValid() )
+  FortPtr b = base();
+  if( b.isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), _d->base->freeSlot(), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( pos(), b->freeSlot(), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {
@@ -321,7 +325,7 @@ void RomeSoldier::_centerTile()
 void RomeSoldier::send2city(FortPtr base, TilePos pos )
 {
   setPos( pos );
-  _d->base = base;
+  _d->basePos = base->pos();
   _back2base();
 
   if( !isDeleted() )

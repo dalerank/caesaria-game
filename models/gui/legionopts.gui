@@ -72,7 +72,7 @@
         textAlign : [ "upperLeft", "center" ]
         font : "FONT_2_WHITE"
         text : "##formation_title##"
-        bgType : "blackFrame"
+        bgtype : "blackFrame"
       }
       
       geometry : [ 15, 230, 445, 290 ] 
@@ -80,6 +80,12 @@
       font : "FONT_2"
       textOffset : [ 0, 20 ]
       text : "##formation_info##"
+    }
+
+    btnReturn#PushButton : {
+      geometry : [ 60, "ph-40", "pw-60", "ph-12" ]
+      bgtype : "whiteBorderUp"
+      text : "##return_to_fort##"
     }
   }
 }

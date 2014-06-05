@@ -152,6 +152,15 @@
         }
       }
     }
+
+    ity_indebt#city_indebt : {
+      date : "-350.01.01"
+      type : "city_indebt"
+      count : 2
+      emperorMoney : 5000
+      video : "city_indebt.bik"
+      text : "##city_has_runout_money##"
+    }
        
     cursed_water#contaminated_water : {
       date : "-219.01.01"
@@ -165,6 +174,42 @@
           text : "##contaminated_water_text##"
         }
       }
+    }
+
+    barbarian_invasion#enemy_attack : {
+      date : "-217.10.01"
+      type : "enemy_attack"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 4
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 2
+          location : "random"
+        }
+      }
+
+      text : "##enemy_attack_city##"
+    }
+
+    barbarian_attack#messagebox : {
+      date : "-217.10.01"
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+
+    emperor_request_oil#city_request : {
+      date : "-217.09.01"
+      reqtype : "good_request"
+      month : 24
+      good : { weapon : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
     }
   }
 	

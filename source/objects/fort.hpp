@@ -25,6 +25,10 @@
 class Fort : public WorkingBuilding
 {
 public:
+  typedef enum { frmNorthLine=0, frmSouthLine,
+                 frmNorthDblLine, frmSouthDblLine,
+                 frmRandomLocation, frmSquad } TroopsFormation;
+
   Fort( constants::building::Type type, int picIdLogo );
   virtual ~Fort();
 
@@ -34,6 +38,9 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual float evaluateTrainee( constants::walker::Type traineeType);
   virtual void timeStep(const unsigned long time);
+
+  virtual TroopsFormation formation() const;
+  virtual void setFormation( TroopsFormation formation );
 
   virtual void destroy();
 

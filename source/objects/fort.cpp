@@ -92,6 +92,7 @@ public:
   PatrolPointPtr patrolPoint;
   LegionEmblem emblem;
   int flagIndex;
+  Fort::TroopsFormation formation;
 };
 
 class FortArea::Impl
@@ -151,6 +152,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   _d->area->drop();
   _d->flagIndex = 21;
   _d->maxSoldier = 16;
+  _d->formation = frmSquad;
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
@@ -184,6 +186,13 @@ void Fort::timeStep( const unsigned long time )
   }
 
   WorkingBuilding::timeStep( time );
+}
+
+Fort::TroopsFormation Fort::formation() const {  return _d->formation; }
+
+void Fort::setFormation(Fort::TroopsFormation formation)
+{
+
 }
 
 void Fort::destroy()
