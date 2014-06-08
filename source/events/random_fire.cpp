@@ -28,11 +28,17 @@ using namespace constants;
 namespace events
 {
 
+namespace {
+CAESARIA_LITERALCONST(population)
+CAESARIA_LITERALCONST(strong)
+}
+
 class RandomFire::Impl
 {
 public:
   int minPopulation, maxPopulation;
   bool isDeleted;
+  int strong;
 };
 
 GameEventPtr RandomFire::create()
@@ -54,7 +60,7 @@ void RandomFire::_exec( Game& game, unsigned int time)
     HouseList houses;
     houses << game.city()->overlays();
 
-    for( unsigned int k=0; k < houses.size() / 4; k++ )
+    for( unsigned int k=0; k < (houses.size() * _d->strong / 100); k++ )
     {
       HouseList::iterator it = houses.begin();
       std::advance( it, math::random( houses.size() ) );
@@ -68,9 +74,10 @@ bool RandomFire::isDeleted() const {  return _d->isDeleted; }
 
 void RandomFire::load(const VariantMap& stream)
 {
-  VariantList vl = stream.get( "population" ).toList();
+  VariantList vl = stream.get( lc_population ).toList();
   _d->minPopulation = vl.get( 0, 0 ).toInt();
   _d->maxPopulation = vl.get( 1, 999999 ).toInt();
+  _d->strong = stream.get( lc_strong, 10 );
 }
 
 VariantMap RandomFire::save() const
@@ -79,8 +86,8 @@ VariantMap RandomFire::save() const
   VariantList vl_pop;
   vl_pop << _d->minPopulation << _d->maxPopulation;
 
-  ret[ "population" ] = vl_pop;
-
+  ret[ lc_population ] = vl_pop;
+  ret[ lc_strong     ] = _d->strong;
   return ret;
 }
 

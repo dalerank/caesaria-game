@@ -34,6 +34,7 @@
 
     "tutorial#random_fire" : {
       population : 30
+      strong : 25
       exec : {
         "step_1.video#messagebox" : {
           title : "##city_fire_title##"
@@ -53,6 +54,7 @@
 
     "tutorial#random_collapse" : {
       population : 60
+      strong : 25
       exec : {
         "first_collapse#tutorial_window" : {
           tutorial : "/tutorial/first_collapse.tutorial"

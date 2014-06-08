@@ -203,7 +203,7 @@
       video : "/smk/spy_army.smk"
     }
 
-    emperor_request_oil#city_request : {
+    emperor_request_weapon#city_request : {
       date : "-217.09.01"
       reqtype : "good_request"
       month : 24
@@ -211,6 +211,73 @@
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 24 }
     }
+
+    fire_1#random_fire : {
+      date : "-216.09.01"
+      strong : 10
+      exec : {
+        "step_1.video#messagebox" : {
+          title : "##city_fire_title##"
+          text : "##city_fire_text##"
+          video : "/smk/city_fire.smk"
+        }
+      }
+    }
+
+    emperor_request_furniture#city_request : {
+      date : "-215.0.01"
+      reqtype : "good_request"
+      month : 24
+      good : { furniture : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    fire_1#random_fire : {
+      date : "-215.09.01"
+      strong : 8
+      exec : {
+        "step_1.video#messagebox" : {
+          title : "##city_fire_title##"
+          text : "##city_fire_text##"
+          video : "/smk/city_fire.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_2#enemy_attack : {
+      date : "-214.06.01"
+      type : "enemy_attack"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 8
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 5
+          location : "random"
+        }
+      }
+
+      text : "##enemy_attack_city##"
+    }
+
+    barbarian_attack#messagebox : {
+      date : "-214.06.01"
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+
+    collapse_1#random_collapse : {
+      date : "-214.11.01"
+      population : 60
+      strong : 10
+    }
+
   }
 	
   buildoptions :
@@ -257,7 +324,6 @@
       school : true
       academy : true
       library : true
-      wheat_farm : true
       senate_1 : true
       gatehouse : true
       wall : true 
@@ -266,9 +332,9 @@
       fort_javelin : true
       fort_horse : true
       military_academy : true
+      lumber_mill = true
       barracks : true
-      wheat_farm : true
-      vegetable_farm : true
+      fruit_farm : true
       olive_farm : true
     }
   }

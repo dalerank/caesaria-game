@@ -27,6 +27,19 @@ using namespace constants;
 namespace events
 {
 
+namespace {
+CAESARIA_LITERALCONST(population)
+CAESARIA_LITERALCONST(strong)
+}
+
+class RandomDamage::Impl
+{
+public:
+  int minPopulation, maxPopulation;
+  bool isDeleted;
+  int strong;
+};
+
 GameEventPtr RandomDamage::create()
 {
   GameEventPtr ret( new RandomDamage() );
@@ -38,13 +51,13 @@ GameEventPtr RandomDamage::create()
 void RandomDamage::_exec( Game& game, unsigned int time )
 {
   int population = game.city()->population();
-  if( population > _minPopulation && population < _maxPopulation )
+  if( population > _d->minPopulation && population < _d->maxPopulation )
   {
-    _isDeleted = true;
+    _d->isDeleted = true;
     HouseList houses;
     houses << game.city()->overlays();
 
-    for( unsigned int k=0; k < houses.size() / 4; k++ )
+    for( unsigned int k=0; k < (houses.size() * _d->strong / 100); k++ )
     {
       HouseList::iterator it = houses.begin();
       std::advance( it, math::random( houses.size() ) );
@@ -54,26 +67,31 @@ void RandomDamage::_exec( Game& game, unsigned int time )
 }
 
 bool RandomDamage::_mayExec(Game&, unsigned int) const { return true; }
-bool RandomDamage::isDeleted() const {  return _isDeleted; }
+bool RandomDamage::isDeleted() const {  return _d->isDeleted; }
 
 void RandomDamage::load(const VariantMap& stream)
 {
-  VariantList vl = stream.get( "population" ).toList();
-  _minPopulation = vl.get( 0, 0 ).toInt();
-  _maxPopulation = vl.get( 1, 999999 ).toInt();
+  VariantList vl = stream.get( lc_population ).toList();
+  _d->minPopulation = vl.get( 0, 0 ).toInt();
+  _d->maxPopulation = vl.get( 1, 999999 ).toInt();
+  _d->strong = stream.get( lc_strong, 10 );
 }
 
 VariantMap RandomDamage::save() const
 {
   VariantMap ret;
   VariantList vl_pop;
-  vl_pop << _minPopulation << _maxPopulation;
+  vl_pop << _d->minPopulation << _d->maxPopulation;
 
-  ret[ "population" ] = vl_pop;
+  ret[ lc_population ] = vl_pop;
+  ret[ lc_strong ] = _d->strong;
 
   return ret;
 }
 
-RandomDamage::RandomDamage(){  _isDeleted = false;}
+RandomDamage::RandomDamage() : _d( new Impl )
+{
+  _d->isDeleted = false;
+}
 
 }//end namespace events
