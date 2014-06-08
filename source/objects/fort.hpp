@@ -28,6 +28,7 @@ public:
   typedef enum { frmNorthLine=0, frmSouthLine,
                  frmNorthDblLine, frmSouthDblLine,
                  frmRandomLocation, frmSquad } TroopsFormation;
+  typedef std::vector<TroopsFormation> TroopsFormations;
 
   Fort( constants::building::Type type, int picIdLogo );
   virtual ~Fort();
@@ -49,6 +50,7 @@ public:
 
   virtual gfx::Picture legionEmblem() const;
   virtual std::string legionName() const;
+  virtual TroopsFormations legionFormations() const;
   virtual int legionMorale() const;
 
   virtual void save(VariantMap &stream) const;
@@ -62,6 +64,7 @@ protected:
   virtual void _setEmblem( gfx::Picture pic );
   virtual void _setName( const std::string& name );
   virtual int  _setFlagIndex( int index );
+  virtual void _addFormation( TroopsFormation formation );
 
 private:  
   class Impl;

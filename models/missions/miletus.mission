@@ -14,13 +14,13 @@
     peace : 40
     favour : 40
     next : "/missions/tutorial6.briefing"
-    title : "##win_questor_title##"
+    title : "##win_procurator_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##miletus_4_title##"
-    overview :  [ "##miletus_4_overview##",
+    caption : "##miletus_5_title##"
+    overview :  [ "##miletus_5_overview##",
                   "@img=pictures_00017",
-                  "##miletus_4_overview_2##" ]
+                  "##miletus_5_overview_2##" ]
   }
 	
   empire : {
@@ -277,6 +277,34 @@
       population : 60
       strong : 10
     }
+
+    barbarian_invasion_3#enemy_attack : {
+      date : "-211.04.01"
+      type : "enemy_attack"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      text : "##enemy_attack_city##"
+    }
+
+    barbarian_attack#messagebox : {
+      date : "-211.04.01"
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+
 
   }
 	

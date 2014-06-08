@@ -92,6 +92,7 @@ public:
   PatrolPointPtr patrolPoint;
   LegionEmblem emblem;
   int flagIndex;
+  Fort::TroopsFormations availableFormations;
   Fort::TroopsFormation formation;
 };
 
@@ -268,6 +269,7 @@ void Fort::changePatrolArea()
 
 Picture Fort::legionEmblem() const { return _d->emblem.pic; }
 std::string Fort::legionName() const{  return _d->emblem.name; }
+Fort::TroopsFormations Fort::legionFormations() const { return _d->availableFormations; }
 
 int Fort::legionMorale() const
 {
@@ -318,6 +320,11 @@ void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patr
 void Fort::_setEmblem(Picture pic) { _d->emblem.pic = pic; }
 void Fort::_setName(const std::string& name) { _d->emblem.name = name; }
 int  Fort::_setFlagIndex( int index ) { return _d->flagIndex = index; }
+
+void Fort::_addFormation(Fort::TroopsFormation formation)
+{
+  _d->availableFormations.push_back( formation );
+}
 
 bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {

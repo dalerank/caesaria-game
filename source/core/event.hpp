@@ -219,7 +219,7 @@ enum GuiEventType
 	guiEditboxChanged,
 
     //! The marked area in an editbox was changed.
-  guiEditboxMarkingChanged,
+    guiEditboxMarkingChanged,
 
 	//! The tab was changed in an tab control
 	guiTabChanged,

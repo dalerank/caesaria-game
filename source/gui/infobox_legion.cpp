@@ -58,12 +58,6 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& 
   _d->lbFormationText = findChildA<Label*>( "lbFormation", true, this );
   _d->btnReturn = findChildA<PushButton*>( "btnReturn", true, this );
 
-  _addFormationButton( Fort::frmNorthLine, 33 );
-  _addFormationButton( Fort::frmSouthLine, 34 );
-  _addFormationButton( Fort::frmNorthDblLine, 30 );
-  _addFormationButton( Fort::frmSouthDblLine, 31 );
-  _addFormationButton( Fort::frmRandomLocation, 32 );
-
   WalkerList walkers = city->getWalkers( walker::any, pos );
   foreach( i, walkers )
   {
@@ -86,10 +80,28 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& 
                 ? _d->fort->legionName()
                 : "##unknown_legion##" );
 
+  _addAvailalbesFormation();
+
   CONNECT( _d->btnReturn, onClicked(), _d.data(), Impl::returnSoldiers2fort );
 }
 
 InfoboxLegion::~InfoboxLegion() {}
+
+void InfoboxLegion::_addAvailalbesFormation()
+{
+  if( _d->fort.isNull() )
+      return;
+
+  Fort::TroopsFormations formations = _d->fort->legionFormations();
+
+  int index = 0;
+  int formationPicId[] = { 33, 34, 30, 31, 29, 28 };
+  foreach( it, formations )
+  {
+    _addFormationButton( index, *it, formationPicId[ *it ] );
+    index++;
+  }
+}
 
 bool InfoboxLegion::onEvent(const NEvent& event)
 {
@@ -124,10 +136,22 @@ bool InfoboxLegion::onEvent(const NEvent& event)
     }
   }
 
+  if( event.EventType == sEventKeyboard && !event.keyboard.pressed && event.keyboard.control )
+  {
+    if( event.keyboard.key == KEY_KEY_A )
+    {
+      if( _d->fort.isValid() )
+      {
+        _d->fort->setTraineeValue( walker::soldier, 100 );
+      }
+      return true;
+    }
+  }
+
   return InfoboxSimple::onEvent( event );
 }
 
-void InfoboxLegion::_addFormationButton(int index, int picId)
+void InfoboxLegion::_addFormationButton(int index, int id, int picId)
 {
   Point offset( 83, 0 );
   Rect rect( Point( 16, 140 ) + offset * index, Size( 83 ) );
