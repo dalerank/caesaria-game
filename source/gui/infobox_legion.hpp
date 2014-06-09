@@ -33,6 +33,8 @@ public:
 private:
   void _addFormationButton(int index, int id, int picId );
   void _addAvailalbesFormation();
+  void _update();
+  void _returnSoldiers2fort();
 
   class Impl;
   ScopedPtr<Impl> _d;

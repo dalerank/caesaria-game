@@ -49,19 +49,13 @@ FortLegionary::FortLegionary()
 
 void FortLegionary::_readyNewSoldier()
 {
-  RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
+  TilesArray tiles = enterArea();
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getAroundTiles( this );
-
-  foreach( tile, tiles)
+  if( !tiles.empty() )
   {
-    if( (*tile)->isWalkable( true ) )
-    {
-      soldier->send2city( this, (*tile)->pos() );
-      addWalker( soldier.object() );
-      return;
-    }
+    RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
+    soldier->send2city( this, tiles.front()->pos() );
+    addWalker( soldier.object() );
   }
 }
 
@@ -85,19 +79,13 @@ void FortMounted::build(PlayerCityPtr city, const TilePos& pos)
 
 void FortMounted::_readyNewSoldier()
 {
-  RomeHorsemanPtr soldier = RomeHorseman::create( _city() );
+  TilesArray tiles = enterArea();
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getAroundTiles( this );
-
-  foreach( tile, tiles)
+  if( !tiles.empty() )
   {
-    if( (*tile)->isWalkable( true ) )
-    {
-      soldier->send2city( this, (*tile)->pos() );
-      addWalker( soldier.object() );
-      return;
-    }
+    RomeHorsemanPtr soldier = RomeHorseman::create( _city() );
+    soldier->send2city( this, tiles.front()->pos() );
+    addWalker( soldier.object() );
   }
 }
 
@@ -114,18 +102,12 @@ FortJaveline::FortJaveline()
 
 void FortJaveline::_readyNewSoldier()
 {
-  RomeArcherPtr soldier = RomeArcher::create( _city() );
+  TilesArray tiles = enterArea();
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getAroundTiles( this );
-
-  foreach( tile, tiles)
+  if( !tiles.empty() )
   {
-    if( (*tile)->isWalkable( true ) )
-    {
-      soldier->send2city( this, (*tile)->pos() );
-      addWalker( soldier.object() );
-      return;
-    }
+    RomeArcherPtr soldier = RomeArcher::create( _city() );
+    soldier->send2city( this, tiles.front()->pos() );
+    addWalker( soldier.object() );
   }
 }

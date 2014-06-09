@@ -104,7 +104,7 @@ void TilemapCamera::setCenter(TilePos pos )
 
   setCenter( Point( pos.i() + pos.j(), _d->tilemap->size() - 1 + pos.j() - pos.i() ) );
 
-  _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
+  oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
 void TilemapCamera::move(PointF relative)
@@ -134,7 +134,7 @@ void TilemapCamera::setCenter(Point pos)
   }
   
   _d->centerMapXZ = pos.toPointF();
-  _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
+  oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
 int TilemapCamera::getCenterX() const  {   return _d->centerMapXZ.x();   }

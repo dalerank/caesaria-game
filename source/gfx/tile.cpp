@@ -285,6 +285,11 @@ int TileHelper::encode(const Tile& tt)
   return res;
 }
 
+unsigned int TileHelper::hash(const TilePos& pos)
+{
+  return (pos.i() << 16) + pos.j();
+}
+
 void TileHelper::decode(Tile& tile, const int bitset)
 {
   tile.setFlag( Tile::clearAll, true );

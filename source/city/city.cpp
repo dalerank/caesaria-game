@@ -94,19 +94,14 @@ public:
     }
 
     _grid.clear();
-  }
-
-  unsigned int hash( const TilePos& pos )
-  {
-    return (pos.i() << 16) + pos.j();
-  }
+  }  
 
   void append( WalkerPtr& a )
   {
     const TilePos& pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      _grid[ hash( pos ) ].push_back( a );
+      _grid[ TileHelper::hash( pos ) ].push_back( a );
     }
   }
 
@@ -115,7 +110,7 @@ public:
     TilePos pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      WalkerList& d = _grid[ hash( pos ) ];
+      WalkerList& d = _grid[ TileHelper::hash( pos ) ];
       foreach( it, d )
       {
         if( *it == a )
@@ -131,7 +126,7 @@ public:
   {
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      return _grid[ hash( pos ) ];
+      return _grid[ TileHelper::hash( pos ) ];
     }
     else
     {

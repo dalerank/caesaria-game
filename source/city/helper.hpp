@@ -192,7 +192,7 @@ public:
   SmartPtr< T > prew( const SmartPtr< T > current );
 
   gfx::TilesArray getArea( gfx::TileOverlayPtr overlay );
-  gfx::TilesArray getAroundTiles( gfx::TileOverlayPtr building );
+  gfx::TilesArray getAroundTiles(gfx::TileOverlayPtr building );
   gfx::TilesArray getArea( TilePos start, TilePos stop );
   float getBalanceKoeff();
   void updateTilePics();
