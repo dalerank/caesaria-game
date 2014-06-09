@@ -327,20 +327,37 @@ Picture Fort::legionEmblem() const { return _d->emblem.pic; }
 std::string Fort::legionName() const{  return _d->emblem.name; }
 Fort::TroopsFormations Fort::legionFormations() const { return _d->availableFormations; }
 
+unsigned int Fort::legionHealth() const
+{
+  SoldierList sldrs = soldiers();
+  if( sldrs.empty() )
+    return 0;
+
+  unsigned int health = 0;
+  foreach( it, sldrs) { health += (*it)->health(); }
+  return health / sldrs.size();
+}
+
+unsigned int Fort::legionTrained() const
+{
+  SoldierList sldrs = soldiers();
+  if( sldrs.empty() )
+    return 0;
+
+  unsigned int trained = 0;
+  foreach( it, sldrs) { trained += (*it)->health(); }
+  return trained / sldrs.size();
+}
+
 int Fort::legionMorale() const
 {
   SoldierList sldrs = soldiers();
   if( sldrs.empty() )
     return 0;
 
-  SoldierList::iterator it=sldrs.begin();
-  int morale = (*it)->morale(); ++it;
-  for( ; it != sldrs.begin(); ++it )
-  {
-    morale = ( morale + (*it)->morale() ) / 2;
-  }
-
-  return morale;
+  int morale = 0;
+  foreach( it, sldrs) { morale += (*it)->morale(); }
+  return morale / sldrs.size();
 }
 
 void Fort::save(VariantMap& stream) const
@@ -373,6 +390,15 @@ SoldierList Fort::soldiers() const
   soldiers << walkers();
 
   return soldiers;
+}
+
+void Fort::returnSoldiers()
+{
+  if( _d->patrolPoint.isValid() )
+  {
+    _d->patrolPoint->setPos( _d->area->pos() + TilePos( 0, 3 ) );
+    changePatrolArea();
+  }
 }
 
 void Fort::_setPatrolPoint(PatrolPointPtr patrolPoint) {  _d->patrolPoint = patrolPoint; }

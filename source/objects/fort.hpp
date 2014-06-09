@@ -52,6 +52,8 @@ public:
 
   virtual gfx::Picture legionEmblem() const;
   virtual std::string legionName() const;
+  virtual unsigned int legionHealth() const;
+  virtual unsigned int legionTrained() const;
   virtual TroopsFormations legionFormations() const;
   virtual int legionMorale() const;
 
@@ -59,6 +61,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual SoldierList soldiers() const;
+  virtual void returnSoldiers();
 
 protected:
   virtual void _readyNewSoldier() {}

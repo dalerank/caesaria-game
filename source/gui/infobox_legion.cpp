@@ -42,11 +42,12 @@ class InfoboxLegion::Impl
 public:
   Label* lbFormationTitle;
   Label* lbFormationText;  
+  Label* lbNumberValue;
+  Label* lbHealthValue;
+  Label* lbMoraleValue;
+  Label* lbTrainedValue;
   PushButton* btnReturn;
   FortPtr fort;
-
-oc3_slots public:
-  void returnSoldiers2fort();
 };
 
 InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
@@ -57,6 +58,10 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& 
   _d->lbFormationTitle = findChildA<Label*>( "lbFormationTitle", true, this );
   _d->lbFormationText = findChildA<Label*>( "lbFormation", true, this );
   _d->btnReturn = findChildA<PushButton*>( "btnReturn", true, this );
+  _d->lbNumberValue = findChildA<Label*>( "lbNumberValue", true, this );
+  _d->lbHealthValue = findChildA<Label*>( "lbHealthValue", true, this );
+  _d->lbMoraleValue = findChildA<Label*>( "lbMoraleValue", true, this );
+  _d->lbTrainedValue = findChildA<Label*>( "lbTrainedValue", true, this );
 
   WalkerList walkers = city->getWalkers( walker::any, pos );
   foreach( i, walkers )
@@ -76,16 +81,50 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& 
     }
   }
 
-  setTitle( _d->fort.isValid()
+  setTitle( _( _d->fort.isValid()
                 ? _d->fort->legionName()
-                : "##unknown_legion##" );
+                : "##unknown_legion##" ) );
 
   _addAvailalbesFormation();
+  _update();
 
-  CONNECT( _d->btnReturn, onClicked(), _d.data(), Impl::returnSoldiers2fort );
+  CONNECT( _d->btnReturn, onClicked(), this, InfoboxLegion::_returnSoldiers2fort );
 }
 
 InfoboxLegion::~InfoboxLegion() {}
+
+void InfoboxLegion::_update()
+{
+  if( _d->fort.isNull() )
+      return;
+
+  if( _d->lbNumberValue )
+  {
+    _d->lbNumberValue->setText( StringHelper::i2str( _d->fort->soldiers().size() ) );
+  }
+
+  if( _d->lbHealthValue )
+  {
+    const char* health[] = { "##sldh_health_low##", "##sldh_health_sparse##", "##sldh_health_middle##","##sldh_health_strong##", "##sldh_health_strongest##" };
+    int index = math::clamp<unsigned int>( _d->fort->legionHealth() / 20, 0, 4 );
+    _d->lbHealthValue->setText( _( health[ index ] ) );
+  }
+
+  if( _d->lbMoraleValue )
+  {
+    const char* morale[] = { "##sldr_totally_distraught##", "##sldr_terrified##", "##sldr_very_frightened##",
+                            "##sldr_badly_shaken##", "##sldr_shaken##",
+                            "##sldr_extremely_scared##",
+                            "##sldr_daring##", "##sldr_encouraged##", "##sdlr_bold##" ,"##sldr_very_bold##" };
+    int index = math::clamp<unsigned int>( _d->fort->legionMorale() / 10, 0, 9 );
+    _d->lbMoraleValue->setText( _( morale[ index ] ) );
+  }
+
+  if( _d->lbTrainedValue )
+  {
+    _d->lbTrainedValue->setText( StringHelper::i2str( _d->fort->legionTrained() ) );
+  }
+}
 
 void InfoboxLegion::_addAvailalbesFormation()
 {
@@ -162,17 +201,14 @@ void InfoboxLegion::_addFormationButton(int index, int id, int picId)
   btn->setTooltipText( _("##legion_formation_tooltip##") );
 }
 
-void InfoboxLegion::Impl::returnSoldiers2fort()
+void InfoboxLegion::_returnSoldiers2fort()
 {
-  if( fort.isNull() )
-      return;
-
-  RomeSoldierList soldiers;
-  soldiers << fort->soldiers();
-  foreach( i, soldiers )
+  if( _d->fort.isValid() )
   {
-    (*i)->return2fort();
+    _d->fort->returnSoldiers();
   }
+
+  deleteLater();
 }
 
 }//end namespace gui
