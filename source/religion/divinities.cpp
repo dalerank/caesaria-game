@@ -38,12 +38,16 @@ namespace religion
 namespace rome
 {
 
+namespace {
+CAESARIA_LITERALCONST(name)
+}
+
 void RomeDivinity::load(const VariantMap& vm)
 {
   if( vm.empty() )
     return;
 
-  _name = vm.get( "name" ).toString();
+  _name = vm.get( lc_name ).toString();
   _service = ServiceHelper::getType( vm.get( "service" ).toString() );
   _pic = Picture::load( vm.get( "image" ).toString() );
   _relation = (float)vm.get( "relation", 100.f );
@@ -86,6 +90,12 @@ void RomeDivinity::load(const VariantMap& vm)
   }
 }
 
+std::string RomeDivinity::shortDescription() const { return _shortDesc; }
+
+Service::Type RomeDivinity::serviceType() const { return _service; }
+
+const Picture&RomeDivinity::picture() const { return _pic; }
+
 void RomeDivinity::assignFestival(int type)
 {
   //_relation = math::clamp<float>( _relation + type * 10, 0, 100 );
@@ -95,7 +105,7 @@ void RomeDivinity::assignFestival(int type)
 VariantMap RomeDivinity::save() const
 {
   VariantMap ret;
-  ret[ "name" ] = Variant( _name );
+  ret[ lc_name ] = Variant( _name );
   ret[ "service" ] = Variant( ServiceHelper::getName( _service ) );
   ret[ "image" ] = Variant( _pic.name() );
   ret[ "relation" ] = _relation;
@@ -111,6 +121,12 @@ VariantMap RomeDivinity::save() const
 }
 
 float RomeDivinity::relation() const { return _relation; }
+float RomeDivinity::monthDecrease() const { return 0.5f; }
+void RomeDivinity::setEffectPoint(int value) { _effectPoints = value; }
+
+int RomeDivinity::wrathPoints() const { return _wrathPoints; }
+
+DateTime RomeDivinity::lastFestivalDate() const { return _lastFestival; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {

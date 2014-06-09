@@ -38,14 +38,14 @@ public:
   virtual void load( const VariantMap& vm );
 
   virtual std::string name() const { return _name; }
-  virtual std::string shortDescription() const { return _shortDesc; }
-  virtual Service::Type serviceType() const { return _service; }
-  virtual const gfx::Picture& picture() const { return _pic; }
+  virtual std::string shortDescription() const;
+  virtual Service::Type serviceType() const;
+  virtual const gfx::Picture& picture() const;
   virtual float relation() const;
-  virtual float monthDecrease() const { return 0.5f; }
-  virtual void setEffectPoint( int value ) { _effectPoints = value; }
-  virtual int wrathPoints() const { return _wrathPoints; }
-  virtual DateTime lastFestivalDate() const { return _lastFestival; }
+  virtual float monthDecrease() const;
+  virtual void setEffectPoint( int value );
+  virtual int wrathPoints() const;
+  virtual DateTime lastFestivalDate() const;
 
   virtual void updateRelation( float income, PlayerCityPtr city );
 

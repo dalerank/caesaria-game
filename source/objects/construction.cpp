@@ -192,22 +192,12 @@ double Construction::getState( ParameterType param) const { return _d->params[ p
 
 TilesArray Construction::enterArea() const
 {
-  TilesArray tiles;
-
   int s = size().width();
   TilesArray near = _city()->tilemap().getRectangle( pos() - TilePos(1, 1),
                                                                   pos() + TilePos(s, s),
-                                                                  !Tilemap::checkCorners );
+                                                                  !Tilemap::checkCorners );  
 
-  foreach( it, near )
-  {
-    if( (*it)->isWalkable( true ) )
-    {
-      tiles.push_back( *it );
-    }
-  }
-
-  return tiles;
+  return near.walkableTiles( true );
 }
 
 void Construction::timeStep(const unsigned long time)

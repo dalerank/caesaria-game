@@ -138,7 +138,7 @@ bool InfoboxLegion::onEvent(const NEvent& event)
 
   if( event.EventType == sEventKeyboard && !event.keyboard.pressed && event.keyboard.control )
   {
-    if( event.keyboard.key == KEY_KEY_A )
+    if( event.keyboard.key == KEY_KEY_B ) //build new soldier
     {
       if( _d->fort.isValid() )
       {
@@ -155,7 +155,7 @@ void InfoboxLegion::_addFormationButton(int index, int id, int picId)
 {
   Point offset( 83, 0 );
   Rect rect( Point( 16, 140 ) + offset * index, Size( 83 ) );
-  PushButton* btn = new PushButton( this, rect, "", index );
+  PushButton* btn = new PushButton( this, rect, "", id );
   btn->setBackgroundStyle( PushButton::whiteBorderUp );
   btn->setIcon( ResourceGroup::menuMiddleIcons, picId );
   btn->setIconOffset( Point( 1, 1 ) );

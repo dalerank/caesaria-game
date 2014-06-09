@@ -125,7 +125,7 @@ public:
   static std::string convId2PicName( const unsigned int imgId );
   static int convPicName2Id( const std::string &pic_name);
   static int encode( const Tile& tt );
-
+  static unsigned int hash( const TilePos& pos );
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();
 };

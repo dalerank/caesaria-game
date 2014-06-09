@@ -27,7 +27,8 @@ class Fort : public WorkingBuilding
 public:
   typedef enum { frmNorthLine=0, frmSouthLine,
                  frmNorthDblLine, frmSouthDblLine,
-                 frmRandomLocation, frmSquad } TroopsFormation;
+                 frmRandomLocation, frmSquad,
+                 frmParade } TroopsFormation;
   typedef std::vector<TroopsFormation> TroopsFormations;
 
   Fort( constants::building::Type type, int picIdLogo );
@@ -42,6 +43,7 @@ public:
 
   virtual TroopsFormation formation() const;
   virtual void setFormation( TroopsFormation formation );
+  virtual gfx::TilesArray enterArea() const;
 
   virtual void destroy();
 
