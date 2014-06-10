@@ -72,6 +72,7 @@
 #include "walker/walkers_factory.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
+#include "events/random_wolves.hpp"
 #include "events/warningmessage.hpp"
 
 using namespace gui;
@@ -505,8 +506,16 @@ void Level::handleEvent( NEvent& event )
     case KEY_F10:_d->makeScreenShot(); break;
     case KEY_F11:
         if( event.keyboard.pressed )
-            _d->makeEnemy();
-    break;
+        {
+          if( event.keyboard.control )
+          {
+            events::GameEventPtr e = events::RandomWolves::create( 10 );
+            e->dispatch();
+          }
+          else { _d->makeEnemy(); }
+        }
+    break;    
+
     case KEY_ESCAPE:
     {
         Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();

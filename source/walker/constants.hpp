@@ -76,6 +76,7 @@ enum Type{
   romeSpearman,
   balista,
   criminal,//50
+  wolf,
   all = 0xff,
   any = all
 };

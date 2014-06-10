@@ -521,5 +521,9 @@ bool Walker::die()
   deleteLater();
 
   WalkerPtr corpse = Corpse::create( _city(), this );
+  if( corpse.isValid() )
+  {
+    _city()->addWalker( corpse );
+  }
   return corpse.isValid();
 }

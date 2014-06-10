@@ -26,6 +26,10 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+CAESARIA_LITERALCONST(destination)
+}
+
 class Animal::Impl
 {
 public:
@@ -37,7 +41,7 @@ Animal::Animal(PlayerCityPtr city )
 {
   _setType( walker::unknown );
 
-  setName( _("##Animal##") );
+  setName( _("##animal##") );
 }
 
 void Animal::send2City(const TilePos &start )
@@ -53,13 +57,13 @@ Animal::~Animal() {}
 void Animal::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "destination" ] = _d->destination;
+  stream[ lc_destination ] = _d->destination;
 }
 
 void Animal::load( const VariantMap& stream )
 {
   Walker::load( stream );
-  _d->destination = stream.get( "destination" ).toTilePos();
+  _d->destination = stream.get( lc_destination ).toTilePos();
 }
 
 std::string Animal::getThinks() const{  return "##sheep_baa##";}
@@ -83,7 +87,7 @@ void Animal::_findNewWay( const TilePos& start )
 Sheep::Sheep( PlayerCityPtr city ) : Animal( city )
 {
   _setType( walker::sheep );
-  setName( _("##Sheep##") );
+  setName( _("##sheep##") );
 
   addAbility( Illness::create( 0.2, 4 ) );
 }
@@ -125,6 +129,136 @@ bool Sheep::die()
 }
 
 void Sheep::send2City(const TilePos &start )
+{
+  _findNewWay( start );
+
+  if( !isDeleted() )
+  {
+    _city()->addWalker( this );
+  }
+}
+
+class Wolf::Impl
+{
+public:
+  TilePos attackPos;
+};
+
+Wolf::Wolf( PlayerCityPtr city )
+  : Animal( city ), _d( new Impl )
+{
+  _setType( walker::wolf );
+  setSpeedMultiplier( 0.8 + math::random( 60 ) / 100.f);
+  setName( _("##wolf##") );
+
+  addAbility( Illness::create( 0.2, 4 ) );
+}
+
+WalkerPtr Wolf::create(PlayerCityPtr city)
+{
+  WalkerPtr ret( new Wolf( city ) );
+  ret->drop();
+
+  return ret;
+}
+
+void Wolf::_reachedPathway()
+{
+  Walker::_reachedPathway();
+
+  _findNewWay( pos() );
+}
+
+void Wolf::_centerTile()
+{
+  Animal::_centerTile();
+
+  TilePos offset(1,1);
+  WalkerList walkers = _city()->getWalkers( walker::any, pos() - offset, pos() + offset );
+  walkers = walkers.exclude<Wolf>();
+
+  if( !walkers.empty() )
+  {
+    WalkerList::iterator it = walkers.begin();
+    std::advance( it, math::random( walkers.size() - 1 ) );
+
+    turn( (*it)->pos() );
+    _setAction( acFight );
+    //setSpeedMultiplier( 0.0 );
+    _d->attackPos = (*it)->pos();
+  }
+}
+
+void Wolf::_findNewWay( const TilePos& start )
+{
+  TilePos offset(10,10);
+  WalkerList walkers = _city()->getWalkers( walker::any, start - offset, start + offset );
+  walkers = walkers.exclude<Wolf>();
+
+  Pathway pathway;
+  if( !walkers.empty() )
+  {
+    WalkerList::iterator it = walkers.begin();
+    std::advance( it, math::random( walkers.size() - 1 ) );
+
+    pathway = PathwayHelper::create( start, (*it)->pos(), PathwayHelper::allTerrain );
+  }
+
+  if( !pathway.isValid() )
+  {
+    pathway = PathwayHelper::randomWay( _city(), start, 10 );
+  }
+
+  if( pathway.isValid() )
+  {
+    setPos( start );
+    setPathway( pathway );
+    go();
+  }
+  else
+  {
+    die();
+  }
+}
+
+void Wolf::_brokePathway(TilePos p){  _findNewWay( pos() );}
+
+bool Wolf::die()
+{
+  return Animal::die();
+}
+
+int Wolf::agressive() const { return 2; }
+
+void Wolf::timeStep(const unsigned long time)
+{
+  Animal::timeStep( time );
+
+  switch( action() )
+  {
+  case acFight:
+  {
+    WalkerList walkers = _city()->getWalkers( walker::any, _d->attackPos );
+    walkers = walkers.exclude<Wolf>();
+
+    if( !walkers.empty() )
+    {
+      walkers.front()->updateHealth( -1 );
+      walkers.front()->acceptAction( acFight, pos() );
+    }
+    else
+    {
+      _findNewWay( pos() );
+    }
+  }
+  break;
+
+  default:
+  break;
+  }
+}
+
+void Wolf::send2City(const TilePos &start )
 {
   _findNewWay( start );
 

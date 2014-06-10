@@ -12,32 +12,40 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITYSERVICE_ANIMALS_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_ANIMALS_H_INCLUDED__
+#ifndef _CAESARIA_RANDOMWOLVES_EVENT_H_INCLUDE_
+#define _CAESARIA_RANDOMWOLVES_EVENT_H_INCLUDE_
 
-#include "cityservice.hpp"
+#include "event.hpp"
+#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
 
-namespace city
+namespace events
 {
 
-class Animals : public Srvc
+class RandomWolves : public GameEvent
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
-  static std::string getDefaultName();
-  virtual void update( const unsigned int time );
-  void setWolvesNumber( unsigned int number );
+  static GameEventPtr create();
+  static GameEventPtr create( unsigned int wolvesNumber );
+  virtual bool isDeleted() const;
+
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
+
+protected:
+  virtual void _exec(Game &game, unsigned int time);
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  Animals(PlayerCityPtr city);
+  RandomWolves();
 
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
-}//end namespace city
+}//namespace events
 
-#endif //__CAESARIA_CITYSERVICE_ANIMALS_H_INCLUDED__
+#endif //_CAESARIA_RANDOMWOLVES_EVENT_H_INCLUDE_

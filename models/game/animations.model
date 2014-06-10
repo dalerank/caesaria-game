@@ -150,6 +150,12 @@
     die : { rc : "citizen04", start : 257, frames : 1, action : 3, step : 0 }
   }
 
+  wolf : {
+    move : { rc : "citizen04", start : 265, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen04", start : 369, frames : 7, action : 2, step : 8 }
+    die : { rc : "citizen04", start : 361, frames : 1, action : 3, step : 0 }
+  }
+
   fishingBoat : {
     move : { rc : "carts", start : 249, frames : 1, action : 1, step : 8 }
     work : { rc : "carts", start : 257, frames : 1, action : 4, step : 8 }
