@@ -447,7 +447,6 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
 
 bool Fort::isNeedRoadAccess() const {  return false; }
 
-
 TilesArray Fort::Impl::getFreeSlots( PlayerCityPtr city, const TilesArray& tiles) const
 {
   TilesArray ret;

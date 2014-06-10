@@ -27,11 +27,15 @@ using namespace gfx;
 namespace city
 {
 
+namespace {
+static const unsigned int defaultMaxSheeps = 10;
+}
+
 class Animals::Impl
 {
 public:
-  static const unsigned int maxSheeps = 10;
-  DateTime lastTimeUpdate;
+  unsigned int maxSheeps;
+  unsigned int maxWolves;
 };
 
 SrvcPtr Animals::create(PlayerCityPtr city)
@@ -45,39 +49,51 @@ std::string Animals::getDefaultName() { return "animals"; }
 
 void Animals::update(const unsigned int time)
 {
-  if( !GameDate::isWeekChanged() )
+  if( !GameDate::isMonthChanged() )
     return;
 
-  if( _d->lastTimeUpdate.month() != GameDate::current().month() )
-  {
-    _d->lastTimeUpdate = GameDate::current();
-    Tilemap& tmap = _city.tilemap();
-    TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
-    TilesArray::iterator it=border.begin();
-    while( it != border.end() )
-    {
-      if( !(*it)->isWalkable(true) )       {        it = border.erase( it );      }
-      else  { ++it; }
-    }
+  Tilemap& tmap = _city.tilemap();
+  TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
+  border = border.walkableTiles( true );
 
+  if( _d->maxSheeps > 0 )
+  {
     WalkerList sheeps = _city.getWalkers( walker::sheep );
-    if( sheeps.size() < Impl::maxSheeps )
+    if( sheeps.size() < _d->maxSheeps )
     {
       WalkerPtr sheep = Sheep::create( &_city );
       if( sheep.isValid() )
       {
         TilesArray::iterator it = border.begin();
-        std::advance( it, std::rand() % border.size() );
+        std::advance( it, math::random( border.size() ) );
         ptr_cast<Sheep>(sheep)->send2City( (*it)->pos() );
+      }
+    }
+  }
+
+  if( _d->maxWolves > 0 )
+  {
+    WalkerList wolves = _city.getWalkers( walker::wolf );
+    if( wolves.size() < _d->maxWolves )
+    {
+      WalkerPtr wolf = Wolf::create( &_city );
+      if( wolf.isValid() )
+      {
+        TilesArray::iterator it = border.begin();
+        std::advance( it, math::random( border.size() ) );
+        ptr_cast<Wolf>(wolf)->send2City( (*it)->pos() );
       }
     }
   }
 }
 
+void Animals::setWolvesNumber(unsigned int number) {  _d->maxWolves = number; }
+
 Animals::Animals( PlayerCityPtr city )
   : Srvc( *city.object(), Animals::getDefaultName() ), _d( new Impl )
 {
-  _d->lastTimeUpdate = GameDate::current();
+  _d->maxSheeps = defaultMaxSheeps;
+  _d->maxWolves = 0;
 }
 
 }//end namespace city

@@ -58,4 +58,27 @@ private:
   Sheep( PlayerCityPtr city );
 };
 
+class Wolf : public Animal
+{
+public:
+  static WalkerPtr create( PlayerCityPtr city );
+
+  virtual void send2City(const TilePos& start);
+  virtual bool die();
+  virtual int agressive() const;
+  virtual void timeStep(const unsigned long time);
+
+protected:
+  virtual void _reachedPathway();
+  virtual void _centerTile();
+  virtual void _brokePathway(TilePos pos);
+  virtual void _findNewWay(const TilePos& start);
+
+private:
+  Wolf( PlayerCityPtr city );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
 #endif //__CAESARIA_ANIMAL_H_INCLUDED__

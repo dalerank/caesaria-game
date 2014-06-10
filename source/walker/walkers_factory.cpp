@@ -133,6 +133,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::bow_arrow, new BaseCreator<BowArrow>() );
   addCreator( walker::etruscanSoldier, new SoldierCreator<EnemySoldier>( walker::etruscanSoldier ) );
   addCreator( walker::etruscanArcher, new SoldierCreator<EnemyArcher>( walker::etruscanArcher ) );
+  addCreator( walker::wolf, new BaseCreator<Wolf>() );
 }
 
 WalkerManager::~WalkerManager(){}

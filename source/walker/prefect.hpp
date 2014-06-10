@@ -33,6 +33,7 @@ public:
   virtual void save( VariantMap& stream ) const;
 
   virtual void send2City( PrefecturePtr prefecture, int water=0 );
+  virtual void acceptAction(Action action, TilePos pos);
   virtual bool die();
 
   virtual std::string getThinks() const;

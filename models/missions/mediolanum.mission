@@ -1,26 +1,24 @@
 {
   version : 1
-  map : "/maps/Miletus.sav"
+  map : "/maps/Mediolanum.sav"
   funds : 8000
   date : "-220.01.01"
   finish : "-100.01.01"
-  climate : 2
+  climate : 1
 	
   win :
   {
-    population : 5000
-    culture : 60
-    prosperity : 35
+    population : 7000
+    culture : 40
+    prosperity : 25
     peace : 40
-    favour : 40
+    favour : 30
     next : "/missions/tutorial6.briefing"
     title : "##win_procurator_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##miletus_5_title##"
-    overview :  [ "##miletus_5_overview##",
-                  "@img=pictures_00017",
-                  "##miletus_5_overview_2##" ]
+    caption : "##mediolanum_5_title##"
+    overview :  [ "##mediolanum_5_overview##" ]
   }
 	
   empire : {
@@ -77,26 +75,27 @@
     }
 
     cities :
-    {
-      Athenae : {
-        location : [ 1200, 700 ]
+    {    
+      Massilia : {
+        location : [ 500, 440 ]
 
         land : true
         sea : true
         available : true
 
-        sells : { wheat : 15, wine : 25, marble : 15 }
-        buys : { meat: 15, oil: 15 }
+        sells : { oil : 15, wine : 25 }
+        buys : { iron: 15, furniture: 15 }
       }
 
-      Corinthus : {
-        location : [ 1160, 760 ]
+      Capua : {
+        location : [ 820, 560 ]
 
         sea : true
         land : true
+        available : true
 
-        sells : { clay : 15, pottery : 25 }
-        buys : { weapon : 15 }
+        sells : { meat : 25, clay : 25 }
+        buys : { weapon : 25 }
       }
     }
   }
@@ -153,7 +152,12 @@
       }
     }
 
-    ity_indebt#city_indebt : {
+    random_wolves#random_wolves : {
+      count : 10
+      maxWolves : 6
+    }
+
+    city_indebt#city_indebt : {
       date : "-350.01.01"
       type : "city_indebt"
       count : 2
@@ -362,8 +366,7 @@
       military_academy : true
       lumber_mill = true
       barracks : true
-      fruit_farm : true
-      olive_farm : true
+      wheat_farm : true
     }
   }
 }

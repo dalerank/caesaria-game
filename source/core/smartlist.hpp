@@ -36,6 +36,22 @@ public:
 
     return *this;
   }
+
+  template< class W >
+  SmartList exclude()
+  {
+    SmartList<T> ret;
+    foreach( it, *this )
+    {
+      SmartPtr<W> ptr = ptr_cast<W>( *it );
+      if( ptr.isNull() )
+      {
+        ret.push_back( *it );
+      }
+    }
+
+    return ret;
+  }
 };
 
 #endif //__CAESARIA_SMARTLIST_H_INCLUDE__

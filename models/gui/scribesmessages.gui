@@ -36,6 +36,7 @@
     btnExit#TexturedButton :
     {
       geometry : [ "pw-40", "ph-40", "pw-16", "ph-16" ]
+      tooltip : "##exit_this_panel##"
       normal : [ "paneling", 532 ]
       hovered : [ "paneling", 533 ]
       pressed : [ "paneling", 534 ]
