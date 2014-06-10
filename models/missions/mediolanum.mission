@@ -2,7 +2,7 @@
   version : 1
   map : "/maps/Mediolanum.sav"
   funds : 8000
-  date : "-270.01.01"
+  date : "-220.01.01"
   finish : "-100.01.01"
   climate : 1
 	
@@ -92,6 +92,7 @@
 
         sea : true
         land : true
+        available : true
 
         sells : { meat : 25, clay : 25 }
         buys : { weapon : 25 }
@@ -151,7 +152,12 @@
       }
     }
 
-    ity_indebt#city_indebt : {
+    random_wolves#random_wolves : {
+      count : 10
+      maxWolves : 6
+    }
+
+    city_indebt#city_indebt : {
       date : "-350.01.01"
       type : "city_indebt"
       count : 2
@@ -360,8 +366,7 @@
       military_academy : true
       lumber_mill = true
       barracks : true
-      fruit_farm : true
-      olive_farm : true
+      wheat_farm : true
     }
   }
 }

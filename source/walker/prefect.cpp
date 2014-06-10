@@ -93,7 +93,7 @@ WalkerPtr Prefect::_looks4Enemy( int range )
 
   for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
   {
-    if( (*it)->agressive() == 0 ) { it = walkers.erase( it ); }
+    if( (*it)->agressive() <= 0 ) { it = walkers.erase( it ); }
     else { ++it; }
   }
 
@@ -507,6 +507,14 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   {
     _d->endPatrolPoint = _pathwayRef().destination().pos();
   }
+}
+
+void Prefect::acceptAction(Walker::Action action, TilePos pos)
+{
+  ServiceWalker::acceptAction( action, pos );
+
+  _setAction( acFight );
+  _d->action = Impl::fightEnemy;
 }
 
 bool Prefect::die()
