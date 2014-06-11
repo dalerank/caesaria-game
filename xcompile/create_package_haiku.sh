@@ -10,7 +10,7 @@ REVISION_NUMBER=`git rev-list HEAD --count`
 #mkdir build 
 #cd build
 cmake -DCMAKE_BUILD_TYPE=Release .
-make -j5
+#make -j5
 cd $BPATH/projects/caesaria-test
 
 echo "Update resources"
