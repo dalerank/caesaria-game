@@ -214,7 +214,7 @@ private:
 class ChartModeHelper : public EnumsHelper<CityChart::DrawMode>
 {
 public:
-  ChartModeHelper() : EnumsHelper( CityChart::dm_count )
+  ChartModeHelper() : EnumsHelper<CityChart::DrawMode>( CityChart::dm_count )
   {
     append( CityChart::dm_census, "census" );
     append( CityChart::dm_population, "population" );

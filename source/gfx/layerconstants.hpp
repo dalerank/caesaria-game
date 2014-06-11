@@ -45,7 +45,7 @@ public:
   }
 
 protected:
-  Helper() : EnumsHelper( count )
+  Helper() : EnumsHelper<Type>( count )
   {
 #define __REG_LAYER(a) append( citylayer::a, "##ovrm_"CAESARIA_STR_EXT(a)"##" );
     __REG_LAYER(simple)
