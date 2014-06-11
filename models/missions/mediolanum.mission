@@ -210,7 +210,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-    emperor_request_furniture#city_request : {
+    emperor_request_3#city_request : {
       date : "-210.07.01"
       reqtype : "good_request"
       month : 24
@@ -219,7 +219,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-    emperor_request_furniture#city_request : {
+    emperor_request_4#city_request : {
       date : "-205.07.01"
       reqtype : "good_request"
       month : 24
@@ -228,7 +228,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-    emperor_request_furniture#city_request : {
+    emperor_request_5#city_request : {
       date : "-200.08.01"
       reqtype : "good_request"
       month : 24
@@ -237,7 +237,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-    emperor_request_furniture#city_request : {
+    emperor_request_6#city_request : {
       date : "-195.05.01"
       reqtype : "good_request"
       month : 24
@@ -246,7 +246,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-    emperor_request_furniture#city_request : {
+    emperor_request_7#city_request : {
       date : "-190.04.01"
       reqtype : "good_request"
       month : 24
@@ -255,7 +255,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-    emperor_request_furniture#city_request : {
+    emperor_request_8#city_request : {
       date : "-185.05.01"
       reqtype : "good_request"
       month : 24
@@ -264,7 +264,7 @@
       fail : { favour : -8, appendMonth : 24 }
     }
 
-    emperor_request_furniture#city_request : {
+    emperor_request_9#city_request : {
       date : "-180.08.01"
       reqtype : "good_request"
       month : 24
