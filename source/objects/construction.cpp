@@ -113,7 +113,7 @@ void Construction::computeAccessRoads()
   Tilemap& tilemap = _city()->tilemap();
 
   int s = size().width();
-  for( int dst=1; dst <= getRoadAccessDistance(); dst++ )
+  for( int dst=1; dst <= roadAccessDistance(); dst++ )
   {
     TilesArray rect = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
                                             pos() + TilePos( s+dst-1, s+dst-1 ),
@@ -128,7 +128,7 @@ void Construction::computeAccessRoads()
   }
 }
 
-int Construction::getRoadAccessDistance() const{  return 1; }
+int Construction::roadAccessDistance() const{  return 1; }
 
 void Construction::burn()
 {

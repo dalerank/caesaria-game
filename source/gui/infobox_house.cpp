@@ -92,7 +92,7 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
     }
     else
     {
-      DateTime lastTax = house->getLastTaxation();
+      DateTime lastTax = house->lastTaxationDate();
       if( GameDate::current().year() == lastTax.year() )
       {
         taxesStr = "##no_tax_in_this_year##";
