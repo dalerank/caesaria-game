@@ -340,11 +340,12 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       {
         HousePtr house = ptr_cast<House>( (*delIt)->overlay() );
         if( house.isValid() )
-        {
+        {          
+          sumHabitants += house->habitants();
+
           house->deleteLater();
           house->_d->habitants.clear();
 
-          sumHabitants += house->habitants();
           sumFreeWorkers += house->getServiceValue( Service::recruter );
 
           house->_d->services[ Service::recruter ].setMax( 0 );

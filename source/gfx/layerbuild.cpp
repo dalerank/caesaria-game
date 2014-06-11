@@ -42,6 +42,10 @@ using namespace gui;
 namespace gfx
 {
 
+namespace {
+static const int frameCountLimiter=25;
+}
+
 class LayerBuild::Impl
 {
 public:
@@ -50,6 +54,7 @@ public:
   bool kbShift, kbCtrl;
   bool borderBuilding;
   bool roadAssignment;
+  int frameCount;
   Renderer* renderer;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
@@ -88,7 +93,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
   Size size = overlay->size();
 
-  bool walkersOnTile = !_city()->getWalkers( walker::any, pos, pos + TilePos( size.width(), size.height() ) ).empty();
+  bool walkersOnTile = !_city()->getWalkers( walker::any, pos, pos + TilePos( size.width()-1, size.height()-1 ) ).empty();
 
   if( !walkersOnTile && overlay->canBuild( _city(), pos, d->buildTiles ) )
   {
@@ -157,7 +162,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
   if( !curTile )
     return;
 
-  if( curTile && !force && d->lastTilePos == curTile->pos() )
+  if( !force && d->lastTilePos == curTile->pos() )
     return;
 
   d->lastTilePos = curTile->pos();
@@ -392,7 +397,15 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 
 void LayerBuild::render( Engine& engine)
 {
+  __D_IMPL(d,LayerBuild);
   Layer::render( engine );
+
+  if( ++d->frameCount >= frameCountLimiter)
+  {
+    _updatePreviewTiles( true );
+  }
+
+  d->frameCount %= frameCountLimiter;
 
   _drawBuildTiles( engine );
 }
@@ -423,6 +436,7 @@ LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
     __INIT_IMPL(LayerBuild)
 {
   _dfunc()->renderer = renderer;
+  _dfunc()->frameCount = 0;
 }
 
 }//end namespace gfx

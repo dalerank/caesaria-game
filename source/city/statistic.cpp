@@ -61,6 +61,13 @@ CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
   return ret;
 }
 
+unsigned int Statistic::getWorkersNeed(PlayerCityPtr city)
+{
+  int have, need;
+  getWorkersNumber( city, have, need );
+  return need < have ? 0 : need - have;
+}
+
 unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
 {
   Helper helper( city );
