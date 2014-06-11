@@ -37,15 +37,17 @@ public:
   virtual void moveLeft(const int amount) = 0;
   virtual void moveUp(const int amount) = 0;
   virtual void moveDown(const int amount) = 0;
-  virtual const TilesArray& getTiles() const = 0;
-  virtual int getCenterX() const = 0;
-  virtual int getCenterZ() const = 0;
-  virtual TilePos getCenter() const = 0;
+  virtual const TilesArray& tiles() const = 0;
+  virtual int centerX() const = 0;
+  virtual int centerZ() const = 0;
+  virtual TilePos center() const = 0;
   virtual void setScrollSpeed( int speed ) = 0;
-  virtual int getScrollSpeed() const = 0;
-  virtual Tile* center() const = 0;
+  virtual int scrollSpeed() const = 0;
+  virtual Tile* centerTile() const = 0;
   virtual void startFrame() = 0;
   virtual void setCenter( TilePos pos ) = 0;
+
+  virtual ~Camera() {}
 
 public oc3_signals:
   virtual Signal1<Point>& onPositionChanged() = 0;

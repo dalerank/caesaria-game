@@ -191,7 +191,7 @@ void CityRenderer::setMode( Renderer::ModePtr command )
 
 void CityRenderer::animate(unsigned int time)
 {
-  const TilesArray& visibleTiles = _d->camera.getTiles();
+  const TilesArray& visibleTiles = _d->camera.tiles();
 
   for( TilesArray::const_iterator i=visibleTiles.begin(); i != visibleTiles.end(); ++i )
   {

@@ -292,7 +292,7 @@ void LayerBuild::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _camera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = _camera()->scrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
     switch( event.keyboard.key )
     {
