@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "cityservice_health.hpp"
-#include "helper.hpp"
 #include "objects/house.hpp"
+#include "helper.hpp"
 #include "game/gamedate.hpp"
 #include "statistic.hpp"
 

@@ -61,7 +61,7 @@ bool BuildMode::isMultiBuilding() const{  return _d->isMultiBuilding;}
 bool BuildMode::isRoadAssignment() const{  return _d->isRoadAssignment;}
 ConstructionPtr BuildMode::getContruction() const{    return _d->construction;}
 
-DestroyMode::DestroyMode() : LayerMode( citylayer::destroy )
+DestroyMode::DestroyMode() : LayerMode( citylayer::destroyd )
 {
 }
 
