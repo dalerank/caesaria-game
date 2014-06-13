@@ -81,7 +81,7 @@ public:
 
   virtual double getState( ParameterType param) const;
 
-  int workersCount() const;
+  unsigned int workersCount() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
