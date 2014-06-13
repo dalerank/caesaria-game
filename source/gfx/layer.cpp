@@ -397,7 +397,7 @@ void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
   __D_IMPL(_d,Layer)
   engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
 
-  int roundPercent = ( percent / 10 ) * 10;
+  int roundPercent = (math::clamp(percent, 0, 100)/ 10) * 10;
 
   for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
   {
