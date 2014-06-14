@@ -52,8 +52,7 @@ void Garden::build(PlayerCityPtr city, const TilePos& p )
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = city->tilemap().getRectangle( pos() - TilePos( 1, 1),
-                                                              pos() + TilePos( 1, 1 ) );
+    TilesArray tilesAround = city->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors);
     foreach( tile, tilesAround )
     {
       GardenPtr garden = ptr_cast<Garden>( (*tile)->overlay() );

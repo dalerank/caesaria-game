@@ -80,6 +80,7 @@ public:
   void setJ( const int j ) { _y = j; }
 
   float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
+  int getDistanceFromSQ(const TilePos& other) const { return Vector2::getDistanceFromSQ(other);}
 
   TilePos& operator=(const TilePos& other) { set( other._x, other._y ); return *this; }
   TilePos& operator+=(const TilePos& other) { set( _x+other._x, _y+other._y ); return *this; }

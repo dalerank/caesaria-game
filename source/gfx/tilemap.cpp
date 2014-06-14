@@ -140,6 +140,19 @@ const Tile& Tilemap::at( const TilePos& ij ) const
 
 int Tilemap::size() const {  return _d->size; }
 
+
+TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
+{
+  switch (type){
+    case AllNeighbors:
+      return getRectangle(pos, Size(1, 1), true);
+    case EdgeNeighbors:
+      return getRectangle(pos, Size(1, 1), false);
+  }
+  _CAESARIA_DEBUG_BREAK_IF("Unexpected type")
+  return TilesArray();
+}
+
 TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corners /*= true*/ )
 {
   TilesArray res;
@@ -150,6 +163,9 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
   int maxj = math::max( start.j(), stop.j() );
   start = TilePos( mini, minj );
   stop = TilePos( maxi, maxj );
+
+  size_t expected = 2 * (maxi - mini) + 2 * (maxj - minj) + corners ? 4 : 0;
+  res.reserve(expected);
 
   int delta_corners = 0;
   if(!corners)
@@ -198,7 +214,8 @@ TilesArray Tilemap::getRectangle( TilePos pos, Size size, const bool corners /*=
 TilesArray Tilemap::getArea(TilePos start, TilePos stop )
 {
   TilesArray res;
-  res.reserve( 100 );
+  int expected = math::min((abs(stop.i() - start.i()) + 1) * (abs(stop.j() - start.j()) + 1), 100);
+  res.reserve(expected);
 
   for (int i = start.i(); i <= stop.i(); ++i)
   {

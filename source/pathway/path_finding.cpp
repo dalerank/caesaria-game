@@ -133,8 +133,7 @@ void Propagator::propagate(const int maxDistance)
       }
 
       // propagate to neighbour tiles
-      TilesArray accessTiles = _d->tilemap->getRectangle( tile.pos() + TilePos( -1,-1 ),
-                                                          tile.pos() + TilePos( 1, 1 ), _d->allDirections);
+      TilesArray accessTiles = _d->tilemap->getNeighbors(tile.pos(), _d->allDirections ? Tilemap::AllNeighbors : Tilemap::EdgeNeighbors);
       foreach( itr, accessTiles )
       {
         Tile* tile2 = *itr;
@@ -259,8 +258,7 @@ PathwayList Propagator::getWays(const int maxDistance)
        // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
        // propagate to neighbour tiles
-       TilesArray accessTiles = _d->tilemap->getRectangle( tile.pos() + TilePos( -1, -1 ),
-                                                           tile.pos() + TilePos( 1, 1 ), _d->allDirections);
+      TilesArray accessTiles = _d->tilemap->getNeighbors(tile.pos(), _d->allDirections ? Tilemap::AllNeighbors : Tilemap::EdgeNeighbors);
 
        // nextTiles = accessTiles - alreadyProcessedTiles
        TilesArray nextTiles;
