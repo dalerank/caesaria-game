@@ -160,7 +160,7 @@ void Granary::initTerrain(Tile& terrain)
   bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
   terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlRoad, walkable );
-  terrain.setFlag( Tile::tlBuilding, !walkable );
+  terrain.setFlag( Tile::tlRock, !walkable ); // el muleta
 }
 
 void Granary::computePictures()
