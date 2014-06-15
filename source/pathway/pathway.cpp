@@ -384,7 +384,7 @@ Pathway& Pathway::operator=( const Pathway& other )
   return *this;
 }
 
-Pathway Pathway::copy(int start, int stop) const
+Pathway Pathway::copy(unsigned int start, int stop) const
 {
   Pathway ret;
   if( start >= length() )

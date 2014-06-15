@@ -14,10 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "working.hpp"
-#include "gfx/picture.hpp"
-#include "core/variant.hpp"
 #include "walker/walker.hpp"
-#include "core/foreach.hpp"
 #include "events/returnworkers.hpp"
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
@@ -63,7 +60,7 @@ void WorkingBuilding::save( VariantMap& stream ) const
 void WorkingBuilding::load( const VariantMap& stream)
 {
   Building::load( stream );
-  _d->currentWorkers = (int)stream.get( lc_currentWorkers, 0 );
+  _d->currentWorkers = (unsigned int)stream.get( lc_currentWorkers, 0 );
   _d->isActive = (bool)stream.get( lc_active, true );
   Variant value = stream.get( lc_maxWorkers );
 

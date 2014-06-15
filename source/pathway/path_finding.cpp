@@ -93,7 +93,7 @@ void Propagator::init(const TilesArray& origin)
   }
 }
 
-void Propagator::propagate(const int maxDistance)
+void Propagator::propagate(const unsigned int maxDistance)
 {
    int nbLoops = 0;  // to detect infinite loops
 
@@ -112,8 +112,8 @@ void Propagator::propagate(const int maxDistance)
       const Tile& tile = pathWay->destination();
       //std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
-      int tileLength = 1;
-      if (pathWay->length() + tileLength > maxDistance)
+      unsigned int tileLength = 1;
+      if( pathWay->length() + tileLength > maxDistance)
       {
          // we processed all paths within range. stop the propagation
          //std::cout << "MaxDistance reached. stop propagation" << std::endl;
@@ -121,8 +121,7 @@ void Propagator::propagate(const int maxDistance)
       }
 
       // propagate to neighbour tiles
-      TilesArray accessTiles = _d->tilemap->getRectangle( tile.pos() + TilePos( -1,-1 ),
-                                                          tile.pos() + TilePos( 1, 1 ), _d->allDirections);
+      TilesArray accessTiles = _d->tilemap->getNeighbors(tile.pos(), _d->allDirections ? Tilemap::AllNeighbors : Tilemap::EdgeNeighbors);
       foreach( itr, accessTiles )
       {
         Tile* tile2 = *itr;
@@ -220,8 +219,7 @@ PathwayList Propagator::getWays(const unsigned int maxDistance)
        // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
        // propagate to neighbour tiles
-       TilesArray accessTiles = _d->tilemap->getRectangle( tile.pos() + TilePos( -1, -1 ),
-                                                           tile.pos() + TilePos( 1, 1 ), _d->allDirections);
+      TilesArray accessTiles = _d->tilemap->getNeighbors(tile.pos(), _d->allDirections ? Tilemap::AllNeighbors : Tilemap::EdgeNeighbors);
 
        // nextTiles = accessTiles - alreadyProcessedTiles
        TilesArray nextTiles;

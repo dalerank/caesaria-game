@@ -63,8 +63,7 @@ RiftList Rift::neighbors() const
 {
   RiftList ret;
 
-  TilePos offset( 1, 1 );
-  TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset, false );
+  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::EdgeNeighbors);
 
   foreach( it, tiles )
   {
@@ -123,7 +122,6 @@ Picture Rift::computePicture()
 
 bool Rift::isWalkable() const{  return false;}
 bool Rift::isFlat() const {  return true;}
-bool Rift::isNeedRoadAccess() const {  return false;}
 void Rift::destroy() {}
 bool Rift::isDestructible() const {  return false;}
 Renderer::PassQueue Rift::passQueue() const {  return riftPassQueue; }

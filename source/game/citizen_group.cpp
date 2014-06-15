@@ -39,7 +39,7 @@ unsigned int CitizenGroup::count( Age group ) const
   }
 
   unsigned int ret=0;
-  for( int i=tmin; i<=tmax; i++)
+  for( unsigned int i=tmin; i<=tmax; i++)
   {
     ret += _peoples[ i ];
   }

@@ -43,7 +43,7 @@ public:
   void init(gfx::Tile& origin);
   void init(const gfx::TilesArray& origin);
   void init(const ConstructionPtr origin);
-  void propagate(const int maxDistance);
+  void propagate(const unsigned int maxDistance);
 
   /** returns all paths starting at origin */
   PathwayList getWays(const unsigned int maxDistance);
