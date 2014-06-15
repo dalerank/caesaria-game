@@ -46,6 +46,7 @@ using namespace gfx;
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
+  static const int vacantLotId = 45;
   CAESARIA_LITERALCONST(taxesThisYear)
 }
 
@@ -230,7 +231,7 @@ void House::_updateMorale()
 
 void House::_checkHomeless()
 {
-  int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0u, 0xffu );
+  int homelessCount = math::clamp<int>( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
   if( homelessCount > 0 )
   {
     homelessCount /= (homelessCount > 4 ? 2 : 1);
@@ -628,17 +629,14 @@ void House::_tryDegrade_20_to_12_lvl( int startPicId, int rsize, const char desi
 
 void House::_levelDown()
 {
-  if( _d->houseLevel == HouseLevel::smallHovel )
-    return;
-
-  _d->houseLevel--;
-  _d->spec = HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel);
+  _d->houseLevel -= ( _d->houseLevel > HouseLevel::smallHovel ? 1 : 0);
+  _d->spec = HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel );
 
   switch (_d->houseLevel)
   {
   case HouseLevel::smallHovel:
   {
-    _d->houseId = 1;
+    _d->houseId = HouseLevel::smallHovel;
     _d->picIdOffset = ( rand() % 10 > 6 ? 1 : 0 );
 
     Tilemap& tmap = _city()->tilemap();
@@ -797,7 +795,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 {
   float res = 0.0;
   Service::Type service = walker->serviceType();
-  if( _reservedServices.count(service) == 1 )
+  if( isServiceReserved( service ) )
   {
      // service is already reserved
     return 0.0;
@@ -878,7 +876,9 @@ double House::getState( ParameterType param) const
 
 void House::_update()
 {
-  int picId = ( _d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0 ) ? 45 : (_d->houseId + _d->picIdOffset);
+  int picId = ( _d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0 )
+                                            ? vacantLotId
+                                            : (_d->houseId + _d->picIdOffset);
   Picture pic = Picture::load( ResourceGroup::housing, picId );
   setPicture( pic );
   setSize( Size( (pic.width() + 2 ) / 60 ) );
@@ -914,6 +914,7 @@ void House::destroy()
   _d->maxHabitants = 0;
 
   const int maxCitizenInGroup = 8;
+  const int workers2fire = workersCount();
   do
   {
     CitizenGroup homeless = _d->habitants.retrieve( std::min<int>( _d->habitants.count(), maxCitizenInGroup ) );
@@ -921,7 +922,7 @@ void House::destroy()
   }
   while( _d->habitants.count() >= maxCitizenInGroup );
 
-  if( workersCount() > 0 )
+  if( workers2fire > 0 )
   {
     events::GameEventPtr e = events::FireWorkers::create( pos(), workersCount() );
     e->dispatch();

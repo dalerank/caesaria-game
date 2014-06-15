@@ -112,12 +112,13 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
   _animationRef().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
   _animationRef().setDelay( 4 );
 
-  _fgPicturesRef()[0] = Picture::load( ResourceGroup::commerce, 141);
-  _fgPicturesRef()[5] = _animationRef().currentFrame();
+  _fgPicture( 0 ) = Picture::load( ResourceGroup::commerce, 141);
+  _fgPicture( 5 ) = _animationRef().currentFrame();
   computePictures();
 
   _d->devastateThis = false;  
   _d->granarySprite.push_back( Picture::load( ResourceGroup::commerce, 141) );
+  _d->granarySprite.push_back( Picture::getInvalid() );
 }
 
 void Granary::timeStep(const unsigned long time)
@@ -146,13 +147,20 @@ GoodStore& Granary::store() {  return _d->goodStore; }
 
 void Granary::initTerrain(Tile& terrain)
 {
+  WorkingBuilding::initTerrain( terrain );
   TilePos offset = terrain.pos() - pos();
-  TilePos av[5] = { TilePos( 0, 1 ), TilePos( 1, 1 ), TilePos( 1, 2 ), TilePos( 2, 1 ), TilePos( 1, 0 ) };
+  //TilePos av[5] = { TilePos( 0, 1 ), TilePos( 1, 1 ), TilePos( 1, 2 ), TilePos( 2, 1 ), TilePos( 1, 0 ) };
+  //bool walkable = offset == av[0] || offset == av[1] || offset == av[2] || offset == av[3] || offset == av[4];
 
-  bool walkable = offset == 0[av] || offset == av[1] || offset == av[2] || offset == av[3] || offset == av[4];
-
+  //              (0,2)N
+  //         (0,1)Y    (1,2)Y
+  //strt(0,0)N    (1,1)Y    (2,2)N
+  //         (1,0)Y    (2,1)Y
+  //              (2,0)N
+  bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
   terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlRoad, walkable );
+  terrain.setFlag( Tile::tlBuilding, !walkable );
 }
 
 void Granary::computePictures()
@@ -202,6 +210,11 @@ const Pictures& Granary::pictures(Renderer::Pass pass) const
   return Building::pictures( pass );
 }
 
+void Granary::_updateAnimation(const unsigned long time)
+{
+  WorkingBuilding::_updateAnimation( time );
+  _d->granarySprite[ 1 ] = _fgPicture( 5 );
+}
 
 Renderer::PassQueue Granary::passQueue() const { return granaryPass; }
 

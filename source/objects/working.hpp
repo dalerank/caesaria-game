@@ -34,7 +34,6 @@ public:
   void addWorkers( const unsigned int workers );
   void removeWorkers( const unsigned int workers );
 
-
   virtual bool mayWork() const;
 
   virtual void setActive(const bool value);  // if false then this building is stopped
@@ -58,8 +57,9 @@ public:
 protected:
   void _setError(const std::string& err);
   void _fireWorkers();
-  void _updateAnimation( const unsigned long time );
   void _setClearAnimationOnStop( bool value );
+
+  virtual void _updateAnimation( const unsigned long time );
 
 private:
 

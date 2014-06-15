@@ -38,6 +38,10 @@ public:
 
   virtual gfx::Renderer::PassQueue passQueue() const;
   virtual const gfx::Pictures& pictures(gfx::Renderer::Pass pass) const;
+
+protected:
+  virtual void _updateAnimation(const unsigned long time);
+
 private:
   void _tryDevastateGranary();
   void _resolveDeliverMode();

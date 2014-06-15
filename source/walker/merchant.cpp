@@ -96,7 +96,7 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
       rating = need > 0 ? ( qty ) : 0;
     }
 
-    rating = math::clamp( rating - routeIt->second->length(), 0, 999 );
+    rating = math::clamp<int>( rating - routeIt->second->length(), 0, 999 );
     warehouseRating[ rating ] = DirectRoute( routeIt->first, *routeIt->second.object() );
 
     ++routeIt;

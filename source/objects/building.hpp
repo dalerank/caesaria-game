@@ -47,6 +47,7 @@ public:
   virtual float evaluateService( ServiceWalkerPtr walker);
   // handle service reservation
   void reserveService(const Service::Type service);
+  bool isServiceReserved(const Service::Type service);
   void cancelService(const Service::Type service);
   virtual void applyService( ServiceWalkerPtr walker);
 
@@ -62,7 +63,6 @@ public:
   virtual gfx::Renderer::PassQueue passQueue() const;
 
 protected:
-  std::set<Service::Type> _reservedServices;  // a serviceWalker is on the way
   std::set< constants::walker::Type > _reservedTrainees;  // a trainee is on the way
 
   class Impl;

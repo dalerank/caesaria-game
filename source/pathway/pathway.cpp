@@ -85,7 +85,7 @@ void Pathway::init( Tilemap& tilemap, Tile &origin)
   _d->tileList.push_back(&origin);
 }
 
-int Pathway::length() const
+unsigned int Pathway::length() const
 {
   // TODO: various lands have various travel time (road easier to travel than open country)
   return _d->directionList.size();
@@ -345,7 +345,7 @@ VariantMap Pathway::save() const
   return stream;
 }
 
-bool Pathway:: isValid() const { return length() != 0; }
+bool Pathway::isValid() const { return length() > 0; }
 
 void Pathway::load( const VariantMap& stream )
 {

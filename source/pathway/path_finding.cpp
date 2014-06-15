@@ -53,21 +53,9 @@ Propagator::Propagator(PlayerCityPtr city ) : _d( new Impl )
    _d->allDirections = true;
 }
 
-void Propagator::setAllLands(const bool value)
-{
-   _d->allLands = value;
-}
-
-void Propagator::setAllDirections(const bool value)
-{
-  _d->allDirections = value;
-}
-
-void Propagator::init(TilePos origin)
-{
-  init( _d->tilemap->at( origin ) );
-}
-
+void Propagator::setAllLands(const bool value) {   _d->allLands = value;}
+void Propagator::setAllDirections(const bool value){  _d->allDirections = value;}
+void Propagator::init(TilePos origin){  init( _d->tilemap->at( origin ) );}
 
 void Propagator::init( ConstructionPtr origin)
 {
@@ -164,33 +152,6 @@ void Propagator::propagate(const int maxDistance)
    }
 }
 
-/*bool Propagator::getPath( RoadPtr destination, Pathway &oPathWay)
-{
-   std::map<Tile*, Pathway>::iterator mapIt;
-   int distance = 30;
-   while (true)
-   {
-      propagate(distance);
-
-      mapIt = _d->completedBranches.find( &destination->getTile() );
-      if (mapIt != _d->completedBranches.end())
-      {
-         // found pathWay!
-         oPathWay = (*mapIt).second;
-         return true;
-      }
-
-      // not found: try again
-      if (_d->activeBranches.empty())
-      {
-         // no need to continue, no more active branches!
-         return false;
-      }
-
-      distance = distance * 2;
-   }
-}*/
-
 DirectRoutes Propagator::getRoutes(const TileOverlay::Type buildingType)
 {
   DirectRoutes ret;
@@ -227,7 +188,7 @@ DirectRoutes Propagator::getRoutes(const TileOverlay::Type buildingType)
   return ret;
 }
 
-PathwayList Propagator::getWays(const int maxDistance)
+PathwayList Propagator::getWays(const unsigned int maxDistance)
 {
   PathwayList oPathWayList;
   int nbLoops = 0;  // to detect infinite loops
@@ -282,7 +243,7 @@ PathwayList Propagator::getWays(const int maxDistance)
           break;
        }
 
-       for( TilesArray::const_iterator itTile = nextTiles.begin(); itTile!=nextTiles.end(); ++itTile)
+       foreach( itTile, nextTiles )
        {
           // for every neighbor tile
           Tile &tile2 = **itTile;
@@ -308,7 +269,10 @@ PathwayList Propagator::getWays(const int maxDistance)
     }
 
     // the current branch has been fully maximized
-    oPathWayList.push_back( pathWay );
+    if( pathWay.isValid() )
+    {
+      oPathWayList.push_back( pathWay );
+    }
     // pathWay.prettyPrint();
 
     // this branch is no longer active
@@ -318,18 +282,14 @@ PathwayList Propagator::getWays(const int maxDistance)
   return oPathWayList;
 }
 
-Propagator::~Propagator()
-{
-
-}
+Propagator::~Propagator(){}
 
 DirectRoute Propagator::getShortestRoute(const DirectRoutes& routes )
 {
   DirectRoute ret;
-  int minLength = 999;
+  unsigned int minLength = 999;
 
-  for( DirectRoutes::const_iterator pathWayIt= routes.begin();
-       pathWayIt != routes.end(); ++pathWayIt)
+  foreach( pathWayIt, routes )
   {
     // for every warehouse within range
     PathwayPtr pathWay = pathWayIt->second;

@@ -46,7 +46,7 @@ public:
   void propagate(const int maxDistance);
 
   /** returns all paths starting at origin */
-  PathwayList getWays(const int maxDistance);
+  PathwayList getWays(const unsigned int maxDistance);
   DirectRoutes getRoutes(const gfx::TileOverlay::Type buildingType);
 
   DirectRoute getShortestRoute( const DirectRoutes& routes );

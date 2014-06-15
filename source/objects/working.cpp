@@ -158,10 +158,7 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
   }
 }
 
-void WorkingBuilding::_setClearAnimationOnStop(bool value)
-{
-  _d->clearAnimationOnStop = value;
-}
+void WorkingBuilding::_setClearAnimationOnStop(bool value) {  _d->clearAnimationOnStop = value; }
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {

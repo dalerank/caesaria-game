@@ -34,7 +34,7 @@ public:
 
   void init( gfx::Tilemap& tilemap, gfx::Tile& origin );
 
-  int length() const;
+  unsigned int length() const;
 
   const gfx::Tile& front() const;
   const gfx::Tile& destination() const;
