@@ -12,6 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "granary.hpp"
 #include "game/resourcegroup.hpp"
@@ -25,6 +28,12 @@
 #include "walker/cart_supplier.hpp"
 
 using namespace gfx;
+
+namespace {
+CAESARIA_LITERALCONST(goodStore)
+static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::overWalker };
+static const Renderer::PassQueue granaryPass = Renderer::PassQueue( rpass, rpass + 1 );
+}
 
 class GranaryGoodStore : public SimpleGoodStore
 {
@@ -87,6 +96,7 @@ class Granary::Impl
 {
 public:
   GranaryGoodStore goodStore;
+  Pictures granarySprite;
   bool devastateThis;
 };
 
@@ -107,6 +117,7 @@ Granary::Granary() : WorkingBuilding( constants::building::granary, Size(3) ), _
   computePictures();
 
   _d->devastateThis = false;  
+  _d->granarySprite.push_back( Picture::load( ResourceGroup::commerce, 141) );
 }
 
 void Granary::timeStep(const unsigned long time)
@@ -133,6 +144,17 @@ void Granary::timeStep(const unsigned long time)
 
 GoodStore& Granary::store() {  return _d->goodStore; }
 
+void Granary::initTerrain(Tile& terrain)
+{
+  TilePos offset = terrain.pos() - pos();
+  TilePos av[5] = { TilePos( 0, 1 ), TilePos( 1, 1 ), TilePos( 1, 2 ), TilePos( 2, 1 ), TilePos( 1, 0 ) };
+
+  bool walkable = offset == 0[av] || offset == av[1] || offset == av[2] || offset == av[3] || offset == av[4];
+
+  terrain.setFlag( Tile::clearAll, true );
+  terrain.setFlag( Tile::tlRoad, walkable );
+}
+
 void Granary::computePictures()
 {
   int allQty = _d->goodStore.qty();
@@ -155,17 +177,33 @@ void Granary::save( VariantMap& stream) const
    WorkingBuilding::save( stream );
 
    stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(B_GRANARY) ) );
-   stream[ "goodStore" ] = _d->goodStore.save();
+   stream[ lc_goodStore ] = _d->goodStore.save();
 }
 
 void Granary::load( const VariantMap& stream)
 {
-   WorkingBuilding::load(stream);
+  WorkingBuilding::load(stream);
 
-   _d->goodStore.load( stream.get( "goodStore" ).toMap() );
+  _d->goodStore.load( stream.get( lc_goodStore ).toMap() );
 
-   computePictures();
+  computePictures();
 }
+
+bool Granary::isWalkable() const { return true; }
+
+const Pictures& Granary::pictures(Renderer::Pass pass) const
+{
+  switch( pass )
+  {
+  case Renderer::overWalker: return _d->granarySprite;
+  default: break;
+  }
+
+  return Building::pictures( pass );
+}
+
+
+Renderer::PassQueue Granary::passQueue() const { return granaryPass; }
 
 void Granary::_resolveDeliverMode()
 {
