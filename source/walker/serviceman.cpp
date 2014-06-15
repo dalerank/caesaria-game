@@ -125,7 +125,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
   float maxPathValue = 0.0;
   PathwayPtr bestPath;
 
-  if( orders & goLowerService == goLowerService )
+  if( (orders & goLowerService) == goLowerService )
   {
     foreach( current, pathWayList )
     {

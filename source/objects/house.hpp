@@ -93,7 +93,7 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  int maxHabitants();
+  unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int count );
   const CitizenGroup& habitants() const;

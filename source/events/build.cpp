@@ -93,7 +93,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
         WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( construction );
         if( wb.isValid() && wb->maximumWorkers() > 0 )
         {
-          int worklessCount = city::Statistic::getWorklessNumber( game.city() );
+          unsigned int worklessCount = city::Statistic::getWorklessNumber( game.city() );
           if( worklessCount < wb->maximumWorkers() )
           {
             GameEventPtr e = WarningMessageEvent::create( "##city_need_more_workers##" );

@@ -25,10 +25,10 @@ public:
   WorkingBuilding(const TileOverlay::Type type, const Size& size);
   virtual ~WorkingBuilding();
 
-  void setMaximumWorkers(const int maximumWorkers);
-  int maximumWorkers() const;
-  int numberWorkers() const;
-  int needWorkers() const;
+  void setMaximumWorkers(const unsigned int maximumWorkers);
+  unsigned int maximumWorkers() const;
+  unsigned int numberWorkers() const;
+  unsigned int needWorkers() const;
 
   void setWorkers( const unsigned int currentWorkers );
   void addWorkers( const unsigned int workers );
@@ -58,7 +58,7 @@ public:
 protected:
   void _setError(const std::string& err);
   void _fireWorkers();
-  void _updateAnimation( const unsigned int time );
+  void _updateAnimation( const unsigned long time );
   void _setClearAnimationOnStop( bool value );
 
 private:

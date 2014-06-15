@@ -34,8 +34,8 @@ const int workersDescNum = 6;
 class WorkingBuilding::Impl
 {
 public:
-  int currentWorkers;
-  int maxWorkers;
+  unsigned int currentWorkers;
+  unsigned int maxWorkers;
   bool isActive;
   WalkerList walkerList;
   std::string errorStr;
@@ -96,11 +96,11 @@ std::string WorkingBuilding::troubleDesc() const
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
-void WorkingBuilding::setMaximumWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
-int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
-void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
-int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
-int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
+void WorkingBuilding::setMaximumWorkers(const unsigned int maxWorkers) { _d->maxWorkers = maxWorkers; }
+unsigned int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
+void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp( currentWorkers, 0u, _d->maxWorkers );}
+unsigned int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
+unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
 bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
@@ -125,7 +125,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
   _updateAnimation( time );
 }
 
-void WorkingBuilding::_updateAnimation( const unsigned int time )
+void WorkingBuilding::_updateAnimation(const unsigned long time )
 {
   if( GameDate::isDayChanged() )
   {

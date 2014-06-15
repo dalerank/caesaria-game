@@ -60,7 +60,7 @@ public:
   Desirability desirability;
   SimpleGoodStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
-  int maxHabitants;
+  unsigned int maxHabitants;
   DateTime taxCheckInterval;
   DateTime lastTaxationDate;
   std::string evolveInfo;
@@ -228,7 +228,7 @@ void House::_updateMorale()
 
 void House::_checkHomeless()
 {
-  int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0, 0xff );
+  int homelessCount = math::clamp( _d->habitants.count() - _d->maxHabitants, 0u, 0xffu );
   if( homelessCount > 0 )
   {
     homelessCount /= (homelessCount > 4 ? 2 : 1);
@@ -887,7 +887,7 @@ int House::getRoadAccessDistance() const {  return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {
-  int peoplesCount = math::clamp(  _d->maxHabitants - _d->habitants.count(), 0, _d->maxHabitants );
+  int peoplesCount = math::clamp(  _d->maxHabitants - _d->habitants.count(), 0u, _d->maxHabitants );
   CitizenGroup newState = _d->habitants;
   newState += habitants.retrieve( peoplesCount );
 
@@ -1095,7 +1095,7 @@ const HouseSpecification& House::spec() const{   return _d->spec; }
 bool House::hasServiceAccess( Service::Type service) {  return (_d->services[service] > 0); }
 float House::getServiceValue( Service::Type service){  return _d->services[service]; }
 void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }
-int House::maxHabitants() {  return _d->maxHabitants; }
+unsigned int House::maxHabitants() {  return _d->maxHabitants; }
 void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
 
 
