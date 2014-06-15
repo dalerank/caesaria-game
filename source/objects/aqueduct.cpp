@@ -380,7 +380,6 @@ void Aqueduct::addWater( const WaterSource& source )
 }
 
 bool Aqueduct::isWalkable() const {  return _isRoad();}
-bool Aqueduct::isRoad() const{  return _isRoad();}
 
 std::string Aqueduct::sound() const
 {

@@ -208,8 +208,7 @@ void Prefect::_back2Patrol()
 
 bool Prefect::_figthFire()
 {
-  TilePos offset( 1, 1 );
-  TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset );
+  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors);
 
   foreach( it, tiles )
   {

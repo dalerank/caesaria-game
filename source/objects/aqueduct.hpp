@@ -32,7 +32,6 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
-  virtual bool isRoad() const;
   virtual std::string sound() const;
 
   void updatePicture(PlayerCityPtr city);

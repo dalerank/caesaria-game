@@ -891,7 +891,7 @@ int House::roadAccessDistance() const {  return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {
-  int peoplesCount = math::clamp(  _d->maxHabitants - _d->habitants.count(), 0u, _d->maxHabitants );
+  int peoplesCount = math::max(_d->maxHabitants - _d->habitants.count(), 0u);
   CitizenGroup newState = _d->habitants;
   newState += habitants.retrieve( peoplesCount );
 
@@ -913,10 +913,10 @@ void House::destroy()
 {
   _d->maxHabitants = 0;
 
-  const int maxCitizenInGroup = 8;
+  const unsigned int maxCitizenInGroup = 8;
   do
   {
-    CitizenGroup homeless = _d->habitants.retrieve( std::min<int>( _d->habitants.count(), maxCitizenInGroup ) );
+    CitizenGroup homeless = _d->habitants.retrieve( std::min( _d->habitants.count(), maxCitizenInGroup ) );
     Emigrant::send2city( _city(), homeless, tile(), math::random( 10 ) > 5 ? "##emigrant_thrown_from_house##" : "##emigrant_no_home##" );
   }
   while( _d->habitants.count() >= maxCitizenInGroup );
@@ -1047,7 +1047,7 @@ int House::Impl::getFoodLevel() const
   return ret;
 }
 
-int House::workersCount() const
+unsigned int House::workersCount() const
 {
   const Service& srvc = _d->services[ Service::recruter ];
   return srvc.max() - srvc.value();

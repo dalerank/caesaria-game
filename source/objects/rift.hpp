@@ -33,7 +33,6 @@ public:
   virtual void initTerrain( gfx::Tile &terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual void timeStep(const unsigned long time);
   virtual bool isDestructible() const;
