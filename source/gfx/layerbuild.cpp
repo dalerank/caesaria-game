@@ -44,6 +44,7 @@ namespace gfx
 
 namespace {
 static const int frameCountLimiter=25;
+CAESARIA_LITERALCONST(oc3_land)
 }
 
 class LayerBuild::Impl
@@ -55,7 +56,10 @@ public:
   bool borderBuilding;
   bool roadAssignment;
   int frameCount;
+  int money4Construction;
   Renderer* renderer;
+  Font textFont;
+  PictureRef textPic;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
 
@@ -92,6 +96,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   }
 
   Size size = overlay->size();
+  int cost = MetaDataHolder::getData( overlay->type() ).getOption( MetaDataOptions::cost );
 
   bool walkersOnTile = false;
   if( bldCommand->isCheckWalkers() )
@@ -104,6 +109,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
     //bldCommand->setCanBuild(true);
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
+    d->money4Construction += cost;
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -127,8 +133,8 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   {
     //bldCommand->setCanBuild(false);
 
-    Picture& grnPicture = Picture::load("oc3_land", 1);
-    Picture& redPicture = Picture::load("oc3_land", 2);
+    Picture& grnPicture = Picture::load(lc_oc3_land, 1);
+    Picture& redPicture = Picture::load(lc_oc3_land, 2);
 
     //TilemapArea area = til
     Tilemap& tmap = _city()->tilemap();
@@ -177,6 +183,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
   d->lastTilePos = curTile->pos();
 
   _discardPreview();
+  d->money4Construction = 0;
 
   if( d->borderBuilding )
   {
@@ -198,6 +205,10 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
     foreach( it, tiles ) { _checkPreviewBuild( (*it)->pos() ); }
   }
+
+  d->textPic->fill( 0x0, Rect() );
+  d->textFont.setColor( 0xffff0000 );
+  d->textFont.draw( *d->textPic, StringHelper::i2str( d->money4Construction ) + " Dn", Point() );
 }
 
 void LayerBuild::_buildAll()
@@ -417,6 +428,7 @@ void LayerBuild::render( Engine& engine)
   d->frameCount %= frameCountLimiter;
 
   _drawBuildTiles( engine );
+  engine.draw( *d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void LayerBuild::init(Point cursor)
@@ -444,8 +456,11 @@ LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
   : Layer( renderer->camera(), city ),
     __INIT_IMPL(LayerBuild)
 {
-  _dfunc()->renderer = renderer;
-  _dfunc()->frameCount = 0;
+  __D_IMPL(d,LayerBuild);
+  d->renderer = renderer;
+  d->frameCount = 0;
+  d->textFont = Font::create( FONT_3 );
+  d->textPic.init( Size( 100, 30 ) );
 }
 
 }//end namespace gfx

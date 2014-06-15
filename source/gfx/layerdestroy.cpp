@@ -34,10 +34,6 @@ using namespace constants;
 namespace gfx
 {
 
-namespace {
-const unsigned int tilePosHashValue = 10000;
-}
-
 void LayerDestroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea();
@@ -86,11 +82,6 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
   }
 }
 
-inline unsigned int __tpHash( const TilePos& pos )
-{
-  return (pos.j() * tilePosHashValue + pos.i());
-}
-
 void LayerDestroy::render( Engine& engine )
 {
   // center the map on the screen
@@ -111,7 +102,7 @@ void LayerDestroy::render( Engine& engine )
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
-    hashDestroyArea.insert( __tpHash( tile->pos() ) );
+    hashDestroyArea.insert( TileHelper::hash( tile->pos() ) );
 
     TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
@@ -119,7 +110,7 @@ void LayerDestroy::render( Engine& engine )
       TilesArray overlayArea = tmap.getArea( overlay->pos(), overlay->size() );
       foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert( __tpHash( (*ovelayTile)->pos() ) );
+        hashDestroyArea.insert( TileHelper::hash( (*ovelayTile)->pos() ) );
       }
     }
 
@@ -135,7 +126,7 @@ void LayerDestroy::render( Engine& engine )
     if( !tile->isFlat() )
       continue;
 
-    int tilePosHash = __tpHash( tile->pos() );
+    int tilePosHash = TileHelper::hash( tile->pos() );
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       _drawTileInSelArea( engine, *tile, master, cameraOffset );
@@ -152,7 +143,7 @@ void LayerDestroy::render( Engine& engine )
     Tile* tile = *it;
     int z = tile->pos().z();
 
-    int tilePosHash = __tpHash( tile->pos() );
+    int tilePosHash = TileHelper::hash( tile->pos() );
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       if( tile->getFlag( Tile::isDestructible ) )
