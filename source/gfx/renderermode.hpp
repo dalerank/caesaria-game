@@ -58,6 +58,7 @@ public:
   bool isBorderBuilding() const;
   bool isMultiBuilding() const;
   bool isRoadAssignment() const;
+  bool isCheckWalkers() const;
 public:
   BuildMode();
 

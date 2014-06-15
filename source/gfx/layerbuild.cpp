@@ -93,7 +93,11 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
   Size size = overlay->size();
 
-  bool walkersOnTile = !_city()->getWalkers( walker::any, pos, pos + TilePos( size.width()-1, size.height()-1 ) ).empty();
+  bool walkersOnTile = false;
+  if( bldCommand->isCheckWalkers() )
+  {
+    walkersOnTile = !_city()->getWalkers( walker::any, pos, pos + TilePos( size.width()-1, size.height()-1 ) ).empty();
+  }
 
   if( !walkersOnTile && overlay->canBuild( _city(), pos, d->buildTiles ) )
   {
@@ -138,8 +142,13 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
         Tile* tile = new Tile( tmap.at( rPos ) );  // make a copy of tile
 
+        walkersOnTile = false;
+        if( bldCommand->isCheckWalkers() )
+        {
+          walkersOnTile = !_city()->getWalkers( walker::any, rPos ).empty();
+        }
+
         bool isConstructible = tile->getFlag( Tile::isConstructible );
-        walkersOnTile = !_city()->getWalkers( walker::any, rPos ).empty();
         tile->setPicture( (!walkersOnTile && isConstructible) ? grnPicture : redPicture );
         tile->setMasterTile( 0 );
         tile->setFlag( Tile::clearAll, true );

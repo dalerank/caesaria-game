@@ -143,13 +143,15 @@ int Tilemap::size() const {  return _d->size; }
 
 TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
 {
+  TilePos offset(1,1);
   switch (type){
     case AllNeighbors:
-      return getRectangle(pos, Size(1, 1), true);
+      return getRectangle(pos - offset, pos + offset, checkCorners);
     case EdgeNeighbors:
-      return getRectangle(pos, Size(1, 1), false);
+      return getRectangle(pos - offset, pos + offset, !checkCorners);
   }
-  _CAESARIA_DEBUG_BREAK_IF("Unexpected type")
+  //_CAESARIA_DEBUG_BREAK_IF("Unexpected type")
+  Logger::warning( "CRITICAL: Unexpected type %d in Tilemap::getNeighbors", type );
   return TilesArray();
 }
 
