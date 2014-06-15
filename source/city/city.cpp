@@ -77,6 +77,7 @@
 #include "cityservice_health.hpp"
 #include <set>
 #include "cityservice_military.hpp"
+#include "cityservice_peace.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -213,6 +214,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( city::Military::create( this ) );
   addService( audio::Player::create( this ) );
   addService( city::HealthCare::create( this ));
+  addService( city::Peace::create( this ) );
 }
 
 void PlayerCity::timeStep(unsigned int time)
@@ -686,8 +688,8 @@ int PlayerCity::culture() const
 
 int PlayerCity::peace() const
 {
-  //CityServicePtr csPrsp = findService( CityServicePeace::getDefaultName() );
-  return 0;//csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
+  SmartPtr<city::Peace> peace = ptr_cast<city::Peace>( findService( city::Peace::getDefaultName() ) );
+  return peace.isValid() ? peace->value() : 0;
 }
 
 int PlayerCity::favour() const { return empire()->emperor().relation( getName() ); }

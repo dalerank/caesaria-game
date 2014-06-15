@@ -41,11 +41,11 @@ public:
   bool mayDelete;
   VariantMap options;
 
-  bool executeRequest( Game& game, const std::string& type );
-  bool executeEvent( Game& game, const std::string& type );
-  bool executeCityService( Game& game, const std::string& type );
+  void executeRequest( Game& game, const std::string& type, bool& result );
+  void executeEvent( Game& game, const std::string& type, bool& result );
+  void executeCityService( Game& game, const std::string& type, bool& result );
 
-  typedef bool (Impl::*Worker)( Game& game, const std::string& );
+  typedef Delegate3< Game&, const std::string&, bool& > Worker;
 };
 
 GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& stream )
@@ -86,11 +86,14 @@ void PostponeEvent::_exec(Game& game, unsigned int)
 {
   Logger::warning( "Start event name=" + _name + " type=" + _type );
 
-  Impl::Worker workers[] = { &Impl::executeRequest, &Impl::executeEvent, &Impl::executeCityService, 0 };
+  Impl::Worker workers[3] = { makeDelegate( _d.data(), &Impl::executeRequest ),
+        				            makeDelegate( _d.data(), &Impl::executeEvent ),
+					            makeDelegate( _d.data(), &Impl::executeCityService ) };
 
-  for( int i=0; workers[i]; i++ )
+  for( int i=0; i < 3; i++ )
   {
-    bool execOk = (_d.data()->*workers[i])( game, _type );
+    bool execOk;
+    workers[i]( game, _type, execOk );
     if( execOk )
     {
       _executeIncludeEvents();
@@ -148,7 +151,7 @@ PostponeEvent::PostponeEvent() : _d( new Impl )
   _d->mayDelete = false;
 }
 
-bool PostponeEvent::Impl::executeRequest( Game& game, const std::string& type )
+void PostponeEvent::Impl::executeRequest( Game& game, const std::string& type, bool& r )
 {
   if( "city_request" == type )
   {
@@ -161,26 +164,28 @@ bool PostponeEvent::Impl::executeRequest( Game& game, const std::string& type )
     {
       dispatcher->add( options );
     }
-    return true;
+    r = true;
+    return;
   }
 
-  return false;
+  r = false;
 }
 
-bool PostponeEvent::Impl::executeEvent( Game& game, const std::string& type  )
+void PostponeEvent::Impl::executeEvent( Game& game, const std::string& type, bool& r  )
 {
   GameEventPtr e = GameEventFactory::create( type );
   if( e.isValid() )
   {
     e->load( options );
     e->dispatch();
-    return true;
+    r = true;
+    return;
   }
 
-  return false;
+  r = false;
 }
 
-bool PostponeEvent::Impl::executeCityService( Game& game, const std::string& type )
+void PostponeEvent::Impl::executeCityService( Game& game, const std::string& type, bool& r )
 {
   PlayerCityPtr city = game.city();
   std::string dtype = options.get( "type", Variant( type ) ).toString();
@@ -189,11 +194,11 @@ bool PostponeEvent::Impl::executeCityService( Game& game, const std::string& typ
   {
     srvc->load( options );
     city->addService( srvc );
-
-    return true;
+    r = true;
+    return;
   }
 
-  return false;
+  r = false;
 }
 
 }

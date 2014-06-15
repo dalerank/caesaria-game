@@ -18,9 +18,9 @@
 #include "advisor_population_window.hpp"
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
+#include "objects/house.hpp"
 #include "city/helper.hpp"
 #include "core/logger.hpp"
-#include "objects/house.hpp"
 #include "game/settings.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
@@ -214,7 +214,7 @@ private:
 class ChartModeHelper : public EnumsHelper<CityChart::DrawMode>
 {
 public:
-  ChartModeHelper() : EnumsHelper( CityChart::dm_count )
+  ChartModeHelper() : EnumsHelper<CityChart::DrawMode>( CityChart::dm_count )
   {
     append( CityChart::dm_census, "census" );
     append( CityChart::dm_population, "population" );

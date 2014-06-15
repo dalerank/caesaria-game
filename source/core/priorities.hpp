@@ -38,6 +38,13 @@ public:
     return vl;
   }
 
+  bool count( const T& v ) const
+  {
+    foreach( i, *this ) { if( *i == v ) return true; }
+
+    return false;
+  }
+
   Priorities& operator << ( const VariantList& vl )
   {
     foreach( i, vl ) { this->push_back( (T)(*i).toInt() ); }

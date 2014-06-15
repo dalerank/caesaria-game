@@ -99,11 +99,12 @@ public:
   const CitizenGroup& habitants() const;
 
   float collectTaxes();
-  DateTime getLastTaxation() const;
+  float taxesThisYear() const;
+  DateTime lastTaxationDate() const;
 
   std::string getEvolveInfo() const;
 
-  virtual int getRoadAccessDistance() const;
+  virtual int roadAccessDistance() const;
 
   virtual bool isWalkable() const;
   virtual bool isFlat() const;

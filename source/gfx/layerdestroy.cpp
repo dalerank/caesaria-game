@@ -98,7 +98,7 @@ void LayerDestroy::render( Engine& engine )
 
   _camera()->startFrame();
 
-  const TilesArray& visibleTiles = _camera()->getTiles();
+  const TilesArray& visibleTiles = _camera()->tiles();
 
   Tilemap& tmap = _city()->tilemap();
 
@@ -222,7 +222,7 @@ void LayerDestroy::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _camera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = _camera()->scrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
     switch( event.keyboard.key )
     {
@@ -236,7 +236,7 @@ void LayerDestroy::handleEvent(NEvent& event)
   }
 }
 
-int LayerDestroy::type() const {  return citylayer::destroy; }
+int LayerDestroy::type() const {  return citylayer::destroyd; }
 
 std::set<int> LayerDestroy::getVisibleWalkers() const
 {

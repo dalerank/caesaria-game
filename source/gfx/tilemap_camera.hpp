@@ -35,7 +35,7 @@ class TilemapCamera : public Camera
 {
 public:
   TilemapCamera();
-  ~TilemapCamera();
+  virtual ~TilemapCamera();
 
   void init( Tilemap& tilemap );
 
@@ -52,18 +52,18 @@ public:
   Point offset() const;
 
   // return tile coordinates (i, j), in order of depth
-  const TilesArray& getTiles() const;
+  const TilesArray& tiles() const;
 
-  int getCenterX() const;
-  int getCenterZ() const;
-  TilePos getCenter() const;
+  int centerX() const;
+  int centerZ() const;
+  TilePos center() const;
 
   void setScrollSpeed( int speed );
-  int getScrollSpeed() const;
+  int scrollSpeed() const;
 
   Tile* at( const Point& pos, bool overborder ) const;
   Tile* at( const TilePos& pos ) const;
-  Tile* center() const;
+  Tile* centerTile() const;
 
   void startFrame();
 

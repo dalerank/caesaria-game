@@ -52,6 +52,7 @@ public:
     int romeWages;
     int maxWorkers;
     int crimeLevel;
+    int peace;
 
     Parameters()
     {

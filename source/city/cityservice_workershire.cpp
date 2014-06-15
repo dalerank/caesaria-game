@@ -167,8 +167,8 @@ void WorkersHire::update( const unsigned int time )
   {
     _d->lastMessageDate = GameDate::current();
 
-    int worklessPrc = Statistic::getWorklessPercent( &_city );
-    if( worklessPrc > 10 )
+    int workersNeed = Statistic::getWorkersNeed( &_city );
+    if( workersNeed > 20 )
     {
       events::GameEventPtr e = events::ShowInfobox::create( "##city_need_workers_title##", "##city_need_workers_text##",
                                                             events::ShowInfobox::send2scribe );

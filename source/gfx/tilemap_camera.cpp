@@ -137,27 +137,27 @@ void TilemapCamera::setCenter(Point pos)
   oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
-int TilemapCamera::getCenterX() const  {   return _d->centerMapXZ.x();   }
-int TilemapCamera::getCenterZ() const  {   return _d->centerMapXZ.y();   }
-TilePos TilemapCamera::getCenter() const  {   return _d->center;   }
+int TilemapCamera::centerX() const  {   return _d->centerMapXZ.x();   }
+int TilemapCamera::centerZ() const  {   return _d->centerMapXZ.y();   }
+TilePos TilemapCamera::center() const  {   return _d->center;   }
 void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }
-int TilemapCamera::getScrollSpeed() const{ return _d->scrollSpeed; }
+int TilemapCamera::scrollSpeed() const{ return _d->scrollSpeed; }
 Tile* TilemapCamera::at(const Point& pos, bool overborder) const {  return _d->tilemap->at( pos - _d->offset, overborder );}
 
 Tile* TilemapCamera::at(const TilePos& pos) const { return &_d->tilemap->at( pos ); }
 Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->onPositionChangedSignal;}
-void TilemapCamera::moveRight(const int amount){  setCenter( Point( getCenterX() + amount, getCenterZ() ) );}
-void TilemapCamera::moveLeft(const int amount){  setCenter( Point( getCenterX() - amount, getCenterZ() ) );}
-void TilemapCamera::moveUp(const int amount){  setCenter( Point( getCenterX(), getCenterZ() + amount ) );}
-void TilemapCamera::moveDown(const int amount){  setCenter( Point( getCenterX(), getCenterZ() - amount ) );}
+void TilemapCamera::moveRight(const int amount){  setCenter( Point( centerX() + amount, centerZ() ) );}
+void TilemapCamera::moveLeft(const int amount){  setCenter( Point( centerX() - amount, centerZ() ) );}
+void TilemapCamera::moveUp(const int amount){  setCenter( Point( centerX(), centerZ() + amount ) );}
+void TilemapCamera::moveDown(const int amount){  setCenter( Point( centerX(), centerZ() - amount ) );}
 void TilemapCamera::startFrame(){  _d->resetDrawn(); }
 
-Tile* TilemapCamera::center() const
+Tile* TilemapCamera::centerTile() const
 {
   return at( Point( _d->screenSize.width() / 2, _d->screenSize.height() / 2 ), true );
 }
 
-const TilesArray& TilemapCamera::getTiles() const
+const TilesArray& TilemapCamera::tiles() const
 {
   if( _d->tiles.empty() )
   {

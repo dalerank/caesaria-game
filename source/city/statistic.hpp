@@ -35,6 +35,7 @@ public:
 
   static void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
   static CitizenGroup getPopulation( PlayerCityPtr city );
+  static unsigned int getWorkersNeed( PlayerCityPtr city );
   static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
   static unsigned int getMontlyWorkersWages( PlayerCityPtr city );
   static unsigned int getWorklessNumber( PlayerCityPtr city );

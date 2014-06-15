@@ -46,6 +46,7 @@ using namespace gfx;
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
+  CAESARIA_LITERALCONST(taxesThisYear)
 }
 
 class House::Impl
@@ -65,6 +66,7 @@ public:
   DateTime lastTaxationDate;
   std::string evolveInfo;
   CitizenGroup habitants;
+  unsigned int taxesThisYear;
   int currentYear;
   int changeCondition;
 
@@ -254,6 +256,7 @@ void House::timeStep(const unsigned long time)
   {
     _d->currentYear = GameDate::current().year();
     _makeOldHabitants();    
+    _d->taxesThisYear = 0;
   }
 
   if( time % spec().getServiceConsumptionInterval() == 0 )
@@ -337,11 +340,12 @@ void House::_tryEvolve_1_to_11_lvl( int level4grow, int startSmallPic, int start
       {
         HousePtr house = ptr_cast<House>( (*delIt)->overlay() );
         if( house.isValid() )
-        {
+        {          
+          sumHabitants += house->habitants();
+
           house->deleteLater();
           house->_d->habitants.clear();
 
-          sumHabitants += house->habitants();
           sumFreeWorkers += house->getServiceValue( Service::recruter );
 
           house->_d->services[ Service::recruter ].setMax( 0 );
@@ -883,7 +887,7 @@ void House::_update()
   _d->initGoodStore( size().area() );
 }
 
-int House::getRoadAccessDistance() const {  return 2; }
+int House::roadAccessDistance() const {  return 2; }
 
 void House::addHabitants( CitizenGroup& habitants )
 {
@@ -963,6 +967,7 @@ void House::save( VariantMap& stream ) const
   stream[ "goodstore" ] = _d->goodStore.save();
   stream[ "healthLevel" ] = getState( (Construction::Param)House::health );
   stream[ "changeCondition" ] = _d->changeCondition;
+  stream[ lc_taxesThisYear ] = _d->taxesThisYear;
 
   VariantList vl_services;
   foreach( mapItem, _d->services )
@@ -992,6 +997,7 @@ void House::load( const VariantMap& stream )
   _d->changeCondition = stream.get( "changeCondition", 0 );
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
   _d->currentYear = GameDate::current().year();
+  _d->taxesThisYear = stream.get( lc_taxesThisYear ).toUInt();
 
   _d->initGoodStore( size().area() );
 
@@ -1079,12 +1085,14 @@ bool House::isEntertainmentNeed(Service::Type type) const
 float House::collectTaxes()
 {
   float tax = getServiceValue( Service::forum );
+  _d->taxesThisYear += tax;
   setServiceValue( Service::forum, 0 );
   _d->lastTaxationDate = GameDate::current();
   return tax;
 }
 
-DateTime House::getLastTaxation() const{  return _d->lastTaxationDate;}
+float House::taxesThisYear() const { return _d->taxesThisYear; }
+DateTime House::lastTaxationDate() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::getDesirability() const {  return _d->desirability; }
 bool House::isWalkable() const{  return (_d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0); }
