@@ -485,9 +485,9 @@ void Level::handleEvent( NEvent& event )
     _MET_TILES
   } _mouseEventTarget = _MET_NONE;
 
-  if( event.EventType == sEventKeyboard )
+  if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
   {
-    if( event.keyboard.control && !event.keyboard.pressed )
+    if( event.keyboard.control )
     {
       switch( event.keyboard.key )
       {

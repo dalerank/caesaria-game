@@ -179,6 +179,18 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   return taxValue;
 }
 
+unsigned int Statistic::getFestivalCost(PlayerCityPtr city, FestivalType type)
+{
+  switch( type )
+  {
+  case smallFest: return floor( city->population() / 20 ) + 10;
+  case middleFest: return floor( city->population() / 10 ) + 20;
+  case greatFest: return floor( city->population() / 5 ) + 40;
+  }
+
+  return 0;
+}
+
 HouseList Statistic::getEvolveHouseReadyBy(PlayerCityPtr city, const std::set<int>& checkTypes )
 {
   HouseList ret;

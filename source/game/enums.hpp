@@ -24,6 +24,8 @@ enum WaterService { WTR_WELL=0, WTR_FONTAIN, WTR_RESERVOIR, WTR_COUNT };
 
 enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
 
+enum FestivalType { smallFest=1, middleFest, greatFest };
+
 enum ScreenType { SCREEN_NONE, SCREEN_MENU, SCREEN_GAME, SCREEN_BRIEFING, SCREEN_QUIT, SCREEN_MAX };
 
 enum BuildMenuType 

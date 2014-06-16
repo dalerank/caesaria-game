@@ -43,7 +43,7 @@ public:
                    exportGoods, donation, 
                    importGoods, workersWages, 
                    buildConstruction, creditPercents, 
-                   playerSalary, otherExpenditure,
+                   playerSalary, sundries,
                    empireTax, debet, credit, cityProfit,
                    balance,
                    issueTypeCount };
