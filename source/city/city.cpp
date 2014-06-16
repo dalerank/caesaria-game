@@ -82,6 +82,11 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+CAESARIA_LITERALCONST(tilemap)
+CAESARIA_LITERALCONST(walkerIdCount)
+}
+
 typedef std::vector< city::SrvcPtr > CityServices;
 
 class WGrid
@@ -457,7 +462,8 @@ void PlayerCity::save( VariantMap& stream) const
   VariantMap vm_tilemap;
   _d->tilemap.save( vm_tilemap );
 
-  stream[ "tilemap"    ] = vm_tilemap;
+  stream[ lc_tilemap    ] = vm_tilemap;
+  stream[ lc_walkerIdCount   ] = (uint)_d->walkerIdCount;
 
   Logger::warning( "City: save main paramters ");
   stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
@@ -515,7 +521,8 @@ void PlayerCity::save( VariantMap& stream) const
 void PlayerCity::load( const VariantMap& stream )
 {
   Logger::warning( "City: start parse savemap" );
-  _d->tilemap.load( stream.get( "tilemap" ).toMap() );
+  _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
+  _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
 
   Logger::warning( "City: parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );

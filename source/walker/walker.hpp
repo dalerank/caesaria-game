@@ -61,7 +61,9 @@ public:
   void setSpeed(const float speed);
   float speed() const;
   void setSpeedMultiplier( float koeff );
+
   void setUniqueId( const UniqueId uid );
+  UniqueId uniqueId() const;
 
   constants::Direction getDirection() const;
   Walker::Action action() const;
