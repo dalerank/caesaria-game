@@ -79,7 +79,7 @@ GameEventPtr ClearLandEvent::create(const TilePos& pos)
   return ret;
 }
 
-bool ClearLandEvent::_mayExec(Game& game, unsigned int time) const{  return true;}
+bool ClearLandEvent::_mayExec(Game& game, unsigned int) const{  return true;}
 
 void ClearLandEvent::_exec( Game& game, unsigned int )
 {
@@ -168,7 +168,7 @@ GameEventPtr Pause::create( Mode mode )
   return ret;
 }
 
-bool Pause::_mayExec(Game& game, unsigned int time) const{  return true;}
+bool Pause::_mayExec(Game& game, unsigned int) const{  return true;}
 
 Pause::Pause() : _mode( unknown ) {}
 
@@ -212,6 +212,28 @@ void Pause::_exec(Game& game, unsigned int)
   }
 }
 
+
+GameEventPtr Step::create(unsigned int count)
+{
+  Step* e = new Step(count);
+  GameEventPtr ret( e );
+  ret->drop();
+  return ret;
+}
+
+void Step::_exec(Game &game, unsigned int)
+{
+  game.step(_count);
+}
+
+bool Step::_mayExec(Game &game, unsigned int) const
+{
+  return game.isPaused();
+}
+
+Step::Step(unsigned int count):_count(count)
+{
+}
 
 GameEventPtr ChangeSpeed::create(int value)
 {
