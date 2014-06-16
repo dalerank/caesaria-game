@@ -30,6 +30,7 @@ public:
   ~GameLoader();
 
   bool load(vfs::Path filename, Game& game);
+  std::string restartFile() const;
 
 private:
   class Impl;

@@ -199,6 +199,7 @@ void Level::initialize()
   CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
   CONNECT( _d->topMenu, onLoad(), this, Level::_resolveShowLoadGameWnd );
   CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
+  CONNECT( _d->topMenu, onRestart(), this, Level::_resolveRestart );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
@@ -518,6 +519,8 @@ void Level::handleEvent( NEvent& event )
       default:
       break;
       }
+
+      return;
     }
 
     switch( event.keyboard.key )
@@ -553,7 +556,7 @@ void Level::handleEvent( NEvent& event )
     case KEY_F11:
       if( event.keyboard.pressed )
       {
-        if( event.keyboard.control )
+        if( event.keyboard.shift )
         {
           events::GameEventPtr e = events::RandomWolves::create( 10 );
           e->dispatch();
@@ -659,16 +662,13 @@ void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::tradin
 void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->gui()->rootWidget(), game->city() ); }
 void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
 void Level::_resolveExitGame(){  _d->result = Level::quitGame;  stop();}
+void Level::_resolveRestart() { _d->result = Level::restart;  stop();}
+void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
 {  
   events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
   e->dispatch();
-}
-
-void Level::setCameraPos(TilePos pos)
-{
-  _d->renderer.camera()->setCenter( pos );
 }
 
 void Level::_resolveShowLoadGameWnd()

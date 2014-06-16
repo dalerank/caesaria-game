@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_OC3SAVE_SAVER_H_INCLUDE_
 #define _CAESARIA_OC3SAVE_SAVER_H_INCLUDE_
@@ -23,10 +24,20 @@
 
 class Game;
 
-class GameSaver
+class SaverOptions
 {
 public:
-   void save( const vfs::Path& filename, const Game& game );
+  static const char* restartFile;
+};
+
+class GameSaver
+{
+public:   
+  void save( const vfs::Path& filename, const Game& game );
+  void setRestartFile( const std::string& filename );
+
+private:
+  std::string _restartFile;
 };
 
 

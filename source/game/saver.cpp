@@ -28,6 +28,8 @@
 #include "settings.hpp"
 #include "events/dispatcher.hpp"
 
+const char* SaverOptions::restartFile = "restartFile";
+
 void GameSaver::save(const vfs::Path& filename, const Game& game )
 {
   VariantMap vm;
@@ -41,6 +43,7 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
   vm_scenario[ "adviserEnabled" ] = GameSettings::get( GameSettings::adviserEnabled );
   vm_scenario[ "climate" ] = (int)game.city()->climate();
   vm[ "scenario" ] = vm_scenario;
+  vm[ SaverOptions::restartFile ] = Variant( _restartFile );
 
   VariantMap vm_empire;
   game.empire()->save( vm_empire );
@@ -60,3 +63,5 @@ void GameSaver::save(const vfs::Path& filename, const Game& game )
 
   SaveAdapter::save( vm, filename );
 }
+
+void GameSaver::setRestartFile(const std::string& filename) { _restartFile = filename; }

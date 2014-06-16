@@ -29,8 +29,17 @@
 #include "core/locale.hpp"
 #include "settings.hpp"
 #include "core/logger.hpp"
+#include "saver.hpp"
 
+namespace {
 static const int currentVesion = 1;
+}
+
+class GameLoaderOc3::Impl
+{
+public:
+  std::string restartFile;
+};
 
 bool GameLoaderOc3::load( const std::string& filename, Game& game )
 {
@@ -45,6 +54,8 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
   int fileVersion = vm[ "version" ];
   if( currentVesion == fileVersion )
   {      
+    _d->restartFile = vm[ SaverOptions::restartFile ].toString();
+
     VariantMap scenario_vm = vm[ "scenario" ].toMap();
     game.setTimeMultiplier( (int)vm[ "timemultiplier"] );
 
@@ -70,7 +81,7 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
   return false;
 }
 
-int GameLoaderOc3::getClimateType(const std::string& filename)
+int GameLoaderOc3::climateType(const std::string& filename)
 {
   Logger::warning( "GameLoaderOc3: check climate type" + filename );
   VariantMap vm = SaveAdapter::load( filename );
@@ -82,4 +93,11 @@ int GameLoaderOc3::getClimateType(const std::string& filename)
 bool GameLoaderOc3::isLoadableFileExtension( const std::string& filename )
 {
   return filename.substr( filename.size() - 8 ) == ".oc3save";
+}
+
+std::string GameLoaderOc3::restartFile() const { return _d->restartFile; }
+
+GameLoaderOc3::GameLoaderOc3() : _d( new Impl )
+{
+
 }

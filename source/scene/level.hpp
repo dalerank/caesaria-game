@@ -33,7 +33,7 @@ namespace scene
 class Level: public Base
 {
 public:
-  typedef enum {mainMenu=0, loadGame, loadBriefing, quitGame} ResultType;
+  typedef enum {mainMenu=0, loadGame, restart, loadBriefing, quitGame} ResultType;
   Level( Game& game, gfx::Engine& engine );
   ~Level();
 
@@ -48,13 +48,13 @@ public:
 
   virtual bool installEventHandler(EventHandlerPtr);
 
-
   void setCameraPos( TilePos pos );
 
 private:
   void _resolveEndGame();
   void _resolveExitGame();
   void _resolveSwitchMap();
+  void _resolveRestart();
   void _resolveShowLoadGameWnd();
   void _resolveLoadGame(std::string filename);
   void _resolveLoad();

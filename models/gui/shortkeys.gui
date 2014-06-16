@@ -9,6 +9,7 @@
       "F5/F9    : fast save/load game",
       "F10      : make screenshot",
       "F11(test): add new enemy soldier in city",
+      "Shift+F11(test): add wolves in city",
       "Esc      : close active window,layer or break current action",
       "Ctrl+Shift+1 : toggle show tile grid",
       "Ctrl+Shift+2 : toggle show tile position",

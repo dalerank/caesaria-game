@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_SCENARIOABSTRACTLOADER_H_INCLUDED__
 #define __CAESARIA_SCENARIOABSTRACTLOADER_H_INCLUDED__
@@ -25,9 +27,9 @@ class GameAbstractLoader : public ReferenceCounted
 public:
   virtual ~GameAbstractLoader() {}
   virtual bool load( const std::string& filename, Game& oScenario ) = 0;
-  virtual int  getClimateType( const std::string& filename ) = 0;
+  virtual int  climateType( const std::string& filename ) = 0;
   virtual bool isLoadableFileExtension( const std::string& filename ) = 0;
-  //virtual bool isLoadableFileFormat( file ) = 0;
+  virtual std::string restartFile() const = 0;
 };
 
 

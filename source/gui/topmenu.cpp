@@ -70,6 +70,7 @@ oc3_signals public:
   Signal0<> onEndSignal;
   Signal0<> onSaveSignal;
   Signal0<> onLoadSignal;
+  Signal0<> onRestartSignal;
   Signal0<> onShowVideoOptionsSignal;
   Signal0<> onShowSoundOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
@@ -178,12 +179,13 @@ TopMenu::TopMenu( Widget* parent, const int height )
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
 
-  /*ContextMenuItem* restart = */ file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
+  ContextMenuItem* restart = file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
   ContextMenuItem* load = file->addItem( _("##mainmenu_loadgame##"), -1, true, false, false, false );
   ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
   ContextMenuItem* exit = file->addItem( _("##gmenu_exit_game##"), -1, true, false, false, false );
 
+  CONNECT( restart, onClicked(), &_d->onRestartSignal, Signal0<>::emit );
   CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::emit );
   CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::emit );
   CONNECT( load, onClicked(), &_d->onLoadSignal, Signal0<>::emit );
@@ -228,6 +230,8 @@ Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
 Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
 Signal1<advisor::Type>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
 Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
+
+Signal0<>&TopMenu::onRestart() { return _d->onRestartSignal; }
 Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }
 Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
 Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
