@@ -550,6 +550,25 @@ void Level::handleEvent( NEvent& event )
     }
     break;
 
+    case KEY_COMMA:
+    {
+      if( event.keyboard.pressed )
+        break;
+
+      events::GameEventPtr e = events::Step::create(1);
+      e->dispatch();
+    }
+    break;
+    case KEY_PERIOD:
+    {
+      if( event.keyboard.pressed )
+        break;
+
+      events::GameEventPtr e = events::Step::create(25);
+      e->dispatch();
+    }
+    break;
+
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
     case KEY_F10:_d->makeScreenShot(); break;
