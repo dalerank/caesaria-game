@@ -267,7 +267,7 @@ PathwayList Propagator::getWays(const unsigned int maxDistance)
     }
 
     // the current branch has been fully maximized
-    if( pathWay.isValid() )
+    if( pathWay->lenght() )
     {
       oPathWayList.push_back( pathWay );
     }
