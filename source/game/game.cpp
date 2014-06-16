@@ -20,6 +20,7 @@
 #include "scene/logo.hpp"
 #include "city/build_options.hpp"
 #include "core/stringhelper.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/sdl_engine.hpp"
@@ -76,6 +77,7 @@ public:
 
   bool loadOk;
   int pauseCounter;
+  std::string restartFile;
 
   float time, saveTime;
   float timeMultiplier;
@@ -342,6 +344,7 @@ void Game::setScreenGame()
   {
     case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;    
     case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  load( screen.nextFilename() ); break;
+    case scene::Level::restart: _d->nextScreen = SCREEN_GAME;  load( _d->restartFile ); break;
     case scene::Level::loadBriefing: _d->nextScreen = SCREEN_BRIEFING; break;
     case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
     default: _d->nextScreen = SCREEN_QUIT;
@@ -381,6 +384,7 @@ Game::~Game(){}
 void Game::save(std::string filename) const
 {
   GameSaver saver;
+  saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 }
 
@@ -425,6 +429,7 @@ void Game::load(std::string filename)
     return;
   }
 
+  _d->restartFile = loader.restartFile();
   Logger::warning( "Game: init player city" );
   world::CityPtr city = _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
   if( city.isNull() )

@@ -42,6 +42,11 @@ using namespace gui;
 namespace gfx
 {
 
+namespace {
+static const int frameCountLimiter=25;
+CAESARIA_LITERALCONST(oc3_land)
+}
+
 class LayerBuild::Impl
 {
 public:
@@ -50,7 +55,11 @@ public:
   bool kbShift, kbCtrl;
   bool borderBuilding;
   bool roadAssignment;
+  int frameCount;
+  int money4Construction;
   Renderer* renderer;
+  Font textFont;
+  PictureRef textPic;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
 
@@ -87,14 +96,20 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   }
 
   Size size = overlay->size();
+  int cost = MetaDataHolder::getData( overlay->type() ).getOption( MetaDataOptions::cost );
 
-  bool walkersOnTile = !_city()->getWalkers( walker::any, pos, pos + TilePos( size.width(), size.height() ) ).empty();
+  bool walkersOnTile = false;
+  if( bldCommand->isCheckWalkers() )
+  {
+    walkersOnTile = !_city()->getWalkers( walker::any, pos, pos + TilePos( size.width()-1, size.height()-1 ) ).empty();
+  }
 
   if( !walkersOnTile && overlay->canBuild( _city(), pos, d->buildTiles ) )
   {
     //bldCommand->setCanBuild(true);
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
+    d->money4Construction += cost;
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -118,8 +133,8 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   {
     //bldCommand->setCanBuild(false);
 
-    Picture& grnPicture = Picture::load("oc3_land", 1);
-    Picture& redPicture = Picture::load("oc3_land", 2);
+    Picture& grnPicture = Picture::load(lc_oc3_land, 1);
+    Picture& redPicture = Picture::load(lc_oc3_land, 2);
 
     //TilemapArea area = til
     Tilemap& tmap = _city()->tilemap();
@@ -133,8 +148,13 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
 
         Tile* tile = new Tile( tmap.at( rPos ) );  // make a copy of tile
 
+        walkersOnTile = false;
+        if( bldCommand->isCheckWalkers() )
+        {
+          walkersOnTile = !_city()->getWalkers( walker::any, rPos ).empty();
+        }
+
         bool isConstructible = tile->getFlag( Tile::isConstructible );
-        walkersOnTile = !_city()->getWalkers( walker::any, rPos ).empty();
         tile->setPicture( (!walkersOnTile && isConstructible) ? grnPicture : redPicture );
         tile->setMasterTile( 0 );
         tile->setFlag( Tile::clearAll, true );
@@ -157,12 +177,13 @@ void LayerBuild::_updatePreviewTiles( bool force )
   if( !curTile )
     return;
 
-  if( curTile && !force && d->lastTilePos == curTile->pos() )
+  if( !force && d->lastTilePos == curTile->pos() )
     return;
 
   d->lastTilePos = curTile->pos();
 
   _discardPreview();
+  d->money4Construction = 0;
 
   if( d->borderBuilding )
   {
@@ -184,6 +205,10 @@ void LayerBuild::_updatePreviewTiles( bool force )
 
     foreach( it, tiles ) { _checkPreviewBuild( (*it)->pos() ); }
   }
+
+  d->textPic->fill( 0x0, Rect() );
+  d->textFont.setColor( 0xffff0000 );
+  d->textFont.draw( *d->textPic, StringHelper::i2str( d->money4Construction ) + " Dn", Point() );
 }
 
 void LayerBuild::_buildAll()
@@ -292,7 +317,7 @@ void LayerBuild::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _camera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = _camera()->scrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
     switch( event.keyboard.key )
     {
@@ -392,9 +417,18 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 
 void LayerBuild::render( Engine& engine)
 {
+  __D_IMPL(d,LayerBuild);
   Layer::render( engine );
 
+  if( ++d->frameCount >= frameCountLimiter)
+  {
+    _updatePreviewTiles( true );
+  }
+
+  d->frameCount %= frameCountLimiter;
+
   _drawBuildTiles( engine );
+  engine.draw( *d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void LayerBuild::init(Point cursor)
@@ -422,7 +456,11 @@ LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
   : Layer( renderer->camera(), city ),
     __INIT_IMPL(LayerBuild)
 {
-  _dfunc()->renderer = renderer;
+  __D_IMPL(d,LayerBuild);
+  d->renderer = renderer;
+  d->frameCount = 0;
+  d->textFont = Font::create( FONT_3 );
+  d->textPic.init( Size( 100, 30 ) );
 }
 
 }//end namespace gfx

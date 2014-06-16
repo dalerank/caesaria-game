@@ -115,7 +115,7 @@ void AmbientSound::update( const unsigned int time )
   if( time % 20 != 1 )
     return;
 
-  Tile* tile = _d->camera->center();
+  Tile* tile = _d->camera->centerTile();
 
   if( !tile )
     return;

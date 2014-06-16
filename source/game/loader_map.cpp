@@ -42,7 +42,7 @@ public:
   static const int kTerrainGrid = 0x1338c;
   static const int kRndmTerGrid = 0x20094;
   static const int kRandomGrid  = 0x26718;
-  static const int kElevationGrid    = 0x2cd9c;
+  static const int kElevationGrid=0x2cd9c;
   static const int kCamera      = 0x33428;
   static const int kStartDate   = 0x33430;
   static const int kLocation    = 0x33434;
@@ -76,6 +76,8 @@ public:
   static const int kClimate     = 0x33ad8;
   static const int kFlotsam     = 0x33ad9;
 
+  std::string restartFile;
+
   void loadCity(std::fstream& f, PlayerCityPtr oCity );
 
   void initClimate(std::fstream &f, PlayerCityPtr ioCity);
@@ -86,6 +88,8 @@ public:
 
 bool GameLoaderC3Map::load(const std::string& filename, Game& game)
 {
+  _d->restartFile = filename;
+
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
   _d->initClimate(f, game.city() );
@@ -103,7 +107,7 @@ bool GameLoaderC3Map::load(const std::string& filename, Game& game)
   return true;
 }
 
-int GameLoaderC3Map::getClimateType(const std::string& filename)
+int GameLoaderC3Map::climateType(const std::string& filename)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -116,12 +120,18 @@ int GameLoaderC3Map::getClimateType(const std::string& filename)
   return i;
 }
 
-GameLoaderC3Map::GameLoaderC3Map() : _d( new Impl ) {}
+GameLoaderC3Map::GameLoaderC3Map()
+  : _d( new Impl )
+{
+
+}
 
 bool GameLoaderC3Map::isLoadableFileExtension( const std::string& filename )
 {
   return vfs::Path( filename ).isMyExtension( ".map" );
 }
+
+std::string GameLoaderC3Map::restartFile() const {  return _d->restartFile; }
 
 void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 {

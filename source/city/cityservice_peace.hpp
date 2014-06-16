@@ -12,33 +12,38 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_OC3SAVE_SAVER_H_INCLUDE_
-#define _CAESARIA_OC3SAVE_SAVER_H_INCLUDE_
+#ifndef __CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__
+#define __CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__
 
-#include "vfs/path.hpp"
+#include "cityservice.hpp"
 #include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
 
-class Game;
+namespace city
+{
 
-class SaverOptions
+class Peace : public city::Srvc
 {
 public:
-  static const char* restartFile;
-};
+  static city::SrvcPtr create( PlayerCityPtr city );
 
-class GameSaver
-{
-public:   
-  void save( const vfs::Path& filename, const Game& game );
-  void setRestartFile( const std::string& filename );
+  virtual void update( const unsigned int time );
+  void addProtestor();
+  void addRioter();
+  void buildingDestroyed( gfx::TileOverlayPtr overlay );
+  int value() const;
+  static std::string getDefaultName();
 
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap& stream);
 private:
-  std::string _restartFile;
+  Peace( PlayerCityPtr city );
+
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
+}//end namespace city
 
-#endif //_CAESARIA_OC3SAVE_SAVER_H_INCLUDE_
+#endif //__CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__

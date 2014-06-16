@@ -97,7 +97,8 @@ TaxCollector::TaxCollector(PlayerCityPtr city ) : ServiceWalker( city, Service::
 
 int TaxCollector::getMoney() const
 {
-  int save = _d->money;
+  int save = round(_d->money);
+  Logger::warning("TaxCollector %f rounded to %d", _d->money, save);
   _d->money = 0;
   return save;
 }

@@ -34,7 +34,7 @@ public:
 
   void init( gfx::Tilemap& tilemap, gfx::Tile& origin );
 
-  int length() const;
+  unsigned int length() const;
 
   const gfx::Tile& front() const;
   const gfx::Tile& destination() const;
@@ -61,7 +61,7 @@ public:
 
   Pathway& operator=(const Pathway& other);
 
-  Pathway copy( int start, int stop=-1) const;
+  Pathway copy(unsigned int start, int stop=-1) const;
 
   void load( const VariantMap& stream );
   VariantMap save() const;

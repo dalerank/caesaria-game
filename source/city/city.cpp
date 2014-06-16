@@ -77,9 +77,15 @@
 #include "cityservice_health.hpp"
 #include <set>
 #include "cityservice_military.hpp"
+#include "cityservice_peace.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+namespace {
+CAESARIA_LITERALCONST(tilemap)
+CAESARIA_LITERALCONST(walkerIdCount)
+}
 
 typedef std::vector< city::SrvcPtr > CityServices;
 
@@ -213,6 +219,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( city::Military::create( this ) );
   addService( audio::Player::create( this ) );
   addService( city::HealthCare::create( this ));
+  addService( city::Peace::create( this ) );
 }
 
 void PlayerCity::timeStep(unsigned int time)
@@ -455,7 +462,8 @@ void PlayerCity::save( VariantMap& stream) const
   VariantMap vm_tilemap;
   _d->tilemap.save( vm_tilemap );
 
-  stream[ "tilemap"    ] = vm_tilemap;
+  stream[ lc_tilemap    ] = vm_tilemap;
+  stream[ lc_walkerIdCount   ] = (uint)_d->walkerIdCount;
 
   Logger::warning( "City: save main paramters ");
   stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
@@ -513,7 +521,8 @@ void PlayerCity::save( VariantMap& stream) const
 void PlayerCity::load( const VariantMap& stream )
 {
   Logger::warning( "City: start parse savemap" );
-  _d->tilemap.load( stream.get( "tilemap" ).toMap() );
+  _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
+  _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
 
   Logger::warning( "City: parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
@@ -686,8 +695,8 @@ int PlayerCity::culture() const
 
 int PlayerCity::peace() const
 {
-  //CityServicePtr csPrsp = findService( CityServicePeace::getDefaultName() );
-  return 0;//csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
+  SmartPtr<city::Peace> peace = ptr_cast<city::Peace>( findService( city::Peace::getDefaultName() ) );
+  return peace.isValid() ? peace->value() : 0;
 }
 
 int PlayerCity::favour() const { return empire()->emperor().relation( getName() ); }

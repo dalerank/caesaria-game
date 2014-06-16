@@ -44,7 +44,7 @@ public:
     
     AStarPoint* operator[](const TilePos& pos )
     {
-	  return *(begin() + hash( pos ));
+      return *(begin() + hash( pos ));
     }
 
     void reset( int width, int height )
@@ -98,7 +98,6 @@ public:
   }
 
   bool aStar(TilePos start, TilesArray arrivedArea, Pathway& oPathWay, int flags );
-
   void isRoad( const Tile* tile, bool& possible );
   void isDeepWater( const Tile* tile, bool& possible );
   void isWater( const Tile* tile, bool& possible );
@@ -109,6 +108,7 @@ Pathfinder::Pathfinder() : _d( new Impl )
 {
   _d->maxLoopCount = 4800;
   _d->verbose = 0;
+  _d->tilemap = 0;
 }
 
 void Pathfinder::update( const Tilemap& tilemap )
@@ -130,6 +130,9 @@ void Pathfinder::update( const Tilemap& tilemap )
 
 Pathway Pathfinder::getPath(TilePos start, TilesArray arrivedArea, int flags)
 {
+  if( !_d->tilemap )
+    return Pathway();
+
   Pathway oPathway;
   if( (flags & checkStart) )
   {
@@ -160,6 +163,11 @@ void Pathfinder::setCondition(const TilePossibleCondition& condition)
 
 Pathway Pathfinder::getPath(TilePos start, TilePos stop,  int flags)
 {
+  if( !_d->tilemap )
+  {
+    return Pathway();
+  }
+
   TilesArray area;
   area.push_back( &_d->tilemap->at(stop) );
   return getPath( start, area, flags );
@@ -183,15 +191,8 @@ bool Pathfinder::Impl::getTraversingPoints( TilePos start, TilePos stop, Pathway
   return true;
 }
 
-unsigned int Pathfinder::getMaxLoopCount() const
-{
-  return _d->maxLoopCount;
-}
-
-void Pathfinder::setVerboseMode(int level)
-{
-  _d->verbose = level;
-}
+unsigned int Pathfinder::getMaxLoopCount() const {  return _d->maxLoopCount; }
+void Pathfinder::setVerboseMode(int level) {  _d->verbose = level;}
 
 bool _inArea( APoints& area, AStarPoint* end )
 {
@@ -387,7 +388,4 @@ Pathfinder& Pathfinder::instance()
   return inst;
 }
 
-Pathfinder::~Pathfinder()
-{
-
-}
+Pathfinder::~Pathfinder() {}

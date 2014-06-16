@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "gfx/layerconstants.hpp"
 #include "menu.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/picture.hpp"
@@ -36,7 +37,6 @@
 #include "objects/constants.hpp"
 #include "city/city.hpp"
 #include "events/playsound.hpp"
-#include "gfx/layerconstants.hpp"
 
 using namespace constants;
 using namespace gfx;

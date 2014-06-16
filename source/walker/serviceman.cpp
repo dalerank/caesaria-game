@@ -125,12 +125,12 @@ void ServiceWalker::_computeWalkerPath( int orders )
   float maxPathValue = 0.0;
   PathwayPtr bestPath;
 
-  if( orders & goLowerService == goLowerService )
+  if( (orders & goLowerService) == goLowerService )
   {
     foreach( current, pathWayList )
     {
       float pathValue = evaluatePath( *current );
-      if (pathValue > maxPathValue)
+      if(pathValue > maxPathValue)
       {
         bestPath = *current;
         maxPathValue = pathValue;
@@ -149,7 +149,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
 
   if( !bestPath.isValid() )
   {
-    // no good path
+    //no good path
     deleteLater();
     return;
   }

@@ -290,6 +290,11 @@ unsigned int TileHelper::hash(const TilePos& pos)
   return (pos.i() << 16) + pos.j();
 }
 
+Point TileHelper::tilepos2screen(const TilePos& pos)
+{
+  return Point( 30 * (pos.i()+pos.j()), 15 * pos.z() );
+}
+
 void TileHelper::decode(Tile& tile, const int bitset)
 {
   tile.setFlag( Tile::clearAll, true );

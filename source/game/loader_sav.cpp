@@ -38,6 +38,7 @@ static const int kClimate     = 0x33ad8;
 class GameLoaderC3Sav::Impl
 {
 public:
+  std::string restartFile;
   bool loadCity(std::fstream& f, Game& game);
   void initEntryExit(std::fstream& f, PlayerCityPtr ioCity);
 };
@@ -90,7 +91,7 @@ void GameLoaderC3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   f.seekg(savePos, std::ios::beg);
 }
 
-int GameLoaderC3Sav::getClimateType(const std::string& filename)
+int GameLoaderC3Sav::climateType(const std::string& filename)
 {
   /*std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
@@ -104,6 +105,7 @@ int GameLoaderC3Sav::getClimateType(const std::string& filename)
   return -1;
 }
 
+std::string GameLoaderC3Sav::restartFile() const { return _d->restartFile; }
 
 bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
 {
@@ -111,6 +113,8 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
 
   //int climateType = getClimateType( filename );
   //game.city()->setClimate( (ClimateType)climateType );
+
+  _d->restartFile = filename;
 
   _d->loadCity(f, game );
 

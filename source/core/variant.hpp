@@ -216,6 +216,7 @@ class Variant
     //LineF toLineF() const;
     RectF toRectf() const;
 
+    operator unsigned int() const { return toUInt(); }
     operator int() const { return toInt(); }
     operator float() const { return toFloat(); }
     operator bool() const { return toBool(); }

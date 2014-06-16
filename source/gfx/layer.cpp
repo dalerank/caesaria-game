@@ -154,7 +154,7 @@ void Layer::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _d->camera->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = _d->camera->scrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
     switch( event.keyboard.key )
     {
@@ -284,7 +284,7 @@ void Layer::render( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   // center the map on the screen
-  const TilesArray& visibleTiles = _d->camera->getTiles();
+  const TilesArray& visibleTiles = _d->camera->tiles();
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
@@ -397,7 +397,7 @@ void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
   __D_IMPL(_d,Layer)
   engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
 
-  int roundPercent = ( percent / 10 ) * 10;
+  int roundPercent = (math::clamp(percent, 0, 100)/ 10) * 10;
 
   for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
   {

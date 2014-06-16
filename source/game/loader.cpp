@@ -44,6 +44,7 @@ public:
   typedef std::vector< GameAbstractLoaderPtr > Loaders;
   typedef Loaders::iterator LoaderIterator;
   Loaders loaders;
+  std::string restartFile;
 
   void initLoaders();
   void initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit );
@@ -56,10 +57,7 @@ GameLoader::GameLoader() : _d( new Impl )
   _d->initLoaders();
 }
 
-GameLoader::~GameLoader()
-{
-
-}
+GameLoader::~GameLoader() {}
 
 void GameLoader::Impl::initEntryExitTile( const TilePos& tlPos, Tilemap& tileMap, const unsigned int picIdStart, bool exit )
 {
@@ -135,7 +133,7 @@ bool GameLoader::load( vfs::Path filename, Game& game )
     if( (*it)->isLoadableFileExtension( filename.toString() ) /*||
         (*it)->isLoadableFileFormat(file) */ )
     {
-      ClimateType currentClimate = (ClimateType)(*it)->getClimateType( filename.toString() );
+      ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
       if( currentClimate >= 0  )
       {
         ClimateManager::initialize( currentClimate );
@@ -145,6 +143,7 @@ bool GameLoader::load( vfs::Path filename, Game& game )
       
       if( loadok )
       {
+        _d->restartFile = (*it)->restartFile();
         _d->finalize( game );
       }
 
@@ -155,3 +154,5 @@ bool GameLoader::load( vfs::Path filename, Game& game )
 
   return false; // failed to load
 }
+
+std::string GameLoader::restartFile() const { return _d->restartFile; }

@@ -73,6 +73,7 @@
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
 #include "events/random_wolves.hpp"
+#include "gfx/layerconstants.hpp"
 #include "events/warningmessage.hpp"
 
 using namespace gui;
@@ -98,6 +99,7 @@ public:
   AlarmEventHolder alarmsHolder;
   std::string mapToLoad;
   TilePos selectedTilePos;
+  citylayer::Type lastLayerId;
   bool isPaused;
 
   int result;
@@ -123,6 +125,7 @@ public:
   void showTileHelp();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
+  void layerChanged( int layer );
 
   vfs::Path getFastSaveName(const std::string& postfix="");
 };
@@ -196,6 +199,7 @@ void Level::initialize()
   CONNECT( _d->topMenu, onExit(), this, Level::_resolveExitGame );
   CONNECT( _d->topMenu, onLoad(), this, Level::_resolveShowLoadGameWnd );
   CONNECT( _d->topMenu, onEnd(), this, Level::_resolveEndGame );
+  CONNECT( _d->topMenu, onRestart(), this, Level::_resolveRestart );
   CONNECT( _d->topMenu, onRequestAdvisor(), _d.data(), Impl::showAdvisorsWindow );
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
@@ -227,6 +231,7 @@ void Level::initialize()
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(), Impl::saveCameraPos );
   CONNECT( mmap, onCenterChange(), _d->renderer.camera(), Camera::setCenter );
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu, ExtentMenu::changeOverlay );
+  CONNECT( &_d->renderer, onLayerSwitch(), _d.data(), Impl::layerChanged );
 
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
@@ -320,6 +325,14 @@ void Level::Impl::setAutosaveInterval(int value)
 {
   GameSettings::set( GameSettings::autosaveInterval, value );
   GameSettings::save();
+}
+
+void Level::Impl::layerChanged(int layer)
+{
+  if( layer > citylayer::simple && layer < citylayer::build )
+  {
+    lastLayerId = (citylayer::Type)layer;
+  }
 }
 
 void Level::_resolveLoadGame( std::string filename )
@@ -472,8 +485,44 @@ void Level::handleEvent( NEvent& event )
     _MET_TILES
   } _mouseEventTarget = _MET_NONE;
 
-  if( event.EventType == sEventKeyboard )
+  if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
   {
+    if( event.keyboard.control )
+    {
+      switch( event.keyboard.key )
+      {
+      case KEY_SPACE:
+      {
+        int newLayer = _d->renderer.layerType() == citylayer::simple
+                          ? _d->lastLayerId : citylayer::simple;
+        _d->renderer.setLayer( newLayer );
+      }
+      break;
+
+      case KEY_KEY_F: _d->renderer.setLayer( citylayer::fire ); break;
+      case KEY_KEY_D: _d->renderer.setLayer( citylayer::damage ); break;
+      case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
+      case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
+      case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
+      case KEY_F1:    _d->showAdvisorsWindow( advisor::employers ); break;
+      case KEY_F2:    _d->showAdvisorsWindow( advisor::military ); break;
+      case KEY_F3:    _d->showAdvisorsWindow( advisor::empire ); break;
+      case KEY_F4:    _d->showAdvisorsWindow( advisor::ratings ); break;
+      case KEY_F5:    _d->showAdvisorsWindow( advisor::trading ); break;
+      case KEY_F6:    _d->showAdvisorsWindow( advisor::population ); break;
+      case KEY_F7:    _d->showAdvisorsWindow( advisor::health ); break;
+      case KEY_F8:    _d->showAdvisorsWindow( advisor::education ); break;
+      case KEY_F9:    _d->showAdvisorsWindow( advisor::entertainment ); break;
+      case KEY_F10:   _d->showAdvisorsWindow( advisor::religion ); break;
+      case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
+      case KEY_F12:    _d->showAdvisorsWindow( advisor::main ); break;
+      default:
+      break;
+      }
+
+      return;
+    }
+
     switch( event.keyboard.key )
     {
     case KEY_MINUS:
@@ -505,26 +554,26 @@ void Level::handleEvent( NEvent& event )
     case KEY_F9: _resolveLoadGame( "" ); break;
     case KEY_F10:_d->makeScreenShot(); break;
     case KEY_F11:
-        if( event.keyboard.pressed )
+      if( event.keyboard.pressed )
+      {
+        if( event.keyboard.shift )
         {
-          if( event.keyboard.control )
-          {
-            events::GameEventPtr e = events::RandomWolves::create( 10 );
-            e->dispatch();
-          }
-          else { _d->makeEnemy(); }
+          events::GameEventPtr e = events::RandomWolves::create( 10 );
+          e->dispatch();
         }
+        else { _d->makeEnemy(); }
+      }
     break;    
 
     case KEY_ESCAPE:
     {
-        Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
-        foreach( it, children )
-        {
-          bool handled = (*it)->onEvent( event );
-          if( handled )
-              break;
-        }
+      Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
+      foreach( it, children )
+      {
+        bool handled = (*it)->onEvent( event );
+        if( handled )
+            break;
+      }
     }
     break;
 
@@ -613,16 +662,13 @@ void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::tradin
 void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->gui()->rootWidget(), game->city() ); }
 void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
 void Level::_resolveExitGame(){  _d->result = Level::quitGame;  stop();}
+void Level::_resolveRestart() { _d->result = Level::restart;  stop();}
+void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
 {  
   events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advType );
   e->dispatch();
-}
-
-void Level::setCameraPos(TilePos pos)
-{
-  _d->renderer.camera()->setCenter( pos );
 }
 
 void Level::_resolveShowLoadGameWnd()

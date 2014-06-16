@@ -81,7 +81,7 @@ public:
 
   virtual double getState( ParameterType param) const;
 
-  int workersCount() const;
+  unsigned int workersCount() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
@@ -93,17 +93,18 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  int maxHabitants();
+  unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int count );
   const CitizenGroup& habitants() const;
 
   float collectTaxes();
-  DateTime getLastTaxation() const;
+  float taxesThisYear() const;
+  DateTime lastTaxationDate() const;
 
   std::string getEvolveInfo() const;
 
-  virtual int getRoadAccessDistance() const;
+  virtual int roadAccessDistance() const;
 
   virtual bool isWalkable() const;
   virtual bool isFlat() const;

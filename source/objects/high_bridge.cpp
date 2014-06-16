@@ -46,7 +46,7 @@ public:
     _index = index;
 
     _picture = Picture::load( ResourceGroup::transport, _index );
-    _picture.addOffset( Point( 30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()) ) );
+    _picture.addOffset( TileHelper::tilepos2screen( _pos ) );
     checkSecondPart();
   }
 

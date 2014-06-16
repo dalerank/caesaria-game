@@ -41,10 +41,7 @@ GoodStock::GoodStock(const Good::Type &goodType, const int maxQty, const int cur
    _qty = currentQty;
 }
 
-GoodStock::~GoodStock()
-{
-
-}
+GoodStock::~GoodStock() {}
 
 void GoodStock::append(GoodStock &stock, const int iAmount)
 {
@@ -74,11 +71,11 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
   amount = math::clamp( amount, 0, _capacity - _qty );
   if (amount+_qty > _capacity)
   {
-    Logger::warning( "GoodStock:Not enough free room for storage");
+    Logger::warning( "GoodStock: not enough free room for storage");
     return;
   }
 
-  _type = stock._type;  // in case goodType was G_NONE
+  _type = stock._type;  // in case goodType was Good::none
   _qty += amount;
   stock._qty -= amount;
   
@@ -91,9 +88,9 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
 VariantList GoodStock::save() const
 {
   VariantList stream;
-  stream.push_back( (int)_type );
-  stream.push_back( _capacity );
-  stream.push_back( _qty );
+  stream << (int)_type
+         << _capacity
+         << _qty;
 
   return stream;
 }
@@ -104,26 +101,17 @@ void GoodStock::load( const VariantList& stream )
     return;
 
   _type = (Good::Type)stream.get( 0 ).toInt();
+  if( _type >= Good::goodCount )
+  {
+    Logger::warning( "GoodStock: wrong type of good %d", _type );
+    _type = Good::none;
+  }
+
   _capacity = (int)stream.get( 1 );
   _qty = math::clamp( (int)stream.get( 2 ), 0, _capacity );
 }
 
-bool GoodStock::empty() const
-{
-  return _qty == 0;
-}
-
-void GoodStock::setType(Type goodType )
-{
-  _type = goodType;
-}
-
-void GoodStock::setCapacity( const int maxQty )
-{
-  _capacity = maxQty;
-}
-
-int GoodStock::freeQty() const
-{
-  return std::max( _capacity - _qty, 0 );
-}
+bool GoodStock::empty() const {  return _qty == 0; }
+void GoodStock::setType(Type goodType ) {  _type = goodType;}
+void GoodStock::setCapacity( const int maxQty ){  _capacity = maxQty;}
+int GoodStock::freeQty() const{  return std::max( _capacity - _qty, 0 );}

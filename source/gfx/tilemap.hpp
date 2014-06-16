@@ -50,8 +50,17 @@ public:
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
   // corners  : if false, don't return corner tiles
-  TilesArray getRectangle(TilePos start, TilePos stope, const bool corners = true );
+  TilesArray getRectangle(TilePos start, TilePos stop, const bool corners = true);
   TilesArray getRectangle(TilePos pos, Size size, const bool corners = true );
+
+  enum TileNeighbors
+  {
+    EdgeNeighbors,
+    //Corners,
+    AllNeighbors
+  };
+
+  TilesArray getNeighbors(TilePos pos, TileNeighbors type = AllNeighbors);
 
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)

@@ -43,6 +43,7 @@ oc3_signals public:
   Signal0<>& onSave();
   Signal0<>& onEnd();
   Signal0<>& onLoad();
+  Signal0<>& onRestart();
   Signal0<>& onShowVideoOptions();
   Signal0<>& onShowSoundOptions();
   Signal0<>& onShowGameSpeedOptions();

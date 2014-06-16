@@ -247,8 +247,3 @@ bool Wall::isWalkable() const
 {
   return false;
 }
-
-bool Wall::isRoad() const
-{
-  return false;
-}

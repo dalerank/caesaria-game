@@ -22,7 +22,6 @@
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "gfx/tilemap.hpp"
-#include "objects/rift.hpp"
 #include "events/disaster.hpp"
 
 using namespace constants;
@@ -74,15 +73,14 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     }
 
     //calculate next point
-    TilePos offset( 1, 1 );
-    TilesArray nextPoints = tmap.getRectangle( _d->currentPoint - offset, _d->currentPoint + offset, false );
+    TilesArray nextPoints = tmap.getNeighbors(_d->currentPoint, Tilemap::EdgeNeighbors);
 
-    int lastDst = _d->currentPoint.distanceFrom( _d->endPoint);
+    int lastDst = _d->currentPoint.getDistanceFromSQ(_d->endPoint);
     for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
     {
       bool mayDestruct = (*it)->getFlag( Tile::isConstructible );
       mayDestruct |= is_kind_of<Construction>( (*it)->overlay() );
-      int curDst = (*it)->pos().distanceFrom( _d->endPoint );
+      int curDst = (*it)->pos().getDistanceFromSQ(_d->endPoint);
       if( !mayDestruct || (curDst > lastDst) ) { it = nextPoints.erase( it ); }
       else { ++it; }
     }

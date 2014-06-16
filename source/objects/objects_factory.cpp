@@ -128,7 +128,7 @@ public:
         anim.setOffset( v_offset.toPoint() );
       }
 
-      anim.setDelay( (int)anMap.get( "delay", 1 ) );
+      anim.setDelay( (unsigned int)anMap.get( "delay", 1u ) );
 
       construction->setAnimation( anim );
     }
@@ -145,7 +145,7 @@ public:
     WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( a );
     if( wb != 0 )
     {
-      wb->setMaximumWorkers( (int)info.getOption( "employers" ) );
+      wb->setMaximumWorkers( (unsigned int)info.getOption( "employers" ) );
     }
   }
 };

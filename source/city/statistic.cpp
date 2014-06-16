@@ -61,6 +61,13 @@ CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
   return ret;
 }
 
+unsigned int Statistic::getWorkersNeed(PlayerCityPtr city)
+{
+  int have, need;
+  getWorkersNumber( city, have, need );
+  return need < have ? 0 : need - have;
+}
+
 unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
 {
   Helper helper( city );
@@ -170,6 +177,18 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   }
 
   return taxValue;
+}
+
+unsigned int Statistic::getFestivalCost(PlayerCityPtr city, FestivalType type)
+{
+  switch( type )
+  {
+  case smallFest: return floor( city->population() / 20 ) + 10;
+  case middleFest: return floor( city->population() / 10 ) + 20;
+  case greatFest: return floor( city->population() / 5 ) + 40;
+  }
+
+  return 0;
 }
 
 HouseList Statistic::getEvolveHouseReadyBy(PlayerCityPtr city, const std::set<int>& checkTypes )

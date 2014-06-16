@@ -41,7 +41,7 @@ class Recruter::Impl
 public:
   typedef std::map< building::Group, int > PriorityMap;
 
-  int needWorkers;
+  unsigned int needWorkers;
   city::HirePriorities priority;
   PriorityMap priorityMap;
 
@@ -61,7 +61,7 @@ void Recruter::hireWorkers( const int workers )
   WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
   if( wbase.isValid() ) 
   {
-    _d->needWorkers = math::clamp( _d->needWorkers - workers, 0, 0xff );
+    _d->needWorkers = math::clamp( _d->needWorkers - workers, 0u, 0xffu );
     wbase->addWorkers( workers );
   }
 }
@@ -106,7 +106,7 @@ void Recruter::_centerTile()
         if( priorityOver )
         {
           WorkingBuildingPtr wbld = *it;
-          int numWorkers = std::min<int>( wbld->numberWorkers(), _d->needWorkers );
+          int numWorkers = std::min( wbld->numberWorkers(), _d->needWorkers );
           wbld->removeWorkers( numWorkers );
           hireWorkers( numWorkers );
         }
