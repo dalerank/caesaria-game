@@ -14,7 +14,25 @@
       "Ctrl+Shift+2 : toggle show tile position",
       "Ctrl+Shift+3 : toggle mode elevation tile draw",
       "W,A,S,D and arrows : move map",
-      "Shift on building mode : build road by rectangle"
+      "Shift on building mode : build road by rectangle",
+      "Ctrl+F1  : visit labor advisor",
+      "Ctrl+F2  : visit military advisor"
+      "Ctrl+F3  : visit empire advisor"
+      "Ctrl+F4  : visit ratings advisor"
+      "Ctrl+F5  : visit trade advisor"
+      "Ctrl+F6  : visit population advisor"
+      "Ctrl+F7  : visit health advisor"
+      "Ctrl+F8  : visit education advisor"
+      "Ctrl+F9  : visit entertainment advisor"
+      "Ctrl+F10  : visit religion advisor"
+      "Ctrl+F11  : visit finance advisor"
+      "Ctrl+F12  : visit main advisor"
+      "Ctrl+f  : show fire layer"
+      "Ctrl+d  : show damage layer"
+      "Ctrl+c  : show crime layer"
+      "Ctrl+t  : show troubles layer"
+      "Ctrl+w  : show water layer"
+      "Ctrl+space  : show last active layer"
     ]
   }
 

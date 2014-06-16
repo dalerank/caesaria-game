@@ -54,6 +54,8 @@ public:
   void animate( unsigned int time );
 
   void addLayer( LayerPtr layer );
+  void setLayer( int layertype );
+  int  layerType() const;
 
   Point getOffset() const;
 
