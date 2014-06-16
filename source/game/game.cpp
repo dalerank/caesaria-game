@@ -77,11 +77,11 @@ public:
 
   bool loadOk;
   int pauseCounter;
-  unsigned int manualStepsCounter;
+  unsigned int manualTicksCounterX10;
   std::string restartFile;
 
   unsigned int saveTime; // last action time
-  unsigned int time10x; // time (ticks) multiplied by 10;
+  unsigned int timeX10; // time (ticks) multiplied by 10;
   unsigned int timeMultiplier; // 100 = 1x speed
 
   void initLocale(std::string localePath);
@@ -315,8 +315,8 @@ void Game::setScreenGame()
   screen.initialize();
   _d->currentScreen = &screen;
   GameDate& cdate = GameDate::instance();
-  _d->time10x = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth() * 10;
-  _d->saveTime = _d->time10x;
+  _d->timeX10 = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth() * 10;
+  _d->saveTime = _d->timeX10;
 
   Logger::warning( "game: prepare for game loop" );
   // Game Loop
@@ -326,14 +326,15 @@ void Game::setScreenGame()
 
     if( !_d->pauseCounter )
     {
-      _d->time10x += _d->timeMultiplier / 10;
+      _d->timeX10 += _d->timeMultiplier / 10;
     }
-    else if (_d->manualStepsCounter > 0)
+    else if (_d->manualTicksCounterX10 > 0)
     {
-      _d->time10x += _d->timeMultiplier / 10;
-      _d->manualStepsCounter--;
+      unsigned int add = math::min(_d->timeMultiplier / 10, _d->manualTicksCounterX10);
+      _d->timeX10 += add;
+      _d->manualTicksCounterX10 -= add;
     }
-    while (_d->time10x > _d->saveTime * 10 + 1)
+    while (_d->timeX10 > _d->saveTime * 10 + 1)
     {
       _d->saveTime++;
 
@@ -374,15 +375,15 @@ void Game::setPaused(bool value)
 
 void Game::step(unsigned int count)
 {
-  _d->manualStepsCounter += count;
+  _d->manualTicksCounterX10 += count * 10;
 }
 
 Game::Game() : _d( new Impl )
 {
   _d->nextScreen = SCREEN_NONE;
   _d->pauseCounter = 0;
-  _d->manualStepsCounter = 0;
-  _d->time10x = 0;
+  _d->manualTicksCounterX10 = 0;
+  _d->timeX10 = 0;
   _d->saveTime = 0;
   _d->timeMultiplier = 70;
 }
@@ -549,7 +550,7 @@ void Game::reset()
   _d->empire = world::Empire::create();
   _d->player = Player::create();
   _d->pauseCounter = 0;
-  _d->manualStepsCounter = 0;
+  _d->manualTicksCounterX10 = 0;
   if( _d->city.isValid() )
   {
     _d->city->clean();
