@@ -44,6 +44,18 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos, WayType type/*
   case deepWater: return p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
   case water: return p.getPath( startPos, stopPos, Pathfinder::waterOnly );
 
+  case deepWaterFirst:
+  {
+    Pathway ret = p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
+    if( !ret.isValid() )
+    {
+      ret = p.getPath( startPos, stopPos, Pathfinder::waterOnly );
+    }
+
+    return ret;
+  }
+  break;
+
   default:
   break;
   }

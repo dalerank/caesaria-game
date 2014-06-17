@@ -4,6 +4,7 @@
   funds : 8000
   date : "-270.01.01"
   finish : "-100.01.01"
+  adviserEnabled : true
 	
   win :
   {

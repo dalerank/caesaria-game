@@ -131,7 +131,7 @@ TradeOptions::TradeOptions() : _d( new Impl )
 {  
 }
 
-int TradeOptions::exportLimit(Good::Type type ) const
+unsigned int TradeOptions::exportLimit(Good::Type type) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? 0 : it->second.exportLimit );
@@ -174,7 +174,7 @@ TradeOptions::Order TradeOptions::switchOrder( Good::Type type )
   return getOrder( type );
 }
 
-void TradeOptions::setExportLimit( Good::Type type, int qty )
+void TradeOptions::setExportLimit(Good::Type type, unsigned int qty)
 {
   _d->goods[ type ].exportLimit = qty;
 
@@ -185,6 +185,32 @@ bool TradeOptions::isGoodsStacking( Good::Type type )
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
   return ( it == _d->goods.end() ? false : it->second.stacking );
+}
+
+bool TradeOptions::isExporting( Good::Type type ) const
+{
+  Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
+  if (it == _d->goods.end())
+  {
+    return false;
+  }
+  else
+  {
+    return !it->second.stacking && it->second.order == exporting ;
+  }
+}
+
+bool TradeOptions::isImporting( Good::Type type ) const
+{
+  Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
+  if (it == _d->goods.end())
+  {
+    return false;
+  }
+  else
+  {
+    return it->second.order == importing ;
+  }
 }
 
 void TradeOptions::setStackMode( Good::Type type, bool stackGoods )

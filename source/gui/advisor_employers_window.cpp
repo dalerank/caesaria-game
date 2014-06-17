@@ -62,6 +62,8 @@ public:
     _needWorkers = need;
     _haveWorkers = have;
     _priority = 0;
+
+    setTooltipText( _("##empbutton_tooltip##") );
   }
 
   void setPriority( int priority )

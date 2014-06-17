@@ -25,7 +25,7 @@
 class PathwayHelper
 {
 public:
-  typedef enum { roadOnly=0, allTerrain, deepWater, roadFirst, water } WayType;
+  typedef enum { roadOnly=0, allTerrain, roadFirst, water, deepWater, deepWaterFirst } WayType;
   static Pathway create(TilePos startPos, TilePos stopPos,
                         WayType type=roadOnly );
 

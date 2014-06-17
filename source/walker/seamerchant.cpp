@@ -165,7 +165,11 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       {
         Good::Type goodType = (Good::Type)n;
         int needQty = buy.freeQty( goodType );
-        int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.exportLimit( goodType ) * 100, 0, needQty );
+        if (!options.isExporting(goodType))
+        {
+          continue;
+        }
+        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - options.exportLimit( goodType ) * 100, 0, needQty );
 
         if( maySell > 0)
         {
@@ -192,10 +196,15 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
     if( myDock.isValid() )
     {
+      city::TradeOptions& options = city->tradeOptions();
       //try buy goods
       for( int n = Good::wheat; n<Good::goodCount; ++n )
       {
         Good::Type goodType = (Good::Type) n;
+        if (!options.isExporting(goodType))
+        {
+          continue;
+        }
         int needQty = buy.freeQty( goodType );
 
         if( needQty > 0 )
@@ -257,17 +266,21 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   case stSellGoods:
   {    
     DockPtr myDock = findLandingDock( city, wlk );
-    const GoodStore& cityOrders = city->exportingGoods();
-
     if( myDock.isValid() )
     {
+      city::TradeOptions& options = city->tradeOptions();
+      const GoodStore& importing = options.importingGoods();
       //try sell goods
       for( int n = Good::wheat; n<Good::goodCount; ++n)
       {
-        Good::Type goodType = (Good::Type)n;
-        if( sell.qty( goodType ) > 0 && cityOrders.capacity( goodType ) > 0)
+        Good::Type type = (Good::Type)n;
+        if (!options.isImporting(type))
         {
-          myDock->importingGoods( sell.getStock( goodType ) );
+          continue;
+        }
+        if( sell.qty(type) > 0 && importing.capacity(type) > 0)
+        {
+          myDock->importingGoods( sell.getStock(type) );
           anySell = true;
         }
       }

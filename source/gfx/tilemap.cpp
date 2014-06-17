@@ -213,7 +213,7 @@ TilesArray Tilemap::getRectangle( TilePos pos, Size size, const bool corners /*=
 }
 
 // Get tiles inside of rectangle
-TilesArray Tilemap::getArea(TilePos start, TilePos stop )
+TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
 {
   TilesArray res;
   int expected = math::min((abs(stop.i() - start.i()) + 1) * (abs(stop.j() - start.j()) + 1), 100);
@@ -233,9 +233,15 @@ TilesArray Tilemap::getArea(TilePos start, TilePos stop )
   return res;
 }
 
-TilesArray Tilemap::getArea( TilePos start, Size size )
+TilesArray Tilemap::getArea(const TilePos& start, const Size& size )
 {
   return getArea( start, start + TilePos( size.width()-1, size.height()-1 ) );
+}
+
+TilesArray Tilemap::getArea(int range, const TilePos& center)
+{
+  TilePos offset(range,range);
+  return getArea( center - offset, center + offset );
 }
 
 void Tilemap::save( VariantMap& stream ) const

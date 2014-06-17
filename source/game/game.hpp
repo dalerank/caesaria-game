@@ -57,11 +57,13 @@ public:
   void setPaused( bool value );
   bool isPaused() const;
 
+  void step( unsigned int count = 1);
+
   void play();
   void pause();
 
   void changeTimeMultiplier(int percent);
-  void setTimeMultiplier( int percent );
+  void setTimeMultiplier(int percent);
   int timeMultiplier() const;
 
 public oc3_signals:

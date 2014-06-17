@@ -46,7 +46,6 @@ public:
   __GS_PROPERTY(fastsavePostfix)
   __GS_PROPERTY(saveExt)
   __GS_PROPERTY(workDir)
-  __GS_PROPERTY(adviserEnabled)
   __GS_PROPERTY(lastTranslation)
   __GS_PROPERTY(c3gfx)
   __GS_PROPERTY(archivesModel)

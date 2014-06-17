@@ -47,7 +47,7 @@ int LayerEducation::_getLevelValue( HousePtr house ) const
   {
   case citylayer::education:
   {
-    switch( house->spec().getMinEducationLevel() )
+    switch( house->spec().minEducationLevel() )
     {
     case 1: return house->getServiceValue( Service::school );
     case 2: return ( house->getServiceValue( Service::school ) +

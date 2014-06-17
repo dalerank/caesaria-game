@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
@@ -47,8 +49,10 @@ InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
   if( fountain != 0 )
   {
     if( fountain->isActive() )
-    {
-      text = "##fountain_info##";
+    {     
+      text = fountain->mayWork()
+              ? "##fountain_info##"
+              : "##fountain_not_work##";
     }
     else
     {

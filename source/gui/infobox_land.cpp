@@ -18,7 +18,9 @@
 #include "infobox_land.hpp"
 #include "label.hpp"
 #include "core/gettext.hpp"
+#include "city/city.hpp"
 #include "objects/constants.hpp"
+#include "pathway/pathway_helper.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -26,7 +28,7 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxLand::InfoboxLand( Widget* parent, const Tile& tile )
+InfoboxLand::InfoboxLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
 { 
   Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
@@ -44,8 +46,12 @@ InfoboxLand::InfoboxLand( Widget* parent, const Tile& tile )
   } 
   else if( tile.getFlag( Tile::tlWater ) )
   {
-    title = "##water_caption##";
-    text = "##water_text##";
+    title = "##water_caption##";    
+
+    TilePos exitPos = city->borderInfo().boatEntry;
+    Pathway way = PathwayHelper::create( tile.pos(), exitPos, PathwayHelper::deepWaterFirst );
+
+    text = way.isValid() ? "##water_text##" : "##inland_lake_text##";
   }
   else if( tile.getFlag( Tile::tlRock ) )
   {
@@ -93,8 +99,8 @@ void InfoboxLand::setText( const std::string& text )
     lb->setText( text );
 }
 
-InfoboxFreeHouse::InfoboxFreeHouse( Widget* parent, const Tile& tile )
-    : InfoboxLand( parent, tile )
+InfoboxFreeHouse::InfoboxFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
+    : InfoboxLand( parent, city, tile )
 {
   setTitle( _("##freehouse_caption##") );
 

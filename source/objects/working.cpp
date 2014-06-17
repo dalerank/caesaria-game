@@ -84,6 +84,11 @@ std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
 
+  if( isNeedRoadAccess() && getAccessRoads().empty() )
+  {
+    trouble = "##working_building_need_road##";
+  }
+
   if( trouble.empty() && numberWorkers() < maximumWorkers() / 2 )
   {
     trouble = workersProblemDesc();

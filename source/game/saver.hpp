@@ -28,6 +28,7 @@ class SaverOptions
 {
 public:
   static const char* restartFile;
+  static const char* version;
 };
 
 class GameSaver

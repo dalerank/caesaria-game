@@ -22,7 +22,7 @@
     btnOk#PushButton : {
       geometry : [ 176, "ph-55", 336, "ph-35" ]
       text : "##ok##"
-      bgtype : "whiteBorderUp"
+      bgtype : "whiteBorderUp"      
       font : "FONT_2"
     }
 
@@ -30,6 +30,7 @@
       geometry : [ 176, "ph-32", 336, "ph-12" ]
       text : "##cancel##"
       bgtype : "whiteBorderUp"
+      tooltip : "##exit_salary_window##"
       font : "FONT_2"
     }
   }

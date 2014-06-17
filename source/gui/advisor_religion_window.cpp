@@ -27,6 +27,7 @@
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
 #include "game/enums.hpp"
+#include "objects/house_level.hpp"
 #include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
@@ -109,6 +110,7 @@ public:
   ReligionInfoLabel* lbMarsInfo;
   ReligionInfoLabel* lbVenusInfo;
   ReligionInfoLabel* lbOracleInfo;
+  Label* religionAdvice;
   TexturedButton* btnHelp;
 
   struct InfrastructureInfo
@@ -128,6 +130,8 @@ public:
 
     return ret;
   }
+
+  void updateReligionAdvice( PlayerCityPtr city );
 };
 
 
@@ -185,6 +189,9 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), DivinityPtr(),
                                             info.smallTemplCount, 0 );
 
+  _d->religionAdvice = new Label( this, Rect( 40, height() - 80, width() - 40, height() - 10 ) );
+  _d->updateReligionAdvice( city );
+
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
@@ -196,6 +203,33 @@ void AdvisorReligionWindow::draw(gfx::Engine& painter )
   painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
+}
+
+void AdvisorReligionWindow::Impl::updateReligionAdvice(PlayerCityPtr city)
+{
+  StringArray advices;
+  city::Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+
+  bool needBasicReligion = false;
+  foreach( it, houses )
+  {
+    const HouseSpecification& spec = (*it)->spec();
+    int curLevel = spec.computeReligionLevel( *it );
+    int needLevel = spec.minReligionLevel();
+
+    switch( needLevel )
+    {
+    case 1:
+      if( curLevel == 0 )
+      {
+        needBasicReligion = true;
+      }
+    break;
+    }
+  }
+
+
 }
 
 }//end namespace gui

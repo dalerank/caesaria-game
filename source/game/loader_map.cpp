@@ -100,6 +100,8 @@ bool GameLoaderC3Map::load(const std::string& filename, Game& game)
 
   _d->initCameraStartPos(f, game.city() );
 
+  game.city()->setOption( PlayerCity::adviserEnabled, 1 );
+
   game.empire()->setCitiesAvailable( true );
 
   f.close();

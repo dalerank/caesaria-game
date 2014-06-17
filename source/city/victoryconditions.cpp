@@ -71,7 +71,7 @@ bool VictoryConditions::isSuccess( int culture, int prosperity,
 
 void VictoryConditions::load( const VariantMap& stream )
 {
-  _d->maxHouseLevel = HouseSpecHelper::instance().getHouseLevel( stream.get( "maxHouseLevel" ).toString() );
+  _d->maxHouseLevel = HouseSpecHelper::instance().geLevel( stream.get( "maxHouseLevel" ).toString() );
   _d->success = stream.get( "success" ).toBool();
   _d->population = (int)stream.get( "population" );
   _d->culture = (int)stream.get( "culture" );

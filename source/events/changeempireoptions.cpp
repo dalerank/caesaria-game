@@ -18,10 +18,13 @@
 #include "city/city.hpp"
 #include "city/build_options.hpp"
 #include "world/empire.hpp"
-#include "game/settings.hpp"
 
 namespace events
 {
+
+namespace {
+CAESARIA_LITERALCONST(enabled)
+}
 
 GameEventPtr ChangeEmpireOptions::create()
 {
@@ -45,16 +48,16 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
   VariantMap em_opts = _vars.get( "empire" ).toMap();
   VariantMap adv_options = _vars.get( "adviser" ).toMap();
 
-  Variant empire_enabled = em_opts.get( "enabled" );
+  Variant empire_enabled = em_opts.get( lc_enabled );
   if( empire_enabled.isValid() )
   {
     game.empire()->setAvailable( empire_enabled );
   }
 
-  Variant adv_enabled = adv_options.get( "enabled" );
+  Variant adv_enabled = adv_options.get( lc_enabled );
   if( adv_enabled.isValid() )
   {
-    GameSettings::set( GameSettings::adviserEnabled, adv_enabled );
+    game.city()->setOption( PlayerCity::adviserEnabled, adv_enabled );
   }
 }
 

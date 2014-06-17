@@ -66,6 +66,7 @@ HirePriorityWnd::HirePriorityWnd(Widget* p, city::Industry::Type type, int prior
     PushButton* btn = new PushButton( this, Rect( start, btnSize), StringHelper::i2str( k+1 ), k+1, false, PushButton::flatBorderLine );
     btn->setIsPushButton( true );
     btn->setPressed( priority > 0 ? k+1 == priority : false );
+    btn->setTooltipText( _("##priority_button_tolltip##") );
     start += Point( btnSize.width() + 5, 0 );
     _d->prButtons.insert( btn );
   }

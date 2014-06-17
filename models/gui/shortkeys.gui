@@ -33,7 +33,9 @@
       "Ctrl+c  : show crime layer"
       "Ctrl+t  : show troubles layer"
       "Ctrl+w  : show water layer"
-      "Ctrl+space  : show last active layer"
+      "Ctrl+space  : show last active layer",
+      ", (Period)" : make one step (if game paused),
+      ". (Comma)" : make 25 steps (day) (if game paused)
     ]
   }
 
