@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "fountain.hpp"
 
@@ -29,19 +31,24 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
+#include "walker/workerhunter.hpp"
+#include "events/returnworkers.hpp"
 
 using namespace constants;
 using namespace gfx;
 
+namespace {
+CAESARIA_LITERALCONST(lastPicId)
+CAESARIA_LITERALCONST(haveWater)
+static const unsigned int fillDistance = 4;
+}
+
 typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFountain = 10, fontainSizeAnim = 7,
                awesomeFountain=18, patricianFountain=26 } FontainConstant;
 
-Fountain::Fountain() : ServiceBuilding(Service::fountain, building::fountain, Size(1))
+Fountain::Fountain()
+  : ServiceBuilding(Service::fountain, building::fountain, Size(1))
 {  
-  //std::srand( DateTime::getElapsedTime() );
-
-  //setPicture( ResourceGroup::utilitya, 10 );
-
   _haveReservoirWater = false;
   _waterIncreaseInterval = GameDate::days2ticks( 7 );
   _lastPicId = simpleFountain;
@@ -50,8 +57,6 @@ Fountain::Fountain() : ServiceBuilding(Service::fountain, building::fountain, Si
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
-
-  setWorkers( 1 );
 }
 
 void Fountain::deliverService()
@@ -72,26 +77,15 @@ void Fountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( time % _waterIncreaseInterval == 1 )
   {
-    if( tile().getWaterService( WTR_RESERVOIR ) > 0 /*&& getWorkersCount() > 0*/ )
-    {
-      _haveReservoirWater = true;
-    }
-    else
-    {
-      //remove fontain service from tiles
-      _haveReservoirWater = false;
-    }
+    _haveReservoirWater = tile().getWaterService( WTR_RESERVOIR ) > 0;
 
-    if( !mayWork() )
+    if( mayWork() )
     {
-      return;
+      Tilemap& tmap = _city()->tilemap();
+      TilesArray reachedTiles = tmap.getArea( fillDistance, pos() );
+
+      foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
     }
-
-    TilePos offset( 4, 4 );
-    Tilemap& tmap = _city()->tilemap();
-    TilesArray reachedTiles = tmap.getArea( pos() - offset, pos() + offset );
-
-    foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_FONTAIN ); }
   }
 
   if( GameDate::isWeekChanged() )
@@ -104,7 +98,13 @@ void Fountain::timeStep(const unsigned long time)
       setPicture( ResourceGroup::utilitya, currentId );
       _initAnimation();
     }
-  }
+
+    if( needWorkers() > 0 )
+    {
+      RecruterPtr recruter = Recruter::create( _city() );
+      recruter->once( this, needWorkers(), fillDistance * 2);
+    }
+  }  
 
   ServiceBuilding::timeStep( time );
 }
@@ -130,12 +130,11 @@ void Fountain::build(PlayerCityPtr city, const TilePos& pos )
   _initAnimation();
 }
 
-bool Fountain::isNeedRoadAccess() const {  return false; }
+bool Fountain::isNeedRoadAccess() const { return false; }
 
 bool Fountain::haveReservoirAccess() const
 {
-  TilePos offset( 10, 10 );
-  TilesArray reachedTiles = _city()->tilemap().getArea( pos() - offset, pos() + offset );
+  TilesArray reachedTiles = _city()->tilemap().getArea( 10, pos() );
   foreach( tile, reachedTiles )
   {
     TileOverlayPtr overlay = (*tile)->overlay();
@@ -153,18 +152,27 @@ void Fountain::destroy()
   ServiceBuilding::destroy();
 
   Tilemap& tmap = _city()->tilemap();
-  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArray reachedTiles = tmap.getArea( fillDistance, pos() );
 
   foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_FONTAIN, 20 ); }
+
+  if( numberWorkers() > 0 )
+  {
+    events::GameEventPtr e = events::ReturnWorkers::create( pos(), numberWorkers() );
+    e->dispatch();
+  }
 }
 
-bool Fountain::mayWork() const {  return ServiceBuilding::isActive() && _haveReservoirWater; }
+bool Fountain::mayWork() const {  return ServiceBuilding::mayWork() && ServiceBuilding::isActive() && _haveReservoirWater; }
+
+unsigned int Fountain::fillRange() const { return fillDistance; }
 
 void Fountain::load(const VariantMap& stream)
 {
   ServiceBuilding::load( stream );
 
-  _lastPicId = stream.get( "lastPicId", simpleFountain );
+  _lastPicId = stream.get( lc_lastPicId, simpleFountain );
+  _haveReservoirWater = stream.get( lc_haveWater );
   setPicture( ResourceGroup::utilitya, _lastPicId );
   _initAnimation();
   //check animation
@@ -174,8 +182,8 @@ void Fountain::load(const VariantMap& stream)
 void Fountain::save(VariantMap& stream) const
 {
   ServiceBuilding::save( stream );
-  stream[ "lastPicId" ] = _lastPicId;
-  stream[ "haveWater" ] = _haveReservoirWater;
+  stream[ lc_lastPicId ] = _lastPicId;
+  stream[ lc_haveWater ] = _haveReservoirWater;
 }
 
 void Fountain::_initAnimation()
@@ -183,7 +191,7 @@ void Fountain::_initAnimation()
   _animationRef().clear();
   _animationRef().load( ResourceGroup::utilitya, _lastPicId+1, fontainSizeAnim );
   _animationRef().setDelay( 2 );
-  _fgPicturesRef()[0] = Picture::getInvalid();
+  _fgPicture( 0 ) = Picture::getInvalid();
   _animationRef().stop();
 
   switch ( _lastPicId )

@@ -37,6 +37,7 @@ public:
   void setRecruterDistance( const unsigned int distance );
   void setIndustryPriority( Industry::Type industry, int priority );
   int getPriority( Industry::Type industry );
+  const HirePriorities& priorities() const;
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);

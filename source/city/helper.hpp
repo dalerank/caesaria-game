@@ -27,6 +27,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "core/foreach.hpp"
 #include "objects/service.hpp"
+#include "city/industry.hpp"
 
 #include <set>
 
@@ -113,7 +114,6 @@ public:
     return Pathway();
   }
 
-
   template< class T >
   SmartPtr< T > find( const gfx::TileOverlay::Type type, const TilePos& pos )
   {   
@@ -194,6 +194,7 @@ public:
   gfx::TilesArray getArea( gfx::TileOverlayPtr overlay );
   gfx::TilesArray getAroundTiles(gfx::TileOverlayPtr building );
   gfx::TilesArray getArea( TilePos start, TilePos stop );
+  HirePriorities getHirePriorities() const;
   float getBalanceKoeff();
   void updateTilePics();
 
