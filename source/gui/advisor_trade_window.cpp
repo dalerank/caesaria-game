@@ -329,14 +329,14 @@ public:
   void increaseQty()
   {
     city::TradeOptions& ctrade = _city->tradeOptions();
-    ctrade.setExportLimit( _type, math::clamp( ctrade.exportLimit( _type )+1, 0, 999 ) );
+    ctrade.setExportLimit( _type, math::clamp<unsigned int>( ctrade.exportLimit( _type )+1, 0, 999 ) );
     updateTradeState();
   }
 
   void decreaseQty()
   {
     city::TradeOptions& ctrade = _city->tradeOptions();
-    ctrade.setExportLimit( _type, math::clamp( ctrade.exportLimit( _type )-1, 0, 999 ) );
+    ctrade.setExportLimit( _type, math::clamp<unsigned int>( ctrade.exportLimit( _type )-1, 0, 999 ) );
     updateTradeState();
   }
 

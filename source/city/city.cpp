@@ -655,8 +655,8 @@ city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
 void PlayerCity::setLocation( const Point& location ) {   _d->location = location; }
 Point PlayerCity::location() const {   return _d->location; }
-const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.exportingGoods(); }
-const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.importingGoods(); }
+const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
+const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
