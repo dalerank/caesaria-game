@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #include "infoboxmanager.hpp"
 #include "gui/info_box.hpp"
@@ -76,7 +76,7 @@ public:
     }
     else
     {
-      return new InfoboxFreeHouse( parent, city->tilemap().at( pos ) );
+      return new InfoboxFreeHouse( parent, city, city->tilemap().at( pos ) );
     }
   }
 };

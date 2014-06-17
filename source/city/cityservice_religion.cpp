@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_religion.hpp"
 #include "objects/construction.hpp"
@@ -33,6 +33,10 @@
 
 using namespace constants;
 using namespace religion;
+
+namespace {
+CAESARIA_LITERALCONST(lastMessageDate)
+}
 
 namespace city
 {
@@ -210,7 +214,7 @@ VariantMap Religion::save() const
 {
   VariantMap ret = Srvc::save();
 
-  ret[ "lastMessageDate" ] = _d->lastMessageDate;
+  ret[ lc_lastMessageDate ] = _d->lastMessageDate;
 
   return ret;
 }
@@ -219,7 +223,7 @@ void Religion::load(const VariantMap& stream)
 {
   Srvc::load( stream );
 
-  _d->lastMessageDate = stream.get( "lastMessageDate", GameDate::current() ).toDateTime();
+  _d->lastMessageDate = stream.get( lc_lastMessageDate, GameDate::current() ).toDateTime();
 }
 
 void Religion::Impl::updateRelation( PlayerCity& city, DivinityPtr divn )

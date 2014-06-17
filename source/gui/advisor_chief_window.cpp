@@ -146,7 +146,7 @@ void AdvisorChiefWindow::Impl::drawEmploymentState(Point pos)
   if( city->population() == 0 )
   {
     text = _("##no_people_in_city##");
-    color =  DefaultColors::rosyBrown;
+    color =  DefaultColors::brown;
   }
   else
   {
@@ -208,7 +208,7 @@ void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
       case 3: text = "##our_foods_level_are_low##"; break;
 
       default:
-        text = StringHelper::format( 0xff, "%s %d", _("##have_food_for##"), monthWithFood );
+        text = StringHelper::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
     }
   }
 

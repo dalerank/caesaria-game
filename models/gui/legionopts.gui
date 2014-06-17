@@ -6,77 +6,81 @@
     image : "paneling_00256"
   }
 
-  lbNumberTitle#Label : {
-    geometry : [ 90, 50, 290, 70 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text : "##soldiers_in_legion##"
-  }
+  gbLegionParams#Label : {
+    geometry : [ 0, 50, 445, 290 ]
 
-  lbNumberValue#Label : {
-    geometry : [ 290, 50, 440, 70 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text : "##value##"
-  }
-
-  lbHeathTitle#Label : {
-    geometry : [ 90, 70, 290, 90 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text : "##soldiers_health##"
-  }
-
-  lbHealthValue#Label : {
-    geometry : [ 290, 70, 440, 90 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text : "##health##"
-  }
-
-  lbTrainedTitle#Label : {
-    geometry : [ 90, 90, 290, 110 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text : "##soldiers_trained_in_academy##"
-  }
-
-  lbTrainedValue#Label : {
-    geometry : [ 290, 90, 440, 110 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text : "##trained##"
-  }
-
-  lbMoraleTitle#Label : {
-    geometry : [ 90, 110, 290, 130 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text : "##soldiers_morale##"
-  }
-
-  lbMoraleValue#Label : {
-    geometry : [ 290, 110, 440, 130 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    text : "##morale##"
-  }
-
-  lbFormation#Label : {
-    lbFormationTitle#Label : {
-      geometry : [ 0, 0, 430, 20 ]
+    lbNumberTitle#Label : {
+      geometry : [ 90, 0, 290, 20 ]
       textAlign : [ "upperLeft", "center" ]
-      font : "FONT_2_WHITE"
-      text : "##formation_title##"
+      font : "FONT_2"
+      text : "##soldiers_in_legion##"
     }
 
-    geometry : [ 15, 230, 445, 290 ]
-    textAlign : [ "upperLeft", "center" ]
-    font : "FONT_2"
-    textOffset : [ 0, 20 ]
-    text : "##formation_info##"
-    bgtype : "blackFrame"
-  }
+    lbNumberValue#Label : {
+      geometry : [ 290, 0, 440, 20 ]
+      textAlign : [ "upperLeft", "center" ]
+      font : "FONT_2"
+      text : "##value##"
+    }
+
+    lbHeathTitle#Label : {
+      geometry : [ 90, 20, 290, 40 ]
+      textAlign : [ "upperLeft", "center" ]
+      font : "FONT_2"
+      text : "##soldiers_health##"
+    }
+
+    lbHealthValue#Label : {
+      geometry : [ 290, 20, 440, 40 ]
+      textAlign : [ "upperLeft", "center" ]
+      font : "FONT_2"
+      text : "##health##"
+    }
+
+    lbTrainedTitle#Label : {
+      geometry : [ 90, 40, 290, 60 ]
+      textAlign : [ "upperLeft", "center" ]
+      font : "FONT_2"
+      text : "##soldiers_trained_in_academy##"
+    }
+
+    lbTrainedValue#Label : {
+      geometry : [ 290, 40, 440, 60 ]
+      textAlign : [ "upperLeft", "center" ]
+      font : "FONT_2"
+      text : "##trained##"
+    }
+
+    lbMoraleTitle#Label : {
+      geometry : [ 90, 60, 290, 80 ]
+      textAlign : [ "upperLeft", "center" ]
+      font : "FONT_2"
+      text : "##soldiers_morale##"
+    }
+
+    lbMoraleValue#Label : {
+      geometry : [ 290, 60, 440, 80 ]
+      textAlign : [ "upperLeft", "center" ]
+      font : "FONT_2"
+      text : "##morale##"
+    }
+
+    lbFormation#Label : {
+      geometry : [ 15, 180, 430, 240 ]
+      textAlign : [ "upperLeft", "center" ]
+      font : "FONT_2"
+      textOffset : [ 0, 20 ]
+      text : "##formation_info##"
+      bgtype : "blackFrame"
+
+      lbFormationTitle#Label : {
+        geometry : [ 0, 0, 430, 20 ]
+        textAlign : [ "upperLeft", "center" ]
+        font : "FONT_2_WHITE"
+        text : "##formation_title##"
+      }
+    }
+  } 
 
   btnReturn#PushButton : {
     geometry : [ 60, "ph-40", "pw-60", "ph-12" ]

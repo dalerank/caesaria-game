@@ -35,6 +35,7 @@ InfoboxRuins::InfoboxRuins( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ) )
 {
   RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
+  setTitle( MetaDataHolder::findPrettyName( ruin->type() ) );
   std::string text = _("##ruins_0000_text##");
   if( ruin.isValid() )
   {

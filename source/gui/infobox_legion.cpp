@@ -46,6 +46,7 @@ public:
   Label* lbHealthValue;
   Label* lbMoraleValue;
   Label* lbTrainedValue;
+  Label* gbLegionParams;
   PushButton* btnReturn;
   FortPtr fort;
 };
@@ -62,22 +63,40 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& 
   _d->lbHealthValue = findChildA<Label*>( "lbHealthValue", true, this );
   _d->lbMoraleValue = findChildA<Label*>( "lbMoraleValue", true, this );
   _d->lbTrainedValue = findChildA<Label*>( "lbTrainedValue", true, this );
+  _d->gbLegionParams = findChildA<Label*>( "gbLegionParams", true, this );
 
   WalkerList walkers = city->getWalkers( walker::any, pos );
-  foreach( i, walkers )
-  {
-    RomeSoldierPtr rs = ptr_cast<RomeSoldier>( *i);
-    if( rs.isValid() )
-    {
-      _d->fort = rs->base();
-      break;
-    }
 
-    PatrolPointPtr pp = ptr_cast<PatrolPoint>( *i);
-    if( pp.isValid() )
+  if( walkers.empty() )
+  {
+    _d->gbLegionParams->hide();
+
+    city::Helper helper( city );
+    BuildingList barracks = helper.find<Building>( building::barracks );
+
+    std::string text = barracks.empty()
+                        ? "##legion_haveho_soldiers_and_barracks##"
+                        : "##legion_haveho_soldiers##";
+
+    setText( _( text ) );
+  }
+  else
+  {
+    foreach( i, walkers )
     {
-      _d->fort = pp->base();
-      break;
+      RomeSoldierPtr rs = ptr_cast<RomeSoldier>( *i);
+      if( rs.isValid() )
+      {
+        _d->fort = rs->base();
+        break;
+      }
+
+      PatrolPointPtr pp = ptr_cast<PatrolPoint>( *i);
+      if( pp.isValid() )
+      {
+        _d->fort = pp->base();
+        break;
+      }
     }
   }
 

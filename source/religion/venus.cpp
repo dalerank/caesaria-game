@@ -61,7 +61,10 @@ void Venus::_doBlessing(PlayerCityPtr city)
 
 void Venus::_doSmallCurse(PlayerCityPtr city)
 {
-
+  events::GameEventPtr event = events::ShowInfobox::create( _("##smcurse_of_venus_title##"),
+                                                            _("##smcurse_of_venus_description##"),
+                                                            events::ShowInfobox::send2scribe );
+  event->dispatch();
 }
 
 }//end namespace rome

@@ -85,8 +85,8 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _d->taxCheckInterval = DateTime( -400, 1, 1 );
   _d->picIdOffset = ( math::random( 10 ) > 6 ? 1 : 0 );
   HouseSpecHelper& helper = HouseSpecHelper::instance();
-  _d->houseLevel = helper.getHouseLevel( houseId );
-  _d->spec = helper.getHouseLevelSpec( _d->houseLevel );
+  _d->houseLevel = helper.geLevel( houseId );
+  _d->spec = helper.getSpec( _d->houseLevel );
   setName( _d->spec.levelName() );
   _d->desirability.base = -3;
   _d->desirability.range = 3;
@@ -213,7 +213,7 @@ void House::_updateMorale()
   int unemploymentPrc = srvc.value() / srvc.max() * 100;
   updateState( House::morale, unemploymentPrc > 10 ? (-unemploymentPrc / 5.f) : +1 );
 
-  if( _d->spec.getMinFoodLevel() > 0 )
+  if( _d->spec.minFoodLevel() > 0 )
   {
     int foodStoreQty = 0;
     for( int k=Good::wheat; k <= Good::vegetable; k++ )
@@ -577,7 +577,7 @@ void House::_levelUp()
   break;
   }
 
-  _d->spec = HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel);
+  _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel);
 
   _update();
 }
@@ -630,7 +630,7 @@ void House::_tryDegrade_20_to_12_lvl( int startPicId, int rsize, const char desi
 void House::_levelDown()
 {
   _d->houseLevel -= ( _d->houseLevel > HouseLevel::smallHovel ? 1 : 0);
-  _d->spec = HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel );
+  _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel );
 
   switch (_d->houseLevel)
   {
@@ -988,7 +988,7 @@ void House::load( const VariantMap& stream )
   _d->houseId = (int)stream.get( "houseId", 0 );
   _d->houseLevel = (int)stream.get( "houseLevel", 0 );
   //_d->healthLevel = (float)stream.get( "healthLevel", 0 );
-  _d->spec = HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel);
+  _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel);
 
   _d->desirability.base = (int)stream.get( "desirability", 0 );
   _d->desirability.step = _d->desirability.base < 0 ? 1 : -1;
@@ -1021,7 +1021,7 @@ int House::Impl::getFoodLevel() const
   std::set<Good::Type> foods( f, f+5 );
 
   int ret = 0;
-  int foodLevel = spec.getMinFoodLevel();
+  int foodLevel = spec.minFoodLevel();
   if( foodLevel == 0 )
     return 0;
 
@@ -1044,7 +1044,7 @@ int House::Impl::getFoodLevel() const
     foodLevel--;
   }
 
-  ret /= spec.getMinFoodLevel();
+  ret /= spec.minFoodLevel();
   return ret;
 }
 
@@ -1056,7 +1056,7 @@ unsigned int House::workersCount() const
 
 bool House::isEducationNeed(Service::Type type) const
 {
-  int lvl = _d->spec.getMinEducationLevel();
+  int lvl = _d->spec.minEducationLevel();
   switch( type )
   {
   case Service::school: return (lvl>0);
@@ -1070,7 +1070,7 @@ bool House::isEducationNeed(Service::Type type) const
 
 bool House::isEntertainmentNeed(Service::Type type) const
 {
-  int lvl = _d->spec.getMinEntertainmentLevel();
+  int lvl = _d->spec.minEntertainmentLevel();
   switch( type )
   {
   case Service::theater: return (lvl>=10);
@@ -1158,7 +1158,7 @@ void House::Impl::consumeGoods( HousePtr house )
 
 void House::Impl::consumeFoods(HousePtr house)
 {
-  const int foodLevel = spec.getMinFoodLevel();
+  const int foodLevel = spec.minFoodLevel();
   if( foodLevel == 0 )
     return;
 

@@ -174,7 +174,7 @@ std::string Migration::getReason() const
         return "##migration_middle_lack_workless##";
       }
 
-      return "##migration_lack_jobs##";
+      return "##migration_lack_workless##";
     }
 
     int diffWages = params.romeWages - params.cityWages;

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 
 #include "house_level.hpp"
@@ -73,22 +73,22 @@ const std::string& HouseSpecification::levelName() const{   return _d->levelName
 bool HouseSpecification::isPatrician() const{   return _d->houseLevel > 12;}
 int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
 int HouseSpecification::taxRate() const{   return _d->taxRate;}
-int HouseSpecification::getMinEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
-int HouseSpecification::getMinEducationLevel() const{  return _d->minEducationLevel;}
+int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
+int HouseSpecification::minEducationLevel() const{  return _d->minEducationLevel;}
 //
 // int HouseLevelSpec::getMinHealthLevel()
 // {
 //    return _minHealthLevel;
 // }
 //
-int HouseSpecification::getMinReligionLevel() const{  return _d->minReligionLevel;}
+int HouseSpecification::minReligionLevel() const{  return _d->minReligionLevel;}
 //
 // int HouseLevelSpec::getMinWaterLevel()
 // {
 //    return _minWaterLevel;
 // }
 //
-int HouseSpecification::getMinFoodLevel() const{  return _d->minFoodLevel;}
+int HouseSpecification::minFoodLevel() const{  return _d->minFoodLevel;}
 
 bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, TileOverlay::Type* retBtype )
 {
@@ -601,7 +601,7 @@ HouseSpecification::HouseSpecification( const HouseSpecification& other ) : _d( 
 
 HouseSpecification HouseSpecification::next() const
 {
-  return HouseSpecHelper::instance().getHouseLevelSpec(_d->houseLevel+1);
+  return HouseSpecHelper::instance().getSpec(_d->houseLevel+1);
 }
 
 int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oMissingRequirement) const
@@ -711,15 +711,15 @@ HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
   _d->level_by_id[45] = 0;
 }
 
-HouseSpecification HouseSpecHelper::getHouseLevelSpec(const int houseLevel)
+HouseSpecification HouseSpecHelper::getSpec(const int houseLevel)
 {
   int level = (math::clamp)(houseLevel, 0, 17);
   return _d->spec_by_level[level];
 }
 
-int HouseSpecHelper::getHouseLevel(const int houseId){  return _d->level_by_id[houseId];}
+int HouseSpecHelper::geLevel(const int houseId){  return _d->level_by_id[houseId];}
 
-int HouseSpecHelper::getHouseLevel( const std::string& name )
+int HouseSpecHelper::geLevel( const std::string& name )
 {
   foreach( item, _d->spec_by_level )
   {
