@@ -55,7 +55,8 @@ libpng-devel
 
 First move your terminal to where you want CaesarIA to be installed, e.g: 
 $ mkdir games && cd games
-$ git clone git://bitbucket.org/dalerank/caesaria.git
+$ git clone git@bitbucket.org:dalerank/caesaria.git
+OR $ git clone https://bitbucket.org/dalerank/caesaria.git
 $ cd caesaria
 $ cmake ./
 $ make
