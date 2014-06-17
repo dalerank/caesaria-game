@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "city.hpp"
 #include "objects/construction.hpp"
@@ -85,6 +85,7 @@ using namespace gfx;
 namespace {
 CAESARIA_LITERALCONST(tilemap)
 CAESARIA_LITERALCONST(walkerIdCount)
+CAESARIA_LITERALCONST(adviserEnabled)
 }
 
 typedef std::vector< city::SrvcPtr > CityServices;
@@ -150,6 +151,7 @@ private:
 class PlayerCity::Impl
 {
 public:
+  typedef std::map<PlayerCity::OptionType, int> Options;
   int population;
   city::Funds funds;  // amount of money
   std::string name;
@@ -172,7 +174,7 @@ public:
   city::BuildOptions buildOptions;
   city::TradeOptions tradeOptions;
   city::VictoryConditions targets;
-
+  Options options;
   ClimateType climate;   
   UniqueId walkerIdCount;
 
@@ -472,6 +474,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
   stream[ "climate"    ] = _d->climate;
+  stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
   stream[ "population" ] = _d->population;
   stream[ "name"       ] = Variant( _d->name );
 
@@ -528,11 +531,13 @@ void PlayerCity::load( const VariantMap& stream )
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
   _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
   _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
-  _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
+  _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );  
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
+
+  setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -659,6 +664,7 @@ const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.
 const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
+void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
@@ -670,6 +676,12 @@ int PlayerCity::prosperity() const
 {
   SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::getDefaultName() ) );
   return csPrsp.isValid() ? csPrsp->getValue() : 0;
+}
+
+int PlayerCity::getOption(PlayerCity::OptionType opt) const
+{
+  Impl::Options::const_iterator it = _d->options.find( opt );
+  return (it != _d->options.end() ? it->second : 0 );
 }
 
 void PlayerCity::clean()

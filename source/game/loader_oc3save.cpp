@@ -51,7 +51,7 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
     return false;
   }
   
-  int fileVersion = vm[ "version" ];
+  int fileVersion = vm[ SaverOptions::version ];
   if( currentVesion == fileVersion )
   {      
     _d->restartFile = vm[ SaverOptions::restartFile ].toString();
@@ -65,7 +65,6 @@ bool GameLoaderOc3::load( const std::string& filename, Game& game )
     Variant lastTr = scenario_vm[ "translation" ];
     Locale::addTranslation( lastTr.toString() );
     GameSettings::set( GameSettings::lastTranslation, lastTr );
-    GameSettings::set( GameSettings::adviserEnabled, scenario_vm.get( "adviserEnabled" ) );
 
     game.player()->load( vm[ "player" ].toMap() );
     game.city()->load( vm[ "city" ].toMap() );

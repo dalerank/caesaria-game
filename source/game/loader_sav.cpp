@@ -118,6 +118,8 @@ bool GameLoaderC3Sav::load(const std::string& filename, Game& game)
 
   _d->loadCity(f, game );
 
+  game.city()->setOption( PlayerCity::adviserEnabled, 1 );
+
   f.close();
 
   return true;
