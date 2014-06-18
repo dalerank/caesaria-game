@@ -78,7 +78,7 @@ else()
 endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 if(WIN32)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
 endif(WIN32)
 
 # prepare working directory

@@ -465,7 +465,7 @@ void PlayerCity::save( VariantMap& stream) const
   _d->tilemap.save( vm_tilemap );
 
   stream[ lc_tilemap    ] = vm_tilemap;
-  stream[ lc_walkerIdCount   ] = (uint)_d->walkerIdCount;
+  stream[ lc_walkerIdCount   ] = (unsigned int)_d->walkerIdCount;
 
   Logger::warning( "City: save main paramters ");
   stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
