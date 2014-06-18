@@ -52,6 +52,7 @@ public:
   // corners  : if false, don't return corner tiles
   TilesArray getRectangle(TilePos start, TilePos stop, const bool corners = true);
   TilesArray getRectangle(TilePos pos, Size size, const bool corners = true );
+  TilesArray getRectangle(unsigned int range, TilePos center );
 
   enum TileNeighbors
   {

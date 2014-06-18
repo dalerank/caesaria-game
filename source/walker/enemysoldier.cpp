@@ -88,6 +88,8 @@ void EnemySoldier::_waitFinished()
   _setSubAction( check4attack );
 }
 
+EnemySoldier::AttackPriority EnemySoldier::_attackPriority() const { return _atPriority; }
+
 void EnemySoldier::_brokePathway(TilePos pos)
 {
   if( !_tryAttack() )
@@ -123,8 +125,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 
   for( unsigned int k=0; k <= range; k ++ )
   {
-    TilePos offset( k, k );
-    TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
+    TilesArray tiles = tmap.getRectangle( k, pos() );
 
     walker::Type rtype;
     foreach( tile, tiles )
@@ -134,7 +135,8 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
       foreach( i, tileWalkers )
       {
         rtype = (*i)->type();
-        if( rtype == type() || is_kind_of<Animal>(*i) || rtype  == walker::corpse
+        if( rtype == type() || is_kind_of<Animal>(*i) || is_kind_of<Fish>( *i)
+            || rtype  == walker::corpse
             || is_kind_of<EnemySoldier>(*i) || is_kind_of<ThrowingWeapon>(*i))
           continue;
 
@@ -208,15 +210,18 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
   BuildingList ret;
   Tilemap& tmap = _city()->tilemap();
 
+  std::set<TileOverlay::Group> excludeGroups;
+  excludeGroups.insert( building::disasterGroup );
+  excludeGroups.insert( building::roadGroup );
+
   for( unsigned int k=0; k <= range; k++ )
   {
-    TilePos offset( k, k );
-    TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
+    TilesArray tiles = tmap.getRectangle( k, pos() );
 
     foreach( it, tiles )
     {
       BuildingPtr b = ptr_cast<Building>( (*it)->overlay() );
-      if( b.isValid() && b->group() != building::disasterGroup )
+      if( b.isValid() && !excludeGroups.count( b->group() ) )
       {
         ret.push_back( b );
       }
@@ -348,6 +353,8 @@ bool EnemySoldier::die()
 
   return created;
 }
+
+void EnemySoldier::setAttackPriority(EnemySoldier::AttackPriority who) {_atPriority = who;}
 
 void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)
 {

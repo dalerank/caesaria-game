@@ -212,6 +212,12 @@ TilesArray Tilemap::getRectangle( TilePos pos, Size size, const bool corners /*=
   return getRectangle( pos, pos + TilePos( size.width()-1, size.height()-1), corners );
 }
 
+TilesArray Tilemap::getRectangle(unsigned int range, TilePos center)
+{
+  TilePos offset( range, range );
+  return getRectangle( center - offset, center + offset );
+}
+
 // Get tiles inside of rectangle
 TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
 {

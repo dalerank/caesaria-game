@@ -32,6 +32,11 @@ using namespace gfx;
 namespace events
 {
 
+namespace {
+CAESARIA_LITERALCONST(type)
+CAESARIA_LITERALCONST(items)
+}
+
 class EnemyAttack::Impl
 {
 public:
@@ -59,7 +64,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
   {
     VariantMap soldiers = i->second.toMap();
 
-    std::string soldierType = soldiers.get( "type" ).toString();
+    std::string soldierType = soldiers.get( lc_type ).toString();
     int soldierNumber = soldiers.get( "count" );
     TilePos location( -1, -1 );
     Variant vLocation = soldiers.get( "location" );
@@ -70,11 +75,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
       int lastIndex = tmap.size();
       TilesArray tiles = tmap.getRectangle( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
 
-      for( TilesArray::iterator t=tiles.begin(); t != tiles.end(); )
-      {
-        if( !(*t)->isWalkable( true ) ) { t = tiles.erase( t ); }
-        else { ++t; }
-      }
+      tiles = tiles.walkableTiles( true );
 
       Tile* tile = tiles[ math::random( tiles.size() ) ];
       if( tile )
@@ -108,7 +109,7 @@ bool EnemyAttack::isDeleted() const { return _dfunc()->isDeleted; }
 void EnemyAttack::load(const VariantMap& stream)
 {
   __D_IMPL(_d,EnemyAttack)
-  _d->items = stream.get( "items" ).toMap();
+  _d->items = stream.get( lc_items ).toMap();
 }
 
 VariantMap EnemyAttack::save() const
@@ -117,7 +118,7 @@ VariantMap EnemyAttack::save() const
 
   __D_IMPL_CONST(_d,EnemyAttack);
 
-  ret[ "items" ] = _d->items;
+  ret[ lc_items ] = _d->items;
 
   return ret;
 }

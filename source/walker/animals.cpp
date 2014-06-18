@@ -12,6 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "animals.hpp"
 #include "core/variant.hpp"
@@ -267,3 +270,13 @@ void Wolf::send2City(const TilePos &start )
     _city()->addWalker( this );
   }
 }
+
+Fish::Fish(PlayerCityPtr city)
+ : Walker( city )
+{
+  _setType( walker::unknown );
+
+  setName( _("##fish##") );
+}
+
+ Fish::~Fish() {}
