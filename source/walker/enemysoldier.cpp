@@ -40,10 +40,18 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+static unsigned int __getCost( BuildingPtr b )
+{
+  return MetaDataHolder::getData( b->type() ).getOption( MetaDataOptions::cost );
+}
+}
+
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
 : Soldier( city, type )
 {
   _setSubAction( check4attack );
+  setAttackPriority( attackAll );
   setAttackDistance( 1 );
 }
 
@@ -226,6 +234,57 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
         ret.push_back( b );
       }
     }
+  }
+
+  if( ret.empty() )
+    return ret;
+
+  switch( _atPriority )
+  {
+  case attackFood:
+  case attackCitizen:
+  {
+    BuildingList tmpRet;
+    TileOverlay::Group needGroup = _atPriority == attackFood ? building::foodGroup : building::houseGroup;
+    foreach( it, ret )
+    {
+      if( (*it)->group() == needGroup )
+      {
+        tmpRet << *it;
+      }
+    }
+
+    if( !tmpRet.empty() )
+      return tmpRet;
+  }
+  break;
+
+  case attackBestBuilding:
+  {
+    BuildingPtr maxBuilding = ret.front();
+    unsigned int maxCost = __getCost( maxBuilding );
+
+    foreach( it, ret )
+    {
+      unsigned int cost = __getCost( *it );
+      if( cost > maxCost )
+      {
+        maxCost = cost;
+        maxBuilding = *it;
+      }
+    }
+
+    if( maxBuilding.isValid() )
+    {
+      ret.clear();
+      ret << maxBuilding;
+      return ret;
+    }
+  }
+  break;
+
+  default:
+  break;
   }
 
   return ret;

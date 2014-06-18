@@ -35,12 +35,26 @@ namespace events
 namespace {
 CAESARIA_LITERALCONST(type)
 CAESARIA_LITERALCONST(items)
+CAESARIA_LITERALCONST(target)
 }
+
+class AttackPriorityHelper : public EnumsHelper<EnemySoldier::AttackPriority>
+{
+public:
+  AttackPriorityHelper() : EnumsHelper<EnemySoldier::AttackPriority>( EnemySoldier::attackAll )
+  {
+    append( EnemySoldier::attackAll, "attack_all" );
+    append( EnemySoldier::attackBestBuilding, "best_building" );
+    append( EnemySoldier::attackCitizen, "citizen" );
+    append( EnemySoldier::attackFood, "food" );
+  }
+};
 
 class EnemyAttack::Impl
 {
 public:
   VariantMap items;
+  EnemySoldier::AttackPriority attackPriority;
   bool isDeleted;
 };
 
@@ -86,7 +100,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     else
     {
 
-    }
+    }    
 
     walker::Type wtype = WalkerHelper::getType( soldierType );   
     for( int k=0; k < soldierNumber; k++ )
@@ -97,6 +111,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
       {
         enemy->send2City( location );
         enemy->wait( math::random( k * 30 ) );
+        enemy->setAttackPriority( _d->attackPriority );
         enemy->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
       }
     }
@@ -110,6 +125,11 @@ void EnemyAttack::load(const VariantMap& stream)
 {
   __D_IMPL(_d,EnemyAttack)
   _d->items = stream.get( lc_items ).toMap();
+
+  std::string targetStr = stream.get( lc_target ).toString();
+
+  AttackPriorityHelper helper;
+  _d->attackPriority = helper.findType( targetStr );
 }
 
 VariantMap EnemyAttack::save() const
