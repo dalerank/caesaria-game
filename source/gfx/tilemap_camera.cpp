@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "tilemap_camera.hpp"
 
@@ -122,7 +122,7 @@ void TilemapCamera::move(PointF relative)
     _d->resetDrawn();
     _d->tiles.clear();
 
-    _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
+    oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
   }
 }
 
@@ -152,6 +152,11 @@ void TilemapCamera::moveUp(const int amount){  setCenter( Point( centerX(), cent
 void TilemapCamera::moveDown(const int amount){  setCenter( Point( centerX(), centerZ() - amount ) );}
 void TilemapCamera::startFrame(){  _d->resetDrawn(); }
 
+void TilemapCamera::refresh()
+{
+  _d->tiles.clear();
+}
+
 Tile* TilemapCamera::centerTile() const
 {
   return at( Point( _d->screenSize.width() / 2, _d->screenSize.height() / 2 ), true );
@@ -171,7 +176,7 @@ const TilesArray& TilemapCamera::tiles() const
 
     Size sizeT = _d->viewSize;  // size x
 
-    std::set< Tile* > overvorderTiles;
+    std::set< Tile* > overborderTiles;
 
     for (int z = cz + sizeT.height(); z>=cz - sizeT.height(); --z)
     {
@@ -185,7 +190,7 @@ const TilesArray& TilemapCamera::tiles() const
 
       for (int x = xstart; x<=cx + sizeT.width(); x+=2)
       {
-	// left-right axis
+        // left-right axis
         int j = (x + z - zm)/2;
         int i = x - j;
 
@@ -199,11 +204,11 @@ const TilesArray& TilemapCamera::tiles() const
         if( master != NULL )
         {
           Point pos = master->mapPos() + _d->offset;
-          std::set< Tile* >::iterator mIt = overvorderTiles.find( master );
-          if( pos.x() < 0 && mIt == overvorderTiles.end() )
+          std::set< Tile* >::iterator mIt = overborderTiles.find( master );
+          if( pos.x() < 0 && mIt == overborderTiles.end() )
           {
             _d->tiles.push_back( master );
-            overvorderTiles.insert( master );
+            overborderTiles.insert( master );
           }
         }
       }

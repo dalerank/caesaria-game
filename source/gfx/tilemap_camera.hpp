@@ -66,6 +66,7 @@ public:
   Tile* centerTile() const;
 
   void startFrame();
+  void refresh();
 
 public oc3_signals:
   virtual Signal1<Point>& onPositionChanged();

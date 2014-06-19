@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "city_renderer.hpp"
 
@@ -202,6 +202,20 @@ void CityRenderer::animate(unsigned int time)
   {
     (*i)->animate( time );
   }
+}
+
+void CityRenderer::rotateRight()
+{
+  _d->tilemap->turnRight();
+  _d->camera.refresh();
+  _d->camera.tiles();
+}
+
+void CityRenderer::rotateLeft()
+{
+  _d->tilemap->turnLeft();
+  _d->camera.refresh();
+  _d->camera.tiles();
 }
 
 Camera* CityRenderer::camera() {  return &_d->camera; }

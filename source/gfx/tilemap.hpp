@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #ifndef __CAESARIA_TILEMAP_H_INCLUDED__
 #define __CAESARIA_TILEMAP_H_INCLUDED__
 
@@ -69,10 +68,14 @@ public:
   TilesArray getArea(const TilePos& start, const TilePos& stop );
   TilesArray getArea(const TilePos& start, const Size& size );
   TilesArray getArea(int range, const TilePos& center );
+
   int size() const;
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
+
+  void turnRight();
+  void turnLeft();
 
   TilePos fit( const TilePos& pos ) const;
 
