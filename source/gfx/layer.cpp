@@ -310,7 +310,7 @@ void Layer::render( Engine& engine)
   foreach( it, visibleTiles )
   {
     Tile* tile = *it;
-    int z = tile->pos().z();
+    int z = tile->epos().z();
 
     drawTileR( engine, *tile, camOffset, z, false );
 
@@ -349,7 +349,7 @@ void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const in
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( master->pos().z() == depth && !master->getFlag( Tile::wasDrawn ) )
+  if( master->epos().z() == depth && !master->getFlag( Tile::wasDrawn ) )
   {
     drawTile( engine, *master, offset );
   }

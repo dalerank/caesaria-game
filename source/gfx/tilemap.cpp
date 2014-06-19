@@ -31,20 +31,41 @@ namespace gfx
 {
 
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
-typedef std::vector< Tile > Row;
 
-class TileGrid : public std::vector< Row >
+class TileRow : public std::vector< Tile* >
+{
+public:
+  ~TileRow()
+  {
+    foreach( it, *this )
+    {
+      delete *it;
+    }
+  }
+};
+
+class TileGrid : public std::vector< TileRow >
 {
 };
 
 class Tilemap::Impl : public TileGrid
 {
 public:
-  Tile& at( const int i, const int j )
+  Tile* ate( const int i, const int j )
   {
     if( isInside( TilePos( i, j ) ) )
     {
       return (*this)[i][j];
+    }
+
+    return 0;
+  }
+
+  Tile& at( const int i, const int j )
+  {
+    if( isInside( TilePos( i, j ) ) )
+    {
+      return *(*this)[i][j];
     }
 
     //Logger::warning( "Need inside point current=[%d, %d]", i, j );
@@ -62,15 +83,22 @@ public:
 
     // resize the tile array
     TileGrid::resize( size );
+
     for( int i = 0; i < size; ++i )
     {
       (*this)[i].reserve( size );
 
       for (int j = 0; j < size; ++j)
       {
-        (*this)[i].push_back( Tile( TilePos( i, j ) ));
+        (*this)[i].push_back( new Tile( TilePos( i, j ) ));
       }
     }
+  }
+
+  void set( int i, int j, Tile* v )
+  {
+    v->setEPos( TilePos( i, j ) );
+    (*this)[i][j] = v;
   }
 
   int size;
@@ -212,6 +240,12 @@ TilesArray Tilemap::getRectangle( TilePos pos, Size size, const bool corners /*=
   return getRectangle( pos, pos + TilePos( size.width()-1, size.height()-1), corners );
 }
 
+TilesArray Tilemap::getRectangle(unsigned int range, TilePos center)
+{
+  TilePos offset( range, range );
+  return getRectangle( center - offset, center + offset );
+}
+
 // Get tiles inside of rectangle
 TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
 {
@@ -313,6 +347,40 @@ void Tilemap::load( const VariantMap& stream )
           sub_tile.setPicture( pic );
         }
       }
+    }
+  }
+}
+
+void Tilemap::turnRight()
+{
+  Tile* tmp;
+  unsigned int size = _d->size;
+  for( unsigned int i=0;i< size/2;i++)
+  {
+    for( unsigned int j=i; j< size-1-i;j++)
+    {
+      tmp = _d->ate( i, j );
+      _d->set( i, j, _d->ate( size -j-1, i ) );
+      _d->set( size-j-1, i, _d->ate( size-i-1, size-j-1 ) );
+      _d->set( size-i-1, size-j-1, _d->ate( j, size-i-1 ) );
+      _d->set( j, size-i-1, tmp );
+    }
+  }
+}
+
+void Tilemap::turnLeft()
+{
+  Tile* tmp;
+  unsigned int size = _d->size;
+  for( unsigned int i=0;i<size/2;i++)
+  {
+    for( unsigned int j=i;j<size-1-i;j++)
+    {
+      tmp = _d->ate( i, j );
+      _d->set( i, j, _d->ate( j, size-1-i ) );
+      _d->set( j, size-1-i, _d->ate( size-1-i, size-1-j ) );
+      _d->set( size-1-i, size-1-j, _d->ate( size-1-j, i ) );
+      _d->set( size-1-j, i, tmp );
     }
   }
 }

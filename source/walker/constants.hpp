@@ -76,6 +76,8 @@ enum Type{
   romeSpearman,
   balista,
   criminal,//50
+  mugger,
+  rioter,
   wolf,
   all = 0xff,
   any = all

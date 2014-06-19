@@ -79,6 +79,14 @@
     move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }
   }
 
+  mugger : {
+    move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }
+  }
+
+  rioter : {
+    move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }
+  }
+
   barber : {
     move : { rc : "citizen02", start : 463, frames : 12, action : 1, step : 8 }
   }

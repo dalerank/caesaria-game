@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "fish_place.hpp"
 #include "game/resourcegroup.hpp"
@@ -34,7 +36,7 @@ public:
   Animation animation;
 };
 
-FishPlace::FishPlace( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
+FishPlace::FishPlace( PlayerCityPtr city ) : Fish( city ), _d( new Impl )
 {
   _setType( walker::fishPlace );
   setSpeedMultiplier( 0.1f );

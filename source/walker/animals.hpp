@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ANIMAL_H_INCLUDED__
 #define __CAESARIA_ANIMAL_H_INCLUDED__
@@ -21,12 +22,18 @@
 #include "walker.hpp"
 #include "core/predefinitions.hpp"
 
-/** This is an immigrant coming with his stuff */
+class Fish : public Walker
+{
+public:
+  Fish( PlayerCityPtr city );
+  virtual ~Fish();
+};
+
 class Animal : public Walker
 {
 public:
   Animal( PlayerCityPtr city );
-  ~Animal();
+  virtual ~Animal();
 
   virtual void send2City(const TilePos& start );
 
@@ -36,7 +43,7 @@ public:
   virtual std::string getThinks() const;
 
 protected:
-  void _findNewWay(const TilePos &start);
+  virtual void _findNewWay(const TilePos &start);
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -255,7 +255,7 @@ void AdvisorChiefWindow::Impl::drawCrime(Point pos)
   city::DisorderPtr ds = ptr_cast<city::Disorder>( city->findService( city::Disorder::getDefaultName() ) );
   if( ds.isValid() )
   {
-    text = ds->getReason();
+    text = ds->reasonDescr();
   }
 
   text = text.empty() ? "##advchief_no_crime##" : text;

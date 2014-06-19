@@ -98,7 +98,12 @@ void WarehouseTile::computePicture()
 
   if (_stock.type() != Good::none)
   {
-    picIdx += _stock.qty()/100 -1;
+    int qty = _stock.qty();
+    // (0  , 100] -> 0
+    // (100, 200] -> 1
+    // (200, 300] -> 2
+    // (300, 400] -> 3
+    picIdx += (qty == 0) ?  0 : (qty - 1 ) / 100;
   }
 
   _picture = Picture::load( ResourceGroup::warehouse, picIdx );

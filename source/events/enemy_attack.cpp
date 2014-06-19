@@ -32,10 +32,29 @@ using namespace gfx;
 namespace events
 {
 
+namespace {
+CAESARIA_LITERALCONST(type)
+CAESARIA_LITERALCONST(items)
+CAESARIA_LITERALCONST(target)
+}
+
+class AttackPriorityHelper : public EnumsHelper<EnemySoldier::AttackPriority>
+{
+public:
+  AttackPriorityHelper() : EnumsHelper<EnemySoldier::AttackPriority>( EnemySoldier::attackAll )
+  {
+    append( EnemySoldier::attackAll, "attack_all" );
+    append( EnemySoldier::attackBestBuilding, "best_building" );
+    append( EnemySoldier::attackCitizen, "citizen" );
+    append( EnemySoldier::attackFood, "food" );
+  }
+};
+
 class EnemyAttack::Impl
 {
 public:
   VariantMap items;
+  EnemySoldier::AttackPriority attackPriority;
   bool isDeleted;
 };
 
@@ -59,7 +78,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
   {
     VariantMap soldiers = i->second.toMap();
 
-    std::string soldierType = soldiers.get( "type" ).toString();
+    std::string soldierType = soldiers.get( lc_type ).toString();
     int soldierNumber = soldiers.get( "count" );
     TilePos location( -1, -1 );
     Variant vLocation = soldiers.get( "location" );
@@ -70,11 +89,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
       int lastIndex = tmap.size();
       TilesArray tiles = tmap.getRectangle( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
 
-      for( TilesArray::iterator t=tiles.begin(); t != tiles.end(); )
-      {
-        if( !(*t)->isWalkable( true ) ) { t = tiles.erase( t ); }
-        else { ++t; }
-      }
+      tiles = tiles.walkableTiles( true );
 
       Tile* tile = tiles[ math::random( tiles.size() ) ];
       if( tile )
@@ -85,7 +100,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     else
     {
 
-    }
+    }    
 
     walker::Type wtype = WalkerHelper::getType( soldierType );   
     for( int k=0; k < soldierNumber; k++ )
@@ -96,6 +111,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
       {
         enemy->send2City( location );
         enemy->wait( math::random( k * 30 ) );
+        enemy->setAttackPriority( _d->attackPriority );
         enemy->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
       }
     }
@@ -108,7 +124,12 @@ bool EnemyAttack::isDeleted() const { return _dfunc()->isDeleted; }
 void EnemyAttack::load(const VariantMap& stream)
 {
   __D_IMPL(_d,EnemyAttack)
-  _d->items = stream.get( "items" ).toMap();
+  _d->items = stream.get( lc_items ).toMap();
+
+  std::string targetStr = stream.get( lc_target ).toString();
+
+  AttackPriorityHelper helper;
+  _d->attackPriority = helper.findType( targetStr );
 }
 
 VariantMap EnemyAttack::save() const
@@ -117,7 +138,7 @@ VariantMap EnemyAttack::save() const
 
   __D_IMPL_CONST(_d,EnemyAttack);
 
-  ret[ "items" ] = _d->items;
+  ret[ lc_items ] = _d->items;
 
   return ret;
 }

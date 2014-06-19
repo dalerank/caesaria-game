@@ -12,8 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#include "protestor.hpp"
+#include "rioter.hpp"
 #include "objects/house.hpp"
 #include "pathway/path_finding.hpp"
 #include "constants.hpp"
@@ -34,7 +36,7 @@
 using namespace constants;
 using namespace gfx;
 
-class Protestor::Impl
+class Rioter::Impl
 {
 public:
   typedef enum { searchHouse=0, go2destination, searchAnyBuilding,
@@ -45,14 +47,14 @@ public:
   Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
 };
 
-Protestor::Protestor(PlayerCityPtr city) : Walker( city ), _d( new Impl )
+Rioter::Rioter(PlayerCityPtr city) : Walker( city ), _d( new Impl )
 {    
-  _setType( walker::protestor );
+  _setType( walker::rioter );
 
   addAbility( Illness::create( 0.3, 4) );
 }
 
-void Protestor::_reachedPathway()
+void Rioter::_reachedPathway()
 {
   Walker::_reachedPathway();
 
@@ -70,7 +72,7 @@ void Protestor::_reachedPathway()
   }
 }
 
-void Protestor::_updateThinks()
+void Rioter::_updateThinks()
 {
   StringArray ret;
   ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
@@ -78,7 +80,7 @@ void Protestor::_updateThinks()
   setThinks( ret.rand() );
 }
 
-void Protestor::timeStep(const unsigned long time)
+void Rioter::timeStep(const unsigned long time)
 {
   Walker::timeStep( time );
 
@@ -203,18 +205,22 @@ void Protestor::timeStep(const unsigned long time)
   }
 }
 
-ProtestorPtr Protestor::create(PlayerCityPtr city )
+RioterPtr Rioter::create(PlayerCityPtr city )
 { 
-  ProtestorPtr ret( new Protestor( city ) );
+  RioterPtr ret( new Rioter( city ) );
   ret->drop();
   return ret;
 }
 
-Protestor::~Protestor() {}
+Rioter::~Rioter() {}
 
-void Protestor::send2City( HousePtr house )
+void Rioter::send2City( HousePtr house )
 {
-  setPos( house->pos() );
+  TilesArray tiles = house->enterArea();
+  if( tiles.empty() )
+    return;
+
+  setPos( tiles.random()->pos() );
   _d->houseLevel = house->spec().level();
   _d->state = Impl::searchHouse;
 
@@ -224,7 +230,7 @@ void Protestor::send2City( HousePtr house )
   }
 }
 
-bool Protestor::die()
+bool Rioter::die()
 {
   bool created = Walker::die();
 
@@ -237,7 +243,7 @@ bool Protestor::die()
   return created;
 }
 
-void Protestor::save(VariantMap& stream) const
+void Rioter::save(VariantMap& stream) const
 {
   Walker::save( stream );
 
@@ -245,7 +251,7 @@ void Protestor::save(VariantMap& stream) const
   stream[ "state" ] = (int)_d->state;
 }
 
-void Protestor::load(const VariantMap& stream)
+void Rioter::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
@@ -253,9 +259,9 @@ void Protestor::load(const VariantMap& stream)
   _d->state = (Impl::State)stream.get( "state" ).toInt();
 }
 
-int Protestor::agressive() const { return 1; }
+int Rioter::agressive() const { return 1; }
 
-Pathway Protestor::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
+Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
 {  
   if( !constructions.empty() )
   {

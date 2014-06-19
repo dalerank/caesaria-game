@@ -87,6 +87,8 @@ public:
     __REG_WTYPE( romeHorseman )
     __REG_WTYPE( romeSpearman )
     __REG_WTYPE( balista )
+    __REG_WTYPE( mugger )
+    __REG_WTYPE( rioter )
     __REG_WTYPE( wolf )
   }
 #undef __REG_WTYPE

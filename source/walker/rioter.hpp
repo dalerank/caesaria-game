@@ -13,28 +13,38 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERSIMPLE_H_INCLUDED__
-#define __CAESARIA_LAYERSIMPLE_H_INCLUDED__
+#ifndef __CAESARIA_RIOTER_H_INCLUDE_
+#define __CAESARIA_RIOTER_H_INCLUDE_
 
-#include "core/referencecounted.hpp"
-#include "gfx/layer.hpp"
+#include "walker.hpp"
 
-namespace gfx
-{
-
-class LayerSimple : public Layer
+class Rioter : public Walker
 {
 public:
-  virtual int type() const;
-  virtual std::set<int> getVisibleWalkers() const;
+  static RioterPtr create( PlayerCityPtr city );
+  virtual ~Rioter();
 
-  static LayerPtr create(Camera& camera, PlayerCityPtr city );
+  virtual void timeStep(const unsigned long time);
+  void send2City( HousePtr house );
+
+  virtual bool die();
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
+  virtual int agressive() const;
 
 protected:
-  LayerSimple(Camera& camera, PlayerCityPtr city );
+  virtual void _reachedPathway();
+  virtual void _updateThinks();
+
+private:
+  Rioter( PlayerCityPtr city );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-}//end namespace gfx
-#endif //__CAESARIA_LAYERSIMPLE_H_INCLUDED__
+#endif//__CAESARIA_RIOTER_H_INCLUDE_

@@ -214,12 +214,17 @@ void StartMenu::Impl::resolveCredits()
   gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
   testers.setTextAlignment( align::center, align::center );
   lbx->addItem( "radek liška" );
-  lbx->addItem( "dimitrius" );
+  lbx->addItem( "dimitrius (caesar-iii.ru)" );
   lbx->addItem( "shibanirm" );
+
+  gui::ListBoxItem& gfx = lbx->addItem( _("##graphics##") );
+  gfx.setTextAlignment( align::center, align::center );
+  lbx->addItem( "dimitrius (caesar-iii.ru)" );
 
   gui::ListBoxItem& thanks_to = lbx->addItem( _("##thanks_to##") );
   thanks_to.setTextAlignment( align::center, align::center );
   lbx->addItem( "doc (doc@nnm.me)");
+  lbx->addItem( "Juan Font Alonso ");
 
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
 }

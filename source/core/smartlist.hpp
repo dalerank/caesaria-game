@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_SMARTLIST_H_INCLUDE__
 #define __CAESARIA_SMARTLIST_H_INCLUDE__
@@ -34,6 +36,12 @@ public:
           this->push_back( ptr );
     }
 
+    return *this;
+  }
+
+  SmartList& operator<<( SmartPtr< T > a )
+  {
+    this->push_back( a );
     return *this;
   }
 

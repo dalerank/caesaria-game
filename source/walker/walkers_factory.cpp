@@ -30,7 +30,7 @@
 #include "fishing_boat.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
-#include "protestor.hpp"
+#include "rioter.hpp"
 #include "enemysoldier.hpp"
 #include "romesoldier.hpp"
 #include "lion.hpp"
@@ -46,6 +46,7 @@
 #include "helper.hpp"
 #include "watergarbage.hpp"
 #include "immigrant.hpp"
+#include "mugger.hpp"
 #include <map>
 
 using namespace constants;
@@ -116,7 +117,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::fishingBoat, new BaseCreator<FishingBoat>() );
   addCreator( walker::corpse, new BaseCreator<Corpse>() );
   addCreator( walker::merchant, new BaseCreator<Merchant>() );
-  addCreator( walker::protestor, new BaseCreator<Protestor>() );
+  addCreator( walker::rioter, new BaseCreator<Rioter>() );
   addCreator( walker::britonSoldier, new SoldierCreator<EnemySoldier>( walker::britonSoldier ) );
   addCreator( walker::legionary, new SoldierCreator<RomeSoldier>( walker::legionary ) );
   addCreator( walker::romeHorseman, new SoldierCreator<RomeSoldier>( walker::romeHorseman ) );
@@ -133,6 +134,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::bow_arrow, new BaseCreator<BowArrow>() );
   addCreator( walker::etruscanSoldier, new SoldierCreator<EnemySoldier>( walker::etruscanSoldier ) );
   addCreator( walker::etruscanArcher, new SoldierCreator<EnemyArcher>( walker::etruscanArcher ) );
+  addCreator( walker::mugger, new BaseCreator<Mugger>() );
   addCreator( walker::wolf, new BaseCreator<Wolf>() );
 }
 
