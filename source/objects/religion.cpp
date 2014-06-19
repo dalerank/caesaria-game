@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "religion.hpp"
 #include "city/helper.hpp"
@@ -37,6 +39,7 @@ Temple::Temple( DivinityPtr divinity, TileOverlay::Type type, int imgId, const S
 {
   _td->divinity = divinity;
   setPicture( ResourceGroup::security, imgId );
+  _fgPicturesRef().resize( 1 );
 }
 
 DivinityPtr Temple::getDivinity() const {  return _td->divinity; }

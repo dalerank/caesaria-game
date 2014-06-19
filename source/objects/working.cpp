@@ -154,9 +154,9 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 
   _animationRef().update( time );
   const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() )
+  if( pic.isValid() && !_fgPicturesRef().empty() )
   {
-     _fgPicturesRef().back() = _animationRef().currentFrame();
+    _fgPicturesRef().back() = _animationRef().currentFrame();
   }
 }
 
