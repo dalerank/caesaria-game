@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_DISORDER_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_DISORDER_H_INCLUDED__
@@ -31,7 +31,7 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
   void update( const unsigned int time );
-  std::string getReason() const;
+  std::string reasonDescr() const;
   unsigned int value() const;
 private:
   Disorder( PlayerCityPtr city );

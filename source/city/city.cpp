@@ -177,6 +177,7 @@ public:
   Options options;
   ClimateType climate;   
   UniqueId walkerIdCount;
+  int sentiment;
 
   // collect taxes from all houses
   void collectTaxes( PlayerCityPtr city);
@@ -204,6 +205,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
+  _d->sentiment = 50;
 
   addService( city::Migration::create( this ) );
   addService( city::WorkersHire::create( this ) );
@@ -709,6 +711,11 @@ int PlayerCity::peace() const
 {
   SmartPtr<city::Peace> peace = ptr_cast<city::Peace>( findService( city::Peace::getDefaultName() ) );
   return peace.isValid() ? peace->value() : 0;
+}
+
+int PlayerCity::sentiment() const
+{
+  return _d->sentiment;
 }
 
 int PlayerCity::favour() const { return empire()->emperor().relation( getName() ); }

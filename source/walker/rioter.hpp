@@ -15,43 +15,36 @@
 //
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_FISHING_BOAT_INCLUDE_H_
-#define _CAESARIA_FISHING_BOAT_INCLUDE_H_
+#ifndef __CAESARIA_RIOTER_H_INCLUDE_
+#define __CAESARIA_RIOTER_H_INCLUDE_
 
-#include "ship.hpp"
+#include "walker.hpp"
 
-class FishingBoat : public Ship
+class Rioter : public Walker
 {
 public:
-  typedef enum { go2fishplace, catchFish, back2base, finishCatch, unloadFish, ready2Catch, wait } State;
+  static RioterPtr create( PlayerCityPtr city );
+  virtual ~Rioter();
 
-  static FishingBoatPtr create( PlayerCityPtr city );
+  virtual void timeStep(const unsigned long time);
+  void send2City( HousePtr house );
 
-  void send2city( CoastalFactoryPtr base, TilePos start);
+  virtual bool die();
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual void timeStep(const unsigned long time);
-  void startCatch();
-  void return2base();
+  virtual int agressive() const;
 
-  void setBase( CoastalFactoryPtr base );
-  State state() const;
-
-  bool isBusy() const;
-  int getFishQty() const;
-
-  virtual bool die();
 protected:
   virtual void _reachedPathway();
+  virtual void _updateThinks();
 
 private:
-  FishingBoat( PlayerCityPtr city );
+  Rioter( PlayerCityPtr city );
 
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
-
-#endif //_CAESARIA_FISHING_BOAT_INCLUDE_H_
+#endif//__CAESARIA_RIOTER_H_INCLUDE_
