@@ -32,11 +32,14 @@ public:
   TradeOptions();
   ~TradeOptions();
 
-  int exportLimit( Good::Type type ) const;
-  void setExportLimit( Good::Type type, int qty );
+  unsigned int exportLimit(Good::Type type) const;
+  void setExportLimit(Good::Type type, unsigned int qty);
   
-  void setStackMode( Good::Type type, bool stackGoods );
+  void setStackMode( Good::Type type, bool stacking );
   bool isGoodsStacking( Good::Type type );
+
+  bool isExporting( Good::Type type ) const;
+  bool isImporting( Good::Type type ) const;
 
   unsigned int sellPrice( Good::Type type ) const;
   void setSellPrice( Good::Type type, unsigned int price );

@@ -68,7 +68,8 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
-        taxLevel = house->getServiceValue( Service::forum );
+        //taxLevel = house->getServiceValue( Service::forum );
+        taxLevel = house->taxesThisYear() / 10;
         needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
         if( !needDrawAnimations )

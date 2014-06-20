@@ -25,6 +25,12 @@
 class Fort : public WorkingBuilding
 {
 public:
+  typedef enum { frmNorthLine=0, frmSouthLine,
+                 frmNorthDblLine, frmSouthDblLine,
+                 frmRandomLocation, frmSquad,
+                 frmParade } TroopsFormation;
+  typedef std::vector<TroopsFormation> TroopsFormations;
+
   Fort( constants::building::Type type, int picIdLogo );
   virtual ~Fort();
 
@@ -35,6 +41,10 @@ public:
   virtual float evaluateTrainee( constants::walker::Type traineeType);
   virtual void timeStep(const unsigned long time);
 
+  virtual TroopsFormation formation() const;
+  virtual void setFormation( TroopsFormation formation );
+  virtual gfx::TilesArray enterArea() const;
+
   virtual void destroy();
 
   virtual TilePos freeSlot() const;
@@ -42,12 +52,16 @@ public:
 
   virtual gfx::Picture legionEmblem() const;
   virtual std::string legionName() const;
+  virtual unsigned int legionHealth() const;
+  virtual unsigned int legionTrained() const;
+  virtual TroopsFormations legionFormations() const;
   virtual int legionMorale() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
   virtual SoldierList soldiers() const;
+  virtual void returnSoldiers();
 
 protected:
   virtual void _readyNewSoldier() {}
@@ -55,6 +69,7 @@ protected:
   virtual void _setEmblem( gfx::Picture pic );
   virtual void _setName( const std::string& name );
   virtual int  _setFlagIndex( int index );
+  virtual void _addFormation( TroopsFormation formation );
 
 private:  
   class Impl;

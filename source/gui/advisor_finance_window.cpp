@@ -115,7 +115,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   _d->drawReportRow( startPoint + offset * 7, _("##percents##"), city::Funds::creditPercents );
   _d->drawReportRow( startPoint + offset * 8, _("##pn_salary##"), city::Funds::playerSalary );
    
-  _d->drawReportRow( startPoint + offset * 9, _("##other##"), city::Funds::otherExpenditure );
+  _d->drawReportRow( startPoint + offset * 9, _("##other##"), city::Funds::sundries );
   _d->drawReportRow( startPoint + offset * 10, _("##empire_tax##"), city::Funds::empireTax );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 200, 0 ), Size( 72, 1) ) );
   _d->background->fill( 0xff000000, Rect( startPoint + offset * 10 + Point( 340, 0 ), Size( 72, 1) ) );

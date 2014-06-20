@@ -39,8 +39,8 @@ protected:
 private:
   RandomDamage();
 
-  int _minPopulation, _maxPopulation;
-  bool _isDeleted;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace events

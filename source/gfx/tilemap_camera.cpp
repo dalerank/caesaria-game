@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "tilemap_camera.hpp"
 
@@ -104,7 +104,7 @@ void TilemapCamera::setCenter(TilePos pos )
 
   setCenter( Point( pos.i() + pos.j(), _d->tilemap->size() - 1 + pos.j() - pos.i() ) );
 
-  _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
+  oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
 void TilemapCamera::move(PointF relative)
@@ -122,7 +122,7 @@ void TilemapCamera::move(PointF relative)
     _d->resetDrawn();
     _d->tiles.clear();
 
-    _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
+    oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
   }
 }
 
@@ -134,30 +134,35 @@ void TilemapCamera::setCenter(Point pos)
   }
   
   _d->centerMapXZ = pos.toPointF();
-  _d->onPositionChangedSignal.emit( _d->centerMapXZ.toPoint() );
+  oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
-int TilemapCamera::getCenterX() const  {   return _d->centerMapXZ.x();   }
-int TilemapCamera::getCenterZ() const  {   return _d->centerMapXZ.y();   }
-TilePos TilemapCamera::getCenter() const  {   return _d->center;   }
+int TilemapCamera::centerX() const  {   return _d->centerMapXZ.x();   }
+int TilemapCamera::centerZ() const  {   return _d->centerMapXZ.y();   }
+TilePos TilemapCamera::center() const  {   return _d->center;   }
 void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }
-int TilemapCamera::getScrollSpeed() const{ return _d->scrollSpeed; }
+int TilemapCamera::scrollSpeed() const{ return _d->scrollSpeed; }
 Tile* TilemapCamera::at(const Point& pos, bool overborder) const {  return _d->tilemap->at( pos - _d->offset, overborder );}
 
 Tile* TilemapCamera::at(const TilePos& pos) const { return &_d->tilemap->at( pos ); }
 Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->onPositionChangedSignal;}
-void TilemapCamera::moveRight(const int amount){  setCenter( Point( getCenterX() + amount, getCenterZ() ) );}
-void TilemapCamera::moveLeft(const int amount){  setCenter( Point( getCenterX() - amount, getCenterZ() ) );}
-void TilemapCamera::moveUp(const int amount){  setCenter( Point( getCenterX(), getCenterZ() + amount ) );}
-void TilemapCamera::moveDown(const int amount){  setCenter( Point( getCenterX(), getCenterZ() - amount ) );}
+void TilemapCamera::moveRight(const int amount){  setCenter( Point( centerX() + amount, centerZ() ) );}
+void TilemapCamera::moveLeft(const int amount){  setCenter( Point( centerX() - amount, centerZ() ) );}
+void TilemapCamera::moveUp(const int amount){  setCenter( Point( centerX(), centerZ() + amount ) );}
+void TilemapCamera::moveDown(const int amount){  setCenter( Point( centerX(), centerZ() - amount ) );}
 void TilemapCamera::startFrame(){  _d->resetDrawn(); }
 
-Tile* TilemapCamera::center() const
+void TilemapCamera::refresh()
+{
+  _d->tiles.clear();
+}
+
+Tile* TilemapCamera::centerTile() const
 {
   return at( Point( _d->screenSize.width() / 2, _d->screenSize.height() / 2 ), true );
 }
 
-const TilesArray& TilemapCamera::getTiles() const
+const TilesArray& TilemapCamera::tiles() const
 {
   if( _d->tiles.empty() )
   {
@@ -171,7 +176,7 @@ const TilesArray& TilemapCamera::getTiles() const
 
     Size sizeT = _d->viewSize;  // size x
 
-    std::set< Tile* > overvorderTiles;
+    std::set< Tile* > overborderTiles;
 
     for (int z = cz + sizeT.height(); z>=cz - sizeT.height(); --z)
     {
@@ -185,7 +190,7 @@ const TilesArray& TilemapCamera::getTiles() const
 
       for (int x = xstart; x<=cx + sizeT.width(); x+=2)
       {
-	// left-right axis
+        // left-right axis
         int j = (x + z - zm)/2;
         int i = x - j;
 
@@ -199,11 +204,11 @@ const TilesArray& TilemapCamera::getTiles() const
         if( master != NULL )
         {
           Point pos = master->mapPos() + _d->offset;
-          std::set< Tile* >::iterator mIt = overvorderTiles.find( master );
-          if( pos.x() < 0 && mIt == overvorderTiles.end() )
+          std::set< Tile* >::iterator mIt = overborderTiles.find( master );
+          if( pos.x() < 0 && mIt == overborderTiles.end() )
           {
             _d->tiles.push_back( master );
-            overvorderTiles.insert( master );
+            overborderTiles.insert( master );
           }
         }
       }

@@ -12,6 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 
 #include <cstdio>
 
@@ -161,7 +164,7 @@ void InfoboxCitizen::_setWalker( WalkerPtr wlk )
   _d->screenshots.clear();
 
   TilePos offset( 1, 1 );
-  gfx::TilesArray tiles = _d->city->tilemap().getRectangle( wlk->pos() - offset, wlk->pos() + offset );
+  gfx::TilesArray tiles = _d->city->tilemap().getNeighbors(wlk->pos(), gfx::Tilemap::AllNeighbors);
   Rect lbRect( 25, 45, 25 + 52, 45 + 52 );
   Point lbOffset( 60, 0 );
   foreach( itTile, tiles )

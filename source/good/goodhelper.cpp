@@ -21,7 +21,6 @@
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
 #include "gfx/animation_bank.hpp"
-#include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include <vector>
 
@@ -81,25 +80,28 @@ public:
 
   Impl() : EnumsHelper<Good::Type>(Good::none)
   {
-    append( Good::none, "none", _("##none##") );
-    append( Good::wheat, "wheat", _("##wheat##") );
-    append( Good::fish, "fish", _("##fish##") );
-    append( Good::meat, "meat", _("##meat##") );
-    append( Good::fruit, "fruit", _("##fruit##"));
-    append( Good::vegetable, "vegetable", _("##vegetable##") );
-    append( Good::olive, "olive", _("##olive##") );
-    append( Good::oil, "oil", _("##oil##") );
-    append( Good::grape, "grape", _("##grape##") );
-    append( Good::wine, "wine", _("##wine##") );
-    append( Good::timber, "timber", _("##timber##") );
-    append( Good::furniture, "furniture", _("##furniture##") );
-    append( Good::clay, "clay", _("##clay##") );
-    append( Good::pottery, "pottery", _("##pottery##") );
-    append( Good::iron, "iron", _("##iron##") );
-    append( Good::weapon, "weapon", _("##weapon##") );
-    append( Good::marble, "marble", _("##marble##") );
-    append( Good::denaries, "denaries", _("##denaries##") );
-    append( Good::goodCount, "", "unknown" );
+#define __REG_GTYPE(a) append( Good::a, CAESARIA_STR_EXT(a), "##"CAESARIA_STR_EXT(a)"##" );
+    __REG_GTYPE(none ) // append( Good::none, "none", "##none##");
+    __REG_GTYPE(wheat) // append( Good::wheat, "wheat", "##wheat##" );
+    __REG_GTYPE(fish ) // append( Good::fish, "fish", "##fish##" );
+    __REG_GTYPE(meat ) // append( Good::meat, "meat", "##meat##" );
+    __REG_GTYPE(fruit) // append( Good::fruit, "fruit", "##fruit##");
+    __REG_GTYPE( vegetable ) //append( Good::vegetable, "vegetable", "##vegetable##" );
+    __REG_GTYPE(olive) // append( Good::olive, "olive", "##olive##" );
+    __REG_GTYPE(oil  ) // append( Good::oil, "oil", "##oil##" );
+    __REG_GTYPE(grape) // append( Good::grape, "grape", "##grape##" );
+    __REG_GTYPE(wine ) // append( Good::wine, "wine", "##wine##" );
+    __REG_GTYPE(timber)// append( Good::timber, "timber", "##timber##" );
+    __REG_GTYPE(furniture) // append( Good::furniture, "furniture", "##furniture##" );
+    __REG_GTYPE(clay ) // append( Good::clay, "clay", "##clay##" );
+    __REG_GTYPE(pottery ) // append( Good::pottery, "pottery", "##pottery##" );
+    __REG_GTYPE(iron ) // append( Good::iron, "iron", "##iron##" );
+    __REG_GTYPE(weapon ) // append( Good::weapon, "weapon", "##weapon##" );
+    __REG_GTYPE(marble ) // append( Good::marble, "marble", "##marble##" );
+    __REG_GTYPE(denaries ) //append( Good::denaries, "denaries", "##denaries##");
+    __REG_GTYPE(prettyWine ) // append( Good::prettyWine, "prettyWine", "##prettyWine##" );
+    append( Good::goodCount, "unknown", "##unknown##" );
+#undef __REG_GTYPE
   }
 };
 

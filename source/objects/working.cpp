@@ -14,10 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "working.hpp"
-#include "gfx/picture.hpp"
-#include "core/variant.hpp"
 #include "walker/walker.hpp"
-#include "core/foreach.hpp"
 #include "events/returnworkers.hpp"
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
@@ -34,8 +31,8 @@ const int workersDescNum = 6;
 class WorkingBuilding::Impl
 {
 public:
-  int currentWorkers;
-  int maxWorkers;
+  unsigned int currentWorkers;
+  unsigned int maxWorkers;
   bool isActive;
   WalkerList walkerList;
   std::string errorStr;
@@ -63,7 +60,7 @@ void WorkingBuilding::save( VariantMap& stream ) const
 void WorkingBuilding::load( const VariantMap& stream)
 {
   Building::load( stream );
-  _d->currentWorkers = (int)stream.get( lc_currentWorkers, 0 );
+  _d->currentWorkers = (unsigned int)stream.get( lc_currentWorkers, 0 );
   _d->isActive = (bool)stream.get( lc_active, true );
   Variant value = stream.get( lc_maxWorkers );
 
@@ -87,6 +84,11 @@ std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
 
+  if( isNeedRoadAccess() && getAccessRoads().empty() )
+  {
+    trouble = "##working_building_need_road##";
+  }
+
   if( trouble.empty() && numberWorkers() < maximumWorkers() / 2 )
   {
     trouble = workersProblemDesc();
@@ -96,11 +98,11 @@ std::string WorkingBuilding::troubleDesc() const
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
-void WorkingBuilding::setMaximumWorkers(const int maxWorkers) { _d->maxWorkers = maxWorkers; }
-int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
-void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp<int>( currentWorkers, 0, _d->maxWorkers );}
-int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
-int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
+void WorkingBuilding::setMaximumWorkers(const unsigned int maxWorkers) { _d->maxWorkers = maxWorkers; }
+unsigned int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
+void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp( currentWorkers, 0u, _d->maxWorkers );}
+unsigned int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
+unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
 bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
@@ -125,7 +127,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
   _updateAnimation( time );
 }
 
-void WorkingBuilding::_updateAnimation( const unsigned int time )
+void WorkingBuilding::_updateAnimation(const unsigned long time )
 {
   if( GameDate::isDayChanged() )
   {
@@ -152,16 +154,13 @@ void WorkingBuilding::_updateAnimation( const unsigned int time )
 
   _animationRef().update( time );
   const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() )
+  if( pic.isValid() && !_fgPicturesRef().empty() )
   {
-     _fgPicturesRef().back() = _animationRef().currentFrame();
+    _fgPicturesRef().back() = _animationRef().currentFrame();
   }
 }
 
-void WorkingBuilding::_setClearAnimationOnStop(bool value)
-{
-  _d->clearAnimationOnStop = value;
-}
+void WorkingBuilding::_setClearAnimationOnStop(bool value) {  _d->clearAnimationOnStop = value; }
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {

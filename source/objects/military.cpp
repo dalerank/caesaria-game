@@ -40,23 +40,22 @@ FortLegionary::FortLegionary()
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 21 );
+
+  _addFormation( frmNorthDblLine );
+  _addFormation( frmSouthDblLine );
+  _addFormation( frmSquad );
+  _addFormation( frmRandomLocation );
 }
 
 void FortLegionary::_readyNewSoldier()
 {
-  RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
+  TilesArray tiles = enterArea();
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getAroundTiles( this );
-
-  foreach( tile, tiles)
+  if( !tiles.empty() )
   {
-    if( (*tile)->isWalkable( true ) )
-    {
-      soldier->send2city( this, (*tile)->pos() );
-      addWalker( soldier.object() );
-      return;
-    }
+    RomeSoldierPtr soldier = RomeSoldier::create( _city(), walker::legionary );
+    soldier->send2city( this, tiles.front()->pos() );
+    addWalker( soldier.object() );
   }
 }
 
@@ -65,40 +64,28 @@ FortMounted::FortMounted()
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 39 );
+
+  _addFormation( frmNorthLine );
+  _addFormation( frmSouthLine );
+  _addFormation( frmNorthDblLine );
+  _addFormation( frmSouthDblLine );
+  _addFormation( frmRandomLocation );
 }
 
 void FortMounted::build(PlayerCityPtr city, const TilePos& pos)
 {
   Fort::build( city, pos );
-
-  _setPatrolPoint( PatrolPoint::create( city, this,
-                                        ResourceGroup::sprites, 39, 8,
-                                        pos + TilePos( 3, 3 ) ) );
-
-  BarracksList barracks;
-  barracks << city->overlays();
-
-  if( barracks.empty() )
-  {
-    _setError( "##need_barracks_for_work##" );
-  }
 }
 
 void FortMounted::_readyNewSoldier()
 {
-  RomeHorsemanPtr soldier = RomeHorseman::create( _city() );
+  TilesArray tiles = enterArea();
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getAroundTiles( this );
-
-  foreach( tile, tiles)
+  if( !tiles.empty() )
   {
-    if( (*tile)->isWalkable( true ) )
-    {
-      soldier->send2city( this, (*tile)->pos() );
-      addWalker( soldier.object() );
-      return;
-    }
+    RomeHorsemanPtr soldier = RomeHorseman::create( _city() );
+    soldier->send2city( this, tiles.front()->pos() );
+    addWalker( soldier.object() );
   }
 }
 
@@ -107,22 +94,20 @@ FortJaveline::FortJaveline()
 {
   setPicture( ResourceGroup::security, 12 );
   _setFlagIndex( 30 );
+
+  _addFormation( frmNorthDblLine );
+  _addFormation( frmSouthDblLine );
+  _addFormation( frmRandomLocation );
 }
 
 void FortJaveline::_readyNewSoldier()
 {
-  RomeArcherPtr soldier = RomeArcher::create( _city() );
+  TilesArray tiles = enterArea();
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getAroundTiles( this );
-
-  foreach( tile, tiles)
+  if( !tiles.empty() )
   {
-    if( (*tile)->isWalkable( true ) )
-    {
-      soldier->send2city( this, (*tile)->pos() );
-      addWalker( soldier.object() );
-      return;
-    }
+    RomeArcherPtr soldier = RomeArcher::create( _city() );
+    soldier->send2city( this, tiles.front()->pos() );
+    addWalker( soldier.object() );
   }
 }

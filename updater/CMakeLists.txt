@@ -22,7 +22,6 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/path.cpp"
       "${BASE_SOURCE_DIR}/vfs/entries.cpp"
       "${BASE_SOURCE_DIR}/vfs/filesystem.cpp"
-      "${BASE_SOURCE_DIR}/vfs/archive_zip.cpp"
       "${BASE_SOURCE_DIR}/vfs/memfile.cpp"
       "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
       "${BASE_SOURCE_DIR}/core/stacktrace.cpp"
@@ -38,54 +37,17 @@ add_executable(${PROJECT_NAME}
                ${UPD_DEP_SOURCES_LIST}
                ${HTTP_SOURCES_LIST} )
 
-find_package( ZLIB )
-if ( ZLIB_FOUND )
-  include_directories(${ZLIB_INCLUDE_DIRS})
-  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
-elseif( BUILD_ZLIB )
-  link_directories(${ZLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${ZLIB_NAME})
-endif()
 
-if( BUILD_AES )
-  link_directories(${AESLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${AESLIB_NAME})
-endif()
-
-find_package( BZIP2 )
-if ( BZIP2_FOUND )
-  include_directories(${BZIP2_INCLUDE_DIRS})
-  target_link_libraries(${PROJECT_NAME} ${BZIP2_LIBRARIES})
-elseif( BUILD_BZIP )
-  link_directories(${BZIPLIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${BZIPLIB_NAME})
-endif()
-
-if( BUILD_LZMA )
-  link_directories(${LZMALIB_HOME})
-  target_link_libraries(${PROJECT_NAME} ${LZMALIB_NAME})
-endif()
-
-find_package( CURL )
-if (CURL_FOUND)
-  # Not sure about that 3 lines
-  add_definitions( -DCURL_STATICLIB )
-  add_definitions( -DCURL_DISABLE_POP3 )
-  add_definitions( -DCURL_DISABLE_SMTP )
-
-  include_directories(${CURL_INCLUDE_DIRS})
-  target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES})
-elseif( BUILD_CURL )
+if( BUILD_CURL )
   add_definitions( -DCURL_STATICLIB )
   add_definitions( -DCURL_DISABLE_POP3 )
   add_definitions( -DCURL_DISABLE_SMTP )
   link_directories(${CURLLIB_HOME})
-
-  target_link_libraries(${PROJECT_NAME} ${CURLLIB_NAME})
+  target_link_libraries(${PROJECT_NAME} ${CURL_LIBRARIES})
 endif()
 
 if(WIN32)
-  target_link_libraries( ${PROJECT_NAME} psapi ws2_32 ${CURLLIB_NAME} )
+  target_link_libraries( ${PROJECT_NAME} psapi ${CURLLIB_NAME} ws2_32 )
   set(EXECUTABLE_FILENAME "updater")
 endif(WIN32)
 
@@ -116,7 +78,7 @@ else()
 endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 if(WIN32)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -static-libgcc -static-libstdc++")
 endif(WIN32)
 
 # prepare working directory

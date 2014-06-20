@@ -28,6 +28,8 @@
 #include "start_work.hpp"
 #include "distant_battle.hpp"
 #include "trading_options.hpp"
+#include "contaminated_water.hpp"
+#include "random_wolves.hpp"
 
 namespace events
 {
@@ -88,6 +90,8 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<StartWork>( "start_work" );
   addCreator<DistantBattle>( "distant_battle" );
   addCreator<TradingOptions>( "trading_options" );
+  addCreator<ContaminatedWater>( "contaminated_water" );
+  addCreator<RandomWolves>( "random_wolves" );
 }
 
 }//end namespace events

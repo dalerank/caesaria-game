@@ -77,6 +77,20 @@ private:
   Mode _mode;
 };
 
+class Step : public GameEvent
+{
+public:
+  static GameEventPtr create(unsigned int count);
+
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
+
+private:
+  Step(unsigned int count);
+  unsigned int _count;
+};
+
 class ChangeSpeed : public GameEvent
 {
 public:

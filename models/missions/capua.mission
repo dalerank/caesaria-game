@@ -4,6 +4,8 @@
   funds : 8000
   date : "-350.01.01"
   finish : "-300.01.01"
+  adviserEnabled : true
+  climate : 0
 	
   win :
   {
@@ -98,11 +100,65 @@
       value : 30
     }
 
-    "emperor_request_oil#city_request" : {
+    emperor_request_0#city_request : {
       date : "-348.06.01"
       reqtype : "good_request"
       month : 12
       good : { oil : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    emperor_request_00#city_request : {
+      date : "-345.02.01"
+      reqtype : "good_request"
+      month : 12
+      good : { oil : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    emperor_request_1#city_request : {
+      date : "-344.01.01"
+      reqtype : "good_request"
+      month : 12
+      good : { fruit : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    emperor_request_2#city_request : {
+      date : "-342.08.01"
+      reqtype : "good_request"
+      month : 12
+      good : { fruit : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    emperor_request_3#city_request : {
+      date : "-340.04.01"
+      reqtype : "good_request"
+      month : 12
+      good : { fruit : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    emperor_request_4#city_request : {
+      date : "-337.07.01"
+      reqtype : "good_request"
+      month : 12
+      good : { fruit : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    emperor_request_5#city_request : {
+      date : "-334.02.01"
+      reqtype : "good_request"
+      month : 12
+      good : { fruit : 15 }
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 24 }
     }

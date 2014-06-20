@@ -55,12 +55,14 @@ target_link_libraries(${PROJECT_NAME}
   ${SDL_TTF_LIBRARY}
 )
 
-find_package( ZLIB )
-if ( ZLIB_FOUND )
-  include_directories(${ZLIB_INCLUDE_DIRS})
-  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
-elseif( BUILD_ZLIB )
+#find_package( ZLIB )
+#if( ZLIB_FOUND )
+#  include_directories(${ZLIB_INCLUDE_DIRS})
+#  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
+#else
+if( BUILD_ZLIB )
   link_directories(${ZLIB_HOME})
+  include_directories(${ZLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${ZLIB_NAME})
 endif()
 
@@ -69,11 +71,12 @@ if( BUILD_AES )
   target_link_libraries(${PROJECT_NAME} ${AESLIB_NAME})
 endif()
 
-find_package( BZIP2 )
-if ( BZIP2_FOUND )
-  include_directories(${BZIP2_INCLUDE_DIRS})
-  target_link_libraries(${PROJECT_NAME} ${BZIP2_LIBRARIES})
-elseif( BUILD_BZIP )
+#find_package( BZIP2 )
+#if ( BZIP2_FOUND )
+#  include_directories(${BZIP2_INCLUDE_DIRS})
+#  target_link_libraries(${PROJECT_NAME} ${BZIP2_LIBRARIES})
+#else
+if( BUILD_BZIP )
   link_directories(${BZIPLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${BZIPLIB_NAME})
 endif()
@@ -88,19 +91,20 @@ if( BUILD_SMK )
   target_link_libraries(${PROJECT_NAME} ${SMKLIB_NAME})
 endif()
 
-find_package( PNG )
-if (PNG_FOUND)
-  include_directories(${PNG_INCLUDE_DIRS})
-  target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARIES})
-elseif( BUILD_PNG )
+#find_package( PNG )
+#if (PNG_FOUND)
+#  include_directories(${PNG_INCLUDE_DIRS})
+#  target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARIES})
+#else
+if( BUILD_PNG )
   link_directories(${PNGLIB_HOME})
   include_directories(${PNGLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${PNGLIB_NAME})
 endif()
 
-if(OPENGL_RENDER)
-  target_link_libraries(${PROJECT_NAME} "GL")
-endif(OPENGL_RENDER)
+#if(OPENGL_RENDER)
+#  target_link_libraries(${PROJECT_NAME} "GL")
+#endif(OPENGL_RENDER)
 
 if(WIN32)
   set(EXECUTABLE_FILENAME "caesaria")
@@ -122,11 +126,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-game: building in release mode")
-  
-  if(NOT APPLE)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s -Os")
-  endif(NOT APPLE)
-
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
 else()
   message("CaesarIA-game: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
@@ -142,7 +142,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 if(WIN32)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
+  #set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -static-libgcc -static-libstdc++ -static")
 endif(WIN32)
 
 # prepare working directory
@@ -204,7 +205,6 @@ if(WIN32)
     ${SDL_LIBRARY}
     ${SDL_MIXER_LIBRARY}
     ${SDL_TTF_LIBRARY}    
-    ${PNG_LIBRARY}
   )
 
   foreach(_lib ${_LIBS_FOR_DLL_SOURCE})

@@ -20,6 +20,7 @@
 #include "scene/logo.hpp"
 #include "city/build_options.hpp"
 #include "core/stringhelper.hpp"
+#include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/sdl_engine.hpp"
@@ -50,6 +51,7 @@
 #include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
+#include "vfs/archive_zip.hpp"
 #include "scene/briefing.hpp"
 #include "gfx/logo.hpp"
 #include "walker/helper.hpp"
@@ -75,15 +77,19 @@ public:
 
   bool loadOk;
   int pauseCounter;
+  unsigned int manualTicksCounterX10;
+  std::string restartFile;
 
-  float time, saveTime;
-  float timeMultiplier;
-  
+  unsigned int saveTime; // last action time
+  unsigned int timeX10; // time (ticks) multiplied by 10;
+  unsigned int timeMultiplier; // 100 = 1x speed
+
   void initLocale(std::string localePath);
   void initVideo();
   void initSound();
   void initPictures( vfs::Path resourcePath);
   void initGuiEnvironment();
+  void initArchiveLoaders();
   void initPantheon(vfs::Path filename );
   void initFontCollection(vfs::Path resourcePath);
   void mountArchives( ResourceLoader& loader );
@@ -105,7 +111,7 @@ void Game::Impl::initVideo()
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
-    
+
   Logger::warning( "GraficEngine: try set fullscreen mode" );
   engine->setFlag( gfx::Engine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
   engine->init();
@@ -126,10 +132,6 @@ void Game::Impl::initSound()
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
 {
-  vfs::FileSystem& fs = vfs::FileSystem::instance();
-  Logger::warning( "Game: initialize sg2 archive loader" );
-  fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
-
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
@@ -164,7 +166,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   {
     OSystem::error( "Resources error", errorStr );
     Logger::warning( "CRITICAL: not found original resources in " + c3res.toString() );
-    exit( -1 ); //kill application    
+    exit( -1 ); //kill application
   }
 
   loader.loadFromModel( GameSettings::rcpath( GameSettings::archivesModel ) );
@@ -204,7 +206,7 @@ void Game::Impl::initPictures(vfs::Path resourcePath)
 {
   AnimationBank::instance().loadCarts();
   AnimationBank::instance().loadAnimation( GameSettings::rcpath( GameSettings::animationsModel ) );
-  
+
   Logger::warning( "Game: create runtime pictures" );
   PictureBank::instance().createResources();
 }
@@ -252,7 +254,7 @@ void Game::setScreenMenu()
   switch( screen.result() )
   {
     case scene::StartMenu::startNewGame:
-    {  
+    {
       std::srand( DateTime::elapsedTime() );
       std::string startMission = "/missions/tutorial.mission";
       Logger::warning( "Start new career with mission " + startMission );
@@ -269,10 +271,10 @@ void Game::setScreenMenu()
     case scene::StartMenu::reloadScreen:
       _d->nextScreen = SCREEN_MENU;
     break;
-   
+
     case scene::StartMenu::loadSavedGame:
     case scene::StartMenu::loadMission:
-    {        
+    {
       load( screen.getMapName() );
       Logger::warning( "screen menu: end loading map" );
 
@@ -292,13 +294,13 @@ void Game::setScreenMenu()
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }
     break;
-   
+
     case scene::StartMenu::closeApplication:
     {
       _d->nextScreen = SCREEN_QUIT;
     }
     break;
-   
+
     default:
       _CAESARIA_DEBUG_BREAK_IF( "Unexpected result event" );
    }
@@ -308,42 +310,48 @@ void Game::setScreenGame()
 {
   Logger::warning( "game: enter setScreenGame" );
   scene::Level screen( *this, *_d->engine );
-  
+
   Logger::warning( "game: start initialize" );
   screen.initialize();
   _d->currentScreen = &screen;
   GameDate& cdate = GameDate::instance();
-  _d->time = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth();
-  _d->saveTime = _d->time;
+  _d->timeX10 = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth() * 10;
+  _d->saveTime = _d->timeX10;
 
   Logger::warning( "game: prepare for game loop" );
+  // Game Loop
   while( !screen.isStopped() )
   {
     screen.update( *_d->engine );
 
     if( !_d->pauseCounter )
     {
-      _d->time += _d->timeMultiplier / 100.f;
-
-      while( (_d->time - _d->saveTime) > 1 )
-      {
-        _d->saveTime++;
-
-        cdate.timeStep( _d->saveTime );
-        _d->empire->timeStep( _d->saveTime );
-
-        screen.animate( _d->saveTime );
-      }
+      _d->timeX10 += _d->timeMultiplier / 10;
     }
+    else if (_d->manualTicksCounterX10 > 0)
+    {
+      unsigned int add = math::min(_d->timeMultiplier / 10, _d->manualTicksCounterX10);
+      _d->timeX10 += add;
+      _d->manualTicksCounterX10 -= add;
+    }
+    while (_d->timeX10 > _d->saveTime * 10 + 1)
+    {
+      _d->saveTime++;
 
-    events::Dispatcher::instance().update( *this, _d->time );
+      cdate.timeStep(_d->saveTime);
+      _d->empire->timeStep(_d->saveTime);
+
+      screen.animate(_d->saveTime);
+    }
+    events::Dispatcher::instance().update( *this, _d->saveTime);
   }
 
   _d->nextFilename = screen.nextFilename();
   switch( screen.result() )
   {
-    case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;    
+    case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
     case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  load( screen.nextFilename() ); break;
+    case scene::Level::restart: _d->nextScreen = SCREEN_GAME;  load( _d->restartFile ); break;
     case scene::Level::loadBriefing: _d->nextScreen = SCREEN_BRIEFING; break;
     case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
     default: _d->nextScreen = SCREEN_QUIT;
@@ -365,17 +373,23 @@ void Game::setPaused(bool value)
   _d->pauseCounter = math::clamp( _d->pauseCounter + (value ? 1 : -1 ), 0, 99 );
 }
 
+void Game::step(unsigned int count)
+{
+  _d->manualTicksCounterX10 += count * 10;
+}
+
 Game::Game() : _d( new Impl )
 {
   _d->nextScreen = SCREEN_NONE;
   _d->pauseCounter = 0;
-  _d->time = 0;
+  _d->manualTicksCounterX10 = 0;
+  _d->timeX10 = 0;
   _d->saveTime = 0;
   _d->timeMultiplier = 70;
 }
 
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
-void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<int>( percent, 10, 300 );}
+void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, 10, 300 );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
 
 Game::~Game(){}
@@ -383,11 +397,12 @@ Game::~Game(){}
 void Game::save(std::string filename) const
 {
   GameSaver saver;
+  saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 }
 
 void Game::load(std::string filename)
-{  
+{
   Logger::warning( "Game: try load from " + filename );
 
   vfs::Path fPath( filename );
@@ -412,7 +427,7 @@ void Game::load(std::string filename)
 
   Logger::warning( "Game: reseting varialbes" );
   reset();
-  
+
   Logger::warning( "Game: init empire start options" );
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
                           GameSettings::rcpath( GameSettings::worldModel ) );
@@ -420,13 +435,14 @@ void Game::load(std::string filename)
   Logger::warning( "Game: try find loader" );
   GameLoader loader;
   _d->loadOk = loader.load( fPath, *this );
-  
+
   if( !_d->loadOk )
   {
     Logger::warning( "LOADING ERROR: can't load game from " + filename );
     return;
   }
 
+  _d->restartFile = loader.restartFile();
   Logger::warning( "Game: init player city" );
   world::CityPtr city = _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
   if( city.isNull() )
@@ -453,13 +469,22 @@ void Game::load(std::string filename)
   return;
 }
 
+void Game::Impl::initArchiveLoaders()
+{
+  vfs::FileSystem& fs = vfs::FileSystem::instance();
+  Logger::warning( "Game: initialize sg2 archive loader" );
+  fs.addArchiveLoader( new vfs::Sg2ArchiveLoader( &fs ) );
+  fs.addArchiveLoader( new vfs::ZipArchiveLoader( &fs ) );
+}
+
 void Game::initialize()
 {
   GameSettings::load();
+  _d->initArchiveLoaders();
   _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
   _d->initVideo();
   _d->initFontCollection( GameSettings::rcpath() );
-  _d->initGuiEnvironment();  
+  _d->initGuiEnvironment();
   _d->initSound();
   _d->createSaveDir();
 
@@ -525,6 +550,7 @@ void Game::reset()
   _d->empire = world::Empire::create();
   _d->player = Player::create();
   _d->pauseCounter = 0;
+  _d->manualTicksCounterX10 = 0;
   if( _d->city.isValid() )
   {
     _d->city->clean();

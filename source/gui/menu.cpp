@@ -12,7 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
+#include "gfx/layerconstants.hpp"
 #include "menu.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/picture.hpp"
@@ -36,7 +39,6 @@
 #include "objects/constants.hpp"
 #include "city/city.hpp"
 #include "events/playsound.hpp"
-#include "gfx/layerconstants.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -504,7 +506,9 @@ Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked();
 Signal0<>& ExtentMenu::onAdvisorsWindowShow(){  return _d->senateButton->onClicked(); }
 Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked(); }
 Signal0<>&ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
-void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
+Signal0<>&ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
+Signal0<>&ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
 
+void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
 }

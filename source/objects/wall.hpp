@@ -30,7 +30,6 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual bool isWalkable() const; 
-  virtual bool isRoad() const;
 
   void updatePicture(PlayerCityPtr city);
 

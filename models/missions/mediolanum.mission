@@ -1,0 +1,879 @@
+{
+  version : 1
+  map : "/maps/Mediolanum.sav"
+  funds : 8000
+  date : "-220.01.01"
+  finish : "-100.01.01"
+  climate : 1
+  adviserEnabled : true
+	
+  win :
+  {
+    population : 7000
+    culture : 40
+    prosperity : 25
+    peace : 40
+    favour : 30
+    next : "/missions/tutorial6.briefing"
+    title : "##win_procurator_title##"
+    may_continue : false
+    maxHouseLevel : "big_villa"
+    caption : "##mediolanum_5_title##"
+    overview :  [ "##mediolanum_5_overview##" ]
+  }
+	
+  empire : {
+    enabled : true
+
+    objects : {
+      ship : {
+        location : [ 709, 604 ]
+        name : "ship"
+        picture : "empire_bits_00112"
+      }
+
+      aqueduct : {
+        location : [ 170, 630 ]
+        name : "aqueduct"
+        picture : "empire_bits_00107"
+      }
+
+      palms : {
+        location : [ 490, 790 ]
+        name : "palms"
+        picture : "empire_bits_00111"
+      }
+
+      colosseum : {
+        location : [ 735, 495 ]
+        name : "colosseum"
+        picture : "empire_bits_00114"
+      }
+
+      rocks : {
+        location : [ 240, 440 ]
+        name : "rocks"
+        picture : "empire_bits_00106"
+      }
+
+      rocks2 : {
+        location : [ 530, 290 ]
+        name : "rocks2"
+        picture : "empire_bits_00115"
+      }
+
+      rocks3 : {
+        location : [ 1010, 440 ]
+        name : "rocks3"
+        picture : "empire_bits_00117"
+      }
+
+      palms2 : {
+        location : [ 1350, 630 ]
+        name : "palms2"
+        picture : "empire_bits_00121"
+      }
+    }
+
+    cities :
+    {    
+      Massilia : {
+        location : [ 500, 440 ]
+
+        land : true
+        sea : true
+        available : true
+
+        sells : { oil : 15, wine : 25 }
+        buys : { iron: 15, furniture: 15 }
+      }
+
+      Capua : {
+        location : [ 820, 560 ]
+
+        sea : true
+        land : true
+        available : true
+
+        sells : { meat : 25, clay : 25 }
+        buys : { weapon : 25 }
+      }
+    }
+  }
+  		
+  events :
+  {
+    population_milestone_500#messagebox : {
+      date : "-350.01.01"
+      population : 500
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }    
+    
+    population_milestone_1000#messagebox : {
+      date : "-350.01.01"
+      population : 1000
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }   
+        
+    population_milestone_2000#messagebox : {
+      date : "-350.01.01"
+      population : 2000
+      send2scribe : true
+      video : "/smk/Population1.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }   
+    
+    population_milestone_3000#messagebox : {
+      date : "-350.01.01"
+      population : 3000
+      send2scribe : true
+      video : "/smk/Population2.smk"
+      title : "##population_milestone##"
+      text : "##500_citzens_in_city##"
+    }
+    
+    first_colosseum_work#start_work : {
+      building : [ "colloseum" ]
+      no_troubles : true
+      type : "start_work"
+      action : {
+        message#messagebox : {
+          send2scribe : true
+          video : "/smk/1st_Glad.smk"
+          title : "##working_colloseum_title##"
+          text : "##working_colloseum_text##"
+        }
+      }
+    }
+
+    random_wolves#random_wolves : {
+      count : 10
+      maxWolves : 6
+    }
+
+    city_indebt#city_indebt : {
+      date : "-350.01.01"
+      type : "city_indebt"
+      count : 2
+      emperorMoney : 5000
+      video : "city_indebt.bik"
+      text : "##city_has_runout_money##"
+    }
+       
+    cursed_water#contaminated_water : {
+      date : "-219.01.01"
+      type : "contaminated_water"
+      population : 500
+      value : 20
+      action : {
+        message#messagebox : {
+          send2scribe : true
+          title : "##contaminated_water_title##"
+          text : "##contaminated_water_text##"
+        }
+      }
+    }
+
+    emperor_request_weapon#city_request : {
+      date : "-217.09.01"
+      reqtype : "good_request"
+      month : 24
+      good : { weapon : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    fire_1#random_fire : {
+      date : "-216.09.01"
+      strong : 10
+      exec : {
+        "step_1.video#messagebox" : {
+          title : "##city_fire_title##"
+          text : "##city_fire_text##"
+          video : "/smk/city_fire.smk"
+        }
+      }
+    }
+
+    emperor_request_furniture#city_request : {
+      date : "-215.08.01"
+      reqtype : "good_request"
+      month : 24
+      good : { furniture : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    emperor_request_3#city_request : {
+      date : "-210.07.01"
+      reqtype : "good_request"
+      month : 24
+      good : { timber : 15 }
+      success : { favour : 10 }
+      fail : { favour : -8, appendMonth : 24 }
+    }
+
+    emperor_request_4#city_request : {
+      date : "-205.07.01"
+      reqtype : "good_request"
+      month : 24
+      good : { weapon : 20 }
+      success : { favour : 10 }
+      fail : { favour : -8, appendMonth : 24 }
+    }
+
+    emperor_request_5#city_request : {
+      date : "-200.08.01"
+      reqtype : "good_request"
+      month : 24
+      good : { timber : 30 }
+      success : { favour : 10 }
+      fail : { favour : -8, appendMonth : 24 }
+    }
+
+    emperor_request_6#city_request : {
+      date : "-195.05.01"
+      reqtype : "good_request"
+      month : 24
+      good : { weapon : 30 }
+      success : { favour : 10 }
+      fail : { favour : -8, appendMonth : 24 }
+    }
+
+    emperor_request_7#city_request : {
+      date : "-190.04.01"
+      reqtype : "good_request"
+      month : 24
+      good : { weapon : 20 }
+      success : { favour : 10 }
+      fail : { favour : -8, appendMonth : 24 }
+    }
+
+    emperor_request_8#city_request : {
+      date : "-185.05.01"
+      reqtype : "good_request"
+      month : 24
+      good : { timber : 50 }
+      success : { favour : 10 }
+      fail : { favour : -8, appendMonth : 24 }
+    }
+
+    emperor_request_9#city_request : {
+      date : "-180.08.01"
+      reqtype : "good_request"
+      month : 24
+      good : { timber : 50 }
+      success : { favour : 10 }
+      fail : { favour : -8, appendMonth : 24 }
+    }
+
+    fire_1#random_fire : {
+      date : "-215.09.01"
+      strong : 8
+      exec : {
+        "step_1.video#messagebox" : {
+          title : "##city_fire_title##"
+          text : "##city_fire_text##"
+          video : "/smk/city_fire.smk"
+        }
+      }
+    }
+
+    barbarian_invasion#enemy_attack : {
+      date : "-217.10.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 4
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 2
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          date : "-217.10.01"
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_2#enemy_attack : {
+      date : "-216.06.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 8
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 5
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    collapse_1#random_collapse : {
+      date : "-214.11.01"
+      population : 60
+      strong : 10
+    }
+
+    barbarian_invasion_3#enemy_attack : {
+      date : "-215.04.01"
+      type : "enemy_attack"
+      target : "citizen"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_4#enemy_attack : {
+      date : "-214.04.01"
+      type : "enemy_attack"
+      target : "citizen"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_5#enemy_attack : {
+      date : "-211.04.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_5#enemy_attack : {
+      date : "-210.08.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_6#enemy_attack : {
+      date : "-205.05.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 32
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 20
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_7#enemy_attack : {
+      date : "-204.04.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 80
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 40
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_8#enemy_attack : {
+      date : "-202.02.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 35
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 35
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_9#enemy_attack : {
+      date : "-199.08.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 40
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_10#enemy_attack : {
+      date : "-195.09.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 16
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_11#enemy_attack : {
+      date : "-190.04.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 10
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 40
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_12#enemy_attack : {
+      date : "-185.08.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 90
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 30
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_13#enemy_attack : {
+      date : "-180.06.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 25
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 25
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_14#enemy_attack : {
+      date : "-175.06.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 20
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 30
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_15#enemy_attack : {
+      date : "-170.05.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 32
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 32
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_16#enemy_attack : {
+      date : "-165.04.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 16
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_17#enemy_attack : {
+      date : "-160.04.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 40
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_18#enemy_attack : {
+      date : "-155.04.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 40
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+  }
+	
+  buildoptions :
+  {
+    farm : "disable_all"
+    raw_material : "disable_all"
+    factory : "disable_all"
+    water : "enabled"
+    health : "enabled"
+    religion : "disable_all"
+    education : "enabled"
+    entertainment : "enabled"
+    govt : "enabled"
+    engineering : "disable_all"
+    security : "disable_all"
+    check_desirability : true
+                   
+    buildings : 
+    {
+      prefecture : true
+      engineering_post : true
+      plaza : true
+
+      quarry : true
+      clay_pit : true
+      iron_mine : true
+
+      pottery : true
+      weapons_workshop : true
+      furniture_workshop : true
+
+      forum_1 : false
+      garden : true
+      low_bridge : true
+      high_bridge : true
+      dock : true
+      wharf : true
+
+      small_ceres_temple : true
+      small_venus_temple : true
+      small_mars_temple : true
+      small_neptune_temple : true
+      small_mercury_temple : true
+
+      shipyard : true
+      market : true
+      granery : true
+      warehouse : true
+      school : true
+      academy : true
+      library : true
+      senate_1 : true
+      gatehouse : true
+      wall : true 
+      tower : true 
+      fort_legionaries : true
+      fort_javelin : true
+      fort_horse : true
+      military_academy : true
+      lumber_mill : true
+      barracks : true
+
+      baths : true
+      doctor : true
+      hospital : true
+      barber : true
+
+      wheat_farm : true
+      vegetable_farm : true
+    }
+  }
+}

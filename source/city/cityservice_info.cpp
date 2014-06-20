@@ -28,6 +28,7 @@
 #include "world/empire.hpp"
 #include "funds.hpp"
 #include "core/foreach.hpp"
+#include "cityservice_peace.hpp"
 #include "statistic.hpp"
 
 namespace city
@@ -100,7 +101,14 @@ void Info::update( const unsigned int time )
     last.tax = _city.funds().taxRate();
     last.cityWages = _city.funds().workerSalary();
     last.romeWages = _city.empire()->getWorkerSalary();
-    last.crimeLevel = city::Statistic::getCrimeLevel( &_city );
+    last.crimeLevel = city::Statistic::getCrimeLevel( &_city );    
+    last.peace = 0;
+
+    SmartPtr<Peace> peaceSrvc = ptr_cast<Peace>( _city.findService( Peace::getDefaultName() ) );
+    if( peaceSrvc.isValid() )
+    {
+      last.peace = peaceSrvc->value();
+    }
 
     if( yearChanged )
     {

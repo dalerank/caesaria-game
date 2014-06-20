@@ -40,10 +40,18 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+static unsigned int __getCost( BuildingPtr b )
+{
+  return MetaDataHolder::getData( b->type() ).getOption( MetaDataOptions::cost );
+}
+}
+
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
 : Soldier( city, type )
 {
   _setSubAction( check4attack );
+  setAttackPriority( attackAll );
   setAttackDistance( 1 );
 }
 
@@ -88,6 +96,8 @@ void EnemySoldier::_waitFinished()
   _setSubAction( check4attack );
 }
 
+EnemySoldier::AttackPriority EnemySoldier::_attackPriority() const { return _atPriority; }
+
 void EnemySoldier::_brokePathway(TilePos pos)
 {
   if( !_tryAttack() )
@@ -123,8 +133,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 
   for( unsigned int k=0; k <= range; k ++ )
   {
-    TilePos offset( k, k );
-    TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
+    TilesArray tiles = tmap.getRectangle( k, pos() );
 
     walker::Type rtype;
     foreach( tile, tiles )
@@ -134,7 +143,8 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
       foreach( i, tileWalkers )
       {
         rtype = (*i)->type();
-        if( rtype == type() || is_kind_of<Animal>(*i) || rtype  == walker::corpse
+        if( rtype == type() || is_kind_of<Animal>(*i) || is_kind_of<Fish>( *i)
+            || rtype  == walker::corpse
             || is_kind_of<EnemySoldier>(*i) || is_kind_of<ThrowingWeapon>(*i))
           continue;
 
@@ -208,19 +218,73 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
   BuildingList ret;
   Tilemap& tmap = _city()->tilemap();
 
+  std::set<TileOverlay::Group> excludeGroups;
+  excludeGroups.insert( building::disasterGroup );
+  excludeGroups.insert( building::roadGroup );
+
   for( unsigned int k=0; k <= range; k++ )
   {
-    TilePos offset( k, k );
-    TilesArray tiles = tmap.getRectangle( pos() - offset, pos() + offset );
+    TilesArray tiles = tmap.getRectangle( k, pos() );
 
     foreach( it, tiles )
     {
       BuildingPtr b = ptr_cast<Building>( (*it)->overlay() );
-      if( b.isValid() && b->group() != building::disasterGroup )
+      if( b.isValid() && !excludeGroups.count( b->group() ) )
       {
         ret.push_back( b );
       }
     }
+  }
+
+  if( ret.empty() )
+    return ret;
+
+  switch( _atPriority )
+  {
+  case attackFood:
+  case attackCitizen:
+  {
+    BuildingList tmpRet;
+    TileOverlay::Group needGroup = _atPriority == attackFood ? building::foodGroup : building::houseGroup;
+    foreach( it, ret )
+    {
+      if( (*it)->group() == needGroup )
+      {
+        tmpRet << *it;
+      }
+    }
+
+    if( !tmpRet.empty() )
+      return tmpRet;
+  }
+  break;
+
+  case attackBestBuilding:
+  {
+    BuildingPtr maxBuilding = ret.front();
+    unsigned int maxCost = __getCost( maxBuilding );
+
+    foreach( it, ret )
+    {
+      unsigned int cost = __getCost( *it );
+      if( cost > maxCost )
+      {
+        maxCost = cost;
+        maxBuilding = *it;
+      }
+    }
+
+    if( maxBuilding.isValid() )
+    {
+      ret.clear();
+      ret << maxBuilding;
+      return ret;
+    }
+  }
+  break;
+
+  default:
+  break;
   }
 
   return ret;
@@ -348,6 +412,8 @@ bool EnemySoldier::die()
 
   return created;
 }
+
+void EnemySoldier::setAttackPriority(EnemySoldier::AttackPriority who) {_atPriority = who;}
 
 void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)
 {

@@ -41,6 +41,11 @@
 
 using namespace gfx;
 
+namespace {
+CAESARIA_LITERALCONST(tiles)
+CAESARIA_LITERALCONST(goodStore)
+}
+
 class WarehouseTile : public ReferenceCounted
 {
 public:
@@ -62,7 +67,7 @@ public:
 void WarehouseTile::computePicture()
 {
   int picIdx = 0;
-  switch (_stock.type() )
+  switch( _stock.type() )
   {
   case Good::none: picIdx = 19; break;
   case Good::wheat: picIdx = 20; break;
@@ -81,17 +86,28 @@ void WarehouseTile::computePicture()
   case Good::furniture: picIdx = 72; break;
   case Good::pottery: picIdx = 76; break;
   case Good::fish: picIdx = 80; break;
+  case Good::prettyWine: picIdx = 44; break;
+  case Good::goodCount:
+    Logger::warning( "Unexpected good type: in warehouse");
+    _stock.setType( Good::none );
+    picIdx = 19;
+  break;
   default:
-      _CAESARIA_DEBUG_BREAK_IF( "Unexpected good type: " );
+    _CAESARIA_DEBUG_BREAK_IF( "Unexpected good type: " );
   }
 
   if (_stock.type() != Good::none)
   {
-    picIdx += _stock.qty()/100 -1;
+    int qty = _stock.qty();
+    // (0  , 100] -> 0
+    // (100, 200] -> 1
+    // (200, 300] -> 2
+    // (300, 400] -> 3
+    picIdx += (qty == 0) ?  0 : (qty - 1 ) / 100;
   }
 
   _picture = Picture::load( ResourceGroup::warehouse, picIdx );
-  _picture.addOffset(30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i()));
+  _picture.addOffset( TileHelper::tilepos2screen( _pos ) );
 }
 
 
@@ -405,7 +421,7 @@ void Warehouse::computePictures()
   foreach( whTile, _d->subTiles )
   {
      whTile->computePicture();
-     _fgPicturesRef()[index] = whTile->_picture;
+     _fgPicture( index ) = whTile->_picture;
      index++;
   }
 }
@@ -418,21 +434,21 @@ void Warehouse::save( VariantMap& stream ) const
   WorkingBuilding::save( stream );
 
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(Warehouse) ) );
-  stream[ "goodStore" ] = _d->goodStore.save();
+  stream[ lc_goodStore ] = _d->goodStore.save();
 
   VariantList vm_tiles;
   foreach( whTile, _d->subTiles ) { vm_tiles.push_back( whTile->_stock.save() ); }
 
-  stream[ "tiles" ] = vm_tiles;
+  stream[ lc_tiles ] = vm_tiles;
 }
 
 void Warehouse::load( const VariantMap& stream )
 {
   WorkingBuilding::load( stream );
 
-  _d->goodStore.load( stream.get( "goodStore" ).toMap() );
+  _d->goodStore.load( stream.get( lc_goodStore ).toMap() );
   
-  VariantList vm_tiles = stream.get( "tiles" ).toList();
+  VariantList vm_tiles = stream.get( lc_tiles ).toList();
   int tileIndex = 0;
   foreach( it, vm_tiles )
   {

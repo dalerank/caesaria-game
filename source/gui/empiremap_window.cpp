@@ -154,7 +154,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
   if( currentCity != 0 )
   {
     unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->getName() );
-    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::otherExpenditure, -(int)cost );
+    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -(int)cost );
     e->dispatch();
     empire->createTradeRoute( ourCity, currentCity->getName() );
 
@@ -379,7 +379,13 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
   if( !isVisible() )
     return;
 
-  engine.draw( _d->empireMap, _d->offset );
+  engine.draw( _d->empireMap, _d->offset );  
+
+  world::ObjectList objects = _d->empire->objects();
+  foreach( obj, objects )
+  {
+    engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
+  }
 
   world::CityList cities = _d->empire->cities();
   foreach( it, cities )
@@ -399,12 +405,6 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
     }
 
     engine.draw( _d->citypics[ index ], _d->offset + location );
-  }  
-
-  world::ObjectList objects = _d->empire->objects();
-  foreach( obj, objects )
-  {
-    engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
   }
 
   world::TraderouteList routes = _d->empire->tradeRoutes();

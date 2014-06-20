@@ -27,7 +27,7 @@ class InfoboxLand : public InfoboxSimple
 {
   static const int lbTextId=2;
 public:
-  InfoboxLand( Widget* parent, const gfx::Tile& tile );
+  InfoboxLand( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 
   virtual void setText( const std::string& text );
 };
@@ -35,7 +35,7 @@ public:
 class InfoboxFreeHouse : public InfoboxLand
 {
 public:
-  InfoboxFreeHouse( Widget* parent, const gfx::Tile& tile );
+  InfoboxFreeHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
 };
 
 

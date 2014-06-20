@@ -35,6 +35,8 @@ using namespace gfx;
 namespace {
 static const unsigned int defaultMaxWorkersNumber = 5;
 static const unsigned int defaultMaxServiceRange = 30;
+CAESARIA_LITERALCONST(delay)
+CAESARIA_LITERALCONST(range)
 }
 
 class ServiceBuilding::Impl
@@ -109,16 +111,16 @@ void ServiceBuilding::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
   stream[ "dateLastSend" ] = _d->dateLastSend;
-  stream[ "delay" ] = _d->serviceDelay;
-  stream[ "range" ] = _d->serviceRange;
+  stream[ lc_delay ] = _d->serviceDelay;
+  stream[ lc_range ] = _d->serviceRange;
 }
 
 void ServiceBuilding::load( const VariantMap& stream )
 {
   WorkingBuilding::load( stream );
   _d->dateLastSend = (int)stream.get( "dateLastSend", 0 );
-  _d->serviceDelay = (int)stream.get( "delay", 80 );
-  _d->serviceRange = (int)stream.get( "range", defaultMaxServiceRange );
+  _d->serviceDelay = (int)stream.get( lc_delay, 80 );
+  _d->serviceRange = (int)stream.get( lc_range, defaultMaxServiceRange );
 }
 
 int ServiceBuilding::serviceDelay() const{  return _d->serviceDelay;}

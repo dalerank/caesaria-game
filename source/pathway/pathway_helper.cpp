@@ -44,6 +44,18 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos, WayType type/*
   case deepWater: return p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
   case water: return p.getPath( startPos, stopPos, Pathfinder::waterOnly );
 
+  case deepWaterFirst:
+  {
+    Pathway ret = p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
+    if( !ret.isValid() )
+    {
+      ret = p.getPath( startPos, stopPos, Pathfinder::waterOnly );
+    }
+
+    return ret;
+  }
+  break;
+
   default:
   break;
   }
@@ -119,25 +131,27 @@ DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, consta
 
 Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius)
 {
+  TilePos offset( walkRadius / 2, walkRadius / 2 );
+  TilesArray tiles = city->tilemap().getArea( startPos - offset, startPos + offset );
+  tiles = tiles.walkableTiles( true );
+
   int loopCounter = 0; //loop limiter
-  do
+  if( !tiles.empty() )
   {
-    const Tilemap& tmap = city->tilemap();
-
-    TilePos destPos( std::rand() % walkRadius - walkRadius / 2, std::rand() % walkRadius - walkRadius / 2 );
-    destPos = (startPos+destPos).fit( TilePos( 0, 0 ), TilePos( tmap.size()-1, tmap.size()-1 ) );
-
-    if( tmap.at( destPos ).isWalkable( true) )
+    do
     {
-      Pathway pathway = create( startPos, destPos, PathwayHelper::allTerrain );
+      TilesArray::iterator destPos = tiles.begin();
+      std::advance( destPos, math::random( tiles.size() - 1 ) );
+
+      Pathway pathway = create( startPos, (*destPos)->pos(), PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {
         return pathway;
       }
     }
+    while( ++loopCounter < 20 );
   }
-  while( ++loopCounter < 20 );
 
   return Pathway();
 }

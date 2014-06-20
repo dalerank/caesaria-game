@@ -272,7 +272,7 @@ void AdvisorEntertainmentWindow::Impl::updateInfo()
       hpdServed += (house->hasServiceAccess( Service::hippodrome) ? habitants : 0);
     }
 
-    nextLevel += ((lspec.computeEntertainmentLevel( house ) - lspec.getMinEntertainmentLevel()) < 0 ? 1 : 0);
+    nextLevel += ((lspec.computeEntertainmentLevel( house ) - lspec.minEntertainmentLevel()) < 0 ? 1 : 0);
   }
 
   int allNeed = theatersNeed + amptNeed + clsNeed + hpdNeed;

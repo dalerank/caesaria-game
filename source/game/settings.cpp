@@ -42,7 +42,6 @@ __REG_PROPERTY(worklessCitizenAway)
 __REG_PROPERTY(fastsavePostfix)
 __REG_PROPERTY(saveExt)
 __REG_PROPERTY(workDir)
-__REG_PROPERTY(adviserEnabled)
 __REG_PROPERTY(c3gfx)
 __REG_PROPERTY(lastTranslation)
 __REG_PROPERTY(archivesModel)
@@ -116,7 +115,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
-  _d->options[ rectuterDistance    ] = 30;
+  _d->options[ rectuterDistance    ] = 35;
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;

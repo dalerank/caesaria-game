@@ -26,7 +26,8 @@ public:
 
   virtual bool load(const std::string& filename, Game& game);
   virtual bool isLoadableFileExtension( const std::string& filename );
-  virtual int  getClimateType(const std::string& filename);
+  virtual int  climateType(const std::string& filename);
+  virtual std::string restartFile() const;
 
 private:
   class Impl;

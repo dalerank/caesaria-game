@@ -27,7 +27,7 @@ class ServiceCreator : public ReferenceCounted
 {
 public:
   virtual SrvcPtr create( PlayerCityPtr city ) = 0;
-  virtual std::string getServiceName() const = 0;
+  virtual std::string serviceName() const = 0;
 };
 
 typedef SmartPtr<ServiceCreator> ServiceCreatorPtr;
@@ -42,7 +42,7 @@ public:
     return ret;
   }
 
-  virtual std::string getServiceName() const { return T::getDefaultName(); }
+  virtual std::string serviceName() const { return T::getDefaultName(); }
 };
 
 

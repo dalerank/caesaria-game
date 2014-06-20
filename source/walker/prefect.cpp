@@ -65,7 +65,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _setType( walker::prefect );
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
-  _d->action = Impl::patrol;
+  _d->action = Impl::doNothing;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -93,7 +93,7 @@ WalkerPtr Prefect::_looks4Enemy( int range )
 
   for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
   {
-    if( (*it)->agressive() == 0 ) { it = walkers.erase( it ); }
+    if( (*it)->agressive() <= 0 ) { it = walkers.erase( it ); }
     else { ++it; }
   }
 
@@ -208,8 +208,7 @@ void Prefect::_back2Patrol()
 
 bool Prefect::_figthFire()
 {
-  TilePos offset( 1, 1 );
-  TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset, pos() + offset );
+  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors);
 
   foreach( it, tiles )
   {
@@ -496,7 +495,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   {
     setBase( prefecture.object() );
 
-    _city()->addWalker( WalkerPtr( this ));
+    _city()->addWalker( this );
   }
   else
   {
@@ -507,6 +506,14 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
   {
     _d->endPatrolPoint = _pathwayRef().destination().pos();
   }
+}
+
+void Prefect::acceptAction(Walker::Action action, TilePos pos)
+{
+  ServiceWalker::acceptAction( action, pos );
+
+  _setAction( acFight );
+  _d->action = Impl::fightEnemy;
 }
 
 bool Prefect::die()

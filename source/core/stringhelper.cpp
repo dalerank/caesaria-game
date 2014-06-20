@@ -33,6 +33,11 @@ namespace {
 
 int StringHelper::vformat(std::string& str, int max_size, const char* format, va_list argument_list)
 {
+  if (format == NULL || format[0] == '\0') //au: VladRassokhin
+  {
+    return 0;
+  }
+
   const int INTERNAL_BUFFER_SIZE = 1024;
   static char buffer[INTERNAL_BUFFER_SIZE];
   char* buffer_ptr = buffer;

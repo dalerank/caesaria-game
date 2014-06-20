@@ -33,6 +33,11 @@ using namespace gfx;
 namespace events
 {
 
+namespace {
+CAESARIA_LITERALCONST(type)
+CAESARIA_LITERALCONST(name)
+}
+
 bool GameEvent::tryExec(Game& game, unsigned int time)
 {
   if( _mayExec( game, time ) )
@@ -50,15 +55,15 @@ void events::GameEvent::dispatch() { Dispatcher::instance().append( this );}
 VariantMap GameEvent::save() const
 {
   VariantMap ret;
-  ret[ "type" ] = Variant( _type );
-  ret[ "name" ] = Variant( _name );
+  ret[ lc_type ] = Variant( _type );
+  ret[ lc_name ] = Variant( _name );
   return ret;
 }
 
 void GameEvent::load(const VariantMap& stream)
 {
-  _type = stream.get( "type", Variant( _type ) ).toString();
-  _name = stream.get( "name", Variant( _name ) ).toString();
+  _type = stream.get( lc_type, Variant( _type ) ).toString();
+  _name = stream.get( lc_name, Variant( _name ) ).toString();
 }
 
 static const int windowGamePausedId = StringHelper::hash( "gamepause" );
@@ -74,7 +79,7 @@ GameEventPtr ClearLandEvent::create(const TilePos& pos)
   return ret;
 }
 
-bool ClearLandEvent::_mayExec(Game& game, unsigned int time) const{  return true;}
+bool ClearLandEvent::_mayExec(Game& game, unsigned int) const{  return true;}
 
 void ClearLandEvent::_exec( Game& game, unsigned int )
 {
@@ -163,7 +168,7 @@ GameEventPtr Pause::create( Mode mode )
   return ret;
 }
 
-bool Pause::_mayExec(Game& game, unsigned int time) const{  return true;}
+bool Pause::_mayExec(Game& game, unsigned int) const{  return true;}
 
 Pause::Pause() : _mode( unknown ) {}
 
@@ -208,6 +213,28 @@ void Pause::_exec(Game& game, unsigned int)
 }
 
 
+GameEventPtr Step::create(unsigned int count)
+{
+  Step* e = new Step(count);
+  GameEventPtr ret( e );
+  ret->drop();
+  return ret;
+}
+
+void Step::_exec(Game &game, unsigned int)
+{
+  game.step(_count);
+}
+
+bool Step::_mayExec(Game &game, unsigned int) const
+{
+  return game.isPaused();
+}
+
+Step::Step(unsigned int count):_count(count)
+{
+}
+
 GameEventPtr ChangeSpeed::create(int value)
 {
   ChangeSpeed* ev = new ChangeSpeed();
@@ -226,7 +253,10 @@ ChangeSpeed::ChangeSpeed()
 
 void ChangeSpeed::_exec(Game& game, unsigned int)
 {
-  game.changeTimeMultiplier( _value );
+  game.changeTimeMultiplier( _value );  
+
+  GameEventPtr e = WarningMessageEvent::create( _("##current_game_speed_is##") + StringHelper::i2str( game.timeMultiplier() ) + "%" );
+  e->dispatch();
 }
 
 } //end namespace events

@@ -27,9 +27,9 @@ namespace vfs
 class FileNative : public Entity
 {
 public:
-	FileNative( const Path& fileName, Entity::Mode mode=Entity::fmRead );
+  FileNative( const Path& fileName, Entity::Mode mode=Entity::fmRead );
 
-	FileNative();
+  FileNative();
 
   virtual ~FileNative();
 

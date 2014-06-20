@@ -75,11 +75,13 @@ Merchant::Merchant(PlayerCityPtr city )
 
 Merchant::~Merchant(){}
 
-DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& basket )
+DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& basket, PlayerCityPtr city)
 {
   DirectRoutes routes = pathPropagator.getRoutes( building::warehouse );
 
   std::map< int, DirectRoute > warehouseRating;
+
+  city::TradeOptions& options = city->tradeOptions();
 
   // select the warehouse with the max quantity of requested goods
   DirectRoutes::iterator routeIt = routes.begin();
@@ -91,12 +93,16 @@ DirectRoute getWarehouse4Buys( Propagator &pathPropagator, SimpleGoodStore& bask
     for( int i=Good::wheat; i<Good::goodCount; i++ )
     {
       Good::Type gtype = Good::Type(i);
+      if (!options.isExporting(gtype))
+      {
+        continue;
+      }
       int qty = warehouse->store().getMaxRetrieve( gtype );
       int need = basket.freeQty( gtype );
       rating = need > 0 ? ( qty ) : 0;
     }
 
-    rating = math::clamp( rating - routeIt->second->length(), 0, 999 );
+    rating = math::clamp<int>( rating - routeIt->second->length(), 0, 999 );
     warehouseRating[ rating ] = DirectRoute( routeIt->first, *routeIt->second.object() );
 
     ++routeIt;
@@ -145,7 +151,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       DirectRoute route;
 
       //try found any available warehouse for selling our goods
-      const GoodStore& buyOrders = city->exportingGoods();
+      const GoodStore& buyOrders = city->importingGoods();
 
       if( buyOrders.capacity() > 0 )
       {
@@ -191,7 +197,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       // try to find goods for city export 
       if( buy.capacity() > 0 )
       {
-        route = getWarehouse4Buys( pathPropagator, buy );
+        route = getWarehouse4Buys( pathPropagator, buy, city );
       }
       
       if( route.first.isValid() )
@@ -226,8 +232,12 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         for( int n = Good::wheat; n<Good::goodCount; ++n )
         {
           Good::Type goodType = (Good::Type) n;
+          if (!options.isExporting(goodType))
+          {
+            continue;
+          }
           int needQty = buy.freeQty( goodType );
-          int maySell = math::clamp( cityGoodsAvailable[ goodType ] - options.exportLimit( goodType ) * 100, 0, 9999 );
+          int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - options.exportLimit( goodType ) * 100, 0, 9999 );
           
           if( needQty > 0 && maySell > 0)
           {
@@ -293,14 +303,19 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       city::Helper helper( city );
       WarehousePtr warehouse = helper.find<Warehouse>( building::warehouse, destBuildingPos );
 
-      const GoodStore& cityOrders = city->exportingGoods();
+      const GoodStore& cityOrders = city->importingGoods();
 
       if( warehouse.isValid() )
       {
+        city::TradeOptions& options = city->tradeOptions();
         //try sell goods
         for (int n = Good::wheat; n<Good::goodCount; ++n)
         {
           Good::Type goodType = (Good::Type)n;
+          if (!options.isImporting(goodType))
+          {
+            continue;
+          }
           int qty4sell = sell.qty( goodType );
           if( qty4sell > 0 && cityOrders.capacity( goodType ) > 0 )
           {

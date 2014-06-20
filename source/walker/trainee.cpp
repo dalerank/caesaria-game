@@ -36,7 +36,7 @@ public:
   NecessaryBuildings necBuildings;  // list of buildings needing this trainee
   BuildingPtr base;
   BuildingPtr destination;
-  int maxDistance;
+  unsigned int maxDistance;
   float maxNeed;  // evaluates the need for that trainee
 };
 
@@ -103,7 +103,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
   DirectRoute droute;
   _d->maxNeed = 0;
-  int minDistance = _d->maxDistance;
+  unsigned int minDistance = _d->maxDistance;
 
   foreach( itile, startArea )
   {
@@ -116,7 +116,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
       float curNeed = bld->evaluateTrainee( type() );
       if( way.isValid()
           && _d->maxNeed < curNeed
-          && way.length() <minDistance)
+          && way.length() < minDistance)
       {
         _d->maxNeed = curNeed;
         droute = DirectRoute( bld.object(), way );

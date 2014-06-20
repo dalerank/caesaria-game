@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_INFOBOX_MANAGER_H_INCLUDE_
 #define __CAESARIA_INFOBOX_MANAGER_H_INCLUDE_
@@ -44,7 +46,7 @@ public:
   bool canCreate( const gfx::TileOverlay::Type type ) const;
 private:
   InfoboxManager();
-  ~InfoboxManager();
+  virtual ~InfoboxManager();
    
   class Impl;
   ScopedPtr< Impl > _d;

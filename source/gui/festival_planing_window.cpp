@@ -17,6 +17,7 @@
 
 #include "festival_planing_window.hpp"
 #include "label.hpp"
+#include "game/enums.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/decorator.hpp"
 #include "core/event.hpp"
@@ -29,6 +30,7 @@
 #include "core/stringhelper.hpp"
 #include "religion/pantheon.hpp"
 #include "core/logger.hpp"
+#include "city/statistic.hpp"
 
 using namespace religion;
 using namespace gfx;
@@ -39,11 +41,12 @@ namespace gui
 class FestivalPlaningWindow::Impl
 {
 public:
-  typedef enum { divId=0x200, festId=0x400, smallFest=1, middleFest, greatFest } FestID;
+  typedef enum { divId=0x200, festId=0x400 } FestID;
   PictureRef background;
   Label* title;
   Label* festivalName;
   int festivalType;
+  unsigned int festivalCost;
   std::vector<TexturedButton*> godBtns;
   std::map<int, RomeDivinityType > divines;
 
@@ -64,8 +67,8 @@ public oc3_signals:
 
 public:
   void assignFestival()
-  {
-    onFestivalAssignSignal.emit( (int)currentDivinity, festivalType );
+  {    
+    oc3_emit onFestivalAssignSignal( (int)currentDivinity, festivalType );
   }
 
   void addImage( Widget* parent, RomeDivinityType type, int column, int startPic )
@@ -83,8 +86,8 @@ public:
     DivinityPtr divinity = rome::Pantheon::get( currentDivinity );
 
     std::string text = StringHelper::format( 0xff, "##hold_%s_festival##", divinity.isValid()
-                                                                                ? divinity->getDebugName().c_str()
-                                                                                : "unknown" );
+                                                                              ? divinity->getDebugName().c_str()
+                                                                              : "unknown" );
     title->setText( _(text) );
   }
 };
@@ -126,33 +129,33 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
   _d->festivalName = new Label( this, Rect( 145, height() - 52, 145 + 200, height() - 22), "##small_festival##" );
 
-  _d->festivalType = Impl::smallFest;
+  _d->festivalType = smallFest;
 
   _d->btnHelp = new TexturedButton( this, Point( 52, height() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
-  int festivalCost = floor( _d->city->population() / 20 ) + 10;
+  _d->festivalCost = city::Statistic::getFestivalCost( city, smallFest );
 
   _d->btnSmallFestival = new PushButton( this, Rect( 95, 170, width() - 95, 170 + 25),
-                                         StringHelper::format( 0xff, "%s %d", _("##small_festival##"), festivalCost ),
-                                         Impl::festId+Impl::smallFest, false, PushButton::whiteBorderUp );
+                                         StringHelper::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ),
+                                         Impl::festId+smallFest, false, PushButton::whiteBorderUp );
   _d->btnSmallFestival->setTextAlignment( align::upperLeft, align::center );
-  //_d->btnSmallFestival->setIsPushButton( true );
+  _d->btnSmallFestival->setIsPushButton( true );
 
-  festivalCost = floor( _d->city->population() / 10 ) + 20;
+  _d->festivalCost = city::Statistic::getFestivalCost( city, middleFest );
   _d->btnMiddleFestival = new PushButton( this, _d->btnSmallFestival->relativeRect() + Point( 0, 30 ),
-                                          StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), festivalCost ),
-                                          Impl::festId+Impl::middleFest, false, PushButton::whiteBorderUp );
+                                          StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ),
+                                          Impl::festId+middleFest, false, PushButton::whiteBorderUp );
   _d->btnMiddleFestival->setTextAlignment( align::upperLeft, align::center );
-  //_d->btnMiddleFestival->setIsPushButton( true );
+  _d->btnMiddleFestival->setIsPushButton( true );
 
-  festivalCost = floor( _d->city->population() / 5 ) + 40;
+  _d->festivalCost = city::Statistic::getFestivalCost( city, greatFest );
   _d->btnGreatFestival = new PushButton( this, _d->btnMiddleFestival->relativeRect() + Point( 0, 30 ),
-                                         StringHelper::format( 0xff, "%s %d", _("##great_festival##"), festivalCost  ),
-                                         Impl::festId+Impl::greatFest, false, PushButton::whiteBorderUp );
+                                         StringHelper::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost  ),
+                                         Impl::festId+greatFest, false, PushButton::whiteBorderUp );
   _d->btnGreatFestival->setTextAlignment( align::upperLeft, align::center );
-  //_d->btnGreatFestival->setIsPushButton( true );
+  _d->btnGreatFestival->setIsPushButton( true );
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
   _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
@@ -192,10 +195,16 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
     }
     else if( btn && (btn->getID() & Impl::festId ) )
     {
+      _d->btnSmallFestival->setPressed( false );
+      _d->btnMiddleFestival->setPressed( false );
+      _d->btnGreatFestival->setPressed( false );
+
       StringArray titles;
       titles << "" << "##small_festival##" << "##middle_festival##" << "##great_festival##";
       _d->festivalType = (btn->getID() & 0xf);
       _d->festivalName->setText( _( titles[ _d->festivalType ] ) );
+
+      btn->setPressed( true );
     }
 
     return true;

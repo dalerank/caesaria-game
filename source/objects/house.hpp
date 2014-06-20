@@ -81,7 +81,7 @@ public:
 
   virtual double getState( ParameterType param) const;
 
-  int workersCount() const;
+  unsigned int workersCount() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
@@ -93,17 +93,18 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
-  int maxHabitants();
+  unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int count );
   const CitizenGroup& habitants() const;
 
   float collectTaxes();
-  DateTime getLastTaxation() const;
+  float taxesThisYear() const;
+  DateTime lastTaxationDate() const;
 
   std::string getEvolveInfo() const;
 
-  virtual int getRoadAccessDistance() const;
+  virtual int roadAccessDistance() const;
 
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
@@ -122,6 +123,7 @@ private:
   void _tryEvolve_1_to_11_lvl( int level, int startSmallPic, int startBigPic, const char desirability );
   void _tryEvolve_12_to_20_lvl(int level4grow, int startPic, int minSize, const char desirability);
   void _tryDegrage_11_to_2_lvl( int smallPic, int bigPic, const char desirability );
+  void _tryDegrade_20_to_12_lvl(int startPicId, int size, const char desirability);
   void _makeOldHabitants();
   void _updateHabitants(const CitizenGroup& group);
   void _checkEvolve();

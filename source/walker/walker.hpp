@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WALKER_H_INCLUDE_
 #define _CAESARIA_WALKER_H_INCLUDE_
@@ -61,7 +61,9 @@ public:
   void setSpeed(const float speed);
   float speed() const;
   void setSpeedMultiplier( float koeff );
+
   void setUniqueId( const UniqueId uid );
+  UniqueId uniqueId() const;
 
   constants::Direction getDirection() const;
   Walker::Action action() const;

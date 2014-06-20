@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "city.hpp"
 #include "objects/construction.hpp"
@@ -77,9 +77,16 @@
 #include "cityservice_health.hpp"
 #include <set>
 #include "cityservice_military.hpp"
+#include "cityservice_peace.hpp"
 
 using namespace constants;
 using namespace gfx;
+
+namespace {
+CAESARIA_LITERALCONST(tilemap)
+CAESARIA_LITERALCONST(walkerIdCount)
+CAESARIA_LITERALCONST(adviserEnabled)
+}
 
 typedef std::vector< city::SrvcPtr > CityServices;
 
@@ -94,19 +101,14 @@ public:
     }
 
     _grid.clear();
-  }
-
-  unsigned int hash( const TilePos& pos )
-  {
-    return (pos.i() << 16) + pos.j();
-  }
+  }  
 
   void append( WalkerPtr& a )
   {
     const TilePos& pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      _grid[ hash( pos ) ].push_back( a );
+      _grid[ TileHelper::hash( pos ) ].push_back( a );
     }
   }
 
@@ -115,7 +117,7 @@ public:
     TilePos pos = a->pos();
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      WalkerList& d = _grid[ hash( pos ) ];
+      WalkerList& d = _grid[ TileHelper::hash( pos ) ];
       foreach( it, d )
       {
         if( *it == a )
@@ -131,7 +133,7 @@ public:
   {
     if( pos.i() >= 0 && pos.j() >= 0 )
     {
-      return _grid[ hash( pos ) ];
+      return _grid[ TileHelper::hash( pos ) ];
     }
     else
     {
@@ -149,6 +151,7 @@ private:
 class PlayerCity::Impl
 {
 public:
+  typedef std::map<PlayerCity::OptionType, int> Options;
   int population;
   city::Funds funds;  // amount of money
   std::string name;
@@ -171,9 +174,10 @@ public:
   city::BuildOptions buildOptions;
   city::TradeOptions tradeOptions;
   city::VictoryConditions targets;
-
+  Options options;
   ClimateType climate;   
   UniqueId walkerIdCount;
+  int sentiment;
 
   // collect taxes from all houses
   void collectTaxes( PlayerCityPtr city);
@@ -201,6 +205,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
+  _d->sentiment = 50;
 
   addService( city::Migration::create( this ) );
   addService( city::WorkersHire::create( this ) );
@@ -218,6 +223,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   addService( city::Military::create( this ) );
   addService( audio::Player::create( this ) );
   addService( city::HealthCare::create( this ));
+  addService( city::Peace::create( this ) );
 }
 
 void PlayerCity::timeStep(unsigned int time)
@@ -460,7 +466,8 @@ void PlayerCity::save( VariantMap& stream) const
   VariantMap vm_tilemap;
   _d->tilemap.save( vm_tilemap );
 
-  stream[ "tilemap"    ] = vm_tilemap;
+  stream[ lc_tilemap    ] = vm_tilemap;
+  stream[ lc_walkerIdCount   ] = (unsigned int)_d->walkerIdCount;
 
   Logger::warning( "City: save main paramters ");
   stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
@@ -469,6 +476,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
   stream[ "climate"    ] = _d->climate;
+  stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
   stream[ "population" ] = _d->population;
   stream[ "name"       ] = Variant( _d->name );
 
@@ -518,17 +526,20 @@ void PlayerCity::save( VariantMap& stream) const
 void PlayerCity::load( const VariantMap& stream )
 {
   Logger::warning( "City: start parse savemap" );
-  _d->tilemap.load( stream.get( "tilemap" ).toMap() );
+  _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
+  _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
 
   Logger::warning( "City: parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
   _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
   _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
-  _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );
+  _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );  
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
   _d->name = stream.get( "name" ).toString();
+
+  setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );
@@ -651,10 +662,11 @@ city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
 void PlayerCity::setLocation( const Point& location ) {   _d->location = location; }
 Point PlayerCity::location() const {   return _d->location; }
-const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.exportingGoods(); }
-const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.importingGoods(); }
+const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
+const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
+void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
@@ -666,6 +678,12 @@ int PlayerCity::prosperity() const
 {
   SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::getDefaultName() ) );
   return csPrsp.isValid() ? csPrsp->getValue() : 0;
+}
+
+int PlayerCity::getOption(PlayerCity::OptionType opt) const
+{
+  Impl::Options::const_iterator it = _d->options.find( opt );
+  return (it != _d->options.end() ? it->second : 0 );
 }
 
 void PlayerCity::clean()
@@ -691,8 +709,13 @@ int PlayerCity::culture() const
 
 int PlayerCity::peace() const
 {
-  //CityServicePtr csPrsp = findService( CityServicePeace::getDefaultName() );
-  return 0;//csPrsp.isValid() ? csPrsp.as<CityServiceCulture>()->getValue() : 0;
+  SmartPtr<city::Peace> peace = ptr_cast<city::Peace>( findService( city::Peace::getDefaultName() ) );
+  return peace.isValid() ? peace->value() : 0;
+}
+
+int PlayerCity::sentiment() const
+{
+  return _d->sentiment;
 }
 
 int PlayerCity::favour() const { return empire()->emperor().relation( getName() ); }

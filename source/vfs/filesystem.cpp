@@ -20,7 +20,6 @@
 #include "directory.hpp"
 #include "core/foreach.hpp"
 #include "entries.hpp"
-#include "archive_zip.hpp"
 #include "core/logger.hpp"
 
 #if defined (CAESARIA_PLATFORM_WIN)
@@ -88,8 +87,6 @@ FileSystem::FileSystem() : _d( new Impl )
   //! reset current working directory
 
   workingDirectory();
-
-  _d->archiveLoaders.push_back(new ZipArchiveLoader(this));
 }
 
 
@@ -706,7 +703,7 @@ DateTime FileSystem::getFileUpdateTime(const Path& filename) const
   struct tm *foo;
   struct stat attrib;
   stat( filename.toString().c_str(), &attrib);
-  foo = gmtime(&(attrib.st_mtime));
+  foo = gmtime((const time_t*)&(attrib.st_mtime));
 
   return DateTime( foo->tm_year, foo->tm_mon+1, foo->tm_mday+1,
                    foo->tm_hour, foo->tm_min, foo->tm_sec );

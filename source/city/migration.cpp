@@ -174,7 +174,7 @@ std::string Migration::getReason() const
         return "##migration_middle_lack_workless##";
       }
 
-      return "##migration_lack_jobs##";
+      return "##migration_lack_workless##";
     }
 
     int diffWages = params.romeWages - params.cityWages;
@@ -269,9 +269,10 @@ void Migration::Impl::createMigrationToCity( PlayerCity& city )
     return;
   }
 
-  WalkerList walkers = city.getWalkers( walker::emigrant );
+  EmigrantList migrants;
+  migrants << city.getWalkers( walker::any );
 
-  if( vh <= walkers.size() * 5 )
+  if( vh <= migrants.size() * 5 )
   {
     return;
   }

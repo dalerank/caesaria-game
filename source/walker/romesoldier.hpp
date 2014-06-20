@@ -30,9 +30,11 @@ public:
 
   virtual bool die();
   virtual void timeStep(const unsigned long time);
+  virtual void return2fort();
   virtual void send2patrol();
 
   virtual void save(VariantMap &stream) const;
+  virtual FortPtr base() const;
   virtual void load(const VariantMap &stream);
 
   virtual ~RomeSoldier();

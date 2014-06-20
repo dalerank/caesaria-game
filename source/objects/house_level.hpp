@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_HOUSE_LEVEL_H_INCLUDE_
 #define _CAESARIA_HOUSE_LEVEL_H_INCLUDE_
@@ -72,13 +72,12 @@ public:
   float evaluateReligionNeed(HousePtr house, const Service::Type service);
   // float evaluateFoodNeed(House &house, const ServiceType service);
 
-
-  int getMinEntertainmentLevel() const;
-  int getMinEducationLevel() const;
+  int minEntertainmentLevel() const;
+  int minEducationLevel() const;
 //    int getMinHealthLevel();
-  int getMinReligionLevel() const;
+  int minReligionLevel() const;
 //    int getMinWaterLevel();
-  int getMinFoodLevel() const;
+  int minFoodLevel() const;
   ~HouseSpecification();
   HouseSpecification();
   HouseSpecification( const HouseSpecification& other );
@@ -94,9 +93,9 @@ class HouseSpecHelper
 public:
   static HouseSpecHelper& instance();
 
-  HouseSpecification getHouseLevelSpec(const int houseLevel);
-  int getHouseLevel(const int houseId);
-  int getHouseLevel( const std::string& name );
+  HouseSpecification getSpec(const int houseLevel);
+  int geLevel(const int houseId);
+  int geLevel( const std::string& name );
   void initialize( const vfs::Path& filename );
 
   ~HouseSpecHelper();

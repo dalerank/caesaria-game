@@ -23,19 +23,20 @@
 
     lbDate#Label : {
       geometry : [ 36, 45, 76, 60 ]
-      text : "##scrw_date##
+      text : "##scrw_date##"
       font : "FONT_1"
     }
 
     lbDate#Label : {
       geometry : [ 120, 45, 180, 60 ]
-      text : "##scrw_subject##
+      text : "##scrw_subject##"
       font : "FONT_1"
     }
     
     btnExit#TexturedButton :
     {
       geometry : [ "pw-40", "ph-40", "pw-16", "ph-16" ]
+      tooltip : "##exit_this_panel##"
       normal : [ "paneling", 532 ]
       hovered : [ "paneling", 533 ]
       pressed : [ "paneling", 534 ]

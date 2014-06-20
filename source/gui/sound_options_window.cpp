@@ -23,6 +23,10 @@
 #include "core/stringhelper.hpp"
 #include "sound/constants.hpp"
 
+namespace {
+const char* ui_model = "/gui/soundoptions.gui";
+}
+
 namespace gui
 {
 
@@ -49,7 +53,7 @@ SoundOptionsWindow::SoundOptionsWindow(Widget* parent, int gameSound, int ambien
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->locker.activate();
-  setupUI( GameSettings::rcpath( "/gui/soundoptions.gui" ) );
+  setupUI( GameSettings::rcpath( ui_model ) );
 
   setCenter( parent->center() );
 

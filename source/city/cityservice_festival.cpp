@@ -18,9 +18,12 @@
 #include "cityservice_festival.hpp"
 #include "game/gamedate.hpp"
 #include "city.hpp"
+#include "city/statistic.hpp"
 #include "religion/pantheon.hpp"
 #include "events/showfeastwindow.hpp"
 #include "events/updatecitysentiment.hpp"
+#include "events/fundissue.hpp"
+#include "city/funds.hpp"
 
 using namespace religion;
 
@@ -65,6 +68,9 @@ void Festival::assignFestival( RomeDivinityType name, int size )
   _d->festivalDate = GameDate::current();
   _d->festivalDate.appendMonth( 2 + size );
   _d->divinity = name;
+
+  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, city::Statistic::getFestivalCost( &_city, (FestivalType)size ) );
+  e->dispatch();
 }
 
 Festival::Festival(PlayerCityPtr city )

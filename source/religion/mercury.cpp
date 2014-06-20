@@ -60,7 +60,7 @@ void Mercury::_doWrath(PlayerCityPtr city)
     for( int i=Good::none; i < Good::goodCount; i++ )
     {
       Good::Type gtype = (Good::Type)i;
-      int goodQty = math::random( store.qty( gtype ) );
+      int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
         GoodStock rmStock( gtype, goodQty );

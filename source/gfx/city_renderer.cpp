@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "city_renderer.hpp"
 
@@ -144,7 +144,7 @@ void CityRenderer::Impl::setLayer(int type)
   }
 
   currentLayer->init( currentCursorPos );
-  oc3_emit onLayerSwitchSignal( type );
+  oc3_emit onLayerSwitchSignal( currentLayer->type() );
 }
 
 void CityRenderer::render()
@@ -178,6 +178,11 @@ void CityRenderer::handleEvent( NEvent& event )
   _d->currentLayer->handleEvent( event );
 }
 
+int CityRenderer::layerType() const
+{
+  return _d->currentLayer->type();
+}
+
 void CityRenderer::setMode( Renderer::ModePtr command )
 {
   _d->changeCommand = command;
@@ -191,7 +196,7 @@ void CityRenderer::setMode( Renderer::ModePtr command )
 
 void CityRenderer::animate(unsigned int time)
 {
-  const TilesArray& visibleTiles = _d->camera.getTiles();
+  const TilesArray& visibleTiles = _d->camera.tiles();
 
   for( TilesArray::const_iterator i=visibleTiles.begin(); i != visibleTiles.end(); ++i )
   {
@@ -199,9 +204,24 @@ void CityRenderer::animate(unsigned int time)
   }
 }
 
+void CityRenderer::rotateRight()
+{
+  _d->tilemap->turnRight();
+  _d->camera.refresh();
+  _d->camera.tiles();
+}
+
+void CityRenderer::rotateLeft()
+{
+  _d->tilemap->turnLeft();
+  _d->camera.refresh();
+  _d->camera.tiles();
+}
+
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::getMode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer(LayerPtr layer){  _d->layers.push_back( layer ); }
+void CityRenderer::setLayer(int layertype) { _d->setLayer( layertype ); }
 TilePos CityRenderer::getTilePos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
 Signal1<int>&CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }

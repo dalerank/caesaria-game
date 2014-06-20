@@ -17,6 +17,7 @@
 
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
+#include "cityservice_workershire.hpp"
 #include "gfx/tilemap.hpp"
 
 using namespace constants;
@@ -69,6 +70,12 @@ TilesArray Helper::getAroundTiles(TileOverlayPtr overlay)
 TilesArray Helper::getArea(TilePos start, TilePos stop)
 {
   return _city->tilemap().getArea( start, stop );
+}
+
+HirePriorities Helper::getHirePriorities() const
+{
+  SmartPtr<WorkersHire> wh = ptr_cast<WorkersHire>( _city->findService( WorkersHire::getDefaultName() ) );
+  return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 
 float Helper::getBalanceKoeff()

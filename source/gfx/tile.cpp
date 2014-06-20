@@ -57,6 +57,7 @@ void Tile::Terrain::clearFlags()
 Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 {
   _pos = pos;
+  _epos = pos;
   _master = NULL;
   _wasDrawn = false;
   _overlay = NULL;
@@ -86,10 +87,11 @@ bool Tile::isFlat() const
            : !(_terrain.rock || _terrain.elevation || _terrain.tree || _terrain.aqueduct) );
 }
 
-TilePos Tile::pos() const{  return _pos; }
+const TilePos& Tile::pos() const{ return _pos; }
+void Tile::setEPos(const TilePos& epos) { _epos = epos; }
 Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
-Point Tile::mapPos() const{  return Point( x_tileBase * ( _pos.i() + _pos.j() ), y_tileBase * ( _pos.i() - _pos.j() ) );}
+Point Tile::mapPos() const{  return Point( x_tileBase * ( _epos.i() + _epos.j() ), y_tileBase * ( _epos.i() - _epos.j() ) );}
 
 void Tile::animate(unsigned int time)
 {
@@ -283,6 +285,16 @@ int TileHelper::encode(const Tile& tt)
   res += tt.getFlag( Tile::tlDeepWater ) ? 0x08000 : 0;
   res += tt.getFlag( Tile::tlRift )      ? 0x10000 : 0;
   return res;
+}
+
+unsigned int TileHelper::hash(const TilePos& pos)
+{
+  return (pos.i() << 16) + pos.j();
+}
+
+Point TileHelper::tilepos2screen(const TilePos& pos)
+{
+  return Point( 30 * (pos.i()+pos.j()), 15 * pos.z() );
 }
 
 void TileHelper::decode(Tile& tile, const int bitset)

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "building.hpp"
 
@@ -44,7 +44,10 @@ class Building::Impl
 {
 public:
   typedef std::map< constants::walker::Type, int> TraineeMap;
+
   TraineeMap traineeMap;  // current level of trainees working in the building (0..200)
+  std::set<Service::Type> reservedServices;  // a serviceWalker is on the way
+
   int stateDecreaseInterval;
 };
 
@@ -58,18 +61,7 @@ Building::Building(const TileOverlay::Type type, const Size& size )
 
 Building::~Building() {}
 
-void Building::initTerrain( Tile &tile )
-{
-  // here goes the problem
-  // when we reset tile, we delete information
-  // about it's original information
-  // try to fix
-  bool saveMeadow = tile.getFlag( Tile::tlMeadow );
-  bool saveWater = tile.getFlag( Tile::tlWater );
-  tile.setFlag( Tile::clearAll, true );
-  tile.setFlag( Tile::tlMeadow, saveMeadow);
-  tile.setFlag( Tile::tlWater, saveWater );
-}
+void Building::initTerrain( Tile& ) {}
 
 void Building::timeStep(const unsigned long time)
 {
@@ -103,7 +95,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
    Service::Type service = walker->serviceType();
-   if(_reservedServices.count(service) == 1)
+   if(_d->reservedServices.count(service) == 1)
    {
       // service is already reserved
       return 0.0;
@@ -118,15 +110,16 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
-void Building::reserveService(const Service::Type service) {   _reservedServices.insert(service);}
-void Building::cancelService(const Service::Type service){   _reservedServices.erase(service);}
+void Building::reserveService(const Service::Type service) { _d->reservedServices.insert(service);}
+bool Building::isServiceReserved( const Service::Type service ) { return _d->reservedServices.count(service)>0; }
+void Building::cancelService(const Service::Type service){ _d->reservedServices.erase(service);}
 
 void Building::applyService( ServiceWalkerPtr walker)
 {
    // std::cout << "apply service" << std::endl;
    // remove service reservation
    Service::Type service = walker->serviceType();
-   _reservedServices.erase(service);
+   _d->reservedServices.erase(service);
 
    switch( service )
    {

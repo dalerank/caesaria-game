@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "workerhunter.hpp"
 #include "objects/house.hpp"
@@ -19,7 +21,7 @@
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
 #include "servicewalker_helper.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "game/enums.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/path_finding.hpp"
@@ -41,9 +43,10 @@ class Recruter::Impl
 public:
   typedef std::map< building::Group, int > PriorityMap;
 
-  int needWorkers;
+  unsigned int needWorkers;
   city::HirePriorities priority;
   PriorityMap priorityMap;
+  unsigned int reachDistance;
 
 public:
   bool isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding );
@@ -53,6 +56,7 @@ Recruter::Recruter(PlayerCityPtr city )
  : ServiceWalker( city, Service::recruter ), _d( new Impl )
 {    
   _d->needWorkers = 0;
+  _d->reachDistance = 2;
   _setType( walker::recruter );
 }
 
@@ -61,7 +65,7 @@ void Recruter::hireWorkers( const int workers )
   WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
   if( wbase.isValid() ) 
   {
-    _d->needWorkers = math::clamp( _d->needWorkers - workers, 0, 0xff );
+    _d->needWorkers = math::clamp( _d->needWorkers - workers, 0u, 0xffu );
     wbase->addWorkers( workers );
   }
 }
@@ -106,7 +110,7 @@ void Recruter::_centerTile()
         if( priorityOver )
         {
           WorkingBuildingPtr wbld = *it;
-          int numWorkers = std::min<int>( wbld->numberWorkers(), _d->needWorkers );
+          int numWorkers = std::min( wbld->numberWorkers(), _d->needWorkers );
           wbld->removeWorkers( numWorkers );
           hireWorkers( numWorkers );
         }
@@ -136,6 +140,17 @@ void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
   _d->needWorkers = workersNeeded;
   ServiceWalker::send2City( building.object(), ServiceWalker::goLowerService | ServiceWalker::anywayWhenFailed );
 }
+
+void Recruter::once(WorkingBuildingPtr building, const unsigned int workersNeed, unsigned int distance )
+{
+  _d->needWorkers = workersNeed;
+  _d->reachDistance = distance;
+  setBase( ptr_cast<Building>( building ) );
+  setPos( building->pos() );
+  _centerTile();
+}
+
+unsigned int Recruter::reachDistance() const { return _d->reachDistance;}
 
 void Recruter::save(VariantMap& stream) const
 {

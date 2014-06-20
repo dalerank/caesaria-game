@@ -11,7 +11,10 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 
 #include <cstdio>
 
@@ -98,8 +101,17 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
   _d->lbBlackFrame = findChildA<Label*>( "lbBlackFrame", true, this );
   _d->lbText = findChildA<Label*>( "lbText", true, this );
 
-  if( _d->btnExit ) { _d->btnExit->setPosition( Point( width() - 39, height() - 39 ) ); }
-  if( _d->btnHelp ) { _d->btnHelp->setPosition( Point( 14, height() - 39 ) ); }
+  if( _d->btnExit )
+  {
+    _d->btnExit->setPosition( Point( width() - 39, height() - 39 ) );
+    _d->btnExit->bringToFront();
+  }
+
+  if( _d->btnHelp )
+  {
+    _d->btnHelp->setPosition( Point( 14, height() - 39 ) );
+    _d->btnHelp->bringToFront();
+  }
 
   CONNECT( _d->btnExit, onClicked(), this, InfoboxSimple::deleteLater );
   CONNECT( _d->btnHelp, onClicked(), this, InfoboxSimple::showDescription );

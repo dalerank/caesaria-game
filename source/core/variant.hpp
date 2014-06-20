@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_VARIANT_H_INCLUDE__
 #define __CAESARIA_VARIANT_H_INCLUDE__
@@ -216,6 +218,7 @@ class Variant
     //LineF toLineF() const;
     RectF toRectf() const;
 
+    operator unsigned int() const { return toUInt(); }
     operator int() const { return toInt(); }
     operator float() const { return toFloat(); }
     operator bool() const { return toBool(); }

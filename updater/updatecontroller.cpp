@@ -240,9 +240,9 @@ void UpdateController::finalizeStep(int step)
 			if (_updater.NewUpdaterAvailable())
 			{
 				// Update necessary, new updater available
-				TryToProceedTo(DownloadNewUpdater);
+                TryToProceedTo(DownloadNewUpdater);
 			}
-			else if (_updater.LocalFilesNeedUpdate())
+            else if (_updater.LocalFilesNeedUpdate())
 			{
 				// Update necessary, updater is ok
 				if (_updater.DifferentialUpdateAvailable())

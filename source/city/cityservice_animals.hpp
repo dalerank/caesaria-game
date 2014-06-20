@@ -28,7 +28,8 @@ class Animals : public Srvc
 public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string getDefaultName();
-  void update( const unsigned int time );
+  virtual void update( const unsigned int time );
+  void setWolvesNumber( unsigned int number );
 
 private:
   Animals(PlayerCityPtr city);

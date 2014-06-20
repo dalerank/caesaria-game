@@ -2,9 +2,10 @@
   version : 1
   map : "/maps/Miletus.sav"
   funds : 8000
-  date : "-270.01.01"
+  date : "-220.01.01"
   finish : "-100.01.01"
   climate : 2
+  adviserEnabled : true
 	
   win :
   {
@@ -14,13 +15,13 @@
     peace : 40
     favour : 40
     next : "/missions/tutorial6.briefing"
-    title : "##win_questor_title##"
+    title : "##win_procurator_title##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##miletus_4_title##"
-    overview :  [ "##miletus_4_overview##",
+    caption : "##miletus_5_title##"
+    overview :  [ "##miletus_5_overview##",
                   "@img=pictures_00017",
-                  "##miletus_4_overview_2##" ]
+                  "##miletus_5_overview_2##" ]
   }
 	
   empire : {
@@ -152,7 +153,159 @@
         }
       }
     }
+
+    ity_indebt#city_indebt : {
+      date : "-350.01.01"
+      type : "city_indebt"
+      count : 2
+      emperorMoney : 5000
+      video : "city_indebt.bik"
+      text : "##city_has_runout_money##"
+    }
        
+    cursed_water#contaminated_water : {
+      date : "-219.01.01"
+      type : "contaminated_water"
+      population : 500
+      value : 20
+      action : {
+        message#messagebox : {
+          send2scribe : true
+          title : "##contaminated_water_title##"
+          text : "##contaminated_water_text##"
+        }
+      }
+    }
+
+    barbarian_invasion#enemy_attack : {
+      date : "-217.10.01"
+      type : "enemy_attack"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 4
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 2
+          location : "random"
+        }
+      }
+
+      text : "##enemy_attack_city##"
+    }
+
+    barbarian_attack#messagebox : {
+      date : "-217.10.01"
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+
+    emperor_request_weapon#city_request : {
+      date : "-217.09.01"
+      reqtype : "good_request"
+      month : 24
+      good : { weapon : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    fire_1#random_fire : {
+      date : "-216.09.01"
+      strong : 10
+      exec : {
+        "step_1.video#messagebox" : {
+          title : "##city_fire_title##"
+          text : "##city_fire_text##"
+          video : "/smk/city_fire.smk"
+        }
+      }
+    }
+
+    emperor_request_furniture#city_request : {
+      date : "-215.0.01"
+      reqtype : "good_request"
+      month : 24
+      good : { furniture : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    fire_1#random_fire : {
+      date : "-215.09.01"
+      strong : 8
+      exec : {
+        "step_1.video#messagebox" : {
+          title : "##city_fire_title##"
+          text : "##city_fire_text##"
+          video : "/smk/city_fire.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_2#enemy_attack : {
+      date : "-214.06.01"
+      type : "enemy_attack"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 8
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 5
+          location : "random"
+        }
+      }
+
+      text : "##enemy_attack_city##"
+    }
+
+    barbarian_attack#messagebox : {
+      date : "-214.06.01"
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+
+    collapse_1#random_collapse : {
+      date : "-214.11.01"
+      population : 60
+      strong : 10
+    }
+
+    barbarian_invasion_3#enemy_attack : {
+      date : "-211.04.01"
+      type : "enemy_attack"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      text : "##enemy_attack_city##"
+    }
+
+    barbarian_attack#messagebox : {
+      date : "-211.04.01"
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+
 
   }
 	
@@ -200,7 +353,6 @@
       school : true
       academy : true
       library : true
-      wheat_farm : true
       senate_1 : true
       gatehouse : true
       wall : true 
@@ -209,9 +361,9 @@
       fort_javelin : true
       fort_horse : true
       military_academy : true
+      lumber_mill = true
       barracks : true
-      wheat_farm : true
-      vegetable_farm : true
+      fruit_farm : true
       olive_farm : true
     }
   }

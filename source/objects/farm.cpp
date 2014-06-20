@@ -77,7 +77,7 @@ void FarmTile::computePicture(const int percent)
 
   int picIdx = (percent * (pictures.size()-1)) / 100;
   _picture = pictures[picIdx];
-  _picture.addOffset(30*(_pos.i()+_pos.j()), 15*(_pos.j()-_pos.i() ));
+  _picture.addOffset( TileHelper::tilepos2screen( _pos ));
 }
 
 Picture& FarmTile::getPicture() {  return _picture; }

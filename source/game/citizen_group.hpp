@@ -26,12 +26,12 @@ public:
   typedef enum { newborn=0, child, scholar, student, mature, aged, longliver=99 } Age;
   typedef enum { childMin=2, matureMin=21 } AgeRange;
 
-  int count() const;
-  int count( Age group ) const;
+  unsigned int count() const;
+  unsigned int count( Age group ) const;
 
-  CitizenGroup retrieve( int count );
+  CitizenGroup retrieve( unsigned int count );
 
-  int& operator[](int age);
+  unsigned int &operator []( unsigned int age);
   CitizenGroup& operator += ( const CitizenGroup& b );
 
   bool empty() const;
@@ -43,7 +43,7 @@ public:
 
   CitizenGroup();
 private:
-  typedef std::vector< int > Peoples;
+  typedef std::vector< unsigned int > Peoples;
   Peoples _peoples;
 };
 

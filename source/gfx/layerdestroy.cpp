@@ -34,10 +34,6 @@ using namespace constants;
 namespace gfx
 {
 
-namespace {
-const unsigned int tilePosHashValue = 10000;
-}
-
 void LayerDestroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea();
@@ -86,11 +82,6 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
   }
 }
 
-inline unsigned int __tpHash( const TilePos& pos )
-{
-  return (pos.j() * tilePosHashValue + pos.i());
-}
-
 void LayerDestroy::render( Engine& engine )
 {
   // center the map on the screen
@@ -98,7 +89,7 @@ void LayerDestroy::render( Engine& engine )
 
   _camera()->startFrame();
 
-  const TilesArray& visibleTiles = _camera()->getTiles();
+  const TilesArray& visibleTiles = _camera()->tiles();
 
   Tilemap& tmap = _city()->tilemap();
 
@@ -111,7 +102,7 @@ void LayerDestroy::render( Engine& engine )
   foreach( it, destroyArea)
   {
     Tile* tile = *it;
-    hashDestroyArea.insert( __tpHash( tile->pos() ) );
+    hashDestroyArea.insert( TileHelper::hash( tile->pos() ) );
 
     TileOverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
@@ -119,7 +110,7 @@ void LayerDestroy::render( Engine& engine )
       TilesArray overlayArea = tmap.getArea( overlay->pos(), overlay->size() );
       foreach( ovelayTile, overlayArea )
       {
-        hashDestroyArea.insert( __tpHash( (*ovelayTile)->pos() ) );
+        hashDestroyArea.insert( TileHelper::hash( (*ovelayTile)->pos() ) );
       }
     }
 
@@ -135,7 +126,7 @@ void LayerDestroy::render( Engine& engine )
     if( !tile->isFlat() )
       continue;
 
-    int tilePosHash = __tpHash( tile->pos() );
+    int tilePosHash = TileHelper::hash( tile->pos() );
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       _drawTileInSelArea( engine, *tile, master, cameraOffset );
@@ -152,7 +143,7 @@ void LayerDestroy::render( Engine& engine )
     Tile* tile = *it;
     int z = tile->pos().z();
 
-    int tilePosHash = __tpHash( tile->pos() );
+    int tilePosHash = TileHelper::hash( tile->pos() );
     if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
     {
       if( tile->getFlag( Tile::isDestructible ) )
@@ -222,7 +213,7 @@ void LayerDestroy::handleEvent(NEvent& event)
   if( event.EventType == sEventKeyboard )
   {
     bool pressed = event.keyboard.pressed;
-    int moveValue = _camera()->getScrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
+    int moveValue = _camera()->scrollSpeed() * ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
     switch( event.keyboard.key )
     {
@@ -236,7 +227,7 @@ void LayerDestroy::handleEvent(NEvent& event)
   }
 }
 
-int LayerDestroy::type() const {  return citylayer::destroy; }
+int LayerDestroy::type() const {  return citylayer::destroyd; }
 
 std::set<int> LayerDestroy::getVisibleWalkers() const
 {

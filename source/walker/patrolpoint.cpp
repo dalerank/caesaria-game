@@ -67,7 +67,12 @@ PatrolPoint::PatrolPoint( PlayerCityPtr city )
 
 void PatrolPoint::timeStep(const unsigned long time)
 {
-  _d->animation.update( time );
+    _d->animation.update( time );
+}
+
+FortPtr PatrolPoint::base() const
+{
+    return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 }
 
 void PatrolPoint::acceptPosition()

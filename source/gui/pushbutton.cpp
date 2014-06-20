@@ -202,7 +202,7 @@ void PushButton::_updateTexture( ElementState state )
     {
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteArea );
       PictureDecorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ),
-                              state == stHovered ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
+                              ( state == stHovered || state == stPressed ) ? PictureDecorator::brownBorder : PictureDecorator::whiteBorderA );
     }
     break;
 

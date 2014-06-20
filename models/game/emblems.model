@@ -9,4 +9,8 @@
   turtles : { name : "##lgn_turtles##", img : "sprites_00076" }
   dragons : { name : "##lgn_dragons##", img : "sprites_00077" }
   lions   : { name : "##lgn_lions##",   img : "sprites_00078" }
+  wolves  : { name : "##lgn_wolves##",  img : "sprites_00078" }
+  pigs    : { name : "##lgn_pigs##",    img : "sprites_00078" }
+  heroes  : { name : "##lgn_heroes##",  img : "sprites_00078" }
+  hydras  : { name : "##lgn_hydras##",  img : "sprites_00078" }
 }

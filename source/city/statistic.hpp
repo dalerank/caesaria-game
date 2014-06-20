@@ -23,6 +23,7 @@
 #include "predefinitions.hpp"
 #include "objects/predefinitions.hpp"
 #include "game/citizen_group.hpp"
+#include "game/enums.hpp"
 #include <set>
 
 namespace city
@@ -35,6 +36,7 @@ public:
 
   static void getWorkersNumber( PlayerCityPtr city, int& workersNumber, int& maxWorkers );
   static CitizenGroup getPopulation( PlayerCityPtr city );
+  static unsigned int getWorkersNeed( PlayerCityPtr city );
   static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
   static unsigned int getMontlyWorkersWages( PlayerCityPtr city );
   static unsigned int getWorklessNumber( PlayerCityPtr city );
@@ -43,6 +45,7 @@ public:
   static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
   static unsigned int getFoodProducing( PlayerCityPtr city );
   static unsigned int getTaxValue( PlayerCityPtr city );
+  static unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
   static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
   static unsigned int getCrimeLevel( PlayerCityPtr city );
   static GoodsMap getGoodsMap( PlayerCityPtr city );

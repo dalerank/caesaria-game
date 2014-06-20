@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "build.hpp"
 #include "objects/objects_factory.hpp"
@@ -93,7 +95,7 @@ void BuildEvent::_exec( Game& game, unsigned int )
         WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( construction );
         if( wb.isValid() && wb->maximumWorkers() > 0 )
         {
-          int worklessCount = city::Statistic::getWorklessNumber( game.city() );
+          unsigned int worklessCount = city::Statistic::getWorklessNumber( game.city() );
           if( worklessCount < wb->maximumWorkers() )
           {
             GameEventPtr e = WarningMessageEvent::create( "##city_need_more_workers##" );

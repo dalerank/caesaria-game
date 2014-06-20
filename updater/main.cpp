@@ -47,8 +47,8 @@ int main(int argc, char* argv[])
 
 	if( localOptions.isSet( "update" ) || localOptions.isSet( "release" ))
 	{
-		std::string basedir = localOptions.Get( "directory" );
-		std::string version = localOptions.Get( "version" );
+        std::string basedir = localOptions.get( "directory" );
+        std::string version = localOptions.get( "version" );
 		Packager p( basedir, version );
 
 		p.createUpdate( localOptions.isSet( "release" ) );

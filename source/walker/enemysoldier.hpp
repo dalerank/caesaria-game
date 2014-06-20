@@ -23,6 +23,7 @@
 class EnemySoldier : public Soldier
 {
 public:
+  typedef enum { attackAll, attackFood, attackCitizen, attackBestBuilding } AttackPriority;
   static EnemySoldierPtr create( PlayerCityPtr city, constants::walker::Type type );
 
   virtual void timeStep(const unsigned long time);
@@ -32,6 +33,7 @@ public:
 
   virtual void send2City( TilePos pos );
   virtual bool die();
+  virtual void setAttackPriority( AttackPriority who );
 
   virtual void acceptAction(Action action, TilePos pos);
 
@@ -45,6 +47,7 @@ protected:
   virtual void _brokePathway(TilePos pos);
   virtual bool _tryAttack();
   virtual void _waitFinished();
+  virtual AttackPriority _attackPriority() const;
 
   virtual BuildingList _findBuildingsInRange(unsigned int range);
   virtual WalkerList _findEnemiesInRange(unsigned int range);
@@ -56,6 +59,7 @@ private:
   Pathway _findFreeSlot(TilePos target, const int range);
   Pathway _findPathway2NearestEnemy(unsigned int range);
   Pathway _findPathway2NearestConstruction(unsigned int range);
+  AttackPriority _atPriority;
 };
 
 #endif //__CAESARIA_ENEMYSOLDIER_H_INCLUDED__

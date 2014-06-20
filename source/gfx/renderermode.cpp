@@ -50,18 +50,21 @@ void LayerMode::_setType(int type){  _d->type = type;}
 class BuildMode::Impl
 {
 public:
-    bool isBorderBuilding;
-    bool isMultiBuilding;
-    bool isRoadAssignment;
-    ConstructionPtr construction;
+  bool isBorderBuilding;
+  bool isMultiBuilding;
+  bool isCheckWalkers;
+  bool isRoadAssignment;
+  ConstructionPtr construction;
 };
 
 bool BuildMode::isBorderBuilding() const {    return _d->isBorderBuilding;}
 bool BuildMode::isMultiBuilding() const{  return _d->isMultiBuilding;}
 bool BuildMode::isRoadAssignment() const{  return _d->isRoadAssignment;}
+bool BuildMode::isCheckWalkers() const { return _d->isCheckWalkers; }
+
 ConstructionPtr BuildMode::getContruction() const{    return _d->construction;}
 
-DestroyMode::DestroyMode() : LayerMode( citylayer::destroy )
+DestroyMode::DestroyMode() : LayerMode( citylayer::destroyd )
 {
 }
 
@@ -81,6 +84,7 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
   newCommand->_d->isMultiBuilding = false;
   newCommand->_d->isBorderBuilding = false;
   newCommand->_d->isRoadAssignment = false;
+  newCommand->_d->isCheckWalkers = true;
 
   switch( type )
   {
@@ -101,6 +105,7 @@ Renderer::ModePtr BuildMode::create(TileOverlay::Type type )
   case construction::garden:
   case construction::plaza:
     newCommand->_d->isMultiBuilding = true;
+    newCommand->_d->isCheckWalkers = (type == building::house);
   break;
 
   default:

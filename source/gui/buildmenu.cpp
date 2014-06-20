@@ -40,6 +40,8 @@ using namespace gfx;
 namespace gui
 {
 
+CAESARIA_LITERALCONST(cost)
+
 class BuildButton : public PushButton
 {
 public:
@@ -154,7 +156,7 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   //int t = DateTime::getElapsedTime();
   const MetaData &buildingData = MetaDataHolder::instance().getData( buildingType );
 
-  int cost = buildingData.getOption( "cost" );
+  int cost = buildingData.getOption( lc_cost );
   bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
   if( cost > 0 && mayBuildInCity )
   {

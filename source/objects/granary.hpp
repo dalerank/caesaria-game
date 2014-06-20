@@ -12,6 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_GRANARY_H_INCLUDED__
 #define __CAESARIA_GRANARY_H_INCLUDED__
@@ -28,8 +31,16 @@ public:
   void computePictures();
   GoodStore& store();
 
+  virtual void initTerrain(gfx::Tile& terrain);
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
+  virtual bool isWalkable() const;
+
+  virtual gfx::Renderer::PassQueue passQueue() const;
+  virtual const gfx::Pictures& pictures(gfx::Renderer::Pass pass) const;
+
+protected:
+  virtual void _updateAnimation(const unsigned long time);
 
 private:
   void _tryDevastateGranary();

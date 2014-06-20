@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "city/funds.hpp"
 #include "objects/construction.hpp"
@@ -28,6 +28,10 @@ using namespace constants;
 
 namespace city
 {
+
+namespace {
+CAESARIA_LITERALCONST(history)
+}
 
 class Funds::Impl
 {
@@ -74,7 +78,7 @@ void Funds::resolveIssue( FundIssue issue )
   break;
   }
 
-  _d->onChangeSignal.emit( _d->money );
+  oc3_emit _d->onChangeSignal( _d->money );
 }
 
 int Funds::treasury() const { return _d->money; }
@@ -141,14 +145,13 @@ VariantMap Funds::save() const
     VariantList stepHistory;
     foreach( it, *stepIt )
     {
-      stepHistory.push_back( it->first );
-      stepHistory.push_back( it->second );
+      stepHistory << it->first << it->second;
     }
 
     history.push_back( stepHistory );
   }
 
-  ret[ "history" ] = history;
+  ret[ lc_history ] = history;
 
   return ret;
 }
@@ -160,7 +163,7 @@ void Funds::load( const VariantMap& stream )
   _d->workerSalary = (int)stream.get( "workerSalary", 30 );
   _d->lastYearUpdate = (int)stream.get( "lastUpdate" );
 
-  VariantList history = stream.get( "history" ).toList();
+  VariantList history = stream.get( lc_history ).toList();
   _d->history.clear();
   foreach( it, history )
   {

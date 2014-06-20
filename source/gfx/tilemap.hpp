@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #ifndef __CAESARIA_TILEMAP_H_INCLUDED__
 #define __CAESARIA_TILEMAP_H_INCLUDED__
 
@@ -50,18 +49,33 @@ public:
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
   // corners  : if false, don't return corner tiles
-  TilesArray getRectangle(TilePos start, TilePos stope, const bool corners = true );
+  TilesArray getRectangle(TilePos start, TilePos stop, const bool corners = true);
   TilesArray getRectangle(TilePos pos, Size size, const bool corners = true );
+  TilesArray getRectangle(unsigned int range, TilePos center );
+
+  enum TileNeighbors
+  {
+    EdgeNeighbors,
+    //Corners,
+    AllNeighbors
+  };
+
+  TilesArray getNeighbors( TilePos pos, TileNeighbors type = AllNeighbors);
 
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-  TilesArray getArea(TilePos start, TilePos stop );
-  TilesArray getArea(TilePos start, Size size );
+  TilesArray getArea(const TilePos& start, const TilePos& stop );
+  TilesArray getArea(const TilePos& start, const Size& size );
+  TilesArray getArea(int range, const TilePos& center );
+
   int size() const;
 
   void save( VariantMap& stream) const;
   void load( const VariantMap& stream);
+
+  void turnRight();
+  void turnLeft();
 
   TilePos fit( const TilePos& pos ) const;
 

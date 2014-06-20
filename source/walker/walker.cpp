@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "walker.hpp"
 
@@ -323,6 +323,7 @@ void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability 
 TilePos Walker::pos() const{    return _d->pos;}
 void Walker::deleteLater(){   _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
+UniqueId Walker::uniqueId() const{ return _d->uid; }
 Pathway& Walker::_pathwayRef() {  return _d->pathway; }
 const Pathway& Walker::getPathway() const {  return _d->pathway; }
 Animation& Walker::_animationRef() {  return _d->animation;}
@@ -521,5 +522,9 @@ bool Walker::die()
   deleteLater();
 
   WalkerPtr corpse = Corpse::create( _city(), this );
+  if( corpse.isValid() )
+  {
+    _city()->addWalker( corpse );
+  }
   return corpse.isValid();
 }

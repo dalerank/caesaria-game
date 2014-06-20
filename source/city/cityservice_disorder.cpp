@@ -13,16 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_disorder.hpp"
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "objects/constants.hpp"
+#include "city/funds.hpp"
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
-#include "walker/protestor.hpp"
+#include "walker/rioter.hpp"
 #include "game/gamedate.hpp"
+#include "walker/mugger.hpp"
+#include "events/showinfobox.hpp"
 
 using namespace constants;
 
@@ -41,6 +44,11 @@ public:
   int minCrimeLevel;
   int currentCrimeLevel;
   int maxCrimeLevel;
+
+public:
+  void generateMugger( PlayerCityPtr city, HousePtr house );
+  void generateRioter( PlayerCityPtr city, HousePtr house );
+  void generateProtestor( PlayerCityPtr city, HousePtr house );
 };
 
 SrvcPtr Disorder::create( PlayerCityPtr city )
@@ -90,14 +98,63 @@ void Disorder::update( const unsigned int time )
   {
     HouseList::iterator it = criminalizedHouse.begin();
     std::advance( it, rand() % criminalizedHouse.size() );
-    (*it)->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
 
-    ProtestorPtr protestor = Protestor::create( &_city );
-    protestor->send2City( *it );
+    int hCrimeLevel = (*it)->getServiceValue( Service::crime );
+
+    int sentiment = _city.sentiment();
+    int randomValue = math::random( 100 );
+    if ( sentiment >= 30 )
+    {
+      if ( sentiment >= 60 )
+      {
+        if ( randomValue >= sentiment + 20 )
+        {
+          if ( hCrimeLevel > 50 )
+            _d->generateProtestor( &_city, *it );
+        }
+      }
+      else
+      {
+        if ( randomValue >= sentiment + 40 )
+        {
+          if ( hCrimeLevel < 70 )
+          {
+            if ( hCrimeLevel > 50 )
+              _d->generateProtestor( &_city, *it );
+          }
+          else
+          {
+            _d->generateMugger( &_city, *it );
+          }
+        }
+      }
+    }
+    else
+    {
+      if ( randomValue >= sentiment + 50 )
+      {
+        if ( hCrimeLevel < 90 )
+        {
+          if ( hCrimeLevel < 70 )
+          {
+            if ( hCrimeLevel > 50 )
+              _d->generateProtestor( &_city, *it );
+          }
+          else
+          {
+            _d->generateMugger( &_city, *it );
+          }
+        }
+        else
+        {
+          _d->generateRioter( &_city, *it );
+        }
+      }
+    }
   }
 }
 
-std::string Disorder::getReason() const
+std::string Disorder::reasonDescr() const
 {
   int crimeLevel = math::clamp<int>( _d->currentCrimeLevel / crimeDescLimiter, 0, crimeDescLimiter-1 );
   std::string crimeDesc[ crimeDescLimiter ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
@@ -127,6 +184,44 @@ std::string Disorder::getReason() const
 unsigned int Disorder::value() const
 {
   return _d->currentCrimeLevel;
+}
+
+void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
+{
+  house->appendServiceValue( Service::crime, -defaultCrimeLevel / 2 );
+
+  int taxesThisYear = city->funds().getIssueValue( city::Funds::taxIncome );
+
+  if( taxesThisYear > 20 )
+  {
+    int moneyStolen = taxesThisYear / 4;
+
+    if( moneyStolen > 400 )
+      moneyStolen = math::random( 400 );
+
+    events::GameEventPtr e = events::ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
+                                                          events::ShowInfobox::send2scribe, "/smk/mugging.smk" );
+    e->dispatch();
+
+    city->funds().resolveIssue( FundIssue( city::Funds::moneyStolen, -moneyStolen ) );
+  }
+
+  currentCrimeLevel++;
+}
+
+void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
+{
+  events::GameEventPtr e = events::ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
+                                                        events::ShowInfobox::send2scribe, "/smk/spy_riot.smk" );
+
+  RioterPtr protestor = Rioter::create( city );
+  protestor->send2City( house );
+}
+
+void Disorder::Impl::generateProtestor(PlayerCityPtr city, HousePtr house)
+{
+  //ProtestorPtr protestor = Protestor::create( city );
+  //protestor->send2City( house );
 }
 
 }//end namespace city

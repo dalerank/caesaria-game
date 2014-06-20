@@ -90,7 +90,7 @@ std::string Construction::errorDesc() const { return ""; }
 TilesArray Construction::getAccessRoads() const {   return _d->accessRoads; }
 bool Construction::canDestroy() const {  return true; }
 void Construction::destroy() { TileOverlay::destroy(); }
-bool Construction::isNeedRoadAccess() const{  return true; }
+bool Construction::isNeedRoadAccess() const{ return true; }
 const Picture& Construction::picture() const {  return TileOverlay::picture(); }
 Construction::~Construction() {}
 
@@ -113,7 +113,7 @@ void Construction::computeAccessRoads()
   Tilemap& tilemap = _city()->tilemap();
 
   int s = size().width();
-  for( int dst=1; dst <= getRoadAccessDistance(); dst++ )
+  for( int dst=1; dst <= roadAccessDistance(); dst++ )
   {
     TilesArray rect = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
                                             pos() + TilePos( s+dst-1, s+dst-1 ),
@@ -128,7 +128,7 @@ void Construction::computeAccessRoads()
   }
 }
 
-int Construction::getRoadAccessDistance() const{  return 1; }
+int Construction::roadAccessDistance() const{  return 1; }
 
 void Construction::burn()
 {
@@ -192,22 +192,12 @@ double Construction::getState( ParameterType param) const { return _d->params[ p
 
 TilesArray Construction::enterArea() const
 {
-  TilesArray tiles;
-
   int s = size().width();
   TilesArray near = _city()->tilemap().getRectangle( pos() - TilePos(1, 1),
                                                                   pos() + TilePos(s, s),
-                                                                  !Tilemap::checkCorners );
+                                                                  !Tilemap::checkCorners );  
 
-  foreach( it, near )
-  {
-    if( (*it)->isWalkable( true ) )
-    {
-      tiles.push_back( *it );
-    }
-  }
-
-  return tiles;
+  return near.walkableTiles( true );
 }
 
 void Construction::timeStep(const unsigned long time)

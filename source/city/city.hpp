@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Gregoire Athanase, gathanase@gmail.com
 
 #ifndef __CAESARIA_PLAYERCITY_H_INCLUDED__
 #define __CAESARIA_PLAYERCITY_H_INCLUDED__
@@ -48,6 +48,7 @@ struct BorderInfo
 class PlayerCity : public world::City
 {
 public:
+  typedef enum { adviserEnabled=0 } OptionType;
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
 
@@ -114,6 +115,8 @@ public:
   virtual const GoodStore& exportingGoods() const;
   virtual unsigned int tradeType() const;
   virtual world::EmpirePtr empire() const;
+  void setOption( OptionType opt, int value );
+  int getOption( OptionType opt ) const;
 
   void updateRoads();
 

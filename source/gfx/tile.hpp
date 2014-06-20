@@ -67,7 +67,11 @@ public:
   // tile coordinates
   int i() const;
   int j() const;
-  TilePos pos() const;
+  const TilePos& pos() const;
+
+  inline const TilePos& epos() const { return _epos; }
+  void setEPos( const TilePos& epos );
+
   Point center() const;
   Point mapPos() const;
 
@@ -86,8 +90,8 @@ public:
 
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
-  void resetWasDrawn() { _wasDrawn = false; }
-  void setWasDrawn()   { _wasDrawn = true;  }
+  inline void resetWasDrawn() { _wasDrawn = false; }
+  inline void setWasDrawn()   { _wasDrawn = true;  }
 
   void animate( unsigned int time );
 
@@ -110,7 +114,8 @@ public:
   int getWaterService( WaterService type ) const;
 
 private:
-  TilePos _pos; // coordinates of the tile
+  TilePos _pos; // absolute coordinates
+  TilePos _epos; // effective coordinates
   Tile* _master;  // left-most tile if multi-tile, or "this" if single-tile
   Terrain _terrain; // infos about the tile (building, tree, road, water, rock...)
   Picture _picture; // main picture
@@ -125,7 +130,8 @@ public:
   static std::string convId2PicName( const unsigned int imgId );
   static int convPicName2Id( const std::string &pic_name);
   static int encode( const Tile& tt );
-
+  static unsigned int hash( const TilePos& pos );
+  static Point tilepos2screen( const TilePos& pos );
   static void decode( Tile& tile, const int bitset);
   static Tile& getInvalid();
 };

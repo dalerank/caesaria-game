@@ -287,7 +287,21 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 		{
 			Logger::warning( "User also have own settings, remove it from downloading list" );
 			_controller.removeDownload( settingsPath.toString() );
-		}
+		}        
+
+        if( _options.isSet( "no-exec" ) )
+        {
+            Logger::warning( "Remove executable files" );
+            StringArray extensions;
+            extensions << "linux" << "macos" << "exe" << "haiku";
+
+            std::string bin="caesaria.", upd="updater.";
+            foreach( it, extensions )
+            {
+              _controller.removeDownload( bin + *it );
+              _controller.removeDownload( upd + *it );
+            }
+        }
 
 		// Print a summary
 		if( _controller.NewUpdaterAvailable() )

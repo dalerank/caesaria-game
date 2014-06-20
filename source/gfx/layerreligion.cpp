@@ -80,7 +80,7 @@ void LayerReligion::drawTile( Engine& engine, Tile& tile, Point offset)
         religionLevel += house->getServiceValue(Service::religionMars);
         religionLevel += house->getServiceValue(Service::religionNeptune);
         religionLevel += house->getServiceValue(Service::religionCeres);
-        religionLevel = math::clamp( religionLevel / (house->spec().getMinReligionLevel()+1), 0, 100 );
+        religionLevel = math::clamp( religionLevel / (house->spec().minReligionLevel()+1), 0, 100 );
         needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
         if( !needDrawAnimations )

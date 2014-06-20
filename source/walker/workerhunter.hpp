@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WORKERSHUNTER_H_INCLUDE_
 #define __CAESARIA_WORKERSHUNTER_H_INCLUDE_
@@ -29,10 +31,12 @@ public:
 
   int needWorkers() const;
 
-  void hireWorkers( const int workers );
+  void hireWorkers( const int workers );  
   void setPriority( const city::HirePriorities& priority );
   void send2City( WorkingBuildingPtr building, const int workersNeeded );
+  void once(WorkingBuildingPtr building, const unsigned int workersNeed, unsigned int distance);
 
+  virtual unsigned int reachDistance() const;
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 

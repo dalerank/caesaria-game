@@ -46,6 +46,8 @@ using namespace gfx;
 
 namespace {
 const int defaultDeliverDistance = 40;
+CAESARIA_LITERALCONST(stock)
+CAESARIA_LITERALCONST(producerPos)
 }
 
 class CartPusher::Impl
@@ -381,11 +383,12 @@ void CartPusher::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   
-  stream[ "stock" ] = _d->stock.save();
-  stream[ "producerPos" ] = _d->producerBuilding->pos();
+  stream[ lc_stock ] = _d->stock.save();
+  stream[ lc_producerPos ] = _d->producerBuilding.isValid()
+                                ? _d->producerBuilding->pos() : TilePos( -1, -1 );
+
   stream[ "consumerPos" ] = _d->consumerBuilding.isValid() 
-                                      ? _d->consumerBuilding->pos()
-                                      : TilePos( -1, -1 );
+                                ? _d->consumerBuilding->pos() : TilePos( -1, -1 );
 
   stream[ "maxDistance" ] = _d->maxDistance;
   stream[ "reservationID" ] = static_cast<int>(_d->reservationID);
@@ -395,16 +398,20 @@ void CartPusher::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->stock.load( stream.get( "stock" ).toList() );
+  _d->stock.load( stream.get( lc_stock ).toList() );
 
-  TilePos prPos( stream.get( "producerPos" ).toTilePos() );
+  TilePos prPos( stream.get( lc_producerPos ).toTilePos() );
   Tile& prTile = _city()->tilemap().at( prPos );
   _d->producerBuilding = ptr_cast<Building>( prTile.overlay() );
-  
+
   if( is_kind_of<WorkingBuilding>( _d->producerBuilding ) )
   {
     WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( _d->producerBuilding );
     wb->addWalker( this );
+  }
+  else
+  {
+    Logger::warning( "WARNING: cartPusher producer building is NULL uid=[%d]", uniqueId() );
   }
 
   TilePos cnsmPos( stream.get( "consumerPos" ).toTilePos() );

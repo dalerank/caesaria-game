@@ -41,23 +41,27 @@ using namespace religion;
 
 namespace {
 CAESARIA_LITERALCONST(climate)
+CAESARIA_LITERALCONST(adviserEnabled)
+static const int currentVesion = 1;
 }
 
 class GameLoaderMission::Impl
 {
 public:
-  static const int currentVesion = 1;
+  std::string restartFile;
 };
 
 GameLoaderMission::GameLoaderMission()
+ : _d( new Impl )
 {
 }
 
 bool GameLoaderMission::load( const std::string& filename, Game& game )
 {
   VariantMap vm = SaveAdapter::load( filename );
+  _d->restartFile = filename;
   
-  if( Impl::currentVesion == vm[ "version" ].toInt() )
+  if( currentVesion == vm[ "version" ].toInt() )
   {
     std::string mapToLoad = vm[ "map" ].toString();
     int climateType = vm.get( lc_climate, -1 );
@@ -72,6 +76,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
 
     PlayerCityPtr city = game.city();
     city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
+    city->setOption( PlayerCity::adviserEnabled, vm[ lc_adviserEnabled ] );
 
     GameDate::instance().init( vm[ "date" ].toDateTime() );
 
@@ -121,7 +126,5 @@ bool GameLoaderMission::isLoadableFileExtension( const std::string& filename )
   return vfs::Path( filename ).isMyExtension( ".mission" );
 }
 
-int GameLoaderMission::getClimateType(const std::string& filename)
-{
-  return -1;
-}
+int GameLoaderMission::climateType(const std::string& filename) { return -1; }
+std::string GameLoaderMission::restartFile() const { return _d->restartFile; }
