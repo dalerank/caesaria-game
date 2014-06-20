@@ -46,7 +46,7 @@
   #include <SDL_opengl.h>
 #endif
 
-#ifdef CAESARIA_PLATFORM_MACOSX
+#if defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
 
 #else
 

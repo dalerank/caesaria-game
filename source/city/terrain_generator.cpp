@@ -25,6 +25,8 @@
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
 
+#include <cfloat>
+
 using namespace gfx;
 
 MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float terrainSquare)
@@ -83,21 +85,21 @@ std::vector<int> MidpointDisplacement::map()
 
   for (int i = 0; i < width_; i += 2 * step) {
     for (int j = 0; j < height_; j+= 2 * step) {
-      map.at(CoordinatesToVectorIndex(i, j)) = random_.Float(0, 2 * h); //???
+      map[ CoordinatesToVectorIndex(i, j) ] = random_.Float(0, 2 * h); //???
     }
   }
 
   for (int i = 0; i < width_; i++) {
-    map.at(CoordinatesToVectorIndex(i, 0)) = random_.Float(-3, -2);
-    map.at(CoordinatesToVectorIndex(i, height_ - 1)) = random_.Float(-2, -1);
+    map[ CoordinatesToVectorIndex(i, 0) ] = random_.Float(-3, -2);
+    map[ CoordinatesToVectorIndex(i, height_ - 1) ] = random_.Float(-2, -1);
   }
 
   for (int i = 0; i < height_; i++) {
-    map.at(CoordinatesToVectorIndex(0, i)) = random_.Float(-3, -2);
-    map.at(CoordinatesToVectorIndex(width_ - 1, i)) = random_.Float(-3, -2);
+    map[ CoordinatesToVectorIndex(0, i) ] = random_.Float(-3, -2);
+    map[ CoordinatesToVectorIndex(width_ - 1, i) ] = random_.Float(-3, -2);
   }
 
-  map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = (2 * h) + random_.Float(1, 5);
+  map[ CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2) ] = (2 * h) + random_.Float(1, 5);
   /*map.at(CoordinatesToVectorIndex(0, 0)) = -3;
 map.at(CoordinatesToVectorIndex((width_ - 1), 0)) = -3;
 map.at(CoordinatesToVectorIndex(0, (height_ - 1))) = -3;
@@ -111,8 +113,11 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
     {
       for (int y = step; y < height_; y += 2 * step)
       {
-        sum = map.at(CoordinatesToVectorIndex(x - step, y - step)) + map.at(CoordinatesToVectorIndex(x - step, y + step)) + map.at(CoordinatesToVectorIndex(x + step, y - step)) + map.at(CoordinatesToVectorIndex(x + step, y + step));
-        map.at(CoordinatesToVectorIndex(x, y)) = sum / 4 + random_.Float(-h, h); //???
+        sum = map[ CoordinatesToVectorIndex(x - step, y - step) ]
+            + map[ CoordinatesToVectorIndex(x - step, y + step) ]
+            + map[ CoordinatesToVectorIndex(x + step, y - step) ]
+            + map[ CoordinatesToVectorIndex(x + step, y + step) ];
+        map[ CoordinatesToVectorIndex(x, y) ] = sum / 4 + random_.Float(-h, h); //???
       }
     }
 
@@ -122,25 +127,25 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
         sum = 0;
         count = 0;
         if(x - step >= 0) {
-          sum += map.at(CoordinatesToVectorIndex(x - step, y));
+          sum += map[ CoordinatesToVectorIndex(x - step, y) ];
           count++;
         }
         if(x + step < width) {
-          sum += map.at(CoordinatesToVectorIndex(x + step, y));
+          sum += map[ CoordinatesToVectorIndex(x + step, y) ];
           count++;
         }
         if(y - step >= 0) {
-          sum += map.at(CoordinatesToVectorIndex(x, y - step));
+          sum += map[ CoordinatesToVectorIndex(x, y - step) ];
           count++;
         }
         if(y + step < height_) {
-          sum += map.at(CoordinatesToVectorIndex(x, y + step));
+          sum += map[ CoordinatesToVectorIndex(x, y + step) ];
           count++;
         }
         if(count > 0) {
-          map.at(CoordinatesToVectorIndex(x, y)) = sum / count + random_.Float(-h, h); //???
+          map[ CoordinatesToVectorIndex(x, y) ] = sum / count + random_.Float(-h, h); //???
         } else {
-          map.at(CoordinatesToVectorIndex(x, y)) = 0;
+          map[ CoordinatesToVectorIndex(x, y) ] = 0;
         }
       }
     }
@@ -148,19 +153,19 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
     step /= 2;
   }
 
-  float max = std::numeric_limits<float>::max();
-  float min = std::numeric_limits<float>::min();
+  float max = FLT_MAX;
+  float min = FLT_MIN;
 
   for (unsigned int i = 0; i < map.size(); i++)
   {
-    if(map.at(i) > max)
+    if(map[ i ] > max)
     {
-      map.at(i) = max;
+      map[ i ] = max;
     }
 
-    if(map.at(i) < min)
+    if(map[ i ] < min)
     {
-      map.at(i) = min;
+      map[ i ] = min;
     }
   }
 
@@ -168,7 +173,7 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
     //std::cout << map.at(i);
     //map.at(i) = (map.at(i) - min) / (max - min);
     //std::cout << map.at(i);
-    float value = map.at(i);
+    float value = map[ i ];
     int new_value = unknown;
     if(value < deep_water_threshold_) {      new_value = deepWater;    }
     else if (value < water_threshold_) {      new_value = water;    }
@@ -179,7 +184,7 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
     else if (value < high_mountains_threshold_) {      new_value = highMountain;    }
     else {      new_value = highMountain;    }
    // new_value = (value * 255) + 255;
-    return_map.at(i) = new_value;
+    return_map[ i ] = new_value;
   }
   return return_map;
 }
@@ -627,7 +632,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
     NColor color;
     tile.setFlag( Tile::clearAll, true );
 
-    switch( map.at(index) )
+    switch( map[ index ] )
     {
       case MidpointDisplacement::unknown:
       {

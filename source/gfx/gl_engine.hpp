@@ -32,8 +32,8 @@
 namespace gfx
 {
 
-#ifdef CAESARIA_PLATFORM_MACOSX
-typedef SdlEngine GlEngine;
+#if defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
+#define GlEngine SdlEngine
 #else
 
 PREDEFINE_CLASS_SMARTLIST(PostprocFilter,List)

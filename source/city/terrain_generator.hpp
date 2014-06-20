@@ -19,7 +19,6 @@
 #define _CAESARIA_TERRAIN_GENERATOR_INCLUDE_H_
 
 #include <vector>
-#include <limits>
 #include <iostream>
 
 #include "terrain_generator_random.hpp"
