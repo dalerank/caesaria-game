@@ -110,7 +110,7 @@ public:
 
   void fillWaterService( WaterService type, int value=1 );
   void decreaseWaterService( WaterService type, int value=1);
-  int getWaterService( WaterService type ) const;
+  int waterService( WaterService type ) const;
 
 private:
   TilePos _pos; // absolute coordinates

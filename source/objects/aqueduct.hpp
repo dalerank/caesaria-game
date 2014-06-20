@@ -26,7 +26,7 @@ public:
   Aqueduct();
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
-
+  virtual void addWater(const WaterSource &source);
   virtual void initTerrain( gfx::Tile& terrain);
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;
   virtual bool isNeedRoadAccess() const;
@@ -36,7 +36,6 @@ public:
   virtual std::string sound() const;
 
   void updatePicture(PlayerCityPtr city);
-  void addWater( const WaterSource& source );
 
   virtual const gfx::Picture& picture( PlayerCityPtr city,
                                        TilePos pos,

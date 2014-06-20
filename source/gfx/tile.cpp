@@ -185,19 +185,19 @@ void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
 
 void Tile::fillWaterService(WaterService type, int value)
 {
-  int vl = math::clamp( getWaterService( type )+value, 0, 0xf );
+  int vl = math::clamp( waterService( type )+value, 0, 0xf );
   _terrain.watersrvc |= ( vl << (type*4));
 }
 
 void Tile::decreaseWaterService(WaterService type, int value)
 {
-  int tmpSrvValue = math::clamp( getWaterService( type )-value, 0, 0xf);
+  int tmpSrvValue = math::clamp( waterService( type )-value, 0, 0xf);
 
   _terrain.watersrvc &= ~(0xf<<(type*4));
   _terrain.watersrvc |= tmpSrvValue << (type*4);
 }
 
-int Tile::getWaterService(WaterService type) const{  return (_terrain.watersrvc >> (type*4)) & 0xf;}
+int Tile::waterService(WaterService type) const{  return (_terrain.watersrvc >> (type*4)) & 0xf;}
 
 std::string TileHelper::convId2PicName( const unsigned int imgId )
 {

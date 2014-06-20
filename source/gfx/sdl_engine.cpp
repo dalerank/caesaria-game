@@ -72,7 +72,7 @@ public:
 };
 
 
-Picture& SdlEngine::getScreen(){  return _d->screen; }
+Picture& SdlEngine::screen(){  return _d->screen; }
 
 SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 {

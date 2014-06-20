@@ -29,6 +29,7 @@
 #include "objects/road.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -37,7 +38,6 @@ Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
 {
   setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
   _setIsRoad( false );
-  _setResolved( false );
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
   // land2a 123 124 125 126 - aqueduct corner
@@ -69,6 +69,14 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
   updatePicture( city );
 }
 
+void Aqueduct::addWater(const WaterSource &source)
+{
+  WaterSource::addWater( source );
+
+  const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
+  _produceWater( offsets, 4 );
+}
+
 void Aqueduct::initTerrain(Tile&) {}
 
 void Aqueduct::destroy()
@@ -92,10 +100,6 @@ void Aqueduct::destroy()
 void Aqueduct::timeStep(const unsigned long time)
 {
   WaterSource::timeStep( time );
-
-  const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
-  _produceWater( offsets, 4 );
-
 }
 
 bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -350,7 +354,7 @@ const Picture& Aqueduct::picture(PlayerCityPtr city, TilePos p, const TilesArray
     index = 121; // it's impossible, but ...
   }
 
-  return Picture::load( ResourceGroup::aqueduct, index + (_getWater() == 0 ? 15 : 0) );
+  return Picture::load( ResourceGroup::aqueduct, index + (water() == 0 ? 15 : 0) );
 }
 
 void Aqueduct::updatePicture(PlayerCityPtr city)
@@ -365,20 +369,9 @@ void Aqueduct::_waterStateChanged()
   updatePicture( _city() );
 }
 
-void Aqueduct::addWater( const WaterSource& source )
-{
-  if( !_isResolved() )
-  {
-    _setResolved( true );
-    WaterSource::addWater( source );
-
-    _setResolved( false );
-  }
-}
-
 bool Aqueduct::isWalkable() const {  return _isRoad();}
 
 std::string Aqueduct::sound() const
 {
-  return ( _getWater() == 0 ? "" : WaterSource::sound() );
+  return ( water() == 0 ? "" : WaterSource::sound() );
 }

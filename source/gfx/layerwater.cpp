@@ -26,6 +26,8 @@
 #include "core/event.hpp"
 #include "core/gettext.hpp"
 #include "tilemap_camera.hpp"
+#include "objects/aqueduct.hpp"
+#include "core/font.hpp"
 
 using namespace constants;
 
@@ -67,13 +69,13 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::highBridge:
     case building::elevation:
       needDrawAnimations = true;
-      areaSize = overlay->size();
+      areaSize = overlay->size();      
     break;
 
     default:
     {
       int tileNumber = 0;
-      bool haveWater = tile.getWaterService( WTR_FONTAIN ) > 0 || tile.getWaterService( WTR_WELL ) > 0;
+      bool haveWater = tile.waterService( WTR_FONTAIN ) > 0 || tile.waterService( WTR_WELL ) > 0;
       if ( overlay->type() == building::house )
       {
         HousePtr h = ptr_cast<House>( overlay );
@@ -81,7 +83,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
         haveWater = haveWater || h->hasServiceAccess(Service::fountain) || h->hasServiceAccess(Service::well);
       }
       tileNumber += (haveWater ? OverlayPic::haveWater : 0);
-      tileNumber += tile.getWaterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
+      tileNumber += tile.waterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
       city::Helper helper( _city() );
       drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
@@ -95,6 +97,18 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     if ( needDrawAnimations )
     {
       Layer::drawTile( engine, tile, offset );
+
+      if( _showWaterValue )
+      {
+        AqueductPtr aq = ptr_cast<Aqueduct>( tile.overlay() );
+        if( aq.isValid() )
+        {
+          Font f = Font::create( FONT_2 );
+          f.setColor( 0xffff0000 );
+          int df = aq->water();
+          f.draw( engine.screen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
+        }
+      }
       registerTileForRendering( tile );
     }
   }
@@ -107,8 +121,8 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     foreach( it, area )
     {
       Tile* rtile = *it;
-      int reservoirWater = rtile->getWaterService( WTR_RESERVOIR );
-      int fontainWater = rtile->getWaterService( WTR_FONTAIN );
+      int reservoirWater = rtile->waterService( WTR_RESERVOIR );
+      int fontainWater = rtile->waterService( WTR_FONTAIN );
 
       if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->overlay().isNull() )
       {
@@ -125,6 +139,14 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
 
 void LayerWater::handleEvent(NEvent& event)
 {
+  if( event.EventType == sEventKeyboard )
+  {
+    if( event.keyboard.control && !event.keyboard.pressed && event.keyboard.key == KEY_KEY_E )
+    {
+      _showWaterValue = !_showWaterValue;
+    }
+  }
+
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -138,9 +160,9 @@ void LayerWater::handleEvent(NEvent& event)
         bool isWater = tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlDeepWater );
         if( !isWater )
         {
-          int wtrSrvc = (tile->getWaterService( WTR_WELL ) > 0 ? 1 : 0);
-          wtrSrvc |= (tile->getWaterService( WTR_FONTAIN ) > 0 ? 2 : 0);
-          wtrSrvc |= (tile->getWaterService( WTR_RESERVOIR ) > 0 ? 4 : 0);
+          int wtrSrvc = (tile->waterService( WTR_WELL ) > 0 ? 1 : 0);
+          wtrSrvc |= (tile->waterService( WTR_FONTAIN ) > 0 ? 2 : 0);
+          wtrSrvc |= (tile->waterService( WTR_RESERVOIR ) > 0 ? 4 : 0);
 
           switch( wtrSrvc )
           {
@@ -176,6 +198,7 @@ LayerPtr LayerWater::create( Camera& camera, PlayerCityPtr city)
 LayerWater::LayerWater( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
+  _showWaterValue = false;
 }
 
 }//end namespace gfx

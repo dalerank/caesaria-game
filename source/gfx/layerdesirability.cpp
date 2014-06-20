@@ -93,7 +93,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
   if( tile.desirability() != 0 )
   {
-    _debugFont.draw( engine.getScreen(), StringHelper::format( 0xff, "%d", tile.desirability() ), screenPos + Point( 20, -15 ), false );
+    _debugFont.draw( engine.screen(), StringHelper::format( 0xff, "%d", tile.desirability() ), screenPos + Point( 20, -15 ), false );
   }
 
   tile.setWasDrawn();

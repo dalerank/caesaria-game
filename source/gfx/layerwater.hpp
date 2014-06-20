@@ -36,6 +36,7 @@ public:
 private:
   LayerWater( Camera& camera, PlayerCityPtr city );
   std::set<int> _flags;
+  bool _showWaterValue;
 };
 
 }//end namespace gfx

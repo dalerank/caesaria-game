@@ -27,9 +27,10 @@ public:
   ~WaterSource();
   
   virtual void addWater( const WaterSource& source );
-  virtual bool haveWater() const;
+  virtual bool haveWater() const;  
   virtual void timeStep(const unsigned long time);
   int getId() const;
+  int water() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -39,11 +40,8 @@ public:
 protected:
   void _setError( const std::string& error );
   virtual void _waterStateChanged() {}
-  virtual void _produceWater( const TilePos* points, const int size, bool mayProduce );
+  virtual void _produceWater(const TilePos* points, const int size);
   void _setIsRoad( bool value );
-  void _setResolved( bool value );
-  bool _isResolved() const;
-  int _getWater() const;
   bool _isRoad() const;
   
   class Impl;

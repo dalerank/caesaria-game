@@ -431,7 +431,7 @@ void Layer::afterRender( Engine& engine)
     Tilemap& tmap = _d->city->tilemap();
     Point offset = _d->camera->offset();
     int size = tmap.size();
-    Picture& screen = engine.getScreen();
+    Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
     {
       const Tile& tile = tmap.at( 0, k );

@@ -36,15 +36,10 @@ using namespace gfx;
 class WaterSource::Impl
 {
 public:
-  typedef std::map< int, int > WaterSourceMap;
-  WaterSourceMap sourcesMap;
-  WaterSourceMap consumersMap;
-
   int  water;
   bool lastWaterState;
+  int  daysWithoutWater;
   bool isRoad;
-  bool alsoResolved;
-  int decreaseWaterInterval;
   std::string errorStr;
 };
 
@@ -70,10 +65,10 @@ void Reservoir::addWater(const WaterSource& source)
   WaterSource::addWater( source );
 }
 
-Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
+Reservoir::Reservoir()
+    : WaterSource( building::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
-  _d->produceTimer = GameDate::days2ticks( 2 );
   setPicture( ResourceGroup::waterbuildings, 1 );
   
   // utilitya 34      - empty reservoir
@@ -85,7 +80,6 @@ Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
   _animationRef().setOffset( Point( 47, 63 ) );
 
   _fgPicturesRef().resize(1);
-  //_fgPictures[0]=;
 }
 
 Reservoir::~Reservoir(){}
@@ -120,12 +114,12 @@ void Reservoir::timeStep(const unsigned long time)
 
   if( _isWaterSource )
   {
-    _d->water = 16;
+    _d->water = 100;
   }
 
   if( !_d->water )
   {
-    _fgPicturesRef()[ 0 ] = Picture::getInvalid();
+    _fgPicture( 0 ) = Picture::getInvalid();
     return;
   }
 
@@ -136,7 +130,10 @@ void Reservoir::timeStep(const unsigned long time)
     TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_RESERVOIR ); }
+  }
 
+  if( GameDate::isDayChanged() )
+  {
     const TilePos offsets[4] = { TilePos( -1, 1), TilePos( 1, 3 ), TilePos( 3, 1), TilePos( 1, -1) };
     _produceWater(offsets, 4);
   }
@@ -144,7 +141,7 @@ void Reservoir::timeStep(const unsigned long time)
   _animationRef().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
+  _fgPicture( 0 ) = _animationRef().currentFrame();
 }
 
 bool Reservoir::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
@@ -165,67 +162,65 @@ WaterSource::WaterSource(const Type type, const Size& size )
 {
   _d->water = 0;
   _d->lastWaterState = false;
-  _d->decreaseWaterInterval = GameDate::days2ticks( 3 );
 }
 
 WaterSource::~WaterSource(){}
 
 void WaterSource::addWater( const WaterSource& source )
 {
-  _d->water = math::clamp( _d->water+1, 0, 16 );
-  int sourceId = source.getId();
-  _d->sourcesMap[ sourceId ] = math::clamp( _d->sourcesMap[ sourceId ]+1, 0, 4 );
+  if( source.water() > water()+1 )
+  {
+    _d->water = source.water() - 1;
+    _d->daysWithoutWater = 0;
+  }
 }
 
 bool WaterSource::haveWater() const{  return _d->water > 0;} 
 
 void WaterSource::timeStep( const unsigned long time )
 {
-  if( time % _d->decreaseWaterInterval == 1)
-  {
-    _d->water = math::clamp( _d->water-1, 0, 16 );
+  if( GameDate::isDayChanged() )
+  {  
+    _d->daysWithoutWater++;
+    if( _d->daysWithoutWater > 5 )
+    {
+      _d->water = math::clamp( _d->water-10, 0, 100 );
+    }
+
     if( _d->lastWaterState != (_d->water > 0) )
     {
       _d->lastWaterState = _d->water > 0;
       _waterStateChanged();
     }
-
-    foreach( item, _d->sourcesMap ) { item->second = math::clamp( item->second-1, 0, 4 ); }
   }
 
   Construction::timeStep( time );
 }
 
-void WaterSource::_produceWater(const TilePos* points, const int size, bool mayProduce)
+void WaterSource::_produceWater(const TilePos* points, const int size)
 {
   Tilemap& tilemap = _city()->tilemap();
 
   for( int index=0; index < size; index++ )
   {
     TilePos p = pos() + points[index];
-    if( !tilemap.isInside( p ) )
+    if( tilemap.isInside( p ) )
     {
-      continue;
-    }
-
-    SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
+      SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
     
-    if( ws.isValid() )
-    {     
-      if( _d->sourcesMap[ ws->getId() ] == 0 )
+      if( ws.isValid() )
       {
-        ws->addWater( *this );
+        if( ws->water() < water() )
+            ws->addWater( *this );
       }
     }
   }
 }
 
 void WaterSource::_setIsRoad(bool value){  _d->isRoad = value;}
-void WaterSource::_setResolved(bool value){  _d->alsoResolved = value;}
-bool WaterSource::_isResolved() const { return _d->alsoResolved; }
-int WaterSource::_getWater() const{  return _d->water;}
 bool WaterSource::_isRoad() const { return _d->isRoad; }
 int WaterSource::getId() const{  return pos().j() * 10000 + pos().i();}
+int WaterSource::water() const{ return _d->water; }
 std::string WaterSource::errorDesc() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 
@@ -241,6 +236,7 @@ void WaterSource::load(const VariantMap &stream)
   Construction::load( stream );
   _d->water = stream.get( "water" );
   _d->isRoad = stream.get( "isRoad" );
+  _d->daysWithoutWater = 0;
 }
 
 
