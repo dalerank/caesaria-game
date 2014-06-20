@@ -31,6 +31,7 @@ public:
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
+  virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const; 
   virtual std::string sound() const;
 

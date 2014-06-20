@@ -89,6 +89,15 @@ void Aqueduct::destroy()
   }
 }
 
+void Aqueduct::timeStep(const unsigned long time)
+{
+  WaterSource::timeStep( time );
+
+  const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
+  _produceWater( offsets, 4 );
+
+}
+
 bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
 {
   bool is_free = Construction::canBuild( city, pos, aroundTiles );
@@ -363,8 +372,6 @@ void Aqueduct::addWater( const WaterSource& source )
     _setResolved( true );
     WaterSource::addWater( source );
 
-    const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
-    _produceWater( offsets, 4 );
     _setResolved( false );
   }
 }

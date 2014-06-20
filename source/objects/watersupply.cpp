@@ -44,7 +44,6 @@ public:
   bool lastWaterState;
   bool isRoad;
   bool alsoResolved;
-  int produceTimer;
   int decreaseWaterInterval;
   std::string errorStr;
 };
@@ -64,6 +63,11 @@ void Reservoir::destroy()
 std::string Reservoir::troubleDesc() const
 {
   return haveWater() ? "" : "##trouble_too_far_from_water##";
+}
+
+void Reservoir::addWater(const WaterSource& source)
+{
+  WaterSource::addWater( source );
 }
 
 Reservoir::Reservoir() : WaterSource( building::reservoir, Size( 3 ) )
@@ -108,12 +112,7 @@ bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
   return near_water;
 }
 
-void Reservoir::initTerrain(Tile &terrain)
-{
-  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
-  terrain.setFlag( Tile::clearAll, true );
-  terrain.setFlag( Tile::tlMeadow, isMeadow);
-}
+void Reservoir::initTerrain(Tile &terrain) {}
 
 void Reservoir::timeStep(const unsigned long time)
 {
@@ -137,12 +136,8 @@ void Reservoir::timeStep(const unsigned long time)
     TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
     foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_RESERVOIR ); }
-  }
 
-  //add water to all consumer
-  if( time % _d->produceTimer == 1 )
-  {
-    const TilePos offsets[4] = { TilePos( -1, 1), TilePos( 1, 3 ), TilePos( 3, 1), TilePos( 1, -1) };  
+    const TilePos offsets[4] = { TilePos( -1, 1), TilePos( 1, 3 ), TilePos( 3, 1), TilePos( 1, -1) };
     _produceWater(offsets, 4);
   }
 
@@ -201,7 +196,7 @@ void WaterSource::timeStep( const unsigned long time )
   Construction::timeStep( time );
 }
 
-void WaterSource::_produceWater( const TilePos* points, const int size )
+void WaterSource::_produceWater(const TilePos* points, const int size, bool mayProduce)
 {
   Tilemap& tilemap = _city()->tilemap();
 

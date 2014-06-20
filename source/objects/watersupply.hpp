@@ -39,7 +39,7 @@ public:
 protected:
   void _setError( const std::string& error );
   virtual void _waterStateChanged() {}
-  virtual void _produceWater( const TilePos* points, const int size );
+  virtual void _produceWater( const TilePos* points, const int size, bool mayProduce );
   void _setIsRoad( bool value );
   void _setResolved( bool value );
   bool _isResolved() const;
@@ -63,6 +63,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void destroy();
   virtual std::string troubleDesc() const;
+  virtual void addWater( const WaterSource& source );
 
   TilePos entry( constants::Direction direction );
 
