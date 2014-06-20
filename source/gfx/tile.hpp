@@ -37,7 +37,6 @@ class Tile
     bool tree;
     bool road;
     bool garden;
-    bool aqueduct;
     bool meadow;
     bool elevation;
     bool rubble;
@@ -57,7 +56,7 @@ class Tile
   };
 
 public:
-  typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding, tlAqueduct,
+  typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, clearAll,
                  wasDrawn } Type;
@@ -103,7 +102,7 @@ public:
   void setFlag( Type type, bool value );
 
   void appendDesirability( int value );
-  int getDesirability() const;
+  int desirability() const;
   TileOverlayPtr overlay() const;
   void setOverlay( TileOverlayPtr overlay );
   unsigned int originalImgId() const;

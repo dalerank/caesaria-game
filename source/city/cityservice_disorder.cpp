@@ -77,22 +77,25 @@ void Disorder::update( const unsigned int time )
   HouseList houses = helper.find<House>( building::house );
 
   WalkerList walkers = _city.getWalkers( walker::protestor );
-  float cityCrimeKoeff = helper.getBalanceKoeff();
 
   HouseList criminalizedHouse;
   _d->currentCrimeLevel = 0;
   _d->maxCrimeLevel = 0;
+
   foreach( house, houses )
   {
-    int crimeLvl = cityCrimeKoeff * (rand() % (int)( (*house)->getServiceValue( Service::crime )+1));
+    int crimeLvl = (*house)->getServiceValue( Service::crime )+1;
     if( crimeLvl >= _d->minCrimeLevel )
     {
       criminalizedHouse.push_back( *house );
     }
 
-    _d->currentCrimeLevel = ( _d->currentCrimeLevel + crimeLvl ) / 2;
+    _d->currentCrimeLevel = crimeLvl;
     _d->maxCrimeLevel = std::max<int>( _d->maxCrimeLevel, crimeLvl );
   }
+
+  if( houses.size() > 0 )
+    _d->currentCrimeLevel /= houses.size();
 
   if( criminalizedHouse.size() > walkers.size() )
   {
@@ -216,6 +219,14 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 
   RioterPtr protestor = Rioter::create( city );
   protestor->send2City( house );
+
+  HouseList houses;
+  houses << city->overlays();
+
+  foreach( it, houses )
+  {
+    (*it)->appendServiceValue( Service::crime, -20 );
+  }
 }
 
 void Disorder::Impl::generateProtestor(PlayerCityPtr city, HousePtr house)

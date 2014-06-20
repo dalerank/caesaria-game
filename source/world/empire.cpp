@@ -192,7 +192,7 @@ void Empire::setCitiesAvailable(bool value)
   foreach( city, _d->cities ) { (*city)->setAvailable( value ); }
 }
 
-unsigned int Empire::getWorkerSalary() const {  return _d->workerSalary; }
+unsigned int Empire::workerSalary() const {  return _d->workerSalary; }
 bool Empire::isAvailable() const{  return _d->available; }
 void Empire::setAvailable(bool value) { _d->available = value; }
 

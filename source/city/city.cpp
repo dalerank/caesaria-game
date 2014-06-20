@@ -205,7 +205,7 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
-  _d->sentiment = 50;
+  _d->sentiment = 60;
 
   addService( city::Migration::create( this ) );
   addService( city::WorkersHire::create( this ) );

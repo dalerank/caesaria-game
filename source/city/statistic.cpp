@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "statistic.hpp"
 #include "objects/construction.hpp"
@@ -24,6 +26,7 @@
 #include "good/goodstore.hpp"
 #include "city/funds.hpp"
 #include "objects/farm.hpp"
+#include "world/empire.hpp"
 #include "objects/warehouse.hpp"
 #include "city/cityservice_disorder.hpp"
 #include <map>
@@ -177,6 +180,11 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   }
 
   return taxValue;
+}
+
+int Statistic::getWagesDiff(PlayerCityPtr city)
+{
+  return city->funds().workerSalary() - city->empire()->workerSalary();
 }
 
 unsigned int Statistic::getFestivalCost(PlayerCityPtr city, FestivalType type)

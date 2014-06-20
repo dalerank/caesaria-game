@@ -45,11 +45,11 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
   if( tile.overlay().isNull() )
   {
     //draw background
-    if( tile.getFlag( Tile::isConstructible ) && tile.getDesirability() != 0 )
+    if( tile.getFlag( Tile::isConstructible ) && tile.desirability() != 0 )
     {
-      int picOffset = tile.getDesirability() < 0
-                          ? math::clamp( tile.getDesirability() / 25, -3, 0 )
-                          : math::clamp( tile.getDesirability() / 15, 0, 6 );
+      int picOffset = tile.desirability() < 0
+                          ? math::clamp( tile.desirability() / 25, -3, 0 )
+                          : math::clamp( tile.desirability() / 15, 0, 6 );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
       engine.draw( pic, screenPos );
@@ -74,9 +74,9 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     //other buildings
     default:
       {
-        int picOffset = tile.getDesirability() < 0
-                          ? math::clamp( tile.getDesirability() / 25, -3, 0 )
-                          : math::clamp( tile.getDesirability() / 15, 0, 6 );
+        int picOffset = tile.desirability() < 0
+                          ? math::clamp( tile.desirability() / 25, -3, 0 )
+                          : math::clamp( tile.desirability() / 15, 0, 6 );
         Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
         city::Helper helper( _city() );
@@ -91,9 +91,9 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     }
   }
 
-  if( tile.getDesirability() != 0 )
+  if( tile.desirability() != 0 )
   {
-    _debugFont.draw( engine.getScreen(), StringHelper::format( 0xff, "%d", tile.getDesirability() ), screenPos + Point( 20, -15 ), false );
+    _debugFont.draw( engine.getScreen(), StringHelper::format( 0xff, "%d", tile.desirability() ), screenPos + Point( 20, -15 ), false );
   }
 
   tile.setWasDrawn();

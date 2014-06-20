@@ -77,6 +77,10 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   int num3 = rndData & 0x3;
   int num7 = rndData & 0x7;
 
+  TileOverlay::Type ovType = construction::unknown;
+  if( tile.overlay().isValid() )
+    ovType = tile.overlay()->type();
+
   if (tile.getFlag( Tile::tlTree ))
   {
     c1 = colors->colour(MinimapColors::MAP_TREE1, num3);
@@ -112,7 +116,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
     c1 = colors->colour(MinimapColors::MAP_WALL, 0);
     c2 = colors->colour(MinimapColors::MAP_WALL, 1);
   }
-  else if (tile.getFlag( Tile::tlAqueduct )) // and not tile.isRoad()
+  else if( ovType == building::aqueduct  )
   {
     c1 = colors->colour(MinimapColors::MAP_AQUA, 0);
     c2 = colors->colour(MinimapColors::MAP_AQUA, 1);

@@ -249,7 +249,7 @@ void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
 
   if( _d->showDebugInfo )
   {
-    Logger::warning( "Tile debug info: dsrbl=%d", tile.getDesirability() );
+    Logger::warning( "Tile debug info: dsrbl=%d", tile.desirability() );
   }
 
   type = overlay.isNull() ? building::unknown : overlay->type();

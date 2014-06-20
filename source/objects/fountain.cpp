@@ -91,7 +91,7 @@ void Fountain::timeStep(const unsigned long time)
   if( GameDate::isWeekChanged() )
   {
     int desPic[] = { simpleFountain, prettyFountain, awesomeFountain, patricianFountain };
-    int currentId = desPic[ math::clamp<int>( tile().getDesirability() / 25, 0, 3 ) ];
+    int currentId = desPic[ math::clamp<int>( tile().desirability() / 25, 0, 3 ) ];
     if( currentId != _lastPicId )
     {
       _lastPicId = currentId;

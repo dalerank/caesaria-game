@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSTATISTIC_H_INCLUDED__
 #define __CAESARIA_CITYSTATISTIC_H_INCLUDED__
@@ -45,6 +47,7 @@ public:
   static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
   static unsigned int getFoodProducing( PlayerCityPtr city );
   static unsigned int getTaxValue( PlayerCityPtr city );
+  static int getWagesDiff( PlayerCityPtr city );
   static unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
   static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
   static unsigned int getCrimeLevel( PlayerCityPtr city );

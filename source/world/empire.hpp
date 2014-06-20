@@ -59,7 +59,7 @@ public:
   virtual void load( const VariantMap& stream );
 
   void setCitiesAvailable( bool value );
-  unsigned int getWorkerSalary() const;
+  unsigned int workerSalary() const;
   bool isAvailable() const;
   void setAvailable( bool value );
   void setPrice( Good::Type gtype, int buy, int sell );

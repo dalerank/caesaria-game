@@ -290,7 +290,7 @@ void Tilemap::save( VariantMap& stream ) const
   {
     Tile* tile = *it;
     bitsetInfo.push_back( TileHelper::encode( *tile ) );
-    desInfo.push_back( tile->getDesirability() );
+    desInfo.push_back( tile->desirability() );
     idInfo.push_back( tile->originalImgId() );
   }
 

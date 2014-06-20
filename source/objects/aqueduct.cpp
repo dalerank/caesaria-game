@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "aqueduct.hpp"
 
@@ -69,6 +69,8 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
   updatePicture( city );
 }
 
+void Aqueduct::initTerrain(Tile&) {}
+
 void Aqueduct::destroy()
 {
   Construction::destroy();
@@ -85,17 +87,6 @@ void Aqueduct::destroy()
       }
     }
   }
-}
-
-void Aqueduct::initTerrain(Tile &terrain)
-{
-  bool isRoad   = terrain.getFlag( Tile::tlRoad );
-  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
-
-  terrain.setFlag( Tile::clearAll, true );
-  terrain.setFlag( Tile::tlRoad, isRoad );
-  terrain.setFlag( Tile::tlMeadow, isMeadow);
-  terrain.setFlag( Tile::tlAqueduct, true); // mandatory!
 }
 
 bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -133,7 +124,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
     foreach( tile, perimetr )
     {
       AqueductPtr bldAqueduct;
-      for( TilesArray::const_iterator it=aroundTiles.begin(); it != aroundTiles.end(); ++it )
+      foreach( it, aroundTiles )
       {
         if( (*it)->pos() == (*tile)->pos() )
         {
@@ -142,8 +133,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
         }
       }
 
-      if( (*tile)->getFlag( Tile::tlRoad )
-          && ( (*tile)->getFlag( Tile::tlAqueduct ) || bldAqueduct.isValid() ) )
+      if( (*tile)->getFlag( Tile::tlRoad ) && bldAqueduct.isValid()  )
         return false;
     }
   }
