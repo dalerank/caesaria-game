@@ -90,7 +90,7 @@ void Disorder::update( const unsigned int time )
       criminalizedHouse.push_back( *house );
     }
 
-    _d->currentCrimeLevel = crimeLvl;
+    _d->currentCrimeLevel += crimeLvl;
     _d->maxCrimeLevel = std::max<int>( _d->maxCrimeLevel, crimeLvl );
   }
 
@@ -100,57 +100,51 @@ void Disorder::update( const unsigned int time )
   if( criminalizedHouse.size() > walkers.size() )
   {
     HouseList::iterator it = criminalizedHouse.begin();
-    std::advance( it, rand() % criminalizedHouse.size() );
+    std::advance( it, math::random(criminalizedHouse.size()));
 
     int hCrimeLevel = (*it)->getServiceValue( Service::crime );
 
     int sentiment = _city.sentiment();
     int randomValue = math::random( 100 );
-    if ( sentiment >= 30 )
+    if (sentiment >= 60)
     {
-      if ( sentiment >= 60 )
+      if ( randomValue >= sentiment + 20 )
       {
-        if ( randomValue >= sentiment + 20 )
+        if ( hCrimeLevel > 50 )
         {
-          if ( hCrimeLevel > 50 )
-            _d->generateProtestor( &_city, *it );
-        }
-      }
-      else
-      {
-        if ( randomValue >= sentiment + 40 )
-        {
-          if ( hCrimeLevel < 70 )
-          {
-            if ( hCrimeLevel > 50 )
-              _d->generateProtestor( &_city, *it );
-          }
-          else
-          {
-            _d->generateMugger( &_city, *it );
-          }
+          _d->generateProtestor( &_city, *it );
         }
       }
     }
-    else
+    else if ( sentiment >= 30 )
+    {
+      if ( randomValue >= sentiment + 40 )
+      {
+        if ( hCrimeLevel >= 70 )
+        {
+          _d->generateMugger( &_city, *it );
+        }
+        else if ( hCrimeLevel > 50 )
+        {
+          _d->generateProtestor( &_city, *it );
+        }
+      }
+    }
+    else // sentiment < 30
     {
       if ( randomValue >= sentiment + 50 )
       {
-        if ( hCrimeLevel < 90 )
-        {
-          if ( hCrimeLevel < 70 )
-          {
-            if ( hCrimeLevel > 50 )
-              _d->generateProtestor( &_city, *it );
-          }
-          else
-          {
-            _d->generateMugger( &_city, *it );
-          }
-        }
-        else
+        if ( hCrimeLevel >= 90 )
         {
           _d->generateRioter( &_city, *it );
+        }
+        else if ( hCrimeLevel >= 70 )
+        {
+          _d->generateMugger( &_city, *it );
+        }
+        else if ( hCrimeLevel > 50 )
+        {
+          _d->generateProtestor( &_city, *it );
         }
       }
     }
