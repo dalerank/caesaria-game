@@ -395,19 +395,41 @@ void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std:
 void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
 {
   __D_IMPL(_d,Layer)
+  // Column made of tree base parts and contains maximum 10 parts.
+  // Header (10)
+  // Body (10, max 8 pieces)
+  // Foot (10)
+  //
+  // Header and footer should be always drawn. (except percent == 0)
+  // In original game fire colomn may be in one of 11 states: none, f+h, f+b+h, f+2b+h, ... f+8b+h
+
+
+  int clamped = math::clamp(percent, 0, 100);
+  int rounded = (clamped / 10) * 10;
+  // [0,  9] -> 0
+  // [10,19] -> 10
+  // ...
+  // [80,89] -> 80
+  // [90,99] -> 90
+  // [100] -> 100
+  // rounded == 0 -> nothing
+  // rounded == 10 -> header + footer
+  // rounded == 20 -> header + body + footer
+
+  if (rounded == 0)
+  {
+    // Nothing to draw.
+    return;
+  }
+
   engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
 
-  int roundPercent = (math::clamp(percent, 0, 100)/ 10) * 10;
-
-  for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
+  for( int offsetY=10; offsetY < rounded; offsetY += 10 )
   {
     engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
   }
 
-  if( percent >= 10 )
-  {
-    engine.draw( _d->headerColumn, pos - Point( -6, 25 + roundPercent ) );
-  }
+  engine.draw( _d->headerColumn, pos - Point( -6, 25 + rounded) );
 }
 
 void Layer::init( Point cursor )
