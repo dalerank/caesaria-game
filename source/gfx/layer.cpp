@@ -400,8 +400,7 @@ void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
   // Body (10, max 8 pieces)
   // Foot (10)
   //
-  // Header and footer should be always drawn. (except percent == 0)
-  // In original game fire colomn may be in one of 11 states: none, f+h, f+b+h, f+2b+h, ... f+8b+h
+  // In original game fire colomn may be in one of 12 (?) states: none, f, f+h, f+b+h, f+2b+h, ... f+8b+h
 
 
   int clamped = math::clamp(percent, 0, 100);
@@ -424,12 +423,15 @@ void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
 
   engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
 
-  for( int offsetY=10; offsetY < rounded; offsetY += 10 )
+  for( int offsetY=20; offsetY < rounded; offsetY += 10 )
   {
     engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
   }
 
-  engine.draw( _d->headerColumn, pos - Point( -6, 25 + rounded) );
+  if (rounded > 10)
+  {
+    engine.draw(_d->headerColumn, pos - Point(-6, 25 + rounded));
+  }
 }
 
 void Layer::init( Point cursor )
