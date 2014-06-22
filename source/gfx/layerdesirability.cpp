@@ -42,14 +42,15 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
   //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mapPos() + offset;
 
+  int desirability = tile.desirability();
   if( tile.overlay().isNull() )
   {
     //draw background
-    if( tile.getFlag( Tile::isConstructible ) && tile.desirability() != 0 )
+    if( tile.getFlag( Tile::isConstructible ) && desirability != 0 )
     {
-      int picOffset = tile.desirability() < 0
-                          ? math::clamp( tile.desirability() / 25, -3, 0 )
-                          : math::clamp( tile.desirability() / 15, 0, 6 );
+      int picOffset = desirability < 0
+                          ? math::clamp( desirability / 25, -3, 0 )
+                          : math::clamp( desirability / 15, 0, 6 );
       Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
       engine.draw( pic, screenPos );
@@ -64,9 +65,20 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     TileOverlayPtr overlay = tile.overlay();
     switch( overlay->type() )
     {
-    //roads
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
+
       Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     break;
@@ -74,9 +86,9 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     //other buildings
     default:
       {
-        int picOffset = tile.desirability() < 0
-                          ? math::clamp( tile.desirability() / 25, -3, 0 )
-                          : math::clamp( tile.desirability() / 15, 0, 6 );
+        int picOffset = desirability < 0
+                          ? math::clamp( desirability / 25, -3, 0 )
+                          : math::clamp( desirability / 15, 0, 6 );
         Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
 
         city::Helper helper( _city() );
@@ -91,9 +103,9 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
     }
   }
 
-  if( tile.desirability() != 0 )
+  if( desirability != 0 )
   {
-    _debugFont.draw( engine.screen(), StringHelper::format( 0xff, "%d", tile.desirability() ), screenPos + Point( 20, -15 ), false );
+    _debugFont.draw( engine.screen(), StringHelper::format( 0xff, "%d", desirability), screenPos + Point( 20, -15 ), false );
   }
 
   tile.setWasDrawn();

@@ -58,16 +58,25 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     TileOverlayPtr overlay = tile.overlay();
     switch( overlay->type() )
     {
-      //water buildings
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
+
+    //water buildings
     case building::reservoir:
     case building::fountain:
     case building::well:
     case building::aqueduct:
-    case building::lowBridge:
-    case building::highBridge:
-    case building::elevation:
       needDrawAnimations = true;
       areaSize = overlay->size();      
     break;
