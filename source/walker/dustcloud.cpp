@@ -71,7 +71,7 @@ DustCloud::DustCloud(PlayerCityPtr city )
 {
   _setType( walker::dustCloud );
   _d->animation.load( ResourceGroup::sprites, 1, 8 );
-  _d->animation.setDelay( 8 );
+  _d->animation.setDelay( 9 );
   _d->animation.setOffset( Point( 5, 7 ) );
 
   setName( _("##dust##") );

@@ -15,17 +15,30 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_EVENTS_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_EVENTS_PREDEFINITIONS_H_INCLUDED__
+#ifndef _CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_
+#define _CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_
 
-#include "core/smartptr.hpp"
-#include "core/predefinitions.hpp"
+#include "event.hpp"
 
 namespace events
 {
 
-PREDEFINE_CLASS_SMARTPOINTER(GameEvent)
+class RemoveCitizens : public GameEvent
+{
+public:
+  static GameEventPtr create(TilePos center, unsigned int workers);
+
+protected:
+  virtual void _exec(Game& game, unsigned int time );
+  virtual bool _mayExec(Game&, unsigned int ) const;
+
+private:
+  RemoveCitizens();
+
+  TilePos _center;
+  unsigned int _count;
+};
 
 }
 
-#endif //__OPENCAESAR3_EVENTS_PREDEFINITIONS_H_INCLUDED__
+#endif //_CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_

@@ -12,8 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "returnworkers.hpp"
+#include "removecitizen.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "objects/house.hpp"
@@ -26,17 +28,18 @@ using namespace gfx;
 namespace events
 {
 
-GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
+GameEventPtr RemoveCitizens::create(TilePos center, unsigned int count)
 {
-  ReturnWorkers* e = new ReturnWorkers();
+  RemoveCitizens* e = new RemoveCitizens();
   e->_center  = center;
-  e->_workers = workers;
+  e->_count = count;
+
   GameEventPtr ret( e );
   ret->drop();
   return ret;
 }
 
-void ReturnWorkers::_exec(Game& game, unsigned int time)
+void RemoveCitizens::_exec(Game& game, unsigned int time)
 {
   Tilemap& tilemap = game.city()->tilemap();
   const int defaultFireWorkersDistance = 40;
@@ -50,24 +53,20 @@ void ReturnWorkers::_exec(Game& game, unsigned int time)
       HousePtr house = *it;
       if( house.isValid() )
       {
-        int lastWorkersCount = house->getServiceValue( Service::recruter );
-        house->appendServiceValue( Service::recruter, _workers );
-        int currentWorkers = (int)house->getServiceValue( Service::recruter );
-
-        int mayAppend = math::clamp<int>( _workers, 0, currentWorkers - lastWorkersCount );
-        _workers -= mayAppend;
+        if( house->habitants().count() >= _count )
+        {
+          house->remHabitants( _count );
+          break;
+        }
       }
-
-      if( !_workers )
-        return;
     }
   }
 }
 
-bool ReturnWorkers::_mayExec(Game&, unsigned int) const { return true; }
+bool RemoveCitizens::_mayExec(Game&, unsigned int) const { return true; }
 
-ReturnWorkers::ReturnWorkers() : _workers( 0 )
+RemoveCitizens::RemoveCitizens() : _count( 0 )
 {
-
 }
+
 }

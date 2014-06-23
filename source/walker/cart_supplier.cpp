@@ -33,6 +33,7 @@
 #include "name_generator.hpp"
 #include "good/goodstore.hpp"
 #include "objects/constants.hpp"
+#include "events/removecitizen.hpp"
 #include "core/direction.hpp"
 
 using namespace constants;
@@ -45,7 +46,6 @@ const int defaultDeliverDistance = 40;
 class CartSupplier::Impl
 {
 public:
-  PlayerCityPtr city;
   GoodStock stock;
   TilePos storageBuildingPos;
   TilePos baseBuildingPos;
@@ -63,7 +63,6 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
   _d->storageBuildingPos = TilePos( -1, -1 );
   _d->baseBuildingPos = TilePos( -1, -1 );
   _d->maxDistance = defaultDeliverDistance;
-  _d->city = city;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -71,7 +70,7 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
 void CartSupplier::_reachedPathway()
 {
   Walker::_reachedPathway();
-  city::Helper helper( _d->city );
+  city::Helper helper( _city() );
 
   if( _pathwayRef().isReverse() )
   {
@@ -220,7 +219,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const Good::Ty
   // we have something to buy!
   // get the list of buildings within reach
   Pathway pathWay;
-  Propagator pathPropagator( _d->city );
+  Propagator pathPropagator( _city() );
   pathPropagator.init( ptr_cast<Construction>( building ) );
   pathPropagator.setAllDirections( false );
   pathPropagator.propagate( _d->maxDistance);
@@ -260,13 +259,13 @@ void CartSupplier::send2city( BuildingPtr building, Good::Type what, const int q
 
   if( !isDeleted()  )
   {           
-    _d->city->addWalker( WalkerPtr( this ) );
+    _city()->addWalker( WalkerPtr( this ) );
   }
 }
 
 void CartSupplier::_reserveStorage()
 {
-  city::Helper helper( _d->city );
+  city::Helper helper( _city() );
   BuildingPtr b = helper.find<Building>( building::any, _d->baseBuildingPos );
 
   GoodStore* storage = 0;
@@ -296,11 +295,33 @@ CartSupplierPtr CartSupplier::create(PlayerCityPtr city )
 void CartSupplier::save( VariantMap& stream ) const
 {
   Walker::save( stream );
+
+  stream[ "stock" ] = _d->stock.save();
+  stream[ "storagePos" ] = _d->storageBuildingPos;
+  stream[ "basrPos" ] = _d->baseBuildingPos;
+  stream[ "maxDistance" ] = _d->maxDistance;
+  stream[ "rcvReservationID" ] = (int)_d->rcvReservationID;
+  stream[ "reservationID" ] = (int)_d->reservationID;
 }
 
 void CartSupplier::load( const VariantMap& stream )
 {
   Walker::load( stream );
+
+  _d->stock.load( stream.get( "stock" ).toList() );
+  _d->storageBuildingPos = stream.get( "storagePos" ).toTilePos();
+  _d->baseBuildingPos = stream.get( "basrPos" ).toTilePos();
+  _d->maxDistance = stream.get( "maxDistance" );
+  _d->rcvReservationID = (int)stream.get( "rcvReservationID" );
+  _d->reservationID = (int)stream.get( "reservationID" );
+}
+
+bool CartSupplier::die()
+{
+  events::GameEventPtr e = events::RemoveCitizens::create( pos(), 1 );
+  e->dispatch();
+
+  return Walker::die();
 }
 
 void CartSupplier::timeStep(const unsigned long time)
