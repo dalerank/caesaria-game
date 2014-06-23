@@ -132,6 +132,22 @@
       value : 30
     }
 
+    oil_price_rising#trading_options : {
+      date : "-345.04.01"
+      goods : {
+        furniture : { buy : 40, sell : 30 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "oil"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
     "city_indebt#city_indebt" : {
       date : "-350.01.01"
       type : "city_indebt"
@@ -142,7 +158,7 @@
     }
 
     "emperor_request_vines#city_request" : {
-      date : "-347.05.01"
+      date : "-347.02.01"
       reqtype : "good_request"
       month : 12
       good : { grape : 10 }
@@ -150,16 +166,128 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-    barbarian_attack#messagebox : {
-      date : "-349.07.01"
-      title : "##barbarian_attack_title##"
-      text : "##barbarian_attack_text##"
-      video : "/smk/spy_army.smk"
+	"emperor_request_vines2#city_request" : {
+      date : "-345.06.01"
+      reqtype : "good_request"
+      month : 12
+      good : { wine : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
     }
 
-    "barbarian_invasion#enemy_attack" : {
+	"emperor_request_vines3#city_request" : {
+      date : "-342.04.01"
+      reqtype : "good_request"
+      month : 12
+      good : { grape : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+	"emperor_request_vines4#city_request" : {
+      date : "-339.08.01"
+      reqtype : "good_request"
+      month : 12
+      good : { grape : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+	"emperor_request_vines5#city_request" : {
+      date : "-336.08.01"
+      reqtype : "good_request"
+      month : 12
+      good : { wine : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+	"emperor_request_vines6#city_request" : {
+      date : "-333.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { grape : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+	"emperor_request_vines7#city_request" : {
+      date : "-329.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { wine : 20 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+	"emperor_request_vines8#city_request" : {
+      date : "-326.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { grape : 20 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    "emperor_request_vines9#city_request" : {
+      date : "-323.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { wine : 20 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    "emperor_request_vines10#city_request" : {
+      date : "-320.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { olive : 20 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+	"emperor_request_vines11#city_request" : {
+      date : "-317.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { grape : 25 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    "emperor_request_vines12#city_request" : {
+      date : "-314.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { wine : 30 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    "emperor_request_vines13#city_request" : {
+      date : "-311.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { grape : 35 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+	"emperor_request_vines14#city_request" : {
+      date : "-308.05.01"
+      reqtype : "good_request"
+      month : 12
+      good : { wine : 40 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 24 }
+    }
+
+    
+    "barbarian_invasion0#enemy_attack" : {
       date : "-349.07.01"
       type : "enemy_attack"
+	  target : "food"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -173,8 +301,149 @@
           location : "random"
         }
       }
+		
+      exec : {
+		barbarian_attack#messagebox : {
+		  title : "##barbarian_attack_title##"
+		  text : "##barbarian_attack_text##"
+		  video : "/smk/spy_army.smk"
+		}
+	  }
+    }
 
-      text : "##enemy_attack_city##"
+	"barbarian_invasion1#enemy_attack" : {
+      date : "-347.07.01"
+      type : "enemy_attack"
+	  target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 6
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 3
+          location : "random"
+        }
+      }
+
+      exec : {
+		barbarian_attack#messagebox : {
+		  title : "##barbarian_attack_title##"
+		  text : "##barbarian_attack_text##"
+		  video : "/smk/spy_army.smk"
+		}
+	  }
+    }
+
+	"barbarian_invasion2#enemy_attack" : {
+      date : "-342.07.01"
+      type : "enemy_attack"
+	  target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 12
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 4
+          location : "random"
+        }
+      }
+
+      exec : {
+		barbarian_attack#messagebox : {
+		  title : "##barbarian_attack_title##"
+		  text : "##barbarian_attack_text##"
+		  video : "/smk/spy_army.smk"
+		}
+	  }
+    }
+ 
+    "barbarian_invasion3#enemy_attack" : {
+      date : "-335.07.01"
+      type : "enemy_attack"
+	  target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 4
+          location : "random"
+        }
+      }
+
+      exec : {
+		barbarian_attack#messagebox : {
+		  title : "##barbarian_attack_title##"
+		  text : "##barbarian_attack_text##"
+		  video : "/smk/spy_army.smk"
+		}
+	  }
+    }
+
+    "barbarian_invasion1#enemy_attack" : {
+      date : "-330.03.01"
+      type : "enemy_attack"
+	  target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 20
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 12
+          location : "random"
+        }
+      }
+
+      exec : {
+		barbarian_attack#messagebox : {
+		  title : "##barbarian_attack_title##"
+		  text : "##barbarian_attack_text##"
+		  video : "/smk/spy_army.smk"
+		}
+	  }
+    }
+
+	"barbarian_invasion1#enemy_attack" : {
+      date : "-325.07.01"
+      type : "enemy_attack"
+	  target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 32
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 16
+          location : "random"
+        }
+      }
+
+      exec : {
+		barbarian_attack#messagebox : {
+		  title : "##barbarian_attack_title##"
+		  text : "##barbarian_attack_text##"
+		  video : "/smk/spy_army.smk"
+		}
+	  }
     }
   }
 	
