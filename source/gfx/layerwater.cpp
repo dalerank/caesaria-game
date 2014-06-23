@@ -146,6 +146,11 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
   tile.setWasDrawn();
 }
 
+void LayerWater::drawTileW(Engine& engine, Tile& tile, const Point& offset, const int depth)
+{
+
+}
+
 void LayerWater::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventKeyboard )

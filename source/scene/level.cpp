@@ -491,6 +491,7 @@ void Level::handleEvent( NEvent& event )
   {
     if( event.keyboard.control )
     {
+      bool handled = true;
       switch( event.keyboard.key )
       {
       case KEY_SPACE:
@@ -519,10 +520,12 @@ void Level::handleEvent( NEvent& event )
       case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
       case KEY_F12:    _d->showAdvisorsWindow( advisor::main ); break;
       default:
+        handled = false;
       break;
       }
 
-      return;
+      if( handled )
+        return;
     }
 
     switch( event.keyboard.key )
