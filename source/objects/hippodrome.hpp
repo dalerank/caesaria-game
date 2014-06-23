@@ -49,6 +49,9 @@ public:
   virtual void destroy();
 
   bool isRacesCarry() const;
+protected:
+  virtual WalkerList _specificWorkers() const;
+
 private:
   void _init(bool onBuild=false);
   HippodromeSectionPtr _addSection( HippodromeSection::Type type, TilePos offset );

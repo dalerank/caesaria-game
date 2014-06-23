@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
+#include "events/removecitizen.hpp"
 #include "core/foreach.hpp"
 #include "game/resourcegroup.hpp"
 
@@ -424,6 +425,9 @@ void CartPusher::load( const VariantMap& stream )
 bool CartPusher::die()
 {
   bool created = Walker::die();
+
+  events::GameEventPtr e = events::RemoveCitizens::create( pos(), 1 );
+  e->dispatch();
 
   if( !created )
   {

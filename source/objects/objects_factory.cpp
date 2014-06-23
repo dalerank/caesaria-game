@@ -72,6 +72,7 @@
 #include "sight.hpp"
 #include "rift.hpp"
 #include "weaponsworkshop.hpp"
+#include "ironmine.hpp"
 #include <map>
 
 using namespace constants;

@@ -43,10 +43,10 @@ int LayerHealth::_getLevelValue( HousePtr house )
 {
   switch(_type)
   {
-  case citylayer::health: return house->getState( (Construction::Param)House::health );
-  case citylayer::hospital: return house->getServiceValue( Service::hospital );
-  case citylayer::barber: return house->getServiceValue( Service::barber );
-  case citylayer::baths: return house->getServiceValue( Service::baths );
+  case citylayer::health: return (int) house->getState( House::health );
+  case citylayer::hospital: return (int) house->getServiceValue( Service::hospital );
+  case citylayer::barber: return (int) house->getServiceValue( Service::barber );
+  case citylayer::baths: return (int) house->getServiceValue( Service::baths );
   }
 
   return 0;
@@ -69,9 +69,19 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
     int healthLevel = -1;
     switch( overlay->type() )
     {
-      //fire buildings and roads
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
       needDrawAnimations = true;
     break;
 
@@ -79,7 +89,7 @@ void LayerHealth::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::hospital:
     case building::barber:
     case building::baths:
-      needDrawAnimations = _flags.count( overlay->type() );
+      needDrawAnimations = _flags.count( overlay->type() ) > 0;
       if( !needDrawAnimations )
       {
         city::Helper helper( _city() );

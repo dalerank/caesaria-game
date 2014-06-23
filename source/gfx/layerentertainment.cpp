@@ -51,10 +51,10 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
     int minLevel = house->spec().minEntertainmentLevel();
     return ( minLevel == 0 ? 0 : entLevel * 100 / minLevel );
   }
-  case citylayer::theater: return house->getServiceValue( Service::theater );
-  case citylayer::amphitheater: return house->getServiceValue( Service::amphitheater );
-  case citylayer::colloseum: return house->getServiceValue( Service::colloseum );
-  case citylayer::hippodrome: return house->getServiceValue( Service::hippodrome );
+  case citylayer::theater: return (int) house->getServiceValue( Service::theater );
+  case citylayer::amphitheater: return (int) house->getServiceValue( Service::amphitheater );
+  case citylayer::colloseum: return (int) house->getServiceValue( Service::colloseum );
+  case citylayer::hippodrome: return (int) house->getServiceValue( Service::hippodrome );
   }
 
   return 0;
@@ -77,9 +77,19 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
     int entertainmentLevel = -1;
     switch( overlay->type() )
     {
-      //fire buildings and roads
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
       needDrawAnimations = true;
     break;
 
@@ -90,7 +100,7 @@ void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
     case building::lionsNursery:
     case building::actorColony:
     case building::gladiatorSchool:
-      needDrawAnimations = _flags.count( overlay->type() );
+      needDrawAnimations = _flags.count( overlay->type() ) > 0;
       if( !needDrawAnimations )
       {
         city::Helper helper( _city() );

@@ -29,7 +29,7 @@ class TilesArray : public std::vector<Tile*>
 public:
   bool contain( TilePos tilePos ) const
   {
-    for( const_iterator it=begin(); it != end(); ++it )
+    foreach( it, *this )
     {
       if( (*it)->pos() == tilePos )
         return true;
@@ -63,10 +63,22 @@ public:
   TilesArray walkableTiles( bool alllands=false ) const
   {
     TilesArray ret;
-    for( const_iterator i=begin(); i != end(); ++i )
+    foreach( i, *this)
     {
       if( (*i)->isWalkable( alllands ) )
           ret.push_back( *i );
+    }
+
+    return ret;
+  }
+
+  TileOverlayList overlays() const
+  {
+    TileOverlayList ret;
+    foreach( i, *this)
+    {
+      if( (*i)->overlay().isValid() )
+        ret << (*i)->overlay();
     }
 
     return ret;

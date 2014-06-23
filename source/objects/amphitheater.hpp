@@ -43,6 +43,10 @@ public:
   bool isActorsShow() const;
 
   bool isNeed( constants::walker::Type type );
+
+protected:
+  virtual WalkerList _specificWorkers() const;
+
 private:
   Service::Type _getServiceManType() const;
 

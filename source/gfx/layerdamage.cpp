@@ -65,10 +65,19 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
       //fire buildings and roads
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
     case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
+
     case building::engineerPost:
-    case building::burningRuins:
-      needDrawAnimations = true;      
+      needDrawAnimations = true;
     break;
 
       //houses
@@ -132,10 +141,10 @@ void LayerDamage::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
-        if( constr != 0 )
+        ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
+        if( construction.isValid() )
         {
-          int damageLevel = math::clamp<int>( constr->getState( Construction::damage ), 0, 100 );
+          int damageLevel = math::clamp<int>( (int) construction->getState( Construction::damage ), 0, 100 );
           if( damageLevel > 0 )
           {
             text = damageLevelName[ damageLevel / 20 ];

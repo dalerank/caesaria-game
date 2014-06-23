@@ -46,6 +46,7 @@
 #include "helper.hpp"
 #include "watergarbage.hpp"
 #include "immigrant.hpp"
+#include "dustcloud.hpp"
 #include "mugger.hpp"
 #include <map>
 
@@ -135,6 +136,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::etruscanSoldier, new SoldierCreator<EnemySoldier>( walker::etruscanSoldier ) );
   addCreator( walker::etruscanArcher, new SoldierCreator<EnemyArcher>( walker::etruscanArcher ) );
   addCreator( walker::mugger, new BaseCreator<Mugger>() );
+  addCreator( walker::dustCloud, new BaseCreator<DustCloud>() );
   addCreator( walker::wolf, new BaseCreator<Wolf>() );
 }
 

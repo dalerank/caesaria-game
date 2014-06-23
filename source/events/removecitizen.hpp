@@ -13,20 +13,32 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WORKSHOP_CHARIOT_H_INCLUDE_
-#define _CAESARIA_WORKSHOP_CHARIOT_H_INCLUDE_
+#ifndef _CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_
+#define _CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_
 
-#include "training.hpp"
+#include "event.hpp"
 
-class WorkshopChariot : public TrainingBuilding
+namespace events
+{
+
+class RemoveCitizens : public GameEvent
 {
 public:
-   WorkshopChariot();
-   virtual void deliverTrainee();
-   virtual void timeStep(const unsigned long time);
+  static GameEventPtr create(TilePos center, unsigned int workers);
+
+protected:
+  virtual void _exec(Game& game, unsigned int time );
+  virtual bool _mayExec(Game&, unsigned int ) const;
+
+private:
+  RemoveCitizens();
+
+  TilePos _center;
+  unsigned int _count;
 };
 
-#endif //_CAESARIA_WORKSHOP_CHARIOT_H_INCLUDE_
+}
+
+#endif //_CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_

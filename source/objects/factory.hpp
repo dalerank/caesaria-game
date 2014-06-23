@@ -84,15 +84,8 @@ protected:
 class TimberLogger : public Factory
 {
 public:
-   TimberLogger();
-   virtual bool canBuild( PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;  // returns true if it can be built there
-};
-
-class IronMine : public Factory
-{
-public:
-   IronMine();
-   bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
+  TimberLogger();
+  virtual bool canBuild( PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;  // returns true if it can be built there
 };
 
 class Winery : public Factory

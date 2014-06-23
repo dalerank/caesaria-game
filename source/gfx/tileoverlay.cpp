@@ -204,7 +204,7 @@ TileOverlay::Group TileOverlay::group() const{  return _d->overlayClass;}
 void TileOverlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
 const Picture& TileOverlay::picture() const{  return _d->picture;}
 void TileOverlay::setAnimation(const Animation& animation){  _d->animation = animation;}
-const Animation&TileOverlay::animation() const { return _d->animation;}
+const Animation& TileOverlay::animation() const { return _d->animation;}
 void TileOverlay::deleteLater(){  _d->isDeleted  = true;}
 void TileOverlay::destroy(){}
 Size TileOverlay::size() const{  return _d->size;}

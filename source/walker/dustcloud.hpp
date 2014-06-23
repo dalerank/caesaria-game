@@ -13,25 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012- Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_THEATER_H_INCLUDED__
-#define __CAESARIA_THEATER_H_INCLUDED__
+#ifndef __CAESARIA_DUSTCLOUD_H_INCLUDED__
+#define __CAESARIA_DUSTCLOUD_H_INCLUDED__
 
-#include "entertainment.hpp"
+#include "walker.hpp"
+#include "core/predefinitions.hpp"
 
-class Theater : public EntertainmentBuilding
+class DustCloud : public Walker
 {
 public:
-  Theater();
+  static WalkerPtr create( PlayerCityPtr city );
+  static void create( PlayerCityPtr city, const TilePos& start, unsigned int range );
+  DustCloud( PlayerCityPtr city );
+  virtual ~DustCloud();
 
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual void send2City(const TilePos& start, const TilePos& stop );
+
   virtual void timeStep(const unsigned long time);
-  virtual int visitorsNumber() const;
-  virtual void deliverService();
+
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
 
 protected:
-  virtual WalkerList _specificWorkers() const;
+  virtual void _reachedPathway();
+  virtual const gfx::Picture& getMainPicture();
+
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-#endif //__CAESARIA_THEATER_H_INCLUDED__
+#endif //__CAESARIA_DUSTCLOUD_H_INCLUDED__

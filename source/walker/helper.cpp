@@ -90,6 +90,7 @@ public:
     __REG_WTYPE( mugger )
     __REG_WTYPE( rioter )
     __REG_WTYPE( wolf )
+    __REG_WTYPE( dustCloud )
   }
 #undef __REG_WTYPE
 };
