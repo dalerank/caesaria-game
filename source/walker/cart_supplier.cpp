@@ -94,7 +94,10 @@ void CartSupplier::_reachedPathway()
     }
     else
     {
-      building->storeGoods( _d->stock );
+      if( building.isValid() )
+      {
+        building->storeGoods( _d->stock );
+      }
     }
   }
   else

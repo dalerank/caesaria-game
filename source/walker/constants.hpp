@@ -79,6 +79,7 @@ enum Type{
   mugger,
   rioter,
   wolf,
+  dustCloud,
   all = 0xff,
   any = all
 };

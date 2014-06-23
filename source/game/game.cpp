@@ -315,7 +315,7 @@ void Game::setScreenGame()
   screen.initialize();
   _d->currentScreen = &screen;
   GameDate& cdate = GameDate::instance();
-  _d->timeX10 = cdate.current().day() * GameDate::days2ticks( 30 ) / cdate.current().daysInMonth() * 10;
+  _d->timeX10 = 0;
   _d->saveTime = _d->timeX10;
 
   Logger::warning( "game: prepare for game loop" );
@@ -550,6 +550,8 @@ void Game::reset()
   _d->empire = world::Empire::create();
   _d->player = Player::create();
   _d->pauseCounter = 0;
+  _d->timeX10 = 0;
+  _d->saveTime = 0;
   _d->manualTicksCounterX10 = 0;
   if( _d->city.isValid() )
   {

@@ -19,7 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
 #include "gfx/picture.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "events/event.hpp"
 
 using namespace constants;
@@ -142,6 +142,14 @@ bool Hippodrome::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aro
   if( _d->direction != noneDirection )
   {
     const_cast<Hippodrome*>( this )->_init();
+  }
+
+  city::Helper helper( city );
+  HippodromeList hpList = helper.find<Hippodrome>( building::hippodrome );
+  if( !hpList.empty() )
+  {
+    const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##" );
+    return false;
   }
 
   return _d->direction != noneDirection;
