@@ -21,6 +21,7 @@
 #include "gfx/picture.hpp"
 #include "city/helper.hpp"
 #include "events/event.hpp"
+#include "walker/walker.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -84,6 +85,7 @@ HippodromeSection::HippodromeSection( Hippodrome& base, constants::Direction dir
 
   _animationRef().addFrame( ResourceGroup::hippodrome, animIndex );
   _animationRef().setOffset( hippodromeSectionOffset[ animIndex ]);
+  _animationRef().stop();
 }
 
 HippodromeSection::~HippodromeSection(){}
@@ -113,6 +115,7 @@ class Hippodrome::Impl
 public:
   Direction direction;
   HippodromeSectionPtr sectionMiddle, sectionEnd;
+  Picture fullyPic;
 };
 
 Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, building::hippodrome, Size(15,5) ), _d( new Impl )
@@ -148,7 +151,7 @@ bool Hippodrome::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aro
   HippodromeList hpList = helper.find<Hippodrome>( building::hippodrome );
   if( !hpList.empty() )
   {
-    const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##" );
+    const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##");
     return false;
   }
 
@@ -169,7 +172,7 @@ void Hippodrome::deliverService()
   }
   else
   {
-
+    _fgPicture( 0 ) = _d->fullyPic;
   }
 
   _d->sectionEnd->setAnimationVisible( animation().isRunning() );
@@ -192,8 +195,8 @@ void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
   city->addOverlay( _d->sectionMiddle.object() );
   city->addOverlay( _d->sectionEnd.object() );
 
-  _d->sectionEnd->setAnimationVisible( true );
-  _d->sectionMiddle->setAnimationVisible( true );
+  _d->sectionEnd->setAnimationVisible( false );
+  _d->sectionMiddle->setAnimationVisible( false );
   _animationRef().start();
 }
 
@@ -218,6 +221,19 @@ void Hippodrome::destroy()
 
 bool Hippodrome::isRacesCarry() const { return animation().isRunning(); }
 
+WalkerList Hippodrome::_specificWorkers() const
+{
+  WalkerList ret;
+
+  foreach( i, walkers() )
+  {
+    if( (*i)->type() == walker::charioteer )
+      ret << *i;
+  }
+
+  return ret;
+}
+
 void Hippodrome::_init( bool onBuild )
 {
   if( onBuild )
@@ -233,8 +249,8 @@ void Hippodrome::_init( bool onBuild )
   case north:
   {
     setPicture( ResourceGroup::hippodrome, 5 );
-    _animationRef().addFrame( ResourceGroup::hippodrome, 9 );
-    _animationRef().setOffset( hippodromeSectionOffset[ 9 ] );
+    _d->fullyPic = Picture::load( ResourceGroup::hippodrome, 9 );
+    _d->fullyPic.setOffset( hippodromeSectionOffset[ 9 ] );
     if( !onBuild )
     {
       _fgPicture( 0 ) = Picture::load( ResourceGroup::hippodrome, 3);
@@ -247,8 +263,8 @@ void Hippodrome::_init( bool onBuild )
 
   case west:
   {
-    _animationRef().addFrame( ResourceGroup::hippodrome, 16 );
-    _animationRef().setOffset( hippodromeSectionOffset[ 16 ] );
+    _d->fullyPic = Picture::load( ResourceGroup::hippodrome, 16 );
+    _d->fullyPic.setOffset( hippodromeSectionOffset[ 16 ] );
     Picture pic = Picture::load( ResourceGroup::hippodrome, 10 );
     pic.setOffset( 0, pic.height() / 2 + 42 );
     setPicture( pic );

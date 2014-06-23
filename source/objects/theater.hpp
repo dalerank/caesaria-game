@@ -26,12 +26,12 @@ public:
   Theater();
 
   virtual void build(PlayerCityPtr city, const TilePos &pos);
-
   virtual void timeStep(const unsigned long time);
-
   virtual int visitorsNumber() const;
-
   virtual void deliverService();
+
+protected:
+  virtual WalkerList _specificWorkers() const;
 };
 
 #endif //__CAESARIA_THEATER_H_INCLUDED__
