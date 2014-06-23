@@ -62,10 +62,7 @@ public:
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
-  const InfrastructureInfo& getInfo() const
-  {
-    return _info;
-  }
+  const InfrastructureInfo& getInfo() const   {    return _info;  }
 
   virtual void _updateTexture( gfx::Engine& painter )
   {
@@ -96,7 +93,7 @@ public:
     const char* coverageStr = _info.coverage > 0
                                   ? coverages[ math::clamp( _info.coverage / 10, 0, 9 ) ]
                                   : "##non_cvrg##";
-    font.draw( *texture, _( coverageStr ), 470, 0 );
+    font.draw( *texture, _( coverageStr ), 440, 0 );
   }
 
 private:
@@ -131,7 +128,7 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   __D_IMPL(_d,AdvisorEducationWindow)
   _d->lbBackframe = findChildA<Label*>( "lbBlackframe", true, this );
   _d->lbCityInfo = findChildA<Label*>( "lbCityInfo", true, this );
-  _d->lbCityTrouble = findChildA<Label*>( "lbCityTrouble", true, this);
+  _d->lbCityTrouble = findChildA<Label*>( "lbTroubleInfo", true, this);
 
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
@@ -161,7 +158,7 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
   StringArray troubles = _d->getTrouble( city );
-  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles[ rand() % troubles.size() ] ) ); }
+  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.rand() ) ); }
 }
 
 void AdvisorEducationWindow::draw( gfx::Engine& painter )
