@@ -29,7 +29,7 @@ class Emperor
 {
 public:
   Emperor();
-  ~Emperor();
+  virtual ~Emperor();
 
   int relation( const std::string& cityname );
   void updateRelation( const std::string& cityname, int value );
@@ -42,6 +42,7 @@ public:
   VariantMap save() const;
   void load( const VariantMap& stream );
 
+  void init( Empire& empire );
 private:
   __DECLARE_IMPL(Emperor)
 };

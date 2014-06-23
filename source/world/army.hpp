@@ -11,37 +11,38 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with CaesarIA. If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_TRADEROUTE_FINDER_H_INCLUDED__
-#define __CAESARIA_TRADEROUTE_FINDER_H_INCLUDED__
+#ifndef __CAESARIA_ARMY_H_INCLUDED__
+#define __CAESARIA_ARMY_H_INCLUDED__
 
-#include "core/smartptr.hpp"
 #include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
-#include "core/position.hpp"
+#include "object.hpp"
+#include "core/variant.hpp"
 
 namespace world
 {
 
-class TraderouteFinder
+class Army : public Object
 {
 public:
-  typedef enum { waterOnly=0x1, terrainOnly=0x2 } Flags;
+  static ArmyPtr create( Empire& empire, CityPtr base );
+  virtual ~Army();
 
-  TraderouteFinder( const EmpireMap& empiremap );
+  virtual VariantMap save() const;
+  virtual void load( const VariantMap& stream );
 
-  bool findRoute( TilePos start, TilePos stop, TilePosArray& way, int flags );
-  void setTerrainType( TilePos pos, unsigned int type );
+  virtual void setBase( CityPtr base);
+  virtual void attack( ObjectPtr obj );
 
-  ~TraderouteFinder();
+  virtual void timeStep(const unsigned int time);
+
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  Army( Empire& empire );
+  __DECLARE_IMPL(Army)
 };
 
 }
-
-#endif //__CAESARIA_TRADEROUTE_FINDER_H_INCLUDED__
+#endif //__CAESARIA_ARMY_H_INCLUDED__

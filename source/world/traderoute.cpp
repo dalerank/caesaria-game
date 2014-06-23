@@ -56,7 +56,7 @@ public:
       }
     }
 
-    CityPtr city = empire->findCity( merchant->getDestCityName() );
+    CityPtr city = empire->findCity( merchant->destinationCity() );
     if( city.isValid() )
     {
       city->arrivedMerchant( merchant );
@@ -164,7 +164,7 @@ VariantMap Traderoute::save() const
   VariantMap merchants;
   foreach( m, _d->merchants )
   {
-    merchants[ "->" + (*m)->getDestCityName() ] = (*m)->save();
+    merchants[ "->" + (*m)->destinationCity() ] = (*m)->save();
   }
 
   ret[ "merchants" ] = merchants;

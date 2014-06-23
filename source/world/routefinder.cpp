@@ -136,7 +136,7 @@ TraderouteFinder::TraderouteFinder(const EmpireMap& empiremap)
   _d->maxLoopCount = 1200;
 }
 
-bool TraderouteFinder::getRoute(TilePos start, TilePos stop, TilePosArray& way, int flags)
+bool TraderouteFinder::findRoute(TilePos start, TilePos stop, TilePosArray& way, int flags)
 {
   return _d->aStar( start, stop, way, flags );
 }
@@ -146,10 +146,7 @@ void TraderouteFinder::setTerrainType(TilePos pos, unsigned int type)
   _d->grid[ pos ]->info = type;
 }
 
-TraderouteFinder::~TraderouteFinder()
-{
-
-}
+TraderouteFinder::~TraderouteFinder(){}
 
 void TraderouteFinder::Impl::update( const EmpireMap& emap )
 {

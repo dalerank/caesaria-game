@@ -91,7 +91,7 @@ void Merchant::update( unsigned int time )
 
   if( _d->step >= _d->steps.size() )
   {
-    _d->onDestinationSignal.emit( this );
+    oc3_emit _d->onDestinationSignal( this );
   }
   else
   {
@@ -101,8 +101,8 @@ void Merchant::update( unsigned int time )
   }
 }
 
-std::string Merchant::getDestCityName() const {  return _d->destCity; }
-Point Merchant::getLocation() const{  return _d->location;}
+std::string Merchant::destinationCity() const {  return _d->destCity; }
+Point Merchant::location() const{  return _d->location;}
 bool Merchant::isDeleted() const{  return _d->isDeleted;}
 void Merchant::deleteLater(){  _d->isDeleted = true;}
 bool Merchant::isSeaRoute() const{  return _d->route->isSeaRoute();}
@@ -140,7 +140,7 @@ void Merchant::load(const VariantMap& stream)
   foreach( v, steps ) { _d->steps.push_back( v->toPoint() ); }
 }
 
-std::string Merchant::getBaseCityName() const{  return _d->baseCity;}
+std::string Merchant::baseCity() const{  return _d->baseCity;}
 GoodStore& Merchant::getSellGoods(){  return _d->sells;}
 GoodStore& Merchant::getBuyGoods(){  return _d->buys;}
 
