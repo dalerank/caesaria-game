@@ -80,7 +80,9 @@ HirePriorities Helper::getHirePriorities() const
 
 float Helper::getBalanceKoeff()
 {
-  return atan( _city->population() / 5000.f );
+  int pop = _city->population();
+
+  return pop > 300 ? atan( pop / 1000.f ) : (pop / 1000.f);
 }
 
 void Helper::updateTilePics()

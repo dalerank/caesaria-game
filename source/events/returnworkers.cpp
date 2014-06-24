@@ -42,11 +42,12 @@ void ReturnWorkers::_exec(Game& game, unsigned int time)
   const int defaultFireWorkersDistance = 40;
   for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
   {
-    TilesArray perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
-                                                 _center + TilePos( curRange, curRange ) );
-    foreach( tile, perimetr )
+    HouseList hList;
+    hList << tilemap.getRectangle( curRange, _center ).overlays();
+
+    foreach( it, hList )
     {
-      HousePtr house = ptr_cast< House >( (*tile)->overlay() );
+      HousePtr house = *it;
       if( house.isValid() )
       {
         int lastWorkersCount = house->getServiceValue( Service::recruter );

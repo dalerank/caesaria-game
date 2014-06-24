@@ -18,8 +18,7 @@
 #ifndef _CAESARIA_WORLD_MERCHANT_INCLUDE_H_
 #define _CAESARIA_WORLD_MERCHANT_INCLUDE_H_
 
-#include "core/scopedptr.hpp"
-#include "core/referencecounted.hpp"
+#include "object.hpp"
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/position.hpp"
@@ -29,34 +28,30 @@ class GoodStore;
 namespace world
 {
 
-class Merchant : public ReferenceCounted
+class Merchant : public Object
 {
 public:
-  static MerchantPtr create( TraderoutePtr route, const std::string& start,
+  static MerchantPtr create(EmpirePtr empire, TraderoutePtr route, const std::string& start,
                              GoodStore& sell, GoodStore& buy );
-  ~Merchant();
+  virtual ~Merchant();
 
-  Point getLocation() const;
-  void update( unsigned int time );
+  void timeStep( unsigned int time );
 
-  std::string getBaseCityName() const;
-  std::string getDestCityName() const;
+  std::string baseCity() const;
+  std::string destinationCity() const;
   GoodStore& getSellGoods();
   GoodStore& getBuyGoods();
 
-  bool isDeleted() const;
-  void deleteLater();
-
   bool isSeaRoute() const;
 
-  VariantMap save() const;
+  void save( VariantMap& stream ) const;
   void load( const VariantMap& stream );
 
 oc3_signals public:
   Signal1<MerchantPtr>& onDestination();
 
 private:
-  Merchant();
+  Merchant( EmpirePtr empire );
 
   class Impl;
   ScopedPtr< Impl > _d;

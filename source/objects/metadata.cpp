@@ -31,6 +31,7 @@ using namespace constants;
 using namespace gfx;
 
 const char* MetaDataOptions::cost = "cost";
+const char* MetaDataOptions::requestDestroy = "requestDestroy";
 
 MetaData MetaData::invalid = MetaData( building::unknown, "unknown" );
 

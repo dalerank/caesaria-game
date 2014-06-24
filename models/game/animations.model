@@ -208,5 +208,11 @@
     fight : { rc : "sprites", start : 162, frames : 6, action : 2, step : 8 }
     work : { rc : "sprites", start : 162, frames : 6, action : 4, step : 8 }
   }
+
+  romeChasternerSoldier : {
+    move : { rc : "citizen03", start : 441, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen03", start : 393, frames : 6, action : 3, step : 8 }
+    die : { rc : "citizen03", start : 545, frames : 1, action : 3, step : 0 }
+  }
 }
 

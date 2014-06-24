@@ -21,7 +21,10 @@
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
+#include "game/resourcegroup.hpp"
 #include "empiremap.hpp"
+
+using namespace gfx;
 
 namespace world
 {
@@ -36,7 +39,6 @@ class ComputerCity::Impl
 public:
   Point location;
   std::string name;
-  EmpirePtr empire;
   unsigned int tradeType;
   bool distantCity, romeCity;
   bool isAvailable;
@@ -47,24 +49,30 @@ public:
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
   unsigned int merchantsNumber;
+  Picture empMapPicture;
+
+public:
+  void initPicture();
 };
 
-ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( new Impl )
+ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
+  : City( empire ), _d( new Impl )
 {
   _d->name = name;
   _d->tradeDelay = 0;
   _d->distantCity = false;
-  _d->empire = empire;
   _d->merchantsNumber = 0;
   _d->isAvailable = true;
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
   _d->romeCity = false;
+
+  _d->initPicture();
 }
 
 bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
-std::string ComputerCity::getName() const {  return _d->name;}
+std::string ComputerCity::name() const {  return _d->name;}
 Point ComputerCity::location() const{  return _d->location;}
 void ComputerCity::setLocation( const Point& location ){  _d->location = location;}
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
@@ -173,6 +181,8 @@ void ComputerCity::load( const VariantMap& options )
   {
     _d->realSells.load( vm_rsold.toMap() );
   }
+
+  _d->initPicture();
 }
 
 const GoodStore& ComputerCity::importingGoods() const {  return _d->realSells;}
@@ -191,24 +201,28 @@ CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
   return ret;
 }
 
-void ComputerCity::arrivedMerchant( MerchantPtr merchant )
+void ComputerCity::addObject(ObjectPtr object )
 {
-  GoodStore& sellGoods = merchant->getSellGoods();
-  GoodStore& buyGoods = merchant->getBuyGoods();
-
-  _d->buyStore.storeAll( buyGoods );
-
-  for( int i=Good::none; i < Good::goodCount; i ++ )
+  MerchantPtr merchant = ptr_cast<Merchant>( object );
+  if( merchant.isValid() )
   {
-    Good::Type gtype = Good::Type ( i );
-    int qty = sellGoods.freeQty( gtype );
-    GoodStock stock( gtype, qty, qty );
-    _d->realSells.store( stock, qty );
+    GoodStore& sellGoods = merchant->getSellGoods();
+    GoodStore& buyGoods = merchant->getBuyGoods();
+
+    _d->buyStore.storeAll( buyGoods );
+
+    for( int i=Good::none; i < Good::goodCount; i ++ )
+    {
+      Good::Type gtype = Good::Type ( i );
+      int qty = sellGoods.freeQty( gtype );
+      GoodStock stock( gtype, qty, qty );
+      _d->realSells.store( stock, qty );
+    }
+
+    _d->sellStore.storeAll( sellGoods );
+
+    _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
   }
-
-  _d->sellStore.storeAll( sellGoods );
-
-  _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
 }
 
 void ComputerCity::changeTradeOptions(const VariantMap& stream)
@@ -255,7 +269,7 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( _d->lastTimeMerchantSend.monthsTo( GameDate::current() ) > 2 ) 
   {
-    TraderouteList routes = _d->empire->tradeRoutes( getName() );
+    TraderouteList routes = empire()->tradeRoutes( name() );
     _d->lastTimeMerchantSend = GameDate::current();
 
     if( _d->merchantsNumber >= routes.size() || !_mayTrade() )
@@ -297,13 +311,23 @@ void ComputerCity::timeStep( unsigned int time )
       foreach( route, routes )
       {
         _d->merchantsNumber++;
-        (*route)->addMerchant( getName(), sellGoods, buyGoods );
+        (*route)->addMerchant( name(), sellGoods, buyGoods );
       }
     }
   }
 }
 
-EmpirePtr ComputerCity::empire() const { return _d->empire; }
+gfx::Picture ComputerCity::picture() const { return _d->empMapPicture; }
 unsigned int ComputerCity::tradeType() const { return _d->tradeType; }
+
+void ComputerCity::Impl::initPicture()
+{
+  int index = 15;
+
+  if( distantCity ) { index = 22; }
+  else if( romeCity ) { index = 8; }
+
+  empMapPicture = Picture::load( ResourceGroup::empirebits, index );
+}
 
 }//end namespace world

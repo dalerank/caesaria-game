@@ -28,12 +28,13 @@ public:
   bool loop;
   unsigned int lastTimeUpdate;
   Point offset;
+  int animIndex;  // index of the current frame
 };
 
 void Animation::start(bool loop)
 {
   __D_IMPL(d, Animation)
-  _animIndex = 0;
+  d->animIndex = 0;
   d->lastTimeUpdate = 0;
   d->loop = loop;
 }
@@ -59,14 +60,14 @@ Point Animation::offset() const
 
 bool Animation::atEnd() const
 {
-  return _animIndex == (int)( _pictures.size()-1 );
+  return _dfunc()->animIndex == (int)( _pictures.size()-1 );
 }
 
 void Animation::update( unsigned int time )
 {  
   __D_IMPL(_d,Animation)
 
-  if( _animIndex < 0 )
+  if( _d->animIndex < 0 )
     return;
 
   if( _d->frameDelay > 0 )
@@ -75,24 +76,25 @@ void Animation::update( unsigned int time )
       return;
   }
 
-  _animIndex += 1;
+  _d->animIndex += 1;
   _d->lastTimeUpdate = time;
 
-  if( _animIndex >= (int)_pictures.size() ) 
+  if( _d->animIndex >= (int)_pictures.size() )
   {
-    _animIndex = isLoop() ? 0 : -1;
+    _d->animIndex = isLoop() ? 0 : -1;
   }
 }
 
 const Picture& Animation::currentFrame() const
 {
-  return ( _animIndex >= 0 && _animIndex < (int)_pictures.size())
-                  ? _pictures[_animIndex] 
+  __D_IMPL_CONST(d,Animation)
+  return ( d->animIndex >= 0 && d->animIndex < (int)_pictures.size())
+                  ? _pictures[d->animIndex]
                   : Picture::getInvalid();
 }
 
-int Animation::index() const {  return _animIndex;}
-void Animation::setIndex(int index){  _animIndex = math::clamp<int>( index, 0, _pictures.size()-1 );}
+int Animation::index() const { return _dfunc()->animIndex;}
+void Animation::setIndex(int index){  _dfunc()->animIndex = math::clamp<int>( index, -1, _pictures.size()-1 );}
 
 Animation::Animation() : __INIT_IMPL(Animation)
 {
@@ -123,7 +125,7 @@ VariantMap Animation::save() const
 {
   __D_IMPL_CONST(d,Animation)
   VariantMap ret;
-  ret[ "index" ] = _animIndex;
+  ret[ "index" ] = d->animIndex;
   ret[ "delay" ] = d->frameDelay;
   ret[ "loop"  ] = d->loop;
 
@@ -139,7 +141,7 @@ VariantMap Animation::save() const
 void Animation::load(const VariantMap &stream)
 {
   __D_IMPL(d,Animation)
-  _animIndex = stream.get( "index" );
+  d->animIndex = stream.get( "index" );
   d->frameDelay = (int)stream.get( "delay" );
   d->loop = stream.get( "loop" );
 
@@ -159,15 +161,15 @@ void Animation::load(const VariantMap &stream)
 }
 
 void Animation::clear() { _pictures.clear();}
-bool Animation::isRunning() const{  return _animIndex >= 0;}
-bool Animation::isStopped() const{  return _animIndex == -1;}
-void Animation::stop(){  _animIndex = -1;}
+bool Animation::isRunning() const{  return _dfunc()->animIndex >= 0;}
+bool Animation::isStopped() const{  return _dfunc()->animIndex == -1;}
+void Animation::stop(){ _dfunc()->animIndex = -1;}
 
 Animation& Animation::operator=( const Animation& other )
 {
   __D_IMPL(_d,Animation)
   _pictures = other._pictures;
-  _animIndex = other._animIndex;  // index of the current frame
+  _dfunc()->animIndex = other._dfunc()->animIndex;  // index of the current frame
   _d->frameDelay = other.delay();
   _d->lastTimeUpdate = other._dfunc()->lastTimeUpdate;
   _d->loop = other.isLoop();

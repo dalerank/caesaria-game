@@ -94,7 +94,7 @@ void Migration::update( const unsigned int time )
   float emDesKoeff = math::clamp<float>( (float)GameSettings::get( GameSettings::emigrantSalaryKoeff ), 1.f, 99.f );
 
   //if salary in city more then empire people more effectivelly go to our city
-  int diffSalary = _city.empire()->getWorkerSalary() - _city.funds().workerSalary();
+  int diffSalary = _city.empire()->workerSalary() - _city.funds().workerSalary();
   _d->emigrantsIndesirability += diffSalary * emDesKoeff;
 
   //emigrant like when lot of food stock int city

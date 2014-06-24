@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "house.hpp"
 
@@ -40,6 +40,7 @@
 #include "core/logger.hpp"
 #include "city/funds.hpp"
 #include "city/build_options.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -48,6 +49,12 @@ namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
   static const int vacantLotId = 45;
   CAESARIA_LITERALCONST(taxesThisYear)
+
+  static int happines4tax[25] = { 10,  9,  7,  6,  4,
+                                   2,  1,  0, -1, -2,
+                                  -2, -3, -4, -5, -7,
+                                  -9,-11,-13,-15, -17,
+                                 -19,-21,-23,-27, -31 };
 }
 
 class House::Impl
@@ -96,7 +103,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
 
   setState( House::health, 100 );
   setState( House::fire, 0 );
-  setState( House::morale, 100 );
+  setState( House::happiness, 100 );
 
   _d->initGoodStore( 1 );
 
@@ -201,8 +208,11 @@ void House::_updateTax()
   appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear) );
 }
 
-void House::_updateMorale()
+void House::_updateCrime()
 {
+  city::Helper helper( _city() );  
+  float cityKoeff = helper.getBalanceKoeff();
+
   const int currentHabtn = habitants().count();
 
   if( currentHabtn == 0 )
@@ -211,22 +221,88 @@ void House::_updateMorale()
   const Service& srvc = _d->services[ Service::recruter ];
 
   int unemploymentPrc = srvc.value() / srvc.max() * 100;
-  updateState( House::morale, unemploymentPrc > 10 ? (-unemploymentPrc / 5.f) : +1 );
+  int unempInfluence4happiness = 0; ///!!!
+  if( unemploymentPrc > 25 ) { unempInfluence4happiness = -3; }
+  else if( unemploymentPrc > 17 ) { unempInfluence4happiness = -2; }
+  else if( unemploymentPrc > 10 ) { unempInfluence4happiness = -1; }
+  else if( unemploymentPrc < 5 ) { unempInfluence4happiness = 1; }
 
+  int wagesInfluence4happiness = 0; ///!!!
+  if( !spec().isPatrician() )
+  {
+    int diffWages = city::Statistic::getWagesDiff( _city() );
+    if( diffWages < 0)
+    {
+      wagesInfluence4happiness = diffWages;
+    }
+    else if( diffWages > 0 )
+    {
+      wagesInfluence4happiness = std::min( diffWages, 8 ) / 2;
+    }
+  }
+
+  int taxValue = city::Statistic::getTaxValue( _city() );
+  int taxInfluence4happiness = happines4tax[ math::clamp( taxValue, 0, 25 ) ]; ///!!!
+  if( spec().isPatrician() )
+  {
+    taxInfluence4happiness *= 1.5;
+  }
+
+  int foodAbundanceInfluence4happines = 0; ///!!!
+  int foodStockInfluence4happines = 0; ///!!!
+  int monthWithFood = 0;
   if( _d->spec.minFoodLevel() > 0 )
   {
     int foodStoreQty = 0;
+    int foodTypeCount = 0;
     for( int k=Good::wheat; k <= Good::vegetable; k++ )
     {
-      foodStoreQty += _d->goodStore.qty( (Good::Type)k );
+      int qty = _d->goodStore.qty( (Good::Type)k );
+      foodStoreQty += qty;
+      foodTypeCount += (qty > 0 ? 1 : 0);
     }
-    const unsigned int habtnConsumeGoodQty = currentHabtn / 2;
-    int monthWithFood = foodStoreQty / (habtnConsumeGoodQty+1);
 
-    updateState( House::morale, math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. ) );
+    int diffFoodLevel = foodTypeCount - _d->spec.minFoodLevel();
+    foodAbundanceInfluence4happines = diffFoodLevel * (diffFoodLevel < 0 ? 4 : 2);
+
+    const unsigned int habtnConsumeGoodQty = currentHabtn / 2;
+    monthWithFood = foodStoreQty / (habtnConsumeGoodQty+1);
+
+    foodStockInfluence4happines = math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. );
   }
 
-  appendServiceValue( Service::crime, _d->spec.crime() * ((100 - getState( House::morale )) / 100.f ) );
+  int curHappiness = 50
+                  + unempInfluence4happiness
+                  + wagesInfluence4happiness
+                  + taxInfluence4happiness
+                  + foodAbundanceInfluence4happines
+                  + foodStockInfluence4happines;
+
+  if( monthWithFood > 0 )
+  {
+    TilePos offset( 4, 4 );
+    TilePos sizeOffset( size().width(), size().height() );
+    TilesArray tiles = _city()->tilemap().getArea( pos() - offset, pos() + sizeOffset + offset );
+    int averageDes = 0;
+    foreach( it, tiles ) { averageDes += (*it)->desirability(); }
+    averageDes /= (tiles.size() + 1);
+
+    int desInfluence4happines = math::clamp( averageDes - spec().minDesirabilityLevel(), -10, 10 );
+    if( averageDes < spec().minDesirabilityLevel() )
+      desInfluence4happines -= 5;
+    else if( averageDes > spec().maxDesirabilityLevel() )
+      desInfluence4happines += 2;
+
+
+    curHappiness += desInfluence4happines;
+  }
+
+  setState( House::happiness, curHappiness );
+
+  int unhappyValue = 100 - curHappiness;
+  int signChange = math::signnum( unhappyValue - getServiceValue( Service::crime) );
+
+  appendServiceValue( Service::crime, _d->spec.crime() * signChange * cityKoeff );
 }
 
 void House::_checkHomeless()
@@ -280,13 +356,14 @@ void House::timeStep(const unsigned long time)
   if( _d->taxCheckInterval.month() != GameDate::current().month() )
   {
     _updateTax(); 
-    _updateMorale();
-    _checkHomeless();
+
   }
 
   if( GameDate::isWeekChanged() )
   {
     _checkEvolve();
+    _updateCrime();
+    _checkHomeless();
   }
 
   Building::timeStep( time );

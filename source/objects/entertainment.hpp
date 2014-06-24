@@ -47,6 +47,7 @@ public:
   virtual NecessaryWalkers necessaryWalkers() const;
 
 protected:
+  virtual WalkerList _specificWorkers() const;
   void _addNecessaryWalker( constants::walker::Type type );
   bool _isWalkerReady();
 

@@ -57,18 +57,23 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
     int fireLevel = 0;
     switch( overlay->type() )
     {
-    //fire buildings and roads
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
-    case building::burningRuins:
+    case construction::garden:
+
     case building::burnedRuins:
     case building::collapsedRuins:
-    case building::prefecture:
-    case building::well:
-    case construction::garden:
-    case building::fountain:
+
     case building::lowBridge:
-    case building::highBridge:    
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
+
+    // Fire-related
+    case building::prefecture:
+    case building::burningRuins:
       needDrawAnimations = true;
     break;
 

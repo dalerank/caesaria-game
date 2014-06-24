@@ -56,13 +56,13 @@ public:
       }
     }
 
-    CityPtr city = empire->findCity( merchant->getDestCityName() );
+    CityPtr city = empire->findCity( merchant->destinationCity() );
     if( city.isValid() )
     {
-      city->arrivedMerchant( merchant );
+      city->addObject( ptr_cast<Object>( merchant ) );
     }
 
-    onMerchantArrivedSignal.emit( merchant );
+    oc3_emit onMerchantArrivedSignal( merchant );
   }
 };
 
@@ -75,8 +75,8 @@ void Traderoute::update( unsigned int time )
   Impl::MerchantList::iterator it=_d->merchants.begin();
   while( it != _d->merchants.end() )
   {
-    if( (*it)->isDeleted() )     {     it = _d->merchants.erase( it );    }
-    else  {      (*it)->update( time );      ++it;  }
+    if( (*it)->isDeleted() ) {  it = _d->merchants.erase( it ); }
+    else  { (*it)->timeStep( time ); ++it;  }
   }
 }
 
@@ -132,7 +132,7 @@ void Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodSto
     return;
   }
 
-  MerchantPtr merchant = Merchant::create( this, begin, sell, buy );
+  MerchantPtr merchant = Merchant::create( _d->empire, this, begin, sell, buy );
   _d->merchants.push_back( merchant );  
 
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
@@ -164,7 +164,9 @@ VariantMap Traderoute::save() const
   VariantMap merchants;
   foreach( m, _d->merchants )
   {
-    merchants[ "->" + (*m)->getDestCityName() ] = (*m)->save();
+    VariantMap saveRoute;
+    (*m)->save( saveRoute );
+    merchants[ "->" + (*m)->destinationCity() ] = saveRoute;
   }
 
   ret[ "merchants" ] = merchants;

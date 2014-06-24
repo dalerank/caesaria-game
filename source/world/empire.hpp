@@ -41,6 +41,7 @@ public:
   void payTax( const std::string& cityname, unsigned int money );
 
   ObjectList objects() const;
+  ObjectPtr findObject( const std::string& name ) const;
   void addObject( ObjectPtr obj );
 
   void initialize( vfs::Path filename, vfs::Path filemap );
@@ -48,10 +49,13 @@ public:
 
   const EmpireMap& map() const;
   Emperor& emperor();
+  CityPtr rome() const;
 
   void createTradeRoute( std::string start, std::string stop );
-  TraderoutePtr findTradeRoute( unsigned int index );
-  TraderoutePtr findTradeRoute( const std::string& start, const std::string& stop );
+
+  TraderoutePtr findRoute( unsigned int index );
+  TraderoutePtr findRoute( const std::string& start, const std::string& stop );  
+
   TraderouteList tradeRoutes( const std::string& startCity );
   TraderouteList tradeRoutes();
 
@@ -59,10 +63,12 @@ public:
   virtual void load( const VariantMap& stream );
 
   void setCitiesAvailable( bool value );
-  unsigned int getWorkerSalary() const;
+  unsigned int workerSalary() const;
   bool isAvailable() const;
   void setAvailable( bool value );
+
   void setPrice( Good::Type gtype, int buy, int sell );
+  void changePrice( Good::Type gtype, int buy, int sell );
   void getPrice( Good::Type gtype, int& buy, int& sell ) const;
 
 private:

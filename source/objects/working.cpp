@@ -131,7 +131,7 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 {
   if( GameDate::isDayChanged() )
   {
-    if( mayWork()  )
+    if( mayWork() )
     {
       if( _animationRef().isStopped() )
       {

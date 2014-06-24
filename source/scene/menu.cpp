@@ -199,6 +199,7 @@ void StartMenu::Impl::resolveCredits()
   lbx->addItem( "gecube (gb12335@gmail.com)" );
   lbx->addItem( "pecunia (pecunia@heavengames.com) game mechanics" );
   lbx->addItem( "tracertong" );
+  lbx->addItem( "VladRassokhin" );
   lbx->addItem( "hellium" );
   lbx->addItem( "pufik6666" );
   lbx->addItem( "andreibranescu" );

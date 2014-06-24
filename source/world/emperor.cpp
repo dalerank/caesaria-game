@@ -18,6 +18,8 @@
 #include "emperor.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "army.hpp"
+#include "empire.hpp"
 #include <map>
 
 namespace world
@@ -60,11 +62,12 @@ class Emperor::Impl
 public:
   typedef std::map< std::string, Relation > Relations;
   Relations relations;
+  Empire* empire;
 };
 
 Emperor::Emperor() : __INIT_IMPL(Emperor)
 {
-
+  __D_IMPL(d,Emperor)
 }
 
 Emperor::~Emperor(){}
@@ -157,5 +160,7 @@ void Emperor::load(const VariantMap& stream)
     relations[ it->first ] = r;
   }
 }
+
+void Emperor::init(Empire &empire) { _dfunc()->empire = &empire; }
 
 }

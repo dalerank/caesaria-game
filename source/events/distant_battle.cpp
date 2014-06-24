@@ -48,7 +48,7 @@ void DistantBattle::_exec(Game& game, unsigned int)
 {
   world::EmpirePtr empire = game.empire();
 
-  world::ObjectPtr obj = world::Object::create( *empire.object() );
+  world::ObjectPtr obj = world::Object::create( empire );
   obj->load( _options );
   empire->addObject( obj );
 }

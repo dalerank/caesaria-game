@@ -70,7 +70,7 @@ public:
   PushButton* btnExit;
   PushButton* btnTrade;
   std::string ourCity;
-  Picture citypics[4];
+
   Label* lbCityTitle;
   Widget* tradeInfo;
   world::EmpirePtr empire;
@@ -109,7 +109,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
   resetInfoPanel();
   if( currentCity != 0 )
   {
-    lbCityTitle->setText( currentCity->getName() );
+    lbCityTitle->setText( currentCity->name() );
 
     if( is_kind_of<PlayerCity>( currentCity ) )
     {
@@ -125,7 +125,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
       }
       else
       {
-        world::TraderoutePtr route = empire->findTradeRoute( currentCity->getName(), ourCity );
+        world::TraderoutePtr route = empire->findRoute( currentCity->name(), ourCity );
         if( route != 0 )
         {
           drawTradeRouteInfo();
@@ -153,10 +153,10 @@ void EmpireMapWindow::Impl::createTradeRoute()
 {
   if( currentCity != 0 )
   {
-    unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->getName() );
+    unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->name() );
     events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -(int)cost );
     e->dispatch();
-    empire->createTradeRoute( ourCity, currentCity->getName() );
+    empire->createTradeRoute( ourCity, currentCity->name() );
 
     PlayerCityPtr plCity = ptr_cast<PlayerCity>( empire->findCity( ourCity ) );
     if( plCity.isValid() )
@@ -232,7 +232,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw + Point( 0, 40 ), Size( 400, 20 ) ),
                                              "", -1, false, PushButton::blackBorderUp );
 
-  unsigned int routeOpenCost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->getName() );
+  unsigned int routeOpenCost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->name() );
 
   btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
 
@@ -364,11 +364,6 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->btnTrade = new TexturedButton( this, Point( width() - 48, height() - 100), Size( 28 ), -1, 292 );
   _d->btnTrade->setTooltipText( _("##to_trade_advisor##") );
 
-  _d->citypics[ 0 ] = Picture::load( ResourceGroup::empirebits, 1 );
-  _d->citypics[ 1 ] = Picture::load( ResourceGroup::empirebits, 8 );
-  _d->citypics[ 2 ] = Picture::load( ResourceGroup::empirebits, 15 );
-  _d->citypics[ 3 ] = Picture::load( ResourceGroup::empirebits, 22 );
-
   CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow );
@@ -391,20 +386,7 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
   foreach( it, cities )
   {
     Point location = (*it)->location();
-    int index = 3;
-    if( is_kind_of<PlayerCity>( *it ) )  //maybe it our city
-    {
-      index = 0;
-    }
-    else if( is_kind_of<world::ComputerCity>( *it ) )
-    {
-      index = 2;
-      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( *it );
-      if( ccity->isDistantCity() )      {        index = 3;       }
-      else if( ccity->isRomeCity() )       {        index = 1;      }
-    }
-
-    engine.draw( _d->citypics[ index ], _d->offset + location );
+    engine.draw( (*it)->picture(), _d->offset + location );
   }
 
   world::TraderouteList routes = _d->empire->tradeRoutes();
@@ -424,7 +406,7 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
 
     if( merchant != 0 )
     {
-      engine.draw( picture, _d->offset + merchant->getLocation() );
+      engine.draw( picture, _d->offset + merchant->location() );
     }      
   }
 
@@ -506,7 +488,7 @@ EmpireMapWindow* EmpireMapWindow::create(world::EmpirePtr empire, PlayerCityPtr 
 {
   EmpireMapWindow* ret = new EmpireMapWindow( parent, id );
   ret->_d->empire = empire;
-  ret->_d->ourCity = city->getName();
+  ret->_d->ourCity = city->name();
 
   return ret;
 }

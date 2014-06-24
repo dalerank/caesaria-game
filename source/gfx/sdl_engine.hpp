@@ -64,7 +64,7 @@ public:
   virtual Modes modes() const;
   virtual Point cursorPos() const;
 
-  virtual Picture& getScreen();
+  virtual Picture& screen();
 
 private:
   class Impl;

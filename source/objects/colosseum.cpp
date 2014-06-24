@@ -138,8 +138,8 @@ Service::Type Colosseum::_getServiceManType() const
 
 bool Colosseum::isShowGladiatorBattles() const {  return _getServiceManType() == Service::amphitheater; }
 bool Colosseum::isShowLionBattles() const{  return _getServiceManType() == Service::colloseum; }
-DateTime Colosseum::getLastAnimalBoutDate() const { return _d->lastDateLion; }
-DateTime Colosseum::getLastGladiatorBoutDate() const { return _d->lastDateGl; }
+DateTime Colosseum::lastAnimalBoutDate() const { return _d->lastDateLion; }
+DateTime Colosseum::lastGladiatorBoutDate() const { return _d->lastDateGl; }
 
 void Colosseum::save(VariantMap& stream) const
 {
@@ -153,4 +153,17 @@ void Colosseum::load(const VariantMap& stream)
   EntertainmentBuilding::load( stream );
   _d->lastDateGl = stream.get( "lastGdate" ).toDateTime();
   _d->lastDateLion = stream.get( "lastLdate" ).toDateTime();
+}
+
+WalkerList Colosseum::_specificWorkers() const
+{
+  WalkerList ret;
+
+  foreach( i, walkers() )
+  {
+    if( (*i)->type() == walker::lionTamer || (*i)->type() == walker::gladiator )
+      ret << *i;
+  }
+
+  return ret;
 }

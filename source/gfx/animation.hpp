@@ -78,7 +78,6 @@ public:
   void addFrame(const std::string& resource, int index);
 private:
   Pictures _pictures;
-  int _animIndex;  // index of the current frame
 
   __DECLARE_IMPL(Animation)
 };

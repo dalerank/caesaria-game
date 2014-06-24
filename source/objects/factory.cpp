@@ -356,31 +356,6 @@ bool TimberLogger::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& 
    return (is_constructible && near_forest);
 }
 
-
-IronMine::IronMine() : Factory(Good::none, Good::iron, building::ironMine, Size(2) )
-{
-  setPicture( ResourceGroup::commerce, 54 );
-
-  _animationRef().load( ResourceGroup::commerce, 55, 6 );
-  _animationRef().setDelay( 5 );
-  _fgPicturesRef().resize(2);
-}
-
-bool IronMine::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
-{
-  bool is_constructible = WorkingBuilding::canBuild( city, pos, aroundTiles );
-  bool near_mountain = false;  // tells if the factory is next to a mountain
-
-  Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), pos + TilePos(3, 3), Tilemap::checkCorners );
-
-  foreach( it, perimetr ) { near_mountain |= (*it)->getFlag( Tile::tlRock ); }
-
-  const_cast< IronMine* >( this )->_setError( near_mountain ? "" : _("##iron_mine_need_mountain_near##"));
-
-  return (is_constructible && near_mountain);
-}
-
 Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )
 {
   setPicture( ResourceGroup::commerce, 86 );

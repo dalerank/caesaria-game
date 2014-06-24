@@ -77,7 +77,7 @@ void Fountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( time % _waterIncreaseInterval == 1 )
   {
-    _haveReservoirWater = tile().getWaterService( WTR_RESERVOIR ) > 0;
+    _haveReservoirWater = tile().waterService( WTR_RESERVOIR ) > 0;
 
     if( mayWork() )
     {
@@ -91,7 +91,7 @@ void Fountain::timeStep(const unsigned long time)
   if( GameDate::isWeekChanged() )
   {
     int desPic[] = { simpleFountain, prettyFountain, awesomeFountain, patricianFountain };
-    int currentId = desPic[ math::clamp<int>( tile().getDesirability() / 25, 0, 3 ) ];
+    int currentId = desPic[ math::clamp<int>( tile().desirability() / 25, 0, 3 ) ];
     if( currentId != _lastPicId )
     {
       _lastPicId = currentId;
@@ -115,7 +115,7 @@ bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
 
   Tilemap& tmap = city->tilemap();
   const Tile& tile = tmap.at( pos );
-  int picid = (tile.getWaterService( WTR_RESERVOIR ) > 0 ? fontainFull : fontainEmpty );
+  int picid = (tile.waterService( WTR_RESERVOIR ) > 0 ? fontainFull : fontainEmpty );
   const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings, picid );
 
   return ret;

@@ -72,6 +72,8 @@ public:
   float evaluateReligionNeed(HousePtr house, const Service::Type service);
   // float evaluateFoodNeed(House &house, const ServiceType service);
 
+  int minDesirabilityLevel() const;
+  int maxDesirabilityLevel() const;
   int minEntertainmentLevel() const;
   int minEducationLevel() const;
 //    int getMinHealthLevel();

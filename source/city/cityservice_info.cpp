@@ -97,10 +97,10 @@ void Info::update( const unsigned int time )
     last.needWorkers = maxWorkers - currentWorkers;
     last.maxWorkers = maxWorkers;
     last.workless = city::Statistic::getWorklessPercent( &_city );
-    last.payDiff = _city.empire()->getWorkerSalary() - _city.funds().workerSalary();
+    last.payDiff = _city.empire()->workerSalary() - _city.funds().workerSalary();
     last.tax = _city.funds().taxRate();
     last.cityWages = _city.funds().workerSalary();
-    last.romeWages = _city.empire()->getWorkerSalary();
+    last.romeWages = _city.empire()->workerSalary();
     last.crimeLevel = city::Statistic::getCrimeLevel( &_city );    
     last.peace = 0;
 

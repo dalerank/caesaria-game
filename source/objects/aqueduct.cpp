@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "aqueduct.hpp"
 
@@ -29,6 +29,7 @@
 #include "objects/road.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
+#include "game/gamedate.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -37,7 +38,6 @@ Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
 {
   setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
   _setIsRoad( false );
-  _setResolved( false );
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
   // land2a 123 124 125 126 - aqueduct corner
@@ -69,6 +69,16 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
   updatePicture( city );
 }
 
+void Aqueduct::addWater(const WaterSource &source)
+{
+  WaterSource::addWater( source );
+
+  const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
+  _produceWater( offsets, 4 );
+}
+
+void Aqueduct::initTerrain(Tile&) {}
+
 void Aqueduct::destroy()
 {
   Construction::destroy();
@@ -87,15 +97,9 @@ void Aqueduct::destroy()
   }
 }
 
-void Aqueduct::initTerrain(Tile &terrain)
+void Aqueduct::timeStep(const unsigned long time)
 {
-  bool isRoad   = terrain.getFlag( Tile::tlRoad );
-  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
-
-  terrain.setFlag( Tile::clearAll, true );
-  terrain.setFlag( Tile::tlRoad, isRoad );
-  terrain.setFlag( Tile::tlMeadow, isMeadow);
-  terrain.setFlag( Tile::tlAqueduct, true); // mandatory!
+  WaterSource::timeStep( time );
 }
 
 bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
@@ -133,7 +137,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
     foreach( tile, perimetr )
     {
       AqueductPtr bldAqueduct;
-      for( TilesArray::const_iterator it=aroundTiles.begin(); it != aroundTiles.end(); ++it )
+      foreach( it, aroundTiles )
       {
         if( (*it)->pos() == (*tile)->pos() )
         {
@@ -142,8 +146,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
         }
       }
 
-      if( (*tile)->getFlag( Tile::tlRoad )
-          && ( (*tile)->getFlag( Tile::tlAqueduct ) || bldAqueduct.isValid() ) )
+      if( (*tile)->getFlag( Tile::tlRoad ) && bldAqueduct.isValid()  )
         return false;
     }
   }
@@ -351,7 +354,7 @@ const Picture& Aqueduct::picture(PlayerCityPtr city, TilePos p, const TilesArray
     index = 121; // it's impossible, but ...
   }
 
-  return Picture::load( ResourceGroup::aqueduct, index + (_getWater() == 0 ? 15 : 0) );
+  return Picture::load( ResourceGroup::aqueduct, index + (water() == 0 ? 15 : 0) );
 }
 
 void Aqueduct::updatePicture(PlayerCityPtr city)
@@ -366,22 +369,9 @@ void Aqueduct::_waterStateChanged()
   updatePicture( _city() );
 }
 
-void Aqueduct::addWater( const WaterSource& source )
-{
-  if( !_isResolved() )
-  {
-    _setResolved( true );
-    WaterSource::addWater( source );
-
-    const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
-    _produceWater( offsets, 4 );
-    _setResolved( false );
-  }
-}
-
 bool Aqueduct::isWalkable() const {  return _isRoad();}
 
 std::string Aqueduct::sound() const
 {
-  return ( _getWater() == 0 ? "" : WaterSource::sound() );
+  return ( water() == 0 ? "" : WaterSource::sound() );
 }

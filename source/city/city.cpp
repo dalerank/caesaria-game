@@ -78,6 +78,9 @@
 #include <set>
 #include "cityservice_military.hpp"
 #include "cityservice_peace.hpp"
+#include "game/resourcegroup.hpp"
+#include "world/romechastenerarmy.hpp"
+#include "walker/chastener.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -154,12 +157,12 @@ public:
   typedef std::map<PlayerCity::OptionType, int> Options;
   int population;
   city::Funds funds;  // amount of money
-  std::string name;
-  world::EmpirePtr empire;
+
   PlayerPtr player;
 
   TileOverlayList overlayList;
   WalkerList walkerList;
+  Picture empMapPicture;
 
   //walkers fast access map !!!
   WGrid walkersGrid;
@@ -170,7 +173,7 @@ public:
   BorderInfo borderInfo;
   Tilemap tilemap;
   TilePos cameraStart;
-  Point location;
+
   city::BuildOptions buildOptions;
   city::TradeOptions tradeOptions;
   city::VictoryConditions targets;
@@ -193,7 +196,8 @@ oc3_signals public:
   Signal0<> onChangeBuildingOptionsSignal;
 };
 
-PlayerCity::PlayerCity() : _d( new Impl )
+PlayerCity::PlayerCity(world::EmpirePtr empire)
+  : City( empire ), _d( new Impl )
 {
   _d->borderInfo.roadEntry = TilePos( 0, 0 );
   _d->borderInfo.roadExit = TilePos( 0, 0 );
@@ -205,7 +209,8 @@ PlayerCity::PlayerCity() : _d( new Impl )
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
-  _d->sentiment = 50;
+  _d->sentiment = 60;
+  _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
   addService( city::Migration::create( this ) );
   addService( city::WorkersHire::create( this ) );
@@ -234,7 +239,7 @@ void PlayerCity::timeStep(unsigned int time)
 
     if( GameDate::isYearChanged() )
     {
-      events::GameEventPtr e = events::EmpireTax::create( getName() );
+      events::GameEventPtr e = events::EmpireTax::create( name() );
       e->dispatch();
     }
   }
@@ -412,6 +417,8 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
 
 TileOverlayList&  PlayerCity::overlays()         { return _d->overlayList; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
+
+Picture PlayerCity::picture() const { return _d->empMapPicture; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
@@ -461,6 +468,7 @@ void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr
 void PlayerCity::save( VariantMap& stream) const
 {
   Logger::warning( "City: create save map" );
+  City::save( stream );
 
   Logger::warning( "City: save tilemap information");
   VariantMap vm_tilemap;
@@ -478,7 +486,6 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "climate"    ] = _d->climate;
   stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
   stream[ "population" ] = _d->population;
-  stream[ "name"       ] = Variant( _d->name );
 
   Logger::warning( "City: save finance information" );
   stream[ "funds" ] = _d->funds.save();
@@ -526,6 +533,7 @@ void PlayerCity::save( VariantMap& stream) const
 void PlayerCity::load( const VariantMap& stream )
 {
   Logger::warning( "City: start parse savemap" );
+  City::load( stream );
   _d->tilemap.load( stream.get( lc_tilemap ).toMap() );
   _d->walkerIdCount = (UniqueId)stream.get( lc_walkerIdCount ).toUInt();
 
@@ -537,7 +545,6 @@ void PlayerCity::load( const VariantMap& stream )
   _d->climate = (ClimateType)stream.get( "climate" ).toInt(); 
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
-  _d->name = stream.get( "name" ).toString();
 
   setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
 
@@ -656,16 +663,14 @@ const city::VictoryConditions& PlayerCity::victoryConditions() const {   return 
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
 TileOverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::player() const { return _d->player; }
-std::string PlayerCity::getName() const {  return _d->name; }
-void PlayerCity::setName( const std::string& name ) {   _d->name = name;}
+
 city::TradeOptions& PlayerCity::tradeOptions() { return _d->tradeOptions; }
 void PlayerCity::delayTrade(unsigned int month){  }
-void PlayerCity::setLocation( const Point& location ) {   _d->location = location; }
-Point PlayerCity::location() const {   return _d->location; }
+
 const GoodStore& PlayerCity::importingGoods() const {   return _d->tradeOptions.importingGoods(); }
 const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.exportingGoods(); }
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
-world::EmpirePtr PlayerCity::empire() const {   return _d->empire; }
+
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
 void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
@@ -693,8 +698,7 @@ void PlayerCity::clean()
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 {
-  PlayerCityPtr ret( new PlayerCity() );
-  ret->_d->empire = empire;
+  PlayerCityPtr ret( new PlayerCity( empire ) );
   ret->_d->player = player;
   ret->drop();
 
@@ -718,19 +722,32 @@ int PlayerCity::sentiment() const
   return _d->sentiment;
 }
 
-int PlayerCity::favour() const { return empire()->emperor().relation( getName() ); }
+int PlayerCity::favour() const { return empire()->emperor().relation( name() ); }
 
-void PlayerCity::arrivedMerchant( world::MerchantPtr merchant )
+void PlayerCity::addObject( world::ObjectPtr object )
 {
-  if( merchant->isSeaRoute() )
+  if( is_kind_of<world::Merchant>( object ) )
   {
-    SeaMerchantPtr cityMerchant = ptr_cast<SeaMerchant>( SeaMerchant::create( this, merchant ) );
-    cityMerchant->send2city();
+    world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
+    if( merchant->isSeaRoute() )
+    {
+      SeaMerchantPtr cityMerchant = ptr_cast<SeaMerchant>( SeaMerchant::create( this, merchant ) );
+      cityMerchant->send2city();
+    }
+    else
+    {
+      MerchantPtr cityMerchant = ptr_cast<Merchant>( Merchant::create( this, merchant ) );
+      cityMerchant->send2city();
+    }
   }
-  else
+  else if( is_kind_of<world::RomeChastenerArmy>( object ) )
   {
-    MerchantPtr cityMerchant = ptr_cast<Merchant>( Merchant::create( this, merchant ) );
-    cityMerchant->send2city();
+    world::RomeChastenerArmyPtr army = ptr_cast<world::RomeChastenerArmy>( object );
+    for( unsigned int k=0; k < army->soldiersNumber(); k++ )
+    {
+      ChastenerPtr soldier = Chastener::create( this, walker::romeChasternerSoldier );
+      soldier->send2City( borderInfo().roadEntry );
+    }
   }
 }
 

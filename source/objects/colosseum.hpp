@@ -33,11 +33,15 @@ public:
   bool isShowGladiatorBattles() const;
   bool isShowLionBattles() const;
 
-  DateTime getLastAnimalBoutDate() const;
-  DateTime getLastGladiatorBoutDate() const;
+  DateTime lastAnimalBoutDate() const;
+  DateTime lastGladiatorBoutDate() const;
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+
+protected:
+  virtual WalkerList _specificWorkers() const;
+
 private:
   Service::Type _getServiceManType() const;
 

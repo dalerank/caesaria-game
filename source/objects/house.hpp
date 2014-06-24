@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_HOUSE_H_INCLUDED__
 #define __CAESARIA_HOUSE_H_INCLUDED__
@@ -58,7 +58,7 @@ class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::count, health, unemployed, morale };
+  enum { food=Construction::count, health, unemployed, happiness };
 
   House( const int houseId=HouseLevel::smallHovel );
 
@@ -128,7 +128,7 @@ private:
   void _updateHabitants(const CitizenGroup& group);
   void _checkEvolve();
   void _updateTax();
-  void _updateMorale();
+  void _updateCrime();
   void _checkHomeless();
 
   class Impl;

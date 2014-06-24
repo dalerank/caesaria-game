@@ -29,4 +29,4 @@ public:
    virtual void timeStep(const unsigned long time);
 };
 
-#endif //_CAESARIA_TRAINING_H_INCLUDE_
+#endif //_CAESARIA_WORKSHOP_CHARIOT_H_INCLUDE_

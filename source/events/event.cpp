@@ -26,6 +26,7 @@
 #include "game/resourcegroup.hpp"
 #include "gui/environment.hpp"
 #include "gui/label.hpp"
+#include "requestdestroy.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -79,7 +80,7 @@ GameEventPtr ClearLandEvent::create(const TilePos& pos)
   return ret;
 }
 
-bool ClearLandEvent::_mayExec(Game& game, unsigned int) const{  return true;}
+bool ClearLandEvent::_mayExec(Game& game, unsigned int) const{ return true; }
 
 void ClearLandEvent::_exec( Game& game, unsigned int )
 {
@@ -99,8 +100,15 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
     ConstructionPtr constr = ptr_cast<Construction>(overlay);
     if( constr.isValid() && !constr->canDestroy() )
     {
-      GameEventPtr e = WarningMessageEvent::create( _( constr->errorDesc().c_str() ) );
+      GameEventPtr e = WarningMessageEvent::create( _( constr->errorDesc() ) );
       e->dispatch();
+
+      const MetaData& md = MetaDataHolder::getData( constr->type() );
+      if( md.getOption( MetaDataOptions::requestDestroy, false ).toBool() )
+      {
+        e = RequestDestroy::create( constr );
+        e->dispatch();
+      }
       return;
     }
 
