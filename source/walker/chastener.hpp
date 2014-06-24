@@ -15,26 +15,22 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
-#define __CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
+#ifndef _CAESARIA_CHASTENER_INCLUDE_H_
+#define _CAESARIA_CHASTENER_INCLUDE_H_
 
-#include "core/smartptr.hpp"
-#include "core/predefinitions.hpp"
+#include "enemysoldier.hpp"
+#include "predefinitions.hpp"
 
-namespace world
+class Chastener : public EnemySoldier
 {
+public:
+  static ChastenerPtr create( PlayerCityPtr city,
+                              constants::walker::Type type=constants::walker::romeHorseman );
 
-PREDEFINE_CLASS_SMARTLIST(Traderoute,List)
-PREDEFINE_CLASS_SMARTPOINTER(Merchant)
-PREDEFINE_CLASS_SMARTPOINTER(Empire)
-PREDEFINE_CLASS_SMARTPOINTER(Emperor)
-PREDEFINE_CLASS_SMARTPOINTER(EmpireMap)
-PREDEFINE_CLASS_SMARTPOINTER(ComputerCity)
-PREDEFINE_CLASS_SMARTLIST(RomeChastenerArmy,List)
-PREDEFINE_CLASS_SMARTLIST(Object,List)
-PREDEFINE_CLASS_SMARTLIST(Army,List)
-PREDEFINE_CLASS_SMARTLIST(City,List)
+  //void send2city( FortPtr base, TilePos pos );
+  virtual int agressive() const;
+protected:
+  Chastener( PlayerCityPtr city, constants::walker::Type type );
+};
 
-}
-
-#endif //__CAESARIA_WORLD_PREDEFINITIONS_H_INCLUDED__
+#endif //_CAESARIA_CHASTENER_INCLUDE_H_

@@ -80,6 +80,7 @@
 #include "cityservice_peace.hpp"
 #include "game/resourcegroup.hpp"
 #include "world/romechastenerarmy.hpp"
+#include "walker/chastener.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -741,10 +742,11 @@ void PlayerCity::addObject( world::ObjectPtr object )
   }
   else if( is_kind_of<world::RomeChastenerArmy>( object ) )
   {
-    world::RomeChastenerArmy army = ptr_cast<world::RomeChastenerArmy>( object );
+    world::RomeChastenerArmyPtr army = ptr_cast<world::RomeChastenerArmy>( object );
     for( unsigned int k=0; k < army->soldiersNumber(); k++ )
     {
-
+      ChastenerPtr soldier = Chastener::create( this, walker::romeChasternerSoldier );
+      soldier->send2City( borderInfo().roadEntry );
     }
   }
 }
