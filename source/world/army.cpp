@@ -19,9 +19,11 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "empire.hpp"
+#include "core/logger.hpp"
 #include "city.hpp"
 #include "empiremap.hpp"
 #include "gfx/tilesarray.hpp"
+#include "game/resourcegroup.hpp"
 #include <map>
 
 using namespace gfx;
@@ -34,20 +36,22 @@ class Army::Impl
 public:
   Point start, stop;
 
-  PointF deltaMove;
   CityPtr base;
   ObjectPtr object;
   PointsArray way;
   unsigned int step;
+
+  VariantMap options;
 };
 
-Army::Army( Empire& empire )
+Army::Army( EmpirePtr empire )
   : Object( empire ), __INIT_IMPL(Army)
 {
-
+  _animation().load( ResourceGroup::empirebits, 37, 16 );
+  _animation().setLoop( Animation::loopAnimation );
 }
 
-ArmyPtr Army::create(Empire &empire, CityPtr base)
+ArmyPtr Army::create( EmpirePtr empire, CityPtr base)
 {
   ArmyPtr ret( new Army( empire ) );
   ret->setBase( base );
@@ -63,33 +67,110 @@ void Army::timeStep(const unsigned int time)
   if( GameDate::isWeekChanged() )
   {
     __D_IMPL(d,Army)
-    d->step = math::clamp<int>( d->step+1, 0, d->way.size()-1 );
-    setLocation( d->way[ d->step ] );
+    if( !d->way.empty() )
+    {
+      d->step++;
+
+      if( d->step >= d->way.size() )
+      {
+        if( is_kind_of<City>( d->object ) )
+        {
+          CityPtr cityp = ptr_cast<City>( d->object );
+          cityp->addObject( this );
+        }
+        deleteLater();
+      }
+      else
+      {
+        d->step = math::clamp<int>( d->step, 0, d->way.size()-1 );
+        setLocation( d->way[ d->step ] );
+      }
+    }
+    else
+    {
+      Logger::warning( "Army: way are empty" );
+    }
   }
 }
 
-VariantMap Army::save() const
+void Army::initialize()
 {
-  VariantMap ret;
+  __D_IMPL(d,Army)
 
-  return ret;
+  d->base = empire()->findCity( d->options[ "base" ].toString() );
+  d->object = empire()->findObject( d->options[ "object" ].toString() );
+
+  d->options.clear();
+}
+
+void Army::save(VariantMap& stream) const
+{
+  Object::save( stream );
+
+  __D_IMPL_CONST(d,Army)
+  stream[ "start" ] = d->start;
+  stream[ "stop"  ] = d->stop;
+  stream[ "base"  ] = Variant( d->base.isValid() ? d->base->name() : "" );
+  stream[ "object"] = Variant( d->object.isValid() ? d->object->name() : "" );
+
+  VariantList pointsVl;
+  foreach( i, d->way ) { pointsVl.push_back( *i ); }
+
+  stream[ "points" ] = pointsVl;
+  stream[ "step" ] = d->step;
 }
 
 void Army::load(const VariantMap& stream)
 {
+  Object::load( stream );
+
+  __D_IMPL(d,Army)
+  d->options = stream;
+  d->start = stream.get( "start" ).toPoint();
+  d->stop = stream.get( "stop"  ).toPoint();
+
+  VariantList points = stream.get( "points" ).toList();
+  foreach( i, points ) { d->way.push_back( (*i).toPoint() ); }
+
+  d->step = stream.get( "step" );
 }
+
+std::string Army::type() const { return CAESARIA_STR_EXT(Army); }
 
 void Army::setBase(CityPtr base){  _dfunc()->base = base;  }
 
 void Army::attack(ObjectPtr obj)
 {
   __D_IMPL(d,Army)
-  d->object = obj;
-  d->stop = obj->location();
+  if( d->base.isValid() && obj.isValid() )
+  {
+    d->object = obj;
+    d->start = d->base->location();
+    d->stop = obj->location();
 
-  d->way = empire()->map().findRoute( d->start, d->stop, EmpireMap::land );
-  setLocation( d->start );
-  d->step = 0;
+    d->way = empire()->map().findRoute( d->start, d->stop, EmpireMap::land );
+    setLocation( d->start );
+    d->step = 0;
+
+    if( !d->way.empty() )
+    {
+      empire()->addObject( this );
+    }
+    else
+    {
+      Logger::warning( "Army: cannot find way from %s to %s", d->base->name().c_str(), obj->name().c_str() );
+    }
+  }
+  else
+  {
+    Logger::warningIf( d->base.isNull(), "Army: base is null" );
+    Logger::warningIf( obj.isNull(), "Army: object for attack is null" );
+  }
+}
+
+Picture Army::picture() const
+{
+  return Object::picture();
 }
 
 }

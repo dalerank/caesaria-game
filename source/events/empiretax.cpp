@@ -59,7 +59,7 @@ void EmpireTax::_exec(Game& game, unsigned int)
     GameEventPtr issue = FundIssueEvent::create( city::Funds::empireTax, -empireTax );
     issue->dispatch();
 
-    game.empire()->payTax( city->getName(), empireTax );
+    game.empire()->payTax( city->name(), empireTax );
   }
 }
 

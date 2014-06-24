@@ -28,34 +28,30 @@ class GoodStore;
 namespace world
 {
 
-class Merchant : public ReferenceCounted
+class Merchant : public Object
 {
 public:
-  static MerchantPtr create( TraderoutePtr route, const std::string& start,
+  static MerchantPtr create(EmpirePtr empire, TraderoutePtr route, const std::string& start,
                              GoodStore& sell, GoodStore& buy );
   virtual ~Merchant();
 
-  Point location() const;
-  void update( unsigned int time );
+  void timeStep( unsigned int time );
 
   std::string baseCity() const;
   std::string destinationCity() const;
   GoodStore& getSellGoods();
   GoodStore& getBuyGoods();
 
-  bool isDeleted() const;
-  void deleteLater();
-
   bool isSeaRoute() const;
 
-  VariantMap save() const;
+  void save( VariantMap& stream ) const;
   void load( const VariantMap& stream );
 
 oc3_signals public:
   Signal1<MerchantPtr>& onDestination();
 
 private:
-  Merchant();
+  Merchant( EmpirePtr empire );
 
   class Impl;
   ScopedPtr< Impl > _d;

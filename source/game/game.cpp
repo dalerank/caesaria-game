@@ -447,7 +447,7 @@ void Game::load(std::string filename)
   world::CityPtr city = _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
   if( city.isNull() )
   {
-    Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->getName() );
+    Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
     return;
   }
 

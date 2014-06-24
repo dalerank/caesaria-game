@@ -67,9 +67,11 @@ void TradingOptions::_exec(Game& game, unsigned int)
     if( gtype != Good::none )
     {
       VariantMap goodInfo = it->second.toMap();
+      bool relative = goodInfo.get( "relative", false );
       int buy = goodInfo.get( "buy" );
       int sell = goodInfo.get( "sell" );
-      game.empire()->setPrice( gtype, buy, sell );
+      if( relative ) { game.empire()->changePrice( gtype, buy, sell ); }
+      else { game.empire()->setPrice( gtype, buy, sell ); }
     }
   }
 }

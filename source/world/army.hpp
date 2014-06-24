@@ -28,19 +28,24 @@ namespace world
 class Army : public Object
 {
 public:
-  static ArmyPtr create( Empire& empire, CityPtr base );
+  static ArmyPtr create( EmpirePtr empire, CityPtr base );
   virtual ~Army();
 
-  virtual VariantMap save() const;
+  virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
-
+  virtual std::string type() const;
   virtual void setBase( CityPtr base);
   virtual void attack( ObjectPtr obj );
 
-  virtual void timeStep(const unsigned int time);
+  virtual gfx::Picture picture() const;
 
-private:
-  Army( Empire& empire );
+  virtual void timeStep(const unsigned int time);
+  virtual void initialize();
+
+protected:
+  Army( EmpirePtr empire );
+
+private: 
   __DECLARE_IMPL(Army)
 };
 

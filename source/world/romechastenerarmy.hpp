@@ -15,44 +15,33 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "distant_battle.hpp"
-#include "game/game.hpp"
-#include "world/empire.hpp"
-#include "world/object.hpp"
+#ifndef __CAESARIA_ROMECHASTENERARMY_H_INCLUDED__
+#define __CAESARIA_ROMECHASTENERARMY_H_INCLUDED__
 
-using namespace constants;
+#include "army.hpp"
 
-namespace events
+namespace world
 {
 
-GameEventPtr DistantBattle::create()
+class RomeChastenerArmy : public Army
 {
-  GameEventPtr ret( new DistantBattle() );
-  ret->drop();
+public:
+  static ArmyPtr create( EmpirePtr empire, CityPtr base );
+  void setSoldiersNumber( unsigned int count );
+  virtual std::string type() const;
+  unsigned int soldiersNumber() const;
 
-  return ret;
-}
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
-void DistantBattle::load(const VariantMap& stream)
-{
-  GameEvent::load( stream );
-  _options = stream;
-}
+protected:
+  RomeChastenerArmy( EmpirePtr );
 
-VariantMap DistantBattle::save() const
-{
-  return _options;
-}
-
-void DistantBattle::_exec(Game& game, unsigned int)
-{
-  world::EmpirePtr empire = game.empire();
-
-  world::ObjectPtr obj = world::Object::create( empire );
-  obj->load( _options );
-  empire->addObject( obj );
-}
-
-bool DistantBattle::_mayExec(Game& game, unsigned int ) const { return true; }
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
 
 }
+
+#endif //__CAESARIA_ROMECHASTENERARMY_H_INCLUDED__

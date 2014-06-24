@@ -15,44 +15,14 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "distant_battle.hpp"
-#include "game/game.hpp"
-#include "world/empire.hpp"
-#include "world/object.hpp"
+#include "city.hpp"
+#include "empire.hpp"
 
-using namespace constants;
-
-namespace events
+namespace world {
+City::City(EmpirePtr empire)
+   : Object( empire )
 {
 
-GameEventPtr DistantBattle::create()
-{
-  GameEventPtr ret( new DistantBattle() );
-  ret->drop();
-
-  return ret;
 }
 
-void DistantBattle::load(const VariantMap& stream)
-{
-  GameEvent::load( stream );
-  _options = stream;
-}
-
-VariantMap DistantBattle::save() const
-{
-  return _options;
-}
-
-void DistantBattle::_exec(Game& game, unsigned int)
-{
-  world::EmpirePtr empire = game.empire();
-
-  world::ObjectPtr obj = world::Object::create( empire );
-  obj->load( _options );
-  empire->addObject( obj );
-}
-
-bool DistantBattle::_mayExec(Game& game, unsigned int ) const { return true; }
-
-}
+} // end namespace world

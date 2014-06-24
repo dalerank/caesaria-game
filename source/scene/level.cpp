@@ -74,6 +74,7 @@
 #include "core/foreach.hpp"
 #include "events/random_wolves.hpp"
 #include "gfx/layerconstants.hpp"
+#include "world/army.hpp"
 #include "events/warningmessage.hpp"
 
 using namespace gui;
@@ -401,7 +402,7 @@ void Level::_showIngameMenu()
 
 vfs::Path Level::Impl::getFastSaveName( const std::string& postfix )
 {
-  vfs::Path filename = game->city()->getName()
+  vfs::Path filename = game->city()->name()
                        + GameSettings::get( GameSettings::fastsavePostfix ).toString()
                        + postfix
                        + GameSettings::get( GameSettings::saveExt ).toString();
@@ -556,27 +557,32 @@ void Level::handleEvent( NEvent& event )
     break;
 
     case KEY_COMMA:
-    {
-      if( event.keyboard.pressed )
-        break;
-
-      events::GameEventPtr e = events::Step::create(1);
-      e->dispatch();
-    }
-    break;
     case KEY_PERIOD:
     {
-      if( event.keyboard.pressed )
-        break;
-
-      events::GameEventPtr e = events::Step::create(25);
-      e->dispatch();
+      if( !event.keyboard.pressed )
+      {
+        events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
+        e->dispatch();
+      }
     }
     break;
 
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
     case KEY_F10:_d->makeScreenShot(); break;
+    case KEY_KEY_I:
+    {
+      if( !event.keyboard.pressed && event.keyboard.shift )
+      {
+        world::CityPtr rome = _d->game->empire()->rome();
+        PlayerCityPtr plCity = _d->game->city();
+
+        world::ArmyPtr army = world::Army::create( _d->game->empire(), rome );
+        army->attack( ptr_cast<world::Object>( plCity ) );
+      }
+    }
+    break;
+
     case KEY_F11:
       if( event.keyboard.pressed )
       {

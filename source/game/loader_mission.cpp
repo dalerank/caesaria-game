@@ -102,7 +102,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     options.load( vm[ "buildoptions" ].toMap() );
     city->setBuildOptions( options  );
 
-    game.empire()->emperor().updateRelation( city->getName(), 50 );
+    game.empire()->emperor().updateRelation( city->name(), 50 );
 
     std::string missionName = vfs::Path( filename ).baseName( false ).toString();
     Locale::addTranslation( missionName );

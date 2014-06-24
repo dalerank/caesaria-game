@@ -259,7 +259,7 @@ void AdvisorEmperorWindow::Impl::sendMoney( int money )
 void AdvisorEmperorWindow::Impl::sendGift(int money)
 {
   city->player()->appendMoney( -money );
-  city->empire()->emperor().sendGift( city->getName(), money );
+  city->empire()->emperor().sendGift( city->name(), money );
 }
 
 void AdvisorEmperorWindow::Impl::resolveRequest(city::request::RequestPtr request)

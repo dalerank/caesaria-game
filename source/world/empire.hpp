@@ -41,6 +41,7 @@ public:
   void payTax( const std::string& cityname, unsigned int money );
 
   ObjectList objects() const;
+  ObjectPtr findObject( const std::string& name ) const;
   void addObject( ObjectPtr obj );
 
   void initialize( vfs::Path filename, vfs::Path filemap );
@@ -67,6 +68,7 @@ public:
   void setAvailable( bool value );
 
   void setPrice( Good::Type gtype, int buy, int sell );
+  void changePrice( Good::Type gtype, int buy, int sell );
   void getPrice( Good::Type gtype, int& buy, int& sell ) const;
 
 private:

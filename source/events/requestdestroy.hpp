@@ -15,44 +15,31 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "distant_battle.hpp"
-#include "game/game.hpp"
-#include "world/empire.hpp"
-#include "world/object.hpp"
+#ifndef _CAESARIA_EVENT_REQUESTDESTROY_H_INCLUDE_
+#define _CAESARIA_EVENT_REQUESTDESTROY_H_INCLUDE_
 
-using namespace constants;
+#include "event.hpp"
 
 namespace events
 {
 
-GameEventPtr DistantBattle::create()
+class RequestDestroy : public GameEvent
 {
-  GameEventPtr ret( new DistantBattle() );
-  ret->drop();
+public:
+  static GameEventPtr create( ConstructionPtr constr );
+  virtual bool isDeleted() const;
 
-  return ret;
-}
+protected:
+  virtual void _exec( Game& game, unsigned int );
+  virtual bool _mayExec(Game &game, unsigned int time) const;
+  void _applyDestroy();
+  void _declineDestroy();
 
-void DistantBattle::load(const VariantMap& stream)
-{
-  GameEvent::load( stream );
-  _options = stream;
-}
-
-VariantMap DistantBattle::save() const
-{
-  return _options;
-}
-
-void DistantBattle::_exec(Game& game, unsigned int)
-{
-  world::EmpirePtr empire = game.empire();
-
-  world::ObjectPtr obj = world::Object::create( empire );
-  obj->load( _options );
-  empire->addObject( obj );
-}
-
-bool DistantBattle::_mayExec(Game& game, unsigned int ) const { return true; }
+private:
+  ConstructionPtr _reqConstruction;
+  bool _mayDelete, _alsoExec;
+};
 
 }
+
+#endif //_CAESARIA_EVENT_REQUESTDESTROY_H_INCLUDE_

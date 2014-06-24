@@ -26,9 +26,9 @@ class ComputerCity : public City
 public:
   static CityPtr create( EmpirePtr empire, const std::string& name );
 
-  ~ComputerCity();
+  virtual ~ComputerCity();
 
-  virtual std::string getName() const;
+  virtual std::string name() const;
   virtual Point location() const;
   virtual void setLocation( const Point& location );
 
@@ -39,18 +39,20 @@ public:
 
   virtual void timeStep( unsigned int time );
 
+  virtual gfx::Picture picture() const;
+
   virtual void save( VariantMap& options ) const;
   virtual void load( const VariantMap& options );
 
   virtual const GoodStore& importingGoods() const;
   virtual const GoodStore& exportingGoods() const;
+
   virtual void delayTrade(unsigned int month);
   virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
 
-  virtual EmpirePtr empire() const;
   virtual unsigned int tradeType() const;
 
-  virtual void arrivedMerchant( MerchantPtr );
+  virtual void addObject(ObjectPtr object);
 
   void changeTradeOptions( const VariantMap& stream );
 

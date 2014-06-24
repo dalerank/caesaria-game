@@ -46,6 +46,7 @@ public:
     append( EnemySoldier::attackAll, "attack_all" );
     append( EnemySoldier::attackBestBuilding, "best_building" );
     append( EnemySoldier::attackCitizen, "citizen" );
+    append( EnemySoldier::attackIndustry, "industry" );
     append( EnemySoldier::attackFood, "food" );
   }
 };

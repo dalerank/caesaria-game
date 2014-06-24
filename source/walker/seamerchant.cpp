@@ -302,7 +302,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     // walker on exit from city
     wlk->deleteLater();
     world::EmpirePtr empire = city->empire();
-    const std::string& ourCityName = city->getName();
+    const std::string& ourCityName = city->name();
     world::TraderoutePtr route = empire->findRoute( ourCityName, baseCityName );
     if( route.isValid() )
     {
