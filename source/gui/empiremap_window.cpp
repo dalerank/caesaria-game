@@ -125,7 +125,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
       }
       else
       {
-        world::TraderoutePtr route = empire->findTradeRoute( currentCity->getName(), ourCity );
+        world::TraderoutePtr route = empire->findRoute( currentCity->getName(), ourCity );
         if( route != 0 )
         {
           drawTradeRouteInfo();
@@ -424,7 +424,7 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
 
     if( merchant != 0 )
     {
-      engine.draw( picture, _d->offset + merchant->getLocation() );
+      engine.draw( picture, _d->offset + merchant->location() );
     }      
   }
 

@@ -1,5 +1,5 @@
 {
-	Lugdunum : {
+  Lugdunum : {
     location : [ 460, 260 ]
     sea : true
     land : true
@@ -8,7 +8,13 @@
     buys : { wine : 25, oil : 15, pottery : 25 }    
     
     resources : [ "wheat", "vegetable", "fish", "iron", "timber", "marble" ] 
-	}
+  }
+
+  Rome : {
+    location : [ 870, 545 ]
+    sea : false
+    land : false
+  }
   
   Corinthus : {
 		location : [ 1160, 760 ]

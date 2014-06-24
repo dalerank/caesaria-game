@@ -89,12 +89,12 @@ EmpireMap::TerrainType EmpireMap::at( const TilePos& ij ) const
   return _d->at( ij ).info;
 }
 
-PointsArray EmpireMap::getRoute(Point start, Point stop, int flags )
+PointsArray EmpireMap::findRoute(Point start, Point stop, int flags ) const
 {
   PointsArray way;
   TilePosArray tiles;
 
-  _d->routefinder->getRoute( _d->pnt2tp( start ), _d->pnt2tp( stop ), tiles, flags);
+  _d->routefinder->findRoute( _d->pnt2tp( start ), _d->pnt2tp( stop ), tiles, flags);
 
   foreach( pos, tiles)
   {
@@ -109,16 +109,13 @@ EmpireMap::EmpireMap() : _d( new Impl )
 
 }
 
-EmpireMap::~EmpireMap()
-{
-
-}
+EmpireMap::~EmpireMap() {}
 
 void EmpireMap::initialize(const VariantMap& stream)
 {
   if( stream.empty() )
   {
-    Logger::warning( "Cann't initialize empiremap" );
+    Logger::warning( "EmpireMap: cann't initialize empiremap" );
     return;
   }
 
@@ -149,9 +146,6 @@ void EmpireMap::setCity(Point rpos)
   }
 }
 
-Size EmpireMap::getSize() const
-{
-  return _d->size;
-}
+Size EmpireMap::getSize() const {  return _d->size; }
 
 }

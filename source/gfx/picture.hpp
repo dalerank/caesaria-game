@@ -50,6 +50,7 @@ public:
 
   void addOffset( Point offset );
   void addOffset(int x, int y);
+  Point offset() const;
 
   void setName(std::string &name);  // for save game
   std::string name() const;
@@ -57,7 +58,7 @@ public:
   void setAlpha( unsigned char value );
   void scale( Size size );
   SDL_Surface* surface() const;
-  Point offset() const;
+
   int width() const;
   int height() const;
 

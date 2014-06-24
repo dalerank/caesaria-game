@@ -41,7 +41,7 @@ public:
 
   TerrainType at(const TilePos& ij) const;
 
-  PointsArray getRoute(Point start, Point stop, int flags );
+  PointsArray findRoute(Point start, Point stop, int flags ) const;
 private:
   class Impl;
   ScopedPtr< Impl > _d;

@@ -30,6 +30,8 @@ class Object : public ReferenceCounted
 public:
   static ObjectPtr create( Empire& empire );
 
+  virtual bool isDeleted() const;
+  virtual void timeStep(const unsigned int time);
   virtual EmpirePtr empire() const;
   virtual std::string name() const;
   virtual Point location() const;
@@ -42,9 +44,10 @@ public:
 
   virtual ~Object();
 
-private:
-  Object();
+protected:
+  Object( Empire& empire );
 
+private:
   class Impl;
   ScopedPtr<Impl> _d;
 };

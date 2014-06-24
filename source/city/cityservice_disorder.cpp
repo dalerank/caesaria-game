@@ -44,6 +44,8 @@ public:
   int minCrimeLevel;
   int currentCrimeLevel;
   int maxCrimeLevel;
+  int rioterInThisYear;
+  int rioterInLastYear;
 
 public:
   void generateMugger( PlayerCityPtr city, HousePtr house );
@@ -70,6 +72,12 @@ Disorder::Disorder(PlayerCityPtr city )
 
 void Disorder::update( const unsigned int time )
 {
+  if( GameDate::isYearChanged() )
+  {
+    _d->rioterInLastYear = _d->rioterInThisYear;
+    _d->rioterInThisYear = 0;
+  }
+
   if( !GameDate::isWeekChanged() )
     return;
 
@@ -178,9 +186,19 @@ std::string Disorder::reasonDescr() const
   return troubles.rand();
 }
 
-unsigned int Disorder::value() const
+unsigned int Disorder::value() const { return _d->currentCrimeLevel; }
+
+VariantMap Disorder::save() const
 {
-  return _d->currentCrimeLevel;
+  VariantMap ret;
+  ret[ "lastRioter" ] = _d->rioterInLastYear;
+  ret[ "curRioter"  ] = _d->rioterInThisYear;
+}
+
+void Disorder::load(const VariantMap &stream)
+{
+  _d->rioterInLastYear = stream.get( "lastRioter" );
+  _d->rioterInThisYear = stream.get( "curRioter" );
 }
 
 void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
@@ -210,6 +228,8 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 {
   events::GameEventPtr e = events::ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
                                                         events::ShowInfobox::send2scribe, "/smk/spy_riot.smk" );
+  e->dispatch();
+  rioterInThisYear++;
 
   RioterPtr protestor = Rioter::create( city );
   protestor->send2City( house );

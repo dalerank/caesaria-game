@@ -39,19 +39,18 @@ public:
 
 ObjectPtr Object::create(Empire& empire)
 {
-  ObjectPtr ret( new Object() );
-  ret->_d->empire = &empire;
+  ObjectPtr ret( new Object( empire ) );
   ret->drop();
 
   return ret;
 }
 
+bool Object::isDeleted() const { return false; }
+void Object::timeStep(const unsigned int time) {}
 EmpirePtr Object::empire() const { return _d->empire; }
 std::string Object::name() const { return _d->name; }
-
 Point Object::location() const { return _d->location;}
 void Object::setLocation(const Point& location){  _d->location = location; }
-
 Picture Object::picture() const { return _d->pic; }
 
 const Pictures& Object::pictures() const
@@ -88,9 +87,10 @@ void Object::load(const VariantMap& stream)
 }
 
 Object::~Object() {}
-Object::Object() : _d( new Impl )
+Object::Object(Empire &empire) : _d( new Impl )
 {
   _d->time = 0;
+  _d->empire = &empire;
   _d->pictures.resize( 2 );
 }
 

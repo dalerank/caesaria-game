@@ -33,6 +33,10 @@
 namespace world
 {
 
+namespace {
+static const char* RomeCityName = "Rome";
+}
+
 class Empire::Impl
 {
 public:
@@ -54,6 +58,7 @@ Empire::Empire() : _d( new Impl )
   _d->workerSalary = 30;
   _d->available = true;
   _d->treasury = 0;
+  _d->emperor.init( *this );
 }
 
 CityList Empire::cities() const
@@ -190,6 +195,12 @@ void Empire::load( const VariantMap& stream )
 void Empire::setCitiesAvailable(bool value)
 {
   foreach( city, _d->cities ) { (*city)->setAvailable( value ); }
+
+  CityPtr rome = findCity( RomeCityName );
+  if( rome.isValid() )
+  {
+    rome->setAvailable( true );
+  }
 }
 
 unsigned int Empire::workerSalary() const {  return _d->workerSalary; }
@@ -226,12 +237,12 @@ void Empire::createTradeRoute(std::string start, std::string stop )
     PointsArray lpnts, spnts;
     if( land )
     {
-      lpnts = _d->emap.getRoute( startCity->location(), stopCity->location(), EmpireMap::land );
+      lpnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::land );
     }
 
     if( sea )
     {
-      spnts = _d->emap.getRoute( startCity->location(), stopCity->location(), EmpireMap::sea );
+      spnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::sea );
     }
 
     if( !lpnts.empty() || !spnts.empty() )
@@ -260,8 +271,9 @@ void Empire::createTradeRoute(std::string start, std::string stop )
   }
 }
 
-TraderoutePtr Empire::findTradeRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
-TraderoutePtr Empire::findTradeRoute( const std::string& start, const std::string& stop )
+TraderoutePtr Empire::findRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
+
+TraderoutePtr Empire::findRoute( const std::string& start, const std::string& stop )
 {
   return _d->trading.findRoute( start, stop ); 
 }
@@ -275,9 +287,19 @@ void Empire::timeStep( unsigned int time )
   {
     (*city)->timeStep( time );
   }
+
+  for( ObjectList::iterator it=_d->objects.begin(); it != _d->objects.end(); )
+  {
+    (*it)->timeStep( time );
+    if( (*it)->isDeleted() ) { it =_d->objects.erase( it ); }
+    else { ++it; }
+  }
 }
 
-Emperor& Empire::emperor() {  return _d->emperor;}
+const EmpireMap &Empire::map() const { return _d->emap; }
+
+Emperor& Empire::emperor() { return _d->emperor; }
+CityPtr Empire::rome() const { return findCity( RomeCityName ); }
 
 CityPtr Empire::initPlayerCity( CityPtr city )
 {

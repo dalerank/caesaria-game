@@ -48,10 +48,13 @@ public:
 
   const EmpireMap& map() const;
   Emperor& emperor();
+  CityPtr rome() const;
 
   void createTradeRoute( std::string start, std::string stop );
-  TraderoutePtr findTradeRoute( unsigned int index );
-  TraderoutePtr findTradeRoute( const std::string& start, const std::string& stop );
+
+  TraderoutePtr findRoute( unsigned int index );
+  TraderoutePtr findRoute( const std::string& start, const std::string& stop );  
+
   TraderouteList tradeRoutes( const std::string& startCity );
   TraderouteList tradeRoutes();
 
@@ -62,6 +65,7 @@ public:
   unsigned int workerSalary() const;
   bool isAvailable() const;
   void setAvailable( bool value );
+
   void setPrice( Good::Type gtype, int buy, int sell );
   void getPrice( Good::Type gtype, int& buy, int& sell ) const;
 

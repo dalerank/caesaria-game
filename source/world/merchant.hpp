@@ -18,8 +18,7 @@
 #ifndef _CAESARIA_WORLD_MERCHANT_INCLUDE_H_
 #define _CAESARIA_WORLD_MERCHANT_INCLUDE_H_
 
-#include "core/scopedptr.hpp"
-#include "core/referencecounted.hpp"
+#include "object.hpp"
 #include "predefinitions.hpp"
 #include "core/signals.hpp"
 #include "core/position.hpp"
@@ -34,13 +33,13 @@ class Merchant : public ReferenceCounted
 public:
   static MerchantPtr create( TraderoutePtr route, const std::string& start,
                              GoodStore& sell, GoodStore& buy );
-  ~Merchant();
+  virtual ~Merchant();
 
-  Point getLocation() const;
+  Point location() const;
   void update( unsigned int time );
 
-  std::string getBaseCityName() const;
-  std::string getDestCityName() const;
+  std::string baseCity() const;
+  std::string destinationCity() const;
   GoodStore& getSellGoods();
   GoodStore& getBuyGoods();
 
