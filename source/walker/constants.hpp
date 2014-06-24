@@ -80,6 +80,7 @@ enum Type{
   rioter,
   wolf,
   dustCloud,
+  romeChasternerSoldier,
   all = 0xff,
   any = all
 };

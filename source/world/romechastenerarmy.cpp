@@ -61,7 +61,7 @@ void RomeChastenerArmy::load(const VariantMap& stream)
 RomeChastenerArmy::RomeChastenerArmy(EmpirePtr empire)
  : Army( empire ), _d( new Impl )
 {
-
+  _d->soldiersNumber = 16;
 }
 
 }

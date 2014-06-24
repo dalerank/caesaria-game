@@ -23,7 +23,8 @@
 class EnemySoldier : public Soldier
 {
 public:
-  typedef enum { attackAll, attackFood, attackCitizen, attackBestBuilding, attackIndustry } AttackPriority;
+  typedef enum { attackAll, attackFood, attackCitizen, attackBestBuilding,
+                 attackIndustry, attackSenate } AttackPriority;
   static EnemySoldierPtr create( PlayerCityPtr city, constants::walker::Type type );
 
   virtual void timeStep(const unsigned long time);

@@ -741,7 +741,11 @@ void PlayerCity::addObject( world::ObjectPtr object )
   }
   else if( is_kind_of<world::RomeChastenerArmy>( object ) )
   {
+    world::RomeChastenerArmy army = ptr_cast<world::RomeChastenerArmy>( object );
+    for( unsigned int k=0; k < army->soldiersNumber(); k++ )
+    {
 
+    }
   }
 }
 
