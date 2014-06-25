@@ -72,6 +72,7 @@
 #include "sight.hpp"
 #include "rift.hpp"
 #include "weaponsworkshop.hpp"
+#include "missionarypost.hpp"
 #include "ironmine.hpp"
 #include <map>
 

@@ -87,6 +87,10 @@
     move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }
   }
 
+  indigeneRioter : {
+    move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }
+  }
+
   barber : {
     move : { rc : "citizen02", start : 463, frames : 12, action : 1, step : 8 }
   }
@@ -199,8 +203,17 @@
     die : { rc : "citizen03", start : 385, frames : 1, action : 3, step : 0 }
   }
 
+  missioner : {
+    move : { rc : "citizen03", start : 921, frames : 12, action : 1, step : 8 }
+    die : { rc : "citizen03", start : 1016, frames : 1, action : 3, step : 0 }
+  }
+
   seaMerchant : {
     move : { rc : "carts", start : 241, frames : 1, action : 1, step : 8 }
+  }
+
+  indigene : {
+    move : { rc : "indigene", start : 1, frames : 12, action : 1, step : 8 }
   }
 
   balista : {

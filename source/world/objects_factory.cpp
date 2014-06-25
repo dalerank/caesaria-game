@@ -59,7 +59,7 @@ ObjectPtr ObjectsFactory::create(const std::string& type, EmpirePtr empire)
     return findConstructor->second->create( empire );
   }
 
-  Logger::warning( "WalkerManager: cannot create walker from type " + type );
+  Logger::warning( "ObjectsFactory: cannot create empire object from type " + (type.empty() ? "null" : type) );
   return Object::create( empire );
 }
 

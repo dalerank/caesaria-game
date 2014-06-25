@@ -93,6 +93,7 @@ void LoaderHelper::decodeTerrain(Tile &oTile, PlayerCityPtr city )
 
       case 0xb11:
       case 0xb44:
+      case 0xb45:
         overlay = TileOverlayFactory::instance().create( building::nativeField );
       break;
 

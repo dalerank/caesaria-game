@@ -67,7 +67,7 @@ public:
 
 Emperor::Emperor() : __INIT_IMPL(Emperor)
 {
-  __D_IMPL(d,Emperor)
+  //__D_IMPL(d,Emperor)
 }
 
 Emperor::~Emperor(){}

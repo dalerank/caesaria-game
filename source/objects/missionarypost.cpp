@@ -15,38 +15,24 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "lion.hpp"
-#include "core/gettext.hpp"
-#include "city/city.hpp"
-//#include "corpse.hpp"
+#include "missionarypost.hpp"
+#include "game/resourcegroup.hpp"
+#include "constants.hpp"
 
 using namespace constants;
 
-LionPtr Lion::create(PlayerCityPtr city)
+MissionaryPost::MissionaryPost() : ServiceBuilding( Service::native, building::missionaryPost, Size(2) )
 {
-  LionPtr ret( new Lion( city ) );
-  ret->drop();
+  setMaximumWorkers(20);
+  setWorkers(0);  
+  setPicture( ResourceGroup::transport, 93 );
 
-  return ret;
+  setState( inflammability, 0 );
+  setState( collapsibility, 0 );
 }
 
-bool Lion::die()
+void MissionaryPost::deliverService()
 {
-  bool created = Animal::die();
-
-  return created;
-  //Corpse::create( _getCity(), getIJ(), "citizen04", 257, 264 );
+  ServiceBuilding::deliverService();
 }
 
-void Lion::_reachedPathway()
-{
-  Animal::_reachedPathway();
-  deleteLater();
-}
-
-Lion::Lion(PlayerCityPtr city) : Animal( city )
-{
-  _setType( walker::lion );
-
-  setName( _("##Lion##") );
-}

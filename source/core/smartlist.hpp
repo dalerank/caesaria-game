@@ -20,6 +20,7 @@
 
 #include "smartptr.hpp"
 #include "foreach.hpp"
+#include "core/math.hpp"
 #include <list>
 
 template <class T>
@@ -43,6 +44,16 @@ public:
   {
     this->push_back( a );
     return *this;
+  }
+
+  SmartPtr<T> random()
+  {
+    if( this->empty() )
+      return SmartPtr<T>();
+
+    typename SmartList<T>::iterator it = this->begin();
+    std::advance( it, math::random( this->size() - 1 ) );
+    return *it;
   }
 
   template< class W >

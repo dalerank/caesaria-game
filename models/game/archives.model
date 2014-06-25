@@ -7,6 +7,7 @@
   sounds : "/audio/wavs_buildings.zip"  
   tutorial : "/gfx/pics_tutorial.zip"
   etruscans : "/gfx/pics_etruscan.zip"
+  indigene : "/gfx/pics_indigene.zip"
   sound_themes : "/audio/themes.zip"
   game_sounds : "/audio/wavs_game.zip"
 }

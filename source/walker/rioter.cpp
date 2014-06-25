@@ -43,7 +43,9 @@ public:
                  destroyConstruction, go2anyplace, gooutFromCity, wait } State;
   int houseLevel;
   State state;
+  std::set<TileOverlay::Group> excludeGroups;
 
+public:
   Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
 };
 
@@ -52,6 +54,7 @@ Rioter::Rioter(PlayerCityPtr city) : Walker( city ), _d( new Impl )
   _setType( walker::rioter );
 
   addAbility( Illness::create( 0.3, 4) );
+  excludeAttack( building::disasterGroup );
 }
 
 void Rioter::_reachedPathway()
@@ -123,7 +126,7 @@ void Rioter::timeStep(const unsigned long time)
       TileOverlay::Type type = (*it)->type();
       TileOverlay::Group group = (*it)->group();
       if( type == building::house || type == construction::road
-          || group == building::disasterGroup ) { it=constructions.erase( it ); }
+          || _d->excludeGroups.count( group ) > 0 ) { it=constructions.erase( it ); }
       else { it++; }
     }
 
@@ -173,7 +176,7 @@ void Rioter::timeStep(const unsigned long time)
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {
-        if( (*it)->type() == construction::road || (*it)->group() == building::disasterGroup )
+        if( (*it)->type() == construction::road || _d->excludeGroups.count( (*it)->group() ) > 0  )
         { it=constructions.erase( it ); }
         else { ++it; }
       }
@@ -189,12 +192,12 @@ void Rioter::timeStep(const unsigned long time)
         foreach( it, constructions )
         {
           ConstructionPtr c = *it;
-          if( c->group() != building::disasterGroup && c->type() != construction::road )
-          {
+          //if( c->group() != building::disasterGroup && c->type() != construction::road )
+          //{
             c->updateState( Construction::fire, 1 );
             c->updateState( Construction::damage, 1 );
             break;
-          }
+          //}
         }
       }
     }
@@ -214,14 +217,21 @@ RioterPtr Rioter::create(PlayerCityPtr city )
 
 Rioter::~Rioter() {}
 
-void Rioter::send2City( HousePtr house )
+void Rioter::send2City( BuildingPtr bld )
 {
-  TilesArray tiles = house->enterArea();
+  TilesArray tiles = bld->enterArea();
   if( tiles.empty() )
     return;
 
   setPos( tiles.random()->pos() );
-  _d->houseLevel = house->spec().level();
+  _d->houseLevel = 0;
+
+  if( is_kind_of<House>( bld ) )
+  {
+    HousePtr house = ptr_cast<House>( bld );
+    _d->houseLevel = house->spec().level();
+  }
+
   _d->state = Impl::searchHouse;
 
   if( !isDeleted() )
@@ -260,6 +270,7 @@ void Rioter::load(const VariantMap& stream)
 }
 
 int Rioter::agressive() const { return 1; }
+void Rioter::excludeAttack(building::Group group) { _d->excludeGroups.insert( group ); }
 
 Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
 {  
@@ -280,4 +291,20 @@ Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructi
   }
 
   return Pathway();
+}
+
+
+RioterPtr NativeRioter::create(PlayerCityPtr city)
+{
+  RioterPtr ret( new NativeRioter( city ) );
+  ret->drop();
+
+  return ret;
+}
+
+NativeRioter::NativeRioter(PlayerCityPtr city)
+  : Rioter( city )
+{
+  _setType( walker::indigeneRioter );
+  excludeAttack( building::nativeGroup );
 }

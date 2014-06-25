@@ -252,6 +252,7 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
     case attackIndustry: needGroup = building::industryGroup; break;
     case attackFood: needGroup = building::foodGroup; break;
     case attackCitizen:  needGroup = building::houseGroup; break;
+    default: needGroup = building::unknownGroup; break;
     }
 
     foreach( it, ret )

@@ -193,6 +193,8 @@ VariantMap Disorder::save() const
   VariantMap ret;
   ret[ "lastRioter" ] = _d->rioterInLastYear;
   ret[ "curRioter"  ] = _d->rioterInThisYear;
+
+  return ret;
 }
 
 void Disorder::load(const VariantMap &stream)
@@ -232,7 +234,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
   rioterInThisYear++;
 
   RioterPtr protestor = Rioter::create( city );
-  protestor->send2City( house );
+  protestor->send2City( ptr_cast<Building>( house ) );
 
   HouseList houses;
   houses << city->overlays();

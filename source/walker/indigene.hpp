@@ -15,38 +15,28 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "lion.hpp"
-#include "core/gettext.hpp"
-#include "city/city.hpp"
-//#include "corpse.hpp"
+#ifndef __CAESARIA_INDIGENE_H_INCLUDED__
+#define __CAESARIA_INDIGENE_H_INCLUDED__
 
-using namespace constants;
+#include "animals.hpp"
+#include "core/predefinitions.hpp"
 
-LionPtr Lion::create(PlayerCityPtr city)
+class Indigene : public Walker
 {
-  LionPtr ret( new Lion( city ) );
-  ret->drop();
+public:
+  static IndigenePtr create( PlayerCityPtr city );
 
-  return ret;
-}
+  void send2city( BuildingPtr base );
 
-bool Lion::die()
-{
-  bool created = Animal::die();
+protected:
+  virtual void _reachedPathway();
+  void _updateState();
 
-  return created;
-  //Corpse::create( _getCity(), getIJ(), "citizen04", 257, 264 );
-}
+private:
+  Indigene( PlayerCityPtr city );
 
-void Lion::_reachedPathway()
-{
-  Animal::_reachedPathway();
-  deleteLater();
-}
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
 
-Lion::Lion(PlayerCityPtr city) : Animal( city )
-{
-  _setType( walker::lion );
-
-  setName( _("##Lion##") );
-}
+#endif //__CAESARIA_INDIGENE_H_INCLUDED__
