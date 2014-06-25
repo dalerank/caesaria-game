@@ -13,35 +13,43 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ROMECHASTENERARMY_H_INCLUDED__
-#define __CAESARIA_ROMECHASTENERARMY_H_INCLUDED__
+#ifndef __CAESARIA_EMPIRE_OBJECTSFACTORY_H_INCLUDED__
+#define __CAESARIA_EMPIRE_OBJECTSFACTORY_H_INCLUDED__
 
-#include "army.hpp"
+#include "core/scopedptr.hpp"
+#include "predefinitions.hpp"
 
 namespace world
 {
 
-class RomeChastenerArmy : public Army
+class ObjectCreator
 {
 public:
-  static ArmyPtr create(EmpirePtr empire);
-  void setSoldiersNumber( unsigned int count );
-  virtual std::string type() const;
-  unsigned int soldiersNumber() const;
-
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
-
-protected:
-  RomeChastenerArmy( EmpirePtr );
-
-private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+  virtual ObjectPtr create( EmpirePtr city ) = 0;
 };
 
-}
+class ObjectsFactory
+{
+public:
+  static ObjectsFactory& instance();
 
-#endif //__CAESARIA_ROMECHASTENERARMY_H_INCLUDED__
+  bool canCreate( const std::string& type ) const;
+
+  void addCreator( const std::string& type, ObjectCreator* ctor );
+
+  ObjectPtr create( const std::string& type, EmpirePtr empire );  // get an instance of the given type
+
+  ~ObjectsFactory();
+
+private:
+  ObjectsFactory();
+
+  class Impl;
+  ScopedPtr< Impl > _d;
+};
+
+}//end namespace world
+
+#endif //__CAESARIA_EMPIRE_OBJECTSFACTORY_H_INCLUDED__

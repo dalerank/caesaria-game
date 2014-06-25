@@ -28,6 +28,7 @@
 #include "object.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
+#include "objects_factory.hpp"
 #include "game/settings.hpp"
 
 namespace world
@@ -192,12 +193,15 @@ void Empire::load( const VariantMap& stream )
   }
 
   _d->objects.clear();
-  VariantMap objects = stream.get( "objects" ).toMap();
+  VariantMap objects = stream.get( "objects" ).toMap();  
   foreach( item, objects )
   {
-    ObjectPtr obj = Object::create( this );
-    obj->load( item->second.toMap() );
-    _d->objects.push_back( obj );
+    const VariantMap& vm = item->second.toMap();
+    std::string objectType = vm.get( "type" ).toString();
+
+    ObjectPtr obj = ObjectsFactory::instance().create( objectType, this );
+    obj->load( vm );
+    _d->objects << obj;
   }
 
   foreach( i, _d->objects )

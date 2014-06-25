@@ -28,12 +28,9 @@ public:
   int soldiersNumber;
 };
 
-ArmyPtr RomeChastenerArmy::create( EmpirePtr empire, CityPtr base )
+ArmyPtr RomeChastenerArmy::create( EmpirePtr empire )
 {
-  RomeChastenerArmy* ptr = new RomeChastenerArmy( empire );
-  ptr->setBase( base );
-
-  ArmyPtr ret( ptr );
+  ArmyPtr ret( new RomeChastenerArmy( empire ) );
   ret->drop();
 
   return ret;
