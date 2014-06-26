@@ -832,7 +832,7 @@
       clay_pit : true
       iron_mine : true
 
-      pottery : true
+      pottery_workshop : true
       weapons_workshop : true
       furniture_workshop : true
 
@@ -856,6 +856,7 @@
       school : true
       academy : true
       library : true
+      mission_post : true
       senate_1 : true
       gatehouse : true
       wall : true 
@@ -868,7 +869,7 @@
       barracks : true
 
       baths : true
-      doctor : true
+      clinic : true
       hospital : true
       barber : true
 

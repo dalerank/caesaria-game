@@ -21,7 +21,8 @@
 
 using namespace constants;
 
-MissionaryPost::MissionaryPost() : ServiceBuilding( Service::native, building::missionaryPost, Size(2) )
+MissionaryPost::MissionaryPost()
+  : ServiceBuilding( Service::native, building::missionaryPost, Size(2) )
 {
   setMaximumWorkers(20);
   setWorkers(0);  
@@ -33,6 +34,9 @@ MissionaryPost::MissionaryPost() : ServiceBuilding( Service::native, building::m
 
 void MissionaryPost::deliverService()
 {
-  ServiceBuilding::deliverService();
+  if( mayWork() )
+  {
+    ServiceBuilding::deliverService();
+  }
 }
 

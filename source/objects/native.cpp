@@ -76,7 +76,7 @@ void NativeHut::timeStep(const unsigned long time)
   NativeBuilding::timeStep( time );
   if( GameDate::isDayChanged() )
   {
-    _discontent = math::clamp<int>( _discontent+1, 0, 100 );
+    _discontent = math::clamp<float>( _discontent+0.5, 0.f, 100.f );
     _day2look--;
 
     if( math::random( _discontent ) > rioterGenerateLevel )
