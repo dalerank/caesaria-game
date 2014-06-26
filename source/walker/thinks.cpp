@@ -26,7 +26,7 @@ using namespace constants;
 
 std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const StringArray& own)
 {
-  SmartPtr< city::Info > info = ptr_cast< city::Info>( city->findService( city::Info::getDefaultName() ) );
+  SmartPtr< city::Info > info = ptr_cast< city::Info>( city->findService( city::Info::defaultName() ) );
 
   if( info.isNull() )
   {
@@ -42,7 +42,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   StringArray troubles = own;
   std::string walkerTypename = WalkerHelper::getTypename( walker->type() );
-  city::Info::Parameters params = info->getLast();
+  city::Info::Parameters params = info->lastParams();
   if( params.monthWithFood < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_so_hungry##" );

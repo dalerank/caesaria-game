@@ -60,7 +60,7 @@ SrvcPtr ProsperityRating::create(PlayerCityPtr city )
 }
 
 ProsperityRating::ProsperityRating(PlayerCityPtr city )
-  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
   _d->prosperity = 0;
@@ -109,7 +109,7 @@ void ProsperityRating::update( const unsigned int time )
       prosperityCap /= houses.size();
     }
 
-    _d->lastYearProsperity = getValue();
+    _d->lastYearProsperity = value();
 
     int saveValue = _d->prosperity;
     _d->prosperity = math::clamp<int>( prosperityCap, 0, _d->prosperity + 2 );
@@ -150,7 +150,7 @@ void ProsperityRating::update( const unsigned int time )
   }
 }
 
-int ProsperityRating::getValue() const {  return _d->prosperity + _d->prosperityExtend; }
+int ProsperityRating::value() const {  return _d->prosperity + _d->prosperityExtend; }
 
 int ProsperityRating::getMark(ProsperityRating::Mark type) const
 {
@@ -160,13 +160,13 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
   case cmHaveProfit: return _d->makeProfit;
   case cmWorkless: return _d->worklessPercent;
   case cmWorkersSalary: return _d->workersSalary;
-  case cmChange: return getValue() - _d->lastYearProsperity;
+  case cmChange: return value() - _d->lastYearProsperity;
   case cmPercentPlebs: return _d->percentPlebs;
   }
 
   return 0;
 }
 
-std::string ProsperityRating::getDefaultName(){  return "prosperity"; }
+std::string ProsperityRating::defaultName(){  return "prosperity"; }
 
 }//end namespace city

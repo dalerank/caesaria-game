@@ -127,9 +127,9 @@ public:
 
     case dm_population:
     {
-      city::InfoPtr info = ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ) );
-      city::Info::History history = info->getHistory();
-      history.push_back( info->getLast() );
+      city::InfoPtr info = ptr_cast<city::Info>( city->findService( city::Info::defaultName() ) );
+      city::Info::History history = info->history();
+      history.push_back( info->lastParams() );
 
       _values.clear();
       foreach( it, history )

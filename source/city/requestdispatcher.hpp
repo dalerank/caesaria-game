@@ -34,7 +34,7 @@ public:
   bool add(const VariantMap& stream , bool showMessage=true);
   virtual ~Dispatcher();
 
-  static std::string getDefaultName();
+  static std::string defaultName();
 
   virtual void update(const unsigned int time);
   virtual VariantMap save() const;

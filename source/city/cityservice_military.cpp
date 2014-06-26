@@ -23,6 +23,10 @@
 namespace city
 {
 
+namespace  {
+CAESARIA_LITERALCONST(notifications)
+}
+
 class Military::Impl
 {
 public:
@@ -95,14 +99,14 @@ VariantMap Military::save() const
     vlNts[ StringHelper::format( 0xff, "note_%03d", index ) ] = vlNt;
   }
 
-  ret[ "notifications" ] = vlNts;
+  ret[ lc_notifications ] = vlNts;
 
   return ret;
 }
 
 void Military::load(const VariantMap& stream)
 {
-  VariantMap vlNts = stream.get( "notifications" ).toMap();
+  VariantMap vlNts = stream.get( lc_notifications ).toMap();
   foreach( it, vlNts )
   {
     VariantList vlN = it->second.toList();
@@ -115,7 +119,7 @@ void Military::load(const VariantMap& stream)
   }
 }
 
-std::string Military::getDefaultName()
+std::string Military::defaultName()
 {
   return CAESARIA_STR_EXT(Military);
 }

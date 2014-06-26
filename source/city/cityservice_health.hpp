@@ -27,10 +27,10 @@ class HealthCare : public city::Srvc
 {
 public:
   static city::SrvcPtr create( PlayerCityPtr city );
-  static std::string getDefaultName();
+  static std::string defaultName();
 
   virtual void update( const unsigned int time );
-  std::string getReason() const;
+  std::string reason() const;
 private:
   HealthCare( PlayerCityPtr city );
 

@@ -93,7 +93,7 @@ SrvcPtr CultureRating::create(PlayerCityPtr city )
 }
 
 CultureRating::CultureRating(PlayerCityPtr city )
-  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
   _d->culture = 0;
@@ -178,6 +178,6 @@ int CultureRating::coverage( Coverage type) const
   }
 }
 
-std::string CultureRating::getDefaultName() { return CAESARIA_STR_EXT(CultureRating); }
+std::string CultureRating::defaultName() { return CAESARIA_STR_EXT(CultureRating); }
 
 }//end namespace city

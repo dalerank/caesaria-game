@@ -32,7 +32,7 @@ class WorkersHire : public Srvc
 {
 public:
   static SrvcPtr create( PlayerCityPtr city );
-  static std::string getDefaultName();
+  static std::string defaultName();
   virtual void update( const unsigned int time );
   void setRecruterDistance( const unsigned int distance );
   void setIndustryPriority( Industry::Type industry, int priority );

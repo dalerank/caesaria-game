@@ -53,10 +53,10 @@ SrvcPtr Roads::create(PlayerCityPtr city)
   return SrvcPtr( ret );
 }
 
-std::string Roads::getDefaultName(){  return "roads";}
+std::string Roads::defaultName(){  return "roads";}
 
 Roads::Roads(PlayerCityPtr city )
-  : Srvc( *city.object(), Roads::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Roads::defaultName() ), _d( new Impl )
 {
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;

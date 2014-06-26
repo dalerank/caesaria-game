@@ -45,7 +45,7 @@ SrvcPtr Animals::create(PlayerCityPtr city)
   return ret;
 }
 
-std::string Animals::getDefaultName() { return "animals"; }
+std::string Animals::defaultName() { return "animals"; }
 
 void Animals::update(const unsigned int time)
 {
@@ -90,7 +90,7 @@ void Animals::update(const unsigned int time)
 void Animals::setWolvesNumber(unsigned int number) {  _d->maxWolves = number; }
 
 Animals::Animals( PlayerCityPtr city )
-  : Srvc( *city.object(), Animals::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Animals::defaultName() ), _d( new Impl )
 {
   _d->maxSheeps = defaultMaxSheeps;
   _d->maxWolves = 0;

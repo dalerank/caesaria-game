@@ -62,7 +62,7 @@ void HealthUpdater::update( const unsigned int time)
   }
 }
 
-std::string HealthUpdater::getDefaultName() { return "health_updater"; }
+std::string HealthUpdater::defaultName() { return "health_updater"; }
 bool HealthUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void HealthUpdater::load(const VariantMap& stream)
@@ -81,7 +81,7 @@ VariantMap HealthUpdater::save() const
 }
 
 HealthUpdater::HealthUpdater( PlayerCityPtr city )
-  : Srvc( *city.object(), HealthUpdater::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), HealthUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
 }

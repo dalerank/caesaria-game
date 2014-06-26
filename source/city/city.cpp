@@ -522,7 +522,7 @@ void PlayerCity::save( VariantMap& stream) const
   VariantMap vm_services;
   foreach( service, _d->services )
   {   
-    vm_services[ (*service)->getName() ] = (*service)->save();
+    vm_services[ (*service)->name() ] = (*service)->save();
   }
 
   stream[ "services" ] = vm_services;
@@ -642,7 +642,7 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 {
   foreach( service, _d->services )
   {
-    if( name == (*service)->getName() )
+    if( name == (*service)->name() )
       return *service;
   }
 
@@ -681,8 +681,8 @@ void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( 
 
 int PlayerCity::prosperity() const
 {
-  SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::getDefaultName() ) );
-  return csPrsp.isValid() ? csPrsp->getValue() : 0;
+  SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::defaultName() ) );
+  return csPrsp.isValid() ? csPrsp->value() : 0;
 }
 
 int PlayerCity::getOption(PlayerCity::OptionType opt) const
@@ -707,7 +707,7 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::culture() const
 {
-  SmartPtr<city::CultureRating> csClt = ptr_cast<city::CultureRating>( findService( city::CultureRating::getDefaultName() ) );
+  SmartPtr<city::CultureRating> csClt = ptr_cast<city::CultureRating>( findService( city::CultureRating::defaultName() ) );
   return csClt.isValid() ? csClt->value() : 0;
 }
 

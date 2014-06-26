@@ -121,7 +121,7 @@ unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 
 unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
 {
-  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::getDefaultName() ) );
+  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::defaultName() ) );
   return ds.isValid() ? ds->value() : 0;
 }
 

@@ -33,11 +33,11 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
 
   virtual void update( const unsigned int time );
-  int getValue() const;
+  int value() const;
 
   int getMark( Mark type ) const;
 
-  static std::string getDefaultName();
+  static std::string defaultName();
 
 private:
   ProsperityRating( PlayerCityPtr city );

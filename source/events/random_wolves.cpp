@@ -91,7 +91,7 @@ void RandomWolves::_exec( Game& game, unsigned int time)
 
   if( _d->maxWolves >= 0 )
   {
-    SmartPtr<city::Animals> srvc = ptr_cast<city::Animals>( game.city()->findService( city::Animals::getDefaultName() ) );
+    SmartPtr<city::Animals> srvc = ptr_cast<city::Animals>( game.city()->findService( city::Animals::defaultName() ) );
     if( srvc.isValid() )
     {
       srvc->setWolvesNumber( _d->maxWolves );

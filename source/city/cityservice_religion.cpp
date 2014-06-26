@@ -68,10 +68,10 @@ SrvcPtr Religion::create(PlayerCityPtr city)
   return ret;
 }
 
-std::string Religion::getDefaultName() { return "religion"; }
+std::string Religion::defaultName() { return "religion"; }
 
 Religion::Religion(PlayerCityPtr city )
-  : Srvc( *city.object(), Religion::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Religion::defaultName() ), _d( new Impl )
 {
 }
 

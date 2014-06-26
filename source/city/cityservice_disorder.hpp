@@ -29,9 +29,9 @@ class Disorder : public Srvc
 {
 public:
   static SrvcPtr create( PlayerCityPtr city );
-  static std::string getDefaultName();
+  static std::string defaultName();
   virtual void update( const unsigned int time );
-  std::string reasonDescr() const;
+  std::string reason() const;
   unsigned int value() const;
 
   virtual VariantMap save() const;

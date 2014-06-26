@@ -35,7 +35,7 @@ public:
 };
 
 Dispatcher::Dispatcher( PlayerCityPtr city )
-  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
 }
 
@@ -70,7 +70,7 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 }
 
 Dispatcher::~Dispatcher() {}
-std::string Dispatcher::getDefaultName(){  return "requests";}
+std::string Dispatcher::defaultName(){  return "requests";}
 
 void Dispatcher::update(const unsigned int time)
 {

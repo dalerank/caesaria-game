@@ -42,7 +42,7 @@ public:
     return ret;
   }
 
-  virtual std::string serviceName() const { return T::getDefaultName(); }
+  virtual std::string serviceName() const { return T::defaultName(); }
 };
 
 

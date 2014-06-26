@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "migration.hpp"
 #include "objects/construction.hpp"
@@ -69,7 +71,7 @@ SrvcPtr Migration::create(PlayerCityPtr city)
 }
 
 Migration::Migration( PlayerCityPtr city )
-  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
   _d->lastMonthMigration = 0;
   _d->lastMonthPopulation = 0;
@@ -140,7 +142,7 @@ void Migration::update( const unsigned int time )
   }
 }
 
-std::string Migration::getReason() const
+std::string Migration::reason() const
 {
   unsigned int vacantHouse = _d->calcVacantHouse( _city );
   if( vacantHouse == 0 )
@@ -207,7 +209,7 @@ std::string Migration::getReason() const
   return "##migration_peoples_arrived_in_city##";
 }
 
-std::string Migration::getDefaultName() { return "migration"; }
+std::string Migration::defaultName() { return "migration"; }
 
 VariantMap Migration::save() const
 {
@@ -250,12 +252,12 @@ float Migration::Impl::getMigrationKoeff( PlayerCity& city )
 
 Info::Parameters Migration::Impl::getLastParams( PlayerCity& city )
 {
-  SmartPtr<Info> info = ptr_cast<Info>( city.findService( Info::getDefaultName() ) );
+  SmartPtr<Info> info = ptr_cast<Info>( city.findService( Info::defaultName() ) );
 
   Info::Parameters params;
   if( info.isValid() )
   {
-    params = info->getLast();
+    params = info->lastParams();
   }
 
   return params;

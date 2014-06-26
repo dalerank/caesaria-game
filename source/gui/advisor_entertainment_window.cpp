@@ -128,7 +128,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widge
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   _d->city = city;
-  _d->srvc = ptr_cast<city::Festival>( city->findService( city::Festival::getDefaultName() ) );
+  _d->srvc = ptr_cast<city::Festival>( city->findService( city::Festival::defaultName() ) );
 
   setupUI( GameSettings::rcpath( "/gui/entertainmentadv.gui" ) );
 
