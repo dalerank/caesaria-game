@@ -224,7 +224,7 @@ std::string Migration::leaveCityReason() const
 {
   if( lastMonthMigration() < 0 )
   {
-    Info::Parameters lastParams = _d->lastMonthParams( &_city );
+    Info::Parameters lastParams = _d->lastMonthParams( _city );
     if( lastParams.tax > insaneTaxLevel )
       return "##people_leave_city_insane_tax##";
 
@@ -236,6 +236,8 @@ std::string Migration::leaveCityReason() const
 
     return "##people_leave_city_some##";
   }
+
+  return "";
 }
 
 std::string Migration::defaultName() { return CAESARIA_STR_EXT(Migration); }
