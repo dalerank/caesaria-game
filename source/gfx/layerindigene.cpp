@@ -13,31 +13,41 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "layertroubles.hpp"
-#include "layerconstants.hpp"
-#include "core/gettext.hpp"
-#include "objects/house.hpp"
+#include "layerindigene.hpp"
 #include "objects/constants.hpp"
-#include "city/helper.hpp"
-#include "objects/house_level.hpp"
-#include "good/goodhelper.hpp"
+#include "objects/native.hpp"
 #include "game/resourcegroup.hpp"
+#include "layerconstants.hpp"
+#include "city/helper.hpp"
 #include "core/event.hpp"
-#include "objects/watersupply.hpp"
 #include "tilemap_camera.hpp"
-#include "objects/factory.hpp"
+
 
 using namespace constants;
 
 namespace gfx
 {
 
-int LayerTroubles::type() const{  return _type;}
-Layer::VisibleWalkers LayerTroubles::visibleWalkers() const{  return std::set<int>();}
+static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_damage_risk##",
+                                         "##some_damage_risk##", "##very_high_damage_risk##",
+                                         "##extreme_damage_risk##" };
 
-void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
+int LayerIndigene::type() const
+{
+  return citylayer::aborigen;
+}
+
+std::set<int> LayerIndigene::visibleWalkers() const
+{
+  std::set<int> ret;
+  ret.insert( walker::indigene );
+  ret.insert( walker::missioner );
+  return ret;
+}
+
+void LayerIndigene::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mapPos() + offset;
 
@@ -50,10 +60,10 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
   {
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
-
+    int discontentLevel = 0;
     switch( overlay->type() )
     {
-    // Base set of visible objects
+      //fire buildings and roads
     case construction::road:
     case construction::plaza:
     case construction::garden:
@@ -66,19 +76,30 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 
     case building::elevation:
     case building::rift:
+
+    case building::nativeCenter:
+    case building::nativeField:
       needDrawAnimations = true;
     break;
 
-    //other buildings
-    default:
-    {
-      ConstructionPtr c = ptr_cast<Construction>( overlay );
-      if( c.isValid() )
+      //houses
+    case building::nativeHut:
       {
-        std::string trouble = c->troubleDesc();
-        needDrawAnimations = !trouble.empty();
+        NativeHutPtr hut = ptr_cast<NativeHut>( overlay );
+        discontentLevel = (int)hut->discontent();
+        needDrawAnimations = false;
+
+        city::Helper helper( _city() );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
-    }
+    break;
+
+      //other buildings
+    default:
+      {
+        city::Helper helper( _city() );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      }
     break;
     }
 
@@ -87,25 +108,24 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
       Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
-    else
+    else if( discontentLevel >= 0 )
     {
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawColumn( engine, screenPos, discontentLevel );
     }
   }
 
   tile.setWasDrawn();
 }
 
-LayerPtr LayerTroubles::create(Camera& camera, PlayerCityPtr city , int type)
+LayerPtr LayerIndigene::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new LayerTroubles( camera, city, type ) );
+  LayerPtr ret( new LayerIndigene( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void LayerTroubles::handleEvent(NEvent& event)
+void LayerIndigene::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -115,17 +135,11 @@ void LayerTroubles::handleEvent(NEvent& event)
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
-
       if( tile != 0 )
       {
-        ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
-        if( constr.isValid() )
-        {
-          text = constr->troubleDesc();
-        }
       }
 
-      _setTooltipText( _(text) );
+      _setTooltipText( text );
     }
     break;
 
@@ -136,10 +150,10 @@ void LayerTroubles::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerTroubles::LayerTroubles( Camera& camera, PlayerCityPtr city, int type )
-  : Layer( &camera, city ), _type( type )
+LayerIndigene::LayerIndigene( Camera& camera, PlayerCityPtr city)
+  : Layer( &camera, city )
 {
-  _loadColumnPicture( 9 );
+  _loadColumnPicture( 15 );
 }
 
 }//end namespace gfx

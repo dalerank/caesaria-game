@@ -117,6 +117,8 @@ float NativeHut::evaluateService(ServiceWalkerPtr walker)
   return res;
 }
 
+float NativeHut::discontent() const { return _discontent; }
+
 NativeCenter::NativeCenter() : NativeBuilding( building::nativeCenter, Size(2) )
 {
   setPicture( ResourceGroup::housing, 51 );

@@ -36,7 +36,7 @@ public:
   typedef std::set<int> VisibleWalkers;
 
   virtual int type() const = 0;
-  virtual VisibleWalkers getVisibleWalkers() const = 0;
+  virtual VisibleWalkers visibleWalkers() const = 0;
 
   //draw gfx before walkers
   virtual void drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );

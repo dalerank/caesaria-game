@@ -32,7 +32,7 @@ int LayerDesirability::type() const
   return citylayer::desirability;
 }
 
-std::set<int> LayerDesirability::getVisibleWalkers() const
+std::set<int> LayerDesirability::visibleWalkers() const
 {
   return std::set<int>();
 }

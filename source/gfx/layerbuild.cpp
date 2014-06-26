@@ -348,7 +348,7 @@ void LayerBuild::_finishBuild()
 
 int LayerBuild::type() const {  return citylayer::build;}
 
-std::set<int> LayerBuild::getVisibleWalkers() const
+std::set<int> LayerBuild::visibleWalkers() const
 {
   std::set<int> ret;
   ret.insert( walker::all );

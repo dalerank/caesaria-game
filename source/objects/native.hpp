@@ -42,6 +42,8 @@ public:
   virtual void applyService( ServiceWalkerPtr walker);
   virtual float evaluateService(ServiceWalkerPtr walker);
 
+  float discontent() const;
+
 protected:
   float _discontent;
   int _day2look;

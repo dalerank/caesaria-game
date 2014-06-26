@@ -747,6 +747,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       ChastenerPtr soldier = Chastener::create( this, walker::romeChasternerSoldier );
       soldier->send2City( borderInfo().roadEntry );
+      soldier->wait( GameDate::days2ticks( k ) );
     }
   }
 }

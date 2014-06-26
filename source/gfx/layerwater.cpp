@@ -36,7 +36,7 @@ namespace gfx
 
 int LayerWater::type() const{  return citylayer::water;}
 
-std::set<int> LayerWater::getVisibleWalkers() const
+std::set<int> LayerWater::visibleWalkers() const
 {
   return std::set<int>();
 }

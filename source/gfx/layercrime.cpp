@@ -34,7 +34,7 @@ int LayerCrime::type() const
   return citylayer::crime;
 }
 
-Layer::VisibleWalkers LayerCrime::getVisibleWalkers() const
+Layer::VisibleWalkers LayerCrime::visibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::prefect );

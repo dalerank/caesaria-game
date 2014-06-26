@@ -234,10 +234,10 @@ void Layer::drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass p
 
 WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos& pos)
 {
-  Layer::VisibleWalkers visibleWalkers = getVisibleWalkers();
+  Layer::VisibleWalkers vWalkers = visibleWalkers();
 
   WalkerList walkerList;
-  foreach( wtAct, visibleWalkers )
+  foreach( wtAct, vWalkers )
   {
     WalkerList foundWalkers = _city()->getWalkers( (walker::Type)*wtAct, pos );
     walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
@@ -249,7 +249,7 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
 void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
-  WalkerList walkers = _getVisibleWalkerList( getVisibleWalkers(), tile.pos() );
+  WalkerList walkers = _getVisibleWalkerList( visibleWalkers(), tile.pos() );
 
   foreach( w, walkers )
   {
@@ -423,13 +423,13 @@ void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
 
   engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
 
-  for( int offsetY=20; offsetY < rounded; offsetY += 10 )
+  if(rounded > 10)
   {
-    engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
-  }
+    for( int offsetY=7; offsetY < rounded; offsetY += 10 )
+    {
+      engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
+    }
 
-  if (rounded > 10)
-  {
     engine.draw(_d->headerColumn, pos - Point(-6, 25 + rounded));
   }
 }

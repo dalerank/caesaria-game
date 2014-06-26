@@ -13,35 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
-#define __CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
+#ifndef __CAESARIA_LAYERINDIGENE_H_INCLUDED__
+#define __CAESARIA_LAYERINDIGENE_H_INCLUDED__
 
 #include "layer.hpp"
 
 namespace gfx
 {
 
-class LayerEducation : public Layer
+class LayerIndigene : public Layer
 {
 public:
   virtual int type() const;
-  virtual VisibleWalkers visibleWalkers() const;
+  virtual std::set<int> visibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
-
-  static LayerPtr create( Camera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);
 
-private:
-  LayerEducation( Camera& camera, PlayerCityPtr city, int type );
-  int _getLevelValue(HousePtr house ) const;
-  std::string _getAccessLevel( int lvl ) const;
+  static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
-  std::set<int> _flags;
-  std::set<int> _walkers;
-  int _type;
+private:
+  LayerIndigene( Camera& camera, PlayerCityPtr city );
 };
 
 }//end namespace gfx
-#endif //__CAESARIA_LAYEREDUCATIONH_H_INCLUDED__
+#endif //__CAESARIA_LAYERINDIGENE_H_INCLUDED__

@@ -31,7 +31,7 @@ int LayerTax::type() const
   return citylayer::tax;
 }
 
-Layer::VisibleWalkers LayerTax::getVisibleWalkers() const
+Layer::VisibleWalkers LayerTax::visibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::taxCollector );
