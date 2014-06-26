@@ -56,10 +56,7 @@ CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
   HouseList houses = helper.find<House>( building::house );
 
   CitizenGroup ret;
-  foreach( it, houses )
-  {
-    ret += (*it)->habitants();
-  }
+  foreach( it, houses ) { ret += (*it)->habitants(); }
 
   return ret;
 }

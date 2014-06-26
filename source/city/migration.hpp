@@ -34,9 +34,11 @@ public:
 
   int value() const;
   std::string reason() const;
+  std::string leaveCityReason() const;
 
   static std::string defaultName();
 
+  int lastMonthMigration() const;
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
@@ -46,6 +48,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+typedef SmartPtr<Migration> MigrationPtr;
 
 }//end namespace city
 
