@@ -26,6 +26,7 @@
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
 #include "objects/house_level.hpp"
+#include "city/migration.hpp"
 #include "label.hpp"
 
 using namespace constants;
@@ -120,8 +121,8 @@ public:
       _maxXValue = _values.size();
       _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
 
-      onMaxYChange.emit( _maxValue );
-      onMaxXChange.emit( _maxXValue );
+      oc3_emit onMaxYChange( _maxValue );
+      oc3_emit onMaxXChange( _maxXValue );
     }
     break;
 
@@ -230,9 +231,12 @@ public:
   Label* lbNextChart;
   Label* lbPrevChart;
   Label* lbTitle;
+  Label* lbMigrationValue;
 
+public:
   void showNextChart();
   void showPrevChart();
+  void updateStates();
   void switch2nextChart( int change );
 };
 
@@ -253,6 +257,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   _d->lbNextChart = findChildA<Label*>( "lbNextChart", true, this );
   _d->lbPrevChart = findChildA<Label*>( "lbPrevChart", true, this );
   _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
+  _d->lbMigrationValue =  findChildA<Label*>( "lbMigrationValue", true, this );
 
   Label* lbChart = findChildA<Label*>( "lbChart", true, this );
   if( lbChart )
@@ -264,6 +269,8 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
 
     _d->switch2nextChart( 0 );
   }
+
+  _d->updateStates();
 
   CONNECT( _d->lbNextChart, onClicked(), _d.data(), Impl::showNextChart );
   CONNECT( _d->lbPrevChart, onClicked(), _d.data(), Impl::showPrevChart );
@@ -306,11 +313,38 @@ void Population::Impl::switch2nextChart( int change )
   }
 }
 
-void Population::Impl::showPrevChart()
+void Population::Impl::showPrevChart() {  switch2nextChart( -1 );}
+
+void Population::Impl::updateStates()
 {
-  switch2nextChart( -1 );
+  if( lbMigrationValue )
+  {
+    int currentPop = city->population();
+
+    city::InfoPtr info = ptr_cast<city::Info>( city->findService( city::Info::defaultName() ) );
+    city::Info::Parameters lastMonth = info->lastParams();
+
+    int migrationValue = currentPop - lastMonth.population;
+
+    if( migrationValue >= 0 )
+    {
+      std::string suffix = ( migrationValue % 10 == 1 )
+                             ? "##newcomer_this_month##"
+                             : "##newcomers_this_month##";
+
+      lbMigrationValue->setText( StringHelper::i2str( migrationValue ) + " " + _( suffix ) );
+    }
+    else
+    {
+      SmartPtr<city::Migration> migration = ptr_cast<city::Migration>( city->findService( city::Migration::defaultName() ) );
+      if( migration.isValid() )
+      {
+        lbMigrationValue->setText( migration->leaveCityReason() );
+      }
+    }
+  }
 }
 
 }//end namespace advisorwnd
 
-} //end namespace gui
+}//end namespace gui
