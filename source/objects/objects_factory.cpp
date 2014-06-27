@@ -162,7 +162,7 @@ public:
     FactoryPtr f = ptr_cast<Factory>( a );
     if( f.isValid() )
     {
-      f->setProductRate( (float)info.getOption( "productRate", 9.6 ) );
+      f->productRate( (float)info.getOption( "productRate", 9.6 ) );
     }
   }
 };
