@@ -26,6 +26,11 @@
 
 class GoodStore;
 
+namespace city
+{
+  class Funds;
+}
+
 namespace world
 {
 
@@ -39,6 +44,9 @@ public:
   virtual void setAvailable( bool value ) {}
   virtual void addObject( ObjectPtr ) = 0;
   virtual unsigned int tradeType() const = 0;
+  virtual city::Funds& funds() = 0;
+  virtual unsigned int population() const = 0;
+  virtual bool isPaysTaxes() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
   virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost ) = 0;

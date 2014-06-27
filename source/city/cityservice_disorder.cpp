@@ -84,7 +84,7 @@ void Disorder::update( const unsigned int time )
   Helper helper( &_city );
   HouseList houses = helper.find<House>( building::house );
 
-  WalkerList walkers = _city.getWalkers( walker::protestor );
+  WalkerList walkers = _city.walkers( walker::protestor );
 
   HouseList criminalizedHouse;
   _d->currentCrimeLevel = 0;

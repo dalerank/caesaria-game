@@ -241,8 +241,7 @@ std::string Migration::leaveCityReason() const
 }
 
 std::string Migration::defaultName() { return CAESARIA_STR_EXT(Migration); }
-
-int Migration::lastMonthMigration() const { _d->lastMonthMigration; }
+int Migration::lastMonthMigration() const { return _d->lastMonthMigration; }
 
 VariantMap Migration::save() const
 {
@@ -305,7 +304,7 @@ void Migration::Impl::createMigrationToCity( PlayerCity& city )
   }
 
   EmigrantList migrants;
-  migrants << city.getWalkers( walker::any );
+  migrants << city.walkers( walker::any );
 
   if( vh <= migrants.size() * 5 )
   {

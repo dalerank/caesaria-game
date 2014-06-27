@@ -214,7 +214,7 @@ const Tile& Dock::getQueueTile() const
     bool saveTile = false;
     if( (*it)->getFlag( Tile::tlDeepWater ) )
     {
-      saveTile = _city()->getWalkers( walker::seaMerchant, (*it)->pos() ).empty();
+      saveTile = _city()->walkers( walker::seaMerchant, (*it)->pos() ).empty();
     }
 
     if( !saveTile ) { it = tiles.erase( it ); }

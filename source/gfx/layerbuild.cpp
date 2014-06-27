@@ -101,7 +101,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
   bool walkersOnTile = false;
   if( bldCommand->isCheckWalkers() )
   {
-    walkersOnTile = !_city()->getWalkers( walker::any, pos, pos + TilePos( size.width()-1, size.height()-1 ) ).empty();
+    walkersOnTile = !_city()->walkers( walker::any, pos, pos + TilePos( size.width()-1, size.height()-1 ) ).empty();
   }
 
   if( !walkersOnTile && overlay->canBuild( _city(), pos, d->buildTiles ) )
@@ -151,7 +151,7 @@ void LayerBuild::_checkPreviewBuild(TilePos pos)
         walkersOnTile = false;
         if( bldCommand->isCheckWalkers() )
         {
-          walkersOnTile = !_city()->getWalkers( walker::any, rPos ).empty();
+          walkersOnTile = !_city()->walkers( walker::any, rPos ).empty();
         }
 
         bool isConstructible = tile->getFlag( Tile::isConstructible );

@@ -29,7 +29,8 @@ namespace {
 static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Road::Road() : Construction( construction::road, Size(1) )
+Road::Road()
+  : Construction( construction::road, Size(1) )
 {
   _paved = 0;
 }
@@ -169,25 +170,10 @@ Picture Road::computePicture()
   return Picture::load( ResourceGroup::road, index);
 }
 
-bool Road::isWalkable() const
-{
-  return true;
-}
-
-bool Road::isFlat() const
-{
-  return true;
-}
-
-void Road::updatePicture()
-{
-  setPicture( computePicture() );
-}
-
-bool Road::isNeedRoadAccess() const
-{
-  return false;
-}
+bool Road::isWalkable() const {  return true;}
+bool Road::isFlat() const{  return true;}
+void Road::updatePicture(){  setPicture( computePicture() );}
+bool Road::isNeedRoadAccess() const {  return false; }
 
 void Road::destroy()
 {
@@ -205,15 +191,14 @@ void Road::appendPaved( int value )
   }
 }
 
-int Road::getPavedValue() const
+void Road::computeAccessRoads()
 {
-  return _paved;
+  Construction::computeAccessRoads();
+  updatePicture();
 }
 
-Renderer::PassQueue Road::passQueue() const
-{
-  return roadPassQueue;
-}
+int Road::pavedValue() const {  return _paved; }
+Renderer::PassQueue Road::passQueue() const{  return roadPassQueue;}
 
 void Road::save(VariantMap& stream) const
 {

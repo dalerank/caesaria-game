@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
+#include "city/funds.hpp"
 #include "game/resourcegroup.hpp"
 #include "empiremap.hpp"
 
@@ -50,6 +51,7 @@ public:
   DateTime lastTimeMerchantSend;
   unsigned int merchantsNumber;
   Picture empMapPicture;
+  city::Funds funds;
 
 public:
   void initPicture();
@@ -75,6 +77,9 @@ bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
 std::string ComputerCity::name() const {  return _d->name;}
 Point ComputerCity::location() const{  return _d->location;}
 void ComputerCity::setLocation( const Point& location ){  _d->location = location;}
+city::Funds&ComputerCity::funds() { return _d->funds; }
+unsigned int ComputerCity::population() const { return 0; }
+bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isRomeCity() const{  return _d->romeCity;}
 bool ComputerCity::isAvailable() const{  return _d->isAvailable;}

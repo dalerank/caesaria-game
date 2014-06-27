@@ -34,7 +34,8 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
   virtual void appendPaved( int value );
-  int getPavedValue() const;
+  virtual void computeAccessRoads();
+  int pavedValue() const;
   virtual gfx::Renderer::PassQueue passQueue() const;
 
   virtual void save(VariantMap &stream) const;

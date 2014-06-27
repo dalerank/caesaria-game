@@ -49,6 +49,7 @@ public:
   int lastYearProsperity;
   int workersSalary;
   int percentPlebs;
+  bool brokeAndCaesarBailCity;
 };
 
 SrvcPtr ProsperityRating::create(PlayerCityPtr city )
@@ -79,7 +80,7 @@ void ProsperityRating::update( const unsigned int time )
   if( !GameDate::isMonthChanged() )
     return;
 
-  if( abs( GameDate::current().year() - _d->lastDate.year() ) == 1 )
+  if( GameDate::current().year() > _d->lastDate.year() )
   {
     _d->lastDate = GameDate::current();
 
@@ -132,6 +133,7 @@ void ProsperityRating::update( const unsigned int time )
     _d->worklessPercent = city::Statistic::getWorklessPercent( &_city );
     bool unemploymentLess5percent = _d->worklessPercent < 5;
     bool unemploymentMore15percent = _d->worklessPercent > 15;
+
     _d->prosperityExtend += (unemploymentLess5percent ? 1 : 0);
     _d->prosperityExtend += (unemploymentMore15percent ? -1 : 0);
 
@@ -142,11 +144,10 @@ void ProsperityRating::update( const unsigned int time )
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
    
-    bool brokeAndCaesarBailCity = false;
-    _d->prosperityExtend += (brokeAndCaesarBailCity ? -3 : 0);
+    _d->prosperityExtend += (_d->brokeAndCaesarBailCity ? -3 : 0);
+    _d->brokeAndCaesarBailCity = false;
 
-    bool failurePayTribute = false;
-    _d->prosperityExtend += (failurePayTribute ? -3 : 0);
+    _d->prosperityExtend += (_city.isPaysTaxes() ? -3 : 0);
   }
 }
 
@@ -167,6 +168,19 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
   return 0;
 }
 
-std::string ProsperityRating::defaultName(){  return "prosperity"; }
+std::string ProsperityRating::defaultName(){  return CAESARIA_STR_EXT(ProsperityRating); }
+
+VariantMap ProsperityRating::save() const
+{
+  VariantMap ret;
+  ret[ "brokeAndCaesarBailCity" ] = _d->brokeAndCaesarBailCity;
+
+  return ret;
+}
+
+void ProsperityRating::load(const VariantMap& stream)
+{
+  _d->brokeAndCaesarBailCity = stream.get( "brokeAndCaesarBailCity" );
+}
 
 }//end namespace city

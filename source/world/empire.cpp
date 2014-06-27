@@ -30,6 +30,8 @@
 #include "emperor.hpp"
 #include "objects_factory.hpp"
 #include "game/settings.hpp"
+#include "game/gamedate.hpp"
+#include "city/funds.hpp"
 
 namespace world
 {
@@ -52,6 +54,9 @@ public:
   std::string playerCityName;
   int workerSalary;
   unsigned int objUid;
+
+public:
+  void takeTaxes();
 };
 
 Empire::Empire() : _d( new Impl )
@@ -309,7 +314,7 @@ TraderoutePtr Empire::findRoute( const std::string& start, const std::string& st
 }
 
 void Empire::timeStep( unsigned int time )
-{
+{    
   _d->trading.timeStep( time );
   _d->emperor.timeStep( time );
 
@@ -323,6 +328,11 @@ void Empire::timeStep( unsigned int time )
     (*it)->timeStep( time );
     if( (*it)->isDeleted() ) { it =_d->objects.erase( it ); }
     else { ++it; }
+  }
+
+  if( GameDate::isYearChanged() )
+  {
+    _d->takeTaxes();
   }
 }
 
@@ -355,12 +365,6 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   }
 
   return ret;
-}
-
-void Empire::payTax(const std::string &cityname, unsigned int money)
-{
-  _d->treasury += money;
-  _d->emperor.cityTax( cityname, money );
 }
 
 ObjectList Empire::objects() const{  return _d->objects; }
@@ -422,5 +426,34 @@ GovernorRanks EmpireHelper::getRanks()
 
 
 TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
+
+void Empire::Impl::takeTaxes()
+{
+  foreach( it, cities)
+  {
+    CityPtr city = *it;
+
+    int profit = city->funds().getIssueValue( city::Funds::cityProfit, city::Funds::lastYear );
+
+    int empireTax = 0;
+    if( profit <= 0 )
+    {
+      empireTax = (city->population() / 1000) * 100;
+    }
+    else
+    {
+      int minimumExpireTax = (city->population() / 1000) * 100 + 50;
+      empireTax = math::clamp( profit / 4, minimumExpireTax, 9999 );
+    }
+
+    if( city->funds().treasury() > empireTax )
+    {
+      city->funds().resolveIssue( FundIssue( city::Funds::empireTax, -empireTax ) );
+
+      treasury += empireTax;
+      emperor.cityTax( city->name(), empireTax );
+    }
+  }
+}
 
 }//end namespace world

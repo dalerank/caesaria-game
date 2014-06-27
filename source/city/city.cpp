@@ -182,12 +182,16 @@ public:
   UniqueId walkerIdCount;
   int sentiment;
 
+public:
   // collect taxes from all houses
   void collectTaxes( PlayerCityPtr city);
   void payWages( PlayerCityPtr city );
   void monthStep( PlayerCityPtr city, const DateTime& time );
   void calculatePopulation( PlayerCityPtr city );
   void beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr overlay );
+  void updateWalkers(unsigned int time);
+  void updateOverlays(PlayerCityPtr city, unsigned int time);
+  void updateServices( unsigned int time );
 
 oc3_signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -235,13 +239,7 @@ void PlayerCity::timeStep(unsigned int time)
 {
   if( GameDate::isMonthChanged() )
   {
-    _d->monthStep( this, GameDate::current() );
-
-    if( GameDate::isYearChanged() )
-    {
-      events::GameEventPtr e = events::EmpireTax::create( name() );
-      e->dispatch();
-    }
+    _d->monthStep( this, GameDate::current() );    
   }
 
   if( GameDate::isWeekChanged() )
@@ -256,88 +254,21 @@ void PlayerCity::timeStep(unsigned int time)
     _d->walkersGrid.append( *it );
   }
 
-  WalkerList::iterator walkerIt = _d->walkerList.begin();
-  while( walkerIt != _d->walkerList.end() )
-  {
-    try
-    {
-      WalkerPtr walker = *walkerIt;
-      walker->timeStep( time );
-
-      if( walker->isDeleted() )
-      {
-        // remove the walker from the walkers list  
-        _d->walkersGrid.remove( *walkerIt );
-        walkerIt = _d->walkerList.erase(walkerIt);               
-      }
-      else
-      {
-         ++walkerIt;
-      }
-    }
-    catch(...)
-    {
-    }
-  }
-
-  TileOverlayList::iterator overlayIt = _d->overlayList.begin();
-  while( overlayIt != _d->overlayList.end() )
-  {
-    try
-    {   
-      (*overlayIt)->timeStep( time );
-
-      if( (*overlayIt)->isDeleted() )
-      {
-        _d->beforeOverlayDestroyed( this, *overlayIt );
-        // remove the overlay from the overlay list
-        (*overlayIt)->destroy();
-        overlayIt = _d->overlayList.erase(overlayIt);
-      }
-      else
-      {
-         ++overlayIt;
-      }
-    }
-    catch(...)
-    {
-      //int i=0;
-    }
-  }
-
-  CityServices::iterator serviceIt=_d->services.begin();
-  city::Timers::getInstance().update( time );
-  while( serviceIt != _d->services.end() )
-  {
-    (*serviceIt)->update( time );
-
-    if( (*serviceIt)->isDeleted() )
-    {
-      (*serviceIt)->destroy();
-      serviceIt = _d->services.erase(serviceIt);
-    }
-    else
-      ++serviceIt;
-  }
+  _d->updateWalkers( time );
+  _d->updateOverlays( this, time );
+  _d->updateServices( time );
 
   if( _d->needRecomputeAllRoads )
   {
     _d->needRecomputeAllRoads = false;
+    // for each overlay
     foreach( it, _d->overlayList )
     {
-      TileOverlayPtr overlay = *it;
-      // for each overlay
-      ConstructionPtr construction = ptr_cast<Construction>( overlay );
+      ConstructionPtr construction = ptr_cast<Construction>( *it );
       if( construction != NULL )
       {
         // overlay matches the filter
         construction->computeAccessRoads();
-        // for some constructions we need to update picture
-        if( construction->type() == construction::road )
-        {
-          RoadPtr road = ptr_cast<Road>( construction );
-          road->updatePicture();
-        }
       }
     }   
   }
@@ -348,14 +279,17 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   collectTaxes( city );
   payWages( city );
 
-  int playerSalary = player->salary();
-  funds.resolveIssue( FundIssue( city::Funds::playerSalary, -playerSalary ) );
-  player->appendMoney( playerSalary );
+  if( funds.treasury() > 0 )
+  {
+    int playerSalary = player->salary();
+    funds.resolveIssue( FundIssue( city::Funds::playerSalary, -playerSalary ) );
+    player->appendMoney( playerSalary );
+  }
 
   funds.updateHistory( GameDate::current() );
 }
 
-WalkerList PlayerCity::getWalkers( walker::Type rtype )
+WalkerList PlayerCity::walkers( walker::Type rtype )
 {
   if( rtype == walker::all )
   {
@@ -374,12 +308,13 @@ WalkerList PlayerCity::getWalkers( walker::Type rtype )
   return res;
 }
 
-WalkerList PlayerCity::getWalkers(walker::Type rtype, TilePos startPos, TilePos stopPos)
+WalkerList PlayerCity::walkers(walker::Type rtype, const TilePos& startPos, const TilePos& stopP)
 {
   TilePos invalidPos( -1, -1 );
+  TilePos stopPos = stopP;
 
   if( startPos == invalidPos )
-    return getWalkers( rtype );
+    return walkers( rtype );
 
   WalkerList ret;
   if( stopPos == invalidPos )
@@ -419,11 +354,13 @@ TileOverlayList&  PlayerCity::overlays()         { return _d->overlayList; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
+
+bool PlayerCity::isPaysTaxes() const { return _d->funds.getIssueValue( city::Funds::empireTax, city::Funds::lastYear ) > 0; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
-city::Funds&      PlayerCity::funds() const      {  return _d->funds;   }
-int               PlayerCity::population() const {   return _d->population; }
+city::Funds& PlayerCity::funds()  {  return _d->funds;   }
+unsigned int PlayerCity::population() const { return _d->population; }
 
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
@@ -463,6 +400,75 @@ void PlayerCity::Impl::beforeOverlayDestroyed(PlayerCityPtr city, TileOverlayPtr
 {
   city::Helper helper( city );
   helper.updateDesirability( overlay, city::Helper::offDesirability );
+}
+
+void PlayerCity::Impl::updateWalkers( unsigned int time )
+{
+  WalkerList::iterator walkerIt = walkerList.begin();
+  while( walkerIt != walkerList.end() )
+  {
+ //   try
+ //   {
+      WalkerPtr walker = *walkerIt;
+      walker->timeStep( time );
+
+      if( walker->isDeleted() )
+      {
+        // remove the walker from the walkers list
+        walkersGrid.remove( *walkerIt );
+        walkerIt = walkerList.erase(walkerIt);
+      }
+      else { ++walkerIt; }
+ //   }
+ //   catch(...)
+ //   {
+ //   }
+  }
+}
+
+void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
+{
+  TileOverlayList::iterator overlayIt = overlayList.begin();
+  while( overlayIt != overlayList.end() )
+  {
+    //try
+    //{
+      (*overlayIt)->timeStep( time );
+
+      if( (*overlayIt)->isDeleted() )
+      {
+        beforeOverlayDestroyed( city, *overlayIt );
+        // remove the overlay from the overlay list
+        (*overlayIt)->destroy();
+        overlayIt = overlayList.erase(overlayIt);
+      }
+      else
+      {
+        ++overlayIt;
+      }
+    //}
+    //catch(...)
+    //{
+      //int i=0;
+    //}
+  }
+}
+
+void PlayerCity::Impl::updateServices(unsigned int time)
+{
+  CityServices::iterator serviceIt= services.begin();
+  city::Timers::instance().update( time );
+  while( serviceIt != services.end() )
+  {
+    (*serviceIt)->update( time );
+
+    if( (*serviceIt)->isDeleted() )
+    {
+      (*serviceIt)->destroy();
+      serviceIt = services.erase(serviceIt);
+    }
+    else { ++serviceIt; }
+  }
 }
 
 void PlayerCity::save( VariantMap& stream) const

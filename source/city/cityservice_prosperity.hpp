@@ -39,6 +39,9 @@ public:
 
   static std::string defaultName();
 
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap &stream);
+
 private:
   ProsperityRating( PlayerCityPtr city );
 

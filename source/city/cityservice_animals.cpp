@@ -60,7 +60,7 @@ void Animals::update(const unsigned int time)
 
   if( _d->maxSheeps > 0 )
   {
-    WalkerList sheeps = _city.getWalkers( walker::sheep );
+    WalkerList sheeps = _city.walkers( walker::sheep );
     if( sheeps.size() < _d->maxSheeps )
     {
       WalkerPtr sheep = Sheep::create( &_city );
@@ -75,7 +75,7 @@ void Animals::update(const unsigned int time)
 
   if( _d->maxWolves > 0 )
   {
-    WalkerList wolves = _city.getWalkers( walker::wolf );
+    WalkerList wolves = _city.walkers( walker::wolf );
     if( wolves.size() < _d->maxWolves )
     {
       WalkerPtr wolf = Wolf::create( &_city );

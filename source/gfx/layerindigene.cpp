@@ -24,15 +24,10 @@
 #include "core/event.hpp"
 #include "tilemap_camera.hpp"
 
-
 using namespace constants;
 
 namespace gfx
 {
-
-static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_damage_risk##",
-                                         "##some_damage_risk##", "##very_high_damage_risk##",
-                                         "##extreme_damage_risk##" };
 
 int LayerIndigene::type() const
 {

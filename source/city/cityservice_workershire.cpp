@@ -140,7 +140,7 @@ void WorkersHire::update( const unsigned int time )
   if( !GameDate::isWeekChanged() )
     return;
 
-  _d->hrInCity = _city.getWalkers( walker::recruter );
+  _d->hrInCity = _city.walkers( walker::recruter );
 
   city::Helper helper( &_city );
   WorkingBuildingList buildings = helper.find< WorkingBuilding >( building::any );

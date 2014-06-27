@@ -159,7 +159,7 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 
   foreach( tile, tiles )
   {
-    WalkerList tileWalkers = _city()->getWalkers( walker::any, (*tile)->pos() );
+    WalkerList tileWalkers = _city()->walkers( walker::any, (*tile)->pos() );
 
     foreach( w, tileWalkers )
     {
@@ -262,7 +262,7 @@ void RomeSoldier::_reachedPathway()
 
   case go2position:
   {
-    if( _city()->getWalkers( type(), pos() ).size() != 1 ) //only me in this tile
+    if( _city()->walkers( type(), pos() ).size() != 1 ) //only me in this tile
     {
       _back2base();
     }

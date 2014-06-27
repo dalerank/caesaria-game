@@ -239,7 +239,7 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
   WalkerList walkerList;
   foreach( wtAct, vWalkers )
   {
-    WalkerList foundWalkers = _city()->getWalkers( (walker::Type)*wtAct, pos );
+    WalkerList foundWalkers = _city()->walkers( (walker::Type)*wtAct, pos );
     walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
   }
 
