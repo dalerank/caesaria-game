@@ -26,7 +26,7 @@ namespace world
 class RomeChastenerArmy : public Army
 {
 public:
-  static ArmyPtr create(EmpirePtr empire);
+  static RomeChastenerArmyPtr create(EmpirePtr empire);
   void setSoldiersNumber( unsigned int count );
   virtual std::string type() const;
   unsigned int soldiersNumber() const;

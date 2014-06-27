@@ -37,6 +37,8 @@ public:
   void sendGift( const std::string& cityname, unsigned int money );
   void timeStep( unsigned int time );
 
+  void soldierDie( const std::string& cityname );
+
   void cityTax( const std::string& cityname, unsigned int money );
 
   VariantMap save() const;

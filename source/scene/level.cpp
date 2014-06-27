@@ -577,7 +577,7 @@ void Level::handleEvent( NEvent& event )
         world::CityPtr rome = _d->game->empire()->rome();
         PlayerCityPtr plCity = _d->game->city();
 
-        world::ArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
+        world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
         army->setBase( rome );
         army->attack( ptr_cast<world::Object>( plCity ) );
       }

@@ -25,6 +25,8 @@
 #include "gfx/tilemap.hpp"
 #include "animals.hpp"
 #include "enemysoldier.hpp"
+#include "world/empire.hpp"
+#include "world/emperor.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 
@@ -46,6 +48,13 @@ ChastenerPtr Chastener::create( PlayerCityPtr city, walker::Type type)
 }
 
 int Chastener::agressive() const { return -2; }
+
+bool Chastener::die()
+{
+  _city()->empire()->emperor().soldierDie( _city()->name() );
+
+  return EnemySoldier::die();
+}
 
 /*
 void RomeSoldier::send2city(FortPtr base, TilePos pos )
