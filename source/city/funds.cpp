@@ -61,9 +61,15 @@ Funds::Funds() : _d( new Impl )
 
 void Funds::resolveIssue( FundIssue issue )
 {
+  bool needUpdateTreasury = true;
   switch( issue.type )
   {
   case unknown: _CAESARIA_DEBUG_BREAK_IF( "wrong issue" ); break;
+
+  case overduePayment:
+    needUpdateTreasury = false;
+  break;
+
   default:
     {
       Impl::IssuesValue& step = _d->history.front();
@@ -73,7 +79,11 @@ void Funds::resolveIssue( FundIssue issue )
       }
 
       step[ (IssueType)issue.type ] += abs( issue.money );
-      _d->money += issue.money;
+
+      if( needUpdateTreasury )
+      {
+        _d->money += issue.money;
+      }
     }
   break;
   }

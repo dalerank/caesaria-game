@@ -47,6 +47,7 @@ public:
   Trading trading;
   EmpireMap emap;
   ObjectList objects;
+  int rateInterest;
   Emperor emperor;
   unsigned int treasury;
   bool available;
@@ -57,6 +58,7 @@ public:
 
 public:
   void takeTaxes();
+  void checkLoans();
 };
 
 Empire::Empire() : _d( new Impl )
@@ -66,6 +68,7 @@ Empire::Empire() : _d( new Impl )
   _d->available = true;
   _d->treasury = 0;
   _d->objUid = 0;
+  _d->rateInterest = 10;
   _d->emperor.init( *this );
 }
 
@@ -180,6 +183,7 @@ void Empire::save( VariantMap& stream ) const
   stream[ "enabled" ] = _d->available;
   stream[ "emperor" ] = _d->emperor.save();
   stream[ "objUid"  ] = _d->objUid;
+  stream[ "rateInterest" ] = _d->rateInterest;
 }
 
 void Empire::load( const VariantMap& stream )
@@ -216,6 +220,7 @@ void Empire::load( const VariantMap& stream )
 
   _d->trading.load( stream.get( "trade").toMap() );
   _d->available = (bool)stream.get( "enabled", true );
+  _d->rateInterest = stream.get( "rateInterest", 10 );
 
   _d->emperor.load( stream.get( "emperor" ).toMap() );
 }
@@ -330,6 +335,11 @@ void Empire::timeStep( unsigned int time )
     else { ++it; }
   }
 
+  if( GameDate::isMonthChanged() )
+  {
+    _d->checkLoans();
+  }
+
   if( GameDate::isYearChanged() )
   {
     _d->takeTaxes();
@@ -424,8 +434,34 @@ GovernorRanks EmpireHelper::getRanks()
   return ranks;
 }
 
-
 TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
+
+void Empire::Impl::checkLoans()
+{
+  foreach( it, cities)
+  {
+    CityPtr city = *it;
+
+    int loanValue = city->funds().treasury();
+    if( loanValue < 0 )
+    {
+      int loanPercent = std::max( 1, abs( loanValue / ( rateInterest * 12 ) ));
+
+      if( loanPercent > 0 )
+      {
+        if( city->funds().haveMoneyForAction( loanPercent ) )
+        {
+          city->funds().resolveIssue( FundIssue( city::Funds::credit, -loanPercent ) );
+          treasury += loanPercent;
+        }
+        else
+        {
+          city->funds().resolveIssue( FundIssue( city::Funds::overduePayment, loanPercent ) );
+        }
+      }
+    }
+  }
+}
 
 void Empire::Impl::takeTaxes()
 {

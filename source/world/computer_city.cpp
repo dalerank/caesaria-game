@@ -80,6 +80,7 @@ void ComputerCity::setLocation( const Point& location ){  _d->location = locatio
 city::Funds&ComputerCity::funds() { return _d->funds; }
 unsigned int ComputerCity::population() const { return 0; }
 bool ComputerCity::isPaysTaxes() const { return true; }
+bool ComputerCity::haveOverduePayment() const { return false; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isRomeCity() const{  return _d->romeCity;}
 bool ComputerCity::isAvailable() const{  return _d->isAvailable;}

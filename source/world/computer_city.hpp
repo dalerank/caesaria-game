@@ -34,6 +34,7 @@ public:
   virtual city::Funds& funds();
   virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
+  virtual bool haveOverduePayment() const;
 
   bool isDistantCity() const;
   bool isRomeCity() const;

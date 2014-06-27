@@ -49,7 +49,6 @@ public:
   int lastYearProsperity;
   int workersSalary;
   int percentPlebs;
-  bool brokeAndCaesarBailCity;
 };
 
 SrvcPtr ProsperityRating::create(PlayerCityPtr city )
@@ -144,9 +143,7 @@ void ProsperityRating::update( const unsigned int time )
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
    
-    _d->prosperityExtend += (_d->brokeAndCaesarBailCity ? -3 : 0);
-    _d->brokeAndCaesarBailCity = false;
-
+    _d->prosperityExtend += (_city.haveOverduePayment() ? -3 : 0);
     _d->prosperityExtend += (_city.isPaysTaxes() ? -3 : 0);
   }
 }
@@ -173,14 +170,13 @@ std::string ProsperityRating::defaultName(){  return CAESARIA_STR_EXT(Prosperity
 VariantMap ProsperityRating::save() const
 {
   VariantMap ret;
-  ret[ "brokeAndCaesarBailCity" ] = _d->brokeAndCaesarBailCity;
 
   return ret;
 }
 
 void ProsperityRating::load(const VariantMap& stream)
 {
-  _d->brokeAndCaesarBailCity = stream.get( "brokeAndCaesarBailCity" );
+
 }
 
 }//end namespace city

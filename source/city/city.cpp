@@ -73,14 +73,14 @@
 #include "cityservice_factory.hpp"
 #include "sound/player.hpp"
 #include "world/emperor.hpp"
-#include "events/empiretax.hpp"
 #include "cityservice_health.hpp"
-#include <set>
 #include "cityservice_military.hpp"
 #include "cityservice_peace.hpp"
 #include "game/resourcegroup.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "walker/chastener.hpp"
+
+#include <set>
 
 using namespace constants;
 using namespace gfx;
@@ -354,8 +354,8 @@ TileOverlayList&  PlayerCity::overlays()         { return _d->overlayList; }
 const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
 
 Picture PlayerCity::picture() const { return _d->empMapPicture; }
-
 bool PlayerCity::isPaysTaxes() const { return _d->funds.getIssueValue( city::Funds::empireTax, city::Funds::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const { return _d->funds.getIssueValue( city::Funds::overduePayment, city::Funds::thisYear ) > 0; }
 Tilemap&          PlayerCity::tilemap()          { return _d->tilemap; }
 ClimateType       PlayerCity::climate() const    { return _d->climate;    }
 void              PlayerCity::setClimate(const ClimateType climate) { _d->climate = climate; }
