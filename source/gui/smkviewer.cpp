@@ -162,9 +162,9 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 
   if( s )
   {
-    for( int i = videoHeight - 1; i >= 0; i--)
+    for( unsigned int i = videoHeight - 1; i >= 0; i--)
     {
-      for( int j = 0; j < videoWidth; j++ )
+      for( unsigned int j = 0; j < videoWidth; j++ )
       {
         unsigned char index = image_data[i * videoWidth + j];
         background->setPixel( Point( j, i ), colors[ index ] );

@@ -173,7 +173,7 @@ void AdvisorEmperorWindow::_updateRequests()
   }
 
   city::request::RequestList reqs;
-  city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( _d->city->findService( city::request::Dispatcher::getDefaultName() ) );
+  city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( _d->city->findService( city::request::Dispatcher::defaultName() ) );
 
   if( dispatcher.isValid() )
   {

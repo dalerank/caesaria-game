@@ -81,6 +81,9 @@ enum Type{
   wolf,
   dustCloud,
   romeChasternerSoldier,
+  indigeneRioter,
+  indigene,
+  missioner,
   all = 0xff,
   any = all
 };

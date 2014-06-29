@@ -31,7 +31,7 @@ int LayerSimple::type() const
   return citylayer::simple;
 }
 
-std::set<int> LayerSimple::getVisibleWalkers() const
+std::set<int> LayerSimple::visibleWalkers() const
 {
   std::set<int> ret;
   ret.insert( walker::all );

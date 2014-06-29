@@ -58,7 +58,7 @@ SrvcPtr Festival::create(PlayerCityPtr city )
   return ret;
 }
 
-std::string Festival::getDefaultName() {  return "festival";}
+std::string Festival::defaultName() {  return "festival";}
 DateTime Festival::lastFestivalDate() const{  return _d->lastFestivalDate;}
 DateTime Festival::nextFestivalDate() const{  return _d->festivalDate; }
 
@@ -74,7 +74,7 @@ void Festival::assignFestival( RomeDivinityType name, int size )
 }
 
 Festival::Festival(PlayerCityPtr city )
-: Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+: Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
   _d->lastFestivalDate = GameDate::current();
   _d->festivalDate = DateTime( -550, 0, 0 );

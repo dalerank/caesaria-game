@@ -188,7 +188,7 @@ void AdvisorEmployerWindow::Impl::changeSalary(int relative)
 
 void AdvisorEmployerWindow::Impl::showPriorityWindow( Industry::Type industry )
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::getDefaultName() ) );
+  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
   int priority = wh->getPriority( industry );
   HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->getEnvironment()->rootWidget(), industry, priority );
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
@@ -196,7 +196,7 @@ void AdvisorEmployerWindow::Impl::showPriorityWindow( Industry::Type industry )
 
 void AdvisorEmployerWindow::Impl::setIndustryPriority(Industry::Type industry, int priority)
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::getDefaultName() ) );
+  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
   wh->setIndustryPriority( industry, priority );
 
   empButtons[ industry ]->setPriority( priority );
@@ -206,7 +206,7 @@ void AdvisorEmployerWindow::Impl::setIndustryPriority(Industry::Type industry, i
 
 void AdvisorEmployerWindow::Impl::update()
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::getDefaultName() ) );
+  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
 
   foreach( i, empButtons )
   {

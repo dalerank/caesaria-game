@@ -15,27 +15,27 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_EMPIRETAX_H_INCLUDE_
-#define _CAESARIA_EVENT_EMPIRETAX_H_INCLUDE_
+#ifndef __CAESARIA_LAYERINDIGENE_H_INCLUDED__
+#define __CAESARIA_LAYERINDIGENE_H_INCLUDED__
 
-#include "event.hpp"
+#include "layer.hpp"
 
-namespace events
+namespace gfx
 {
 
-class EmpireTax : public GameEvent
+class LayerIndigene : public Layer
 {
 public:
-  static GameEventPtr create( const std::string& citname );
+  virtual int type() const;
+  virtual std::set<int> visibleWalkers() const;
+  virtual void drawTile( Engine& engine, Tile& tile, Point offset );
+  virtual void handleEvent(NEvent& event);
 
-protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec( Game &game, unsigned int time) const;
+  static LayerPtr create( Camera& camera, PlayerCityPtr city );
 
 private:
-  std::string _cityname;
+  LayerIndigene( Camera& camera, PlayerCityPtr city );
 };
 
-}
-
-#endif //_CAESARIA_EVENT_CITYINDEBT_H_INCLUDE_
+}//end namespace gfx
+#endif //__CAESARIA_LAYERINDIGENE_H_INCLUDED__

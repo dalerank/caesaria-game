@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_ANIMALS_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_ANIMALS_H_INCLUDED__
@@ -27,7 +29,7 @@ class Animals : public Srvc
 {
 public:
   static SrvcPtr create( PlayerCityPtr city );
-  static std::string getDefaultName();
+  static std::string defaultName();
   virtual void update( const unsigned int time );
   void setWolvesNumber( unsigned int number );
 

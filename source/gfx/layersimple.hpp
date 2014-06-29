@@ -28,7 +28,7 @@ class LayerSimple : public Layer
 {
 public:
   virtual int type() const;
-  virtual std::set<int> getVisibleWalkers() const;
+  virtual std::set<int> visibleWalkers() const;
 
   static LayerPtr create(Camera& camera, PlayerCityPtr city );
 

@@ -229,7 +229,7 @@ void LayerDestroy::handleEvent(NEvent& event)
 
 int LayerDestroy::type() const {  return citylayer::destroyd; }
 
-std::set<int> LayerDestroy::getVisibleWalkers() const
+std::set<int> LayerDestroy::visibleWalkers() const
 {
   std::set<int> ret;
   ret.insert( walker::all );

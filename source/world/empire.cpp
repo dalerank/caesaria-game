@@ -28,7 +28,10 @@
 #include "object.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
+#include "objects_factory.hpp"
 #include "game/settings.hpp"
+#include "game/gamedate.hpp"
+#include "city/funds.hpp"
 
 namespace world
 {
@@ -44,6 +47,7 @@ public:
   Trading trading;
   EmpireMap emap;
   ObjectList objects;
+  int rateInterest;
   Emperor emperor;
   unsigned int treasury;
   bool available;
@@ -51,6 +55,10 @@ public:
   std::string playerCityName;
   int workerSalary;
   unsigned int objUid;
+
+public:
+  void takeTaxes();
+  void checkLoans();
 };
 
 Empire::Empire() : _d( new Impl )
@@ -60,6 +68,7 @@ Empire::Empire() : _d( new Impl )
   _d->available = true;
   _d->treasury = 0;
   _d->objUid = 0;
+  _d->rateInterest = 10;
   _d->emperor.init( *this );
 }
 
@@ -174,6 +183,7 @@ void Empire::save( VariantMap& stream ) const
   stream[ "enabled" ] = _d->available;
   stream[ "emperor" ] = _d->emperor.save();
   stream[ "objUid"  ] = _d->objUid;
+  stream[ "rateInterest" ] = _d->rateInterest;
 }
 
 void Empire::load( const VariantMap& stream )
@@ -192,12 +202,15 @@ void Empire::load( const VariantMap& stream )
   }
 
   _d->objects.clear();
-  VariantMap objects = stream.get( "objects" ).toMap();
+  VariantMap objects = stream.get( "objects" ).toMap();  
   foreach( item, objects )
   {
-    ObjectPtr obj = Object::create( this );
-    obj->load( item->second.toMap() );
-    _d->objects.push_back( obj );
+    const VariantMap& vm = item->second.toMap();
+    std::string objectType = vm.get( "type" ).toString();
+
+    ObjectPtr obj = ObjectsFactory::instance().create( objectType, this );
+    obj->load( vm );
+    _d->objects << obj;
   }
 
   foreach( i, _d->objects )
@@ -207,6 +220,7 @@ void Empire::load( const VariantMap& stream )
 
   _d->trading.load( stream.get( "trade").toMap() );
   _d->available = (bool)stream.get( "enabled", true );
+  _d->rateInterest = stream.get( "rateInterest", 10 );
 
   _d->emperor.load( stream.get( "emperor" ).toMap() );
 }
@@ -305,7 +319,7 @@ TraderoutePtr Empire::findRoute( const std::string& start, const std::string& st
 }
 
 void Empire::timeStep( unsigned int time )
-{
+{    
   _d->trading.timeStep( time );
   _d->emperor.timeStep( time );
 
@@ -319,6 +333,16 @@ void Empire::timeStep( unsigned int time )
     (*it)->timeStep( time );
     if( (*it)->isDeleted() ) { it =_d->objects.erase( it ); }
     else { ++it; }
+  }
+
+  if( GameDate::isMonthChanged() )
+  {
+    _d->checkLoans();
+  }
+
+  if( GameDate::isYearChanged() )
+  {
+    _d->takeTaxes();
   }
 }
 
@@ -351,12 +375,6 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   }
 
   return ret;
-}
-
-void Empire::payTax(const std::string &cityname, unsigned int money)
-{
-  _d->treasury += money;
-  _d->emperor.cityTax( cityname, money );
 }
 
 ObjectList Empire::objects() const{  return _d->objects; }
@@ -416,7 +434,62 @@ GovernorRanks EmpireHelper::getRanks()
   return ranks;
 }
 
-
 TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
+
+void Empire::Impl::checkLoans()
+{
+  foreach( it, cities)
+  {
+    CityPtr city = *it;
+
+    int loanValue = city->funds().treasury();
+    if( loanValue < 0 )
+    {
+      int loanPercent = std::max( 1, abs( loanValue / ( rateInterest * 12 ) ));
+
+      if( loanPercent > 0 )
+      {
+        if( city->funds().haveMoneyForAction( loanPercent ) )
+        {
+          city->funds().resolveIssue( FundIssue( city::Funds::credit, -loanPercent ) );
+          treasury += loanPercent;
+        }
+        else
+        {
+          city->funds().resolveIssue( FundIssue( city::Funds::overduePayment, loanPercent ) );
+        }
+      }
+    }
+  }
+}
+
+void Empire::Impl::takeTaxes()
+{
+  foreach( it, cities)
+  {
+    CityPtr city = *it;
+
+    int profit = city->funds().getIssueValue( city::Funds::cityProfit, city::Funds::lastYear );
+
+    int empireTax = 0;
+    if( profit <= 0 )
+    {
+      empireTax = (city->population() / 1000) * 100;
+    }
+    else
+    {
+      int minimumExpireTax = (city->population() / 1000) * 100 + 50;
+      empireTax = math::clamp( profit / 4, minimumExpireTax, 9999 );
+    }
+
+    if( city->funds().treasury() > empireTax )
+    {
+      city->funds().resolveIssue( FundIssue( city::Funds::empireTax, -empireTax ) );
+
+      treasury += empireTax;
+      emperor.cityTax( city->name(), empireTax );
+    }
+  }
+}
 
 }//end namespace world

@@ -38,7 +38,6 @@ public:
   CityPtr findCity( const std::string& name ) const;
   CityPtr addCity( CityPtr city );
   CityPtr initPlayerCity( CityPtr city );
-  void payTax( const std::string& cityname, unsigned int money );
 
   ObjectList objects() const;
   ObjectPtr findObject( const std::string& name ) const;

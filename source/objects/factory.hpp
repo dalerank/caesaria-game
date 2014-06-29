@@ -48,7 +48,7 @@ public:
   virtual void deliverGood();
   virtual void receiveGood();
 
-  virtual int getProgress();
+  virtual int progress();
   virtual void updateProgress( float value );
 
   virtual bool isActive() const;
@@ -63,7 +63,7 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
-  virtual void setProductRate( const float rate );
+  virtual void productRate( const float rate );
   virtual float getProductRate() const;
 
   virtual unsigned int getFinishedQty() const;

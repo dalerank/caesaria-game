@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_HEALTHUPDATER_H_INCLUDE_
 #define _CAESARIA_HEALTHUPDATER_H_INCLUDE_
@@ -28,7 +30,7 @@ class HealthUpdater : public Srvc
 public:
   static SrvcPtr create(PlayerCityPtr city);
   virtual void update( const unsigned int time);
-  static std::string getDefaultName();
+  static std::string defaultName();
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);

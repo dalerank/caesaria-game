@@ -72,7 +72,7 @@ public:
     __REG_TOTYPE( school )
     __REG_TOTYPE( academy );
     __REG_TOTYPE( library )
-    append( building::missionaryPost, "mission post" );
+    append( building::missionaryPost, "mission_post" );
     append( building::templeCeres,    "small_ceres_temple" );
     append( building::templeNeptune,  "small_neptune_temple" );
     append( building::templeMars,     "small_mars_temple" );
@@ -131,6 +131,7 @@ public:
     __REG_TOTYPE( fortification )
     __REG_TOTYPE( elevation )
     __REG_TOTYPE( rift )
+
     append( building::unknown,        "" );
 #undef __REG_TOTYPE
  }
@@ -396,7 +397,7 @@ TileOverlay::Type MetaDataHolder::findType( const std::string& name )
 
   if( type == instance()._d->typeHelper.getInvalid() )
   {
-    Logger::warning( "Can't find type for typeName %s", name.c_str() );
+    Logger::warning( "MetaDataHolder: can't find type for typeName " + ( name.empty() ? "null" : name) );
     return building::unknown;
   }
 
@@ -414,7 +415,7 @@ TileOverlay::Group MetaDataHolder::findGroup( const std::string& name )
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
-    Logger::warning( "Can't find building class for building className %s", name.c_str() );
+    Logger::warning( "MetaDataHolder: can't find building class for building className %s", name.c_str() );
     return building::unknownGroup;
   }
 

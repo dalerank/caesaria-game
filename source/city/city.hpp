@@ -54,8 +54,8 @@ public:
 
   virtual void timeStep(unsigned int time);  // performs one simulation step
 
-  WalkerList getWalkers( constants::walker::Type type );
-  WalkerList getWalkers( constants::walker::Type type, TilePos startPos, TilePos stopPos=TilePos( -1, -1 ) );
+  WalkerList walkers(constants::walker::Type type );
+  WalkerList walkers(constants::walker::Type type, const TilePos& startPos, const TilePos& stopPos=TilePos( -1, -1 ) );
 
   void addWalker( WalkerPtr walker );
 
@@ -68,6 +68,8 @@ public:
   const BorderInfo& borderInfo() const;
 
   virtual gfx::Picture picture() const;
+  virtual bool isPaysTaxes() const;
+  virtual bool haveOverduePayment() const;
 
   PlayerPtr player() const;
   
@@ -77,9 +79,9 @@ public:
   ClimateType climate() const;
   void setClimate(const ClimateType);
 
-  city::Funds& funds() const;
+  city::Funds& funds();
 
-  int population() const;
+  unsigned int population() const;
   int prosperity() const;
   int culture() const;
   int peace() const;

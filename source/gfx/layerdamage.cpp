@@ -39,7 +39,7 @@ int LayerDamage::type() const
   return citylayer::damage;
 }
 
-std::set<int> LayerDamage::getVisibleWalkers() const
+std::set<int> LayerDamage::visibleWalkers() const
 {
   std::set<int> ret;
   ret.insert( walker::engineer );

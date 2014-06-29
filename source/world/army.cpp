@@ -51,10 +51,9 @@ Army::Army( EmpirePtr empire )
   _animation().setLoop( Animation::loopAnimation );
 }
 
-ArmyPtr Army::create( EmpirePtr empire, CityPtr base)
+ArmyPtr Army::create(EmpirePtr empire)
 {
   ArmyPtr ret( new Army( empire ) );
-  ret->setBase( base );
   ret->drop();
 
   return ret;

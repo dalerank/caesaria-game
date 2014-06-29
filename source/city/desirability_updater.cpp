@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "desirability_updater.hpp"
 #include "game/game.hpp"
@@ -65,7 +67,7 @@ void DesirabilityUpdater::update( const unsigned int time)
   }
 }
 
-std::string DesirabilityUpdater::getDefaultName() { return "desirability_updater"; }
+std::string DesirabilityUpdater::defaultName() { return "desirability_updater"; }
 bool DesirabilityUpdater::isDeleted() const {  return _d->isDeleted; }
 void DesirabilityUpdater::destroy(){ _d->update( _city, false );}
 
@@ -86,7 +88,7 @@ VariantMap DesirabilityUpdater::save() const
   return ret;
 }
 
-DesirabilityUpdater::DesirabilityUpdater( PlayerCityPtr city ) : Srvc( *city.object(), DesirabilityUpdater::getDefaultName() ), _d( new Impl )
+DesirabilityUpdater::DesirabilityUpdater( PlayerCityPtr city ) : Srvc( *city.object(), DesirabilityUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
   _d->alsoInfluence = false;

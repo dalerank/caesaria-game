@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "city.hpp"
 #include "requestdispatcher.hpp"
@@ -35,7 +37,7 @@ public:
 };
 
 Dispatcher::Dispatcher( PlayerCityPtr city )
-  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
 }
 
@@ -70,7 +72,7 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 }
 
 Dispatcher::~Dispatcher() {}
-std::string Dispatcher::getDefaultName(){  return "requests";}
+std::string Dispatcher::defaultName(){  return "requests";}
 
 void Dispatcher::update(const unsigned int time)
 {

@@ -48,6 +48,8 @@
 #include "immigrant.hpp"
 #include "dustcloud.hpp"
 #include "mugger.hpp"
+#include "indigene.hpp"
+#include "chastener.hpp"
 #include <map>
 
 using namespace constants;
@@ -138,6 +140,9 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::mugger, new BaseCreator<Mugger>() );
   addCreator( walker::dustCloud, new BaseCreator<DustCloud>() );
   addCreator( walker::wolf, new BaseCreator<Wolf>() );
+  addCreator( walker::missioner, new ServicemanCreator( Service::native ) );
+  addCreator( walker::indigene, new BaseCreator<Indigene>() );
+  addCreator( walker::romeChasternerSoldier, new SoldierCreator<Chastener>( walker::romeChasternerSoldier ) );
 }
 
 WalkerManager::~WalkerManager(){}

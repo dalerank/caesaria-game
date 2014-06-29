@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_prosperity.hpp"
 #include "objects/construction.hpp"
@@ -60,7 +60,7 @@ SrvcPtr ProsperityRating::create(PlayerCityPtr city )
 }
 
 ProsperityRating::ProsperityRating(PlayerCityPtr city )
-  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
   _d->prosperity = 0;
@@ -79,7 +79,7 @@ void ProsperityRating::update( const unsigned int time )
   if( !GameDate::isMonthChanged() )
     return;
 
-  if( abs( GameDate::current().year() - _d->lastDate.year() ) == 1 )
+  if( GameDate::current().year() > _d->lastDate.year() )
   {
     _d->lastDate = GameDate::current();
 
@@ -109,7 +109,7 @@ void ProsperityRating::update( const unsigned int time )
       prosperityCap /= houses.size();
     }
 
-    _d->lastYearProsperity = getValue();
+    _d->lastYearProsperity = value();
 
     int saveValue = _d->prosperity;
     _d->prosperity = math::clamp<int>( prosperityCap, 0, _d->prosperity + 2 );
@@ -132,6 +132,7 @@ void ProsperityRating::update( const unsigned int time )
     _d->worklessPercent = city::Statistic::getWorklessPercent( &_city );
     bool unemploymentLess5percent = _d->worklessPercent < 5;
     bool unemploymentMore15percent = _d->worklessPercent > 15;
+
     _d->prosperityExtend += (unemploymentLess5percent ? 1 : 0);
     _d->prosperityExtend += (unemploymentMore15percent ? -1 : 0);
 
@@ -142,15 +143,12 @@ void ProsperityRating::update( const unsigned int time )
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
     _d->prosperityExtend += (_d->workersSalary < 0 ? -1 : 0);
    
-    bool brokeAndCaesarBailCity = false;
-    _d->prosperityExtend += (brokeAndCaesarBailCity ? -3 : 0);
-
-    bool failurePayTribute = false;
-    _d->prosperityExtend += (failurePayTribute ? -3 : 0);
+    _d->prosperityExtend += (_city.haveOverduePayment() ? -3 : 0);
+    _d->prosperityExtend += (_city.isPaysTaxes() ? -3 : 0);
   }
 }
 
-int ProsperityRating::getValue() const {  return _d->prosperity + _d->prosperityExtend; }
+int ProsperityRating::value() const {  return _d->prosperity + _d->prosperityExtend; }
 
 int ProsperityRating::getMark(ProsperityRating::Mark type) const
 {
@@ -160,13 +158,25 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
   case cmHaveProfit: return _d->makeProfit;
   case cmWorkless: return _d->worklessPercent;
   case cmWorkersSalary: return _d->workersSalary;
-  case cmChange: return getValue() - _d->lastYearProsperity;
+  case cmChange: return value() - _d->lastYearProsperity;
   case cmPercentPlebs: return _d->percentPlebs;
   }
 
   return 0;
 }
 
-std::string ProsperityRating::getDefaultName(){  return "prosperity"; }
+std::string ProsperityRating::defaultName(){  return CAESARIA_STR_EXT(ProsperityRating); }
+
+VariantMap ProsperityRating::save() const
+{
+  VariantMap ret;
+
+  return ret;
+}
+
+void ProsperityRating::load(const VariantMap& stream)
+{
+
+}
 
 }//end namespace city

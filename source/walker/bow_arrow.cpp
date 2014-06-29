@@ -32,7 +32,7 @@ BowArrowPtr BowArrow::create(PlayerCityPtr city)
 
 void BowArrow::_onTarget()
 {
-  WalkerList walkers = _city()->getWalkers( walker::any, dstPos() );
+  WalkerList walkers = _city()->walkers( walker::any, dstPos() );
   foreach( w, walkers )
   {
     (*w)->updateHealth( -3 );

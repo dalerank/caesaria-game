@@ -137,6 +137,12 @@
     sound : [ "fort", 1 ]
   },
 
+  mission_post : {
+    cost : 100
+    employers : 20
+    class : "education"
+  },
+
   statue_small : {
     cost : 12,
     desirability : { base :3,	range : 3,	step : -1}

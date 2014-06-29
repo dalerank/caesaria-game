@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_health.hpp"
 #include "objects/house.hpp"
@@ -43,7 +45,7 @@ city::SrvcPtr HealthCare::create(PlayerCityPtr city )
   return ret;
 }
 
-std::string HealthCare::getDefaultName()
+std::string HealthCare::defaultName()
 {
   return CAESARIA_STR_EXT(HealthCare);
 }
@@ -73,7 +75,7 @@ void HealthCare::update( const unsigned int time )
   //unsigned int vacantPop=0;
 }
 
-std::string HealthCare::getReason() const
+std::string HealthCare::reason() const
 {
   StringArray reasons;
 

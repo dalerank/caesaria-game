@@ -27,7 +27,7 @@ class LayerEntertainment : public Layer
 {
 public:
   virtual int type() const;
-  virtual VisibleWalkers getVisibleWalkers() const;
+  virtual VisibleWalkers visibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
   static LayerPtr create(TilemapCamera& camera, PlayerCityPtr city, int type );

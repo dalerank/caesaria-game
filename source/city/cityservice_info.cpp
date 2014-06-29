@@ -56,7 +56,7 @@ SrvcPtr Info::create(PlayerCityPtr city )
 }
 
 Info::Info( PlayerCityPtr city )
-  : Srvc( *city.object(), getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), defaultName() ), _d( new Impl )
 {
   _d->lastDate = GameDate::current();
   _d->lastYearHistory.resize( 12 );
@@ -117,11 +117,11 @@ void Info::update( const unsigned int time )
   }
 }
 
-Info::Parameters Info::getLast() const {  return _d->lastYearHistory.empty() ? Parameters() : _d->lastYearHistory.back(); }
+Info::Parameters Info::lastParams() const {  return _d->lastYearHistory.empty() ? Parameters() : _d->lastYearHistory.back(); }
 
-const Info::History& Info ::getHistory() const { return _d->allHistory; }
+const Info::History& Info ::history() const { return _d->allHistory; }
 
-std::string Info::getDefaultName(){  return CAESARIA_STR_EXT(Info); }
+std::string Info::defaultName(){  return CAESARIA_STR_EXT(Info); }
 
 VariantMap Info::save() const
 {

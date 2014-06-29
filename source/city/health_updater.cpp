@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "health_updater.hpp"
 #include "game/game.hpp"
@@ -62,7 +64,7 @@ void HealthUpdater::update( const unsigned int time)
   }
 }
 
-std::string HealthUpdater::getDefaultName() { return "health_updater"; }
+std::string HealthUpdater::defaultName() { return "health_updater"; }
 bool HealthUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void HealthUpdater::load(const VariantMap& stream)
@@ -81,7 +83,7 @@ VariantMap HealthUpdater::save() const
 }
 
 HealthUpdater::HealthUpdater( PlayerCityPtr city )
-  : Srvc( *city.object(), HealthUpdater::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), HealthUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
 }

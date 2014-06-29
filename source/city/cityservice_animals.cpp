@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_animals.hpp"
 #include "city.hpp"
@@ -45,7 +47,7 @@ SrvcPtr Animals::create(PlayerCityPtr city)
   return ret;
 }
 
-std::string Animals::getDefaultName() { return "animals"; }
+std::string Animals::defaultName() { return "animals"; }
 
 void Animals::update(const unsigned int time)
 {
@@ -58,7 +60,7 @@ void Animals::update(const unsigned int time)
 
   if( _d->maxSheeps > 0 )
   {
-    WalkerList sheeps = _city.getWalkers( walker::sheep );
+    WalkerList sheeps = _city.walkers( walker::sheep );
     if( sheeps.size() < _d->maxSheeps )
     {
       WalkerPtr sheep = Sheep::create( &_city );
@@ -73,7 +75,7 @@ void Animals::update(const unsigned int time)
 
   if( _d->maxWolves > 0 )
   {
-    WalkerList wolves = _city.getWalkers( walker::wolf );
+    WalkerList wolves = _city.walkers( walker::wolf );
     if( wolves.size() < _d->maxWolves )
     {
       WalkerPtr wolf = Wolf::create( &_city );
@@ -90,7 +92,7 @@ void Animals::update(const unsigned int time)
 void Animals::setWolvesNumber(unsigned int number) {  _d->maxWolves = number; }
 
 Animals::Animals( PlayerCityPtr city )
-  : Srvc( *city.object(), Animals::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Animals::defaultName() ), _d( new Impl )
 {
   _d->maxSheeps = defaultMaxSheeps;
   _d->maxWolves = 0;

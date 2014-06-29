@@ -18,7 +18,7 @@
 #include "updatecitysentiment.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
-#include "city/cityservice_sentiment.hpp"
+#include "city/sentiment.hpp"
 
 namespace events
 {

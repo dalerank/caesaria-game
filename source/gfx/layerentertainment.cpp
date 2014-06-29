@@ -36,7 +36,7 @@ int LayerEntertainment::type() const
   return _type;
 }
 
-Layer::VisibleWalkers LayerEntertainment::getVisibleWalkers() const
+Layer::VisibleWalkers LayerEntertainment::visibleWalkers() const
 {
   return _visibleWalkers;
 }

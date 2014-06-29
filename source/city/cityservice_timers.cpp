@@ -31,7 +31,7 @@ public:
   TimerList timers;
 };
 
-Timers& Timers::getInstance()
+Timers& Timers::instance()
 {
   static Timers inst;
   return inst;

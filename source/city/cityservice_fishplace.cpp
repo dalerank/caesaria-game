@@ -45,10 +45,10 @@ SrvcPtr Fishery::create( PlayerCityPtr city )
   return ret;
 }
 
-std::string Fishery::getDefaultName() {  return "fishery";}
+std::string Fishery::defaultName() {  return "fishery";}
 
 Fishery::Fishery( PlayerCityPtr city )
-  : Srvc( *city.object(), Fishery::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Fishery::defaultName() ), _d( new Impl )
 {
   _d->failedCounter = 0;
   _d->maxFishPlace = 1;

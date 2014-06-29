@@ -101,7 +101,7 @@ InfoboxCitizen::InfoboxCitizen( Widget* parent, PlayerCityPtr city, const TilePo
   : InfoboxSimple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
     _d( new Impl)
 {
-  _d->walkers = city->getWalkers( walker::any, pos );
+  _d->walkers = city->walkers( walker::any, pos );
   _d->city = city;
 
   Widget::setupUI( GameSettings::rcpath( ui_model ) );
@@ -169,7 +169,7 @@ void InfoboxCitizen::_setWalker( WalkerPtr wlk )
   Point lbOffset( 60, 0 );
   foreach( itTile, tiles )
   {
-    WalkerList tileWalkers = _d->city->getWalkers( walker::any, (*itTile)->pos() );
+    WalkerList tileWalkers = _d->city->walkers( walker::any, (*itTile)->pos() );
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
