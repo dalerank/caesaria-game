@@ -26,6 +26,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
+#include "gfx/picture_info_bank.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -364,8 +365,16 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     VariantList basePic = options[ "image" ].toList();
     if( !basePic.empty() )
     {
-      Picture pic = Picture::load( basePic.get( 0 ).toString(), basePic.get( 1 ).toInt() );
-      bData._d->picture = pic.name();
+      std::string groupName = basePic.get( 0 ).toString();
+      int imageIndex = basePic.get( 1 ).toInt();
+      Variant vOffset = options[ "image.offset" ];
+      if( vOffset.isValid() )
+      {
+        PictureInfoBank::instance().setOffset( groupName, imageIndex, vOffset.toPoint() );
+      }
+
+      Picture pic = Picture::load( groupName, imageIndex );
+      bData._d->picture = pic.name();     
     }
 
     VariantList soundVl = options[ "sound" ].toList();
