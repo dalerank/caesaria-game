@@ -283,6 +283,9 @@
     employers : 2
     class : "religion"
     sound : [ "templeneptune", 1 ]
+    image : [ "smlneptune", 1 ]
+    animation : { rc : "smlneptune", start : 2, count : 6, offset : [ 35, 34 ], delay : 3 }
+    image.offset : [-1, -1]
   }, 
   
   small_mercury_temple : {
