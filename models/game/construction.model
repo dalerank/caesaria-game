@@ -137,6 +137,12 @@
     sound : [ "fort", 1 ]
   },
 
+  mission_post : {
+    cost : 100
+    employers : 20
+    class : "education"
+  },
+
   statue_small : {
     cost : 12,
     desirability : { base :3,	range : 3,	step : -1}
@@ -283,6 +289,9 @@
     employers : 2
     class : "religion"
     sound : [ "templeneptune", 1 ]
+    image : [ "smlneptune", 1 ]
+    animation : { rc : "smlneptune", start : 2, count : 6, offset : [ 35, 34 ], delay : 3 }
+    image.offset : [-1, -1]
   }, 
   
   small_mercury_temple : {
@@ -290,6 +299,9 @@
     desirability : { base : 4, 	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    image : [ "smlmercury", 1 ]
+    image.offset : [-1, -1]
+    animation : { rc : "smlmercury", start : 2, count : 6, offset : [ 38, 30 ], delay : 3 }
     sound : [ "templemercury", 1 ]
   },
  

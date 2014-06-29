@@ -455,7 +455,7 @@ TilesArray Fort::Impl::getFreeSlots( PlayerCityPtr city, const TilesArray& tiles
   foreach ( it, tiles )
   {
     RomeSoldierList wlist;
-    wlist << city->getWalkers( walker::any, (*it)->pos() );
+    wlist << city->walkers( walker::any, (*it)->pos() );
 
     std::map<unsigned int, TilePos>::const_iterator busyIt = patrolAreaPos.find( TileHelper::hash( (*it)->pos() ) );
 

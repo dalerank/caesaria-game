@@ -254,6 +254,7 @@ void BuildMenu_education::initialize()
   addBuildButton(building::school);
   addBuildButton(building::library);
   addBuildButton(building::academy);
+  addBuildButton(building::missionaryPost);
 
   BuildMenu::initialize();
 }

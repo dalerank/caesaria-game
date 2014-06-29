@@ -109,12 +109,12 @@ GoodStock& Factory::inStockRef(){   return _d->store.getStock(_d->inGoodType);}
 const GoodStock& Factory::inStockRef() const { return _d->store.getStock(_d->inGoodType);}
 GoodStock& Factory::outStockRef(){  return _d->store.getStock(_d->outGoodType);}
 Good::Type Factory::consumeGoodType() const{  return _d->inGoodType; }
-int Factory::getProgress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
+int Factory::progress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
 void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
 
 bool Factory::mayWork() const
 {
-  if( numberWorkers() == 0 || !_d->isActive )
+  if( numberWorkers() == 0 || !isActive() )
     return false;
 
   GoodStock& inStock = const_cast< Factory* >( this )->inStockRef();
@@ -128,7 +128,7 @@ bool Factory::mayWork() const
     mayContinue = ( haveMaterial() || _d->produceGood );
   }
 
-  GoodStock& outStock = const_cast< Factory* >( this )->outStockRef();
+  const GoodStock& outStock = const_cast< Factory* >( this )->outStockRef();
   mayContinue &= (outStock.freeQty() > 0);
 
   return mayContinue;
@@ -278,7 +278,7 @@ Factory::~Factory(){}
 bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
-void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
+void Factory::productRate( const float rate ){  _d->productionRate = rate;}
 float Factory::getProductRate() const{  return _d->productionRate;}
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}

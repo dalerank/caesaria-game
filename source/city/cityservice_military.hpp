@@ -47,7 +47,7 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
 
-  static std::string getDefaultName();
+  static std::string defaultName();
 private:
   Military( PlayerCityPtr city );
 

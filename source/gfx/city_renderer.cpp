@@ -53,6 +53,7 @@
 #include "layereducation.hpp"
 #include "city/city.hpp"
 #include "layertroubles.hpp"
+#include "layerindigene.hpp"
 
 using namespace constants;
 
@@ -122,6 +123,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::GuiEnv* g
   addLayer( LayerEducation::create( _d->camera, city, citylayer::academy ) );
   addLayer( LayerTroubles::create( _d->camera, city, citylayer::risks ) );
   addLayer( LayerTroubles::create( _d->camera, city, citylayer::troubles ) );
+  addLayer( LayerIndigene::create( _d->camera, city ) );
 
   _d->setLayer( citylayer::simple );
 }

@@ -34,7 +34,7 @@ int LayerHealth::type() const
   return _type;
 }
 
-Layer::VisibleWalkers LayerHealth::getVisibleWalkers() const
+Layer::VisibleWalkers LayerHealth::visibleWalkers() const
 {
   return _walkers;
 }

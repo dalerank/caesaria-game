@@ -56,7 +56,7 @@ void Ceres::_doWrath( PlayerCityPtr city )
 
   foreach( farm, farms )
   {
-    (*farm)->updateProgress( -(*farm)->getProgress() );
+    (*farm)->updateProgress( -(*farm)->progress() );
   }
 }
 
@@ -69,9 +69,14 @@ void Ceres::_doBlessing(PlayerCityPtr city)
   FarmList farms;
   farms << city->overlays();
 
-  foreach( farm, farms )
+  //foreach( farm, farms )
+  //{
+  //  FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 0.1, GameDate::days2ticks( 60 ) );
+  //}
+
+  foreach(farm, farms)
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 0.1, GameDate::days2ticks( 60 ) );
+    (*farm)->updateProgress( 100.f -  (*farm)->progress() );
   }
 }
 

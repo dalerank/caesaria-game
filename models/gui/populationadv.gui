@@ -14,6 +14,14 @@
     lbBlackframe#Label : {
       geometry : [ 46, 335, "pw-50", "ph-20" ]
       bgtype : "blackFrame"
+
+      lbMigrationValue#Label : {
+        geometry : [ 10, 5, "pw-10", 25 ]
+        icon : "paneling_00048"
+        icon.offset : [ 5, 5 ]
+        text.offset : [ 20, 0 ]
+        font : "FONT_2_WHITE"
+      }
     }
 
     lbChart#Label : {

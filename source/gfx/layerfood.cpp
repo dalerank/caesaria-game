@@ -33,7 +33,7 @@ namespace gfx
 
 int LayerFood::type() const {  return citylayer::food; }
 
-Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
+Layer::VisibleWalkers LayerFood::visibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::marketLady );

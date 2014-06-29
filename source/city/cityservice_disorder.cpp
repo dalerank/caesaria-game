@@ -60,10 +60,10 @@ SrvcPtr Disorder::create( PlayerCityPtr city )
   return SrvcPtr( ret );
 }
 
-std::string Disorder::getDefaultName(){  return "disorder";}
+std::string Disorder::defaultName(){  return "disorder";}
 
 Disorder::Disorder(PlayerCityPtr city )
-  : Srvc( *city.object(), Disorder::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Disorder::defaultName() ), _d( new Impl )
 {
   _d->minCrimeLevel = defaultCrimeLevel;
   _d->currentCrimeLevel = 0;
@@ -84,7 +84,7 @@ void Disorder::update( const unsigned int time )
   Helper helper( &_city );
   HouseList houses = helper.find<House>( building::house );
 
-  WalkerList walkers = _city.getWalkers( walker::protestor );
+  WalkerList walkers = _city.walkers( walker::protestor );
 
   HouseList criminalizedHouse;
   _d->currentCrimeLevel = 0;
@@ -159,7 +159,7 @@ void Disorder::update( const unsigned int time )
   }
 }
 
-std::string Disorder::reasonDescr() const
+std::string Disorder::reason() const
 {
   int crimeLevel = math::clamp<int>( _d->currentCrimeLevel / crimeDescLimiter, 0, crimeDescLimiter-1 );
   std::string crimeDesc[ crimeDescLimiter ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
@@ -193,6 +193,8 @@ VariantMap Disorder::save() const
   VariantMap ret;
   ret[ "lastRioter" ] = _d->rioterInLastYear;
   ret[ "curRioter"  ] = _d->rioterInThisYear;
+
+  return ret;
 }
 
 void Disorder::load(const VariantMap &stream)
@@ -232,7 +234,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
   rioterInThisYear++;
 
   RioterPtr protestor = Rioter::create( city );
-  protestor->send2City( house );
+  protestor->send2City( ptr_cast<Building>( house ) );
 
   HouseList houses;
   houses << city->overlays();

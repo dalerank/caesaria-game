@@ -68,7 +68,7 @@ public:
   {
     needMeMove = false;
     SmartList<T> walkers;
-    walkers << _city->getWalkers( constants::walker::all, p );
+    walkers << _city->walkers( constants::walker::all, p );
     foreach( it, walkers )
     {
       if( *it == caller.object() )
@@ -95,7 +95,7 @@ public:
       foreach( itile, tiles )
       {
         SmartList<T> eslist;
-        eslist << _city->getWalkers( constants::walker::any, (*itile)->pos() );
+        eslist << _city->walkers( constants::walker::any, (*itile)->pos() );
 
         if( !eslist.empty() )
           continue;
@@ -132,7 +132,7 @@ public:
   {
     SmartList< T > ret;
 
-    WalkerList walkers = _city->getWalkers( type, start, stop );
+    WalkerList walkers = _city->walkers( type, start, stop );
     foreach( w, walkers )
     {
       SmartPtr< T > ptr = ptr_cast<T>( *w );

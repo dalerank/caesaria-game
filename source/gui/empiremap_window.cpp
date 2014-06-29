@@ -199,15 +199,23 @@ void EmpireMapWindow::Impl::drawCityInfo()
 
 void EmpireMapWindow::Impl::drawCityGoodsInfo()
 {
+  Point startInfo( 0, 0 );
+  Point startButton( 0, 40 );
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  startInfo = Point( 0, 40 );
+  startButton = Point( 0, -8 );
+#endif
+
   Point startDraw( (tradeInfo->width() - 400) / 2, tradeInfo->height() - 90 );
-  new Label( tradeInfo, Rect( startDraw, Size( 70, 30 )), _("##emw_sell##") );
+  new Label( tradeInfo, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
 
   const GoodStore& sellgoods = currentCity->importingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( sellgoods.capacity( (Good::Type)i ) > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( startDraw + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
+      Label* lb = new Label( tradeInfo, Rect( startDraw + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture( GoodHelper::getPicture( Good::Type(i), true) );
       lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
       k++;
@@ -215,21 +223,21 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   }
 
   Point buyPoint = startDraw + Point( 200, 0 );
-  new Label( tradeInfo, Rect( buyPoint, Size( 70, 30 )), _("##emw_buy##") );
+  new Label( tradeInfo, Rect( buyPoint + startInfo, Size( 70, 30 )), _("##emw_buy##") );
 
   const GoodStore& buygoods = currentCity->exportingGoods();
   for( int i=0, k=0; i < Good::goodCount; i++ )
   {
     if( buygoods.capacity( (Good::Type)i ) > 0  )
     {
-      Label* lb = new Label( tradeInfo, Rect( buyPoint + Point( 70 + 30 * k, 0 ), Size( 24, 24 ) ) );
+      Label* lb = new Label( tradeInfo, Rect( buyPoint + startInfo + Point( 30 * (k+2), 0 ), Size( 24, 24 ) ) );
       lb->setBackgroundPicture(  GoodHelper::getPicture( Good::Type(i), true) );
       lb->setTooltipText( GoodHelper::getTypeName( Good::Type(i) ) );
       k++;
     }
   }
 
-  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw + Point( 0, 40 ), Size( 400, 20 ) ),
+  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw + startButton, Size( 400, 20 ) ),
                                              "", -1, false, PushButton::blackBorderUp );
 
   unsigned int routeOpenCost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->name() );
@@ -278,11 +286,6 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
       k++;
     }
   }
-
-/*  PushButton* btnOpenTrade = new PushButton( tradeInfo, Rect( startDraw, Size( 400, 20 ) ),
-    "", -1, false, PushButton::blackBorderUp );
-  btnOpenTrade->setText( StringHelper::format( 0xff, "%d %s", 1000, _("##dn_for_open_trade##")));
-  */
 }
 
 void EmpireMapWindow::Impl::resetInfoPanel()

@@ -36,7 +36,7 @@ int LayerEducation::type() const
   return _type;
 }
 
-Layer::VisibleWalkers LayerEducation::getVisibleWalkers() const
+Layer::VisibleWalkers LayerEducation::visibleWalkers() const
 {
   return _walkers;
 }

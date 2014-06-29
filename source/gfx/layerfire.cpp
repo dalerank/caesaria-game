@@ -39,7 +39,7 @@ namespace {
 
 int LayerFire::type() const {  return citylayer::fire; }
 
-std::set<int> LayerFire::getVisibleWalkers() const {  return layerFireWalkers; }
+std::set<int> LayerFire::visibleWalkers() const {  return layerFireWalkers; }
 
 void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
 {

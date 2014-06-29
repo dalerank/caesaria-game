@@ -74,7 +74,7 @@
 #include "core/foreach.hpp"
 #include "events/random_wolves.hpp"
 #include "gfx/layerconstants.hpp"
-#include "world/army.hpp"
+#include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
 
 using namespace gui;
@@ -572,12 +572,13 @@ void Level::handleEvent( NEvent& event )
     case KEY_F10:_d->makeScreenShot(); break;
     case KEY_KEY_I:
     {
-      if( !event.keyboard.pressed && event.keyboard.shift )
+      if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
       {
         world::CityPtr rome = _d->game->empire()->rome();
         PlayerCityPtr plCity = _d->game->city();
 
-        world::ArmyPtr army = world::Army::create( _d->game->empire(), rome );
+        world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
+        army->setBase( rome );
         army->attack( ptr_cast<world::Object>( plCity ) );
       }
     }

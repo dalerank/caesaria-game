@@ -31,7 +31,7 @@ class LayerDestroy : public Layer
 public:
   virtual void handleEvent( NEvent& event );
   virtual int type() const;
-  virtual std::set<int> getVisibleWalkers() const;
+  virtual std::set<int> visibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
   virtual void render( Engine& engine);
 

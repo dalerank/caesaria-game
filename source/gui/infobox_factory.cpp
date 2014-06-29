@@ -42,7 +42,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   setTitle( _(title) );
 
   // paint progress
-  std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->getProgress() );
+  std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
   Label* lbPr = new Label( this, Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
   lbPr->setFont( Font::create( FONT_2 ) );
 
@@ -87,7 +87,7 @@ InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
 {
   ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.overlay() );
 
-  int progressCount = shipyard->getProgress();
+  int progressCount = shipyard->progress();
   if( progressCount > 1 && progressCount < 100 )
   {
     new Label( this,

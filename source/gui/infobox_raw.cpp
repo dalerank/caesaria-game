@@ -64,7 +64,7 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
 
   if( lbProgress != NULL )
   {
-    std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), rawmb->getProgress() );
+    std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), rawmb->progress() );
     lbProgress->setText( text );
   }
 

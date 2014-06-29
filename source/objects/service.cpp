@@ -125,7 +125,7 @@ void ServiceBuilding::load( const VariantMap& stream )
 
 int ServiceBuilding::serviceDelay() const{  return _d->serviceDelay;}
 ServiceBuilding::~ServiceBuilding() {}
-unsigned int ServiceBuilding::walkerDistance() const{  return 5; }
+unsigned int ServiceBuilding::walkerDistance() const{  return _d->serviceRange; }
 
 std::string ServiceBuilding::workersStateDesc() const
 {

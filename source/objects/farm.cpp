@@ -136,7 +136,7 @@ void Farm::init()
 
 void Farm::computePictures()
 {
-  int amount = getProgress();
+  int amount = progress();
   int percentTile;
 
   for (int n = 0; n<5; ++n)
@@ -166,7 +166,7 @@ void Farm::timeStep(const unsigned long time)
 {
   Factory::timeStep(time);
 
-  if( GameDate::isDayChanged() && mayWork() && getProgress() < 100 )
+  if( GameDate::isDayChanged() && mayWork() && progress() < 100 )
   {
     computePictures();
   }

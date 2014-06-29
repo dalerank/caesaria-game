@@ -103,10 +103,10 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
-  Parameters getLast() const;
-  const History& getHistory() const;
+  Parameters lastParams() const;
+  const History& history() const;
 
-  static std::string getDefaultName();
+  static std::string defaultName();
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);

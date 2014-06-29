@@ -69,7 +69,7 @@ void Wharf::timeStep(const unsigned long time)
     return;
   }
 
-  if( getProgress() >= 100.0 )
+  if( progress() >= 100.0 )
   {
     if( store().qty( produceGoodType() ) < store().capacity( produceGoodType() )  )
     {

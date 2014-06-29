@@ -24,37 +24,58 @@ class NativeBuilding : public Building
 {
 public:
   NativeBuilding( const TileOverlay::Type type, const Size& size );
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
-  void build(PlayerCityPtr city, const TilePos& pos );
+  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool canDestroy() const;
 };
 
 class NativeHut : public NativeBuilding
 {
 public:
   NativeHut();
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-  //virtual GuiInfoBox* makeInfoBox();  
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+  virtual void timeStep(const unsigned long time);
+  virtual void applyService( ServiceWalkerPtr walker);
+  virtual float evaluateService(ServiceWalkerPtr walker);
+
+  float discontent() const;
+
+protected:
+  float _discontent;
+  int _day2look;
 };
 
 class NativeField  : public NativeBuilding
 {
 public:
   NativeField();
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-  //virtual GuiInfoBox* makeInfoBox();
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+  virtual void timeStep(const unsigned long time);
+  unsigned int progress() const;
+
+  unsigned int catchCrops();
+
+private:
+  void _updatePicture();
+
+  unsigned int _progress;
+
 };
 
 class NativeCenter : public NativeBuilding
 {
 public:
   NativeCenter();
-  void save( VariantMap& stream) const;
-  void load( const VariantMap& stream);
-  //virtual GuiInfoBox* makeInfoBox();
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
+
+  void store( unsigned int qty );
 };
 
 

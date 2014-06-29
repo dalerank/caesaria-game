@@ -56,10 +56,7 @@ CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
   HouseList houses = helper.find<House>( building::house );
 
   CitizenGroup ret;
-  foreach( it, houses )
-  {
-    ret += (*it)->habitants();
-  }
+  foreach( it, houses ) { ret += (*it)->habitants(); }
 
   return ret;
 }
@@ -121,7 +118,7 @@ unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 
 unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
 {
-  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::getDefaultName() ) );
+  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::defaultName() ) );
   return ds.isValid() ? ds->value() : 0;
 }
 

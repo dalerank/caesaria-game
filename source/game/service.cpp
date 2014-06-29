@@ -51,6 +51,9 @@ ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
   __REG_SERVICE( colloseum )
   __REG_SERVICE( hippodrome )
   __REG_SERVICE( recruter )
+  __REG_SERVICE( crime )
+  __REG_SERVICE( guard )
+  __REG_SERVICE( native )
 #undef __REG_SERVICE
   append( Service::srvCount, "srvc_none" );
 }

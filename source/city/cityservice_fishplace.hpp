@@ -29,7 +29,7 @@ class Fishery : public Srvc
 {
 public:
   static SrvcPtr create( PlayerCityPtr city );
-  static std::string getDefaultName();
+  static std::string defaultName();
   void update( const unsigned int time );
   virtual bool isDeleted() const;
 

@@ -35,7 +35,7 @@ int LayerReligion::type() const
   return citylayer::religion;
 }
 
-Layer::VisibleWalkers LayerReligion::getVisibleWalkers() const
+Layer::VisibleWalkers LayerReligion::visibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::priest );

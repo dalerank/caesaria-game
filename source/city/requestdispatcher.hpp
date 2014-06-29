@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
 #define _CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
@@ -34,7 +36,7 @@ public:
   bool add(const VariantMap& stream , bool showMessage=true);
   virtual ~Dispatcher();
 
-  static std::string getDefaultName();
+  static std::string defaultName();
 
   virtual void update(const unsigned int time);
   virtual VariantMap save() const;

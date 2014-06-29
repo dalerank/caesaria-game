@@ -28,7 +28,7 @@ namespace world
 class Army : public Object
 {
 public:
-  static ArmyPtr create( EmpirePtr empire, CityPtr base );
+  static ArmyPtr create( EmpirePtr empire );
   virtual ~Army();
 
   virtual void save( VariantMap& stream ) const;
