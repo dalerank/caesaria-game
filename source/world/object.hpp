@@ -42,6 +42,7 @@ public:
   virtual gfx::Picture picture() const;
   virtual const gfx::Pictures& pictures() const;
   virtual void setPicture( gfx::Picture pic );
+  virtual bool isMovable() const;
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );

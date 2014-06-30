@@ -19,6 +19,7 @@
 #include "core/variant.hpp"
 #include "empire.hpp"
 #include "gfx/animation.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -70,6 +71,8 @@ void Object::setPicture(Picture pic)
   _d->pictures[ 0 ] = pic;
 }
 
+bool Object::isMovable() const { return true; }
+
 void Object::save( VariantMap& stream ) const
 {
   stream[ "location" ] = _d->location;
@@ -82,8 +85,15 @@ void Object::save( VariantMap& stream ) const
 
 void Object::load(const VariantMap& stream)
 {
-  _d->location = stream.get( "location" ).toPoint();
-  _d->name = stream.get( "name" ).toString();
+  _d->location = stream.get( "location" ).toPoint();  
+
+  Variant name = stream.get( "name" );
+  if( name.isValid() )
+  {
+    _d->name = name.toString();
+  }
+  Logger::warningIf( _d->name.empty(), "Object: name is null" );
+
   setPicture( Picture::load( stream.get( "picture" ).toString() ) );
   _d->animation.load( stream.get( "animation" ).toMap() );
   _d->isDeleted = stream.get( "isDeleted" );

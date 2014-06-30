@@ -379,38 +379,49 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
 
   engine.draw( _d->empireMap, _d->offset );  
 
-  world::ObjectList objects = _d->empire->objects();
-  foreach( obj, objects )
+  //draw static objects
+  foreach( obj, _d->empire->objects() )
   {
-    engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
+    if( !(*obj)->isMovable() )
+    {
+      engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
+    }
   }
 
   world::CityList cities = _d->empire->cities();
   foreach( it, cities )
   {
     Point location = (*it)->location();
-    engine.draw( (*it)->picture(), _d->offset + location );
+    engine.draw( (*it)->pictures(), _d->offset + location );
   }
 
   world::TraderouteList routes = _d->empire->tradeRoutes();
   foreach( it, routes )
   {
     world::TraderoutePtr route = *it;
-    const Picture& picture = Picture::load( ResourceGroup::empirebits,
-                                            route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute );
 
-    world::MerchantPtr merchant = route->merchant( 0 );
     const PointsArray& points = route->points();
     const Pictures& pictures = route->pictures();
+
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
       engine.draw( pictures[ index ], _d->offset + points[ index ] );
     }
 
+    world::MerchantPtr merchant = route->merchant( 0 );
     if( merchant != 0 )
     {
-      engine.draw( picture, _d->offset + merchant->location() );
+      engine.draw( merchant->picture(), _d->offset + merchant->location() );
     }      
+  }
+
+  //draw movable objects
+  foreach( obj, _d->empire->objects() )
+  {
+    if( (*obj)->isMovable() )
+    {
+      engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
+    }
   }
 
   engine.draw( *_d->border, Point( 0, 0 ) );

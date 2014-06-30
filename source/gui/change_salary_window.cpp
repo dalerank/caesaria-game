@@ -39,7 +39,7 @@ public oc3_signals:
   Signal1<int> onChangeSalarySignal;
 };
 
-ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, int salary)
+ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
   : Widget( p, -1, Rect() ), __INIT_IMPL(ChangeSalaryWindow)
 {
   setupUI( GameSettings::rcpath( "/gui/changesalary.gui") );

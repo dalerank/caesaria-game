@@ -23,6 +23,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "traderoute.hpp"
+#include "game/resourcegroup.hpp"
 
 namespace world
 {
@@ -46,6 +47,8 @@ Merchant::~Merchant(){}
 Merchant::Merchant( EmpirePtr empire )
   : Object( empire ), _d( new Impl )
 {
+  //default picture
+  setPicture( gfx::Picture::load( ResourceGroup::empirebits, PicID::landTradeRoute ) );
 }
 
 MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
@@ -77,6 +80,8 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
     return MerchantPtr();
   }
 
+  ret->setPicture( gfx::Picture::load( ResourceGroup::empirebits,
+                                       route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute ));
   ret->setLocation( ret->_d->steps.front() );
   return ret;
 }
@@ -131,7 +136,7 @@ void Merchant::load(const VariantMap& stream)
 }
 
 std::string Merchant::baseCity() const{  return _d->baseCity;}
-GoodStore& Merchant::getSellGoods(){  return _d->sells;}
-GoodStore& Merchant::getBuyGoods(){  return _d->buys;}
+GoodStore& Merchant::sellGoods(){  return _d->sells;}
+GoodStore& Merchant::buyGoods(){  return _d->buys;}
 
 }//end namespace world

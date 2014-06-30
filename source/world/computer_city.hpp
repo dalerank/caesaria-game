@@ -28,9 +28,6 @@ public:
 
   virtual ~ComputerCity();
 
-  virtual std::string name() const;
-  virtual Point location() const;
-  virtual void setLocation( const Point& location );
   virtual city::Funds& funds();
   virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
@@ -42,8 +39,6 @@ public:
   virtual void setAvailable(bool value);
 
   virtual void timeStep( unsigned int time );
-
-  virtual gfx::Picture picture() const;
 
   virtual void save( VariantMap& options ) const;
   virtual void load( const VariantMap& options );
@@ -63,6 +58,7 @@ public:
 protected:
   ComputerCity( EmpirePtr empire, const std::string& name );
   bool _mayTrade() const;
+  void _initTextures();
 
 private:
   class Impl;
