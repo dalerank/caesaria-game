@@ -20,6 +20,7 @@
 #include "city/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "actor_colony.hpp"
+#include "walker/walker.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -59,4 +60,17 @@ void Theater::deliverService()
     _fgPicturesRef().front() = Picture::getInvalid();
     _fgPicturesRef().back() = Picture::getInvalid();
   }
+}
+
+WalkerList Theater::_specificWorkers() const
+{
+  WalkerList ret;
+
+  foreach( i, walkers() )
+  {
+    if( (*i)->type() == walker::actor )
+      ret << *i;
+  }
+
+  return ret;
 }

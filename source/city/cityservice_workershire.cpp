@@ -70,10 +70,10 @@ SrvcPtr WorkersHire::create(PlayerCityPtr city )
   return ret;
 }
 
-std::string WorkersHire::getDefaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
+std::string WorkersHire::defaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
 
 WorkersHire::WorkersHire(PlayerCityPtr city )
-  : Srvc( *city.object(), WorkersHire::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), WorkersHire::defaultName() ), _d( new Impl )
 {
   _d->lastMessageDate = GameDate::current();
   _d->excludeTypes.insert( building::fountain );
@@ -140,7 +140,7 @@ void WorkersHire::update( const unsigned int time )
   if( !GameDate::isWeekChanged() )
     return;
 
-  _d->hrInCity = _city.getWalkers( walker::recruter );
+  _d->hrInCity = _city.walkers( walker::recruter );
 
   city::Helper helper( &_city );
   WorkingBuildingList buildings = helper.find< WorkingBuilding >( building::any );

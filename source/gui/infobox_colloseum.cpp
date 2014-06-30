@@ -47,7 +47,7 @@ InfoboxColosseum::InfoboxColosseum(Widget *parent, const Tile &tile)
     std::string text = _("##colloseum_haveno_animal_bouts##");
     if( coloseum->isShowLionBattles() )
     {
-      DateTime lastAnimalBoutDate = coloseum->getLastAnimalBoutDate();
+      DateTime lastAnimalBoutDate = coloseum->lastAnimalBoutDate();
       text = StringHelper::format( 0xff, "%s %d %s", "##colloseum_animal_contest_runs##", lastAnimalBoutDate.daysTo( GameDate::current() ), "##days##" );
     }
     new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
@@ -55,7 +55,7 @@ InfoboxColosseum::InfoboxColosseum(Widget *parent, const Tile &tile)
     text = _("##colloseum_haveno_gladiator_bouts##");
     if( coloseum->isShowGladiatorBattles() )
     {
-      DateTime lastGlBoutDate = coloseum->getLastGladiatorBoutDate();
+      DateTime lastGlBoutDate = coloseum->lastGladiatorBoutDate();
       text = StringHelper::format( 0xff, "%s %d %s", "##colloseum_gladiator_contest_runs##", lastGlBoutDate.daysTo( GameDate::current() ), "##days##" );
     }
 

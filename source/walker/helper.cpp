@@ -90,6 +90,11 @@ public:
     __REG_WTYPE( mugger )
     __REG_WTYPE( rioter )
     __REG_WTYPE( wolf )
+    __REG_WTYPE( dustCloud )
+    __REG_WTYPE( romeChasternerSoldier )
+    __REG_WTYPE( indigeneRioter )
+    __REG_WTYPE( missioner )
+    __REG_WTYPE( indigene )
   }
 #undef __REG_WTYPE
 };

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_AQUEDUCT_H_INCLUDED__
 #define __CAESARIA_AQUEDUCT_H_INCLUDED__
@@ -26,16 +26,16 @@ public:
   Aqueduct();
 
   virtual void build(PlayerCityPtr city, const TilePos& pos );
-
+  virtual void addWater(const WaterSource &source);
   virtual void initTerrain( gfx::Tile& terrain);
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
+  virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const; 
   virtual std::string sound() const;
 
   void updatePicture(PlayerCityPtr city);
-  void addWater( const WaterSource& source );
 
   virtual const gfx::Picture& picture( PlayerCityPtr city,
                                        TilePos pos,

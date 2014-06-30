@@ -73,7 +73,7 @@ void ServiceUpdater::update( const unsigned int time)
   }
 }
 
-std::string ServiceUpdater::getDefaultName() { return "service_updater"; }
+std::string ServiceUpdater::defaultName() { return "service_updater"; }
 bool ServiceUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void ServiceUpdater::load(const VariantMap& stream)
@@ -94,7 +94,7 @@ VariantMap ServiceUpdater::save() const
 }
 
 ServiceUpdater::ServiceUpdater( PlayerCityPtr city )
-  : Srvc( *city.object(), ServiceUpdater::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), ServiceUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
   _d->stype = Service::srvCount;

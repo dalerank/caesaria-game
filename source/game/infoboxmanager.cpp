@@ -200,6 +200,8 @@ InfoboxManager::InfoboxManager() : _d( new Impl )
   addInfobox( building::smallStatue,      CAESARIA_STR_EXT(B_STATUE1),   new InfoboxBasicCreator( "", "##statue_info##") );
   addInfobox( building::middleStatue,     CAESARIA_STR_EXT(B_STATUE2),   new InfoboxBasicCreator( "", "##statue_info##") );
   addInfobox( building::bigStatue,        CAESARIA_STR_EXT(B_STATUE3),   new InfoboxBasicCreator( "", "##statue_info##") );
+  addInfobox( building::nativeHut,        CAESARIA_STR_EXT(NativeHut),   new InfoboxBasicCreator( "", "##nativeHut_info##") );
+  addInfobox( building::nativeCenter,     CAESARIA_STR_EXT(NativeCenter),   new InfoboxBasicCreator( "", "##nativeCenter_info##") );
   addInfobox( building::pottery,          CAESARIA_STR_EXT(Pottery),   new BaseInfoboxCreator<InfoboxFactory>() );
   addInfobox( building::shipyard,         CAESARIA_STR_EXT(Shipyard),   new BaseInfoboxCreator<InfoboxShipyard>() );
   addInfobox( building::weaponsWorkshop,  CAESARIA_STR_EXT(WeaponsWorkshop), new BaseInfoboxCreator<InfoboxFactory>() );
@@ -249,7 +251,7 @@ void InfoboxManager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
 
   if( _d->showDebugInfo )
   {
-    Logger::warning( "Tile debug info: dsrbl=%d", tile.getDesirability() );
+    Logger::warning( "Tile debug info: dsrbl=%d", tile.desirability() );
   }
 
   type = overlay.isNull() ? building::unknown : overlay->type();

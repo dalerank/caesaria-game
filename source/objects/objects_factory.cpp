@@ -72,6 +72,8 @@
 #include "sight.hpp"
 #include "rift.hpp"
 #include "weaponsworkshop.hpp"
+#include "missionarypost.hpp"
+#include "ironmine.hpp"
 #include <map>
 
 using namespace constants;
@@ -160,7 +162,7 @@ public:
     FactoryPtr f = ptr_cast<Factory>( a );
     if( f.isValid() )
     {
-      f->setProductRate( (float)info.getOption( "productRate", 9.6 ) );
+      f->productRate( (float)info.getOption( "productRate", 9.6 ) );
     }
   }
 };

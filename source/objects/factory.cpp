@@ -109,12 +109,12 @@ GoodStock& Factory::inStockRef(){   return _d->store.getStock(_d->inGoodType);}
 const GoodStock& Factory::inStockRef() const { return _d->store.getStock(_d->inGoodType);}
 GoodStock& Factory::outStockRef(){  return _d->store.getStock(_d->outGoodType);}
 Good::Type Factory::consumeGoodType() const{  return _d->inGoodType; }
-int Factory::getProgress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
+int Factory::progress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
 void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
 
 bool Factory::mayWork() const
 {
-  if( numberWorkers() == 0 || !_d->isActive )
+  if( numberWorkers() == 0 || !isActive() )
     return false;
 
   GoodStock& inStock = const_cast< Factory* >( this )->inStockRef();
@@ -128,7 +128,7 @@ bool Factory::mayWork() const
     mayContinue = ( haveMaterial() || _d->produceGood );
   }
 
-  GoodStock& outStock = const_cast< Factory* >( this )->outStockRef();
+  const GoodStock& outStock = const_cast< Factory* >( this )->outStockRef();
   mayContinue &= (outStock.freeQty() > 0);
 
   return mayContinue;
@@ -278,7 +278,7 @@ Factory::~Factory(){}
 bool Factory::_mayDeliverGood() const {  return ( getAccessRoads().size() > 0 ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
-void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
+void Factory::productRate( const float rate ){  _d->productionRate = rate;}
 float Factory::getProductRate() const{  return _d->productionRate;}
 unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
 unsigned int Factory::getConsumeQty() const{  return 100;}
@@ -354,31 +354,6 @@ bool TimberLogger::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& 
    const_cast< TimberLogger* >( this )->_setError( near_forest ? "" : _("##lumber_mill_need_forest_near##"));
 
    return (is_constructible && near_forest);
-}
-
-
-IronMine::IronMine() : Factory(Good::none, Good::iron, building::ironMine, Size(2) )
-{
-  setPicture( ResourceGroup::commerce, 54 );
-
-  _animationRef().load( ResourceGroup::commerce, 55, 6 );
-  _animationRef().setDelay( 5 );
-  _fgPicturesRef().resize(2);
-}
-
-bool IronMine::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
-{
-  bool is_constructible = WorkingBuilding::canBuild( city, pos, aroundTiles );
-  bool near_mountain = false;  // tells if the factory is next to a mountain
-
-  Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), pos + TilePos(3, 3), Tilemap::checkCorners );
-
-  foreach( it, perimetr ) { near_mountain |= (*it)->getFlag( Tile::tlRock ); }
-
-  const_cast< IronMine* >( this )->_setError( near_mountain ? "" : _("##iron_mine_need_mountain_near##"));
-
-  return (is_constructible && near_mountain);
 }
 
 Winery::Winery() : Factory(Good::grape, Good::wine, building::winery, Size(2) )

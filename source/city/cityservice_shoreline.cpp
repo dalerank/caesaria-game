@@ -63,10 +63,10 @@ city::SrvcPtr Shoreline::create(PlayerCityPtr city )
   return ret;
 }
 
-std::string Shoreline::getDefaultName(){ return "shoreline"; }
+std::string Shoreline::defaultName(){ return "shoreline"; }
 
 Shoreline::Shoreline( PlayerCityPtr city )
-  : city::Srvc( *city.object(), Shoreline::getDefaultName() ), _d( new Impl )
+  : city::Srvc( *city.object(), Shoreline::defaultName() ), _d( new Impl )
 {
   _d->lastTimeUpdate = 0;  
   _d->nextWaterGarbage = 0;
@@ -98,7 +98,7 @@ void Shoreline::update( const unsigned int time )
       continue;
 
     int picId = tile->originalImgId();
-    if( tile->getDesirability() > 10 )
+    if( tile->desirability() > 10 )
     {
       switch( picId )
       {

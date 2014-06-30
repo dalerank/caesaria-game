@@ -19,6 +19,7 @@
 #define __CAESARIA_RIOTER_H_INCLUDE_
 
 #include "walker.hpp"
+#include "objects/constants.hpp"
 
 class Rioter : public Walker
 {
@@ -27,7 +28,7 @@ public:
   virtual ~Rioter();
 
   virtual void timeStep(const unsigned long time);
-  void send2City( HousePtr house );
+  void send2City( BuildingPtr bld );
 
   virtual bool die();
 
@@ -35,16 +36,25 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual int agressive() const;
+  virtual void excludeAttack( constants::building::Group group );
 
 protected:
+  Rioter( PlayerCityPtr city );
   virtual void _reachedPathway();
   virtual void _updateThinks();
 
 private:
-  Rioter( PlayerCityPtr city );
-
   class Impl;
   ScopedPtr<Impl> _d;
+};
+
+class NativeRioter : public Rioter
+{
+public:
+  static RioterPtr create( PlayerCityPtr city );
+
+private:
+  NativeRioter( PlayerCityPtr city );
 };
 
 #endif//__CAESARIA_RIOTER_H_INCLUDE_

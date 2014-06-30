@@ -54,11 +54,8 @@ public:
 
   virtual void timeStep(unsigned int time);  // performs one simulation step
 
-  void setLocation( const Point& location );
-  Point location() const;
-
-  WalkerList getWalkers( constants::walker::Type type );
-  WalkerList getWalkers( constants::walker::Type type, TilePos startPos, TilePos stopPos=TilePos( -1, -1 ) );
+  WalkerList walkers(constants::walker::Type type );
+  WalkerList walkers(constants::walker::Type type, const TilePos& startPos, const TilePos& stopPos=TilePos( -1, -1 ) );
 
   void addWalker( WalkerPtr walker );
 
@@ -70,6 +67,10 @@ public:
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
 
+  virtual gfx::Picture picture() const;
+  virtual bool isPaysTaxes() const;
+  virtual bool haveOverduePayment() const;
+
   PlayerPtr player() const;
   
   void setCameraPos(const TilePos pos);
@@ -78,9 +79,9 @@ public:
   ClimateType climate() const;
   void setClimate(const ClimateType);
 
-  city::Funds& funds() const;
+  city::Funds& funds();
 
-  int population() const;
+  unsigned int population() const;
   int prosperity() const;
   int culture() const;
   int peace() const;
@@ -89,11 +90,8 @@ public:
 
   gfx::Tilemap& tilemap();
 
-  virtual std::string getName() const;
-  void setName( const std::string& name );
-
-  virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream ) const;
+  virtual void load( const VariantMap& stream );
 
   // add construction
   void addOverlay( gfx::TileOverlayPtr overlay);
@@ -108,13 +106,13 @@ public:
   city::TradeOptions& tradeOptions();
 
   virtual void delayTrade(unsigned int month);
-  virtual void arrivedMerchant( world::MerchantPtr merchant );
+  virtual void addObject( world::ObjectPtr object );
   virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
 
   virtual const GoodStore& importingGoods() const;
   virtual const GoodStore& exportingGoods() const;
   virtual unsigned int tradeType() const;
-  virtual world::EmpirePtr empire() const;
+
   void setOption( OptionType opt, int value );
   int getOption( OptionType opt ) const;
 
@@ -130,7 +128,7 @@ oc3_signals public:
   Signal0<>& onChangeBuildingOptions();  
 
 private:
-  PlayerCity();
+  PlayerCity( world::EmpirePtr empire );
 
   class Impl;
   ScopedPtr< Impl > _d;

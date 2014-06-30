@@ -30,7 +30,7 @@ class Construction : public gfx::TileOverlay
 {
 public:
   typedef int ParameterType;
-  typedef enum { fire=0, damage, inflammability, collapsibility, count } Param;
+  typedef enum { fire=0, damage, inflammability, collapsibility, destroyable, count } Param;
   Construction( const TileOverlay::Type type, const Size& size );
   virtual ~Construction();
 

@@ -21,6 +21,7 @@
 #include "core/position.hpp"
 #include "gfx/picturesarray.hpp"
 #include "predefinitions.hpp"
+#include "gfx/animation.hpp"
 
 namespace world
 {
@@ -28,23 +29,34 @@ namespace world
 class Object : public ReferenceCounted
 {
 public:
-  static ObjectPtr create( Empire& empire );
+  static ObjectPtr create( EmpirePtr empire );
 
+  virtual bool isDeleted() const;
+  virtual std::string type() const;
+  virtual void timeStep(const unsigned int time);
   virtual EmpirePtr empire() const;
   virtual std::string name() const;
+  virtual void setName( const std::string& name );
   virtual Point location() const;
   virtual void setLocation( const Point& location );
   virtual gfx::Picture picture() const;
   virtual const gfx::Pictures& pictures() const;
   virtual void setPicture( gfx::Picture pic );
-  virtual VariantMap save() const;
+  virtual bool isMovable() const;
+
+  virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
+
+  virtual void initialize();
 
   virtual ~Object();
 
-private:
-  Object();
+  void deleteLater();
+protected:
+  Object(EmpirePtr empire );
+  gfx::Animation& _animation();
 
+private:
   class Impl;
   ScopedPtr<Impl> _d;
 };

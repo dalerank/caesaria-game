@@ -20,13 +20,23 @@
 #include "gfx/tile.hpp"
 #include "city/city.hpp"
 #include "constants.hpp"
+#include "game/gamedate.hpp"
+#include "walker/serviceman.hpp"
+#include "walker/rioter.hpp"
+#include "walker/indigene.hpp"
 
 using namespace constants;
 using namespace gfx;
 
+namespace {
+static const int rioterGenerateLevel = 80;
+}
+
 NativeBuilding::NativeBuilding(const Type type, const Size& size )
 : Building( type, size )
 {
+  setState( inflammability, 0 );
+  setState( collapsibility, 0 );
 }
 
 void NativeBuilding::save( VariantMap& stream) const 
@@ -40,21 +50,74 @@ void NativeBuilding::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   tile().setFlag( Tile::tlRock, true );
-  tile().setFlag( Tile::tlBuilding, false );
 }
+
+bool NativeBuilding::canDestroy() const { return false; }
 
 NativeHut::NativeHut() : NativeBuilding( building::nativeHut, Size(1) )
 {
   setPicture( ResourceGroup::housing, 49 );
-  //setPicture(PicLoader::instance().get_picture("housng1a", 50));
+  _discontent = 0;
+  _day2look = math::random( 90 );
 }
 
 void NativeHut::save( VariantMap& stream) const 
 {
   Building::save(stream);
+
+  stream[ "discontent" ] = _discontent;
+  stream[ "day2look"   ] = _day2look;
 }
 
 void NativeHut::load( const VariantMap& stream) {Building::load(stream);}
+
+void NativeHut::timeStep(const unsigned long time)
+{
+  NativeBuilding::timeStep( time );
+  if( GameDate::isDayChanged() )
+  {
+    _discontent = math::clamp<float>( _discontent+0.5, 0.f, 100.f );
+    _day2look--;
+
+    if( math::random( _discontent ) > rioterGenerateLevel )
+    {
+      RioterPtr rioter = NativeRioter::create( _city() );
+      rioter->send2City( this );
+      _discontent = 0;
+    }
+
+    if( _day2look < 0 )
+    {
+      _day2look = 30 + math::random( 60 );
+      IndigenePtr ind = Indigene::create( _city() );
+      ind->send2city( this );
+    }
+  }
+}
+
+void NativeHut::applyService(ServiceWalkerPtr walker)
+{
+  if( walker->serviceType() == Service::native )
+  {
+    _discontent -= walker->serviceValue();
+  }
+
+  NativeBuilding::applyService( walker );
+}
+
+float NativeHut::evaluateService(ServiceWalkerPtr walker)
+{
+  float res = NativeBuilding::evaluateService( walker );
+
+  switch( walker->serviceType() )
+  {
+  case Service::native: res = math::clamp( 100.f - _discontent, 0.f, 100.f ); break;
+  default: break;
+  }
+  return res;
+}
+
+float NativeHut::discontent() const { return _discontent; }
 
 NativeCenter::NativeCenter() : NativeBuilding( building::nativeCenter, Size(2) )
 {
@@ -68,8 +131,14 @@ void NativeCenter::save( VariantMap&stream) const
 
 void NativeCenter::load( const VariantMap& stream) {Building::load(stream);}
 
+void NativeCenter::store(unsigned int qty)
+{
+
+}
+
 NativeField::NativeField() : NativeBuilding( building::nativeField, Size(1) )
 {
+  _progress = 0;
   setPicture( ResourceGroup::commerce, 13 );
 }
 
@@ -79,3 +148,34 @@ void NativeField::save( VariantMap&stream) const
 }
 
 void NativeField::load( const VariantMap& stream) {Building::load(stream);}
+
+void NativeField::timeStep(const unsigned long time)
+{
+  if( GameDate::isDayChanged() )
+  {
+    int lastState = _progress / 20;
+    _progress = math::clamp( _progress+1, 0u, 100u );
+
+    int currentState = _progress / 20;
+    if( lastState != currentState )
+    {
+      _updatePicture();
+    }
+  }
+}
+
+unsigned int NativeField::progress() const { return _progress; }
+
+unsigned int NativeField::catchCrops()
+{
+  unsigned int ret = progress();
+  _progress = 0;
+  _updatePicture();
+
+  return ret;
+}
+
+void NativeField::_updatePicture()
+{
+  setPicture( ResourceGroup::commerce, 13 + _progress / 20 );
+}

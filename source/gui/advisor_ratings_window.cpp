@@ -120,7 +120,7 @@ void AdvisorRatingsWindow::Impl::drawColumn( const Point& center, const int valu
 
 void AdvisorRatingsWindow::Impl::checkCultureRating()
 {
-  SmartPtr< city::CultureRating > culture = ptr_cast<city::CultureRating>( city->findService( city::CultureRating::getDefaultName() ) );
+  SmartPtr< city::CultureRating > culture = ptr_cast<city::CultureRating>( city->findService( city::CultureRating::defaultName() ) );
 
   if( culture != 0 )
   {
@@ -152,11 +152,11 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
 
 void AdvisorRatingsWindow::Impl::checkProsperityRating()
 {
-  SmartPtr< city::ProsperityRating > prosperity = ptr_cast<city::ProsperityRating>( city->findService( city::ProsperityRating::getDefaultName() ) );
+  SmartPtr< city::ProsperityRating > prosperity = ptr_cast<city::ProsperityRating>( city->findService( city::ProsperityRating::defaultName() ) );
 
   if( prosperity != 0 )
   {
-    if( prosperity->getValue() == 0 )
+    if( prosperity->value() == 0 )
     {
       lbRatingInfo->setText( _("##cant_calc_prosperity##") );
       return;

@@ -535,6 +535,9 @@ float HouseSpecification::evaluateReligionNeed(HousePtr house, const Service::Ty
    return (float)minLevel;
 }
 
+int HouseSpecification::minDesirabilityLevel() const { return _d->minDesirability; }
+int HouseSpecification::maxDesirabilityLevel() const { return _d->maxDesirability; }
+
 int HouseSpecification::computeMonthlyGoodConsumption( HousePtr house, const Good::Type goodType, bool real) const
 {
   if( house.isNull() )
@@ -610,9 +613,9 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 
   TilesArray area = city->tilemap().getArea( house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
 
-  float middleDesirbl = (float)area.front()->getDesirability();
+  float middleDesirbl = (float)area.front()->desirability();
 
-  foreach( tile, area ) { middleDesirbl = (middleDesirbl + (float)(*tile)->getDesirability() )/2.f; }
+  foreach( tile, area ) { middleDesirbl = (middleDesirbl + (float)(*tile)->desirability() )/2.f; }
 
   return (int)middleDesirbl;
 }

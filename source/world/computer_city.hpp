@@ -26,11 +26,12 @@ class ComputerCity : public City
 public:
   static CityPtr create( EmpirePtr empire, const std::string& name );
 
-  ~ComputerCity();
+  virtual ~ComputerCity();
 
-  virtual std::string getName() const;
-  virtual Point location() const;
-  virtual void setLocation( const Point& location );
+  virtual city::Funds& funds();
+  virtual unsigned int population() const;
+  virtual bool isPaysTaxes() const;
+  virtual bool haveOverduePayment() const;
 
   bool isDistantCity() const;
   bool isRomeCity() const;
@@ -44,19 +45,20 @@ public:
 
   virtual const GoodStore& importingGoods() const;
   virtual const GoodStore& exportingGoods() const;
+
   virtual void delayTrade(unsigned int month);
   virtual void empirePricesChanged(Good::Type gtype, int bCost, int sCost);
 
-  virtual EmpirePtr empire() const;
   virtual unsigned int tradeType() const;
 
-  virtual void arrivedMerchant( MerchantPtr );
+  virtual void addObject(ObjectPtr object);
 
   void changeTradeOptions( const VariantMap& stream );
 
 protected:
   ComputerCity( EmpirePtr empire, const std::string& name );
   bool _mayTrade() const;
+  void _initTextures();
 
 private:
   class Impl;

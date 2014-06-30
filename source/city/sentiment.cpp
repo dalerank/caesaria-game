@@ -15,12 +15,16 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "cityservice_sentiment.hpp"
+#include "sentiment.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
 
 namespace city
 {
+
+namespace {
+CAESARIA_LITERALCONST(value)
+}
 
 class Sentiment::Impl
 {
@@ -34,7 +38,7 @@ city::SrvcPtr Sentiment::create(PlayerCityPtr city )
   return city::SrvcPtr( ret );
 }
 
-std::string Sentiment ::getDefaultName() { return "sentiment";}
+std::string Sentiment ::getDefaultName() { return CAESARIA_STR_EXT(Sentiment);}
 
 Sentiment::Sentiment(PlayerCityPtr city )
   : city::Srvc( *city.object(), getDefaultName() ), _d( new Impl )
@@ -58,14 +62,14 @@ void Sentiment::append(int value)
 VariantMap Sentiment::save() const
 {
   VariantMap ret = Srvc::save();
-  ret[ "value" ] = _d->value;
+  ret[ lc_value ] = _d->value;
   return ret;
 }
 
 void Sentiment::load(const VariantMap& stream)
 {
   Srvc::load( stream );
-  _d->value = stream.get( "value" );
+  _d->value = stream.get( lc_value );
 }
 
 

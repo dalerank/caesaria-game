@@ -45,6 +45,7 @@ public:
                    buildConstruction, creditPercents, 
                    playerSalary, sundries, moneyStolen,
                    empireTax, debet, credit, cityProfit,
+                   overduePayment,
                    balance,
                    issueTypeCount };
   enum { thisYear=0, lastYear=1 };

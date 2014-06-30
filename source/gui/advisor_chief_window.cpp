@@ -180,12 +180,12 @@ void AdvisorChiefWindow::Impl::drawProfitState(Point pos)
 
 void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
 {
-  SmartPtr<city::Migration> migration = ptr_cast<city::Migration>( city->findService( city::Migration::getDefaultName() ) );
+  SmartPtr<city::Migration> migration = ptr_cast<city::Migration>( city->findService( city::Migration::defaultName() ) );
 
   std::string text = _("##migration_unknown_reason##");
   if( migration.isValid() )
   {
-    text = migration->getReason();
+    text = migration->reason();
   }
 
   drawReportRow( pos, _("##advchief_migration##"), _( text ) );
@@ -194,12 +194,12 @@ void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
 void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
 {
   city::InfoPtr info;
-  info << city->findService( city::Info::getDefaultName() );
+  info << city->findService( city::Info::defaultName() );
 
   std::string text = _("##food_stock_unknown_reason##");
   if( info.isValid() )
   {
-    int monthWithFood = info->getLast().monthWithFood;
+    int monthWithFood = info->lastParams().monthWithFood;
     switch( monthWithFood )
     {
       case 0: text = "##have_no_food_on_next_month##"; break;
@@ -219,9 +219,9 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
 {
   std::string text;
   city::InfoPtr info;
-  info << ptr_cast<city::Info>( city->findService( city::Info::getDefaultName() ));
+  info << ptr_cast<city::Info>( city->findService( city::Info::defaultName() ));
 
-  switch( info->getLast().foodKoeff )
+  switch( info->lastParams().foodKoeff )
   {
   case -1: text= "##we_produce_less_than_eat##"; break;
   case 0: text = "##we_noproduce_food##"; break;
@@ -237,7 +237,7 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption(Point pos)
 void AdvisorChiefWindow::Impl::drawMilitary(Point pos)
 {
   std::string text;
-  city::MilitaryPtr mil = ptr_cast<city::Military>( city->findService( city::Military::getDefaultName() ) );
+  city::MilitaryPtr mil = ptr_cast<city::Military>( city->findService( city::Military::defaultName() ) );
   if( mil.isValid() )
   {
     city::Military::Notification n = mil->getPriorityNotification();
@@ -252,10 +252,10 @@ void AdvisorChiefWindow::Impl::drawCrime(Point pos)
 {
   std::string text;
 
-  city::DisorderPtr ds = ptr_cast<city::Disorder>( city->findService( city::Disorder::getDefaultName() ) );
+  city::DisorderPtr ds = ptr_cast<city::Disorder>( city->findService( city::Disorder::defaultName() ) );
   if( ds.isValid() )
   {
-    text = ds->reasonDescr();
+    text = ds->reason();
   }
 
   text = text.empty() ? "##advchief_no_crime##" : text;
@@ -267,10 +267,10 @@ void AdvisorChiefWindow::Impl::drawHealth(Point pos)
 {
   std::string text;
 
-  city::HealthCarePtr ds = ptr_cast<city::HealthCare>( city->findService( city::HealthCare::getDefaultName() ) );
+  city::HealthCarePtr ds = ptr_cast<city::HealthCare>( city->findService( city::HealthCare::defaultName() ) );
   if( ds.isValid() )
   {
-    text = ds->getReason();
+    text = ds->reason();
   }
 
   text = text.empty() ? "##advchief_health_good##" : text;

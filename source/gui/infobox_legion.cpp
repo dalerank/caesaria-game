@@ -65,7 +65,7 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& 
   _d->lbTrainedValue = findChildA<Label*>( "lbTrainedValue", true, this );
   _d->gbLegionParams = findChildA<Label*>( "gbLegionParams", true, this );
 
-  WalkerList walkers = city->getWalkers( walker::any, pos );
+  WalkerList walkers = city->walkers( walker::any, pos );
 
   if( walkers.empty() )
   {

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layer.hpp"
 #include "tileoverlay.hpp"
@@ -234,12 +234,12 @@ void Layer::drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass p
 
 WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos& pos)
 {
-  Layer::VisibleWalkers visibleWalkers = getVisibleWalkers();
+  Layer::VisibleWalkers vWalkers = visibleWalkers();
 
   WalkerList walkerList;
-  foreach( wtAct, visibleWalkers )
+  foreach( wtAct, vWalkers )
   {
-    WalkerList foundWalkers = _city()->getWalkers( (walker::Type)*wtAct, pos );
+    WalkerList foundWalkers = _city()->walkers( (walker::Type)*wtAct, pos );
     walkerList.insert( walkerList.end(), foundWalkers.begin(), foundWalkers.end() );
   }
 
@@ -249,7 +249,7 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
 void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
-  WalkerList walkers = _getVisibleWalkerList( getVisibleWalkers(), tile.pos() );
+  WalkerList walkers = _getVisibleWalkerList( visibleWalkers(), tile.pos() );
 
   foreach( w, walkers )
   {
@@ -395,18 +395,42 @@ void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std:
 void Layer::drawColumn( Engine& engine, const Point& pos, const int percent)
 {
   __D_IMPL(_d,Layer)
-  engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
+  // Column made of tree base parts and contains maximum 10 parts.
+  // Header (10)
+  // Body (10, max 8 pieces)
+  // Foot (10)
+  //
+  // In original game fire colomn may be in one of 12 (?) states: none, f, f+h, f+b+h, f+2b+h, ... f+8b+h
 
-  int roundPercent = (math::clamp(percent, 0, 100)/ 10) * 10;
 
-  for( int offsetY=10; offsetY < roundPercent; offsetY += 10 )
+  int clamped = math::clamp(percent, 0, 100);
+  int rounded = (clamped / 10) * 10;
+  // [0,  9] -> 0
+  // [10,19] -> 10
+  // ...
+  // [80,89] -> 80
+  // [90,99] -> 90
+  // [100] -> 100
+  // rounded == 0 -> nothing
+  // rounded == 10 -> header + footer
+  // rounded == 20 -> header + body + footer
+
+  if (rounded == 0)
   {
-    engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
+    // Nothing to draw.
+    return;
   }
 
-  if( percent >= 10 )
+  engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
+
+  if(rounded > 10)
   {
-    engine.draw( _d->headerColumn, pos - Point( -6, 25 + roundPercent ) );
+    for( int offsetY=7; offsetY < rounded; offsetY += 10 )
+    {
+      engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
+    }
+
+    engine.draw(_d->headerColumn, pos - Point(-6, 25 + rounded));
   }
 }
 
@@ -431,7 +455,7 @@ void Layer::afterRender( Engine& engine)
     Tilemap& tmap = _d->city->tilemap();
     Point offset = _d->camera->offset();
     int size = tmap.size();
-    Picture& screen = engine.getScreen();
+    Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
     {
       const Tile& tile = tmap.at( 0, k );

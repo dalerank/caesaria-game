@@ -87,6 +87,10 @@
     move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }
   }
 
+  indigeneRioter : {
+    move : { rc : "citizen02", start : 351, frames : 12, action : 1, step : 8 }
+  }
+
   barber : {
     move : { rc : "citizen02", start : 463, frames : 12, action : 1, step : 8 }
   }
@@ -199,14 +203,29 @@
     die : { rc : "citizen03", start : 385, frames : 1, action : 3, step : 0 }
   }
 
+  missioner : {
+    move : { rc : "citizen03", start : 921, frames : 12, action : 1, step : 8 }
+    die : { rc : "citizen03", start : 1016, frames : 1, action : 3, step : 0 }
+  }
+
   seaMerchant : {
     move : { rc : "carts", start : 241, frames : 1, action : 1, step : 8 }
+  }
+
+  indigene : {
+    move : { rc : "indigene", start : 1, frames : 12, action : 1, step : 8 }
   }
 
   balista : {
     none : { rc : "sprites", start : 210, frames : 1, action : 0, step : 8 }
     fight : { rc : "sprites", start : 162, frames : 6, action : 2, step : 8 }
     work : { rc : "sprites", start : 162, frames : 6, action : 4, step : 8 }
+  }
+
+  romeChasternerSoldier : {
+    move : { rc : "citizen03", start : 441, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen03", start : 393, frames : 6, action : 3, step : 8 }
+    die : { rc : "citizen03", start : 545, frames : 1, action : 3, step : 0 }
   }
 }
 

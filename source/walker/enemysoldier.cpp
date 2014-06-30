@@ -138,7 +138,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
     walker::Type rtype;
     foreach( tile, tiles )
     {
-      WalkerList tileWalkers = _city()->getWalkers( walker::any, (*tile)->pos() );
+      WalkerList tileWalkers = _city()->walkers( walker::any, (*tile)->pos() );
 
       foreach( i, tileWalkers )
       {
@@ -243,9 +243,18 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
   {
   case attackFood:
   case attackCitizen:
+  case attackIndustry:
   {
     BuildingList tmpRet;
-    TileOverlay::Group needGroup = _atPriority == attackFood ? building::foodGroup : building::houseGroup;
+    TileOverlay::Group needGroup;
+    switch( _atPriority )
+    {
+    case attackIndustry: needGroup = building::industryGroup; break;
+    case attackFood: needGroup = building::foodGroup; break;
+    case attackCitizen:  needGroup = building::houseGroup; break;
+    default: needGroup = building::unknownGroup; break;
+    }
+
     foreach( it, ret )
     {
       if( (*it)->group() == needGroup )

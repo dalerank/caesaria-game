@@ -74,13 +74,15 @@ TilesArray Helper::getArea(TilePos start, TilePos stop)
 
 HirePriorities Helper::getHirePriorities() const
 {
-  SmartPtr<WorkersHire> wh = ptr_cast<WorkersHire>( _city->findService( WorkersHire::getDefaultName() ) );
+  SmartPtr<WorkersHire> wh = ptr_cast<WorkersHire>( _city->findService( WorkersHire::defaultName() ) );
   return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 
 float Helper::getBalanceKoeff()
 {
-  return atan( _city->population() / 5000.f );
+  int pop = _city->population();
+
+  return pop > 300 ? atan( pop / 1000.f ) : (pop / 1000.f);
 }
 
 void Helper::updateTilePics()

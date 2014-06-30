@@ -19,6 +19,7 @@
 #include "core/variant.hpp"
 #include "empire.hpp"
 #include "gfx/animation.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -30,28 +31,30 @@ class Object::Impl
 public:
   Picture pic;
   Point location;
-  Empire* empire;
+  EmpirePtr empire;
   std::string name;
   Animation animation;
   Pictures pictures;
   unsigned int time;
+  bool isDeleted;
 };
 
-ObjectPtr Object::create(Empire& empire)
+ObjectPtr Object::create( EmpirePtr empire)
 {
-  ObjectPtr ret( new Object() );
-  ret->_d->empire = &empire;
+  ObjectPtr ret( new Object( empire ) );
   ret->drop();
 
   return ret;
 }
 
+bool Object::isDeleted() const { return _d->isDeleted; }
+std::string Object::type() const { return CAESARIA_STR_EXT(Object); }
+void Object::timeStep(const unsigned int time) {}
 EmpirePtr Object::empire() const { return _d->empire; }
 std::string Object::name() const { return _d->name; }
-
+void Object::setName(const std::string& name) { _d->name = name; }
 Point Object::location() const { return _d->location;}
 void Object::setLocation(const Point& location){  _d->location = location; }
-
 Picture Object::picture() const { return _d->pic; }
 
 const Pictures& Object::pictures() const
@@ -68,30 +71,47 @@ void Object::setPicture(Picture pic)
   _d->pictures[ 0 ] = pic;
 }
 
-VariantMap Object::save() const
-{
-  VariantMap ret;
-  ret[ "location" ] = _d->location;
-  ret[ "picture" ] = Variant( _d->pic.name() );
-  ret[ "name" ] = Variant( _d->name );
-  ret[ "animation" ] = _d->animation.save();
+bool Object::isMovable() const { return true; }
 
-  return ret;
+void Object::save( VariantMap& stream ) const
+{
+  stream[ "location" ] = _d->location;
+  stream[ "picture" ] = Variant( _d->pic.name() );
+  stream[ "name" ] = Variant( _d->name );
+  stream[ "animation" ] = _d->animation.save();
+  stream[ "isDeleted" ] = _d->isDeleted;
+  stream[ "type" ] = Variant( type() );
 }
 
 void Object::load(const VariantMap& stream)
 {
-  _d->location = stream.get( "location" ).toPoint();
-  _d->name = stream.get( "name" ).toString();
+  _d->location = stream.get( "location" ).toPoint();  
+
+  Variant name = stream.get( "name" );
+  if( name.isValid() )
+  {
+    _d->name = name.toString();
+  }
+  Logger::warningIf( _d->name.empty(), "Object: name is null" );
+
   setPicture( Picture::load( stream.get( "picture" ).toString() ) );
   _d->animation.load( stream.get( "animation" ).toMap() );
+  _d->isDeleted = stream.get( "isDeleted" );
 }
 
+void Object::initialize() {}
 Object::~Object() {}
-Object::Object() : _d( new Impl )
+
+void Object::deleteLater() { _d->isDeleted = true; }
+
+Object::Object( EmpirePtr empire) : _d( new Impl )
 {
   _d->time = 0;
+  _d->empire = empire;
   _d->pictures.resize( 2 );
+  _d->isDeleted = false;
 }
+
+Animation& Object::_animation() { return _d->animation; }
 
 }

@@ -18,32 +18,37 @@
 #ifndef __CAESARIA_EMPIRECITY_H_INCLUDED__
 #define __CAESARIA_EMPIRECITY_H_INCLUDED__
 
-#include "core/scopedptr.hpp"
+#include "object.hpp"
 #include "core/referencecounted.hpp"
 #include "core/position.hpp"
 #include "predefinitions.hpp"
 #include "good/good.hpp"
-#include "core/serializer.hpp"
 
 class GoodStore;
+
+namespace city
+{
+  class Funds;
+}
 
 namespace world
 {
 
-class City : public ReferenceCounted, public Serializable
+class City : public Object
 {
 public:
-  virtual std::string getName() const = 0;
-  virtual Point location() const = 0;
-  virtual void setLocation( const Point& location ) = 0;
+  City( EmpirePtr empire );
 
   // performs one simulation step
-  virtual void timeStep( unsigned int time ) = 0;
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
-  virtual void arrivedMerchant( MerchantPtr ) = 0;
+  virtual void addObject( ObjectPtr ) = 0;
   virtual unsigned int tradeType() const = 0;
-  virtual EmpirePtr empire() const = 0;
+  virtual city::Funds& funds() = 0;
+  virtual unsigned int population() const = 0;
+  virtual bool isPaysTaxes() const = 0;
+  virtual bool haveOverduePayment() const = 0;
+  virtual bool isMovable() const { return false; }
 
   virtual void delayTrade( unsigned int month ) = 0;
   virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost ) = 0;

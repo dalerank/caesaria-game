@@ -21,22 +21,18 @@
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "merchant.hpp"
+#include "city/funds.hpp"
+#include "game/resourcegroup.hpp"
 #include "empiremap.hpp"
+
+using namespace gfx;
 
 namespace world
 {
 
-namespace {
-CAESARIA_LITERALCONST(location)
-CAESARIA_LITERALCONST(distant)
-}
-
 class ComputerCity::Impl
 {
 public:
-  Point location;
-  std::string name;
-  EmpirePtr empire;
   unsigned int tradeType;
   bool distantCity, romeCity;
   bool isAvailable;
@@ -47,26 +43,31 @@ public:
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
   unsigned int merchantsNumber;
+  city::Funds funds;
 };
 
-ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name ) : _d( new Impl )
+ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
+  : City( empire ), _d( new Impl )
 {
-  _d->name = name;
+  setName( name );
   _d->tradeDelay = 0;
   _d->distantCity = false;
-  _d->empire = empire;
   _d->merchantsNumber = 0;
   _d->isAvailable = true;
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
   _d->romeCity = false;
+
+  _initTextures();
 }
 
 bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
-std::string ComputerCity::getName() const {  return _d->name;}
-Point ComputerCity::location() const{  return _d->location;}
-void ComputerCity::setLocation( const Point& location ){  _d->location = location;}
+
+city::Funds& ComputerCity::funds() { return _d->funds; }
+unsigned int ComputerCity::population() const { return 0; }
+bool ComputerCity::isPaysTaxes() const { return true; }
+bool ComputerCity::haveOverduePayment() const { return false; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isRomeCity() const{  return _d->romeCity;}
 bool ComputerCity::isAvailable() const{  return _d->isAvailable;}
@@ -74,7 +75,7 @@ void ComputerCity::setAvailable(bool value){  _d->isAvailable = value;}
 
 void ComputerCity::save( VariantMap& options ) const
 {
-  options[ lc_location ] = _d->location;
+  City::save( options );
 
   VariantMap vm_sells;
   VariantMap vm_sold;
@@ -116,11 +117,11 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "bought" ] = vm_bought;
   options[ "lastTimeMerchantSend" ] = _d->lastTimeMerchantSend;
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
-  options[ "available" ] = _d->isAvailable;
+  VARIANT_SAVE_ANY_D( options, _d, isAvailable );
   options[ "merchantsNumber" ] = _d->merchantsNumber;
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
-  options[ lc_distant ] = _d->distantCity;
+  VARIANT_SAVE_ANY_D( options, _d, distantCity );
   options[ "romecity" ] = _d->romeCity;
   options[ "realSells" ] = _d->realSells.save();
   options[ "tradeDelay" ] = _d->tradeDelay;
@@ -128,15 +129,13 @@ void ComputerCity::save( VariantMap& options ) const
 
 void ComputerCity::load( const VariantMap& options )
 {
-  Variant v_location = options.get( lc_location );
-  if( v_location.isValid() )
-    setLocation( v_location.toPoint() );
+  City::load( options );
 
-  _d->isAvailable = (bool)options.get( "available", false );
+  VARIANT_LOAD_ANY_D( _d, isAvailable, options );
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
   _d->merchantsNumber = (int)options.get( "merchantsNumber" );
-  _d->distantCity = (bool)options.get( lc_distant );
+  VARIANT_LOAD_ANY_D( _d, distantCity, options );
   _d->romeCity = (bool)options.get( "romecity" );
   _d->tradeDelay = (int)options.get( "tradeDelay" );
 
@@ -173,6 +172,8 @@ void ComputerCity::load( const VariantMap& options )
   {
     _d->realSells.load( vm_rsold.toMap() );
   }
+
+  _initTextures();
 }
 
 const GoodStore& ComputerCity::importingGoods() const {  return _d->realSells;}
@@ -191,24 +192,28 @@ CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
   return ret;
 }
 
-void ComputerCity::arrivedMerchant( MerchantPtr merchant )
+void ComputerCity::addObject(ObjectPtr object )
 {
-  GoodStore& sellGoods = merchant->getSellGoods();
-  GoodStore& buyGoods = merchant->getBuyGoods();
-
-  _d->buyStore.storeAll( buyGoods );
-
-  for( int i=Good::none; i < Good::goodCount; i ++ )
+  MerchantPtr merchant = ptr_cast<Merchant>( object );
+  if( merchant.isValid() )
   {
-    Good::Type gtype = Good::Type ( i );
-    int qty = sellGoods.freeQty( gtype );
-    GoodStock stock( gtype, qty, qty );
-    _d->realSells.store( stock, qty );
+    GoodStore& sellGoods = merchant->sellGoods();
+    GoodStore& buyGoods = merchant->buyGoods();
+
+    _d->buyStore.storeAll( buyGoods );
+
+    for( int i=Good::none; i < Good::goodCount; i ++ )
+    {
+      Good::Type gtype = Good::Type ( i );
+      int qty = sellGoods.freeQty( gtype );
+      GoodStock stock( gtype, qty, qty );
+      _d->realSells.store( stock, qty );
+    }
+
+    _d->sellStore.storeAll( sellGoods );
+
+    _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
   }
-
-  _d->sellStore.storeAll( sellGoods );
-
-  _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
 }
 
 void ComputerCity::changeTradeOptions(const VariantMap& stream)
@@ -255,7 +260,7 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( _d->lastTimeMerchantSend.monthsTo( GameDate::current() ) > 2 ) 
   {
-    TraderouteList routes = _d->empire->tradeRoutes( getName() );
+    TraderouteList routes = empire()->tradeRoutes( name() );
     _d->lastTimeMerchantSend = GameDate::current();
 
     if( _d->merchantsNumber >= routes.size() || !_mayTrade() )
@@ -297,13 +302,28 @@ void ComputerCity::timeStep( unsigned int time )
       foreach( route, routes )
       {
         _d->merchantsNumber++;
-        (*route)->addMerchant( getName(), sellGoods, buyGoods );
+        (*route)->addMerchant( name(), sellGoods, buyGoods );
       }
     }
   }
 }
 
-EmpirePtr ComputerCity::empire() const { return _d->empire; }
 unsigned int ComputerCity::tradeType() const { return _d->tradeType; }
+
+void ComputerCity::_initTextures()
+{
+  int index = PicID::otherCity;
+
+  if( _d->distantCity ) { index = PicID::distantCity; }
+  else if( _d->romeCity ) { index = PicID::romeCity; }
+
+  Picture pic = Picture::load( ResourceGroup::empirebits, index );
+  pic.setOffset( 0, 30 );
+  setPicture( pic );
+  _animation().load( ResourceGroup::empirebits, index+1, 6 );
+  _animation().setLoop( true );
+  _animation().setOffset( Point( 17, 24 ) );
+  _animation().setDelay( 2 );
+}
 
 }//end namespace world

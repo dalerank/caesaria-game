@@ -658,6 +658,16 @@ void Label::setupUI(const VariantMap& ui)
   setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
   setWordwrap( (bool)ui.get( "multiline", false ) );
 
+  Variant vTextOffset = ui.get( "text.offset" );
+  if( vTextOffset.isValid() ){ setTextOffset( vTextOffset.toPoint() ); }
+
+  Variant vIcon = ui.get( "icon" );
+  if( vIcon.isValid() )
+  {
+    Point iconOffset = ui.get( "icon.offset" ).toPoint();
+    setIcon( Picture::load( vIcon.toString() ), iconOffset );
+  }
+
   BackgroundModeHelper helper;
   Label::BackgroundMode mode = helper.findType( ui.get( "bgtype" ).toString() );
   if( mode != bgNone )

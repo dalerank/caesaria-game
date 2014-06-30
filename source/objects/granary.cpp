@@ -22,7 +22,7 @@
 #include "core/variant.hpp"
 #include "walker/cart_pusher.hpp"
 #include "good/goodstore_simple.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
@@ -158,7 +158,6 @@ void Granary::initTerrain(Tile& terrain)
   //         (1,0)Y    (2,1)Y
   //              (2,0)N
   bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
-  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlRoad, walkable );
   terrain.setFlag( Tile::tlRock, !walkable ); // el muleta
 }
@@ -198,6 +197,17 @@ void Granary::load( const VariantMap& stream)
 }
 
 bool Granary::isWalkable() const { return true; }
+
+void Granary::destroy()
+{
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getArea( this );
+  foreach( it, tiles )
+  {
+    (*it)->setFlag( Tile::tlRoad, false );
+    (*it)->setFlag( Tile::tlRock, false );
+  }
+}
 
 const Pictures& Granary::pictures(Renderer::Pass pass) const
 {

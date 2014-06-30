@@ -42,7 +42,7 @@ class CitizenInfoboxParser : public InfoboxCreator
 public:
   gui::InfoboxSimple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    WalkerList walkers = city->getWalkers( walker::any, pos );
+    WalkerList walkers = city->walkers( walker::any, pos );
     
     if( walkers.empty() )
     {
@@ -96,7 +96,7 @@ void InfoboxCitizenManager::addCreator( constants::walker::Type type, InfoboxCit
 
 gui::InfoboxSimple* InfoboxCitizenManager::show( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
 {
-  WalkerList walkers = city->getWalkers( walker::any, pos );
+  WalkerList walkers = city->walkers( walker::any, pos );
   Impl::Creators::iterator it = _d->creators.find( walkers.empty() ? walker::unknown : walkers.front()->type() );
   if( it == _d->creators.end() )
   {

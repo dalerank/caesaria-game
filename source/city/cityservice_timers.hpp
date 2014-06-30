@@ -28,7 +28,7 @@ namespace city
 class Timers
 {
 public:
-  static Timers& getInstance();
+  static Timers& instance();
 
   void update( const unsigned int time );
   void addTimer( TimerPtr timer );

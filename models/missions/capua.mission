@@ -100,6 +100,38 @@
       value : 30
     }
 
+    oil_price_rising#trading_options : {
+      date : "-345.04.01"
+      goods : {
+        oil : { buy : 40, sell : 30 }	    
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "oil"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+	 oil_price_rising#trading_options : {
+      date : "-343.04.01"
+      goods : {
+        pottery : { buy : 30, sell : 20 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "oil"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
     emperor_request_0#city_request : {
       date : "-348.06.01"
       reqtype : "good_request"

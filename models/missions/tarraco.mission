@@ -152,12 +152,17 @@
   events :
   {
     city_indebt#city_indebt : {
-      date : "-350.01.01"
       type : "city_indebt"
       count : 2
       emperorMoney : 5000
       video : "city_indebt.bik"
       text : "##city_has_runout_money##"
+    }
+
+	earthquake#earthquake : {
+      date : "-268.03.01"
+      start : [ 14, 77 ]
+      end : [ 44, 57 ]
     }
 
     emperor_request_pottery1#city_request : {
@@ -168,6 +173,160 @@
       good : { pottery : 10 }
       success : { favour : 10 }
       fail : { favour : -10, appendMonth : 12 }
+    }
+    
+	emperor_request_pottery2#city_request : {
+      date : "-267.04.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { fruit : 10 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+	emperor_request_pottery3#city_request : {
+      date : "-265.05.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { pottery : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+	emperor_request_pottery4#city_request : {
+      date : "-263.03.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { fruit : 15 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+    emperor_request_pottery5#city_request : {
+      date : "-261.05.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { pottery : 20 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+	emperor_request_pottery6#city_request : {
+      date : "-259.08.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { fruit : 25 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+	emperor_request_pottery7#city_request : {
+      date : "-257.02.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { pottery : 25 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+	emperor_request_pottery8#city_request : {
+      date : "-255.05.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { fruit : 30 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+	emperor_request_pottery9#city_request : {
+      date : "-250.05.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { pottery : 30 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+    emperor_request_pottery10#city_request : {
+      date : "-245.05.01"
+      reqtype : "good_request"
+      video : "/smk/Urgent_message2.smk"
+      month : 24
+      good : { fruit : 30 }
+      success : { favour : 10 }
+      fail : { favour : -10, appendMonth : 12 }
+    }
+
+	price_rising1#trading_options : {
+      date : "-265.04.01"
+      goods : {
+        fruit : { buy : 20, sell : 15 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "fruit"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+    price_rising2#trading_options : {
+      date : "-262.04.01"
+      goods : {
+        marble : { buy : 200, sell : 150 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "marble"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+	price_rising3#trading_options : {
+      date : "-255.04.01"
+      goods : {
+        furniture : { buy : 120, sell : 80 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "furniture"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
+    }
+
+	price_rising4#trading_options : {
+      date : "-250.04.01"
+      goods : {
+        pottery : { buy : 70, sell : 50 }
+      }
+
+      exec : {
+        message#messagebox : {
+          good : "pottery"
+          title : "##a_price_rise_title##"
+          text : "##a_price_rise_text##"
+          send2scribe : true
+        }
+      }
     }
 
     population_milestone_500#messagebox : {

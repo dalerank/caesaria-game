@@ -177,7 +177,7 @@ void Wolf::_centerTile()
   Animal::_centerTile();
 
   TilePos offset(1,1);
-  WalkerList walkers = _city()->getWalkers( walker::any, pos() - offset, pos() + offset );
+  WalkerList walkers = _city()->walkers( walker::any, pos() - offset, pos() + offset );
   walkers = walkers.exclude<Wolf>();
 
   if( !walkers.empty() )
@@ -195,7 +195,7 @@ void Wolf::_centerTile()
 void Wolf::_findNewWay( const TilePos& start )
 {
   TilePos offset(10,10);
-  WalkerList walkers = _city()->getWalkers( walker::any, start - offset, start + offset );
+  WalkerList walkers = _city()->walkers( walker::any, start - offset, start + offset );
   walkers = walkers.exclude<Wolf>();
 
   Pathway pathway;
@@ -241,7 +241,7 @@ void Wolf::timeStep(const unsigned long time)
   {
   case acFight:
   {
-    WalkerList walkers = _city()->getWalkers( walker::any, _d->attackPos );
+    WalkerList walkers = _city()->walkers( walker::any, _d->attackPos );
     walkers = walkers.exclude<Wolf>();
 
     if( !walkers.empty() )

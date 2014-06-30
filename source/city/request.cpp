@@ -163,14 +163,14 @@ void RqGood::success( PlayerCityPtr city )
 
   if( _d->winFavour > 0 )
   {
-    events::GameEventPtr e = events::UpdateFavour::create( city->getName(), _d->winFavour );
+    events::GameEventPtr e = events::UpdateFavour::create( city->name(), _d->winFavour );
     e->dispatch();
   }
 }
 
 void RqGood::fail( PlayerCityPtr city )
 {
-  events::GameEventPtr e = events::UpdateFavour::create( city->getName(), _d->failFavour );
+  events::GameEventPtr e = events::UpdateFavour::create( city->name(), _d->failFavour );
   e->dispatch();
 
   if( _d->failAppendMonth > 0 )

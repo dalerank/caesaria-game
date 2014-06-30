@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_FACTORY_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_FACTORY_H_INCLUDED__
@@ -42,7 +44,7 @@ public:
     return ret;
   }
 
-  virtual std::string serviceName() const { return T::getDefaultName(); }
+  virtual std::string serviceName() const { return T::defaultName(); }
 };
 
 

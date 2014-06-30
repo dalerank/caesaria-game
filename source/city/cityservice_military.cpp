@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_military.hpp"
 #include "city.hpp"
@@ -22,6 +22,10 @@
 
 namespace city
 {
+
+namespace  {
+CAESARIA_LITERALCONST(notifications)
+}
 
 class Military::Impl
 {
@@ -95,14 +99,14 @@ VariantMap Military::save() const
     vlNts[ StringHelper::format( 0xff, "note_%03d", index ) ] = vlNt;
   }
 
-  ret[ "notifications" ] = vlNts;
+  ret[ lc_notifications ] = vlNts;
 
   return ret;
 }
 
 void Military::load(const VariantMap& stream)
 {
-  VariantMap vlNts = stream.get( "notifications" ).toMap();
+  VariantMap vlNts = stream.get( lc_notifications ).toMap();
   foreach( it, vlNts )
   {
     VariantList vlN = it->second.toList();
@@ -115,7 +119,7 @@ void Military::load(const VariantMap& stream)
   }
 }
 
-std::string Military::getDefaultName()
+std::string Military::defaultName()
 {
   return CAESARIA_STR_EXT(Military);
 }

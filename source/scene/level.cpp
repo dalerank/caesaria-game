@@ -74,6 +74,7 @@
 #include "core/foreach.hpp"
 #include "events/random_wolves.hpp"
 #include "gfx/layerconstants.hpp"
+#include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
 
 using namespace gui;
@@ -401,7 +402,7 @@ void Level::_showIngameMenu()
 
 vfs::Path Level::Impl::getFastSaveName( const std::string& postfix )
 {
-  vfs::Path filename = game->city()->getName()
+  vfs::Path filename = game->city()->name()
                        + GameSettings::get( GameSettings::fastsavePostfix ).toString()
                        + postfix
                        + GameSettings::get( GameSettings::saveExt ).toString();
@@ -491,6 +492,7 @@ void Level::handleEvent( NEvent& event )
   {
     if( event.keyboard.control )
     {
+      bool handled = true;
       switch( event.keyboard.key )
       {
       case KEY_SPACE:
@@ -519,10 +521,12 @@ void Level::handleEvent( NEvent& event )
       case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
       case KEY_F12:    _d->showAdvisorsWindow( advisor::main ); break;
       default:
+        handled = false;
       break;
       }
 
-      return;
+      if( handled )
+        return;
     }
 
     switch( event.keyboard.key )
@@ -553,27 +557,33 @@ void Level::handleEvent( NEvent& event )
     break;
 
     case KEY_COMMA:
-    {
-      if( event.keyboard.pressed )
-        break;
-
-      events::GameEventPtr e = events::Step::create(1);
-      e->dispatch();
-    }
-    break;
     case KEY_PERIOD:
     {
-      if( event.keyboard.pressed )
-        break;
-
-      events::GameEventPtr e = events::Step::create(25);
-      e->dispatch();
+      if( !event.keyboard.pressed )
+      {
+        events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
+        e->dispatch();
+      }
     }
     break;
 
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
     case KEY_F10:_d->makeScreenShot(); break;
+    case KEY_KEY_I:
+    {
+      if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
+      {
+        world::CityPtr rome = _d->game->empire()->rome();
+        PlayerCityPtr plCity = _d->game->city();
+
+        world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
+        army->setBase( rome );
+        army->attack( ptr_cast<world::Object>( plCity ) );
+      }
+    }
+    break;
+
     case KEY_F11:
       if( event.keyboard.pressed )
       {

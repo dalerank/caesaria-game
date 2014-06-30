@@ -173,7 +173,7 @@ void AdvisorEmperorWindow::_updateRequests()
   }
 
   city::request::RequestList reqs;
-  city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( _d->city->findService( city::request::Dispatcher::getDefaultName() ) );
+  city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( _d->city->findService( city::request::Dispatcher::defaultName() ) );
 
   if( dispatcher.isValid() )
   {
@@ -259,7 +259,7 @@ void AdvisorEmperorWindow::Impl::sendMoney( int money )
 void AdvisorEmperorWindow::Impl::sendGift(int money)
 {
   city->player()->appendMoney( -money );
-  city->empire()->emperor().sendGift( city->getName(), money );
+  city->empire()->emperor().sendGift( city->name(), money );
 }
 
 void AdvisorEmperorWindow::Impl::resolveRequest(city::request::RequestPtr request)

@@ -26,7 +26,7 @@ class LayerFire : public Layer
 {
 public:
   virtual int type() const;
-  virtual std::set<int> getVisibleWalkers() const;
+  virtual std::set<int> visibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
   virtual void handleEvent( NEvent& event );
 

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "statistic.hpp"
 #include "objects/construction.hpp"
@@ -24,6 +26,7 @@
 #include "good/goodstore.hpp"
 #include "city/funds.hpp"
 #include "objects/farm.hpp"
+#include "world/empire.hpp"
 #include "objects/warehouse.hpp"
 #include "city/cityservice_disorder.hpp"
 #include <map>
@@ -53,10 +56,7 @@ CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
   HouseList houses = helper.find<House>( building::house );
 
   CitizenGroup ret;
-  foreach( it, houses )
-  {
-    ret += (*it)->habitants();
-  }
+  foreach( it, houses ) { ret += (*it)->habitants(); }
 
   return ret;
 }
@@ -118,7 +118,7 @@ unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 
 unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
 {
-  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::getDefaultName() ) );
+  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::defaultName() ) );
   return ds.isValid() ? ds->value() : 0;
 }
 
@@ -177,6 +177,11 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   }
 
   return taxValue;
+}
+
+int Statistic::getWagesDiff(PlayerCityPtr city)
+{
+  return city->funds().workerSalary() - city->empire()->workerSalary();
 }
 
 unsigned int Statistic::getFestivalCost(PlayerCityPtr city, FestivalType type)

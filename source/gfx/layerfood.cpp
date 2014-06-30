@@ -33,7 +33,7 @@ namespace gfx
 
 int LayerFood::type() const {  return citylayer::food; }
 
-Layer::VisibleWalkers LayerFood::getVisibleWalkers() const
+Layer::VisibleWalkers LayerFood::visibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::marketLady );
@@ -59,9 +59,21 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
     int foodLevel = -1;
     switch( overlay->type() )
     {
-      //fire buildings and roads
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
+
+    // Food-related
     case building::market:
     case building::granary:
       needDrawAnimations = true;     
@@ -72,7 +84,7 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
       {
         city::Helper helper( _city() );        
         HousePtr house = ptr_cast<House>( overlay );
-        foodLevel = house->getState( (Construction::Param)House::food );
+        foodLevel = (int) house->getState( (Construction::Param)House::food );
         needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
         if( !needDrawAnimations )
         {

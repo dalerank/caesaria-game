@@ -63,7 +63,7 @@ void Mars::_doSmallCurse(PlayerCityPtr city)
 void Mars::_doBlessing(PlayerCityPtr city)
 {
   EnemySoldierList enemies;
-  enemies << city->getWalkers( walker::any );
+  enemies << city->walkers( walker::any );
 
   bool blessingDone = false;
   int step = enemies.size() / 3;

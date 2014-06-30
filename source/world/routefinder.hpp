@@ -33,7 +33,7 @@ public:
 
   TraderouteFinder( const EmpireMap& empiremap );
 
-  bool getRoute( TilePos start, TilePos stop, TilePosArray& way, int flags );
+  bool findRoute( TilePos start, TilePos stop, TilePosArray& way, int flags );
   void setTerrainType( TilePos pos, unsigned int type );
 
   ~TraderouteFinder();

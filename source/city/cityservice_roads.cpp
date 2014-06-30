@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_roads.hpp"
 #include "objects/construction.hpp"
@@ -53,10 +53,10 @@ SrvcPtr Roads::create(PlayerCityPtr city)
   return SrvcPtr( ret );
 }
 
-std::string Roads::getDefaultName(){  return "roads";}
+std::string Roads::defaultName(){  return "roads";}
 
 Roads::Roads(PlayerCityPtr city )
-  : Srvc( *city.object(), Roads::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), Roads::defaultName() ), _d( new Impl )
 {
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;

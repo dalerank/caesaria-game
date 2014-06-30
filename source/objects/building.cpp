@@ -83,7 +83,7 @@ void Building::storeGoods(GoodStock &stock, const int amount)
                    bldType.c_str(), pos().i(), pos().j() );
   try
   {
-   _CAESARIA_DEBUG_BREAK_IF("This building should not store any goods");
+   //_CAESARIA_DEBUG_BREAK_IF("This building should not store any goods");
   }
   catch(...)
   {

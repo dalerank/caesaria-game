@@ -34,7 +34,7 @@ int LayerCrime::type() const
   return citylayer::crime;
 }
 
-Layer::VisibleWalkers LayerCrime::getVisibleWalkers() const
+Layer::VisibleWalkers LayerCrime::visibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::prefect );
@@ -54,13 +54,25 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
   {
     bool needDrawAnimations = false;
     TileOverlayPtr overlay = tile.overlay();
-    int fireLevel = -1;
+    int crime = -1;
     switch( overlay->type() )
     {
     //fire buildings and roads
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
+
     case building::prefecture:
+    case building::burningRuins:
       needDrawAnimations = true;
     break;
 
@@ -68,8 +80,8 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
-        fireLevel = (int)house->getServiceValue( Service::crime );
-        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+        crime = (int)house->getServiceValue( Service::crime );
+        needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty(); // In case of vacant terrain
 
         city::Helper helper( _city() );
         drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
@@ -90,9 +102,9 @@ void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
       Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
-    else if( fireLevel >= 0)
+    else if( crime >= 0)
     {
-      drawColumn( engine, screenPos, fireLevel );
+      drawColumn( engine, screenPos, crime);
     }
   }
 

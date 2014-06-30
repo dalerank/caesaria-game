@@ -206,7 +206,7 @@
       }
     }
     
-    emperor_request_pottery1#city_request : {
+    emperor_request1#city_request : {
       date : "-267.02.01"
       reqtype : "good_request"
       video : "/smk/Urgent_message2.smk"
@@ -230,19 +230,12 @@
           send2scribe : true
         }
       }
-    }
-
-    greeck_attack#messagebox : {
-      date : "-267.09.01"
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "/smk/spy_army.smk"
-      send2scribe : true
-    }
+    }    
 
     greek_invasion#enemy_attack : {
       date : "-267.09.01"
       type : "enemy_attack"
+      target : "food"
       items : {
         troop_soldiers : {
           type : "greekSoldier"
@@ -257,7 +250,14 @@
         }
       }
 
-      text : "##enemy_attack_city##"
+      exec : {
+		greeck_attack#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+ 	  }
     }    
     
     capua_increase_weapons_trading#trading_options : {
@@ -292,19 +292,12 @@
           send2scribe : true
         }
       }
-    }
-    
-    greeck_attack_2#messagebox : {
-      date : "-264.02.01"
-      title : "##greeck_attack_title##"
-      text : "##greeck_attack_text##"
-      video : "/smk/spy_army.smk"
-      send2scribe : true
-    }
+    }    
 
     greek_invasion_2#enemy_attack : {
       date : "-264.02.01"
       type : "enemy_attack"
+      target : "best_building"
       items : {
         troop_soldiers : {
           type : "greekSoldier"
@@ -319,7 +312,238 @@
         }
       }
 
-      text : "##enemy_attack_city##"
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
+    }       
+
+	greek_invasion_3#enemy_attack : {
+      date : "-261.04.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 8
+          location : "random"
+        }
+      }
+
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
+    }  
+
+    greek_invasion_4#enemy_attack : {
+      date : "-258.06.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 16
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 16
+          location : "random"
+        }
+      }
+
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
+    }            
+
+	greek_invasion_5#enemy_attack : {
+      date : "-255.08.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 18
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 18
+          location : "random"
+        }
+      }
+
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
+    }    
+
+    greek_invasion_6#enemy_attack : {
+      date : "-252.06.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 20
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 20
+          location : "random"
+        }
+      }
+
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
+    }  
+
+    greek_invasion_7#enemy_attack : {
+      date : "-249.06.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 22
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 22
+          location : "random"
+        }
+      }
+
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
+    }     
+
+    greek_invasion_8#enemy_attack : {
+      date : "-245.06.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 25
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 25
+          location : "random"
+        }
+      }
+
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
+    }    
+
+    greek_invasion_9#enemy_attack : {
+      date : "-240.06.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 32
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 32
+          location : "random"
+        }
+      }
+
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
+    }  
+
+    greek_invasion_10#enemy_attack : {
+      date : "-235.06.01"
+      type : "enemy_attack"
+      target : "best_building"
+      items : {
+        troop_soldiers : {
+          type : "greekSoldier"
+          count : 36
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "greekArcher"
+          count : 36
+          location : "random"
+        }
+      }
+
+      exec : {
+        greeck_attack_2#messagebox : {
+		  title : "##greeck_attack_title##"
+		  text : "##greeck_attack_text##"
+		  video : "/smk/spy_army.smk"
+		  send2scribe : true
+		}
+	  }
     }       
     
     tarentum_increase_oil_trading#trading_options : {

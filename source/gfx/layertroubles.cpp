@@ -35,7 +35,7 @@ namespace gfx
 {
 
 int LayerTroubles::type() const{  return _type;}
-Layer::VisibleWalkers LayerTroubles::getVisibleWalkers() const{  return std::set<int>();}
+Layer::VisibleWalkers LayerTroubles::visibleWalkers() const{  return std::set<int>();}
 
 void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 {
@@ -53,11 +53,19 @@ void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 
     switch( overlay->type() )
     {
-      //fire buildings and roads
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
     case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
     case building::elevation:
+    case building::rift:
       needDrawAnimations = true;
     break;
 

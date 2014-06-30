@@ -36,7 +36,7 @@ public:
 
   int coverage( Coverage type ) const;
 
-  static std::string getDefaultName();
+  static std::string defaultName();
 
 private:
   CultureRating( PlayerCityPtr city );

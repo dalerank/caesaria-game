@@ -36,7 +36,7 @@ int LayerEducation::type() const
   return _type;
 }
 
-Layer::VisibleWalkers LayerEducation::getVisibleWalkers() const
+Layer::VisibleWalkers LayerEducation::visibleWalkers() const
 {
   return _walkers;
 }
@@ -47,23 +47,21 @@ int LayerEducation::_getLevelValue( HousePtr house ) const
   {
   case citylayer::education:
   {
-    switch( house->spec().minEducationLevel() )
+    float acc = 0;
+    int level = house->spec().minEducationLevel();
+    switch(level)
     {
-    case 1: return house->getServiceValue( Service::school );
-    case 2: return ( house->getServiceValue( Service::school ) +
-                      house->getServiceValue( Service::library ) ) / 2;
-    case 3: return ( house->getServiceValue( Service::school ) +
-                     house->getServiceValue( Service::library ) +
-                     house->getServiceValue( Service::academy ) ) / 3;
-
+    case 3: acc += house->getServiceValue( Service::academy );
+    case 2: acc += house->getServiceValue( Service::library );
+    case 1: acc += house->getServiceValue( Service::school );
+      return static_cast<int>(acc / level);
     default: return 0;
     }
   }
-  break;
 
-  case citylayer::school: return house->getServiceValue( Service::school );
-  case citylayer::library: return house->getServiceValue( Service::library );
-  case citylayer::academy: return house->getServiceValue( Service::academy );
+  case citylayer::school: return (int) house->getServiceValue( Service::school );
+  case citylayer::library: return (int) house->getServiceValue( Service::library );
+  case citylayer::academy: return (int) house->getServiceValue( Service::academy );
   }
 
   return 0;
@@ -86,16 +84,26 @@ void LayerEducation::drawTile( Engine& engine, Tile& tile, Point offset)
     int educationLevel = -1;
     switch( overlay->type() )
     {
-      //fire buildings and roads
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
       needDrawAnimations = true;
     break;
 
     case building::school:
     case building::library:
     case building::academy:
-      needDrawAnimations = _flags.count( overlay->type() );
+      needDrawAnimations = _flags.count( overlay->type() ) > 0;
       if( !needDrawAnimations )
       {
         city::Helper helper( _city() );

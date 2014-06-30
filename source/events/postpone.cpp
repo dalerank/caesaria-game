@@ -157,7 +157,7 @@ void PostponeEvent::Impl::executeRequest( Game& game, const std::string& type, b
   {
     PlayerCityPtr city = game.city();
 
-    city::SrvcPtr service = city->findService( city::request::Dispatcher::getDefaultName() );
+    city::SrvcPtr service = city->findService( city::request::Dispatcher::defaultName() );
     city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( service );
 
     if( dispatcher.isValid() )

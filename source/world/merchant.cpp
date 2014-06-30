@@ -23,6 +23,7 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "traderoute.hpp"
+#include "game/resourcegroup.hpp"
 
 namespace world
 {
@@ -35,9 +36,7 @@ public:
   SimpleGoodStore buys;
   PointsArray steps;
   unsigned int step;
-  Point location;
   std::string destCity, baseCity;
-  bool isDeleted;
 
 oc3_signals public:
   Signal1<MerchantPtr> onDestinationSignal;
@@ -45,19 +44,21 @@ oc3_signals public:
 
 Merchant::~Merchant(){}
 
-Merchant::Merchant() : _d( new Impl )
+Merchant::Merchant( EmpirePtr empire )
+  : Object( empire ), _d( new Impl )
 {
-  _d->isDeleted = false;
+  //default picture
+  setPicture( gfx::Picture::load( ResourceGroup::empirebits, PicID::landTradeRoute ) );
 }
 
-MerchantPtr Merchant::create( TraderoutePtr route, const std::string& start,
+MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
                               GoodStore& sell, GoodStore& buy )
 {
-  MerchantPtr ret( new Merchant() );
+  MerchantPtr ret( new Merchant( empire ) );
   ret->drop();
 
   ret->_d->route = route;
-  bool startCity = (route->getBeginCity()->getName() == start);
+  bool startCity = (route->getBeginCity()->name() == start);
   
   ret->_d->sells.resize( sell );
   ret->_d->sells.storeAll( sell );
@@ -68,8 +69,8 @@ MerchantPtr Merchant::create( TraderoutePtr route, const std::string& start,
   CityPtr baseCity = startCity ? route->getBeginCity() : route->getEndCity();
   CityPtr destCity = startCity ? route->getEndCity() : route->getBeginCity();
 
-  ret->_d->baseCity = baseCity->getName();
-  ret->_d->destCity = destCity->getName();
+  ret->_d->baseCity = baseCity->name();
+  ret->_d->destCity = destCity->name();
 
   ret->_d->steps = route->points( !startCity );
   ret->_d->step = 0;  
@@ -79,69 +80,63 @@ MerchantPtr Merchant::create( TraderoutePtr route, const std::string& start,
     return MerchantPtr();
   }
 
-  ret->_d->location = ret->_d->steps.front();
+  ret->setPicture( gfx::Picture::load( ResourceGroup::empirebits,
+                                       route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute ));
+  ret->setLocation( ret->_d->steps.front() );
   return ret;
 }
 
 Signal1<MerchantPtr>& Merchant::onDestination(){  return _d->onDestinationSignal;}
 
-void Merchant::update( unsigned int time )
+void Merchant::timeStep( unsigned int time )
 {
   _d->step++;
 
   if( _d->step >= _d->steps.size() )
   {
-    _d->onDestinationSignal.emit( this );
+    oc3_emit _d->onDestinationSignal( this );
   }
   else
   {
-    PointsArray::iterator it = _d->steps.begin();
-    std::advance( it, _d->step );
-    _d->location = *it;
+    setLocation( _d->steps[ _d->step ] );
   }
 }
 
-std::string Merchant::getDestCityName() const {  return _d->destCity; }
-Point Merchant::getLocation() const{  return _d->location;}
-bool Merchant::isDeleted() const{  return _d->isDeleted;}
-void Merchant::deleteLater(){  _d->isDeleted = true;}
+std::string Merchant::destinationCity() const {  return _d->destCity; }
 bool Merchant::isSeaRoute() const{  return _d->route->isSeaRoute();}
 
-VariantMap Merchant::save() const
+void Merchant::save(VariantMap& stream) const
 {
-  VariantMap ret;
-  ret[ "sells"    ]= _d->sells.save();
-  ret[ "buys"     ]= _d->buys.save();
-  ret[ "step"     ]= _d->step;
-  ret[ "deleted"  ]= _d->isDeleted;
-  ret[ "begin"    ]= Variant( _d->baseCity );
-  ret[ "end"      ]= Variant( _d->destCity );
-  ret[ "location" ]= _d->location;
+  Object::save( stream );
+
+  stream[ "sells"    ]= _d->sells.save();
+  stream[ "buys"     ]= _d->buys.save();
+  stream[ "step"     ]= _d->step;
+  stream[ "begin"    ]= Variant( _d->baseCity );
+  stream[ "end"      ]= Variant( _d->destCity );
+
   VariantList vl_steps;
 
   foreach( p, _d->steps ) { vl_steps.push_back( *p ); }
 
-  ret[ "steps"    ]= vl_steps;
-
-  return ret;
+  stream[ "steps"    ]= vl_steps;
 }
 
 void Merchant::load(const VariantMap& stream)
 {
+  Object::load( stream );
   _d->sells.load( stream.get( "sells" ).toMap() );
   _d->buys.load( stream.get( "buys" ).toMap() );
   _d->step = stream.get( "step" ).toInt();
-  _d->isDeleted = stream.get( "deleted" );
   _d->baseCity = stream.get( "begin" ).toString();
   _d->destCity = stream.get( "end" ).toString();
-  _d->location = stream.get( "location" ).toPoint();
 
   VariantList steps = stream.get( "steps" ).toList();
   foreach( v, steps ) { _d->steps.push_back( v->toPoint() ); }
 }
 
-std::string Merchant::getBaseCityName() const{  return _d->baseCity;}
-GoodStore& Merchant::getSellGoods(){  return _d->sells;}
-GoodStore& Merchant::getBuyGoods(){  return _d->buys;}
+std::string Merchant::baseCity() const{  return _d->baseCity;}
+GoodStore& Merchant::sellGoods(){  return _d->sells;}
+GoodStore& Merchant::buyGoods(){  return _d->buys;}
 
 }//end namespace world

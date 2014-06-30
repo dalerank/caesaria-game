@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "amphitheater.hpp"
 #include "core/position.hpp"
@@ -156,4 +158,17 @@ bool Amphitheater::isNeed(walker::Type type)
   }
 
   return false;
+}
+
+WalkerList Amphitheater::_specificWorkers() const
+{
+  WalkerList ret;
+
+  foreach( i, walkers() )
+  {
+    if( (*i)->type() == walker::actor || (*i)->type() == walker::gladiator )
+      ret << *i;
+  }
+
+  return ret;
 }

@@ -25,6 +25,7 @@
 #include "events/build.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "walker/dustcloud.hpp"
 #include "game/gamedate.hpp"
 
 using namespace constants;
@@ -180,10 +181,12 @@ void CollapsedRuins::burn() {}
 void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
-  //while burning can't remove it
+
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
-  setPicture( ResourceGroup::land2a, 111 + rand() % 8  );
+  setPicture( ResourceGroup::land2a, 111 + math::random( 8 ) );
+
+  DustCloud::create( city, pos, 4 );
 }
 
 bool CollapsedRuins::isWalkable() const{  return true;}

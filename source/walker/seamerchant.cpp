@@ -147,7 +147,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   {
     landingDate = GameDate::current();
 
-    WalkerList walkers = city->getWalkers( walker::any, wlk->pos() );
+    WalkerList walkers = city->walkers( walker::any, wlk->pos() );
     foreach( it, walkers )
     {
       if( *it == wlk ) { walkers.erase( it ); break; }
@@ -302,8 +302,8 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     // walker on exit from city
     wlk->deleteLater();
     world::EmpirePtr empire = city->empire();
-    const std::string& ourCityName = city->getName();
-    world::TraderoutePtr route = empire->findTradeRoute( ourCityName, baseCityName );
+    const std::string& ourCityName = city->name();
+    world::TraderoutePtr route = empire->findRoute( ourCityName, baseCityName );
     if( route.isValid() )
     {
       route->addMerchant( ourCityName, sell, buy );
@@ -472,11 +472,11 @@ WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
   SeaMerchant* cityMerchant( new SeaMerchant( city ) );
   if( merchant.isValid() )
   {
-    cityMerchant->_d->sell.resize( merchant->getSellGoods() );
-    cityMerchant->_d->sell.storeAll( merchant->getSellGoods() );
-    cityMerchant->_d->buy.resize( merchant->getBuyGoods() );
-    cityMerchant->_d->buy.storeAll( merchant->getBuyGoods() );
-    cityMerchant->_d->baseCityName = merchant->getBaseCityName();
+    cityMerchant->_d->sell.resize( merchant->sellGoods() );
+    cityMerchant->_d->sell.storeAll( merchant->sellGoods() );
+    cityMerchant->_d->buy.resize( merchant->buyGoods() );
+    cityMerchant->_d->buy.storeAll( merchant->buyGoods() );
+    cityMerchant->_d->baseCityName = merchant->baseCity();
   }
 
   WalkerPtr ret( cityMerchant );

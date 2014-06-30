@@ -29,6 +29,11 @@
 
 using namespace constants;
 
+namespace {
+static const int idleDecreaseLevel = 10;
+static const int workDecreaseLevel = 25;
+}
+
 class EntertainmentBuilding::Impl
 {
 public:
@@ -49,7 +54,7 @@ EntertainmentBuilding::~EntertainmentBuilding() {}
 void EntertainmentBuilding::deliverService()
 {
   // we need all trainees types for the show
-  if( numberWorkers() <= 0 )
+  if( !mayWork() )
   {
     _animationRef().stop();
     return;
@@ -57,24 +62,24 @@ void EntertainmentBuilding::deliverService()
 
   bool isWalkerReady = _isWalkerReady();
 
-  int decreaseLevel = 10;
+  int decreaseLevel = idleDecreaseLevel;
   // all trainees are there for the show!
   if( isWalkerReady )
   {
-    if( walkers().empty() )
+    if( _specificWorkers().empty() )
     {
       ServiceBuilding::deliverService();
-      _d->showCounter++;
 
-      if( !walkers().empty() )
+      if( !_specificWorkers().empty() )
       {
+        _d->showCounter++;
         _animationRef().start();
-        decreaseLevel = 25;
+        decreaseLevel = workDecreaseLevel;
       }
     }
   }
 
-  if( walkers().empty() )
+  if( _specificWorkers().empty() )
   {
     _animationRef().stop(); //have no actors for the show
   }
@@ -97,8 +102,8 @@ float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
   return ServiceBuilding::evaluateTrainee( traineeType );
 }
 
-bool EntertainmentBuilding::isShow() const { return animation().isRunning(); }
 unsigned int EntertainmentBuilding::showsCount() const { return _d->showCounter; }
+bool EntertainmentBuilding::isShow() const {   return animation().isRunning(); }
 
 void EntertainmentBuilding::save(VariantMap& stream) const
 {
@@ -133,6 +138,8 @@ std::string EntertainmentBuilding::troubleDesc() const
 }
 
 EntertainmentBuilding::NecessaryWalkers EntertainmentBuilding::necessaryWalkers() const { return _d->necWalkers; }
+WalkerList EntertainmentBuilding::_specificWorkers() const { return walkers(); }
+
 void EntertainmentBuilding::_addNecessaryWalker(walker::Type type){  _d->necWalkers.push_back( type );}
 
 bool EntertainmentBuilding::_isWalkerReady()

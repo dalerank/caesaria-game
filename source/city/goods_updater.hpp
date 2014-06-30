@@ -30,7 +30,7 @@ class GoodsUpdater : public Srvc
 public:
   static SrvcPtr create(PlayerCityPtr city);
   virtual void update( const unsigned int time);
-  static std::string getDefaultName();
+  static std::string defaultName();
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);

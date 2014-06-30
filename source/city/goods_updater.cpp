@@ -76,7 +76,7 @@ void GoodsUpdater::update( const unsigned int time)
   }
 }
 
-std::string GoodsUpdater::getDefaultName() { return "goods_updater"; }
+std::string GoodsUpdater::defaultName() { return "goods_updater"; }
 bool GoodsUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void GoodsUpdater::load(const VariantMap& stream)
@@ -97,7 +97,7 @@ VariantMap GoodsUpdater::save() const
 }
 
 GoodsUpdater::GoodsUpdater( PlayerCityPtr city )
-  : Srvc( *city.object(), GoodsUpdater::getDefaultName() ), _d( new Impl )
+  : Srvc( *city.object(), GoodsUpdater::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
 }

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_LAYERDESTROY_H_INCLUDED__
 #define __CAESARIA_LAYERDESTROY_H_INCLUDED__
@@ -31,7 +31,7 @@ class LayerDestroy : public Layer
 public:
   virtual void handleEvent( NEvent& event );
   virtual int type() const;
-  virtual std::set<int> getVisibleWalkers() const;
+  virtual std::set<int> visibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
   virtual void render( Engine& engine);
 

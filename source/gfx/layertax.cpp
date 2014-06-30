@@ -31,7 +31,7 @@ int LayerTax::type() const
   return citylayer::tax;
 }
 
-Layer::VisibleWalkers LayerTax::getVisibleWalkers() const
+Layer::VisibleWalkers LayerTax::visibleWalkers() const
 {
   VisibleWalkers ret;
   ret.insert( walker::taxCollector );
@@ -56,9 +56,21 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
     int taxLevel = -1;
     switch( overlay->type() )
     {
-      //fire buildings and roads
+    // Base set of visible objects
     case construction::road:
     case construction::plaza:
+    case construction::garden:
+
+    case building::burnedRuins:
+    case building::collapsedRuins:
+
+    case building::lowBridge:
+    case building::highBridge:
+
+    case building::elevation:
+    case building::rift:
+
+    // Tax-related
     case building::senate:
     case building::forum:
       needDrawAnimations = true;
@@ -69,7 +81,7 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
       {
         HousePtr house = ptr_cast<House>( overlay );
         //taxLevel = house->getServiceValue( Service::forum );
-        taxLevel = house->taxesThisYear() / 10;
+        taxLevel = (int) (house->taxesThisYear() / 10);
         needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
         if( !needDrawAnimations )
