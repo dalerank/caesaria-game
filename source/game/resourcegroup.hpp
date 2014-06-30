@@ -92,7 +92,10 @@ public:
   enum {
   	bad = 0,
     seaTradeRoute = 69,
-    landTradeRoute = 70
+    landTradeRoute = 70,
+    romeCity=8,
+    distantCity=22,
+    otherCity=15
   };
 
   static const int empireStamp = 543;

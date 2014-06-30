@@ -233,6 +233,9 @@ void Empire::setCitiesAvailable(bool value)
   if( rome.isValid() )
   {
     rome->setAvailable( true );
+    gfx::Picture pic = gfx::Picture::load( "roma", 1 );
+    pic.setOffset( 0, 30 );
+    rome->setPicture( pic );
   }
 }
 
@@ -377,7 +380,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   return ret;
 }
 
-ObjectList Empire::objects() const{  return _d->objects; }
+const ObjectList& Empire::objects() const{  return _d->objects; }
 
 ObjectPtr Empire::findObject(const std::string& name) const
 {

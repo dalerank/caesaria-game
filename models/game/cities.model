@@ -51,7 +51,7 @@
 	}
 	
 	Lindum : { 
-		location : [ 260, 0 ]
+    location : [ 280, 40 ]
     
     sea : true
     land : true
@@ -257,7 +257,7 @@
   }
   
   Tarentum : {
-		location : [ 900, 600 ]
+    location : [ 900, 640 ]
     
     land : true
     sea : true

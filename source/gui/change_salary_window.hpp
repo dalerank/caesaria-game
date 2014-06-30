@@ -27,7 +27,7 @@ namespace gui
 class ChangeSalaryWindow : public Widget
 {
 public:
-  ChangeSalaryWindow(Widget* p, int salary );
+  ChangeSalaryWindow(Widget* p, unsigned int salary );
 
   virtual ~ChangeSalaryWindow();
 public oc3_signals:

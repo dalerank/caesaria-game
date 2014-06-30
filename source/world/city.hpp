@@ -48,6 +48,7 @@ public:
   virtual unsigned int population() const = 0;
   virtual bool isPaysTaxes() const = 0;
   virtual bool haveOverduePayment() const = 0;
+  virtual bool isMovable() const { return false; }
 
   virtual void delayTrade( unsigned int month ) = 0;
   virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost ) = 0;

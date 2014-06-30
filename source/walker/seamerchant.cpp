@@ -472,10 +472,10 @@ WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
   SeaMerchant* cityMerchant( new SeaMerchant( city ) );
   if( merchant.isValid() )
   {
-    cityMerchant->_d->sell.resize( merchant->getSellGoods() );
-    cityMerchant->_d->sell.storeAll( merchant->getSellGoods() );
-    cityMerchant->_d->buy.resize( merchant->getBuyGoods() );
-    cityMerchant->_d->buy.storeAll( merchant->getBuyGoods() );
+    cityMerchant->_d->sell.resize( merchant->sellGoods() );
+    cityMerchant->_d->sell.storeAll( merchant->sellGoods() );
+    cityMerchant->_d->buy.resize( merchant->buyGoods() );
+    cityMerchant->_d->buy.storeAll( merchant->buyGoods() );
     cityMerchant->_d->baseCityName = merchant->baseCity();
   }
 

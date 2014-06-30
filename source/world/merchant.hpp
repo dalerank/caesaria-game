@@ -31,7 +31,7 @@ namespace world
 class Merchant : public Object
 {
 public:
-  static MerchantPtr create(EmpirePtr empire, TraderoutePtr route, const std::string& start,
+  static MerchantPtr create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
                              GoodStore& sell, GoodStore& buy );
   virtual ~Merchant();
 
@@ -39,13 +39,13 @@ public:
 
   std::string baseCity() const;
   std::string destinationCity() const;
-  GoodStore& getSellGoods();
-  GoodStore& getBuyGoods();
+  GoodStore& sellGoods();
+  GoodStore& buyGoods();
 
   bool isSeaRoute() const;
 
-  void save( VariantMap& stream ) const;
-  void load( const VariantMap& stream );
+  virtual void save( VariantMap& stream ) const;
+  virtual void load( const VariantMap& stream );
 
 oc3_signals public:
   Signal1<MerchantPtr>& onDestination();

@@ -30,16 +30,9 @@ using namespace gfx;
 namespace world
 {
 
-namespace {
-CAESARIA_LITERALCONST(location)
-CAESARIA_LITERALCONST(distant)
-}
-
 class ComputerCity::Impl
 {
 public:
-  Point location;
-  std::string name;
   unsigned int tradeType;
   bool distantCity, romeCity;
   bool isAvailable;
@@ -50,17 +43,13 @@ public:
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
   unsigned int merchantsNumber;
-  Picture empMapPicture;
   city::Funds funds;
-
-public:
-  void initPicture();
 };
 
 ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   : City( empire ), _d( new Impl )
 {
-  _d->name = name;
+  setName( name );
   _d->tradeDelay = 0;
   _d->distantCity = false;
   _d->merchantsNumber = 0;
@@ -70,14 +59,12 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->realSells.setCapacity( 99999 );
   _d->romeCity = false;
 
-  _d->initPicture();
+  _initTextures();
 }
 
 bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
-std::string ComputerCity::name() const {  return _d->name;}
-Point ComputerCity::location() const{  return _d->location;}
-void ComputerCity::setLocation( const Point& location ){  _d->location = location;}
-city::Funds&ComputerCity::funds() { return _d->funds; }
+
+city::Funds& ComputerCity::funds() { return _d->funds; }
 unsigned int ComputerCity::population() const { return 0; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
@@ -88,7 +75,7 @@ void ComputerCity::setAvailable(bool value){  _d->isAvailable = value;}
 
 void ComputerCity::save( VariantMap& options ) const
 {
-  options[ lc_location ] = _d->location;
+  City::save( options );
 
   VariantMap vm_sells;
   VariantMap vm_sold;
@@ -130,11 +117,11 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "bought" ] = vm_bought;
   options[ "lastTimeMerchantSend" ] = _d->lastTimeMerchantSend;
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
-  options[ "available" ] = _d->isAvailable;
+  VARIANT_SAVE_ANY_D( options, _d, isAvailable );
   options[ "merchantsNumber" ] = _d->merchantsNumber;
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
-  options[ lc_distant ] = _d->distantCity;
+  VARIANT_SAVE_ANY_D( options, _d, distantCity );
   options[ "romecity" ] = _d->romeCity;
   options[ "realSells" ] = _d->realSells.save();
   options[ "tradeDelay" ] = _d->tradeDelay;
@@ -142,15 +129,13 @@ void ComputerCity::save( VariantMap& options ) const
 
 void ComputerCity::load( const VariantMap& options )
 {
-  Variant v_location = options.get( lc_location );
-  if( v_location.isValid() )
-    setLocation( v_location.toPoint() );
+  City::load( options );
 
-  _d->isAvailable = (bool)options.get( "available", false );
+  VARIANT_LOAD_ANY_D( _d, isAvailable, options );
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
   _d->merchantsNumber = (int)options.get( "merchantsNumber" );
-  _d->distantCity = (bool)options.get( lc_distant );
+  VARIANT_LOAD_ANY_D( _d, distantCity, options );
   _d->romeCity = (bool)options.get( "romecity" );
   _d->tradeDelay = (int)options.get( "tradeDelay" );
 
@@ -188,7 +173,7 @@ void ComputerCity::load( const VariantMap& options )
     _d->realSells.load( vm_rsold.toMap() );
   }
 
-  _d->initPicture();
+  _initTextures();
 }
 
 const GoodStore& ComputerCity::importingGoods() const {  return _d->realSells;}
@@ -212,8 +197,8 @@ void ComputerCity::addObject(ObjectPtr object )
   MerchantPtr merchant = ptr_cast<Merchant>( object );
   if( merchant.isValid() )
   {
-    GoodStore& sellGoods = merchant->getSellGoods();
-    GoodStore& buyGoods = merchant->getBuyGoods();
+    GoodStore& sellGoods = merchant->sellGoods();
+    GoodStore& buyGoods = merchant->buyGoods();
 
     _d->buyStore.storeAll( buyGoods );
 
@@ -323,17 +308,22 @@ void ComputerCity::timeStep( unsigned int time )
   }
 }
 
-gfx::Picture ComputerCity::picture() const { return _d->empMapPicture; }
 unsigned int ComputerCity::tradeType() const { return _d->tradeType; }
 
-void ComputerCity::Impl::initPicture()
+void ComputerCity::_initTextures()
 {
-  int index = 15;
+  int index = PicID::otherCity;
 
-  if( distantCity ) { index = 22; }
-  else if( romeCity ) { index = 8; }
+  if( _d->distantCity ) { index = PicID::distantCity; }
+  else if( _d->romeCity ) { index = PicID::romeCity; }
 
-  empMapPicture = Picture::load( ResourceGroup::empirebits, index );
+  Picture pic = Picture::load( ResourceGroup::empirebits, index );
+  pic.setOffset( 0, 30 );
+  setPicture( pic );
+  _animation().load( ResourceGroup::empirebits, index+1, 6 );
+  _animation().setLoop( true );
+  _animation().setOffset( Point( 17, 24 ) );
+  _animation().setDelay( 2 );
 }
 
 }//end namespace world

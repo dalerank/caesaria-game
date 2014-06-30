@@ -233,6 +233,12 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   addService( audio::Player::create( this ) );
   addService( city::HealthCare::create( this ));
   addService( city::Peace::create( this ) );
+
+  setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
+  _animation().load( ResourceGroup::empirebits, 2, 6 );
+  _animation().setLoop( true );
+  _animation().setOffset( Point( 18, -7 ));
+  _animation().setDelay( 2 );
 }
 
 void PlayerCity::timeStep(unsigned int time)

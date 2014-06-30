@@ -39,7 +39,7 @@ public:
   CityPtr addCity( CityPtr city );
   CityPtr initPlayerCity( CityPtr city );
 
-  ObjectList objects() const;
+  const ObjectList& objects() const;
   ObjectPtr findObject( const std::string& name ) const;
   void addObject( ObjectPtr obj );
 
