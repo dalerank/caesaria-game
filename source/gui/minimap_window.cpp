@@ -197,9 +197,10 @@ void Minimap::Impl::updateImage()
 {
   int mapsize = tilemap->size();
 
-  fullmap->lock();
+  //fullmap->lock();
   // here we can draw anything
 
+  fullmap->fill( 0xff000000, Rect() );
   int border = (162 - mapsize) / 2;
   int max = border + mapsize;
 
@@ -242,11 +243,13 @@ void Minimap::Impl::updateImage()
   }
   */
 
-  fullmap->unlock();
+  //fullmap->unlock();
 
   // this is window where minimap is displayed
   minimap->fill( 0xff000000, Rect() );
+  minimap->lock();
   minimap->draw( *fullmap, getOffset() );
+  minimap->unlock();
 }
 
 /* end of helper functions */

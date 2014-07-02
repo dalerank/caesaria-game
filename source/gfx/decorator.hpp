@@ -43,7 +43,7 @@ public:
                  lightgreyPanelBig
                } Mode;
 
-  static void draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha=true );
+  static void draw(Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha=true, bool updateTexture=false);
 
   static void drawArea( Picture& dstpic, const Rect& rectangle,  int picId, int picCount, int offset, bool useAlpha );
 

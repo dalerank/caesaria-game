@@ -37,6 +37,7 @@
 #include "core/stringhelper.hpp"
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
+#include "core/foreach.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
 #include <dlfcn.h>
@@ -108,7 +109,7 @@ void SdlEngine::init()
     THROW("Unable to initialize SDL: " << SDL_GetError());
   }
 
-  unsigned int flags = SDL_DOUBLEBUF | SDL_SWSURFACE;
+  unsigned int flags = SDL_DOUBLEBUF | SDL_HWSURFACE;
   flags |= (getFlag( Engine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
   int systemBpp = screenBpp32;
     
@@ -147,13 +148,12 @@ void SdlEngine::exit()
 
 /* Convert picture to SDL surface and then put surface into Picture class
  */
-
 void SdlEngine::loadPicture( Picture& ioPicture )
 {
   // convert pixel format
   if( !ioPicture.surface() )
   {
-    Logger::warning( "GfxSdlEngine: cannot load NULL surface " + ioPicture.name() );
+    Logger::warning( "SdlEngine: cannot load NULL surface " + ioPicture.name() );
     return;
   }
   SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.surface() );
@@ -238,7 +238,7 @@ void SdlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
 
 void SdlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
 {
-  for( Pictures::const_iterator it=pictures.begin(); it != pictures.end(); ++it )
+  foreach( it, pictures )
   {
     draw( *it, pos, clipRect );
   }

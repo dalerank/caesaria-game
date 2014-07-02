@@ -1,7 +1,6 @@
 #include "loader_png.hpp"
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
-#include "gfx/engine.hpp"
 
 #include <SDL.h>
 
@@ -195,8 +194,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   }
 
   // Create the image structure to be filled by png data
-  Picture* pic = Engine::instance().createPicture( Size( Width, Height ) );
-  Engine::instance().loadPicture( *pic );
+  Picture* pic = Picture::create(  Size( Width, Height ) );
 
   if( pic->size().area() == 0 )
   {
@@ -216,7 +214,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   ScopedPtr<unsigned char*> RowPointers( (unsigned char**)new png_bytep[ Height ] );
 
   // Fill array of pointers to rows in image data
-  SDL_LockSurface( pic->surface() );
+  pic->lock();
   unsigned char* data = (unsigned char*)pic->surface()->pixels;
   for(unsigned int i=0; i<Height; ++i)
   {
@@ -228,7 +226,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   if( setjmp( png_jmpbuf( png_ptr ) ) )
   {
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-    Engine::instance().deletePicture( pic );
+    Picture::destroy( pic );
     return Picture::getInvalid();
   }
 
@@ -238,7 +236,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_read_end( png_ptr, NULL );
   png_destroy_read_struct( &png_ptr, &info_ptr, 0 ); // Clean up memory
 
-  SDL_UnlockSurface(pic->surface());
+  pic->unlock();
 
   return *pic;
 }

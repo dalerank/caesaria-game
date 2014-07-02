@@ -105,7 +105,7 @@ unsigned int Font::getWidthFromCharacter( unsigned int c ) const
   return advance;
 }
 
-unsigned int Font::getKerningHeight() const {  return 3; }
+unsigned int Font::kerningHeight() const {  return 3; }
 
 int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
 {
@@ -204,7 +204,7 @@ void Font::setColor( const NColor& color )
   _d->color.unused = color.getAlpha();
 }
 
-void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha )
+void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
 {
   if( !_d->ttfFont || !dstpic.isValid() )
     return;
@@ -219,15 +219,22 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   {
     Picture pic;
     pic.init( sText, Point( 0, 0 ) );
+
+    if( updatextTx )
+      dstpic.lock();
+
     dstpic.draw( pic, dx, dy);
+
+    if( updatextTx )
+      dstpic.unlock();
   }
 
   SDL_FreeSurface( sText );
 }       
 
-void Font::draw( Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha )
+void Font::draw(Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha , bool updateTx)
 {
-  draw( dstpic, text, pos.x(), pos.y(), useAlpha );
+  draw( dstpic, text, pos.x(), pos.y(), useAlpha, updateTx );
 }
 
 Font::~Font() {}

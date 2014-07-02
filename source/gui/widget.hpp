@@ -100,9 +100,9 @@ public:
 	*/
   virtual void setTextAlignment( align::Type horizontal, align::Type vertical );
 
-  virtual Alignment getHorizontalTextAlign() const;
+  virtual Alignment horizontalTextAlign() const;
 
-  virtual Alignment getVerticalTextAlign() const;
+  virtual Alignment verticalTextAlign() const;
 
   virtual void hide();
 

@@ -61,7 +61,7 @@ protected:
     Font font2 = Font::create( FONT_1 );
 
     std::string timeStr = item.data().toString();
-    Rect textRect = _getItemsRect();
+    Rect textRect = _itemsRect();
     textRect = font2.calculateTextRect( timeStr, Rect( 0, pos.y(), textRect.width(), pos.y() + itemHeight() ),
                                         align::lowerRight, align::center );
 

@@ -75,7 +75,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 
   WidgetEscapeCloser::insertTo( this );
 
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame, true, true );
 
   Label* lbToCity = new Label( this, Rect( width() / 2, height() - 40, width() - 110, height() - 10 ), _("##mission_wnd_tocity##" ) );
   lbToCity->setTextAlignment( align::center, align::center );

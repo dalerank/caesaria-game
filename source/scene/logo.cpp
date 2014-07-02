@@ -94,7 +94,9 @@ void SplashScreen::fadeOut()
   for( int k=0; k < 0xff; k+=offset )
   {
     engine.startRenderFrame();
+    pf->lock();
     pf->fill( NColor(k, 0, 0, 0), Rect() );
+    pf->unlock();
     engine.draw( _d->bgPicture, 0, 0);
     engine.draw( *pf, 0, 0);
     //engine.delay( 1 );

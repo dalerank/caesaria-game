@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include <cstdio>
 
 #include "info_box.hpp"
@@ -76,7 +75,6 @@ public:
   PushButton* btnHelp;
   bool isAutoPosition;
   GameAutoPause autopause;
-
 
   Impl() : lbBackground(0), lbBlackFrame(0), lbTitle(0),
     lbText(0), btnExit(0), btnHelp(0), isAutoPosition(false)

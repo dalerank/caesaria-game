@@ -48,7 +48,6 @@ GroupBox::GroupBox( Widget* parent, const Rect& rectangle, int id, Style style)
   _d->style = style;
 }
 
-
 //! destructor
 GroupBox::~GroupBox() {}
 
@@ -67,10 +66,7 @@ void GroupBox::draw(gfx::Engine& painter )
 }
 
 //! Returns true if the image is scaled to fit, false if not
-bool GroupBox::isBackgroundImageScaled() const
-{
-	return _d->scaleImage;
-}
+bool GroupBox::isBackgroundImageScaled() const {	return _d->scaleImage; }
 
 void GroupBox::setBackgroundImage( const Picture& image )
 {
@@ -78,15 +74,8 @@ void GroupBox::setBackgroundImage( const Picture& image )
   _d->needUpdateTexture = true;
 }
 
-const Picture& GroupBox::getBackgroundImage() const
-{
-  return _d->backgroundImage;
-}
-
-void GroupBox::setScaleBackgroundImage( bool scale )
-{
-  _d->scaleImage = scale;
-}
+const Picture& GroupBox::getBackgroundImage() const {  return _d->backgroundImage; }
+void GroupBox::setScaleBackgroundImage( bool scale ) { _d->scaleImage = scale; }
 
 void GroupBox::setStyle( Style style )
 {
@@ -100,7 +89,6 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
   {
     _d->needUpdateTexture = false;
     Size mySize = size();
-
 
     if( !_d->texture.isNull() && _d->texture->size() != mySize )
       _d->texture.reset();
@@ -122,38 +110,12 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
     else
     {
       PictureDecorator::draw( *_d->texture, Rect( Point( 0, 0 ), size() ), 
-                              _d->style == whiteFrame ? PictureDecorator::whiteFrame : PictureDecorator::blackFrame );
+                              _d->style == whiteFrame ? PictureDecorator::whiteFrame : PictureDecorator::blackFrame,
+                              true, true );
     }
   }
 
   Widget::beforeDraw( painter );
 }
-
-//! Writes attributes of the element.
-/*
-void GroupBox::save(VariantArray* out) const
-{
-        Widget::save(out);
-
-	//out->addTexture	("Texture", Texture);
-	out->AddBool	( SerializeHelper::useAlphaChannelProp, _d->useAlphaChannel);
-	out->AddColor	( SerializeHelper::colorProp, _d->color.color);
-	out->AddBool	( L"ScaleImage", _d->scaleImage);
-
-}*/
-
-
-
-//! Reads attributes of the element
-/*
-void GroupBox::load(VariantArray* in)
-{
-        Widget::load(in);
-
-	//setImage(in->getAttributeAsTexture("Texture"));
-	setUseAlphaChannel(in->getAttributeAsBool( SerializeHelper::useAlphaChannelProp ));
-	setColor(in->getAttributeAsColor( SerializeHelper::colorProp ).color);
-	setScaleImage(in->getAttributeAsBool( L"ScaleImage" ));
-}*/
 
 }//end namespace gui

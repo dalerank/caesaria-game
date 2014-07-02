@@ -856,8 +856,8 @@ int Widget::left() const { return relativeRect().UpperLeftCorner.x(); }
 int Widget::right() const { return relativeRect().LowerRightCorner.x(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
-Alignment Widget::getHorizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
-Alignment Widget::getVerticalTextAlign() const{  return _dfunc()->textVertAlign;}
+Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
+Alignment Widget::verticalTextAlign() const{  return _dfunc()->textVertAlign;}
 void Widget::deleteLater(){  _environment->deleteLater( this ); }
 
 void Widget::installEventHandler( Widget* elementHandler )

@@ -36,6 +36,9 @@ MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 
 
 void MenuRigthPanel::draw( gfx::Engine& engine )
 {
+  if( !isVisible() )
+    return;
+
   engine.draw( *_d->picture, screenLeft(), screenTop() );
 }
 
@@ -48,12 +51,14 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, c
   ret->_d->picture.reset( Picture::create( rectangle.size() ) );
   //SDL_SetAlpha( ret->_d->picture->getSurface(), 0, 0 );  // remove surface alpha
 
+  ret->_d->picture->lock();
   int y = 0;
-  while( y <  ret->_d->picture->height() )
+  while( y < ret->_d->picture->height() )
   {
-      ret->_d->picture->draw( tilePic, Point( 0, y ) );
-      y += tilePic.height();
+    ret->_d->picture->draw( tilePic, Point( 0, y ) );
+    y += tilePic.height();
   }
+  ret->_d->picture->unlock();
 
   return ret;
 }

@@ -57,6 +57,7 @@
 #include "walker/helper.hpp"
 #include "core/osystem.hpp"
 #include "freeplay_finalizer.hpp"
+#include "gfx/gl_engine.hpp"
 
 #include <list>
 
@@ -107,7 +108,9 @@ void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
 
-  engine = new gfx::SdlEngine();
+  std::string render = GameSettings::get( GameSettings::render ).toString();
+  if( render == "opengl" ) { engine = new gfx::GlEngine(); }
+  else { engine = new gfx::SdlEngine(); }
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );

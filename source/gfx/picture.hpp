@@ -58,6 +58,8 @@ public:
   void setAlpha( unsigned char value );
   void scale( Size size );
   SDL_Surface* surface() const;
+  unsigned int& textureID();
+  unsigned int& textureID() const;
 
   int width() const;
   int height() const;

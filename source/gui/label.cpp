@@ -145,6 +145,9 @@ void Label::_updateTexture(gfx::Engine& painter )
   }
 
   // draw button background
+  if( _d->background )
+    _d->background->lock();
+
   if( _d->bgPicture.isValid() )
   {
     _d->background->fill( 0xff000000, Rect( 0, 0, 0, 0 ) );
@@ -173,6 +176,8 @@ void Label::_updateTexture(gfx::Engine& painter )
     case bgWhiteBorderA: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteBorderA ); break;
     }
   }
+  if( _d->background )
+    _d->background->unlock();
 
   if( _d->font.isValid() )
   {
@@ -184,7 +189,7 @@ void Label::_updateTexture(gfx::Engine& painter )
       //eColor = GetResultColor( eColor );
       if( !_d->isWordwrap )
       {
-        Rect textRect = _d->font.calculateTextRect( rText, frameRect, getHorizontalTextAlign(), getVerticalTextAlign() );
+        Rect textRect = _d->font.calculateTextRect( rText, frameRect, horizontalTextAlign(), verticalTextAlign() );
 
         textRect += _d->textOffset;
         _d->font.draw( *_d->textPicture, text(), textRect.left(), textRect.top() );
@@ -202,7 +207,7 @@ void Label::_updateTexture(gfx::Engine& painter )
         for (unsigned int i=0; i<_d->brokenText.size(); ++i)
         {
             Rect textRect = _d->font.calculateTextRect( rText, r,
-                                                        getHorizontalTextAlign(), getVerticalTextAlign() );
+                                                        horizontalTextAlign(), verticalTextAlign() );
 
             textRect += _d->textOffset;
 
