@@ -1309,7 +1309,7 @@ void EditBox::setTextRect(int line, const std::string& tempText )
 		d.setHeight( height() );
 	}
 	
-  d.setHeight( d.height() + font.getKerningHeight() );
+  d.setHeight( d.height() + font.kerningHeight() );
 
   _d->currentTextRect = absoluteRect();
 

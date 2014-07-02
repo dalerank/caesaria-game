@@ -108,7 +108,8 @@ void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
 
-  if( GameSettings::get( "render") == "opengl" ) { engine = new gfx::GlEngine(); }
+  std::string render = GameSettings::get( GameSettings::render ).toString();
+  if( render == "opengl" ) { engine = new gfx::GlEngine(); }
   else { engine = new gfx::SdlEngine(); }
 
   Logger::warning( "GraficEngine: set size" );

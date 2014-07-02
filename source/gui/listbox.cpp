@@ -142,12 +142,12 @@ void ListBox::removeItem(unsigned int id)
 
   if( (unsigned int)_d->selectedItemIndex==id )
 	{
-        _d->selectedItemIndex = -1;
+		_d->selectedItemIndex = -1;
 	}
   else if ((unsigned int)_d->selectedItemIndex > id)
 	{
-     _d->selectedItemIndex -= 1;
-     _d->selectTime = DateTime::elapsedTime();
+		_d->selectedItemIndex -= 1;
+		_d->selectTime = DateTime::elapsedTime();
 	}
 
   _d->items.erase( _d->items.begin() + id);
@@ -228,21 +228,21 @@ void ListBox::_indexChanged( unsigned int eventType )
   {
   case guiListboxChanged:
   {
-    _d->indexSelected.emit( _d->selectedItemIndex );
+    oc3_emit _d->indexSelected( _d->selectedItemIndex );
     if( _d->selectedItemIndex >= 0 )
     {
-      _d->textSelected.emit( _d->items[ _d->selectedItemIndex ].text() );
-      _d->onItemSelectedSignal.emit( _d->items[ _d->selectedItemIndex ] );
+      oc3_emit _d->textSelected( _d->items[ _d->selectedItemIndex ].text() );
+      oc3_emit _d->onItemSelectedSignal( _d->items[ _d->selectedItemIndex ] );
     }
   }
   break;
 
   case guiListboxSelectedAgain:
   {
-    _d->indexSelectedAgain.emit( _d->selectedItemIndex );
+    oc3_emit _d->indexSelectedAgain( _d->selectedItemIndex );
     if( _d->selectedItemIndex >= 0 )
     {
-        _d->onItemSelectedAgainSignal.emit( _d->items[ _d->selectedItemIndex ].text() );
+      oc3_emit _d->onItemSelectedAgainSignal( _d->items[ _d->selectedItemIndex ].text() );
     }
   }
   break;
@@ -255,7 +255,7 @@ void ListBox::_indexChanged( unsigned int eventType )
 //! called if an event happened.
 bool ListBox::onEvent(const NEvent& event)
 {
-    if( isEnabled() )
+	if( isEnabled() )
 	{
 		switch(event.EventType)
         {
@@ -501,8 +501,8 @@ void ListBox::_selectNew(int ypos)
   _recalculateScrollPos();
 
 	GuiEventType eventType = (_d->selectedItemIndex == oldSelected && now < _d->selectTime + 500)
-								? guiListboxSelectedAgain
-								: guiListboxChanged;
+															? guiListboxSelectedAgain
+															: guiListboxChanged;
 	_d->selectTime = now;
 	// post the news
 	_indexChanged( eventType );
@@ -511,24 +511,24 @@ void ListBox::_selectNew(int ypos)
 //! Update the position and size of the listbox, and update the scrollbar
 void ListBox::_resizeEvent()
 {
-    _d->totalItemHeight = 0;
-    _d->recalculateItemHeight( _d->font, height() );
+  _d->totalItemHeight = 0;
+  _d->recalculateItemHeight( _d->font, height() );
 }
 
 ElementState ListBox::_getCurrentItemState( unsigned int index, bool hl )
 {
-    if( _d->items[ index ].isEnabled() )
-    {
-        if( hl && (int)index == _d->selectedItemIndex )
-            return stChecked;
+  if( _d->items[ index ].isEnabled() )
+  {
+    if( hl && (int)index == _d->selectedItemIndex )
+      return stChecked;
 
-        if( (int)index == _d->hoveredItemIndex )
-            return stHovered;
+    if( (int)index == _d->hoveredItemIndex )
+      return stHovered;
 
-        return stNormal;
-    }
+    return stNormal;
+  }
 
-    return stDisabled;
+  return stDisabled;
 }
 
 Font ListBox::_getCurrentItemFont( const ListBoxItem& item, bool selected )
@@ -554,7 +554,7 @@ NColor ListBox::_getCurrentItemColor( const ListBoxItem& item, bool selected )
   return ret;
 }
 
-Rect ListBox::_getItemsRect()
+Rect ListBox::_itemsRect()
 {
   Rect frameRect( Point( 0, 0 ), size() );
   //if( _d->scrollBar->isVisible() )
@@ -565,12 +565,13 @@ Rect ListBox::_getItemsRect()
 
 void ListBox::_drawItemIcon(Picture& texture, ListBoxItem& item, const Point& pos)
 {
+  item.icon().setAlpha( 0 );
   texture.draw( item.icon(), pos );
 }
 
 void ListBox::_drawItemText(Picture& texture, Font font, ListBoxItem& item, const Point& pos)
 {
-  font.draw( texture, item.text(), pos, false );
+  font.draw( texture, item.text(), pos, false, false );
 }
 
 void ListBox::beforeDraw(gfx::Engine& painter)
@@ -582,10 +583,11 @@ void ListBox::beforeDraw(gfx::Engine& painter)
   {
     _updateTexture();
 
+    _d->picture->lock();
     _d->picture->draw( *_d->background, 0, 0 );
 
     bool hl = ( isFlag( hightlightNotinfocused ) || isFocused() || _d->scrollBar->isFocused() );
-    Rect frameRect = _getItemsRect();
+    Rect frameRect = _itemsRect();
     frameRect.LowerRightCorner.setY( frameRect.top() + _d->itemHeight );
 
     Alignment itemTextHorizontalAlign, itemTextVerticalAlign;
@@ -637,6 +639,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
       frameRect += Point( 0, _d->itemHeight );
     }
 
+    _d->picture->unlock();
     _d->needItemsRepackTextures = false;
   }
 

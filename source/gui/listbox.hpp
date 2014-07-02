@@ -158,7 +158,7 @@ protected:
   virtual void _resizeEvent();
   virtual void _drawItemIcon(gfx::Picture& texture, ListBoxItem& item, const Point& pos );
   virtual void _drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos );
-  Rect _getItemsRect();
+  Rect _itemsRect();
 
 private:
   void _selectNew(int ypos);

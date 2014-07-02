@@ -66,12 +66,12 @@ public:
   Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
                           align::Type horizontalAlign, align::Type verticalAlign );
 
-  void draw(gfx::Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true);
-  void draw(gfx::Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true );
+  void draw(gfx::Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true, bool updatextTx=true);
+  void draw(gfx::Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha=true, bool updateTx=true );
 
   unsigned int getWidthFromCharacter( unsigned int c ) const;
   int getCharacterFromPos(const std::wstring& text, int pixel_x) const;
-  unsigned int getKerningHeight() const;
+  unsigned int kerningHeight() const;
   StringArray breakText( const std::string& text, int pixelLength );
 private:
   class Impl;
