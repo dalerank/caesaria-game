@@ -1,7 +1,6 @@
 #include "loader_bmp.hpp"
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
-#include "gfx/engine.hpp"
 
 #include <SDL.h>
 
@@ -48,8 +47,9 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
   }
 
   Picture pic;
+  pic.lock();
   pic.init( temp, Point(0, 0) );
-  Engine::instance().loadPicture( pic );
+  pic.unlock();
 
   if( pic.size().area() == 0 )
   {

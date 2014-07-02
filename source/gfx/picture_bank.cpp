@@ -32,7 +32,6 @@
 #include "core/stringhelper.hpp"
 #include "core/logger.hpp"
 #include "picture_info_bank.hpp"
-#include "engine.hpp"
 #include "core/foreach.hpp"
 #include "loader.hpp"
 #include "vfs/file.hpp"
@@ -47,6 +46,9 @@ public:
 
   Pictures resources;  // key=image name, value=picture
   Picture tryLoadPicture( const std::string& name );
+
+  void setPicture( const std::string &name, SDL_Surface& surface, uint id );
+  Picture makePicture(const std::string& name, SDL_Surface *surface, uint id );
 };
 
 PictureBank& PictureBank::instance()
@@ -55,22 +57,25 @@ PictureBank& PictureBank::instance()
   return inst;
 }
 
-void PictureBank::setPicture(const std::string &name, SDL_Surface &surface)
+void PictureBank::Impl::setPicture( const std::string &name, SDL_Surface& surface, uint id )
 {
   // first: we deallocate the current picture, if any
   unsigned int picId = StringHelper::hash( name );
-  Impl::ItPicture it = _d->resources.find( picId );
-  if( it != _d->resources.end() )
+  Impl::ItPicture it = resources.find( picId );
+  if( it != resources.end() )
   {
      SDL_FreeSurface( it->second.surface());
+     it->second = makePicture( name, &surface, id );
   }
-
-  _d->resources[ picId ] = makePicture(&surface, name);
+  else
+  {
+    resources[ picId ] = makePicture( name, &surface, id );
+  }
 }
 
 void PictureBank::setPicture( const std::string &name, const Picture& pic )
 {
-  setPicture( name, *pic.surface() );
+  _d->setPicture( name, *pic.surface(), pic.textureID() );
 }
 
 Picture& PictureBank::getPicture(const std::string &name)
@@ -96,19 +101,19 @@ Picture& PictureBank::getPicture(const std::string &name)
   return it->second;
 }
 
-Picture& PictureBank::getPicture(const std::string &prefix, const int idx)
+Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
 {
-   std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(), idx );
+  std::string resource_name = StringHelper::format( 0xff, "%s_%05d", prefix.c_str(), idx );
 
-   return getPicture(resource_name);
+  return getPicture(resource_name);
 }
 
-Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resource_name) const
+Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Surface* surface, uint id)
 {
    Point offset( 0, 0 );
 
-   int dot_pos = resource_name.find('.');
-   std::string filename = resource_name.substr(0, dot_pos);
+   int dot_pos = name.find('.');
+   std::string filename = name.substr(0, dot_pos);
 
    if( surface )
    {
@@ -133,7 +138,8 @@ Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resour
 
    Picture pic;
    pic.init( surface, offset );
-   pic.setName(filename);
+   pic.setName( filename );
+   pic.textureID() = id;
 
    return pic;
 }
@@ -141,18 +147,18 @@ Picture PictureBank::makePicture(SDL_Surface *surface, const std::string& resour
 void PictureBank::createResources()
 {
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001", *originalPic.surface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001", originalPic );
 
   Picture* fullReservoir = originalPic.clone(); //mem leak on destroy picloader
   fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002", *fullReservoir->surface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002", *fullReservoir );
 
   Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003", *emptyFontainOrig.surface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003", emptyFontainOrig );
 
   Picture* fullFontain = emptyFontainOrig.clone();  //mem leak on destroy picloader
   fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004", *fullFontain->surface() );
+  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004", *fullFontain );
 }
 
 PictureBank::PictureBank() : _d( new Impl )

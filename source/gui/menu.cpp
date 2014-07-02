@@ -94,7 +94,7 @@ oc3_signals public:
   Signal0<> onMaximizeSignal;
 };
 
-Signal1< int >& Menu::onCreateConstruction(){  return _d->onCreateConstructionSignal;}
+Signal1<int>& Menu::onCreateConstruction(){  return _d->onCreateConstructionSignal;}
 Signal0<>& Menu::onRemoveTool(){  return _d->onRemoveToolSignal;}
 
 class MenuButton : public TexturedButton
@@ -107,73 +107,71 @@ public:
     setIsPushButton( pushBtn );
   }
 
-  int getMidPicId() const { return _midIconId; }
+  int midPicId() const { return _midIconId; }
   void setMidPicId( int id ) { _midIconId = id; }
 private:
   int _midIconId;
 };
 
-Menu::Menu( Widget* parent, int id, const Rect& rectangle ) : Widget( parent, id, rectangle ), _d( new Impl )
+Menu::Menu( Widget* parent, int id, const Rect& rectangle )
+  : Widget( parent, id, rectangle ), _d( new Impl )
 {
-    _d->lastPressed = 0;
-    _d->overlaysMenu = 0;
+  _d->lastPressed = 0;
+  _d->overlaysMenu = 0;
 
-    const bool haveSubMenu = true;
-    _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
-                                     !haveSubMenu, ResourceMenu::emptyMidPicId, _("##hide_bigpanel##") );
-    _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
+  const bool haveSubMenu = true;
+  _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
+                                   !haveSubMenu, ResourceMenu::emptyMidPicId, _("##hide_bigpanel##") );
+  _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
-    _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, building::house,
-                                  !haveSubMenu, ResourceMenu::houseMidPicId, _("##build_housing##") );
-    
-    _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID, 
-                                  !haveSubMenu, ResourceMenu::clearMidPicId, _("##clear_land##") );
-    
-    _d->roadButton = _addButton( 135, true, 2, construction::road, !haveSubMenu, ResourceMenu::roadMidPicId, _("##build_road_tlp##") );
-    _d->waterButton = _addButton( 127, true, 3, BM_WATER, haveSubMenu, ResourceMenu::waterMidPicId, _("##water_build_tlp##") );
-    _d->healthButton = _addButton( 163, true, 4, BM_HEALTH, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip##") );
-    _d->templeButton = _addButton( 151, true, 5, BM_RELIGION, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip##") );
-    _d->educationButton = _addButton( 147, true, 6, BM_EDUCATION, haveSubMenu, ResourceMenu::educationMidPicId, _("##education_objects##") );
-    
-    _d->entertainmentButton = _addButton( 143, true, 7, BM_ENTERTAINMENT, haveSubMenu, 
-                                          ResourceMenu::entertainmentMidPicId, _("##entertainment##") );
-    
-    _d->administrationButton = _addButton( 139, true, 8, BM_ADMINISTRATION, haveSubMenu, 
-                                           ResourceMenu::administrationMidPicId, _("##administration_building##") );
-    
-    _d->engineerButton = _addButton( 167, true, 9, BM_ENGINEERING, haveSubMenu, 
-                                     ResourceMenu::engineerMidPicId, _("##engineering_structures##") );
-    
-    _d->securityButton = _addButton( 159, true, 10, BM_SECURITY, haveSubMenu, 
-                                     ResourceMenu::securityMidPicId, _("##securityBtnTooltip##") );
-    
-    _d->commerceButton = _addButton( 155, true, 11, BM_COMMERCE, haveSubMenu, 
-                                     ResourceMenu::comerceMidPicId, _("##comerceBtnTooltip##") );
+  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, building::house,
+                                !haveSubMenu, ResourceMenu::houseMidPicId, _("##build_housing##") );
+
+  _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID,
+                                !haveSubMenu, ResourceMenu::clearMidPicId, _("##clear_land##") );
+
+  _d->roadButton = _addButton( 135, true, 2, construction::road, !haveSubMenu, ResourceMenu::roadMidPicId, _("##build_road_tlp##") );
+  _d->waterButton = _addButton( 127, true, 3, BM_WATER, haveSubMenu, ResourceMenu::waterMidPicId, _("##water_build_tlp##") );
+  _d->healthButton = _addButton( 163, true, 4, BM_HEALTH, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip##") );
+  _d->templeButton = _addButton( 151, true, 5, BM_RELIGION, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip##") );
+  _d->educationButton = _addButton( 147, true, 6, BM_EDUCATION, haveSubMenu, ResourceMenu::educationMidPicId, _("##education_objects##") );
+
+  _d->entertainmentButton = _addButton( 143, true, 7, BM_ENTERTAINMENT, haveSubMenu,
+                                        ResourceMenu::entertainmentMidPicId, _("##entertainment##") );
+
+  _d->administrationButton = _addButton( 139, true, 8, BM_ADMINISTRATION, haveSubMenu,
+                                         ResourceMenu::administrationMidPicId, _("##administration_building##") );
+
+  _d->engineerButton = _addButton( 167, true, 9, BM_ENGINEERING, haveSubMenu,
+                                   ResourceMenu::engineerMidPicId, _("##engineering_structures##") );
+
+  _d->securityButton = _addButton( 159, true, 10, BM_SECURITY, haveSubMenu,
+                                   ResourceMenu::securityMidPicId, _("##securityBtnTooltip##") );
+
+  _d->commerceButton = _addButton( 155, true, 11, BM_COMMERCE, haveSubMenu,
+                                   ResourceMenu::comerceMidPicId, _("##comerceBtnTooltip##") );
 }
 
 PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
                              int id, bool haveSubmenu, int midPic, const std::string& tooltip )
 {
-    Point offset( 1, 32 );
-    int dy = 35;
+  Point offset( 1, 32 );
+  int dy = 35;
 
-    MenuButton* ret = new MenuButton( this, Point( 0, 0 ), -1, -1, startPic, pushBtn );
-    ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
-    ret->setPosition( offset + Point( 0, dy * yMul ) );
-    ret->setTooltipText( tooltip );
+  MenuButton* ret = new MenuButton( this, Point( 0, 0 ), -1, -1, startPic, pushBtn );
+  ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
+  ret->setPosition( offset + Point( 0, dy * yMul ) );
+  ret->setTooltipText( tooltip );
 
-    if( MenuButton* btn = safety_cast< MenuButton* >( ret ) )
-    {
-        btn->setMidPicId( midPic );
-    }
+  if( MenuButton* btn = safety_cast< MenuButton* >( ret ) )
+  {
+    btn->setMidPicId( midPic );
+  }
 
-    return ret;
+  return ret;
 }
 
 /* here will be helper functions for minimap generation */
-
-
-
 void Menu::draw(gfx::Engine& painter )
 {
   if( !isVisible() )
@@ -186,97 +184,95 @@ void Menu::draw(gfx::Engine& painter )
 
 bool Menu::onEvent(const NEvent& event)
 {
-    if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  {
+    if( !event.gui.caller )
+        return false;
+
+    int id = event.gui.caller->getID();
+    switch( id )
     {
-        if( !event.gui.caller )
-            return false;
+    case MAXIMIZE_ID:
+      _d->lastPressed = 0;
+      _createBuildMenu( -1, this );
+      oc3_emit _d->onMaximizeSignal();
+    break;
 
-        int id = event.gui.caller->getID();
-        switch( id )
-        {
-        case MAXIMIZE_ID:
-            _d->lastPressed = 0;
-            _createBuildMenu( -1, this );
-            _d->onMaximizeSignal.emit();
-        break;
+    case building::house:
+    case construction::road:
+      _d->lastPressed = event.gui.caller;
+      oc3_emit _d->onCreateConstructionSignal( id );
+      _createBuildMenu( -1, this );
+    break;
 
-        case building::house:
-        case construction::road:
+    case REMOVE_TOOL_ID:
+      _d->lastPressed = event.gui.caller;
+      oc3_emit _d->onRemoveToolSignal();
+      _createBuildMenu( -1, this );
+    break;
+
+    default:
+      if( _d->lastPressed != event.gui.caller )
+      {
+        if( event.gui.caller->parent() == this )
             _d->lastPressed = event.gui.caller;
-            _d->onCreateConstructionSignal.emit( id );
-            _createBuildMenu( -1, this );
-        break;
 
-        case REMOVE_TOOL_ID:
-            _d->lastPressed = event.gui.caller;
-            _d->onRemoveToolSignal.emit();
-            _createBuildMenu( -1, this );
-        break;
-        
-        default:
-            if( _d->lastPressed != event.gui.caller )
-            {
-                if( event.gui.caller->parent() == this )
-                    _d->lastPressed = event.gui.caller;
-                
-                if( PushButton* btn = safety_cast< PushButton* >( event.gui.caller ) )
-                {
-                    int id = btn->getID();
-                    if( id & BuildMenu::subMenuCreateIdHigh )
-                    {
-                        _createBuildMenu( id & 0xff, event.gui.caller );        
-                    }
-                    else
-                    {
-                        _d->onCreateConstructionSignal.emit( id );
-                        _createBuildMenu( -1, this );
-                        setFocus();
-                        //_d->lastPressed = 0;
-                    }
-                }
-            }
-
-        break;
-        }
-
-        unselectAll();
-        if( PushButton* btn = safety_cast< PushButton* >( _d->lastPressed ) )
+        if( PushButton* btn = safety_cast< PushButton* >( event.gui.caller ) )
         {
-            btn->setPressed( true && btn->isPushButton() );
+          int id = btn->getID();
+          if( id & BuildMenu::subMenuCreateIdHigh )
+          {
+            _createBuildMenu( id & 0xff, event.gui.caller );
+          }
+          else
+          {
+            oc3_emit _d->onCreateConstructionSignal( id );
+            _createBuildMenu( -1, this );
+            setFocus();
+          }
         }
+      }
+    break;
+    }
+
+    unselectAll();
+    if( PushButton* btn = safety_cast< PushButton* >( _d->lastPressed ) )
+    {
+      btn->setPressed( true && btn->isPushButton() );
+    }
+    return true;
+  }
+
+  if( event.EventType == sEventGui && event.gui.type == guiElementFocusLost )
+  {
+    unselectAll();
+    _d->lastPressed = 0;
+  }
+
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type )
+    {
+    case mouseRbtnRelease:
+      _createBuildMenu( -1, this );
+      unselectAll();
+      _d->lastPressed = 0;
+    return true;
+
+    case mouseLbtnPressed:
+    case mouseLbtnRelease:
+    {
+      //lock movement for tilemap
+      if( findChildren<BuildMenu*>().size() > 0 )
         return true;
     }
+    break;
 
-    if( event.EventType == sEventGui && event.gui.type == guiElementFocusLost )
-    {
-        unselectAll();
-        _d->lastPressed = 0;
+    default: break;
     }
+  }
 
-    if( event.EventType == sEventMouse )
-    {
-      switch( event.mouse.type )
-      {
-      case mouseRbtnRelease:
-        _createBuildMenu( -1, this );
-        unselectAll();
-        _d->lastPressed = 0;
-      return true;
-
-      case mouseLbtnPressed:
-      case mouseLbtnRelease:
-      {
-        //lock movement for tilemap
-        if( findChildren<BuildMenu*>().size() > 0 )
-          return true;
-      }
-      break;
-
-      default: break;
-      }
-    }
-
-    return Widget::onEvent( event );
+  return Widget::onEvent( event );
 }
 
 Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
@@ -287,8 +283,12 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
   const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
   ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), bground.height() + bottom.height() ) ) );
-  ret->_d->bgPicture->draw( bground, 0, 0);
+
+  ret->_d->bgPicture->lock();
+  ret->_d->bgPicture->draw( bground, 0, 0 );
   ret->_d->bgPicture->draw( bottom,  0, bground.height() );
+  ret->_d->bgPicture->unlock();
+
   ret->_d->city = city;  
   ret->_d->updateBuildingOptions();
 
@@ -300,17 +300,17 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
 
 bool Menu::unselectAll()
 {
-    bool anyPressed = false;
-    for( ConstChildIterator it=getChildren().begin(); it != getChildren().end(); it++ )
+  bool anyPressed = false;
+  foreach( it, getChildren() )
+  {
+    if( PushButton* btn = safety_cast< PushButton* >( *it ) )
     {
-        if( PushButton* btn = safety_cast< PushButton* >( *it ) )
-        {
-            anyPressed |= btn->isPressed();
-            btn->setPressed( false );
-        }
+      anyPressed |= btn->isPressed();
+      btn->setPressed( false );
     }
+  }
 
-    return anyPressed;
+  return anyPressed;
 }
 
 void Menu::_createBuildMenu( int type, Widget* parent )
@@ -372,8 +372,11 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
   const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
   ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), bground.height() + bottom.height() ) ) );
+
+  ret->_d->bgPicture->lock();
   ret->_d->bgPicture->draw( bground, 0, 0);
   ret->_d->bgPicture->draw( bottom, 0, bground.height() );
+  ret->_d->bgPicture->unlock();
 
   ret->_d->city = city;
   ret->_d->updateBuildingOptions();
@@ -473,7 +476,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
   {
     if( MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller ) )
     {
-      int picId = btn->getMidPicId() > 0 ? btn->getMidPicId() : ResourceMenu::emptyMidPicId;
+      int picId = btn->midPicId() > 0 ? btn->midPicId() : ResourceMenu::emptyMidPicId;
       _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );
     }
   }

@@ -37,7 +37,7 @@ class PostponeEvent::Impl
 {
 public:
   DateTime date;
-  int population;
+  unsigned int population;
   bool mayDelete;
   VariantMap options;
 

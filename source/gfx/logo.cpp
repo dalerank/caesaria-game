@@ -19223,6 +19223,8 @@ void initialize( const std::string& name)
 {
 	gfx::Picture* pic = gfx::Picture::create( Size( width, height ) );
 	char const* ptr = data;
+
+	pic->lock();
 	for( unsigned int y = 0; y < height; y++ )
 	{
 		for( unsigned int x=0; x < width; x++ )
@@ -19232,6 +19234,7 @@ void initialize( const std::string& name)
 			pic->setPixel( Point( x, y ), *(int*)pixel );
 		}
 	}
+	pic->unlock();
 
 	gfx::PictureBank::instance().setPicture( name, *pic );
 }

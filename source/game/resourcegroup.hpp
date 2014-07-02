@@ -95,6 +95,7 @@ public:
     landTradeRoute = 70,
     romeCity=8,
     distantCity=22,
+    rightPanelTx=14,
     otherCity=15
   };
 

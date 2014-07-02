@@ -773,7 +773,7 @@ void EditBox::beforeDraw(Engine& painter )
       }
       else
       {
-        PictureDecorator::draw( *_d->picture, Rect( 0, 0, width(), height() ), PictureDecorator::blackFrame );
+        PictureDecorator::draw( *_d->picture, Rect( 0, 0, width(), height() ), PictureDecorator::blackFrame, true, true );
       }
 
       Rect localClipRect = absoluteRect();
@@ -849,7 +849,7 @@ void EditBox::beforeDraw(Engine& painter )
              std::string rText = __ucs2utf8( *txtLine );
              //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
              Rect curTextureRect( Point( 0, 0), _d->currentTextRect.size() );
-             curTextureRect = _d->lastBreakFont.calculateTextRect( rText, curTextureRect, getHorizontalTextAlign(), getVerticalTextAlign() );
+             curTextureRect = _d->lastBreakFont.calculateTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
              curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
 
              _d->lastBreakFont.draw( *_d->textPicture, rText, curTextureRect.UpperLeftCorner );
@@ -955,9 +955,9 @@ void EditBox::draw( Engine& painter )
 
   if( _d->markAreaRect.isValid() )
   {
-      NColor markAreaColor( 0xff0000ff );
-      //markAreaColor.setAlpha( _d->resultTransparent );
-      //painter.drawRectangle( markAreaColor, convertLocalToScreen( _d->markAreaRect ), &getAbsoluteClippingRectRef() );
+    NColor markAreaColor( 0xff0000ff );
+    //markAreaColor.setAlpha( _d->resultTransparent );
+    //painter.drawRectangle( markAreaColor, convertLocalToScreen( _d->markAreaRect ), &getAbsoluteClippingRectRef() );
   }
 
 	// draw the text

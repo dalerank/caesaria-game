@@ -130,8 +130,11 @@ void PictureDecorator::drawPanel( Picture &dstpic, const Rect& rectangle, int pi
                rectangle.UpperLeftCorner + Point( rectangle.width()-16, 0) );
 }
 
-void PictureDecorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha )
+void PictureDecorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha, bool updateTexture )
 {
+  if( updateTexture )
+    dstpic.lock();
+
   switch( mode )
   {
   case whiteArea: drawArea( dstpic, rectangle, 348, 10, 12, useAlpha ); break;  
@@ -159,6 +162,9 @@ void PictureDecorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, 
   case brownFrame: drawFrame(dstpic, rectangle, 28, useAlpha); break;
   case greyFrame: drawFrame(dstpic, rectangle, 37, useAlpha); break;
   }
+
+  if( updateTexture )
+    dstpic.unlock();
 }
 
 void PictureDecorator::drawBorder( Picture &dstpic, const Rect& rectangle, 

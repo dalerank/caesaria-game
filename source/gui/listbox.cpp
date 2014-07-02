@@ -612,8 +612,8 @@ void ListBox::beforeDraw(gfx::Engine& painter)
       {
         refItem.setState( _getCurrentItemState( i, hl ) );
 
-        itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.horizontalAlign() : getHorizontalTextAlign();
-        itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.verticalAlign() : getVerticalTextAlign();
+        itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.horizontalAlign() : horizontalTextAlign();
+        itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.verticalAlign() : verticalTextAlign();
 
         currentFont = _getCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
         currentFont.setColor( _getCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
@@ -817,7 +817,7 @@ ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int col
   //i.currentHovered = 255;
   i.OverrideColors[ ListBoxItem::simple ].font = font.isValid() ? font : _d->font;
   i.OverrideColors[ ListBoxItem::simple ].color = color;
-  i.setTextAlignment( getHorizontalTextAlign(), getVerticalTextAlign() );
+  i.setTextAlignment( horizontalTextAlign(), verticalTextAlign() );
 
   _d->needItemsRepackTextures = true;
 

@@ -148,7 +148,7 @@ void Level::initialize()
   _d->game->gui()->clear();
 
   const int topMenuHeight = 23;
-  const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, 14 );
+  const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
   gui::GuiEnv& gui = *_d->game->gui();

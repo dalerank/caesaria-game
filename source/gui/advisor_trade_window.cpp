@@ -237,7 +237,7 @@ public:
 
         Font font = getFont( state );        
         std::string text = (order == city::TradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
-        Rect textRect = font.calculateTextRect( text, Rect( Point( 0, 0), size() ), getHorizontalTextAlign(), getVerticalTextAlign() );
+        Rect textRect = font.calculateTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
         font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner );
       }
       break;
@@ -249,11 +249,11 @@ public:
 
           Font font = getFont( state );
           std::string text = _("##trade_btn_export_text##");
-          Rect textRect = font.calculateTextRect( text, Rect( 0, 0, width() / 2, height() ), getHorizontalTextAlign(), getVerticalTextAlign() );
+          Rect textRect = font.calculateTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
           font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner, true );
 
           text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
-          textRect = font.calculateTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), getHorizontalTextAlign(), getVerticalTextAlign() );
+          textRect = font.calculateTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
           font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner, true );
         }
       break;

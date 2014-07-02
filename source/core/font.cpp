@@ -219,7 +219,10 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   {
     Picture pic;
     pic.init( sText, Point( 0, 0 ) );
+
+    dstpic.lock();
     dstpic.draw( pic, dx, dy);
+    dstpic.unlock();
   }
 
   SDL_FreeSurface( sText );

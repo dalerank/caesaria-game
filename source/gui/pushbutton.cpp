@@ -162,9 +162,12 @@ void PushButton::_updateTexture( ElementState state )
   }
 
   // draw button background
+  if( curTxs )
+    curTxs->lock();
+
   if( _d->buttonStates[ state ].bgTexture.isValid() )
   {
-    curTxs->fill( 0x00000000, Rect( Point( 0, 0 ), btnSize ) );
+    curTxs->fill( 0, Rect( Point( 0, 0 ), btnSize ) );
     curTxs->draw( _d->buttonStates[ state ].bgTexture, 0, 0, false );
   }
   else
@@ -230,12 +233,14 @@ void PushButton::_updateTexture( ElementState state )
     break;
     }
   }
+  if( curTxs )
+    curTxs->unlock();
 
   Font stFont = _d->buttonStates[ state ].font;
   if( textTxs && stFont.isValid() )
   {
     Rect textRect = stFont.calculateTextRect( text(), Rect( 0, 0, width(), height() ),
-                                              getHorizontalTextAlign(), getVerticalTextAlign() );
+                                              horizontalTextAlign(), verticalTextAlign() );
     textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
     stFont.draw( *textTxs, text(), textRect.UpperLeftCorner + _d->textOffset );
   }
@@ -285,6 +290,7 @@ void PushButton::setPicture(Picture picture, ElementState state )
 
   _d->buttonStates[ state ].bgTexture = picture;
   _d->buttonStates[ state ].rectangle = rectangle;
+
   _updateTexture( state );
 }
 

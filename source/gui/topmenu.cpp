@@ -64,6 +64,7 @@ oc3_slots public:
   void showAboutInfo();
   void resolveAdvisorShow(int);
   void showShortKeyInfo();
+  void initBackground( const Size& size );
 
 oc3_signals public:
   Signal0<> onExitSignal;
@@ -127,6 +128,28 @@ void TopMenu::Impl::showShortKeyInfo()
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 
+void TopMenu::Impl::initBackground( const Size& size )
+{
+  Pictures p_marble;
+  for (int i = 1; i<=12; ++i)
+  {
+    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
+  }
+  bgPicture.reset( Picture::create( size ) );
+
+  unsigned int i = 0;
+  unsigned int x = 0;
+  bgPicture->lock();
+  while( x < size.width())
+  {
+    const Picture& pic = p_marble[i%10];
+    bgPicture->draw( pic, x, 0);
+    x += pic.width();
+    i++;
+  }
+  bgPicture->unlock();
+}
+
 void TopMenu::Impl::showAboutInfo()
 {
   Widget* parent = lbDate->getEnvironment()->rootWidget();
@@ -147,23 +170,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
   setupUI( GameSettings::rcpath( "/gui/topmenu.gui" ) );
   setGeometry( Rect( 0, 0, parent->width(), height ) );
 
-  Pictures p_marble;
-  for (int i = 1; i<=12; ++i)
-  {
-    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
-  }
+  _d->initBackground( size() );
 
-  _d->bgPicture.reset( Picture::create( size() ) );
-
-  int i = 0;
-  unsigned int x = 0;
-  while (x < width())
-  {
-    const Picture& pic = p_marble[i%10];
-    _d->bgPicture->draw( pic, x, 0);
-    x += pic.width();
-    i++;
-  }
   _d->lbPopulation = findChildA<Label*>( "lbPopulation", false, this );
   if( _d->lbPopulation )
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );

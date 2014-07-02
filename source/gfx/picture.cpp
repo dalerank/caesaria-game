@@ -48,6 +48,8 @@ public:
   // for SDL surface
   SDL_Surface* surface;
 
+  unsigned int textureID;
+
   // for OPEN_GL surface
   //unsigned int glTextureID;  // texture ID for openGL
 
@@ -59,7 +61,7 @@ Picture::Picture() : _d( new Impl )
 {
   _d->surface = NULL;
   _d->offset = Point( 0, 0 );
-  //_d->glTextureID = 0;
+  _d->textureID = 0;
   _d->size = Size( 0 );
   _d->name = "";
 }
@@ -85,6 +87,8 @@ void Picture::addOffset( Point offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Surface* Picture::surface() const{  return _d->surface;}
+unsigned int& Picture::textureID() { return _d->textureID; }
+unsigned int&Picture::textureID() const {  return _d->textureID; }
 Point Picture::offset() const{  return _d->offset;}
 int Picture::width() const{  return _d->size.width();}
 int Picture::height() const{  return _d->size.height();}
@@ -92,8 +96,16 @@ void Picture::setName(std::string &name){  _d->name = name;}
 std::string Picture::name() const{  return _d->name;}
 Size Picture::size() const{  return _d->size; }
 bool Picture::isValid() const{  return _d->surface != 0;}
-Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
-Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}
+
+Picture& Picture::load( const std::string& group, const int id )
+{
+  return PictureBank::instance().getPicture( group, id );
+}
+
+Picture& Picture::load( const std::string& filename )
+{
+  return PictureBank::instance().getPicture( filename );
+}
 
 Picture* Picture::clone() const
 {
@@ -187,7 +199,7 @@ void Picture::lock()
   if (SDL_MUSTLOCK(_d->surface))
   {
     int rc = SDL_LockSurface(_d->surface);
-    if (rc < 0) THROW("Cannot lock surface: " << SDL_GetError());
+    if (rc < 0) THROW("Picture: cannot lock surface: " << SDL_GetError());
   }
 }
 
@@ -196,6 +208,11 @@ void Picture::unlock()
   if (SDL_MUSTLOCK(_d->surface))
   {
     SDL_UnlockSurface(_d->surface);
+  }
+
+  if( _d->textureID > 0 )
+  {
+    Engine::instance().loadPicture( *this );
   }
 }
 
@@ -285,7 +302,7 @@ Picture& Picture::operator=( const Picture& other )
   _d->surface = other._d->surface;
 
   // for OPEN_GL surface
-  //_d->glTextureID = other._d->glTextureID;  // texture ID for openGL
+  _d->textureID = other._d->textureID;  // texture ID for openGL
 
   _d->offset = other._d->offset;
 
@@ -308,14 +325,14 @@ void Picture::fill( const NColor& color, const Rect& rect )
 {
   SDL_Surface* source = _d->surface;
 
-  if( _d->surface )
+  if( source )
   {
     SDL_LockSurface( source );
     SDL_Rect sdlRect = { (short)rect.left(), (short)rect.top(), (Uint16)rect.width(), (Uint16)rect.height() };
 
     SDL_FillRect(source, rect.width() > 0 ? &sdlRect : NULL, SDL_MapRGBA( source->format, color.getRed(), color.getGreen(),
-                                                                                             color.getBlue(), color.getAlpha() ));
-    SDL_UnlockSurface(source);
+                                                                                          color.getBlue(), color.getAlpha() ));
+    SDL_UnlockSurface( source );
   }
   else
   {
