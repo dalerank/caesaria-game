@@ -32,7 +32,11 @@
 #include "core/position.hpp"
 #include "core/eventconverter.hpp"
 #include "core/foreach.hpp"
+#ifdef CAESARIA_PLATFORM_ANDROID
+#include <GLES/gl.h>
+#else
 #include <SDL_opengl.h>
+#endif
 #include "core/font.hpp"
 #include "core/stringhelper.hpp"
 #include "core/time.hpp"
@@ -73,7 +77,7 @@ void GlEngine::init()
   glDisable(GL_DEPTH_TEST); // no depth test
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, _srcSize.width(), _srcSize.height(), 0, 0, 1);
+  glOrthof(0, _srcSize.width(), _srcSize.height(), 0, 0, 1);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   // Displacement trick for exact pixelization
