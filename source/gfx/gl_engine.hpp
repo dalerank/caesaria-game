@@ -51,13 +51,9 @@ public:
   void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
   void endRenderFrame();
 
-<<<<<<< HEAD
+
   void setColorMask( int rmask, int gmask, int bmask, int amask );
   void resetColorMask();
-=======
-   void setColorMask( int rmask, int gmask, int bmask, int amask );
-   void resetColorMask();
->>>>>>> afae27479c5d7a2fb05a4d571cfe314ec9c382be
 
   void createScreenshot( const std::string& filename );
   unsigned int fps() const;
@@ -68,15 +64,10 @@ public:
   Point cursorPos() const;
   Picture& screen();
 private:
-<<<<<<< HEAD
-  Picture _screen;
-  unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
-  float _rmask, _gmask, _bmask, _amask;
-=======
+
    Picture _screen;
    unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
    float _rmask, _gmask, _bmask, _amask;
->>>>>>> afae27479c5d7a2fb05a4d571cfe314ec9c382be
 };
 
 }
