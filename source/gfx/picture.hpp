@@ -84,7 +84,7 @@ public:
   bool isValid() const;
 
   static Picture& load( const std::string& group, const int id );
-  static Picture& load( const std::string& filename ); 
+  static Picture& load( const std::string& filename );     
 
   static Picture* create( const Size& size );
   static const Picture& getInvalid();

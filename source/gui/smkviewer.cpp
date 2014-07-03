@@ -162,7 +162,7 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 
   if( s )
   {
-    for( unsigned int i = videoHeight - 1; i >= 0; i--)
+    for( int i = videoHeight - 1; i >= 0; i--)
     {
       for( unsigned int j = 0; j < videoWidth; j++ )
       {
@@ -200,7 +200,7 @@ void SmkViewer::Impl::nextFrame()
   if( currentFrame+1 == frameCount )
   {
     currentFrame++;
-    onFinishSignal.emit();
+    oc3_emit onFinishSignal();
   }
 
   Logger::warning( " -> Frame %d...", currentFrame );

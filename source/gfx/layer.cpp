@@ -304,7 +304,7 @@ void Layer::render( Engine& engine)
 
   if( !_d->renderOverlay )
   {
-    engine.setTileDrawMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
+    engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
   }
   // SECOND PART: draw all sprites, impassable land and buildings
   foreach( it, visibleTiles )
@@ -319,7 +319,7 @@ void Layer::render( Engine& engine)
     drawTileW( engine, *tile, camOffset, z );
   }
 
-  engine.resetTileDrawMask();
+  engine.resetColorMask();
 }
 
 void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth)

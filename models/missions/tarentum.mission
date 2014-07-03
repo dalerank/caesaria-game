@@ -311,31 +311,31 @@
 	  }
     }
 
-	"barbarian_invasion1#enemy_attack" : {
+    barbarian_invasion1#enemy_attack : {
       date : "-347.07.01"
       type : "enemy_attack"
-	  target : "food"
-      items : {
-        troop_soldiers : {
-          type : "etruscanSoldier"
-          count : 6
-          location : "random"
-        }
+      target : "food"
+        items : {
+          troop_soldiers : {
+            type : "etruscanSoldier"
+            count : 6
+            location : "random"
+          }
 
-        troop_archers : {
-          type : "etruscanArcher"
-          count : 3
-          location : "random"
+          troop_archers : {
+            type : "etruscanArcher"
+            count : 3
+            location : "random"
+          }
         }
-      }
 
       exec : {
-		barbarian_attack#messagebox : {
-		  title : "##barbarian_attack_title##"
-		  text : "##barbarian_attack_text##"
-		  video : "/smk/spy_army.smk"
-		}
-	  }
+        barbarian_attack#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
     }
 
 	"barbarian_invasion2#enemy_attack" : {
