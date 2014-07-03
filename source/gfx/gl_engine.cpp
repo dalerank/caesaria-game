@@ -34,9 +34,10 @@
 #include "core/foreach.hpp"
 #include <SDL_opengl.h>
 #include "core/font.hpp"
+#include "pictureconverter.hpp"
 #include "core/stringhelper.hpp"
 #include "core/time.hpp"
-
+#include "IMG_savepng.h"
 
 namespace gfx{
 
@@ -286,7 +287,15 @@ void GlEngine::resetColorMask()
 
 void GlEngine::createScreenshot( const std::string& filename )
 {
+  Picture* screen = createPicture( screenSize() );
+  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
 
+  PictureConverter::flipVertical( *screen );
+
+  IMG_SavePNG( filename.c_str(), screen->surface(), -1 );
+
+  deletePicture( screen );
+  delete screen;
 }
 
 unsigned int GlEngine::fps() const
