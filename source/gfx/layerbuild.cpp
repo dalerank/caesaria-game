@@ -366,18 +366,18 @@ void LayerBuild::_drawBuildTiles( Engine& engine)
     postTile->resetWasDrawn();
 
     ConstructionPtr ptr_construction = ptr_cast<Construction>( postTile->overlay() );
-    engine.resetTileDrawMask();
+    engine.resetColorMask();
 
     if( ptr_construction.isValid()
         && ptr_construction->canBuild( _city(), postTile->pos(), _d->buildTiles ) )
     {
-      engine.setTileDrawMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+      engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     }
 
     drawTileR( engine, *postTile, offset, postTile->pos().z(), true );
   }
 
-  engine.resetTileDrawMask();
+  engine.resetColorMask();
 }
 
 void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )

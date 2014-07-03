@@ -202,7 +202,6 @@ void Religion::update( const unsigned int time )
       randomGod = *it;
     }
 
-
     if( randomGod.isValid() )
     {
       randomGod->checkAction( &_city );

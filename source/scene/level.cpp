@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "level.hpp"
 
@@ -76,6 +76,7 @@
 #include "gfx/layerconstants.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
+#include "religion/pantheon.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -519,7 +520,7 @@ void Level::handleEvent( NEvent& event )
       case KEY_F9:    _d->showAdvisorsWindow( advisor::entertainment ); break;
       case KEY_F10:   _d->showAdvisorsWindow( advisor::religion ); break;
       case KEY_F11:   _d->showAdvisorsWindow( advisor::finance ); break;
-      case KEY_F12:    _d->showAdvisorsWindow( advisor::main ); break;
+      case KEY_F12:   _d->showAdvisorsWindow( advisor::main ); break;
       default:
         handled = false;
       break;
@@ -580,6 +581,15 @@ void Level::handleEvent( NEvent& event )
         world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( _d->game->empire() );
         army->setBase( rome );
         army->attack( ptr_cast<world::Object>( plCity ) );
+      }
+    }
+    break;
+
+    case KEY_KEY_M:
+    {
+      if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
+      {
+        religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
       }
     }
     break;

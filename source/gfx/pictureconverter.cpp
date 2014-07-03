@@ -100,6 +100,25 @@ void PictureConverter::maskColor( Picture& dst, const Picture& src, int rmask, i
   dst.init( target, src.offset() );
 }
 
+void PictureConverter::flipVertical(Picture& pic)
+{
+  if( !pic.isValid() )
+    return;
+
+  unsigned int width = pic.width();
+  ScopedPtr<int> tmpLine( new int[ width ] );
+  void* pixels = pic.surface()->pixels;
+
+  for( int y=0; y < pic.height()/2; y++ )
+  {
+    unsigned int* tp = (unsigned int*)pixels + y * width;
+    unsigned int* etp = (unsigned int*)pixels + ( pic.height() - y - 1) * width;
+    memcpy( tmpLine.data(), tp, width * 4 );
+    memcpy( tp, etp, width * 4 );
+    memcpy( etp, tmpLine.data(), width * 4 );
+  }
+}
+
 void PictureConverter::save(Picture& pic, const std::string& filename, const std::string& type)
 {
   if( type == pngType )

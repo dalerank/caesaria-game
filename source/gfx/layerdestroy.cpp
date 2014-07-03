@@ -71,14 +71,14 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
   {
     if( master->getFlag( Tile::isDestructible ) )
     {
-      engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
+      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
     }
 
     // multi-tile: draw the master tile.
     if( !master->getFlag( Tile::wasDrawn ) )
       drawTile( engine, *master, offset );
 
-    engine.resetTileDrawMask();
+    engine.resetColorMask();
   }
 }
 
@@ -148,14 +148,14 @@ void LayerDestroy::render( Engine& engine )
     {
       if( tile->getFlag( Tile::isDestructible ) )
       {
-        engine.setTileDrawMask( 0x00ff0000, 0, 0, 0xff000000 );
+        engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
       }
     }
 
     drawTileR( engine, *tile, cameraOffset, z, false );
 
     _drawWalkers( engine, *tile, cameraOffset );
-    engine.resetTileDrawMask();
+    engine.resetColorMask();
   }
 
   if( saveSum != _money4destroy )

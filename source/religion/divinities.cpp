@@ -130,6 +130,12 @@ DateTime RomeDivinity::lastFestivalDate() const { return _lastFestival; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)
 {
+  if( income == -101.f )
+  {
+    _doWrath( city );
+    return;
+  }
+
   unsigned int minMood = 50 - math::clamp( city->population() / 10, 0u, 50u );
   int festivalFactor = 12 - std::min( 40, _lastFestival.monthsTo( GameDate::current() ) );
   _needRelation = math::clamp<int>( income + festivalFactor + _effectPoints, minMood, 100 );

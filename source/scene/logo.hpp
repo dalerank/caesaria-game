@@ -35,7 +35,7 @@ public:
   void initialize();
 
   virtual void draw();
-  void fadeOut();
+  void fadeout();
   void setText( std::string text );
   void setPrefix( std::string prefix );
 

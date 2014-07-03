@@ -34,37 +34,40 @@ namespace gfx
 class GlEngine : public Engine
 {
 public:
-   GlEngine();
-   virtual ~GlEngine();
-   void init();
-   void exit();
-   void delay( const unsigned int msec );
+  GlEngine();
+  virtual ~GlEngine();
+  void init();
+  void exit();
+  void delay( const unsigned int msec );
 
-   Picture* createPicture(const Size& size);
-   virtual void loadPicture(Picture &ioPicture);
-   virtual void unloadPicture(Picture &ioPicture);
-   void deletePicture(Picture* pic);
+  Picture* createPicture(const Size& size);
+  virtual void loadPicture(Picture &ioPicture);
+  virtual void unloadPicture(Picture &ioPicture);
+  void deletePicture(Picture* pic);
 
-   void startRenderFrame();
-   void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
-   void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
-   void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
-   void endRenderFrame();
+  void startRenderFrame();
+  void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
+  void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
+  void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
+  void endRenderFrame();
 
-   void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
-   void resetTileDrawMask();
 
-   void createScreenshot( const std::string& filename );
-   unsigned int fps() const;
-   bool haveEvent( NEvent& event );
+  void setColorMask( int rmask, int gmask, int bmask, int amask );
+  void resetColorMask();
 
-   Modes modes() const;
+  void createScreenshot( const std::string& filename );
+  unsigned int fps() const;
+  bool haveEvent( NEvent& event );
 
-   Point cursorPos() const;
-   Picture& screen();
+  Modes modes() const;
+
+  Point cursorPos() const;
+  Picture& screen();
 private:
+
    Picture _screen;
    unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
+   float _rmask, _gmask, _bmask, _amask;
 };
 
 }

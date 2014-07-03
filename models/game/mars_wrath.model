@@ -1,0 +1,20 @@
+{
+  type : "enemy_attack"
+  target : "food"
+    items : {
+      troop_soldiers : {
+        type : "etruscanSoldier"
+        count : 10
+        /*city.pop : 10*/
+        location : "random"
+      }
+    }
+
+  exec : {
+    barbarian_attack#messagebox : {
+      title : "##barbarian_attack_title##"
+      text : "##barbarian_attack_text##"
+      video : "/smk/spy_army.smk"
+    }
+  }
+}

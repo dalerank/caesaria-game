@@ -62,8 +62,8 @@ public:
   virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;
   virtual void draw(const Pictures& pic, const Point& pos, Rect* clipRect=0 ) = 0;
 
-  virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask ) = 0;
-  virtual void resetTileDrawMask() = 0;
+  virtual void setColorMask( int rmask, int gmask, int bmask, int amask ) = 0;
+  virtual void resetColorMask() = 0;
   
   virtual void deletePicture( Picture* pic ) = 0;
   // creates a picture with the given size, it will need to be loaded by the graphic engine

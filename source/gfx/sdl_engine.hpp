@@ -44,8 +44,8 @@ public:
 
   virtual void setFlag( int flag, int value );
 
-  virtual void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
-  virtual void resetTileDrawMask();
+  virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
+  virtual void resetColorMask();
 
   // deletes a picture (deallocate memory)
   virtual void deletePicture(Picture* pic);

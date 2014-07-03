@@ -38,9 +38,10 @@
 #include <SDL_opengl.h>
 #endif
 #include "core/font.hpp"
+#include "pictureconverter.hpp"
 #include "core/stringhelper.hpp"
 #include "core/time.hpp"
-
+#include "IMG_savepng.h"
 
 namespace gfx{
 
@@ -55,6 +56,7 @@ GlEngine::~GlEngine()
 
 void GlEngine::init()
 {
+  _rmask = _gmask = _bmask = _amask = 1.f;
   int rc;
   rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
@@ -84,6 +86,9 @@ void GlEngine::init()
   glTranslatef(0.375, 0.375, 0);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
+
+  Logger::warning( "GrafixEngine: set caption");
+  SDL_WM_SetCaption( "CaesarIA: OGL "CAESARIA_VERSION, 0 );
 }
 
 
@@ -236,18 +241,22 @@ void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* cl
    glBegin( GL_QUADS );
 
    //Bottom-left vertex (corner)
+   glColor4f( _rmask, _gmask, _bmask, _amask );
    glTexCoord2i( 0, 0 );
-   glVertex2f( x0, y0 );
+   glVertex2f( x0, y0 );   
 
    //Bottom-right vertex (corner)
+   glColor4f( _rmask, _gmask, _bmask, _amask );
    glTexCoord2i( 1, 0 );
    glVertex2f( x1, y0 );
 
    //Top-right vertex (corner)
+   glColor4f( _rmask, _gmask, _bmask, _amask );
    glTexCoord2i( 1, 1 );
    glVertex2f( x1, y1 );
 
    //Top-left vertex (corner)
+   glColor4f( _rmask, _gmask, _bmask, _amask );
    glTexCoord2i( 0, 1 );
    glVertex2f( x0, y1 );
 
@@ -267,19 +276,30 @@ void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
   draw( picture, pos.x(), pos.y() );
 }
 
-void GlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
+void GlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
 {
-
+  _rmask = (rmask ? 1.f : 0.f);
+  _gmask = (gmask ? 1.f : 0.f);
+  _bmask = (bmask ? 1.f : 0.f);
+  _amask = (amask ? 1.f : 0.f);
 }
 
-void GlEngine::resetTileDrawMask()
+void GlEngine::resetColorMask()
 {
-
+  _rmask = _gmask = _bmask = _amask = 1.f;
 }
 
 void GlEngine::createScreenshot( const std::string& filename )
 {
+  Picture* screen = createPicture( screenSize() );
+  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
 
+  PictureConverter::flipVertical( *screen );
+
+  IMG_SavePNG( filename.c_str(), screen->surface(), -1 );
+
+  deletePicture( screen );
+  delete screen;
 }
 
 unsigned int GlEngine::fps() const
