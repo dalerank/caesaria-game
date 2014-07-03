@@ -81,6 +81,13 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
 
     std::string soldierType = soldiers.get( lc_type ).toString();
     int soldierNumber = soldiers.get( "count" );
+
+    Variant vCityPop = soldiers.get( "city.pop" );
+    if( vCityPop.isValid() )
+    {
+      soldierNumber = game.city()->population() * vCityPop.toInt() / 100;
+    }
+
     TilePos location( -1, -1 );
     Variant vLocation = soldiers.get( "location" );
 

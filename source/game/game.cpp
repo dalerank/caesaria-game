@@ -524,7 +524,7 @@ void Game::initialize()
 
   screen.setText( "##ready_to_game" );
   if( GameSettings::get( "no-fade" ).isNull() )
-    screen.fadeOut();
+    screen.fadeout();
 }
 
 void Game::exec()

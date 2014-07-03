@@ -78,7 +78,7 @@ void SplashScreen::draw()
   }
 }
 
-void SplashScreen::fadeOut()
+void SplashScreen::fadeout()
 {
   Engine& engine = Engine::instance();
   engine.loadPicture( _d->bgPicture );

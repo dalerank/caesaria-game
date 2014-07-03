@@ -51,8 +51,8 @@ public:
    void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
    void endRenderFrame();
 
-   void setTileDrawMask( int rmask, int gmask, int bmask, int amask );
-   void resetTileDrawMask();
+   void setColorMask( int rmask, int gmask, int bmask, int amask );
+   void resetColorMask();
 
    void createScreenshot( const std::string& filename );
    unsigned int fps() const;
@@ -65,6 +65,7 @@ public:
 private:
    Picture _screen;
    unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
+   float _rmask, _gmask, _bmask, _amask;
 };
 
 }

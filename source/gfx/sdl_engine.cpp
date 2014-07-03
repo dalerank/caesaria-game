@@ -77,7 +77,7 @@ Picture& SdlEngine::screen(){  return _d->screen; }
 
 SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 {
-  resetTileDrawMask();
+  resetColorMask();
 
   _d->lastUpdateFps = DateTime::elapsedTime();
   _d->fps = 0;
@@ -244,7 +244,7 @@ void SdlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
   }
 }
 
-void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
+void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
 {
   Impl::MaskInfo& mask = _d->mask;
   mask.red = rmask;
@@ -253,7 +253,7 @@ void SdlEngine::setTileDrawMask( int rmask, int gmask, int bmask, int amask )
   mask.alpha = amask;
 }
 
-void SdlEngine::resetTileDrawMask() {  memset( &_d->mask, 0, sizeof( Impl::MaskInfo ) ); }
+void SdlEngine::resetColorMask() {  memset( &_d->mask, 0, sizeof( Impl::MaskInfo ) ); }
 
 Picture* SdlEngine::createPicture(const Size& size )
 {
