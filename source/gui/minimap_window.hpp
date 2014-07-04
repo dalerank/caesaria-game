@@ -26,6 +26,7 @@
 namespace gfx
 {
   class Tilemap;
+  class Camera;
 }
 
 namespace gui
@@ -34,7 +35,7 @@ namespace gui
 class Minimap : public Widget
 {
 public:
-  Minimap(Widget* parent, Rect rect, const gfx::Tilemap& tilemap, int climate );
+  Minimap(Widget* parent, Rect rect, const gfx::Tilemap& tilemap, const gfx::Camera& camera, int climate );
 
   virtual void draw( gfx::Engine& painter);
 

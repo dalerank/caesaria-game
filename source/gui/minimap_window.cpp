@@ -25,6 +25,7 @@
 #include "core/event.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
+#include "gfx/camera.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -36,9 +37,9 @@ class Minimap::Impl
 {
 public:
   PictureRef minimap;
-  PictureRef fullmap;
 
   Tilemap const* tilemap;
+  Camera const* camera;
   int climate;
 
   MinimapColors* colors;
@@ -56,13 +57,13 @@ public oc3_signals:
   Signal1<TilePos> onCenterChangeSignal;
 };
 
-Minimap::Minimap(Widget* parent, Rect rect, const Tilemap& tilemap, int climate)
+Minimap::Minimap(Widget* parent, Rect rect, const Tilemap& tilemap, const gfx::Camera& camera, int climate)
   : Widget( parent, -1, rect ), _d( new Impl )
 {
   _d->tilemap = &tilemap;
   _d->climate = climate;
+  _d->camera = &camera;
   _d->lastTimeUpdate = 0;
-  _d->fullmap.reset( Picture::create( Size( _d->tilemap->size() * 2 ) ) );
   _d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
   _d->colors = new MinimapColors( (ClimateType)climate );
   setTooltipText( _("##minimap_tooltip##") );
@@ -197,28 +198,34 @@ void Minimap::Impl::updateImage()
 {
   int mapsize = tilemap->size();
 
-  //fullmap->lock();
+  minimap->lock();
   // here we can draw anything
 
-  fullmap->fill( 0xff000000, Rect() );
-  int border = (162 - mapsize) / 2;
-  int max = border + mapsize;
+  minimap->fill( 0xff000000, Rect() );
 
-  for (int y = border; y < max; y++)
+  mapsize = std::min( mapsize, 42 );
+  TilePos tpos = camera->center();
+  TilePos offset = TilePos( 80, 80 );
+  TilePos startPos = tpos - offset;
+  TilePos stopPos = tpos + offset;
+
+  int w = minimap->width()-1;
+  int h = minimap->height();
+  for( int i = startPos.i(); i < stopPos.i(); i++)
   {
-    for (int x = border; x < max; x++)
+    for (int j = startPos.j(); j < stopPos.j(); j++)
     {
-      const Tile& tile = tilemap->at(x - border, y - border);
+      const Tile& tile = tilemap->at(i, j);
 
-      Point pnt = getBitmapCoordinates(x - border, y - border, mapsize);
+      Point pnt = getBitmapCoordinates(i-startPos.i() - 60, j-startPos.j()-60, mapsize);
       int c1, c2;
       getTerrainColours( tile, c1, c2);
 
-      if( pnt.x() >= fullmap->width()-1 || pnt.y() >= fullmap->height() )
+      if( pnt.x() >= w || pnt.y() >= h )
         continue;
 
-      fullmap->setPixel( pnt, c1);
-      fullmap->setPixel( pnt + Point( 1, 0 ), c2);
+      minimap->setPixel( pnt, c1);
+      minimap->setPixel( pnt + Point( 1, 0 ), c2);
     }
   }
 
@@ -246,9 +253,7 @@ void Minimap::Impl::updateImage()
   //fullmap->unlock();
 
   // this is window where minimap is displayed
-  minimap->fill( 0xff000000, Rect() );
-  minimap->lock();
-  minimap->draw( *fullmap, getOffset() );
+
   minimap->unlock();
 }
 

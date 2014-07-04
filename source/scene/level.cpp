@@ -175,6 +175,7 @@ void Level::initialize()
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
                                city->tilemap(),
+                               *_d->renderer.camera(),
                                city->climate() );
 
   WindowMessageStack::create( gui.rootWidget() );
