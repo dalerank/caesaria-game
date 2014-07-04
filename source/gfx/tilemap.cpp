@@ -109,7 +109,7 @@ Tilemap::Tilemap() : _d( new Impl )
   _d->size = 0;
 }
 
-void Tilemap::resize( const int size )
+void Tilemap::resize( const unsigned int size )
 {
   _d->resize( size );
 }

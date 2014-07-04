@@ -35,6 +35,7 @@
 #include "world/emperor.hpp"
 #include "religion/pantheon.hpp"
 #include "core/locale.hpp"
+#include "city/terrain_generator.hpp"
 #include "climatemanager.hpp"
 
 using namespace religion;
@@ -43,6 +44,7 @@ namespace {
 CAESARIA_LITERALCONST(climate)
 CAESARIA_LITERALCONST(adviserEnabled)
 static const int currentVesion = 1;
+CAESARIA_LITERALCONST(random)
 }
 
 class GameLoaderMission::Impl
@@ -71,10 +73,25 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
       ClimateManager::initialize( (ClimateType)climateType );
     }
 
-    GameLoader mapLoader;
-    mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
+    if( mapToLoad == lc_random )
+    {
+      TerrainGenerator targar;
+      targar.create( game );
+    }
+    else
+    {
+      GameLoader mapLoader;
+      mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
+    }
 
     PlayerCityPtr city = game.city();
+
+    Variant vCityName = vm[ "city.name" ];
+    if( vCityName.isValid() )
+    {
+      city->setName( vCityName.toString() );
+    }
+
     city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
     city->setOption( PlayerCity::adviserEnabled, vm[ lc_adviserEnabled ] );
 

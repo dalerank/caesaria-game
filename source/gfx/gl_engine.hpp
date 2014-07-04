@@ -51,7 +51,6 @@ public:
   void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
   void endRenderFrame();
 
-
   void setColorMask( int rmask, int gmask, int bmask, int amask );
   void resetColorMask();
 

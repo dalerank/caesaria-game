@@ -45,7 +45,7 @@ void Tile::Terrain::clearFlags()
   rock       = false;
   tree       = false;
   road       = false;
-  //aqueduct   = false;
+  coast      = false;
   elevation  = false;
   garden     = false;
   meadow     = false;
@@ -112,7 +112,6 @@ void Tile::setAnimation(const Animation& animation){ _animation = animation;}
 
 bool Tile::isWalkable( bool alllands ) const
 {
-  // TODO: test building to allow garden, gatehouse, granary, ...
   bool walkable = (_terrain.road || (alllands && !_terrain.water && !_terrain.tree && !_terrain.rock));
   if( _overlay.isValid() )
   {
@@ -136,7 +135,7 @@ bool Tile::getFlag(Tile::Type type) const
   case tlMeadow: return _terrain.meadow;
   case tlRock: return _terrain.rock;
   case tlBuilding: return _overlay.isValid();
-  //case tlAqueduct: return _terrain.aqueduct;
+  case tlCoast: return _terrain.coast;
   case tlRubble: return _terrain.rubble;
   case isDestructible:
   {
@@ -164,14 +163,14 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlTree: _terrain.tree = value; break;
   case tlMeadow: _terrain.meadow = value; break;
   case tlRock: _terrain.rock = value; break;
-  //case tlAqueduct: _terrain.aqueduct = value; break;
+  case tlCoast: _terrain.coast = value; break;
   case tlGarden: _terrain.garden = value; break;
   case tlElevation: _terrain.elevation = value; break;
   case tlRubble: _terrain.rubble = value; break;
   case clearAll: _terrain.clearFlags(); break;
   case tlWall: _terrain.wall = value; break;
   case wasDrawn: _wasDrawn = value; break;
-  case tlDeepWater: _terrain.deepWater = value;
+  case tlDeepWater: _terrain.deepWater = value; break;
   default: break;
   }
 }
@@ -180,7 +179,7 @@ void Tile::appendDesirability(int value){ _terrain.desirability += value; }
 int Tile::desirability() const{  return _terrain.desirability;}
 TileOverlayPtr Tile::overlay() const{ return _overlay;}
 void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
-unsigned int Tile::originalImgId() const{  return _terrain.imgid;}
+unsigned int Tile::originalImgId() const{ return _terrain.imgid;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
 
 void Tile::fillWaterService(WaterService type, int value)
@@ -278,6 +277,7 @@ int TileHelper::encode(const Tile& tt)
   res += tt.getFlag( Tile::tlWater )     ? 0x00004 : 0;
   res += tt.getFlag( Tile::tlBuilding )  ? 0x00008 : 0;
   res += tt.getFlag( Tile::tlRoad )      ? 0x00040 : 0;
+  res += tt.getFlag( Tile::tlCoast )     ? 0x00100 : 0;
   res += tt.getFlag( Tile::tlElevation ) ? 0x00200 : 0;
   res += tt.getFlag( Tile::tlMeadow )    ? 0x00800 : 0;
   res += tt.getFlag( Tile::tlRubble )    ? 0x01000 : 0;
@@ -308,7 +308,7 @@ void TileHelper::decode(Tile& tile, const int bitset)
   if(bitset & 0x00010) { tile.setFlag( Tile::tlTree, true);      }
   if(bitset & 0x00020) { tile.setFlag( Tile::tlGarden, true);    }
   if(bitset & 0x00040) { tile.setFlag( Tile::tlRoad, true);      }
-  //if(bitset & 0x00100) { tile.setFlag( Tile::tlAqueduct, true);  }
+  if(bitset & 0x00100) { tile.setFlag( Tile::tlCoast, true);     }
   if(bitset & 0x00200) { tile.setFlag( Tile::tlElevation, true); }
   if(bitset & 0x00400) { tile.setFlag( Tile::tlRock, true );     }
   if(bitset & 0x00800) { tile.setFlag( Tile::tlMeadow, true);    }
