@@ -402,7 +402,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 
     registerTileForRendering( tile );
 
-    //if( !tile.picture().isValid() )
+    /*if( !tile.picture().isValid() )
     {
       static Font _debugFont = Font::create( FONT_2 );
       static Picture* pic = Picture::create( Size( 200, 30 ));
@@ -410,7 +410,7 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
       std::string debugText = StringHelper::format( 0xff, "%x", tile.originalImgId() );
       _debugFont.draw( *pic, debugText, 0, 0, true );
       engine.draw( *pic, screenPos + Point( 20, -80 ) );
-    }
+    }*/
   }
 
   Layer::drawTile( engine, tile, offset );

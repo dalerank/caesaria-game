@@ -94,6 +94,7 @@ void Image::_updateTexture(gfx::Engine& painter )
   // draw button background
   if( _d->bgPicture.isValid() )
   {    
+    _d->background->lock();
     _d->background->fill( 0x0000000, Rect() );
     switch( _d->mode )
     {
@@ -110,6 +111,7 @@ void Image::_updateTexture(gfx::Engine& painter )
                             Rect( Point( 0, 0 ), size() ), false );
     break;
     }
+    _d->background->unlock();
   }    
   else
   {

@@ -217,7 +217,7 @@ void Minimap::Impl::updateImage()
     {
       const Tile& tile = tilemap->at(i, j);
 
-      Point pnt = getBitmapCoordinates(i-startPos.i() - 60, j-startPos.j()-60, mapsize);
+      Point pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
       int c1, c2;
       getTerrainColours( tile, c1, c2);
 
