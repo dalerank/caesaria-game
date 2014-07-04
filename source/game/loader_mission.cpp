@@ -76,7 +76,11 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     if( mapToLoad == lc_random )
     {
       TerrainGenerator targar;
-      targar.create( game );
+      VariantMap rndvm = vm[ lc_random ].toMap();
+      int n2size = rndvm.get( "size", 5 );
+      float smooth = rndvm.get( "smooth", 2.6 );
+      float terrain = rndvm.get( "terrain", 4 );
+      targar.create( game, n2size, smooth, terrain );
     }
     else
     {

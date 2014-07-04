@@ -29,7 +29,7 @@ class Game;
 class MidpointDisplacement
 {
  public:
-  MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float fineness);
+  MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float terrainSquare);
   ~MidpointDisplacement() {}
   std::vector<int> map();
   int width() const { return width_; }
@@ -50,7 +50,7 @@ private:
   int wmult_;
   int hmult_;
   float smoothness_;
-  float fineness_;
+  float _terrainSquare;
   int width_;
   int height_;
   Random random_;
@@ -59,7 +59,7 @@ private:
 class TerrainGenerator
 {
 public:
-  static void create( Game& game );
+  static void create( Game& game, int n2size, float smooth, float terrainSq );
 };
 
 #endif //_CAESARIA_TERRAIN_GENERATOR_INCLUDE_H_

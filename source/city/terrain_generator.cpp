@@ -25,12 +25,13 @@
 
 using namespace gfx;
 
-MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float fineness) {
+MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float terrainSquare)
+{
   n_ = n;
   wmult_ = wmult;
   hmult_ = hmult;
   smoothness_ = smoothness;
-  fineness_ = fineness;
+  _terrainSquare = terrainSquare;
   grass_threshold_ = 1.25;
   water_threshold_ = 0.55;
   sand_threshold_ = 0.70;
@@ -41,12 +42,15 @@ MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float sm
   random_ = Random();
 }
 
-int MidpointDisplacement::CoordinatesToVectorIndex(int x, int y) {
+int MidpointDisplacement::CoordinatesToVectorIndex(int x, int y)
+{
   int i = 0;
   i = x + y * width_;
   return i;
 }
-std::pair<int, int> MidpointDisplacement::VectorIndexToCoordinates(int i) {
+
+std::pair<int, int> MidpointDisplacement::VectorIndexToCoordinates(int i)
+{
   int x = 0;
   int y = 0;
   y = i / width_;
@@ -54,7 +58,8 @@ std::pair<int, int> MidpointDisplacement::VectorIndexToCoordinates(int i) {
   return std::make_pair(x, y);
 }
 
-std::vector<int> MidpointDisplacement::map() {
+std::vector<int> MidpointDisplacement::map()
+{
   int power = pow(2, n_);
   int width = wmult_ * power + 1;
   int height = hmult_ * power + 1;
@@ -72,7 +77,7 @@ std::vector<int> MidpointDisplacement::map() {
   float sum;
   int count;
 
-  float h = fineness_;
+  float h = _terrainSquare;
 
   for (int i = 0; i < width_; i += 2 * step) {
     for (int j = 0; j < height_; j+= 2 * step) {
@@ -100,8 +105,10 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
   while(step > 0) {
 
     //Diamond
-    for (int x = step; x < width_; x += 2 * step) {
-      for (int y = step; y < height_; y += 2 * step) {
+    for (int x = step; x < width_; x += 2 * step)
+    {
+      for (int y = step; y < height_; y += 2 * step)
+      {
         sum = map.at(CoordinatesToVectorIndex(x - step, y - step)) + map.at(CoordinatesToVectorIndex(x - step, y + step)) + map.at(CoordinatesToVectorIndex(x + step, y - step)) + map.at(CoordinatesToVectorIndex(x + step, y + step));
         map.at(CoordinatesToVectorIndex(x, y)) = sum / 4 + random_.Float(-h, h); //???
       }
@@ -142,11 +149,15 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
   float max = std::numeric_limits<float>::max();
   float min = std::numeric_limits<float>::min();
 
-  for (unsigned int i = 0; i < map.size(); i++) {
-    if(map.at(i) > max) {
+  for (unsigned int i = 0; i < map.size(); i++)
+  {
+    if(map.at(i) > max)
+    {
       map.at(i) = max;
     }
-    if(map.at(i) < min) {
+
+    if(map.at(i) < min)
+    {
       map.at(i) = min;
     }
   }
@@ -157,23 +168,14 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
     //std::cout << map.at(i);
     float value = map.at(i);
     int new_value = unknown;
-    if(value < deep_water_threshold_) {
-      new_value = deepWater;
-    } else if (value < water_threshold_) {
-      new_value = water;
-    } else if (value < sand_threshold_) {
-      new_value = coast;
-    } else if (value < grass_threshold_) {
-      new_value = grass;
-    } else if (value < hills_threshold_) {
-      new_value = trees;
-    } else if (value < shallow_mountains_threshold_) {
-      new_value = shallowMountain;
-    } else if (value < high_mountains_threshold_) {
-      new_value = highMountain;
-    } else {
-      new_value = highMountain;
-    }
+    if(value < deep_water_threshold_) {      new_value = deepWater;    }
+    else if (value < water_threshold_) {      new_value = water;    }
+    else if (value < sand_threshold_) {      new_value = coast;    }
+    else if (value < grass_threshold_) {      new_value = grass;    }
+    else if (value < hills_threshold_) {      new_value = trees;    }
+    else if (value < shallow_mountains_threshold_) {      new_value = shallowMountain;    }
+    else if (value < high_mountains_threshold_) {      new_value = highMountain;    }
+    else {      new_value = highMountain;    }
    // new_value = (value * 255) + 255;
     return_map.at(i) = new_value;
   }
@@ -278,20 +280,15 @@ static void __finalizeMap(Game& game, int pass )
         {
         case 0x26: case 0x66: case 0x36: case 0x76: case 0x72: case 0x52: case 0x74:
         case 0x34: case 0x16: case 0x42: case 0x46: case 0x14: case 0x54: case 0x56:
-        case 0x06: start = 171; rnd=0; break;
-
-        case 0xcc: case 0x4e: case 0x4c: case 0x62: case 0x6c: case 0xec:
-        case 0xc4: case 0x68: case 0xe4: case 0xe8: case 0xa8: case 0x84:
-        case 0x28: case 0xac: case 0xa4: case 0x0c: case 0x8c: case 0x2c:
-          start = 172; rnd=0; break;
+        case 0x06: case 0x70: case 0x62: start = 171; rnd=0; break;
 
         case 0xc9: case 0x89: case 0x99: case 0x98: case 0xd9: case 0x58: case 0x19:
         case 0xd8: case 0xd1: case 0x49: case 0x18: case 0xc1: case 0x41:
-        case 0x51: case 0x09:  start=173; rnd=0; break;
+        case 0x51: case 0x09: case 0x59: case 0xd0: start=173; rnd=0; break;
 
         case 0x13: case 0xb1: case 0x23: case 0x93: case 0x33: case 0xb3: case 0x83:
         case 0x31: case 0xa3: case 0x21: case 0x82: case 0xa1: case 0xa2: case 0x92:
-        case 0xb2: case 0x03: case 0xd0: start=170; rnd=0; break;
+        case 0xb2: case 0x03: case 0xb0: start=170; rnd=0; break;
 
         case 0xa0: start=168; rnd=0; break;
         case 0x50: start=169; rnd=0; break;
@@ -301,6 +298,16 @@ static void __finalizeMap(Game& game, int pass )
       case 6:
         switch( direction )
         {
+        case 0xcc: case 0x4c: case 0x6c: case 0xec:
+        case 0xc4: case 0x68: case 0xe4: case 0xe8: case 0xa8: case 0x84:
+        case 0x28: case 0xac: case 0xa4: case 0x0c: case 0x8c: case 0x2c:
+        case 0xe0:  start = 172; rnd=0; break;
+        }
+      break;
+
+      case 7:
+        switch( direction )
+        {
         case 0x10: start=144; break;
         case 0x20: start=148; break;
         case 0x40: start=152; break;
@@ -308,7 +315,7 @@ static void __finalizeMap(Game& game, int pass )
         }
       break;
 
-      case 7:
+      case 8:
         switch( direction )
         {
         case 0x6e: case 0xed: case 0x9b: case 0xcd: case 0xff: case 0xee:
@@ -318,16 +325,31 @@ static void __finalizeMap(Game& game, int pass )
         case 0xad: case 0x71: case 0xdc: case 0xdb: case 0xa6: case 0xb9:
         case 0xa7: case 0x27: case 0xdd: case 0xf3: case 0x7e: case 0x75:
         case 0xd3: case 0xc5: case 0x55: case 0xfe: case 0xbb: case 0x7c:
-        case 0x5a: case 0x53: case 0x45: case 0xce: case 0xb6: case 0xef:
-        case 0x7f: case 0x8d: case 0x1d: case 0xf5: case 0xf7: case 0xf1:
+        case 0x5a: case 0x53: case 0x45: case 0xce: case 0xef: case 0x7f:
+        case 0x8d: case 0x1d: case 0xf5: case 0xf7: case 0xf1:
         case 0x97: case 0x2e: case 0xc3: case 0x5c: case 0x0a: case 0x69:
         case 0xb5: case 0x25: case 0x8a: case 0x3b: case 0xe6: case 0x6a:
         case 0xcb: case 0x3f: case 0xaa: case 0x57: case 0xfd: case 0xd5:
-        case 0x7a: case 0x85: case 0xfc: case 0xca: case 0x8b:  start=120; rnd=0; break;
+        case 0x7a: case 0x85: case 0xfc: case 0xca: case 0x8b: case 0x9f:
+        case 0x4f: case 0xde: case 0x9d: case 0xe9: case 0x6f: case 0xd7:
+        case 0xae: case 0xaf: case 0xf8: case 0x3c: case 0xe2: case 0xea:
+        case 0x96: case 0x3a: case 0xcf: case 0xbd: case 0xbe: case 0x94:
+        case 0x73: case 0x4a: case 0xc6: case 0x5d: case 0x2a: case 0xa9:
+        case 0x6d: case 0xf4: case 0xda: case 0x5e: case 0xfa: case 0x7b:
+        case 0x79: case 0x65: case 0xc7: case 0xe1: case 0x4d: case 0x2b:
+        case 0xab: case 0x0e: case 0x87: case 0x1a: case 0x67: case 0x3d:
+        case 0xf6: case 0x1f: case 0xd6: case 0xb4: case 0x8f: case 0x9c:
+        case 0x48: case 0x5f: case 0x5b: case 0xd4: case 0xf0: case 0x0f:
+        case 0x15: case 0x0b: case 0xb8: case 0x07: case 0x1c: case 0x61:
+        case 0x8e: case 0x86: case 0x2d: case 0x4b: case 0xe3: case 0xc2:
+        case 0xba: case 0xf2: case 0x1e: case 0x39: case 0x38: case 0xd2:
+        case 0x78: case 0x0d: case 0x6b: case 0x3e: case 0x63: case 0x29:
+        case 0x47: case 0x21: case 0xbc: case 0x2f: case 0xb6: case 0x43:
+        case 0x9e: case 0x4e: start=120; rnd=0; break;
         }
       break;
 
-      case 8:
+      case 9:
         switch( direction )
         {
         case 0:
@@ -360,9 +382,9 @@ static void __finalizeMap(Game& game, int pass )
     }
 }
 
-void TerrainGenerator::create(Game& game)
+void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrainSq)
 {
-  MidpointDisplacement diamond_square = MidpointDisplacement(5, 8, 8, 3, 1.2);
+  MidpointDisplacement diamond_square = MidpointDisplacement(n2size, 8, 8, smooth, terrainSq);
   std::vector<int> map = diamond_square.map();
 
   PlayerCityPtr oCity = game.city();
@@ -483,5 +505,6 @@ void TerrainGenerator::create(Game& game)
   __finalizeMap( game, 6 );
   __finalizeMap( game, 7 );
   __finalizeMap( game, 8 );
+  __finalizeMap( game, 9 );
   __finalizeMap( game, 0xff );
 }

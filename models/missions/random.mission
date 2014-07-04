@@ -1,6 +1,11 @@
 {
   version : 1
   map : "random"
+  random : {
+   size : 6
+   smooth : 2.6
+   terrain : 5
+  }
   funds : 8000
   city.name : "Brundisium"
   date : "-350.01.01"
