@@ -47,8 +47,8 @@ public:
   Pictures resources;  // key=image name, value=picture
   Picture tryLoadPicture( const std::string& name );
 
-  void setPicture( const std::string &name, SDL_Surface& surface, uint id );
-  Picture makePicture(const std::string& name, SDL_Surface *surface, uint id );
+  void setPicture( const std::string &name, SDL_Surface& surface, unsigned int id );
+  Picture makePicture(const std::string& name, SDL_Surface *surface, unsigned int id );
 };
 
 PictureBank& PictureBank::instance()
@@ -57,7 +57,7 @@ PictureBank& PictureBank::instance()
   return inst;
 }
 
-void PictureBank::Impl::setPicture( const std::string &name, SDL_Surface& surface, uint id )
+void PictureBank::Impl::setPicture( const std::string &name, SDL_Surface& surface, unsigned int id )
 {
   // first: we deallocate the current picture, if any
   unsigned int picId = StringHelper::hash( name );
@@ -108,7 +108,7 @@ Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
   return getPicture(resource_name);
 }
 
-Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Surface* surface, uint id)
+Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Surface* surface, unsigned int id)
 {
    Point offset( 0, 0 );
 
