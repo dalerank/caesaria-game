@@ -52,7 +52,7 @@ public:
 
   virtual void updateState( ParameterType name, double value );
   virtual void setState( ParameterType name, double value );
-  virtual double getState( ParameterType name ) const;
+  virtual double state( ParameterType name ) const;
 
   virtual void timeStep(const unsigned long time);
   virtual const gfx::Picture& picture() const;

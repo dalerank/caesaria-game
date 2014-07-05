@@ -72,6 +72,4 @@ void Sentiment::load(const VariantMap& stream)
   _d->value = stream.get( lc_value );
 }
 
-
-
 }//end namespace city

@@ -40,7 +40,8 @@ public:
   static CitizenGroup getPopulation( PlayerCityPtr city );
   static unsigned int getWorkersNeed( PlayerCityPtr city );
   static unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
-  static unsigned int getMontlyWorkersWages( PlayerCityPtr city );
+  static unsigned int getMonthlyWorkersWages( PlayerCityPtr city );
+  static float getMonthlyOneWorkerWages( PlayerCityPtr city );
   static unsigned int getWorklessNumber( PlayerCityPtr city );
   static unsigned int getWorklessPercent( PlayerCityPtr city );
   static unsigned int getFoodStock( PlayerCityPtr city );

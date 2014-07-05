@@ -167,7 +167,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
     HousePtr house = ptr_cast<House>( building );
     if( house.isValid() )
     {
-      int healthLevel = house->getState( (Construction::Param)House::health );
+      int healthLevel = house->state( (Construction::Param)House::health );
       if( healthLevel < 1 )
       {
         house->deleteLater();

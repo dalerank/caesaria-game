@@ -84,7 +84,7 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
-        damageLevel = (int)house->getState( Construction::damage );
+        damageLevel = (int)house->state( Construction::damage );
         needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
         city::Helper helper( _city() );
@@ -98,7 +98,7 @@ void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
         BuildingPtr building = ptr_cast<Building>( overlay );
         if( building.isValid() )
         {
-          damageLevel = (int)building->getState( Construction::damage );
+          damageLevel = (int)building->state( Construction::damage );
         }
 
         city::Helper helper( _city() );
@@ -144,7 +144,7 @@ void LayerDamage::handleEvent(NEvent& event)
         ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
         if( construction.isValid() )
         {
-          int damageLevel = math::clamp<int>( (int) construction->getState( Construction::damage ), 0, 100 );
+          int damageLevel = math::clamp<int>( (int) construction->state( Construction::damage ), 0, 100 );
           if( damageLevel > 0 )
           {
             text = damageLevelName[ damageLevel / 20 ];

@@ -54,13 +54,13 @@ void RandomDamage::_exec( Game& game, unsigned int time )
   if( population > _d->minPopulation && population < _d->maxPopulation )
   {
     _d->isDeleted = true;
-    HouseList houses;
-    houses << game.city()->overlays();
+    ConstructionList ctrs;
+    ctrs << game.city()->overlays();
 
-    for( unsigned int k=0; k < (houses.size() * _d->strong / 100); k++ )
+    for( unsigned int k=0; k < (ctrs.size() * _d->strong / 100); k++ )
     {
-      HouseList::iterator it = houses.begin();
-      std::advance( it, math::random( houses.size() ) );
+      ConstructionList::iterator it = ctrs.begin();
+      std::advance( it, math::random( ctrs.size()-1 ) );
       (*it)->collapse();
     }
   }

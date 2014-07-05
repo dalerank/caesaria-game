@@ -64,13 +64,13 @@ public:
   int picIdOffset;
   int houseId;  // pictureId
   int houseLevel;
-  //float healthLevel;
+  float money;
+  int poverity;
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
   SimpleGoodStore goodStore;
   Services services;  // value=access to the service (0=no access, 100=good access)
   unsigned int maxHabitants;
-  DateTime taxCheckInterval;
   DateTime lastTaxationDate;
   std::string evolveInfo;
   CitizenGroup habitants;
@@ -78,6 +78,7 @@ public:
   int currentYear;
   int changeCondition;
 
+public:
   void updateHealthLevel( HousePtr house );
   void initGoodStore( int size );
   void consumeServices();
@@ -89,7 +90,6 @@ public:
 House::House(const int houseId) : Building( building::house ), _d( new Impl )
 {
   _d->houseId = houseId;
-  _d->taxCheckInterval = DateTime( -400, 1, 1 );
   _d->picIdOffset = ( math::random( 10 ) > 6 ? 1 : 0 );
   HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = helper.geLevel( houseId );
@@ -99,6 +99,7 @@ House::House(const int houseId) : Building( building::house ), _d( new Impl )
   _d->desirability.range = 3;
   _d->desirability.step = 1;
   _d->changeCondition = 0;
+  _d->money = 0;
   _d->currentYear = GameDate::current().year();
 
   setState( House::health, 100 );
@@ -203,8 +204,9 @@ void House::_checkEvolve()
 
 void House::_updateTax()
 {
-  _d->taxCheckInterval = GameDate::current();
-  float cityTax = _city()->funds().taxRate() / 100.f;
+  float cityTax = math::clamp<float>( _city()->funds().taxRate() / 100.f, 0, _d->money );
+  _d->money -= cityTax;
+
   appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear) );
 }
 
@@ -271,12 +273,15 @@ void House::_updateCrime()
     foodStockInfluence4happines = math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. );
   }
 
+  int poverity4happiness = _d->spec.level() > HouseLevel::bigHut ? -_d->poverity / 2 : 0;
+
   int curHappiness = 50
                   + unempInfluence4happiness
                   + wagesInfluence4happiness
                   + taxInfluence4happiness
                   + foodAbundanceInfluence4happines
-                  + foodStockInfluence4happines;
+                  + foodStockInfluence4happines
+                  + poverity4happiness;
 
   if( monthWithFood > 0 )
   {
@@ -353,10 +358,13 @@ void House::timeStep(const unsigned long time)
     _d->consumeGoods( this );
   }
 
-  if( _d->taxCheckInterval.month() != GameDate::current().month() )
+  if( GameDate::isMonthChanged() )
   {
     _updateTax(); 
 
+    if( _d->money > 0 ) { _d->poverity--; }
+    else { _d->poverity += 2; }
+    _d->poverity = math::clamp( _d->poverity, 0, 100 );
   }
 
   if( GameDate::isWeekChanged() )
@@ -880,8 +888,8 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   switch(service)
   {
-  case Service::engineer: res = getState( Construction::damage ); break;
-  case Service::prefect: res = getState( Construction::fire ); break;
+  case Service::engineer: res = state( Construction::damage ); break;
+  case Service::prefect: res = state( Construction::fire ); break;
 
   // this house pays taxes
   case Service::forum:
@@ -941,13 +949,13 @@ TilesArray House::enterArea() const
   }
 }
 
-double House::getState( ParameterType param) const
+double House::state( ParameterType param) const
 {
   switch( (int)param )
   {
   case House::food: return _d->getFoodLevel();
 
-  default: return Building::getState( param );
+  default: return Building::state( param );
   }
 }
 
@@ -1043,9 +1051,12 @@ void House::save( VariantMap& stream ) const
   stream[ "currentHubitants" ] = _d->habitants.save();
   stream[ "maxHubitants" ] = _d->maxHabitants;
   stream[ "goodstore" ] = _d->goodStore.save();
-  stream[ "healthLevel" ] = getState( (Construction::Param)House::health );
+  stream[ "healthLevel" ] = state( (Construction::Param)House::health );
   stream[ "changeCondition" ] = _d->changeCondition;
   stream[ lc_taxesThisYear ] = _d->taxesThisYear;
+
+  VARIANT_SAVE_ANY_D(stream, _d, poverity)
+  VARIANT_SAVE_ANY_D(stream, _d, money)
 
   VariantList vl_services;
   foreach( mapItem, _d->services )
@@ -1073,6 +1084,9 @@ void House::load( const VariantMap& stream )
   _d->habitants.load( stream.get( "currentHubitants" ).toList() );
   _d->maxHabitants = (int)stream.get( "maxHubitants", 0 );
   _d->changeCondition = stream.get( "changeCondition", 0 );
+  VARIANT_LOAD_ANY_D(_d,poverity, stream)
+  VARIANT_LOAD_ANY_D(_d,money, stream)
+
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
   _d->currentYear = GameDate::current().year();
   _d->taxesThisYear = stream.get( lc_taxesThisYear ).toUInt();
@@ -1170,9 +1184,11 @@ float House::collectTaxes()
 }
 
 float House::taxesThisYear() const { return _d->taxesThisYear; }
+
+void House::appendMoney(float money) {  _d->money += money; }
 DateTime House::lastTaxationDate() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
-Desirability House::getDesirability() const {  return _d->desirability; }
+Desirability House::desirability() const {  return _d->desirability; }
 bool House::isWalkable() const{  return (_d->houseId == HouseLevel::smallHovel && _d->habitants.count() == 0); }
 bool House::isFlat() const { return false; }//isWalkable(); }
 const CitizenGroup& House::habitants() const  {  return _d->habitants; }
@@ -1183,7 +1199,6 @@ float House::getServiceValue( Service::Type service){  return _d->services[servi
 void House::setServiceValue( Service::Type service, float value) {  _d->services[service] = value; }
 unsigned int House::maxHabitants() {  return _d->maxHabitants; }
 void House::appendServiceValue( Service::Type srvc, float value){  setServiceValue( srvc, getServiceValue( srvc ) + value ); }
-
 
 void House::Impl::updateHealthLevel( HousePtr house )
 {

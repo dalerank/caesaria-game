@@ -384,8 +384,24 @@ void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 
 void PlayerCity::Impl::payWages(PlayerCityPtr city)
 {
-  int wages = city::Statistic::getMontlyWorkersWages( city );
-  funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
+  int wages = city::Statistic::getMonthlyWorkersWages( city );
+
+  if( funds.haveMoneyForAction( wages ) )
+  {
+    funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
+  }
+  else
+  {
+    HouseList houses;
+    houses << city->overlays();
+
+    float salary = city::Statistic::getMonthlyOneWorkerWages( city );
+    foreach( it, houses )
+    {
+      int workers = (*it)->workersCount();
+      (*it)->appendMoney( salary * workers );
+    }
+  }
 }
 
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )

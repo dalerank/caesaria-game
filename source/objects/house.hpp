@@ -58,7 +58,7 @@ class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::count, health, unemployed, happiness };
+  enum { food=Construction::count, health, happiness };
 
   House( const int houseId=HouseLevel::smallHovel );
 
@@ -79,14 +79,14 @@ public:
   virtual void setServiceValue(Service::Type service, float value );
   virtual gfx::TilesArray enterArea() const;
 
-  virtual double getState( ParameterType param) const;
+  virtual double state( ParameterType param) const;
 
   unsigned int workersCount() const;
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
 
-  Desirability getDesirability() const;
+  Desirability desirability() const;
 
   virtual void destroy();
 
@@ -100,6 +100,7 @@ public:
 
   float collectTaxes();
   float taxesThisYear() const;
+  void appendMoney( float money );
   DateTime lastTaxationDate() const;
 
   std::string getEvolveInfo() const;
@@ -115,7 +116,6 @@ public:
   bool isCheckedDesirability() const;
 
 private:
-
   void _levelUp();
   void _levelDown();
 

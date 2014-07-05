@@ -57,13 +57,13 @@ void RandomFire::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute random fire service" );
     _d->isDeleted = true;
 
-    HouseList houses;
-    houses << game.city()->overlays();
+    ConstructionList ctrs;
+    ctrs << game.city()->overlays();
 
-    for( unsigned int k=0; k < (houses.size() * _d->strong / 100); k++ )
+    for( unsigned int k=0; k < (ctrs.size() * _d->strong / 100); k++ )
     {
-      HouseList::iterator it = houses.begin();
-      std::advance( it, math::random( houses.size() ) );
+      ConstructionList::iterator it = ctrs.begin();
+      std::advance( it, math::random( ctrs.size()-1 ) );
       (*it)->burn();
     }
   }
