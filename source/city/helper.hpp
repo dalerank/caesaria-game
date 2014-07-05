@@ -195,7 +195,6 @@ public:
   gfx::TilesArray getAroundTiles(gfx::TileOverlayPtr building );
   gfx::TilesArray getArea( TilePos start, TilePos stop );
   HirePriorities getHirePriorities() const;
-  float getBalanceKoeff();
   void updateTilePics();
 
   void updateDesirability(gfx::TileOverlayPtr overlay, bool onBuild );

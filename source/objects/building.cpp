@@ -28,6 +28,7 @@
 #include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
+#include "city/statistic.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
@@ -67,8 +68,7 @@ void Building::timeStep(const unsigned long time)
 {
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    city::Helper helper( _city() );
-    float popkoeff = helper.getBalanceKoeff();
+    float popkoeff = city::Statistic::getBalanceKoeff( _city() );
     updateState( Construction::damage, popkoeff * state( Construction::collapsibility ) );
     updateState( Construction::fire, popkoeff * state( Construction::inflammability ) );
   }

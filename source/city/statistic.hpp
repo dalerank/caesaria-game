@@ -48,11 +48,13 @@ public:
   static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
   static unsigned int getFoodProducing( PlayerCityPtr city );
   static unsigned int getTaxValue( PlayerCityPtr city );
+  static unsigned int getHealth( PlayerCityPtr city );
   static int getWagesDiff( PlayerCityPtr city );
   static unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
   static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);
   static unsigned int getCrimeLevel( PlayerCityPtr city );
   static GoodsMap getGoodsMap( PlayerCityPtr city );
+  static float getBalanceKoeff( PlayerCityPtr city );
 };
 
 }//end namespace city

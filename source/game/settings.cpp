@@ -105,7 +105,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ testArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );
   _d->options[ needAcceptBuild     ] = false;
-  _d->options[ render              ] = "opengl";
+  _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;

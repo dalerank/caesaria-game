@@ -321,6 +321,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 
   _d->tradeInfo = new Widget( this, -1, Rect( 0, height() - 120, width(), height() ) );
 
+  _d->border->lock();
   const Picture& backgr = Picture::load( ResourceGroup::empirepnls, 4 );
   for( unsigned int y=height() - 120; y < height(); y+=backgr.height() )
   {
@@ -355,6 +356,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 
   _d->border->fill( 0x00000000, Rect( corner.width(), corner.height(), 
                                       width() - corner.width(), height() - 120 ) );
+  _d->border->unlock();
 
   _d->leftEagle = Picture::load( ResourceGroup::empirepnls, 7 );
   _d->rightEagle = Picture::load( ResourceGroup::empirepnls, 8 );

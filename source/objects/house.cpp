@@ -125,8 +125,22 @@ void House::_makeOldHabitants()
 {
   CitizenGroup newHabitants = _d->habitants;
   newHabitants.makeOld();
-  newHabitants[ CitizenGroup::newborn ] = 0; //birth+health function from mature habitants count
+
+  unsigned int houseHealth = state( House::health );
+
   newHabitants[ CitizenGroup::longliver ] = 0; //death-health function from oldest habitants count
+  unsigned int agedPeoples = newHabitants.count( CitizenGroup::aged );
+  unsigned int peoples2remove = math::random( agedPeoples * ( 100 - houseHealth ) / 100 );
+  newHabitants.retrieve( CitizenGroup::aged, peoples2remove+1 );
+
+  unsigned int mature = newHabitants.count( CitizenGroup::mature );
+  unsigned int newBorn = math::random( mature / 10 );
+  newBorn = newBorn * houseHealth / 100 ;
+
+  unsigned int vacantRoom = maxHabitants() - newHabitants.count();
+  newBorn = math::clamp( newBorn, 0u, vacantRoom );
+
+  newHabitants[ CitizenGroup::newborn ] = newBorn; //birth+health function from mature habitants count
 
   _updateHabitants( newHabitants );
 }
@@ -212,8 +226,7 @@ void House::_updateTax()
 
 void House::_updateCrime()
 {
-  city::Helper helper( _city() );  
-  float cityKoeff = helper.getBalanceKoeff();
+  float cityKoeff = city::Statistic::getBalanceKoeff( _city() );
 
   const int currentHabtn = habitants().count();
 
@@ -1207,7 +1220,7 @@ void House::Impl::updateHealthLevel( HousePtr house )
       + (services[Service::baths] > 0 ? 0.7 : 0)
       + (services[Service::barber] > 0 ? 0.3 : 0);
 
-  float decrease = 0.3f / delim;
+  float decrease = 2.f / delim;
 
   house->updateState( (Construction::Param)House::health, -decrease );
 }

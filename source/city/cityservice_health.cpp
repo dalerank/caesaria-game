@@ -75,6 +75,8 @@ void HealthCare::update( const unsigned int time )
   //unsigned int vacantPop=0;
 }
 
+unsigned int HealthCare::value() const { return _d->value; }
+
 std::string HealthCare::reason() const
 {
   StringArray reasons;

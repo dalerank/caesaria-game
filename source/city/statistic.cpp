@@ -30,6 +30,7 @@
 #include "objects/warehouse.hpp"
 #include "city/cityservice_disorder.hpp"
 #include "core/time.hpp"
+#include "cityservice_health.hpp"
 #include <map>
 
 using namespace constants;
@@ -49,6 +50,13 @@ void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& ma
     workersNumber += (*bld)->numberWorkers();
     maxWorkers += (*bld)->maximumWorkers();
   }
+}
+
+float Statistic::getBalanceKoeff(PlayerCityPtr city)
+{
+  int pop = city->population();
+
+  return pop > 300 ? atan( pop / 1000.f ) : (pop / 1000.f);
 }
 
 CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
@@ -183,6 +191,12 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   }
 
   return taxValue;
+}
+
+unsigned int Statistic::getHealth(PlayerCityPtr city)
+{
+  SmartPtr<HealthCare> hc = ptr_cast<HealthCare>( city->findService( HealthCare::defaultName() ) );
+  return hc.isValid() ? hc->value() : 0;
 }
 
 int Statistic::getWagesDiff(PlayerCityPtr city)
