@@ -103,7 +103,11 @@ if( BUILD_PNG )
 endif()
 
 #if(OPENGL_RENDER)
+if(WIN32)
+  target_link_libraries(${PROJECT_NAME} "opengl32")
+else()
   target_link_libraries(${PROJECT_NAME} "GL")
+endif(WIN32)
 #endif(OPENGL_RENDER)
 
 if(WIN32)
