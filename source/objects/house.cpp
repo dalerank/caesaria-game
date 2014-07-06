@@ -1043,8 +1043,8 @@ std::string House::troubleDesc() const
 {
   std::string ret = Building::troubleDesc();
 
-  if( ret.empty() )
-  {
+  if( ret.empty() && _d->changeCondition <= 0 )
+  {  
     ret = _d->evolveInfo;
   }
 
@@ -1088,7 +1088,6 @@ void House::load( const VariantMap& stream )
   _d->picIdOffset = (int)stream.get( "picIdOffset", 0 );
   _d->houseId = (int)stream.get( "houseId", 0 );
   _d->houseLevel = (int)stream.get( "houseLevel", 0 );
-  //_d->healthLevel = (float)stream.get( "healthLevel", 0 );
   _d->spec = HouseSpecHelper::instance().getSpec(_d->houseLevel);
 
   _d->desirability.base = (int)stream.get( "desirability", 0 );
