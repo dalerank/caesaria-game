@@ -310,6 +310,9 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    image : [ "smlmars", 1 ]
+    image.offset : [-1, -1]
+    animation : { rc : "smlmars", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templemars", 1 ]
   },
 
