@@ -16,6 +16,7 @@
 #include "city/city.hpp"
 #include "mercury.hpp"
 #include "objects/warehouse.hpp"
+#include "objects/granary.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
@@ -44,20 +45,23 @@ void Mercury::updateRelation(float income, PlayerCityPtr city)
   RomeDivinity::updateRelation( income, city );
 }
 
-void Mercury::_doWrath(PlayerCityPtr city)
+template<class T>
+void __filchGoods( const std::string& title, PlayerCityPtr city )
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_mercury_title##"),
-                                                            _("##wrath_of_mercury_description##"),
+  std::string txt = StringHelper::format( 0xff, "##%s_of_mercury_title##", title.c_str() );
+  std::string descr = StringHelper::format( 0xff, "##%s_of_mercury_description##", title.c_str() );
+  events::GameEventPtr event = events::ShowInfobox::create( _(txt),
+                                                            _(descr),
                                                             events::ShowInfobox::send2scribe );
   event->dispatch();
 
-  WarehouseList whs;
-  whs << city->overlays();
+  SmartList< Granary> buildings;
+  buildings << city->overlays();
 
-  foreach( it, whs )
+  foreach( it, buildings )
   {
     GoodStore& store = (*it)->store();
-    for( int i=Good::none; i < Good::goodCount; i++ )
+    for( int i=Good::wheat; i < Good::goodCount; i++ )
     {
       Good::Type gtype = (Good::Type)i;
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
@@ -70,9 +74,14 @@ void Mercury::_doWrath(PlayerCityPtr city)
   }
 }
 
+void Mercury::_doWrath(PlayerCityPtr city)
+{
+  __filchGoods<Warehouse>( "wrath", city );
+}
+
 void Mercury::_doSmallCurse(PlayerCityPtr city)
 {
-
+  __filchGoods<Granary>( "smallcurser", city );
 }
 
 void Mercury::_doBlessing(PlayerCityPtr city)
