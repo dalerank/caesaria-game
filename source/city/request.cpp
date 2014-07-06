@@ -27,7 +27,9 @@
 #include "events/showinfobox.hpp"
 #include "events/updatefavour.hpp"
 #include "game/gamedate.hpp"
+#include "world/empire.hpp"
 #include "events/showrequestwindow.hpp"
+#include "world/goodcaravan.hpp"
 
 namespace  city
 {
@@ -66,6 +68,9 @@ void RqGood::exec( PlayerCityPtr city )
     events::GameEventPtr e = events::RemoveGoods::create( _d->stock.type(), _d->stock.capacity() * 100 );
     e->dispatch();
     success( city );
+
+    world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( city ) );
+    caravan->sendTo( city->empire()->rome() );
   }
 }
 

@@ -38,6 +38,7 @@ public:
   virtual std::string name() const;
   virtual void setName( const std::string& name );
   virtual Point location() const;
+  virtual void addObject( ObjectPtr );
   virtual void setLocation( const Point& location );
   virtual gfx::Picture picture() const;
   virtual const gfx::Pictures& pictures() const;
@@ -46,8 +47,6 @@ public:
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
-
-  virtual void initialize();
 
   virtual ~Object();
 

@@ -35,6 +35,7 @@ public:
                               bool send2scribe=false, const vfs::Path& video="" );
 
   virtual void load(const VariantMap &);
+  virtual VariantMap save() const;
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -42,11 +43,9 @@ protected:
 
 private:
   ShowInfobox();
-  std::string _title, _text;
-  bool _send2scribe;
-  vfs::Path _video;
-  Point _position;
-  Good::Type _gtype;
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 } //end namespace events

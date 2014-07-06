@@ -15,34 +15,34 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ARMY_H_INCLUDED__
-#define __CAESARIA_ARMY_H_INCLUDED__
+#ifndef __CAESARIA_MOVABLEOBJECT_H_INCLUDED__
+#define __CAESARIA_MOVABLEOBJECT_H_INCLUDED__
 
 #include "predefinitions.hpp"
-#include "movableobject.hpp"
+#include "object.hpp"
 #include "core/variant.hpp"
 
 namespace world
 {
 
-class Army : public MovableObject
+class MovableObject : public Object
 {
 public:
-  static ArmyPtr create( EmpirePtr empire );
-  virtual ~Army();
+  virtual ~MovableObject();
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
-  virtual std::string type() const;
-  virtual void setBase( CityPtr base);
-  virtual void attack( ObjectPtr obj );
+  virtual void setSpeed( float speed );
+  virtual void timeStep(const unsigned int time);
 
 protected:
-  void _reachedWay();
-  Army( EmpirePtr empire );
+  virtual void _findWay( Point p1, Point p2 );
+  virtual void _reachedWay();
+  PointsArray& _way();
+  MovableObject( EmpirePtr empire );
 
 private: 
-  __DECLARE_IMPL(Army)
+  __DECLARE_IMPL(MovableObject)
 };
 
 }

@@ -15,35 +15,36 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ARMY_H_INCLUDED__
-#define __CAESARIA_ARMY_H_INCLUDED__
+#ifndef __CAESARIA_GOODCARAVAN_H_INCLUDED__
+#define __CAESARIA_GOODCARAVAN_H_INCLUDED__
 
-#include "predefinitions.hpp"
 #include "movableobject.hpp"
-#include "core/variant.hpp"
+#include "good/goodstore.hpp"
 
 namespace world
 {
 
-class Army : public MovableObject
+class GoodCaravan : public MovableObject
 {
 public:
-  static ArmyPtr create( EmpirePtr empire );
-  virtual ~Army();
-
-  virtual void save( VariantMap& stream ) const;
-  virtual void load( const VariantMap& stream );
+  static GoodCaravanPtr create( CityPtr city );
+  void sendTo( ObjectPtr obj );
+  void sendTo( CityPtr obj );
+  GoodStore& store();
   virtual std::string type() const;
-  virtual void setBase( CityPtr base);
-  virtual void attack( ObjectPtr obj );
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
 protected:
-  void _reachedWay();
-  Army( EmpirePtr empire );
+  virtual void _reachedWay();
+  GoodCaravan( CityPtr city );
 
-private: 
-  __DECLARE_IMPL(Army)
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }
-#endif //__CAESARIA_ARMY_H_INCLUDED__
+
+#endif //__CAESARIA_GOODCARAVAN_H_INCLUDED__

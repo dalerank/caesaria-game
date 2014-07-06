@@ -213,11 +213,6 @@ void Empire::load( const VariantMap& stream )
     _d->objects << obj;
   }
 
-  foreach( i, _d->objects )
-  {
-    (*i)->initialize();
-  }
-
   _d->trading.load( stream.get( "trade").toMap() );
   _d->available = (bool)stream.get( "enabled", true );
   _d->rateInterest = stream.get( "rateInterest", 10 );
@@ -392,7 +387,9 @@ ObjectPtr Empire::findObject(const std::string& name) const
     }
   }
 
-  return ObjectPtr();
+  CityPtr city = findCity( name );
+
+  return ptr_cast<Object>( city );
 }
 
 TraderouteList Empire::tradeRoutes( const std::string& startCity ){  return _d->trading.routes( startCity );}

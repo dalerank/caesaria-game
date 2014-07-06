@@ -97,7 +97,7 @@ public oc3_signals:
   Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
-  void _acceptRequest()  { _onExecRequestSignal.emit( _request );  }
+  void _acceptRequest()  { oc3_emit _onExecRequestSignal( _request );  }
 
   void _executeRequest()
   {

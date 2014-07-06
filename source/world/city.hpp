@@ -42,7 +42,7 @@ public:
   // performs one simulation step
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
-  virtual void addObject( ObjectPtr ) = 0;
+
   virtual unsigned int tradeType() const = 0;
   virtual city::Funds& funds() = 0;
   virtual unsigned int population() const = 0;
