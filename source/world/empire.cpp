@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 #include "traderoute.hpp"
 #include "object.hpp"
+#include "rome.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
 #include "objects_factory.hpp"
@@ -107,6 +108,19 @@ void Empire::initialize(vfs::Path filename, vfs::Path filemap)
     city->load( item->second.toMap() );
     _d->emap.setCity( city->location() );
   }
+
+  //initialize capital
+  CityPtr stubRome = new Rome( this );
+  stubRome->drop();
+
+  CityPtr rome = findCity( RomeCityName );
+  if( rome.isValid() )
+  {
+    stubRome->setLocation( rome->location() );
+  }
+
+  _d->cities.remove( rome );
+  _d->cities.push_back( stubRome );
 }
 
 void Empire::addObject(ObjectPtr obj)
@@ -223,15 +237,6 @@ void Empire::load( const VariantMap& stream )
 void Empire::setCitiesAvailable(bool value)
 {
   foreach( city, _d->cities ) { (*city)->setAvailable( value ); }
-
-  CityPtr rome = findCity( RomeCityName );
-  if( rome.isValid() )
-  {
-    rome->setAvailable( true );
-    gfx::Picture pic = gfx::Picture::load( "roma", 1 );
-    pic.setOffset( 0, 30 );
-    rome->setPicture( pic );
-  }
 }
 
 unsigned int Empire::workerSalary() const {  return _d->workerSalary; }

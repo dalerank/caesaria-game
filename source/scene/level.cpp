@@ -77,6 +77,8 @@
 #include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
 #include "religion/pantheon.hpp"
+#include "core/saveadapter.hpp"
+#include "events/postpone.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -102,7 +104,6 @@ public:
   std::string mapToLoad;
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
-  bool isPaused;
 
   int result;
 
@@ -137,7 +138,6 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
   _d->topMenu = NULL;
   _d->game = &game;
   _d->engine = &engine;
-  _d->isPaused = false;
 }
 
 Level::~Level() {}
@@ -546,15 +546,11 @@ void Level::handleEvent( NEvent& event )
 
     case KEY_KEY_P:
     {
-      if( event.keyboard.pressed )
-        break;
-
-      _d->isPaused = !_d->isPaused;
-
-      events::GameEventPtr e = events::Pause::create( _d->isPaused
-                                                        ? events::Pause::pause
-                                                        : events::Pause::play );
-      e->dispatch();      
+      if( !event.keyboard.pressed )
+      {
+        events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
+        e->dispatch();
+      }
     }
     break;
 
@@ -572,6 +568,18 @@ void Level::handleEvent( NEvent& event )
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
     case KEY_F10:_d->makeScreenShot(); break;
+    case KEY_KEY_R:
+    {
+      if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
+      {
+        VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
+        events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
+        e->dispatch();
+        return;
+      }
+    }
+    break;
+
     case KEY_KEY_I:
     {
       if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
@@ -591,6 +599,7 @@ void Level::handleEvent( NEvent& event )
       if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
       {
         religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
+        return;
       }
     }
     break;

@@ -30,6 +30,7 @@
 #include "world/empire.hpp"
 #include "events/showrequestwindow.hpp"
 #include "world/goodcaravan.hpp"
+#include "core/logger.hpp"
 
 namespace  city
 {
@@ -200,9 +201,9 @@ void RqGood::fail( PlayerCityPtr city )
   }
 }
 
-std::string RqGood::getDescription() const {  return _d->description; }
-int RqGood::getQty() const { return _d->stock.capacity(); }
-Good::Type RqGood::getGoodType() const { return _d->stock.type(); }
+std::string RqGood::description() const {  return _d->description; }
+int RqGood::qty() const { return _d->stock.capacity(); }
+Good::Type RqGood::goodType() const { return _d->stock.type(); }
 
 RqGood::RqGood() : Request( DateTime() ), _d( new Impl )
 {
@@ -215,7 +216,7 @@ VariantMap Request::save() const
   ret[ "deleted" ] = _isDeleted;
   ret[ "announced" ] = _isAnnounced;
   ret[ "finish" ] = _finishDate;
-  ret[ "start" ] = _startDate;
+  ret[ "date" ] = _startDate;
 
   return ret;
 }
@@ -225,7 +226,11 @@ void Request::load(const VariantMap& stream)
   _isDeleted = stream.get( "deleted" );
   _isAnnounced = stream.get( "announced" );
   _finishDate = stream.get( "finish" ).toDateTime();
-  _startDate = stream.get( "date" ).toDateTime();
+
+  Variant vStart = stream.get( "date" );
+  Logger::warningIf( vStart.isNull(), "Request: unknown start date" );
+
+  _startDate = vStart.isNull() ? GameDate::current() : vStart.toDateTime();
 }
 
 Request::Request(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishDate( finish )
