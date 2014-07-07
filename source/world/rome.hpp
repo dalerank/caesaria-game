@@ -26,6 +26,7 @@ namespace world
 class Rome : public City
 {
 public:
+  static const char* defaultName;
   Rome( EmpirePtr empire );
 
   // performs one simulation step
@@ -33,6 +34,7 @@ public:
 
   virtual unsigned int tradeType() const;
   virtual city::Funds& funds();
+  virtual std::string name() const;
   virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;

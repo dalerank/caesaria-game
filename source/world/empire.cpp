@@ -37,10 +37,6 @@
 namespace world
 {
 
-namespace {
-static const char* RomeCityName = "Rome";
-}
-
 class Empire::Impl
 {
 public:
@@ -113,7 +109,7 @@ void Empire::initialize(vfs::Path filename, vfs::Path filemap)
   CityPtr stubRome = new Rome( this );
   stubRome->drop();
 
-  CityPtr rome = findCity( RomeCityName );
+  CityPtr rome = findCity( Rome::defaultName );
   if( rome.isValid() )
   {
     stubRome->setLocation( rome->location() );
@@ -352,7 +348,7 @@ void Empire::timeStep( unsigned int time )
 const EmpireMap &Empire::map() const { return _d->emap; }
 
 Emperor& Empire::emperor() { return _d->emperor; }
-CityPtr Empire::rome() const { return findCity( RomeCityName ); }
+CityPtr Empire::rome() const { return findCity( Rome::defaultName ); }
 
 CityPtr Empire::initPlayerCity( CityPtr city )
 {

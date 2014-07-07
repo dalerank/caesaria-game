@@ -18,6 +18,8 @@
 #include "goodcaravan.hpp"
 #include "empire.hpp"
 #include "good/goodstore_simple.hpp"
+#include "game/resourcegroup.hpp"
+#include "core/logger.hpp"
 #include "city.hpp"
 
 namespace world
@@ -43,7 +45,27 @@ GoodCaravanPtr GoodCaravan::create( CityPtr city )
 
 void GoodCaravan::sendTo(ObjectPtr obj)
 {
-  _d->destination = (obj.isValid() ? obj->name() : "");
+  _d->destination = "";
+
+  if( _d->base.isValid() && obj.isValid() )
+  {
+    _d->destination = obj->name();
+    _findWay( _d->base->location(), obj->location() );
+
+    if( !_way().empty() )
+    {
+      empire()->addObject( this );
+    }
+    else
+    {
+      Logger::warning( "GoodCaravan: cannot find way from %s to %s", _d->base->name().c_str(), obj->name().c_str() );
+    }
+  }
+  else
+  {
+    Logger::warningIf( _d->base.isNull(), "GoodCaravan: base is null" );
+    Logger::warningIf( obj.isNull(), "GoodCaravan: destiantion is null" );
+  }
 }
 
 void GoodCaravan::sendTo(CityPtr obj)
@@ -53,6 +75,11 @@ void GoodCaravan::sendTo(CityPtr obj)
 
 GoodStore& GoodCaravan::store() { return _d->store; }
 std::string GoodCaravan::type() const { return CAESARIA_STR_EXT(GoodCaravan); }
+
+void GoodCaravan::timeStep(unsigned int time)
+{
+  MovableObject::timeStep( time );
+}
 
 void GoodCaravan::save(VariantMap& stream) const
 {
@@ -86,6 +113,9 @@ GoodCaravan::GoodCaravan( CityPtr city )
  : MovableObject( city->empire() ), _d( new Impl )
 {
   _d->base = city;
+  setSpeed( 3.f );
+
+  setPicture( gfx::Picture::load( ResourceGroup::panelBackground, 108 ) );
 }
 
 }

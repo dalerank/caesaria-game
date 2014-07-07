@@ -25,6 +25,8 @@
 
 namespace world {
 
+const char* Rome::defaultName = "Rome";
+
 class Rome::Impl
 {
 public:
@@ -44,6 +46,8 @@ Rome::Rome(EmpirePtr empire)
 
 unsigned int Rome::tradeType() const { return 0; }
 city::Funds& Rome::funds() { return _d->funds; }
+
+std::string Rome::name() const { return Rome::defaultName; }
 unsigned int Rome::population() const { return 45000; }
 bool Rome::isPaysTaxes() const { return true; }
 bool Rome::haveOverduePayment() const { return false; }

@@ -33,6 +33,8 @@ public:
   GoodStore& store();
   virtual std::string type() const;
 
+  virtual void timeStep( unsigned int time );
+
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
