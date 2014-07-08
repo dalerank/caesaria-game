@@ -260,7 +260,7 @@ void Empire::getPrice(Good::Type gtype, int& buy, int& sell) const
   _d->trading.getPrice( gtype, buy, sell );
 }
 
-void Empire::createTradeRoute(std::string start, std::string stop )
+TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 {
   CityPtr startCity = findCity( start );
   CityPtr stopCity = findCity( stop );
@@ -289,13 +289,13 @@ void Empire::createTradeRoute(std::string start, std::string stop )
       if( lpnts.empty() )
       {
         route->setPoints( spnts, true );
-        return;
+        return route;
       }
 
       if( spnts.empty() )
       {
         route->setPoints( lpnts, false );
-        return;
+        return route;
       }
 
       if( spnts.size() > lpnts.size() )
@@ -307,7 +307,11 @@ void Empire::createTradeRoute(std::string start, std::string stop )
         route->setPoints( spnts, true );
       }
     }
+
+    return route;
   }
+
+  return TraderoutePtr();
 }
 
 TraderoutePtr Empire::findRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
