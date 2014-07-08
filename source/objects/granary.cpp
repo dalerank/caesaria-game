@@ -157,6 +157,7 @@ void Granary::initTerrain(Tile& terrain)
   //strt(0,0)N    (1,1)Y    (2,2)N
   //         (1,0)Y    (2,1)Y
   //              (2,0)N
+
   bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
   terrain.setFlag( Tile::tlRoad, walkable );
   terrain.setFlag( Tile::tlRock, !walkable ); // el muleta
@@ -174,7 +175,7 @@ void Granary::computePictures()
   }
 
   if (allQty > 0){ _fgPicturesRef()[1] = Picture::load( ResourceGroup::commerce, 142); }
-  if( allQty > maxQty * 0.25) { _fgPicturesRef()[2] = Picture::load( ResourceGroup::commerce, 143); }
+  if (allQty > maxQty * 0.25) { _fgPicturesRef()[2] = Picture::load( ResourceGroup::commerce, 143); }
   if (allQty > maxQty * 0.5){ _fgPicturesRef()[3] = Picture::load( ResourceGroup::commerce, 144); }
   if (allQty > maxQty * 0.9){ _fgPicturesRef()[4] = Picture::load( ResourceGroup::commerce, 145); }
 }
@@ -213,7 +214,7 @@ const Pictures& Granary::pictures(Renderer::Pass pass) const
 {
   switch( pass )
   {
-  case Renderer::overWalker: return _d->granarySprite;
+  //case Renderer::overWalker: return _d->granarySprite;
   default: break;
   }
 

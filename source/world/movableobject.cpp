@@ -45,6 +45,7 @@ public:
 MovableObject::MovableObject( EmpirePtr empire )
   : Object( empire ), __INIT_IMPL(MovableObject)
 {
+  setSpeed( 1.f );
 }
 
 MovableObject::~MovableObject(){}
@@ -58,7 +59,7 @@ void MovableObject::setSpeed(float speed)
 void MovableObject::timeStep(const unsigned int time)
 {
   __D_IMPL(d,MovableObject)
-  if( (time % d->speed) == 1 )
+  if( ( time % (d->speed+1) ) == 1 )
   {    
     if( !d->way.empty() )
     {

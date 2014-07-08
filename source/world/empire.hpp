@@ -50,7 +50,7 @@ public:
   Emperor& emperor();
   CityPtr rome() const;
 
-  void createTradeRoute( std::string start, std::string stop );
+  TraderoutePtr createTradeRoute( std::string start, std::string stop );
 
   TraderoutePtr findRoute( unsigned int index );
   TraderoutePtr findRoute( const std::string& start, const std::string& stop );  

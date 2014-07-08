@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 #include "traderoute.hpp"
 #include "object.hpp"
+#include "rome.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
 #include "objects_factory.hpp"
@@ -35,10 +36,6 @@
 
 namespace world
 {
-
-namespace {
-static const char* RomeCityName = "Rome";
-}
 
 class Empire::Impl
 {
@@ -107,6 +104,19 @@ void Empire::initialize(vfs::Path filename, vfs::Path filemap)
     city->load( item->second.toMap() );
     _d->emap.setCity( city->location() );
   }
+
+  //initialize capital
+  CityPtr stubRome = new Rome( this );
+  stubRome->drop();
+
+  CityPtr rome = findCity( Rome::defaultName );
+  if( rome.isValid() )
+  {
+    stubRome->setLocation( rome->location() );
+  }
+
+  _d->cities.remove( rome );
+  _d->cities.push_back( stubRome );
 }
 
 void Empire::addObject(ObjectPtr obj)
@@ -223,15 +233,6 @@ void Empire::load( const VariantMap& stream )
 void Empire::setCitiesAvailable(bool value)
 {
   foreach( city, _d->cities ) { (*city)->setAvailable( value ); }
-
-  CityPtr rome = findCity( RomeCityName );
-  if( rome.isValid() )
-  {
-    rome->setAvailable( true );
-    gfx::Picture pic = gfx::Picture::load( "roma", 1 );
-    pic.setOffset( 0, 30 );
-    rome->setPicture( pic );
-  }
 }
 
 unsigned int Empire::workerSalary() const {  return _d->workerSalary; }
@@ -259,7 +260,7 @@ void Empire::getPrice(Good::Type gtype, int& buy, int& sell) const
   _d->trading.getPrice( gtype, buy, sell );
 }
 
-void Empire::createTradeRoute(std::string start, std::string stop )
+TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 {
   CityPtr startCity = findCity( start );
   CityPtr stopCity = findCity( stop );
@@ -288,13 +289,13 @@ void Empire::createTradeRoute(std::string start, std::string stop )
       if( lpnts.empty() )
       {
         route->setPoints( spnts, true );
-        return;
+        return route;
       }
 
       if( spnts.empty() )
       {
         route->setPoints( lpnts, false );
-        return;
+        return route;
       }
 
       if( spnts.size() > lpnts.size() )
@@ -306,7 +307,11 @@ void Empire::createTradeRoute(std::string start, std::string stop )
         route->setPoints( spnts, true );
       }
     }
+
+    return route;
   }
+
+  return TraderoutePtr();
 }
 
 TraderoutePtr Empire::findRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
@@ -347,7 +352,7 @@ void Empire::timeStep( unsigned int time )
 const EmpireMap &Empire::map() const { return _d->emap; }
 
 Emperor& Empire::emperor() { return _d->emperor; }
-CityPtr Empire::rome() const { return findCity( RomeCityName ); }
+CityPtr Empire::rome() const { return findCity( Rome::defaultName ); }
 
 CityPtr Empire::initPlayerCity( CityPtr city )
 {

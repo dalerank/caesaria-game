@@ -73,10 +73,10 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
   if( gr.isValid() )
   {
     Label* lb = findChildA<Label*>( "lbQty", true, this );
-    if( lb ) { lb->setText( StringHelper::format( 0xff, "%d", gr->getQty() ) ); }
+    if( lb ) { lb->setText( StringHelper::format( 0xff, "%d", gr->qty() ) ); }
 
     Image* img = findChildA<Image*>( "imgIcon", true, this );
-    if( img ) { img->setPicture( GoodHelper::getPicture( gr->getGoodType() )); }
+    if( img ) { img->setPicture( GoodHelper::getPicture( gr->goodType() )); }
 
     lb = findChildA<Label*>( "lbInterval", true, this );
     int month2Comply = GameDate::current().monthsTo( gr->finishedDate() );

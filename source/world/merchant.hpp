@@ -35,7 +35,7 @@ public:
                              GoodStore& sell, GoodStore& buy );
   virtual ~Merchant();
 
-  void timeStep( unsigned int time );
+  virtual void timeStep( unsigned int time );
 
   std::string baseCity() const;
   std::string destinationCity() const;
