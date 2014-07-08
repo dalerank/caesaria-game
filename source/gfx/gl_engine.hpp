@@ -63,10 +63,13 @@ public:
   Point cursorPos() const;
   Picture& screen();
 private:
+  void _initFramebuffer();
+  void _drawFramebuffer();
 
-   Picture _screen;
-   unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
-   float _rmask, _gmask, _bmask, _amask;
+  Picture _screen;
+  unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
+  float _rmask, _gmask, _bmask, _amask;
+  unsigned int _framebuffer, _colorbuffer, _depthbuffer;
 };
 
 }

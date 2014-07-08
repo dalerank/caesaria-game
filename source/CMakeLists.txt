@@ -55,11 +55,6 @@ target_link_libraries(${PROJECT_NAME}
   ${SDL_TTF_LIBRARY}
 )
 
-#find_package( ZLIB )
-#if( ZLIB_FOUND )
-#  include_directories(${ZLIB_INCLUDE_DIRS})
-#  target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
-#else
 if( BUILD_ZLIB )
   link_directories(${ZLIB_HOME})
   include_directories(${ZLIB_HOME})
@@ -71,11 +66,6 @@ if( BUILD_AES )
   target_link_libraries(${PROJECT_NAME} ${AESLIB_NAME})
 endif()
 
-#find_package( BZIP2 )
-#if ( BZIP2_FOUND )
-#  include_directories(${BZIP2_INCLUDE_DIRS})
-#  target_link_libraries(${PROJECT_NAME} ${BZIP2_LIBRARIES})
-#else
 if( BUILD_BZIP )
   link_directories(${BZIPLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${BZIPLIB_NAME})
@@ -91,11 +81,6 @@ if( BUILD_SMK )
   target_link_libraries(${PROJECT_NAME} ${SMKLIB_NAME})
 endif()
 
-#find_package( PNG )
-#if (PNG_FOUND)
-#  include_directories(${PNG_INCLUDE_DIRS})
-#  target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARIES})
-#else
 if( BUILD_PNG )
   link_directories(${PNGLIB_HOME})
   include_directories(${PNGLIB_HOME})
@@ -103,6 +88,7 @@ if( BUILD_PNG )
 endif()
 
 #if(OPENGL_RENDER)
+add_definitions( -DGL_GLEXT_PROTOTYPES )
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
 else()

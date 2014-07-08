@@ -25,6 +25,9 @@
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_opengl.h>
+
+#include <GL/glext.h>
 
 #include "core/logger.hpp"
 #include "core/exception.hpp"
@@ -32,7 +35,6 @@
 #include "core/position.hpp"
 #include "core/eventconverter.hpp"
 #include "core/foreach.hpp"
-#include <SDL_opengl.h>
 #include "core/font.hpp"
 #include "pictureconverter.hpp"
 #include "core/stringhelper.hpp"
@@ -46,12 +48,11 @@ GlEngine::GlEngine() : Engine()
 {
 }
 
-GlEngine::~GlEngine()
-{ }
-
+GlEngine::~GlEngine() {}
 
 void GlEngine::init()
 {
+  setFlag( Engine::effects, 1 );
   _rmask = _gmask = _bmask = _amask = 1.f;
   int rc;
   rc = SDL_Init(SDL_INIT_VIDEO);
@@ -85,6 +86,12 @@ void GlEngine::init()
 
   Logger::warning( "GrafixEngine: set caption");
   SDL_WM_SetCaption( "CaesarIA: OGL "CAESARIA_VERSION, 0 );
+
+  //!!!!!
+  if( getFlag( Engine::effects ) > 0 )
+  {
+    _initFramebuffer();
+  }
 }
 
 
@@ -115,6 +122,82 @@ Picture* GlEngine::createPicture(const Size& size )
 
 Picture& GlEngine::screen(){  return _screen; }
 
+void GlEngine::_initFramebuffer()
+{
+#ifndef GL_DRAW_FRAMEBUFFER
+  #define GL_DRAW_FRAMEBUFFER               0x8CA9
+#endif
+
+  glGenFramebuffersEXT(1, &_framebuffer);
+  glGenTexturesEXT(1, &_colorbuffer);
+  glGenRenderbuffersEXT(1, &_depthbuffer);
+
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _framebuffer);
+
+  glBindTexture(GL_TEXTURE_2D, _colorbuffer);
+  glTexImage2D(	GL_TEXTURE_2D,
+                0,
+                GL_RGBA,
+                _srcSize.width(), _srcSize.height(),
+                0,
+                GL_RGBA,
+                GL_UNSIGNED_BYTE,
+                NULL);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, _colorbuffer, 0);
+
+  glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, _depthbuffer);
+  glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _srcSize.width(), _srcSize.height());
+  glFramebufferRenderbufferEXT(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, _depthbuffer);
+  int st1 = glCheckFramebufferStatusEXT(GL_DRAW_FRAMEBUFFER);
+  if(st1==GL_FRAMEBUFFER_COMPLETE_EXT)
+  {
+    Logger::warning( "Init framebuffer so good ");
+  }
+  else
+  {
+     if(st1==GL_FRAMEBUFFER_UNSUPPORTED_EXT)
+     {
+       setFlag( effects, 0 );
+       Logger::warning("Init framebuffer failde");
+     }
+    }
+}
+
+void GlEngine::_drawFramebuffer()
+{
+  // Bind default framebuffer and draw contents of our framebuffer
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+  glLoadIdentity();
+  glMatrixMode(GL_MODELVIEW);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
+
+  float x0 =0;
+  float x1 = x0+_srcSize.width();
+  float y0 = 0;
+  float y1 = y0+_srcSize.height();
+
+  glBindTexture(GL_TEXTURE_2D, _colorbuffer);
+
+  glBegin( GL_QUADS );
+
+  glTexCoord2i( 0, 1 );
+  glVertex2f( x0, y0 );
+
+  glTexCoord2i( 0, 0 );
+  glVertex2f( x0, y1 );
+
+  glTexCoord2i( 1, 0 );
+  glVertex2f( x1, y1 );
+
+  glTexCoord2i( 1, 1 );
+  glVertex2f( x1, y0 );
+
+  glEnd();
+}
+
 Point GlEngine::cursorPos() const
 {
   int x,y;
@@ -123,7 +206,7 @@ Point GlEngine::cursorPos() const
   return Point( x, y );
 }
 
-void GlEngine::unloadPicture(Picture &ioPicture)
+void GlEngine::unloadPicture(Picture& ioPicture)
 {
   GLuint& texture( ioPicture.textureID() );
   glDeleteTextures(1, &texture );
@@ -135,87 +218,96 @@ void GlEngine::unloadPicture(Picture &ioPicture)
 
 void GlEngine::loadPicture(Picture& ioPicture)
 {
-   GLuint& texture( ioPicture.textureID() );
+  GLuint& texture( ioPicture.textureID() );
 
-   SDL_Surface* pot_surface = SDL_DisplayFormatAlpha( ioPicture.surface() );
-   SDL_SetAlpha( pot_surface, 0, 0 );
+  SDL_Surface* pot_surface = SDL_DisplayFormatAlpha( ioPicture.surface() );
+  SDL_SetAlpha( pot_surface, 0, 0 );
 
-   SDL_FreeSurface( ioPicture.surface() );
+  SDL_FreeSurface( ioPicture.surface() );
 
-   ioPicture.init( pot_surface, ioPicture.offset() );
+  ioPicture.init( pot_surface, ioPicture.offset() );
 
-   GLenum texture_format;
-   GLint nOfColors;
+  GLenum texture_format;
+  GLint nOfColors;
 
-   // get the number of channels in the SDL surface
-   nOfColors = pot_surface->format->BytesPerPixel;
-   if (nOfColors == 4)     // contains an alpha channel
-   {
-      if (pot_surface->format->Rmask == 0x000000ff)
-         texture_format = GL_RGBA;
-      else
-         texture_format = GL_BGRA;
-   }
-   else if (nOfColors == 3)     // no alpha channel
-   {
-      if (pot_surface->format->Rmask == 0x000000ff)
-         texture_format = GL_RGB;
-      else
-         texture_format = GL_BGR;
-   }
-   else
-   {
-      THROW("Invalid image format");
-   }
+  // get the number of channels in the SDL surface
+  nOfColors = pot_surface->format->BytesPerPixel;
+  if( nOfColors == 4 )     // contains an alpha channel
+  {
+     if (pot_surface->format->Rmask == 0x000000ff)
+        texture_format = GL_RGBA;
+     else
+        texture_format = GL_BGRA;
+  }
+  else if (nOfColors == 3)     // no alpha channel
+  {
+     if (pot_surface->format->Rmask == 0x000000ff)
+        texture_format = GL_RGB;
+     else
+        texture_format = GL_BGR;
+  }
+  else
+  {
+     THROW("Invalid image format");
+  }
 
-   if (texture == 0)
-   {
-      // the picture has no texture ID!
-      // generate a texture ID
-      glGenTextures( 1, &texture );
-   }
+  if (texture == 0)
+  {
+     // the picture has no texture ID!
+     // generate a texture ID
+     glGenTextures( 1, &texture );
+  }
 
-   // Bind the texture object
-   glBindTexture( GL_TEXTURE_2D, texture );
+  // Bind the texture object
+  glBindTexture( GL_TEXTURE_2D, texture );
 
-   // Set the texture's stretching properties
-   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+  // Set the texture's stretching properties
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-   // Edit the texture object's image data using the information SDL_Surface gives us
-   glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, pot_surface->w, pot_surface->h, 0,
-                 texture_format, GL_UNSIGNED_BYTE, pot_surface->pixels );
+  // Edit the texture object's image data using the information SDL_Surface gives us
+  glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, pot_surface->w, pot_surface->h, 0,
+                texture_format, GL_UNSIGNED_BYTE, pot_surface->pixels );
 }
 
 
 void GlEngine::startRenderFrame()
 {
-  glClear(GL_COLOR_BUFFER_BIT);  // black screen
+  if( getFlag( Engine::effects ) > 0 )
+  {
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _framebuffer);
+  }
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
 }
 
 void GlEngine::endRenderFrame()
 { 
-   if( getFlag( debugInfo ) )
-   {
-     static Font _debugFont = Font::create( FONT_2 );
-     static Picture* pic = Picture::create( Size( 160, 30 ));
-     std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
-     _debugFont.draw( *pic, debugText, 0, 0, true );
-     draw( *pic, _screen.width() / 2, 2 );
-   }
+  if( getFlag( debugInfo ) )
+  {
+    static Font _debugFont = Font::create( FONT_2 );
+    static Picture* pic = Picture::create( Size( 160, 30 ));
+    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
+    _debugFont.draw( *pic, debugText, 0, 0, true );
+    draw( *pic, _screen.width() / 2, 2 );
+  }
 
-   glFlush();
-   SDL_GL_SwapBuffers(); //Refresh the screen
-   _fps++;
+  if( getFlag( Engine::effects ) > 0 )
+  {
+    _drawFramebuffer();
+  }
 
-   if( DateTime::elapsedTime() - _lastUpdateFps > 1000 )
-   {
-     _lastUpdateFps = DateTime::elapsedTime();
-     _lastFps = _fps;
-     _fps = 0;
-   }
+  SDL_GL_SwapBuffers(); //Refresh the screen
+  _fps++;
 
-   _drawCall = 0;
+  if( DateTime::elapsedTime() - _lastUpdateFps > 1000 )
+  {
+    _lastUpdateFps = DateTime::elapsedTime();
+    _lastFps = _fps;
+    _fps = 0;
+  }
+
+  _drawCall = 0;
 }
 
 void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect)
@@ -298,10 +390,7 @@ void GlEngine::createScreenshot( const std::string& filename )
   delete screen;
 }
 
-unsigned int GlEngine::fps() const
-{
-  return _fps;
-}
+unsigned int GlEngine::fps() const {  return _fps; }
 
 void GlEngine::delay( const unsigned int msec )
 {
