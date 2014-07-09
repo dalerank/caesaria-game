@@ -53,13 +53,13 @@ protected:
   virtual BuildingList _findBuildingsInRange(unsigned int range);
   virtual WalkerList _findEnemiesInRange(unsigned int range);
   virtual void _check4attack();
+  virtual Pathway _findPathway2NearestConstruction(unsigned int range);
 
   EnemySoldier( PlayerCityPtr city, constants::walker::Type type );
 
 private:
   Pathway _findFreeSlot(TilePos target, const int range);
   Pathway _findPathway2NearestEnemy(unsigned int range);
-  Pathway _findPathway2NearestConstruction(unsigned int range);
   AttackPriority _atPriority;
 };
 

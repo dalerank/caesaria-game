@@ -138,7 +138,7 @@ void TopMenu::Impl::initBackground( const Size& size )
   bgPicture.reset( Picture::create( size ) );
 
   unsigned int i = 0;
-  unsigned int x = 0;
+  int x = 0;
   bgPicture->lock();
   while( x < size.width())
   {

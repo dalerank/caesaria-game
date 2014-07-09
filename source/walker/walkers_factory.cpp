@@ -50,6 +50,7 @@
 #include "mugger.hpp"
 #include "indigene.hpp"
 #include "chastener.hpp"
+#include "chastener_elephant.hpp"
 #include <map>
 
 using namespace constants;
@@ -142,7 +143,8 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::wolf, new BaseCreator<Wolf>() );
   addCreator( walker::missioner, new ServicemanCreator( Service::native ) );
   addCreator( walker::indigene, new BaseCreator<Indigene>() );
-  addCreator( walker::romeChasternerSoldier, new SoldierCreator<Chastener>( walker::romeChasternerSoldier ) );
+  addCreator( walker::romeChastenerSoldier, new SoldierCreator<Chastener>( walker::romeChastenerSoldier ) );
+  addCreator( walker::romeChastenerElephant, new BaseCreator<ChastenerElephant>() );
 }
 
 WalkerManager::~WalkerManager(){}

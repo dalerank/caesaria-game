@@ -433,6 +433,7 @@ void Game::load(std::string filename)
 
   Logger::warning( "Game: init empire start options" );
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
+                          GameSettings::rcpath( GameSettings::empireObjectsModel ),
                           GameSettings::rcpath( GameSettings::worldModel ) );
 
   Logger::warning( "Game: try find loader" );

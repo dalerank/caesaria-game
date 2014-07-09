@@ -78,6 +78,7 @@
 #include "cityservice_peace.hpp"
 #include "game/resourcegroup.hpp"
 #include "world/romechastenerarmy.hpp"
+#include "walker/chastener_elephant.hpp"
 #include "walker/chastener.hpp"
 
 #include <set>
@@ -773,9 +774,15 @@ void PlayerCity::addObject( world::ObjectPtr object )
     world::RomeChastenerArmyPtr army = ptr_cast<world::RomeChastenerArmy>( object );
     for( unsigned int k=0; k < army->soldiersNumber(); k++ )
     {
-      ChastenerPtr soldier = Chastener::create( this, walker::romeChasternerSoldier );
+      ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
       soldier->send2City( borderInfo().roadEntry );
       soldier->wait( GameDate::days2ticks( k ) );
+      if( (k % 16) == 15 )
+      {
+        ChastenerElephantPtr elephant = ChastenerElephant::create( this );
+        elephant->send2City( borderInfo().roadEntry );
+        soldier->wait( GameDate::days2ticks( k ) );
+      }
     }
   }
 }

@@ -32,6 +32,7 @@ public:
   __GS_PROPERTY(pantheonModel)
   __GS_PROPERTY(houseModel)
   __GS_PROPERTY(citiesModel)
+  __GS_PROPERTY(empireObjectsModel)
   __GS_PROPERTY(constructionModel)
   __GS_PROPERTY(settingsPath)
   __GS_PROPERTY(language)

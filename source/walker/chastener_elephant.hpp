@@ -15,30 +15,28 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_CHANGEHOMEOPTIONS_H_INCLUDE_
-#define _CAESARIA_EVENT_CHANGEHOMEOPTIONS_H_INCLUDE_
+#ifndef _CAESARIA_CHASTENER_ELEPHANT_INCLUDE_H_
+#define _CAESARIA_CHASTENER_ELEPHANT_INCLUDE_H_
 
-#include "event.hpp"
+#include "enemysoldier.hpp"
+#include "predefinitions.hpp"
 
-namespace events
-{
-
-class ChangeHomeOptions : public GameEvent
+class ChastenerElephant : public EnemySoldier
 {
 public:
-  static GameEventPtr create();
+  static ChastenerElephantPtr create( PlayerCityPtr city );
 
-  virtual void load(const VariantMap &);
-  virtual VariantMap save() const;
+  virtual int agressive() const;
+  virtual bool die();
 
 protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &game, unsigned int time) const;
+  Pathway _findPathway2NearestConstruction( unsigned int range );
+  bool _tryAttack();
 
-private:
-  VariantMap _vars;
+  ChastenerElephant( PlayerCityPtr city );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-}
-
-#endif //_CAESARIA_EVENT_CHANGEHOMEOPTIONS_H_INCLUDE_
+#endif //_CAESARIA_CHASTENER_ELEPHANT_INCLUDE_H_
