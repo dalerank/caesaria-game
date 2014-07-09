@@ -25,8 +25,8 @@
 #include "events/build.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
-#include "walker/dustcloud.hpp"
 #include "game/gamedate.hpp"
+#include "walker/dustcloud.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -186,7 +186,10 @@ void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
   tile().setFlag( Tile::tlRoad, false );
   setPicture( ResourceGroup::land2a, 111 + math::random( 8 ) );
 
-  DustCloud::create( city, pos, 4 );
+  if( !_alsoBuilt )
+  {
+    DustCloud::create( _city(), pos, 4 );
+  }
 }
 
 void CollapsedRuins::collapse() {}
@@ -268,7 +271,7 @@ bool PlagueRuins::isWalkable() const{  return (state( Construction::fire ) == 0)
 bool PlagueRuins::isNeedRoadAccess() const{  return false;}
 
 Ruins::Ruins(building::Type type)
-  : Building( type, Size(1) )
+  : Building( type, Size(1) ), _alsoBuilt( true )
 {
 
 }

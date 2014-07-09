@@ -30,9 +30,11 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  void afterBuild() { _alsoBuilt=false; }
 
 protected:
   std::string _parent;
+  bool _alsoBuilt;
 };
 
 class BurningRuins : public Ruins
