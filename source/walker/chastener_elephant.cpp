@@ -29,6 +29,7 @@
 #include "world/emperor.hpp"
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
+#include "core/priorities.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -46,7 +47,10 @@ public:
 ChastenerElephant::ChastenerElephant( PlayerCityPtr city )
     : EnemySoldier( city, walker::romeChastenerElephant ), _d( new Impl )
 {
-
+  _excludeAttack().clear();
+  _excludeAttack() << building::disasterGroup
+                   << building::roadGroup
+                   << building::bridgeGroup;
 }
 
 Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range )
@@ -55,9 +59,9 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
 
   for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
   {
-    BuildingList buildings = _findBuildingsInRange( tmpRange );
+    ConstructionList constructions = _findContructionsInRange( tmpRange );
 
-    foreach( it, buildings )
+    foreach( it, constructions )
     {
       ConstructionPtr c = ptr_cast<Construction>( *it );
       ret = PathwayHelper::create( pos(), c->pos(), makeDelegate( _d.data(), &Impl::mayMove ) );
@@ -77,10 +81,10 @@ bool ChastenerElephant::_tryAttack()
   TilesArray tiles = tmap.getNeighbors( pos() );
   foreach( it, tiles )
   {
-    BuildingPtr bld = ptr_cast<Building>( (*it)->overlay() );
-    if( bld.isValid() )
+    ConstructionPtr ov = ptr_cast<Construction>( (*it)->overlay() );
+    if( ov.isValid() && !_excludeAttack().count( ov->group() ) )
     {
-      bld->collapse();
+      ov->collapse();
     }
   }
 

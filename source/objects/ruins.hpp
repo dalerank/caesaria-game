@@ -76,8 +76,10 @@ public:
 
   virtual void burn();
   virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual void collapse();
 
   virtual bool isWalkable() const;
+  virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
 };
 

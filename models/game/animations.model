@@ -229,7 +229,7 @@
   }
 
   romeChastenerElephant : {
-    move : { rc : "carthegenians", start : 401, frames : 13, action : 1, step : 8 }
+    move : { rc : "carthegenians", start : 401, frames : 12, action : 1, step : 8 }
     /*fight : { rc : "carthegenians", start : 497, frames : 1, action : 3, step : 8 }*/
     die : { rc : "carthegenians", start : 505, frames : 1, action : 3, step : 0 }
   }

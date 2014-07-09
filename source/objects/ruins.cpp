@@ -189,7 +189,9 @@ void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
   DustCloud::create( city, pos, 4 );
 }
 
+void CollapsedRuins::collapse() {}
 bool CollapsedRuins::isWalkable() const{  return true;}
+bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoadAccess() const{  return false;}
 
 PlagueRuins::PlagueRuins() : Ruins( building::plagueRuins )

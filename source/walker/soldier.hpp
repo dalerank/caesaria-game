@@ -61,7 +61,7 @@ protected:
   void _setSubAction( SldrAction action );
 
   virtual bool _move2freePos(TilePos target);
-  virtual BuildingList _findBuildingsInRange(unsigned int range) = 0;
+  virtual ConstructionList _findContructionsInRange(unsigned int range) = 0;
   virtual WalkerList _findEnemiesInRange(unsigned int range) = 0;
 private:
   __DECLARE_IMPL(Soldier)

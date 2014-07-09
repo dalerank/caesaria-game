@@ -162,6 +162,9 @@ WaterSource::WaterSource(const Type type, const Size& size )
 {
   _d->water = 0;
   _d->lastWaterState = false;
+
+  setState( Building::inflammability, 0 );
+  setState( Building::collapsibility, 0 );
 }
 
 WaterSource::~WaterSource(){}
