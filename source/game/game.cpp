@@ -404,7 +404,6 @@ void Game::save(std::string filename) const
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 
-
   events::GameEventPtr e = events::WarningMessageEvent::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
   e->dispatch();
 }
