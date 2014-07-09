@@ -469,7 +469,8 @@ void Level::animate( unsigned int time )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
-      _d->game->save( _d->getFastSaveName( StringHelper::i2str( rotate ) ).toString() );
+      vfs::Path filename = _d->getFastSaveName( StringHelper::i2str( rotate ) );
+      _d->game->save( filename.toString() );
     }
   }
 }

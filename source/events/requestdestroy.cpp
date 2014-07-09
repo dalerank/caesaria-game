@@ -47,7 +47,9 @@ void RequestDestroy::_exec(Game& game, unsigned int)
     _alsoExec = true;
     gui::DialogBox* dialog = new gui::DialogBox( game.gui()->rootWidget(), Rect(), "##warning##", "##destroy_this_building##", gui::DialogBox::btnOkCancel );
     CONNECT(dialog, onOk(), this, RequestDestroy::_applyDestroy );
+    CONNECT(dialog, onOk(), dialog, gui::DialogBox::deleteLater );
     CONNECT(dialog, onCancel(), this, RequestDestroy::_declineDestroy );
+    CONNECT(dialog, onCancel(), dialog, gui::DialogBox::deleteLater );
   }
 }
 

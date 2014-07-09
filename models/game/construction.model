@@ -135,6 +135,7 @@
     employers : 16
     class : "military"
     sound : [ "fort", 1 ]
+    requestDestroy : true
   },
 
   mission_post : {
@@ -169,6 +170,7 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    requestDestroy : true
   }, 
 
   fort_horse : {
@@ -176,6 +178,7 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    requestDestroy : true
   }, 
 
   clinic : {
@@ -448,6 +451,7 @@
     desirability : { base : 0,	range : 0,	step : 0 }
     employers : 0
     class : "bridge"
+    requestDestroy : true
   }, 
   
   high_bridge : {
@@ -455,6 +459,7 @@
     desirability : { base : 0,	range : 0,	step : 0 }
     employers : 0
     class : "bridge"
+    requestDestroy : true
   },
 
   senate_1 : {

@@ -30,6 +30,7 @@ public:
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual bool canDestroy() const;
   virtual void destroy();
+  virtual void setState(ParameterType name, double value);
   virtual std::string errorDesc() const;
   virtual bool isNeedRoadAccess() const;
 

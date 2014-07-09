@@ -58,6 +58,7 @@
 #include "core/osystem.hpp"
 #include "freeplay_finalizer.hpp"
 #include "gfx/gl_engine.hpp"
+#include "events/warningmessage.hpp"
 
 #include <list>
 
@@ -402,6 +403,10 @@ void Game::save(std::string filename) const
   GameSaver saver;
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
+
+
+  events::GameEventPtr e = events::WarningMessageEvent::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  e->dispatch();
 }
 
 void Game::load(std::string filename)
