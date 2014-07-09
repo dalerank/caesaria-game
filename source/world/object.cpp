@@ -80,7 +80,7 @@ void Object::setPicture(Picture pic)
   _d->pictures[ 0 ] = pic;
 }
 
-bool Object::isMovable() const { return true; }
+bool Object::isMovable() const { return false; }
 
 void Object::save( VariantMap& stream ) const
 {

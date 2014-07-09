@@ -83,14 +83,23 @@ CityList Empire::cities() const
 
 Empire::~Empire(){}
 
-void Empire::initialize(vfs::Path filename, vfs::Path filemap)
+void Empire::_initializeObjects( vfs::Path filename )
 {
-  VariantMap emap = SaveAdapter::load( filemap.toString() );
-  _d->emap.initialize( emap );
+  _d->objects.clear();
+  VariantMap objects = SaveAdapter::load( filename.toString() );
+  if( objects.empty() )
+  {
+    Logger::warning( "Empire: can't load objects model from %s", filename.toString().c_str() );
+    return;
+  }
+  _loadObjects( objects );
+}
 
-  _d->cities.clear();
+void Empire::_initializeCities( vfs::Path filename )
+{
   VariantMap cities = SaveAdapter::load( filename.toString() );
 
+  _d->cities.clear();
   if( cities.empty() )
   {
     Logger::warning( "Empire: can't load cities model from %s", filename.toString().c_str() );
@@ -104,6 +113,15 @@ void Empire::initialize(vfs::Path filename, vfs::Path filemap)
     city->load( item->second.toMap() );
     _d->emap.setCity( city->location() );
   }
+}
+
+void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap)
+{
+  VariantMap emap = SaveAdapter::load( filemap.toString() );
+  _d->emap.initialize( emap );
+
+  _initializeCities( citiesPath );
+  _initializeObjects( objectsPath );
 
   //initialize capital
   CityPtr stubRome = new Rome( this );
@@ -196,6 +214,19 @@ void Empire::save( VariantMap& stream ) const
   stream[ "rateInterest" ] = _d->rateInterest;
 }
 
+void Empire::_loadObjects(const VariantMap &objects)
+{
+  foreach( item, objects )
+  {
+    const VariantMap& vm = item->second.toMap();
+    std::string objectType = vm.get( "type" ).toString();
+
+    ObjectPtr obj = ObjectsFactory::instance().create( objectType, this );
+    obj->load( vm );
+    _d->objects << obj;
+  }
+}
+
 void Empire::load( const VariantMap& stream )
 {
   VariantMap cities = stream.get( "cities" ).toMap();
@@ -212,22 +243,8 @@ void Empire::load( const VariantMap& stream )
   }
 
   _d->objects.clear();
-  VariantMap objects = stream.get( "objects" ).toMap();  
-  foreach( item, objects )
-  {
-    const VariantMap& vm = item->second.toMap();
-    std::string objectType = vm.get( "type" ).toString();
-
-    ObjectPtr obj = ObjectsFactory::instance().create( objectType, this );
-    obj->load( vm );
-    _d->objects << obj;
-  }
-
-  _d->trading.load( stream.get( "trade").toMap() );
-  _d->available = (bool)stream.get( "enabled", true );
-  _d->rateInterest = stream.get( "rateInterest", 10 );
-
-  _d->emperor.load( stream.get( "emperor" ).toMap() );
+  VariantMap objects = stream.get( "objects" ).toMap();
+  _loadObjects( objects );
 }
 
 void Empire::setCitiesAvailable(bool value)
