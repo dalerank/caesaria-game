@@ -242,7 +242,6 @@ void Empire::load( const VariantMap& stream )
     }
   }
 
-  _d->objects.clear();
   VariantMap objects = stream.get( "objects" ).toMap();
   _loadObjects( objects );
 }

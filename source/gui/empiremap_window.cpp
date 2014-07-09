@@ -118,6 +118,8 @@ void EmpireMapWindow::Impl::updateCityInfo()
     else
     {
       world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( currentCity );
+      if( ccity.isNull() )
+        return;
 
       if( ccity->isDistantCity() || ccity->isRomeCity() )
       {
