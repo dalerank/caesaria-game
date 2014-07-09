@@ -63,10 +63,10 @@ void GlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
 
-  SDL_Surface* screen = SDL_SetVideoMode( _srcSize.width(), _srcSize.height(), 32, SDL_OPENGL );
-  _screen.init( screen, Point() );
+  SDL_Surface* screen = SDL_SetVideoMode( _srcSize.width(), _srcSize.height(), 16, SDL_OPENGL );
+   _screen.init( screen, Point() );
   if( screen == NULL )
   {
     THROW("Unable to set video mode: " << SDL_GetError());
@@ -155,17 +155,25 @@ void GlEngine::loadPicture(Picture& ioPicture)
    nOfColors = pot_surface->format->BytesPerPixel;
    if (nOfColors == 4)     // contains an alpha channel
    {
+#ifdef CAESARIA_PLATFORM_ANDROID
+      texture_format = GL_RGBA;
+#else
       if (pot_surface->format->Rmask == 0x000000ff)
          texture_format = GL_RGBA;
       else
          texture_format = GL_BGRA;
+#endif
    }
    else if (nOfColors == 3)     // no alpha channel
    {
+#ifdef CAESARIA_PLATFORM_ANDROID
+      texture_format = GL_RGB;
+#else
       if (pot_surface->format->Rmask == 0x000000ff)
          texture_format = GL_RGB;
       else
          texture_format = GL_BGR;
+#endif
    }
    else
    {
@@ -238,29 +246,41 @@ void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* cl
    glBindTexture( GL_TEXTURE_2D, aTextureID);
    // Set the texture's stretching properties
 
-   glBegin( GL_QUADS );
+#ifndef CAESARIA_PLATFORM_ANDROID
+  glBegin( GL_QUADS );
 
-   //Bottom-left vertex (corner)
-   glColor4f( _rmask, _gmask, _bmask, _amask );
-   glTexCoord2i( 0, 0 );
-   glVertex2f( x0, y0 );   
+  //Bottom-left vertex (corner)
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 0, 0 ); glVertex2f( x0, y0 );   
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 1, 0 ); glVertex2f( x1, y0 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 1, 1 ); glVertex2f( x1, y1 );
+  glColor4f( _rmask, _gmask, _bmask, _amask ); glTexCoord2i( 0, 1 ); glVertex2f( x0, y1 );
 
-   //Bottom-right vertex (corner)
-   glColor4f( _rmask, _gmask, _bmask, _amask );
-   glTexCoord2i( 1, 0 );
-   glVertex2f( x1, y0 );
+  glEnd();
+#else
+  GLfloat vtx1[] = {
+    x0, y0,
+    x1, y0,
+    x1, y1,
+    x0, y1
+  };
 
-   //Top-right vertex (corner)
-   glColor4f( _rmask, _gmask, _bmask, _amask );
-   glTexCoord2i( 1, 1 );
-   glVertex2f( x1, y1 );
+  GLfloat tex1[] = {
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1
+  };
 
-   //Top-left vertex (corner)
-   glColor4f( _rmask, _gmask, _bmask, _amask );
-   glTexCoord2i( 0, 1 );
-   glVertex2f( x0, y1 );
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-   glEnd();
+  glVertexPointer(3,GL_FLOAT, 0, vtx1 );
+  glTexCoordPointer(2, GL_FLOAT, 0, tex1 );
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 4 );
+
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+#endif
 }
 
 void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
@@ -292,7 +312,11 @@ void GlEngine::resetColorMask()
 void GlEngine::createScreenshot( const std::string& filename )
 {
   Picture* screen = createPicture( screenSize() );
+#ifdef CAESARIA_PLATFORM_ANDROID
+  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_RGBA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
+#else
   glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
+#endif
 
   PictureConverter::flipVertical( *screen );
 
