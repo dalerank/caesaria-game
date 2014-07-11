@@ -226,18 +226,18 @@ public:
 	void repair()
 	{
 		if (LowerRightCorner.x() < UpperLeftCorner.x())
-        {
-            T tmp = LowerRightCorner.x();
+		{
+			T tmp = LowerRightCorner.x();
 			LowerRightCorner.setX( UpperLeftCorner.x() );
-            UpperLeftCorner.setX( tmp );
-        }
+			UpperLeftCorner.setX( tmp );
+		}
 
 		if (LowerRightCorner.y() < UpperLeftCorner.y())
-        {
-            T tmp = LowerRightCorner.y();
+		{
+			T tmp = LowerRightCorner.y();
 			LowerRightCorner.setY( UpperLeftCorner.y() );
-            UpperLeftCorner.setY( tmp );
-        }
+			UpperLeftCorner.setY( tmp );
+		}
 	}
 
 	//! Returns if the rect is valid to draw.

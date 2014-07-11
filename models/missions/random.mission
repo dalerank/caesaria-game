@@ -2,7 +2,7 @@
   version : 1
   map : "random"
   random : {
-   size : 7
+   size : 5
    smooth : 2.6
    terrain : 5
   }

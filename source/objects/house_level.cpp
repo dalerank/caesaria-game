@@ -31,6 +31,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
+#include "game/resourcegroup.hpp"
 
 #include <string>
 #include <map>
@@ -38,6 +39,10 @@
 
 using namespace gfx;
 using namespace constants;
+
+namespace {
+  static const int vacantLotId = 45;
+}
 
 class HouseSpecification::Impl
 {
@@ -648,11 +653,14 @@ HouseSpecification& HouseSpecification::operator=( const HouseSpecification& oth
 class HouseSpecHelper::Impl
 {
 public:
+  typedef std::map<std::string, Pictures > TexturesOneHouse;
   typedef std::map<int, int> HouseLevelSpecsEqMap;
   typedef std::map<int, HouseSpecification > HouseLevels;
+  typedef std::map<int, TexturesOneHouse > HouseTextures;
 
   HouseLevels spec_by_level;  // key=houseLevel, value=houseLevelSpec
-  HouseLevelSpecsEqMap level_by_id;  // key=houseId, value=houseLevel
+  //HouseLevelSpecsEqMap level_by_id;  // key=houseId, value=houseLevel
+  HouseTextures houseTextures;
 };
 
 HouseSpecHelper& HouseSpecHelper::instance()
@@ -665,7 +673,9 @@ HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
 {
   Logger::warning( "HouseLevelSpec INIT" );
 
-  _d->level_by_id.clear();
+  _d->houseTextures[ HouseLevel::vacantLot ][ "s1" ] << Picture::load( ResourceGroup::housing, vacantLotId );
+
+  /*_d->level_by_id.clear();
   _d->level_by_id[0] = 0;
   _d->level_by_id[1] = 1;
   _d->level_by_id[2] = 1;
@@ -711,16 +721,16 @@ HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
   _d->level_by_id[42] = 16; // 3x3
   _d->level_by_id[43] = 17; // 4x4
   _d->level_by_id[44] = 17; // 4x4
-  _d->level_by_id[45] = 0;
+  _d->level_by_id[45] = 0;*/
 }
 
 HouseSpecification HouseSpecHelper::getSpec(const int houseLevel)
 {
-  int level = (math::clamp)(houseLevel, 0, 17);
+  int level = math::clamp<int>(houseLevel, 0, 17);
   return _d->spec_by_level[level];
 }
 
-int HouseSpecHelper::geLevel(const int houseId){  return _d->level_by_id[houseId];}
+//int HouseSpecHelper::geLevel( const int houseId ){  return _d->level_by_id[houseId];}
 
 int HouseSpecHelper::geLevel( const std::string& name )
 {
@@ -792,6 +802,26 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
       spec._d->consumptionMuls[ GoodHelper::getType( v->first ) ] = (float)v->second;
     }
 
+    VariantMap vmTextures = hSpec.get( "txs" ).toMap();
+    foreach( it, vmTextures )
+    {
+      StringArray txNames = it->second.toStringArray();
+      foreach( tx, txNames )
+      {
+        _d->houseTextures[ spec._d->houseLevel ][ it->first ] << Picture::load( *tx );
+      }
+    }
+
     _d->spec_by_level[ spec._d->houseLevel ] = spec;
   }
+}
+
+Picture HouseSpecHelper::getPicture(int houseLevel, int size ) const
+{
+  std::string sizeStr = "s" + StringHelper::i2str( size );
+  Pictures& array = _d->houseTextures[ houseLevel ][ sizeStr ];
+
+  return array.empty()
+           ? Picture::getInvalid()
+           : array[ math::random( array.size() ) ];
 }

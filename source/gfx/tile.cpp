@@ -112,7 +112,7 @@ void Tile::setAnimation(const Animation& animation){ _animation = animation;}
 
 bool Tile::isWalkable( bool alllands ) const
 {
-  bool walkable = (_terrain.road || (alllands && !_terrain.water && !_terrain.tree && !_terrain.rock));
+  bool walkable = (_terrain.road || (alllands && !_terrain.deepWater && !_terrain.water && !_terrain.tree && !_terrain.rock));
   if( _overlay.isValid() )
   {
     walkable &= _overlay->isWalkable();

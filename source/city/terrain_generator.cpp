@@ -22,6 +22,8 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "core/direction.hpp"
+#include "objects/objects_factory.hpp"
+#include "pathway/astarpathfinding.hpp"
 
 using namespace gfx;
 
@@ -382,6 +384,107 @@ static void __finalizeMap(Game& game, int pass )
     }
 }
 
+class TerrainGeneratorHelper
+{
+public:
+  void canBuildRoad( const Tile* tile, bool& ret )
+  {
+    ret = tile->isWalkable( true ) || tile->getFlag( Tile::tlTree );
+  }
+
+  TilesArray sideTiles( int side, Tilemap& oTilemap )
+  {
+    int mapSize = oTilemap.size();
+    switch( side % 4 )
+    {
+    case 0: return oTilemap.getArea( TilePos( 0, 0), TilePos( 0, mapSize-1 ) );
+    case 1: return oTilemap.getArea( TilePos( 0, mapSize-1), TilePos( mapSize-1, mapSize-1 ) );
+    case 2: return oTilemap.getArea( TilePos( mapSize-1, mapSize-1), TilePos( mapSize-1, 0 ) );
+    case 3: return oTilemap.getArea( TilePos( mapSize-1, 0), TilePos( 0, 0 ) );
+    }
+
+    return TilesArray();
+  }
+};
+
+static void __createRoad(Game& game )
+{
+  PlayerCityPtr oCity = game.city();
+  Tilemap& oTilemap = oCity->tilemap();
+
+  Pathfinder& pathfinder = Pathfinder::instance();
+  pathfinder.update( oTilemap );
+
+  Pathway way;
+  TerrainGeneratorHelper tgHelper;
+
+  for( int side=0; side < 4; side++ )
+  {
+    TilesArray tiles = tgHelper.sideTiles( side, oTilemap );
+    tiles = tiles.walkableTiles( true );
+
+    if( tiles.empty() )
+      continue;
+
+    for( int nextSide=1; nextSide < 4; nextSide++ )
+    {
+      TilesArray otherTiles = tgHelper.sideTiles( side + nextSide, oTilemap );
+      otherTiles = otherTiles.walkableTiles( true );
+
+      if( otherTiles.empty() )
+        continue;
+
+      for( int tryCount = 0; tryCount < std::min<int>( 20, tiles.size() ); tryCount++ )
+      {
+        Tile* rtile = tiles.random();
+
+        for( int tryTileCount=0; tryTileCount < std::min<int>( 20, tiles.size() ); tryTileCount++ )
+        {
+          Tile* endTile = otherTiles.random();
+
+          pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRoad ) );
+          way = pathfinder.getPath( *rtile, *endTile, Pathfinder::customCondition | Pathfinder::fourDirection );
+
+          if( way.isValid() )
+            break;
+        }
+
+        if( way.isValid() )
+          break;
+      }
+
+      if( way.isValid() )
+        break;
+    }
+
+    if( way.isValid() )
+      break;
+  }
+
+  if( way.isValid() )
+  {
+    TilesArray wayTiles = way.allTiles();
+
+    foreach( it, wayTiles )
+    {
+      TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::construction::road );
+
+      Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+      (*it)->setPicture( pic );
+      (*it)->setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+
+      overlay->build( oCity, (*it)->pos() );
+      oCity->overlays().push_back( overlay );
+    }
+
+    BorderInfo borderInfo = oCity->borderInfo();
+
+    borderInfo.roadEntry = way.front().pos();
+    borderInfo.roadExit = way.destination().pos();
+    oCity->setBorderInfo( borderInfo );
+  }
+}
+
 void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrainSq)
 {
   MidpointDisplacement diamond_square = MidpointDisplacement(n2size, 8, 8, smooth, terrainSq);
@@ -507,4 +610,6 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   __finalizeMap( game, 8 );
   __finalizeMap( game, 9 );
   __finalizeMap( game, 0xff );
+
+  __createRoad( game );
 }
