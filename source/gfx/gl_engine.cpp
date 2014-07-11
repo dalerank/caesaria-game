@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "gl_engine.hpp"
 
@@ -34,14 +34,13 @@
 
 #ifdef CAESARIA_PLATFORM_ANDROID
 #include <GLES/gl.h>
-#include <GLES/glext.h>
-#define NO_FRAME_BUFFER
+#define glOrtho glOrthof
 #else
-#include <GL/glext.h>
 #include <SDL_opengl.h>
 #endif
 
 #ifdef GL_EXT_PROTOTYPES
+#include <GLES/glext.h>
 #define glGenFramebuffers  glGenFramebuffersEXT
 #define glGenTextures     glGenTexturesEXT
 #define glGenRendererbuffers glGenRendererbuffersEXT
@@ -50,6 +49,8 @@
 #define glRenderbufferStorage glRenderbufferStorageEXT
 #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
 #define glCheckFramebufferStatus glCheckFramebufferEXT
+#else
+#define NO_FRAME_BUFFER
 #endif
 
 #include "core/font.hpp"
@@ -93,7 +94,7 @@ void GlEngine::init()
   glDisable(GL_DEPTH_TEST); // no depth test
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrthof(0, _srcSize.width(), _srcSize.height(), 0, 0, 1);
+  glOrtho(0, _srcSize.width(), _srcSize.height(), 0, 0, 1);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   // Displacement trick for exact pixelization
