@@ -18,8 +18,10 @@
 #include "object.hpp"
 #include "core/variant.hpp"
 #include "empire.hpp"
+#include "core/logger.hpp"
 #include "gfx/animation.hpp"
 #include "core/logger.hpp"
+#include "core/stacktrace.hpp"
 
 using namespace gfx;
 
@@ -54,6 +56,13 @@ EmpirePtr Object::empire() const { return _d->empire; }
 std::string Object::name() const { return _d->name; }
 void Object::setName(const std::string& name) { _d->name = name; }
 Point Object::location() const { return _d->location;}
+
+void Object::addObject(ObjectPtr)
+{
+  Logger::warning( "!!!Object: Not available addObject() function for base object");
+  Stacktrace::print();
+}
+
 void Object::setLocation(const Point& location){  _d->location = location; }
 Picture Object::picture() const { return _d->pic; }
 
@@ -71,7 +80,7 @@ void Object::setPicture(Picture pic)
   _d->pictures[ 0 ] = pic;
 }
 
-bool Object::isMovable() const { return true; }
+bool Object::isMovable() const { return false; }
 
 void Object::save( VariantMap& stream ) const
 {
@@ -99,7 +108,6 @@ void Object::load(const VariantMap& stream)
   _d->isDeleted = stream.get( "isDeleted" );
 }
 
-void Object::initialize() {}
 Object::~Object() {}
 
 void Object::deleteLater() { _d->isDeleted = true; }

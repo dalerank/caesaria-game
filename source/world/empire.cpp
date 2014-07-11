@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 #include "traderoute.hpp"
 #include "object.hpp"
+#include "rome.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
 #include "objects_factory.hpp"
@@ -35,10 +36,6 @@
 
 namespace world
 {
-
-namespace {
-static const char* RomeCityName = "Rome";
-}
 
 class Empire::Impl
 {
@@ -86,14 +83,23 @@ CityList Empire::cities() const
 
 Empire::~Empire(){}
 
-void Empire::initialize(vfs::Path filename, vfs::Path filemap)
+void Empire::_initializeObjects( vfs::Path filename )
 {
-  VariantMap emap = SaveAdapter::load( filemap.toString() );
-  _d->emap.initialize( emap );
+  _d->objects.clear();
+  VariantMap objects = SaveAdapter::load( filename.toString() );
+  if( objects.empty() )
+  {
+    Logger::warning( "Empire: can't load objects model from %s", filename.toString().c_str() );
+    return;
+  }
+  _loadObjects( objects );
+}
 
-  _d->cities.clear();
+void Empire::_initializeCities( vfs::Path filename )
+{
   VariantMap cities = SaveAdapter::load( filename.toString() );
 
+  _d->cities.clear();
   if( cities.empty() )
   {
     Logger::warning( "Empire: can't load cities model from %s", filename.toString().c_str() );
@@ -107,6 +113,28 @@ void Empire::initialize(vfs::Path filename, vfs::Path filemap)
     city->load( item->second.toMap() );
     _d->emap.setCity( city->location() );
   }
+}
+
+void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap)
+{
+  VariantMap emap = SaveAdapter::load( filemap.toString() );
+  _d->emap.initialize( emap );
+
+  _initializeCities( citiesPath );
+  _initializeObjects( objectsPath );
+
+  //initialize capital
+  CityPtr stubRome = new Rome( this );
+  stubRome->drop();
+
+  CityPtr rome = findCity( Rome::defaultName );
+  if( rome.isValid() )
+  {
+    stubRome->setLocation( rome->location() );
+  }
+
+  _d->cities.remove( rome );
+  _d->cities.push_back( stubRome );
 }
 
 void Empire::addObject(ObjectPtr obj)
@@ -186,6 +214,19 @@ void Empire::save( VariantMap& stream ) const
   stream[ "rateInterest" ] = _d->rateInterest;
 }
 
+void Empire::_loadObjects(const VariantMap &objects)
+{
+  foreach( item, objects )
+  {
+    const VariantMap& vm = item->second.toMap();
+    std::string objectType = vm.get( "type" ).toString();
+
+    ObjectPtr obj = ObjectsFactory::instance().create( objectType, this );
+    obj->load( vm );
+    _d->objects << obj;
+  }
+}
+
 void Empire::load( const VariantMap& stream )
 {
   VariantMap cities = stream.get( "cities" ).toMap();
@@ -201,42 +242,13 @@ void Empire::load( const VariantMap& stream )
     }
   }
 
-  _d->objects.clear();
-  VariantMap objects = stream.get( "objects" ).toMap();  
-  foreach( item, objects )
-  {
-    const VariantMap& vm = item->second.toMap();
-    std::string objectType = vm.get( "type" ).toString();
-
-    ObjectPtr obj = ObjectsFactory::instance().create( objectType, this );
-    obj->load( vm );
-    _d->objects << obj;
-  }
-
-  foreach( i, _d->objects )
-  {
-    (*i)->initialize();
-  }
-
-  _d->trading.load( stream.get( "trade").toMap() );
-  _d->available = (bool)stream.get( "enabled", true );
-  _d->rateInterest = stream.get( "rateInterest", 10 );
-
-  _d->emperor.load( stream.get( "emperor" ).toMap() );
+  VariantMap objects = stream.get( "objects" ).toMap();
+  _loadObjects( objects );
 }
 
 void Empire::setCitiesAvailable(bool value)
 {
   foreach( city, _d->cities ) { (*city)->setAvailable( value ); }
-
-  CityPtr rome = findCity( RomeCityName );
-  if( rome.isValid() )
-  {
-    rome->setAvailable( true );
-    gfx::Picture pic = gfx::Picture::load( "roma", 1 );
-    pic.setOffset( 0, 30 );
-    rome->setPicture( pic );
-  }
 }
 
 unsigned int Empire::workerSalary() const {  return _d->workerSalary; }
@@ -264,7 +276,7 @@ void Empire::getPrice(Good::Type gtype, int& buy, int& sell) const
   _d->trading.getPrice( gtype, buy, sell );
 }
 
-void Empire::createTradeRoute(std::string start, std::string stop )
+TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 {
   CityPtr startCity = findCity( start );
   CityPtr stopCity = findCity( stop );
@@ -293,13 +305,13 @@ void Empire::createTradeRoute(std::string start, std::string stop )
       if( lpnts.empty() )
       {
         route->setPoints( spnts, true );
-        return;
+        return route;
       }
 
       if( spnts.empty() )
       {
         route->setPoints( lpnts, false );
-        return;
+        return route;
       }
 
       if( spnts.size() > lpnts.size() )
@@ -311,7 +323,11 @@ void Empire::createTradeRoute(std::string start, std::string stop )
         route->setPoints( spnts, true );
       }
     }
+
+    return route;
   }
+
+  return TraderoutePtr();
 }
 
 TraderoutePtr Empire::findRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
@@ -352,7 +368,7 @@ void Empire::timeStep( unsigned int time )
 const EmpireMap &Empire::map() const { return _d->emap; }
 
 Emperor& Empire::emperor() { return _d->emperor; }
-CityPtr Empire::rome() const { return findCity( RomeCityName ); }
+CityPtr Empire::rome() const { return findCity( Rome::defaultName ); }
 
 CityPtr Empire::initPlayerCity( CityPtr city )
 {
@@ -392,7 +408,9 @@ ObjectPtr Empire::findObject(const std::string& name) const
     }
   }
 
-  return ObjectPtr();
+  CityPtr city = findCity( name );
+
+  return ptr_cast<Object>( city );
 }
 
 TraderouteList Empire::tradeRoutes( const std::string& startCity ){  return _d->trading.routes( startCity );}

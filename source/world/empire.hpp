@@ -43,14 +43,14 @@ public:
   ObjectPtr findObject( const std::string& name ) const;
   void addObject( ObjectPtr obj );
 
-  void initialize( vfs::Path filename, vfs::Path filemap );
+  void initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap );
   void timeStep( unsigned int time );
 
   const EmpireMap& map() const;
   Emperor& emperor();
   CityPtr rome() const;
 
-  void createTradeRoute( std::string start, std::string stop );
+  TraderoutePtr createTradeRoute( std::string start, std::string stop );
 
   TraderoutePtr findRoute( unsigned int index );
   TraderoutePtr findRoute( const std::string& start, const std::string& stop );  
@@ -72,6 +72,9 @@ public:
 
 private:
   Empire();
+  void _loadObjects(const VariantMap& objects );
+  void _initializeObjects(vfs::Path filename);
+  void _initializeCities( vfs::Path filename );
 
   class Impl;
   ScopedPtr< Impl > _d;

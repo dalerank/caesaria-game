@@ -57,6 +57,7 @@
 #include "walker/helper.hpp"
 #include "core/osystem.hpp"
 #include "freeplay_finalizer.hpp"
+#include "events/warningmessage.hpp"
 #include "gfx/gl_engine.hpp"
 
 #include <list>
@@ -109,6 +110,7 @@ void Game::Impl::initVideo()
   Logger::warning( "GraficEngine: create" );
 
   std::string render = GameSettings::get( GameSettings::render ).toString();
+
   if( render == "opengl" ) { engine = new gfx::GlEngine(); }
   else { engine = new gfx::SdlEngine(); }
 
@@ -402,6 +404,9 @@ void Game::save(std::string filename) const
   GameSaver saver;
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
+
+  events::GameEventPtr e = events::WarningMessageEvent::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  e->dispatch();
 }
 
 void Game::load(std::string filename)
@@ -433,6 +438,7 @@ void Game::load(std::string filename)
 
   Logger::warning( "Game: init empire start options" );
   _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
+                          GameSettings::rcpath( GameSettings::empireObjectsModel ),
                           GameSettings::rcpath( GameSettings::worldModel ) );
 
   Logger::warning( "Game: try find loader" );

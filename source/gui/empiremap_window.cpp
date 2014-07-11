@@ -118,6 +118,8 @@ void EmpireMapWindow::Impl::updateCityInfo()
     else
     {
       world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( currentCity );
+      if( ccity.isNull() )
+        return;
 
       if( ccity->isDistantCity() || ccity->isRomeCity() )
       {
@@ -156,10 +158,10 @@ void EmpireMapWindow::Impl::createTradeRoute()
     unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, ourCity, currentCity->name() );
     events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::sundries, -(int)cost );
     e->dispatch();
-    empire->createTradeRoute( ourCity, currentCity->name() );
+    world::TraderoutePtr route = empire->createTradeRoute( ourCity, currentCity->name() );
 
     PlayerCityPtr plCity = ptr_cast<PlayerCity>( empire->findCity( ourCity ) );
-    if( plCity.isValid() )
+    if( plCity.isValid() && route.isValid() && route->isSeaRoute() )
     {
       city::Helper helper( plCity );
       DockList docks = helper.find<Dock>( constants::building::dock );
@@ -321,6 +323,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 
   _d->tradeInfo = new Widget( this, -1, Rect( 0, height() - 120, width(), height() ) );
 
+  _d->border->lock();
   const Picture& backgr = Picture::load( ResourceGroup::empirepnls, 4 );
   for( unsigned int y=height() - 120; y < height(); y+=backgr.height() )
   {
@@ -355,6 +358,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 
   _d->border->fill( 0x00000000, Rect( corner.width(), corner.height(), 
                                       width() - corner.width(), height() - 120 ) );
+  _d->border->unlock();
 
   _d->leftEagle = Picture::load( ResourceGroup::empirepnls, 7 );
   _d->rightEagle = Picture::load( ResourceGroup::empirepnls, 8 );

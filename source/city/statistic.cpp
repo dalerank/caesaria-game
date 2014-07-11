@@ -29,6 +29,8 @@
 #include "world/empire.hpp"
 #include "objects/warehouse.hpp"
 #include "city/cityservice_disorder.hpp"
+#include "core/time.hpp"
+#include "cityservice_health.hpp"
 #include <map>
 
 using namespace constants;
@@ -48,6 +50,13 @@ void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& ma
     workersNumber += (*bld)->numberWorkers();
     maxWorkers += (*bld)->maximumWorkers();
   }
+}
+
+float Statistic::getBalanceKoeff(PlayerCityPtr city)
+{
+  int pop = city->population();
+
+  return pop > 300 ? atan( pop / 1000.f ) : (pop / 1000.f);
 }
 
 CitizenGroup Statistic::getPopulation(PlayerCityPtr city)
@@ -82,7 +91,7 @@ unsigned int Statistic::getAvailableWorkersNumber(PlayerCityPtr city)
   return workersNumber;
 }
 
-unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
+unsigned int Statistic::getMonthlyWorkersWages(PlayerCityPtr city)
 {
   int workersNumber, maxWorkers;
   getWorkersNumber( city, workersNumber, maxWorkers );
@@ -92,11 +101,16 @@ unsigned int Statistic::getMontlyWorkersWages(PlayerCityPtr city)
 
   //wages all worker in year
   //workers take salary in sestertius 1/100 part of dinarius
-  int wages = workersNumber * city->funds().workerSalary() / 100;
+  int wages = workersNumber * getMonthlyOneWorkerWages( city );
 
   wages = std::max<int>( wages, 1 );
 
   return wages;
+}
+
+float Statistic::getMonthlyOneWorkerWages(PlayerCityPtr city)
+{
+  return city->funds().workerSalary() / (10 * DateTime::monthsInYear);
 }
 
 unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
@@ -177,6 +191,12 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   }
 
   return taxValue;
+}
+
+unsigned int Statistic::getHealth(PlayerCityPtr city)
+{
+  SmartPtr<HealthCare> hc = ptr_cast<HealthCare>( city->findService( HealthCare::defaultName() ) );
+  return hc.isValid() ? hc->value() : 0;
 }
 
 int Statistic::getWagesDiff(PlayerCityPtr city)

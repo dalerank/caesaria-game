@@ -173,17 +173,17 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   return walkers;
 }
 
-BuildingList RomeSoldier ::_findBuildingsInRange(unsigned int) { return BuildingList(); }
+ConstructionList RomeSoldier::_findContructionsInRange(unsigned int) { return ConstructionList(); }
 
 
 bool RomeSoldier::_tryAttack()
 {
-  BuildingList buildings = _findBuildingsInRange( attackDistance() );
+  ConstructionList constructions = _findContructionsInRange( attackDistance() );
   TilePos targetPos;
-  if( !buildings.empty() )
+  if( !constructions.empty() )
   {
     _setSubAction( Soldier::destroyBuilding );
-    targetPos = buildings.front()->pos();
+    targetPos = constructions.front()->pos();
     fight();
   }
   else

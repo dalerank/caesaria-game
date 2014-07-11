@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_CONSTRUCTION_H_INCLUDE_
 #define _CAESARIA_CONSTRUCTION_H_INCLUDE_
@@ -52,7 +53,7 @@ public:
 
   virtual void updateState( ParameterType name, double value );
   virtual void setState( ParameterType name, double value );
-  virtual double getState( ParameterType name ) const;
+  virtual double state( ParameterType name ) const;
 
   virtual void timeStep(const unsigned long time);
   virtual const gfx::Picture& picture() const;

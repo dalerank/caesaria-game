@@ -27,7 +27,6 @@ public:
   static ChastenerPtr create( PlayerCityPtr city,
                               constants::walker::Type type=constants::walker::romeHorseman );
 
-  //void send2city( FortPtr base, TilePos pos );
   virtual int agressive() const;
   virtual bool die();
 

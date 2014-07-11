@@ -44,7 +44,6 @@ struct MovableOrders
 class TilemapCamera::Impl
 {
 public:
-  TilePos center;
   Size screenSize;
   Size borderSize;
   Point offset;
@@ -68,7 +67,6 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->tilemap = NULL;
   _d->scrollSpeed = 4;
   _d->viewSize = Size( 0 );
-  _d->center = TilePos( 0, 0 );
   _d->screenSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
   _d->borderSize = Size( 90 );
@@ -100,8 +98,6 @@ void TilemapCamera::setViewport(Size newSize)
 
 void TilemapCamera::setCenter(TilePos pos )
 {
-  _d->center = pos;
-
   setCenter( Point( pos.i() + pos.j(), _d->tilemap->size() - 1 + pos.j() - pos.i() ) );
 
   oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
@@ -137,13 +133,17 @@ void TilemapCamera::setCenter(Point pos)
   oc3_emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
 
+TilePos TilemapCamera::center() const
+{
+  Tile* tile = centerTile();
+  return tile ? tile->pos() : TilePos( -1, -1 );
+}
+
 int TilemapCamera::centerX() const  {   return _d->centerMapXZ.x();   }
 int TilemapCamera::centerZ() const  {   return _d->centerMapXZ.y();   }
-TilePos TilemapCamera::center() const  {   return _d->center;   }
 void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }
 int TilemapCamera::scrollSpeed() const{ return _d->scrollSpeed; }
 Tile* TilemapCamera::at(const Point& pos, bool overborder) const {  return _d->tilemap->at( pos - _d->offset, overborder );}
-
 Tile* TilemapCamera::at(const TilePos& pos) const { return &_d->tilemap->at( pos ); }
 Signal1<Point>& TilemapCamera::onPositionChanged(){  return _d->onPositionChangedSignal;}
 void TilemapCamera::moveRight(const int amount){  setCenter( Point( centerX() + amount, centerZ() ) );}
@@ -151,11 +151,7 @@ void TilemapCamera::moveLeft(const int amount){  setCenter( Point( centerX() - a
 void TilemapCamera::moveUp(const int amount){  setCenter( Point( centerX(), centerZ() + amount ) );}
 void TilemapCamera::moveDown(const int amount){  setCenter( Point( centerX(), centerZ() - amount ) );}
 void TilemapCamera::startFrame(){  _d->resetDrawn(); }
-
-void TilemapCamera::refresh()
-{
-  _d->tiles.clear();
-}
+void TilemapCamera::refresh(){  _d->tiles.clear(); }
 
 Tile* TilemapCamera::centerTile() const
 {

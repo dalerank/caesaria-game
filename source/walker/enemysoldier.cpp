@@ -41,7 +41,7 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-static unsigned int __getCost( BuildingPtr b )
+static unsigned int __getCost( ConstructionPtr b )
 {
   return MetaDataHolder::getData( b->type() ).getOption( MetaDataOptions::cost );
 }
@@ -53,7 +53,13 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
   _setSubAction( check4attack );
   setAttackPriority( attackAll );
   setAttackDistance( 1 );
+
+  _atExclude << building::disasterGroup
+             << building::roadGroup
+             << building::gardenGroup;
 }
+
+Priorities<int>&EnemySoldier::_excludeAttack() {  return _atExclude; }
 
 bool EnemySoldier::_tryAttack()
 {
@@ -68,11 +74,11 @@ bool EnemySoldier::_tryAttack()
   }
   else
   {
-    BuildingList buildings = _findBuildingsInRange( attackDistance() );
-    if( !buildings.empty() )
+    ConstructionList constructions = _findContructionsInRange( attackDistance() );
+    if( !constructions.empty() )
     {
       _setSubAction( Soldier::destroyBuilding );
-      targetPos = buildings.front()->pos();
+      targetPos = constructions.front()->pos();
       fight();
     }
   }
@@ -213,14 +219,10 @@ void EnemySoldier::_check4attack()
   }
 }
 
-BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
+ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
 {
-  BuildingList ret;
+  ConstructionList ret;
   Tilemap& tmap = _city()->tilemap();
-
-  std::set<TileOverlay::Group> excludeGroups;
-  excludeGroups.insert( building::disasterGroup );
-  excludeGroups.insert( building::roadGroup );
 
   for( unsigned int k=0; k <= range; k++ )
   {
@@ -228,8 +230,8 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
 
     foreach( it, tiles )
     {
-      BuildingPtr b = ptr_cast<Building>( (*it)->overlay() );
-      if( b.isValid() && !excludeGroups.count( b->group() ) )
+      ConstructionPtr b = ptr_cast<Construction>( (*it)->overlay() );
+      if( b.isValid() && !_atExclude.count( b->group() ) )
       {
         ret.push_back( b );
       }
@@ -245,7 +247,7 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
   case attackCitizen:
   case attackIndustry:
   {
-    BuildingList tmpRet;
+    ConstructionList tmpRet;
     TileOverlay::Group needGroup;
     switch( _atPriority )
     {
@@ -270,7 +272,7 @@ BuildingList EnemySoldier::_findBuildingsInRange( unsigned int range )
 
   case attackBestBuilding:
   {
-    BuildingPtr maxBuilding = ret.front();
+    ConstructionPtr maxBuilding = ret.front();
     unsigned int maxCost = __getCost( maxBuilding );
 
     foreach( it, ret )
@@ -305,9 +307,9 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
 
   for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
   {
-    BuildingList buildings = _findBuildingsInRange( tmpRange );
+    ConstructionList constructions = _findContructionsInRange( tmpRange );
 
-    foreach( it, buildings )
+    foreach( it, constructions )
     {
       ConstructionPtr c = ptr_cast<Construction>( *it );
       ret = PathwayHelper::create( pos(), c, PathwayHelper::allTerrain );
@@ -369,11 +371,11 @@ void EnemySoldier::timeStep(const unsigned long time)
 
   case destroyBuilding:
   {
-    BuildingList buildings = _findBuildingsInRange( attackDistance() );
+    ConstructionList constructions = _findContructionsInRange( attackDistance() );
 
-    if( !buildings.empty() )
+    if( !constructions.empty() )
     {
-      BuildingPtr b = buildings.front();
+      ConstructionPtr b = constructions.front();
 
       turn( b->pos() );
       b->updateState( Construction::damage, 1 );

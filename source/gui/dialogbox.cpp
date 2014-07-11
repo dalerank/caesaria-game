@@ -97,13 +97,13 @@ bool DialogBox::onEvent( const NEvent& event )
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     int id = event.gui.caller->getID();
-    _d->onResultSignal.emit( id );
+    oc3_emit _d->onResultSignal( id );
 
     switch( id )
     {
-    case btnOk: _d->onOkSignal.emit(); break;
-    case btnCancel: _d->onCancelSignal.emit(); break;
-    case btnNever: _d->onNeverSignal.emit(); break;
+    case btnOk: oc3_emit _d->onOkSignal(); break;
+    case btnCancel: oc3_emit _d->onCancelSignal(); break;
+    case btnNever: oc3_emit _d->onNeverSignal(); break;
     }
 
     return true;

@@ -80,7 +80,7 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
     case building::house:
       {
         HousePtr house = ptr_cast<House>( overlay );
-        fireLevel = (int)house->getState( Construction::fire );
+        fireLevel = (int)house->state( Construction::fire );
         needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
         city::Helper helper( _city() );
@@ -94,7 +94,7 @@ void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
         ConstructionPtr constr = ptr_cast<Construction>( overlay );
         if( constr != 0 )
         {
-          fireLevel = (int)constr->getState( Construction::fire );
+          fireLevel = (int)constr->state( Construction::fire );
         }
 
         city::Helper helper( _city() );
@@ -132,7 +132,7 @@ void LayerFire::handleEvent(NEvent& event)
         ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
         if( constr != 0 )
         {
-          int fireLevel = math::clamp<int>( constr->getState( Construction::fire ), 0, 100 );
+          int fireLevel = math::clamp<int>( constr->state( Construction::fire ), 0, 100 );
           text = fireLevelName[ math::clamp( fireLevel / 16, 0, 5 ) ];
         }
       }

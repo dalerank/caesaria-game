@@ -62,6 +62,7 @@ __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
 __REG_PROPERTY(rectuterDistance)
 __REG_PROPERTY(render)
+__REG_PROPERTY(empireObjectsModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -100,12 +101,13 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
   _d->options[ walkerModel         ] = Variant( std::string( "/walker.model" ) );
   _d->options[ animationsModel     ] = Variant( std::string( "/animations.model" ) );
+  _d->options[ empireObjectsModel  ] = Variant( std::string( "/empire_objects.model" ) );
   _d->options[ giftsModel          ] = Variant( std::string( "/gifts.model" ) );
   _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
   _d->options[ testArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );
   _d->options[ needAcceptBuild     ] = false;
-  _d->options[ render              ] = "opengl";
+  _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;

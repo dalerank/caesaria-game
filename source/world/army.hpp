@@ -19,13 +19,13 @@
 #define __CAESARIA_ARMY_H_INCLUDED__
 
 #include "predefinitions.hpp"
-#include "object.hpp"
+#include "movableobject.hpp"
 #include "core/variant.hpp"
 
 namespace world
 {
 
-class Army : public Object
+class Army : public MovableObject
 {
 public:
   static ArmyPtr create( EmpirePtr empire );
@@ -37,12 +37,8 @@ public:
   virtual void setBase( CityPtr base);
   virtual void attack( ObjectPtr obj );
 
-  virtual gfx::Picture picture() const;
-
-  virtual void timeStep(const unsigned int time);
-  virtual void initialize();
-
 protected:
+  void _reachedWay();
   Army( EmpirePtr empire );
 
 private: 

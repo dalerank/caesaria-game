@@ -41,6 +41,7 @@ class Tile
     bool elevation;
     bool rubble;
     bool wall;
+    bool coast;
     bool deepWater;
     int  desirability;
     int  watersrvc;
@@ -58,7 +59,7 @@ class Tile
 public:
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlBuilding,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
-                 isConstructible, isDestructible, tlRift, clearAll,
+                 isConstructible, isDestructible, tlRift, tlCoast, clearAll,
                  wasDrawn } Type;
 
   explicit Tile(const TilePos& pos);

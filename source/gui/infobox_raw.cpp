@@ -57,8 +57,8 @@ InfoboxRawMaterial::InfoboxRawMaterial( Widget* parent, const Tile& tile )
   if( lbDamage != NULL )
   {
     std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
-                                            (int)rawmb->getState( Construction::damage ),
-                                            (int)rawmb->getState( Construction::fire ) );
+                                            (int)rawmb->state( Construction::damage ),
+                                            (int)rawmb->state( Construction::fire ) );
     lbDamage->setText( text );
   }
 

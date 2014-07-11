@@ -78,13 +78,6 @@ HirePriorities Helper::getHirePriorities() const
   return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 
-float Helper::getBalanceKoeff()
-{
-  int pop = _city->population();
-
-  return pop > 300 ? atan( pop / 1000.f ) : (pop / 1000.f);
-}
-
 void Helper::updateTilePics()
 {
   TilesArray tiles = _city->tilemap().getArea( TilePos( 0, 0 ), Size( _city->tilemap().size() ) );

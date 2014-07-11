@@ -30,6 +30,7 @@ public:
   unsigned int count( Age group ) const;
 
   CitizenGroup retrieve( unsigned int count );
+  CitizenGroup retrieve( Age group, unsigned int count );
 
   unsigned int &operator []( unsigned int age);
   CitizenGroup& operator += ( const CitizenGroup& b );

@@ -80,16 +80,16 @@ public:
     city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
     if( gr.isValid() )
     {
-      font.draw( *pic, StringHelper::format( 0xff, "%d", gr->getQty() ), 2, 2 );
+      font.draw( *pic, StringHelper::format( 0xff, "%d", gr->qty() ), 2, 2 );
 
-      Picture goodPicture = GoodHelper::getPicture( gr->getGoodType() );
+      Picture goodPicture = GoodHelper::getPicture( gr->goodType() );
       pic->draw( goodPicture, Point( 40, 2 ), false );
 
-      font.draw( *pic, GoodHelper::getTypeName( gr->getGoodType() ), 60, 2 );
+      font.draw( *pic, GoodHelper::getTypeName( gr->goodType() ), 60, 2 );
 
       int month2comply = GameDate::current().monthsTo( gr->finishedDate() );
       font.draw( *pic, StringHelper::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
-      font.draw( *pic, gr->getDescription(), 5, pic->height() - 20 );
+      font.draw( *pic, gr->description(), 5, pic->height() - 20 );
     }
   }
 
@@ -97,7 +97,7 @@ public oc3_signals:
   Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
-  void _acceptRequest()  { _onExecRequestSignal.emit( _request );  }
+  void _acceptRequest()  { oc3_emit _onExecRequestSignal( _request );  }
 
   void _executeRequest()
   {

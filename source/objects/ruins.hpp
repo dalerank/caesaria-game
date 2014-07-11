@@ -30,9 +30,11 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  void afterBuild() { _alsoBuilt=false; }
 
 protected:
   std::string _parent;
+  bool _alsoBuilt;
 };
 
 class BurningRuins : public Ruins
@@ -76,8 +78,10 @@ public:
 
   virtual void burn();
   virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual void collapse();
 
   virtual bool isWalkable() const;
+  virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
 };
 

@@ -25,15 +25,6 @@
   empire : {
     enabled : true
 
-    objects : {
-      ship : {
-        location : [ 709, 604 ]
-        name : "ship"
-        picture : "empire_bits_00112"
-      }
-
-    }
-
     cities :
     {
       Brundisium : {

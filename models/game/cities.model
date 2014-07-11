@@ -11,7 +11,7 @@
   }
 
   Rome : {
-    location : [ 870, 545 ]
+    location : [ 750, 510 ]
     sea : false
     land : false
   }

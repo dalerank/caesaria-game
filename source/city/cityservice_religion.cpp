@@ -68,7 +68,7 @@ SrvcPtr Religion::create(PlayerCityPtr city)
   return ret;
 }
 
-std::string Religion::defaultName() { return "religion"; }
+std::string Religion::defaultName() { return CAESARIA_STR_EXT(Religion); }
 
 Religion::Religion(PlayerCityPtr city )
   : Srvc( *city.object(), Religion::defaultName() ), _d( new Impl )

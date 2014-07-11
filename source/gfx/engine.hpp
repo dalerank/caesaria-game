@@ -33,7 +33,7 @@ public:
   typedef Size Mode;
   typedef std::vector<Size> Modes;
 
-  typedef enum { fullscreen=0, debugInfo } Flags;
+  typedef enum { fullscreen=0, debugInfo, effects } Flags;
   static Engine& instance();
 
   Engine();

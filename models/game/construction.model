@@ -135,6 +135,7 @@
     employers : 16
     class : "military"
     sound : [ "fort", 1 ]
+    requestDestroy : true
   },
 
   mission_post : {
@@ -169,6 +170,7 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    requestDestroy : true
   }, 
 
   fort_horse : {
@@ -176,6 +178,7 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    requestDestroy : true
   }, 
 
   clinic : {
@@ -310,6 +313,9 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    image : [ "smlmars", 1 ]
+    image.offset : [-1, -1]
+    animation : { rc : "smlmars", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templemars", 1 ]
   },
 
@@ -318,6 +324,9 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    image : [ "smlvenus", 1 ]
+    image.offset : [-1, -1]
+    animation : { rc : "smlvenus", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
     sound : [ "templevenus", 1 ]
   },
  
@@ -442,6 +451,7 @@
     desirability : { base : 0,	range : 0,	step : 0 }
     employers : 0
     class : "bridge"
+    requestDestroy : true
   }, 
   
   high_bridge : {
@@ -449,6 +459,7 @@
     desirability : { base : 0,	range : 0,	step : 0 }
     employers : 0
     class : "bridge"
+    requestDestroy : true
   },
 
   senate_1 : {

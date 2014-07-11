@@ -109,7 +109,7 @@ void SdlEngine::init()
     THROW("Unable to initialize SDL: " << SDL_GetError());
   }
 
-  unsigned int flags = SDL_DOUBLEBUF | SDL_HWSURFACE;
+  unsigned int flags = SDL_DOUBLEBUF;
   flags |= (getFlag( Engine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
   int systemBpp = screenBpp32;
     
@@ -120,6 +120,8 @@ void SdlEngine::init()
   nsappload = (void(*)()) dlsym( cocoa_lib, "NSApplicationLoad" );
   nsappload();
   systemBpp = screenBpp24;
+#elif defined(CAESARIA_PLATFORM_ANDROID)
+  systemBpp = 16;
 #endif
  
   Logger::warning( StringHelper::format( 0xff, "GrafixEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );

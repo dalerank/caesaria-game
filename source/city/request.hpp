@@ -46,7 +46,7 @@ public:
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
-  virtual std::string getDescription() const{  return ""; }
+  virtual std::string description() const{  return ""; }
 
 protected:
   bool _isDeleted, _isAnnounced;
@@ -70,9 +70,9 @@ public:
   virtual void success( PlayerCityPtr city );
   virtual void fail( PlayerCityPtr city );
 
-  int getQty() const;
-  Good::Type getGoodType() const;
-  virtual std::string getDescription() const;
+  int qty() const;
+  Good::Type goodType() const;
+  virtual std::string description() const;
 
   static std::string typeName();
 private:

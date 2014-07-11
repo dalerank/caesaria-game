@@ -58,7 +58,7 @@ void Engineer::_centerTile()
   {
     if( !_d->_reachedBuildings.count( *b ) )
     {
-      int damageLvl = (*b)->getState( Construction::damage );
+      int damageLvl = (*b)->state( Construction::damage );
       _d->averageLevel = ( _d->averageLevel + damageLvl ) / 2;
       _d->_reachedBuildings.insert( *b );
     }

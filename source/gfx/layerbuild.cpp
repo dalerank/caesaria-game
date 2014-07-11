@@ -402,13 +402,14 @@ void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 
     registerTileForRendering( tile );
 
-    /*if( csCheckCast<Fortification>( tile.getOverlay() ) )
+    /*if( !tile.picture().isValid() )
     {
-      GfxSdlEngine* e = static_cast< GfxSdlEngine* >( &GfxEngine::instance());
-      Font f = Font::create( FONT_2 );
-      f.setColor( 0xffff0000 );
-      int df = tile.getOverlay().as<Fortification>()->getDirection();
-      f.draw( e->getScreen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
+      static Font _debugFont = Font::create( FONT_2 );
+      static Picture* pic = Picture::create( Size( 200, 30 ));
+      pic->fill( 0, Rect() );
+      std::string debugText = StringHelper::format( 0xff, "%x", tile.originalImgId() );
+      _debugFont.draw( *pic, debugText, 0, 0, true );
+      engine.draw( *pic, screenPos + Point( 20, -80 ) );
     }*/
   }
 

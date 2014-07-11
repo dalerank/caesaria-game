@@ -14,8 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012 Dalerank, dalerankn7@gmail.com
-
+// Copyright 2012-2014 Dalerank, dalerankn7@gmail.com
 
 #include "construction.hpp"
 
@@ -72,8 +71,8 @@ std::string Construction::troubleDesc() const
   }
 
   int lvlTrouble = 0;
-  int damage = getState( Construction::fire );
-  int fire = getState( Construction::damage );
+  int damage = state( Construction::fire );
+  int fire = state( Construction::damage );
 
   if( fire > 50 || damage > 50 )
   {
@@ -157,7 +156,7 @@ void Construction::setState( ParameterType param, double value)
 
 void Construction::updateState(Construction::ParameterType name, double value)
 {
-  setState( name, getState( name ) + value );
+  setState( name, state( name ) + value );
 }
 
 void Construction::save( VariantMap& stream) const
@@ -188,7 +187,7 @@ void Construction::addExtension(ConstructionExtensionPtr ext)
   _d->extensions.push_back( ext );
 }
 
-double Construction::getState( ParameterType param) const { return _d->params[ param ]; }
+double Construction::state( ParameterType param) const { return _d->params[ param ]; }
 
 TilesArray Construction::enterArea() const
 {
@@ -202,11 +201,11 @@ TilesArray Construction::enterArea() const
 
 void Construction::timeStep(const unsigned long time)
 {
-  if( getState( Construction::damage ) >= 100 )
+  if( state( Construction::damage ) >= 100 )
   {    
     collapse();
   }
-  else if( getState( Construction::fire ) >= 100 )
+  else if( state( Construction::fire ) >= 100 )
   {
     burn();
   }

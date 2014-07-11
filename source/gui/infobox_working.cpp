@@ -45,8 +45,8 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
   setText( "" );
 
   std::string text = StringHelper::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)_working->getState( Construction::damage ),
-                                           (int)_working->getState( Construction::fire ));
+                                           (int)_working->state( Construction::damage ),
+                                           (int)_working->state( Construction::fire ));
   if( is_kind_of<ServiceBuilding>( _working ) )
   {
     ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );

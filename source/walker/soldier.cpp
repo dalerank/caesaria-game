@@ -34,6 +34,7 @@ public:
   Soldier::SldrAction action;
   float strikeForce;
   float resistance;
+
   unsigned int attackDistance;
   int morale;
 

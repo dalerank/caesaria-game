@@ -25,8 +25,8 @@
 #include "events/build.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
-#include "walker/dustcloud.hpp"
 #include "game/gamedate.hpp"
+#include "walker/dustcloud.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -67,17 +67,17 @@ void BurningRuins::timeStep(const unsigned long time)
       }
     }
 
-    if( getState( Construction::fire ) > 0 )
+    if( state( Construction::fire ) > 0 )
     {
       updateState( Construction::fire, -1 );
-      if( getState( Construction::fire ) == 50 )
+      if( state( Construction::fire ) == 50 )
       {
         setPicture( ResourceGroup::land2a, 214 );
         _animationRef().clear();
         _animationRef().load( ResourceGroup::land2a, 215, 8);
         _animationRef().setOffset( Point( 14, 26 ) );
       }
-      else if( getState( Construction::fire ) == 25 )
+      else if( state( Construction::fire ) == 25 )
       {
         setPicture( ResourceGroup::land2a, 223 );
         _animationRef().clear();
@@ -123,14 +123,14 @@ void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
   tile().setFlag( Tile::tlRock, true );
 }   
 
-bool BurningRuins::isWalkable() const{  return (getState( Construction::fire ) == 0);}
+bool BurningRuins::isWalkable() const{  return (state( Construction::fire ) == 0);}
 bool BurningRuins::isDestructible() const{  return isWalkable();}
 
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
   if ( Service::prefect == walker->serviceType() )
   {
-    return getState( Construction::fire );
+    return state( Construction::fire );
   }
 
   return 0;
@@ -186,10 +186,15 @@ void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
   tile().setFlag( Tile::tlRoad, false );
   setPicture( ResourceGroup::land2a, 111 + math::random( 8 ) );
 
-  DustCloud::create( city, pos, 4 );
+  if( !_alsoBuilt )
+  {
+    DustCloud::create( _city(), pos, 4 );
+  }
 }
 
+void CollapsedRuins::collapse() {}
 bool CollapsedRuins::isWalkable() const{  return true;}
+bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoadAccess() const{  return false;}
 
 PlagueRuins::PlagueRuins() : Ruins( building::plagueRuins )
@@ -211,17 +216,17 @@ void PlagueRuins::timeStep(const unsigned long time)
 
   if( GameDate::isDayChanged() )
   {
-    if( getState( Construction::fire ) > 0 )
+    if( state( Construction::fire ) > 0 )
     {
       updateState( Construction::fire, -1 );
-      if( getState( Construction::fire ) == 50 )
+      if( state( Construction::fire ) == 50 )
       {
         setPicture( ResourceGroup::land2a, 214 );
         _animationRef().clear();
         _animationRef().load( ResourceGroup::land2a, 215, 8);
         _animationRef().setOffset( Point( 14, 26 ) );
       }
-      else if( getState( Construction::fire ) == 25 )
+      else if( state( Construction::fire ) == 25 )
       {
         setPicture( ResourceGroup::land2a, 223 );
         _animationRef().clear();
@@ -262,11 +267,11 @@ void PlagueRuins::build(PlayerCityPtr city, const TilePos& pos )
   tile().setFlag( Tile::tlRock, true );
 }
 
-bool PlagueRuins::isWalkable() const{  return (getState( Construction::fire ) == 0);}
+bool PlagueRuins::isWalkable() const{  return (state( Construction::fire ) == 0);}
 bool PlagueRuins::isNeedRoadAccess() const{  return false;}
 
 Ruins::Ruins(building::Type type)
-  : Building( type, Size(1) )
+  : Building( type, Size(1) ), _alsoBuilt( true )
 {
 
 }

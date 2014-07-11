@@ -205,7 +205,7 @@ void InfoboxSimple::_updateWorkersLabel(const Point &pos, int picId, int need, i
   std::string text = StringHelper::format( 0xff, "%d %s (%d %s)",
                                            have, _("##employers##"),
                                            need, _("##requierd##") );
-  _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), pos );
+  _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );
   _d->lbBlackFrame->setText( text );
   _d->lbBlackFrame->setTextOffset( Point( pos.x() + 30, 0 ) );
 }

@@ -85,20 +85,27 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
     {
       int tileNumber = 0;
       bool haveWater = tile.waterService( WTR_FONTAIN ) > 0 || tile.waterService( WTR_WELL ) > 0;
+      needDrawAnimations = false;
+
       if ( overlay->type() == building::house )
       {
         HousePtr h = ptr_cast<House>( overlay );
+        needDrawAnimations = (h->spec().level() == 1) && h->habitants().empty();
+
         tileNumber = OverlayPic::inHouse;
         haveWater = haveWater || h->hasServiceAccess(Service::fountain) || h->hasServiceAccess(Service::well);
       }
-      tileNumber += (haveWater ? OverlayPic::haveWater : 0);
-      tileNumber += tile.waterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
-      city::Helper helper( _city() );
-      drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
+      if( !needDrawAnimations )
+      {
+        tileNumber += (haveWater ? OverlayPic::haveWater : 0);
+        tileNumber += tile.waterService( WTR_RESERVOIR ) > 0 ? OverlayPic::reservoirRange : 0;
 
-      areaSize = 0;
-      needDrawAnimations = false;
+        city::Helper helper( _city() );
+        drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
+
+        areaSize = 0;
+      }
     }
     break;
     }

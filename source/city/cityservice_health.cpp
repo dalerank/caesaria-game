@@ -68,12 +68,14 @@ void HealthCare::update( const unsigned int time )
     _d->minHealthLevel = 0;
     foreach( house, houses )
     {
-      unsigned int hLvl = (*house)->getState( (Construction::Param)House::health );
+      unsigned int hLvl = (*house)->state( (Construction::Param)House::health );
       _d->value = ( _d->value + hLvl ) / 2;
     }
   }
   //unsigned int vacantPop=0;
 }
+
+unsigned int HealthCare::value() const { return _d->value; }
 
 std::string HealthCare::reason() const
 {

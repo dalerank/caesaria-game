@@ -40,6 +40,7 @@ public:
   virtual bool isNeedRoadAccess() const;
   virtual float evaluateTrainee( constants::walker::Type traineeType);
   virtual void timeStep(const unsigned long time);
+  virtual bool canDestroy() const;
 
   virtual TroopsFormation formation() const;
   virtual void setFormation( TroopsFormation formation );

@@ -84,7 +84,7 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
       {
         city::Helper helper( _city() );        
         HousePtr house = ptr_cast<House>( overlay );
-        foodLevel = (int) house->getState( (Construction::Param)House::food );
+        foodLevel = (int) house->state( (Construction::Param)House::food );
         needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
         if( !needDrawAnimations )
         {

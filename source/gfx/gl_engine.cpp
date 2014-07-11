@@ -25,18 +25,33 @@
 #include <vector>
 #include <SDL.h>
 #include <SDL_ttf.h>
-
 #include "core/logger.hpp"
 #include "core/exception.hpp"
 #include "picture.hpp"
 #include "core/position.hpp"
 #include "core/eventconverter.hpp"
 #include "core/foreach.hpp"
+
 #ifdef CAESARIA_PLATFORM_ANDROID
 #include <GLES/gl.h>
+#include <GLES/glext.h>
+#define NO_FRAME_BUFFER
 #else
+#include <GL/glext.h>
 #include <SDL_opengl.h>
 #endif
+
+#ifdef GL_EXT_PROTOTYPES
+#define glGenFramebuffers  glGenFramebuffersEXT
+#define glGenTextures     glGenTexturesEXT
+#define glGenRendererbuffers glGenRendererbuffersEXT
+#define glBindFramebuffer glBindFramebufferEXT
+#define glBindRenderbuffer glBindRendererbufferEXT
+#define glRenderbufferStorage glRenderbufferStorageEXT
+#define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+#define glCheckFramebufferStatus glCheckFramebufferEXT
+#endif
+
 #include "core/font.hpp"
 #include "pictureconverter.hpp"
 #include "core/stringhelper.hpp"
@@ -50,12 +65,11 @@ GlEngine::GlEngine() : Engine()
 {
 }
 
-GlEngine::~GlEngine()
-{ }
-
+GlEngine::~GlEngine() {}
 
 void GlEngine::init()
 {
+  setFlag( Engine::effects, 1 );
   _rmask = _gmask = _bmask = _amask = 1.f;
   int rc;
   rc = SDL_Init(SDL_INIT_VIDEO);
@@ -89,6 +103,12 @@ void GlEngine::init()
 
   Logger::warning( "GrafixEngine: set caption");
   SDL_WM_SetCaption( "CaesarIA: OGL "CAESARIA_VERSION, 0 );
+
+  //!!!!!
+  if( getFlag( Engine::effects ) > 0 )
+  {
+    _initFramebuffer();
+  }
 }
 
 
@@ -119,6 +139,87 @@ Picture* GlEngine::createPicture(const Size& size )
 
 Picture& GlEngine::screen(){  return _screen; }
 
+void GlEngine::_initFramebuffer()
+{
+#ifndef NO_FRAME_BUFFER
+
+#ifndef GL_DRAW_FRAMEBUFFER
+  #define GL_DRAW_FRAMEBUFFER               0x8CA9
+#endif
+
+  glGenFramebuffers(1, &_framebuffer);
+  glGenTextures(1, &_colorbuffer);
+  glGenRenderbuffers(1, &_depthbuffer);
+
+  glBindFramebuffer(GL_FRAMEBUFFER_EXT, _framebuffer);
+
+  glBindTexture(GL_TEXTURE_2D, _colorbuffer);
+  glTexImage2D(	GL_TEXTURE_2D,
+                0,
+                GL_RGBA,
+                _srcSize.width(), _srcSize.height(),
+                0,
+                GL_RGBA,
+                GL_UNSIGNED_BYTE,
+                NULL);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, _colorbuffer, 0);
+
+  glBindRenderbuffer(GL_RENDERBUFFER_EXT, _depthbuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _srcSize.width(), _srcSize.height());
+  glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, _depthbuffer);
+  int st1 = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+  if(st1==GL_FRAMEBUFFER_COMPLETE_EXT)
+  {
+    Logger::warning( "Init framebuffer so good ");
+  }
+  else
+  {
+     if(st1==GL_FRAMEBUFFER_UNSUPPORTED_EXT)
+     {
+       setFlag( effects, 0 );
+       Logger::warning("Init framebuffer failde");
+     }
+  }
+#endif
+}
+
+void GlEngine::_drawFramebuffer()
+{
+#ifndef NO_FRAME_BUFFER
+  // Bind default framebuffer and draw contents of our framebuffer
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+  glLoadIdentity();
+  glMatrixMode(GL_MODELVIEW);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
+
+  float x0 =0;
+  float x1 = x0+_srcSize.width();
+  float y0 = 0;
+  float y1 = y0+_srcSize.height();
+
+  glBindTexture(GL_TEXTURE_2D, _colorbuffer);
+
+  glBegin( GL_QUADS );
+
+  glTexCoord2i( 0, 1 );
+  glVertex2f( x0, y0 );
+
+  glTexCoord2i( 0, 0 );
+  glVertex2f( x0, y1 );
+
+  glTexCoord2i( 1, 0 );
+  glVertex2f( x1, y1 );
+
+  glTexCoord2i( 1, 1 );
+  glVertex2f( x1, y0 );
+
+  glEnd();
+#endif
+}
+
 Point GlEngine::cursorPos() const
 {
   int x,y;
@@ -127,7 +228,7 @@ Point GlEngine::cursorPos() const
   return Point( x, y );
 }
 
-void GlEngine::unloadPicture(Picture &ioPicture)
+void GlEngine::unloadPicture(Picture& ioPicture)
 {
   GLuint& texture( ioPicture.textureID() );
   glDeleteTextures(1, &texture );
@@ -194,40 +295,51 @@ void GlEngine::loadPicture(Picture& ioPicture)
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-   // Edit the texture object's image data using the information SDL_Surface gives us
-   glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, pot_surface->w, pot_surface->h, 0,
-                 texture_format, GL_UNSIGNED_BYTE, pot_surface->pixels );
+  // Edit the texture object's image data using the information SDL_Surface gives us
+  glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, pot_surface->w, pot_surface->h, 0,
+                texture_format, GL_UNSIGNED_BYTE, pot_surface->pixels );
 }
 
 
 void GlEngine::startRenderFrame()
 {
-  glClear(GL_COLOR_BUFFER_BIT);  // black screen
+#ifndef NO_FRAME_BUFFER
+  if( getFlag( Engine::effects ) > 0 )
+  {
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _framebuffer);
+  }
+#endif
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
 }
 
 void GlEngine::endRenderFrame()
 { 
-   if( getFlag( debugInfo ) )
-   {
-     static Font _debugFont = Font::create( FONT_2 );
-     static Picture* pic = Picture::create( Size( 160, 30 ));
-     std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
-     _debugFont.draw( *pic, debugText, 0, 0, true );
-     draw( *pic, _screen.width() / 2, 2 );
-   }
+  if( getFlag( debugInfo ) )
+  {
+    static Font _debugFont = Font::create( FONT_2 );
+    static Picture* pic = Picture::create( Size( 160, 30 ));
+    std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
+    _debugFont.draw( *pic, debugText, 0, 0, true );
+    draw( *pic, _screen.width() / 2, 2 );
+  }
 
-   glFlush();
-   SDL_GL_SwapBuffers(); //Refresh the screen
-   _fps++;
+  if( getFlag( Engine::effects ) > 0 )
+  {
+    _drawFramebuffer();
+  }
 
-   if( DateTime::elapsedTime() - _lastUpdateFps > 1000 )
-   {
-     _lastUpdateFps = DateTime::elapsedTime();
-     _lastFps = _fps;
-     _fps = 0;
-   }
+  SDL_GL_SwapBuffers(); //Refresh the screen
+  _fps++;
 
-   _drawCall = 0;
+  if( DateTime::elapsedTime() - _lastUpdateFps > 1000 )
+  {
+    _lastUpdateFps = DateTime::elapsedTime();
+    _lastFps = _fps;
+    _fps = 0;
+  }
+
+  _drawCall = 0;
 }
 
 void GlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect)
@@ -326,10 +438,7 @@ void GlEngine::createScreenshot( const std::string& filename )
   delete screen;
 }
 
-unsigned int GlEngine::fps() const
-{
-  return _fps;
-}
+unsigned int GlEngine::fps() const {  return _fps; }
 
 void GlEngine::delay( const unsigned int msec )
 {

@@ -167,6 +167,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
 
   setState( Construction::inflammability, 0 );
   setState( Construction::collapsibility, 0 );
+  setState( Construction::destroyable, 0 );
 }
 
 float Fort::evaluateTrainee(walker::Type traineeType)
@@ -199,6 +200,7 @@ void Fort::timeStep( const unsigned long time )
   WorkingBuilding::timeStep( time );
 }
 
+bool Fort::canDestroy() const { return state( Construction::destroyable ) > 0; }
 Fort::TroopsFormation Fort::formation() const {  return _d->formation; }
 
 void Fort::setFormation(Fort::TroopsFormation formation)

@@ -35,7 +35,7 @@ public:
 
   Tilemap();
   virtual ~Tilemap();
-  void resize(const int size);
+  void resize(const unsigned int size);
 
   bool isInside( const TilePos& pos ) const;
 
