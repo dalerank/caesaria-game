@@ -4,25 +4,63 @@
 
 ![IndieDb Rating](http://button.indiedb.com/popularity/medium/games/27823.png)
 
-CaesarIA is remake of Caesar III in the big and seamless world of Ancient Rome. You can build the small village with some of gardens and a workshop where you want.
-You also can perform tasks of an emperor or build the whole city and broke attacks of barbarians, Egyptians or carfagens which want to steal your goods and to kill your inhabitants!
-You also can pass the company from original game (when it will be restored)
-The good lock with high walls will help to cope with any invasions. 
+# CaesarIA 0.3
 
-The fighting system of game continues and develops the principles from Caesar III. Legions of soldiers can be sent to any point of the card, but don't submit to direct instructions of the player, and work independently.
-Depending on a situation soldiers can recede or be reformed for the best interaction.
+CaesarIA is an open-source remake of the popular
+citybuilder and economic sim Caesar III, videogame by
+Empressions Games, written in C++ / SDL.
 
-The agriculture, extraction and production of goods will demand adjustment of production chains and if the necessary goods can't be got in the city, your trade partner can always sell it to you using
-land or maritime trade routes.
+See more info at the ours [website](https://bitbucket.org/dalerank/caesaria/wiki/Home)
 
-Building CaesarIA
--------------------
-See INSTALL_LINUX or INSTALL_WINDOWS depending on which operating system you are running.
+## Installation
 
-#### External dependencies
-CaesarIA is build using following excellent libraries:
+CaesarIA requires a some items from copy of the original game resources.
+When installing manually, copy the Caesar III .sg2 and .555 files to 
+CaesarIA's gfx folder: <game directory>\resources\gfx, 
+videos to <game directory>\resources\smk and sound to <game directory>\resources\audio
 
-  * SDL - http://www.libsdl.org/
-  * SDL_mixer - http://www.libsdl.org/projects/SDL_mixer/
-  * SDL_ttf - http://www.libsdl.org/projects/SDL_ttf/
-    
+The resources can be in a different folder as the CaesarIA data.
+You can also specify your own path by passing the command-line
+argument "-c3gfx <path to CaesarIII folder>" when running CaesarIA.
+
+### Windows, Mac OS X
+
+CaesarIA will also check the following folders:
+
+- <game directory>\saves (Windows 2000/XP/7/8)
+
+It's recommended you copy the resources to the "gfx" folder.
+The installer not automatically detect a Caesar III installation.
+
+### Linux
+
+CaesarIA requires the following libraries:
+
+- [SDL](http://www.libsdl.org) (libsdl1.2)
+- [SDL_mixer](http://www.libsdl.org/projects/SDL_mixer/) (libsdl-mixer1.2)
+- [SDL_ttf](http://www.libsdl.org/projects/SDL_ttf/) (libsdl-ttf2)
+
+Check your distribution's package manager or the library
+website on how to install them.
+
+## Configuration
+
+CaesarIA has a some settings which can be
+customized, both in-game and out-game. These options are global
+and affect any old or new savegame.
+
+For more details please check the [wiki](https://bitbucket.org/dalerank/caesaria/wiki/Configuration%20files).
+
+## Development
+
+CaesarIA requires the following developer libraries:
+
+- [SDL](http://www.libsdl.org) (libsdl1.2)
+- [SDL_mixer](http://www.libsdl.org/projects/SDL_mixer/) (libsdl-mixer1.2)
+- [SDL_ttf](http://www.libsdl.org/projects/SDL_ttf/) (libsdl-ttf2)
+- Cmake
+
+It's also been tested on a variety of other tools on
+Windows/Mac/Linux. More detailed compiling instructions
+and pre-compiled dependencies are available at the [wiki](https://bitbucket.org/dalerank/caesaria/wiki/Compiling).
+
