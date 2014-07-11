@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
@@ -61,38 +63,39 @@ namespace gui
 InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
-  HousePtr house = ptr_cast<House>( tile.overlay() );
-  setTitle( _(house->spec().levelName()) );
+  HousePtr _house = ptr_cast<House>( tile.overlay() );
+
+  setTitle( _(_house->spec().levelName()) );
 
   _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
 
-  Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), _( house->getEvolveInfo() ) );
+  Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), _( _house->getEvolveInfo() ) );
   houseInfo->setWordwrap( true );
 
   std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
-                                                  house->habitants().count(),
-                                                  (int)house->getServiceValue( Service::recruter ),
-                                                  house->habitants().count( CitizenGroup::newborn ),
-                                                  house->habitants().count( CitizenGroup::child ),
-                                                  house->habitants().count( CitizenGroup::scholar ),
-                                                  house->habitants().count( CitizenGroup::student ),
-                                                  house->habitants().count( CitizenGroup::mature ),
-                                                  house->habitants().count( CitizenGroup::aged ) );
+                                                  _house->habitants().count(),
+                                                  (int)_house->getServiceValue( Service::recruter ),
+                                                  _house->habitants().count( CitizenGroup::newborn ),
+                                                  _house->habitants().count( CitizenGroup::child ),
+                                                  _house->habitants().count( CitizenGroup::scholar ),
+                                                  _house->habitants().count( CitizenGroup::student ),
+                                                  _house->habitants().count( CitizenGroup::mature ),
+                                                  _house->habitants().count( CitizenGroup::aged ) );
   new Label( this, Rect( 16, 125, width() - 16, 150 ), workerState );
 
-  drawHabitants( house );
+  drawHabitants( _house );
 
-  int taxes = house->spec().taxRate();
+  int taxes = _house->spec().taxRate();
   std::string taxesStr;
   if( taxes > 0 )
   {
-    if( house->getServiceValue( Service::forum ) == 0 )
+    if( _house->getServiceValue( Service::forum ) == 0 )
     {
       taxesStr = StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
     }
     else
     {
-      DateTime lastTax = house->lastTaxationDate();
+      DateTime lastTax = _house->lastTaxationDate();
       if( GameDate::current().year() == lastTax.year() )
       {
         taxesStr = "##no_tax_in_this_year##";
@@ -114,13 +117,13 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   Label* lbCrime = new Label( this, taxesLb->relativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->bottom() + 10;
-  if( house->spec().level() > 2 )
+  if( _house->spec().level() > 2 )
   {
-    drawGood( house, Good::wheat, 0, 0, startY );
-    drawGood( house, Good::fish, 1, 0, startY );
-    drawGood( house, Good::meat, 2, 0, startY );
-    drawGood( house, Good::fruit, 3, 0, startY );
-    drawGood( house, Good::vegetable, 4, 0, startY );
+    drawGood( _house, Good::wheat, 0, 0, startY );
+    drawGood( _house, Good::fish, 1, 0, startY );
+    drawGood( _house, Good::meat, 2, 0, startY );
+    drawGood( _house, Good::fruit, 3, 0, startY );
+    drawGood( _house, Good::vegetable, 4, 0, startY );
   }
   else
   {
@@ -132,10 +135,10 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
     startY = lb->top();
   }
 
-  drawGood( house, Good::pottery, 0, 1, startY );
-  drawGood( house, Good::furniture, 1, 1, startY );
-  drawGood( house, Good::oil, 2, 1, startY );
-  drawGood( house, Good::wine, 3, 1, startY );
+  drawGood( _house, Good::pottery, 0, 1, startY );
+  drawGood( _house, Good::furniture, 1, 1, startY );
+  drawGood( _house, Good::oil, 2, 1, startY );
+  drawGood( _house, Good::wine, 3, 1, startY );
 }
 
 InfoboxHouse::~InfoboxHouse() {}
@@ -187,6 +190,27 @@ void InfoboxHouse::drawGood( HousePtr house, const Good::Type &goodType, const i
   lb->setText( text );
   lb->setTextOffset( Point( 30, 0 ));
   //font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row, false );
+}
+
+bool InfoboxHouse::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventKeyboard )
+  {
+    if( event.keyboard.control && event.keyboard.shift )
+    {
+      switch( event.keyboard.key )
+      {
+      case KEY_COMMA:
+      case KEY_PERIOD:
+        _house->debugChangeLevel( event.keyboard.key == KEY_COMMA );
+        return true;
+      default:
+         break;
+      }
+    }
+  }
+
+  return InfoboxSimple::onEvent( event );
 }
 
 }//end namespace gui
