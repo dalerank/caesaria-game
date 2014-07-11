@@ -49,6 +49,12 @@ public:
 
     void reset( int width, int height )
     {
+      foreach( it, *this )
+      {
+        delete *it;
+        *it = 0;
+      }
+
     	_size = Size( width, height );
     	resize( _size.area() );
     }
@@ -191,7 +197,8 @@ bool Pathfinder::Impl::getTraversingPoints( TilePos start, TilePos stop, Pathway
   return true;
 }
 
-unsigned int Pathfinder::getMaxLoopCount() const {  return _d->maxLoopCount; }
+unsigned int Pathfinder::maxLoopCount() const {  return _d->maxLoopCount; }
+void Pathfinder::setMaxLoopCount(unsigned int count){ _d->maxLoopCount = count; }
 void Pathfinder::setVerboseMode(int level) {  _d->verbose = level;}
 
 bool _inArea( APoints& area, AStarPoint* end )

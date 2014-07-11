@@ -147,7 +147,7 @@ Tile* Tilemap::at(Point pos, bool overborder)
   }
   else // the pixel is outside the tilemap => no tile here
   {
-     return NULL;
+    return NULL;
   }
 }
 
@@ -253,9 +253,12 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
   int expected = math::min((abs(stop.i() - start.i()) + 1) * (abs(stop.j() - start.j()) + 1), 100);
   res.reserve(expected);
 
-  for (int i = start.i(); i <= stop.i(); ++i)
+  Rect r( start.i(), start.j(), stop.i(), stop.j() );
+  r.repair();
+
+  for (int i = r.left(); i <= r.right(); ++i)
   {
-    for (int j = start.j(); j <= stop.j(); ++j)
+    for (int j = r.top(); j <= r.bottom(); ++j)
     {
       if( isInside( TilePos( i, j ) ))
       {
