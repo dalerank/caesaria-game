@@ -65,9 +65,9 @@ public:
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-  TilesArray getArea(const TilePos& start, const TilePos& stop );
-  TilesArray getArea(const TilePos& start, const Size& size );
-  TilesArray getArea(int range, const TilePos& center );
+  TilesArray getArea(const TilePos& start, const TilePos& stop ) const;
+  TilesArray getArea(const TilePos& start, const Size& size ) const;
+  TilesArray getArea(int range, const TilePos& center ) const;
 
   int size() const;
 

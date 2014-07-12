@@ -247,7 +247,7 @@ TilesArray Tilemap::getRectangle(unsigned int range, TilePos center)
 }
 
 // Get tiles inside of rectangle
-TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
+TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
 {
   TilesArray res;
   int expected = math::min((abs(stop.i() - start.i()) + 1) * (abs(stop.j() - start.j()) + 1), 100);
@@ -262,7 +262,7 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
     {
       if( isInside( TilePos( i, j ) ))
       {
-        res.push_back( &at( TilePos( i, j ) ) );
+        res.push_back( &( const_cast<Tilemap*>( this )->at( TilePos( i, j ) )) );
       }
     }
   }
@@ -270,12 +270,12 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop )
   return res;
 }
 
-TilesArray Tilemap::getArea(const TilePos& start, const Size& size )
+TilesArray Tilemap::getArea(const TilePos& start, const Size& size ) const
 {
   return getArea( start, start + TilePos( size.width()-1, size.height()-1 ) );
 }
 
-TilesArray Tilemap::getArea(int range, const TilePos& center)
+TilesArray Tilemap::getArea(int range, const TilePos& center) const
 {
   TilePos offset(range,range);
   return getArea( center - offset, center + offset );
@@ -284,49 +284,64 @@ TilesArray Tilemap::getArea(int range, const TilePos& center)
 void Tilemap::save( VariantMap& stream ) const
 {
   // saves the graphics map
-  VariantList bitsetInfo;
-  VariantList desInfo;
-  VariantList idInfo;
+  std::vector<int> bitsetInfo;
+  std::vector<short> desInfo;
+  std::vector<short> idInfo;
 
-  TilesArray tiles = const_cast< Tilemap* >( this )->getArea( TilePos( 0, 0 ), Size( _d->size ) );
+  TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
   foreach( it, tiles )
   {
-    Tile* tile = *it;
+    Tile* tile = *it;    
     bitsetInfo.push_back( TileHelper::encode( *tile ) );
     desInfo.push_back( tile->desirability() );
     idInfo.push_back( tile->originalImgId() );
   }
 
-  stream[ "bitset" ]       = bitsetInfo;
-  stream[ "desirability" ] = desInfo;
-  stream[ "imgId" ]        = idInfo;
+  ByteArray baBitset;
+  ByteArray baDes;
+  ByteArray baId;
+  baBitset.resize( bitsetInfo.size() * sizeof(int) );
+  baDes.resize( desInfo.size() * sizeof(short) );
+  baId.resize( idInfo.size() * sizeof(short) );
+
+  memcpy( baBitset.data(), bitsetInfo.data(), baBitset.size() );
+  memcpy( baDes.data(), desInfo.data(), baDes.size() );
+  memcpy( baId.data(), idInfo.data(), baId.size() );
+
+  stream[ "bitset" ]       = Variant( baBitset.base64() );
+  stream[ "desirability" ] = Variant( baDes.base64() );
+  stream[ "imgId" ]        = Variant( baId.base64() );
   stream[ "size" ]         = _d->size;
 }
 
 void Tilemap::load( const VariantMap& stream )
 {
-  VariantList bitsetInfo = stream.get( "bitset" ).toList();
-  VariantList desInfo    = stream.get( "desirability" ).toList();
-  VariantList idInfo     = stream.get( "imgId" ).toList();
+  std::string bitsetInfo = stream.get( "bitset" ).toString();
+  std::string desInfo    = stream.get( "desirability" ).toString();
+  std::string idInfo     = stream.get( "imgId" ).toString();
 
   int size = stream.get( "size" ).toInt();
 
   resize( size );
 
-  VariantList::iterator imgIdIt        = idInfo.begin();
-  VariantList::iterator bitsetInfoIt   = bitsetInfo.begin();
-  VariantList::iterator desirabilityIt = desInfo.begin();
+  ByteArray baImgId = ByteArray::fromBase64( idInfo );
+  ByteArray baBitset = ByteArray::fromBase64( bitsetInfo );
+  ByteArray baDes = ByteArray::fromBase64( desInfo );
+
+  const int* bitsetAr = (int*)baBitset.data();
+  const short* imgIdAr = (short*)baImgId.data();
+  const short* desAr = (short*)baDes.data();
 
   TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
-  for( TilesArray::iterator it = tiles.begin(); it != tiles.end();
-       ++it, ++imgIdIt, ++bitsetInfoIt, ++desirabilityIt )
+  int index = 0;
+  foreach( it, tiles )
   {
     Tile* tile = *it;
 
-    TileHelper::decode( *tile, (*bitsetInfoIt).toInt() );
-    tile->appendDesirability( (*desirabilityIt).toInt() );
+    TileHelper::decode( *tile, bitsetAr[index] );
+    tile->appendDesirability( desAr[index] );
 
-    int imgId = (*imgIdIt).toInt();
+    int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )
     {
       std::string picName = TileHelper::convId2PicName( imgId );
@@ -351,6 +366,7 @@ void Tilemap::load( const VariantMap& stream )
         }
       }
     }
+    index++;
   }
 }
 
