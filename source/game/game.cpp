@@ -530,7 +530,7 @@ void Game::initialize()
 
   screen.setText( "##ready_to_game" );
   if( GameSettings::get( "no-fade" ).isNull() )
-    screen.fadeout();
+    screen.exitScene();
 }
 
 void Game::exec()

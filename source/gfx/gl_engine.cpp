@@ -40,7 +40,11 @@
 #endif
 
 #ifdef GL_EXT_PROTOTYPES
+#ifdef CAESARIA_PLATFORM_ANDROID
 #include <GLES/glext.h>
+#else
+#include <GL/glext.h>
+#endif
 #define glGenFramebuffers  glGenFramebuffersEXT
 #define glGenTextures     glGenTexturesEXT
 #define glGenRendererbuffers glGenRendererbuffersEXT
@@ -109,7 +113,29 @@ void GlEngine::init()
   if( getFlag( Engine::effects ) > 0 )
   {
     _initFramebuffer();
+   // _initShaderProgram(screenVertexSource, screenFragmentSource, screenVertexShader, screenFragmentShader, screenShaderProgram);
   }
+}
+
+void GlEngine::_initShaderProgramm( const char* vertSrc, const char* fragSrc,
+                                    unsigned int& vertexShader, unsigned int& fragmentShader, unsigned int& shaderProgram)
+{
+  // Create and compile the vertex shader
+  /*vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertexShader, 1, &vertSrc, NULL);
+  glCompileShader(vertexShader);
+
+  // Create and compile the fragment shader
+  fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fragmentShader, 1, &fragSrc, NULL);
+  glCompileShader(fragmentShader);
+
+  // Link the vertex and fragment shader into a shader program
+  shaderProgram = glCreateProgram();
+  glAttachShader(shaderProgram, vertexShader);
+  glAttachShader(shaderProgram, fragmentShader);
+  glBindFragDataLocation(shaderProgram, 0, "outColor");
+  glLinkProgram(shaderProgram);*/
 }
 
 

@@ -349,6 +349,9 @@ void FontCollection::initialize(const std::string &resourcePath)
   addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),full_font_path.toString(), 18, white );
   addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), full_font_path.toString(), 18, yellow );
   addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path.toString(), 28, black);
+  addFont( FONT_4,       CAESARIA_STR_EXT(FONT_4),      full_font_path.toString(), 32, black);
+  addFont( FONT_5,       CAESARIA_STR_EXT(FONT_5),      full_font_path.toString(), 36, black);
+  addFont( FONT_6,       CAESARIA_STR_EXT(FONT_6),      full_font_path.toString(), 42, black);
 }
 
 static StringArray _font_breakText(const std::string& text, const Font& f, int elWidth, bool RightToLeft )

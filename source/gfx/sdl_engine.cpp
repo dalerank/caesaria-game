@@ -38,6 +38,7 @@
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
 #include "core/foreach.hpp"
+#include "gfx/decorator.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
 #include <dlfcn.h>

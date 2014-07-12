@@ -87,14 +87,15 @@ if( BUILD_PNG )
   target_link_libraries(${PROJECT_NAME} ${PNGLIB_NAME})
 endif()
 
-#if(OPENGL_RENDER)
+if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DGL_GLEXT_PROTOTYPES )
+endif(BUILD_GL_FRAMEBUFFER)
+
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
 else()
   target_link_libraries(${PROJECT_NAME} "GL")
 endif(WIN32)
-#endif(OPENGL_RENDER)
 
 if(WIN32)
   set(EXECUTABLE_FILENAME "caesaria")
@@ -120,6 +121,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
   message("CaesarIA-game: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
+  add_definitions( -DDEBUG )
 endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 # set compiler options

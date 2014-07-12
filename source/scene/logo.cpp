@@ -37,6 +37,10 @@ public:
   Picture bgPicture;
   PictureRef textPicture;
   std::string text, prefix;
+  PictureRef pf;
+
+public:
+  void fade(Engine &engine, Picture &pic, bool out, int offset);
 };
 
 SplashScreen::SplashScreen() : _d( new Impl ) {}
@@ -55,6 +59,7 @@ void SplashScreen::initialize()
   _d->textPicture.init( Size( _d->bgPicture.width(), 30 ) );
   _d->textPicture->setOffset( Point( (engine.screenSize().width() - _d->textPicture->width()) / 2,
                                       _d->bgPicture.offset().y() - _d->bgPicture.height() - 5 ) );
+  _d->pf.init( engine.screenSize() );
 }
 
 void SplashScreen::draw()
@@ -78,30 +83,59 @@ void SplashScreen::draw()
   }
 }
 
-void SplashScreen::fadeout()
+void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offset )
 {
+  int start = out ? 0 : 0xff;
+  int stop = out ? 0xff : 0;
+  offset *= (out ? 1 : -1);
+
+  for( int k=start; out ? k < stop : k > stop ; k+=offset )
+  {
+    engine.startRenderFrame();
+    pf->lock();
+    pf->fill( NColor(k, 0, 0, 0), Rect() );
+    pf->unlock();
+    engine.draw( pic, 0, 0);
+    engine.draw( *pf, 0, 0);
+    engine.endRenderFrame();
+  }
+}
+
+void SplashScreen::exitScene()
+{
+#ifndef DEBUG
   Engine& engine = Engine::instance();
   engine.loadPicture( _d->bgPicture );
 
-  PictureRef pf;
-  pf.init( engine.screenSize() );
   int offset = 3;
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   offset = 12;
 #endif
 
-  for( int k=0; k < 0xff; k+=offset )
+  _d->fade( engine, _d->bgPicture, true, offset );
+
+  _d->textPicture.init( engine.screenSize() );
+  _d->textPicture->fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPicture->size() ) );
+  _d->textPicture->lock();
+  Font textFont = Font::create( FONT_3 ) ;
+
+  std::string text[5] = { "This is an early access version of CaesarIA!",
+                          "The outer reaches are placeholders: more features and polish are coming soon",
+                          "see",
+                          "www.bitbucket.org/dalerank/caesaria",
+                          "for our roadmap." };
+  for( int i=0; i < 5; i++ )
   {
-    engine.startRenderFrame();
-    pf->lock();
-    pf->fill( NColor(k, 0, 0, 0), Rect() );
-    pf->unlock();
-    engine.draw( _d->bgPicture, 0, 0);
-    engine.draw( *pf, 0, 0);
-    //engine.delay( 1 );
-    engine.endRenderFrame();
+    Rect textRect = textFont.calculateTextRect( text[i], Rect( Point(), _d->textPicture->size() ), align::center, align::center );
+    textFont.setColor( i == 3 ?  DefaultColors::indianRed : DefaultColors::dodgerBlue );
+    textFont.draw( *_d->textPicture, text[i], textRect.left(), textRect.top() + 20 * i, false );
   }
+
+  _d->fade( engine, *_d->textPicture, false, offset );
+  engine.delay( 3000 );
+  _d->fade( engine, *_d->textPicture, true, offset );
+#endif
 }
 
 void SplashScreen::setText(std::string text)
@@ -112,11 +146,7 @@ void SplashScreen::setText(std::string text)
   update( engine );
 }
 
-void SplashScreen::setPrefix(std::string prefix)
-{
-  _d->prefix = _( prefix );
-}
-
+ void SplashScreen::setPrefix(std::string prefix) { _d->prefix = _( prefix ); }
 int SplashScreen::result() const { return 0; }
 
 }//end namespace scene

@@ -10,6 +10,8 @@ option( BUILD_LZMA  "Static lzma"    ON )
 option( BUILD_CURL  "Static curl"    ON )
 option( BUILD_PNG   "Static png"     ON )
 option( BUILD_SMK   "Static smk"     ON )
+option( BUILD_GL_FRAMEBUFFER "Opengl framebuffer"     ON )
+option( BUILD_GL_SHADERS "OpenGL shaders"     ON )
 option( BUILD_AUDIO "Use sdl_mixer"  ON )
 
 set(DEP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep" )

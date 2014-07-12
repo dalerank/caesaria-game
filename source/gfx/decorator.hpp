@@ -63,6 +63,8 @@ public:
   static void drawLine( Picture &dstpic, const Point& p1, const Point& p2, NColor color );
 
   static void basicText( Picture &dstpic, const Point& po, const std::string& text, NColor color );
+
+  static void brightPass(Picture &dstpic , float brightnessThreshold=1.0);
 };
 
 }//end namespace gfx

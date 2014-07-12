@@ -82,6 +82,12 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   if( tile.overlay().isValid() )
     ovType = tile.overlay()->type();
 
+  if( tile.i() < 0 || tile.j() < 0 )
+  {
+    c1 = c2 = 0xff000000;
+    return;
+  }
+
   if (tile.getFlag( Tile::tlTree ))
   {
     c1 = colors->colour(MinimapColors::MAP_TREE1, num3);
