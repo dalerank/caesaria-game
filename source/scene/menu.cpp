@@ -42,8 +42,10 @@
 #include "core/osystem.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
+#include "gui/widgetpositionanimator.hpp"
 
 using namespace gfx;
+using namespace gui;
 
 namespace scene
 {
@@ -183,50 +185,59 @@ void StartMenu::Impl::resolveCredits()
 {
   gui::Widget* parent = game->gui()->rootWidget();
 
-  gui::Label* frame = new gui::Label( parent, Rect( 0, 0, 512, 384 ), "", false, gui::Label::bgWhiteFrame );
-  frame->setCenter( parent->center() );
+  Size size = engine->screenSize();
+  std::string strs[] = { _("##developers##"),
+                         " ",
+                       "dalerank (dalerankn8@gmail.com)",
+                       "gathanase (gathanase@gmail.com) render, game mechanics ",
+                       "gecube (gb12335@gmail.com)",
+                       "pecunia (pecunia@heavengames.com) game mechanics",
+                       "tracertong",
+                       "VladRassokhin",
+                       "hellium",
+                       "pufik6666",
+                       "andreibranescu",
+                       "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
+                       "akuskis (?) aqueduct system",
+                       "rovanion",
+                       "nickers (2nickers@gmail.com)",
+                       "ImperatorPrime",
+                       "veprbl",
+                       "ramMASTER",
+                       "greg kennedy(kennedy.greg@gmail.com) smk decoder",
+                       " ",
+                       _("##testers##"),
+                       " ",
+                       "radek liška",
+                       "dimitrius (caesar-iii.ru)",
+                       "shibanirm",
+                       " ",
+                       _("##graphics##"),
+                       " ",
+                       "dimitrius (caesar-iii.ru)",
+                       " ",
+                       _("##thanks_to##"),
+                       " ",
+                       "doc (doc@nnm.me)",
+                       "Juan Font Alonso ",
+                       "Mephistopheles"
+                       "" };
 
-  gui::ListBox* lbx = new gui::ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  gui::PushButton* btn = new gui::PushButton( frame, Rect( 0, 0, 1, 1), _("##close##") );
+  gui::Label* frame = new gui::Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
+  gui::Label* subFrame = new gui::Label( frame, Rect( Point( 10, 10), size - Size( 20, 20 ) ), "", false, Label::bgNone );
+  int h = size.height();
+  for( int i=0; !strs[i].empty(); i++ )
+  {
+    Label* lb = new gui::Label( subFrame, Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
+    lb->setTextAlignment( align::center, align::center );
+    lb->setFont( Font::create( FONT_2_WHITE ) );
+    PositionAnimator* anim = new PositionAnimator( lb, WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
+    anim->setSpeed( PointF( 0, -0.5 ) );
+  }
 
-  lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
-  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
-
-  gui::ListBoxItem& item = lbx->addItem( _("##developers##") );
-  item.setTextAlignment( align::center, align::center );
-  lbx->addItem( "dalerank (dalerankn8@gmail.com)" );
-  lbx->addItem( "gathanase (gathanase@gmail.com) render, game mechanics " );
-  lbx->addItem( "gecube (gb12335@gmail.com)" );
-  lbx->addItem( "pecunia (pecunia@heavengames.com) game mechanics" );
-  lbx->addItem( "tracertong" );
-  lbx->addItem( "VladRassokhin" );
-  lbx->addItem( "hellium" );
-  lbx->addItem( "pufik6666" );
-  lbx->addItem( "andreibranescu" );
-  lbx->addItem( "amdmi3 (amdmi3@amdmi3.ru) bsd fixes" );
-  lbx->addItem( "akuskis (?) aqueduct system" );
-  lbx->addItem( "rovanion" );
-  lbx->addItem( "nickers (2nickers@gmail.com)" );
-  lbx->addItem( "ImperatorPrime" );
-  lbx->addItem( "veprbl" );
-  lbx->addItem( "ramMASTER" );
-  lbx->addItem( "greg kennedy(kennedy.greg@gmail.com) smk decoder" );
-
-  gui::ListBoxItem& testers = lbx->addItem( _("##testers##") );
-  testers.setTextAlignment( align::center, align::center );
-  lbx->addItem( "radek liška" );
-  lbx->addItem( "dimitrius (caesar-iii.ru)" );
-  lbx->addItem( "shibanirm" );
-
-  gui::ListBoxItem& gfx = lbx->addItem( _("##graphics##") );
-  gfx.setTextAlignment( align::center, align::center );
-  lbx->addItem( "dimitrius (caesar-iii.ru)" );
-
-  gui::ListBoxItem& thanks_to = lbx->addItem( _("##thanks_to##") );
-  thanks_to.setTextAlignment( align::center, align::center );
-  lbx->addItem( "doc (doc@nnm.me)");
-  lbx->addItem( "Juan Font Alonso ");
-
+  gui::PushButton* btn = new gui::PushButton( frame,
+                                              Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
+                                              _("##close##") );
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
 }
 

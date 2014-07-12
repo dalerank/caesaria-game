@@ -162,6 +162,7 @@ void Label::_updateTexture(gfx::Engine& painter )
       _d->background->fill( 0xff000000, Rect() );
       _d->background->fill( 0xffffffff, Rect( 1, 1, width() - 1, height() - 1 ) );
     break;
+    case bgSimpleBlack: _d->background->fill( 0xff000000, Rect() );    break;
     case bgWhite: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteArea); break;
     case bgBlack: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackArea ); break;
     case bgBrown:

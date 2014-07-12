@@ -28,9 +28,9 @@ class WidgetAnimator : public Widget, public FlagHolder<int>
 {
 public:
 	enum { showParent=0x1,
-		   removeSelf=0x2, removeParent=0x4,
-		   debug=0x8,
-		   isActive=0x10 };
+         removeSelf=0x2, removeParent=0x4,
+         debug=0x8,
+         isActive=0x10 };
 
     WidgetAnimator( Widget* parent, int flags );
 

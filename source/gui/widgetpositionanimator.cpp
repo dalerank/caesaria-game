@@ -28,20 +28,21 @@ public:
 	Point stopPos, startPos;
 	PointF currentPos;
 	int time;
-    int lastTimeUpdate;
+  int lastTimeUpdate;
+  PointF speed;
 };
 
 PositionAnimator::PositionAnimator( Widget* node, 
                                     int flags,
-								    const Point& stopPos,
-									int time )
+                                    const Point& stopPos,
+                                    int time )
 	: WidgetAnimator( node, flags ), _d( new Impl )
 {
   //"parent must be exist"
   _CAESARIA_DEBUG_BREAK_IF( !node );
 
 	_d->stopPos = stopPos;
-	_d->time = time;
+  _d->time = time;
   _d->lastTimeUpdate = DateTime::elapsedTime();
 
 	restart();
@@ -73,6 +74,12 @@ void PositionAnimator::beforeDraw(gfx::Engine& painter )
 			float offsetY = _d->stopPos.y() - _d->currentPos.y();
 			float signY = offsetY < 0 ? -1.f : 1.f;
 
+      if( _d->speed.x() != 0 || _d->speed.y() != 0 )
+      {
+        offsetX = _d->speed.x();
+        offsetY = _d->speed.y();
+      }
+
       _d->currentPos += PointF( signX * std::min<float>( step, fabs( offsetX ) ),
                                 signY * std::min<float>( step, fabs( offsetY ) ) );
 
@@ -85,45 +92,23 @@ void PositionAnimator::beforeDraw(gfx::Engine& painter )
 			if( isFlag( debug ) )
 			{
 				parent()->setPosition( _d->startPos );
-                return;
+        return;
 			}
 
 			parent()->setVisible( isFlag( showParent ) );
-
-            afterFinished_();
+      afterFinished_();
 		}
 	}
 
-    Widget::beforeDraw( painter );
+  Widget::beforeDraw( painter );
 }
 
-PositionAnimator::~PositionAnimator( void )
-{
-}
-
-void PositionAnimator::setStartPos( const Point& p )
-{
-	_d->startPos = p;
-}
-
-void PositionAnimator::setStopPos( const Point& p )
-{
-	_d->stopPos = p;
-}
-
-Point PositionAnimator::getStartPos() const
-{
-	return _d->startPos;
-}
-
-void PositionAnimator::setTime( int time )
-{
-	_d->time = time;
-}
-
-Point PositionAnimator::getStopPos() const
-{
-	return _d->stopPos;
-}
+PositionAnimator::~PositionAnimator( void ) {}
+void PositionAnimator::setStartPos( const Point& p ){	_d->startPos = p;}
+void PositionAnimator::setStopPos( const Point& p ){	_d->stopPos = p;}
+Point PositionAnimator::getStartPos() const{	return _d->startPos;}
+void PositionAnimator::setTime( int time ){	_d->time = time;}
+void PositionAnimator::setSpeed(PointF speed) { _d->speed = speed; }
+Point PositionAnimator::getStopPos() const{	return _d->stopPos; }
 
 }//end namespace gui

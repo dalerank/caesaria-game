@@ -30,7 +30,7 @@ class Label : public Widget
 public:
   typedef enum { bgWhite=0, bgBlack, bgBrown, bgSmBrown, bgNone,
                  bgWhiteFrame, bgBlackFrame,
-                 bgWhiteBorderA, bgSimpleWhite } BackgroundMode;
+                 bgWhiteBorderA, bgSimpleWhite, bgSimpleBlack } BackgroundMode;
   //! constructor
   Label( Widget* parent );
 
