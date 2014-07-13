@@ -1342,7 +1342,7 @@ std::wstring __unic2utf8(unsigned short wc)
  }
  else if (wc < 0x800)
  {
-   ret += (wchar_t)( ((0xC0 | wc>>6) << 8 ) + (0x80 | wc & 0x3F) );
+   ret += (wchar_t)( ((0xC0 | wc>>6) << 8 ) + (0x80 | (wc & 0x3F)) );
  }
 
  return ret;
