@@ -124,7 +124,7 @@ ListBoxItem& ListBox::item(unsigned int id)
 	if( id >= _d->items.size() )
 	{
 		Logger::warning( "Index out of range ListBox::items [%d]", id );
-		return ListBoxItem::getInvalidItem();
+		return ListBoxItem::invalidItem();
 	}
 
 	return _d->items[ id ];
@@ -494,18 +494,24 @@ void ListBox::_selectNew(int ypos)
 
   _d->needItemsRepackTextures = true;
 
-  _d->selectedItemIndex = itemAt( Point( screenLeft(), ypos ) );
-  if( _d->selectedItemIndex<0 && !_d->items.empty() )
-      _d->selectedItemIndex = 0;
+  int newIndex = itemAt( Point( screenLeft(), ypos ) );
+  ListBoxItem& ritem = item( newIndex );
 
-  _recalculateScrollPos();
+  if( ritem.isEnabled() )
+  {
+    _d->selectedItemIndex = newIndex;
+    if( _d->selectedItemIndex<0 && !_d->items.empty() )
+        _d->selectedItemIndex = 0;
 
-	GuiEventType eventType = (_d->selectedItemIndex == oldSelected && now < _d->selectTime + 500)
-															? guiListboxSelectedAgain
-															: guiListboxChanged;
-	_d->selectTime = now;
-	// post the news
-	_indexChanged( eventType );
+    _recalculateScrollPos();
+
+    GuiEventType eventType = ( _d->selectedItemIndex == oldSelected && now < _d->selectTime + 500)
+                                   ? guiListboxSelectedAgain
+                                   : guiListboxChanged;
+    _d->selectTime = now;
+    // post the news
+    _indexChanged( eventType );
+  }
 }
 
 //! Update the position and size of the listbox, and update the scrollbar
@@ -557,8 +563,8 @@ NColor ListBox::_getCurrentItemColor( const ListBoxItem& item, bool selected )
 Rect ListBox::_itemsRect()
 {
   Rect frameRect( Point( 0, 0 ), size() );
-  //if( _d->scrollBar->isVisible() )
-  frameRect.LowerRightCorner.setX( frameRect.LowerRightCorner.x() - DEFAULT_SCROLLBAR_SIZE );
+
+  frameRect.rright() = frameRect.LowerRightCorner.x() - DEFAULT_SCROLLBAR_SIZE;
 
   return frameRect;
 }
@@ -588,7 +594,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 
     bool hl = ( isFlag( hightlightNotinfocused ) || isFocused() || _d->scrollBar->isFocused() );
     Rect frameRect = _itemsRect();
-    frameRect.LowerRightCorner.setY( frameRect.top() + _d->itemHeight );
+    frameRect.rbottom() = frameRect.top() + _d->itemHeight;
 
     Alignment itemTextHorizontalAlign, itemTextVerticalAlign;
     Font currentFont;
@@ -629,10 +635,11 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 
         _drawItemText( *_d->picture, currentFont, refItem,
                        textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+
         if( !refItem.url().empty() )
         {
-          textRect.UpperLeftCorner.setY( textRect.LowerRightCorner.y() - 1 );
-          _d->picture->fill( currentFont.color(), textRect  + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+          textRect.rtop() = textRect.bottom() - 1;
+          _d->picture->fill( currentFont.color(), textRect + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
         }
       }
 
@@ -760,7 +767,7 @@ bool ListBox::hasItemOverrideColor(unsigned int index, ListBoxItem::ColorType co
     return _d->items[index].OverrideColors[colorType].Use;
 }
 
-int ListBox::getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const
+NColor ListBox::getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const
 {
   if ( (unsigned int)index >= _d->items.size() || colorType < 0 || colorType >= ListBoxItem::count )
 		return 0;

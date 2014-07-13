@@ -97,7 +97,7 @@ public:
   virtual bool hasItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const;
 
   //! return the overwrite color at given item index.
-  virtual int getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const;
+  virtual NColor getItemOverrideColor(unsigned int index, ListBoxItem::ColorType colorType) const;
 
   //! return the default color which is used for the given colorType
   virtual NColor itemDefaultColor( ListBoxItem::ColorType colorType) const;

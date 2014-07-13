@@ -85,12 +85,14 @@ public:
   Variant data() const;
   void setData( const Variant& value );
 
+  void setTextColor( ColorType type, NColor color);
+
   struct OverrideColor
   {
     OverrideColor() : Use(false), color( 0 ) {}
     bool Use;
     Font font;
-    int /*Color*/ color;
+    NColor color;
   };
 
 	//!sets the item text alignment
@@ -98,7 +100,7 @@ public:
 
 	OverrideColor OverrideColors[ count ];
 
-	static ListBoxItem& getInvalidItem(); 
+  static ListBoxItem& invalidItem();
 
 private:
   class Impl;

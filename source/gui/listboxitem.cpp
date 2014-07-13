@@ -38,11 +38,11 @@ public:
   bool alignEnabled;
 };
 
-void ListBoxItem::setText(const std::string& text){    _d->text = text;}
+void ListBoxItem::setText(const std::string& text){ _d->text = text;}
 void ListBoxItem::setIcon( Picture icon ){    _d->icon = icon; }
 const std::string& ListBoxItem::text() const{    return _d->text;}
 const Alignment& ListBoxItem::verticalAlign() const{    return _d->vertical;}
-bool ListBoxItem::isAlignEnabled() const{    return _d->enabled;}
+bool ListBoxItem::isAlignEnabled() const{ return _d->enabled; }
 const Alignment& ListBoxItem::horizontalAlign() const{    return _d->horizontal;}
 
 ListBoxItem::ListBoxItem() : _d( new Impl )
@@ -83,7 +83,7 @@ ListBoxItem& ListBoxItem::operator=( const ListBoxItem& other )
 	return *this;
 }
 
-ListBoxItem& ListBoxItem::getInvalidItem()
+ListBoxItem& ListBoxItem::invalidItem()
 {
 	static ListBoxItem invalidItem = ListBoxItem();
 	return invalidItem;
@@ -94,6 +94,12 @@ void ListBoxItem::setTextAlignment( Alignment horizontal, Alignment vertical )
   _d->vertical = vertical;
   _d->horizontal = horizontal;
   _d->alignEnabled = true;
+}
+
+void ListBoxItem::setTextColor(ListBoxItem::ColorType type, NColor color)
+{
+  OverrideColors[ type ].color = color;
+  OverrideColors[ type ].Use = true;
 }
 
 ListBoxItem::~ListBoxItem(){}

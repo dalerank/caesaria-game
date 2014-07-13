@@ -275,9 +275,13 @@ public:
   }
 
 	T top() const 	{		return UpperLeftCorner.y();	}
+  T& rtop() {		return UpperLeftCorner.ry();	}
 	T left() const	{		return UpperLeftCorner.x();	}
+  T& rleft() {		return UpperLeftCorner.rx();	}
 	T bottom() const	{		return LowerRightCorner.y();	}
+  T& rbottom() { return LowerRightCorner.ry();	}
 	T right() const	{		return LowerRightCorner.x();	}
+  T& rright() {	return LowerRightCorner.rx();	}
 
 	//! Upper left corner
 	Vector2<T> UpperLeftCorner;

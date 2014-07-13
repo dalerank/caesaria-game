@@ -31,13 +31,15 @@ namespace gui
 class EmperorGiftWindow::Impl
 {
 public:
+  typedef enum { modest, generous, lavish } GiftType;
   int wantSend, maxMoney;
 
   void fillGifts( ListBox* lbx );
+  unsigned int getGiftCost( GiftType type, unsigned int money );
 
 public oc3_slots:
-  void sendGift() { sendGiftSignal.emit( wantSend ); }
-  void selectGift(const ListBoxItem& item);
+  void sendGift() { oc3_emit sendGiftSignal( wantSend ); }
+  void selectGift( const ListBoxItem& item);
 
 public oc3_signals:
   Signal1<int> sendGiftSignal;
@@ -77,16 +79,28 @@ void EmperorGiftWindow::Impl::fillGifts(ListBox* lbx)
   VariantMap giftModel = SaveAdapter::load( giftsDesc );
   StringArray gifts = giftModel.get( "items" ).toStringArray();
 
-  int minMoney = math::max<int>( maxMoney, 600 );
-  float giftKoeff[] = { 0.2, 0.4, 0.7 };
+  lbx->setTextAlignment( align::center, align::center );
   for( int k=0; k < 3; k++ )
   {
-    int tag = minMoney * giftKoeff[ k ];
-    std::string priceStr = StringHelper::format( 0xff, " :%d", tag );
+    int tag = getGiftCost( (GiftType)k, maxMoney );
+    std::string priceStr = StringHelper::format( 0xff, " : %d", tag );
     ListBoxItem& item = lbx->addItem( _( gifts.rand() ) + priceStr );
     item.setTag( tag );
-    item.setTextAlignment( align::center, align::center );
+    item.setTextColor( ListBoxItem::simple, tag < maxMoney ? DefaultColors::black : DefaultColors::grey );
+    item.setEnabled( tag < maxMoney );
   }
+}
+
+unsigned int EmperorGiftWindow::Impl::getGiftCost(EmperorGiftWindow::Impl::GiftType type, unsigned int money)
+{
+  switch( type )
+  {
+  case modest: return money / 8 + 20;
+  case generous: return money / 4 + 50;
+  case lavish: return money / 2 + 100;
+  }
+
+  return 100;
 }
 
 void EmperorGiftWindow::Impl::selectGift(const ListBoxItem& item)
