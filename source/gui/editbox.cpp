@@ -661,7 +661,7 @@ bool EditBox::_processKey(const NEvent& event)
 			{
 				// delete text before cursor
 				s = _d->text.substr(0, _d->cursorPos);
-				if( _d->cursorPos+1 < _d->text.size() )
+        if( _d->cursorPos+1 < (int)_d->text.size() )
 				{
 					s.append( _d->text.substr(_d->cursorPos+1, _d->text.size()-_d->cursorPos-1) );
 				}

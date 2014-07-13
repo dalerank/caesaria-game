@@ -83,8 +83,11 @@ private:
 struct GovernorRank
 {
   std::string rankName;
-  std::string prettyName;
+  std::string pretty;
   unsigned int salary;
+  unsigned int level;
+
+  void load( const std::string& name, const VariantMap& vm );
 };
 
 typedef std::vector<GovernorRank> GovernorRanks;
@@ -93,7 +96,7 @@ class EmpireHelper
 {
 public:
   static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
-  static GovernorRanks getRanks();
+  static GovernorRanks ranks();
 };
 
 }//end namespace world

@@ -50,10 +50,10 @@ ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
   ListBox* lbx = findChildA<ListBox*>( "lbxTitles", true, this );
   if( lbx )
   {
-    world::GovernorRanks ranks = world::EmpireHelper::getRanks();
+    world::GovernorRanks ranks = world::EmpireHelper::ranks();
     foreach( i, ranks )
     {
-      ListBoxItem& item = lbx->addItem( _( (*i).prettyName ) );
+      ListBoxItem& item = lbx->addItem( _( (*i).pretty ) );
       item.setTag( (*i).salary );
       if( (*i).salary == salary )
       {

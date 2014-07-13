@@ -431,28 +431,23 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
   return 0;
 }
 
-GovernorRanks EmpireHelper::getRanks()
+GovernorRanks EmpireHelper::ranks()
 {
   std::map<unsigned int, GovernorRank > sortRanks;
 
   VariantMap vm = SaveAdapter::load( SETTINGS_RC_PATH( ranksModel ) );
   foreach( i, vm )
   {
-    VariantMap rankInfo = i->second.toMap();
-
     GovernorRank rank;
-    rank.rankName = i->first;
-    rank.prettyName = rankInfo.get( "name" ).toString();
-    rank.salary = (int)rankInfo.get( "salary" );
-
-    sortRanks[ rank.salary ] = rank;
+    rank.load( i->first, i->second.toMap() );
+    sortRanks[ rank.level ] = rank;
   }
 
-  GovernorRanks ranks;
+  GovernorRanks ret;
   foreach( i, sortRanks )
-    ranks.push_back( i->second );
+    ret.push_back( i->second );
 
-  return ranks;
+  return ret;
 }
 
 TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
@@ -510,7 +505,15 @@ void Empire::Impl::takeTaxes()
       treasury += empireTax;
       emperor.cityTax( city->name(), empireTax );
     }
-  }
+    }
+}
+
+void GovernorRank::load( const std::string& name, const VariantMap &vm)
+{
+  rankName = name;
+  VARIANT_LOAD_STR( pretty, vm );
+  VARIANT_LOAD_ANY( salary, vm );
+  VARIANT_LOAD_ANY( level, vm );
 }
 
 }//end namespace world
