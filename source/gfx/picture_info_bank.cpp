@@ -12,11 +12,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "picture_info_bank.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/stringhelper.hpp"
-
+#include "core/variant.hpp"
+#include "core/saveadapter.hpp"
+#include "core/logger.hpp"
 #include <map>
 
 class PictureInfoBank::Impl
@@ -41,7 +45,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   // tiles
   Point offset = getDefaultOffset( tileOffset );
   _d->setRange( ResourceGroup::land1a, 1, 303, offset);
-  _d->setRange("oc3_land", 1, 2, offset);
+  _d->setRange( "oc3_land", 1, 2, offset);
   _d->setRange( ResourceGroup::land2a, 1, 151, offset);
   _d->setRange( ResourceGroup::land2a, 187, 195, offset); //burning ruins start animation
   _d->setRange( ResourceGroup::land2a, 214, 231, offset); //burning ruins middle animation
@@ -178,6 +182,30 @@ void PictureInfoBank::setOffset(const std::string& preffix, const int index, con
 }
 
 PictureInfoBank::~PictureInfoBank() {}
+
+void PictureInfoBank::initialize(vfs::Path filename)
+{
+  VariantMap m = SaveAdapter::load( filename );
+
+  foreach( it, m )
+  {
+    Variant v = it->second;
+    Logger::warning( "Set offset for " + it->first );
+    if( v.type() == Variant::Map )
+    {
+      VariantMap vm = v.toMap();
+      int startIndex = vm[ "start" ];
+      int stopIndex = vm[ "stop" ];
+      Point offset = vm[ "offset" ].toPoint();
+      _d->setRange( it->first, startIndex, stopIndex, offset );
+    }
+    else if( v.type() == Variant::List )
+    {
+      VariantList vl = v.toList();
+      _d->setOne( it->first, vl.get( 0 ).toInt(), vl.get( 1 ).toInt(), vl.get( 2 ).toInt() );
+    }
+  }
+}
 
 Point PictureInfoBank::getDefaultOffset(PictureInfoBank::OffsetType type) const
 {

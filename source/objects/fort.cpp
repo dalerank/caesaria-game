@@ -58,7 +58,7 @@ static LegionEmblem _findFreeEmblem( PlayerCityPtr city )
   forts << city->overlays();
 
   std::vector<LegionEmblem> availableEmblems;
-  VariantMap emblemsModel = SaveAdapter::load( GameSettings::rcpath( GameSettings::emblemsModel ) );
+  VariantMap emblemsModel = SaveAdapter::load( SETTINGS_RC_PATH( emblemsModel ) );
   foreach( it, emblemsModel )
   {
     VariantMap vm_emblem = it->second.toMap();

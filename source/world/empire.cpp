@@ -435,7 +435,7 @@ GovernorRanks EmpireHelper::getRanks()
 {
   std::map<unsigned int, GovernorRank > sortRanks;
 
-  VariantMap vm = SaveAdapter::load( GameSettings::rcpath( GameSettings::ranksModel ) );
+  VariantMap vm = SaveAdapter::load( SETTINGS_RC_PATH( ranksModel ) );
   foreach( i, vm )
   {
     VariantMap rankInfo = i->second.toMap();

@@ -59,6 +59,7 @@
 #include "freeplay_finalizer.hpp"
 #include "events/warningmessage.hpp"
 #include "gfx/gl_engine.hpp"
+#include "gfx/picture_info_bank.hpp"
 
 #include <list>
 
@@ -137,7 +138,7 @@ void Game::Impl::initSound()
   ae.setVolume( audio::themeSound, GameSettings::get( GameSettings::musicVolume ) );
   ae.setVolume( audio::gameSound, GameSettings::get( GameSettings::soundVolume ) );
 
-  audio::Helper::initTalksArchive( GameSettings::rcpath( GameSettings::talksArchive ) );
+  audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
@@ -159,11 +160,11 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
     }
 
-    loader.loadFromModel( GameSettings::rcpath( GameSettings::sg2model ) );
+    loader.loadFromModel( SETTINGS_RC_PATH( sg2model ) );
   }
   else
   {
-    vfs::Path testPics = GameSettings::rcpath( GameSettings::testArchive );
+    vfs::Path testPics = SETTINGS_RC_PATH( testArchive );
     if( !testPics.exist() )
     {
       errorStr = "Not found graphics set. Use precompiled CaesarIA archive or use\n"
@@ -179,7 +180,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     exit( -1 ); //kill application
   }
 
-  loader.loadFromModel( GameSettings::rcpath( GameSettings::archivesModel ) );
+  loader.loadFromModel( SETTINGS_RC_PATH( archivesModel ) );
 }
 
 void Game::Impl::createSaveDir()
@@ -215,7 +216,7 @@ void Game::Impl::initFontCollection( vfs::Path resourcePath )
 void Game::Impl::initPictures(vfs::Path resourcePath)
 {
   AnimationBank::instance().loadCarts();
-  AnimationBank::instance().loadAnimation( GameSettings::rcpath( GameSettings::animationsModel ) );
+  AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ) );
 
   Logger::warning( "Game: create runtime pictures" );
   PictureBank::instance().createResources();
@@ -442,9 +443,9 @@ void Game::load(std::string filename)
   reset();
 
   Logger::warning( "Game: init empire start options" );
-  _d->empire->initialize( GameSettings::rcpath( GameSettings::citiesModel ),
-                          GameSettings::rcpath( GameSettings::empireObjectsModel ),
-                          GameSettings::rcpath( GameSettings::worldModel ) );
+  _d->empire->initialize( SETTINGS_RC_PATH( citiesModel ),
+                          SETTINGS_RC_PATH( empireObjectsModel ),
+                          SETTINGS_RC_PATH( worldModel ) );
 
   Logger::warning( "Game: try find loader" );
   GameLoader loader;
@@ -511,6 +512,9 @@ void Game::initialize()
   ResourceLoader rcLoader;
   rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
 
+  screen.setPrefix( "##loading_offsets##" );
+  PictureInfoBank::instance().initialize( SETTINGS_RC_PATH( pic_offsets ) );
+
   screen.setPrefix( "##loading_resources##" );
   _d->mountArchives( rcLoader );  // init some quick pictures for screenWait
 
@@ -519,19 +523,19 @@ void Game::initialize()
   _d->initPictures( GameSettings::rcpath() );
 
   screen.setText( "##initialize_names##" );
-  NameGenerator::instance().initialize( GameSettings::rcpath( GameSettings::ctNamesModel ) );
+  NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
 
   screen.setText( "##initialize_house_specification##" );
-  HouseSpecHelper::instance().initialize( GameSettings::rcpath( GameSettings::houseModel ) );
+  HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
 
   screen.setText( "##initialize_constructions##" );
-  MetaDataHolder::instance().initialize( GameSettings::rcpath( GameSettings::constructionModel ) );
+  MetaDataHolder::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
 
   screen.setText( "##initialize_walkers##" );
-  WalkerHelper::instance().initialize( GameSettings::rcpath( GameSettings::walkerModel ) );
+  WalkerHelper::instance().initialize( SETTINGS_RC_PATH( walkerModel ) );
 
   screen.setText( "##initialize_religion##" );
-  _d->initPantheon( GameSettings::rcpath( GameSettings::pantheonModel ) );
+  _d->initPantheon( SETTINGS_RC_PATH( pantheonModel ) );
 
   screen.setText( "##ready_to_game" );
 

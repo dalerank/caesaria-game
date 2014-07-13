@@ -38,7 +38,7 @@ public:
 
 Player::Player( PlayerCityPtr city ) : Srvc( *city.object(), "audio_player" ), _d( new Impl )
 { 
-  vfs::Path path = GameSettings::rcpath( GameSettings::soundThemesModel );
+  vfs::Path path = SETTINGS_RC_PATH( soundThemesModel );
 
   if( path.exist() )
   {

@@ -911,8 +911,10 @@ void House::_update()
                                              ? HouseLevel::vacantLot
                                              : (HouseLevel::ID)_d->houseLevel;
   Picture pic = HouseSpecHelper::instance().getPicture( level, size().width() );
-
-  setPicture( pic );
+  if( pic.isValid() )
+  {
+    setPicture( pic );
+  }
 
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * size().area();
   _d->services[ Service::forum ].setMax( _d->spec.taxRate() * _d->maxHabitants );

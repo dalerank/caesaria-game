@@ -9,5 +9,6 @@
   etruscans : "/gfx/pics_etruscan.zip"
   indigene : "/gfx/pics_indigene.zip"
   sound_themes : "/audio/themes.zip"
+  housingb : "/gfx/pics_house.zip"
   game_sounds : "/audio/wavs_game.zip"
 }

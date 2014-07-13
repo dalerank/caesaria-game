@@ -73,7 +73,7 @@ void EmperorGiftWindow::Impl::fillGifts(ListBox* lbx)
   if( !lbx )
     return;
 
-  vfs::Path giftsDesc = GameSettings::rcpath( GameSettings::giftsModel );
+  vfs::Path giftsDesc = SETTINGS_RC_PATH( giftsModel );
   VariantMap giftModel = SaveAdapter::load( giftsDesc );
   StringArray gifts = giftModel.get( "items" ).toStringArray();
 
