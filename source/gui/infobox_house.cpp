@@ -202,7 +202,7 @@ bool InfoboxHouse::onEvent(const NEvent& event)
       {
       case KEY_COMMA:
       case KEY_PERIOD:
-        _house->debugChangeLevel( event.keyboard.key == KEY_COMMA );
+        _house->debugChangeLevel( event.keyboard.key == KEY_COMMA ? +1 : -1);
         return true;
       default:
          break;

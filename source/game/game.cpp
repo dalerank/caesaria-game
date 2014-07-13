@@ -117,8 +117,13 @@ void Game::Impl::initVideo()
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
 
-  Logger::warning( "GraficEngine: try set fullscreen mode" );
-  engine->setFlag( gfx::Engine::fullscreen, GameSettings::get( GameSettings::fullscreen ).toBool() ? 1 : 0 );
+  bool fullscreen = GameSettings::get( GameSettings::fullscreen );
+  if( fullscreen )
+  {
+    Logger::warning( "GraficEngine: try set fullscreen mode" );
+    engine->setFlag( gfx::Engine::fullscreen, fullscreen ? 1 : 0 );
+  }
+
   engine->init();
 }
 
@@ -529,6 +534,7 @@ void Game::initialize()
   _d->initPantheon( GameSettings::rcpath( GameSettings::pantheonModel ) );
 
   screen.setText( "##ready_to_game" );
+
   if( GameSettings::get( "no-fade" ).isNull() )
     screen.exitScene();
 }

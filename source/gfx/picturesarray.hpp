@@ -29,7 +29,7 @@ class Pictures : public std::vector<Picture>
 public:
   void load( const std::string& rc, int startIndex, int number, int multiplier=1 );
 
-  inline Pictures& operator << ( const Picture& pic ) { push_back( pic); return *this; }
+  Pictures& operator << ( const Picture& pic );
 };
 
 } //end namespace gfx

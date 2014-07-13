@@ -40,10 +40,6 @@
 using namespace gfx;
 using namespace constants;
 
-namespace {
-  static const int vacantLotId = 45;
-}
-
 class HouseSpecification::Impl
 {
 public:
@@ -653,13 +649,10 @@ HouseSpecification& HouseSpecification::operator=( const HouseSpecification& oth
 class HouseSpecHelper::Impl
 {
 public:
-  typedef std::map<std::string, Pictures > TexturesOneHouse;
-  typedef std::map<int, int> HouseLevelSpecsEqMap;
   typedef std::map<int, HouseSpecification > HouseLevels;
-  typedef std::map<int, TexturesOneHouse > HouseTextures;
+  typedef std::map<std::string, StringArray > HouseTextures;
 
-  HouseLevels spec_by_level;  // key=houseLevel, value=houseLevelSpec
-  //HouseLevelSpecsEqMap level_by_id;  // key=houseId, value=houseLevel
+  HouseLevels levels;
   HouseTextures houseTextures;
 };
 
@@ -672,69 +665,17 @@ HouseSpecHelper& HouseSpecHelper::instance()
 HouseSpecHelper::HouseSpecHelper() : _d( new Impl )
 {
   Logger::warning( "HouseLevelSpec INIT" );
-
-  _d->houseTextures[ HouseLevel::vacantLot ][ "s1" ] << Picture::load( ResourceGroup::housing, vacantLotId );
-
-  /*_d->level_by_id.clear();
-  _d->level_by_id[0] = 0;
-  _d->level_by_id[1] = 1;
-  _d->level_by_id[2] = 1;
-  _d->level_by_id[3] = 2;
-  _d->level_by_id[4] = 2;
-  _d->level_by_id[5] = 1; // 2x2
-  _d->level_by_id[6] = 2; // 2x2
-  _d->level_by_id[7] = 3;
-  _d->level_by_id[8] = 3;
-  _d->level_by_id[9] = 4;
-  _d->level_by_id[10] = 4;
-  _d->level_by_id[11] = 3; // 2x2
-  _d->level_by_id[12] = 4; // 2x2
-  _d->level_by_id[13] = 5;
-  _d->level_by_id[14] = 5;
-  _d->level_by_id[15] = 6;
-  _d->level_by_id[16] = 6;
-  _d->level_by_id[17] = 5; // 2x2
-  _d->level_by_id[18] = 6; // 2x2
-  _d->level_by_id[19] = 7;
-  _d->level_by_id[20] = 7;
-  _d->level_by_id[21] = 8;
-  _d->level_by_id[22] = 8;
-  _d->level_by_id[23] = 7; // 2x2
-  _d->level_by_id[24] = 8; // 2x2
-  _d->level_by_id[25] = 9;
-  _d->level_by_id[26] = 9;
-  _d->level_by_id[27] = 10;
-  _d->level_by_id[28] = 10;
-  _d->level_by_id[29] = 9; // 2x2
-  _d->level_by_id[30] = 10; // 2x2
-  _d->level_by_id[31] = 11; // 2x2
-  _d->level_by_id[32] = 11; // 2x2
-  _d->level_by_id[33] = 12; // 2x2
-  _d->level_by_id[34] = 12; // 2x2
-  _d->level_by_id[35] = 13; // 2x2
-  _d->level_by_id[36] = 13; // 2x2
-  _d->level_by_id[37] = 14; // 2x2
-  _d->level_by_id[38] = 14; // 2x2
-  _d->level_by_id[39] = 15; // 3x3
-  _d->level_by_id[40] = 15; // 3x3
-  _d->level_by_id[41] = 16; // 3x3
-  _d->level_by_id[42] = 16; // 3x3
-  _d->level_by_id[43] = 17; // 4x4
-  _d->level_by_id[44] = 17; // 4x4
-  _d->level_by_id[45] = 0;*/
 }
 
 HouseSpecification HouseSpecHelper::getSpec(const int houseLevel)
 {
-  int level = math::clamp<int>(houseLevel, 0, 17);
-  return _d->spec_by_level[level];
+  int level = math::clamp<int>(houseLevel, 0, 20);
+  return _d->levels[level];
 }
 
-//int HouseSpecHelper::geLevel( const int houseId ){  return _d->level_by_id[houseId];}
-
-int HouseSpecHelper::geLevel( const std::string& name )
+int HouseSpecHelper::getLevel( const std::string& name )
 {
-  foreach( item, _d->spec_by_level )
+  foreach( item, _d->levels )
   {
     if( item->second.internalName() == name )
     {
@@ -749,11 +690,11 @@ HouseSpecHelper::~HouseSpecHelper(){}
 
 void HouseSpecHelper::initialize( const vfs::Path& filename )
 {
-  VariantMap houseSpecs = SaveAdapter::load( filename.toString() );
+  VariantMap houseSpecs = SaveAdapter::load( filename );
 
   if( houseSpecs.empty() )
   {
-    Logger::warning( "Can't load house model from %s", filename.toString().c_str() );
+    Logger::warning( "Can't load house model from " + filename.toString() );
     return;
   }
 
@@ -764,7 +705,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap hSpec = item->second.toMap();
 
     HouseSpecification spec;
-    spec._d->houseLevel = hSpec[ "level" ].toInt();
+    spec._d->houseLevel = hSpec[ "level" ];
     spec._d->internalName = item->first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
@@ -805,23 +746,29 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();
     foreach( it, vmTextures )
     {
+      std::string arName = StringHelper::format( 0xff, "h%d_%s", spec._d->houseLevel, it->first.c_str() );
       StringArray txNames = it->second.toStringArray();
+
+      StringArray& hSizeTxs = _d->houseTextures[ arName ];
       foreach( tx, txNames )
       {
-        _d->houseTextures[ spec._d->houseLevel ][ it->first ] << Picture::load( *tx );
+        hSizeTxs.push_back( *tx );
       }
     }
 
-    _d->spec_by_level[ spec._d->houseLevel ] = spec;
+    _d->levels[ spec._d->houseLevel ] = spec;
   }
 }
 
-Picture HouseSpecHelper::getPicture(int houseLevel, int size ) const
+Picture HouseSpecHelper::getPicture( int houseLevel, int size ) const
 {
-  std::string sizeStr = "s" + StringHelper::i2str( size );
-  Pictures& array = _d->houseTextures[ houseLevel ][ sizeStr ];
+  std::string arName = StringHelper::format( 0xff, "h%d_s%d", houseLevel, size );
+  StringArray& array = _d->houseTextures[ arName ];
 
-  return array.empty()
-           ? Picture::getInvalid()
-           : array[ math::random( array.size() ) ];
+  if( !array.empty() )
+  {
+    return Picture::load( array[ array.size() == 1 ? 0 : math::random(array.size()) ] );
+  }
+
+  return Picture::getInvalid();
 }

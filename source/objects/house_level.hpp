@@ -96,8 +96,7 @@ public:
   static HouseSpecHelper& instance();
 
   HouseSpecification getSpec(const int houseLevel);
-  //int geLevel(const int houseId);
-  int geLevel( const std::string& name );
+  int getLevel( const std::string& name );
   void initialize( const vfs::Path& filename );
   gfx::Picture getPicture(int houseLevel , int size) const;
 

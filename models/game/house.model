@@ -81,7 +81,7 @@
       "tax" : 1
       "txs" : {
         s1: [ "housng1a_00003", "housng1a_00004" ]
-        s2 : [ "housng1a_00006" ]
+        s2: [ "housng1a_00006" ]
       }
     },
 
@@ -140,7 +140,7 @@
       "prosperity" : 20,
       "tax" : 1
       "txs" : {
-        s1: [ "housng1a_00009", "housng1a_000010" ]
+        s1: [ "housng1a_00009", "housng1a_00010" ]
         s2: [ "housng1a_00012" ]
       }
     },
@@ -170,7 +170,7 @@
       "prosperity" : 25,
       "tax" : 2
       "txs" : {
-        s1: [ "housng1a_00013", "housng1a_000014" ]
+        s1: [ "housng1a_00013", "housng1a_00014" ]
         s2: [ "housng1a_00017" ]
       }
     },
@@ -199,7 +199,7 @@
       "prosperity" : 30,
       "tax" : 2
       "txs" : {
-       s1: [ "housng1a_00015", "housng1a_000016" ]
+       s1: [ "housng1a_00015", "housng1a_00016" ]
        s2: [ "housng1a_00018" ]
       }
     },
@@ -229,7 +229,7 @@
       "prosperity" : 35,
       "tax" : 2
       "txs" : {
-        s1: [ "housng1a_00019", "housng1a_000020" ]
+        s1: [ "housng1a_00019", "housng1a_00020" ]
         s2: [ "housng1a_00023" ]
       }
     },
@@ -259,7 +259,7 @@
       "prosperity" : 45,
       "tax" : 2
       "txs" : {
-        s1: [ "housng1a_00021", "housng1a_000022" ]
+        s1: [ "housng1a_00021", "housng1a_00022" ]
         s2: [ "housng1a_00024" ]
       }
     },
@@ -289,7 +289,7 @@
       "prosperity" : 50,
       "tax" : 3
       "txs" : {
-        s1: [ "housng1a_00025", "housng1a_000026" ]
+        s1: [ "housng1a_00025", "housng1a_00026" ]
         s2: [ "housng1a_00029" ]
       }
     },
@@ -319,7 +319,7 @@
       "prosperity" : 58,
       "tax" : 3
       "txs" : {
-        s1: [ "housng1a_00027", "housng1a_000028" ]
+        s1: [ "housng1a_00027", "housng1a_00028" ]
         s2: [ "housng1a_00030" ]
       }
     },
@@ -349,7 +349,7 @@
       "prosperity" : 65,
       "tax" : 3
       "txs" : {
-        s2 : [ "housng1a_00031", "housng1a_000032" ]
+        s2 : [ "housng1a_00031", "housng1a_00032" ]
       }
     },
 
@@ -378,7 +378,7 @@
       "prosperity" : 80,
       "tax" : 4
       "txs" : {
-        s2 : [ "housng1a_00033", "housng1a_000034" ]
+        s2 : [ "housng1a_00033", "housng1a_00034" ]
       }
     },
 
@@ -407,7 +407,7 @@
       "prosperity" : 150,
       "tax" : 9
       "txs" : {
-        s2 : [ "housng1a_00035", "housng1a_000036" ]
+        s2 : [ "housng1a_00035", "housng1a_00036" ]
       }
     },
 
@@ -436,7 +436,7 @@
       "prosperity" : 180,
       "tax" : 10
       "txs" : {
-        s2: [ "housng1a_00037", "housng1a_000038" ]
+        s2: [ "housng1a_00037", "housng1a_00038" ]
       }
     },
 
@@ -492,7 +492,7 @@
       "prosperity" : 600,
       "tax" : 11
       "txs" : {
-        s3 : [ "housng1a_000040" ]
+        s3 : [ "housng1a_00040" ]
       }
     },
 

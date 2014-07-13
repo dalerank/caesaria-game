@@ -71,7 +71,7 @@ bool VictoryConditions::isSuccess( int culture, int prosperity,
 
 void VictoryConditions::load( const VariantMap& stream )
 {
-  _d->maxHouseLevel = HouseSpecHelper::instance().geLevel( stream.get( "maxHouseLevel" ).toString() );
+  _d->maxHouseLevel = HouseSpecHelper::instance().getLevel( stream.get( "maxHouseLevel" ).toString() );
   _d->success = stream.get( "success" ).toBool();
   _d->population = (int)stream.get( "population" );
   _d->culture = (int)stream.get( "culture" );
@@ -88,17 +88,17 @@ void VictoryConditions::load( const VariantMap& stream )
 VariantMap VictoryConditions::save() const
 {
   VariantMap ret;
-  ret[ "success" ] = _d->success;
-  ret[ "culture" ] = _d->culture;
+  ret[ "success"    ] = _d->success;
+  ret[ "culture"    ] = _d->culture;
   ret[ "population" ] = _d->population;
   ret[ "prosperity" ] = _d->prosperity;
-  ret[ "favour" ]  = _d->favour;
-  ret[ "peace"  ]  = _d->peace;
-  ret[ "overview" ] = Variant( _d->overview );
-  ret[ "short" ] = Variant( _d->shortDesc );
-  ret[ "caption" ] = Variant( _d->caption );
-  ret[ "next" ] = Variant( _d->nextMission );
-  ret[ "title" ] = Variant( _d->newTitle );
+  ret[ "favour"     ] = _d->favour;
+  ret[ "peace"      ] = _d->peace;
+  ret[ "overview"   ] = Variant( _d->overview );
+  ret[ "short"      ] = Variant( _d->shortDesc );
+  ret[ "caption"    ] = Variant( _d->caption );
+  ret[ "next"       ] = Variant( _d->nextMission );
+  ret[ "title"      ] = Variant( _d->newTitle );
 
   return ret;
 }
