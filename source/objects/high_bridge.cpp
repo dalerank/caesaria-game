@@ -40,7 +40,7 @@ public:
           liftingWestL=173, descentWestL=175,
           liftingNorthL=176, descentNorthL=178 };
   HighBridgeSubTile( const TilePos& pos, int index )
-    : Construction( building::lowBridge, Size( 1 ) )
+    : Construction( building::highBridge, Size( 1 ) )
   {
     _pos = pos;
     _index = index;

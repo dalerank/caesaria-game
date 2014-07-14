@@ -11,7 +11,8 @@
       geometryf : [ 0, 0, 0, 0 ]
       bgtype : "blackFrame"
       font : "FONT_2"
-      textAlign : [ "upperLeft", "center" ]
+      textAlign : [ "upperLeft", "upperLeft" ]
+      text.offset : [ 50, 15 ]
     }
     
     lbTitle#Label : 
@@ -47,6 +48,7 @@
       geometry : [ 32, 64, 380, 128 ]
       multiline : true
       font : "FONT_2"
+      multiline : true
     }
   }
 }

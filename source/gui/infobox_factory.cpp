@@ -43,8 +43,8 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
   // paint progress
   std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
-  Label* lbPr = new Label( this, Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
-  lbPr->setFont( Font::create( FONT_2 ) );
+  _lbProduction = new Label( this, Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
+  _lbProduction->setFont( Font::create( FONT_2 ) );
 
   if( factory->produceGoodType() != Good::none )
   {
@@ -66,9 +66,9 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
     lbStockInfo->setText( text );
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
-  }
 
-  _lbTextRef()->move( Point( 0, 15 ));
+    _lbTextRef()->setPosition( lbStockInfo->leftdownCorner() + Point( 0, 5 ));
+  }
 
   std::string workInfo = factory->workersProblemDesc();
   std::string cartInfo = factory->cartStateDesc();
@@ -90,9 +90,11 @@ InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
   int progressCount = shipyard->progress();
   if( progressCount > 1 && progressCount < 100 )
   {
-    new Label( this,
-               Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
-               _("##build_fishing_boat##") );
+    Label* lb = new Label( this,
+                           Rect( _lbProduction->leftdownCorner() + Point( 0, 5 ), Size( width() - 90, 25 ) ),
+                           _("##build_fishing_boat##") );
+    lb->setTextAlignment( align::upperLeft, align::upperLeft );
+    _lbTextRef()->setPosition( lb->leftdownCorner() + Point( 0, 5 ) );
   }
 }
 
@@ -104,9 +106,12 @@ InfoboxWharf::InfoboxWharf(Widget* parent, const Tile& tile)
 
   if( wharf->getBoat().isNull() )
   {
-    new Label( this,
-               Rect( _lbTitleRef()->leftdownCorner() + Point( 10, 35 ), Size( width() - 32, 25 ) ),
-               _("##wait_for_fishing_boat##") );
+    Label* lb = new Label( this,
+                           Rect( _lbProduction->leftdownCorner() + Point( 0, 10 ), Size( width() - 90, 25 ) ),
+                           _("##wait_for_fishing_boat##") );
+    lb->setTextAlignment( align::upperLeft, align::upperLeft );
+    lb->setWordwrap( true );
+    _lbTextRef()->setPosition( lb->leftdownCorner() + Point( 0, 10 ) );
   }
 }
 

@@ -29,8 +29,10 @@ public:
   InfoboxFactory( Widget* parent, const gfx::Tile& tile );
 
   virtual void showDescription();
-private:
+
+protected:
   gfx::TileOverlay::Type _type;
+  Label* _lbProduction;
 };
 
 class InfoboxShipyard : public InfoboxFactory
