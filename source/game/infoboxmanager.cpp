@@ -161,17 +161,18 @@ InfoboxManager::InfoboxManager() : _d( new Impl )
 
   InfoboxCitizenManager::instance().loadInfoboxes( *this );
 
-#define ADD_INFOBOX(typen, creator) addInfobox(typen, CAESARIA_STR_EXT(typen), new creator)
-  ADD_INFOBOX( building::reservoir,    BaseInfoboxCreator<InfoboxReservoir>() );
-  ADD_INFOBOX( building::house,        InfoboxHouseCreator() );
-  ADD_INFOBOX( building::prefecture,   ServiceBaseInfoboxCreator( "", "" ) );
-  ADD_INFOBOX( building::engineerPost, ServiceBaseInfoboxCreator( "", "" ) );
-  ADD_INFOBOX( building::well,         BaseInfoboxCreator<InfoboxWell>() );
-  ADD_INFOBOX( building::doctor,       ServiceBaseInfoboxCreator( "", "" ) );
-  ADD_INFOBOX( building::baths,        ServiceBaseInfoboxCreator( "", "" ) );
-  ADD_INFOBOX( building::barber,       ServiceBaseInfoboxCreator( "", "" ) );
-  ADD_INFOBOX( building::hospital,     ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( building::fountain,         CAESARIA_STR_EXT(B_FOUNTAIN),  new BaseInfoboxCreator<InfoboxFontain>() );
+#define ADD_INFOBOX(typen, creator) addInfobox(typen, CAESARIA_STR_EXT(typen), new creator);
+  ADD_INFOBOX( building::reservoir,    BaseInfoboxCreator<InfoboxReservoir>() )
+  ADD_INFOBOX( building::house,        InfoboxHouseCreator() )
+  ADD_INFOBOX( building::prefecture,   ServiceBaseInfoboxCreator( "", "" ) )
+  ADD_INFOBOX( building::engineerPost, ServiceBaseInfoboxCreator( "", "" ) )
+  ADD_INFOBOX( building::well,         BaseInfoboxCreator<InfoboxWell>() )
+  ADD_INFOBOX( building::doctor,       ServiceBaseInfoboxCreator( "", "" ) )
+  ADD_INFOBOX( building::baths,        ServiceBaseInfoboxCreator( "", "" ) )
+  ADD_INFOBOX( building::barber,       ServiceBaseInfoboxCreator( "", "" ) )
+  ADD_INFOBOX( building::hospital,     ServiceBaseInfoboxCreator( "", "" ) )
+  ADD_INFOBOX( building::fountain,     BaseInfoboxCreator<InfoboxFontain> )
+  ADD_INFOBOX( building::elevation,    InfoboxBasicCreator( "", "##elevation_info##" ) )
   addInfobox( building::aqueduct,         CAESARIA_STR_EXT(B_AQUEDUCT),  new InfoboxBasicCreator( "", "##aqueduct_info##") );
   addInfobox( building::market,           CAESARIA_STR_EXT(B_MARKET),    new BaseInfoboxCreator<InfoboxMarket>() );
   addInfobox( building::granary,          CAESARIA_STR_EXT(B_GRANARY),   new BaseInfoboxCreator<InfoboxGranary>() );
@@ -216,7 +217,7 @@ InfoboxManager::InfoboxManager() : _d( new Impl )
   addInfobox( building::senate,           CAESARIA_STR_EXT(Senate),    new BaseInfoboxCreator<InfoboxSenate>() );
   addInfobox( building::theater,          CAESARIA_STR_EXT(Theater),     new BaseInfoboxCreator<InfoboxTheater>() );
   addInfobox( building::actorColony,      CAESARIA_STR_EXT(ActorColony), new ServiceBaseInfoboxCreator( "", "" ) );
-  ADD_INFOBOX( building::amphitheater,    BaseInfoboxCreator<InfoboxAmphitheater>() );
+  ADD_INFOBOX( building::amphitheater,    BaseInfoboxCreator<InfoboxAmphitheater>() )
   addInfobox( building::gladiatorSchool,  CAESARIA_STR_EXT(GladiatorSchool), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::colloseum,        CAESARIA_STR_EXT(Collosseum), new BaseInfoboxCreator<InfoboxColosseum>() );
   addInfobox( building::lionsNursery,     CAESARIA_STR_EXT(LionsNursery), new ServiceBaseInfoboxCreator( "", "" ) );

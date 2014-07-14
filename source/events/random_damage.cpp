@@ -30,7 +30,6 @@ namespace events
 
 namespace {
 CAESARIA_LITERALCONST(population)
-CAESARIA_LITERALCONST(strong)
 }
 
 class RandomDamage::Impl
@@ -60,11 +59,12 @@ void RandomDamage::_exec( Game& game, unsigned int time )
 
     ctrs = ctrs.exclude<Road>();
 
-    for( unsigned int k=0; k < (ctrs.size() * _d->strong / 100); k++ )
+    unsigned int number4dmg = math::clamp<unsigned int>( ctrs.size() * _d->strong / 100, 1, 100 );
+
+    for( unsigned int k=0; k < number4dmg; k++ )
     {
-      ConstructionList::iterator it = ctrs.begin();
-      std::advance( it, math::random( ctrs.size()-1 ) );
-      (*it)->collapse();
+      ConstructionPtr ctr = ctrs.random();
+      ctr->collapse();
     }
   }
 }
@@ -77,7 +77,7 @@ void RandomDamage::load(const VariantMap& stream)
   VariantList vl = stream.get( lc_population ).toList();
   _d->minPopulation = vl.get( 0, 0 ).toInt();
   _d->maxPopulation = vl.get( 1, 999999 ).toInt();
-  _d->strong = stream.get( lc_strong, 10 );
+  VARIANT_LOAD_ANY_D( _d, strong, stream );
 }
 
 VariantMap RandomDamage::save() const
@@ -87,7 +87,7 @@ VariantMap RandomDamage::save() const
   vl_pop << _d->minPopulation << _d->maxPopulation;
 
   ret[ lc_population ] = vl_pop;
-  ret[ lc_strong ] = _d->strong;
+  VARIANT_SAVE_ANY_D(ret, _d, strong );
 
   return ret;
 }

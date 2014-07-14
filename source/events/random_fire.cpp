@@ -71,7 +71,7 @@ void RandomFire::_exec( Game& game, unsigned int time)
       else { ++it; }
     }
 
-    unsigned int number4burn = math::clamp( (ctrs.size() * _d->strong / 100), 1u, 100u );
+    unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );
 
     for( unsigned int k=0; k < number4burn; k++ )
     {
