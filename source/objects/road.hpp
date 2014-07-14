@@ -33,6 +33,7 @@ public:
   virtual bool isFlat() const;
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
+  virtual void burn();
   virtual void appendPaved( int value );
   virtual void computeAccessRoads();
   int pavedValue() const;

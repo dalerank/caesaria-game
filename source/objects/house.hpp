@@ -109,7 +109,7 @@ private:
   void _levelUp();
   void _levelDown();
 
-  void _update();
+  void _update(bool needChangeTexture);
   void _tryEvolve_1_to_11_lvl(int level, int growSize, const char desirability );
   void _tryEvolve_12_to_20_lvl(int level4grow, int minSize, const char desirability);
   void _tryDegrage_11_to_2_lvl( const char desirability );

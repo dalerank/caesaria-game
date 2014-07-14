@@ -180,6 +180,8 @@ void Road::destroy()
   Construction::destroy();
 }
 
+void Road::burn() {}
+
 void Road::appendPaved( int value )
 {
   bool saveValue = _paved > 0;

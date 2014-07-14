@@ -13,12 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "random_damage.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "game/gamedate.hpp"
+#include "objects/road.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
 
@@ -56,6 +57,8 @@ void RandomDamage::_exec( Game& game, unsigned int time )
     _d->isDeleted = true;
     ConstructionList ctrs;
     ctrs << game.city()->overlays();
+
+    ctrs = ctrs.exclude<Road>();
 
     for( unsigned int k=0; k < (ctrs.size() * _d->strong / 100); k++ )
     {

@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
+#include "core/priorities.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;
@@ -57,14 +58,25 @@ void RandomFire::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute random fire service" );
     _d->isDeleted = true;
 
+    Priorities<int> exclude;
+    exclude << building::waterGroup
+            << building::roadGroup;
+
     ConstructionList ctrs;
     ctrs << game.city()->overlays();
 
-    for( unsigned int k=0; k < (ctrs.size() * _d->strong / 100); k++ )
+    for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
     {
-      ConstructionList::iterator it = ctrs.begin();
-      std::advance( it, math::random( ctrs.size()-1 ) );
-      (*it)->burn();
+      if( exclude.count( (*it)->group() ) ) { it = ctrs.erase( it ); }
+      else { ++it; }
+    }
+
+    unsigned int number4burn = math::clamp( (ctrs.size() * _d->strong / 100), 1u, 100u );
+
+    for( unsigned int k=0; k < number4burn; k++ )
+    {
+      ConstructionPtr building = ctrs.random();
+      building->burn();
     }
   }
 }
