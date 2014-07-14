@@ -15,14 +15,12 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "rift.hpp"
+#include "river.hpp"
 #include "gfx/tile.hpp"
 #include "game/resourcegroup.hpp"
-#include "objects/aqueduct.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "walker/dustcloud.hpp"
 #include "core/foreach.hpp"
 
 using namespace constants;
@@ -32,40 +30,36 @@ namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Rift::Rift() : TileOverlay( building::rift, Size(1) )
-{  
+River::River() : TileOverlay( building::river, Size(1) )
+{
 }
 
-void Rift::build( PlayerCityPtr city, const TilePos& pos )
+void River::build( PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
   setPicture( computePicture() );
 
-  RiftList rifts = neighbors();
+  RiverList rifts = neighbors();
   foreach( it, rifts )
   {
     (*it)->updatePicture();
-  }
-
-  DustCloud::create( city, pos, 5 );
+  } 
 }
 
-void Rift::initTerrain(Tile& terrain)
+void River::initTerrain(Tile& terrain)
 {
-  terrain.setFlag( Tile::clearAll, true );
-  terrain.setFlag( Tile::tlRift, true );
-  terrain.setFlag( Tile::tlRock, true );
+  terrain.setFlag( Tile::tlWater, true );
 }
 
-RiftList Rift::neighbors() const
+RiverList River::neighbors() const
 {
-  RiftList ret;
+  RiverList ret;
 
   TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::FourNeighbors);
 
   foreach( it, tiles )
   {
-    RiftPtr rt = ptr_cast<Rift>( (*it)->overlay() );
+    RiverPtr rt = ptr_cast<River>( (*it)->overlay() );
     if( rt.isValid() )
     {
       ret.push_back( rt );
@@ -75,14 +69,14 @@ RiftList Rift::neighbors() const
   return ret;
 }
 
-Picture Rift::computePicture()
+Picture River::computePicture()
 {
   int i = tile().i();
   int j = tile().j();
 
-  RiftList neigs = neighbors();
+  RiverList neigs = neighbors();
 
-  int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
+  directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
   foreach( it, neigs )
   {
     Tile* tile = &(*it)->tile();
@@ -95,41 +89,55 @@ Picture Rift::computePicture()
   // std::cout << "direction flags=" << directionFlags << std::endl;
 
   int index = 0;
-  switch (directionFlags)
+  if( tile().getFlag( Tile::tlCoast ) )
   {
-  case 0: index = 224; break; // no RIFT!
-  case 1: index = 216 + math::random( 2 ); break; // North
-  case 2: index = 220 + math::random( 2 ); break; // East
-  case 4: index = 218 + math::random( 2 ); break; // South
-  case 3: index = 208 + math::random( 2 );  break; // North+East
-  case 5: index = 200 + math::random( 4 ); break;  // North+South
-  case 6: index = 210 + math::random( 2 );  break; // East+South
-  case 7: index = 225; break; // North+East+South
-  case 8: index = 222 + math::random( 2 ); break; // West
-  case 9: index = 214 + math::random( 2 ); break; // North+West
-  case 10: index = 204 + + math::random( 4 ); break;  // East+West
-  case 11: index = 228; break; // North+East+West
-  case 12: index = 212 + math::random( 2 ); break;  // South+West
-  case 13: index = 227; break; // North+South+West
-  case 14: index = 226; break; // East+South+West
-  case 15: index = 229; break; // North+East+South+West
+    switch (directionFlags)
+    {
+    case 1: index = 175; break;
+    case 2: index = 176; break;
+    case 4: index = 177; break;
+    case 8: index = 174; break;
+    }
+  }
+  else
+  {
+    switch (directionFlags)
+    {
+    case 0: index = 199; break; // no River!
+    case 1: index = 164; break; // North
+    case 2: index = 165; break; // East
+    case 3: index = 1188;  break; // North+East
+    case 4: index = 166; break; // South
+    case 5: index = 162 + math::random( 2 ); break;  // North+South
+    case 6: index = 1198;  break; // East+South
+    case 7: index = 188; break; // North+East+South
+    case 8: index = 167; break; // West
+    case 9: index = 198; break; // North+West
+    case 0xa: index = 160 + math::random( 2 ); break;  // East+West
+    case 0xb: index = 185; break; // North+East+West
+    case 0xc: index = 1194; break;  // South+West
+    case 0xd: index = 194; break; // North+South+West
+    case 0xe: index = 191; break; // East+South+West
+    case 0xf: index = 182; break; // North+East+South+West
+    }
   }
 
   return Picture::load( ResourceGroup::land1a, index);
 }
 
-bool Rift::isWalkable() const{  return false;}
-bool Rift::isFlat() const {  return true;}
-void Rift::destroy() {}
-bool Rift::isDestructible() const {  return false;}
-Renderer::PassQueue Rift::passQueue() const {  return riftPassQueue; }
+bool River::isWalkable() const{  return false;}
+bool River::isFlat() const {  return true;}
+void River::destroy() {}
+bool River::isDestructible() const { return false;}
+Renderer::PassQueue River::passQueue() const {  return riftPassQueue; }
 
-void Rift::updatePicture()
+void River::updatePicture()
 {
   setPicture( computePicture() );
+  tile().setOriginalImgId( directionFlags );
 }
 
-void Rift::load(const VariantMap& stream)
+void River::load(const VariantMap& stream)
 {
   updatePicture();
 }

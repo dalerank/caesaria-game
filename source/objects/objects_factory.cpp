@@ -74,6 +74,7 @@
 #include "weaponsworkshop.hpp"
 #include "missionarypost.hpp"
 #include "ironmine.hpp"
+#include "river.hpp"
 #include <map>
 
 using namespace constants;
@@ -320,6 +321,7 @@ TileOverlayFactory::TileOverlayFactory() : _d( new Impl )
   //places
   ADD_CREATOR( building::elevation, Elevation, BaseCreator );
   ADD_CREATOR( building::rift, Rift, BaseCreator );
+  ADD_CREATOR( building::river, River, BaseCreator );
 }
 
 void TileOverlayFactory::addCreator( const TileOverlay::Type type, const std::string& typeName, TileOverlayConstructor* ctor )

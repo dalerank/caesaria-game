@@ -175,7 +175,7 @@ TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
   switch (type){
     case AllNeighbors:
       return getRectangle(pos - offset, pos + offset, checkCorners);
-    case EdgeNeighbors:
+    case FourNeighbors:
       return getRectangle(pos - offset, pos + offset, !checkCorners);
   }
   //_CAESARIA_DEBUG_BREAK_IF("Unexpected type")

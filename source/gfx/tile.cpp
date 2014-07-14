@@ -128,6 +128,8 @@ bool Tile::getFlag(Tile::Type type) const
   case tlRoad: return _terrain.road;
   case tlWater: return _terrain.water;
   case tlTree: return _terrain.tree;
+  case tlGrass: return (!_terrain.road && !_terrain.deepWater && !_terrain.water && !_terrain.tree && !_terrain.rock && _overlay.isNull());
+
   case isConstructible:
   {
     return !(_terrain.water || _terrain.deepWater || _terrain.rock || _terrain.tree || _overlay.isValid() || _terrain.road);

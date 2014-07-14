@@ -217,15 +217,30 @@ static void __removeCorners(Game& game )
     }
 }
 
+namespace {
+enum { passCheckNorthTiles=1,
+       passCheckEastTiles=2,
+       passCheckSouthTiles=3,
+       passCheckWestTiles=4,
+       passCheckCornerTiles=5 };
+
+enum { drN=0x1,drNW=0x80,
+       drW=0x8,drSW=0x40,
+       drS=0x4,drSE=0x20,
+       drE=0x2,drNE=0x10 };
+
+int directions[8] = { drN, drNW, drW, drSW, drS, drSE, drE, drNE };
+
+TilePos psAr[8] = { TilePos(0, 1), TilePos(-1, 1), TilePos(-1, 0), TilePos(-1, -1),
+                    TilePos(0, -1), TilePos(1, -1), TilePos(1, 0), TilePos(1, 1)};
+}
+
 static void __finalizeMap(Game& game, int pass )
 {
   PlayerCityPtr oCity = game.city();
   Tilemap& oTilemap = oCity->tilemap();
   unsigned int mapSize = oTilemap.size();
 
-  TilePos psAr[8] = { TilePos(0, 1), TilePos(-1, 1), TilePos(-1, 0), TilePos(-1, -1),
-                      TilePos(0, -1), TilePos(1, -1), TilePos(1, 0), TilePos(1, 1)};
-  int directions[8] = { 0x1, 0x80, 0x8, 0x40, 0x4, 0x20, 0x2, 0x10 };
   //check one water tiles
   for( unsigned int i=0; i < mapSize; i++ )
     for( unsigned int j=0; j < mapSize; j++ )
@@ -249,40 +264,47 @@ static void __finalizeMap(Game& game, int pass )
 
       int start=0, rnd=4;
       switch( pass ) {
-      case 1:
+      case passCheckNorthTiles:
         switch( direction )
         {
-        case 0x1: case 0x81: case 0x91: case 0x11: case 0x90: start=128; break;
+        case drN: case drN|drNW: case drNW|drNE|drN: case drNE|drN: case drNE|drNW: start=128; break;
         }
       break;
 
-      case 2:
+      case passCheckEastTiles:
         switch( direction )
         {
-        case 0x2: case 0x12: case 0x30: case 0x32: case 0x22: start=132; break;
+        case drE: case drNE|drE: case drNE|drSE: case drNE|drSE|drE: case drSE|drE: start=132; break;
         }
       break;
 
-      case 3:
+      case passCheckSouthTiles:
         switch( direction )
         {
-        case 0x4: case 0x44: case 0x24: case 0x64: case 0x60: start=136; break;
+        case drS: case drSW|drS: case drSE|drS: case drSW|drSE|drS: case drSW|drSE: start=136; break;
         }
       break;
 
-      case 4:
+      case passCheckWestTiles:
         switch( direction )
         {
-        case 0x8: case 0xc8: case 0x48: case 0x88: case 0xc0: start=140; break;
+        case drW: case drSW|drNW|drW: case drSW|drW: case drNW|drW: case drSW|drNW: start=140; break;
         }
       break;
 
-      case 5:
+      case passCheckCornerTiles:
         switch( direction )
         {
-        case 0x26: case 0x66: case 0x36: case 0x76: case 0x72: case 0x52: case 0x74:
-        case 0x34: case 0x16: case 0x42: case 0x46: case 0x14: case 0x54: case 0x56:
-        case 0x06: case 0x70: case 0x62: start = 171; rnd=0; break;
+        case drE|drS|drSE:
+        case drE|drNE|drSE|drS:
+        case drE|drSW|drSE|drS:
+        case drE|drSW|drSE|drS|drNE:
+        case drE|drSW|drSE|drNE:
+        case drE|drSW|drNE: case drNE|drSE|drSW|drS:
+        case drSE|drNE|drS: case drNE|drS|drE: case drSW|drE:
+        case drSW|drS|drE: case drNE|drS: case drNE|drSW|drS:
+        case drNE|drSW|drE|drS:
+        case drE|drS: case drNE|drSE|drSW: case drSW|drSE|drE: start = 171; rnd=0; break;
 
         case 0xc9: case 0x89: case 0x99: case 0x98: case 0xd9: case 0x58: case 0x19:
         case 0xd8: case 0xd1: case 0x49: case 0x18: case 0xc1: case 0x41:
@@ -294,17 +316,15 @@ static void __finalizeMap(Game& game, int pass )
 
         case 0xa0: start=168; rnd=0; break;
         case 0x50: start=169; rnd=0; break;
-        }
-      break;
 
-      case 6:
-        switch( direction )
-        {
         case 0xcc: case 0x4c: case 0x6c: case 0xec:
         case 0xc4: case 0x68: case 0xe4: case 0xe8: case 0xa8: case 0x84:
         case 0x28: case 0xac: case 0xa4: case 0x0c: case 0x8c: case 0x2c:
         case 0xe0:  start = 172; rnd=0; break;
         }
+      break;
+
+      case 6:
       break;
 
       case 7:
@@ -392,6 +412,12 @@ public:
     ret = tile->isWalkable( true ) || tile->getFlag( Tile::tlTree );
   }
 
+  void canBuildRiver( const Tile* tile, bool& ret )
+  {
+    ret = (  tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlGrass ) || tile->getFlag( Tile::tlTree ) );
+  }
+
+
   TilesArray sideTiles( int side, Tilemap& oTilemap )
   {
     int mapSize = oTilemap.size();
@@ -407,17 +433,86 @@ public:
   }
 };
 
+static void __createRivers(Game& game )
+{
+  PlayerCityPtr oCity = game.city();
+  Tilemap& oTilemap = oCity->tilemap();
+
+  TerrainGeneratorHelper tgHelper;
+  Pathfinder& pathfinder = Pathfinder::instance();
+  pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRiver ) );
+
+  TilesArray terrainTiles = oTilemap.getArea( TilePos(0,0), Size( oTilemap.size() ) );
+  for( TilesArray::iterator it=terrainTiles.begin(); it != terrainTiles.end(); )
+  {
+    Tile* tile = *it;
+    if( tile->isWalkable( true ) || tile->getFlag( Tile::tlTree ) ) { ++it; }
+    else { it = terrainTiles.erase( it ); }
+  }
+
+  int riverCount = 0;
+  for( int tryCount=0; tryCount < 20;  tryCount++ )
+  {
+    if( riverCount++ > oTilemap.size() / 60 )
+      break;
+
+    Tile* centertile = terrainTiles.random();
+    Pathway way;
+    for( int range=0; range < 99; range++ )
+    {
+      TilesArray perimeter = oTilemap.getRectangle( range, centertile->pos() );
+      foreach( it, perimeter )
+      {
+        Tile* currentTile = *it;
+        if( currentTile->getFlag( Tile::tlWater ) )
+        {
+          way = pathfinder.getPath( *centertile, *currentTile, Pathfinder::customCondition | Pathfinder::fourDirection );
+          if( way.isValid() )
+          {
+            break;
+          }
+        }
+      }
+
+      if( way.isValid() )
+        break;
+    }
+
+    if( way.isValid() )
+    {
+      TilesArray wayTiles = way.allTiles();
+
+      foreach( it, wayTiles )
+      {
+        TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::building::river );
+
+        //Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+        (*it)->setPicture( Picture::getInvalid() );
+        //(*it)->setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+        (*it)->setOriginalImgId( 0 );
+
+        bool isWater = (*it)->getFlag( Tile::tlWater );
+
+        overlay->build( oCity, (*it)->pos() );
+        oCity->overlays().push_back( overlay );
+
+        if( isWater )
+          break;
+      }
+    }
+  }
+}
+
 static void __createRoad(Game& game )
 {
   PlayerCityPtr oCity = game.city();
   Tilemap& oTilemap = oCity->tilemap();
 
+  TerrainGeneratorHelper tgHelper;
   Pathfinder& pathfinder = Pathfinder::instance();
-  pathfinder.update( oTilemap );
+  pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRoad ) );
 
   Pathway way;
-  TerrainGeneratorHelper tgHelper;
-
   for( int side=0; side < 4; side++ )
   {
     TilesArray tiles = tgHelper.sideTiles( side, oTilemap );
@@ -442,7 +537,6 @@ static void __createRoad(Game& game )
         {
           Tile* endTile = otherTiles.random();
 
-          pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRoad ) );
           way = pathfinder.getPath( *rtile, *endTile, Pathfinder::customCondition | Pathfinder::fourDirection );
 
           if( way.isValid() )
@@ -564,9 +658,17 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
       }
       break;
 
-      case MidpointDisplacement::trees: {
+      case MidpointDisplacement::trees:
+      {
         color = NColor( 255, 32, 139, 58);
-        Picture pic = Picture::load( ResourceGroup::land1a, 30 + math::random( 31 ) );
+        int start=30, rnd=31;
+        if( math::random( 10 ) > 6 )
+        {
+          start = 10;
+          rnd = 7;
+        }
+
+        Picture pic = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
         tile.setFlag( Tile::tlTree, true );
         tile.setPicture( pic );
         tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
@@ -600,16 +702,20 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
 
   __removeCorners( game );
 
-  __finalizeMap( game, 1 );
-  __finalizeMap( game, 2 );
-  __finalizeMap( game, 3 );
-  __finalizeMap( game, 4 );
-  __finalizeMap( game, 5 );
-  __finalizeMap( game, 6 );
+  __finalizeMap( game, passCheckNorthTiles );
+  __finalizeMap( game, passCheckEastTiles );
+  __finalizeMap( game, passCheckSouthTiles );
+  __finalizeMap( game, passCheckWestTiles );
+  __finalizeMap( game, passCheckCornerTiles );
+  //__finalizeMap( game, 6 );
   __finalizeMap( game, 7 );
   __finalizeMap( game, 8 );
   __finalizeMap( game, 9 );
   __finalizeMap( game, 0xff );
 
+  //update pathfinder map
+  Pathfinder::instance().update( oTilemap );
+
   __createRoad( game );
+  __createRivers( game );
 }

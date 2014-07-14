@@ -15,19 +15,19 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_RIFT_H_INCLUDE__
-#define __CAESARIA_RIFT_H_INCLUDE__
+#ifndef __CAESARIA_RIVER_H_INCLUDE__
+#define __CAESARIA_RIVER_H_INCLUDE__
 
 #include "gfx/tileoverlay.hpp"
 
-class Rift : public gfx::TileOverlay
+class River : public gfx::TileOverlay
 {
 public:
-  Rift();
+  River();
 
   virtual gfx::Picture computePicture();
   void updatePicture();
-  RiftList neighbors() const;
+  RiverList neighbors() const;
 
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void initTerrain( gfx::Tile &terrain);
@@ -38,6 +38,9 @@ public:
 
   virtual void load(const VariantMap &stream);
   virtual gfx::Renderer::PassQueue passQueue() const;
+
+private:
+  int directionFlags;
 };
 
-#endif //__CAESARIA_RIFT_H_INCLUDE__
+#endif //__CAESARIA_RIVER_H_INCLUDE__

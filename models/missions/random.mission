@@ -39,17 +39,17 @@
 	
   buildoptions :
   {
-    farm : "disable_all"
-    raw_material : "disable_all"
-    factory : "disable_all"
-    water : "disable_all"
-    health : "disable_all"
-    religion : "disable_all"
-    education : "disable_all"
-    entertainment : "disable_all"
-    govt : "disable_all"
-    engineering : "disable_all"
-    security : "disable_all"
+    farm : "enabled"
+    raw_material : "enabled"
+    factory : "enabled"
+    water : "enabled"
+    health : "enabled"
+    religion : "enabled"
+    education : "enabled"
+    entertainment : "enabled"
+    govt : "enabled"
+    engineering : "enabled"
+    security : "enabled"
     check_desirability : false
                    
     buildings : 

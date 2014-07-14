@@ -55,7 +55,7 @@ public:
 
   enum TileNeighbors
   {
-    EdgeNeighbors,
+    FourNeighbors,
     //Corners,
     AllNeighbors
   };

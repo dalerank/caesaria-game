@@ -1,3 +1,5 @@
 {
   housng1b : { start : 1, stop : 45, offset : [-1,-1] }
+  land1a : { start: 160, stop : 199, offset : [-1,-1] }
+  land1a : { start: 1188, stop : 1198, offset : [-1,-1] }
 }

@@ -132,7 +132,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
       {
         ov = TileOverlayFactory::instance().create( building::rift );
 
-        TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::EdgeNeighbors);
+        TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 
         /*foreach( it, tiles )
         {

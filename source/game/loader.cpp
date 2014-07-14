@@ -53,7 +53,7 @@ public:
   void finalize( Game& game );
   bool maySetSign( const Tile& tile )
   {
-    return tile.isWalkable( true ) || tile.getFlag( Tile::tlTree );
+    return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
   }
 };
 
