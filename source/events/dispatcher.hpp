@@ -32,13 +32,15 @@ class Dispatcher : public StaticSingleton<Dispatcher>
 {
 public:
   Dispatcher();
-  ~Dispatcher();
+  virtual ~Dispatcher();
 
   void append( GameEventPtr event );
   void update( Game& game, unsigned int time );
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+
+  void reset();
 
 private:
   class Impl;

@@ -234,7 +234,7 @@ void Religion::Impl::updateRelation( PlayerCity& city, DivinityPtr divn )
     faithValue = math::clamp( 100 * myTemples.parishionerNumber / city.population(), 0u, 100u );
   }
 
-  Logger::warning( "Religion: set faith income for %s is %f[r=%f]", divn->name().c_str(), faithValue, divn->relation() );
+  Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );
   divn->updateRelation( faithValue, &city );
 
   if( divn->relation() < 30 && lastMessageDate.monthsTo( GameDate::current() ) > 6 )

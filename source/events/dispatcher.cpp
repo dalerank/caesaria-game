@@ -77,7 +77,6 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  _d->events.clear();
   foreach( it, stream )
   {
     GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
@@ -86,7 +85,9 @@ void Dispatcher::load(const VariantMap& stream)
     {
       append( e );
     }
-  }
+    }
 }
+
+void Dispatcher::reset() { _d->events.clear(); }
 
 }//end namespace events

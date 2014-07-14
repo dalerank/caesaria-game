@@ -443,6 +443,7 @@ void Game::load(std::string filename)
   reset();
 
   Logger::warning( "Game: init empire start options" );
+  events::Dispatcher::instance().reset();
   _d->empire->initialize( SETTINGS_RC_PATH( citiesModel ),
                           SETTINGS_RC_PATH( empireObjectsModel ),
                           SETTINGS_RC_PATH( worldModel ) );
