@@ -24,8 +24,10 @@
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
+#include "city/city.hpp"
 #include "objects/constants.hpp"
 #include "gfx/camera.hpp"
+#include "walker/walker.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -38,9 +40,8 @@ class Minimap::Impl
 public:
   PictureRef minimap;
 
-  Tilemap const* tilemap;
+  PlayerCityPtr city;
   Camera const* camera;
-  int climate;
 
   MinimapColors* colors;
 
@@ -51,21 +52,18 @@ public:
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
 
-  Point getOffset() { return Point( 146/2 - center.x(), 112/2 + center.y() - tilemap->size()*2); }
-
 public oc3_signals:
   Signal1<TilePos> onCenterChangeSignal;
 };
 
-Minimap::Minimap(Widget* parent, Rect rect, const Tilemap& tilemap, const gfx::Camera& camera, int climate)
+Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camera& camera)
   : Widget( parent, -1, rect ), _d( new Impl )
 {
-  _d->tilemap = &tilemap;
-  _d->climate = climate;
+  _d->city = city;
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
   _d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
-  _d->colors = new MinimapColors( (ClimateType)climate );
+  _d->colors = new MinimapColors( (ClimateType)city->climate() );
   setTooltipText( _("##minimap_tooltip##") );
 }
 
@@ -202,7 +200,8 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 
 void Minimap::Impl::updateImage()
 {
-  int mapsize = tilemap->size();
+  Tilemap& tilemap = city->tilemap();
+  int mapsize = tilemap.size();
 
   minimap->lock();
   // here we can draw anything
@@ -221,7 +220,7 @@ void Minimap::Impl::updateImage()
   {
     for (int j = startPos.j(); j < stopPos.j(); j++)
     {
-      const Tile& tile = tilemap->at(i, j);
+      const Tile& tile = tilemap.at(i, j);
 
       Point pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
       int c1, c2;
@@ -232,6 +231,20 @@ void Minimap::Impl::updateImage()
 
       minimap->setPixel( pnt, c1);
       minimap->setPixel( pnt + Point( 1, 0 ), c2);
+    }
+  }
+
+  WalkerList walkers = city->walkers( walker::any, startPos, stopPos );
+  foreach( it, walkers )
+  {
+    WalkerPtr wlk = *it;
+    if( wlk->agressive() != 0 )
+    {
+      NColor c1 = wlk->agressive() > 0 ? DefaultColors::red : DefaultColors::blue;
+
+      Point pnt = getBitmapCoordinates( wlk->pos().i()-startPos.i() - 40, wlk->pos().j()-startPos.j()-60, mapsize);
+      minimap->fill( c1, Rect( pnt, Size(2) ) );
+
     }
   }
 
@@ -295,14 +308,16 @@ bool Minimap::onEvent(const NEvent& event)
   {
     Point clickPosition = event.mouse.pos() - absoluteRect().UpperLeftCorner;
 
-    int mapsize = _d->tilemap->size();
+    int mapsize = _d->city->tilemap().size();
+    Size minimapSize = _d->minimap->size();
 
-    clickPosition -= _d->getOffset();
+    Point offset( minimapSize.width()/2 - _d->center.x(), minimapSize.height()/2 + _d->center.y() - mapsize*2 );
+    clickPosition -= offset;
     TilePos tpos;
     tpos.setI( (clickPosition.x() + clickPosition.y() - mapsize + 1) / 2 );
     tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
 
-    _d->onCenterChangeSignal.emit( tpos );
+    oc3_emit _d->onCenterChangeSignal( tpos );
   }
 
   return Widget::onEvent( event );

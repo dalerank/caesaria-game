@@ -22,6 +22,7 @@
 #include "core/scopedptr.hpp"
 #include "gfx/picture.hpp"
 #include "core/signals.hpp"
+#include "city/predefinitions.hpp"
 
 namespace gfx
 {
@@ -35,7 +36,7 @@ namespace gui
 class Minimap : public Widget
 {
 public:
-  Minimap(Widget* parent, Rect rect, const gfx::Tilemap& tilemap, const gfx::Camera& camera, int climate );
+  Minimap(Widget* parent, Rect rect, PlayerCityPtr tilemap, const gfx::Camera& camera );
 
   virtual void draw( gfx::Engine& painter);
 

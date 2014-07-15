@@ -174,9 +174,8 @@ void Level::initialize()
                                      _d->topMenu->height() ) );
 
   Minimap* mmap = new Minimap( _d->extMenu, Rect( 8, 35, 8 + 144, 35 + 110 ),
-                               city->tilemap(),
-                               *_d->renderer.camera(),
-                               city->climate() );
+                               city,
+                               *_d->renderer.camera() );
 
   WindowMessageStack::create( gui.rootWidget() );
 
@@ -493,7 +492,7 @@ void Level::handleEvent( NEvent& event )
 
   if( event.EventType == sEventKeyboard && !event.keyboard.pressed)
   {
-    if( event.keyboard.control )
+    if( event.keyboard.control && !event.keyboard.shift )
     {
       bool handled = true;
       switch( event.keyboard.key )
@@ -547,22 +546,16 @@ void Level::handleEvent( NEvent& event )
 
     case KEY_KEY_P:
     {
-      if( !event.keyboard.pressed )
-      {
-        events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
-        e->dispatch();
-      }
+      events::GameEventPtr e = events::Pause::create( events::Pause::toggle );
+      e->dispatch();
     }
     break;
 
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      if( !event.keyboard.pressed )
-      {
-        events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
-        e->dispatch();
-      }
+      events::GameEventPtr e = events::Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
+      e->dispatch();
     }
     break;
 
@@ -571,7 +564,7 @@ void Level::handleEvent( NEvent& event )
     case KEY_F10:_d->makeScreenShot(); break;
     case KEY_KEY_R:
     {
-      if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
+      if( event.keyboard.shift )
       {
         VariantMap rqvm = SaveAdapter::load( GameSettings::rcpath( "test_request.model" ) );
         events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
@@ -583,7 +576,7 @@ void Level::handleEvent( NEvent& event )
 
     case KEY_KEY_I:
     {
-      if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
+      if( event.keyboard.shift )
       {
         world::CityPtr rome = _d->game->empire()->rome();
         PlayerCityPtr plCity = _d->game->city();
@@ -597,7 +590,7 @@ void Level::handleEvent( NEvent& event )
 
     case KEY_KEY_M:
     {
-      if( !event.keyboard.pressed && event.keyboard.control && event.keyboard.shift )
+      if( event.keyboard.shift )
       {
         religion::rome::Pantheon::mars()->updateRelation( -101.f, _d->game->city() );
         return;
@@ -606,15 +599,12 @@ void Level::handleEvent( NEvent& event )
     break;
 
     case KEY_F11:
-      if( event.keyboard.pressed )
+      if( event.keyboard.shift )
       {
-        if( event.keyboard.shift )
-        {
-          events::GameEventPtr e = events::RandomWolves::create( 10 );
-          e->dispatch();
-        }
-        else { _d->makeEnemy(); }
+        events::GameEventPtr e = events::RandomWolves::create( 10 );
+        e->dispatch();
       }
+      else { _d->makeEnemy(); }
     break;    
 
     case KEY_ESCAPE:
