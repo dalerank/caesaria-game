@@ -12,38 +12,32 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012- Dalerank, dalerankn8@gmail.com
 
-#include "cityservice_water.hpp"
-#include "city.hpp"
+#ifndef __CAESARIA_RIVER_WAVE_H_INCLUDED__
+#define __CAESARIA_RIVER_WAVE_H_INCLUDED__
 
-namespace city
-{
+#include "walker.hpp"
+#include "predefinitions.hpp"
 
-class Water::Impl
+class RiverWave : public Walker
 {
 public:
-  PlayerCityPtr city;
+  static RiverWavePtr create( PlayerCityPtr city );
+  virtual ~RiverWave();
+
+  virtual void send2City(const TilePos& location);
+  virtual void timeStep(const unsigned long time);
+  virtual void save(VariantMap& stream) const;
+
+protected:
+  const gfx::Picture& getMainPicture();
+
+private:
+  RiverWave( PlayerCityPtr city );
+  gfx::Animation _animation;
+  unsigned int _delay;
 };
 
-city::SrvcPtr Water::create(PlayerCityPtr city )
-{
-  Water* ret = new Water( city );
-
-  return city::SrvcPtr( ret );
-}
-
-Water::Water(PlayerCityPtr city )
-  : city::Srvc( *city.object(), "water" ), _d( new Impl )
-{
-  _d->city = city;
-}
-
-void Water::update( const unsigned int time )
-{
-  if( time % 22 != 1 )
-    return;
-
-  //unsigned int vacantPop=0;
-}
-
-}//end namespace city
+#endif //__CAESARIA_RIVER_WAVE_H_INCLUDED__

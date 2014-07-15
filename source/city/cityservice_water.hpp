@@ -20,17 +20,22 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
-class CityServiceWater : public city::Srvc
+namespace city
+{
+
+class Water : public city::Srvc
 {
 public:
   static city::SrvcPtr create( PlayerCityPtr city );
 
   void update( const unsigned int time );
 private:
-  CityServiceWater( PlayerCityPtr city );
+  Water( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
