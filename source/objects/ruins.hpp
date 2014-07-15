@@ -48,7 +48,8 @@ public:
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
-  virtual int getMaxWorkers() const;
+  virtual void collapse();
+  virtual bool canDestroy();
 
   virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);

@@ -34,6 +34,8 @@ using namespace gfx;
 BurningRuins::BurningRuins() : Ruins( building::burningRuins )
 {
   setState( Construction::fire, 99 );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 
   setPicture( ResourceGroup::land2a, 187 );
   _animationRef().load( ResourceGroup::land2a, 188, 8 );
@@ -95,7 +97,7 @@ void BurningRuins::timeStep(const unsigned long time)
 
   if( GameDate::isWeekChanged() )
   {
-    _animationRef().setDelay( math::random( 6 ) );
+    _animationRef().setDelay( math::random( 4 )+1 );
   }
 }
 
@@ -111,7 +113,11 @@ void BurningRuins::destroy()
   event->dispatch();
 }
 
-int BurningRuins::getMaxWorkers() const {  return 0;}
+void BurningRuins::collapse()
+{
+  int g=0;
+}
+
 void BurningRuins::burn(){}
 
 void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
@@ -120,11 +126,11 @@ void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
   //while burning can't remove it
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
-  tile().setFlag( Tile::tlRock, true );
 }   
 
 bool BurningRuins::isWalkable() const{  return (state( Construction::fire ) == 0);}
 bool BurningRuins::isDestructible() const{  return isWalkable();}
+bool BurningRuins::canDestroy() { return (state( Construction::fire ) == 0); }
 
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
@@ -168,6 +174,8 @@ void BurnedRuins::destroy(){ Building::destroy();}
 CollapsedRuins::CollapsedRuins() : Ruins(building::collapsedRuins)
 {
   setState( Construction::damage, 1 );
+  setState( Construction::inflammability, 0 );
+  setState( Construction::collapsibility, 0 );
 
   _animationRef().load( ResourceGroup::sprites, 1, 8 );
   _animationRef().setOffset( Point( 14, 26 ) );
@@ -200,6 +208,7 @@ bool CollapsedRuins::isNeedRoadAccess() const{  return false;}
 PlagueRuins::PlagueRuins() : Ruins( building::plagueRuins )
 {
   setState( Construction::fire, 99 );
+  setState( Construction::collapsibility, 0 );
 
   setPicture( ResourceGroup::land2a, 187 );
   _animationRef().load( ResourceGroup::land2a, 188, 8 );

@@ -55,12 +55,13 @@ void RandomFire::_exec( Game& game, unsigned int time)
   int population = game.city()->population();
   if( population > _d->minPopulation && population < _d->maxPopulation )
   {
-    Logger::warning( "Execute random fire service" );
+    Logger::warning( "Execute random fire event" );
     _d->isDeleted = true;
 
     Priorities<int> exclude;
     exclude << building::waterGroup
-            << building::roadGroup;
+            << building::roadGroup
+            << building::disasterGroup;
 
     ConstructionList ctrs;
     ctrs << game.city()->overlays();

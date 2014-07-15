@@ -22,6 +22,8 @@
 #include "objects/road.hpp"
 #include "objects/house.hpp"
 #include "events/dispatcher.hpp"
+#include "core/logger.hpp"
+#include "core/priorities.hpp"
 
 using namespace constants;
 
@@ -53,18 +55,29 @@ void RandomDamage::_exec( Game& game, unsigned int time )
   int population = game.city()->population();
   if( population > _d->minPopulation && population < _d->maxPopulation )
   {
+    Logger::warning( "Execute random collapse event" );
     _d->isDeleted = true;
+
+    Priorities<int> exclude;
+    exclude << building::waterGroup
+            << building::roadGroup
+            << building::disasterGroup;
+
     ConstructionList ctrs;
     ctrs << game.city()->overlays();
 
-    ctrs = ctrs.exclude<Road>();
-
-    unsigned int number4dmg = math::clamp<unsigned int>( ctrs.size() * _d->strong / 100, 1, 100 );
-
-    for( unsigned int k=0; k < number4dmg; k++ )
+    for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
     {
-      ConstructionPtr ctr = ctrs.random();
-      ctr->collapse();
+      if( exclude.count( (*it)->group() ) ) { it = ctrs.erase( it ); }
+      else { ++it; }
+    }
+
+    unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );
+
+    for( unsigned int k=0; k < number4burn; k++ )
+    {
+      ConstructionPtr building = ctrs.random();
+      building->collapse();
     }
   }
 }
