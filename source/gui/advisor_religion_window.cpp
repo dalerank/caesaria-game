@@ -197,7 +197,7 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
 
 void AdvisorReligionWindow::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->background, screenLeft(), screenTop() );

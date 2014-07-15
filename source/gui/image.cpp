@@ -125,7 +125,7 @@ Image::~Image() {}
 //! draws the element and its children
 void Image::draw(gfx::Engine& painter )
 {
-  if ( !isVisible() )
+  if ( !visible() )
     return;
 
   // draw background

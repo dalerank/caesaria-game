@@ -117,7 +117,7 @@ void GuiEnv::clear()
 
   _updateHovered( Point( -9999, -9999 ) );
 
-  for( ConstChildIterator it = getChildren().begin(); it != getChildren().end(); it++ )
+  for( ConstChildIterator it = children().begin(); it != children().end(); it++ )
     deleteLater( *it );
 }
 
@@ -268,13 +268,13 @@ void GuiEnv::_drawTooltip( unsigned int time )
       _d->toolTip.element->setGeometry( _d->toolTip.element->relativeRect() + Point( 1, 1 ) );
     }
 
-    if( _d->toolTip.element.isValid() && _d->toolTip.element->isVisible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
+    if( _d->toolTip.element.isValid() && _d->toolTip.element->visible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
     {
       _d->toolTip.LastTime = time;
 
       // got invisible or removed in the meantime?
       if( _d->hoveredNoSubelement.isNull()
-          || !_d->hoveredNoSubelement->isVisible() 
+          || !_d->hoveredNoSubelement->visible() 
           || !_d->hoveredNoSubelement->parent() )
       {
         _d->toolTip.element->deleteLater();
@@ -354,12 +354,12 @@ Widget* GuiEnv::next(bool reverse, bool group)
     // if we're searching for a group
     if (group && startPos)
     {
-        startOrder = startPos->getTabOrder();
+        startOrder = startPos->tabOrder();
     }
     else
         if (!group && getFocus() && !getFocus()->hasTabgroup())
         {
-            startOrder = getFocus()->getTabOrder();
+            startOrder = getFocus()->tabOrder();
             if (startOrder == -1)
             {
                 // this element is not part of the tab cycle,
@@ -368,7 +368,7 @@ Widget* GuiEnv::next(bool reverse, bool group)
                 while (el && el->parent() && startOrder == -1)
                 {
                     el = el->parent();
-                    startOrder = el->getTabOrder();
+                    startOrder = el->tabOrder();
                 }
 
             }
@@ -525,8 +525,8 @@ void GuiEnv::beforeDraw()
 
   _updateHovered( _d->cursorPos );
 
-  const Widgets& children = getChildren();
-  for( Widgets::const_iterator i=children.begin(); i != children.end(); ++i )
+  const Widgets& rchildren = children();
+  foreach( i, rchildren )
   {
     (*i)->beforeDraw( *_d->engine );
   }

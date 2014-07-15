@@ -107,7 +107,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
 
 void MissionTargetsWindow::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   if( _d->background )

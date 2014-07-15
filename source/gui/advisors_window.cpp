@@ -122,13 +122,13 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   if( type >= advisor::count )
     return;
 
-  Widget::Widgets children = getChildren();
-  foreach( child, children )
+  Widget::Widgets rchildren = children();
+  foreach( child, rchildren )
   {
     PushButton* btn = safety_cast< PushButton* >( *child );
     if( btn )
     {
-      btn->setPressed( btn->getID() == type );
+      btn->setPressed( btn->ID() == type );
     }
   }
 
@@ -175,7 +175,7 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
 
 void AdvisorsWindow::draw(gfx::Engine& engine )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   Widget::draw( engine );
@@ -191,10 +191,10 @@ bool AdvisorsWindow::onEvent( const NEvent& event )
 
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    int id = event.gui.caller->getID();
+    int id = event.gui.caller->ID();
     if( id >= 0 && id < advisor::count )
     {
-      showAdvisor( (constants::advisor::Type)event.gui.caller->getID() );
+      showAdvisor( (constants::advisor::Type)event.gui.caller->ID() );
     }
   }
 

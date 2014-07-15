@@ -278,7 +278,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
 
 void Population::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   Widget::draw( painter );

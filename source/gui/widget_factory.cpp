@@ -1,6 +1,6 @@
 // This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "widget_factory.hpp"
 #include "core/stringhelper.hpp"

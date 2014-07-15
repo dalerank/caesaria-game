@@ -101,7 +101,7 @@ private:
 
   void _executeRequest()
   {
-    DialogBox* dialog = new DialogBox( getEnvironment()->rootWidget(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOkCancel );
+    DialogBox* dialog = new DialogBox( environment()->rootWidget(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOkCancel );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
     CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
     CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );
@@ -238,7 +238,7 @@ AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, 
 
 void AdvisorEmperorWindow::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   if( _d->isRequestsUpdated )

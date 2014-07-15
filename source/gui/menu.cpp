@@ -174,7 +174,7 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
 /* here will be helper functions for minimap generation */
 void Menu::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->bgPicture, screenLeft(), screenTop() );
@@ -189,7 +189,7 @@ bool Menu::onEvent(const NEvent& event)
     if( !event.gui.caller )
         return false;
 
-    int id = event.gui.caller->getID();
+    int id = event.gui.caller->ID();
     switch( id )
     {
     case MAXIMIZE_ID:
@@ -219,7 +219,7 @@ bool Menu::onEvent(const NEvent& event)
 
         if( PushButton* btn = safety_cast< PushButton* >( event.gui.caller ) )
         {
-          int id = btn->getID();
+          int id = btn->ID();
           if( id & BuildMenu::subMenuCreateIdHigh )
           {
             _createBuildMenu( id & 0xff, event.gui.caller );
@@ -301,7 +301,7 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
 bool Menu::unselectAll()
 {
   bool anyPressed = false;
-  foreach( it, getChildren() )
+  foreach( it, children() )
   {
     if( PushButton* btn = safety_cast< PushButton* >( *it ) )
     {
@@ -486,7 +486,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
 
 void ExtentMenu::draw(Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   Menu::draw( painter );
@@ -495,7 +495,7 @@ void ExtentMenu::draw(Engine& painter )
 void ExtentMenu::toggleOverlayMenuVisible()
 {
   _d->overlaysMenu->setPosition( Point( screenLeft() - 170, 74 ) );
-  _d->overlaysMenu->setVisible( !_d->overlaysMenu->isVisible() );
+  _d->overlaysMenu->setVisible( !_d->overlaysMenu->visible() );
 }
 
 void ExtentMenu::changeOverlay(int ovType)

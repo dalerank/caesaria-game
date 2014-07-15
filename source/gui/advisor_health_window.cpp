@@ -176,7 +176,7 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
 
 void AdvisorHealthWindow::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->background, screenLeft(), screenTop() );

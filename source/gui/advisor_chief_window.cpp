@@ -113,7 +113,7 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
 
 void AdvisorChiefWindow::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   __D_IMPL(_d, AdvisorChiefWindow)

@@ -138,7 +138,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
 
 void AdvisorFinanceWindow::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->background, screenLeft(), screenTop() );

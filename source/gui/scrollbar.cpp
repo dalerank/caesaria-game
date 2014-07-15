@@ -75,7 +75,7 @@ void ScrollBar::_resolvePositionChanged()
 //! called if an event happened
 bool ScrollBar::onEvent(const NEvent& event)
 {
-	if (isEnabled())
+	if (enabled())
 	{
 		switch(event.EventType)
 		{
@@ -230,7 +230,7 @@ void ScrollBar::_resizeEvent()
 
 void ScrollBar::afterPaint( unsigned int timeMs )
 {
-  if( !isVisible() )
+  if( !visible() )
       return;
 
 	if( _dragging && !_draggedBySlider && _trayClick && timeMs > _d->lastTimeChange + 200 )
@@ -261,7 +261,7 @@ void ScrollBar::afterPaint( unsigned int timeMs )
 
 void ScrollBar::beforeDraw(gfx::Engine& painter )
 {
-    if( !isVisible() )
+    if( !visible() )
         return;
 
     bool needRecalculateSliderParams = (_sliderPos != _lastSliderPos);
@@ -274,18 +274,18 @@ void ScrollBar::beforeDraw(gfx::Engine& painter )
       _d->backgroundRect = absoluteRect();
       if( _horizontal )
       {
-          if( _d->upButton && _d->upButton->isVisible() )
+          if( _d->upButton && _d->upButton->visible() )
               _d->backgroundRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
 
-          if( _d->downButton && _d->downButton->isVisible() )
+          if( _d->downButton && _d->downButton->visible() )
               _d->backgroundRect.LowerRightCorner -= Point( _d->downButton->width(), 0 );
       }
       else
       {
-          if( _d->upButton && _d->upButton->isVisible() )
+          if( _d->upButton && _d->upButton->visible() )
               _d->backgroundRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
 
-          if( _d->downButton && _d->downButton->isVisible() )
+          if( _d->downButton && _d->downButton->visible() )
               _d->backgroundRect.LowerRightCorner -= Point( 0, _d->downButton->height() );
       }
     }
@@ -308,7 +308,7 @@ void ScrollBar::beforeDraw(gfx::Engine& painter )
       if( _horizontal )
       {
         _d->sliderRect.UpperLeftCorner.setX( screenLeft() + _lastSliderPos - _drawLenght/2 );
-        if( _d->upButton && _d->upButton->isVisible() )
+        if( _d->upButton && _d->upButton->visible() )
            _d->sliderRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
         
         _d->sliderRect.LowerRightCorner.setX( _d->sliderRect.left() + _drawLenght );
@@ -317,7 +317,7 @@ void ScrollBar::beforeDraw(gfx::Engine& painter )
       {
         _d->sliderRect.UpperLeftCorner.setX( screenLeft() + (width() - _d->sliderTexture.width()) / 2 );
         _d->sliderRect.UpperLeftCorner.setY( screenTop() + _lastSliderPos - _drawLenght/2 );
-        if( _d->upButton && _d->upButton->isVisible() )
+        if( _d->upButton && _d->upButton->visible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
 
         _d->sliderRect.LowerRightCorner.setY( _d->sliderRect.top() + _drawLenght );
@@ -332,7 +332,7 @@ void ScrollBar::beforeDraw(gfx::Engine& painter )
 //! draws the element and its children
 void ScrollBar::draw(gfx::Engine& painter )
 {
-	if (!isVisible())
+	if (!visible())
 		return;
 
   //draw background
@@ -386,8 +386,8 @@ void ScrollBar::setPosition(int pos)
 	}
 	else
 	{
-		int top = _d->upButton->isVisible() ? _d->upButton->height() : 0;
-		_drawLenght = top	+ ( _d->downButton->isVisible() ? _d->downButton->height() : 0 );
+		int top = _d->upButton->visible() ? _d->upButton->height() : 0;
+		_drawLenght = top	+ ( _d->downButton->visible() ? _d->downButton->height() : 0 );
 		int borderMargin = -borderMarginRect.top() - borderMarginRect.bottom();
 		int sliderHeight = _d->sliderTexture.height();
 

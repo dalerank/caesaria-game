@@ -46,7 +46,7 @@ public:
   //! Modalscreen is not a typical element, but rather acts like a state for it's children.
   //! isVisible is overriden to give this a useful behaviour, so that a modal will no longer
   //! be active when its parent is invisible or all its children are invisible.
-	virtual bool isVisible() const;
+	virtual bool visible() const;
 
 	//! Modals are infinite so every point is inside
 	virtual bool isPointInside(const Point& point) const;

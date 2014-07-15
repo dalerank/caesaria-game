@@ -231,7 +231,7 @@ SmkViewer::~SmkViewer()
 //! draws the element and its children
 void SmkViewer::draw(gfx::Engine& painter )
 {
-  if ( !isVisible() )
+  if ( !visible() )
     return;
 
   // draw background

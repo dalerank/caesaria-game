@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_legion_window.hpp"
 #include "gfx/decorator.hpp"
@@ -25,6 +27,7 @@
 #include "objects/military.hpp"
 #include "walker/soldier.hpp"
 #include "core/logger.hpp"
+#include "events/movecamera.hpp"
 
 using namespace gfx;
 
@@ -32,7 +35,7 @@ namespace gui
 {
 
 namespace {
-  Point legionButtonOffset = Point( 0, 50 );
+  Point legionButtonOffset = Point( 4, 4 );
   Size legionButtonSize = Size( 565, 42 );
 }
 
@@ -90,9 +93,9 @@ public oc3_signals:
   Signal1<FortPtr> onEmpireServiceSignal;
 
 private oc3_slots:
-  void _resolveMove2Legion() { onShowLegionSignal.emit( _fort ); }
-  void _resolveReturnLegion2Fort() { onLegionRetreatSignal.emit( _fort ); }
-  void _resolveEmpireService() { onEmpireServiceSignal.emit( _fort ); }
+  void _resolveMove2Legion() { oc3_emit onShowLegionSignal( _fort ); }
+  void _resolveReturnLegion2Fort() { oc3_emit onLegionRetreatSignal( _fort ); }
+  void _resolveEmpireService() { oc3_emit onEmpireServiceSignal( _fort ); }
 
 private:
   FortPtr _fort;
@@ -117,7 +120,8 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts
   PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
   //buttons background
-  PictureDecorator::draw( *_d->background, Rect( Point( 32, 70 ), Size( 574, 270 )), PictureDecorator::blackFrame );
+  Point startLegionArea( 32, 70 );
+  PictureDecorator::draw( *_d->background, Rect( startLegionArea, Size( 574, 270 )), PictureDecorator::blackFrame );
 
   gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
   title->setText( _("##advlegion_window_title##") );
@@ -135,18 +139,27 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts
   int index=0;
   foreach( it, forts )
   {
-    LegionButton* btn = new LegionButton( this, legionButtonOffset, index++, *it );
+    LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, *it );
+    CONNECT( btn, onShowLegionSignal, this, AdvisorLegionWindow::_handleMove2Legion );
   }
 }
 
+
 void AdvisorLegionWindow::draw( Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->background, screenLeft(), screenTop() );
 
   Widget::draw( painter );
+}
+
+void AdvisorLegionWindow::_handleMove2Legion(FortPtr fort)
+{
+  parent()->deleteLater();
+  events::GameEventPtr e = events::MoveCamera::create( fort->patrolLocation() );
+  e->dispatch();
 }
 
 }//end namespace gui

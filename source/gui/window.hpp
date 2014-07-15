@@ -1,3 +1,20 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 #ifndef _CAESARIA_WINDOW_H_INCLUDE_
 #define _CAESARIA_WINDOW_H_INCLUDE_
 
@@ -11,7 +28,7 @@ class Window : public Widget
 {
 public:
 	typedef enum { buttonClose=0, buttonMin, buttonMax, buttonCount } ButtonName;
-	typedef enum { draggable=0x1, backgroundVisible=0x2, titleVisible=0x4 } FlagName;
+	typedef enum { fdraggable=0x1, fbackgroundVisible=0x2, ftitleVisible=0x4 } FlagName;
 	//! constructor
 	Window( Widget* parent, const Rect& rectangle, const std::string& title, int id=-1 );
 
@@ -25,7 +42,7 @@ public:
 	virtual void draw( gfx::Engine& painter );
 
 	//! Returns pointer to the close button
-	virtual PushButton* getButton( ButtonName btn ) const;
+	virtual PushButton* button( ButtonName btn ) const;
 
 	//!
 	virtual void beforeDraw(gfx::Engine &painter);
@@ -34,20 +51,20 @@ public:
 	virtual void setBackgroundVisible(bool draw);
 
 	//! Get if the window background will be drawn
-	virtual bool isBackgroundVisible() const;
+	virtual bool backgroundVisible() const;
 
 	//! Set if the window titlebar will be drawn
 	//! Note: If the background is not drawn, then the titlebar is automatically also not drawn
 	virtual void setHeaderVisible(bool draw);
 
 	//! Get if the window titlebar will be drawn
-	virtual bool isHeaderVisible() const;
+	virtual bool headerVisible() const;
 
 	virtual void setBackground( gfx::Picture texture );
 
-	virtual gfx::Picture getBackground() const;
+	virtual gfx::Picture background() const;
 
-	virtual Rect getClientRect() const;
+	virtual Rect clientRect() const;
 
 	virtual void setModal();
 
@@ -58,7 +75,7 @@ public:
 	void setText( const std::string& text );
 
 protected:
-	void _createSystemButton( ButtonName btnName, /*ELEMENT_STYLE_TYPE configName,*/ const std::string& tooltip, bool visible );
+	void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
 	void _init();
 
 private:

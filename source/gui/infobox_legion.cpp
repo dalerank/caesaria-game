@@ -165,7 +165,7 @@ bool InfoboxLegion::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    int id = event.gui.caller->getID();
+    int id = event.gui.caller->ID();
     if( id >= 0 )
     {
       std::string text;

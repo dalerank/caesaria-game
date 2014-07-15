@@ -78,7 +78,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
   {
   case guiButtonClicked:
   {
-    switch( event.gui.caller->getID() )
+    switch( event.gui.caller->ID() )
     {
     case 1:
     {
@@ -92,7 +92,7 @@ bool VideoOptionsWindow::onEvent(const NEvent& event)
     default:
       if( _d->haveChanges )
       {
-        Widget* parent = getEnvironment()->rootWidget();
+        Widget* parent = environment()->rootWidget();
         DialogBox* dlg = new DialogBox( parent, Rect(), "",
                                         _("##need_restart_for_apply_changes##"), DialogBox::btnOk );
         CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );

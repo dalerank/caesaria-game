@@ -105,7 +105,7 @@ protected:
   virtual void _btnClicked()
   {
     PushButton::_btnClicked();
-    oc3_emit onClickedSignal( (Industry::Type)getID() );
+    oc3_emit onClickedSignal( (Industry::Type)ID() );
   }
 
 private:
@@ -190,7 +190,7 @@ void AdvisorEmployerWindow::Impl::showPriorityWindow( Industry::Type industry )
 {
   city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
   int priority = wh->getPriority( industry );
-  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->getEnvironment()->rootWidget(), industry, priority );
+  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->environment()->rootWidget(), industry, priority );
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
@@ -210,7 +210,7 @@ void AdvisorEmployerWindow::Impl::update()
 
   foreach( i, empButtons )
   {
-    int priority = wh->getPriority( (Industry::Type)(*i)->getID() );
+    int priority = wh->getPriority( (Industry::Type)(*i)->ID() );
     (*i)->setPriority( priority );
   }
 }
@@ -303,7 +303,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
 
 void AdvisorEmployerWindow::draw(Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   Widget::draw( painter );

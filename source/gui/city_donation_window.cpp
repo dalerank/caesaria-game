@@ -69,7 +69,7 @@ bool CityDonationWindow::onEvent(const NEvent& event)
   __D_IMPL(d,CityDonationWindow)
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    int id = event.gui.caller->getID();
+    int id = event.gui.caller->ID();
     if( id > 0 )
     {
       int maxMoney = d->maxMoney;

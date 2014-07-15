@@ -79,7 +79,7 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
 
 void InfoboxFactory::showDescription()
 {
-  DictionaryWindow::show( getEnvironment()->rootWidget(), _type );
+  DictionaryWindow::show( environment()->rootWidget(), _type );
 }
 
 InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)

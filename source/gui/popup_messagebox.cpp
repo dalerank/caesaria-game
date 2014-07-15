@@ -76,7 +76,7 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
 
 void PopupMessageBox::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->background, screenLeft(), screenTop() );

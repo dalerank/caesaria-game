@@ -1,3 +1,20 @@
+// This file is part of CaesarIA.
+//
+// CaesarIA is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// CaesarIA is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+
 #include "window.hpp"
 #include "label.hpp"
 #include "core/event.hpp"
@@ -36,9 +53,9 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 	: Widget( parent, id, rectangle ),
 	  _d( new Impl )
 {
-  _d->flags.setFlag( draggable, true );
-  _d->flags.setFlag( backgroundVisible, true );
-  _d->flags.setFlag( titleVisible, true );
+  _d->flags.setFlag( fdraggable, true );
+  _d->flags.setFlag( fbackgroundVisible, true );
+  _d->flags.setFlag( ftitleVisible, true );
 	_d->title = 0;
 #ifdef _DEBUG
 	setDebugName( L"NrpWindow");
@@ -62,7 +79,7 @@ void Window::setText(const std::string& text )
 	_d->title->setText( text );
 }
 
-void Window::_createSystemButton( ButtonName btnName, /*ELEMENT_STYLE_TYPE configName,*/ const std::string& tooltip, bool visible )
+void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
 {
     PushButton*& btn = _d->buttons[ btnName ];
     if( !btn )
@@ -105,7 +122,7 @@ Window::~Window()
 //! called if an event happened.
 bool Window::onEvent(const NEvent& event)
 {
-	if( isEnabled() )
+	if( enabled() )
 	{
 		switch(event.EventType)
 		{
@@ -146,7 +163,7 @@ bool Window::onEvent(const NEvent& event)
 			{
 			case mouseLbtnPressed:
 				_d->dragStartPosition = event.mouse.pos();
-				_d->dragging = _d->flags.isFlag( draggable );
+				_d->dragging = _d->flags.isFlag( fdraggable );
 				bringToFront();
 #ifdef _CAESARIA_COMPILE_WITH_SCRIPT_
 								CallScriptFunction( NMOUSE_EVENT + LMOUSE_PRESSED_DOWN, this, (void*)&event );
@@ -215,14 +232,21 @@ void Window::beforeDraw( Engine& painter )
 //! draws the element and its children
 void Window::draw( Engine& painter )
 {
-	if( isVisible() )
+	if( visible() )
 	{
-		NColor colors[ 4 ] = { _d->currentColor, _d->currentColor, _d->currentColor, _d->currentColor };
+		//NColor colors[ 4 ] = { _d->currentColor, _d->currentColor, _d->currentColor, _d->currentColor };
 
-		if( _d->backgroundImage.isValid() )
+		if( _d->flags.isFlag( fbackgroundVisible ) )
 		{
-			Rect rsize( Point( 0, 0 ), _d->backgroundImage.size() );
-			painter.draw( _d->backgroundImage, absoluteRect().UpperLeftCorner );
+			if( _d->backgroundImage.isValid() )
+			{
+				Rect rsize( Point( 0, 0 ), _d->backgroundImage.size() );
+				painter.draw( _d->backgroundImage, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+			}
+			else
+			{
+				painter.draw( *_d->bg, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+			}
 		}
 	}
 
@@ -230,7 +254,7 @@ void Window::draw( Engine& painter )
 }
 
 //! Returns pointer to the maximize button
-PushButton* Window::getButton(ButtonName btn) const
+PushButton* Window::button(ButtonName btn) const
 {
   if( btn < buttonClose || btn > buttonMax )
     return 0;
@@ -239,39 +263,22 @@ PushButton* Window::getButton(ButtonName btn) const
 }
 
 //! Set if the window background will be drawn
-void Window::setBackgroundVisible(bool draw)
-{
-	_d->flags.setFlag( backgroundVisible, draw );
-}
+void Window::setBackgroundVisible(bool draw) {	_d->flags.setFlag( fbackgroundVisible, draw ); }
 
 //! Get if the window background will be drawn
-bool Window::isBackgroundVisible() const
-{
-	return _d->flags.isFlag( backgroundVisible );
-}
+bool Window::backgroundVisible() const {	return _d->flags.isFlag( fbackgroundVisible ); }
 
 //! Set if the window titlebar will be drawn
 void Window::setHeaderVisible(bool draw)
 {
-	_d->flags.setFlag( titleVisible, draw );
+	_d->flags.setFlag( ftitleVisible, draw );
 	_d->title->setVisible( draw );
 }
 
 //! Get if the window titlebar will be drawn
-bool Window::isHeaderVisible() const
-{
-	return _d->flags.isFlag( titleVisible );
-}
-
-void Window::setBackground( Picture texture )
-{
-	_d->backgroundImage = texture;
-}
-
-Rect Window::getClientRect() const
-{
-	return Rect(0, 0, 0, 0);
-}
+bool Window::headerVisible() const {	return _d->flags.isFlag( ftitleVisible );}
+void Window::setBackground( Picture texture ){	_d->backgroundImage = texture;}
+Rect Window::clientRect() const{	return Rect(0, 0, 0, 0);}
 
 void Window::setModal()
 {
@@ -279,10 +286,7 @@ void Window::setModal()
 	mdScr->addChild( this );
 }
 
-Picture Window::getBackground() const
-{
-	return _d->backgroundImage;
-}
+Picture Window::background() const {return _d->backgroundImage; }
 
 void Window::setWindowFlag( FlagName flag, bool enabled/*=true */ )
 {

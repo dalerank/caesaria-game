@@ -39,7 +39,7 @@ void Widget::beforeDraw(gfx::Engine& painter )
   foreach( widget, d->children ) { (*widget)->beforeDraw( painter ); }
 }
 
-GuiEnv* Widget::getEnvironment() {  return _environment; }
+GuiEnv* Widget::environment() {  return _environment; }
 
 void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 {
@@ -60,7 +60,7 @@ unsigned int Widget::height() const{    return relativeRect().height(); }
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : __INIT_IMPL(Widget),
-  _environment( parent ? parent->getEnvironment() : 0 )
+  _environment( parent ? parent->environment() : 0 )
 {
   __D_IMPL(_d,Widget)
   _d->alignLeft = align::upperLeft;
@@ -247,7 +247,7 @@ Widget* Widget::getElementFromPoint( const Point& point )
 
   ChildIterator it = _d->children.getLast();
 
-  if (isVisible())
+  if (visible())
   {
     while(it != _d->children.end())
     {
@@ -261,7 +261,7 @@ Widget* Widget::getElementFromPoint( const Point& point )
     }
   }
 
-  if( isVisible() && isPointInside(point) )
+  if( visible() && isPointInside(point) )
   {
     target = this;
   }
@@ -299,7 +299,7 @@ void Widget::removeChild( Widget* child )
 
 void Widget::draw(gfx::Engine& painter )
 {
-  if ( isVisible() )
+  if ( visible() )
   {
     Widgets& children = _getChildren();
     foreach( widget, children ) { (*widget)->draw( painter ); }
@@ -324,7 +324,7 @@ void Widget::setTabOrder( int index )
         el->next(-1, true, _d->isTabGroup, first, closest, true);
         if (first)
         {
-            _d->tabOrder = first->getTabOrder() + 1;
+            _d->tabOrder = first->tabOrder() + 1;
         }
     }
   }
@@ -334,7 +334,7 @@ void Widget::setTabOrder( int index )
   }
 }
 
-int Widget::getTabOrder() const{  return _dfunc()->tabOrder;}
+int Widget::tabOrder() const{  return _dfunc()->tabOrder;}
 
 Widget* Widget::tabgroup()
 {
@@ -346,12 +346,12 @@ Widget* Widget::tabgroup()
   return ret;
 }
 
-bool Widget::isEnabled() const
+bool Widget::enabled() const
 {
   __D_IMPL_CONST(_d,Widget)
   if ( isSubElement() && _d->isEnabled && parent() )
   {
-    return parent()->isEnabled();
+    return parent()->enabled();
   }
 
   return _d->isEnabled;
@@ -420,7 +420,7 @@ Widget* Widget::findChild( int id, bool searchchildren/*=false*/ ) const
   __D_IMPL_CONST(_d,Widget)
   foreach( widget, _d->children )
   {
-    if( (*widget)->getID() == id)
+    if( (*widget)->ID() == id)
     {
       return *widget;
     }
@@ -454,13 +454,13 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
     while(it != _d->children.end())
     {
         // ignore invisible elements and their children
-        if ( ( (*it)->isVisible() || includeInvisible ) &&
+        if ( ( (*it)->visible() || includeInvisible ) &&
             (group == true || (*it)->hasTabgroup() == false) )
         {
             // only check tab stops and those with the same group status
             if ((*it)->isTabStop() && ((*it)->hasTabgroup() == group))
             {
-                currentOrder = (*it)->getTabOrder();
+                currentOrder = (*it)->tabOrder();
 
                 // is this what we're looking for?
                 if (currentOrder == wanted)
@@ -472,7 +472,7 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
                 // is it closer than the current closest?
                 if (closest)
                 {
-                    closestOrder = closest->getTabOrder();
+                    closestOrder = closest->tabOrder();
                     if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
                         ||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
                     {
@@ -488,7 +488,7 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
                     // is it before the current first?
                     if (first)
                     {
-                        closestOrder = first->getTabOrder();
+                        closestOrder = first->tabOrder();
 
                         if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
                         {
@@ -611,11 +611,11 @@ void Widget::setupUI( const VariantMap& ui )
 
     if( !widgetType.empty() )
     {
-      Widget* child = getEnvironment()->createWidget( widgetType, this );
+      Widget* child = environment()->createWidget( widgetType, this );
       if( child )
       {
         child->setupUI( tmp );
-        if( child->getInternalName().empty() )
+        if( child->internalName().empty() )
         {
           child->setInternalName( widgetName );
         }
@@ -751,7 +751,7 @@ void Widget::recalculateAbsolutePosition( bool recursive )
 
 void Widget::animate( unsigned int timeMs )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   foreach( widget, _getChildren() ) { (*widget)->animate( timeMs ); }
@@ -808,7 +808,7 @@ void Widget::setHeight( unsigned int height )
 }
 
 void Widget::setEnabled(bool enabled){  _dfunc()->isEnabled = enabled;}
-std::string Widget::getInternalName() const{    return _dfunc()->internalName;}
+std::string Widget::internalName() const{    return _dfunc()->internalName;}
 void Widget::setInternalName( const std::string& name ){    _dfunc()->internalName = name;}
 Widget* Widget::parent() const {    return _dfunc()->parent;}
 Rect Widget::relativeRect() const{  return _dfunc()->relativeRect;}
@@ -820,16 +820,16 @@ void Widget::setText( const std::string& text ){  _dfunc()->text = text;}
 void Widget::setTooltipText( const std::string& text ) {  _dfunc()->toolTipText = text;}
 std::string Widget::text() const{  return _dfunc()->text;}
 std::string Widget::tooltipText() const{  return _dfunc()->toolTipText;}
-int Widget::getID() const{  return _dfunc()->id;}
+int Widget::ID() const{  return _dfunc()->id;}
 void Widget::setID( int id ) {  _dfunc()->id = id; }
-const Widget::Widgets& Widget::getChildren() const{  return _dfunc()->children;}
+const Widget::Widgets& Widget::children() const{  return _dfunc()->children;}
 Size Widget::maxSize() const{    return _dfunc()->maxSize;}
 Size Widget::minSize() const{    return _dfunc()->minSize;}
 bool Widget::isHovered() const{  return _environment->isHovered( this );}
 bool Widget::isFocused() const{  return _environment->hasFocus( this );}
-Rect Widget::getClientRect() const{  return Rect( 0, 0, width(), height() );}
-void Widget::setFocus(){  getEnvironment()->setFocus( this );}
-void Widget::removeFocus(){  getEnvironment()->removeFocus( this );}
+Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
+void Widget::setFocus(){  environment()->setFocus( this );}
+void Widget::removeFocus(){  environment()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const{  return _dfunc()->absoluteClippingRect;}
 unsigned int Widget::width() const{  return relativeRect().width();}
 Size Widget::size() const{  return Size( _dfunc()->relativeRect.width(), _dfunc()->relativeRect.height() );}
@@ -847,7 +847,7 @@ void Widget::move( const Point& relativeMovement ){  setGeometry( _dfunc()->rela
 int Widget::bottom() const{  return _dfunc()->relativeRect.LowerRightCorner.y(); }
 Point Widget::center() const { return (_dfunc()->relativeRect.LowerRightCorner + _dfunc()->relativeRect.UpperLeftCorner) / 2; }
 void Widget::setTabgroup( bool isGroup ) { _dfunc()->isTabGroup = isGroup; }
-bool Widget::isVisible() const{  return _dfunc()->isVisible;}
+bool Widget::visible() const{  return _dfunc()->isVisible;}
 bool Widget::isSubElement() const{  return _dfunc()->isSubElement;}
 void Widget::setSubElement( bool subElement ){  _dfunc()->isSubElement = subElement;}
 void Widget::setTabStop( bool enable ){  _dfunc()->isTabStop = enable;}

@@ -164,7 +164,7 @@ AdvisorEntertainmentWindow::AdvisorEntertainmentWindow(PlayerCityPtr city, Widge
 
 void AdvisorEntertainmentWindow::draw( Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   Widget::draw( painter );

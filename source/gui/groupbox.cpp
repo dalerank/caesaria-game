@@ -54,7 +54,7 @@ GroupBox::~GroupBox() {}
 //! draws the element and its children
 void GroupBox::draw(gfx::Engine& painter )
 {
-  if (!isVisible())
+  if (!visible())
       return;
 
   if( !_d->texture.isNull() )

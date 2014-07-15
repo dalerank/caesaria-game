@@ -350,7 +350,7 @@ bool PushButton::isPressed() const {  return _dfunc()->pressed; }
 //! called if an event happened.
 bool PushButton::onEvent(const NEvent& event)
 {
-  if( !isEnabled() )
+  if( !enabled() )
   {
     return parent()->onEvent(event);
   }
@@ -476,7 +476,7 @@ bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 
 ElementState PushButton::_getActiveButtonState()
 {
-  if( isEnabled() )
+  if( enabled() )
       return ( isPressed()
                   ? stPressed
                   : ( isHovered() ? stHovered : stNormal) );
@@ -505,7 +505,7 @@ bool PushButton::isBodyVisible() const { __D_IMPL_CONST(_d,PushButton); return _
 //! draws the element and its children
 void PushButton::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
 	__D_IMPL(_d,PushButton);

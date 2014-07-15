@@ -255,7 +255,7 @@ void ListBox::_indexChanged( unsigned int eventType )
 //! called if an event happened.
 bool ListBox::onEvent(const NEvent& event)
 {
-	if( isEnabled() )
+	if( enabled() )
 	{
 		switch(event.EventType)
         {
@@ -582,7 +582,7 @@ void ListBox::_drawItemText(Picture& texture, Font font, ListBoxItem& item, cons
 
 void ListBox::beforeDraw(gfx::Engine& painter)
 {
-  if ( !isVisible() )
+  if ( !visible() )
       return;
 
   if( _d->needItemsRepackTextures )
@@ -656,7 +656,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 //! draws the element and its children
 void ListBox::draw(gfx::Engine& painter )
 {
-  if ( !isVisible() )
+  if ( !visible() )
 		return;
 
 	if( !_d->picture.isNull() )

@@ -70,7 +70,7 @@ bool SoundOptionsWindow::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    int id = event.gui.caller->getID();
+    int id = event.gui.caller->ID();
     switch( id )
     {
     case 1: case 2: _d->current.game += (id == 1 ? -10 : +10 );       _update(); break;

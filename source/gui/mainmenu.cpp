@@ -39,7 +39,7 @@ MainMenu::MainMenu( Widget* parent, const Rect& rectangle, const int id )
 ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool enabled, bool hasSubMenu, bool checked, bool autoChecking)
 {
   ContextMenuItem* ret = ContextMenu::addItem( text, commandId, enabled, hasSubMenu, checked, autoChecking );
-  if( ret && ret->getSubMenu() )
+  if( ret && ret->subMenu() )
   {
     //ret->getSubMenu()->setStyle( getStyle().getSubStyle( NES_SUBMENU ).getName() );
     ret->setFlag( ContextMenuItem::drawSubmenuSprite, false );
@@ -55,7 +55,7 @@ ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool 
 //! called if an event happened.
 bool MainMenu::onEvent(const NEvent& event)
 {
-	if (isEnabled())
+	if (enabled())
 	{
 		switch(event.EventType)
 		{
@@ -84,9 +84,9 @@ bool MainMenu::onEvent(const NEvent& event)
 			{
 			case mouseLbtnPressed:
 			{
-				if (!getEnvironment()->hasFocus(this))
+				if (!environment()->hasFocus(this))
 				{
-					getEnvironment()->setFocus(this);
+					environment()->setFocus(this);
 				}
 
     	  bringToFront();
@@ -100,7 +100,7 @@ bool MainMenu::onEvent(const NEvent& event)
 				_isHighlighted( event.mouse.pos(), true);
 				if ( shouldCloseSubMenu )
 				{
-          getEnvironment()->removeFocus(this);
+          environment()->removeFocus(this);
 				}
 
 				return true;
@@ -121,7 +121,7 @@ bool MainMenu::onEvent(const NEvent& event)
 
       case mouseMoved:
       {
-        if (getEnvironment()->hasFocus(this) && hovered() >= 0)
+        if (environment()->hasFocus(this) && hovered() >= 0)
 				{
 					int oldHighLighted = hovered();
 					_isHighlighted( event.mouse.pos(), true);
@@ -148,7 +148,7 @@ bool MainMenu::onEvent(const NEvent& event)
 
 void MainMenu::_recalculateSize()
 {
-	Rect parentRect = parent()->getClientRect(); // client rect of parent  
+	Rect parentRect = parent()->clientRect(); // client rect of parent  
 
 	//AbstractSkin* skin = getEnvironment()->getSkin();
   Font font = Font::create( FONT_2_WHITE );
@@ -170,17 +170,17 @@ void MainMenu::_recalculateSize()
 		ContextMenuItem* refItem = item( i );
 		if ( refItem->isSeparator() )
 		{
-			refItem->setDim( Size( 16, height() ) );
+			refItem->setDimmension( Size( 16, height() ) );
 		}
 		else
 		{
       Size itemSize = font.getSize( refItem->text() ) + Size( 20, 0 );
       itemSize.setHeight( height() );
-			refItem->setDim( itemSize );
+			refItem->setDimmension( itemSize );
 		}
 
 		refItem->setOffset( width );
-		width += refItem->getDim().width();
+		width += refItem->dimmension().width();
 	}
 
 	// recalculate submenus
@@ -188,16 +188,16 @@ void MainMenu::_recalculateSize()
   {
     ContextMenuItem* refItem = item( i );
 
-    Rect rectangle( refItem->getOffset(), 0, refItem->getOffset() + refItem->getDim().width(), hg );
+    Rect rectangle( refItem->offset(), 0, refItem->offset() + refItem->dimmension().width(), hg );
     refItem->setGeometry( rectangle );
 
-		if( refItem->getSubMenu() )
+		if( refItem->subMenu() )
 		{
 			// move submenu
-      Size itemSize = refItem->getSubMenu()->absoluteRect().size();
+      Size itemSize = refItem->subMenu()->absoluteRect().size();
 
-			refItem->getSubMenu()->setGeometry( Rect( refItem->getOffset(), hg,
-																								refItem->getOffset() + itemSize.width()-5, hg+itemSize.height() ));
+			refItem->subMenu()->setGeometry( Rect( refItem->offset(), hg,
+																								refItem->offset() + itemSize.width()-5, hg+itemSize.height() ));
 		}
   }
 }

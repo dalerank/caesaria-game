@@ -145,7 +145,7 @@ ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
 
 void ScribesMessagestWindow::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   Widget::draw( painter );

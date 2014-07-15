@@ -85,7 +85,7 @@ oc3_signals public:
 
 void TopMenu::draw(gfx::Engine& engine )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   _d->updateDate();
@@ -117,7 +117,7 @@ void TopMenu::Impl::updateDate()
 
 void TopMenu::Impl::showShortKeyInfo()
 {
-  Widget* parent = lbDate->getEnvironment()->rootWidget();
+  Widget* parent = lbDate->environment()->rootWidget();
   Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   bg->setupUI( GameSettings::rcpath( "/gui/shortkeys.gui" ) );
   bg->setCenter( parent->center() );
@@ -152,7 +152,7 @@ void TopMenu::Impl::initBackground( const Size& size )
 
 void TopMenu::Impl::showAboutInfo()
 {
-  Widget* parent = lbDate->getEnvironment()->rootWidget();
+  Widget* parent = lbDate->environment()->rootWidget();
   Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   bg->setupUI( GameSettings::rcpath( "/gui/about.gui" ) );
   bg->setCenter( parent->center() );

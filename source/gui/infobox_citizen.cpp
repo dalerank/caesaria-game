@@ -68,7 +68,7 @@ public:
 
   virtual void draw(gfx::Engine &painter)
   {
-    if ( !isVisible() )
+    if ( !visible() )
       return;
 
     Label::draw( painter );

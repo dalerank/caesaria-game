@@ -36,7 +36,7 @@ MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 
 
 void MenuRigthPanel::draw( gfx::Engine& engine )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   engine.draw( *_d->picture, screenLeft(), screenTop() );

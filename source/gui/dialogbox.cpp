@@ -96,7 +96,7 @@ bool DialogBox::onEvent( const NEvent& event )
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    int id = event.gui.caller->getID();
+    int id = event.gui.caller->ID();
     oc3_emit _d->onResultSignal( id );
 
     switch( id )
@@ -118,7 +118,7 @@ Signal0<>& DialogBox::onNever() { return _d->onNeverSignal; }
 
 void DialogBox::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
   {
     return;
   }

@@ -618,7 +618,7 @@ void Level::handleEvent( NEvent& event )
 
     case KEY_ESCAPE:
     {
-      Widget::Widgets children = _d->game->gui()->rootWidget()->getChildren();
+      Widget::Widgets children = _d->game->gui()->rootWidget()->children();
       foreach( it, children )
       {
         bool handled = (*it)->onEvent( event );

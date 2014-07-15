@@ -87,7 +87,7 @@ InfoboxRawMaterial::~InfoboxRawMaterial()
 
 void InfoboxRawMaterial::showDescription()
 {
-  DictionaryWindow::show( getEnvironment()->rootWidget(), _type );
+  DictionaryWindow::show( environment()->rootWidget(), _type );
 }
 
 }//end namespace gui

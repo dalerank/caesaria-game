@@ -52,24 +52,21 @@ public:
 
   Widget( Widget* parent, int id, const Rect& rectangle );
 
-//    virtual f32 getOpacity( u32 index=0 ) const;
-//    virtual void setOpacity( f32 nA, s32 index=0 );
-
-  std::string getInternalName() const;
+  std::string internalName() const;
   void setInternalName( const std::string& name );
 
   template< class T >
   List< T > findChildren()
   {
-      List< T > ret;
-      ConstChildIterator it = getChildren().begin();
-      for( ; it != getChildren().end(); ++it )
-      {
-          if( T elm = safety_cast< T >( *it ) )
-              ret.push_back( elm );
-      }        
+    List< T > ret;
+    ConstChildIterator it = children().begin();
+    for( ; it != children().end(); ++it )
+    {
+        if( T elm = safety_cast< T >( *it ) )
+            ret.push_back( elm );
+    }
 
-      return ret;
+    return ret;
   }
 
   virtual bool isHovered() const;
@@ -81,9 +78,9 @@ public:
 
 	virtual void beforeDraw( gfx::Engine& painter );
 
-  virtual Rect getClientRect() const;
+	virtual Rect clientRect() const;
 
-    //! Sets another skin independent font.
+	//! Sets another skin independent font.
 	/** If this is set to zero, the button uses the font of the skin.
 	\param font: New font to set. */
   //virtual void setFont( Font font, u32 nA=0 );
@@ -92,7 +89,7 @@ public:
   /** \return The override font (may be 0) */
   //virtual Font getFont( u32 index=0 ) const;
   
-  virtual GuiEnv* getEnvironment();
+  virtual GuiEnv* environment();
 
   //! Sets text justification mode
   /** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
@@ -168,10 +165,6 @@ public:
   virtual void draw( gfx::Engine& painter );
 
   virtual void animate( unsigned int timeMs );
-	
-  //! Checks if an override color is enabled
-	/** \return true if the override color is enabled, false otherwise */
-	//virtual bool isColorEnabled( unsigned int index=0 ) const;
 
   //! Destructor
   virtual ~Widget();
@@ -183,7 +176,7 @@ public:
   virtual void move( const Point& offset );
 
   //! Returns true if element is visible.
-  virtual bool isVisible() const;
+  virtual bool visible() const;
 
   //! Sets the visible state of this element.
   virtual void setVisible( bool visible );
@@ -210,7 +203,7 @@ public:
   virtual void setTabOrder( int index );
 
   //! Returns the number in the tab order sequence
-  virtual int getTabOrder() const;
+  virtual int tabOrder() const;
 
   //! Sets whether this element is a container for a group of elements which can be navigated using the tab key.
   /** For example, windows are tab groups.
@@ -228,7 +221,7 @@ public:
   So if you want to affect childs you have to enable/disable them all.
   The only exception to this are sub-elements which also check their parent.
   */
-  virtual bool isEnabled() const;
+  virtual bool enabled() const;
 
   //! Sets the enabled state of this element.
   virtual void setEnabled(bool enabled);
@@ -246,7 +239,7 @@ public:
   virtual std::string tooltipText() const;
 
   //! Returns id. Can be used to identify the element.
-  virtual int getID() const;
+  virtual int ID() const;
 
   //! Sets the id of this element
   virtual void setID(int id);
@@ -271,7 +264,7 @@ public:
   virtual bool sendToBack();
 
   //! Returns list with children of this element
-  virtual const Widgets& getChildren() const;
+  virtual const Widgets& children() const;
 
   //! Finds the first element with the given id.
   /** \param id: Id to search for.
@@ -282,17 +275,6 @@ public:
    *	with this id was found, 0 is returned.
    */
   virtual Widget* findChild(int id, bool searchchildren=false) const;
-
-  //! Sets if the static text should use the overide color or the color in the gui skin.
-  /** \param enable: If set to true, the override color, which can be set
-   */
-  //virtual void setEnabledColor(bool enable, u32 index=0);
-
-  //! Writes attributes of the scene node.
-  /** Implement this to expose the attributes of your scene node for
-   *	scripting languages, editors, debuggers or xml serialization purposes.
-   */
-  //virtual void save( core::VariantArray* out ) const;
 
   //! Reads attributes of the scene node.
   /** Implement this to set the attributes of your scene node for
@@ -389,21 +371,6 @@ public:
    */
   Widget* getElementFromPoint(const Point& point);
 
-  //! Sets another color for the text.
-  /** If set, the static text does not use the EGDC_BUTTON_TEXT color defined
-   *  in the skin, but the set color instead. You don't need to call
-   *  INrpLabel::enableOverrrideColor(true) after this, this is done
-   *  by this function.
-   *  If you set a color, and you want the text displayed with the color
-   *  of the skin again, call IGUIStaticText::enableOverrideColor(false);
-   *  \param color: New color of the text.
-   *  \param na: index of overriding color
-	 */
-  //void setColor( const Color& color, u32 nA=0 );
-
-  //! Returns an override color
-  //Color getColor( u32 index=0 ) const;
-
   //! returns true if the given element is a child of this one.
   //! \param child: The child element to check
   bool isMyChild(Widget* child) const;
@@ -438,8 +405,6 @@ protected:
   // not virtual because needed in constructor
   void addChild_(Widget* child);
 
-	//FontsMap& getFonts_();
-
   // not virtual because needed in constructor
   void recalculateAbsolutePosition(bool recursive);	
 
@@ -464,10 +429,10 @@ enum ElementState
 template< class T >
 inline T findChildA( const std::string& internalName, bool recursiveFind, const Widget* p )
 {
-  Widget::Widgets::const_iterator it = p->getChildren().begin();
-  for( ; it != p->getChildren().end(); ++it )
+  Widget::Widgets::const_iterator it = p->children().begin();
+  for( ; it != p->children().end(); ++it )
   {
-    if( (*it)->getInternalName() == internalName )
+    if( (*it)->internalName() == internalName )
       return safety_cast< T >( *it );
 
       if( recursiveFind )

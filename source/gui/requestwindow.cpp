@@ -95,7 +95,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
 
 void EmperrorRequestWindow::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   Widget::draw( painter );

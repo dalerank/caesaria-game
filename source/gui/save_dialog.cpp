@@ -114,7 +114,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
 
 void SaveDialog::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->background, screenLeft(), screenTop() );

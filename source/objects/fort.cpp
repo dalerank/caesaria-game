@@ -31,6 +31,7 @@
 #include "walker/romehorseman.hpp"
 #include "walker/helper.hpp"
 #include "walker/romearcher.hpp"
+#include "core/stacktrace.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -305,10 +306,9 @@ TilePos Fort::freeSlot() const
   tiles = _d->getFreeSlots( _city(), tiles );
   if( !tiles.empty() )
   {
-    TilesArray::iterator it = tiles.begin();
-    std::advance( it, math::random( tiles.size() ) );
-    _d->patrolAreaPos[ TileHelper::hash( (*it)->pos() ) ] = (*it)->pos();
-    return (*it)->pos();
+    Tile* tile = tiles.random();
+    _d->patrolAreaPos[ TileHelper::hash( tile->pos() ) ] = tile->pos();
+    return tile->pos();
   }
 
   return TilePos( -1, -1 );
@@ -323,6 +323,23 @@ void Fort::changePatrolArea()
   {
     (*it)->send2patrol();
   }
+}
+
+TilePos Fort::patrolLocation() const
+{
+  TilePos patrolPos;
+  if( _d->patrolPoint.isNull()  )
+  {
+    Logger::warning( "!!!!WARNING: Fort::patrolLocation(): not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
+    patrolPos = _d->area->pos() + TilePos( 0, 3 );
+    Stacktrace::print();
+  }
+  else
+  {
+    patrolPos = _d->patrolPoint->pos();
+  }
+
+  return patrolPos;
 }
 
 Picture Fort::legionEmblem() const { return _d->emblem.pic; }

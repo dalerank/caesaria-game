@@ -244,7 +244,7 @@ void EditBox::setTextAlignment(Alignment horizontal, Alignment vertical)
 //! called if an event happened.
 bool EditBox::onEvent(const NEvent& event)
 {
-	if (isEnabled())
+	if (enabled())
 	{
 		switch(event.EventType)
 		{
@@ -344,7 +344,7 @@ bool EditBox::_processKey(const NEvent& event)
 			}*/
 	  break;
 		case KEY_KEY_V:
-			if ( !isEnabled() )
+			if ( !enabled() )
 				break;
 
 			// paste from the clipboard
@@ -600,7 +600,7 @@ bool EditBox::_processKey(const NEvent& event)
 		break;
 
 	case KEY_BACK:
-		if ( !isEnabled() )
+		if ( !enabled() )
 			break;
 
 		if( _d->text.size() )
@@ -638,7 +638,7 @@ bool EditBox::_processKey(const NEvent& event)
 		}
 		break;
 	case KEY_DELETE:
-		if ( !isEnabled() )
+		if ( !enabled() )
 			break;
 
 		if( _d->text.size() != 0)
@@ -944,7 +944,7 @@ void EditBox::beforeDraw(Engine& painter )
 //! draws the element and its children
 void EditBox::draw( Engine& painter )
 {
-	if (!isVisible())
+	if (!visible())
 		return;
 
 	const bool focus = _environment->hasFocus(this);
@@ -1350,7 +1350,7 @@ std::wstring __unic2utf8(unsigned short wc)
 
 void EditBox::_inputChar(unsigned short c)
 {
-	if (!isEnabled())
+	if (!enabled())
 		return;
 
 	if (c != 0)

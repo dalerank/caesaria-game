@@ -170,7 +170,7 @@ public:
 
   virtual void draw( gfx::Engine& painter )
   {
-    if( !isVisible() )
+    if( !visible() )
       return;
 
     painter.draw( *background, absoluteRect().UpperLeftCorner );
@@ -318,7 +318,7 @@ public:
 
   void draw( gfx::Engine& painter )
   {
-    if( !isVisible() )
+    if( !visible() )
       return;
 
     painter.draw( *_background, screenLeft(), screenTop() );
@@ -452,7 +452,7 @@ oc3_signals private:
 
 void AdvisorTradeWindow::Impl::updateGoodsInfo()
 {
-  Widget::Widgets children = gbInfo->getChildren();
+  Widget::Widgets children = gbInfo->children();
 
   foreach( child, children ) { (*child)->deleteLater(); }
 
@@ -551,7 +551,7 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
 
 void AdvisorTradeWindow::draw(gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->background, screenLeft(), screenTop() );

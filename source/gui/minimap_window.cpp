@@ -284,7 +284,7 @@ namespace {
 
 void Minimap::draw(Engine& painter)
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   if( DateTime::elapsedTime() - _d->lastTimeUpdate > 250 )

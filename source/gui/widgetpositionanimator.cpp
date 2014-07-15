@@ -56,7 +56,7 @@ void PositionAnimator::restart()
 
 void PositionAnimator::beforeDraw(gfx::Engine& painter )
 {
-	if( isEnabled() && parent() && isFlag( isActive ) )
+	if( enabled() && parent() && isFlag( isActive ) )
 	{
     if( fabs(_d->currentPos.x() - _d->stopPos.x() ) > 0.5f 
         || fabs( _d->currentPos.y() - _d->stopPos.y() ) > 0.5f )

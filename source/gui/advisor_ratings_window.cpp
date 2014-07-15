@@ -242,7 +242,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
 
 void AdvisorRatingsWindow::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   painter.draw( *_d->background, screenLeft(), screenTop() );

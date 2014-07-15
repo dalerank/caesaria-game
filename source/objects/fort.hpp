@@ -50,6 +50,7 @@ public:
 
   virtual TilePos freeSlot() const;
   virtual void changePatrolArea();
+  virtual TilePos patrolLocation() const;
 
   virtual gfx::Picture legionEmblem() const;
   virtual std::string legionName() const;

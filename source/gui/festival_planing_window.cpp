@@ -168,7 +168,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
 
 void FestivalPlaningWindow::draw( gfx::Engine& painter )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   if( _d->background )
@@ -184,16 +184,16 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     PushButton* btn = safety_cast< PushButton* >( event.gui.caller );
-    if( btn && (btn->getID() & Impl::divId ) )
+    if( btn && (btn->ID() & Impl::divId ) )
     {
       foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
 
       btn->setPressed( true );
-      _d->currentDivinity = _d->divines[ btn->getID() ];
+      _d->currentDivinity = _d->divines[ btn->ID() ];
 
       _d->updateTitle();
     }
-    else if( btn && (btn->getID() & Impl::festId ) )
+    else if( btn && (btn->ID() & Impl::festId ) )
     {
       _d->btnSmallFestival->setPressed( false );
       _d->btnMiddleFestival->setPressed( false );
@@ -201,7 +201,7 @@ bool FestivalPlaningWindow::onEvent(const NEvent& event)
 
       StringArray titles;
       titles << "" << "##small_festival##" << "##middle_festival##" << "##great_festival##";
-      _d->festivalType = (btn->getID() & 0xf);
+      _d->festivalType = (btn->ID() & 0xf);
       _d->festivalName->setText( _( titles[ _d->festivalType ] ) );
 
       btn->setPressed( true );

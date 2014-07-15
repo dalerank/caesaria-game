@@ -292,13 +292,13 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 
 void EmpireMapWindow::Impl::resetInfoPanel()
 {
-  Widget::Widgets childs = tradeInfo->getChildren();
+  Widget::Widgets childs = tradeInfo->children();
   foreach( widget, childs ) { (*widget)->deleteLater(); }
 }
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
-  DialogBox* dialog = new DialogBox( tradeInfo->getEnvironment()->rootWidget(), Rect( 0, 0, 0, 0 ),
+  DialogBox* dialog = new DialogBox( tradeInfo->environment()->rootWidget(), Rect( 0, 0, 0, 0 ),
                                      _("##emp_open_trade_route##"), _("##emp_pay_open_this_route_question##"), 
                                      DialogBox::btnOk | DialogBox::btnCancel  );
 
@@ -378,7 +378,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
 
 void EmpireMapWindow::draw(gfx::Engine& engine )
 {
-  if( !isVisible() )
+  if( !visible() )
     return;
 
   engine.draw( _d->empireMap, _d->offset );  

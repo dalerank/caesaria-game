@@ -49,7 +49,7 @@ WindowMessageStack::WindowMessageStack( Widget* parent, int id, const Rect& rect
 
 void WindowMessageStack::draw(gfx::Engine& painter )
 {
-  if( !isVisible() || getChildren().empty() )
+  if( !visible() || children().empty() )
     return;
 
   Widget::draw( painter );
@@ -59,7 +59,7 @@ void WindowMessageStack::_update()
 {
   Point offsetLb( width() / 2, 12 );
   Point offset( 0, 23 );
-  Widgets wds = getChildren();
+  Widgets wds = children();
   foreach( widget, wds )
   {
     (*widget)->setCenter( offsetLb );
@@ -69,7 +69,7 @@ void WindowMessageStack::_update()
 
 void WindowMessageStack::beforeDraw(gfx::Engine& painter)
 {
-  Widget::Widgets wds = getChildren();
+  Widget::Widgets wds = children();
   unsigned int myWidth = width();
   int speed = std::max<int>( 20, 2 * myWidth / (painter.fps()+1) );
 
@@ -91,9 +91,9 @@ bool WindowMessageStack::onEvent( const NEvent& ) {  return false; }
 
 void WindowMessageStack::addMessage( std::string message )
 {
-  if( getChildren().size() > 3 )
+  if( children().size() > 3 )
   {
-    removeChild( *getChildren().begin() );
+    removeChild( *children().begin() );
   }
 
   Label* lbMessage = new Label( this, Rect( 0, 0, 2, 20), message );
