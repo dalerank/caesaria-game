@@ -73,19 +73,54 @@ GlEngine::GlEngine() : Engine()
 
 GlEngine::~GlEngine() {}
 
-static const char* screenVertexSource = "void main(void)"
-"{"
-   "vec4 a = gl_Vertex;"
-   //"a.x = a.x * 0.5;"
-   //"a.y = a.y * 0.5;"
+static const char* screenVertexSource = "varying vec2 vTexCoord; \n"
+"void main(void) \n"
+"{ \n"
+   "vTexCoord = gl_MultiTexCoord0; \n"
+   "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; \n"
+"} \n";
 
-   "gl_Position = gl_ModelViewProjectionMatrix * a;"
-"}       ";
+/*static const char* screenFragmentSource = "uniform sampler2D tex;\n \
+    uniform vec2 offset;\n \
+    void main(void)\n \
+    { \n \
+    float dx = 2.0;//offset.s;\n \
+    float dy = 2.0;//offset.t;\n \
+    vec2 st = gl_TexCoord[0].st;\n \
+    vec4 color	= 4.0 * texture2D(tex, st);\n \
+    color	+= 2.0 * texture2D(tex, st + vec2(+dx, 0.0));\n \
+    color	+= 2.0 * texture2D(tex, st + vec2(-dx, 0.0));\n \
+    color	+= 2.0 * texture2D(tex, st + vec2(0.0, +dy));\n \
+    color	+= 2.0 * texture2D(tex, st + vec2(0.0, -dy));\n \
+    color	+= texture2D(tex, st + vec2(+dx, +dy));\n \
+    color	+= texture2D(tex, st + vec2(-dx, +dy));\n \
+    color	+= texture2D(tex, st + vec2(-dx, -dy));\n \
+    color	+= texture2D(tex, st + vec2(+dx, -dy));\n \
+    gl_FragColor = texture2D(tex, st); //color / 16.0;\n \
+    }\n";
+    */
 
-static const char* screenFragmentSource = "void main (void)"
-"{"
-   "gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);"
-"}      ";
+static const char* screenFragmentSource =
+   /* "uniform sampler2D tex; \n"
+    "varying vec2 vTexCoord; \n"
+    "void main() { \n"
+    "  gl_FragColor = texture2D(tex, vTexCoord).bgra; \n"
+    "} \n"; */
+
+    "uniform sampler2D tex; \n"
+    "varying vec2 vTexCoord; \n"
+    "const float blurSizeH = 0.2 / 800.0; \n"
+    "const float blurSizeV = 0.4 / 1280.0; \n"
+    "void main() {  \n "
+    "    vec4 sum = vec4(0.0); \n "
+    "    for (int x = -4; x <= 4; x++) \n "
+    "         for (int y = -4; y <= 4; y++) \n "
+    "            sum += texture2D( \n "
+"                    tex, \n "
+                    "vec2(vTexCoord.x + x * blurSizeH, vTexCoord.y + y * blurSizeV) \n "
+                ") / 81.0; \n "
+        "gl_FragColor = sum; \n "
+    "}";
 
 void GlEngine::init()
 {
@@ -141,10 +176,44 @@ void GlEngine::_initShaderProgramm( const char* vertSrc, const char* fragSrc,
   glShaderSource(vertexShader, 1, &vertSrc, NULL);
   glCompileShader(vertexShader);
 
+  GLint isCompiled = 0;
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
+  if(isCompiled == GL_FALSE)
+  {
+    GLint maxLength = 0;
+    glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
+
+    //The maxLength includes the NULL character
+    std::vector<char> errorLog(maxLength);
+    glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &errorLog[0]);
+
+    Logger::warning( errorLog.data() );
+
+    glDeleteShader(vertexShader); //Don't leak the shader.
+    return;
+  }
+
   // Create and compile the fragment shader
   fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fragmentShader, 1, &fragSrc, NULL);
   glCompileShader(fragmentShader);
+
+  isCompiled = 0;
+  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
+  if(isCompiled == GL_FALSE)
+  {
+    GLint maxLength = 0;
+    glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
+
+    //The maxLength includes the NULL character
+    std::vector<char> errorLog(maxLength);
+    glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &errorLog[0]);
+
+    Logger::warning( errorLog.data() );
+
+    glDeleteShader(fragmentShader); //Don't leak the shader.
+    return;
+  }
 
   // Link the vertex and fragment shader into a shader program
   shaderProgram = glCreateProgram();
@@ -157,10 +226,9 @@ void GlEngine::_initShaderProgramm( const char* vertSrc, const char* fragSrc,
   if( linked )
   {
     Logger::warning( "GlEngine: sucessful link shader program" );
-  }
+  }    
 #endif
 }
-
 
 void GlEngine::exit()
 {
@@ -254,6 +322,12 @@ void GlEngine::_drawFramebuffer()
   glBindTexture(GL_TEXTURE_2D, _colorbuffer);
 
   glUseProgram( _screenShaderProgram );
+  GLint ii = glGetUniformLocation(_screenShaderProgram, "tex");
+ /* if (ii == -1)
+  {
+    Logger::warning( "Error: can't find uniform variable tex" );
+  } */
+  glUniform1i( ii, 0);  glUniform1i( ii, 0);
 
   glBegin( GL_QUADS );
 
