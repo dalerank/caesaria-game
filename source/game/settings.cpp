@@ -64,6 +64,7 @@ __REG_PROPERTY(rectuterDistance)
 __REG_PROPERTY(render)
 __REG_PROPERTY(empireObjectsModel)
 __REG_PROPERTY(pic_offsets)
+__REG_PROPERTY(picsArchive)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -108,6 +109,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ remakeModel         ] = Variant( std::string( "/remake.model" ) );
   _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );
   _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.model" ) );
+  _d->options[ picsArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );

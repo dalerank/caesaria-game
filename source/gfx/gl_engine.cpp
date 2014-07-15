@@ -33,28 +33,29 @@
 #include "core/foreach.hpp"
 
 #ifdef CAESARIA_PLATFORM_ANDROID
-#include <GLES/gl.h>
-#define glOrtho glOrthof
+  #include <GLES/gl.h>
+  #define glOrtho glOrthof
 #else
-#include <SDL_opengl.h>
+  #include <SDL_opengl.h>
 #endif
 
-#ifdef GL_EXT_PROTOTYPES
-#ifdef CAESARIA_PLATFORM_ANDROID
-#include <GLES/glext.h>
+#ifdef GL_GLEXT_PROTOTYPES
+  #ifdef CAESARIA_PLATFORM_ANDROID
+    #include <GLES/glext.h>
+  #else
+   #include <GL/glext.h>
+  #endif
+
+  #define glGenFramebuffers  glGenFramebuffersEXT
+  #define glGenTextures     glGenTexturesEXT
+  #define glGenRenderbuffers glGenRenderbuffersEXT
+  #define glBindFramebuffer glBindFramebufferEXT
+  #define glBindRenderbuffer glBindRenderbufferEXT
+  #define glRenderbufferStorage glRenderbufferStorageEXT
+  #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+  #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
 #else
-#include <GL/glext.h>
-#endif
-#define glGenFramebuffers  glGenFramebuffersEXT
-#define glGenTextures     glGenTexturesEXT
-#define glGenRendererbuffers glGenRendererbuffersEXT
-#define glBindFramebuffer glBindFramebufferEXT
-#define glBindRenderbuffer glBindRendererbufferEXT
-#define glRenderbufferStorage glRenderbufferStorageEXT
-#define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
-#define glCheckFramebufferStatus glCheckFramebufferEXT
-#else
-#define NO_FRAME_BUFFER
+  #define NO_FRAME_BUFFER
 #endif
 
 #include "core/font.hpp"
@@ -71,6 +72,20 @@ GlEngine::GlEngine() : Engine()
 }
 
 GlEngine::~GlEngine() {}
+
+static const char* screenVertexSource = "void main(void)"
+"{"
+   "vec4 a = gl_Vertex;"
+   //"a.x = a.x * 0.5;"
+   //"a.y = a.y * 0.5;"
+
+   "gl_Position = gl_ModelViewProjectionMatrix * a;"
+"}       ";
+
+static const char* screenFragmentSource = "void main (void)"
+"{"
+   "gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);"
+"}      ";
 
 void GlEngine::init()
 {
@@ -113,15 +128,16 @@ void GlEngine::init()
   if( getFlag( Engine::effects ) > 0 )
   {
     _initFramebuffer();
-   // _initShaderProgram(screenVertexSource, screenFragmentSource, screenVertexShader, screenFragmentShader, screenShaderProgram);
+    _initShaderProgramm(screenVertexSource, screenFragmentSource, _screenVertexShader, _screenFragmentShader, _screenShaderProgram);
   }
 }
 
 void GlEngine::_initShaderProgramm( const char* vertSrc, const char* fragSrc,
                                     unsigned int& vertexShader, unsigned int& fragmentShader, unsigned int& shaderProgram)
 {
+#ifndef NO_FRAME_BUFFER
   // Create and compile the vertex shader
-  /*vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  vertexShader = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vertexShader, 1, &vertSrc, NULL);
   glCompileShader(vertexShader);
 
@@ -134,8 +150,15 @@ void GlEngine::_initShaderProgramm( const char* vertSrc, const char* fragSrc,
   shaderProgram = glCreateProgram();
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
-  glBindFragDataLocation(shaderProgram, 0, "outColor");
-  glLinkProgram(shaderProgram);*/
+  glLinkProgram(shaderProgram);
+
+  GLint linked;
+  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &linked);
+  if( linked )
+  {
+    Logger::warning( "GlEngine: sucessful link shader program" );
+  }
+#endif
 }
 
 
@@ -217,6 +240,7 @@ void GlEngine::_drawFramebuffer()
 {
 #ifndef NO_FRAME_BUFFER
   // Bind default framebuffer and draw contents of our framebuffer
+
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
   glLoadIdentity();
   glMatrixMode(GL_MODELVIEW);
@@ -228,6 +252,8 @@ void GlEngine::_drawFramebuffer()
   float y1 = y0+_srcSize.height();
 
   glBindTexture(GL_TEXTURE_2D, _colorbuffer);
+
+  glUseProgram( _screenShaderProgram );
 
   glBegin( GL_QUADS );
 
@@ -244,6 +270,8 @@ void GlEngine::_drawFramebuffer()
   glVertex2f( x1, y0 );
 
   glEnd();
+
+  glUseProgram( 0 );
 #endif
 }
 
@@ -352,7 +380,7 @@ void GlEngine::endRenderFrame()
   }
 
   if( getFlag( Engine::effects ) > 0 )
-  {
+  {    
     _drawFramebuffer();
   }
 

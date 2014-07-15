@@ -164,13 +164,15 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   }
   else
   {
-    vfs::Path testPics = SETTINGS_RC_PATH( remakeModel );
+    vfs::Path testPics = SETTINGS_RC_PATH( picsArchive );
     if( !testPics.exist() )
     {
       errorStr = "Not found graphics set. Use precompiled CaesarIA archive or use\n"
                  "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
                  "forexample, \"-c3gfx c:/games/caesar3/\"";
     }
+
+    loader.loadFromModel( SETTINGS_RC_PATH( remakeModel ) );
   }
 
   if( !errorStr.empty() )

@@ -68,6 +68,7 @@ public:
   __GS_PROPERTY(rectuterDistance)
   __GS_PROPERTY(render)
   __GS_PROPERTY(pic_offsets)
+  __GS_PROPERTY(picsArchive)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();
