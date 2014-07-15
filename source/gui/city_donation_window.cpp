@@ -20,6 +20,8 @@
 #include "core/event.hpp"
 #include "game/settings.hpp"
 #include "core/logger.hpp"
+#include "label.hpp"
+#include "core/stringhelper.hpp"
 
 namespace gui
 {
@@ -28,9 +30,12 @@ class CityDonationWindow::Impl
 {
 public:
   int wantSend, maxMoney;
+  Label* lbDonation;
+
+  void updateDonationText();
 
 public oc3_slots:
-  void sendMoney() { sendMoneySignal.emit( wantSend ); }
+  void sendMoney() { oc3_emit sendMoneySignal( wantSend ); }
 
 public oc3_signals:
   Signal1<int> sendMoneySignal;
@@ -39,14 +44,18 @@ public oc3_signals:
 CityDonationWindow::CityDonationWindow( Widget* p, int money )
   : Widget( p, -1, Rect( 0, 0, 1, 1 ) ), __INIT_IMPL(CityDonationWindow)
 {
-  _dfunc()->maxMoney = money;
-  _dfunc()->wantSend = 0;
+  __D_IMPL(d,CityDonationWindow)
+  d->maxMoney = money;
+  d->wantSend = 0;
 
   setupUI( GameSettings::rcpath( "/gui/money2city.gui" ) );
   setCenter( parent()->center() );
 
   PushButton* btnSend = findChildA<PushButton*>( "btnSend", true, this );
   PushButton* btnCancel = findChildA<PushButton*>( "btnCancel", true, this );
+  d->lbDonation = findChildA<Label*>( "lbDonation", true, this );
+
+  d->updateDonationText();
 
   CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendMoney );
   CONNECT( btnSend, onClicked(), this, CityDonationWindow::deleteLater );
@@ -57,14 +66,27 @@ CityDonationWindow::~CityDonationWindow() {}
 
 bool CityDonationWindow::onEvent(const NEvent& event)
 {
+  __D_IMPL(d,CityDonationWindow)
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     int id = event.gui.caller->getID();
-    if( id > 0 && ((id & 0x0f00) == 0x0f00) )
+    if( id > 0 )
     {
-      int multiplier = id & 0xff;
-      int maxMoney = _dfunc()->maxMoney;
-      _dfunc()->wantSend = math::clamp( (multiplier == 0xff ? maxMoney : (multiplier * 500)), 0, maxMoney );
+      int maxMoney = d->maxMoney;
+      int wantSend = d->wantSend;
+      if( ((id & 0x0f00) == 0x0f00) )
+      {
+        int multiplier = id & 0xff;
+        wantSend = multiplier == 0xff ? maxMoney : (multiplier * 500);
+      }
+      else if( (id & 0x1000) == 0x1000 )
+      {
+        int offset = (id & 0xf) == 1 ? -10 : 10;
+        wantSend += offset;
+      }
+
+      d->wantSend =  math::clamp( wantSend, 0, maxMoney );
+      d->updateDonationText();
     }
 
     return true;
@@ -74,5 +96,11 @@ bool CityDonationWindow::onEvent(const NEvent& event)
 }
 
 Signal1<int>& CityDonationWindow::onSendMoney() { return _dfunc()->sendMoneySignal; }
+
+void CityDonationWindow::Impl::updateDonationText()
+{
+  std::string text = StringHelper::format( 0xff, "%d from %d dn", wantSend, maxMoney );
+  if( lbDonation ) lbDonation->setText( text );
+}
 
 }//end namespace gui

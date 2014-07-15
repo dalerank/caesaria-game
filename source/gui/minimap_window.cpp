@@ -244,7 +244,6 @@ void Minimap::Impl::updateImage()
 
       Point pnt = getBitmapCoordinates( wlk->pos().i()-startPos.i() - 40, wlk->pos().j()-startPos.j()-60, mapsize);
       minimap->fill( c1, Rect( pnt, Size(2) ) );
-
     }
   }
 

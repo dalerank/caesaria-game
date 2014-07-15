@@ -14,6 +14,7 @@
       "Ctrl+Shift+1 : toggle show tile grid",
       "Ctrl+Shift+2 : toggle show tile position",
       "Ctrl+Shift+3 : toggle mode elevation tile draw",
+      "Ctrl+Shift+Y : add 1000 dn for player",
       "W,A,S,D and arrows : move map",
       "Shift on building mode : build road by rectangle",
       "Ctrl+F1  : visit labor advisor",

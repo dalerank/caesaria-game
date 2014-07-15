@@ -267,6 +267,9 @@ void PushButton::setupUI(const VariantMap &ui)
   setIsPushButton( (bool)ui.get( "pushbutton" ) );
   _d->textOffset = ui.get( "textOffset" ).toPoint();
 
+  Variant vFont = ui.get( "font" );
+  if( vFont.isValid() ) { setFont( Font::create( vFont.toString() ) ); }
+
   VariantList vlist = ui.get( "normal" ).toList();
   if( !vlist.empty() ) setPicture( vlist.get( 0 ).toString(), vlist.get( 1 ).toInt(), stNormal );
 

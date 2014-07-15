@@ -588,6 +588,15 @@ void Level::handleEvent( NEvent& event )
     }
     break;
 
+    case KEY_KEY_Y:
+    {
+      if( event.keyboard.shift )
+      {
+        _d->game->player()->appendMoney( 1000 );
+      }
+    }
+    break;
+
     case KEY_KEY_M:
     {
       if( event.keyboard.shift )
