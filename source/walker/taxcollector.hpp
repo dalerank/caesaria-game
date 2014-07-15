@@ -26,7 +26,7 @@ class TaxCollector : public ServiceWalker
 public:
   static TaxCollectorPtr create( PlayerCityPtr city );
 
-  int getMoney() const;
+  float getMoney() const;
 
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;

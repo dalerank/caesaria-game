@@ -28,7 +28,7 @@ using namespace constants;
 class Forum::Impl
 {
 public:
-  int taxValue;
+  float taxValue;
 };
 
 Forum::Forum() : ServiceBuilding(Service::forum, building::forum, Size(2)), _d( new Impl )
@@ -51,6 +51,8 @@ void Forum::deliverService()
   }
 }
 
+unsigned int Forum::walkerDistance() const { return 26; }
+
 void Forum::applyService(ServiceWalkerPtr walker)
 {
   switch( walker->type() )
@@ -62,7 +64,7 @@ void Forum::applyService(ServiceWalkerPtr walker)
     {
       float tax = txcl->getMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Forum: collect money %f. All money %d", tax, _d->taxValue );
+      Logger::warning( "Forum: collect money %f. All money %f", tax, _d->taxValue );
     }
   }
   break;
@@ -74,9 +76,9 @@ void Forum::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-int Forum::collectTaxes()
+float Forum::collectTaxes()
 {
-  int taxes = _d->taxValue;
+  float taxes = _d->taxValue;
   _d->taxValue = 0;
   return taxes;
 }

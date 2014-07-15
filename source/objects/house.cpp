@@ -47,7 +47,6 @@ using namespace gfx;
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
-  CAESARIA_LITERALCONST(taxesThisYear)
 
   static int happines4tax[25] = { 10,  9,  7,  6,  4,
                                    2,  1,  0, -1, -2,
@@ -61,7 +60,7 @@ class House::Impl
 public:
   typedef std::map< Service::Type, Service > Services;
   int houseLevel;
-  float money;
+  float money, tax;
   int poverity;
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
@@ -96,6 +95,8 @@ House::House( HouseLevel::ID level ) : Building( building::house ), _d( new Impl
   _d->desirability.step = 1;
   _d->changeCondition = 0;
   _d->money = 0;
+  _d->tax = 0;
+  _d->taxesThisYear = 0;
   _d->currentYear = GameDate::current().year();
 
   setState( House::health, 100 );
@@ -214,10 +215,12 @@ void House::_checkEvolve()
 
 void House::_updateTax()
 {
-  float cityTax = math::clamp<float>( _city()->funds().taxRate() / 100.f, 0, _d->money );
-  _d->money -= cityTax;
+  float cityTax = _city()->funds().taxRate() / 100.f;
+  cityTax = cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear;
+  cityTax = math::clamp<float>( cityTax, 0, _d->money );
 
-  appendServiceValue( Service::forum, (cityTax * _d->spec.taxRate() * _d->habitants.count( CitizenGroup::mature ) / (float)DateTime::monthsInYear) );
+  _d->money -= cityTax;
+  _d->tax += cityTax;
 }
 
 void House::_updateCrime()
@@ -786,6 +789,11 @@ void House::applyService( ServiceWalkerPtr walker )
     updateState( (Construction::Param)House::health, 10 );
     setServiceValue(service, 100);
   break;
+
+  case Service::forum:
+  case Service::senate:
+    setServiceValue(Service::forum,100);
+  break;
   
   case Service::market:
     setServiceValue( Service::market, 100 );
@@ -807,12 +815,12 @@ void House::applyService( ServiceWalkerPtr walker )
     if( !svalue )
       break;
 
-    RecruterPtr hunter = ptr_cast<Recruter>( walker );
-    if( hunter.isValid() )
+    RecruterPtr recuter = ptr_cast<Recruter>( walker );
+    if( recuter.isValid() )
     {
-      int hiredWorkers = math::clamp( svalue, 0, hunter->needWorkers() );
+      int hiredWorkers = math::clamp( svalue, 0, recuter->needWorkers() );
       appendServiceValue( service, -hiredWorkers );
-      hunter->hireWorkers( hiredWorkers );
+      recuter->hireWorkers( hiredWorkers );
     }
   }
   break;
@@ -837,12 +845,6 @@ float House::evaluateService(ServiceWalkerPtr walker)
   case Service::engineer: res = state( Construction::damage ); break;
   case Service::prefect: res = state( Construction::fire ); break;
 
-  // this house pays taxes
-  case Service::forum:
-  case Service::senate:
-    res = _d->services[ Service::forum ];
-  break;
-
   case Service::market:
   {
     MarketPtr market = ptr_cast<Market>( walker->base() );
@@ -863,10 +865,13 @@ float House::evaluateService(ServiceWalkerPtr walker)
   }
   break;
 
+  case Service::forum:
+  case Service::senate:
+    res = _d->tax;
+  break;
+
   case Service::recruter:
-  {
-    res = (float)getServiceValue( service );
-  }
+    res = getServiceValue( service );
   break;   
 
   default:
@@ -911,13 +916,13 @@ void House::_update( bool needChangeTexture )
                                              ? HouseLevel::vacantLot
                                              : (HouseLevel::ID)_d->houseLevel;
   Picture pic = HouseSpecHelper::instance().getPicture( level, size().width() );
-  if( pic.isValid() && needChangeTexture )
+  if( needChangeTexture )
   {
+    if( !pic.isValid() ) pic = Picture::getInvalid();
     setPicture( pic );
   }
 
   _d->maxHabitants = _d->spec.getMaxHabitantsByTile() * size().area();
-  _d->services[ Service::forum ].setMax( _d->spec.taxRate() * _d->maxHabitants );
   _d->initGoodStore( size().area() );
 }
 
@@ -1008,10 +1013,10 @@ void House::save( VariantMap& stream ) const
   stream[ "goodstore" ] = _d->goodStore.save();
   stream[ "healthLevel" ] = state( (Construction::Param)House::health );
   stream[ "changeCondition" ] = _d->changeCondition;
-  stream[ lc_taxesThisYear ] = _d->taxesThisYear;
-
+  VARIANT_SAVE_ANY_D(stream, _d, taxesThisYear)
   VARIANT_SAVE_ANY_D(stream, _d, poverity)
   VARIANT_SAVE_ANY_D(stream, _d, money)
+  VARIANT_SAVE_ANY_D(stream, _d, tax)
 
   VariantList vl_services;
   foreach( mapItem, _d->services )
@@ -1038,10 +1043,11 @@ void House::load( const VariantMap& stream )
   _d->changeCondition = stream.get( "changeCondition", 0 );
   VARIANT_LOAD_ANY_D(_d,poverity, stream)
   VARIANT_LOAD_ANY_D(_d,money, stream)
+  VARIANT_LOAD_ANY_D(_d,tax, stream)
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
   _d->currentYear = GameDate::current().year();
-  _d->taxesThisYear = stream.get( lc_taxesThisYear ).toUInt();
+  VARIANT_LOAD_ANY_D(_d,taxesThisYear, stream)
 
   _d->initGoodStore( size().area() );
 
@@ -1128,9 +1134,9 @@ bool House::isEntertainmentNeed(Service::Type type) const
 
 float House::collectTaxes()
 {
-  float tax = getServiceValue( Service::forum );
+  float tax = _d->tax;
   _d->taxesThisYear += tax;
-  setServiceValue( Service::forum, 0 );
+  _d->tax = 0.f;
   _d->lastTaxationDate = GameDate::current();
   return tax;
 }
@@ -1182,12 +1188,10 @@ void House::Impl::initGoodStore(int size)
 void House::Impl::consumeServices()
 {
   int currentWorkersPower = services[ Service::recruter ];       //save available workers number
-  float tax = services[ Service::forum ];
 
   foreach( s, services ) { s->second -= 1; } //consume services
 
   services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
-  services[ Service::forum ] = tax;
 }
 
 void House::Impl::consumeGoods( HousePtr house )

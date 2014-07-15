@@ -26,7 +26,7 @@ public:
   Senate();
   unsigned int getFunds() const;
 
-  int collectTaxes();
+  float collectTaxes();
 
   int getStatus( Status status ) const;
 

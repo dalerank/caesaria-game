@@ -3,4 +3,5 @@
   sounds : "/audio/wavs_buildings.zip"
   game_sounds : "/audio/wavs_game.zip"
   oc3  : "/gfx/pics_oc3.zip"
+  housingb : "/gfx/pics_house.zip"
 }

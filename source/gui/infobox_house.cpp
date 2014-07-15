@@ -86,29 +86,25 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   drawHabitants( _house );
 
   int taxes = _house->spec().taxRate();
-  std::string taxesStr;
+  std::string taxesStr = "##house_not_taxation##";
   if( taxes > 0 )
   {
-    if( _house->getServiceValue( Service::forum ) == 0 )
+    if( _house->getServiceValue( Service::forum ) > 0 )
     {
       taxesStr = StringHelper::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
     }
     else
     {
       DateTime lastTax = _house->lastTaxationDate();
-      if( GameDate::current().year() == lastTax.year() )
+      if( GameDate::current().year() > lastTax.year() )
       {
         taxesStr = "##no_tax_in_this_year##";
       }
       else
-      {
+      {        
         taxesStr = "##no_visited_by_taxman##";
       }
     }
-  }
-  else
-  {
-    taxesStr = "##house_not_taxation##";
   }
 
   Label* taxesLb = new Label( this, Rect( 16 + 35, 177, width() - 16, 177 + 20 ), _( taxesStr ) );

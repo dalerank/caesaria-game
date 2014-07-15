@@ -372,7 +372,7 @@ unsigned int PlayerCity::population() const { return _d->population; }
 void PlayerCity::Impl::collectTaxes(PlayerCityPtr city )
 {
   city::Helper hlp( city );
-  int lastMonthTax = 0;
+  float lastMonthTax = 0;
   
   ForumList forums = hlp.find< Forum >( building::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
@@ -389,19 +389,24 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
 
   if( funds.haveMoneyForAction( wages ) )
   {
-    funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
-  }
-  else
-  {
+    //funds.resolveIssue( FundIssue( city::Funds::workersWages, -wages ) );
     HouseList houses;
     houses << city->overlays();
 
     float salary = city::Statistic::getMonthlyOneWorkerWages( city );
+    float wages = 0;
     foreach( it, houses )
     {
       int workers = (*it)->workersCount();
-      (*it)->appendMoney( salary * workers );
+      float house_wages = salary * workers;
+      (*it)->appendMoney( house_wages );
+      wages += house_wages;
     }
+    funds.resolveIssue( FundIssue( city::Funds::workersWages, ceil( -wages ) ) );
+  }
+  else
+  {
+
   }
 }
 

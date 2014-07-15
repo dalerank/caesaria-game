@@ -48,6 +48,7 @@ public:
   static unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
   static unsigned int getFoodProducing( PlayerCityPtr city );
   static unsigned int getTaxValue( PlayerCityPtr city );
+  static unsigned int getTaxPayersPercent( PlayerCityPtr city );
   static unsigned int getHealth( PlayerCityPtr city );
   static int getWagesDiff( PlayerCityPtr city );
   static unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );

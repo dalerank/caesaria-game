@@ -35,6 +35,7 @@
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
+#include "city/statistic.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -91,7 +92,8 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   _d->lbTaxRateNow->setFont( fontWhite );
   _d->updateTaxRateNowLabel();
 
-  std::string strRegPaeyrs = StringHelper::format( 0xff, "%d%% %s", 0, _("##population_registered_as_taxpayers##") );
+  unsigned int regTaxPayers = city::Statistic::getTaxPayersPercent( city );
+  std::string strRegPaeyrs = StringHelper::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
   fontWhite.draw( *_d->background, strRegPaeyrs, 75, 95, false );
 
   Font font = Font::create( FONT_1 );

@@ -95,10 +95,9 @@ TaxCollector::TaxCollector(PlayerCityPtr city ) : ServiceWalker( city, Service::
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-int TaxCollector::getMoney() const
+float TaxCollector::getMoney() const
 {
-  int save = round(_d->money);
-  Logger::warning("TaxCollector %f rounded to %d", _d->money, save);
+  float save = _d->money;
   _d->money = 0;
   return save;
 }

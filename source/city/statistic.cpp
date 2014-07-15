@@ -110,7 +110,7 @@ unsigned int Statistic::getMonthlyWorkersWages(PlayerCityPtr city)
 
 float Statistic::getMonthlyOneWorkerWages(PlayerCityPtr city)
 {
-  return city->funds().workerSalary() / (10 * DateTime::monthsInYear);
+  return city->funds().workerSalary() / (10.f * DateTime::monthsInYear);
 }
 
 unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
@@ -191,6 +191,26 @@ unsigned int Statistic::getTaxValue(PlayerCityPtr city)
   }
 
   return taxValue;
+}
+
+unsigned int Statistic::getTaxPayersPercent(PlayerCityPtr city)
+{
+  Helper helper( city );
+  HouseList houses = helper.find<House>( building::house );
+
+  unsigned int registered = 0;
+  unsigned int population = 0;
+  foreach( house, houses )
+  {
+    unsigned int hbCount = (*house)->habitants().count();
+    population += hbCount;
+    if( (*house)->getServiceValue( Service::forum ) > 25 )
+    {
+      registered += hbCount;
+    }
+  }
+
+  return population > 0 ? (registered * 100 / population): 0;
 }
 
 unsigned int Statistic::getHealth(PlayerCityPtr city)

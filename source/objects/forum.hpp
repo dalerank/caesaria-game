@@ -24,9 +24,10 @@ class Forum : public ServiceBuilding
 public:
   Forum();
 
-  int collectTaxes();
+  float collectTaxes();
   
   virtual void deliverService();
+  virtual unsigned int walkerDistance() const;
   virtual void applyService(ServiceWalkerPtr walker);
 
 private:

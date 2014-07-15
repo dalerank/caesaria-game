@@ -34,7 +34,7 @@ using namespace gfx;
 class Senate::Impl
 {
 public:
-  int taxValue;
+  float taxValue;
   std::string errorStr;
 };
 
@@ -81,7 +81,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
     {
       float tax = txcl->getMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Senate: collect money %f. All money %d", tax, _d->taxValue );
+      Logger::warning( "Senate: collect money %f. All money %f", tax, _d->taxValue );
     }
   }
   break;
@@ -137,9 +137,9 @@ void Senate::_updateUnemployers()
   }
 }
 
-int Senate::collectTaxes()
+float Senate::collectTaxes()
 {
-  int save = _d->taxValue;
+  float save = _d->taxValue;
   _d->taxValue = 0;
   return save;
 }
