@@ -34,6 +34,7 @@ public:
   virtual ConstructionPtr getConstruction() const;
   virtual void setConstruction( ConstructionPtr construction );
 private:
+  void _switch( int flag );
   ConstructionPtr _construction;
 };
 
