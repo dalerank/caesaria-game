@@ -1140,6 +1140,12 @@ Variant::Variant(const std::string& val)
 Variant::Variant(char val)
 { _d.is_null = false; _d.type = Variant::Char; _d.data.c = val;  }
 
+Variant::Variant(const char* string)
+{
+  const std::string rstring( string );
+  _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, rstring);
+}
+
 Variant::Variant(const DateTime &val)
 { _d.is_null = false; _d.type = Variant::NDateTime; v_construct<DateTime>(&_d, val); }
 
@@ -1940,7 +1946,7 @@ std::ostream & operator << (std::ostream& os, const Variant::Type p)
 
 Variant::Variant( float f )
 {
-    _d.is_null = false; _d.type = Float; _d.data.f = f;
+  _d.is_null = false; _d.type = Float; _d.data.f = f;
 }
 
 bool Variant::isValid() const

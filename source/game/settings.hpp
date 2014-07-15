@@ -58,7 +58,7 @@ public:
   __GS_PROPERTY(walkerModel)
   __GS_PROPERTY(giftsModel)
   __GS_PROPERTY(emblemsModel)
-  __GS_PROPERTY(testArchive)
+  __GS_PROPERTY(remakeModel)
   __GS_PROPERTY(screenFitted)
   __GS_PROPERTY(needAcceptBuild)
   __GS_PROPERTY(sg2model)
@@ -90,5 +90,6 @@ private:
 };
 
 #define SETTINGS_RC_PATH(a) GameSettings::rcpath( GameSettings::a )
+#define SETTINGS_VALUE(a) GameSettings::get( GameSettings::a )
 
 #endif //__CAESARIA_APPCONFIG_H_INCLUDED__

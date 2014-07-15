@@ -166,6 +166,7 @@ class Variant
     Variant( double d);
     Variant( float f);
 
+    explicit Variant( const char* string );
     Variant( const ByteArray& bytearray );
     explicit Variant( const std::string& string);
     Variant( const StringArray& stringlist );

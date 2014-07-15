@@ -103,7 +103,7 @@ void Game::Impl::initLocale( std::string localePath)
 {
   //init translator
   Locale::setDirectory( localePath );
-  Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
+  Locale::setLanguage( SETTINGS_VALUE( language ).toString() );
 }
 
 void Game::Impl::initVideo()
@@ -116,9 +116,9 @@ void Game::Impl::initVideo()
   else { engine = new gfx::SdlEngine(); }
 
   Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize( GameSettings::get( GameSettings::resolution ).toSize() );
+  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
 
-  bool fullscreen = GameSettings::get( GameSettings::fullscreen );
+  bool fullscreen = SETTINGS_VALUE( fullscreen );
   if( fullscreen )
   {
     Logger::warning( "GraficEngine: try set fullscreen mode" );
@@ -146,7 +146,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
-  Variant c3res = GameSettings::get( GameSettings::c3gfx );
+  Variant c3res = SETTINGS_VALUE( c3gfx );
   if( c3res.isValid() )
   {
     vfs::Directory gfxDir( c3res.toString() );
@@ -160,11 +160,11 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
     }
 
-    loader.loadFromModel( SETTINGS_RC_PATH( sg2model ) );
+    loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
   }
   else
   {
-    vfs::Path testPics = SETTINGS_RC_PATH( testArchive );
+    vfs::Path testPics = SETTINGS_RC_PATH( remakeModel );
     if( !testPics.exist() )
     {
       errorStr = "Not found graphics set. Use precompiled CaesarIA archive or use\n"
@@ -185,7 +185,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
 
 void Game::Impl::createSaveDir()
 {
-  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
 
   bool dirCreated = true;
   if( !saveDir.exist() )
@@ -497,7 +497,7 @@ void Game::initialize()
 {
   GameSettings::load();
   _d->initArchiveLoaders();
-  _d->initLocale( GameSettings::get( GameSettings::localePath ).toString() );
+  _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
   _d->initFontCollection( GameSettings::rcpath() );
   _d->initGuiEnvironment();

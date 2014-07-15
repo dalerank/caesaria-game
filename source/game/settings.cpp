@@ -53,7 +53,7 @@ __REG_PROPERTY(animationsModel )
 __REG_PROPERTY(walkerModel)
 __REG_PROPERTY(giftsModel)
 __REG_PROPERTY(emblemsModel )
-__REG_PROPERTY(testArchive )
+__REG_PROPERTY(remakeModel )
 __REG_PROPERTY(screenFitted)
 __REG_PROPERTY(needAcceptBuild)
 __REG_PROPERTY(sg2model)
@@ -105,7 +105,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ empireObjectsModel  ] = Variant( std::string( "/empire_objects.model" ) );
   _d->options[ giftsModel          ] = Variant( std::string( "/gifts.model" ) );
   _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
-  _d->options[ testArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
+  _d->options[ remakeModel         ] = Variant( std::string( "/remake.model" ) );
   _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );
   _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.model" ) );
   _d->options[ needAcceptBuild     ] = false;
