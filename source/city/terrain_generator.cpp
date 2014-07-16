@@ -218,11 +218,13 @@ static void __removeCorners(Game& game )
 }
 
 namespace {
-enum { passCheckNorthTiles=1,
-       passCheckEastTiles=2,
-       passCheckSouthTiles=3,
-       passCheckWestTiles=4,
-       passCheckCornerTiles=5 };
+enum { passCheckNorthCoastTiles=1,
+       passCheckEastCoastTiles=2,
+       passCheckSouthCoastTiles=3,
+       passCheckWestCoastTiles=4,
+       passCheckSmallCoastTiles=5,
+       reserved1=6,
+       passCheckInsideCornerTiles=7 };
 
 enum { drN=0x1,drNW=0x80,
        drW=0x8,drSW=0x40,
@@ -263,36 +265,37 @@ static void __finalizeMap(Game& game, int pass )
 
 
       int start=0, rnd=4;
-      switch( pass ) {
-      case passCheckNorthTiles:
+      switch( pass )
+      {
+      case passCheckNorthCoastTiles:
         switch( direction )
         {
         case drN: case drN|drNW: case drNW|drNE|drN: case drNE|drN: case drNE|drNW: start=128; break;
         }
       break;
 
-      case passCheckEastTiles:
+      case passCheckEastCoastTiles:
         switch( direction )
         {
         case drE: case drNE|drE: case drNE|drSE: case drNE|drSE|drE: case drSE|drE: start=132; break;
         }
       break;
 
-      case passCheckSouthTiles:
+      case passCheckSouthCoastTiles:
         switch( direction )
         {
         case drS: case drSW|drS: case drSE|drS: case drSW|drSE|drS: case drSW|drSE: start=136; break;
         }
       break;
 
-      case passCheckWestTiles:
+      case passCheckWestCoastTiles:
         switch( direction )
         {
         case drW: case drSW|drNW|drW: case drSW|drW: case drNW|drW: case drSW|drNW: start=140; break;
         }
       break;
 
-      case passCheckCornerTiles:
+      case passCheckSmallCoastTiles:
         switch( direction )
         {
         case drE|drS|drSE:
@@ -306,7 +309,8 @@ static void __finalizeMap(Game& game, int pass )
         case drNE|drSW|drE|drS:
         case drE|drS: case drNE|drSE|drSW: case drSW|drSE|drE: start = 171; rnd=0; break;
 
-        case 0xc9: case 0x89: case 0x99: case 0x98: case 0xd9: case 0x58: case 0x19:
+        case drNW|drSW|drW|drN: case drNW|drW|drN: case drNW|drNE|drW|drN:
+        case drNW|drNW|drW: case 0xd9: case 0x58: case 0x19:
         case 0xd8: case 0xd1: case 0x49: case 0x18: case 0xc1: case 0x41:
         case 0x51: case 0x09: case 0x59: case 0xd0: start=173; rnd=0; break;
 
@@ -327,11 +331,11 @@ static void __finalizeMap(Game& game, int pass )
       case 6:
       break;
 
-      case 7:
+      case passCheckInsideCornerTiles:
         switch( direction )
         {
-        case 0x10: start=144; break;
-        case 0x20: start=148; break;
+        case drNE: start=PicID::coastNE; break;
+        case drSE: start=PicID::coastSE; break;
         case 0x40: start=152; break;
         case 0x80: start=156; break;
         }
@@ -563,7 +567,7 @@ static void __createRoad(Game& game )
     {
       TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::construction::road );
 
-      Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+      Picture pic = Picture::load( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
       (*it)->setPicture( pic );
       (*it)->setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
 
@@ -702,13 +706,13 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
 
   __removeCorners( game );
 
-  __finalizeMap( game, passCheckNorthTiles );
-  __finalizeMap( game, passCheckEastTiles );
-  __finalizeMap( game, passCheckSouthTiles );
-  __finalizeMap( game, passCheckWestTiles );
-  __finalizeMap( game, passCheckCornerTiles );
+  __finalizeMap( game, passCheckNorthCoastTiles );
+  __finalizeMap( game, passCheckEastCoastTiles );
+  __finalizeMap( game, passCheckSouthCoastTiles );
+  __finalizeMap( game, passCheckWestCoastTiles );
+  __finalizeMap( game, passCheckSmallCoastTiles );
   //__finalizeMap( game, 6 );
-  __finalizeMap( game, 7 );
+  __finalizeMap( game, passCheckInsideCornerTiles );
   __finalizeMap( game, 8 );
   __finalizeMap( game, 9 );
   __finalizeMap( game, 0xff );

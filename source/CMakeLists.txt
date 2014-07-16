@@ -88,8 +88,12 @@ if( BUILD_PNG )
 endif()
 
 if(BUILD_GL_FRAMEBUFFER)
-add_definitions( -DGL_GLEXT_PROTOTYPES )
+add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
 endif(BUILD_GL_FRAMEBUFFER)
+
+if(BUILD_GL_SHADERS)
+add_definitions( -DCAESARIA_USE_SHADERS )
+endif(BUILD_GL_SHADERS)
 
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")

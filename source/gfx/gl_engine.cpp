@@ -39,21 +39,56 @@
   #include <SDL_opengl.h>
 #endif
 
-#ifdef GL_GLEXT_PROTOTYPES
-  #ifdef CAESARIA_PLATFORM_ANDROID
-    #include <GLES/glext.h>
-  #else
-   #include <GL/glext.h>
-  #endif
+#ifndef CAESARIA_PLATFORM_MACOSX
 
-  #define glGenFramebuffers  glGenFramebuffersEXT
-  #define glGenTextures     glGenTexturesEXT
-  #define glGenRenderbuffers glGenRenderbuffersEXT
-  #define glBindFramebuffer glBindFramebufferEXT
-  #define glBindRenderbuffer glBindRenderbufferEXT
-  #define glRenderbufferStorage glRenderbufferStorageEXT
-  #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
-  #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
+#ifdef CAESARIA_USE_FRAMEBUFFER
+  #ifdef CAESARIA_PLATFORM_LINUX
+    #define GL_GLEXT_PROTOTYPES
+
+    #define glGenFramebuffers  glGenFramebuffersEXT
+    #define glGenTextures     glGenTexturesEXT
+    #define glGenRenderbuffers glGenRenderbuffersEXT
+    #define glBindFramebuffer glBindFramebufferEXT
+    #define glBindRenderbuffer glBindRenderbufferEXT
+    #define glRenderbufferStorage glRenderbufferStorageEXT
+    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+    #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
+    #define glFramebufferTexture2D glFramebufferTexture2DEXT
+  #elif defined(CAESARIA_PLATFORM_WIN)
+    #define ASSIGNGLFUNCTION(type,name) type name = (type)wglGetProcAddress( #name );
+    ASSIGNGLFUNCTION(PFNGLCREATESHADERPROC,glCreateShader)
+    ASSIGNGLFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource)
+    ASSIGNGLFUNCTION(PFNGLCOMPILESHADERPROC,glCompileShader)
+    ASSIGNGLFUNCTION(PFNGLGETSHADERIVPROC,glGetShaderiv)
+    ASSIGNGLFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram)
+    ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i)
+    ASSIGNGLFUNCTION(PFNGLGETUNIFORMLOCATIONPROC,glGetUniformLocation)
+    ASSIGNGLFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog)
+    ASSIGNGLFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader)
+    ASSIGNGLFUNCTION(PFNGLCREATEPROGRAMPROC,glCreateProgram)
+    ASSIGNGLFUNCTION(PFNGLATTACHSHADERPROC,glAttachShader)
+    ASSIGNGLFUNCTION(PFNGLLINKPROGRAMPROC,glLinkProgram)
+    ASSIGNGLFUNCTION(PFNGLGETPROGRAMIVPROC,glGetProgramiv)
+    ASSIGNGLFUNCTION(PFNGLGENFRAMEBUFFERSEXTPROC,glGenFramebuffersEXT)
+    ASSIGNGLFUNCTION(PFNGLGENTEXTURESEXTPROC,glGenTexturesEXT)
+    ASSIGNGLFUNCTION(PFNGLGENRENDERBUFFERSEXTPROC,glGenRenderbuffersEXT)
+    ASSIGNGLFUNCTION(PFNGLBINDFRAMEBUFFEREXTPROC,glBindFramebufferEXT)
+    ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERTEXTURE2DEXTPROC,glFramebufferTexture2DEXT)
+    ASSIGNGLFUNCTION(PFNGLBINDRENDERBUFFEREXTPROC,glBindRenderbufferEXT)
+    ASSIGNGLFUNCTION(PFNGLRENDERBUFFERSTORAGEEXTPROC,glRenderbufferStorageEXT)
+    ASSIGNGLFUNCTION(PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC,glFramebufferRenderbufferEXT)
+    ASSIGNGLFUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC,glCheckFramebufferStatusEXT)
+
+    #define glGenFramebuffers  glGenFramebuffersEXT
+    #define glGenTextures     glGenTexturesEXT
+    #define glGenRenderbuffers glGenRenderbuffersEXT
+    #define glBindFramebuffer glBindFramebufferEXT
+    #define glBindRenderbuffer glBindRenderbufferEXT
+    #define glRenderbufferStorage glRenderbufferStorageEXT
+    #define glFramebufferRenderbuffer glFramebufferRenderbufferEXT
+    #define glCheckFramebufferStatus glCheckFramebufferStatusEXT
+    #define glFramebufferTexture2D glFramebufferTexture2DEXT
+  #endif
 #else
   #define NO_FRAME_BUFFER
 #endif
@@ -170,7 +205,7 @@ void GlEngine::init()
 void GlEngine::_initShaderProgramm( const char* vertSrc, const char* fragSrc,
                                     unsigned int& vertexShader, unsigned int& fragmentShader, unsigned int& shaderProgram)
 {
-#ifndef NO_FRAME_BUFFER
+#ifdef CAESARIA_USE_SHADERS
   // Create and compile the vertex shader
   vertexShader = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vertexShader, 1, &vertSrc, NULL);
@@ -283,7 +318,7 @@ void GlEngine::_initFramebuffer()
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, _colorbuffer, 0);
+  glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, _colorbuffer, 0);
 
   glBindRenderbuffer(GL_RENDERBUFFER_EXT, _depthbuffer);
   glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _srcSize.width(), _srcSize.height());
@@ -593,3 +628,5 @@ Engine::Modes GlEngine::modes() const
 }
 
 }
+
+#endif //#ifdef CAESARIA_PLATFORM_MACOSX

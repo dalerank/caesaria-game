@@ -96,12 +96,15 @@ public:
     romeCity=8,
     distantCity=22,
     rightPanelTx=14,
-    otherCity=15
+    otherCity=15,
+    grassPic=62,
+    coastNE=144, coastSE=148
   };
 
   static const int empireStamp = 543;
   static const int baseLocalGoodId = 316;
   static const int baseEmpireGoodId = 10;
+  static const int grassPicsNumber = 57;
 };
 
 class OverlayPic

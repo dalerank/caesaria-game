@@ -21,10 +21,6 @@
 #define GFX_GL_ENGINE_HPP
 
 #include "engine.hpp"
-
-#include <list>
-#include <vector>
-
 #include "picture.hpp"
 
 // This is the OpenGL engine
@@ -32,6 +28,9 @@
 namespace gfx
 {
 
+#ifdef CAESARIA_PLATFORM_MACOSX
+typedef SdlEngine GlEngine;
+#else
 class GlEngine : public Engine
 {
 public:
@@ -75,6 +74,7 @@ private:
   unsigned int _framebuffer, _colorbuffer, _depthbuffer;
   unsigned int _screenVertexShader, _screenFragmentShader, _screenShaderProgram;
 };
+#endif
 
 }
 #endif
