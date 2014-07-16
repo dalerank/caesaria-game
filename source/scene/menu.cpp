@@ -220,7 +220,7 @@ void StartMenu::Impl::resolveCredits()
                        " ",
                        "doc (doc@nnm.me)",
                        "Juan Font Alonso ",
-                       "Mephistopheles"
+                       "Mephistopheles",
                        "" };
 
   gui::Label* frame = new gui::Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
