@@ -230,7 +230,10 @@ TopMenu::TopMenu( Widget* parent, const int height )
   advisersMenu->addItem( _("##visit_entertainment_advisor##"), advisor::entertainment );
   advisersMenu->addItem( _("##visit_financial_advisor##"    ), advisor::finance );
   advisersMenu->addItem( _("##visit_chief_advisor##"       ), advisor::main );
+
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
+
+  _d->updateDate();
 }
 
 Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }

@@ -35,9 +35,9 @@ class Level: public Base
 public:
   typedef enum {mainMenu=0, loadGame, restart, loadBriefing, quitGame} ResultType;
   Level( Game& game, gfx::Engine& engine );
-  ~Level();
+  virtual ~Level();
 
-  void initialize();
+  virtual void initialize();
   std::string nextFilename() const;
 
   virtual void handleEvent( NEvent& event );
@@ -50,7 +50,7 @@ public:
 
   void setCameraPos( TilePos pos );
 
-private:
+private oc3_slots:
   void _resolveEndGame();
   void _resolveExitGame();
   void _resolveSwitchMap();
@@ -61,7 +61,9 @@ private:
   void _resolveEscapeButton();
   void _resolveEnterButton();
   void _showIngameMenu();
+  void _exitGame();
 
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
