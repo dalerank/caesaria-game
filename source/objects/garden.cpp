@@ -94,7 +94,7 @@ std::string Garden::sound() const
 void Garden::setPicture(Picture picture)
 {
   Construction::setPicture( picture );
-  _flat = picture.height()/ (float)picture.width() >= 2.f;
+  _flat = picture.width()/ (float)picture.height() >= 1.7f;
 }
 
 void Garden::update()
