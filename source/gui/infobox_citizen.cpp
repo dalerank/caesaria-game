@@ -40,7 +40,7 @@ namespace gui
 
 namespace {
 static const char* ui_model = "/gui/infoboxcitizen.gui";
-static const char* sound_ext = ".wav";
+static const char* sound_ext = ".ogg";
 }
 
 class CitizenScreenshot : public Label
