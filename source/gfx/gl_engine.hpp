@@ -74,7 +74,7 @@ private:
   unsigned int _framebuffer, _colorbuffer, _depthbuffer;
   unsigned int _screenVertexShader, _screenFragmentShader, _screenShaderProgram;
 };
-#endif
+#endif //#ifdef CAESARIA_PLATFORM_MACOSX
 
 }
 #endif

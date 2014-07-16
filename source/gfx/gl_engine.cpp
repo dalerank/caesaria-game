@@ -36,15 +36,19 @@
   #include <GLES/gl.h>
   #define glOrtho glOrthof
 #else
+  #ifdef CAESARIA_PLATFORM_LINUX
+    #define GL_GLEXT_PROTOTYPES
+  #endif
+
   #include <SDL_opengl.h>
 #endif
 
-#ifndef CAESARIA_PLATFORM_MACOSX
+#ifdef CAESARIA_PLATFORM_MACOSX
+
+#else
 
 #ifdef CAESARIA_USE_FRAMEBUFFER
   #ifdef CAESARIA_PLATFORM_LINUX
-    #define GL_GLEXT_PROTOTYPES
-
     #define glGenFramebuffers  glGenFramebuffersEXT
     #define glGenTextures     glGenTexturesEXT
     #define glGenRenderbuffers glGenRenderbuffersEXT
