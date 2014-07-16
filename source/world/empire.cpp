@@ -232,6 +232,7 @@ void Empire::load( const VariantMap& stream )
   VariantMap cities = stream.get( "cities" ).toMap();
 
   _d->objUid = stream.get( "objUid" );
+  _d->available = stream.get( "enabled" );
 
   foreach( item, cities )
   {

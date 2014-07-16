@@ -76,13 +76,12 @@ void GoodsUpdater::update( const unsigned int time)
   }
 }
 
-std::string GoodsUpdater::defaultName() { return "goods_updater"; }
 bool GoodsUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void GoodsUpdater::load(const VariantMap& stream)
 {
   _d->endTime = stream.get( lc_endTime ).toDateTime();
-  _d->value = stream.get( lc_value );
+  VARIANT_LOAD_ANY_D( _d, value, stream );
   _d->gtype = (Good::Type)GoodHelper::getType( stream.get( lc_good ).toString() );
 }
 
@@ -90,11 +89,14 @@ VariantMap GoodsUpdater::save() const
 {
   VariantMap ret;
   ret[ lc_endTime ] = _d->endTime;
-  ret[ lc_value   ] = _d->value;
+  VARIANT_SAVE_ANY_D(ret, _d, value );
   ret[ lc_good    ] = Variant( GoodHelper::getTypeName( _d->gtype ) );
 
   return ret;
 }
+
+std::string GoodsUpdater::defaultName() { return "goods_updater"; }
+Good::Type GoodsUpdater::goodType() const {  return _d->gtype; }
 
 GoodsUpdater::GoodsUpdater( PlayerCityPtr city )
   : Srvc( *city.object(), GoodsUpdater::defaultName() ), _d( new Impl )

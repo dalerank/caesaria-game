@@ -92,8 +92,6 @@ CAESARIA_LITERALCONST(walkerIdCount)
 CAESARIA_LITERALCONST(adviserEnabled)
 }
 
-typedef std::vector< city::SrvcPtr > CityServices;
-
 class WGrid
 {
 public:
@@ -169,7 +167,7 @@ public:
   WGrid walkersGrid;
   //*********************** !!!
 
-  CityServices services;
+  city::SrvcList services;
   bool needRecomputeAllRoads;
   BorderInfo borderInfo;
   Tilemap tilemap;
@@ -484,7 +482,7 @@ void PlayerCity::Impl::updateOverlays( PlayerCityPtr city, unsigned int time )
 
 void PlayerCity::Impl::updateServices(unsigned int time)
 {
-  CityServices::iterator serviceIt= services.begin();
+  city::SrvcList::iterator serviceIt = services.begin();
   city::Timers::instance().update( time );
   while( serviceIt != services.end() )
   {
@@ -682,6 +680,8 @@ city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 
   return city::SrvcPtr();
 }
+
+city::SrvcList PlayerCity::services() const { return _d->services; }
 
 void PlayerCity::setBuildOptions(const city::BuildOptions& options)
 {

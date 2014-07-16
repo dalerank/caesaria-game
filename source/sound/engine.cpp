@@ -231,7 +231,7 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
 
 int Engine::play(std::string rc, int index, int volume, SoundType type)
 {
-  std::string filename = StringHelper::format( 0xff, "%s_%05d.wav", rc.c_str(), index );
+  std::string filename = StringHelper::format( 0xff, "%s_%05d.ogg", rc.c_str(), index );
   return play( filename, volume, type );
 }
 

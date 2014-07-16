@@ -39,6 +39,7 @@
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
+#include "city/goods_updater.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -192,23 +193,42 @@ void AdvisorChiefWindow::Impl::drawMigrationState(Point pos)
 }
 
 void AdvisorChiefWindow::Impl::drawFoodStockState(Point pos)
-{
-  city::InfoPtr info;
-  info << city->findService( city::Info::defaultName() );
+{ 
+  SmartList<city::GoodsUpdater> goodsUpdaters;
+  goodsUpdaters << city->services();
+
+  bool romeSendWheat = false;
+  foreach( it, goodsUpdaters )
+  {
+    if( (*it)->goodType() == Good::wheat )
+    {
+      romeSendWheat = true;
+    }
+  }
 
   std::string text = _("##food_stock_unknown_reason##");
-  if( info.isValid() )
+  if( romeSendWheat )
   {
-    int monthWithFood = info->lastParams().monthWithFood;
-    switch( monthWithFood )
-    {
-      case 0: text = "##have_no_food_on_next_month##"; break;
-      case 1: text = "##small_food_on_next_month##"; break;
-      case 2: text = "##some_food_on_next_month##"; break;
-      case 3: text = "##our_foods_level_are_low##"; break;
+    text = "##rome_send_wheat_to_city##";
+  }
+  else
+  {
+    city::InfoPtr info;
+    info << city->findService( city::Info::defaultName() );
 
-      default:
-        text = StringHelper::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
+    if( info.isValid() )
+    {
+      int monthWithFood = info->lastParams().monthWithFood;
+      switch( monthWithFood )
+      {
+        case 0: text = "##have_no_food_on_next_month##"; break;
+        case 1: text = "##small_food_on_next_month##"; break;
+        case 2: text = "##some_food_on_next_month##"; break;
+        case 3: text = "##our_foods_level_are_low##"; break;
+
+        default:
+          text = StringHelper::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
+      }
     }
   }
 

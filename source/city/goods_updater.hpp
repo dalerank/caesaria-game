@@ -21,6 +21,7 @@
 #include "cityservice.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
+#include "good/good.hpp"
 
 namespace city
 {
@@ -35,6 +36,7 @@ public:
 
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
+  Good::Type goodType() const;
 
 private:
   GoodsUpdater(PlayerCityPtr city);

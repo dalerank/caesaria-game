@@ -106,7 +106,6 @@
 
 namespace gfx{
 
-
 GlEngine::GlEngine() : Engine()
 {
 }

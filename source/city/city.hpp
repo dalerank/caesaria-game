@@ -61,6 +61,7 @@ public:
 
   void addService( city::SrvcPtr service );
   city::SrvcPtr findService( const std::string& name ) const;
+  city::SrvcList services() const;
 
   gfx::TileOverlayList& overlays();
 
