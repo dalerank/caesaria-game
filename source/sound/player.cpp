@@ -36,7 +36,7 @@ public:
   int lastIndex;
 };
 
-Player::Player( PlayerCityPtr city ) : Srvc( *city.object(), "audio_player" ), _d( new Impl )
+Player::Player( PlayerCityPtr city ) : Srvc( *city.object(), defaultName()  ), _d( new Impl )
 { 
   vfs::Path path = SETTINGS_RC_PATH( soundThemesModel );
 
@@ -56,6 +56,8 @@ city::SrvcPtr Player::create(PlayerCityPtr city)
 
   return ret;
 }
+
+std::string Player::defaultName() { return "audio_player"; }
 
 void Player::update( const unsigned int time )
 {

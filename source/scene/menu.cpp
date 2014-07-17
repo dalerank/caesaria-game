@@ -42,6 +42,7 @@
 #include "core/osystem.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
+#include "sound/engine.hpp"
 #include "gui/widgetpositionanimator.hpp"
 
 using namespace gfx;
@@ -70,18 +71,8 @@ public:
   
   void resolvePlayMission();
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
-
-  void resolveSelectFile( std::string fileName )
-  {
-    fileMap = fileName;
-    isStopped = true;
-  }
-
-  void setPlayerName( std::string name )
-  {
-    playerName = name;
-  }
-
+  void resolveSelectFile( std::string fileName );
+  void setPlayerName( std::string name );
   void openGreenlightPage() { OSystem::openUrl( "http://steamcommunity.com/sharedfiles/filedetails/?id=249746982" ); }
   void openHomePage() { OSystem::openUrl( "https://bitbucket.org/dalerank/caesaria/wiki/Home" ); }
   void resolveShowLoadMapWnd();
@@ -90,11 +81,8 @@ public:
   void resolveShowChangeLanguageWindow();
   void resolveChangeLanguage(const gui::ListBoxItem&);
   void fitScreenResolution();
-  void reload()
-  {
-    result = StartMenu::reloadScreen;
-    isStopped = true;
-  }
+  void playMenuSoundTheme();
+  void reload();
 };
 
 void StartMenu::Impl::resolveShowLoadGameWnd()
@@ -117,6 +105,17 @@ void StartMenu::Impl::fitScreenResolution()
   GameSettings::set( GameSettings::resolution, Variant( modes.front() ) );
   GameSettings::set( GameSettings::screenFitted, true );
   GameSettings::save();
+}
+
+void StartMenu::Impl::playMenuSoundTheme()
+{
+  audio::Engine::instance().play( "rome6.ogg", 50, audio::themeSound );
+}
+
+void StartMenu::Impl::reload()
+{
+  result = StartMenu::reloadScreen;
+  isStopped = true;
 }
 
 void StartMenu::Impl::resolveShowChangeLanguageWindow()
@@ -183,6 +182,7 @@ void StartMenu::Impl::resolveNewGame()
 
 void StartMenu::Impl::resolveCredits()
 {
+  audio::Engine::instance().play( "combat_long.ogg", 50, audio::themeSound );
   gui::Widget* parent = game->gui()->rootWidget();
 
   Size size = engine->screenSize();
@@ -239,6 +239,7 @@ void StartMenu::Impl::resolveCredits()
                                               Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
                                               _("##close##") );
   CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
+  CONNECT( btn, onClicked(), this, Impl::playMenuSoundTheme );
 }
 
 void StartMenu::Impl::resolvePlayMission()
@@ -256,6 +257,14 @@ void StartMenu::Impl::resolvePlayMission()
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_playmission##") );
 }
+
+void StartMenu::Impl::resolveSelectFile(std::string fileName)
+{
+  fileMap = fileName;
+  isStopped = true;
+}
+
+void StartMenu::Impl::setPlayerName(std::string name) {  playerName = name; }
 
 void StartMenu::Impl::resolveShowLoadMapWnd()
 {
@@ -349,11 +358,13 @@ void StartMenu::initialize()
     dialog->show();
   }
 #endif
+
+  _d->playMenuSoundTheme();
 }
 
 int StartMenu::result() const{  return _d->result;}
 bool StartMenu::isStopped() const{  return _d->isStopped;}
-std::string StartMenu::getMapName() const{  return _d->fileMap;}
-std::string StartMenu::getPlayerName() const { return _d->playerName; }
+std::string StartMenu::mapName() const{  return _d->fileMap;}
+std::string StartMenu::playerName() const { return _d->playerName; }
 
 }//end namespace scene

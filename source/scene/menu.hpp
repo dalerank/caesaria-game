@@ -49,12 +49,11 @@ public:
 
   virtual void handleEvent( NEvent& event);
 
-  // draws the menu/menubar/etc... on the screen
   virtual void draw();
   virtual void initialize();
 
-  std::string getMapName() const;
-  std::string getPlayerName() const;
+  std::string mapName() const;
+  std::string playerName() const;
 
   int result() const;
   bool isStopped() const;

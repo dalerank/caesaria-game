@@ -193,8 +193,8 @@ bool Engine::_loadSound(vfs::Path filename)
 int Engine::play( vfs::Path filename, int volValue, SoundType type )
 {
   if(_d->useSound )
-  {
-    bool isLoading = _loadSound( filename );
+  {        
+    bool isLoading = _loadSound( filename );   
 
     if( isLoading )
     {
@@ -203,6 +203,11 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
       if( i == _d->samples.end() )
       {
         return -1;
+      }
+
+      if( type == themeSound )
+      {
+        stop( filename );
       }
 
       if( (i->second.channel == -1 )

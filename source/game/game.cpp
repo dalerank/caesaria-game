@@ -274,7 +274,7 @@ void Game::setScreenMenu()
       Logger::warning( "Start new career with mission " + startMission );
 
       load( startMission );
-      _d->player->setName( screen.getPlayerName() );
+      _d->player->setName( screen.playerName() );
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
 
       /*_d->nextFilename = "/missions/mission3.briefing";
@@ -289,7 +289,7 @@ void Game::setScreenMenu()
     case scene::StartMenu::loadSavedGame:
     case scene::StartMenu::loadMission:
     {
-      load( screen.getMapName() );
+      load( screen.mapName() );
       Logger::warning( "screen menu: end loading map" );
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
@@ -298,7 +298,7 @@ void Game::setScreenMenu()
 
     case scene::StartMenu::loadMap:
     {
-      load( screen.getMapName() );
+      load( screen.mapName() );
       Logger::warning( "screen menu: end loading map" );
 
       FreeplayFinalizer::addPopulationMilestones( _d->city );
