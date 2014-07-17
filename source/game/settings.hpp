@@ -69,6 +69,7 @@ public:
   __GS_PROPERTY(render)
   __GS_PROPERTY(pic_offsets)
   __GS_PROPERTY(picsArchive)
+  __GS_PROPERTY(opengl_opts)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();

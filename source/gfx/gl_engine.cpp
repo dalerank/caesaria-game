@@ -148,17 +148,14 @@ static const char* screenFragmentSource =
 
     "uniform sampler2D tex; \n"
     "varying vec2 vTexCoord; \n"
-    "const float blurSizeH = 0.2 / 800.0; \n"
-    "const float blurSizeV = 0.4 / 1280.0; \n"
+    "const vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721); \n"
+    "const float saturation = 1.15; \n"
     "void main() {  \n "
-    "    vec4 sum = vec4(0.0); \n "
-    "    for (int x = -4; x <= 4; x++) \n "
-    "         for (int y = -4; y <= 4; y++) \n "
-    "            sum += texture2D( \n "
-"                    tex, \n "
-                    "vec2(vTexCoord.x + x * blurSizeH, vTexCoord.y + y * blurSizeV) \n "
-                ") / 81.0; \n "
-        "gl_FragColor = sum; \n "
+    "    vec4 textureColor = texture2D(tex, vTexCoord.xy); \n "
+    "    float luminance = dot(textureColor.rgb, luminanceWeighting); \n "
+    "    vec3 greyScaleColor = vec3(luminance); \n "
+    ""
+    "    gl_FragColor = vec4(mix(greyScaleColor, textureColor.rgb, saturation), textureColor.w); \n "
     "}";
 
 void GlEngine::init()
@@ -225,7 +222,8 @@ void GlEngine::init()
   //!!!!!
   if( getFlag( Engine::effects ) > 0 )
   {
-    _initFramebuffer();
+    _createFramebuffer( _framebuffer );
+    _createFramebuffer( _framebuffer2 );
     _initShaderProgramm(screenVertexSource, screenFragmentSource, _screenVertexShader, _screenFragmentShader, _screenShaderProgram);
   }
 }
@@ -320,20 +318,22 @@ Picture* GlEngine::createPicture(const Size& size )
 
 Picture& GlEngine::screen(){  return _screen; }
 
-void GlEngine::_initFramebuffer()
+void GlEngine::_createFramebuffer( unsigned int& id )
 {
 #ifndef NO_FRAME_BUFFER
+
+  unsigned int colorbuffer, depthbuffer;
 
 #ifndef GL_DRAW_FRAMEBUFFER
   #define GL_DRAW_FRAMEBUFFER               0x8CA9
 #endif
-  glGenFramebuffers(1, &_framebuffer);
-  glGenTextures(1, &_colorbuffer);
-  glGenRenderbuffers(1, &_depthbuffer);
+  glGenFramebuffers(1, &id);
+  glGenTextures(1, &colorbuffer);
+  glGenRenderbuffers(1, &depthbuffer);
 
-  glBindFramebuffer(GL_FRAMEBUFFER_EXT, _framebuffer);
+  glBindFramebuffer(GL_FRAMEBUFFER_EXT, id);
 
-  glBindTexture(GL_TEXTURE_2D, _colorbuffer);
+  glBindTexture(GL_TEXTURE_2D, colorbuffer);
   glTexImage2D(	GL_TEXTURE_2D,
                 0,
                 GL_RGBA,
@@ -345,11 +345,11 @@ void GlEngine::_initFramebuffer()
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, _colorbuffer, 0);
+  glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorbuffer, 0);
 
-  glBindRenderbuffer(GL_RENDERBUFFER_EXT, _depthbuffer);
+  glBindRenderbuffer(GL_RENDERBUFFER_EXT, depthbuffer);
   glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _srcSize.width(), _srcSize.height());
-  glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, _depthbuffer);
+  glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthbuffer);
   int st1 = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
   if(st1==GL_FRAMEBUFFER_COMPLETE_EXT)
   {
@@ -381,14 +381,51 @@ void GlEngine::_drawFramebuffer()
   float y0 = 0;
   float y1 = y0+_srcSize.height();
 
-  glBindTexture(GL_TEXTURE_2D, _colorbuffer);
+  glBindTexture(GL_TEXTURE_2D, _framebuffer);
+
+ /* glUseProgram( _screenShaderProgram );
+  GLint ii = glGetUniformLocation(_screenShaderProgram, "tex");
+  glUniform1i( ii, 0);  glUniform1i( ii, 0); */
+
+  glBegin( GL_QUADS );
+
+  glTexCoord2i( 0, 1 );
+  glVertex2f( x0, y0 );
+
+  glTexCoord2i( 0, 0 );
+  glVertex2f( x0, y1 );
+
+  glTexCoord2i( 1, 0 );
+  glVertex2f( x1, y1 );
+
+  glTexCoord2i( 1, 1 );
+  glVertex2f( x1, y0 );
+
+  glEnd();
+
+  glUseProgram( 0 );
+#endif
+}
+
+void GlEngine::_postProcessing()
+{
+#ifndef NO_FRAME_BUFFER
+  // Bind default framebuffer and draw contents of our framebuffer
+
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _framebuffer2 );
+  glLoadIdentity();
+  glMatrixMode(GL_MODELVIEW);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
+
+  float x0 =0;
+  float x1 = x0+_srcSize.width();
+  float y0 = 0;
+  float y1 = y0+_srcSize.height();
+
+  glBindTexture(GL_TEXTURE_2D, _framebuffer);
 
   glUseProgram( _screenShaderProgram );
   GLint ii = glGetUniformLocation(_screenShaderProgram, "tex");
- /* if (ii == -1)
-  {
-    Logger::warning( "Error: can't find uniform variable tex" );
-  } */
   glUniform1i( ii, 0);  glUniform1i( ii, 0);
 
   glBegin( GL_QUADS );
@@ -408,6 +445,8 @@ void GlEngine::_drawFramebuffer()
   glEnd();
 
   glUseProgram( 0 );
+
+  std::swap( _framebuffer, _framebuffer2 );
 #endif
 }
 
@@ -516,6 +555,7 @@ void GlEngine::endRenderFrame()
 
   if( getFlag( Engine::effects ) > 0 )
   {    
+    _postProcessing();
     _drawFramebuffer();
   }
 

@@ -63,15 +63,16 @@ public:
   Point cursorPos() const;
   Picture& screen();
 private:
-  void _initFramebuffer();
+  void _createFramebuffer( unsigned int& id );
   void _drawFramebuffer();
+  void _postProcessing();
   void _initShaderProgramm(const char* vertSrc, const char* fragSrc,
                            unsigned int& vertexShader, unsigned int& fragmentShader, unsigned int& shaderProgram);
 
   Picture _screen;
   unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
   float _rmask, _gmask, _bmask, _amask;
-  unsigned int _framebuffer, _colorbuffer, _depthbuffer;
+  unsigned int _framebuffer, _framebuffer2;
   unsigned int _screenVertexShader, _screenFragmentShader, _screenShaderProgram;
 };
 #endif //#ifdef CAESARIA_PLATFORM_MACOSX
