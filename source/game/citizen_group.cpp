@@ -45,8 +45,13 @@ unsigned int CitizenGroup::count( Age group ) const
 {
   std::pair<unsigned int, unsigned int> range = __getGroupRange( group );
 
+  return count( range.first, range.second );
+}
+
+unsigned int CitizenGroup::count(unsigned int beginAge, unsigned int endAge) const
+{
   unsigned int ret=0;
-  for( unsigned int i=range.first; i<=range.second; i++)
+  for( unsigned int i=beginAge; i<=endAge; i++)
   {
     ret += _peoples[ i ];
   }

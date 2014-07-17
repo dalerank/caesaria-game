@@ -28,6 +28,7 @@ public:
 
   unsigned int count() const;
   unsigned int count( Age group ) const;
+  unsigned int count( unsigned int beginAge, unsigned int endAge ) const;
 
   CitizenGroup retrieve( unsigned int count );
   CitizenGroup retrieve( Age group, unsigned int count );

@@ -130,9 +130,16 @@ void House::_makeOldHabitants()
   unsigned int peoples2remove = math::random( agedPeoples * ( 100 - houseHealth ) / 100 );
   newHabitants.retrieve( CitizenGroup::aged, peoples2remove+1 );
 
-  unsigned int mature = newHabitants.count( CitizenGroup::mature );
-  unsigned int newBorn = math::random( mature / 10 );
-  newBorn = newBorn * houseHealth / 100 ;
+  unsigned int studentNumber = newHabitants.count( 10, 19 );
+  unsigned int youngNumber = newHabitants.count( 20, 29);
+  unsigned int matureNumber = newHabitants.count( 30, 39 );
+  unsigned int oldNumber = newHabitants.count( 40, 49 );
+  unsigned int newBorn = studentNumber * math::random( 3 ) / 100 + //at 3% of student add newborn
+                         youngNumber * math::random( 16 ) / 100 + //at 16% of young people add newborn
+                         matureNumber * math::random( 9 ) / 100 + //at 9% of matures add newborn
+                         oldNumber * math::random( 2 ) / 100;     //at 2% of aged peoples add newborn
+
+  newBorn = newBorn * houseHealth / 100 ;  //house health add compensation for newborn citizens
 
   unsigned int vacantRoom = maxHabitants() - newHabitants.count();
   newBorn = math::clamp( newBorn, 0u, vacantRoom );
