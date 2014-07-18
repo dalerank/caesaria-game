@@ -24,7 +24,7 @@ namespace events
 GameEventPtr PlaySound::create( std::string rc, int index, int volume )
 {
   PlaySound* e = new PlaySound();
-  e->_sound = StringHelper::format( 0xff, "%s_%05d.wav", rc.c_str(), index );
+  e->_sound = StringHelper::format( 0xff, "%s_%05d", rc.c_str(), index );
   e->_volume = volume;
 
   GameEventPtr ret( e );

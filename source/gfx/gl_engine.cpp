@@ -70,6 +70,8 @@
     PFNGLUSEPROGRAMPROC glUseProgram;
     PFNGLUNIFORM1IPROC glUniform1i;
     PFNGLUNIFORM1IPROC glUniform1f;
+    PFNGLUNIFORM1IPROC glUniform2i;
+    PFNGLUNIFORM1IPROC glUniform2f;
     PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
     PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
     PFNGLDELETESHADERPROC glDeleteShader;
@@ -156,6 +158,8 @@ void GlEngine::init()
   ASSIGNGLFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram)
   ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i)
   ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1f)
+  ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform2i)
+  ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform2f)
   ASSIGNGLFUNCTION(PFNGLGETUNIFORMLOCATIONPROC,glGetUniformLocation)
   ASSIGNGLFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog)
   ASSIGNGLFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader)
@@ -186,8 +190,8 @@ void GlEngine::init()
   glLoadIdentity();
   // Displacement trick for exact pixelization
   glTranslatef(0.375, 0.375, 0);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   Logger::warning( "GrafixEngine: set caption");
   SDL_WM_SetCaption( "CaesarIA: OGL "CAESARIA_VERSION, 0 );
@@ -262,14 +266,14 @@ void FrameBuffer::_createFramebuffer( unsigned int& id )
   int st1 = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
   if(st1==GL_FRAMEBUFFER_COMPLETE_EXT)
   {
-    Logger::warning( "Init framebuffer so good ");
+    Logger::warning( "FrameBuffer:: init framebuffer so good ");
   }
   else
   {
      if(st1==GL_FRAMEBUFFER_UNSUPPORTED_EXT)
      {
        _isOk = false;
-       Logger::warning("Init framebuffer failed");
+       Logger::warning("FrameBuffer:: init framebuffer failed");
      }
   }
 #endif
@@ -386,6 +390,8 @@ void GlEngine::loadPicture(Picture& ioPicture)
    // Set the texture's stretching properties
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+   //glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+   //glTexParameterf( GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 
   // Edit the texture object's image data using the information SDL_Surface gives us
   glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, pot_surface->w, pot_surface->h, 0,
@@ -643,7 +649,28 @@ PostprocFilterPtr PostprocFilter::create()
 
 void PostprocFilter::setVariables(const VariantMap& variables)
 {
-  _variables = variables;
+  foreach( i, variables )
+  {
+    if( i->second.type() == Variant::List )
+    {
+      VariantList vl = i->second.toList();
+      switch( vl.size() )
+      {
+      case 1: _variables[ i->first ] = i->second;
+      case 2:
+      {
+        PointF p( vl.get( 0 ).toFloat(), vl.get( 1 ).toFloat() );
+        if( vl.get( 0).type() == Variant::Int  ) { _variables[ i->first ] = p.toPoint(); }
+        else { _variables[ i->first ] = p; }
+      }
+      case 3: break;
+      }
+    }
+    else
+    {
+      _variables[ i->first ] = i->second;
+    }
+  }
 }
 
 void PostprocFilter::loadProgramm(vfs::Path fragmentShader)
@@ -695,7 +722,7 @@ void PostprocFilter::loadProgramm(vfs::Path fragmentShader)
   glGetProgramiv(_program, GL_LINK_STATUS, &linked);
   if( linked )
   {
-    Logger::warning( "GlEngine: sucessful link shader program" );
+    Logger::warning( "GlEngine: sucessful link shader program " + fragmentShader.toString() );
   }
 #endif
 }
@@ -708,16 +735,19 @@ void PostprocFilter::setUniformVar(const std::string& name, const Variant& var)
   {
   case Variant::Int: glUniform1i( ii, var.toInt() ); break;
   case Variant::Float: glUniform1f( ii, var.toFloat() ); break;
+  case Variant::NPoint: { Point p = var.toPoint(); glUniform2i( ii, p.x(), p.y() ); } break;
+  case Variant::NPointF: { PointF p = var.toPointF(); glUniform2f( ii, p.x(), p.y() ); } break;
+
   default: break;
   }
 }
 
 void PostprocFilter::begin()
 {
+  glUseProgram( _program );
+
   foreach( i, _variables )
     setUniformVar( i->first, i->second );
-
-  glUseProgram( _program );
 }
 
 

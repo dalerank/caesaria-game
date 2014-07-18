@@ -5,7 +5,13 @@
     pass_1 :
     {
       shader : "/shaders/saturation.glsl"
-      saturation : 1.5
+      saturation : 2.0
+    }
+
+    pass_2 :
+    {
+      shader : "/shaders/fxaa.glsl"
+      texOffset : [2,2]
     }
   }
 }

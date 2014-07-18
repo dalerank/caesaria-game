@@ -156,7 +156,7 @@ bool Engine::_loadSound(vfs::Path filename)
 {
   if(_d->useSound>0 && _d->samples.size()<Impl::maxSamplesNumner)
   {
-    Impl::Samples::iterator i = _d->samples.find( filename.toString() );
+    Impl::Samples::iterator i = _d->samples.find( filename.toString() );    
 
     if( i != _d->samples.end() )
     {
@@ -166,7 +166,8 @@ bool Engine::_loadSound(vfs::Path filename)
     Sample sample;
 
     /* load the sample */
-    vfs::NFile wavFile = vfs::NFile::open( filename );
+    std::string ext = filename.extension().empty() ? ".ogg" : "";
+    vfs::NFile wavFile = vfs::NFile::open( filename + ext );
     ByteArray data = wavFile.readAll();
 
     if( data.empty() )
@@ -179,7 +180,7 @@ bool Engine::_loadSound(vfs::Path filename)
     sample.sound = filename.toString();
     if(sample.chunk == NULL)
     {
-      Logger::warning( "could not load wav (%s)", SDL_GetError() );
+      Logger::warning( "could not load sound (%s)", SDL_GetError() );
       return false;
     }
 

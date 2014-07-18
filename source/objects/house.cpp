@@ -985,7 +985,7 @@ std::string House::sound() const
   if( !_d->habitants.count() )
     return "";
 
-  return StringHelper::format( 0xff, "house_%05d.wav", _d->houseLevel*10+1 );
+  return StringHelper::format( 0xff, "house_%05d", _d->houseLevel*10+1 );
 }
 
 std::string House::troubleDesc() const

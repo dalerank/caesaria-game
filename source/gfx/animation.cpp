@@ -163,7 +163,7 @@ void Animation::load(const VariantMap &stream)
 void Animation::clear() { _pictures.clear();}
 bool Animation::isRunning() const{  return _dfunc()->animIndex >= 0;}
 bool Animation::isStopped() const{  return _dfunc()->animIndex == -1;}
-void Animation::stop(){ _dfunc()->animIndex = -1;}
+void Animation::stop(){ _dfunc()->animIndex = -1; }
 
 Animation& Animation::operator=( const Animation& other )
 {

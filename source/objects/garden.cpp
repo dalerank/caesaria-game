@@ -88,7 +88,7 @@ Desirability Garden::desirability() const
 
 std::string Garden::sound() const
 {
-  return StringHelper::format( 0xff, "garden_%05d.wav", size().area() );
+  return StringHelper::format( 0xff, "garden_%05d", size().area() );
 }
 
 void Garden::setPicture(Picture picture)
