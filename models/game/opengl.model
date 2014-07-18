@@ -1,14 +1,11 @@
 {
   framebuffer : true
-  renderpass :
+  technique :
   {
     pass_1 :
     {
-      file : "saturation.glsl"
-      params :
-      {
-        saturation : 1.5
-      }
+      shader : "/shaders/saturation.glsl"
+      saturation : 1.5
     }
   }
 }

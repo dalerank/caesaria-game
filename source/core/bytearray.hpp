@@ -35,6 +35,8 @@ public:
 
   char* data();
 
+  std::string toString() const;
+
   unsigned long crc32(unsigned long crc);
 
   static ByteArray fromBase64(const std::string &encoded_string);

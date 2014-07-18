@@ -167,18 +167,18 @@ ByteArray FileNative::readLine()
 
 ByteArray FileNative::read(unsigned int sizeToRead)
 {
-    if (!isOpen())
-    {
-       return ByteArray();
-    }
+  if (!isOpen())
+  {
+     return ByteArray();
+  }
 
-    ByteArray ret;
-    ret.resize( sizeToRead );
+  ByteArray ret;
+  ret.resize( sizeToRead );
 
-    int reallyReadingBytes = fread( ret.data(), 1, sizeToRead, _file);
-    ret.resize( reallyReadingBytes );
+  int reallyReadingBytes = fread( ret.data(), 1, sizeToRead, _file);
+  ret.resize( reallyReadingBytes );
 
-    return ret;
+  return ret;
 }
 
 //! opens the file

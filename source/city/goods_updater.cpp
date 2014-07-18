@@ -35,7 +35,6 @@ namespace city
 
 namespace {
 CAESARIA_LITERALCONST(endTime)
-CAESARIA_LITERALCONST(value)
 CAESARIA_LITERALCONST(good)
 }
 

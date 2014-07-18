@@ -22,6 +22,10 @@
 
 #include "engine.hpp"
 #include "picture.hpp"
+#include "vfs/path.hpp"
+#include "core/predefinitions.hpp"
+#include "core/smartlist.hpp"
+#include "core/variant.hpp"
 
 // This is the OpenGL engine
 // It does a dumb drawing from back to front, in a 2D projection, with no depth buffer
@@ -31,6 +35,65 @@ namespace gfx
 #ifdef CAESARIA_PLATFORM_MACOSX
 typedef SdlEngine GlEngine;
 #else
+
+PREDEFINE_CLASS_SMARTLIST(PostprocFilter,List)
+typedef PostprocFilterList Effects;
+
+class PostprocFilter : public ReferenceCounted
+{
+public:
+  static PostprocFilterPtr create();
+  void setVariables( const VariantMap& variables );
+  void loadProgramm( vfs::Path fragmentShader );
+
+  void setUniformVar( const std::string& name, const Variant& var );
+
+  void begin();
+  void bindTexture();
+  void end();
+
+private:
+  PostprocFilter();
+  void _log( unsigned int program );
+  unsigned int _program;
+  unsigned int _vertexShader, _fragmentShader;
+  VariantMap _variables;
+};
+
+class EffectManager : public ReferenceCounted
+{
+public:
+  EffectManager();
+  void load( vfs::Path effectModel );
+
+  Effects& effects();
+
+private:
+  Effects _effects;
+};
+
+class FrameBuffer : public ReferenceCounted
+{
+public:
+  FrameBuffer();
+  void initialize( Size size );
+
+  void begin();
+  void end();
+
+  void draw();
+  void draw( Effects& effects );
+
+  bool isOk() const;
+
+private:
+  void _createFramebuffer( unsigned int& id );
+
+  unsigned int _framebuffer, _framebuffer2;
+  Size _size;
+  bool _isOk;
+};
+
 class GlEngine : public Engine
 {
 public:
@@ -64,16 +127,15 @@ public:
   Picture& screen();
 private:
   void _createFramebuffer( unsigned int& id );
-  void _drawFramebuffer();
-  void _postProcessing();
   void _initShaderProgramm(const char* vertSrc, const char* fragSrc,
                            unsigned int& vertexShader, unsigned int& fragmentShader, unsigned int& shaderProgram);
 
+  class Impl;
+  ScopedPtr<Impl> _d;
+
   Picture _screen;
   unsigned int _fps, _lastUpdateFps, _lastFps, _drawCall;
-  float _rmask, _gmask, _bmask, _amask;
-  unsigned int _framebuffer, _framebuffer2;
-  unsigned int _screenVertexShader, _screenFragmentShader, _screenShaderProgram;
+  float _rmask, _gmask, _bmask, _amask;  
 };
 #endif //#ifdef CAESARIA_PLATFORM_MACOSX
 

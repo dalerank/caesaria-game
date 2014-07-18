@@ -31,6 +31,9 @@
 #include "core/position.hpp"
 #include "core/eventconverter.hpp"
 #include "core/foreach.hpp"
+#include "vfs/file.hpp"
+#include "game/settings.hpp"
+#include "core/saveadapter.hpp"
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   #include <GLES/gl.h>
@@ -66,6 +69,7 @@
     PFNGLGETSHADERIVPROC glGetShaderiv;
     PFNGLUSEPROGRAMPROC glUseProgram;
     PFNGLUNIFORM1IPROC glUniform1i;
+    PFNGLUNIFORM1IPROC glUniform1f;
     PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
     PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
     PFNGLDELETESHADERPROC glDeleteShader;
@@ -106,7 +110,14 @@
 
 namespace gfx{
 
-GlEngine::GlEngine() : Engine()
+class GlEngine::Impl
+{
+public:
+  FrameBuffer fb;
+  EffectManager effects;
+};
+
+GlEngine::GlEngine() : Engine(), _d( new Impl )
 {
 }
 
@@ -118,45 +129,6 @@ static const char* screenVertexSource = "varying vec2 vTexCoord; \n"
    "vTexCoord = gl_MultiTexCoord0; \n"
    "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; \n"
 "} \n";
-
-/*static const char* screenFragmentSource = "uniform sampler2D tex;\n \
-    uniform vec2 offset;\n \
-    void main(void)\n \
-    { \n \
-    float dx = 2.0;//offset.s;\n \
-    float dy = 2.0;//offset.t;\n \
-    vec2 st = gl_TexCoord[0].st;\n \
-    vec4 color	= 4.0 * texture2D(tex, st);\n \
-    color	+= 2.0 * texture2D(tex, st + vec2(+dx, 0.0));\n \
-    color	+= 2.0 * texture2D(tex, st + vec2(-dx, 0.0));\n \
-    color	+= 2.0 * texture2D(tex, st + vec2(0.0, +dy));\n \
-    color	+= 2.0 * texture2D(tex, st + vec2(0.0, -dy));\n \
-    color	+= texture2D(tex, st + vec2(+dx, +dy));\n \
-    color	+= texture2D(tex, st + vec2(-dx, +dy));\n \
-    color	+= texture2D(tex, st + vec2(-dx, -dy));\n \
-    color	+= texture2D(tex, st + vec2(+dx, -dy));\n \
-    gl_FragColor = texture2D(tex, st); //color / 16.0;\n \
-    }\n";
-    */
-
-static const char* screenFragmentSource =
-   /* "uniform sampler2D tex; \n"
-    "varying vec2 vTexCoord; \n"
-    "void main() { \n"
-    "  gl_FragColor = texture2D(tex, vTexCoord).bgra; \n"
-    "} \n"; */
-
-    "uniform sampler2D tex; \n"
-    "varying vec2 vTexCoord; \n"
-    "const vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721); \n"
-    "const float saturation = 1.15; \n"
-    "void main() {  \n "
-    "    vec4 textureColor = texture2D(tex, vTexCoord.xy); \n "
-    "    float luminance = dot(textureColor.rgb, luminanceWeighting); \n "
-    "    vec3 greyScaleColor = vec3(luminance); \n "
-    ""
-    "    gl_FragColor = vec4(mix(greyScaleColor, textureColor.rgb, saturation), textureColor.w); \n "
-    "}";
 
 void GlEngine::init()
 {
@@ -183,6 +155,7 @@ void GlEngine::init()
   ASSIGNGLFUNCTION(PFNGLGETSHADERIVPROC,glGetShaderiv)
   ASSIGNGLFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram)
   ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i)
+  ASSIGNGLFUNCTION(PFNGLUNIFORM1IPROC,glUniform1f)
   ASSIGNGLFUNCTION(PFNGLGETUNIFORMLOCATIONPROC,glGetUniformLocation)
   ASSIGNGLFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog)
   ASSIGNGLFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader)
@@ -222,73 +195,9 @@ void GlEngine::init()
   //!!!!!
   if( getFlag( Engine::effects ) > 0 )
   {
-    _createFramebuffer( _framebuffer );
-    _createFramebuffer( _framebuffer2 );
-    _initShaderProgramm(screenVertexSource, screenFragmentSource, _screenVertexShader, _screenFragmentShader, _screenShaderProgram);
+    _d->fb.initialize( _srcSize );
+    _d->effects.load( SETTINGS_RC_PATH( opengl_opts ) );
   }
-}
-
-void GlEngine::_initShaderProgramm( const char* vertSrc, const char* fragSrc,
-                                    unsigned int& vertexShader, unsigned int& fragmentShader, unsigned int& shaderProgram)
-{
-#ifdef CAESARIA_USE_SHADERS
-  // Create and compile the vertex shader
-  vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertexShader, 1, &vertSrc, NULL);
-  glCompileShader(vertexShader);
-
-  GLint isCompiled = 0;
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-  if(isCompiled == GL_FALSE)
-  {
-    GLint maxLength = 0;
-    glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-    //The maxLength includes the NULL character
-    std::vector<char> errorLog(maxLength);
-    glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &errorLog[0]);
-
-    Logger::warning( errorLog.data() );
-
-    glDeleteShader(vertexShader); //Don't leak the shader.
-    return;
-  }
-
-  // Create and compile the fragment shader
-  fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragmentShader, 1, &fragSrc, NULL);
-  glCompileShader(fragmentShader);
-
-  isCompiled = 0;
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-  if(isCompiled == GL_FALSE)
-  {
-    GLint maxLength = 0;
-    glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-    //The maxLength includes the NULL character
-    std::vector<char> errorLog(maxLength);
-    glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &errorLog[0]);
-
-    Logger::warning( errorLog.data() );
-
-    glDeleteShader(fragmentShader); //Don't leak the shader.
-    return;
-  }
-
-  // Link the vertex and fragment shader into a shader program
-  shaderProgram = glCreateProgram();
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
-  glLinkProgram(shaderProgram);
-
-  GLint linked;
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &linked);
-  if( linked )
-  {
-    Logger::warning( "GlEngine: sucessful link shader program" );
-  }    
-#endif
 }
 
 void GlEngine::exit()
@@ -318,7 +227,7 @@ Picture* GlEngine::createPicture(const Size& size )
 
 Picture& GlEngine::screen(){  return _screen; }
 
-void GlEngine::_createFramebuffer( unsigned int& id )
+void FrameBuffer::_createFramebuffer( unsigned int& id )
 {
 #ifndef NO_FRAME_BUFFER
 
@@ -337,7 +246,7 @@ void GlEngine::_createFramebuffer( unsigned int& id )
   glTexImage2D(	GL_TEXTURE_2D,
                 0,
                 GL_RGBA,
-                _srcSize.width(), _srcSize.height(),
+                _size.width(), _size.height(),
                 0,
                 GL_RGBA,
                 GL_UNSIGNED_BYTE,
@@ -348,7 +257,7 @@ void GlEngine::_createFramebuffer( unsigned int& id )
   glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorbuffer, 0);
 
   glBindRenderbuffer(GL_RENDERBUFFER_EXT, depthbuffer);
-  glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _srcSize.width(), _srcSize.height());
+  glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _size.width(), _size.height());
   glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthbuffer);
   int st1 = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
   if(st1==GL_FRAMEBUFFER_COMPLETE_EXT)
@@ -359,16 +268,18 @@ void GlEngine::_createFramebuffer( unsigned int& id )
   {
      if(st1==GL_FRAMEBUFFER_UNSUPPORTED_EXT)
      {
-       setFlag( effects, 0 );
-       Logger::warning("Init framebuffer failde");
+       _isOk = false;
+       Logger::warning("Init framebuffer failed");
      }
   }
 #endif
 }
 
-void GlEngine::_drawFramebuffer()
+void FrameBuffer::draw()
 {
 #ifndef NO_FRAME_BUFFER
+  if( !_isOk )
+    return;
   // Bind default framebuffer and draw contents of our framebuffer
 
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -377,15 +288,11 @@ void GlEngine::_drawFramebuffer()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
 
   float x0 =0;
-  float x1 = x0+_srcSize.width();
+  float x1 = x0+_size.width();
   float y0 = 0;
-  float y1 = y0+_srcSize.height();
+  float y1 = y0+_size.height();
 
   glBindTexture(GL_TEXTURE_2D, _framebuffer);
-
- /* glUseProgram( _screenShaderProgram );
-  GLint ii = glGetUniformLocation(_screenShaderProgram, "tex");
-  glUniform1i( ii, 0);  glUniform1i( ii, 0); */
 
   glBegin( GL_QUADS );
 
@@ -402,51 +309,6 @@ void GlEngine::_drawFramebuffer()
   glVertex2f( x1, y0 );
 
   glEnd();
-
-  glUseProgram( 0 );
-#endif
-}
-
-void GlEngine::_postProcessing()
-{
-#ifndef NO_FRAME_BUFFER
-  // Bind default framebuffer and draw contents of our framebuffer
-
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _framebuffer2 );
-  glLoadIdentity();
-  glMatrixMode(GL_MODELVIEW);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
-
-  float x0 =0;
-  float x1 = x0+_srcSize.width();
-  float y0 = 0;
-  float y1 = y0+_srcSize.height();
-
-  glBindTexture(GL_TEXTURE_2D, _framebuffer);
-
-  glUseProgram( _screenShaderProgram );
-  GLint ii = glGetUniformLocation(_screenShaderProgram, "tex");
-  glUniform1i( ii, 0);  glUniform1i( ii, 0);
-
-  glBegin( GL_QUADS );
-
-  glTexCoord2i( 0, 1 );
-  glVertex2f( x0, y0 );
-
-  glTexCoord2i( 0, 0 );
-  glVertex2f( x0, y1 );
-
-  glTexCoord2i( 1, 0 );
-  glVertex2f( x1, y1 );
-
-  glTexCoord2i( 1, 1 );
-  glVertex2f( x1, y0 );
-
-  glEnd();
-
-  glUseProgram( 0 );
-
-  std::swap( _framebuffer, _framebuffer2 );
 #endif
 }
 
@@ -536,7 +398,7 @@ void GlEngine::startRenderFrame()
 #ifndef NO_FRAME_BUFFER
   if( getFlag( Engine::effects ) > 0 )
   {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _framebuffer);
+    _d->fb.begin();
   }
 #endif
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
@@ -555,8 +417,8 @@ void GlEngine::endRenderFrame()
 
   if( getFlag( Engine::effects ) > 0 )
   {    
-    _postProcessing();
-    _drawFramebuffer();
+    _d->fb.draw( _d->effects.effects() );
+    _d->fb.draw();
   }
 
   SDL_GL_SwapBuffers(); //Refresh the screen
@@ -690,7 +552,219 @@ bool GlEngine::haveEvent( NEvent& event )
 
 Engine::Modes GlEngine::modes() const
 {
-  return Modes();
+  Modes ret;
+
+  /* Get available fullscreen/hardware modes */
+  SDL_Rect** modes = SDL_ListModes( NULL, SDL_FULLSCREEN|SDL_HWSURFACE) ;
+
+  for(int i=0; modes[i]; ++i)
+  {
+    ret.push_back( Size( modes[i]->w, modes[i]->h) );
+  }
+
+  return ret;
+}
+
+FrameBuffer::FrameBuffer()
+{
+  _framebuffer = 0;
+  _framebuffer2 = 0;
+  _isOk = true;
+}
+
+void FrameBuffer::initialize(Size size)
+{
+  _size = size;
+  _createFramebuffer( _framebuffer );
+  _createFramebuffer( _framebuffer2 );
+}
+
+void FrameBuffer::begin()
+{
+#ifndef NO_FRAME_BUFFER
+  if( _isOk )
+    glBindFramebuffer(GL_FRAMEBUFFER_EXT, _framebuffer);
+#endif
+}
+
+bool FrameBuffer::isOk() const { return _isOk; }
+
+void FrameBuffer::draw( Effects& effects )
+{
+#ifndef NO_FRAME_BUFFER
+  foreach( it, effects )
+  {
+    // Bind default framebuffer and draw contents of our framebuffer
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _framebuffer2 );
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // black screen
+
+    float x0 =0;
+    float x1 = x0+_size.width();
+    float y0 = 0;
+    float y1 = y0+_size.height();
+
+    glBindTexture(GL_TEXTURE_2D, _framebuffer);
+
+    (*it)->begin();
+    (*it)->bindTexture();
+
+    glBegin( GL_QUADS );
+
+    glTexCoord2i( 0, 1 );
+    glVertex2f( x0, y0 );
+
+    glTexCoord2i( 0, 0 );
+    glVertex2f( x0, y1 );
+
+    glTexCoord2i( 1, 0 );
+    glVertex2f( x1, y1 );
+
+    glTexCoord2i( 1, 1 );
+    glVertex2f( x1, y0 );
+
+    glEnd();
+
+    (*it)->end();
+
+    std::swap( _framebuffer, _framebuffer2 );
+  }
+#endif
+}
+
+PostprocFilterPtr PostprocFilter::create()
+{
+  PostprocFilterPtr ret( new PostprocFilter() );
+  ret->drop();
+
+  return ret;
+}
+
+void PostprocFilter::setVariables(const VariantMap& variables)
+{
+  _variables = variables;
+}
+
+void PostprocFilter::loadProgramm(vfs::Path fragmentShader)
+{
+#ifdef CAESARIA_USE_SHADERS
+  vfs::NFile file = vfs::NFile::open( fragmentShader );
+  if( !file.isOpen() )
+    return;
+
+  // Create and compile the vertex shader
+  _vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(_vertexShader, 1, &screenVertexSource, NULL);
+  glCompileShader(_vertexShader);
+
+  GLint isCompiled = 0;
+  glGetShaderiv(_vertexShader, GL_COMPILE_STATUS, &isCompiled);
+  if(isCompiled == GL_FALSE)
+  {
+    _log( _vertexShader );
+    glDeleteShader(_vertexShader); //Don't leak the shader.
+    return;
+  }
+
+  // Create and compile the fragment shader
+  _fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+  std::string vertStr( file.readAll().toString() );
+
+  const char* fragSrc = vertStr.c_str();
+  glShaderSource( _fragmentShader, 1, &fragSrc, NULL);
+  glCompileShader(_fragmentShader);
+
+  isCompiled = 0;
+  glGetShaderiv(_fragmentShader, GL_COMPILE_STATUS, &isCompiled);
+  if(isCompiled == GL_FALSE)
+  {
+    _log(_fragmentShader); //Don't leak the shader.
+    glDeleteShader(_fragmentShader); //Don't leak the shader.
+    return;
+  }
+
+  // Link the vertex and fragment shader into a shader program
+  _program = glCreateProgram();
+  glAttachShader(_program, _vertexShader);
+  glAttachShader(_program, _fragmentShader);
+  glLinkProgram(_program);
+
+  GLint linked;
+  glGetProgramiv(_program, GL_LINK_STATUS, &linked);
+  if( linked )
+  {
+    Logger::warning( "GlEngine: sucessful link shader program" );
+  }
+#endif
+}
+
+void PostprocFilter::setUniformVar(const std::string& name, const Variant& var)
+{
+  GLint ii = glGetUniformLocation( _program, name.c_str() );
+
+  switch( var.type() )
+  {
+  case Variant::Int: glUniform1i( ii, var.toInt() ); break;
+  case Variant::Float: glUniform1f( ii, var.toFloat() ); break;
+  default: break;
+  }
+}
+
+void PostprocFilter::begin()
+{
+  foreach( i, _variables )
+    setUniformVar( i->first, i->second );
+
+  glUseProgram( _program );
+}
+
+
+void PostprocFilter::end() { glUseProgram( 0 ); }
+
+PostprocFilter::PostprocFilter() {}
+
+void PostprocFilter::_log( unsigned int program )
+{
+  GLint maxLength = 0;
+  glGetShaderiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+
+  //The maxLength includes the NULL character
+  std::vector<char> errorLog(maxLength);
+  glGetShaderInfoLog(program, maxLength, &maxLength, &errorLog[0]);
+
+  Logger::warning( errorLog.data() );
+}
+
+EffectManager::EffectManager() {}
+
+void EffectManager::load(vfs::Path effectModel)
+{
+  VariantMap stream = SaveAdapter::load( effectModel );
+
+  VariantMap technique = stream.get( CAESARIA_STR_EXT(technique) ).toMap();
+
+  foreach( pass, technique )
+  {
+    VariantMap variables = pass->second.toMap();
+    PostprocFilterPtr effect = PostprocFilter::create();
+    std::string shaderFile = variables.get( "shader" ).toString();
+    variables.erase( "shader" );
+
+    effect->loadProgramm( GameSettings::rcpath( shaderFile ) );
+    effect->setVariables( variables );
+
+    _effects.push_back( effect );
+  }
+}
+
+Effects& EffectManager::effects() { return _effects; }
+
+void PostprocFilter::bindTexture()
+{
+  GLint ii = glGetUniformLocation( _program, "tex");
+  glUniform1i( ii, 0 );
 }
 
 }

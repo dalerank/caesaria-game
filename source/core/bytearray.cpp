@@ -109,7 +109,7 @@ unsigned long ByteArray::crc32(unsigned long crc)
 
 
 ByteArray::ByteArray()
-{
+{  
 }
 
 static const std::string base64_chars =
@@ -235,3 +235,10 @@ ByteArray ByteArray::copy(unsigned int start, int length) const
 
 const char* ByteArray::data() const {  return &(*this)[0]; }
 char* ByteArray::data(){  return &(*this)[0]; }
+
+std::string ByteArray::toString() const
+{
+  std::string ret( data() );
+  *(ret.rbegin()) = '\0';
+  return ret;
+}
