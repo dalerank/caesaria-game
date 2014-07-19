@@ -113,10 +113,7 @@ void BurningRuins::destroy()
   event->dispatch();
 }
 
-void BurningRuins::collapse()
-{
-  int g=0;
-}
+void BurningRuins::collapse() {}
 
 void BurningRuins::burn(){}
 

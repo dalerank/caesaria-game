@@ -5,7 +5,7 @@
     pass_1 :
     {
       shader : "/shaders/saturation.glsl"
-      saturation : 2.0
+      saturation : 1.1
     }
 
     pass_2 :
