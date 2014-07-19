@@ -332,9 +332,9 @@ void Tilemap::load( const VariantMap& stream )
   const short* imgIdAr = (short*)baImgId.data();
   const short* desAr = (short*)baDes.data();
 
-  if( !bitsetAr || !imgIdAr || !desAr )
+  if( baBitset.empty() || baImgId.empty() || baDes.empty() )
   {
-    Logger::warning( "!!! Tilemap::load data's array is null %d/%d/%d", (int)bitsetAr, (int)imgIdAr, (int)desAr );
+    Logger::warning( "!!! Tilemap::load data's array is null %d/%d/%d", baBitset.size(), baImgId.size(), baDes.size() );
     return;
   }
 
