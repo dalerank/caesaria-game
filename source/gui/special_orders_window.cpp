@@ -61,13 +61,13 @@ public:
     Picture goodIcon = GoodHelper::getPicture( _type );
     std::string goodName = _( "##" + GoodHelper::getTypeName( _type ) + "##" );
 
-    if( getTextPicture() )
+    if( _textPictureRef() )
     {
-      getTextPicture()->draw( goodIcon, 15, 0, false );
-      getTextPicture()->draw( goodIcon, 390, 0, false );
+      _textPictureRef()->draw( goodIcon, 15, 0, false );
+      _textPictureRef()->draw( goodIcon, 390, 0, false );
 
-      Font font = getFont();    
-      font.draw( *getTextPicture(), goodName, 55, 0 );   
+      Font rfont = font();
+      rfont.draw( *_textPictureRef(), goodName, 55, 0 );
     }
   }
 

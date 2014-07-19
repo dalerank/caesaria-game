@@ -439,7 +439,7 @@ void ContextMenu::_recalculateSize()
 		}
 		else
 		{
-			Font font = refItem->getFont();
+			Font font = refItem->font();
 			if( font.isValid() )
 				refItem->setDimmension( font.getSize( refItem->text() ) + Size( 40, 0 ) );
 

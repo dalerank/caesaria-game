@@ -237,7 +237,7 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
   Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->tooltipText(), true, Label::bgSimpleWhite );
   elm->setSubElement(true);
 
-  Size size( elm->getTextWidth() + 20, elm->getTextHeight() + 2 );
+  Size size( elm->textWidth() + 20, elm->textHeight() + 2 );
   Rect rect( cursorPos, size );
 
   rect -= Point( size.width() + 20, -20 );

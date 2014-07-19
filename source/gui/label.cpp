@@ -255,7 +255,7 @@ void Label::draw(gfx::Engine& painter )
 }
 
 //! Get the font which is used right now for drawing
-Font Label::getFont() const
+Font Label::font() const
 {
 	/*if( index == activeFont )
 	{
@@ -534,7 +534,7 @@ void Label::setText(const string& newText)
 Signal0<>& Label::onClicked() {  return _d->onClickedSignal; }
 
 //! Returns the height of the text in pixels when it is drawn.
-int Label::getTextHeight() const
+int Label::textHeight() const
 {
     Font font = _d->font;
     if( !font.isValid() )
@@ -549,7 +549,7 @@ int Label::getTextHeight() const
 }
 
 
-int Label::getTextWidth() const
+int Label::textWidth() const
 {
     Font font = _d->font;
     if( !font.isValid() )
@@ -589,7 +589,7 @@ void Label::beforeDraw(gfx::Engine& painter )
   Widget::beforeDraw( painter );
 }
 
-Label::BackgroundMode Label::getBackgroundMode() const {  return _d->backgroundMode; }
+Label::BackgroundMode Label::backgroundMode() const {  return _d->backgroundMode; }
 
 bool Label::onEvent(const NEvent& event)
 {
@@ -681,7 +681,7 @@ void Label::setupUI(const VariantMap& ui)
 }
 
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
-PictureRef& Label::getPicture(){  return _d->background;}
-PictureRef& Label::getTextPicture(){  return _d->textPicture;}
+PictureRef& Label::_pictureRef(){  return _d->background;}
+PictureRef& Label::_textPictureRef(){  return _d->textPicture;}
 
 }//end namespace gui

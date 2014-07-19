@@ -87,12 +87,12 @@ public:
     break;
     }
 
-    PictureRef& texture = getTextPicture();
-    Font font = getFont();
-    font.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() ), 0, 0 );
-    font.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingWork ), 165, 0 );
-    font.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingShow ), 245, 0 );
-    font.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.peoplesServed, peoplesStr.c_str() ), 305, 0 );
+    PictureRef& texture = _textPictureRef();
+    Font rfont = font();
+    rfont.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() ), 0, 0 );
+    rfont.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingWork ), 165, 0 );
+    rfont.draw( *texture, StringHelper::format( 0xff, "%d", _info.buildingShow ), 245, 0 );
+    rfont.draw( *texture, StringHelper::format( 0xff, "%d %s", _info.peoplesServed, peoplesStr.c_str() ), 305, 0 );
   }
 
 private:

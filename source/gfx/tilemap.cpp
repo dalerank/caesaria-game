@@ -332,6 +332,12 @@ void Tilemap::load( const VariantMap& stream )
   const short* imgIdAr = (short*)baImgId.data();
   const short* desAr = (short*)baDes.data();
 
+  if( !bitsetAr || !imgIdAr || !desAr )
+  {
+    Logger::warning( "!!! Tilemap::load data's array is null %d/%d/%d", (int)bitsetAr, (int)imgIdAr, (int)desAr );
+    return;
+  }
+
   TilesArray tiles = getArea( TilePos( 0, 0 ), Size( _d->size ) );
   int index = 0;
   foreach( it, tiles )
