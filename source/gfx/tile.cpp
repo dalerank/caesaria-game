@@ -229,7 +229,7 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
   else
   {
     res_pfx = ResourceGroup::land1a;
-    res_id = 1;
+    res_id = 0;
 
     // std::cout.setf(std::ios::hex, std::ios::basefield);
     // std::cout << "Unknown image Id " << imgId << std::endl;
@@ -241,7 +241,7 @@ std::string TileHelper::convId2PicName( const unsigned int imgId )
       res_id = 51;
     } // TERRIBLE HACK!
 
-    // THROW("Unknown image Id " << imgId);
+    Logger::warning( "TileHelper: unknown image Id=%d ", imgId );
   }
 
   std::string ret_str = StringHelper::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );

@@ -137,7 +137,14 @@ void EnemyAttack::load(const VariantMap& stream)
   std::string targetStr = stream.get( lc_target ).toString();
 
   AttackPriorityHelper helper;
-  _d->attackPriority = helper.findType( targetStr );
+  if( targetStr == "random" )
+  {
+    _d->attackPriority = (EnemySoldier::AttackPriority)math::random( EnemySoldier::attackCount );
+  }
+  else
+  {
+    _d->attackPriority = helper.findType( targetStr );
+  }
 }
 
 VariantMap EnemyAttack::save() const

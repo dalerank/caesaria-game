@@ -265,6 +265,16 @@
 		sells : {	fruit : 25, olive : 25, timber : 25 }	
 		buys : { pottery : 25, vegetable : 25, wheat : 40 }
 	}
+
+  Thamugadi : {
+    location : [ 530, 830 ]
+
+    land : true
+    sea : true
+
+    buys : { olive : 25, wine : 25, oil : 15 }
+    sells : { clay: 15, furniture: 25 }
+  }
 	
 	Syracusae : {
 		location : [ 840, 720 ]

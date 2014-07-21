@@ -59,6 +59,7 @@ public:
   typedef std::map< audio::SoundType, int > Volumes;
   Samples samples;
   Volumes volumes;
+  vfs::Path currentTheme;
 };
 
 Engine& Engine::instance()
@@ -166,9 +167,8 @@ bool Engine::_loadSound(vfs::Path filename)
     Sample sample;
 
     /* load the sample */
-    std::string ext = filename.extension().empty() ? ".ogg" : "";
-    vfs::NFile wavFile = vfs::NFile::open( filename + ext );
-    ByteArray data = wavFile.readAll();
+    vfs::NFile soundFile = vfs::NFile::open( filename );
+    ByteArray data = soundFile.readAll();
 
     if( data.empty() )
     {
@@ -180,7 +180,7 @@ bool Engine::_loadSound(vfs::Path filename)
     sample.sound = filename.toString();
     if(sample.chunk == NULL)
     {
-      Logger::warning( "could not load sound (%s)", SDL_GetError() );
+      Logger::warning( "SoundEngine: could not load sound (%s)", SDL_GetError() );
       return false;
     }
 
@@ -194,7 +194,16 @@ bool Engine::_loadSound(vfs::Path filename)
 int Engine::play( vfs::Path filename, int volValue, SoundType type )
 {
   if(_d->useSound )
-  {        
+  {
+    std::string ext = filename.extension().empty() ? ".ogg" : "";
+    filename = filename + ext;
+
+    if( type == themeSound )
+    {
+      stop( _d->currentTheme );
+      _d->currentTheme = filename;
+    }
+
     bool isLoading = _loadSound( filename );   
 
     if( isLoading )
@@ -204,11 +213,6 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
       if( i == _d->samples.end() )
       {
         return -1;
-      }
-
-      if( type == themeSound )
-      {
-        stop( filename );
       }
 
       if( (i->second.channel == -1 )

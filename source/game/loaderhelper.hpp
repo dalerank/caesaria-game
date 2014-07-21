@@ -28,7 +28,8 @@ class LoaderHelper
 {
 public:
   static std::string getDefaultCityName( unsigned int location );
-  static void decodeTerrain(gfx::Tile& oTile, PlayerCityPtr city);
+  static void decodeTerrain(gfx::Tile& oTile, PlayerCityPtr city, unsigned int forceId=0 );
+  static unsigned int convImgId2ovrType(unsigned int imgId);
 };
 
 #endif //__CAESARIA_LOADER_HELPER_H_INCLUDED__

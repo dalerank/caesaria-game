@@ -24,6 +24,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
+#include "game/resourcegroup.hpp"
 #include "loaderhelper.hpp"
 
 #include <fstream>
@@ -38,6 +39,8 @@ static const int kClimate     = 0x33ad8;
 class GameLoaderC3Sav::Impl
 {
 public:
+  std::map<TilePos, unsigned int> baseBuildings;
+
   std::string restartFile;
   bool loadCity(std::fstream& f, Game& game);
   void initEntryExit(std::fstream& f, PlayerCityPtr ioCity);
@@ -269,8 +272,28 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
       int index = 162 * (border_size + itA) + border_size + itB;
 
       Tile& tile = oTilemap.at(i, j);
-      tile.setPicture( TileHelper::convId2PicName( graphicGrid[index] ) );
-      tile.setOriginalImgId( graphicGrid[index] );
+
+      unsigned int imgId = graphicGrid[index];
+      Picture pic = Picture::load( TileHelper::convId2PicName( imgId ));
+
+      if( pic.isValid() )
+      {
+        tile.setPicture( pic );
+        tile.setOriginalImgId( imgId );
+      }
+      else
+      {
+        TileOverlay::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
+        if( ovType == constants::construction::unknown )
+        {
+          Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [%d,%d]", imgId, i, j );
+        }
+
+        baseBuildings[ tile.pos() ] = imgId;
+        pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 57 ) );
+        tile.setPicture( pic );
+        tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
+      }
 
       edgeData[ i ][ j ] = edgeGrid[index];
       TileHelper::decode( tile, terrainGrid[index] );
@@ -308,12 +331,9 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
 					}
 				}
 
-				//Logger::warning( "Multi-tile x %d at (%d,%d)", size, i, j );
-
 				Tile& master = oTilemap.at(i, j - size + 1);
 
 				//Logger::warning( "Master will be at (%d,%d)", master.i(), master.j() );
-
         for (int di = 0; di < size; ++di)
         {
           for (int dj = 0; dj < size; ++dj)
@@ -321,13 +341,22 @@ bool GameLoaderC3Sav::Impl::loadCity( std::fstream& f, Game& game )
             oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
           }
         }
-
-        //Logger::warning( " decoding " );
       }
 
       // Check if it is building and type of building
-      //if (ttile.getMasterTile() == NULL)
-      LoaderHelper::decodeTerrain( oTilemap.at( i, j ), oCity );
+      //if (ttile.getMasterTile() == NULL)      
+      std::map<TilePos, unsigned int>::iterator bbIt = baseBuildings.find( TilePos( i, j ) );
+      unsigned int bbImgId = bbIt == baseBuildings.end() ? 0 : bbIt->second;
+
+      Tile& tile = oTilemap.at( i, j );
+      Tile* masterTile = tile.masterTile();
+      if( !masterTile )
+        masterTile = &tile;
+
+      if( masterTile->overlay().isNull() )
+      {
+        LoaderHelper::decodeTerrain( *masterTile, oCity, bbImgId );
+      }
     }
   }
     
