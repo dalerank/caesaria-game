@@ -310,7 +310,7 @@ static void __finalizeMap(Game& game, int pass )
         case drE|drS: case drNE|drSE|drSW: case drSW|drSE|drE: start = 171; rnd=0; break;
 
         case drNW|drSW|drW|drN: case drNW|drW|drN: case drNW|drNE|drW|drN:
-        case drNW|drNW|drW: case 0xd9: case 0x58: case 0x19:
+        case drNW|drNE|drW: case 0xd9: case 0x58: case 0x19:
         case 0xd8: case 0xd1: case 0x49: case 0x18: case 0xc1: case 0x41:
         case 0x51: case 0x09: case 0x59: case 0xd0: start=173; rnd=0; break;
 
@@ -421,6 +421,51 @@ public:
     ret = (  tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlGrass ) || tile->getFlag( Tile::tlTree ) );
   }
 
+  Pathway findWay(Tilemap& oTilemap, int startSide, int endSide )
+  {
+    Pathfinder& pathfinder = Pathfinder::instance();
+    pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::canBuildRoad ) );
+
+    TilesArray tiles = sideTiles( startSide, oTilemap );
+    tiles = tiles.walkableTiles( true );
+
+    if( tiles.empty() )
+      return Pathway();
+
+    TilesArray otherTiles = sideTiles( endSide, oTilemap );
+    otherTiles = otherTiles.walkableTiles( true );
+
+    return findWay( tiles, otherTiles );
+  }
+
+  Pathway findWay( const TilesArray& startTiles, const TilesArray& arrivedTiles )
+  {
+    if( arrivedTiles.empty() || startTiles.empty() )
+      return Pathway();
+
+    Pathfinder& pathfinder = Pathfinder::instance();
+    unsigned int mainLimiter = 10;
+    unsigned int stTileLimiter = startTiles.size() > mainLimiter
+                                   ? startTiles.size() / mainLimiter : 1;
+    for( unsigned int tileIndex = 0; tileIndex < startTiles.size(); tileIndex += stTileLimiter )
+    {
+      Tile* rtile = startTiles[ tileIndex ];
+
+      unsigned int arvTileLimiter = arrivedTiles.size() > mainLimiter
+                                      ? arrivedTiles.size() / mainLimiter : 1;
+      for( unsigned int arvTileIndex=0; arvTileIndex < arrivedTiles.size(); arvTileIndex += arvTileLimiter )
+      {
+        Tile* endTile = arrivedTiles[ arvTileIndex ];
+
+        Pathway way = pathfinder.getPath( *rtile, *endTile, Pathfinder::customCondition | Pathfinder::fourDirection );
+
+        if( way.isValid() )
+          return way;
+      }
+    }
+
+    return Pathway();
+  }
 
   TilesArray sideTiles( int side, Tilemap& oTilemap )
   {
@@ -513,46 +558,20 @@ static void __createRoad(Game& game )
   Tilemap& oTilemap = oCity->tilemap();
 
   TerrainGeneratorHelper tgHelper;
-  Pathfinder& pathfinder = Pathfinder::instance();
-  pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRoad ) );
 
   Pathway way;
-  for( int side=0; side < 4; side++ )
+  for( int side=0; side < 2; side++ )
   {
-    TilesArray tiles = tgHelper.sideTiles( side, oTilemap );
-    tiles = tiles.walkableTiles( true );
+    way = tgHelper.findWay( oTilemap, side, side + 2 );
 
-    if( tiles.empty() )
-      continue;
-
-    for( int nextSide=1; nextSide < 4; nextSide++ )
+    if( !way.isValid() )
     {
-      TilesArray otherTiles = tgHelper.sideTiles( side + nextSide, oTilemap );
-      otherTiles = otherTiles.walkableTiles( true );
+      way = tgHelper.findWay( oTilemap, side, side + 1 );
+    }
 
-      if( otherTiles.empty() )
-        continue;
-
-      for( int tryCount = 0; tryCount < std::min<int>( 20, tiles.size() ); tryCount++ )
-      {
-        Tile* rtile = tiles.random();
-
-        for( int tryTileCount=0; tryTileCount < std::min<int>( 20, tiles.size() ); tryTileCount++ )
-        {
-          Tile* endTile = otherTiles.random();
-
-          way = pathfinder.getPath( *rtile, *endTile, Pathfinder::customCondition | Pathfinder::fourDirection );
-
-          if( way.isValid() )
-            break;
-        }
-
-        if( way.isValid() )
-          break;
-      }
-
-      if( way.isValid() )
-        break;
+    if( !way.isValid() )
+    {
+      way = tgHelper.findWay( oTilemap, side, side + 3 );
     }
 
     if( way.isValid() )
@@ -720,6 +739,6 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   //update pathfinder map
   Pathfinder::instance().update( oTilemap );
 
-  __createRoad( game );
   __createRivers( game );
+  __createRoad( game );
 }

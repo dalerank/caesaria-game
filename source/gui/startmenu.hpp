@@ -36,6 +36,7 @@ public:
   virtual ~StartMenu();
 
   PushButton* addButton( const std::string& caption, int id );
+  void clear();
 };
 
 }//end namespace gui

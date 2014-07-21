@@ -17,9 +17,9 @@
     
     lbTitle#Label : 
     {
-      geometryf : [ 0.1 , 0.02, 0.9, 0.15 ]
+      geometryf : [ 0.10 , 0.04, 0.9, 0.20 ]
       text : "##title##"
-      font : "FONT_3"
+      font : "FONT_4"
       textAlign : [ "center", "upperLeft" ]
     }
 

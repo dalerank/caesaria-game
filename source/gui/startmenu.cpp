@@ -69,4 +69,11 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
   return newButton;
 }
 
+void StartMenu::clear()
+{
+  Widgets rchildren = children();
+  foreach( it, rchildren )
+    (*it)->remove();
+}
+
 }//end namespace gui

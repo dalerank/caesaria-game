@@ -68,7 +68,9 @@ public:
 
   void resolveNewGame();
   void resolveCredits();
-  
+  void showLoadMenu();
+  void resolveLoadRandommap();
+  void showMainMenu();
   void resolvePlayMission();
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
   void resolveSelectFile( std::string fileName );
@@ -242,6 +244,56 @@ void StartMenu::Impl::resolveCredits()
   CONNECT( btn, onClicked(), this, Impl::playMenuSoundTheme );
 }
 
+void StartMenu::Impl::showLoadMenu()
+{
+  menu->clear();
+
+  gui::PushButton* btn = menu->addButton( _("##mainmenu_playmission##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolvePlayMission );
+
+  btn = menu->addButton( _("##mainmenu_loadgame##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveShowLoadGameWnd );
+
+  btn = menu->addButton( _("##mainmenu_loadmap##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
+
+  btn = menu->addButton( _("##mainmenu_loadcampaign##"), -1 );
+  //CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
+
+  btn = menu->addButton( _("##mainmenu_randommap##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveLoadRandommap );
+
+  btn = menu->addButton( _("##cancel##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showMainMenu );
+}
+
+void StartMenu::Impl::resolveLoadRandommap()
+{
+  result = StartMenu::loadMission;
+  fileMap = GameSettings::rcpath( "/missions/random.mission" ).toString();
+  isStopped = true;
+}
+
+void StartMenu::Impl::showMainMenu()
+{
+  menu->clear();
+
+  gui::PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveChangePlayerName );
+
+  btn = menu->addButton( _("##mainmenu_load##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showLoadMenu );
+
+  btn = menu->addButton( _("Language"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+
+  btn = menu->addButton( _("##mainmenu_credits##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveCredits );
+
+  btn = menu->addButton( _("##mainmenu_quit##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveQuitGame );
+}
+
 void StartMenu::Impl::resolvePlayMission()
 {
   gui::Widget* parent = game->gui()->rootWidget();
@@ -324,26 +376,7 @@ void StartMenu::initialize()
                                                               "logo_rdt", 1, 2, 2, 2 );
   CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
 
-  gui::PushButton* btn = _d->menu->addButton( _("##mainmenu_newgame##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveChangePlayerName );
-
-  btn = _d->menu->addButton( _("##mainmenu_playmission##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolvePlayMission );
-
-  btn = _d->menu->addButton( _("##mainmenu_loadgame##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadGameWnd );
-
-  btn = _d->menu->addButton( _("##mainmenu_loadmap##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowLoadMapWnd );
-
-  btn = _d->menu->addButton( _("Language"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveShowChangeLanguageWindow );
-
-  btn = _d->menu->addButton( _("Credits"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveCredits );
-
-  btn = _d->menu->addButton( _("##mainmenu_quit##"), -1 );
-  CONNECT( btn, onClicked(), _d.data(), Impl::resolveQuitGame );
+  _d->showMainMenu();
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   bool screenFitted = GameSettings::get( GameSettings::screenFitted );
