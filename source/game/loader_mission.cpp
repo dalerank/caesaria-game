@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "loader_mission.hpp"
 #include "gfx/tile.hpp"
@@ -36,6 +38,7 @@
 #include "religion/pantheon.hpp"
 #include "core/locale.hpp"
 #include "city/terrain_generator.hpp"
+#include "events/fishplace.hpp"
 #include "climatemanager.hpp"
 
 using namespace religion;
@@ -124,6 +127,13 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     city->setBuildOptions( options  );
 
     game.empire()->emperor().updateRelation( city->name(), 50 );
+
+    VariantMap fishpointsVm = vm[ "fishpoints" ].toMap();
+    foreach( it, fishpointsVm )
+    {
+      events::GameEventPtr e = events::FishPlaceEvent::create( it->second.toTilePos(), events::FishPlaceEvent::add );
+      e->dispatch();
+    }
 
     std::string missionName = vfs::Path( filename ).baseName( false ).toString();
     Locale::addTranslation( missionName );

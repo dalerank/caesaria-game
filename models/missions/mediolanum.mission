@@ -757,6 +757,10 @@
       }
     }
   }
+
+  fishpoints : {
+   fp1 : [ 32, 126 ]
+  }
 	
   buildoptions :
   {

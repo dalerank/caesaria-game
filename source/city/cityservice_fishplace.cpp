@@ -19,6 +19,7 @@
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
 #include "core/safetycast.hpp"
+#include "core/stringhelper.hpp"
 #include "core/position.hpp"
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
@@ -31,9 +32,12 @@ namespace city
 class Fishery::Impl
 {
 public:
+  typedef std::vector<TilePos> Locations;
+
   unsigned int maxFishPlace;
   int failedCounter;
 
+  Locations locations;
   FishPlaceList places;
 };
 
@@ -45,7 +49,7 @@ SrvcPtr Fishery::create( PlayerCityPtr city )
   return ret;
 }
 
-std::string Fishery::defaultName() {  return "fishery";}
+std::string Fishery::defaultName() {  return CAESARIA_STR_EXT(Fishery);}
 
 Fishery::Fishery( PlayerCityPtr city )
   : Srvc( *city.object(), Fishery::defaultName() ), _d( new Impl )
@@ -68,7 +72,15 @@ void Fishery::update( const unsigned int time )
   while( _d->places.size() < _d->maxFishPlace )
   {
     FishPlacePtr fishplace = FishPlace::create( &_city );
-    fishplace->send2city( _city.borderInfo().boatEntry );
+    TilePos travelingPoint = _city.borderInfo().boatExit;
+    if( !_d->locations.empty() )
+    {
+      travelingPoint = _d->locations.size() > 1
+                         ? _d->locations[ math::random( _d->locations.size() ) ]
+                         : _d->locations.front();
+    }
+
+    fishplace->send2city( _city.borderInfo().boatEntry, travelingPoint );
 
     if( fishplace->isDeleted() )
     {
@@ -88,5 +100,37 @@ void Fishery::update( const unsigned int time )
 }
 
 bool Fishery::isDeleted() const { return _d->failedCounter > 3; }
+
+void Fishery::addLocation(TilePos location)
+{
+  _d->locations.push_back( location );
+}
+
+void Fishery::load(const VariantMap& stream)
+{
+  Srvc::load( stream );
+
+  VariantMap locations = stream.get( "locations" ).toMap();
+  foreach( it, locations )
+  {
+    addLocation( it->second.toTilePos() );
+  }
+}
+
+VariantMap Fishery::save() const
+{
+  VariantMap ret = Srvc::save();
+
+  VariantMap locationsVm;
+  int index = 0;
+  foreach( it, _d->locations )
+  {
+    locationsVm[ StringHelper::format( 0xff, "fp_%d", index++ ) ] = *it;
+  }
+
+  ret[ "locations" ] = locationsVm;
+
+  return ret;
+}
 
 }//end namespace city

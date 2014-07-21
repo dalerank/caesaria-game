@@ -33,6 +33,11 @@ public:
   void update( const unsigned int time );
   virtual bool isDeleted() const;
 
+  void addLocation( TilePos location );
+
+  virtual void load(const VariantMap& stream);
+  virtual VariantMap save() const;
+
 private:
   Fishery( PlayerCityPtr city );
 

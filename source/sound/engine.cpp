@@ -60,6 +60,8 @@ public:
   Samples samples;
   Volumes volumes;
   vfs::Path currentTheme;
+
+  void checkFilename( vfs::Path& path );
 };
 
 Engine& Engine::instance()
@@ -195,8 +197,7 @@ int Engine::play( vfs::Path filename, int volValue, SoundType type )
 {
   if(_d->useSound )
   {
-    std::string ext = filename.extension().empty() ? ".ogg" : "";
-    filename = filename + ext;
+    _d->checkFilename( filename );
 
     if( type == themeSound )
     {
@@ -247,6 +248,7 @@ int Engine::play(std::string rc, int index, int volume, SoundType type)
 
 bool Engine::isPlaying(vfs::Path filename) const
 {
+  _d->checkFilename( filename );
   Impl::Samples::iterator i = _d->samples.find( filename.toString() );
 
   if( i == _d->samples.end() )
@@ -308,6 +310,12 @@ void Helper::initTalksArchive(const vfs::Path& filename)
 
   saveFilename = filename;
   vfs::FileSystem::instance().mountArchive( saveFilename );
+}
+
+void Engine::Impl::checkFilename(vfs::Path& path)
+{
+  std::string ext = path.extension().empty() ? ".ogg" : "";
+  path = path + ext;
 }
 
 }//end namespace audio

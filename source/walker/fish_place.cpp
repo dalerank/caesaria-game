@@ -94,10 +94,32 @@ const Picture& FishPlace::getMainPicture()
   return _d->animation.currentFrame();
 }
 
-void FishPlace::send2city(TilePos pos)
+void FishPlace::send2city(TilePos rpos, TilePos dst )
 {
-  Pathway pathway = PathwayHelper::create( pos, _city()->borderInfo().boatExit,
-                                           PathwayHelper::deepWater );
+  if( dst.i() < 0 || dst.j() < 0 )
+  {
+    dst = _city()->borderInfo().boatExit;
+  }
+
+  _findway( rpos, dst );
+}
+
+void FishPlace::_reachedPathway()
+{
+  if( pos() == _city()->borderInfo().boatExit )
+  {
+    deleteLater();
+  }
+  else
+  {
+    _findway( pos(), _city()->borderInfo().boatExit );
+  }
+}
+
+
+void FishPlace::_findway( TilePos start, TilePos end)
+{
+  Pathway pathway = PathwayHelper::create( start, end, PathwayHelper::deepWaterFirst );
   if( !pathway.isValid() )
   {
     deleteLater();
@@ -105,13 +127,8 @@ void FishPlace::send2city(TilePos pos)
   else
   {
     _city()->addWalker( this );
-    setPos( pos );
+    setPos( start );
     setPathway( pathway );
     go();
   }
-}
-
-void FishPlace::_reachedPathway()
-{
-  deleteLater();
 }

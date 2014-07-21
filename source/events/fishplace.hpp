@@ -15,25 +15,36 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_C3SAV_LOADER_H_INCLUDED__
-#define __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+#ifndef _CAESARIA_FISHPLACE_EVENT_H_INCLUDE_
+#define _CAESARIA_FISHPLACE_EVENT_H_INCLUDE_
 
-#include "abstractloader.hpp"
+#include "event.hpp"
+#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
-class GameLoaderC3Sav : public GameAbstractLoader
+namespace events
+{
+
+class FishPlaceEvent : public GameEvent
 {
 public:
-  GameLoaderC3Sav();
+  typedef enum { unknown, add=1, remove } Mode;
+  static GameEventPtr create( TilePos pos, Mode mode );
 
-  virtual bool load(const std::string& filename, Game& game);
-  virtual bool isLoadableFileExtension( const std::string& filename );
-  virtual int  climateType(const std::string& filename);
-  virtual std::string restartFile() const;
+  virtual void load(const VariantMap &stream);
+  virtual VariantMap save() const;
+
+protected:
+  virtual void _exec(Game &game, unsigned int time);
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
+  FishPlaceEvent();
+
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
-#endif // __CAESARIA_C3SAV_LOADER_H_INCLUDED__
+}//namespace events
+
+#endif //_CAESARIA_RANDOMFIRE_EVENT_H_INCLUDE_

@@ -32,7 +32,7 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  void send2city( TilePos pos );
+  void send2city( TilePos pos, TilePos dst );
 
 protected:
   virtual void _reachedPathway();
@@ -40,6 +40,7 @@ protected:
 
 private:
   FishPlace( PlayerCityPtr city );
+  void _findway( TilePos start, TilePos end );
 
   class Impl;
   ScopedPtr< Impl > _d;
