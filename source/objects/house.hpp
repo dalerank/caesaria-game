@@ -37,7 +37,8 @@ public:
                  smallInsula, middleInsula, //10
                  bigInsula, beatyfullInsula, //12
                  smallVilla,  middleVilla,  bigVilla,  greatVilla,
-                 smallPalace, middlePalace, bigPalace, greatPalace } ID;
+                 smallPalace, middlePalace, bigPalace, greatPalace,
+                 count } ID;
 
   typedef enum { maxSize2=2, maxSize3, maxSize4 } HouseMaxSize;
 };
@@ -103,7 +104,7 @@ public:
 
   bool isCheckedDesirability() const;
 
-  void debugChangeLevel( int change );
+  void __debugChangeLevel( int change );
 
 private:
   void _levelUp();

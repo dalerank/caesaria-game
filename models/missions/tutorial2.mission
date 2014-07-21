@@ -2,6 +2,7 @@
   version : 1
   map : "/maps/Brundisium.sav"
   funds : 8000
+  city.name : "Brundisium"
   date : "-350.01.01"
   finish : "-300.01.01"
   climate : 0

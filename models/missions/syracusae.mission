@@ -2,6 +2,7 @@
   version : 1
   map : "/maps/Syracusae.sav"
   funds : 8000
+  city.name : "Syracusae"
   date : "-270.01.01"
   finish : "-100.01.01"
   adviserEnabled : true

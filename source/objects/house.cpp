@@ -1002,7 +1002,7 @@ std::string House::troubleDesc() const
 
 bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCheckDesirability(); }
 
-void House::debugChangeLevel(int change)
+void House::__debugChangeLevel(int change)
 {
   change > 0
       ? _levelUp()

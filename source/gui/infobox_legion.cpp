@@ -172,9 +172,9 @@ bool InfoboxLegion::onEvent(const NEvent& event)
       switch( id )
       {
       case Fort::frmNorthLine: text = "##defensive_formation"; break;
-      case Fort::frmSouthLine: text = "##defensive_formation2_"; break;
+      case Fort::frmWestLine: text = "##defensive_formation2_"; break;
       case Fort::frmNorthDblLine: text = "##simple_formation"; break;
-      case Fort::frmSouthDblLine: text = "##simple_formation2"; break;
+      case Fort::frmWestDblLine: text = "##simple_formation2"; break;
       case Fort::frmRandomLocation: text = "##simple_random_location"; break;
 
       default:

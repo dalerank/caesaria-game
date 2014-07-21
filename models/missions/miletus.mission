@@ -2,6 +2,7 @@
   version : 1
   map : "/maps/Miletus.sav"
   funds : 8000
+  city.name : "Miletus"
   date : "-220.01.01"
   finish : "-100.01.01"
   climate : 2

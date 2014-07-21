@@ -61,19 +61,19 @@ public:
   {
     Label::_updateTexture( painter );
 
-    PictureRef& texture = getTextPicture();
-    Font font = getFont();
+    PictureRef& texture = _textPictureRef();
+    Font rfont = font();
 
     if( _divinity.isValid() )
     {
       _lastFestival = _divinity->lastFestivalDate().monthsTo( GameDate::current() );
 
-      font.draw( *texture, _divinity->name(), 0, 0 );
+      rfont.draw( *texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
       fontBlack.draw( *texture, StringHelper::format( 0xff, "(%s)", _( _divinity->shortDescription() ) ), 80, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
+      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _bigTempleCount ), 280, 0 );
+      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _lastFestival ), 350, 0 );
 
       int xOffset = 400, k=0;
       Picture pic = Picture::load( ResourceGroup::panelBackground, 334 );
@@ -82,12 +82,12 @@ public:
         texture->draw( pic, Point( xOffset + k * 15, 0), false );
       }
 
-      font.draw( *texture, _( _divinity->moodDescription() ), xOffset + k * 15, 0 );
+      rfont.draw( *texture, _( _divinity->moodDescription() ), xOffset + k * 15, 0 );
     }
     else
     {
-      font.draw( *texture, _("##oracles_in_city##"), 0, 0 );
-      font.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      rfont.draw( *texture, _("##oracles_in_city##"), 0, 0 );
+      rfont.draw( *texture, StringHelper::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
     }
   }
 

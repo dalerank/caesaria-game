@@ -68,16 +68,16 @@ public:
     default: break;
     }
 
-    PictureRef& texture = getTextPicture();
-    Font font = getFont();
+    PictureRef& texture = _textPictureRef();
+    Font rfont = font();
     std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _numberBuilding, buildingStr.c_str() );
-    font.draw( *texture, buildingStrT, 0, 0 );
+    rfont.draw( *texture, buildingStrT, 0, 0 );
 
     std::string buildingWorkT = StringHelper::format( 0xff, "%d", _workingBuilding );
-    font.draw( *texture, buildingWorkT, 165, 0 );
+    rfont.draw( *texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _peoplesCount, peoplesStr.c_str() );
-    font.draw( *texture, peoplesStrT, 255, 0 );
+    rfont.draw( *texture, peoplesStrT, 255, 0 );
   }
 
 private:

@@ -98,7 +98,7 @@ CitizenGroup CitizenGroup::retrieve( Age group, unsigned int rcount)
 
   while( rcount > 0 )
   {
-    for( int age=range.first; age <= range.second; age++ )
+    for( unsigned int age=range.first; age <= range.second; age++ )
     {
       unsigned int n = std::min( _peoples[ age ], 1u );
 

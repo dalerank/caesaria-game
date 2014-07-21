@@ -36,6 +36,7 @@
 #include "events/disaster.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walker/helper.hpp"
+#include "events/fireworkers.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -171,9 +172,13 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
       if( healthLevel < 1 )
       {
         house->deleteLater();
+
         _d->fumigateHouseNumber++;
-        house->remHabitants( 1000 ); //all habitants will killed
-        events::GameEventPtr e = events::DisasterEvent::create( house->tile(), events::DisasterEvent::plague );
+        CitizenGroup citizens = house->remHabitants( 1000 ); //all habitants will killed
+        events::GameEventPtr e = events::FireWorkers::create( house->pos(), citizens.count() );
+        e->dispatch();
+
+        e = events::DisasterEvent::create( house->tile(), events::DisasterEvent::plague );
         e->dispatch();
 
         if( _d->fumigateHouseNumber > 5 )
@@ -311,7 +316,7 @@ void Prefect::_centerTile()
 
   case Impl::patrol:
   {
-    TilePos protestorPos, firePos;
+    TilePos firePos;
     ReachedBuildings reachedBuildings;
     WalkerPtr enemy = _looks4Enemy( 5 );
     bool haveBurningRuinsNear = _looks4Fire( reachedBuildings, firePos );

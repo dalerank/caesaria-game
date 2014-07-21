@@ -77,23 +77,23 @@ public:
     default: break;
     }
 
-    PictureRef& texture = getTextPicture();
-    Font font = getFont();
+    PictureRef& texture = _textPictureRef();
+    Font rfont = font();
     std::string buildingStrT = StringHelper::format( 0xff, "%d %s", _info.buildingCount, buildingStr.c_str() );
-    font.draw( *texture, buildingStrT, 0, 0 );
+    rfont.draw( *texture, buildingStrT, 0, 0 );
 
     std::string buildingWorkT = StringHelper::format( 0xff, "%d", _info.buildingWork );
-    font.draw( *texture, buildingWorkT, 165, 0 );
+    rfont.draw( *texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = StringHelper::format( 0xff, "%d %s", _info.peoplesStuding, peoplesStr.c_str() );
-    font.draw( *texture, peoplesStrT, 255, 0 );
+    rfont.draw( *texture, peoplesStrT, 255, 0 );
 
     const char* coverages[10] = { "##edu_poor##", "##edu_very_bad##", "##edu_bad##", "##edu_not_bad##", "##edu_simple##",
                                   "##edu_above_simple##", "##edu_good##", "##edu_very_good##", "##edu_pretty##", "##edu_awesome##" };
     const char* coverageStr = _info.coverage > 0
                                   ? coverages[ math::clamp( _info.coverage / 10, 0, 9 ) ]
                                   : "##non_cvrg##";
-    font.draw( *texture, _( coverageStr ), 440, 0 );
+    rfont.draw( *texture, _( coverageStr ), 440, 0 );
   }
 
 private:
