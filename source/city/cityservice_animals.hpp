@@ -21,6 +21,7 @@
 #include "cityservice.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
+#include "walker/constants.hpp"
 
 namespace city
 {
@@ -31,7 +32,10 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
   virtual void update( const unsigned int time );
-  void setWolvesNumber( unsigned int number );
+  void setAnimalsNumber( constants::walker::Type animal_type, unsigned int number );
+
+  virtual VariantMap save() const;
+  virtual void load(const VariantMap& stream);
 
 private:
   Animals(PlayerCityPtr city);

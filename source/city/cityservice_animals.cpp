@@ -22,6 +22,8 @@
 #include "gfx/tilemap.hpp"
 #include "walker/animals.hpp"
 #include "walker/constants.hpp"
+#include "walker/helper.hpp"
+#include "walker/walkers_factory.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -30,14 +32,13 @@ namespace city
 {
 
 namespace {
-static const unsigned int defaultMaxSheeps = 10;
+static const unsigned int defaultMaxAnimals = 10;
 }
 
 class Animals::Impl
 {
 public:
-  unsigned int maxSheeps;
-  unsigned int maxWolves;
+  std::map< walker::Type, unsigned int > maxAnimal;
 };
 
 SrvcPtr Animals::create(PlayerCityPtr city)
@@ -54,48 +55,71 @@ void Animals::update(const unsigned int time)
   if( !GameDate::isMonthChanged() )
     return;
 
+  if( _d->maxAnimal.empty() )
+  {
+    walker::Type currentTerrainAnimal = _city.climate() == C_DESERT ? walker::zebra : walker::sheep;
+    _d->maxAnimal[ currentTerrainAnimal ] = defaultMaxAnimals;
+  }
+
   Tilemap& tmap = _city.tilemap();
   TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
   border = border.walkableTiles( true );
 
-  if( _d->maxSheeps > 0 )
+  foreach( winfo, _d->maxAnimal )
   {
-    WalkerList sheeps = _city.walkers( walker::sheep );
-    if( sheeps.size() < _d->maxSheeps )
-    {
-      WalkerPtr sheep = Sheep::create( &_city );
-      if( sheep.isValid() )
-      {
-        TilesArray::iterator it = border.begin();
-        std::advance( it, math::random( border.size() ) );
-        ptr_cast<Sheep>(sheep)->send2City( (*it)->pos() );
-      }
-    }
-  }
+    walker::Type walkerType = winfo->first;
+    unsigned int maxAnimalInCity = winfo->second;
 
-  if( _d->maxWolves > 0 )
-  {
-    WalkerList wolves = _city.walkers( walker::wolf );
-    if( wolves.size() < _d->maxWolves )
+    if( maxAnimalInCity > 0 )
     {
-      WalkerPtr wolf = Wolf::create( &_city );
-      if( wolf.isValid() )
+      WalkerList animals = _city.walkers( walkerType );
+      if( animals.size() < maxAnimalInCity )
       {
-        TilesArray::iterator it = border.begin();
-        std::advance( it, math::random( border.size() ) );
-        ptr_cast<Wolf>(wolf)->send2City( (*it)->pos() );
+        AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( walkerType, &_city ) );
+        if( animal.isValid() )
+        {
+          Tile* rndTile = border.random();
+          animal->send2City( rndTile->pos() );
+        }
       }
     }
   }
 }
 
-void Animals::setWolvesNumber(unsigned int number) {  _d->maxWolves = number; }
+void Animals::setAnimalsNumber( constants::walker::Type animal_type, unsigned int number)
+{
+  //walker::Type wtype = WalkerHelper::getType( animal_type );
+  _d->maxAnimal[ animal_type ] = number;
+}
+
+VariantMap Animals::save() const
+{
+  VariantMap ret = Srvc::save();
+
+  VariantMap animalsVm;
+  foreach( winfo, _d->maxAnimal )
+    animalsVm[ WalkerHelper::getTypename( winfo->first ) ] = winfo->second;
+
+  ret[ "animals" ] = animalsVm;
+
+  return ret;
+}
+
+void Animals::load(const VariantMap& stream)
+{
+  Srvc::load( stream );
+
+  VariantMap animalsVm = stream.get( "animals" ).toMap();
+  foreach( info, animalsVm )
+  {
+    walker::Type wtype = WalkerHelper::getType( info->first );
+    _d->maxAnimal[ wtype ] = info->second;
+  }
+}
 
 Animals::Animals( PlayerCityPtr city )
   : Srvc( *city.object(), Animals::defaultName() ), _d( new Impl )
 {
-  _d->maxSheeps = defaultMaxSheeps;
-  _d->maxWolves = 0;
 }
 
 }//end namespace city

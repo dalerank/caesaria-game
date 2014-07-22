@@ -29,7 +29,7 @@
 #include "distant_battle.hpp"
 #include "trading_options.hpp"
 #include "contaminated_water.hpp"
-#include "random_wolves.hpp"
+#include "random_animals.hpp"
 
 namespace events
 {
@@ -91,7 +91,7 @@ GameEventFactory::GameEventFactory() : _d( new Impl )
   addCreator<DistantBattle>( "distant_battle" );
   addCreator<TradingOptions>( "trading_options" );
   addCreator<ContaminatedWater>( "contaminated_water" );
-  addCreator<RandomWolves>( "random_wolves" );
+  addCreator<RandomAnimals>( "random_animals" );
 }
 
 }//end namespace events

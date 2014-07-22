@@ -72,7 +72,7 @@
 #include "walker/walkers_factory.hpp"
 #include "gui/scribesmessages.hpp"
 #include "core/foreach.hpp"
-#include "events/random_wolves.hpp"
+#include "events/random_animals.hpp"
 #include "gfx/layerconstants.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "events/warningmessage.hpp"
@@ -610,7 +610,7 @@ void Level::handleEvent( NEvent& event )
     case KEY_F11:
       if( event.keyboard.shift )
       {
-        events::GameEventPtr e = events::RandomWolves::create( 10 );
+        events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
         e->dispatch();
       }
       else { _d->makeEnemy(); }

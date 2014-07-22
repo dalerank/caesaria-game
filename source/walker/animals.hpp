@@ -49,20 +49,34 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class Sheep : public Animal
+class Herbivorous : public Animal
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-
   virtual void send2City(const TilePos& start);
-  virtual bool die();
 
 protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
 
+  Herbivorous( constants::walker::Type type, PlayerCityPtr city );
+};
+
+class Sheep : public Herbivorous
+{
+public:
+  static WalkerPtr create( PlayerCityPtr city );
+
 private:
   Sheep( PlayerCityPtr city );
+};
+
+class Zebra : public Herbivorous
+{
+public:
+  static WalkerPtr create( PlayerCityPtr city );
+
+private:
+  Zebra( PlayerCityPtr city );
 };
 
 class Wolf : public Animal

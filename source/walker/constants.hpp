@@ -85,6 +85,7 @@ enum Type{
   indigeneRioter,
   indigene,
   missioner,
+  zebra,
   all = 0xff,
   any = all
 };

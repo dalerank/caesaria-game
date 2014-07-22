@@ -142,6 +142,7 @@ WalkerManager::WalkerManager() : _d( new Impl )
   addCreator( walker::mugger, new BaseCreator<Mugger>() );
   addCreator( walker::dustCloud, new BaseCreator<DustCloud>() );
   addCreator( walker::wolf, new BaseCreator<Wolf>() );
+  addCreator( walker::zebra, new BaseCreator<Zebra>() );
   addCreator( walker::missioner, new ServicemanCreator( Service::native ) );
   addCreator( walker::indigene, new BaseCreator<Indigene>() );
   addCreator( walker::romeSpearman, new SoldierCreator<RomeArcher>( walker::romeSpearman ) );

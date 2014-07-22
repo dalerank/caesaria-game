@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "random_wolves.hpp"
+#include "random_animals.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "game/gamedate.hpp"
@@ -24,6 +24,8 @@
 #include "events/dispatcher.hpp"
 #include "core/logger.hpp"
 #include "walker/animals.hpp"
+#include "walker/helper.hpp"
+#include "walker/walkers_factory.hpp"
 #include "gfx/tilemap.hpp"
 
 using namespace constants;
@@ -32,31 +34,28 @@ using namespace gfx;
 namespace events
 {
 
-namespace {
-CAESARIA_LITERALCONST(count)
-CAESARIA_LITERALCONST(maxWolves)
-}
-
-class RandomWolves::Impl
+class RandomAnimals::Impl
 {
 public:
   bool isDeleted;
   unsigned int count;
-  int maxWolves;
+  walker::Type animalType;
+  int maxAnimals;
 };
 
-GameEventPtr RandomWolves::create()
+GameEventPtr RandomAnimals::create()
 {
-  GameEventPtr ret( new RandomWolves() );
+  GameEventPtr ret( new RandomAnimals() );
   ret->drop();
 
   return ret;
 }
 
-GameEventPtr RandomWolves::create(unsigned int wolvesNumber)
+GameEventPtr RandomAnimals::create( walker::Type type, unsigned int wolvesNumber)
 {
-  RandomWolves* r = new RandomWolves();
+  RandomAnimals* r = new RandomAnimals();
   r->_d->count = wolvesNumber;
+  r->_d->count = type;
 
   GameEventPtr ret( r );
   ret->drop();
@@ -64,9 +63,9 @@ GameEventPtr RandomWolves::create(unsigned int wolvesNumber)
   return ret;
 }
 
-void RandomWolves::_exec( Game& game, unsigned int time)
+void RandomAnimals::_exec( Game& game, unsigned int time)
 {
-  Logger::warning( "Execute random wolves event" );
+  Logger::warning( "Execute random animals event" );
   if( _d->count > 0 )
   {
     Tilemap& tmap = game.city()->tilemap();
@@ -78,48 +77,61 @@ void RandomWolves::_exec( Game& game, unsigned int time)
 
     for( unsigned int k=0; k < _d->count; k++ )
     {
-      WolfPtr wolf = ptr_cast<Wolf>( Wolf::create( game.city() ) );
-      if( wolf.isValid() )
+      AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( _d->animalType, game.city() ) );
+      if( animal.isValid() )
       {
-        wolf->send2City( (*it)->pos() );
-        wolf->wait( k * 20 );
+        animal->send2City( (*it)->pos() );
+        animal->wait( k * 20 );
       }
     }
 
     _d->count = 0;
   }
 
-  if( _d->maxWolves >= 0 )
+  if( _d->maxAnimals >= 0 )
   {
     SmartPtr<city::Animals> srvc = ptr_cast<city::Animals>( game.city()->findService( city::Animals::defaultName() ) );
     if( srvc.isValid() )
     {
-      srvc->setWolvesNumber( _d->maxWolves );
+      srvc->setAnimalsNumber( _d->animalType, _d->maxAnimals );
     }
   }
 }
 
-bool RandomWolves::_mayExec(Game&, unsigned int) const { return true; }
-bool RandomWolves::isDeleted() const {  return _d->isDeleted; }
+bool RandomAnimals::_mayExec(Game&, unsigned int) const { return true; }
+bool RandomAnimals::isDeleted() const {  return _d->isDeleted; }
 
-void RandomWolves::load(const VariantMap& stream)
+void RandomAnimals::load(const VariantMap& stream)
 {
-  _d->count = stream.get( lc_count, 0 ).toUInt();
-  _d->maxWolves = stream.get( lc_maxWolves, -1 );
+  VARIANT_LOAD_ANY_D( _d, count, stream );
+  VARIANT_LOAD_ANY_D( _d, maxAnimals, stream );
+
+  Variant vAnimalType = stream.get( "animalType" );
+  if( vAnimalType.type() == Variant::String )
+  {
+    _d->animalType = WalkerHelper::getType( vAnimalType.toString() );
+  }
+  else
+  {
+    _d->animalType = (walker::Type)stream.get( "animalType" ).toInt();
+  }
 }
 
-VariantMap RandomWolves::save() const
+VariantMap RandomAnimals::save() const
 {
   VariantMap ret;
 
-  ret[ lc_count ] = (int)_d->count;
-  ret[ lc_maxWolves ] = _d->maxWolves;
+  VARIANT_SAVE_ANY_D( ret, _d, count );
+  VARIANT_SAVE_ANY_D( ret, _d, maxAnimals );
+  ret[ "animalType" ] = (int)_d->animalType;
   return ret;
 }
 
-RandomWolves::RandomWolves() : _d( new Impl )
+RandomAnimals::RandomAnimals() : _d( new Impl )
 {
   _d->isDeleted = true;
+  _d->count = 0;
+  _d->maxAnimals = 0;
 }
 
 }//end namespace events

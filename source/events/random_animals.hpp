@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_RANDOMWOLVES_EVENT_H_INCLUDE_
-#define _CAESARIA_RANDOMWOLVES_EVENT_H_INCLUDE_
+#ifndef _CAESARIA_RANDOMANIMALS_EVENT_H_INCLUDE_
+#define _CAESARIA_RANDOMANIMALS_EVENT_H_INCLUDE_
 
 #include "event.hpp"
 #include "predefinitions.hpp"
@@ -25,11 +25,11 @@
 namespace events
 {
 
-class RandomWolves : public GameEvent
+class RandomAnimals : public GameEvent
 {
 public:
   static GameEventPtr create();
-  static GameEventPtr create( unsigned int wolvesNumber );
+  static GameEventPtr create(constants::walker::Type type, unsigned int wolvesNumber );
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);
@@ -40,7 +40,7 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  RandomWolves();
+  RandomAnimals();
 
   class Impl;
   ScopedPtr<Impl> _d;
@@ -48,4 +48,4 @@ private:
 
 }//namespace events
 
-#endif //_CAESARIA_RANDOMWOLVES_EVENT_H_INCLUDE_
+#endif //_CAESARIA_RANDOMANIMALS_EVENT_H_INCLUDE_

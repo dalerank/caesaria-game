@@ -24,6 +24,7 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
+#include "helper.hpp"
 #include "ability.hpp"
 
 using namespace constants;
@@ -87,12 +88,8 @@ void Animal::_findNewWay( const TilePos& start )
   }
 }
 
-Sheep::Sheep( PlayerCityPtr city ) : Animal( city )
+Sheep::Sheep( PlayerCityPtr city ) : Herbivorous( walker::sheep, city )
 {
-  _setType( walker::sheep );
-  setName( _("##sheep##") );
-
-  addAbility( Illness::create( 0.2, 4 ) );
 }
 
 WalkerPtr Sheep::create(PlayerCityPtr city)
@@ -103,7 +100,7 @@ WalkerPtr Sheep::create(PlayerCityPtr city)
   return ret;
 }
 
-void Sheep::_reachedPathway()
+void Herbivorous::_reachedPathway()
 {
   Walker::_reachedPathway();
 
@@ -116,22 +113,18 @@ void Sheep::_reachedPathway()
   _findNewWay( pos() );
 }
 
-void Sheep::_brokePathway(TilePos p){  _findNewWay( pos() );}
+void Herbivorous::_brokePathway(TilePos p){  _findNewWay( pos() );}
 
-bool Sheep::die()
+Herbivorous::Herbivorous(walker::Type type, PlayerCityPtr city)
+ : Animal( city )
 {
-  bool created = Animal::die();
+  _setType( type );
+  setName( WalkerHelper::getPrettyTypeName( type ) );
 
-  if( !created )
-  {
-    Corpse::create( _city(), pos(), "citizen04", 257, 264 );
-    return true;
-  }
-
-  return created;
+  addAbility( Illness::create( 0.2, 4 ) );
 }
 
-void Sheep::send2City(const TilePos &start )
+void Herbivorous::send2City(const TilePos &start )
 {
   _findNewWay( start );
 
@@ -279,4 +272,17 @@ Fish::Fish(PlayerCityPtr city)
   setName( _("##fish##") );
 }
 
- Fish::~Fish() {}
+Fish::~Fish() {}
+
+
+WalkerPtr Zebra::create(PlayerCityPtr city)
+{
+  WalkerPtr ret( new Zebra( city ) );
+  ret->drop();
+
+  return ret;
+}
+
+Zebra::Zebra(PlayerCityPtr city) : Herbivorous( walker::zebra, city )
+{
+}

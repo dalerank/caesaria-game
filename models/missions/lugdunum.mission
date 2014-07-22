@@ -104,9 +104,10 @@
       }
     }
 
-    random_wolves#random_wolves : {
+    random_wolves#random_animals : {
       count : 10
-      maxWolves : 6
+      maxAnimals : 6
+      animalType : "wolf"
     }
 
     city_indebt#city_indebt : {
