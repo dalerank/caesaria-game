@@ -1154,7 +1154,7 @@ void House::appendMoney(float money) {  _d->money += money; }
 DateTime House::lastTaxationDate() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::desirability() const {  return _d->desirability; }
-bool House::isWalkable() const{  return (_d->houseLevel == HouseLevel::smallHovel && _d->habitants.count() == 0); }
+bool House::isWalkable() const{  return (_d->houseLevel < HouseLevel::bigTent); }
 bool House::isFlat() const { return _d->houseLevel < 3; }//isWalkable(); }
 const CitizenGroup& House::habitants() const  {  return _d->habitants; }
 GoodStore& House::goodStore(){   return _d->goodStore;}

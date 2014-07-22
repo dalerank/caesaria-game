@@ -73,5 +73,6 @@ RiverWave::~RiverWave() {}
 
 void RiverWave::save( VariantMap& stream ) const
 {
+  Walker::save( stream );
 }
 

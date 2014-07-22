@@ -35,6 +35,7 @@ public:
   void setPriority( const city::HirePriorities& priority );
   void send2City( WorkingBuildingPtr building, const int workersNeeded );
   void once(WorkingBuildingPtr building, const unsigned int workersNeed, unsigned int distance);
+  void timeStep(const unsigned long time);
 
   virtual unsigned int reachDistance() const;
   virtual void save(VariantMap &stream) const;

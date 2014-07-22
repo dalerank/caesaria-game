@@ -150,6 +150,11 @@ void Recruter::once(WorkingBuildingPtr building, const unsigned int workersNeed,
   _centerTile();
 }
 
+void Recruter::timeStep(const unsigned long time)
+{
+  ServiceWalker::timeStep( time );
+}
+
 unsigned int Recruter::reachDistance() const { return _d->reachDistance;}
 
 void Recruter::save(VariantMap& stream) const

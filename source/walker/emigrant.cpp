@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "immigrant.hpp"
 #include "core/position.hpp"
@@ -45,6 +45,12 @@ public:
   CitizenGroup peoples;
   int failedWayCount;
   float stamina;
+
+  void mayWalk( const Tile* tile, bool& ret )
+  {
+    HousePtr f = ptr_cast<House>( tile->overlay() );
+    ret = ( tile->isWalkable( true ) || f.isValid() );
+  }
 };
 
 Emigrant::Emigrant(PlayerCityPtr city )
@@ -132,7 +138,7 @@ void Emigrant::_reachedPathway()
   else
   {
     city::Helper helper( _city() );
-    TilePos offset( 1, 1 );
+    TilePos offset( 2, 2 );
     HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
     foreach( it, houses )  //have destination
     {
@@ -141,10 +147,7 @@ void Emigrant::_reachedPathway()
       int freeRoom = house->maxHabitants() - house->habitants().count();
       if( freeRoom > 0 )
       {
-        Tilemap& tmap = _city()->tilemap();
-        Pathway pathway;
-        pathway.init( tmap, tmap.at( pos() ) );
-        pathway.setNextTile( house->tile() );
+        Pathway pathway = PathwayHelper::create( pos(), house->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
 
         gooutCity = false;
         _updatePathway( pathway );
