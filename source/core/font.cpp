@@ -99,10 +99,15 @@ Font Font::create( const std::string& family, const int size )
 
 unsigned int Font::getWidthFromCharacter( unsigned int c ) const
 {
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+  //TODO: calcualte real width
+  return 16;
+#else
   int minx, maxx, miny, maxy, advance;
   TTF_GlyphMetrics( _d->ttfFont, c, &minx, &maxx, &miny, &maxy, &advance );
   
   return advance;
+#endif
 }
 
 unsigned int Font::kerningHeight() const {  return 3; }
@@ -137,7 +142,11 @@ bool Font::isValid() const {  return _d->ttfFont != 0; }
 Size Font::getTextSize( const std::string& text ) const
 {
   int w, h;
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+  TTF_SizeText( _d->ttfFont, text.c_str(), &w, &h );
+#else  
   TTF_SizeUTF8( _d->ttfFont, text.c_str(), &w, &h );
+#endif  
 
   return Size( w, h );
 }
@@ -209,7 +218,12 @@ void Font::draw(Picture& dstpic, const std::string &text, const int dx, const in
   if( !_d->ttfFont || !dstpic.isValid() )
     return;
 
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+  SDL_Surface* sText = TTF_RenderText_Solid( _d->ttfFont, text.c_str(), _d->color );
+#else  
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
+#endif 
+  
   if( sText && useAlpha )
   {
     SDL_SetAlpha( sText, 0, 0 );

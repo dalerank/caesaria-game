@@ -18,6 +18,11 @@
 #include "logger.hpp"
 #include <map>
 
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+#include <SDL_compat.h>
+#define SDL_GetKeyState SDL_GetKeyboardState
+#endif
+
 struct SMouseMultiClicks
 {
     SMouseMultiClicks()

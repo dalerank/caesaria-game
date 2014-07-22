@@ -145,6 +145,14 @@ void Picture::draw(const Picture &srcpic, int x, int y, bool useAlpha )
 
 unsigned int* Picture::lock()
 {
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+  if( _d->surface )
+  {
+    return (unsigned int*)_d->surface->pixels;
+  }  
+
+  return 0;
+#endif
   /*if( _d->texture )
   {
     int a;
@@ -178,6 +186,9 @@ unsigned int* Picture::lock()
 
 void Picture::unlock()
 {
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+  return;
+#endif
   /*if( _d->texture )
   {
     int a;

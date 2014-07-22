@@ -32,6 +32,15 @@
   #undef main
 #endif
 
+#if defined(CAESARIA_PLATFORM_EMSCRIPTEN)
+#include <emscripten.h>
+Game *game = 0;
+
+void asyncLoop() {
+  game->exec();
+}
+#endif
+
 #if defined(CAESARIA_PLATFORM_ANDROID)
 #include <SDL.h>
 #include <SDL_system.h>
@@ -86,22 +95,23 @@ int main(int argc, char* argv[])
     }
   }
 
-  Logger::registerWriter( Logger::filelog, workdir.toString() );
-
+#if !defined(CAESARIA_PLATFORM_EMSCRIPTEN)
   try
   {
     Game game;
     game.initialize();
-    game.exec();
+    while (game.exec());
   }
   catch( Exception& e )
   {
     Logger::warning( "Critical error: " + e.getDescription() );
     Stacktrace::print();
   }
-
-#ifdef CAESARIA_USE_STEAM
-  steamapi::Handler::close();
+#else
+  EM_ASM("SDL.defaults.copyOnLock = true; SDL.defaults.discardOnLock = false; SDL.defaults.opaqueFrontBuffer = false;");
+  game = new Game();
+  game->initialize();
+  emscripten_set_main_loop(asyncLoop, 0, false);
 #endif
 
   return 0;
