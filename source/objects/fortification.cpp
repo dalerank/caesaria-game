@@ -434,30 +434,16 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   return _d->tmpPicture;
 }
 
-int Fortification::getDirection() const
-{
-  return _d->direction;
-}
+int Fortification::getDirection() const {  return _d->direction;}
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
   setPicture( picture( city, pos(), TilesArray() ) );
 }
 
-bool Fortification::isTowerEnter() const
-{
-  return _d->isTowerEnter;
-}
-
-bool Fortification::mayPatrol() const
-{
-  return _d->mayPatrol;
-}
-
-bool Fortification::isFlat() const
-{
-  return false;
-}
+bool Fortification::isTowerEnter() const {  return _d->isTowerEnter;}
+bool Fortification::mayPatrol() const{  return _d->mayPatrol;}
+bool Fortification::isFlat() const{  return false;}
 
 void Fortification::save(VariantMap& stream) const
 {

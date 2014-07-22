@@ -130,7 +130,7 @@ public:
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
 
-  vfs::Path getFastSaveName(const std::string& postfix="");
+  vfs::Path getFastSaveName( const std::string& type="", const std::string& postfix="");
 };
 
 Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
@@ -401,10 +401,11 @@ void Level::_showIngameMenu()
 #endif
 }
 
-vfs::Path Level::Impl::getFastSaveName( const std::string& postfix )
+vfs::Path Level::Impl::getFastSaveName(const std::string& type, const std::string& postfix )
 {
+  std::string typesave = type.empty() ? SETTINGS_VALUE( fastsavePostfix ).toString() : type;
   vfs::Path filename = game->city()->name()
-                       + GameSettings::get( GameSettings::fastsavePostfix ).toString()
+                       + typesave
                        + postfix
                        + GameSettings::get( GameSettings::saveExt ).toString();
 
@@ -468,7 +469,7 @@ void Level::animate( unsigned int time )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
-      vfs::Path filename = _d->getFastSaveName( StringHelper::i2str( rotate ) );
+      vfs::Path filename = _d->getFastSaveName( "autosave", StringHelper::i2str( rotate ) );
       _d->game->save( filename.toString() );
     }
   }
