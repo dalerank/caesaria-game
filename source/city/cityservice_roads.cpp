@@ -119,7 +119,7 @@ void Roads::Impl::updateRoadsAround( UpdateInfo info )
   foreach( current, pathWayList )
   {
     const TilesArray& tiles = (*current)->allTiles();
-    for( TilesArray::const_iterator it=tiles.begin(); it != tiles.end(); ++it )
+    foreach( it, tiles )
     {
       RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
       if( road.isValid() )

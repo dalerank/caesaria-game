@@ -72,15 +72,14 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
     TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
     border = border.walkableTiles( true );
 
-    TilesArray::iterator it = border.begin();
-    std::advance( it, math::random( border.size()-1 ) );
+    Tile* randomTile = border.random();
 
     for( unsigned int k=0; k < _d->count; k++ )
     {
       AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( _d->animalType, game.city() ) );
       if( animal.isValid() )
       {
-        animal->send2City( (*it)->pos() );
+        animal->send2City( randomTile->pos() );
         animal->wait( k * 20 );
       }
     }

@@ -173,7 +173,7 @@ const Picture& Fortification::picture(PlayerCityPtr city, TilePos p,
   // if we have a TMP array with wall, calculate them
   if( !tmp.empty())
   {
-    for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
+    foreach( it, tmp )
     {
       if( (*it)->overlay().isNull()
           || (*it)->overlay()->type() != building::fortification )

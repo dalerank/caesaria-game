@@ -55,7 +55,10 @@ oc3_signals public:
 public:
   void resolveButtonOkClick()
   {
-    vfs::Path filename( edFilename->text() + extension );
+    vfs::Path filename( edFilename->text() );
+    if( filename.extension().empty() )
+      filename = filename + extension;
+
     oc3_emit onFileSelectedSignal( (directory/filename).toString() );
   }
 

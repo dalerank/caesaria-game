@@ -314,16 +314,23 @@ void ServiceWalker::_brokePathway(TilePos p)
     {
       setPathway( way );
       go();
-    }
-    else
-    {
-      die();
+      return;
     }
   }
-  else
+
+  die();
+}
+
+void ServiceWalker::_noWay()
+{
+  TilesArray area = base()->enterArea();
+  if( area.contain( pos() ) )
   {
-    die();
+    deleteLater();
+    return;
   }
+
+  die();
 }
 
 void ServiceWalker::save( VariantMap& stream ) const

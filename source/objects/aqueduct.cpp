@@ -236,7 +236,7 @@ const Picture& Aqueduct::picture(PlayerCityPtr city, TilePos p, const TilesArray
   // if we have a TMP array with aqueducts, calculate them
   if (!tmp.empty())
   {
-    for( TilesArray::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
+    foreach( it, tmp )
     {
       int i = (*it)->i();
       int j = (*it)->j();

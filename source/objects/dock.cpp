@@ -344,7 +344,7 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
 bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
 {
   bool ret = true;
-  for( TilesArray::const_iterator i=tiles.begin(); i != tiles.end(); ++i )
+  foreach( i, tiles )
   {
     ret &= (*i)->getFlag( Tile::isConstructible );
   }
@@ -355,7 +355,7 @@ bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
 bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
 {
   bool ret = true;
-  for( TilesArray::const_iterator i=tiles.begin(); i != tiles.end(); ++i )
+  foreach( i, tiles )
   {
     ret &= (*i)->getFlag( Tile::tlWater ) && isFlatCoast( *(*i) );
   }

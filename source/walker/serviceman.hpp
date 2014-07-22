@@ -57,6 +57,7 @@ public:
 protected:
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
+  virtual void _noWay();
   virtual void _centerTile();  // called when the walker is on a new tile
 
 protected:

@@ -33,7 +33,6 @@
 using namespace constants;
 
 namespace {
-CAESARIA_LITERALCONST(needworkers)
 CAESARIA_LITERALCONST(priority)
 static const int noPriority = 999;
 }
@@ -161,13 +160,13 @@ void Recruter::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
   stream[ lc_priority ] = _d->priority.toVariantList();
-  stream[ lc_needworkers ] = _d->needWorkers;
+  VARIANT_SAVE_ANY_D( stream, _d, needWorkers );
 }
 
 void Recruter::load(const VariantMap& stream)
 {
   ServiceWalker::load( stream );
-  _d->needWorkers = stream.get( lc_needworkers );
+  VARIANT_LOAD_ANY_D( _d, needWorkers, stream );
   _d->priority << stream.get( lc_priority ).toList();
 }
 

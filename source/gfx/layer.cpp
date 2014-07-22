@@ -382,7 +382,7 @@ void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std:
   TileOverlayPtr overlay = baseTile->overlay();
   int leftBorderAtI = baseTile->i();
   int rightBorderAtJ = overlay->size().height() - 1 + baseTile->j();
-  for( TilesArray::const_iterator it=area.begin(); it != area.end(); ++it )
+  foreach( it, area )
   {
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )

@@ -144,14 +144,11 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 void Prefect::_back2Prefecture()
 { 
   TilesArray area = base()->enterArea();
-  foreach( tile, area )
+  if( area.contain( pos() ) )
   {
-    if( pos() == (*tile)->pos() )
-    {
-      _setAction( Walker::acNone );
-      deleteLater();
-      return;
-    }
+    _setAction( Walker::acNone );
+    deleteLater();
+    return;
   }
 
   Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ),
