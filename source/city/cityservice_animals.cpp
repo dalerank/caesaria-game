@@ -47,7 +47,7 @@ SrvcPtr Animals::create(PlayerCityPtr city)
   return ret;
 }
 
-std::string Animals::defaultName() { return "animals"; }
+std::string Animals::defaultName() { return CAESARIA_STR_EXT(Animals); }
 
 void Animals::update(const unsigned int time)
 {

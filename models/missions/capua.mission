@@ -95,7 +95,7 @@
     oil_price_rising#trading_options : {
       date : "-345.04.01"
       goods : {
-        oil : { buy : 40, sell : 30 }	    
+        oil : { buy : 220, sell : 180 }
       }
 
       exec : {
@@ -111,7 +111,7 @@
 	 oil_price_rising#trading_options : {
       date : "-343.04.01"
       goods : {
-        pottery : { buy : 30, sell : 20 }
+        pottery : { buy : 210, sell : 170 }
       }
 
       exec : {

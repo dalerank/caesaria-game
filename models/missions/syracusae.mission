@@ -182,7 +182,7 @@
     oil_price_rising#trading_options : {
       date : "-267.04.01"
       goods : {
-        oil : { buy : 40, sell : 30 }
+        oil : { relative : true, buy : 40, sell : 30 }
       }
 
       exec : {
@@ -214,13 +214,13 @@
       }
 
       exec : {
-		greeck_attack#messagebox : {
-		  title : "##greeck_attack_title##"
-		  text : "##greeck_attack_text##"
-		  video : "/smk/spy_army.smk"
-		  send2scribe : true
-		}
- 	  }
+        greeck_attack#messagebox : {
+          title : "##greeck_attack_title##"
+          text : "##greeck_attack_text##"
+          video : "/smk/spy_army.smk"
+          send2scribe : true
+        }
+      }
     }    
     
     capua_increase_weapons_trading#trading_options : {

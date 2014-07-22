@@ -231,7 +231,7 @@
 	price_rising1#trading_options : {
       date : "-265.04.01"
       goods : {
-        fruit : { buy : 20, sell : 15 }
+        fruit : { relative : true, buy : 20, sell : 15 }
       }
 
       exec : {
@@ -247,7 +247,7 @@
     price_rising2#trading_options : {
       date : "-262.04.01"
       goods : {
-        marble : { buy : 200, sell : 150 }
+        marble : { relative : true, buy : 200, sell : 150 }
       }
 
       exec : {
@@ -263,7 +263,7 @@
 	price_rising3#trading_options : {
       date : "-255.04.01"
       goods : {
-        furniture : { buy : 120, sell : 80 }
+        furniture : { relative : true, buy : 120, sell : 80 }
       }
 
       exec : {
@@ -279,7 +279,7 @@
 	price_rising4#trading_options : {
       date : "-250.04.01"
       goods : {
-        pottery : { buy : 70, sell : 50 }
+        pottery : { relative : true, buy : 70, sell : 50 }
       }
 
       exec : {

@@ -98,7 +98,7 @@
     oil_price_rising#trading_options : {
       date : "-345.04.01"
       goods : {
-        furniture : { buy : 40, sell : 30 }
+        furniture : { relative : true, buy : 40, sell : 30 }
       }
 
       exec : {

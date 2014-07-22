@@ -1,0 +1,19 @@
+{
+  version : 1
+  image : "europe01_00005"
+  title : "120 BC - Seventh assignment"
+	
+  items : {
+    tarsus : {
+      title : "Tarsus: largely peaceful province"
+      location : [ 570, 280 ]
+      mission : "/missions/tarsus.mission"
+    }
+
+    tingis : {
+      title : "Tingis: a dangerous province"
+      mission : "/missions/tingis.mission"
+      location : [ 20, 320 ]
+    }
+  }
+}

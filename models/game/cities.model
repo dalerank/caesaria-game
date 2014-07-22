@@ -146,6 +146,18 @@
     
     resources : [ "wheat", "fruit", "fish", "clay" ]
 	}
+
+  Alexandria : {
+    location : [ 1450, 960 ]
+
+    sea : true
+    land : true
+
+    resources : [ "wheat", "fruit", "fish", "clay" ]
+
+    sells : { olive : 40, furniture : 25, pottery : 25 }
+    buys : { wine : 15, timber : 25, marble : 15 }
+  }
   
   Miletus : {
  		location : [ 1340, 760 ]
