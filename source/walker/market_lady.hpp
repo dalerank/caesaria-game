@@ -37,7 +37,7 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
-  virtual std::string getThinks() const;
+  virtual std::string currentThinks() const;
 
 protected:
   virtual void _reachedPathway();

@@ -135,7 +135,7 @@ void InfoboxCitizen::_setWalker( WalkerPtr wlk )
   _d->lbType->setText( _(walkerType) );
   _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->type() ) );
 
-  std::string thinks = wlk->getThinks();
+  std::string thinks = wlk->currentThinks();
   _d->lbThinks->setText( _( thinks ) );
 
   if( !thinks.empty() )

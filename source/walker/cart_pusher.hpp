@@ -47,7 +47,7 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
   virtual bool die();
-  virtual std::string getThinks() const;
+  virtual std::string currentThinks() const;
 
 protected:
   CartPusher( PlayerCityPtr city );

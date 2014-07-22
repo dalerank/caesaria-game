@@ -452,7 +452,7 @@ void SeaMerchant::timeStep(const unsigned long time)
 
 bool SeaMerchant::isWaitFreeDock() const {  return Impl::stWaitFreeDock == _d->nextState; }
 
-std::string SeaMerchant::getThinks() const
+std::string SeaMerchant::currentThinks() const
 {
   switch( _d->nextState )
   {
@@ -462,7 +462,7 @@ std::string SeaMerchant::getThinks() const
   default: break;
   }
 
-  return Walker::getThinks();
+  return Walker::currentThinks();
 }
 
 WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }

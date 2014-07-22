@@ -438,12 +438,12 @@ bool CartPusher::die()
   return created;
 }
 
-std::string CartPusher::getThinks() const
+std::string CartPusher::currentThinks() const
 {
   if( !getPathway().isValid() )
   {
     return "##cartpusher_cantfind_destination##";
   }
 
-  return Walker::getThinks();
+  return Walker::currentThinks();
 }

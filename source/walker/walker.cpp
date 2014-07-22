@@ -357,7 +357,7 @@ void Walker::initialize(const VariantMap &options)
 
 int Walker::agressive() const { return 0; }
 
-std::string Walker::getThinks() const
+std::string Walker::currentThinks() const
 {
   if( _d->thinks.empty() )
   {

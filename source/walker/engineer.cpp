@@ -34,7 +34,7 @@ WalkerPtr Engineer::create(PlayerCityPtr city)
 
 Engineer::~Engineer() {}
 
-std::string Engineer::getThinks() const
+std::string Engineer::currentThinks() const
 {
   if( _d->averageLevel > 70 )
   {
@@ -46,7 +46,7 @@ std::string Engineer::getThinks() const
     return "##engineer_no_trouble_buildings##";
   }
 
-  return ServiceWalker::getThinks();
+  return ServiceWalker::currentThinks();
 }
 
 void Engineer::_centerTile()

@@ -58,7 +58,7 @@ void TaxCollector::_centerTile()
   }
 }
 
-std::string TaxCollector::getThinks() const
+std::string TaxCollector::currentThinks() const
 {
   city::Helper helper( _city() );
   TilePos offset( 2, 2 );
@@ -76,7 +76,7 @@ std::string TaxCollector::getThinks() const
   if( poorHouseCounter > houses.size() / 2 ) { return "##tax_collector_very_little_tax##";  }
   if( richHouseCounter > houses.size() / 2 ) { return "##tax_collector_high_tax##";  }
 
-  return ServiceWalker::getThinks();
+  return ServiceWalker::currentThinks();
 }
 
 TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )

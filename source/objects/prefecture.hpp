@@ -23,7 +23,7 @@ class Prefecture : public ServiceBuilding
 {
 public:
   Prefecture();
-  ~Prefecture();
+  virtual ~Prefecture();
   virtual void timeStep(const unsigned long time);
   virtual void deliverService();
 

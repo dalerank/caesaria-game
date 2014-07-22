@@ -18,6 +18,7 @@
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/helper.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -65,32 +66,40 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos, WayType type/*
 
 Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, PathwayHelper::WayType type)
 {
+  Pathway way;
   if( construction.isValid() )
   {
+    Pathfinder& p = Pathfinder::instance();
+
     switch( type )
     {
-    case allTerrain: return Pathfinder::instance().getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
-    case roadOnly: return Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+    case allTerrain: way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
+    case roadOnly: way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
 
     case roadFirst:
     {
-      Pathway ret = Pathfinder::instance().getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+      way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
 
-      if( !ret.isValid() )
+      if( !way.isValid() )
       {
-        ret = Pathfinder::instance().getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
+        way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
       }
-
-      return ret;
     }
     break;
 
     default:
     break;
     }
-  }
 
-  return Pathway();
+    if( !way.isValid() )
+    {
+      Logger::warning( "PathwayHelper: can't find way from [%d,%d] to construction: name=%s pos=[%d,%d]",
+                       startPos.i(), startPos.j(), construction->name().c_str(),
+                       construction->pos().i(), construction->pos().j() );
+    }
+  }  
+
+  return way;
 }
 
 Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition)

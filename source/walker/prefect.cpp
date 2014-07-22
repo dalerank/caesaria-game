@@ -114,6 +114,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->pos().distanceFrom( pos() ) < 1.5f )
     {
       turn( building->pos() );
+      _d->action = Impl::fightFire;
       _setAction( acFightFire  );
       setSpeed( 0.f );
       return true;
@@ -142,8 +143,19 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 { 
+  TilesArray area = base()->enterArea();
+  foreach( tile, area )
+  {
+    if( pos() == (*tile)->pos() )
+    {
+      _setAction( Walker::acNone );
+      deleteLater();
+      return;
+    }
+  }
+
   Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ),
-                                           PathwayHelper::roadFirst );
+                                           PathwayHelper::roadFirst );  
 
   if( pathway.isValid() )
   {
@@ -396,6 +408,11 @@ void Prefect::_centerTile()
   Walker::_centerTile();
 }
 
+void Prefect::_noWay()
+{
+  _back2Prefecture();
+}
+
 void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
@@ -534,7 +551,7 @@ bool Prefect::die()
   return created;
 }
 
-std::string Prefect::getThinks() const
+std::string Prefect::currentThinks() const
 {
   switch( _d->action )
   {
@@ -543,7 +560,7 @@ std::string Prefect::getThinks() const
   default: break;
   }
 
-  return ServiceWalker::getThinks();
+  return ServiceWalker::currentThinks();
 }
 
 void Prefect::load( const VariantMap& stream )
@@ -551,8 +568,8 @@ void Prefect::load( const VariantMap& stream )
    ServiceWalker::load( stream );
  
   _d->action = (Impl::PrefectAction)stream.get( "prefectAction" ).toInt();
-  _d->water = (int)stream.get( "water" );
-  _d->endPatrolPoint = stream.get( "endPoint" );
+  VARIANT_LOAD_ANY_D( _d, water, stream );
+  VARIANT_LOAD_ANY_D( _d, endPatrolPoint, stream );
 
   _setAction( _d->water > 0 ? acDragWater : acMove );
 
@@ -575,8 +592,8 @@ void Prefect::save( VariantMap& stream ) const
   ServiceWalker::save( stream );
 
   stream[ "type" ] = (int)walker::prefect;
-  stream[ "water" ] = _d->water;
   stream[ "prefectAction" ] = (int)_d->action;
-  stream[ "endPoint" ] = _d->endPatrolPoint;
+  VARIANT_SAVE_ANY_D( stream, _d, water );
+  VARIANT_SAVE_ANY_D( stream, _d, endPatrolPoint );
   stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
 }

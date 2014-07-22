@@ -18,11 +18,11 @@
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
 #include "walker/prefect.hpp"
-#include "pathway/astarpathfinding.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "gfx/tile.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "objects/constants.hpp"
 
 using namespace gfx;
@@ -58,25 +58,23 @@ void Prefecture::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     bool fireDetect = _d->fireDetect.i() >= 0;
-    PrefectPtr walker = Prefect::create( _city() );
-    walker->setMaxDistance( 26 );
+    PrefectPtr prefect = Prefect::create( _city() );
+    prefect->setMaxDistance( 26 );
 
-    //bool patrol = true;
     if( fireDetect )
     {
       TilePos startPos = getAccessRoads().front()->pos();
 
-      Tilemap& tmap = _city()->tilemap();
-      TilesArray arrivedArea = tmap.getArea( _d->fireDetect - TilePos( 1, 1), _d->fireDetect + TilePos( 1, 1 ) );
-      Pathway pathway = Pathfinder::instance().getPath( startPos, arrivedArea, Pathfinder::terrainOnly );
-      //patrol = !pathFounded;
+      ConstructionPtr ruin = ptr_cast<Construction>( _city()->getOverlay( _d->fireDetect ) );
+      Pathway pathway = PathwayHelper::create( startPos, ruin, PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {
-        pathway.setNextTile( tmap.at( _d->fireDetect ) );
-        walker->setPos( pathway.getStartPos() );
-        walker->setBase( this );
-        walker->setPathway( pathway );
+        pathway.setNextTile( ruin->tile() );
+        prefect->setPos( pathway.getStartPos() );
+        prefect->setBase( this );
+        prefect->setPathway( pathway );
+        prefect->go();
       }
       else
       {
@@ -86,13 +84,10 @@ void Prefecture::deliverService()
       _d->fireDetect = TilePos( -1, -1 );
     }
     
-    walker->send2City( PrefecturePtr( this ), fireDetect ? 200 : 0 );
+    prefect->send2City( this, fireDetect ? 200 : 0 );
 
-    addWalker( walker.object() );
+    addWalker( prefect.object() );
   }
 }
 
-void Prefecture::fireDetect( const TilePos& pos )
-{
-  _d->fireDetect = pos;
-}
+void Prefecture::fireDetect( const TilePos& pos ) {  _d->fireDetect = pos; }

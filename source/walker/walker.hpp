@@ -75,7 +75,7 @@ public:
   virtual void setName( const std::string& name );
   virtual const std::string& getName() const;
 
-  virtual std::string getThinks() const;
+  virtual std::string currentThinks() const;
   virtual void setThinks( std::string newThinks );
 
   virtual void save( VariantMap& stream) const;

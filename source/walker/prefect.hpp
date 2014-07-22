@@ -36,11 +36,12 @@ public:
   virtual void acceptAction(Action action, TilePos pos);
   virtual bool die();
 
-  virtual std::string getThinks() const;
+  virtual std::string currentThinks() const;
 
   virtual ~Prefect();
 
 protected:
+  virtual void _noWay();
   virtual void _centerTile();
   virtual void _reachedPathway();
 

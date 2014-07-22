@@ -103,7 +103,7 @@ public:
     return false;
   }
 
-  bool aStar(TilePos start, TilesArray arrivedArea, Pathway& oPathWay, int flags );
+  bool aStar(const TilePos& start, TilesArray arrivedArea, Pathway& oPathWay, int flags );
   void isRoad( const Tile* tile, bool& possible );
   void isDeepWater( const Tile* tile, bool& possible );
   void isWater( const Tile* tile, bool& possible );
@@ -217,15 +217,24 @@ void Pathfinder::Impl::isTerrain( const Tile* tile, bool& possible ) { possible 
 void Pathfinder::Impl::isDeepWater( const Tile* tile, bool& possible ) { possible = tile ? tile->getFlag( Tile::tlDeepWater ) : false; }
 void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = tile ? tile->getFlag( Tile::tlWater ) : false; }
 
-bool Pathfinder::Impl::aStar(TilePos startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
+bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
   if( arrivedArea.empty() )
   {
     Logger::warning( "AStarPathfinder: no arrived area" );
     return false;
-  }
+  }  
 
   oPathWay.init( *tilemap, tilemap->at( startPos ) );
+
+  foreach( tile, arrivedArea )
+  {
+    if( (*tile)->pos() == startPos )
+    {
+      oPathWay.setNextTile( *(*tile) );
+      return true;
+    }
+  }
 
   bool useRoad = (( flags & ignoreRoad ) == 0 );
 
