@@ -19,7 +19,6 @@
 #define _CAESARIA_TERRAIN_GENERATOR_INCLUDE_H_
 
 #include <vector>
-
 #include "vfs/path.hpp"
 #include "terrain_generator_random.hpp"
 

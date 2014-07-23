@@ -304,9 +304,9 @@ void Tilemap::save( VariantMap& stream ) const
   baDes.resize( desInfo.size() * sizeof(short) );
   baId.resize( idInfo.size() * sizeof(short) );
 
-  memcpy( baBitset.data(), bitsetInfo.data(), baBitset.size() );
-  memcpy( baDes.data(), desInfo.data(), baDes.size() );
-  memcpy( baId.data(), idInfo.data(), baId.size() );
+  memcpy( baBitset.data(), &bitsetInfo[0], baBitset.size() );
+  memcpy( baDes.data(), &desInfo[0], baDes.size() );
+  memcpy( baId.data(), &idInfo[0], baId.size() );
 
   stream[ "bitset" ]       = Variant( baBitset.base64() );
   stream[ "desirability" ] = Variant( baDes.base64() );
