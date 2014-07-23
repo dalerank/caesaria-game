@@ -121,7 +121,7 @@ void PictureConverter::flipVertical(Picture& pic)
 
 void PictureConverter::save(Picture& pic, const std::string& filename, const std::string& type)
 {
-  if( type == pngType )
+  if( type == pngType || type.empty() )
   {
     IMG_SavePNG( filename.c_str(), pic.surface(), -1 );
   }

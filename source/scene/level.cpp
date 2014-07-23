@@ -79,6 +79,7 @@
 #include "religion/pantheon.hpp"
 #include "core/saveadapter.hpp"
 #include "events/postpone.hpp"
+#include "gfx/pictureconverter.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -129,6 +130,7 @@ public:
   void showMessagesWindow();
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
+  void makeFullScreenshot();
 
   vfs::Path getFastSaveName( const std::string& type="", const std::string& postfix="");
 };
@@ -337,6 +339,50 @@ void Level::Impl::layerChanged(int layer)
   {
     lastLayerId = (citylayer::Type)layer;
   }
+}
+
+void Level::Impl::makeFullScreenshot()
+{
+  Tilemap& tmap = game->city()->tilemap();
+  int mapSize = tmap.size();
+  Tile& lastRightTile = tmap.at( mapSize-1, mapSize-1 );
+  Tile& lastBottomTile = tmap.at( mapSize-1, 0 );
+  Point lastRightPos = TileHelper::tilepos2screen( lastRightTile.pos() );
+  Point lastBottomPos = TileHelper::tilepos2screen( lastBottomTile.pos() );
+  Size fullPicSize( lastRightPos.x(), abs( lastBottomPos.y() ) * 2 );
+
+  TilesArray ret;
+  for( int y=0; y < mapSize; y++ )
+  {
+    for( int t=0; t <= y; t++ )
+    {
+      ret.push_back( &tmap.at( t, mapSize - 1 - ( y - t ) ) );
+    }
+  }
+
+  for( int x=1; x < mapSize; x++ )
+  {
+    for( int t=0; t < mapSize-x; t++ )
+    {
+      ret.push_back( &tmap.at( x + t, t ) );
+    }
+  }
+
+  PictureRef fullPic;
+  fullPic.init( fullPicSize );
+  Point doffset( 0, fullPicSize.height() / 2 );
+  foreach( tile, ret )
+  {
+    Tile* t = *tile;
+    if( t->masterTile() )
+      t = t->masterTile();
+
+    const Picture& tpic = t->picture();
+    Rect srcRect( 0, 0, tpic.width(), tpic.height() );
+    fullPic->draw( tpic, srcRect, t->mapPos() + doffset - tpic.offset() );
+  }
+
+  PictureConverter::save( *fullPic, "fullpic.png", "PNG" );
 }
 
 void Level::_resolveLoadGame( std::string filename )
@@ -562,7 +608,14 @@ void Level::handleEvent( NEvent& event )
 
     case KEY_F5: _d->makeFastSave(); break;
     case KEY_F9: _resolveLoadGame( "" ); break;
-    case KEY_F10:_d->makeScreenShot(); break;
+
+    case KEY_F10:
+      if( !event.keyboard.shift )
+        _d->makeScreenShot();
+      else
+        _d->makeFullScreenshot();
+    break;
+
     case KEY_KEY_R:
     {
       if( event.keyboard.shift )

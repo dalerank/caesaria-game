@@ -52,7 +52,7 @@ public:
   Point offset() const;
 
   // return tile coordinates (i, j), in order of depth
-  const TilesArray& tiles() const;
+  virtual const TilesArray& tiles() const;
 
   int centerX() const;
   int centerZ() const;

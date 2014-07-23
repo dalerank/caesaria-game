@@ -21,9 +21,13 @@
 #include "core/logger.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "vfs/file.hpp"
+#include "vfs/path.hpp"
 #include "core/direction.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
+#include <limits>
+#include <fstream>
 
 using namespace gfx;
 
@@ -607,6 +611,26 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   MidpointDisplacement diamond_square = MidpointDisplacement(n2size, 8, 8, smooth, terrainSq);
   std::vector<int> map = diamond_square.map();
 
+  /*vfs::NFile nfile = vfs::NFile::open( vfs::Path( "test.ter" ), vfs::Entity::fmWrite );
+  nfile.write( map.data(), map.size() * 4 );
+  nfile.flush();*/
+
+  /*std::ifstream rfile( "test.ter", std::ios::binary );
+  if( rfile.is_open() )
+  {
+    std::streampos begin,end;
+    begin = rfile.tellg();
+    rfile.seekg (0, std::ios::end);
+    end = rfile.tellg();
+
+    rfile.seekg (0, std::ios::beg);
+    map.resize( (end-begin) / 4 );
+
+    rfile.read( (char*)map.data(), end-begin );
+
+    rfile.close();
+  }*/
+
   PlayerCityPtr oCity = game.city();
   Tilemap& oTilemap = oCity->tilemap();
   unsigned int mapSize = diamond_square.width();
@@ -646,7 +670,6 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
         Picture pic = Picture::load( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
         tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
-
       }
       break;
 
@@ -691,8 +714,17 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
           rnd = 7;
         }
 
+        if( tile.i() == 0 || tile.i() == (mapSize - 1) || tile.j() == 0 || tile.j() == mapSize - 1 )
+        {
+          start = 62;
+          rnd = 57;
+        }
+        else
+        {
+          tile.setFlag( Tile::tlTree, true );
+        }
+
         Picture pic = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
-        tile.setFlag( Tile::tlTree, true );
         tile.setPicture( pic );
         tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
       }
@@ -709,7 +741,8 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
 
       case MidpointDisplacement::highMountain: {
         color = NColor( 255, 129, 141, 132);
-        Picture pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 59 ) );
+        Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+        //Picture::load( ResourceGroup::land1a, 230 + math::random( 59 ) );
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
         tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
@@ -734,6 +767,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   __finalizeMap( game, passCheckInsideCornerTiles );
   __finalizeMap( game, 8 );
   __finalizeMap( game, 9 );
+
   __finalizeMap( game, 0xff );
 
   //update pathfinder map

@@ -19,9 +19,8 @@
 #define _CAESARIA_TERRAIN_GENERATOR_INCLUDE_H_
 
 #include <vector>
-#include <limits>
-#include <iostream>
 
+#include "vfs/path.hpp"
 #include "terrain_generator_random.hpp"
 
 class Game;
@@ -59,7 +58,9 @@ private:
 class TerrainGenerator
 {
 public:
-  static void create( Game& game, int n2size, float smooth, float terrainSq );
+  void setSaveFile( vfs::Path filename );
+  void create( Game& game, vfs::Path filename );
+  void create( Game& game, int n2size, float smooth, float terrainSq );
 };
 
 #endif //_CAESARIA_TERRAIN_GENERATOR_INCLUDE_H_

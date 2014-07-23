@@ -134,6 +134,7 @@ Renderer::PassQueue River::passQueue() const {  return riftPassQueue; }
 void River::updatePicture()
 {
   setPicture( computePicture() );
+  tile().setPicture( picture() );
   tile().setOriginalImgId( directionFlags );
 }
 
