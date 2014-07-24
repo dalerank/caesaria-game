@@ -193,7 +193,35 @@ void LayerBuild::_updatePreviewTiles( bool force )
     TilesArray pathWay = RoadPropagator::createPath( _city()->tilemap(),
                                                      startTile->pos(), stopTile->pos(),
                                                      d->roadAssignment, d->kbShift );
+    Tilemap& tmap = _city()->tilemap();
+    TilePos leftUpCorner = pathWay.leftUpCorner();
+    TilePos rigthDownCorner = pathWay.rightDownCorner();
+    TilePos leftDownCorner( leftUpCorner.i(), rigthDownCorner.j() );
+    TilesArray ret;
 
+    int mmapSize = std::max<int>( leftUpCorner.j() - rigthDownCorner.j() + 1,
+                                  rigthDownCorner.i() - leftUpCorner.i() + 1 );
+    for( int y=0; y < mmapSize; y++ )
+    {
+      for( int t=0; t <= y; t++ )
+      {
+        TilePos tpos = leftDownCorner + TilePos( t, mmapSize - 1 - ( y - t ) );
+        if( pathWay.contain( tpos ) )
+          ret.push_back( &tmap.at( tpos ) );
+      }
+    }
+
+    for( int x=1; x < mmapSize; x++ )
+    {
+      for( int t=0; t < mmapSize-x; t++ )
+      {
+        TilePos tpos = leftDownCorner + TilePos( x + t, t );
+        if( pathWay.contain( tpos ) )
+          ret.push_back( &tmap.at( tpos ) );
+      }
+    }
+
+    pathWay = ret;
     foreach( it, pathWay )
     {
       _checkPreviewBuild( (*it)->pos() );
@@ -204,7 +232,7 @@ void LayerBuild::_updatePreviewTiles( bool force )
     TilesArray tiles = _getSelectedArea();
 
     foreach( it, tiles ) { _checkPreviewBuild( (*it)->pos() ); }
-  }
+  }  
 
   d->textPic->fill( 0x0, Rect() );
   d->textFont.setColor( 0xffff0000 );
