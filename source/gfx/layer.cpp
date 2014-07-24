@@ -445,10 +445,21 @@ void Layer::init( Point cursor )
 void Layer::afterRender( Engine& engine)
 {
   __D_IMPL(_d,Layer)
+  Point cursorPos = engine.cursorPos();
+  Size screenSize = engine.screenSize();
+  Point moveValue;
+
+  if( cursorPos.x() >= 0 && cursorPos.x() < 2 ) moveValue.rx() -= 1;
+  else if( cursorPos.x() > screenSize.width() - 2 && cursorPos.x() <= screenSize.width() ) moveValue.rx() += 1;
+  if( cursorPos.y() >= 0 && cursorPos.y() < 2 ) moveValue.ry() += 1;
+  else if( cursorPos.y() > screenSize.height() - 2 && cursorPos.y() <= screenSize.height() ) moveValue.ry() -= 1;
+
+  _d->camera->move( moveValue.toPointF() );
+
   if( !_d->tooltipText.empty() )
   {
     engine.draw( *_d->tooltipPic, _d->lastCursorPos );
-  }
+  }  
 
   if( _d->drawGrid )
   {
