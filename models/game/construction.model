@@ -121,6 +121,7 @@
     image : [ "entertainment", 102 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 102, count : 6 }
+      type_1a: { size:1, rc : "plaza", start : 3139, count : 6 }
       type_2 : { size:2, rc : "entertainment", start : 108, count : 2 }
     }
   },  

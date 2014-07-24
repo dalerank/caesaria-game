@@ -39,6 +39,7 @@ class Walker : public Serializable, public ReferenceCounted
 {
 public:
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
+  typedef enum { showDebugInfo=1 } Flag;
 
   Walker( PlayerCityPtr city );
   virtual ~Walker();
@@ -54,7 +55,7 @@ public:
   Point tilesubpos() const;
 
   virtual void setPathway(const Pathway& pathway);
-  const Pathway& getPathway() const;
+  const Pathway& pathway() const;
 
   virtual void turn( TilePos pos );
 
@@ -65,7 +66,10 @@ public:
   void setUniqueId( const UniqueId uid );
   UniqueId uniqueId() const;
 
-  constants::Direction getDirection() const;
+  void setFlag( Flag flag, bool value );
+  bool getFlag( Flag flag ) const;
+
+  constants::Direction direction() const;
   Walker::Action action() const;
 
   virtual double health() const;
@@ -73,7 +77,7 @@ public:
   virtual void acceptAction( Action action, TilePos pos );
 
   virtual void setName( const std::string& name );
-  virtual const std::string& getName() const;
+  virtual const std::string& name() const;
 
   virtual std::string currentThinks() const;
   virtual void setThinks( std::string newThinks );

@@ -31,6 +31,7 @@
 #include "layerconstants.hpp"
 #include "decorator.hpp"
 #include "core/stringhelper.hpp"
+#include "walker_debuginfo.hpp"
 
 using namespace constants;
 
@@ -52,7 +53,7 @@ public:
   std::string tooltipText;
   RenderQueue renderQueue;
 
-  bool drawGrid, renderOverlay;
+  bool drawGrid, renderOverlay, showPath;
   int posMode;
 
   Picture footColumn;
@@ -173,6 +174,7 @@ void Layer::handleEvent(NEvent& event)
       case KEY_KEY_1: _d->drawGrid = !_d->drawGrid; break;
       case KEY_KEY_2: _d->posMode = (++_d->posMode) % 3; break;
       case KEY_KEY_3: _d->renderOverlay = !_d->renderOverlay; break;
+      case KEY_KEY_4: _d->showPath = !_d->showPath; break;
       default: break;
       }
     }
@@ -320,6 +322,16 @@ void Layer::render( Engine& engine)
   }
 
   engine.resetColorMask();
+
+  if( _d->showPath )
+  {
+    const WalkerList& walkers = _city()->walkers( walker::all );
+    foreach( it, walkers )
+    {
+      if( (*it)->getFlag( Walker::showDebugInfo ) )
+        WalkerDebugInfo::showPath( *it, engine, _d->camera );
+    }
+  }
 }
 
 void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const int depth)
@@ -506,6 +518,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->camera = camera;
   _d->city = city;
   _d->drawGrid = false;
+  _d->showPath = false;
   _d->posMode = 0;
   _d->renderOverlay = true;
   _d->tooltipPic.reset( Picture::create( Size( 240, 80 ) ) );

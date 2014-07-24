@@ -396,7 +396,7 @@ void Dock::_tryDeliverGoods()
       //success to send cartpusher
       if( !walker->isDeleted() )
       {
-        if( walker->getPathway().isValid() )
+        if( walker->pathway().isValid() )
         {
           addWalker( walker.object() );
         }

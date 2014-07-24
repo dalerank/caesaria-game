@@ -25,6 +25,7 @@ namespace gfx
 {
 
 class Tile;
+class TilesArray;
 
 class Camera
 {

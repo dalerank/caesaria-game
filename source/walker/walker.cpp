@@ -46,6 +46,7 @@ CAESARIA_LITERALCONST(speedMultiplier)
 class Walker::Impl
 {
 public:
+  std::set<Walker::Flag> flags;
   PlayerCityPtr city;
   walker::Type type;
   bool isDeleted;
@@ -312,20 +313,20 @@ void Walker::_brokePathway( TilePos pos ){}
 void Walker::_noWay(){}
 
 void Walker::_waitFinished() { }
-Direction Walker::getDirection() const {  return _d->action.direction;}
+Direction Walker::direction() const {  return _d->action.direction;}
 Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
 double Walker::health() const{  return _d->health;}
 void Walker::updateHealth(double value) {  _d->health = math::clamp( _d->health + value, -100.0, 100.0 );}
 void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
-const std::string &Walker::getName() const{  return _d->name; }
+const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
 TilePos Walker::pos() const{ return _d->pos;}
 void Walker::deleteLater(){ _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 UniqueId Walker::uniqueId() const{ return _d->uid; }
 Pathway& Walker::_pathwayRef() {  return _d->pathway; }
-const Pathway& Walker::getPathway() const {  return _d->pathway; }
+const Pathway& Walker::pathway() const {  return _d->pathway; }
 Animation& Walker::_animationRef() {  return _d->animation;}
 const Animation& Walker::_animationRef() const {  return _d->animation;}
 void Walker::_setDirection(constants::Direction direction ){  _d->action.direction = direction; }
@@ -333,6 +334,13 @@ void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
+bool Walker::getFlag(Walker::Flag flag) const{ return _d->flags.count( flag ) > 0; }
+
+void Walker::setFlag(Walker::Flag flag, bool value)
+{
+  if( value ) _d->flags.insert( flag );
+  else _d->flags.erase( flag );
+}
 
 Point Walker::tilesubpos() const
 {

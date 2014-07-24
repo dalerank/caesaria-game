@@ -357,9 +357,9 @@ void MetaDataHolder::initialize( vfs::Path filename )
 
     bData._d->options = options;
     VariantMap desMap = options[ "desirability" ].toMap();
-    bData._d->desirability.base = (int)desMap[ "base" ];
-    bData._d->desirability.range = (int)desMap[ "range" ];
-    bData._d->desirability.step  = (int)desMap[ "step" ];
+    bData._d->desirability.VARIANT_LOAD_ANY(base, desMap );
+    bData._d->desirability.VARIANT_LOAD_ANY(range, desMap);
+    bData._d->desirability.VARIANT_LOAD_ANY(step, desMap );
 
     bData._d->desc = options.get( "desc" ).toStringArray();
     bData._d->prettyName = options.get( "prettyName", Variant( bData._d->prettyName ) ).toString();

@@ -50,7 +50,7 @@ MarketKidPtr MarketKid::create( PlayerCityPtr city, MarketLadyPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
   ret->setPos( lady->pos() );
-  ret->_pathwayRef() = lady->getPathway();
+  ret->_pathwayRef() = lady->pathway();
 
   ret->drop();
 

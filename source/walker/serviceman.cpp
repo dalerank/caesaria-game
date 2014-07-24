@@ -161,7 +161,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
 
 void ServiceWalker::_cancelPath()
 {
-  TilesArray pathTileList = getPathway().allTiles();
+  TilesArray pathTileList = pathway().allTiles();
 
   foreach( tile, pathTileList )
   {

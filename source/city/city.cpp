@@ -668,6 +668,8 @@ void PlayerCity::addWalker( WalkerPtr walker )
 {
   walker->setUniqueId( ++_d->walkerIdCount );
   _d->walkerList.push_back( walker );
+
+  walker->setFlag( Walker::showDebugInfo, true );
 }
 
 city::SrvcPtr PlayerCity::findService( const std::string& name ) const

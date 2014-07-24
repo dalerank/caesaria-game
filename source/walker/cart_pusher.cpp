@@ -137,7 +137,7 @@ Picture& CartPusher::getCartPicture()
 {
    if( !_d->cartPicture.isValid() )
    {
-     _d->cartPicture = GoodHelper::getCartPicture(_d->stock, getDirection());
+     _d->cartPicture = GoodHelper::getCartPicture(_d->stock, direction());
    }
 
    return _d->cartPicture;
@@ -154,7 +154,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    oPics.clear();
    Point offset;
 
-   switch( getDirection() )
+   switch( direction() )
    {
    case constants::west: offset = Point( 10, -5 ); break;
    case constants::east: offset = Point( -10, 5 ); break;
@@ -164,7 +164,7 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
    }
 
    // depending on the walker direction, the cart is ahead or behind
-   switch( getDirection() )
+   switch( direction() )
    {
    case constants::west:
    case constants::northWest:
@@ -440,7 +440,7 @@ bool CartPusher::die()
 
 std::string CartPusher::currentThinks() const
 {
-  if( !getPathway().isValid() )
+  if( !pathway().isValid() )
   {
     return "##cartpusher_cantfind_destination##";
   }

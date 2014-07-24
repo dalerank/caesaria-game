@@ -129,7 +129,7 @@ const Picture& CartSupplier::getCartPicture()
 {
   if( !_d->cartPicture.isValid() )
   {
-    _d->cartPicture = GoodHelper::getCartPicture( _d->stock, getDirection() );
+    _d->cartPicture = GoodHelper::getCartPicture( _d->stock, direction() );
   }
 
   return _d->cartPicture;
@@ -146,7 +146,7 @@ void CartSupplier::getPictures( Pictures& oPics)
    oPics.clear();
 
    // depending on the walker direction, the cart is ahead or behind
-   switch (getDirection())
+   switch (direction())
    {
    case constants::west:
    case constants::northWest:

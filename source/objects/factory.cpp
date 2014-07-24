@@ -290,9 +290,9 @@ std::string Factory::cartStateDesc() const
     CartPusherPtr cart = ptr_cast<CartPusher>( walkers().front() );
     if( cart.isValid() )
     {
-      if( cart->getPathway().isValid() )
+      if( cart->pathway().isValid() )
       {
-        return cart->getPathway().isReverse()
+        return cart->pathway().isReverse()
                  ? "##factory_cart_returning_from_delivery##"
                  : "##factory_cart_taking_goods##";
       }

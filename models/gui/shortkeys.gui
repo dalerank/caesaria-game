@@ -15,6 +15,7 @@
       "Ctrl+Shift+1 : toggle show tile grid",
       "Ctrl+Shift+2 : toggle show tile position",
       "Ctrl+Shift+3 : toggle mode elevation tile draw",
+      "Ctrl+Shift+4 : toggle walker path draw",
       "Ctrl+Shift+Y : add 1000 dn for player",
       "W,A,S,D and arrows : move map",
       "Shift on building mode : build road by rectangle",

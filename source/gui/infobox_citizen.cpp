@@ -129,7 +129,7 @@ void InfoboxCitizen::_setWalker( WalkerPtr wlk )
   if( wlk.isNull() )
     return;
 
-  _d->lbName->setText( wlk->getName() );
+  _d->lbName->setText( wlk->name() );
 
   std::string walkerType = WalkerHelper::getPrettyTypeName( wlk->type() );
   _d->lbType->setText( _(walkerType) );
