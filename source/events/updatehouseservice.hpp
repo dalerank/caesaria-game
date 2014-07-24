@@ -15,27 +15,34 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_EVENT_UPDATECITYSENTIMENT_H_INCLUDE_
-#define _CAESARIA_EVENT_UPDATECITYSENTIMENT_H_INCLUDE_
+#ifndef _CAESARIA_UPDATEHOUSESERVICE_EVENT_H_INCLUDE_
+#define _CAESARIA_UPDATEHOUSESERVICE_EVENT_H_INCLUDE_
 
 #include "event.hpp"
 
 namespace events
 {
 
-class UpdateCitySentiment : public GameEvent
+class UpdateHouseService : public GameEvent
 {
 public:
-  static GameEventPtr create( int value );
+  static GameEventPtr create( Service::Type type=Service::srvCount, int value=0 );
+  virtual bool isDeleted() const;
+
+  virtual void load(const VariantMap& stream);
+  virtual VariantMap save() const;
 
 protected:
-  virtual void _exec( Game& game, unsigned int );
-  virtual bool _mayExec(Game &, unsigned int) const;
+  virtual void _exec(Game &game, unsigned int time);
+  virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  int _value;
+  UpdateHouseService();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-}
+}//end namespace events
 
-#endif //_CAESARIA_EVENT_UPDATECITYSENTIMENT_H_INCLUDE_
+#endif //_CAESARIA_UPDATEHOUSESERVICE_EVENT_H_INCLUDE_

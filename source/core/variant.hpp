@@ -37,12 +37,18 @@ class VariantMap;
 
 #define VARIANT_INIT_ANY( type, param, vm) type param = vm.get( #param );
 #define VARIANT_INIT_STR( param, vm) std::string param = vm.get( #param ).toString();
+
 #define VARIANT_SAVE_ANY(vm,param) vm[ #param ] = param;
 #define VARIANT_LOAD_ANY(param,vm) param = vm.get( #param );
 #define VARIANT_LOAD_STR(param,vm) param = vm.get( #param ).toString();
+#define VARIANT_LOAD_TIME(param,vm) param = vm.get( #param ).toDateTime();
+
 #define VARIANT_SAVE_ANY_D(vm,d,param) vm[ #param ] = d->param;
 #define VARIANT_LOAD_ANY_D(d,param,vm) d->param = vm.get( #param );
+
 #define VARIANT_LOAD_STR_D(d,param,vm) d->param = vm.get( #param ).toString();
+#define VARIANT_LOAD_TIME_D(d,param,vm) d->param = vm.get( #param ).toDateTime();
+
 
 template <typename T>
 inline Variant createVariant2FromValue(const T &);

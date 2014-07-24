@@ -22,6 +22,7 @@
 #include "religion/pantheon.hpp"
 #include "events/showfeastwindow.hpp"
 #include "events/updatecitysentiment.hpp"
+#include "events/updatehouseservice.hpp"
 #include "events/fundissue.hpp"
 #include "city/funds.hpp"
 
@@ -58,7 +59,7 @@ SrvcPtr Festival::create(PlayerCityPtr city )
   return ret;
 }
 
-std::string Festival::defaultName() {  return "festival";}
+std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival);}
 DateTime Festival::lastFestivalDate() const{  return _d->lastFestivalDate;}
 DateTime Festival::nextFestivalDate() const{  return _d->festivalDate; }
 
@@ -113,28 +114,31 @@ void Festival::update( const unsigned int time )
 
     e = events::UpdateCitySentiment::create( sentimentValue );
     e->dispatch();
+
+    e = events::UpdateHouseService::create( Service::crime, -firstFestivalSentinment[ _d->festivalType ] );
+    e->dispatch();
   }
 }
 
 VariantMap Festival::save() const
 {
   VariantMap ret;
-  ret[ "lastDate" ] = _d->lastFestivalDate;
-  ret[ "prevDate" ] = _d->prevFestivalDate;
-  ret[ "nextDate" ] = _d->festivalDate;
+  VARIANT_SAVE_ANY_D( ret, _d, lastFestivalDate );
+  VARIANT_SAVE_ANY_D( ret, _d, prevFestivalDate );
+  VARIANT_SAVE_ANY_D( ret, _d, festivalDate );
   ret[ "divinity" ] = (int)_d->divinity;
-  ret[ "festival" ] = _d->festivalType;
+  VARIANT_SAVE_ANY_D( ret, _d, festivalType );
 
   return ret;
 }
 
 void Festival::load( const VariantMap& stream)
 {
-  _d->lastFestivalDate = stream.get( "lastDate" ).toDateTime();
-  _d->prevFestivalDate = stream.get( "prevDate" ).toDateTime();
-  _d->festivalDate = stream.get( "nextDate" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, lastFestivalDate, stream );
+  VARIANT_LOAD_TIME_D( _d, prevFestivalDate, stream );
+  VARIANT_LOAD_TIME_D( _d, festivalDate, stream );
   _d->divinity = (RomeDivinityType)stream.get( "divinity" ).toInt();
-  _d->festivalType = (int)stream.get( "festival" );
+  VARIANT_LOAD_ANY_D( _d, festivalType, stream );
 }
 
 }//end namespace city
