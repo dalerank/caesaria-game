@@ -22,6 +22,7 @@
 #include <SDL_ttf.h>
 #include "color.hpp"
 #include "vfs/directory.hpp"
+#include "game/settings.hpp"
 #include "core/osystem.hpp"
 #include <map>
 
@@ -311,12 +312,15 @@ void FontCollection::setFont(const int key, const std::string& name, Font font)
   _d->fhelper.append( key, name );
 }
 
-void FontCollection::addFont(const int key, const std::string& name, const std::string& pathFont, const int size, const NColor& color )
+void FontCollection::addFont(const int key, const std::string& name, vfs::Path pathFont, const int size, const NColor& color )
 {
-  TTF_Font* ttf = TTF_OpenFont(pathFont.c_str(), size);
+  TTF_Font* ttf = TTF_OpenFont(pathFont.toString().c_str(), size);
   if( ttf == NULL )
   {
-    std::string errorStr = "Cannot load font file:" + pathFont + "\n, error:" + TTF_GetError();
+    std::string errorStr = "Cririal error:\n" + std::string( TTF_GetError() );
+#ifdef CAESARIA_PLATFORM_WIN
+    errorStr += "\n Use only latin symbols in path. "
+#endif
     OSystem::error( "Critical error", errorStr );
     THROW( errorStr );
   }
@@ -332,26 +336,26 @@ void FontCollection::addFont(const int key, const std::string& name, const std::
 void FontCollection::initialize(const std::string &resourcePath)
 {
   vfs::Directory resDir( resourcePath );
-  vfs::Path fontDir( "FreeSerif.ttf" );
-  vfs::Path full_font_path = resDir/fontDir;
+  vfs::Path fontFilename = SETTINGS_VALUE( font ).toString();
+  vfs::Path absolutFontfilename = resDir/fontFilename;
 
   NColor black( 255, 0, 0, 0 );
   NColor red( 255, 160, 0, 0 );  // dim red
   NColor white( 255, 215, 215, 215 );  // dim white
   NColor yellow( 255, 160, 160, 0 );
 
-  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      full_font_path.toString(), 12, black );
-  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      full_font_path.toString(), 16, black );
-  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),full_font_path.toString(), 16, white );
-  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  full_font_path.toString(), 16, red );
-  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      full_font_path.toString(), 18, black );
-  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  full_font_path.toString(), 18, red );
-  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),full_font_path.toString(), 18, white );
-  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), full_font_path.toString(), 18, yellow );
-  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      full_font_path.toString(), 28, black);
-  addFont( FONT_4,       CAESARIA_STR_EXT(FONT_4),      full_font_path.toString(), 32, black);
-  addFont( FONT_5,       CAESARIA_STR_EXT(FONT_5),      full_font_path.toString(), 36, black);
-  addFont( FONT_6,       CAESARIA_STR_EXT(FONT_6),      full_font_path.toString(), 42, black);
+  addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      absolutFontfilename, 12, black );
+  addFont( FONT_1,       CAESARIA_STR_EXT(FONT_1),      absolutFontfilename, 16, black );
+  addFont( FONT_1_WHITE, CAESARIA_STR_EXT(FONT_1_WHITE),absolutFontfilename, 16, white );
+  addFont( FONT_1_RED,   CAESARIA_STR_EXT(FONT_1_RED),  absolutFontfilename, 16, red );
+  addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      absolutFontfilename, 18, black );
+  addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  absolutFontfilename, 18, red );
+  addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),absolutFontfilename, 18, white );
+  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), absolutFontfilename, 18, yellow );
+  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      absolutFontfilename, 28, black);
+  addFont( FONT_4,       CAESARIA_STR_EXT(FONT_4),      absolutFontfilename, 32, black);
+  addFont( FONT_5,       CAESARIA_STR_EXT(FONT_5),      absolutFontfilename, 36, black);
+  addFont( FONT_6,       CAESARIA_STR_EXT(FONT_6),      absolutFontfilename, 42, black);
 }
 
 static StringArray _font_breakText(const std::string& text, const Font& f, int elWidth, bool RightToLeft )

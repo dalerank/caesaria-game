@@ -25,6 +25,7 @@
 #include "core/scopedptr.hpp"
 #include "core/stringarray.hpp"
 #include "core/color.hpp"
+#include "vfs/path.hpp"
 
 namespace gfx
 {
@@ -89,7 +90,7 @@ public:
   Font& getFont_(const std::string& name );  // get a saved font
 
   void setFont(const int key, const std::string& name, Font font);  // save a font
-  void addFont(const int key, const std::string& name, const std::string& pathFont, const int size, const NColor& color);
+  void addFont(const int key, const std::string& name, vfs::Path filename, const int size, const NColor& color);
 
 private:
   FontCollection();

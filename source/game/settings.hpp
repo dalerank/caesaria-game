@@ -70,6 +70,7 @@ public:
   __GS_PROPERTY(pic_offsets)
   __GS_PROPERTY(picsArchive)
   __GS_PROPERTY(opengl_opts)
+  __GS_PROPERTY(font)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();
