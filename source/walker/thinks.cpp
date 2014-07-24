@@ -90,7 +90,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   if( !troubles.empty() )
   {
-    return troubles.rand();
+    return troubles.random();
   }
 
   StringArray positiveIdeas = own;
@@ -115,11 +115,11 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
   std::string ret;
   if( !positiveIdeas.empty() )
   {
-    ret = positiveIdeas.rand();
+    ret = positiveIdeas.random();
   }
   else
   {
-    ret = positiveIdeas.rand();
+    ret = positiveIdeas.random();
   }
 
   return ret.empty() ? "##unknown_reason##" : ret;

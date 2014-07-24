@@ -49,7 +49,7 @@ std::string NameGenerator::rand( NameType type )
   case patricianFemale: names = &ng._d->female; break;
   }
 
-  return names->rand() + " " + ng._d->surname.rand();
+  return names->random() + " " + ng._d->surname.random();
 }
 
 void NameGenerator::initialize(const vfs::Path &filename)

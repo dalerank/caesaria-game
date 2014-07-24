@@ -177,14 +177,17 @@ public:
   TileOverlay::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
-  std::string picture;
   StringArray desc;
   VariantMap options;
+  std::string prettyName;
+
+  std::map< int, StringArray > pictures;
 };
 
 MetaData::MetaData(const gfx::TileOverlay::Type buildingType, const std::string& name )
-  : _prettyName( "##" + name + "##" ), _d( new Impl )
+  : _d( new Impl )
 {
+  _d->prettyName = "##" + name + "##";
   _d->tileovType = buildingType;
   _d->group = building::unknownGroup;
   _d->name = name;  
@@ -196,11 +199,11 @@ MetaData::MetaData(const MetaData &a) : _d( new Impl )
 }
 
 MetaData::~MetaData(){}
-std::string MetaData::getName() const{  return _d->name;}
-std::string MetaData::getSound() const{  return _d->sound;}
-std::string MetaData::prettyName() const {  return _prettyName;}
+std::string MetaData::name() const{  return _d->name;}
+std::string MetaData::sound() const{  return _d->sound;}
+std::string MetaData::prettyName() const {  return _d->prettyName;}
 
-std::string MetaData::getDescription() const
+std::string MetaData::description() const
 {
   if( _d->desc.empty() )
     return "##" + _d->name + "_info##";
@@ -209,8 +212,13 @@ std::string MetaData::getDescription() const
 }
 
 TileOverlay::Type MetaData::type() const {  return _d->tileovType;}
-Picture MetaData::basePicture() const{  return Picture::load( _d->picture ); }
 Desirability MetaData::desirability() const{  return _d->desirability;}
+
+Picture MetaData::picture(int size) const
+{
+  StringArray& array = _d->pictures[ size ];
+  return Picture::load( array.random() );
+}
 
 Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
 {
@@ -222,9 +230,9 @@ MetaData& MetaData::operator=(const MetaData &a)
 {
   _d->tileovType = a._d->tileovType;
   _d->name = a._d->name;
-  _prettyName = a._prettyName;
+  _d->prettyName = a._d->prettyName;
   _d->sound = a._d->sound;
-  _d->picture = a._d->picture;
+  _d->pictures = a._d->pictures;
   _d->group = a._d->group;
   _d->desirability = a._d->desirability;
   _d->desc = a._d->desc;
@@ -304,7 +312,7 @@ void MetaDataHolder::addData(const MetaData &data)
 
   if (hasData(buildingType))
   {
-    Logger::warning( "MetaDataHolder: Info is already set for " + data.getName() );
+    Logger::warning( "MetaDataHolder: Info is already set for " + data.name() );
     return;
   }
 
@@ -316,7 +324,7 @@ MetaDataHolder::MetaDataHolder() : _d( new Impl )
 {
 }
 
-void MetaDataHolder::initialize( const vfs::Path& filename )
+void MetaDataHolder::initialize( vfs::Path filename )
 {
   // populate _mapBuildingByInGood
   _d->mapBuildingByInGood[Good::iron  ] = building::weaponsWorkshop;
@@ -354,12 +362,7 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
     bData._d->desirability.step  = (int)desMap[ "step" ];
 
     bData._d->desc = options.get( "desc" ).toStringArray();
-
-    Variant prettyName = options.get( "prettyName" );
-    if( prettyName.isValid() )
-    {
-      bData._prettyName = prettyName.toString();
-    }
+    bData._d->prettyName = options.get( "prettyName", Variant( bData._d->prettyName ) ).toString();
 
     bData._d->group = findGroup( options[ "class" ].toString() );
 
@@ -375,7 +378,25 @@ void MetaDataHolder::initialize( const vfs::Path& filename )
       }
 
       Picture pic = Picture::load( groupName, imageIndex );
-      bData._d->picture = pic.name();     
+      bData._d->pictures[ 0 ] << pic.name();
+    }
+
+    VariantMap extPics = options[ "image.ext" ].toMap();
+    foreach( it, extPics )
+    {
+      VariantMap info = it->second.toMap();
+      VARIANT_INIT_ANY( int, size, info )
+      VARIANT_INIT_ANY( int, start, info );
+      VARIANT_INIT_ANY( int, count, info );
+      VARIANT_INIT_STR( rc, info );
+      for( int i=0; i < count; i++ )
+      {
+        Picture pic = Picture::load( rc, start + i );
+        if( pic.isValid() )
+        {
+          bData._d->pictures[ size ] << pic.name();
+        }
+      }
     }
 
     VariantList soundVl = options[ "sound" ].toList();
@@ -429,5 +450,11 @@ std::string MetaDataHolder::findPrettyName(TileOverlay::Type type)
 
 std::string MetaDataHolder::findDescription(TileOverlay::Type type)
 {
-  return instance().getData( type ).getDescription();
+  return instance().getData( type ).description();
+}
+
+Picture MetaDataHolder::randomPicture(TileOverlay::Type type, Size size)
+{
+  const MetaData& md = getData( type );
+  return md.picture( size.width() );
 }

@@ -25,7 +25,7 @@
 class StringArray : public std::vector< std::string >
 {
 public:
-  inline std::string rand() const
+  inline std::string random() const
   {
     return empty() ? "" : (*this)[ (int)math::random( size() ) ];
   }

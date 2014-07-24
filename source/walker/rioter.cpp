@@ -80,7 +80,7 @@ void Rioter::_updateThinks()
   StringArray ret;
   ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
 
-  setThinks( ret.rand() );
+  setThinks( ret.random() );
 }
 
 void Rioter::timeStep(const unsigned long time)

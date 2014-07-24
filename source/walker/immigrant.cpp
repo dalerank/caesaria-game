@@ -99,7 +99,7 @@ void Immigrant::_updateThinks()
     thinks << "##immigrant_much_food_here##";
   }
 
-  setThinks( thinks.rand() );
+  setThinks( thinks.random() );
 }
 
 void Immigrant::timeStep(const unsigned long time)

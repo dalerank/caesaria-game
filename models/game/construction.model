@@ -126,6 +126,10 @@
     employers : 0
     class : "garden"
     image : [ "entertainment", 110 ]
+    image.ext : {
+      type_1 : { size:1, rc : "entertainment", start : 110, count : 4 }
+      type_2 : { size:2, rc : "entertainment", start : 114, count : 3 }
+    }
     sound : [ "garden", 1 ]
   },
   

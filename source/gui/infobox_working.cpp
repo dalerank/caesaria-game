@@ -69,7 +69,7 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
       messages.push_back( _working->workersProblemDesc() );
     }
 
-    lb->setText( _( messages.rand() ) );
+    lb->setText( _( messages.random() ) );
   }
 }
 

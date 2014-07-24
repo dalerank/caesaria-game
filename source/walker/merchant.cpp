@@ -274,7 +274,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         StringArray th;
         th << "##landmerchart_noany_trade2##";
         th << "##landmerchant_noany_trade##";
-        wlk->setThinks( th.rand() );
+        wlk->setThinks( th.random() );
       }
       else
       {

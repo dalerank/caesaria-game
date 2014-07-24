@@ -84,7 +84,7 @@ void EmperorGiftWindow::Impl::fillGifts(ListBox* lbx)
   {
     int tag = getGiftCost( (GiftType)k, maxMoney );
     std::string priceStr = StringHelper::format( 0xff, " : %d", tag );
-    ListBoxItem& item = lbx->addItem( _( gifts.rand() ) + priceStr );
+    ListBoxItem& item = lbx->addItem( _( gifts.random() ) + priceStr );
     item.setTag( tag );
     item.setTextColor( ListBoxItem::simple, tag < maxMoney ? DefaultColors::black : DefaultColors::grey );
     item.setEnabled( tag < maxMoney );

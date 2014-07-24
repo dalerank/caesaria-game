@@ -116,7 +116,7 @@ std::string HealthCare::reason() const
     }
   }
 
-  return reasons.rand();
+  return reasons.random();
 }
 
 }//end namespace city

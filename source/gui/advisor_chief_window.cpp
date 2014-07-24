@@ -319,7 +319,7 @@ void AdvisorChiefWindow::Impl::drawEducation(Point pos)
     }
   }
 
-  text = reasons.rand();
+  text = reasons.random();
 
   text = text.empty()
             ? "##advchief_education_ok##"

@@ -145,7 +145,7 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
 
     if( !troubles.empty() )
     {
-      lbRatingInfo->setText( _( troubles.rand() ) );
+      lbRatingInfo->setText( _( troubles.random() ) );
     }
   }
 }

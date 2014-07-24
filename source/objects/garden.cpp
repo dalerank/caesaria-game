@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "garden.hpp"
 #include "game/resourcegroup.hpp"
@@ -45,10 +47,8 @@ bool Garden::isNeedRoadAccess() const{  return false;}
 void Garden::build(PlayerCityPtr city, const TilePos& p )
 {
   // this is the same arrangement of garden tiles as existed in C3
-  int theGrid[2][2] = {{113, 110}, {112, 111}};
-
   Construction::build( city, p );
-  setPicture( Picture::load( ResourceGroup::entertaiment, theGrid[p.i() % 2][p.j() % 2]) );
+  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
 
   if( size().area() == 1 )
   {

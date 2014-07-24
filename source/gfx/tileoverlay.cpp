@@ -67,7 +67,7 @@ void TileOverlay::setType(const Type type)
 
    _d->overlayType = type;
    _d->overlayClass = bd.group();
-   _d->name = bd.getName();
+   _d->name = bd.name();
 }
 
 void TileOverlay::timeStep(const unsigned long) {}
@@ -148,7 +148,7 @@ void TileOverlay::save( VariantMap& stream ) const
 
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
-                      ? Variant( md.getData( _d->overlayType ).getName() )
+                      ? Variant( md.getData( _d->overlayType ).name() )
                       : Variant( getDebugName() ) );
 
   config.push_back( tile().pos() );
@@ -188,7 +188,7 @@ TilePos TileOverlay::pos() const
 std::string TileOverlay::sound() const
 {
   const MetaData& md = MetaDataHolder::instance().getData( type() );
-  return md.getSound();
+  return md.sound();
 }
 
 void TileOverlay::setName( const std::string& name ){  _d->name = name;}

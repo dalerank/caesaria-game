@@ -111,9 +111,9 @@ public:
     if( construction == 0 )
       return;
 
-    if( info.basePicture().isValid() )
+    if( info.picture().isValid() )
     {
-      construction->setPicture( info.basePicture() );  // default picture for build tool
+      construction->setPicture( info.picture() );  // default picture for build tool
     }
 
     VariantMap anMap = info.getOption( "animation" ).toMap();

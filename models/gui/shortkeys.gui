@@ -8,6 +8,7 @@
       "key p    : toggle game pause",
       "F5/F9    : fast save/load game",
       "F10      : make screenshot",
+      "Shift+F10 : fullmap screenshot",
       "F11(test): add new enemy soldier in city",
       "Shift+F11(test): add wolves in city",
       "Esc      : close active window,layer or break current action",

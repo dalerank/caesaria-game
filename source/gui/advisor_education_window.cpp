@@ -158,7 +158,7 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
 
   StringArray troubles = _d->getTrouble( city );
-  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.rand() ) ); }
+  if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.random() ) ); }
 }
 
 void AdvisorEducationWindow::draw( gfx::Engine& painter )

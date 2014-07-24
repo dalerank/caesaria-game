@@ -35,6 +35,8 @@ class Variant;
 class VariantList;
 class VariantMap;
 
+#define VARIANT_INIT_ANY( type, param, vm) type param = vm.get( #param );
+#define VARIANT_INIT_STR( param, vm) std::string param = vm.get( #param ).toString();
 #define VARIANT_SAVE_ANY(vm,param) vm[ #param ] = param;
 #define VARIANT_LOAD_ANY(param,vm) param = vm.get( #param );
 #define VARIANT_LOAD_STR(param,vm) param = vm.get( #param ).toString();
