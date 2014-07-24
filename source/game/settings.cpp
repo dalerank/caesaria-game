@@ -113,7 +113,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.model" ) );
   _d->options[ picsArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ opengl_opts         ] = Variant( std::string( "/opengl.model" ) );
-  _d->options[ opengl_opts         ] = Variant( std::string( "FreeSerif.ttf" ) );
+  _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );

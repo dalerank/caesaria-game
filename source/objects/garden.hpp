@@ -32,6 +32,7 @@ public:
   virtual void load(const VariantMap &stream);
   virtual Desirability desirability() const;
   virtual std::string sound() const;
+  virtual void destroy();
   virtual void setPicture(gfx::Picture picture);
 
   void update();

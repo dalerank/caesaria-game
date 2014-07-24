@@ -34,10 +34,7 @@ Garden::Garden() : Construction(constants::construction::garden, Size(1) )
 
 void Garden::initTerrain(Tile& terrain)
 {
-  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
-  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlGarden, true);
-  terrain.setFlag( Tile::tlMeadow, isMeadow);
 }
 
 bool Garden::isWalkable() const {  return _flat; }
@@ -91,6 +88,13 @@ std::string Garden::sound() const
   return StringHelper::format( 0xff, "garden_%05d", size().area() );
 }
 
+void Garden::destroy()
+{
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getArea( this );
+  foreach( it, tiles ) (*it)->setFlag( Tile::tlGarden, false );
+}
+
 void Garden::setPicture(Picture picture)
 {
   Construction::setPicture( picture );
@@ -122,10 +126,10 @@ void Garden::update()
     }
 
     city::Helper helper( _city() );
-    helper.updateDesirability( this, false );
+    helper.updateDesirability( this, city::Helper::offDesirability );
     setSize( 2 );
     Construction::build( _city(), pos() );
-    setPicture( Picture::load( ResourceGroup::entertaiment, 114 + rand() % 3 ) );
-    helper.updateDesirability( this, true );
+    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+    helper.updateDesirability( this, city::Helper::onDesirability );
   }
 }

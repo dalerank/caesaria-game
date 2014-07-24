@@ -629,12 +629,12 @@ void House::_tryDegrage_11_to_2_lvl( const char desirability )
 
   city::Helper helper( _city() );
   //clear current desirability influence
-  helper.updateDesirability( this, false );
+  helper.updateDesirability( this, city::Helper::offDesirability );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
   //set new desirability level
-  helper.updateDesirability( this, true );
+  helper.updateDesirability( this, city::Helper::onDesirability );
 }
 
 void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
@@ -645,7 +645,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
 
   city::Helper helper( _city() );
   //clear current desirability influence
-  helper.updateDesirability( this, false );
+  helper.updateDesirability( this, city::Helper::offDesirability );
 
   _d->desirability.base = desirability;
   _d->desirability.step = desirability < 0 ? 1 : -1;
@@ -664,7 +664,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     build( _city(), bpos + TilePos( 1, 0 ) );
   }
   //set new desirability level
-  helper.updateDesirability( this, true );
+  helper.updateDesirability( this, city::Helper::onDesirability );
 }
 
 void House::_levelDown()

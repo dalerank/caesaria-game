@@ -20,6 +20,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "city/helper.hpp"
 #include "core/foreach.hpp"
 
 using namespace constants;
@@ -40,43 +41,18 @@ void Road::build( PlayerCityPtr city, const TilePos& pos )
   Tilemap& tilemap = city->tilemap();
   TileOverlayPtr overlay = tilemap.at( pos ).overlay();
 
-  Construction::build( city, pos );
-  setPicture( computePicture() );
-
   if( is_kind_of<Road>( overlay ) )
   {
     return;
   }
+
+  Construction::build( city, pos );
 
   if( is_kind_of<Aqueduct>( overlay ) )
   {
     overlay->build( city, pos );
     return;
   }
-
-  // update adjacent roads
-  /*foreach( Tile* tile, _accessRoads )
-  {
-    RoadPtr road = tile->getOverlay().as<Road>(); // let's think: may here different type screw up whole program?
-    if( road.isValid() )
-    {
-      road->computeAccessRoads();
-      road->setPicture(road->computePicture());
-    }
-  }*/
-  
-  // NOTE: also we need to update accessRoads for adjacent building
-  // how to detect them if MaxDistance2Road can be any
-  // so let's recompute accessRoads for every _building_
-  /*LandOverlayList list = city->getOverlayList(); // it looks terrible!!!!
-  foreach( LandOverlayPtr overlay, list )
-  {
-    BuildingPtr construction = overlay.as<Building>();
-    if( construction.isValid() ) // if not valid then it isn't building
-    {
-      construction->computeAccessRoads();
-    }
-  }*/
 
   city->updateRoads();
 }
@@ -96,7 +72,6 @@ bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
 
 void Road::initTerrain(Tile& terrain)
 {
-  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlRoad, true );
 }
 
@@ -177,7 +152,13 @@ bool Road::isNeedRoadAccess() const {  return false; }
 
 void Road::destroy()
 {
-  Construction::destroy();
+  city::Helper helper( _city() );
+  TilesArray tiles = helper.getArea( this );
+
+  foreach( it, tiles )
+  {
+    (*it)->setFlag( Tile::tlRoad, false );
+  }
 }
 
 void Road::burn() {}
@@ -229,16 +210,6 @@ Plaza::Plaza()
   setSize( Size( 1 ) );
 }
 
-
-void Plaza::initTerrain(Tile& terrain)
-{
-  //std::cout << "Plaza::setTerrain" << std::endl;
-  bool isMeadow = terrain.getFlag( Tile::tlMeadow );
-  terrain.setFlag( Tile::clearAll , true);
-  terrain.setFlag( Tile::tlRoad, true);
-  terrain.setFlag( Tile::tlMeadow, isMeadow );
-}
-
 Picture Plaza::computePicture()
 {
   //std::cout << "Plaza::computePicture" << std::endl;
@@ -265,7 +236,62 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   return is_constructible;
 }
 
-void Plaza::appendPaved(int value)
-{
+void Plaza::appendPaved(int) {}
 
+void Plaza::build(PlayerCityPtr city, const TilePos& p)
+{
+  Tilemap& tilemap = city->tilemap();
+  TileOverlayPtr overlay = tilemap.at( p ).overlay();
+
+  if( !is_kind_of<Road>( overlay ) )
+  {
+    return;
+  }
+
+  Construction::build( city, p );
+  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+
+  if( size().area() == 1 )
+  {
+    TilesArray tilesAround = city->tilemap().getNeighbors( pos(), Tilemap::AllNeighbors);
+    foreach( tile, tilesAround )
+    {
+      PlazaPtr plaza = ptr_cast<Plaza>( (*tile)->overlay() );
+      if( plaza.isValid() )
+      {
+        plaza->updatePicture();
+      }
+    }
+  }
+}
+
+void Plaza::updatePicture()
+{
+  TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );
+
+  bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
+  foreach( tile, nearTiles )
+  {
+    PlazaPtr garden = ptr_cast<Plaza>( (*tile)->overlay() );
+    canGrow2squarePlaza &= (garden.isValid() && garden->size().area() <= 2 );
+  }
+
+  if( canGrow2squarePlaza )
+  {
+    nearTiles.remove( pos() );
+    foreach( tile, nearTiles )
+    {
+      if( (*tile)->overlay().isValid() )
+      {
+        (*tile)->overlay()->deleteLater();
+      }
+    }
+
+    city::Helper helper( _city() );
+    helper.updateDesirability( this, city::Helper::offDesirability );
+    setSize( 2 );
+    Construction::build( _city(), pos() );
+    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+    helper.updateDesirability( this, city::Helper::onDesirability );
+  }
 }

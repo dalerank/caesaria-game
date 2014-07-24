@@ -706,7 +706,7 @@ const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
-void PlayerCity::updateRoads() {   _d->needRecomputeAllRoads = true; }
+void PlayerCity::updateRoads() { _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }

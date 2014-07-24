@@ -50,10 +50,11 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual void initTerrain( gfx::Tile& terrain);
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
   virtual gfx::Picture computePicture();
   virtual void appendPaved(int value);
+  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  void updatePicture();
 };
 
 

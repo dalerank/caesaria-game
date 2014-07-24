@@ -104,6 +104,20 @@ public:
     return ret;
   }
 
+  TilesArray& remove( TilePos pos )
+  {
+    foreach( it, *this )
+    {
+      if( (*it)->pos() == pos )
+      {
+        erase( it );
+        break;
+      }
+    }
+
+    return *this;
+  }
+
   TileOverlayList overlays() const
   {
     TileOverlayList ret;
