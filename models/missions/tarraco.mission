@@ -6,6 +6,7 @@
   date : "-270.01.01"
   finish : "-170.01.01"
   adviserEnabled : true
+  fishPlaceEnabled : false
 	
   win :
   {

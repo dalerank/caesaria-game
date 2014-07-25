@@ -41,10 +41,10 @@ using namespace constants;
 using namespace gfx;
 
 namespace {
-static unsigned int __getCost( ConstructionPtr b )
-{
-  return MetaDataHolder::getData( b->type() ).getOption( MetaDataOptions::cost );
-}
+  static unsigned int __getCost( ConstructionPtr b )
+  {
+    return MetaDataHolder::getData( b->type() ).getOption( MetaDataOptions::cost );
+  }
 }
 
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
@@ -254,6 +254,7 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
     case attackIndustry: needGroup = building::industryGroup; break;
     case attackFood: needGroup = building::foodGroup; break;
     case attackCitizen:  needGroup = building::houseGroup; break;
+    case attackSenate: needGroup = building::administrationGroup; break;
     default: needGroup = building::unknownGroup; break;
     }
 
@@ -378,7 +379,7 @@ void EnemySoldier::timeStep(const unsigned long time)
       ConstructionPtr b = constructions.front();
 
       turn( b->pos() );
-      b->updateState( Construction::damage, 1 );
+      b->updateState( Construction::damage, 1 );     
     }
     else
     {

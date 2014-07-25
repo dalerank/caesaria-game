@@ -90,6 +90,7 @@ namespace {
 CAESARIA_LITERALCONST(tilemap)
 CAESARIA_LITERALCONST(walkerIdCount)
 CAESARIA_LITERALCONST(adviserEnabled)
+CAESARIA_LITERALCONST(fishPlaceEnabled)
 }
 
 class WGrid
@@ -239,6 +240,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
+  setOption( fishPlaceEnabled, 1 );
 }
 
 void PlayerCity::timeStep(unsigned int time)
@@ -518,6 +520,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "boatExit"   ] = _d->borderInfo.boatExit;
   stream[ "climate"    ] = _d->climate;
   stream[ lc_adviserEnabled ] = getOption( PlayerCity::adviserEnabled );
+  stream[ lc_fishPlaceEnabled ] = getOption( PlayerCity::fishPlaceEnabled );
   stream[ "population" ] = _d->population;
 
   Logger::warning( "City: save finance information" );
@@ -579,7 +582,9 @@ void PlayerCity::load( const VariantMap& stream )
   _d->population = (int)stream.get( "population", 0 );
   _d->cameraStart = TilePos( stream.get( "cameraStart" ).toTilePos() );
 
+  Logger::warning( "City: parse options" );
   setOption( adviserEnabled, stream.get( lc_adviserEnabled, 1 ) );
+  setOption( fishPlaceEnabled, stream.get( lc_fishPlaceEnabled, 1 ) );
 
   Logger::warning( "City: parse funds" );
   _d->funds.load( stream.get( "funds" ).toMap() );

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_BUILD_OPTIONS_H_INCLUDED__
 #define __CAESARIA_BUILD_OPTIONS_H_INCLUDED__
@@ -29,7 +31,7 @@ class BuildOptions : public ReferenceCounted
 {
 public:
   BuildOptions();
-  ~BuildOptions();
+  virtual ~BuildOptions();
 
   void setBuildingAvailble( const gfx::TileOverlay::Type type, bool mayBuild );
   void setGroupAvailable(const BuildMenuType type, Variant mayBuild );
@@ -47,6 +49,7 @@ public:
   void setBuildingAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop, bool mayBuild);
   bool isBuildingsAvailble(const gfx::TileOverlay::Type start, const gfx::TileOverlay::Type stop) const;
   bool isCheckDesirability() const;
+
 private:
   class Impl;
   ScopedPtr< Impl > _d;

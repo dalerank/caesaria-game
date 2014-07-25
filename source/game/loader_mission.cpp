@@ -46,6 +46,7 @@ using namespace religion;
 namespace {
 CAESARIA_LITERALCONST(climate)
 CAESARIA_LITERALCONST(adviserEnabled)
+CAESARIA_LITERALCONST(fishPlaceEnabled)
 static const int currentVesion = 1;
 CAESARIA_LITERALCONST(random)
 }
@@ -100,7 +101,8 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     }
 
     city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
-    city->setOption( PlayerCity::adviserEnabled, vm[ lc_adviserEnabled ] );
+    city->setOption( PlayerCity::adviserEnabled, vm.get( lc_adviserEnabled, true ) );
+    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( lc_fishPlaceEnabled, true ) );
 
     GameDate::instance().init( vm[ "date" ].toDateTime() );
 

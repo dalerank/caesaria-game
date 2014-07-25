@@ -1,13 +1,13 @@
 {
   version : 1
-  map : "/maps/Tarsus.sav"
+  map : "/maps/Tingis.sav"
   funds : 6000
   city.name : "Tarsus"
   date : "-120.01.01"
   finish : "-1.01.01"
   climate : 2
   adviserEnabled : true
-  fishPlaceEnabled : true
+  fishPlaceEnabled : false
 	
   win :
   {
@@ -20,8 +20,8 @@
     title : "##win_procurator_aedile##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##tarsus_7_title##"
-    overview :  [ "##tarsus_7_overview##" ]
+    caption : "##tingis_7_title##"
+    overview :  [ "##tingis_7_overview##" ]
   }
 	
   empire : {
@@ -29,48 +29,26 @@
 
     cities :
     {    
-      Miletus : {
-        location : [ 1340, 760 ]
+      "Carthago Nova" : {
+        location : [ 220, 760 ]
 
         land : true
         sea : true
         available : true
 
-        sells : { wheat : 25, clay : 25 }
-        buys : { meat: 15, marble : 10 }
+        buys : { vegetable : 25, pottery : 25 }
+        sells : { wine: 15, oil : 10, weapon : 15 }
       }
 
-      Alexandria : {
-        location : [ 1450, 960 ]
+      Caesarea : {
+        location : [ 380, 780 ] 
 
         sea : true
         land : true
         available : true
 
-        sells : { furniture : 15 }
-        buys : { wheapon : 25 }
-      }
-
-      Hierosolyma : {
-        location : [ 1740, 920 ]
-
-        sea : true
-        land : true
-        available : true
-
-        sells : { olive : 40, pottery : 25 }
-        buys : { weapon : 15, furniture : 25 }
-      }
-
-      Damascus : {
-        location : [ 1740, 860 ]
-
-        sea : true
-        land : true
-        available : true
-
-        sells : { wheat : 25 }
-        buys : { marble : 25 }
+        sells : { meat : 15, wine : 15, marble : 15 }
+        buys : { furniture : 25, pottery : 25 }
       }
     }
   }
@@ -135,66 +113,18 @@
       video : "city_indebt.bik"
       text : "##city_has_runout_money##"
     }
-
-    price_change_1#trading_options : {
-      date : "-110.03.01"
-      goods : {
-        wheat : { relative : true, buy : 6, sell : 4  }
-      }
-
-      exec : {
-        message#messagebox : {
-          good : "wheat"
-          title : "##a_price_rise_title##"
-          text : "##a_price_rise_text##"
-          send2scribe : true
+    
+    carthago_change_trading_1#trading_options : {
+      date: "-115.06.01"
+      cities : {
+        "Carthago Nova" : {
+          sells : { weapon : 25 }
         }
-      }
-    }
-
-    price_change_2#trading_options : {
-      date : "-107.06.01"
-      goods : {
-        oil : { relative : true, buy : -15, sell : -20  }
-      }
-
-      exec : {
-        message#messagebox : {
-          good : "oil"
-          title : "##a_price_rise_title##"
-          text : "##a_price_rise_text##"
-          send2scribe : true
-        }
-      }
-    }
-
-    price_change_3#trading_options : {
-      date : "-102.03.01"
-      goods : {
-        weapon : { relative : true, buy : -30, sell : -40  }
       }
 
       exec : {
         message#messagebox : {
           good : "weapon"
-          title : "##a_price_rise_title##"
-          text : "##a_price_rise_text##"
-          send2scribe : true
-        }
-      }
-    }
-
-    miletus_change_trading_1#trading_options : {
-      date: "-115.06.01"
-      cities : {
-        Miletus : {
-          sells : { wheat : 40 }
-        }
-      }
-
-      exec : {
-        message#messagebox : {
-          good : "wheat"
           title : "##increase_trading_title##"
           text : "##increase_trading_text##"
           send2scribe : true
@@ -202,17 +132,17 @@
       }
     }
 
-    miletus_change_trading_2#trading_options : {
-      date: "-114.06.01"
+    carthago_change_trading_2#trading_options : {
+      date: "-110.06.01"
       cities : {
-        Miletus : {
-          sells : { clay : 25 }
+        "Carthago Nova" : {
+          sells : { weapon : 40 }
         }
       }
 
       exec : {
         message#messagebox : {
-          good : "clay"
+          good : "weapon"
           title : "##increase_trading_title##"
           text : "##increase_trading_text##"
           send2scribe : true
@@ -220,53 +150,17 @@
       }
     }
 
-    damascus_change_trading_1#trading_options : {
+    caesarea_change_trading_1#trading_options : {
       date: "-110.03.01"
       cities : {
-        Damascus : {
-          sells : { wheat : 40 }
+        Caesarea : {
+          sells : { meat : 25 }
         }
       }
 
       exec : {
         message#messagebox : {
-          good : "wheat"
-          title : "##increase_trading_title##"
-          text : "##increase_trading_text##"
-          send2scribe : true
-        }
-      }
-    }
-
-    damascus_change_trading_2#trading_options : {
-      date: "-105.03.01"
-      cities : {
-        Damascus : {
-          sells : { Marble : 10 }
-        }
-      }
-
-      exec : {
-        message#messagebox : {
-          good : "oil"
-          title : "##increase_trading_title##"
-          text : "##increase_trading_text##"
-          send2scribe : true
-        }
-      }
-    }
-
-    hierosolyma_change_trading#trading_options : {
-      date: "-100.06.01"
-      cities : {
-        Hierosolyma : {
-          sells : { pottery : 40 }
-        }
-      }
-
-      exec : {
-        message#messagebox : {
-          good : "oil"
+          good : "meat"
           title : "##increase_trading_title##"
           text : "##increase_trading_text##"
           send2scribe : true
@@ -275,11 +169,11 @@
     }
        
     emperor_request_1#city_request : {
-      date : "-117.05.01"
+      date : "-118.05.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 10 }
-      success : { favour : 10 }
+      good : { pottery : 5 }
+      success : { favour : 3 }
       fail : { favour : -10, appendMonth : 24 }
     }
 
@@ -287,34 +181,34 @@
       date : "-115.04.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 15 }
-      success : { favour : 10 }
+      good : { pottery : 10 }
+      success : { favour : 8 }
       fail : { favour : -10, appendMonth : 24 }
     }
 
     emperor_request_3#city_request : {
-      date : "-113.05.01"
+      date : "-112.05.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 20 }
+      good : { pottery : 20 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
 
     emperor_request_4#city_request : {
-      date : "-111.05.01"
+      date : "-110.05.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 25 }
-      success : { favour : 10 }
+      good : { furniture : 5 }
+      success : { favour : 3 }
       fail : { favour : -8, appendMonth : 24 }
     }
 
     emperor_request_5#city_request : {
-      date : "-108.06.01"
+      date : "-109.06.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 30 }
+      good : { pottery : 20 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
@@ -323,7 +217,7 @@
       date : "-106.05.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 35 }
+      good : { furniture : 10 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
@@ -332,61 +226,61 @@
       date : "-104.07.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 40 }
+      good : { pottery : 20 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
 
     emperor_request_8#city_request : {
-      date : "-102.05.01"
+      date : "-100.05.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 45 }
+      good : { furniture : 20 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
 
     emperor_request_9#city_request : {
-      date : "-100.08.01"
+      date : "-99.08.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 50 }
+      good : { pottery : 25 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
 
     emperor_request_10#city_request : {
-      date : "-98.08.01"
+      date : "-95.08.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 55 }
+      good : { pottery : 30 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
 
     emperor_request_11#city_request : {
-      date : "-95.08.01"
+      date : "-90.08.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 60 }
+      good : { furniture : 25 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
 
     emperor_request_12#city_request : {
-      date : "-90.08.01"
+      date : "-80.08.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 70 }
+      good : { pottery : 35 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
 
     emperor_request_13#city_request : {
-      date : "-85.08.01"
+      date : "-70.08.01"
       reqtype : "good_request"
       month : 24
-      good : { iron : 80 }
+      good : { furniture : 30 }
       success : { favour : 10 }
       fail : { favour : -8, appendMonth : 24 }
     }
@@ -394,17 +288,17 @@
     barbarian_invasion#enemy_attack : {
       date : "-117.05.01"
       type : "enemy_attack"
-      target : "random"
+      target : "food"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
-          count : 5
+          count : 8
           location : "random"
         }
 
         troop_archers : {
           type : "etruscanArcher"
-          count : 5
+          count : 8
           location : "random"
         }
       }
@@ -419,19 +313,19 @@
     }
 
     barbarian_invasion_2#enemy_attack : {
-      date : "-115.06.01"
+      date : "-116.06.01"
       type : "enemy_attack"
-      target : "random"
+      target : "gold"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
-          count : 6
+          count : 10
           location : "random"
         }
 
         troop_archers : {
           type : "etruscanArcher"
-          count : 6
+          count : 10
           location : "random"
         }
       }
@@ -446,19 +340,19 @@
     }
 
     barbarian_invasion_3#enemy_attack : {
-      date : "-112.08.01"
+      date : "-115.08.01"
       type : "enemy_attack"
-      target : "random"
+      target : "gold"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
-          count : 8
+          count : 16
           location : "random"
         }
 
         troop_archers : {
           type : "etruscanArcher"
-          count : 8
+          count : 16
           location : "random"
         }
       }
@@ -473,36 +367,9 @@
     }
 
     barbarian_invasion_4#enemy_attack : {
-      date : "-108.09.01"
+      date : "-112.09.01"
       type : "enemy_attack"
-      target : "random"
-      items : {
-        troop_soldiers : {
-          type : "etruscanSoldier"
-          count : 10
-          location : "random"
-        }
-
-        troop_archers : {
-          type : "etruscanArcher"
-          count : 10
-          location : "random"
-        }
-      }
-
-      exec : {
-        m#messagebox : {
-          title : "##barbarian_attack_title##"
-          text : "##barbarian_attack_text##"
-          video : "/smk/spy_army.smk"
-        }
-      }
-    }
-
-    barbarian_invasion_5#enemy_attack : {
-      date : "-102.10.01"
-      type : "enemy_attack"
-      target : "random"
+      target : "gold"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -527,9 +394,36 @@
     }
 
     barbarian_invasion_5#enemy_attack : {
-      date : "-99.06.01"
+      date : "-109.10.01"
       type : "enemy_attack"
-      target : "random"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 40
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 30
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_5#enemy_attack : {
+      date : "-104.06.01"
+      type : "enemy_attack"
+      target : "gold"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -554,9 +448,9 @@
     }
 
     barbarian_invasion_6#enemy_attack : {
-      date : "-94.07.01"
+      date : "-104.07.01"
       type : "enemy_attack"
-      target : "food"
+      target : "gold"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -581,9 +475,9 @@
     }
 
     barbarian_invasion_7#enemy_attack : {
-      date : "-89.04.01"
+      date : "-102.04.01"
       type : "enemy_attack"
-      target : "food"
+      target : "gold"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -593,7 +487,223 @@
 
         troop_archers : {
           type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_8#enemy_attack : {
+      date : "-102.06.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 20
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 20
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_9#enemy_attack : {
+      date : "-99.04.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 30
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 10
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_10#enemy_attack : {
+      date : "-102.09.01"
+      type : "enemy_attack"
+      target : "gold"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
           count : 26
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 16
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_11#enemy_attack : {
+      date : "-95.04.01"
+      type : "enemy_attack"
+      target : "gold"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 30
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 30
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_12#enemy_attack : {
+      date : "-90.04.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 32
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 32
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_13#enemy_attack : {
+      date : "-85.04.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 40
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 30
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_14#enemy_attack : {
+      date : "-75.04.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 40
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 40
+          location : "random"
+        }
+      }
+
+      exec : {
+        m#messagebox : {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "/smk/spy_army.smk"
+        }
+      }
+    }
+
+    barbarian_invasion_15#enemy_attack : {
+      date : "-65.03.01"
+      type : "enemy_attack"
+      target : "food"
+      items : {
+        troop_soldiers : {
+          type : "etruscanSoldier"
+          count : 120
+          location : "random"
+        }
+
+        troop_archers : {
+          type : "etruscanArcher"
+          count : 120
           location : "random"
         }
       }
@@ -608,17 +718,6 @@
     }
   }
 
-  fishpoints : {
-   fp1 : [ 13, 90 ]
-   fp2 : [ 19, 101 ]
-   fp3 : [ 36, 104 ]
-   fp4 : [ 57, 103 ]
-   fp5 : [ 80, 83 ]
-   fp6 : [ 65, 71 ]
-   fp7 : [ 48, 66 ]
-   fp8 : [ 43, 65 ]
-  }
-	
   buildoptions :
   {
     farm : "disable_all"
@@ -646,13 +745,10 @@
       military_academy : true
       barracks : true
 
-      quarry : true
       lumber_mill : true
-      iron_mine : true
+      clay_pit : true
 
-      wine_workshop : true
       pottery_workshop : true
-      weapons_workshop : true
       furniture_workshop : true
 
       garden : true
@@ -670,6 +766,9 @@
       market : true
       granery : true
       warehouse : true
+
+      wheat_farm : true
+      vegetable_farm : true
     }
   }
 }
