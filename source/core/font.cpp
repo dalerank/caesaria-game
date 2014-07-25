@@ -319,7 +319,7 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   {
     std::string errorStr = "Cririal error:\n" + std::string( TTF_GetError() );
 #ifdef CAESARIA_PLATFORM_WIN
-    errorStr += "\n Use only latin symbols in path. "
+    errorStr += "\n Use only latin symbols in path. ";
 #endif
     OSystem::error( "Critical error", errorStr );
     THROW( errorStr );
