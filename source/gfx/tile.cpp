@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "tile.hpp"
 #include "core/exception.hpp"
@@ -26,7 +28,6 @@ namespace gfx
 {
 
 namespace {
-  const int waterDecreaseInterval = GameDate::days2ticks( 15 );
   const int x_tileBase = 30;
   const int y_tileBase = x_tileBase / 2;
   Animation invalidAnimation;
@@ -35,8 +36,10 @@ namespace {
 void Tile::Terrain::reset()
 {
   clearFlags();
-  desirability = 0;
-  watersrvc = 0;
+  params[ Tile::pDesirability ] = 0;
+  params[ Tile::pWellWater ] = 0;
+  params[ Tile::pFountainWater ] = 0;
+  params[ Tile::pReservoirWater ] = 0;
 }
 
 void Tile::Terrain::clearFlags()
@@ -98,12 +101,6 @@ void Tile::animate(unsigned int time)
   if( _overlay.isNull() && _animation.isValid() )
   {
     _animation.update( time );
-  }
-
-  if( time % waterDecreaseInterval == 0)
-  {
-    decreaseWaterService( WTR_FONTAIN );
-    decreaseWaterService( WTR_WELL );
   }
 }
 
@@ -177,28 +174,18 @@ void Tile::setFlag(Tile::Type type, bool value)
   }
 }
 
-void Tile::appendDesirability(int value){ _terrain.desirability += value; }
-int Tile::desirability() const{  return _terrain.desirability;}
 TileOverlayPtr Tile::overlay() const{ return _overlay;}
 void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
 unsigned int Tile::originalImgId() const{ return _terrain.imgid;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
+void Tile::setParam( Param param, int value) { _terrain.params[ param ] = value; }
+void Tile::changeParam( Param param, int value) { _terrain.params[ param ] += value; }
 
-void Tile::fillWaterService(WaterService type, int value)
+int Tile::param( Param param) const
 {
-  int vl = math::clamp( waterService( type )+value, 0, 0xf );
-  _terrain.watersrvc |= ( vl << (type*4));
+  std::map<Param, int>::const_iterator it = _terrain.params.find( param );
+  return it != _terrain.params.end() ? it->second : 0;
 }
-
-void Tile::decreaseWaterService(WaterService type, int value)
-{
-  int tmpSrvValue = math::clamp( waterService( type )-value, 0, 0xf);
-
-  _terrain.watersrvc &= ~(0xf<<(type*4));
-  _terrain.watersrvc |= tmpSrvValue << (type*4);
-}
-
-int Tile::waterService(WaterService type) const{  return (_terrain.watersrvc >> (type*4)) & 0xf;}
 
 std::string TileHelper::convId2PicName( const unsigned int imgId )
 {

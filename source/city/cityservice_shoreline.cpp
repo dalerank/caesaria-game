@@ -114,7 +114,7 @@ void Shoreline::update( const unsigned int time )
       continue;
 
     int picId = tile->originalImgId();
-    if( tile->desirability() > 10 )
+    if( tile->param( Tile::pDesirability ) > 10 )
     {
       switch( picId )
       {

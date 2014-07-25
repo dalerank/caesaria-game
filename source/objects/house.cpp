@@ -308,7 +308,7 @@ void House::_updateCrime()
     TilePos sizeOffset( size().width(), size().height() );
     TilesArray tiles = _city()->tilemap().getArea( pos() - offset, pos() + sizeOffset + offset );
     int averageDes = 0;
-    foreach( it, tiles ) { averageDes += (*it)->desirability(); }
+    foreach( it, tiles ) { averageDes += (*it)->param( Tile::pDesirability ); }
     averageDes /= (tiles.size() + 1);
 
     int desInfluence4happines = math::clamp( averageDes - spec().minDesirabilityLevel(), -10, 10 );

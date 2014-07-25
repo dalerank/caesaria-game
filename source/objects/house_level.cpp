@@ -614,9 +614,15 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 
   TilesArray area = city->tilemap().getArea( house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
 
-  float middleDesirbl = (float)area.front()->desirability();
+  float middleDesirbl = 0;;
 
-  foreach( tile, area ) { middleDesirbl = (middleDesirbl + (float)(*tile)->desirability() )/2.f; }
+  foreach( tile, area )
+  {
+    middleDesirbl += (float)(*tile)->param( Tile::pDesirability );
+  }
+
+  if( !area.empty() )
+   middleDesirbl /= area.size();
 
   return (int)middleDesirbl;
 }

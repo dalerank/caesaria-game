@@ -20,8 +20,6 @@
 #ifndef _CAESARIA_ENUMS_INCLUDE_H_
 #define _CAESARIA_ENUMS_INCLUDE_H_
 
-enum WaterService { WTR_WELL=0, WTR_FONTAIN, WTR_RESERVOIR, WTR_COUNT };
-
 enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
 
 enum FestivalType { smallFest=1, middleFest, greatFest };

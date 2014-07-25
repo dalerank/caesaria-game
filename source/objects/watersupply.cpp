@@ -49,7 +49,7 @@ void Reservoir::destroy()
   Tilemap& tmap = _city()->tilemap();
   TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
-  foreach( tile, reachedTiles ) { (*tile)->decreaseWaterService( WTR_RESERVOIR, 20 ); }
+  foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pReservoirWater, 0 ); }
 
   // update adjacent aqueducts
   Construction::destroy();
@@ -129,7 +129,11 @@ void Reservoir::timeStep(const unsigned long time)
     Tilemap& tmap = _city()->tilemap();
     TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
-    foreach( tile, reachedTiles ) { (*tile)->fillWaterService( WTR_RESERVOIR ); }
+    foreach( tile, reachedTiles )
+    {
+      int value = (*tile)->param( Tile::pReservoirWater );
+      (*tile)->setParam( Tile::pReservoirWater, math::clamp( value+1, 0, 20 ) );
+    }
   }
 
   if( GameDate::isDayChanged() )

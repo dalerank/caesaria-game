@@ -12,38 +12,60 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_water.hpp"
 #include "city.hpp"
+#include "gfx/tilemap.hpp"
+#include "game/gamedate.hpp"
+#include "gfx/tilesarray.hpp"
+
+using namespace gfx;
 
 namespace city
 {
+
+const int waterDecreaseInterval = GameDate::days2ticks( 5 );
 
 class Water::Impl
 {
 public:
   PlayerCityPtr city;
+  TilesArray tiles;
 };
 
 city::SrvcPtr Water::create(PlayerCityPtr city )
 {
-  Water* ret = new Water( city );
+  city::SrvcPtr ret( new Water( city ) );
+  ret->drop();
 
-  return city::SrvcPtr( ret );
+  return ret;
 }
 
 Water::Water(PlayerCityPtr city )
   : city::Srvc( *city.object(), "water" ), _d( new Impl )
 {
   _d->city = city;
+  _d->tiles = city->tilemap().allTiles();
 }
 
 void Water::update( const unsigned int time )
 {
-  if( time % 22 != 1 )
-    return;
+  if( time % waterDecreaseInterval == 0 )
+  {
+    foreach( it, _d->tiles )
+    {
+      Tile* tile = *it;
+      int value = tile->param( Tile::pFountainWater );
+      if( value > 0 )
+        tile->setParam( Tile::pFountainWater, math::max( 0, value-1) );
 
-  //unsigned int vacantPop=0;
+      value = tile->param( Tile::pWellWater );
+      if( value > 0 )
+       tile->setParam( Tile::pWellWater, math::max( 0, value-1) );
+    }
+  }
 }
 
 }//end namespace city

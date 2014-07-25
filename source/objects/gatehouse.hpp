@@ -29,7 +29,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual bool isWalkable() const;
-  virtual bool isRoad() const;
+  virtual void destroy();
 
   virtual gfx::Renderer::PassQueue passQueue() const;
   virtual const gfx::Pictures& pictures(gfx::Renderer::Pass pass) const;

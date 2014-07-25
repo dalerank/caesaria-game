@@ -101,7 +101,7 @@ void DesirabilityUpdater::Impl::update( PlayerCity& city, bool positive)
 
   foreach( it, tiles )
   {
-    (*it)->appendDesirability( positive ? value : -value);
+    (*it)->changeParam( Tile::pDesirability, positive ? value : -value );
   }
 }
 

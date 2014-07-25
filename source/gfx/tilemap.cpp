@@ -32,7 +32,7 @@ namespace gfx
 
 static Tile invalidTile = Tile( TilePos( -1, -1 ) );
 
-class TileRow : public std::vector< Tile* >
+class TileRow : public TilesArray
 {
 public:
   ~TileRow()
@@ -152,18 +152,25 @@ Tile* Tilemap::at(Point pos, bool overborder)
 }
 
 Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
-
-const Tile& Tilemap::at(const int i, const int j) const
-{
-  return const_cast< Tilemap* >( this )->at( i, j );
-}
-
-Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() );}
+const Tile& Tilemap::at(const int i, const int j) const  {  return _d->at( i, j ); }
+Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() ); }
 
 
 const Tile& Tilemap::at( const TilePos& ij ) const
 {
   return const_cast<Tilemap*>( this )->at( ij.i(), ij.j() );
+}
+
+TilesArray Tilemap::allTiles() const
+{
+  TilesArray ret;
+  TileGrid& tg = *_d;
+  for( int row=0; row < _d->size; row++ )
+  {
+    ret.append( tg.at(row) );
+  }
+
+  return ret;
 }
 
 int Tilemap::size() const {  return _d->size; }
@@ -293,7 +300,7 @@ void Tilemap::save( VariantMap& stream ) const
   {
     Tile* tile = *it;    
     bitsetInfo.push_back( TileHelper::encode( *tile ) );
-    desInfo.push_back( tile->desirability() );
+    desInfo.push_back( tile->param( Tile::pDesirability ) );
     idInfo.push_back( tile->originalImgId() );
   }
 
@@ -311,7 +318,7 @@ void Tilemap::save( VariantMap& stream ) const
   stream[ "bitset" ]       = Variant( baBitset.base64() );
   stream[ "desirability" ] = Variant( baDes.base64() );
   stream[ "imgId" ]        = Variant( baId.base64() );
-  stream[ "size" ]         = _d->size;
+  VARIANT_SAVE_ANY_D( stream, _d, size );
 }
 
 void Tilemap::load( const VariantMap& stream )
@@ -320,7 +327,8 @@ void Tilemap::load( const VariantMap& stream )
   std::string desInfo    = stream.get( "desirability" ).toString();
   std::string idInfo     = stream.get( "imgId" ).toString();
 
-  int size = stream.get( "size" ).toInt();
+  int size;
+  VARIANT_LOAD_ANY( size, stream );
 
   resize( size );
 
@@ -345,7 +353,7 @@ void Tilemap::load( const VariantMap& stream )
     Tile* tile = *it;
 
     TileHelper::decode( *tile, bitsetAr[index] );
-    tile->appendDesirability( desAr[index] );
+    tile->setParam( Tile::pDesirability, desAr[index] );
 
     int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )

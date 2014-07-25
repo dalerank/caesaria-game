@@ -39,7 +39,7 @@ void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
   TilesArray area = tilemap.getArea( overlay->pos(), overlay->size() );
   foreach( tile, area )
   {
-    (*tile)->appendDesirability( mul * dsrbl.base );
+    (*tile)->changeParam( Tile::pDesirability, mul * dsrbl.base );
   }
 
   //change deisirability around
@@ -50,7 +50,7 @@ void Helper::updateDesirability( TileOverlayPtr overlay, bool onBuild )
                                                  overlay->size() + Size( 2 * curRange ) );
     foreach( tile, perimetr )
     {
-      (*tile)->appendDesirability( current );
+      (*tile)->changeParam( Tile::pDesirability, current );
     }
 
     current += mul * dsrbl.step;

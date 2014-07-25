@@ -42,7 +42,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
   //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mapPos() + offset;
 
-  int desirability = tile.desirability();
+  int desirability = tile.param( Tile::pDesirability );
   if( tile.overlay().isNull() )
   {
     //draw background
