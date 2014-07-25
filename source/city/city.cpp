@@ -168,7 +168,6 @@ public:
   //*********************** !!!
 
   city::SrvcList services;
-  bool needRecomputeAllRoads;
   BorderInfo borderInfo;
   Tilemap tilemap;
   TilePos cameraStart;
@@ -208,7 +207,6 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->borderInfo.boatExit = TilePos( 0, 0 );
   _d->funds.resolveIssue( FundIssue( city::Funds::donation, 1000 ) );
   _d->population = 0;
-  _d->needRecomputeAllRoads = false;
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
   _d->climate = C_CENTRAL;
@@ -238,6 +236,9 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _animation().setLoop( true );
   _animation().setOffset( Point( 18, -7 ));
   _animation().setDelay( 2 );
+
+  setOption( updateRoads, 0 );
+  setOption( godEnabled, 1 );
 }
 
 void PlayerCity::timeStep(unsigned int time)
@@ -263,9 +264,9 @@ void PlayerCity::timeStep(unsigned int time)
   _d->updateOverlays( this, time );
   _d->updateServices( time );
 
-  if( _d->needRecomputeAllRoads )
+  if( getOption( updateRoads ) > 0 )
   {
-    _d->needRecomputeAllRoads = false;
+    setOption( updateRoads, 0 );
     // for each overlay
     foreach( it, _d->overlayList )
     {
@@ -708,7 +709,6 @@ const GoodStore& PlayerCity::exportingGoods() const {   return _d->tradeOptions.
 unsigned int PlayerCity::tradeType() const { return world::EmpireMap::sea | world::EmpireMap::land; }
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
-void PlayerCity::updateRoads() { _d->needRecomputeAllRoads = true; }
 Signal1<int>& PlayerCity::onPopulationChanged() {  return _d->onPopulationChangedSignal; }
 Signal1<int>& PlayerCity::onFundsChanged() {  return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos) { _d->cameraStart = pos; }

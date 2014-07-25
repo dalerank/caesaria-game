@@ -80,6 +80,7 @@
 #include "core/saveadapter.hpp"
 #include "events/postpone.hpp"
 #include "gfx/pictureconverter.hpp"
+#include "gui/city_options_window.hpp"
 
 using namespace gui;
 using namespace constants;
@@ -121,6 +122,7 @@ public:
   void makeScreenShot();
   void setVideoOptions();
   void showGameSpeedOptionsDialog();
+  void showCityOptionsDialog();
   void resolveWarningMessage( std::string );
   void saveCameraPos(Point p);
   void showSoundOptionsWindow();
@@ -132,6 +134,7 @@ public:
   void layerChanged( int layer );
   void makeFullScreenshot();
 
+  std::string getScreenshotName();
   vfs::Path getFastSaveName( const std::string& type="", const std::string& postfix="");
 };
 
@@ -208,6 +211,7 @@ void Level::initialize()
   CONNECT( _d->topMenu, onShowVideoOptions(), _d.data(), Impl::setVideoOptions );
   CONNECT( _d->topMenu, onShowSoundOptions(), _d.data(), Impl::showSoundOptionsWindow );
   CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(), Impl::showGameSpeedOptionsDialog );
+  CONNECT( _d->topMenu, onShowCityOptions(), _d.data(), Impl::showCityOptionsDialog );
 
   CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
   CONNECT( _d->menu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
@@ -278,6 +282,13 @@ void Level::Impl::showGameSpeedOptionsDialog()
   CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
   CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
   CONNECT( dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
+}
+
+void Level::Impl::showCityOptionsDialog()
+{
+  CityOptionsWindow* wnd = new CityOptionsWindow( game->gui()->rootWidget(),
+                                                  game->city() );
+  wnd->show();
 }
 
 void Level::Impl::resolveWarningMessage(std::string text )
@@ -375,14 +386,26 @@ void Level::Impl::makeFullScreenshot()
   {
     Tile* t = *tile;
     if( t->masterTile() )
-      t = t->masterTile();
+      t = t->masterTile();       
 
-    const Picture& tpic = t->picture();
+    const Picture& tpic = t->overlay().isValid()
+                            ? t->overlay()->picture()
+                            : t->picture();
+
     Rect srcRect( 0, 0, tpic.width(), tpic.height() );
     fullPic->draw( tpic, srcRect, t->mapPos() + doffset - tpic.offset() );
   }
 
-  PictureConverter::save( *fullPic, "fullpic.png", "PNG" );
+  std::string filename = getScreenshotName();
+  PictureConverter::save( *fullPic, filename, "PNG" );
+}
+
+std::string Level::Impl::getScreenshotName()
+{
+  DateTime time = DateTime::getCurrenTime();
+  return StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
+                               time.year(), time.month(), time.day(),
+                               time.hour(), time.minutes(), time.seconds() );
 }
 
 void Level::_resolveLoadGame( std::string filename )
@@ -747,11 +770,7 @@ void Level::handleEvent( NEvent& event )
 
 void Level::Impl::makeScreenShot()
 {
-  DateTime time = DateTime::getCurrenTime();
-
-  std::string filename = StringHelper::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png", 
-                                               time.year(), time.month(), time.day(),
-                                               time.hour(), time.minutes(), time.seconds() );
+  std::string filename = getScreenshotName();
   Logger::warning( "creating screenshot %s", filename.c_str() );
 
   Engine::instance().createScreenshot( filename );

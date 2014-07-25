@@ -47,6 +47,7 @@ oc3_signals public:
   Signal0<>& onShowVideoOptions();
   Signal0<>& onShowSoundOptions();
   Signal0<>& onShowGameSpeedOptions();
+  Signal0<>& onShowCityOptions();
   Signal1<constants::advisor::Type>& onRequestAdvisor();
 
 private:

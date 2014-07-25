@@ -161,7 +161,7 @@ void ClearLandEvent::_exec( Game& game, unsigned int )
     //
     if( deleteRoad )
     {
-      game.city()->updateRoads();
+      game.city()->setOption( PlayerCity::updateRoads, 1 );
     }
   }
 }

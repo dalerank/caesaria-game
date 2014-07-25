@@ -48,7 +48,7 @@ struct BorderInfo
 class PlayerCity : public world::City
 {
 public:
-  typedef enum { adviserEnabled=0 } OptionType;
+  typedef enum { adviserEnabled=0, godEnabled, updateRoads } OptionType;
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr player );
   virtual ~PlayerCity();
 
@@ -116,8 +116,6 @@ public:
 
   void setOption( OptionType opt, int value );
   int getOption( OptionType opt ) const;
-
-  void updateRoads();
 
   void clean();
    

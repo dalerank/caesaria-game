@@ -79,6 +79,9 @@ void Religion::update( const unsigned int time )
 {  
   if( GameDate::isWeekChanged() )
   {
+    if( _city.getOption( PlayerCity::godEnabled ) == 0 )
+      return;
+
     Logger::warning( "Religion: start update relations" );
     DivinityList divinities = rome::Pantheon::instance().all();
 
@@ -157,6 +160,9 @@ void Religion::update( const unsigned int time )
 
   if( GameDate::isMonthChanged() )
   {
+    if( _city.getOption( PlayerCity::godEnabled ) == 0 )
+      return;
+
     int goddesRandom = math::random( 20 );
     //only for trird, seven, ace event
     if( !(goddesRandom == 3 || goddesRandom == 7 || goddesRandom == 11) )

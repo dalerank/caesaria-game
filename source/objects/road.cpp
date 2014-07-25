@@ -54,7 +54,7 @@ void Road::build( PlayerCityPtr city, const TilePos& pos )
     return;
   }
 
-  city->updateRoads();
+  city->setOption( PlayerCity::updateRoads, 1 );
 }
 
 bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
