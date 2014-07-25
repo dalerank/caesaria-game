@@ -411,7 +411,7 @@ void LayerBuild::_drawBuildTiles( Engine& engine)
 void LayerBuild::drawTile( Engine& engine, Tile& tile, Point offset )
 {
   __D_IMPL(_d,LayerBuild);
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   TileOverlayPtr overlay = tile.overlay();
   const TilesArray& postTiles = _d->buildTiles;

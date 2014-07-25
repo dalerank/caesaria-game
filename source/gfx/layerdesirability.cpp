@@ -40,7 +40,7 @@ std::set<int> LayerDesirability::visibleWalkers() const
 void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   //Tilemap& tilemap = _city->getTilemap();
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   int desirability = tile.param( Tile::pDesirability );
   if( tile.overlay().isNull() )
@@ -96,7 +96,7 @@ void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 
         foreach( tile, tiles4clear )
         {
-          engine.draw( pic, (*tile)->mapPos() + offset );
+          engine.draw( pic, (*tile)->mappos() + offset );
         }
       }
     break;

@@ -44,7 +44,7 @@ std::set<int> LayerIndigene::visibleWalkers() const
 
 void LayerIndigene::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {

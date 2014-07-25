@@ -750,6 +750,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
         //Picture::load( ResourceGroup::land1a, 230 + math::random( 59 ) );
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
+        //tile.setHeight( 1 );
         tile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
       }
       break;

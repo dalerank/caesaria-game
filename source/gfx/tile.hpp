@@ -51,7 +51,7 @@ public:
   void setEPos( const TilePos& epos );
 
   Point center() const;
-  Point mapPos() const;
+  Point mappos() const;
 
   // displayed picture
   void setPicture( const Picture& picture );

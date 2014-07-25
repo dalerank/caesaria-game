@@ -48,7 +48,7 @@ std::set<int> LayerDamage::visibleWalkers() const
 
 void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {

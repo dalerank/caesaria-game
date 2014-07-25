@@ -51,7 +51,7 @@ public:
   TilePos pos() const;
   void setPos( const TilePos& pos );
 
-  virtual Point screenpos() const;
+  virtual Point mappos() const;
   Point tilesubpos() const;
 
   virtual void setPathway(const Pathway& pathway);

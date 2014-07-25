@@ -33,11 +33,11 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
 
   const TilesArray& tiles = pathway.allTiles();
 
-  Point pos = walker->screenpos();
+  Point pos = walker->mappos();
   for( int step=pathway.curStep()+1; step < tiles.size(); step++ )
   {
-    PictureDecorator::drawLine( engine.screen(), pos + camOffset, tiles[ step ]->mapPos() + camOffset + Point( 30, 0 ), 0xff00ff00 );
-    pos = tiles[ step ]->mapPos() + Point( 30, 0 );
+    PictureDecorator::drawLine( engine.screen(), pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ), 0xff00ff00 );
+    pos = tiles[ step ]->mappos() + Point( 30, 0 );
   }
 }
 

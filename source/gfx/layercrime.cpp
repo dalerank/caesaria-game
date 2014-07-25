@@ -43,7 +43,7 @@ Layer::VisibleWalkers LayerCrime::visibleWalkers() const
 
 void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {

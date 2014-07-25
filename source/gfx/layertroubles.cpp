@@ -39,7 +39,7 @@ Layer::VisibleWalkers LayerTroubles::visibleWalkers() const{  return std::set<in
 
 void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {

@@ -296,7 +296,7 @@ const Tile& Walker::_nextTile() const
   return _d->city->tilemap().at( p );
 }
 
-Point Walker::screenpos() const
+Point Walker::mappos() const
 {
   const Tile& tile = _d->city->tilemap().at( pos() );
   Point offset;

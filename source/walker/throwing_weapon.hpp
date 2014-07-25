@@ -25,7 +25,7 @@ public:
   void toThrow( TilePos src, TilePos dst );
 
   virtual void timeStep(const unsigned long time);
-  virtual Point screenpos() const;
+  virtual Point mappos() const;
   virtual void turn(TilePos pos);
   virtual void setPicOffset( Point offset );
   virtual const gfx::Picture& getMainPicture();

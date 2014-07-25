@@ -43,7 +43,7 @@ std::set<int> LayerWater::visibleWalkers() const
 
 void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   bool needDrawAnimations = false;
   Size areaSize(1);
@@ -124,6 +124,17 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
           int df = aq->water();
           f.draw( engine.screen(), StringHelper::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
         }
+
+        int wellValue = tile.param( Tile::pWellWater );
+        int fountainValue = tile.param( Tile::pFountainWater );
+        int reservoirWater = tile.param( Tile::pReservoirWater );
+        if( wellValue > 0 || fountainValue > 0 || reservoirWater > 0 )
+        {
+          std::string text = StringHelper::format( 0xff, "%d/%d/%d", wellValue, fountainValue, reservoirWater );
+          Font f = Font::create( FONT_2 );
+          f.setColor( 0xffff0000 );
+          f.draw( engine.screen(), text, screenPos + Point( 20, -80 ), false );
+        }
       }
       registerTileForRendering( tile );
     }
@@ -145,7 +156,7 @@ void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
         picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine.draw( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mapPos() + offset );
+        engine.draw( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mappos() + offset );
       }
     }
   }

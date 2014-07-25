@@ -66,7 +66,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
   turn( dst );
 }
 
-Point ThrowingWeapon::screenpos() const
+Point ThrowingWeapon::mappos() const
 {
   const Point& p = _wpos();
   return Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );

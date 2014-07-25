@@ -41,7 +41,7 @@ Layer::VisibleWalkers LayerTax::visibleWalkers() const
 
 void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {

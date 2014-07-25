@@ -200,7 +200,7 @@ TilesArray Layer::_getSelectedArea()
 
 void Layer::drawPass( Engine& engine, Tile& tile, Point offset, Renderer::Pass pass)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
   switch( pass )
   {
   case Renderer::ground: engine.draw( tile.picture(), screenPos ); break;
@@ -257,7 +257,7 @@ void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffs
   {
     pics.clear();
     (*w)->getPictures( pics );
-    engine.draw( pics, (*w)->screenpos() + camOffset );
+    engine.draw( pics, (*w)->mappos() + camOffset );
   }
 }
 
@@ -400,7 +400,7 @@ void Layer::drawArea( Engine& engine, const TilesArray& area, Point offset, std:
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
-    engine.draw( *pic, tile->mapPos() + offset );
+    engine.draw( *pic, tile->mappos() + offset );
   }
 }
 
@@ -483,11 +483,11 @@ void Layer::afterRender( Engine& engine)
     {
       const Tile& tile = tmap.at( 0, k );
       const Tile& etile = tmap.at( size - 1, k );
-      PictureDecorator::drawLine( screen, tile.mapPos() + offset, etile.mapPos() + offset, 0x80ff0000);
+      PictureDecorator::drawLine( screen, tile.mappos() + offset, etile.mappos() + offset, 0x80ff0000);
 
       const Tile& rtile = tmap.at( k, 0 );
       const Tile& ertile = tmap.at( k, size - 1 );
-      PictureDecorator::drawLine( screen, rtile.mapPos() + offset, ertile.mapPos() + offset, 0x80ff0000 );
+      PictureDecorator::drawLine( screen, rtile.mappos() + offset, ertile.mappos() + offset, 0x80ff0000 );
     }
 
     std::string text;
@@ -503,7 +503,7 @@ void Layer::afterRender( Engine& engine)
           const Tile& rtile = tmap.at( i, j );
           text = StringHelper::format( 0xff, "(%d,%d)", i, j );
           //PictureDecorator::basicText( screen, rtile.mapPos() + offset + Point( 0, 0),text.c_str(), 0xffffffff );
-          font.draw( screen, text, rtile.mapPos() + offset + Point( 7, -7 ), false );
+          font.draw( screen, text, rtile.mappos() + offset + Point( 7, -7 ), false );
         }
       }
     break;

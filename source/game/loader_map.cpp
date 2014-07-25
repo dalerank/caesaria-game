@@ -170,10 +170,10 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   ScopedPtr<short> pTerrainGrid( new short[26244] );
   ScopedPtr<unsigned char> pRndmTerGrid( new unsigned char[26244] );
   ScopedPtr<unsigned char> pRandomGrid( new unsigned char[26244] );
-  ScopedPtr<unsigned char> pZeroGrid( new unsigned char[26244] );
+  ScopedPtr<unsigned char> pElevationGrid( new unsigned char[26244] );
 
   if( pGraphicGrid.isNull() || pEdgeGrid.isNull() || pTerrainGrid.isNull() ||
-      pRndmTerGrid.isNull() || pRandomGrid.isNull() || pZeroGrid.isNull() )
+      pRndmTerGrid.isNull() || pRandomGrid.isNull() || pElevationGrid.isNull() )
   {
     THROW("NOT ENOUGH MEMORY!!!! FATAL");
   }
@@ -191,7 +191,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.seekg(kRandomGrid, std::ios::beg);
   f.read((char*)pRandomGrid.data(), 26244);
   f.seekg(kElevationGrid, std::ios::beg);
-  f.read((char*)pZeroGrid.data(), 26244);
+  f.read((char*)pElevationGrid.data(), 26244);
 
   std::map< int, std::map< int, unsigned char > > edgeData;
 
@@ -210,6 +210,7 @@ void GameLoaderC3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
       Tile& tile = oTilemap.at(i, j);
       tile.setPicture( TileHelper::convId2PicName( pGraphicGrid.data()[index] ) );
       tile.setOriginalImgId( pGraphicGrid.data()[index] );
+      //tile.setHeight( pElevationGrid.data()[ index ] );
 
       edgeData[ i ][ j ] =  pEdgeGrid.data()[index];
       TileHelper::decode( tile, pTerrainGrid.data()[index] );

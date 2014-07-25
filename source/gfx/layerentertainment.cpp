@@ -62,7 +62,7 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
 
 void LayerEntertainment::drawTile(Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {

@@ -43,7 +43,7 @@ std::set<int> LayerFire::visibleWalkers() const {  return layerFireWalkers; }
 
 void LayerFire::drawTile( Engine& engine, Tile& tile, Point offset)
 {
-  Point screenPos = tile.mapPos() + offset;
+  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {

@@ -199,7 +199,7 @@ const TilesArray& TilemapCamera::tiles() const
         Tile* master = tile->masterTile();
         if( master != NULL )
         {
-          Point pos = master->mapPos() + _d->offset;
+          Point pos = master->mappos() + _d->offset;
           std::set< Tile* >::iterator mIt = overborderTiles.find( master );
           if( pos.x() < 0 && mIt == overborderTiles.end() )
           {
@@ -222,10 +222,10 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF point)
   Point mapOffset = Point( screenSize.width() / 2 - 30 * (centerMapXZ.x() + 1) + 1,
                            screenSize.height() / 2 + 15 * (centerMapXZ.y()-mapSize + 1) - 30 );
 
-  ret.left = !( (tilemap->at( 0, 0 ).mapPos() + mapOffset ).x() > 0);
-  ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).mapPos() + mapOffset).x() > screenSize.width();
-  ret.down = ( (tilemap->at( 0, mapSize - 1 ).mapPos() + mapOffset ).y() < 0 );
-  ret.up = (tilemap->at( mapSize - 1, 0 ).mapPos() + mapOffset ).y() > screenSize.height();
+  ret.left = !( (tilemap->at( 0, 0 ).mappos() + mapOffset ).x() > 0);
+  ret.right = (tilemap->at( mapSize - 1, mapSize - 1 ).mappos() + mapOffset).x() > screenSize.width();
+  ret.down = ( (tilemap->at( 0, mapSize - 1 ).mappos() + mapOffset ).y() < 0 );
+  ret.up = (tilemap->at( mapSize - 1, 0 ).mappos() + mapOffset ).y() > screenSize.height();
 
   return ret;
 }

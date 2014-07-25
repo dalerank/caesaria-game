@@ -65,7 +65,7 @@ void LayerDestroy::_drawTileInSelArea( Engine& engine, Tile& tile, Tile* master,
   {
     // single-tile
     drawTile( engine, tile, offset );
-    engine.draw( _clearPic, tile.mapPos() + offset );
+    engine.draw( _clearPic, tile.mappos() + offset );
   }
   else
   {

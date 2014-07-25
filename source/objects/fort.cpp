@@ -151,7 +151,7 @@ Fort::Fort(building::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) 
   logo.setOffset( Point( 80, 10 ) );
 
   Picture area = Picture::load(ResourceGroup::security, 13 );
-  area.setOffset( Tile( TilePos(3,0) ).mapPos() + Point(0,-30) );
+  area.setOffset( Tile( TilePos(3,0) ).mappos() + Point(0,-30) );
 
   _fgPicturesRef().resize(2);
   _fgPicture( 0 ) = logo;
