@@ -73,9 +73,9 @@ bool GameSpeedOptionsWindow::onEvent(const NEvent& event)
 
     case 1001:
     {
-      _d->onGameSpeedChangeSignal.emit( _d->speedValue );
-      _d->onScrollSpeedChangeSignal.emit( _d->scrollValue );
-      _d->onAutosaveIntervalShangeSignal.emit( _d->autosaveInterval );
+      oc3_emit _d->onGameSpeedChangeSignal( _d->speedValue );
+      oc3_emit _d->onScrollSpeedChangeSignal( _d->scrollValue );
+      oc3_emit _d->onAutosaveIntervalShangeSignal( _d->autosaveInterval );
       deleteLater();
     }
     break;
@@ -105,7 +105,7 @@ void GameSpeedOptionsWindow::_update()
 
   if( lbSpeed ) { lbSpeed->setText( StringHelper::i2str( _d->speedValue ) + "%" ); }
   if( lbScroll ) { lbScroll->setText( StringHelper::i2str( _d->scrollValue ) + "%" ); }
-  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( StringHelper::i2str( _d->autosaveInterval ) + " month" ); }
+  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( StringHelper::i2str( _d->autosaveInterval ) + " m." ); }
 }
 
 }//end namespace gui

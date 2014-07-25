@@ -61,10 +61,13 @@ bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
 {
   bool is_free = Construction::canBuild( city, pos, aroundTiles );
 
-  if( is_free ) 
+  if( is_free )
     return true; // we try to build on free tile
 
   TileOverlayPtr overlay  = city->tilemap().at( pos ).overlay();
+
+  Picture pic = picture( city, pos, aroundTiles );
+  const_cast<Road*>( this )->setPicture( pic );
 
   return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
 }
@@ -75,20 +78,43 @@ void Road::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlRoad, true );
 }
 
-Picture Road::computePicture()
+const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::TilesArray& tmp ) const
 {
-  int i = tile().i();
-  int j = tile().j();
+  int i = p.i();
+  int j = p.j();
 
-  TilesArray roads = getAccessRoads();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
+  if (!tmp.empty())
+  {
+    foreach( it, tmp )
+    {
+      int i = (*it)->i();
+      int j = (*it)->j();
+
+      if( (*it)->getFlag( Tile::tlRoad ) ||
+          is_kind_of<Road>( (*it)->overlay() ) )
+      {
+
+        if( i == p.i() && j == (p.j() + 1)) directionFlags |= 0x1; // road to the north
+        else if (i == p.i() && j == (p.j() - 1)) directionFlags |= 0x4; // road to the south
+        else if (j == p.j() && i == (p.i() + 1)) directionFlags |= 0x2; // road to the east
+        else if (j == p.j() && i == (p.i() - 1)) directionFlags |= 0x8; // road to the west
+      }
+    }
+  }
+
+  TilesArray roads = city->tilemap().getNeighbors( p, Tilemap::FourNeighbors );
   foreach( it, roads )
   {
     Tile* tile = *it;
-    if (tile->j() > j)      { directionFlags += 1; } // road to the north
-    else if (tile->j() < j) { directionFlags += 4; } // road to the south
-    else if (tile->i() > i) { directionFlags += 2; } // road to the east
-    else if (tile->i() < i) { directionFlags += 8; } // road to the west
+    if( tile->getFlag( Tile::tlRoad ) ||
+        is_kind_of<Road>( tile->overlay() ) )
+    {
+      if (tile->j() > j )      { directionFlags |= 0x1; } // road to the north
+      else if (tile->j() < j ) { directionFlags |= 0x4; } // road to the south
+      else if (tile->i() > i ) { directionFlags |= 0x2; } // road to the east
+      else if (tile->i() < i ) { directionFlags |= 0x8; } // road to the west
+    }
   }
 
   // std::cout << "direction flags=" << directionFlags << std::endl;
@@ -104,11 +130,11 @@ Picture Road::computePicture()
     case 4: index = 103; break; // South
     case 8: index = 104; break; // West
     case 3: index = 97;  break; // North+East
-    case 5: index = 93+2*(rand()%2); break;  // 93/95 // North+South
+    case 5: index = 93+2*((p.i() + p.j()) % 2); break;  // 93/95 // North+South
     case 6: index = 98;  break; // East+South
     case 7: index = 106; break; // North+East+South
     case 9: index = 100; break; // North+West
-    case 10: index = 94+2*(rand()%2); break;  // 94/96 // East+West
+    case 10: index = 94+2*((p.i() + p.j())%2); break;  // 94/96 // East+West
     case 11: index = 109; break; // North+East+West
     case 12: index = 99; break;  // South+West
     case 13: index = 108; break; // North+South+West
@@ -121,15 +147,15 @@ Picture Road::computePicture()
     switch (directionFlags)
     {
     case 0: index = 52; break; // no road!
-    case 1: index = 52+4*(rand()%2); break; // North
+    case 1: index = 52+4*((p.i() + p.j())%2); break; // North
     case 2: index = 53; break; // East
     case 4: index = 54; break; // South
     case 8: index = 55; break; // West
     case 3: index = 48;  break; // North+East
-    case 5: index = 44+2*(rand()%2); break;  // 93/95 // North+South
+    case 5: index = 44+2*((p.i() + p.j())%2); break;  // 93/95 // North+South
     case 6: index = 49;  break; // East+South
     case 9: index = 51; break; // North+West
-    case 10: index = 45+2*(rand()%2); break;  // 94/96 // East+West
+    case 10: index = 45+2*((p.i() + p.j())%2); break;  // 94/96 // East+West
     case 12: index = 50; break;  // South+West
 
     case 7:
@@ -137,7 +163,7 @@ Picture Road::computePicture()
     case 13:
     case 14:
     case 15:
-      index = 78 + rand() % 14;
+      index = 78 + (p.i() + p.j()) % 14;
     break;
     }
   }
@@ -147,7 +173,7 @@ Picture Road::computePicture()
 
 bool Road::isWalkable() const {  return true;}
 bool Road::isFlat() const{  return true;}
-void Road::updatePicture(){  setPicture( computePicture() );}
+void Road::updatePicture(){  setPicture( picture( _city(), _masterTile() ? _masterTile()->pos() : TilePos(), TilesArray() ) );}
 bool Road::isNeedRoadAccess() const {  return false; }
 
 void Road::destroy()
@@ -206,11 +232,11 @@ Plaza::Plaza()
   // or we will run into big troubles
 
   setType(construction::plaza);
-  setPicture(computePicture()); // 102 ~ 107
+  setPicture(picture()); // 102 ~ 107
   setSize( Size( 1 ) );
 }
 
-Picture Plaza::computePicture()
+Picture Plaza::picture()
 {
   //std::cout << "Plaza::computePicture" << std::endl;
   return Picture::load( ResourceGroup::entertaiment, 102);

@@ -23,7 +23,7 @@ class Road : public Construction
 public:
   Road();
 
-  virtual gfx::Picture computePicture();
+  virtual const gfx::Picture& picture(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& tmp ) const;
   void updatePicture();
 
   virtual void build( PlayerCityPtr city, const TilePos& pos );
@@ -51,7 +51,7 @@ class Plaza : public Road
 public:
   Plaza();
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
-  virtual gfx::Picture computePicture();
+  virtual gfx::Picture picture();
   virtual void appendPaved(int value);
   virtual void build(PlayerCityPtr city, const TilePos &pos);
   void updatePicture();

@@ -188,7 +188,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
     case 5:  // North+South
     case 10: // East+West
       {
-        Picture pic = const_cast<Aqueduct*>( this )->picture( city, pos, aroundTiles );
+        Picture pic = picture( city, pos, aroundTiles );
         const_cast<Aqueduct*>( this )->setPicture( pic );
       }
       return true;
@@ -197,7 +197,7 @@ bool Aqueduct::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   return false;
 }
 
-const Picture& Aqueduct::picture(PlayerCityPtr city, TilePos p, const TilesArray& tmp ) const
+const Picture& Aqueduct::picture( PlayerCityPtr city, TilePos p, const TilesArray& tmp ) const
 {
   // find correct picture as for roads
   Tilemap& tmap = city->tilemap();

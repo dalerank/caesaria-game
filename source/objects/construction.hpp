@@ -58,7 +58,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual const gfx::Picture& picture() const;
   virtual const gfx::Picture& picture( PlayerCityPtr city, TilePos pos,
-                                          const gfx::TilesArray& aroundTiles ) const;
+                                       const gfx::TilesArray& aroundTiles ) const;
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
