@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "freeplay_finalizer.hpp"
 #include "core/saveadapter.hpp"
@@ -22,7 +24,7 @@
 
 void FreeplayFinalizer::addPopulationMilestones(PlayerCityPtr city)
 {
-  VariantMap freeplayVm = SaveAdapter::load( GameSettings::rcpath( "freeplay.model" ) );
+  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
 
   VariantMap milestones = freeplayVm[ "population_milestones" ].toMap();
   foreach( it, milestones )
