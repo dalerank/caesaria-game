@@ -57,7 +57,7 @@ void Animals::update(const unsigned int time)
 
   if( _d->maxAnimal.empty() )
   {
-    walker::Type currentTerrainAnimal = _city.climate() == C_DESERT ? walker::zebra : walker::sheep;
+    walker::Type currentTerrainAnimal = _city.climate() == climateDesert ? walker::zebra : walker::sheep;
     _d->maxAnimal[ currentTerrainAnimal ] = defaultMaxAnimals;
   }
 

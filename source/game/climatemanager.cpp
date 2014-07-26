@@ -40,9 +40,9 @@ void ClimateManager::initialize(ClimateType climate)
   VariantMap climateArchives = SaveAdapter::load( GameSettings::rcpath( "climate.model" ) );
 
   std::string optName;
-  if( climate == C_CENTRAL ) { optName = "central"; }
-  else if( climate == C_NORTHERN )  { optName = "north"; }
-  else if( climate == C_DESERT ) { optName = "south"; }
+  if( climate == climateCentral ) { optName = "central"; }
+  else if( climate == climateNorthen )  { optName = "north"; }
+  else if( climate == climateDesert ) { optName = "south"; }
 
   Path archivePath = GameSettings::rcpath( climateArchives.get( optName ).toString() );
   ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
