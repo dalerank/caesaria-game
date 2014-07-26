@@ -34,6 +34,9 @@ public:
   static Menu* create( Widget* parent, int id, PlayerCityPtr city );
 
   // draw on screen
+  virtual void minimize();
+  virtual void maximize();
+
   virtual void draw( gfx::Engine& engine );
 
   virtual bool onEvent(const NEvent& event);
@@ -43,7 +46,7 @@ public:
 oc3_signals public:
   Signal1<int>& onCreateConstruction();
   Signal0<>& onRemoveTool();
-  Signal0<>& onMaximize();
+  Signal0<>& onHide();
 
 protected:
   class Impl;
@@ -60,9 +63,6 @@ class ExtentMenu : public Menu
 {
 public:
   static ExtentMenu* create( Widget* parent, int id, PlayerCityPtr city );
-
-  void minimize();
-  void maximize();
 
   virtual bool onEvent(const NEvent& event);
 

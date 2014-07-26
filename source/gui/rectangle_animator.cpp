@@ -115,7 +115,7 @@ void RectangleAnimator::updateFinished_()
     {
         parent()->setVisible( isFlag( showParent ) );
 
-        afterFinished_();
+        _afterFinished();
     }
     else
     {

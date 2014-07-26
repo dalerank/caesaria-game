@@ -42,11 +42,11 @@ AndroidActionsBar::AndroidActionsBar( Widget* parent)
                                         pic.size(), -1, 651 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 654 );
-  _d->btnExit = new TexturedButton( this, _d->btnShowHelp->leftupCorner() - Point( pic.width(), 0),
+  _d->btnExit = new TexturedButton( this, _d->btnShowHelp->leftup() - Point( pic.width(), 0),
                                     pic.size(), -1, 654 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 657 );
-  _d->btnEnter = new TexturedButton( this, _d->btnExit->leftupCorner() - Point( pic.width(), 0 ), pic.size(), -1, 657 );
+  _d->btnEnter = new TexturedButton( this, _d->btnExit->leftup() - Point( pic.width(), 0 ), pic.size(), -1, 657 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 657 );
   _d->btnMenu = new TexturedButton( this, Point( 0, 0 ), pic.size(), -1, 657 );  

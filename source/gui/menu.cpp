@@ -89,9 +89,9 @@ public:
   void updateBuildingOptions();
 
 oc3_signals public:
-  Signal1< int > onCreateConstructionSignal;
+  Signal1<int> onCreateConstructionSignal;
   Signal0<> onRemoveToolSignal;
-  Signal0<> onMaximizeSignal;
+  Signal0<> onHideSignal;
 };
 
 Signal1<int>& Menu::onCreateConstruction(){  return _d->onCreateConstructionSignal;}
@@ -121,7 +121,8 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle )
 
   const bool haveSubMenu = true;
   _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
-                                   !haveSubMenu, ResourceMenu::emptyMidPicId, _("##hide_bigpanel##") );
+                                   !haveSubMenu, ResourceMenu::emptyMidPicId, _("##show_bigpanel##") );
+
   _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
   _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, building::house,
@@ -150,6 +151,8 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle )
 
   _d->commerceButton = _addButton( 155, true, 11, BM_COMMERCE, haveSubMenu,
                                    ResourceMenu::comerceMidPicId, _("##comerceBtnTooltip##") );
+
+  CONNECT( _d->minimizeButton, onClicked(), this, Menu::minimize );
 }
 
 PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
@@ -192,23 +195,17 @@ bool Menu::onEvent(const NEvent& event)
     int id = event.gui.caller->ID();
     switch( id )
     {
-    case MAXIMIZE_ID:
-      _d->lastPressed = 0;
-      _createBuildMenu( -1, this );
-      oc3_emit _d->onMaximizeSignal();
-    break;
-
     case building::house:
     case construction::road:
       _d->lastPressed = event.gui.caller;
-      oc3_emit _d->onCreateConstructionSignal( id );
       _createBuildMenu( -1, this );
+      oc3_emit _d->onCreateConstructionSignal( id );
     break;
 
     case REMOVE_TOOL_ID:
       _d->lastPressed = event.gui.caller;
-      oc3_emit _d->onRemoveToolSignal();
       _createBuildMenu( -1, this );
+      oc3_emit _d->onRemoveToolSignal();
     break;
 
     default:
@@ -282,11 +279,16 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
   const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
-  ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), bground.height() + bottom.height() ) ) );
+  ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), parent->height() ) ) );
 
   ret->_d->bgPicture->lock();
   ret->_d->bgPicture->draw( bground, 0, 0 );
-  ret->_d->bgPicture->draw( bottom,  0, bground.height() );
+  int y = bground.height();
+  while( y < ret->_d->bgPicture->height() )
+  {
+    ret->_d->bgPicture->draw( bottom, 0, y );
+    y += bottom.height() - 5;
+  }
   ret->_d->bgPicture->unlock();
 
   ret->_d->city = city;  
@@ -296,6 +298,28 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
   CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
 
   return ret;
+}
+
+void Menu::minimize()
+{
+  _d->lastPressed = 0;
+  _createBuildMenu( -1, this );
+  Point stopPos = leftup() + Point( width(), 0 );
+  PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
+  CONNECT( anim, onFinish(), &_d->onHideSignal, Signal0<>::emit );
+
+  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
+  e->dispatch();
+}
+
+void Menu::maximize()
+{
+  Point stopPos = leftup() - Point( width(), 0 );
+  show();
+  new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
+
+  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
+  e->dispatch();
 }
 
 bool Menu::unselectAll()
@@ -332,11 +356,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    }
 }
 
-Signal0<>& Menu::onMaximize()
-{
-  _d->minimizeButton->setTooltipText( _("##show_bigpanel##") );
-  return _d->onMaximizeSignal;
-}
+Signal0<>& Menu::onHide() { return _d->onHideSignal; }
 
 void Menu::Impl::initActionButton(PushButton* btn, Point pos)
 {
@@ -371,11 +391,16 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
   const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
   const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-  ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), bground.height() + bottom.height() ) ) );
+  ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), parent->height() ) ) );
 
   ret->_d->bgPicture->lock();
   ret->_d->bgPicture->draw( bground, 0, 0);
-  ret->_d->bgPicture->draw( bottom, 0, bground.height() );
+  int y = bground.height();
+  while( y < ret->_d->bgPicture->height() )
+  {
+    ret->_d->bgPicture->draw( bottom, 0, y );
+    y += bottom.height() - 5;
+  }
   ret->_d->bgPicture->unlock();
 
   ret->_d->city = city;
@@ -387,33 +412,11 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
   return ret;
 }
 
-void ExtentMenu::minimize()
-{
-  _d->minimizeButton->setTooltipText( _("##hide_bigpanel##") );
-  _d->lastPressed = 0;
-  _createBuildMenu( -1, this );
-  Point stopPos = relativeRect().UpperLeftCorner + Point( width(), 0 );
-  new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
-
-  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
-  e->dispatch();
-}
-
-void ExtentMenu::maximize()
-{
-  Point stopPos = relativeRect().UpperLeftCorner - Point( width(), 0 );
-  show();
-  new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
-
-  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
-  e->dispatch();
-}
-
 ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
     : Menu( p, id, rectangle )
 {
   _d->minimizeButton->deleteLater();
-  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##show_bigpanel##") );
+  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##hide_bigpanel##") );
   _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
   CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );  
 
