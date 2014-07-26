@@ -35,7 +35,7 @@ class ComputerCity::Impl
 public:
   unsigned int tradeType;
   bool distantCity, romeCity;
-  bool isAvailable;
+  bool available;
   unsigned int tradeDelay;
   SimpleGoodStore sellStore;
   SimpleGoodStore buyStore;
@@ -53,7 +53,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->tradeDelay = 0;
   _d->distantCity = false;
   _d->merchantsNumber = 0;
-  _d->isAvailable = true;
+  _d->available = true;
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
@@ -70,8 +70,8 @@ bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isRomeCity() const{  return _d->romeCity;}
-bool ComputerCity::isAvailable() const{  return _d->isAvailable;}
-void ComputerCity::setAvailable(bool value){  _d->isAvailable = value;}
+bool ComputerCity::isAvailable() const{  return _d->available;}
+void ComputerCity::setAvailable(bool value){  _d->available = value;}
 
 void ComputerCity::save( VariantMap& options ) const
 {
@@ -117,7 +117,7 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "bought" ] = vm_bought;
   options[ "lastTimeMerchantSend" ] = _d->lastTimeMerchantSend;
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
-  VARIANT_SAVE_ANY_D( options, _d, isAvailable );
+  VARIANT_SAVE_ANY_D( options, _d, available );
   options[ "merchantsNumber" ] = _d->merchantsNumber;
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
@@ -131,7 +131,7 @@ void ComputerCity::load( const VariantMap& options )
 {
   City::load( options );
 
-  VARIANT_LOAD_ANY_D( _d, isAvailable, options );
+  VARIANT_LOAD_ANY_D( _d, available, options );
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
   _d->merchantsNumber = (int)options.get( "merchantsNumber" );
