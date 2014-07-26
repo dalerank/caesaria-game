@@ -53,10 +53,7 @@ VariantMap StartWork::save() const
   return ret;
 }
 
-bool StartWork::isDeleted() const
-{
-  return _isDeleted;
-}
+bool StartWork::isDeleted() const {  return _isDeleted; }
 
 void StartWork::_exec(Game& game, unsigned int)
 {

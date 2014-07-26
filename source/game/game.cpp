@@ -303,6 +303,7 @@ void Game::setScreenMenu()
 
       FreeplayFinalizer::addPopulationMilestones( _d->city );
       FreeplayFinalizer::initBuildOptions( _d->city );
+      FreeplayFinalizer::addEvents( _d->city );
 
       _d->nextScreen = _d->loadOk ? SCREEN_GAME : SCREEN_MENU;
     }

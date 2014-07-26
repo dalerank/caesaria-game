@@ -22,16 +22,27 @@
 #include "city/build_options.hpp"
 #include "events/postpone.hpp"
 
-void FreeplayFinalizer::addPopulationMilestones(PlayerCityPtr city)
-{
-  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+using namespace events;
 
-  VariantMap milestones = freeplayVm[ "population_milestones" ].toMap();
-  foreach( it, milestones )
+void __loadEventsFromSection( const VariantMap& vm )
+{
+  foreach( it, vm )
   {
     events::GameEventPtr e = events::PostponeEvent::create( it->first, it->second.toMap() );
     e->dispatch();
   }
+}
+
+void FreeplayFinalizer::addPopulationMilestones(PlayerCityPtr city)
+{
+  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+  __loadEventsFromSection( freeplayVm[ "population_milestones" ].toMap() );
+}
+
+void FreeplayFinalizer::addEvents(PlayerCityPtr city)
+{
+  VariantMap freeplayVm = SaveAdapter::load( SETTINGS_RC_PATH( freeplay_opts ) );
+  __loadEventsFromSection( freeplayVm[ "events" ].toMap() );
 }
 
 void FreeplayFinalizer::initBuildOptions(PlayerCityPtr city)

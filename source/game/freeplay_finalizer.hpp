@@ -25,6 +25,7 @@ class FreeplayFinalizer
 public:
   static void addPopulationMilestones( PlayerCityPtr city );
   static void initBuildOptions(PlayerCityPtr city);
+  static void addEvents(PlayerCityPtr city);
 };
 
 #endif //__CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
