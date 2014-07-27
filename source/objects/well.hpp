@@ -27,9 +27,8 @@ public:
 
   virtual void deliverService();
   virtual bool isNeedRoadAccess() const;
-
   virtual bool isDestructible() const;
-  gfx::TilesArray getCoverageArea() const;
+  gfx::TilesArray coverageArea() const;
 };
 
 #endif //__CAESARIA_WELL_H_INCLUDED__
