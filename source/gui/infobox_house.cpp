@@ -63,7 +63,7 @@ namespace gui
 InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
-  HousePtr _house = ptr_cast<House>( tile.overlay() );
+  _house = ptr_cast<House>( tile.overlay() );
 
   setTitle( _(_house->spec().levelName()) );
 
@@ -192,7 +192,7 @@ bool InfoboxHouse::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventKeyboard )
   {
-    if( event.keyboard.control && event.keyboard.shift )
+    if( event.keyboard.control && event.keyboard.shift && !event.keyboard.pressed )
     {
       switch( event.keyboard.key )
       {

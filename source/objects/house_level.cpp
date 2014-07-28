@@ -773,7 +773,7 @@ Picture HouseSpecHelper::getPicture( int houseLevel, int size ) const
 
   if( !array.empty() )
   {
-    return Picture::load( array[ array.size() == 1 ? 0 : math::random(array.size()) ] );
+    return Picture::load( array.random() );
   }
 
   return Picture::getInvalid();

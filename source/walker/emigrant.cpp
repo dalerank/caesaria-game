@@ -142,7 +142,7 @@ void Emigrant::_reachedPathway()
     HouseList houses = helper.find<House>( building::house, pos()-offset, pos() + offset );
     foreach( it, houses )  //have destination
     {
-      HousePtr house = *it;
+      house = *it;
 
       int freeRoom = house->maxHabitants() - house->habitants().count();
       if( freeRoom > 0 )
@@ -178,6 +178,11 @@ void Emigrant::_reachedPathway()
 
 void Emigrant::_brokePathway(TilePos p)
 {
+  _reachedPathway();
+
+  if( isDeleted() )
+    return;
+
   Pathway way = _findSomeWay( pos() );
   if( way.isValid() )
   {
@@ -192,7 +197,7 @@ void Emigrant::_brokePathway(TilePos p)
 
 void Emigrant::_noWay()
 {
-  Pathway someway = _findSomeWay( pos() );
+  Pathway someway = PathwayHelper::randomWay( _city(), pos(), 5 );
   if( !someway.isValid() )
   {
     _d->failedWayCount++;
