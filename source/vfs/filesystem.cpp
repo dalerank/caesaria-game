@@ -402,7 +402,7 @@ ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
 	{
 		if( archive == _d->openArchives[i])
 		{
-            return archive;
+			return archive;
 		}
 	}
 
@@ -417,7 +417,6 @@ bool FileSystem::unmountArchive(unsigned int index)
 	bool ret = false;
 	if (index < _d->openArchives.size())
 	{
-		_d->openArchives[index]->drop();
 		_d->openArchives.erase( _d->openArchives.begin() + index );
 		ret = true;
 	}

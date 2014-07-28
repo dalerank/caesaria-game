@@ -65,6 +65,8 @@ public:
   obscurity.
   */
   std::string Password;
+
+  virtual ~Archive() {}
 };
 
 typedef SmartPtr< Archive > ArchivePtr;
