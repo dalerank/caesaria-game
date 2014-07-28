@@ -45,6 +45,7 @@ protected:
   virtual void _brokePathway(TilePos pos);
   virtual bool _tryAttack();
   virtual void _back2base();
+  virtual void _duckout();
 
   void _init( constants::walker::Type type);
 

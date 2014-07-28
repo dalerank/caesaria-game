@@ -39,7 +39,7 @@ public:
   int morale;
 
   Impl() : strikeForce ( 3.f ), resistance( 1.f ),
-           attackDistance( 1u ), morale( 0 ) {}
+           attackDistance( 1u ), morale( 100 ) {}
 };
 
 Soldier::Soldier(PlayerCityPtr city, walker::Type type)
@@ -61,6 +61,12 @@ float Soldier::strike() const { return _dfunc()->strikeForce; }
 void Soldier::setStrike(float value) { _dfunc()->strikeForce = value; }
 
 int Soldier::morale() const { return _dfunc()->morale; }
+
+void Soldier::updateMorale(int value)
+{
+  int absValue = math::clamp( _dfunc()->morale+value, 0, 100 );
+  _dfunc()->morale = absValue;
+}
 
 void Soldier::wait(int ticks)
 {

@@ -148,7 +148,7 @@ GoodStore& Granary::store() {  return _d->goodStore; }
 void Granary::initTerrain(Tile& terrain)
 {
   WorkingBuilding::initTerrain( terrain );
-  TilePos offset = terrain.pos() - pos();
+  //TilePos offset = terrain.pos() - pos();
   //TilePos av[5] = { TilePos( 0, 1 ), TilePos( 1, 1 ), TilePos( 1, 2 ), TilePos( 2, 1 ), TilePos( 1, 0 ) };
   //bool walkable = offset == av[0] || offset == av[1] || offset == av[2] || offset == av[3] || offset == av[4];
 

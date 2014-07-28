@@ -164,3 +164,32 @@ Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walk
 
   return Pathway();
 }
+
+Pathway PathwayHelper::way2border(PlayerCityPtr city, TilePos pos)
+{
+  Tilemap& tmap = city->tilemap();
+
+  TilePos lastStart, lastStop;
+  for( int k=0; k < 80; k++ )
+  {
+    TilePos start, stop;
+    start = tmap.fit( pos - TilePos( k, k ) );
+    stop = tmap.fit( pos + TilePos( k, k ) );
+
+    if( start == lastStart && stop == lastStop )
+      break;
+
+    TilesArray border = tmap.getRectangle( start, stop );
+    border = border.walkableTiles( true );
+    foreach( it, border )
+    {
+      Tile* tile = *it;
+      Pathway pw = create( pos, tile->pos(), PathwayHelper::allTerrain );
+
+      if( pw.isValid() )
+        return pw;
+    }
+  }
+
+  return Pathway();
+}

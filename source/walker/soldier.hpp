@@ -31,6 +31,7 @@ public:
                  fightEnemy,
                  destroyBuilding,
                  back2base,
+                 duckout,
                  patrol,
                  doNothing } SldrAction;
 
@@ -45,6 +46,7 @@ public:
   void setStrike( float value );
 
   int morale() const;
+  void updateMorale( int value );
 
   virtual void wait(int ticks);
   virtual void initialize(const VariantMap &options);
