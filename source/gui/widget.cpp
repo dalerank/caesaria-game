@@ -837,7 +837,7 @@ int Widget::screenTop() const { return absoluteRect().top(); }
 int Widget::screenLeft() const { return absoluteRect().left(); }
 int Widget::screenBottom() const { return absoluteRect().bottom(); }
 int Widget::screenRight() const { return absoluteRect().right(); }
-Point Widget::leftupCorner() const { return Point( left(), top() ); }
+Point Widget::leftup() const { return Point( left(), top() ); }
 Point Widget::leftdownCorner() const { return Point( left(), bottom() ); }
 Point Widget::rightupCorner() const { return Point( right(), top() ); }
 Point Widget::rightdownCorner() const { return Point( right(), bottom() ); }

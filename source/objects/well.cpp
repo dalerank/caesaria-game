@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
+#include "house.hpp"
 #include "city/helper.hpp"
 #include "constants.hpp"
 
@@ -44,13 +45,35 @@ void Well::deliverService()
 
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
-  foreach( it, reachedBuildings) { (*it)->applyService( walker ); }
+  bool lowHealth = false;
+  HouseList houses;
+  foreach( it, reachedBuildings)
+  {
+    (*it)->applyService( walker );
+    HousePtr house = ptr_cast<House>( *it );
+    if( house.isValid() )
+    {
+      lowHealth |= house->state( (Construction::Param)House::health ) < 10;
+      houses << house;
+    }
+  }
+
+  if( lowHealth )
+  {
+    foreach( it, houses)
+    {
+      if( (*it)->state( (Construction::Param)House::health ) > 10 )
+      {
+        (*it)->updateState( (Construction::Param)House::health, -1 );
+      }
+    }
+  }
 }
 
 bool Well::isNeedRoadAccess() const {  return false; }
 bool Well::isDestructible() const{  return true; }
 
-TilesArray Well::getCoverageArea() const
+TilesArray Well::coverageArea() const
 {
   TilesArray ret;
 

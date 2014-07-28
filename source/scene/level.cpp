@@ -171,8 +171,8 @@ void Level::initialize()
   _d->topMenu->setFunds( _d->game->city()->funds().treasury() );
 
   _d->menu = Menu::create( gui.rootWidget(), -1, city );
-  _d->menu->setPosition( Point( engine.screenSize().width() - _d->menu->width() - _d->rightPanel->width(),
-                                 _d->topMenu->height() ) );
+  _d->menu->setPosition( Point( engine.screenSize().width() - _d->rightPanel->width(),
+                                _d->topMenu->height() ) );
 
   _d->extMenu = ExtentMenu::create( gui.rootWidget(), -1, city );
   _d->extMenu->setPosition( Point( engine.screenSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
@@ -215,8 +215,9 @@ void Level::initialize()
 
   CONNECT( _d->menu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
   CONNECT( _d->menu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
-  CONNECT( _d->menu, onMaximize(), _d->extMenu, ExtentMenu::maximize );
+  CONNECT( _d->menu, onHide(), _d->extMenu, ExtentMenu::maximize );
 
+  CONNECT( _d->extMenu, onHide(), _d->menu, Menu::maximize );
   CONNECT( _d->extMenu, onCreateConstruction(), _d.data(), Impl::resolveCreateConstruction );
   CONNECT( _d->extMenu, onRemoveTool(), _d.data(), Impl::resolveRemoveTool );
   CONNECT( _d->extMenu, onRotateRight(), &_d->renderer, CityRenderer::rotateRight );

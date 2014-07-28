@@ -210,7 +210,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->population = 0;
   _d->funds.setTaxRate( 7 );
   _d->walkerIdCount = 0;
-  _d->climate = C_CENTRAL;
+  _d->climate = climateCentral;
   _d->sentiment = 60;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 

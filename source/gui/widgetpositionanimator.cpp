@@ -96,7 +96,7 @@ void PositionAnimator::beforeDraw(gfx::Engine& painter )
 			}
 
 			parent()->setVisible( isFlag( showParent ) );
-      afterFinished_();
+      _afterFinished();
 		}
 	}
 

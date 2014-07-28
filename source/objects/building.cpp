@@ -110,6 +110,18 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
+void Building::build(PlayerCityPtr city, const TilePos &pos)
+{
+  Construction::build( city, pos );
+
+  switch( city->climate() )
+  {
+  case climateNorthen: setState( Construction::inflammability, 0.5 ); break;
+  case climateDesert: setState( Construction::inflammability, 2 ); break;
+  default: break;
+  }
+}
+
 void Building::reserveService(const Service::Type service) { _d->reservedServices.insert(service);}
 bool Building::isServiceReserved( const Service::Type service ) { return _d->reservedServices.count(service)>0; }
 void Building::cancelService(const Service::Type service){ _d->reservedServices.erase(service);}

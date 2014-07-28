@@ -115,7 +115,7 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
   std::string text;
   if( well.isValid() )
   {
-    TilesArray coverageArea = well->getCoverageArea();
+    TilesArray coverageArea = well->coverageArea();
 
     bool haveHouseInArea = false;
     foreach( tile, coverageArea )
@@ -145,7 +145,16 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
       }
       else
       {
-        text = "##well_info##";
+        TilesArray tiles = well->coverageArea();
+        bool haveLowHealthHouse = false;
+        foreach( it, tiles )
+        {
+          haveLowHealthHouse |= (*it)->state( (Construction::Param)House::health ) < 10;
+        }
+
+        text = haveLowHealthHouse
+                ? "##well_infected_info##"
+                : "##well_info##";
       }
     }
   }

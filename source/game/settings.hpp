@@ -71,6 +71,7 @@ public:
   __GS_PROPERTY(picsArchive)
   __GS_PROPERTY(opengl_opts)
   __GS_PROPERTY(font)
+  __GS_PROPERTY(freeplay_opts)
 #undef __GS_PROPERTY
 
   static GameSettings& instance();

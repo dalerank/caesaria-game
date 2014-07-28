@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
 #define __CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
@@ -23,6 +25,7 @@ class FreeplayFinalizer
 public:
   static void addPopulationMilestones( PlayerCityPtr city );
   static void initBuildOptions(PlayerCityPtr city);
+  static void addEvents(PlayerCityPtr city);
 };
 
 #endif //__CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__

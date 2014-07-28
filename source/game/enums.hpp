@@ -20,7 +20,7 @@
 #ifndef _CAESARIA_ENUMS_INCLUDE_H_
 #define _CAESARIA_ENUMS_INCLUDE_H_
 
-enum ClimateType { C_CENTRAL, C_NORTHERN, C_DESERT, C_MAX };
+enum ClimateType { climateCentral=0, climateNorthen, climateDesert, climateCount };
 
 enum FestivalType { smallFest=1, middleFest, greatFest };
 

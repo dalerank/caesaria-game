@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "widgetanimator.hpp"
 #include "gfx/engine.hpp"
@@ -22,8 +24,8 @@ namespace gui
 WidgetAnimator::WidgetAnimator( Widget* parent, int flags ) 
     : Widget( parent, -1, Rect( 0, 0, 1, 1 ) )
 {
-    setFlags( flags );
-    setFlag( isActive );
+  setFlags( flags );
+  setFlag( isActive );
 }
 
 WidgetAnimator::~WidgetAnimator( void )
@@ -32,27 +34,29 @@ WidgetAnimator::~WidgetAnimator( void )
 
 void WidgetAnimator::beforeDraw(gfx::Engine& painter )
 {
-    //! draw self area in debug mode
-    if( isFlag( debug ) )
-    {
-       // painter->drawRectangleOutline( getAbsoluteRect(), Color( 0xff, 0xff, 0xff, 0 ), &getAbsoluteClippingRectRef() );
+  //! draw self area in debug mode
+  if( isFlag( debug ) )
+  {
+     // painter->drawRectangleOutline( getAbsoluteRect(), Color( 0xff, 0xff, 0xff, 0 ), &getAbsoluteClippingRectRef() );
 
-        //Font font( Font::builtinName );
-        //if( font.available() )
-        //    font.Draw( getInternalName(), getAbsoluteRect(), getResultColor(), true, true, NULL );
-    }
+      //Font font( Font::builtinName );
+      //if( font.available() )
+      //    font.Draw( getInternalName(), getAbsoluteRect(), getResultColor(), true, true, NULL );
+  }
 
-    Widget::beforeDraw( painter );
+  Widget::beforeDraw( painter );
 }
 
-void WidgetAnimator::afterFinished_()
+void WidgetAnimator::_afterFinished()
 {
 	if( isFlag( removeParent ) )
 	{
 		parent()->deleteLater();
 	}
-    else if( isFlag( removeSelf ) )
-        deleteLater();    
+  else if( isFlag( removeSelf ) )
+    deleteLater();
+
+  oc3_emit _onFinishSignal();
 }
 
 }//end namespace gui
