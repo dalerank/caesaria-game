@@ -37,7 +37,9 @@
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   #include <GLES/gl.h>
+  #include <GLES/glext.h>
   #define glOrtho glOrthof
+  #undef CAESRAIA_USE_SHADERS
 #else
   #ifdef CAESARIA_PLATFORM_LINUX
     #define GL_GLEXT_PROTOTYPES
@@ -46,7 +48,7 @@
   #include <SDL_opengl.h>
 #endif
 
-#if defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(CAESARIA_PLATFORM_ANDROID) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
 
 #else
 
