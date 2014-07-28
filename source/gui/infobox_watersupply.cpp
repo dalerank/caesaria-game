@@ -149,7 +149,11 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
         bool haveLowHealthHouse = false;
         foreach( it, tiles )
         {
-          haveLowHealthHouse |= (*it)->state( (Construction::Param)House::health ) < 10;
+          HousePtr house = ptr_cast<House>( (*it)->overlay() );
+          if( house.isValid() )
+          {
+            haveLowHealthHouse |= house->state( (Construction::Param)House::health ) < 10;
+          }
         }
 
         text = haveLowHealthHouse
