@@ -35,21 +35,19 @@ public:
 };
 
 AndroidActionsBar::AndroidActionsBar( Widget* parent)
-  : Widget( parent, -1, Rect( 0, parent->height() - 72, parent->width(), parent->height() ) ), _d( new Impl )
+  : Widget( parent, -1, Rect( parent->width() - 150, 480, parent->width(), parent->height() ) ), _d( new Impl )
 {
-  Picture pic = Picture::load( ResourceGroup::panelBackground, 651 );
-  _d->btnShowHelp = new TexturedButton( this, Point( width() - pic.width(), 0 ),
-                                        pic.size(), -1, 651 );
+  Picture pic = Picture::load( ResourceGroup::panelBackground, 657 );
+  _d->btnMenu = new TexturedButton( this, Point( 0, 0 ), pic.size(), -1, 657 );
+
+  pic = Picture::load( ResourceGroup::panelBackground, 651 );
+  _d->btnShowHelp = new TexturedButton( this, _d->btnMenu->leftdown(), pic.size(), -1, 651 );
+
+  pic = Picture::load( ResourceGroup::panelBackground, 661 );
+  _d->btnEnter = new TexturedButton( this, _d->btnShowHelp->leftdown(), pic.size(), -1, 661 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 654 );
-  _d->btnExit = new TexturedButton( this, _d->btnShowHelp->leftup() - Point( pic.width(), 0),
-                                    pic.size(), -1, 654 );
-
-  pic = Picture::load( ResourceGroup::panelBackground, 657 );
-  _d->btnEnter = new TexturedButton( this, _d->btnExit->leftup() - Point( pic.width(), 0 ), pic.size(), -1, 657 );
-
-  pic = Picture::load( ResourceGroup::panelBackground, 657 );
-  _d->btnMenu = new TexturedButton( this, Point( 0, 0 ), pic.size(), -1, 657 );  
+  _d->btnExit = new TexturedButton( this, _d->btnEnter->leftdown(), pic.size(), -1, 654 );
 }
 
 Signal0<> &AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }

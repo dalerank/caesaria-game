@@ -131,7 +131,7 @@ public:
 
   virtual int screenRight() const;
 
-  virtual Point leftdownCorner() const;
+  virtual Point leftdown() const;
 
   virtual Point leftup() const;
 

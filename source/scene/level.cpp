@@ -118,7 +118,6 @@ public:
   void resolveCreateConstruction( int type );
   void resolveSelectLayer( int type );
   void resolveRemoveTool();
-  void resolveShowLoadGameWnd();
   void makeScreenShot();
   void setVideoOptions();
   void showGameSpeedOptionsDialog();
@@ -135,7 +134,7 @@ public:
   void makeFullScreenshot();
 
   std::string getScreenshotName();
-  vfs::Path getFastSaveName( const std::string& type="", const std::string& postfix="");
+  vfs::Path createFastSaveName( const std::string& type="", const std::string& postfix="");
 };
 
 Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
@@ -325,7 +324,7 @@ void Level::Impl::makeEnemy()
   }
 }
 
-void Level::Impl::makeFastSave() { game->save( getFastSaveName().toString() ); }
+void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
 
 void Level::Impl::showTileHelp()
 {
@@ -412,7 +411,7 @@ std::string Level::Impl::getScreenshotName()
 void Level::_resolveLoadGame( std::string filename )
 {
   _d->mapToLoad = filename.empty()
-                      ? _d->getFastSaveName().toString()
+                      ? _d->createFastSaveName().toString()
                       : filename;
   _resolveSwitchMap();
 }
@@ -448,7 +447,6 @@ void Level::_resolveEnterButton()
 
 void Level::_showIngameMenu()
 {
-#ifdef CAESARIA_PLATFORM_ANDROID
   gui::Widget* p = _d->game->gui()->rootWidget();
   gui::Widget* menu = new Label( p, Rect( 0, 0, 500, 450 ), "", false, Label::bgWhiteFrame );
 
@@ -465,21 +463,21 @@ void Level::_showIngameMenu()
 
   CONNECT( btnContinue, onClicked(), menu, Label::deleteLater );
   CONNECT( btnExit, onClicked(), this, Level::_resolveExitGame );
-  CONNECT( btnSave, onClicked(), _d.data(), Impl::showSaveDialog );
-  //CONNECT( btnLoad, onClicked(), _d.data(), Impl::showSaveDialog  );
+  CONNECT( btnSave, onClicked(), this, Level::_resolveShowLoadGameWnd );
+  CONNECT( btnLoad, onClicked(), _d.data(), Impl::showSaveDialog  );
+  CONNECT( btnRestart, onClicked(), this, Level::_resolveRestart );
   CONNECT( btnMainMenu, onClicked(), this, Level::_resolveEndGame );
-#endif
 }
 
-vfs::Path Level::Impl::getFastSaveName(const std::string& type, const std::string& postfix )
+vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
 {
   std::string typesave = type.empty() ? SETTINGS_VALUE( fastsavePostfix ).toString() : type;
   vfs::Path filename = game->city()->name()
                        + typesave
                        + postfix
-                       + GameSettings::get( GameSettings::saveExt ).toString();
+                       + SETTINGS_VALUE( saveExt ).toString();
 
-  vfs::Directory saveDir = GameSettings::get( GameSettings::savedir ).toString();
+  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
 
   return saveDir/filename;
 }
@@ -539,7 +537,7 @@ void Level::animate( unsigned int time )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
-      vfs::Path filename = _d->getFastSaveName( "autosave", StringHelper::i2str( rotate ) );
+      vfs::Path filename = _d->createFastSaveName( "autosave", StringHelper::i2str( rotate ) );
       _d->game->save( filename.toString() );
     }
   }
