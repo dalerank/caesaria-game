@@ -25,7 +25,15 @@ class IronMine : public Factory
 {
 public:
   IronMine();
-  bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
+  virtual void timeStep(const unsigned long time);
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_IRON_MINE_H_INCLUDE_

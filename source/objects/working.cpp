@@ -12,14 +12,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "working.hpp"
 #include "walker/walker.hpp"
 #include "events/returnworkers.hpp"
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
+#include "events/removecitizen.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace {
 CAESARIA_LITERALCONST(currentWorkers)
@@ -162,6 +166,19 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 
 void WorkingBuilding::_setClearAnimationOnStop(bool value) {  _d->clearAnimationOnStop = value; }
 
+void WorkingBuilding::_disaster()
+{
+  unsigned int buriedCitizens = math::random( numberWorkers() );
+
+  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() - buriedCitizens );
+  e->dispatch();
+
+  e = RemoveCitizens::create( pos(), buriedCitizens );
+  e->dispatch();
+
+  setWorkers( 0 );
+}
+
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
   if( walker.isValid() )
@@ -178,7 +195,21 @@ void WorkingBuilding::destroy()
 
   if( numberWorkers() > 0 )
   {
-    events::GameEventPtr e=events::ReturnWorkers::create( pos(), numberWorkers() );
+    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
     e->dispatch();
   }
+}
+
+void WorkingBuilding::collapse()
+{
+  Building::collapse();
+
+  _disaster();
+}
+
+void WorkingBuilding::burn()
+{
+  Building::burn();
+
+  _disaster();
 }

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WORKINGBUILDING_H_INCLUDED__
 #define __CAESARIA_WORKINGBUILDING_H_INCLUDED__
@@ -40,6 +42,8 @@ public:
   virtual bool isActive() const;
 
   virtual void destroy();
+  virtual void collapse();
+  virtual void burn();
 
   virtual void timeStep(const unsigned long time);
 
@@ -58,6 +62,7 @@ protected:
   void _setError(const std::string& err);
   void _fireWorkers();
   void _setClearAnimationOnStop( bool value );
+  void _disaster();
 
   virtual void _updateAnimation( const unsigned long time );
 

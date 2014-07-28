@@ -44,6 +44,7 @@
 
 using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace {
   enum { maxNegativeStep=-2, maxPositiveStep=2 };
@@ -161,7 +162,7 @@ void House::_updateHabitants( const CitizenGroup& group )
 
   if( firedWorkersNumber < 0 )
   {
-    events::GameEventPtr e = events::FireWorkers::create( pos(), abs( firedWorkersNumber ) );
+    GameEventPtr e = FireWorkers::create( pos(), abs( firedWorkersNumber ) );
     e->dispatch();
   }
 }
@@ -339,7 +340,7 @@ void House::_checkHomeless()
     int workersFireCount = homeless.count( CitizenGroup::mature );
     if( workersFireCount > 0 )
     {
-      events::GameEventPtr e = events::FireWorkers::create( pos(), workersFireCount );
+      GameEventPtr e = FireWorkers::create( pos(), workersFireCount );
       e->dispatch();
     }
 
@@ -694,7 +695,7 @@ void House::_levelDown()
         //house->_d->houseId = HouseLevel::smallHovel;
         house->_update( true );
 
-        events::GameEventPtr event = events::BuildEvent::create( (*tile)->pos(), house.object() );
+        GameEventPtr event = BuildEvent::create( (*tile)->pos(), house.object() );
         event->dispatch();
       }
 
@@ -973,7 +974,7 @@ void House::destroy()
 
   if( workers2fire > 0 )
   {
-    events::GameEventPtr e = events::FireWorkers::create( pos(), workersCount() );
+    GameEventPtr e = FireWorkers::create( pos(), workersCount() );
     e->dispatch();
   }
 
@@ -1071,6 +1072,29 @@ void House::load( const VariantMap& stream )
 
   Building::build( _city(), pos() );
   _update( false );
+}
+
+void House::_disaster()
+{
+  unsigned int habitantsNuumber = _d->habitants.count();
+  unsigned int buriedCitizens = habitantsNuumber - math::random( habitantsNuumber );
+
+  CitizenGroup buriedGroup = _d->habitants.retrieve( buriedCitizens );
+
+  GameEventPtr e = FireWorkers::create( pos(), buriedGroup.count( CitizenGroup::mature ) );
+  e->dispatch();
+}
+
+void House::collapse()
+{
+  Building::collapse();
+  _disaster();
+}
+
+void House::burn()
+{
+  Building::burn();
+  _disaster();
 }
 
 int House::Impl::getFoodLevel() const

@@ -45,7 +45,7 @@ void Well::deliverService()
 
   ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
-  bool lowHealth = false;
+  unsigned int lowHealth = 100;
   HouseList houses;
   foreach( it, reachedBuildings)
   {
@@ -53,18 +53,19 @@ void Well::deliverService()
     HousePtr house = ptr_cast<House>( *it );
     if( house.isValid() )
     {
-      lowHealth |= house->state( (Construction::Param)House::health ) < 10;
+      lowHealth = std::min<unsigned int>( lowHealth, house->state( (Construction::Param)House::health ) );
       houses << house;
     }
   }
 
-  if( lowHealth )
+  if( lowHealth < 30 )
   {
+    lowHealth = (100 - lowHealth) / 10;
     foreach( it, houses)
     {
       if( (*it)->state( (Construction::Param)House::health ) > 10 )
       {
-        (*it)->updateState( (Construction::Param)House::health, -1 );
+        (*it)->updateState( (Construction::Param)House::health, -lowHealth );
       }
     }
   }

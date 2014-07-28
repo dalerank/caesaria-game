@@ -87,7 +87,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
       overlay->deleteLater();
       rPos = overlay->pos();
       size = overlay->size();
-    }
+    }    
 
     switch( _type )
     {
@@ -123,7 +123,7 @@ void DisasterEvent::_exec( Game& game, unsigned int )
             std::string typev = _infoType > 1000
                                   ? StringHelper::format( 0xff, "house%02d", _infoType - 1000 )
                                   : MetaDataHolder::findTypename( _infoType );
-            ruins->setInfo( StringHelper::format( 0xff, "##ruins_%04d_text##", typev.c_str() ) );
+            ruins->setInfo( StringHelper::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
             ruins->afterBuild();
           }
         }

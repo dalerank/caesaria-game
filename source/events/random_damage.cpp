@@ -40,6 +40,7 @@ public:
   int minPopulation, maxPopulation;
   bool isDeleted;
   int strong;
+  int priority;
 };
 
 GameEventPtr RandomDamage::create()
@@ -66,10 +67,21 @@ void RandomDamage::_exec( Game& game, unsigned int time )
     ConstructionList ctrs;
     ctrs << game.city()->overlays();
 
-    for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
+    if( _d->priority != construction::unknown )
     {
-      if( exclude.count( (*it)->group() ) ) { it = ctrs.erase( it ); }
-      else { ++it; }
+      for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
+      {
+        if( (*it)->group() != _d->priority ) { it = ctrs.erase( it ); }
+        else { ++it; }
+      }
+    }
+    else
+    {
+      for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
+      {
+        if( exclude.count( (*it)->group() ) ) { it = ctrs.erase( it ); }
+        else { ++it; }
+      }
     }
 
     unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );
@@ -91,6 +103,8 @@ void RandomDamage::load(const VariantMap& stream)
   _d->minPopulation = vl.get( 0, 0 ).toInt();
   _d->maxPopulation = vl.get( 1, 999999 ).toInt();
   VARIANT_LOAD_ANY_D( _d, strong, stream );
+  VARIANT_LOAD_ANY_D( _d, priority, stream );
+
 }
 
 VariantMap RandomDamage::save() const
@@ -101,6 +115,7 @@ VariantMap RandomDamage::save() const
 
   ret[ lc_population ] = vl_pop;
   VARIANT_SAVE_ANY_D(ret, _d, strong );
+  VARIANT_SAVE_ANY_D(ret, _d, priority );
 
   return ret;
 }

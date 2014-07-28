@@ -82,6 +82,9 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
 
+  virtual void collapse();
+  virtual void burn();
+
   unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup remHabitants( int count );
@@ -109,7 +112,7 @@ public:
 private:
   void _levelUp();
   void _levelDown();
-
+  void _disaster();
   void _update(bool needChangeTexture);
   void _tryEvolve_1_to_11_lvl(int level, int growSize, const char desirability );
   void _tryEvolve_12_to_20_lvl(int level4grow, int minSize, const char desirability);
