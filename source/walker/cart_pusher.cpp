@@ -73,7 +73,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->maxDistance = defaultDeliverDistance;
-  _d->stock.setCapacity( defaultCartCapacity );
+  _d->stock.setCapacity( simpleCart );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -114,18 +114,18 @@ void CartPusher::_reachedPathway()
   }
 }
 
-GoodStock& CartPusher::getStock() {   return _d->stock;}
+GoodStock& CartPusher::stock() {   return _d->stock;}
 void CartPusher::setProducerBuilding(BuildingPtr building){   _d->producerBuilding = building;}
 void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuilding = building;}
 
-BuildingPtr CartPusher::getProducerBuilding()
+BuildingPtr CartPusher::producerBuilding()
 {
    if( _d->producerBuilding.isNull() ) 
      THROW("ProducerBuilding is not initialized");
    return _d->producerBuilding;
 }
 
-BuildingPtr CartPusher::getConsumerBuilding()
+BuildingPtr CartPusher::consumerBuilding()
 {
    if( _d->consumerBuilding.isNull() ) 
      THROW("ConsumerBuilding is not initialized");
@@ -372,9 +372,10 @@ void CartPusher::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-CartPusherPtr CartPusher::create(PlayerCityPtr city )
+CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
 {
   CartPusherPtr ret( new CartPusher( city ) );
+  ret->_d->stock.setCapacity( cap );
   ret->drop(); //delete automatically
 
   return ret;

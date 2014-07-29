@@ -230,7 +230,7 @@ void Factory::deliverGood()
     }
     else
     {
-      _d->store.store( walker->getStock(), walker->getStock().qty() );
+      _d->store.store( walker->stock(), walker->stock().qty() );
     }
   }
 }

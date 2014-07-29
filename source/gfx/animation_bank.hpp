@@ -42,7 +42,7 @@ public:
 
   void loadAnimation( vfs::Path model );
 
-  static const Picture& getCart( int cartID, constants::Direction direction );
+  static const Picture& getCart(int good, int capacity, constants::Direction direction );
 
   static const MovementAnimation& find( int type );
 private:
