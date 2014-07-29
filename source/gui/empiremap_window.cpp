@@ -204,10 +204,6 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   Point startInfo( 0, 0 );
   Point startButton( 0, 40 );
 
-#ifdef CAESARIA_PLATFORM_ANDROID
-  startInfo = Point( 0, 40 );
-  startButton = Point( 0, -8 );
-#endif
 
   Point startDraw( (tradeInfo->width() - 400) / 2, tradeInfo->height() - 90 );
   new Label( tradeInfo, Rect( startDraw + startInfo, Size( 70, 30 )), _("##emw_sell##") );
