@@ -26,9 +26,7 @@
 #include "core/direction.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
-#include <limits>
 #include <fstream>
-
 #include <cfloat>
 
 using namespace gfx;

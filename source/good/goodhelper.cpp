@@ -165,5 +165,5 @@ std::string GoodHelper::getTypeName( Good::Type type )
 
 Picture GoodHelper::getCartPicture(const GoodStock& stock, constants::Direction direction)
 {
-  return AnimationBank::getCart( stock.empty() ? Good::none : stock.type(), direction );
+  return AnimationBank::getCart( stock.empty() ? Good::none : stock.type(), stock.capacity(), direction );
 }
