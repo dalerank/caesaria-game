@@ -44,16 +44,16 @@ AndroidActionsBar::AndroidActionsBar( Widget* parent)
   _d->btnShowHelp = new TexturedButton( this, _d->btnMenu->leftdown(), pic.size(), -1, 651 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 661 );
-  _d->btnEnter = new TexturedButton( this, _d->btnShowHelp->leftdown(), pic.size(), -1, 661 );
+  _d->btnEnter = new TexturedButton( this, _d->btnShowHelp->rightup(), pic.size(), -1, 661 );
 
   pic = Picture::load( ResourceGroup::panelBackground, 654 );
-  _d->btnExit = new TexturedButton( this, _d->btnEnter->leftdown(), pic.size(), -1, 654 );
+  _d->btnExit = new TexturedButton( this, _d->btnShowHelp->leftdown(), pic.size(), -1, 654 );
 }
 
-Signal0<> &AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }
-Signal0<> &AndroidActionsBar::onEscapeClicked() { return _d->btnExit->onClicked(); }
-Signal0<> &AndroidActionsBar::onEnterClicked() { return _d->btnEnter->onClicked(); }
-Signal0<> &AndroidActionsBar::onRequestMenu() { return _d->btnMenu->onClicked(); }
+Signal0<>& AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }
+Signal0<>& AndroidActionsBar::onEscapeClicked() { return _d->btnExit->onClicked(); }
+Signal0<>& AndroidActionsBar::onEnterClicked() { return _d->btnEnter->onClicked(); }
+Signal0<>& AndroidActionsBar::onRequestMenu() { return _d->btnMenu->onClicked(); }
 
 void AndroidActionsBar::beforeDraw(gfx::Engine& painter)
 {
