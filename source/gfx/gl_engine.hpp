@@ -32,7 +32,7 @@
 namespace gfx
 {
 
-#if defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(CAESARIA_PLATFORM_ANDROID) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
 #define GlEngine SdlEngine
 #else
 

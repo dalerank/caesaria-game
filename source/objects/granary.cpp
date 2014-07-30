@@ -257,25 +257,39 @@ void Granary::_resolveDeliverMode()
   }
 }
 
+bool Granary::_trySendGoods( Good::Type gtype, int qty )
+{
+  GoodStock stock( gtype, qty, qty);
+  CartPusherPtr walker = CartPusher::create( _city() );
+  walker->send2city( BuildingPtr( this ), stock );
+
+  if( !walker->isDeleted() )
+  {
+    stock.setQty( 0 );
+    _d->goodStore.retrieve( stock, qty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
+    addWalker( walker.object() );
+    return true;
+  }
+
+  return false;
+}
+
 void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
+  const int maxSentTry = 3;
   for( int goodType=Good::wheat; goodType <= Good::vegetable; goodType++ )
   {
-    int goodQty = math::clamp( _d->goodStore.qty( (Good::Type)goodType ), 0, 400);
+    int trySentQty[maxSentTry] = { 400, 200, 100 };
 
-    if( goodQty > 0 )
+    int goodQty = _d->goodStore.qty( (Good::Type)goodType );
+    for( int i=0; i < maxSentTry; ++i )
     {
-      GoodStock stock( (Good::Type)goodType, goodQty, goodQty);
-      CartPusherPtr walker = CartPusher::create( _city() );
-      walker->send2city( BuildingPtr( this ), stock );
-
-      if( !walker->isDeleted() )
+      if( goodQty >= trySentQty[i] )
       {
-        stock.setQty( 0 );
-        _d->goodStore.retrieve( stock, goodQty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
-        addWalker( walker.object() );
-        break;
+        bool goodSended = _trySendGoods( (Good::Type)goodType, trySentQty[i] );
+        if( goodSended )
+          return;
       }
     }
   }   

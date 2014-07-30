@@ -167,7 +167,7 @@ TilesArray Tilemap::allTiles() const
   TileGrid& tg = *_d;
   for( int row=0; row < _d->size; row++ )
   {
-    ret.append( tg.at(row) );
+    ret.append( tg[row] );
   }
 
   return ret;
