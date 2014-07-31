@@ -839,7 +839,7 @@ int Widget::screenBottom() const { return absoluteRect().bottom(); }
 int Widget::screenRight() const { return absoluteRect().right(); }
 Point Widget::leftup() const { return Point( left(), top() ); }
 Point Widget::leftdown() const { return Point( left(), bottom() ); }
-Point Widget::rightupCorner() const { return Point( right(), top() ); }
+Point Widget::rightup() const { return Point( right(), top() ); }
 Point Widget::rightdownCorner() const { return Point( right(), bottom() ); }
 Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.UpperLeftCorner;}
 Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.UpperLeftCorner;}

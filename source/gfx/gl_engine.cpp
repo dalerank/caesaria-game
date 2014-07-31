@@ -44,14 +44,12 @@
   #ifdef CAESARIA_PLATFORM_LINUX
     #define GL_GLEXT_PROTOTYPES
   #endif
-
-  #include <SDL_opengl.h>
 #endif
 
 #if defined(CAESARIA_PLATFORM_ANDROID) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_HAIKU)
 
 #else
-
+#include <SDL_opengl.h>
 #ifdef CAESARIA_USE_FRAMEBUFFER
   #ifdef CAESARIA_PLATFORM_LINUX
     #define glGenFramebuffers  glGenFramebuffersEXT

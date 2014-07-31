@@ -126,7 +126,7 @@ InfoboxSimple::InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blac
   if( _d->lbText && blackArea.width() == 0 )
   {
     Rect r = _d->lbText->relativeRect();
-    r.LowerRightCorner = _d->btnExit->rightupCorner();
+    r.LowerRightCorner = _d->btnExit->rightup();
     _d->lbText->setGeometry( r );
   }
 
