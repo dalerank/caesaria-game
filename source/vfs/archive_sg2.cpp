@@ -365,14 +365,17 @@ void Sg2ArchiveReader::_writeIsometricTile( Picture& img, const unsigned char* b
 	int half_height = tile_height / 2;
 	int x, y, i = 0;
 
+	unsigned int* pixels = img.lock();
+
 	for (y = 0; y < half_height; y++)
 	{
 		int start = tile_height - 2 * (y + 1);
 		int end = tile_width - start;
 		for (x = start; x < end; x++, i += 2)
 		{
-			_set555Pixel( img, offset_x + x, offset_y + y,
-				      (buffer[i+1] << 8) | buffer[i]);
+			unsigned int* bufp32;
+			bufp32 = pixels + (offset_y + y) * img.width() + offset_x + x;
+			*bufp32 = _555toRGBA( (buffer[i+1] << 8) | buffer[i] );
 		}
 	}
 
@@ -382,10 +385,13 @@ void Sg2ArchiveReader::_writeIsometricTile( Picture& img, const unsigned char* b
 		int end = tile_width - start;
 		for (x = start; x < end; x++, i += 2)
 		{
-			_set555Pixel( img, offset_x + x, offset_y + y,
-					(buffer[i+1] << 8) | buffer[i]);
+			unsigned int* bufp32;
+			bufp32 = pixels + (offset_y + y) * img.width() + offset_x + x;
+			*bufp32 = _555toRGBA( (buffer[i+1] << 8) | buffer[i] );
 		}
 	}
+
+	img.unlock();
 }
 
 void Sg2ArchiveReader::_writeTransparentImage( Picture& img, const unsigned char* buffer, int length)
@@ -394,6 +400,7 @@ void Sg2ArchiveReader::_writeTransparentImage( Picture& img, const unsigned char
 	int x = 0, y = 0, j;
 	int width = img.width();
 
+	unsigned int* pixels = img.lock();
 	while (i < length)
 	{
 		unsigned char c = buffer[i++];
@@ -411,7 +418,10 @@ void Sg2ArchiveReader::_writeTransparentImage( Picture& img, const unsigned char
 			/* `c' is the number of image data bytes */
 			for (j = 0; j < c; j++, i += 2)
 			{
-				_set555Pixel(img, x, y, buffer[i] | (buffer[i+1] << 8));
+				unsigned int* bufp32;
+				bufp32 = pixels + y * img.width() + x;
+				*bufp32 = _555toRGBA( buffer[i] | (buffer[i+1] << 8) );
+
 				x++;
 				if (x >= width)
 				{
@@ -420,6 +430,7 @@ void Sg2ArchiveReader::_writeTransparentImage( Picture& img, const unsigned char
 			}
 		}
 	}
+	img.unlock();
 }
 
 void Sg2ArchiveReader::_loadPlainImage( Picture& pic, const SgFileEntry& rec)
@@ -441,21 +452,27 @@ void Sg2ArchiveReader::_loadPlainImage( Picture& pic, const SgFileEntry& rec)
 	}
 
 	int i = 0;
+	unsigned int* pixels = pic.lock();
+
 	unsigned char* rdata = (unsigned char*)data.data();
 	for (int y = 0; y < (int)rec.sr.height; y++)
 	{
 		for (int x = 0; x < (int)rec.sr.width; x++, i+= 2)
 		{
-			_set555Pixel( pic, x, y, rdata[i] | (rdata[i+1] << 8));
+			unsigned int* bufp32;
+			bufp32 = pixels + y * pic.width() + x;
+			*bufp32 = _555toRGBA( rdata[i] | (rdata[i+1] << 8) );
 		}
 	}
+
+	pic.unlock();
 }
 
-void Sg2ArchiveReader::_set555Pixel( Picture& img, int x, int y, unsigned short color)
+unsigned int Sg2ArchiveReader::_555toRGBA( unsigned short color)
 {
 	if(color == 0xf81f)
 	{
-		return;
+		return 0;
 	}
 
 	NColor rgb( 0xff000000 );
@@ -473,7 +490,7 @@ void Sg2ArchiveReader::_set555Pixel( Picture& img, int x, int y, unsigned short 
 	rgb.setGreen( (green >> 8) & 0xff );
 	rgb.setBlue( blue & 0xff );
 
-	img.setPixel( Point( x, y ), rgb.color );
+	return rgb.color;
 }
 
 NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)

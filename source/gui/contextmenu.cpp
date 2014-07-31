@@ -441,7 +441,7 @@ void ContextMenu::_recalculateSize()
 		{
 			Font font = refItem->font();
 			if( font.isValid() )
-				refItem->setDimmension( font.getSize( refItem->text() ) + Size( 40, 0 ) );
+				refItem->setDimmension( font.getTextSize( refItem->text() ) + Size( 40, 0 ) );
 
 			maxSize.setWidth( std::max<unsigned int>( refItem->dimmension().width(), maxSize.width() ) );
 		}

@@ -28,6 +28,7 @@
 #include "core/rectangle.hpp"
 #include "core/color.hpp"
 
+struct SDL_Texture;
 struct SDL_Surface;
 
 namespace gfx
@@ -43,7 +44,7 @@ public:
   Picture( const Picture& other );
   Picture& operator=(const Picture& other);
   
-  void init(SDL_Surface* surface, const Point& offset );
+  void init(SDL_Texture* texture, const Point& offset );
 
   void setOffset( Point offset );
   void setOffset( int x, int y );
@@ -52,43 +53,41 @@ public:
   void addOffset(int x, int y);
   Point offset() const;
 
-  void setName(std::string &name);  // for save game
+  void setName(const std::string &name);  // for save game
   std::string name() const;
-  Picture* clone() const;
   void setAlpha( unsigned char value );
-  void scale( Size size );
-  SDL_Surface* surface() const;
-  unsigned int& textureID();
-  unsigned int& textureID() const;
+
+  SDL_Texture* texture() const;
+  SDL_Surface* surface();
 
   int width() const;
   int height() const;
+  int pitch() const;
 
-  void draw( const Picture &srcpic, int x, int y, bool useAlpha=true );
-  void draw( const Picture &srcpic, const Point& pos, bool useAlpha=true );
-  void draw( const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
-  void draw( const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
+  void draw( Picture srcpic, int x, int y, bool useAlpha=true );
+  void draw( Picture srcpic, const Point& pos, bool useAlpha=true );
+  void draw( Picture srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
+  void draw( Picture srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
 
-  void fill( const NColor& color, const Rect& rect );
+  void fill(const NColor& color, Rect rect=Rect() );
 
-  // lock/unlock the given surface for pixel access
-  void lock();
+  unsigned int* lock();
   void unlock();
 
-  // Uint32 is the pixel color in the surface format. The surface must be locked!!!
-  int pixel( Point pos );
-  void setPixel( Point pos, const int color);
-
   Size size() const;
+  unsigned int sizeInBytes() const;
 
   bool isValid() const;
 
   static Picture& load( const std::string& group, const int id );
   static Picture& load( const std::string& filename );     
 
-  static Picture* create( const Size& size );
+  static Picture* create( const Size& size, unsigned char* data=0, bool mayChange=false );
+
   static const Picture& getInvalid();
   static void destroy( Picture* ptr );
+
+  void update();
 private:
   class Impl;
   ScopedPtr< Impl > _d;
@@ -112,7 +111,7 @@ class PictureRef : public ScopedPtr< Picture, PictureRefDeleter >
 public:
   void init( const Size& size )
   {
-    reset( Picture::create( size ) );
+    reset( Picture::create( size, 0, true ) );
   }
 };
 

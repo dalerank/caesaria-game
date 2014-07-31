@@ -108,6 +108,24 @@ unsigned long ByteArray::crc32(unsigned long crc)
 }
 
 
+unsigned long ByteArray::CRC32(unsigned long crc, const char * data, size_t length)
+{
+  if(length == 0)
+    return 0UL;
+
+  crc = crc ^ 0xffffffffUL;
+  const char* buf = data;
+  size_t len = length;
+
+  do
+  {
+    DO1;
+    len --;
+  } while (len > 0);
+
+  return crc ^ 0xffffffffUL;
+}
+
 ByteArray::ByteArray()
 {  
 }

@@ -8,15 +8,13 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODUL
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
-find_package(SDL REQUIRED)
-find_package(SDL_mixer REQUIRED)
-find_package(SDL_ttf REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${SDL_INCLUDE_DIR}
-  ${SDL_MIXER_INCLUDE_DIR}
-  ${SDL_TTF_INCLUDE_DIR}
+  ${SDL2_INCLUDE_DIR}
+  ${SDL2_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
 )
 
@@ -51,9 +49,8 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST})
 
 target_link_libraries(${PROJECT_NAME}
-  ${SDL_LIBRARY}
-  ${SDL_MIXER_LIBRARY}
-  ${SDL_TTF_LIBRARY}
+  ${SDL2_LIBRARY}
+  ${SDL2_MIXER_LIBRARY}
 )
 
 if( BUILD_ZLIB )
@@ -80,6 +77,11 @@ endif()
 if( BUILD_SMK )
   link_directories(${SMKLIB_HOME})
   target_link_libraries(${PROJECT_NAME} ${SMKLIB_NAME})
+endif()
+
+if( BUILD_TTF )
+  link_directories(${TTFLIB_HOME})
+  target_link_libraries(${PROJECT_NAME} ${TTFLIB_NAME})
 endif()
 
 if( BUILD_PNG )
@@ -214,9 +216,9 @@ endif(EXT_BINDIR)
 # Copy DLL to build output directory
 if(WIN32)
   set(_LIBS_FOR_DLL_SOURCE
-    ${SDL_LIBRARY}
-    ${SDL_MIXER_LIBRARY}
-    ${SDL_TTF_LIBRARY}
+    ${SDL2_LIBRARY}
+    ${SDL2_MIXER_LIBRARY}
+    ${SDL2_TTF_LIBRARY}
   )
 
   foreach(_lib ${_LIBS_FOR_DLL_SOURCE})

@@ -41,6 +41,8 @@ public:
 
   static ByteArray fromBase64(const std::string &encoded_string);
   std::string base64() const;
+
+  static unsigned long CRC32(unsigned long crc, const char* data, size_t length);
 };
 
 #endif //__CAESARIA_BYTEARRAY_H_INCLUDED__

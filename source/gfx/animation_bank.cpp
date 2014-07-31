@@ -119,17 +119,17 @@ void AnimationBank::Impl::loadCarts()
   carts[bigCart+Good::meat]     = fillCart( ResourceGroup::carts, 641, frontCart);
   carts[bigCart+Good::fish]     = fillCart( ResourceGroup::carts, 649, frontCart);
 
-  carts[bigCart+Good::grape]    = fillCart( ResourceGroup::carts, 41, frontCart);
-  carts[bigCart+Good::olive]    = fillCart( ResourceGroup::carts, 33, frontCart);
-  carts[bigCart+Good::wine]     = fillCart( ResourceGroup::carts, 57, frontCart);
-  carts[bigCart+Good::oil]      = fillCart( ResourceGroup::carts, 65, frontCart);
-  carts[bigCart+Good::iron]     = fillCart( ResourceGroup::carts, 73, frontCart);
-  carts[bigCart+Good::timber]   = fillCart( ResourceGroup::carts, 81, frontCart);
-  carts[bigCart+Good::clay]     = fillCart( ResourceGroup::carts, 89, frontCart);
-  carts[bigCart+Good::marble]   = fillCart( ResourceGroup::carts, 97, frontCart);
-  carts[bigCart+Good::weapon]   = fillCart( ResourceGroup::carts, 105, frontCart);
-  carts[bigCart+Good::furniture]= fillCart( ResourceGroup::carts, 113, frontCart);
-  carts[bigCart+Good::pottery]  = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[bigCart+Good::olive]    = fillCart( ResourceGroup::citizen5, 97, frontCart);
+  carts[bigCart+Good::grape]    = fillCart( ResourceGroup::carts, 105, frontCart);
+  carts[bigCart+Good::wine]     = fillCart( ResourceGroup::carts, 113, frontCart);
+  carts[bigCart+Good::oil]      = fillCart( ResourceGroup::carts, 121, frontCart);
+  carts[bigCart+Good::iron]     = fillCart( ResourceGroup::carts, 129, frontCart);
+  carts[bigCart+Good::timber]   = fillCart( ResourceGroup::carts, 137, frontCart);
+  carts[bigCart+Good::clay]     = fillCart( ResourceGroup::carts, 145, frontCart);
+  carts[bigCart+Good::marble]   = fillCart( ResourceGroup::carts, 153, frontCart);
+  carts[bigCart+Good::weapon]   = fillCart( ResourceGroup::carts, 161, frontCart);
+  carts[bigCart+Good::furniture]= fillCart( ResourceGroup::carts, 169, frontCart);
+  carts[bigCart+Good::pottery]  = fillCart( ResourceGroup::carts, 177, frontCart);
 
   carts[megaCart+Good::none]     = fillCart( ResourceGroup::carts, noneGoodsPicId, frontCart);
   carts[megaCart+Good::wheat]    = fillCart( ResourceGroup::carts, 547, frontCart);

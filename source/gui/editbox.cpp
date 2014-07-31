@@ -849,7 +849,7 @@ void EditBox::beforeDraw(Engine& painter )
              std::string rText = __ucs2utf8( *txtLine );
              //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
              Rect curTextureRect( Point( 0, 0), _d->currentTextRect.size() );
-             curTextureRect = _d->lastBreakFont.calculateTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
+             curTextureRect = _d->lastBreakFont.getTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
              curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
 
              _d->lastBreakFont.draw( *_d->textPicture, rText, curTextureRect.UpperLeftCorner );
@@ -866,7 +866,7 @@ void EditBox::beforeDraw(Engine& painter )
                {
                    // highlight start is on this line
                    s = rText.substr(0, realmbgn - startPos);
-                   mbegin = _d->lastBreakFont.getSize( s ).width();
+                   mbegin = _d->lastBreakFont.getTextSize( s ).width();
 
                    // deal with kerning
                    //mbegin += _d->lastBreakFont.getKerningSize( &((*txtLine)[realmbgn - startPos]),
@@ -880,11 +880,11 @@ void EditBox::beforeDraw(Engine& painter )
                {
                    // highlight end is on this line
                    s2 = rText.substr( 0, realmend - startPos );
-                   mend = _d->lastBreakFont.getSize( s2 ).width();
+                   mend = _d->lastBreakFont.getTextSize( s2 ).width();
                    lineEndPos = (int)s2.size();
                }
                else
-                   mend = _d->lastBreakFont.getSize( (char*)txtLine->c_str() ).width();
+                   mend = _d->lastBreakFont.getTextSize( (char*)txtLine->c_str() ).width();
 
                _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.UpperLeftCorner;
                _d->markAreaRect.UpperLeftCorner += Point( mbegin, 0 );
@@ -928,7 +928,7 @@ void EditBox::beforeDraw(Engine& painter )
       }
 
       std::wstring stringBeforeCursor = txtLine->substr(0,_d->cursorPos-startPos);
-      charcursorpos = _d->lastBreakFont.getSize( __ucs2utf8( stringBeforeCursor ) ).width() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
+      charcursorpos = _d->lastBreakFont.getTextSize( __ucs2utf8( stringBeforeCursor ) ).width() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
 
       setTextRect(cursorLine);
       _d->cursorRect = _d->currentTextRect;
@@ -1233,8 +1233,8 @@ void EditBox::breakText()
 			// here comes the next whitespace, look if
 			// we can break the last word to the next line
 			// We also break whitespace, otherwise cursor would vanish beside the right border.
-			int whitelgth = font.getSize( (char*)whitespace.c_str() ).width();
-			int worldlgth = font.getSize( (char*)word.c_str() ).width();
+			int whitelgth = font.getTextSize( (char*)whitespace.c_str() ).width();
+			int worldlgth = font.getTextSize( (char*)word.c_str() ).width();
 
 			if (_d->wordWrapEnabled && length + worldlgth + whitelgth > elWidth)
 			{
@@ -1301,11 +1301,11 @@ void EditBox::setTextRect(int line, const std::string& tempText )
         //const unsigned int lineCount = (WordWrap || MultiLine) ? BrokenText.size() : 1;
 	if (_d->wordWrapEnabled || _d->multiLine)
 	{
-		d = font.getSize( tempText.size() > 0 ? tempText : (char*)_d->brokenText[line].c_str() );
+		d = font.getTextSize( tempText.size() > 0 ? tempText : (char*)_d->brokenText[line].c_str() );
 	}
 	else
 	{
-		d = font.getSize( tempText.size() > 0 ? tempText : (char*)_d->text.c_str() );
+		d = font.getTextSize( tempText.size() > 0 ? tempText : (char*)_d->text.c_str() );
 		d.setHeight( height() );
 	}
 	
@@ -1416,9 +1416,9 @@ void EditBox::calculateScrollPos()
 		int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
 
     int cStart = _d->currentTextRect.UpperLeftCorner.x() + _d->horizScrollPos +
-                                font.getSize( (char*)txtLine->substr(0, cPos).c_str() ).width();
+                                font.getTextSize( (char*)txtLine->substr(0, cPos).c_str() ).width();
 
-		int cEnd = cStart + font.getSize( "_ " ).width();
+		int cEnd = cStart + font.getTextSize( "_ " ).width();
 
 		if ( screenRight() < cEnd)
 			_d->horizScrollPos = cEnd - screenRight();

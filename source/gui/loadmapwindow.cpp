@@ -62,7 +62,7 @@ protected:
 
     std::string timeStr = item.data().toString();
     Rect textRect = _itemsRect();
-    textRect = font2.calculateTextRect( timeStr, Rect( 0, pos.y(), textRect.width(), pos.y() + itemHeight() ),
+    textRect = font2.getTextRect( timeStr, Rect( 0, pos.y(), textRect.width(), pos.y() + itemHeight() ),
                                         align::lowerRight, align::center );
 
     font2.setColor( font.color() );

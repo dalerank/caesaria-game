@@ -44,6 +44,7 @@
 #include "sound/engine.hpp"
 #include "sound/engine.hpp"
 #include "gui/widgetpositionanimator.hpp"
+#include "core/event.hpp"
 
 using namespace gfx;
 using namespace gui;
@@ -351,7 +352,15 @@ void StartMenu::draw()
   _d->game->gui()->draw();
 }
 
-void StartMenu::handleEvent( NEvent& event ){  _d->game->gui()->handleEvent( event );}
+void StartMenu::handleEvent( NEvent& event )
+{
+  if (event.EventType == sEventQuit)
+  {
+    _d->resolveQuitGame();
+  }
+
+  _d->game->gui()->handleEvent( event );
+}
 
 void StartMenu::initialize()
 {

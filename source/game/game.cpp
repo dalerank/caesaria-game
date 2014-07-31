@@ -59,7 +59,6 @@
 #include "freeplay_finalizer.hpp"
 #include "events/warningmessage.hpp"
 #include "gfx/picture_info_bank.hpp"
-#include "gfx/gl_engine.hpp"
 
 #include <list>
 
@@ -110,11 +109,9 @@ void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
 
-  std::string render = GameSettings::get( GameSettings::render ).toString();
+  //std::string render = GameSettings::get( GameSettings::render ).toString();
 
-  if( render == "opengl" ) { engine = new gfx::GlEngine(); }
-  else
-  { engine = new gfx::SdlEngine(); }
+  engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );

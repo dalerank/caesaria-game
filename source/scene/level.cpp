@@ -153,7 +153,7 @@ void Level::initialize()
   _d->game->gui()->clear();
 
   const int topMenuHeight = 23;
-  const Picture& rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
+  Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
   gui::GuiEnv& gui = *_d->game->gui();
@@ -551,6 +551,12 @@ void Level::handleEvent( NEvent& event )
 {
   //After MouseDown events are send to the same target till MouseUp
   GuiEnv& gui = *_d->game->gui();
+
+  if (event.EventType == sEventQuit)
+  {
+    _resolveExitGame();
+    return;
+  }
 
   static enum _MouseEventTarget
   {

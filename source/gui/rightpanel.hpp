@@ -32,7 +32,7 @@ namespace gui
 class MenuRigthPanel : public Widget
 {
 public:
-    static MenuRigthPanel* create( Widget* parent, const Rect& rectangle, const gfx::Picture& tilePic );
+    static MenuRigthPanel* create(Widget* parent, const Rect& rectangle, gfx::Picture& tilePic );
         
     void draw( gfx::Engine& engine );
 private:

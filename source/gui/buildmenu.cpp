@@ -68,7 +68,7 @@ public:
     {           
       char buffer[32];
       sprintf( buffer, "%d", _cost );
-      Rect textRect = font.calculateTextRect( buffer, Rect( 5, 0, width()-10, height() ),
+      Rect textRect = font.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
                                                 align::lowerRight, verticalTextAlign() );
       font.draw( *_textPictureRef( state ), buffer, textRect.left(), textRect.top() );
     }
@@ -112,11 +112,11 @@ void BuildMenu::initialize()
     BuildButton *button = dynamic_cast< BuildButton* >( *widget );
     if( button )
     {
-        textSize = font.getSize( button->text());
+        textSize = font.getTextSize( button->text());
         max_text_width = std::max(max_text_width, textSize.width() );
 
         std::string text = StringHelper::format( 0xff, "%i", button->getCost() );
-        textSize = font.getSize( text );
+        textSize = font.getTextSize( text );
         max_cost_width = std::max(max_cost_width, textSize.width());
     }
   }

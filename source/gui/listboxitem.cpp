@@ -117,6 +117,6 @@ Variant ListBoxItem::data() const{ return _d->data; }
 void ListBoxItem::setData( const Variant& value ){ _d->data = value; }
 float ListBoxItem::currentHovered() const {   return _d->currentHovered;}
 void ListBoxItem::updateHovered( float delta ){    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );}
-Picture ListBoxItem::icon() const { return _d->icon; }
+Picture ListBoxItem::icon() { return _d->icon; }
 
 }//end namespace gui

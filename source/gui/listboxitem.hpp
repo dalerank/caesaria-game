@@ -58,7 +58,7 @@ public:
   const std::string& text() const;
 	void setTag( int tag );
 	int tag() const;
-	gfx::Picture icon() const;
+	gfx::Picture icon();
 	void setIcon( gfx::Picture pic );
 
   bool isEnabled() const;

@@ -201,7 +201,7 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
   start = TilePos( mini, minj );
   stop = TilePos( maxi, maxj );
 
-  size_t expected = 2 * (maxi - mini) + 2 * (maxj - minj) + corners ? 4 : 0;
+  size_t expected = (2 * (maxi - mini) + 2 * (maxj - minj) + corners) ? 4 : 0;
   res.reserve(expected);
 
   int delta_corners = 0;

@@ -216,6 +216,7 @@ void Minimap::Impl::updateImage()
 
   int w = minimap->width()-1;
   int h = minimap->height();
+  unsigned int* pixels = minimap->lock();
   for( int i = startPos.i(); i < stopPos.i(); i++)
   {
     for (int j = startPos.j(); j < stopPos.j(); j++)
@@ -229,10 +230,13 @@ void Minimap::Impl::updateImage()
       if( pnt.x() >= w || pnt.y() >= h )
         continue;
 
-      minimap->setPixel( pnt, c1);
-      minimap->setPixel( pnt + Point( 1, 0 ), c2);
+      unsigned int* bufp32;
+      bufp32 = pixels + pnt.y() * minimap->width() + pnt.x();
+      *bufp32 = c1;
+      *(bufp32+1) = c2;
     }
   }
+
 
   WalkerList walkers = city->walkers( walker::any, startPos, stopPos );
   foreach( it, walkers )
@@ -246,6 +250,8 @@ void Minimap::Impl::updateImage()
       minimap->fill( c1, Rect( pnt, Size(2) ) );
     }
   }
+
+  minimap->unlock();
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it

@@ -276,8 +276,8 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
 {
   Menu* ret = new Menu( parent, id, Rect( 0, 0, 1, 1 ) );
 
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
-  const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
+  Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
+  Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
   ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), parent->height() ) ) );
 
@@ -388,8 +388,8 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 {
   ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, 1, 1 ) );
 
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
-  const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
+  Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
+  Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
   ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), parent->height() ) ) );
 

@@ -158,7 +158,7 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 
   // draw button background
   //background->fill( 0x0000000, Rect() );
-  background->lock();
+  unsigned int* pixels = background->lock();
 
   if( s )
   {
@@ -167,7 +167,9 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
       for( unsigned int j = 0; j < videoWidth; j++ )
       {
         unsigned char index = image_data[i * videoWidth + j];
-        background->setPixel( Point( j, i ), colors[ index ] );
+        unsigned int* bufp32;
+        bufp32 = pixels + j * videoWidth + i;
+        *bufp32 = colors[ index ];
       }
     }
   }

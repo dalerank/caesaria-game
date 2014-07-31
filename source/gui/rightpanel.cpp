@@ -42,7 +42,7 @@ void MenuRigthPanel::draw( gfx::Engine& engine )
   engine.draw( *_d->picture, screenLeft(), screenTop() );
 }
 
-MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
+MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, Picture& tilePic )
 {
   MenuRigthPanel* ret = new MenuRigthPanel( parent );
 

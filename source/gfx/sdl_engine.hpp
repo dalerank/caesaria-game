@@ -20,6 +20,8 @@
 #ifndef _CAESARIA_SDL_ENGINE_H_INCLUDE_
 #define _CAESARIA_SDL_ENGINE_H_INCLUDE_
 
+#include <SDL_surface.h>
+#include <SDL_video.h>
 #include "engine.hpp"
 #include "picture.hpp"
 #include "core/scopedptr.hpp"
@@ -52,11 +54,11 @@ public:
   virtual void loadPicture(Picture &ioPicture);
   virtual void unloadPicture(Picture& ioPicture);
 
-  virtual void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
-  virtual void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
-  virtual void draw(const Pictures& pictures, const Point& pos, Rect* clipRect=0 );
+  virtual void draw( const Picture& picture, const int dx, const int dy, Rect* clipRect=0);
+  virtual void draw( const Picture& picture, const Point& pos, Rect* clipRect=0 );
+  virtual void draw( const Pictures& pictures, const Point& pos, Rect* clipRect=0 );
   // creates a picture with the given size, it will need to be loaded by the graphic engine
-  virtual Picture* createPicture(const Size& size);
+  virtual Picture* createPicture(const Size& size, unsigned char* data, bool mayChange);
 
   virtual unsigned int fps() const;
   virtual void createScreenshot( const std::string& filename );
@@ -65,8 +67,9 @@ public:
   virtual Point cursorPos() const;
 
   virtual Picture& screen();
+  virtual unsigned int format() const;
 
-private:
+protected:
   class Impl;
   ScopedPtr< Impl > _d;
 };

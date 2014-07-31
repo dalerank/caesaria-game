@@ -239,7 +239,7 @@ void PushButton::_updateTexture( ElementState state )
   Font stFont = _d->buttonStates[ state ].font;
   if( textTxs && stFont.isValid() )
   {
-    Rect textRect = stFont.calculateTextRect( text(), Rect( 0, 0, width(), height() ),
+    Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
     textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
     stFont.draw( *textTxs, text(), textRect.UpperLeftCorner + _d->textOffset );

@@ -19,7 +19,7 @@
 #include "core/platform.hpp"
 
 #define CAESARIA_VERSION_MAJOR 0
-#define CAESARIA_VERSION_MINOR 3
+#define CAESARIA_VERSION_MINOR 4
 #define CAESARIA_VERSION_REVSN @rev_number@
 
 #define CAESARIA_STR_EXT(__A) #__A

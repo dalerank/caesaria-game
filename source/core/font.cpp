@@ -19,7 +19,7 @@
 #include "gfx/picture.hpp"
 #include "logger.hpp"
 #include "exception.hpp"
-#include <SDL_ttf.h>
+#include "ttf/SDL_ttf.h"
 #include "color.hpp"
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
@@ -32,48 +32,10 @@ class Font::Impl
 {
 public:
   TTF_Font *ttfFont;
-  SDL_Color color;
-
-  void setSurfaceAlpha (SDL_Surface *surface, Uint8 alpha);    
+  SDL_Color color; 
 };
 
-void Font::Impl::setSurfaceAlpha( SDL_Surface *surface, Uint8 alpha )
-{
-  SDL_PixelFormat* fmt = surface->format;
 
-  // If surface has no alpha channel, just set the surface alpha.
-  if( fmt->Amask == 0 )
-  {
-    SDL_SetAlpha( surface, SDL_SRCALPHA, alpha );
-  }
-  // Else change the alpha of each pixel.
-  else 
-  {
-    unsigned bpp = fmt->BytesPerPixel;
-    // Scaling factor to clamp alpha to [0, alpha].
-    float scale = alpha / 255.0f;
-
-    SDL_LockSurface(surface);
-
-    for (int y = 0; y < surface->h; ++y) 
-    {
-      for (int x = 0; x < surface->w; ++x) 
-      {
-        // Get a pointer to the current pixel.
-        Uint32* pixel_ptr = (Uint32 *)( (Uint8 *)surface->pixels + y * surface->pitch + x * bpp );
-
-        // Get the old pixel components.
-        Uint8 r, g, b, a;
-        SDL_GetRGBA( *pixel_ptr, fmt, &r, &g, &b, &a );
-
-        // Set the pixel with the new alpha.
-        *pixel_ptr = SDL_MapRGBA( fmt, r, g, b, (Uint8)(scale * a) );
-      }   
-    }
-    
-    SDL_UnlockSurface(surface);
-  }
-}
 Font::Font() : _d( new Impl )
 {
   _d->ttfFont = 0;
@@ -89,14 +51,6 @@ Font Font::create( const std::string& family, const int size )
 {
   return Font();
 }
-
-// unsigned int Font::getKerningSize( )
-// {
-//   if( _d->ttfFont )
-//   {
-//     return TTF_GetFontKerningSize( );
-//   }
-// }
 
 unsigned int Font::getWidthFromCharacter( unsigned int c ) const
 {
@@ -129,13 +83,13 @@ int Font::getCharacterFromPos(const std::wstring& text, int pixel_x) const
 int Font::color() const
 {
   int ret = 0;
-  ret = (_d->color.unused << 24 ) + (_d->color.r << 16) + (_d->color.g << 8) + _d->color.b;
+  ret = (_d->color.a << 24 ) + (_d->color.r << 16) + (_d->color.g << 8) + _d->color.b;
   return ret;
 }
 
 bool Font::isValid() const {  return _d->ttfFont != 0; }
 
-Size Font::getSize( const std::string& text ) const
+Size Font::getTextSize( const std::string& text ) const
 {
   int w, h;
   TTF_SizeUTF8( _d->ttfFont, text.c_str(), &w, &h );
@@ -148,11 +102,11 @@ bool Font::operator!=( const Font& other ) const
   return !( _d->ttfFont == other._d->ttfFont );
 }
 
-Rect Font::calculateTextRect(const std::string& text, const Rect& baseRect,
+Rect Font::getTextRect(const std::string& text, const Rect& baseRect,
                              align::Type horizontalAlign, align::Type verticalAlign )
 {
   Rect resultRect;
-  Size d = getSize( text );
+  Size d = getTextSize( text );
 
   // justification
   switch (horizontalAlign)
@@ -202,35 +156,41 @@ void Font::setColor( const NColor& color )
   _d->color.b = color.getBlue();
   _d->color.g = color.getGreen();
   _d->color.r = color.getRed();
-  _d->color.unused = color.getAlpha();
+  _d->color.a = color.getAlpha();
 }
 
-void Font::draw(Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
+void Font::draw( Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
 {
   if( !_d->ttfFont || !dstpic.isValid() )
     return;
 
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  if( sText && useAlpha )
-  {
-    SDL_SetAlpha( sText, 0, 0 );
-  }
 
   if( sText )
   {
-    Picture pic;
-    pic.init( sText, Point( 0, 0 ) );
+    if( !(dstpic.surface()) )
+    {
+      Logger::warning("Picture does not have surface or srcimg is null");
+      return;
+    }
 
-    if( updatextTx )
-      dstpic.lock();
+    SDL_Rect srcRect, dstRect;
 
-    dstpic.draw( pic, dx, dy);
+    srcRect.x = 0;
+    srcRect.y = 0;
+    srcRect.w = sText->w;
+    srcRect.h = sText->h;
+    dstRect.x = dx;
+    dstRect.y = dy;
+    dstRect.w = sText->w;
+    dstRect.h = sText->h;
 
-    if( updatextTx )
-      dstpic.unlock();
+    SDL_BlitSurface( sText, &srcRect, dstpic.surface(), &dstRect );
+    SDL_FreeSurface( sText );
   }
 
-  SDL_FreeSurface( sText );
+  if( updatextTx )
+    dstpic.update();
 }       
 
 void Font::draw(Picture &dstpic, const std::string &text, const Point& pos, bool useAlpha , bool updateTx)
@@ -420,8 +380,8 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getSize( rwhitespace ).width();
-					const int wordlgth = font.getSize( word ).width();
+					const int whitelgth = font.getTextSize( rwhitespace ).width();
+					const int wordlgth = font.getTextSize( word ).width();
 
 					if (wordlgth > elWidth)
 					{
@@ -434,7 +394,7 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 							std::string first  = word.substr(0, where);
 							std::string second = word.substr(where, word.size() - where);
 							brokenText.push_back(line + first + "-");
-							const int secondLength = font.getSize( second ).width();
+							const int secondLength = font.getTextSize( second ).width();
 
 							length = secondLength;
 							line = second;
@@ -521,8 +481,8 @@ static StringArray _font_breakText(const std::string& text, const Font& f, int e
 				{
 					// here comes the next whitespace, look if
 					// we must break the last word to the next line.
-					const int whitelgth = font.getSize( rwhitespace ).width();
-					const int wordlgth = font.getSize( word ).width();
+					const int whitelgth = font.getTextSize( rwhitespace ).width();
+					const int wordlgth = font.getTextSize( word ).width();
 
 					if (length && (length + wordlgth + whitelgth > elWidth))
 					{

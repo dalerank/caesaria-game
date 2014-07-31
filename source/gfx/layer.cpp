@@ -268,7 +268,7 @@ void Layer::_setTooltipText(std::string text)
   {
     Font font = Font::create( FONT_2 );
     _d->tooltipText = text;
-    Size size = font.getSize( text );
+    Size size = font.getTextSize( text );
 
     if( _d->tooltipPic->size() != size )
     {

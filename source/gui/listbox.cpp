@@ -479,8 +479,10 @@ bool ListBox::onEvent(const NEvent& event)
         default:
         break;
         }
-          }
-          break;
+      }
+      break;
+
+			default: break;
 		}
 	}
 
@@ -569,7 +571,7 @@ Rect ListBox::_itemsRect()
   return frameRect;
 }
 
-void ListBox::_drawItemIcon(Picture& texture, ListBoxItem& item, const Point& pos)
+void ListBox::_drawItemIcon( Picture texture, ListBoxItem& item, const Point& pos)
 {
   item.icon().setAlpha( 0 );
   texture.draw( item.icon(), pos );
@@ -626,7 +628,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
         currentFont = _getCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
         currentFont.setColor( _getCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
 
-        Rect textRect = currentFont.calculateTextRect( refItem.text(), frameRect,
+        Rect textRect = currentFont.getTextRect( refItem.text(), frameRect,
                                                        itemTextHorizontalAlign, itemTextVerticalAlign );
 
         //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );

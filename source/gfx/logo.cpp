@@ -19238,20 +19238,22 @@ static const char* const data =
 
 void initialize( const std::string& name)
 {
-	gfx::Picture* pic = gfx::Picture::create( Size( width, height ) );
 	char const* ptr = data;
+  std::vector<unsigned int> pixels;
+  pixels.resize( width * height );
 
-	pic->lock();
 	for( unsigned int y = 0; y < height; y++ )
 	{
 		for( unsigned int x=0; x < width; x++ )
 		{
 			char pixel[4];
 			PIXEL( ptr, pixel)
-			pic->setPixel( Point( x, y ), *(int*)pixel );
+      pixels[ y * width + x ] = *(int*)pixel;
+      //pic->setPixel( Point( x, y ), *(int*)pixel );
 		}
 	}
-	pic->unlock();
+
+  gfx::Picture* pic = gfx::Picture::create( Size( width, height ), (unsigned char*)pixels.data() );
 
 	gfx::PictureBank::instance().setPicture( name, *pic );
 }

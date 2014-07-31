@@ -44,8 +44,6 @@ public:
   // create runtime resources
   void createResources();
 
-  // loads all resources of the given archive file
-  //void loadArchive(const std::string &filename, GfxEngine& engine );
   ~PictureBank();
 
 private:

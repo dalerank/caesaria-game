@@ -80,9 +80,9 @@ void EventConverter::Impl::createKeyMap()
     KeyMap[ SDLK_DOWN ]= KEY_DOWN;
 
     // select missing
-    KeyMap[ SDLK_PRINT]=KEY_PRINT;
+    KeyMap[ SDLK_PRINTSCREEN]=KEY_PRINT;
     // execute missing
-    KeyMap[ SDLK_PRINT]= KEY_SNAPSHOT;
+    KeyMap[ SDLK_PRINTSCREEN]= KEY_SNAPSHOT;
 
     KeyMap[ SDLK_INSERT]= KEY_INSERT;
     KeyMap[ SDLK_DELETE]= KEY_DELETE;
@@ -126,21 +126,21 @@ void EventConverter::Impl::createKeyMap()
     KeyMap[ SDLK_y ]= KEY_KEY_Y;
     KeyMap[ SDLK_z ]= KEY_KEY_Z;
 
-    KeyMap[ SDLK_LSUPER]= KEY_LWIN;
-    KeyMap[ SDLK_RSUPER]= KEY_RWIN;
+    KeyMap[ SDLK_LGUI]= KEY_LWIN;
+    KeyMap[ SDLK_RGUI]= KEY_RWIN;
     // apps missing
     KeyMap[ SDLK_POWER]=  KEY_SLEEP; //??
 
-    KeyMap[ SDLK_KP0]= KEY_NUMPAD0;
-    KeyMap[ SDLK_KP1]= KEY_NUMPAD1;
-    KeyMap[ SDLK_KP2]= KEY_NUMPAD2;
-    KeyMap[ SDLK_KP3]= KEY_NUMPAD3;
-    KeyMap[ SDLK_KP4]= KEY_NUMPAD4;
-    KeyMap[ SDLK_KP5]= KEY_NUMPAD5;
-    KeyMap[ SDLK_KP6]= KEY_NUMPAD6;
-    KeyMap[ SDLK_KP7]= KEY_NUMPAD7;
-    KeyMap[ SDLK_KP8]= KEY_NUMPAD8;
-    KeyMap[ SDLK_KP9]= KEY_NUMPAD9;
+    KeyMap[ SDLK_KP_0]= KEY_NUMPAD0;
+    KeyMap[ SDLK_KP_1]= KEY_NUMPAD1;
+    KeyMap[ SDLK_KP_2]= KEY_NUMPAD2;
+    KeyMap[ SDLK_KP_3]= KEY_NUMPAD3;
+    KeyMap[ SDLK_KP_4]= KEY_NUMPAD4;
+    KeyMap[ SDLK_KP_5]= KEY_NUMPAD5;
+    KeyMap[ SDLK_KP_6]= KEY_NUMPAD6;
+    KeyMap[ SDLK_KP_7]= KEY_NUMPAD7;
+    KeyMap[ SDLK_KP_8]= KEY_NUMPAD8;
+    KeyMap[ SDLK_KP_9]= KEY_NUMPAD9;
     KeyMap[ SDLK_KP_MULTIPLY]= KEY_MULTIPLY;
     KeyMap[ SDLK_KP_PLUS]= KEY_ADD;
     //	KeyMap[ SDLK_KP_, KEY_SEPARATOR));
@@ -165,8 +165,8 @@ void EventConverter::Impl::createKeyMap()
     KeyMap[ SDLK_F15]= KEY_F15;
     // no higher F-keys
 
-    KeyMap[ SDLK_NUMLOCK]= KEY_NUMLOCK;
-    KeyMap[ SDLK_SCROLLOCK]= KEY_SCROLL;
+    KeyMap[ SDLK_NUMLOCKCLEAR]= KEY_NUMLOCK;
+    KeyMap[ SDLK_SCROLLLOCK]= KEY_SCROLL;
     KeyMap[ SDLK_LSHIFT]=  KEY_LSHIFT;
     KeyMap[ SDLK_RSHIFT]=  KEY_RSHIFT;
     KeyMap[ SDLK_LCTRL]=   KEY_LCONTROL;
@@ -190,13 +190,13 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   {
     ret.EventType = sEventMouse;
     ret.mouse.type = mouseMoved;
-    Uint8 *keys = SDL_GetKeyState(NULL);
+    SDL_Keymod mods = SDL_GetModState();
 
     _d->mouseX = ret.mouse.x = sdlEvent.motion.x;
     _d->mouseY = ret.mouse.y = sdlEvent.motion.y;
 
-    ret.mouse.control = keys[SDLK_LCTRL];
-    ret.mouse.shift = keys[SDLK_LSHIFT];
+    ret.mouse.control = mods & KMOD_CTRL;
+    ret.mouse.shift = mods & KMOD_SHIFT;
     ret.mouse.buttonStates = _d->mouseButtonStates;
   }
   break;
@@ -205,13 +205,13 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   case SDL_MOUSEBUTTONUP:
   {    
     ret.EventType = sEventMouse;
-    Uint8 *keys = SDL_GetKeyState(NULL);
+    SDL_Keymod mods = SDL_GetModState();
 
     ret.mouse.x = sdlEvent.button.x;
     ret.mouse.y = sdlEvent.button.y;
 
-    ret.mouse.control = keys[SDLK_LCTRL];
-    ret.mouse.shift = keys[SDLK_LSHIFT];
+    ret.mouse.control = mods & KMOD_CTRL;
+    ret.mouse.shift = mods & KMOD_SHIFT;
     ret.mouse.type = mouseMoved;
 
     switch(sdlEvent.button.button)
@@ -225,7 +225,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
       else
       {
         ret.mouse.type = mouseLbtnRelease;
-        _d->mouseButtonStates &= !mbsmLeft;
+        _d->mouseButtonStates &= ~mbsmLeft;
       }
     break;
 
@@ -238,7 +238,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
       else
       {
         ret.mouse.type = mouseRbtnRelease;
-        _d->mouseButtonStates &= !mbsmRight;
+        _d->mouseButtonStates &= ~mbsmRight;
       }
     break;
 
@@ -250,21 +250,9 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
       }
       else
       {
-        ret.mouse.control = keys[SDLK_LCTRL];
-        ret.mouse.shift = keys[SDLK_LSHIFT];
         ret.mouse.type = mouseMbtnRelease;
-        _d->mouseButtonStates &= !mbsmMiddle;
+        _d->mouseButtonStates &= ~mbsmMiddle;
       }
-    break;
-
-    case SDL_BUTTON_WHEELUP:
-      ret.mouse.type = mouseWheel;
-      ret.mouse.wheel = 1.0f;
-    break;
-
-    case SDL_BUTTON_WHEELDOWN:
-      ret.mouse.type = mouseWheel;
-      ret.mouse.wheel = -1.0f;
     break;
     }
 
@@ -287,6 +275,13 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     }
   }
   break;
+  case SDL_MOUSEWHEEL:
+  {
+    SDL_MouseWheelEvent wheelEvent = sdlEvent.wheel;
+    ret.mouse.type = mouseWheel;
+    ret.mouse.wheel = wheelEvent.y > 0 ? 1.0f : -1.0f;
+  }
+  break;
 
   case SDL_KEYDOWN:
   case SDL_KEYUP:
@@ -302,12 +297,12 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
     ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
     ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
-    ret.keyboard.symbol =  sdlEvent.key.keysym.unicode;
+    ret.keyboard.symbol =  sdlEvent.key.keysym.sym;
   }
   break;
 
   case SDL_QUIT:
-      //Close = true;
+    ret.EventType = sEventQuit;
   break;
 
 //     case SDL_ACTIVEEVENT:
@@ -379,7 +374,7 @@ EventConverter& EventConverter::instance()
 
 EventConverter::EventConverter() : _d( new Impl )
 {
-  SDL_EnableUNICODE(1);
+//  SDL_EnableUNICODE(1);
   _d->createKeyMap();
 }
 

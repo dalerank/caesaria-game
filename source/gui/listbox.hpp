@@ -156,7 +156,7 @@ oc3_signals public:
 protected:
   //! Update the position and size of the listbox, and update the scrollbar
   virtual void _resizeEvent();
-  virtual void _drawItemIcon(gfx::Picture& texture, ListBoxItem& item, const Point& pos );
+  virtual void _drawItemIcon(gfx::Picture texture, ListBoxItem& item, const Point& pos );
   virtual void _drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos );
   Rect _itemsRect();
 

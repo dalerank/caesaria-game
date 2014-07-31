@@ -47,8 +47,8 @@ public:
   Pictures resources;  // key=image name, value=picture
   Picture tryLoadPicture( const std::string& name );
 
-  void setPicture( const std::string &name, SDL_Surface& surface, unsigned int id );
-  Picture makePicture(const std::string& name, SDL_Surface *surface, unsigned int id );
+  void setPicture( const std::string &name, SDL_Texture* texture);
+  Picture makePicture(const std::string& name, SDL_Texture* texture );
 };
 
 PictureBank& PictureBank::instance()
@@ -57,25 +57,25 @@ PictureBank& PictureBank::instance()
   return inst;
 }
 
-void PictureBank::Impl::setPicture( const std::string &name, SDL_Surface& surface, unsigned int id )
+void PictureBank::Impl::setPicture( const std::string &name, SDL_Texture* texture )
 {
   // first: we deallocate the current picture, if any
   unsigned int picId = StringHelper::hash( name );
   Impl::ItPicture it = resources.find( picId );
   if( it != resources.end() )
   {
-     SDL_FreeSurface( it->second.surface());
-     it->second = makePicture( name, &surface, id );
+    SDL_DestroyTexture( it->second.texture() );
+    it->second = makePicture( name, texture );
   }
   else
   {
-    resources[ picId ] = makePicture( name, &surface, id );
+    resources[ picId ] = makePicture( name, texture );
   }
 }
 
 void PictureBank::setPicture( const std::string &name, const Picture& pic )
 {
-  _d->setPicture( name, *pic.surface(), pic.textureID() );
+  _d->setPicture( name, pic.texture() );
 }
 
 Picture& PictureBank::getPicture(const std::string &name)
@@ -108,27 +108,29 @@ Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
   return getPicture(resource_name);
 }
 
-Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Surface* surface, unsigned int id)
+Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Texture* texture)
 {
    Point offset( 0, 0 );
 
    int dot_pos = name.find('.');
    std::string filename = name.substr(0, dot_pos);
+   int w, h;
+   SDL_QueryTexture( texture, 0, 0, &w, &h );
 
-   if( surface )
+   if( texture )
    {
      // decode the picture name => to set the offset manually
      Point pic_info = PictureInfoBank::instance().getOffset( filename );
 
      if( pic_info == Point( -1, -1 ) )
      {
-        // this is a tiled picture=> automatic offset correction
-        offset.setY( surface->h-15*((surface->w+2)/60) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
+       // this is a tiled picture=> automatic offset correction
+       offset.setY( h-15*( (w+2)/60 ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
      }
      else if( pic_info == Point( -2, -2 ) )
      {
         // this is a walker picture=> automatic offset correction
-        offset = Point( -surface->w/2, int(surface->h*3./4.) );
+        offset = Point( -w/2, int(h*3./4.) );
      }
      else
      {
@@ -137,9 +139,9 @@ Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Surface* sur
    }
 
    Picture pic;
-   pic.init( surface, offset );
+   pic.init( texture, offset );
    pic.setName( filename );
-   pic.textureID() = id;
+   //pic.textureID() = id;
 
    return pic;
 }
@@ -149,14 +151,16 @@ void PictureBank::createResources()
   Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001", originalPic );
 
-  Picture* fullReservoir = originalPic.clone(); //mem leak on destroy picloader
+  Picture* fullReservoir = Picture::create( originalPic.size() );
+  fullReservoir->draw( originalPic, 0, 0 ); //mem leak on destroy picloader
   fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002", *fullReservoir );
 
   Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003", emptyFontainOrig );
 
-  Picture* fullFontain = emptyFontainOrig.clone();  //mem leak on destroy picloader
+  Picture* fullFontain = Picture::create( emptyFontainOrig.size() ); ;  //mem leak on destroy picloader
+  fullFontain->draw( emptyFontainOrig, 0, 0 );
   fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
   setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004", *fullFontain );
 }

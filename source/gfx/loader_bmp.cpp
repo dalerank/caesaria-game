@@ -46,7 +46,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
 {
   //Get the bitmap's buffer and size from the resource file
   if( !file.isOpen() )
-        return Picture::getInvalid();
+    return Picture::getInvalid();
 
   int filesize = file.size();
   ByteArray data = file.readAll();
@@ -59,23 +59,20 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
   //Were we able to load the bitmap?
   if (temp == NULL)
   {
-        Logger::warning( "Unable to load bitmap: %s", SDL_GetError());
-        return Picture::getInvalid();
+    Logger::warning( "Unable to load bitmap: %s", SDL_GetError());
+    return Picture::getInvalid();
   }
 
-  Picture pic;
-  pic.lock();
-  pic.init( temp, Point(0, 0) );
-  pic.unlock();
+  Picture* pic = Picture::create( Size( temp->w, temp->h), (unsigned char*)temp->pixels );
 
-  if( pic.size().area() == 0 )
+  if( pic->size().area() == 0 )
   {
     Logger::warning( "LOAD BMP: Internal create image struct failure " + file.path().toString() );
     return Picture::getInvalid();
   }
 
 	//Return our loaded image
-	return pic;
+  return *pic;
 }
 
 

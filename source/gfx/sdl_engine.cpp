@@ -25,7 +25,7 @@
 #include <list>
 #include <vector>
 #include <SDL.h>
-#include <SDL_ttf.h>
+#include <ttf/SDL_ttf.h>
 
 #include "IMG_savepng.h"
 #include "core/exception.hpp"
@@ -47,10 +47,6 @@
 namespace gfx
 {
 
-namespace {
-  enum { screenBpp24 = 24, screenBpp32 = 32 };
-}
-
 class SdlEngine::Impl
 {
 public:
@@ -64,7 +60,11 @@ public:
 
   Picture screen;
   Picture maskedPic;
-  
+
+  SDL_Window *window;
+  SDL_Renderer *renderer;
+  SDL_Texture *texture;
+
   MaskInfo mask;
   unsigned int fps, lastFps;  
   unsigned int lastUpdateFps;
@@ -93,6 +93,11 @@ void SdlEngine::deletePicture( Picture* pic )
     unloadPicture( *pic );
 }
 
+unsigned int SdlEngine::format() const
+{
+  return SDL_GetWindowPixelFormat(_d->window);
+}
+
 void SdlEngine::init()
 {
   Logger::warning( "GrafixEngine: init");
@@ -109,10 +114,6 @@ void SdlEngine::init()
   {
     THROW("Unable to initialize SDL: " << SDL_GetError());
   }
-
-  unsigned int flags = SDL_DOUBLEBUF;
-  flags |= (getFlag( Engine::fullscreen ) > 0 ? SDL_FULLSCREEN : 0);
-  int systemBpp = screenBpp32;
     
 #ifdef CAESARIA_PLATFORM_MACOSX
   void* cocoa_lib;
@@ -120,16 +121,62 @@ void SdlEngine::init()
   void (*nsappload)(void);
   nsappload = (void(*)()) dlsym( cocoa_lib, "NSApplicationLoad" );
   nsappload();
-  systemBpp = screenBpp24;
-#elif defined(CAESARIA_PLATFORM_ANDROID)
-  systemBpp = 16;
 #endif
  
+  unsigned int flags = SDL_WINDOW_OPENGL;
+
   Logger::warning( StringHelper::format( 0xff, "GrafixEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
-  SDL_Surface* scr = SDL_SetVideoMode(_srcSize.width(), _srcSize.height(), systemBpp, flags );  // 32bpp
     
+  SDL_Window *window;
+
+  if(isFullscreen())
+  {
+    window = SDL_CreateWindow("CaesariA",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        0, 0,
+        flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+  }
+  else
+  {
+    window = SDL_CreateWindow("CaesariA",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        _srcSize.width(), _srcSize.height(),
+        flags);
+  }
+
+  if (window == NULL)
+  {
+    THROW("Failed to create window");
+  }
+
+  Logger::warning("SDLGraficEngine: init successfull");
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
+
+  if (renderer == NULL)
+  {
+    THROW("Failed to create renderer");
+  }
+
+  if (isFullscreen())
+  {
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
+    SDL_RenderSetLogicalSize(renderer, _srcSize.width(), _srcSize.height());
+  }
+
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderClear(renderer);
+  SDL_RenderPresent(renderer);
+
+  SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
+      SDL_PIXELFORMAT_ARGB8888,
+      SDL_TEXTUREACCESS_STREAMING,
+    _srcSize.width(), _srcSize.height());
+
   Logger::warning( "GrafixEngine: init successfull");
-  _d->screen.init( scr, Point( 0, 0 ) );
+  _d->screen.init( screenTexture, Point(0, 0));
   
   if( !_d->screen.isValid() ) 
   {
@@ -137,11 +184,14 @@ void SdlEngine::init()
   }
 
   Logger::warning( "GrafixEngine: set caption");
-  SDL_WM_SetCaption( "CaesarIA: "CAESARIA_VERSION, 0 );
+  SDL_SetWindowTitle( window, "CaesarIA: "CAESARIA_VERSION );
 
-  SDL_EnableKeyRepeat(1, 100);
+  //SDL_EnableKeyRepeat(1, 100);
+
+  _d->window = window;
+  _d->renderer = renderer;
+  _d->texture = screenTexture;
 }
-
 
 void SdlEngine::exit()
 {
@@ -154,31 +204,34 @@ void SdlEngine::exit()
 void SdlEngine::loadPicture( Picture& ioPicture )
 {
   // convert pixel format
-  if( !ioPicture.surface() )
+  if( !ioPicture.texture() )
   {
     Logger::warning( "SdlEngine: cannot load NULL surface " + ioPicture.name() );
     return;
   }
-  SDL_Surface* newImage = SDL_DisplayFormatAlpha( ioPicture.surface() );
-  
+
+  /*SDL_Surface* newImage = SDL_ConvertSurfaceFormat( ioPicture.texture(), SDL_GetWindowPixelFormat(_d->window), 0);
   if( newImage == NULL ) 
   {
     THROW("Cannot convert surface, maybe out of memory");
   }
-  SDL_FreeSurface(ioPicture.surface());
+  SDL_FreeSurface(ioPicture.texture());
 
   ioPicture.init( newImage, ioPicture.offset() );
+  */
 }
 
 void SdlEngine::unloadPicture( Picture& ioPicture )
 {
-  SDL_FreeSurface( ioPicture.surface() );
+  if( ioPicture.surface() ) SDL_FreeSurface( ioPicture.surface() );
+  if( ioPicture.texture() ) SDL_DestroyTexture( ioPicture.texture() );
+
   ioPicture = Picture();
 }
 
 void SdlEngine::startRenderFrame()
 {
-  SDL_FillRect( _d->screen.surface(), NULL, 0 );  // black background for a complete redraw
+  SDL_RenderClear(_d->renderer);  // black background for a complete redraw
 }
 
 void SdlEngine::endRenderFrame()
@@ -189,7 +242,11 @@ void SdlEngine::endRenderFrame()
     _d->debugFont.draw( _d->screen, debugText, _d->screen.width() / 2, 2, false );
   }
 
-  SDL_Flip( _d->screen.surface() ); //Refresh the screen
+  //Refresh the screen
+  //SDL_RenderClear(_d->renderer);
+//  SDL_RenderCopy(_d->renderer, _d->texture, NULL, NULL);
+  SDL_RenderPresent(_d->renderer);
+
   _d->fps++;
 
   if( DateTime::elapsedTime() - _d->lastUpdateFps > 1000 )
@@ -202,44 +259,50 @@ void SdlEngine::endRenderFrame()
   _d->drawCall = 0;
 }
 
-void SdlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect )
+void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
 {
   if( !picture.isValid() )
       return;
 
   _d->drawCall++;
 
-  Picture& screen = _d->screen;
   if( clipRect != 0 )
   {
     SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->width(), (Uint16)clipRect->height() };
-    SDL_SetClipRect( screen.surface(), &r );
+    SDL_RenderSetClipRect( _d->renderer, &r );
   }
 
   const Impl::MaskInfo& mask = _d->mask;
-  if( mask.red || mask.green|| mask.blue || mask.alpha )
+  bool masked = mask.red || mask.green|| mask.blue || mask.alpha;
+  if( masked )
   {
-    PictureConverter::maskColor( _d->maskedPic, picture, mask.red, mask.green, mask.blue, mask.alpha );
+    SDL_SetTextureColorMod( _d->maskedPic.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
+  }
 
-    screen.draw( _d->maskedPic, dx, dy );
-  }
-  else
-  {
-    screen.draw( picture, dx, dy );
-  }
+  const Size& picSize = picture.size();
+  const Point& offset = picture.offset();
+
+  SDL_Rect srcRect = { 0, 0, picSize.width(), picSize.height() };
+  SDL_Rect dstRect = { dx+ offset.x(), dy-offset.y(),
+                       picSize.width(), picSize.height() };
+
+  SDL_RenderCopy( _d->renderer, picture.texture(), &srcRect, &dstRect );
+
+  if( masked )
+    SDL_SetTextureColorMod( picture.texture(), 0, 0, 0 );
 
   if( clipRect != 0 )
   {
-    SDL_SetClipRect( screen.surface(), 0 );
+    SDL_RenderSetClipRect( _d->renderer, 0 );
   }
 }
 
-void SdlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )
+void SdlEngine::draw( const Picture& picture, const Point& pos, Rect* clipRect )
 {
   draw( picture, pos.x(), pos.y(), clipRect );
 }
 
-void SdlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
+void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect)
 {
   foreach( it, pictures )
   {
@@ -256,14 +319,33 @@ void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
   mask.alpha = amask;
 }
 
-void SdlEngine::resetColorMask() {  memset( &_d->mask, 0, sizeof( Impl::MaskInfo ) ); }
-
-Picture* SdlEngine::createPicture(const Size& size )
+void SdlEngine::resetColorMask()
 {
-  SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
-                                           0, 0, 0, 0 );
+  _d->mask = Impl::MaskInfo();
+}
+
+Picture* SdlEngine::createPicture(const Size& size, unsigned char *data, bool mayChange)
+{
+  SDL_Texture* img = 0;
+  if( !data )
+  {
+    img = SDL_CreateTexture( _d->renderer,
+                             SDL_PIXELFORMAT_ARGB8888,
+                             mayChange ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC,
+                             size.width(), size.height() );
+  }
+  else
+  {
+    SDL_Surface* surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
+                                                     0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+
+    img = SDL_CreateTextureFromSurface(_d->renderer, surface);
+    SDL_FreeSurface( surface );
+  }
 
   Logger::warningIf( NULL == img, StringHelper::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+
+  SDL_SetTextureBlendMode( img, SDL_BLENDMODE_BLEND );
 
   Picture *pic = new Picture();
   pic->init(img, Point( 0, 0 ));  // no offset
@@ -273,7 +355,15 @@ Picture* SdlEngine::createPicture(const Size& size )
 
 void SdlEngine::createScreenshot( const std::string& filename )
 {
-  IMG_SavePNG( filename.c_str(), _d->screen.surface(), -1 );
+  unsigned int* pixes = _d->screen.lock();
+  if( pixes )
+  {
+    SDL_Surface* surface = SDL_CreateRGBSurfaceFrom( pixes, _d->screen.width(), _d->screen.height(), 32, _d->screen.width() * 4,
+                                                     0, 0, 0, 0 );
+    IMG_SavePNG( filename.c_str(), surface, -1 );
+    SDL_FreeSurface( surface );
+  }
+  _d->screen.unlock();
 }
 
 Engine::Modes SdlEngine::modes() const
@@ -281,11 +371,15 @@ Engine::Modes SdlEngine::modes() const
   Modes ret;
 
   /* Get available fullscreen/hardware modes */
-  SDL_Rect** modes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
+  int num = SDL_GetNumDisplayModes(0);
 
-  for(int i=0; modes[i]; ++i)
+  for (int i = 0; i < num; ++i)
   {
-    ret.push_back( Size( modes[i]->w, modes[i]->h) );
+    SDL_DisplayMode mode;
+    if (SDL_GetDisplayMode(0, i, &mode) == 0)
+    {
+      ret.push_back(Size(mode.w, mode.h));
+    }
   }
 
   return ret;

@@ -105,67 +105,14 @@ void PictureDecorator::drawBorder(Picture &dstpic, const Rect& rectangle, const 
   dstpic.draw(Picture::load( ResourceGroup::panelBackground, offset+4), rectangle.right()-16, rectangle.bottom()-sh, useAlpha);
 }
 
-void PictureDecorator::drawLine(Picture& dstpic, const Point& p1, const Point& p2, NColor color)
+void PictureDecorator::drawLine( Picture& dstpic, const Point& p1, const Point& p2, NColor color)
 {
-  lineColor( dstpic.surface(), p1.x(), p1.y(), p2.x(), p2.y(), color.rgba() );
+  //lineColor( dstpic.texture(), p1.x(), p1.y(), p2.x(), p2.y(), color.rgba() );
 }
 
 void PictureDecorator::basicText(Picture& dstpic, const Point& pos, const std::string& text, NColor color)
 {
-  stringColor( dstpic.surface(), pos.x(), pos.y(), text.c_str(), color.color );
-}
-
-void PictureDecorator::brightPass(Picture &dstpic, float brightnessThreshold)
-{
-  int threshold = (int) (brightnessThreshold * 255);
-
-  int r;
-  int g;
-  int b;
-
-  int luminance;
-  int lenght = 3*256;
-  int luminanceData[lenght];
-
-  // pre-computations for conversion from RGB to YCC
-  for (int i = 0; i < lenght; i += 3)
-  {
-    luminanceData[i    ] = (int) (i * 0.2125f);
-    luminanceData[i + 1] = (int) (i * 0.7154f);
-    luminanceData[i + 2] = (int) (i * 0.0721f);
-  }
-
-  int index = 0;
-  dstpic.lock();
-  unsigned int* pixels = (unsigned int*)dstpic.surface()->pixels;
-  for (int y = 0; y < dstpic.height(); y++)
-  {
-    for (int x = 0; x < dstpic.width(); x++)
-    {
-      unsigned int& pixel = pixels[ index ];
-
-      // unpack the pixel's components
-      r = pixel >> 16 & 0xFF;
-      g = pixel >> 8  & 0xFF;
-      b = pixel       & 0xFF;
-
-      // compute the luminance
-      luminance = luminanceData[r * 3] + luminanceData[g * 3 + 1] +
-                  luminanceData[b * 3 + 2];
-
-      // apply the treshold to select the brightest pixels
-      luminance = std::max<int>(0, luminance - threshold);
-
-      int sign = math::signnum(luminance);
-
-      // pack the components in a single pixel
-      pixel = 0xFF000000 | (r * sign) << 16 |
-                      (g * sign) << 8 | (b * sign);
-
-      index++;
-    }
-  }
-  dstpic.unlock();
+ // stringColor( dstpic.texture(), pos.x(), pos.y(), text.c_str(), color.color );
 }
 
 void PictureDecorator::drawPanel( Picture &dstpic, const Rect& rectangle, int picId, bool useAlpha )

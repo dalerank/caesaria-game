@@ -156,7 +156,7 @@ private:
   ByteArray _readData( const SgFileEntry& rec );
   void _loadIsometricImage( gfx::Picture& pic, const SgFileEntry& rec);
   void _loadPlainImage( gfx::Picture& pic, const SgFileEntry& rec);
-  void _set555Pixel( gfx::Picture& img, int x, int y, unsigned short color);
+  unsigned int _555toRGBA( unsigned short color);
   std::string _findFilenameCaseInsensitive(const std::string& directory, std::string filename);
   std::string _find555File(const SgFileEntry& rec);
 }; // class Sg2ArchiveReader

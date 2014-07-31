@@ -58,6 +58,7 @@ public:
 
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame
+  virtual unsigned int format() const = 0;
 
   virtual void draw(const Picture& pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;
@@ -68,7 +69,7 @@ public:
   
   virtual void deletePicture( Picture* pic ) = 0;
   // creates a picture with the given size, it will need to be loaded by the graphic engine
-  virtual Picture* createPicture(const Size& size ) = 0;
+  virtual Picture* createPicture(const Size& size, unsigned char* data, bool mayChange) = 0;
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int fps() const = 0;

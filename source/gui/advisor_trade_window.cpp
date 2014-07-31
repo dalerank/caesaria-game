@@ -149,7 +149,7 @@ public:
       }
 
       Good::Type gtype = (Good::Type)i;
-      const Picture& goodIcon = GoodHelper::getPicture( gtype );
+      Picture goodIcon = GoodHelper::getPicture( gtype );
       background->draw( goodIcon, startPos );
       
       std::string priceStr = StringHelper::format( 0xff, "%d", ctrade.buyPrice( gtype ) );
@@ -237,7 +237,7 @@ public:
 
         Font font = getFont( state );        
         std::string text = (order == city::TradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
-        Rect textRect = font.calculateTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
+        Rect textRect = font.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
         font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner );
       }
       break;
@@ -249,11 +249,11 @@ public:
 
           Font font = getFont( state );
           std::string text = _("##trade_btn_export_text##");
-          Rect textRect = font.calculateTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
+          Rect textRect = font.getTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
           font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner, true );
 
           text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
-          textRect = font.calculateTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
+          textRect = font.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
           font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner, true );
         }
       break;
@@ -286,7 +286,7 @@ public:
     _background.reset( Picture::create( size() ) );
     PictureDecorator::draw( *_background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
 
-    const Picture& iconGood = GoodHelper::getPicture( type );
+    Picture iconGood = GoodHelper::getPicture( type );
     _background->draw( iconGood, Point( 10, 10 ) );
 
     Label* lbTitle = new Label( this, Rect( 40, 10, width() - 10, 10 + 30), GoodHelper::getName( type ) );

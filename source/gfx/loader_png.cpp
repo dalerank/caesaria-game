@@ -1,9 +1,6 @@
 #include "loader_png.hpp"
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
-
-#include <SDL.h>
-
 #include "png.h"
 
 // PNG function for error handling
@@ -193,15 +190,12 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
     png_set_bgr(png_ptr);
   }
 
-  // Create the image structure to be filled by png data
-  Picture* pic = Picture::create(  Size( Width, Height ) );
-
-  if( pic->size().area() == 0 )
+  /*if( pic->size().area() == 0 )
   {
     Logger::warning( "LOAD PNG: Internal PNG create image struct failure %s", file.path().toString().c_str() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
-  }
+  }*/
 
   if( !Height )
   {
@@ -211,22 +205,24 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   }
 
   // Create array of pointers to rows in image data
+  std::vector<unsigned char> bytes;
+  bytes.resize( Width * Height * 4 );
+
   ScopedPtr<unsigned char*> RowPointers( (unsigned char**)new png_bytep[ Height ] );
 
   // Fill array of pointers to rows in image data
-  pic->lock();
-  unsigned char* data = (unsigned char*)pic->surface()->pixels;
+  unsigned char* data = bytes.data();
+
   for(unsigned int i=0; i<Height; ++i)
   {
     RowPointers.data()[i] = data;
-    data += pic->surface()->pitch;
+    data += Width * 4;
   }
 
   // for proper error handling
   if( setjmp( png_jmpbuf( png_ptr ) ) )
   {
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-    Picture::destroy( pic );
     return Picture::getInvalid();
   }
 
@@ -236,7 +232,8 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_read_end( png_ptr, NULL );
   png_destroy_read_struct( &png_ptr, &info_ptr, 0 ); // Clean up memory
 
-  pic->unlock();
+  // Create the image structure to be filled by png data
+  Picture* pic = Picture::create( Size( Width, Height ), bytes.data() );
 
   return *pic;
 }

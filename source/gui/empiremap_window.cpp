@@ -320,7 +320,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->tradeInfo = new Widget( this, -1, Rect( 0, height() - 120, width(), height() ) );
 
   _d->border->lock();
-  const Picture& backgr = Picture::load( ResourceGroup::empirepnls, 4 );
+  Picture backgr = Picture::load( ResourceGroup::empirepnls, 4 );
   for( unsigned int y=height() - 120; y < height(); y+=backgr.height() )
   {
     for( unsigned int x=0; x < width(); x += backgr.width() )
@@ -329,14 +329,14 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
     }
   }
 
-  const Picture& lrBorderPic = Picture::load( ResourceGroup::empirepnls, 1 );
+  Picture lrBorderPic = Picture::load( ResourceGroup::empirepnls, 1 );
   for( unsigned int y = 0; y < height(); y += lrBorderPic.height() )
   {
     _d->border->draw( lrBorderPic, 0, y );
     _d->border->draw( lrBorderPic, width() - lrBorderPic.width(), y );
   }
 
-  const Picture& tdBorderPic = Picture::load( ResourceGroup::empirepnls, 2 );
+  Picture tdBorderPic = Picture::load( ResourceGroup::empirepnls, 2 );
   for( unsigned int x = 0; x < width(); x += tdBorderPic.width() )
   {
     _d->border->draw( tdBorderPic, x, 0 );
@@ -344,7 +344,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
     _d->border->draw( tdBorderPic, x, height() - 120 );
   }
 
-  const Picture& corner = Picture::load( ResourceGroup::empirepnls, 3 );
+  Picture corner = Picture::load( ResourceGroup::empirepnls, 3 );
   _d->border->draw( corner, 0, 0 );    //left top
   _d->border->draw( corner, 0, height() - corner.height() ); //top right
   _d->border->draw( corner, width() - corner.width(), 0 ); //left bottom

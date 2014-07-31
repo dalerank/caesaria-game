@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerank@gmail.com
+// Copyright 2012-2014 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 Dalerank, dalerank@gmail.com
 
 #ifndef _CAESARIA_SCENE_LOGO_HPP_INCLUDE_
 #define _CAESARIA_SCENE_LOGO_HPP_INCLUDE_

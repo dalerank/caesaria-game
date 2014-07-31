@@ -60,11 +60,10 @@ public:
 
   bool isValid() const;
 
-  Size getSize( const std::string& text ) const;
-
   bool operator!=(const Font& other) const;
 
-  Rect calculateTextRect( const std::string& text, const Rect& baseRect, 
+  Size getTextSize( const std::string& text ) const;
+  Rect getTextRect( const std::string& text, const Rect& baseRect,
                           align::Type horizontalAlign, align::Type verticalAlign );
 
   void draw(gfx::Picture &dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true, bool updatextTx=true);

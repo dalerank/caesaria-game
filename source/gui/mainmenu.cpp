@@ -159,7 +159,7 @@ void MainMenu::_recalculateSize()
 	Rect rect;
 
   rect.UpperLeftCorner = parentRect.UpperLeftCorner;
-  hg = std::max<int>( font.getSize("A").height(), hg );
+  hg = std::max<int>( font.getTextSize("A").height(), hg );
 	//if (skin && height < skin->getSize ( EGDS_MENU_HEIGHT ))
 	//	height = skin->getSize(EGDS_MENU_HEIGHT);
 	int width = rect.UpperLeftCorner.x();
@@ -174,7 +174,7 @@ void MainMenu::_recalculateSize()
 		}
 		else
 		{
-      Size itemSize = font.getSize( refItem->text() ) + Size( 20, 0 );
+      Size itemSize = font.getTextSize( refItem->text() ) + Size( 20, 0 );
       itemSize.setHeight( height() );
 			refItem->setDimmension( itemSize );
 		}

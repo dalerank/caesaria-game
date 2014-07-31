@@ -111,7 +111,7 @@ int get_format_usability(SDL_Surface *surf)
     // less than 24 bit formats aren't directly usable
     } else if(fmt -> BitsPerPixel < 24) {
         // if Aloss is 8, there's no alpha channel
-        return (fmt -> Aloss == 8) ? PF_UNUSABLE : PF_UNUSABLE_ALPHA; 
+        return (fmt -> Aloss == 8) ? PF_UNUSABLE : PF_UNUSABLE_ALPHA;
 
     // if it's 24 bits per pixel, with usable masks, it's usable
     } else if(fmt -> BitsPerPixel == 24) {
@@ -138,7 +138,7 @@ int get_format_usability(SDL_Surface *surf)
         }
     }
 
-    // Get here and we don't know what the hell is going on, so let SDL deal 
+    // Get here and we don't know what the hell is going on, so let SDL deal
     return PF_UNUSABLE;
 }
         
@@ -157,19 +157,17 @@ static SDL_Surface *make_usable_format(SDL_Surface *surf, int alpha)
 {
     // Yes, it's probably horrible to just straight up declare these two, but ffs
     // it takes up all of 80 bytes of stack space for these...
-    SDL_PixelFormat pf_temp24 = { NULL, 24, 3, 
-                                  0, 0, 0, 8, 
-                                  RSHIFT24, GSHIFT24, BSHIFT24, 0,
-                                  RMASK24, GMASK24, BMASK24, 0,
-                                  0, 255 };
-    SDL_PixelFormat pf_temp32 = { NULL, 32, 4, 
-                                  0, 0, 0, 0, 
-                                  RSHIFT32, GSHIFT32, BSHIFT32, ASHIFT32,
-                                  RMASK32, GMASK32, BMASK32, AMASK32,
-                                  0, 255 };
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+
+    Uint32 f24 = SDL_PIXELFORMAT_BGR24;
+    Uint32 f32 = SDL_PIXELFORMAT_ABGR8888;
+#else
+    Uint32 f24 = SDL_PIXELFORMAT_RGB24;
+    Uint32 f32 = SDL_PIXELFORMAT_RGBA8888;
+#endif
 
     // Make a copy of our errant surface
-    SDL_Surface *rgb_surf = SDL_ConvertSurface(surf, alpha ? &pf_temp32 : &pf_temp24, SDL_SWSURFACE);
+    SDL_Surface *rgb_surf = SDL_ConvertSurfaceFormat(surf, alpha > 0 ? f32 : f24, 0);
 
     return rgb_surf;
 }
@@ -214,23 +212,26 @@ static int write_palette_chunk(png_structp png_ptr, png_infop info_ptr, SDL_Surf
     // Done with the palette now
     free(palette);
 
+    Uint32 colorkey;
+    int ck = SDL_GetColorKey(surf, &colorkey);
+
     // If we have a colour key, we need to set up the alphas for each palette colour
-    if(surf -> flags & SDL_SRCCOLORKEY) {
+    if(ck == 0) {
         // According the the PNG spec (section 4.2.1.1) we only need enough entries
         // to store transparencies up to the transparent pixel.
-        if(!(alphas = (Uint8 *)malloc((fmt -> colorkey + 1) * sizeof(Uint8)))) {
+        if(!(alphas = (Uint8 *)malloc((colorkey + 1) * sizeof(Uint8)))) {
             SDL_SetError("Unable to create memory for transparency storage");
             return -1;
         }
 
         // Set all of the alpha values to full
-        memset(alphas, 255, (fmt -> colorkey + 1) * sizeof(Uint8));
+        memset(alphas, 255, (colorkey + 1) * sizeof(Uint8));
 
         // And handle the transparent pixel
-        alphas[fmt -> colorkey] = 0;
+        alphas[colorkey] = 0;
 
         // Write the chunk, and then we're done with the transparencies
-        png_set_tRNS(png_ptr, info_ptr, alphas, fmt -> colorkey + 1, NULL);
+        png_set_tRNS(png_ptr, info_ptr, alphas, colorkey + 1, NULL);
         free(alphas);
     }
 
@@ -282,12 +283,12 @@ int IMG_SavePNG(const char *filename, SDL_Surface *surf, int compression)
  *                     range 0 (no compression) to Z_BEST_COMPRESSION (usually 9).
  *  \return -1 on error, 0 if the png was saved successfully.
  */
-int IMG_SavePNG_RW(SDL_RWops *dest, SDL_Surface *surf, int compression) 
+int IMG_SavePNG_RW(SDL_RWops *dest, SDL_Surface *surf, int compression)
 {
   int isUsable;
 	png_structp png_ptr;
 	png_infop info_ptr;
-    SDL_Surface *outsurf = surf;
+		SDL_Surface *outsurf = surf;
     png_byte *line;
     int y;
     int start;         // rw position on invoking this function, for error handling
