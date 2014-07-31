@@ -63,11 +63,11 @@ public:
     CONNECT( empireService, onClicked(), this, LegionButton::_resolveEmpireService );
   }
 
-  virtual void _updateTexture( ElementState state )
+  virtual void _updateTextPic()
   {
-    PushButton::_updateTexture( state );
+    PushButton::_textPictureRef();
 
-    PictureRef& pic = _textPictureRef( state );
+    PictureRef& pic = _textPictureRef();
 
     Font fontW = Font::create( FONT_1_WHITE );
     Font fontB = Font::create( FONT_1 );
@@ -117,11 +117,11 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts
 
   _d->background.reset( Picture::create( size() ) );
   //main background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
   //buttons background
   Point startLegionArea( 32, 70 );
-  PictureDecorator::draw( *_d->background, Rect( startLegionArea, Size( 574, 270 )), PictureDecorator::blackFrame );
+  Decorator::draw( *_d->background, Rect( startLegionArea, Size( 574, 270 )), Decorator::blackFrame );
 
   gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
   title->setText( _("##advlegion_window_title##") );

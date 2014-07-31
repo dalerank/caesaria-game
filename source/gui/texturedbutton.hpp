@@ -28,7 +28,7 @@ class TexturedButton : public PushButton
 public:
   TexturedButton( Widget* parent, const Point& pos, const Size& size, int id, 
                   int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 ) 
-    : PushButton( parent, Rect( pos, size ), "", id )
+    : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
   {
     setPicture( ResourceGroup::panelBackground, normalTxIndex, stNormal );
     setPicture( ResourceGroup::panelBackground, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex , stHovered );
@@ -39,7 +39,7 @@ public:
   TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
                   const char* resourceGroup,
                   int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 )
-    : PushButton( parent, Rect( pos, size ), "", id )
+    : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
   {
     setPicture( resourceGroup, normalTxIndex , stNormal );
     setPicture( resourceGroup, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex, stHovered );

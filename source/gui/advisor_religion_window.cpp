@@ -149,9 +149,9 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   _d->background.reset( Picture::create( size() ) );
 
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
   //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( 35, 62, width() - 35, 62 + 130 ), PictureDecorator::blackFrame );
+  Decorator::draw( *_d->background, Rect( 35, 62, width() - 35, 62 + 130 ), Decorator::blackFrame );
 
   Picture icon = Picture::load( ResourceGroup::panelBackground, 264 );
   _d->background->draw( icon, Point( 11, 11 ) );

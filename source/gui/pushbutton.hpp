@@ -107,12 +107,12 @@ protected:
   //! when some mouse button clicked
 	virtual void _btnClicked();
 
-	virtual ElementState _getActiveButtonState();
+  virtual ElementState _getState();
  
-  virtual void _updateTexture( ElementState state );
+  virtual void _updateBackground( ElementState state );
+  virtual void _updateTextPic();
 
-  gfx::PictureRef& _backgroundRef( ElementState state );
-  gfx::PictureRef& _textPictureRef( ElementState state );
+  gfx::PictureRef& _textPictureRef();
 
 private:
   __DECLARE_IMPL(PushButton)

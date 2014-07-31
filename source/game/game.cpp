@@ -549,7 +549,7 @@ void Game::exec()
   _d->nextScreen = SCREEN_MENU;
   _d->engine->setFlag( gfx::Engine::debugInfo, 1 );
 
-  while(_d->nextScreen != SCREEN_QUIT)
+  while(_d->nextScreen != SCREEN_QUIT )
   {
     Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
     switch(_d->nextScreen)

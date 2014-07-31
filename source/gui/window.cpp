@@ -223,7 +223,7 @@ void Window::beforeDraw( Engine& painter )
 	if( _d->bg.isNull() || ( size() != _d->bg->size() ) )
 	{
 		_d->bg.init( size() );
-		PictureDecorator::draw( *_d->bg, Rect( Point( 0, 0), size() ), PictureDecorator::whiteFrame );
+		Decorator::draw( *_d->bg, Rect( Point( 0, 0), size() ), Decorator::whiteFrame );
 	}
 
 	Widget::beforeDraw( painter );

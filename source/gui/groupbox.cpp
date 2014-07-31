@@ -109,8 +109,8 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
     }
     else
     {
-      PictureDecorator::draw( *_d->texture, Rect( Point( 0, 0 ), size() ), 
-                              _d->style == whiteFrame ? PictureDecorator::whiteFrame : PictureDecorator::blackFrame,
+      Decorator::draw( *_d->texture, Rect( Point( 0, 0 ), size() ), 
+                              _d->style == whiteFrame ? Decorator::whiteFrame : Decorator::blackFrame,
                               true, true );
     }
   }

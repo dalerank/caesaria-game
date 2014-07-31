@@ -93,7 +93,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
 
   _d->background.reset( Picture::create( size() ) );
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame, true, true );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame, true, true );
 
   _d->edFilename = new EditBox( this, Rect( 18, 40, 18 + 320, 40 + 30 ), "Savecity" );
   _d->directory = dir;

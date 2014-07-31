@@ -110,7 +110,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->city = city;
   _d->background.reset( Picture::create( size() ) );
 
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
   _d->addImage( this, romeDivCeres, 0, 17 );
   _d->addImage( this, romeDivNeptune, 1, 18 );

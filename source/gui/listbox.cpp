@@ -108,10 +108,10 @@ void ListBox::_updateTexture()
   {    
     _d->background.reset( Picture::create( s ) );
     _d->picture.reset( Picture::create( s ) );
-    PictureDecorator::draw( *_d->background, Rect( 0, 0, width() - _d->scrollBar->width(), height() ), PictureDecorator::blackFrame );
-    PictureDecorator::draw( *_d->background,
+    Decorator::draw( *_d->background, Rect( 0, 0, width() - _d->scrollBar->width(), height() ), Decorator::blackFrame );
+    Decorator::draw( *_d->background,
                             Rect( width() - _d->scrollBar->width(), 0, width(), height() ), 
-                            PictureDecorator::whiteArea  );
+                            Decorator::whiteArea  );
   }
 }
 

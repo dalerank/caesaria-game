@@ -69,11 +69,11 @@ public:
     CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
   }
 
-  virtual void _updateTexture( ElementState state )
+  virtual void _updateBackground( ElementState state )
   {
-    PushButton::_updateTexture( state );
+    PushButton::_updateBackground( state );
 
-    PictureRef& pic = _textPictureRef( state );
+    PictureRef& pic = _textPictureRef();
 
     Font font = Font::create( FONT_1_WHITE );
 

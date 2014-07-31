@@ -15,30 +15,30 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "walker_debuginfo.hpp"
-#include "pathway/pathway.hpp"
-#include "walker/walker.hpp"
-#include "city/city.hpp"
-#include "gfx/decorator.hpp"
-
-#include "gfx/picture.hpp"
+#include "drawstack.hpp"
+#include "core/foreach.hpp"
 
 namespace gfx
 {
 
-void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera )
+void DrawStack::draw( Engine& e, const Point& pos) const
 {
-  Point camOffset = camera->offset();
-  const Pathway& pathway = walker->pathway();
-
-  const TilesArray& tiles = pathway.allTiles();
-
-  Point pos = walker->mappos();
-  for( int step=pathway.curStep()+1; step < tiles.size(); step++ )
+  foreach( i, stack )
   {
-    Decorator::drawLine( engine.screen(), pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ), 0xff00ff00 );
-    pos = tiles[ step ]->mappos() + Point( 30, 0 );
+    e.draw( (*i).pic, pos + (*i).offset );
   }
+}
+
+void DrawStack::add(const Picture& pic, const Point& offset)
+{
+  stack.push_back( DrawInstruction() );
+  stack.back().pic = pic;
+  stack.back().offset = offset;
+}
+
+void DrawStack::clear()
+{
+  stack.clear();
 }
 
 }//end namespace gfx

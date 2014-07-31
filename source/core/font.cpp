@@ -165,10 +165,11 @@ void Font::draw( Picture& dstpic, const std::string &text, const int dx, const i
     return;
 
   SDL_Surface* sText = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
+  SDL_SetSurfaceBlendMode( sText, SDL_BLENDMODE_NONE );
 
   if( sText )
   {
-    if( !(dstpic.surface()) )
+    if( !dstpic.surface() )
     {
       Logger::warning("Picture does not have surface or srcimg is null");
       return;

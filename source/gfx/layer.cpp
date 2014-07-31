@@ -483,11 +483,11 @@ void Layer::afterRender( Engine& engine)
     {
       const Tile& tile = tmap.at( 0, k );
       const Tile& etile = tmap.at( size - 1, k );
-      PictureDecorator::drawLine( screen, tile.mappos() + offset, etile.mappos() + offset, 0x80ff0000);
+      Decorator::drawLine( screen, tile.mappos() + offset, etile.mappos() + offset, 0x80ff0000);
 
       const Tile& rtile = tmap.at( k, 0 );
       const Tile& ertile = tmap.at( k, size - 1 );
-      PictureDecorator::drawLine( screen, rtile.mappos() + offset, ertile.mappos() + offset, 0x80ff0000 );
+      Decorator::drawLine( screen, rtile.mappos() + offset, ertile.mappos() + offset, 0x80ff0000 );
     }
 
     std::string text;

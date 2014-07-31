@@ -57,8 +57,8 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
 
   _d->background.reset( Picture::create( size() ) );
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
-  PictureDecorator::draw( *_d->background, Rect( Point( 18, 50 ), Size( width() - 34, 220 ) ), PictureDecorator::blackFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 18, 50 ), Size( width() - 34, 220 ) ), Decorator::blackFrame );
 
   _d->btnExit = new TexturedButton( this, Point( width() - 40, height() - 40 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );

@@ -88,9 +88,9 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   _d->background.reset( Picture::create( size() ) );
 
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
   //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( 20, 55, width() - 20, height() - 20 ), PictureDecorator::blackFrame);
+  Decorator::draw( *_d->background, Rect( 20, 55, width() - 20, height() - 20 ), Decorator::blackFrame);
 
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 266 );
   _d->background->draw( icon, Point( 11, 11 ) );

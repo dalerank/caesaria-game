@@ -163,18 +163,18 @@ void Label::_updateTexture(gfx::Engine& painter )
       _d->background->fill( 0xffffffff, Rect( 1, 1, width() - 1, height() - 1 ) );
     break;
     case bgSimpleBlack: _d->background->fill( 0xff000000, Rect() );    break;
-    case bgWhite: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteArea); break;
-    case bgBlack: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackArea ); break;
+    case bgWhite: Decorator::draw( *_d->background, r, Decorator::whiteArea); break;
+    case bgBlack: Decorator::draw( *_d->background, r, Decorator::blackArea ); break;
     case bgBrown:
       _d->background->fill( 0xff5C4033, Rect( 0, 0, 0, 0 ) );
-      PictureDecorator::draw( *_d->background, r, PictureDecorator::brownBorder );
+      Decorator::draw( *_d->background, r, Decorator::brownBorder );
     break;
 
-    case bgSmBrown: PictureDecorator::draw( *_d->background, r, PictureDecorator::brownPanelSmall ); break;
-    case bgWhiteFrame: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteFrame ); break;
-    case bgBlackFrame: PictureDecorator::draw( *_d->background, r, PictureDecorator::blackFrame ); break;
+    case bgSmBrown: Decorator::draw( *_d->background, r, Decorator::brownPanelSmall ); break;
+    case bgWhiteFrame: Decorator::draw( *_d->background, r, Decorator::whiteFrame ); break;
+    case bgBlackFrame: Decorator::draw( *_d->background, r, Decorator::blackFrame ); break;
     case bgNone: _d->background.reset(); break;
-    case bgWhiteBorderA: PictureDecorator::draw( *_d->background, r, PictureDecorator::whiteBorderA ); break;
+    case bgWhiteBorderA: Decorator::draw( *_d->background, r, Decorator::whiteBorderA ); break;
     }
   }
   if( _d->background )

@@ -141,12 +141,12 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
   _d->background.reset( Picture::create( size() ) );
 
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 261 );
   _d->background->draw( icon, Point( 11, 11 ) );
 
   //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( 35, 110, width() - 35, 110 + 85 ), PictureDecorator::blackFrame );
+  Decorator::draw( *_d->background, Rect( 35, 110, width() - 35, 110 + 85 ), Decorator::blackFrame );
 
   Font font = Font::create( FONT_1 );
   font.draw( *_d->background, _("##work##"), 180, 92, false );

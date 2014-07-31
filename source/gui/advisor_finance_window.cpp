@@ -75,7 +75,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   _d->background.reset( Picture::create( size() ) );
 
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
   Picture& icon = Picture::load( ResourceGroup::panelBackground, 265 );
   _d->background->draw( icon, Point( 11, 11 ) );
@@ -83,7 +83,7 @@ AdvisorFinanceWindow::AdvisorFinanceWindow(PlayerCityPtr city, Widget* parent, i
   Font fontWhite = Font::create( FONT_1_WHITE );
 
   //buttons _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 70, 50 ), Size( width() - 86, 70 ) ), PictureDecorator::blackFrame);
+  Decorator::draw( *_d->background, Rect( Point( 70, 50 ), Size( width() - 86, 70 ) ), Decorator::blackFrame);
   std::string moneyStr = StringHelper::format( 0xff, "%s %d %s", _("##city_have##"), city->funds().treasury(), _("##denaries##") );
   fontWhite.draw( *_d->background, moneyStr, 75, 55, false );
   fontWhite.draw( *_d->background, _("##tax_rate##"), 75, 75, false );

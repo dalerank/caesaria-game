@@ -153,7 +153,7 @@ void SdlEngine::init()
   }
 
   Logger::warning("SDLGraficEngine: init successfull");
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
   if (renderer == NULL)
   {
@@ -199,26 +199,21 @@ void SdlEngine::exit()
   SDL_Quit();
 }
 
-/* Convert picture to SDL surface and then put surface into Picture class
- */
 void SdlEngine::loadPicture( Picture& ioPicture )
 {
-  // convert pixel format
-  if( !ioPicture.texture() )
+  if( ioPicture.surface() )
   {
-    Logger::warning( "SdlEngine: cannot load NULL surface " + ioPicture.name() );
-    return;
+    SDL_Texture* tx = SDL_CreateTextureFromSurface(_d->renderer, ioPicture.surface());
+    ioPicture.init( tx, ioPicture.offset() );
+  }
+  else
+  {
+    Size size = ioPicture.size();
+    Logger::warning( StringHelper::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
   }
 
-  /*SDL_Surface* newImage = SDL_ConvertSurfaceFormat( ioPicture.texture(), SDL_GetWindowPixelFormat(_d->window), 0);
-  if( newImage == NULL ) 
-  {
-    THROW("Cannot convert surface, maybe out of memory");
-  }
-  SDL_FreeSurface(ioPicture.texture());
-
-  ioPicture.init( newImage, ioPicture.offset() );
-  */
+  SDL_SetTextureBlendMode( ioPicture.texture(), SDL_BLENDMODE_BLEND );
+  SDL_SetSurfaceBlendMode( ioPicture.surface(), SDL_BLENDMODE_BLEND );
 }
 
 void SdlEngine::unloadPicture( Picture& ioPicture )
@@ -268,7 +263,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
 
   if( clipRect != 0 )
   {
-    SDL_Rect r = { (short)clipRect->left(), (short)clipRect->top(), (Uint16)clipRect->width(), (Uint16)clipRect->height() };
+    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
     SDL_RenderSetClipRect( _d->renderer, &r );
   }
 
@@ -283,8 +278,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
   const Point& offset = picture.offset();
 
   SDL_Rect srcRect = { 0, 0, picSize.width(), picSize.height() };
-  SDL_Rect dstRect = { dx+ offset.x(), dy-offset.y(),
-                       picSize.width(), picSize.height() };
+  SDL_Rect dstRect = { dx+offset.x(), dy-offset.y(), picSize.width(), picSize.height() };
 
   SDL_RenderCopy( _d->renderer, picture.texture(), &srcRect, &dstRect );
 
@@ -322,35 +316,6 @@ void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
 void SdlEngine::resetColorMask()
 {
   _d->mask = Impl::MaskInfo();
-}
-
-Picture* SdlEngine::createPicture(const Size& size, unsigned char *data, bool mayChange)
-{
-  SDL_Texture* img = 0;
-  if( !data )
-  {
-    img = SDL_CreateTexture( _d->renderer,
-                             SDL_PIXELFORMAT_ARGB8888,
-                             mayChange ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC,
-                             size.width(), size.height() );
-  }
-  else
-  {
-    SDL_Surface* surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
-                                                     0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
-
-    img = SDL_CreateTextureFromSurface(_d->renderer, surface);
-    SDL_FreeSurface( surface );
-  }
-
-  Logger::warningIf( NULL == img, StringHelper::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
-
-  SDL_SetTextureBlendMode( img, SDL_BLENDMODE_BLEND );
-
-  Picture *pic = new Picture();
-  pic->init(img, Point( 0, 0 ));  // no offset
-  
-  return pic;
 }
 
 void SdlEngine::createScreenshot( const std::string& filename )

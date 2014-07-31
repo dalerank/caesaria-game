@@ -105,7 +105,7 @@ void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offse
 
 void SplashScreen::exitScene()
 {
-//#ifndef DEBUG
+#ifndef DEBUG
   Engine& engine = Engine::instance();
 
   int offset = 3;
@@ -136,7 +136,7 @@ void SplashScreen::exitScene()
   _d->fade( engine, *_d->textPic, false, offset );
   engine.delay( 3000 );
   _d->fade( engine, *_d->textPic, true, offset );
-//#endif
+#endif
 }
 
 void SplashScreen::setText(std::string text)

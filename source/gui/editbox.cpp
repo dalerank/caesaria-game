@@ -773,7 +773,7 @@ void EditBox::beforeDraw(Engine& painter )
       }
       else
       {
-        PictureDecorator::draw( *_d->picture, Rect( 0, 0, width(), height() ), PictureDecorator::blackFrame, true, true );
+        Decorator::draw( *_d->picture, Rect( 0, 0, width(), height() ), Decorator::blackFrame, true, true );
       }
 
       Rect localClipRect = absoluteRect();

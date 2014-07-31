@@ -15,30 +15,30 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "walker_debuginfo.hpp"
-#include "pathway/pathway.hpp"
-#include "walker/walker.hpp"
-#include "city/city.hpp"
-#include "gfx/decorator.hpp"
+#ifndef _CAESARIA_DRAWSTACK_INCLUDE_H_
+#define _CAESARIA_DRAWSTACK_INCLUDE_H_
 
-#include "gfx/picture.hpp"
+#include "picture.hpp"
+#include "engine.hpp"
 
 namespace gfx
 {
 
-void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Camera* camera )
+class DrawStack
 {
-  Point camOffset = camera->offset();
-  const Pathway& pathway = walker->pathway();
-
-  const TilesArray& tiles = pathway.allTiles();
-
-  Point pos = walker->mappos();
-  for( int step=pathway.curStep()+1; step < tiles.size(); step++ )
+public:
+  struct DrawInstruction
   {
-    Decorator::drawLine( engine.screen(), pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ), 0xff00ff00 );
-    pos = tiles[ step ]->mappos() + Point( 30, 0 );
-  }
-}
+    Picture pic;
+    Point offset;
+  };
 
-}//end namespace gfx
+  std::vector<DrawInstruction> stack;
+
+  void draw(Engine& e, const Point& pos) const;
+  void add( const Picture& pic, const Point& offset );
+  void clear();
+};
+
+} //end namespace gfx
+#endif //_CAESARIA_DRAWSTACK_INCLUDE_H_

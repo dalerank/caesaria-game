@@ -57,22 +57,26 @@ public:
     _goodPicture = GoodHelper::getPicture( _type );
     _goodName = GoodHelper::getName( _type );
 
+
     setFont( Font::create( FONT_2_WHITE ) );
   }
 
-  virtual void _updateTexture( ElementState state )
+  virtual void draw(Engine &painter)
   {
-    PushButton::_updateTexture( state );
+    PushButton::draw( painter );
 
-    PictureRef& background = _backgroundRef( state );
-    background->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
-    background->draw( _goodPicture, 15, 0, false );
-    background->draw( _goodPicture, width() - 20 - _goodPicture.width(), 0, false );
+    painter.draw( _goodPicture, absoluteRect().UpperLeftCorner + Point( 15, 0) );
+    painter.draw( _goodPicture, absoluteRect().UpperLeftCorner + ( width() - 20 - _goodPicture.width(), 0 ) );
+  }
 
-    if( _textPictureRef( state ) != 0 )
+  virtual void _updateBackground( ElementState state )
+  {
+    PushButton::_updateBackground( state );
+
+    if( _textPictureRef() != 0 )
     {
       Font font = getFont( state );    
-      PictureRef& textPic = _textPictureRef( state );
+      PictureRef& textPic = _textPictureRef();
       font.draw( *textPic, _goodName, 55, 0 );   
       font.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0 );
       font.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0 );
@@ -97,7 +101,7 @@ public:
 
       if( state == stHovered ) 
       {
-        PictureDecorator::draw( *background, Rect( 50, 0, width() - 50, height() ), PictureDecorator::brownBorder, false );
+     //   Decorator::draw( *background, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder, false );
       }
     }
   }
@@ -109,7 +113,7 @@ protected:
   {
     PushButton::_btnClicked();
 
-    _onClickedASignal.emit( _type );
+    oc3_emit _onClickedASignal( _type );
   }
 
 private:
@@ -133,7 +137,7 @@ public:
     : Widget( parent, id, rectangle )
   {
     background.reset( Picture::create( size() ) );
-    PictureDecorator::draw( *background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+    Decorator::draw( *background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
     Font font = Font::create( FONT_3 );
     font.draw( *background, _("##rome_prices##"), Point( 10, 10 ), false );
@@ -223,9 +227,9 @@ public:
     btnIncrease->setTooltipText( _("##export_btn_tooltip##") );
   }
 
-  virtual void _updateTexture( ElementState state )
+  virtual void _updateTextPic()
   {
-    PushButton::_updateTexture( state );
+    PushButton::_updateTextPic();
 
     switch( order )
     {
@@ -235,10 +239,10 @@ public:
         btnDecrease->hide();
         btnIncrease->hide();
 
-        Font font = getFont( state );        
+        Font font = getFont( _getState() );
         std::string text = (order == city::TradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
         Rect textRect = font.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
-        font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner );
+        font.draw( *_textPictureRef(), text, textRect.UpperLeftCorner );
       }
       break;
 
@@ -247,14 +251,14 @@ public:
           btnDecrease->show();
           btnIncrease->show();
 
-          Font font = getFont( state );
+          Font font = getFont( _getState() );
           std::string text = _("##trade_btn_export_text##");
           Rect textRect = font.getTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
-          font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner, true );
+          font.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
 
           text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
           textRect = font.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
-          font.draw( *_textPictureRef( state ), text, textRect.UpperLeftCorner, true );
+          font.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
         }
       break;
 
@@ -284,7 +288,7 @@ public:
     _city = city;
     _type = type;
     _background.reset( Picture::create( size() ) );
-    PictureDecorator::draw( *_background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+    Decorator::draw( *_background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
     Picture iconGood = GoodHelper::getPicture( type );
     _background->draw( iconGood, Point( 10, 10 ) );
@@ -535,7 +539,7 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
   _d->background.reset( Picture::create( size() ) );
   _d->city = city;
   //main _d->_d->background
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
   _d->btnEmpireMap = new PushButton( this, Rect( Point( 100, 398), Size( 200, 24 ) ), _("##empire_map##"), -1, false, PushButton::whiteBorderUp );
   _d->btnPrices = new PushButton( this, Rect( Point( 400, 398), Size( 200, 24 ) ), _("##show_prices##"), -1, false, PushButton::whiteBorderUp );

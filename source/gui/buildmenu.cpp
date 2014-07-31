@@ -58,9 +58,10 @@ public:
     setTextOffset( Point( 15, 0 ) );
   }
 
-  void _updateTexture( ElementState state )
+  void _updateTextPic()
   {
-    PushButton::_updateTexture( state );
+    ElementState state = _getState();
+    PushButton::_updateTextPic();
 
     Font font = getFont( state );
 
@@ -70,7 +71,7 @@ public:
       sprintf( buffer, "%d", _cost );
       Rect textRect = font.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
                                                 align::lowerRight, verticalTextAlign() );
-      font.draw( *_textPictureRef( state ), buffer, textRect.left(), textRect.top() );
+      font.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
     }
   }
 
@@ -82,7 +83,7 @@ public:
   void _resizeEvent()
   {
     for( int i=0; i < StateCount; i++ )
-        _updateTexture( ElementState(i) );
+        _updateBackground( ElementState(i) );
   }
 
   int getCost() const

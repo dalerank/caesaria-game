@@ -76,11 +76,11 @@ oc3_signals public:
   Signal1<Industry::Type> onClickedSignal;
 
 protected:
-  virtual void _updateTexture( ElementState state )
+  virtual void _updateTextPic()
   {
-    PushButton::_updateTexture( state );
+    PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef( state );
+    PictureRef& pic = _textPictureRef();
 
     Font font = Font::create( FONT_1_WHITE );
     font.draw( *pic, _title, 130, 2 );

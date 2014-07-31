@@ -68,8 +68,6 @@ public:
   virtual void resetColorMask() = 0;
   
   virtual void deletePicture( Picture* pic ) = 0;
-  // creates a picture with the given size, it will need to be loaded by the graphic engine
-  virtual Picture* createPicture(const Size& size, unsigned char* data, bool mayChange) = 0;
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int fps() const = 0;

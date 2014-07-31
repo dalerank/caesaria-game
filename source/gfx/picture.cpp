@@ -205,15 +205,29 @@ void Picture::fill( const NColor& color, Rect rect )
 
 Picture* Picture::create(const Size& size, unsigned char* data, bool mayChange)
 {
-  Picture* ret = Engine::instance().createPicture( size, data, mayChange );
-  Engine::instance().loadPicture( *ret );
+  Picture *pic = new Picture();
 
-  if( mayChange )
+  if( data )
   {
-    ret->_d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32, 0, 0, 0, 0 );
+    pic->_d->surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
+                                                 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+  }
+  else
+  {
+    pic->_d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
+                                             0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+    SDL_FillRect( pic->_d->surface, 0, 0 );
   }
 
-  return ret;
+  Engine::instance().loadPicture( *pic );
+
+  if( !mayChange )
+  {
+    SDL_FreeSurface( pic->_d->surface );
+    pic->_d->surface = 0;
+  }
+
+  return pic;
 }
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }

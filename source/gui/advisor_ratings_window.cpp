@@ -51,12 +51,12 @@ public:
     _target = 0;
   }
 
-  void _updateTexture( ElementState state )
+  void _updateTextPic()
   {
-    PushButton::_updateTexture( state );
+    PushButton::_textPictureRef();
 
     Font digitFont = Font::create( FONT_3 );
-    PictureRef& pic = _backgroundRef( state );
+    PictureRef& pic = _textPictureRef();
     digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), width() / 2 - 10, 15, false );
 
     Font targetFont = Font::create( FONT_1 );
@@ -200,11 +200,11 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   title->setTextAlignment( align::upperLeft, align::center );
 
   _d->background.reset( Picture::create( size() ) );
-  PictureDecorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), PictureDecorator::whiteFrame );
+  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
   //buttons _d->_d->background
   Rect r( Point( 66, 360 ), Size( 510, 60 ) );
-  PictureDecorator::draw( *_d->background, r, PictureDecorator::blackFrame );
+  Decorator::draw( *_d->background, r, Decorator::blackFrame );
   _d->lbRatingInfo = new Label( this, r, _("##click_on_rating_for_info##") );
 
   _d->background->draw( Picture::load( ResourceGroup::menuMiddleIcons, 27), 60, 50 );
