@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+﻿// This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public:
 
   virtual void draw( const Picture& picture, const int dx, const int dy, Rect* clipRect=0);
   virtual void draw( const Picture& picture, const Point& pos, Rect* clipRect=0 );
-  virtual void draw( const Pictures& pictures, const Point& pos, Rect* clipRect=0 );
+  virtual void draw( const Pictures& pictures, const Point& pos, Rect* clipRect=0 );  
 
   virtual unsigned int fps() const;
   virtual void createScreenshot( const std::string& filename );
@@ -66,6 +66,8 @@ public:
 
   virtual Picture& screen();
   virtual unsigned int format() const;
+
+  virtual void debug( const std::string& text, const Point& pos );
 
 protected:
   class Impl;

@@ -282,12 +282,12 @@ void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mo
   case brownBorder: drawBorder(stack, rectangle, 555 ); break;
   case whiteBorderA: drawBorder( stack, rectangle, 547 ); break;
   case whiteFrame:
-    draw( stack, Rect( rectangle.UpperLeftCorner + Point( 16, 16 ), rectangle.LowerRightCorner - Point( 16, 16 ) ), whiteArea );    // draws the inside of the box
+    draw( stack, Rect( rectangle.UpperLeftCorner, rectangle.LowerRightCorner - Point( 16, 16 ) ), whiteArea );    // draws the inside of the box
     draw( stack, rectangle, whiteBorder );    // draws borders
   break;
 
   case blackFrame:
-    draw(stack, Rect( rectangle.UpperLeftCorner + Point( 16, 16 ), rectangle.LowerRightCorner - Point( 16, 16 ) ), blackArea );    // draws the inside of the box
+    draw(stack, Rect( rectangle.UpperLeftCorner, rectangle.LowerRightCorner - Point( 16, 16 ) ), blackArea );    // draws the inside of the box
     draw(stack, rectangle, blackBorder );    // draws borders
   break;
 
@@ -344,7 +344,7 @@ void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
   }
 
   // draws vertical borders
-  for (int i = 0; i<(rectangle.height()/size.height()); ++i)
+  for (int i = 0; i<=(rectangle.height()/size.height()); ++i)
   {
     Point offset = rectangle.UpperLeftCorner + Point( 0, sh-sh*i );
     stack.append( Picture::load( ResourceGroup::panelBackground, lp+hCount*(i%pCount)), offset );      // left border
@@ -359,9 +359,9 @@ void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
 
 void Decorator::drawArea( Pictures &stack, const Rect& rectangle, int picId, int picCount, int offset )
 {
-  for (int j = 0; j<=(rectangle.height()/16+1); ++j)
+  for( int j = 0; j*16 < rectangle.height(); j++ )
   {
-    for (int i = 0; i<(rectangle.width()/16+1); ++i)
+    for (int i = 0; i*16 < rectangle.width(); i++)
     {
       // use some clipping to remove the right and bottom areas
       const Picture &srcpic = Picture::load( ResourceGroup::panelBackground, picId + (i%picCount) + offset*(j%picCount) );

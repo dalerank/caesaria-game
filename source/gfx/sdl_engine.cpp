@@ -60,6 +60,7 @@ public:
 
   Picture screen;
   Picture maskedPic;
+  PictureRef fpsText;
 
   SDL_Window *window;
   SDL_Renderer *renderer;
@@ -96,6 +97,11 @@ void SdlEngine::deletePicture( Picture* pic )
 unsigned int SdlEngine::format() const
 {
   return SDL_GetWindowPixelFormat(_d->window);
+}
+
+void SdlEngine::debug(const std::string &text, const Point &pos)
+{
+
 }
 
 void SdlEngine::init()
@@ -173,7 +179,7 @@ void SdlEngine::init()
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
       SDL_PIXELFORMAT_ARGB8888,
       SDL_TEXTUREACCESS_STREAMING,
-    _srcSize.width(), _srcSize.height());
+      _srcSize.width(), _srcSize.height());
 
   Logger::warning( "GrafixEngine: init successfull");
   _d->screen.init( screenTexture, Point(0, 0));
@@ -186,11 +192,12 @@ void SdlEngine::init()
   Logger::warning( "GrafixEngine: set caption");
   SDL_SetWindowTitle( window, "CaesarIA: "CAESARIA_VERSION );
 
-  //SDL_EnableKeyRepeat(1, 100);
-
   _d->window = window;
   _d->renderer = renderer;
   _d->texture = screenTexture;
+
+
+  _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
 }
 
 void SdlEngine::exit()
@@ -234,12 +241,12 @@ void SdlEngine::endRenderFrame()
   if( _d->showDebugInfo )
   {
     std::string debugText = StringHelper::format( 0xff, "fps:%d call:%d", _d->lastFps, _d->drawCall );
-    _d->debugFont.draw( _d->screen, debugText, _d->screen.width() / 2, 2, false );
+    _d->fpsText->fill( 0, Rect() );
+    _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
+    draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );
   }
 
   //Refresh the screen
-  //SDL_RenderClear(_d->renderer);
-//  SDL_RenderCopy(_d->renderer, _d->texture, NULL, NULL);
   SDL_RenderPresent(_d->renderer);
 
   _d->fps++;

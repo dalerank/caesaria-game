@@ -18,7 +18,7 @@
 #include "json.hpp"
 #include "stringhelper.hpp"
 //#include <iostream>
-
+static std::string lastParsedObjectName;
 static std::string sanitizeString(std::string str)
 {
   str = StringHelper::replace( str, "\\", "\\\\");
@@ -337,7 +337,8 @@ Variant Json::parseObject(const std::string &json, int &index, bool &success)
 
     case JsonTokenObjectName:
       {
-        std::string name = Json::parseObjectName( json, index, success ).toString();        
+        std::string name = Json::parseObjectName( json, index, success ).toString();
+        lastParsedObjectName = name;
 
         if(!success)
         {
@@ -784,3 +785,5 @@ int Json::nextToken(const std::string &json, int &index)
 
   return JsonTokenNone;
 }
+
+std::string Json::lastParsedObject() { return lastParsedObjectName; }

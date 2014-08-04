@@ -26,6 +26,7 @@
 #include "image.hpp"
 #include "smkviewer.hpp"
 #include "core/logger.hpp"
+#include "groupbox.hpp"
 #include <map>
 
 namespace gui
@@ -66,6 +67,7 @@ WidgetFactory::WidgetFactory() : _d( new Impl )
   addCreator( CAESARIA_STR_EXT(EditBox),        new BaseWidgetCreator<EditBox>() );
   addCreator( CAESARIA_STR_EXT(TexturedButton), new BaseWidgetCreator<TexturedButton>() );
   addCreator( CAESARIA_STR_EXT(PushButton),     new BaseWidgetCreator<PushButton>() );
+  addCreator( CAESARIA_STR_EXT(GroupBox),       new BaseWidgetCreator<GroupBox>() );
   addCreator( CAESARIA_STR_EXT(ListBox),        new BaseWidgetCreator<ListBox>() );
   addCreator( CAESARIA_STR_EXT(Image),          new BaseWidgetCreator<Image>() );
   addCreator( CAESARIA_STR_EXT(SmkViewer),      new BaseWidgetCreator<SmkViewer>() );

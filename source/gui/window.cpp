@@ -150,17 +150,11 @@ bool Window::onEvent(const NEvent& event)
 		case sEventGui:
 			if (event.gui.type == guiElementFocusLost)
 			{
-#ifdef _CAESARIA_COMPILE_WITH_SCRIPT_
-								CallScriptFunction( GUI_EVENT + ELEMENT_FOCUS_LOST, this );
-#endif
 				_d->dragging = false;
 			}
 
 			else if (event.gui.type == guiElementFocused)
 			{
-#ifdef _CAESARIA_COMPILE_WITH_SCRIPT_
-										CallScriptFunction( GUI_EVENT + ELEMENT_FOCUSED, this );
-#endif
 					if( ((event.gui.caller == this) || isMyChild(event.gui.caller)))
 						bringToFront();
 			}
@@ -173,8 +167,7 @@ bool Window::onEvent(const NEvent& event)
     					// if the event was not absorbed
               if( !parent()->onEvent( NEvent::Gui( this, 0, guiElementClosed ) ) )
 					        deleteLater();
-						
-                        return true;
+              return true;
 					}
 				}
 		break;
@@ -186,16 +179,12 @@ bool Window::onEvent(const NEvent& event)
 				_d->dragStartPosition = event.mouse.pos();
 				_d->dragging = _d->flags.isFlag( fdraggable );
 				bringToFront();
-#ifdef _CAESARIA_COMPILE_WITH_SCRIPT_
-								CallScriptFunction( NMOUSE_EVENT + LMOUSE_PRESSED_DOWN, this, (void*)&event );
-#endif
+
 				return true;
 			case mouseRbtnRelease:
 			case mouseLbtnRelease:
 				_d->dragging = false;
-#ifdef _CAESARIA_COMPILE_WITH_SCRIPT_
-				CallScriptFunction( NMOUSE_EVENT + event.MouseEvent.Event, this, (void*)&event );
-#endif
+
 				return true;
 			case mouseMoved:
 				if ( !event.mouse.isLeftPressed() )
@@ -232,7 +221,7 @@ bool Window::onEvent(const NEvent& event)
 		}
 	}
 
-	return parent()->onEvent(event);
+  return Widget::onEvent(event);
 }
 
 
@@ -326,8 +315,8 @@ void Window::setupUI(const VariantMap &ui)
 {
   Widget::setupUI( ui );
 
-  StringArray buttons = ui.get( "buttons" ).toStringArray();
-  if( buttons.front() == "off" )
+  StringArray buttons = ui.get( "buttons" ).toStringArray();  
+  if( buttons.empty() || buttons.front() == "off" )
   {
     foreach( i, _d->buttons )
        (*i)->hide();

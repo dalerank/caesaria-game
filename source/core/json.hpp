@@ -85,6 +85,8 @@ public:
    */
    static std::string serialize(const Variant &data, bool &success, const std::string& tab);
 
+   static std::string lastParsedObject();
+
  private:
    /**
     * Parses a value starting from index

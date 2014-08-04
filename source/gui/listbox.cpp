@@ -878,6 +878,10 @@ void ListBox::setupUI(const VariantMap& ui)
   std::string fontname = ui.get( "itemfont" ).toString();
   if( !fontname.empty() ) setItemFont( Font::create( fontname ) );
 
+  Variant itemtextoffset = ui.get( "items.offset" );
+  if( itemtextoffset.isValid() )
+    setItemTextOffset( itemtextoffset.toPoint() );
+
   VariantList items = ui.get( "items" ).toList();
   foreach( i, items )
   {

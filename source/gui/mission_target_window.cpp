@@ -33,6 +33,7 @@
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
+#include "game/settings.hpp"
 
 using namespace gfx;
 
@@ -44,8 +45,7 @@ class MissionTargetsWindow::Impl
 public:
   GameAutoPause locker;
   PlayerCityPtr city;
-  PictureRef background;
-  Label* title;
+  Label* lbTitle;
   Label* subTitle;
   Label* lbPopulation;
   Label* lbProsperity;
@@ -68,41 +68,27 @@ MissionTargetsWindow* MissionTargetsWindow::create(Widget* parent, PlayerCityPtr
 MissionTargetsWindow::~MissionTargetsWindow() {}
 
 MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& rectangle ) 
-  : Widget( parent, id, rectangle ), _d( new Impl )
+  : Window( parent, rectangle, "", id ), _d( new Impl )
 {
+  Widget::setupUI( GameSettings::rcpath( "/gui/targets.gui" ) );
   _d->locker.activate();
-  _d->background.reset( Picture::create( size() ) );
 
   WidgetEscapeCloser::insertTo( this );
 
-  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame, true, true );
-
-  Label* lbToCity = new Label( this, Rect( width() / 2, height() - 40, width() - 110, height() - 10 ), _("##mission_wnd_tocity##" ) );
-  lbToCity->setTextAlignment( align::center, align::center );
-
-  TexturedButton* btnExit = new TexturedButton( this, Point( width() - 110, height() - 40), Size( 27 ), -1, 179 );
+  TexturedButton* btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
   CONNECT( btnExit, onClicked(), this, MissionTargetsWindow::deleteLater );
 
-  _d->title = new Label( this, Rect( 16, 16, width() - 16, 16 + 30), "##player_name##");
+  _d->lbTitle = findChildA<Label*>( "lbTitle", true, this );
   //_d->subTitle = new Label( this, Rect( 16, _d->title->getBottom(), getWidth() - 16, _d->title->getBottom() + 20), "##sub_title##" );
 
-  GroupBox* gbTargets = new GroupBox( this, Rect( 16, 64, width() - 64, 64 + 80), Widget::noId, GroupBox::blackFrame );
-  Label* lbTtargets = new Label( gbTargets, Rect( 15, 0, 490, 28), _("##mission_wnd_targets_title##") );
-  lbTtargets->setFont( Font::create( FONT_1_WHITE ) );
-  lbTtargets->setTextAlignment( align::upperLeft, align::upperLeft );
+  _d->lbPopulation = findChildA<Label*>( "lbPopulation", true, this );
+  _d->lbProsperity = findChildA<Label*>( "lbProsperity", true, this );
+  _d->lbFavour = findChildA<Label*>( "lbFavour", true, this );
+  _d->lbCulture = findChildA<Label*>( "lbCulture", true, this );
+  _d->lbPeace = findChildA<Label*>( "lbPeace", true, this );
+  _d->lbShortDesc = findChildA<Label*>( "lbPeace", true, this );
 
-  _d->lbPopulation = new Label( gbTargets, Rect( 16, 32, 16 + 240, 32 + 20), _("##mission_wnd_population##"), false, Label::bgSmBrown );
-  _d->lbProsperity = new Label( gbTargets, Rect( 16, 54, 16 + 240, 54 + 20), _("##mission_wnd_prosperity##"), false, Label::bgSmBrown );
-
-  _d->lbFavour = new Label( gbTargets, Rect( 270, 10, 270 + 240, 10 + 20), _("##mission_wnd_favour##"), false, Label::bgSmBrown );
-  _d->lbCulture = new Label( gbTargets, Rect( 270, 32, 270 + 240, 32 + 20), _("##mission_wnd_culture##"), false, Label::bgSmBrown );
-  _d->lbPeace = new Label( gbTargets, Rect( 270, 54, 270 + 240, 54 + 20), _("##mission_wnd_peace##"), false, Label::bgSmBrown );
-  _d->lbShortDesc = new Label( gbTargets, Rect( 16, 54, 270 + 240, 54 + 20), "", false, Label::bgSmBrown );
-
-  _d->lbxHelp = new ListBox( this, Rect( 16, 152, width() - 20, height() - 40 ) );
-  _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
-  _d->lbxHelp->setItemTextOffset( Point( 10, 0 ) );
-  _d->lbxHelp->setItemHeight( 16 );
+  _d->lbxHelp = findChildA<ListBox*>( "lbxHelp", true, this );
 }
 
 void MissionTargetsWindow::draw( gfx::Engine& painter )
@@ -110,61 +96,78 @@ void MissionTargetsWindow::draw( gfx::Engine& painter )
   if( !visible() )
     return;
 
-  if( _d->background )
-  {
-    painter.draw( *_d->background, screenLeft(), screenTop() );
-  }
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 void MissionTargetsWindow::setCity(PlayerCityPtr city)
 {
   _d->city = city;
   const city::VictoryConditions& wint = _d->city->victoryConditions();
-  _d->lbCulture->setVisible( wint.needCulture() > 0 );
-  _d->lbPeace->setVisible( wint.needPeace() > 0 );
-  _d->lbFavour->setVisible( wint.needFavour() > 0 );
-  _d->lbProsperity->setVisible( wint.needProsperity() > 0 );
-  _d->title->setText( _d->city->player()->name()  );
-  _d->lbShortDesc->setVisible( !wint.getShortDesc().empty() );
 
-  std::string text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
-  _d->lbPopulation->setText( text );
+  if( _d->lbTitle ) _d->lbTitle->setText( _d->city->player()->name()  );
 
-  text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_prsp_rating##"), wint.needProsperity() );
-  _d->lbProsperity->setText( text );
+  std::string text;
 
-  text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_favour_rating##"), wint.needFavour() );
-  _d->lbFavour->setText( text );
-
-  text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_clt_rating##"), wint.needCulture() );
-  _d->lbCulture->setText( text );
-
-  text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_peace_rating##"), wint.needPeace() );
-  _d->lbPeace->setText( text );
-
-  _d->lbxHelp->setItemFont( Font::create( FONT_2_WHITE ) );
-  _d->lbxHelp->setItemTextOffset( Point( 20, 0 ) );
-  _d->lbxHelp->setItemDefaultColor( ListBoxItem::simple, 0xffe0e0e0 );
-
-  foreach( it, wint.getOverview() )
+  if( _d->lbProsperity )
   {
-    std::string text = *it;
-    if( text.substr( 0, 5 ) == "@img=" )
-    {
-      Picture pic = Picture::load( text.substr( 5 ) );
-      ListBoxItem& item = _d->lbxHelp->addItem( pic );
-      item.setTextAlignment( align::center, align::upperLeft );
-      int lineCount = pic.height() / _d->lbxHelp->itemHeight();
-      StringArray lines;
-      lines.resize( lineCount );
-      _d->lbxHelp->addItems( lines );
-    }
-    else { _d->lbxHelp->fitText( _( text ) ); }
+    text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_prsp_rating##"), wint.needProsperity() );
+    _d->lbProsperity->setText( text );
+    _d->lbProsperity->setVisible( wint.needProsperity() > 0 );
   }
 
-  _d->lbShortDesc->setText( _(wint.getShortDesc()) );
+  if( _d->lbPopulation )
+  {
+    text = StringHelper::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
+    _d->lbPopulation->setText( text );
+  }
+
+  if( _d->lbFavour )
+  {
+    text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_favour_rating##"), wint.needFavour() );
+    _d->lbFavour->setText( text );
+    _d->lbFavour->setVisible( wint.needFavour() > 0 );
+  }
+
+  if( _d->lbCulture )
+  {
+    text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_clt_rating##"), wint.needCulture() );
+    _d->lbCulture->setText( text );
+    _d->lbCulture->setVisible( wint.needCulture() > 0 );
+  }
+
+  if( _d->lbPeace )
+  {
+    text = StringHelper::format( 0xff, "%s:%d", _("##senatepp_peace_rating##"), wint.needPeace() );
+    _d->lbPeace->setText( text );
+    _d->lbPeace->setVisible( wint.needPeace() > 0 );
+  }
+
+  if( _d->lbxHelp )
+  {
+    _d->lbxHelp->setItemDefaultColor( ListBoxItem::simple, 0xffe0e0e0 );
+
+    foreach( it, wint.getOverview() )
+    {
+      std::string text = *it;
+      if( text.substr( 0, 5 ) == "@img=" )
+      {
+        Picture pic = Picture::load( text.substr( 5 ) );
+        ListBoxItem& item = _d->lbxHelp->addItem( pic );
+        item.setTextAlignment( align::center, align::upperLeft );
+        int lineCount = pic.height() / _d->lbxHelp->itemHeight();
+        StringArray lines;
+        lines.resize( lineCount );
+        _d->lbxHelp->addItems( lines );
+      }
+      else { _d->lbxHelp->fitText( _( text ) ); }
+    }
+  }
+
+  if( _d->lbShortDesc )
+  {
+    _d->lbShortDesc->setText( _(wint.getShortDesc()) );
+    _d->lbShortDesc->setVisible( !wint.getShortDesc().empty() );
+  }
 }
 
 }//end namespace gui

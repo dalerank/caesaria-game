@@ -1,0 +1,85 @@
+{  
+  buttons : "off"
+
+  lbToCity#Label : {
+    geometry : [ "pw-300", "ph-40", "pw-110", "ph-10" ]
+    text.align : [ "center", "center" ]
+    font : "FONT_2"
+    text : "##mission_wnd_tocity##"
+  }
+
+  lbTitle#Label : {
+    geometry : [ 16, 16, "pw-1", 46 ]
+    font : "FONT_3"
+    text : "##player_name##"
+  }
+
+  btnExit#TexturedButton : {
+    geometry : [ "pw-110", "ph-40", "pw-83", "ph-13" ]
+    normal : [ "paneling", 179 ]
+    hovered : [ "paneling", 180 ]
+    pressed : [ "paneling", 181 ]
+    disabled : [ "paneling", 182 ]
+  }
+
+  gbox#GroupBox : {
+    geometry : [ 16, 64, "pw-64", 144 ]
+    bgtype : "blackFrame"
+
+    lbTargets#Label : {
+      geometry : [ 15, 0, "pw-15", 28 ]
+      text : "##mission_wnd_targets_title##"
+      font : "FONT_1_WHITE"
+      text.align : [ "upperLeft", "upperLeft" ]
+    }
+
+    lbPopulation#Label : {
+      geometry : [ 16, 32, 256, 52 ]
+      text : "##mission_wnd_population##"
+      bgtype : "smallBrown"
+      font : "FONT_1_WHITE"
+    }
+
+    lbProsperity#Label : {
+      geometry : [ 16, 54, 256, 74 ]
+      text : "##mission_wnd_prosperity##"
+      bgtype : "smallBrown"
+      font : "FONT_1_WHITE"
+    }
+
+    lbFavour#Label : {
+      geometry : [ 270, 10, "pw-16", 30 ]
+      text : "##mission_wnd_favour##"
+      bgtype : "smallBrown"
+      font : "FONT_1_WHITE"
+    }
+
+    lbCulture#Label : {
+      geometry : [ 270, 32, "pw-16", 52 ]
+      text : "##mission_wnd_culture##"
+      bgtype : "smallBrown"
+      font : "FONT_1_WHITE"
+    }
+
+    lbPeace#Label : {
+      geometry : [ 270, 54, "pw-16", 74 ]
+      text : "##mission_wnd_peace##"
+      bgtype : "smallBrown"
+      font : "FONT_1_WHITE"
+    }
+
+    lbShortDesc#Label : {
+      geometry : [ 16, 54, "pw-16", 74 ]
+      text : "##mission_wnd_peace##"
+      bgtype : "smallBrown"
+      font : "FONT_2"
+    }
+  }
+
+  lbxHelp#ListBox : {
+    geometry : [ 16, 152, "pw-20", "ph-40" ]
+    itemfont : "FONT_2_WHITE"
+    itemheight : 16
+    items.offset : [ 0, 0 ]
+  }
+}

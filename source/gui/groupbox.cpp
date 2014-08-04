@@ -28,7 +28,7 @@ namespace gui
 class GroupBox::Impl
 {
 public:
-	PictureRef texture;
+  Pictures background;
   Picture backgroundImage;
 	bool scaleImage;
   GroupBox::Style style;
@@ -36,6 +36,18 @@ public:
 };
 
 //! constructor
+GroupBox::GroupBox(Widget *parent)
+  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+{
+  #ifdef _DEBUG
+      setDebugName("GroupBox");
+  #endif
+
+  _d->scaleImage = true;
+  _d->needUpdateTexture = true;
+  _d->style = blackFrame;
+}
+
 GroupBox::GroupBox( Widget* parent, const Rect& rectangle, int id, Style style)
 : Widget( parent, id, rectangle ), _d( new Impl )
 {
@@ -57,9 +69,13 @@ void GroupBox::draw(gfx::Engine& painter )
   if (!visible())
       return;
 
-  if( !_d->texture.isNull() )
+  if( _d->backgroundImage.isValid() )
   {
-    painter.draw( *_d->texture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( _d->backgroundImage, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  }
+  else
+  {
+    painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -74,7 +90,7 @@ void GroupBox::setBackgroundImage( const Picture& image )
   _d->needUpdateTexture = true;
 }
 
-const Picture& GroupBox::getBackgroundImage() const {  return _d->backgroundImage; }
+const Picture& GroupBox::backgroundImage() const {  return _d->backgroundImage; }
 void GroupBox::setScaleBackgroundImage( bool scale ) { _d->scaleImage = scale; }
 
 void GroupBox::setStyle( Style style )
@@ -88,34 +104,24 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
   if( _d->needUpdateTexture )
   {
     _d->needUpdateTexture = false;
-    Size mySize = size();
 
-    if( !_d->texture.isNull() && _d->texture->size() != mySize )
-      _d->texture.reset();
-
-    if( _d->texture.isNull() )
-      _d->texture.reset( Picture::create( mySize ) );
-
-    if( _d->backgroundImage.isValid() )
+    if( !_d->backgroundImage.isValid() )
     {
-      if( _d->scaleImage )
-      {
-        _d->texture->draw( _d->backgroundImage, Rect( Point( 0, 0 ), _d->backgroundImage.size()), Rect( Point(0, 0), mySize) );
-      }
-      else
-      {
-        _d->texture->draw( _d->backgroundImage, Point(0, 0) );
-      }
-    }
-    else
-    {
-      Decorator::draw( *_d->texture, Rect( Point( 0, 0 ), size() ), 
-                              _d->style == whiteFrame ? Decorator::whiteFrame : Decorator::blackFrame,
-                              true, true );
+      Decorator::draw( _d->background, Rect( Point( 0, 0 ), size() ),
+                       _d->style == whiteFrame ? Decorator::whiteFrame : Decorator::blackFrame );
     }
   }
 
   Widget::beforeDraw( painter );
+}
+
+void GroupBox::setupUI(const VariantMap &ui)
+{
+  Widget::setupUI( ui );
+
+  std::string style = ui.get( "bgtype" ).toString();
+  _d->style = style == "blackFrame" ? blackFrame : whiteFrame;
+  _d->needUpdateTexture = true;
 }
 
 }//end namespace gui

@@ -49,6 +49,7 @@ VariantMap SaveAdapter::load( const vfs::Path& fileName )
     else
     {
      Logger::warning( "Can't parse file %s: %s", fileName.toString().c_str(), ret.toString().c_str() );
+     Logger::warning( "Last parsed object is %s", Json::lastParsedObject().c_str() );
     }
   }
   else

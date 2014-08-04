@@ -538,6 +538,11 @@ void Widget::setupUI( const VariantMap& ui )
   _d->internalName = ui.get( "name" ).toString();
   align::Helper ahelper;
   VariantList textAlign = ui.get( "textAlign" ).toList();
+  VariantList altAlign = ui.get( "text.align" ).toList();
+  if( !altAlign.empty() )
+  {
+    textAlign = altAlign;
+  }
 
   if( textAlign.size() > 1 )
   {
