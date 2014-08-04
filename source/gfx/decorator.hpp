@@ -18,8 +18,7 @@
 #ifndef _CAESARIA_PICTURE_DECORATOR_INCLUDE_H_
 #define _CAESARIA_PICTURE_DECORATOR_INCLUDE_H_
 
-#include "picture.hpp"
-#include "drawstack.hpp"
+#include "picturesarray.hpp"
 
 namespace gfx
 {
@@ -48,27 +47,27 @@ public:
                } Mode;
 
   static void draw(Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha=true, bool updateTexture=false);
-  static void draw(DrawStack& stack, const Rect& rectangle, Mode mode);
+  static void draw(Pictures& stack, const Rect& rectangle, Mode mode);
 
   static void drawArea( Picture& dstpic, const Rect& rectangle,  int picId, int picCount, int offset, bool useAlpha );
-  static void drawArea( DrawStack& stack, const Rect& rectangle, int picId, int picCount, int offset);
+  static void drawArea( Pictures& stack, const Rect& rectangle, int picId, int picCount, int offset);
 
   // draws a text button background  offset=22(lightgray), 25(gray), 62(small_green), 65(small_brown), 68(small_grey)
   static void drawPanel( Picture &dstpic, const Rect& rectangle, int picId, bool useAlpha );
-  static void drawPanel( DrawStack& stack, const Rect& rectangle, int picId );
+  static void drawPanel( Pictures& stack, const Rect& rectangle, int picId );
 
   static void drawBorder( Picture &dstpic, const Rect& rectangle, int tp, int bp, int lp, int rp, 
                           int pCount, int hCount, int ltc, int lbc, int rtc, int rbc, bool useAlpha );
-  static void drawBorder( DrawStack& stack, const Rect& rectangle, int tp, int bp, int lp, int rp,
+  static void drawBorder( Pictures& stack, const Rect& rectangle, int tp, int bp, int lp, int rp,
                           int pCount, int hCount, int ltc, int lbc, int rtc, int rbc );
 
   // draws a rectangular area
   static void drawFrame(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha);
-  static void drawFrame(DrawStack& stack, const Rect& rectangle, const int picId );
+  static void drawFrame(Pictures& stack, const Rect& rectangle, const int picId );
 
   // draws a rectangular perimeter
   static void drawBorder(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha);
-  static void drawBorder(DrawStack& stack, const Rect& rectangle, const int picId );
+  static void drawBorder(Pictures& stack, const Rect& rectangle, const int picId );
 
   static void drawLine( Picture &dstpic, const Point& p1, const Point& p2, NColor color );
 

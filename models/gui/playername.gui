@@ -1,50 +1,46 @@
 {  
   geometry : [ 0, 0, 380, 128 ]
-  
-	lbBackground#Label : 
+  buttons : "off"
+  bgtype : "whiteFrame"
+     
+  edPlayerName#EditBox :
   {
-    geometryf : [ 0.0, 0.0, 1, 1 ]
-    bgtype : "whiteFrame"
-    
-    edPlayerName#EditBox :
-    {
-      geometry : [ 32, 50, 352, 82 ]    
-      textAlign : [ "upperLeft", "center" ]
-      font : "FONT_2_WHITE"
-      textOffset : [ 20, 0 ]
-      text : "##new_governor##"
-    }
-    
-    lbNext#Label : 
-    {
-      geometry : [ 180, 90, 325, 110 ]
-      text : "##plname_continue##"
-      font : "FONT_2"
-      textAlign : [ "lowerRight", "center" ]
-    }
-    
-    lbTitle#Label : 
-    {
-      geometry : [ 10, 10, 380, 48 ]
-      text : "##enter_your_name##"
-      font : "FONT_3"
-      textAlign : [ "center", "center" ]
-    }
-    
-    btnContinue#TexturedButton : 
-    {
-      geometry : [ 330, 90, 357, 117 ]
-      normal : [ "paneling", 179 ]
-      hovered : [ "paneling", 180 ]
-      pressed : [ "paneling", 181 ]
-      disabled : [ "paneling", 179 ]
-    }
+    geometry : [ 32, 50, 352, 82 ]
+    textAlign : [ "upperLeft", "center" ]
+    font : "FONT_2_WHITE"
+    textOffset : [ 20, 0 ]
+    text : "##new_governor##"
+  }
 
-    lbExitHelp#Label :
-    {
-      geometry : [ 18, 100, 300, 117 ]
-      text : "##press_escape_for_exit##"
-      font : "FONT_1"
-    }
+  lbNext#Label :
+  {
+    geometry : [ 180, 90, 325, 110 ]
+    text : "##plname_continue##"
+    font : "FONT_2"
+    textAlign : [ "lowerRight", "center" ]
+  }
+
+  lbTitle#Label :
+  {
+    geometry : [ 10, 10, 380, 48 ]
+    text : "##enter_your_name##"
+    font : "FONT_3"
+    textAlign : [ "center", "center" ]
+  }
+
+  btnContinue#TexturedButton :
+  {
+    geometry : [ 330, 90, 357, 117 ]
+    normal : [ "paneling", 179 ]
+    hovered : [ "paneling", 180 ]
+    pressed : [ "paneling", 181 ]
+    disabled : [ "paneling", 179 ]
+  }
+
+  lbExitHelp#Label :
+  {
+    geometry : [ 18, 100, 300, 117 ]
+    text : "##press_escape_for_exit##"
+    font : "FONT_1"
   }
 }

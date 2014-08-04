@@ -28,10 +28,10 @@ using namespace gfx;
 namespace gui
 {
 
-class BackgroundModeHelper : public EnumsHelper<Label::BackgroundMode>
+class LabelBackgroundHelper : public EnumsHelper<Label::BackgroundMode>
 {
 public:
-  BackgroundModeHelper()
+  LabelBackgroundHelper()
     : EnumsHelper<Label::BackgroundMode>(Label::bgNone)
   {
     append( Label::bgWhite, "white" );
@@ -674,7 +674,7 @@ void Label::setupUI(const VariantMap& ui)
     setIcon( Picture::load( vIcon.toString() ), iconOffset );
   }
 
-  BackgroundModeHelper helper;
+  LabelBackgroundHelper helper;
   Label::BackgroundMode mode = helper.findType( ui.get( "bgtype" ).toString() );
   if( mode != bgNone )
     setBackgroundMode( mode );

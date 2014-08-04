@@ -229,7 +229,7 @@ void Widget::updateAbsolutePosition()
   const Rect oldRect = _d->absoluteRect;
   recalculateAbsolutePosition(false);
 
-  if( oldRect != _d->absoluteRect )
+  if( oldRect.size() != _d->absoluteRect.size() )
   {
     _resizeEvent();
   }

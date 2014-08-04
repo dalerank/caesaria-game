@@ -110,6 +110,7 @@ protected:
   virtual ElementState _getState();
  
   virtual void _updateBackground( ElementState state );
+  void _updateStyle();
   virtual void _updateTextPic();
 
   gfx::PictureRef& _textPictureRef();

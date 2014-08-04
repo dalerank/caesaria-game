@@ -28,9 +28,10 @@ class Window : public Widget
 {
 public:
 	typedef enum { buttonClose=0, buttonMin, buttonMax, buttonCount } ButtonName;
-	typedef enum { fdraggable=0x1, fbackgroundVisible=0x2, ftitleVisible=0x4 } FlagName;
+  typedef enum { fdraggable=0x1, fbackgroundVisible=0x2, ftitleVisible=0x4 } FlagName;
+  typedef enum { bgNone, bgWhiteFrame } BackgroundType;
 	//! constructor
-	Window( Widget* parent, const Rect& rectangle, const std::string& title, int id=-1 );
+  Window( Widget* parent, const Rect& rectangle, const std::string& title, int id=-1, BackgroundType style=bgWhiteFrame );
 
 	//! destructor
 	virtual ~Window();
@@ -61,6 +62,7 @@ public:
 	virtual bool headerVisible() const;
 
 	virtual void setBackground( gfx::Picture texture );
+  virtual void setBackground( BackgroundType type );
 
 	virtual gfx::Picture background() const;
 
@@ -70,13 +72,16 @@ public:
 
 	void setWindowFlag( FlagName flag, bool enabled=true );
 
-	void setTextAlignment( Alignment horizontal, Alignment vertical );
+  virtual void setupUI(const VariantMap &ui);
 
-	void setText( const std::string& text );
+  virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
+
+  virtual void setText( const std::string& text );
 
 protected:
 	void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
 	void _init();
+  virtual void _resizeEvent();
 
 private:
 	class Impl;

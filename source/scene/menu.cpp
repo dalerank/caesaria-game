@@ -42,7 +42,6 @@
 #include "core/osystem.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
-#include "sound/engine.hpp"
 #include "gui/widgetpositionanimator.hpp"
 #include "core/event.hpp"
 
@@ -67,7 +66,7 @@ public:
   std::string fileMap;
   std::string playerName;
 
-  void resolveNewGame();
+  void nadleNewGame();
   void resolveCredits();
   void showLoadMenu();
   void resolveLoadRandommap();
@@ -80,7 +79,7 @@ public:
   void openHomePage() { OSystem::openUrl( "https://bitbucket.org/dalerank/caesaria/wiki/Home" ); }
   void resolveShowLoadMapWnd();
   void resolveShowLoadGameWnd();
-  void resolveChangePlayerName();
+  void handleStartCareer();
   void resolveShowChangeLanguageWindow();
   void resolveChangeLanguage(const gui::ListBoxItem&);
   void fitScreenResolution();
@@ -92,8 +91,8 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 {
   gui::Widget* parent = game->gui()->rootWidget();
 
-  vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
-  std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
+  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
+  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
 
   result = StartMenu::loadSavedGame;
   gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, Rect(), savesPath, defaultExt,-1 );
@@ -105,8 +104,8 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 void StartMenu::Impl::fitScreenResolution()
 {
   gfx::Engine::Modes modes = game->engine()->modes();
-  GameSettings::set( GameSettings::resolution, Variant( modes.front() ) );
-  GameSettings::set( GameSettings::screenFitted, true );
+  SETTINGS_SET_VALUE( resolution, modes.front() );
+  SETTINGS_SET_VALUE( screenFitted, true );
   GameSettings::save();
 }
 
@@ -162,23 +161,23 @@ void StartMenu::Impl::resolveChangeLanguage(const gui::ListBoxItem& item)
     }
   }
 
-  GameSettings::set( GameSettings::language, Variant( lang ) );
-  GameSettings::set( GameSettings::talksArchive, Variant( talksArchive ) );
+  SETTINGS_SET_VALUE( language, Variant( lang ) );
+  SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
 
-  Locale::setLanguage( GameSettings::get( GameSettings::language ).toString() );
+  Locale::setLanguage( lang );
   audio::Helper::initTalksArchive( GameSettings::rcpath( talksArchive ) );
 }
 
-void StartMenu::Impl::resolveChangePlayerName()
+void StartMenu::Impl::handleStartCareer()
 {
   gui::WindowPlayerName* dlg = new gui::WindowPlayerName( game->gui()->rootWidget() );
 
   playerName = dlg->text();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( dlg, onClose(), this, Impl::resolveNewGame );
+  CONNECT( dlg, onClose(), this, Impl::nadleNewGame );
 }
 
-void StartMenu::Impl::resolveNewGame()
+void StartMenu::Impl::nadleNewGame()
 {  
   result=startNewGame; isStopped=true;
 }
@@ -191,40 +190,40 @@ void StartMenu::Impl::resolveCredits()
   Size size = engine->screenSize();
   std::string strs[] = { _("##developers##"),
                          " ",
-                       "dalerank (dalerankn8@gmail.com)",
-                       "gathanase (gathanase@gmail.com) render, game mechanics ",
-                       "gecube (gb12335@gmail.com)",
-                       "pecunia (pecunia@heavengames.com) game mechanics",
-                       "tracertong",
-                       "VladRassokhin",
-                       "hellium",
-                       "pufik6666",
-                       "andreibranescu",
-                       "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
-                       "akuskis (?) aqueduct system",
-                       "rovanion",
-                       "nickers (2nickers@gmail.com)",
-                       "ImperatorPrime",
-                       "veprbl",
-                       "ramMASTER",
-                       "greg kennedy(kennedy.greg@gmail.com) smk decoder",
-                       " ",
-                       _("##testers##"),
-                       " ",
-                       "radek liška",
-                       "dimitrius (caesar-iii.ru)",
-                       "shibanirm",
-                       " ",
-                       _("##graphics##"),
-                       " ",
-                       "dimitrius (caesar-iii.ru)",
-                       " ",
-                       _("##thanks_to##"),
-                       " ",
-                       "doc (doc@nnm.me)",
-                       "Juan Font Alonso ",
-                       "Mephistopheles",
-                       "" };
+                         "dalerank (dalerankn8@gmail.com)",
+                         "gathanase (gathanase@gmail.com) render, game mechanics ",
+                         "gecube (gb12335@gmail.com)",
+                         "pecunia (pecunia@heavengames.com) game mechanics",
+                         "tracertong",
+                         "VladRassokhin",
+                         "hellium",
+                         "pufik6666",
+                         "andreibranescu",
+                         "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
+                         "akuskis (?) aqueduct system",
+                         "rovanion",
+                         "nickers (2nickers@gmail.com)",
+                         "ImperatorPrime",
+                         "veprbl",
+                         "ramMASTER",
+                         "greg kennedy(kennedy.greg@gmail.com) smk decoder",
+                         " ",
+                         _("##testers##"),
+                         " ",
+                         "radek liška",
+                         "dimitrius (caesar-iii.ru)",
+                         "shibanirm",
+                         " ",
+                         _("##graphics##"),
+                         " ",
+                         "dimitrius (caesar-iii.ru)",
+                         " ",
+                         _("##thanks_to##"),
+                         " ",
+                         "doc (doc@nnm.me)",
+                         "Juan Font Alonso ",
+                         "Mephistopheles",
+                         "" };
 
   gui::Label* frame = new gui::Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
   gui::Label* subFrame = new gui::Label( frame, Rect( Point( 10, 10), size - Size( 20, 20 ) ), "", false, Label::bgNone );
@@ -280,7 +279,7 @@ void StartMenu::Impl::showMainMenu()
   menu->clear();
 
   gui::PushButton* btn = menu->addButton( _("##mainmenu_newgame##"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::resolveChangePlayerName );
+  CONNECT( btn, onClicked(), this, Impl::handleStartCareer );
 
   btn = menu->addButton( _("##mainmenu_load##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showLoadMenu );

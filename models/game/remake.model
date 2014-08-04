@@ -5,5 +5,7 @@
   carthago : "/gfx/pics_carthage.zip"
   tutorial : "/gfx/pics_tutorial.zip"
   etruscans : "/gfx/pics_etruscan.zip"
+  carts : "/gfx/pics_carts.zip"
+  commerce : "/gfx/pics_commerce.zip"
   sound_themes : "/audio/themes.zip"  
 }

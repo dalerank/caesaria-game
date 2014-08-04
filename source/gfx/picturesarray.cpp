@@ -34,6 +34,12 @@ Pictures& Pictures::operator<<(const Picture& pic)
   return *this;
 }
 
+void Pictures::append(const Picture &pic, const Point &offset)
+{
+  this->push_back( pic );
+  this->back().setOffset( offset );
+}
+
 
 }//end namespace gfx
 

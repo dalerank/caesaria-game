@@ -95,5 +95,6 @@ private:
 
 #define SETTINGS_RC_PATH(a) GameSettings::rcpath( GameSettings::a )
 #define SETTINGS_VALUE(a) GameSettings::get( GameSettings::a )
+#define SETTINGS_SET_VALUE(a, value) GameSettings::set( GameSettings::a, value )
 
 #endif //__CAESARIA_APPCONFIG_H_INCLUDED__

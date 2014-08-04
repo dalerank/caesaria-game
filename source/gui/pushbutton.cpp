@@ -23,7 +23,7 @@
 #include "gfx/engine.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
-#include "gfx/drawstack.hpp"
+#include "gfx/picturesarray.hpp"
 
 using namespace gfx;
 
@@ -49,7 +49,7 @@ public:
 struct ButtonState
 {
   Picture background;
-  DrawStack style;
+  Pictures style;
   Picture icon;
   Point iconOffset;
   Font font;
@@ -118,7 +118,7 @@ PushButton::PushButton( Widget* parent,
   _d->pressed = false;
   _d->currentButtonState = stNormal;
   _d->lastButtonState = StateCount;
-  _d->bgStyle = bgStyle;
+  setBackgroundStyle( bgStyle );
   setTextAlignment( align::center, align::center );
 
   setText( caption );
@@ -154,7 +154,7 @@ void PushButton::_updateTextPic()
 void PushButton::_updateBackground( ElementState state )
 {
   __D_IMPL(_d,PushButton)     
-  DrawStack& drawStack = _d->buttonStates[ state ].style;
+  Pictures& drawStack = _d->buttonStates[ state ].style;
 
   drawStack.clear();
 
@@ -222,6 +222,14 @@ void PushButton::_updateBackground( ElementState state )
   Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), mode );
 }
 
+void PushButton::_updateStyle()
+{
+  for( int i=0; i != StateCount; i++ )
+  {
+    _updateBackground( ElementState(i) );
+  }
+}
+
 //! destructor
 PushButton::~PushButton(){}
 void PushButton::setIsPushButton( bool value ){  _dfunc()->isPushButton = value; }
@@ -237,7 +245,7 @@ void PushButton::setupUI(const VariantMap &ui)
   if( tmp.isValid() )
   {
     BackgroundStyleHelper helper;
-    setBackgroundStyle( helper.findType( tmp.toString() ) );
+    setBackgroundStyle( helper.findType( tmp.toString() ) );    
   }
 
   setIsPushButton( (bool)ui.get( "pushbutton" ) );
@@ -495,7 +503,7 @@ void PushButton::draw( gfx::Engine& painter )
     if( state.background.isValid() )
       painter.draw( state.background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
     else
-      state.style.draw( painter, absoluteRect().UpperLeftCorner );
+      painter.draw( state.style, absoluteRect().UpperLeftCorner );
 	}
 
   if( _d->textPicture )
@@ -549,17 +557,14 @@ Font PushButton::getFont( ElementState state ) {  return _dfunc()->buttonStates[
 
 void PushButton::_resizeEvent()
 {
-  for( int i=0; i != StateCount; i++ )
-  {
-    _updateBackground( ElementState(i) );
-  }
+  _updateStyle();
   _dfunc()->needUpdateTextPic = true;
 }
 
 void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
   _dfunc()->bgStyle = style;
-  _resizeEvent();
+  _updateStyle();
 }
 
 void PushButton::setBackgroundStyle(const std::string &strStyle)

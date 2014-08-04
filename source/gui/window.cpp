@@ -23,11 +23,23 @@
 #include "gfx/engine.hpp"
 #include "modal_widget.hpp"
 #include "gfx/decorator.hpp"
+#include "gfx/picturesarray.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+class WindowBackgroundHelper : public EnumsHelper<Window::BackgroundType>
+{
+public:
+  WindowBackgroundHelper()
+    : EnumsHelper<Window::BackgroundType>(Window::bgNone)
+  {
+    append( Window::bgWhiteFrame, "whiteFrame" );
+    append( Window::bgNone, "none" );
+  }
+};
 
 class Window::Impl
 {
@@ -38,8 +50,9 @@ public:
 	Label* title;
 
 	Picture backgroundImage;
-	PictureRef bg;
+  Pictures bgStyle;
 	Point dragStartPosition;
+  BackgroundType backgroundType;
 	bool dragging;
 
 	NColor currentColor;
@@ -49,7 +62,7 @@ public:
 };
 
 //! constructor
-Window::Window( Widget* parent, const Rect& rectangle, const std::string& title, int id )
+Window::Window( Widget* parent, const Rect& rectangle, const std::string& title, int id, BackgroundType type )
 	: Widget( parent, id, rectangle ),
 	  _d( new Impl )
 {
@@ -58,7 +71,7 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
   _d->flags.setFlag( ftitleVisible, true );
 	_d->title = 0;
 #ifdef _DEBUG
-	setDebugName( L"NrpWindow");
+  setDebugName( "Window");
 #endif
 	_d->backgroundImage = Picture::getInvalid();
 	_d->dragging = false;
@@ -66,7 +79,10 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 	for( unsigned int index=0; index < _d->buttons.size(); index++ )
         _d->buttons[ index ] = NULL;
 
+  _init();
+
     // this element is a tab group
+  setBackground( type );
   setTabgroup( true );
   setTabStop(true);
   setTabOrder(-1);
@@ -76,7 +92,8 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 void Window::setText(const std::string& text )
 {
 	Widget::setText( text );
-	_d->title->setText( text );
+  if( _d->title )
+    _d->title->setText( text );
 }
 
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
@@ -105,17 +122,21 @@ void Window::_init()
 		_d->title->setSubElement( true );
 	}
 
-	_d->title->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
+  _d->title->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
 }
 
-//! destructor
+void Window::_resizeEvent()
+{
+  Widget::_resizeEvent();
+  if( _d->backgroundType != bgNone  )
+  {
+    setBackground( _d->backgroundType );
+  }
+}
+
 Window::~Window()
 {
 	Logger::warning( "Window was removed" );
-
-#ifdef _CAESARIA_COMPILE_WITH_SCRIPT_
-	CallScriptFunction( GUIELEMENT_ON_REMOVE, this, NULL );
-#endif
 }
 
 
@@ -203,9 +224,6 @@ bool Window::onEvent(const NEvent& event)
 
 		case sEventKeyboard:
 			{
-#ifdef _CAESARIA_COMPILE_WITH_SCRIPT_
-				CallScriptFunction( GUIELEMENT_KEY_INPUT, this, (void*)&event );
-#endif
 			}
 		break;
 
@@ -220,12 +238,6 @@ bool Window::onEvent(const NEvent& event)
 
 void Window::beforeDraw( Engine& painter )
 {
-	if( _d->bg.isNull() || ( size() != _d->bg->size() ) )
-	{
-		_d->bg.init( size() );
-		Decorator::draw( *_d->bg, Rect( Point( 0, 0), size() ), Decorator::whiteFrame );
-	}
-
 	Widget::beforeDraw( painter );
 }
 
@@ -240,12 +252,11 @@ void Window::draw( Engine& painter )
 		{
 			if( _d->backgroundImage.isValid() )
 			{
-				Rect rsize( Point( 0, 0 ), _d->backgroundImage.size() );
 				painter.draw( _d->backgroundImage, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
 			}
 			else
 			{
-				painter.draw( *_d->bg, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+        painter.draw( _d->bgStyle, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
 			}
 		}
 	}
@@ -277,8 +288,26 @@ void Window::setHeaderVisible(bool draw)
 
 //! Get if the window titlebar will be drawn
 bool Window::headerVisible() const {	return _d->flags.isFlag( ftitleVisible );}
-void Window::setBackground( Picture texture ){	_d->backgroundImage = texture;}
 Rect Window::clientRect() const{	return Rect(0, 0, 0, 0);}
+
+void Window::setBackground( Picture texture )
+{
+  _d->backgroundImage = texture;
+  _d->backgroundType = bgNone;
+  _d->bgStyle.clear();
+}
+
+void Window::setBackground(Window::BackgroundType type)
+{
+  _d->backgroundImage = Picture::getInvalid();
+  _d->backgroundType = type;
+  _d->bgStyle.clear();
+  switch( type )
+  {
+  case bgWhiteFrame: Decorator::draw( _d->bgStyle, Rect( 0, 0, width(), height()), Decorator::whiteFrame );
+  default: break;
+  }
+}
 
 void Window::setModal()
 {
@@ -290,7 +319,24 @@ Picture Window::background() const {return _d->backgroundImage; }
 
 void Window::setWindowFlag( FlagName flag, bool enabled/*=true */ )
 {
-	_d->flags.setFlag( flag, enabled );
+  _d->flags.setFlag( flag, enabled );
+}
+
+void Window::setupUI(const VariantMap &ui)
+{
+  Widget::setupUI( ui );
+
+  StringArray buttons = ui.get( "buttons" ).toStringArray();
+  if( buttons.front() == "off" )
+  {
+    foreach( i, _d->buttons )
+       (*i)->hide();
+  }
+
+  WindowBackgroundHelper helper;
+  Window::BackgroundType mode = helper.findType( ui.get( "bgtype" ).toString() );
+  if( mode != bgNone )
+    setBackground( mode );
 }
 
 void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
