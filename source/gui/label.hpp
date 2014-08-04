@@ -119,7 +119,6 @@ protected:
   virtual void _resizeEvent();
   virtual void _updateTexture( gfx::Engine& painter );
   virtual void _handleClick();
-  gfx::PictureRef& _pictureRef();
   gfx::PictureRef& _textPictureRef();
 
 private:

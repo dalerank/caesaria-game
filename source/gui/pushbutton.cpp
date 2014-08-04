@@ -113,7 +113,7 @@ PushButton::PushButton( Widget* parent,
 : Widget( parent, id, rectangle ), __INIT_IMPL(PushButton)
 {
   __D_IMPL(_d,PushButton)
-  setDebugName( "pushbutton" );
+  setDebugName( CAESARIA_STR_EXT(PushButton) );
 
   _d->pressed = false;
   _d->currentButtonState = stNormal;

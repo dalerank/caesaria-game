@@ -62,7 +62,7 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->city = city;
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
-  _d->minimap.reset( Picture::create( Size( 144, 110 ) ) );
+  _d->minimap.reset( Picture::create( Size( 144, 110 ), 0, true ) );
   _d->colors = new MinimapColors( (ClimateType)city->climate() );
   setTooltipText( _("##minimap_tooltip##") );
 }
@@ -203,11 +203,7 @@ void Minimap::Impl::updateImage()
   Tilemap& tilemap = city->tilemap();
   int mapsize = tilemap.size();
 
-  minimap->lock();
   // here we can draw anything
-
-  minimap->fill( 0xff000000, Rect() );
-
   mapsize = std::min( mapsize, 42 );
   TilePos tpos = camera->center();
   TilePos offset = TilePos( 80, 80 );
@@ -217,37 +213,42 @@ void Minimap::Impl::updateImage()
   int w = minimap->width()-1;
   int h = minimap->height();
   unsigned int* pixels = minimap->lock();
-  for( int i = startPos.i(); i < stopPos.i(); i++)
+
+  if( pixels != 0)
   {
-    for (int j = startPos.j(); j < stopPos.j(); j++)
+    minimap->fill( 0xff000000, Rect() );
+    for( int i = startPos.i(); i < stopPos.i(); i++)
     {
-      const Tile& tile = tilemap.at(i, j);
+      for (int j = startPos.j(); j < stopPos.j(); j++)
+      {
+        const Tile& tile = tilemap.at(i, j);
 
-      Point pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
-      int c1, c2;
-      getTerrainColours( tile, c1, c2);
+        Point pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
+        int c1, c2;
+        getTerrainColours( tile, c1, c2);
 
-      if( pnt.x() >= w || pnt.y() >= h )
-        continue;
+        if( pnt.x() >= w || pnt.y() >= h )
+          continue;
 
-      unsigned int* bufp32;
-      bufp32 = pixels + pnt.y() * minimap->width() + pnt.x();
-      *bufp32 = c1;
-      *(bufp32+1) = c2;
+        unsigned int* bufp32;
+        bufp32 = pixels + pnt.y() * minimap->width() + pnt.x();
+        *bufp32 = c1;
+        *(bufp32+1) = c2;
+      }
     }
-  }
 
 
-  WalkerList walkers = city->walkers( walker::any, startPos, stopPos );
-  foreach( it, walkers )
-  {
-    WalkerPtr wlk = *it;
-    if( wlk->agressive() != 0 )
+    WalkerList walkers = city->walkers( walker::any, startPos, stopPos );
+    foreach( it, walkers )
     {
-      NColor c1 = wlk->agressive() > 0 ? DefaultColors::red : DefaultColors::blue;
+      WalkerPtr wlk = *it;
+      if( wlk->agressive() != 0 )
+      {
+        NColor c1 = wlk->agressive() > 0 ? DefaultColors::red : DefaultColors::blue;
 
-      Point pnt = getBitmapCoordinates( wlk->pos().i()-startPos.i() - 40, wlk->pos().j()-startPos.j()-60, mapsize);
-      minimap->fill( c1, Rect( pnt, Size(2) ) );
+        Point pnt = getBitmapCoordinates( wlk->pos().i()-startPos.i() - 40, wlk->pos().j()-startPos.j()-60, mapsize);
+        minimap->fill( c1, Rect( pnt, Size(2) ) );
+      }
     }
   }
 
@@ -277,8 +278,6 @@ void Minimap::Impl::updateImage()
   //fullmap->unlock();
 
   // this is window where minimap is displayed
-
-  minimap->unlock();
 }
 
 /* end of helper functions */

@@ -65,7 +65,7 @@ public:
   Point textOffset, iconOffset;
   Picture bgPicture;
   Picture icon;
-  PictureRef background;
+  Pictures background;
   PictureRef textPicture;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
@@ -81,7 +81,6 @@ public:
 
   ~Impl()
   {
-    background.reset();
     textPicture.reset();
   }
 
@@ -117,26 +116,14 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 
 void Label::_updateTexture(gfx::Engine& painter )
 {
-  Size labelSize = size();
-
-  if( _d->background && _d->background->size() != labelSize )
+  if( _d->textPicture && _d->textPicture->size() != size() )
   {
-    _d->background.reset();
-  }
-
-  if( !_d->background )
-  {
-    _d->background.reset( Picture::create( labelSize ) );
-  }
-
-  if( _d->textPicture && _d->textPicture->size() != labelSize )
-  {
-    _d->textPicture.reset( Picture::create( labelSize ) );
+    _d->textPicture.reset( Picture::create( size(), 0, true ) );
   }
 
   if( !_d->textPicture )
   {
-    _d->textPicture.reset( Picture::create( labelSize ) );
+    _d->textPicture.reset( Picture::create( size(), 0, true ) );
   }
 
   if( _d->textPicture )
@@ -145,40 +132,24 @@ void Label::_updateTexture(gfx::Engine& painter )
   }
 
   // draw button background
-  if( _d->background )
-    _d->background->lock();
-
-  if( _d->bgPicture.isValid() )
-  {
-    _d->background->fill( 0xff000000, Rect( 0, 0, 0, 0 ) );
-    _d->background->draw( _d->bgPicture, _d->bgOffset, true );
-  }
-  else
+  if( !_d->bgPicture.isValid() )
   {
     Rect r( Point( 0, 0 ), size() );
+    _d->background.clear();
     switch( _d->backgroundMode )
     {
-    case bgSimpleWhite:
-      _d->background->fill( 0xff000000, Rect() );
-      _d->background->fill( 0xffffffff, Rect( 1, 1, width() - 1, height() - 1 ) );
-    break;
-    case bgSimpleBlack: _d->background->fill( 0xff000000, Rect() );    break;
-    case bgWhite: Decorator::draw( *_d->background, r, Decorator::whiteArea); break;
-    case bgBlack: Decorator::draw( *_d->background, r, Decorator::blackArea ); break;
-    case bgBrown:
-      _d->background->fill( 0xff5C4033, Rect( 0, 0, 0, 0 ) );
-      Decorator::draw( *_d->background, r, Decorator::brownBorder );
-    break;
-
-    case bgSmBrown: Decorator::draw( *_d->background, r, Decorator::brownPanelSmall ); break;
-    case bgWhiteFrame: Decorator::draw( *_d->background, r, Decorator::whiteFrame ); break;
-    case bgBlackFrame: Decorator::draw( *_d->background, r, Decorator::blackFrame ); break;
-    case bgNone: _d->background.reset(); break;
-    case bgWhiteBorderA: Decorator::draw( *_d->background, r, Decorator::whiteBorderA ); break;
+    case bgSimpleWhite: break;
+    case bgSimpleBlack: break;
+    case bgWhite: Decorator::draw( _d->background, r, Decorator::whiteArea); break;
+    case bgBlack: Decorator::draw( _d->background, r, Decorator::blackArea ); break;
+    case bgBrown: Decorator::draw( _d->background, r, Decorator::brownBorder );  break;
+    case bgSmBrown: Decorator::draw( _d->background, r, Decorator::brownPanelSmall ); break;
+    case bgWhiteFrame: Decorator::draw( _d->background, r, Decorator::whiteFrame ); break;
+    case bgBlackFrame: Decorator::draw( _d->background, r, Decorator::blackFrame ); break;
+    case bgNone:  break;
+    case bgWhiteBorderA: Decorator::draw( _d->background, r, Decorator::whiteBorderA ); break;
     }
   }
-  if( _d->background )
-    _d->background->unlock();
 
   if( _d->font.isValid() )
   {
@@ -236,9 +207,13 @@ void Label::draw(gfx::Engine& painter )
     return;
 
   // draw background
-  if( _d->background )
+  if( _d->bgPicture.isValid() )
   {
-    painter.draw( *_d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  }
+  else
+  {
+    painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   if( _d->icon.isValid() )
@@ -681,7 +656,6 @@ void Label::setupUI(const VariantMap& ui)
 }
 
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
-PictureRef& Label::_pictureRef(){  return _d->background;}
 PictureRef& Label::_textPictureRef(){  return _d->textPicture;}
 
 }//end namespace gui
