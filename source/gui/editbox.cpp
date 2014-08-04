@@ -56,7 +56,7 @@ public:
 	unsigned int max;
 	std::string holderText;
   Picture bgPicture;
-  PictureRef picture;
+  Pictures background;
   PictureRef cursorPic;
   PictureRef textPicture;
 
@@ -110,7 +110,7 @@ std::string __ucs2utf8( const std::wstring& text )
 
 void EditBox::_init()
 {
-  _d->lastBreakFont = getActiveFont();
+  _d->lastBreakFont = activeFont();
 
   #ifdef _DEBUG
       setDebugName( "EditBox");
@@ -172,7 +172,7 @@ void EditBox::setFont( const Font& font )
 Font EditBox::getFont() const {	return _d->overrideFont; }
 
 //! Get the font which is used right now for drawing
-Font EditBox::getActiveFont()
+Font EditBox::activeFont()
 {
   if ( _d->overrideFont.isValid() )
     return _d->overrideFont;
@@ -750,30 +750,22 @@ void EditBox::beforeDraw(Engine& painter )
     if( _d->needUpdateTexture )
     {
       _d->needUpdateTexture = false;
-      if( !_d->picture || ( _d->picture && size() != _d->picture->size()) )
-      {
-        _d->picture.reset( Picture::create( size() ) );
-      }
 
       if( _d->cursorPic.isNull() )
       {
-        _d->cursorPic.reset( Picture::create( Size(1, height() / 5 * 4 ) ) );
+        _d->cursorPic.reset( Picture::create( Size(1, height() / 5 * 4 ), 0, true ) );
         _d->cursorPic->fill( 0xff000000, Rect( 0, 0, 0, 0) );
       }
 
       if( !_d->textPicture || ( _d->textPicture && size() != _d->textPicture->size()) )
       {
-        _d->textPicture.reset( Picture::create( size() ) );
+        _d->textPicture.reset( Picture::create( size(), 0, true ) );
         _d->textPicture->fill( 0x00000000, Rect( 0, 0, 0, 0) );
       }
 
-      if( _d->bgPicture.isValid() )
+      if( !_d->bgPicture.isValid() )
       {
-        _d->picture->draw( _d->bgPicture, 0, 0 );
-      }
-      else
-      {
-        Decorator::draw( *_d->picture, Rect( 0, 0, width(), height() ), Decorator::blackFrame, true, true );
+        Decorator::draw( _d->background, Rect( 0, 0, width(), height() ), Decorator::blackFrame );
       }
 
       Rect localClipRect = absoluteRect();
@@ -961,14 +953,18 @@ void EditBox::draw( Engine& painter )
   }
 
 	// draw the text
-  if( _d->picture )
+  if( _d->bgPicture.isValid() )
   {
-    painter.draw( *_d->picture, screenLeft(), screenTop() );
+    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  }
+  else
+  {
+    painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture )
   {
-    painter.draw( *_d->textPicture, _d->textOffset.x() + screenLeft(), _d->textOffset.y() + screenTop() );
+    painter.draw( *_d->textPicture, _d->textOffset + absoluteRect().UpperLeftCorner );
   }
 
   if( focus )
@@ -1024,7 +1020,7 @@ bool EditBox::isAutoscrollEnabled() const{	return _d->autoScrollEnabled;}
 
 //! Gets the area of the text in the edit box
 //! \return Returns the size in pixels of the text
-Size EditBox::getTextDimension()
+Size EditBox::textDimension()
 {
 	Rect ret;
 
@@ -1045,7 +1041,7 @@ Size EditBox::getTextDimension()
 //! Sets the maximum amount of characters which may be entered in the box.
 //! \param max: Maximum amount of characters. If 0, the character amount is
 //! infinity.
-void EditBox::setMax(unsigned int max)
+void EditBox::setMaxCharactersNumber(unsigned int max)
 {
 	_d->max = max;
 
@@ -1055,7 +1051,7 @@ void EditBox::setMax(unsigned int max)
 
 
 //! Returns maximum amount of characters, previously set by setMax();
-unsigned int EditBox::getMax() const{	return _d->max; }
+unsigned int EditBox::maxCharactersNumber() const{	return _d->max; }
 
 bool EditBox::_processMouse(const NEvent& event)
 {
@@ -1127,7 +1123,7 @@ bool EditBox::_processMouse(const NEvent& event)
 
 int EditBox::getCursorPos(int x, int y)
 {
-	Font font = getActiveFont();
+  Font font = activeFont();
 
 	const unsigned int lineCount = (_d->wordWrapEnabled || _d->multiLine) ? _d->brokenText.size() : 1;
 
@@ -1182,7 +1178,7 @@ int EditBox::getCursorPos(int x, int y)
 //! Breaks the single text line.
 void EditBox::breakText()
 {
-	Font font = getActiveFont();
+  Font font = activeFont();
 	if( !font.isValid() )
 		return;
 
@@ -1291,7 +1287,7 @@ void EditBox::setTextRect(int line, const std::string& tempText )
 	if ( line < 0 )
 		return;
 
-	Font font = getActiveFont();
+  Font font = activeFont();
 	if( !font.isValid() )
 		return;
 
@@ -1407,7 +1403,7 @@ void EditBox::calculateScrollPos()
 	if (!_d->wordWrapEnabled)
 	{
 		// get cursor position
-		Font font = getActiveFont();
+    Font font = activeFont();
 		if( !font.isValid() )
 			return;
 
@@ -1514,7 +1510,7 @@ void EditBox::sendGuiEvent( unsigned int type)
     */
 //}
 
-NColor EditBox::getOverrideColor() const
+NColor EditBox::overrideColor() const
 {
     return _d->overrideColor;
 }
