@@ -745,189 +745,189 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
 
 void EditBox::beforeDraw(Engine& painter )
 {
-    int startPos = 0;
+  int startPos = 0;
 
-    if( _d->needUpdateTexture )
+  if( _d->needUpdateTexture )
+  {
+    _d->needUpdateTexture = false;
+
+    if( _d->cursorPic.isNull() )
     {
-      _d->needUpdateTexture = false;
+      _d->cursorPic.reset( Picture::create( Size(1, height() / 5 * 4 ), 0, true ) );
+      _d->cursorPic->fill( 0xff000000, Rect( 0, 0, 0, 0) );
+    }
 
-      if( _d->cursorPic.isNull() )
-      {
-        _d->cursorPic.reset( Picture::create( Size(1, height() / 5 * 4 ), 0, true ) );
-        _d->cursorPic->fill( 0xff000000, Rect( 0, 0, 0, 0) );
-      }
+    if( !_d->textPicture || ( _d->textPicture && size() != _d->textPicture->size()) )
+    {
+      _d->textPicture.reset( Picture::create( size(), 0, true ) );
+      _d->textPicture->fill( 0x00000000, Rect( 0, 0, 0, 0) );
+    }
 
-      if( !_d->textPicture || ( _d->textPicture && size() != _d->textPicture->size()) )
-      {
-        _d->textPicture.reset( Picture::create( size(), 0, true ) );
-        _d->textPicture->fill( 0x00000000, Rect( 0, 0, 0, 0) );
-      }
+    if( !_d->bgPicture.isValid() )
+    {
+      Decorator::draw( _d->background, Rect( 0, 0, width(), height() ), Decorator::blackFrame );
+    }
 
-      if( !_d->bgPicture.isValid() )
-      {
-        Decorator::draw( _d->background, Rect( 0, 0, width(), height() ), Decorator::blackFrame );
-      }
+    Rect localClipRect = absoluteRect();
+    _d->markAreaRect = Rect( 0, 0, -1, -1 );
+    localClipRect.clipAgainst( absoluteClippingRect() );
 
-      Rect localClipRect = absoluteRect();
-      _d->markAreaRect = Rect( 0, 0, -1, -1 );
-      localClipRect.clipAgainst( absoluteClippingRect() );
+    NColor simpleTextColor, markTextColor;
 
-      NColor simpleTextColor, markTextColor;
+    simpleTextColor = 0xff000000;
 
-      simpleTextColor = 0xff000000;
-
-      markTextColor = 0xffffffff;
+    markTextColor = 0xffffffff;
 
 //         if( _d->lastBreakFont != font )
 //         {
 //             breakText();
 //         }
 
-      if( _d->lastBreakFont.isValid() )
+    if( _d->lastBreakFont.isValid() )
+    {
+      // calculate cursor pos
+      std::wstring myText = _d->text;
+      std::wstring* txtLine = &myText;
+
+      std::string s2;
+
+      // get mark position
+      const bool ml = (!_d->isPasswordBox && (_d->wordWrapEnabled || _d->multiLine));
+      const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
+      const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
+      const int hlineStart = ml ? getLineFromPos(realmbgn) : 0;
+      const int hlineCount = ml ? getLineFromPos(realmend) - hlineStart + 1 : 1;
+      const int lineCount = ml ? _d->brokenText.size() : 1;
+
+      _d->textPicture->fill( 0x00000000, Rect(0, 0, 0, 0) );
+      if( !_d->text.empty() )
       {
-        // calculate cursor pos
-        std::wstring myText = _d->text;
-        std::wstring* txtLine = &myText;
+        for (int i=0; i < lineCount; ++i)
+        {
+           setTextRect(i);
 
-        std::string s2;
+           // clipping test - don't draw anything outside the visible area
+           Rect c = localClipRect;
+           c.clipAgainst( _d->currentTextRect );
+           if (!c.isValid())
+               continue;
 
-        // get mark position
-        const bool ml = (!_d->isPasswordBox && (_d->wordWrapEnabled || _d->multiLine));
-        const int realmbgn = _d->markBegin < _d->markEnd ? _d->markBegin : _d->markEnd;
-        const int realmend = _d->markBegin < _d->markEnd ? _d->markEnd : _d->markBegin;
-        const int hlineStart = ml ? getLineFromPos(realmbgn) : 0;
-        const int hlineCount = ml ? getLineFromPos(realmend) - hlineStart + 1 : 1;
-        const int lineCount = ml ? _d->brokenText.size() : 1;
-
-        _d->textPicture->fill( 0x00000000, Rect(0, 0, 0, 0) );
-        if( !_d->text.empty() )
-        {          
-          for (int i=0; i < lineCount; ++i)
-          {
-             setTextRect(i);
-
-             // clipping test - don't draw anything outside the visible area
-             Rect c = localClipRect;
-             c.clipAgainst( _d->currentTextRect );
-             if (!c.isValid())
-                 continue;
-
-             // get current line%
-             if (_d->isPasswordBox)
+           // get current line%
+           if (_d->isPasswordBox)
+           {
+             if (_d->brokenText.size() != 1)
              {
-               if (_d->brokenText.size() != 1)
-               {
-                 _d->brokenText.clear();
-                 _d->brokenText.push_back(std::wstring());
-               }
+               _d->brokenText.clear();
+               _d->brokenText.push_back(std::wstring());
+             }
 
-               if( _d->brokenText[0].size() != _d->text.size())
+             if( _d->brokenText[0].size() != _d->text.size())
+             {
+               _d->brokenText[0] = _d->text;
+               for (unsigned int q = 0; q < myText.size(); ++q)
                {
-                 _d->brokenText[0] = _d->text;
-                 for (unsigned int q = 0; q < myText.size(); ++q)
-                 {
-                   _d->brokenText[0][q] = _d->passwordChar;
-                 }
+                 _d->brokenText[0][q] = _d->passwordChar;
                }
-               txtLine = &_d->brokenText[0];
-               startPos = 0;
+             }
+             txtLine = &_d->brokenText[0];
+             startPos = 0;
+           }
+           else
+           {
+             txtLine = ml ? &_d->brokenText[i] : &myText;
+             startPos = ml ? _d->brokenTextPositions[i] : 0;
+           }
+
+           std::string rText = __ucs2utf8( *txtLine );
+           //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
+           Rect curTextureRect( Point( 0, 0), _d->currentTextRect.size() );
+           curTextureRect = _d->lastBreakFont.getTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
+           curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
+
+           _d->lastBreakFont.draw( *_d->textPicture, rText, curTextureRect.UpperLeftCorner );
+
+           // draw mark and marked text
+           if( isFocused() && _d->markBegin != _d->markEnd && i >= hlineStart && i < hlineStart + hlineCount)
+           {
+             int mbegin = 0, mend = 0;
+             int lineStartPos = 0, lineEndPos = txtLine->size();
+
+             std::string s;
+
+             if (i == hlineStart)
+             {
+                 // highlight start is on this line
+                 s = rText.substr(0, realmbgn - startPos);
+                 mbegin = _d->lastBreakFont.getTextSize( s ).width();
+
+                 // deal with kerning
+                 //mbegin += _d->lastBreakFont.getKerningSize( &((*txtLine)[realmbgn - startPos]),
+                 //                                      realmbgn - startPos > 0 ? &((*txtLine)[realmbgn - startPos - 1]) : 0);
+                 mbegin += 3;
+
+                 lineStartPos = realmbgn - startPos;
+             }
+
+             if( i == hlineStart + hlineCount - 1 )
+             {
+                 // highlight end is on this line
+                 s2 = rText.substr( 0, realmend - startPos );
+                 mend = _d->lastBreakFont.getTextSize( s2 ).width();
+                 lineEndPos = (int)s2.size();
              }
              else
+                 mend = _d->lastBreakFont.getTextSize( (char*)txtLine->c_str() ).width();
+
+             _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.UpperLeftCorner;
+             _d->markAreaRect.UpperLeftCorner += Point( mbegin, 0 );
+             _d->markAreaRect.LowerRightCorner += Point( _d->markAreaRect.UpperLeftCorner.x() + mend - mbegin, 0 );
+
+             //draw mark
+             _d->markAreaRect = _d->markAreaRect /*+ marginOffset */;
+             //_d->markAreaRect.UpperLeftCorner += _d->markStyle->GetMargin().getRect().UpperLeftCorner;
+             //_d->markAreaRect.LowerRightCorner -= _d->markStyle->GetMargin().getRect().LowerRightCorner;
+
+             // draw marked text
+             s = rText.substr(lineStartPos, lineEndPos - lineStartPos);
+
+             if( s.size() )
              {
-               txtLine = ml ? &_d->brokenText[i] : &myText;
-               startPos = ml ? _d->brokenTextPositions[i] : 0;
-             }
-
-             std::string rText = __ucs2utf8( *txtLine );
-             //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
-             Rect curTextureRect( Point( 0, 0), _d->currentTextRect.size() );
-             curTextureRect = _d->lastBreakFont.getTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
-             curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
-
-             _d->lastBreakFont.draw( *_d->textPicture, rText, curTextureRect.UpperLeftCorner );
-
-             // draw mark and marked text
-             if( isFocused() && _d->markBegin != _d->markEnd && i >= hlineStart && i < hlineStart + hlineCount)
-             {
-               int mbegin = 0, mend = 0;
-               int lineStartPos = 0, lineEndPos = txtLine->size();
-
-               std::string s;
-
-               if (i == hlineStart)
-               {
-                   // highlight start is on this line
-                   s = rText.substr(0, realmbgn - startPos);
-                   mbegin = _d->lastBreakFont.getTextSize( s ).width();
-
-                   // deal with kerning
-                   //mbegin += _d->lastBreakFont.getKerningSize( &((*txtLine)[realmbgn - startPos]),
-                   //                                      realmbgn - startPos > 0 ? &((*txtLine)[realmbgn - startPos - 1]) : 0);
-                   mbegin += 3;     
-
-                   lineStartPos = realmbgn - startPos;
-               }
-
-               if( i == hlineStart + hlineCount - 1 )
-               {
-                   // highlight end is on this line
-                   s2 = rText.substr( 0, realmend - startPos );
-                   mend = _d->lastBreakFont.getTextSize( s2 ).width();
-                   lineEndPos = (int)s2.size();
-               }
-               else
-                   mend = _d->lastBreakFont.getTextSize( (char*)txtLine->c_str() ).width();
-
-               _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.UpperLeftCorner;
-               _d->markAreaRect.UpperLeftCorner += Point( mbegin, 0 );
-               _d->markAreaRect.LowerRightCorner += Point( _d->markAreaRect.UpperLeftCorner.x() + mend - mbegin, 0 );
-
-               //draw mark
-               _d->markAreaRect = _d->markAreaRect /*+ marginOffset */;
-               //_d->markAreaRect.UpperLeftCorner += _d->markStyle->GetMargin().getRect().UpperLeftCorner;
-               //_d->markAreaRect.LowerRightCorner -= _d->markStyle->GetMargin().getRect().LowerRightCorner;
-
-               // draw marked text
-               s = rText.substr(lineStartPos, lineEndPos - lineStartPos);
-
-               if( s.size() )
-               {
-                   //_d->txs4Text.NeedUpdateTextureWithText();
-                   //_d->txs4Text.CreateTextureWithText( painter, textureRect, *txtLine, font, simpleTextColor, _textHorzAlign, _textVertAlign, false );
-               }
+                 //_d->txs4Text.NeedUpdateTextureWithText();
+                 //_d->txs4Text.CreateTextureWithText( painter, textureRect, *txtLine, font, simpleTextColor, _textHorzAlign, _textVertAlign, false );
              }
            }
-        }
-        else
-            _drawHolderText( _d->lastBreakFont, &localClipRect );
+         }
       }
+      else
+          _drawHolderText( _d->lastBreakFont, &localClipRect );
+    }
   }
 
   if( _d->cursorPos != _d->oldCursorPos )
   {
-      int cursorLine = 0;
-      int charcursorpos = 0;
-      _d->oldCursorPos = _d->cursorPos;
+    int cursorLine = 0;
+    int charcursorpos = 0;
+    _d->oldCursorPos = _d->cursorPos;
 
-      std::wstring myText = _d->text;
-      std::wstring* txtLine = &myText;
+    std::wstring myText = _d->text;
+    std::wstring* txtLine = &myText;
 
-      if( _d->wordWrapEnabled || _d->multiLine )
-      {
-        cursorLine = getLineFromPos(_d->cursorPos);
-        txtLine = &_d->brokenText[ cursorLine ];
-        startPos = _d->brokenTextPositions[ cursorLine ];
-      }
+    if( _d->wordWrapEnabled || _d->multiLine )
+    {
+      cursorLine = getLineFromPos(_d->cursorPos);
+      txtLine = &_d->brokenText[ cursorLine ];
+      startPos = _d->brokenTextPositions[ cursorLine ];
+    }
 
-      std::wstring stringBeforeCursor = txtLine->substr(0,_d->cursorPos-startPos);
-      charcursorpos = _d->lastBreakFont.getTextSize( __ucs2utf8( stringBeforeCursor ) ).width() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
+    std::wstring stringBeforeCursor = txtLine->substr(0,_d->cursorPos-startPos);
+    charcursorpos = _d->lastBreakFont.getTextSize( __ucs2utf8( stringBeforeCursor ) ).width() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
 
-      setTextRect(cursorLine);
-      _d->cursorRect = _d->currentTextRect;
-      _d->cursorRect.UpperLeftCorner += Point( charcursorpos-1, 6 );
-      _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, height() - 4 );
-      //_d->cursorRect.UpperLeftCorner += style.GetMargin().getRect().UpperLeftCorner;
-      //_d->cursorRect.LowerRightCorner -= style.GetMargin().getRect().LowerRightCorner;
+    setTextRect(cursorLine);
+    _d->cursorRect = _d->currentTextRect;
+    _d->cursorRect.UpperLeftCorner += Point( charcursorpos-1, 6 );
+    _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, height() - 4 );
+    //_d->cursorRect.UpperLeftCorner += style.GetMargin().getRect().UpperLeftCorner;
+    //_d->cursorRect.LowerRightCorner -= style.GetMargin().getRect().LowerRightCorner;
   }
 
   Widget::beforeDraw( painter );
@@ -936,7 +936,7 @@ void EditBox::beforeDraw(Engine& painter )
 //! draws the element and its children
 void EditBox::draw( Engine& painter )
 {
-	if (!visible())
+  if( !visible() )
 		return;
 
 	const bool focus = _environment->hasFocus(this);

@@ -56,7 +56,7 @@ public:
   Label* lbFunds;
   Label* lbDate;
   ContextMenu* langSelect;
-  PictureRef bgPicture;
+  Pictures background;
 
 oc3_slots public:
   void resolveSave();
@@ -86,7 +86,7 @@ void TopMenu::draw(gfx::Engine& engine )
 
   _d->updateDate();
 
-  engine.draw( *_d->bgPicture, screenLeft(), screenTop() );
+  engine.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
 
   MainMenu::draw( engine );
 }
@@ -131,19 +131,18 @@ void TopMenu::Impl::initBackground( const Size& size )
   {
     p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
   }
-  bgPicture.reset( Picture::create( size ) );
+
+  background.clear();
 
   unsigned int i = 0;
   int x = 0;
-  bgPicture->lock();
+
   while( x < size.width())
   {
-    const Picture& pic = p_marble[i%10];
-    bgPicture->draw( pic, x, 0);
-    x += pic.width();
+    background.append( p_marble[i%10], Point( x, 0 ) );
+    x += p_marble[i%10].width();
     i++;
   }
-  bgPicture->unlock();
 }
 
 void TopMenu::Impl::showAboutInfo()
