@@ -52,7 +52,7 @@ static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
 class Menu::Impl
 {
 public:
-  PictureRef bgPicture;
+  Pictures background;
 
   Widget* lastPressed;
   PushButton* menuButton;
@@ -180,7 +180,7 @@ void Menu::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  painter.draw( *_d->bgPicture, screenLeft(), screenTop() );
+  painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
     
   Widget::draw( painter );
 }
@@ -274,27 +274,25 @@ bool Menu::onEvent(const NEvent& event)
 
 Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
 {
-  Menu* ret = new Menu( parent, id, Rect( 0, 0, 1, 1 ) );
+  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
 
-  Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
-  Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
+  Menu* ret = new Menu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
 
-  ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), parent->height() ) ) );
+  const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
 
-  ret->_d->bgPicture->lock();
-  ret->_d->bgPicture->draw( bground, 0, 0 );
+  ret->_d->background.clear();
+
+  ret->_d->background.append( bground, Point( 0, 0 ) );
   int y = bground.height();
-  while( y < ret->_d->bgPicture->height() )
+  while( y < parent->height() )
   {
-    ret->_d->bgPicture->draw( bottom, 0, y );
+    ret->_d->background.append( bottom, Point( 0, -y ) );
     y += bottom.height() - 5;
   }
-  ret->_d->bgPicture->unlock();
 
   ret->_d->city = city;  
   ret->_d->updateBuildingOptions();
 
-  ret->setGeometry( Rect( 0, 0, bground.width(), ret->_d->bgPicture->height() ) );
   CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
 
   return ret;
@@ -386,27 +384,25 @@ void Menu::Impl::updateBuildingOptions()
 
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 {
-  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, 1, 1 ) );
+  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
 
-  Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
-  Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
+  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
 
-  ret->_d->bgPicture.reset( Picture::create( Size( bground.width(), parent->height() ) ) );
+  const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
 
-  ret->_d->bgPicture->lock();
-  ret->_d->bgPicture->draw( bground, 0, 0);
+  ret->_d->background.clear();
+
+  ret->_d->background.append( bground, Point( 0, 0 ) );
   int y = bground.height();
-  while( y < ret->_d->bgPicture->height() )
+  while( y < parent->height() )
   {
-    ret->_d->bgPicture->draw( bottom, 0, y );
+    ret->_d->background.append( bottom, Point( 0, -y ) );
     y += bottom.height() - 5;
   }
-  ret->_d->bgPicture->unlock();
 
   ret->_d->city = city;
   ret->_d->updateBuildingOptions();
 
-  ret->setGeometry( Rect( 0, 0, bground.width(), ret->_d->bgPicture->height() ) );
   CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
 
   return ret;

@@ -171,7 +171,7 @@ void Font::draw( Picture& dstpic, const std::string &text, const int dx, const i
   {
     if( !dstpic.surface() )
     {
-      Logger::warning("Picture does not have surface or srcimg is null");
+      Logger::warning("Font::draw dstpic surface is null");
       return;
     }
 

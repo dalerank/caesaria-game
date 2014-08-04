@@ -227,7 +227,7 @@ void Minimap::Impl::updateImage()
         int c1, c2;
         getTerrainColours( tile, c1, c2);
 
-        if( pnt.x() >= w || pnt.y() >= h )
+        if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() >= w || pnt.y() >= h )
           continue;
 
         unsigned int* bufp32;
@@ -253,6 +253,7 @@ void Minimap::Impl::updateImage()
   }
 
   minimap->unlock();
+  minimap->update();
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it

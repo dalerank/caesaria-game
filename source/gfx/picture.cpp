@@ -146,21 +146,56 @@ void Picture::draw(Picture srcpic, int x, int y, bool useAlpha/*=true */ )
 
 unsigned int* Picture::lock()
 {
-  unsigned int* pixels;
-  int pitch;
-  int rc = SDL_LockTexture(_d->texture, 0, (void**)&pixels, &pitch );
-  if (rc < 0)
+  if( _d->texture )
   {
-    Logger::warning( "Cannot lock texture: %s", SDL_GetError() );
-    return 0;
+    int a;
+    SDL_QueryTexture( _d->texture, 0, &a, 0, 0 );
+    if( a == SDL_TEXTUREACCESS_STREAMING )
+    {
+      unsigned int* pixels;
+      int pitch;
+      int rc = SDL_LockTexture(_d->texture, 0, (void**)&pixels, &pitch );
+      if (rc < 0)
+      {
+        Logger::warning( "Cannot lock texture: %s", SDL_GetError() );
+        return 0;
+      }
+
+      return pixels;
+    }
   }
 
-  return pixels;
+  if( _d->surface )
+  {
+    if( SDL_MUSTLOCK(_d->surface) )
+    {
+      SDL_LockSurface(_d->surface);      
+    }
+    return (unsigned int*)_d->surface->pixels;
+  }
+
+  return 0;
 }
 
 void Picture::unlock()
 {
-  SDL_UnlockTexture(_d->texture);
+  if( _d->texture )
+  {
+    int a;
+    SDL_QueryTexture( _d->texture, 0, &a, 0, 0 );
+    if( a == SDL_TEXTUREACCESS_STREAMING )
+    {
+      SDL_UnlockTexture(_d->texture);
+    }
+  }
+
+  if( _d->surface )
+  {
+    if( SDL_MUSTLOCK(_d->surface) )
+    {
+      SDL_UnlockSurface(_d->surface);
+    }
+  }
 }
 
 Picture& Picture::operator=( const Picture& other )
@@ -185,7 +220,7 @@ void Picture::update()
 {
   if( _d->texture && _d->surface )
   {
-    SDL_Rect r = { 0, 0, _d->surface->w,  _d->surface->h };
+    SDL_Rect r = { 0, 0, _d->surface->w, _d->surface->h };
     SDL_UpdateTexture(_d->texture, &r, _d->surface->pixels, _d->surface->pitch );
   }
 }
