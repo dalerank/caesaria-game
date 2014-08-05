@@ -2,7 +2,7 @@
   version : 1
   map : "/maps/Tingis.sav"
   funds : 6000
-  city.name : "Tarsus"
+  city.name : "Tingis"
   date : "-120.01.01"
   finish : "-1.01.01"
   climate : 2
