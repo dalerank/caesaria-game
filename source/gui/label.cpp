@@ -67,6 +67,7 @@ public:
   Picture icon;
   Pictures background;
   PictureRef textPicture;
+  unsigned int opaque;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
            isBorderVisible( false ),
@@ -77,6 +78,7 @@ public:
   {
     font = Font::create( FONT_2 );
     lmbPressed = false;
+    opaque = 0xff;
   }
 
   ~Impl()
@@ -95,6 +97,8 @@ Label::Label( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( ne
 {
   _d->isBorderVisible = false;
   _d->backgroundMode = bgNone;
+  _d->needUpdatePicture = true;
+
   setTextAlignment( align::automatic, align::automatic );
 }
 
@@ -105,6 +109,7 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 {
   _d->isBorderVisible = border;
   _d->backgroundMode = background;
+  _d->needUpdatePicture = true;
 
   #ifdef _DEBUG
     setDebugName( "label");
@@ -145,7 +150,7 @@ void Label::_updateTexture(gfx::Engine& painter )
       Decorator::draw( *_d->textPicture, r, Decorator::lineBlackBorder );
     break;
 
-    case bgSimpleBlack: break;
+    case bgSimpleBlack:
       _d->textPicture->fill( 0xff000000, Rect( 0, 0, 0, 0) );
       useAlpha4Text = false;
       Decorator::draw( *_d->textPicture, r, Decorator::lineWhiteBorder );
@@ -175,7 +180,7 @@ void Label::_updateTexture(gfx::Engine& painter )
         Rect textRect = _d->font.getTextRect( rText, frameRect, horizontalTextAlign(), verticalTextAlign() );
 
         textRect += _d->textOffset;
-        _d->font.draw( *_d->textPicture, text(), textRect.lefttop(), useAlpha4Text );
+        _d->font.draw( *_d->textPicture, text(), textRect.lefttop(), useAlpha4Text, false );
       }
       else
       {
@@ -196,10 +201,15 @@ void Label::_updateTexture(gfx::Engine& painter )
             _d->font.draw( *_d->textPicture, _d->brokenText[i], textRect.lefttop(), useAlpha4Text, false );
 
             r += Point( 0, height + _d->lineIntervalOffset );
-        }
-        _d->textPicture->update();
+        }        
       }
     }
+  }
+
+  if( _d->textPicture )
+  {
+    _d->textPicture->setAlpha( _d->opaque );
+    _d->textPicture->update();
   }
 }
 
@@ -625,6 +635,12 @@ void Label::setIcon(const Picture& icon, Point offset )
 void Label::setFont( const Font& font )
 {
   _d->font = font;
+  _d->needUpdatePicture = true;
+}
+
+void Label::setAlpha(unsigned int value)
+{
+  _d->opaque = value;
   _d->needUpdatePicture = true;
 }
 

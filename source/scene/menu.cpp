@@ -69,6 +69,7 @@ public:
   void nadleNewGame();
   void resolveCredits();
   void showLoadMenu();
+  void showOptionsMenu();
   void resolveLoadRandommap();
   void showMainMenu();
   void resolvePlayMission();
@@ -226,11 +227,11 @@ void StartMenu::Impl::resolveCredits()
                          "" };
 
   gui::Label* frame = new gui::Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
-  gui::Label* subFrame = new gui::Label( frame, Rect( Point( 10, 10), size - Size( 20, 20 ) ), "", false, Label::bgNone );
+  frame->setAlpha( 0xa0 );
   int h = size.height();
   for( int i=0; !strs[i].empty(); i++ )
   {
-    Label* lb = new gui::Label( subFrame, Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
+    Label* lb = new gui::Label( frame, Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
     lb->setTextAlignment( align::center, align::center );
     lb->setFont( Font::create( FONT_2_WHITE ) );
     PositionAnimator* anim = new PositionAnimator( lb, WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
@@ -274,6 +275,26 @@ void StartMenu::Impl::resolveLoadRandommap()
   isStopped = true;
 }
 
+void StartMenu::Impl::showOptionsMenu()
+{
+  menu->clear();
+
+  gui::PushButton* btn = menu->addButton( _("##mainmenu_language##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+
+  btn = menu->addButton( _("##mainmenu_video##"), -1 );
+  //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+
+  btn = menu->addButton( _("##mainmenu_sound##"), -1 );
+  //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+
+  btn = menu->addButton( _("##mainmenu_game##"), -1 );
+  //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+
+  btn = menu->addButton( _("##cancel##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showMainMenu );
+}
+
 void StartMenu::Impl::showMainMenu()
 {
   menu->clear();
@@ -284,8 +305,8 @@ void StartMenu::Impl::showMainMenu()
   btn = menu->addButton( _("##mainmenu_load##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::showLoadMenu );
 
-  btn = menu->addButton( _("Language"), -1 );
-  CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+  btn = menu->addButton( _("##mainmenu_options##"), -1 );
+  CONNECT( btn, onClicked(), this, Impl::showOptionsMenu );
 
   btn = menu->addButton( _("##mainmenu_credits##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::resolveCredits );

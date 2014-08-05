@@ -94,7 +94,6 @@ void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offse
   for( int k=start; out ? k < stop : k > stop ; k+=offset )
   {
     engine.startRenderFrame();
-    //fadetx->fill( NColor(k, 0, 0, 0), Rect() );
     fadetx->setAlpha( k );
     fadetx->update();
     engine.draw( pic, 0, 0);

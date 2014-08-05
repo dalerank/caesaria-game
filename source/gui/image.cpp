@@ -111,7 +111,6 @@ void Image::draw(gfx::Engine& painter )
   Widget::draw( painter );
 }
 
-
 Signal0<>& Image::onClicked(){  return _d->onClickedSignal;}
 
 void Image::setPicture( Picture picture )
