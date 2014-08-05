@@ -16,7 +16,6 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include "sdl_engine.hpp"
 
 #include <cstdlib>
@@ -278,6 +277,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
   if( masked )
   {
     SDL_SetTextureColorMod( picture.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
+    SDL_SetTextureAlphaMod( picture.texture(), mask.alpha >> 24 );
   }
 
   const Size& picSize = picture.size();
@@ -289,7 +289,10 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
   SDL_RenderCopy( _d->renderer, picture.texture(), &srcRect, &dstRect );
 
   if( masked )
-    SDL_SetTextureColorMod( picture.texture(), 0, 0, 0 );
+  {
+    SDL_SetTextureColorMod( picture.texture(), 0xff, 0xff, 0xff );
+    SDL_SetTextureAlphaMod( picture.texture(), 0xff );
+  }
 
   if( clipRect != 0 )
   {
@@ -327,6 +330,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     if( masked )
     {
       SDL_SetTextureColorMod( picture.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
+      SDL_SetTextureAlphaMod( picture.texture(), mask.alpha >> 24 );
     }
 
     SDL_Rect srcRect = { 0, 0, size.width(), size.height() };
@@ -335,7 +339,10 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     SDL_RenderCopy( _d->renderer, picture.texture(), &srcRect, &dstRect );
 
     if( masked )
-      SDL_SetTextureColorMod( picture.texture(), 0, 0, 0 );
+    {
+      SDL_SetTextureColorMod( picture.texture(), 0xff, 0xff, 0xff );
+      SDL_SetTextureAlphaMod( picture.texture(), 0xff );
+    }
   }
 
   if( clipRect != 0 )

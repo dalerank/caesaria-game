@@ -103,7 +103,10 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
     }
   }
 
-  TilesArray roads = city->tilemap().getNeighbors( p, Tilemap::FourNeighbors );
+  TilesArray roads;
+  if( city.isValid() )
+    roads = city->tilemap().getNeighbors( p, Tilemap::FourNeighbors );
+
   foreach( it, roads )
   {
     Tile* tile = *it;

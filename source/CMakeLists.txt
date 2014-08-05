@@ -100,11 +100,6 @@ endif(BUILD_GL_SHADERS)
 
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
-else()
-  target_link_libraries(${PROJECT_NAME} "GL")
-endif(WIN32)
-
-if(WIN32)
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 
@@ -113,6 +108,8 @@ if(UNIX)
 
   if(APPLE)
     set(EXECUTABLE_FILENAME "caesaria.macos")
+  else(APPLE)
+    target_link_libraries(${PROJECT_NAME} "GL")
   endif(APPLE)
 endif(UNIX)
 

@@ -36,7 +36,7 @@ namespace {
 class DialogBox::Impl
 {
 public:
-  PictureRef background;
+  Pictures background;
 
 oc3_signals public:
   Signal1<int> onResultSignal;
@@ -55,8 +55,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
     setCenter( parent->center() );
   }
 
-  _d->background.reset( Picture::create( size() ) );
-  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
+  Decorator::draw( _d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_3 ) );
@@ -123,10 +122,7 @@ void DialogBox::draw(gfx::Engine& painter )
     return;
   }
 
-  if( _d->background )
-  {
-    painter.draw( *_d->background, screenLeft(), screenTop() );
-  }
+  painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 
   Widget::draw( painter );
 }

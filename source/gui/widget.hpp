@@ -135,7 +135,7 @@ public:
 
   virtual Point leftup() const;
 
-  virtual Point rightupCorner() const;
+  virtual Point rightup() const;
 
   virtual Point rightdownCorner() const;
 
