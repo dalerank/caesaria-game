@@ -67,7 +67,6 @@ public:
   Widget* advisorPanel;
 
   Point offset;
-  PictureRef tabBg;
 
   PlayerCityPtr city;
 
@@ -95,9 +94,10 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
 
   WidgetEscapeCloser::insertTo( this );
 
-  Point tabButtonPos( (width() - 636) / 2, height() / 2 + 192);
+  Image* imgBgButtons = findChildA<Image*>( "imgBgButtons", true, this );
+  if( imgBgButtons )
+    imgBgButtons->setPosition( Point( (width() - 636) / 2, height() / 2 + 192) );
 
-  new gui::Image( this, tabButtonPos, Picture::load( ResourceGroup::menuMiddleIcons, 14 ) );
   addButton( advisor::employers,     255, _("##visit_labor_advisor##"        ));
   addButton( advisor::military,      256, _("##visit_military_advisor##"     ));
   addButton( advisor::empire,        257, _("##visit_imperial_advisor##"     ));

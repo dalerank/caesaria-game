@@ -4,6 +4,11 @@
   imgBackground#Image : {
     geometryf : [ 0, 0, 1, 1 ]
     image : "senate_00001"
-  }
+    mode : "center"
 
+    imgBgButtons#Image : {
+      image : "panelwindows_00014"
+      mode : "image"
+    }
+  }
 }

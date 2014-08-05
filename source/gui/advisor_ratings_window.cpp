@@ -57,10 +57,13 @@ public:
 
     Font digitFont = Font::create( FONT_3 );
     PictureRef& pic = _textPictureRef();
-    digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), width() / 2 - 10, 15, false );
+    if( pic )
+    {
+      digitFont.draw( *pic, StringHelper::format( 0xff, "%d", _value ), width() / 2 - 10, 15, false );
 
-    Font targetFont = Font::create( FONT_1 );
-    targetFont.draw( *pic, StringHelper::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 25, false );
+      Font targetFont = Font::create( FONT_1 );
+      targetFont.draw( *pic, StringHelper::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 25, false );
+    }
   }
 
   void setValue( const int value )

@@ -351,6 +351,46 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   }
 }
 
+void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect)
+{
+  if( !pic.isValid() )
+      return;
+
+  _d->drawCall++;
+
+  if( clipRect != 0 )
+  {
+    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+    SDL_RenderSetClipRect( _d->renderer, &r );
+  }
+
+  const Impl::MaskInfo& mask = _d->mask;
+  bool masked = mask.red || mask.green|| mask.blue || mask.alpha;
+  if( masked )
+  {
+    SDL_SetTextureColorMod( pic.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
+    SDL_SetTextureAlphaMod( pic.texture(), mask.alpha >> 24 );
+  }
+
+  const Point& offset = pic.offset();
+
+  SDL_Rect srcr = { srcRect.left(), srcRect.top(), srcRect.width(), srcRect.height() };
+  SDL_Rect dstr = { dstRect.left()+offset.x(), dstRect.top()-offset.y(), dstRect.width(), dstRect.height() };
+
+  SDL_RenderCopy( _d->renderer, pic.texture(), &srcr, &dstr );
+
+  if( masked )
+  {
+    SDL_SetTextureColorMod( pic.texture(), 0xff, 0xff, 0xff );
+    SDL_SetTextureAlphaMod( pic.texture(), 0xff );
+  }
+
+  if( clipRect != 0 )
+  {
+    SDL_RenderSetClipRect( _d->renderer, 0 );
+  }
+}
+
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 {
   SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );

@@ -62,6 +62,7 @@ public:
 
   virtual void draw(const Picture& pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;
+  virtual void draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect=0 ) = 0;
   virtual void draw(const Pictures& pic, const Point& pos, Rect* clipRect=0 ) = 0;
 
   virtual void drawLine( const NColor& color, const Point& p1, const Point& p2 ) = 0;
