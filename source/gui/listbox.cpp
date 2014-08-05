@@ -632,7 +632,7 @@ void ListBox::draw(gfx::Engine& painter )
   if ( !visible() )
 		return;
 
-  painter.draw( _d->background, absoluteRect().UpperLeftCorner );
+	painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 
   Point scrollBarOffset( 0, -_d->scrollBar->position() );
   Rect frameRect = _itemsRect();
@@ -881,6 +881,9 @@ void ListBox::setupUI(const VariantMap& ui)
   if( itemheight != 0 ) setItemHeight( itemheight );
 
   std::string fontname = ui.get( "itemfont" ).toString();
+  if( !fontname.empty() ) setItemFont( Font::create( fontname ) );
+
+  fontname = ui.get( "items.font" ).toString();
   if( !fontname.empty() ) setItemFont( Font::create( fontname ) );
 
   Variant itemtextoffset = ui.get( "items.offset" );

@@ -15,10 +15,10 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LOADMAPWINDOW_H_INCLUDED__
-#define __CAESARIA_LOADMAPWINDOW_H_INCLUDED__
+#ifndef __CAESARIA_FILELISTBOX_H_INCLUDED__
+#define __CAESARIA_FILELISTBOX_H_INCLUDED__
 
-#include "widget.hpp"
+#include "listbox.hpp"
 #include "core/scopedptr.hpp"
 #include "vfs/path.hpp"
 #include "core/signals.hpp"
@@ -26,35 +26,17 @@
 namespace gui
 {
 
-class LoadMapWindow : public Widget
+class FileListBox : public ListBox
 {
 public:
-  LoadMapWindow( Widget* parent, const Rect& rect, 
-    const vfs::Directory& dir, const std::string& ext,
-    int id );
-  
-  virtual ~LoadMapWindow();
+  FileListBox( Widget* parent );
+  FileListBox( Widget* parent, const Rect& rectangle, int id );
 
-  virtual void draw( gfx::Engine& engine );  // draw on screen
-
-  virtual bool onEvent( const NEvent& event);
-
-  virtual bool isPointInside(const Point& point) const;
-
-  void setTitle( const std::string& title );
-
-  void setMayDelete( bool mayDelete );
-  bool isMayDelete() const;
-
-oc3_signals public:
-  Signal1<std::string>& onSelectFile();
+  virtual ListBoxItem& addItem(const std::string &text, Font font, const int color);
 
 protected:
-  //void _resizeEvent();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  virtual void _drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos);
 };
 
 }//end namespace gui
-#endif //__CAESARIA_LOADMAPWINDOW_H_INCLUDED__
+#endif //__CAESARIA_FILELISTBOX_H_INCLUDED__

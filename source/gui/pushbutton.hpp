@@ -83,7 +83,7 @@ public:
 
   virtual void setFont( const Font& font );
 
-  virtual Font getFont( ElementState state );
+  virtual Font font( ElementState state );
 
   virtual void setIsPushButton( bool value );
 
@@ -107,7 +107,7 @@ protected:
   //! when some mouse button clicked
 	virtual void _btnClicked();
 
-  virtual ElementState _getState();
+  virtual ElementState _state();
  
   virtual void _updateBackground( ElementState state );
   void _updateStyle();

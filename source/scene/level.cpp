@@ -24,7 +24,7 @@
 #include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
 #include "gui/rightpanel.hpp"
-#include "gui/loadmapwindow.hpp"
+#include "gui/loadfiledialog.hpp"
 #include "game/resourcegroup.hpp"
 #include "gui/environment.hpp"
 #include "gui/topmenu.hpp"
@@ -813,7 +813,7 @@ void Level::_resolveShowLoadGameWnd()
 
   vfs::Path savesPath = GameSettings::get( GameSettings::savedir ).toString();
   std::string defaultExt = GameSettings::get( GameSettings::saveExt ).toString();
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, Rect(), savesPath, defaultExt,-1 );
+  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
   wnd->setTitle( _("##mainmenu_loadgame##") );

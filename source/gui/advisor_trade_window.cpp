@@ -75,11 +75,11 @@ public:
 
     if( _textPictureRef() != 0 )
     {
-      Font font = getFont( state );    
+      Font f = font( state );
       PictureRef& textPic = _textPictureRef();
-      font.draw( *textPic, _goodName, 55, 0 );   
-      font.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0 );
-      font.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0 );
+      f.draw( *textPic, _goodName, 55, 0 );
+      f.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0 );
+      f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0 );
 
       std::string ruleName[] = { _("##import##"), "", _("##export##"), _("##stacking##") };
       std::string tradeStateText = ruleName[ _tradeOrder ];
@@ -97,7 +97,7 @@ public:
 
       default: break;
       }
-      font.draw( *textPic, tradeStateText, 340, 0 );
+      f.draw( *textPic, tradeStateText, 340, 0 );
 
       if( state == stHovered ) 
       {
@@ -239,10 +239,10 @@ public:
         btnDecrease->hide();
         btnIncrease->hide();
 
-        Font font = getFont( _getState() );
+        Font f = font( _state() );
         std::string text = (order == city::TradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
-        Rect textRect = font.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
-        font.draw( *_textPictureRef(), text, textRect.UpperLeftCorner );
+        Rect textRect = f.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
+        f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner );
       }
       break;
 
@@ -251,14 +251,14 @@ public:
           btnDecrease->show();
           btnIncrease->show();
 
-          Font font = getFont( _getState() );
+          Font f = font( _state() );
           std::string text = _("##trade_btn_export_text##");
-          Rect textRect = font.getTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
-          font.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
+          Rect textRect = f.getTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
+          f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
 
           text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
-          textRect = font.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
-          font.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
+          textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
+          f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
         }
       break;
 

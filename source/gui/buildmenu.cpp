@@ -60,18 +60,18 @@ public:
 
   void _updateTextPic()
   {
-    ElementState state = _getState();
+    ElementState state = _state();
     PushButton::_updateTextPic();
 
-    Font font = getFont( state );
+    Font f = font( state );
 
-    if( font.isValid() && _cost >= 0 )
+    if( f.isValid() && _cost >= 0 )
     {           
       char buffer[32];
       sprintf( buffer, "%d", _cost );
-      Rect textRect = font.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
+      Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
                                                 align::lowerRight, verticalTextAlign() );
-      font.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
+      f.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
     }
   }
 

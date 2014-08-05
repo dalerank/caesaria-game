@@ -153,16 +153,17 @@ void Decorator::drawBorder(Picture &dstpic, const Rect& rectangle, const int off
 
 void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int offset)
 {
-  // pics are: 0TopLeft, 1Top, 2TopRight, 3Right, 4BottomRight, 5Bottom, 6BottomLeft, 7Left
-  // draws horizontal borders
+  // pics are: 0TopLeft, 1Top, 2TopRight, 3Right, 4BottomRight, 5Bottom, 6BottomLeft, 7Left  
   const Picture& topborder = Picture::load( ResourceGroup::panelBackground, offset+1);
   const int sw = topborder.width();
   const int sh = topborder.height();
   const Picture& bottomBorder = Picture::load( ResourceGroup::panelBackground, offset+5);
+
+  // draws horizontal borders
   for (int i = 0; i<(rectangle.width()/sw-1); ++i)
   {
      stack.append( topborder, rectangle.UpperLeftCorner + Point( sw+sw*i, 0 ) );
-     stack.append( bottomBorder, rectangle.UpperLeftCorner + Point( sw+sw*i, rectangle.height()-sh ) );
+     stack.append( bottomBorder, rectangle.UpperLeftCorner + Point( sw+sw*i, -rectangle.height()+sh ) );
   }
 
   // draws vertical borders
@@ -179,9 +180,9 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
   // topRight corner
   stack.append( Picture::load( ResourceGroup::panelBackground, offset+2), Point( rectangle.right()-sw, rectangle.top() ) );
   // bottomLeft corner
-  stack.append( Picture::load( ResourceGroup::panelBackground, offset+6), Point( rectangle.left(), rectangle.bottom()-sh ) );
+  stack.append( Picture::load( ResourceGroup::panelBackground, offset+6), Point( rectangle.left(), -rectangle.bottom()+sh ) );
   // bottomRight corner
-  stack.append( Picture::load( ResourceGroup::panelBackground, offset+4), Point( rectangle.right()-16, rectangle.bottom()-sh ) );
+  stack.append( Picture::load( ResourceGroup::panelBackground, offset+4), Point( rectangle.right()-16, -rectangle.bottom()+sh ) );
 }
 
 void Decorator::drawLine( Picture& dstpic, const Point& p1, const Point& p2, NColor color)

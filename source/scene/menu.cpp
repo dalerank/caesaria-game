@@ -19,7 +19,7 @@
 #include "menu.hpp"
 
 #include "core/gettext.hpp"
-#include "gui/loadmapwindow.hpp"
+#include "gui/loadfiledialog.hpp"
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
 #include "gui/startmenu.hpp"
@@ -66,7 +66,7 @@ public:
   std::string fileMap;
   std::string playerName;
 
-  void nadleNewGame();
+  void handleNewGame();
   void resolveCredits();
   void showLoadMenu();
   void showOptionsMenu();
@@ -96,7 +96,7 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
 
   result = StartMenu::loadSavedGame;
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, Rect(), savesPath, defaultExt,-1 );
+  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
@@ -175,10 +175,10 @@ void StartMenu::Impl::handleStartCareer()
 
   playerName = dlg->text();
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( dlg, onClose(), this, Impl::nadleNewGame );
+  CONNECT( dlg, onClose(), this, Impl::handleNewGame );
 }
 
-void StartMenu::Impl::nadleNewGame()
+void StartMenu::Impl::handleNewGame()
 {  
   result=startNewGame; isStopped=true;
 }
@@ -318,14 +318,12 @@ void StartMenu::Impl::showMainMenu()
 void StartMenu::Impl::resolvePlayMission()
 {
   gui::Widget* parent = game->gui()->rootWidget();
-  Size rootSize = parent->size();
-  Size windowSize( 512, 384 );
-  Rect rect( Point( (rootSize - windowSize).width() / 2, ( rootSize - windowSize ).height() / 2),
-             windowSize );
+  Rect rect( Point(), Size( 512, 384 ) );
 
   result = StartMenu::loadMission;
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent, rect,
+  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, rect,
                                                     GameSettings::rcpath( "/missions/" ), ".mission", -1 );
+  wnd->setCenter( parent->center() );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_playmission##") );
@@ -343,7 +341,7 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
 {
   gui::Widget* parent = game->gui()->rootWidget();
 
-  gui::LoadMapWindow* wnd = new gui::LoadMapWindow( parent,
+  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
                                                     Rect(),
                                                     GameSettings::rcpath( "/maps/" ), ".map",
                                                     -1 );

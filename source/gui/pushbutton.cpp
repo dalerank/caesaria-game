@@ -128,7 +128,7 @@ PushButton::PushButton( Widget* parent,
 void PushButton::_updateTextPic()
 {
   __D_IMPL(_d,PushButton)
-  ElementState state = _getState();
+  ElementState state = _state();
   PictureRef& textTxs = _d->textPicture;
 
   if( textTxs.isNull() )
@@ -192,7 +192,7 @@ void PushButton::_updateBackground( ElementState state )
     {
       Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), Decorator::whiteArea );
       Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ),
-                              ( state == stHovered || state == stPressed ) ? Decorator::brownBorder : Decorator::whiteBorderA );
+                       ( state == stHovered || state == stPressed ) ? Decorator::brownBorder : Decorator::whiteBorderA );
     }
     break;
 
@@ -458,7 +458,7 @@ bool PushButton::_leftMouseBtnPressed( const NEvent& event )
   return true;
 }
 
-ElementState PushButton::_getState()
+ElementState PushButton::_state()
 {
   if( enabled() )
       return ( isPressed()
@@ -475,7 +475,7 @@ void PushButton::beforeDraw( gfx::Engine& painter )
   // Point spritePos = AbsoluteRect.getCenter();
   __D_IMPL(_d,PushButton);
 
-	_d->currentButtonState = _getState();
+	_d->currentButtonState = _state();
 	if( _d->needUpdateTextPic )
 	{
 		_updateTextPic();
@@ -501,9 +501,9 @@ void PushButton::draw( gfx::Engine& painter )
   if( isBodyVisible() )
   {
     if( state.background.isValid() )
-      painter.draw( state.background, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+      painter.draw( state.background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     else
-      painter.draw( state.style, absoluteRect().UpperLeftCorner );
+      painter.draw( state.style, absoluteRect().lefttop(), &absoluteClippingRectRef());
 	}
 
   if( _d->textPicture )
@@ -553,7 +553,7 @@ void PushButton::setFont( const Font& font )
 }
 
 PictureRef& PushButton::_textPictureRef() {  return _dfunc()->textPicture;}
-Font PushButton::getFont( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
+Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
 
 void PushButton::_resizeEvent()
 {

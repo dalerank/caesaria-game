@@ -293,7 +293,7 @@ void Window::setBackground(Window::BackgroundType type)
   _d->bgStyle.clear();
   switch( type )
   {
-  case bgWhiteFrame: Decorator::draw( _d->bgStyle, Rect( 0, 0, width(), height()), Decorator::whiteFrame );
+  case bgWhiteFrame: Decorator::draw( _d->bgStyle, Rect( 0, 0, width(), height()), Decorator::whiteFrame ); break;
   default: break;
   }
 }
@@ -323,9 +323,12 @@ void Window::setupUI(const VariantMap &ui)
   }
 
   WindowBackgroundHelper helper;
-  Window::BackgroundType mode = helper.findType( ui.get( "bgtype" ).toString() );
-  if( mode != bgNone )
+  std::string modeStr = ui.get( "bgtype" ).toString();
+  if( !modeStr.empty() )
+  {
+    Window::BackgroundType mode = helper.findType( modeStr );
     setBackground( mode );
+  }
 }
 
 void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
