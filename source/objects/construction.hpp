@@ -41,7 +41,7 @@ public:
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual void burn();
   virtual void collapse();
-
+  virtual const gfx::Picture& picture() const;
   virtual bool isNeedRoadAccess() const;
   virtual gfx::TilesArray getAccessRoads() const;  // return all road tiles adjacent to the construction
   virtual void computeAccessRoads();  

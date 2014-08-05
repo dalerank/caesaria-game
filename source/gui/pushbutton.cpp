@@ -159,7 +159,7 @@ void PushButton::_updateBackground( ElementState state )
   drawStack.clear();
 
   // draw button background
-  Decorator::Mode mode;
+  Decorator::Mode mode = Decorator::pure;
   if( !_d->buttonStates[ state ].background.isValid() )
   {
     switch( _d->bgStyle )
@@ -209,9 +209,9 @@ void PushButton::_updateBackground( ElementState state )
 
     case blackBorderUp:
     {
-      /*Decorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), Decorator::blackArea );
-      Decorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ),
-                              state == stHovered ? Decorator::brownBorder : Decorator::whiteBorderA );*/
+      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), Decorator::blackArea );
+      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ),
+                       state == stHovered ? Decorator::brownBorder : Decorator::whiteBorderA );
     }
     break;
 

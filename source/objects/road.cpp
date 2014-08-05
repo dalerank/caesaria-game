@@ -309,6 +309,8 @@ void Plaza::load(const VariantMap& stream)
   setPicture( Picture::load( stream.get( "picture" ).toString() ) );
 }
 
+const Picture& Plaza::picture() const { return Construction::picture(); }
+
 void Plaza::updatePicture()
 {
   TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );

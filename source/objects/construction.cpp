@@ -147,6 +147,8 @@ void Construction::collapse()
   Logger::warning( "Building collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
+const Picture& Construction::picture() const { return TileOverlay::picture(); }
+
 void Construction::setState( ParameterType param, double value)
 {
   _d->params[ param ] = math::clamp<double>( value, 0.f, 100.f );
@@ -222,6 +224,6 @@ void Construction::timeStep(const unsigned long time)
 
 const Picture& Construction::picture(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
 {
-  return picture();
+  return TileOverlay::picture();
 }
 

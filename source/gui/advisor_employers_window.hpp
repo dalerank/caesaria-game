@@ -18,14 +18,14 @@
 #ifndef __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace gui
 {
 
-class AdvisorEmployerWindow : public Widget
+class AdvisorEmployerWindow : public Window
 {
 public:
   AdvisorEmployerWindow( PlayerCityPtr city, Widget* parent, int id );

@@ -76,6 +76,7 @@ oc3_signals public:
   Signal1<Industry::Type> onClickedSignal;
 
 protected:
+
   virtual void _updateTextPic()
   {
     PushButton::_updateTextPic();
@@ -83,23 +84,25 @@ protected:
     PictureRef& pic = _textPictureRef();
 
     Font font = Font::create( FONT_1_WHITE );
-    font.draw( *pic, _title, 130, 2 );
-    font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2 );
+    font.draw( *pic, _title, 130, 2, true, false );
+    font.draw( *pic, StringHelper::format( 0xff, "%d", _needWorkers ), 375, 2, true, false );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2 );
+    font.draw( *pic, StringHelper::format( 0xff, "%d", _haveWorkers ), 480, 2, true, false );
 
     if( _priority > 0 )
     {
       Picture lock = Picture::load( ResourceGroup::panelBackground, 238 );
       pic->draw( lock, Point( 45, 4), false );
       font.setColor( DefaultColors::black );
-      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 4 ) );
+      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 4 ), true, false );
     }
+
+    pic->update();
   }
 
   virtual void _btnClicked()
@@ -266,9 +269,9 @@ EmployerButton* AdvisorEmployerWindow::Impl::addButton( AdvisorEmployerWindow* p
 }
 
 AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
-  setupUI( GameSettings::rcpath( "/gui/employersadv.gui" ) );
+  Widget::setupUI( GameSettings::rcpath( "/gui/employersadv.gui" ) );
   setPosition( Point( (parent->width() - width()) / 2, parent->height() / 2 - 242 ) );
 
   _d->city = city;
@@ -306,7 +309,7 @@ void AdvisorEmployerWindow::draw(Engine& painter )
   if( !visible() )
     return;
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 bool AdvisorEmployerWindow::onEvent(const NEvent& event)

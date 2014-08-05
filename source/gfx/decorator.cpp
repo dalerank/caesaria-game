@@ -272,6 +272,8 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
     drawLine( dstpic, rectangle.leftbottom(), rectangle.lefttop(), color );
   }
   break;
+
+  default: break;
   }
 
   if( updateTexture )
@@ -307,6 +309,7 @@ void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mo
   case brownFrame: drawFrame(stack, rectangle, 28); break;
   case greyFrame: drawFrame(stack, rectangle, 37); break;
   case pure: break;
+  default: break;
   }
 }
 

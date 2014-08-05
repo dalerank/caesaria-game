@@ -57,6 +57,7 @@ public:
   virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  virtual const gfx::Picture& picture() const;
   void updatePicture();
 };
 
