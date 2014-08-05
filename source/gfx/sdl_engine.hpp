@@ -58,6 +58,8 @@ public:
   virtual void draw( const Picture& picture, const Point& pos, Rect* clipRect=0 );
   virtual void draw( const Pictures& pictures, const Point& pos, Rect* clipRect=0 );  
 
+  virtual void drawLine(const NColor &color, const Point &p1, const Point &p2);
+
   virtual unsigned int fps() const;
   virtual void createScreenshot( const std::string& filename );
 

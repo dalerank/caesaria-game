@@ -70,7 +70,7 @@
 
     lbShortDesc#Label : {
       geometry : [ 16, 54, "pw-16", 74 ]
-      text : "##mission_wnd_peace##"
+      text : "##mission_wnd_short##"
       bgtype : "smallBrown"
       font : "FONT_2"
     }

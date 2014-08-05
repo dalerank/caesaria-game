@@ -139,7 +139,7 @@ public:
 
   virtual void addItems( const StringArray& strings );
 
-  virtual Font getFont() const;
+  virtual Font font() const;
 
   virtual int selected();
 
@@ -156,8 +156,9 @@ oc3_signals public:
 protected:
   //! Update the position and size of the listbox, and update the scrollbar
   virtual void _resizeEvent();
-  virtual void _drawItemIcon(gfx::Picture texture, ListBoxItem& item, const Point& pos );
-  virtual void _drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos );
+  virtual void _drawItemIcon(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect);
+  virtual void _drawItemText(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect);
+  virtual void _updateItemText( gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );
   Rect _itemsRect();
 
 private:
@@ -168,7 +169,7 @@ private:
   ElementState _getCurrentItemState( unsigned int index, bool hl );
   Font _getCurrentItemFont( const ListBoxItem& item, bool selected );
   NColor _getCurrentItemColor( const ListBoxItem& item, bool selected );
-  void _updateTexture();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

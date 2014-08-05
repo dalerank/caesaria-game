@@ -20,6 +20,7 @@
 #include "core/signals.hpp"
 #include "scrollbar.hpp"
 #include "core/color.hpp"
+#include "gfx/picturesarray.hpp"
 #include <vector>
 
 namespace gui
@@ -28,8 +29,7 @@ namespace gui
 class ListBox::Impl
 {
 public:
-  gfx::PictureRef background;
-  gfx::PictureRef picture;
+  gfx::Pictures background;
   std::vector< ListBoxItem > items;
   NColor itemDefaultColorText;
   NColor itemDefaultColorTextHighlight;
@@ -48,8 +48,8 @@ public:
 	unsigned int lastKeyTime;
   std::string keyBuffer;
 	bool selecting;
-	Point itemTextOffset;
-	bool needItemsRepackTextures;
+  Point itemTextOffset;
+  bool needItemsRepackTextures;
 
 oc3_signals public:
 	Signal1<int> indexSelected;

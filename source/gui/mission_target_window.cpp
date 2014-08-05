@@ -86,7 +86,7 @@ MissionTargetsWindow::MissionTargetsWindow( Widget* parent, int id, const Rect& 
   _d->lbFavour = findChildA<Label*>( "lbFavour", true, this );
   _d->lbCulture = findChildA<Label*>( "lbCulture", true, this );
   _d->lbPeace = findChildA<Label*>( "lbPeace", true, this );
-  _d->lbShortDesc = findChildA<Label*>( "lbPeace", true, this );
+  _d->lbShortDesc = findChildA<Label*>( "lbShortDesc", true, this );
 
   _d->lbxHelp = findChildA<ListBox*>( "lbxHelp", true, this );
 }

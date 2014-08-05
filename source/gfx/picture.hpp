@@ -51,7 +51,7 @@ public:
 
   void addOffset( Point offset );
   void addOffset(int x, int y);
-  Point offset() const;
+  const Point& offset() const;
 
   void setName(const std::string &name);  // for save game
   std::string name() const;
@@ -74,7 +74,7 @@ public:
   unsigned int* lock();
   void unlock();
 
-  Size size() const;
+  const Size& size() const;
   unsigned int sizeInBytes() const;
 
   bool isValid() const;

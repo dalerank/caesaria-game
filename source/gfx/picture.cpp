@@ -77,13 +77,13 @@ void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Texture* Picture::texture() const{  return _d->texture;}
 SDL_Surface*Picture::surface() { return _d->surface;  }
-Point Picture::offset() const{  return _d->offset;}
+const Point& Picture::offset() const{  return _d->offset;}
 int Picture::width() const{  return _d->size.width();}
 int Picture::height() const{  return _d->size.height();}
 int Picture::pitch() const { return width() * 4; }
 void Picture::setName(const std::string &name){  _d->name = name;}
 std::string Picture::name() const{  return _d->name;}
-Size Picture::size() const{  return _d->size; }
+const Size& Picture::size() const{  return _d->size; }
 unsigned int Picture::sizeInBytes() const { return size().area() * 4; }
 bool Picture::isValid() const{  return _d->texture != 0;}
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}

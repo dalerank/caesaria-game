@@ -344,9 +344,9 @@ void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
   }
 
   // draws vertical borders
-  for (int i = 0; i<=(rectangle.height()/size.height()); ++i)
+  for (int i = 0; i<(rectangle.height()/size.height()); ++i)
   {
-    Point offset = rectangle.UpperLeftCorner + Point( 0, sh-sh*i );
+    Point offset = rectangle.UpperLeftCorner + Point( 0, -sh*i );
     stack.append( Picture::load( ResourceGroup::panelBackground, lp+hCount*(i%pCount)), offset );      // left border
     stack.append( Picture::load( ResourceGroup::panelBackground, rp+hCount*(i%pCount)), offset + Point( rectangle.width()-sw, 0 ) );      // right border
   }

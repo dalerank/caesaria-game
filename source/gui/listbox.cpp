@@ -55,7 +55,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 	_d->selectedItemIndex = -1;
 	_d->lastKeyTime = 0;
 	_d->selecting = false;
-	_d->needItemsRepackTextures = true;
+  _d->needItemsRepackTextures = true;
 
   _d->recalculateItemHeight( Font::create( FONT_2 ), height() );
 
@@ -93,27 +93,6 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
 //! destructor
 ListBox::~ListBox() {}
-
-void ListBox::_updateTexture()
-{
-  Size s = size();
-
-  if( _d->background && _d->background->size() != s )
-  {
-    _d->background.reset();
-    _d->picture.reset();
-  }
-
-  if( !_d->background )
-  {    
-    _d->background.reset( Picture::create( s ) );
-    _d->picture.reset( Picture::create( s ) );
-    Decorator::draw( *_d->background, Rect( 0, 0, width() - _d->scrollBar->width(), height() ), Decorator::blackFrame );
-    Decorator::draw( *_d->background,
-                            Rect( width() - _d->scrollBar->width(), 0, width(), height() ), 
-                            Decorator::whiteArea  );
-  }
-}
 
 //! returns amount of list items
 unsigned int ListBox::itemCount() const {  return _d->items.size(); }
@@ -426,7 +405,7 @@ bool ListBox::onEvent(const NEvent& event)
 				case mouseWheel:
 					{
 						_d->scrollBar->setPosition(_d->scrollBar->position() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
-						_d->needItemsRepackTextures = true;
+            _d->needItemsRepackTextures = true;
 						return true;
 					}
 				break;
@@ -521,6 +500,9 @@ void ListBox::_resizeEvent()
 {
   _d->totalItemHeight = 0;
   _d->recalculateItemHeight( _d->font, height() );
+
+  Decorator::draw( _d->background, Rect( 0, 0, width() - _d->scrollBar->width(), height() ), Decorator::blackFrame );
+  Decorator::draw( _d->background, Rect( width() - _d->scrollBar->width(), 0, width(), height() ), Decorator::whiteArea  );
 }
 
 ElementState ListBox::_getCurrentItemState( unsigned int index, bool hl )
@@ -566,20 +548,24 @@ Rect ListBox::_itemsRect()
 {
   Rect frameRect( Point( 0, 0 ), size() );
 
-  frameRect.rright() = frameRect.LowerRightCorner.x() - DEFAULT_SCROLLBAR_SIZE;
+  frameRect.rright() = frameRect.right() - DEFAULT_SCROLLBAR_SIZE;
 
   return frameRect;
 }
 
-void ListBox::_drawItemIcon( Picture texture, ListBoxItem& item, const Point& pos)
+void ListBox::_drawItemIcon( Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect)
 {
-  item.icon().setAlpha( 0 );
-  texture.draw( item.icon(), pos );
+  painter.draw( item.icon(), pos + item.iconOffset(), clipRect );
 }
 
-void ListBox::_drawItemText(Picture& texture, Font font, ListBoxItem& item, const Point& pos)
+void ListBox::_drawItemText( Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect )
 {
-  font.draw( texture, item.text(), pos, false, false );
+  painter.draw( item.picture(), pos + item.textOffset(), clipRect );
+}
+
+void ListBox::_updateItemText(Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect)
+{
+  item.updateText( textRect.UpperLeftCorner, font, frameRect.size() );
 }
 
 void ListBox::beforeDraw(gfx::Engine& painter)
@@ -589,11 +575,6 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 
   if( _d->needItemsRepackTextures )
   {
-    _updateTexture();
-
-    _d->picture->lock();
-    _d->picture->draw( *_d->background, 0, 0 );
-
     bool hl = ( isFlag( hightlightNotinfocused ) || isFocused() || _d->scrollBar->isFocused() );
     Rect frameRect = _itemsRect();
     frameRect.rbottom() = frameRect.top() + _d->itemHeight;
@@ -613,7 +594,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
           offset.setX( (width() - refItem.icon().width()) / 2 );
         }
 
-        _drawItemIcon( *_d->picture, refItem, frameRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + offset );
+        refItem.setIconOffset( offset );
       }
 
       int mnY = frameRect.bottom() - _d->scrollBar->position();
@@ -628,27 +609,17 @@ void ListBox::beforeDraw(gfx::Engine& painter)
         currentFont = _getCurrentItemFont( refItem, i == _d->selectedItemIndex && hl );
         currentFont.setColor( _getCurrentItemColor( refItem, i==_d->selectedItemIndex && hl ) );
 
-        Rect textRect = currentFont.getTextRect( refItem.text(), frameRect,
-                                                       itemTextHorizontalAlign, itemTextVerticalAlign );
-
-        //_DrawItemIcon( refItem, textRect, hl, i == _d->selectedItemIndex, &_d->clientClip, fontColor );
+        Rect textRect = currentFont.getTextRect( refItem.text(), Rect( Point(0, 0), frameRect.size() ),
+                                                 itemTextHorizontalAlign, itemTextVerticalAlign );
 
         textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
 
-        _drawItemText( *_d->picture, currentFont, refItem,
-                       textRect.UpperLeftCorner + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
-
-        if( !refItem.url().empty() )
-        {
-          textRect.rtop() = textRect.bottom() - 1;
-          _d->picture->fill( currentFont.color(), textRect + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
-        }
+        _updateItemText( painter, refItem, textRect, currentFont, frameRect);
       }
 
       frameRect += Point( 0, _d->itemHeight );
     }
 
-    _d->picture->unlock();
     _d->needItemsRepackTextures = false;
   }
 
@@ -661,10 +632,44 @@ void ListBox::draw(gfx::Engine& painter )
   if ( !visible() )
 		return;
 
-	if( !_d->picture.isNull() )
-	{
-		painter.draw( *_d->picture, absoluteRect().UpperLeftCorner );
-	}
+  painter.draw( _d->background, absoluteRect().UpperLeftCorner );
+
+  Point scrollBarOffset( 0, -_d->scrollBar->position() );
+  Rect frameRect = _itemsRect();
+  frameRect.rbottom() = frameRect.top() + _d->itemHeight;
+  const Point& widgetLeftup = absoluteRect().UpperLeftCorner;
+
+  Rect clipRect = absoluteClippingRectRef();
+  clipRect.UpperLeftCorner += Point( 3, 3 );
+  clipRect.LowerRightCorner -= Point( 3, 3 );
+
+  for( unsigned int i = 0; i < _d->items.size();  i++ )
+  {
+    ListBoxItem& refItem = _d->items[ i ];
+
+    int mnY = frameRect.bottom() - _d->scrollBar->position();
+    int mxY = frameRect.top() - _d->scrollBar->position();
+
+    if( !refItem.text().empty() && mnY >= 0 && mxY <= (int)height() )
+    {
+      if( refItem.icon().isValid() )
+      {
+        _drawItemIcon( painter, refItem, widgetLeftup + frameRect.UpperLeftCorner + scrollBarOffset, &clipRect );
+      }
+
+      _drawItemText( painter, refItem, widgetLeftup + frameRect.UpperLeftCorner + scrollBarOffset, &clipRect  );
+
+      if( !refItem.url().empty() )
+      {
+        Point r = frameRect.LowerRightCorner;
+        r += Point( 0, -_d->scrollBar->position() ) + refItem.textOffset();
+        //_d->background->fill( currentFont.color(), textRect + Point( 0, -_d->scrollBar->position() ) + refItem.offset() );
+        painter.drawLine( 0xff00ff00, r - Point( frameRect.width(), 0 ), r );
+      }
+    }
+
+    frameRect += Point( 0, _d->itemHeight );
+  }
 
 	Widget::draw( painter );
 }
@@ -825,7 +830,7 @@ ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int col
   ListBoxItem i;
   i.setText( text );
   i.setState( stNormal );
-  i.setOffset( _d->itemTextOffset );
+  i.setTextOffset( _d->itemTextOffset );
   //i.currentHovered = 255;
   i.OverrideColors[ ListBoxItem::simple ].font = font.isValid() ? font : _d->font;
   i.OverrideColors[ ListBoxItem::simple ].color = color;
@@ -860,7 +865,7 @@ void ListBox::addItems(const StringArray& strings)
   { addItem( *it ); }
 }
 
-Font ListBox::getFont() const{  return _d->font;}
+Font ListBox::font() const{  return _d->font;}
 void ListBox::setDrawBackground(bool draw){    setFlag( drawBackground, draw );} //! Sets whether to draw the background
 int ListBox::selected() {    return _d->selectedItemIndex; }
 Signal1<std::string>& ListBox::onItemSelectedAgain(){  return _d->onItemSelectedAgainSignal;}
@@ -895,8 +900,8 @@ void ListBox::setupUI(const VariantMap& ui)
       std::string fontName = vm.get( "font" ).toString();
       std::string text = vm.get( "text" ).toString();
       int tag = vm.get( "tag" );
-      Font font = fontName.empty() ? getFont() : Font::create( fontName );
-      ListBoxItem& item = addItem( _(text), font );
+      Font f = fontName.empty() ? font() : Font::create( fontName );
+      ListBoxItem& item = addItem( _(text), f );
       item.setTag( tag );
       item.setUrl( vm.get( "url").toString() );
     }

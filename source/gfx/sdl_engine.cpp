@@ -59,7 +59,6 @@ public:
   }MaskInfo;
 
   Picture screen;
-  Picture maskedPic;
   PictureRef fpsText;
 
   SDL_Window *window;
@@ -278,7 +277,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
   bool masked = mask.red || mask.green|| mask.blue || mask.alpha;
   if( masked )
   {
-    SDL_SetTextureColorMod( _d->maskedPic.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
+    SDL_SetTextureColorMod( picture.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
   }
 
   const Size& picSize = picture.size();
@@ -305,10 +304,49 @@ void SdlEngine::draw( const Picture& picture, const Point& pos, Rect* clipRect )
 
 void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect)
 {
+  if( pictures.empty() )
+      return;
+
+  _d->drawCall++;
+
+  if( clipRect != 0 )
+  {
+    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+    SDL_RenderSetClipRect( _d->renderer, &r );
+  }
+
+  const Impl::MaskInfo& mask = _d->mask;
+  bool masked = mask.red || mask.green|| mask.blue || mask.alpha;
+
   foreach( it, pictures )
   {
-    draw( *it, pos, clipRect );
+    const Picture& picture = *it;
+    const Size& size = picture.size();
+    const Point& offset = picture.offset();
+
+    if( masked )
+    {
+      SDL_SetTextureColorMod( picture.texture(), mask.red >> 16, mask.green >> 8, mask.blue );
+    }
+
+    SDL_Rect srcRect = { 0, 0, size.width(), size.height() };
+    SDL_Rect dstRect = { pos.x() + offset.x(), pos.y() - offset.y(), size.width(), size.height() };
+
+    SDL_RenderCopy( _d->renderer, picture.texture(), &srcRect, &dstRect );
+
+    if( masked )
+      SDL_SetTextureColorMod( picture.texture(), 0, 0, 0 );
   }
+
+  if( clipRect != 0 )
+  {
+    SDL_RenderSetClipRect( _d->renderer, 0 );
+  }
+}
+
+void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
+{
+  SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );
 }
 
 void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "listboxitem.hpp"
 
@@ -23,11 +25,13 @@ namespace gui
 class ListBoxItem::Impl
 {
 public:
+  PictureRef textPic;
   std::string text;
   Variant data;
 	int tag;
   float currentHovered;
   Picture icon;
+  Point iconOffset;
   ElementState state;
   bool enabled;
   Point offset;
@@ -102,6 +106,19 @@ void ListBoxItem::setTextColor(ListBoxItem::ColorType type, NColor color)
   OverrideColors[ type ].Use = true;
 }
 
+void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
+{
+  if( _d->textPic.isNull() || ( _d->textPic != 0 && _d->textPic->size() != s ) )
+  {
+    _d->textPic.reset( Picture::create( s, 0, true ) );
+  }
+
+  if( _d->textPic )
+  {
+    f.draw( *_d->textPic, _d->text, p );
+  }
+}
+
 ListBoxItem::~ListBoxItem(){}
 void ListBoxItem::setTag( int tag ){	_d->tag = tag;}
 int ListBoxItem::tag() const{	return _d->tag;}
@@ -109,8 +126,11 @@ bool ListBoxItem::isEnabled() const{    return _d->enabled;}
 void ListBoxItem::setEnabled( bool en ){    _d->enabled = en;}
 ElementState ListBoxItem::state() const{    return _d->state;}
 void ListBoxItem::setState( const ElementState& st ){    _d->state = st;}
-Point ListBoxItem::offset() const{  return _d->offset;}
-void ListBoxItem::setOffset(Point p){  _d->offset = p;}
+Point ListBoxItem::textOffset() const{  return _d->offset;}
+void ListBoxItem::setTextOffset(Point p){  _d->offset = p;}
+Point ListBoxItem::iconOffset() const{ return _d->iconOffset; }
+void ListBoxItem::setIconOffset(Point p) { _d->iconOffset = p; }
+const Picture &ListBoxItem::picture() const { return *_d->textPic; }
 void ListBoxItem::setUrl(const std::string& url) { _d->url = url; }
 const std::string&ListBoxItem::url() const { return _d->url; }
 Variant ListBoxItem::data() const{ return _d->data; }
