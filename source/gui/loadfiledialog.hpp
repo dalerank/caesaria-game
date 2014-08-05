@@ -15,8 +15,8 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LOADMAPWINDOW_H_INCLUDED__
-#define __CAESARIA_LOADMAPWINDOW_H_INCLUDED__
+#ifndef __CAESARIA_LOADFILEDIALOG_H_INCLUDED__
+#define __CAESARIA_LOADFILEDIALOG_H_INCLUDED__
 
 #include "window.hpp"
 #include "core/scopedptr.hpp"
@@ -50,11 +50,9 @@ oc3_signals public:
   Signal1<std::string>& onSelectFile();
 
 protected:
-  //void _resizeEvent();
-
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
 }//end namespace gui
-#endif //__CAESARIA_LOADMAPWINDOW_H_INCLUDED__
+#endif //__CAESARIA_LOADFILEDIALOG_H_INCLUDED__

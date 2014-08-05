@@ -36,12 +36,10 @@ public:
   void addMessage( std::string );
  
 private:
+  class LabelA;
   WindowMessageStack( Widget* parent, int id, const Rect& rectangle );
 
   void _update();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
 }//end namespace gui

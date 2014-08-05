@@ -140,31 +140,7 @@ void Label::_updateTexture(gfx::Engine& painter )
   bool useAlpha4Text = true;
   if( !_d->bgPicture.isValid() )
   {
-    Rect r( Point( 0, 0 ), size() );
-    _d->background.clear();
-    switch( _d->backgroundMode )
-    {
-    case bgSimpleWhite:
-      _d->textPicture->fill( 0xffffffff, Rect( 0, 0, 0, 0) );
-      useAlpha4Text = false;
-      Decorator::draw( *_d->textPicture, r, Decorator::lineBlackBorder );
-    break;
-
-    case bgSimpleBlack:
-      _d->textPicture->fill( 0xff000000, Rect( 0, 0, 0, 0) );
-      useAlpha4Text = false;
-      Decorator::draw( *_d->textPicture, r, Decorator::lineWhiteBorder );
-    break;
-
-    case bgWhite: Decorator::draw( _d->background, r, Decorator::whiteArea); break;
-    case bgBlack: Decorator::draw( _d->background, r, Decorator::blackArea ); break;
-    case bgBrown: Decorator::draw( _d->background, r, Decorator::brownBorder );  break;
-    case bgSmBrown: Decorator::draw( _d->background, r, Decorator::brownPanelSmall ); break;
-    case bgWhiteFrame: Decorator::draw( _d->background, r, Decorator::whiteFrame ); break;
-    case bgBlackFrame: Decorator::draw( _d->background, r, Decorator::blackFrame ); break;
-    case bgNone:  break;
-    case bgWhiteBorderA: Decorator::draw( _d->background, r, Decorator::whiteBorderA ); break;
-    }
+    _updateBackground( painter, useAlpha4Text );
   }
 
   if( _d->font.isValid() )
@@ -210,6 +186,36 @@ void Label::_updateTexture(gfx::Engine& painter )
   {
     _d->textPicture->setAlpha( _d->opaque );
     _d->textPicture->update();
+  }
+}
+
+void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
+{
+  Rect r( Point( 0, 0 ), size() );
+  _d->background.clear();
+
+  switch( _d->backgroundMode )
+  {
+  case bgSimpleWhite:
+    _d->textPicture->fill( 0xffffffff, Rect( 0, 0, 0, 0) );
+    useAlpha4Text = false;
+    Decorator::draw( *_d->textPicture, r, Decorator::lineBlackBorder );
+  break;
+
+  case bgSimpleBlack:
+    _d->textPicture->fill( 0xff000000, Rect( 0, 0, 0, 0) );
+    useAlpha4Text = false;
+    Decorator::draw( *_d->textPicture, r, Decorator::lineWhiteBorder );
+  break;
+
+  case bgWhite: Decorator::draw( _d->background, r, Decorator::whiteArea); break;
+  case bgBlack: Decorator::draw( _d->background, r, Decorator::blackArea ); break;
+  case bgBrown: Decorator::draw( _d->background, r, Decorator::brownBorder );  break;
+  case bgSmBrown: Decorator::draw( _d->background, r, Decorator::brownPanelSmall ); break;
+  case bgWhiteFrame: Decorator::draw( _d->background, r, Decorator::whiteFrame ); break;
+  case bgBlackFrame: Decorator::draw( _d->background, r, Decorator::blackFrame ); break;
+  case bgNone:  break;
+  case bgWhiteBorderA: Decorator::draw( _d->background, r, Decorator::whiteBorderA ); break;
   }
 }
 
@@ -683,6 +689,7 @@ void Label::setupUI(const VariantMap& ui)
 }
 
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
-PictureRef& Label::_textPictureRef(){  return _d->textPicture;}
+PictureRef& Label::_textPictureRef(){  return _d->textPicture; }
+gfx::Pictures&Label::_backgroundRef(){ return _d->background; }
 
 }//end namespace gui

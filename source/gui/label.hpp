@@ -19,7 +19,7 @@
 #define __CAESARIA_GUILABEL_H_INCLUDE_
 
 #include "widget.hpp"
-#include "gfx/picture.hpp"
+#include "gfx/picturesarray.hpp"
 #include "core/signals.hpp"
 
 namespace gui
@@ -120,9 +120,11 @@ oc3_signals public:
 protected:
   virtual void _resizeEvent();
   virtual void _updateTexture( gfx::Engine& painter );
+  virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text);
   virtual void _handleClick();
 
   gfx::PictureRef& _textPictureRef();
+  gfx::Pictures& _backgroundRef();
 
 private:
 
