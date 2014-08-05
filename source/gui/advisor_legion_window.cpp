@@ -104,37 +104,21 @@ private:
 class AdvisorLegionWindow::Impl
 {
 public:
-  PictureRef background;
   gui::Label* alarm;
   gui::Label* helpRequest;
 };
 
 AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-                     Size( 640, 416 ) ) );
-
-  _d->background.reset( Picture::create( size() ) );
-  //main background
-  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
+  Widget::setupUI( ":/gui/legionadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   //buttons background
   Point startLegionArea( 32, 70 );
-  Decorator::draw( *_d->background, Rect( startLegionArea, Size( 574, 270 )), Decorator::blackFrame );
 
-  gui::Label* title = new gui::Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
-  title->setText( _("##advlegion_window_title##") );
-  title->setFont( Font::create( FONT_3 ) );
-  title->setTextAlignment( align::center, align::center );
-
-  _d->alarm = new gui::Label( this, Rect( 60, height()-60, width() - 60, height() - 40 ), _("##advlegion_noalarm##") );
-  _d->helpRequest = new gui::Label( this, Rect( 60, height()-40, width() - 60, height() - 20 ), _("##advlegion_norequest##") );
-
-  new gui::Label( this, Rect( 290, 60, 340, 80 ), _("##advlegion_morale##") );
-  new gui::Label( this, Rect( 380, 50, 435, 80 ), _("##advlegion_gotolegion##") );
-  new gui::Label( this, Rect( 465, 50, 520, 80 ), _("##advlegion_return2fort##") );
-  new gui::Label( this, Rect( 550, 50, 600, 80 ), _("##advlegion_empireservice##") );
+  _d->alarm = findChildA<Label*>( "alarm", true, this );
+  _d->helpRequest = findChildA<Label*>( "helpRequest", true, this );
 
   int index=0;
   foreach( it, forts )
@@ -144,15 +128,12 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts
   }
 }
 
-
 void AdvisorLegionWindow::draw( Engine& painter )
 {
   if( !visible() )
     return;
 
-  painter.draw( *_d->background, screenLeft(), screenTop() );
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 void AdvisorLegionWindow::_handleMove2Legion(FortPtr fort)

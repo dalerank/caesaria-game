@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/predefinitions.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
@@ -28,7 +28,7 @@
 namespace gui
 {
 
-class AdvisorEmperorWindow : public Widget
+class AdvisorEmperorWindow : public Window
 {
 public:
   AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id );

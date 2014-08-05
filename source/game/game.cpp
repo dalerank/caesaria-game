@@ -89,7 +89,7 @@ public:
   void initLocale(std::string localePath);
   void initVideo();
   void initSound();
-  void initPictures( vfs::Path resourcePath);
+  void initPictures();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon(vfs::Path filename );
@@ -213,7 +213,7 @@ void Game::Impl::initFontCollection( vfs::Path resourcePath )
   FontCollection::instance().initialize( resourcePath.toString() );
 }
 
-void Game::Impl::initPictures(vfs::Path resourcePath)
+void Game::Impl::initPictures()
 {
   AnimationBank::instance().loadCarts();
   AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ) );
@@ -496,6 +496,9 @@ void Game::Impl::initArchiveLoaders()
 void Game::initialize()
 {
   GameSettings::load();
+  //mount default rcpath folder
+  vfs::FileSystem::instance().mountFolder( GameSettings::rcpath() );
+
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
   _d->initVideo();
@@ -521,7 +524,7 @@ void Game::initialize()
 
   screen.setPrefix( "" );
   screen.setText( "##initialize_animations##" );
-  _d->initPictures( GameSettings::rcpath() );
+  _d->initPictures();
 
   screen.setText( "##initialize_names##" );
   NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );

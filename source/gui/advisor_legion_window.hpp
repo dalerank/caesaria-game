@@ -18,14 +18,14 @@
 #ifndef __CAESARIA_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_LEGION_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 #include "objects/predefinitions.hpp"
 
 namespace gui
 {
 
-class AdvisorLegionWindow : public Widget
+class AdvisorLegionWindow : public Window
 {
 public:
   AdvisorLegionWindow(Widget* parent, int id , FortList forts);

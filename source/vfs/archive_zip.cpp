@@ -27,11 +27,6 @@
 namespace vfs
 {
 
-// -----------------------------------------------------------------------------
-// zip loader
-// -----------------------------------------------------------------------------
-
-//! Constructor
 ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)
 : _fileSystem(fs)
 {
@@ -116,19 +111,26 @@ bool ZipArchiveLoader::isALoadableFileFormat( NFile file ) const
 // -----------------------------------------------------------------------------
 // zip archive
 // -----------------------------------------------------------------------------
+class ZipArchiveReader::Impl
+{
+public:
+  bool isGZip;
+};
 
 ZipArchiveReader::ZipArchiveReader( NFile file, bool ignoreCase, bool ignorePaths, bool isGZip)
  : Entries( (file.isOpen() ? file.path() : Path("") ), ignoreCase ? Path::ignoreCase : Path::equaleCase, ignorePaths),
-   File(file), IsGZip(isGZip)
+   File(file), _d( new Impl )
 {
 	#ifdef _DEBUG
-        FileList::setDebugName( "ZipReader");
-    #endif
+    FileList::setDebugName( "ZipReader");
+  #endif
 
-    if( file.isOpen() )
+  _d->isGZip = isGZip;
+
+  if( file.isOpen() )
 	{
 		// load file entries
-		if (IsGZip)
+    if( _d->isGZip )
 			while (scanGZipHeader()) { }
 		else
 			while (scanZipHeader()) { }
@@ -142,7 +144,7 @@ ZipArchiveReader::~ZipArchiveReader(){}
 //! get the archive type
 Archive::Type ZipArchiveReader::getType() const
 {
-	return IsGZip 
+  return _d->isGZip
             ? Archive::gzip
             : Archive::zip;
 }

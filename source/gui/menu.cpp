@@ -393,7 +393,7 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
   ret->_d->background.clear();
 
   ret->_d->background.append( bground, Point( 0, 0 ) );
-  int y = bground.height();
+  unsigned int y = bground.height();
   while( y < parent->height() )
   {
     ret->_d->background.append( bottom, Point( 0, -y ) );

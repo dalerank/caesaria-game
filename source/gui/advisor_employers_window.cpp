@@ -28,7 +28,6 @@
 #include "core/foreach.hpp"
 #include "city/helper.hpp"
 #include "city/funds.hpp"
-#include "game/settings.hpp"
 #include "world/empire.hpp"
 #include "objects/constants.hpp"
 #include "objects/working.hpp"
@@ -271,7 +270,7 @@ EmployerButton* AdvisorEmployerWindow::Impl::addButton( AdvisorEmployerWindow* p
 AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent, int id )
   : Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
-  Widget::setupUI( GameSettings::rcpath( "/gui/employersadv.gui" ) );
+  Widget::setupUI( ":/gui/employersadv.gui" );
   setPosition( Point( (parent->width() - width()) / 2, parent->height() / 2 - 242 ) );
 
   _d->city = city;

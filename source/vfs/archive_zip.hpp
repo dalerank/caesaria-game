@@ -228,7 +228,8 @@ protected:
   // holds extended info about files
   std::vector< SZipFileEntry > FileInfo;
 
-  bool IsGZip;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }

@@ -143,10 +143,8 @@ Path Path::removeEndSlash() const
   return pathTo;
 }
 
-char Path::lastChar() const
-{
-  return _d->path.empty() ? 0 : *_d->path.rbegin();
-}
+char Path::lastChar() const { return _d->path.empty() ? 0 : *_d->path.rbegin(); }
+char Path::firstChar() const { return _d->path.empty() ? 0 : *_d->path.begin(); }
 
 bool Path::exist(SensType sens) const
 {

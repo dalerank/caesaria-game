@@ -50,11 +50,14 @@ public:
 	//! currently attached Archives
   std::vector< ArchivePtr > openArchives;
 
+  std::vector< Directory > folders;
+
   //! WorkingDirectory for Native and Virtual filesystems	
   Path workingDirectory[2];
 
-  Mode fileSystemType;
+  FileSystem::Mode fileSystemType;
 
+public:
   ArchivePtr changeArchivePassword( const Path& filename, const std::string& password );
 };
 
@@ -110,16 +113,34 @@ NFile FileSystem::loadFileFromArchive( const Path& filePath )
 //! opens a file for read access
 NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
 {
-  NFile file = loadFileFromArchive( filename );
-
-  if( file.isOpen() )
+  Path realFilename = filename;
+  if( filename.firstChar() == ':' )
   {
-    return file;
+    Path rPath = filename.toString().substr( 1 );
+    foreach( it, _d->folders )
+    {
+      Path absPath = (*it)/rPath;
+      if( absPath.exist() )
+      {
+        realFilename = absPath;
+        break;
+      }
+    }
   }
-	
+  else
+  {
+    NFile file = loadFileFromArchive( filename );
+
+    if( file.isOpen() )
+    {
+      return file;
+    }
+  }
+
   // Create the file using an absolute path so that it matches
-  FSEntityPtr ptr( new FileNative( filename.absolutePath(), mode ) );
+  FSEntityPtr ptr( new FileNative( realFilename.absolutePath(), mode ) );
   ptr->drop();
+
   return NFile( ptr );
 }
 
@@ -392,6 +413,20 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
   }
 
   return ArchivePtr();
+}
+
+void FileSystem::mountFolder(const Directory &folder)
+{
+  foreach( it, _d->folders )
+  {
+    if( folder.absolutePath() == (*it).absolutePath() )
+    {
+      Logger::warning( "FileSystem: directory %s aslo mounted", folder.absolutePath().toString().c_str() );
+      return;
+    }
+  }
+
+  _d->folders.push_back( folder.absolutePath() );
 }
 
 

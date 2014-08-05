@@ -69,9 +69,9 @@ public:
     CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
   }
 
-  virtual void _updateBackground( ElementState state )
+  virtual void _updateTextPic()
   {
-    PushButton::_updateBackground( state );
+    PushButton::_updateTextPic();
 
     PictureRef& pic = _textPictureRef();
 
@@ -204,32 +204,39 @@ void AdvisorEmperorWindow::_updateRequests()
 }
 
 AdvisorEmperorWindow::AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
   _d->autoPause.activate();
   _d->city = city;
   _d->isRequestsUpdated = true;
 
-  setupUI( GameSettings::rcpath( "/gui/emperoropts.gui") );
+  Widget::setupUI( GameSettings::rcpath( "/gui/emperoropts.gui") );
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
   gui::Label* title = findChildA<Label*>( "lbTitle", true, this );
-  title->setText( city->player()->name() );
 
   _d->lbEmperorFavour = findChildA<Label*>( "lbEmperorFavour", true, this );
-  if( _d->lbEmperorFavour )
-    _d->lbEmperorFavour->setText( StringHelper::format( 0xff, "%s %d", _("##advemp_emperor_favour##"), _d->city->favour() ) );
-
   _d->lbEmperorFavourDesc = findChildA<Label*>( "lbEmperorFavourDesc", true, this );
-  if( _d->lbEmperorFavourDesc )
-    _d->lbEmperorFavourDesc->setText( _( _d->getEmperorFavourStr() ) );
-
   _d->lbPost = findChildA<Label*>( "lbPost", true, this );
   _d->lbPrimaryFunds = findChildA<Label*>( "lbPrimaryFunds", true, this );
-
   _d->btnSendGift = findChildA<PushButton*>( "btnSendGift", true, this );
   _d->btnSend2City = findChildA<PushButton*>( "btnSend2City", true, this );
   _d->btnChangeSalary = findChildA<PushButton*>( "btnChangeSalary", true, this );
+
+  if( _d->lbEmperorFavour )
+    _d->lbEmperorFavour->setText( StringHelper::format( 0xff, "%s %d", _("##advemp_emperor_favour##"), _d->city->favour() ) );
+
+  if( _d->lbEmperorFavourDesc )
+    _d->lbEmperorFavourDesc->setText( _( _d->getEmperorFavourStr() ) );
+
+  if( title )
+  {
+    std::string text = city->player()->name();
+    if( text.empty() )
+      text = _("##emperor_advisor_title##");
+
+    title->setText( text );
+  }
 
   CONNECT( _d->btnChangeSalary, onClicked(), this, AdvisorEmperorWindow::_showChangeSalaryWindow );
   CONNECT( _d->btnSend2City, onClicked(), this, AdvisorEmperorWindow::_showSend2CityWindow );
@@ -246,7 +253,7 @@ void AdvisorEmperorWindow::draw(gfx::Engine& painter )
     _updateRequests();
   }
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 void AdvisorEmperorWindow::Impl::sendMoney( int money )

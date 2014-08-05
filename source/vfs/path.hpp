@@ -55,6 +55,7 @@ public:
   Path removeBeginSlash() const;
   Path removeEndSlash() const;
   char lastChar() const;
+  char firstChar() const;
  
   const std::string& toString() const;
   std::string removeExtension() const;
