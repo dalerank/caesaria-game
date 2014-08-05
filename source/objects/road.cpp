@@ -244,7 +244,6 @@ Plaza::Plaza()
 // Plazas can be built ONLY on top of existing roads
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
-
 bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles ) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
@@ -261,6 +260,11 @@ bool Plaza::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   return is_constructible;
 }
 
+const Picture& Plaza::picture(PlayerCityPtr city, TilePos pos, const TilesArray &tmp) const
+{
+  return picture();
+}
+
 void Plaza::appendPaved(int) {}
 
 void Plaza::build(PlayerCityPtr city, const TilePos& p)
@@ -268,10 +272,10 @@ void Plaza::build(PlayerCityPtr city, const TilePos& p)
   Tilemap& tilemap = city->tilemap();
   TileOverlayPtr overlay = tilemap.at( p ).overlay();
 
-  if( !is_kind_of<Road>( overlay ) )
-  {
-    return;
-  }
+  //if( !is_kind_of<Road>( overlay ) )
+  //{
+  //  return;
+  //}
 
   Construction::build( city, p );
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
@@ -309,7 +313,12 @@ void Plaza::load(const VariantMap& stream)
   setPicture( Picture::load( stream.get( "picture" ).toString() ) );
 }
 
-const Picture& Plaza::picture() const { return Construction::picture(); }
+const Picture& Plaza::picture() const
+{
+  return tile().masterTile()
+           ? Construction::picture()
+           : Picture::load( ResourceGroup::entertaiment, 102);
+}
 
 void Plaza::updatePicture()
 {

@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_SAVE_DIALOG_H_INCLUDED__
 #define __CAESARIA_SAVE_DIALOG_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "vfs/directory.hpp"
@@ -26,7 +26,7 @@
 namespace gui
 {
 
-class SaveDialog : public Widget
+class SaveDialog : public Window
 {
 public:
   SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id );

@@ -52,7 +52,8 @@ class Plaza : public Road
 {
 public:
   Plaza();
-  virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
+  virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
+  virtual const gfx::Picture& picture(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& tmp ) const;
   virtual void appendPaved(int value);
   virtual void build(PlayerCityPtr city, const TilePos &pos);
   virtual void save(VariantMap &stream) const;
