@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "road.hpp"
 #include "gfx/tile.hpp"
@@ -235,14 +237,8 @@ Plaza::Plaza()
   // or we will run into big troubles
 
   setType(construction::plaza);
-  setPicture(picture()); // 102 ~ 107
+  setPicture( Picture::load( ResourceGroup::entertaiment, 102) ); // 102 ~ 107
   setSize( Size( 1 ) );
-}
-
-Picture Plaza::picture()
-{
-  //std::cout << "Plaza::computePicture" << std::endl;
-  return Picture::load( ResourceGroup::entertaiment, 102);
 }
 
 // Plazas can be built ONLY on top of existing roads
@@ -292,6 +288,25 @@ void Plaza::build(PlayerCityPtr city, const TilePos& p)
       }
     }
   }
+}
+
+void Plaza::save(VariantMap& stream) const
+{
+  Road::save( stream );
+
+  stream[ "picture" ] = Variant( picture().name() );
+}
+
+void Plaza::load(const VariantMap& stream)
+{
+  Road::load( stream );
+
+  if( size().area() > 1 )
+  {
+    Construction::build( _city(), pos() );
+  }
+
+  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
 }
 
 void Plaza::updatePicture()

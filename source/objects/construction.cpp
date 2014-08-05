@@ -90,7 +90,6 @@ TilesArray Construction::getAccessRoads() const { return _d->accessRoads; }
 bool Construction::canDestroy() const { return true; }
 void Construction::destroy() { TileOverlay::destroy(); }
 bool Construction::isNeedRoadAccess() const{ return true; }
-const Picture& Construction::picture() const { return TileOverlay::picture(); }
 Construction::~Construction() {}
 
 void Construction::build(PlayerCityPtr city, const TilePos& pos )

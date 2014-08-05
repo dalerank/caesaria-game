@@ -56,7 +56,6 @@ public:
   virtual double state( ParameterType name ) const;
 
   virtual void timeStep(const unsigned long time);
-  virtual const gfx::Picture& picture() const;
   virtual const gfx::Picture& picture( PlayerCityPtr city, TilePos pos,
                                        const gfx::TilesArray& aroundTiles ) const;
 

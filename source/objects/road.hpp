@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ROAD_H_INCLUDE__
 #define __CAESARIA_ROAD_H_INCLUDE__
@@ -51,9 +53,10 @@ class Plaza : public Road
 public:
   Plaza();
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;
-  virtual gfx::Picture picture();
   virtual void appendPaved(int value);
   virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
   void updatePicture();
 };
 

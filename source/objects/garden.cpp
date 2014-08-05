@@ -71,6 +71,15 @@ void Garden::load(const VariantMap& stream)
   {
     Construction::build( _city(), pos() );
   }
+
+  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+}
+
+void Garden::save(VariantMap& stream) const
+{
+  Construction::save( stream );
+
+  stream[ "picture" ] = Variant( picture().name() );
 }
 
 Desirability Garden::desirability() const
