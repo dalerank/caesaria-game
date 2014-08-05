@@ -43,6 +43,8 @@ public:
                  greyFrame,          //grey rectangular area with borders
                  greyPanelBig,
                  lightgreyPanelBig,
+                 lineBlackBorder,
+                 lineWhiteBorder,
                  pure,
                } Mode;
 

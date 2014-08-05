@@ -9,7 +9,7 @@
   }
 
   lbTitle#Label : {
-    geometry : [ 16, 16, "pw-1", 46 ]
+    geometry : [ 16, 16, "pw-1", 48 ]
     font : "FONT_3"
     text : "##player_name##"
   }

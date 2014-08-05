@@ -275,6 +275,11 @@ public:
   }
 
 	T top() const 	{		return UpperLeftCorner.y();	}
+	Vector2<T> righttop() const { return Vector2<T>( LowerRightCorner.x(), UpperLeftCorner.y() ); }
+	Vector2<T> leftbottom() const { return Vector2<T>( UpperLeftCorner.x(), LowerRightCorner.y() ); }
+	Vector2<T> lefttop() const { return UpperLeftCorner; }
+	Vector2<T> rightbottom() const { return LowerRightCorner; }
+
   T& rtop() {		return UpperLeftCorner.ry();	}
 	T left() const	{		return UpperLeftCorner.x();	}
   T& rleft() {		return UpperLeftCorner.rx();	}

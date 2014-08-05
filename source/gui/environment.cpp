@@ -125,20 +125,13 @@ void GuiEnv::draw()
 {
   if( !_d->preRenderFunctionCalled )
   {
-   //Logger::warning( "Called OnPreRender() function needed" );
+   Logger::warning( "Called OnPreRender() function needed" );
    return;
   }
 
   Widget::draw( *_d->engine );
 
   _drawTooltip( DateTime::elapsedTime() );
-
-  // make sure tooltip is always on top
-  //if(_d->toolTip.Element.isValid() )
-  //{
-  //   _d->toolTip.Element->draw( *_d->engine );
-  //}
-
   _d->preRenderFunctionCalled = false;
 }
 

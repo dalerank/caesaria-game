@@ -132,14 +132,25 @@ void Label::_updateTexture(gfx::Engine& painter )
   }
 
   // draw button background
+  bool useAlpha4Text = true;
   if( !_d->bgPicture.isValid() )
   {
     Rect r( Point( 0, 0 ), size() );
     _d->background.clear();
     switch( _d->backgroundMode )
     {
-    case bgSimpleWhite: break;
+    case bgSimpleWhite:
+      _d->textPicture->fill( 0xffffffff, Rect( 0, 0, 0, 0) );
+      useAlpha4Text = false;
+      Decorator::draw( *_d->textPicture, r, Decorator::lineBlackBorder );
+    break;
+
     case bgSimpleBlack: break;
+      _d->textPicture->fill( 0xff000000, Rect( 0, 0, 0, 0) );
+      useAlpha4Text = false;
+      Decorator::draw( *_d->textPicture, r, Decorator::lineWhiteBorder );
+    break;
+
     case bgWhite: Decorator::draw( _d->background, r, Decorator::whiteArea); break;
     case bgBlack: Decorator::draw( _d->background, r, Decorator::blackArea ); break;
     case bgBrown: Decorator::draw( _d->background, r, Decorator::brownBorder );  break;
@@ -164,7 +175,7 @@ void Label::_updateTexture(gfx::Engine& painter )
         Rect textRect = _d->font.getTextRect( rText, frameRect, horizontalTextAlign(), verticalTextAlign() );
 
         textRect += _d->textOffset;
-        _d->font.draw( *_d->textPicture, text(), textRect.left(), textRect.top() );
+        _d->font.draw( *_d->textPicture, text(), textRect.lefttop(), useAlpha4Text );
       }
       else
       {
@@ -178,15 +189,15 @@ void Label::_updateTexture(gfx::Engine& painter )
 
         for (unsigned int i=0; i<_d->brokenText.size(); ++i)
         {
-            Rect textRect = _d->font.getTextRect( rText, r,
-                                                        horizontalTextAlign(), verticalTextAlign() );
+            Rect textRect = _d->font.getTextRect( rText, r, horizontalTextAlign(), verticalTextAlign() );
 
             textRect += _d->textOffset;
 
-            _d->font.draw( *_d->textPicture, _d->brokenText[i], textRect.left(), textRect.top() );
+            _d->font.draw( *_d->textPicture, _d->brokenText[i], textRect.lefttop(), useAlpha4Text, false );
 
             r += Point( 0, height + _d->lineIntervalOffset );
         }
+        _d->textPicture->update();
       }
     }
   }
