@@ -89,7 +89,7 @@
     
     lbFestivals#Label : {
       geometry : [ 47, 219, 250, 250 ]
-      font : "FONT_3"
+      font : "FONT_5"
       text : "##Festivals##"
       textAlign : [ "upperLeft", "center" ]
     }

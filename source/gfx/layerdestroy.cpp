@@ -261,7 +261,7 @@ LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _clearPic = Picture::load( "oc3_land", 2 );
-  _textFont = Font::create( FONT_3 );
+  _textFont = Font::create( FONT_5 );
   _textPic.init( Size( 100, 30 ) );
 }
 

@@ -331,6 +331,11 @@ void Window::setupUI(const VariantMap &ui)
   }
 }
 
+void Window::setupUI(const vfs::Path& path)
+{
+  Widget::setupUI( path );
+}
+
 void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
 	Widget::setTextAlignment( horizontal, vertical );

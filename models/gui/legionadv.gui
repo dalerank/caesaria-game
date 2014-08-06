@@ -13,7 +13,7 @@
   }
 
   lbMorale#Label : {
-    geometry : [ 290, 60, 340, 80 ]
+    geometry : [ 290, 50, 340, 80 ]
     text : "##advlegion_morale##"
   }
 
@@ -46,7 +46,7 @@
   
   lbTitle#Label : {
     geometry : [ 10, 10, "pw-10", 50 ]
-    font : "FONT_3"
+    font : "FONT_5"
     text : "##advlegion_window_title##"
     textAlign : [ "center", "center" ]
   }

@@ -315,11 +315,13 @@ void FontCollection::initialize(const std::string &resourcePath)
   addFont( FONT_2,       CAESARIA_STR_EXT(FONT_2),      absolutFontfilename, 18, black );
   addFont( FONT_2_RED,   CAESARIA_STR_EXT(FONT_2_RED),  absolutFontfilename, 18, red );
   addFont( FONT_2_WHITE, CAESARIA_STR_EXT(FONT_2_WHITE),absolutFontfilename, 18, white );
-  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW), absolutFontfilename, 18, yellow );
-  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      absolutFontfilename, 28, black);
-  addFont( FONT_4,       CAESARIA_STR_EXT(FONT_4),      absolutFontfilename, 32, black);
-  addFont( FONT_5,       CAESARIA_STR_EXT(FONT_5),      absolutFontfilename, 36, black);
-  addFont( FONT_6,       CAESARIA_STR_EXT(FONT_6),      absolutFontfilename, 42, black);
+  addFont( FONT_2_YELLOW,CAESARIA_STR_EXT(FONT_2_YELLOW),absolutFontfilename, 18, yellow );
+  addFont( FONT_3,       CAESARIA_STR_EXT(FONT_3),      absolutFontfilename, 20, black );
+  addFont( FONT_4,       CAESARIA_STR_EXT(FONT_4),      absolutFontfilename, 24, black );
+  addFont( FONT_5,       CAESARIA_STR_EXT(FONT_5),      absolutFontfilename, 28, black);
+  addFont( FONT_6,       CAESARIA_STR_EXT(FONT_6),      absolutFontfilename, 32, black);
+  addFont( FONT_7,       CAESARIA_STR_EXT(FONT_7),      absolutFontfilename, 36, black);
+  addFont( FONT_8,       CAESARIA_STR_EXT(FONT_8),      absolutFontfilename, 42, black);
 }
 
 static StringArray _font_breakText(const std::string& text, const Font& f, int elWidth, bool RightToLeft )

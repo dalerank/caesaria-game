@@ -9,7 +9,7 @@
       geometry : [ 85, 15, "pw-85", 40 ]
       text : "##dispatch_gift_title##"   
       textAlign : [ "center", "center" ]
-      font : "FONT_3"
+      font : "FONT_5"
     }
     
     lbxGifts#ListBox : {

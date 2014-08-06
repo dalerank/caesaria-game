@@ -488,7 +488,7 @@ LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
   __D_IMPL(d,LayerBuild);
   d->renderer = renderer;
   d->frameCount = 0;
-  d->textFont = Font::create( FONT_3 );
+  d->textFont = Font::create( FONT_5 );
   d->textPic.init( Size( 100, 30 ) );
 }
 

@@ -143,7 +143,7 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
 
   Label* title = new Label( this, Rect( 60, 10, 60 + 280, 10 + 40) );
   title->setText( _("##religion_advisor##") );
-  title->setFont( Font::create( FONT_3 ) );
+  title->setFont( Font::create( FONT_5 ) );
   title->setTextAlignment( align::upperLeft, align::center );
 
   _d->background.reset( Picture::create( size() ) );

@@ -122,7 +122,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   _d->currentDivinity = romeDivCeres;
 
   _d->title = new Label( this, Rect( 16, 16, width() - 16, 16 + 30), _("##title##") );
-  _d->title->setFont( Font::create( FONT_3 ) );
+  _d->title->setFont( Font::create( FONT_5 ) );
   _d->title->setTextAlignment( align::center, align::center );
 
   _d->updateTitle();

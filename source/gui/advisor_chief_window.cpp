@@ -40,7 +40,6 @@
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
 #include "city/goods_updater.hpp"
-#include "game/settings.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -127,7 +126,7 @@ AdvisorChiefWindow::AdvisorChiefWindow(PlayerCityPtr city, Widget* parent, int i
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL( AdvisorChiefWindow )
 {
   __D_IMPL(_d, AdvisorChiefWindow)
-  Widget::setupUI( GameSettings::rcpath( "/gui/chiefadv.gui" ) );
+  setupUI( ":/gui/chiefadv.gui" );
 
   _d->city = city;
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );

@@ -6,7 +6,7 @@
     
     lbTitle#Label :
     {
-      font : "FONT_3"
+      font : "FONT_5"
       geometry : [ 16, 10, "pw-16", 50 ]
       text : "##scribes_messages_title##"
       textAlign : [ "center", "center" ]

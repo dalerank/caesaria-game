@@ -9,7 +9,7 @@
     {
       geometryf : [ 0.1 , 0.02, 0.9, 0.13 ]
       text : "##title##"
-      font : "FONT_3"
+      font : "FONT_5"
       text : "##emperor_request##"
       textAlign : [ "center", "center" ]
     }

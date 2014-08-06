@@ -74,6 +74,8 @@ public:
 
   virtual void setupUI(const VariantMap &ui);
 
+  virtual void setupUI(const vfs::Path& path );
+
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   virtual void setText( const std::string& text );

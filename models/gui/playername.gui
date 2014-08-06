@@ -24,7 +24,7 @@
   {
     geometry : [ 10, 10, 380, 48 ]
     text : "##enter_your_name##"
-    font : "FONT_3"
+    font : "FONT_5"
     textAlign : [ "center", "center" ]
   }
 

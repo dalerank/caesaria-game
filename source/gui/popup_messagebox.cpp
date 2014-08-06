@@ -52,7 +52,7 @@ PopupMessageBox::PopupMessageBox( Widget* parent, const std::string& title,
   setPosition( Point( (parent->width() - width())/2, (parent->height() - height()) / 2 ) );
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 30), title );
-  lbTitle->setFont( Font::create( FONT_3 ) );
+  lbTitle->setFont( Font::create( FONT_5 ) );
   lbTitle->setTextAlignment( align::center, align::center );
 
   _d->background.reset( Picture::create( size() ) );

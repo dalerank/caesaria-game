@@ -2,7 +2,7 @@
   geometry : [ 0, 0, 385, 336 ]
 
   lbTitle#Label : {
-    font : "FONT_3"
+    font : "FONT_5"
     geometry : [ 10, 10, "pw-10", 40 ]
     text : "##save_city##"
     textAlign : [ "center", "center" ]

@@ -58,7 +58,7 @@ DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& 
   Decorator::draw( _d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
-  lbTitle->setFont( Font::create( FONT_3 ) );
+  lbTitle->setFont( Font::create( FONT_5 ) );
   lbTitle->setTextAlignment( align::center, align::center );
 
   Label* lbText = new Label( this, Rect( 10, 55, width() - 10, 55 + 55 ), text );

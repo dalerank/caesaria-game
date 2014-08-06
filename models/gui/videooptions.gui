@@ -3,7 +3,7 @@
   
   lbTitle#Label :
   {
-    font : "FONT_3"
+    font : "FONT_5"
     geometry : [ 30, 10, 290, 35 ]
     text : "##screen_settings##"
     textAlign : [ "center", "center" ]

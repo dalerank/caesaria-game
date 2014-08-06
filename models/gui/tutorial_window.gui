@@ -8,7 +8,7 @@
     
     lbTitle#Label :
     {
-      font : "FONT_3"
+      font : "FONT_5"
       geometry : [ 10, 10, 580, 70 ]
       text : "##title##"
       textAlign : [ "center", "center" ]

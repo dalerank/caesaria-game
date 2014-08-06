@@ -8,7 +8,7 @@
     lbTitle#Label :
     {
       geometryf : [ 0.1, 0.02, 0.9, 0.13 ]
-      font : "FONT_3"
+      font : "FONT_5"
       text : "##city_options##"
       textAlign : [ "center", "center" ]
     }

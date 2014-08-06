@@ -9,7 +9,7 @@
 
   lbTitle#Label : {
     geometry : [ 10, 10, "pw-10", 50 ]
-    font : "FONT_3"
+    font : "FONT_5"
     text.align : [ "center", "center" ]
   }
 

@@ -3,7 +3,7 @@
   
   lbTitle#Label :
   {
-    font : "FONT_3"
+    font : "FONT_5"
     geometryf : [ 0.05, 0.05, 0.95, 0.2 ]
     text : "##game_sound_options##"
     textAlign : [ "center", "center" ]

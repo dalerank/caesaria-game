@@ -139,7 +139,7 @@ public:
     background.reset( Picture::create( size() ) );
     Decorator::draw( *background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
-    Font font = Font::create( FONT_3 );
+    Font font = Font::create( FONT_5 );
     font.draw( *background, _("##rome_prices##"), Point( 10, 10 ), false );
 
     city::TradeOptions& ctrade = city->tradeOptions();
@@ -294,7 +294,7 @@ public:
     _background->draw( iconGood, Point( 10, 10 ) );
 
     Label* lbTitle = new Label( this, Rect( 40, 10, width() - 10, 10 + 30), GoodHelper::getName( type ) );
-    lbTitle->setFont( Font::create( FONT_3 ) );
+    lbTitle->setFont( Font::create( FONT_5 ) );
 
     _lbIndustryInfo = new Label( this, Rect( 40, 40, width() - 10, 40 + 20 ) );
 
@@ -533,7 +533,7 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
 
   Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
   title->setText( _("##trade_advisor##") );
-  title->setFont( Font::create( FONT_3 ) );
+  title->setFont( Font::create( FONT_5 ) );
   title->setTextAlignment( align::center, align::center );
 
   _d->background.reset( Picture::create( size() ) );

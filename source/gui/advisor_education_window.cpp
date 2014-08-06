@@ -28,7 +28,6 @@
 #include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/foreach.hpp"
-#include "game/settings.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
@@ -117,13 +116,11 @@ public:
 };
 
 AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ),
+: Window( parent, Rect( 0, 0, 640, 256 ), "", id ),
   __INIT_IMPL(AdvisorEducationWindow)
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-               Size( 640, 256 ) ) );
-
-  setupUI( GameSettings::rcpath( "/gui/educationadv.gui" ) );
+  setupUI( ":/gui/educationadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
   
   __D_IMPL(_d,AdvisorEducationWindow)
   _d->lbBackframe = findChildA<Label*>( "lbBlackframe", true, this );
@@ -166,7 +163,7 @@ void AdvisorEducationWindow::draw( gfx::Engine& painter )
   if( !visible() )
     return;
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)

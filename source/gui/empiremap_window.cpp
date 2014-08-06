@@ -312,7 +312,7 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;
   _d->lbCityTitle = new Label( this, Rect( Point( (width() - 240) / 2 + 60, height() - 132 ), Size( 240, 32 )) );
-  _d->lbCityTitle->setFont( Font::create( FONT_3 ) );
+  _d->lbCityTitle->setFont( Font::create( FONT_5 ) );
   _d->offset = GameSettings::get( empMapOffset ).toPoint();
 
   WidgetEscapeCloser::insertTo( this );
