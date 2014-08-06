@@ -105,8 +105,6 @@ private:
 class Religion::Impl
 {
 public:
-  PictureRef background;
-
   ReligionInfoLabel* lbCeresInfo;
   ReligionInfoLabel* lbNeptuneInfo;
   ReligionInfoLabel* lbMercuryInfo;
@@ -139,32 +137,10 @@ public:
 
 
 Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+: Window( parent, Rect( 0, 0, 640, 280 ), "", id ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-               Size( 640, 280 ) ) );
-
-  Label* title = new Label( this, Rect( 60, 10, 60 + 280, 10 + 40) );
-  title->setText( _("##religion_advisor##") );
-  title->setFont( Font::create( FONT_5 ) );
-  title->setTextAlignment( align::upperLeft, align::center );
-
-  _d->background.reset( Picture::create( size() ) );
-
-  //main _d->_d->background
-  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
-  //buttons _d->_d->background
-  Decorator::draw( *_d->background, Rect( 35, 62, width() - 35, 62 + 130 ), Decorator::blackFrame );
-
-  Picture icon = Picture::load( ResourceGroup::panelBackground, 264 );
-  _d->background->draw( icon, Point( 11, 11 ) );
-
-  Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##temples##"), 268, 32, false );
-  font.draw( *_d->background, _("##small##"), 240, 47, false );
-  font.draw( *_d->background, _("##large##"), 297, 47, false );
-  font.draw( *_d->background, _("##test_t##"), 370, 47, false );
-  font.draw( *_d->background, _("##rladv_mood##"), 450, 47, false );
+  setupUI( ":/gui/religionadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   Point startPoint( 42, 65 );
   Size labelSize( 550, 20 );
@@ -192,10 +168,10 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
   _d->lbOracleInfo = new ReligionInfoLabel( this, Rect( startPoint + Point( 0, 100), labelSize), DivinityPtr(),
                                             info.smallTemplCount, 0 );
 
-  _d->religionAdvice = new Label( this, Rect( 40, height() - 80, width() - 40, height() - 10 ) );
+  _d->religionAdvice = findChildA<Label*>( "lbReligionAdvice", true, this );
   _d->updateReligionAdvice( city );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
 }
 
 void Religion::draw(gfx::Engine& painter )
@@ -203,9 +179,7 @@ void Religion::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  painter.draw( *_d->background, screenLeft(), screenTop() );
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)

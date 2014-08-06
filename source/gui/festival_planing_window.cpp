@@ -135,23 +135,23 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   if( _d->btnSmallFestival )
   {
     _d->btnSmallFestival->setID( Impl::festId+smallFest );
-    _d->btnSmallFestival->setText( StringHelper::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ));
+    _d->btnSmallFestival->setText( StringHelper::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
   }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, middleFest );
   _d->btnMiddleFestival = findChildA<PushButton*>( "btnMiddleFestival", true, this );
   if( _d->btnMiddleFestival )
   {
-    _d->btnSmallFestival->setID( Impl::festId+middleFest );
-    _d->btnSmallFestival->setText( StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
+    _d->btnMiddleFestival->setID( Impl::festId+middleFest );
+    _d->btnMiddleFestival->setText( StringHelper::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
   }
 
   _d->festivalCost = city::Statistic::getFestivalCost( city, greatFest );
   _d->btnGreatFestival = findChildA<PushButton*>( "btnGreatFestival", true, this );
   if( _d->btnGreatFestival )
   {
-    _d->btnSmallFestival->setID( Impl::festId+greatFest );
-    _d->btnSmallFestival->setText( StringHelper::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost ));
+    _d->btnGreatFestival->setID( Impl::festId+greatFest );
+    _d->btnGreatFestival->setText( StringHelper::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost ));
   }
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );

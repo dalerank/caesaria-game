@@ -169,7 +169,7 @@ void Entertainment::draw( Engine& painter )
   if( !visible() )
     return;
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 void Entertainment::_showFestivalWindow()
