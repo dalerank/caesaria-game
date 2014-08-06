@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Carthago.sav"
+  map : ":/maps/Carthago.sav"
   funds : 6000
   city.name : "Carthago"
   date : "-170.01.01"

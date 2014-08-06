@@ -11,7 +11,9 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// alo  ng with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+// along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "core/exception.hpp"
 #include "directory.hpp"
@@ -154,7 +156,6 @@ Directory::Directory( const std::string& nPath ) : Path( nPath )
 
 Directory::Directory( const Directory& nPath ) : Path( nPath.toString()  )
 {
-
 }
 
 Path Directory::getFilePath( const Path& fileName )

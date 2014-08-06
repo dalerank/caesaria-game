@@ -39,6 +39,9 @@ using namespace gfx;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 class HealthInfoLabel : public Label
 {
 public:
@@ -87,11 +90,9 @@ private:
   int _peoplesCount;
 };
 
-class AdvisorHealthWindow::Impl
+class Health::Impl
 {
 public:
-  PictureRef background;
-
   HealthInfoLabel* lbBathsInfo;
   HealthInfoLabel* lbBarbersInfo;
   HealthInfoLabel* lbDoctorInfo;
@@ -127,31 +128,11 @@ public:
 };
 
 
-AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+Health::Health(PlayerCityPtr city, Widget* parent, int id )
+: Window( parent, Rect( 0, 0, 640, 290 ), "", id ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-               Size( 640, 290 ) ) );
-
-  Label* title = new Label( this, Rect( 60, 10, width() - 10, 10 + 40) );
-  title->setText( _("##health_advisor##") );
-  title->setFont( Font::create( FONT_5 ) );
-  title->setTextAlignment( align::upperLeft, align::center );
-
-  _d->background.reset( Picture::create( size() ) );
-
-  //main _d->_d->background
-  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
-  Picture& icon = Picture::load( ResourceGroup::panelBackground, 261 );
-  _d->background->draw( icon, Point( 11, 11 ) );
-
-  //buttons _d->_d->background
-  Decorator::draw( *_d->background, Rect( 35, 110, width() - 35, 110 + 85 ), Decorator::blackFrame );
-
-  Font font = Font::create( FONT_1 );
-  font.draw( *_d->background, _("##work##"), 180, 92, false );
-  font.draw( *_d->background, _("##max_available##"), 290, 92, false );
-  font.draw( *_d->background, _("##coverage##"), 480, 92, false );
+  setupUI( ":/gui/healthadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   Point startPoint( 42, 112 );
   Size labelSize( 550, 20 );
@@ -165,7 +146,7 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
 
   info = _d->getInfo( city, building::doctor );
   _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), building::doctor,
-                                              info.buildingWork, info.buildingCount, info.peoplesServed );
+                                          info.buildingWork, info.buildingCount, info.peoplesServed );
 
   info = _d->getInfo( city, building::hospital );
   _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), building::hospital,
@@ -174,14 +155,14 @@ AdvisorHealthWindow::AdvisorHealthWindow(PlayerCityPtr city, Widget* parent, int
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
-void AdvisorHealthWindow::draw( gfx::Engine& painter )
+void Health::draw( gfx::Engine& painter )
 {
   if( !visible() )
     return;
 
-  painter.draw( *_d->background, screenLeft(), screenTop() );
+  Window::draw( painter );
+}
 
-  Widget::draw( painter );
 }
 
 }//end namespace gui

@@ -1,0 +1,40 @@
+{
+  geometry : [ 0, 0, 640, 290 ]
+  bgtype : "whiteFrame"
+
+  lbBlackframe#Label : {
+    geometry : [ 35, 110, "pw-35", 195 ]
+    bgtype : "blackFrame"
+  }
+
+  lbWorkText#Label : {
+    font : "FONT_1"
+    geometry : [ 180, 92, 280, 112 ]
+    text : "##work##"
+  }
+
+  lbMaxAv#Label : {
+    font : "FONT_1"
+    geometry : [ 290, 92, 470, 112 ]
+    text : "##max_available##"
+  }
+
+  lbCoverage#Label : {
+    font : "FONT_1"
+    geometry : [ 480, 92, "pw-20", 112 ]
+    text : "##coverage##"
+  }
+
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00261"
+  }
+
+  lbTitle#Label : {
+    geometryf : [ 0.1, 0.05, 0.95, 0.1 ]
+    font : "FONT_5"
+    text : "##health_advisor##"
+    textAlign : [ "center", "center" ]
+  }
+}
+

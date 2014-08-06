@@ -44,7 +44,7 @@ void ResourceLoader::loadFromModel( Path path2model, Directory dir )
   VariantMap archives = SaveAdapter::load( path2model );
   foreach( a, archives )
   {
-    Path absArchivePath = GameSettings::rcpath( a->second.toString() );
+    Path absArchivePath( a->second.toString() );
 
     if( !absArchivePath.exist() )
     {
@@ -53,7 +53,7 @@ void ResourceLoader::loadFromModel( Path path2model, Directory dir )
     }
     Logger::warning( "Game: try mount archive " + absArchivePath.toString() );
 
-    Directory dir( absArchivePath.directory() );
+    dir = absArchivePath.directory();
     absArchivePath = dir.find( absArchivePath.baseName(), Path::ignoreCase );
 
     ArchivePtr archive = FileSystem::instance().mountArchive( absArchivePath );

@@ -18,7 +18,6 @@
 #include "city_donation_window.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
-#include "game/settings.hpp"
 #include "core/logger.hpp"
 #include "label.hpp"
 #include "core/stringhelper.hpp"
@@ -48,7 +47,7 @@ CityDonationWindow::CityDonationWindow( Widget* p, int money )
   d->maxMoney = money;
   d->wantSend = 0;
 
-  setupUI( GameSettings::rcpath( "/gui/money2city.gui" ) );
+  setupUI( ":/gui/money2city.gui" );
   setCenter( parent()->center() );
 
   PushButton* btnSend = findChildA<PushButton*>( "btnSend", true, this );

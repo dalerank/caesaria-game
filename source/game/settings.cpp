@@ -51,7 +51,6 @@ __REG_PROPERTY(ambientVolume)
 __REG_PROPERTY(musicVolume )
 __REG_PROPERTY(animationsModel )
 __REG_PROPERTY(walkerModel)
-__REG_PROPERTY(giftsModel)
 __REG_PROPERTY(emblemsModel )
 __REG_PROPERTY(remakeModel )
 __REG_PROPERTY(screenFitted)
@@ -107,7 +106,6 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ walkerModel         ] = Variant( std::string( "/walker.model" ) );
   _d->options[ animationsModel     ] = Variant( std::string( "/animations.model" ) );
   _d->options[ empireObjectsModel  ] = Variant( std::string( "/empire_objects.model" ) );
-  _d->options[ giftsModel          ] = Variant( std::string( "/gifts.model" ) );
   _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
   _d->options[ remakeModel         ] = Variant( std::string( "/remake.model" ) );
   _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );

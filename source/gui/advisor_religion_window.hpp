@@ -26,10 +26,13 @@
 namespace gui
 {
 
-class AdvisorReligionWindow : public Widget
+namespace advisorwnd
+{
+
+class Religion : public Widget
 {
 public:
-  AdvisorReligionWindow( PlayerCityPtr city, Widget* parent, int id );
+  Religion( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
 
@@ -38,5 +41,7 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+}
+
 }//end namespace gui
-#endif //__CAESARIA_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_ADVISOR_RELIGION_WINDOW_H_INCLUDED__

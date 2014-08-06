@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Tutorial1.sav"
+  map : ":/maps/Tutorial1.sav"
   funds : 8000
   city.name : "Brundisium"
   date : "-350.01.01"

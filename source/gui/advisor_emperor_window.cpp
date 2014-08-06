@@ -37,7 +37,6 @@
 #include "city/requestdispatcher.hpp"
 #include "game/player.hpp"
 #include "dialogbox.hpp"
-#include "game/settings.hpp"
 #include "events/fundissue.hpp"
 #include "change_salary_window.hpp"
 #include "city/funds.hpp"
@@ -213,7 +212,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   _d->city = city;
   _d->isRequestsUpdated = true;
 
-  Widget::setupUI( GameSettings::rcpath( "/gui/emperoropts.gui") );
+  Widget::setupUI( ":/gui/emperoropts.gui" );
   setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
   gui::Label* title = findChildA<Label*>( "lbTitle", true, this );

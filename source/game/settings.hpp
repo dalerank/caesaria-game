@@ -56,7 +56,6 @@ public:
   __GS_PROPERTY(musicVolume)
   __GS_PROPERTY(animationsModel)
   __GS_PROPERTY(walkerModel)
-  __GS_PROPERTY(giftsModel)
   __GS_PROPERTY(emblemsModel)
   __GS_PROPERTY(remakeModel)
   __GS_PROPERTY(screenFitted)

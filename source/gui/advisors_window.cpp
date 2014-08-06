@@ -44,7 +44,6 @@
 #include "city/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
-#include "game/settings.hpp"
 #include "image.hpp"
 #include "gameautopause.hpp"
 #include "events/fundissue.hpp"
@@ -89,7 +88,7 @@ AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
 {
   _d->locker.activate();
   // use some clipping to remove the right and bottom areas
-  setupUI( GameSettings::rcpath( "/gui/advisors.gui" ) );
+  setupUI( ":/gui/advisors.gui" );
   _d->advisorPanel = 0;
 
   WidgetEscapeCloser::insertTo( this );
@@ -162,9 +161,9 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
   break;
 
   case advisor::education: _d->advisorPanel = new advisorwnd::Education( _d->city, this, -1 ); break;
-  case advisor::health: _d->advisorPanel = new AdvisorHealthWindow( _d->city, this, -1 ); break;
-  case advisor::entertainment: _d->advisorPanel = new AdvisorEntertainmentWindow( _d->city, this, -1 ); break;
-  case advisor::religion: _d->advisorPanel = new AdvisorReligionWindow( _d->city, this, -1 ); break;
+  case advisor::health: _d->advisorPanel = new advisorwnd::Health( _d->city, this, -1 ); break;
+  case advisor::entertainment: _d->advisorPanel = new advisorwnd::Entertainment( _d->city, this, -1 ); break;
+  case advisor::religion: _d->advisorPanel = new advisorwnd::Religion( _d->city, this, -1 ); break;
   case advisor::finance: _d->advisorPanel = new AdvisorFinanceWindow( _d->city, this, -1 ); break;
   case advisor::main: _d->advisorPanel = new AdvisorChiefWindow( _d->city, this, -1 );
 

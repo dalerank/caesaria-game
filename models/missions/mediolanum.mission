@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Mediolanum.sav"
+  map : ":/maps/Mediolanum.sav"
   funds : 8000
   city.name : "Mediolanum"
   date : "-220.01.01"

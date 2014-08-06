@@ -89,7 +89,7 @@ bool GameLoaderMission::load( const std::string& filename, Game& game )
     else
     {
       GameLoader mapLoader;
-      mapLoader.load( GameSettings::rcpath( mapToLoad ), game );
+      mapLoader.load( mapToLoad, game );
     }
 
     PlayerCityPtr city = game.city();

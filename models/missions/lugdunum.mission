@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Lugdunum.sav"
+  map : ":/maps/Lugdunum.sav"
   funds : 8000
   city.name : "Lugdunum"
   date : "-170.01.01"

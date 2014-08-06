@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Tarraco2.sav"
+  map : ":/maps/Tarraco2.sav"
   funds : 8000
   city.name : "Tarraco"
   date : "-270.01.01"

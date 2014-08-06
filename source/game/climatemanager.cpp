@@ -17,7 +17,6 @@
 
 #include "climatemanager.hpp"
 #include "core/saveadapter.hpp"
-#include "settings.hpp"
 #include "vfs/filesystem.hpp"
 #include "gfx/loader.hpp"
 #include "resourcegroup.hpp"
@@ -37,14 +36,14 @@ void __appendRange( const std::string& rc, int start, int stop, StringArray& ar 
 
 void ClimateManager::initialize(ClimateType climate)
 {
-  VariantMap climateArchives = SaveAdapter::load( GameSettings::rcpath( "climate.model" ) );
+  VariantMap climateArchives = SaveAdapter::load( ":/climate.model" );
 
   std::string optName;
   if( climate == climateCentral ) { optName = "central"; }
   else if( climate == climateNorthen )  { optName = "north"; }
   else if( climate == climateDesert ) { optName = "south"; }
 
-  Path archivePath = GameSettings::rcpath( climateArchives.get( optName ).toString() );
+  Path archivePath = climateArchives.get( optName ).toString();
   ArchivePtr archive = FileSystem::instance().mountArchive( archivePath );
 
   if( archive.isNull() )

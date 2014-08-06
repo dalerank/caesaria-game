@@ -7,12 +7,12 @@
     tarsus : {
       title : "Tarsus: largely peaceful province"
       location : [ 570, 280 ]
-      mission : "/missions/tarsus.mission"
+      mission : ":/missions/tarsus.mission"
     }
 
     tingis : {
       title : "Tingis: a dangerous province"
-      mission : "/missions/tingis.mission"
+      mission : ":/missions/tingis.mission"
       location : [ 20, 320 ]
     }
   }

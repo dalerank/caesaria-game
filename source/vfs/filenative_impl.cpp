@@ -12,9 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-// Make getline declaration available on e.g. FreeBSD (see getline(3))
-// Should precede other includes
 #include "filenative_impl.hpp"
 #include "core/logger.hpp"
 

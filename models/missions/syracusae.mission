@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Syracusae.sav"
+  map : ":/maps/Syracusae.sav"
   funds : 8000
   city.name : "Syracusae"
   date : "-270.01.01"

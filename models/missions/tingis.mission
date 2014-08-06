@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Tingis.sav"
+  map : ":/maps/Tingis.sav"
   funds : 6000
   city.name : "Tingis"
   date : "-120.01.01"

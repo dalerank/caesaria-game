@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "city_options_window.hpp"
-#include "game/settings.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "listbox.hpp"
@@ -47,7 +46,7 @@ CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
 {
   _d->city = city;
   _d->locker.activate();
-  setupUI( GameSettings::rcpath( "/gui/cityoptions.gui" ) );
+  setupUI( ":/gui/cityoptions.gui" );
 
   setCenter( parent->center() );
   _d->btnGodEnabled = findChildA<PushButton*>( "btnGodEnabled", true, this );

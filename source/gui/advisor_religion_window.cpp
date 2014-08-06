@@ -42,6 +42,9 @@ using namespace gfx;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 class ReligionInfoLabel : public Label
 {
 public:
@@ -99,7 +102,7 @@ private:
   int _mood;
 };
 
-class AdvisorReligionWindow::Impl
+class Religion::Impl
 {
 public:
   PictureRef background;
@@ -135,7 +138,7 @@ public:
 };
 
 
-AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent, int id )
+Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
 : Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
   setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
@@ -195,7 +198,7 @@ AdvisorReligionWindow::AdvisorReligionWindow(PlayerCityPtr city, Widget* parent,
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
-void AdvisorReligionWindow::draw(gfx::Engine& painter )
+void Religion::draw(gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -205,7 +208,7 @@ void AdvisorReligionWindow::draw(gfx::Engine& painter )
   Widget::draw( painter );
 }
 
-void AdvisorReligionWindow::Impl::updateReligionAdvice(PlayerCityPtr city)
+void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
   city::Helper helper( city );
@@ -228,7 +231,7 @@ void AdvisorReligionWindow::Impl::updateReligionAdvice(PlayerCityPtr city)
     break;
     }
   }
-
+}
 
 }
 

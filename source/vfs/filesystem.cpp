@@ -12,7 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "filesystem.hpp"
 #include "filenative_impl.hpp"
@@ -50,7 +51,7 @@ public:
 	//! currently attached Archives
   std::vector< ArchivePtr > openArchives;
 
-  std::vector< Directory > folders;
+  Directory resourdFolder;
 
   //! WorkingDirectory for Native and Virtual filesystems	
   Path workingDirectory[2];
@@ -113,32 +114,15 @@ NFile FileSystem::loadFileFromArchive( const Path& filePath )
 //! opens a file for read access
 NFile FileSystem::createAndOpenFile(const Path& filename, Entity::Mode mode)
 {
-  Path realFilename = filename;
-  if( filename.firstChar() == ':' )
-  {
-    Path rPath = filename.toString().substr( 1 );
-    foreach( it, _d->folders )
-    {
-      Path absPath = (*it)/rPath;
-      if( absPath.exist() )
-      {
-        realFilename = absPath;
-        break;
-      }
-    }
-  }
-  else
-  {
-    NFile file = loadFileFromArchive( filename );
+  NFile file = loadFileFromArchive( filename );
 
-    if( file.isOpen() )
-    {
-      return file;
-    }
+  if( file.isOpen() )
+  {
+    return file;
   }
 
   // Create the file using an absolute path so that it matches
-  FSEntityPtr ptr( new FileNative( realFilename.absolutePath(), mode ) );
+  FSEntityPtr ptr( new FileNative( filename.absolutePath(), mode ) );
   ptr->drop();
 
   return NFile( ptr );
@@ -415,20 +399,9 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
   return ArchivePtr();
 }
 
-void FileSystem::mountFolder(const Directory &folder)
-{
-  foreach( it, _d->folders )
-  {
-    if( folder.absolutePath() == (*it).absolutePath() )
-    {
-      Logger::warning( "FileSystem: directory %s aslo mounted", folder.absolutePath().toString().c_str() );
-      return;
-    }
-  }
+Directory FileSystem::rcFolder() const { return _d->resourdFolder; }
 
-  _d->folders.push_back( folder.absolutePath() );
-}
-
+void FileSystem::setRcFolder( const Directory &folder) { _d->resourdFolder = folder; }
 
 //! Adds an archive to the file system.
 ArchivePtr FileSystem::mountArchive( ArchivePtr archive)
@@ -710,25 +683,22 @@ bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
     if (_d->openArchives[i]->entries()->findFile(filename)!=-1)
       return true;
 
-#if defined(CAESARIA_PLATFORM_WIN)
-  if( sens == Path::nativeCase || sens == Path::ignoreCase )
-  {
-    return ( _access( filename.toString().c_str(), 0) != -1);
-  }
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  if( sens == Path::nativeCase || sens == Path::equaleCase )
-  {
-    return ( access( filename.toString().c_str(), 0 ) != -1);
-  }
-#endif //CAESARIA_PLATFORM_UNIX
+  #if defined(CAESARIA_PLATFORM_WIN)
+    if( sens == Path::nativeCase || sens == Path::ignoreCase )
+    {
+      return ( _access( filename.toString().c_str(), 0) != -1);
+    }
+  #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+    if( sens == Path::nativeCase || sens == Path::equaleCase )
+    {
+      return ( access( filename.toString().c_str(), 0 ) != -1);
+    }
+  #endif //CAESARIA_PLATFORM_UNIX
 
   Entries files = Directory( filename.directory() ).getEntries();
   files.setSensType( sens );
   int index = files.findFile( filename );
   return index != -1;
-
-
-  return false;
 }
 
 DateTime FileSystem::getFileUpdateTime(const Path& filename) const

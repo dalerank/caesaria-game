@@ -224,7 +224,7 @@ void Game::Impl::initPictures()
 
 void Game::setScreenBriefing()
 {
-  scene::Briefing screen( *this, *_d->engine, GameSettings::rcpath( _d->nextFilename ).toString() );
+  scene::Briefing screen( *this, *_d->engine, _d->nextFilename );
   screen.initialize();
   _d->currentScreen = &screen;
 
@@ -497,7 +497,7 @@ void Game::initialize()
 {
   GameSettings::load();
   //mount default rcpath folder
-  vfs::FileSystem::instance().mountFolder( GameSettings::rcpath() );
+  vfs::FileSystem::instance().setRcFolder( GameSettings::rcpath() );
 
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );

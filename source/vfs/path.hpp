@@ -36,7 +36,7 @@ public:
   static const char* secondEntry;
 
   Path( const char* nPath );
-  Path();
+  Path( );
   Path( const std::string& nPath );
   Path( const Path& );
   virtual ~Path();

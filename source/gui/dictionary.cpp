@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "dictionary.hpp"
-#include "game/settings.hpp"
 #include "pushbutton.hpp"
 #include "core/stringhelper.hpp"
 #include "texturedbutton.hpp"
@@ -41,7 +40,7 @@ public:
 DictionaryWindow::DictionaryWindow( Widget* parent )
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
 {
-  setupUI( GameSettings::rcpath( "/gui/dictionary.gui" ) );
+  setupUI( ":/gui/dictionary.gui" );
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );
 

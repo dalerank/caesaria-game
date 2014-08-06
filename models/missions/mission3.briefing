@@ -7,12 +7,12 @@
     capua : {
       title : "Capua: a peaceful province"
       location : [ 300, 170 ]
-      mission : "/missions/capua.mission"
+      mission : ":/missions/capua.mission"
     }
 
     tarentum : {
       title : "Tarentum: slightly dangerous province"
-      mission : "/missions/tarentum.mission"
+      mission : ":/missions/tarentum.mission"
       location : [ 350, 230 ]
     }
   }

@@ -1,6 +1,6 @@
 {
   version : 1
-  map : "/maps/Tarsus.sav"
+  map : ":/maps/Tarsus.sav"
   funds : 6000
   city.name : "Tarsus"
   date : "-120.01.01"

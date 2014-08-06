@@ -18,7 +18,6 @@
 #include "emperorgiftwindow.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
-#include "game/settings.hpp"
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "listbox.hpp"
@@ -51,7 +50,7 @@ EmperorGiftWindow::EmperorGiftWindow( Widget* p, int money )
   _dfunc()->maxMoney = money;
   _dfunc()->wantSend = 0;
 
-  setupUI( GameSettings::rcpath( "/gui/gift4emperor.gui" ) );
+  setupUI( ":/gui/gift4emperor.gui" );
   setCenter( parent()->center() );
 
   PushButton* btnSend = findChildA<PushButton*>( "btnSend", true, this );
@@ -75,8 +74,7 @@ void EmperorGiftWindow::Impl::fillGifts(ListBox* lbx)
   if( !lbx )
     return;
 
-  vfs::Path giftsDesc = SETTINGS_RC_PATH( giftsModel );
-  VariantMap giftModel = SaveAdapter::load( giftsDesc );
+  VariantMap giftModel = SaveAdapter::load( ":/gifts.model" );
   StringArray gifts = giftModel.get( "items" ).toStringArray();
 
   lbx->setTextAlignment( align::center, align::center );

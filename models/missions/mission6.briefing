@@ -7,12 +7,12 @@
     lugdunum : {
       title : "Lugdunum: largely peaceful province"
       location : [ 190, 140 ]
-      mission : "/missions/lugdunum.mission"
+      mission : ":/missions/lugdunum.mission"
     }
 
     carthago : {
       title : "Carthago: a dangerous province"
-      mission : "/missions/carthago.mission"
+      mission : ":/missions/carthago.mission"
       location : [ 240, 310 ]
     }
   }
