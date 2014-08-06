@@ -21,8 +21,8 @@
 #include "objects/house.hpp"
 #include "city/helper.hpp"
 #include "core/logger.hpp"
-#include "game/settings.hpp"
 #include "game/resourcegroup.hpp"
+#include "gfx/engine.hpp"
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
 #include "objects/house_level.hpp"
@@ -67,7 +67,7 @@ public:
 
   void update( PlayerCityPtr city, DrawMode mode );
 
-  void _updateTexture( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   DrawMode mode() const { return _mode; }
   void setIsSmall( bool value ) { _isSmall = value; }
@@ -118,10 +118,10 @@ public:
 };
 
 Population::Population(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ),
+: Window( parent, Rect( 0, 0, 1, 1 ), "", id ),
   __INIT_IMPL(Population)
 {
-  setupUI( GameSettings::rcpath( "/gui/populationadv.gui" ) );
+  setupUI( ":/gui/populationadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   __D_IMPL(_d,Population)
@@ -174,7 +174,7 @@ void Population::draw( gfx::Engine& painter )
   if( !visible() )
     return;
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 
@@ -381,10 +381,8 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
   _resizeEvent();
 }
 
-void CityChart::_updateTexture(Engine &painter)
-{
-  Label::_updateTexture( painter );
-
+void CityChart::draw(Engine &painter)
+{  
   if( !_textPictureRef() || _maxValue == 0 )
     return;
 
@@ -397,9 +395,13 @@ void CityChart::_updateTexture(Engine &painter)
   foreach( it, _values )
   {
     int y = maxHeight - (*it) * maxHeight / _maxValue;
-    pic.draw( rpic, Rect( 0, y, rpic.width(), maxHeight), Rect( rpic.width() * index, y, rpic.width() * (index+1), maxHeight), false );
+    painter.draw( rpic, Rect( 0, y, rpic.width(), maxHeight),
+                  Rect( rpic.width() * index, y, rpic.width() * (index+1), maxHeight) + absoluteRect().lefttop(),
+                  &absoluteClippingRectRef() );
     index++;
   }
+
+  Label::draw( painter );
 }
 
 }//end namespace advisorwnd

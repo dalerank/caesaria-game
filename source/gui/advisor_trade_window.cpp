@@ -45,6 +45,9 @@ using namespace gfx;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 class TradeGoodInfo : public PushButton
 {
 public:
@@ -186,7 +189,7 @@ public:
   }
 };
 
-class AdvisorTradeWindow::Impl
+class Trade::Impl
 {
 public:
   PushButton* btnEmpireMap;
@@ -443,7 +446,7 @@ oc3_signals private:
   Signal0<> _onOrderChangedSignal;
 };
 
-void AdvisorTradeWindow::Impl::updateGoodsInfo()
+void Trade::Impl::updateGoodsInfo()
 {
   if( !gbInfo )
     return;
@@ -476,7 +479,7 @@ void AdvisorTradeWindow::Impl::updateGoodsInfo()
   }
 }
 
-bool AdvisorTradeWindow::Impl::getWorkState(Good::Type gtype )
+bool Trade::Impl::getWorkState(Good::Type gtype )
 {
   city::Helper helper( city );
 
@@ -488,7 +491,7 @@ bool AdvisorTradeWindow::Impl::getWorkState(Good::Type gtype )
   return producers.empty() ? true : industryActive;
 }
 
-int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
+int Trade::Impl::getStackedGoodsQty( Good::Type gtype )
 {
   city::Helper helper( city );
 
@@ -499,7 +502,7 @@ int AdvisorTradeWindow::Impl::getStackedGoodsQty( Good::Type gtype )
   return goodsQty;
 }
 
-void AdvisorTradeWindow::Impl::showGoodOrderManageWindow(Good::Type type )
+void Trade::Impl::showGoodOrderManageWindow(Good::Type type )
 {
   Widget* parent = gbInfo->parent();
   int stackedGoods = getStackedGoodsQty( type ) ;
@@ -509,7 +512,7 @@ void AdvisorTradeWindow::Impl::showGoodOrderManageWindow(Good::Type type )
   CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
 
-void AdvisorTradeWindow::Impl::showGoodsPriceWindow()
+void Trade::Impl::showGoodsPriceWindow()
 {
   Widget* parent = gbInfo->parent();
   Size size( 610, 180 );
@@ -517,7 +520,7 @@ void AdvisorTradeWindow::Impl::showGoodsPriceWindow()
                                                    ( parent->height() - size.height() ) / 2), size ), city );
 }
 
-AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int id )
+Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
 : Window( parent, Rect( 0, 0, 640, 432 ), "", id ), _d( new Impl )
 {
   setupUI( ":/gui/tradeadv.gui" );
@@ -529,13 +532,13 @@ AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int i
   _d->btnPrices = findChildA<PushButton*>( "btnPrices", true, this );
   _d->gbInfo = findChildA<GroupBox*>( "gbInfo", true, this );
 
-  CONNECT( _d->btnEmpireMap, onClicked(), this, AdvisorTradeWindow::deleteLater );
+  CONNECT( _d->btnEmpireMap, onClicked(), this, Trade::deleteLater );
   CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );
 
   _d->updateGoodsInfo();
 }
 
-void AdvisorTradeWindow::draw(gfx::Engine& painter )
+void Trade::draw(gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -543,9 +546,11 @@ void AdvisorTradeWindow::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-Signal0<>& AdvisorTradeWindow::onEmpireMapRequest()
+Signal0<>& Trade::onEmpireMapRequest()
 {
   return _d->btnEmpireMap->onClicked();
+}
+
 }
 
 }//end namespace gui

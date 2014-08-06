@@ -34,6 +34,9 @@ using namespace gfx;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 namespace {
   Point legionButtonOffset = Point( 4, 4 );
   Size legionButtonSize = Size( 565, 42 );
@@ -101,14 +104,14 @@ private:
   FortPtr _fort;
 };
 
-class AdvisorLegionWindow::Impl
+class Legion::Impl
 {
 public:
   gui::Label* alarm;
   gui::Label* helpRequest;
 };
 
-AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts )
+Legion::Legion( Widget* parent, int id, FortList forts )
 : Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/legionadv.gui" );
@@ -124,11 +127,11 @@ AdvisorLegionWindow::AdvisorLegionWindow( Widget* parent, int id, FortList forts
   foreach( it, forts )
   {
     LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, *it );
-    CONNECT( btn, onShowLegionSignal, this, AdvisorLegionWindow::_handleMove2Legion );
+    CONNECT( btn, onShowLegionSignal, this, Legion::_handleMove2Legion );
   }
 }
 
-void AdvisorLegionWindow::draw( Engine& painter )
+void Legion::draw( Engine& painter )
 {
   if( !visible() )
     return;
@@ -136,11 +139,13 @@ void AdvisorLegionWindow::draw( Engine& painter )
   Window::draw( painter );
 }
 
-void AdvisorLegionWindow::_handleMove2Legion(FortPtr fort)
+void Legion::_handleMove2Legion(FortPtr fort)
 {
   parent()->deleteLater();
   events::GameEventPtr e = events::MoveCamera::create( fort->patrolLocation() );
   e->dispatch();
+}
+
 }
 
 }//end namespace gui

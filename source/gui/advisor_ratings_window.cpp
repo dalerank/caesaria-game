@@ -39,6 +39,9 @@ using namespace city;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 class RatingButton : public PushButton
 {
 public:
@@ -85,7 +88,7 @@ private:
   int _target;
 };
 
-class AdvisorRatingsWindow::Impl
+class Ratings::Impl
 {
 public:
   Pictures columns;
@@ -104,7 +107,7 @@ public:
   PlayerCityPtr city;
 };
 
-void AdvisorRatingsWindow::Impl::updateColumn( const Point& center, const int value )
+void Ratings::Impl::updateColumn( const Point& center, const int value )
 {
   int columnStartY = 275;
   const Picture& footer = Picture::load( ResourceGroup::panelBackground, 544 );
@@ -123,7 +126,7 @@ void AdvisorRatingsWindow::Impl::updateColumn( const Point& center, const int va
   }
 }
 
-void AdvisorRatingsWindow::Impl::checkCultureRating()
+void Ratings::Impl::checkCultureRating()
 {
   SmartPtr< city::CultureRating > culture = ptr_cast<city::CultureRating>( city->findService( city::CultureRating::defaultName() ) );
 
@@ -155,7 +158,7 @@ void AdvisorRatingsWindow::Impl::checkCultureRating()
   }
 }
 
-void AdvisorRatingsWindow::Impl::checkProsperityRating()
+void Ratings::Impl::checkProsperityRating()
 {
   SmartPtr< city::ProsperityRating > prosperity = ptr_cast<city::ProsperityRating>( city->findService( city::ProsperityRating::defaultName() ) );
 
@@ -187,12 +190,12 @@ void AdvisorRatingsWindow::Impl::checkProsperityRating()
   }
 }
 
-void AdvisorRatingsWindow::Impl::checkPeaceRating()
+void Ratings::Impl::checkPeaceRating()
 {
   lbRatingInfo->setText( _("##peace_rating_text##") );
 }
 
-AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerCityPtr city )
+Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   : Window( parent, Rect( 0, 0, 640, 432 ), "", id ), _d( new Impl )
 {
   _d->city = city;
@@ -234,7 +237,7 @@ AdvisorRatingsWindow::AdvisorRatingsWindow(Widget* parent, int id, const PlayerC
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
 
-void AdvisorRatingsWindow::draw( gfx::Engine& painter )
+void Ratings::draw( gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -242,6 +245,8 @@ void AdvisorRatingsWindow::draw( gfx::Engine& painter )
   Window::draw( painter );
 
   painter.draw( _d->columns, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+}
+
 }
 
 }//end namespace gui

@@ -28,10 +28,13 @@
 namespace gui
 {
 
-class AdvisorEmperorWindow : public Window
+namespace advisorwnd
+{
+
+class Emperor : public Window
 {
 public:
-  AdvisorEmperorWindow( PlayerCityPtr city, Widget* parent, int id );
+  Emperor( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
 
@@ -45,6 +48,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__

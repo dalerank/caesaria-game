@@ -39,6 +39,9 @@ using namespace gfx;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 namespace {
   struct InfrastructureInfo
   {
@@ -100,7 +103,7 @@ private:
   InfrastructureInfo _info;
 };
 
-class AdvisorEducationWindow::Impl
+class Education::Impl
 {
 public:
   Label* lbCityInfo;
@@ -115,14 +118,14 @@ public:
   StringArray getTrouble( PlayerCityPtr city );
 };
 
-AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* parent, int id )
+Education::Education(PlayerCityPtr city, Widget* parent, int id )
 : Window( parent, Rect( 0, 0, 640, 256 ), "", id ),
-  __INIT_IMPL(AdvisorEducationWindow)
+  __INIT_IMPL(Education)
 {
   setupUI( ":/gui/educationadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
   
-  __D_IMPL(_d,AdvisorEducationWindow)
+  __D_IMPL(_d,Education)
   _d->lbBackframe = findChildA<Label*>( "lbBlackframe", true, this );
   _d->lbCityInfo = findChildA<Label*>( "lbCityInfo", true, this );
   _d->lbCityTrouble = findChildA<Label*>( "lbTroubleInfo", true, this);
@@ -158,7 +161,7 @@ AdvisorEducationWindow::AdvisorEducationWindow(PlayerCityPtr city, Widget* paren
   if( _d->lbCityTrouble ) { _d->lbCityTrouble->setText( _( troubles.random() ) ); }
 }
 
-void AdvisorEducationWindow::draw( gfx::Engine& painter )
+void Education::draw( gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -166,7 +169,7 @@ void AdvisorEducationWindow::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
+InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type bType)
 {
   city::Helper helper( city );
 
@@ -223,7 +226,7 @@ InfrastructureInfo AdvisorEducationWindow::Impl::getInfo(PlayerCityPtr city, con
   return ret;
 }
 
-StringArray AdvisorEducationWindow::Impl::getTrouble(PlayerCityPtr city)
+StringArray Education::Impl::getTrouble(PlayerCityPtr city)
 {
   StringArray ret;
   const InfrastructureInfo& schInfo = lbSchoolInfo->getInfo();
@@ -250,6 +253,8 @@ StringArray AdvisorEducationWindow::Impl::getTrouble(PlayerCityPtr city)
   if( ret.empty() ) { ret.push_back( "##education_awesome##" ); }
 
   return ret;
+}
+
 }
 
 } //end namespace gui

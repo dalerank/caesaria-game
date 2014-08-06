@@ -25,10 +25,13 @@
 namespace gui
 {
 
-class AdvisorEmployerWindow : public Window
+namespace advisorwnd
+{
+
+class Employer : public Window
 {
 public:
-  AdvisorEmployerWindow( PlayerCityPtr city, Widget* parent, int id );
+  Employer( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
   virtual bool onEvent(const NEvent &event);
@@ -37,6 +40,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace advisorwnd
 
 }//end namespace gui
 

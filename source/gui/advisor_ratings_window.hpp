@@ -25,10 +25,13 @@
 namespace gui
 {
 
-class AdvisorRatingsWindow : public Window
+namespace advisorwnd
+{
+
+class Ratings : public Window
 {
 public:
-  AdvisorRatingsWindow( Widget* parent, int id, const PlayerCityPtr city );
+  Ratings( Widget* parent, int id, const PlayerCityPtr city );
 
   virtual void draw( gfx::Engine& painter );
 
@@ -36,6 +39,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISOR_RATINGS_WINDOW_H_INCLUDED__

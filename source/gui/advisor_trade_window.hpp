@@ -26,10 +26,13 @@
 namespace gui
 {
 
-class AdvisorTradeWindow : public Window
+namespace advisorwnd
+{
+
+class Trade : public Window
 {
 public:
-  AdvisorTradeWindow( PlayerCityPtr city, Widget* parent, int id );
+  Trade( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
 
@@ -40,6 +43,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISOR_TRADE_WINDOW_H_INCLUDED__

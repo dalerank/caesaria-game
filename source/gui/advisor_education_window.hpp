@@ -26,16 +26,21 @@
 namespace gui
 {
 
-class AdvisorEducationWindow : public Window
+namespace advisorwnd
+{
+
+class Education : public Window
 {
 public:
-  AdvisorEducationWindow( PlayerCityPtr city, Widget* parent, int id );
+  Education( PlayerCityPtr city, Widget* parent, int id );
 
   void draw( gfx::Engine& painter );
 
 private:
-  __DECLARE_IMPL(AdvisorEducationWindow)
+  __DECLARE_IMPL(Education)
 };
+
+}
 
 } //end namespace gui
 

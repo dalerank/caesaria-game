@@ -140,28 +140,28 @@ void AdvisorsWindow::showAdvisor( const constants::advisor::Type type )
 
   switch( type )
   {
-  case advisor::employers: _d->advisorPanel = new AdvisorEmployerWindow( _d->city, this, advisor::employers ); break;
+  case advisor::employers: _d->advisorPanel = new advisorwnd::Employer( _d->city, this, advisor::employers ); break;
   case advisor::military:
   {
     FortList forts;
     forts << _d->city->overlays();
-    _d->advisorPanel = new AdvisorLegionWindow( this, advisor::military, forts );
+    _d->advisorPanel = new advisorwnd::Legion( this, advisor::military, forts );
   }
   break;
 
   case advisor::population: _d->advisorPanel = new advisorwnd::Population( _d->city, this, advisor::population ); break;
 
-  case advisor::empire: _d->advisorPanel = new AdvisorEmperorWindow( _d->city, this, advisor::empire ); break;
-  case advisor::ratings: _d->advisorPanel = new AdvisorRatingsWindow( this, advisor::ratings, _d->city ); break;
+  case advisor::empire: _d->advisorPanel = new advisorwnd::Emperor( _d->city, this, advisor::empire ); break;
+  case advisor::ratings: _d->advisorPanel = new advisorwnd::Ratings( this, advisor::ratings, _d->city ); break;
   case advisor::trading:
     {
-      AdvisorTradeWindow* wnd = new AdvisorTradeWindow( _d->city, this, advisor::trading );
+      advisorwnd::Trade* wnd = new advisorwnd::Trade( _d->city, this, advisor::trading );
       _d->advisorPanel =  wnd;
       CONNECT( wnd, onEmpireMapRequest(), _d.data(), Impl::showEmpireMapWindow );
     }
   break;
 
-  case advisor::education: _d->advisorPanel = new AdvisorEducationWindow( _d->city, this, -1 ); break;
+  case advisor::education: _d->advisorPanel = new advisorwnd::Education( _d->city, this, -1 ); break;
   case advisor::health: _d->advisorPanel = new AdvisorHealthWindow( _d->city, this, -1 ); break;
   case advisor::entertainment: _d->advisorPanel = new AdvisorEntertainmentWindow( _d->city, this, -1 ); break;
   case advisor::religion: _d->advisorPanel = new AdvisorReligionWindow( _d->city, this, -1 ); break;

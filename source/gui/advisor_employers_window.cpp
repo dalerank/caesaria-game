@@ -45,6 +45,9 @@ using namespace city;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 namespace {
 static const Point employerButtonOffset = Point( 0, 25 );
 static const Size  employerButtonSize = Size( 560, 22 );
@@ -117,7 +120,7 @@ private:
   int _haveWorkers;
 };
 
-class AdvisorEmployerWindow::Impl
+class Employer::Impl
 {
 public:
   typedef std::vector< TileOverlay::Type > BldTypes;
@@ -147,13 +150,13 @@ public:
   void update();
   EmployersInfo getEmployersInfo( Industry::Type type );
 
-  EmployerButton* addButton( AdvisorEmployerWindow* parent, const Point& startPos, Industry::Type priority, const std::string& title );
+  EmployerButton* addButton( Employer* parent, const Point& startPos, Industry::Type priority, const std::string& title );
 };
 
-void AdvisorEmployerWindow::Impl::increaseSalary() { changeSalary( +1 );}
-void AdvisorEmployerWindow::Impl::decreaseSalary() { changeSalary( -1 );}
+void Employer::Impl::increaseSalary() { changeSalary( +1 );}
+void Employer::Impl::decreaseSalary() { changeSalary( -1 );}
 
-void AdvisorEmployerWindow::Impl::updateWorkersState()
+void Employer::Impl::updateWorkersState()
 {
   int workers = city::Statistic::getAvailableWorkersNumber( city );
   int worklessPercent = city::Statistic::getWorklessPercent( city );
@@ -169,7 +172,7 @@ void AdvisorEmployerWindow::Impl::updateWorkersState()
   }
 }
 
-void AdvisorEmployerWindow::Impl::updateYearlyWages()
+void Employer::Impl::updateYearlyWages()
 {
   if( lbYearlyWages )
   {
@@ -180,7 +183,7 @@ void AdvisorEmployerWindow::Impl::updateYearlyWages()
   }
 }
 
-void AdvisorEmployerWindow::Impl::changeSalary(int relative)
+void Employer::Impl::changeSalary(int relative)
 {
   int currentSalary = city->funds().workerSalary();
   city->funds().setWorkerSalary( currentSalary+relative );
@@ -188,7 +191,7 @@ void AdvisorEmployerWindow::Impl::changeSalary(int relative)
   updateYearlyWages();
 }
 
-void AdvisorEmployerWindow::Impl::showPriorityWindow( Industry::Type industry )
+void Employer::Impl::showPriorityWindow( Industry::Type industry )
 {
   city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
   int priority = wh->getPriority( industry );
@@ -196,7 +199,7 @@ void AdvisorEmployerWindow::Impl::showPriorityWindow( Industry::Type industry )
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
-void AdvisorEmployerWindow::Impl::setIndustryPriority(Industry::Type industry, int priority)
+void Employer::Impl::setIndustryPriority(Industry::Type industry, int priority)
 {
   city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
   wh->setIndustryPriority( industry, priority );
@@ -206,7 +209,7 @@ void AdvisorEmployerWindow::Impl::setIndustryPriority(Industry::Type industry, i
   update();
 }
 
-void AdvisorEmployerWindow::Impl::update()
+void Employer::Impl::update()
 {
   city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
 
@@ -217,7 +220,7 @@ void AdvisorEmployerWindow::Impl::update()
   }
 }
 
-void AdvisorEmployerWindow::Impl::updateSalaryLabel()
+void Employer::Impl::updateSalaryLabel()
 {
   int pay = city->funds().workerSalary();
   int romePay = city->empire()->workerSalary();
@@ -231,7 +234,7 @@ void AdvisorEmployerWindow::Impl::updateSalaryLabel()
   }
 }
 
-AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmployersInfo(Industry::Type type )
+Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(Industry::Type type )
 {
   std::vector<building::Group> bldGroups = city::Industry::toGroups( type );
 
@@ -253,7 +256,7 @@ AdvisorEmployerWindow::Impl::EmployersInfo AdvisorEmployerWindow::Impl::getEmplo
   return ret;
 }
 
-EmployerButton* AdvisorEmployerWindow::Impl::addButton( AdvisorEmployerWindow* parent, const Point& startPos,
+EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startPos,
                                                         Industry::Type priority, const std::string& title )
 {
   EmployersInfo info = getEmployersInfo( priority );
@@ -267,7 +270,7 @@ EmployerButton* AdvisorEmployerWindow::Impl::addButton( AdvisorEmployerWindow* p
   return btn;
 }
 
-AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent, int id )
+Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   : Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/employersadv.gui" );
@@ -303,7 +306,7 @@ AdvisorEmployerWindow::AdvisorEmployerWindow(PlayerCityPtr city, Widget* parent,
   _d->update();
 }
 
-void AdvisorEmployerWindow::draw(Engine& painter )
+void Employer::draw(Engine& painter )
 {
   if( !visible() )
     return;
@@ -311,7 +314,7 @@ void AdvisorEmployerWindow::draw(Engine& painter )
   Window::draw( painter );
 }
 
-bool AdvisorEmployerWindow::onEvent(const NEvent& event)
+bool Employer::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -319,6 +322,8 @@ bool AdvisorEmployerWindow::onEvent(const NEvent& event)
   }
 
   return Widget::onEvent( event );
+}
+
 }
 
 }//end namespace gui

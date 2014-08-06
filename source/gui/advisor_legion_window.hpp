@@ -25,10 +25,13 @@
 namespace gui
 {
 
-class AdvisorLegionWindow : public Window
+namespace advisorwnd
+{
+
+class Legion : public Window
 {
 public:
-  AdvisorLegionWindow(Widget* parent, int id , FortList forts);
+  Legion(Widget* parent, int id , FortList forts);
 
   virtual void draw( gfx::Engine& painter );
 
@@ -38,6 +41,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace advisorwnd
 
 }//end namespace gui
 #endif
