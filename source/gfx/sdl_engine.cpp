@@ -415,15 +415,14 @@ void SdlEngine::resetColorMask()
 
 void SdlEngine::createScreenshot( const std::string& filename )
 {
-  unsigned int* pixes = _d->screen.lock();
-  if( pixes )
+  SDL_Surface* surface = SDL_CreateRGBSurface( 0, _srcSize.width(), _srcSize.height(), 24, 0, 0, 0, 0 );
+  if( surface )
   {
-    SDL_Surface* surface = SDL_CreateRGBSurfaceFrom( pixes, _d->screen.width(), _d->screen.height(), 32, _d->screen.width() * 4,
-                                                     0, 0, 0, 0 );
+    SDL_RenderReadPixels( _d->renderer, 0, SDL_PIXELFORMAT_BGR24, surface->pixels, surface->pitch );
+
     IMG_SavePNG( filename.c_str(), surface, -1 );
     SDL_FreeSurface( surface );
   }
-  _d->screen.unlock();
 }
 
 Engine::Modes SdlEngine::modes() const

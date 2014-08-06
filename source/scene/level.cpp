@@ -776,9 +776,11 @@ void Level::handleEvent( NEvent& event )
 void Level::Impl::makeScreenShot()
 {
   std::string filename = getScreenshotName();
-  Logger::warning( "creating screenshot %s", filename.c_str() );
+  Logger::warning( "Level: create screenshot %s", filename.c_str() );
 
   Engine::instance().createScreenshot( filename );
+  events::GameEventPtr e = events::WarningMessageEvent::create( "Screenshot save to " + filename );
+  e->dispatch();
 }
 
 int Level::result() const {  return _d->result; }
