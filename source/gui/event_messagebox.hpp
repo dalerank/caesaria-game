@@ -21,7 +21,7 @@
 namespace gui
 {
 
-class EventMessageBox : public InfoboxSimple
+class EventMessageBox : public infobox::Simple
 {
 public:
   EventMessageBox( Widget* parent, const std::string& title, const std::string& message, DateTime time, Good::Type gtype );

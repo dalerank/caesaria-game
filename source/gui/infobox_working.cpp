@@ -26,8 +26,11 @@ using namespace constants;
 namespace gui
 {
 
-InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
+namespace infobox
+{
+
+AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
   _working = building;
 
@@ -56,7 +59,7 @@ InfoboxWorkingBuilding::InfoboxWorkingBuilding( Widget* parent, WorkingBuildingP
   new Label( this, Rect( 50, height() - 30, width() - 50, height() - 10 ), text );
 }
 
-void InfoboxWorkingBuilding::setText(const std::string& text)
+void AboutWorkingBuilding::setText(const std::string& text)
 {  
   if( Widget* lb = findChild( lbHelpId ) )
   {
@@ -73,14 +76,16 @@ void InfoboxWorkingBuilding::setText(const std::string& text)
   }
 }
 
-void InfoboxWorkingBuilding::showDescription()
+void AboutWorkingBuilding::showDescription()
 {
   DictionaryWindow::show( environment()->rootWidget(), _working->type() );
 }
 
-WorkingBuildingPtr InfoboxWorkingBuilding::_getBuilding()
+WorkingBuildingPtr AboutWorkingBuilding::_getBuilding()
 {
   return _working;
+}
+
 }
 
 }//end namespace gui

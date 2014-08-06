@@ -31,8 +31,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxWarehouse::InfoboxWarehouse( Widget* parent, const Tile& tile )
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
+namespace infobox
+{
+
+AboutWarehouse::AboutWarehouse( Widget* parent, const Tile& tile )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )
 {
   _warehouse = ptr_cast<Warehouse>( tile.overlay() );
 
@@ -52,7 +55,7 @@ InfoboxWarehouse::InfoboxWarehouse( Widget* parent, const Tile& tile )
   PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width()) / 2, height() - 34 ), btnOrdersSize ),
                                           _("##special_orders##"), -1, false, PushButton::whiteBorderUp );
 
-  CONNECT( btnOrders, onClicked(), this, InfoboxWarehouse::showSpecialOrdersWindow );
+  CONNECT( btnOrders, onClicked(), this, AboutWarehouse::showSpecialOrdersWindow );
 
   std::string title = MetaDataHolder::findPrettyName( _warehouse->type() );
   setTitle( _(title) );
@@ -82,9 +85,9 @@ InfoboxWarehouse::InfoboxWarehouse( Widget* parent, const Tile& tile )
   _updateWorkersLabel( Point( 20, 10 ), 542, _warehouse->maximumWorkers(), _warehouse->numberWorkers() );
 }
 
-InfoboxWarehouse::~InfoboxWarehouse() {}
+AboutWarehouse::~AboutWarehouse() {}
 
-void InfoboxWarehouse::showSpecialOrdersWindow()
+void AboutWarehouse::showSpecialOrdersWindow()
 {
   Point pos;
   if( top() > (int)parent()->height() / 2 )
@@ -99,7 +102,7 @@ void InfoboxWarehouse::showSpecialOrdersWindow()
   new WarehouseSpecialOrdersWindow( parent(), pos, _warehouse );
 }
 
-void InfoboxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
+void AboutWarehouse::drawGood( const Good::Type &goodType, int col, int paintY )
 {
   std::string goodName = GoodHelper::getName( goodType );
   int qty = _warehouse->store().qty(goodType);
@@ -113,6 +116,8 @@ void InfoboxWarehouse::drawGood( const Good::Type &goodType, int col, int paintY
   std::string outText = StringHelper::format( 0xff, "%d %s", qty, goodName.c_str() );
   lb->setText( outText );
   lb->setTextOffset( Point( 24, 0 ) );
+}
+
 }
 
 }//end namespace gui

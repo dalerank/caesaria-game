@@ -32,8 +32,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
+namespace infobox
+{
+
+AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 147, 510 - 16, 147 + 62) )
 {
   FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
   setConstruction( ptr_cast<Construction>( factory ) );
@@ -77,13 +80,13 @@ InfoboxFactory::InfoboxFactory( Widget* parent, const Tile& tile)
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
 }
 
-void InfoboxFactory::showDescription()
+void AboutFactory::showDescription()
 {
   DictionaryWindow::show( environment()->rootWidget(), _type );
 }
 
-InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
-  : InfoboxFactory( parent, tile )
+AboutShipyard::AboutShipyard(Widget* parent, const Tile& tile)
+  : AboutFactory( parent, tile )
 {
   ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.overlay() );
 
@@ -99,8 +102,8 @@ InfoboxShipyard::InfoboxShipyard(Widget* parent, const Tile& tile)
 }
 
 
-InfoboxWharf::InfoboxWharf(Widget* parent, const Tile& tile)
-  : InfoboxFactory( parent, tile )
+AboutWharf::AboutWharf(Widget* parent, const Tile& tile)
+  : AboutFactory( parent, tile )
 {
   WharfPtr wharf = ptr_cast<Wharf>( tile.overlay() );
 
@@ -115,5 +118,6 @@ InfoboxWharf::InfoboxWharf(Widget* parent, const Tile& tile)
   }
 }
 
+}
 
 }//end namespace gui

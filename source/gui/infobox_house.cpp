@@ -60,8 +60,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
+namespace infobox
+{
+
+AboutHouse::AboutHouse( Widget* parent, const Tile& tile )
+  : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   _house = ptr_cast<House>( tile.overlay() );
 
@@ -137,9 +140,9 @@ InfoboxHouse::InfoboxHouse( Widget* parent, const Tile& tile )
   drawGood( _house, Good::wine, 3, 1, startY );
 }
 
-InfoboxHouse::~InfoboxHouse() {}
+AboutHouse::~AboutHouse() {}
 
-void InfoboxHouse::drawHabitants( HousePtr house )
+void AboutHouse::drawHabitants( HousePtr house )
 {
   // citizen or patrician picture
   int picId = house->spec().isPatrician() ? 541 : 542;
@@ -173,7 +176,7 @@ void InfoboxHouse::drawHabitants( HousePtr house )
   lbHabitants->setText( freeRoomText );
 }
 
-void InfoboxHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
+void AboutHouse::drawGood( HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY )
 {
   int qty = house->goodStore().qty( goodType );
   std::string text = StringHelper::format( 0xff, "%d", qty);
@@ -188,7 +191,7 @@ void InfoboxHouse::drawGood( HousePtr house, const Good::Type &goodType, const i
   //font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row, false );
 }
 
-bool InfoboxHouse::onEvent(const NEvent& event)
+bool AboutHouse::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventKeyboard )
   {
@@ -206,7 +209,9 @@ bool InfoboxHouse::onEvent(const NEvent& event)
     }
   }
 
-  return InfoboxSimple::onEvent( event );
+  return Simple::onEvent( event );
+}
+
 }
 
 }//end namespace gui

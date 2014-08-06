@@ -22,7 +22,7 @@
 #include <string>
 #include <list>
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "gfx/picture.hpp"
 #include "objects/service.hpp"
 #include "game/predefinitions.hpp"
@@ -33,12 +33,15 @@ namespace gui
 class PushButton;
 class Label;
 
+namespace infobox
+{
+
 // base class for info boxes
-class InfoboxSimple : public Widget
+class Simple : public Window
 {
 public:
-  InfoboxSimple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
-  virtual ~InfoboxSimple();
+  Simple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
+  virtual ~Simple();
 
   virtual void draw( gfx::Engine& engine );  // draw on screen
 
@@ -54,6 +57,7 @@ public:
   void setAutoPosition( bool value );
 
   virtual void setupUI(const VariantMap &ui);
+  virtual void setupUI(const vfs::Path& filename);
   virtual void showDescription() {}
 
 protected:
@@ -69,11 +73,13 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class InfoboxBuilding : public InfoboxSimple
+class InfoboxBuilding : public Simple
 {
 public:
    InfoboxBuilding( Widget* parent, const gfx::Tile& tile );
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXSIMPLE_H_INCLUDE_

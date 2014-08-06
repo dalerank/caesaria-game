@@ -29,8 +29,11 @@ using namespace constants;
 namespace gui
 {
 
-InfoboxAmphitheater::InfoboxAmphitheater(Widget *parent, const Tile &tile)
-  : InfoboxConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
+namespace infobox
+{
+
+AboutAmphitheater::AboutAmphitheater(Widget *parent, const Tile &tile)
+  : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
   AmphitheaterPtr amph = ptr_cast<Amphitheater>(tile.overlay());
   setConstruction( ptr_cast<Construction>( amph ) );
@@ -63,6 +66,8 @@ InfoboxAmphitheater::InfoboxAmphitheater(Widget *parent, const Tile &tile)
   }
 }
 
-InfoboxAmphitheater::~InfoboxAmphitheater() {}
+AboutAmphitheater::~AboutAmphitheater() {}
+
+}
 
 }//end namespace gui

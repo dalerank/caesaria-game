@@ -23,32 +23,47 @@
 #include "walker/predefinitions.hpp"
 #include "walker/constants.hpp"
 
-class InfoboxManager;
 
-class InfoboxCitizenCreator : public ReferenceCounted
+namespace gui
+{
+
+namespace infobox
+{
+
+class Manager;
+
+namespace citizen
+{
+
+class Creator : public ReferenceCounted
 {
 public:
-  virtual gui::InfoboxSimple* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos ) = 0;
+  virtual gui::infobox::Simple* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos ) = 0;
 };
 
-typedef SmartPtr<InfoboxCitizenCreator> InfoboxCitizenCreatorPtr;
+typedef SmartPtr<Creator> CreatorPtr;
 
-class InfoboxCitizenManager
+class PManager
 {
 public:
-  static InfoboxCitizenManager& instance();
+  static PManager& instance();
 
-  void loadInfoboxes( InfoboxManager& manager );
-  virtual ~InfoboxCitizenManager();
+  void loadInfoboxes( Manager& manager );
+  virtual ~PManager();
 
-  void addCreator( constants::walker::Type type, InfoboxCitizenCreatorPtr c );
+  void addCreator( constants::walker::Type type, CreatorPtr c );
 
-  gui::InfoboxSimple* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
+  gui::infobox::Simple* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
 private:
-  InfoboxCitizenManager();
+  PManager();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
+}
+
+}
+
+}
 #endif //_CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_

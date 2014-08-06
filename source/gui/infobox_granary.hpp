@@ -21,12 +21,15 @@
 namespace gui
 {
 
+namespace infobox
+{
+
 // info box about a granary
-class InfoboxGranary : public InfoboxConstruction
+class AboutGranary : public AboutConstruction
 {
 public:
-  InfoboxGranary( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxGranary();
+  AboutGranary( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutGranary();
   
   void drawGood(Good::Type goodType, int, int);
   void showSpecialOrdersWindow();
@@ -34,6 +37,8 @@ public:
 private:
   GranaryPtr _granary;
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_GRANARY_H_INCLUDE_

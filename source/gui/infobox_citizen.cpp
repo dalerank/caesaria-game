@@ -38,6 +38,12 @@ using namespace constants;
 namespace gui
 {
 
+namespace infobox
+{
+
+namespace citizen
+{
+
 namespace {
 static const char* ui_model = "/gui/infoboxcitizen.gui";
 static const char* sound_ext = ".ogg";
@@ -84,7 +90,7 @@ public:
   Signal1<WalkerPtr> _onClickedSignal;
 };
 
-class InfoboxCitizen::Impl
+class AboutPeople::Impl
 {
 public:
   WalkerList walkers;
@@ -97,8 +103,8 @@ public:
   std::vector<CitizenScreenshot*> screenshots;
 };
 
-InfoboxCitizen::InfoboxCitizen( Widget* parent, PlayerCityPtr city, const TilePos& pos )
-  : InfoboxSimple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
+AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos )
+  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
     _d( new Impl)
 {
   _d->walkers = city->walkers( walker::any, pos );
@@ -124,7 +130,7 @@ InfoboxCitizen::InfoboxCitizen( Widget* parent, PlayerCityPtr city, const TilePo
    _setWalker( _d->walkers.front() );
 }
 
-void InfoboxCitizen::_setWalker( WalkerPtr wlk )
+void AboutPeople::_setWalker( WalkerPtr wlk )
 {
   if( wlk.isNull() )
     return;
@@ -177,11 +183,15 @@ void InfoboxCitizen::_setWalker( WalkerPtr wlk )
       _d->screenshots.push_back( lb );
       lbRect += lbOffset;
 
-      CONNECT( lb, _onClickedSignal, this, InfoboxCitizen::_setWalker );
+      CONNECT( lb, _onClickedSignal, this, AboutPeople::_setWalker );
     }
   }
 }
 
-InfoboxCitizen::~InfoboxCitizen() {}
+AboutPeople::~AboutPeople() {}
+
+}
+
+}
 
 }//end namespace gui

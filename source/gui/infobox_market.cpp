@@ -29,8 +29,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxMarket::InfoboxMarket( Widget* parent, const Tile& tile )
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
+namespace infobox
+{
+
+AboutMarket::AboutMarket( Widget* parent, const Tile& tile )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
 {
    MarketPtr market = ptr_cast<Market>( tile.overlay() );
 
@@ -87,9 +90,9 @@ InfoboxMarket::InfoboxMarket( Widget* parent, const Tile& tile )
    _updateWorkersLabel( Point( 32, 8 ), 542, market->maximumWorkers(), market->numberWorkers() );
 }
 
-InfoboxMarket::~InfoboxMarket() {}
+AboutMarket::~AboutMarket() {}
 
-void InfoboxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int index, int paintY )
+void AboutMarket::drawGood( MarketPtr market, const Good::Type &goodType, int index, int paintY )
 {
   int startOffset = 25;
 
@@ -106,6 +109,8 @@ void InfoboxMarket::drawGood( MarketPtr market, const Good::Type &goodType, int 
   lb->setIcon( pic );
   lb->setText( outText );
   lb->setTextOffset( Point( 30, 0 ) );
+}
+
 }
 
 }//end namespace gui

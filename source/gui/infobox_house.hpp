@@ -26,11 +26,14 @@
 namespace gui
 {
 
-class InfoboxHouse : public InfoboxSimple
+namespace infobox
+{
+
+class AboutHouse : public Simple
 {
 public:
-   InfoboxHouse( Widget* parent, const gfx::Tile& tile);
-   virtual ~InfoboxHouse();
+   AboutHouse( Widget* parent, const gfx::Tile& tile);
+   virtual ~AboutHouse();
 
    void drawHabitants(HousePtr house);
    void drawGood(HousePtr house, const Good::Type &goodType, const int col, const int row, const int startY );
@@ -40,6 +43,8 @@ public:
 private:
    HousePtr _house;
 };
+
+}
 
 }//end namespace gui
 

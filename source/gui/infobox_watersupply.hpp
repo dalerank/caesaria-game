@@ -24,33 +24,38 @@
 namespace gui
 {
 
+namespace infobox
+{
+
 // info box about a fontain
-class InfoboxFontain : public InfoboxConstruction
+class AboutFontain : public AboutConstruction
 {
 public:
-   InfoboxFontain( Widget* parent, const gfx::Tile& tile );
-   virtual ~InfoboxFontain();
+   AboutFontain( Widget* parent, const gfx::Tile& tile );
+   virtual ~AboutFontain();
 
    virtual void showDescription();
 };
 
-class InfoboxWell : public InfoboxConstruction
+class AboutWell : public AboutConstruction
 {
 public:
-  InfoboxWell( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxWell();
+  AboutWell( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutWell();
 
   virtual void showDescription();
 };
 
-class InfoboxReservoir : public InfoboxConstruction
+class AboutReservoir : public AboutConstruction
 {
 public:
-  InfoboxReservoir( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxReservoir();
+  AboutReservoir( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutReservoir();
 
   virtual void showDescription();
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXWATERSUPPLY_H_INCLUDE_

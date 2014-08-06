@@ -37,7 +37,10 @@ using namespace constants;
 namespace gui
 {
 
-class InfoboxLegion::Impl
+namespace infobox
+{
+
+class AboutLegion::Impl
 {
 public:
   Label* lbFormationTitle;
@@ -51,8 +54,8 @@ public:
   FortPtr fort;
 };
 
-InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
-  : InfoboxSimple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
+AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
+  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
 {  
   Widget::setupUI( GameSettings::rcpath( "/gui/legionopts.gui") );
 
@@ -107,12 +110,12 @@ InfoboxLegion::InfoboxLegion(Widget* parent, PlayerCityPtr city, const TilePos& 
   _addAvailalbesFormation();
   _update();
 
-  CONNECT( _d->btnReturn, onClicked(), this, InfoboxLegion::_returnSoldiers2fort );
+  CONNECT( _d->btnReturn, onClicked(), this, AboutLegion::_returnSoldiers2fort );
 }
 
-InfoboxLegion::~InfoboxLegion() {}
+AboutLegion::~AboutLegion() {}
 
-void InfoboxLegion::_update()
+void AboutLegion::_update()
 {
   if( _d->fort.isNull() )
       return;
@@ -145,7 +148,7 @@ void InfoboxLegion::_update()
   }
 }
 
-void InfoboxLegion::_addAvailalbesFormation()
+void AboutLegion::_addAvailalbesFormation()
 {
   if( _d->fort.isNull() )
       return;
@@ -161,7 +164,7 @@ void InfoboxLegion::_addAvailalbesFormation()
   }
 }
 
-bool InfoboxLegion::onEvent(const NEvent& event)
+bool AboutLegion::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -206,10 +209,10 @@ bool InfoboxLegion::onEvent(const NEvent& event)
     }
   }
 
-  return InfoboxSimple::onEvent( event );
+  return Simple::onEvent( event );
 }
 
-void InfoboxLegion::_addFormationButton(int index, int id, int picId)
+void AboutLegion::_addFormationButton(int index, int id, int picId)
 {
   Point offset( 83, 0 );
   Rect rect( Point( 16, 140 ) + offset * index, Size( 83 ) );
@@ -220,7 +223,7 @@ void InfoboxLegion::_addFormationButton(int index, int id, int picId)
   btn->setTooltipText( _("##legion_formation_tooltip##") );
 }
 
-void InfoboxLegion::_returnSoldiers2fort()
+void AboutLegion::_returnSoldiers2fort()
 {
   if( _d->fort.isValid() )
   {
@@ -228,6 +231,8 @@ void InfoboxLegion::_returnSoldiers2fort()
   }
 
   deleteLater();
+}
+
 }
 
 }//end namespace gui

@@ -21,12 +21,17 @@
 namespace gui
 {
 
-class InfoboxTemple : public InfoboxConstruction
+namespace infobox
+{
+
+class AboutTemple : public AboutConstruction
 {
 public:
-  InfoboxTemple( Widget* parent, const gfx::Tile& tile );
-  virtual ~InfoboxTemple();
+  AboutTemple( Widget* parent, const gfx::Tile& tile );
+  virtual ~AboutTemple();
 };
+
+}
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOXTEMPLE_H_INCLUDE_

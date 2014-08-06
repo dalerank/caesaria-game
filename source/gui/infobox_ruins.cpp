@@ -31,8 +31,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxRuins::InfoboxRuins( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 350 ) )
+namespace infobox
+{
+
+AboutRuins::AboutRuins( Widget* parent, const Tile& tile )
+  : Simple( parent, Rect( 0, 0, 510, 350 ) )
 {
   RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
   setTitle( MetaDataHolder::findPrettyName( ruin->type() ) );
@@ -49,8 +52,10 @@ InfoboxRuins::InfoboxRuins( Widget* parent, const Tile& tile )
   lb->setWordwrap( true );
 }
 
-InfoboxRuins::~InfoboxRuins()
+AboutRuins::~AboutRuins()
 {
+}
+
 }
 
 }//end namespace gui

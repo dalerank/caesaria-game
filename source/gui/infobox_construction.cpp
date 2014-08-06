@@ -25,15 +25,18 @@ using namespace constants;
 namespace gui
 {
 
-InfoboxConstruction::InfoboxConstruction( Widget* parent, Rect rect, Rect blackArea )
-  : InfoboxSimple( parent, rect, blackArea )
+namespace infobox
 {
-  Widget::setupUI( GameSettings::rcpath( "/gui/infoboxconstr.gui" ) );
+
+AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea )
+  : Simple( parent, rect, blackArea )
+{
+  setupUI( ":/gui/infoboxconstr.gui" );
 }
 
-InfoboxConstruction::~InfoboxConstruction() {}
+AboutConstruction::~AboutConstruction() {}
 
-bool InfoboxConstruction::onEvent(const NEvent& event)
+bool AboutConstruction::onEvent(const NEvent& event)
 {
   switch( event.EventType )
   {
@@ -54,13 +57,13 @@ bool InfoboxConstruction::onEvent(const NEvent& event)
   default: break;
   }
 
-  return InfoboxSimple::onEvent( event );
+  return Simple::onEvent( event );
 }
 
-ConstructionPtr InfoboxConstruction::getConstruction() const { return _construction; }
-void InfoboxConstruction::setConstruction(ConstructionPtr construction) { _construction = construction; }
+ConstructionPtr AboutConstruction::getConstruction() const { return _construction; }
+void AboutConstruction::setConstruction(ConstructionPtr construction) { _construction = construction; }
 
-void InfoboxConstruction::_switch(int flag)
+void AboutConstruction::_switch(int flag)
 {
   if( _construction.isValid() )
   {
@@ -70,6 +73,8 @@ void InfoboxConstruction::_switch(int flag)
     deleteLater();
     e->dispatch();
   }
+}
+
 }
 
 }//end namespace gui

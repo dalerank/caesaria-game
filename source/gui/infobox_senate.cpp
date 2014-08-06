@@ -35,13 +35,16 @@ using namespace gfx;
 namespace gui
 {
 
+namespace infobox
+{
+
 namespace {
   int advisorBtnId = 0x2552;
   Signal0<> invalidBtnClickedSignal;
 }
 
-InfoboxSenate::InfoboxSenate( Widget* parent, const Tile& tile )
-  : InfoboxSimple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
+AboutSenate::AboutSenate( Widget* parent, const Tile& tile )
+  : Simple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
   SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
   std::string title = MetaDataHolder::instance().getData( building::senate ).prettyName();
@@ -59,22 +62,24 @@ InfoboxSenate::InfoboxSenate( Widget* parent, const Tile& tile )
 
   new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
   TexturedButton* btnAdvisor = new TexturedButton( this, Point( 350, 215 ), Size(28), advisorBtnId, 289 );
-  CONNECT( btnAdvisor, onClicked(), this, InfoboxSenate::_showRatingAdvisor );
-  CONNECT( btnAdvisor, onClicked(), this, InfoboxSenate::deleteLater );
+  CONNECT( btnAdvisor, onClicked(), this, AboutSenate::_showRatingAdvisor );
+  CONNECT( btnAdvisor, onClicked(), this, AboutSenate::deleteLater );
 }
 
-InfoboxSenate::~InfoboxSenate() {}
+AboutSenate::~AboutSenate() {}
 
-Signal0<>& InfoboxSenate::onButtonAdvisorClicked()
+Signal0<>& AboutSenate::onButtonAdvisorClicked()
 {
   TexturedButton* btn = safety_cast<TexturedButton*>( findChild( advisorBtnId, true ) );
   return btn ? btn->onClicked() : invalidBtnClickedSignal;
 }
 
-void InfoboxSenate::_showRatingAdvisor()
+void AboutSenate::_showRatingAdvisor()
 {
   events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::ratings );
   e->dispatch();
+}
+
 }
 
 }//end namespace gui

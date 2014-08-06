@@ -34,8 +34,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
-  : InfoboxConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+namespace infobox
+{
+
+AboutFontain::AboutFontain(Widget* parent, const Tile& tile)
+  : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##fountain##") );
 
@@ -65,15 +68,15 @@ InfoboxFontain::InfoboxFontain(Widget* parent, const Tile& tile)
   _lbTextRef()->setText( _(text) );
 }
 
-InfoboxFontain::~InfoboxFontain(){}
+AboutFontain::~AboutFontain(){}
 
-void InfoboxFontain::showDescription()
+void AboutFontain::showDescription()
 {
   DictionaryWindow::show( parent(), building::fountain );
 }
 
-InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
-  : InfoboxConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
+AboutReservoir::AboutReservoir(Widget* parent, const Tile& tile)
+  : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
   setTitle( _("##reservoir##") );
 
@@ -94,15 +97,15 @@ InfoboxReservoir::InfoboxReservoir(Widget* parent, const Tile& tile)
   _lbTextRef()->setText( _(text) );
 }
 
-InfoboxReservoir::~InfoboxReservoir() {}
+AboutReservoir::~AboutReservoir() {}
 
-void InfoboxReservoir::showDescription()
+void AboutReservoir::showDescription()
 {
   DictionaryWindow::show( parent(), building::reservoir );
 }
 
-InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
-  : InfoboxConstruction( parent, Rect( 0, 0, 480, 320 ), Rect() )
+AboutWell::AboutWell(Widget* parent, const Tile& tile)
+  : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect() )
 {
   setTitle( _("##well##") );
 
@@ -166,12 +169,13 @@ InfoboxWell::InfoboxWell(Widget* parent, const Tile& tile)
   _lbTextRef()->setText( _(text) );
 }
 
-InfoboxWell::~InfoboxWell() {}
+AboutWell::~AboutWell() {}
 
-void InfoboxWell::showDescription()
+void AboutWell::showDescription()
 {
   DictionaryWindow::show( parent(), building::well );
 }
 
+}
 
 }//end namespace gui

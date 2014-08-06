@@ -32,8 +32,11 @@ using namespace gfx;
 namespace gui
 {
 
-InfoboxGranary::InfoboxGranary( Widget* parent, const Tile& tile )
-  : InfoboxConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
+namespace infobox
+{
+
+AboutGranary::AboutGranary( Widget* parent, const Tile& tile )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
   _granary = ptr_cast<Granary>( tile.overlay() );
 
@@ -42,7 +45,7 @@ InfoboxGranary::InfoboxGranary( Widget* parent, const Tile& tile )
   Size btnOrdersSize( 350, 20 );
   PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width())/ 2, height() - 34 ), btnOrdersSize),
                                          _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );
-  CONNECT( btnOrders, onClicked(), this, InfoboxGranary::showSpecialOrdersWindow );
+  CONNECT( btnOrders, onClicked(), this, AboutGranary::showSpecialOrdersWindow );
 
   std::string title = MetaDataHolder::findPrettyName( _granary->type() );
   setTitle( _(title) );
@@ -63,11 +66,11 @@ InfoboxGranary::InfoboxGranary( Widget* parent, const Tile& tile )
   _updateWorkersLabel( Point( 32, lbUnits->bottom() + 60 ), 542, _granary->maximumWorkers(), _granary->numberWorkers() );
 }
 
-InfoboxGranary::~InfoboxGranary()
+AboutGranary::~AboutGranary()
 {
 }
 
-void InfoboxGranary::showSpecialOrdersWindow()
+void AboutGranary::showSpecialOrdersWindow()
 {
   Point pos;
   if( top() > (int)parent()->height() / 2 )
@@ -82,7 +85,7 @@ void InfoboxGranary::showSpecialOrdersWindow()
   new GranarySpecialOrdersWindow( parent(), pos, _granary );
 }
 
-void InfoboxGranary::drawGood( Good::Type goodType, int col, int paintY)
+void AboutGranary::drawGood( Good::Type goodType, int col, int paintY)
 {
   std::string goodName = GoodHelper::getTypeName( goodType );
   int qty = _granary->store().qty(goodType);
@@ -95,6 +98,8 @@ void InfoboxGranary::drawGood( Good::Type goodType, int col, int paintY)
   lb->setFont( Font::create( FONT_2 ) );
   lb->setText( outText );
   lb->setTextOffset( Point( 30, 0 ) );
+}
+
 }
 
 }//end namespace gui
