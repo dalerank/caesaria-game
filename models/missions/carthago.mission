@@ -16,7 +16,7 @@
     prosperity : 30
     peace : 40
     favour : 30
-    next : "/missions/tutorial7.briefing"
+    next : ":/missions/tutorial7.briefing"
     title : "##win_procurator_title##"
     may_continue : false
     maxHouseLevel : "big_villa"

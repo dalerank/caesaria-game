@@ -12,12 +12,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
-
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
 #define __CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "objects/predefinitions.hpp"
 
 namespace gui
@@ -25,7 +26,7 @@ namespace gui
 
 class PushButton;
 
-class BaseSpecialOrdersWindow : public Widget
+class BaseSpecialOrdersWindow : public Window
 {
 public:
   virtual void draw( gfx::Engine& engine );  // draw on screen
@@ -36,7 +37,7 @@ public:
 
   virtual void setTitle( const std::string& text );
 
-  ~BaseSpecialOrdersWindow();
+  virtual ~BaseSpecialOrdersWindow();
 protected:
   BaseSpecialOrdersWindow(Widget* parent, const Point& pos , int height);
 

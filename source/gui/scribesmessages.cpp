@@ -17,7 +17,6 @@
 
 #include "scribesmessages.hpp"
 #include "gameautopause.hpp"
-#include "game/settings.hpp"
 #include "listbox.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/datetimehelper.hpp"
@@ -120,12 +119,12 @@ public:
 ScribesMessagestWindow::~ScribesMessagestWindow() {}
 
 ScribesMessagestWindow::ScribesMessagestWindow( Widget* p, PlayerCityPtr city )
-  : Widget( p, -1, Rect( 0, 0, 480, 320 ) ), _d( new Impl )
+  : Window( p, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
   _d->city = city;
   _d->locker.activate();
 
-  setupUI( GameSettings::rcpath( "/gui/scribesmessages.gui" ) );
+  setupUI( ":/gui/scribesmessages.gui" );
   setCenter( p->center() );
 
   WidgetEscapeCloser::insertTo( this );

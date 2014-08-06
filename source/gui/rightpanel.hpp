@@ -32,14 +32,14 @@ namespace gui
 class MenuRigthPanel : public Widget
 {
 public:
-    static MenuRigthPanel* create(Widget* parent, const Rect& rectangle, gfx::Picture& tilePic );
+  static MenuRigthPanel* create(Widget* parent, const Rect& rectangle, gfx::Picture& tilePic );
         
-    void draw( gfx::Engine& engine );
+  virtual void draw( gfx::Engine& engine );
 private:
-    class Impl;
-    ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 
-    MenuRigthPanel( Widget* parent );
+  MenuRigthPanel( Widget* parent );
 };
 
 }//end namespace gui

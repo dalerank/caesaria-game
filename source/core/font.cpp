@@ -153,10 +153,10 @@ Rect Font::getTextRect(const std::string& text, const Rect& baseRect,
 
 void Font::setColor( const NColor& color )
 {
-  _d->color.b = color.getBlue();
-  _d->color.g = color.getGreen();
-  _d->color.r = color.getRed();
-  _d->color.a = color.getAlpha();
+  _d->color.b = color.blue();
+  _d->color.g = color.green();
+  _d->color.r = color.red();
+  _d->color.a = color.alpha();
 }
 
 void Font::draw( Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
@@ -292,7 +292,7 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   Font font0;
   font0._d->ttfFont = ttf;
 
-  SDL_Color c = { color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() };
+  SDL_Color c = { color.red(), color.green(), color.blue(), color.alpha() };
   font0._d->color = c;
   setFont( key, name, font0);
 }

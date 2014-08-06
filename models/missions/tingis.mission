@@ -16,7 +16,7 @@
     prosperity : 60
     peace : 60
     favour : 80
-    next : "/missions/tutorial8.briefing"
+    next : ":/missions/tutorial8.briefing"
     title : "##win_procurator_aedile##"
     may_continue : false
     maxHouseLevel : "big_villa"

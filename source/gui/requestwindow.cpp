@@ -59,7 +59,7 @@ EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::requ
 EmperrorRequestWindow::~EmperrorRequestWindow() {}
 
 EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::RequestPtr request )
-  : Widget( parent, -1, Rect( 0, 0, 480, 320 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
 
@@ -98,7 +98,7 @@ void EmperrorRequestWindow::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 void EmperrorRequestWindow::setText(const std::string& text)

@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
@@ -95,7 +97,7 @@ private:
 class BaseSpecialOrdersWindow::Impl
 {
 public:
-  PictureRef bgPicture;
+  Pictures bgPicture;
   GroupBox* gbOrders;
   Widget* gbOrdersInsideArea;
   Label* lbTitle;
@@ -113,7 +115,7 @@ public:
 };
 
 BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& pos, int h )
-  : Widget( parent, -1, Rect( pos, Size( 510, h ) ) ), _d( new Impl )
+  : Window( parent, Rect( pos, Size( 510, h ) ), "" ), _d( new Impl )
 {
   // create the title
   _d->lbTitle = new Label( this, Rect( 50, 10, width()-50, 10 + 30 ), "", true );
@@ -128,11 +130,6 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
 
   CONNECT( _d->btnExit, onClicked(), this, GranarySpecialOrdersWindow::deleteLater );
 
-  _d->bgPicture.reset( Picture::create( size() ) );
-
-  // draws the box and the inner black box
-  Decorator::draw( *_d->bgPicture, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
-
   _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
   _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->height() -5 ) );
 }
@@ -142,8 +139,7 @@ BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}
 
 void BaseSpecialOrdersWindow::draw(gfx::Engine& engine )
 {
-  engine.draw( *_d->bgPicture, screenLeft(), screenTop() );
-  Widget::draw( engine );
+  Window::draw( engine );
 }
 
 bool BaseSpecialOrdersWindow::isPointInside( const Point& point ) const

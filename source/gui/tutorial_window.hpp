@@ -18,13 +18,13 @@
 #ifndef _CAESARIA_TUTORIAL_WINDOW_H_INCLUDE_
 #define _CAESARIA_TUTORIAL_WINDOW_H_INCLUDE_
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "gameautopause.hpp"
 
 namespace gui
 {
 
-class TutorialWindow : public Widget
+class TutorialWindow : public Window
 {
 public:
   TutorialWindow(Widget* parent, vfs::Path tutorial );

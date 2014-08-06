@@ -20,13 +20,13 @@
 
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class ScribesMessagestWindow : public Widget
+class ScribesMessagestWindow : public Window
 {
 public:
   ScribesMessagestWindow(Widget* parent, PlayerCityPtr city);

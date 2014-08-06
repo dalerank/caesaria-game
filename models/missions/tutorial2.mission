@@ -16,7 +16,7 @@
     prosperity : 0
     peace : 0
     favour : 0
-    next : "/missions/mission3.briefing"
+    next : ":/missions/mission3.briefing"
     title : "##win_clerk_title##"
     may_continue : false
     short : "##tt2_caption##"
@@ -45,7 +45,7 @@
 
     "reservoir#tutorial_window" : {
       population : 200
-      tutorial : "/tutorial/reservoir.tutorial"
+      tutorial : ":/tutorial/reservoir.tutorial"
     }
 
     "enable_reservoir#building_options" : {
@@ -55,7 +55,7 @@
 
     "gardens#tutorial_window" : {
       population : 250
-      tutorial : "/tutorial/gardens.tutorial"
+      tutorial : ":/tutorial/gardens.tutorial"
     }
 
     "enable_gardens#building_options" : {
@@ -65,7 +65,7 @@
 
     "taxes_and_industry#tutorial_window" : {
       population : 450
-      tutorial : "/tutorial/taxes_and_industry.tutorial"
+      tutorial : ":/tutorial/taxes_and_industry.tutorial"
     }
 
     "enable_industry#building_options" : {
@@ -85,7 +85,7 @@
 
     "empire_trade#tutorial_window" : {
       population : 600
-      tutorial : "/tutorial/tt2_trade.tutorial"
+      tutorial : ":/tutorial/tt2_trade.tutorial"
     }
 
 

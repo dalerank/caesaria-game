@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "win_mission_window.hpp"
 #include "pushbutton.hpp"
@@ -33,30 +35,19 @@ public oc3_signals:
 };
 
 WinMissionWindow::WinMissionWindow(Widget* p, std::string newTitle, bool mayContinue )
-  : Widget( p, -1, Rect( 0, 0, 540, 240 )), _d( new Impl )
+  : Window( p, Rect( 0, 0, 540, 240 ), "" ), _d( new Impl )
 {
+  setupUI( ":/gui/winmission.gui" );
+
   Logger::warning( "WinMissionWindow: show" );
   _d->locker.activate();
 
-  Size pSize = parent()->size() - size();
-  setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
+  setCenter( p->center() );
 
-  new Label( this, Rect( 0, 0, width(), height()), "", false, Label::bgWhiteFrame );
+  Label* lb = findChildA<Label*>( "lbNewTitle", true, this );
+  lb->setText( _( newTitle ) );
 
-  Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 30), _("##mission_win##") );
-  title->setFont( Font::create( FONT_5 ) );
-  title->setTextAlignment( align::center, align::center );
-
-  Label* lb = new Label( this, Rect( 10, 40, width() - 10, 40 + 20), _("##caesar_assign_new_title##") );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setTextAlignment( align::center, align::center );
-
-  lb = new Label( this, Rect( 10, 60, width() - 10, 60 + 30), _( newTitle ) );
-  lb->setFont( Font::create( FONT_5) );
-  lb->setTextAlignment( align::center, align::center );
-
-  PushButton* btn = new PushButton( this, Rect( 35, 115, width() - 35, 115 + 20 ), _("##accept_promotion##"),
-                                    -1, false, PushButton::greyBorderLineSmall );
+  PushButton* btn = findChildA<PushButton*>( "btnAccept", true, this );
 
   CONNECT( btn, onClicked(), &_d->onNextMissionSignal, Signal0<>::emit );
   CONNECT( btn, onClicked(), this, WinMissionWindow::deleteLater );

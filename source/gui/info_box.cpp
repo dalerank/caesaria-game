@@ -144,7 +144,7 @@ Simple::~Simple() {}
 
 void Simple::draw(gfx::Engine& engine )
 {
-  Widget::draw( engine );
+  Window::draw( engine );
 }
 
 bool Simple::isPointInside( const Point& point ) const

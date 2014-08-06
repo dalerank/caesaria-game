@@ -19,7 +19,7 @@
     prosperity : 0
     peace : 0
     favour : 0
-    next : "/missions/tutorial2.mission"
+    next : ""
     title : "##clerk##"
     may_continue : false
     short : "##build_some_houses##"

@@ -45,7 +45,6 @@ public:
 
   virtual void draw( gfx::Engine& engine );  // draw on screen
 
-
   virtual bool onEvent( const NEvent& event);
 
   virtual bool isPointInside(const Point& point) const;
@@ -76,7 +75,7 @@ protected:
 class InfoboxBuilding : public Simple
 {
 public:
-   InfoboxBuilding( Widget* parent, const gfx::Tile& tile );
+  InfoboxBuilding( Widget* parent, const gfx::Tile& tile );
 };
 
 }

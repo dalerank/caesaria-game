@@ -392,8 +392,11 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
 }
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
-{
+{  
+  SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
   SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );
+
+  SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
 }
 
 void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )

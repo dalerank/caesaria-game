@@ -153,7 +153,7 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 
   if( !background )
   {
-    background.reset( Picture::create( imageSize ) );
+    background.reset( Picture::create( imageSize, 0, true ) );
   }
 
   // draw button background

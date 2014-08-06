@@ -17,7 +17,6 @@
 
 #include "window_gamespeed_options.hpp"
 #include "gfx/engine.hpp"
-#include "game/settings.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "label.hpp"
@@ -44,14 +43,14 @@ public:
 
 GameSpeedOptionsWindow::GameSpeedOptionsWindow(Widget* parent, int gameSpeed, int scrollSpeed,
                                                int autosaveInterval)
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->speedValue = gameSpeed;
   _d->scrollValue = scrollSpeed;
   _d->autosaveInterval = autosaveInterval;
   _d->locker.activate();
 
-  setupUI( GameSettings::rcpath( "/gui/speedoptions.gui" ) );
+  setupUI( ":/gui/speedoptions.gui" );
 
   setCenter( parent->center() );
 

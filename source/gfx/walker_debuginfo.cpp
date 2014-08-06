@@ -36,7 +36,7 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
   Point pos = walker->mappos();
   for( int step=pathway.curStep()+1; step < tiles.size(); step++ )
   {
-    Decorator::drawLine( engine.screen(), pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ), 0xff00ff00 );
+    engine.drawLine(  0xff00ff00, pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ) );
     pos = tiles[ step ]->mappos() + Point( 30, 0 );
   }
 }

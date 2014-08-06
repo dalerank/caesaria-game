@@ -1,0 +1,48 @@
+{  
+  geometry : [ 0, 0, 590, 320  ]
+  bgtype : "whiteFrame"
+
+  gbox#GroupBox : {
+    geometry : [ 18, 50, "pw-18", 220 ]
+    bgtype : "blackFrame"
+  }
+
+  lbTitle#Label : {
+    geometry : [ 10, 10, "pw-10", 40 ]
+    font : "FONT_5"
+    text.align : [ "center", "center" ]
+  }
+
+  lbTime#Label : {
+    geometry : [ 20, 50, 100, 70 ]
+    font : "FONT_2_WHITE"
+  }
+
+  lbReceiver#Label : {
+    geometry : [ 180, 50, 280, 70 ]
+    font : "FONT_2_WHITE"
+  }
+
+  lbText#Label : {
+    geometry : [ 20, 100, 570, 265 ]
+    font : "FONT_2_WHITE"
+  }
+
+  btnExit#TexturedButton : {
+    geometry : [ "pw-40", "ph-40", "pw-16", "ph-16" ]
+    normal : [ "paneling", 532 ]
+    hovered : [ "paneling", 533 ]
+    pressed : [ "paneling", 534 ]
+    disabled : [ "paneling", 535 ]
+    tooltip : "##infobox_tooltip_exit##"
+  }
+
+  btnExit#TexturedButton : {
+    geometry : [ 18, "ph-40", 42, "ph-16" ]
+    normal : [ "paneling", 528 ]
+    hovered : [ "paneling", 529 ]
+    pressed : [ "paneling", 530 ]
+    disabled : [ "paneling", 531 ]
+    tooltip : "##infobox_tooltip_help##"
+  }
+}

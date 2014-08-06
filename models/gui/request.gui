@@ -1,62 +1,58 @@
 {  
   geometry : [ 0, 0, 480, 320 ]
+  bgtype : "whiteFrame"
 
-  imgBackground#Label : {
-    geometryf : [ 0, 0, 1, 1 ]
-    bgtype : "whiteFrame"
+  lbTitle#Label :
+  {
+    geometryf : [ 0.1 , 0.02, 0.9, 0.13 ]
+    text : "##title##"
+    font : "FONT_5"
+    text : "##emperor_request##"
+    textAlign : [ "center", "center" ]
+  }
 
-    lbTitle#Label :
-    {
-      geometryf : [ 0.1 , 0.02, 0.9, 0.13 ]
-      text : "##title##"
-      font : "FONT_5"
-      text : "##emperor_request##"
-      textAlign : [ "center", "center" ]
-    }
+  lbBlackframe#Label : {
+    font : "FONT_2_WHITE"
+    geometryf : [ 0.05, 0.15, 0.95, 0.85 ]
+    textAlign : [ "center", "center" ]
+    bgtype : "blackFrame"
 
-    lbBlackframe#Label : {
+    lbText#Label : {
+      geometry : [ 5, 55, 430, 100 ]
       font : "FONT_2_WHITE"
-      geometryf : [ 0.05, 0.15, 0.95, 0.85 ]
-      textAlign : [ "center", "center" ]
-      bgtype : "blackFrame"
-
-      lbText#Label : {
-        geometry : [ 5, 55, 430, 100 ]
-        font : "FONT_2_WHITE"
-        text : "##rome_need_some_goods##"
-      }
-
-      lbQty#Label : {
-        geometry : [ 10, 110, 30, 135 ]
-        font : "FONT_2_WHITE"
-      }
-
-      imgIcon#Image : {
-        geometry : [ 40, 110, 64, 134 ]
-        mode : "image"
-      }
-
-      lbInterval#Label : {
-        geometry : [ 200, 110, 420, 135 ]
-        font : "FONT_2_WHITE"
-      }
+      text : "##rome_need_some_goods##"
     }
 
-    btnAdvisor#TexturedButton : {
-      geometry : [ 18, 280, 46, 308 ]
-      normal : [ "paneling", 286 ]
-      hovered : [ "paneling", 287 ]
-      pressed : [ "paneling", 288 ]
-      disabled : [ "paneling", 286 ]
+    lbQty#Label : {
+      geometry : [ 10, 110, 30, 135 ]
+      font : "FONT_2_WHITE"
     }
 
-    btnExit#TexturedButton :
-    {
-      geometry : [ 440, 284, 464, 308 ]
-      normal : [ "paneling", 532 ]
-      hovered : [ "paneling", 533 ]
-      pressed : [ "paneling", 534 ]
-      disabled : [ "paneling", 535 ]
+    imgIcon#Image : {
+      geometry : [ 40, 110, 64, 134 ]
+      mode : "image"
     }
+
+    lbInterval#Label : {
+      geometry : [ 200, 110, 420, 135 ]
+      font : "FONT_2_WHITE"
+    }
+  }
+
+  btnAdvisor#TexturedButton : {
+    geometry : [ 18, 280, 46, 308 ]
+    normal : [ "paneling", 286 ]
+    hovered : [ "paneling", 287 ]
+    pressed : [ "paneling", 288 ]
+    disabled : [ "paneling", 286 ]
+  }
+
+  btnExit#TexturedButton :
+  {
+    geometry : [ 440, 284, 464, 308 ]
+    normal : [ "paneling", 532 ]
+    hovered : [ "paneling", 533 ]
+    pressed : [ "paneling", 534 ]
+    disabled : [ "paneling", 535 ]
   }
 }

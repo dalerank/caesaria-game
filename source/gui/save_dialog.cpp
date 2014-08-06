@@ -30,7 +30,6 @@
 #include "vfs/directory.hpp"
 #include "gameautopause.hpp"
 #include "core/gettext.hpp"
-#include "game/settings.hpp"
 #include "widgetescapecloser.hpp"
 
 using namespace gfx;
@@ -82,7 +81,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
 : Window( parent, Rect( 0, 0, 385, 336 ), "", id ), _d( new Impl )
 {
   _d->locker.activate();
-  Widget::setupUI( GameSettings::rcpath( "/gui/savefile.gui" ) );
+  Widget::setupUI( ":/gui/savefile.gui" );
 
   setCenter( parent->center() );
 

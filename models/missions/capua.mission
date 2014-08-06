@@ -16,7 +16,7 @@
     prosperity : 10
     peace : 0
     favour : 60
-    next : "/missions/tutorial4.briefing"
+    next : ":/missions/tutorial4.briefing"
     title : "##win_engineer_title##"
     may_continue : false
     maxHouseLevel : "big_villa"

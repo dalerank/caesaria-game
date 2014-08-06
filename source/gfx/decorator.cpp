@@ -188,7 +188,8 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
 
 void Decorator::drawLine( Picture& dstpic, const Point& p1, const Point& p2, NColor color)
 {
-  lineColor( dstpic.surface(), p1.x(), p1.y(), p2.x(), p2.y(), color.rgba() );
+  if( dstpic.isValid() )
+    lineColor( dstpic.surface(), p1.x(), p1.y(), p2.x(), p2.y(), color.rgba() );
 }
 
 void Decorator::basicText(Picture& dstpic, const Point& pos, const std::string& text, NColor color)
