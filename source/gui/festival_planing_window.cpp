@@ -107,6 +107,7 @@ FestivalPlaningWindow::FestivalPlaningWindow( Widget* parent, int id, const Rect
   : Window( parent, rectangle, "", id ), _d( new Impl )
 {
   setupUI( ":/gui/festivalplaning.gui" );
+  setCenter( parent->center() );
   _d->city = city;
 
   _d->addImage( this, romeDivCeres, 0, 17 );

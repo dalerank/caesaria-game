@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_ADVISOR_FINANCE_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_FINANCE_WINDOW_H_INCLUDED__
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "game/predefinitions.hpp"
@@ -26,7 +26,7 @@
 namespace gui
 {
 
-class AdvisorFinanceWindow : public Widget
+class AdvisorFinanceWindow : public Window
 {
 public:
   AdvisorFinanceWindow( PlayerCityPtr city, Widget* parent, int id );
@@ -34,6 +34,8 @@ public:
   virtual void draw( gfx::Engine& painter );
 
 private:
+  void _drawReportRow( const Point& pos, const std::string& title, int type );
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
