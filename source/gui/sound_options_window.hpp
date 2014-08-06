@@ -18,7 +18,7 @@
 #ifndef _CAESARIA_WINDOW_SOUND_OPTIONS_H_INCLUDE_
 #define _CAESARIA_WINDOW_SOUND_OPTIONS_H_INCLUDE_
 
-#include "gui/widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 #include "gfx/engine.hpp"
 #include "sound/constants.hpp"
@@ -26,7 +26,7 @@
 namespace gui
 {
 
-class SoundOptionsWindow : public Widget
+class SoundOptionsWindow : public Window
 {
 public:
   SoundOptionsWindow( Widget* parent,

@@ -42,7 +42,7 @@ public:
 };
 
 CityOptionsWindow::CityOptionsWindow(Widget* parent, PlayerCityPtr city )
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->city = city;
   _d->locker.activate();

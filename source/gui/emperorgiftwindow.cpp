@@ -45,7 +45,7 @@ public oc3_signals:
 };
 
 EmperorGiftWindow::EmperorGiftWindow( Widget* p, int money )
-  : Widget( p, -1, Rect( 0, 0, 1, 1 ) ), __INIT_IMPL(EmperorGiftWindow)
+  : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(EmperorGiftWindow)
 {
   _dfunc()->maxMoney = money;
   _dfunc()->wantSend = 0;

@@ -18,7 +18,7 @@
 #ifndef _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
 #define _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
 
-#include "gui/widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 #include "gfx/engine.hpp"
 #include "city/city.hpp"
@@ -26,7 +26,7 @@
 namespace gui
 {
 
-class CityOptionsWindow : public Widget
+class CityOptionsWindow : public Window
 {
 public:
   CityOptionsWindow( Widget* parent, PlayerCityPtr city );

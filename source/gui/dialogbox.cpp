@@ -35,9 +35,6 @@ namespace {
 
 class DialogBox::Impl
 {
-public:
-  Pictures background;
-
 oc3_signals public:
   Signal1<int> onResultSignal;
   Signal0<> onOkSignal;
@@ -47,15 +44,13 @@ oc3_signals public:
 
 DialogBox::DialogBox( Widget* parent, const Rect& rectangle, const std::string& title, 
                       const std::string& text, int buttons )
-                      : Widget( parent, -1, rectangle ), _d( new Impl )
+                      : Window( parent, rectangle, "" ), _d( new Impl )
 {
   if( rectangle.size() == Size( 0, 0 ) )
   {
     setGeometry( Rect( 0, 0, 480, 160 ) );
     setCenter( parent->center() );
   }
-
-  Decorator::draw( _d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
   
   Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + 40), title );
   lbTitle->setFont( Font::create( FONT_5 ) );
@@ -122,9 +117,7 @@ void DialogBox::draw(gfx::Engine& painter )
     return;
   }
 
-  painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 }//end namespace gui

@@ -38,7 +38,7 @@ public:
 };
 
 DictionaryWindow::DictionaryWindow( Widget* parent )
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/dictionary.gui" );
 
@@ -59,9 +59,7 @@ void DictionaryWindow::show(Widget* parent, TileOverlay::Type type)
   }
 }
 
-DictionaryWindow::~DictionaryWindow( void )
-{
-}
+DictionaryWindow::~DictionaryWindow( void ) {}
 
 bool DictionaryWindow::onEvent(const NEvent& event)
 {

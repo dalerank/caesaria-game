@@ -39,7 +39,7 @@ public oc3_signals:
 };
 
 ChangeSalaryWindow::ChangeSalaryWindow(Widget* p, unsigned int salary)
-  : Widget( p, -1, Rect() ), __INIT_IMPL(ChangeSalaryWindow)
+  : Window( p, Rect(), "" ), __INIT_IMPL(ChangeSalaryWindow)
 {
   setupUI( ":/gui/changesalary.gui");
   setCenter( parent()->center() );

@@ -41,7 +41,7 @@ public oc3_signals:
 };
 
 CityDonationWindow::CityDonationWindow( Widget* p, int money )
-  : Widget( p, -1, Rect( 0, 0, 1, 1 ) ), __INIT_IMPL(CityDonationWindow)
+  : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(CityDonationWindow)
 {
   __D_IMPL(d,CityDonationWindow)
   d->maxMoney = money;

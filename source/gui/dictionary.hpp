@@ -18,14 +18,14 @@
 #ifndef _CAESARIA_DICTIONARY_H_INCLUDE_
 #define _CAESARIA_DICTIONARY_H_INCLUDE_
 
-#include "gui/widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 #include "gfx/tileoverlay.hpp"
 
 namespace gui
 {
 
-class DictionaryWindow : public Widget
+class DictionaryWindow : public Window
 {
 public:
   static void show( Widget* parent, gfx::TileOverlay::Type type );

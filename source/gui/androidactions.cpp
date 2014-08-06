@@ -35,7 +35,7 @@ public:
 };
 
 AndroidActionsBar::AndroidActionsBar( Widget* parent)
-  : Widget( parent, -1, Rect( parent->width() - 150, 480, parent->width(), parent->height() ) ), _d( new Impl )
+  : Window( parent, Rect( parent->width() - 150, 480, parent->width(), parent->height() ), "", -1, bgNone ), _d( new Impl )
 {
   Picture pic = Picture::load( ResourceGroup::panelBackground, 657 );
   _d->btnMenu = new TexturedButton( this, Point( 0, 0 ), pic.size(), -1, 657 );

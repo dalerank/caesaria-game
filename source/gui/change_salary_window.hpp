@@ -18,18 +18,19 @@
 #ifndef _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
 #define _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
 
-#include "gui/widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 
 namespace gui
 {
 
-class ChangeSalaryWindow : public Widget
+class ChangeSalaryWindow : public Window
 {
 public:
   ChangeSalaryWindow(Widget* p, unsigned int salary );
 
   virtual ~ChangeSalaryWindow();
+
 public oc3_signals:
   Signal1<int>& onChangeSalary();
 

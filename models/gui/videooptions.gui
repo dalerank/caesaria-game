@@ -1,6 +1,8 @@
 {  
   geometry : [ 0, 0, 320, 290 ]
-  
+  bgtype : "whiteFrame"
+
+ 
   lbTitle#Label :
   {
     font : "FONT_5"
@@ -9,30 +11,25 @@
     textAlign : [ "center", "center" ]
   }
 
-	lbBackground#Label : 
-  {
-    geometryf : [ 0.0, 0.0, 1, 1 ]
-    bgtype : "whiteFrame"
        
-    btnSwitchMode#PushButton :
-    {
-      geometry : [ 50, 45, 270, 65 ]
-      text : "##switch_mode##"
-      bgtype : "smallGrayBorderLine"
-      id : 1
-    }
+  btnSwitchMode#PushButton :
+  {
+    geometry : [ 50, 45, 270, 65 ]
+    text : "##switch_mode##"
+    bgtype : "smallGrayBorderLine"
+    id : 1
+  }
      
-    lbxModes#ListBox :
-    {
-      geometry : [ 52, 68, 270, 232 ]
-      bgtype : "smallGrayBorderLine"
-    }
-    
-    btnCancel#PushButton :
-    {
-      geometry : [ 50, 237, 270, 257 ]
-      bgtype : "smallGrayBorderLine"
-      text : "##ok##"
-    }
+  lbxModes#ListBox :
+  {
+    geometry : [ 52, 68, 270, 232 ]
+    bgtype : "smallGrayBorderLine"
+  }
+   
+  btnCancel#PushButton :
+  {
+    geometry : [ 50, 237, 270, 257 ]
+    bgtype : "smallGrayBorderLine"
+    text : "##ok##"
   }
 }

@@ -18,14 +18,14 @@
 #ifndef _CAESARIA_GUI_DIALOGBOX_INCLUDE_H_
 #define _CAESARIA_GUI_DIALOGBOX_INCLUDE_H_
 
-#include "gui/widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 #include "core/scopedptr.hpp"
 
 namespace  gui
 {
 
-class DialogBox : public Widget 
+class DialogBox : public Window
 {
 public:
   enum { btnYes=0x1, btnNo=0x2, btnOk=0x4, btnCancel=0x8,

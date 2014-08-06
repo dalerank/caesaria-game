@@ -59,6 +59,9 @@ using namespace gfx;
 namespace gui
 {
 
+namespace advisorwnd
+{
+
 class AdvisorsWindow::Impl
 {
 public:
@@ -84,7 +87,7 @@ PushButton* AdvisorsWindow::addButton( const int pos, const int picId, std::stri
 }
 
 AdvisorsWindow::AdvisorsWindow( Widget* parent, int id )
-: Widget( parent, id, Rect( Point(0, 0), parent->size() ) ), _d( new Impl )
+: Window( parent, Rect( Point(0, 0), parent->size() ), "", id ), _d( new Impl )
 {
   _d->locker.activate();
   // use some clipping to remove the right and bottom areas
@@ -177,7 +180,7 @@ void AdvisorsWindow::draw(gfx::Engine& engine )
   if( !visible() )
     return;
 
-  Widget::draw( engine );
+  Window::draw( engine );
 }
 
 bool AdvisorsWindow::onEvent( const NEvent& event )
@@ -220,6 +223,8 @@ void AdvisorsWindow::Impl::showEmpireMapWindow()
   advisorPanel->parent()->deleteLater();
   events::GameEventPtr event = events::ShowEmpireMapWindow::create( true );
   event->dispatch();
+}
+
 }
 
 }//end namespace gui

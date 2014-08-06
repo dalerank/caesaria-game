@@ -18,14 +18,9 @@
 #include "sound_options_window.hpp"
 #include "gameautopause.hpp"
 #include "core/event.hpp"
-#include "game/settings.hpp"
 #include "label.hpp"
 #include "core/stringhelper.hpp"
 #include "sound/constants.hpp"
-
-namespace {
-const char* ui_model = "/gui/soundoptions.gui";
-}
 
 namespace gui
 {
@@ -50,10 +45,10 @@ public oc3_signals:
 };
 
 SoundOptionsWindow::SoundOptionsWindow(Widget* parent, int gameSound, int ambientSound, int themeSound )
-  : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
-  setupUI( GameSettings::rcpath( ui_model ) );
+  setupUI( ":/gui/soundoptions.gui" );
 
   setCenter( parent->center() );
 
