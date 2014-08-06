@@ -48,6 +48,9 @@ WindowPlayerName::WindowPlayerName(Widget* parent)
 
   PushButton* btn = findChildA<PushButton*>( "btnContinue", searchRecursive, this );
   CONNECT( btn, onClicked(), &_d->onCloseSignal, Signal0<>::emit );
+
+  if( ed )
+    ed->setFocus();
 }
 
 WindowPlayerName::~WindowPlayerName(){}

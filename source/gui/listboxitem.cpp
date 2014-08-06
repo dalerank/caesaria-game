@@ -130,7 +130,7 @@ Point ListBoxItem::textOffset() const{  return _d->offset;}
 void ListBoxItem::setTextOffset(Point p){  _d->offset = p;}
 Point ListBoxItem::iconOffset() const{ return _d->iconOffset; }
 void ListBoxItem::setIconOffset(Point p) { _d->iconOffset = p; }
-const Picture &ListBoxItem::picture() const { return *_d->textPic; }
+const Picture &ListBoxItem::picture() const { return _d->textPic ? *_d->textPic : Picture::getInvalid(); }
 void ListBoxItem::setUrl(const std::string& url) { _d->url = url; }
 const std::string&ListBoxItem::url() const { return _d->url; }
 Variant ListBoxItem::data() const{ return _d->data; }

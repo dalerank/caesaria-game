@@ -842,12 +842,12 @@ int Widget::screenTop() const { return absoluteRect().top(); }
 int Widget::screenLeft() const { return absoluteRect().left(); }
 int Widget::screenBottom() const { return absoluteRect().bottom(); }
 int Widget::screenRight() const { return absoluteRect().right(); }
-Point Widget::leftup() const { return Point( left(), top() ); }
-Point Widget::leftdown() const { return Point( left(), bottom() ); }
-Point Widget::rightup() const { return Point( right(), top() ); }
-Point Widget::rightdownCorner() const { return Point( right(), bottom() ); }
-Point Widget::convertLocalToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.UpperLeftCorner;}
-Rect Widget::convertLocalToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.UpperLeftCorner;}
+Point Widget::lefttop() const { return Point( left(), top() ); }
+Point Widget::leftbottom() const { return Point( left(), bottom() ); }
+Point Widget::righttop() const { return Point( right(), top() ); }
+Point Widget::rightbottom() const { return Point( right(), bottom() ); }
+Point Widget::localToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.UpperLeftCorner;}
+Rect Widget::localToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.UpperLeftCorner;}
 void Widget::move( const Point& relativeMovement ){  setGeometry( _dfunc()->relativeRect + relativeMovement );}
 int Widget::bottom() const{  return _dfunc()->relativeRect.LowerRightCorner.y(); }
 Point Widget::center() const { return (_dfunc()->relativeRect.LowerRightCorner + _dfunc()->relativeRect.UpperLeftCorner) / 2; }

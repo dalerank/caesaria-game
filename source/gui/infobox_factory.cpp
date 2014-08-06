@@ -46,7 +46,7 @@ AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
 
   // paint progress
   std::string text = StringHelper::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
-  _lbProduction = new Label( this, Rect( _lbTitleRef()->leftdown() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
+  _lbProduction = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 10, 0 ), Size( width() - 32, 25 ) ), text );
   _lbProduction->setFont( Font::create( FONT_2 ) );
 
   if( factory->produceGoodType() != Good::none )
@@ -57,7 +57,7 @@ AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
   // paint picture of in good
   if( factory->inStockRef().type() != Good::none )
   {
-    Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftdown() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
+    Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo->setIcon( GoodHelper::getPicture( factory->inStockRef().type() ) );
 
     std::string whatStock = StringHelper::format( 0xff, "##%s_factory_stock##", GoodHelper::getTypeName( factory->inStockRef().type() ).c_str() );
@@ -70,7 +70,7 @@ AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
     lbStockInfo->setText( text );
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
 
-    _lbTextRef()->setPosition( lbStockInfo->leftdown() + Point( 0, 5 ));
+    _lbTextRef()->setPosition( lbStockInfo->leftbottom() + Point( 0, 5 ));
   }
 
   std::string workInfo = factory->workersProblemDesc();
@@ -94,10 +94,10 @@ AboutShipyard::AboutShipyard(Widget* parent, const Tile& tile)
   if( progressCount > 1 && progressCount < 100 )
   {
     Label* lb = new Label( this,
-                           Rect( _lbProduction->leftdown() + Point( 0, 5 ), Size( width() - 90, 25 ) ),
+                           Rect( _lbProduction->leftbottom() + Point( 0, 5 ), Size( width() - 90, 25 ) ),
                            _("##build_fishing_boat##") );
     lb->setTextAlignment( align::upperLeft, align::upperLeft );
-    _lbTextRef()->setPosition( lb->leftdown() + Point( 0, 5 ) );
+    _lbTextRef()->setPosition( lb->leftbottom() + Point( 0, 5 ) );
   }
 }
 
@@ -110,11 +110,11 @@ AboutWharf::AboutWharf(Widget* parent, const Tile& tile)
   if( wharf->getBoat().isNull() )
   {
     Label* lb = new Label( this,
-                           Rect( _lbProduction->leftdown() + Point( 0, 10 ), Size( width() - 90, 25 ) ),
+                           Rect( _lbProduction->leftbottom() + Point( 0, 10 ), Size( width() - 90, 25 ) ),
                            _("##wait_for_fishing_boat##") );
     lb->setTextAlignment( align::upperLeft, align::upperLeft );
     lb->setWordwrap( true );
-    _lbTextRef()->setPosition( lb->leftdown() + Point( 0, 10 ) );
+    _lbTextRef()->setPosition( lb->leftbottom() + Point( 0, 10 ) );
   }
 }
 

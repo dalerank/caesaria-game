@@ -131,17 +131,17 @@ public:
 
   virtual int screenRight() const;
 
-  virtual Point leftdown() const;
+  virtual Point leftbottom() const;
 
-  virtual Point leftup() const;
+  virtual Point lefttop() const;
 
-  virtual Point rightup() const;
+  virtual Point righttop() const;
 
-  virtual Point rightdownCorner() const;
+  virtual Point rightbottom() const;
 
-  virtual Point convertLocalToScreen( const Point& localPoint ) const;
+  virtual Point localToScreen( const Point& localPoint ) const;
 
-  virtual Rect convertLocalToScreen( const Rect& localPoint ) const;
+  virtual Rect localToScreen( const Rect& localPoint ) const;
 
   virtual Size size() const;
 

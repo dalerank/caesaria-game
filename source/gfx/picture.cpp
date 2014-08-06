@@ -85,7 +85,7 @@ void Picture::setName(const std::string &name){  _d->name = name;}
 std::string Picture::name() const{  return _d->name;}
 const Size& Picture::size() const{  return _d->size; }
 unsigned int Picture::sizeInBytes() const { return size().area() * 4; }
-bool Picture::isValid() const{  return _d->texture != 0;}
+bool Picture::isValid() const{  return _d->texture != 0; }
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
 Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}
 

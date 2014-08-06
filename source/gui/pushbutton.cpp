@@ -526,7 +526,7 @@ void PushButton::drawIcon( gfx::Engine& painter )
   if( !iconTexture.isValid() )
       return;
 
-  Point pos = convertLocalToScreen( _d->iconRect ).UpperLeftCorner;
+  Point pos = localToScreen( _d->iconRect ).UpperLeftCorner;
   painter.draw( iconTexture, pos + bstate.iconOffset );
 }
 

@@ -302,7 +302,7 @@ void Menu::minimize()
 {
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
-  Point stopPos = leftup() + Point( width(), 0 );
+  Point stopPos = lefttop() + Point( width(), 0 );
   PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( anim, onFinish(), &_d->onHideSignal, Signal0<>::emit );
 
@@ -312,7 +312,7 @@ void Menu::minimize()
 
 void Menu::maximize()
 {
-  Point stopPos = leftup() - Point( width(), 0 );
+  Point stopPos = lefttop() - Point( width(), 0 );
   show();
   new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 

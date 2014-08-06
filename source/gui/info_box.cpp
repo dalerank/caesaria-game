@@ -128,7 +128,7 @@ Simple::Simple( Widget* parent, const Rect& rect, const Rect& blackArea, int id 
   if( _d->lbText && blackArea.width() == 0 )
   {
     Rect r = _d->lbText->relativeRect();
-    r.LowerRightCorner = _d->btnExit->rightup();
+    r.LowerRightCorner = _d->btnExit->righttop();
     _d->lbText->setGeometry( r );
   }
 

@@ -37,7 +37,7 @@ public:
   std::vector<std::wstring> brokenText;
   std::vector< int > brokenTextPositions;
   Rect currentTextRect;
-  Rect cursorRect; // temporary values
+  Rect cursorRect;
   Rect markAreaRect;
   Point textOffset;
   Font overrideFont;
@@ -57,7 +57,6 @@ public:
 	std::string holderText;
   Picture bgPicture;
   Pictures background;
-  PictureRef cursorPic;
   PictureRef textPicture;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
@@ -751,12 +750,6 @@ void EditBox::beforeDraw(Engine& painter )
   {
     _d->needUpdateTexture = false;
 
-    if( _d->cursorPic.isNull() )
-    {
-      _d->cursorPic.reset( Picture::create( Size(1, height() / 5 * 4 ), 0, true ) );
-      _d->cursorPic->fill( 0xff000000, Rect( 0, 0, 0, 0) );
-    }
-
     if( !_d->textPicture || ( _d->textPicture && size() != _d->textPicture->size()) )
     {
       _d->textPicture.reset( Picture::create( size(), 0, true ) );
@@ -923,7 +916,8 @@ void EditBox::beforeDraw(Engine& painter )
     charcursorpos = _d->lastBreakFont.getTextSize( __ucs2utf8( stringBeforeCursor ) ).width() + 1/*font.GetKerningWidth(L"_", lastChar ? &lastChar : NULL )*/ ;
 
     setTextRect(cursorLine);
-    _d->cursorRect = _d->currentTextRect;
+    _d->cursorRect = _d->currentTextRect - absoluteClippingRect().lefttop();
+
     _d->cursorRect.UpperLeftCorner += Point( charcursorpos-1, 6 );
     _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, height() - 4 );
     //_d->cursorRect.UpperLeftCorner += style.GetMargin().getRect().UpperLeftCorner;
@@ -972,7 +966,9 @@ void EditBox::draw( Engine& painter )
 		unsigned int t = DateTime::elapsedTime() % 1000;
     if( t < 500 )
     {
-      painter.draw( *_d->cursorPic, _d->textOffset + _d->cursorRect.UpperLeftCorner );
+      Point p = _d->textOffset + absoluteRect().lefttop();
+      painter.drawLine( 0xff000000, p + _d->cursorRect.lefttop() + Point( 0, 3),
+                                    p + _d->cursorRect.leftbottom() - Point( 0, 6 ) );
     }
 	}
 

@@ -147,7 +147,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 						if (isInside)
 						{
               _dragging = true;
-              _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos );
+              _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
               _trayClick = !_draggedBySlider;
               _desiredPos = _getPosFromMousePos( _d->cursorPos );
 							_environment->setFocus ( this );
@@ -176,7 +176,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 						{
 							if ( isInside )
 							{
-                _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos );
+                _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
                 _trayClick = !_draggedBySlider;
 							}
 
@@ -261,36 +261,36 @@ void ScrollBar::afterPaint( unsigned int timeMs )
 
 void ScrollBar::beforeDraw(gfx::Engine& painter )
 {
-    if( !visible() )
-        return;
+  if( !visible() )
+      return;
 
-    bool needRecalculateSliderParams = (_sliderPos != _lastSliderPos);
+  bool needRecalculateSliderParams = (_sliderPos != _lastSliderPos);
 
-    if( !(_d->needRecalculateParams || needRecalculateSliderParams) )
-        return;
+  if( !(_d->needRecalculateParams || needRecalculateSliderParams) )
+      return;
 
-    if( _d->needRecalculateParams )
+  if( _d->needRecalculateParams )
+  {
+    _d->backgroundRect = absoluteRect();
+    if( _horizontal )
     {
-      _d->backgroundRect = absoluteRect();
-      if( _horizontal )
-      {
-          if( _d->upButton && _d->upButton->visible() )
-              _d->backgroundRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
+        if( _d->upButton && _d->upButton->visible() )
+            _d->backgroundRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
 
-          if( _d->downButton && _d->downButton->visible() )
-              _d->backgroundRect.LowerRightCorner -= Point( _d->downButton->width(), 0 );
-      }
-      else
-      {
-          if( _d->upButton && _d->upButton->visible() )
-              _d->backgroundRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
-
-          if( _d->downButton && _d->downButton->visible() )
-              _d->backgroundRect.LowerRightCorner -= Point( 0, _d->downButton->height() );
-      }
+        if( _d->downButton && _d->downButton->visible() )
+            _d->backgroundRect.LowerRightCorner -= Point( _d->downButton->width(), 0 );
     }
+    else
+    {
+        if( _d->upButton && _d->upButton->visible() )
+            _d->backgroundRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
 
-  _isSliderHovered = _d->sliderRect.isPointInside( _d->cursorPos );
+        if( _d->downButton && _d->downButton->visible() )
+            _d->backgroundRect.LowerRightCorner -= Point( 0, _d->downButton->height() );
+    }
+  }
+
+  _isSliderHovered = _d->sliderRect.isPointInside( _d->cursorPos - absoluteRect().lefttop()  );
   ElementState st = _dragging && _draggedBySlider
                                 ? stPressed
                                 : (_lastSliderHovered ? stHovered : stNormal);
@@ -315,14 +315,16 @@ void ScrollBar::beforeDraw(gfx::Engine& painter )
       }
       else
       {
-        _d->sliderRect.UpperLeftCorner.setX( screenLeft() + (width() - _d->sliderTexture.width()) / 2 );
-        _d->sliderRect.UpperLeftCorner.setY( screenTop() + _lastSliderPos - _drawLenght/2 );
+        _d->sliderRect.UpperLeftCorner = Point( screenLeft() + (width() - _d->sliderTexture.width()) / 2,
+                                                screenTop() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->visible() )
             _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
 
         _d->sliderRect.LowerRightCorner.setY( _d->sliderRect.top() + _drawLenght );
       }
     }
+
+    _d->sliderRect -= absoluteRect().lefttop();
   }
 
   Widget::beforeDraw( painter );
@@ -338,13 +340,13 @@ void ScrollBar::draw(gfx::Engine& painter )
   //draw background
   if( _d->texture.isValid() )
   {
-    painter.draw( _d->texture, absoluteRect().UpperLeftCorner );
+    painter.draw( _d->texture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   //draw slider
   if( _d->sliderTexture.isValid() )
   {
-    painter.draw( _d->sliderTexture, _d->sliderRect.UpperLeftCorner );
+    painter.draw( _d->sliderTexture, absoluteRect().lefttop() + _d->sliderRect.lefttop(), &absoluteClippingRectRef() );
   }
 
 	// draw buttons
@@ -398,13 +400,13 @@ void ScrollBar::setPosition(int pos)
 
 
 //! gets the small step value
-int ScrollBar::getSmallStep() const {    return _smallStep;}
+int ScrollBar::smallStep() const {    return _smallStep;}
 
 //! sets the small step value
 void ScrollBar::setSmallStep(int step) {  _smallStep = step > 0 ? step : 10;}
 
 //! gets the small step value
-int ScrollBar::getLargeStep() const {    return _largeStep;}
+int ScrollBar::largeStep() const {    return _largeStep;}
 
 //! sets the small step value
  void ScrollBar::setLargeStep(int step){  _largeStep = step > 0 ? step : 50;}

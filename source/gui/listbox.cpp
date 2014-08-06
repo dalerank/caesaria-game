@@ -650,14 +650,17 @@ void ListBox::draw(gfx::Engine& painter )
     int mnY = frameRect.bottom() - _d->scrollBar->position();
     int mxY = frameRect.top() - _d->scrollBar->position();
 
-    if( !refItem.text().empty() && mnY >= 0 && mxY <= (int)height() )
+    if( mnY >= 0 && mxY <= (int)height() )
     {
       if( refItem.icon().isValid() )
       {
         _drawItemIcon( painter, refItem, widgetLeftup + frameRect.UpperLeftCorner + scrollBarOffset, &clipRect );
       }
 
-      _drawItemText( painter, refItem, widgetLeftup + frameRect.UpperLeftCorner + scrollBarOffset, &clipRect  );
+      if( refItem.picture().isValid() )
+      {
+        _drawItemText( painter, refItem, widgetLeftup + frameRect.UpperLeftCorner + scrollBarOffset, &clipRect  );
+      }
 
       if( !refItem.url().empty() )
       {
@@ -831,7 +834,6 @@ ListBoxItem& ListBox::addItem( const std::string& text, Font font, const int col
   i.setText( text );
   i.setState( stNormal );
   i.setTextOffset( _d->itemTextOffset );
-  //i.currentHovered = 255;
   i.OverrideColors[ ListBoxItem::simple ].font = font.isValid() ? font : _d->font;
   i.OverrideColors[ ListBoxItem::simple ].color = color;
   i.setTextAlignment( horizontalTextAlign(), verticalTextAlign() );
