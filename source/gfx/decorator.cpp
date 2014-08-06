@@ -24,6 +24,7 @@
 #include "game/resourcegroup.hpp"
 #include "primitives.hpp"
 #include "core/color.hpp"
+#include "core/logger.hpp"
 #include "primitives.hpp"
 
 namespace gfx
@@ -169,10 +170,10 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
   // draws vertical borders
   const Picture& leftborder = Picture::load( ResourceGroup::panelBackground, offset+7);
   const Picture& rightborder = Picture::load( ResourceGroup::panelBackground, offset+3);
-  for (int i = 0; i<(rectangle.height()/sh-1); ++i)
+  for (int i = 0; i<(rectangle.height()/sh); ++i)
   {
-     stack.append( leftborder, rectangle.UpperLeftCorner + Point( 0, sh+sh*i ) );
-     stack.append( rightborder, rectangle.UpperLeftCorner + Point( rectangle.width()-sw, sh+sh*i ) );
+     stack.append( leftborder, rectangle.lefttop() + Point( 0, -rectangle.height()+sh*i ) );
+     stack.append( rightborder, rectangle.lefttop() + Point( rectangle.width()-sw, -rectangle.height()+sh*i ) );
   }
 
   // topLeft corner
@@ -352,6 +353,12 @@ void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
   Size size = Picture::load( ResourceGroup::panelBackground, tp ).size();
   const int sw = size.width();
   const int sh = size.height();
+  if( !sw || !sh )
+  {
+    Logger::warning( "Decorator::drawBorder() can't finf texture %s %d", ResourceGroup::panelBackground, tp );
+    return;
+  }
+
   for (int i = 0; i<(rectangle.width()/size.width()-1); ++i)
   {
     Point offset = rectangle.UpperLeftCorner + Point( sw+sw*i, 0 );

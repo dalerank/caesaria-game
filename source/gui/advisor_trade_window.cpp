@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_trade_window.hpp"
 #include "gfx/picture.hpp"
@@ -34,6 +36,7 @@
 #include "core/event.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "image.hpp"
 #include "objects/constants.hpp"
 
 using namespace constants;
@@ -47,7 +50,7 @@ class TradeGoodInfo : public PushButton
 public:
   TradeGoodInfo( Widget* parent, const Rect& rect, Good::Type good, int qty, bool enable,
                  city::TradeOptions::Order trade, int tradeQty )
-    : PushButton( parent, rect, "" )
+    : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
   {
     _type = good;
     _qty = qty;
@@ -57,7 +60,6 @@ public:
     _goodPicture = GoodHelper::getPicture( _type );
     _goodName = GoodHelper::getName( _type );
 
-
     setFont( Font::create( FONT_2_WHITE ) );
   }
 
@@ -65,17 +67,17 @@ public:
   {
     PushButton::draw( painter );
 
-    painter.draw( _goodPicture, absoluteRect().UpperLeftCorner + Point( 15, 0) );
-    painter.draw( _goodPicture, absoluteRect().UpperLeftCorner + ( width() - 20 - _goodPicture.width(), 0 ) );
+    painter.draw( _goodPicture, absoluteRect().lefttop() + Point( 15, 0) );
+    painter.draw( _goodPicture, absoluteRect().righttop() - Point( 20 + _goodPicture.width(), 0 ) );
   }
 
-  virtual void _updateBackground( ElementState state )
+  virtual void _updateTextPic()
   {
-    PushButton::_updateBackground( state );
+    PushButton::_updateTextPic();
 
     if( _textPictureRef() != 0 )
     {
-      Font f = font( state );
+      Font f = font( _state() );
       PictureRef& textPic = _textPictureRef();
       f.draw( *textPic, _goodName, 55, 0 );
       f.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0 );
@@ -90,7 +92,7 @@ public:
       case city::TradeOptions::importing:
         tradeStateText = ruleName[ _tradeOrder ];
       break;
-      
+
       case city::TradeOptions::exporting:
         tradeStateText = StringHelper::format( 0xff, "%s %d", ruleName[ _tradeOrder ].c_str(), _tradeQty );
       break;
@@ -99,7 +101,7 @@ public:
       }
       f.draw( *textPic, tradeStateText, 340, 0 );
 
-      if( state == stHovered ) 
+      if( _state() == stHovered )
       {
      //   Decorator::draw( *background, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder, false );
       }
@@ -109,7 +111,7 @@ public:
   Signal1<Good::Type>& onClickedA() { return _onClickedASignal; }
 
 protected:
-  void _btnClicked()
+  virtual void _btnClicked()
   {
     PushButton::_btnClicked();
 
@@ -130,21 +132,17 @@ oc3_signals private:
   Signal1<Good::Type> _onClickedASignal;
 };
 
-class EmpirePricesWindow : public Widget
+class EmpirePricesWindow : public Window
 {
 public:
   EmpirePricesWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city  )
-    : Widget( parent, id, rectangle )
+    : Window( parent, rectangle, "", id )
   {
-    background.reset( Picture::create( size() ) );
-    Decorator::draw( *background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
-
-    Font font = Font::create( FONT_5 );
-    font.draw( *background, _("##rome_prices##"), Point( 10, 10 ), false );
+    setupUI( ":/gui/empireprices.gui" );
 
     city::TradeOptions& ctrade = city->tradeOptions();
-    font = Font::create( FONT_1 );
-    Point startPos( 140, 50 );
+    Font font = Font::create( FONT_1 );
+    Point startPos( 140, 50 );    
     for( int i=Good::wheat; i < Good::prettyWine; i++ )
     {
       if( i == Good::fish || i == Good::denaries)
@@ -154,22 +152,18 @@ public:
 
       Good::Type gtype = (Good::Type)i;
       Picture goodIcon = GoodHelper::getPicture( gtype );
-      background->draw( goodIcon, startPos );
+      new Image( this, startPos, goodIcon );
       
       std::string priceStr = StringHelper::format( 0xff, "%d", ctrade.buyPrice( gtype ) );
-      font.draw( *background, priceStr, startPos + Point( 0, 34 ), false );
+      Label* lb = new Label( this, Rect( startPos + Point( 0, 34 ), Size( 24, 24 ) ), priceStr );
+      lb->setFont( font );
 
       priceStr = StringHelper::format( 0xff, "%d", ctrade.sellPrice( gtype ) );
-      font.draw( *background, priceStr, startPos + Point( 0, 58 ), false );
+      lb = new Label( this, Rect( startPos + Point( 0, 58 ), Size( 24, 24 ) ), priceStr );
+      lb->setFont( font );
 
       startPos += Point( 30, 0 );
     }
-
-    font = Font::create( FONT_2 );
-    font.draw( *background, _("##buy_price##"), Point( 10, 84 ), false );
-    font.draw( *background, _("##sell_price##"), Point( 10, 108 ), false );
-
-    font.draw( *background, _("##click_rmb_for_exit##"), Point( 140, height() - 30 ), false ); 
   }
 
   virtual void draw( gfx::Engine& painter )
@@ -177,9 +171,7 @@ public:
     if( !visible() )
       return;
 
-    painter.draw( *background, absoluteRect().UpperLeftCorner );
-
-    Widget::draw( painter );
+    Window::draw( painter );
   }
 
   virtual bool onEvent(const NEvent& event)
@@ -190,16 +182,13 @@ public:
       return true;
     }
 
-    return Widget::onEvent( event );
+    return Window::onEvent( event );
   }
-
-  PictureRef background;
 };
 
 class AdvisorTradeWindow::Impl
 {
 public:
-  PictureRef background;
   PushButton* btnEmpireMap;
   PushButton* btnPrices; 
   GroupBox* gbInfo;
@@ -356,7 +345,7 @@ public:
   {
     _city->tradeOptions().switchOrder( _type );
     updateTradeState();
-    _onOrderChangedSignal.emit();
+    oc3_emit _onOrderChangedSignal();
   }
 
   bool isIndustryEnabled()
@@ -410,7 +399,7 @@ public:
     foreach( factory, factories ) { (*factory)->setActive( !industryEnabled ); }
 
     updateIndustryState();
-    _onOrderChangedSignal.emit();
+    oc3_emit _onOrderChangedSignal();
   }
 
   void toggleStackingGoods()
@@ -419,7 +408,7 @@ public:
     _city->tradeOptions().setStackMode( _type, !isStacking );
 
     updateStackingState();
-    _onOrderChangedSignal.emit();
+    oc3_emit _onOrderChangedSignal();
   }
 
   void updateStackingState()
@@ -456,6 +445,9 @@ oc3_signals private:
 
 void AdvisorTradeWindow::Impl::updateGoodsInfo()
 {
+  if( !gbInfo )
+    return;
+
   Widget::Widgets children = gbInfo->children();
 
   foreach( child, children ) { (*child)->deleteLater(); }
@@ -526,29 +518,19 @@ void AdvisorTradeWindow::Impl::showGoodsPriceWindow()
 }
 
 AdvisorTradeWindow::AdvisorTradeWindow(PlayerCityPtr city, Widget* parent, int id )
-: Widget( parent, id, Rect( 0, 0, 1, 1 ) ), _d( new Impl )
+: Window( parent, Rect( 0, 0, 640, 432 ), "", id ), _d( new Impl )
 {
-  setGeometry( Rect( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ),
-               Size( 640, 432 ) ) );
+  setupUI( ":/gui/tradeadv.gui" );
+  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  Label* title = new Label( this, Rect( 10, 10, width() - 10, 10 + 40) );
-  title->setText( _("##trade_advisor##") );
-  title->setFont( Font::create( FONT_5 ) );
-  title->setTextAlignment( align::center, align::center );
-
-  _d->background.reset( Picture::create( size() ) );
   _d->city = city;
-  //main _d->_d->background
-  Decorator::draw( *_d->background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
 
-  _d->btnEmpireMap = new PushButton( this, Rect( Point( 100, 398), Size( 200, 24 ) ), _("##empire_map##"), -1, false, PushButton::whiteBorderUp );
-  _d->btnPrices = new PushButton( this, Rect( Point( 400, 398), Size( 200, 24 ) ), _("##show_prices##"), -1, false, PushButton::whiteBorderUp );
-  _d->btnPrices->setTooltipText( _("##btn_showprice_tooltip##") );
+  _d->btnEmpireMap = findChildA<PushButton*>( "btnEmpireMap", true, this );
+  _d->btnPrices = findChildA<PushButton*>( "btnPrices", true, this );
+  _d->gbInfo = findChildA<GroupBox*>( "gbInfo", true, this );
 
   CONNECT( _d->btnEmpireMap, onClicked(), this, AdvisorTradeWindow::deleteLater );
   CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );
-
-  _d->gbInfo = new GroupBox( this, Rect( 35, 55, width() - 33, height() - 45 ), -1, GroupBox::blackFrame );
 
   _d->updateGoodsInfo();
 }
@@ -558,9 +540,7 @@ void AdvisorTradeWindow::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  painter.draw( *_d->background, screenLeft(), screenTop() );
-
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 Signal0<>& AdvisorTradeWindow::onEmpireMapRequest()
