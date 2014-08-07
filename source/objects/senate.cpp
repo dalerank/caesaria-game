@@ -96,11 +96,13 @@ void Senate::applyService(ServiceWalkerPtr walker)
   ServiceBuilding::applyService( walker );
 }
 
-void Senate::build(PlayerCityPtr city, const TilePos& pos)
+bool Senate::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
   _updateUnemployers();
   _updateRatings();
+
+  return true;
 }
 
 unsigned int Senate::walkerDistance() const {  return 26; }

@@ -44,7 +44,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual void burn();
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
   virtual bool isWalkable() const;
   virtual bool isDestructible() const;
   virtual void destroy();
@@ -65,7 +65,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
   virtual bool isNeedRoadAccess() const;
   virtual void destroy();
 };
@@ -79,7 +79,7 @@ public:
   CollapsedRuins();
 
   virtual void burn();
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
   virtual void collapse();
 
   virtual bool isWalkable() const;
@@ -95,7 +95,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void burn();
   virtual bool isDestructible() const;
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual bool isWalkable() const;
   virtual void destroy();
 

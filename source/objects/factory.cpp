@@ -370,14 +370,16 @@ bool Winery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundT
   return Factory::canBuild( city, pos, aroundTiles );
 }
 
-void Winery::build(PlayerCityPtr city, const TilePos& pos)
+bool Winery::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
   city::Helper helper( city );
   bool haveVinegrad = !helper.find<Building>( building::grapeFarm ).empty();
 
-  const_cast< Winery* >( this )->_setError( haveVinegrad ? "" : "##need_grape##" );
+  _setError( haveVinegrad ? "" : "##need_grape##" );
+
+  return true;
 }
 
 void Winery::_storeChanged()
@@ -400,7 +402,7 @@ bool Creamery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   return Factory::canBuild( city, pos, aroundTiles );
 }
 
-void Creamery::build(PlayerCityPtr city, const TilePos& pos)
+bool Creamery::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
@@ -408,6 +410,8 @@ void Creamery::build(PlayerCityPtr city, const TilePos& pos)
   bool haveOliveFarm = !helper.find<Building>( building::oliveFarm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
+
+  return true;
 }
 
 void Creamery::_storeChanged()

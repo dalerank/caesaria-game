@@ -22,9 +22,9 @@ class Fortification : public Wall
 {
 public:
   Fortification();
-  ~Fortification();
+  virtual ~Fortification();
 
-  virtual void build(PlayerCityPtr city, const TilePos& pos );
+  virtual bool build(PlayerCityPtr city, const TilePos& pos );
   const gfx::Picture& picture(PlayerCityPtr city,
                             TilePos pos,
                             const gfx::TilesArray& tmp ) const;

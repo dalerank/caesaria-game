@@ -36,7 +36,7 @@ Rift::Rift() : TileOverlay( building::rift, Size(1) )
 {  
 }
 
-void Rift::build( PlayerCityPtr city, const TilePos& pos )
+bool Rift::build( PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
   setPicture( computePicture() );
@@ -48,6 +48,8 @@ void Rift::build( PlayerCityPtr city, const TilePos& pos )
   }
 
   DustCloud::create( city, pos, 5 );
+
+  return true;
 }
 
 void Rift::initTerrain(Tile& terrain)

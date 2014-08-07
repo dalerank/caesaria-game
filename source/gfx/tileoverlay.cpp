@@ -93,7 +93,7 @@ void TileOverlay::setPicture(Picture picture)
   }*/
 }
 
-void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
+bool TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap &tilemap = city->tilemap();
 
@@ -117,6 +117,8 @@ void TileOverlay::build( PlayerCityPtr city, const TilePos& pos )
       initTerrain( tile );
     }
   }
+
+  return true;
 }
 
 Tile& TileOverlay::tile() const

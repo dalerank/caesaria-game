@@ -64,7 +64,11 @@ void BuildEvent::_exec( Game& game, unsigned int )
 
   if( !_overlay->isDeleted() && mayBuild )
   {
-      _overlay->build( game.city(), _pos );
+      bool buildOk = _overlay->build( game.city(), _pos );
+
+      if( !buildOk )
+        return;
+
       city::Helper helper( game.city() );
       helper.updateDesirability( _overlay, city::Helper::onDesirability );
       game.city()->addOverlay( _overlay );

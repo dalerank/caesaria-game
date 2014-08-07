@@ -28,7 +28,7 @@ public:
   CoastalFactory( const Good::Type consume, const Good::Type produce,
                   const TileOverlay::Type type, Size size );
   virtual bool canBuild(PlayerCityPtr city, TilePos pos , const gfx::TilesArray& aroundTiles) const;  // returns true if it can be built there
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
   virtual void destroy();
 
   virtual void save(VariantMap &stream) const;

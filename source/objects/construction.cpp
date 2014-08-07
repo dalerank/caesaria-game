@@ -92,10 +92,11 @@ void Construction::destroy() { TileOverlay::destroy(); }
 bool Construction::isNeedRoadAccess() const{ return true; }
 Construction::~Construction() {}
 
-void Construction::build(PlayerCityPtr city, const TilePos& pos )
+bool Construction::build(PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
   computeAccessRoads();
+  return true;
 }
 
 // here the problem lays: if we remove road, it is left in _accessRoads array

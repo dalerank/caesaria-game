@@ -82,7 +82,7 @@ bool Dock::canBuild( PlayerCityPtr city, TilePos pos, const TilesArray& aroundTi
   return (is_constructible && direction != noneDirection );
 }
 
-void Dock::build(PlayerCityPtr city, const TilePos& pos)
+bool Dock::build(PlayerCityPtr city, const TilePos& pos)
 {
   _setDirection( _d->getDirection( city, pos, size() ) );
 
@@ -98,6 +98,8 @@ void Dock::build(PlayerCityPtr city, const TilePos& pos)
   {
     _setError( "##inland_lake_has_no_access_to_sea##" );
   }
+
+  return true;
 }
 
 void Dock::destroy()

@@ -77,7 +77,7 @@ std::string Amphitheater::workersStateDesc() const
   return EntertainmentBuilding::workersStateDesc();
 }
 
-void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
+bool Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
 {
   EntertainmentBuilding::build( city, pos );
 
@@ -93,6 +93,8 @@ void Amphitheater::build(PlayerCityPtr city, const TilePos& pos)
   {
     _setError( "##colloseum_haveno_gladiatorpit##" );
   }
+
+  return true;
 }
 
 void Amphitheater::deliverService()

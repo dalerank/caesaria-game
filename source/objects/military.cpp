@@ -72,9 +72,9 @@ FortMounted::FortMounted()
   _addFormation( frmRandomLocation );
 }
 
-void FortMounted::build(PlayerCityPtr city, const TilePos& pos)
+bool FortMounted::build(PlayerCityPtr city, const TilePos& pos)
 {
-  Fort::build( city, pos );
+  return Fort::build( city, pos );
 }
 
 void FortMounted::_readyNewSoldier()

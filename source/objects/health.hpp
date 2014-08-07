@@ -41,7 +41,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
   virtual bool mayWork() const;
 protected:
   bool _haveReservorWater;

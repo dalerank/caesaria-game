@@ -54,7 +54,7 @@ public:
   bool isWalkable() const { return true;  }
   bool isNeedRoadAccess() const { return false; }
 
-  void build( PlayerCityPtr city, const TilePos& pos )
+  bool build( PlayerCityPtr city, const TilePos& pos )
   {
     Construction::build( city, pos );
     _fgPicturesRef().clear();
@@ -62,6 +62,8 @@ public:
     _picture = Picture::load( ResourceGroup::transport, _index );
     _picture.addOffset( Point( 10, -12 ) );
     _fgPicturesRef().push_back( _picture );
+
+    return true;
   }
 
   void initTerrain( Tile& terrain )
@@ -327,7 +329,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, constants::Direction& direction
   }
 }
 
-void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
+bool LowBridge::build(PlayerCityPtr city, const TilePos& pos )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;
@@ -389,6 +391,8 @@ void LowBridge::build(PlayerCityPtr city, const TilePos& pos )
       index++;
     }    
   }
+
+  return true;
 }
 
 bool LowBridge::canDestroy() const

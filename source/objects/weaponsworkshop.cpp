@@ -39,7 +39,7 @@ bool WeaponsWorkshop::canBuild( PlayerCityPtr city, TilePos pos, const TilesArra
   return Factory::canBuild( city, pos, aroundTiles );
 }
 
-void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
+bool WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
 
@@ -47,6 +47,8 @@ void WeaponsWorkshop::build(PlayerCityPtr city, const TilePos& pos)
   bool haveIronMine = !helper.find<Building>( building::ironMine ).empty();
 
   _setError( haveIronMine ? "" : "##need_iron_for_work##" );
+
+  return true;
 }
 
 void WeaponsWorkshop::_storeChanged()

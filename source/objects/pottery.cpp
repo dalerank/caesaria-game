@@ -37,13 +37,15 @@ bool Pottery::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& around
   return ret;
 }
 
-void Pottery::build(PlayerCityPtr city, const TilePos& pos)
+bool Pottery::build(PlayerCityPtr city, const TilePos& pos)
 {
   Factory::build( city, pos );
   city::Helper helper( city );
   bool haveClaypit = !helper.find<Building>( building::clayPit ).empty();
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
+
+  return true;
 }
 
 void Pottery::timeStep( const unsigned long time )

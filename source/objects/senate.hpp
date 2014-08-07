@@ -40,7 +40,7 @@ public:
 
   virtual void applyService(ServiceWalkerPtr walker);
 
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
 
   virtual unsigned int walkerDistance() const;
 

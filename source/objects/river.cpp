@@ -34,7 +34,7 @@ River::River() : TileOverlay( building::river, Size(1) )
 {
 }
 
-void River::build( PlayerCityPtr city, const TilePos& pos )
+bool River::build( PlayerCityPtr city, const TilePos& pos )
 {
   TileOverlay::build( city, pos );
   setPicture( computePicture() );
@@ -44,6 +44,8 @@ void River::build( PlayerCityPtr city, const TilePos& pos )
   {
     (*it)->updatePicture();
   } 
+
+  return true;
 }
 
 void River::initTerrain(Tile& terrain)

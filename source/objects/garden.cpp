@@ -41,7 +41,7 @@ bool Garden::isWalkable() const {  return _flat; }
 bool Garden::isFlat() const{ return _flat;}
 bool Garden::isNeedRoadAccess() const{  return false;}
 
-void Garden::build(PlayerCityPtr city, const TilePos& p )
+bool Garden::build(PlayerCityPtr city, const TilePos& p )
 {
   // this is the same arrangement of garden tiles as existed in C3
   Construction::build( city, p );
@@ -59,6 +59,8 @@ void Garden::build(PlayerCityPtr city, const TilePos& p )
       }
     }
   }
+
+  return true;
 }
 
 void Garden::load(const VariantMap& stream)

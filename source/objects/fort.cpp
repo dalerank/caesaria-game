@@ -466,7 +466,7 @@ bool Fort::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTil
   return (isFreeFort && isFreeArea);
 }
 
-void Fort::build(PlayerCityPtr city, const TilePos& pos)
+bool Fort::build(PlayerCityPtr city, const TilePos& pos)
 {
   Building::build( city, pos );
 
@@ -490,6 +490,8 @@ void Fort::build(PlayerCityPtr city, const TilePos& pos)
   _setPatrolPoint( PatrolPoint::create( city, this,
                                         ResourceGroup::sprites, _d->flagIndex, 8,
                                         pos + TilePos( 3, 3 ) ) );
+
+  return true;
 }
 
 bool Fort::isNeedRoadAccess() const {  return false; }

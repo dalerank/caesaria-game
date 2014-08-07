@@ -38,7 +38,7 @@ Road::Road()
   _paved = 0;
 }
 
-void Road::build( PlayerCityPtr city, const TilePos& pos )
+bool Road::build( PlayerCityPtr city, const TilePos& pos )
 {
   city->setOption( PlayerCity::updateRoads, 1 );
 
@@ -47,7 +47,7 @@ void Road::build( PlayerCityPtr city, const TilePos& pos )
 
   if( is_kind_of<Road>( overlay ) )
   {
-    return;
+    return false;
   }
 
   Construction::build( city, pos );
@@ -55,9 +55,9 @@ void Road::build( PlayerCityPtr city, const TilePos& pos )
   if( is_kind_of<Aqueduct>( overlay ) )
   {
     overlay->build( city, pos );
-
-    return;
   }
+
+  return true;
 }
 
 bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
@@ -278,16 +278,8 @@ const Picture& Plaza::picture(PlayerCityPtr city, TilePos pos, const TilesArray 
 
 void Plaza::appendPaved(int) {}
 
-void Plaza::build(PlayerCityPtr city, const TilePos& p)
+bool Plaza::build(PlayerCityPtr city, const TilePos& p)
 {
-  Tilemap& tilemap = city->tilemap();
-  TileOverlayPtr overlay = tilemap.at( p ).overlay();
-
-  //if( !is_kind_of<Road>( overlay ) )
-  //{
-  //  return;
-  //}
-
   Construction::build( city, p );
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
 
@@ -303,6 +295,8 @@ void Plaza::build(PlayerCityPtr city, const TilePos& p)
       }
     }
   }
+
+  return true;
 }
 
 void Plaza::save(VariantMap& stream) const

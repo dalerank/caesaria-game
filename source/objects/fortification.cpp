@@ -59,13 +59,13 @@ Fortification::~Fortification()
 {
 }
 
-void Fortification::build(PlayerCityPtr city, const TilePos& pos )
+bool Fortification::build(PlayerCityPtr city, const TilePos& pos )
 {
   // we can't build if already have wall here
   WallPtr wall = ptr_cast<Wall>( city->getOverlay( pos ) );
   if( wall.isValid() )
   {
-    return;
+    return false;
   }
 
   Building::build( city, pos );
@@ -79,6 +79,8 @@ void Fortification::build(PlayerCityPtr city, const TilePos& pos )
   foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
   updatePicture( city );
+
+  return true;
 }
 
 void Fortification::destroy()

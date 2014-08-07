@@ -47,7 +47,7 @@ Aqueduct::Aqueduct() : WaterSource( building::aqueduct, Size(1) )
   // land2a 134 - 148       - aqueduct without water
 }
 
-void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
+bool Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
 {
   Tilemap& tilemap = city->tilemap();
   Tile& terrain = tilemap.at( pos );
@@ -56,7 +56,7 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
   AqueductPtr aqueveduct = ptr_cast<Aqueduct>( terrain.overlay() );
   if( aqueveduct.isValid() )
   {
-    return;
+    return false;
   }
 
   _setIsRoad( terrain.getFlag( Tile::tlRoad ) );
@@ -74,6 +74,7 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
   foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( city ); }
 
   updatePicture( city );
+  return true;
 }
 
 void Aqueduct::addWater(const WaterSource &source)

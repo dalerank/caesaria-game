@@ -38,7 +38,7 @@ public:
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
 
-  virtual void build(PlayerCityPtr city, const TilePos& pos);
+  virtual bool build(PlayerCityPtr city, const TilePos& pos);
 private:
   bool _update( PlayerCityPtr city, TilePos pos );
 

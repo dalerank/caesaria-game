@@ -111,14 +111,17 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), building::oracle, 55 )
 
 unsigned int TempleOracle::parishionerNumber() const {  return 500; }
 
-void TempleOracle::build(PlayerCityPtr city, const TilePos& pos)
+bool TempleOracle::build(PlayerCityPtr city, const TilePos& pos)
 {
   BigTemple::build( city, pos );
 
   if( isDeleted() )
   {
     _setError( "##oracle_need_2_cart_marble##" );
+    return false;
   }
+
+  return true;
 }
 
 SmallTemple::SmallTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
@@ -137,7 +140,7 @@ BigTemple::BigTemple( DivinityPtr divinity, TileOverlay::Type type, int imgId )
 
 unsigned int BigTemple::parishionerNumber() const {  return 300;}
 
-void BigTemple::build(PlayerCityPtr city, const TilePos& pos)
+bool BigTemple::build(PlayerCityPtr city, const TilePos& pos)
 {
   city::Statistic::GoodsMap goods = city::Statistic::getGoodsMap( city );
   if( goods[ Good::marble ] >= 2 )
@@ -148,5 +151,8 @@ void BigTemple::build(PlayerCityPtr city, const TilePos& pos)
   {
     _setError( "##need_marble_for_large_temple##" );
     deleteLater();
+    return false;
   }
+
+  return true;
 }

@@ -31,7 +31,7 @@ Theater::Theater() : EntertainmentBuilding(Service::theater, building::theater, 
   _addNecessaryWalker( walker::actor );
 }
 
-void Theater::build(PlayerCityPtr city, const TilePos& pos)
+bool Theater::build(PlayerCityPtr city, const TilePos& pos)
 {
   ServiceBuilding::build( city, pos );
 
@@ -42,6 +42,8 @@ void Theater::build(PlayerCityPtr city, const TilePos& pos)
   {
     _setError( "##need_actor_colony##" );
   }
+
+  return true;
 }
 
 void Theater::timeStep(const unsigned long time) {  EntertainmentBuilding::timeStep( time );}

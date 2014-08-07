@@ -110,7 +110,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
    return res;
 }
 
-void Building::build(PlayerCityPtr city, const TilePos &pos)
+bool Building::build(PlayerCityPtr city, const TilePos &pos)
 {
   Construction::build( city, pos );
 
@@ -120,6 +120,8 @@ void Building::build(PlayerCityPtr city, const TilePos &pos)
   case climateDesert: setState( Construction::inflammability, 2 ); break;
   default: break;
   }
+
+  return true;
 }
 
 void Building::reserveService(const Service::Type service) { _d->reservedServices.insert(service);}

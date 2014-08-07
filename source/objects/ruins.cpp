@@ -117,12 +117,14 @@ void BurningRuins::collapse() {}
 
 void BurningRuins::burn(){}
 
-void BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
+bool BurningRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   //while burning can't remove it
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
+
+  return true;
 }   
 
 bool BurningRuins::isWalkable() const{  return (state( Construction::fire ) == 0);}
@@ -156,11 +158,12 @@ BurnedRuins::BurnedRuins() : Ruins( building::burnedRuins )
   setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
 }
 
-void BurnedRuins::build(PlayerCityPtr city, const TilePos& pos )
+bool BurnedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos);
 
   tile().setFlag( Tile::tlRock, false );
+  return true;
 }
 
 bool BurnedRuins::isWalkable() const{  return true; }
@@ -183,7 +186,7 @@ CollapsedRuins::CollapsedRuins() : Ruins(building::collapsedRuins)
 
 void CollapsedRuins::burn() {}
 
-void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
+bool CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
 
@@ -195,6 +198,8 @@ void CollapsedRuins::build(PlayerCityPtr city, const TilePos& pos )
   {
     DustCloud::create( _city(), pos, 4 );
   }
+
+  return true;
 }
 
 void CollapsedRuins::collapse() {}
@@ -265,13 +270,15 @@ void PlagueRuins::applyService(ServiceWalkerPtr walker){}
 void PlagueRuins::burn(){}
 bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
-void PlagueRuins::build(PlayerCityPtr city, const TilePos& pos )
+bool PlagueRuins::build(PlayerCityPtr city, const TilePos& pos )
 {
   Building::build( city, pos );
   //while burning can't remove it
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
   tile().setFlag( Tile::tlRock, true );
+
+  return true;
 }
 
 bool PlagueRuins::isWalkable() const{  return (state( Construction::fire ) == 0);}

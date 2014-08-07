@@ -151,14 +151,14 @@ void Gatehouse::destroy()
   foreach( it, tiles ) (*it)->setFlag( Tile::tlRoad, false );
 }
 
-void Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
+bool Gatehouse::build(PlayerCityPtr city, const TilePos &pos)
 {
   _update( city, pos );
 
   _d->gatehouseSprite[ 0 ] = Picture::load( ResourceGroup::sprites, _d->direction == north ? 224 : 225 );
   _d->gatehouseSprite[ 0 ].setOffset( _d->direction == north ? Point( 8, 80 ) : Point( 12, 80 ) );
 
-  Building::build( city, pos );
+  return Building::build( city, pos );
 }
 
 bool Gatehouse::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const

@@ -27,7 +27,7 @@ public:
   WeaponsWorkshop();
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles) const;
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
 protected:
   virtual void _storeChanged();
 };

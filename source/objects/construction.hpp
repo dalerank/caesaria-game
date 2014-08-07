@@ -38,7 +38,7 @@ public:
   virtual bool canBuild( PlayerCityPtr city, TilePos pos, const gfx::TilesArray& aroundTiles ) const;  // returns true if it can be built there
   virtual std::string errorDesc() const;
   virtual std::string troubleDesc() const;
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual void burn();
   virtual void collapse();
   virtual const gfx::Picture& picture() const;

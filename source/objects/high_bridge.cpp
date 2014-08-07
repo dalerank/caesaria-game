@@ -71,7 +71,7 @@ public:
   bool isWalkable() const   {    return true;  }
   bool isNeedRoadAccess() const { return false; }
 
-  void build( PlayerCityPtr city, const TilePos& pos )
+  bool build( PlayerCityPtr city, const TilePos& pos )
   {
     if( _index == descentNorth || _index == liftingNorth )
     {
@@ -84,7 +84,7 @@ public:
     else if( _index == descentNorthL || _index == liftingNorthL ||
              _index == descentWestL || _index == liftingWestL )
     {
-      return;
+      return false;
     }
 
     Construction::build( city, pos );
@@ -118,6 +118,8 @@ public:
     _fgPicturesRef().push_back( _picture );
 
     _pos = pos;
+
+    return true;
   }
 
   void setState( ParameterType name, double value )
@@ -424,7 +426,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   }
 }
 
-void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
+bool HighBridge::build(PlayerCityPtr city, const TilePos& pos )
 {
   TilePos endPos, startPos;
   _d->direction=noneDirection;
@@ -457,6 +459,8 @@ void HighBridge::build(PlayerCityPtr city, const TilePos& pos )
       event->dispatch();
     }    
   }
+
+  return true;
 }
 
 bool HighBridge::canDestroy() const

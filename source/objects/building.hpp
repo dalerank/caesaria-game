@@ -45,7 +45,7 @@ public:
   virtual void storeGoods(GoodStock &stock, const int amount = -1);
   // evaluate the given service
   virtual float evaluateService( ServiceWalkerPtr walker);
-  virtual void build(PlayerCityPtr city, const TilePos &pos);
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
   // handle service reservation
   void reserveService(const Service::Type service);
   bool isServiceReserved(const Service::Type service);

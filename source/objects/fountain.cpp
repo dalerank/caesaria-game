@@ -125,13 +125,15 @@ bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   return ret;
 }
 
-void Fountain::build(PlayerCityPtr city, const TilePos& pos )
+bool Fountain::build(PlayerCityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
 
   setPicture( ResourceGroup::waterbuildings, fontainEmpty );
   _lastPicId = simpleFountain;
   _initAnimation();
+
+  return true;
 }
 
 bool Fountain::isNeedRoadAccess() const { return false; }

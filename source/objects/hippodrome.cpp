@@ -179,7 +179,7 @@ void Hippodrome::deliverService()
   _d->sectionMiddle->setAnimationVisible( animation().isRunning() );
 }
 
-void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
+bool Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
 {
   _checkDirection( city, pos );
 
@@ -198,6 +198,8 @@ void Hippodrome::build(PlayerCityPtr city, const TilePos& pos)
   _d->sectionEnd->setAnimationVisible( false );
   _d->sectionMiddle->setAnimationVisible( false );
   _animationRef().start();
+
+  return true;
 }
 
 void Hippodrome::destroy()

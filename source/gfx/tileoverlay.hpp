@@ -61,7 +61,7 @@ public:
   virtual bool isFlat() const;
   virtual void initTerrain( gfx::Tile& terrain ) = 0;
 
-  virtual void build( PlayerCityPtr city, const TilePos& pos );
+  virtual bool build( PlayerCityPtr city, const TilePos& pos );
   virtual void destroy();  // handles the delete
 
   virtual Point offset(const Tile &tile, const Point& subpos ) const;
