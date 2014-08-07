@@ -40,6 +40,8 @@ Road::Road()
 
 void Road::build( PlayerCityPtr city, const TilePos& pos )
 {
+  city->setOption( PlayerCity::updateRoads, 1 );
+
   Tilemap& tilemap = city->tilemap();
   TileOverlayPtr overlay = tilemap.at( pos ).overlay();
 
@@ -53,10 +55,9 @@ void Road::build( PlayerCityPtr city, const TilePos& pos )
   if( is_kind_of<Aqueduct>( overlay ) )
   {
     overlay->build( city, pos );
+
     return;
   }
-
-  city->setOption( PlayerCity::updateRoads, 1 );
 }
 
 bool Road::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroundTiles) const
@@ -183,6 +184,9 @@ bool Road::isNeedRoadAccess() const {  return false; }
 
 void Road::destroy()
 {
+  if( state( lockTerrain ) > 0 )
+    return;
+
   city::Helper helper( _city() );
   TilesArray tiles = helper.getArea( this );
 

@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "menu.hpp"
 
@@ -42,6 +42,8 @@
 #include "core/osystem.hpp"
 #include "gui/texturedbutton.hpp"
 #include "sound/engine.hpp"
+#include "events/setvideooptions.hpp"
+#include "events/setsoundoptions.hpp"
 #include "gui/widgetpositionanimator.hpp"
 #include "core/event.hpp"
 
@@ -72,6 +74,8 @@ public:
   void showOptionsMenu();
   void resolveLoadRandommap();
   void showMainMenu();
+  void showSoundOptions();
+  void showVideoOptions();
   void resolvePlayMission();
   void resolveQuitGame() { result=closeApplication; isStopped=true; }
   void resolveSelectFile( std::string fileName );
@@ -121,6 +125,12 @@ void StartMenu::Impl::reload()
   isStopped = true;
 }
 
+void StartMenu::Impl::showSoundOptions()
+{
+  events::GameEventPtr e = events::SetSoundOptions::create();
+  e->dispatch();
+}
+
 void StartMenu::Impl::resolveShowChangeLanguageWindow()
 {
   gui::Widget* parent = game->gui()->rootWidget();
@@ -137,10 +147,17 @@ void StartMenu::Impl::resolveShowChangeLanguageWindow()
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.94 ) );
 
   VariantMap languages = SaveAdapter::load( SETTINGS_RC_PATH( langModel ) );
+  std::string currentLang = SETTINGS_VALUE( language ).toString();
+  int currentIndex = -1;
   foreach( it, languages )
   {
     lbx->addItem( it->first );
+    std::string ext = it->second.toMap().get( "ext" ).toString();
+    if( ext == currentLang )
+      currentIndex = std::distance( languages.begin(), it );
   }
+
+  lbx->setSelected( currentIndex );
 
   CONNECT( lbx, onItemSelected(), this, Impl::resolveChangeLanguage );
   CONNECT( btn, onClicked(), this, Impl::reload );
@@ -284,12 +301,12 @@ void StartMenu::Impl::showOptionsMenu()
   CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
 
   btn = menu->addButton( _("##mainmenu_video##"), -1 );
-  //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+  CONNECT( btn, onClicked(), this, Impl::showVideoOptions );
 
   btn = menu->addButton( _("##mainmenu_sound##"), -1 );
-  //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
+  CONNECT( btn, onClicked(), this, Impl::showSoundOptions );
 
-  btn = menu->addButton( _("##mainmenu_game##"), -1 );
+  //btn = menu->addButton( _("##mainmenu_game##"), -1 );
   //CONNECT( btn, onClicked(), this, Impl::resolveShowChangeLanguageWindow );
 
   btn = menu->addButton( _("##cancel##"), -1 );
@@ -314,6 +331,12 @@ void StartMenu::Impl::showMainMenu()
 
   btn = menu->addButton( _("##mainmenu_quit##"), -1 );
   CONNECT( btn, onClicked(), this, Impl::resolveQuitGame );
+}
+
+void StartMenu::Impl::showVideoOptions()
+{
+  events::GameEventPtr event = events::SetVideoSettings::create();
+  event->dispatch();
 }
 
 void StartMenu::Impl::resolvePlayMission()

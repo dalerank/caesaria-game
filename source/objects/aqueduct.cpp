@@ -59,6 +59,13 @@ void Aqueduct::build(PlayerCityPtr city, const TilePos& pos )
     return;
   }
 
+  _setIsRoad( terrain.getFlag( Tile::tlRoad ) );
+  RoadPtr road = ptr_cast<Road>( terrain.overlay() );
+  if( road.isValid() )
+  {
+    road->setState( (Construction::Param)Road::lockTerrain, 1 );
+  }
+
   Construction::build( city, pos );
 
   city::Helper helper( city );
@@ -77,7 +84,7 @@ void Aqueduct::addWater(const WaterSource &source)
   _produceWater( offsets, 4 );
 }
 
-void Aqueduct::initTerrain(Tile&) {}
+void Aqueduct::initTerrain(Tile& terrain) {}
 
 void Aqueduct::destroy()
 {
@@ -94,6 +101,15 @@ void Aqueduct::destroy()
         aq->updatePicture( _city() );
       }
     }
+  }
+
+  if( tile().getFlag( Tile::tlRoad ) || _isRoad() )
+  {
+    RoadPtr r( new Road() );
+    r->drop();
+
+    r->build( _city(), pos() );
+    _city()->addOverlay( ptr_cast<TileOverlay>( r ) );
   }
 }
 
@@ -363,13 +379,8 @@ void Aqueduct::updatePicture(PlayerCityPtr city)
 }
 
 bool Aqueduct::isNeedRoadAccess() const {  return false; }
-
-void Aqueduct::_waterStateChanged()
-{
-  updatePicture( _city() );
-}
-
-bool Aqueduct::isWalkable() const {  return _isRoad();}
+void Aqueduct::_waterStateChanged(){  updatePicture( _city() ); }
+bool Aqueduct::isWalkable() const {  return _isRoad(); }
 
 std::string Aqueduct::sound() const
 {

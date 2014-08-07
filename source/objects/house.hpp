@@ -47,7 +47,7 @@ class House : public Building
 {
   friend class HouseSpecification;
 public:
-  enum { food=Construction::count, health, happiness };
+  enum { food=Construction::paramCount, health, happiness };
 
   House( HouseLevel::ID level=HouseLevel::smallHovel );
 
@@ -87,7 +87,7 @@ public:
 
   unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
-  CitizenGroup remHabitants( int count );
+  CitizenGroup remHabitants( int paramCount );
   const CitizenGroup& habitants() const;
 
   float collectTaxes();
