@@ -72,6 +72,7 @@ void Well::deliverService()
 }
 
 bool Well::isNeedRoadAccess() const {  return false; }
+void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
 TilesArray Well::coverageArea() const
