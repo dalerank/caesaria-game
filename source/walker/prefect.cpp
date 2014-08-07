@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "prefect.hpp"
 #include "core/position.hpp"
@@ -49,14 +49,9 @@ namespace {
 class Prefect::Impl
 {
 public:
-  typedef enum { patrol=0,
-                 findFire, go2fire, fightFire,
-                 go2enemy, fightEnemy,
-                 doNothing } PrefectAction;
-    
   int water;
   TilePos endPatrolPoint;
-  PrefectAction action;
+  Prefect::SbAction action;
   int fumigateHouseNumber;
 };
 
@@ -66,7 +61,7 @@ Prefect::Prefect(PlayerCityPtr city )
   _setType( walker::prefect );
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
-  _d->action = Impl::doNothing;
+  _setSubAction( doNothing );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -114,7 +109,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->pos().distanceFrom( pos() ) < 1.5f )
     {
       turn( building->pos() );
-      _d->action = Impl::fightFire;
+      _setSubAction( fightFire );
       _setAction( acFightFire  );
       setSpeed( 0.f );
       return true;
@@ -130,7 +125,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     Pathway tmp = PathwayHelper::create( pos(), ptr_cast<Construction>( building ), PathwayHelper::allTerrain );
     if( tmp.isValid() )
     {
-      _d->action = Impl::go2fire;
+      _setSubAction( go2fire );
       _updatePathway( tmp );      
       go();
       _setAction( acDragWater );
@@ -156,7 +151,7 @@ void Prefect::_back2Prefecture()
 
   if( pathway.isValid() )
   {
-    _d->action = Impl::patrol;
+    _setSubAction( patrol );
     _updatePathway( pathway );
     _d->endPatrolPoint = pathway.destination().pos();
     go();
@@ -209,7 +204,7 @@ void Prefect::_back2Patrol()
 
   if( pathway.isValid() )
   {
-    _d->action = _d->water > 0 ? Impl::go2fire : Impl::patrol;
+    _setSubAction( _d->water > 0 ? go2fire : patrol );
     _updatePathway( pathway );
     go();
     _setAction( _d->water > 0 ? acDragWater : acMove );
@@ -217,6 +212,17 @@ void Prefect::_back2Patrol()
   else
   {
     _back2Prefecture();
+  }
+}
+
+void Prefect::_setSubAction(Prefect::SbAction action)
+{
+  _d->action = action;
+
+  switch( action )
+  {
+  case fightFire: _animationRef().setDelay( 2 ); break;
+  default: _animationRef().setDelay( 1 ); break;
   }
 }
 
@@ -230,7 +236,7 @@ bool Prefect::_figthFire()
     if( building.isValid() && building->type() == building::burningRuins )
     {
       turn( building->pos() );
-      _d->action = Impl::fightFire;
+      _setSubAction( fightFire );
       _d->endPatrolPoint = building->pos();
       _setAction( acFightFire );
       setSpeed( 0.f );
@@ -261,7 +267,7 @@ void Prefect::_brokePathway(TilePos p)
   {
     setSpeed( 0.f );
     _setAction( acFightFire );
-    _d->action = Impl::fightFire;
+    _setSubAction( fightFire );
     return;
   }
   else if( _d->water > 0 )
@@ -271,7 +277,7 @@ void Prefect::_brokePathway(TilePos p)
     Pathway pathway = PathwayHelper::create( pos(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
     {
-      _d->action = Impl::findFire;
+      _setSubAction( findFire );
       setPathway( pathway );
       go();
       _setAction( acDragWater );
@@ -286,11 +292,11 @@ void Prefect::_reachedPathway()
 {
   switch( _d->action )
   {
-  case Impl::patrol:
+  case patrol:
     if( base()->enterArea().contain( pos() )  )
     {
       deleteLater();
-      _d->action = Impl::doNothing;
+      _setSubAction( doNothing );
     }
     else
     {
@@ -298,14 +304,14 @@ void Prefect::_reachedPathway()
     }
   break;
 
-  case Impl::go2fire:
+  case go2fire:
     if( !_figthFire() )
     {
       _back2Patrol();
     }
   break;
 
-  case Impl::findFire:
+  case findFire:
     if( !_findFire() )
     {
       _back2Patrol();
@@ -320,10 +326,10 @@ void Prefect::_centerTile()
 {
   switch( _d->action )
   {
-  case Impl::doNothing:
+  case doNothing:
   break; 
 
-  case Impl::patrol:
+  case patrol:
   {
     TilePos firePos;
     ReachedBuildings reachedBuildings;
@@ -339,7 +345,7 @@ void Prefect::_centerTile()
         _updatePathway( pathway );
         go( 1.5f );
 
-        _d->action = Impl::go2enemy;
+        _setSubAction( go2enemy );
       }
     }
     else if( haveBurningRuinsNear )
@@ -364,13 +370,13 @@ void Prefect::_centerTile()
   }
   break;
 
-  case Impl::findFire:
+  case findFire:
   {
     _findFire();
   }
   break;
 
-  case Impl::go2enemy:
+  case go2enemy:
   {
     WalkerPtr enemy = _looks4Enemy( 5 );
     if( enemy.isValid() )
@@ -378,7 +384,7 @@ void Prefect::_centerTile()
       if( enemy->pos().distanceFrom( pos() ) < 1.5f  )
       {
         turn( enemy->pos() );
-        _d->action = Impl::fightEnemy;
+        _setSubAction( fightEnemy );
         setSpeed( 0.f );
         _setAction( acFight );
         return;
@@ -391,15 +397,15 @@ void Prefect::_centerTile()
   }
   break;
 
-  case Impl::go2fire:
+  case go2fire:
   {
     if( _figthFire() )
       return;
   }
   break;
 
-  case Impl::fightFire:
-  case Impl::fightEnemy:
+  case fightFire:
+  case fightEnemy:
   break;
   }
   Walker::_centerTile();
@@ -407,6 +413,12 @@ void Prefect::_centerTile()
 
 void Prefect::_noWay()
 {
+  if( _d->water > 0 )
+  {
+    if( _findFire() )
+      return;
+  }
+
   _back2Prefecture();
 }
 
@@ -431,7 +443,7 @@ void Prefect::timeStep(const unsigned long time)
   switch( _d->action )
   {
 
-  case Impl::fightFire:
+  case fightFire:
   {    
     BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
     bool inFire = (building.isValid() && building->type() == building::burningRuins );
@@ -464,13 +476,13 @@ void Prefect::timeStep(const unsigned long time)
   }
   break;
 
-  case Impl::findFire:
-  case Impl::go2fire:
+  case findFire:
+  case go2fire:
       if( speed() == 0.f )
           _back2Patrol();
   break;
 
-  case Impl::fightEnemy:
+  case fightEnemy:
   {
     WalkerPtr enemy = _looks4Enemy(  1 );
 
@@ -506,7 +518,7 @@ PrefectPtr Prefect::create(PlayerCityPtr city )
 
 void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 {
-  _d->action = water > 0 ? Impl::findFire : Impl::patrol;
+  _setSubAction( water > 0 ? findFire : patrol );
   _d->water = water;
   _setAction( water > 0 ? acDragWater : acMove );
 
@@ -532,7 +544,7 @@ void Prefect::acceptAction(Walker::Action action, TilePos pos)
   ServiceWalker::acceptAction( action, pos );
 
   _setAction( acFight );
-  _d->action = Impl::fightEnemy;
+  _setSubAction( fightEnemy );
 }
 
 bool Prefect::die()
@@ -552,8 +564,8 @@ std::string Prefect::currentThinks() const
 {
   switch( _d->action )
   {
-  case Impl::go2fire: return "##prefect_goto_fire##";
-  case Impl::fightFire: return "##prefect_fight_fire##";
+  case go2fire: return "##prefect_goto_fire##";
+  case fightFire: return "##prefect_fight_fire##";
   default: break;
   }
 
@@ -564,7 +576,7 @@ void Prefect::load( const VariantMap& stream )
 {
    ServiceWalker::load( stream );
  
-  _d->action = (Impl::PrefectAction)stream.get( "prefectAction" ).toInt();
+  _setSubAction( (SbAction)stream.get( "prefectAction" ).toInt() );
   VARIANT_LOAD_ANY_D( _d, water, stream );
   VARIANT_LOAD_ANY_D( _d, endPatrolPoint, stream );
 

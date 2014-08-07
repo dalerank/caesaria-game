@@ -52,7 +52,7 @@ public:
 	Picture backgroundImage;
   Pictures bgStyle;
 	Point dragStartPosition;
-  BackgroundType backgroundType;
+	Window::BackgroundType backgroundType;
 	bool dragging;
 
 	NColor currentColor;
@@ -321,6 +321,8 @@ void Window::setupUI(const VariantMap &ui)
     foreach( i, _d->buttons )
        (*i)->hide();
   }
+
+  _d->flags.setFlag( fdraggable, !ui.get( "static", false ).toBool() );
 
   WindowBackgroundHelper helper;
   std::string modeStr = ui.get( "bgtype" ).toString();

@@ -798,7 +798,7 @@ void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
 
 void Level::_resolveExitGame()
 {
-  DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_game##"), DialogBox::btnOkCancel );
+  DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
   CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
 }

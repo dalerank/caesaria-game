@@ -218,6 +218,7 @@ void StartMenu::Impl::resolveCredits()
                          _("##graphics##"),
                          " ",
                          "dimitrius (caesar-iii.ru)",
+                         "aneurysm (4pda.ru)",
                          " ",
                          _("##thanks_to##"),
                          " ",

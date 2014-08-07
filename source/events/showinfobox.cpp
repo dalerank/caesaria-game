@@ -20,6 +20,7 @@
 #include "game/game.hpp"
 #include "gui/environment.hpp"
 #include "scribemessage.hpp"
+#include "core/gettext.hpp"
 #include "gui/film_widget.hpp"
 #include "gui/event_messagebox.hpp"
 #include "good/goodhelper.hpp"
@@ -117,8 +118,8 @@ void ShowInfobox::_exec( Game& game, unsigned int )
   else
   {
     gui::FilmWidget* wnd = new gui::FilmWidget( game.gui()->rootWidget(), _d->video );
-    wnd->setTitle( _d->title );
-    wnd->setText( _d->text );
+    wnd->setTitle( _( _d->title ) );
+    wnd->setText( _( _d->text ) );
     wnd->show();
   }
 

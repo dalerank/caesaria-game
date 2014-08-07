@@ -541,7 +541,7 @@ void Game::initialize()
   screen.setText( "##initialize_religion##" );
   _d->initPantheon( SETTINGS_RC_PATH( pantheonModel ) );
 
-  screen.setText( "##ready_to_game" );
+  screen.setText( "##ready_to_game##" );
 
   if( GameSettings::get( "no-fade" ).isNull() )
     screen.exitScene();
@@ -554,7 +554,7 @@ void Game::exec()
 
   while(_d->nextScreen != SCREEN_QUIT )
   {
-    Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+    Logger::warning( "Game: exec switch to screen %d", _d->nextScreen );
     switch(_d->nextScreen)
     {
       case SCREEN_MENU:        setScreenMenu();     break;

@@ -34,7 +34,7 @@ class GuiEnv : Widget
 public:
   GuiEnv( gfx::Engine& painter );
 
-  ~GuiEnv();
+  virtual ~GuiEnv();
 
   bool hasFocus( const Widget* element) const;
   virtual bool setFocus( Widget* element);

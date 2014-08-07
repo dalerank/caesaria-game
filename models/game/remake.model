@@ -8,4 +8,6 @@
   carts : ":/gfx/pics_carts.zip"
   commerce : ":/gfx/pics_commerce.zip"
   sound_themes : ":/audio/themes.zip"
+  plaza : ":/gfx/pics_plaza.zip"
+  gardens : ":/gfx/pics_gardens.zip"
 }

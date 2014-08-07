@@ -72,7 +72,7 @@
       geometry : [ 16, 54, "pw-16", 74 ]
       text : "##mission_wnd_short##"
       bgtype : "smallBrown"
-      font : "FONT_2"
+      font : "FONT_1_WHITE"
     }
   }
 

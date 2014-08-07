@@ -26,12 +26,9 @@ using namespace vfs;
 
 class ResourceLoader::Impl
 {
-public:
-
 public oc3_signals:
   Signal1<std::string> onStartLoadingSignal;
 };
-
 
 ResourceLoader::ResourceLoader() : _d( new Impl )
 {

@@ -37,5 +37,7 @@
   lbxHelp#ListBox : {
     geometry : [ 16, 76, 580, 410 ]
     bgtype : "blackFrame"
+    itemfont : "FONT_2_WHITE"
+    itemheight : 17
   }
 }

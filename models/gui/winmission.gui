@@ -25,7 +25,7 @@
 
   btnAccept#PushButton : {
     geometry : [ 35, 115, "pw-35", 135 ]
-    bgtype : "greyBorderLineSmall"
+    bgtype : "whiteBorderUp"
     text : "##accept_promotion##"
     font : "FONT_2"
   }

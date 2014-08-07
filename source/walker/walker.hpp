@@ -120,7 +120,7 @@ protected:
 
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;
-  void _setAction( Walker::Action action );
+  virtual void _setAction( Walker::Action action );
   void _setDirection( constants::Direction direction );
 
   void _setType( constants::walker::Type type );

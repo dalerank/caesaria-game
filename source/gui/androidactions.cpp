@@ -35,19 +35,14 @@ public:
 };
 
 AndroidActionsBar::AndroidActionsBar( Widget* parent)
-  : Window( parent, Rect( parent->width() - 150, 480, parent->width(), parent->height() ), "", -1, bgNone ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 150, 480 ), "", -1, bgNone ), _d( new Impl )
 {
-  Picture pic = Picture::load( ResourceGroup::panelBackground, 657 );
-  _d->btnMenu = new TexturedButton( this, Point( 0, 0 ), pic.size(), -1, 657 );
+  setupUI( ":/gui/android_actions_bar.gui" );
 
-  pic = Picture::load( ResourceGroup::panelBackground, 651 );
-  _d->btnShowHelp = new TexturedButton( this, _d->btnMenu->leftbottom(), pic.size(), -1, 651 );
-
-  pic = Picture::load( ResourceGroup::panelBackground, 661 );
-  _d->btnEnter = new TexturedButton( this, _d->btnShowHelp->righttop(), pic.size(), -1, 661 );
-
-  pic = Picture::load( ResourceGroup::panelBackground, 654 );
-  _d->btnExit = new TexturedButton( this, _d->btnShowHelp->leftbottom(), pic.size(), -1, 654 );
+  _d->btnMenu = findChildA<TexturedButton*>( "btnMenu", true, this );
+  _d->btnShowHelp = findChildA<TexturedButton*>( "btnShowHelp", true, this );
+  _d->btnEnter = findChildA<TexturedButton*>( "btnEnter", true, this );
+  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
 }
 
 Signal0<>& AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }
@@ -62,7 +57,7 @@ void AndroidActionsBar::beforeDraw(gfx::Engine& painter)
     bringToFront();
   }
 
-  Widget::beforeDraw( painter );
+  Window::beforeDraw( painter );
 }
 
 }//end namespace gui

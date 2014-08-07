@@ -164,7 +164,7 @@ void BurnedRuins::build(PlayerCityPtr city, const TilePos& pos )
 }
 
 bool BurnedRuins::isWalkable() const{  return true; }
-bool BurnedRuins::isFlat() const{  return true;}
+bool BurnedRuins::isFlat() const{ return true;}
 bool BurnedRuins::isNeedRoadAccess() const{  return false;}
 void BurnedRuins::destroy(){ Building::destroy();}
 
