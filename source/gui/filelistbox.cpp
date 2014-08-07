@@ -34,7 +34,7 @@ FileListBox::FileListBox(Widget* parent, const Rect& rectangle, int id)
 
 }
 
-ListBoxItem&FileListBox::addItem(const std::string& text, Font font, const int color)
+ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int color)
 {
   DateTime time = vfs::FileSystem::instance().getFileUpdateTime( text );
   std::string timeStr = StringHelper::format( 0xff, "(%02d %s %02d:%02d:%02d)",
@@ -57,7 +57,7 @@ void FileListBox::_drawItemText(gfx::Picture& texture, Font font, ListBoxItem& i
                                 align::lowerRight, align::center );
 
   font2.setColor( font.color() );
-  font2.draw( texture, timeStr, textRect.UpperLeftCorner - Point( 10, 0), false );
+  font2.draw( texture, timeStr, textRect.UpperLeftCorner - Point( 10, 0) );
 }
 
 

@@ -25,10 +25,19 @@
   }
 
   btnLoad#PushButton : {
-    geometry : [ 50, "ph-39", "pw-50", "ph-15" ]
+    geometry : [ 50, "ph-39", 250, "ph-15" ]
     text : "##continue##"
     tooltip : "##fileload_load_tlp##"
     bgtype : "whiteBorderUp"
+    enabled : false
+  }
+
+  btnDelete#PushButton : {
+    geometry : [ 250, "ph-39", "pw-50", "ph-15" ]
+    text : "##delete##"
+    tooltip : "##fileload_delete_tlp##"
+    bgtype : "whiteBorderUp"
+    enabled : false
   }
 
   btnHelp#TexturedButton : {

@@ -256,6 +256,7 @@ void PushButton::setupUI(const VariantMap &ui)
 
   setIsPushButton( (bool)ui.get( "pushbutton" ) );
   _d->textOffset = ui.get( "textOffset" ).toPoint();
+  setEnabled( (bool)ui.get( "enabled", true ) );
 
   Variant vFont = ui.get( "font" );
   if( vFont.isValid() ) { setFont( Font::create( vFont.toString() ) ); }

@@ -28,8 +28,8 @@
 #include "core/color.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
-#include "game/settings.hpp"
 #include "filelistbox.hpp"
+#include "vfs/file.hpp"
 
 namespace gui
 {
@@ -42,6 +42,7 @@ public:
   PushButton* btnExit;
   PushButton* btnHelp;
   PushButton* btnLoad;
+  PushButton* btnDelete;
   vfs::Directory directory;
   std::string fileExtension;
   std::string saveItemText;
@@ -62,6 +63,12 @@ public:
     emitSelectFile();
   }
 
+  void deleteFile()
+  {
+    vfs::Path path4delete( saveItemText );
+    vfs::NFile::remove( directory/path4delete );
+  }
+
   void emitSelectFile()
   {
     if( saveItemText.empty() )
@@ -80,7 +87,7 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
                               int id )
   : Window( parent, rect, "", id ), _d( new Impl )
 {
-  Widget::setupUI( GameSettings::rcpath( "/gui/loadfile.gui" ) );
+  Widget::setupUI( ":/gui/loadfile.gui" );
   setCenter( parent->center() );
 
   // create the title
@@ -92,12 +99,11 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
   _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
   _d->btnLoad = findChildA<PushButton*>( "btnLoad", true, this );
-  if( _d->btnLoad )
-  {
-    _d->btnLoad->setEnabled( false );
-  }
+  _d->btnDelete = findChildA<PushButton*>( "btnDelete", true, this );
+
   CONNECT( _d->btnExit, onClicked(), this, LoadFileDialog::deleteLater );
   CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );
+  CONNECT( _d->btnDelete, onClicked(), _d.data(), Impl::deleteFile );
 
   _d->lbxFiles = findChildA<FileListBox*>( "lbxFiles", true, this );
   if( _d->lbxFiles )
