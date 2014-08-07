@@ -61,6 +61,7 @@ class House::Impl
 public:
   typedef std::map< Service::Type, Service > Services;
   int houseLevel;
+  int hid;
   float money, tax;
   int poverity;
   HouseSpecification spec;  // characteristics of the current house level
@@ -88,6 +89,7 @@ House::House( HouseLevel::ID level ) : Building( building::house ), _d( new Impl
 {
   HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = level;
+  _d->hid = HouseLevel::vacantLot;
   _d->spec = helper.getSpec( _d->houseLevel );
   setName( _d->spec.levelName() );
   _d->desirability.base = -3;
@@ -918,10 +920,10 @@ double House::state( ParameterType param) const
 
 void House::_update( bool needChangeTexture )
 {
-  HouseLevel::ID level = ( _d->houseLevel == HouseLevel::smallHovel && _d->habitants.count() == 0 )
+  _d->hid = ( _d->houseLevel == HouseLevel::smallHovel && _d->habitants.count() == 0 )
                                              ? HouseLevel::vacantLot
                                              : (HouseLevel::ID)_d->houseLevel;
-  Picture pic = HouseSpecHelper::instance().getPicture( level, size().width() );
+  Picture pic = HouseSpecHelper::instance().getPicture( _d->hid, size().width() );
   if( needChangeTexture )
   {
     if( !pic.isValid() )
@@ -1181,7 +1183,7 @@ DateTime House::lastTaxationDate() const{  return _d->lastTaxationDate;}
 std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
 Desirability House::desirability() const {  return _d->desirability; }
 bool House::isWalkable() const{  return _d->houseLevel < HouseLevel::bigTent; }
-bool House::isFlat() const { return _d->houseLevel <= HouseLevel::smallHovel; }
+bool House::isFlat() const { return _d->hid == HouseLevel::vacantLot; }
 const CitizenGroup& House::habitants() const  {  return _d->habitants; }
 GoodStore& House::goodStore(){   return _d->goodStore;}
 const HouseSpecification& House::spec() const{   return _d->spec; }

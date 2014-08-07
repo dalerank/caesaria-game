@@ -67,7 +67,7 @@ public:
   int freeQty() const;
 
   void push( const int qty ) { _qty += qty; }
-  void pop( const int qty ) { _qty -= qty; }
+  void pop( const int qty );
 
   /** amount: if -1, amount=stock._currentQty */
   void append(GoodStock &stock, const int amount = -1);

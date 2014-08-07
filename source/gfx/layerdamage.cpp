@@ -34,17 +34,7 @@ static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_dama
                                          "##some_damage_risk##", "##very_high_damage_risk##",
                                          "##extreme_damage_risk##" };
 
-int LayerDamage::type() const
-{
-  return citylayer::damage;
-}
-
-std::set<int> LayerDamage::visibleWalkers() const
-{
-  std::set<int> ret;
-  ret.insert( walker::engineer );
-  return ret;
-}
+int LayerDamage::type() const {  return citylayer::damage; }
 
 void LayerDamage::drawTile( Engine& engine, Tile& tile, Point offset)
 {
@@ -170,6 +160,7 @@ LayerDamage::LayerDamage( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _loadColumnPicture( 15 );
+  _addWalkerType( walker::engineer );
 }
 
 }//end namespace gfx

@@ -34,14 +34,6 @@ int LayerIndigene::type() const
   return citylayer::aborigen;
 }
 
-std::set<int> LayerIndigene::visibleWalkers() const
-{
-  std::set<int> ret;
-  ret.insert( walker::indigene );
-  ret.insert( walker::missioner );
-  return ret;
-}
-
 void LayerIndigene::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mappos() + offset;
@@ -149,6 +141,9 @@ LayerIndigene::LayerIndigene( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _loadColumnPicture( 15 );
+
+  _addWalkerType( walker::indigene );
+  _addWalkerType( walker::missioner );
 }
 
 }//end namespace gfx

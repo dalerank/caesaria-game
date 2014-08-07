@@ -25,6 +25,7 @@
 #include "gfx/tilemap_camera.hpp"
 #include "core/gettext.hpp"
 #include "good/goodstore.hpp"
+#include "walker/cart_pusher.hpp"
 
 using namespace constants;
 
@@ -32,16 +33,6 @@ namespace gfx
 {
 
 int LayerFood::type() const {  return citylayer::food; }
-
-Layer::VisibleWalkers LayerFood::visibleWalkers() const
-{
-  VisibleWalkers ret;
-  ret.insert( walker::marketLady );
-  ret.insert( walker::marketKid );
-  ret.insert( walker::marketBuyer );
-
-  return ret;
-}
 
 void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
 {
@@ -116,6 +107,27 @@ void LayerFood::drawTile( Engine& engine, Tile& tile, Point offset)
   tile.setWasDrawn();
 }
 
+void LayerFood::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
+{
+  Pictures pics;
+  WalkerList walkers = _getVisibleWalkerList( visibleWalkers(), tile.pos() );
+
+  foreach( w, walkers )
+  {
+    WalkerPtr wlk = *w;
+    if( wlk->type() == walker::cartPusher )
+    {
+      CartPusherPtr cartp = ptr_cast<CartPusher>( wlk );
+      Good::Type gtype = cartp->stock().type();
+      if( gtype == Good::none || gtype > Good::vegetable )
+        continue;
+    }
+    pics.clear();
+    (*w)->getPictures( pics );
+    engine.draw( pics, (*w)->mappos() + camOffset );
+  }
+}
+
 void LayerFood::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
@@ -177,6 +189,12 @@ LayerFood::LayerFood( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _loadColumnPicture( 18 );
+
+  _addWalkerType( walker::marketLady );
+  _addWalkerType( walker::marketKid );
+  _addWalkerType( walker::fishingBoat );
+  _addWalkerType( walker::marketBuyer );
+  _addWalkerType( walker::cartPusher );
 }
 
 }//end namespace gfx

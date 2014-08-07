@@ -29,17 +29,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerCrime::type() const
-{
-  return citylayer::crime;
-}
-
-Layer::VisibleWalkers LayerCrime::visibleWalkers() const
-{
-  VisibleWalkers ret;
-  ret.insert( walker::prefect );
-  return ret;
-}
+int LayerCrime::type() const {  return citylayer::crime; }
 
 void LayerCrime::drawTile( Engine& engine, Tile& tile, Point offset)
 {
@@ -123,6 +113,7 @@ LayerCrime::LayerCrime( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _loadColumnPicture( 18 );
+  _addWalkerType( walker::prefect );
 }
 
 }//end namespace gfx

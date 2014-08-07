@@ -376,14 +376,6 @@ void LayerBuild::_finishBuild()
 
 int LayerBuild::type() const {  return citylayer::build;}
 
-std::set<int> LayerBuild::visibleWalkers() const
-{
-  std::set<int> ret;
-  ret.insert( walker::all );
-
-  return ret;
-}
-
 void LayerBuild::_drawBuildTiles( Engine& engine)
 {
   __D_IMPL(_d,LayerBuild);
@@ -492,6 +484,7 @@ LayerBuild::LayerBuild(Renderer* renderer, PlayerCityPtr city)
   d->frameCount = 0;
   d->textFont = Font::create( FONT_5 );
   d->textPic.init( Size( 100, 30 ) );
+  _addWalkerType( walker::all );
 }
 
 }//end namespace gfx

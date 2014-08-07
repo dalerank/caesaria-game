@@ -29,7 +29,6 @@ class LayerDesirability : public Layer
 {
 public:
   virtual int type() const;
-  virtual std::set<int> visibleWalkers() const;
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );

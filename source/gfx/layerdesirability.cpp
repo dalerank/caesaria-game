@@ -27,15 +27,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerDesirability::type() const
-{
-  return citylayer::desirability;
-}
-
-std::set<int> LayerDesirability::visibleWalkers() const
-{
-  return std::set<int>();
-}
+int LayerDesirability::type() const {  return citylayer::desirability; }
 
 void LayerDesirability::drawTile( Engine& engine, Tile& tile, Point offset)
 {

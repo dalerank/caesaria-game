@@ -35,7 +35,6 @@ namespace gfx
 {
 
 int LayerTroubles::type() const{  return _type;}
-Layer::VisibleWalkers LayerTroubles::visibleWalkers() const{  return std::set<int>();}
 
 void LayerTroubles::drawTile( Engine& engine, Tile& tile, Point offset)
 {

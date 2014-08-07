@@ -31,15 +31,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerEducation::type() const
-{
-  return _type;
-}
-
-Layer::VisibleWalkers LayerEducation::visibleWalkers() const
-{
-  return _walkers;
-}
+int LayerEducation::type() const {  return _type; }
 
 int LayerEducation::_getLevelValue( HousePtr house ) const
 {
@@ -235,9 +227,9 @@ LayerEducation::LayerEducation( Camera& camera, PlayerCityPtr city, int type)
   switch( type )
   {
   case citylayer::education:
-  case citylayer::school: _flags.insert( building::school ); _walkers.insert( walker::scholar ); break;
-  case citylayer::library: _flags.insert( building::library ); _walkers.insert( walker::librarian ); break;
-  case citylayer::academy: _flags.insert( building::academy ); _walkers.insert( walker::teacher ); break;
+  case citylayer::school: _flags.insert( building::school ); _addWalkerType( walker::scholar ); break;
+  case citylayer::library: _flags.insert( building::library ); _addWalkerType( walker::librarian ); break;
+  case citylayer::academy: _flags.insert( building::academy ); _addWalkerType( walker::teacher ); break;
   }
 }
 

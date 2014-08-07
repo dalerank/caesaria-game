@@ -154,7 +154,7 @@ void LayerDestroy::render( Engine& engine )
 
     drawTileR( engine, *tile, cameraOffset, z, false );
 
-    _drawWalkers( engine, *tile, cameraOffset );
+    drawWalkers( engine, *tile, cameraOffset );
     engine.resetColorMask();
   }
 
@@ -229,14 +229,6 @@ void LayerDestroy::handleEvent(NEvent& event)
 
 int LayerDestroy::type() const {  return citylayer::destroyd; }
 
-std::set<int> LayerDestroy::visibleWalkers() const
-{
-  std::set<int> ret;
-  ret.insert( walker::all );
-
-  return ret;
-}
-
 void LayerDestroy::drawTile( Engine& engine, Tile& tile, Point offset )
 {
   TileOverlayPtr overlay = tile.overlay();
@@ -263,6 +255,7 @@ LayerDestroy::LayerDestroy( Camera& camera, PlayerCityPtr city)
   _clearPic = Picture::load( "oc3_land", 2 );
   _textFont = Font::create( FONT_5 );
   _textPic.init( Size( 100, 30 ) );
+  _addWalkerType( walker::all );
 }
 
 }//end namespace gfx

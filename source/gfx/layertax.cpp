@@ -26,18 +26,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerTax::type() const
-{
-  return citylayer::tax;
-}
-
-Layer::VisibleWalkers LayerTax::visibleWalkers() const
-{
-  VisibleWalkers ret;
-  ret.insert( walker::taxCollector );
-
-  return ret;
-}
+int LayerTax::type() const {  return citylayer::tax; }
 
 void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
 {
@@ -127,6 +116,7 @@ LayerTax::LayerTax( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _loadColumnPicture( 9 );
+  _addWalkerType( walker::taxCollector );
 }
 
 }//end namespace gfx

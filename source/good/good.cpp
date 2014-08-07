@@ -115,3 +115,12 @@ bool GoodStock::empty() const {  return _qty == 0; }
 void GoodStock::setType(Type goodType ) {  _type = goodType;}
 void GoodStock::setCapacity( const int maxQty ){  _capacity = maxQty;}
 int GoodStock::freeQty() const{  return std::max( _capacity - _qty, 0 );}
+
+void GoodStock::pop(const int qty)
+{
+  _qty -= math::clamp( qty, 0, _qty );
+  if( _qty == 0 )
+  {
+    _type = Good::none;
+  }
+}

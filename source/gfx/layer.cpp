@@ -52,6 +52,7 @@ public:
   int nextLayer;
   std::string tooltipText;
   RenderQueue renderQueue;
+  VisibleWalkers vwalkers;
 
   bool drawGrid, renderOverlay, showPath;
   int posMode;
@@ -248,7 +249,7 @@ WalkerList Layer::_getVisibleWalkerList(const VisibleWalkers& aw, const TilePos&
   return walkerList;
 }
 
-void Layer::_drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
+void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
   WalkerList walkers = _getVisibleWalkerList( visibleWalkers(), tile.pos() );
@@ -316,7 +317,7 @@ void Layer::render( Engine& engine)
 
     drawTileR( engine, *tile, camOffset, z, false );
 
-    _drawWalkers( engine, *tile, camOffset );
+    drawWalkers( engine, *tile, camOffset );
 
     drawTileW( engine, *tile, camOffset, z );
   }
@@ -342,6 +343,11 @@ void Layer::drawTileW( Engine& engine, Tile& tile, const Point& offset, const in
   // single-tile: draw current tile
   // and it is time to draw the master tile
   drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
+}
+
+const Layer::VisibleWalkers& Layer::visibleWalkers() const
+{
+  return _dfunc()->vwalkers;
 }
 
 void Layer::drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
@@ -530,6 +536,11 @@ void Layer::_loadColumnPicture(int picId)
   _d->footColumn = Picture::load( ResourceGroup::sprites, picId + 2 );
   _d->bodyColumn = Picture::load( ResourceGroup::sprites, picId + 1 );
   _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
+}
+
+void Layer::_addWalkerType(walker::Type wtype)
+{
+  _dfunc()->vwalkers.insert( wtype );
 }
 
 int Layer::getNextLayer() const{ return _dfunc()->nextLayer; }

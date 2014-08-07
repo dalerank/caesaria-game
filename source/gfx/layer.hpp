@@ -24,6 +24,7 @@
 #include "tile.hpp"
 #include "game/predefinitions.hpp"
 #include "core/signals.hpp"
+#include "walker/constants.hpp"
 
 #include <set>
 
@@ -36,7 +37,7 @@ public:
   typedef std::set<int> VisibleWalkers;
 
   virtual int type() const = 0;
-  virtual VisibleWalkers visibleWalkers() const = 0;
+  virtual const VisibleWalkers& visibleWalkers() const;
 
   //draw gfx before walkers
   virtual void drawTileR( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force );
@@ -53,6 +54,7 @@ public:
                          std::string resourceGroup, int tileId );
 
   virtual void drawColumn( Engine& engine, const Point& pos, const int percent );
+  virtual void drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
   virtual void init( Point cursor );
 
   virtual void beforeRender( Engine& engine) {}
@@ -70,9 +72,9 @@ protected:
   WalkerList _getVisibleWalkerList( const VisibleWalkers& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
-  void _drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset );
   void _setTooltipText( std::string text );
   void _loadColumnPicture( int picId );
+  void _addWalkerType( constants::walker::Type wtype );
 
   TilesArray _getSelectedArea();
 

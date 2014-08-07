@@ -36,11 +36,6 @@ namespace gfx
 
 int LayerWater::type() const{  return citylayer::water;}
 
-std::set<int> LayerWater::visibleWalkers() const
-{
-  return std::set<int>();
-}
-
 void LayerWater::drawTile( Engine& engine, Tile& tile, Point offset)
 {
   Point screenPos = tile.mappos() + offset;

@@ -29,15 +29,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerHealth::type() const
-{
-  return _type;
-}
-
-Layer::VisibleWalkers LayerHealth::visibleWalkers() const
-{
-  return _walkers;
-}
+int LayerHealth::type() const {  return _type; }
 
 int LayerHealth::_getLevelValue( HousePtr house )
 {
@@ -206,19 +198,23 @@ LayerHealth::LayerHealth(Camera& camera, PlayerCityPtr city, int type)
   {
   case citylayer::health:
   case citylayer::doctor:
-    _flags.insert( building::doctor ); _walkers.insert( walker::doctor );
+    _flags.insert( building::doctor );
+    _addWalkerType( walker::doctor );
   break;
 
   case citylayer::hospital:
-    _flags.insert( building::hospital ); _walkers.insert( walker::surgeon );
+    _flags.insert( building::hospital );
+    _addWalkerType( walker::surgeon );
   break;
 
   case citylayer::barber:
-    _flags.insert( building::barber ); _walkers.insert( walker::barber );
+    _flags.insert( building::barber );
+    _addWalkerType( walker::barber );
   break;
 
   case citylayer::baths:
-    _flags.insert( building::baths ); _walkers.insert( walker::bathlady );
+    _flags.insert( building::baths );
+    _addWalkerType( walker::bathlady );
   break;
   }
 }

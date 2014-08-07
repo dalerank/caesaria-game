@@ -31,15 +31,7 @@ using namespace constants;
 namespace gfx
 {
 
-int LayerEntertainment::type() const
-{
-  return _type;
-}
-
-Layer::VisibleWalkers LayerEntertainment::visibleWalkers() const
-{
-  return _visibleWalkers;
-}
+int LayerEntertainment::type() const {  return _type; }
 
 int LayerEntertainment::_getLevelValue( HousePtr house )
 {
@@ -229,17 +221,17 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
     _flags.insert( building::gladiatorSchool ); _flags.insert( building::lionsNursery );
     _flags.insert( building::chariotSchool );
 
-    _visibleWalkers.insert( walker::actor );
-    _visibleWalkers.insert( walker::gladiator );
-    _visibleWalkers.insert( walker::lionTamer );
-    _visibleWalkers.insert( walker::charioteer );
+    _addWalkerType( walker::actor );
+    _addWalkerType( walker::gladiator );
+    _addWalkerType( walker::lionTamer );
+    _addWalkerType( walker::charioteer );
   break;
 
   case citylayer::theater:
     _flags.insert( building::theater );
     _flags.insert( building::actorColony );
 
-    _visibleWalkers.insert( walker::actor );
+    _addWalkerType( walker::actor );
   break;
 
   case citylayer::amphitheater:
@@ -247,8 +239,8 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
     _flags.insert( building::actorColony );
     _flags.insert( building::gladiatorSchool );
 
-    _visibleWalkers.insert( walker::actor );
-    _visibleWalkers.insert( walker::gladiator );
+    _addWalkerType( walker::actor );
+    _addWalkerType( walker::gladiator );
   break;
 
   case citylayer::colloseum:
@@ -256,8 +248,8 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
     _flags.insert( building::gladiatorSchool );
     _flags.insert( building::lionsNursery );
 
-    _visibleWalkers.insert( walker::gladiator );
-    _visibleWalkers.insert( walker::lionTamer );
+    _addWalkerType( walker::gladiator );
+    _addWalkerType( walker::lionTamer );
   break;
 
 
@@ -265,7 +257,7 @@ LayerEntertainment::LayerEntertainment( Camera& camera, PlayerCityPtr city, int 
     _flags.insert( building::hippodrome );
     _flags.insert( building::chariotSchool );
 
-    _visibleWalkers.insert( walker::charioteer );
+    _addWalkerType( walker::charioteer );
   break;
 
   default: break;
