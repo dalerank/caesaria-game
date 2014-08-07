@@ -553,7 +553,7 @@ void Game::initialize()
   MetaDataHolder::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
 
   screen.setText( "##initialize_walkers##" );
-  WalkerHelper::instance().initialize( SETTINGS_RC_PATH( walkerModel ) );
+  WalkerHelper::instance().load( SETTINGS_RC_PATH( walkerModel ) );
 
   screen.setText( "##initialize_religion##" );
   _d->initPantheon( SETTINGS_RC_PATH( pantheonModel ) );

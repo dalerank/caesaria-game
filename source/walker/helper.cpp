@@ -114,7 +114,7 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   return mapIt->second.toMap();
 }
 
-void WalkerHelper::initialize( const vfs::Path& filename )
+void WalkerHelper::load( const vfs::Path& filename )
 {
   _d->options = SaveAdapter::load( filename );
 }

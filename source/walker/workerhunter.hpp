@@ -51,7 +51,6 @@ private:
 
   class Impl;
   ScopedPtr<Impl> _d;
-
 };
 
 #endif//__CAESARIA_WORKERSHUNTER_H_INCLUDE_

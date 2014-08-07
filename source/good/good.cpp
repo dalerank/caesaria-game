@@ -22,23 +22,20 @@
 #include "core/exception.hpp"
 #include "core/variant.hpp"
 #include "core/stringhelper.hpp"
-
-#include <iostream>
-#include <algorithm>
 #include "core/logger.hpp"
 
 GoodStock::GoodStock()
 {
-   _type = none;
-   _capacity = 0;
-   _qty = 0;
+  _type = none;
+  _capacity = 0;
+  _qty = 0;
 }
 
 GoodStock::GoodStock(const Good::Type &goodType, const int maxQty, const int currentQty)
 {
-   _type = goodType;
-   _capacity = maxQty;
-   _qty = currentQty;
+  _type = goodType;
+  _capacity = maxQty;
+  _qty = currentQty;
 }
 
 GoodStock::~GoodStock() {}

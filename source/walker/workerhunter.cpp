@@ -64,7 +64,7 @@ void Recruter::hireWorkers( const int workers )
   WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
   if( wbase.isValid() ) 
   {
-    _d->needWorkers = math::clamp( _d->needWorkers - workers, 0u, 0xffu );
+    _d->needWorkers = math::clamp<int>( _d->needWorkers - workers, 0, 0xff );
     wbase->addWorkers( workers );
   }
 }

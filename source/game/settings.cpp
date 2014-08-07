@@ -59,7 +59,6 @@ __REG_PROPERTY(sg2model)
 __REG_PROPERTY(ranksModel)
 __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
-__REG_PROPERTY(rectuterDistance)
 __REG_PROPERTY(render)
 __REG_PROPERTY(empireObjectsModel)
 __REG_PROPERTY(pic_offsets)
@@ -113,7 +112,7 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ picsArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
   _d->options[ opengl_opts         ] = Variant( std::string( "/opengl.model" ) );
   _d->options[ freeplay_opts       ] = Variant( std::string( "/freeplay.model" ) );
-  _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );
+  _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );  
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ render              ] = "sdl";
   _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
@@ -127,7 +126,6 @@ GameSettings::GameSettings() : _d( new Impl )
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
-  _d->options[ rectuterDistance    ] = 35;
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;
