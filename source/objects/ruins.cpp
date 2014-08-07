@@ -263,6 +263,7 @@ void PlagueRuins::destroy()
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker){}
 void PlagueRuins::burn(){}
+bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
 void PlagueRuins::build(PlayerCityPtr city, const TilePos& pos )
 {

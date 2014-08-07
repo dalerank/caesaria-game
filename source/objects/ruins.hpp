@@ -94,6 +94,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual void burn();
+  virtual bool isDestructible() const;
   virtual void build( PlayerCityPtr city, const TilePos& pos );
   virtual bool isWalkable() const;
   virtual void destroy();
