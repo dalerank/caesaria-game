@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_SENATE_H_INCLUDED_
 #define __CAESARIA_SENATE_H_INCLUDED_
@@ -24,11 +26,11 @@ class Senate : public ServiceBuilding
 public:
   typedef enum { workless, culture, prosperity, peace, favour } Status;
   Senate();
-  unsigned int getFunds() const;
+  unsigned int funds() const;
 
   float collectTaxes();
 
-  int getStatus( Status status ) const;
+  int status( Status status ) const;
 
   virtual std::string errorDesc() const;
 

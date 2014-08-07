@@ -55,7 +55,6 @@ void Statistic::getWorkersNumber(PlayerCityPtr city, int& workersNumber, int& ma
 float Statistic::getBalanceKoeff(PlayerCityPtr city)
 {
   int pop = city->population();
-
   return pop > 300 ? atan( pop / 1000.f ) : (pop / 1000.f);
 }
 

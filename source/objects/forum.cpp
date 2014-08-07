@@ -111,7 +111,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
   if( !senates.empty() )
     senate = senates.front();
 
-  unsigned int maxMoney = city->funds().treasury();
+  int maxMoney = city->funds().treasury();
   if( maxMoney > 0 )
   {
     ForumList forums;

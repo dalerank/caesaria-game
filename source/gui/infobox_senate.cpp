@@ -53,7 +53,7 @@ AboutSenate::AboutSenate( Widget* parent, const Tile& tile )
   // number of workers
   _updateWorkersLabel( Point( 32, 136), 542, senate->maximumWorkers(), senate->numberWorkers() );
 
-  std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->getFunds() );
+  std::string denariesStr = StringHelper::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
 
   Label* lb = new Label( this, Rect( 60, 35, width() - 16, 35 + 30 ), denariesStr );
   lb->setIcon( GoodHelper::getPicture( Good::denaries ) );
