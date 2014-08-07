@@ -96,7 +96,8 @@ void CartPusher::_reachedPathway()
 
     if( goodStore )
     {
-      goodStore->applyStorageReservation(_d->stock, _d->reservationID);
+      wait( _d->stock.qty() );
+      goodStore->applyStorageReservation(_d->stock, _d->reservationID);      
       _d->reservationID = 0;
     }
   }
