@@ -240,7 +240,6 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
   return elm;
 }
 
-//
 void GuiEnv::_drawTooltip( unsigned int time )
 {
     // launch tooltip

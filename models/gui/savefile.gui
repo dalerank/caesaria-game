@@ -9,13 +9,14 @@
   }
 
   edFilename#EditBox : {
-    geometry : [ 18, 40, "pw-10", 70 ]
+    geometry : [ 20, 40, "pw-20", 70 ]
     font : "FONT_2"
+    text.offset : [ 10, 0 ]
     text : "savecity"
   }
 
   lbxSaves#ListBox : {
-    geometry : [ 18, 75, "pw-10", 275 ]
+    geometry : [ 20, 75, "pw-15", 275 ]
     items.font : "FONT_2"
     items.simple.color : "0xffffffff"
     items.hovered.color : "0xff000000"
@@ -24,7 +25,7 @@
   lbContinue#Label : {
     geometry : [ 18, 296, 260, 326 ]
     font : "FONT_2"
-    text.align : [ "lowerRight", "center" ]
+    text.align : [ "center", "lowerRight" ]
     text : "##savedlg_continue##"
   }
 

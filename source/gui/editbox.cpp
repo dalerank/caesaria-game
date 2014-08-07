@@ -35,7 +35,7 @@ class EditBox::Impl
 public:
   std::wstring text;
   std::vector<std::wstring> brokenText;
-  std::vector< int > brokenTextPositions;
+  std::vector<int> brokenTextPositions;
   Rect currentTextRect;
   Rect cursorRect;
   Rect markAreaRect;
@@ -231,6 +231,11 @@ void EditBox::setupUI(const VariantMap& ui)
 	setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
 
 	_d->textOffset = ui.get( "textOffset" ).toPoint();
+
+	Variant vOffset = ui.get( "text.offset" );
+	if( vOffset.isValid() )
+		_d->textOffset = vOffset.toPoint();
+
 	_d->needUpdateTexture = true;
 }
 
