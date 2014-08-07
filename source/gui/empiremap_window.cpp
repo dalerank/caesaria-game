@@ -105,7 +105,7 @@ void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 void EmpireMapWindow::Impl::updateCityInfo()
 {
   resetInfoPanel();
-  if( currentCity != 0 )
+  if( currentCity != 0 && lbCityTitle )
   {
     lbCityTitle->setText( currentCity->name() );
 
@@ -356,20 +356,20 @@ EmpireMapWindow::EmpireMapWindow( Widget* parent, int id )
   _d->autopause.activate();
   _d->empireMap = Picture::load( "the_empire", 1 );
   _d->dragging = false;
-  _d->lbCityTitle = new Label( this, Rect( Point( (width() - 240) / 2 + 60, height() - 132 ), Size( 240, 32 )) );
-  _d->lbCityTitle->setFont( Font::create( FONT_5 ) );
+  _d->lbCityTitle = findChildA<Label*>( "lbTitle", true, this );
   _d->offset = GameSettings::get( empMapOffset ).toPoint();
 
   WidgetEscapeCloser::insertTo( this );
 
-  _d->tradeInfo = new Widget( this, -1, Rect( 0, height() - 120, width(), height() ) );
-
   _d->initBorder( this );
 
-  _d->btnHelp = new TexturedButton( this, Point( 20, height() - 44 ), Size( 24 ), -1, 528 );
-  _d->btnExit = new TexturedButton( this, Point( width() - 44, height() - 44 ), Size( 24 ), -1, 533 );
-  _d->btnTrade = new TexturedButton( this, Point( width() - 48, height() - 100), Size( 28 ), -1, 292 );
-  _d->btnTrade->setTooltipText( _("##to_trade_advisor##") );
+  _d->tradeInfo = findChildA<Widget*>( "gbox", true, this );
+  if( _d->tradeInfo ) _d->tradeInfo->sendToBack();
+
+  _d->btnHelp = findChildA<TexturedButton*>( "btnHelp", true, this );
+  _d->btnExit = findChildA<TexturedButton*>( "btnExit", true, this );
+  _d->btnTrade = findChildA<TexturedButton*>( "btnTrade", true, this);
+
 
   CONNECT( _d->btnExit, onClicked(), this, EmpireMapWindow::deleteLater );
   CONNECT( _d->btnTrade, onClicked(), this, EmpireMapWindow::deleteLater );

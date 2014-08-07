@@ -107,8 +107,10 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
 
     if( !_d->backgroundImage.isValid() )
     {
+      Decorator::Mode styles[] = { Decorator::whiteFrame, Decorator::blackFrame, Decorator::pure };
+
       Decorator::draw( _d->background, Rect( Point( 0, 0 ), size() ),
-                       _d->style == whiteFrame ? Decorator::whiteFrame : Decorator::blackFrame );
+                       Decorator::Mode( styles[ math::clamp<int>( _d->style, 0, count ) ] ) );
     }
   }
 
@@ -120,7 +122,9 @@ void GroupBox::setupUI(const VariantMap &ui)
   Widget::setupUI( ui );
 
   std::string style = ui.get( "bgtype" ).toString();
-  _d->style = style == "blackFrame" ? blackFrame : whiteFrame;
+  if( style == "blackFrame" ) _d->style = blackFrame;
+  else if( style == "whiteFrame" ) _d->style = whiteFrame;
+  else if( style == "none" ) _d->style = none;
   _d->needUpdateTexture = true;
 }
 

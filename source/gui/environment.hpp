@@ -40,8 +40,6 @@ public:
   virtual bool setFocus( Widget* element);
   virtual bool removeFocus( Widget* element);
 
-  double getVersion() const;
-
   Widget* rootWidget();								//  
   Widget* getFocus() const;
   Point getCursorPos() const;

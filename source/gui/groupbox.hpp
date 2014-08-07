@@ -26,7 +26,7 @@ namespace gui
 class GroupBox : public Widget
 {
 public:
-  typedef enum { whiteFrame=0, blackFrame } Style;
+  typedef enum { whiteFrame=0, blackFrame, none, count } Style;
 
   //! constructor
   GroupBox( Widget* parent );
