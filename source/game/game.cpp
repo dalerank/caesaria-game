@@ -362,7 +362,24 @@ void Game::setScreenGame()
   {
     case scene::Level::mainMenu: _d->nextScreen = SCREEN_MENU;  break;
     case scene::Level::loadGame: _d->nextScreen = SCREEN_GAME;  load( screen.nextFilename() ); break;
-    case scene::Level::restart: _d->nextScreen = SCREEN_GAME;  load( _d->restartFile ); break;
+
+    case scene::Level::restart:
+    {
+      Logger::warning( "ScreenGame: restart game " + _d->restartFile );
+      _d->nextScreen = SCREEN_GAME;
+      load( _d->restartFile );
+
+      Logger::warning( "ScreenGame: end loading file " + _d->restartFile );
+      std::string ext = vfs::Path( _d->restartFile ).extension();
+      if( ext == ".map" || ext == ".sav" )
+      {
+        FreeplayFinalizer::addPopulationMilestones( _d->city );
+        FreeplayFinalizer::initBuildOptions( _d->city );
+        FreeplayFinalizer::addEvents( _d->city );
+      }
+    }
+    break;
+
     case scene::Level::loadBriefing: _d->nextScreen = SCREEN_BRIEFING; break;
     case scene::Level::quitGame: _d->nextScreen = SCREEN_QUIT;  break;
     default: _d->nextScreen = SCREEN_QUIT;

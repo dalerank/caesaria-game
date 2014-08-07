@@ -123,9 +123,16 @@ const gfx::Picture& Road::picture( PlayerCityPtr city, TilePos p, const gfx::Til
     }
   }
 
-  // std::cout << "direction flags=" << directionFlags << std::endl;
+  if( city.isValid() )
+  {
+    int mapBorder = city->tilemap().size()-1;
+    if( p.i() == 0 ) { directionFlags |= 0x2; }
+    if( p.i() == mapBorder ) { directionFlags |= 0x8; }
+    if( p.j() == 0 ) { directionFlags |= 0x4; }
+    if( p.j() == mapBorder ) { directionFlags |= 0x1; }
+  }
 
-  int index = 0;
+  int index=0;
   if( _paved == 0 )
   {
     switch (directionFlags)
