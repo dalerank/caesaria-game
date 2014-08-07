@@ -19,6 +19,7 @@
 #include "city/city.hpp"
 #include "gfx/tile.hpp"
 #include "objects/objects_factory.hpp"
+#include "resourcegroup.hpp"
 #include "core/logger.hpp"
 
 using namespace constants;
@@ -120,6 +121,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
      ovType = construction::road;
+     oTile.setPicture( Picture::load( ResourceGroup::land1a, 230 + math::random( 59) ) );
   }
   else /*if( oTile.getFlag( Tile::tlBuilding ) )*/
   {

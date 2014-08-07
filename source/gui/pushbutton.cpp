@@ -147,8 +147,18 @@ void PushButton::_updateTextPic()
     Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
     textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( *textTxs, text(), textRect.UpperLeftCorner + _d->textOffset );
+    stFont.draw( *textTxs, text(), textRect.UpperLeftCorner + _d->textOffset, true, false );
   }
+
+  if( _d->bgStyle == flatBorderLine )
+  {
+    Decorator::drawLine( *textTxs, Point( 0, 0), Point( width(), 0), DefaultColors::black );
+    Decorator::drawLine( *textTxs, Point( width()-1, 0), Point( width()-1, height() ), DefaultColors::black );
+    Decorator::drawLine( *textTxs, Point( width(), height()-1), Point( 0, height()-1), DefaultColors::black );
+    Decorator::drawLine( *textTxs, Point( 0, height() ), Point( 0, 0), DefaultColors::black );
+  }
+
+  textTxs->update();
 }
 
 void PushButton::_updateBackground( ElementState state )
@@ -198,12 +208,8 @@ void PushButton::_updateBackground( ElementState state )
 
     case flatBorderLine:
     {
-      /*Decorator::draw( *curTxs, Rect( Point( 0, 0 ), size() ), (state == stHovered || state == stPressed)
+      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), (state == stHovered || state == stPressed)
                                                                        ? Decorator::blackArea : Decorator::whiteArea );
-      Decorator::drawLine( *curTxs, Point( 0, 0), Point( width(), 0), DefaultColors::black );
-      Decorator::drawLine( *curTxs, Point( width()-1, 0), Point( width()-1, height() ), DefaultColors::black );
-      Decorator::drawLine( *curTxs, Point( width(), height()-1), Point( 0, height()-1), DefaultColors::black );
-      Decorator::drawLine( *curTxs, Point( 0, height() ), Point( 0, 0), DefaultColors::black );*/
     }
     break;
 

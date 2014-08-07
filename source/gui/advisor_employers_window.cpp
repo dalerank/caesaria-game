@@ -64,6 +64,7 @@ public:
     _needWorkers = need;
     _haveWorkers = have;
     _priority = 0;
+    _lockPick = Picture::load( ResourceGroup::panelBackground, 238 );
 
     setTooltipText( _("##empbutton_tooltip##") );
   }
@@ -98,13 +99,21 @@ protected:
 
     if( _priority > 0 )
     {
-      Picture lock = Picture::load( ResourceGroup::panelBackground, 238 );
-      pic->draw( lock, Point( 45, 4), false );
       font.setColor( DefaultColors::black );
-      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 4 ), true, false );
+      font.draw( *pic, StringHelper::i2str( _priority ), Point( 60, 3 ), true, false );
     }
 
     pic->update();
+  }
+
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    if( _priority > 0 )
+    {
+      painter.draw( _lockPick, absoluteRect().lefttop() + Point( 45, 4), &absoluteClippingRectRef() );
+    }
   }
 
   virtual void _btnClicked()
@@ -115,6 +124,7 @@ protected:
 
 private:
   std::string _title;
+  Picture _lockPick;
   int _priority;
   int _needWorkers;
   int _haveWorkers;
@@ -257,11 +267,12 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(Industry::Type ty
 }
 
 EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startPos,
-                                                        Industry::Type priority, const std::string& title )
+                                           Industry::Type priority, const std::string& title )
 {
   EmployersInfo info = getEmployersInfo( priority );
 
   EmployerButton* btn = new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
+  btn->setTooltipText( _("##empbutton_tooltip##") );
   btn->setText( "" );
   empButtons[ priority ] = btn;
 

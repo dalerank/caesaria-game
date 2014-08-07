@@ -16,7 +16,7 @@
 #ifndef _CAESARIA_HIRE_PRIORITY_WINDOW_H_INCLUDE_
 #define _CAESARIA_HIRE_PRIORITY_WINDOW_H_INCLUDE_
 
-#include "widget.hpp"
+#include "window.hpp"
 #include "core/signals.hpp"
 #include "game/enums.hpp"
 #include "city/industry.hpp"
@@ -24,7 +24,7 @@
 namespace gui
 {
 
-class HirePriorityWnd : public Widget
+class HirePriorityWnd : public Window
 {
 public:
   HirePriorityWnd( Widget* parent, city::Industry::Type type, int priority );
