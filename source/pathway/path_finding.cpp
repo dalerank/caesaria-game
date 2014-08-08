@@ -79,7 +79,7 @@ void Propagator::init(const TilesArray& origin)
   _d->completedBranches.clear();
 
   // init propagation
-  for( TilesArray::const_iterator it=origin.begin(); it != origin.end(); ++it )
+  foreach( it, origin )
   {
     // std::cout << "Tile access " << tile.getI() << "," << tile.getJ() << std::endl;
     Tile* tile = *it;

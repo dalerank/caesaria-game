@@ -63,7 +63,7 @@ public:
   virtual void renderPass( Engine& engine, Renderer::Pass pass);
 
   virtual void registerTileForRendering(Tile&);
-  virtual int getNextLayer() const;
+  virtual int nextLayer() const;
 
   virtual ~Layer();
 protected:
@@ -72,7 +72,7 @@ protected:
   WalkerList _getVisibleWalkerList( const VisibleWalkers& aw, const TilePos& pos );
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
-  void _setTooltipText( std::string text );
+  void _setTooltipText( const std::string& text );
   void _loadColumnPicture( int picId );
   void _addWalkerType( constants::walker::Type wtype );
 

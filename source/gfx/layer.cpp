@@ -262,7 +262,7 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
   }
 }
 
-void Layer::_setTooltipText(std::string text)
+void Layer::_setTooltipText(const std::string& text)
 {
   __D_IMPL(_d,Layer)
   if( !_d->tooltipPic.isNull() && (_d->tooltipText != text))
@@ -273,7 +273,7 @@ void Layer::_setTooltipText(std::string text)
 
     if( _d->tooltipPic->size() != size )
     {
-      _d->tooltipPic.reset( Picture::create( size ) );
+      _d->tooltipPic.reset( Picture::create( size, 0, true ) );
     }
 
     _d->tooltipPic->fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic->size() ) );
@@ -543,7 +543,7 @@ void Layer::_addWalkerType(walker::Type wtype)
   _dfunc()->vwalkers.insert( wtype );
 }
 
-int Layer::getNextLayer() const{ return _dfunc()->nextLayer; }
+int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 Camera* Layer::_camera(){ return _dfunc()->camera;}
 PlayerCityPtr Layer::_city(){ return _dfunc()->city;}
 void Layer::_setNextLayer(int layer) { _dfunc()->nextLayer = layer;}

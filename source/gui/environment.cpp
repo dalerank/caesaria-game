@@ -186,6 +186,11 @@ bool GuiEnv::isHovered( const Widget* element )
   return element != NULL ? (_d->hovered.object() == element) : false;
 }
 
+Widget *GuiEnv::findWidget(int id)
+{
+  return Widget::findChild( id, true );
+}
+
 void GuiEnv::deleteLater( Widget* ptrElement )
 {
 	try

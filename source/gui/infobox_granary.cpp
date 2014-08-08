@@ -59,6 +59,7 @@ AboutGranary::AboutGranary( Widget* parent, const Tile& tile )
                                              _granary->store().qty(),
                                              _("##units_in_stock##"), _("##freespace_for##"),
                                              _granary->store().freeQty() );
+    lbUnits->setPosition( _lbTitleRef()->leftbottom() + Point( 0, 5 ) );
     lbUnits->setText( desc );
 
     drawGood(Good::wheat, 0, lbUnits->bottom() );

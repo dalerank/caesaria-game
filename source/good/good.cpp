@@ -75,11 +75,6 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
   _type = stock._type;  // in case goodType was Good::none
   _qty += amount;
   stock._qty -= amount;
-  
-  if( stock._qty == 0 )
-  {
-     stock._type = none;
-  }
 }
 
 VariantList GoodStock::save() const

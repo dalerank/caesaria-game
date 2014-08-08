@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "granary.hpp"
 #include "game/resourcegroup.hpp"
@@ -69,14 +69,14 @@ public:
     SimpleGoodStore::store( stock, amount );
   }
 
-  virtual void applyStorageReservation(GoodStock &stock, const long reservationID)
+  virtual void applyStorageReservation(GoodStock &stock, const int reservationID)
   {
     SimpleGoodStore::applyStorageReservation( stock, reservationID );
 
     granary->computePictures();
   }
 
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID)
+  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID)
   {
     SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
 
@@ -225,6 +225,7 @@ const Pictures& Granary::pictures(Renderer::Pass pass) const
 void Granary::_updateAnimation(const unsigned long time)
 {
   WorkingBuilding::_updateAnimation( time );
+
   _d->granarySprite[ 1 ] = _fgPicture( 5 );
 }
 

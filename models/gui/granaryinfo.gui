@@ -5,6 +5,7 @@
     text : "##granary_orders##"
     geometry : [ 60, "ph-34", "pw-60", "ph-14" ]
     font : "FONT_2"
+    bgtype : "whiteBorderUp"
   }
 
   lbUnits#Label : {
