@@ -65,8 +65,11 @@ void ServiceBuilding::_setLastSendService(DateTime time) { _d->dateLastSend = ti
 
 int ServiceBuilding::time2NextService() const
 {
-  float koeff = ( numberWorkers() > 0 ) ? (float)maximumWorkers() / (float)numberWorkers() : 1.f;
-  return (int)(serviceDelay() * koeff);
+  float workersRate = (numberWorkers() > 0 ? productivity() : 100) / 100.f;
+  float laborAccessKoeff = laborAccessPercent() / 100.f;
+  float timeKoeff = math::clamp( 1 / (workersRate * laborAccessKoeff), 1.f, 4.f );
+
+  return (int)(serviceDelay() * timeKoeff);
 }
 
 Service::Type ServiceBuilding::serviceType() const{   return _d->service;}

@@ -90,7 +90,7 @@ void Barracks::storeGoods(GoodStock& stock, const int amount)
 std::string Barracks::workersProblemDesc() const
 {
   unsigned int pp = productivity();
-  unsigned int haveWeapon = _d->store.qty() > 0.5 * _d->store.capacity();
+  unsigned int haveWeapon = _d->store.qty() >= _d->store.capacity() / 2;
   if( pp > 0  )
   {
     if( _d->notNeedSoldiers )
@@ -105,13 +105,13 @@ std::string Barracks::workersProblemDesc() const
                 ? "##barracks_have_weapons_bad_workers##"
                 : "##barracks_bad_weapons_bad_workers##";
     }
-    else if( p < 50 )
+    else if( pp < 50 )
     {
       return ( haveWeapon )
                 ? "##barracks_have_weapons_slow_workers##"
                 : "##barracks_bad_weapons_slow_workers##";
     }
-    else if( p < 75 )
+    else if( pp < 75 )
     {
       return ( haveWeapon )
                 ? "##barracks_have_weapons_patrly_workers##"

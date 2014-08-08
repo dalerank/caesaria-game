@@ -32,6 +32,7 @@ class MetaDataOptions
 public:
   static const char* cost;
   static const char* requestDestroy;
+  static const char* employers;
 };
 
 class MetaData

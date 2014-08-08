@@ -72,7 +72,7 @@ AboutHouse::AboutHouse( Widget* parent, const Tile& tile )
 
   _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
 
-  Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), _( _house->getEvolveInfo() ) );
+  Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), _( _house->evolveInfo() ) );
   houseInfo->setWordwrap( true );
 
   std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",

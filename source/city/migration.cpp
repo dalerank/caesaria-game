@@ -285,7 +285,7 @@ float Migration::Impl::getMigrationKoeff( PlayerCity& city )
 Info::Parameters Migration::Impl::lastMonthParams( PlayerCity& city )
 {
   InfoPtr info;
-  info << ptr_cast<Info>( city.findService( Info::defaultName() );
+  info << ptr_cast<Info>( city.findService( Info::defaultName() ) );
 
   Info::Parameters params;
   if( info.isValid() )

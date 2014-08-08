@@ -16,20 +16,18 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "working.hpp"
+#include "city/helper.hpp"
 #include "walker/walker.hpp"
 #include "events/returnworkers.hpp"
 #include "core/stringhelper.hpp"
 #include "game/gamedate.hpp"
+#include "objects/house.hpp"
+#include "objects/house_level.hpp"
 #include "events/removecitizen.hpp"
 
 using namespace gfx;
 using namespace events;
-
-namespace {
-CAESARIA_LITERALCONST(currentWorkers)
-CAESARIA_LITERALCONST(active)
-CAESARIA_LITERALCONST(maxWorkers)
-}
+using namespace constants;
 
 class WorkingBuilding::Impl
 {
@@ -40,6 +38,7 @@ public:
   WalkerList walkerList;
   std::string errorStr;
   bool clearAnimationOnStop;
+  float laborAccessKoeff;
 };
 
 WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
@@ -49,26 +48,29 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
   _d->maxWorkers = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
+  _d->laborAccessKoeff = 1.f;
   _animationRef().stop();
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
 {
   Building::save( stream );
-  stream[ lc_currentWorkers ] = _d->currentWorkers;
-  stream[ lc_active ] = _d->isActive;
-  stream[ lc_maxWorkers ] = _d->maxWorkers;
+  VARIANT_SAVE_ANY_D( stream, _d, currentWorkers );
+  VARIANT_SAVE_ANY_D( stream, _d, isActive );
+  VARIANT_SAVE_ANY_D( stream, _d, maxWorkers );
 }
 
 void WorkingBuilding::load( const VariantMap& stream)
 {
   Building::load( stream );
-  _d->currentWorkers = (unsigned int)stream.get( lc_currentWorkers, 0 );
-  _d->isActive = (bool)stream.get( lc_active, true );
-  Variant value = stream.get( lc_maxWorkers );
+  VARIANT_LOAD_ANY_D( _d, currentWorkers, stream );
+  VARIANT_LOAD_ANY_D( _d, isActive, stream );
+  VARIANT_LOAD_ANY_D( _d, maxWorkers, stream );
 
-  if( !value.isNull() )
-    _d->maxWorkers = value;
+  if( !_d->maxWorkers )
+  {
+    _d->maxWorkers = MetaDataHolder::getData( type() ).getOption( MetaDataOptions::employers );
+  }
 }
 
 std::string WorkingBuilding::workersProblemDesc() const
@@ -85,6 +87,11 @@ std::string WorkingBuilding::troubleDesc() const
     trouble = "##working_building_need_road##";
   }
 
+  if( _d->laborAccessKoeff < 0.5f )
+  {
+    trouble = "##working_build_poor_labor_warning##";
+  }
+
   if( trouble.empty() && numberWorkers() < maximumWorkers() / 2 )
   {
     trouble = workersProblemDesc();
@@ -99,7 +106,8 @@ unsigned int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp( currentWorkers, 0u, _d->maxWorkers );}
 unsigned int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
-unsigned int WorkingBuilding::productivity() const { return numberWorkers() * 100u / maximumWorkers(); }
+unsigned int WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
+unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAccessKoeff; }
 bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
@@ -119,6 +127,27 @@ void WorkingBuilding::timeStep( const unsigned long time )
   {
     if( (*it)->isDeleted() ) { it = _d->walkerList.erase( it ); }
     else { ++it; }
+  }
+
+  if( GameDate::isMonthChanged() && numberWorkers() > 0 )
+  {
+    city::Helper helper( _city() );
+    TilePos offset( 8, 8 );
+    TilePos myPos = pos();
+    HouseList houses = helper.find<House>( building::house, myPos - offset, myPos + offset );
+    float averageDistance = 0;
+    foreach( it, houses )
+    {
+      if( (*it)->spec().level() < HouseLevel::smallVilla )
+      {
+        averageDistance += myPos.distanceFrom( (*it)->pos() );
+      }
+    }
+
+    if( houses.size() > 0 )
+      averageDistance /= houses.size();
+
+    _d->laborAccessKoeff = std::min( math::percentage( averageDistance, 8 ) * 2, 100 );
   }
 
   _updateAnimation( time );

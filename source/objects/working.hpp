@@ -32,6 +32,7 @@ public:
   unsigned int numberWorkers() const;
   unsigned int needWorkers() const;
   unsigned int productivity() const;
+  unsigned int laborAccessPercent() const;
 
   void setWorkers( const unsigned int currentWorkers );
   void addWorkers( const unsigned int workers );

@@ -95,7 +95,7 @@ public:
   void appendMoney( float money );
   DateTime lastTaxationDate() const;
 
-  std::string getEvolveInfo() const;
+  std::string evolveInfo() const;
 
   virtual int roadAccessDistance() const;
 

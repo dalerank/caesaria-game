@@ -33,6 +33,7 @@ using namespace gfx;
 
 const char* MetaDataOptions::cost = "cost";
 const char* MetaDataOptions::requestDestroy = "requestDestroy";
+const char* MetaDataOptions::employers = "employers";
 
 MetaData MetaData::invalid = MetaData( building::unknown, "unknown" );
 

@@ -1180,7 +1180,7 @@ float House::taxesThisYear() const { return _d->taxesThisYear; }
 
 void House::appendMoney(float money) {  _d->money += money; }
 DateTime House::lastTaxationDate() const{  return _d->lastTaxationDate;}
-std::string House::getEvolveInfo() const{  return _d->evolveInfo;}
+std::string House::evolveInfo() const{  return _d->evolveInfo;}
 Desirability House::desirability() const {  return _d->desirability; }
 bool House::isWalkable() const{  return _d->houseLevel < HouseLevel::bigTent; }
 bool House::isFlat() const { return _d->hid == HouseLevel::vacantLot; }
