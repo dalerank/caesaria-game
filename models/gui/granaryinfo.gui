@@ -1,0 +1,14 @@
+{  
+  geometry : [ 0, 0, 510, 280 ]
+
+  btnOrders#PushButton : {
+    text : "##granary_orders##"
+    geometry : [ 60, "ph-34", "pw-60", "ph-14" ]
+    font : "FONT_2"
+  }
+
+  lbUnits#Label : {
+    geometry : [ 16, 0, "pw-1", 25 ]
+    font : "FONT_2"
+  }
+}

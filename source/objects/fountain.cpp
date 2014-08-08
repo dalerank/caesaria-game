@@ -127,7 +127,7 @@ bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
   if( tile.param( Tile::pReservoirWater ) )
   {
     thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 11 ) );
-    thisp->_fgPicturesRef().back().setOffset( 12, 10 + picture().offset().y() );
+    thisp->_fgPicturesRef().back().setOffset( 12, 8 + picture().offset().y() );
   }
 
   return ret;

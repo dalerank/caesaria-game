@@ -114,6 +114,7 @@ void LoadFileDialog::Impl::fillFiles()
   {
     names << (*it).absolutePath().toString();
   }
+  std::sort( names.begin(), names.end() );
 
   lbxFiles->addItems( names );
 }

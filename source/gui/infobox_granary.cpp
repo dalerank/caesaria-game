@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
@@ -38,37 +40,37 @@ namespace infobox
 AboutGranary::AboutGranary( Widget* parent, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 280 ), Rect( 16, 130, 510 - 16, 130 + 62) )
 {
+  setupUI( ":/gui/granaryinfo.gui" );
   _granary = ptr_cast<Granary>( tile.overlay() );
 
   setConstruction( ptr_cast<Construction>( _granary ) );
 
-  Size btnOrdersSize( 350, 20 );
-  PushButton* btnOrders = new PushButton( this, Rect( Point( (width() - btnOrdersSize.width())/ 2, height() - 34 ), btnOrdersSize),
-                                         _("##granary_orders##"), -1, false, PushButton::whiteBorderUp );
+  PushButton* btnOrders = findChildA<PushButton*>( "btnOrders", true, this );
   CONNECT( btnOrders, onClicked(), this, AboutGranary::showSpecialOrdersWindow );
 
   std::string title = MetaDataHolder::findPrettyName( _granary->type() );
-  setTitle( _(title) );
+  setTitle( _(title) ); 
 
-  // summary: total stock, free capacity
-  std::string desc = StringHelper::format( 0xff, "%d %s, %s %d",
-                                           _granary->store().qty(),
-                                           _("##units_in_stock##"), _("##freespace_for##"),
-                                           _granary->store().freeQty() );
+  Label* lbUnits = findChildA<Label*>( "lbUnits", true, this );
+  if( lbUnits )
+  {
+    // summary: total stock, free capacity
+    std::string desc = StringHelper::format( 0xff, "%d %s, %s %d",
+                                             _granary->store().qty(),
+                                             _("##units_in_stock##"), _("##freespace_for##"),
+                                             _granary->store().freeQty() );
+    lbUnits->setText( desc );
 
-  Label* lbUnits = new Label( this, Rect( _lbTitleRef()->leftbottom(), Size( width() - 16, 40 )), desc );
-
-  drawGood(Good::wheat, 0, lbUnits->bottom() );
-  drawGood(Good::meat, 0, lbUnits->bottom() + 25);
-  drawGood(Good::fruit, 1, lbUnits->bottom() );
-  drawGood(Good::vegetable, 1, lbUnits->bottom() + 25);
+    drawGood(Good::wheat, 0, lbUnits->bottom() );
+    drawGood(Good::meat, 0, lbUnits->bottom() + 25);
+    drawGood(Good::fruit, 1, lbUnits->bottom() );
+    drawGood(Good::vegetable, 1, lbUnits->bottom() + 25);
+  }
 
   _updateWorkersLabel( Point( 32, lbUnits->bottom() + 60 ), 542, _granary->maximumWorkers(), _granary->numberWorkers() );
 }
 
-AboutGranary::~AboutGranary()
-{
-}
+AboutGranary::~AboutGranary() {}
 
 void AboutGranary::showSpecialOrdersWindow()
 {

@@ -413,8 +413,8 @@ void PlayerCity::Impl::payWages(PlayerCityPtr city)
 
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 {
-  long pop = 0; /* population can't be negative - should be unsigned long long*/
-  
+  unsigned int pop = 0;
+
   city::Helper helper( city );
 
   HouseList houseList = helper.find<House>( building::house );

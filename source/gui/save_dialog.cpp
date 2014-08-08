@@ -74,6 +74,7 @@ void SaveDialog::Impl::findFiles()
   vfs::Entries flist = directory.getEntries();
   StringArray names;
   names << flist.filter( vfs::Entries::file | vfs::Entries::extFilter, extension );
+  std::sort( names.begin(), names.end() );
   if( lbxSaves ) lbxSaves->addItems( names );
 }
 

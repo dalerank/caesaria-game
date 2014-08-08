@@ -81,6 +81,7 @@ void Pathway::init( Tilemap& tilemap, Tile &origin)
 {
   _d->tilemap = &tilemap;
   _d->origin = &origin;
+  _d->isReverse = false;
   _d->destination = origin.pos();
   _d->directionList.clear();
   _d->directionIt = _d->directionList.begin();

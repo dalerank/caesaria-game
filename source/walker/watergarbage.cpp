@@ -39,6 +39,7 @@ WaterGarbage::WaterGarbage(PlayerCityPtr city )
   _animation.load( ResourceGroup::sprites, 93, 6 );
   _animation.setDelay( 2 );
   _animation.setOffset( Point( -15, 0 ) );
+  setSpeedMultiplier( 0.5 + math::random( 10 ) / 10.f );
 
   setName( _("##water_garbage##") );
 }
