@@ -274,15 +274,12 @@ void Emperor::Impl::sendGift(int money)
   city->empire()->emperor().sendGift( city->name(), money );
 }
 
-void Emperor::Impl::changeSalary( int money)
+void Emperor::Impl::changeSalary( int money )
 {
   PlayerPtr pl = city->player();
   pl->setSalary( money );
 
-  world::GovernorRanks ranks = world::EmpireHelper::ranks();
-  const world::GovernorRank& curRank = ranks[ math::clamp( pl->rank(), 0, ranks.size()-1 ) ];
-  int normalSalary = curRank.salary;
-  if( pl->salary() > normalSalary )
+  if( world::EmpireHelper::isGreaterSalary( ptr_cast<world::City>( city ) ) )
   {
     DialogBox* dlg = new DialogBox( lbEmperorFavour->parent(), Rect(),
                                     "##changesalary_warning##", "##changesalary_greater_salary##",

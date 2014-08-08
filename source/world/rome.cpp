@@ -22,6 +22,7 @@
 #include "events/showinfobox.hpp"
 #include "goodcaravan.hpp"
 #include "core/gettext.hpp"
+#include "game/player.hpp"
 
 namespace world {
 
@@ -50,6 +51,8 @@ city::Funds& Rome::funds() { return _d->funds; }
 std::string Rome::name() const { return Rome::defaultName; }
 unsigned int Rome::population() const { return 45000; }
 bool Rome::isPaysTaxes() const { return true; }
+
+SmartPtr<Player> Rome::player() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
 const GoodStore& Rome::exportingGoods() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}

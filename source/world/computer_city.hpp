@@ -37,7 +37,7 @@ public:
   bool isRomeCity() const;
   virtual bool isAvailable() const;
   virtual void setAvailable(bool value);
-
+  virtual SmartPtr<Player> player() const;
   virtual void timeStep( unsigned int time );
 
   virtual void save( VariantMap& options ) const;

@@ -24,6 +24,7 @@
 #include "city/funds.hpp"
 #include "game/resourcegroup.hpp"
 #include "empiremap.hpp"
+#include "game/player.hpp"
 
 using namespace gfx;
 
@@ -72,6 +73,8 @@ bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isRomeCity() const{  return _d->romeCity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
+
+SmartPtr<Player> ComputerCity::player() const { return 0; }
 
 void ComputerCity::save( VariantMap& options ) const
 {

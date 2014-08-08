@@ -29,6 +29,7 @@
 #include "rome.hpp"
 #include "empiremap.hpp"
 #include "emperor.hpp"
+#include "game/player.hpp"
 #include "objects_factory.hpp"
 #include "game/settings.hpp"
 #include "game/gamedate.hpp"
@@ -430,6 +431,23 @@ unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::s
   }
 
   return 0;
+}
+
+bool EmpireHelper::isGreaterSalary(CityPtr city)
+{
+  PlayerPtr pl = city->player();
+
+  bool result = false;
+  if( pl.isValid() )
+  {
+    world::GovernorRanks ranks = world::EmpireHelper::ranks();
+    const world::GovernorRank& curRank = ranks[ math::clamp<int>( pl->rank(), 0, ranks.size()-1 ) ];
+    int normalSalary = curRank.salary;
+
+    result = (pl->salary() > normalSalary);
+  }
+
+  return result;
 }
 
 GovernorRanks EmpireHelper::ranks()

@@ -25,6 +25,7 @@
 #include "good/good.hpp"
 
 class GoodStore;
+class Player;
 
 namespace city
 {
@@ -49,6 +50,7 @@ public:
   virtual bool isPaysTaxes() const = 0;
   virtual bool haveOverduePayment() const = 0;
   virtual bool isMovable() const { return false; }
+  virtual SmartPtr<Player> player() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
   virtual void empirePricesChanged( Good::Type gtype, int bCost, int sCost ) = 0;

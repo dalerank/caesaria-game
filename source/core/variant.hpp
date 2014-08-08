@@ -44,7 +44,7 @@ class VariantMap;
 #define VARIANT_LOAD_TIME(param,vm) param = vm.get( #param ).toDateTime();
 
 #define VARIANT_SAVE_ANY_D(vm,d,param) vm[ #param ] = d->param;
-#define VARIANT_SAVE_STR_D(vm,d,param) vm[ #param ] = Varinat( d->param );
+#define VARIANT_SAVE_STR_D(vm,d,param) vm[ #param ] = Variant( d->param );
 #define VARIANT_LOAD_ANY_D(d,param,vm) d->param = vm.get( #param );
 
 #define VARIANT_LOAD_STR_D(d,param,vm) d->param = vm.get( #param ).toString();

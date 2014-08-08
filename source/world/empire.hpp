@@ -96,6 +96,7 @@ class EmpireHelper
 {
 public:
   static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
+  static bool isGreaterSalary( CityPtr city );
   static GovernorRanks ranks();
 };
 

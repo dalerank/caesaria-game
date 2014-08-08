@@ -37,6 +37,7 @@ public:
   virtual std::string name() const;
   virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
+  virtual SmartPtr<Player> player() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
 
