@@ -36,7 +36,8 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, gfx::Engine& engine, gfx::Came
   Point pos = walker->mappos();
   if( pathway.isReverse() )
   {
-    for( int step=pathway.curStep()-1; step >= 0; step-- )
+    int rStart = pathway.length() - pathway.curStep();
+    for( int step=rStart-1; step >= 0; step-- )
     {
       engine.drawLine(  0xff00ff00, pos + camOffset, tiles[ step ]->mappos() + camOffset + Point( 30, 0 ) );
       pos = tiles[ step ]->mappos() + Point( 30, 0 );

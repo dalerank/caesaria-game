@@ -95,6 +95,8 @@ public:
 
   void updateText( const Point& p, Font f, const Size& s );
 
+  void draw(const std::string& text, Font f , const Point& p);
+
   struct OverrideColor
   {
     OverrideColor() : Use(false), color( 0 ) {}

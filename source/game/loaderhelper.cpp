@@ -121,7 +121,9 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
      ovType = construction::road;
-     oTile.setPicture( Picture::load( ResourceGroup::land1a, 230 + math::random( 59) ) );
+     Picture pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 59) );
+     oTile.setPicture( pic );
+     oTile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
   }
   else /*if( oTile.getFlag( Tile::tlBuilding ) )*/
   {

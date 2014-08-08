@@ -51,6 +51,7 @@ void Player::save( VariantMap& stream ) const
   VARIANT_SAVE_STR_D( stream, _d, name );
   VARIANT_SAVE_ANY_D( stream, _d, salary );
   VARIANT_SAVE_ANY_D( stream, _d, color );
+  VARIANT_SAVE_ANY_D( stream, _d, rank );
 }
 
 void Player::load( const VariantMap& stream )
@@ -59,6 +60,7 @@ void Player::load( const VariantMap& stream )
   VARIANT_LOAD_STR_D( _d, name, stream );
   VARIANT_LOAD_ANY_D( _d, salary, stream );
   VARIANT_LOAD_ANY_D( _d, color, stream );
+  VARIANT_LOAD_ANY_D( _d, rank, stream );
 }
 
 void Player::appendMoney( int money ){  _d->funds += money;}

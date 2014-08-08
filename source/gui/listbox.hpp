@@ -158,7 +158,7 @@ protected:
   virtual void _resizeEvent();
   virtual void _drawItemIcon(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect);
   virtual void _drawItemText(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect);
-  virtual void _updateItemText( gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );
+  virtual void _updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );
   Rect _itemsRect();
 
 private:

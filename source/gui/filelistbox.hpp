@@ -35,7 +35,7 @@ public:
   virtual ListBoxItem& addItem(const std::string &text, Font font, const int color);
 
 protected:
-  virtual void _drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos);
+  virtual void _updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );
 };
 
 }//end namespace gui

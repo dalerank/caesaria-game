@@ -119,6 +119,14 @@ void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
   }
 }
 
+void ListBoxItem::draw(const std::string& text, Font f, const Point& p )
+{
+  if( _d->textPic )
+  {
+    f.draw( *_d->textPic, text, p );
+  }
+}
+
 ListBoxItem::~ListBoxItem(){}
 void ListBoxItem::setTag( int tag ){	_d->tag = tag;}
 int ListBoxItem::tag() const{	return _d->tag;}

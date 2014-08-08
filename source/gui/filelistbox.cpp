@@ -18,6 +18,7 @@
 #include "filelistbox.hpp"
 #include "vfs/filesystem.hpp"
 #include "core/stringhelper.hpp"
+#include "listboxitem.hpp"
 
 namespace gui
 {
@@ -46,18 +47,17 @@ ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int 
   return item;
 }
 
-void FileListBox::_drawItemText(gfx::Picture& texture, Font font, ListBoxItem& item, const Point& pos)
+
+void FileListBox::_updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect )
 {
-  font.draw( texture, item.text(), pos, false );
-  Font font2 = Font::create( FONT_1 );
+  ListBox::_updateItemText( painter, item, textRect, font, frameRect );
+
+  Font f = Font::create( FONT_1 );
 
   std::string timeStr = item.data().toString();
-  Rect textRect = _itemsRect();
-  textRect = font2.getTextRect( timeStr, Rect( 0, pos.y(), textRect.width(), pos.y() + itemHeight() ),
-                                align::lowerRight, align::center );
+  Rect finalRect = f.getTextRect( timeStr, Rect( Point(), frameRect.size() ), align::lowerRight, align::center );
 
-  font2.setColor( font.color() );
-  font2.draw( texture, timeStr, textRect.UpperLeftCorner - Point( 10, 0) );
+  item.draw( timeStr, f, finalRect.lefttop() - Point( 10, 0)  );
 }
 
 
