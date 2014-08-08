@@ -389,6 +389,8 @@ public:
 
   void setParent( Widget* parent );
 
+  void setRight(int newRight);
+
 protected:
 
   /*!

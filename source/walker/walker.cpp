@@ -151,7 +151,7 @@ void Walker::setPos( const TilePos& pos )
 void Walker::setPathway( const Pathway& pathway)
 {
   _d->pathway = pathway;
-  _d->pathway.begin();
+  _d->pathway.move( Pathway::forward );
   _d->centerReached = false;
   _centerTile();
 }
@@ -485,7 +485,7 @@ void Walker::turn(TilePos p)
 void Walker::_updatePathway( const Pathway& pathway)
 {
   _d->pathway = pathway;
-  _d->pathway.begin();  
+  _d->pathway.move( Pathway::forward );
   _computeDirection();
 }
 

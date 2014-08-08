@@ -28,7 +28,7 @@ struct ReserveInfo
 {
   GoodStock stock;
   DateTime time;
-  unsigned long id;
+  unsigned int id;
 
   bool operator<(const ReserveInfo& a ) const
   {
@@ -41,9 +41,9 @@ class Reservations : public std::set<ReserveInfo>
   static const ReserveInfo invalid;
 public:
   Reservations();
-  const ReserveInfo& get(unsigned long id) const;
+  const ReserveInfo& get(unsigned int id) const;
 
-  unsigned long push( const GoodStock& stock, DateTime time );
+  unsigned int push( const GoodStock& stock, DateTime time );
   bool pop( unsigned int id );
 
   void removeExpired(DateTime currentDate, int monthNumber );
@@ -52,7 +52,7 @@ public:
   void load( const VariantMap& stream );
 
 private:
-  unsigned long _idCounter;
+  unsigned int _idCounter;
 };
 
 class SimpleGoodStore;
@@ -78,24 +78,24 @@ public:
   virtual int getMaxRetrieve(const Good::Type goodType);
 
   // returns the reservationID if stock can be retrieved (else 0)
-  virtual long reserveStorage( GoodStock &stock, DateTime time );
-  virtual long reserveStorage( Good::Type what, unsigned int qty, DateTime time);
+  virtual int reserveStorage( GoodStock &stock, DateTime time );
+  virtual int reserveStorage( Good::Type what, unsigned int qty, DateTime time);
 
   // returns the reservationID if stock can be retrieved (else 0)
-  virtual long reserveRetrieval(GoodStock &stock, DateTime time);
-  virtual long reserveRetrieval(Good::Type what, unsigned int qty, DateTime time);
+  virtual int reserveRetrieval(GoodStock &stock, DateTime time);
+  virtual int reserveRetrieval(Good::Type what, unsigned int qty, DateTime time);
 
   // return the reservation
-  GoodStock getStorageReservation(const long reservationID, const bool pop=false);
-  GoodStock getRetrieveReservation(const long reservationID, const bool pop=false);
+  GoodStock getStorageReservation(const int reservationID, const bool pop=false);
+  GoodStock getRetrieveReservation(const int reservationID, const bool pop=false);
 
   // store/retrieve
-  virtual void applyStorageReservation(GoodStock &stock, const long reservationID) = 0;
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID) = 0;
+  virtual void applyStorageReservation(GoodStock &stock, const int reservationID) = 0;
+  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID) = 0;
 
   // store/retrieve to goodStore
-  void applyStorageReservation(SimpleGoodStore& goodStore, const long reservationID);
-  void applyRetrieveReservation(SimpleGoodStore& goodStore, const long reservationID);
+  void applyStorageReservation(SimpleGoodStore& goodStore, const int reservationID);
+  void applyRetrieveReservation(SimpleGoodStore& goodStore, const int reservationID);
 
   // immediate store/retrieve, exception if impossible
   virtual void store( GoodStock &stock, const int amount);

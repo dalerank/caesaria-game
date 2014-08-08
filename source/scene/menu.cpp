@@ -101,6 +101,8 @@ void StartMenu::Impl::resolveShowLoadGameWnd()
 
   result = StartMenu::loadSavedGame;
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  wnd->setCenter( parent->center() );
+  wnd->setMayDelete( true );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_loadgame##") );
@@ -348,6 +350,7 @@ void StartMenu::Impl::resolvePlayMission()
   gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, rect,
                                                     GameSettings::rcpath( "/missions/" ), ".mission", -1 );
   wnd->setCenter( parent->center() );
+  wnd->setMayDelete( false );
 
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );
   wnd->setTitle( _("##mainmenu_playmission##") );
@@ -369,6 +372,8 @@ void StartMenu::Impl::resolveShowLoadMapWnd()
                                                     Rect(),
                                                     GameSettings::rcpath( "/maps/" ), ".map",
                                                     -1 );
+  wnd->setCenter( parent->center() );
+  wnd->setMayDelete( false );
 
   result = StartMenu::loadMap;
   CONNECT( wnd, onSelectFile(), this, Impl::resolveSelectFile );

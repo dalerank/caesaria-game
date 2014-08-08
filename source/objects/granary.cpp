@@ -52,7 +52,7 @@ public:
   }
 
   // returns the reservationID if stock can be retrieved (else 0)
-  virtual long reserveStorage( GoodStock &stock, DateTime time )
+  virtual int reserveStorage( GoodStock &stock, DateTime time )
   {
     return granary->numberWorkers() > 0
               ? SimpleGoodStore::reserveStorage( stock, time )

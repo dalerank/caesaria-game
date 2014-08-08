@@ -133,8 +133,8 @@ public:
   virtual int getMaxStore(const Good::Type goodType);
 
   // store/retrieve
-  virtual void applyStorageReservation(GoodStock &stock, const long reservationID);
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID);
+  virtual void applyStorageReservation(GoodStock &stock, const int reservationID);
+  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID);
 
 private:
   Warehouse* _warehouse;
@@ -234,7 +234,7 @@ int WarehouseStore::getMaxStore(const Good::Type goodType)
   return freeRoom;
 }
 
-void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reservationID )
+void WarehouseStore::applyStorageReservation( GoodStock &stock, const int reservationID )
 {
   GoodStock reservedStock = getStorageReservation(reservationID, true);
 
@@ -293,7 +293,7 @@ void WarehouseStore::applyStorageReservation( GoodStock &stock, const long reser
   _warehouse->computePictures();
 }
 
-void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const long reservationID)
+void WarehouseStore::applyRetrieveReservation(GoodStock &stock, const int reservationID)
 {
   GoodStock reservedStock = getRetrieveReservation(reservationID, true);
 

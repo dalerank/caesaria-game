@@ -153,7 +153,7 @@ void Prefect::_back2Prefecture()
   {
     _setSubAction( patrol );
     _updatePathway( pathway );
-    _d->endPatrolPoint = pathway.destination().pos();
+    _d->endPatrolPoint = pathway.stopPos();
     go();
   }
   else
@@ -272,7 +272,7 @@ void Prefect::_brokePathway(TilePos p)
   }
   else if( _d->water > 0 )
   {
-    TilePos destination = _pathwayRef().destination().pos();
+    TilePos destination = _pathwayRef().stopPos();
 
     Pathway pathway = PathwayHelper::create( pos(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
@@ -535,7 +535,7 @@ void Prefect::send2City(PrefecturePtr prefecture, int water/*=0 */ )
 
   if( _pathwayRef().isValid() )
   {
-    _d->endPatrolPoint = _pathwayRef().destination().pos();
+    _d->endPatrolPoint = _pathwayRef().stopPos();
   }
 }
 

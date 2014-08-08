@@ -155,7 +155,7 @@ void ServiceWalker::_computeWalkerPath( int orders )
     return;
   }
 
-  setPos( bestPath->getStartPos() );
+  setPos( bestPath->startPos() );
   setPathway( *bestPath.object() );
 }
 
@@ -298,7 +298,7 @@ void ServiceWalker::_reachedPathway()
   else
   {
     // walker finished service => get back to service building    
-    _pathwayRef().rbegin();
+    _pathwayRef().move( Pathway::reverse );
     _computeDirection();
     go();
   }

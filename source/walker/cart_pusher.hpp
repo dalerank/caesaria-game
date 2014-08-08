@@ -58,6 +58,7 @@ protected:
 
   virtual void _changeDirection();
   virtual void _reachedPathway();
+  virtual void _brokePathway(TilePos pos);
 
 private:
   class Impl;

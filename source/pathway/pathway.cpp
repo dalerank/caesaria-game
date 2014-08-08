@@ -22,6 +22,10 @@
 using namespace constants;
 using namespace gfx;
 
+namespace {
+static Tile invalidTile( TilePos(-1, -1) );
+}
+
 class Directions : public std::vector<constants::Direction>
 {
 public:
@@ -91,27 +95,21 @@ unsigned int Pathway::length() const
   return _d->directionList.size();
 }
 
-const Tile& Pathway::front() const {  return *_d->origin; }
-TilePos Pathway::getStartPos() const { return _d->origin ? _d->origin->pos() : TilePos( -1, -1); }
+const Tile& Pathway::front() const { return _d->origin ? *_d->origin : invalidTile; }
 bool Pathway::isReverse() const {  return _d->isReverse; }
 const TilesArray& Pathway::allTiles() const {  return _d->tileList; }
+const Tile& Pathway::back() const { return _d->tilemap->at( _d->destination ); }
 
-const Tile& Pathway::destination() const
+TilePos Pathway::startPos() const
 {
-  const Tile& res = _d->tilemap->at( _d->destination );
-  return res;
+  if( _d->isReverse )   {    return _d->destination;  }
+  else  {    return _d->origin ? _d->origin->pos() : invalidTile.pos();  }
 }
 
-void Pathway::begin()
+TilePos Pathway::stopPos() const
 {
-  _d->directionIt = _d->directionList.begin();
-  _d->isReverse = false;
-}
-
-void Pathway::rbegin()
-{
-  _d->directionIt_reverse = _d->directionList.rbegin();
-  _d->isReverse = true;
+  if( _d->isReverse )   {  return _d->origin ? _d->origin->pos() : invalidTile.pos();    }
+  else  { return _d->destination; }
 }
 
 constants::Direction Pathway::direction()
@@ -225,7 +223,6 @@ void Pathway::setNextDirection(Direction direction)
     Logger::warning( "Unexpected Direction:%d", direction);
   break;
   }
-
 
   if( !_d->tilemap->isInside( TilePos( _d->destination ) ) )
   {
@@ -413,5 +410,19 @@ unsigned int Pathway::curStep() const
   {
     size_t pos = std::distance<Directions::const_iterator>(_d->directionList.begin(), _d->directionIt);
     return static_cast<unsigned int>(pos);
+  }
+}
+
+void Pathway::move(Pathway::DirectionType type)
+{
+  if( type == forward )
+  {
+    _d->directionIt = _d->directionList.begin();
+    _d->isReverse = false;
+  }
+  else
+  {
+    _d->directionIt_reverse = _d->directionList.rbegin();
+    _d->isReverse = true;
   }
 }

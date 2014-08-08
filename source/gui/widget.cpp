@@ -867,6 +867,13 @@ Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textHorzAlign; 
 Alignment Widget::verticalTextAlign() const{  return _dfunc()->textVertAlign;}
 void Widget::deleteLater(){  _environment->deleteLater( this ); }
 
+void Widget::setRight( int newRight )
+{
+  Rect r = relativeRect();
+  r.rright() = newRight;
+  setGeometry( r );
+}
+
 void Widget::installEventHandler( Widget* elementHandler )
 {
   _dfunc()->eventHandlers.insert( elementHandler );

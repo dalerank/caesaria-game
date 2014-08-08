@@ -45,8 +45,8 @@ public:
   int getMaxStore(const Good::Type goodType);
 
   // store/retrieve
-  virtual void applyStorageReservation(GoodStock &stock, const long reservationID);
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID);
+  virtual void applyStorageReservation(GoodStock &stock, const int reservationID);
+  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID);
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );

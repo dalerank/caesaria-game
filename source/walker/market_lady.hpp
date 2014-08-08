@@ -42,7 +42,6 @@ public:
 protected:
   virtual void _reachedPathway();
 
-
 private:
   MarketLady( PlayerCityPtr city );
 

@@ -33,9 +33,9 @@ class MarketKid::Impl
 {
 public:
   GoodStock basket;
-  unsigned long delay;
   TilePos marketPos;
-  unsigned long birthTime;
+  unsigned int delay;
+  unsigned int birthTime;
 };
 
 MarketKidPtr MarketKid::create(PlayerCityPtr city )
@@ -75,7 +75,7 @@ void MarketKid::send2City( MarketPtr destination )
   if( destination.isValid() )
   {
     _d->marketPos = destination->pos();
-    _pathwayRef().rbegin();
+    _pathwayRef().move( Pathway::reverse );
     _centerTile();
     _city()->addWalker( this );
   }
@@ -89,18 +89,18 @@ void MarketKid::save(VariantMap& stream) const
 {
   Walker::save( stream );
   stream[ "basket" ] = _d->basket.save();
-  stream[ "delay"  ] = (int)_d->delay;
-  stream[ "market" ] = _d->marketPos;
-  stream[ "birthTime" ] = (int)_d->birthTime;
+  VARIANT_SAVE_ANY_D( stream, _d, delay );
+  VARIANT_SAVE_ANY_D( stream, _d, marketPos );
+  VARIANT_SAVE_ANY_D( stream, _d, birthTime );
 }
 
 void MarketKid::load(const VariantMap& stream)
 {
   Walker::load( stream );
   _d->basket.load( stream.get( "basket" ).toList() );
-  _d->delay = (int)stream.get( "delay" );
-  _d->marketPos = stream.get( "market" ).toTilePos();
-  _d->birthTime = (int)stream.get( "birthTime" );
+  VARIANT_LOAD_ANY_D( _d, delay, stream );
+  VARIANT_LOAD_ANY_D( _d, marketPos, stream );
+  VARIANT_LOAD_ANY_D( _d, birthTime, stream );
 }
 
 void MarketKid::timeStep( const unsigned long time )

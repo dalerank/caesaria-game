@@ -52,7 +52,7 @@ int GoodStore::getMaxRetrieve(const Good::Type goodType)
 }
 
 
-long GoodStore::reserveStorage(GoodStock &stock, DateTime time)
+int GoodStore::reserveStorage(GoodStock &stock, DateTime time)
 {
   if( getMaxStore(stock.type() ) < stock.qty() )   // current free capacity
     return 0;
@@ -61,13 +61,13 @@ long GoodStore::reserveStorage(GoodStock &stock, DateTime time)
   return _d->storeReservations.push( stock, time );
 }
 
-long GoodStore::reserveStorage(Good::Type what, unsigned int qty, DateTime time)
+int GoodStore::reserveStorage(Good::Type what, unsigned int qty, DateTime time)
 {
   GoodStock tmpStock( what, qty, qty);
   return reserveStorage( tmpStock, time );
 }
 
-long GoodStore::reserveRetrieval(GoodStock &stock, DateTime time)
+int GoodStore::reserveRetrieval(GoodStock &stock, DateTime time)
 {
   // current good quantity
   if( getMaxRetrieve(stock.type()) < stock.qty())
@@ -76,13 +76,13 @@ long GoodStore::reserveRetrieval(GoodStock &stock, DateTime time)
   return _d->retrieveReservations.push( stock, time );
 }
 
-long GoodStore::reserveRetrieval(Good::Type what, unsigned int qty, DateTime time)
+int GoodStore::reserveRetrieval(Good::Type what, unsigned int qty, DateTime time)
 {
   GoodStock tmpStock( what, qty, qty);
   return reserveRetrieval( tmpStock, time );
 }
 
-GoodStock GoodStore::getStorageReservation(const long reservationID, const bool pop)
+GoodStock GoodStore::getStorageReservation(const int reservationID, const bool pop)
 {
   ReserveInfo info = _d->storeReservations.get( reservationID );
 
@@ -101,7 +101,7 @@ GoodStock GoodStore::getStorageReservation(const long reservationID, const bool 
 }
 
 
-GoodStock GoodStore::getRetrieveReservation(const long reservationID, const bool pop)
+GoodStock GoodStore::getRetrieveReservation(const int reservationID, const bool pop)
 {
   ReserveInfo info = _d->retrieveReservations.get(reservationID);
 
@@ -120,7 +120,7 @@ GoodStock GoodStore::getRetrieveReservation(const long reservationID, const bool
 }
 
 
-void GoodStore::applyStorageReservation(SimpleGoodStore &goodStore, const long reservationID)
+void GoodStore::applyStorageReservation(SimpleGoodStore &goodStore, const int reservationID)
 {
   GoodStock reservedStock = getStorageReservation(reservationID);
   GoodStock &stock = goodStore.getStock(reservedStock.type() );
@@ -129,7 +129,7 @@ void GoodStore::applyStorageReservation(SimpleGoodStore &goodStore, const long r
 }
 
 
-void GoodStore::applyRetrieveReservation(SimpleGoodStore &goodStore, const long reservationID)
+void GoodStore::applyRetrieveReservation(SimpleGoodStore &goodStore, const int reservationID)
 {
   GoodStock reservedStock = getRetrieveReservation(reservationID);
   GoodStock &stock = goodStore.getStock(reservedStock.type() );
@@ -246,7 +246,7 @@ bool GoodStore::empty() const{  return qty() == 0;}
 const ReserveInfo Reservations::invalid = { GoodStock(), DateTime(), 0 };
 Reservations::Reservations(){  _idCounter = 1; }
 
-const ReserveInfo& Reservations::get(unsigned long id) const
+const ReserveInfo& Reservations::get(unsigned int id) const
 {
   for( Reservations::const_iterator i=begin(); i != end(); ++i )
   {
@@ -257,7 +257,7 @@ const ReserveInfo& Reservations::get(unsigned long id) const
   return Reservations::invalid;
 }
 
-unsigned long Reservations::push(const GoodStock& stock, DateTime time)
+unsigned int Reservations::push(const GoodStock& stock, DateTime time)
 {
   ReserveInfo info;
   info.stock = stock;

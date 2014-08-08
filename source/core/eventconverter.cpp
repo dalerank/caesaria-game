@@ -275,10 +275,14 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     }
   }
   break;
+
   case SDL_MOUSEWHEEL:
   {
     SDL_MouseWheelEvent wheelEvent = sdlEvent.wheel;
+    ret.EventType = sEventMouse;
     ret.mouse.type = mouseWheel;
+    ret.mouse.x = _d->mouseX;
+    ret.mouse.y = _d->mouseY;
     ret.mouse.wheel = wheelEvent.y > 0 ? 1.0f : -1.0f;
   }
   break;

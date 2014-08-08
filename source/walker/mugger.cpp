@@ -108,7 +108,7 @@ void Mugger::timeStep(const unsigned long time)
         //find path to most expensive house, fire this!!!
         if( pathway.isValid() )
         {
-          setPos( pathway.getStartPos() );
+          setPos( pathway.startPos() );
           setPathway( pathway );
           go();
           _d->state = Impl::go2destination;

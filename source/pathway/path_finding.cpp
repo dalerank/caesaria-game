@@ -109,7 +109,7 @@ void Propagator::propagate(const unsigned int maxDistance)
       firstBranch = _d->activeBranches.begin();
 
       PathwayPtr pathWay = *firstBranch;
-      const Tile& tile = pathWay->destination();
+      const Tile& tile = _d->tilemap->at( pathWay->stopPos() );
       //std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
       unsigned int tileLength = 1;
@@ -215,7 +215,7 @@ PathwayList Propagator::getWays(const unsigned int maxDistance)
          return PathwayList();
        }
 
-       const Tile& tile = pathWay->destination();
+       const Tile& tile = _d->tilemap->at( pathWay->stopPos() );
        // std::cout << "Propagation from tile " << tile.getI() << ", " << tile.getJ() << std::endl;
 
        // propagate to neighbour tiles

@@ -36,6 +36,7 @@
 #include "name_generator.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "objects/constants.hpp"
 #include "corpse.hpp"
 #include "events/removecitizen.hpp"
@@ -113,6 +114,23 @@ void CartPusher::_reachedPathway()
   {
     deleteLater();
   }
+}
+
+void CartPusher::_brokePathway(TilePos pos)
+{
+  if( _pathwayRef().isValid() )
+  {
+    Pathway way = PathwayHelper::create( pos, _pathwayRef().stopPos(), PathwayHelper::roadFirst );
+    if( way.isValid() )
+    {
+      setPathway( way );
+      go();
+      return;
+    }
+  }
+
+  Logger::warning( "CartPusher::_brokePathway now destination point [%d,%d]", pos.i(), pos.j() );
+  deleteLater();
 }
 
 GoodStock& CartPusher::stock() {   return _d->stock;}
@@ -231,7 +249,7 @@ void CartPusher::computeWalkerDestination()
    {
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
-     setPos( pathWay.getStartPos() );
+     setPos( pathWay.startPos() );
      setPathway( pathWay );
      go();
    }

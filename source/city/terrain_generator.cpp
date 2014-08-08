@@ -603,8 +603,8 @@ static void __createRoad(Game& game )
 
     BorderInfo borderInfo = oCity->borderInfo();
 
-    borderInfo.roadEntry = way.front().pos();
-    borderInfo.roadExit = way.destination().pos();
+    borderInfo.roadEntry = way.startPos();
+    borderInfo.roadExit = way.stopPos();
     oCity->setBorderInfo( borderInfo );
   }
 }

@@ -43,7 +43,7 @@ public:
   int maxDistance;
   MarketPtr market;
   SimpleGoodStore basket;
-  long reservationID;
+  int reservationID;
 };
 
 MarketLady::MarketLady(PlayerCityPtr city )
@@ -72,7 +72,7 @@ MarketLady::~MarketLady(){}
 template< class T >
 TilePos getWalkerDestination2( Propagator &pathPropagator, const TileOverlay::Type type,
                                MarketPtr market, SimpleGoodStore& basket, const Good::Type what,
-                               Pathway& oPathWay, long& reservId )
+                               Pathway& oPathWay, int& reservId )
 {
   SmartPtr< T > res;
 
@@ -157,7 +157,7 @@ void MarketLady::computeWalkerDestination( MarketPtr market )
       if( _d->destBuildingPos.i() >= 0 )
       {
         // we found a destination!
-        setPos( pathWay.getStartPos() );
+        setPos( pathWay.startPos() );
         setPathway( pathWay );
          break;
       }
@@ -277,7 +277,7 @@ void MarketLady::_reachedPathway()
       }
 
       // walker is near the granary/warehouse
-      _pathwayRef().rbegin();
+      _pathwayRef().move( Pathway::reverse );
       _centerTile();
       go();
    }
@@ -296,26 +296,28 @@ void MarketLady::send2City( MarketPtr market )
 void MarketLady::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  stream[ "destBuildPos" ] = _d->destBuildingPos;
+  VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos );
   stream[ "priorityGood" ] = (int)_d->priorityGood;
   stream[ "marketPos" ] = _d->market->pos();
 
   stream[ "basket" ] = _d->basket.save();
-  stream[ "maxDistance" ] = _d->maxDistance;
-  stream[ "reservationId" ] = static_cast<unsigned int>(_d->reservationID);
+  VARIANT_SAVE_ANY_D( stream, _d, maxDistance );
+  VARIANT_SAVE_ANY_D( stream, _d, reservationID );
 }
 
 void MarketLady::load( const VariantMap& stream)
 {
   Walker::load( stream );
-  _d->destBuildingPos = stream.get( "destBuildPos" ).toTilePos();
+  VARIANT_LOAD_ANY_D( _d, destBuildingPos, stream );
   _d->priorityGood = (Good::Type)stream.get( "priorityGood" ).toInt();
+
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
   city::Helper helper( _city() );
   _d->market = helper.find<Market>( building::market, tpos );
+
   _d->basket.load( stream.get( "basket" ).toMap() );
-  _d->maxDistance = stream.get( "maxDistance" ).toInt();
-  _d->reservationID = stream.get( "reserationId" ).toInt();
+  VARIANT_LOAD_ANY_D( _d, maxDistance, stream );
+  VARIANT_LOAD_ANY_D( _d, reservationID, stream );
 }
 
 MarketLadyPtr MarketLady::create( PlayerCityPtr city )

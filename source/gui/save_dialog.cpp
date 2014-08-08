@@ -18,7 +18,7 @@
 #include "save_dialog.hpp"
 #include "gfx/picture.hpp"
 #include "pushbutton.hpp"
-#include "listbox.hpp"
+#include "filelistbox.hpp"
 #include "editbox.hpp"
 #include "gui/label.hpp"
 #include "gfx/decorator.hpp"
@@ -78,7 +78,7 @@ void SaveDialog::Impl::findFiles()
 }
 
 SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id )
-: Window( parent, Rect( 0, 0, 385, 336 ), "", id ), _d( new Impl )
+: Window( parent, Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
 {
   _d->locker.activate();
   Widget::setupUI( ":/gui/savefile.gui" );
@@ -88,7 +88,7 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
   WidgetEscapeCloser::insertTo( this );
   
   _d->edFilename = findChildA<EditBox*>( "edFilename", true, this );
-  _d->lbxSaves = findChildA<ListBox*>( "lbxSaves", true, this );
+  _d->lbxSaves = findChildA<FileListBox*>( "lbxSaves", true, this );
   _d->btnOk = findChildA<TexturedButton*>( "btnOk", true, this );
   _d->btnCancel = findChildA<TexturedButton*>( "btnCancel", true, this );
 

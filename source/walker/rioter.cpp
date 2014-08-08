@@ -104,7 +104,7 @@ void Rioter::timeStep(const unsigned long time)
     //find more expensive house, fire this!!!
     if( pathway.isValid() )
     {
-      setPos( pathway.getStartPos() );
+      setPos( pathway.startPos() );
       setPathway( pathway );
       go();
       _d->state = Impl::go2destination;
@@ -133,7 +133,7 @@ void Rioter::timeStep(const unsigned long time)
     Pathway pathway = _d->findTarget( _city(), constructions, pos() );
     if( pathway.isValid() )
     {
-      setPos( pathway.getStartPos() );
+      setPos( pathway.startPos() );
       setPathway( pathway );
       go();
       _d->state = Impl::go2destination;

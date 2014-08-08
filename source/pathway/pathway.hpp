@@ -27,6 +27,7 @@
 class Pathway : public ReferenceCounted
 {
 public:
+  typedef enum { forward, reverse } DirectionType;
   Pathway();
   Pathway( const Pathway& copy );
 
@@ -37,19 +38,20 @@ public:
   unsigned int length() const;
 
   const gfx::Tile& front() const;
-  const gfx::Tile& destination() const;
+  const gfx::Tile& back() const;
 
-  TilePos getStartPos() const;
+  TilePos startPos() const;
+  TilePos stopPos() const;
 
   bool isReverse() const;
   unsigned int curStep() const;
 
-  void begin();
-  void rbegin();
-  void next();
+  void move( DirectionType type );
 
-  constants::Direction direction();
   bool isDestination() const;
+
+  void next();
+  constants::Direction direction();
 
   void setNextDirection(constants::Direction direction);
   void setNextTile( const gfx::Tile& tile);

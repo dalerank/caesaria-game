@@ -118,7 +118,7 @@ int SimpleGoodStore::getMaxStore(const Good::Type goodType)
   return freeRoom;
 }
 
-void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reservationID)
+void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const int reservationID)
 {
   GoodStock reservedStock = getStorageReservation(reservationID, true);
 
@@ -139,7 +139,7 @@ void SimpleGoodStore::applyStorageReservation(GoodStock &stock, const long reser
   stock.pop( amount );
 }
 
-void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const long reservationID)
+void SimpleGoodStore::applyRetrieveReservation(GoodStock &stock, const int reservationID)
 {
   GoodStock reservedStock = getRetrieveReservation(reservationID, true);
 

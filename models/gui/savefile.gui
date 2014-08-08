@@ -1,5 +1,5 @@
 {  
-  geometry : [ 0, 0, 385, 336 ]
+  geometry : [ 0, 0, 512, 384 ]
 
   lbTitle#Label : {
     font : "FONT_5"
@@ -15,22 +15,22 @@
     text : "savecity"
   }
 
-  lbxSaves#ListBox : {
-    geometry : [ 20, 75, "pw-15", 275 ]
+  lbxSaves#FileListBox : {
+    geometry : [ 20, 75, "pw-15", "ph-45" ]
     items.font : "FONT_2"
     items.simple.color : "0xffffffff"
     items.hovered.color : "0xff000000"
   }
 
   lbContinue#Label : {
-    geometry : [ 18, 296, 260, 326 ]
+    geometry : [ 18, "ph-40", 260, "ph-14" ]
     font : "FONT_2"
     text.align : [ "center", "lowerRight" ]
     text : "##savedlg_continue##"
   }
 
   btnOk#TexturedButton : {
-    geometry : [ 265, 297, 304, 323 ]
+    geometry : [ 265, "ph-40", 304, "ph-14" ]
     normal : [ "paneling", 239 ]
     hovered : [ "paneling", 240 ]
     pressed : [ "paneling", 241 ]
@@ -39,7 +39,7 @@
   }
 
   btnCancel#TexturedButton : {
-    geometry : [ 306, 297, 345, 323 ]
+    geometry : [ 306, "ph-40", 345, "ph-14" ]
     normal : [ "paneling", 243 ]
     hovered : [ "paneling", 244 ]
     pressed : [ "paneling", 245 ]

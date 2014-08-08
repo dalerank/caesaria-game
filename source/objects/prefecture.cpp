@@ -73,7 +73,7 @@ void Prefecture::deliverService()
       if( pathway.isValid() )
       {
         pathway.setNextTile( ruin->tile() );
-        prefect->setPos( pathway.getStartPos() );
+        prefect->setPos( pathway.startPos() );
         prefect->setBase( this );
         prefect->setPathway( pathway );
         prefect->go();
