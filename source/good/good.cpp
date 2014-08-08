@@ -111,8 +111,4 @@ int GoodStock::freeQty() const{  return std::max( _capacity - _qty, 0 );}
 void GoodStock::pop(const int qty)
 {
   _qty -= math::clamp( qty, 0, _qty );
-  if( _qty == 0 )
-  {
-    _type = Good::none;
-  }
 }

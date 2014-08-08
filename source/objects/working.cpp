@@ -48,7 +48,7 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
   _d->maxWorkers = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
-  _d->laborAccessKoeff = 1.f;
+  _d->laborAccessKoeff = 100;
   _animationRef().stop();
 }
 
@@ -115,12 +115,24 @@ unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAcces
 bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
-void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( numberWorkers() + workers ); }
-void WorkingBuilding::removeWorkers(const unsigned int workers) { setWorkers( numberWorkers() - workers ); }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
+
+unsigned int WorkingBuilding::addWorkers(const unsigned int workers )
+{
+  unsigned int maxAdd = std::min( workers, needWorkers() );
+  setWorkers( numberWorkers() + maxAdd );
+  return maxAdd;
+}
+
+unsigned int WorkingBuilding::removeWorkers(const unsigned int workers)
+{
+  unsigned int maxRemove = std::min( numberWorkers(), workers );
+  setWorkers( numberWorkers() - maxRemove );
+  return maxRemove;
+}
 
 void WorkingBuilding::timeStep( const unsigned long time )
 {
