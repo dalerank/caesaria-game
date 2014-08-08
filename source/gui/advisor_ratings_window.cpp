@@ -128,7 +128,8 @@ void Ratings::Impl::updateColumn( const Point& center, const int value )
 
 void Ratings::Impl::checkCultureRating()
 {
-  SmartPtr< city::CultureRating > culture = ptr_cast<city::CultureRating>( city->findService( city::CultureRating::defaultName() ) );
+  city::CultureRatingPtr culture;
+  culture << city->findService( city::CultureRating::defaultName() );
 
   if( culture != 0 )
   {
@@ -160,7 +161,8 @@ void Ratings::Impl::checkCultureRating()
 
 void Ratings::Impl::checkProsperityRating()
 {
-  SmartPtr< city::ProsperityRating > prosperity = ptr_cast<city::ProsperityRating>( city->findService( city::ProsperityRating::defaultName() ) );
+  city::ProsperityRatingPtr prosperity;
+  prosperity << city->findService( city::ProsperityRating::defaultName() );
 
   if( prosperity != 0 )
   {

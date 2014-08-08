@@ -31,6 +31,7 @@ public:
   unsigned int maximumWorkers() const;
   unsigned int numberWorkers() const;
   unsigned int needWorkers() const;
+  unsigned int productivity() const;
 
   void setWorkers( const unsigned int currentWorkers );
   void addWorkers( const unsigned int workers );
@@ -70,6 +71,13 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
+};
+
+class WorkingBuildingHelper
+{
+public:
+  static std::string productivity2desc( WorkingBuildingPtr w );
+  static std::string productivity2str( WorkingBuildingPtr w );
 };
 
 #endif //__CAESARIA_WORKINGBUILDING_H_INCLUDED__

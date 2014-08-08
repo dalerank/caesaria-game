@@ -213,7 +213,9 @@ void Population::Impl::updateStates()
   {
     int currentPop = city->population();
 
-    city::InfoPtr info = ptr_cast<city::Info>( city->findService( city::Info::defaultName() ) );
+    city::InfoPtr info;
+    info << city->findService( city::Info::defaultName() );
+
     city::Info::Parameters lastMonth = info->lastParams();
 
     int migrationValue = currentPop - lastMonth.population;
@@ -228,7 +230,9 @@ void Population::Impl::updateStates()
     }
     else
     {
-      city::MigrationPtr migration = ptr_cast<city::Migration>( city->findService( city::Migration::defaultName() ) );
+      city::MigrationPtr migration;
+      migration << city->findService( city::Migration::defaultName() );
+
       if( migration.isValid() )
       {
         lbMigrationValue->setText( migration->leaveCityReason() );
@@ -308,7 +312,9 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   case dm_population:
     {
-      city::InfoPtr info = ptr_cast<city::Info>( city->findService( city::Info::defaultName() ) );
+      city::InfoPtr info;
+      info << city->findService( city::Info::defaultName() );
+
       city::Info::History history = info->history();
       history.push_back( info->lastParams() );
 

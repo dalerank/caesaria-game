@@ -44,6 +44,8 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+typedef SmartPtr<Animals> AnimalsPtr;
+
 }//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_ANIMALS_H_INCLUDED__

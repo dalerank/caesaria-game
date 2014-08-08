@@ -54,7 +54,8 @@ GameEventPtr FishPlaceEvent::create( TilePos pos, Mode mode )
 
 void FishPlaceEvent::_exec( Game& game, unsigned int time)
 {
-  SmartPtr<city::Fishery> fishery = ptr_cast<city::Fishery>( game.city()->findService( city::Fishery::defaultName() ) );
+  city::FisheryPtr fishery;
+  fishery << game.city()->findService( city::Fishery::defaultName() );
   if( fishery.isValid() )
   {
     switch( _d->mode )

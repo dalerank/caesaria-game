@@ -29,7 +29,6 @@ namespace {
 CAESARIA_LITERALCONST(currentWorkers)
 CAESARIA_LITERALCONST(active)
 CAESARIA_LITERALCONST(maxWorkers)
-const int workersDescNum = 6;
 }
 
 class WorkingBuilding::Impl
@@ -74,14 +73,7 @@ void WorkingBuilding::load( const VariantMap& stream)
 
 std::string WorkingBuilding::workersProblemDesc() const
 {
-  std::string factoryType = MetaDataHolder::findTypename( type() );
-  float workKoeff = (numberWorkers() / (float)maximumWorkers()) * workersDescNum;
-
-  const char* workKoeffStr[] = { "no_workers", "bad_work", "slow_work", "patrly_workers",
-                                 "need_some_workers", "full_work" };
-  workKoeff = math::clamp( (int)ceil(workKoeff), 0, workersDescNum-1 );
-
-  return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), workKoeffStr[ (int)workKoeff ] );
+  return WorkingBuildingHelper::productivity2desc( const_cast<WorkingBuilding*>( this ) );
 }
 
 std::string WorkingBuilding::troubleDesc() const
@@ -107,6 +99,7 @@ unsigned int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp( currentWorkers, 0u, _d->maxWorkers );}
 unsigned int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
+unsigned int WorkingBuilding::productivity() const { return numberWorkers() * 100u / maximumWorkers(); }
 bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
@@ -212,4 +205,34 @@ void WorkingBuilding::burn()
   Building::burn();
 
   _disaster();
+}
+
+namespace {
+
+static const unsigned int productivityDescriptionCount = 6;
+static const char* productivityDescription[] =
+{
+  "no_workers", "bad_work",
+  "slow_work", "patrly_workers",
+  "need_some_workers", "full_work"
+};
+
+}
+
+std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w)
+{
+  std::string factoryType = MetaDataHolder::findTypename( w->type() );
+  unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
+
+  workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount );
+
+  return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), productivityDescription[ workKoeff ] );
+}
+
+std::string WorkingBuildingHelper::productivity2str( WorkingBuildingPtr w )
+{
+  unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
+  workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount );
+
+  return productivityDescription[ workKoeff ];
 }

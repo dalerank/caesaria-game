@@ -97,6 +97,17 @@ bool Tower::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) const
   return mayConstruct;
 }
 
+std::string Tower::workersProblemDesc() const
+{
+  if( productivity() > 50 )
+  {
+    if( traineeValue( walker::soldier ) == 0 )
+      return "##tower_have_workers_no_soldiers##";
+  }
+
+  return ServiceBuilding::workersProblemDesc();
+}
+
 void Tower::_rebuildWays()
 {
   _d->patrolWays.clear();

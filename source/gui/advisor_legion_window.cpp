@@ -109,6 +109,7 @@ class Legion::Impl
 public:
   gui::Label* alarm;
   gui::Label* helpRequest;
+  gui::Label* lbBlackframe;
 };
 
 Legion::Legion( Widget* parent, int id, FortList forts )
@@ -122,6 +123,7 @@ Legion::Legion( Widget* parent, int id, FortList forts )
 
   _d->alarm = findChildA<Label*>( "alarm", true, this );
   _d->helpRequest = findChildA<Label*>( "helpRequest", true, this );
+  _d->lbBlackframe = findChildA<Label*>( "lbBlackframe", true, this );
 
   int index=0;
   foreach( it, forts )
@@ -129,6 +131,9 @@ Legion::Legion( Widget* parent, int id, FortList forts )
     LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, *it );
     CONNECT( btn, onShowLegionSignal, this, Legion::_handleMove2Legion );
   }
+
+  if( _d->lbBlackframe && forts.empty() )
+    _d->lbBlackframe->setText( "##legionadv_no_legions##" );
 }
 
 void Legion::draw( Engine& painter )

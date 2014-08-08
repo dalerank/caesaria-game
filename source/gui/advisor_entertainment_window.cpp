@@ -117,7 +117,7 @@ public:
   Label* lbInfoAboutLastFestival;
   TexturedButton* btnHelp;
   Label* lbMonthFromLastFestival;
-  SmartPtr<city::Festival> srvc;
+  city::FestivalPtr srvc;
 
   InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
   void assignFestival(int divinityType, int festSize);
@@ -130,7 +130,7 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
 : Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
 {
   _d->city = city;
-  _d->srvc = ptr_cast<city::Festival>( city->findService( city::Festival::defaultName() ) );
+  _d->srvc << city->findService( city::Festival::defaultName() );
 
   setupUI( ":/gui/entertainmentadv.gui" );
 

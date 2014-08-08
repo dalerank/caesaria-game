@@ -32,6 +32,7 @@
 #include "texturedbutton.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
+#include "city/cityservice_health.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -97,6 +98,7 @@ public:
   HealthInfoLabel* lbBarbersInfo;
   HealthInfoLabel* lbDoctorInfo;
   HealthInfoLabel* lbHospitalInfo;
+  Label* lbAdvice;
   TexturedButton* btnHelp;
 
   struct InfrastructureInfo
@@ -106,25 +108,8 @@ public:
     int peoplesServed;
   };
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service )
-  {
-    city::Helper helper( city );
-
-    InfrastructureInfo ret;
-
-    ret.buildingWork = 0;
-    ret.peoplesServed = 0;
-    ret.buildingCount = 0;
-
-    ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
-    foreach( b, srvBuildings )
-    {
-      ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
-      ret.buildingCount++;
-    }
-
-    return ret;
-  }
+  InfrastructureInfo getInfo( PlayerCityPtr city, const TileOverlay::Type service );
+  void updateAdvice( PlayerCityPtr city );
 };
 
 
@@ -133,6 +118,8 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
 {
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
+
+  _d->lbAdvice = findChildA<Label*>( "lbAvice", true, this );
 
   Point startPoint( 42, 112 );
   Size labelSize( 550, 20 );
@@ -153,6 +140,8 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+
+  _d->updateAdvice( city );
 }
 
 void Health::draw( gfx::Engine& painter )
@@ -161,6 +150,46 @@ void Health::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const TileOverlay::Type service)
+{
+  city::Helper helper( city );
+
+  InfrastructureInfo ret;
+
+  ret.buildingWork = 0;
+  ret.peoplesServed = 0;
+  ret.buildingCount = 0;
+
+  ServiceBuildingList srvBuildings = helper.find<ServiceBuilding>( service );
+  foreach( b, srvBuildings )
+  {
+    ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
+    ret.buildingCount++;
+  }
+
+  return ret;
+}
+
+void Health::Impl::updateAdvice(PlayerCityPtr c)
+{
+  if( !lbAdvice )
+    return;
+
+  std::string text = "##healthadv_unknown_reason##";
+  city::HealthCarePtr hc;
+  hc << c->findService( city::HealthCare::defaultName() );
+
+  if( hc.isValid() )
+  {
+    if( hc->value() > 75 && c->population() < 300 )
+    {
+      text = "##healthadv_noproblem_small_city##";
+    }
+  }
+
+  lbAdvice->setText( text );
 }
 
 }

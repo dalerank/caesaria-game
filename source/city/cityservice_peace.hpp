@@ -44,6 +44,8 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+typedef SmartPtr<Peace> PeacePtr;
+
 }//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__

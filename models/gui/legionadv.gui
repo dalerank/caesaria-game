@@ -5,6 +5,9 @@
   lbIcon#Label : {
     geometry : [ 10, 10, 50, 50 ]
     image : "paneling_00256"
+    font : "FONT_3"
+    text.align : [ "center", "center" ]
+    multiline : true
   }
 
   lbBlackframe#Label : {

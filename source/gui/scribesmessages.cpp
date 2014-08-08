@@ -154,7 +154,9 @@ void ScribesMessagestWindow::_fillMessages()
 {
   _d->lbxMessages->clear();
 
-  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( _d->city->findService( city::Info::defaultName() ) );
+  city::InfoPtr srvc;
+  srvc << _d->city->findService( city::Info::defaultName() );
+
   if( srvc.isValid() )
   {
     const city::Info::Messages& messages = srvc->messages();
@@ -174,7 +176,9 @@ void ScribesMessagestWindow::_fillMessages()
 
 void ScribesMessagestWindow::_showMessage(int index)
 {
-  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( _d->city->findService( city::Info::defaultName() ) );
+  city::InfoPtr srvc;
+  srvc << _d->city->findService( city::Info::defaultName() );
+
   if( srvc.isValid() )
   {
     city::Info::ScribeMessage mt = srvc->getMessage( index );
@@ -189,7 +193,9 @@ void ScribesMessagestWindow::_showMessage(int index)
 
 void ScribesMessagestWindow::_removeMessage(int index)
 {
-  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( _d->city->findService( city::Info::defaultName() ) );
+  city::InfoPtr srvc;
+  srvc << _d->city->findService( city::Info::defaultName() );
+
   if( srvc.isValid() )
   {
     srvc->removeMessage( index );

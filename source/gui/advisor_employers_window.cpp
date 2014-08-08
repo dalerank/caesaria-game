@@ -66,7 +66,14 @@ public:
     _priority = 0;
     _lockPick = Picture::load( ResourceGroup::panelBackground, 238 );
 
-    setTooltipText( _("##empbutton_tooltip##") );
+    int percentage = have * 100 / need;
+    std::string tooltip;
+    if( percentage > 90 ) tooltip = "##empbutton_tooltip##";
+    else if( percentage > 75 ) tooltip = "##empbutton_simple_work##";
+    else if( percentage > 50 ) tooltip = "##empbutton_low_work##";
+    else tooltip = "##empbutton_tooltip##";
+
+    setTooltipText( _(tooltip) );
   }
 
   void setPriority( int priority )
@@ -203,7 +210,9 @@ void Employer::Impl::changeSalary(int relative)
 
 void Employer::Impl::showPriorityWindow( Industry::Type industry )
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
+  city::WorkersHirePtr wh;
+  wh << city->findService( city::WorkersHire::defaultName() );
+
   int priority = wh->getPriority( industry );
   HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->environment()->rootWidget(), industry, priority );
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
@@ -211,17 +220,25 @@ void Employer::Impl::showPriorityWindow( Industry::Type industry )
 
 void Employer::Impl::setIndustryPriority(Industry::Type industry, int priority)
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
-  wh->setIndustryPriority( industry, priority );
+  city::WorkersHirePtr wh;
+  wh << city->findService( city::WorkersHire::defaultName() );
 
-  empButtons[ industry ]->setPriority( priority );
+  if( wh.isValid() )
+  {
+    wh->setIndustryPriority( industry, priority );
+    empButtons[ industry ]->setPriority( priority );
+  }
 
   update();
 }
 
 void Employer::Impl::update()
 {
-  city::WorkersHirePtr wh = ptr_cast<city::WorkersHire>( city->findService( city::WorkersHire::defaultName() ) );
+  city::WorkersHirePtr wh;
+  wh << city->findService( city::WorkersHire::defaultName() );
+
+  if( wh.isNull() )
+    return;
 
   foreach( i, empButtons )
   {

@@ -38,7 +38,9 @@ GameEventPtr ScribeMessage::create( const std::string& title, const std::string&
 
 void ScribeMessage::_exec(Game& game, unsigned int)
 {
-  SmartPtr<city::Info> srvc = ptr_cast<city::Info>( game.city()->findService( city::Info::defaultName() ) );
+  city::InfoPtr srvc;
+  srvc << game.city()->findService( city::Info::defaultName() );
+
   if( srvc.isValid() )
   {
     city::Info::ScribeMessage msg;

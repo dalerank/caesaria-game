@@ -49,6 +49,8 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+typedef SmartPtr<ProsperityRating> ProsperityRatingPtr;
+
 }//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_PROSPERITY_H_INCLUDED__

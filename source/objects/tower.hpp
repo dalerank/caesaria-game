@@ -30,7 +30,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual bool canBuild(PlayerCityPtr city, TilePos pos, const gfx::TilesArray&) const;
-
+  virtual std::string workersProblemDesc() const;
   virtual void deliverService();
 
   virtual gfx::TilesArray enterArea() const;

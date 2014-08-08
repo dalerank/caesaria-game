@@ -40,7 +40,9 @@ void UpdateCitySentiment::_exec(Game& game, unsigned int)
 {
   PlayerCityPtr city = game.city();
 
-  SmartPtr<city::Sentiment> srvc = ptr_cast<city::Sentiment>( city->findService( city::Sentiment::getDefaultName() ) );
+  city::SentimentPtr srvc;
+  srvc << city->findService( city::Sentiment::getDefaultName() );
+
   if( srvc.isValid() )
   {
     srvc->update( _value );

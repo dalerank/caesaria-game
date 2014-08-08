@@ -29,6 +29,7 @@ class Barracks::Impl
 {
 public:
   SimpleGoodStore store;
+  bool notNeedSoldiers;
 };
 
 Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
@@ -39,6 +40,7 @@ Barracks::Barracks() : TrainingBuilding( building::barracks, Size( 3 ) ),
 
   _d->store.setCapacity( 1000 );
   _d->store.setCapacity( Good::weapon, 1000 );
+  _d->notNeedSoldiers = false;
 }
 
 void Barracks::deliverTrainee()
@@ -64,6 +66,11 @@ void Barracks::deliverTrainee()
       GoodStock delStock( Good::weapon, 100 );
       _d->store.retrieve( delStock, 100 );
       addWalker( trainee.object() );
+      _d->notNeedSoldiers = false;
+    }
+    else
+    {
+      _d->notNeedSoldiers = true;
     }
   }
 }
@@ -80,11 +87,47 @@ void Barracks::storeGoods(GoodStock& stock, const int amount)
   _d->store.store(stock, amount == -1 ? stock.qty() : amount );
 }
 
+std::string Barracks::workersProblemDesc() const
+{
+  unsigned int pp = productivity();
+  unsigned int haveWeapon = _d->store.qty() > 0.5 * _d->store.capacity();
+  if( pp > 0  )
+  {
+    if( _d->notNeedSoldiers )
+      return "##barracks_city_not_need_soldiers##";
+
+    if( _d->store.empty() )
+      return "##barracks_no_weapons##";
+
+    if( pp < 25 )
+    {
+      return ( haveWeapon )
+                ? "##barracks_have_weapons_bad_workers##"
+                : "##barracks_bad_weapons_bad_workers##";
+    }
+    else if( p < 50 )
+    {
+      return ( haveWeapon )
+                ? "##barracks_have_weapons_slow_workers##"
+                : "##barracks_bad_weapons_slow_workers##";
+    }
+    else if( p < 75 )
+    {
+      return ( haveWeapon )
+                ? "##barracks_have_weapons_patrly_workers##"
+                : "##barracks_bad_weapons_patrly_workers##";
+    }
+  }
+
+  return WorkingBuilding::workersProblemDesc();
+}
+
 void Barracks::save(VariantMap& stream) const
 {
   TrainingBuilding::save( stream );
 
   stream[ "store" ] = _d->store.save();
+  VARIANT_SAVE_ANY_D( stream, _d, notNeedSoldiers );
 }
 
 void Barracks::load(const VariantMap& stream)
@@ -92,4 +135,5 @@ void Barracks::load(const VariantMap& stream)
   TrainingBuilding::load( stream );
 
   _d->store.load( stream.get( "store" ).toMap() );
+  VARIANT_LOAD_ANY_D( _d, notNeedSoldiers, stream );
 }

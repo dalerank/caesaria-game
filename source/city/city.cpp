@@ -722,7 +722,8 @@ void PlayerCity::addService( city::SrvcPtr service ) {  _d->services.push_back( 
 
 int PlayerCity::prosperity() const
 {
-  SmartPtr<city::ProsperityRating> csPrsp = ptr_cast<city::ProsperityRating>( findService( city::ProsperityRating::defaultName() ) );
+  city::ProsperityRatingPtr csPrsp;
+  csPrsp << findService( city::ProsperityRating::defaultName() );
   return csPrsp.isValid() ? csPrsp->value() : 0;
 }
 
@@ -748,14 +749,16 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::culture() const
 {
-  SmartPtr<city::CultureRating> csClt = ptr_cast<city::CultureRating>( findService( city::CultureRating::defaultName() ) );
+  city::CultureRatingPtr csClt;
+  csClt << findService( city::CultureRating::defaultName() );
   return csClt.isValid() ? csClt->value() : 0;
 }
 
 int PlayerCity::peace() const
 {
-  SmartPtr<city::Peace> peace = ptr_cast<city::Peace>( findService( city::Peace::getDefaultName() ) );
-  return peace.isValid() ? peace->value() : 0;
+  city::PeacePtr p;
+  p << findService( city::Peace::getDefaultName() );
+  return p.isValid() ? p->value() : 0;
 }
 
 int PlayerCity::sentiment() const

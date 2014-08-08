@@ -45,6 +45,8 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+typedef SmartPtr<CultureRating> CultureRatingPtr;
+
 }//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_CULTURE_H_INCLUDED__

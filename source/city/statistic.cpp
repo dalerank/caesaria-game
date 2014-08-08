@@ -130,7 +130,9 @@ unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 
 unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
 {
-  DisorderPtr ds = ptr_cast<Disorder>( city->findService( Disorder::defaultName() ) );
+  DisorderPtr ds;
+  ds << city->findService( Disorder::defaultName() );
+
   return ds.isValid() ? ds->value() : 0;
 }
 
@@ -213,7 +215,8 @@ unsigned int Statistic::getTaxPayersPercent(PlayerCityPtr city)
 
 unsigned int Statistic::getHealth(PlayerCityPtr city)
 {
-  SmartPtr<HealthCare> hc = ptr_cast<HealthCare>( city->findService( HealthCare::defaultName() ) );
+  HealthCarePtr hc;
+  hc << city->findService( HealthCare::defaultName() );
   return hc.isValid() ? hc->value() : 0;
 }
 

@@ -178,6 +178,7 @@ Manager::Manager() : _d( new Impl )
   ADD_INFOBOX( building::barber,       ServiceBaseInfoboxCreator( "", "" ) )
   ADD_INFOBOX( building::hospital,     ServiceBaseInfoboxCreator( "", "" ) )
   ADD_INFOBOX( building::fountain,     BaseInfoboxCreator<AboutFontain> )
+  ADD_INFOBOX( building::missionaryPost, ServiceBaseInfoboxCreator( "", "") )
   ADD_INFOBOX( building::elevation,    InfoboxBasicCreator( "", "##elevation_info##" ) )
   addInfobox( building::aqueduct,         CAESARIA_STR_EXT(aqueduct),  new InfoboxBasicCreator( "", "##aqueduct_info##") );
   addInfobox( building::market,           CAESARIA_STR_EXT(market),    new BaseInfoboxCreator<AboutMarket>() );

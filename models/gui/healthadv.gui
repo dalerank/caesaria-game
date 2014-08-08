@@ -36,5 +36,11 @@
     text : "##health_advisor##"
     textAlign : [ "center", "center" ]
   }
+
+  lbAdvice#Label : {
+    geometry : [ 35, 200, "pw-35", "ph-15" ]
+    multiline : true
+    font : "FONT_2"
+  }
 }
 

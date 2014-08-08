@@ -74,7 +74,8 @@ TilesArray Helper::getArea(TilePos start, TilePos stop)
 
 HirePriorities Helper::getHirePriorities() const
 {
-  SmartPtr<WorkersHire> wh = ptr_cast<WorkersHire>( _city->findService( WorkersHire::defaultName() ) );
+  WorkersHirePtr wh;
+  wh << _city->findService( WorkersHire::defaultName() );
   return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 

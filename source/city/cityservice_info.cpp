@@ -89,7 +89,7 @@ void Info::update( const unsigned int time )
     int yearlyFoodConsumption = foodMontlyConsumption * DateTime::monthsInYear;
     last.foodKoeff = ( foodProducing - yearlyFoodConsumption > 0 )
                       ? foodProducing / (yearlyFoodConsumption+1)
-                      : -1;
+                      : -(yearlyFoodConsumption / (foodProducing+1) );
 
     int currentWorkers, maxWorkers;
     city::Statistic::getWorkersNumber( &_city, currentWorkers, maxWorkers );
@@ -104,7 +104,8 @@ void Info::update( const unsigned int time )
     last.crimeLevel = city::Statistic::getCrimeLevel( &_city );    
     last.peace = 0;
 
-    SmartPtr<Peace> peaceSrvc = ptr_cast<Peace>( _city.findService( Peace::getDefaultName() ) );
+    PeacePtr peaceSrvc;
+    peaceSrvc << _city.findService( Peace::getDefaultName() );
     if( peaceSrvc.isValid() )
     {
       last.peace = peaceSrvc->value();

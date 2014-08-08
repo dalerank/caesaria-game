@@ -283,16 +283,29 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
 {
   std::string text;
   city::InfoPtr info;
-  info << ptr_cast<city::Info>( city->findService( city::Info::defaultName() ));
+  info << city->findService( city::Info::defaultName() );
 
-  switch( info->lastParams().foodKoeff )
+  int fk = info->lastParams().foodKoeff;
+
+  if( fk < -4 )
   {
-  case -1: text= "##we_produce_less_than_eat##"; break;
-  case 0: text = "##we_noproduce_food##"; break;
-  case 1: text = "##we_produce_some_than_eat##"; break;
-  case 2: text = "##we_produce_more_than_eat##"; break;
-
-  default: text = "##we_produce_much_than_eat##";
+    text = "##we_eat_much_then_produce##";
+  }
+  else if( fk > 2 )
+  {
+    text = "##we_produce_much_than_eat##";
+  }
+  else
+  {
+    switch( info->lastParams().foodKoeff )
+    {
+    case -3: text = "##we_eat_more_thie_produce##"; break;
+    case -2: text = "##we_eat_some_then_produce##"; break;
+    case -1: text= "##we_produce_less_than_eat##"; break;
+    case 0: text = "##we_noproduce_food##"; break;
+    case 1: text = "##we_produce_some_than_eat##"; break;
+    case 2: text = "##we_produce_more_than_eat##"; break;
+    }
   }
 
   drawReportRow( foodConsumption, _(text) );
@@ -301,7 +314,9 @@ void AdvisorChiefWindow::Impl::drawFoodConsumption()
 void AdvisorChiefWindow::Impl::drawMilitary()
 {
   std::string text;
-  city::MilitaryPtr mil = ptr_cast<city::Military>( city->findService( city::Military::defaultName() ) );
+  city::MilitaryPtr mil;
+  mil << city->findService( city::Military::defaultName() );
+
   if( mil.isValid() )
   {
     city::Military::Notification n = mil->getPriorityNotification();
@@ -316,7 +331,9 @@ void AdvisorChiefWindow::Impl::drawCrime()
 {
   std::string text;
 
-  city::DisorderPtr ds = ptr_cast<city::Disorder>( city->findService( city::Disorder::defaultName() ) );
+  city::DisorderPtr ds;
+  ds << city->findService( city::Disorder::defaultName() );
+
   if( ds.isValid() )
   {
     text = ds->reason();
@@ -331,7 +348,8 @@ void AdvisorChiefWindow::Impl::drawHealth()
 {
   std::string text;
 
-  city::HealthCarePtr ds = ptr_cast<city::HealthCare>( city->findService( city::HealthCare::defaultName() ) );
+  city::HealthCarePtr ds;
+  ds << city->findService( city::HealthCare::defaultName() );
   if( ds.isValid() )
   {
     text = ds->reason();

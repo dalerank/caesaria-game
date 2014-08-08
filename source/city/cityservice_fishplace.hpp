@@ -45,6 +45,8 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+typedef SmartPtr<Fishery> FisheryPtr;
+
 }//end namespace city
 
 #endif //__CAESARIA_CITYSERVICE_FISHPLACE_H_INCLUDED__

@@ -89,7 +89,9 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
   if( _d->maxAnimals >= 0 )
   {
-    SmartPtr<city::Animals> srvc = ptr_cast<city::Animals>( game.city()->findService( city::Animals::defaultName() ) );
+    city::AnimalsPtr srvc;
+    srvc << game.city()->findService( city::Animals::defaultName() );
+
     if( srvc.isValid() )
     {
       srvc->setAnimalsNumber( _d->animalType, _d->maxAnimals );

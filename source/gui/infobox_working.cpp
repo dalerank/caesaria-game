@@ -56,6 +56,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
     DateTime time = srvc->lastSendService();
     text += StringHelper::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
   }
+
   new Label( this, Rect( 50, height() - 30, width() - 50, height() - 10 ), text );
 }
 
