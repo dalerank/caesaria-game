@@ -43,6 +43,7 @@ public:
   virtual bool die();
 
 protected:
+  virtual void _centerTile();
   virtual void _reachedPathway();
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
@@ -55,8 +56,9 @@ protected:
   HousePtr _findBlankHouse();
   Pathway _findSomeWay(TilePos startPoint );
 
-protected:
   const CitizenGroup& _getPeoples() const;
+  bool _checkNearestHouse();
+  void _append2house(HousePtr house);
 
 private:
   class Impl;

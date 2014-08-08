@@ -86,6 +86,7 @@ enum Type{
   indigene,
   missioner,
   zebra,
+  riverWave,
   all = 0xff,
   any = all
 };

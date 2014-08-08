@@ -4,8 +4,7 @@
     items : {
       troop_soldiers : {
         type : "etruscanSoldier"
-        count : 10
-        /*city.pop : 10*/
+        city.pop : 0.01
         location : "random"
       }
     }

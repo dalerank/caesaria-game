@@ -38,6 +38,8 @@
 #include "core/logger.hpp"
 #include "image.hpp"
 #include "objects/constants.hpp"
+#include "empireprices.hpp"
+#include "goodordermanage.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -61,7 +63,8 @@ public:
     _tradeOrder = trade;
     _tradeQty = tradeQty;
     _goodPicture = GoodHelper::getPicture( _type );
-    _goodName = GoodHelper::getName( _type );
+    _goodName = GoodHelper::getName( _type );    
+    Decorator::draw( _border, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder );
 
     setFont( Font::create( FONT_2_WHITE ) );
   }
@@ -72,6 +75,9 @@ public:
 
     painter.draw( _goodPicture, absoluteRect().lefttop() + Point( 15, 0) );
     painter.draw( _goodPicture, absoluteRect().righttop() - Point( 20 + _goodPicture.width(), 0 ) );
+
+    if( _state() == stHovered )
+      painter.draw( _border, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   virtual void _updateTextPic()
@@ -82,9 +88,9 @@ public:
     {
       Font f = font( _state() );
       PictureRef& textPic = _textPictureRef();
-      f.draw( *textPic, _goodName, 55, 0 );
-      f.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0 );
-      f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0 );
+      f.draw( *textPic, _goodName, 55, 0, true, false );
+      f.draw( *textPic, StringHelper::format( 0xff, "%d", _qty), 190, 0, true, false );
+      f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
       std::string ruleName[] = { _("##import##"), "", _("##export##"), _("##stacking##") };
       std::string tradeStateText = ruleName[ _tradeOrder ];
@@ -102,12 +108,8 @@ public:
 
       default: break;
       }
-      f.draw( *textPic, tradeStateText, 340, 0 );
-
-      if( _state() == stHovered )
-      {
-     //   Decorator::draw( *background, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder, false );
-      }
+      f.draw( *textPic, tradeStateText, 340, 0, true, false );
+      textPic->update();
     }
   }
 
@@ -130,63 +132,10 @@ private:
   Good::Type _type;
   std::string _goodName;
   Picture _goodPicture;
+  Pictures _border;
 
 oc3_signals private:
   Signal1<Good::Type> _onClickedASignal;
-};
-
-class EmpirePricesWindow : public Window
-{
-public:
-  EmpirePricesWindow( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city  )
-    : Window( parent, rectangle, "", id )
-  {
-    setupUI( ":/gui/empireprices.gui" );
-
-    city::TradeOptions& ctrade = city->tradeOptions();
-    Font font = Font::create( FONT_1 );
-    Point startPos( 140, 50 );    
-    for( int i=Good::wheat; i < Good::prettyWine; i++ )
-    {
-      if( i == Good::fish || i == Good::denaries)
-      {
-        continue;
-      }
-
-      Good::Type gtype = (Good::Type)i;
-      Picture goodIcon = GoodHelper::getPicture( gtype );
-      new Image( this, startPos, goodIcon );
-      
-      std::string priceStr = StringHelper::format( 0xff, "%d", ctrade.buyPrice( gtype ) );
-      Label* lb = new Label( this, Rect( startPos + Point( 0, 34 ), Size( 24, 24 ) ), priceStr );
-      lb->setFont( font );
-
-      priceStr = StringHelper::format( 0xff, "%d", ctrade.sellPrice( gtype ) );
-      lb = new Label( this, Rect( startPos + Point( 0, 58 ), Size( 24, 24 ) ), priceStr );
-      lb->setFont( font );
-
-      startPos += Point( 30, 0 );
-    }
-  }
-
-  virtual void draw( gfx::Engine& painter )
-  {
-    if( !visible() )
-      return;
-
-    Window::draw( painter );
-  }
-
-  virtual bool onEvent(const NEvent& event)
-  {
-    if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-    {
-      deleteLater();
-      return true;
-    }
-
-    return Window::onEvent( event );
-  }
 };
 
 class Trade::Impl
@@ -204,247 +153,7 @@ public:
   void showGoodsPriceWindow();
 };
 
-class TradeStateButton : public PushButton
-{
-public:
-  TradeStateButton( Widget* parent, const Rect& rectangle, int id ) 
-    : PushButton( parent, rectangle, "", id, false, PushButton::whiteBorderUp )
-  {
-    btnDecrease = new TexturedButton( this, Point( 220, 3 ), Size( 24 ), -1, 601 );
-    btnIncrease = new TexturedButton( this, Point( 220 + 24, 3 ), Size( 24 ), -1, 605 );
-    btnDecrease->hide();
-    btnIncrease->hide();
 
-    btnDecrease->setTooltipText( _("##export_btn_tooltip##") );
-    btnIncrease->setTooltipText( _("##export_btn_tooltip##") );
-  }
-
-  virtual void _updateTextPic()
-  {
-    PushButton::_updateTextPic();
-
-    switch( order )
-    {
-      case city::TradeOptions::importing:
-      case city::TradeOptions::noTrade:
-      {
-        btnDecrease->hide();
-        btnIncrease->hide();
-
-        Font f = font( _state() );
-        std::string text = (order == city::TradeOptions::importing ? _("##trade_btn_import_text##") : _("##trade_btn_notrade_text##"));
-        Rect textRect = f.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner );
-      }
-      break;
-
-      case city::TradeOptions::exporting:
-        {
-          btnDecrease->show();
-          btnIncrease->show();
-
-          Font f = font( _state() );
-          std::string text = _("##trade_btn_export_text##");
-          Rect textRect = f.getTextRect( text, Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
-          f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
-
-          text = StringHelper::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
-          textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
-          f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
-        }
-      break;
-
-      default: break;
-    }
-  }
-
-  void setTradeState( city::TradeOptions::Order o, int qty )
-  {
-    order = o;
-    goodsQty = qty;
-    _resizeEvent();
-  }
-  
-  city::TradeOptions::Order order;
-  int goodsQty;
-  TexturedButton* btnDecrease;
-  TexturedButton* btnIncrease;
-};
-
-class GoodOrderManageWindow : public Widget
-{
-public:
-  GoodOrderManageWindow( Widget* parent, const Rect& rectangle, PlayerCityPtr city, Good::Type type, int stackedGoods )
-    : Widget( parent, -1, rectangle )
-  {
-    _city = city;
-    _type = type;
-    _background.reset( Picture::create( size() ) );
-    Decorator::draw( *_background, Rect( Point( 0, 0 ), size() ), Decorator::whiteFrame );
-
-    Picture iconGood = GoodHelper::getPicture( type );
-    _background->draw( iconGood, Point( 10, 10 ) );
-
-    Label* lbTitle = new Label( this, Rect( 40, 10, width() - 10, 10 + 30), GoodHelper::getName( type ) );
-    lbTitle->setFont( Font::create( FONT_5 ) );
-
-    _lbIndustryInfo = new Label( this, Rect( 40, 40, width() - 10, 40 + 20 ) );
-
-    std::string text = StringHelper::format( 0xff, "%d %s", stackedGoods, _("##qty_stacked_in_city_warehouse##") );
-    /*Label* lbStacked = */new Label( this, Rect( 40, 60, width() - 10, 60 + 20 ), text );
-
-    _btnTradeState = new TradeStateButton( this, Rect( 50, 85, width() - 60, 85 + 30), -1 );
-    _btnIndustryState = new PushButton( this, Rect( 50, 125, width() - 60, 125 + 30), "", -1, false, PushButton::whiteBorderUp );
-    _btnStackingState = new PushButton( this, Rect( 50, 160, width() - 60, 160 + 50), "", -1, false, PushButton::whiteBorderUp );
-
-    TexturedButton* btnExit = new TexturedButton( this, Point( width() - 34, height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-    /*TexturedButton* btnHelp = */new TexturedButton( this, Point( 11, height() - 34 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-
-    updateTradeState();
-    updateIndustryState();
-    updateStackingState();
-
-    CONNECT( btnExit, onClicked(), this, GoodOrderManageWindow::deleteLater );
-    CONNECT( _btnTradeState, onClicked(), this, GoodOrderManageWindow::changeTradeState );
-    CONNECT( _btnTradeState->btnIncrease, onClicked(), this, GoodOrderManageWindow::increaseQty );
-    CONNECT( _btnTradeState->btnDecrease, onClicked(), this, GoodOrderManageWindow::decreaseQty );
-    CONNECT( _btnIndustryState, onClicked(), this, GoodOrderManageWindow::toggleIndustryEnable );
-    CONNECT( _btnStackingState, onClicked(), this, GoodOrderManageWindow::toggleStackingGoods );
-  }
-
-  void draw( gfx::Engine& painter )
-  {
-    if( !visible() )
-      return;
-
-    painter.draw( *_background, screenLeft(), screenTop() );
-
-    Widget::draw( painter );
-  }
-
-  void increaseQty()
-  {
-    city::TradeOptions& ctrade = _city->tradeOptions();
-    ctrade.setExportLimit( _type, math::clamp<unsigned int>( ctrade.exportLimit( _type )+1, 0, 999 ) );
-    updateTradeState();
-  }
-
-  void decreaseQty()
-  {
-    city::TradeOptions& ctrade = _city->tradeOptions();
-    ctrade.setExportLimit( _type, math::clamp<unsigned int>( ctrade.exportLimit( _type )-1, 0, 999 ) );
-    updateTradeState();
-  }
-
-  void updateTradeState()
-  {
-    city::TradeOptions& ctrade = _city->tradeOptions();
-    city::TradeOptions::Order order = ctrade.getOrder( _type );
-    int qty = ctrade.exportLimit( _type );
-    _btnTradeState->setTradeState( order, qty );
-  }
-
-  void changeTradeState()
-  {
-    _city->tradeOptions().switchOrder( _type );
-    updateTradeState();
-    oc3_emit _onOrderChangedSignal();
-  }
-
-  bool isIndustryEnabled()
-  {
-    city::Helper helper( _city );
-    //if any factory work in city, that industry work too
-    bool anyFactoryWork = false;
-    FactoryList factories = helper.getProducers<Factory>( _type );
-    foreach( factory, factories )
-    {
-      anyFactoryWork |= (*factory)->isActive();
-    }
-
-    return factories.empty() ? true : anyFactoryWork;
-  }
-
-  void updateIndustryState()
-  {
-    bool industryActive = _city->tradeOptions().isVendor( _type );
-    _btnIndustryState->setVisible( industryActive );
-
-    if( !industryActive )
-    {
-      return;
-    }
-
-    city::Helper helper( _city );
-    int workFactoryCount=0, idleFactoryCount=0;
-
-    FactoryList factories = helper.getProducers<Factory>( _type );
-    foreach( factory, factories )
-    {
-      ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
-    }
-
-    std::string text = StringHelper::format( 0xff, "%d %s, %d %s", workFactoryCount, _("##work##"), 
-                                                                   idleFactoryCount, _("##idle_factory_in_city##") );
-    _lbIndustryInfo->setText( text );
-
-    bool industryEnabled = isIndustryEnabled();
-    _btnIndustryState->setText( industryEnabled ? _("##industry_enabled##") : _("##industry_disabled##") );
-  }
-
-  void toggleIndustryEnable()
-  {
-    city::Helper helper( _city );
-
-    bool industryEnabled = isIndustryEnabled();
-    //up or down all factory for this industry
-    FactoryList factories = helper.getProducers<Factory>( _type );
-    foreach( factory, factories ) { (*factory)->setActive( !industryEnabled ); }
-
-    updateIndustryState();
-    oc3_emit _onOrderChangedSignal();
-  }
-
-  void toggleStackingGoods()
-  {
-    bool isStacking = _city->tradeOptions().isGoodsStacking( _type );
-    _city->tradeOptions().setStackMode( _type, !isStacking );
-
-    updateStackingState();
-    oc3_emit _onOrderChangedSignal();
-  }
-
-  void updateStackingState()
-  {
-    bool isStacking = _city->tradeOptions().isGoodsStacking( _type );
-    std::string text;
-    if( isStacking )
-    {
-      text = StringHelper::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
-    }
-    else
-    {
-      text = StringHelper::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
-    }
-
-    _btnStackingState->setText( text );
-  }
-
-oc3_signals public:
-  Signal0<>& onOrderChanged() { return _onOrderChangedSignal; }
-
-private:
-  PlayerCityPtr _city;
-  Good::Type _type;
-  PictureRef _background;
-  TradeStateButton* _btnTradeState;
-  PushButton* _btnIndustryState;
-  Label* _lbIndustryInfo;
-  PushButton* _btnStackingState;
-
-oc3_signals private:
-  Signal0<> _onOrderChangedSignal;
-};
 
 void Trade::Impl::updateGoodsInfo()
 {

@@ -36,7 +36,7 @@ RiverWave::RiverWave(PlayerCityPtr city )
   : Walker( city )
 {
   _delay = math::random( 100 );
-  _setType( walker::waterGarbage );
+  _setType( walker::riverWave );
   _animation.load( ResourceGroup::sprites, 109, 5 );
   _animation.setDelay( 4 );
   _animation.setOffset( Point( 0, 0) );
