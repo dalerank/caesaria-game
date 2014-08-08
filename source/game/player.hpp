@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_PLAYER_HPP_INCLUDE_
 #define _CAESARIA_PLAYER_HPP_INCLUDE_
@@ -34,6 +34,9 @@ public:
 
    void setName( const std::string& name );
    std::string name() const;
+
+   void setRank( int rank );
+   int rank() const;
 
    int salary() const;
    void setSalary( const int value );

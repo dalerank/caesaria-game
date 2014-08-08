@@ -253,7 +253,7 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w)
   std::string factoryType = MetaDataHolder::findTypename( w->type() );
   unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
 
-  workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount );
+  workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount-1 );
 
   return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), productivityDescription[ workKoeff ] );
 }
@@ -261,7 +261,7 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w)
 std::string WorkingBuildingHelper::productivity2str( WorkingBuildingPtr w )
 {
   unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
-  workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount );
+  workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount-1 );
 
   return productivityDescription[ workKoeff ];
 }

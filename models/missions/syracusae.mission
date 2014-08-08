@@ -4,6 +4,7 @@
   funds : 8000
   city.name : "Syracusae"
   date : "-270.01.01"
+  player.rank : 3
   finish : "-100.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false

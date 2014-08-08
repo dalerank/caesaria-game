@@ -45,6 +45,7 @@
 #include "city_donation_window.hpp"
 #include "emperorgiftwindow.hpp"
 #include "gui/environment.hpp"
+#include "gui/dialogbox.hpp"
 
 using namespace gfx;
 
@@ -129,6 +130,7 @@ public:
 
   void sendMoney( int money );
   void sendGift( int money );
+  void changeSalary(int money );
   void resolveRequest( city::request::RequestPtr request );
 
   std::string getEmperorFavourStr()
@@ -143,7 +145,7 @@ void Emperor::_showChangeSalaryWindow()
   ChangeSalaryWindow* dialog = new ChangeSalaryWindow( parent(), pl->salary() );
   dialog->show();
 
-  CONNECT( dialog, onChangeSalary(), pl.object(), Player::setSalary )
+  CONNECT( dialog, onChangeSalary(), _d.data(), Impl::changeSalary )
 }
 
 void Emperor::_showSend2CityWindow()
@@ -270,6 +272,23 @@ void Emperor::Impl::sendGift(int money)
 {
   city->player()->appendMoney( -money );
   city->empire()->emperor().sendGift( city->name(), money );
+}
+
+void Emperor::Impl::changeSalary( int money)
+{
+  PlayerPtr pl = city->player();
+  pl->setSalary( money );
+
+  world::GovernorRanks ranks = world::EmpireHelper::ranks();
+  const world::GovernorRank& curRank = ranks[ math::clamp( pl->rank(), 0, ranks.size()-1 ) ];
+  int normalSalary = curRank.salary;
+  if( pl->salary() > normalSalary )
+  {
+    DialogBox* dlg = new DialogBox( lbEmperorFavour->parent(), Rect(),
+                                    "##changesalary_warning##", "##changesalary_greater_salary##",
+                                    DialogBox::btnYes );
+    CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
+  }
 }
 
 void Emperor::Impl::resolveRequest(city::request::RequestPtr request)

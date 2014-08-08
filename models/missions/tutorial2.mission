@@ -3,6 +3,7 @@
   map : ":/maps/Brundisium.sav"
   funds : 8000
   city.name : "Brundisium"
+  player.rank : 1
   date : "-350.01.01"
   finish : "-300.01.01"
   climate : 0

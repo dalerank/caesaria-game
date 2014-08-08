@@ -4,6 +4,7 @@
   funds : 8000
   city.name : "Tarraco"
   date : "-270.01.01"
+  player.rank : 3
   finish : "-170.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false

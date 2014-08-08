@@ -5,6 +5,7 @@
   city.name : "Miletus"
   date : "-220.01.01"
   finish : "-100.01.01"
+  player.rank : 4
   climate : 2
   adviserEnabled : true
   fishPlaceEnabled : true

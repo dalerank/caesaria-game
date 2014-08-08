@@ -3,6 +3,7 @@
   map : ":/maps/Lugdunum.sav"
   funds : 8000
   city.name : "Lugdunum"
+  player.rank : 5
   date : "-170.01.01"
   finish : "-100.01.01"
   climate : 1

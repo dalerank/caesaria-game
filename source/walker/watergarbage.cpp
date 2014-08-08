@@ -38,7 +38,7 @@ WaterGarbage::WaterGarbage(PlayerCityPtr city )
   _setType( walker::waterGarbage );
   _animation.load( ResourceGroup::sprites, 93, 6 );
   _animation.setDelay( 2 );
-  _animation.setOffset( Point( 5, 0 ) );
+  _animation.setOffset( Point( -15, 0 ) );
 
   setName( _("##water_garbage##") );
 }

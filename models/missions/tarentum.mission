@@ -4,6 +4,7 @@
   funds : 8000
   city.name : "Tarentum"
   date : "-350.01.01"
+  player.rank : 2
   finish : "-300.01.01"
   adviserEnabled : true
   fishPlaceEnabled : false

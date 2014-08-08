@@ -4,6 +4,7 @@
   funds : 8000
   city.name : "Mediolanum"
   date : "-220.01.01"
+  player.rank : 4
   finish : "-100.01.01"
   climate : 1
   adviserEnabled : true

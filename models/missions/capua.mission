@@ -3,6 +3,7 @@
   map : ":/maps/Capua.sav"
   funds : 8000
   city.name : "Capua"
+  player.rank : 2
   date : "-350.01.01"
   finish : "-300.01.01"
   adviserEnabled : true
