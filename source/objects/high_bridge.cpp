@@ -225,13 +225,14 @@ bool HighBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) c
   if( ov.isNull() )
   {
     _d->subtiles.clear();
-    const_cast< HighBridge* >( this )->_fgPicturesRef().clear();
+    HighBridge* thisp = const_cast< HighBridge* >( this );
+    thisp->_fgPicturesRef().clear();
 
     _checkParams( city, _d->direction, startPos, endPos, pos );
 
     if( _d->direction != noneDirection )
     {
-      const_cast< HighBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
+      thisp->_computePictures( city, startPos, endPos, _d->direction );
     }
   }
 

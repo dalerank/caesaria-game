@@ -146,25 +146,6 @@ Picture PictureBank::Impl::makePicture(const std::string& name, SDL_Texture* tex
    return pic;
 }
 
-void PictureBank::createResources()
-{
-  Picture& originalPic = getPicture( ResourceGroup::utilitya, 34 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00001", originalPic );
-
-  Picture* fullReservoir = Picture::create( originalPic.size() );
-  fullReservoir->draw( originalPic, 0, 0 ); //mem leak on destroy picloader
-  fullReservoir->draw( getPicture( ResourceGroup::utilitya, 35 ), 47, 37 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00002", *fullReservoir );
-
-  Picture& emptyFontainOrig = getPicture( ResourceGroup::utilitya, 10 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00003", emptyFontainOrig );
-
-  Picture* fullFontain = Picture::create( emptyFontainOrig.size() ); ;  //mem leak on destroy picloader
-  fullFontain->draw( emptyFontainOrig, 0, 0 );
-  fullFontain->draw( getPicture( ResourceGroup::utilitya, 11 ), 12, 25 );
-  setPicture( std::string( ResourceGroup::waterbuildings ) + "_00004", *fullFontain );
-}
-
 PictureBank::PictureBank() : _d( new Impl )
 {
   _d->availableExentions << ".bmp";

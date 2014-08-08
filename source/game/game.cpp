@@ -217,9 +217,6 @@ void Game::Impl::initPictures()
 {
   AnimationBank::instance().loadCarts();
   AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ) );
-
-  Logger::warning( "Game: create runtime pictures" );
-  PictureBank::instance().createResources();
 }
 
 void Game::setScreenBriefing()

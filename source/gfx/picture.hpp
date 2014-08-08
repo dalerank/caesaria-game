@@ -58,16 +58,16 @@ public:
   void setAlpha( unsigned char value );
 
   SDL_Texture* texture() const;
-  SDL_Surface* surface();
+  SDL_Surface* surface() const;
 
   int width() const;
   int height() const;
   int pitch() const;
 
-  void draw( Picture srcpic, int x, int y, bool useAlpha=true );
-  void draw( Picture srcpic, const Point& pos, bool useAlpha=true );
-  void draw( Picture srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
-  void draw( Picture srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
+  void draw( const Picture& srcpic, int x, int y, bool useAlpha=true );
+  void draw( const Picture& srcpic, const Point& pos, bool useAlpha=true );
+  void draw( const Picture& srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
+  void draw( const Picture& srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );
 
   void fill(const NColor& color, Rect rect=Rect() );
 

@@ -41,9 +41,6 @@ public:
   // show resource
   Picture& getPicture(const std::string &prefix, const int idx);
 
-  // create runtime resources
-  void createResources();
-
   ~PictureBank();
 
 private:

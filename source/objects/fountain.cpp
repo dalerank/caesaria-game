@@ -49,6 +49,7 @@ typedef enum { prettyFountain=2, fontainEmpty = 3, fontainFull = 4, simpleFounta
 Fountain::Fountain()
   : ServiceBuilding(Service::fountain, building::fountain, Size(1))
 {  
+  setPicture( ResourceGroup::utilitya, 10 );
   _haveReservoirWater = false;
   _waterIncreaseInterval = GameDate::days2ticks( 7 );
   _lastPicId = simpleFountain;
@@ -119,8 +120,15 @@ bool Fountain::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& aroun
 
   Tilemap& tmap = city->tilemap();
   const Tile& tile = tmap.at( pos );
-  int picid = (tile.param( Tile::pReservoirWater ) > 0 ? fontainFull : fontainEmpty );
-  const_cast< Fountain* >( this )->setPicture( ResourceGroup::waterbuildings, picid );
+  Fountain* thisp = const_cast< Fountain* >( this );
+  thisp->_fgPicturesRef().clear();
+  thisp->setPicture( ResourceGroup::utilitya, 10 );
+
+  if( tile.param( Tile::pReservoirWater ) )
+  {
+    thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 11 ) );
+    thisp->_fgPicturesRef().back().setOffset( 12, 10 + picture().offset().y() );
+  }
 
   return ret;
 }
@@ -129,7 +137,7 @@ bool Fountain::build(PlayerCityPtr city, const TilePos& pos )
 {
   ServiceBuilding::build( city, pos );
 
-  setPicture( ResourceGroup::waterbuildings, fontainEmpty );
+  setPicture( ResourceGroup::utilitya, 10 );
   _lastPicId = simpleFountain;
   _initAnimation();
 
