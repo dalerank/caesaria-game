@@ -3,4 +3,5 @@
   land1a : { start: 160, stop : 199, offset : [-1,-1] }
   land1a : { start: 1188, stop : 1198, offset : [-1,-1] }
   plaza :  { start: 3139, stop : 3144, offset : [-1,-1] }
+  well : { start: 1, stop : 4, offset : [-1, -1] }
 }

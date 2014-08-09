@@ -29,6 +29,7 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual int visitorsNumber() const;
   virtual void deliverService();
+  virtual bool mayWork() const;
 
 protected:
   virtual WalkerList _specificWorkers() const;

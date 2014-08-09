@@ -71,7 +71,7 @@
 
     "enable_industry#building_options" : {
       population : 450
-      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true }
+      buildings : { clay_pit : true, warehouse : true, pottery_workshop : true, weapons_workshop : true }
     }
 
     "enable_advisors#empire_options" : {
@@ -81,7 +81,22 @@
 
     "enable_empire#empire_options" : {
       population : 600
-      empire : { enabled : true }
+      empire : {
+       enabled : true
+       cities : {
+          Capua : {
+            location : [ 820, 560 ]
+
+            land : true
+            sea : true
+            available : true
+
+            sells : { iron : 25 }
+            buys : { wheat: 25, weapon: 15, pottery : 15 }
+          }
+        }
+      }
+
     }
 
     "empire_trade#tutorial_window" : {

@@ -117,6 +117,13 @@ void Herbivorous::_brokePathway(TilePos p){  _findNewWay( pos() );}
 
 void Herbivorous::_noWay()
 {
+  _noWayCount++;
+  if( _noWayCount > 30 )
+  {
+    die();
+    return;
+  }
+
   _findNewWay( pos() );
 }
 

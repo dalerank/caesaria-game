@@ -28,6 +28,7 @@ public:
   virtual void deliverService();
   virtual bool isNeedRoadAccess() const;
   virtual void burn();
+  virtual bool build(PlayerCityPtr city, const TilePos &pos);
   virtual bool isDestructible() const;
   gfx::TilesArray coverageArea() const;
 };
