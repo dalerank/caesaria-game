@@ -17,9 +17,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "level.hpp"
-
-#include <algorithm>
-
 #include "gfx/engine.hpp"
 #include "city/victoryconditions.hpp"
 #include "core/exception.hpp"
@@ -790,7 +787,6 @@ void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::Impl::showMissionTaretsWindow(){  MissionTargetsWindow::create( game->gui()->rootWidget(), game->city() ); }
 void Level::_resolveEndGame(){  _d->result = Level::mainMenu;  stop();}
 void Level::_resolveRestart() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
@@ -801,6 +797,18 @@ void Level::_resolveExitGame()
   DialogBox* dlg = new DialogBox( _d->game->gui()->rootWidget(), Rect(), "", _("##exit_without_saving_question##"), DialogBox::btnOkCancel );
   CONNECT( dlg, onOk(), this, Level::_exitGame );
   CONNECT( dlg, onCancel(), dlg, DialogBox::deleteLater );
+}
+
+void Level::Impl::showMissionTaretsWindow()
+{
+  int id = StringHelper::hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  Widget* wdg = game->gui()->findWidget( id );
+  if( !wdg )
+  {
+    MissionTargetsWindow* wnd = MissionTargetsWindow::create( game->gui()->rootWidget(), game->city() );
+    wnd->show();
+    wnd->setID( id );
+  }
 }
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType )

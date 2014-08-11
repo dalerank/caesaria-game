@@ -75,11 +75,6 @@ void GoodStock::append(GoodStock &stock, const int iAmount)
   _type = stock._type;  // in case goodType was Good::none
   _qty += amount;
   stock._qty -= amount;
-  
-  if( stock._qty == 0 )
-  {
-     stock._type = none;
-  }
 }
 
 VariantList GoodStock::save() const
@@ -116,8 +111,4 @@ int GoodStock::freeQty() const{  return std::max( _capacity - _qty, 0 );}
 void GoodStock::pop(const int qty)
 {
   _qty -= math::clamp( qty, 0, _qty );
-  if( _qty == 0 )
-  {
-    _type = Good::none;
-  }
 }

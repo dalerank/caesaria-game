@@ -17,13 +17,14 @@
 
 #include "fireworkers.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/working.hpp"
 #include "gfx/tile.hpp"
 #include "core/foreach.hpp"
 
 using namespace gfx;
+using namespace constants;
 
 namespace events
 {
@@ -59,10 +60,23 @@ void FireWorkers::_exec(Game& game, unsigned int)
       WorkingBuildingPtr wrkBuilding = ptr_cast<WorkingBuilding>( (*tile)->overlay() );
       if( wrkBuilding.isValid() )
       {
-        int bldWorkersCount = wrkBuilding->numberWorkers();
-        wrkBuilding->removeWorkers( _workers );
-        _workers -= math::clamp<int>( bldWorkersCount, 0, _workers );
+        int removedFromWb = wrkBuilding->removeWorkers( _workers );
+        _workers -= removedFromWb;
       }
+
+      if( !_workers )
+        return;
+    }
+  }
+
+  if( _workers > 0 )
+  {
+    city::Helper helper( game.city() );
+    WorkingBuildingList  wb = helper.find<WorkingBuilding>( building::any );
+    foreach( it, wb )
+    {
+      int removedFromWb = (*it)->removeWorkers( _workers );
+      _workers -= removedFromWb;
 
       if( !_workers )
         return;

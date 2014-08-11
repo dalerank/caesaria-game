@@ -188,6 +188,8 @@ void Farm::save( VariantMap& stream ) const
 void Farm::load( const VariantMap& stream )
 {
   Factory::load( stream );
+
+  computePictures();
 }
 
 unsigned int Farm::getProduceQty() const

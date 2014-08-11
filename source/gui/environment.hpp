@@ -45,6 +45,7 @@ public:
   Point getCursorPos() const;
 
   virtual bool isHovered( const Widget* element );
+  Widget* findWidget( int id );
   Widget* hovered() const;
 
   virtual void draw();

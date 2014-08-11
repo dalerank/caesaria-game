@@ -64,8 +64,8 @@ void Recruter::hireWorkers( const int workers )
   WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
   if( wbase.isValid() ) 
   {
-    _d->needWorkers = math::clamp<int>( _d->needWorkers - workers, 0, 0xff );
-    wbase->addWorkers( workers );
+    unsigned int reallyHire = wbase->addWorkers( workers );
+    _d->needWorkers -= reallyHire;
   }
 }
 
@@ -109,9 +109,8 @@ void Recruter::_centerTile()
         if( priorityOver )
         {
           WorkingBuildingPtr wbld = *it;
-          int numWorkers = std::min( wbld->numberWorkers(), _d->needWorkers );
-          wbld->removeWorkers( numWorkers );
-          hireWorkers( numWorkers );
+          int removedFromWb = wbld->removeWorkers( _d->needWorkers );
+          hireWorkers( removedFromWb );
         }
       }
     }

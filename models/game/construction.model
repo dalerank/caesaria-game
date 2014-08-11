@@ -134,7 +134,7 @@
     image : [ "entertainment", 110 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 110, count : 4 }
-      type_2 : { size:2, rc : "entertainment", start : 114, count : 3 }
+      type_1a : { size:2, rc : "entertainment", start : 114, count : 3 }
     }
     sound : [ "garden", 1 ]
   },
@@ -538,6 +538,9 @@
     employers : 0,
     pretty : "Well",
     image : [ "utilitya", 1 ]
+    image.ext : {
+      type_1 : { size:1, rc : "well", start : 1, count : 4 }
+    }
     class : "water"
     sound : [ "well", 1 ]
   }, 

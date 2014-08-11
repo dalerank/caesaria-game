@@ -230,11 +230,13 @@ void Empire::_loadObjects(const VariantMap &objects)
 
 void Empire::load( const VariantMap& stream )
 {
+  Variant uidV = stream.get( "objUid" );
+  if( uidV.isValid() ) _d->objUid = uidV;
+
+  Variant enV = stream.get( "enabled" );;
+  if( enV.isValid() ) _d->available = enV;
+
   VariantMap cities = stream.get( "cities" ).toMap();
-
-  _d->objUid = stream.get( "objUid" );
-  _d->available = stream.get( "enabled" );
-
   foreach( item, cities )
   {
     CityPtr city = findCity( item->first );

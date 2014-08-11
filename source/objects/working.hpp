@@ -35,8 +35,8 @@ public:
   unsigned int laborAccessPercent() const;
 
   void setWorkers( const unsigned int currentWorkers );
-  void addWorkers( const unsigned int workers );
-  void removeWorkers( const unsigned int workers );
+  unsigned int addWorkers( const unsigned int workers );
+  unsigned int removeWorkers( const unsigned int workers );
 
   virtual bool mayWork() const;
 

@@ -10,4 +10,5 @@
   sound_themes : ":/audio/themes.zip"
   plaza : ":/gfx/pics_plaza.zip"
   gardens : ":/gfx/pics_gardens.zip"
+  well : ":/gfx/pics_well.zip"
 }

@@ -81,6 +81,7 @@ void Pathway::init( Tilemap& tilemap, Tile &origin)
 {
   _d->tilemap = &tilemap;
   _d->origin = &origin;
+  _d->isReverse = false;
   _d->destination = origin.pos();
   _d->directionList.clear();
   _d->directionIt = _d->directionList.begin();
@@ -372,7 +373,8 @@ Pathway& Pathway::operator=( const Pathway& other )
 {
   _d->tilemap             = other._d->tilemap;
   _d->origin              = other._d->origin;
-  _d->destination      = other._d->destination;
+  _d->destination         = other._d->destination;
+  _d->isReverse           = other._d->isReverse;
   _d->directionList       = other._d->directionList;
   _d->directionIt         = _d->directionList.begin();
   _d->directionIt_reverse = _d->directionList.rbegin();

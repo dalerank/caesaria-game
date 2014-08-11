@@ -69,7 +69,7 @@ Reservoir::Reservoir()
     : WaterSource( building::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
-  setPicture( ResourceGroup::waterbuildings, 1 );
+  setPicture( ResourceGroup::utilitya, 34 );
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
@@ -88,9 +88,7 @@ bool Reservoir::build(PlayerCityPtr city, const TilePos& pos )
 {
   Construction::build( city, pos );
 
-  setPicture( ResourceGroup::waterbuildings, 1 );
-  _isWaterSource = _isNearWater( city, pos );
-  
+  _isWaterSource = _isNearWater( city, pos );  
   _setError( _isWaterSource ? "" : "##need_connect_to_other_reservoir##");
 
   return true;
@@ -155,8 +153,13 @@ bool Reservoir::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& arou
   bool ret = Construction::canBuild( city, pos, aroundTiles );
 
   bool nearWater = _isNearWater( city, pos );
-  const_cast< Reservoir* >( this )->setPicture( ResourceGroup::waterbuildings, nearWater ? 2 : 1  );
-
+  Reservoir* thisp = const_cast< Reservoir* >( this );
+  thisp->_fgPicturesRef().clear();
+  if( nearWater )
+  {
+    thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 35 )  );
+    thisp->_fgPicturesRef().back().setOffset( 47, -10+picture().offset().y() );
+  }
   return ret;
 }
 

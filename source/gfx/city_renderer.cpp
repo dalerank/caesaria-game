@@ -164,9 +164,9 @@ void CityRenderer::render()
 
   _d->currentLayer->afterRender( *_d->engine );
 
-  if( _d->currentLayer->type() != _d->currentLayer->getNextLayer() )
+  if( _d->currentLayer->type() != _d->currentLayer->nextLayer() )
   {
-    _d->setLayer( _d->currentLayer->getNextLayer() );
+    _d->setLayer( _d->currentLayer->nextLayer() );
   }
 }
 

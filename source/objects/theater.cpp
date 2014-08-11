@@ -46,8 +46,8 @@ bool Theater::build(PlayerCityPtr city, const TilePos& pos)
   return true;
 }
 
-void Theater::timeStep(const unsigned long time) {  EntertainmentBuilding::timeStep( time );}
-int Theater::visitorsNumber() const {  return 500; }
+void Theater::timeStep(const unsigned long time) { EntertainmentBuilding::timeStep( time );}
+int Theater::visitorsNumber() const { return 500; }
 
 void Theater::deliverService()
 {
@@ -63,6 +63,8 @@ void Theater::deliverService()
     _fgPicturesRef().back() = Picture::getInvalid();
   }
 }
+
+bool Theater::mayWork() const {  return (numberWorkers() > 0 && traineeValue(walker::actor) > 0); }
 
 WalkerList Theater::_specificWorkers() const
 {

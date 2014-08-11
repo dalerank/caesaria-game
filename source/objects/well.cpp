@@ -75,6 +75,15 @@ bool Well::isNeedRoadAccess() const {  return false; }
 void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
+bool Well::build(PlayerCityPtr city, const TilePos &pos)
+{
+  ServiceBuilding::build( city, pos );
+
+  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  return true;
+}
+
+
 TilesArray Well::coverageArea() const
 {
   TilesArray ret;

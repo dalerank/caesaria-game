@@ -66,7 +66,7 @@ public:
     _priority = 0;
     _lockPick = Picture::load( ResourceGroup::panelBackground, 238 );
 
-    int percentage = have * 100 / need;
+    int percentage = math::percentage( have, need );
     std::string tooltip;
     if( percentage > 90 ) tooltip = "##empbutton_tooltip##";
     else if( percentage > 75 ) tooltip = "##empbutton_simple_work##";

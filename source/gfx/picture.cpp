@@ -76,7 +76,7 @@ void Picture::addOffset( Point offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Texture* Picture::texture() const{  return _d->texture;}
-SDL_Surface*Picture::surface() { return _d->surface;  }
+SDL_Surface*Picture::surface() const { return _d->surface;  }
 const Point& Picture::offset() const{  return _d->offset;}
 int Picture::width() const{  return _d->size.width();}
 int Picture::height() const{  return _d->size.height();}
@@ -102,12 +102,12 @@ void Picture::setAlpha(unsigned char value)
   }
 }
 
-void Picture::draw(Picture srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
+void Picture::draw(const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
 {
   draw( srcpic, srcrect, Rect( pos, srcrect.size() ), useAlpha );
 }
 
-void Picture::draw( Picture srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )
+void Picture::draw(const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )
 {
   SDL_Surface* srcimg = srcpic.surface();
 
@@ -131,7 +131,7 @@ void Picture::draw( Picture srcpic, const Rect& srcrect, const Rect& dstrect, bo
   SDL_BlitSurface( srcimg, &srcRect, _d->surface, &dstRect );
 }
 
-void Picture::draw( Picture srcpic, const Point& pos, bool useAlpha )
+void Picture::draw(const Picture &srcpic, const Point& pos, bool useAlpha )
 {
   const Point& offset = srcpic._d->offset;
   draw( srcpic, Rect( Point( 0, 0 ), srcpic.size() ), 
@@ -139,7 +139,7 @@ void Picture::draw( Picture srcpic, const Point& pos, bool useAlpha )
 
 }
 
-void Picture::draw(Picture srcpic, int x, int y, bool useAlpha/*=true */ )
+void Picture::draw(const Picture &srcpic, int x, int y, bool useAlpha/*=true */ )
 {
   draw( srcpic, Point( x, y ), useAlpha );
 }

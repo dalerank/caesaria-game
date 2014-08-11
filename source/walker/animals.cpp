@@ -115,6 +115,18 @@ void Herbivorous::_reachedPathway()
 
 void Herbivorous::_brokePathway(TilePos p){  _findNewWay( pos() );}
 
+void Herbivorous::_noWay()
+{
+  _noWayCount++;
+  if( _noWayCount > 30 )
+  {
+    die();
+    return;
+  }
+
+  _findNewWay( pos() );
+}
+
 Herbivorous::Herbivorous(walker::Type type, PlayerCityPtr city)
  : Animal( city )
 {
@@ -122,6 +134,7 @@ Herbivorous::Herbivorous(walker::Type type, PlayerCityPtr city)
   setName( WalkerHelper::getPrettyTypeName( type ) );
 
   addAbility( Illness::create( 0.2, 4 ) );
+  _noWayCount = 0;
 }
 
 void Herbivorous::send2City(const TilePos &start )

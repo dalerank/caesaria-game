@@ -55,13 +55,13 @@ public:
     return SimpleGoodStore::getMaxStore( goodType );
   }
 
-  virtual void applyStorageReservation( GoodStock &stock, const long reservationID )
+  virtual void applyStorageReservation( GoodStock &stock, const int reservationID )
   {
     SimpleGoodStore::applyStorageReservation( stock, reservationID );
     oc3_emit onChangeState();
   }
 
-  virtual void applyRetrieveReservation(GoodStock &stock, const long reservationID)
+  virtual void applyRetrieveReservation(GoodStock &stock, const int reservationID)
   {
     SimpleGoodStore::applyRetrieveReservation( stock, reservationID );
     oc3_emit onChangeState();

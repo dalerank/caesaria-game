@@ -310,9 +310,10 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
   {
     ConstructionList constructions = _findContructionsInRange( tmpRange );
 
-    foreach( it, constructions )
+    ConstructionPtr c = constructions.random();
+    //foreach( it, constructions )
     {
-      ConstructionPtr c = ptr_cast<Construction>( *it );
+      //ConstructionPtr c = ptr_cast<Construction>( *it );
       ret = PathwayHelper::create( pos(), c, PathwayHelper::allTerrain );
       if( ret.isValid() )
       {

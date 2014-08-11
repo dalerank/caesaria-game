@@ -48,7 +48,7 @@ WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
   _d->maxWorkers = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
-  _d->laborAccessKoeff = 1.f;
+  _d->laborAccessKoeff = 100;
   _animationRef().stop();
 }
 
@@ -58,6 +58,7 @@ void WorkingBuilding::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, currentWorkers );
   VARIANT_SAVE_ANY_D( stream, _d, isActive );
   VARIANT_SAVE_ANY_D( stream, _d, maxWorkers );
+  VARIANT_SAVE_ANY_D( stream, _d, laborAccessKoeff );
 }
 
 void WorkingBuilding::load( const VariantMap& stream)
@@ -66,6 +67,7 @@ void WorkingBuilding::load( const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, currentWorkers, stream );
   VARIANT_LOAD_ANY_D( _d, isActive, stream );
   VARIANT_LOAD_ANY_D( _d, maxWorkers, stream );
+  VARIANT_LOAD_ANY_D( _d, laborAccessKoeff, stream );
 
   if( !_d->maxWorkers )
   {
@@ -87,14 +89,16 @@ std::string WorkingBuilding::troubleDesc() const
     trouble = "##working_building_need_road##";
   }
 
-  if( _d->laborAccessKoeff < 0.5f )
+  if( trouble.empty() )
   {
-    trouble = "##working_build_poor_labor_warning##";
-  }
-
-  if( trouble.empty() && numberWorkers() < maximumWorkers() / 2 )
-  {
-    trouble = workersProblemDesc();
+    if( numberWorkers() < maximumWorkers() / 2)
+    {
+      trouble = workersProblemDesc();
+    }
+    else if( _d->laborAccessKoeff < 50 )
+    {
+      trouble = "##working_build_poor_labor_warning##";
+    }
   }
 
   return trouble;
@@ -111,12 +115,24 @@ unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAcces
 bool WorkingBuilding::mayWork() const {  return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
-void WorkingBuilding::addWorkers(const unsigned int workers ) { setWorkers( numberWorkers() + workers ); }
-void WorkingBuilding::removeWorkers(const unsigned int workers) { setWorkers( numberWorkers() - workers ); }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
+
+unsigned int WorkingBuilding::addWorkers(const unsigned int workers )
+{
+  unsigned int maxAdd = std::min( workers, needWorkers() );
+  setWorkers( numberWorkers() + maxAdd );
+  return maxAdd;
+}
+
+unsigned int WorkingBuilding::removeWorkers(const unsigned int workers)
+{
+  unsigned int maxRemove = std::min( numberWorkers(), workers );
+  setWorkers( numberWorkers() - maxRemove );
+  return maxRemove;
+}
 
 void WorkingBuilding::timeStep( const unsigned long time )
 {
@@ -147,7 +163,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
     if( houses.size() > 0 )
       averageDistance /= houses.size();
 
-    _d->laborAccessKoeff = std::min( math::percentage( averageDistance, 8 ) * 2, 100 );
+    _d->laborAccessKoeff = math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
   }
 
   _updateAnimation( time );

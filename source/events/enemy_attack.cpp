@@ -86,7 +86,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     Variant vCityPop = soldiers.get( "city.pop" );
     if( vCityPop.isValid() )
     {
-      soldierNumber = game.city()->population() * vCityPop.toInt() / 100;
+      soldierNumber = game.city()->population() * vCityPop.toFloat();
     }
 
     TilePos location( -1, -1 );

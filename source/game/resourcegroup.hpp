@@ -35,7 +35,6 @@ public:
   __RCG_NAME security;
   __RCG_NAME transport;
   __RCG_NAME aqueduct;
-  __RCG_NAME waterbuildings;
   __RCG_NAME road;
   __RCG_NAME land1a;
   __RCG_NAME entertaiment;

@@ -142,13 +142,14 @@ bool LowBridge::canBuild(PlayerCityPtr city, TilePos pos, const TilesArray& ) co
   if( bridge.isNull() )
   {
     _d->subtiles.clear();
-    const_cast< LowBridge* >( this )->_fgPicturesRef().clear();
+    LowBridge* thisp = const_cast< LowBridge* >( this );
+    thisp->_fgPicturesRef().clear();
 
     _checkParams( city, _d->direction, startPos, endPos, pos );
 
     if( _d->direction != noneDirection )
     {
-      const_cast< LowBridge* >( this )->_computePictures( city, startPos, endPos, _d->direction );
+      thisp->_computePictures( city, startPos, endPos, _d->direction );
     }
   }
 
