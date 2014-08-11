@@ -219,10 +219,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const TileOverla
     ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, service ) == 100 ? 1 : 0);
   }
 
-  ret.coverage = ret.need > 0
-                  ? ret.peoplesStuding * 100 / ret.need
-                  : 0;
-
+  ret.coverage = math::percentage( ret.peoplesStuding, ret.need );
   return ret;
 }
 

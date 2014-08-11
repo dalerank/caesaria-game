@@ -119,9 +119,11 @@ oc3_signals public:
 
 GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectangle, PlayerCityPtr city, Good::Type type, int stackedGoods)
   : Window( parent, rectangle, "" ), _d( new Impl )
-{
+{  
   _d->city = city;
   _d->type = type;
+
+  setupUI( ":/gui/goodorder.gui" );
 
   _d->icon = GoodHelper::getPicture( type );
 
@@ -150,6 +152,8 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   CONNECT( _d->btnTradeState->btnDecrease, onClicked(), this, GoodOrderManageWindow::decreaseQty );
   CONNECT( _d->btnIndustryState, onClicked(), this, GoodOrderManageWindow::toggleIndustryEnable );
   CONNECT( _d->btnStackingState, onClicked(), this, GoodOrderManageWindow::toggleStackingGoods );
+
+  setModal();
 }
 
 void GoodOrderManageWindow::draw(Engine &painter)
@@ -157,9 +161,9 @@ void GoodOrderManageWindow::draw(Engine &painter)
   if( !visible() )
     return;
 
-  painter.draw( _d->icon, absoluteRect().lefttop() + Point( 10, 10 ) );
-
   Window::draw( painter );
+
+  painter.draw( _d->icon, absoluteRect().lefttop() + Point( 10, 10 ) );
 }
 
 void GoodOrderManageWindow::increaseQty()
@@ -259,13 +263,13 @@ void GoodOrderManageWindow::updateStackingState()
   bool isStacking = _d->city->tradeOptions().isGoodsStacking( _d->type );
   std::string text;
   if( isStacking )
-    {
-      text = StringHelper::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
-    }
+  {
+    text = StringHelper::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
+  }
   else
-    {
-      text = StringHelper::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
-    }
+  {
+    text = StringHelper::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
+  }
 
   _d->btnStackingState->setText( text );
 }

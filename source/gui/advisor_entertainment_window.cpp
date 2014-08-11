@@ -280,7 +280,7 @@ void Entertainment::Impl::updateInfo()
   int allNeed = theatersNeed + amptNeed + clsNeed + hpdNeed;
   int allServed = theatersServed + amptServed + clsServed + hpdServed;
 
-  int entertCoverage = (allNeed > 0 ? (allServed * 100 / allNeed) : 0);
+  int entertCoverage = math::percentage( allServed, allNeed);
 
   if( entertCoverage > 80 && entertCoverage <= 100 )     { troubles.push_back( "##entertainment_80_100##" ); }
   else if( entertCoverage > 50 && entertCoverage <= 80 ) { troubles.push_back( "##entertainment_50_80##" ); }

@@ -143,7 +143,7 @@
   }
 
   merchant : {
-    move : { rc : "carts", start : 145, frames : 12, action : 1, step : 8 }
+    move : { rc : "carts", start : 145, frames : 5, action : 1, step : 8 }
   }
 
   /*

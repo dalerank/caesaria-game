@@ -233,6 +233,8 @@ void Empire::load( const VariantMap& stream )
   Variant uidV = stream.get( "objUid" );
   if( uidV.isValid() ) _d->objUid = uidV;
 
+  _d->trading.load( stream.get( "trade").toMap() );
+
   Variant enV = stream.get( "enabled" );;
   if( enV.isValid() ) _d->available = enV;
 

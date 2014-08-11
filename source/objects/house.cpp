@@ -243,7 +243,7 @@ void House::_updateCrime()
 
   const Service& srvc = _d->services[ Service::recruter ];
 
-  int unemploymentPrc = srvc.value() / srvc.max() * 100;
+  int unemploymentPrc = math::percentage( srvc.value(), srvc.max() );
   int unempInfluence4happiness = 0; ///!!!
   if( unemploymentPrc > 25 ) { unempInfluence4happiness = -3; }
   else if( unemploymentPrc > 17 ) { unempInfluence4happiness = -2; }
@@ -1123,7 +1123,7 @@ int House::Impl::getFoodLevel() const
       }
     }
 
-    ret += maxFoodQty * 100 / goodStore.capacity( maxFtype );
+    ret += math::percentage( maxFoodQty, goodStore.capacity( maxFtype ) );
     foods.erase( maxFtype );
     foodLevel--;
   }

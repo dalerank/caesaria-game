@@ -50,7 +50,7 @@ public:
     __REG_TOTYPE( colloseum )
     __REG_TOTYPE( actorColony )
     __REG_TOTYPE( gladiatorSchool ) __REG_ALTTYPE( gladiatorSchool, "gladiator_pit" )
-    __REG_TOTYPE( gladiatorSchool ) __REG_ALTTYPE( lionsNursery,   "lion_pit" )
+    __REG_TOTYPE( lionsNursery )    __REG_ALTTYPE( lionsNursery,   "lion_pit" )
     __REG_TOTYPE( chariotSchool )   __REG_ALTTYPE( chariotSchool,  "chatioteer_school" )
     __REG_TOTYPE( house )
     append( construction::road,       "road" );

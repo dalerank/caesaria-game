@@ -125,7 +125,7 @@ unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
 
 unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 {
-  return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
+  return math::percentage( getWorklessNumber( city ), getAvailableWorkersNumber( city ) );
 }
 
 unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
@@ -210,7 +210,7 @@ unsigned int Statistic::getTaxPayersPercent(PlayerCityPtr city)
     }
   }
 
-  return population > 0 ? (registered * 100 / population): 0;
+  return math::percentage( registered, population );
 }
 
 unsigned int Statistic::getHealth(PlayerCityPtr city)

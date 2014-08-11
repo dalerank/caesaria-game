@@ -128,7 +128,7 @@ void Traderoute::addMerchant( const std::string& begin, GoodStore& sell, GoodSto
 {
   if( _d->points.empty() )
   {
-    Logger::warning( "Cannot create merchant for empty trade route [" + _d->begin + "<->" +_d->end  + "]" );
+    Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [" + _d->begin + "<->" +_d->end  + "]" );
     return;
   }
 

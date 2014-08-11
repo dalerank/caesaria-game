@@ -148,7 +148,7 @@
     requestDestroy : true
   },
 
-  mission_post : {
+  missionaryPost : {
     cost : 100
     employers : 20
     class : "education"
