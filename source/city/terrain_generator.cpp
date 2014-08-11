@@ -717,7 +717,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
           rnd = 7;
         }
 
-        if( tile.i() == 0 || tile.i() == (mapSize - 1) || tile.j() == 0 || tile.j() == mapSize - 1 )
+        if( tile.i() == 0 || tile.i() == ((int)mapSize - 1) || tile.j() == 0 || tile.j() == ((int)mapSize - 1) )
         {
           start = 62;
           rnd = 57;

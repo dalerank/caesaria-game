@@ -128,6 +128,22 @@ else()
   add_definitions( -DDEBUG )
 endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # using Clang
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"clang\"")  
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  # using GCC
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"gcc\"")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+  # using Intel C++
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"icc\"" )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  # using Visual Studio C++
+  add_definitions("-DCAESARIA_COMPILER_NAME=\"msvc\"")
+endif()
+
+message( "C++ compiler is ${CMAKE_CXX_COMPILER_ID}" )
+
 # set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   if(HAIKU)

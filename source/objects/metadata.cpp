@@ -43,14 +43,15 @@ public:
   BuildingTypeHelper() : EnumsHelper<TileOverlay::Type>( building::unknown )
   {
 #define __REG_TOTYPE(a) append(building::a, CAESARIA_STR_EXT(a) );
+#define __REG_ALTTYPE(a, b) append(building::a, b );
     __REG_TOTYPE( amphitheater )
     __REG_TOTYPE( theater )
     __REG_TOTYPE( hippodrome )
     __REG_TOTYPE( colloseum )
     __REG_TOTYPE( actorColony )
-    append( building::gladiatorSchool,"gladiator_pit" );
-    append( building::lionsNursery,   "lion_pit" );
-    append( building::chariotSchool,  "chatioteer_school" );
+    __REG_TOTYPE( gladiatorSchool ) __REG_ALTTYPE( gladiatorSchool, "gladiator_pit" )
+    __REG_TOTYPE( gladiatorSchool ) __REG_ALTTYPE( lionsNursery,   "lion_pit" )
+    __REG_TOTYPE( chariotSchool )   __REG_ALTTYPE( chariotSchool,  "chatioteer_school" )
     __REG_TOTYPE( house )
     append( construction::road,       "road" );
     append( construction::plaza,      "plaza" );
@@ -73,7 +74,7 @@ public:
     __REG_TOTYPE( school )
     __REG_TOTYPE( academy );
     __REG_TOTYPE( library )
-    append( building::missionaryPost, "mission_post" );
+    __REG_TOTYPE( missionaryPost )
     append( building::templeCeres,    "small_ceres_temple" );
     append( building::templeNeptune,  "small_neptune_temple" );
     append( building::templeMars,     "small_mars_temple" );
@@ -132,6 +133,7 @@ public:
     __REG_TOTYPE( fortification )
     __REG_TOTYPE( elevation )
     __REG_TOTYPE( rift )
+    __REG_TOTYPE( river )
 
     append( building::unknown,        "" );
 #undef __REG_TOTYPE

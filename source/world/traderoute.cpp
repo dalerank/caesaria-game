@@ -66,8 +66,8 @@ public:
   }
 };
 
-CityPtr Traderoute::getBeginCity() const {  return _d->empire->findCity( _d->begin );}
-CityPtr Traderoute::getEndCity() const{  return _d->empire->findCity( _d->end );}
+CityPtr Traderoute::beginCity() const {  return _d->empire->findCity( _d->begin );}
+CityPtr Traderoute::endCity() const{  return _d->empire->findCity( _d->end );}
 std::string Traderoute::getName() const{  return _d->begin + "<->" + _d->end;}
 
 void Traderoute::update( unsigned int time )
@@ -105,14 +105,14 @@ void Traderoute::setPoints(const PointsArray& points, bool seaRoute )
     int angle = (int)((p2-p1).getAngle() / 45.f);
     switch( angle )
     {
-    case 0: angle = 91; offset = Point( -10, 0 ); break;
-    case 1: angle = 89; offset = Point( -20, 0 ); break;
+    case 0: angle = 91; offset = Point( -10, -2 ); break;
+    case 1: angle = 89; offset = Point( -10, -5 ); break;
     case 2: angle = 88; offset = Point( 0, -5 );break;
     case 3: angle = 93; offset = Point( 0, -10 ); break;
     case 4: angle = 91; offset = Point( 0, -10 ); break;
-    case 5: angle = 89; break;
-    case 6: angle = 94; offset = Point( 0, 5 );break;
-    case 7: angle = 93; offset = Point( -10, 5 ); break;
+    case 5: angle = 89; offset = Point( 0, 5 ); break;
+    case 6: angle = 94; offset = Point( 0, 12 );break;
+    case 7: angle = 93; offset = Point( -10, 12 ); break;
     }
 
     Picture pic = Picture::load( ResourceGroup::empirebits, angle + (seaRoute ? 8 : 0) );

@@ -650,7 +650,10 @@ void ListBox::draw(gfx::Engine& painter )
     int mnY = frameRect.bottom() - _d->scrollBar->position();
     int mxY = frameRect.top() - _d->scrollBar->position();
 
-    if( mnY >= 0 && mxY <= (int)height() )
+    mnY += std::max( 0, refItem.icon().height() - frameRect.height() );
+
+    bool overBorder = (mnY < 0 && mxY < 0 ) || (mnY > (int)height() && mxY > (int)height() );
+    if( !overBorder )
     {
       if( refItem.icon().isValid() )
       {

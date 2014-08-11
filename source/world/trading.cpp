@@ -208,7 +208,7 @@ TraderouteList Trading::routes( const std::string& begin )
 
   foreach( it, _d->routes )
   {
-    if( it->second->getBeginCity() == city || it->second->getEndCity() == city )
+    if( it->second->beginCity() == city || it->second->endCity() == city )
     {
       ret.push_back( it->second );
     }

@@ -194,7 +194,7 @@ void Factory::timeStep(const unsigned long time)
 
   if( !_d->produceGood )
   {
-    unsigned int consumeQty = getConsumeQty();
+    int consumeQty = (int)getConsumeQty();
     if( _d->inGoodType == Good::none ) //raw material
     {
       _d->produceGood = true;

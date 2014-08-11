@@ -48,6 +48,7 @@ public:
     int lifeValue;
     int education;
     int payDiff;
+    bool enemyAttack;
     int cityWages;
     int romeWages;
     int maxWorkers;
