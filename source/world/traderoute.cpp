@@ -201,7 +201,7 @@ void Traderoute::load(const VariantMap& stream)
   }
 
   VariantMap merchants = stream.get( "merchants" ).toMap();
-  for( VariantMap::const_iterator it=merchants.begin(); it != merchants.end(); ++it )
+  foreach( it, merchants )
   {
     SimpleGoodStore sell, buy;
     addMerchant( _d->begin, sell, buy );

@@ -127,7 +127,7 @@ Trading::~Trading()
 }
 
 void Trading::sendMerchant( const std::string& begin, const std::string& end,
-                                  GoodStore& sell, GoodStore& buy )
+                            GoodStore& sell, GoodStore& buy )
 {
   TraderoutePtr route = findRoute( begin, end );
   if( route != 0 )
