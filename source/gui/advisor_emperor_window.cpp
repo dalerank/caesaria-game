@@ -270,6 +270,15 @@ void Emperor::Impl::sendMoney( int money )
 
 void Emperor::Impl::sendGift(int money)
 {
+  if( money > city->player()->money() )
+  {
+    DialogBox* dlg = new DialogBox( lbEmperorFavour->parent(), Rect(),
+                                    _("##nomoney_for_gift_title##"), _("##nomoney_for_gift_text##"),
+                                    DialogBox::btnOk );
+    CONNECT( dlg, onOk(), dlg, DialogBox::deleteLater );
+    return;
+  }
+
   city->player()->appendMoney( -money );
   city->empire()->emperor().sendGift( city->name(), money );
 }

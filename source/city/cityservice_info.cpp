@@ -101,7 +101,9 @@ void Info::update( const unsigned int time )
     last.tax = _city.funds().taxRate();
     last.cityWages = _city.funds().workerSalary();
     last.romeWages = _city.empire()->workerSalary();
-    last.crimeLevel = city::Statistic::getCrimeLevel( &_city );    
+    last.crimeLevel = city::Statistic::getCrimeLevel( &_city );
+
+    last.monthWithourWar = city::Statistic::months2lastAttack( &_city );
     last.peace = 0;
 
     PeacePtr peaceSrvc;

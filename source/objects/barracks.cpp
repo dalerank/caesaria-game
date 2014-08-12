@@ -117,6 +117,12 @@ std::string Barracks::workersProblemDesc() const
                 ? "##barracks_have_weapons_patrly_workers##"
                 : "##barracks_bad_weapons_patrly_workers##";
     }
+    else if( pp < 90 )
+    {
+      return ( haveWeapon )
+                ? "##barracks_have_weapons_need_some_workers##"
+                : "##barracks_bad_weapons_need_some_workers##";
+    }
   }
 
   return WorkingBuilding::workersProblemDesc();

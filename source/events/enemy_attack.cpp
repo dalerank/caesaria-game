@@ -23,6 +23,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "walker/enemysoldier.hpp"
+#include "city/cityservice_military.hpp"
 #include "walker/walkers_factory.hpp"
 #include "walker/helper.hpp"
 
@@ -122,6 +123,17 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
         enemy->wait( math::random( k * 30 ) );
         enemy->setAttackPriority( _d->attackPriority );
         enemy->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
+      }
+    }
+
+    if( soldierNumber > 0 )
+    {
+      city::MilitaryPtr ml;
+      ml << game.city()->findService( city::Military::defaultName() );
+
+      if( ml.isValid() )
+      {
+        ml->enemyAttack();
       }
     }
   }
