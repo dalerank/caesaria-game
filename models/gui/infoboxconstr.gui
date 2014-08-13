@@ -4,6 +4,7 @@
     geometry : [ "pw-36", 12, "pw-12", 36 ]
     text : ">"
     bgtype : "whiteBorderUp"
+    tooltip : "##infobox_construction_comma_tip##"
   }
 
   btnPrev#PushButton : {
@@ -11,5 +12,6 @@
     geometry : [ "pw-60", 12, "pw-36", 36 ]
     text : "<"
     bgtype : "whiteBorderUp"
+    tooltip : "##infobox_construction_comma_tip##"
   }
 }

@@ -483,6 +483,11 @@ std::string Warehouse::troubleDesc() const
     else if( isGettingFull() ) { ret == "##warehouse_gettinfull_warning##"; }
   }
 
+  if( ret.empty() && _d->goodStore.isDevastation() )
+  {
+    ret = _("##warehouse_devastation_mode_text##");
+  }
+
   return ret;
 }
 
