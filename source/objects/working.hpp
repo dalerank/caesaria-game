@@ -77,7 +77,7 @@ private:
 class WorkingBuildingHelper
 {
 public:
-  static std::string productivity2desc( WorkingBuildingPtr w );
+  static std::string productivity2desc( WorkingBuildingPtr w, const std::string& prefix="" );
   static std::string productivity2str( WorkingBuildingPtr w );
 };
 

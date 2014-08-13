@@ -264,14 +264,23 @@ static const char* productivityDescription[] =
 
 }
 
-std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w)
+std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, const std::string& prefix )
 {
   std::string factoryType = MetaDataHolder::findTypename( w->type() );
   unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
 
   workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount-1 );
 
-  return StringHelper::format( 0xff, "##%s_%s##", factoryType.c_str(), productivityDescription[ workKoeff ] );
+  if( prefix.empty() )
+  {
+    return StringHelper::format( 0xff, "##%s_%s##",
+                                 factoryType.c_str(), productivityDescription[ workKoeff ] );
+  }
+  else
+  {
+    return StringHelper::format( 0xff, "##%s_%s_%s##",
+                                 factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+  }
 }
 
 std::string WorkingBuildingHelper::productivity2str( WorkingBuildingPtr w )
