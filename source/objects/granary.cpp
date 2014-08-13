@@ -211,6 +211,18 @@ void Granary::destroy()
   }
 }
 
+std::string Granary::troubleDesc() const
+{
+  std::string error = WorkingBuilding::troubleDesc();
+
+  if( error.empty() && _d->goodStore.isDevastation() )
+  {
+    error = "##granary_devastation_mode_text##";
+  }
+
+  return error;
+}
+
 const Pictures& Granary::pictures(Renderer::Pass pass) const
 {
   switch( pass )

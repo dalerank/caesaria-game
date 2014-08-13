@@ -180,16 +180,19 @@ void LayerEducation::handleEvent(NEvent& event)
           {
           case citylayer::education:
           {
-            if( house->hasServiceAccess( Service::academy ) )
+            bool schoolAccess = house->hasServiceAccess( Service::school );
+            bool libraryAccess = house->hasServiceAccess( Service::library );
+            bool academyAccess = house->hasServiceAccess( Service::academy );
+
+            if( schoolAccess && libraryAccess && academyAccess )
             {
-              text = "##education_have_academy_access##";
+              text = "##education_full_access##";
             }
             else
             {
-              bool schoolAccess = house->hasServiceAccess( Service::school );
-              bool libraryAccess = house->hasServiceAccess( Service::library );
               if( schoolAccess && libraryAccess ) { text = "##education_have_school_library_access##"; }
               else if( schoolAccess || libraryAccess ) { text = "##education_have_school_or_library_access##"; }
+              else if( academyAccess ) { text = "##education_have_academy_access##"; }
               else { text = "##education_have_no_access##"; }
             }
           }

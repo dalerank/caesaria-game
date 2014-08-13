@@ -263,7 +263,7 @@ void GuiEnv::_drawTooltip( unsigned int time )
 
       _d->toolTip.element = _d->createStandartTooltip( this );
       _d->toolTip.element->setGeometry( _d->toolTip.element->relativeRect() + Point( 1, 1 ) );
-      if( _d->toolTip.element->screenBottom() > height() )
+      if( _d->toolTip.element->screenBottom() > (int)height() )
       {
         int delta = _d->toolTip.element->screenBottom() - height();
         Rect geom = _d->toolTip.element->absoluteRect();
@@ -566,6 +566,6 @@ void GuiEnv::animate( unsigned int time )
   Widget::animate( time );
 }
 
-Point GuiEnv::getCursorPos() const {  return _d->cursorPos; }
+Point GuiEnv::cursorPos() const {  return _d->cursorPos; }
 
 }//end namespace gui

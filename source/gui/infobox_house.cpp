@@ -66,14 +66,27 @@ namespace infobox
 AboutHouse::AboutHouse( Widget* parent, const Tile& tile )
   : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
+  setupUI( ":/gui/infoboxhouse.gui" );
+
   _house = ptr_cast<House>( tile.overlay() );
 
   setTitle( _(_house->spec().levelName()) );
 
   _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
 
-  Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), _( _house->evolveInfo() ) );
-  houseInfo->setWordwrap( true );
+  Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), "" );
+  if( houseInfo )
+  {
+    houseInfo->setWordwrap( true );
+
+    std::string text = _house->evolveInfo();
+    if( _house->spec().level() == HouseLevel::greatPalace && text.empty() )
+    {
+      text =  "##greatPalace_info##";
+    }
+
+    houseInfo->setText( _(text) );
+  }
 
   std::string workerState = StringHelper::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
                                                   _house->habitants().count(),

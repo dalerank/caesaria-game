@@ -79,6 +79,7 @@
     geometry : [ 80, "ph-35", 240, "ph-15" ]
     font : "FONT_2"
     text : "##give_money##"
+    tooltip : "##give_money_tip##"
     bgtype : "whiteBorderUp"
   }
 

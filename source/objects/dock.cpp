@@ -135,11 +135,12 @@ void Dock::save(VariantMap& stream) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "direction" ] = (int)_d->direction;
+  VARIANT_SAVE_ANY_D( stream, _d, direction );
+  VARIANT_SAVE_ANY_D( stream, _d, dateSendGoods );
+
   stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
   stream[ "exportGoods" ] = _d->exportGoods.save();
   stream[ "importGoods" ] = _d->importGoods.save();
-  stream[ "dateSendGoods"] = _d->dateSendGoods;
   stream[ "requestGoods" ] = _d->requestGoods.save();
 }
 
@@ -147,7 +148,7 @@ void Dock::load(const VariantMap& stream)
 {
   Building::load( stream );
 
-  _d->direction = (Direction)stream.get( "direction", (int)southWest ).toInt();
+  _d->direction = (Direction)stream.get( CAESARIA_STR_EXT(direction), (int)southWest ).toInt();
   _d->saveTileInfo << stream.get( "saved_tile" ).toList();
 
   Variant tmp = stream.get( "exportGoods" );
@@ -159,9 +160,14 @@ void Dock::load(const VariantMap& stream)
   tmp = stream.get( "requestGoods" );
   if( tmp.isValid() ) _d->requestGoods.load( tmp.toMap() );
 
-  _d->dateSendGoods = stream.get( "dateSendGoods" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, dateSendGoods, stream );
 
   _updatePicture( _d->direction );
+}
+
+std::string Dock::workersProblemDesc() const
+{
+  return WorkingBuildingHelper::productivity2desc( const_cast<Dock*>( this ), isBusy() ? "busy" : "" );
 }
 
 bool Dock::isBusy() const
@@ -189,7 +195,7 @@ const Tile& Dock::landingTile() const
   return tmap.at( pos() + offset );
 }
 
-int Dock::getQueueSize() const
+int Dock::queueSize() const
 {
   city::Helper helper( _city() );
   TilePos offset( 3, 3 );
@@ -205,7 +211,7 @@ int Dock::getQueueSize() const
   return merchants.size();
 }
 
-const Tile& Dock::getQueueTile() const
+const Tile& Dock::queueTile() const
 {
   city::Helper helper( _city() );
   TilePos offset( 3, 3 );
@@ -297,7 +303,6 @@ void Dock::_updatePicture(Direction direction)
   _animationRef().load( ResourceGroup::transport, index+10, 10, Animation::reverse );
   _animationRef().setOffset( offset );
 }
-
 
 void Dock::_setDirection(Direction direction)
 {

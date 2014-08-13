@@ -243,7 +243,7 @@ void House::_updateCrime()
 
   const Service& srvc = _d->services[ Service::recruter ];
 
-  int unemploymentPrc = srvc.value() / srvc.max() * 100;
+  int unemploymentPrc = math::percentage( srvc.value(), srvc.max() );
   int unempInfluence4happiness = 0; ///!!!
   if( unemploymentPrc > 25 ) { unempInfluence4happiness = -3; }
   else if( unemploymentPrc > 17 ) { unempInfluence4happiness = -2; }
@@ -737,7 +737,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
   if( market.isNull() )
     return;
 
-  GoodStore& marketStore = market->getGoodStore();
+  GoodStore& marketStore = market->goodStore();
 
   GoodStore &houseStore = goodStore();
   for (int i = 0; i < Good::goodCount; ++i)
@@ -858,7 +858,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   case Service::market:
   {
     MarketPtr market = ptr_cast<Market>( walker->base() );
-    GoodStore &marketStore = market->getGoodStore();
+    GoodStore &marketStore = market->goodStore();
     GoodStore &houseStore = goodStore();
     for (int i = 0; i < Good::goodCount; ++i)
     {
@@ -1123,7 +1123,7 @@ int House::Impl::getFoodLevel() const
       }
     }
 
-    ret += maxFoodQty * 100 / goodStore.capacity( maxFtype );
+    ret += math::percentage( maxFoodQty, goodStore.capacity( maxFtype ) );
     foods.erase( maxFtype );
     foodLevel--;
   }

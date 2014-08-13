@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "layertax.hpp"
 #include "objects/constants.hpp"
@@ -19,6 +21,9 @@
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
 #include "layerconstants.hpp"
+#include "core/event.hpp"
+#include "camera.hpp"
+#include "core/gettext.hpp"
 #include "city/helper.hpp"
 
 using namespace constants;
@@ -73,6 +78,12 @@ void LayerTax::drawTile(Engine& engine, Tile& tile, Point offset)
         taxLevel = math::clamp<int>( house->taxesThisYear(), 0, 100 );
         needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
 
+        if( needDrawAnimations  )
+        {
+          int taxAccess = house->hasServiceAccess( Service::forum );
+          needDrawAnimations = (taxAccess < 25);
+        }
+
         if( !needDrawAnimations )
         {
           city::Helper helper( _city() );
@@ -110,6 +121,38 @@ LayerPtr LayerTax::create( Camera& camera, PlayerCityPtr city )
   ret->drop();
 
   return ret;
+}
+
+void LayerTax::handleEvent(NEvent& event)
+{
+  if( event.EventType == sEventMouse )
+  {
+    switch( event.mouse.type  )
+    {
+    case mouseMoved:
+    {
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      std::string text = "";
+      if( tile != 0 )
+      {
+        HousePtr house = ptr_cast<House>( tile->overlay() );
+        if( house.isValid() )
+        {
+          int taxAccess = house->hasServiceAccess( Service::forum );
+          if( taxAccess < 25 )
+            text = "##house_not_registered_for_taxes##";
+        }
+      }
+
+      _setTooltipText( _(text) );
+    }
+    break;
+
+    default: break;
+    }
+  }
+
+  Layer::handleEvent( event );
 }
 
 LayerTax::LayerTax( Camera& camera, PlayerCityPtr city)

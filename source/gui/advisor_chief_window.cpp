@@ -319,7 +319,7 @@ void AdvisorChiefWindow::Impl::drawMilitary()
 
   if( mil.isValid() )
   {
-    city::Military::Notification n = mil->getPriorityNotification();
+    city::Military::Notification n = mil->priorityNotification();
     text = n.message;
   }
 

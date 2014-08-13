@@ -31,6 +31,7 @@
 #include "texturedbutton.hpp"
 #include "core/color.hpp"
 #include "event_messagebox.hpp"
+#include "core/gettext.hpp"
 
 using namespace constants;
 using namespace gfx;
@@ -101,6 +102,22 @@ protected:
       case mouseLbtnRelease: oc3_emit onShowMessage( selected() ); break;
       case mouseRbtnRelease: oc3_emit onRemoveMessage( selected() ); break;
       default: break;
+
+      case mouseMoved:
+      {
+        int index = itemAt( event.mouse.pos() );
+        if( index >= 0 )
+        {
+          ListBoxItem& itemUnderMouse = item( index );
+
+          VariantMap options = itemUnderMouse.data().toMap();
+          bool opened = options.get( lc_opened, false );
+
+          std::string text = opened ? "" : _("##scribemessages_unread##");
+          setTooltipText( text );
+        }
+      }
+      break;
       }
     }
 

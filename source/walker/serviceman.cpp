@@ -83,7 +83,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::colloseum:  _setType( walker::lionTamer );    break;
   case Service::hippodrome:   _setType( walker::charioteer ); break;
   case Service::market: _setType( walker::marketLady ); nameType = NameGenerator::female; break;
-  case Service::native: _setType( walker::missioner ); break;
+  case Service::missionary: _setType( walker::missioner ); break;
 
   case Service::library:
   case Service::academy: _setType( walker::teacher ); break;

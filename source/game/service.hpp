@@ -37,7 +37,7 @@ public:
     recruter,
     crime,
     guard,
-    native,
+    missionary,
     srvCount
   } Type;
 

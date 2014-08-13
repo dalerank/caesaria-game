@@ -231,7 +231,6 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
 
 void WaterSource::_setIsRoad(bool value){  _d->isRoad = value;}
 bool WaterSource::_isRoad() const { return _d->isRoad; }
-int WaterSource::getId() const{  return pos().j() * 10000 + pos().i();}
 int WaterSource::water() const{ return _d->water; }
 std::string WaterSource::errorDesc() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}

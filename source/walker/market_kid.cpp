@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "market_kid.hpp"
-#include "market_lady.hpp"
+#include "market_buyer.hpp"
 #include "objects/market.hpp"
 #include "city/helper.hpp"
 #include "pathway/pathway.hpp"
@@ -46,7 +46,7 @@ MarketKidPtr MarketKid::create(PlayerCityPtr city )
   return ret;
 }
 
-MarketKidPtr MarketKid::create( PlayerCityPtr city, MarketLadyPtr lady )
+MarketKidPtr MarketKid::create(PlayerCityPtr city, MarketBuyerPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
   ret->setPos( lady->pos() );
@@ -128,7 +128,7 @@ void MarketKid::_reachedPathway()
   MarketPtr market = cityh.find<Market>( building::market, _d->marketPos );
   if( market.isValid() )
   {
-    market->getGoodStore().store( _d->basket, _d->basket.qty() );
+    market->goodStore().store( _d->basket, _d->basket.qty() );
   }
 }
 

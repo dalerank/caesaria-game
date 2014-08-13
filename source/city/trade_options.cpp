@@ -272,7 +272,6 @@ void TradeOptions::load( const VariantMap& stream )
     {
       Logger::warning( "%s %s [%s %d]", "Can't convert type from ",
                            it->first.c_str(), __FILE__, __LINE__ );
-      return;
     }
 
     _d->goods[ gtype ].load( it->second.toList() );

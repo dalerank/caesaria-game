@@ -170,7 +170,7 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
   // draws vertical borders
   const Picture& leftborder = Picture::load( ResourceGroup::panelBackground, offset+7);
   const Picture& rightborder = Picture::load( ResourceGroup::panelBackground, offset+3);
-  for (int i = 0; i<(rectangle.height()/sh); ++i)
+  for (int i = 0; i<(rectangle.height()/sh+1); ++i)
   {
      stack.append( leftborder, rectangle.lefttop() + Point( 0, -rectangle.height()+sh*i ) );
      stack.append( rightborder, rectangle.lefttop() + Point( rectangle.width()-sw, -rectangle.height()+sh*i ) );
@@ -370,12 +370,12 @@ void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
   // draws vertical borders
   for (int i = 0; i<(rectangle.height()/size.height()); ++i)
   {
-    Point offset = rectangle.UpperLeftCorner + Point( 0, -sh*i );
+    Point offset = rectangle.lefttop() + Point( 0, -sh*i );
     stack.append( Picture::load( ResourceGroup::panelBackground, lp+hCount*(i%pCount)), offset );      // left border
     stack.append( Picture::load( ResourceGroup::panelBackground, rp+hCount*(i%pCount)), offset + Point( rectangle.width()-sw, 0 ) );      // right border
   }
 
-  stack.append( Picture::load( ResourceGroup::panelBackground, ltc), rectangle.UpperLeftCorner );    // left-top corner
+  stack.append( Picture::load( ResourceGroup::panelBackground, ltc), rectangle.lefttop() );    // left-top corner
   stack.append( Picture::load( ResourceGroup::panelBackground, lbc), Point( rectangle.left(), -rectangle.bottom()+sh ) );    // left-bottom corner
   stack.append( Picture::load( ResourceGroup::panelBackground, rtc ), Point( rectangle.right() - sw, rectangle.top() ) );     // right-top corner
   stack.append( Picture::load( ResourceGroup::panelBackground, rbc), Point( rectangle.right() - sw, -rectangle.bottom()+sh ) );    // right-bottom corner

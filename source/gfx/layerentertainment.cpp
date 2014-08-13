@@ -41,7 +41,7 @@ int LayerEntertainment::_getLevelValue( HousePtr house )
   {
     int entLevel = house->spec().computeEntertainmentLevel( house );
     int minLevel = house->spec().minEntertainmentLevel();
-    return ( minLevel == 0 ? 0 : entLevel * 100 / minLevel );
+    return math::percentage( entLevel, minLevel );
   }
   case citylayer::theater: return (int) house->getServiceValue( Service::theater );
   case citylayer::amphitheater: return (int) house->getServiceValue( Service::amphitheater );

@@ -29,7 +29,6 @@ public:
   virtual void addWater( const WaterSource& source );
   virtual bool haveWater() const;  
   virtual void timeStep(const unsigned long time);
-  int getId() const;
   int water() const;
 
   virtual void save(VariantMap &stream) const;

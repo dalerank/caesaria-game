@@ -50,6 +50,7 @@ public:
   static unsigned int getTaxValue( PlayerCityPtr city );
   static unsigned int getTaxPayersPercent( PlayerCityPtr city );
   static unsigned int getHealth( PlayerCityPtr city );
+  static int months2lastAttack( PlayerCityPtr city );
   static int getWagesDiff( PlayerCityPtr city );
   static unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
   static HouseList getEvolveHouseReadyBy(PlayerCityPtr, const std::set<int>& checkTypes);

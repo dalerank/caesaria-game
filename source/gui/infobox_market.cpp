@@ -49,7 +49,7 @@ AboutMarket::AboutMarket( Widget* parent, const Tile& tile )
 
    if( market->numberWorkers() > 0 )
    {
-     GoodStore& goods = market->getGoodStore();
+     GoodStore& goods = market->goodStore();
      int furageSum = 0;
      // for all furage types of good
      for (int goodType = 0; goodType<Good::olive; ++goodType)
@@ -98,7 +98,7 @@ void AboutMarket::drawGood( MarketPtr market, const Good::Type &goodType, int in
 
   int offset = ( width() - startOffset * 2 ) / 5;
   std::string goodName = GoodHelper::getName( goodType );
-  std::string outText = StringHelper::format( 0xff, "%d", market->getGoodStore().qty( goodType ) );
+  std::string outText = StringHelper::format( 0xff, "%d", market->goodStore().qty( goodType ) );
 
   // pictures of goods
   Picture pic = GoodHelper::getPicture( goodType );

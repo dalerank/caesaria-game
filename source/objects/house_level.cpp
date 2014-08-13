@@ -382,13 +382,16 @@ int HouseSpecification::computeHealthLevel( HousePtr house, std::string &oMissin
 int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMissingRequirement)
 {
   int res = 0;
-  if( house->hasServiceAccess(Service::school) )
+  bool haveSchool = house->hasServiceAccess(Service::school);
+  bool haveAcademy = house->hasServiceAccess(Service::academy);
+  bool haveLibrary = house->hasServiceAccess(Service::library);
+  if( haveSchool )
   {
     res = 1;   
-    if( house->hasServiceAccess(Service::academy) )
+    if( haveAcademy )
     {
       res = 2;      
-      if( house->hasServiceAccess(Service::library) )
+      if( haveLibrary )
       {
         res = 3;
       }
@@ -404,7 +407,9 @@ int HouseSpecification::computeEducationLevel(HousePtr house, std::string &oMiss
   }
   else
   {
-    oMissingRequirement = "##missing_school##";
+     oMissingRequirement = haveLibrary
+                             ? "##missing_school##"
+                             : "##missing_school_or_library##";
   }
 
   return res;

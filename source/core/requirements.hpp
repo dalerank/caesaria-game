@@ -40,11 +40,11 @@
   #endif
 #endif
 
-#if defined(CAESARIA_PLATFORM_UNIX)
+/*#if defined(CAESARIA_PLATFORM_UNIX)
   #ifdef __GNUC__
     #define CAESARIA_COMPILER_NAME "gcc"
   #endif
-#endif
+#endif*/
 
 #ifndef CAESARIA_COMPILER_NAME
   #define CAESARIA_COMPILER_NAME "unknown"

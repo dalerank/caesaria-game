@@ -13,40 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MARKETLADY_H_INCLUDED__
-#define __CAESARIA_MARKETLADY_H_INCLUDED__
+#ifndef __CAESARIA_MARKET_LADY_H_INCLUDED__
+#define __CAESARIA_MARKET_LADY_H_INCLUDED__
 
-#include "walker.hpp"
-#include "objects/warehouse.hpp"
+#include "serviceman.hpp"
+#include "core/predefinitions.hpp"
 
-/** This is the market lady buying goods at granaries and warehouses */
-class MarketLady : public Walker
+class MarketLady : public ServiceWalker
 {
 public:
-  static MarketLadyPtr create( PlayerCityPtr city );
-
-  virtual ~MarketLady();
-
-  void send2City( MarketPtr market );
-
-  // compute the destination to fetch the given good
-  void computeWalkerDestination( MarketPtr market );
-
-  virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream);
-
-  virtual std::string currentThinks() const;
+  static ServiceWalkerPtr create( PlayerCityPtr city  );
 
 protected:
-  virtual void _reachedPathway();
+  virtual void _updateThinks();
+  virtual void _centerTile();
 
 private:
   MarketLady( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_MARKETLADY_H_INCLUDED__
+#endif //__CAESARIA_MARKET_LADY_H_INCLUDED__

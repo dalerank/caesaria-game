@@ -136,8 +136,8 @@ void ListBox::removeItem(unsigned int id)
 
 int ListBox::itemAt(Point pos ) const
 {
-  if ( 	pos.x() < screenLeft() || pos.x() >= screenRight()
-      ||	pos.y() < screenTop() || pos.y() >= screenBottom() )
+  if(	pos.x() < screenLeft() || pos.x() >= screenRight()
+       ||	pos.y() < screenTop() || pos.y() >= screenBottom() )
   {
 	  return -1;
   }
@@ -201,8 +201,6 @@ void ListBox::_indexChanged( unsigned int eventType )
 {
   parent()->onEvent( NEvent::Gui( this, 0, GuiEventType( eventType ) ) );
 
-  //_CallLuaFunction( eventType );
-
   switch( eventType )
   {
   case guiListboxChanged:
@@ -237,10 +235,10 @@ bool ListBox::onEvent(const NEvent& event)
 	if( enabled() )
 	{
 		switch(event.EventType)
-        {
-        case sEventMax:
-        case sEventUser:
-        break;
+		{
+		case sEventMax:
+		case sEventUser:
+		break;
 
 		case sEventKeyboard:
 			if (event.keyboard.pressed &&
@@ -267,7 +265,7 @@ bool ListBox::onEvent(const NEvent& event)
         {
           _d->selectedItemIndex = _d->items.size() - 1;
         }
-                else if (_d->selectedItemIndex<0)
+        else if (_d->selectedItemIndex<0)
         {
           _d->selectedItemIndex = 0;
         }
@@ -292,7 +290,7 @@ bool ListBox::onEvent(const NEvent& event)
 			else if (event.keyboard.pressed && event.keyboard.symbol)
 			{
 				// change selection based on text as it is typed.
-                unsigned int now = DateTime::elapsedTime();
+				unsigned int now = DateTime::elapsedTime();
 
 				if (now - _d->lastKeyTime < 500)
 				{
@@ -368,27 +366,25 @@ bool ListBox::onEvent(const NEvent& event)
 			switch(event.gui.type)
 			{
 			case guiScrollbarChanged:
+			{
+				if (event.gui.caller == _d->scrollBar)
 				{
-					if (event.gui.caller == _d->scrollBar)
-					{
-						_d->needItemsRepackTextures = true;
-						return true;
-					}
+					_d->needItemsRepackTextures = true;
+					return true;
 				}
+			}
 			break;
 
       case guiElementFocused:
-            //          CallScriptFunction( GUI_EVENT + NRP_ELEMENT_FOCUSED, this );
       break;
 
 			case guiElementFocusLost:
+			{
+				if (event.gui.caller == this)
 				{
-          //CallScriptFunction( GUI_EVENT + NRP_ELEMENT_FOCUS_LOST, this );
-          if (event.gui.caller == this)
-          {
-             _d->selecting = false;
-          }
-        }
+					 _d->selecting = false;
+				}
+			}
       break;
 
 			default:
@@ -403,41 +399,42 @@ bool ListBox::onEvent(const NEvent& event)
 				switch(event.mouse.type)
 				{
 				case mouseWheel:
-					{
-						_d->scrollBar->setPosition(_d->scrollBar->position() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
-            _d->needItemsRepackTextures = true;
-						return true;
-					}
+				{
+					_d->scrollBar->setPosition(_d->scrollBar->position() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->itemHeight/2));
+					_d->needItemsRepackTextures = true;
+					return true;
+				}
 				break;
 
 				case mouseLbtnPressed:
-				  {
-						_d->dragEventSended = false;
-						_d->selecting = true;
+				{
+					_d->dragEventSended = false;
+					_d->selecting = true;
 
-            if (isPointInside(p) && isFlag( selectOnMDown ) )
-            {
-              _selectNew(event.mouse.y);
-            }
+          if (isPointInside(p) && isFlag( selectOnMDown ) )
+          {
+            _selectNew(event.mouse.y);
+          }
 
-						return true;
-				  }
+					return true;
+				}
 				break;
 
 				case mouseLbtnRelease:
-				  {
-						_d->selecting = false;
+				{
+					_d->selecting = false;
 
-            if (isPointInside(p) && !isFlag( selectOnMDown ) )
-            {
-              _selectNew(event.mouse.y);
-            }
+          if (isPointInside(p) && !isFlag( selectOnMDown ) )
+          {
+            _selectNew(event.mouse.y);
+          }
 
-						return true;
-				  }
+					return true;
+				}
 				break;
 
         case mouseMoved:
+        {
           if( _d->selecting && isFlag( selectOnMove ) )
           {
             if (isPointInside(p))
@@ -446,13 +443,7 @@ bool ListBox::onEvent(const NEvent& event)
               return true;
             }
           }
-
-//        if( _d->selecting && !_d->dragEventSended && !isPointInside(p) )
-//           {
-//               getParent()->onEvent( NEvent::Drag( this, 0 ));
-//               _d->dragEventSended = true;
-//               return true;
-//           }
+        }
         break;
 
         default:
@@ -650,7 +641,10 @@ void ListBox::draw(gfx::Engine& painter )
     int mnY = frameRect.bottom() - _d->scrollBar->position();
     int mxY = frameRect.top() - _d->scrollBar->position();
 
-    if( mnY >= 0 && mxY <= (int)height() )
+    mnY += std::max( 0, refItem.icon().height() - frameRect.height() );
+
+    bool overBorder = (mnY < 0 && mxY < 0 ) || (mnY > (int)height() && mxY > (int)height() );
+    if( !overBorder )
     {
       if( refItem.icon().isValid() )
       {

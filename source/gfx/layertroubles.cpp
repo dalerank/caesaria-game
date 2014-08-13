@@ -121,6 +121,27 @@ void LayerTroubles::handleEvent(NEvent& event)
         if( constr.isValid() )
         {
           text = constr->troubleDesc();
+
+          if( text.empty() )
+          {
+            WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( constr );
+            if( wb.isValid() )
+            {
+              int laborAccess = wb->laborAccessPercent();
+              if( wb->getAccessRoads().empty() || laborAccess == 0 )
+              {
+                text = "##working_have_no_labor_access##";
+              }
+              else
+              {
+                if( laborAccess < 20 ) { text = "##working_have_bad_labor_access##"; }
+                else if( laborAccess < 40 ) { text = "##working_have_very_little_labor_access##"; }
+                else if( laborAccess < 60 ) { text = "##working_have_some_labor_access##"; }
+                else if( laborAccess < 80 ) { text = "##working_have_good_labor_access##"; }
+                else if( laborAccess <= 100 ) { text = "##working_have_awsesome_labor_access##"; }
+              }
+            }
+          }
         }
       }
 

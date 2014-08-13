@@ -42,7 +42,7 @@ public:
 
   Widget* rootWidget();								//  
   Widget* getFocus() const;
-  Point getCursorPos() const;
+  Point cursorPos() const;
 
   virtual bool isHovered( const Widget* element );
   Widget* findWidget( int id );

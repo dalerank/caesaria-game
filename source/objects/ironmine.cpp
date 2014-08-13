@@ -74,7 +74,7 @@ void IronMine::timeStep(const unsigned long time)
       _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
     }
 
-    if( _d->lowWorkerWeeksNumber > 8 &&  _d->lowWorkerWeeksNumber > math::random( 42 ) )
+    if( _d->lowWorkerWeeksNumber > 8 &&  _d->lowWorkerWeeksNumber > (unsigned int)math::random( 42 ) )
     {
       collapse();
 

@@ -37,7 +37,7 @@ class ComputerCity::Impl
 {
 public:
   unsigned int tradeType;
-  bool distantCity, romeCity;
+  bool distantCity, romecity;
   bool available;
   unsigned int tradeDelay;
   SimpleGoodStore sellStore;
@@ -60,7 +60,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->sellStore.setCapacity( 99999 );
   _d->buyStore.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
-  _d->romeCity = false;
+  _d->romecity = false;
 
   _initTextures();
 }
@@ -72,7 +72,7 @@ unsigned int ComputerCity::population() const { return 0; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
-bool ComputerCity::isRomeCity() const{  return _d->romeCity;}
+bool ComputerCity::isRomeCity() const{  return _d->romecity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
 
@@ -123,13 +123,13 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "lastTimeMerchantSend" ] = _d->lastTimeMerchantSend;
   options[ "lastTimeUpdate" ] = _d->lastTimeUpdate;
   VARIANT_SAVE_ANY_D( options, _d, available );
-  options[ "merchantsNumber" ] = _d->merchantsNumber;
+  VARIANT_SAVE_ANY_D( options, _d, merchantsNumber );
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
   VARIANT_SAVE_ANY_D( options, _d, distantCity );
-  options[ "romecity" ] = _d->romeCity;
+  VARIANT_SAVE_ANY_D( options, _d, romecity );
   options[ "realSells" ] = _d->realSells.save();
-  options[ "tradeDelay" ] = _d->tradeDelay;
+  VARIANT_SAVE_ANY_D( options, _d, tradeDelay );
 }
 
 void ComputerCity::load( const VariantMap& options )
@@ -139,10 +139,10 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D( _d, available, options );
   _d->lastTimeUpdate = options.get( "lastTimeUpdate", GameDate::current() ).toDateTime();
   _d->lastTimeMerchantSend = options.get( "lastTimeMerchantSend", GameDate::current() ).toDateTime();
-  _d->merchantsNumber = (int)options.get( "merchantsNumber" );
+  VARIANT_LOAD_ANY_D( _d, merchantsNumber, options );
   VARIANT_LOAD_ANY_D( _d, distantCity, options );
-  _d->romeCity = (bool)options.get( "romecity" );
-  _d->tradeDelay = (int)options.get( "tradeDelay" );
+  VARIANT_LOAD_ANY_D( _d, romecity, options );
+  VARIANT_LOAD_ANY_D( _d, tradeDelay, options );
 
   for( int i=Good::none; i < Good::goodCount; i ++ )
   {
@@ -172,7 +172,6 @@ void ComputerCity::load( const VariantMap& options )
                   + (options.get( "land" ).toBool() ? EmpireMap::land : EmpireMap::unknown);
 
   Variant vm_rsold = options.get( "realSells" );
-
   if( vm_rsold.isValid() )
   {
     _d->realSells.load( vm_rsold.toMap() );
@@ -251,7 +250,7 @@ void ComputerCity::timeStep( unsigned int time )
   //one year before step need
   if( _d->lastTimeUpdate.monthsTo( GameDate::current() ) > 11 )
   {
-    _d->merchantsNumber = math::clamp<unsigned int>( _d->merchantsNumber-1, 0, 2 );
+    _d->merchantsNumber = math::clamp<int>( _d->merchantsNumber-1, 0, 2 );
     _d->lastTimeUpdate = GameDate::current();
 
     for( int i=Good::none; i < Good::goodCount; i ++ )
@@ -266,49 +265,53 @@ void ComputerCity::timeStep( unsigned int time )
   if( _d->lastTimeMerchantSend.monthsTo( GameDate::current() ) > 2 ) 
   {
     TraderouteList routes = empire()->tradeRoutes( name() );
+
+    if( routes.empty() )
+      return;
+
+    if( !_mayTrade() )
+      return;
+
     _d->lastTimeMerchantSend = GameDate::current();
 
-    if( _d->merchantsNumber >= routes.size() || !_mayTrade() )
+    if( _d->merchantsNumber >= routes.size() )
     {
       return;
     }
 
-    if( !routes.empty() )
+    SimpleGoodStore sellGoods, buyGoods;
+    sellGoods.setCapacity( 2000 );
+    buyGoods.setCapacity( 2000 );
+    for( int i=Good::none; i < Good::goodCount; i ++ )
     {
-      SimpleGoodStore sellGoods, buyGoods;
-      sellGoods.setCapacity( 2000 );
-      buyGoods.setCapacity( 2000 );
-      for( int i=Good::none; i < Good::goodCount; i ++ )
-      {
-        Good::Type gtype = Good::Type( i );
+      Good::Type gtype = Good::Type( i );
 
-        buyGoods.setCapacity( gtype, _d->buyStore.capacity( gtype ) );
+      buyGoods.setCapacity( gtype, _d->buyStore.capacity( gtype ) );
 
-        //how much space left
-        int maxQty = (std::min)( _d->sellStore.capacity( gtype ) / 4, sellGoods.freeQty() );
-        
-        //we want send merchants to all routes
-        maxQty /= routes.size();
+      //how much space left
+      int maxQty = (std::min)( _d->sellStore.capacity( gtype ) / 4, sellGoods.freeQty() );
 
-        int qty = math::clamp( _d->sellStore.qty( gtype ), 0, maxQty );
+      //we want send merchants to all routes
+      maxQty /= routes.size();
 
-        //have no goods to sell
-        if( qty == 0 )
-          continue;
+      int qty = math::clamp( _d->sellStore.qty( gtype ), 0, maxQty );
 
-        GoodStock& stock = sellGoods.getStock( gtype );  
-        stock.setCapacity( qty );
-        
-        //move goods to merchant's storage
-        _d->sellStore.retrieve( stock, qty );
-      }
+      //have no goods to sell
+      if( qty == 0 )
+        continue;
 
-      //send merchants to all routes
-      foreach( route, routes )
-      {
-        _d->merchantsNumber++;
-        (*route)->addMerchant( name(), sellGoods, buyGoods );
-      }
+      GoodStock& stock = sellGoods.getStock( gtype );
+      stock.setCapacity( qty );
+
+      //move goods to merchant's storage
+      _d->sellStore.retrieve( stock, qty );
+    }
+
+    //send merchants to all routes
+    foreach( route, routes )
+    {
+      _d->merchantsNumber++;
+      (*route)->addMerchant( name(), sellGoods, buyGoods );
     }
   }
 }
@@ -320,7 +323,7 @@ void ComputerCity::_initTextures()
   int index = PicID::otherCity;
 
   if( _d->distantCity ) { index = PicID::distantCity; }
-  else if( _d->romeCity ) { index = PicID::romeCity; }
+  else if( _d->romecity ) { index = PicID::romeCity; }
 
   Picture pic = Picture::load( ResourceGroup::empirebits, index );
   pic.setOffset( 0, 30 );

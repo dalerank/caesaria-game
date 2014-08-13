@@ -28,7 +28,8 @@
 #include "objects/farm.hpp"
 #include "world/empire.hpp"
 #include "objects/warehouse.hpp"
-#include "city/cityservice_disorder.hpp"
+#include "cityservice_disorder.hpp"
+#include "cityservice_military.hpp"
 #include "core/time.hpp"
 #include "cityservice_health.hpp"
 #include <map>
@@ -125,7 +126,7 @@ unsigned int Statistic::getWorklessNumber(PlayerCityPtr city)
 
 unsigned int Statistic::getWorklessPercent(PlayerCityPtr city)
 {
-  return getWorklessNumber( city ) * 100 / (getAvailableWorkersNumber( city )+1);
+  return math::percentage( getWorklessNumber( city ), getAvailableWorkersNumber( city ) );
 }
 
 unsigned int Statistic::getCrimeLevel( PlayerCityPtr city )
@@ -210,7 +211,7 @@ unsigned int Statistic::getTaxPayersPercent(PlayerCityPtr city)
     }
   }
 
-  return population > 0 ? (registered * 100 / population): 0;
+  return math::percentage( registered, population );
 }
 
 unsigned int Statistic::getHealth(PlayerCityPtr city)
@@ -218,6 +219,13 @@ unsigned int Statistic::getHealth(PlayerCityPtr city)
   HealthCarePtr hc;
   hc << city->findService( HealthCare::defaultName() );
   return hc.isValid() ? hc->value() : 0;
+}
+
+int Statistic::months2lastAttack(PlayerCityPtr city)
+{
+  MilitaryPtr ml;
+  ml << city->findService( Military::defaultName() );
+  return ml.isValid() ? ml->month2lastAttack() : 0;
 }
 
 int Statistic::getWagesDiff(PlayerCityPtr city)

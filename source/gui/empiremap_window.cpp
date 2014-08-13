@@ -80,24 +80,18 @@ public:
   void drawCityInfo();
   void resetInfoPanel();
   void updateCityInfo();
+  void drawCities( Engine& painter );
+  void drawStatic( Engine& painter );
+  void drawTradeRoutes( Engine& painter );
+  void drawMovable( Engine& painter );
   void showTradeAdvisorWindow();
   void initBorder(Widget* p);
+  world::CityPtr findCity( const Point& pos );
 };
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 {
-  world::CityList cities = empire->cities();
-
-  currentCity = 0;
-  foreach( city, cities )
-  {
-    Rect rect( (*city)->location(), Size( 40 ) );
-    if( rect.isPointInside( pos ) )
-    {
-      currentCity = (*city);
-      break;
-    }
-  }
+  currentCity = findCity( pos );
 
   updateCityInfo();
 }
@@ -140,6 +134,61 @@ void EmpireMapWindow::Impl::updateCityInfo()
   else
   {
     lbCityTitle->setText( "" );    
+  }
+}
+
+void EmpireMapWindow::Impl::drawCities(Engine& painter)
+{
+  world::CityList cities = empire->cities();
+  foreach( it, cities )
+  {
+    Point location = (*it)->location();
+    painter.draw( (*it)->pictures(), offset + location );
+  }
+}
+
+void EmpireMapWindow::Impl::drawStatic(Engine& painter)
+{
+  foreach( obj, empire->objects() )
+  {
+    if( !(*obj)->isMovable() )
+    {
+      painter.draw( (*obj)->pictures(), offset + (*obj)->location() );
+    }
+  }
+}
+
+void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
+{
+  world::TraderouteList routes = empire->tradeRoutes();
+  foreach( it, routes )
+  {
+    world::TraderoutePtr route = *it;
+
+    const PointsArray& points = route->points();
+    const Pictures& pictures = route->pictures();
+
+    for( unsigned int index=0; index < pictures.size(); index++ )
+    {
+      painter.draw( pictures[ index ], offset + points[ index ] );
+    }
+
+    world::MerchantPtr merchant = route->merchant( 0 );
+    if( merchant != 0 )
+    {
+      painter.draw( merchant->picture(), offset + merchant->location() );
+    }
+  }
+}
+
+void EmpireMapWindow::Impl::drawMovable(Engine& painter)
+{
+  foreach( obj, empire->objects() )
+  {
+    if( (*obj)->isMovable() )
+    {
+      painter.draw( (*obj)->pictures(), offset + (*obj)->location() );
+    }
   }
 }
 
@@ -194,6 +243,24 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
 
   border.append( centerPicture, Point( (p->width() - centerPicture.width()) / 2,
                                        -p->height() + (120 + centerPicture.height() - 20)) );
+}
+
+world::CityPtr EmpireMapWindow::Impl::findCity(const Point& pos)
+{
+  world::CityList cities = empire->cities();
+
+  world::CityPtr ret;
+  foreach( it, cities )
+  {
+    Rect rect( (*it)->location(), Size( 40 ) );
+    if( rect.isPointInside( pos ) )
+    {
+      ret = (*it);
+      break;
+    }
+  }
+
+  return ret;
 }
 
 void EmpireMapWindow::Impl::createTradeRoute()
@@ -384,49 +451,14 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
   engine.draw( _d->empireMap, _d->offset );  
 
   //draw static objects
-  foreach( obj, _d->empire->objects() )
-  {
-    if( !(*obj)->isMovable() )
-    {
-      engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
-    }
-  }
+  _d->drawStatic( engine );
 
-  world::CityList cities = _d->empire->cities();
-  foreach( it, cities )
-  {
-    Point location = (*it)->location();
-    engine.draw( (*it)->pictures(), _d->offset + location );
-  }
+  _d->drawTradeRoutes( engine );
 
-  world::TraderouteList routes = _d->empire->tradeRoutes();
-  foreach( it, routes )
-  {
-    world::TraderoutePtr route = *it;
-
-    const PointsArray& points = route->points();
-    const Pictures& pictures = route->pictures();
-
-    for( unsigned int index=0; index < pictures.size(); index++ )
-    {
-      engine.draw( pictures[ index ], _d->offset + points[ index ] );
-    }
-
-    world::MerchantPtr merchant = route->merchant( 0 );
-    if( merchant != 0 )
-    {
-      engine.draw( merchant->picture(), _d->offset + merchant->location() );
-    }      
-  }
+  _d->drawCities( engine );
 
   //draw movable objects
-  foreach( obj, _d->empire->objects() )
-  {
-    if( (*obj)->isMovable() )
-    {
-      engine.draw( (*obj)->pictures(), _d->offset + (*obj)->location() );
-    }
-  }
+  _d->drawMovable( engine );
 
   engine.draw( _d->border, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 
@@ -493,6 +525,18 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
   }
 
   return Widget::onEvent( event );
+}
+
+std::string EmpireMapWindow::tooltipText() const
+{
+  world::CityPtr wCity = _d->findCity( const_cast<EmpireMapWindow*>( this )->environment()->cursorPos() );
+
+  if( wCity.isValid() )
+  {
+    return "##click_on_city_for_info##";
+  }
+
+  return Widget::tooltipText();
 }
 
 EmpireMapWindow* EmpireMapWindow::create(world::EmpirePtr empire, PlayerCityPtr city, Widget* parent, int id )
