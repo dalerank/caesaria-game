@@ -63,7 +63,10 @@ void Mars::_doWrath(PlayerCityPtr city)
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {
-
+  events::GameEventPtr message = events::ShowInfobox::create( _("##smallcurse_of_mars_title##"),
+                                                            _("##smallcurse_of_mars_text##"),
+                                                            events::ShowInfobox::send2scribe );
+  message->dispatch();
 }
 
 void Mars::_doBlessing(PlayerCityPtr city)

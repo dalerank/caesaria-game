@@ -3,7 +3,7 @@
 	terrain_vacant : 
 		{
 			level : 0,
-			title : "##terrain_vacant##",
+      title : "##freehouse_caption##",
 			habitants : 0,
 			minDesirability : 0,
 		  maxDesirability : 0,
@@ -500,7 +500,7 @@
   "small_palace" :
     {
       level : 17,
-      title : "Small palace",
+      title : "##small_palace##",
       habitants : 12,
       minDesirability : 65,
         maxDesirability : 74,
@@ -529,7 +529,7 @@
   "middle_palace" :
     {
       level : 18,
-      title : "Middle palace",
+      title : "##middle_palace##",
       habitants : 12,
       minDesirability : 70,
         maxDesirability : 80,
@@ -558,7 +558,7 @@
   "big_palace" :
     {
       level : 19,
-      title : "Big palace",
+      title : "##big_palace##",
       habitants : 12,
       minDesirability : 76,
         maxDesirability : 90,
@@ -587,7 +587,7 @@
   "luxury_palace" :
     {
       level : 20,
-      title : "Luxury palace",
+      title : "##luxury_palace##",
       habitants : 12,
       minDesirability : 85,
       maxDesirability : 100,

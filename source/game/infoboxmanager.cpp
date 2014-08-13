@@ -230,7 +230,7 @@ Manager::Manager() : _d( new Impl )
   addInfobox( building::colloseum,        CAESARIA_STR_EXT(Collosseum), new BaseInfoboxCreator<AboutColosseum>() );
   addInfobox( building::lionsNursery,     CAESARIA_STR_EXT(LionsNursery), new ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::hippodrome,       CAESARIA_STR_EXT(Hippodrome), new ServiceBaseInfoboxCreator( "", "" ) );
-  addInfobox( building::chariotSchool,    CAESARIA_STR_EXT(chariotSchool),new ServiceBaseInfoboxCreator( "", "" ) );
+  ADD_INFOBOX( building::chariotSchool, ServiceBaseInfoboxCreator( "", "" ) );
   addInfobox( building::forum,            CAESARIA_STR_EXT(Forum),        new ServiceBaseInfoboxCreator("", "" ) );
   addInfobox( building::governorHouse,    CAESARIA_STR_EXT(governorHouse),new ServiceBaseInfoboxCreator( "", "##governor_house_text##") );
   addInfobox( building::governorVilla,    CAESARIA_STR_EXT(governorVilla),new ServiceBaseInfoboxCreator( "", "##governor_villa_text##") );
@@ -275,7 +275,7 @@ void Manager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
   if( infoBox && infoBox->isAutoPosition() )
   {
     Size rSize = gui->rootWidget()->size();
-    int y = ( gui->getCursorPos().y() < rSize.height() / 2 )
+    int y = ( gui->cursorPos().y() < rSize.height() / 2 )
                 ? rSize.height() - infoBox->height() - 5
                 : 30;
     Point pos( ( rSize.width() - infoBox->width() ) / 2, y );

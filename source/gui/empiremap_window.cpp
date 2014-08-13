@@ -86,22 +86,12 @@ public:
   void drawMovable( Engine& painter );
   void showTradeAdvisorWindow();
   void initBorder(Widget* p);
+  world::CityPtr findCity( const Point& pos );
 };
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 {
-  world::CityList cities = empire->cities();
-
-  currentCity = 0;
-  foreach( city, cities )
-  {
-    Rect rect( (*city)->location(), Size( 40 ) );
-    if( rect.isPointInside( pos ) )
-    {
-      currentCity = (*city);
-      break;
-    }
-  }
+  currentCity = findCity( pos );
 
   updateCityInfo();
 }
@@ -253,6 +243,24 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
 
   border.append( centerPicture, Point( (p->width() - centerPicture.width()) / 2,
                                        -p->height() + (120 + centerPicture.height() - 20)) );
+}
+
+world::CityPtr EmpireMapWindow::Impl::findCity(const Point& pos)
+{
+  world::CityList cities = empire->cities();
+
+  world::CityPtr ret;
+  foreach( it, cities )
+  {
+    Rect rect( (*it)->location(), Size( 40 ) );
+    if( rect.isPointInside( pos ) )
+    {
+      ret = (*it);
+      break;
+    }
+  }
+
+  return ret;
 }
 
 void EmpireMapWindow::Impl::createTradeRoute()
@@ -517,6 +525,18 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
   }
 
   return Widget::onEvent( event );
+}
+
+std::string EmpireMapWindow::tooltipText() const
+{
+  world::CityPtr wCity = _d->findCity( const_cast<EmpireMapWindow*>( this )->environment()->cursorPos() );
+
+  if( wCity.isValid() )
+  {
+    return "##click_on_city_for_info##";
+  }
+
+  return Widget::tooltipText();
 }
 
 EmpireMapWindow* EmpireMapWindow::create(world::EmpirePtr empire, PlayerCityPtr city, Widget* parent, int id )

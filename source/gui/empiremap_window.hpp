@@ -37,6 +37,8 @@ public:
   //resolve event
   virtual bool onEvent(const NEvent& event);
 
+  virtual std::string tooltipText() const;
+
 protected:
   class Impl;
   ScopedPtr< Impl > _d;
