@@ -566,6 +566,6 @@ void GuiEnv::animate( unsigned int time )
   Widget::animate( time );
 }
 
-Point GuiEnv::getCursorPos() const {  return _d->cursorPos; }
+Point GuiEnv::cursorPos() const {  return _d->cursorPos; }
 
 }//end namespace gui

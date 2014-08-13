@@ -737,7 +737,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
   if( market.isNull() )
     return;
 
-  GoodStore& marketStore = market->getGoodStore();
+  GoodStore& marketStore = market->goodStore();
 
   GoodStore &houseStore = goodStore();
   for (int i = 0; i < Good::goodCount; ++i)
@@ -858,7 +858,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   case Service::market:
   {
     MarketPtr market = ptr_cast<Market>( walker->base() );
-    GoodStore &marketStore = market->getGoodStore();
+    GoodStore &marketStore = market->goodStore();
     GoodStore &houseStore = goodStore();
     for (int i = 0; i < Good::goodCount; ++i)
     {

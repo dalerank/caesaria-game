@@ -12,11 +12,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "market.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "walker/market_lady.hpp"
+#include "walker/market_buyer.hpp"
 #include "core/variant.hpp"
 #include "good/goodstore_simple.hpp"
 #include "city/city.hpp"
@@ -73,7 +75,7 @@ void Market::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketLadyPtr buyer = MarketLady::create( _city() );
+    MarketBuyerPtr buyer = MarketBuyer::create( _city() );
     buyer->send2City( this );
 
     if( !buyer->isDeleted() )
@@ -88,9 +90,9 @@ void Market::deliverService()
 }
 
 unsigned int Market::walkerDistance() const {  return 26; }
-GoodStore& Market::getGoodStore(){  return _d->goodStore; }
+GoodStore& Market::goodStore(){  return _d->goodStore; }
 
-std::list<Good::Type> Market::getMostNeededGoods()
+std::list<Good::Type> Market::mostNeededGoods()
 {
   std::list<Good::Type> res;
 

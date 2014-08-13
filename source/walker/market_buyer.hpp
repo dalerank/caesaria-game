@@ -15,37 +15,38 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MARKET_KID_H_INCLUDED__
-#define __CAESARIA_MARKET_KID_H_INCLUDED__
+#ifndef __CAESARIA_MARKETLADY_H_INCLUDED__
+#define __CAESARIA_MARKETLADY_H_INCLUDED__
 
 #include "walker.hpp"
+#include "objects/warehouse.hpp"
 
-class MarketKid : public Walker
+/** This is the market lady buying goods at granaries and warehouses */
+class MarketBuyer : public Walker
 {
 public:
-  static MarketKidPtr create( PlayerCityPtr city );
-  static MarketKidPtr create( PlayerCityPtr city, MarketBuyerPtr lady );
+  static MarketBuyerPtr create( PlayerCityPtr city );
 
-  GoodStock& getBasket();
-  void setDelay( int delay );
+  virtual ~MarketBuyer();
 
-  void send2City( MarketPtr destination );
+  void send2City( MarketPtr market );
 
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
+  // compute the destination to fetch the given good
+  void computeWalkerDestination( MarketPtr market );
 
-  virtual void timeStep(const unsigned long time);
-  virtual bool die();
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
-protected: 
-  virtual void _updateThinks();
+  virtual std::string currentThinks() const;
+
+protected:
   virtual void _reachedPathway();
 
 private:
-  MarketKid( PlayerCityPtr city );
+  MarketBuyer( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-#endif //__CAESARIA_MARKET_KID_H_INCLUDED__
+#endif //__OPENCAESAR3_MARKETLADY_H_INCLUDED__

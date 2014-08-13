@@ -81,7 +81,7 @@ void Mercury::_doWrath(PlayerCityPtr city)
 
 void Mercury::_doSmallCurse(PlayerCityPtr city)
 {
-  __filchGoods<Granary>( "smallcurser", city );
+  __filchGoods<Granary>( "smallcurse", city );
 }
 
 void Mercury::_doBlessing(PlayerCityPtr city)
