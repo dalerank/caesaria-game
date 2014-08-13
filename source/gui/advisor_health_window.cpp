@@ -181,11 +181,25 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   city::HealthCarePtr hc;
   hc << c->findService( city::HealthCare::defaultName() );
 
-  if( hc.isValid() )
+  StringArray outText;
+
+  if( c->population() < 100 )
   {
-    if( hc->value() > 75 && c->population() < 300 )
+    outText << "##healthadv_not_need_health_service_now##";
+  }
+  else
+  {
+    if( c->population() < 300 )
     {
-      text = "##healthadv_noproblem_small_city##";
+      if( hc.isValid() && hc->value() > 85 )
+      {
+        outText << "##healthadv_noproblem_small_city##";
+      }
+    }
+    else
+    {
+      city::Helper helper( c );
+      HouseList houses =  helper.find<House>( building::house );
     }
   }
 
