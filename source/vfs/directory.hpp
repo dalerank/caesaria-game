@@ -34,13 +34,13 @@ public:
   Directory( const std::string& nPath );
   Directory( const Directory& nPath );
 
-  virtual ~Directory() {}
+  virtual ~Directory();
 
   //void CopyTo( const NrpDir& pathNew );
   Path getFilePath( const Path& fileName );
 
-  Directory operator/(const Directory& dir );
-  Path operator/(const Path& filename );
+  Directory operator/(const Directory& dir ) const;
+  Path operator/(const Path& filename ) const;
 
   Entries getEntries() const;
   Path find( const Path& fileName, SensType sens = Path::nativeCase ) const;

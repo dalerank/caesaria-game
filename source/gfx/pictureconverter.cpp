@@ -181,9 +181,9 @@ void PictureConverter::flipVertical(Picture& pic)
     {
       unsigned int* tp = (unsigned int*)pixels + y * width;
       unsigned int* etp = (unsigned int*)pixels + ( pic.height() - y - 1) * width;
-      memcpy( tmpLine.data(), tp, width * 4 );
+      memcpy( &tmpLine[0], tp, width * 4 );
       memcpy( tp, etp, width * 4 );
-      memcpy( etp, tmpLine.data(), width * 4 );
+      memcpy( etp, &tmpLine[0], width * 4 );
     }
   }
 

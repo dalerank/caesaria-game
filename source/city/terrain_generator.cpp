@@ -66,7 +66,7 @@ std::pair<int, int> MidpointDisplacement::VectorIndexToCoordinates(int i)
 
 std::vector<int> MidpointDisplacement::map()
 {
-  int power = pow(2, n_);
+  int power = pow(2, (float)n_);
   int width = wmult_ * power + 1;
   int height = hmult_ * power + 1;
 

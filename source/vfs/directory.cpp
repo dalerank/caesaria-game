@@ -44,6 +44,8 @@
 namespace vfs
 {
 
+Directory::~Directory() {}
+  
 bool Directory::create( std::string dir )
 {
   Directory rdir( dir );
@@ -165,13 +167,13 @@ Path Directory::getFilePath( const Path& fileName )
   return Path( ret );
 }
 
-Directory Directory::operator/(const Directory& dir)
+Directory Directory::operator/(const Directory& dir) const
 {
   std::string dr = addEndSlash().toString();
   return Directory( dr + dir.toString() );
 }
 
-Path Directory::operator/(const Path& filename)
+Path Directory::operator/(const Path& filename) const
 {
   std::string dr = addEndSlash().toString();
   std::string fn = filename.removeBeginSlash().toString();

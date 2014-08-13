@@ -211,7 +211,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   ScopedPtr<unsigned char*> RowPointers( (unsigned char**)new png_bytep[ Height ] );
 
   // Fill array of pointers to rows in image data
-  unsigned char* data = bytes.data();
+  unsigned char* data = &bytes[0];
 
   for(unsigned int i=0; i<Height; ++i)
   {
@@ -233,7 +233,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_destroy_read_struct( &png_ptr, &info_ptr, 0 ); // Clean up memory
 
   // Create the image structure to be filled by png data
-  Picture* pic = Picture::create( Size( Width, Height ), bytes.data() );
+  Picture* pic = Picture::create( Size( Width, Height ), &bytes[0] );
 
   return *pic;
 }

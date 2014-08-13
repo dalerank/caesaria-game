@@ -17,6 +17,7 @@
 
 #include "bytearray.hpp"
 #include "math.hpp"
+#include <ctype.h>
 
 static const unsigned long crc_table[1][256] =
 {

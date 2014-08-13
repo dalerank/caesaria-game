@@ -43,8 +43,8 @@ public:
 
     int checkSuccessiveClicks(int mouseX, int mouseY, MouseEventType inputEvent );
     void createKeyMap();
+    inline void init_key( int name, int value ) { KeyMap[ name ] = value; }     
 };
-
 
 void EventConverter::Impl::createKeyMap()
 {
@@ -53,131 +53,121 @@ void EventConverter::Impl::createKeyMap()
     // I find a better version.
     // buttons missing
 
-    KeyMap[ SDLK_BACKSPACE ] = KEY_BACK;
-    KeyMap[ SDLK_TAB ] = KEY_TAB;
-    KeyMap[ SDLK_CLEAR ] = KEY_CLEAR;
-    KeyMap[ SDLK_RETURN ] = KEY_RETURN;
+    init_key( SDLK_BACKSPACE, KEY_BACK );
+    init_key( SDLK_TAB, KEY_TAB );
+    init_key( SDLK_CLEAR, KEY_CLEAR );
+    init_key( SDLK_RETURN, KEY_RETURN );
 
     // combined modifiers missing
+    init_key( SDLK_PAUSE, KEY_PAUSE );
+    init_key( SDLK_CAPSLOCK, KEY_CAPITAL );
 
-    KeyMap[ SDLK_PAUSE ] = KEY_PAUSE;
-    KeyMap[ SDLK_CAPSLOCK ] = KEY_CAPITAL;
+    init_key( SDLK_ESCAPE, KEY_ESCAPE );
+    init_key( SDLK_SPACE, KEY_SPACE );
+    init_key( SDLK_PAGEUP, KEY_PRIOR );
+    init_key( SDLK_PAGEDOWN, KEY_NEXT );
+    init_key( SDLK_END , KEY_END );
+    init_key( SDLK_HOME , KEY_HOME );
+    init_key( SDLK_LEFT , KEY_LEFT );
+    init_key( SDLK_UP , KEY_UP );
+    init_key( SDLK_RIGHT , KEY_RIGHT );
+    init_key( SDLK_DOWN , KEY_DOWN );
 
-    // asian letter keys missing
+    init_key( SDLK_PRINTSCREEN,KEY_PRINT );
+    init_key( SDLK_PRINTSCREEN, KEY_SNAPSHOT );
 
-    KeyMap[ SDLK_ESCAPE ] = KEY_ESCAPE ;
+    init_key( SDLK_INSERT, KEY_INSERT );
+    init_key( SDLK_DELETE, KEY_DELETE );
+    init_key( SDLK_HELP, KEY_HELP );
 
-    // asian letter keys missing
+    init_key( SDLK_0 , KEY_KEY_0 );
+    init_key( SDLK_1 , KEY_KEY_1 );
+    init_key( SDLK_2 , KEY_KEY_2 );
+    init_key( SDLK_3 , KEY_KEY_3 );
+    init_key( SDLK_4 , KEY_KEY_4 );
+    init_key( SDLK_5 , KEY_KEY_5 );
+    init_key( SDLK_6 , KEY_KEY_6 );
+    init_key( SDLK_7 , KEY_KEY_7 );
+    init_key( SDLK_8 , KEY_KEY_8 );
+    init_key( SDLK_9 , KEY_KEY_9 );
 
-    KeyMap[ SDLK_SPACE ] = KEY_SPACE;
-    KeyMap[ SDLK_PAGEUP ] = KEY_PRIOR;
-    KeyMap[ SDLK_PAGEDOWN ] = KEY_NEXT;
-    KeyMap[ SDLK_END ]= KEY_END;
-    KeyMap[ SDLK_HOME ]= KEY_HOME;
-    KeyMap[ SDLK_LEFT ]= KEY_LEFT;
-    KeyMap[ SDLK_UP ]= KEY_UP;
-    KeyMap[ SDLK_RIGHT ]= KEY_RIGHT;
-    KeyMap[ SDLK_DOWN ]= KEY_DOWN;
+    init_key( SDLK_a , KEY_KEY_A );
+    init_key( SDLK_b , KEY_KEY_B );
+    init_key( SDLK_c , KEY_KEY_C );
+    init_key( SDLK_d , KEY_KEY_D );
+    init_key( SDLK_e , KEY_KEY_E );
+    init_key( SDLK_f , KEY_KEY_F );
+    init_key( SDLK_g , KEY_KEY_G );
+    init_key( SDLK_h , KEY_KEY_H );
+    init_key( SDLK_i , KEY_KEY_I );
+    init_key( SDLK_j , KEY_KEY_J );
+    init_key( SDLK_k , KEY_KEY_K );
+    init_key( SDLK_l , KEY_KEY_L );
+    init_key( SDLK_m , KEY_KEY_M );
+    init_key( SDLK_n , KEY_KEY_N );
+    init_key( SDLK_o , KEY_KEY_O );
+    init_key( SDLK_p , KEY_KEY_P );
+    init_key( SDLK_q , KEY_KEY_Q );
+    init_key( SDLK_r , KEY_KEY_R );
+    init_key( SDLK_s , KEY_KEY_S );
+    init_key( SDLK_t , KEY_KEY_T );
+    init_key( SDLK_u , KEY_KEY_U );
+    init_key( SDLK_v , KEY_KEY_V );
+    init_key( SDLK_w , KEY_KEY_W );
+    init_key( SDLK_x , KEY_KEY_X );
+    init_key( SDLK_y , KEY_KEY_Y );
+    init_key( SDLK_z , KEY_KEY_Z ); 
 
-    // select missing
-    KeyMap[ SDLK_PRINTSCREEN]=KEY_PRINT;
-    // execute missing
-    KeyMap[ SDLK_PRINTSCREEN]= KEY_SNAPSHOT;
+    init_key( SDLK_LGUI, KEY_LWIN );
+    init_key( SDLK_RGUI, KEY_RWIN );
+    init_key( SDLK_POWER,  KEY_SLEEP );
 
-    KeyMap[ SDLK_INSERT]= KEY_INSERT;
-    KeyMap[ SDLK_DELETE]= KEY_DELETE;
-    KeyMap[ SDLK_HELP]= KEY_HELP;
+    init_key( SDLK_KP_0, KEY_NUMPAD0 );
+    init_key( SDLK_KP_1, KEY_NUMPAD1 );
+    init_key( SDLK_KP_2, KEY_NUMPAD2 );
+    init_key( SDLK_KP_3, KEY_NUMPAD3 );
+    init_key( SDLK_KP_4, KEY_NUMPAD4 );
+    init_key( SDLK_KP_5, KEY_NUMPAD5 );
+    init_key( SDLK_KP_6, KEY_NUMPAD6 );
+    init_key( SDLK_KP_7, KEY_NUMPAD7 );
+    init_key( SDLK_KP_8, KEY_NUMPAD8 );
+    init_key( SDLK_KP_9, KEY_NUMPAD9 );
+    init_key( SDLK_KP_MULTIPLY, KEY_MULTIPLY );
+    init_key( SDLK_KP_PLUS, KEY_ADD );
+    init_key( SDLK_KP_MINUS, KEY_SUBTRACT );
+    init_key( SDLK_KP_PERIOD, KEY_DECIMAL );
+    init_key( SDLK_KP_DIVIDE, KEY_DIVIDE );
 
-    KeyMap[ SDLK_0 ]= KEY_KEY_0;
-    KeyMap[ SDLK_1 ]= KEY_KEY_1;
-    KeyMap[ SDLK_2 ]= KEY_KEY_2;
-    KeyMap[ SDLK_3 ]= KEY_KEY_3;
-    KeyMap[ SDLK_4 ]= KEY_KEY_4;
-    KeyMap[ SDLK_5 ]= KEY_KEY_5;
-    KeyMap[ SDLK_6 ]= KEY_KEY_6;
-    KeyMap[ SDLK_7 ]= KEY_KEY_7;
-    KeyMap[ SDLK_8 ]= KEY_KEY_8;
-    KeyMap[ SDLK_9 ]= KEY_KEY_9;
-
-    KeyMap[ SDLK_a ]= KEY_KEY_A;
-    KeyMap[ SDLK_b ]= KEY_KEY_B;
-    KeyMap[ SDLK_c ]= KEY_KEY_C;
-    KeyMap[ SDLK_d ]= KEY_KEY_D;
-    KeyMap[ SDLK_e ]= KEY_KEY_E;
-    KeyMap[ SDLK_f ]= KEY_KEY_F;
-    KeyMap[ SDLK_g ]= KEY_KEY_G;
-    KeyMap[ SDLK_h ]= KEY_KEY_H;
-    KeyMap[ SDLK_i ]= KEY_KEY_I;
-    KeyMap[ SDLK_j ]= KEY_KEY_J;
-    KeyMap[ SDLK_k ]= KEY_KEY_K;
-    KeyMap[ SDLK_l ]= KEY_KEY_L;
-    KeyMap[ SDLK_m ]= KEY_KEY_M;
-    KeyMap[ SDLK_n ]= KEY_KEY_N;
-    KeyMap[ SDLK_o ]= KEY_KEY_O;
-    KeyMap[ SDLK_p ]= KEY_KEY_P;
-    KeyMap[ SDLK_q ]= KEY_KEY_Q;
-    KeyMap[ SDLK_r ]= KEY_KEY_R;
-    KeyMap[ SDLK_s ]= KEY_KEY_S;
-    KeyMap[ SDLK_t ]= KEY_KEY_T;
-    KeyMap[ SDLK_u ]= KEY_KEY_U;
-    KeyMap[ SDLK_v ]= KEY_KEY_V;
-    KeyMap[ SDLK_w ]= KEY_KEY_W;
-    KeyMap[ SDLK_x ]= KEY_KEY_X;
-    KeyMap[ SDLK_y ]= KEY_KEY_Y;
-    KeyMap[ SDLK_z ]= KEY_KEY_Z;
-
-    KeyMap[ SDLK_LGUI]= KEY_LWIN;
-    KeyMap[ SDLK_RGUI]= KEY_RWIN;
-    // apps missing
-    KeyMap[ SDLK_POWER]=  KEY_SLEEP; //??
-
-    KeyMap[ SDLK_KP_0]= KEY_NUMPAD0;
-    KeyMap[ SDLK_KP_1]= KEY_NUMPAD1;
-    KeyMap[ SDLK_KP_2]= KEY_NUMPAD2;
-    KeyMap[ SDLK_KP_3]= KEY_NUMPAD3;
-    KeyMap[ SDLK_KP_4]= KEY_NUMPAD4;
-    KeyMap[ SDLK_KP_5]= KEY_NUMPAD5;
-    KeyMap[ SDLK_KP_6]= KEY_NUMPAD6;
-    KeyMap[ SDLK_KP_7]= KEY_NUMPAD7;
-    KeyMap[ SDLK_KP_8]= KEY_NUMPAD8;
-    KeyMap[ SDLK_KP_9]= KEY_NUMPAD9;
-    KeyMap[ SDLK_KP_MULTIPLY]= KEY_MULTIPLY;
-    KeyMap[ SDLK_KP_PLUS]= KEY_ADD;
-    //	KeyMap[ SDLK_KP_, KEY_SEPARATOR));
-    KeyMap[ SDLK_KP_MINUS]= KEY_SUBTRACT;
-    KeyMap[ SDLK_KP_PERIOD]= KEY_DECIMAL;
-    KeyMap[ SDLK_KP_DIVIDE]= KEY_DIVIDE;
-
-    KeyMap[ SDLK_F1]=  KEY_F1;
-    KeyMap[ SDLK_F2]=  KEY_F2;
-    KeyMap[ SDLK_F3]=  KEY_F3;
-    KeyMap[ SDLK_F4]=  KEY_F4;
-    KeyMap[ SDLK_F5]=  KEY_F5;
-    KeyMap[ SDLK_F6]=  KEY_F6;
-    KeyMap[ SDLK_F7]=  KEY_F7;
-    KeyMap[ SDLK_F8]=  KEY_F8;
-    KeyMap[ SDLK_F9]=  KEY_F9;
-    KeyMap[ SDLK_F10]= KEY_F10;
-    KeyMap[ SDLK_F11]= KEY_F11;
-    KeyMap[ SDLK_F12]= KEY_F12;
-    KeyMap[ SDLK_F13]= KEY_F13;
-    KeyMap[ SDLK_F14]= KEY_F14;
-    KeyMap[ SDLK_F15]= KEY_F15;
+    init_key( SDLK_F1,  KEY_F1 );
+    init_key( SDLK_F2,  KEY_F2 );
+    init_key( SDLK_F3,  KEY_F3 );
+    init_key( SDLK_F4,  KEY_F4 );
+    init_key( SDLK_F5,  KEY_F5);
+    init_key( SDLK_F6,  KEY_F6);
+    init_key( SDLK_F7,  KEY_F7);
+    init_key( SDLK_F8,  KEY_F8);
+    init_key( SDLK_F9,  KEY_F9);
+    init_key( SDLK_F10, KEY_F10);
+    init_key( SDLK_F11, KEY_F11);
+    init_key( SDLK_F12, KEY_F12);
+    init_key( SDLK_F13, KEY_F13);
+    init_key( SDLK_F14, KEY_F14);
+    init_key( SDLK_F15, KEY_F15);
     // no higher F-keys
 
-    KeyMap[ SDLK_NUMLOCKCLEAR]= KEY_NUMLOCK;
-    KeyMap[ SDLK_SCROLLLOCK]= KEY_SCROLL;
-    KeyMap[ SDLK_LSHIFT]=  KEY_LSHIFT;
-    KeyMap[ SDLK_RSHIFT]=  KEY_RSHIFT;
-    KeyMap[ SDLK_LCTRL]=   KEY_LCONTROL;
-    KeyMap[ SDLK_RCTRL]=   KEY_RCONTROL;
-    KeyMap[ SDLK_LALT]=    KEY_LMENU;
-    KeyMap[ SDLK_RALT]=    KEY_RMENU;
+    init_key( SDLK_NUMLOCKCLEAR, KEY_NUMLOCK);
+    init_key( SDLK_SCROLLLOCK, KEY_SCROLL);
+    init_key( SDLK_LSHIFT,  KEY_LSHIFT);
+    init_key( SDLK_RSHIFT,  KEY_RSHIFT);
+    init_key( SDLK_LCTRL,   KEY_LCONTROL);
+    init_key( SDLK_RCTRL,   KEY_RCONTROL);
+    init_key( SDLK_LALT,    KEY_LMENU);
+    init_key( SDLK_RALT,    KEY_RMENU);
 
-    KeyMap[ SDLK_PLUS]=    KEY_PLUS;
-    KeyMap[ SDLK_COMMA]=   KEY_COMMA;
-    KeyMap[ SDLK_MINUS]=   KEY_MINUS;
-    KeyMap[ SDLK_PERIOD]=  KEY_PERIOD;
+    init_key( SDLK_PLUS,    KEY_PLUS);
+    init_key( SDLK_COMMA,   KEY_COMMA);
+    init_key( SDLK_MINUS,   KEY_MINUS);
+    init_key( SDLK_PERIOD,  KEY_PERIOD);
 }
 
 NEvent EventConverter::get( const SDL_Event& sdlEvent )

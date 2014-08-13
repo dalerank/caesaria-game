@@ -19238,24 +19238,23 @@ static const char* const data =
 
 void initialize( const std::string& name)
 {
-	char const* ptr = data;
+  char const* ptr = data;
   std::vector<unsigned int> pixels;
   pixels.resize( width * height );
 
-	for( unsigned int y = 0; y < height; y++ )
-	{
-		for( unsigned int x=0; x < width; x++ )
-		{
-			char pixel[4];
-			PIXEL( ptr, pixel)
+  for( unsigned int y = 0; y < height; y++ )
+  {
+    for( unsigned int x=0; x < width; x++ )
+    {
+      char pixel[4];
+      PIXEL( ptr, pixel)
       pixels[ y * width + x ] = *(int*)pixel;
       //pic->setPixel( Point( x, y ), *(int*)pixel );
-		}
-	}
+    }
+  }
 
-  gfx::Picture* pic = gfx::Picture::create( Size( width, height ), (unsigned char*)pixels.data() );
-
-	gfx::PictureBank::instance().setPicture( name, *pic );
+  gfx::Picture* pic = gfx::Picture::create( Size( width, height ), (unsigned char*)&pixels[0] );
+  gfx::PictureBank::instance().setPicture( name, *pic );
 }
 
 }//end namespace splash

@@ -36,7 +36,7 @@ ResourceLoader::ResourceLoader() : _d( new Impl )
 
 ResourceLoader::~ResourceLoader(){  }
 
-void ResourceLoader::loadFromModel( Path path2model, Directory dir )
+void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 {
   VariantMap archives = SaveAdapter::load( path2model );
   foreach( a, archives )
@@ -50,8 +50,8 @@ void ResourceLoader::loadFromModel( Path path2model, Directory dir )
     }
     Logger::warning( "Game: try mount archive " + absArchivePath.toString() );
 
-    dir = absArchivePath.directory();
-    absArchivePath = dir.find( absArchivePath.baseName(), Path::ignoreCase );
+    Directory absDir = absArchivePath.directory();
+    absArchivePath = absDir.find( absArchivePath.baseName(), Path::ignoreCase );
 
     ArchivePtr archive = FileSystem::instance().mountArchive( absArchivePath );
     if( archive.isValid() )

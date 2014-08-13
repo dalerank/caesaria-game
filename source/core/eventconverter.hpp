@@ -23,10 +23,10 @@
 class EventConverter
 {
 public:
-	 static EventConverter& instance();
-	~EventConverter();
+  static EventConverter& instance();
+  virtual ~EventConverter();
 
-	NEvent get( const SDL_Event& event );
+  NEvent get( const SDL_Event& event );
 
 private:
   class Impl;

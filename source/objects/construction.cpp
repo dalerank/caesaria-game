@@ -79,7 +79,7 @@ std::string Construction::troubleDesc() const
     const char* troubleName[] = { "some", "have", "most" };
     lvlTrouble = std::max( fire, damage );
     const char* typelvl = ( fire > damage ) ? "fire" : "damage";
-    return StringHelper::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)floor((lvlTrouble-50) / 25) ], typelvl );
+    return StringHelper::format( 0xff, "##trouble_%s_%s##", troubleName[ (int)((lvlTrouble-50) / 25) ], typelvl );
   }
 
   return "";

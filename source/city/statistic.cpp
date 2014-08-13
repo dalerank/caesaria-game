@@ -229,9 +229,9 @@ unsigned int Statistic::getFestivalCost(PlayerCityPtr city, FestivalType type)
 {
   switch( type )
   {
-  case smallFest: return floor( city->population() / 20 ) + 10;
-  case middleFest: return floor( city->population() / 10 ) + 20;
-  case greatFest: return floor( city->population() / 5 ) + 40;
+  case smallFest: return int( city->population() / 20 ) + 10;
+  case middleFest: return int( city->population() / 10 ) + 20;
+  case greatFest: return int( city->population() / 5 ) + 40;
   }
 
   return 0;
