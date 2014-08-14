@@ -19,8 +19,8 @@
 #include <stdexcept>
 #include <string>
 #include "core/delegate.hpp"
-#include "core/thread.hpp"
-#include "core/threadtask.hpp"
+#include "thread/thread.hpp"
+#include "thread/threadtask.hpp"
 
 namespace updater
 {

@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "thread.hpp"
-#include "requirements.hpp"
+#include "core/requirements.hpp"
 
 #include <memory.h>
 #include <errno.h>

@@ -16,8 +16,8 @@
 #ifndef _CAESARIA_MUTEX_H_INCLUDE_
 #define _CAESARIA_MUTEX_H_INCLUDE_
 
-#include "platform.hpp"
-#include "predefinitions.hpp"
+#include "core/platform.hpp"
+#include "core/predefinitions.hpp"
 
 #ifdef CAESARIA_PLATFORM_UNIX
 	#include <pthread.h>

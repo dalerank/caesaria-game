@@ -18,7 +18,7 @@
 #ifndef _CAESARIA_THREADEVENT_H_INCLUDE_
 #define _CAESARIA_THREADEVENT_H_INCLUDE_
 
-#include "predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 #ifdef CAESARIA_PLATFORM_WIN
 #include "windows.h"

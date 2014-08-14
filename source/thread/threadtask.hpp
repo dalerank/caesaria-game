@@ -16,9 +16,9 @@
 #ifndef _CAESARIA_THREADTASK_H_INCLUDE_
 #define _CAESARIA_THREADTASK_H_INCLUDE_
 
-#include "platform.hpp"
+#include "core/platform.hpp"
 #include "mutex.hpp"
-#include "predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 typedef enum
 {

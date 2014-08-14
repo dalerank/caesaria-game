@@ -18,9 +18,9 @@
 #ifndef _CAESARIA_THREAD_H_INCLUDE_
 #define _CAESARIA_THREAD_H_INCLUDE_
 
-#include "platform.hpp"
-#include "smartptr.hpp"
-#include "referencecounted.hpp"
+#include "core/platform.hpp"
+#include "core/smartptr.hpp"
+#include "core/referencecounted.hpp"
 
 #if defined(CAESARIA_PLATFORM_LINUX)
   #include <stdio.h>
@@ -52,7 +52,7 @@
 #include "mutex.hpp"
 #include "threadevent.hpp"
 #include "threadtask.hpp"
-#include "predefinitions.hpp"
+#include "core/predefinitions.hpp"
 
 #define QUEUE_SIZE 100
 #define DEFAULT_STACK_SIZE 0
