@@ -74,6 +74,7 @@ public:
 
   bool isEducationNeed( Service::Type type ) const;
   bool isEntertainmentNeed( Service::Type type ) const;
+  bool isHealthNeed( Service::Type type ) const;
 
   Desirability desirability() const;
 

@@ -76,12 +76,7 @@ int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitants
 int HouseSpecification::taxRate() const{   return _d->taxRate;}
 int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
 int HouseSpecification::minEducationLevel() const{  return _d->minEducationLevel;}
-//
-// int HouseLevelSpec::getMinHealthLevel()
-// {
-//    return _minHealthLevel;
-// }
-//
+int HouseSpecification::minHealthLevel() const {  return _d->minHealthLevel; }
 int HouseSpecification::minReligionLevel() const{  return _d->minReligionLevel;}
 //
 // int HouseLevelSpec::getMinWaterLevel()
@@ -169,9 +164,10 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing, Ti
 
     switch( value )
     {
-    case 0: case 1: needBuilding = building::baths; break;
-    case 2: needBuilding = building::doctor; break;
-    case 3: needBuilding = building::hospital; break;
+    case 1: needBuilding = building::baths; break;
+    case 2: needBuilding = building::barber; break;
+    case 3: needBuilding = building::doctor; break;
+    case 4: needBuilding = building::hospital; break;
     }
 
     return false;
@@ -329,7 +325,7 @@ int HouseSpecification::computeEntertainmentLevel(HousePtr house) const
 }
 
 
-int HouseSpecification::computeHealthLevel( HousePtr house, std::string &oMissingRequirement)
+int HouseSpecification::computeHealthLevel(HousePtr house, std::string &oMissingRequirement)
 {
    // no health=0, bath=1, bath+doctor/hospital=2, bath+doctor/hospital+barber=3, bath+doctor+hospital+barber=4
    int res = 0;
@@ -343,37 +339,37 @@ int HouseSpecification::computeHealthLevel( HousePtr house, std::string &oMissin
 
          if (house->hasServiceAccess(Service::barber))
          {
-            res = 3;
+           res = 3;
 
-            if (house->hasServiceAccess(Service::doctor) && house->hasServiceAccess(Service::hospital))
-            {
-               res = 4;
-            }
-            else
-            {
-               if (house->hasServiceAccess(Service::doctor))
-               {
-                  oMissingRequirement = "##missing_hospital##";
-               }
-               else
-               {
-                  oMissingRequirement = "##missing_doctor##";
-               }
-            }
+           if (house->hasServiceAccess(Service::doctor) && house->hasServiceAccess(Service::hospital))
+           {
+              res = 4;
+           }
+           else
+           {
+             if (house->hasServiceAccess(Service::doctor))
+             {
+               oMissingRequirement = "##missing_hospital##";
+             }
+             else
+             {
+               oMissingRequirement = "##missing_doctor##";
+             }
+           }
          }
          else
          {
-            oMissingRequirement = "##missing_barber##";
+           oMissingRequirement = "##missing_barber##";
          }
       }
       else
       {
-         oMissingRequirement = "##missing_doctor_or_hospital##";
+        oMissingRequirement = "##missing_doctor_or_hospital##";
       }
    }
    else
    {
-      oMissingRequirement = "##missing_bath##";
+     oMissingRequirement = "##missing_bath##";
    }
    return res;
 }

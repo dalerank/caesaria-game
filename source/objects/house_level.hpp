@@ -76,7 +76,7 @@ public:
   int maxDesirabilityLevel() const;
   int minEntertainmentLevel() const;
   int minEducationLevel() const;
-//    int getMinHealthLevel();
+  int minHealthLevel() const;
   int minReligionLevel() const;
 //    int getMinWaterLevel();
   int minFoodLevel() const;

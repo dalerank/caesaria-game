@@ -177,7 +177,6 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   if( !lbAdvice )
     return;
 
-  std::string text = "##healthadv_unknown_reason##";
   city::HealthCarePtr hc;
   hc << c->findService( city::HealthCare::defaultName() );
 
@@ -200,9 +199,24 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     {
       city::Helper helper( c );
       HouseList houses =  helper.find<House>( building::house );
+
+      unsigned int needBath = 0;
+      foreach( it, houses )
+      {
+        HousePtr house = *it;
+        needBath += house->isHealthNeed( Service::baths );
+      }
+
+      if( needBath > 0 )
+      {
+        outText << "##healthadv_some_regions_need_bath##";
+      }
     }
   }
 
+  std::string text = outText.empty()
+                        ? "##healthadv_unknown_reason##"
+                        : outText.random();
   lbAdvice->setText( text );
 }
 

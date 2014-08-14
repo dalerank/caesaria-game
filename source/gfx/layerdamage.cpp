@@ -31,6 +31,7 @@ namespace gfx
 {
 
 static const char* damageLevelName[] = { "##very_low_damage_risk##", "##low_damage_risk##",
+                                         "##little_damage_risk##",
                                          "##some_damage_risk##", "##very_high_damage_risk##",
                                          "##extreme_damage_risk##" };
 
@@ -137,11 +138,8 @@ void LayerDamage::handleEvent(NEvent& event)
         ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
         if( construction.isValid() )
         {
-          int damageLevel = math::clamp<int>( (int) construction->state( Construction::damage ), 0, 100 );
-          if( damageLevel > 0 )
-          {
-            text = damageLevelName[ damageLevel / 20 ];
-          }
+          int damageLevel = math::clamp<int>( construction->state( Construction::damage ) / 16, 0, 5 );
+          text = damageLevelName[ damageLevel ];
         }
       }
 

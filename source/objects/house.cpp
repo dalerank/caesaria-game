@@ -1167,6 +1167,20 @@ bool House::isEntertainmentNeed(Service::Type type) const
   return false;
 }
 
+bool House::isHealthNeed(Service::Type type) const
+{
+  int lvl = _d->spec.minHealthLevel();
+  switch( type )
+  {
+  case Service::baths: return (lvl>0);
+  case Service::doctor: return (lvl>=1);
+  case Service::hospital: return (lvl>=2);
+  default: break;
+  }
+
+  return false;
+}
+
 float House::collectTaxes()
 {
   float tax = _d->tax;
