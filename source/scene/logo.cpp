@@ -109,8 +109,11 @@ void SplashScreen::exitScene()
 
   int offset = 3;
 
+  Font textFont = Font::create( FONT_3 ) ;
+
 #ifdef CAESARIA_PLATFORM_ANDROID
   offset = 12;
+  textFont = Font::create( FONT_4 );
 #endif
 
   _d->fade( engine, _d->background, true, offset );
@@ -118,17 +121,23 @@ void SplashScreen::exitScene()
   _d->textPic.init( engine.screenSize() );
   _d->textPic->fill( 0xff000000, Rect( Point( 0, 0 ), _d->textPic->size() ) );
 
-  Font textFont = Font::create( FONT_3 ) ;
-
-  std::string text[5] = { "This is an early access version of CaesarIA!",
-                          "The outer reaches are placeholders: more features and polish are coming soon",
-                          "see",
+  std::string text[7] = { 
+                          "This is an developer's version of CaesarIA!",
+                          "therefore this game still has bugs and some features  is not complete!",
+                          "It will be updated and fixed for a basis stage.",
+			  "Also, this game is not tested with every device, be aware of that if you choose this version for play",
+			  "You can support the development of this game at",
                           "www.bitbucket.org/dalerank/caesaria",
-                          "for our roadmap." };
-  for( int i=0; i < 5; i++ )
+                          "If you encounter bugs or crashes please send us a description about"
+			};
+  for( int i=0; i<7; i++ )
   {
     Rect textRect = textFont.getTextRect( text[i], Rect( Point(), _d->textPic->size() ), align::center, align::center );
-    textFont.setColor( i == 3 ?  DefaultColors::indianRed : DefaultColors::dodgerBlue );
+    bool defaultColor = i == 5;
+#ifdef CAESARIA_PLATFORM_ANDROID
+    defaultColor = !defaultColor;
+#endif    
+    textFont.setColor( defaultColor ? DefaultColors::indianRed : DefaultColors::dodgerBlue );
     textFont.draw( *_d->textPic, text[i], textRect.left(), textRect.top() + 20 * i, false, true );
   }
 

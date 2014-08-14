@@ -1,8 +1,8 @@
-package org.mygame;
+package net.dalerank.caesaria;
 
 import org.libsdl.app.SDLActivity;
 
-public class MyGame extends SDLActivity {
+public class CaesarIA extends SDLActivity {
   //load .so
   static {
     System.loadLibrary( "aes" );
@@ -12,5 +12,6 @@ public class MyGame extends SDLActivity {
     System.loadLibrary( "sdl_ttf" );
     System.loadLibrary( "smk" );
     System.loadLibrary( "application" );
+    System.loadLibrary( "main" ); 	 	
   }
 }
