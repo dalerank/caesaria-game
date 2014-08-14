@@ -39,7 +39,7 @@ void Widget::beforeDraw(gfx::Engine& painter )
   foreach( widget, d->children ) { (*widget)->beforeDraw( painter ); }
 }
 
-GuiEnv* Widget::environment() {  return _environment; }
+Ui* Widget::ui() {  return _environment; }
 
 void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 {
@@ -60,7 +60,7 @@ unsigned int Widget::height() const{    return relativeRect().height(); }
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : __INIT_IMPL(Widget),
-  _environment( parent ? parent->environment() : 0 )
+  _environment( parent ? parent->ui() : 0 )
 {
   __D_IMPL(_d,Widget)
   _d->alignLeft = align::upperLeft;
@@ -531,14 +531,14 @@ static int __convStr2RelPos( Widget* w, std::string s )
   else { return StringHelper::toInt( s );  }
 }
 
-void Widget::setupUI( const VariantMap& ui )
+void Widget::setupUI( const VariantMap& options )
 {
   __D_IMPL(_d,Widget)
   //setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
-  _d->internalName = ui.get( "name" ).toString();
+  _d->internalName = options.get( "name" ).toString();
   align::Helper ahelper;
-  VariantList textAlign = ui.get( "textAlign" ).toList();
-  VariantList altAlign = ui.get( "text.align" ).toList();
+  VariantList textAlign = options.get( "textAlign" ).toList();
+  VariantList altAlign = options.get( "text.align" ).toList();
   if( !altAlign.empty() )
   {
     textAlign = altAlign;
@@ -551,23 +551,23 @@ void Widget::setupUI( const VariantMap& ui )
   }
 
   Variant tmp;
-  setID( (int)ui.get( "id", -1 ) );
-  setText( _( ui.get( "text" ).toString() ) );
-  setTooltipText( ui.get( "tooltip" ).toString() );
-  setVisible( ui.get( "visible", true ).toBool() );
-  setEnabled( ui.get( "enabled", true ).toBool() );
-  _d->isTabStop = ui.get( "tabStop", false ).toBool();
-  _d->isTabGroup = ui.get( "tabGroup", -1 ).toInt();
-  _d->tabOrder = ui.get( "tabOrder", -1 ).toInt();
-  setMaxSize( ui.get( "maximumSize", Size( 0 ) ).toSize() );
-  setMinSize( ui.get( "minimumSize", Size( 1 ) ).toSize() );
+  setID( (int)options.get( "id", -1 ) );
+  setText( _( options.get( "text" ).toString() ) );
+  setTooltipText( options.get( "tooltip" ).toString() );
+  setVisible( options.get( "visible", true ).toBool() );
+  setEnabled( options.get( "enabled", true ).toBool() );
+  _d->isTabStop = options.get( "tabStop", false ).toBool();
+  _d->isTabGroup = options.get( "tabGroup", -1 ).toInt();
+  _d->tabOrder = options.get( "tabOrder", -1 ).toInt();
+  setMaxSize( options.get( "maximumSize", Size( 0 ) ).toSize() );
+  setMinSize( options.get( "minimumSize", Size( 1 ) ).toSize() );
 
   /*setAlignment( ahelper.findType( ui.get( "leftAlign" ).toString() ),
                 ahelper.findType( ui.get( "rightAlign" ).toString() ),
                 ahelper.findType( ui.get( "topAlign" ).toString() ),
                 ahelper.findType( ui.get( "bottomAlign" ).toString() ));*/
 
-  VariantList aRectList = ui.get( "geometry" ).toList();
+  VariantList aRectList = options.get( "geometry" ).toList();
   if( !aRectList.empty() )
   {
     Rect cRect(
@@ -579,7 +579,7 @@ void Widget::setupUI( const VariantMap& ui )
     setGeometry( cRect );
   }
 
-  tmp = ui.get( "geometryf" );
+  tmp = options.get( "geometryf" );
   if( tmp.isValid() )
   {
     RectF r = tmp.toRectf();
@@ -593,9 +593,9 @@ void Widget::setupUI( const VariantMap& ui )
     setGeometry( r );
   }
 
-  setNotClipped( ui.get( "noclipped", false ).toBool() );
+  setNotClipped( options.get( "noclipped", false ).toBool() );
 
-  for( VariantMap::const_iterator it=ui.begin(); it != ui.end(); ++it )
+  for( VariantMap::const_iterator it=options.begin(); it != options.end(); ++it )
   {
     if( it->second.type() != Variant::Map )
       continue;
@@ -616,7 +616,7 @@ void Widget::setupUI( const VariantMap& ui )
 
     if( !widgetType.empty() )
     {
-      Widget* child = environment()->createWidget( widgetType, this );
+      Widget* child = ui()->createWidget( widgetType, this );
       if( child )
       {
         child->setupUI( tmp );
@@ -833,8 +833,8 @@ Size Widget::minSize() const{    return _dfunc()->minSize;}
 bool Widget::isHovered() const{  return _environment->isHovered( this );}
 bool Widget::isFocused() const{  return _environment->hasFocus( this );}
 Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
-void Widget::setFocus(){  environment()->setFocus( this );}
-void Widget::removeFocus(){  environment()->removeFocus( this );}
+void Widget::setFocus(){  ui()->setFocus( this );}
+void Widget::removeFocus(){  ui()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const{  return _dfunc()->absoluteClippingRect;}
 unsigned int Widget::width() const{  return relativeRect().width();}
 Size Widget::size() const{  return Size( _dfunc()->relativeRect.width(), _dfunc()->relativeRect.height() );}

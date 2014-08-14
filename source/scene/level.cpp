@@ -153,7 +153,7 @@ void Level::initialize()
   Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
-  gui::GuiEnv& gui = *_d->game->gui();
+  gui::Ui& gui = *_d->game->gui();
 
   installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
 
@@ -547,7 +547,7 @@ void Level::afterFrame()
 void Level::handleEvent( NEvent& event )
 {
   //After MouseDown events are send to the same target till MouseUp
-  GuiEnv& gui = *_d->game->gui();
+  Ui& gui = *_d->game->gui();
 
   if (event.EventType == sEventQuit)
   {

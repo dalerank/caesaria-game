@@ -50,7 +50,7 @@ public:
   PlayerPtr player() const;
   PlayerCityPtr city() const;
   world::EmpirePtr empire() const;
-  gui::GuiEnv* gui() const;
+  gui::Ui* gui() const;
   gfx::Engine* engine() const;
   scene::Base* scene() const;
 

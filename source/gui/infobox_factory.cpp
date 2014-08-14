@@ -82,7 +82,7 @@ AboutFactory::AboutFactory( Widget* parent, const Tile& tile)
 
 void AboutFactory::showDescription()
 {
-  DictionaryWindow::show( environment()->rootWidget(), _type );
+  DictionaryWindow::show( ui()->rootWidget(), _type );
 }
 
 AboutShipyard::AboutShipyard(Widget* parent, const Tile& tile)

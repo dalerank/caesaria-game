@@ -24,6 +24,8 @@
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
 
+using namespace constants;
+
 namespace gfx
 {
 
@@ -95,6 +97,12 @@ const TilePos& Tile::pos() const{ return _pos; }
 void Tile::setEPos(const TilePos& epos) { _epos = epos; }
 Point Tile::center() const {  return Point( _pos.i(), _pos.j() ) * y_tileBase + Point( 7, 7); }
 bool Tile::isMasterTile() const{  return (_master == this);}
+
+void Tile::changeDirection(constants::Direction newDirection)
+{
+  if( _overlay.isValid() )
+    _overlay->changeDirection(newDirection);
+}
 
 Point Tile::mappos() const
 {

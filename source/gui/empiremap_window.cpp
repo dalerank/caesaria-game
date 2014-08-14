@@ -406,7 +406,7 @@ void EmpireMapWindow::Impl::resetInfoPanel()
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
-  DialogBox* dialog = new DialogBox( tradeInfo->environment()->rootWidget(), Rect( 0, 0, 0, 0 ),
+  DialogBox* dialog = new DialogBox( tradeInfo->ui()->rootWidget(), Rect( 0, 0, 0, 0 ),
                                      _("##emp_open_trade_route##"), _("##emp_pay_open_this_route_question##"), 
                                      DialogBox::btnOk | DialogBox::btnCancel  );
 
@@ -529,7 +529,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
 std::string EmpireMapWindow::tooltipText() const
 {
-  world::CityPtr wCity = _d->findCity( const_cast<EmpireMapWindow*>( this )->environment()->cursorPos() );
+  world::CityPtr wCity = _d->findCity( const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() );
 
   if( wCity.isValid() )
   {

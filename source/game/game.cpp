@@ -71,7 +71,7 @@ public:
   std::string nextFilename;
   scene::Base* currentScreen;
   gfx::Engine* engine;
-  gui::GuiEnv* gui;
+  gui::Ui* gui;
 
   world::EmpirePtr empire;
   PlayerCityPtr city;
@@ -198,7 +198,7 @@ void Game::Impl::createSaveDir()
 
 void Game::Impl::initGuiEnvironment()
 {
-  gui = new gui::GuiEnv( *engine );
+  gui = new gui::Ui( *engine );
 }
 
 void Game::Impl::initPantheon( vfs::Path filename)
@@ -386,7 +386,7 @@ void Game::setScreenGame()
 PlayerPtr Game::player() const { return _d->player; }
 PlayerCityPtr Game::city() const { return _d->city; }
 world::EmpirePtr Game::empire() const { return _d->empire; }
-gui::GuiEnv* Game::gui() const { return _d->gui; }
+gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen; }
 bool Game::isPaused() const { return _d->pauseCounter>0; }

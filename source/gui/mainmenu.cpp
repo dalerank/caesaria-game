@@ -84,9 +84,9 @@ bool MainMenu::onEvent(const NEvent& event)
 			{
 			case mouseLbtnPressed:
 			{
-				if (!environment()->hasFocus(this))
+				if (!ui()->hasFocus(this))
 				{
-					environment()->setFocus(this);
+					ui()->setFocus(this);
 				}
 
     	  bringToFront();
@@ -100,7 +100,7 @@ bool MainMenu::onEvent(const NEvent& event)
 				_isHighlighted( event.mouse.pos(), true);
 				if ( shouldCloseSubMenu )
 				{
-          environment()->removeFocus(this);
+          ui()->removeFocus(this);
 				}
 
 				return true;
@@ -121,7 +121,7 @@ bool MainMenu::onEvent(const NEvent& event)
 
       case mouseMoved:
       {
-        if (environment()->hasFocus(this) && hovered() >= 0)
+        if (ui()->hasFocus(this) && hovered() >= 0)
 				{
 					int oldHighLighted = hovered();
 					_isHighlighted( event.mouse.pos(), true);

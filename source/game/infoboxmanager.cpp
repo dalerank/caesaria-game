@@ -253,7 +253,7 @@ Manager& Manager::getInstance()
   return inst;
 }
 
-void Manager::showHelp( PlayerCityPtr city, GuiEnv* gui, TilePos pos )
+void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 {
   Tile& tile = city->tilemap().at( pos );
   TileOverlayPtr overlay = tile.overlay();

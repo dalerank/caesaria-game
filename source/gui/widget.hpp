@@ -38,7 +38,7 @@ struct NEvent;
 namespace gui
 {
 
-class GuiEnv;
+class Ui;
 
 class Widget : public virtual ReferenceCounted
 {
@@ -89,7 +89,7 @@ public:
   /** \return The override font (may be 0) */
   //virtual Font getFont( u32 index=0 ) const;
   
-  virtual GuiEnv* environment();
+  virtual Ui* ui();
 
   //! Sets text justification mode
   /** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
@@ -280,7 +280,7 @@ public:
   /** Implement this to set the attributes of your scene node for
    *	scripting languages, editors, debuggers or xml deserialization purposes.
    */
-  virtual void setupUI( const VariantMap& ui );
+  virtual void setupUI(const VariantMap& options );
   virtual void setupUI( const vfs::Path& filename );
 
   virtual void installEventHandler( Widget* elementHandler );
@@ -413,7 +413,7 @@ protected:
   __DECLARE_IMPL(Widget)
 
   //! GUI Environment
-  GuiEnv* _environment;
+  Ui* _environment;
 };
 
 typedef SmartPtr< Widget > WidgetPtr;

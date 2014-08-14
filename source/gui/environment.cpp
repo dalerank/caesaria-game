@@ -31,7 +31,7 @@ using namespace gfx;
 namespace gui
 {
 
-class GuiEnv::Impl
+class Ui::Impl
 {
 public:
   struct SToolTip
@@ -64,7 +64,7 @@ public:
   void threatDeletionQueue();
 };
 
-GuiEnv::GuiEnv(Engine& painter )
+Ui::Ui(Engine& painter )
   : Widget( 0, -1, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
   setDebugName( "GuiEnv" );
@@ -90,16 +90,16 @@ GuiEnv::GuiEnv(Engine& painter )
 }
 
 //! Returns if the element has focus
-bool GuiEnv::hasFocus( const Widget* element) const
+bool Ui::hasFocus( const Widget* element) const
 {
     return ( _d->focusedElement.object() == element );
 }
 
-GuiEnv::~GuiEnv() {}
+Ui::~Ui() {}
 
-Widget* GuiEnv::rootWidget() {	return this; }
+Widget* Ui::rootWidget() {	return this; }
 
-void GuiEnv::Impl::threatDeletionQueue()
+void Ui::Impl::threatDeletionQueue()
 {
   foreach( widget, deletionQueue )
   {
@@ -110,7 +110,7 @@ void GuiEnv::Impl::threatDeletionQueue()
   deletionQueue.clear();
 }
 
-void GuiEnv::clear()
+void Ui::clear()
 {
   // Remove the focus
   setFocus( this );
@@ -121,7 +121,7 @@ void GuiEnv::clear()
     deleteLater( *it );
 }
 
-void GuiEnv::draw()
+void Ui::draw()
 {
   if( !_d->preRenderFunctionCalled )
   {
@@ -135,7 +135,7 @@ void GuiEnv::draw()
   _d->preRenderFunctionCalled = false;
 }
 
-bool GuiEnv::setFocus( Widget* element )
+bool Ui::setFocus( Widget* element )
 {
     if( _d->focusedElement == element )
     {
@@ -179,19 +179,19 @@ bool GuiEnv::setFocus( Widget* element )
     return true;
 }
 
-Widget* GuiEnv::getFocus() const { return _d->focusedElement.object(); }
+Widget* Ui::getFocus() const { return _d->focusedElement.object(); }
 
-bool GuiEnv::isHovered( const Widget* element )
+bool Ui::isHovered( const Widget* element )
 {
   return element != NULL ? (_d->hovered.object() == element) : false;
 }
 
-Widget *GuiEnv::findWidget(int id)
+Widget *Ui::findWidget(int id)
 {
   return Widget::findChild( id, true );
 }
 
-void GuiEnv::deleteLater( Widget* ptrElement )
+void Ui::deleteLater( Widget* ptrElement )
 {
 	try
 	{
@@ -225,12 +225,12 @@ void GuiEnv::deleteLater( Widget* ptrElement )
 	{}
 }
 
-Widget* GuiEnv::createWidget(const std::string& type, Widget* parent)
+Widget* Ui::createWidget(const std::string& type, Widget* parent)
 {
   return _d->factory.create( type, parent );
 }
 
-WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
+WidgetPtr Ui::Impl::createStandartTooltip( Widget* parent )
 {
   Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->tooltipText(), true, Label::bgSimpleWhite );
   elm->setSubElement(true);
@@ -245,7 +245,7 @@ WidgetPtr GuiEnv::Impl::createStandartTooltip( Widget* parent )
   return elm;
 }
 
-void GuiEnv::_drawTooltip( unsigned int time )
+void Ui::_drawTooltip( unsigned int time )
 {
     // launch tooltip
     if ( _d->toolTip.element.isNull()
@@ -287,7 +287,7 @@ void GuiEnv::_drawTooltip( unsigned int time )
     }
 }
 
-void GuiEnv::_updateHovered( const Point& mousePos )
+void Ui::_updateHovered( const Point& mousePos )
 {
   WidgetPtr lastHovered = _d->hovered;
   WidgetPtr lastHoveredNoSubelement = _d->hoveredNoSubelement;
@@ -349,7 +349,7 @@ void GuiEnv::_updateHovered( const Point& mousePos )
 }
 
 //! Returns the next element in the tab group starting at the focused element
-Widget* GuiEnv::next(bool reverse, bool group)
+Widget* Ui::next(bool reverse, bool group)
 {
     // start the search at the root of the current tab group
     Widget *startPos = getFocus() ? getFocus()->tabgroup() : 0;
@@ -397,7 +397,7 @@ Widget* GuiEnv::next(bool reverse, bool group)
 }
 
 //! posts an input event to the environment
-bool GuiEnv::handleEvent( const NEvent& event )
+bool Ui::handleEvent( const NEvent& event )
 {  
   switch(event.EventType)
   {
@@ -512,9 +512,9 @@ bool GuiEnv::handleEvent( const NEvent& event )
   return false;
 }
 
-Widget* GuiEnv::hovered() const {  return _d->hovered.object(); }
+Widget* Ui::hovered() const {  return _d->hovered.object(); }
 
-void GuiEnv::beforeDraw()
+void Ui::beforeDraw()
 {
   const Size screenSize( _d->engine->screenSize() );
   const Point rigthDown = rootWidget()->absoluteRect().LowerRightCorner;
@@ -543,7 +543,7 @@ void GuiEnv::beforeDraw()
   _d->preRenderFunctionCalled = true;
 }
 
-bool GuiEnv::removeFocus( Widget* element)
+bool Ui::removeFocus( Widget* element)
 {
   if( _d->focusedElement.isValid() && _d->focusedElement == element )
   {
@@ -561,11 +561,11 @@ bool GuiEnv::removeFocus( Widget* element)
   return true;
 }
 
-void GuiEnv::animate( unsigned int time )
+void Ui::animate( unsigned int time )
 {
   Widget::animate( time );
 }
 
-Point GuiEnv::cursorPos() const {  return _d->cursorPos; }
+Point Ui::cursorPos() const {  return _d->cursorPos; }
 
 }//end namespace gui

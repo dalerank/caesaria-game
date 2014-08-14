@@ -67,7 +67,7 @@ public:
 
   PlayerCityPtr city;     // city to display
   Tilemap* tilemap;
-  gui::GuiEnv* guienv;
+  gui::Ui* guienv;
   Engine* engine;
   TilemapCamera camera;  // visible map area
   Layers layers;
@@ -88,7 +88,7 @@ CityRenderer::CityRenderer() : _d( new Impl )
 
 CityRenderer::~CityRenderer() {}
 
-void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::GuiEnv* guienv )
+void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guienv )
 {
   _d->city = city;
   _d->tilemap = &city->tilemap();

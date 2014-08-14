@@ -45,7 +45,7 @@ class Manager : public ReferenceCounted
 public:
   static Manager& getInstance();
 
-  void showHelp( PlayerCityPtr city, gui::GuiEnv* gui, TilePos tile );
+  void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );
 
   void addInfobox( const gfx::TileOverlay::Type type, const std::string& typeName, InfoboxCreator* ctor );

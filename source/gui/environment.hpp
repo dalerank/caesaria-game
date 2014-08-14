@@ -29,12 +29,12 @@ namespace gfx
 namespace gui
 {
 
-class GuiEnv : Widget
+class Ui : Widget
 {
 public:
-  GuiEnv( gfx::Engine& painter );
+  Ui( gfx::Engine& painter );
 
-  virtual ~GuiEnv();
+  virtual ~Ui();
 
   bool hasFocus( const Widget* element) const;
   virtual bool setFocus( Widget* element);

@@ -25,6 +25,7 @@
 #include "core/serializer.hpp"
 #include "core/scopedptr.hpp"
 #include "gfx/renderer.hpp"
+#include "core/direction.hpp"
 #include "game/predefinitions.hpp"
 
 struct Desirability
@@ -66,6 +67,7 @@ public:
 
   virtual Point offset(const Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
+  virtual void changeDirection(constants::Direction direction);
 
   // graphic
   virtual void setPicture(Picture picture);

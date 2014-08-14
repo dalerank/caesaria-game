@@ -23,6 +23,7 @@
 #include "game/enums.hpp"
 #include "tileoverlay.hpp"
 #include "predefinitions.hpp"
+#include "core/direction.hpp"
 
 namespace gfx
 {
@@ -65,6 +66,8 @@ public:
   Tile* masterTile() const;
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
+
+  void changeDirection(constants::Direction newDirection);
 
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 

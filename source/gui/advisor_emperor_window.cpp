@@ -104,7 +104,7 @@ private:
 
   void _executeRequest()
   {
-    DialogBox* dialog = new DialogBox( environment()->rootWidget(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOkCancel );
+    DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect(), "", "##dispatch_emperor_request_question##", DialogBox::btnOkCancel );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
     CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater );
     CONNECT( dialog, onCancel(), dialog, DialogBox::deleteLater );

@@ -35,7 +35,7 @@ void SlideAnimator::Impl::checkMode( SlideAnimator* anim )
         anim->setStopPos( parentRect.UpperLeftCorner );
         Rect hRect = anim->parent()->parent()
                                     ? anim->parent()->parent()->relativeRect()
-                                    : Rect( Point( 0, 0 ), anim->environment()->rootWidget()->size() );
+                                    : Rect( Point( 0, 0 ), anim->ui()->rootWidget()->size() );
         switch( mode )
         {
         case SlideAnimator::SlideTop: anim->setStopPos( Point( anim->getStopPos().x(), -parentRect.height() ) ); break;

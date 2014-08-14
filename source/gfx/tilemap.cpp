@@ -27,6 +27,8 @@
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 
+using namespace constants;
+
 namespace gfx
 {
 
@@ -51,62 +53,23 @@ class TileGrid : public std::vector< TileRow >
 class Tilemap::Impl : public TileGrid
 {
 public:
-  Tile* ate( const int i, const int j )
-  {
-    if( isInside( TilePos( i, j ) ) )
-    {
-      return (*this)[i][j];
-    }
-
-    return 0;
-  }
-
-  Tile& at( const int i, const int j )
-  {
-    if( isInside( TilePos( i, j ) ) )
-    {
-      return *(*this)[i][j];
-    }
-
-    //Logger::warning( "Need inside point current=[%d, %d]", i, j );
-    return invalidTile;
-  }
-
-  bool isInside( const TilePos& pos )
-  {
-    return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size && pos.j() < size);
-  }
-
-  void resize( const int s )
-  {
-    size = s;
-
-    // resize the tile array
-    TileGrid::resize( size );
-
-    for( int i = 0; i < size; ++i )
-    {
-      (*this)[i].reserve( size );
-
-      for (int j = 0; j < size; ++j)
-      {
-        (*this)[i].push_back( new Tile( TilePos( i, j ) ));
-      }
-    }
-  }
-
-  void set( int i, int j, Tile* v )
-  {
-    v->setEPos( TilePos( i, j ) );
-    (*this)[i][j] = v;
-  }
-
   int size;
+  Direction direction;
+
+  Tile* ate(const TilePos& pos);
+  Tile* ate( const int i, const int j );
+
+  Tile& at( const int i, const int j );
+
+  bool isInside( const TilePos& pos );
+  void resize( const int s );
+  void set( int i, int j, Tile* v );
 };
 
 Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
+  _d->direction = north;
 }
 
 void Tilemap::resize( const unsigned int size )
@@ -127,7 +90,7 @@ TilePos Tilemap::fit( const TilePos& pos ) const
   return ret;
 }
 
-Tile* Tilemap::at(Point pos, bool overborder)
+Tile* Tilemap::at( const Point& pos, bool overborder)
 {
   // x relative to the left most pixel of the tilemap
   int i = (pos.x() + 2 * pos.y()) / 60;
@@ -386,8 +349,47 @@ void Tilemap::load( const VariantMap& stream )
 
 void Tilemap::turnRight()
 {
+  switch( _d->direction )
+  {
+  case north: _d->direction = west; break;
+  case west: _d->direction = south; break;
+  case south: _d->direction = east; break;
+  case east: _d->direction = north; break;
+
+  default:
+    Logger::warning( "Tilemap::turnRight wrong direction %d", _d->direction );
+  }
+
+  std::map<Tile*,Picture> masterTiles;
+
   Tile* tmp;
   unsigned int size = _d->size;
+
+  for( unsigned int i=0; i < size; i++ )
+  {
+    for( unsigned int j=0; j < size; j++ )
+    {
+      tmp = _d->ate( i, j );
+      if( tmp->masterTile() )
+      {
+        Tile* mTile = tmp->masterTile();
+        Picture pic = mTile->picture();
+        int pSize = (pic.width() + 2) / 60;
+
+        masterTiles[ tmp->masterTile() ] = pic;
+        for( int i=0; i < pSize; i++ )
+        {
+          for( int j=0; j < pSize; j++ )
+          {
+            Tile* apTile = _d->ate( mTile->pos() + TilePos( i, j ) );
+            apTile->setMasterTile( 0 );
+            apTile->setPicture( Picture::getInvalid() );
+          }
+        }
+      }
+    }
+  }
+
   for( unsigned int i=0;i< size/2;i++)
   {
     for( unsigned int j=i; j< size-1-i;j++)
@@ -398,11 +400,53 @@ void Tilemap::turnRight()
       _d->set( size-i-1, size-j-1, _d->ate( j, size-i-1 ) );
       _d->set( j, size-i-1, tmp );
     }
+  }  
+
+  foreach( it, masterTiles )
+  {
+    Picture pic = it->second;
+    int pSize = (pic.width() + 2) / 60;
+
+    switch( _d->direction )
+    {
+    case west:
+    {
+      TilePos mTilePos = it->first->epos() - TilePos( 0, pSize - 1 );
+      Tile* mTile = _d->ate( mTilePos );
+      for( int i=0; i < pSize; i++ )
+      {
+        for( int j=0; j < pSize; j++ )
+        {
+          Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
+          apTile->setMasterTile( mTile );
+        }
+      }
+      mTile->setPicture( pic );
+    }
+    break;
+
+    default:
+      break;
+    }
+
   }
+
+  //tmp->changeDirection( _d->direction );
 }
 
 void Tilemap::turnLeft()
 {
+  switch( _d->direction )
+  {
+  case north: _d->direction = east; break;
+  case east: _d->direction = south; break;
+  case south: _d->direction = west; break;
+  case west: _d->direction = north; break;
+
+  default:
+    Logger::warning( "Tilemap::turnLeft wrong direction %d", _d->direction );
+  }
+
   Tile* tmp;
   unsigned int size = _d->size;
   for( unsigned int i=0;i<size/2;i++)
@@ -414,10 +458,69 @@ void Tilemap::turnLeft()
       _d->set( j, size-1-i, _d->ate( size-1-i, size-1-j ) );
       _d->set( size-1-i, size-1-j, _d->ate( size-1-j, i ) );
       _d->set( size-1-j, i, tmp );
+
+      tmp->changeDirection( _d->direction );
     }
   }
 }
 
+Direction Tilemap::direction() const { return _d->direction; }
+
 Tilemap::~Tilemap(){}
+
+Tile* Tilemap::Impl::ate(const TilePos& pos )
+{
+  return ate( pos.i(), pos.j() );
+}
+
+Tile* Tilemap::Impl::ate(const int i, const int j)
+{
+  if( isInside( TilePos( i, j ) ) )
+  {
+    return (*this)[i][j];
+  }
+
+  return 0;
+}
+
+Tile& Tilemap::Impl::at(const int i, const int j)
+{
+  if( isInside( TilePos( i, j ) ) )
+  {
+    return *(*this)[i][j];
+  }
+
+  //Logger::warning( "Need inside point current=[%d, %d]", i, j );
+  return invalidTile;
+}
+
+bool Tilemap::Impl::isInside(const TilePos& pos)
+{
+  return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size && pos.j() < size);
+}
+
+void Tilemap::Impl::resize(const int s)
+{
+  size = s;
+
+  // resize the tile array
+  TileGrid::resize( size );
+
+  for( int i = 0; i < size; ++i )
+  {
+    (*this)[i].reserve( size );
+
+    for (int j = 0; j < size; ++j)
+    {
+      (*this)[i].push_back( new Tile( TilePos( i, j ) ));
+    }
+  }
+}
+
+void Tilemap::Impl::set(int i, int j, Tile* v)
+{
+  v->setEPos( TilePos( i, j ) );
+  (*this)[i][j] = v;
+}
 
 }//end namespace gfx

@@ -90,7 +90,7 @@ AboutRawMaterial::~AboutRawMaterial()
 
 void AboutRawMaterial::showDescription()
 {
-  DictionaryWindow::show( environment()->rootWidget(), _type );
+  DictionaryWindow::show( ui()->rootWidget(), _type );
 }
 
 }

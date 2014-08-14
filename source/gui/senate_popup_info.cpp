@@ -85,7 +85,7 @@ SenatePopupInfo::SenatePopupInfo( Widget* parent, gfx::Renderer& mapRenderer ) :
 
 void SenatePopupInfo::draw(gfx::Engine& painter )
 {
-  Point cursorPos = environment()->cursorPos();
+  Point cursorPos = ui()->cursorPos();
 
   Tile* tile = _d->cityRenderer->camera()->at( cursorPos, false );
 

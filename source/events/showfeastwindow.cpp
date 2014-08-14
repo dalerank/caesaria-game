@@ -51,7 +51,7 @@ bool ShowFeastWindow::_mayExec(Game& game, unsigned int time) const
 
 void ShowFeastWindow::_exec(Game& game, unsigned int)
 {
-  gui::GuiEnv* env = game.gui();
+  gui::Ui* env = game.gui();
 
   gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), "/smk/Festival3_Glad.smk" );
   dlg->setText( _text );

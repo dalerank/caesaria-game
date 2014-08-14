@@ -22,6 +22,7 @@
 #include "core/serializer.hpp"
 #include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
+#include "core/direction.hpp"
 #include "gfx/tilesarray.hpp"
 
 namespace gfx
@@ -78,9 +79,11 @@ public:
   void turnRight();
   void turnLeft();
 
+  constants::Direction direction() const;
+
   TilePos fit( const TilePos& pos ) const;
 
-  Tile* at(Point pos, bool overborder);
+  Tile* at(const Point& pos, bool overborder);
 private: 
   class Impl;
   ScopedPtr< Impl > _d;

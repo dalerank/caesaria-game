@@ -214,7 +214,7 @@ void Employer::Impl::showPriorityWindow( Industry::Type industry )
   wh << city->findService( city::WorkersHire::defaultName() );
 
   int priority = wh->getPriority( industry );
-  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->environment()->rootWidget(), industry, priority );
+  HirePriorityWnd* wnd = new HirePriorityWnd( lbSalary->ui()->rootWidget(), industry, priority );
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
