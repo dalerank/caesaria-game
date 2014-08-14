@@ -2,8 +2,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../libs/freetype/include \
-                  $(LOCAL_PATH)/../../../libs/SDL/include 
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../android/libs/freetype/include \
+                  $(LOCAL_PATH)/../../android/libs/SDL/include 
 
 LOCAL_MODULE := sdl_ttf
 LOCAL_SRC_FILES := $(subst $(LOCAL_PATH)/,, \
