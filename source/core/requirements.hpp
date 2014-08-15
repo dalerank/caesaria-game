@@ -32,12 +32,6 @@
   #if !defined _CRT_SECURE_NO_DEPRECATE
     #define _CRT_SECURE_NO_DEPRECATE
   #endif
-
-  #if defined(_MSC_VER)
-    #define CAESARIA_COMPILER_NAME "msvc"
-  #elif defined(__GNUC__)
-    #define CAESARIA_COMPILER_NAME "mingw"
-  #endif
 #endif
 
 /*#if defined(CAESARIA_PLATFORM_UNIX)

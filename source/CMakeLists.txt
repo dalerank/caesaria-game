@@ -100,6 +100,7 @@ endif(BUILD_GL_SHADERS)
 
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
+  target_link_libraries(${PROJECT_NAME} "winmm")
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 

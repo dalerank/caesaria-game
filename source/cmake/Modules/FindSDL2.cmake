@@ -77,7 +77,7 @@ endif(WIN32)
 FIND_PATH(SDL2_INCLUDE_DIR SDL.h
   HINTS
   $ENV{SDL2DIR}
-  PATH_SUFFIXES include/SDL2 include
+  PATH_SUFFIXES include/SDL2 include SDL2
   PATHS
   ~/Library/Frameworks
   /Library/Frameworks
@@ -105,6 +105,8 @@ FIND_LIBRARY(SDL2_LIBRARY_PATH
   ${WIN32_SDL_DEPENDENCIES_DIR}
   /boot/system/develop/lib   #haiku
 )
+
+MESSAGE( "SDL2_LIBRARY_PATH is ${SDL2_LIBRARY_PATH}")
 
 set(SDL2_LIBRARY_ONLY ${SDL2_LIBRARY_PATH} CACHE STRING "The SDL2 library, with no other libraries.")
 set(SDL2_LIBRARY_TEMP ${SDL2_LIBRARY_PATH})
