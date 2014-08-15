@@ -188,7 +188,7 @@ void Emperor::_updateRequests()
 
   if( dispatcher.isValid() )
   {
-    reqs = dispatcher->getRequests();
+    reqs = dispatcher->requests();
   }
 
   if( reqs.empty() )

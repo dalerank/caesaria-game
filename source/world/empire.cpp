@@ -445,7 +445,7 @@ bool EmpireHelper::isGreaterSalary(CityPtr city)
   if( pl.isValid() )
   {
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
-    const world::GovernorRank& curRank = ranks[ math::clamp<int>( pl->rank(), 0, ranks.size()-1 ) ];
+    const world::GovernorRank& curRank = ranks[ math::clamp<int>( pl->rank(), 0, ranks.size() ) ];
     int normalSalary = curRank.salary;
 
     result = (pl->salary() > normalSalary);
@@ -456,7 +456,7 @@ bool EmpireHelper::isGreaterSalary(CityPtr city)
 
 GovernorRanks EmpireHelper::ranks()
 {
-  std::map<unsigned int, GovernorRank > sortRanks;
+  std::map<unsigned int, GovernorRank> sortRanks;
 
   VariantMap vm = SaveAdapter::load( SETTINGS_RC_PATH( ranksModel ) );
   foreach( i, vm )
@@ -471,6 +471,12 @@ GovernorRanks EmpireHelper::ranks()
     ret.push_back( i->second );
 
   return ret;
+}
+
+GovernorRank EmpireHelper::getRank(unsigned int name)
+{
+  GovernorRanks ranks = world::EmpireHelper::ranks();
+  return ranks[ math::clamp<int>( name, 0, ranks.size() ) ];
 }
 
 TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}

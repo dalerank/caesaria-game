@@ -31,6 +31,7 @@ public:
   virtual void drawTile( Engine& engine, Tile& tile, Point offset );
 
   static LayerPtr create( Camera& camera, PlayerCityPtr city );
+  virtual void handleEvent(NEvent &event);
 private:
   LayerCrime(Camera& camera, PlayerCityPtr city );
 };

@@ -31,8 +31,10 @@
 #include "texturedbutton.hpp"
 #include "city/cityservice_culture.hpp"
 #include "city/cityservice_prosperity.hpp"
+#include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "city/requestdispatcher.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -104,6 +106,7 @@ public:
   void checkCultureRating();
   void checkProsperityRating();
   void checkPeaceRating();
+  void checkFavourRating();
 
   PlayerCityPtr city;
 };
@@ -187,7 +190,7 @@ void Ratings::Impl::checkProsperityRating()
 
     std::string text = troubles.empty()
                         ? _("##good_prosperity##")
-                        : troubles[ (int)(rand() % troubles.size()) ];
+                        : troubles.random();
 
     lbRatingInfo->setText( text );
   }
@@ -196,6 +199,34 @@ void Ratings::Impl::checkProsperityRating()
 void Ratings::Impl::checkPeaceRating()
 {
   lbRatingInfo->setText( _("##peace_rating_text##") );
+}
+
+void Ratings::Impl::checkFavourRating()
+{
+  StringArray problems;
+  city::request::DispatcherPtr rd;
+  rd << city->findService( city::request::Dispatcher::defaultName() );
+
+  PlayerPtr player = city->player();
+  world::GovernorRank rank = world::EmpireHelper::getRank( player->rank() );
+  if( player->salary() / rank.salary >= 2 )
+  {
+    problems << "##high_salary_angers_senate##";
+  }
+
+  if( rd.isValid() )
+  {
+    if( rd->haveCanceledRequest() )
+    {
+      problems << "##imperial_request_cance_badly_affected##";
+    }
+  }
+
+  std::string text = problems.empty()
+                      ? _("##no_favour_problem##")
+                      : problems.random();
+
+  lbRatingInfo->setText( _(text) );
 }
 
 Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
@@ -235,6 +266,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   _d->btnFavour->setValue( _d->city->favour() );
   _d->btnFavour->setTarget( targets.needFavour() );
   _d->updateColumn( _d->btnFavour->relativeRect().getCenter(), 0 );
+  CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
